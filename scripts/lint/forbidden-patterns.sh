@@ -418,6 +418,13 @@ for (const rel of changedFiles()) {
   }
 }
 
+try {
+  execFileSync('node', [path.join(root, 'scripts/lint/resolution-registry-duplicates.js'), root], { stdio: 'pipe' });
+} catch (error) {
+  process.stdout.write(`INVARIANT-4: FAIL ${String(error.stderr || error.message).trim()}\n`);
+  process.exit(1);
+}
+
 if (failures.length) {
   process.stdout.write(`INVARIANT-4: FAIL ${failures[0]}\n`);
   process.exit(1);

@@ -1,0 +1,2055 @@
+{
+  "schema_version": "STAGE_2Y_REGISTRY_BASELINE/V1",
+  "head_commit": "01e80f6f52560e0ec2d2ddf44d35c418c10d729a",
+  "harness_patch_sha256": "sha256:41c877575165cb2b01017496adadadcb098d7af24577d359677011165212d815",
+  "run_names": [
+    "concho-antitrust-regulatory-20260809-2xk-final",
+    "concho-appraisal-dissenters-rights-20260809-2xk-final",
+    "concho-closing-conditions-20260809-2xk-final",
+    "concho-consideration-20260809-2xk-final",
+    "concho-dividends-20260809-2xk-final",
+    "concho-dno-indemnification-20260809-2xk-final",
+    "concho-employee-matters-20260809-2xk-final",
+    "concho-financing-covenants-20260809-2xk-final",
+    "concho-general-covenants-20260809-2xk-final",
+    "concho-interim-operating-20260809-2xk-final",
+    "concho-key-defined-terms-20260809-2xk-final",
+    "concho-mae-definition-20260809-2xk-final",
+    "concho-material-contracts-20260809-2xk-final",
+    "concho-merger-structure-closing-20260809-2xk-final",
+    "concho-misc-boilerplate-20260809-2xk-final",
+    "concho-no-other-reps-fraud-20260809-2xk-final",
+    "concho-no-shop-20260809-2xk-final",
+    "concho-proxy-meeting-20260809-2xk-final",
+    "concho-representations-r1a-20260809-2xk-final",
+    "concho-representations-r1b-20260809-2xk-final",
+    "concho-representations-r1c-20260809-2xk-final",
+    "concho-representations-r1d-20260809-2xk-final",
+    "concho-specific-performance-remedies-20260809-2xk-final",
+    "concho-tax-matters-20260809-2xk-final",
+    "concho-termination-20260809-2xk-final",
+    "concho-termination-fee-20260809-2xk-final",
+    "metsera-antitrust-regulatory-20260809-2xk-final",
+    "metsera-appraisal-dissenters-rights-20260809-2xk-final",
+    "metsera-closing-conditions-20260809-2xk-final",
+    "metsera-consideration-20260809-2xk-final",
+    "metsera-dividends-20260809-2xk-final",
+    "metsera-dno-indemnification-20260809-2xk-final",
+    "metsera-employee-matters-20260809-2xk-final",
+    "metsera-general-covenants-20260809-2xk-final",
+    "metsera-interim-operating-20260809-2xk-final",
+    "metsera-key-defined-terms-20260809-2xk-final",
+    "metsera-mae-definition-20260809-2xk-final",
+    "metsera-material-contracts-20260809-2xk-final",
+    "metsera-merger-structure-closing-20260809-2xk-final",
+    "metsera-misc-boilerplate-20260809-2xk-final",
+    "metsera-no-other-reps-fraud-20260809-2xk-final",
+    "metsera-no-shop-20260809-2xk-final",
+    "metsera-proxy-meeting-20260809-2xk-final",
+    "metsera-representations-r1a-20260809-2xk-final",
+    "metsera-representations-r1b-20260809-2xk-final",
+    "metsera-representations-r1c-20260809-2xk-final",
+    "metsera-specific-performance-remedies-20260809-2xk-final",
+    "metsera-tax-matters-20260809-2xk-final",
+    "metsera-termination-20260809-2xk-final",
+    "metsera-termination-fee-20260809-2xk-final",
+    "modiv-antitrust-regulatory-20260809-2xk-final",
+    "modiv-closing-conditions-20260809-2xk-final",
+    "modiv-dno-indemnification-20260809-2xk-final",
+    "modiv-general-covenants-20260809-2xk-final",
+    "modiv-material-contracts-20260809-2xk-final",
+    "modiv-merger-structure-closing-20260809-2xk-final",
+    "modiv-misc-boilerplate-20260809-2xk-final",
+    "modiv-no-other-reps-fraud-20260809-2xk-final",
+    "modiv-no-shop-20260809-2xk-final",
+    "modiv-proxy-meeting-20260809-2xk-final",
+    "redhat-antitrust-regulatory-20260809-2xk-final",
+    "redhat-appraisal-dissenters-rights-20260809-2xk-final",
+    "redhat-closing-conditions-20260809-2xk-final",
+    "redhat-consideration-20260809-2xk-final",
+    "redhat-dno-indemnification-20260809-2xk-final",
+    "redhat-employee-matters-20260809-2xk-final",
+    "redhat-general-covenants-20260809-2xk-final",
+    "redhat-interim-operating-20260809-2xk-final",
+    "redhat-key-defined-terms-20260809-2xk-final",
+    "redhat-mae-definition-20260809-2xk-final",
+    "redhat-material-contracts-20260809-2xk-final",
+    "redhat-merger-structure-closing-20260809-2xk-final",
+    "redhat-no-other-reps-fraud-20260809-2xk-final",
+    "redhat-no-shop-20260809-2xk-final",
+    "redhat-proxy-meeting-20260809-2xk-final",
+    "redhat-representations-20260809-2xk-final",
+    "redhat-specific-performance-remedies-20260809-2xk-final",
+    "redhat-tax-matters-20260809-2xk-final",
+    "redhat-termination-20260809-2xk-final",
+    "redhat-termination-fee-20260809-2xk-final",
+    "skechers-antitrust-regulatory-20260809-2xk-final",
+    "skechers-appraisal-dissenters-rights-20260809-2xk-final",
+    "skechers-closing-conditions-20260809-2xk-final",
+    "skechers-consideration-20260809-2xk-final",
+    "skechers-dividends-20260809-2xk-final",
+    "skechers-dno-indemnification-20260809-2xk-final",
+    "skechers-employee-matters-20260809-2xk-final",
+    "skechers-financing-covenants-20260809-2xk-final",
+    "skechers-general-covenants-20260809-2xk-final",
+    "skechers-guaranty-financing-party-20260809-2xk-final",
+    "skechers-interim-operating-20260809-2xk-final",
+    "skechers-key-defined-terms-20260809-2xk-final",
+    "skechers-mae-definition-20260809-2xk-final",
+    "skechers-material-contracts-20260809-2xk-final",
+    "skechers-merger-structure-closing-20260809-2xk-final",
+    "skechers-misc-boilerplate-20260809-2xk-final",
+    "skechers-no-other-reps-fraud-20260809-2xk-final",
+    "skechers-no-shop-20260809-2xk-final",
+    "skechers-proxy-meeting-20260809-2xk-final",
+    "skechers-representations-r1a-20260809-2xk-final",
+    "skechers-representations-r1b-20260809-2xk-final",
+    "skechers-representations-r1c-20260809-2xk-final",
+    "skechers-representations-r1d-20260809-2xk-final",
+    "skechers-specific-performance-remedies-20260809-2xk-final",
+    "skechers-tax-matters-20260809-2xk-final",
+    "skechers-termination-20260809-2xk-final",
+    "skechers-termination-fee-20260809-2xk-final",
+    "skywater-antitrust-regulatory-20260809-2xk-final",
+    "skywater-appraisal-dissenters-rights-20260809-2xk-final",
+    "skywater-closing-conditions-20260809-2xk-final",
+    "skywater-consideration-20260809-2xk-final",
+    "skywater-dividends-20260809-2xk-final",
+    "skywater-dno-indemnification-20260809-2xk-final",
+    "skywater-employee-matters-20260809-2xk-final",
+    "skywater-financing-covenants-20260809-2xk-final",
+    "skywater-general-covenants-20260809-2xk-final",
+    "skywater-interim-operating-20260809-2xk-final",
+    "skywater-key-defined-terms-20260809-2xk-final",
+    "skywater-mae-definition-20260809-2xk-final",
+    "skywater-material-contracts-20260809-2xk-final",
+    "skywater-merger-structure-closing-20260809-2xk-final",
+    "skywater-misc-boilerplate-20260809-2xk-final",
+    "skywater-no-other-reps-fraud-20260809-2xk-final",
+    "skywater-no-shop-20260809-2xk-final",
+    "skywater-proxy-meeting-20260809-2xk-final",
+    "skywater-representations-r1a-20260809-2xk-final",
+    "skywater-representations-r1b-20260809-2xk-final",
+    "skywater-representations-r1c-20260809-2xk-final",
+    "skywater-representations-r1d-20260809-2xk-final",
+    "skywater-specific-performance-remedies-20260809-2xk-final",
+    "skywater-tax-matters-20260809-2xk-final",
+    "skywater-termination-20260809-2xk-final",
+    "skywater-termination-fee-20260809-2xk-final",
+    "topbuild-antitrust-regulatory-20260809-2xk-r4-final",
+    "topbuild-appraisal-dissenters-rights-20260809-2xk-r2-final",
+    "topbuild-closing-conditions-20260809-2xk-r3-final",
+    "topbuild-consideration-20260809-2xk-r2-final",
+    "topbuild-dividends-20260809-2xk-r4-final",
+    "topbuild-dno-indemnification-20260809-2xk-r4-final",
+    "topbuild-employee-matters-20260809-2xk-r4-final",
+    "topbuild-financing-covenants-20260809-2xk-r4-final",
+    "topbuild-general-covenants-20260809-2xk-r3-final",
+    "topbuild-guaranty-financing-party-20260809-2xk-r4-final",
+    "topbuild-interim-operating-20260809-2xk-r3-final",
+    "topbuild-key-defined-terms-20260809-2xk-r2-final",
+    "topbuild-mae-definition-20260809-2xk-r4-final",
+    "topbuild-material-contracts-20260809-2xk-r3-final",
+    "topbuild-merger-structure-closing-20260809-2xk-r4-final",
+    "topbuild-misc-boilerplate-20260809-2xk-r4-final",
+    "topbuild-no-other-reps-fraud-20260809-2xk-r4-final",
+    "topbuild-no-shop-20260809-2xk-r4-final",
+    "topbuild-proxy-meeting-20260809-2xk-r4-final",
+    "topbuild-representations-20260809-2xk-r3-final",
+    "topbuild-specific-performance-remedies-20260809-2xk-r3-final",
+    "topbuild-tax-matters-20260809-2xk-r3-final",
+    "topbuild-termination-20260809-2xk-r3-final",
+    "topbuild-termination-fee-20260809-2xk-r1-final"
+  ],
+  "runs": {
+    "concho-antitrust-regulatory-20260809-2xk-final": {
+      "family": "ANTITRUST_REGULATORY",
+      "semantic_output_digest": "sha256:05d0ed5a85dcd4d500a50440fa8afb32e0a865ca8d99e412d734ce17bfb5c5cd",
+      "receipt_projection_digest": "sha256:dbc24a87b8782444096d97c82e542c1e09753ca4a37675f0a7cbed9d4f8066d5",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-appraisal-dissenters-rights-20260809-2xk-final": {
+      "family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "semantic_output_digest": "sha256:a29863ef458c50bcc86d96a90fe947697562aa8e016ccfb1fda6d73c3becbf52",
+      "receipt_projection_digest": "sha256:264fd54e2b827e9363bc194484ca12281a63b06260896d4ae2d3252411c45900",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-closing-conditions-20260809-2xk-final": {
+      "family": "CLOSING_CONDITIONS",
+      "semantic_output_digest": "sha256:99fdb23b7f7cafdb09574715bcc4533e8621759d629eff9b301efc143d1e9162",
+      "receipt_projection_digest": "sha256:130e16a04f5a1ecc9ee5777f5e23054e9cfb0d2530f89fe84e56886210a6ba8f",
+      "replay_coverage": {
+        "recorded_calls": 4,
+        "replayed_calls": 4,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-consideration-20260809-2xk-final": {
+      "family": "CONSIDERATION",
+      "semantic_output_digest": "sha256:2664bb9a9058f97da28499c0a770285cac1151fdc0fe924734b907edac11553a",
+      "receipt_projection_digest": "sha256:82662db84a76436b75abb05d86f33916b896f28ecb9b5f2af33e74a51cc5dd0c",
+      "replay_coverage": {
+        "recorded_calls": 3,
+        "replayed_calls": 3,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-dividends-20260809-2xk-final": {
+      "family": "DIVIDENDS",
+      "semantic_output_digest": "sha256:08121203b74b8b3725b4280d9be191a9275c08285bc40c576decd9781fb4d1ae",
+      "receipt_projection_digest": "sha256:c02b358ede9d95f26890f9c4dd2643be5f7651306ee54ec7675548fd4a73033e",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-dno-indemnification-20260809-2xk-final": {
+      "family": "DNO_INDEMNIFICATION",
+      "semantic_output_digest": "sha256:3b7bfee5900d8a1258e03267c980e7be3660951a0b9a7dc8325b99ea41d0a2bd",
+      "receipt_projection_digest": "sha256:fd140be95fecef3a43b28e1de1a7ccef16c0d16a566e0213956b191cc40a8da3",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-employee-matters-20260809-2xk-final": {
+      "family": "EMPLOYEE_MATTERS",
+      "semantic_output_digest": "sha256:fbf522e0d73ac8c6ecd0aad04ed5d5a5ea2f958075ade2dddf287238e1b55483",
+      "receipt_projection_digest": "sha256:6739a66dcdcb6482bc71dcf94128ae0ed85c8df0aba0e7ba53d3333f8db6bed2",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-financing-covenants-20260809-2xk-final": {
+      "family": "FINANCING_COVENANTS",
+      "semantic_output_digest": "sha256:d2677c7ec3ad36404cdd994b6a726acf5b42c9f6622a37b104dececaef1db644",
+      "receipt_projection_digest": "sha256:1b2689f14a51ed43f9c52f1da67c1bd6b4ee88984805debb98341a34ee8f258a",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-general-covenants-20260809-2xk-final": {
+      "family": "GENERAL_COVENANTS",
+      "semantic_output_digest": "sha256:a03f29898c86e19bd8e21cdd41a7ad5cfdc135385b800b42cca7bf2dc0f426dd",
+      "receipt_projection_digest": "sha256:3213252eaab8797327e93812f7c44283dacdaf40cf14de627ee18cfd9770e348",
+      "replay_coverage": {
+        "recorded_calls": 8,
+        "replayed_calls": 8,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-interim-operating-20260809-2xk-final": {
+      "family": "INTERIM_OPERATING",
+      "semantic_output_digest": "sha256:ccf9cc90f049cb9651d0b439b1e8fdc18297787dd20ea413e62a8f6ef3ad970a",
+      "receipt_projection_digest": "sha256:a63ffa061d87192e85d1c978dabdbad85126a1526d5a2a28a81261142aa9e5fb",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-key-defined-terms-20260809-2xk-final": {
+      "family": "KEY_DEFINED_TERMS",
+      "semantic_output_digest": "sha256:8a08085c5047c8f567361c7fb205887a9640e0864692cc4b0c047fc2582e62c9",
+      "receipt_projection_digest": "sha256:d2ebad026c81501359ee2408ce93260423f3c2fbfba5e26c93e7bd06900a5cfd",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-mae-definition-20260809-2xk-final": {
+      "family": "MAE_DEFINITION",
+      "semantic_output_digest": "sha256:f6c61476152250eaf5d2dd3c06ebd721ed57a8548e1e8abe40ca2b7d3fddf406",
+      "receipt_projection_digest": "sha256:29b3fb07c908e06286b3c7ec015ee748b9ccfaf4e4dcd9274436a916c1f3532d",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-material-contracts-20260809-2xk-final": {
+      "family": "MATERIAL_CONTRACTS",
+      "semantic_output_digest": "sha256:6bd3d9bc35ebb38048da483de9faa92e000ac7fc55c5de24fe222bb751579a89",
+      "receipt_projection_digest": "sha256:b199edc1b43e3e09e983e128f4f4233710f92786c3ecb928dcc8ee75ede25aa4",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-merger-structure-closing-20260809-2xk-final": {
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "semantic_output_digest": "sha256:1ac0e81af03a1a065a136c35056f6c3db13fc5f3b92daa7550a89411202916e0",
+      "receipt_projection_digest": "sha256:61602be4eba6fa757044956b55cb4ed363406351003be17429c0f9c12462d7b3",
+      "replay_coverage": {
+        "recorded_calls": 7,
+        "replayed_calls": 7,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-misc-boilerplate-20260809-2xk-final": {
+      "family": "MISC_BOILERPLATE",
+      "semantic_output_digest": "sha256:cd089bd071cf4969eb32fe8c0ec5b86e43aa7d11cfa99736b676760eb8220278",
+      "receipt_projection_digest": "sha256:500310c479167a7daea2eca7dfdf8f5bb2ac9a7294f829ca185ec0a488b6c2da",
+      "replay_coverage": {
+        "recorded_calls": 12,
+        "replayed_calls": 12,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-no-other-reps-fraud-20260809-2xk-final": {
+      "family": "NO_OTHER_REPS_FRAUD",
+      "semantic_output_digest": "sha256:fba3db9c15a301bb14c0d93eca9b6308b06d610d39181d1a53741513289c04b5",
+      "receipt_projection_digest": "sha256:54458e755a2dc52ea5e15b808f864c5fd0583dffa5b60d270502df18f2f71bc0",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-no-shop-20260809-2xk-final": {
+      "family": "NO_SHOP",
+      "semantic_output_digest": "sha256:2d271fcbab47755ff3176f4bad3e46501ecebf027018220f49e9ad893f43ecdb",
+      "receipt_projection_digest": "sha256:88d8997230821767fa8dee723eb2791f1beb211c5e925acfbfe64ed1e408d82f",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-proxy-meeting-20260809-2xk-final": {
+      "family": "PROXY_MEETING",
+      "semantic_output_digest": "sha256:4a538e0b07360673936f865dcf0edbeea2d4d74da1cf23863e0e0c4066f5fce8",
+      "receipt_projection_digest": "sha256:9583f5e79934809e0aff11119c8317d11584613bf1495e484b14ca498a2b2368",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-representations-r1a-20260809-2xk-final": {
+      "family": "REPRESENTATIONS",
+      "semantic_output_digest": "sha256:393617057103167cebc6e50c2d4930440b2db57bf02b75d4cdfe4ba8a5a6f3d6",
+      "receipt_projection_digest": "sha256:81c2ac3122d2736eb2cb321cc392d22282debe93be287fb370be833daa7154ea",
+      "replay_coverage": {
+        "recorded_calls": 12,
+        "replayed_calls": 12,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-representations-r1b-20260809-2xk-final": {
+      "family": "REPRESENTATIONS",
+      "semantic_output_digest": "sha256:afab7d7f8f1d9d65095e57c76963c9baff7f38b4d4ac10b26c4f3fd90625dd68",
+      "receipt_projection_digest": "sha256:b254a636920d110508d46d30df5d5ffa21b637c151238b66b6958204a050e029",
+      "replay_coverage": {
+        "recorded_calls": 12,
+        "replayed_calls": 12,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-representations-r1c-20260809-2xk-final": {
+      "family": "REPRESENTATIONS",
+      "semantic_output_digest": "sha256:5587ad00bfad5ed94bee1ef45ca2dff457153d8f307e8a19ed66923c6b038751",
+      "receipt_projection_digest": "sha256:a66c625705a21e74ecff5fd9d010d740ea04d7fd897df43b29ec9bef2b3557a7",
+      "replay_coverage": {
+        "recorded_calls": 12,
+        "replayed_calls": 12,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-representations-r1d-20260809-2xk-final": {
+      "family": "REPRESENTATIONS",
+      "semantic_output_digest": "sha256:24bbe6a217638e141171da5e66b407b5c93b637037e8a1ecfdef9383e2502d56",
+      "receipt_projection_digest": "sha256:9a39c8e4f6f5f1fde94efffee499e74eed1500d30a04dd380bfe4aaa0d18be7a",
+      "replay_coverage": {
+        "recorded_calls": 10,
+        "replayed_calls": 10,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-specific-performance-remedies-20260809-2xk-final": {
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "semantic_output_digest": "sha256:ef920370075b3e586e7449acbd65828577b2a284c809a939a0a81edc895db71f",
+      "receipt_projection_digest": "sha256:b17f7b7e352f3cd227564c7e14b365a9f558c5b627dd47149d65ef85916d9ca1",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-tax-matters-20260809-2xk-final": {
+      "family": "TAX_MATTERS",
+      "semantic_output_digest": "sha256:d3c7ef9d565791b02f90284c903bcb8df59073ecb08355cb46213b86296675d3",
+      "receipt_projection_digest": "sha256:483ba824eb9c0ad38f9da5dac1306b25a3e7051db3433bd5a5f3f0985142adaa",
+      "replay_coverage": {
+        "recorded_calls": 3,
+        "replayed_calls": 3,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-termination-20260809-2xk-final": {
+      "family": "TERMINATION",
+      "semantic_output_digest": "sha256:ac6e4cf3b15da32f00b2297c6a29f9734019be18cb974e69498817a1ae12f65e",
+      "receipt_projection_digest": "sha256:ea257a16298e34e02552aa26e4c68496669c386626a1ff36e233f5b6795a2f8a",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "concho-termination-fee-20260809-2xk-final": {
+      "family": "TERMINATION_FEE",
+      "semantic_output_digest": "sha256:3047a879d670b144bcec5cfecdb94ccc3618af68f9cefe528db14915727df07c",
+      "receipt_projection_digest": "sha256:177e37f36a386b7e0c98bd85c26c41565923411ebeb1d9b389bdd4c9818f481d",
+      "replay_coverage": {
+        "recorded_calls": 3,
+        "replayed_calls": 3,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-antitrust-regulatory-20260809-2xk-final": {
+      "family": "ANTITRUST_REGULATORY",
+      "semantic_output_digest": "sha256:aa46f5057f6a2dfc89a3b2d4257494d5fed3a4c29a9f9ba02305d8867f7ac01e",
+      "receipt_projection_digest": "sha256:33e18f47249ab3457e8cd51fa79be9a4a54a73e6c57a6183d775256ce01357f1",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-appraisal-dissenters-rights-20260809-2xk-final": {
+      "family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "semantic_output_digest": "sha256:3eab5be3463eb5967beac2fb0dfb94838f5f33cba9a9ed0b47b68d2cffaec4ae",
+      "receipt_projection_digest": "sha256:567ae5d7c8ad04140050b73ccb5a81434639a5f3d99ef21fe4b07860b4fa71db",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-closing-conditions-20260809-2xk-final": {
+      "family": "CLOSING_CONDITIONS",
+      "semantic_output_digest": "sha256:658c9546e1e55a4e5a9e0a46a860a7aa1fca4dc4e3b38dee2bc73d92415e0b34",
+      "receipt_projection_digest": "sha256:0bafd7b0039a157398ecc8c3bf4dc2ace72d1b4493fe245663d12b01a69c97bf",
+      "replay_coverage": {
+        "recorded_calls": 4,
+        "replayed_calls": 4,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-consideration-20260809-2xk-final": {
+      "family": "CONSIDERATION",
+      "semantic_output_digest": "sha256:b1c74edefa5439757aff58fbbd5fe4dd730d55471031e0d2fdc05bba1f7146e8",
+      "receipt_projection_digest": "sha256:73a3604c4a90edf187cefc07073e374467dcaae9295542e7a043c7be66edcfa8",
+      "replay_coverage": {
+        "recorded_calls": 3,
+        "replayed_calls": 3,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-dividends-20260809-2xk-final": {
+      "family": "DIVIDENDS",
+      "semantic_output_digest": "sha256:7fc2a8864bd7f96fd59bedabaa2b5d2e574cb5857e8cc9d0f4434623f9afb72b",
+      "receipt_projection_digest": "sha256:1edea58ffcc89a13c0d6f2bc9719ec93f78028a1f79e1a3326043c3509adb60f",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-dno-indemnification-20260809-2xk-final": {
+      "family": "DNO_INDEMNIFICATION",
+      "semantic_output_digest": "sha256:72f74e51596bdf39b4bbc24ba037c6c305c77a02be521952ec2a28e0e1a2a8b7",
+      "receipt_projection_digest": "sha256:74ef596fefbcc82ccbfc470cfd24506e0d8a0ea76ea67ff7686dfd71d3ef32bf",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-employee-matters-20260809-2xk-final": {
+      "family": "EMPLOYEE_MATTERS",
+      "semantic_output_digest": "sha256:3134daeb581bf5ef58ca0d1d110dbc63653b63ba82fcec01b225386c1b2c785d",
+      "receipt_projection_digest": "sha256:c8ff37de4e4a0e28c61daf46c10212e49f1bee850f93fa07f86a9225ccce15a7",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-general-covenants-20260809-2xk-final": {
+      "family": "GENERAL_COVENANTS",
+      "semantic_output_digest": "sha256:94cc8d74649802e85177728678c29a9cabe3d947f8d91a107640657da31fe70a",
+      "receipt_projection_digest": "sha256:44caf15fcbd0c81d628ba70a19bb5ae021562d8e8eb51cb422e5d73502d9c390",
+      "replay_coverage": {
+        "recorded_calls": 10,
+        "replayed_calls": 10,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-interim-operating-20260809-2xk-final": {
+      "family": "INTERIM_OPERATING",
+      "semantic_output_digest": "sha256:b148c664bd61e76e9b9592df2a09d790cb3e6c18f4148f046437b77c1e059699",
+      "receipt_projection_digest": "sha256:e16c77cb9a1f3bf3c741aaa1007fcd7b86186e3025fdaf9b9fa37a294bfa81a7",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-key-defined-terms-20260809-2xk-final": {
+      "family": "KEY_DEFINED_TERMS",
+      "semantic_output_digest": "sha256:9a20255979d11d3596530d3c63cc487c228bf80b06882cb7a4507d2bcc07f843",
+      "receipt_projection_digest": "sha256:cdb818d6e58f202fcacdfa5c7c6358071bbd9248070a4ea022375965a27f12d1",
+      "replay_coverage": {
+        "recorded_calls": 3,
+        "replayed_calls": 3,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-mae-definition-20260809-2xk-final": {
+      "family": "MAE_DEFINITION",
+      "semantic_output_digest": "sha256:8cd14a0777aefdb1427723163e46f782824109d63976216cccfbd0aa0c0f47ba",
+      "receipt_projection_digest": "sha256:c6167bea2b3b5b11044475ef288cd365bdec4ce799f46daa2eab53d2180cc6fe",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-material-contracts-20260809-2xk-final": {
+      "family": "MATERIAL_CONTRACTS",
+      "semantic_output_digest": "sha256:deeedbc2a9623a22396e2d5e480974cae5f9c2f4cd5644e85e0e64d51cfc93bf",
+      "receipt_projection_digest": "sha256:c11f08b1434f7f6933cccf0f174aed694298fb5f352464537747aeb0dee80044",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-merger-structure-closing-20260809-2xk-final": {
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "semantic_output_digest": "sha256:ae2ba6df23e609d006a8d4c49b766b4cb0bd46a46d0ae6453686db5c81073657",
+      "receipt_projection_digest": "sha256:3805e18a9b329dc20297bce2b7a8bf9d1051f678c0f31e04478198d9f7f8f40a",
+      "replay_coverage": {
+        "recorded_calls": 6,
+        "replayed_calls": 6,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-misc-boilerplate-20260809-2xk-final": {
+      "family": "MISC_BOILERPLATE",
+      "semantic_output_digest": "sha256:74a85f0523c1b5ad9b69e4e09c27c810a7e858075ef1e94d5270f9e3432148d2",
+      "receipt_projection_digest": "sha256:9f2ecaf7b8b1be6d3c320f112410948da6aa8ffe4551720b7c571890774c3af7",
+      "replay_coverage": {
+        "recorded_calls": 11,
+        "replayed_calls": 11,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-no-other-reps-fraud-20260809-2xk-final": {
+      "family": "NO_OTHER_REPS_FRAUD",
+      "semantic_output_digest": "sha256:2f76a687984b01e6dd24324f5482d2d3246d9606deea0273aab9130b72003797",
+      "receipt_projection_digest": "sha256:eec2e85c37c091d217ae49aa29af1d552e296a38f0e16d9391578389504d1285",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-no-shop-20260809-2xk-final": {
+      "family": "NO_SHOP",
+      "semantic_output_digest": "sha256:0d800a6270cb181e109a75dded66dcaeee36e9234b7a9f39df63a543555e4950",
+      "receipt_projection_digest": "sha256:ad981abd21e39f5d8d4a2e389d1cf523af7f3b76a8f5d28f9ff9565bd0c69c82",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-proxy-meeting-20260809-2xk-final": {
+      "family": "PROXY_MEETING",
+      "semantic_output_digest": "sha256:a4095fc4ec78e20bd842b1e37410fef462d06fd1b38f8d0b731aa9255af68a94",
+      "receipt_projection_digest": "sha256:c638d35b77bf16ec93847b89ba97c9dee7bef812a55a3ca0071d08de5cc9f7bd",
+      "replay_coverage": {
+        "recorded_calls": 3,
+        "replayed_calls": 3,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-representations-r1a-20260809-2xk-final": {
+      "family": "REPRESENTATIONS",
+      "semantic_output_digest": "sha256:ee79727f3e71a51718cb7ec8a8431fb1da5104d4ef6006015a17cab91489713f",
+      "receipt_projection_digest": "sha256:32d2b5557fee7a93e454c5b66a37e1a40f0f3533d627a209e6c22120aa5861ab",
+      "replay_coverage": {
+        "recorded_calls": 12,
+        "replayed_calls": 12,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-representations-r1b-20260809-2xk-final": {
+      "family": "REPRESENTATIONS",
+      "semantic_output_digest": "sha256:6fd3c56e6a64afdf3e0c8a64d1921fd83b01cd65b07be98748e31bce9f56154e",
+      "receipt_projection_digest": "sha256:5d2316286b85ad3c82ef2e19c94a3779b484232aa318556e430bd431423f2631",
+      "replay_coverage": {
+        "recorded_calls": 12,
+        "replayed_calls": 12,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-representations-r1c-20260809-2xk-final": {
+      "family": "REPRESENTATIONS",
+      "semantic_output_digest": "sha256:420923b0ab981927c104dab02d47525202c6145464bf0970a5c86f461352f9a0",
+      "receipt_projection_digest": "sha256:f510c5d03e78c0c75eb916062b6ee73ea6d0ddf20cceffc4d46cb2944cf122df",
+      "replay_coverage": {
+        "recorded_calls": 11,
+        "replayed_calls": 11,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-specific-performance-remedies-20260809-2xk-final": {
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "semantic_output_digest": "sha256:bb95c7ae106d29d52534eeeff2095027b8dff311ebe90374585166f1bc9bb695",
+      "receipt_projection_digest": "sha256:1339c50f61c4ba0e37bcc1d7330696e09a8f36f589b1e07399339344497220c5",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-tax-matters-20260809-2xk-final": {
+      "family": "TAX_MATTERS",
+      "semantic_output_digest": "sha256:f2a643dbe158b27535e66ee99c90a262aca1655233a8b7a2190e94a0a2e2299b",
+      "receipt_projection_digest": "sha256:9f29fe8b9be5a5c68204758dfd5ca5cc49fbb3f4a7d41fa3bdf8418b429066df",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-termination-20260809-2xk-final": {
+      "family": "TERMINATION",
+      "semantic_output_digest": "sha256:979a4a271ccca66fd594957cfc87e60e0a7e60c410a6e6bd7cbb4adaa9534110",
+      "receipt_projection_digest": "sha256:4e69e371d282bbd8c5976dba0649563d1fcbee4dbd2503e9b66439c22424fa2b",
+      "replay_coverage": {
+        "recorded_calls": 3,
+        "replayed_calls": 3,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "metsera-termination-fee-20260809-2xk-final": {
+      "family": "TERMINATION_FEE",
+      "semantic_output_digest": "sha256:6e1b8ecd4b60e7834ca3f9aecfe306328ed1d2ab395e8c873c623e1bacd6f26e",
+      "receipt_projection_digest": "sha256:15a195a652b1b905c3bc4acb7e5a0af3ae9993ce88c5ed7071be55370da223c1",
+      "replay_coverage": {
+        "recorded_calls": 3,
+        "replayed_calls": 3,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "modiv-antitrust-regulatory-20260809-2xk-final": {
+      "family": "ANTITRUST_REGULATORY",
+      "semantic_output_digest": "sha256:6247928d5b501c6bae433fe16a4802fe8b26b54f1dadec48023fc53d8c25a7fa",
+      "receipt_projection_digest": "sha256:373a427b7a1f46862b0b812ea32496208db9c0fa8377717ead18af968b077577",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "modiv-closing-conditions-20260809-2xk-final": {
+      "family": "CLOSING_CONDITIONS",
+      "semantic_output_digest": "sha256:09ce6917a73fd2781bc8260e78a33739405cf4dfa056bd36729e542108f6c78f",
+      "receipt_projection_digest": "sha256:2b2161dfe610a4886d57f2bb79a27f31e08bb5a80c451af30bbe74f6c23f5033",
+      "replay_coverage": {
+        "recorded_calls": 4,
+        "replayed_calls": 4,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "modiv-dno-indemnification-20260809-2xk-final": {
+      "family": "DNO_INDEMNIFICATION",
+      "semantic_output_digest": "sha256:522eb05e53cd60fe71b9d2b5f02aeff6218725e690e98938737beb197ac0043b",
+      "receipt_projection_digest": "sha256:b19378d6a7ca044f06c8a39ea78745e01bb627bdab11dfa5468030d7cafddaeb",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "modiv-general-covenants-20260809-2xk-final": {
+      "family": "GENERAL_COVENANTS",
+      "semantic_output_digest": "sha256:5d771ccb5f76c120e3279191a47c27efc8298139bf8cf512fd5b1d39e9bd84b7",
+      "receipt_projection_digest": "sha256:ef3efdafef0ab933f4f701882f1fef8026f3cb0d5528e4c068b3abc09dd01613",
+      "replay_coverage": {
+        "recorded_calls": 7,
+        "replayed_calls": 7,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "modiv-material-contracts-20260809-2xk-final": {
+      "family": "MATERIAL_CONTRACTS",
+      "semantic_output_digest": "sha256:fa1890dc789ffea4599642998b5cf18b1b42d5734c425615781aab72e154a0a4",
+      "receipt_projection_digest": "sha256:80f56a583a58ea6710afddbf66d124f45e0526fc4b1f2f2ccd1b9ffac8d7f7cc",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "modiv-merger-structure-closing-20260809-2xk-final": {
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "semantic_output_digest": "sha256:c2619fe4492621d2af0b4a9931a9848a50c000e158b3988a63cb58b07b77d254",
+      "receipt_projection_digest": "sha256:5a9e92efe9743fe79f6fbef8a01045bf41d5662ed4e2e27841dfc4ee579fc2f3",
+      "replay_coverage": {
+        "recorded_calls": 4,
+        "replayed_calls": 4,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "modiv-misc-boilerplate-20260809-2xk-final": {
+      "family": "MISC_BOILERPLATE",
+      "semantic_output_digest": "sha256:e5774dfbf2c71df09f695a02c89e9ff789f2f6dd7eefe05d0d89cbfa1e43f6b9",
+      "receipt_projection_digest": "sha256:ec1991be0a873e108dcbb1997f2a7433acbfc44f77edc2748f405d7333e43a88",
+      "replay_coverage": {
+        "recorded_calls": 6,
+        "replayed_calls": 6,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "modiv-no-other-reps-fraud-20260809-2xk-final": {
+      "family": "NO_OTHER_REPS_FRAUD",
+      "semantic_output_digest": "sha256:06b51e64c43032da41feabbf3c1a186a0e7700caea9d5b8e14b8edb2895c3a06",
+      "receipt_projection_digest": "sha256:d7b4c9eb8939ca1e55bbe574b0970054e2b64ea7ff8b7d2c7a6e0766c8208965",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "modiv-no-shop-20260809-2xk-final": {
+      "family": "NO_SHOP",
+      "semantic_output_digest": "sha256:ee6ed700f09b08086592efe112f6c72306dbd9a9e2deda16d023b1392e744a2a",
+      "receipt_projection_digest": "sha256:d23bf36ac4a338589dd91447c827ddaea31a662ab9e92baf1e1b5e8a82b1c2b2",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "modiv-proxy-meeting-20260809-2xk-final": {
+      "family": "PROXY_MEETING",
+      "semantic_output_digest": "sha256:5f0a141d09b1c619240fce3488f81770a6c6883c62ab565e7c86d60c93245d1a",
+      "receipt_projection_digest": "sha256:bfe07c870e9ad562dfee860b892e2c56ebd80ad2641ad1527d8218d9a5360f98",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "redhat-antitrust-regulatory-20260809-2xk-final": {
+      "family": "ANTITRUST_REGULATORY",
+      "semantic_output_digest": "sha256:bcde790c349ea2fc784879555438690baec21e28fe2650f07c2d271aca276591",
+      "receipt_projection_digest": "sha256:ee70a4216b0ecb3f9bfa7b0e5feff8852dddb8d7e6208241c2148aa6d353dc07",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "redhat-appraisal-dissenters-rights-20260809-2xk-final": {
+      "family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "semantic_output_digest": "sha256:cf3d8b8d3847183bdb8fb1ab6faeb6ea9d34951c1430e801af2f571601c04c0c",
+      "receipt_projection_digest": "sha256:bf8b0f4708402187692b95eb7741f883f8f249392c83c508a545291bf12c29fd",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "redhat-closing-conditions-20260809-2xk-final": {
+      "family": "CLOSING_CONDITIONS",
+      "semantic_output_digest": "sha256:7aa44d6d3bd31fefc7998e782def7d74e1dc52e29f5c9b8f144dc9c3369378e2",
+      "receipt_projection_digest": "sha256:97d02f5b257ba72cf1400066f2f94d70de812c305552ef12d3f4da7e585428dd",
+      "replay_coverage": {
+        "recorded_calls": 4,
+        "replayed_calls": 4,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "redhat-consideration-20260809-2xk-final": {
+      "family": "CONSIDERATION",
+      "semantic_output_digest": "sha256:9817d9ae39c687f9771a8028c73c2df214d9c9cd5d8643047ebf8b45fa55d8e6",
+      "receipt_projection_digest": "sha256:520e12f13140788a673e7f13843c9d86483ad5c3584ee561c9fd349c63165e8d",
+      "replay_coverage": {
+        "recorded_calls": 3,
+        "replayed_calls": 3,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "redhat-dno-indemnification-20260809-2xk-final": {
+      "family": "DNO_INDEMNIFICATION",
+      "semantic_output_digest": "sha256:947159853f04aa96eae49319a4dc3c07a642d79445325372586143ed4c91f2e1",
+      "receipt_projection_digest": "sha256:d254a4090a551c04d273c277b3f4ac8ab85df1a391809e974dcac43ade081fd9",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "redhat-employee-matters-20260809-2xk-final": {
+      "family": "EMPLOYEE_MATTERS",
+      "semantic_output_digest": "sha256:a6f70fcae3aa339373fcf6709d5d83cd607a124000374ca278f68df104f3f393",
+      "receipt_projection_digest": "sha256:cd9170631b9ef1e1d24906bb45611f03b957fcd65fbf1b467c1caf99faf3d1e9",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "redhat-general-covenants-20260809-2xk-final": {
+      "family": "GENERAL_COVENANTS",
+      "semantic_output_digest": "sha256:6a42853fb1da11169b2ff08103276bb7c374862a5f0c2d2edb83926222debe99",
+      "receipt_projection_digest": "sha256:0c6aa8ed7ffb5cb1e2c1aca5c9cbce028a34a357535312c17bc52b0343abb02a",
+      "replay_coverage": {
+        "recorded_calls": 5,
+        "replayed_calls": 5,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "redhat-interim-operating-20260809-2xk-final": {
+      "family": "INTERIM_OPERATING",
+      "semantic_output_digest": "sha256:c91c34e905f787ff6576ea88fb0be440fd02915d422697d48e1ce5bf7cf27894",
+      "receipt_projection_digest": "sha256:6453bdf46402a87bf9886d61068cdcf3a423bdc2ddba52f7070e02daff2985f3",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "redhat-key-defined-terms-20260809-2xk-final": {
+      "family": "KEY_DEFINED_TERMS",
+      "semantic_output_digest": "sha256:38b80f260b9000ec3d9f372d23b72cc023e9d1481833c37debf6edfd0ba10390",
+      "receipt_projection_digest": "sha256:bf341952c53796e1d3b8a633e5f68a27c2a0123a26f6c05e2206c0bf1ac0d713",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "redhat-mae-definition-20260809-2xk-final": {
+      "family": "MAE_DEFINITION",
+      "semantic_output_digest": "sha256:b85d10bf7028c9038a6f2d74ab5025327afb1a809f1c733d68b705723036c29a",
+      "receipt_projection_digest": "sha256:dc2d488f00ea3ae950e4467acff3cc41a90be26b72e634a07aa4e4e95b610eb1",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "redhat-material-contracts-20260809-2xk-final": {
+      "family": "MATERIAL_CONTRACTS",
+      "semantic_output_digest": "sha256:e1e3b3fa35f1e7f8337af0a6ad7dd6a8633b5dd56963f0a0f8b5eae8133a7e72",
+      "receipt_projection_digest": "sha256:45f6bdf34936e0de4c6ce48e1c7d68d7bf6a1e986113688ad78187a32a96d5b6",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "redhat-merger-structure-closing-20260809-2xk-final": {
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "semantic_output_digest": "sha256:ac7f6bedda3bb45cf7dc9e4073fa3821bc008823a34e6e3c8e081be769a34deb",
+      "receipt_projection_digest": "sha256:4c2a4dbcf194b69a57ab513ea1f75a218415e1f58b593241b8fc604e80380f14",
+      "replay_coverage": {
+        "recorded_calls": 7,
+        "replayed_calls": 7,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "redhat-no-other-reps-fraud-20260809-2xk-final": {
+      "family": "NO_OTHER_REPS_FRAUD",
+      "semantic_output_digest": "sha256:70289c52b3cddf11cd8f3433296d47910a63178791cf7247dced5492b8c64b89",
+      "receipt_projection_digest": "sha256:8ae13be6b42bf27ee16dd52cdb7c7181ff92ce64c4488ed4c3403e6366c5a57d",
+      "replay_coverage": {
+        "recorded_calls": 3,
+        "replayed_calls": 3,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "redhat-no-shop-20260809-2xk-final": {
+      "family": "NO_SHOP",
+      "semantic_output_digest": "sha256:de39b64dc07008dc1f8e5001095229d4be7be1a9171d6c512ce9412bab2d3bbb",
+      "receipt_projection_digest": "sha256:ba794d345348d25585a8457405c1489aeaf737b8419e36ece5ecacaf6dd309cd",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "redhat-proxy-meeting-20260809-2xk-final": {
+      "family": "PROXY_MEETING",
+      "semantic_output_digest": "sha256:cd47b407f43866c05c89221c136189522b67a8849510a9e305563c9db03654d6",
+      "receipt_projection_digest": "sha256:cb4e1a844e1332ce1b0e78dfb96bad6b062d71b585daefe36f84399699b758a1",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "redhat-representations-20260809-2xk-final": {
+      "family": "REPRESENTATIONS",
+      "semantic_output_digest": "sha256:128a2b3edd964454758dc3f36db491b54aac303f3c090118e51cadde42679732",
+      "receipt_projection_digest": "sha256:b2178b5917061b6dcacde275a27ef5da3fdec68becfc769df58e91dced66a247",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "redhat-specific-performance-remedies-20260809-2xk-final": {
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "semantic_output_digest": "sha256:97558d1cb923992694b9158be860aef0c464746e4088a227db70b58803cc019e",
+      "receipt_projection_digest": "sha256:d4d84e92f4400a8e2350e4f11c7a0d1c0fdd738d81449460b4a8f8d743f8d763",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "redhat-tax-matters-20260809-2xk-final": {
+      "family": "TAX_MATTERS",
+      "semantic_output_digest": "sha256:9563db4c46e766adddbdbb82284875dde1d478d7e0edea3acf8787ef45d9d37a",
+      "receipt_projection_digest": "sha256:ce273669d971d069cff67de6d2a0e87b9ff4a15c2fb3d6f1b95c3721abc7442f",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "redhat-termination-20260809-2xk-final": {
+      "family": "TERMINATION",
+      "semantic_output_digest": "sha256:e1f85daad229330d89f6d480fc2576ea89f9d87e6737624f7fe734fad27f1685",
+      "receipt_projection_digest": "sha256:2511c67b31aae142544afe5029179010092e8f7a35f9a1a4214ad04219abd055",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "redhat-termination-fee-20260809-2xk-final": {
+      "family": "TERMINATION_FEE",
+      "semantic_output_digest": "sha256:57553db9ff0c291f26053035dcd6794b89f17be33333e95d69c2e321adbb67c8",
+      "receipt_projection_digest": "sha256:e528a82b824b6d5fcdd15b3bbab0714348373f87cc7fe1f0d81d772293236910",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-antitrust-regulatory-20260809-2xk-final": {
+      "family": "ANTITRUST_REGULATORY",
+      "semantic_output_digest": "sha256:01748bcf8b1fe91f8cd8cfbbf86e3423ee0f5f1bb2f25ddc46558871529f641c",
+      "receipt_projection_digest": "sha256:535dadf2ed7c851eee495ca07108b9a2f3b476f2fae5c48f01c598d5cc04bcfb",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-appraisal-dissenters-rights-20260809-2xk-final": {
+      "family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "semantic_output_digest": "sha256:899fcc947b8379caaad61536e67f5b04d7224e2e898c382f915ec7e3fc75981d",
+      "receipt_projection_digest": "sha256:fbb977c0975f5215002e69425947ce8f348b39b9ef60eda7fc92c6091f1fdce4",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-closing-conditions-20260809-2xk-final": {
+      "family": "CLOSING_CONDITIONS",
+      "semantic_output_digest": "sha256:b08637e774dece4c85f15c38f0622f0a64e9fe40f5613da3b40dc4afbdef82bc",
+      "receipt_projection_digest": "sha256:eeeaa6bfdd454efeec385cc679ebff3284657a551f8b418a1cd6c537e2f38e62",
+      "replay_coverage": {
+        "recorded_calls": 3,
+        "replayed_calls": 3,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-consideration-20260809-2xk-final": {
+      "family": "CONSIDERATION",
+      "semantic_output_digest": "sha256:ce0d59205b5533adc252325dc090bccf8646306c0652cde3430cb2da2f5a8e40",
+      "receipt_projection_digest": "sha256:a00e04182fa89576e872bfde65fceedc9584427010ad441b8b5eb1b64cd24ae3",
+      "replay_coverage": {
+        "recorded_calls": 6,
+        "replayed_calls": 6,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-dividends-20260809-2xk-final": {
+      "family": "DIVIDENDS",
+      "semantic_output_digest": "sha256:7fc2a8864bd7f96fd59bedabaa2b5d2e574cb5857e8cc9d0f4434623f9afb72b",
+      "receipt_projection_digest": "sha256:55a14f5cef642284091e89260f9c3a2a43a4b75d152f997318c7ad2ad5f29894",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-dno-indemnification-20260809-2xk-final": {
+      "family": "DNO_INDEMNIFICATION",
+      "semantic_output_digest": "sha256:c752b06c24e88c3c725b357e12bb394ae303dbac2a9d71bd3453d37baf6ce17c",
+      "receipt_projection_digest": "sha256:68a1810cd404258659629c546758ca42d131acbd52bf708916d32f43035ff081",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-employee-matters-20260809-2xk-final": {
+      "family": "EMPLOYEE_MATTERS",
+      "semantic_output_digest": "sha256:7acb385c3e8947da1b4003958267a5911c12952341330a2ec4f3c1727c1fbb48",
+      "receipt_projection_digest": "sha256:8eaf50235e5973c89edaf3b04a721a7d71c85ff379ce1617c9acf4fcfd138f1b",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-financing-covenants-20260809-2xk-final": {
+      "family": "FINANCING_COVENANTS",
+      "semantic_output_digest": "sha256:ca6303ba652fc9ae1356cff89dcd36225426a373c5c516678eea79f2af53f0e1",
+      "receipt_projection_digest": "sha256:8e00140bb8ddb0929454eb79117f90ecd3de6491305499564339feef1c5e9fca",
+      "replay_coverage": {
+        "recorded_calls": 3,
+        "replayed_calls": 3,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-general-covenants-20260809-2xk-final": {
+      "family": "GENERAL_COVENANTS",
+      "semantic_output_digest": "sha256:c2b02d1ade65a17bc51673754b46863ac86ca50536a0e5f3442897edb94d8b02",
+      "receipt_projection_digest": "sha256:a4f6f17ec81c0d2a3c9f53861995c6babfb383315c81527f41ad4a0a327afa74",
+      "replay_coverage": {
+        "recorded_calls": 11,
+        "replayed_calls": 11,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-guaranty-financing-party-20260809-2xk-final": {
+      "family": "GUARANTY_FINANCING_PARTY",
+      "semantic_output_digest": "sha256:a8d3728c6809aab4d330bd7aa63eed5305a9423cb8fb1fe5904f70146a53681a",
+      "receipt_projection_digest": "sha256:d31034b51ee00f2e2ab1d76cafe3ade515a72d0050c87fa7987a7ce891412eb6",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-interim-operating-20260809-2xk-final": {
+      "family": "INTERIM_OPERATING",
+      "semantic_output_digest": "sha256:f8544c476e9710149792a0eee91b531d5c647dd0ff1f11f0f51bf408c9c8e347",
+      "receipt_projection_digest": "sha256:7080fbe070004717176ca3b7759bf597650bcf755d97d362394eef2b19334b85",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-key-defined-terms-20260809-2xk-final": {
+      "family": "KEY_DEFINED_TERMS",
+      "semantic_output_digest": "sha256:585c4b9f8a69a7b2482f0f61711465204ab9052ee57c3127f956672b78a984fe",
+      "receipt_projection_digest": "sha256:db9b0912000c6f504a487a339431aa897ba9ff898d71623abd45f35bcdb34f3d",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-mae-definition-20260809-2xk-final": {
+      "family": "MAE_DEFINITION",
+      "semantic_output_digest": "sha256:a1341d38534ee62844f27af91ead5863f0ee878a760c4a833b7f24f286890627",
+      "receipt_projection_digest": "sha256:0f9e042f5c159806f9ed7ec58252b394d8512f1ae89d3c173ec57ac27e2cce89",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-material-contracts-20260809-2xk-final": {
+      "family": "MATERIAL_CONTRACTS",
+      "semantic_output_digest": "sha256:e70ef0c73d9f61e89e7c92b6b0461126aa89125100a4ae585cbfdbfde3936289",
+      "receipt_projection_digest": "sha256:5c9e1d1621bcdc9fbd77b31ddb741f4c2e777bef1558a0e7797b639d5710dc8b",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-merger-structure-closing-20260809-2xk-final": {
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "semantic_output_digest": "sha256:ac86dfa62c9471312ffa9e19ada4c219f2d5cb621086133d3c72095b4960d0c3",
+      "receipt_projection_digest": "sha256:1aa3aa948d119db09e8091322298d3ec9e535743c784b2b758259704c91a7335",
+      "replay_coverage": {
+        "recorded_calls": 6,
+        "replayed_calls": 6,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-misc-boilerplate-20260809-2xk-final": {
+      "family": "MISC_BOILERPLATE",
+      "semantic_output_digest": "sha256:9c267789c3f30856948e4d6808415266dc2d107b0729a533395a26102dba7424",
+      "receipt_projection_digest": "sha256:23835524fd9aef6c0fb840e540db4c5b478e5ca480bc2b661e8735ecd8531419",
+      "replay_coverage": {
+        "recorded_calls": 17,
+        "replayed_calls": 17,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-no-other-reps-fraud-20260809-2xk-final": {
+      "family": "NO_OTHER_REPS_FRAUD",
+      "semantic_output_digest": "sha256:80a99b1555be1e194de71cff71563e88d2c3cd0208405c361d62438b43e05ce6",
+      "receipt_projection_digest": "sha256:736217c01cd0331023c54ebb418a26071928ff25ce705b1fdd06adddbcd969f2",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-no-shop-20260809-2xk-final": {
+      "family": "NO_SHOP",
+      "semantic_output_digest": "sha256:d783cc2a188f8c232959ec57fd329191675459f26beacd36ff844aeac07157b3",
+      "receipt_projection_digest": "sha256:2445eed367f9fb49a805d7d29daa793f2cbc70dfe0379a47d7cd51fb5bd5d655",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-proxy-meeting-20260809-2xk-final": {
+      "family": "PROXY_MEETING",
+      "semantic_output_digest": "sha256:19a080b5ec5fa646a03e23ea39d05ce31f0cb94bcc4482c71483d95f99efd694",
+      "receipt_projection_digest": "sha256:9df3847ee49fcdec75ac96d494190a91b642bda7104db6a6bdf1d6822796ae93",
+      "replay_coverage": {
+        "recorded_calls": 3,
+        "replayed_calls": 3,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-representations-r1a-20260809-2xk-final": {
+      "family": "REPRESENTATIONS",
+      "semantic_output_digest": "sha256:656a1e12b27e44e039064b0ceee58e2b753f88ce4b04fe994b99bbd05dbc234c",
+      "receipt_projection_digest": "sha256:e21d06a9e79649d3e7efede869b3b7097764d5c80adc9e48b46d6b635ae14ef6",
+      "replay_coverage": {
+        "recorded_calls": 12,
+        "replayed_calls": 12,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-representations-r1b-20260809-2xk-final": {
+      "family": "REPRESENTATIONS",
+      "semantic_output_digest": "sha256:b5fb41f3cbca55ee250dcf711a57e9f611416cd2e2ac9bb6f1ef8122c8bdef04",
+      "receipt_projection_digest": "sha256:c1e4c1a741793cc32e68ae9d8f285a966cef75ef7cd9f06e0f0b31b0447f3b72",
+      "replay_coverage": {
+        "recorded_calls": 12,
+        "replayed_calls": 12,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-representations-r1c-20260809-2xk-final": {
+      "family": "REPRESENTATIONS",
+      "semantic_output_digest": "sha256:fc8f1ebf2056017eaeee24aeea34967f0494e3d6350d1c13374e08c2837f2ba1",
+      "receipt_projection_digest": "sha256:18a63c8ce73f3d38b7f42d9efe8a8183a73948b1cfcba21f53371a32cb9edef2",
+      "replay_coverage": {
+        "recorded_calls": 12,
+        "replayed_calls": 12,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-representations-r1d-20260809-2xk-final": {
+      "family": "REPRESENTATIONS",
+      "semantic_output_digest": "sha256:fcbe04804308055779dbb4262afd6c41fbd1986217e444e016dc6457fb8a2eef",
+      "receipt_projection_digest": "sha256:d6103018c4284ca0786623b348209c61a474435c1081da2e1af85fd9ac114b85",
+      "replay_coverage": {
+        "recorded_calls": 9,
+        "replayed_calls": 9,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-specific-performance-remedies-20260809-2xk-final": {
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "semantic_output_digest": "sha256:693ea382bfb6c6710404427005576fcbee90a912c11a8f66a52f760e616a2c01",
+      "receipt_projection_digest": "sha256:32fda0fa99a47e284ffbd7a88d1b255d1a88126748b2f1e4f7f2af6fcc3fb746",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-tax-matters-20260809-2xk-final": {
+      "family": "TAX_MATTERS",
+      "semantic_output_digest": "sha256:7c62e6a80ec90367e68a64b656686c7eca100f8d61eea64abe1fa754919f6ab6",
+      "receipt_projection_digest": "sha256:0ad5bc09b684384d78d71ad5acbac31e7ed55ae384e0c01aeafdb97c861c430d",
+      "replay_coverage": {
+        "recorded_calls": 5,
+        "replayed_calls": 5,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-termination-20260809-2xk-final": {
+      "family": "TERMINATION",
+      "semantic_output_digest": "sha256:9cab5dddc429713e26edd7786c466535afd5d4f7e8acfb2e46b44243d6230fcd",
+      "receipt_projection_digest": "sha256:53d714927cf4f2d61a29ac10f0d30e9c9ee8301934654fd22c1db2c7d72145c0",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skechers-termination-fee-20260809-2xk-final": {
+      "family": "TERMINATION_FEE",
+      "semantic_output_digest": "sha256:317ace80026745c4ccc5ece51e9a347d2f6475d46ae8f3e86c13f3e780ddfb2c",
+      "receipt_projection_digest": "sha256:fb643c8e914cf13fad1f63faf744fed323d3bcd6d0b1281f80cd52c8f58d76f3",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-antitrust-regulatory-20260809-2xk-final": {
+      "family": "ANTITRUST_REGULATORY",
+      "semantic_output_digest": "sha256:a335eada1d704c49d00fb5cf5e8e785e3aa13098e47c481c3a82ad6ab649da04",
+      "receipt_projection_digest": "sha256:f2f75bb7d853af7ba6e1caed26e6045679b14b894c52d0267bcbf419d3c0af7b",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-appraisal-dissenters-rights-20260809-2xk-final": {
+      "family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "semantic_output_digest": "sha256:e7c2bb4213d141f94de68b69f007db07fb0149813c5c82d5bf773a4ca54efec4",
+      "receipt_projection_digest": "sha256:9cd348d3dbff8772493fefeebb651b4fd62270588ddfcc357dcceb5511ce920a",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-closing-conditions-20260809-2xk-final": {
+      "family": "CLOSING_CONDITIONS",
+      "semantic_output_digest": "sha256:ea3752b085f0ae05258d7ff198560db601ed1ebd3f20afe797f8cc274cae52c5",
+      "receipt_projection_digest": "sha256:d642032428ed2845a7de869a2bace0eea2094987f0f080ce25c6f1da03cd06f0",
+      "replay_coverage": {
+        "recorded_calls": 4,
+        "replayed_calls": 4,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-consideration-20260809-2xk-final": {
+      "family": "CONSIDERATION",
+      "semantic_output_digest": "sha256:ba01b6957a9c58c26f376b2b8d6ea36545d7464a7dff68e2e798dc62bfa8e51f",
+      "receipt_projection_digest": "sha256:e0858da28c6dd3b6cfac70415c4f5aac414124efbbde30c0575dccaf0cd41257",
+      "replay_coverage": {
+        "recorded_calls": 6,
+        "replayed_calls": 6,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-dividends-20260809-2xk-final": {
+      "family": "DIVIDENDS",
+      "semantic_output_digest": "sha256:7fc2a8864bd7f96fd59bedabaa2b5d2e574cb5857e8cc9d0f4434623f9afb72b",
+      "receipt_projection_digest": "sha256:909479d7e3892b99c85514452b61229ff5186c358c60e37cd886b1f62e360e6c",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-dno-indemnification-20260809-2xk-final": {
+      "family": "DNO_INDEMNIFICATION",
+      "semantic_output_digest": "sha256:b0ce35846fe1d395f7b8984fb280e6150c8c23344833c4dfa39589671e0890a9",
+      "receipt_projection_digest": "sha256:1bab73acd44d0745eaa91ac605befcf27a61a84645cf84183aec6f1c292d092f",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-employee-matters-20260809-2xk-final": {
+      "family": "EMPLOYEE_MATTERS",
+      "semantic_output_digest": "sha256:58c6997bc3becdec7016c551dcdca441b24ad2a8f0002847269d6979f74e9085",
+      "receipt_projection_digest": "sha256:547e7cc1b73efc022520f0d373c55cb7ba17d66e10e41759439029efb7426248",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-financing-covenants-20260809-2xk-final": {
+      "family": "FINANCING_COVENANTS",
+      "semantic_output_digest": "sha256:a0e59111c0609ac5e99063be4bfec3aaa094dafa4b9a86a3ef0ebdf4c6bec51f",
+      "receipt_projection_digest": "sha256:1f26ba4752469b21d8345cc32cdc1de1ed7c75a628db9927a9119c53d8d34541",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-general-covenants-20260809-2xk-final": {
+      "family": "GENERAL_COVENANTS",
+      "semantic_output_digest": "sha256:c3ecff65a30632055b5f3198905f99cb4bdd7b655a7a8d3ccc8138eec1709e9d",
+      "receipt_projection_digest": "sha256:6019828f8e634fbf788cfa59ebfd6c003a6f246813ab85eeb9c7fcc3615f90bb",
+      "replay_coverage": {
+        "recorded_calls": 13,
+        "replayed_calls": 13,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-interim-operating-20260809-2xk-final": {
+      "family": "INTERIM_OPERATING",
+      "semantic_output_digest": "sha256:55fcf09616652e40307725bf75d16095173c15c4bc509a64d0a0cbc9fc53ad03",
+      "receipt_projection_digest": "sha256:ff5033808cbc1582c2b29fd2fa77e15d457379b98e0d5e5e6b6d0b01d05ee2f6",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-key-defined-terms-20260809-2xk-final": {
+      "family": "KEY_DEFINED_TERMS",
+      "semantic_output_digest": "sha256:cf92af9245ba43053467a2b50dc7cda8ccd7731d7d3e0336b3b12ca5370f46e2",
+      "receipt_projection_digest": "sha256:e3da1b8046247681af86b7ea212a87a45099f1dcf901ea6dc1f416da41f1b427",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-mae-definition-20260809-2xk-final": {
+      "family": "MAE_DEFINITION",
+      "semantic_output_digest": "sha256:61c9236c8f15d205148dce0cf629993aa687e836b318eb22f026663730e90b5e",
+      "receipt_projection_digest": "sha256:0ce5cf6cf1c7ead132ea4639171371949a9872029dd36c5d16875714e5a56c8b",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-material-contracts-20260809-2xk-final": {
+      "family": "MATERIAL_CONTRACTS",
+      "semantic_output_digest": "sha256:70825fd8c8b41631fa597a74ea6e0265df5a6585470523341e64a07b4c2d952b",
+      "receipt_projection_digest": "sha256:5c7b25974febb554fdfd39f1a838720cd15a6ba51cd79ff80731a66bfe7bde36",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-merger-structure-closing-20260809-2xk-final": {
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "semantic_output_digest": "sha256:8b7bbdc4928b98ad25be7c3e6078136abc9bc8e25d67d4698e397834a25fe149",
+      "receipt_projection_digest": "sha256:2d37c60e7dd4260efe8cb98766b3488f70f032eaaa8e9365170a8c6d190d2a10",
+      "replay_coverage": {
+        "recorded_calls": 3,
+        "replayed_calls": 3,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-misc-boilerplate-20260809-2xk-final": {
+      "family": "MISC_BOILERPLATE",
+      "semantic_output_digest": "sha256:a0663fd0215f41ef2bd80ce7a6dc7d6d9326da2284c948eb30e26ddc571efe59",
+      "receipt_projection_digest": "sha256:bf73a0ebdfd206a8148f22fcd5c5d978676e81acd4cd206cd77b3dff2d289842",
+      "replay_coverage": {
+        "recorded_calls": 13,
+        "replayed_calls": 13,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-no-other-reps-fraud-20260809-2xk-final": {
+      "family": "NO_OTHER_REPS_FRAUD",
+      "semantic_output_digest": "sha256:ed905037f5583e6dd1dfc1da7a3ac9d1b1ba016b7a43dfe8ca4f5954fd7e7d59",
+      "receipt_projection_digest": "sha256:93b0286b44285838e7bcd326ec36e37fd4e97052d94c1bb9ebe504aedc50ce3e",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-no-shop-20260809-2xk-final": {
+      "family": "NO_SHOP",
+      "semantic_output_digest": "sha256:82c3c7cec3208a9c7cb118a2dc05c7c1a5dcf102973914a5b55e42cb8cfb44d9",
+      "receipt_projection_digest": "sha256:926e3cc72159ca94f02cb02a4f4717ad5809477cdc3a14c0c3547f068463ad63",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-proxy-meeting-20260809-2xk-final": {
+      "family": "PROXY_MEETING",
+      "semantic_output_digest": "sha256:357f6cc1cde77cdf512cfbf23b27d218a2c90292b5b788c29d8f6af38e73409f",
+      "receipt_projection_digest": "sha256:de464c5d0d1d2fcce952eba78036c870fe0fe71ecb0c579f47d3323febf8a6dd",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-representations-r1a-20260809-2xk-final": {
+      "family": "REPRESENTATIONS",
+      "semantic_output_digest": "sha256:5f71eaabf98f90c7cef324d436a9e0f7981f233d812eaa5d0d6a4fda90842ea8",
+      "receipt_projection_digest": "sha256:cda2fb53f2ef577976255c6beb6fe60f3bf037a0fbe3e77a1426738734299d2b",
+      "replay_coverage": {
+        "recorded_calls": 12,
+        "replayed_calls": 12,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-representations-r1b-20260809-2xk-final": {
+      "family": "REPRESENTATIONS",
+      "semantic_output_digest": "sha256:9251c333816259673d53946c7620113029836e43525ed8ff0ba85f5b674151b1",
+      "receipt_projection_digest": "sha256:dee37f386d8dc0ef6b1b4a5617e8aef04611662d605d427a9712da58d2c05cbc",
+      "replay_coverage": {
+        "recorded_calls": 12,
+        "replayed_calls": 12,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-representations-r1c-20260809-2xk-final": {
+      "family": "REPRESENTATIONS",
+      "semantic_output_digest": "sha256:d2fe17f3c1b1b229d5f452f604f0e159d5e05b46d83bac5d36203c01a4b97e21",
+      "receipt_projection_digest": "sha256:d9dd0ff65f86403a94c19587c92570d00e51037c4f2b40c94a091ce8fa2f4dc3",
+      "replay_coverage": {
+        "recorded_calls": 12,
+        "replayed_calls": 12,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-representations-r1d-20260809-2xk-final": {
+      "family": "REPRESENTATIONS",
+      "semantic_output_digest": "sha256:8049157c2de78725d38adcf47c835bcb339dc6f5dccdb1ae269f6a7aed0a4676",
+      "receipt_projection_digest": "sha256:04cb0306fefad7563e7b02889fbc8bb87337f2764211a14afa129b952d81b73a",
+      "replay_coverage": {
+        "recorded_calls": 10,
+        "replayed_calls": 10,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-specific-performance-remedies-20260809-2xk-final": {
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "semantic_output_digest": "sha256:bcbeb66ac8dc9bbfad963205b4fba602ae595cf4771924ac7fe298192551a5ad",
+      "receipt_projection_digest": "sha256:95489ba0f5ab057bdeb7b38d7fdd4ec4ab36a35022f22f5ffba00236f2d669ef",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-tax-matters-20260809-2xk-final": {
+      "family": "TAX_MATTERS",
+      "semantic_output_digest": "sha256:c53f88882e823d8604ace5a919efd1563e8aac276edd0507082ae4f4dca117cd",
+      "receipt_projection_digest": "sha256:ee149211a1e0678adbd325bc25f86c0fbb9f32875da43005b0b2817ddb5ceed3",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-termination-20260809-2xk-final": {
+      "family": "TERMINATION",
+      "semantic_output_digest": "sha256:ffde596343c8a57b7b7439c7c5691c14c24177f25db1ee4ea26c3cd34945fc2f",
+      "receipt_projection_digest": "sha256:c23ce6dc8186e5b70e288e01065786f99598b19ba465eccf34c76918828f4fad",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "skywater-termination-fee-20260809-2xk-final": {
+      "family": "TERMINATION_FEE",
+      "semantic_output_digest": "sha256:96d05dbfe962c7b28d71c4f005d7b90834164dbbd95778b5de2eed3a2c49b61c",
+      "receipt_projection_digest": "sha256:1f46602416c7ff6f9cb8c3a980d96d8e962f64aba08ca519939defcb15244d70",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-antitrust-regulatory-20260809-2xk-r4-final": {
+      "family": "ANTITRUST_REGULATORY",
+      "semantic_output_digest": "sha256:ef5c5309c0da803fb2aee95000d09d1e53633470d0cda418c2df798243c5f0f4",
+      "receipt_projection_digest": "sha256:e85c35e5dedbe0574fe33bc571b2dd7593ba2e7252984e62720d1a3bf70bd707",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-appraisal-dissenters-rights-20260809-2xk-r2-final": {
+      "family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "semantic_output_digest": "sha256:617b3ee7cfb00bc64009c08eaa5cc1e880a05986486960bb8f29c37b29501ec8",
+      "receipt_projection_digest": "sha256:1ee864eb0d7231c4d00ad3ef298adb6cedc09775ac9c768ae6e202fb0559bf7f",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-closing-conditions-20260809-2xk-r3-final": {
+      "family": "CLOSING_CONDITIONS",
+      "semantic_output_digest": "sha256:a1f239c2708d9e6d2baa1d1df42d43c6558f38a360fc78512334a74a1a281174",
+      "receipt_projection_digest": "sha256:7a3412b2d4361512acf73a3d5cc1818eee81feafb008a0859f096224073c9714",
+      "replay_coverage": {
+        "recorded_calls": 3,
+        "replayed_calls": 3,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-consideration-20260809-2xk-r2-final": {
+      "family": "CONSIDERATION",
+      "semantic_output_digest": "sha256:a6f3e264a48202eb3c6589fc55ff0ed3d152379d3d566d84dc60595164919ecc",
+      "receipt_projection_digest": "sha256:b49634c373b604311836d58a2b516ac22018194e2c5f48344472a41aebd40f44",
+      "replay_coverage": {
+        "recorded_calls": 5,
+        "replayed_calls": 5,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-dividends-20260809-2xk-r4-final": {
+      "family": "DIVIDENDS",
+      "semantic_output_digest": "sha256:9e61c24085858c5c10fafcf5deb775e1796bec87f3d873582207f340b93c4692",
+      "receipt_projection_digest": "sha256:80a6f1a8159e77b10c06f6916c3a10fdb0d64f6a80d6dd398ad8bde1ea1af8a8",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-dno-indemnification-20260809-2xk-r4-final": {
+      "family": "DNO_INDEMNIFICATION",
+      "semantic_output_digest": "sha256:00f66a761f04f6efc47acb4b5a8c08cd386dc1ce0bac87ed329036ba4474a609",
+      "receipt_projection_digest": "sha256:349618c43e70b33ec515716b1e21474e905c905f3b41cf4fc31535d67e2d2af6",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-employee-matters-20260809-2xk-r4-final": {
+      "family": "EMPLOYEE_MATTERS",
+      "semantic_output_digest": "sha256:8fa596fddc60b4593eaeb6633cc6a368c01bd56364c5c1378a353b3187fcaada",
+      "receipt_projection_digest": "sha256:4ca505e308f5c9089f0a1d6aecafa9ab858534114c3b8a22979a1372a9ee4ef2",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-financing-covenants-20260809-2xk-r4-final": {
+      "family": "FINANCING_COVENANTS",
+      "semantic_output_digest": "sha256:528ae37735f38a6b6648bc918ae1904a129d0271fb969375fafb48d7b34ea375",
+      "receipt_projection_digest": "sha256:3623cb5d36845f764de13878c06e8e97adf2c1e70ea0678c55ef3a03044cc4e7",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-general-covenants-20260809-2xk-r3-final": {
+      "family": "GENERAL_COVENANTS",
+      "semantic_output_digest": "sha256:dffc83603154d8b722d67796d8b35627be89f0e387285fde3ddaa1b02c5d841e",
+      "receipt_projection_digest": "sha256:9bce38c530135f8827af14d787c20f1626eb77a46e9849696231c5f61819f1a0",
+      "replay_coverage": {
+        "recorded_calls": 6,
+        "replayed_calls": 6,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-guaranty-financing-party-20260809-2xk-r4-final": {
+      "family": "GUARANTY_FINANCING_PARTY",
+      "semantic_output_digest": "sha256:59464a308c7e38b32161b52753e9e578705bb5f66698c7a231c48879f592eafe",
+      "receipt_projection_digest": "sha256:6e6a41b34bfecdc4fe7adb8774cdf4b3fc8da83092b200f69b772308d4a90131",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-interim-operating-20260809-2xk-r3-final": {
+      "family": "INTERIM_OPERATING",
+      "semantic_output_digest": "sha256:14ee0c2cf666b0fbf5813dd3c2cf537a45150b2c9055fd6225b64751f178c25d",
+      "receipt_projection_digest": "sha256:117f7d9931d5e8537e2643c17a4c80dccb90f7c5cabaeda72faa9f77b00bb8f3",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-key-defined-terms-20260809-2xk-r2-final": {
+      "family": "KEY_DEFINED_TERMS",
+      "semantic_output_digest": "sha256:ea02f20d748d205b57ea5ad287393c7aefe186b862e3f50b2a29f1125e1eb78d",
+      "receipt_projection_digest": "sha256:5c325946196df907abece7f45fad2e9940cf5d4ac420b9484ccf97deb8384aa7",
+      "replay_coverage": {
+        "recorded_calls": 4,
+        "replayed_calls": 4,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-mae-definition-20260809-2xk-r4-final": {
+      "family": "MAE_DEFINITION",
+      "semantic_output_digest": "sha256:dcf70544b6fa2aa8fd05dc8dddb11a81c6fecb04c45f1486fbe43cfd4d946ed9",
+      "receipt_projection_digest": "sha256:956e31d0bbaa4fc4bf830fbe802934a807f34654149e6dc2de6160621a0d180f",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-material-contracts-20260809-2xk-r3-final": {
+      "family": "MATERIAL_CONTRACTS",
+      "semantic_output_digest": "sha256:73224ee2a77b59dd9e3ca7418f45eb0c04c6ce9b8ada9768d991d303c63a10e2",
+      "receipt_projection_digest": "sha256:8ae313a57c2238cf49cc660929c2acfe7ddfbed6a9c517b85fc925c1fde39597",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-merger-structure-closing-20260809-2xk-r4-final": {
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "semantic_output_digest": "sha256:97ec7966afdc6a04242156a17ac097045032b78806d2f50065f29b2da76f1bbf",
+      "receipt_projection_digest": "sha256:69e38a0c3f873bf82747a74119c563b2ca46e95f800bb2a033fe3c434a55a3fd",
+      "replay_coverage": {
+        "recorded_calls": 8,
+        "replayed_calls": 8,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-misc-boilerplate-20260809-2xk-r4-final": {
+      "family": "MISC_BOILERPLATE",
+      "semantic_output_digest": "sha256:d79c56672938667eecd31fdf3e680f86601e73ebe2bcb95fc144ac614fd80a65",
+      "receipt_projection_digest": "sha256:618dece50aa363c983573d78bdac4e726c4817c8ddfdfb8d3b9a096de4d59bca",
+      "replay_coverage": {
+        "recorded_calls": 11,
+        "replayed_calls": 11,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-no-other-reps-fraud-20260809-2xk-r4-final": {
+      "family": "NO_OTHER_REPS_FRAUD",
+      "semantic_output_digest": "sha256:c7bb5cf17e8ccdd71f58ca0f2c23e93d8d52126a1e23b6c9fccdbeaea6dc679f",
+      "receipt_projection_digest": "sha256:348dd453af5a644906de556ddb52e48b2e786a95c1ca8d68bcfc918315352f29",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-no-shop-20260809-2xk-r4-final": {
+      "family": "NO_SHOP",
+      "semantic_output_digest": "sha256:7cd5f3f788ba8def29b7110ab8f1dc4498c0f3279e2367b9b1de5c34fdf1984e",
+      "receipt_projection_digest": "sha256:0710f657acfa52f84c925e8590383389ea9cd2e09523cdd3e1b4b10505b5ffc7",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-proxy-meeting-20260809-2xk-r4-final": {
+      "family": "PROXY_MEETING",
+      "semantic_output_digest": "sha256:4947f37792599ecdf5ecdb8fab37f6092a9ff74b7849abcdfc971a7c2826fd75",
+      "receipt_projection_digest": "sha256:8fc20096d2189ba830679c540a540a71c84aabc67bf0f98d26f0b79a43716e38",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-representations-20260809-2xk-r3-final": {
+      "family": "REPRESENTATIONS",
+      "semantic_output_digest": "sha256:8125512a4fe9f1a510bb8933c3c6c8f5f8512836babc9244e1dc67b498551cfa",
+      "receipt_projection_digest": "sha256:b9ff31b0a38726757c6ad1120095b1feb584ae0c09a0f97c8ff5485335834a55",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-specific-performance-remedies-20260809-2xk-r3-final": {
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "semantic_output_digest": "sha256:86ed0cca8619a98a12581b93ff8093a97be12379fa2837614f4543c1c4352157",
+      "receipt_projection_digest": "sha256:bf58a63c9d6c401d9b8615040717061eb2e720d6ec0affc330083befc5826b3c",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-tax-matters-20260809-2xk-r3-final": {
+      "family": "TAX_MATTERS",
+      "semantic_output_digest": "sha256:35a1ef281240424b14dd77261ea70073651534aba33e6e78e33659b75cf817eb",
+      "receipt_projection_digest": "sha256:ab86758b1c4b6f10a436cc9cd4d0a35d63135c135d8eaeb87117da216489be70",
+      "replay_coverage": {
+        "recorded_calls": 2,
+        "replayed_calls": 2,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-termination-20260809-2xk-r3-final": {
+      "family": "TERMINATION",
+      "semantic_output_digest": "sha256:2ca67e09f9cd700b8470f5bdba34e20d02cb708d06cedaa4c9f0146a2c005e99",
+      "receipt_projection_digest": "sha256:cbb29d97096f03212e2d8565af1a5c581f6a5402ad853edbaf3661bf429eb7f1",
+      "replay_coverage": {
+        "recorded_calls": 4,
+        "replayed_calls": 4,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    },
+    "topbuild-termination-fee-20260809-2xk-r1-final": {
+      "family": "TERMINATION_FEE",
+      "semantic_output_digest": "sha256:cc3515bf8eb2c912dbf1625bb6f78e2e9002fef96aa7c988020df58453f8e98b",
+      "receipt_projection_digest": "sha256:99f1fc6f5c7b5153beceeea6b45f82e7adbbaa87d2fce2a5c6957a5648564918",
+      "replay_coverage": {
+        "recorded_calls": 1,
+        "replayed_calls": 1,
+        "keying": "REQUEST_HASH",
+        "unused_recorded_requests": 0,
+        "complete": true
+      }
+    }
+  },
+  "baseline_provenance": {
+    "frozen_head": "01e80f6f52560e0ec2d2ddf44d35c418c10d729a",
+    "harness_patch_sha256": "sha256:41c877575165cb2b01017496adadadcb098d7af24577d359677011165212d815",
+    "harness_patch_scope": "exports replayInput and replayReceipt only"
+  }
+}

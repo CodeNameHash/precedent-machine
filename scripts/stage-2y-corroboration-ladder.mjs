@@ -545,4 +545,5 @@ if (isMain) main().catch((error) => { process.stderr.write(`${error.stack || err
 export {
   OUTPUT_JSON, OUTPUT_MD, SELECTED_RUNS, REPORT_SCHEMA, EXPECTED_SELECTED_RUN_COUNT,
   deriveSelectedRuns, selectOfficialRuns, mergeExactCriteria, curves, buildReport, renderMarkdown, parseArgs, main,
+  replayInput, replayReceipt,
 };
