@@ -39,6 +39,30 @@ test('recorded replay cannot make a live call and missing or exhausted recording
   await assert.rejects(() => replay.messages.create({ messages: [{ role: 'user', content: 'live calls are forbidden' }] }), /REPLAY_MISS/);
 });
 
+test('recorded replay keeps the sealed historical prompt when current prompt text changes', async () => {
+  const { createRecordedPromptTransformer } = await runner();
+  const recording = {
+    calls: [{
+      request_system: [{ type: 'text', text: 'sealed system' }],
+      request_messages: [{ role: 'user', content: 'GOVERNED SECTION REFERENCE: 7.1\n\nsealed historical body' }],
+    }],
+  };
+  const transform = createRecordedPromptTransformer({
+    recording,
+    oldReceipt: { resolved_sections: [{ section_reference: '7.1' }] },
+    runName: 'fixture-final',
+  });
+  const transformed = transform({
+    prompt_id: 'current-prompt',
+    system: [{ type: 'text', text: 'current system' }],
+    messages: [{ role: 'user', content: 'GOVERNED SECTION REFERENCE: 7.1\n\ncurrent changed body' }],
+  });
+  assert.equal(transformed.prompt_id, 'current-prompt');
+  assert.deepEqual(transformed.system, recording.calls[0].request_system);
+  assert.deepEqual(transformed.messages, recording.calls[0].request_messages);
+  assert.throws(() => transform({ messages: [{ role: 'user', content: 'GOVERNED SECTION REFERENCE: 7.2\n\nwrong section' }] }), /no sealed recording/);
+});
+
 test('UTF-8 byte evidence is a gate and can never defer a model result', () => {
   const candidate = {
     claim: {

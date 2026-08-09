@@ -21,7 +21,6 @@ const { createAnthropicProvider } = require('../lib/canonical-v2/native-producer
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
 const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
 const { assessCorroborationLadder, criterionIdentity, PUBLICATION_DISPOSITION, ANCHOR_STEM_DECLARATION_DIGEST } = require('../lib/canonical-v2/native-producer/corroboration-ladder');
-const { JSON_ONLY_INSTRUCTION } = require('../lib/llm-cli-client');
 
 const { isFinalCorpusRun } = await import('./canonical-v2-corpus-review-artifact.mjs');
 const liveRunner = await import('./canonical-v2-live-extraction-run.mjs');
@@ -118,6 +117,47 @@ function replayInput({ family, runName, manifest, sourceReference, recording, ol
     || manifest.source_sha256 !== sourceReference.canonical_text_sha256) {
     fail('INPUT_REJECTED', `${runName} source digest does not agree across immutable inputs`);
   }
+}
+
+function promptSectionReference(prompt, source) {
+  const messages = prompt?.messages;
+  if (!Array.isArray(messages) || messages.length !== 1
+    || messages[0]?.role !== 'user' || typeof messages[0]?.content !== 'string') {
+    fail('INPUT_REJECTED', `${source} does not contain one sealed user prompt`);
+  }
+  const match = /^GOVERNED SECTION REFERENCE: ([^\n]+)\n\n/.exec(messages[0].content);
+  if (!match) fail('INPUT_REJECTED', `${source} has no governed section reference`);
+  return match[1];
+}
+
+// A replay re-executes current compilation and resolution against the recorded
+// provider response. It must use the sealed historical request to retrieve
+// that response. Current prompt text can change independently and must never
+// turn an otherwise complete recording into a model-call miss.
+function createRecordedPromptTransformer({ recording, oldReceipt, runName }) {
+  const expectedReferences = new Set((oldReceipt.resolved_sections || []).map((section) => section.section_reference));
+  if (expectedReferences.size === 0) fail('INPUT_REJECTED', `${runName} receipt has no resolved sections`);
+  const recordedByReference = new Map();
+  for (const [index, call] of (recording.calls || []).entries()) {
+    const sectionReference = promptSectionReference({ messages: call.request_messages }, `${runName} recording call ${index + 1}`);
+    if (!expectedReferences.has(sectionReference) || recordedByReference.has(sectionReference)) {
+      fail('INPUT_REJECTED', `${runName} recording does not map one prompt to each committed section`);
+    }
+    recordedByReference.set(sectionReference, call);
+  }
+  if (recordedByReference.size !== expectedReferences.size) {
+    fail('INPUT_REJECTED', `${runName} recording does not cover every committed section`);
+  }
+  return (currentPrompt) => {
+    const sectionReference = promptSectionReference(currentPrompt, `${runName} current prompt`);
+    const recorded = recordedByReference.get(sectionReference);
+    if (!recorded) fail('INPUT_REJECTED', `${runName} current prompt has no sealed recording`);
+    return Object.freeze({
+      ...currentPrompt,
+      system: recorded.request_system,
+      messages: recorded.request_messages,
+    });
+  };
 }
 
 function runControlMap(resolution, receipt) {
@@ -241,6 +281,7 @@ async function replayReceipt({ family, runName, manifest, sourceReference, recor
 
   const identity = resolveOriginalProviderIdentity({ recording, runReceipt: oldReceipt, source: runName });
   const replay = createReplayClient({ recording });
+  const transformPrompt = createRecordedPromptTransformer({ recording, oldReceipt, runName });
   const provider = createAnthropicProvider({
     providerId: identity.provider_id,
     model: identity.model_id,
@@ -248,9 +289,7 @@ async function replayReceipt({ family, runName, manifest, sourceReference, recor
     maxRetries: 0,
     maxOutputTokens: null,
     includeRawResponse: true,
-    transformPrompt(prompt) {
-      return Object.freeze({ ...prompt, system: Object.freeze([{ type: 'text', text: JSON_ONLY_INSTRUCTION }]) });
-    },
+    transformPrompt,
   });
   const sectionReferences = manifest.section_references;
   const receipt = await runNativeExtraction({
@@ -545,5 +584,5 @@ if (isMain) main().catch((error) => { process.stderr.write(`${error.stack || err
 export {
   OUTPUT_JSON, OUTPUT_MD, SELECTED_RUNS, REPORT_SCHEMA, EXPECTED_SELECTED_RUN_COUNT,
   deriveSelectedRuns, selectOfficialRuns, mergeExactCriteria, curves, buildReport, renderMarkdown, parseArgs, main,
-  replayInput, replayReceipt,
+  replayInput, replayReceipt, createRecordedPromptTransformer,
 };
