@@ -142,6 +142,7 @@ test('resolver finalizes MERGER_TRANSACTION_STEP claims with topology attributes
     (row) => row.resolved_claim_definition_key === 'MERGER_TRANSACTION_STEP',
   );
   assert.equal(claims.length, 1);
+  assert.equal(resolution.residuals.length, 0);
   assert.equal(claims[0].claim.attributes.step_kind, 'MERGER');
   assert.equal(claims[0].claim.attributes.step_order, 1);
   assert.equal(claims[0].concept_key, 'MERGER-STRUCTURE');

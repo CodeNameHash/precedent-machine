@@ -202,7 +202,7 @@ const { bindNativePromptToGovernedScope } = require('../lib/canonical-v2/native-
 // Same reason the V34 -> V38 move recorded above: resolving against an
 // older bundle turns already-governed vocabulary into open-world rows
 // for want of a home that exists.
-const { compileFixtureContractV41 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV42 } = require('../lib/canonical-v2/contract-bundle');
 const { createAnthropicProvider, normalizeProviderUsage } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { createCodexCliProvider, PROVIDER_ID: CODEX_PROVIDER_ID, resolveProfile } = require('../lib/canonical-v2/native-producer/codex-cli-provider');
 const { createCodexCliClient, JSON_ONLY_INSTRUCTION } = require('../lib/llm-cli-client');
@@ -1957,7 +1957,7 @@ async function main() {
 
   // ─── Step 3: LIVE model calls, one per pinned section, all dispatched under the chosen family ───
 
-  const contractBundle = compileFixtureContractV41();
+  const contractBundle = compileFixtureContractV42();
   const definitions = { known_definitions: [] };
   const telemetry = { calls: [] };
 
@@ -2201,7 +2201,7 @@ async function main() {
       : `General extraction run: family ${config.family} on deal ${config.deal}.`,
     section_references: config.sectionRefs,
     section_family_assignments: sectionFamilyAssignments,
-    contract_bundle_version: 'compileFixtureContractV41',
+    contract_bundle_version: 'compileFixtureContractV42',
     prompt_id: promptInfo.prompt_id,
     prompt_version: promptInfo.prompt_version,
     agreement_date: config.agreementDate,

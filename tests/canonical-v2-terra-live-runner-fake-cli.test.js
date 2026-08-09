@@ -10,7 +10,7 @@ const { execFileSync } = require('node:child_process');
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const { importRunEvidence } = require('../lib/canonical-v2/evidence-to-write-set-bridge');
 const { InMemoryCanonicalRepository } = require('../lib/canonical-v2/canonical-writer');
-const { compileFixtureContractV41 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV42 } = require('../lib/canonical-v2/contract-bundle');
 
 const ROOT = path.resolve(__dirname, '..');
 const RUNNER = path.join(ROOT, 'scripts', 'canonical-v2-live-extraction-run.mjs');
@@ -129,6 +129,7 @@ exit 94
     assert.deepEqual(runManifest.requested_models, [MODEL_ID]);
     assert.equal(runManifest.requested_model_id, MODEL_ID);
     assert.deepEqual(runManifest.resolved_models, []);
+    assert.equal(runManifest.contract_bundle_version, 'compileFixtureContractV42');
     assert.deepEqual(runManifest.code_provenance, {
       commit: 'fake-clean-commit',
       working_tree_clean: true,
@@ -149,7 +150,7 @@ exit 94
       (await importRunEvidence({
         runDirectory: liveOut,
         repository: new InMemoryCanonicalRepository(),
-        contractBundle: compileFixtureContractV41(),
+        contractBundle: compileFixtureContractV42(),
         dryRun: true,
       })).receipt.validation.accepted,
       true,
