@@ -196,8 +196,8 @@ test('the publishable-object-count sum still counts conditional_termination_fee_
   );
   assert.match(
     countSum,
-    /WHERE key NOT IN \('source_references', 'deal', 'persisted_object_references'\);/,
-    'the publishable-object-count exclusion list must stay exactly as it was -- conditional_termination_fee_values must be counted, unlike the closure-keyed loops above',
+    /WHERE key NOT IN \('source_references', 'deal', 'persisted_object_references', 'publication_dispositions', 'publication_calibration_authorities'\);/,
+    'the publishable-object-count exclusion list must exclude immutable publication sidecars but count conditional_termination_fee_values, which is a real write rather than a reference',
   );
 });
 

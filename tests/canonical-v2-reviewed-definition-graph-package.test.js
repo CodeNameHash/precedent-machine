@@ -329,6 +329,7 @@ test('exact admitted QXO inputs reconstruct one deterministic definitions-first 
     'lib/parser-v2/regions/preamble.js',
     'lib/parser-v2/structural.js',
     'lib/parser-v2/text-layers.js',
+    'lib/vocab/resolution/representation-topic-registry.js',
   ];
   assert.deepEqual(
     first.normaliser_identity.executable_semantic_closure.map(

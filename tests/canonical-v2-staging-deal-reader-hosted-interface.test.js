@@ -92,6 +92,15 @@ function fakeHostedClient(tables) {
           error: null,
         };
       }
+      if (name === 'canonical_v2_staging_read_claim_publication_dispositions') {
+        return {
+          data: (tables.claim_publication_dispositions || [])
+            .filter((r) => params.p_claim_revision_ids.includes(r.claim_revision_id)
+              && r.decision_id === params.p_decision_id)
+            .map((r) => r.payload),
+          error: null,
+        };
+      }
       return { data: null, error: { message: `fake hosted client cannot route rpc: ${name}` } };
     },
   };
@@ -148,7 +157,7 @@ test('createLocalStagingQueryInterface issues the exact SQL text this module has
 });
 
 // ── The hosted interface calls the whitelisted RPC, by name, with the
-// documented params -- one assertion per of the eight functions this
+// documented params -- one assertion per of the nine functions this
 // module and supabase/canonical-v2-staging-read.sql both define. ──
 
 test('every hosted interface method calls a name in HOSTED_STAGING_RPC_NAMES, with the documented params shape', async () => {
@@ -163,8 +172,9 @@ test('every hosted interface method calls a name in HOSTED_STAGING_RPC_NAMES, wi
   await iface.openWorldCandidateOccurrencesByCandidateIds(['CAND1']);
   await iface.openWorldEvidenceReferencesByOccurrenceIds(['OCC1']);
   await iface.conditionalTerminationFeeValuesByDocumentHash('DH');
+  await iface.claimPublicationDispositionsByClaimRevisionIds(['CR1'], 'DEC1');
 
-  assert.equal(client.calls.length, 8);
+  assert.equal(client.calls.length, 9);
   for (const call of client.calls) {
     assert.ok(HOSTED_STAGING_RPC_NAMES.includes(call.name), `${call.name} is not in HOSTED_STAGING_RPC_NAMES`);
   }
@@ -180,11 +190,15 @@ test('every hosted interface method calls a name in HOSTED_STAGING_RPC_NAMES, wi
     { p_open_world_candidate_occurrence_ids: ['OCC1'] },
   );
   assert.deepEqual(byName.canonical_v2_staging_read_conditional_termination_fee_values, { p_document_hash: 'DH' });
+  assert.deepEqual(
+    byName.canonical_v2_staging_read_claim_publication_dispositions,
+    { p_claim_revision_ids: ['CR1'], p_decision_id: 'DEC1' },
+  );
 });
 
-test('HOSTED_STAGING_RPC_NAMES has exactly eight entries, one per function supabase/canonical-v2-staging-read.sql defines', () => {
-  assert.equal(HOSTED_STAGING_RPC_NAMES.length, 8);
-  assert.equal(new Set(HOSTED_STAGING_RPC_NAMES).size, 8, 'no duplicate RPC names');
+test('HOSTED_STAGING_RPC_NAMES has exactly nine entries, one per function supabase/canonical-v2-staging-read.sql defines', () => {
+  assert.equal(HOSTED_STAGING_RPC_NAMES.length, 9);
+  assert.equal(new Set(HOSTED_STAGING_RPC_NAMES).size, 9, 'no duplicate RPC names');
 });
 
 // ── A refused read (the grant boundary firing) surfaces as a
