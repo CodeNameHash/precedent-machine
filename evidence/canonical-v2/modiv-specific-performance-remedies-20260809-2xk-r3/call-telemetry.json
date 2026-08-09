@@ -1,0 +1,23 @@
+{
+  "run_wall_clock_ms": 17691,
+  "calls": [
+    {
+      "call_index": 0,
+      "section_reference": "8.8",
+      "wall_clock_ms": 17495,
+      "usage": {
+        "input_tokens": 18248,
+        "cached_input_tokens": 9984,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 785,
+        "reasoning_output_tokens": 117
+      },
+      "requested_model_profile": "TERRA_MEDIUM",
+      "requested_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+      "served_model": null,
+      "served_model_status": "NOT_REPORTED_BY_CODEX_JSONL",
+      "provider_request_id": "019fe4dc-01f7-72d3-910a-94c72c32e972",
+      "attribution_basis": "ORDERED_PINNED_SECTION"
+    }
+  ]
+}

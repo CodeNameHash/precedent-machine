@@ -1,0 +1,403 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "e9d2c5cfdfb038aab376b5698c9ae3e12c45d498199cdc627f563680218d8c61",
+  "review_queue": [
+    {
+      "section_reference": "3.17",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "54c6b44e44f9ab65ecb08ca4ce779083abbdf10337ba89449466f74a88be44ec",
+      "closure_id": "0d3ac972b5ea6dcaf0388bd27acc553392568f78cf1548a2ff955dfee86fa48f",
+      "normalised_phrase": "contains covenants of the Company or any of the Company Subsidiaries purporting to limit, in any material respect, either the type of business in which the Company or any of the Company Subsidiaries or any of their controlled affiliates may engage or the geographic area in which any of them may so engage",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 6880,
+          "end": 6906,
+          "excerpt": "mpany, the Company has made available to Parent true and complete copies of all Company Material Contracts as of the date hereof, including amendments and supplements thereto that modify",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 6888,
+          "end": 6906,
+          "excerpt": "he Company has made available to Parent true and complete copies of all Company Material Contracts as of the date hereof, including amendments and supplements thereto that modify",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.17",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "1ae03261df42b1756c865315ff3dc115315d1eafea8ff144e7a1b67fc47d7c6a",
+      "closure_id": "36d3dad1b01dd172b592066d8b578f98760d6112043afc5a416411ec10596964",
+      "normalised_phrase": "that has any continuing indemnification, guarantee, “earn-out” or other contingent payment obligations of the Company or any of the Company Subsidiaries",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 6880,
+          "end": 6906,
+          "excerpt": "mpany, the Company has made available to Parent true and complete copies of all Company Material Contracts as of the date hereof, including amendments and supplements thereto that modify",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 6888,
+          "end": 6906,
+          "excerpt": "he Company has made available to Parent true and complete copies of all Company Material Contracts as of the date hereof, including amendments and supplements thereto that modify",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.17",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "035f891c05cf0191493821b55990d973b3bc1a19fd12cff710b0c0c3b3d394f3",
+      "closure_id": "480c79a452a9cff1931280f538158a63d74486367589c5fd129555472002ddf6",
+      "normalised_phrase": "constitutes an interest rate cap, interest rate collar, interest rate, currency or commodity derivative or other contract or agreement relating to a hedging",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 6880,
+          "end": 6906,
+          "excerpt": "mpany, the Company has made available to Parent true and complete copies of all Company Material Contracts as of the date hereof, including amendments and supplements thereto that modify",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 6888,
+          "end": 6906,
+          "excerpt": "he Company has made available to Parent true and complete copies of all Company Material Contracts as of the date hereof, including amendments and supplements thereto that modify",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.17",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "b4360cc2b77856104750884d444b48d89eae1885363fe9f83204c433cd04c120",
+      "closure_id": "64ae03504c9041ec8004dcb909f5161f5315c3b6746001b23d36de0acf020bcc",
+      "normalised_phrase": "All Contracts, including amendments thereto, required to be filed as an exhibit to any report of the Company filed on or after January 1, 2023 pursuant to the Exchange Act of the type described in Item 601(b)(10) of Regulation S-K promulgated by the SEC",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 6880,
+          "end": 6906,
+          "excerpt": "mpany, the Company has made available to Parent true and complete copies of all Company Material Contracts as of the date hereof, including amendments and supplements thereto that modify",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 6888,
+          "end": 6906,
+          "excerpt": "he Company has made available to Parent true and complete copies of all Company Material Contracts as of the date hereof, including amendments and supplements thereto that modify",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.17",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6c911c7508305384d59932bde030ceb151eb885d958e578e05747c64a163783e",
+      "closure_id": "66d191fe55c203eec7e3e7442ce2b60191ba6b0d96f5522ff8c4d31e2902b292",
+      "normalised_phrase": "is a limited liability company agreement, partnership agreement or joint venture agreement or similar Contract (including Joint Venture Agreements) with a third party",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 6880,
+          "end": 6906,
+          "excerpt": "mpany, the Company has made available to Parent true and complete copies of all Company Material Contracts as of the date hereof, including amendments and supplements thereto that modify",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 6888,
+          "end": 6906,
+          "excerpt": "he Company has made available to Parent true and complete copies of all Company Material Contracts as of the date hereof, including amendments and supplements thereto that modify",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.17",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2b1403fc09790943bdbea9da6e007df567c138a3a1c0c3176eec6f129b924294",
+      "closure_id": "6bc0d2f6c93a61fcd579b5cfe79b7edc51cf622feeb32c5a42e1263fe6f266e1",
+      "normalised_phrase": "relates to the settlement (or proposed settlement) of any pending or threatened suit or proceeding, in cash",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 6880,
+          "end": 6906,
+          "excerpt": "mpany, the Company has made available to Parent true and complete copies of all Company Material Contracts as of the date hereof, including amendments and supplements thereto that modify",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 6888,
+          "end": 6906,
+          "excerpt": "he Company has made available to Parent true and complete copies of all Company Material Contracts as of the date hereof, including amendments and supplements thereto that modify",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.17",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9f2beec832faea1d6e9b155ab702eb0526e9aa9a41c322c896dff77f2b932be2",
+      "closure_id": "71c84a9518632fbc9dc575b82a3a1ee0f46254b8b2796f6ca953e0c60fd35862",
+      "normalised_phrase": "involves fixed or minimum payment obligations of the Company or the Company Subsidiaries in excess of $200,000 in the aggregate over the remaining term of such Contract",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 6880,
+          "end": 6906,
+          "excerpt": "mpany, the Company has made available to Parent true and complete copies of all Company Material Contracts as of the date hereof, including amendments and supplements thereto that modify",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 6888,
+          "end": 6906,
+          "excerpt": "he Company has made available to Parent true and complete copies of all Company Material Contracts as of the date hereof, including amendments and supplements thereto that modify",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.17",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e0f574ab7251b0597ad3e73880aded53e708baa8c16d0b908c550411b66037c7",
+      "closure_id": "7cd7a0d9a2d78324e4b76e3f2f7a6237ff82af0554615e1c1021c06885a4ec76",
+      "normalised_phrase": "relate to an acquisition, divestiture, merger or similar transaction that (A) was entered into since January 1, 2025",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 6880,
+          "end": 6906,
+          "excerpt": "mpany, the Company has made available to Parent true and complete copies of all Company Material Contracts as of the date hereof, including amendments and supplements thereto that modify",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 6888,
+          "end": 6906,
+          "excerpt": "he Company has made available to Parent true and complete copies of all Company Material Contracts as of the date hereof, including amendments and supplements thereto that modify",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.17",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "536345b90653e0e1e2341dadfdf12e14d0d0fa9da36c47f97830236357106a55",
+      "closure_id": "8ec8eddb20d591e1eccc2190664776e542e83dc62c625bbd65ccdf1f366eea52",
+      "normalised_phrase": "involves fixed or minimum payment obligations of the Company or the Company Subsidiaries in excess of $200,000 in the aggregate over the remaining term of such Contract",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 6880,
+          "end": 6906,
+          "excerpt": "mpany, the Company has made available to Parent true and complete copies of all Company Material Contracts as of the date hereof, including amendments and supplements thereto that modify",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 6888,
+          "end": 6906,
+          "excerpt": "he Company has made available to Parent true and complete copies of all Company Material Contracts as of the date hereof, including amendments and supplements thereto that modify",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "2c4ba44e655e5c4a92dd0715059cbda1011e425d0458842688d1254bf2dbb05f"
+}

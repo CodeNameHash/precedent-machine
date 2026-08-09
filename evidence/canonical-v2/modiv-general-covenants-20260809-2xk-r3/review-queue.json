@@ -1,0 +1,314 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "eebfba69199a9280c45b0945cf3897be967b0dfa5177fa4fe80e728ff0057924",
+  "review_queue": [
+    {
+      "section_reference": "5.7",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_PUBLICITY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-PUBLICITY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d2fec2aa00f2dcfeec06a19e8fc73c966b23e80260d82fbe91b02e85714c4d16",
+      "closure_id": "876cc3a0fbd8f64bb6cafb18ba4a3ee1014715faa2bfaa13b3180aa522f56834",
+      "normalised_phrase": "The Company and Parent, and their respective Subsidiaries (a) shall consult with each other before issuing any press release or otherwise making any public statements that may, or could reasonably be expected to, delay the consummation of the Mergers or with respect to this Agreement or the Mergers, and (b) shall not issue any such press release or make any such public statement without the prior written consent of the other parties hereto",
+      "attachment_position": null,
+      "concept_family": "COV-PUBLICITY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-PUBLICITY",
+          "pattern_id": "COV-PUBLICITY:PHRASE:PUBLICITY",
+          "start": 12,
+          "end": 32,
+          "excerpt": "Section 5.7 Public Announcements. The Company and Parent, and their respective Subsidiaries (a) shall consult wi",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.7",
+      "source_citation": "5.7",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_PUBLICITY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-PUBLICITY",
+      "reasons": [
+        "PARTY_UNRESOLVED"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the parties shall cooperate as to the timing and contents of any such press release or public statement",
+      "canonical_value": "COV-PUBLICITY",
+      "original_claim_occurrence_id": "e87546bee9a2755b66b4b2be6bdb72ed97c136d64448830490fc4ff00db574b7",
+      "closure_id": "bf257a355808f60e25df17d8424dad627c2c69fc078d362b7232c1f96119a047",
+      "normalised_phrase": "the parties shall cooperate as to the timing and contents of any such press release or public statement",
+      "attachment_position": null,
+      "concept_family": "COV-PUBLICITY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.9",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_NOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-NOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "24700bf3bcfb36e8d04e610914b092e58aed178a9ae74bfc7241b52fcb115b89",
+      "closure_id": "0c294b183c482d9cd174962e3d64c186a884bae6f68c9c0a255dffd9c97d1e32",
+      "normalised_phrase": "the Company shall give prompt notice to Parent (x) upon receipt of notice of any written notice to the effect that any condemnation, eminent domain or rezoning proceedings are pending or threatened with respect to any of the Company Real Properties, (y) upon receipt of any written notice to the effect that any certificate, permit or license from any governmental authority having jurisdiction over any of the Company Real Properties or to the effect that any agreement, easement or other right of an unlimited duration that is necessary to permit the lawful use and operation of the buildings and improvements on any of the Company Real Properties or that is necessary to permit the lawful use and operation of all utilities, parking areas, retention ponds, driveways, roads and other means of egress and ingress to and from any of the Company Real Properties is not in full force and effect (or of any pending written threat of modification or cancellation of any of same) and (z) of any material (i) operational defects that would prevent operation of any Company Real Property in the manner currently being operated or (ii) structural defects of any Company Real Property other than as may be disclosed in any physical condition reports that have been made available to Parent, in each case upon actual knowledge of the Company",
+      "attachment_position": null,
+      "concept_family": "COV-NOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-NOTIFY",
+          "pattern_id": "COV-NOTIFY:PHRASE:NOTIFY",
+          "start": 12,
+          "end": 43,
+          "excerpt": "Section 5.9 Notification of Certain Matters.\n(a) The Company shall give prompt notice to Parent, and Parent shall give prom",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.9",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_NOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-NOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d289d701fbee709ba0c63e2d4084a3d7bc65ed167dee40986083d5020247401f",
+      "closure_id": "3664e5cd3abdc160a802e06c7ee6ffd5850cccac02c4baa7d6a7c178cfcd2e49",
+      "normalised_phrase": "The Company shall give prompt notice to Parent",
+      "attachment_position": null,
+      "concept_family": "COV-NOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-NOTIFY",
+          "pattern_id": "COV-NOTIFY:PHRASE:NOTIFY",
+          "start": 12,
+          "end": 43,
+          "excerpt": "Section 5.9 Notification of Certain Matters.\n(a) The Company shall give prompt notice to Parent, and Parent shall give prom",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.9",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_NOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-NOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "cd1433edadd7d9f8e1cf29bf5405969d8cfcc7902b4c3e5229e897061ab79351",
+      "closure_id": "3672681f145b1de98b3d2c91844ce86d31199d56c8018ad9282461ec1d8f3c55",
+      "normalised_phrase": "the Company shall give prompt notice to Parent if, to the Company’s Knowledge, the Company or any of the Company Subsidiaries suffer any material violations, breaches, outages, corruptions or unauthorized uses of or unauthorized access to the Company IT Assets",
+      "attachment_position": null,
+      "concept_family": "COV-NOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-NOTIFY",
+          "pattern_id": "COV-NOTIFY:PHRASE:NOTIFY",
+          "start": 12,
+          "end": 43,
+          "excerpt": "Section 5.9 Notification of Certain Matters.\n(a) The Company shall give prompt notice to Parent, and Parent shall give prom",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.9",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_NOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-NOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c70bd8f024747f15e4d8e6ae383baca179fe6f1765e3a98a818c3d5f4ad10184",
+      "closure_id": "64066418d54953a285892f37383ba6e5acea16e14f19524a11743b624890cf94",
+      "normalised_phrase": "Parent shall give prompt notice to the Company",
+      "attachment_position": null,
+      "concept_family": "COV-NOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-NOTIFY",
+          "pattern_id": "COV-NOTIFY:PHRASE:NOTIFY",
+          "start": 12,
+          "end": 43,
+          "excerpt": "Section 5.9 Notification of Certain Matters.\n(a) The Company shall give prompt notice to Parent, and Parent shall give prom",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.9",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_NOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-NOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2b73be49c5a948c410511da67337eba233486d593ab8f216010982812bf8bc8c",
+      "closure_id": "853c785b9deeaf51dec65f3a8a73c313119889544af7176c96f8db6a76eb747d",
+      "normalised_phrase": "The Company shall give prompt notice to Parent",
+      "attachment_position": null,
+      "concept_family": "COV-NOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-NOTIFY",
+          "pattern_id": "COV-NOTIFY:PHRASE:NOTIFY",
+          "start": 12,
+          "end": 43,
+          "excerpt": "Section 5.9 Notification of Certain Matters.\n(a) The Company shall give prompt notice to Parent, and Parent shall give prom",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.9",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_NOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-NOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4e64704ae61b94c1b20c2b671e59bb6c091e255b71f5c26048948ee5a3d67400",
+      "closure_id": "9250cb5983538f1174ae6db6661863ea695959b53d779d7dc553cc248b98c75b",
+      "normalised_phrase": "Parent shall give prompt notice to the Company",
+      "attachment_position": null,
+      "concept_family": "COV-NOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-NOTIFY",
+          "pattern_id": "COV-NOTIFY:PHRASE:NOTIFY",
+          "start": 12,
+          "end": 43,
+          "excerpt": "Section 5.9 Notification of Certain Matters.\n(a) The Company shall give prompt notice to Parent, and Parent shall give prom",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.9",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_NOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-NOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "3d637d32f73a1cab5b916f4ba8edf932d2bbf481a729856f67364ec3ac50853d",
+      "closure_id": "967015fe35b168d54ac08b7f9bcef1dda49598cb10dcdfdaf838b6b6f09bb2b6",
+      "normalised_phrase": "the Company shall give prompt notice to Parent upon receipt by the Company or any Company Subsidiaries of any written notice from any tenant under a Company Space Lease challenging the calculation of any amounts payable by such tenant under such Company Space Lease",
+      "attachment_position": null,
+      "concept_family": "COV-NOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-NOTIFY",
+          "pattern_id": "COV-NOTIFY:PHRASE:NOTIFY",
+          "start": 12,
+          "end": 43,
+          "excerpt": "Section 5.9 Notification of Certain Matters.\n(a) The Company shall give prompt notice to Parent, and Parent shall give prom",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "ef18d30e29e0b09988e66fa7147d3478a884bf25cb90a6b0ed4abe0390b93ddc"
+}

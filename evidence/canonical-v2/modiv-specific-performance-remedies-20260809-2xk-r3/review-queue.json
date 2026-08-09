@@ -1,0 +1,78 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "f1646c7ef341a9150fdf49faed4d2f30af72e9eb2c177af779456f60c7dbb33a",
+  "review_queue": [
+    {
+      "section_reference": "8.8",
+      "generic_claim_key": "NATIVE_SPECIFIC_PERFORMANCE_REMEDY_CANDIDATE",
+      "resolved_claim_definition_key": "SPECIFIC_PERFORMANCE_REMEDY_PRESENT",
+      "concept_key": "REMEDY-SPECIFIC-PERFORMANCE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 25,
+      "materiality_label": "REMEDIES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ce25039818378bf12bbcc7011c780ed9a43a92ab19806660d804c16ce0de85bf",
+      "closure_id": "348acac303ae91157247e0ee72443950b2d0d474baca48848e6ec7b3ad89c669",
+      "normalised_phrase": "The parties hereto agree that irreparable harm, for which monetary damages (even if available) would not be an adequate remedy, would occur in the event that any party hereto does not perform any of the provisions of this Agreement (including failing to take such actions as are required of them hereunder to consummate the Mergers and the other Transactions) in accordance with this Agreement’s specified terms or otherwise breaches such provisions. Accordingly, the parties acknowledge and agree that the parties hereto shall be entitled to an injunction, specific performance or other equitable relief to prevent and/or remedy a breach of this Agreement by any other party hereto and to enforce specifically the terms and provisions hereof, in addition to any other remedy to which such party is entitled at Law or in equity.",
+      "attachment_position": null,
+      "concept_family": "REMEDY-SPECIFIC-PERFORMANCE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REMEDY-SPECIFIC-PERFORMANCE",
+          "pattern_id": "REMEDY-SPECIFIC-PERFORMANCE:PHRASE:SPECIFIC_PERFORMANCE",
+          "start": 12,
+          "end": 32,
+          "excerpt": "Section 8.8 Specific Performance.\n(a) The parties hereto agree that irreparable harm, for which monetary damages",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REMEDY-SPECIFIC-PERFORMANCE",
+          "pattern_id": "REMEDY-SPECIFIC-PERFORMANCE:PHRASE:SPECIFIC_PERFORMANCE",
+          "start": 949,
+          "end": 969,
+          "excerpt": "Each party hereto agrees that it will not oppose the granting of an injunction, specific performance, or other equitable relief on the basis that there is an adequate remedy at Law",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REMEDY-SPECIFIC-PERFORMANCE",
+          "pattern_id": "REMEDY-SPECIFIC-PERFORMANCE:PHRASE:SPECIFIC_PERFORMANCE",
+          "start": 1071,
+          "end": 1091,
+          "excerpt": "elief on the basis that there is an adequate remedy at Law or that any award of specific performance is not an appropriate remedy for any reason at Law or in equity. Any party here",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REMEDY-SPECIFIC-PERFORMANCE",
+          "pattern_id": "REMEDY-SPECIFIC-PERFORMANCE:PHRASE:SPECIFIC_PERFORMANCE",
+          "start": 1524,
+          "end": 1544,
+          "excerpt": "ch order or injunction. Each party hereto agrees not to assert that a remedy of specific performance is unenforceable, invalid, contrary to Law or inequitable for any reason, nor t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REMEDY-SPECIFIC-PERFORMANCE",
+          "pattern_id": "REMEDY-SPECIFIC-PERFORMANCE:PHRASE:SPECIFIC_PERFORMANCE",
+          "start": 2344,
+          "end": 2364,
+          "excerpt": "y proceeding for (or limit any party’s right to institute any proceeding for) specific performance under this Section 8.8 prior to or as a condition to exercising any termination",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "53a5199b948170d6be5571135cf1915bc8bceefdd6b7efa3d2a143ce2e342533"
+}
