@@ -85,7 +85,7 @@ const RECORDED_LIVE_RUN_DIR = /^tests\/fixtures\/canonical-v2\/(f28-live-run|f28
 // REPRESENTATIONS recording, whose section is the one place a merger agreement
 // says "Qualification" and "litigation" in the same breath.
 const LIVE_RUN_SOURCE_TEXT_FILE = /^evidence\/canonical-v2\/[^/]+\/(adapter-result|recording|native-producer-recorded-response-[^/]+)\.json$/;
-const DETERMINISTIC_DERIVED_PROSE_EVIDENCE_FILE = /^evidence\/canonical-v2\/(stage-2y-f-lexical-classification|stage-2y-h-representation-topic-replay)\.json$/;
+const DETERMINISTIC_DERIVED_PROSE_EVIDENCE_FILE = /^evidence\/canonical-v2\/(stage-2y-f-lexical-classification|stage-2y-f-terra-adjudication|stage-2y-h-representation-topic-replay)\.json$/;
 const PROSE_CLASS_FINGERPRINTS = [
   'QUALIFICATION.*litigation',
   'Must defend \\(incl\\. appeals/final judgment\\)',
@@ -406,7 +406,7 @@ for (const rel of changedFiles()) {
     // is still checked in full, and the CODE-class fingerprints still apply
     // here in full too.
     if (LIVE_RUN_SOURCE_TEXT_FILE.test(rel) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
-    // These two Stage 2Y ledgers are deterministic copies of recorded
+    // These Stage 2Y evidence ledgers are deterministic copies of recorded
     // candidate prose. Their canonical JSON has no line breaks, so a prose
     // fingerprint can bridge unrelated source quotes across the artifact.
     // Keep every code fingerprint, and every other evidence file, in scope.

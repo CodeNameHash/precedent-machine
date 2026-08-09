@@ -11,6 +11,7 @@ const ROOT = path.resolve(__dirname, '..', '..');
 const LINTER = path.join(ROOT, 'scripts', 'lint', 'forbidden-patterns.sh');
 const DUPLICATE_CHECK = path.join(ROOT, 'scripts', 'lint', 'resolution-registry-duplicates.js');
 const LEDGER = 'evidence/canonical-v2/stage-2y-f-lexical-classification.json';
+const TERRA_ADJUDICATION = 'evidence/canonical-v2/stage-2y-f-terra-adjudication.json';
 const REPRESENTATION_REPLAY = 'evidence/canonical-v2/stage-2y-h-representation-topic-replay.json';
 const PROSE_FINGERPRINT_TEXT = ['QUALI', 'FICATION from recorded agreement text lit', 'igation'].join('');
 const PROSE_FINGERPRINT_PATTERN = ['QUALI', 'FICATION.*lit', 'igation'].join('');
@@ -46,6 +47,25 @@ test('Stage 2Y-F lexical evidence still rejects code fingerprints', () => {
   const result = lintFixture({ relativePath: LEDGER, source: `const unsafe: ${CODE_FINGERPRINT_TEXT} = value;` });
   assert.notEqual(result.status, 0);
   assert.ok(result.stdout.includes(`${LEDGER} :: ${CODE_FINGERPRINT_PATTERN}`));
+});
+
+test('Stage 2Y-F Terra adjudication evidence ignores prose-only fingerprints', () => {
+  const result = lintFixture({ relativePath: TERRA_ADJUDICATION, source: PROSE_FINGERPRINT_TEXT });
+  assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+  assert.match(result.stdout, /INVARIANT-4: PASS/);
+});
+
+test('Stage 2Y-F Terra adjudication evidence still rejects code fingerprints', () => {
+  const result = lintFixture({ relativePath: TERRA_ADJUDICATION, source: `const unsafe: ${CODE_FINGERPRINT_TEXT} = value;` });
+  assert.notEqual(result.status, 0);
+  assert.ok(result.stdout.includes(`${TERRA_ADJUDICATION} :: ${CODE_FINGERPRINT_PATTERN}`));
+});
+
+test('Stage 2Y-F Terra adjudication adjacent paths remain subject to prose-only fingerprints', () => {
+  const adjacent = 'evidence/canonical-v2/stage-2y-f-terra-adjudication-copy.json';
+  const result = lintFixture({ relativePath: adjacent, source: PROSE_FINGERPRINT_TEXT });
+  assert.notEqual(result.status, 0);
+  assert.match(result.stdout, new RegExp(`${adjacent.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} :: ${PROSE_FINGERPRINT_PATTERN.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`));
 });
 
 test('other evidence files remain subject to prose-only fingerprints', () => {
