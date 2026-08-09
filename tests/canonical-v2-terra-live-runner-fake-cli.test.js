@@ -3,9 +3,14 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
+const zlib = require('node:zlib');
 const { execFileSync } = require('node:child_process');
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
+const { importRunEvidence } = require('../lib/canonical-v2/evidence-to-write-set-bridge');
+const { InMemoryCanonicalRepository } = require('../lib/canonical-v2/canonical-writer');
+const { compileFixtureContractV41 } = require('../lib/canonical-v2/contract-bundle');
 
 const ROOT = path.resolve(__dirname, '..');
 const RUNNER = path.join(ROOT, 'scripts', 'canonical-v2-live-extraction-run.mjs');
@@ -19,6 +24,7 @@ function writeExecutable(file, body) {
 
 test('full runner uses Terra subscription JSONL once, records exact identity, and replays offline', { timeout: 60000 }, async () => {
   const scratch = fs.mkdtempSync(path.join(ROOT, '.terra-runner-fake-'));
+  let externalOut = null;
   const bin = path.join(scratch, 'bin');
   const liveOut = path.join(scratch, 'live');
   const replayOut = path.join(scratch, 'replay');
@@ -90,6 +96,7 @@ exit 94
     execFileSync('node', [...commonArgs, '--out-dir', liveOut, '--record', recordingPath], {
       cwd: ROOT, env, encoding: 'utf8', stdio: 'pipe',
     });
+    const runner = await import(RUNNER_URL);
 
     const codexCalls = fs.readFileSync(codexLog, 'utf8').trim().split('\n');
     assert.equal(codexCalls.filter((line) => line === 'login status').length, 1);
@@ -126,12 +133,85 @@ exit 94
       commit: 'fake-clean-commit',
       working_tree_clean: true,
     }, 'in-repo output writes after startup must not make an initially clean run appear dirty');
+    assert.equal(runManifest.recorded_to, 'recording.json');
+    const sourceReference = JSON.parse(fs.readFileSync(path.join(liveOut, 'source-reference.json')));
+    const captureInputs = sourceReference.admitted_source_capture_inputs;
+    const storedPayload = fs.readFileSync(path.join(ROOT, captureInputs.source_map_payload_path));
+    const locallyVerified = runner.loadAndVerifySource({
+      dealPin: runner.DEAL_PINS.topbuild,
+      deal: 'topbuild',
+      rawHtmlPath: runner.DEAL_PINS.topbuild.raw_html_path,
+    });
+    assert.equal(captureInputs.source_map_compressed_sha256, sha256Hex(storedPayload));
+    assert.equal(captureInputs.source_map_digest, locallyVerified.conversion.source_map_digest);
+    assert.equal(sourceReference.canonical_text_sha256, locallyVerified.conversion.canonical_text_sha256);
+    assert.equal(
+      (await importRunEvidence({
+        runDirectory: liveOut,
+        repository: new InMemoryCanonicalRepository(),
+        contractBundle: compileFixtureContractV41(),
+        dryRun: true,
+      })).receipt.validation.accepted,
+      true,
+      'a run using the shared persisted payload must be importable',
+    );
+
+    const alternativePayload = path.join(scratch, 'alternative-source-map.deflate');
+    const uncompressedSourceMap = zlib.inflateRawSync(Buffer.from(
+      locallyVerified.conversion.source_map_payload_base64,
+      'base64',
+    ));
+    const alternativeBytes = zlib.deflateRawSync(uncompressedSourceMap, { level: 0 });
+    fs.writeFileSync(alternativePayload, alternativeBytes);
+    assert.notEqual(
+      sha256Hex(alternativeBytes),
+      locallyVerified.conversion.source_map_compressed_sha256,
+      'the hermetic alternate payload must take the recorded-payload seam',
+    );
+    const adopted = runner.adoptStoredSourceMapPayload({
+      verified: locallyVerified,
+      absolutePayloadPath: alternativePayload,
+    });
+    const adoptedContext = runner.buildAdmittedContext({
+      deal: 'topbuild',
+      family: 'MAE_DEFINITION',
+      dealPin: runner.DEAL_PINS.topbuild,
+      verified: adopted.verified,
+      locallyValidatedConversion: locallyVerified.conversion,
+      recordedSourceMapProvenance: {
+        source_map_payload_path: 'evidence/canonical-v2/example.deflate',
+        source_map_compressed_sha256: sha256Hex(alternativeBytes),
+      },
+    });
+    const localContext = runner.buildAdmittedContext({
+      deal: 'topbuild', family: 'MAE_DEFINITION', dealPin: runner.DEAL_PINS.topbuild, verified: locallyVerified,
+    });
+    assert.equal(
+      adoptedContext.admissionBundle.immutable_source_document.source_map_compressed_sha256,
+      sha256Hex(alternativeBytes),
+    );
+    assert.equal(adopted.verified.conversion.source_map_digest, locallyVerified.conversion.source_map_digest);
+    assert.equal(adopted.verified.conversion.canonical_text_id, locallyVerified.conversion.canonical_text_id);
+    assert.notEqual(
+      adoptedContext.admittedSourceContext.immutable_source_document_id,
+      localContext.admittedSourceContext.immutable_source_document_id,
+    );
+
+    const hostilePayload = path.join(scratch, 'hostile-source-map.deflate');
+    fs.writeFileSync(hostilePayload, zlib.deflateRawSync(Buffer.from('foreign source map', 'utf8')));
+    assert.throws(
+      () => runner.adoptStoredSourceMapPayload({
+        verified: locallyVerified,
+        absolutePayloadPath: hostilePayload,
+      }),
+      (error) => error.code === 'PERSISTED_SOURCE_MAP_DIVERGES',
+      'a stored payload must inflate to the independently validated map before adoption',
+    );
 
     const fixtureName = fs.readdirSync(liveOut).find((name) => name.startsWith('native-producer-recorded-response-'));
     assert.ok(fixtureName);
     const fixtureBytes = fs.readFileSync(path.join(liveOut, fixtureName));
     const receiptBytes = fs.readFileSync(path.join(liveOut, 'run-receipt.json'));
-    const runner = await import(RUNNER_URL);
     const manifest = {
       schema_version: 'SEALED_REPLAY_SOURCE_MANIFEST/V1',
       sections: [{
@@ -184,7 +264,20 @@ exit 94
       commit: 'fake-clean-commit',
       working_tree_clean: false,
     }, 'an initially dirty tree must remain dirty in the run manifest');
+
+    fs.rmSync(env.FAKE_GIT_DIRTY_MARKER, { force: true });
+    externalOut = fs.mkdtempSync(path.join(os.tmpdir(), 'terra-runner-external-'));
+    const externalRecording = path.join(externalOut, 'recording.json');
+    execFileSync('node', [...commonArgs, '--out-dir', externalOut, '--record', externalRecording], {
+      cwd: ROOT, env, encoding: 'utf8', stdio: 'pipe',
+    });
+    assert.equal(JSON.parse(fs.readFileSync(path.join(externalOut, 'run-manifest.json'))).recorded_to, 'recording.json');
+    const movedExternalOut = path.join(scratch, 'moved-external-live');
+    fs.renameSync(externalOut, movedExternalOut);
+    externalOut = null;
+    assert.equal(JSON.parse(fs.readFileSync(path.join(movedExternalOut, 'run-manifest.json'))).recorded_to, 'recording.json');
   } finally {
+    if (externalOut) fs.rmSync(externalOut, { recursive: true, force: true });
     fs.rmSync(scratch, { recursive: true, force: true });
   }
 });

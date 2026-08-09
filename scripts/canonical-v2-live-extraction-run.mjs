@@ -162,7 +162,7 @@
 import {
   readFileSync, writeFileSync, mkdirSync, existsSync, lstatSync, realpathSync,
 } from 'node:fs';
-import { resolve, dirname, relative, isAbsolute } from 'node:path';
+import { resolve, dirname, relative, isAbsolute, sep } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
@@ -173,10 +173,13 @@ const { sha256Hex, contentId, utf8Slice } = require('../lib/canonical-v2/canonic
 const { buildSecEdgarIntakeCapture } = require('../lib/canonical-v2/sec-edgar-intake-capture');
 const { convertSecHtmlToCanonicalText } = require('../lib/canonical-v2/sec-html-canonical-text');
 const { verifySecHtmlCanonicalText } = require('../lib/canonical-v2/sec-html-canonical-text-verifier');
-const { buildVerifiedSecSourceAdmission } = require('../lib/canonical-v2/sec-source-admission');
+const {
+  buildVerifiedSecSourceAdmission,
+  buildVerifiedSecSourceAdmissionForRecordedSourceMapPayload,
+} = require('../lib/canonical-v2/sec-source-admission');
 const { buildAdmittedSemanticSourceContext } = require('../lib/canonical-v2/admitted-semantic-source');
 const {
-  retrievalPolicyDigestFor, sourceMapPayloadPathFor,
+  retrievalPolicyDigestFor, sourceMapPayloadPathFor, adoptPersistedSourceMapPayload,
 } = require('../lib/canonical-v2/admitted-source-chain-rebuild');
 const {
   sectionizeAdmittedSource, findSectionByReference,
@@ -266,6 +269,21 @@ const DEFAULT_FAMILY = 'TERMINATION_FEE';
 function repoRelative(absolutePath) {
   const root = `${process.cwd()}/`;
   return absolutePath.startsWith(root) ? absolutePath.slice(root.length) : absolutePath;
+}
+
+// A recording kept with its run output moves when the run directory moves.
+// Preserve that relationship in the manifest instead of preserving the
+// machine-specific absolute path used to create it. An explicitly separate
+// recording destination remains explicit, because moving the run directory
+// does not move that file.
+function manifestRecordingPath({ outDir, recordPath }) {
+  if (!recordPath || !outDir) return recordPath || null;
+  const pathFromOutDir = relative(outDir, resolve(recordPath));
+  const isInsideOutDir = pathFromOutDir
+    && pathFromOutDir !== '..'
+    && !pathFromOutDir.startsWith(`..${sep}`)
+    && !isAbsolute(pathFromOutDir);
+  return isInsideOutDir ? pathFromOutDir.split(sep).join('/') : recordPath;
 }
 
 function scriptRelativePath() {
@@ -1342,10 +1360,19 @@ function loadAndVerifySource({ dealPin, deal, rawHtmlPath }) {
  * loaded/verified source data -- no I/O of its own.
  */
 function buildAdmittedContext({
-  deal, family, dealPin, verified,
+  deal, family, dealPin, verified, locallyValidatedConversion = null,
+  recordedSourceMapProvenance = null,
 }) {
   const { capture, conversion, verification } = verified;
-  const admissionBundle = buildVerifiedSecSourceAdmission({ capture, conversion, verification });
+  const admissionBundle = recordedSourceMapProvenance
+    ? buildVerifiedSecSourceAdmissionForRecordedSourceMapPayload({
+      capture,
+      locally_validated_conversion: locallyValidatedConversion,
+      adopted_conversion: conversion,
+      verification,
+      recorded_source_map_provenance: recordedSourceMapProvenance,
+    })
+    : buildVerifiedSecSourceAdmission({ capture, conversion, verification });
   const dealKeySlug = `${deal}-${family.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
   const dealKey = `deal:${dealKeySlug}:${sha256Hex(dealPin.retrieval_url).slice(0, 16)}`;
   const dealAdmissionId = sha256Hex(`deal-admission-${dealKeySlug}:${dealPin.retrieval_url}`);
@@ -1360,6 +1387,25 @@ function buildAdmittedContext({
   });
   return {
     admissionBundle, admittedSourceContext, dealKey, dealAdmissionId,
+  };
+}
+
+// The local conversion has already passed the strict converter and verifier
+// checks. A payload from the shared store may differ only in DEFLATE bytes,
+// so adopt it only through the rebuild module's inflation-and-digest check.
+function adoptStoredSourceMapPayload({ verified, absolutePayloadPath }) {
+  const payloadBytes = readFileSync(absolutePayloadPath);
+  const sourceMapCompressedSha256 = sha256Hex(payloadBytes);
+  return {
+    verified: {
+      ...verified,
+      conversion: adoptPersistedSourceMapPayload({
+        conversion: verified.conversion,
+        payloadBytes,
+        expectedSha256: sourceMapCompressedSha256,
+      }),
+    },
+    sourceMapCompressedSha256,
   };
 }
 
@@ -1763,17 +1809,12 @@ async function main() {
 
   // ─── Step 1: reuse the ALREADY-ADMITTED committed source (no live fetch) ───
 
-  const verified = loadAndVerifySource({ dealPin: config.dealPin, deal: config.deal, rawHtmlPath: config.rawHtmlPath });
-  process.stderr.write(`${logPrefix} reused committed raw HTML at ${verified.rawHtmlPath}, sha256=${verified.rawBytesSha256} (MATCHES pin)\n`);
-
-  const { admittedSourceContext } = buildAdmittedContext({
-    deal: config.deal, family: config.family, dealPin: config.dealPin, verified,
+  const locallyVerified = loadAndVerifySource({
+    dealPin: config.dealPin, deal: config.deal, rawHtmlPath: config.rawHtmlPath,
   });
-  const documentHash = admittedSourceContext.document_hash; // = raw HTML sha256
-  const fullText = verified.conversion.canonical_text;
-
-  process.stderr.write(`${logPrefix} document_hash = ${documentHash}\n`);
-  process.stderr.write(`${logPrefix} canonical_text_sha256 = ${verified.conversion.canonical_text_sha256} (MATCHES pin)\n`);
+  let verified = locallyVerified;
+  let sourceMapPayloadPath = null;
+  let recordedSourceMapProvenance = null;
 
   // Persist the compressed source map before writing the reference that names
   // it, so a run directory never points at a payload that is not there.
@@ -1794,16 +1835,43 @@ async function main() {
   // was writing a 1.4 MB file into committed evidence every time the test
   // suite exercised the runner's argument parsing. A dry run needs no
   // payload, because it has no write-set to import.
-  let sourceMapPayloadPath = null;
   if (outDir && !config.dryRun) {
-    sourceMapPayloadPath = sourceMapPayloadPathFor(verified.conversion.canonical_text_id);
+    sourceMapPayloadPath = sourceMapPayloadPathFor(locallyVerified.conversion.canonical_text_id);
     const absolutePayloadPath = resolve(sourceMapPayloadPath);
-    if (!existsSync(absolutePayloadPath)) {
+    if (existsSync(absolutePayloadPath)) {
+      const adopted = adoptStoredSourceMapPayload({
+        verified: locallyVerified,
+        absolutePayloadPath,
+      });
+      verified = adopted.verified;
+      recordedSourceMapProvenance = {
+        source_map_payload_path: sourceMapPayloadPath,
+        source_map_compressed_sha256: adopted.sourceMapCompressedSha256,
+      };
+    } else {
       mkdirSync(dirname(absolutePayloadPath), { recursive: true });
-      writeFileSync(absolutePayloadPath, Buffer.from(verified.conversion.source_map_payload_base64, 'base64'));
+      writeFileSync(
+        absolutePayloadPath,
+        Buffer.from(locallyVerified.conversion.source_map_payload_base64, 'base64'),
+      );
       process.stderr.write(`${logPrefix} persisted compressed source map at ${sourceMapPayloadPath}\n`);
     }
   }
+
+  process.stderr.write(`${logPrefix} reused committed raw HTML at ${verified.rawHtmlPath}, sha256=${verified.rawBytesSha256} (MATCHES pin)\n`);
+  const { admittedSourceContext } = buildAdmittedContext({
+    deal: config.deal,
+    family: config.family,
+    dealPin: config.dealPin,
+    verified,
+    locallyValidatedConversion: recordedSourceMapProvenance ? locallyVerified.conversion : null,
+    recordedSourceMapProvenance,
+  });
+  const documentHash = admittedSourceContext.document_hash; // = raw HTML sha256
+  const fullText = verified.conversion.canonical_text;
+
+  process.stderr.write(`${logPrefix} document_hash = ${documentHash}\n`);
+  process.stderr.write(`${logPrefix} canonical_text_sha256 = ${verified.conversion.canonical_text_sha256} (MATCHES pin)\n`);
 
   if (outDir) {
     writeFileSync(resolve(outDir, 'source-reference.json'), JSON.stringify({
@@ -2156,7 +2224,7 @@ async function main() {
         producer_receipt_id: section.producer_receipt && section.producer_receipt.producer_receipt_id,
       }))),
     }) : null,
-    recorded_to: config.recordPath || null,
+    recorded_to: manifestRecordingPath({ outDir, recordPath: config.recordPath }),
     // Change-detection inputs (PLAN.md Stage 2). With these a later run can
     // decide whether a (deal, family) pair needs re-running at all, instead
     // of re-running everything and comparing samples of a nondeterministic
@@ -2228,6 +2296,7 @@ export {
   resolvePromptVersionInfo,
   loadAndVerifySource,
   buildAdmittedContext,
+  adoptStoredSourceMapPayload,
   sectionizeAndResolve,
   buildDryRunReport,
   currentPromptDigests,
