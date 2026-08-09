@@ -250,15 +250,17 @@ test('resolveCandidates no longer throws on the real Modiv 5.1 IOC response, and
   // Measured against this exact fixture with both fixes applied -- see the
   // file header. Not a guess: re-derive by re-running this file if the
   // upstream fixture, prompt, or resolver logic ever legitimately changes.
-  // Re-measured after Stage 4 (V1 IOC category vocabulary consumed as
-  // second-chance corroboration, ioc-corroboration.js): five previously
-  // CATEGORY_UNCORROBORATED rows on this same fixture now corroborate
-  // through lib/vocab/ioc-categories.js and resolve (10 -> 15); review and
-  // open-world totals are unchanged in size because the five resolved rows
-  // are replaced in the queue by their own lexical-net companion rows.
-  assert.equal(resolution.resolved.length, 15);
-  assert.equal(resolution.review_queue.length, 54);
-  assert.equal(resolution.open_world.length, 46);
+  // Re-measured after Step 2X-I (IOC V1×25 category corroboration rewrite):
+  // the second-chance vocabulary path is gone; parent/child IOC attachment
+  // scope is enforced directly against the widened V25 concept set. On this
+  // same recorded Modiv 5.1 response every IOC mechanic row now queues or
+  // open-worlds with IOC_PARENT_ATTACHMENT_* / IOC_ATTACHMENT_* reasons
+  // instead of resolving (15 -> 0 resolved; 54 -> 37 review; 46 -> 64
+  // open_world). The crash-regression property under test is unchanged: the
+  // IOC splice path still runs (`enabled: true`) and must not throw.
+  assert.equal(resolution.resolved.length, 0);
+  assert.equal(resolution.review_queue.length, 37);
+  assert.equal(resolution.open_world.length, 64);
   // The specific mechanism that crashed: IOC mechanic items must actually be
   // present in open_world (i.e. this fixture genuinely exercises the
   // resolveIocMechanics `enabled: true` path -- the ONLY path that performs
