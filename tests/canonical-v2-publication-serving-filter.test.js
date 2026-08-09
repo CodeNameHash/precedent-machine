@@ -8,7 +8,6 @@ const test = require('node:test');
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
 const {
   PUBLICATION_DISPOSITION_V2_SCHEMA,
-  buildCalibrationAuthority,
   buildPublicationDispositionV2,
   buildPublicationFamilySwitch,
   buildPublicationReleaseReceipt,
@@ -23,41 +22,31 @@ const {
 } = require('../lib/canonical-v2/publication-serving-filter');
 const { projectTerminationFeeProductSurfaces } = require('../lib/canonical-v2/termination-product-projection');
 
-const DIGESTS = Object.freeze({
-  corpus_digest: '0'.repeat(64), source_digest: '1'.repeat(64), prompt_digest: '2'.repeat(64),
-  requested_model_digest: '3'.repeat(64), registry_digest: '4'.repeat(64), resolver_digest: '5'.repeat(64),
-  adjudication_rubric_digest: '6'.repeat(64),
-});
 const TIME = '2026-08-09T12:00:00.000Z';
 const LATER_TIME = '2026-09-01T12:00:00.000Z';
 
-function authority(family = 'TERMINATION_FEE') {
-  return buildCalibrationAuthority({
-    ...DIGESTS,
-    family, mechanism: 'EXACT_BOUND_DIGESTS', selected_rung: 2, sample_size: 50,
-    confidence_interval: { lower_bound: 0.01, upper_bound: 0.03, confidence_level: 0.95 },
-    adjudicators: [{ identity: 'adjudicator', calibration_score: 0.99 }],
-    valid_from: '2026-08-01T00:00:00.000Z', expires_at: '2026-08-31T00:00:00.000Z',
-    expiry_drift_rule: { mode: 'EXACT_BOUND_DIGESTS_AND_TIME_EXPIRY', description: 'bound values must match.' },
-    product_approved_false_publication_threshold: 0.03,
-    family_switches: [{ family, enabled: true, claim_kinds: ['AMOUNT'] }],
-  });
-}
-
-function publicationInput(family = 'TERMINATION_FEE') {
-  return {
-    ...DIGESTS, canonical_claim_publication_state: 'VALIDATED', family, claim_kind: 'AMOUNT',
-    mechanism: 'EXACT_BOUND_DIGESTS', selected_rung: 2,
-    risk_signals: { structural_uncertainty: false, definition_ambiguity: false, model_fallback: false, party_attribution_risk: false },
-  };
-}
-
 function eligibleSidecar({ claimRevisionId = 'a'.repeat(64), family = 'TERMINATION_FEE' } = {}) {
-  return buildPublicationDispositionV2({
-    claim_revision_id: claimRevisionId, run_receipt_id: 'b'.repeat(64), resolution_receipt_id: 'c'.repeat(64),
-    evaluated_at: TIME, calibration_authority: authority(family), canonical_validation_state: 'VALIDATED',
-    publication_input: publicationInput(family),
-  });
+  const body = {
+    schema_version: PUBLICATION_DISPOSITION_V2_SCHEMA,
+    claim_revision_id: claimRevisionId,
+    run_receipt_id: 'b'.repeat(64),
+    resolution_receipt_id: 'c'.repeat(64),
+    review_queue_artifact_id: null,
+    publication_input_digest: 'd'.repeat(64),
+    canonical_validation_state: 'VALIDATED',
+    family,
+    claim_kind: 'AMOUNT',
+    mechanism: 'EXACT_BOUND_DIGESTS',
+    selected_rung: 2,
+    risk_signals: { structural_uncertainty: false, definition_ambiguity: false, model_fallback: false, party_attribution_risk: false },
+    evaluated_at: TIME,
+    authority_id: 'e'.repeat(64),
+    disposition: 'ELIGIBLE',
+    reason_codes: ['CALIBRATION_AUTHORITY_MATCHED'],
+    prior_eligible_decision_id: null,
+    prior_eligible_decision: null,
+  };
+  return { ...body, decision_id: contentId(PUBLICATION_DISPOSITION_V2_SCHEMA, body) };
 }
 
 function entry(sidecar, claimRevisionId = 'a'.repeat(64)) {

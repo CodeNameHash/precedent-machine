@@ -2,6 +2,7 @@
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const test = require('node:test');
@@ -135,4 +136,32 @@ test('empty ledger validates and the review gate remains closed without publicat
     publication_authorisation: 'NONE',
   });
   assert.equal(canonicalJson(ledger.decisions), '[]');
+});
+
+test('completed imported ledger validates without rebuilding the empty ledger template', async () => {
+  const { buildHumanAnchorArtefacts } = await import(`${path.toNamespacedPath(SCRIPT)}?imported-ledger=${Date.now()}`);
+  const { reviewPacket, key } = buildHumanAnchorArtefacts({ repoRoot: ROOT });
+  const body = {
+    schema_version: DECISION_LEDGER_SCHEMA,
+    review_packet_id: reviewPacket.review_packet_id,
+    machine_packet_id: reviewPacket.machine_packet_id,
+    decision_keys_digest: reviewPacket.decision_keys_digest,
+    decisions: reviewPacket.cards.map((card) => ({
+      decision_key: card.decision_key,
+      reviewer_id: 'test-human',
+      reviewed_at: '2026-08-09T16:00:00.000Z',
+      verdict: key.entries.find((entry) => entry.decision_key === card.decision_key).seeded_wrong ? 'ERROR' : 'CORRECT',
+    })),
+  };
+  const ledger = { ...body, decision_ledger_id: contentId(DECISION_LEDGER_SCHEMA, body) };
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'stage-2y-0-ledger-'));
+  const ledgerPath = path.join(directory, 'completed-ledger.json');
+  try {
+    fs.writeFileSync(ledgerPath, `${canonicalJson(ledger)}\n`);
+    const validation = spawnSync(process.execPath, [SCRIPT, '--validate-ledger', ledgerPath], { cwd: ROOT, encoding: 'utf8' });
+    assert.equal(validation.status, 0, validation.stderr);
+    assert.match(validation.stdout, /human anchor ledger validated: 80; anchor set: [a-f0-9]{64}/);
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
 });

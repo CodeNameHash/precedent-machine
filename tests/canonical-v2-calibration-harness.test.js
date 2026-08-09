@@ -72,6 +72,11 @@ function input(overrides = {}) {
   return {
     catalogue, calibration: calibration(), claims, sampling,
     confidence_interval: { method: 'WILSON', confidence_level: 0.95 },
+    authority_binding: {
+      corpus_digest: digest('corpus'), source_digest: digest('source'), prompt_digest: digest('prompt'),
+      requested_model_digest: digest('model'), registry_digest: digest('registry'), resolver_digest: digest('resolver'),
+      adjudication_rubric_digest: digest('rubric'),
+    },
     joint_confirmation: buildJointConfirmation({
       selected_rungs: [{ family_id: 'FAMILY_A', mechanism_id: 'CONTEXT', rung: 1 }],
       leave_one_out: [{ family_id: 'FAMILY_A', mechanism_id: 'CONTEXT', selected_rung: 1, omitted_mechanism_id: 'CONTEXT', result: 'PASS' }],

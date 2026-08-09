@@ -1,6 +1,9 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { createHash } = require('node:crypto');
+const fs = require('node:fs');
+const path = require('node:path');
 const test = require('node:test');
 
 const {
@@ -26,7 +29,17 @@ const {
   buildPublicationRollbackReceipt,
   validatePublicationRollbackReceipt,
 } = require('../lib/canonical-v2/publication-disposition');
-const { contentId } = require('../lib/canonical-v2/canonical-bytes');
+const { canonicalJson, contentId, sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
+const {
+  buildHumanAnchorReviewPacket,
+  buildHumanAnchorKey,
+} = require('../lib/canonical-v2/human-anchor-review');
+const {
+  buildAnchorSetFromHumanAnchorLedger,
+  buildCalibration,
+  buildCalibrationHarnessReport,
+  buildJointConfirmation,
+} = require('../lib/canonical-v2/calibration-harness');
 
 const DIGESTS = Object.freeze({
   corpus_digest: '0'.repeat(64),
@@ -39,25 +52,145 @@ const DIGESTS = Object.freeze({
 });
 const EVALUATION_TIME = '2026-08-09T12:00:00.000Z';
 
+function digest(value) {
+  return createHash('sha256').update(value).digest('hex');
+}
+
+function authorityProof() {
+  const machinePacket = JSON.parse(fs.readFileSync(path.join(
+    __dirname,
+    '../evidence/blind-review/2026-08-09/stage-2y-0-human-anchor-machine-packet.json',
+  ), 'utf8'));
+  const reviewPacket = buildHumanAnchorReviewPacket({ machine_packet: machinePacket });
+  const seedKey = buildHumanAnchorKey({ machine_packet: machinePacket, review_packet: reviewPacket });
+  const ledgerBody = {
+    schema_version: 'CANONICAL_V2_HUMAN_ANCHOR_DECISION_LEDGER/V1',
+    review_packet_id: reviewPacket.review_packet_id,
+    machine_packet_id: reviewPacket.machine_packet_id,
+    decision_keys_digest: reviewPacket.decision_keys_digest,
+    decisions: reviewPacket.cards.map((card) => ({
+      decision_key: card.decision_key,
+      reviewer_id: 'test-human',
+      reviewed_at: '2026-08-09T16:00:00.000Z',
+      verdict: seedKey.entries.find((entry) => entry.decision_key === card.decision_key).seeded_wrong ? 'ERROR' : 'CORRECT',
+    })),
+  };
+  const decisionLedger = {
+    ...ledgerBody,
+    decision_ledger_id: contentId(ledgerBody.schema_version, ledgerBody),
+  };
+  const anchorSet = buildAnchorSetFromHumanAnchorLedger({
+    machine_packet: machinePacket,
+    review_packet: reviewPacket,
+    seed_key: seedKey,
+    decision_ledger: decisionLedger,
+  });
+  const adjudicators = ['adjudicator-a', 'adjudicator-b', 'adjudicator-c'].map((adjudicator_id, index) => ({
+    adjudicator_id,
+    vendor: index === 1 ? 'VENDOR_B' : 'VENDOR_A',
+    requested_model_digest: digest(`model-${adjudicator_id}`),
+    rubric_digest: digest(`rubric-${adjudicator_id}`),
+    anchor_verdicts: anchorSet.anchors.map((anchor) => ({ anchor_id: anchor.anchor_id, verdict: anchor.human_verdict })),
+  }));
+  const calibration = buildCalibration({
+    anchor_set: anchorSet,
+    adjudicators,
+    floors: { precision: 0.9, recall: 0.9, seeded_detection_rate: 1 },
+  });
+  const claim = (claim_id, rung, population) => ({
+    claim_id,
+    family_id: 'TERMINATION_FEE',
+    mechanism_id: 'EXACT_BOUND_DIGESTS',
+    rung,
+    population,
+    evidence: {
+      source_id: `source-${claim_id}`,
+      source_digest: digest(`source-${claim_id}`),
+      evidence_id: `evidence-${claim_id}`,
+      evidence_digest: digest(`evidence-${claim_id}`),
+    },
+    verdicts: adjudicators.map(({ adjudicator_id }) => ({ adjudicator_id, verdict: 'CORRECT' })),
+  });
+  const claims = [
+    claim('baseline-new', 0, 'NEWLY_PUBLISHED'),
+    claim('baseline-existing', 0, 'EXISTING_PUBLISHED'),
+    claim('selected-new', 2, 'NEWLY_PUBLISHED'),
+    claim('selected-existing', 2, 'EXISTING_PUBLISHED'),
+    claim('marginal-new', 3, 'NEWLY_PUBLISHED'),
+  ];
+  const sampling = claims.map((entry) => ({
+    family_id: entry.family_id,
+    mechanism_id: entry.mechanism_id,
+    rung: entry.rung,
+    population: entry.population,
+    population_role: entry.rung === 0 ? 'BASELINE' : entry.rung === 2 ? 'SELECTED' : 'MARGINAL_INCREMENT',
+    denominator: 1,
+    sample_size: 1,
+    mode: 'CENSUS',
+  }));
+  const catalogue = {
+    families: ['TERMINATION_FEE'],
+    mechanisms: [{ mechanism_id: 'EXACT_BOUND_DIGESTS', rungs: [0, 2, 3] }],
+  };
+  const confidenceInterval = { method: 'WILSON', confidence_level: 0.95 };
+  const jointConfirmation = buildJointConfirmation({
+    selected_rungs: [{ family_id: 'TERMINATION_FEE', mechanism_id: 'EXACT_BOUND_DIGESTS', rung: 2 }],
+    leave_one_out: [{ family_id: 'TERMINATION_FEE', mechanism_id: 'EXACT_BOUND_DIGESTS', selected_rung: 2, omitted_mechanism_id: 'EXACT_BOUND_DIGESTS', result: 'PASS' }],
+  });
+  const calibrationHarnessReport = buildCalibrationHarnessReport({
+    catalogue,
+    calibration,
+    claims,
+    sampling,
+    confidence_interval: confidenceInterval,
+    joint_confirmation: jointConfirmation,
+    authority_binding: DIGESTS,
+  });
+  return {
+    machine_packet: machinePacket,
+    review_packet: reviewPacket,
+    seed_key: seedKey,
+    decision_ledger: decisionLedger,
+    calibration,
+    calibration_harness_report: calibrationHarnessReport,
+    catalogue,
+    claims,
+    sampling,
+    confidence_interval: confidenceInterval,
+    joint_confirmation: jointConfirmation,
+    authority_binding: DIGESTS,
+  };
+}
+
+const AUTHORITY_PROOF = authorityProof();
+const AUTHORITY_MEASUREMENT = (() => {
+  const result = AUTHORITY_PROOF.calibration_harness_report.selected_rung_results[0];
+  return {
+    sample_size: result.marginal_count,
+    confidence_interval: {
+      lower_bound: result.marginal_confidence_interval.lower,
+      upper_bound: result.marginal_confidence_interval.upper,
+      confidence_level: result.marginal_confidence_interval.confidence_level,
+    },
+  };
+})();
+
 function authorityInput(overrides = {}) {
   return {
     ...DIGESTS,
     family: 'TERMINATION_FEE',
     mechanism: 'EXACT_BOUND_DIGESTS',
     selected_rung: 2,
-    sample_size: 50,
-    confidence_interval: { lower_bound: 0.01, upper_bound: 0.03, confidence_level: 0.95 },
-    adjudicators: [
-      { identity: 'adjudicator-b', calibration_score: 0.98 },
-      { identity: 'adjudicator-a', calibration_score: 0.99 },
-    ],
+    sample_size: AUTHORITY_MEASUREMENT.sample_size,
+    confidence_interval: AUTHORITY_MEASUREMENT.confidence_interval,
+    calibration_proof: AUTHORITY_PROOF,
     valid_from: '2026-08-01T00:00:00.000Z',
     expires_at: '2026-08-31T00:00:00.000Z',
     expiry_drift_rule: {
       mode: 'EXACT_BOUND_DIGESTS_AND_TIME_EXPIRY',
       description: 'All bound digests must match and the authority must be current.',
     },
-    product_approved_false_publication_threshold: 0.03,
+    product_approved_false_publication_threshold: 1,
     family_switches: [{ family: 'TERMINATION_FEE', enabled: true, claim_kinds: ['AMOUNT', 'TRIGGER'] }],
     ...overrides,
   };
@@ -67,6 +200,22 @@ function decisionWithIdentity(body) {
   return {
     ...body,
     decision_id: contentId(UNATTENDED_PUBLICATION_DISPOSITION_SCHEMA, body),
+  };
+}
+
+function authorityWithRecomputedIdentity(authority, changes) {
+  const { calibration_authority_id: _authorityId, canonical_payload_digest: _payloadDigest, ...body } = {
+    ...authority,
+    ...changes,
+  };
+  const canonicalPayloadDigest = sha256Hex(canonicalJson(body));
+  return {
+    ...body,
+    canonical_payload_digest: canonicalPayloadDigest,
+    calibration_authority_id: contentId(CALIBRATION_AUTHORITY_SCHEMA, {
+      ...body,
+      canonical_payload_digest: canonicalPayloadDigest,
+    }),
   };
 }
 
@@ -137,6 +286,91 @@ test('missing authority defaults to WITHHELD', () => {
   assert.equal(decision.authority_id, null);
 });
 
+test('an unbound one-adjudicator authority cannot produce ELIGIBLE', () => {
+  assert.throws(
+    () => buildCalibrationAuthority(authorityInput({
+      calibration_proof: { adjudicators: [{ identity: 'unbound', calibration_score: 1 }] },
+    })),
+    (error) => error.code === 'INVALID_CALIBRATION_AUTHORITY_SCHEMA',
+  );
+});
+
+test('a self-consistent forged low confidence interval cannot make an authority ELIGIBLE', () => {
+  const forged = authorityWithRecomputedIdentity(buildCalibrationAuthority(authorityInput()), {
+    confidence_interval: { lower_bound: 0, upper_bound: 0.03, confidence_level: 0.95 },
+  });
+  assert.throws(
+    () => validateCalibrationAuthority(forged),
+    (error) => error.code === 'INVALID_CALIBRATION_AUTHORITY_SCHEMA',
+  );
+  assert.deepEqual(evaluatePublicationDisposition({
+    calibration_authority: forged,
+    publication_input: publicationInput(),
+    evaluation_time: EVALUATION_TIME,
+  }).reason_codes, ['INVALID_CALIBRATION_AUTHORITY']);
+});
+
+test('a self-consistent authority with unrelated outer provenance cannot become ELIGIBLE', () => {
+  const forged = authorityWithRecomputedIdentity(buildCalibrationAuthority(authorityInput()), {
+    corpus_digest: 'f'.repeat(64),
+  });
+  assert.throws(
+    () => validateCalibrationAuthority(forged),
+    (error) => error.code === 'INVALID_CALIBRATION_AUTHORITY_SCHEMA',
+  );
+  assert.deepEqual(evaluatePublicationDisposition({
+    calibration_authority: forged,
+    publication_input: publicationInput({ corpus_digest: 'f'.repeat(64) }),
+    evaluation_time: EVALUATION_TIME,
+  }).reason_codes, ['INVALID_CALIBRATION_AUTHORITY']);
+});
+
+test('a self-consistent forged report cannot make a persisted authority ELIGIBLE', () => {
+  const proof = JSON.parse(JSON.stringify(AUTHORITY_PROOF));
+  const selected = proof.claims.find((claim) => claim.claim_id === 'selected-new');
+  selected.verdicts = selected.verdicts.map(({ adjudicator_id }) => ({
+    adjudicator_id,
+    verdict: 'ERROR',
+    error_class: 'OTHER',
+  }));
+  const recomputed = buildCalibrationHarnessReport({
+    catalogue: proof.catalogue,
+    calibration: proof.calibration,
+    claims: proof.claims,
+    sampling: proof.sampling,
+    confidence_interval: proof.confidence_interval,
+    joint_confirmation: proof.joint_confirmation,
+    authority_binding: proof.authority_binding,
+  });
+  assert.equal(recomputed.selected_rung_results[0].pass, false);
+  const forgedReportBody = {
+    ...recomputed,
+    selected_rung_results: recomputed.selected_rung_results.map((result) => ({
+      ...result,
+      pass: true,
+      failure_reason: null,
+    })),
+  };
+  delete forgedReportBody.calibration_harness_report_id;
+  proof.calibration_harness_report = {
+    ...forgedReportBody,
+    calibration_harness_report_id: contentId('CANONICAL_V2_CALIBRATION_HARNESS/V1', forgedReportBody),
+  };
+  const forged = authorityWithRecomputedIdentity(buildCalibrationAuthority(authorityInput()), {
+    calibration_proof: proof,
+  });
+  assert.throws(
+    () => validateCalibrationAuthority(forged),
+    (error) => error.code === 'INVALID_CALIBRATION_AUTHORITY_SCHEMA',
+  );
+  const decision = evaluatePublicationDisposition({
+    calibration_authority: forged,
+    publication_input: publicationInput(),
+    evaluation_time: EVALUATION_TIME,
+  });
+  assert.deepEqual(decision.reason_codes, ['INVALID_CALIBRATION_AUTHORITY']);
+});
+
 test('an authority requires a publication input and an explicit evaluation time', () => {
   const authority = buildCalibrationAuthority(authorityInput());
   const missingInput = evaluatePublicationDisposition({
@@ -167,22 +401,17 @@ test('authority that is not current or is expired fails closed', () => {
 });
 
 test('false-publication confidence must not exceed the approved threshold', () => {
-  const equality = evaluate({
-    calibration_authority: buildCalibrationAuthority(authorityInput({
-      confidence_interval: { lower_bound: 0.01, upper_bound: 0.03, confidence_level: 0.95 },
-      product_approved_false_publication_threshold: 0.03,
-    })),
-  });
+  const equality = evaluate();
   assert.equal(equality.disposition, UNATTENDED_PUBLICATION_DISPOSITIONS.ELIGIBLE);
   assert.throws(
     () => buildCalibrationAuthority(authorityInput({
-      confidence_interval: { lower_bound: 0.01, upper_bound: 0.031, confidence_level: 0.95 },
+      product_approved_false_publication_threshold: 0.99,
     })),
     (error) => error.code === 'FALSE_PUBLICATION_CONFIDENCE_EXCEEDS_THRESHOLD',
   );
   const malformedAuthority = {
     ...buildCalibrationAuthority(authorityInput()),
-    confidence_interval: { lower_bound: 0.01, upper_bound: 0.031, confidence_level: 0.95 },
+    product_approved_false_publication_threshold: 0.99,
   };
   const malformedDecision = evaluate({ calibration_authority: malformedAuthority });
   assert.equal(malformedDecision.disposition, UNATTENDED_PUBLICATION_DISPOSITIONS.WITHHELD);
@@ -234,10 +463,6 @@ test('every risk signal fails closed', () => {
 test('authority and decision identities are deterministic despite input ordering', () => {
   const first = buildCalibrationAuthority(authorityInput());
   const second = buildCalibrationAuthority(authorityInput({
-    adjudicators: [
-      { identity: 'adjudicator-a', calibration_score: 0.99 },
-      { identity: 'adjudicator-b', calibration_score: 0.98 },
-    ],
     family_switches: [{ family: 'TERMINATION_FEE', enabled: true, claim_kinds: ['TRIGGER', 'AMOUNT'] }],
   }));
   assert.equal(first.calibration_authority_id, second.calibration_authority_id);

@@ -14,8 +14,13 @@ const {
   buildHumanAnchorReviewPacket,
   buildHumanAnchorKey,
   buildEmptyHumanAnchorDecisionLedger,
+  validateHumanAnchorMachinePacket,
+  validateHumanAnchorReviewPacket,
+  validateHumanAnchorKey,
+  validateHumanAnchorDecisionLedger,
   humanAnchorReviewGate,
 } = require('../lib/canonical-v2/human-anchor-review');
+const { buildAnchorSetFromHumanAnchorLedger } = require('../lib/canonical-v2/calibration-harness');
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(SCRIPT_DIR, '..');
@@ -80,8 +85,36 @@ function expectedOutputs({ repoRoot = ROOT } = {}) {
     [resolve(repoRoot, LEDGER_OUTPUT)]: `${canonicalJson(artefacts.ledger)}\n`,
   });
 }
+
+function validateImportedHumanAnchorLedger({ ledgerPath, repoRoot = ROOT } = {}) {
+  if (typeof ledgerPath !== 'string' || ledgerPath.length === 0 || !existsSync(ledgerPath)) {
+    throw new Error('LEDGER_INPUT_REQUIRED');
+  }
+  const machinePacket = readJson(resolve(repoRoot, MACHINE_OUTPUT));
+  const reviewPacket = buildHumanAnchorReviewPacket({ machine_packet: machinePacket });
+  const seedKey = readJson(resolve(repoRoot, KEY_OUTPUT));
+  const ledger = readJson(ledgerPath);
+  validateHumanAnchorMachinePacket(machinePacket);
+  validateHumanAnchorReviewPacket(reviewPacket);
+  validateHumanAnchorKey({ key: seedKey, machine_packet: machinePacket, review_packet: reviewPacket });
+  validateHumanAnchorDecisionLedger({ ledger, review_packet: reviewPacket });
+  const anchorSet = buildAnchorSetFromHumanAnchorLedger({
+    machine_packet: machinePacket,
+    review_packet: reviewPacket,
+    seed_key: seedKey,
+    decision_ledger: ledger,
+  });
+  return Object.freeze({ ledger, anchorSet });
+}
+
 function main() {
   const mode = process.argv[2];
+  if (mode === '--validate-ledger') {
+    if (process.argv.length !== 4) throw new Error('usage: --validate-ledger <ledger-path>');
+    const { ledger, anchorSet } = validateImportedHumanAnchorLedger({ ledgerPath: resolve(ROOT, process.argv[3]) });
+    process.stdout.write(`human anchor ledger validated: ${ledger.decisions.length}; anchor set: ${anchorSet.anchor_set_id}\n`);
+    return;
+  }
   if (!['--write', '--check'].includes(mode) || process.argv.length !== 3) throw new Error('usage: --write | --check');
   const outputs = expectedOutputs();
   if (mode === '--write') {
@@ -96,4 +129,4 @@ function main() {
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();
 
-export { OUTPUT_DIR, MACHINE_OUTPUT, REVIEW_OUTPUT, KEY_OUTPUT, LEDGER_OUTPUT, sourceRuns, renderReviewerHtml, buildHumanAnchorArtefacts, expectedOutputs };
+export { OUTPUT_DIR, MACHINE_OUTPUT, REVIEW_OUTPUT, KEY_OUTPUT, LEDGER_OUTPUT, sourceRuns, renderReviewerHtml, buildHumanAnchorArtefacts, expectedOutputs, validateImportedHumanAnchorLedger };
