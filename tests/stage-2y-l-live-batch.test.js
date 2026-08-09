@@ -5,6 +5,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const crypto = require('node:crypto');
 
 const ROOT = path.resolve(__dirname, '..');
 
@@ -12,11 +13,13 @@ async function subject() {
   return import(path.join(ROOT, 'scripts', 'stage-2y-l-live-batch.mjs'));
 }
 
+function rawDigestFor(call) { return crypto.createHash('sha256').update(fs.readFileSync(path.join(ROOT, call.raw_html_path))).digest('hex'); }
+
 function outputFor(call, requestId = 'request-1') {
   return {
     provider: { provider_id: 'OPENAI_CODEX_CLI_SUBSCRIPTION', profile_id: 'TERRA_MEDIUM', requested_model_id: 'gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM', provider_request_ids: [requestId] },
     source_binding: {
-      raw_bytes_sha256: 'a'.repeat(64), converter_digest: 'b'.repeat(64),
+      raw_bytes_sha256: rawDigestFor(call), converter_digest: 'b'.repeat(64),
       converter_config_digest: 'c'.repeat(64), canonical_text_sha256: 'd'.repeat(64),
       source_map_compressed_sha256: 'e'.repeat(64), source_map_digest: 'f'.repeat(64),
     },
@@ -24,6 +27,18 @@ function outputFor(call, requestId = 'request-1') {
     artifact_digests: { run_manifest: '2'.repeat(64), source_reference: '3'.repeat(64), run_receipt: '4'.repeat(64), adapter_result: '5'.repeat(64), call_telemetry: '6'.repeat(64), recording: '7'.repeat(64) },
     run_identity: { deal: call.deal, family: call.family, section_references: [call.section_reference], requested_model_profile: 'TERRA_MEDIUM' },
   };
+}
+function writeJson(file, value) { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, JSON.stringify(value)); }
+function digestFile(file) { return crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex'); }
+function completeRunDirectory({ directory, call }) {
+  const source = { raw_bytes_sha256: rawDigestFor(call), canonical_text_sha256: 'd'.repeat(64), admitted_source_capture_inputs: { source_map_compressed_sha256: 'e'.repeat(64), source_map_digest: 'f'.repeat(64) } };
+  const prompt = { prompt_id: call.prompt_identity.prompt_id, prompt_version: call.prompt_identity.prompt_version, prompt_digest: '1'.repeat(64) };
+  writeJson(path.join(directory, 'source-reference.json'), source);
+  writeJson(path.join(directory, 'adapter-result.json'), { converter_digest: 'b'.repeat(64), converter_config_digest: 'c'.repeat(64) });
+  writeJson(path.join(directory, 'run-manifest.json'), { deal: call.deal, section_family: call.family, section_references: [call.section_reference], requested_model_profile: 'TERRA_MEDIUM' });
+  writeJson(path.join(directory, 'run-receipt.json'), { resolved_sections: [{ section_reference: call.section_reference, prompt_id: prompt.prompt_id, prompt_version: prompt.prompt_version, prompt_digest: prompt.prompt_digest, producer_receipt: { provider_id: 'OPENAI_CODEX_CLI_SUBSCRIPTION', model_id: 'gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM', prompt_digest: prompt.prompt_digest } }] });
+  writeJson(path.join(directory, 'call-telemetry.json'), { calls: [{ section_reference: call.section_reference, provider_request_id: 'adopted-request' }] });
+  writeJson(path.join(directory, 'recording.json'), { recording: true });
 }
 
 test('2Y-L fixes the authorised 46 section calls with raw-html and per-section prompt identities', async () => {
@@ -43,6 +58,39 @@ test('2Y-L invokes the existing runner with a sealed per-call recording path', a
   assert.equal(args[args.indexOf('--record') + 1], path.join(outputDir, 'recording.json'));
   assert.equal(args[args.indexOf('--out-dir') + 1], outputDir);
   assert.equal(args[args.indexOf('--profile') + 1], 'TERRA_MEDIUM');
+});
+
+test('2Y-L rejects a forged digest that has the right shape but not the pinned raw bytes', async () => {
+  const { STAGE_2Y_L_CALLS, runStage2yLLiveBatch } = await subject(); const call = STAGE_2Y_L_CALLS[0];
+  const artifact = await runStage2yLLiveBatch({ calls: [call], executeSection: async () => {
+    const output = outputFor(call); output.source_binding.raw_bytes_sha256 = '0'.repeat(64); return output;
+  } });
+  assert.equal(artifact.calls[0].state, 'MALFORMED_OUTPUT');
+  assert.ok(artifact.calls[0].errors.includes('RAW_BYTES_DIGEST_MISMATCH'));
+});
+
+test('2Y-L adopts a complete sealed run directory without launching another model call', async () => {
+  const { STAGE_2Y_L_CALLS, makeLiveExecutor } = await subject();
+  const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'stage-2y-l-adopt-')); const call = STAGE_2Y_L_CALLS[0]; const runDir = path.join(scratch, call.call_id);
+  try {
+    completeRunDirectory({ directory: runDir, call }); let invoked = 0;
+    const execute = makeLiveExecutor({ runsRoot: scratch, invokeRunner: async () => { invoked += 1; throw new Error('must not call'); } });
+    const output = await execute({ call });
+    assert.equal(invoked, 0);
+    assert.equal(output.artifact_digests.recording, digestFile(path.join(runDir, 'recording.json')));
+    assert.equal(output.output_directory, runDir);
+  } finally { fs.rmSync(scratch, { recursive: true, force: true }); }
+});
+
+test('2Y-L refuses a partial existing run directory without launching another model call', async () => {
+  const { STAGE_2Y_L_CALLS, makeLiveExecutor } = await subject();
+  const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'stage-2y-l-partial-')); const call = STAGE_2Y_L_CALLS[0]; const runDir = path.join(scratch, call.call_id);
+  try {
+    writeJson(path.join(runDir, 'recording.json'), { incomplete: true }); let invoked = 0;
+    const execute = makeLiveExecutor({ runsRoot: scratch, invokeRunner: async () => { invoked += 1; } });
+    await assert.rejects(execute({ call }), /EXISTING_RUN_DIRECTORY_PARTIAL/);
+    assert.equal(invoked, 0);
+  } finally { fs.rmSync(scratch, { recursive: true, force: true }); }
 });
 
 test('2Y-L checkpoints each sealed outcome and resume never re-calls a failed or malformed section', async () => {

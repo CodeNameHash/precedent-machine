@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { execFile as execFileCallback } from 'node:child_process';
 import { promisify } from 'node:util';
 import { createRequire } from 'node:module';
+import { createHash } from 'node:crypto';
 import { DEAL_PINS, resolvePromptVersionInfo } from './canonical-v2-live-extraction-run.mjs';
 
 const require = createRequire(import.meta.url);
@@ -22,6 +23,7 @@ const DEFAULT_RUNS_ROOT = 'evidence/canonical-v2/stage-2y-l-live-runs';
 const PROFILE_ID = 'TERRA_MEDIUM';
 const REQUESTED_MODEL_ID = 'gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM';
 const DIGEST = /^[a-f0-9]{64}$/;
+const RUN_ARTIFACT_FILES = Object.freeze(['run-manifest.json', 'source-reference.json', 'run-receipt.json', 'adapter-result.json', 'call-telemetry.json', 'recording.json']);
 let atomicSequence = 0;
 
 const SELECTED_SECTIONS = Object.freeze([
@@ -48,6 +50,11 @@ function plain(value) { return value !== null && typeof value === 'object' && !A
 function nonempty(value) { return typeof value === 'string' && value.length > 0; }
 function digest(value) { return typeof value === 'string' && DIGEST.test(value); }
 function isoTimestamp(value) { return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value); }
+function rawBytesDigest(call) {
+  const rawPath = resolve(REPO_ROOT, call.raw_html_path);
+  if (!existsSync(rawPath)) return null;
+  return createHash('sha256').update(readFileSync(rawPath)).digest('hex');
+}
 function profileMetadata() { const profile = resolveProfile(PROFILE_ID); return Object.freeze({ provider_id: PROVIDER_ID, profile_id: profile.profile_id, requested_model_id: `${profile.model};reasoning=${profile.reasoning_effort};profile=${profile.profile_id}` }); }
 function callId(call) { const { call_id, ...body } = call; return hash(body); }
 function artifactId(artifact) { const { artifact_id, ...body } = artifact; return hash(body); }
@@ -83,10 +90,10 @@ function findDigestField(value, key) {
   return null;
 }
 function readJson(path) { return JSON.parse(readFileSync(path, 'utf8')); }
-function fileDigest(path) { return hash(readFileSync(path)); }
+function fileDigest(path) { return createHash('sha256').update(readFileSync(path)).digest('hex'); }
 
 function collectRunOutput({ call, outputDir }) {
-  const names = ['run-manifest.json', 'source-reference.json', 'run-receipt.json', 'adapter-result.json', 'call-telemetry.json', 'recording.json'];
+  const names = RUN_ARTIFACT_FILES;
   const paths = Object.fromEntries(names.map((name) => [name, resolve(outputDir, name)]));
   if (names.some((name) => !existsSync(paths[name]))) throw new Error('RUN_ARTIFACT_MISSING');
   const runManifest = readJson(paths['run-manifest.json']); const sourceReference = readJson(paths['source-reference.json']);
@@ -120,6 +127,7 @@ function outputErrors(call, output) {
   const provider = output.provider; const source = output.source_binding; const prompt = output.prompt_identity; const artifacts = output.artifact_digests;
   if (!plain(provider) || provider.provider_id !== PROVIDER_ID || provider.profile_id !== PROFILE_ID || provider.requested_model_id !== REQUESTED_MODEL_ID || !Array.isArray(provider.provider_request_ids) || provider.provider_request_ids.length !== 1 || !nonempty(provider.provider_request_ids[0])) errors.push('PROVIDER_PROVENANCE_INVALID');
   if (!plain(source) || !['raw_bytes_sha256', 'converter_digest', 'converter_config_digest', 'canonical_text_sha256', 'source_map_compressed_sha256', 'source_map_digest'].every((key) => digest(source?.[key]))) errors.push('SOURCE_BINDING_INVALID');
+  else if (source.raw_bytes_sha256 !== rawBytesDigest(call)) errors.push('RAW_BYTES_DIGEST_MISMATCH');
   if (!plain(prompt) || prompt.prompt_id !== call.prompt_identity.prompt_id || prompt.prompt_version !== call.prompt_identity.prompt_version || prompt.section_reference !== call.section_reference || !digest(prompt.prompt_digest)) errors.push('PROMPT_IDENTITY_INVALID');
   if (!plain(artifacts) || !['run_manifest', 'source_reference', 'run_receipt', 'adapter_result', 'call_telemetry', 'recording'].every((key) => digest(artifacts?.[key]))) errors.push('ARTIFACT_DIGESTS_INVALID');
   if (!plain(output.run_identity) || output.run_identity.deal !== call.deal || output.run_identity.family !== call.family || !Array.isArray(output.run_identity.section_references) || output.run_identity.section_references.length !== 1 || output.run_identity.section_references[0] !== call.section_reference || output.run_identity.requested_model_profile !== PROFILE_ID) errors.push('RUN_IDENTITY_INVALID');
@@ -193,11 +201,17 @@ function writeAtomic(path, value) { mkdirSync(dirname(path), { recursive: true }
 function buildLiveRunnerArgs({ call, outputDir }) {
   return [resolve(SCRIPT_DIR, 'canonical-v2-live-extraction-run.mjs'), '--deal', call.deal, '--family', call.family, '--raw-html', call.raw_html_path, '--section-refs', call.section_reference, '--agreement-date', call.agreement_date, '--profile', PROFILE_ID, '--no-follow-citations', '--record', resolve(outputDir, 'recording.json'), '--out-dir', outputDir];
 }
-function makeLiveExecutor({ runsRoot }) {
+function makeLiveExecutor({ runsRoot, invokeRunner = null }) {
   return async ({ call }) => {
     const outputDir = resolve(runsRoot, call.call_id);
+    if (existsSync(outputDir)) {
+      if (RUN_ARTIFACT_FILES.every((name) => existsSync(resolve(outputDir, name)))) return collectRunOutput({ call, outputDir });
+      throw new Error(`EXISTING_RUN_DIRECTORY_PARTIAL:${outputDir}`);
+    }
     mkdirSync(outputDir, { recursive: true });
-    await execFile(process.execPath, buildLiveRunnerArgs({ call, outputDir }), { cwd: REPO_ROOT, maxBuffer: 1024 * 1024 * 16 });
+    const args = buildLiveRunnerArgs({ call, outputDir });
+    if (invokeRunner) await invokeRunner({ call, outputDir, args });
+    else await execFile(process.execPath, args, { cwd: REPO_ROOT, maxBuffer: 1024 * 1024 * 16 });
     return collectRunOutput({ call, outputDir });
   };
 }
@@ -217,4 +231,4 @@ async function main() {
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();
 
-export { SCHEMA_VERSION, CALL_SCHEMA_VERSION, STAGE_2Y_L_CALLS, batchManifest, collectRunOutput, buildLiveRunnerArgs, runStage2yLLiveBatch, validateStage2yLArtifact, validateCheckpoint, checkStage2yLArtifact, writeAtomic, parseArgs };
+export { SCHEMA_VERSION, CALL_SCHEMA_VERSION, STAGE_2Y_L_CALLS, batchManifest, collectRunOutput, buildLiveRunnerArgs, makeLiveExecutor, runStage2yLLiveBatch, validateStage2yLArtifact, validateCheckpoint, checkStage2yLArtifact, writeAtomic, parseArgs };
