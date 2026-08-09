@@ -297,7 +297,7 @@ function validateTerraAdjudicationArtifact({ inventory, artifact, expectedRootCo
   const terraAuthority = errors.includes('ARTIFACT_ID_MISMATCH') ? null : terraAuthorityFromArtifact(artifact);
   const applied = applyClassificationDecisions(inventory, { schema_version: 'STAGE_2Y_F_LEXICAL_DECISIONS/V1', decisions: artifact.decisions || [] }, { terraAuthority });
   if (applied.decision_validation_errors.length) errors.push('DECISION_VALIDATION_FAILED');
-  for (const root of applied.roots) if (root.classification === 'INVALID_INPUT' || root.classification === 'AMBIGUOUS_NEEDS_REVIEW') errors.push(root.classification === 'INVALID_INPUT' ? 'INVALID_ROOT' : 'UNREVIEWED_ROOT');
+  for (const root of applied.roots) if (root.classification === 'INVALID_INPUT') errors.push('INVALID_ROOT');
   const uniqueErrors = [...new Set(errors)].sort();
   return { ok: uniqueErrors.length === 0, errors: uniqueErrors, applied, terra_authority: uniqueErrors.length === 0 ? terraAuthority : null };
 }

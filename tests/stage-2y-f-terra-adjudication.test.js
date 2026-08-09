@@ -31,6 +31,16 @@ function genuineDecision(input) {
   };
 }
 
+function ambiguousDecision(input) {
+  return {
+    root_id: input.root_id,
+    evidence_fingerprint: input.evidence_fingerprint,
+    classification: 'AMBIGUOUS_NEEDS_REVIEW',
+    rationale: 'The evidence card does not prove whether the lexical signal is a distinct legal item.',
+    review_question: 'Does the unresolved signal state a legal item that is absent from the resolved claims?',
+  };
+}
+
 test('Terra prompt states the exact classification key and output shapes', async () => {
   const { buildTerraAdjudicationInput, buildTerraPrompt } = await subject();
   const source = await inventory();
@@ -87,7 +97,28 @@ test('Terra output is strict and malformed output stays fail-closed', async () =
   const checked = validateTerraAdjudicationArtifact({ inventory: one, artifact, expectedRootCount: 1 });
   assert.equal(checked.ok, false);
   assert.ok(checked.errors.includes('CALL_OUTPUT_INVALID'));
-  assert.ok(checked.errors.includes('UNREVIEWED_ROOT'));
+});
+
+test('a valid ambiguous result keeps the artifact valid but remains non-authoritative for publication and matcher changes', async () => {
+  const { runTerraAdjudication, validateTerraAdjudicationArtifact } = await subject();
+  const source = await inventory();
+  const one = { ...source, roots: [source.roots[0]] };
+  const artifact = await runTerraAdjudication({
+    inventory: one,
+    expectedRootCount: 1,
+    reviewedAt: '2026-08-09T12:00:00.000Z',
+    invoke: async ({ input }) => ({
+      text: JSON.stringify(ambiguousDecision(input)),
+      provider_request_id: 'thread-ambiguous',
+      usage: { input_tokens: 1, cached_input_tokens: 0, output_tokens: 1, reasoning_output_tokens: 0 },
+      codex_completion: { status: 'COMPLETE', terminal_event: 'turn.completed' },
+    }),
+  });
+  const checked = validateTerraAdjudicationArtifact({ inventory: one, artifact, expectedRootCount: 1 });
+  assert.equal(checked.ok, true);
+  assert.equal(checked.applied.roots[0].classification, 'AMBIGUOUS_NEEDS_REVIEW');
+  assert.equal(artifact.publication_authorisation, 'NONE');
+  assert.equal(artifact.matcher_change_authorisation, false);
 });
 
 test('forged Terra-labelled decisions fail without verified artifact authority, while human decisions keep their source', async () => {
