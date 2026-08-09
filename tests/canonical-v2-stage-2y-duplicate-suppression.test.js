@@ -6,6 +6,8 @@ const fs = require('node:fs');
 const { spawnSync } = require('node:child_process');
 const path = require('node:path');
 const { canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
+const { compileFixtureContractV42 } = require('../lib/canonical-v2/contract-bundle');
+const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
 const { applyDuplicateSuppression, duplicateSuppressionReceipt, MODES } = require('../lib/canonical-v2/native-producer/duplicate-suppression');
 
 function fixture() {
@@ -21,6 +23,28 @@ function fixture() {
 }
 function report(input) { return applyDuplicateSuppression({ ...input, mode: MODES.REPORT_ONLY }); }
 function clone(value) { return JSON.parse(JSON.stringify(value)); }
+
+function finalMaeRun(name) {
+  const root = path.resolve(__dirname, '..', 'evidence', 'canonical-v2', name);
+  return {
+    run_receipt: JSON.parse(fs.readFileSync(path.join(root, 'run-receipt.json'), 'utf8')),
+    admitted_source_context: JSON.parse(fs.readFileSync(path.join(root, 'adapter-result.json'), 'utf8')).admitted_source_contexts[0],
+  };
+}
+
+function resolveFinalMaeRun(name, mode) {
+  const { run_receipt: runReceipt, admitted_source_context: admittedSourceContext } = finalMaeRun(name);
+  return resolveFinalMaeInput({ runReceipt, admittedSourceContext, mode });
+}
+
+function resolveFinalMaeInput({ runReceipt, admittedSourceContext, mode }) {
+  return resolveCandidates({
+    run_receipt: runReceipt,
+    contract_vocabulary: compileFixtureContractV42(),
+    admitted_source_context: admittedSourceContext,
+    ...(mode === undefined ? {} : { duplicate_suppression_mode: mode }),
+  });
+}
 function addResolvedProng(input) {
   const typed = clone(input.run_receipt.compiled_candidates[1].candidate.claim);
   typed.claim_definition_key = 'NATIVE_MAE_DEFINITION_PRONG_CANDIDATE';
@@ -65,7 +89,7 @@ test('every retained carrier has a named cause and exact source link, and the pl
   );
 });
 
-test('OFF is referentially byte-identical, REPORT_ONLY changes no output, and ENFORCE is module-only', () => {
+test('OFF is referentially byte-identical, REPORT_ONLY changes no output, and the live runner excludes ENFORCE', () => {
   const input = fixture(); const before = JSON.stringify(input.open_world);
   const off = applyDuplicateSuppression({ ...input, mode: MODES.OFF });
   assert.strictEqual(off.open_world, input.open_world); assert.equal(off.records.length, 0);
@@ -75,6 +99,62 @@ test('OFF is referentially byte-identical, REPORT_ONLY changes no output, and EN
   const runner = path.resolve(__dirname, '..', 'scripts/canonical-v2-live-extraction-run.mjs');
   const normalRunner = spawnSync(process.execPath, [runner, '--duplicate-suppression-enforce'], { encoding: 'utf8' });
   assert.notEqual(normalRunner.status, 0); assert.match(normalRunner.stderr, /unrecognised argument/);
+});
+
+test('public resolver finalisation activates only ENFORCE and preserves every non-carrier output', () => {
+  const defaultOff = resolveFinalMaeRun('metsera-mae-definition-20260809-2xk-final');
+  const explicitOff = resolveFinalMaeRun('metsera-mae-definition-20260809-2xk-final', 'OFF');
+  const reported = resolveFinalMaeRun('metsera-mae-definition-20260809-2xk-final', 'REPORT_ONLY');
+  const enforced = resolveFinalMaeRun('metsera-mae-definition-20260809-2xk-final', 'ENFORCE');
+
+  assert.equal(canonicalJson(explicitOff), canonicalJson(defaultOff), 'OFF remains the default byte-identical result');
+  for (const key of ['resolved', 'review_queue', 'open_world', 'residuals', 'limb_component_trees']) {
+    assert.equal(canonicalJson(reported[key]), canonicalJson(defaultOff[key]), `REPORT_ONLY leaves ${key} unchanged`);
+  }
+  assert.equal(reported.resolution_receipt.duplicate_suppression.mode, 'REPORT_ONLY');
+  assert.equal(reported.resolution_receipt.duplicate_suppression.suppressed, 0);
+  assert.equal(reported.resolution_receipt.counts.provisions, defaultOff.resolution_receipt.counts.provisions);
+  assert.equal(reported.duplicate_suppression_records.filter((row) => row.disposition === 'WOULD_SUPPRESS').length, 3);
+
+  for (const key of ['resolved', 'review_queue', 'residuals', 'limb_component_trees']) {
+    assert.equal(canonicalJson(enforced[key]), canonicalJson(defaultOff[key]), `ENFORCE leaves ${key} unchanged`);
+  }
+  const suppressed = enforced.duplicate_suppression_records.filter((row) => row.disposition === 'SUPPRESSED');
+  assert.equal(suppressed.length, 3);
+  assert.equal(enforced.resolution_receipt.duplicate_suppression.mode, 'ENFORCE');
+  assert.equal(enforced.resolution_receipt.duplicate_suppression.suppressed, 3);
+  assert.equal(enforced.resolution_receipt.counts.provisions, defaultOff.resolution_receipt.counts.provisions);
+  assert.equal(enforced.open_world.length, defaultOff.open_world.length - suppressed.length);
+  const suppressedClosures = new Set(suppressed.map((row) => row.carrier_closure_id));
+  assert.ok(defaultOff.open_world.filter((row) => suppressedClosures.has(row.closure_id)).every((row) => (
+    row.claim_definition_key === 'NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE'
+  )));
+  assert.equal(enforced.open_world.some((row) => suppressedClosures.has(row.closure_id)), false);
+});
+
+test('public resolver ENFORCE retains typed peers that are held for review', () => {
+  const off = resolveFinalMaeRun('concho-mae-definition-20260809-2xk-final', 'OFF');
+  const enforced = resolveFinalMaeRun('concho-mae-definition-20260809-2xk-final', 'ENFORCE');
+  assert.equal(canonicalJson(enforced.open_world), canonicalJson(off.open_world));
+  assert.equal(enforced.resolution_receipt.duplicate_suppression.suppressed, 0);
+  assert.equal(enforced.resolution_receipt.duplicate_suppression.retained_typed_peer_held, 11);
+  assert.equal(enforced.duplicate_suppression_records.filter((row) => row.reason_code === 'PARALLEL_TYPED_HELD').length, 11);
+});
+
+test('public resolver ENFORCE retains a carrier referenced by a materialised component tree', () => {
+  const { run_receipt: originalReceipt, admitted_source_context: admittedSourceContext } = finalMaeRun('metsera-mae-definition-20260809-2xk-final');
+  const runReceipt = structuredClone(originalReceipt);
+  const treeCarrier = runReceipt.compiled_candidates.find((entry) => (
+    entry.candidate?.claim?.claim_definition_key === 'NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE'
+  ));
+  assert.ok(treeCarrier);
+  treeCarrier.candidate.claim.attributes.party_making = 'the Company';
+  const enforced = resolveFinalMaeInput({ runReceipt, admittedSourceContext, mode: 'ENFORCE' });
+  const retained = enforced.duplicate_suppression_records.filter((row) => row.reason_code === 'COMPONENT_TREE_REFERENCE_PRESENT');
+  assert.equal(enforced.limb_component_trees.length, 1);
+  assert.equal(retained.length, 2);
+  const retainedClosures = new Set(retained.map((row) => row.carrier_closure_id));
+  assert.equal(enforced.open_world.filter((row) => retainedClosures.has(row.closure_id)).length, retained.length);
 });
 
 test('identity guards reject the same quote under another defined term, section, non-root path, party, provision, and UTF-8 span', () => {
