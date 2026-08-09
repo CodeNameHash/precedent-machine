@@ -1,0 +1,965 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+  "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e",
+  "source_byte_length": 428768,
+  "root_section_id": "15320594801b671dd24dd2404e88ede8dcdd874cb28fc7283ceab4909d9c407b",
+  "requested_section_references": [
+    "3.11",
+    "3.12"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "3.11",
+      "section_id": "f99c293e62ffe7f51d98c3da5647a030a79de8188d34c23b102d425e747fc083",
+      "parent_section_id": "aa6c968a4d3b4efabaefa521fb8b4f550589feda8ff6bebe7fb32bd09a97a1c0",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 85694,
+      "end": 93846,
+      "text_sha256": "617d9e30fae83706fb26c06da60a8c6e5cb7b82b42a2db9e134454ebee7379b1",
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-employee-matters/v1",
+      "prompt_version": 2,
+      "prompt_digest": "3e46927b1341a4f21af362ac3394350772a13d230782145b36989a915360474b",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "3e46927b1341a4f21af362ac3394350772a13d230782145b36989a915360474b",
+        "input_scope_digest": "f3c39a0afedade2b886fcf7af79bab8f36142738ae037da4d0346647df08a3e7",
+        "proposal_count": 1,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "784bfa41f59274110a038aa46cc0994ec01752712b09508b8cd8c7de1f531976"
+      }
+    },
+    {
+      "section_reference": "3.12",
+      "section_id": "6d1ad8bb910aed5863a0da5528352d6e196f4b0272e9b426d6e740e384e9428c",
+      "parent_section_id": "aa6c968a4d3b4efabaefa521fb8b4f550589feda8ff6bebe7fb32bd09a97a1c0",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 93846,
+      "end": 99540,
+      "text_sha256": "c826ead1ff530ee249df7067fabb413fd2350d47571a602f243714cbb8913eb1",
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-employee-matters/v1",
+      "prompt_version": 2,
+      "prompt_digest": "e9891a708e79202d4e312c8af6fd6f0e4003c6bd4a6426ca4f0a9cb682144a47",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "e9891a708e79202d4e312c8af6fd6f0e4003c6bd4a6426ca4f0a9cb682144a47",
+        "input_scope_digest": "d9ed1ccf908a1e93fbbd9f1b8959cd396143f8d9f2259b8fcd2d84b026dc9551",
+        "proposal_count": 2,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "b03e71317803d8dc21b01def49dfd8121cf6ba75d76090a0b82fa8c8547bd38e"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "3.11",
+      "citation_validation": null,
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "7c52becefcd8374fa851ea41aa8a810f7f750afb11a251bbf296c560ca7b624c",
+          "claim_occurrence_id": "3ae75cc4938bf5e6c8a232d7b9627f63d5d82a50e20d5a4433ac0b08e3ea0e4e",
+          "subject_occurrence_id": "12a2ca2e74b6331d759ba215d94a0fedb8216d0b5f6b0dad084ecef5c738e7d8",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Except as set forth in Section 3.11(g) of the Company Disclosure Letter, neither the execution and delivery of this Agreement nor the consummation of the Mergers (either alone or in combination with any other event) will (i) result in any payment becoming due, or increase the amount of compensation due, to any current or former Service Provider; (ii) increase any benefits otherwise payable under any Company Employee Benefit Plan, or, to the Company’s knowledge, any PEO Plan; (iii) result in the acceleration of the time of payment (including the funding of a trust) or vesting of any compensation or benefits from the Company or any Company Subsidiary to any current or former Service Provider;",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "66946fda07bef40e4cae3fc7f70f747aef7c32dbbeffdcaed1f5d3fbde50fa3f"
+          ],
+          "attributes": {
+            "why_unmapped": "BONUS_OR_LTI: Subject to the disclosure letter, the transaction does not cause payments or compensation to become due or increase, increase benefits, or accelerate payment or vesting of compensation or benefits.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "66946fda07bef40e4cae3fc7f70f747aef7c32dbbeffdcaed1f5d3fbde50fa3f",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "a8276236c9226a6fee6a8b0248606c1c15518c2227d432c7fb9d9f182f1f2189",
+              "document_ordinal": 0,
+              "absolute_start": 6283,
+              "absolute_end": 6984,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "c03080a3361d2d170ad3363672106b85c06d58c2bd797c38db9369bd1d67c901"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "3e46927b1341a4f21af362ac3394350772a13d230782145b36989a915360474b",
+          "producer_receipt_id": "784bfa41f59274110a038aa46cc0994ec01752712b09508b8cd8c7de1f531976",
+          "governed_scope_digest": "f531bcd81c1fa71a1e31a7b4621fc8b13118e595ca0162bc0939de74cfcbcad7",
+          "extraction_provenance_id": "1efc49c03cc8fedffeae59f271518cca4bf6a72bfbb0edb9d72eee83b2a02e9f"
+        }
+      }
+    },
+    {
+      "section_reference": "3.12",
+      "citation_validation": null,
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "40ec18978de767443ab0115c9d4be088f241411c265d1ce9dbc904c0eb3b34df",
+          "claim_occurrence_id": "1ec577457c6902cec671e6769b473c664edc99f51c29d5576a5acae9b8e03689",
+          "subject_occurrence_id": "5e03734386c453e10da0b2cfb60309462c70b0880d81a725b900e3f3594168ed",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "(g) (i) The Company and each Company Subsidiary is in compliance in all material respects with all Laws relating to the Worker Adjustment and Retraining Notification Act and any similar state or local “mass layoff” or “plant closing” Law (“WARN”); and (ii) since January 1, 2023, the Company has not incurred any material liability or obligation under the WARN Act that remains unsatisfied.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "1a7d7e26b24b5d4474071bcdb880c09e6c1b62c7a1ad6f6f24a4b8283ae762ee"
+          ],
+          "attributes": {
+            "why_unmapped": "WARN_OR_CBA: WARN compliance and unsatisfied liability mechanic.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "1a7d7e26b24b5d4474071bcdb880c09e6c1b62c7a1ad6f6f24a4b8283ae762ee",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "3e2ede0b5bfbefd5b0c34496e9a109077f4fde4919b3cc071be7a11bdb781d44",
+              "document_ordinal": 0,
+              "absolute_start": 3803,
+              "absolute_end": 4205,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "d08fee475b4b8f5e11ed01ebea56b8b2584d45c529d9391717cb818a67daa366"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "e9891a708e79202d4e312c8af6fd6f0e4003c6bd4a6426ca4f0a9cb682144a47",
+          "producer_receipt_id": "b03e71317803d8dc21b01def49dfd8121cf6ba75d76090a0b82fa8c8547bd38e",
+          "governed_scope_digest": "61f47e0795f79346a0ada04f898a099545f0ebb02482d5a03d3cc1a3f98b88ec",
+          "extraction_provenance_id": "414c2bdb884470f630464624eed216246c38bd3598b3e4bcf97bd85db87f4742"
+        }
+      }
+    },
+    {
+      "section_reference": "3.12",
+      "citation_validation": null,
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "1eb865a2a1e7b7a2b933e7faa42f376b76560583148f04a2594c970bfcb6f870",
+          "claim_occurrence_id": "edcfa0de9918d57e24bfa49d1c665b2549ae523f2db4c55d69e39af4329d5ab0",
+          "subject_occurrence_id": "36c4a3c6228688324c922d18ed4ae2d275093f82de4ee5e513aeca7d8ad3847d",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "There has been no “mass layoff” or “plant closing” as defined by WARN with respect to the Company or any Company Subsidiary within the last six (6) months.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "94c0be5c054338f52f72797d1e2c174d97c66f9cdbb04745e9e07f2488dea896"
+          ],
+          "attributes": {
+            "why_unmapped": "WARN_OR_CBA: No WARN-defined mass layoff or plant closing in the stated period.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "94c0be5c054338f52f72797d1e2c174d97c66f9cdbb04745e9e07f2488dea896",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "49987523b902bec5c8d86c199daa3545a8caebaf184bda23b6450e03d9825f43",
+              "document_ordinal": 0,
+              "absolute_start": 4206,
+              "absolute_end": 4369,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "c7ca644817e7f9a28d4d1564e9dab0d11f0de41c4d5d4cdb3507dae6318587fd"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "e9891a708e79202d4e312c8af6fd6f0e4003c6bd4a6426ca4f0a9cb682144a47",
+          "producer_receipt_id": "b03e71317803d8dc21b01def49dfd8121cf6ba75d76090a0b82fa8c8547bd38e",
+          "governed_scope_digest": "61f47e0795f79346a0ada04f898a099545f0ebb02482d5a03d3cc1a3f98b88ec",
+          "extraction_provenance_id": "414c2bdb884470f630464624eed216246c38bd3598b3e4bcf97bd85db87f4742"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "3.11",
+      "source_byte_length": 8152,
+      "covered_byte_length": 701,
+      "coverage_share": 0.08599116781157998,
+      "marker_counts": {
+        "as of": 0,
+        "except": 5,
+        "knowledge": 10,
+        "material": 4,
+        "total": 19
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "LOW_SPAN_COVERAGE",
+          "coverage_share": 0.08599116781157998,
+          "threshold": 0.5
+        },
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 19,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    },
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "3.12",
+      "source_byte_length": 5694,
+      "covered_byte_length": 565,
+      "coverage_share": 0.09922725676150333,
+      "marker_counts": {
+        "as of": 1,
+        "except": 3,
+        "knowledge": 4,
+        "material": 8,
+        "total": 16
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "LOW_SPAN_COVERAGE",
+          "coverage_share": 0.09922725676150333,
+          "threshold": 0.5
+        },
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 16,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "3.11",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 32,
+          "end": 35
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 48,
+          "end": 51
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 1345,
+          "end": 1348
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 1626,
+          "end": 1629
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 2312,
+          "end": 2315
+        },
+        {
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 2990,
+          "end": 2993
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3299,
+          "end": 3302
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3365,
+          "end": 3369
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3441,
+          "end": 3446
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3530,
+          "end": 3534
+        },
+        {
+          "token": "(v)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3627,
+          "end": 3630
+        },
+        {
+          "token": "(vi)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3719,
+          "end": 3723
+        },
+        {
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 3839,
+          "end": 3842
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3964,
+          "end": 3967
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4165,
+          "end": 4169
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4349,
+          "end": 4354
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4856,
+          "end": 4860
+        },
+        {
+          "token": "(v)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5103,
+          "end": 5106
+        },
+        {
+          "token": "(vi)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5316,
+          "end": 5320
+        },
+        {
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 5848,
+          "end": 5851
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 6016,
+          "end": 6019
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 6279,
+          "end": 6282
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 6318,
+          "end": 6321
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6504,
+          "end": 6507
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6631,
+          "end": 6635
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6765,
+          "end": 6770
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6985,
+          "end": 6989
+        },
+        {
+          "token": "(v)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7139,
+          "end": 7142
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 7407,
+          "end": 7410
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 17,
+        "section_paragraph_marker": 7,
+        "cross_reference_marker": 5
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 3299,
+          "end": 3302
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 3365,
+          "end": 3369
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 3441,
+          "end": 3446
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iv)",
+          "family": "ROMAN",
+          "start": 3530,
+          "end": 3534
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(v)",
+          "family": "ROMAN",
+          "start": 3627,
+          "end": 3630
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(vi)",
+          "family": "ROMAN",
+          "start": 3719,
+          "end": 3723
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 3964,
+          "end": 3967
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 4165,
+          "end": 4169
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 4349,
+          "end": 4354
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iv)",
+          "family": "ROMAN",
+          "start": 4856,
+          "end": 4860
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(v)",
+          "family": "ROMAN",
+          "start": 5103,
+          "end": 5106
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(vi)",
+          "family": "ROMAN",
+          "start": 5316,
+          "end": 5320
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 6504,
+          "end": 6507
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 6631,
+          "end": 6635
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 6765,
+          "end": 6770
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iv)",
+          "family": "ROMAN",
+          "start": 6985,
+          "end": 6989
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(v)",
+          "family": "ROMAN",
+          "start": 7139,
+          "end": 7142
+        }
+      ],
+      "disagreement_count": 17
+    },
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "3.12",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 28,
+          "end": 31
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 195,
+          "end": 198
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 1263,
+          "end": 1266
+        },
+        {
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 1513,
+          "end": 1516
+        },
+        {
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 2255,
+          "end": 2258
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2937,
+          "end": 2940
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2984,
+          "end": 2988
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3036,
+          "end": 3041
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3099,
+          "end": 3103
+        },
+        {
+          "token": "(v)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3143,
+          "end": 3146
+        },
+        {
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 3312,
+          "end": 3315
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3617,
+          "end": 3620
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3676,
+          "end": 3680
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 3803,
+          "end": 3806
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3807,
+          "end": 3810
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4067,
+          "end": 4071
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 4370,
+          "end": 4373
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 4386,
+          "end": 4389
+        },
+        {
+          "token": "(i)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4389,
+          "end": 4392
+        },
+        {
+          "token": "(m)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 5067,
+          "end": 5070
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 5387,
+          "end": 5390
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5390,
+          "end": 5394
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 11,
+        "section_paragraph_marker": 8,
+        "cross_reference_marker": 3
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 2937,
+          "end": 2940
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 2984,
+          "end": 2988
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 3036,
+          "end": 3041
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iv)",
+          "family": "ROMAN",
+          "start": 3099,
+          "end": 3103
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(v)",
+          "family": "ROMAN",
+          "start": 3143,
+          "end": 3146
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 3617,
+          "end": 3620
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 3676,
+          "end": 3680
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 3807,
+          "end": 3810
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 4067,
+          "end": 4071
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ALPHA_LOWER",
+          "start": 4389,
+          "end": 4392
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(m)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 5067,
+          "end": 5070
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 5390,
+          "end": 5394
+        }
+      ],
+      "disagreement_count": 12
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 3,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "7c2c4622b76d83d5afc9a38af703658c8f6c28236543b9f8fcfe1a3ddb2c7e25"
+}
