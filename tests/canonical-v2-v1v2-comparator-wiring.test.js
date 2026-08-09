@@ -233,7 +233,7 @@ test('FIXTURE PIN: the no-v1v2-input resolveCandidates() path reproduces the com
   // phantom "III-INTRO(b)" chapeau child is gone; the real reference is
   // "3.1(b)", byte-identical span, byte-identical section_text_sha256).
   // Unlike every prior re-pin below, MAPPING_TABLE_VERSION did NOT move this
-  // time (still 20) -- the fixture's own committed resolution_receipt_id
+  // time (still 21) -- the fixture's own committed resolution_receipt_id
   // moved because resolution_receipt is computed over the run receipt's
   // resolved_sections/compiled_candidates, which embed the governed scope,
   // which embeds section_reference and the section-tree-derived section_id.
@@ -250,14 +250,14 @@ test('FIXTURE PIN: the no-v1v2-input resolveCandidates() path reproduces the com
   // (2 -> 3) below: lexicon version folds into answer_provenance, so
   // claim_revision_ids and this receipt id move; fixture regenerated via
   // resolveCandidates on the same run-receipt — counts unchanged (3/6/31/1).
-  assert.equal(resolutionFixture.resolution_receipt.resolution_receipt_id, '606d2c44b1d6e3ec241041404c4c87c625d9a122bb52275850b4348cc421b209');
+  assert.equal(resolutionFixture.resolution_receipt.resolution_receipt_id, '9cc1752ed7c24edc3ab8c2a8074fcc9a0cb099483987cb1e436e0d7ee9b11a99');
   // MAPPING_TABLE_VERSION 4 -> 5 (family-termination-fee slice, three fee
   // entries -- docs/superpowers/specs/2026-08-02-family-termination-fee-
   // design.md section 4).
-  assert.equal(baseline.resolution_receipt.mapping_table_version, 20);
+  assert.equal(baseline.resolution_receipt.mapping_table_version, 21);
   assert.equal(
     baseline.resolution_receipt.resolution_receipt_id,
-    '606d2c44b1d6e3ec241041404c4c87c625d9a122bb52275850b4348cc421b209',
+    '9cc1752ed7c24edc3ab8c2a8074fcc9a0cb099483987cb1e436e0d7ee9b11a99',
     // Re-pinned again (Stage 3, QUALIFIER_KIND_LEXICON_VERSION 2 -> 3): the
     // lexicon version is folded into every mechanically-resolved claim's
     // answer_provenance, so the version bump re-keys claim_revision_ids and
@@ -271,7 +271,7 @@ test('FIXTURE PIN: the no-v1v2-input resolveCandidates() path reproduces the com
     // III-INTRO(b) -> 3.1(b) in the underlying fixture (same bytes, same
     // section_text_sha256 -- see docs/codex-program/notes/
     // phantom-citation-rederivation.md); mapping_table_version is UNCHANGED
-    // at 20. This value is now identical to the fixture's own committed
+    // at 21. This value is now identical to the fixture's own committed
     // resolution_receipt_id (assert.equal above), not a separate baseline.
     // Re-pinned after Ben's 2026-08-03 ruling: bare no-shop "days"
     // now resolve as CALENDAR_DAYS, and no_shop_period_parse_version is 2.
@@ -306,7 +306,7 @@ test('FIXTURE PIN: the no-v1v2-input resolveCandidates() path reproduces the com
     // changed. [family-no-shop-era
     // pin 55b1e8da... superseded.]
     // General Covenants parity adds mapping_table_version 15->16.
-    'the re-pinned resolution_receipt_id under MAPPING_TABLE_VERSION 20, now current with the regenerated (3.1(b)) fixture',
+    'the re-pinned resolution_receipt_id under MAPPING_TABLE_VERSION 21, now current with the regenerated (3.1(b)) fixture',
   );
 });
 

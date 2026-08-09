@@ -36,7 +36,7 @@
  *   2. End-to-end: the committed evidence/canonical-v2/modiv-termination-
  *      20260806/run-receipt.json replayed through the real resolveCandidates
  *      (real SEC HTML admission of the pinned Modiv raw HTML, no
- *      reconstruction) resolves 12 termination-right candidates, up from the
+ *      reconstruction) resolves 17 termination-right candidates (post-2X-I mutual fan-out), up from the
  *      8 the same replay produced before this fix, and the two null-
  *      trigger_kind candidates still queue.
  *   3. Step 3A1 (docs/core/PLAN.md, "Close the fiduciary-out false positive
@@ -261,7 +261,7 @@ function admitModivSource() {
   });
 }
 
-test('replay: the committed Modiv termination run-receipt now resolves 12 termination-right candidates, up from 8', () => {
+test('replay: the committed Modiv termination run-receipt now resolves 17 termination-right candidates after Step 2X-I mutual two-row mint', () => {
   const runReceipt = loadRunReceipt();
   const admittedSourceContext = admitModivSource();
   assert.equal(admittedSourceContext.document_hash, runReceipt.document_hash);
@@ -273,7 +273,7 @@ test('replay: the committed Modiv termination run-receipt now resolves 12 termin
     agreement_date: '2026-05-03',
   });
 
-  assert.equal(resolution.resolution_receipt.counts.resolved, 12);
+  assert.equal(resolution.resolution_receipt.counts.resolved, 17);
 
   const resolvedCitations = resolution.resolved
     .filter((row) => row.generic_claim_key === 'NATIVE_TERMINATION_RIGHT_CANDIDATE')

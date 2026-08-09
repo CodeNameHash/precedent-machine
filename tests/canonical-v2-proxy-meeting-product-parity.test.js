@@ -84,7 +84,7 @@ async function productFixture() {
 
 test('the resolver promotes the governed Proxy and Meeting follow-on facts', async () => {
   const { resolution } = await productFixture();
-  assert.equal(MAPPING_TABLE_VERSION, 20);
+  assert.equal(MAPPING_TABLE_VERSION, 21);
   assert.deepEqual(resolution.resolved.map((entry) => entry.resolved_claim_definition_key).sort(), [
     'BOARD_RECOMMENDATION_INCLUSION',
     'BROKER_SEARCH_OBLIGATION_PRESENT',

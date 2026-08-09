@@ -102,8 +102,8 @@ test('Closing Conditions Wave B resolves grounded facts, preserves certificate r
   ));
   assert.ok(dissentOpenWorld);
   assert.equal(dissentOpenWorld.raw_value, QUOTES.dissent);
-  assert.equal(resolution.resolution_receipt.mapping_table_version, 20);
-  assert.equal(MAPPING_TABLE_VERSION, 20);
+  assert.equal(resolution.resolution_receipt.mapping_table_version, 21);
+  assert.equal(MAPPING_TABLE_VERSION, 21);
 
   const projection = projectClosingConditionProductSurfaces({ resolution, deal_id: dealKey });
   assert.ok(projection.cards.every((card) => card.canonical_v2_lineage.source === 'CANONICAL_V2_NATIVE_CLAIM'));

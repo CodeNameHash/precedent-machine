@@ -161,7 +161,7 @@ test('Material Contracts registers its exact contract, producer and title route'
   assert.equal(getProducerPromptModule('MATERIAL_CONTRACTS'), buildMaterialContractsProducerPrompt);
   assert.ok(MATERIAL_CONTRACT_BUCKET_KINDS.includes('SUPPLY'));
   assert.equal(MATERIAL_CONTRACT_BUCKET_KINDS.includes('OTHER'), false);
-  assert.equal(MAPPING_TABLE_VERSION, 20);
+  assert.equal(MAPPING_TABLE_VERSION, 21);
   const classification = await classifySectionFamily({ title: 'Material Contracts' });
   assert.equal(classification.section_family, 'MATERIAL_CONTRACTS');
   assert.equal(classification.provenance, SECTION_FAMILY_RULE_CLASSIFIED);
