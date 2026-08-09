@@ -1,6 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { collect, isFragment, labelOf } = require('../lib/canonical-v2/open-world-promotion-candidates');
+const { collect, isFragment, labelOf, buildCompatibility, nativeProposal, appraisalProposal } = require('../lib/canonical-v2/open-world-promotion-candidates');
+const { compileFixtureContractV42 } = require('../lib/canonical-v2/contract-bundle');
 const childProcess = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -59,6 +60,68 @@ test('fragment policy uses UTF-8 byte length and subordinate starts', () => {
 test('only a leading controlled label is recognised', () => {
   assert.equal(labelOf({ attributes: { why_unmapped: 'APPRAISAL_NOTICE: detail' } }), 'APPRAISAL_NOTICE');
   assert.equal(labelOf({ attributes: { why_unmapped: 'note: APPRAISAL_NOTICE' } }), null);
+});
+
+test('compatibility analysis does not invent a target tuple for a recurring native label', () => {
+  const quote = 'The parties shall complete the recurring native proposal fixture in full.';
+  const item = {
+    raw_value: quote,
+    evidence: [{ excerpt_id: 'native-open-world-fixture' }],
+  };
+  const compatibility = buildCompatibility({
+    activeBundle: compileFixtureContractV42(),
+    proposal: nativeProposal('RECURRING_NATIVE_FIXTURE', 'TEST_FAMILY'),
+    rows: [{ item, selector_resolution: { open_world: [{ reason: 'NATIVE_OPEN_WORLD_PROPOSAL', claim_definition_key: 'OPEN_WORLD_PROPOSITION', raw_value: quote, evidence: [{ excerpt_id: 'native-open-world-fixture' }] }] } }],
+  });
+  assert.equal(compatibility.analysis_state, undefined);
+  assert.equal(compatibility.collision, 'INSUFFICIENT_EVIDENCE');
+  assert.ok(compatibility.reasons.includes('PROPOSED_TARGET_TUPLE_UNSPECIFIED'));
+  assert.deepEqual(compatibility.selector_behaviour.current_replay_observations, [{ state: 'OPEN_WORLD', reason: 'NATIVE_OPEN_WORLD_PROPOSAL', claim_definition_key: 'OPEN_WORLD_PROPOSITION' }]);
+  assert.equal(compatibility.activation_allowed, false);
+});
+
+test('compatibility analysis proves the appraisal tuple already exists without activating it', () => {
+  const quote = 'The Company may not settle any appraisal claim without prior written consent.';
+  const item = {
+    raw_value: quote,
+    evidence: [{ excerpt_id: 'appraisal-open-world-fixture' }],
+  };
+  const compatibility = buildCompatibility({
+    activeBundle: compileFixtureContractV42(),
+    proposal: appraisalProposal(),
+    rows: [{ item, selector_resolution: { open_world: [{ reason: 'APPRAISAL_ASSERTION_OPEN_WORLD', claim_definition_key: 'NATIVE_APPRAISAL_CANDIDATE', raw_value: quote, evidence: [{ excerpt_id: 'appraisal-open-world-fixture' }] }] } }],
+  });
+  assert.equal(compatibility.collision, 'EXACT_ACTIVE_TUPLE');
+  assert.deepEqual(compatibility.contract_schema.exact_concept_matches, ['APPR-SETTLE']);
+  assert.equal(compatibility.contract_schema.exact_claim_definition_matches[0].claim_definition_key, 'APPRAISAL_SETTLEMENT_CONSENT');
+  assert.equal(compatibility.contract_schema.value_shape, 'COMPATIBLE');
+  assert.equal(compatibility.authoritative_tuple_association.state, 'VERIFIED');
+  assert.equal(compatibility.authoritative_tuple_association.authority_export, 'APPRAISAL_CLAIMS');
+  assert.equal(compatibility.selector_behaviour.exact_tuple_resolved_in_replay, false);
+  assert.equal(compatibility.activation_allowed, false);
+});
+
+test('separate active concept and definition membership does not prove a tuple association', () => {
+  const proposal = {
+    proposal_kind: 'TYPED_OPEN_WORLD_ASSERTION',
+    owner_family: 'APPRAISAL_DISSENTERS_RIGHTS',
+    vocabulary_name: 'APPRAISAL_WITHDRAWAL_RECONVERSION',
+    concept_key: 'APPR-SETTLE',
+    claim_definition_key: 'APPRAISAL_WITHDRAWAL_RECONVERSION',
+    canonical_value: true,
+    promotion_mechanism: null,
+    source_claim_definition_key: 'NATIVE_APPRAISAL_CANDIDATE',
+  };
+  const compatibility = buildCompatibility({
+    activeBundle: compileFixtureContractV42(),
+    proposal,
+    rows: [],
+  });
+  assert.deepEqual(compatibility.contract_schema.exact_concept_matches, ['APPR-SETTLE']);
+  assert.equal(compatibility.contract_schema.exact_claim_definition_matches[0].claim_definition_key, 'APPRAISAL_WITHDRAWAL_RECONVERSION');
+  assert.equal(compatibility.authoritative_tuple_association.state, 'NOT_ASSOCIATED');
+  assert.equal(compatibility.collision, 'NO_EXACT_ACTIVE_TUPLE');
+  assert.ok(compatibility.reasons.includes('AUTHORITATIVE_TUPLE_ASSOCIATION_MISSING'));
 });
 
 test('public collector requires three eligible deals, not three raw deals, for a promotion candidate', () => {

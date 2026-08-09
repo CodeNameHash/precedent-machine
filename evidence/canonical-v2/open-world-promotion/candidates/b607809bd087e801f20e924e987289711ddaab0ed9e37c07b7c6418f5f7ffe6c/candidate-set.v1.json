@@ -161,23 +161,56 @@
         }
       ],
       "compatibility": {
-        "active_contract_bundle_fingerprint": "FIXTURE_CONTRACT_INPUT/V31",
-        "mapping_table_version": 21,
-        "existing_concept_matches": [],
-        "existing_claim_definition_matches": [],
-        "resolver_route_matches": [],
-        "vocabulary_collisions": [],
-        "step_2x_j_consume_collisions": [],
-        "hold_scaffold_collisions": [],
-        "value_shape_conflict": false,
-        "owner_family_conflict": false,
-        "cross_family_evidence": false,
-        "source_state_mixture": false,
-        "required_future_changes": [
-          "CONTRACT_BUNDLE",
-          "RESOLVER",
-          "PROMPT",
-          "REPLAY"
+        "analysis_version": "OPEN_WORLD_PROMOTION_COMPATIBILITY/V2",
+        "active_contract": {
+          "schema_version": "CANONICAL_CONTRACT_BUNDLE/V1",
+          "fingerprint": "cf8320d2cabedeeb7042f81a1c7c7c37ecbd8e1a41b6d0672902cf79279d7ae2",
+          "contract_key": "CANONICAL_V2_VERTICAL_SLICE",
+          "concept_count": 133,
+          "claim_definition_count": 147
+        },
+        "proposed_tuple": {
+          "proposal_kind": "NATIVE_OPEN_WORLD_LABEL",
+          "owner_family": "APPRAISAL_DISSENTERS_RIGHTS",
+          "vocabulary_name": "APPRAISAL_INFORMATION_RIGHT",
+          "concept_key": null,
+          "claim_definition_key": null,
+          "canonical_value": null,
+          "promotion_mechanism": null,
+          "source_claim_definition_key": "OPEN_WORLD_PROPOSITION"
+        },
+        "contract_schema": {
+          "exact_concept_matches": [],
+          "exact_claim_definition_matches": [],
+          "vocabulary_collisions": [],
+          "step_2x_j_consume_collisions": [],
+          "value_shape": "NOT_APPLICABLE"
+        },
+        "authoritative_tuple_association": {
+          "state": "NOT_ASSOCIATED"
+        },
+        "selector_behaviour": {
+          "current_replay_observations": [
+            {
+              "state": "OPEN_WORLD",
+              "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+              "claim_definition_key": "OPEN_WORLD_PROPOSITION"
+            }
+          ],
+          "exact_tuple_resolved_in_replay": false
+        },
+        "hold_scaffold_check": {
+          "known_scaffolds": [
+            "lib/vocab/guaranty-assertion-legacy.js",
+            "lib/vocab/tax-cooperation-legacy.js",
+            "lib/vocab/general-covenant-rubric-presentation.js"
+          ],
+          "proposed_mechanism": null,
+          "result": "INSUFFICIENT_EVIDENCE"
+        },
+        "collision": "INSUFFICIENT_EVIDENCE",
+        "reasons": [
+          "PROPOSED_TARGET_TUPLE_UNSPECIFIED"
         ],
         "activation_allowed": false
       },
@@ -194,7 +227,7 @@
         "active_registry_change": false,
         "resolver_change": false
       },
-      "candidate_revision_id": "owpc-revision:sha256:54015b4be836e6d13c0782d2e16a302e884744b8b90e78b0636a1120c2b3a7d3"
+      "candidate_revision_id": "owpc-revision:sha256:39e586ae16e27348b33b8a14b2ef4aea3a1640708ca174a31a7893ac7f429d47"
     },
     {
       "candidate_id": "owpc:sha256:400c4abbc090df2a9f5d392350104b78e3b1cae10c25a07c6f8ee7839fcf2712",
@@ -369,23 +402,56 @@
         }
       ],
       "compatibility": {
-        "active_contract_bundle_fingerprint": "FIXTURE_CONTRACT_INPUT/V31",
-        "mapping_table_version": 21,
-        "existing_concept_matches": [],
-        "existing_claim_definition_matches": [],
-        "resolver_route_matches": [],
-        "vocabulary_collisions": [],
-        "step_2x_j_consume_collisions": [],
-        "hold_scaffold_collisions": [],
-        "value_shape_conflict": false,
-        "owner_family_conflict": false,
-        "cross_family_evidence": false,
-        "source_state_mixture": false,
-        "required_future_changes": [
-          "CONTRACT_BUNDLE",
-          "RESOLVER",
-          "PROMPT",
-          "REPLAY"
+        "analysis_version": "OPEN_WORLD_PROMOTION_COMPATIBILITY/V2",
+        "active_contract": {
+          "schema_version": "CANONICAL_CONTRACT_BUNDLE/V1",
+          "fingerprint": "cf8320d2cabedeeb7042f81a1c7c7c37ecbd8e1a41b6d0672902cf79279d7ae2",
+          "contract_key": "CANONICAL_V2_VERTICAL_SLICE",
+          "concept_count": 133,
+          "claim_definition_count": 147
+        },
+        "proposed_tuple": {
+          "proposal_kind": "NATIVE_OPEN_WORLD_LABEL",
+          "owner_family": "CONSIDERATION",
+          "vocabulary_name": "ELECTION_DEFAULT",
+          "concept_key": null,
+          "claim_definition_key": null,
+          "canonical_value": null,
+          "promotion_mechanism": null,
+          "source_claim_definition_key": "OPEN_WORLD_PROPOSITION"
+        },
+        "contract_schema": {
+          "exact_concept_matches": [],
+          "exact_claim_definition_matches": [],
+          "vocabulary_collisions": [],
+          "step_2x_j_consume_collisions": [],
+          "value_shape": "NOT_APPLICABLE"
+        },
+        "authoritative_tuple_association": {
+          "state": "NOT_ASSOCIATED"
+        },
+        "selector_behaviour": {
+          "current_replay_observations": [
+            {
+              "state": "OPEN_WORLD",
+              "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+              "claim_definition_key": "OPEN_WORLD_PROPOSITION"
+            }
+          ],
+          "exact_tuple_resolved_in_replay": false
+        },
+        "hold_scaffold_check": {
+          "known_scaffolds": [
+            "lib/vocab/guaranty-assertion-legacy.js",
+            "lib/vocab/tax-cooperation-legacy.js",
+            "lib/vocab/general-covenant-rubric-presentation.js"
+          ],
+          "proposed_mechanism": null,
+          "result": "INSUFFICIENT_EVIDENCE"
+        },
+        "collision": "INSUFFICIENT_EVIDENCE",
+        "reasons": [
+          "PROPOSED_TARGET_TUPLE_UNSPECIFIED"
         ],
         "activation_allowed": false
       },
@@ -402,7 +468,7 @@
         "active_registry_change": false,
         "resolver_change": false
       },
-      "candidate_revision_id": "owpc-revision:sha256:91edd801b7dc415bdfc5091cc2604dcb4442ca8cc2c3f85e313da8176c2c1002"
+      "candidate_revision_id": "owpc-revision:sha256:dbfe796d3d696d6c2f4dde344953cb238313dfd59623346347e22b5173beb06b"
     },
     {
       "candidate_id": "owpc:sha256:40f108617918a26ec0b709ab6b1defaab1b36f166213d65242495d9377c003b0",
@@ -2221,23 +2287,56 @@
         }
       ],
       "compatibility": {
-        "active_contract_bundle_fingerprint": "FIXTURE_CONTRACT_INPUT/V31",
-        "mapping_table_version": 21,
-        "existing_concept_matches": [],
-        "existing_claim_definition_matches": [],
-        "resolver_route_matches": [],
-        "vocabulary_collisions": [],
-        "step_2x_j_consume_collisions": [],
-        "hold_scaffold_collisions": [],
-        "value_shape_conflict": false,
-        "owner_family_conflict": false,
-        "cross_family_evidence": false,
-        "source_state_mixture": false,
-        "required_future_changes": [
-          "CONTRACT_BUNDLE",
-          "RESOLVER",
-          "PROMPT",
-          "REPLAY"
+        "analysis_version": "OPEN_WORLD_PROMOTION_COMPATIBILITY/V2",
+        "active_contract": {
+          "schema_version": "CANONICAL_CONTRACT_BUNDLE/V1",
+          "fingerprint": "cf8320d2cabedeeb7042f81a1c7c7c37ecbd8e1a41b6d0672902cf79279d7ae2",
+          "contract_key": "CANONICAL_V2_VERTICAL_SLICE",
+          "concept_count": 133,
+          "claim_definition_count": 147
+        },
+        "proposed_tuple": {
+          "proposal_kind": "NATIVE_OPEN_WORLD_LABEL",
+          "owner_family": "CONSIDERATION",
+          "vocabulary_name": "EXCHANGE_MECHANICS",
+          "concept_key": null,
+          "claim_definition_key": null,
+          "canonical_value": null,
+          "promotion_mechanism": null,
+          "source_claim_definition_key": "OPEN_WORLD_PROPOSITION"
+        },
+        "contract_schema": {
+          "exact_concept_matches": [],
+          "exact_claim_definition_matches": [],
+          "vocabulary_collisions": [],
+          "step_2x_j_consume_collisions": [],
+          "value_shape": "NOT_APPLICABLE"
+        },
+        "authoritative_tuple_association": {
+          "state": "NOT_ASSOCIATED"
+        },
+        "selector_behaviour": {
+          "current_replay_observations": [
+            {
+              "state": "OPEN_WORLD",
+              "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+              "claim_definition_key": "OPEN_WORLD_PROPOSITION"
+            }
+          ],
+          "exact_tuple_resolved_in_replay": false
+        },
+        "hold_scaffold_check": {
+          "known_scaffolds": [
+            "lib/vocab/guaranty-assertion-legacy.js",
+            "lib/vocab/tax-cooperation-legacy.js",
+            "lib/vocab/general-covenant-rubric-presentation.js"
+          ],
+          "proposed_mechanism": null,
+          "result": "INSUFFICIENT_EVIDENCE"
+        },
+        "collision": "INSUFFICIENT_EVIDENCE",
+        "reasons": [
+          "PROPOSED_TARGET_TUPLE_UNSPECIFIED"
         ],
         "activation_allowed": false
       },
@@ -2254,7 +2353,7 @@
         "active_registry_change": false,
         "resolver_change": false
       },
-      "candidate_revision_id": "owpc-revision:sha256:b5edebabe1c73de574126521e559309c62b8fbccd9784f79526ada5f2adbf893"
+      "candidate_revision_id": "owpc-revision:sha256:75507eb923bd208fe06a0754d711f5631de6ca8fea497d75a3851656427e5203"
     },
     {
       "candidate_id": "owpc:sha256:46ddc57067c7f8c40dc3335539e240311ab4dcafccf3d29d190853ef7bb03d08",
@@ -2583,23 +2682,56 @@
         }
       ],
       "compatibility": {
-        "active_contract_bundle_fingerprint": "FIXTURE_CONTRACT_INPUT/V31",
-        "mapping_table_version": 21,
-        "existing_concept_matches": [],
-        "existing_claim_definition_matches": [],
-        "resolver_route_matches": [],
-        "vocabulary_collisions": [],
-        "step_2x_j_consume_collisions": [],
-        "hold_scaffold_collisions": [],
-        "value_shape_conflict": false,
-        "owner_family_conflict": false,
-        "cross_family_evidence": false,
-        "source_state_mixture": false,
-        "required_future_changes": [
-          "CONTRACT_BUNDLE",
-          "RESOLVER",
-          "PROMPT",
-          "REPLAY"
+        "analysis_version": "OPEN_WORLD_PROMOTION_COMPATIBILITY/V2",
+        "active_contract": {
+          "schema_version": "CANONICAL_CONTRACT_BUNDLE/V1",
+          "fingerprint": "cf8320d2cabedeeb7042f81a1c7c7c37ecbd8e1a41b6d0672902cf79279d7ae2",
+          "contract_key": "CANONICAL_V2_VERTICAL_SLICE",
+          "concept_count": 133,
+          "claim_definition_count": 147
+        },
+        "proposed_tuple": {
+          "proposal_kind": "NATIVE_OPEN_WORLD_LABEL",
+          "owner_family": "CONSIDERATION",
+          "vocabulary_name": "WITHHOLDING",
+          "concept_key": null,
+          "claim_definition_key": null,
+          "canonical_value": null,
+          "promotion_mechanism": null,
+          "source_claim_definition_key": "OPEN_WORLD_PROPOSITION"
+        },
+        "contract_schema": {
+          "exact_concept_matches": [],
+          "exact_claim_definition_matches": [],
+          "vocabulary_collisions": [],
+          "step_2x_j_consume_collisions": [],
+          "value_shape": "NOT_APPLICABLE"
+        },
+        "authoritative_tuple_association": {
+          "state": "NOT_ASSOCIATED"
+        },
+        "selector_behaviour": {
+          "current_replay_observations": [
+            {
+              "state": "OPEN_WORLD",
+              "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+              "claim_definition_key": "OPEN_WORLD_PROPOSITION"
+            }
+          ],
+          "exact_tuple_resolved_in_replay": false
+        },
+        "hold_scaffold_check": {
+          "known_scaffolds": [
+            "lib/vocab/guaranty-assertion-legacy.js",
+            "lib/vocab/tax-cooperation-legacy.js",
+            "lib/vocab/general-covenant-rubric-presentation.js"
+          ],
+          "proposed_mechanism": null,
+          "result": "INSUFFICIENT_EVIDENCE"
+        },
+        "collision": "INSUFFICIENT_EVIDENCE",
+        "reasons": [
+          "PROPOSED_TARGET_TUPLE_UNSPECIFIED"
         ],
         "activation_allowed": false
       },
@@ -2616,7 +2748,7 @@
         "active_registry_change": false,
         "resolver_change": false
       },
-      "candidate_revision_id": "owpc-revision:sha256:78f4a3efc34eed547838e6eae615808313ac8aa87339e0e3c6e323d90b047ed7"
+      "candidate_revision_id": "owpc-revision:sha256:f72ba6d167e98b5212c10efd25b707dfccc6bbfcfdf9a406707ea356917294ff"
     },
     {
       "candidate_id": "owpc:sha256:52215a54549e76b838b44a75f0899d46b0565511db2d2df6b3b88e3cec49d5a4",
@@ -2823,23 +2955,56 @@
         }
       ],
       "compatibility": {
-        "active_contract_bundle_fingerprint": "FIXTURE_CONTRACT_INPUT/V31",
-        "mapping_table_version": 21,
-        "existing_concept_matches": [],
-        "existing_claim_definition_matches": [],
-        "resolver_route_matches": [],
-        "vocabulary_collisions": [],
-        "step_2x_j_consume_collisions": [],
-        "hold_scaffold_collisions": [],
-        "value_shape_conflict": false,
-        "owner_family_conflict": false,
-        "cross_family_evidence": false,
-        "source_state_mixture": false,
-        "required_future_changes": [
-          "CONTRACT_BUNDLE",
-          "RESOLVER",
-          "PROMPT",
-          "REPLAY"
+        "analysis_version": "OPEN_WORLD_PROMOTION_COMPATIBILITY/V2",
+        "active_contract": {
+          "schema_version": "CANONICAL_CONTRACT_BUNDLE/V1",
+          "fingerprint": "cf8320d2cabedeeb7042f81a1c7c7c37ecbd8e1a41b6d0672902cf79279d7ae2",
+          "contract_key": "CANONICAL_V2_VERTICAL_SLICE",
+          "concept_count": 133,
+          "claim_definition_count": 147
+        },
+        "proposed_tuple": {
+          "proposal_kind": "NATIVE_OPEN_WORLD_LABEL",
+          "owner_family": "DNO_INDEMNIFICATION",
+          "vocabulary_name": "CLAIMS_HANDLING",
+          "concept_key": null,
+          "claim_definition_key": null,
+          "canonical_value": null,
+          "promotion_mechanism": null,
+          "source_claim_definition_key": "OPEN_WORLD_PROPOSITION"
+        },
+        "contract_schema": {
+          "exact_concept_matches": [],
+          "exact_claim_definition_matches": [],
+          "vocabulary_collisions": [],
+          "step_2x_j_consume_collisions": [],
+          "value_shape": "NOT_APPLICABLE"
+        },
+        "authoritative_tuple_association": {
+          "state": "NOT_ASSOCIATED"
+        },
+        "selector_behaviour": {
+          "current_replay_observations": [
+            {
+              "state": "OPEN_WORLD",
+              "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+              "claim_definition_key": "OPEN_WORLD_PROPOSITION"
+            }
+          ],
+          "exact_tuple_resolved_in_replay": false
+        },
+        "hold_scaffold_check": {
+          "known_scaffolds": [
+            "lib/vocab/guaranty-assertion-legacy.js",
+            "lib/vocab/tax-cooperation-legacy.js",
+            "lib/vocab/general-covenant-rubric-presentation.js"
+          ],
+          "proposed_mechanism": null,
+          "result": "INSUFFICIENT_EVIDENCE"
+        },
+        "collision": "INSUFFICIENT_EVIDENCE",
+        "reasons": [
+          "PROPOSED_TARGET_TUPLE_UNSPECIFIED"
         ],
         "activation_allowed": false
       },
@@ -2856,7 +3021,7 @@
         "active_registry_change": false,
         "resolver_change": false
       },
-      "candidate_revision_id": "owpc-revision:sha256:3b9656b2a38c3b64334cae12587240388e4394dad7d751f6a58346a3fc91c33b"
+      "candidate_revision_id": "owpc-revision:sha256:5e05f35e98041e9c1dbbab33d9626e1aa04ee4bfce30cdab7d35fc7cbf7c17c9"
     },
     {
       "candidate_id": "owpc:sha256:6f153eeac0bc668ed02994572ce9c4a5dd3c1fdb688e7a21c9d6d372ddf2db39",
@@ -3064,23 +3229,56 @@
         }
       ],
       "compatibility": {
-        "active_contract_bundle_fingerprint": "FIXTURE_CONTRACT_INPUT/V31",
-        "mapping_table_version": 21,
-        "existing_concept_matches": [],
-        "existing_claim_definition_matches": [],
-        "resolver_route_matches": [],
-        "vocabulary_collisions": [],
-        "step_2x_j_consume_collisions": [],
-        "hold_scaffold_collisions": [],
-        "value_shape_conflict": false,
-        "owner_family_conflict": false,
-        "cross_family_evidence": false,
-        "source_state_mixture": false,
-        "required_future_changes": [
-          "CONTRACT_BUNDLE",
-          "RESOLVER",
-          "PROMPT",
-          "REPLAY"
+        "analysis_version": "OPEN_WORLD_PROMOTION_COMPATIBILITY/V2",
+        "active_contract": {
+          "schema_version": "CANONICAL_CONTRACT_BUNDLE/V1",
+          "fingerprint": "cf8320d2cabedeeb7042f81a1c7c7c37ecbd8e1a41b6d0672902cf79279d7ae2",
+          "contract_key": "CANONICAL_V2_VERTICAL_SLICE",
+          "concept_count": 133,
+          "claim_definition_count": 147
+        },
+        "proposed_tuple": {
+          "proposal_kind": "NATIVE_OPEN_WORLD_LABEL",
+          "owner_family": "DNO_INDEMNIFICATION",
+          "vocabulary_name": "INDEMNIFICATION_AGREEMENT",
+          "concept_key": null,
+          "claim_definition_key": null,
+          "canonical_value": null,
+          "promotion_mechanism": null,
+          "source_claim_definition_key": "OPEN_WORLD_PROPOSITION"
+        },
+        "contract_schema": {
+          "exact_concept_matches": [],
+          "exact_claim_definition_matches": [],
+          "vocabulary_collisions": [],
+          "step_2x_j_consume_collisions": [],
+          "value_shape": "NOT_APPLICABLE"
+        },
+        "authoritative_tuple_association": {
+          "state": "NOT_ASSOCIATED"
+        },
+        "selector_behaviour": {
+          "current_replay_observations": [
+            {
+              "state": "OPEN_WORLD",
+              "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+              "claim_definition_key": "OPEN_WORLD_PROPOSITION"
+            }
+          ],
+          "exact_tuple_resolved_in_replay": false
+        },
+        "hold_scaffold_check": {
+          "known_scaffolds": [
+            "lib/vocab/guaranty-assertion-legacy.js",
+            "lib/vocab/tax-cooperation-legacy.js",
+            "lib/vocab/general-covenant-rubric-presentation.js"
+          ],
+          "proposed_mechanism": null,
+          "result": "INSUFFICIENT_EVIDENCE"
+        },
+        "collision": "INSUFFICIENT_EVIDENCE",
+        "reasons": [
+          "PROPOSED_TARGET_TUPLE_UNSPECIFIED"
         ],
         "activation_allowed": false
       },
@@ -3097,7 +3295,7 @@
         "active_registry_change": false,
         "resolver_change": false
       },
-      "candidate_revision_id": "owpc-revision:sha256:2ebac2385349c0c72d2eb2904ec8b67a515568f4c885a21c4d3e106c214717b3"
+      "candidate_revision_id": "owpc-revision:sha256:4707da81648c20277b77c776ec6c3dfe21922d948e7f4876f285415617c08e83"
     },
     {
       "candidate_id": "owpc:sha256:853218d86cf5215a7ba44b4ee54f3de969faa042632745883ef3c893826912ab",
@@ -3248,23 +3446,56 @@
       ],
       "exclusions": [],
       "compatibility": {
-        "active_contract_bundle_fingerprint": "FIXTURE_CONTRACT_INPUT/V31",
-        "mapping_table_version": 21,
-        "existing_concept_matches": [],
-        "existing_claim_definition_matches": [],
-        "resolver_route_matches": [],
-        "vocabulary_collisions": [],
-        "step_2x_j_consume_collisions": [],
-        "hold_scaffold_collisions": [],
-        "value_shape_conflict": false,
-        "owner_family_conflict": false,
-        "cross_family_evidence": false,
-        "source_state_mixture": false,
-        "required_future_changes": [
-          "CONTRACT_BUNDLE",
-          "RESOLVER",
-          "PROMPT",
-          "REPLAY"
+        "analysis_version": "OPEN_WORLD_PROMOTION_COMPATIBILITY/V2",
+        "active_contract": {
+          "schema_version": "CANONICAL_CONTRACT_BUNDLE/V1",
+          "fingerprint": "cf8320d2cabedeeb7042f81a1c7c7c37ecbd8e1a41b6d0672902cf79279d7ae2",
+          "contract_key": "CANONICAL_V2_VERTICAL_SLICE",
+          "concept_count": 133,
+          "claim_definition_count": 147
+        },
+        "proposed_tuple": {
+          "proposal_kind": "NATIVE_OPEN_WORLD_LABEL",
+          "owner_family": "FINANCING_COVENANTS",
+          "vocabulary_name": "REIMBURSEMENT_OR_INDEMNITY",
+          "concept_key": null,
+          "claim_definition_key": null,
+          "canonical_value": null,
+          "promotion_mechanism": null,
+          "source_claim_definition_key": "OPEN_WORLD_PROPOSITION"
+        },
+        "contract_schema": {
+          "exact_concept_matches": [],
+          "exact_claim_definition_matches": [],
+          "vocabulary_collisions": [],
+          "step_2x_j_consume_collisions": [],
+          "value_shape": "NOT_APPLICABLE"
+        },
+        "authoritative_tuple_association": {
+          "state": "NOT_ASSOCIATED"
+        },
+        "selector_behaviour": {
+          "current_replay_observations": [
+            {
+              "state": "OPEN_WORLD",
+              "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+              "claim_definition_key": "OPEN_WORLD_PROPOSITION"
+            }
+          ],
+          "exact_tuple_resolved_in_replay": false
+        },
+        "hold_scaffold_check": {
+          "known_scaffolds": [
+            "lib/vocab/guaranty-assertion-legacy.js",
+            "lib/vocab/tax-cooperation-legacy.js",
+            "lib/vocab/general-covenant-rubric-presentation.js"
+          ],
+          "proposed_mechanism": null,
+          "result": "INSUFFICIENT_EVIDENCE"
+        },
+        "collision": "INSUFFICIENT_EVIDENCE",
+        "reasons": [
+          "PROPOSED_TARGET_TUPLE_UNSPECIFIED"
         ],
         "activation_allowed": false
       },
@@ -3281,7 +3512,7 @@
         "active_registry_change": false,
         "resolver_change": false
       },
-      "candidate_revision_id": "owpc-revision:sha256:6f80e27fc43792595244de806430834c63bef50d44601ef847cb006cbb6b8db1"
+      "candidate_revision_id": "owpc-revision:sha256:a20b34ecb6d6bb4b5f8a74f2b69bddea9cb4d855d9421c8873247fe1af74154e"
     },
     {
       "candidate_id": "owpc:sha256:91256bdd903f69ca9c4c4bf43efef43cbcac3f8b99f3c9524884720725854cd9",
@@ -3419,23 +3650,56 @@
         }
       ],
       "compatibility": {
-        "active_contract_bundle_fingerprint": "FIXTURE_CONTRACT_INPUT/V31",
-        "mapping_table_version": 21,
-        "existing_concept_matches": [],
-        "existing_claim_definition_matches": [],
-        "resolver_route_matches": [],
-        "vocabulary_collisions": [],
-        "step_2x_j_consume_collisions": [],
-        "hold_scaffold_collisions": [],
-        "value_shape_conflict": false,
-        "owner_family_conflict": false,
-        "cross_family_evidence": false,
-        "source_state_mixture": false,
-        "required_future_changes": [
-          "CONTRACT_BUNDLE",
-          "RESOLVER",
-          "PROMPT",
-          "REPLAY"
+        "analysis_version": "OPEN_WORLD_PROMOTION_COMPATIBILITY/V2",
+        "active_contract": {
+          "schema_version": "CANONICAL_CONTRACT_BUNDLE/V1",
+          "fingerprint": "cf8320d2cabedeeb7042f81a1c7c7c37ecbd8e1a41b6d0672902cf79279d7ae2",
+          "contract_key": "CANONICAL_V2_VERTICAL_SLICE",
+          "concept_count": 133,
+          "claim_definition_count": 147
+        },
+        "proposed_tuple": {
+          "proposal_kind": "NATIVE_OPEN_WORLD_LABEL",
+          "owner_family": "DNO_INDEMNIFICATION",
+          "vocabulary_name": "FEE_SHIFTING",
+          "concept_key": null,
+          "claim_definition_key": null,
+          "canonical_value": null,
+          "promotion_mechanism": null,
+          "source_claim_definition_key": "OPEN_WORLD_PROPOSITION"
+        },
+        "contract_schema": {
+          "exact_concept_matches": [],
+          "exact_claim_definition_matches": [],
+          "vocabulary_collisions": [],
+          "step_2x_j_consume_collisions": [],
+          "value_shape": "NOT_APPLICABLE"
+        },
+        "authoritative_tuple_association": {
+          "state": "NOT_ASSOCIATED"
+        },
+        "selector_behaviour": {
+          "current_replay_observations": [
+            {
+              "state": "OPEN_WORLD",
+              "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+              "claim_definition_key": "OPEN_WORLD_PROPOSITION"
+            }
+          ],
+          "exact_tuple_resolved_in_replay": false
+        },
+        "hold_scaffold_check": {
+          "known_scaffolds": [
+            "lib/vocab/guaranty-assertion-legacy.js",
+            "lib/vocab/tax-cooperation-legacy.js",
+            "lib/vocab/general-covenant-rubric-presentation.js"
+          ],
+          "proposed_mechanism": null,
+          "result": "INSUFFICIENT_EVIDENCE"
+        },
+        "collision": "INSUFFICIENT_EVIDENCE",
+        "reasons": [
+          "PROPOSED_TARGET_TUPLE_UNSPECIFIED"
         ],
         "activation_allowed": false
       },
@@ -3452,7 +3716,7 @@
         "active_registry_change": false,
         "resolver_change": false
       },
-      "candidate_revision_id": "owpc-revision:sha256:9b0f77b25085e12aa0db490c98ef13ca26c4b698a664f654a4f11cb815d25fd2"
+      "candidate_revision_id": "owpc-revision:sha256:fd5d0fb9b7b86849a4d2144d58ee6e7d138af7e05c609faa9877b99000e1e354"
     },
     {
       "candidate_id": "owpc:sha256:a312db437c16fbbe0b458880343ffe805653d6742eb7a91296b2c852b4880345",
@@ -3663,23 +3927,56 @@
         }
       ],
       "compatibility": {
-        "active_contract_bundle_fingerprint": "FIXTURE_CONTRACT_INPUT/V31",
-        "mapping_table_version": 21,
-        "existing_concept_matches": [],
-        "existing_claim_definition_matches": [],
-        "resolver_route_matches": [],
-        "vocabulary_collisions": [],
-        "step_2x_j_consume_collisions": [],
-        "hold_scaffold_collisions": [],
-        "value_shape_conflict": false,
-        "owner_family_conflict": false,
-        "cross_family_evidence": false,
-        "source_state_mixture": false,
-        "required_future_changes": [
-          "CONTRACT_BUNDLE",
-          "RESOLVER",
-          "PROMPT",
-          "REPLAY"
+        "analysis_version": "OPEN_WORLD_PROMOTION_COMPATIBILITY/V2",
+        "active_contract": {
+          "schema_version": "CANONICAL_CONTRACT_BUNDLE/V1",
+          "fingerprint": "cf8320d2cabedeeb7042f81a1c7c7c37ecbd8e1a41b6d0672902cf79279d7ae2",
+          "contract_key": "CANONICAL_V2_VERTICAL_SLICE",
+          "concept_count": 133,
+          "claim_definition_count": 147
+        },
+        "proposed_tuple": {
+          "proposal_kind": "NATIVE_OPEN_WORLD_LABEL",
+          "owner_family": "DNO_INDEMNIFICATION",
+          "vocabulary_name": "SUCCESSOR_ASSUMPTION",
+          "concept_key": null,
+          "claim_definition_key": null,
+          "canonical_value": null,
+          "promotion_mechanism": null,
+          "source_claim_definition_key": "OPEN_WORLD_PROPOSITION"
+        },
+        "contract_schema": {
+          "exact_concept_matches": [],
+          "exact_claim_definition_matches": [],
+          "vocabulary_collisions": [],
+          "step_2x_j_consume_collisions": [],
+          "value_shape": "NOT_APPLICABLE"
+        },
+        "authoritative_tuple_association": {
+          "state": "NOT_ASSOCIATED"
+        },
+        "selector_behaviour": {
+          "current_replay_observations": [
+            {
+              "state": "OPEN_WORLD",
+              "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+              "claim_definition_key": "OPEN_WORLD_PROPOSITION"
+            }
+          ],
+          "exact_tuple_resolved_in_replay": false
+        },
+        "hold_scaffold_check": {
+          "known_scaffolds": [
+            "lib/vocab/guaranty-assertion-legacy.js",
+            "lib/vocab/tax-cooperation-legacy.js",
+            "lib/vocab/general-covenant-rubric-presentation.js"
+          ],
+          "proposed_mechanism": null,
+          "result": "INSUFFICIENT_EVIDENCE"
+        },
+        "collision": "INSUFFICIENT_EVIDENCE",
+        "reasons": [
+          "PROPOSED_TARGET_TUPLE_UNSPECIFIED"
         ],
         "activation_allowed": false
       },
@@ -3696,7 +3993,7 @@
         "active_registry_change": false,
         "resolver_change": false
       },
-      "candidate_revision_id": "owpc-revision:sha256:d951fa331036e9fff1906e95942e10145fee6226cd628911545d3cd735e9ddcc"
+      "candidate_revision_id": "owpc-revision:sha256:f76140f0df34648463cbddfd46de4abe50a17676c8f27ba5ef5f63b57a4e544d"
     },
     {
       "candidate_id": "owpc:sha256:a760b38e8a4661d6a849946fc29b45324eb30404a9510999c7c05c09a74b2e41",
@@ -4778,23 +5075,56 @@
         }
       ],
       "compatibility": {
-        "active_contract_bundle_fingerprint": "FIXTURE_CONTRACT_INPUT/V31",
-        "mapping_table_version": 21,
-        "existing_concept_matches": [],
-        "existing_claim_definition_matches": [],
-        "resolver_route_matches": [],
-        "vocabulary_collisions": [],
-        "step_2x_j_consume_collisions": [],
-        "hold_scaffold_collisions": [],
-        "value_shape_conflict": false,
-        "owner_family_conflict": false,
-        "cross_family_evidence": false,
-        "source_state_mixture": false,
-        "required_future_changes": [
-          "CONTRACT_BUNDLE",
-          "RESOLVER",
-          "PROMPT",
-          "REPLAY"
+        "analysis_version": "OPEN_WORLD_PROMOTION_COMPATIBILITY/V2",
+        "active_contract": {
+          "schema_version": "CANONICAL_CONTRACT_BUNDLE/V1",
+          "fingerprint": "cf8320d2cabedeeb7042f81a1c7c7c37ecbd8e1a41b6d0672902cf79279d7ae2",
+          "contract_key": "CANONICAL_V2_VERTICAL_SLICE",
+          "concept_count": 133,
+          "claim_definition_count": 147
+        },
+        "proposed_tuple": {
+          "proposal_kind": "NATIVE_OPEN_WORLD_LABEL",
+          "owner_family": "CONSIDERATION",
+          "vocabulary_name": "EQUITY_AWARD_TREATMENT",
+          "concept_key": null,
+          "claim_definition_key": null,
+          "canonical_value": null,
+          "promotion_mechanism": null,
+          "source_claim_definition_key": "OPEN_WORLD_PROPOSITION"
+        },
+        "contract_schema": {
+          "exact_concept_matches": [],
+          "exact_claim_definition_matches": [],
+          "vocabulary_collisions": [],
+          "step_2x_j_consume_collisions": [],
+          "value_shape": "NOT_APPLICABLE"
+        },
+        "authoritative_tuple_association": {
+          "state": "NOT_ASSOCIATED"
+        },
+        "selector_behaviour": {
+          "current_replay_observations": [
+            {
+              "state": "OPEN_WORLD",
+              "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+              "claim_definition_key": "OPEN_WORLD_PROPOSITION"
+            }
+          ],
+          "exact_tuple_resolved_in_replay": false
+        },
+        "hold_scaffold_check": {
+          "known_scaffolds": [
+            "lib/vocab/guaranty-assertion-legacy.js",
+            "lib/vocab/tax-cooperation-legacy.js",
+            "lib/vocab/general-covenant-rubric-presentation.js"
+          ],
+          "proposed_mechanism": null,
+          "result": "INSUFFICIENT_EVIDENCE"
+        },
+        "collision": "INSUFFICIENT_EVIDENCE",
+        "reasons": [
+          "PROPOSED_TARGET_TUPLE_UNSPECIFIED"
         ],
         "activation_allowed": false
       },
@@ -4811,7 +5141,7 @@
         "active_registry_change": false,
         "resolver_change": false
       },
-      "candidate_revision_id": "owpc-revision:sha256:02ad23279885d0363520529a5bfb7bcb13b4c81c2d6f186c9b425e51cf341ffb"
+      "candidate_revision_id": "owpc-revision:sha256:37bb16315e9c5902ca9988d93f005bee18b0958e221271127d0b0dc640e7989d"
     },
     {
       "candidate_id": "owpc:sha256:ad12300258ad5da4d9622cf5ab573a9025ff9411cf9df499573339acecf37148",
@@ -4975,23 +5305,56 @@
         }
       ],
       "compatibility": {
-        "active_contract_bundle_fingerprint": "FIXTURE_CONTRACT_INPUT/V31",
-        "mapping_table_version": 21,
-        "existing_concept_matches": [],
-        "existing_claim_definition_matches": [],
-        "resolver_route_matches": [],
-        "vocabulary_collisions": [],
-        "step_2x_j_consume_collisions": [],
-        "hold_scaffold_collisions": [],
-        "value_shape_conflict": false,
-        "owner_family_conflict": false,
-        "cross_family_evidence": false,
-        "source_state_mixture": false,
-        "required_future_changes": [
-          "CONTRACT_BUNDLE",
-          "RESOLVER",
-          "PROMPT",
-          "REPLAY"
+        "analysis_version": "OPEN_WORLD_PROMOTION_COMPATIBILITY/V2",
+        "active_contract": {
+          "schema_version": "CANONICAL_CONTRACT_BUNDLE/V1",
+          "fingerprint": "cf8320d2cabedeeb7042f81a1c7c7c37ecbd8e1a41b6d0672902cf79279d7ae2",
+          "contract_key": "CANONICAL_V2_VERTICAL_SLICE",
+          "concept_count": 133,
+          "claim_definition_count": 147
+        },
+        "proposed_tuple": {
+          "proposal_kind": "NATIVE_OPEN_WORLD_LABEL",
+          "owner_family": "APPRAISAL_DISSENTERS_RIGHTS",
+          "vocabulary_name": "APPRAISAL_STATUTE",
+          "concept_key": null,
+          "claim_definition_key": null,
+          "canonical_value": null,
+          "promotion_mechanism": null,
+          "source_claim_definition_key": "OPEN_WORLD_PROPOSITION"
+        },
+        "contract_schema": {
+          "exact_concept_matches": [],
+          "exact_claim_definition_matches": [],
+          "vocabulary_collisions": [],
+          "step_2x_j_consume_collisions": [],
+          "value_shape": "NOT_APPLICABLE"
+        },
+        "authoritative_tuple_association": {
+          "state": "NOT_ASSOCIATED"
+        },
+        "selector_behaviour": {
+          "current_replay_observations": [
+            {
+              "state": "OPEN_WORLD",
+              "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+              "claim_definition_key": "OPEN_WORLD_PROPOSITION"
+            }
+          ],
+          "exact_tuple_resolved_in_replay": false
+        },
+        "hold_scaffold_check": {
+          "known_scaffolds": [
+            "lib/vocab/guaranty-assertion-legacy.js",
+            "lib/vocab/tax-cooperation-legacy.js",
+            "lib/vocab/general-covenant-rubric-presentation.js"
+          ],
+          "proposed_mechanism": null,
+          "result": "INSUFFICIENT_EVIDENCE"
+        },
+        "collision": "INSUFFICIENT_EVIDENCE",
+        "reasons": [
+          "PROPOSED_TARGET_TUPLE_UNSPECIFIED"
         ],
         "activation_allowed": false
       },
@@ -5008,7 +5371,7 @@
         "active_registry_change": false,
         "resolver_change": false
       },
-      "candidate_revision_id": "owpc-revision:sha256:1c8f0b19cfb8b807f604ba6d109a45634e02dbed902d26b12f2f64669e8a1953"
+      "candidate_revision_id": "owpc-revision:sha256:a35c52102eb97010a41f330dd20930f6bc2e131373a22d59597ee62d43c80c43"
     },
     {
       "candidate_id": "owpc:sha256:bd722094987f1785a35f907e2b7d3412d21fd13a082a2aedfe088bbb01652c37",
@@ -5225,23 +5588,56 @@
         }
       ],
       "compatibility": {
-        "active_contract_bundle_fingerprint": "FIXTURE_CONTRACT_INPUT/V31",
-        "mapping_table_version": 21,
-        "existing_concept_matches": [],
-        "existing_claim_definition_matches": [],
-        "resolver_route_matches": [],
-        "vocabulary_collisions": [],
-        "step_2x_j_consume_collisions": [],
-        "hold_scaffold_collisions": [],
-        "value_shape_conflict": false,
-        "owner_family_conflict": false,
-        "cross_family_evidence": false,
-        "source_state_mixture": false,
-        "required_future_changes": [
-          "CONTRACT_BUNDLE",
-          "RESOLVER",
-          "PROMPT",
-          "REPLAY"
+        "analysis_version": "OPEN_WORLD_PROMOTION_COMPATIBILITY/V2",
+        "active_contract": {
+          "schema_version": "CANONICAL_CONTRACT_BUNDLE/V1",
+          "fingerprint": "cf8320d2cabedeeb7042f81a1c7c7c37ecbd8e1a41b6d0672902cf79279d7ae2",
+          "contract_key": "CANONICAL_V2_VERTICAL_SLICE",
+          "concept_count": 133,
+          "claim_definition_count": 147
+        },
+        "proposed_tuple": {
+          "proposal_kind": "NATIVE_OPEN_WORLD_LABEL",
+          "owner_family": "EMPLOYEE_MATTERS",
+          "vocabulary_name": "RETIREMENT_401K",
+          "concept_key": null,
+          "claim_definition_key": null,
+          "canonical_value": null,
+          "promotion_mechanism": null,
+          "source_claim_definition_key": "OPEN_WORLD_PROPOSITION"
+        },
+        "contract_schema": {
+          "exact_concept_matches": [],
+          "exact_claim_definition_matches": [],
+          "vocabulary_collisions": [],
+          "step_2x_j_consume_collisions": [],
+          "value_shape": "NOT_APPLICABLE"
+        },
+        "authoritative_tuple_association": {
+          "state": "NOT_ASSOCIATED"
+        },
+        "selector_behaviour": {
+          "current_replay_observations": [
+            {
+              "state": "OPEN_WORLD",
+              "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+              "claim_definition_key": "OPEN_WORLD_PROPOSITION"
+            }
+          ],
+          "exact_tuple_resolved_in_replay": false
+        },
+        "hold_scaffold_check": {
+          "known_scaffolds": [
+            "lib/vocab/guaranty-assertion-legacy.js",
+            "lib/vocab/tax-cooperation-legacy.js",
+            "lib/vocab/general-covenant-rubric-presentation.js"
+          ],
+          "proposed_mechanism": null,
+          "result": "INSUFFICIENT_EVIDENCE"
+        },
+        "collision": "INSUFFICIENT_EVIDENCE",
+        "reasons": [
+          "PROPOSED_TARGET_TUPLE_UNSPECIFIED"
         ],
         "activation_allowed": false
       },
@@ -5258,7 +5654,7 @@
         "active_registry_change": false,
         "resolver_change": false
       },
-      "candidate_revision_id": "owpc-revision:sha256:8a72286e44161a45a6a65c5f6822b896ccf0c5e81678ee673a65ce4446d33161"
+      "candidate_revision_id": "owpc-revision:sha256:aac47a98063df0fe4e3f224e693344047de97654326c4510c8a4de4f1acaaac7"
     },
     {
       "candidate_id": "owpc:sha256:c459dfa81f21a59e7da30b69687d1b75218abfa5364862ac39486ea2403c288a",
@@ -5349,9 +5745,86 @@
       ],
       "exclusions": [],
       "compatibility": {
-        "exact_active_match": "APPR-SETTLE / APPRAISAL_SETTLEMENT_CONSENT",
-        "topbuild_observation": "EXACT_ACTIVE_MATCH",
-        "proposed_action": "NONE",
+        "analysis_version": "OPEN_WORLD_PROMOTION_COMPATIBILITY/V2",
+        "active_contract": {
+          "schema_version": "CANONICAL_CONTRACT_BUNDLE/V1",
+          "fingerprint": "cf8320d2cabedeeb7042f81a1c7c7c37ecbd8e1a41b6d0672902cf79279d7ae2",
+          "contract_key": "CANONICAL_V2_VERTICAL_SLICE",
+          "concept_count": 133,
+          "claim_definition_count": 147
+        },
+        "proposed_tuple": {
+          "proposal_kind": "TYPED_OPEN_WORLD_ASSERTION",
+          "owner_family": "APPRAISAL_DISSENTERS_RIGHTS",
+          "vocabulary_name": "APPRAISAL_SETTLEMENT_CONSENT",
+          "concept_key": "APPR-SETTLE",
+          "claim_definition_key": "APPRAISAL_SETTLEMENT_CONSENT",
+          "canonical_value": true,
+          "promotion_mechanism": null,
+          "source_claim_definition_key": "NATIVE_APPRAISAL_CANDIDATE"
+        },
+        "contract_schema": {
+          "exact_concept_matches": [
+            "APPR-SETTLE"
+          ],
+          "exact_claim_definition_matches": [
+            {
+              "claim_definition_key": "APPRAISAL_SETTLEMENT_CONSENT",
+              "version": 1,
+              "allowed_canonical_values": [
+                true
+              ],
+              "canonical_value_type": null,
+              "canonical_value_required_when_present": true
+            }
+          ],
+          "vocabulary_collisions": [
+            {
+              "kind": "CLAIM_DEFINITION_KEY",
+              "key": "APPRAISAL_SETTLEMENT_CONSENT"
+            }
+          ],
+          "step_2x_j_consume_collisions": [],
+          "value_shape": "COMPATIBLE"
+        },
+        "authoritative_tuple_association": {
+          "state": "VERIFIED",
+          "authority_module": "lib/canonical-v2/tax-dividends-appraisal-product-projection.js",
+          "authority_export": "APPRAISAL_CLAIMS",
+          "mapping_key": "APPRAISAL_SETTLEMENT_CONSENT",
+          "concept_key": "APPR-SETTLE",
+          "value_kind": "PRESENCE",
+          "allowed_values": [
+            true
+          ]
+        },
+        "selector_behaviour": {
+          "current_replay_observations": [
+            {
+              "state": "OPEN_WORLD",
+              "reason": "APPRAISAL_ASSERTION_OPEN_WORLD",
+              "claim_definition_key": "NATIVE_APPRAISAL_CANDIDATE"
+            },
+            {
+              "state": "INSUFFICIENT_EVIDENCE",
+              "reason": "CURRENT_SELECTOR_OUTPUT_AMBIGUOUS"
+            }
+          ],
+          "exact_tuple_resolved_in_replay": false
+        },
+        "hold_scaffold_check": {
+          "known_scaffolds": [
+            "lib/vocab/guaranty-assertion-legacy.js",
+            "lib/vocab/tax-cooperation-legacy.js",
+            "lib/vocab/general-covenant-rubric-presentation.js"
+          ],
+          "proposed_mechanism": null,
+          "result": "INSUFFICIENT_EVIDENCE"
+        },
+        "collision": "EXACT_ACTIVE_TUPLE",
+        "reasons": [
+          "CURRENT_SELECTOR_REPLAY_INSUFFICIENT"
+        ],
         "activation_allowed": false
       },
       "disposition": "held",
@@ -5367,7 +5840,7 @@
         "active_registry_change": false,
         "resolver_change": false
       },
-      "candidate_revision_id": "owpc-revision:sha256:d6d43ddf1513e128d21946babda5dc2a25f4fe0d449b9540f4fc65b83aebb0c1"
+      "candidate_revision_id": "owpc-revision:sha256:39bbd7a56f896b36562b3277a543124c3105d44a1f03308e8315f2716b2f9651"
     },
     {
       "candidate_id": "owpc:sha256:c718b302b66baf08b0f337260e70a4a463104fa49d74452219fb0632acabfd07",
@@ -5504,23 +5977,56 @@
         }
       ],
       "compatibility": {
-        "active_contract_bundle_fingerprint": "FIXTURE_CONTRACT_INPUT/V31",
-        "mapping_table_version": 21,
-        "existing_concept_matches": [],
-        "existing_claim_definition_matches": [],
-        "resolver_route_matches": [],
-        "vocabulary_collisions": [],
-        "step_2x_j_consume_collisions": [],
-        "hold_scaffold_collisions": [],
-        "value_shape_conflict": false,
-        "owner_family_conflict": false,
-        "cross_family_evidence": false,
-        "source_state_mixture": false,
-        "required_future_changes": [
-          "CONTRACT_BUNDLE",
-          "RESOLVER",
-          "PROMPT",
-          "REPLAY"
+        "analysis_version": "OPEN_WORLD_PROMOTION_COMPATIBILITY/V2",
+        "active_contract": {
+          "schema_version": "CANONICAL_CONTRACT_BUNDLE/V1",
+          "fingerprint": "cf8320d2cabedeeb7042f81a1c7c7c37ecbd8e1a41b6d0672902cf79279d7ae2",
+          "contract_key": "CANONICAL_V2_VERTICAL_SLICE",
+          "concept_count": 133,
+          "claim_definition_count": 147
+        },
+        "proposed_tuple": {
+          "proposal_kind": "NATIVE_OPEN_WORLD_LABEL",
+          "owner_family": "EMPLOYEE_MATTERS",
+          "vocabulary_name": "BONUS_OR_LTI",
+          "concept_key": null,
+          "claim_definition_key": null,
+          "canonical_value": null,
+          "promotion_mechanism": null,
+          "source_claim_definition_key": "OPEN_WORLD_PROPOSITION"
+        },
+        "contract_schema": {
+          "exact_concept_matches": [],
+          "exact_claim_definition_matches": [],
+          "vocabulary_collisions": [],
+          "step_2x_j_consume_collisions": [],
+          "value_shape": "NOT_APPLICABLE"
+        },
+        "authoritative_tuple_association": {
+          "state": "NOT_ASSOCIATED"
+        },
+        "selector_behaviour": {
+          "current_replay_observations": [
+            {
+              "state": "OPEN_WORLD",
+              "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+              "claim_definition_key": "OPEN_WORLD_PROPOSITION"
+            }
+          ],
+          "exact_tuple_resolved_in_replay": false
+        },
+        "hold_scaffold_check": {
+          "known_scaffolds": [
+            "lib/vocab/guaranty-assertion-legacy.js",
+            "lib/vocab/tax-cooperation-legacy.js",
+            "lib/vocab/general-covenant-rubric-presentation.js"
+          ],
+          "proposed_mechanism": null,
+          "result": "INSUFFICIENT_EVIDENCE"
+        },
+        "collision": "INSUFFICIENT_EVIDENCE",
+        "reasons": [
+          "PROPOSED_TARGET_TUPLE_UNSPECIFIED"
         ],
         "activation_allowed": false
       },
@@ -5537,7 +6043,7 @@
         "active_registry_change": false,
         "resolver_change": false
       },
-      "candidate_revision_id": "owpc-revision:sha256:f26be6bbc26a762ce325f1f85bfd05a1875786a108b77efd8f6a10fa24232772"
+      "candidate_revision_id": "owpc-revision:sha256:bb776efd9ff28051456687c1eddbf6c104119b5007bcd0ac49796c3f93ebe451"
     },
     {
       "candidate_id": "owpc:sha256:ff18a878d239345a45ebe250b3f49135576f581e2a48448c39aefd357c3343f3",
@@ -5672,23 +6178,56 @@
       ],
       "exclusions": [],
       "compatibility": {
-        "active_contract_bundle_fingerprint": "FIXTURE_CONTRACT_INPUT/V31",
-        "mapping_table_version": 21,
-        "existing_concept_matches": [],
-        "existing_claim_definition_matches": [],
-        "resolver_route_matches": [],
-        "vocabulary_collisions": [],
-        "step_2x_j_consume_collisions": [],
-        "hold_scaffold_collisions": [],
-        "value_shape_conflict": false,
-        "owner_family_conflict": false,
-        "cross_family_evidence": false,
-        "source_state_mixture": false,
-        "required_future_changes": [
-          "CONTRACT_BUNDLE",
-          "RESOLVER",
-          "PROMPT",
-          "REPLAY"
+        "analysis_version": "OPEN_WORLD_PROMOTION_COMPATIBILITY/V2",
+        "active_contract": {
+          "schema_version": "CANONICAL_CONTRACT_BUNDLE/V1",
+          "fingerprint": "cf8320d2cabedeeb7042f81a1c7c7c37ecbd8e1a41b6d0672902cf79279d7ae2",
+          "contract_key": "CANONICAL_V2_VERTICAL_SLICE",
+          "concept_count": 133,
+          "claim_definition_count": 147
+        },
+        "proposed_tuple": {
+          "proposal_kind": "NATIVE_OPEN_WORLD_LABEL",
+          "owner_family": "APPRAISAL_DISSENTERS_RIGHTS",
+          "vocabulary_name": "APPRAISAL_NOTICE",
+          "concept_key": null,
+          "claim_definition_key": null,
+          "canonical_value": null,
+          "promotion_mechanism": null,
+          "source_claim_definition_key": "OPEN_WORLD_PROPOSITION"
+        },
+        "contract_schema": {
+          "exact_concept_matches": [],
+          "exact_claim_definition_matches": [],
+          "vocabulary_collisions": [],
+          "step_2x_j_consume_collisions": [],
+          "value_shape": "NOT_APPLICABLE"
+        },
+        "authoritative_tuple_association": {
+          "state": "NOT_ASSOCIATED"
+        },
+        "selector_behaviour": {
+          "current_replay_observations": [
+            {
+              "state": "OPEN_WORLD",
+              "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+              "claim_definition_key": "OPEN_WORLD_PROPOSITION"
+            }
+          ],
+          "exact_tuple_resolved_in_replay": false
+        },
+        "hold_scaffold_check": {
+          "known_scaffolds": [
+            "lib/vocab/guaranty-assertion-legacy.js",
+            "lib/vocab/tax-cooperation-legacy.js",
+            "lib/vocab/general-covenant-rubric-presentation.js"
+          ],
+          "proposed_mechanism": null,
+          "result": "INSUFFICIENT_EVIDENCE"
+        },
+        "collision": "INSUFFICIENT_EVIDENCE",
+        "reasons": [
+          "PROPOSED_TARGET_TUPLE_UNSPECIFIED"
         ],
         "activation_allowed": false
       },
@@ -5705,7 +6244,7 @@
         "active_registry_change": false,
         "resolver_change": false
       },
-      "candidate_revision_id": "owpc-revision:sha256:3abdd0433920cfba4b55dcff43da2411395e55ba86ec371c83bbfd65e6a57a54"
+      "candidate_revision_id": "owpc-revision:sha256:14cdcccfcd4c1fc173fb2c415eb339badec525eda84ec3a1d168c910aa00d12a"
     }
   ],
   "exclusions": [
