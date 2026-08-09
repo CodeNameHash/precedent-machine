@@ -35,16 +35,20 @@ test('antitrust parser preserves scaled-money safety and exact literal money', (
   assert.equal(parseDivestitureCapAmount('$12,34').reason, 'MALFORMED_GROUPING');
 });
 
-test('antitrust parser resolves one literal deadline and abstains on non-literal or compound counts', () => {
+test('antitrust parser resolves one deadline and abstains on ambiguous or inconsistent counts', () => {
   assert.equal(parseFilingDeadlineDays('within ten (10) Business Days').canonical_value, '10');
   assert.equal(parseFilingDeadlineDays('within fifteen (15) Business Days').canonical_value, '15');
   assert.equal(parseFilingDeadlineDays('within thirty (30) business days').canonical_value, '30');
-  assert.equal(parseFilingDeadlineDays('within twenty five Business Days').reason, 'NON_LITERAL_NUMERAL');
+  assert.equal(parseFilingDeadlineDays('at least four Business Days').canonical_value, '4');
+  assert.equal(parseFilingDeadlineDays('a Match Period of three Business Days').canonical_value, '3');
   assert.equal(parseFilingDeadlineDays('within ten (45) Business Days').reason, 'SPELLED_DIGIT_MISMATCH');
+  assert.equal(parseFilingDeadlineDays('within four (3) Business Days').reason, 'SPELLED_DIGIT_MISMATCH');
   assert.equal(parseFilingDeadlineDays('within 10 Business Days and 45 Business Days').reason, 'MULTIPLE_DAY_COUNTS');
+  assert.equal(parseFilingDeadlineDays('within four Business Days and 10 Calendar Days').reason, 'MULTIPLE_DAY_COUNTS');
+  assert.equal(parseFilingDeadlineDays('Four directors may nominate one successor.').reason, 'NO_DAY_COUNT');
   assert.equal(parseFilingDeadlineDays('within 10 days').day_kind, 'UNSPECIFIED');
   assert.equal(parseFilingDeadlineDays('within 10 Calendar Days').day_kind, 'CALENDAR');
-  assert.equal(ANTITRUST_REGULATORY_PARSE_VERSION, 1);
+  assert.equal(ANTITRUST_REGULATORY_PARSE_VERSION, 2);
 });
 
 test('registry, resolver seam and materiality tier include the M3-B antitrust shapes', () => {
