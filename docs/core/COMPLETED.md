@@ -1507,12 +1507,14 @@ inflated map matches the independently rebuilt map and its recorded digest.
 **Original blind sample recovered; Stage 3 entry remains closed.** The exact
 96-card sample is committed under `evidence/blind-review/2026-08-08/`. The
 executable scorer is `scripts/canonical-v2-20260808-blind-current-rescore.mjs`.
-Its `--gate` result is `blind_rescore_gate: FAIL` and `stage_3_entry: CLOSED`:
-the current re-score resolves 17/96, terminating party 6/8 against 7/8, clause
-label 6/8 against 6/8, qualifier kind 4/8 against 4/8, category 1/8 against 4/8,
-and the other eight strata remain 0/8. The control strata hold, but the original
-per-stratum floor is missed. No successor sample or exception applies. A future
-pass of this scorer does not itself authorise Stage 3.
+The corrected live-source re-score resolves 24/96. Terminating party is 6/8
+against 7/8, clause label 6/8 against 6/8, qualifier kind 4/8 against 4/8 and
+category 1/8 against 4/8. Three former zero strata move: condition kind 1/8,
+party unresolved 5/8 and proxy kind 1/8. Its `--gate` result remains
+`blind_rescore_gate: FAIL` and `stage_3_entry: CLOSED`. The source split is 74
+replay / 22 committed, and the trace names 15 fallback quote matches. No
+successor sample or exception applies. A future pass of this scorer does not
+itself authorise Stage 3.
 
 ---
 
@@ -1558,4 +1560,15 @@ disposition substrate therefore fails closed: no authority artefact, eligible
 claim, publication release or serving activation exists. Other replay evidence
 remains inert: the duplicate census is report-only, the representation-topic
 replay is 324 classified / 299 unclassified, and the promotion collector holds
-15 cards. None of this completes a Stage 2Y step or authorises Stage 3.
+15 cards. The defined-term replay binds six exact final receipts and preserves
+70 `RESOLVED` / 21 `NO_DEFINITION`, with 80 `RESOLVED` / 11 `REVIEW` integration
+dispositions. Qualifier dispatch is report-only: 104 safe proposals, 23 review
+conflicts and 336 held rows from its fixed 463-row cohort. The lexical concept
+adjudication completed 164 recorded Terra calls and classified the roots as 57
+concept-covered, 55 genuine gaps and 52 ambiguous. The Stage 2Y-L batch completed
+46 recorded Terra calls and its offline target audit records closing accuracy
+24 resolved / 1 open-world / 1 held, closing obligor 7 resolved, financing 2
+resolved / 4 held / 2 not emitted, and proxy day count 3 open-world. The joint
+sweep is blocked before replay because the 80-card human anchor has zero reviewed
+decisions. Golden evaluation was **NOT RUN** because Supabase credentials were
+absent. No credentials were requested. None of this authorises Stage 3.

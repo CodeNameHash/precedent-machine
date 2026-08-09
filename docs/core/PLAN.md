@@ -2336,13 +2336,14 @@ fresh in-memory canonical repository, with a real receipt and no refusal.
 **Stage 3 entry is closed.** The original 96-card sample was recovered and is
 committed under `evidence/blind-review/2026-08-08/`; no successor sample or
 exception is needed. `node scripts/canonical-v2-20260808-blind-current-rescore.mjs
---gate` reports `blind_rescore_gate: FAIL` and `stage_3_entry: CLOSED`: the
-current exact re-score resolves 17/96, reported by its twelve fixed strata:
-terminating party 6/8, clause label 6/8, qualifier kind 4/8, category 1/8, and
-the other eight strata 0/8. The eight zero controls hold, but the original floor
-is missed because terminating party regressed by one and category regressed by
-three. A future pass of this scorer is not Stage 3 permission. Stage 3 does not
-start until the full entry decision is made.
+--gate` reports `blind_rescore_gate: FAIL` and `stage_3_entry: CLOSED`. The
+corrected live-source re-score resolves 24/96, using 74 replay and 22 committed
+cards. Terminating party is 6/8, clause label 6/8, qualifier kind 4/8 and
+category 1/8. Three former zero strata move: condition kind 1/8, party unresolved
+5/8 and proxy kind 1/8. Fifteen fallback quote matches are named in the trace.
+The original per-stratum floor is missed, and the control movements are findings
+rather than gains netted into the total. A future pass of this scorer is not
+Stage 3 permission. Stage 3 does not start until the full entry decision is made.
 
 ---
 
@@ -3152,9 +3153,13 @@ a genuine conflict. Only definition-absent cases may test model fallback.
 
 ## Step 2Y-C. One vocabulary registry, and a lint that forces its use
 
-**Status: in progress.** The registry migration and its evidence must be
-regenerated from the current implementation before this step can be accepted.
-No production activation is claimed.
+**Status: in progress.** The shared registry substrate now contains the seven
+recorded registry modules, including representation topics. The 157 selected
+runs replayed at zero model calls with no receipt-projection difference, and the
+near-miss report scanned 203 resolver matchers. Representation topics are
+explicitly excluded from that scan because the classifier remains inert. This is
+evidence for the move, not completion of the lint, migration or near-miss
+acceptance criteria. No production activation is claimed.
 
 **What it is.** Ben's source-of-truth question, answered. A single registry of
 the controlled language the resolver matches against — codes, controlled
@@ -3211,6 +3216,15 @@ variants.
 ---
 
 ## Step 2Y-D. Resolve party and defined-term references from the agreement itself
+
+**Status: partially implemented and inert.** A shared, explicit final-corpus
+binding now selects one exact KEY_DEFINED_TERMS receipt, its receipt identity,
+document hash and calibration for each of six deals. The defined-term replay
+uses that binding and preserves 70 `RESOLVED` / 21 `NO_DEFINITION` outcomes and
+80 `RESOLVED` / 11 `REVIEW` integration dispositions. Blind replay supplies the
+same validated index to both resolver passes. Omitted binding is inert; a source
+or receipt mismatch fails closed. This changes no candidate-resolution handler
+and does not resolve the four named failures.
 
 **What it is.** Stop hard-coding `Parent`, `stockholder`, `Burdensome Condition`.
 Resolve the reference against the agreement's own definitions and the resolved
@@ -3271,6 +3285,13 @@ unsupported units and ambiguous quotes still abstain, including
 ---
 
 ## Step 2Y-F. The lexical net: concept coverage, not hit-by-hit overlap
+
+**Status: Terra adjudication complete, result report-only.** All 164 roots ran
+through recorded Terra calls and produced 164 bound decisions: 57
+concept-covered, 55 genuine uncaptured items and 52 ambiguous. The latter 107
+remain held. Each completed call binds its input, prompt, response and provider
+request identity. No matcher, review queue, source claim, taxonomy or serving
+state changed.
 
 **What it is.** Change `matchFamily()` (`lexical-disagreement-net.js:1115`) to
 score whether a *concept* was captured in a section, rather than requiring every
@@ -3339,6 +3360,12 @@ accounted for as above. Any activation requires a separate decision.
 
 ## Step 2Y-H. Build the reconciliation stage that was deferred
 
+**Status: registry substrate only.** The representation-topic registry is now a
+shared vocabulary module, while the former module remains a compatibility
+export. Its 324 classified and 299 unclassified replay rows remain withheld.
+No classifier has been connected to candidate resolution, no topic claim has
+been published and the hand-adjudicated acceptance sample is still absent.
+
 **What it is.** Register a controlled "representation topic present" claim family
 and a resolver-side lexical classifier over `attributes.subject` / `raw_value`,
 keyed to the recurring textbook topics — organisation and standing, compliance
@@ -3376,6 +3403,13 @@ remaining open-world rather than being forced into the nearest bucket.
 ---
 
 ## Step 2Y-I. Dispatch the representation qualifier kinds that exist
+
+**Status: report-only implementation.** The resolver accepts only `OFF` and
+`REPORT_ONLY`; the default is `OFF`, and `ENFORCE` is rejected. The fixed
+463-row measurement cohort reports 104 safe proposed dispatches, 23 model-kind
+conflicts routed to review and 336 held rows. It creates no claims, writes no
+data, changes no resolution receipt and activates no taxonomy. The 157-run
+campaign cohort remains separately counted at 485 occurrences.
 
 **What it is.** In the fixed 157-run selected campaign cohort,
 `REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED` has 485 occurrences, all accounted
@@ -3449,6 +3483,17 @@ across its three deals.
 
 ## Step 2Y-L. One live prompt batch, with per-section identities
 
+**Status: live batch complete, product inactive.** Financing covenants prompt
+version 3, closing conditions version 5 and proxy meeting version 2 ran through
+46 recorded Terra calls: 8 financing, 26 closing and 12 proxy, all complete.
+The recorded receipts were then re-resolved offline, at zero additional model
+calls, and compared per family. The target audit records closing accuracy at 24
+resolved, one open-world and one held; closing obligor at 7 resolved; financing
+at 2 resolved, 4 held and 2 not emitted; and all 3 qualitative proxy day counts
+as open-world. No product write, serving activation, taxonomy activation or
+publication authority exists. The self-contained successor review is
+`evidence/canonical-v2/corpus-review-20260809-stage-2y-l-live-successor.html`.
+
 **What it is.** The changes that genuinely require re-extraction, batched into
 one planned live ladder. Each changed literal prompt section gets its own prompt
 identity invalidation; there is no shared digest invalidation.
@@ -3506,10 +3551,17 @@ the 2Y-0 precision baseline re-measured at the end and not lower than at the
 start. If recovery is up and precision is down, this stage has failed on Ben's
 own terms and the result is the precision number, not the recovery number.
 
-**Current gate.** Before the final ladder, the executable scorer is
-`scripts/canonical-v2-20260808-blind-current-rescore.mjs`. Its `--gate` result is
-`blind_rescore_gate: FAIL` and `stage_3_entry: CLOSED`. This is a stratum floor
-check, not authority to start Stage 3 if it later passes.
+**Current gate.** The joint sweep stops before replay with
+`BLOCKED_HUMAN_ANCHOR_UNREVIEWED`: its 80-card human anchor has zero reviewed
+decisions, no selected joint rung, no calibration authority and no publication
+authority. The executable blind scorer is
+`scripts/canonical-v2-20260808-blind-current-rescore.mjs`. Its final live-source
+re-score is 24/96 and its `--gate` result remains `blind_rescore_gate: FAIL` and
+`stage_3_entry: CLOSED`: terminating-party is 6/8 against 7/8 and category is
+1/8 against 4/8. Three zero-baseline controls also move: condition kind 1/8,
+party unresolved 5/8 and proxy kind 1/8. The trace names all 15 fallback quote
+matches. This is a stratum floor check, not authority to start Stage 3 if it
+later passes.
 
 ---
 
