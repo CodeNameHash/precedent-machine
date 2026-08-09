@@ -2580,68 +2580,9 @@ tail only; `normalizeProviderUsage` sums cache fields. Proof:
 
 ## Step 2X-I. One prompt bump, not four
 
-**What it is.** Four producer-side changes, batched into a single digest
-invalidation: limb-assertion emission for REPRESENTATIONS and MAE; the IOC
-producer's category enum widened; `transaction_steps` fields for topology; and
-the 2F2 open-world element-schema fix, held since 2026-08-08 for exactly this.
-
-**Why only MAE's limb work is here. CORRECTED 2026-08-08 after Fable's review.**
-This step originally read "the REPRESENTATIONS producer emits zero
-limb-assertion candidates at all", citing Red Hat's run receipt — 68
-qualifiers, 12 open-world, no limbs — and concluded no resolver change could
-reach the limb tree. **That was wrong, and it was the load-bearing claim of the
-whole step.**
-
-Red Hat's recorded responses contain **69 limbs**: 60 across 29 instances in
-§3.01 and 9 across 3 instances in §3.02. The model has been emitting them all
-along. They are dropped one layer later, because
-`FAMILY_RESPONSE_SHAPERS.REPRESENTATIONS` is
-`shapeRepresentationQualifierProposals`, which never reads `instance.limbs`.
-Only `CAPITALISATION` routes to the minting shaper — which is exactly why
-`limb_component_trees` is non-empty in 1 of 202 runs.
-
-The error is the one CLAUDE.md exists to prevent: absence was inferred at the
-source from an artefact three steps downstream. A run receipt records what the
-**shaper produced**, not what the **model returned**. Anyone re-deriving this
-must read `raw_response_text`, not the receipt.
-
-**Consequence: the REPRESENTATIONS fix is free and does not belong in this
-step.** Replay re-feeds `raw_response_text` through the shapers, so fixing the
-shaper costs zero model calls. The 421-claim family — the largest in the corpus
-— moves to the replay-validated phase in 2X-K. See Step 2X-L.
-
-MAE is genuinely different and stays here: neither Red Hat's nor SkyWater's MAE
-recorded responses contain a `limbs` array at all, so its limb emission really
-does need the prompt to change.
-
-**Why IOC is here.** V1 has 25 categories; the V2 producer enum has 11. Nine
-categories that hit in the corpus **cannot be emitted at all**, so no
-resolver-side work can recover them. **Ben's ruling, 2026-08-08:** bring in all
-25, and the IOC codes go in the rubric.
-
-**Also folded in, deliberately.** Ruling 2 — a mutual right minting two rows,
-one per party — is not implemented anywhere; mutual rights still mint one row
-with `EITHER_PRINCIPAL_PARTY`. It re-mints Modiv's committed identities and
-rewrites three pinned test files plus the termination projection, so it belongs
-in the bump rather than as a silent fold into a resolver step.
-
-**The constraint this step inherits, and it is not negotiable.** Derived
-structure may **describe what the model said; it may never select what the model
-reads.** Chunking prompts by derived limbs would convert a 1% segmentation error
-into an invisible coverage hole with no disagreement signal — the one failure
-mode nothing downstream can detect. Path-citation is admissible only if the
-model still sees the full section text.
-
-**The open question for this step.** Whether segmentation should also move
-*ahead* of the model call, so the model cites a limb by path rather than
-re-quoting its governing text. Output dominates cost — 15,897 tokens per call
-on average — and much of it is the model re-transcribing structure a pure
-function already knows. This is the lever, but the magnitude is unmeasured and
-must not be claimed until one family is run both ways.
-
-**Proves it is done.** One digest invalidation, not four; and REPRESENTATIONS
-produces a non-empty limb tree on at least one deal, which has happened once in
-202 runs to date.
+**MOVED TO COMPLETED.md (2026-08-09)** — IOC V1×25, MAE limbs, 2F2 schemas,
+mutual two-row mint, model `transaction_steps` + `mergeDealTopology` precedence.
+Live re-extract is 2X-K. Notes under `docs/codex-program/notes/step-2x-i-*.md`.
 
 ---
 
@@ -2785,13 +2726,11 @@ cost. So the ladder is climbed **twice**: a replay-validated resolver phase
 phase for the producer-side changes.
 
 **Corrected 2026-08-08 after Fable's review.** The original phase list omitted
-2X-F, 2X-G and 2X-H. 2X-H is replay-safe and joins the free phase. 2X-G's
-promotion loop spans both. **2X-F straddles**: its detector work is
-replay-validatable, but its seven-deal acceptance proof needs `transaction_steps`
-from the bump, so that acceptance must be split in two or it stalls the free
-phase. 2X-D is confirmed replay-safe — the retired code was already absent from
-the prompt. This places 2X-I by design rather than letting
-implementation order decide it.
+2X-F, 2X-G and 2X-H. As of 2026-08-09, 2X-H and 2X-G (gate + first promo) and
+the 2X-F detector half are closed. **2X-F straddled**: detector half closed;
+model-extracted `transaction_steps` + precedence remain inside 2X-I. 2X-D is
+confirmed replay-safe — the retired code was already absent from the prompt.
+This places 2X-I by design rather than letting implementation order decide it.
 
 **One tie-back to derived identity.** When the stability criterion is met,
 mint only **CORROBORATED** starts. Two independent detectors agreeing on

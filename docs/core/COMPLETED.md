@@ -1352,10 +1352,41 @@ exit 0. Note: `docs/codex-program/notes/step-2x-h-input-tokens.md`.
 
 ---
 
+## Step 2X-I. One prompt bump, not four
+
+**Closed 2026-08-09.** Producer-side changes batched into one digest-invalidation
+window (live re-extract is 2X-K, not required to close this step):
+
+| Piece | What landed |
+|---|---|
+| IOC V1×25 | Producer enum + corroboration V1-keyed; `IOC_PROMPT_VERSION` 6; `DATA_PRIVACY_CYBER` → `IOC-REGAUTH` |
+| MAE limbs | Prompt v3 emits `limbs[]`; `shapeMaeDefinitionLimbAssertionProposals` |
+| 2F2 open-world schema | Bare `[]` → object schema on remaining deferred families (merger-structure among them) |
+| Mutual rights (Ruling 2) | `EITHER_PARTY` mints TARGET+BUYER rows via `resolveMutualPrincipalParties`; product still projects `PARTY_MUTUAL` |
+| Model `transaction_steps` | Merger-structure prompt v3; shaper + `handleMergerTransactionStepCandidate`; `MERGER_TRANSACTION_STEP` V42; `mergeDealTopology` with model-wins precedence |
+
+**Precedence (model vs detector).** Model-extracted steps win
+(`MODEL_EXTRACTED`); detector is fallback always `topology_needs_review`;
+disagreement keeps model topology and forces review. Neither → `UNDETERMINED`.
+
+**Proof.** Focused suites exit 0:
+`tests/canonical-v2-ioc-*.test.js`, MAE/2F2 prompt contracts,
+`tests/canonical-v2-termination-rights-resolution.test.js` (+ limb/product/real-fixture),
+`tests/canonical-v2-deal-topology-from-claims.test.js`,
+`tests/canonical-v2-transaction-topology-detector.test.js` (7/7 detector unchanged).
+
+Notes: `docs/codex-program/notes/step-2x-i-ioc-mae-2f2.md`,
+`step-2x-i-mutual-rights.md`, `step-2x-i-transaction-steps.md`.
+
+**Not claimed.** Live Modiv / family re-extract (2X-K); product UI topology badge;
+Postgres `deal_topology` writer hookup.
+
+---
+
 ## Step 2X-F. Topology, with an undetermined state
 
 **Closed 2026-08-09** for the detector half. Model-extracted `transaction_steps`
-(prompt bump) and model-vs-detector precedence remain for 2X-I / later wiring.
+closed under 2X-I (`mergeDealTopology`). Product UI wiring remains later.
 
 **Taxonomy.** `UNDETERMINED` (no silent `SINGLE_MERGER`); `PARALLEL_MERGERS`
 (simultaneous dual mergers); `REVERSE_TRIANGULAR_THEN_LLC` (sequential two-step

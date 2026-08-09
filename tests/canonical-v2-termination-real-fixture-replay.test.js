@@ -135,9 +135,9 @@ test('the full committed Landos agreement resolves Termination Rights and keeps 
 
   assert.deepEqual(
     resolution.resolved.map((entry) => entry.concept_key).sort(),
-    ['TERMR-LEGAL', 'TERMR-MUTUAL'],
+    ['TERMR-LEGAL', 'TERMR-LEGAL', 'TERMR-MUTUAL', 'TERMR-MUTUAL'],
   );
-  assert.equal(resolution.review_queue.length, 2);
+  assert.equal(resolution.review_queue.length, 4);
   assert.ok(resolution.review_queue.every((item) => item.has_resolution && item.reasons.length === 0));
   assert.equal(resolution.open_world.length, 1);
   assert.match(resolution.open_world[0].attributes.why_unmapped, /^OUTSIDE_DATE_EXTENSION:/);
@@ -146,7 +146,8 @@ test('the full committed Landos agreement resolves Termination Rights and keeps 
 
   const dealId = 'landos-termination-rights';
   const projection = projectTerminationRightsProductSurfaces({ resolution, deal_id: dealId });
-  assert.equal(projection.cards.filter((card) => card.canonical_v2_lineage.source === NATIVE_SOURCE).length, 2);
+  // Step 2X-I: each mutual EITHER_PARTY right mints TARGET+BUYER rows → 4 native cards.
+  assert.equal(projection.cards.filter((card) => card.canonical_v2_lineage.source === NATIVE_SOURCE).length, 4);
   assert.equal(projection.cards.filter((card) => card.canonical_v2_lineage.source === EVIDENCE_SOURCE).length, 1);
   assert.equal(projection.open_items[0].structured_mechanic.maximum_exercises, 3);
   const mutual = projection.cards.find((card) => card.provision_subtype === 'TERMR-MUTUAL');
