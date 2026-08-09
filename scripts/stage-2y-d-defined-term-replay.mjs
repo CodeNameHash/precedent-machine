@@ -10,7 +10,9 @@ const { sha256Hex, utf8Slice } = require('../lib/canonical-v2/canonical-bytes');
 const { buildSemanticSpan } = require('../lib/canonical-v2/source-structure');
 const {
   OUTCOMES,
-  buildSameDealDefinedTermIndex,
+  FINAL_CORPUS_DEFINED_TERM_BINDINGS,
+  FINAL_CORPUS_DEFINED_TERM_CALIBRATION,
+  buildFinalCorpusSameDealDefinedTermIndex,
   resolveSameDealDefinedTerm,
 } = require('../lib/canonical-v2/native-producer/same-deal-defined-term-resolution');
 
@@ -41,26 +43,6 @@ const RUNS = Object.freeze([
   ['skywater', 'skywater-representations-r1d-20260809-2xk-final'],
   ['topbuild', 'topbuild-representations-20260809-2xk-r3-final'],
 ]);
-const KEY_RUNS = Object.freeze({
-  concho: 'concho-key-defined-terms-20260809-2xk-final',
-  metsera: 'metsera-key-defined-terms-20260809-2xk-final',
-  redhat: 'redhat-key-defined-terms-20260809-2xk-final',
-  skechers: 'skechers-key-defined-terms-20260809-2xk-final',
-  skywater: 'skywater-key-defined-terms-20260809-2xk-final',
-  topbuild: 'topbuild-key-defined-terms-20260809-2xk-r2-final',
-});
-const CALIBRATION = Object.freeze({
-  calibration_id: 'stage-2y-d-defined-term-replay/final-corpus/v1',
-  codebook_version: 'knowledge/v1',
-  integration_fixture_id: 'stage-2y-d-final-representations-91',
-  allowed_assertion_kinds: ['KNOWLEDGE_STANDARD'],
-  generic_party_neutral: true,
-  composite_precedence: [
-    { code: 'AFTER_INQUIRY', patterns: ['due inquiry', 'reasonable inquiry'] },
-    { code: 'CONSTRUCTIVE', patterns: ['constructive knowledge'] },
-    { code: 'ACTUAL' },
-  ],
-});
 
 function assertion(condition, message) {
   if (!condition) throw new Error(message);
@@ -265,7 +247,7 @@ function buildLedgerRow({ deal, run, keyRun, index, keySource, row, resolutionIn
     integration_disposition: integration.disposition,
     integration_reason: integration.reason,
     effective_code_source: integration.effective_code_source,
-    calibration_id: CALIBRATION.calibration_id,
+    calibration_id: FINAL_CORPUS_DEFINED_TERM_CALIBRATION.calibration_id,
     selected_definition_claim_occurrence_ids: result.provenance?.source_claim_occurrence_ids || [],
     selected_definitions: selectedDefinitions,
     typed_absence_or_conflict: result.outcome === OUTCOMES.NO_DEFINITION
@@ -342,14 +324,21 @@ export function assertReplayIntegrity(replay, sourcesByDocumentHash) {
 export function buildReplay() {
   const keyByDeal = new Map();
   const sourcesByDocumentHash = new Map();
-  for (const [deal, name] of Object.entries(KEY_RUNS)) {
+  for (const [deal, binding] of Object.entries(FINAL_CORPUS_DEFINED_TERM_BINDINGS)) {
+    const name = binding.key_defined_term_run;
     const run = loadRun(name);
     const source = sourceFor(run);
     assertion(run.manifest.section_family === 'KEY_DEFINED_TERMS', `${name}: not a KEY_DEFINED_TERMS final run`);
-    assertion(run.receipt.document_hash === source.document_hash, `${name}: current final receipt hash mismatch`);
+    assertion(run.receipt.run_receipt_id === binding.key_defined_term_run_receipt_id, `${name}: wrong final receipt identity`);
+    assertion(run.receipt.document_hash === binding.document_hash, `${name}: wrong final receipt hash`);
+    assertion(source.document_hash === binding.document_hash, `${name}: admitted source document hash mismatch`);
     assertion(!sourcesByDocumentHash.has(source.document_hash), `${name}: shared source requires explicit multi-deal handling`);
     sourcesByDocumentHash.set(source.document_hash, source);
-    const index = buildSameDealDefinedTermIndex({ key_defined_term_receipts: [run.receipt], admitted_source_context: source, calibration: CALIBRATION });
+    const index = buildFinalCorpusSameDealDefinedTermIndex({
+      binding,
+      key_defined_term_receipt: run.receipt,
+      admitted_source_context: source,
+    });
     assertion(index.status === 'CALIBRATED', `${name}: current final index was not calibrated`);
     keyByDeal.set(deal, { run, source, index });
   }
@@ -377,9 +366,11 @@ export function buildReplay() {
     model_calls: 0,
     writes: false,
     serving: false,
-    calibration: CALIBRATION,
+    calibration: FINAL_CORPUS_DEFINED_TERM_CALIBRATION,
     selected_representation_runs: RUNS.map(([, name]) => name),
-    selected_current_final_key_defined_term_runs: KEY_RUNS,
+    selected_current_final_key_defined_term_runs: Object.fromEntries(
+      Object.entries(FINAL_CORPUS_DEFINED_TERM_BINDINGS).map(([deal, binding]) => [deal, binding.key_defined_term_run]),
+    ),
     expected_historical_reason: 'REPRESENTATION_KNOWLEDGE_STANDARD_UNCORROBORATED',
     expected_historical_rows: EXPECTED_TOTAL,
     counts_by_deal: countBy(ledgerRows, (row) => row.deal),

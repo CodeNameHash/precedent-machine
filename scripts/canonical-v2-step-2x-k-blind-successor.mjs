@@ -26,6 +26,10 @@ const {
   assertRecordedSourceMapProvenance,
   readSourceMapPayload,
 } = require('../lib/canonical-v2/source-map-payload-store');
+const {
+  buildFinalCorpusSameDealDefinedTermIndex,
+  finalCorpusDefinedTermBindingForDeal,
+} = require('../lib/canonical-v2/native-producer/same-deal-defined-term-resolution');
 
 const COHORT_SCHEMA = 'STEP_2X_K_BLIND_SUCCESSOR_COHORT/V1';
 const SAMPLE_SCHEMA = 'STEP_2X_K_BLIND_SUCCESSOR_SAMPLE/V1';
@@ -541,12 +545,21 @@ async function resolveSourceRun({ repoRoot, sourceRun, runner, resolverModule = 
     locallyValidatedConversion: recordedSourceMapProvenance ? locallyVerified.conversion : null,
     recordedSourceMapProvenance,
   });
+  const definedTermBinding = finalCorpusDefinedTermBindingForDeal(manifest.deal);
+  const definedTermInput = definedTermBinding === null ? {} : {
+    same_deal_defined_terms: buildFinalCorpusSameDealDefinedTermIndex({
+      binding: definedTermBinding,
+      key_defined_term_receipt: readJson(resolve(repoRoot, definedTermBinding.key_defined_term_receipt_path)),
+      admitted_source_context: admittedSourceContext,
+    }),
+  };
   const contract = resolverModule.compileContract();
   const plain = resolverModule.resolveCandidates({
     run_receipt: runReceipt,
     contract_vocabulary: contract,
     admitted_source_context: admittedSourceContext,
     agreement_date: manifest.agreement_date,
+    ...definedTermInput,
   });
   const lexical = {};
   for (const section of runReceipt.resolved_sections || []) {
@@ -567,6 +580,7 @@ async function resolveSourceRun({ repoRoot, sourceRun, runner, resolverModule = 
     admitted_source_context: admittedSourceContext,
     agreement_date: manifest.agreement_date,
     lexical_disagreement: lexical,
+    ...definedTermInput,
   });
   return { runReceipt, resolution };
 }

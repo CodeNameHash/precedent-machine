@@ -6,7 +6,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { sha256Hex, utf8ByteLength } = require('../lib/canonical-v2/canonical-bytes');
 const {
-  OUTCOMES, buildSameDealDefinedTermIndex, resolveSameDealDefinedTerm,
+  OUTCOMES, FINAL_CORPUS_DEFINED_TERM_BINDINGS, finalCorpusDefinedTermBindingForDeal,
+  buildFinalCorpusSameDealDefinedTermIndex, buildSameDealDefinedTermIndex, resolveSameDealDefinedTerm,
 } = require('../lib/canonical-v2/native-producer/same-deal-defined-term-resolution');
 const { buildIdentityAdmittedSourceContext } = require('./helpers/identity-admitted-source');
 
@@ -113,6 +114,43 @@ test('Stage 2Y is inert without explicit calibrated receipts', () => {
   const result = resolveSameDealDefinedTerm({ index: buildSameDealDefinedTermIndex({}), term_ref: 'Knowledge', use_party: 'TARGET', requested_kind: 'KNOWLEDGE_STANDARD' });
   assert.equal(result.outcome, OUTCOMES.INERT);
   assert.equal(index([item]).status, 'CALIBRATED');
+});
+
+test('final-corpus bindings select one exact same-deal final receipt and fail closed on document mismatch', () => {
+  const binding = finalCorpusDefinedTermBindingForDeal('skechers');
+  assert.strictEqual(binding, FINAL_CORPUS_DEFINED_TERM_BINDINGS.skechers);
+  const source = actualSource(binding.key_defined_term_run);
+  const receipt = JSON.parse(fs.readFileSync(path.join(
+    __dirname, '..', binding.key_defined_term_receipt_path,
+  ), 'utf8'));
+  const index = buildFinalCorpusSameDealDefinedTermIndex({
+    binding,
+    key_defined_term_receipt: receipt,
+    admitted_source_context: source,
+  });
+  assert.equal(index.status, 'CALIBRATED');
+  assert.equal(index.document_hash, binding.document_hash);
+  assert.equal(index.calibration_id, binding.calibration.calibration_id);
+  assert.equal(buildFinalCorpusSameDealDefinedTermIndex({
+    binding: null,
+    key_defined_term_receipt: receipt,
+    admitted_source_context: source,
+  }).status, 'INERT');
+  assert.throws(() => buildFinalCorpusSameDealDefinedTermIndex({
+    binding,
+    key_defined_term_receipt: receipt,
+    admitted_source_context: { ...source, document_hash: '0'.repeat(64) },
+  }), /final-corpus defined-term document hash mismatch/);
+  assert.throws(() => buildFinalCorpusSameDealDefinedTermIndex({
+    binding,
+    key_defined_term_receipt: { ...receipt, document_hash: '0'.repeat(64) },
+    admitted_source_context: source,
+  }), /final-corpus defined-term receipt hash mismatch/);
+  assert.throws(() => buildFinalCorpusSameDealDefinedTermIndex({
+    binding,
+    key_defined_term_receipt: { ...receipt, run_receipt_id: '0'.repeat(64) },
+    admitted_source_context: source,
+  }), /final-corpus defined-term receipt identity mismatch/);
 });
 
 test('byte verification rejects wrong offsets, UTF-16 hostile offsets and document mismatches', () => {

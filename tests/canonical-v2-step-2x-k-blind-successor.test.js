@@ -9,6 +9,7 @@ const {
 const { tmpdir } = require('node:os');
 const { dirname, join, resolve } = require('node:path');
 const { spawnSync } = require('node:child_process');
+const { pathToFileURL } = require('node:url');
 
 let successor;
 
@@ -744,6 +745,33 @@ test('hermetic end-to-end scoring reconstructs and adopts source bytes determini
   } finally {
     rmSync(fixture.repoRoot, { recursive: true, force: true });
   }
+});
+
+test('blind replay supplies the final-corpus defined-term index to both resolver passes', async () => {
+  const root = resolve(__dirname, '..');
+  const runner = await import(pathToFileURL(join(root, 'scripts/canonical-v2-live-extraction-run.mjs')).href);
+  const resolverCalls = [];
+  const resolverModule = {
+    compileContract: () => ({}),
+    resolveCandidates: (input) => {
+      resolverCalls.push(input);
+      return { resolved: [], review_queue: [], open_world: [], residuals: [] };
+    },
+    computeSectionCandidatesForLexicalDigest: () => [],
+    buildLexicalDisagreementReceipt: () => ({}),
+  };
+  await successor.resolveSourceRun({
+    repoRoot: root,
+    sourceRun: 'skechers-representations-r1b-20260809-2xk-final',
+    runner,
+    resolverModule,
+  });
+  assert.equal(resolverCalls.length, 2);
+  const [plain, final] = resolverCalls;
+  assert.strictEqual(plain.same_deal_defined_terms, final.same_deal_defined_terms);
+  assert.equal(plain.same_deal_defined_terms.status, 'CALIBRATED');
+  assert.equal(plain.same_deal_defined_terms.document_hash, plain.admitted_source_context.document_hash);
+  assert.equal(plain.same_deal_defined_terms.calibration_id, 'stage-2y-d-defined-term-replay/final-corpus/v1');
 });
 
 test('scoring rejects a non-canonical payload path before it reaches a payload reader', async () => {
