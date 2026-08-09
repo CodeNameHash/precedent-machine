@@ -2551,47 +2551,11 @@ than a cross-family port.
 
 ## Step 2X-F. Topology, with an undetermined state
 
-**What it is.** `lib/schema/topology-detector.js` scores 4/7 against real
-hash-verified document text: concho, metsera and redhat correct at one step;
-skywater's chain correct; **skechers a false positive** (a generic `/the offer/i`
-regex matches an unrelated antitrust-remedies clause, reported at HIGH
-confidence); **topbuild a false negative** (its double-dummy pattern is
-hardcoded to "first/second/subsequent merger" and topbuild names its steps
-"Titanium Merger" and "Forward Merger"); **modiv a false negative** (no parallel
-pattern exists).
-
-**Why the earlier recommendation was not to wire it, and why that changed.**
-The objection was never to topology as a capability — Ben's point that
-understanding how a merger works is valuable stands. The objection was to a
-silent fallback: two of the three failures return `SINGLE_MERGER`, which looks
-like a normal answer, so nothing invites review. That is a property of the
-default, not of the detection. With no unconditional default the same 4/7
-becomes four correct and three visibly flagged, which is useful and honest.
-
-**Change.**
-1. Remove the unconditional single-step default; no matched pattern yields
-   `UNDETERMINED`.
-2. Replace the generic tender regex; derive step names from the agreement's own
-   defined terms rather than a fixed list.
-3. Add a concurrency concept. `step_order` is an enforced total order
-   (`assertConsecutiveSteps` requires 1,2,3…) and nothing carries simultaneity,
-   so modiv's UPREIT structure — Company Merger and OpCo Merger, explicitly
-   simultaneous — currently lands in the same bucket as a malformed deal. Ben's
-   ruling, 2026-08-08: invent the simultaneous-merger taxonomy.
-4. Add reverse-triangular-then-LLC-conversion as its own structure. Ben's
-   ruling: double dummy is a real structure, but skywater and topbuild are not
-   it — there is no HoldCo.
-5. Model-extracted steps primary, detector as corroboration, with disagreement
-   surfaced rather than resolved silently.
-
-Also fix or document `FORWARD_TRIANGULAR` and `REVERSE_TRIANGULAR`, which the
-module declares but cannot reach — they are gated behind an option no caller
-passes.
-
-**Proves it is done.** Seven deals, one right answer each: concho, metsera,
-redhat and skechers single-step; skywater and topbuild sequential two-step;
-modiv parallel two-step. Any deal the detector cannot place returns
-`UNDETERMINED` and is counted separately from a wrong answer.
+**MOVED TO COMPLETED.md (2026-08-09)** — detector half: 7/7 hash-verified
+(concho/metsera/redhat/skechers single; skywater/topbuild
+`REVERSE_TRIANGULAR_THEN_LLC`; modiv `PARALLEL_MERGERS`). Model-extracted
+`transaction_steps` + precedence merge wait on the 2X-I prompt bump.
+See `docs/codex-program/notes/step-2x-f-topology.md`.
 
 ---
 

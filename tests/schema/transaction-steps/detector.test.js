@@ -20,7 +20,7 @@ test('General Dynamics-shaped tender deal emits tender offer then back-end merge
   assert.equal(model.steps[1].step_kind, 'BACK_END_MERGER');
 });
 
-test('double-dummy language emits merger then subsequent merger', () => {
+test('double-dummy language with HoldCo emits DOUBLE_DUMMY', () => {
   const text = [
     'Section 2.01 The First Merger. Merger Subsidiary 1 shall merge with and into the Company at the First Effective Time.',
     'Immediately following the Effective Time, at the Second Effective Time, the First Surviving Corporation shall merge with and into Merger Subsidiary 2.',
@@ -34,6 +34,18 @@ test('double-dummy language emits merger then subsequent merger', () => {
   assert.equal(model.steps[0].step_kind, 'MERGER');
   assert.equal(model.steps[1].step_kind, 'SUBSEQUENT_MERGER');
   assert.equal(model.steps[1].effective_time_ref, 'Second Effective Time');
+});
+
+test('first/second merger without HoldCo is REVERSE_TRIANGULAR_THEN_LLC', () => {
+  const text = [
+    'Section 2.01 The First Merger. Merger Subsidiary 1 shall merge with and into the Company at the First Effective Time.',
+    'Immediately following the Effective Time, at the Second Effective Time, the First Surviving Corporation shall merge with and into Merger Subsidiary 2.',
+  ].join(' ');
+  const model = extractTransactionSteps([
+    { provision_type: 'STRUCT', number: '2.01', title: 'The Mergers', text, regionId: 'r-struct' },
+  ]);
+  assert.equal(model.topology.topology, 'REVERSE_TRIANGULAR_THEN_LLC');
+  assert.equal(model.steps.length, 2);
 });
 
 test('Conoco-shaped single merger control emits one single-merger step', () => {

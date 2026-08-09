@@ -1330,3 +1330,27 @@ Only one PASS row names an ungate target today:
 `tests/canonical-v2-open-world-promotion-gate.test.js` (7/7).
 
 Evidence and commands: `docs/codex-program/notes/step-2x-g-open-world-promotion.md`.
+
+---
+
+## Step 2X-F. Topology, with an undetermined state
+
+**Closed 2026-08-09** for the detector half. Model-extracted `transaction_steps`
+(prompt bump) and model-vs-detector precedence remain for 2X-I / later wiring.
+
+**Taxonomy.** `UNDETERMINED` (no silent `SINGLE_MERGER`); `PARALLEL_MERGERS`
+(simultaneous dual mergers); `REVERSE_TRIANGULAR_THEN_LLC` (sequential two-step
+without HoldCo). `DOUBLE_DUMMY` kept for HoldCo structures.
+`FORWARD_TRIANGULAR` / `REVERSE_TRIANGULAR` documented as
+`opts.singleStepTopology`-only.
+
+**Detector.** Tender signal tightened to `Acceptance Time` / `251(h)`; named
+mergers from quoted defined terms / `X Merger Effective Time`; merger-scoped
+simultaneity; unconditional single-step default removed.
+
+**Proof.** Seven hash-verified deals via
+`tests/canonical-v2-transaction-topology-detector.test.js`: 4× `SINGLE_MERGER`,
+skywater+topbuild `REVERSE_TRIANGULAR_THEN_LLC` (0 chaining warnings), modiv
+`PARALLEL_MERGERS`. Was 4/7; now 7/7 on the detector half.
+
+Evidence and commands: `docs/codex-program/notes/step-2x-f-topology.md`.
