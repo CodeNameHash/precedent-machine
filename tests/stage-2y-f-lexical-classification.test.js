@@ -125,6 +125,10 @@ test('same-concept decisions require complete known IDs and every decision requi
     reviewed_on: '2026-08-09',
   };
   assert.equal(applyClassificationDecisions({ ...inventory, roots: [root] }, { schema_version: 'STAGE_2Y_F_LEXICAL_DECISIONS/V1', decisions: [valid] }).roots[0].classification, 'SAME_CONCEPT_REPEAT');
+  const unknownRoot = { ...valid, root_id: 'UNKNOWN_ROOT' };
+  const unknownResult = applyClassificationDecisions({ ...inventory, roots: [root] }, { schema_version: 'STAGE_2Y_F_LEXICAL_DECISIONS/V1', decisions: [unknownRoot] });
+  assert.ok(unknownResult.decision_validation_errors.includes('DECISION_UNKNOWN_ROOT'));
+  assert.equal(unknownResult.roots[0].classification, 'AMBIGUOUS_NEEDS_REVIEW');
   const foreign = structuredClone(valid);
   foreign.covered_claim_revision_ids.push('foreign');
   foreign.covered_disagreement_ids = foreign.covered_disagreement_ids.slice(1);
@@ -169,10 +173,31 @@ test('rendered output is deterministic when reviewed decisions are shuffled', as
   assert.equal(renderLexicalClassificationInventory(applyClassificationDecisions(inventory, input)), renderLexicalClassificationInventory(applyClassificationDecisions(inventory, { ...input, decisions: [...decisions].reverse() })));
 });
 
+test('self-contained adjudication review contains every root once and its exact decision keys', async () => {
+  const { buildLexicalClassificationInventory, applyClassificationDecisions, renderLexicalClassificationReview } = await ledger();
+  const inventory = applyClassificationDecisions(buildLexicalClassificationInventory({ repoRoot: ROOT }), {
+    schema_version: 'STAGE_2Y_F_LEXICAL_DECISIONS/V1', decisions: [],
+  });
+  const review = renderLexicalClassificationReview(inventory);
+  assert.match(review, /Content-Security-Policy/);
+  assert.doesNotMatch(review, /https?:\/\//);
+  assert.match(review, /id="family"/);
+  assert.match(review, /id="state"/);
+  assert.equal((review.match(/data-root-id=/g) || []).length, 164);
+  const root = inventory.roots.find((item) => item.disagreement_items.length && item.compiled_candidates.length);
+  assert.ok(root);
+  assert.match(review, new RegExp(root.root_id));
+  assert.match(review, new RegExp(root.evidence_fingerprint));
+  assert.match(review, new RegExp(root.disagreement_items[0].disagreement_id));
+  assert.match(review, new RegExp(root.disagreement_items[0].exact_hit_text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.match(review, new RegExp(root.compiled_candidates[0].candidate.claim.raw_value.slice(0, 20).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+});
+
 test('write and allow-unreviewed check are mechanical green, while the ordinary review gate remains closed', () => {
   const script = path.join(ROOT, 'scripts/stage-2y-f-lexical-classification.mjs');
   const run = (args) => spawnSync(process.execPath, [script, ...args], { cwd: ROOT, encoding: 'utf8' });
   assert.equal(run(['--write']).status, 0);
+  assert.equal(fs.existsSync(path.join(ROOT, 'evidence/canonical-v2/stage-2y-f-lexical-classification.html')), true);
   const mechanical = run(['--check', '--allow-unreviewed']);
   assert.equal(mechanical.status, 0);
   assert.match(mechanical.stdout, /source linkage: 488 unique, 130 ambiguous, 17 not located, 635 total/);

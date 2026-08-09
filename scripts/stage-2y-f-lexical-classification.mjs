@@ -17,6 +17,7 @@ const {
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const DEFAULT_ROOT = resolve(SCRIPT_DIR, '..');
 const OUTPUT = 'evidence/canonical-v2/stage-2y-f-lexical-classification.json';
+const REVIEW_OUTPUT = 'evidence/canonical-v2/stage-2y-f-lexical-classification.html';
 const DECISIONS = 'docs/codex-program/notes/stage-2y/lexical-classification-decisions.json';
 const REASON = 'LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE';
 const CLASSES = new Set(['SAME_CONCEPT_REPEAT', 'GENUINE_UNCAPTURED_ITEM', 'AMBIGUOUS_NEEDS_REVIEW']);
@@ -231,12 +232,61 @@ function renderLexicalClassificationInventory(inventory) {
   return `${canonicalJson(serialisable)}\n`;
 }
 
+function escapeHtml(value) {
+  return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function sourceExcerptForCandidate(root, edge) {
+  if (!Number.isInteger(edge?.absolute_start) || !Number.isInteger(edge?.absolute_end)
+    || edge.absolute_start < 0 || edge.absolute_end <= edge.absolute_start) return null;
+  const sectionBytes = Buffer.from(root.canonical_text || '', 'utf8').subarray(root.section.start, root.section.end);
+  if (edge.absolute_end > sectionBytes.length || !boundary(sectionBytes, edge.absolute_start) || !boundary(sectionBytes, edge.absolute_end)) return null;
+  return excerpt(sectionBytes, edge.absolute_start, edge.absolute_end);
+}
+function candidateRowsForReview(root) {
+  const rows = [];
+  for (const entry of root.compiled_candidates || []) {
+    const claim = entry?.candidate?.claim;
+    if (!claim) continue;
+    const excerpts = (claim.evidence || []).map((edge) => ({
+      evidence_role: edge.evidence_role || null,
+      claim_evidence_id: edge.claim_evidence_id || null,
+      absolute_start: edge.absolute_start,
+      absolute_end: edge.absolute_end,
+      excerpt: sourceExcerptForCandidate(root, edge),
+    }));
+    rows.push({
+      claim_revision_id: claim.claim_revision_id || null,
+      claim_occurrence_id: claim.claim_occurrence_id || null,
+      claim_definition_key: claim.claim_definition_key || null,
+      canonical_value: claim.canonical_value,
+      raw_value: claim.raw_value || null,
+      evidence: excerpts,
+    });
+  }
+  return rows.sort((left, right) => String(left.claim_revision_id).localeCompare(String(right.claim_revision_id)));
+}
+function reviewCard(root, number) {
+  const disagreements = root.disagreement_items.map((hit) => `<li><code>${escapeHtml(hit.disagreement_id)}</code><br><strong>${escapeHtml(hit.pattern_id)}</strong>: <mark>${escapeHtml(hit.exact_hit_text)}</mark><pre>${escapeHtml(hit.excerpt)}</pre></li>`).join('');
+  const candidates = candidateRowsForReview(root).map((claim) => `<li><code>${escapeHtml(claim.claim_revision_id)}</code> <strong>${escapeHtml(claim.claim_definition_key)}</strong> = ${escapeHtml(claim.canonical_value)}<pre>${escapeHtml(claim.raw_value)}</pre>${claim.evidence.map((edge) => `<div class="evidence"><code>${escapeHtml(edge.evidence_role)} ${escapeHtml(edge.claim_evidence_id)} [${escapeHtml(edge.absolute_start)}, ${escapeHtml(edge.absolute_end)})</code><pre>${escapeHtml(edge.excerpt || 'UNAVAILABLE')}</pre></div>`).join('')}</li>`).join('');
+  const claimKeys = [...new Set((root.resolved_entries || []).map((entry) => entry.claim?.claim_revision_id).filter(nonEmptyString))].sort();
+  const decisionKeys = [`root_id=${root.root_id}`, `evidence_fingerprint=${root.evidence_fingerprint}`, ...claimKeys.map((id) => `claim_revision_id=${id}`), ...root.disagreement_items.map((hit) => `disagreement_id=${hit.disagreement_id}`)];
+  return `<article class="card" data-root-id="${escapeHtml(root.root_id)}" data-family="${escapeHtml(root.family)}" data-state="${escapeHtml(root.classification)}"><h2>${number}. ${escapeHtml(root.deal)} · ${escapeHtml(root.family)} · §${escapeHtml(root.section_reference)} · ${escapeHtml(root.concept_key)}</h2><p><strong>State:</strong> ${escapeHtml(root.classification)} (${escapeHtml(root.classification_source)})<br><strong>Run:</strong> ${escapeHtml(root.run_name)}<br><strong>Section:</strong> bytes [${escapeHtml(root.section.start)}, ${escapeHtml(root.section.end)}) · ${escapeHtml(root.section.text_sha256)}</p><details open><summary>Exact decision keys</summary><pre>${escapeHtml(decisionKeys.join('\n'))}</pre></details><details open><summary>Lexical disagreement excerpts (${root.disagreement_items.length})</summary><ol>${disagreements || '<li>None</li>'}</ol></details><details open><summary>Compiled candidate excerpts (${root.compiled_candidates.length})</summary><ol>${candidates || '<li>None</li>'}</ol></details><details><summary>Queue linkage (${root.queue_rows.length})</summary><pre>${escapeHtml(root.queue_rows.map((row) => `${row.closure_id || row.claim_revision_id || 'unknown'} · ${row.source_candidate_linkage?.state || 'UNAVAILABLE'}`).join('\n'))}</pre></details></article>`;
+}
+function renderLexicalClassificationReview(inventory) {
+  const families = [...new Set(inventory.roots.map((root) => root.family))].sort();
+  const states = [...new Set(inventory.roots.map((root) => root.classification))].sort();
+  const cards = inventory.roots.map((root, index) => reviewCard(root, index + 1)).join('\n');
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Stage 2Y-F lexical adjudication</title><style>body{margin:0;background:#f6f7f9;color:#18212f;font:14px/1.45 system-ui,sans-serif}main{max-width:1200px;margin:auto;padding:24px}.controls,.card{background:#fff;border:1px solid #d9dee7;border-radius:8px;padding:16px;margin:14px 0}.controls{position:sticky;top:0;z-index:1}label{margin-right:14px}select{margin-left:6px}h1,h2{margin-top:0}h2{font-size:16px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f1f3f6;padding:10px;border-radius:4px}ol{padding-left:22px}.evidence{margin:8px 0}mark{background:#ffed9d}.hidden{display:none}</style></head><body><main><h1>Stage 2Y-F lexical adjudication</h1><p>Read-only inventory. Every root remains fail-closed until a signed decision validates against its exact keys.</p><div class="controls"><label>Family <select id="family"><option value="">All</option>${families.map((value) => `<option>${escapeHtml(value)}</option>`).join('')}</select></label><label>State <select id="state"><option value="">All</option>${states.map((value) => `<option>${escapeHtml(value)}</option>`).join('')}</select></label><strong id="count"></strong></div>${cards}</main><script>const cards=[...document.querySelectorAll('.card')],family=document.querySelector('#family'),state=document.querySelector('#state'),count=document.querySelector('#count');function filter(){let visible=0;for(const card of cards){const show=(!family.value||card.dataset.family===family.value)&&(!state.value||card.dataset.state===state.value);card.classList.toggle('hidden',!show);if(show)visible+=1}count.textContent=visible+' / '+cards.length+' roots'}family.onchange=filter;state.onchange=filter;filter()</script></body></html>\n`;
+}
+
 function main() {
   const mode = process.argv[2]; const allowUnreviewed = process.argv.includes('--allow-unreviewed');
   if (!['--write', '--check'].includes(mode) || process.argv.slice(2).some((arg) => !['--write', '--check', '--allow-unreviewed'].includes(arg))) throw new Error('usage: --write | --check [--allow-unreviewed]');
-  const decisions = json(resolve(DEFAULT_ROOT, DECISIONS)); const inventory = applyClassificationDecisions(buildLexicalClassificationInventory(), decisions); const output = renderLexicalClassificationInventory(inventory); const path = resolve(DEFAULT_ROOT, OUTPUT);
-  if (mode === '--write') writeFileSync(path, output);
-  const validOutput = existsSync(path) && readFileSync(path, 'utf8') === output;
+  const decisions = json(resolve(DEFAULT_ROOT, DECISIONS)); const inventory = applyClassificationDecisions(buildLexicalClassificationInventory(), decisions); const output = renderLexicalClassificationInventory(inventory); const review = renderLexicalClassificationReview(inventory); const path = resolve(DEFAULT_ROOT, OUTPUT); const reviewPath = resolve(DEFAULT_ROOT, REVIEW_OUTPUT);
+  if (mode === '--write') { writeFileSync(path, output); writeFileSync(reviewPath, review); }
+  const validOutput = existsSync(path) && readFileSync(path, 'utf8') === output
+    && existsSync(reviewPath) && readFileSync(reviewPath, 'utf8') === review;
   const invalid = inventory.roots.filter((root) => !root.evidence_valid).length; const incomplete = inventory.roots.filter((root) => root.evidence_valid && root.classification === 'AMBIGUOUS_NEEDS_REVIEW').length;
   const links = inventory.stats.source_candidate_linkage_totals;
   process.stdout.write(`roots: ${inventory.roots.length} = ${inventory.classification_counts.SAME_CONCEPT_REPEAT} SAME + ${inventory.classification_counts.GENUINE_UNCAPTURED_ITEM} GENUINE + ${inventory.classification_counts.AMBIGUOUS_NEEDS_REVIEW} AMBIGUOUS + ${inventory.classification_counts.INVALID_INPUT} INVALID\naffected claim rows: ${inventory.stats.affected_claim_rows}\nunmatched hits: ${inventory.stats.unmatched_hits}\nselected runs: ${inventory.stats.selected_run_count}, lexical files: ${inventory.stats.lexical_file_count}, governed sections: ${inventory.stats.governed_section_count}\nsource linkage: ${links.SOURCE_CANDIDATE_UNIQUE} unique, ${links.SOURCE_CANDIDATE_AMBIGUOUS} ambiguous, ${links.SOURCE_CANDIDATE_NOT_LOCATED} not located, ${links.SOURCE_CANDIDATE_UNIQUE + links.SOURCE_CANDIDATE_AMBIGUOUS + links.SOURCE_CANDIDATE_NOT_LOCATED} total\n`);
@@ -247,4 +297,4 @@ function main() {
   if (mode === '--check' && incomplete && !allowUnreviewed) throw new Error('INCOMPLETE_REVIEW');
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();
-export { buildLexicalClassificationInventory, validateRootEvidence, applyClassificationDecisions, renderLexicalClassificationInventory };
+export { buildLexicalClassificationInventory, validateRootEvidence, applyClassificationDecisions, renderLexicalClassificationInventory, renderLexicalClassificationReview };
