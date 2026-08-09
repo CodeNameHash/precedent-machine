@@ -318,3 +318,194 @@ claims instead of parking in review — contingent on confirming
 `MAE_DEFINITION_PRONG`/`MAE_CARVEOUT`/`MAE_DISPROPORTIONALITY`'s claim
 definitions actually accept a JOINT_MULTI_PARTY party role downstream (not
 checked — out of this diagnosis's scope, flagged for whoever picks this up).
+
+---
+
+## 4. REPRESENTATION_SIDE_UNRESOLVED (1) — DIAGNOSED
+
+**Raised**: `handleRepresentationQualifierCarrier`, candidate-resolution.js
+~9688-9691:
+```js
+const side = attrs.representation_side;
+if (!['TARGET', 'BUYER'].includes(side)) {
+  pushOpenWorld({ entry, claimRow: claim, reason: 'REPRESENTATION_SIDE_UNRESOLVED' });
+  return;
+}
+```
+`representation_side` is not model-tagged — it's computed upstream in
+`anthropic-provider.js`'s `representationSideFor(partyMaking)` (line 3532-3537):
+```js
+const target = /\b(?:company|target|seller|partnership)\b/i.test(partyMaking);
+const buyer = /\b(?:parent|buyer|acquir)/i.test(partyMaking);
+return target === buyer ? null : (target ? 'TARGET' : 'BUYER');
+```
+
+**Population**: 1 occurrence, metsera §4.02. Confirmed from the recorded model
+response: `"party_making":"Merger Sub"` for a boilerplate "Merger Sub was formed
+solely for the purpose of..." representation, with a TEMPORAL qualifier "since
+the date of its incorporation". `representationSideFor("Merger Sub")` tests
+false for both the TARGET regex and the BUYER regex (neither "parent", "buyer",
+nor "acquir" appears in "Merger Sub"), so `target === buyer` (both false) →
+returns `null`.
+
+**Diagnosis: a second, incomplete party-capacity lexicon.** The main
+party-capacity table used elsewhere in this same file,
+`PARTY_CAPACITY_LEXICON` (line 1162-1182), already has a dedicated entry for
+exactly this case: `Object.freeze({ pattern: /merger\s*sub/i, capacity:
+'BUYER_AFFILIATE' })`, with a comment explaining Merger Sub is a real,
+recurring party role. `representationSideFor` is a separate, simpler regex
+pair that never learned this — a small, second hand-maintained lexicon that
+has drifted from the first (same *shape* of bug as the MAE_CARVEOUT_CODES_V2
+duplication in item 2, but for representation-side capacity rather than
+carve-out codes). Only 1 occurrence in this corpus because Merger Sub rarely
+carries its own REPRESENTATIONS-family qualifier (most Merger Sub content is
+either boilerplate with no qualifier, or captured elsewhere), but the gap is
+real and will recur on any deal where Merger Sub reps get a knowledge/accuracy
+qualifier.
+
+**Fix — RESOLVER_SIDE, free, replay-validatable.** Add `merger\s*sub` to
+`representationSideFor`'s buyer regex (anthropic-provider.js line 3535), or
+better, have it delegate to the existing, complete `resolvePartyCapacity`/
+`PARTY_CAPACITY_LEXICON` and treat `BUYER_AFFILIATE` as `BUYER` for this
+binary side attribute, so the two lexicons cannot diverge again. No prompt
+change — `party_making: "Merger Sub"` is already recorded verbatim.
+
+---
+
+## 5. QUALIFIER_KIND_DISAGREEMENT (1) — DIAGNOSED
+
+**Raised**: `qualifier-kind-lexicon.js`'s `classifyQualifierQuote`, inside the
+legacy (v1) family-marker pipeline (~line 1035-1049): a single legacy marker
+family fires, disagrees with the model's `modelKind`, and one of the two is in
+`IDENTITY_BEARING_KINDS`, so it routes to `REVIEW`/`QUALIFIER_KIND_DISAGREEMENT`
+instead of `OPEN_WORLD`.
+
+**Sample**: card #1903, skechers §3.18, quote `"except as would not be material
+to the business of the Company Group, taken as a whole"`. Confirmed from the
+recorded model response: model tagged `kind: "ACCURACY", code:
+"MAT_MATERIAL_TO_COMPANY"` — a real, registered `ACCURACY_STANDARD` code
+(representations-producer-prompt.js line 14: `MAT_MATERIAL_TO_COMPANY:
+'Materiality to the Company'`), specifically designed to cover exactly this
+"material to the business of X" phrasing.
+
+Ran the real function directly against this quote:
+```
+classifyQualifierQuote({quote: "...", modelKind: 'ACCURACY'})
+  => { outcome: 'REVIEW', reason: 'QUALIFIER_KIND_DISAGREEMENT', lexiconKind: null, families: ['THRESHOLD'] }
+```
+The deterministic legacy-family binder classifies "material to the business of
+X" as its own internal **THRESHOLD marker family** (a subject-matter
+materiality-scope marker in the lexicon's own taxonomy, per diag-qualifier-
+proxy.md's 1a finding on the SAME marker-family names), which disagrees with
+the model's ACCURACY tag.
+
+**Diagnosis: a genuine cross-module vocabulary mismatch, not the primary
+outside-the-quote pattern and not the two-condition-drafter's-habit species.**
+`qualifier-kind-lexicon.js` is shared across families (capitalisation,
+representations) and its THRESHOLD marker family was built around a different
+semantic boundary than representations' own `MAT_MATERIAL_TO_COMPANY`
+ACCURACY_STANDARD code — both describe overlapping text ("material to the
+business/Company") but classify it into different top-level kinds. The model
+followed the representations prompt's own controlled vocabulary correctly; the
+shared lexicon's older marker-family boundary disagrees.
+
+**Fix**: **TAXONOMY_DESIGN** call, not a one-line patch — reconcile whether
+"material to the business of X" belongs to the lexicon's THRESHOLD family or
+representations' ACCURACY family (they cannot both be canonical for the same
+text). If representations' `MAT_MATERIAL_TO_COMPANY` is to stand as designed,
+a narrow **RESOLVER_SIDE** carve-out would exempt the representations
+ACCURACY path from this specific disagreement when the model's code is a
+registered `ACCURACY_STANDARD` value the lexicon has no equivalent code for.
+Only 1 occurrence measured; likely underrepresents true frequency since this
+phrasing ("material to the business of the Company [Group]") is a common
+representations idiom — worth a wider sweep before dismissing as low-priority.
+
+---
+
+## 6. CARVEBACK_CLAUSE_LABELS_NOT_IN_QUOTE (1) — DIAGNOSED
+
+**Raised**: `handleMaeDisproportionalityCandidate` (candidate-resolution.js
+~9176), in the `TRAILING_LIST` branch of the clause-label verification:
+```js
+const badLabel = appliesToClauseLabels.find((label) => {
+  if (carvebackSourceForm !== 'PER_LIMB') return !claim.raw_value.includes(label);
+  ...
+});
+if (badLabel !== undefined) { pushMaeReview({..., reason: 'CARVEBACK_CLAUSE_LABELS_NOT_IN_QUOTE'}); return; }
+```
+For `TRAILING_LIST` candidates this is a plain substring-of-quote test on
+*each* label in `applies_to_clause_labels`, unchanged since the module's
+original design (comment: "no committed run has ever exercised a TRAILING_LIST
+candidate where it fails").
+
+**Sample**: card #2744, concho §Annex-A, `NATIVE_MAE_DISPROPORTIONALITY_
+CANDIDATE`. Confirmed from the recorded response:
+`applies_to_clause_labels: ["(i)","(ii)","(iii)","(iv)","(v)"]`,
+`carveback_source_form: 'TRAILING_LIST'` (the default for
+`disproportionality_assertions`, per anthropic-provider.js line 2462/2571).
+The quote itself reads `"...the matters described in the foregoing clauses
+(i) – (v) (excluding..."` — a compact **en-dash range** naming only the two
+endpoints. `claim.raw_value.includes("(ii)")` is false (and likewise "(iii)",
+"(iv)") — those tokens are never spelled out individually, only implied by the
+"(i) – (v)" range notation. "(i)" and "(v)" themselves pass (literally
+present as the range endpoints).
+
+**Diagnosis: this is the first real case breaking the module's own stated
+assumption.** The model correctly expanded the range into all five individual
+clause labels — semantically right, since "(i) – (v)" does mean clauses i
+through v are covered — but the substring check assumes every covered label
+is spelled out inline (its own worked example: "clauses (a), (b) and (c)",
+a comma-enumerated list, not a dash range). This is a notation-compression
+gap, not a missing corroborating fact and not the drafter's-habit species —
+both range endpoints genuinely are in the quote; the check just can't expand
+a range.
+
+**Fix — RESOLVER_SIDE, free, replay-validatable.** Teach the TRAILING_LIST
+label check (candidate-resolution.js ~9159) to recognise en-dash/hyphen/
+"through" range notation between two clause labels present in the quote
+(e.g. `/\(([ivxlc]+)\)\s*[–—-]\s*\(([ivxlc]+)\)/i` for roman-numeral labels,
+matching this codebase's existing roman-numeral-ordering helpers if any
+exist) and treat every label the range implies as satisfied, instead of
+requiring each to appear as its own literal substring. No prompt change.
+
+---
+
+## Verdict on the two recurring patterns (per the brief)
+
+**Primary pattern ("corroborating detail sits outside the claim's own
+quote")**: applies cleanly to **item 1 only** (91/127, ~72% of this slice) —
+the Article-I/Annex-A "Knowledge" definition's "actual" sits in a different
+section from the qualifier's own bare quote, and the resolver only ever looks
+at the bare quote. It does **not** apply to item 2 (MAE_CARVEOUT_UNCORROBORATED,
+19-23) — every corroborating word for the genuine-miss cases there is inside
+the claim's own quote; the regex is simply too literal/zero-gap to reach it,
+plus a distinct "null code miscoded as a failure" bug. It does not apply to
+items 3-6 either (correct refusal; a second incomplete lexicon; a cross-module
+vocabulary mismatch; a range-notation gap). **So this slice is roughly 72%
+the primary pattern, 28% genuinely different shapes** — the pattern is real
+and dominant for representations-knowledge, but MAE_CARVEOUT's UNCORROBORATED
+population is a materially different defect class and should not be queued
+behind the same fix.
+
+**Second recurring species (two-condition regex, one condition = a single
+drafter's habit — shall/will, SEC/clearance, shares/Securities,
+certificate/certifying)**: found **one confirmed instance** — MAE_CARVEOUT's
+`NATURAL_DISASTERS` pattern anchored to the word "natural", where redhat's own
+carve-out literally reads "national disaster" (item 2c). Possibly a second,
+softer instance in the same family: `COMPLIANCE_WITH_AGREEMENT`'s reliance on
+the literal preposition "by" in "required by this Agreement" vs. real drafting
+using "of...under" (item 2c) — same shape (a regex over-fit to one drafter's
+preposition choice) though not a single clean word-swap like natural/national.
+Neither instance is in items 1, 3-6.
+
+## Sweep confirmation
+
+Cross-checked every REPRESENTATIONS/MAE_DEFINITION row in
+`unresolved-register.json` (14 total rows across the two families): 8 already
+carry a `diagnosis_note` pointing at a prior note (diag-unmapped-lexical.md,
+diag-qualifier-proxy.md, diag-open-world.md) and are out of this slice's
+scope; the remaining 6 are exactly items 1-6 above. **All 6 are now
+diagnosed. Nothing in REPRESENTATIONS/MAE_DEFINITION remains unaccounted
+for.**
+
+Status: COMPLETE.
