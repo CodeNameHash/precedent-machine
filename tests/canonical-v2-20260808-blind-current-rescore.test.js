@@ -2,6 +2,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const { spawnSync } = require('node:child_process');
 const { existsSync, readFileSync } = require('node:fs');
 const { resolve } = require('node:path');
 
@@ -92,6 +93,92 @@ test('a missed floor cannot add accepted=false or alter any card state', () => {
   assert.equal(rows.every((row) => row.now === 'REVIEW:ASSERTION_KIND_UNCORROBORATED'), true);
 });
 
+test('the gate reports all twelve original strata and keeps Stage 3 closed on the current failed floor', () => {
+  const { sample, key } = originalInputs();
+  const root = resolve(__dirname, '../evidence/blind-review/2026-08-08');
+  const baseline = JSON.parse(readFileSync(resolve(root, 'blind-rescore.json'), 'utf8'));
+  const rows = JSON.parse(readFileSync(resolve(root, 'blind-current-rescore.json'), 'utf8'));
+  const gate = scorer.evaluateStratumGate({ rows, baseline, sample, key });
+  assert.equal(gate.stratum_count, 12);
+  assert.equal(gate.cards_per_stratum, 8);
+  assert.equal(gate.blind_rescore_gate, 'FAIL');
+  assert.equal(gate.stage_3_entry, 'CLOSED');
+  assert.equal(gate.pass, false);
+  const termination = gate.strata.find((row) => row.reason === 'TERMINATING_PARTY_REF_NOT_IN_QUOTE');
+  const category = gate.strata.find((row) => row.reason === 'CATEGORY_UNCORROBORATED');
+  assert.deepEqual(termination.resolved, { current: 6, baseline: 7 });
+  assert.deepEqual(category.resolved, { current: 1, baseline: 4 });
+  for (const row of gate.strata) {
+    assert.equal(typeof row.review, 'number');
+    assert.equal(typeof row.not_located_in_output, 'number');
+    assert.equal(typeof row.artifact_missing, 'number');
+  }
+  assert.deepEqual(gate.failures.map((row) => row.reason).sort(), [
+    'CATEGORY_UNCORROBORATED', 'TERMINATING_PARTY_REF_NOT_IN_QUOTE',
+  ]);
+});
+
+test('a passing blind-rescore gate cannot authorise Stage 3', () => {
+  const { sample, key } = originalInputs();
+  const root = resolve(__dirname, '../evidence/blind-review/2026-08-08');
+  const baseline = JSON.parse(readFileSync(resolve(root, 'blind-rescore.json'), 'utf8'));
+  const gate = scorer.evaluateStratumGate({ rows: baseline, baseline, sample, key });
+  assert.equal(gate.pass, true);
+  assert.equal(gate.blind_rescore_gate, 'PASS');
+  assert.equal(gate.stage_3_entry, 'NOT_AUTHORISED_BY_THIS_GATE');
+});
+
+test('a tampered blind-rescore baseline cannot redefine the authorised floor', () => {
+  const { sample, key } = originalInputs();
+  const root = resolve(__dirname, '../evidence/blind-review/2026-08-08');
+  const baseline = JSON.parse(readFileSync(resolve(root, 'blind-rescore.json'), 'utf8'));
+  const tampered = structuredClone(baseline);
+  tampered.find((row) => row.orig_reason === 'TERMINATING_PARTY_REF_NOT_IN_QUOTE' && row.now.startsWith('RESOLVED ')).now = 'REVIEW:TERMINATING_PARTY_REF_NOT_IN_QUOTE';
+  assert.throws(() => scorer.evaluateStratumGate({ rows: baseline, baseline: tampered, sample, key }), (error) => (
+    error.code === 'AUTHORISED_BASELINE_FLOOR_MISMATCH'
+  ));
+});
+
+test('the gate fails a staged-stratum regression without changing any output row', () => {
+  const { sample, key } = originalInputs();
+  const root = resolve(__dirname, '../evidence/blind-review/2026-08-08');
+  const baseline = JSON.parse(readFileSync(resolve(root, 'blind-rescore.json'), 'utf8'));
+  const rows = structuredClone(baseline);
+  const target = rows.find((row) => row.orig_reason === 'CLAUSE_LABEL_NOT_IN_QUOTE' && row.now.startsWith('RESOLVED '));
+  target.now = 'REVIEW:CLAUSE_LABEL_NOT_IN_QUOTE';
+  const gate = scorer.evaluateStratumGate({ rows, baseline, sample, key });
+  assert.equal(gate.pass, false);
+  assert.deepEqual(gate.failures, [{
+    reason: 'CLAUSE_LABEL_NOT_IN_QUOTE', type: 'STAGED_STRATUM_REGRESSED', current_resolved: 5, baseline_resolved: 6,
+  }]);
+  assert.equal(Object.hasOwn(target, 'accepted'), false);
+});
+
+test('the gate fails any new resolution in a zero-baseline control stratum', () => {
+  const { sample, key } = originalInputs();
+  const root = resolve(__dirname, '../evidence/blind-review/2026-08-08');
+  const baseline = JSON.parse(readFileSync(resolve(root, 'blind-rescore.json'), 'utf8'));
+  const rows = structuredClone(baseline);
+  const target = rows.find((row) => row.orig_reason === 'ASSERTION_KIND_UNCORROBORATED');
+  target.now = 'RESOLVED [FINANCING_COVENANT_ASSERTION]';
+  const gate = scorer.evaluateStratumGate({ rows, baseline, sample, key });
+  assert.equal(gate.pass, false);
+  assert.deepEqual(gate.failures, [{
+    reason: 'ASSERTION_KIND_UNCORROBORATED', type: 'CONTROL_STRATUM_MOVED', current_resolved: 1, baseline_resolved: 0,
+  }]);
+});
+
+test('the gate CLI emits its table and has a non-zero status while Stage 3 is closed', () => {
+  const root = resolve(__dirname, '..');
+  const run = spawnSync(process.execPath, [resolve(root, 'scripts/canonical-v2-20260808-blind-current-rescore.mjs'), '--gate'], {
+    cwd: root, encoding: 'utf8', env: { ...process.env, CI: 'true' },
+  });
+  assert.equal(run.status, 1, run.stderr);
+  const report = JSON.parse(run.stdout);
+  assert.equal(report.stage_3_entry, 'CLOSED');
+  assert.equal(report.strata.length, 12);
+});
+
 test('normalised exact matching wins before fallback matching', () => {
   const card = { deal: 'deal', family: 'FAMILY', section: '1.1', claim_key: 'NATIVE_CLAIM', quote: 'Exact candidate text' };
   const exact = candidate({ candidate_id: 'exact', raw_value: 'Exact  candidate\u200E text' });
@@ -144,24 +231,25 @@ test('duplicate exact matches from different recordings fail when their selected
   );
 });
 
-test('source is selected once per family from the recorded resolver route changes', () => {
+test('source manifest replays every sampled family changed by the shared resolver', () => {
   const { sample } = originalInputs();
-  const baseline = JSON.parse(readFileSync(resolve(__dirname, '../evidence/blind-review/2026-08-08/blind-rescore.json'), 'utf8'));
-  const expectedReplay = new Set(['TERMINATION', 'REPRESENTATIONS', 'INTERIM_OPERATING', 'MAE_DEFINITION', 'DNO_INDEMNIFICATION']);
   const counts = { replay: 0, committed: 0 };
   for (const family of new Set(sample.map((card) => card.family))) {
     const mode = scorer.sourceModeForFamily(family);
-    assert.equal(mode.source, expectedReplay.has(family) ? 'replay' : 'committed', family);
-    const baselineSources = new Set(baseline.filter((row) => row.family === family).map((row) => row.source));
-    assert.deepEqual(baselineSources, new Set([mode.baseline_source]), `${family} baseline source`);
-    if (mode.source === 'replay') {
-      assert.ok(mode.resolver_paths.length > 0, `${family} needs a resolver path`);
-      assert.ok(mode.change_commits.length > 0, `${family} needs a change commit`);
-    } else {
-      assert.deepEqual(mode.resolver_paths, []);
-      assert.deepEqual(mode.change_commits, []);
+    assert.equal(mode.source, 'replay', family);
+    assert.ok(mode.resolver_paths.includes('lib/canonical-v2/native-producer/candidate-resolution.js'), family);
+    assert.match(mode.reason, /^STAGE_2Y_/);
     }
-  }
   for (const card of sample) counts[scorer.sourceModeForFamily(card.family).source] += 1;
-  assert.deepEqual(counts, { replay: 57, committed: 39 });
+  assert.deepEqual(counts, { replay: 96, committed: 0 });
+});
+
+test('committed mode fails closed when it points at the historical score', () => {
+  const { sample, key } = originalInputs();
+  assert.throws(() => scorer.currentCommittedRows({
+    repoRoot: resolve(__dirname, '..'), sample, key,
+    baselinePath: 'evidence/blind-review/2026-08-08/blind-rescore.json',
+    sourceMode: { source: 'committed', current_score_path: 'evidence/blind-review/2026-08-08/blind-rescore.json' },
+    cache: new Map(),
+  }), (error) => error.code === 'HISTORICAL_SCORE_REUSE_FORBIDDEN');
 });

@@ -34,67 +34,36 @@ const OUTPUT_KEYS = Object.freeze(['id', 'deal', 'family', 'orig_reason', 'now',
 const SAMPLE_CARD_KEYS = Object.freeze(['deal', 'family', 'section', 'quote', 'claim_key', 'id']);
 const KEY_CARD_KEYS = Object.freeze([...SAMPLE_CARD_KEYS, '_reason']);
 const RESERVED_DISPOSITION_CODES = new Set(['NOT_LOCATED_IN_OUTPUT', 'ARTIFACT_MISSING']);
+const AUTHORISED_STRATUM_BASELINE = Object.freeze({
+  TERMINATING_PARTY_REF_NOT_IN_QUOTE: 7,
+  ASSERTION_KIND_UNCORROBORATED: 0,
+  QUALIFIER_KIND_UNCLASSIFIED: 4,
+  CATEGORY_UNCORROBORATED: 4,
+  CONDITION_KIND_UNCORROBORATED: 0,
+  NO_SHOP_PREREQUISITE_UNCORROBORATED: 0,
+  IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED: 0,
+  CLAUSE_LABEL_NOT_IN_QUOTE: 6,
+  PARTY_UNRESOLVED: 0,
+  IOC_ATTACHMENT_TARGET_QUOTE_MISSING: 0,
+  PROXY_MEETING_KIND_UNCORROBORATED: 0,
+  DNO_KIND_UNCORROBORATED: 0,
+});
 
-// A family is replayed only when its resolver route changed after the sample
-// was drawn, or when the original rescore already replayed that route. The
-// commit identities make the choice reproducible without making a score depend
-// on the checkout's current git history.
-const FAMILY_SOURCE_MODES = Object.freeze({
-  TERMINATION: Object.freeze({
-    source: 'replay', baseline_source: 'replay',
-    resolver_paths: Object.freeze(['lib/canonical-v2/native-producer/candidate-resolution.js']),
-    change_commits: Object.freeze(['0076f460d01dc8f1c9b8bb4d70e7ca9cc92a33a7']),
-    reason: 'ORIGINAL_RESCORE_REPLAYED_CHANGED_TERMINATION_ROUTE',
-  }),
-  REPRESENTATIONS: Object.freeze({
-    source: 'replay', baseline_source: 'replay',
-    resolver_paths: Object.freeze([
-      'lib/canonical-v2/native-producer/candidate-resolution.js',
-      'lib/canonical-v2/native-producer/same-deal-defined-term-resolution.js',
-    ]),
-    change_commits: Object.freeze(['cfaf7433da71bb297d9d75ce68006a3746fd86b9']),
-    reason: 'ORIGINAL_RESCORE_REPLAYED_CHANGED_REPRESENTATIONS_ROUTE',
-  }),
-  INTERIM_OPERATING: Object.freeze({
-    source: 'replay', baseline_source: 'replay',
-    resolver_paths: Object.freeze(['lib/canonical-v2/native-producer/corroboration-ladder.js']),
-    change_commits: Object.freeze(['632374392f8df2e64a76d7ab000af4f092140b7d']),
-    reason: 'ORIGINAL_RESCORE_REPLAYED_CHANGED_INTERIM_OPERATING_ROUTE',
-  }),
-  MAE_DEFINITION: Object.freeze({
-    source: 'replay', baseline_source: 'replay',
-    resolver_paths: Object.freeze([
-      'lib/canonical-v2/native-producer/candidate-resolution.js',
-      'lib/canonical-v2/native-producer/duplicate-suppression.js',
-    ]),
-    change_commits: Object.freeze(['8e736cf833e4814939a6bc2f8911949d367e7d74']),
-    reason: 'CURRENT_ROUTE_CHANGED_AFTER_SAMPLE',
-  }),
-  DNO_INDEMNIFICATION: Object.freeze({
-    source: 'replay', baseline_source: 'committed',
-    resolver_paths: Object.freeze([
-      'lib/canonical-v2/native-producer/candidate-resolution.js',
-      'lib/normalize-numeric.js',
-    ]),
-    change_commits: Object.freeze(['7b6390bfb01ba3bebb7813071d16118523aaa4c0']),
-    reason: 'CURRENT_ROUTE_CHANGED_AFTER_SAMPLE',
-  }),
-  FINANCING_COVENANTS: Object.freeze({
-    source: 'committed', baseline_source: 'committed', resolver_paths: Object.freeze([]), change_commits: Object.freeze([]),
-    reason: 'NO_RESOLVER_ROUTE_CHANGE_AFTER_SAMPLE',
-  }),
-  CLOSING_CONDITIONS: Object.freeze({
-    source: 'committed', baseline_source: 'committed', resolver_paths: Object.freeze([]), change_commits: Object.freeze([]),
-    reason: 'NO_RESOLVER_ROUTE_CHANGE_AFTER_SAMPLE',
-  }),
-  NO_SHOP: Object.freeze({
-    source: 'committed', baseline_source: 'committed', resolver_paths: Object.freeze([]), change_commits: Object.freeze([]),
-    reason: 'NO_RESOLVER_ROUTE_CHANGE_AFTER_SAMPLE',
-  }),
-  PROXY_MEETING: Object.freeze({
-    source: 'committed', baseline_source: 'committed', resolver_paths: Object.freeze([]), change_commits: Object.freeze([]),
-    reason: 'NO_RESOLVER_ROUTE_CHANGE_AFTER_SAMPLE',
-  }),
+const SHARED_RESOLVER_PATH = 'lib/canonical-v2/native-producer/candidate-resolution.js';
+
+// This manifest is the audit record for source selection. Stage 2Y changes
+// the shared resolver dispatcher, so every sampled family replays. A future
+// committed entry must name a new score artefact, never blind-rescore.json.
+const FAMILY_SOURCE_MANIFEST = Object.freeze({
+  TERMINATION: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH]), reason: 'STAGE_2Y_SHARED_RESOLVER_CHANGED' }),
+  REPRESENTATIONS: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH, 'lib/canonical-v2/native-producer/same-deal-defined-term-resolution.js']), reason: 'STAGE_2Y_SHARED_RESOLVER_CHANGED' }),
+  INTERIM_OPERATING: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH, 'lib/canonical-v2/native-producer/corroboration-ladder.js']), reason: 'STAGE_2Y_SHARED_RESOLVER_CHANGED' }),
+  MAE_DEFINITION: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH, 'lib/canonical-v2/native-producer/duplicate-suppression.js']), reason: 'STAGE_2Y_SHARED_RESOLVER_CHANGED' }),
+  DNO_INDEMNIFICATION: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH, 'lib/normalize-numeric.js']), reason: 'STAGE_2Y_SHARED_RESOLVER_CHANGED' }),
+  FINANCING_COVENANTS: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH]), reason: 'STAGE_2Y_SHARED_RESOLVER_CHANGED' }),
+  CLOSING_CONDITIONS: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH]), reason: 'STAGE_2Y_SHARED_RESOLVER_CHANGED' }),
+  NO_SHOP: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH]), reason: 'STAGE_2Y_SHARED_RESOLVER_CHANGED' }),
+  PROXY_MEETING: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH]), reason: 'STAGE_2Y_SHARED_RESOLVER_CHANGED' }),
 });
 
 class CurrentBlindRescoreError extends Error {
@@ -165,9 +134,38 @@ function assertStrata(key) {
   return strata;
 }
 
+function assertAuthorisedBaseline({ baseline, sample, key }) {
+  assertOutput(baseline, sample, key);
+  const strata = assertStrata(key);
+  const authorisedReasons = Object.keys(AUTHORISED_STRATUM_BASELINE).sort();
+  const actualReasons = [...strata.keys()].sort();
+  if (canonicalJson(actualReasons) !== canonicalJson(authorisedReasons)) {
+    fail('AUTHORISED_BASELINE_STRATA_MISMATCH', 'the original key does not have the authorised twelve reason strata');
+  }
+  const baselineById = new Map(baseline.map((row) => [row.id, row]));
+  for (const [reason, cards] of strata) {
+    const resolved = cards.filter((card) => baselineById.get(card.id).now.startsWith('RESOLVED ')).length;
+    if (resolved !== AUTHORISED_STRATUM_BASELINE[reason]) {
+      fail('AUTHORISED_BASELINE_FLOOR_MISMATCH', 'blind-rescore.json does not match the authorised original floor', {
+        reason, expected: AUTHORISED_STRATUM_BASELINE[reason], actual: resolved,
+      });
+    }
+  }
+  return strata;
+}
+
 function sourceModeForFamily(family) {
-  const mode = FAMILY_SOURCE_MODES[family];
+  const mode = FAMILY_SOURCE_MANIFEST[family];
   if (!mode) fail('FAMILY_SOURCE_MODE_MISSING', 'every sample family must have an explicit source mode', { family });
+  if (!['replay', 'committed'].includes(mode.source) || typeof mode.reason !== 'string' || mode.reason.length === 0) {
+    fail('FAMILY_SOURCE_MANIFEST_INVALID', 'every source manifest entry needs a governed source and audit reason', { family });
+  }
+  if (mode.source === 'replay' && (!Array.isArray(mode.resolver_paths) || mode.resolver_paths.length === 0)) {
+    fail('FAMILY_SOURCE_MANIFEST_INVALID', 'a replay family must name its changed resolver path', { family });
+  }
+  if (mode.source === 'committed' && typeof mode.current_score_path !== 'string') {
+    fail('CURRENT_COMMITTED_EVIDENCE_REQUIRED', 'a committed family must name a current score artefact', { family });
+  }
   return mode;
 }
 
@@ -383,12 +381,27 @@ function familyModes(cards) {
     return Object.freeze({
       family,
       source: mode.source,
-      baseline_source: mode.baseline_source,
       resolver_paths: mode.resolver_paths,
-      change_commits: mode.change_commits,
+      current_score_path: mode.current_score_path || null,
       reason: mode.reason,
     });
   });
+}
+
+function currentCommittedRows({ repoRoot, sourceMode, sample, key, baselinePath, cache }) {
+  const path = sourceMode.current_score_path;
+  if (typeof path !== 'string' || path.length === 0) {
+    fail('CURRENT_COMMITTED_EVIDENCE_REQUIRED', 'committed mode requires a named current score artefact');
+  }
+  if (path === baselinePath || resolve(repoRoot, path) === resolve(repoRoot, baselinePath)) {
+    fail('HISTORICAL_SCORE_REUSE_FORBIDDEN', 'committed mode may not reuse blind-rescore.json');
+  }
+  if (!cache.has(path)) {
+    const rows = readJson(resolve(repoRoot, path));
+    assertOutput(rows, sample, key);
+    cache.set(path, new Map(rows.map((row) => [row.id, row])));
+  }
+  return cache.get(path);
 }
 
 function successorComparison({ baseline, key, successor }) {
@@ -427,8 +440,7 @@ async function buildCurrentBlindRescore({
   const { keyById } = assertOriginalSampleJoin(sample, key);
   assertStrata(key);
   const baseline = readJson(resolve(repoRoot, baselinePath));
-  assertOutput(baseline, sample, key);
-  const baselineById = new Map(baseline.map((row) => [row.id, row]));
+  assertAuthorisedBaseline({ baseline, sample, key });
   const discovered = historicalCandidates({ repoRoot });
   const inventory = candidates || discovered.candidates;
   let runner = runnerModule;
@@ -445,18 +457,23 @@ async function buildCurrentBlindRescore({
   };
   const rows = [];
   const matchTrace = [];
+  const committedEvidenceCache = new Map();
   for (const card of sample) {
     const keyedCard = Object.freeze({ ...card, _reason: keyById.get(card.id)._reason });
     const sourceMode = sourceModeForFamily(card.family);
     const origReason = keyById.get(card.id)._reason;
     if (sourceMode.source === 'committed') {
-      const committed = baselineById.get(card.id);
-      if (!committed) fail('COMMITTED_BASELINE_CARD_MISSING', 'committed source requires its original card disposition', { id: card.id });
+      const committed = currentCommittedRows({
+        repoRoot, sourceMode, sample, key, baselinePath, cache: committedEvidenceCache,
+      }).get(card.id);
+      if (!committed || committed.source !== 'committed') {
+        fail('CURRENT_COMMITTED_EVIDENCE_CARD_MISSING', 'current committed evidence must provide this card as committed', { id: card.id, family: card.family });
+      }
       rows.push(Object.freeze({ id: card.id, deal: card.deal, family: card.family, orig_reason: origReason, now: committed.now, source: 'committed' }));
       matchTrace.push(Object.freeze({
         id: card.id,
         source: 'committed',
-        match_method: 'committed',
+        match_method: 'current_committed_evidence',
         matched_candidates: [],
         observations: [],
         now: committed.now,
@@ -533,7 +550,78 @@ function assertOutput(rows, sample, key = null) {
   }
 }
 
-async function main() {
+function stateCounts(rows) {
+  return Object.freeze({
+    resolved: rows.filter((row) => row.now.startsWith('RESOLVED ')).length,
+    review: rows.filter((row) => row.now.startsWith('REVIEW:')).length,
+    open_world: rows.filter((row) => row.now.startsWith('OPEN_WORLD:')).length,
+    not_located_in_output: rows.filter((row) => row.now === 'NOT_LOCATED_IN_OUTPUT').length,
+    artifact_missing: rows.filter((row) => row.now === 'ARTIFACT_MISSING').length,
+  });
+}
+
+function evaluateStratumGate({ rows, baseline, sample, key }) {
+  assertOriginalSampleJoin(sample, key);
+  const strata = assertAuthorisedBaseline({ baseline, sample, key });
+  assertOutput(rows, sample, key);
+  const currentById = new Map(rows.map((row) => [row.id, row]));
+  const results = [...strata.entries()].map(([reason, cards]) => {
+    const current = stateCounts(cards.map((card) => currentById.get(card.id)));
+    const authorisedBaseline = AUTHORISED_STRATUM_BASELINE[reason];
+    const control = authorisedBaseline === 0;
+    const pass = control ? current.resolved === 0 : current.resolved >= authorisedBaseline;
+    return Object.freeze({
+      reason,
+      cards: cards.length,
+      resolved: Object.freeze({ current: current.resolved, baseline: authorisedBaseline }),
+      review: current.review,
+      open_world: current.open_world,
+      not_located_in_output: current.not_located_in_output,
+      artifact_missing: current.artifact_missing,
+      control,
+      movement: current.resolved - authorisedBaseline,
+      pass,
+    });
+  }).sort((left, right) => left.reason.localeCompare(right.reason));
+  const controls = results.filter((row) => row.control);
+  if (controls.length !== 8 || controls.some((row) => row.resolved.baseline !== 0)) {
+    fail('ORIGINAL_CONTROL_STRATA_INVALID', 'the recovered baseline must contain exactly eight zero-resolved control strata');
+  }
+  const failures = results.filter((row) => !row.pass).map((row) => Object.freeze({
+    reason: row.reason,
+    type: row.control ? 'CONTROL_STRATUM_MOVED' : 'STAGED_STRATUM_REGRESSED',
+    current_resolved: row.resolved.current,
+    baseline_resolved: row.resolved.baseline,
+  }));
+  return Object.freeze({
+    schema_version: 'BLIND_CURRENT_RESCORE_STRATUM_GATE/V1',
+    card_count: rows.length,
+    stratum_count: results.length,
+    cards_per_stratum: 8,
+    blind_rescore_gate: failures.length === 0 ? 'PASS' : 'FAIL',
+    pass: failures.length === 0,
+    stage_3_entry: failures.length === 0 ? 'NOT_AUTHORISED_BY_THIS_GATE' : 'CLOSED',
+    strata: Object.freeze(results),
+    failures: Object.freeze(failures),
+  });
+}
+
+function readGateInputs({ repoRoot = DEFAULT_ROOT, samplePath = SAMPLE_PATH, keyPath = KEY_PATH, baselinePath = BASELINE_SCORE_PATH, outputPath = OUTPUT_PATH } = {}) {
+  const sample = readJson(resolve(repoRoot, samplePath));
+  const key = readJson(resolve(repoRoot, keyPath));
+  const baseline = readJson(resolve(repoRoot, baselinePath));
+  const rows = readJson(resolve(repoRoot, outputPath));
+  return Object.freeze({ sample, key, baseline, rows });
+}
+
+async function main(argv = process.argv.slice(2)) {
+  if (argv.length === 1 && argv[0] === '--gate') {
+    const report = evaluateStratumGate(readGateInputs());
+    process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
+    if (!report.pass) process.exitCode = 1;
+    return report;
+  }
+  if (argv.length !== 0) fail('USAGE', 'use no arguments to write the current score, or --gate to check its original strata');
   const { rows, trace } = await buildCurrentBlindRescore();
   writeFileSync(resolve(DEFAULT_ROOT, OUTPUT_PATH), `${JSON.stringify(rows, null, 2)}\n`);
   writeFileSync(resolve(DEFAULT_ROOT, TRACE_PATH), `${JSON.stringify(trace, null, 2)}\n`);
@@ -547,17 +635,22 @@ if (isMain) main().catch((error) => {
 });
 
 export {
+  AUTHORISED_STRATUM_BASELINE,
   CurrentBlindRescoreError,
-  FAMILY_SOURCE_MODES,
+  FAMILY_SOURCE_MANIFEST,
   OUTPUT_KEYS,
+  assertAuthorisedBaseline,
   assertOriginalSampleJoin,
   assertOutput,
   assertStrata,
   buildCurrentBlindRescore,
+  currentCommittedRows,
+  evaluateStratumGate,
   fallbackMatch,
   historicalCandidates,
   matchCard,
   matchCurrentOutput,
+  readGateInputs,
   normalise,
   outcomeText,
   resolveMatches,
