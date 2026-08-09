@@ -1,0 +1,4160 @@
+{
+  "6.01": {
+    "schema_version": "LEXICAL_DISAGREEMENT_RECEIPT/V1",
+    "lexicon_version": 16,
+    "lexicon_content_hash": "4eb1bfb365d0aee6569e5c38ce4a4c40fb30bbb43caf5ee941a20cc6354e7ec3",
+    "section_ref": "6.01",
+    "text_sha256": "ed61e8c47a47e30e709e2b11c270e0c266047b4821ee9acd5eda412a76ebef0f",
+    "candidate_digest": "d74f6937505035f1bec94cff82147d2dc6be8db8e31601f0f14675c2ea19be8b",
+    "family_outcomes": [
+      {
+        "family": "ANTI-AGREEMENTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-BURDEN",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "ANTI-BURDEN",
+            "pattern_id": "ANTI-BURDEN:ACRONYM:BURDENSOME_CONDITION",
+            "start": 861,
+            "end": 881,
+            "excerpt": " of (i) and (ii) without the imposition, individually or in the aggregate, of a Burdensome Condition.\n46\n(c) No Injunctions or Legal Restraints. (i) No temporary restraining order,",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-BURDEN",
+            "pattern_id": "ANTI-BURDEN:ACRONYM:BURDENSOME_CONDITION",
+            "start": 1287,
+            "end": 1307,
+            "excerpt": "ing consummation of the Merger or imposing, individually or in the aggregate, a Burdensome Condition (collectively, “Legal Restraints”) and (ii) no Governmental Entity shall ha",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 2,
+        "matched_count": 0,
+        "unmatched_count": 2,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-CONSULT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-COOPERATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-EFFORTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-FILING",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "ANTI-FILING",
+            "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+            "start": 460,
+            "end": 467,
+            "excerpt": "y waiting period (and any extension thereof) applicable to the Merger under the HSR Act shall have been terminated or shall have expired and (ii) any other approval or",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-INFO",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-LITIGATION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-NOACTION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-NOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-STRATEGY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-WITHDRAW",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-B-REP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-COV",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-M-LEGAL",
+        "outcome": "LEXICON_FAMILY_UNCOVERED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-MAE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-REG",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.06865671641791045
+      },
+      {
+        "family": "COND-S-REP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-DISSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-PERSHARE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-RATIO",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-16B",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-ACCESS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CONSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CVR",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DELIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-EMPLOYEE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FDACOMMS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FINANCING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FURTHER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-INDEMN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LITNOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MARKETING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MEETING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MERGESUB",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-NOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYAGENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYOFF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PROXY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PUBLICITY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-RESIGN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-SECREPORT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-TAKEOVER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-MAE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-WILLFUL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-COORD",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-SPECIAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-BENEF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-INDEM",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-DELIVERY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-PERF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ACCOUNTING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CAPEX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CHARTER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-COMP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CONTRACT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DIVIDEND",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ISSUE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-MERGE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-TAX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MERGER-STRUCTURE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MISC-BOILERPLATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-EXCEPT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-MATCH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-NOTICE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-PROHIBIT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-REMATCH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REMEDY-SPECIFIC-PERFORMANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NOOTHERREPS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CAP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CONTRACTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NOOTHERREPS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-FIRPTA",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TRANSFER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TREATMENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-REVERSE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TARGET",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-BREACH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-LEGAL",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "TERMR-LEGAL",
+            "pattern_id": "TERMR-LEGAL:PHRASE:PERMANENT_INJUNCTION",
+            "start": 977,
+            "end": 997,
+            "excerpt": "nctions or Legal Restraints. (i) No temporary restraining order, preliminary or permanent injunction or other Judgment or Law of, or issued by, any court of competent jurisdiction ",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-MUTUAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-NOVOTE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-OUTSIDE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-RECOMMEND",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-SUPERIOR",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      }
+    ],
+    "counts": {
+      "families_total": 99,
+      "families_all_matched": 95,
+      "families_unmatched_signals": 3,
+      "families_uncovered": 1,
+      "total_pattern_hits": 4,
+      "total_matched": 0,
+      "total_unmatched": 4,
+      "total_irreproducible": 0
+    },
+    "lexical_disagreement_receipt_id": "14de359b32f637b4d601d350fa56b6f22042fe49caf5ccce94a9398ecbe7e130"
+  },
+  "6.02": {
+    "schema_version": "LEXICAL_DISAGREEMENT_RECEIPT/V1",
+    "lexicon_version": 16,
+    "lexicon_content_hash": "4eb1bfb365d0aee6569e5c38ce4a4c40fb30bbb43caf5ee941a20cc6354e7ec3",
+    "section_ref": "6.02",
+    "text_sha256": "99500661ccc075eecd3e00f0958de85cca569553a0f2affc72a3374404c5fb6e",
+    "candidate_digest": "c475f3e43c6fb0f4578f93f43e37c05544096cc221a70407685c4ede4d8748b8",
+    "family_outcomes": [
+      {
+        "family": "ANTI-AGREEMENTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-BURDEN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-CONSULT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-COOPERATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-EFFORTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-FILING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-INFO",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-LITIGATION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-NOACTION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-NOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-STRATEGY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-WITHDRAW",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-B-CERT",
+        "outcome": "LEXICON_FAMILY_UNCOVERED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-B-REP",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "COND-B-REP",
+            "pattern_id": "COND-B-REP:PHRASE:COMPANY_REPRESENTATIONS",
+            "start": 308,
+            "end": 353,
+            "excerpt": "osing Date of the following conditions:\n(a) Representations and Warranties. The representations and warranties of the Company:\n(i) set forth in Section 3.01(f)(ii) of this Agreement shall be true and corre",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-B-REP",
+            "pattern_id": "COND-B-REP:PHRASE:COMPANY_REPRESENTATIONS",
+            "start": 1043,
+            "end": 1088,
+            "excerpt": "of an earlier date, in which case as of such earlier date); and\n(iii) all other representations and warranties of the Company set forth in this Agreement, other than those Sections specifically identified ",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 2,
+        "matched_count": 0,
+        "unmatched_count": 2,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-COV",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 1,
+        "matched_count": 1,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.06140691799455888
+      },
+      {
+        "family": "COND-MAE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-REG",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-S-REP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-DISSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-PERSHARE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-RATIO",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-16B",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-ACCESS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CONSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CVR",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DELIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-EMPLOYEE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FDACOMMS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FINANCING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FURTHER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-INDEMN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LITNOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MARKETING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MEETING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MERGESUB",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-NOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYAGENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYOFF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PROXY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PUBLICITY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-RESIGN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-SECREPORT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-TAKEOVER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-MAE",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 1335,
+            "end": 1358,
+            "excerpt": "g all qualifications or limitations as to “material,” “materiality,” “Material Adverse Effect” and words of similar import set forth therein) as of the date of this Agreem",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 1789,
+            "end": 1812,
+            "excerpt": "t would not reasonably be expected to have, individually or in the aggregate, a Material Adverse Effect.\n(b) Performance of Obligations of the Company. The Company shall have performe",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 2027,
+            "end": 2050,
+            "excerpt": "be performed by it under this Agreement at or prior to the Closing Date.\n(c) No Material Adverse Effect. Since the date of this Agreement, no Effect has occurred that would reasonably",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 2188,
+            "end": 2211,
+            "excerpt": " that would reasonably be expected to have, individually or in the aggregate, a Material Adverse Effect, of which the existence or consequences are still continuing.\n(d) Officer’s C",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 4,
+        "matched_count": 0,
+        "unmatched_count": 4,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-WILLFUL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-COORD",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-SPECIAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-BENEF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-INDEM",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-DELIVERY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-PERF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ACCOUNTING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CAPEX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CHARTER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-COMP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CONTRACT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DIVIDEND",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ISSUE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-MERGE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-TAX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MERGER-STRUCTURE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MISC-BOILERPLATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-EXCEPT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-MATCH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-NOTICE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-PROHIBIT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-REMATCH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REMEDY-SPECIFIC-PERFORMANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NOOTHERREPS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CAP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CONTRACTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NOOTHERREPS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-FIRPTA",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TRANSFER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TREATMENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-REVERSE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TARGET",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-BREACH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-LEGAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-MUTUAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-NOVOTE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-OUTSIDE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-RECOMMEND",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-SUPERIOR",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      }
+    ],
+    "counts": {
+      "families_total": 99,
+      "families_all_matched": 96,
+      "families_unmatched_signals": 2,
+      "families_uncovered": 1,
+      "total_pattern_hits": 7,
+      "total_matched": 1,
+      "total_unmatched": 6,
+      "total_irreproducible": 0
+    },
+    "lexical_disagreement_receipt_id": "6ec5d2a32970c450efbf58324a0dfbac508f2e75777efc1937c6f672cdc18a3b"
+  },
+  "6.03": {
+    "schema_version": "LEXICAL_DISAGREEMENT_RECEIPT/V1",
+    "lexicon_version": 16,
+    "lexicon_content_hash": "4eb1bfb365d0aee6569e5c38ce4a4c40fb30bbb43caf5ee941a20cc6354e7ec3",
+    "section_ref": "6.03",
+    "text_sha256": "bbf8d03277f60aa91aef89748702269313a832a23588709dedba6388fa89810f",
+    "candidate_digest": "32e4d17b1a70d715cb24e92f52922c5b17b276ccb5c6870d81b77caf3c38369d",
+    "family_outcomes": [
+      {
+        "family": "ANTI-AGREEMENTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-BURDEN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-CONSULT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-COOPERATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-EFFORTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-FILING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-INFO",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-LITIGATION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-NOACTION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-NOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-STRATEGY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-WITHDRAW",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-B-REP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-COV",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 1,
+        "matched_count": 1,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.1133518776077886
+      },
+      {
+        "family": "COND-MAE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-REG",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-S-CERT",
+        "outcome": "LEXICON_FAMILY_UNCOVERED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-S-REP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-DISSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-PERSHARE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-RATIO",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-16B",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-ACCESS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CONSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CVR",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DELIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-EMPLOYEE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FDACOMMS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FINANCING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FURTHER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-INDEMN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LITNOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MARKETING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MEETING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MERGESUB",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-NOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYAGENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYOFF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PROXY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PUBLICITY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-RESIGN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-SECREPORT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-TAKEOVER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-MAE",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 494,
+            "end": 517,
+            "excerpt": "g all qualifications or limitations as to “material,” “materiality,” “Material Adverse Effect” and words of similar import set forth therein) as of date of this\n47\nAgreeme",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-WILLFUL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-COORD",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-SPECIAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-BENEF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-INDEM",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-DELIVERY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-PERF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ACCOUNTING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CAPEX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CHARTER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-COMP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CONTRACT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DIVIDEND",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ISSUE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-MERGE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-TAX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MERGER-STRUCTURE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MISC-BOILERPLATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-EXCEPT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-MATCH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-NOTICE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-PROHIBIT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-REMATCH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REMEDY-SPECIFIC-PERFORMANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NOOTHERREPS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CAP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CONTRACTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NOOTHERREPS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-FIRPTA",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TRANSFER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TREATMENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-REVERSE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TARGET",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-BREACH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-LEGAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-MUTUAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-NOVOTE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-OUTSIDE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-RECOMMEND",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-SUPERIOR",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      }
+    ],
+    "counts": {
+      "families_total": 99,
+      "families_all_matched": 97,
+      "families_unmatched_signals": 1,
+      "families_uncovered": 1,
+      "total_pattern_hits": 2,
+      "total_matched": 1,
+      "total_unmatched": 1,
+      "total_irreproducible": 0
+    },
+    "lexical_disagreement_receipt_id": "72ef9c8ec0a39223476216ab94842f63b859c1ed63ea0d13f37c012417951dda"
+  },
+  "6.04": {
+    "schema_version": "LEXICAL_DISAGREEMENT_RECEIPT/V1",
+    "lexicon_version": 16,
+    "lexicon_content_hash": "4eb1bfb365d0aee6569e5c38ce4a4c40fb30bbb43caf5ee941a20cc6354e7ec3",
+    "section_ref": "6.04",
+    "text_sha256": "25818a4f3a82216c8a1e33ced3e7af4d8c8cdf722b42c1ad310b0ae49874aea4",
+    "candidate_digest": "8f50e8441781b5ee628b47fc1fc3d07a812534d9fd32f1e811b28b5be7fda8d8",
+    "family_outcomes": [
+      {
+        "family": "ANTI-AGREEMENTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-BURDEN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-CONSULT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-COOPERATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-EFFORTS",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+            "start": 278,
+            "end": 301,
+            "excerpt": "be, to be satisfied if such failure was caused by such party’s failure to use reasonable best efforts to consummate the Merger and the other transactions contemplated by this Agreem",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+            "start": 289,
+            "end": 301,
+            "excerpt": "atisfied if such failure was caused by such party’s failure to use reasonable best efforts to consummate the Merger and the other transactions contemplated by this Agreem",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 2,
+        "matched_count": 0,
+        "unmatched_count": 2,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-FILING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-INFO",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-LITIGATION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-NOACTION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-NOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-STRATEGY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-WITHDRAW",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-B-REP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-COV",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-MAE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-REG",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-S-REP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-DISSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-PERSHARE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-RATIO",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-16B",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-ACCESS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CONSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CVR",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DELIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-EMPLOYEE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FDACOMMS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FINANCING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FURTHER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-INDEMN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LITNOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MARKETING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MEETING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MERGESUB",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-NOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYAGENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYOFF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PROXY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PUBLICITY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-RESIGN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-SECREPORT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-TAKEOVER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-MAE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-WILLFUL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-COORD",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-SPECIAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-BENEF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-INDEM",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-DELIVERY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-PERF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ACCOUNTING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CAPEX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CHARTER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-COMP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CONTRACT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DIVIDEND",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ISSUE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-MERGE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-TAX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MERGER-STRUCTURE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MISC-BOILERPLATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-EXCEPT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-MATCH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-NOTICE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-PROHIBIT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-REMATCH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REMEDY-SPECIFIC-PERFORMANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NOOTHERREPS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CAP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CONTRACTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NOOTHERREPS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-FIRPTA",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TRANSFER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TREATMENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-REVERSE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TARGET",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-BREACH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-LEGAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-MUTUAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-NOVOTE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-OUTSIDE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-RECOMMEND",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-SUPERIOR",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      }
+    ],
+    "counts": {
+      "families_total": 98,
+      "families_all_matched": 97,
+      "families_unmatched_signals": 1,
+      "families_uncovered": 0,
+      "total_pattern_hits": 2,
+      "total_matched": 0,
+      "total_unmatched": 2,
+      "total_irreproducible": 0
+    },
+    "lexical_disagreement_receipt_id": "48d264ef066baf8f7d2e48984adb69697d3f21537d783327ca790cac121ed844"
+  }
+}

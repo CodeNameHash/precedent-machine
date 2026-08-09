@@ -1,0 +1,156 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "e4dd192031755654d7c9bf01654b5ce39b5e58eb4998215de57cfa1563c4a006",
+  "review_queue": [
+    {
+      "section_reference": "3.01(v)",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "67ed71a306294b66e39e0286c43a0ecbca6d2d20970693933d1e0ab62bed537a",
+      "closure_id": "47f86f6cdd3d18a678f4f6e8cd7fa3e99086d0c867c56a3d362b3a3c28f3ab4b",
+      "normalised_phrase": "The Company acknowledges and agrees that, except for the representations and warranties of Parent and Sub expressly set forth in Section 3.02, the Parent Letter or in a certificate delivered pursuant to this Agreement, (1) none of Parent, Sub or any of their affiliates is making and none of them has made any representations or warranties (express or implied) relating to itself or its business, operations, assets, liabilities, conditions (financial or otherwise) or prospects or otherwise in connection with the transactions contemplated by this Agreement, including the Merger, and none of the Company or its representatives is relying on any representation or warranty of Parent, Sub or any of their affiliates except for those expressly set forth in Section 3.02 or the Parent Letter and (2) no person has been authorized by Parent, Sub or any of their affiliates to make any representation or warranty relating to Parent, Sub or any of their affiliates or their respective businesses or otherwise in connection with the transactions contemplated by this Agreement, including the Merger, and if made, such representation or warranty has not been and shall not be relied upon by the Company.",
+      "attachment_position": null,
+      "concept_family": "REP-B-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-B-NOOTHERREPS",
+          "pattern_id": "REP-B-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 4,
+          "end": 28,
+          "excerpt": "(v) No Other Representations and Warranties.\n(i) Except for the representations and warranties expressly set",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.01(v)",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "70af760774d4228e46fdc09908052fbdc6c252987cb1679da53b605f920f19c8",
+      "closure_id": "ba54867f185f042acba1886a74db62d772d91df8e75049b87ec69b93cf82c898",
+      "normalised_phrase": "Except for the representations and warranties expressly set forth in this Section 3.01, the Company Letter or in a certificate delivered pursuant to this Agreement, neither the Company nor any other person on behalf of the Company or its Subsidiaries makes any express or implied representation or warranty with respect to the Company or its Subsidiaries or with respect to any other information provided to Parent, Sub or any of their affiliates or representatives, including, but not limited to, its business, operations, assets, liabilities, conditions (financial or otherwise) or prospects, in connection with the transactions contemplated hereby.",
+      "attachment_position": null,
+      "concept_family": "REP-T-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-NOOTHERREPS",
+          "pattern_id": "REP-T-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 4,
+          "end": 28,
+          "excerpt": "(v) No Other Representations and Warranties.\n(i) Except for the representations and warranties expressly set",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.01(v)",
+      "generic_claim_key": "NATIVE_NON_RELIANCE_ACKNOWLEDGMENT_CANDIDATE",
+      "resolved_claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+      "concept_key": "REP-B-NONRELIANCE",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "708fc5dafe73f9739cb337ac45a5cff384ef48399179b76d42fd4f6deb33c9ec",
+      "closure_id": "145bf456933746587bd6329ad957c7ffc4f3492cc280f1907a7245d8ba0381a7",
+      "normalised_phrase": "The Company acknowledges and agrees that, except for the representations and warranties of Parent and Sub expressly set forth in Section 3.02, the Parent Letter or in a certificate delivered pursuant to this Agreement, (1) none of Parent, Sub or any of their affiliates is making and none of them has made any representations or warranties (express or implied) relating to itself or its business, operations, assets, liabilities, conditions (financial or otherwise) or prospects or otherwise in connection with the transactions contemplated by this Agreement, including the Merger, and none of the Company or its representatives is relying on any representation or warranty of Parent, Sub or any of their affiliates except for those expressly set forth in Section 3.02 or the Parent Letter and (2) no person has been authorized by Parent, Sub or any of their affiliates to make any representation or warranty relating to Parent, Sub or any of their affiliates or their respective businesses or otherwise in connection with the transactions contemplated by this Agreement, including the Merger, and if made, such representation or warranty has not been and shall not be relied upon by the Company.",
+      "attachment_position": null,
+      "concept_family": "REP-B-NONRELIANCE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.02(f)",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d98226a985ec83dc233a99638d21e778f11aa77a9badf6b36bd984899b7adcb1",
+      "closure_id": "e1c7ba8f5f07f474ab62533238e1f52398c39160403251f12ac6907cb27b21b9",
+      "normalised_phrase": "Except for the representations and warranties of Parent and Sub expressly set forth in this Section 3.02, the Parent Letter or in a certificate delivered pursuant to this Agreement, none of Parent, Sub or any other person on behalf of Parent or Sub makes any express or implied representation or warranty with respect to Parent or Sub or with respect to any other information provided to the Company or any of its Subsidiaries or Representatives in connection with the transactions contemplated hereby.",
+      "attachment_position": null,
+      "concept_family": "REP-B-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-B-NOOTHERREPS",
+          "pattern_id": "REP-B-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 4,
+          "end": 28,
+          "excerpt": "(f) No Other Representations and Warranties.\n(i) Except for the representations and warranties of Parent and",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.02(f)",
+      "generic_claim_key": "NATIVE_NON_RELIANCE_ACKNOWLEDGMENT_CANDIDATE",
+      "resolved_claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+      "concept_key": "REP-T-NONRELIANCE",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "b59edcd1098c43581235c059344d8ea5ccab4ca75da2f16d98c1e749ca78a594",
+      "closure_id": "be97169bac3f646c8b3fadc423a285ab8a488d517708ff73ee32a0b6408fa42e",
+      "normalised_phrase": "none of Parent, Sub or their respective affiliates or representatives is relying on any representation or warranty of the Company or any of its affiliates except for those expressly set forth in Section 3.01 or the Company Letter",
+      "attachment_position": null,
+      "concept_family": "REP-T-NONRELIANCE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "88cfa6692ff381db6a904129b56fd306ac3025828a97f56090f5d8b971116978"
+}

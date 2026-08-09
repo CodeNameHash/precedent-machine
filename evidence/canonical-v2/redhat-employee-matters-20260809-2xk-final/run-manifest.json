@@ -1,0 +1,59 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "redhat",
+  "deal_label": "International Business Machines Corporation / Red Hat, Inc.",
+  "section_family": "EMPLOYEE_MATTERS",
+  "purpose": "General extraction run: family EMPLOYEE_MATTERS on deal redhat.",
+  "section_references": [
+    "5.11"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "5.11",
+      "family_id": "EMPLOYEE_MATTERS"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV42",
+  "prompt_id": "native-producer-employee-matters/v1",
+  "prompt_version": 2,
+  "agreement_date": "2018-10-28",
+  "requested_model_profile": "TERRA_MEDIUM",
+  "requested_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "requested_models": [
+    "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM"
+  ],
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-09T07:09:55.588Z",
+  "total_elapsed_ms": 33577,
+  "extraction_wall_clock_ms": 29646,
+  "replay": null,
+  "replay_eligibility": null,
+  "recorded_to": "recording.json",
+  "code_provenance": {
+    "commit": "b06c4126cdb534451e2a3490df2f977192d86a94",
+    "working_tree_clean": true
+  },
+  "resolved_models": [],
+  "model_call_count": 1,
+  "run_receipt_id": "4826f869e983671bfe5ae9cef8e673027a6d45caa0eb168bf58cb22ec2cd8740",
+  "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+  "source_sha256": "dcdbf66142d25cbe56ed2bc1fbd26939aaf86056bf34188176c48b5944d31c5e",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 1,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

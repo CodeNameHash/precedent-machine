@@ -1,0 +1,404 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "1e6bf256d77a6e0fb1b570b2beefd471dc90d899d60468aa5ed62490bc90817a",
+  "review_queue": [
+    {
+      "section_reference": "6.01",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "GOVERNMENT_PROCEEDING_CONDITION",
+      "concept_key": "COND-M-LEGAL",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ff4d61a8ee9a9904c10632480f8ce83f60418e80a1da200b8c42b87bfb6cc157",
+      "closure_id": "36257de21d1c18853ae04555a0d227004d46719893c511a3086ea9474146171d",
+      "normalised_phrase": "no Governmental Entity shall have instituted any action or proceeding (which remains pending at what would otherwise be the Closing Date) before any court or other Governmental Entity of competent jurisdiction seeking to temporarily or permanently enjoin, restrain or otherwise prohibit consummation of the Merger or impose a Legal Restraint",
+      "attachment_position": null,
+      "concept_family": "COND-M-LEGAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.01",
+      "source_citation": "6.01(b)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "APPROVAL_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any other approval or waiting period under any other applicable Antitrust Law of any Governmental Entity in a jurisdiction set forth in Section 6.01(b) of the Company Letter shall have been obtained or terminated or shall have expired",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "fb42968ffed23a96d07803817c39787317428a3439055344188b24950abe9c34",
+      "closure_id": "5e4ebf9c97fef1f6035a2cafa92ad7e54a35a7afaf81375537ae63fb143271c3",
+      "normalised_phrase": "any other approval or waiting period under any other applicable Antitrust Law of any Governmental Entity in a jurisdiction set forth in Section 6.01(b) of the Company Letter shall have been obtained or terminated or shall have expired",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.01",
+      "source_citation": "6.01(b)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "PARTY_UNRESOLVED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "in the case of each of (i) and (ii) without the imposition, individually or in the aggregate, of a Burdensome Condition.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "289869191bcee5bc1f8c7c631fdd855d6c48bdf93082685104f045f49859e547",
+      "closure_id": "941a27dd3f1383a5023b28e8dd3536bccd8120f47c4eb232c0bde00341bae9fa",
+      "normalised_phrase": "in the case of each of (i) and (ii) without the imposition, individually or in the aggregate, of a Burdensome Condition.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.01",
+      "source_citation": "6.01(a)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Shareholder Approval shall have been obtained.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "6be81c66d907da18be9ecc0865028d12b9769cf1e83305409eb7313ed258df6f",
+      "closure_id": "bd976dbce469bd6c9bffe631df31ad18be2a49d44b13699cc3ba5bec1d668675",
+      "normalised_phrase": "The Shareholder Approval shall have been obtained.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.01",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LEGAL_RESTRAINT_CONDITION",
+      "concept_key": "COND-M-LEGAL",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f2ba7571dbf24f4dd40e7ec203fe40dcb89cf5e22cc6a4c3fad23b054b914393",
+      "closure_id": "c06a168b13f7497bfdad1deb69074102e66831059d8e8e055dc9191685705c72",
+      "normalised_phrase": "No temporary restraining order, preliminary or permanent injunction or other Judgment or Law of, or issued by, any court of competent jurisdiction or other Governmental Entity shall be in effect, in each case having the effect of making the Merger illegal or otherwise prohibiting consummation of the Merger or imposing, individually or in the aggregate, a Burdensome Condition (collectively, “Legal Restraints”)",
+      "attachment_position": null,
+      "concept_family": "COND-M-LEGAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.01",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_APPROVAL_CONDITION",
+      "concept_key": "COND-REG",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0cf704897dab67878579446af9406314bd64dbec2f1db944e992081a667132c6",
+      "closure_id": "e6fde59d810702098c5e73fb980cf477d8ee598a204b96cd19dbe5f9217597ab",
+      "normalised_phrase": "Any waiting period (and any extension thereof) applicable to the Merger under the HSR Act shall have been terminated or shall have expired",
+      "attachment_position": null,
+      "concept_family": "COND-REG",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.02",
+      "source_citation": "6.02(c)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Since the date of this Agreement, no Effect has occurred that would reasonably be expected to have, individually or in the aggregate, a Material Adverse Effect, of which the existence or consequences are still continuing.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "b6ce65c4e976347f16554afa9b7723a3b2f1a6bd63d5d358d100a9d6fb32adbd",
+      "closure_id": "055aef7db9b327003601c77b93b5590a1bf05ff084c11af9e82b50c1c5c2aa4f",
+      "normalised_phrase": "Since the date of this Agreement, no Effect has occurred that would reasonably be expected to have, individually or in the aggregate, a Material Adverse Effect, of which the existence or consequences are still continuing.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.02",
+      "source_citation": "6.02(a)(i)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "set forth in Section 3.01(f)(ii) of this Agreement shall be true and correct in all respects as of the date of this Agreement and as of the Closing Date with the same effect as though made as of the Closing Date;",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "3118f1deae1b1b0d5c45fbc81b5b98ad3f02e277e71309f6b788536fcd1ade0a",
+      "closure_id": "16e9216571909027de2c561894c5ea0bac151d7d08809f0b0cb101e410a23603",
+      "normalised_phrase": "set forth in Section 3.01(f)(ii) of this Agreement shall be true and correct in all respects as of the date of this Agreement and as of the Closing Date with the same effect as though made as of the Closing Date;",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.02",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "COVENANT_COMPLIANCE_STANDARD",
+      "concept_key": "COND-COV",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "47c51a84544e827a7940e9a38f54f8a0cd82d8f8e2d4fb46273734d788f18608",
+      "closure_id": "2d185bd702c43b8753b1f703700c929d80afc385876884d44a264820f96a1d8f",
+      "normalised_phrase": "The Company shall have performed in all material respects all obligations required to be performed by it under this Agreement at or prior to the Closing Date.",
+      "attachment_position": null,
+      "concept_family": "COND-COV",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.02",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+      "concept_key": "COND-B-CERT",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "442048a20c05b3165707c4dbda0e911a148778229cb7934c7f2b85e210141b8e",
+      "closure_id": "3114722ed70e99adc0e2afec2f66eb73ddb8c76a8d6119f79dfbe5509fb6071b",
+      "normalised_phrase": "Parent shall have received a certificate signed on behalf of the Company by the Chief Executive Officer and the Chief Financial Officer of the Company, certifying that the conditions set forth in Section 6.02(a), Section 6.02(b) and Section 6.02(c) have been satisfied.",
+      "attachment_position": null,
+      "concept_family": "COND-B-CERT",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.02",
+      "source_citation": "6.02(a)(ii)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "set forth in Section 3.01(a), Section 3.01(b), Section 3.01(c), Section 3.01(d)(i), Section 3.01(d)(ii), Section 3.01(s), Section 3.01(t) and Section 3.01(u) of this Agreement shall be true and correct in all material respects as of the date of this Agreement and as of the Closing Date with the same effect as though made as of the Closing Date (except to the extent expressly made as of an earlier date, in which case as of such earlier date); and",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "5ce827faf2584da88bb0c348cae1c2baa79d72b55b5ec7165ff668a30dd9a87e",
+      "closure_id": "785e8e96f02b6c1a1c6b3175a5ea05b48af2557f0a74c807a682c7b15acc1c43",
+      "normalised_phrase": "set forth in Section 3.01(a), Section 3.01(b), Section 3.01(c), Section 3.01(d)(i), Section 3.01(d)(ii), Section 3.01(s), Section 3.01(t) and Section 3.01(u) of this Agreement shall be true and correct in all material respects as of the date of this Agreement and as of the Closing Date with the same effect as though made as of the Closing Date (except to the extent expressly made as of an earlier date, in which case as of such earlier date); and",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.02",
+      "source_citation": "6.02(c)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Since the date of this Agreement, no Effect has occurred that would reasonably be expected to have, individually or in the aggregate, a Material Adverse Effect, of which the existence or consequences are still continuing.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "509e8589b2acec7ffbfca055eaa516e7996392543cb53831c5a118b8264c4b20",
+      "closure_id": "81f361a7878178826855683662e9db69f2b0c7a4abe16a94075cadc7390dd6d2",
+      "normalised_phrase": "Since the date of this Agreement, no Effect has occurred that would reasonably be expected to have, individually or in the aggregate, a Material Adverse Effect, of which the existence or consequences are still continuing.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.03",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+      "concept_key": "COND-S-CERT",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2072b7aec2e1285fdfbad1daa5a2beda57e0b782fd39a3d2f810833dfa14b614",
+      "closure_id": "b68fc50240a16697bdf8e52444eba62a708ad5a1d8c90826eb9673c76d99c1f8",
+      "normalised_phrase": "The Company shall have received a certificate signed on behalf of Parent by the Chief Executive Officer and the Chief Financial Officer of Parent, certifying that the conditions set forth in Section 6.03(a) and Section 6.03(b) have been satisfied.",
+      "attachment_position": null,
+      "concept_family": "COND-S-CERT",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.03",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "COVENANT_COMPLIANCE_STANDARD",
+      "concept_key": "COND-COV",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "b64b0f1f2348419894b3abd8977c1cb80b5a1466bcd9b50f29b62a6753c4d127",
+      "closure_id": "bc19eb5210326f081152fe9edfa90c3bc9bcd5333d8a38e92a1b3104f29007dc",
+      "normalised_phrase": "Parent and Sub shall have performed in all material respects all obligations required to be performed by them under this Agreement at or prior to the Closing Date.",
+      "attachment_position": null,
+      "concept_family": "COND-COV",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.04",
+      "source_citation": "6.04",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "if such failure was caused by such party’s failure to use reasonable best efforts to consummate the Merger and the other transactions contemplated by this Agreement, as required by and subject to Section 5.03",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e86f03e04136b8d483641a82c45fdd6cc4b2a96de041fb28931ba758efbc9302",
+      "closure_id": "7e6805f5819842d3a7f9d2e5127509885146926499139ecff364a1c832ff9c24",
+      "normalised_phrase": "if such failure was caused by such party’s failure to use reasonable best efforts to consummate the Merger and the other transactions contemplated by this Agreement, as required by and subject to Section 5.03",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.04",
+      "source_citation": "6.04",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "by such party’s breach of any other provision of this Agreement",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e74819ad03f619a7c9db4df2bdc9b930dc549d742472a735824bdd70c3f70a57",
+      "closure_id": "9a07aaeb0a7b393d24a51fc9d90b093af93821191420e004953f438f513eb1f5",
+      "normalised_phrase": "by such party’s breach of any other provision of this Agreement",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "a1e0a88ad97dfd8e50a058ce7a2b58a2c9360c44c449f6786e1201598cbf7c3e"
+}

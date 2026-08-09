@@ -1,0 +1,1073 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+  "source_sha256": "dcdbf66142d25cbe56ed2bc1fbd26939aaf86056bf34188176c48b5944d31c5e",
+  "source_byte_length": 264358,
+  "root_section_id": "3d90818eb9590ab0940e2daff9eb6c2a5579fbc2ed81c4fe940f54c10c670113",
+  "requested_section_references": [
+    "5.11"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "5.11",
+      "section_id": "da8f01d90893d828553a3a39ed9439c94b87d9a3902ed32a3234b4940b024d29",
+      "parent_section_id": "bf3e07e0bb856e2dd5d2e4721d914373eb85a80df8387d9ffcfa0690054f4509",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 210015,
+      "end": 216375,
+      "text_sha256": "c5baed9671e817b371ee26c0b7f8b29458406ad0bc1af62148798d6e0ec2fdd2",
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-employee-matters/v1",
+      "prompt_version": 2,
+      "prompt_digest": "967dbc6a27c3d1a0a58fc93f4ee2aa319532d6c1783c50b6d61db8749e65dfff",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "967dbc6a27c3d1a0a58fc93f4ee2aa319532d6c1783c50b6d61db8749e65dfff",
+        "input_scope_digest": "48a4937bca3eeced7427753565e4799bd3e7a7905f6c0fe5c1a91a0d24183f6a",
+        "proposal_count": 11,
+        "evidence_residual_count": 1,
+        "producer_receipt_id": "f138c96dbd80ff5d898b649c13c9cc8fe7b1604dfd87ef7d38e74972e3e72f7f"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "5.11",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.11",
+        "normalized_citation": "5.11",
+        "derived_citation": "5.11(a)"
+      },
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "3c766e6d6debfe761037753630cc7766393108c298412a6fc61d389645889fef",
+          "claim_occurrence_id": "ed7636a18cad45a774ed3e7db2046e5ea5b4b98196894562de9d39a2e9d8c2f6",
+          "subject_occurrence_id": "e9e0433a1fb3cbc45627901952b87887e76fad958ae6951e92acd048cdb2ff66",
+          "claim_definition_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "(i) base salaries or wages that are no less favorable than those provided to Continuing Employees immediately prior to the Closing",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "b87bb0beea815bb401b0a4612e4f8ec77121433073f89eff12d592b997dbf38f"
+          ],
+          "attributes": {
+            "section_reference": "5.11",
+            "assertion_kind": "ITEM_STANDARD",
+            "comp_item": "BASE_SALARY",
+            "standard_kind": "NO_LESS_FAVORABLE",
+            "aggregation": "ITEM_BY_ITEM",
+            "benchmark": "TARGET_PRE_CLOSING",
+            "period_term": "the period beginning on the Closing and ending on the first anniversary of the Closing",
+            "relief_kind": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "b87bb0beea815bb401b0a4612e4f8ec77121433073f89eff12d592b997dbf38f",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "a004fde6309c7023f38dd0cc191868e9601564f2d0a5b7e2270d83e1e275e862",
+              "document_ordinal": 0,
+              "absolute_start": 930,
+              "absolute_end": 1060,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "6930a9f9624c6b382ebcee5018e991fbb6ec6e4bb1f7ff6a679e00cfba581bfb"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "EMPLOYEE_MATTERS",
+          "prompt_digest": "967dbc6a27c3d1a0a58fc93f4ee2aa319532d6c1783c50b6d61db8749e65dfff",
+          "producer_receipt_id": "f138c96dbd80ff5d898b649c13c9cc8fe7b1604dfd87ef7d38e74972e3e72f7f",
+          "governed_scope_digest": "93b8d9cbf388f945e4bed5866b17dea9a8f0eaf2f468dd0f7d9a355d57a39cd8",
+          "extraction_provenance_id": "c1f06d2575ec3a86b38ec774a5da63baa0d92294b138a1a9d68814dbdf72dc47"
+        }
+      }
+    },
+    {
+      "section_reference": "5.11",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.11",
+        "normalized_citation": "5.11",
+        "derived_citation": "5.11(a)"
+      },
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "cec8b5b224097ab3946cd2c38bfe32674b5241ac15f7dfa86ef18203355dab1b",
+          "claim_occurrence_id": "706fe43c1f796e77eb04a32afaff23032d28c24aaadd1efa03f10378a3422717",
+          "subject_occurrence_id": "57702fab7819c08233e47b670482ad647201de327151c40f110605bc69801aae",
+          "claim_definition_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "(ii) target incentive opportunities (excluding retention, change in control and equity-based compensation), if any, that are no less favorable than those provided to Continuing Employees immediately prior to the Closing",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "dd83184c8b66235e0d3f428198d9b8e3241f266b639b467051391055d4656075"
+          ],
+          "attributes": {
+            "section_reference": "5.11",
+            "assertion_kind": "ITEM_STANDARD",
+            "comp_item": "TARGET_BONUS",
+            "standard_kind": "NO_LESS_FAVORABLE",
+            "aggregation": "ITEM_BY_ITEM",
+            "benchmark": "TARGET_PRE_CLOSING",
+            "period_term": "the period beginning on the Closing and ending on the first anniversary of the Closing",
+            "relief_kind": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "dd83184c8b66235e0d3f428198d9b8e3241f266b639b467051391055d4656075",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "f9354c4cf38de14c7653e32999da0d598c4eef2a8a3668c28a181e74548213ee",
+              "document_ordinal": 0,
+              "absolute_start": 1062,
+              "absolute_end": 1281,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "1bc0fae241905bc59f28f2ddfe1ecf315db1104a1574bcaf3abf78b3ec8aa1c6"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "EMPLOYEE_MATTERS",
+          "prompt_digest": "967dbc6a27c3d1a0a58fc93f4ee2aa319532d6c1783c50b6d61db8749e65dfff",
+          "producer_receipt_id": "f138c96dbd80ff5d898b649c13c9cc8fe7b1604dfd87ef7d38e74972e3e72f7f",
+          "governed_scope_digest": "93b8d9cbf388f945e4bed5866b17dea9a8f0eaf2f468dd0f7d9a355d57a39cd8",
+          "extraction_provenance_id": "c1f06d2575ec3a86b38ec774a5da63baa0d92294b138a1a9d68814dbdf72dc47"
+        }
+      }
+    },
+    {
+      "section_reference": "5.11",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.11",
+        "normalized_citation": "5.11",
+        "derived_citation": "5.11(a)"
+      },
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "768461be37416584cfc52e7584518088cd66c126f1a5f4d0b957f133bf15e784",
+          "claim_occurrence_id": "f730a4df0413cf1a524eae8a19f25c353c1c8ff7b9d2d52a3b14731c7a7d2621",
+          "subject_occurrence_id": "9877563d67feb8a8ddee163891166ef17e445162b4fb0a88bd31873c3290d6eb",
+          "claim_definition_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "(iii) retirement and welfare benefits (excluding any severance benefits, post-employment health benefits, post-employment welfare benefits and defined benefit pension and nonqualified deferred compensation plans) that are no less favorable in the aggregate to those provided to Continuing Employees immediately prior to the Closing.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "940496b6725c49b469518862054bd161d43dfd8649a03cbaa9ef7bacc9fa39f5"
+          ],
+          "attributes": {
+            "section_reference": "5.11",
+            "assertion_kind": "ITEM_STANDARD",
+            "comp_item": "EMPLOYEE_BENEFITS",
+            "standard_kind": "NO_LESS_FAVORABLE",
+            "aggregation": "AGGREGATE",
+            "benchmark": "TARGET_PRE_CLOSING",
+            "period_term": "the period beginning on the Closing and ending on the first anniversary of the Closing",
+            "relief_kind": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "940496b6725c49b469518862054bd161d43dfd8649a03cbaa9ef7bacc9fa39f5",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "77c172af8a807fe5e47eb5549f9691192905d8bf2c02bafb05419d9e3cd7c290",
+              "document_ordinal": 0,
+              "absolute_start": 1286,
+              "absolute_end": 1618,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "daa5da39040a9590c86f2513129dedc43df252525ab8739b338db613efe29d5d"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "EMPLOYEE_MATTERS",
+          "prompt_digest": "967dbc6a27c3d1a0a58fc93f4ee2aa319532d6c1783c50b6d61db8749e65dfff",
+          "producer_receipt_id": "f138c96dbd80ff5d898b649c13c9cc8fe7b1604dfd87ef7d38e74972e3e72f7f",
+          "governed_scope_digest": "93b8d9cbf388f945e4bed5866b17dea9a8f0eaf2f468dd0f7d9a355d57a39cd8",
+          "extraction_provenance_id": "c1f06d2575ec3a86b38ec774a5da63baa0d92294b138a1a9d68814dbdf72dc47"
+        }
+      }
+    },
+    {
+      "section_reference": "5.11",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.11",
+        "normalized_citation": "5.11",
+        "derived_citation": "5.11(b)"
+      },
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "4f60bf40842d85c2832851be6bb42d3ee7a25068c6e13c7b8a82afc47012ffcc",
+          "claim_occurrence_id": "b1398e4edff9593e40d745fe779f6b6e378b53e8cf1880551100d1fb75edf436",
+          "subject_occurrence_id": "e9f4932f3d54c59766f03829d1161c6cf4be18d4198a6e90f10ce69c0e4c8843",
+          "claim_definition_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Parent or its applicable affiliates shall, unless prohibited by applicable Law give, or cause to be given, to Continuing Employees credit for purposes of eligibility to participate (other than any defined benefit pension, post-employment health benefits or post-employment welfare benefits plan), vesting and, with respect to severance and vacation benefits only, determining level of benefits, but not for benefit accrual, under employee benefit plans maintained by Parent or its affiliates and in which such employees participate after the Closing, for such employees’ service prior to the Closing with the Company or any of its Subsidiaries, to the same extent recognized by the Company and its Subsidiaries prior to the Closing.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "a618cacde51b57ac1210f3249951e8655ac902719d66c6865cb4b8f59f28f81d"
+          ],
+          "attributes": {
+            "section_reference": "5.11",
+            "assertion_kind": "SERVICE_CREDIT",
+            "comp_item": null,
+            "standard_kind": null,
+            "aggregation": null,
+            "benchmark": null,
+            "period_term": null,
+            "relief_kind": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "a618cacde51b57ac1210f3249951e8655ac902719d66c6865cb4b8f59f28f81d",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "137a1c286012f1ff6fb9f7f8dc20877363d295d1f2872d593f908be5c7495ca4",
+              "document_ordinal": 0,
+              "absolute_start": 1623,
+              "absolute_end": 2357,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "71708b27d5fc89d6488f608de80cf795eb1f733c79283094d7914f7766f8d89a"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "EMPLOYEE_MATTERS",
+          "prompt_digest": "967dbc6a27c3d1a0a58fc93f4ee2aa319532d6c1783c50b6d61db8749e65dfff",
+          "producer_receipt_id": "f138c96dbd80ff5d898b649c13c9cc8fe7b1604dfd87ef7d38e74972e3e72f7f",
+          "governed_scope_digest": "93b8d9cbf388f945e4bed5866b17dea9a8f0eaf2f468dd0f7d9a355d57a39cd8",
+          "extraction_provenance_id": "c1f06d2575ec3a86b38ec774a5da63baa0d92294b138a1a9d68814dbdf72dc47"
+        }
+      }
+    },
+    {
+      "section_reference": "5.11",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.11",
+        "normalized_citation": "5.11",
+        "derived_citation": "5.11(c)"
+      },
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "3fed3c0ca766355d48e58f431bed09bd2480938a5f9e56987f1342debfdd9a48",
+          "claim_occurrence_id": "1ef064bf24fa487f29e81c36d1328056ccbe638151e7c1cee3bf1964b00f3768",
+          "subject_occurrence_id": "cfc4df209c6423d5a9aa3595254a55e7b5f104a4bcdf73b46b54a42dbcc2b95e",
+          "claim_definition_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "(i) waive all limitations as to preexisting conditions and exclusions with respect to participation and coverage requirements applicable to such employees to the extent such conditions and exclusions were satisfied or did not apply to such employees under the Welfare Plans of the Company and its Subsidiaries prior to the Closing (other than with respect to pre-existing health conditions pursuant to underwriting requirements under fully insured plans)",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "28a9d4dedc948d0fa1bd9885a01bb5f19900db80e0779aee011f8570e57dff33"
+          ],
+          "attributes": {
+            "section_reference": "5.11",
+            "assertion_kind": "WELFARE_RELIEF",
+            "comp_item": "EMPLOYEE_BENEFITS",
+            "standard_kind": null,
+            "aggregation": null,
+            "benchmark": null,
+            "period_term": null,
+            "relief_kind": "PREEXISTING_AND_WAITING_WAIVER"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "28a9d4dedc948d0fa1bd9885a01bb5f19900db80e0779aee011f8570e57dff33",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "ca07921db239f6e55167ce0cd929fefaab9c7219cc322bb9945f3b702fb2d18b",
+              "document_ordinal": 0,
+              "absolute_start": 2658,
+              "absolute_end": 3112,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "06d477ff89533d879692dbf4ff9e988794e29436af57001f1e77aa4feae7b323"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "EMPLOYEE_MATTERS",
+          "prompt_digest": "967dbc6a27c3d1a0a58fc93f4ee2aa319532d6c1783c50b6d61db8749e65dfff",
+          "producer_receipt_id": "f138c96dbd80ff5d898b649c13c9cc8fe7b1604dfd87ef7d38e74972e3e72f7f",
+          "governed_scope_digest": "93b8d9cbf388f945e4bed5866b17dea9a8f0eaf2f468dd0f7d9a355d57a39cd8",
+          "extraction_provenance_id": "c1f06d2575ec3a86b38ec774a5da63baa0d92294b138a1a9d68814dbdf72dc47"
+        }
+      }
+    },
+    {
+      "section_reference": "5.11",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.11",
+        "normalized_citation": "5.11",
+        "derived_citation": "5.11(c)"
+      },
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "eb2b7976512a2529eb29a6231c9841b6d42500b79b97bd264cb0ac756184cf9c",
+          "claim_occurrence_id": "c898e93d378885e124e39e267019415f8bafbf013d874f62a8ef8dbd82a8a383",
+          "subject_occurrence_id": "725454325687b59ac227591eae3c7988145694addb6357b7b2f5c5211ed7182b",
+          "claim_definition_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "(ii) provide Continuing Employees with credit for any co-payments and deductibles paid prior to the Closing in satisfying any analogous deductible or out-of-pocket requirements only to the same extent recognized by the Company or its Subsidiaries prior to the Closing.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "6a20c1cf78c1b81c6c3430961ce0527cfd344e550beaf994b84491ae7643e2d9"
+          ],
+          "attributes": {
+            "section_reference": "5.11",
+            "assertion_kind": "WELFARE_RELIEF",
+            "comp_item": "EMPLOYEE_BENEFITS",
+            "standard_kind": null,
+            "aggregation": null,
+            "benchmark": null,
+            "period_term": null,
+            "relief_kind": "EXPENSE_CREDIT"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "6a20c1cf78c1b81c6c3430961ce0527cfd344e550beaf994b84491ae7643e2d9",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "21f29e6899bfc8dc2cd80e19bb7c77e0ef596ecd90caa64546bcf726edd59034",
+              "document_ordinal": 0,
+              "absolute_start": 3117,
+              "absolute_end": 3385,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "43eea3342f8552cbbcdf110296f1b06a6bc5818a3f9be2bdde1748582668585c"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "EMPLOYEE_MATTERS",
+          "prompt_digest": "967dbc6a27c3d1a0a58fc93f4ee2aa319532d6c1783c50b6d61db8749e65dfff",
+          "producer_receipt_id": "f138c96dbd80ff5d898b649c13c9cc8fe7b1604dfd87ef7d38e74972e3e72f7f",
+          "governed_scope_digest": "93b8d9cbf388f945e4bed5866b17dea9a8f0eaf2f468dd0f7d9a355d57a39cd8",
+          "extraction_provenance_id": "c1f06d2575ec3a86b38ec774a5da63baa0d92294b138a1a9d68814dbdf72dc47"
+        }
+      }
+    },
+    {
+      "section_reference": "5.11",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.11",
+        "normalized_citation": "5.11",
+        "derived_citation": "5.11(e)"
+      },
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "3d3b88dbd2c28b5dccd5ae18140ef57e1e0ab04c7d59ee5e7c2002bd9248c50d",
+          "claim_occurrence_id": "7afcec6cb8e418a26bcd2ca73271b52178eaf8f81ad089c1a0ea0d91335d8fc1",
+          "subject_occurrence_id": "e0529d8b1593c5a20ffe769b8bc3c4fe14fdf0aa87da1eaa0ba6c1e95905d48b",
+          "claim_definition_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "During the Continuation Period, Parent shall, or shall cause the Company and its Subsidiaries to, provide Continuing Employees whose employment is terminated (in a manner that would trigger severance benefits) with severance benefits in accordance with such employee’s individual employment agreement or severance agreement or, in the absence of any such agreement, in accordance with the applicable severance policy of the Company or its Subsidiaries in effect immediately prior to the Closing, in each case, subject to any requirements therein (e.g., the execution of a release of claims).",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "b196fbdbb56e83224798262be6b3afec3facf20c5520f058e315cc8fef6750bb"
+          ],
+          "attributes": {
+            "section_reference": "5.11",
+            "assertion_kind": "ITEM_STANDARD",
+            "comp_item": "SEVERANCE",
+            "standard_kind": "DEFERRED_TO_SCHEDULE",
+            "aggregation": null,
+            "benchmark": "TARGET_PRE_CLOSING",
+            "period_term": "During the Continuation Period",
+            "relief_kind": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "b196fbdbb56e83224798262be6b3afec3facf20c5520f058e315cc8fef6750bb",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "703b21e2c5037ac8ac7d0da14bb0f7ef049397be1454f5d48500bb055196e814",
+              "document_ordinal": 0,
+              "absolute_start": 4316,
+              "absolute_end": 4909,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "d6459a403a250fe069614b219133c94150fa9bc172245689b073575502b088d6"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "EMPLOYEE_MATTERS",
+          "prompt_digest": "967dbc6a27c3d1a0a58fc93f4ee2aa319532d6c1783c50b6d61db8749e65dfff",
+          "producer_receipt_id": "f138c96dbd80ff5d898b649c13c9cc8fe7b1604dfd87ef7d38e74972e3e72f7f",
+          "governed_scope_digest": "93b8d9cbf388f945e4bed5866b17dea9a8f0eaf2f468dd0f7d9a355d57a39cd8",
+          "extraction_provenance_id": "c1f06d2575ec3a86b38ec774a5da63baa0d92294b138a1a9d68814dbdf72dc47"
+        }
+      }
+    },
+    {
+      "section_reference": "5.11",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.11",
+        "normalized_citation": "5.11",
+        "derived_citation": "5.11(g)"
+      },
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "df9926c78f4791137043a59c8549eb7c975c9ac96b60ee24e0d9eae7b2e57058",
+          "claim_occurrence_id": "80abd3ac13bea366c335e1e5f09e351e5f5a15725754aeb30a8c8bf5f9620604",
+          "subject_occurrence_id": "bde2676805110c0c642aa0c7ff1717f50db35edfcaaf710a7d90b08ea5fc49a9",
+          "claim_definition_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Without limiting the scope of Section 8.06, nothing in this Section 5.11 shall confer any rights or remedies of any kind or description upon any Continuing Employee (or any beneficiaries or dependents thereof) or any other person other than Parent, its Subsidiaries, the Company and their respective successors and assigns.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "97083526a26e094b49f7c36883af61d6bdd117d8b4e17142b779b5ec4e89c49d"
+          ],
+          "attributes": {
+            "section_reference": "5.11",
+            "assertion_kind": "TPB_DISCLAIMER",
+            "comp_item": null,
+            "standard_kind": null,
+            "aggregation": null,
+            "benchmark": null,
+            "period_term": null,
+            "relief_kind": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "97083526a26e094b49f7c36883af61d6bdd117d8b4e17142b779b5ec4e89c49d",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "b2804fbe1e0724fc78cbe29a4407fb6a809d5f64cacae3d200facbfbfbb5ad4b",
+              "document_ordinal": 0,
+              "absolute_start": 6036,
+              "absolute_end": 6359,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "cde8d7bfb40951b19a00618157f83c378750b4d957720db66ed5adfc1eed92a5"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "EMPLOYEE_MATTERS",
+          "prompt_digest": "967dbc6a27c3d1a0a58fc93f4ee2aa319532d6c1783c50b6d61db8749e65dfff",
+          "producer_receipt_id": "f138c96dbd80ff5d898b649c13c9cc8fe7b1604dfd87ef7d38e74972e3e72f7f",
+          "governed_scope_digest": "93b8d9cbf388f945e4bed5866b17dea9a8f0eaf2f468dd0f7d9a355d57a39cd8",
+          "extraction_provenance_id": "c1f06d2575ec3a86b38ec774a5da63baa0d92294b138a1a9d68814dbdf72dc47"
+        }
+      }
+    },
+    {
+      "section_reference": "5.11",
+      "citation_validation": null,
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "39043ec0069d0b632a1ebe3caaf375fe1c49b4ac5971d917bf6dc6a5e4834579",
+          "claim_occurrence_id": "6021834b45cdee2342573101123cc0e4c544829d11d9d73b1ec1f09140fe9550",
+          "subject_occurrence_id": "b3be41728099055ac2ec5358eb39d847d3795f0ea872264aa67e911c489d8e93",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Payment with respect to such Cash Bonus Plans shall be made following the Closing Date at the time Parent normally pays bonuses to similarly situated employees (or, if sooner, the time the Company normally pays such bonuses) at the greater of the target or actual level of performance, pro-rated for the portion of the applicable performance period which has elapsed as of the Closing Date.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "8f952155124dc5815c02d98a3125319becf2f09872c280ea0e75fbd319201445"
+          ],
+          "attributes": {
+            "why_unmapped": "BONUS_OR_LTI: Cash Bonus Plan payment timing, performance level and proration.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "8f952155124dc5815c02d98a3125319becf2f09872c280ea0e75fbd319201445",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "7149fb633b9e70a0362d32b0723f9b175bd9cc3d4af2d36eedc648993c24a852",
+              "document_ordinal": 0,
+              "absolute_start": 3921,
+              "absolute_end": 4311,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "5d24523a0b35a367c45b2e22785750453b6b080d256abf2e6c228c8e76f8c883"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "967dbc6a27c3d1a0a58fc93f4ee2aa319532d6c1783c50b6d61db8749e65dfff",
+          "producer_receipt_id": "f138c96dbd80ff5d898b649c13c9cc8fe7b1604dfd87ef7d38e74972e3e72f7f",
+          "governed_scope_digest": "93b8d9cbf388f945e4bed5866b17dea9a8f0eaf2f468dd0f7d9a355d57a39cd8",
+          "extraction_provenance_id": "3a55528a3af51d1e293fd8bb1aa92af3faab40bad553442e22346ea98a7752fa"
+        }
+      }
+    },
+    {
+      "section_reference": "5.11",
+      "citation_validation": null,
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "0a369df939074c28568018ed3add89ee1ea7494e1e8d480b15de326b9548ac0f",
+          "claim_occurrence_id": "ead32a2bc7d0439cfdda51755884ec87b1e7379cfafd9c0cc048f1ef5659c42d",
+          "subject_occurrence_id": "c72b94624c0089fcf930bc5d302c46f99d81876ac743327632ff1b1898ed94fa",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "(a) From and after the Closing, Parent shall cause the Company and its Subsidiaries to honor all compensation and benefit plans, programs, policies, practices or agreements maintained or sponsored by the\n44\nCompany or any of its Subsidiaries, or to which the Company or any of its Subsidiaries is a party, as such plans, programs, policies, practices or agreements are in effect on the date hereof",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "ecc1b63a5da22b0a763fd7ef1d356b431990fe2019a23e064cb9c9f5759fc0dc"
+          ],
+          "attributes": {
+            "why_unmapped": "General plan-honouring obligation does not fit a specified assertion kind.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "ecc1b63a5da22b0a763fd7ef1d356b431990fe2019a23e064cb9c9f5759fc0dc",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "3da18cc8d89fd0ea36ce32dbfc3d3169129aedb299c8dcf71c2489840570c4e7",
+              "document_ordinal": 0,
+              "absolute_start": 31,
+              "absolute_end": 428,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "cee070edbe4a6c1b96072c0752f3e3ccab5413936b3d86ab32539924f91a1fca"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "967dbc6a27c3d1a0a58fc93f4ee2aa319532d6c1783c50b6d61db8749e65dfff",
+          "producer_receipt_id": "f138c96dbd80ff5d898b649c13c9cc8fe7b1604dfd87ef7d38e74972e3e72f7f",
+          "governed_scope_digest": "93b8d9cbf388f945e4bed5866b17dea9a8f0eaf2f468dd0f7d9a355d57a39cd8",
+          "extraction_provenance_id": "3a55528a3af51d1e293fd8bb1aa92af3faab40bad553442e22346ea98a7752fa"
+        }
+      }
+    },
+    {
+      "section_reference": "5.11",
+      "citation_validation": null,
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "525ab5097922f77c5f75ea0d29f754b59f245e85920fb167311071270c4a6c54",
+          "claim_occurrence_id": "6b050b2478aed7dc7335f63dd8596f0ed10fdd91ed4bf6a0d0b9d2ebb36cf898",
+          "subject_occurrence_id": "050443d7204894b2f60f35dd3d70a9d75233e50e49192329c60d486ead9c8f73",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "(g) Nothing contained herein shall be construed as requiring, and the Company shall take no action that would have the effect of requiring, Parent or its Subsidiaries or the Surviving Corporation to continue any specific plans or to continue the employment of any specific person.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "001b886224f587dba44984795c8f205499b9d9f2faab4769b44d84e8f5fbe21b"
+          ],
+          "attributes": {
+            "why_unmapped": "General continuation limitation does not fit a specified assertion kind.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "001b886224f587dba44984795c8f205499b9d9f2faab4769b44d84e8f5fbe21b",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "e722dd294a54fdf4318c5b1adfd3bd994e19ef4ebc3d8714bdb49db4f6cbbe21",
+              "document_ordinal": 0,
+              "absolute_start": 5273,
+              "absolute_end": 5553,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "fa21590da9bc19666f8d59cda61dfc19c94668dccfd9680e7ba8166bb3bd09d3"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "967dbc6a27c3d1a0a58fc93f4ee2aa319532d6c1783c50b6d61db8749e65dfff",
+          "producer_receipt_id": "f138c96dbd80ff5d898b649c13c9cc8fe7b1604dfd87ef7d38e74972e3e72f7f",
+          "governed_scope_digest": "93b8d9cbf388f945e4bed5866b17dea9a8f0eaf2f468dd0f7d9a355d57a39cd8",
+          "extraction_provenance_id": "3a55528a3af51d1e293fd8bb1aa92af3faab40bad553442e22346ea98a7752fa"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [
+    {
+      "section_reference": "5.11",
+      "reason": "OPEN_WORLD_QUOTE_UNVERIFIED",
+      "quote_preview": "From and after the Closing, Parent shall cause the Company and its Subsidiaries to honor the terms of each collective ba"
+    }
+  ],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "5.11",
+      "source_byte_length": 6360,
+      "covered_byte_length": 4120,
+      "coverage_share": 0.6477987421383647,
+      "marker_counts": {
+        "as of": 2,
+        "except": 0,
+        "knowledge": 0,
+        "material": 0,
+        "total": 2
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 2,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "5.11",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 31,
+          "end": 34
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 472,
+          "end": 475
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 930,
+          "end": 933
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1062,
+          "end": 1066
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1286,
+          "end": 1291
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 1619,
+          "end": 1622
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 2463,
+          "end": 2466
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2658,
+          "end": 2661
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3117,
+          "end": 3121
+        },
+        {
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 3386,
+          "end": 3389
+        },
+        {
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 4312,
+          "end": 4315
+        },
+        {
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 4910,
+          "end": 4913
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 5273,
+          "end": 5276
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 5,
+        "section_paragraph_marker": 7,
+        "cross_reference_marker": 1
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 930,
+          "end": 933
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 1062,
+          "end": 1066
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 1286,
+          "end": 1291
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 2658,
+          "end": 2661
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 3117,
+          "end": 3121
+        }
+      ],
+      "disagreement_count": 5
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 1,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 11,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "4826f869e983671bfe5ae9cef8e673027a6d45caa0eb168bf58cb22ec2cd8740"
+}

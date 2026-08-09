@@ -1,0 +1,27 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_SOURCE_REFERENCE/V1",
+  "deal": "redhat",
+  "reused_committed_raw_html": "tests/fixtures/canonical-v2/redhat-first-live-run/redhat-raw-fetched.htm",
+  "retrieval_url": "https://www.sec.gov/Archives/edgar/data/1087423/000119312518310577/d640856dex21.htm",
+  "raw_bytes_length": 464782,
+  "raw_bytes_sha256": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+  "canonical_text_byte_length": 264358,
+  "canonical_text_sha256": "dcdbf66142d25cbe56ed2bc1fbd26939aaf86056bf34188176c48b5944d31c5e",
+  "verification_status": "PASS",
+  "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+  "pin_corroboration": "docs/codex-program/notes/four-deal-sources-2026-08-08.md (raw_bytes_sha256 and raw_bytes_length 464782 both match this pin exactly); canonical_text_sha256 above was independently re-derived through this script's own loadAndVerifySource path (loadAndVerifySource -> buildSecEdgarIntakeCapture -> convertSecHtmlToCanonicalText -> verifySecHtmlCanonicalText) via a --dry-run probe, read from its own CANONICAL_TEXT_HASH_MISMATCH report, and pinned from that value verbatim -- never reimplemented or hand-computed.",
+  "note": "REUSE, not a pinning fetch. No network call was made by this script.",
+  "admitted_source_capture_inputs": {
+    "schema_version": "ADMITTED_SOURCE_CAPTURE_INPUTS/V1",
+    "raw_html_path": "tests/fixtures/canonical-v2/redhat-first-live-run/redhat-raw-fetched.htm",
+    "raw_bytes_sha256": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+    "retrieval_url": "https://www.sec.gov/Archives/edgar/data/1087423/000119312518310577/d640856dex21.htm",
+    "content_type": "text/html; charset=UTF-8",
+    "retrieved_at": "2026-08-08T03:43:09.000Z",
+    "retrieval_policy_digest": "5e624d6903d140049d2ae0211a8dc83101a09351cba5424ed35ad894acda4248",
+    "immutable_source_document_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+    "source_map_payload_path": "evidence/canonical-v2/_admitted-source-map-payloads/e2666a438a78125e141395f04e747e98ee7d64db7ad483a62383a22423c4f784.deflate",
+    "source_map_compressed_sha256": "82df12abe5cab78db536c17474aab74d5b3804131cbb517ff86e79bffc15c278",
+    "source_map_digest": "d81bc8c85488c57babbe6ce02c2230ac55d56687dae2b0ecbebe3efc3de8c9fe"
+  }
+}

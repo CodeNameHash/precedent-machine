@@ -1,0 +1,154 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "9bb4c551fe118a7da1d0070ea062ab78ea107bbf56eeed374f4dad72ac600db8",
+  "review_queue": [
+    {
+      "section_reference": "5.05",
+      "source_citation": "5.05(d)",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DNO-BENEF",
+      "reasons": [
+        "DNO_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The provisions of this Section 5.05 (i) are intended to be for the benefit of, and will be enforceable by, each indemnified party, his or her heirs and his or her representatives",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "0f036d6dcc8a1cbb1608addca7e0e011dc603a5bc98e8aa964cd0d854e3b04a8",
+      "closure_id": "0098b633abd0d1388ae21112707201f92e4af6e60f55f090e50437d8ad0cc613",
+      "normalised_phrase": "The provisions of this Section 5.05 (i) are intended to be for the benefit of, and will be enforceable by, each indemnified party, his or her heirs and his or her representatives",
+      "attachment_position": null,
+      "concept_family": "DNO-BENEF",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.05",
+      "source_citation": "5.05(c)",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DNO-TAIL",
+      "reasons": [
+        "DNO_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "with a claims period of six (6) years from the Effective Time",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "c79fd88b4e1c68cd4135db3c39f772f2b7b3d532839dc6f827d38453c3136d64",
+      "closure_id": "055d1358793392fa7a6043019fa80290c1c69e6337b906c65e9902462b8b5ae7",
+      "normalised_phrase": "with a claims period of six (6) years from the Effective Time",
+      "attachment_position": null,
+      "concept_family": "DNO-TAIL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.05",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "TAIL_PREMIUM_CAP_PERCENT",
+      "concept_key": "DNO-TAIL",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "89c25444d87006036ff31d03e712aaba40e4d235864e22cee2561b3567f3c202",
+      "closure_id": "3920ba3f09df2f7232b3d5f4241132bf2387fa779381d211db752a6b59164bf5",
+      "normalised_phrase": "provided that in no event shall Parent or the Surviving Corporation be required to pay, with respect to the entire six (6)-year period following the Effective Time, premiums for insurance under this Section 5.05(c) which in the aggregate exceed 300% of the aggregate premiums paid by the Company for the period in its most recent fiscal year for such purpose",
+      "attachment_position": null,
+      "concept_family": "DNO-TAIL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.05",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "TAIL_POLICY_OBLIGATION",
+      "concept_key": "DNO-TAIL",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9ec1a17c01c749badf1eab0419e8fb92419ca00c6aa4b75f0ab75bf2b5361997",
+      "closure_id": "63f4426f78974cf2dbcd59192df68562aa9b64231ef9380b4c22693c0619e54a",
+      "normalised_phrase": "Parent shall obtain, or cause to be obtained, as of the Effective Time, a “tail” insurance policy",
+      "attachment_position": null,
+      "concept_family": "DNO-TAIL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.05",
+      "source_citation": "5.05(c)",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DNO-TAIL",
+      "reasons": [
+        "DNO_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "provided that Parent shall nevertheless be obligated to provide such coverage, with respect to the entire six (6)-year period following the Effective Time, as may be obtained for such 300% amount.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "53a2c76d67d752572b38c91345e0790ad85b7530a1da4056b7a91b60e5c2ee07",
+      "closure_id": "87f812ee2f691eb5eeca034f439b6e034f8d11ab9e0446ee26e9c4d6f30af613",
+      "normalised_phrase": "provided that Parent shall nevertheless be obligated to provide such coverage, with respect to the entire six (6)-year period following the Effective Time, as may be obtained for such 300% amount.",
+      "attachment_position": null,
+      "concept_family": "DNO-TAIL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.05",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "INDEMNIFICATION_CONTINUATION",
+      "concept_key": "DNO-INDEM",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "7bbcac6fe51a836de452e40698c6988ab37d6d613f8110d33718f60d2dfeec25",
+      "closure_id": "970c39462bf5d318f162459eeb85778a2a5fc78fcae5bf20ecf743e560d2789e",
+      "normalised_phrase": "all rights to indemnification, advancement of expenses and exculpation from liabilities for acts or omissions occurring at or prior to the Effective Time now existing in favor of the current or former directors or officers of the Company and its Subsidiaries as provided in their respective certificate of incorporation or bylaws (or comparable organizational documents) and any indemnification or other agreements of the Company as in effect on the date of this Agreement shall be assumed by the Surviving Corporation in the Merger, without further action, at the Effective Time, and shall survive the Merger and shall continue in full force and effect in accordance with their terms, and Parent shall cause the Surviving Corporation to comply with and honor the foregoing obligations.",
+      "attachment_position": null,
+      "concept_family": "DNO-INDEM",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "0cde9ee353700347ee385256d886792db90fad735af905cc9baa08f20c8c13ee"
+}

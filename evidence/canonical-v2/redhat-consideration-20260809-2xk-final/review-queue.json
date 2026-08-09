@@ -1,0 +1,239 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "68e8afa0ed506ca1a05ad84b953fbcc5fef5cc830bd143b45cee26c8eed04ec1",
+  "review_queue": [
+    {
+      "section_reference": "2.01",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9fee1b6242edc961156405e082762faf8c0abf62be96050ae954dae8d2a1a957",
+      "closure_id": "4bba751f68370835f21eccff17d5df7414f8a55684af5a8febce595758bd7f80",
+      "normalised_phrase": "Each share of Company Common Stock issued and outstanding immediately prior to the Effective Time (other than (i) Canceled Shares, (ii) Dissenting Shares, and (iii) Subsidiary Converted Shares) shall be converted into the right to receive $190.00 in cash, without interest (the “Merger Consideration”).",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:ACRONYM:MERGER_CONSIDERATION",
+          "start": 2595,
+          "end": 2615,
+          "excerpt": " cease to have any rights with respect thereto, except the right to receive the Merger Consideration in accordance with the terms of this Agreement.\n(d) Statutory Right of Appraisa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:ACRONYM:MERGER_CONSIDERATION",
+          "start": 3621,
+          "end": 3641,
+          "excerpt": " such shares) shall not be converted into, or represent a right to receive, the Merger Consideration pursuant to this Section 2.01. Such Company Shareholders shall be entitled to r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:ACRONYM:MERGER_CONSIDERATION",
+          "start": 4660,
+          "end": 4680,
+          "excerpt": " they had been converted as of the Effective Time into the right to receive the Merger Consideration in accordance with this Section 2.01, without interest thereon, upon surrender ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.01",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+      "concept_key": "CONS-DISSENT",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f4fcbb4658abc050740465fff79d35f03db204059dbf374a4fe8646a74c3ec12",
+      "closure_id": "78e93b488c3242b9c3c179b73e051fd697a76a272aa193870fad76d722635aed",
+      "normalised_phrase": "Such Company Shareholders shall be entitled to receive payment of the appraised value of such Dissenting Shares to the extent afforded by Section 262 of the DGCL",
+      "attachment_position": null,
+      "concept_family": "CONS-DISSENT",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 2042,
+          "end": 2059,
+          "excerpt": "g immediately prior to the Effective Time (other than (i) Canceled Shares, (ii) Dissenting Shares, and (iii) Subsidiary Converted Shares) shall be converted into the right to re",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 3354,
+          "end": 3371,
+          "excerpt": "h Section 262 of the DGCL (such shares being referred to collectively as the “Dissenting Shares” until such time as such holder fails to perfect, withdraws or otherwise lose",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:PHRASE:APPRAISAL_RIGHTS",
+          "start": 3469,
+          "end": 3485,
+          "excerpt": "e as such holder fails to perfect, withdraws or otherwise loses such holder’s appraisal rights under the Laws of the State of Delaware with respect to such shares) shall not ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 3854,
+          "end": 3871,
+          "excerpt": "ing Shares to the extent afforded by Section 262 of the DGCL (in such case, the Dissenting Shares shall no longer be outstanding and shall automatically be canceled and cease to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 4127,
+          "end": 4144,
+          "excerpt": "o except with regard to such holders’ right to receive the fair value of such Dissenting Shares to the extent afforded by Section 262 of the DGCL); provided, however, that if,",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.04",
+      "source_citation": "5.04(a)(iii)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "NO_MONEY_LITERAL"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "each Cash-Out Restricted Share outstanding at the Effective Time shall be converted at the Effective Time into the right to receive an amount in cash equal to the Merger Consideration in accordance with Section 2.01(c)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "0baa479637386ac7aa2739821bd3f6bc3a155afb2cbe54f4d77efbe83b8707d2",
+      "closure_id": "174eeccb9454060c80827b2cf82a9a401d42eb2436dda3ea079a73840a9a01ee",
+      "normalised_phrase": "each Cash-Out Restricted Share outstanding at the Effective Time shall be converted at the Effective Time into the right to receive an amount in cash equal to the Merger Consideration in accordance with Section 2.01(c)",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.04",
+      "source_citation": "5.04(a)(v)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "PER_SHARE_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "each Cash-Out RSU outstanding immediately prior to the Effective Time shall, in accordance with any applicable Company Stock Plan or any applicable award agreement thereunder, be canceled and the holder thereof shall be entitled to receive in consideration for such cancelation an amount in cash equal to the product of (A) the number of shares of Company Common Stock that are subject to such Cash-Out RSU immediately prior to the Effective Time and (B) the Merger Consideration",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "6ff2fc31c328daf9e751047652dc327febc04f4484b52b5a405f9a289af4b461",
+      "closure_id": "392c1cee5d6306c5d41739a899444f90e9b4116d8da3c5041e1adc9241dcffae",
+      "normalised_phrase": "each Cash-Out RSU outstanding immediately prior to the Effective Time shall, in accordance with any applicable Company Stock Plan or any applicable award agreement thereunder, be canceled and the holder thereof shall be entitled to receive in consideration for such cancelation an amount in cash equal to the product of (A) the number of shares of Company Common Stock that are subject to such Cash-Out RSU immediately prior to the Effective Time and (B) the Merger Consideration",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.04",
+      "source_citation": "5.04(a)(xi)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "EXCHANGE_RATIO_VALUE",
+      "concept_key": "CONS-RATIO",
+      "reasons": [
+        "NO_RATIO_LITERAL"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "“Exchange Ratio” means a fraction, the numerator of which is the Merger Consideration and the denominator of which is the closing price per share of Parent Common Stock on the New York Stock Exchange Composite Transactions Tape on the trading day immediately preceding the date on which the Effective Time occurs.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a533023faa65eee41793ff4fa4f3973f6d09699b0232f06ca7458fee5f93555a",
+      "closure_id": "53e6a12228df471f18d9fe2628fb42351e3c7f9fa255f5f0021688df2a0d473a",
+      "normalised_phrase": "“Exchange Ratio” means a fraction, the numerator of which is the Merger Consideration and the denominator of which is the closing price per share of Parent Common Stock on the New York Stock Exchange Composite Transactions Tape on the trading day immediately preceding the date on which the Effective Time occurs.",
+      "attachment_position": null,
+      "concept_family": "CONS-RATIO",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.04",
+      "source_citation": "5.04(a)(vii)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "PER_SHARE_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "each Cash-Out PSU outstanding immediately prior to the Effective Time shall, in accordance with any applicable Company Stock Plan or any applicable award agreement thereunder, be canceled and the holder thereof shall be entitled to receive in consideration for such cancelation an amount in cash equal to the product of (A) the applicable PSU Share Number and (B) the Merger Consideration",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "30929f7f9d82e0b06698fc58e7fa377922369863e4f5ecc62fb6d768b562cab9",
+      "closure_id": "54a9eb066cc9bdd12da2d1ec7ae708fb035afb82b4b5964d54f0f2333671f318",
+      "normalised_phrase": "each Cash-Out PSU outstanding immediately prior to the Effective Time shall, in accordance with any applicable Company Stock Plan or any applicable award agreement thereunder, be canceled and the holder thereof shall be entitled to receive in consideration for such cancelation an amount in cash equal to the product of (A) the applicable PSU Share Number and (B) the Merger Consideration",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "11e690182ad5adcc91f3308dd7c8420b1c3e0495d9828abfc73ebfac6b651532"
+}

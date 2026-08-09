@@ -1,0 +1,336 @@
+{
+  "resolved": [],
+  "review_queue": [],
+  "open_world": [
+    {
+      "section_reference": "2.01(d)",
+      "source_citation": "2.01(d)(ii)",
+      "reason": "APPRAISAL_ASSERTION_OPEN_WORLD",
+      "claim_definition_key": "NATIVE_APPRAISAL_CANDIDATE",
+      "raw_value": "Except with the prior written consent of Parent, the Company shall not make any payment with respect to, or offer to settle or settle, or approve the withdrawal of, any such demands or agree to do any of the foregoing.",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "2.01(d)",
+        "assertion_kind": "SETTLEMENT_CONSENT",
+        "treatment_scope_ref": null,
+        "treatment_term_ref": null,
+        "tax_opinion_ref": null,
+        "representation_letter_ref": null,
+        "bearer_ref": null,
+        "dividend_term_ref": null,
+        "statute_ref": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "33c4b28fd45cb1c0c2c4c0b448ec163d895dc2a1b311b678cbf9887407c557c7",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "497a598fb8c6fc10b2473ca954eca1ac42f1fe1e1886b9f070fea4531d0ccbef",
+          "document_ordinal": 0,
+          "absolute_start": 2815,
+          "absolute_end": 3033,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "1db9cdcab03a2d0a2261184f40c35bb682617d24f363cd61a1fce8f8cb193ebb",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "APPRAISAL",
+        "prompt_digest": "c99af847c9b0c9b72e7583666ef260349d3fc8ff00ac8c71cd6ee541e3141dcf",
+        "producer_receipt_id": "b09209ea1e01946f6bb6873ff063e902c35ee10d63c4c620fb0ef132595ee21f",
+        "governed_scope_digest": "6fda8f519bbc327a9adb1d35d47829f3e245a812873e46f44bdfe604734dcb24",
+        "extraction_provenance_id": "4dede440a5d2ccd655457027af8650e417f72bbec369bb224cfddeda02216d26"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "2.01(d)",
+        "normalized_citation": "2.01(d)",
+        "derived_citation": "2.01(d)(ii)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.01(d)",
+      "source_citation": "2.01(d)(ii)",
+      "reason": "APPRAISAL_ASSERTION_OPEN_WORLD",
+      "claim_definition_key": "NATIVE_APPRAISAL_CANDIDATE",
+      "raw_value": "Except with the prior written consent of Parent, the Company shall not make any payment with respect to, or offer to settle or settle, or approve the withdrawal of, any such demands or agree to do any of the foregoing.",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "2.01(d)",
+        "assertion_kind": "WITHDRAWAL_RECONVERSION",
+        "treatment_scope_ref": null,
+        "treatment_term_ref": null,
+        "tax_opinion_ref": null,
+        "representation_letter_ref": null,
+        "bearer_ref": null,
+        "dividend_term_ref": null,
+        "statute_ref": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "8e014f787a4d8c3bf395b98ccf8b39176d17891077d1641253077a7746d4875b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "497a598fb8c6fc10b2473ca954eca1ac42f1fe1e1886b9f070fea4531d0ccbef",
+          "document_ordinal": 0,
+          "absolute_start": 2815,
+          "absolute_end": 3033,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "a906cdd27786edc65d282b28b08c01e313dfde3c34c6326f44c11a1df11205ca",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "APPRAISAL",
+        "prompt_digest": "c99af847c9b0c9b72e7583666ef260349d3fc8ff00ac8c71cd6ee541e3141dcf",
+        "producer_receipt_id": "b09209ea1e01946f6bb6873ff063e902c35ee10d63c4c620fb0ef132595ee21f",
+        "governed_scope_digest": "6fda8f519bbc327a9adb1d35d47829f3e245a812873e46f44bdfe604734dcb24",
+        "extraction_provenance_id": "4dede440a5d2ccd655457027af8650e417f72bbec369bb224cfddeda02216d26"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "2.01(d)",
+        "normalized_citation": "2.01(d)",
+        "derived_citation": "2.01(d)(ii)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.01(d)",
+      "source_citation": "2.01(d)",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "The Company shall provide Parent prompt written notice of any demands received by the Company for appraisal of shares of Company Common Stock (or written threats thereof), any written withdrawal or purported withdrawal of any such demand and any other demand, notice or instrument delivered to the Company prior to the Effective Time pursuant to the Laws of the State of Delaware that relates to such demand,",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "APPRAISAL_NOTICE: The Company must give Parent prompt written notice of specified appraisal demands, withdrawals, threats and related instruments.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "4fa8f14fa590f7c110d77b3de31aa950c0ac426aad4a6ab25eb627d3451323b0",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "8eae936bb034e940eb9d73b7766834788d85ec4d8dbd10a54c0f539fee12e819",
+          "document_ordinal": 0,
+          "absolute_start": 2229,
+          "absolute_end": 2637,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "c955daf685229ca2de96bc898641c61af78879a87e8f28d2ae4e38d75862e57f",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "c99af847c9b0c9b72e7583666ef260349d3fc8ff00ac8c71cd6ee541e3141dcf",
+        "producer_receipt_id": "b09209ea1e01946f6bb6873ff063e902c35ee10d63c4c620fb0ef132595ee21f",
+        "governed_scope_digest": "6fda8f519bbc327a9adb1d35d47829f3e245a812873e46f44bdfe604734dcb24",
+        "extraction_provenance_id": "61ac7edd1e7411f02edc1b224a0d2353bd9aa01e77fa14d09bbca299e8c1938b"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.01(d)",
+      "source_citation": "2.01(d)",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Parent shall have the opportunity and right to participate in and direct all negotiations and any litigation, suit, action or other proceeding with respect to such demands.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "APPRAISAL_INFORMATION_RIGHT: Parent has participation and direction rights for negotiations and proceedings concerning the demands.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "18cb097971ba1b794027ff441ae8b3870eefe01c0fa528116f508d15f0d1991b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2577762d5bdbd4e14c987172725de8f4e0e4db8226e4d70a9ff1cda776a804f9",
+          "document_ordinal": 0,
+          "absolute_start": 2642,
+          "absolute_end": 2814,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "159ac739d341a22866e195033e563c2af019b264ea41f0e626375617bd6bee8d",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "c99af847c9b0c9b72e7583666ef260349d3fc8ff00ac8c71cd6ee541e3141dcf",
+        "producer_receipt_id": "b09209ea1e01946f6bb6873ff063e902c35ee10d63c4c620fb0ef132595ee21f",
+        "governed_scope_digest": "6fda8f519bbc327a9adb1d35d47829f3e245a812873e46f44bdfe604734dcb24",
+        "extraction_provenance_id": "61ac7edd1e7411f02edc1b224a0d2353bd9aa01e77fa14d09bbca299e8c1938b"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.01(d)",
+      "source_citation": "2.01(d)",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "in accordance with Section 262 of the DGCL",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "APPRAISAL_STATUTE: The appraisal rights are exercised under Section 262 of the DGCL.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "01eb9dbe413fad7f7798b0ef642783d3f0f2dd50f0b7c6cb90a3f3ebbdef2cbc",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "7dcfb5e8c5d67cc9e0c9d10f35779482d300b8d41f8fbbf09a2379454babb681",
+          "document_ordinal": 0,
+          "absolute_start": 593,
+          "absolute_end": 635,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "87867eb9961ea79d9be179f4ff4a6b35e625d46754416ebffdcbb499fe5236c3",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "c99af847c9b0c9b72e7583666ef260349d3fc8ff00ac8c71cd6ee541e3141dcf",
+        "producer_receipt_id": "b09209ea1e01946f6bb6873ff063e902c35ee10d63c4c620fb0ef132595ee21f",
+        "governed_scope_digest": "6fda8f519bbc327a9adb1d35d47829f3e245a812873e46f44bdfe604734dcb24",
+        "extraction_provenance_id": "61ac7edd1e7411f02edc1b224a0d2353bd9aa01e77fa14d09bbca299e8c1938b"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "796dcb1dda60efb2df10d4c2864e9e827eec3bfded6f9e07730b89cf5db91e0c",
+    "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 5,
+      "resolved": 0,
+      "auto_pass": 0,
+      "review_queue": 0,
+      "open_world": 5,
+      "residuals": 0,
+      "provisions": 0,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "d1eb5efd6e77c282ac395df6a9d841fff6dcb435a03293a2bf715794913926a6"
+  }
+}

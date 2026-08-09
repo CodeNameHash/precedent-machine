@@ -1,0 +1,107 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "832410ddabdbb194ac8d3a7c799eb70384c8e79845277a663292c745fa6eeb70",
+  "review_queue": [
+    {
+      "section_reference": "8.03",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "WILLFUL_BREACH_DEFINITION",
+      "concept_key": "DEF-WILLFUL",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f3107b4a56044daf16e50ec421e6a2d4c99bed576e16ea79f846fa9f49a92837",
+      "closure_id": "ae00fbedb5c5afe8879b5622d333b83912370be62814379f25b1fcdd5f3a4489",
+      "normalised_phrase": "an act or omission (including a failure to cure circumstances) taken or omitted to be taken",
+      "attachment_position": null,
+      "concept_family": "DEF-WILLFUL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.03",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "WILLFUL_BREACH_KNOWLEDGE_STANDARD",
+      "concept_key": "DEF-WILLFUL",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ace1cc5d7690330f6a2b9a4668a27e8bc8268fcc235eb971ad20c51edd58d595",
+      "closure_id": "bb0e15bc8603f1580fbea59bf6eda6d3ad3e1ed0c74c3e97a91077f35d9adb26",
+      "normalised_phrase": "the breaching party intentionally takes (or intentionally fails to take) and knows (or reasonably should have known) would, or would reasonably be expected to, cause a material breach of such representation, warranty, agreement or covenant.",
+      "attachment_position": null,
+      "concept_family": "DEF-WILLFUL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.03",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "KNOWLEDGE_STANDARD",
+      "concept_key": "DEF-KNOWLEDGE",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "71645f86fc0fc695660361546c6a4c938e834c25036004beb4f7638279de7c23",
+      "closure_id": "118d42e538a6e0ae178b38f799c41de7a5393f77ab8e1a59190de81a224ad26e",
+      "normalised_phrase": "the actual knowledge",
+      "attachment_position": null,
+      "concept_family": "DEF-KNOWLEDGE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.03",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "KNOWLEDGE_PERSON_SOURCE",
+      "concept_key": "DEF-KNOWLEDGE",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6985f34d1e203143f77667dcceb0dc2967fc89b22b90033b7d9dfe21dea952e3",
+      "closure_id": "46460b51175152f340133626647020e94be098dde0dcffcc339831a464036916",
+      "normalised_phrase": "the persons identified in Section 8.03(k) of the Company Letter",
+      "attachment_position": null,
+      "concept_family": "DEF-KNOWLEDGE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "d93f4db9fbed9eecd39c725775835e2692784e02ff69c78c21c080ad627b47d5"
+}
