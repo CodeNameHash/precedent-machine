@@ -232,6 +232,7 @@ const { runNativeExtractionWithCitationFollowup } = require('../lib/canonical-v2
 const {
   resolveCandidates, computeSectionCandidatesForLexicalDigest,
 } = require('../lib/canonical-v2/native-producer/candidate-resolution');
+const { buildSameDealDefinedTermIndex } = require('../lib/canonical-v2/native-producer/same-deal-defined-term-resolution');
 // Ben's two M3 auto-pass conditions (docs/core/PLAN.md, "Prerequisite. Wire
 // Ben's two M3 auto-pass conditions before rung 1"). Both are pure,
 // deterministic, no-model-call modules -- see each file's own header.
@@ -1099,6 +1100,8 @@ function parseArgs(argv) {
     dryRun: false,
     outDir: null,
     v1SnapshotPath: null,
+    sameDealDefinedTermReceiptPaths: [],
+    sameDealDefinedTermCalibrationPath: null,
   };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -1131,6 +1134,8 @@ function parseArgs(argv) {
       // trusted over it.
       case '--replay-model-id': out.replayModelId = argv[++i]; break;
       case '--v1-snapshot': out.v1SnapshotPath = argv[++i]; break;
+      case '--same-deal-defined-terms-receipt': out.sameDealDefinedTermReceiptPaths.push(argv[++i]); break;
+      case '--same-deal-defined-terms-calibration': out.sameDealDefinedTermCalibrationPath = argv[++i]; break;
       default: throw new Error(`unrecognised argument: ${arg}`);
     }
   }
@@ -1151,6 +1156,9 @@ function parseArgs(argv) {
     throw new Error('LIVE_PROFILE_FORBIDDEN: extraction only permits --profile TERRA_MEDIUM. Sol is reserved for review and escalation.');
   }
   if (out.sectionRefs && out.sectionRefs.length === 0) throw new Error('--section-refs must name at least one section reference');
+  if (Boolean(out.sameDealDefinedTermCalibrationPath) !== Boolean(out.sameDealDefinedTermReceiptPaths.length)) {
+    throw new Error('SAME_DEAL_DEFINED_TERMS_PIN_REQUIRED: --same-deal-defined-terms-receipt and --same-deal-defined-terms-calibration must be supplied together');
+  }
   return out;
 }
 
@@ -1221,6 +1229,8 @@ function resolveRunConfig(args) {
     replayManifestId: args.replayManifestId || null,
     replayModelId: args.replayModelId || null,
     v1SnapshotPath: args.v1SnapshotPath || null,
+    sameDealDefinedTermReceiptPaths: Object.freeze([...args.sameDealDefinedTermReceiptPaths]),
+    sameDealDefinedTermCalibrationPath: args.sameDealDefinedTermCalibrationPath || null,
   });
 }
 
@@ -2082,6 +2092,17 @@ async function main() {
 
   // ─── Step 4: resolveCandidates -> buildNativeWriteSet (WITH resolution context) -> validate ───
 
+  // Stage 2Y is deliberately inert unless the operator names both a sealed
+  // KEY_DEFINED_TERMS receipt set and its explicit calibration. It reads
+  // compiled candidates, never another family's resolution output.
+  const sameDealDefinedTerms = config.sameDealDefinedTermCalibrationPath
+    ? buildSameDealDefinedTermIndex({
+      key_defined_term_receipts: config.sameDealDefinedTermReceiptPaths.map((file) => JSON.parse(readFileSync(resolve(file), 'utf8'))),
+      admitted_source_context: admittedSourceContext,
+      calibration: JSON.parse(readFileSync(resolve(config.sameDealDefinedTermCalibrationPath), 'utf8')),
+    })
+    : null;
+
   // PLAIN PASS (no M3 conditions wired yet): needed as the input BOTH M3
   // conditions are built from -- the lexical net keys its per-section
   // candidates off `plainResolution.resolved`, and the comparator's
@@ -2093,6 +2114,7 @@ async function main() {
     contract_vocabulary: contractBundle,
     admitted_source_context: admittedSourceContext,
     agreement_date: config.agreementDate,
+    same_deal_defined_terms: sameDealDefinedTerms,
   });
 
   // Condition 2: lexical-disagreement net (Ben's M3 auto-pass condition 2,
@@ -2149,6 +2171,7 @@ async function main() {
     agreement_date: config.agreementDate,
     v1v2_comparison: v1v2Comparison,
     lexical_disagreement: lexicalDisagreement,
+    same_deal_defined_terms: sameDealDefinedTerms,
   });
   writeFileSync(resolve(outDir, 'resolution.json'), JSON.stringify(resolution, null, 2));
 

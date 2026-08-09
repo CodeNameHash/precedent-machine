@@ -12,6 +12,7 @@ const {
   shapeMiscBoilerplateProposals,
 } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
+const { buildSameDealDefinedTermIndex } = require('../lib/canonical-v2/native-producer/same-deal-defined-term-resolution');
 const { classifyQualifierQuote } = require('../lib/canonical-v2/native-producer/qualifier-kind-lexicon');
 const {
   AUTHORITY_STATE: REPRESENTATIONS_AUTHORITY_STATE,
@@ -21,6 +22,7 @@ const { buildIdentityAdmittedSourceContext } = require('./helpers/identity-admit
 const { buildLexicalDisagreementReceipt } = require('../lib/canonical-v2/native-producer/lexical-disagreement-net');
 const fs = require('node:fs');
 const path = require('node:path');
+const { pathToFileURL } = require('node:url');
 
 const CONTRACT = compileFixtureContractV33();
 
@@ -153,6 +155,79 @@ async function replayRepresentationAdapter({ source, sectionReference, parsed, d
   });
   return { prompt, receipt, resolution };
 }
+
+test('Stage 2Y representation knowledge uses a calibrated same-document definition without changing the carrier shape', async () => {
+  const source = 'Section 3.1. “Knowledge” means actual knowledge after due inquiry. The Company represents, to the Knowledge of the Company, that this is true.\n';
+  const documentHash = sha256Hex(Buffer.from(source, 'utf8'));
+  const admittedSourceContext = buildIdentityAdmittedSourceContext(source, { dealKey: 'stage-2y-integration', dealAdmissionId: sha256Hex('stage-2y-integration') });
+  const keyReceipt = await runNativeExtraction({
+    source_text: source, document_hash: documentHash, section_references: ['3.1'], contract_bundle: CONTRACT, definitions: {},
+    provider: async ({ governed_scope: scope }) => ({ provider_id: 'fixture', model_id: 'fixture', prompt: 'fixture', ...require('../lib/canonical-v2/native-producer/anthropic-provider').shapeDefinedTermsProposals({
+      defined_term_assertions: [{ section_reference: '3.1', assertion_kind: 'KNOWLEDGE_STANDARD', knowledge_term_ref: 'Knowledge', standard_code: 'ACTUAL', knowledge_party: 'TARGET', definition_head_quote: '“Knowledge” means', limb_quote: 'actual knowledge after due inquiry' }],
+    }, scope.source_text) }),
+  });
+  const representationReceipt = await runNativeExtraction({
+    source_text: source, document_hash: documentHash, section_references: ['3.1'], contract_bundle: CONTRACT, definitions: {},
+    provider: async ({ governed_scope: scope }) => ({ provider_id: 'fixture', model_id: 'fixture', prompt: 'fixture', ...shapeRepresentationQualifierProposals({
+      representation_instances: [{ section_reference: '3.1', party_making: 'the Company', qualifiers: [{ kind: 'KNOWLEDGE', code: 'AFTER_INQUIRY', quote: 'to the Knowledge of the Company', attachment: { position: 'ITEM', governs_path: ['(a)'] } }] }],
+      bring_down_conditions: [], open_world_candidates: [],
+    }, scope.source_text) }),
+  });
+  const index = buildSameDealDefinedTermIndex({
+    key_defined_term_receipts: [keyReceipt], admitted_source_context: admittedSourceContext,
+    calibration: { calibration_id: 'stage-2y-integration', codebook_version: 'knowledge/v1', integration_fixture_id: 'integration', allowed_assertion_kinds: ['KNOWLEDGE_STANDARD'], generic_party_neutral: true, composite_precedence: [{ code: 'AFTER_INQUIRY', patterns: ['due inquiry'] }, { code: 'ACTUAL' }] },
+  });
+  const baseline = resolveCandidates({ run_receipt: representationReceipt, contract_vocabulary: CONTRACT, admitted_source_context: admittedSourceContext });
+  const inert = resolveCandidates({ run_receipt: representationReceipt, contract_vocabulary: CONTRACT, admitted_source_context: admittedSourceContext, same_deal_defined_terms: buildSameDealDefinedTermIndex({}) });
+  assert.deepEqual(inert, baseline);
+  const resolution = resolveCandidates({ run_receipt: representationReceipt, contract_vocabulary: CONTRACT, admitted_source_context: admittedSourceContext, same_deal_defined_terms: index });
+  assert.equal(resolution.resolved.length, 1);
+  const attrs = resolution.resolved[0].claim.attributes;
+  assert.equal(attrs.knowledge_standard, 'AFTER_INQUIRY');
+  assert.equal(attrs.defined_term_resolution.calibration_id, 'stage-2y-integration');
+
+  const noDefinitionReceipt = structuredClone(keyReceipt);
+  noDefinitionReceipt.compiled_candidates[0].candidate.claim.attributes.knowledge_party = 'BUYER';
+  const noDefinitionIndex = buildSameDealDefinedTermIndex({
+    key_defined_term_receipts: [noDefinitionReceipt], admitted_source_context: admittedSourceContext,
+    calibration: { calibration_id: 'stage-2y-no-definition', codebook_version: 'knowledge/v1', integration_fixture_id: 'integration', allowed_assertion_kinds: ['KNOWLEDGE_STANDARD'], generic_party_neutral: true, composite_precedence: [{ code: 'AFTER_INQUIRY', patterns: ['due inquiry'] }, { code: 'ACTUAL' }] },
+  });
+  const fallback = resolveCandidates({ run_receipt: representationReceipt, contract_vocabulary: CONTRACT, admitted_source_context: admittedSourceContext, same_deal_defined_terms: noDefinitionIndex });
+  assert.equal(fallback.resolved.length, 1);
+  assert.equal(fallback.resolved[0].claim.attributes.knowledge_standard, 'AFTER_INQUIRY');
+  assert.equal(fallback.resolved[0].claim.attributes.defined_term_resolution, undefined);
+
+  const conflictReceipt = structuredClone(representationReceipt);
+  conflictReceipt.compiled_candidates[0].candidate.claim.canonical_value = 'ACTUAL';
+  const conflict = resolveCandidates({ run_receipt: conflictReceipt, contract_vocabulary: CONTRACT, admitted_source_context: admittedSourceContext, same_deal_defined_terms: index });
+  assert.equal(conflict.review_queue.length, 1);
+  assert.deepEqual(conflict.review_queue[0].reasons, ['REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT']);
+});
+
+test('Stage 2Y live runner requires the defined-term receipt and calibration together', async () => {
+  const runner = await import(pathToFileURL(path.join(__dirname, '..', 'scripts', 'canonical-v2-live-extraction-run.mjs')).href);
+  const base = ['--deal', 'modiv', '--family', 'REPRESENTATIONS', '--out-dir', '/tmp/stage-2y-runner-test'];
+  assert.throws(
+    () => runner.parseArgs([...base, '--same-deal-defined-terms-receipt', 'key-defined-terms-receipt.json']),
+    /SAME_DEAL_DEFINED_TERMS_PIN_REQUIRED/,
+  );
+  assert.throws(
+    () => runner.parseArgs([...base, '--same-deal-defined-terms-calibration', 'calibration.json']),
+    /SAME_DEAL_DEFINED_TERMS_PIN_REQUIRED/,
+  );
+  const config = runner.resolveRunConfig(runner.parseArgs([
+    ...base,
+    '--same-deal-defined-terms-receipt', 'key-defined-terms-receipt.json',
+    '--same-deal-defined-terms-receipt', 'second-key-defined-terms-receipt.json',
+    '--same-deal-defined-terms-calibration', 'calibration.json',
+  ]));
+  assert.deepEqual(config.sameDealDefinedTermReceiptPaths, [
+    'key-defined-terms-receipt.json',
+    'second-key-defined-terms-receipt.json',
+  ]);
+  assert.ok(Object.isFrozen(config.sameDealDefinedTermReceiptPaths));
+  assert.equal(config.sameDealDefinedTermCalibrationPath, 'calibration.json');
+});
 
 test('real representation excerpt reaches distinct accuracy and knowledge product records through the live adapter', async () => {
   const pack = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'canonical-v2', 'm3-v31-fixtures', 'corpus-cards.json'), 'utf8'));
