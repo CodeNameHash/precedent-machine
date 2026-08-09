@@ -3101,11 +3101,19 @@ without a consumption gate produces a second `taxonomy.js`. So 2Y-C is registry
 *Default if you say nothing: build it, with the lint, scoped to what the
 resolver actually reads today rather than migrating all 429 codes.*
 
-**2. The precision/recall trade.** Every step here loosens a check. How much
-wrongness is acceptable to recover a claim? My recommendation: **publish only at
-or above the precision the current strict behaviour achieves**, measured in
-2Y-0, and hold anything that would lower it. That is conservative and it is what
-"the system needs to be fucking good" implies. *Default: that rule.*
+**2. The precision/recall trade — ANSWERED 2026-08-09, see Step 2Y-0.** I
+proposed a rule: publish only at or above the precision current strict behaviour
+achieves. **Ben's answer: don't choose the cutoff, sweep it.** Run each mechanism
+at several looseness levels, cross-reference each level against independently
+deduced output, and read the cutoff off the curve. That is right, and it exposes
+that my rule depended on a baseline nobody has ever measured. Two things Ben
+still owes this step, both small and both bounded: **the 60–100-claim
+human-adjudicated anchor set** that scores the adjudicators before their verdicts
+count, and a decision on the disagreement set the adjudicators will route to him.
+One remaining open question is named in 2Y-0: **whether each family carries a
+stated recall floor** alongside the precision gate, since a precision rule alone
+is a ratchet. *Default: yes, floors derived from
+`lib/category-summary-features.js`.*
 
 **3. Open-world promotion threshold.** 2X-G left this open and 2Y-J cannot
 proceed without it. The evidence now says a concept-recurrence rule reads better
@@ -3124,35 +3132,172 @@ answered once for both.*
 
 ---
 
-## Step 2Y-0. Measure precision before loosening anything, and fix the denominator
+## Step 2Y-0. Find the cutoff by sweeping it, not by choosing it
 
-**What it is.** Two things that must exist before any other step in this stage
-lands. First, a **precision baseline**: a stratified sample of *published*
-claims — not held ones — adjudicated against the source agreement, per family,
-recording what fraction is correct today. Second, a **denominator correction**:
-reclassify the ~25 confirmed correct abstentions out of the failure population
-so that "unresolved" counts only things that should have resolved.
+**Ben's ruling, 2026-08-09**, replacing what I proposed. I offered a rule —
+publish only at or above the precision the current strict behaviour achieves.
+Ben's answer: run it at **different levels**, cross-reference each level against
+independently deduced output, and **read the cutoff off the result**.
 
-**Why.** Every step below trades precision for recall and there is currently no
-instrument that would notice. The programme's measurement failures have all been
-denominator failures — `review_queue` read as a reject pile, correct abstentions
-read as bugs, auto-pass-blocked rows folded into open-world. Loosening a dozen
-checks against a denominator nobody trusts is how a system gets worse while its
-headline number improves.
+That is better than what I proposed, for a reason worth stating. My rule
+presupposed a baseline precision figure that **has never been measured** — the
+96-card blind sample measured the *held* population, whether a refusal was
+correct, not the published one. So my rule needed a number we do not have and
+then picked a threshold by argument. A sweep produces the number and the
+threshold together, per family, from evidence.
 
-**Change.** A new script under `scripts/` producing a committed evidence file, in
-the shape of `evidence/blind-review/2026-08-08/` — which is the precedent to
-copy, including its discipline: **report per-stratum movement, never a bare
-total**. Reclassification lands in the register and in
-`docs/codex-program/notes/stage-2y/unresolved-register.json`.
+### The ladders
 
-**Direction of risk: none.** Measurement only.
+Looseness is not one dial. Each mechanism gets an **ordinal ladder**, rung 0
+always being today's behaviour, so every curve carries its own control.
 
-**Proves it is done.** A committed per-family precision figure with its sample
-size and its adjudications, and a corrected unresolved total with the
-reclassified codes named individually. If the precision baseline is already
-below what the product needs, that is a finding that reorders this entire stage
-and it is better found now.
+| mechanism | rung 0 (today) | rung 1 | rung 2 | rung 3 | rung 4 |
+|---|---|---|---|---|---|
+| Context window (2Y-A) | rendered line | paragraph | enumerated sibling group | whole section | section + full chapeau chain |
+| Corroboration strictness (2Y-B, 2Y-C) | exact literal | modal/tense/voice normalised | anchor word + stem | defer to model where derivation is empty | defer unless positively contradicted |
+| Defined terms (2Y-D) | hard-coded literal | exact defined term | resolved alias from the agreement's own definitions | alias + capacity lexicon | |
+| Numerals (2Y-E) | digit only | spelled **and** digit | spelled alone | spelled + unit conversion | |
+| Lexical net (2Y-F) | hit-by-hit overlap | sentence-deduped | concept coverage | | |
+| Topic classification (2Y-H) | exact match only | high confidence | any classification carrying evidence | | |
+
+### One at a time, then jointly — and the joint run is the one that gates
+
+The full cross-product is over a thousand configurations. Sweep each ladder with
+the others **pinned at rung 0** — about 25 replays, and replay costs zero model
+calls, so the resolver side of this is free.
+
+Then run a **joint confirmation at the chosen rungs only**, because these
+mechanisms interact and the interaction is not incidental: deferring to the
+model (ladder 2, rung 3) is *only* defensible once the context window is wide
+enough that the evidence was actually complete (ladder 1). Measured apart, each
+looks safer than it is together.
+
+**The joint run is what gates a step. The one-at-a-time sweeps choose candidate
+rungs and nothing more.** Written down because reporting the individual sweeps
+as the result is exactly the shape of error this programme keeps making.
+
+### The sequencing consequence, and it changes every other step in this stage
+
+You cannot sweep a ladder that is not built. So **2Y-A through 2Y-J each ship
+rung-selectable and default to rung 0** — the implementation lands disabled, the
+sweep chooses its rung, and only then is that rung turned on. Each of those steps
+therefore has two landings, an inert one and a live one, and the acceptance
+evidence quoted in each step belongs to the second.
+
+This is a real cost and it is worth it: it is also the only way any of these
+changes is ever revertible per-mechanism rather than per-commit.
+
+### Adjudication — how a level's output is judged
+
+- **Adjudicators are agents with no shared context** with whoever wrote the fix,
+  and never the run that produced the claim. Cross-vendor for load-bearing calls,
+  per the routing table in `CLAUDE.md`.
+- **Judged against the source agreement**, never against the resolver's own
+  output. Reading our output back to ourselves measures self-consistency.
+- **Census, not sample, below ~150 newly-published claims at a rung.** Most of
+  these sets are small — 91 for the knowledge standard, 62, 59 — so adjudicate
+  all of them and the sampling problem disappears. Sampling is forced only on the
+  large ones (623, 485), and there the sample size **and the effect size it can
+  actually detect** get stated rather than assumed.
+- **Every verdict carries an error class**, not just right/wrong: party
+  attribution, materiality or qualifier code, span, topic bucket, other. The
+  curve is then drawn per class, because these do not cost the same.
+
+### The instrument must be calibrated before it calibrates anything
+
+**This is the part that can invalidate everything above, so it comes first.** The
+adjudicator is a model. If it errs in the same direction as the extractor, the
+curve is wrong and confidently wrong — and both are working on the same kind of
+text, which is precisely when correlated error is likely.
+
+So: a **human-adjudicated anchor set, 60–100 claims**, stratified across families
+and error classes, produced once, by Ben. Every adjudicator agent is scored
+against it **before its verdicts count**, and its own precision, recall and
+per-class agreement are recorded alongside the curve. If an adjudicator cannot
+clear a stated floor, the calibration is unsupported and must say so rather than
+publish a curve.
+
+This is the smallest amount of human work that makes the rest mean anything, and
+it is bounded — one sitting, not a standing burden.
+
+### Where the adjudicators disagree is the sample worth a human's time
+
+Run **three independent adjudicators** per claim. The set where they disagree —
+not a random draw — is where the real boundary sits, and it is a far better use
+of Ben's attention. Route the disagreement set to him; it is also the raw
+material for a sharper rubric next time.
+
+### Reading the curve — the rule this actually produces
+
+Per (family, mechanism), take the **highest rung** where all of the following
+hold:
+
+1. precision on that rung's newly-published claims is at or above the family's
+   rung-0 precision;
+2. precision of the **previously**-published set has not fallen at all — this is
+   what catches collateral damage, where a loosened check changes an existing
+   claim rather than adding a new one;
+3. **zero errors of class party-attribution or materiality-code, at any count.**
+   These do not average out. A 1% party-attribution rate is a thousand
+   wrong-party claims at a thousand agreements, and a wrong party reverses the
+   meaning of a covenant;
+4. the **marginal** claims the next rung up would add fall below the floor. That
+   is the knee, and finding it is what "where the cutoff should be" means.
+
+Report per rung, per family, per error class. **Never a corpus total.** A total
+over a shifting denominator is not comparable to anything — the same discipline
+the blind sample's twelve strata of eight already impose, for the same reason.
+
+### The recall counterweight, because a precision rule alone is a ratchet
+
+"Never lower precision" can freeze the system at excellent precision and
+unusable recall, which fails Ben's standard as surely as publishing wrongly does.
+Two counterweights, both in scope here:
+
+- the rule governs **published** claims, so recovery that lands as held-but-
+  surfaced does not trip it;
+- each family carries a **stated recall floor**, derived from
+  `lib/category-summary-features.js` — ~200 expected rows annotated with PW
+  question numbers, the closest thing this repository has to "what should this
+  family produce". Below its floor a family is failing whatever its precision
+  says.
+
+*(Note: the 2026-08-09 re-audit found `category-summary-features.js` has zero
+canonical-V2 consumers, so this is its first real use as well as 2Y-H's.)*
+
+### And, still, the denominator correction
+
+Reclassify the ~25 confirmed correct abstentions out of the failure population —
+`PARTY_UNRESOLVED` in MAE_DEFINITION (14), `NO_DAY_COUNT` on "as promptly as
+reasonably practicable" (3), `MULTIPLE_DAY_COUNTS` (1), and the rest — so that
+"unresolved" counts only what should have resolved. Every measurement failure
+this programme has had was a denominator failure: `review_queue` read as a reject
+pile, correct abstentions read as bugs, auto-pass-blocked rows folded into
+open-world.
+
+**Change.** A sweep runner and an adjudication harness under `scripts/`; the
+rung-selection configuration the other steps build against; a committed evidence
+directory in the shape of `evidence/blind-review/2026-08-08/`; reclassification
+into `docs/codex-program/notes/stage-2y/unresolved-register.json`.
+
+**Direction of risk: none to the product, high to the programme if skipped.** No
+resolver change ships from this step. But every later step's gate is defined
+here, so an error here is invisible and propagates into all of them.
+
+**Cost.** The replays are free — zero model calls. The cost is adjudication:
+rungs × newly-published claims × three adjudicators. Size and cap it before it
+runs, census below ~150 and stated sampling above.
+
+**Proves it is done.** A committed curve per (family, mechanism, rung) broken out
+by error class; each adjudicator's own score against Ben's anchor set, stated
+rather than assumed; the chosen rung per mechanism with the marginal-claim
+evidence that chose it; the disagreement set routed to Ben; and the corrected
+unresolved total with every reclassified code named individually. Committed so it
+replays and nobody ever re-adjudicates by hand.
+
+**What it leaves behind.** This is not Stage 2Y scaffolding. It is the regression
+instrument every later change gets measured with, and the first thing this
+programme has ever had that could notice the system getting quietly worse.
 
 ---
 
