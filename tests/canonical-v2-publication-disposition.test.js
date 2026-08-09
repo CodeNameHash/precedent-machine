@@ -19,6 +19,12 @@ const {
   PUBLICATION_DISPOSITION_V2_SCHEMA,
   buildPublicationDispositionV2,
   validatePublicationDispositionV2,
+  buildPublicationFamilySwitch,
+  validatePublicationFamilySwitch,
+  buildPublicationReleaseReceipt,
+  validatePublicationReleaseReceipt,
+  buildPublicationRollbackReceipt,
+  validatePublicationRollbackReceipt,
 } = require('../lib/canonical-v2/publication-disposition');
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
 
@@ -399,4 +405,42 @@ test('the V2 validator rebuilds the evaluator result when asked to validate a wr
     }),
     /independent evaluation/,
   );
+});
+
+test('an explicit release receipt requires an eligible decision and an enabled family switch, while rollback requires its disabled successor', () => {
+  const authority = buildCalibrationAuthority(authorityInput());
+  const eligible = buildPublicationDispositionV2({
+    claim_revision_id: 'a'.repeat(64),
+    run_receipt_id: 'b'.repeat(64),
+    resolution_receipt_id: 'c'.repeat(64),
+    evaluated_at: EVALUATION_TIME,
+    calibration_authority: authority,
+    publication_input: publicationInput(),
+    canonical_validation_state: 'VALIDATED',
+  });
+  const enabled = buildPublicationFamilySwitch({
+    family: 'TERMINATION_FEE', enabled: true, effective_at: EVALUATION_TIME, reason_code: 'FUTURE_RELEASE_AUTHORISED',
+  });
+  const release = buildPublicationReleaseReceipt({
+    eligible_decision: eligible, family_switch: enabled, released_at: EVALUATION_TIME,
+  });
+  assert.doesNotThrow(() => validatePublicationFamilySwitch(enabled));
+  assert.doesNotThrow(() => validatePublicationReleaseReceipt(release, {
+    eligible_decision: eligible, family_switch: enabled,
+  }));
+  const disabled = buildPublicationFamilySwitch({
+    family: 'TERMINATION_FEE', enabled: false, effective_at: '2026-08-09T13:00:00.000Z', reason_code: 'ROLLBACK',
+  });
+  const rollback = buildPublicationRollbackReceipt({
+    release_receipt: release,
+    disabled_family_switch: disabled,
+    rolled_back_at: '2026-08-09T13:00:00.000Z',
+    reason_code: 'ROLLBACK',
+  });
+  assert.doesNotThrow(() => validatePublicationRollbackReceipt(rollback, {
+    release_receipt: release, disabled_family_switch: disabled,
+  }));
+  assert.throws(() => buildPublicationReleaseReceipt({
+    eligible_decision: eligible, family_switch: disabled, released_at: EVALUATION_TIME,
+  }), (error) => error.code === 'FAMILY_PUBLICATION_DISABLED');
 });
