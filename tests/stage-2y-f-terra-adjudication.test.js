@@ -121,6 +121,37 @@ test('a valid ambiguous result keeps the artifact valid but remains non-authorit
   assert.equal(artifact.matcher_change_authorisation, false);
 });
 
+test('one semantically incomplete Terra decision fails closed locally without invalidating other sealed calls', async () => {
+  const { runTerraAdjudication, validateTerraAdjudicationArtifact } = await subject();
+  const source = await inventory();
+  const root = source.roots.find((item) => item.resolved_entries.length > 1 && item.disagreement_items.length > 0);
+  assert.ok(root);
+  const one = { ...source, roots: [root] };
+  const artifact = await runTerraAdjudication({
+    inventory: one,
+    expectedRootCount: 1,
+    reviewedAt: '2026-08-09T12:00:00.000Z',
+    invoke: async ({ input }) => ({
+      text: JSON.stringify({
+        root_id: input.root_id,
+        evidence_fingerprint: input.evidence_fingerprint,
+        classification: 'SAME_CONCEPT_REPEAT',
+        rationale: 'The disagreement repeats one resolved concept, but this response omits other required resolved claim identifiers.',
+        covered_claim_revision_ids: [input.resolved_claims[0].claim_revision_id],
+        covered_disagreement_ids: input.disagreement_items.map((item) => item.disagreement_id),
+      }),
+      provider_request_id: 'thread-incomplete-coverage',
+      usage: { input_tokens: 1, cached_input_tokens: 0, output_tokens: 1, reasoning_output_tokens: 0 },
+      codex_completion: { status: 'COMPLETE', terminal_event: 'turn.completed' },
+    }),
+  });
+  const checked = validateTerraAdjudicationArtifact({ inventory: one, artifact, expectedRootCount: 1 });
+  assert.equal(checked.ok, true);
+  assert.deepEqual(checked.decision_validation_errors, ['DECISION_SAME_CONCEPT_CLAIM_COVERAGE_MISMATCH']);
+  assert.equal(checked.applied.roots[0].classification, 'AMBIGUOUS_NEEDS_REVIEW');
+  assert.equal(checked.applied.roots[0].classification_source, 'DEFAULT_FAIL_CLOSED');
+});
+
 test('forged Terra-labelled decisions fail without verified artifact authority, while human decisions keep their source', async () => {
   const ledger = await import(path.join(ROOT, 'scripts', 'stage-2y-f-lexical-classification.mjs'));
   const { runTerraAdjudication, validateTerraAdjudicationArtifact } = await subject();
