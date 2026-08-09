@@ -25,7 +25,7 @@ function build(root = ROOT) {
   return { candidatePath, review, html: renderPromotionReviewPacket(review) };
 }
 function assertReview(value) {
-  if (value.review.candidate_count !== 23 || value.review.activation.closed !== true || value.review.decision_set_state !== 'INCOMPLETE' || !value.review.decision_validation_errors.includes('DECISION_MISSING')) throw new Error('REVIEW_PACKET_BASELINE_MISMATCH');
+  if (value.review.candidate_count !== 15 || value.review.activation.closed !== true || value.review.decision_set_state !== 'INCOMPLETE' || !value.review.decision_validation_errors.includes('DECISION_MISSING')) throw new Error('REVIEW_PACKET_BASELINE_MISMATCH');
   if (!value.review.cards.every((card) => card.review_disposition === 'HELD' && card.activation_allowed === false)) throw new Error('REVIEW_PACKET_HOLD_MISMATCH');
 }
 const args = process.argv.slice(2); const value = build(); assertReview(value); const output = resolve(dirname(value.candidatePath), 'review-packet.v1.html');

@@ -31,13 +31,13 @@ const review = (decisions) => validatePromotionReview({ candidateSet: CANDIDATE_
 
 test('Stage 2Y-J review packet is self-contained, numbered, and held by the empty decision contract', () => {
   const result = review([]); const html = renderPromotionReviewPacket(result);
-  assert.equal(result.candidate_count, 23);
+  assert.equal(result.candidate_count, 15);
   assert.equal(result.decision_set_state, 'INCOMPLETE');
   assert.equal(result.activation.closed, true);
   assert.ok(result.cards.every((card) => card.review_disposition === 'HELD' && card.decision_errors.includes('DECISION_MISSING')));
   assert.match(html, /Content-Security-Policy/);
   assert.doesNotMatch(html, /https?:\/\//);
-  assert.equal((html.match(/data-family=/g) || []).length, 23);
+  assert.equal((html.match(/data-family=/g) || []).length, 15);
   assert.match(html, /id="family"/);
   assert.match(html, /id="disposition"/);
   assert.match(html, /resolution\.json/);
