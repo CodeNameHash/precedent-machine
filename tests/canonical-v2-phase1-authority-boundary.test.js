@@ -10,6 +10,9 @@ const {
   PURE_PROPOSAL_SOURCES,
   PURE_PROPOSAL_SIGNATURE_VERIFICATION_SOURCES,
   LOCAL_ARTIFACT_WRITERS,
+  RECORDED_PROVIDER_REPLAY_WRITERS,
+  LIVE_MODEL_ADJUDICATION_RUNS,
+  LIVE_EXTRACTION_ORCHESTRATORS,
   READ_ONLY_GIT_INSPECTORS,
   PRODUCTION_PATH_PURE_ANALYSIS_SOURCES,
   LIVE_EXTRACTION_RUN_SOURCES,
@@ -199,7 +202,7 @@ const CRYPTO_MEMBER_METHODS = Object.freeze(new Set(['sign', 'verify', 'createSi
 const CRYPTO_ANY_RECEIVER_NAMES = Object.freeze(new Set(['createPrivateKey', 'createPublicKey', 'createSign', 'createVerify']));
 const DB_CLIENT_METHODS = Object.freeze(new Set(['from', 'rpc', 'insert', 'upsert', 'update', 'delete']));
 const DB_FACTORY_NAMES = Object.freeze(new Set(['createClient', 'getServiceSupabase']));
-const PROVIDER_ANY_RECEIVER_NAMES = Object.freeze(new Set(['createCodexCliProvider', 'createAnthropicProvider', 'executeUnifiedRun']));
+const PROVIDER_ANY_RECEIVER_NAMES = Object.freeze(new Set(['createCodexCliProvider', 'createAnthropicProvider', 'createCodexCliClient', 'executeUnifiedRun']));
 const DEPLOYMENT_ANY_RECEIVER_NAMES = Object.freeze(new Set(['activate_candidate_release']));
 const DB_NAME_FALLBACK = Object.freeze(new Set(['db', 'supabase', 'database']));
 const FS_NAME_FALLBACK = Object.freeze(new Set(['fs', 'fsPromises']));
@@ -214,6 +217,9 @@ function isAnthropicSdkSpecifier(specifier) {
 
 const PURE_FORBIDDEN_CAPABILITIES = CAPABILITY_NAMES;
 const LOCAL_WRITER_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'filesystem_write'));
+const RECORDED_PROVIDER_REPLAY_WRITER_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => !['provider', 'filesystem_write'].includes(name)));
+const LIVE_MODEL_ADJUDICATION_RUN_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => !['provider', 'filesystem_write'].includes(name)));
+const LIVE_EXTRACTION_ORCHESTRATOR_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => !['external_process', 'filesystem_write'].includes(name)));
 const GIT_INSPECTOR_FORBIDDEN_CAPABILITIES = Object.freeze(LOCAL_WRITER_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'external_process').concat('filesystem_write'));
 // A live extraction run is allowed exactly the three capabilities that make
 // it what it is -- provider (the real model call), external_process (the
@@ -661,6 +667,9 @@ test('every production source changed from the fixed Phase 1 base is classified 
     'PURE_PROPOSAL',
     'PURE_PROPOSAL_SIGNATURE_VERIFICATION',
     'LOCAL_ARTIFACT_WRITER',
+    'RECORDED_PROVIDER_REPLAY_WRITER',
+    'LIVE_MODEL_ADJUDICATION_RUN',
+    'LIVE_EXTRACTION_ORCHESTRATOR',
     'READ_ONLY_GIT_INSPECTOR',
     'PRODUCTION_PATH_PURE_ANALYSIS',
     'LIVE_EXTRACTION_RUN',
@@ -718,6 +727,39 @@ test('pure proposals and local artefact writers have their exact capability boun
   // too so the split cannot silently regress back into one shared (and
   // then falsely all-signing-forbidden) array.
   assert.equal(PURE_PROPOSAL_SOURCES.includes('lib/canonical-v2/v1-output-routing-reconciliation-audit.js'), false);
+});
+
+test('recorded provider replay writers have their exact capability boundary', () => {
+  assert.deepEqual(RECORDED_PROVIDER_REPLAY_WRITERS, ['scripts/stage-2y-corroboration-ladder.mjs']);
+  for (const relativePath of RECORDED_PROVIDER_REPLAY_WRITERS) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assertNoCapabilities(source, RECORDED_PROVIDER_REPLAY_WRITER_FORBIDDEN_CAPABILITIES, relativePath);
+    assert.ok(capabilityCounts(source).provider > 0, `${relativePath} must construct a replay provider`);
+    assert.ok(capabilityCounts(source).filesystem_write > 0, `${relativePath} must write only local evidence`);
+    assert.match(source, /createReplayClient\s*\(/, `${relativePath} must bind the provider to a committed recording`);
+  }
+});
+
+test('live model adjudication runs have their exact capability boundary', () => {
+  assert.deepEqual(LIVE_MODEL_ADJUDICATION_RUNS, ['scripts/stage-2y-f-terra-adjudication.mjs']);
+  for (const relativePath of LIVE_MODEL_ADJUDICATION_RUNS) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assertNoCapabilities(source, LIVE_MODEL_ADJUDICATION_RUN_FORBIDDEN_CAPABILITIES, relativePath);
+    assert.ok(capabilityCounts(source).provider > 0, `${relativePath} must construct the Terra client`);
+    assert.ok(capabilityCounts(source).filesystem_write > 0, `${relativePath} must write local adjudication evidence`);
+    assert.match(source, /createCodexCliClient\s*\(/, `${relativePath} must use the Codex CLI client`);
+  }
+});
+
+test('live extraction orchestrators have their exact capability boundary', () => {
+  assert.deepEqual(LIVE_EXTRACTION_ORCHESTRATORS, ['scripts/stage-2y-l-live-batch.mjs']);
+  for (const relativePath of LIVE_EXTRACTION_ORCHESTRATORS) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assertNoCapabilities(source, LIVE_EXTRACTION_ORCHESTRATOR_FORBIDDEN_CAPABILITIES, relativePath);
+    assert.ok(capabilityCounts(source).external_process > 0, `${relativePath} must invoke the contained live runner`);
+    assert.ok(capabilityCounts(source).filesystem_write > 0, `${relativePath} must write local batch evidence`);
+    assert.match(source, /canonical-v2-live-extraction-run\.mjs/, `${relativePath} must invoke the registered live extraction runner`);
+  }
 });
 
 test('the pure proposal signature-verification source has its exact capability boundary', () => {
@@ -962,12 +1004,10 @@ test('hostile inventory and capability changes fail closed', () => {
     () => assertPureProposalSignatureVerificationBoundary("fetch('https://evil.example');", 'hostile proposal network'),
     /network/,
   );
-  // Moved 11 -> 12 on 2026-08-07 by PLAN.md Step 4A, which added
-  // LOCAL_DATABASE_PROOF: the first class in this programme permitting the
-  // `database` capability. This assertion exists precisely so that adding an
-  // authority class cannot happen quietly, so the number is meant to be
-  // edited by hand, in the same change, with the reason recorded here.
-  assert.equal(Object.keys(EXPLICIT_NEW_SOURCE_CLASSES).length, 12);
+  // Moved 12 -> 15 with the Stage 2Y recorded-replay writer, Terra
+  // adjudication runner, and live-extraction orchestrator. This assertion
+  // exists precisely so that adding an authority class cannot happen quietly.
+  assert.equal(Object.keys(EXPLICIT_NEW_SOURCE_CLASSES).length, 15);
 });
 
 // ---------------------------------------------------------------------------------------
