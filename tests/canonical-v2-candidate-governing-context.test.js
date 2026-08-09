@@ -64,6 +64,9 @@ test('binds repeated text to the evidence-addressed leaf with UTF-8 digests', ()
   assert.equal(result.leaf.path, 'b');
   assert.equal(result.item.path, 'b');
   assert.ok(result.chapeau.some((record) => record.path === null));
+  assert.equal(result.siblings.length, 1);
+  assert.equal(result.siblings[0].path, 'a');
+  assert.equal(result.section.text, sectionText);
   assert.match(result.trailing.text, /trailing qualifier/);
   assert.equal(result.operative.text, quote);
   assert.equal(result.operative.exact_bytes_digest, sha256Hex(Buffer.from(quote, 'utf8')));
@@ -91,6 +94,11 @@ test('returns detached chapeau, selected item, and only same-leaf trailing text'
   assert.equal(result.item.path, 'a.i');
   assert.ok(result.chapeau.some((record) => record.path === 'a'));
   assert.ok(result.chapeau.some((record) => record.path === null));
+  assert.equal(result.siblings.length, 1);
+  assert.equal(result.siblings[0].path, 'a.ii');
+  assert.equal(result.rendered_line.text, '(i) issue equity; only with consent;');
+  assert.match(result.rendered_line.text, /issue equity/);
+  assert.doesNotMatch(result.rendered_line.text, /sibling only/);
   assert.match(result.trailing.text, /only with consent/);
   assert.doesNotMatch(result.trailing.text, /sibling only/);
 });
@@ -146,6 +154,7 @@ test('propagates structural refusals and treats a markerless section as section-
   assert.equal(markerlessResult.item, null);
   assert.equal(markerlessResult.chapeau.length, 1);
   assert.equal(markerlessResult.chapeau[0].path, null);
+  assert.equal(markerlessResult.siblings.length, 0);
 });
 
 test('preserves original evidence without mutation for held and open-world shapes', () => {

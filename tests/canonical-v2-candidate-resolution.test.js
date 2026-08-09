@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const zlib = require('node:zlib');
 
-const { contentId, sha256Hex, canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
+const { contentId, sha256Hex, canonicalJson, utf8Slice } = require('../lib/canonical-v2/canonical-bytes');
 const {
   compileFixtureContract,
   compileFixtureContractV13,
@@ -30,6 +30,8 @@ const {
   MATERIALITY_TABLE,
   MAPPING_TABLE_VERSION,
   REPRESENTATION_QUALIFIER_DISPATCH_MODES,
+  CONTEXT_LADDER_MODES,
+  CONTEXT_RUNGS,
 } = require('../lib/canonical-v2/native-producer/candidate-resolution');
 const { QUALIFIER_KIND_LEXICON_VERSION } = require('../lib/canonical-v2/native-producer/qualifier-kind-lexicon');
 const { MEASUREMENT_DATE_PARSE_VERSION } = require('../lib/canonical-v2/native-producer/measurement-date-parse');
@@ -426,6 +428,79 @@ async function buildReceipt(options) {
 function findResolved(resolution, genericKey) {
   return resolution.resolved.find((entry) => entry.generic_claim_key === genericKey);
 }
+
+test('context ladder is default-off and report-only binds each candidate to exact atomic context', async () => {
+  const receipt = await buildReceipt();
+  const baseArgs = {
+    run_receipt: receipt,
+    contract_vocabulary: CONTRACT_BUNDLE,
+    admitted_source_context: ADMITTED_SOURCE_CONTEXT,
+  };
+  const omitted = resolveCandidates(baseArgs);
+  const explicitOff = resolveCandidates({
+    ...baseArgs,
+    context_rung: CONTEXT_RUNGS.RENDERED_LINE,
+    context_ladder_mode: CONTEXT_LADDER_MODES.OFF,
+  });
+  assert.equal(canonicalJson(omitted), canonicalJson(explicitOff));
+  assert.equal(Object.hasOwn(omitted, 'context_ladder'), false);
+
+  const report = resolveCandidates({
+    ...baseArgs,
+    context_rung: CONTEXT_RUNGS.SECTION_AND_FULL_CHAPEAU_CHAIN,
+    context_ladder_mode: CONTEXT_LADDER_MODES.REPORT_ONLY,
+  });
+  assert.equal(canonicalJson({
+    resolved: report.resolved,
+    review_queue: report.review_queue,
+    open_world: report.open_world,
+    residuals: report.residuals,
+    resolution_receipt: report.resolution_receipt,
+  }), canonicalJson({
+    resolved: omitted.resolved,
+    review_queue: omitted.review_queue,
+    open_world: omitted.open_world,
+    residuals: omitted.residuals,
+    resolution_receipt: omitted.resolution_receipt,
+  }), 'report-only context never changes claims or the receipt');
+  assert.equal(report.context_ladder.context_rung, 4);
+  assert.ok(report.context_ladder.records.some((row) => row.route === 'GENERIC_FALLBACK'));
+  assert.ok(report.context_ladder.records.some((row) => row.route === 'RESOLVED_PASS'));
+  assert.ok(report.context_ladder.records.some((row) => row.fragment_binding.status === 'BOUND'));
+  for (const row of report.context_ladder.records) {
+    assert.ok(['BOUND', 'UNDETERMINED'].includes(row.fragment_binding.status));
+    assert.ok(Array.isArray(row.selected_context.records));
+    if (row.fragment_binding.status === 'BOUND') assert.ok(row.selected_context.records.length >= 1);
+    assert.ok(Array.isArray(row.evidence));
+    assert.ok(row.source_citation);
+    const section = receipt.resolved_sections.find((item) => item.section_reference === row.section_reference);
+    assert.ok(section);
+    assert.equal(row.raw_value, utf8Slice(
+      qxoFullText,
+      section.start + row.evidence[0].absolute_start,
+      section.start + row.evidence[0].absolute_end,
+    ));
+  }
+  for (const [rung, scope] of [
+    [CONTEXT_RUNGS.RENDERED_LINE, 'RENDERED_LINE'],
+    [CONTEXT_RUNGS.PARAGRAPH, 'PARAGRAPH'],
+    [CONTEXT_RUNGS.ENUMERATED_SIBLING_GROUP, 'ENUMERATED_SIBLING_GROUP'],
+    [CONTEXT_RUNGS.WHOLE_SECTION, 'WHOLE_SECTION'],
+  ]) {
+    const selected = resolveCandidates({
+      ...baseArgs,
+      context_rung: rung,
+      context_ladder_mode: CONTEXT_LADDER_MODES.REPORT_ONLY,
+    });
+    assert.equal(selected.context_ladder.context_rung, rung);
+    assert.ok(selected.context_ladder.records
+      .filter((row) => row.selected_context.status === 'RESOLVED')
+      .every((row) => row.selected_context.scope === scope));
+  }
+  assert.throws(() => resolveCandidates({ ...baseArgs, context_rung: -1 }), /integer from 0 through 4/);
+  assert.throws(() => resolveCandidates({ ...baseArgs, context_rung: 5 }), /integer from 0 through 4/);
+  assert.throws(() => resolveCandidates({ ...baseArgs, context_ladder_mode: 'ENFORCE' }), /OFF or REPORT_ONLY/);
+});
 
 // ─── Clean resolution: qualifier + bring-down tier auto-pass; limb assertion
 // and the genuine open-world candidate both land in open_world. ───

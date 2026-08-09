@@ -774,6 +774,20 @@ test('blind replay supplies the final-corpus defined-term index to both resolver
   assert.equal(plain.same_deal_defined_terms.calibration_id, 'stage-2y-d-defined-term-replay/final-corpus/v1');
 });
 
+test('blind replay reaches the public resolver through both passes with the default context rung', async () => {
+  const root = resolve(__dirname, '..');
+  const runner = await import(pathToFileURL(join(root, 'scripts/canonical-v2-live-extraction-run.mjs')).href);
+  const replay = await successor.resolveSourceRun({
+    repoRoot: root,
+    sourceRun: 'skechers-representations-r1b-20260809-2xk-final',
+    runner,
+  });
+  assert.ok(Array.isArray(replay.resolution.resolved));
+  assert.ok(Array.isArray(replay.resolution.review_queue));
+  assert.ok(Array.isArray(replay.resolution.open_world));
+  assert.equal(Object.hasOwn(replay.resolution, 'context_ladder'), false);
+});
+
 test('scoring rejects a non-canonical payload path before it reaches a payload reader', async () => {
   const fixture = makeHermeticRepo();
   try {
