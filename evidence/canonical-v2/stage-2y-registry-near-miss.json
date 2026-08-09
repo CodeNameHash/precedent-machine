@@ -1,5 +1,5 @@
 {
-  "schema_version": "STAGE_2Y_REGISTRY_NEAR_MISS_REPORT/V3",
+  "schema_version": "STAGE_2Y_REGISTRY_NEAR_MISS_REPORT/V4",
   "method": "SOURCE_REBUILD_PER_MATCHER_NON_FIRE_SCAN",
   "execution": {
     "product_writes": false,
@@ -10,18 +10,12 @@
   },
   "publication_disposition": "WITHHELD",
   "registry_substrate": {
-    "manifest": {
-      "schema_version": "RESOLUTION_REGISTRY_SUBSTRATE_MANIFEST/V1",
+    "scanned_registry_substrate": {
       "modules": [
         {
           "name": "materiality-qualifier",
           "version": "RESOLUTION_MATERIALITY_QUALIFIER_REGISTRY/V1",
           "digest": "sha256:6368129c33917101e97979baa1836e222894af0fe4ed98244ded61c4a7802515"
-        },
-        {
-          "name": "closing-condition-kinds",
-          "version": "RESOLUTION_CLOSING_CONDITION_KINDS_REGISTRY/V1",
-          "digest": "sha256:66bb6592c2f0c21125df9b12a03991aebbe5ca1832bacfb427eadd2df2327efc"
         },
         {
           "name": "general-covenant",
@@ -44,27 +38,23 @@
           "digest": "sha256:1b089c7a6cf30f540043352234cb4109fe27013a554423c8d3ecd652272db202"
         }
       ],
-      "preserved_v1_collisions": [
-        {
-          "path": "UNDISCLOSED_LIABILITIES_EXCEPTION_CODES.MAT_MAE_AGGREGATE",
-          "label": "Would not reasonably be expected to have an MAE",
-          "v1_only": true,
-          "no_delete": true
-        },
-        {
-          "path": "MATERIALITY_CODES.MAT_MAE_AGGREGATE",
-          "label": "Would not, individually or in aggregate, have MAE",
-          "v1_only": true,
-          "no_delete": true
-        }
-      ]
+      "digest": "sha256:102871df7cb8ae6aab32da65bdfd367bbf29fb6d297633f0d4a017b63ee9d9e6"
     },
-    "manifest_digest": "sha256:c7b666bcd85261383939354ddcf56968f9a999d9886e6aad0cd383c3b30ef1d9"
+    "inert_registry_exclusions": {
+      "representation_topic": {
+        "matcher_count": 0,
+        "reason": "The representation-topic registry is inert. Stage 2Y-C near-miss scans resolver matchers only, and does not invoke this recorded-corpus classifier."
+      }
+    }
   },
   "matcher_coverage": {
     "closing_condition_kinds": {
       "matcher_count": 0,
       "reason": "The closing-condition registry is an enum only. It contains no controlled source matcher to test."
+    },
+    "representation_topic": {
+      "matcher_count": 0,
+      "reason": "The representation-topic registry is inert. Stage 2Y-C near-miss scans resolver matchers only, and does not invoke this recorded-corpus classifier."
     },
     "scanned_matcher_count": 203
   },

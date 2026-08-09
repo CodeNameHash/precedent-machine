@@ -9,7 +9,7 @@ import { isFinalCorpusRun } from './canonical-v2-corpus-review-artifact.mjs';
 const require = createRequire(import.meta.url);
 const { canonicalJson, sha256Hex, utf8ByteLength, utf8Slice } = require('../lib/canonical-v2/canonical-bytes');
 const { rebuildAdmittedSourcePrimitives } = require('../lib/canonical-v2/admitted-source-chain-rebuild');
-const { MANIFEST, DIGEST: manifest_digest } = require('../lib/vocab/resolution/registry-substrate-manifest');
+const { MANIFEST } = require('../lib/vocab/resolution/registry-substrate-manifest');
 const closing = require('../lib/vocab/resolution/closing-condition-kinds-registry');
 const general = require('../lib/vocab/resolution/general-covenant-registry');
 const contracts = require('../lib/vocab/resolution/material-contract-registry');
@@ -59,6 +59,21 @@ function buildMatchers() {
   return scanned;
 }
 const MATCHERS = Object.freeze(buildMatchers());
+const INERT_REGISTRY_EXCLUSIONS = Object.freeze({
+  representation_topic: Object.freeze({
+    matcher_count: 0,
+    reason: 'The representation-topic registry is inert. Stage 2Y-C near-miss scans resolver matchers only, and does not invoke this recorded-corpus classifier.',
+  }),
+});
+const SCANNED_REGISTRY_NAMES = Object.freeze(['general-covenant', 'material-contract', 'interim-operating', 'party-capacity', 'materiality-qualifier']);
+const SCANNED_REGISTRY_SUBSTRATE = Object.freeze({
+  modules: Object.freeze(MANIFEST.modules.filter(({ name }) => SCANNED_REGISTRY_NAMES.includes(name))),
+  digest: hash(MANIFEST.modules.filter(({ name }) => SCANNED_REGISTRY_NAMES.includes(name))),
+});
+const MATCHER_COVERAGE = Object.freeze({
+  closing_condition_kinds: Object.freeze({ matcher_count: 0, reason: 'The closing-condition registry is an enum only. It contains no controlled source matcher to test.' }),
+  ...INERT_REGISTRY_EXCLUSIONS,
+});
 
 function sentenceWindows(text) {
   const windows = [];
@@ -141,21 +156,46 @@ function build() {
   const records = [...leadsByMatcher.values()].flat().sort((a, b) => b.rank - a.rank || a.registry.localeCompare(b.registry) || a.matcher.localeCompare(b.matcher));
   const included = runs.filter((row) => row.source_rebuild === 'INCLUDED');
   const excluded = runs.filter((row) => row.source_rebuild === 'EXCLUDED');
-  return { schema_version: 'STAGE_2Y_REGISTRY_NEAR_MISS_REPORT/V3', method: 'SOURCE_REBUILD_PER_MATCHER_NON_FIRE_SCAN', execution: { product_writes: false, artifact_write_only: true, classification_performed: false, model_calls: 0, serving: false }, publication_disposition: 'WITHHELD', registry_substrate: { manifest: MANIFEST, manifest_digest }, matcher_coverage: { closing_condition_kinds: { matcher_count: 0, reason: 'The closing-condition registry is an enum only. It contains no controlled source matcher to test.' }, scanned_matcher_count: MATCHERS.length }, run_names, input_digest: currentInputDigest(run_names), summary: { runs_discovered: run_names.length, runs_rebuilt: included.length, runs_excluded: excluded.length, evaluated_spans: included.reduce((sum, row) => sum + row.evaluated_spans, 0), anchor_hits: matcher_summary.reduce((sum, row) => sum + row.anchor_hits, 0), non_fires: matcher_summary.reduce((sum, row) => sum + row.non_fires, 0), review_leads_reported: records.length, review_leads_per_matcher_cap: MAX_LEADS_PER_MATCHER }, runs, matcher_summary, records };
+  return { schema_version: 'STAGE_2Y_REGISTRY_NEAR_MISS_REPORT/V4', method: 'SOURCE_REBUILD_PER_MATCHER_NON_FIRE_SCAN', execution: { product_writes: false, artifact_write_only: true, classification_performed: false, model_calls: 0, serving: false }, publication_disposition: 'WITHHELD', registry_substrate: { scanned_registry_substrate: SCANNED_REGISTRY_SUBSTRATE, inert_registry_exclusions: INERT_REGISTRY_EXCLUSIONS }, matcher_coverage: { ...MATCHER_COVERAGE, scanned_matcher_count: MATCHERS.length }, run_names, input_digest: currentInputDigest(run_names), summary: { runs_discovered: run_names.length, runs_rebuilt: included.length, runs_excluded: excluded.length, evaluated_spans: included.reduce((sum, row) => sum + row.evaluated_spans, 0), anchor_hits: matcher_summary.reduce((sum, row) => sum + row.anchor_hits, 0), non_fires: matcher_summary.reduce((sum, row) => sum + row.non_fires, 0), review_leads_reported: records.length, review_leads_per_matcher_cap: MAX_LEADS_PER_MATCHER }, runs, matcher_summary, records };
 }
 function markdown(value) {
-  const lines = ['# Stage 2Y registry near-miss report', '', 'Method: rebuild each admitted source, split resolved sections into sentence spans, and test every controlled registry matcher. A record has matcher anchors but the same matcher did not fire. It is a review lead only. No provider, resolver, classification, product write, or publication occurred. Only this JSON report and Markdown report were written.', '', `Runs rebuilt: ${value.summary.runs_rebuilt}/${value.summary.runs_discovered}`, `Runs excluded: ${value.summary.runs_excluded}`, `Evaluated spans: ${value.summary.evaluated_spans}`, `Matcher anchor hits: ${value.summary.anchor_hits}`, `Matcher non-fires: ${value.summary.non_fires}`, `Reported review leads: ${value.summary.review_leads_reported}, maximum ${value.summary.review_leads_per_matcher_cap} per matcher.`, '', '## Ranked review leads', ''];
+  const lines = ['# Stage 2Y registry near-miss report', '', 'Method: rebuild each admitted source, split resolved sections into sentence spans, and test every controlled registry matcher. A record has matcher anchors but the same matcher did not fire. It is a review lead only. No provider, resolver, classification, product write, or publication occurred. Only this JSON report and Markdown report were written.', '', `Runs rebuilt: ${value.summary.runs_rebuilt}/${value.summary.runs_discovered}`, `Runs excluded: ${value.summary.runs_excluded}`, `Evaluated spans: ${value.summary.evaluated_spans}`, `Matcher anchor hits: ${value.summary.anchor_hits}`, `Matcher non-fires: ${value.summary.non_fires}`, `Reported review leads: ${value.summary.review_leads_reported}, maximum ${value.summary.review_leads_per_matcher_cap} per matcher.`, '', `Scanned registry modules: ${(value.registry_substrate?.scanned_registry_substrate?.modules || []).map(({ name }) => name).join(', ')}.`, 'Excluded non-runtime registry: representation-topic. It is a recorded-corpus classifier, not a resolver matcher, and this scan does not invoke it.', '', '## Ranked review leads', ''];
   for (const [index, record] of value.records.entries()) lines.push(`### ${index + 1}. ${record.registry} / ${record.matcher}`, '', `Run: ${record.run_name}. Section: ${record.section_reference}. UTF-8 bytes: ${record.absolute_start}-${record.absolute_end}. Anchors: ${record.anchors_present.join(', ')}. Recorded candidates in sentence: ${record.recorded_candidate_ids.length}.`, '', `> ${record.excerpt.replace(/\n+/g, ' ').trim()}`, '');
   lines.push('Classification performed: false', '', 'Model calls: 0', '', 'Publication disposition: WITHHELD', '');
   return lines.join('\n');
 }
+function migrateStoredMetadata(value) {
+  return {
+    schema_version: 'STAGE_2Y_REGISTRY_NEAR_MISS_REPORT/V4',
+    method: value.method,
+    execution: value.execution,
+    publication_disposition: value.publication_disposition,
+    registry_substrate: { scanned_registry_substrate: SCANNED_REGISTRY_SUBSTRATE, inert_registry_exclusions: INERT_REGISTRY_EXCLUSIONS },
+    matcher_coverage: { ...MATCHER_COVERAGE, scanned_matcher_count: value.matcher_coverage?.scanned_matcher_count ?? MATCHERS.length },
+    run_names: value.run_names,
+    input_digest: value.input_digest,
+    summary: value.summary,
+    runs: value.runs,
+    matcher_summary: value.matcher_summary,
+    records: value.records,
+  };
+}
 function isCurrentReport({ stored, storedMarkdown, current }) {
-  return stored === `${JSON.stringify(current, null, 2)}\n` && storedMarkdown === markdown(current);
+  let parsed;
+  try { parsed = JSON.parse(stored); } catch { return false; }
+  return canonicalJson(parsed) === canonicalJson(current) && storedMarkdown === markdown(parsed);
 }
 const isMain = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isMain) {
   const mode = process.argv[2];
-  if (!['--write', '--check'].includes(mode)) throw new Error('USAGE: use --write or --check');
+  if (!['--write', '--check', '--migrate-metadata'].includes(mode)) throw new Error('USAGE: use --write, --check, or --migrate-metadata');
+  if (mode === '--migrate-metadata') {
+    if (!existsSync(JSON_OUTPUT)) throw new Error('MISSING_STORED_REPORT');
+    const migrated = migrateStoredMetadata(json(JSON_OUTPUT));
+    writeFileSync(JSON_OUTPUT, `${JSON.stringify(migrated, null, 2)}\n`);
+    writeFileSync(MD_OUTPUT, markdown(migrated));
+    process.stdout.write(`MIGRATED ${JSON_OUTPUT}\nMIGRATED ${MD_OUTPUT}\n`);
+  } else {
   const value = build();
   const text = `${JSON.stringify(value, null, 2)}\n`;
   const md = markdown(value);
@@ -168,5 +208,6 @@ if (isMain) {
       || !isCurrentReport({ stored: readFileSync(JSON_OUTPUT, 'utf8'), storedMarkdown: readFileSync(MD_OUTPUT, 'utf8'), current: value })) throw new Error('STALE_OUTPUT');
     process.stdout.write(`CHECKED ${JSON_OUTPUT}\nCHECKED ${MD_OUTPUT}\n`);
   }
+  }
 }
-export { build, sentenceWindows, matchingCandidates, literalAnchors, markdown, isCurrentReport, MATCHERS };
+export { build, sentenceWindows, matchingCandidates, literalAnchors, markdown, isCurrentReport, MATCHERS, INERT_REGISTRY_EXCLUSIONS, SCANNED_REGISTRY_NAMES, SCANNED_REGISTRY_SUBSTRATE, migrateStoredMetadata };

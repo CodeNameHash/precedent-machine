@@ -9,6 +9,9 @@ Matcher anchor hits: 236587
 Matcher non-fires: 230821
 Reported review leads: 1292, maximum 8 per matcher.
 
+Scanned registry modules: materiality-qualifier, general-covenant, material-contract, interim-operating, party-capacity.
+Excluded non-runtime registry: representation-topic. It is a recorded-corpus classifier, not a resolver matcher, and this scan does not invoke it.
+
 ## Ranked review leads
 
 ### 1. materiality-qualifier / ACCURACY_MAT_ALL_RESPECTS_DE_MINIMIS#2

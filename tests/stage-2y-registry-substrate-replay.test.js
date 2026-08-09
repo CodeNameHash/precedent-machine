@@ -4,9 +4,9 @@ const assert = require('node:assert/strict');
 const { spawnSync } = require('node:child_process');
 const path = require('node:path');
 const { MANIFEST, DIGEST } = require('../lib/vocab/resolution/registry-substrate-manifest');
-test('Stage 2Y-C manifest pins six concern registries and keeps V1 MAE meanings distinct', () => {
+test('Stage 2Y-C/H manifest pins seven concern registries and keeps V1 MAE meanings distinct', () => {
   assert.equal(MANIFEST.schema_version, 'RESOLUTION_REGISTRY_SUBSTRATE_MANIFEST/V1');
-  assert.equal(MANIFEST.modules.length, 6);
+  assert.equal(MANIFEST.modules.length, 7);
   assert.equal(MANIFEST.preserved_v1_collisions.length, 2);
   assert.ok(DIGEST.startsWith('sha256:'));
 });

@@ -12,6 +12,7 @@ const signatures = {
   'material-contract': { declaration: 'MATERIAL_CONTRACT_BUCKET_META', atoms: ['AGGREGATE_PAYMENTS', 'IP_LICENSES_IN', 'NONCOMPETE', 'affiliate\\s+(?:transaction|agreement|contract)'] },
   'interim-operating': { declaration: 'CATEGORY_TESTS', atoms: ['DIVIDENDS_DISTRIBUTIONS', 'ACQUISITIONS_BUSINESS_COMBINATIONS', 'OTHER_ORDINARY_COURSE', '\\bordinary\\s+course\\b'] },
   'materiality-qualifier': { declaration: 'MATERIALITY_TABLE', atoms: ['MAT_ALL_RESPECTS', 'MAT_MAE_QUALIFIED', 'CAPITAL_STRUCTURE', 'KNOWLEDGE_STANDARD_META'] },
+  'representation-topic': { declaration: 'TOPIC_RULES', atoms: ['REP_TOPIC_V1_CORPORATE_ORGANISATION', 'REP_TOPIC_V1_TAX', 'REP_TOPIC_V1_FINANCING', 'REP_TOPIC_V1_TRANSACTION_PROCESS'] },
 };
 function files(dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {

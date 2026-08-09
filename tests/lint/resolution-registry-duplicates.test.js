@@ -39,6 +39,7 @@ for (const [concern, source] of [
   ['material-contract', String.raw`const MATERIAL_CONTRACT_BUCKET_META = { AGGREGATE_PAYMENTS: [], IP_LICENSES_IN: [], NONCOMPETE: [/affiliate\s+(?:transaction|agreement|contract)/] };`],
   ['interim-operating', String.raw`const CATEGORY_TESTS = { DIVIDENDS_DISTRIBUTIONS: [], ACQUISITIONS_BUSINESS_COMBINATIONS: [], OTHER_ORDINARY_COURSE: [/\bordinary\s+course\b/] };`],
   ['materiality-qualifier', String.raw`const MATERIALITY_TABLE = { MAT_ALL_RESPECTS: 1, MAT_MAE_QUALIFIED: 2, CAPITAL_STRUCTURE: 3, KNOWLEDGE_STANDARD_META: 4 };`],
+  ['representation-topic', String.raw`const TOPIC_RULES = { REP_TOPIC_V1_CORPORATE_ORGANISATION: [], REP_TOPIC_V1_TAX: [], REP_TOPIC_V1_FINANCING: [], REP_TOPIC_V1_TRANSACTION_PROCESS: [] };`],
 ]) {
   test(`a copied ${concern} controlled vocabulary fails`, () => {
     const run = lintFixture(source);

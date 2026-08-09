@@ -77,6 +77,14 @@ test('registry identity is deterministic and versioned', () => {
   assert.equal(classifyRepresentationTopic(input('duly organized')).registry_digest, REGISTRY_DIGEST);
 });
 
+test('canonical-v2 compatibility module reexports the resolution vocabulary registry exactly', () => {
+  const compatibility = require('../lib/canonical-v2/representation-topic-registry');
+  const vocabulary = require('../lib/vocab/resolution/representation-topic-registry');
+  assert.strictEqual(compatibility, vocabulary);
+  assert.equal(vocabulary.VERSION, REGISTRY_VERSION);
+  assert.equal(vocabulary.DIGEST, `sha256:${REGISTRY_DIGEST}`);
+});
+
 test('recorded replay conserves the exact corpus, exclusions, zero calls, and deterministic write/check output', async () => {
   const replay = await import(`${path.toNamespacedPath(SCRIPT)}?test=${Date.now()}`);
   const ledger = replay.buildRepresentationTopicReplay({ repoRoot: ROOT });
