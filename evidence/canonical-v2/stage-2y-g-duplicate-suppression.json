@@ -1,0 +1,1887 @@
+{
+  "schema_version": "STAGE_2Y_G_DUPLICATE_SUPPRESSION_EVIDENCE/V1",
+  "model_calls": 0,
+  "writes": false,
+  "serving": false,
+  "publication": "WITHHELD",
+  "final_corpus": {
+    "selector": "canonical-v2-corpus-review-artifact.mjs:isFinalCorpusRun",
+    "final_runs": 157,
+    "before": {
+      "compiled_candidates": 4841,
+      "resolved": 1571,
+      "review_queue": 2310,
+      "open_world": 2692,
+      "displayed_claim_rows": 5002,
+      "reason_code_occurrences": 4241
+    },
+    "after": {
+      "compiled_candidates": 4841,
+      "resolved": 1571,
+      "review_queue": 2310,
+      "open_world": 2633,
+      "displayed_claim_rows": 4943,
+      "reason_code_occurrences": 4182
+    }
+  },
+  "duplicate_suppression": {
+    "mode": "REPORT_ONLY",
+    "counts": {
+      "scanned": 84,
+      "would_suppress": 59,
+      "suppressed": 0,
+      "retained_typed_peer_held": 21,
+      "retained_no_typed_peer": 4
+    },
+    "eligible_per_run": [
+      3,
+      11,
+      9,
+      20,
+      16
+    ],
+    "records_digest": "sha256:c1c3cbc9a2012d25bfbdfac5bac43f7de3b7060d719c2c8ea12a3a10fda2b4b3"
+  },
+  "runs": [
+    {
+      "run_name": "concho-mae-definition-20260809-2xk-final",
+      "run_receipt_id": "eb67b6e9b50a021a5e5e9bc0255edd6718903f4171b168e828736608fa7a9172",
+      "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+      "source_hashes": {
+        "run_receipt": "sha256:6e41c56a3886935fa72ebc37e5d26a10e77fe3c284c5ff7c8b3247f372bcab0e",
+        "resolution": "sha256:4874a9206a3b3b306343f66049c5d8a170d8950733111a2ce74e37c9fe924faf"
+      },
+      "before_counts": {
+        "compiled_candidates": 26,
+        "resolved": 0,
+        "review_queue": 15,
+        "open_world": 11
+      },
+      "report_only": {
+        "scanned": 11,
+        "would_suppress": 0,
+        "suppressed": 0,
+        "retained_typed_peer_held": 11,
+        "retained_no_typed_peer": 0,
+        "open_world_unchanged": true
+      },
+      "enforce": {
+        "scanned": 11,
+        "would_suppress": 0,
+        "suppressed": 0,
+        "retained_typed_peer_held": 11,
+        "retained_no_typed_peer": 0,
+        "open_world_after": 11
+      },
+      "decisions": [
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "17244c08a494b150bc12b00350c7309974116a808bd596c1cdff8b6eafd1d09a",
+          "carrier_claim_occurrence_id": "590992897706cbbe35e62b5666665772a2fdcda3968354501fea917ea13125c1",
+          "semantic_identity_digest": "sha256:22067f03460601090a3c43b9e69b5ce8cc4bbd4a94385ecf22f78484a0b111ab",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 18461,
+            "absolute_end": 18724
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "174b251351114b6f969a298af17217193814d5850b45790ed6efe6245c925a4a",
+          "carrier_claim_occurrence_id": "a369350415dec94fb56a6bea1e9a0a8f582e9dab6804582f492e43f3a2f02c7b",
+          "semantic_identity_digest": "sha256:990f043f55b0a113c408e096f042d7b58ec671164f0cfd27e641bb7e7a6d60ff",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 17955,
+            "absolute_end": 18153
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "24d2a3f650c5182b739dcc0e3daf7b0ea7a3a9b8eebdd68d1b0cc97aa921a366",
+          "carrier_claim_occurrence_id": "8bcfe2e5925a811155e354ccee1430da10c69b1deaa98c881a6039a840cff7a7",
+          "semantic_identity_digest": "sha256:e17a6c93a20c653d430e4f4b562591116beb6f66bbfc8cb428c4f1ae56de187b",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 16108,
+            "absolute_end": 16237
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "308d239fc2fc9ceb0f20260c7329a9dd289502a7dd942eed5bc983897693125c",
+          "carrier_claim_occurrence_id": "dfba435279226a487441d418a8b71cff538ab20119c4a542e5d67eb04da0ab36",
+          "semantic_identity_digest": "sha256:401454e62c9f33f8aa81b59b16e51626be934932e2e0aac8f53143193395d834",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 18732,
+            "absolute_end": 18996
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "3496b9e37496e95a09c96b4242802ee6e5e41daf362b5f79a8b6b7a447cf6e50",
+          "carrier_claim_occurrence_id": "9f9df352ee11393c64650c630a95daba7a796042ea8b51cb26ccf39b88b182a6",
+          "semantic_identity_digest": "sha256:21823daf98ea03041a2a335144090334483fb9d85ad36abf2b73b5a54b6801ec",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 17637,
+            "absolute_end": 17950
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "58ec616fd614aac3b37d69e8afc1e59811bb82ef82f468e1fd3e4968d3ccaca4",
+          "carrier_claim_occurrence_id": "a92da0817b53daec4348a81e9ccf033fcb7e4811e3f6675840b394726a094784",
+          "semantic_identity_digest": "sha256:d28d4e5730c4c29c3f3166d101797c03808ce9010e3ec581a348437f5ce60d22",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 16884,
+            "absolute_end": 16990
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "64215a3397ff74fcb535fa6e88a7b38f65a858b56f8b60e97b58d20fee5336dc",
+          "carrier_claim_occurrence_id": "2e84b3c86f1991f932329004da2d84389df7681ce14775a7d7c5cef6352861d2",
+          "semantic_identity_digest": "sha256:5d7bbd6a19e3ffdd0d21c59e29b03f934b7c71077d37899d2128291611b00403",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 18159,
+            "absolute_end": 18454
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "89ab04b2436881ae3b798ac06cc9de726d4d3cf75fb8586fc88f15645185cb2d",
+          "carrier_claim_occurrence_id": "ff2e42c14269d1097012dd09337a74a6496ae81cda310d8918e8cafba471bf49",
+          "semantic_identity_digest": "sha256:d76d6cdb7bc332098b0272378503998fb017af9a8aa408915287d4ad95ec3bb0",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 16245,
+            "absolute_end": 16406
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "9e064e04553effb6a0d27d490913d682cb1bd45871305086df15fd232057e0e4",
+          "carrier_claim_occurrence_id": "e5f4a77b6945d492b86d7d1b9334b779304309b167824fbec9d5f4aaa7ab75e6",
+          "semantic_identity_digest": "sha256:7e4ddeb050ebcb94e7917ac4872368bfb67884748aef57bcf8f9e950880ab447",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 19002,
+            "absolute_end": 19693
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "aa14f9c32d5286338c94879968b697e22c3725b607c83aeee0e57e4b019fe196",
+          "carrier_claim_occurrence_id": "249de7dd0467442bb7b592acfbe16e14ebcd49ef4894ef97b5d56c30cda3183b",
+          "semantic_identity_digest": "sha256:7ba8eb2108c706f436658a06f0cf7f6227caf0f0d028b7e521ef790cf05591cf",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 16996,
+            "absolute_end": 17401
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "bf61b94ab792a7017827040254d951017798b29a8e6aca5649fdd71346f7a086",
+          "carrier_claim_occurrence_id": "a2a3921b361036d027e4ba0b33523d2b3351f8570d35a188c50b75509a565573",
+          "semantic_identity_digest": "sha256:2ee392e83fb604bd79e64bf94f7dd2077b16a3df073af663f49fbfc88107c2c5",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 17412,
+            "absolute_end": 17631
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        }
+      ]
+    },
+    {
+      "run_name": "metsera-mae-definition-20260809-2xk-final",
+      "run_receipt_id": "d0ad1aa4891b3299adf66e8a855b1a341785b369eefaf81cfb5d3c35eabaeae3",
+      "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+      "source_hashes": {
+        "run_receipt": "sha256:d7a3fb4c53156c526f37229700a1cc1286fac2322e6e1495da99cd450e47626b",
+        "resolution": "sha256:3f75573c15280978a098d7454a720cc467791e5ea2ce682f1688c5cfe76c65e3"
+      },
+      "before_counts": {
+        "compiled_candidates": 23,
+        "resolved": 15,
+        "review_queue": 19,
+        "open_world": 4
+      },
+      "report_only": {
+        "scanned": 3,
+        "would_suppress": 3,
+        "suppressed": 0,
+        "retained_typed_peer_held": 0,
+        "retained_no_typed_peer": 0,
+        "open_world_unchanged": true
+      },
+      "enforce": {
+        "scanned": 3,
+        "would_suppress": 3,
+        "suppressed": 3,
+        "retained_typed_peer_held": 0,
+        "retained_no_typed_peer": 0,
+        "open_world_after": 1
+      },
+      "decisions": [
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "a5817b6875f420fc674f625faf690a506a0fc121226079a5061ee49ca21cd430",
+          "carrier_claim_occurrence_id": "3eabfb466b1768d935fae71a996c6c3fb4e711828d104ccfa5c1ea2748b89220",
+          "semantic_identity_digest": "sha256:c951fe0a2a338801bdb14da3c7fcc7d1026681827173720077ef1b8a55d97723",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 1493,
+            "absolute_end": 1656
+          },
+          "surviving_typed_claim_revision_ids": [
+            "01c1960614ed85afb0a1cfa2888c1822ff7d1aa4d23b9a0416cec80cce903192"
+          ],
+          "surviving_provision_instance_ids": [
+            "3dd30da4a2d591fe2264875d1c869e04d36e5d8385cf575b3ba9363bda68d0c6"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "ac2ebb11570eccc69919e1f4cff9c8e9527c90beef3d2be653eec22ec6e0b03f",
+          "carrier_claim_occurrence_id": "8fc554231a3111fec4f51391f7a4afdad96a64e448dc4d421b7a598ac3131655",
+          "semantic_identity_digest": "sha256:056e835c3d36169336c97d1f45856d7522ddd73338e80a858bf9b52f6fab1a8c",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 1261,
+            "absolute_end": 1483
+          },
+          "surviving_typed_claim_revision_ids": [
+            "e8e450ca0913a62e6a4f3a156d617fbb0644d9f54cc06f0f77b9b4f706726521"
+          ],
+          "surviving_provision_instance_ids": [
+            "3dd30da4a2d591fe2264875d1c869e04d36e5d8385cf575b3ba9363bda68d0c6"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "ed9d8ad9dad950ccb6031e0ea7de6f9f1b4bd80dd474201fd2e475dd5576c224",
+          "carrier_claim_occurrence_id": "491a38a916626f269fe4696148740fc1a32ac6b24484b0fb86574d85f13c228e",
+          "semantic_identity_digest": "sha256:062dc021a3c865de56d1e7cc24524ab2803a3b9ce596eee29d0e863e947d7dc1",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 13136,
+            "absolute_end": 13291
+          },
+          "surviving_typed_claim_revision_ids": [
+            "6ca0a8d9201d22315f35686496b30e09316e0f81fa2b3fd2a1d629483f485483"
+          ],
+          "surviving_provision_instance_ids": [
+            "84a148acda7987a7135673ffa7216f3a0d148d2d7af3e6b5ef67d467547ea9f2"
+          ]
+        }
+      ]
+    },
+    {
+      "run_name": "redhat-mae-definition-20260809-2xk-final",
+      "run_receipt_id": "abb598b1e4cafcb302b11f89aa626d3d0a85561f71cf0e7cd44a7d25962d4b99",
+      "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+      "source_hashes": {
+        "run_receipt": "sha256:7f500e903bab73244fb4d734d23a8d63fcac90c5c41c8914b5e44f24fe9b8eda",
+        "resolution": "sha256:7234a37dfaa9c030b1622a240ee6c5d7a37027902dc117988d99ac93f1c64adb"
+      },
+      "before_counts": {
+        "compiled_candidates": 31,
+        "resolved": 15,
+        "review_queue": 18,
+        "open_world": 13
+      },
+      "report_only": {
+        "scanned": 12,
+        "would_suppress": 11,
+        "suppressed": 0,
+        "retained_typed_peer_held": 1,
+        "retained_no_typed_peer": 0,
+        "open_world_unchanged": true
+      },
+      "enforce": {
+        "scanned": 12,
+        "would_suppress": 11,
+        "suppressed": 11,
+        "retained_typed_peer_held": 1,
+        "retained_no_typed_peer": 0,
+        "open_world_after": 2
+      },
+      "decisions": [
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "07bcad41b4776d1308546a38b76681e625f484352b897ac292c1ea4eefca7bf3",
+          "carrier_claim_occurrence_id": "9bf59abaa97d899c26c8b463cd71a293907b195a7004a2250635c63943343b5a",
+          "semantic_identity_digest": "sha256:a515099bd22de850ab2063d6bce377b835a6c4be37a1bc9d84f7614c19409e4f",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 238,
+            "absolute_end": 409
+          },
+          "surviving_typed_claim_revision_ids": [
+            "4a9983427f630af7cdaffae518767741f1b11fd15b810a9484c5816604f0ac93"
+          ],
+          "surviving_provision_instance_ids": [
+            "1474e760b630ba8df81eadd9fa13327f79df4719595168ca26369ee91ff38624"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "3446bef0ca2b224ac530991d6ad61dd85572859e332fe9bffe9ffc71b8633536",
+          "carrier_claim_occurrence_id": "e204d173b3ae5e36e6f53f539fb774adcdade2c110ab67f6ee5886a97a48217a",
+          "semantic_identity_digest": "sha256:bf9de48fbf1bbcc6c70b60e02ae00ef5a3687c41c1824cd050601cf69545150f",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 3090,
+            "absolute_end": 3956
+          },
+          "surviving_typed_claim_revision_ids": [
+            "8a71377165745e9389daa18ef0d4dbb99dcde33505be363bd52ed410ba542abe"
+          ],
+          "surviving_provision_instance_ids": [
+            "1474e760b630ba8df81eadd9fa13327f79df4719595168ca26369ee91ff38624"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "3cf0f887aab06c79f40259d063cddfac82cc0d7dc53b12eded65f855e4145945",
+          "carrier_claim_occurrence_id": "e2596ffd32ce8de37d1b0fe2d3a909e05b8d50c750f0f063119ee13ed3946e88",
+          "semantic_identity_digest": "sha256:c9cf989aeca8f5cf9d253ffbe12fec1cf9fd61df7641b54be66471194394265a",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 1960,
+            "absolute_end": 2525
+          },
+          "surviving_typed_claim_revision_ids": [
+            "6f80cf808bf0dcbb06e21d577fcf4f716ba3e703a31ee4b59f5efb9ff707ca4b",
+            "a447d7de5f58257611592be2d8119d4bbff955e63e2a3ecb27ae50cbbbfd44d0"
+          ],
+          "surviving_provision_instance_ids": [
+            "1474e760b630ba8df81eadd9fa13327f79df4719595168ca26369ee91ff38624",
+            "1474e760b630ba8df81eadd9fa13327f79df4719595168ca26369ee91ff38624"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "3d2a9e22f87f70395af8a01868174e8d5c4cfe70007f575ce814b2b5bef7e268",
+          "carrier_claim_occurrence_id": "d9093f2bd93a2d400d2e2f4af313fb2671023a1097ef7529725abbae41c3b736",
+          "semantic_identity_digest": "sha256:479b287010d04d5cb1bf1eb341bc1337dfd49a684287244f3b679411fa79a381",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 418,
+            "absolute_end": 567
+          },
+          "surviving_typed_claim_revision_ids": [
+            "283701f33e6c620681a75cbc76b3da1144f1946042a07f318b595fb56c018c26"
+          ],
+          "surviving_provision_instance_ids": [
+            "1474e760b630ba8df81eadd9fa13327f79df4719595168ca26369ee91ff38624"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "466920186e63e33b7fabf0c824a8b5cb31e3effac90fb5020526f93f3dd74a45",
+          "carrier_claim_occurrence_id": "c1b84dda651ea67c760f8d3ac68f99872784d635ecc7c7c9cc54b53b6de2705c",
+          "semantic_identity_digest": "sha256:6548122b81c165befcc40a84f969d7bd8b6b2f1fc9a410abcb2e558f1fadda9d",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 1511,
+            "absolute_end": 1954
+          },
+          "surviving_typed_claim_revision_ids": [
+            "18ddaa46b534da6a19b0bf8b742b9522c76f355f7ed695bf05688e123ffdaec6",
+            "ebf50e51e0235c8a0c293e81652b40a36a9f50c91c04e11ee0dfb6f187cc46a1"
+          ],
+          "surviving_provision_instance_ids": [
+            "1474e760b630ba8df81eadd9fa13327f79df4719595168ca26369ee91ff38624",
+            "1474e760b630ba8df81eadd9fa13327f79df4719595168ca26369ee91ff38624"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "71db7f003b1b287b23e70a396f1c6f53cdd4c14c3cdda11019732f579db94886",
+          "carrier_claim_occurrence_id": "ae07d37290342e33d3c509ec887d62f2f1b9e2085fd6d78181a97f43159635cb",
+          "semantic_identity_digest": "sha256:1b362fac4c61ed517896ea92414ec1f9c768cf245acc11cf56819abe21e77cd4",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 2827,
+            "absolute_end": 3084
+          },
+          "surviving_typed_claim_revision_ids": [
+            "49614170c4d2e2e92e72259431abe4a463c7cc6c7d995ac238f8621a1a391eb6"
+          ],
+          "surviving_provision_instance_ids": [
+            "1474e760b630ba8df81eadd9fa13327f79df4719595168ca26369ee91ff38624"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "7e700ff413a68a86549adc0ca9556be3d6363d32351ddf1f80c17f45d2a7bfd8",
+          "carrier_claim_occurrence_id": "cf8302c69d1c7d5432a8e63bee8dca2863439e21595b83d46fbc9c9c1df15be1",
+          "semantic_identity_digest": "sha256:8ce4afcd64881d9f8529bb6379e9e6bb17918818e3073988ce44bbc39a157152",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 4124,
+            "absolute_end": 4359
+          },
+          "surviving_typed_claim_revision_ids": [
+            "2d99883efc2e1f7974f8c45a3ba6d4e17e3e6ac0aae1676c2e414ac76ff270ad"
+          ],
+          "surviving_provision_instance_ids": [
+            "1474e760b630ba8df81eadd9fa13327f79df4719595168ca26369ee91ff38624"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "b60f1c41628eea625e4675a025df9f971cffaa8bce86153746c8da3c6e15808d",
+          "carrier_claim_occurrence_id": "5c569495d1a2801e7582de697d6445a59034fde485032c743a99b770d927fe2a",
+          "semantic_identity_digest": "sha256:25e98545fc0035d502bb6ffd763c134c27b4a5f102fa9e5adb1a6fe06915c9e7",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 800,
+            "absolute_end": 1218
+          },
+          "surviving_typed_claim_revision_ids": [
+            "1bf854f576537bd349750eddf23b412a689c92de70be72c7cc27680e5ac0f360",
+            "32d53e6a1fdf80b58f4176ee74a0530d9e13c85ba83496da02b14858602e1232"
+          ],
+          "surviving_provision_instance_ids": [
+            "1474e760b630ba8df81eadd9fa13327f79df4719595168ca26369ee91ff38624",
+            "1474e760b630ba8df81eadd9fa13327f79df4719595168ca26369ee91ff38624"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "d0632d51fe87543fe98b6169686325c6a0df742cd778c091b7bc2d7c4b0a56f2",
+          "carrier_claim_occurrence_id": "3f14fd2acd9892b819aa5b0ec387d24746a1b420e54ebc652e17237d1208a27d",
+          "semantic_identity_digest": "sha256:3afd3abfaa281669697f163c7923e26ea57b89d49ade88aaa3ac2b46e00fe6b1",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 1224,
+            "absolute_end": 1505
+          },
+          "surviving_typed_claim_revision_ids": [
+            "0ae7eb0bc90ff6dbd0b758b5d0477738d38a7becfc827a42e00fd8476a2eb89e",
+            "d10bdf2b927a29138dea621c0760da15cc5254fb9e5bc8fee58339ec68042652"
+          ],
+          "surviving_provision_instance_ids": [
+            "1474e760b630ba8df81eadd9fa13327f79df4719595168ca26369ee91ff38624",
+            "1474e760b630ba8df81eadd9fa13327f79df4719595168ca26369ee91ff38624"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "d447908044998e904bd6f3ebfd3fd7a060a9fdeecc60ffb02e226b8f2a075810",
+          "carrier_claim_occurrence_id": "dcab9c481065306c06a944ebc46463d9993cabf597bb2dfb340dc4b43efbcb6f",
+          "semantic_identity_digest": "sha256:a208774b8ac5f5f6e4eb50d0e617d8aa96f23b0b3d0e491965475e7004b7f945",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 2531,
+            "absolute_end": 2821
+          },
+          "surviving_typed_claim_revision_ids": [
+            "47227f96a911052547f5d244fa65e43d4836971b56f419ad59719fe46090eda7"
+          ],
+          "surviving_provision_instance_ids": [
+            "1474e760b630ba8df81eadd9fa13327f79df4719595168ca26369ee91ff38624"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "e001e2a3c89bf80a71fc9c1a2461279172aa0d1891f69dcf9298bc71596ab762",
+          "carrier_claim_occurrence_id": "ad6c548b6c8849c48c8ab7a1410a4e1af138e4448be19cd3d464e1dd519bb7f3",
+          "semantic_identity_digest": "sha256:c26f7c1124537f5b93e83ab4f6364bd93c5a3cae6b6ab2b84c8dc8ddce3a597f",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 3962,
+            "absolute_end": 4118
+          },
+          "surviving_typed_claim_revision_ids": [
+            "d72e53daafcbc38c0c03b24d042bea3c61ab74854bb78af9a825ca4143d55504"
+          ],
+          "surviving_provision_instance_ids": [
+            "1474e760b630ba8df81eadd9fa13327f79df4719595168ca26369ee91ff38624"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "e888ece1abd0b49387faabb8bb762710f79a5f442ce4d20066fb5bb60d7fcc42",
+          "carrier_claim_occurrence_id": "239c698acc4080ca343b36578df55d6a2d05907963017ff5c4e81c4fb94e9122",
+          "semantic_identity_digest": "sha256:0642fee0fbde9c694a078c81ca4e09269fb3a933b2ed5a8a3404ca549f25a8a8",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 4368,
+            "absolute_end": 4564
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        }
+      ]
+    },
+    {
+      "run_name": "skechers-mae-definition-20260809-2xk-final",
+      "run_receipt_id": "1d7ad8914d7b257fe968bade7657d8e224a2e5c38272570224bae5fb44669d89",
+      "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+      "source_hashes": {
+        "run_receipt": "sha256:d9ad0a55a8adb7dafea4a55002ff928b59db743c1f27686ec830b0096d08773a",
+        "resolution": "sha256:f6d3fe91573a5f7c0d21b740c4f41b5fdb458f0c91c4ab85222a5388d00bca32"
+      },
+      "before_counts": {
+        "compiled_candidates": 32,
+        "resolved": 12,
+        "review_queue": 18,
+        "open_world": 14
+      },
+      "report_only": {
+        "scanned": 14,
+        "would_suppress": 9,
+        "suppressed": 0,
+        "retained_typed_peer_held": 5,
+        "retained_no_typed_peer": 0,
+        "open_world_unchanged": true
+      },
+      "enforce": {
+        "scanned": 14,
+        "would_suppress": 9,
+        "suppressed": 9,
+        "retained_typed_peer_held": 5,
+        "retained_no_typed_peer": 0,
+        "open_world_after": 5
+      },
+      "decisions": [
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "0e1ae111e08dec501f72fd3b6cf2371ebe9d37cecea623f453f3084c6f3eb39c",
+          "carrier_claim_occurrence_id": "bbf68e5b041d9e34897d02f7f341d689e464322614c034c10a2dc72538308a81",
+          "semantic_identity_digest": "sha256:6f8683e0b2a2458724cf9d4d5b66e94c6e2a62cdaed955c6fd91db32131b0845",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 11596,
+            "absolute_end": 11677
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "4892eea5a97aa696a20188a0de0e40a4658f303465d26a17b770c9e81315335f",
+          "carrier_claim_occurrence_id": "c8accaf81860f239c180d05fc59f1b4217c704e23aa9e53eb5d165d4511d6ba4",
+          "semantic_identity_digest": "sha256:e9c23a0f5d816e1bd1c33c1a8198c48d5368304713ade7dfb4938df197760bf9",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 10652,
+            "absolute_end": 10978
+          },
+          "surviving_typed_claim_revision_ids": [
+            "0d2bf8d5181062227917383a88053459369d3b692d2efe68fa68b0e974a8d681"
+          ],
+          "surviving_provision_instance_ids": [
+            "48c06d3ff5508a1127dc43bf6dc9c63849863f344efb0f6597d46552ebad6954"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "5b2334a81e7f0fa27506da9d8a3e0ca2047b8bec8ddfe7a3abffd862b7fe748c",
+          "carrier_claim_occurrence_id": "016cacf0fd416c159a9fc6ccd7fbdc187416d064bd697e86b41c02a4c06c1f5e",
+          "semantic_identity_digest": "sha256:cb548b18911403c8e8d57e4da296ab84c6a5f7a20105964b24e2f46c5e4dbb7c",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 9992,
+            "absolute_end": 10303
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "66a95822fd81dab5fb045fd123b751608addf3ad855b113eaefe3716538a60f2",
+          "carrier_claim_occurrence_id": "b9e53c77c213eb0efac9048c07bade3be378724955e9e56916c7575903fe521f",
+          "semantic_identity_digest": "sha256:4b8c68388daa89d933ec1941137e56305cdedbcf575b3d6a84bc23a3caa0cbfd",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 7633,
+            "absolute_end": 7795
+          },
+          "surviving_typed_claim_revision_ids": [
+            "ba41031a8b403da43583e4fbe8f6d50d9ea5b254e65f080f80d9d4dab166f5ec"
+          ],
+          "surviving_provision_instance_ids": [
+            "48c06d3ff5508a1127dc43bf6dc9c63849863f344efb0f6597d46552ebad6954"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "7690535701018edba9b1ef5ed18ee1259031190fb02294ed786888aa803aebfe",
+          "carrier_claim_occurrence_id": "ef17091d1cd02758663dd3187b7c9eb26bf08fda694deff198f8578691b65259",
+          "semantic_identity_digest": "sha256:7fa8120e66ea482c37d1c544b52c89b139f2bef78add7a2729780c49691c8d49",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 9503,
+            "absolute_end": 9982
+          },
+          "surviving_typed_claim_revision_ids": [
+            "3fdf219f0f278fe0b9af0d6832319397423dbbb722e63d8edb646b69af01c2e6"
+          ],
+          "surviving_provision_instance_ids": [
+            "48c06d3ff5508a1127dc43bf6dc9c63849863f344efb0f6597d46552ebad6954"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "7c0ae6afa1502357efb9fb062f20521a16451f3d9b564b0bf7321d006ce14b2f",
+          "carrier_claim_occurrence_id": "1e6b5d5b450574f432392e6c073536ac6e7407ae4ef74541a980c4af910ea849",
+          "semantic_identity_digest": "sha256:a968e78a13ada1c2e8ccacaccdc1f716aa8503d8ed15662bf4ede99ee350b630",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 8465,
+            "absolute_end": 8589
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "9701a87e909bf2a34c68249c2a991a8ef4d285c0ca43de639fce76d39da14187",
+          "carrier_claim_occurrence_id": "5e26b7972c40a82a2180b407bc424d2d3e14125ca7ab1864469758871122d514",
+          "semantic_identity_digest": "sha256:4526b5e04fa07d2de10b2f7c566173f84df5bfdf206165630ad5cdf84400d4d9",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 9233,
+            "absolute_end": 9495
+          },
+          "surviving_typed_claim_revision_ids": [
+            "16b485ba79d83fbbfd16f52c03970ccbf0908b1b5a9c47282a91be3ad693dec7",
+            "45e7e16d7a12793b43f2a80341d40bfd26a3e13e6c4c5e2a006351558e6ff281"
+          ],
+          "surviving_provision_instance_ids": [
+            "48c06d3ff5508a1127dc43bf6dc9c63849863f344efb0f6597d46552ebad6954",
+            "48c06d3ff5508a1127dc43bf6dc9c63849863f344efb0f6597d46552ebad6954"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "a5c8affbf7e3bce9646954e0c20edaf0199c87cbef9c2b0bf75bb0f3071cb4c0",
+          "carrier_claim_occurrence_id": "cf834fc3378ddaed174d3188a0d1f967c92ab13a644bde911bb76e096f2110d0",
+          "semantic_identity_digest": "sha256:2969702d5efe3a487edb13b971235b664cc445ac72f1d2df717d542bbc981db1",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 10308,
+            "absolute_end": 10469
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "a634769884c026a5779da99cc749395bf30f84f84ed0a9e8c6287a79180ac592",
+          "carrier_claim_occurrence_id": "89db3a0020a531d6bfdd3a7e0096342d7cf5dd56e2d9dc4c60a6206edc5038b4",
+          "semantic_identity_digest": "sha256:593e801406ca7ea7de31dbbcbf0e48f20121f52899454d143dfbaa90243f4f79",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 8885,
+            "absolute_end": 9226
+          },
+          "surviving_typed_claim_revision_ids": [
+            "87063c7bcf3d6ff98d0aed81bfec93cde64ad1ae1db851c94af2986c0db7ed18"
+          ],
+          "surviving_provision_instance_ids": [
+            "48c06d3ff5508a1127dc43bf6dc9c63849863f344efb0f6597d46552ebad6954"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "b7b1f7a78e2a85ef10a334a1bfd50fd9b62acccba495eacd45295e8dd214b2c3",
+          "carrier_claim_occurrence_id": "3ecc6e9aaa4d466523f2e39ce6602c3e24f994cc210f94d9271464301a0f5ff2",
+          "semantic_identity_digest": "sha256:7136bde1619ec369668c5447c8482afdea2a0023ce19ee5a43e1ed592ca7c775",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 8364,
+            "absolute_end": 8459
+          },
+          "surviving_typed_claim_revision_ids": [
+            "41599db592ee6c4ca00f96010bc1518df64ec1a000c58f96e4f1d1b3d062817d"
+          ],
+          "surviving_provision_instance_ids": [
+            "48c06d3ff5508a1127dc43bf6dc9c63849863f344efb0f6597d46552ebad6954"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "db66453437f11ed1f85012a77e38b3e60d4cedfdb3728e8df3a0470e1dbeed50",
+          "carrier_claim_occurrence_id": "ee7beaef4a8bf9f4599b4c1276f4e2c9488823a2f5e16abf888ad51e81beebfe",
+          "semantic_identity_digest": "sha256:3c01e1aa1144c1375f65bd24d4a0e2dc600291686c3e5ddc0c5302ec62ca64c4",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 7801,
+            "absolute_end": 8357
+          },
+          "surviving_typed_claim_revision_ids": [
+            "07af7db262b214fca708665b7ef33157cdba7c5baf91fef03b0e09875792b782"
+          ],
+          "surviving_provision_instance_ids": [
+            "48c06d3ff5508a1127dc43bf6dc9c63849863f344efb0f6597d46552ebad6954"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "e3152588adb199d37f909ead198a246cae57bea45be9cde259b5621b7128c3c8",
+          "carrier_claim_occurrence_id": "11c6e287dec5753782b9988d72b9b868ce4023595f66dd483af708c7a6383792",
+          "semantic_identity_digest": "sha256:e7096f21f42e9f55ef41b294f119cfc17e431e7d68bdcc07fb427b4e1af81dec",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 10475,
+            "absolute_end": 10645
+          },
+          "surviving_typed_claim_revision_ids": [
+            "622778d4292b7939c94f9b1a511db4598ab61f82dded3b33a6551e458d6889b8"
+          ],
+          "surviving_provision_instance_ids": [
+            "48c06d3ff5508a1127dc43bf6dc9c63849863f344efb0f6597d46552ebad6954"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "eb8dae5961cebad3a56fff0c3eb14b10cfa4f9ee525e2ed4b5cbab5b48203924",
+          "carrier_claim_occurrence_id": "895d51d209856f5f58c9583b3352f6b34f53b333a33710cc8f0147bb032cd84b",
+          "semantic_identity_digest": "sha256:df8fdf222144f430af96d4c6190df6efa8207a8436bb8244c0e0ef20ea37083c",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 10986,
+            "absolute_end": 11589
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "f0f0ec167be9f01e5632950e93880a25a01acb8ea49c3d9f918bbfc23c23f710",
+          "carrier_claim_occurrence_id": "c84f4f3a0c49989845b5a3935b0c7d4883d41685f577dee67983d382fdcad8b1",
+          "semantic_identity_digest": "sha256:4fa2e0eda054558d409711076a65f90ff2ef73b33ff68c3387be36e787048f78",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 8594,
+            "absolute_end": 8879
+          },
+          "surviving_typed_claim_revision_ids": [
+            "af9c7c58d0ef6b70d180de9034f076dbe6e09b8f2e90942be58195ca6f3cbb82"
+          ],
+          "surviving_provision_instance_ids": [
+            "48c06d3ff5508a1127dc43bf6dc9c63849863f344efb0f6597d46552ebad6954"
+          ]
+        }
+      ]
+    },
+    {
+      "run_name": "skywater-mae-definition-20260809-2xk-final",
+      "run_receipt_id": "fa0e041cdf512d33fbec9058802853e8f9d3f7198f6626e27f27118c87aeff67",
+      "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+      "source_hashes": {
+        "run_receipt": "sha256:9de1337e8c73ff8bcc57c2b8503be6ddca93356e1a3f85fb2b62203c1d15a59e",
+        "resolution": "sha256:8c4efb9e29b05d11130a91b55feb75c9f60fc18a9746cff879ab89ea72ede15f"
+      },
+      "before_counts": {
+        "compiled_candidates": 55,
+        "resolved": 28,
+        "review_queue": 30,
+        "open_world": 25
+      },
+      "report_only": {
+        "scanned": 22,
+        "would_suppress": 20,
+        "suppressed": 0,
+        "retained_typed_peer_held": 0,
+        "retained_no_typed_peer": 2,
+        "open_world_unchanged": true
+      },
+      "enforce": {
+        "scanned": 22,
+        "would_suppress": 20,
+        "suppressed": 20,
+        "retained_typed_peer_held": 0,
+        "retained_no_typed_peer": 2,
+        "open_world_after": 5
+      },
+      "decisions": [
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "0267b3d8eeb5b873bfb9426c615214403b5a462c7e48228d8a8ddc7388f6c3ce",
+          "carrier_claim_occurrence_id": "064eabe3a0c70841c846c44a6db0cfce1ae70b8386c347b7134698a1d39f87c7",
+          "semantic_identity_digest": "sha256:406906771f3b782e8eb62b962bae3f01b20b7b3b99e59ce3c7a9005f5faaf79b",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 26621,
+            "absolute_end": 26857
+          },
+          "surviving_typed_claim_revision_ids": [
+            "cbcdd40ccd4182bcf3352a72c3c7e8472934633e77acf13aace8c114eb70bcf4"
+          ],
+          "surviving_provision_instance_ids": [
+            "dd04e4a604c1f648d8a06b77511174dbd86babca28630c673362a0496d8960d2"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "1ba82e2f21fd66b83f9096555495d633975a4e1f3b1ce4286a2c7db06ab55f5d",
+          "carrier_claim_occurrence_id": "cccd014e171c761c1c83a16fe06bbea0d64d7de895675c921d53b70fcba7e155",
+          "semantic_identity_digest": "sha256:4c77205e2beeae71356ab4dfb73091917b71e41aad12284899a182885a0346a2",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 8388,
+            "absolute_end": 8610
+          },
+          "surviving_typed_claim_revision_ids": [
+            "a3c9b4bca8017c9f90d860024a90a6d135f1e80943e7ab53073be5754a05d58a"
+          ],
+          "surviving_provision_instance_ids": [
+            "4bbcd871c62a83a361d7fb8c7ff8fd02ef60912f4626026ff4003924593e8a9c"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "1d1a11416265d68e8a334f388e85ac337ace5907a9d6b00314f19f6fef33e141",
+          "carrier_claim_occurrence_id": "56fabfffd03247c45e08b8b145d0a76ed798477027f89194561327ba061fee3c",
+          "semantic_identity_digest": "sha256:a5d34a3ac0981e3609c7a4e0e50525a899161308eace05aa812344e614003c6a",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 8388,
+            "absolute_end": 8610
+          },
+          "surviving_typed_claim_revision_ids": [
+            "5302cc3cd72c770588a5d76e2dfe5411495ca05c9894b6d20e4b2c5dbaad5018"
+          ],
+          "surviving_provision_instance_ids": [
+            "dd04e4a604c1f648d8a06b77511174dbd86babca28630c673362a0496d8960d2"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "2cab269aa80d865e8b2f7f6564bf2c9f2af58f1e6783f65167a065972dbfa28f",
+          "carrier_claim_occurrence_id": "176705fe2a4c48354b64b3432a3e68deebb6e335ef8ff2008590c38a7e77ea4c",
+          "semantic_identity_digest": "sha256:891fbf5490b116bda6f36c79c3db5ebdf39a69fa3c65ec82f957b27b994fa66a",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 26385,
+            "absolute_end": 26617
+          },
+          "surviving_typed_claim_revision_ids": [
+            "9a5da13d57e7136e3f7bb7868df8620c9d134ef32ff67cb14362bc58eab86ca4"
+          ],
+          "surviving_provision_instance_ids": [
+            "dd04e4a604c1f648d8a06b77511174dbd86babca28630c673362a0496d8960d2"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "40013f455155d95a781c0b776db11b41a8d0d9a49deab4027ee3f8be55477d30",
+          "carrier_claim_occurrence_id": "0c697a00e9c228f768f3bddb1140b1e943a7575e138be97a90feefbd079d53ad",
+          "semantic_identity_digest": "sha256:d0aea9b103493525424806390135c0246ad7939b97be395430552e7a61a2ff22",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 8046,
+            "absolute_end": 8287
+          },
+          "surviving_typed_claim_revision_ids": [
+            "3990164cde932e485f59fa4ad28d847a2a640f43d6d6cd47d7442a3439fba8cd",
+            "4a51a0c701d7e545fc69f35a13104b6a5a0586006b3cd201486222112de9e2f4"
+          ],
+          "surviving_provision_instance_ids": [
+            "4bbcd871c62a83a361d7fb8c7ff8fd02ef60912f4626026ff4003924593e8a9c",
+            "4bbcd871c62a83a361d7fb8c7ff8fd02ef60912f4626026ff4003924593e8a9c"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "4a7b4c2051b908057fa7582a51da5372a8f5b254173e6e871ed18ae875b332ba",
+          "carrier_claim_occurrence_id": "8a2c230256024c84e651eac80891a59919f370bda369ea163d62e053fc30368f",
+          "semantic_identity_digest": "sha256:dbacb2a855a89c52177c180df5803f9c26deebd90e6c6f65863d2ce55379d51f",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 27259,
+            "absolute_end": 27356
+          },
+          "surviving_typed_claim_revision_ids": [
+            "07db5edf6c208a4c6758c330a150a00ff018fb1e1a285a168c1fb9313dfdd74c"
+          ],
+          "surviving_provision_instance_ids": [
+            "dd04e4a604c1f648d8a06b77511174dbd86babca28630c673362a0496d8960d2"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "510149113d802f8692865fbb0c657f10eeb0f770e6f71d1b29f62b700d8fd2aa",
+          "carrier_claim_occurrence_id": "3cd91a3fcde22929e70b047dfeae0ce4eae4ba00110e00614834ff52ada62d90",
+          "semantic_identity_digest": "sha256:b6907031c703255771b2048d5711ff5dac66daa76898f301925897f90f4599a9",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 28740,
+            "absolute_end": 28834
+          },
+          "surviving_typed_claim_revision_ids": [
+            "bcb0fdc0e941c5e68de722046f509d18c131e60e6b5b944142ee284bb41712ea"
+          ],
+          "surviving_provision_instance_ids": [
+            "dd04e4a604c1f648d8a06b77511174dbd86babca28630c673362a0496d8960d2"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "NO_TYPED_PEER_FOR_OPERATIVE_SPAN",
+          "carrier_closure_id": "5139bfe887607e566eea60202c2cbe09927d611f8de2973a0a0de88c2dd64f08",
+          "carrier_claim_occurrence_id": "509b34329c7da809a25964b509880f6b3a2f741f6eaa46ad9630b29ae5b4705c",
+          "semantic_identity_digest": "sha256:192a8d9c07f554e690388a8a86d806430d40a19804a314de8fceb0dc5d5b28e3",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 8614,
+            "absolute_end": 8983
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "555ecb53c8715e09ae2ae99f6219ef3f6c1b514dfb16f66e7d6683e4e5a12b6a",
+          "carrier_claim_occurrence_id": "8a5dcbb440b2e15e1f0be4dda8039c9d7bafa44c74f276c7a1efeca6a4a23069",
+          "semantic_identity_digest": "sha256:86f33d9e862afcfddf08ecbd2d6cb8cce63dba15f520f7fb0c8f2fde8cb83906",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 6645,
+            "absolute_end": 6776
+          },
+          "surviving_typed_claim_revision_ids": [
+            "a4f0eacde9ba677cd8fa082202df92bb5e8b2b3dd8001a126177d0db028705f6"
+          ],
+          "surviving_provision_instance_ids": [
+            "dd04e4a604c1f648d8a06b77511174dbd86babca28630c673362a0496d8960d2"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "6e4b731f2d4b429502b543d35517d912e7ddf6b909fa945e39335f416a4bef51",
+          "carrier_claim_occurrence_id": "de99e841cbd813a94ea49d636544cd433b6abe1c1ffab0bd008345028f11636c",
+          "semantic_identity_digest": "sha256:6dac92f551362222c0b0e475f9408418c8044399c52a4b261c18eccedf642055",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 27742,
+            "absolute_end": 28079
+          },
+          "surviving_typed_claim_revision_ids": [
+            "a72396137e60cc3c7fe972c021eb82fc14b2070fa870338693580d08b384dd80",
+            "e081a73c50e018da96a789a9050053ad8d2a05bcb4fcd63ec850826739a1ff75"
+          ],
+          "surviving_provision_instance_ids": [
+            "dd04e4a604c1f648d8a06b77511174dbd86babca28630c673362a0496d8960d2",
+            "dd04e4a604c1f648d8a06b77511174dbd86babca28630c673362a0496d8960d2"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "6f4a3394688dafcc4300b6c0328510951c8643680f8e9675fb2952201add67ec",
+          "carrier_claim_occurrence_id": "38427743b0403e222c11927985fcf4e7e2933ccc727dfa544bad41e00a1f58fa",
+          "semantic_identity_digest": "sha256:35fd172cc9aa2452e25bad44b85d2059c4d12d4ad4fe48b7c168e63346601585",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 6645,
+            "absolute_end": 6776
+          },
+          "surviving_typed_claim_revision_ids": [
+            "4d15556b394880bfea733e7ff2a17ac53213a93d3368b1c901c1f15e29c7f30a"
+          ],
+          "surviving_provision_instance_ids": [
+            "4bbcd871c62a83a361d7fb8c7ff8fd02ef60912f4626026ff4003924593e8a9c"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "71b5a506e251099cc5d78db02c027840f501bfdd7655a896e327ca1d9d9dbc42",
+          "carrier_claim_occurrence_id": "9bea7f6f61ee4181edf232a6a3f10c7211bc2da7765ac7c664c49f3c7b8fa322",
+          "semantic_identity_digest": "sha256:4865474edcfac6070afde85b7eea30fb45d14918dff90a7175c4539d10aac431",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 7265,
+            "absolute_end": 7632
+          },
+          "surviving_typed_claim_revision_ids": [
+            "69cff4cd0b083c737fd270694724c9326a5961eb97e097e07b78f95b5f0ae864",
+            "a7bfc3405a77bd0e5d4b30037cbad1defbc86d2b7f45444db754879438cdef63"
+          ],
+          "surviving_provision_instance_ids": [
+            "4bbcd871c62a83a361d7fb8c7ff8fd02ef60912f4626026ff4003924593e8a9c",
+            "4bbcd871c62a83a361d7fb8c7ff8fd02ef60912f4626026ff4003924593e8a9c"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "NO_TYPED_PEER_FOR_OPERATIVE_SPAN",
+          "carrier_closure_id": "85081d223c90966ba30076d6a2a2f0931794b89492ea2b48c254cabb73972e17",
+          "carrier_claim_occurrence_id": "f04453bffd128cda4c78a5feb51a8eadd50ff47586845a327d035cd2b42b83b6",
+          "semantic_identity_digest": "sha256:3b422bce4e71aec662fcd50c0ff134b6e969d14cdec3e9b9d59624024c066b02",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 29061,
+            "absolute_end": 29425
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "86e2d36a103256a36291deb36a156c0e44065bd06b1f4b918b04548557294ed5",
+          "carrier_claim_occurrence_id": "95cb0609ddd6f72647149bf6804188bbc02f28ef38ec6d0d52506334e4c2baed",
+          "semantic_identity_digest": "sha256:68819bb89770a52748955a31a7ee944a035b575e072db354483600783e1fd214",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 6777,
+            "absolute_end": 6879
+          },
+          "surviving_typed_claim_revision_ids": [
+            "e485af502dd8c88d05112ab71703aa0e5b5c85a7da99588273b4e0dacc25f4c0"
+          ],
+          "surviving_provision_instance_ids": [
+            "4bbcd871c62a83a361d7fb8c7ff8fd02ef60912f4626026ff4003924593e8a9c"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "90bc17f5ce31a87e838698eb3f650e4d2aec7df20b015f4e65ebeaa546b56368",
+          "carrier_claim_occurrence_id": "d212089e6193c6152d09b88dc0803659aa18f41187db818ba97ea96f931b3153",
+          "semantic_identity_digest": "sha256:46d7d23d10b1764facf64c1e6afba121cb7733685b742c4c32d3efb727e51b8f",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 6159,
+            "absolute_end": 6373
+          },
+          "surviving_typed_claim_revision_ids": [
+            "da599c9d268182479ffb2f8cc5be82a2d57341f1f7cd81acbbfc00afe5731f9a"
+          ],
+          "surviving_provision_instance_ids": [
+            "4bbcd871c62a83a361d7fb8c7ff8fd02ef60912f4626026ff4003924593e8a9c"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "97d40a9eab770912a08efc0fbcfcdb473317eed32ffe605c8576294dbed9e406",
+          "carrier_claim_occurrence_id": "4046495354e126a813c89d0b4dd6c098efaf5af7b69078baf75861c313f90e13",
+          "semantic_identity_digest": "sha256:c2dfb123b7810d6e16eee6dea5bb2fd57c2c7e4c505fdd448004d71e76cc22df",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 5917,
+            "absolute_end": 6155
+          },
+          "surviving_typed_claim_revision_ids": [
+            "2c4d7710b663eda5778b935fa558336b3e251f2ee6f93772ffcfdea3080662df"
+          ],
+          "surviving_provision_instance_ids": [
+            "4bbcd871c62a83a361d7fb8c7ff8fd02ef60912f4626026ff4003924593e8a9c"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "a4bb13f6de33d7ebd33d9aab85a58ca8869eaae9ebbcad9853cc7bd7962c4e31",
+          "carrier_claim_occurrence_id": "804865499c2b60873d6bc59aa6aa5b6def0550acb337f11fc4ab634f6f53969c",
+          "semantic_identity_digest": "sha256:0ffd4d6ea93169790ef84ee945074ba0e288523ccdc62bcc8403e3c02f7ccd7f",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 8288,
+            "absolute_end": 8387
+          },
+          "surviving_typed_claim_revision_ids": [
+            "6f3317ae5e367458642400e3e547c429f8c8da98fdc0b2e3412d1c5bc41c2be2"
+          ],
+          "surviving_provision_instance_ids": [
+            "4bbcd871c62a83a361d7fb8c7ff8fd02ef60912f4626026ff4003924593e8a9c"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "a5cce326dd486ef1091fb4482fb693887e2c829ba47f7131c652e847f4d692b5",
+          "carrier_claim_occurrence_id": "e874c8b0b09514e6d11dae3b11eeabe15269eef7fde8833de60c8b22317a7011",
+          "semantic_identity_digest": "sha256:bc31560a9344aa9995dc9985aacc4430cc16f5f94623de53a64f22d06a66b34e",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 7049,
+            "absolute_end": 7264
+          },
+          "surviving_typed_claim_revision_ids": [
+            "9e9637c962cba2044b77704705908ff78a913a83c6f2bae8b4bec523344c95e6",
+            "da81077b2367ca9b2255c1cc05e79caf61bed51738faf85ee8860dd94bed2164"
+          ],
+          "surviving_provision_instance_ids": [
+            "dd04e4a604c1f648d8a06b77511174dbd86babca28630c673362a0496d8960d2",
+            "dd04e4a604c1f648d8a06b77511174dbd86babca28630c673362a0496d8960d2"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "be5c7610355bec0af7648580abde013a40d7f153061e0ae1ca072880a868db93",
+          "carrier_claim_occurrence_id": "303fae83f468f8251c9ee29769c7f2353e09b3953c036ab9c234c6ba30c5f1e3",
+          "semantic_identity_digest": "sha256:9a53bb5cb3ad1ca90c99cd3435198c47cf29511e89253e183526acd316de1512",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 7049,
+            "absolute_end": 7264
+          },
+          "surviving_typed_claim_revision_ids": [
+            "2a7bd5593ec1e5167d0c954d9fdcd5864030a236868a1f45912fcaeff5bede7c",
+            "dfb24469b5ed29b7b56494563121f876f780006003f59bfd92b1611325653cd1"
+          ],
+          "surviving_provision_instance_ids": [
+            "4bbcd871c62a83a361d7fb8c7ff8fd02ef60912f4626026ff4003924593e8a9c",
+            "4bbcd871c62a83a361d7fb8c7ff8fd02ef60912f4626026ff4003924593e8a9c"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "c56a784c4548975fe591f681aebee265603afbe164366e44adce72026229f526",
+          "carrier_claim_occurrence_id": "cc818c1f43a2e81192c7a4f98233857b3e6184a20b964abd9fd87228b6832d69",
+          "semantic_identity_digest": "sha256:2bb167d8574b5dbd46199b3dda09456ce1a39204d95bc3bb6856ac1150adf586",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 28492,
+            "absolute_end": 28739
+          },
+          "surviving_typed_claim_revision_ids": [
+            "64364ab294fd9b49b75070613b6e76a17d8a34ff151435aeb2c32f769dc386ba",
+            "a56fce20c637a4f94be2d32e8a85e926f0349f024141d61a7fc7f89f000393ce"
+          ],
+          "surviving_provision_instance_ids": [
+            "dd04e4a604c1f648d8a06b77511174dbd86babca28630c673362a0496d8960d2",
+            "dd04e4a604c1f648d8a06b77511174dbd86babca28630c673362a0496d8960d2"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "e88d7012aaa0b0daaf583a0181092f13c5a6d6b0fbc46f332af8f0eb80b46f38",
+          "carrier_claim_occurrence_id": "96ce813e3e88852f96403b8201b1bd06fd7dfd24949f3f9189f841e783a40411",
+          "semantic_identity_digest": "sha256:3a6c6f97890a88c0949d8a70380423b7c85e5c3160e5a34eac221355cb1deb65",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 6880,
+            "absolute_end": 7048
+          },
+          "surviving_typed_claim_revision_ids": [
+            "b016666dd1d23fe37a4f70d2b9eac930c49aeac53a23dce7ed55448ba65507bb"
+          ],
+          "surviving_provision_instance_ids": [
+            "dd04e4a604c1f648d8a06b77511174dbd86babca28630c673362a0496d8960d2"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "eec7c6ff44ccb4d1ab9194d50875aa124f2b6423abbec7a2eea24f6bf5d71432",
+          "carrier_claim_occurrence_id": "eb4985aece24c273c2dc8d536ad0c88f103bc96f9931be2c0b24bade0e47e855",
+          "semantic_identity_digest": "sha256:9b7a3dda6c7eaf8233a6a5efe5645939523d7deb59e5ded79ba1684962927fcf",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 6880,
+            "absolute_end": 7048
+          },
+          "surviving_typed_claim_revision_ids": [
+            "725121b20b561ff4ab929cc2f4a1ea4027a667ffbae6b118a1aa006522451350"
+          ],
+          "surviving_provision_instance_ids": [
+            "4bbcd871c62a83a361d7fb8c7ff8fd02ef60912f4626026ff4003924593e8a9c"
+          ]
+        }
+      ]
+    },
+    {
+      "run_name": "topbuild-mae-definition-20260809-2xk-r4-final",
+      "run_receipt_id": "03fbdc6782a23ed043435ec9086a436d40d97e1c9e144bdfc5f51d73c585c6aa",
+      "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+      "source_hashes": {
+        "run_receipt": "sha256:4caabb5903559479399cd7908f7c8ae5a035dfadbe54eb94906b9a87577030b2",
+        "resolution": "sha256:ea04f3adab48048219f54731a95423f224b021cdbe90f7cd0f1b11c197e0a7c7"
+      },
+      "before_counts": {
+        "compiled_candidates": 65,
+        "resolved": 38,
+        "review_queue": 42,
+        "open_world": 23
+      },
+      "report_only": {
+        "scanned": 22,
+        "would_suppress": 16,
+        "suppressed": 0,
+        "retained_typed_peer_held": 4,
+        "retained_no_typed_peer": 2,
+        "open_world_unchanged": true
+      },
+      "enforce": {
+        "scanned": 22,
+        "would_suppress": 16,
+        "suppressed": 16,
+        "retained_typed_peer_held": 4,
+        "retained_no_typed_peer": 2,
+        "open_world_after": 7
+      },
+      "decisions": [
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "183896e0c14e17a5a665d06ac5c8fad027a1faa7c455a04b949314feb5bbfd86",
+          "carrier_claim_occurrence_id": "0fcb64ecc323ba4ccd70220f7acfebda0b9e539d432be658263ec95a0daef05b",
+          "semantic_identity_digest": "sha256:de0b6ea53df033ccb1263891bf3fb4fb1a368398c453d5ad5729322c44ea06b0",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 6347,
+            "absolute_end": 7069
+          },
+          "surviving_typed_claim_revision_ids": [
+            "1f43352b38f81657aea335b1e1eee5ab1ba1c95c131b92a717ce04bf9d4139cc",
+            "a96cedc19a215724f2611a143587a26c0039d3806799d67a461a453cf4c5816d",
+            "a9d87ce9e9fe0b7aed7b3ac1da1859ef94874c9d15f720bd3e4834c4cb828cfa",
+            "ec00d53014d7c6b4b60ff8e81038438d37830734e6720061f88425edfebaba7e"
+          ],
+          "surviving_provision_instance_ids": [
+            "951336df37cac3ad2417bcf0cb6c1e2fc75f253a6d387e4490829d9581327563",
+            "951336df37cac3ad2417bcf0cb6c1e2fc75f253a6d387e4490829d9581327563",
+            "951336df37cac3ad2417bcf0cb6c1e2fc75f253a6d387e4490829d9581327563",
+            "951336df37cac3ad2417bcf0cb6c1e2fc75f253a6d387e4490829d9581327563"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "NO_TYPED_PEER_FOR_OPERATIVE_SPAN",
+          "carrier_closure_id": "1bd241622a1f1d3d995a9747b52502a876740f8e724bad1997308a374301faf2",
+          "carrier_claim_occurrence_id": "cfb293da025d83ef4de5f058300a963cee082d50c78aa8a9a5ed3120e2b786da",
+          "semantic_identity_digest": "sha256:7416b7af84e446265e2651efa921349d34a014948572afd0325b51ce206fefd4",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 3799,
+            "absolute_end": 4240
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "33ca99d0c5e45c357b56973e01b6df2ffec852ab13aa80a8c02ea4d2abc7cfde",
+          "carrier_claim_occurrence_id": "b56b529eee7fc50b8367554d4ecd51f85364941b97744faf33aabbe7eae9c2c4",
+          "semantic_identity_digest": "sha256:9449e77034ad4c6065710bff105eb70e770b32aa2b77262974e007043e48f81b",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 7073,
+            "absolute_end": 7420
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "42386824f2a171ecf635b1dfac8c2aa85c87fbd82037c02ff738f14e68e56360",
+          "carrier_claim_occurrence_id": "9ed268152f142ce53d296830fc72a3c6d07a11fc8b0110e00e701fb7c7765fde",
+          "semantic_identity_digest": "sha256:0ca6c87eaa6170a10134f2a146bdc01164c8f0c64ca3068c017a1398291d8e59",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 5263,
+            "absolute_end": 5715
+          },
+          "surviving_typed_claim_revision_ids": [
+            "543ceda04eb0fbf2d4af9ab9e3074f56bc2b08a732dcdd60ee9a2a181901e9b2",
+            "ec602be281262f5d20a40d7731046ca33dbf191417f8298f010d1e5aa3ae5ed5"
+          ],
+          "surviving_provision_instance_ids": [
+            "951336df37cac3ad2417bcf0cb6c1e2fc75f253a6d387e4490829d9581327563",
+            "951336df37cac3ad2417bcf0cb6c1e2fc75f253a6d387e4490829d9581327563"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "499bbe1e59cfc2afff477ab77ceeaa2223b6d369de47d4cff67eb999791caec2",
+          "carrier_claim_occurrence_id": "420e77fd6ba849db8620cbe9470c6ec3462109a58fa7c04e0ab8ac77f4d3bae7",
+          "semantic_identity_digest": "sha256:5a91a9597793423392e2920d8b7654466e8713fb696a2fb79b0a00214df3dd0f",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 6751,
+            "absolute_end": 7114
+          },
+          "surviving_typed_claim_revision_ids": [
+            "ad4d33c07ac9999ddaa22abbe4ca7f265ec7d045b59d934b67d29253a261d638"
+          ],
+          "surviving_provision_instance_ids": [
+            "f679c07e199fe4ad13dca5f8a0d6c0d8eb88e3903d6aaeb894f57885022e7f1b"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "5180b58bdcee721db0fa957e3d9c41a412de273a6787dea5214ba82981de4f85",
+          "carrier_claim_occurrence_id": "a9c6457da8bf37d15ac120875bbc94b19da5608427e89b338542aedb53662234",
+          "semantic_identity_digest": "sha256:39bfd6812812d96e06860f35411f601cfd47d43d924227e9207f8cbaa4301cc8",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 8995,
+            "absolute_end": 9409
+          },
+          "surviving_typed_claim_revision_ids": [
+            "e67a7219e304e2023ce1d66adc87fc1669d35d3fbb35167728cbaf9417e81014"
+          ],
+          "surviving_provision_instance_ids": [
+            "951336df37cac3ad2417bcf0cb6c1e2fc75f253a6d387e4490829d9581327563"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "68a210a529ee99f14420bb1e4ad90e9177f3cf61ba4e6b299dcf41df9380b262",
+          "carrier_claim_occurrence_id": "2467bbd33d4dcbb583e316412a47018d40ea8ac9c2abcb7a9075c3d087ff9bd6",
+          "semantic_identity_digest": "sha256:ca30111ac3068e78453b9559fa291a5a55660c6f433738e142636f6aeb3ba430",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 4491,
+            "absolute_end": 5262
+          },
+          "surviving_typed_claim_revision_ids": [
+            "31edcdf1e0a00039d9caa432738adc3ab471806930cef315c819fbba0f53234c",
+            "78a9b9d1d59844b04912f8fb577e2d76820ac050fe9bc512db4172e20268693f",
+            "a4a9b89633a0cba73f8dca5ad3f5629dd596a5e68df77ae51fb5e38151c791d6",
+            "aad328667c4de91a396737b6fb2f79150f83b6f2c163255c8ba8d47c17c95bd0",
+            "f46743990bc3b3e910940648c5d9be2d9b58bf4e37a0eef23c66b650e7c50496"
+          ],
+          "surviving_provision_instance_ids": [
+            "951336df37cac3ad2417bcf0cb6c1e2fc75f253a6d387e4490829d9581327563",
+            "951336df37cac3ad2417bcf0cb6c1e2fc75f253a6d387e4490829d9581327563",
+            "951336df37cac3ad2417bcf0cb6c1e2fc75f253a6d387e4490829d9581327563",
+            "951336df37cac3ad2417bcf0cb6c1e2fc75f253a6d387e4490829d9581327563",
+            "951336df37cac3ad2417bcf0cb6c1e2fc75f253a6d387e4490829d9581327563"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "76d5b96c469ea4afee853c53cd724a265795c49ee599bdb673722fd4aede2b35",
+          "carrier_claim_occurrence_id": "4138f5164b9a93455d3483d2196f630fc0306161c3f2b78ca009214e5b86d292",
+          "semantic_identity_digest": "sha256:f324b20ec022c01bf3d32a8ccf3720e7f10b7ae0338bd0c582ffd5b5b45eb4b4",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 4228,
+            "absolute_end": 4861
+          },
+          "surviving_typed_claim_revision_ids": [
+            "f9dea597972467b7943e092e855c662bfdf0da216ce803158b098c7d5661bbf6"
+          ],
+          "surviving_provision_instance_ids": [
+            "f679c07e199fe4ad13dca5f8a0d6c0d8eb88e3903d6aaeb894f57885022e7f1b"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "NO_TYPED_PEER_FOR_OPERATIVE_SPAN",
+          "carrier_closure_id": "87d34b54f90dd98699834c2e78c0bbeef0b3619ab36c07de597c54e5431b0ae4",
+          "carrier_claim_occurrence_id": "e5d402553082d8295e66f1653edb5c8b2250e388a61c672539bf649ac7b0a5a2",
+          "semantic_identity_digest": "sha256:9c39f0b5e4f3821f514b15d692b0dd5e13fd2d611f6d34f885a6c07d5f8299c4",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 2495,
+            "absolute_end": 2778
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "995bb784b9535a9bad69874e50946f9d7f28ef27d616a1a9f1e452d200310397",
+          "carrier_claim_occurrence_id": "3213a1c28d67924c823bff0c7e02c0f03b2b0bca19e8a138304a102d9a790b7b",
+          "semantic_identity_digest": "sha256:b62f254d043bd8952c97ef6b627363648fa6f8320a5621240468332ecc1bfb1c",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 7807,
+            "absolute_end": 8180
+          },
+          "surviving_typed_claim_revision_ids": [
+            "09f75335b0deb09f10bc83429b9e947c5a3900e7bd465134d41629d8603cdefa",
+            "de28ae0f60081d2f60fddf6591a1f2e60e4ea38a12a7721d8f4a63ea5cfc16df"
+          ],
+          "surviving_provision_instance_ids": [
+            "951336df37cac3ad2417bcf0cb6c1e2fc75f253a6d387e4490829d9581327563",
+            "951336df37cac3ad2417bcf0cb6c1e2fc75f253a6d387e4490829d9581327563"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "a52d95c655628ada08ccb13ec8c59c882ecc1c2cf2d0d4c4bdd26ee5d71ade30",
+          "carrier_claim_occurrence_id": "e5e6f7f73de90533dba6d1b1b15760735830ec7e32500e9fdb719864d3b90225",
+          "semantic_identity_digest": "sha256:67586a6f03bf36e2f8efea30a17baa7e86c6a50e53eb24f3c49c4d8fdebd1f9e",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 8617,
+            "absolute_end": 8994
+          },
+          "surviving_typed_claim_revision_ids": [
+            "db6d9a5dee723e9f88549b3ae18cf86dbe0827aaa6911aea1c1e30482e9243f8"
+          ],
+          "surviving_provision_instance_ids": [
+            "951336df37cac3ad2417bcf0cb6c1e2fc75f253a6d387e4490829d9581327563"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "a561beeb331970a39d97f1c93c345fa6ad41503270d0707da182365e4a0d1d9f",
+          "carrier_claim_occurrence_id": "f1b5cf26081591c6780c83f59a77472303be8e787b3c640599f394c7fc6d3eba",
+          "semantic_identity_digest": "sha256:3c48ed738632058fcf91bdd4ffab5d68839ad7a0ffa26d4c44559c50c4a93ed9",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 6031,
+            "absolute_end": 6390
+          },
+          "surviving_typed_claim_revision_ids": [
+            "9363e7b1df56ed08dae1c37797f66486779cccc5d26f85556cd725422932ec3c",
+            "986dd43cb0c1fa456008ab481ae34a4ca4bfd904f67ab87df7adac41c879249a"
+          ],
+          "surviving_provision_instance_ids": [
+            "f679c07e199fe4ad13dca5f8a0d6c0d8eb88e3903d6aaeb894f57885022e7f1b",
+            "f679c07e199fe4ad13dca5f8a0d6c0d8eb88e3903d6aaeb894f57885022e7f1b"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "a883fb73f50790f6f5c3529b6feb06279410b97e87f8f2532d0426f35d890650",
+          "carrier_claim_occurrence_id": "6b44fd94d1ac614f84d2c90dc5c639209cc705ac4648f1a6b12d4ee57a9bafda",
+          "semantic_identity_digest": "sha256:a69a44e1b753098e3fd03cad5bbc7eb551e95b9c951c371681013f82250cf44d",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 5642,
+            "absolute_end": 6023
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "a9b6e74ec30f7aeecdbc97caff35d5c3ad352dd50bcb5061044e030cfb531db3",
+          "carrier_claim_occurrence_id": "0c24865557ce44bd0de9137574a13d36a864132642b133730f1f588bdeafd1e9",
+          "semantic_identity_digest": "sha256:9868d95f4efac14bcf827d99e6d6539160b07bbe31959dfdebf6dbb34dd1a2b9",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 7421,
+            "absolute_end": 7806
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "b355d7f23ae73a5c2c03f5193fc6d63c930ec42a18c82748ea57ad7d9a763285",
+          "carrier_claim_occurrence_id": "0949260b0e6a23ab857969828b5daf56bc25e8a5239d7344d9770cf4f0b5f1e0",
+          "semantic_identity_digest": "sha256:f551c32a367c4d0527b339df97609058c9b83d4f082fa87c4950da75d34aa2b8",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 3033,
+            "absolute_end": 3785
+          },
+          "surviving_typed_claim_revision_ids": [
+            "64f46b91805ba8a4fc43660f7620e34fb6d0d5564b73cc621ec03e060fc22a89",
+            "6f6cd652ac6c1fdc7cb8f5e1b6e6bc92855a482eb3821d25f23f2331c9d1d1cb",
+            "77266d764148e45b2fa86ea4f89b72fd4778678ea1695ee527ac57ff3823f6df",
+            "7d4f8329ddbe8b6f2b80cc85441537e8daba4148f3038e6a980d5a79fa66e27c",
+            "942f474bc08bf818cac16a694af1d038e5a93cb44a965f1c0459057ebc45753e"
+          ],
+          "surviving_provision_instance_ids": [
+            "f679c07e199fe4ad13dca5f8a0d6c0d8eb88e3903d6aaeb894f57885022e7f1b",
+            "f679c07e199fe4ad13dca5f8a0d6c0d8eb88e3903d6aaeb894f57885022e7f1b",
+            "f679c07e199fe4ad13dca5f8a0d6c0d8eb88e3903d6aaeb894f57885022e7f1b",
+            "f679c07e199fe4ad13dca5f8a0d6c0d8eb88e3903d6aaeb894f57885022e7f1b",
+            "f679c07e199fe4ad13dca5f8a0d6c0d8eb88e3903d6aaeb894f57885022e7f1b"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "bb2b06d1ae1469b8ae29956b437f4c9df65d602c472628b132d97d1acbaadc88",
+          "carrier_claim_occurrence_id": "0aff51be0c3085d2a14ac12f3095c61b15c38eef197884b0d6b6bc14b115cf44",
+          "semantic_identity_digest": "sha256:b14bd3500d59da2e0d587c7350dbee84ce2eeb8df85ed3375324d9c4822b28a4",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 5716,
+            "absolute_end": 6346
+          },
+          "surviving_typed_claim_revision_ids": [
+            "bcdc1feef8736e6bea6aa8f218ec03cd4c515223b435ad7177eec049de69b7a2"
+          ],
+          "surviving_provision_instance_ids": [
+            "951336df37cac3ad2417bcf0cb6c1e2fc75f253a6d387e4490829d9581327563"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "bd6fc59473a0d090777dcbbdf0fa4fd312552c05d04a0ec6c205fc81a6b5d9a1",
+          "carrier_claim_occurrence_id": "65aa8fbc48c8c36389a2e34ab6fbf1e9c2652c377691e311f8d56fa67a720927",
+          "semantic_identity_digest": "sha256:801fd8ce616d183931ba413c59d7bc414b00dc5c19a7cf4505b819e6a3a3e4a2",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 7123,
+            "absolute_end": 7523
+          },
+          "surviving_typed_claim_revision_ids": [
+            "2ff310977d36d23339be823c3ebddb52141c0a8b5e4ab1b1b13fb24671c24ad0"
+          ],
+          "surviving_provision_instance_ids": [
+            "f679c07e199fe4ad13dca5f8a0d6c0d8eb88e3903d6aaeb894f57885022e7f1b"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "cbc83c8b4c8b46982af54596bfbef0e7d471ced63c787ba8b503b70fc618f88a",
+          "carrier_claim_occurrence_id": "9ca93cdca98a3038dfed3b3a97601d941efbfdd623115af8437e588dd8796277",
+          "semantic_identity_digest": "sha256:c7ddcf778503ed179922884bc08b491348585b89043c845cabf9666c843e7d57",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 6395,
+            "absolute_end": 6746
+          },
+          "surviving_typed_claim_revision_ids": [
+            "51865b37a53555c7b3fdddb27153dd036a525e1e54106dc3172da88fe9b47dc1",
+            "6ebc7a31913a11f0cf4efbdd73b873a7f2e2dc11982d6e1e90c4cfc05dca2614"
+          ],
+          "surviving_provision_instance_ids": [
+            "f679c07e199fe4ad13dca5f8a0d6c0d8eb88e3903d6aaeb894f57885022e7f1b",
+            "f679c07e199fe4ad13dca5f8a0d6c0d8eb88e3903d6aaeb894f57885022e7f1b"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "cfc79daf4191b1e06ec0b07233e12f05f0170d9500a659cc922ee46fe05c23ca",
+          "carrier_claim_occurrence_id": "0abb0deb1f291c82b6772be9b8dd5ce20687d850393fc2d62180ce4060c9a4d3",
+          "semantic_identity_digest": "sha256:08ee5a1ca964ded1e8b9c5cc33aba2fdc5d09f991da4e33d1ca046f4bc84b6b3",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 3790,
+            "absolute_end": 4223
+          },
+          "surviving_typed_claim_revision_ids": [
+            "0c917d5d8956ca3415e43fda4690c0d823cf8ab9286d334d04db5959701fed57",
+            "c13a80239abbdd4ba578420cc32a2979a41783f3a828969a62485a4ec0475d3a"
+          ],
+          "surviving_provision_instance_ids": [
+            "f679c07e199fe4ad13dca5f8a0d6c0d8eb88e3903d6aaeb894f57885022e7f1b",
+            "f679c07e199fe4ad13dca5f8a0d6c0d8eb88e3903d6aaeb894f57885022e7f1b"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "RETAINED",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "carrier_closure_id": "e9430f7a4f5f357982ac60e0a144d010f35bec42ebd10c550702f50060db9c35",
+          "carrier_claim_occurrence_id": "db67ce413d993a6f56a7d05182301a587e0875c0e09212ce73214ed6d4edf7e1",
+          "semantic_identity_digest": "sha256:1d7fbe24175660dce0d7e458b8ad060c254b538d86b915a65fcbdd31b9509837",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 5579,
+            "absolute_end": 5637
+          },
+          "surviving_typed_claim_revision_ids": [],
+          "surviving_provision_instance_ids": []
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "f0a01639c776bfb3d0c59a22af577d4ba9498a3b73a699e767d0059fe28461c5",
+          "carrier_claim_occurrence_id": "1c2bc57be26dc72c4ed0a00e035ff815725085aaa01bb56572b27325a97b4b3b",
+          "semantic_identity_digest": "sha256:4e27ff1e069d4fd83ffdbf8a62066791dfa445f8d694779df242c88ab6b5b643",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 4866,
+            "absolute_end": 5574
+          },
+          "surviving_typed_claim_revision_ids": [
+            "6251b72ce03cb2596ef13c78033802344760ec8dc1416a3db1c592ce40295c60",
+            "ec948ccdea0302cc45a3ab8d6f16afbbd403037f4a958f1248e116a9f27a738a",
+            "f3ecfe85e5dd5aaea75c08230751dcda213e2e7ad96643de204c77c14ad7cd37",
+            "f8d8033da65df698a3b033563bd7a8127581c6e6af220aff7b5817999e75f201"
+          ],
+          "surviving_provision_instance_ids": [
+            "f679c07e199fe4ad13dca5f8a0d6c0d8eb88e3903d6aaeb894f57885022e7f1b",
+            "f679c07e199fe4ad13dca5f8a0d6c0d8eb88e3903d6aaeb894f57885022e7f1b",
+            "f679c07e199fe4ad13dca5f8a0d6c0d8eb88e3903d6aaeb894f57885022e7f1b",
+            "f679c07e199fe4ad13dca5f8a0d6c0d8eb88e3903d6aaeb894f57885022e7f1b"
+          ]
+        },
+        {
+          "schema_version": "DUPLICATE_SUPPRESSION/V1",
+          "mode": "REPORT_ONLY",
+          "disposition": "WOULD_SUPPRESS",
+          "reason_code": "SEMANTIC_DUPLICATE_WITH_RESOLVED_TYPED_MAE_CLAIM",
+          "carrier_closure_id": "f97028026ea75002ae17ed75ddbb6d7a28223a8c4f7aa69309252a239107ddd5",
+          "carrier_claim_occurrence_id": "46cc5010f95923ead69ca96011105425421b5242d74ac138922b6d27ef7c851a",
+          "semantic_identity_digest": "sha256:25bfbaf76651f4bd3274915f8aa1cebdb15b310ba1308da6a33fa2b449d1fba8",
+          "operative_span": {
+            "document_ordinal": 0,
+            "absolute_start": 8181,
+            "absolute_end": 8616
+          },
+          "surviving_typed_claim_revision_ids": [
+            "845ebeb5cf5e6889acf8b20ecfd48136bc3548b333431bc38006c0bc6d2a7a48",
+            "d454fb6714a8d53327fe83bd2af36a6306824d822fa334d7504c3b7f7273fe54"
+          ],
+          "surviving_provision_instance_ids": [
+            "951336df37cac3ad2417bcf0cb6c1e2fc75f253a6d387e4490829d9581327563",
+            "951336df37cac3ad2417bcf0cb6c1e2fc75f253a6d387e4490829d9581327563"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1102,6 +1102,7 @@ function parseArgs(argv) {
     v1SnapshotPath: null,
     sameDealDefinedTermReceiptPaths: [],
     sameDealDefinedTermCalibrationPath: null,
+    duplicateSuppressionReportOnly: false,
   };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -1136,6 +1137,7 @@ function parseArgs(argv) {
       case '--v1-snapshot': out.v1SnapshotPath = argv[++i]; break;
       case '--same-deal-defined-terms-receipt': out.sameDealDefinedTermReceiptPaths.push(argv[++i]); break;
       case '--same-deal-defined-terms-calibration': out.sameDealDefinedTermCalibrationPath = argv[++i]; break;
+      case '--duplicate-suppression-report-only': out.duplicateSuppressionReportOnly = true; break;
       default: throw new Error(`unrecognised argument: ${arg}`);
     }
   }
@@ -1231,6 +1233,7 @@ function resolveRunConfig(args) {
     v1SnapshotPath: args.v1SnapshotPath || null,
     sameDealDefinedTermReceiptPaths: Object.freeze([...args.sameDealDefinedTermReceiptPaths]),
     sameDealDefinedTermCalibrationPath: args.sameDealDefinedTermCalibrationPath || null,
+    duplicateSuppressionMode: args.duplicateSuppressionReportOnly ? 'REPORT_ONLY' : 'OFF',
   });
 }
 
@@ -2115,6 +2118,7 @@ async function main() {
     admitted_source_context: admittedSourceContext,
     agreement_date: config.agreementDate,
     same_deal_defined_terms: sameDealDefinedTerms,
+    duplicate_suppression_mode: config.duplicateSuppressionMode,
   });
 
   // Condition 2: lexical-disagreement net (Ben's M3 auto-pass condition 2,
@@ -2172,6 +2176,7 @@ async function main() {
     v1v2_comparison: v1v2Comparison,
     lexical_disagreement: lexicalDisagreement,
     same_deal_defined_terms: sameDealDefinedTerms,
+    duplicate_suppression_mode: config.duplicateSuppressionMode,
   });
   writeFileSync(resolve(outDir, 'resolution.json'), JSON.stringify(resolution, null, 2));
 
