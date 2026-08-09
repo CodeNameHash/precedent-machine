@@ -1410,23 +1410,22 @@ Evidence and commands: `docs/codex-program/notes/step-2x-f-topology.md`.
 
 ## Step 2X-A. One structure service, and point it at every family
 
-**Closed 2026-08-08 for the replay-validated structure and placement work.**
+**Closed 2026-08-08 for replay.**
 `resolveGoverningStructure` is the shared UTF-8 boundary service over
 `segmentSubClauses`; it returns a resolved leaf and chapeau chain, or a typed
 undetermined result. `structure-placement.js` annotates resolved, review-queue
-and open-world rows without changing claim identity. The termination structural
-adapter landed separately with 19 of 19 pinned Modiv, Concho and TopBuild spans
-byte-identical to the previous implementation.
+and open-world rows without changing claim identity. The termination adapter's
+19 pinned Modiv, Concho and TopBuild spans are byte-identical to the previous
+implementation.
 
 The six-mechanism comparison is recorded in
 `docs/codex-program/notes/step-2x-a-mechanism-comparison.md`. The implementation
 record, fixtures and exact parity result are in
 `docs/codex-program/notes/step-2x-a-structure-service.md`.
 
-**Deferred without blocking 2X-K.** The human spot-audit of unflagged
-marker-bearing sections remains a quality follow-up. Derived-limb minting also
-remains separate: the marker-start gate has passed, but no product mint path is
-wired.
+**Deferred without blocking 2X-K.** The live termination-adapter swap remains
+deferred. A human spot-audit of unflagged marker-bearing sections is optional
+quality follow-up.
 
 ---
 
@@ -1451,8 +1450,8 @@ non-scope senses.
 **Closed 2026-08-08.** The report widened to held review-queue quotes before
 enforcement. After the agreed lex-specialis treatment of NOTIFY and LITNOTIFY
 and the Merger Sub pattern correction, it found zero unresolved collisions
-across resolved, open-world and held rows. Primary multi-match enforcement then
-landed as a no-op for the scanned corpus.
+across resolved, open-world and held rows, including zero held collisions.
+Primary multi-match enforcement then landed as a no-op for the scanned corpus.
 
 **Evidence.** `docs/codex-program/notes/step-2x-c-collision-report.md`,
 `docs/codex-program/notes/step-2x-c-followup.md`, Decision 16, and commit

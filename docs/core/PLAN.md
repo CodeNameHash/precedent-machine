@@ -2105,9 +2105,11 @@ before touching this branch.
 
 ## Step 2X-A. One structure service, and point it at every family
 
-**MOVED TO COMPLETED.md (2026-08-08).** The replay-validated service,
-placement pass and termination structural adapter are complete. See the closure
-record for the six-mechanism comparison, pinned fixtures and 19/19 parity.
+**MOVED TO COMPLETED.md (2026-08-08).** DONE on replay: the structure service,
+placement pass and termination-adapter parity are complete. Only the deferred
+live termination-adapter swap and an optional human spot-audit remain. See the
+closure record for the six-mechanism comparison, pinned fixtures and 19/19
+parity.
 
 
 ---
