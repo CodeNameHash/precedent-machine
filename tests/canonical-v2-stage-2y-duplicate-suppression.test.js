@@ -2,6 +2,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const { spawnSync } = require('node:child_process');
 const path = require('node:path');
 const { canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
@@ -38,6 +39,30 @@ test('Stage 2Y-G full-corpus evidence is pinned and mechanically current', () =>
   const run = spawnSync(process.execPath, [script, '--check'], { cwd: path.resolve(__dirname, '..'), encoding: 'utf8' });
   assert.equal(run.status, 0, run.stderr);
   assert.match(run.stdout, /CHECKED/);
+});
+
+test('every retained carrier has a named cause and exact source link, and the plan’s Concho 25 is reconciled', () => {
+  const evidence = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', 'evidence/canonical-v2/stage-2y-g-duplicate-suppression.json'), 'utf8'));
+  const accounts = evidence.duplicate_suppression.retained_accounts;
+  assert.equal(accounts.length, 25);
+  assert.deepEqual(evidence.duplicate_suppression.retained_cause_counts, {
+    OPEN_WORLD_PROPOSITION_WITH_SAME_EXACT_QUOTE: 2,
+    TYPED_PEER_DIFFERENT_OPERATIVE_SPAN: 2,
+    TYPED_PEER_HELD_IN_REVIEW_QUEUE: 21,
+  });
+  assert.ok(accounts.every((account) => account.named_cause.code && account.exact_source_link.artifact_path.endsWith('/adapter-result.json') && account.exact_source_link.claim_evidence_id && account.exact_source_link.document_byte_span.end > account.exact_source_link.document_byte_span.start));
+  const concho = accounts.filter((account) => account.run_name.startsWith('concho-'));
+  assert.equal(concho.length, 11);
+  assert.ok(concho.every((account) => account.named_cause.code === 'TYPED_PEER_HELD_IN_REVIEW_QUEUE' && account.named_cause.typed_peer_rows.every((peer) => peer.resolution.reasons.includes('PARTY_UNRESOLVED'))));
+  assert.deepEqual(
+    {
+      finding_code: evidence.historical_concho_25_reconciliation.finding_code,
+      total: evidence.historical_concho_25_reconciliation.total_retained_carriers,
+      concho: evidence.historical_concho_25_reconciliation.concho_retained_carriers,
+      other: evidence.historical_concho_25_reconciliation.other_run_retained_carriers,
+    },
+    { finding_code: 'PLAN_CONCHO_25_WAS_THE_TOTAL_RETAINED_COUNT_NOT_A_CONCHO_RUN_COUNT', total: 25, concho: 11, other: 14 },
+  );
 });
 
 test('OFF is referentially byte-identical, REPORT_ONLY changes no output, and ENFORCE is module-only', () => {

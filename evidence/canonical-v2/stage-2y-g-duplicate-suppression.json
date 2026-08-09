@@ -40,7 +40,1247 @@
       20,
       16
     ],
-    "records_digest": "sha256:c1c3cbc9a2012d25bfbdfac5bac43f7de3b7060d719c2c8ea12a3a10fda2b4b3"
+    "records_digest": "sha256:c1c3cbc9a2012d25bfbdfac5bac43f7de3b7060d719c2c8ea12a3a10fda2b4b3",
+    "retained_cause_counts": {
+      "TYPED_PEER_HELD_IN_REVIEW_QUEUE": 21,
+      "OPEN_WORLD_PROPOSITION_WITH_SAME_EXACT_QUOTE": 2,
+      "TYPED_PEER_DIFFERENT_OPERATIVE_SPAN": 2
+    },
+    "retained_accounts": [
+      {
+        "run_name": "concho-mae-definition-20260809-2xk-final",
+        "carrier_closure_id": "17244c08a494b150bc12b00350c7309974116a808bd596c1cdff8b6eafd1d09a",
+        "carrier_claim_revision_id": "19f83a6d056e511c243403fcf7b4d86e430719b8c76068c2890ee9db7cd650e4",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "c2ac0a3eef25bef476de6993a90e0c90af26865966e2c5dec03a869b29efdf54",
+              "claim_occurrence_id": "e6eef4b30653aa247bc232d9d37f0cb11bc83d6496f211754d06472c02847db6",
+              "closure_id": "93410dd382e593160c0dbe68319d3af58923e784385c6ad406ff27c2381c462d",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "93410dd382e593160c0dbe68319d3af58923e784385c6ad406ff27c2381c462d",
+                "reasons": [
+                  "PARTY_UNRESOLVED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "Annex-A",
+          "claim_evidence_id": "9d4efa7ce20bca25f114147af92b4100ce46591d6567500f9eb4145bfd5e41bf",
+          "section_relative_byte_span": {
+            "start": 18461,
+            "end": 18724
+          },
+          "document_byte_span": {
+            "start": 328123,
+            "end": 328386
+          },
+          "quote_sha256": "sha256:8255d7c0ddb99428c0ef321cf1b4694b840b92cbcc72f44a11c0a9408fe86f2a"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[8].assertion_quote",
+            "$.mae_definition_instances[0].carveout_assertions[7].quote"
+          ]
+        }
+      },
+      {
+        "run_name": "concho-mae-definition-20260809-2xk-final",
+        "carrier_closure_id": "174b251351114b6f969a298af17217193814d5850b45790ed6efe6245c925a4a",
+        "carrier_claim_revision_id": "e4b56a453306bdd896aeb4aab23f6d9845740f7c424172884cb7f19472195eb9",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "6324291db640f1ce37d77925b80894e5bc824db697a401e7051646b1c57fd60f",
+              "claim_occurrence_id": "59421f9f94ae00cfc19761b128952bd76d1fb36888ba3157479c236adc5ddb33",
+              "closure_id": "856063d06a02ad9e017e5600388f0d1b8e7998825ac94728b9bfdea0c3f0c2e9",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "856063d06a02ad9e017e5600388f0d1b8e7998825ac94728b9bfdea0c3f0c2e9",
+                "reasons": [
+                  "PARTY_UNRESOLVED"
+                ]
+              }
+            },
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "33b8faeb30b58606beac16bfcc4f7cdfde2aaca55a18b526131669b89d4b8b97",
+              "claim_occurrence_id": "5d3d3125da80d5ed9700f8957aaf68493de0f2f89672f87e65ce57fdd4c729c9",
+              "closure_id": "86f61169fffcc28ae066571966ddcdd82d7cd7552a2e5548e9e2b6d5e9840293",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "86f61169fffcc28ae066571966ddcdd82d7cd7552a2e5548e9e2b6d5e9840293",
+                "reasons": [
+                  "PARTY_UNRESOLVED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "Annex-A",
+          "claim_evidence_id": "b17da03bb69be35c7c802326c3fd9c1905afde8b693fdb88732cd33d0d822d9a",
+          "section_relative_byte_span": {
+            "start": 17955,
+            "end": 18153
+          },
+          "document_byte_span": {
+            "start": 327617,
+            "end": 327815
+          },
+          "quote_sha256": "sha256:dd33e663a2d49f542a051a8b457e249cfb67b1911bd30e42704ae2c2bcf607e3"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[6].assertion_quote",
+            "$.mae_definition_instances[0].carveout_assertions[4].quote",
+            "$.mae_definition_instances[0].carveout_assertions[5].quote"
+          ]
+        }
+      },
+      {
+        "run_name": "concho-mae-definition-20260809-2xk-final",
+        "carrier_closure_id": "24d2a3f650c5182b739dcc0e3daf7b0ea7a3a9b8eebdd68d1b0cc97aa921a366",
+        "carrier_claim_revision_id": "60f0853610cf3acbda2b26c90ce78a043f759deb9d985f1d65ae343b15a05a39",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
+              "claim_revision_id": "5321cfbbc039f9f14687e001664c905d48508450f2f7ab01646d57e9d743dc43",
+              "claim_occurrence_id": "d661737ecba02d7ffd38a928972e1d0daf2263067f2974d9fd105375f38ef00e",
+              "closure_id": "a45e9982adb114c94d23807c8405410871e73579cefdf4cdcbed6b6283f7e384",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "a45e9982adb114c94d23807c8405410871e73579cefdf4cdcbed6b6283f7e384",
+                "reasons": [
+                  "PARTY_UNRESOLVED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "Annex-A",
+          "claim_evidence_id": "6e3373e188f802552b0d6d76a72964983c29fdcb642854aa01d5bfd96ff2276d",
+          "section_relative_byte_span": {
+            "start": 16108,
+            "end": 16237
+          },
+          "document_byte_span": {
+            "start": 325770,
+            "end": 325899
+          },
+          "quote_sha256": "sha256:e29075531ff2f36588fb11aa4d371382effc2f39fba27c23407f37a5a899789a"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[0].assertion_quote",
+            "$.mae_definition_instances[0].prong_assertions[0].quote"
+          ]
+        }
+      },
+      {
+        "run_name": "concho-mae-definition-20260809-2xk-final",
+        "carrier_closure_id": "308d239fc2fc9ceb0f20260c7329a9dd289502a7dd942eed5bc983897693125c",
+        "carrier_claim_revision_id": "df78328d667b02ff86f523261961fccdcfeef51f77c3eb5f934beec3e23c711e",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "1fdeb4fd35912a65af70d330973b7d94ec6204a78a612827179b2c73a9b8d56a",
+              "claim_occurrence_id": "099e19dd53a5558d2004af16b4ec2cabb88d89dadebfdb9d2d3e41dc19a68205",
+              "closure_id": "7c91f34824a4e2cf1ad533218c295ad8513c5f56a2cdec844187b9c7fd874c46",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "7c91f34824a4e2cf1ad533218c295ad8513c5f56a2cdec844187b9c7fd874c46",
+                "reasons": [
+                  "PARTY_UNRESOLVED"
+                ]
+              }
+            },
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "026767f5d5ad6d67c5d145cc2ae5cc5a09fbdb009342cfd57c8096b498e17597",
+              "claim_occurrence_id": "bc07a4ea2246c1bbe2bcf1d77cdb0ba39a8cd2b36b58e5276adfc0389080597a",
+              "closure_id": "db7cebfb2b16a72ed454a97a7e5084436d2e2d35ebe59503b9cb4607993a2266",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "db7cebfb2b16a72ed454a97a7e5084436d2e2d35ebe59503b9cb4607993a2266",
+                "reasons": [
+                  "PARTY_UNRESOLVED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "Annex-A",
+          "claim_evidence_id": "0bea7dda28b7ddc6be9edf2d7d8d17156c529b2baf74398e7208c1f1d55f9a48",
+          "section_relative_byte_span": {
+            "start": 18732,
+            "end": 18996
+          },
+          "document_byte_span": {
+            "start": 328394,
+            "end": 328658
+          },
+          "quote_sha256": "sha256:605f578f5937f8b2a4b803957004a00250e548497e431f9d740f635ded261f2f"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[9].assertion_quote",
+            "$.mae_definition_instances[0].carveout_assertions[8].quote",
+            "$.mae_definition_instances[0].carveout_assertions[9].quote"
+          ]
+        }
+      },
+      {
+        "run_name": "concho-mae-definition-20260809-2xk-final",
+        "carrier_closure_id": "3496b9e37496e95a09c96b4242802ee6e5e41daf362b5f79a8b6b7a447cf6e50",
+        "carrier_claim_revision_id": "0e04c981560c79ae8042775616147fc6f953a8b3dfa894eb9ee3a14b4fd4a371",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "f4f0c42e8d4ce2bb7fdbdcd63f83a7860010955e3311ca13015c730252d66a65",
+              "claim_occurrence_id": "a007c72e11fbeb8b81926d77dee583691b00996d79ecd623edc3b9808c53a37f",
+              "closure_id": "aa92a338fb85458e34d5597b4d39f2f02b1e403fc60ab13d2f9524fc7823254b",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "aa92a338fb85458e34d5597b4d39f2f02b1e403fc60ab13d2f9524fc7823254b",
+                "reasons": [
+                  "PARTY_UNRESOLVED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "Annex-A",
+          "claim_evidence_id": "a4842a0ea6bcbecaf09e45fd1736bae58ea1bb4035b2b00be45fa22264177229",
+          "section_relative_byte_span": {
+            "start": 17637,
+            "end": 17950
+          },
+          "document_byte_span": {
+            "start": 327299,
+            "end": 327612
+          },
+          "quote_sha256": "sha256:fcf7ca7ea311582d5e24a506482843bf40540a26817100ecbed75b111b7a598a"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[5].assertion_quote",
+            "$.mae_definition_instances[0].carveout_assertions[3].quote"
+          ]
+        }
+      },
+      {
+        "run_name": "concho-mae-definition-20260809-2xk-final",
+        "carrier_closure_id": "58ec616fd614aac3b37d69e8afc1e59811bb82ef82f468e1fd3e4968d3ccaca4",
+        "carrier_claim_revision_id": "bc6fea24a8ad3d8a249de5fd5b57151bff9e5870016d398c87d4c77d135ae5e0",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "6afc1e7c1058903ab987ad746625f56f52365fbae9bf6ac7e0e038eb325835b5",
+              "claim_occurrence_id": "047deb9147e2b5a8fbf740d7c1805cb9188300b94bf8064ebe9690d5691c87b0",
+              "closure_id": "91327714a8c72f3be5001b97470b180842cd95143c5411e0168efae5d34b38e0",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "91327714a8c72f3be5001b97470b180842cd95143c5411e0168efae5d34b38e0",
+                "reasons": [
+                  "PARTY_UNRESOLVED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "Annex-A",
+          "claim_evidence_id": "66755e3e3316386bb888c2ced2cfe32bab0bd6547226220850966f95701caa77",
+          "section_relative_byte_span": {
+            "start": 16884,
+            "end": 16990
+          },
+          "document_byte_span": {
+            "start": 326546,
+            "end": 326652
+          },
+          "quote_sha256": "sha256:aa60a282da80145481580a3cc9b936891b6d8ef3c5e40e106cf46ef228ce139b"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[2].assertion_quote",
+            "$.mae_definition_instances[0].carveout_assertions[0].quote"
+          ]
+        }
+      },
+      {
+        "run_name": "concho-mae-definition-20260809-2xk-final",
+        "carrier_closure_id": "64215a3397ff74fcb535fa6e88a7b38f65a858b56f8b60e97b58d20fee5336dc",
+        "carrier_claim_revision_id": "2fd20bd0877bb98dc44f9023bfc60069f32beb77394d59d4027748ea4423b752",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "3d368393a49cc3ea06e6ed0c7a8b512643634e1c6b684dfd3069915ff9e32ef6",
+              "claim_occurrence_id": "e46fe1eb4dc43a195638d4c4a170a3e1e0f6b7fbbd7e5c1c8838e4490ad1e3ee",
+              "closure_id": "19afd831a10816214f6a3430979e74c4b348cc9c09a9a9ea97fa21a4365c5f79",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "19afd831a10816214f6a3430979e74c4b348cc9c09a9a9ea97fa21a4365c5f79",
+                "reasons": [
+                  "PARTY_UNRESOLVED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "Annex-A",
+          "claim_evidence_id": "d821b767fe14c2e38dd64ef1cfd4d5f1802f6ec608982704814e7a12c4a4fac3",
+          "section_relative_byte_span": {
+            "start": 18159,
+            "end": 18454
+          },
+          "document_byte_span": {
+            "start": 327821,
+            "end": 328116
+          },
+          "quote_sha256": "sha256:5566a7890145f7b7cc88f1007aab8f43b2598b73743bc55744a61e6db6acdfc5"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[7].assertion_quote",
+            "$.mae_definition_instances[0].carveout_assertions[6].quote"
+          ]
+        }
+      },
+      {
+        "run_name": "concho-mae-definition-20260809-2xk-final",
+        "carrier_closure_id": "89ab04b2436881ae3b798ac06cc9de726d4d3cf75fb8586fc88f15645185cb2d",
+        "carrier_claim_revision_id": "f3646a0e343a353e912c527dba68da3b0c1132bba7b40dd5d82c784e4bfc0b5b",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
+              "claim_revision_id": "0d69a727421d088b41c1a9f956fd5be9d9267b00abfebe3a96a5e1cf62b81abf",
+              "claim_occurrence_id": "1ec8b5e008f51f38b0fd8274265175d890865149cd49a72ce2bb859bbc2dd747",
+              "closure_id": "9a6dec6ebe1adc74af069b1618d54f9ed98ed2ea724b7c69cacaf6c573b2aa4b",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "9a6dec6ebe1adc74af069b1618d54f9ed98ed2ea724b7c69cacaf6c573b2aa4b",
+                "reasons": [
+                  "PARTY_UNRESOLVED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "Annex-A",
+          "claim_evidence_id": "ec28297bbba2c195f7c227235c94ff2ddb5f7d4810d96a51a7bbf26cddfb026b",
+          "section_relative_byte_span": {
+            "start": 16245,
+            "end": 16406
+          },
+          "document_byte_span": {
+            "start": 325907,
+            "end": 326068
+          },
+          "quote_sha256": "sha256:9135fa3e33466d0571ceb1e679ceafe121bdd3171f87c3cb1c803b4a9bbd98e3"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[1].assertion_quote",
+            "$.mae_definition_instances[0].prong_assertions[1].quote"
+          ]
+        }
+      },
+      {
+        "run_name": "concho-mae-definition-20260809-2xk-final",
+        "carrier_closure_id": "9e064e04553effb6a0d27d490913d682cb1bd45871305086df15fd232057e0e4",
+        "carrier_claim_revision_id": "5cbac7fd4baf3502fa7676894769b12b624b95e5346af3fb81d35e1e556cc9bc",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "6087d1866a1ea88fcb32657a18bd0068283a47c9c9a1434b5df09ae18648b298",
+              "claim_occurrence_id": "4db08056e73aa23ea3eadd198dfa39947a2caa562ecf7f94b2b155810f505d88",
+              "closure_id": "2f6f4e8fff5cd4fd8c2936aa54a82af9f135711c92155e99bd9a779c79f66406",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "2f6f4e8fff5cd4fd8c2936aa54a82af9f135711c92155e99bd9a779c79f66406",
+                "reasons": [
+                  "PARTY_UNRESOLVED"
+                ]
+              }
+            },
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "0ba4703be2e45e3fdcac5df0c2b02763bc6796d09759f3ed3e6b8c6db8790817",
+              "claim_occurrence_id": "4afa76cf43c78edb93b81828f30409d15acc4ca190806a7145c3df161735d12d",
+              "closure_id": "2fd42b360cd54cf0f0beee7bcd91103b6ebe692461568b23c946379b38f2c21e",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "2fd42b360cd54cf0f0beee7bcd91103b6ebe692461568b23c946379b38f2c21e",
+                "reasons": [
+                  "PARTY_UNRESOLVED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "Annex-A",
+          "claim_evidence_id": "1802e554f1798a262713f5063cd30556790b07315bb2d6766c419bb99278c043",
+          "section_relative_byte_span": {
+            "start": 19002,
+            "end": 19693
+          },
+          "document_byte_span": {
+            "start": 328664,
+            "end": 329355
+          },
+          "quote_sha256": "sha256:54f3b9ef296e2b743de663bb52866c34297caf2ee43446ae1431ccd63ea082a7"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[10].assertion_quote",
+            "$.mae_definition_instances[0].carveout_assertions[10].quote",
+            "$.mae_definition_instances[0].carveout_assertions[11].quote"
+          ]
+        }
+      },
+      {
+        "run_name": "concho-mae-definition-20260809-2xk-final",
+        "carrier_closure_id": "aa14f9c32d5286338c94879968b697e22c3725b607c83aeee0e57e4b019fe196",
+        "carrier_claim_revision_id": "9ec1d9ae2d9201e01d94cbff026b4248515c34a9037a39a9995ad52971ed9192",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "23d14a9c057292f7c9a5deab7e950a3d967bcd0d8be21201dfaec7d56defebcc",
+              "claim_occurrence_id": "1b339067cf49eb470790656798d05317a19fbea992f83ea0c6705370cb373af5",
+              "closure_id": "15f35cfab4d8494542095dfe8e71f8cd460db06efa1f3c4c94135b809778bbe5",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "15f35cfab4d8494542095dfe8e71f8cd460db06efa1f3c4c94135b809778bbe5",
+                "reasons": [
+                  "PARTY_UNRESOLVED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "Annex-A",
+          "claim_evidence_id": "688b06db9b6c572fa58dc9a58d8babbdc3b0ace397cb539c6355a7d7be3cfe5f",
+          "section_relative_byte_span": {
+            "start": 16996,
+            "end": 17401
+          },
+          "document_byte_span": {
+            "start": 326658,
+            "end": 327063
+          },
+          "quote_sha256": "sha256:8a6e7fd560db340c800dd11c46dd881c2affcfaa4dcc7f573df2750eee79fcbd"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[3].assertion_quote",
+            "$.mae_definition_instances[0].carveout_assertions[1].quote"
+          ]
+        }
+      },
+      {
+        "run_name": "concho-mae-definition-20260809-2xk-final",
+        "carrier_closure_id": "bf61b94ab792a7017827040254d951017798b29a8e6aca5649fdd71346f7a086",
+        "carrier_claim_revision_id": "175e01761ead6a5c6e1e061dd1f9a4a7ff0cca3e2e5e74b03fa108054745c262",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "168f5af59895b12415caf6d6ec4d9981c0a88409c0407b4b13b5e30b9390e2e4",
+              "claim_occurrence_id": "423f4bb77e6a26d3ed78871ef5d1ba43fa88bd48dda11f88c0a3e82d66b85100",
+              "closure_id": "43112f9140df63427bee7f02ddeccf04713e11bb5e74611af10a34b9a754b44c",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "43112f9140df63427bee7f02ddeccf04713e11bb5e74611af10a34b9a754b44c",
+                "reasons": [
+                  "PARTY_UNRESOLVED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "Annex-A",
+          "claim_evidence_id": "bad280d2e696ba5c3bd945b9c98780ac4558a38ae4bdadaf7004c4d7d6483511",
+          "section_relative_byte_span": {
+            "start": 17412,
+            "end": 17631
+          },
+          "document_byte_span": {
+            "start": 327074,
+            "end": 327293
+          },
+          "quote_sha256": "sha256:5d6f2de5064e7dcec65a362138d038bbd1d9a2c5bd18a776c5820b240df64549"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[4].assertion_quote",
+            "$.mae_definition_instances[0].carveout_assertions[2].quote"
+          ]
+        }
+      },
+      {
+        "run_name": "redhat-mae-definition-20260809-2xk-final",
+        "carrier_closure_id": "e888ece1abd0b49387faabb8bb762710f79a5f442ce4d20066fb5bb60d7fcc42",
+        "carrier_claim_revision_id": "a829f14f9db6278bc20c08df7bb771d92628ed0b9d6c39bf5a94f12c660fff7a",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "5ba2a29690a47ca9726241cc4ab166b39a234d421f5f8c2db9452e5a113705b2",
+              "claim_occurrence_id": "1eb9b10d116b95b22753a25573ddadc72c8eecbca887623b65eddcf73c2ad492",
+              "closure_id": "7f432594bcc594a4dae1c1685087730de647bf9f6aafb857c7080c6215f94c0f",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "7f432594bcc594a4dae1c1685087730de647bf9f6aafb857c7080c6215f94c0f",
+                "reasons": [
+                  "MAE_CARVEOUT_UNCORROBORATED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/redhat-mae-definition-20260809-2xk-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "8.03(l)",
+          "claim_evidence_id": "f99d5e59d64e9e0193d2df1417d6db0574fde5052191524ece26bb6a4fe49ee8",
+          "section_relative_byte_span": {
+            "start": 4368,
+            "end": 4564
+          },
+          "document_byte_span": {
+            "start": 247511,
+            "end": 247707
+          },
+          "quote_sha256": "sha256:b99d3b7829c8df531fb490ca972190eb754af2e0de02a993c9b7ac86891d9069"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/redhat-mae-definition-20260809-2xk-final/native-producer-recorded-response-8.03_l_.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[11].assertion_quote",
+            "$.mae_definition_instances[0].carveout_assertions[11].quote"
+          ]
+        }
+      },
+      {
+        "run_name": "skechers-mae-definition-20260809-2xk-final",
+        "carrier_closure_id": "0e1ae111e08dec501f72fd3b6cf2371ebe9d37cecea623f453f3084c6f3eb39c",
+        "carrier_claim_revision_id": "4597efb6197e87879409ff9741c4efb4fc4d74d7824c8adc04aaa43a26d8441d",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "0d836290b8d1ac1cd39d79bf63538dd20103dd9067f83bb094e59d1ee8545514",
+              "claim_occurrence_id": "d472b1e700ee2822edda62a09b800ce6d0846d2f5b6502337cedc52e846b3e13",
+              "closure_id": "57cdf9eb3cc92b62394f535a22256ceedcc5847bf1b53833aa13f3f3f0fd3548",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "57cdf9eb3cc92b62394f535a22256ceedcc5847bf1b53833aa13f3f3f0fd3548",
+                "reasons": [
+                  "MAE_CARVEOUT_UNCORROBORATED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/skechers-mae-definition-20260809-2xk-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "1.1",
+          "claim_evidence_id": "0e4dd09eefae127b920fc287a2d76fe1b895eb088f59acb583c0a18c565af989",
+          "section_relative_byte_span": {
+            "start": 11596,
+            "end": 11677
+          },
+          "document_byte_span": {
+            "start": 20274,
+            "end": 20355
+          },
+          "quote_sha256": "sha256:4aadb3877781795ae012b99430cb635445ed33431c745334917c10d923168a9a"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/skechers-mae-definition-20260809-2xk-final/native-producer-recorded-response-1.1.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[13].assertion_quote",
+            "$.mae_definition_instances[0].carveout_assertions[15].quote"
+          ]
+        }
+      },
+      {
+        "run_name": "skechers-mae-definition-20260809-2xk-final",
+        "carrier_closure_id": "5b2334a81e7f0fa27506da9d8a3e0ca2047b8bec8ddfe7a3abffd862b7fe748c",
+        "carrier_claim_revision_id": "4b50466a45f58a95df3a501c305b0f145178c4d379edb16b1c1cc4eafd8034f4",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "ee8ed3cc9ddc69a8627403e9698b7ea42a67dc73a5e13b44a994cce7884f65c6",
+              "claim_occurrence_id": "fc9905a30790475ca21363ec1bf3cfa7ce91d7179f1653652044024802161243",
+              "closure_id": "843a7d14eb6a27c4dbf8bfa8926495c1d3871ce12b591a27861073e1aaa936d2",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "843a7d14eb6a27c4dbf8bfa8926495c1d3871ce12b591a27861073e1aaa936d2",
+                "reasons": [
+                  "MAE_CARVEOUT_UNCORROBORATED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/skechers-mae-definition-20260809-2xk-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "1.1",
+          "claim_evidence_id": "d7156a0d736d3688fdd69df738808d579a0c9a8630fe27ddfd666b0bf2c74bac",
+          "section_relative_byte_span": {
+            "start": 9992,
+            "end": 10303
+          },
+          "document_byte_span": {
+            "start": 18670,
+            "end": 18981
+          },
+          "quote_sha256": "sha256:9fea3c6e21c10e7dfc7e466a2900b79971830aae92f584622a38af9fb58b758a"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/skechers-mae-definition-20260809-2xk-final/native-producer-recorded-response-1.1.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[8].assertion_quote",
+            "$.mae_definition_instances[0].carveout_assertions[9].quote"
+          ]
+        }
+      },
+      {
+        "run_name": "skechers-mae-definition-20260809-2xk-final",
+        "carrier_closure_id": "7c0ae6afa1502357efb9fb062f20521a16451f3d9b564b0bf7321d006ce14b2f",
+        "carrier_claim_revision_id": "7c305c4c96545de81f024aac0b59fe70da2b0bd87dde6a58e446427f30ccb722",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "7e25ca8a06df57af4ce98e9d343f7cc48181d71fee80c2b4dee42354d7af7ef8",
+              "claim_occurrence_id": "b8f5a79af321d5a740c7bdc2d2c92ab2f7fa1a9326f5bdc8f9ec539c10d55c23",
+              "closure_id": "8f064060519c93a79bca707fe35f5b012bccd2279c7b325f887e8a1d299b705e",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "8f064060519c93a79bca707fe35f5b012bccd2279c7b325f887e8a1d299b705e",
+                "reasons": [
+                  "MAE_CARVEOUT_UNCORROBORATED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/skechers-mae-definition-20260809-2xk-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "1.1",
+          "claim_evidence_id": "363a86c2763c95a81f785080837e05b46966072b34a25c0764b328d96ae208b2",
+          "section_relative_byte_span": {
+            "start": 8465,
+            "end": 8589
+          },
+          "document_byte_span": {
+            "start": 17143,
+            "end": 17267
+          },
+          "quote_sha256": "sha256:29a20b64ac5097194550b238e81853f9d009cdcec192db10c6d6e56e5f1eb7b9"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/skechers-mae-definition-20260809-2xk-final/native-producer-recorded-response-1.1.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[3].assertion_quote",
+            "$.mae_definition_instances[0].carveout_assertions[3].quote"
+          ]
+        }
+      },
+      {
+        "run_name": "skechers-mae-definition-20260809-2xk-final",
+        "carrier_closure_id": "a5c8affbf7e3bce9646954e0c20edaf0199c87cbef9c2b0bf75bb0f3071cb4c0",
+        "carrier_claim_revision_id": "b23e6f0366bb4c8441016f96468f2b69dbee958ebec014ec28ec5a7b7c4d2882",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "cee26c27f47b3f2a14af81cdf753a01efac23cbb228030c038b4790c2a7f719b",
+              "claim_occurrence_id": "282e4d09896857cdb162f2830377cdd220748ade99fea971318b127afdc8816b",
+              "closure_id": "75469b0282a4e1191eac4b338545e89de3a1908fda85d623719435791b4fa7c1",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "75469b0282a4e1191eac4b338545e89de3a1908fda85d623719435791b4fa7c1",
+                "reasons": [
+                  "MAE_CARVEOUT_UNCORROBORATED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/skechers-mae-definition-20260809-2xk-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "1.1",
+          "claim_evidence_id": "8578e3f29a3f202140b1be7cdb26d092978d3c4f0fd3892c150272331c10027c",
+          "section_relative_byte_span": {
+            "start": 10308,
+            "end": 10469
+          },
+          "document_byte_span": {
+            "start": 18986,
+            "end": 19147
+          },
+          "quote_sha256": "sha256:b63058a63941620c9636dd175b3a87a82271fc9a2b1571084b946374505f028f"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/skechers-mae-definition-20260809-2xk-final/native-producer-recorded-response-1.1.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[9].assertion_quote",
+            "$.mae_definition_instances[0].carveout_assertions[10].quote"
+          ]
+        }
+      },
+      {
+        "run_name": "skechers-mae-definition-20260809-2xk-final",
+        "carrier_closure_id": "eb8dae5961cebad3a56fff0c3eb14b10cfa4f9ee525e2ed4b5cbab5b48203924",
+        "carrier_claim_revision_id": "d1e1a0842a074b96fa6e8854fd89550ba5ce11ab7bfcad2c313a141a41eb2b4d",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "16a1fc76b88088f9fa938c9b3724c90b03e86211da353a22faddf7910014f409",
+              "claim_occurrence_id": "b3fd4ebcebb42c3644cd76f8d2872ba426386b61885256d4b594d490864a04b9",
+              "closure_id": "57f892c9c1ea13da7658a188cfc7a76d83a3f7b704c103f6ec04f879f1459f90",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "57f892c9c1ea13da7658a188cfc7a76d83a3f7b704c103f6ec04f879f1459f90",
+                "reasons": [
+                  "MAE_CARVEOUT_UNCORROBORATED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/skechers-mae-definition-20260809-2xk-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "1.1",
+          "claim_evidence_id": "33c55e0d586ab6ceed61d7669895e457556dd31980a014df1209900cbcb22a23",
+          "section_relative_byte_span": {
+            "start": 10986,
+            "end": 11589
+          },
+          "document_byte_span": {
+            "start": 19664,
+            "end": 20267
+          },
+          "quote_sha256": "sha256:685131eea9929a20b5f1a49c53bc1ddeb673e32632d8d16c379be6a5be0de56b"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/skechers-mae-definition-20260809-2xk-final/native-producer-recorded-response-1.1.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[12].assertion_quote",
+            "$.mae_definition_instances[0].carveout_assertions[14].quote"
+          ]
+        }
+      },
+      {
+        "run_name": "skywater-mae-definition-20260809-2xk-final",
+        "carrier_closure_id": "5139bfe887607e566eea60202c2cbe09927d611f8de2973a0a0de88c2dd64f08",
+        "carrier_claim_revision_id": "b97b131346579de4bb3059948265df0eceacc43ce4fa92f5d4769d1bc42ef3ff",
+        "reason_code": "NO_TYPED_PEER_FOR_OPERATIVE_SPAN",
+        "named_cause": {
+          "code": "OPEN_WORLD_PROPOSITION_WITH_SAME_EXACT_QUOTE",
+          "content_disposition": "SHAPED_UNDER_ANOTHER_OPEN_WORLD_KIND",
+          "non_typed_peer_rows": [
+            {
+              "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+              "claim_revision_id": "d3c6e478d83f69ab78029478a672755bac330e684946e2a7580b83b733f2f35a",
+              "claim_occurrence_id": "53a05b32a22229db8c7efd8f85e831dffa9741b67b5af8bc38a911452eb5f0bb",
+              "closure_id": "382fca5dfc218898768960875e7b5e87c9864f6bdb8428784daed64ee67423a4",
+              "resolution": {
+                "state": "OPEN_WORLD",
+                "closure_id": "382fca5dfc218898768960875e7b5e87c9864f6bdb8428784daed64ee67423a4",
+                "reasons": [
+                  "NATIVE_OPEN_WORLD_PROPOSAL"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/skywater-mae-definition-20260809-2xk-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "Annex-A",
+          "claim_evidence_id": "5797cc69c925eb2ba966110c917cb37dfeed0ebea1e3319a50531ff2d4a51f31",
+          "section_relative_byte_span": {
+            "start": 8614,
+            "end": 8983
+          },
+          "document_byte_span": {
+            "start": 325640,
+            "end": 326009
+          },
+          "quote_sha256": "sha256:2e2bcfe3b94cf9b7a3ae495c7bd5b4870dc926a9a1d9968c52b2a6828387d942"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/skywater-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[10].assertion_quote",
+            "$.open_world_candidates[0].observed_quote"
+          ]
+        }
+      },
+      {
+        "run_name": "skywater-mae-definition-20260809-2xk-final",
+        "carrier_closure_id": "85081d223c90966ba30076d6a2a2f0931794b89492ea2b48c254cabb73972e17",
+        "carrier_claim_revision_id": "e2d2705211ed4bef180a7867e3be1e75c53fce15a859cd611c9a8a9c1f04ba33",
+        "reason_code": "NO_TYPED_PEER_FOR_OPERATIVE_SPAN",
+        "named_cause": {
+          "code": "OPEN_WORLD_PROPOSITION_WITH_SAME_EXACT_QUOTE",
+          "content_disposition": "SHAPED_UNDER_ANOTHER_OPEN_WORLD_KIND",
+          "non_typed_peer_rows": [
+            {
+              "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+              "claim_revision_id": "428d62a2bc6c30e6d3cfec0d7853850cc794299680a1d242765150c920d1a1c5",
+              "claim_occurrence_id": "35e04b044c5cd99953cf4b375d200aade3f1f27b2c030a45b93e1b5545d67431",
+              "closure_id": "e9a95b16c4e19a375b66464321e03592281a96d93a4be9ceabe9b64b99fdc4b6",
+              "resolution": {
+                "state": "OPEN_WORLD",
+                "closure_id": "e9a95b16c4e19a375b66464321e03592281a96d93a4be9ceabe9b64b99fdc4b6",
+                "reasons": [
+                  "NATIVE_OPEN_WORLD_PROPOSAL"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/skywater-mae-definition-20260809-2xk-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "Annex-A",
+          "claim_evidence_id": "a09fb6508a3f8b9393c1fc2f12866045b1082cd4a6140cd8c4c020669e9e31c0",
+          "section_relative_byte_span": {
+            "start": 29061,
+            "end": 29425
+          },
+          "document_byte_span": {
+            "start": 346087,
+            "end": 346451
+          },
+          "quote_sha256": "sha256:5f66a921ad8495e35585ec1d6ac09d56e4fb80dc08941860602fd7702226ae91"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/skywater-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[1].limbs[10].assertion_quote",
+            "$.open_world_candidates[2].observed_quote"
+          ]
+        }
+      },
+      {
+        "run_name": "topbuild-mae-definition-20260809-2xk-r4-final",
+        "carrier_closure_id": "1bd241622a1f1d3d995a9747b52502a876740f8e724bad1997308a374301faf2",
+        "carrier_claim_revision_id": "cd48ca1a8077c6e2f06e08249f8c82a78cfb42029e624729a7edd83505eb521d",
+        "reason_code": "NO_TYPED_PEER_FOR_OPERATIVE_SPAN",
+        "named_cause": {
+          "code": "TYPED_PEER_DIFFERENT_OPERATIVE_SPAN",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_WITH_A_DIFFERENT_EXACT_QUOTE",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
+              "claim_revision_id": "2c6cb3aba02142b52407bacb63f7008cde44baf08b961b6459f0c04cf4a174dd",
+              "claim_occurrence_id": "60b782edd2af56e3b0467a482e4d698c8436fd177a53ad1327b9007a51d4632c",
+              "closure_id": "f70c4d4f905952ee938eaab5acce7b64ce6180b7d4deaa5ff1b15b9c156eedaf",
+              "resolution": {
+                "state": "NOT_EMITTED",
+                "closure_id": "f70c4d4f905952ee938eaab5acce7b64ce6180b7d4deaa5ff1b15b9c156eedaf"
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "3.1",
+          "claim_evidence_id": "f0f5ba49a8c39cfc4f797cb13790ceca4cf43638396310f65e185ead7801a9e9",
+          "section_relative_byte_span": {
+            "start": 3799,
+            "end": 4240
+          },
+          "document_byte_span": {
+            "start": 51554,
+            "end": 51995
+          },
+          "quote_sha256": "sha256:8a52c685bed84b8b1e660f92a0b9c12d8ad9801125ec6cc42c3831d8e00b43dc"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/native-producer-recorded-response-3.1.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[0].assertion_quote"
+          ]
+        }
+      },
+      {
+        "run_name": "topbuild-mae-definition-20260809-2xk-r4-final",
+        "carrier_closure_id": "33ca99d0c5e45c357b56973e01b6df2ffec852ab13aa80a8c02ea4d2abc7cfde",
+        "carrier_claim_revision_id": "44d46fa8170d296c6685c3ae8b5c33ed87be2a8d9619894b561b07ccefaf1fca",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "c0fa830d0951c26fc8ce95489495f6fd5a32832425c1ea4fee692db092007ede",
+              "claim_occurrence_id": "231101fbdcdb7be9de46d6faf71a2d93473a660410ae9b2f5228a558a7eaad4e",
+              "closure_id": "a582e74c082977666a3d175c37bbd0bc448718fd76acc3b9c133d4e0e324fbd7",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "a582e74c082977666a3d175c37bbd0bc448718fd76acc3b9c133d4e0e324fbd7",
+                "reasons": [
+                  "MAE_CARVEOUT_UNCORROBORATED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "3.1",
+          "claim_evidence_id": "65f9a9f467349b8ef13b4e8533297010a0fd5fada998d8ae63a687f6a7e3d118",
+          "section_relative_byte_span": {
+            "start": 7073,
+            "end": 7420
+          },
+          "document_byte_span": {
+            "start": 54828,
+            "end": 55175
+          },
+          "quote_sha256": "sha256:6b5cbed8f38aaf054980f65ce9d24a77d7766def826099996450261355ece6ef"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/native-producer-recorded-response-3.1.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[5].assertion_quote",
+            "$.mae_definition_instances[0].carveout_assertions[9].quote"
+          ]
+        }
+      },
+      {
+        "run_name": "topbuild-mae-definition-20260809-2xk-r4-final",
+        "carrier_closure_id": "87d34b54f90dd98699834c2e78c0bbeef0b3619ab36c07de597c54e5431b0ae4",
+        "carrier_claim_revision_id": "ca0e74ea55baac17fe330b8ac5304f3c057915705c70ef25d89638ce28a09a79",
+        "reason_code": "NO_TYPED_PEER_FOR_OPERATIVE_SPAN",
+        "named_cause": {
+          "code": "TYPED_PEER_DIFFERENT_OPERATIVE_SPAN",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_WITH_A_DIFFERENT_EXACT_QUOTE",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
+              "claim_revision_id": "4949ccdda78127e49a8189b839052ce853f32d42c4274b33658fe92c1e10ba56",
+              "claim_occurrence_id": "3370376c59e6c1bc8f3946f542d9ecc2f84d4eb03ebdf2a3f66e22c454183fa8",
+              "closure_id": "cef4e6e2ec56186c25e6d5434e33a4147be0f2e8febd3069873cddbd56715482",
+              "resolution": {
+                "state": "NOT_EMITTED",
+                "closure_id": "cef4e6e2ec56186c25e6d5434e33a4147be0f2e8febd3069873cddbd56715482"
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "3.2",
+          "claim_evidence_id": "70c14cbf4d7ab93cd579869b6915a9af62cc179be4820764be809d2628fa9596",
+          "section_relative_byte_span": {
+            "start": 2495,
+            "end": 2778
+          },
+          "document_byte_span": {
+            "start": 134006,
+            "end": 134289
+          },
+          "quote_sha256": "sha256:6034dbcb028fd35883f72d1e988b0d5da88f767b2a7470157d568b8f9ef62ad4"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/native-producer-recorded-response-3.1.json",
+          "exact_quote_json_paths": []
+        }
+      },
+      {
+        "run_name": "topbuild-mae-definition-20260809-2xk-r4-final",
+        "carrier_closure_id": "a883fb73f50790f6f5c3529b6feb06279410b97e87f8f2532d0426f35d890650",
+        "carrier_claim_revision_id": "15f903f1d4a69bb70fbb23af574ac0aac549135212dd17873cf47ac571487966",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "841112f33f4e9f268d9872679207cbe2c85f54d7b3e9f5cfd6bcc3f3a88b178a",
+              "claim_occurrence_id": "fcc4d5d85ec0a90b7d2a53696a57730942092fead777bafb268cf4e992eecaa3",
+              "closure_id": "cfadd24bcebf9aeb796fe2b4309a98985ea938a2239ca1fcc6acc5ecfc589650",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "cfadd24bcebf9aeb796fe2b4309a98985ea938a2239ca1fcc6acc5ecfc589650",
+                "reasons": [
+                  "MAE_CARVEOUT_UNCORROBORATED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "3.2",
+          "claim_evidence_id": "146a6a88f8524f2ae4a77831a26e79aafaf11ed7df768a8f448513652912f7de",
+          "section_relative_byte_span": {
+            "start": 5642,
+            "end": 6023
+          },
+          "document_byte_span": {
+            "start": 137153,
+            "end": 137534
+          },
+          "quote_sha256": "sha256:84634151257aa865a032b1bb3015b2c7fedbd9642f83aeeb710fd8bba010d5ed"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/native-producer-recorded-response-3.1.json",
+          "exact_quote_json_paths": []
+        }
+      },
+      {
+        "run_name": "topbuild-mae-definition-20260809-2xk-r4-final",
+        "carrier_closure_id": "a9b6e74ec30f7aeecdbc97caff35d5c3ad352dd50bcb5061044e030cfb531db3",
+        "carrier_claim_revision_id": "ecf5fda21511c7e16b3c0e71561dc8791a4bbd2acb0df5144cbf6765c05b4e50",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "4f2ce8fbcff20caaa6d6d957fa947c4e84b70369fdf81383f06e4e1af4263dda",
+              "claim_occurrence_id": "bbb54f78b6c5982b20c9bc43fb814415e145825d03d0b8f5a7fae5d7e9051f4c",
+              "closure_id": "d267e30d645a9fa8a4e2fecdd2bd9d8ae1fa21f49de0e80b3519309f3321bba1",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "d267e30d645a9fa8a4e2fecdd2bd9d8ae1fa21f49de0e80b3519309f3321bba1",
+                "reasons": [
+                  "MAE_CARVEOUT_UNCORROBORATED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "3.1",
+          "claim_evidence_id": "2326df8985e9c5cf4ec64b58d716ce672d54ec17d6c5499f56a915c149afa2f8",
+          "section_relative_byte_span": {
+            "start": 7421,
+            "end": 7806
+          },
+          "document_byte_span": {
+            "start": 55176,
+            "end": 55561
+          },
+          "quote_sha256": "sha256:8232fc8368e4569b1df2e5f21314193e90d2a3267473133443843cb88e431a30"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/native-producer-recorded-response-3.1.json",
+          "exact_quote_json_paths": [
+            "$.mae_definition_instances[0].limbs[6].assertion_quote",
+            "$.mae_definition_instances[0].carveout_assertions[10].quote"
+          ]
+        }
+      },
+      {
+        "run_name": "topbuild-mae-definition-20260809-2xk-r4-final",
+        "carrier_closure_id": "e9430f7a4f5f357982ac60e0a144d010f35bec42ebd10c550702f50060db9c35",
+        "carrier_claim_revision_id": "3e334ff137f56f81dfc375a6da59da0664a3d95d35d68b0c7b9fc92f30d56b7e",
+        "reason_code": "PARALLEL_TYPED_HELD",
+        "named_cause": {
+          "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+          "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+          "typed_peer_rows": [
+            {
+              "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+              "claim_revision_id": "ecc2925112c0668c1d520174bbc2a1a40474337d6e74826e0c41db441d427dc5",
+              "claim_occurrence_id": "c4b7578d236fccab078fa53f88b66794e1ab3dcbb7a7e883254eb59f60c2f270",
+              "closure_id": "4555fca93bb6187e7635068c45f5b8a474a1e75def5bc4f0fc3101dd499ef9b7",
+              "resolution": {
+                "state": "REVIEW_QUEUE",
+                "closure_id": "4555fca93bb6187e7635068c45f5b8a474a1e75def5bc4f0fc3101dd499ef9b7",
+                "reasons": [
+                  "MAE_CARVEOUT_UNCORROBORATED"
+                ]
+              }
+            }
+          ]
+        },
+        "exact_source_link": {
+          "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/adapter-result.json",
+          "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+          "section_reference": "3.2",
+          "claim_evidence_id": "b56c5aea0a9eed01433b52ae807dfe6a7ea0d2e7cbbb3e838ad493b6fd110926",
+          "section_relative_byte_span": {
+            "start": 5579,
+            "end": 5637
+          },
+          "document_byte_span": {
+            "start": 137090,
+            "end": 137148
+          },
+          "quote_sha256": "sha256:2bb9e113a63b9b6ca58ff9063d1d17665be52f5056b44c026756c66024a8ff75"
+        },
+        "recorded_response": {
+          "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/native-producer-recorded-response-3.1.json",
+          "exact_quote_json_paths": []
+        }
+      }
+    ]
+  },
+  "historical_concho_25_reconciliation": {
+    "plan_statement": "The original plan called the remaining 25 a Concho concentration.",
+    "finding_code": "PLAN_CONCHO_25_WAS_THE_TOTAL_RETAINED_COUNT_NOT_A_CONCHO_RUN_COUNT",
+    "total_retained_carriers": 25,
+    "concho_retained_carriers": 11,
+    "other_run_retained_carriers": 14,
+    "conclusion": "No committed Concho recording has 25 generic limb carriers. The current final Concho replay has 11, each also shaped as a typed MAE candidate and held in review because its subject is any Party. The historical 25 equals the total retained count, 84 scanned minus 59 would-suppress, across all five MAE runs.",
+    "concho_recordings": [
+      {
+        "run_name": "concho-mae-definition-20260808-r1",
+        "recording_path": "evidence/canonical-v2/concho-mae-definition-20260808-r1/recording.json",
+        "recorded_response_path": "evidence/canonical-v2/concho-mae-definition-20260808-r1/native-producer-recorded-response-Annex_A.json",
+        "compiled_candidates": 17,
+        "generic_limb_carriers": 0,
+        "typed_mae_candidates": 17,
+        "resolved": 0,
+        "review_queue": 17,
+        "open_world": 0
+      },
+      {
+        "run_name": "concho-mae-definition-20260809-2xk-final",
+        "recording_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/recording.json",
+        "recorded_response_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+        "compiled_candidates": 26,
+        "generic_limb_carriers": 11,
+        "typed_mae_candidates": 15,
+        "resolved": 0,
+        "review_queue": 15,
+        "open_world": 11
+      }
+    ]
   },
   "runs": [
     {
@@ -250,6 +1490,556 @@
           "surviving_typed_claim_revision_ids": [],
           "surviving_provision_instance_ids": []
         }
+      ],
+      "retained_accounts": [
+        {
+          "carrier_closure_id": "17244c08a494b150bc12b00350c7309974116a808bd596c1cdff8b6eafd1d09a",
+          "carrier_claim_revision_id": "19f83a6d056e511c243403fcf7b4d86e430719b8c76068c2890ee9db7cd650e4",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "c2ac0a3eef25bef476de6993a90e0c90af26865966e2c5dec03a869b29efdf54",
+                "claim_occurrence_id": "e6eef4b30653aa247bc232d9d37f0cb11bc83d6496f211754d06472c02847db6",
+                "closure_id": "93410dd382e593160c0dbe68319d3af58923e784385c6ad406ff27c2381c462d",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "93410dd382e593160c0dbe68319d3af58923e784385c6ad406ff27c2381c462d",
+                  "reasons": [
+                    "PARTY_UNRESOLVED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "Annex-A",
+            "claim_evidence_id": "9d4efa7ce20bca25f114147af92b4100ce46591d6567500f9eb4145bfd5e41bf",
+            "section_relative_byte_span": {
+              "start": 18461,
+              "end": 18724
+            },
+            "document_byte_span": {
+              "start": 328123,
+              "end": 328386
+            },
+            "quote_sha256": "sha256:8255d7c0ddb99428c0ef321cf1b4694b840b92cbcc72f44a11c0a9408fe86f2a"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[8].assertion_quote",
+              "$.mae_definition_instances[0].carveout_assertions[7].quote"
+            ]
+          }
+        },
+        {
+          "carrier_closure_id": "174b251351114b6f969a298af17217193814d5850b45790ed6efe6245c925a4a",
+          "carrier_claim_revision_id": "e4b56a453306bdd896aeb4aab23f6d9845740f7c424172884cb7f19472195eb9",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "6324291db640f1ce37d77925b80894e5bc824db697a401e7051646b1c57fd60f",
+                "claim_occurrence_id": "59421f9f94ae00cfc19761b128952bd76d1fb36888ba3157479c236adc5ddb33",
+                "closure_id": "856063d06a02ad9e017e5600388f0d1b8e7998825ac94728b9bfdea0c3f0c2e9",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "856063d06a02ad9e017e5600388f0d1b8e7998825ac94728b9bfdea0c3f0c2e9",
+                  "reasons": [
+                    "PARTY_UNRESOLVED"
+                  ]
+                }
+              },
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "33b8faeb30b58606beac16bfcc4f7cdfde2aaca55a18b526131669b89d4b8b97",
+                "claim_occurrence_id": "5d3d3125da80d5ed9700f8957aaf68493de0f2f89672f87e65ce57fdd4c729c9",
+                "closure_id": "86f61169fffcc28ae066571966ddcdd82d7cd7552a2e5548e9e2b6d5e9840293",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "86f61169fffcc28ae066571966ddcdd82d7cd7552a2e5548e9e2b6d5e9840293",
+                  "reasons": [
+                    "PARTY_UNRESOLVED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "Annex-A",
+            "claim_evidence_id": "b17da03bb69be35c7c802326c3fd9c1905afde8b693fdb88732cd33d0d822d9a",
+            "section_relative_byte_span": {
+              "start": 17955,
+              "end": 18153
+            },
+            "document_byte_span": {
+              "start": 327617,
+              "end": 327815
+            },
+            "quote_sha256": "sha256:dd33e663a2d49f542a051a8b457e249cfb67b1911bd30e42704ae2c2bcf607e3"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[6].assertion_quote",
+              "$.mae_definition_instances[0].carveout_assertions[4].quote",
+              "$.mae_definition_instances[0].carveout_assertions[5].quote"
+            ]
+          }
+        },
+        {
+          "carrier_closure_id": "24d2a3f650c5182b739dcc0e3daf7b0ea7a3a9b8eebdd68d1b0cc97aa921a366",
+          "carrier_claim_revision_id": "60f0853610cf3acbda2b26c90ce78a043f759deb9d985f1d65ae343b15a05a39",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
+                "claim_revision_id": "5321cfbbc039f9f14687e001664c905d48508450f2f7ab01646d57e9d743dc43",
+                "claim_occurrence_id": "d661737ecba02d7ffd38a928972e1d0daf2263067f2974d9fd105375f38ef00e",
+                "closure_id": "a45e9982adb114c94d23807c8405410871e73579cefdf4cdcbed6b6283f7e384",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "a45e9982adb114c94d23807c8405410871e73579cefdf4cdcbed6b6283f7e384",
+                  "reasons": [
+                    "PARTY_UNRESOLVED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "Annex-A",
+            "claim_evidence_id": "6e3373e188f802552b0d6d76a72964983c29fdcb642854aa01d5bfd96ff2276d",
+            "section_relative_byte_span": {
+              "start": 16108,
+              "end": 16237
+            },
+            "document_byte_span": {
+              "start": 325770,
+              "end": 325899
+            },
+            "quote_sha256": "sha256:e29075531ff2f36588fb11aa4d371382effc2f39fba27c23407f37a5a899789a"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[0].assertion_quote",
+              "$.mae_definition_instances[0].prong_assertions[0].quote"
+            ]
+          }
+        },
+        {
+          "carrier_closure_id": "308d239fc2fc9ceb0f20260c7329a9dd289502a7dd942eed5bc983897693125c",
+          "carrier_claim_revision_id": "df78328d667b02ff86f523261961fccdcfeef51f77c3eb5f934beec3e23c711e",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "1fdeb4fd35912a65af70d330973b7d94ec6204a78a612827179b2c73a9b8d56a",
+                "claim_occurrence_id": "099e19dd53a5558d2004af16b4ec2cabb88d89dadebfdb9d2d3e41dc19a68205",
+                "closure_id": "7c91f34824a4e2cf1ad533218c295ad8513c5f56a2cdec844187b9c7fd874c46",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "7c91f34824a4e2cf1ad533218c295ad8513c5f56a2cdec844187b9c7fd874c46",
+                  "reasons": [
+                    "PARTY_UNRESOLVED"
+                  ]
+                }
+              },
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "026767f5d5ad6d67c5d145cc2ae5cc5a09fbdb009342cfd57c8096b498e17597",
+                "claim_occurrence_id": "bc07a4ea2246c1bbe2bcf1d77cdb0ba39a8cd2b36b58e5276adfc0389080597a",
+                "closure_id": "db7cebfb2b16a72ed454a97a7e5084436d2e2d35ebe59503b9cb4607993a2266",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "db7cebfb2b16a72ed454a97a7e5084436d2e2d35ebe59503b9cb4607993a2266",
+                  "reasons": [
+                    "PARTY_UNRESOLVED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "Annex-A",
+            "claim_evidence_id": "0bea7dda28b7ddc6be9edf2d7d8d17156c529b2baf74398e7208c1f1d55f9a48",
+            "section_relative_byte_span": {
+              "start": 18732,
+              "end": 18996
+            },
+            "document_byte_span": {
+              "start": 328394,
+              "end": 328658
+            },
+            "quote_sha256": "sha256:605f578f5937f8b2a4b803957004a00250e548497e431f9d740f635ded261f2f"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[9].assertion_quote",
+              "$.mae_definition_instances[0].carveout_assertions[8].quote",
+              "$.mae_definition_instances[0].carveout_assertions[9].quote"
+            ]
+          }
+        },
+        {
+          "carrier_closure_id": "3496b9e37496e95a09c96b4242802ee6e5e41daf362b5f79a8b6b7a447cf6e50",
+          "carrier_claim_revision_id": "0e04c981560c79ae8042775616147fc6f953a8b3dfa894eb9ee3a14b4fd4a371",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "f4f0c42e8d4ce2bb7fdbdcd63f83a7860010955e3311ca13015c730252d66a65",
+                "claim_occurrence_id": "a007c72e11fbeb8b81926d77dee583691b00996d79ecd623edc3b9808c53a37f",
+                "closure_id": "aa92a338fb85458e34d5597b4d39f2f02b1e403fc60ab13d2f9524fc7823254b",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "aa92a338fb85458e34d5597b4d39f2f02b1e403fc60ab13d2f9524fc7823254b",
+                  "reasons": [
+                    "PARTY_UNRESOLVED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "Annex-A",
+            "claim_evidence_id": "a4842a0ea6bcbecaf09e45fd1736bae58ea1bb4035b2b00be45fa22264177229",
+            "section_relative_byte_span": {
+              "start": 17637,
+              "end": 17950
+            },
+            "document_byte_span": {
+              "start": 327299,
+              "end": 327612
+            },
+            "quote_sha256": "sha256:fcf7ca7ea311582d5e24a506482843bf40540a26817100ecbed75b111b7a598a"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[5].assertion_quote",
+              "$.mae_definition_instances[0].carveout_assertions[3].quote"
+            ]
+          }
+        },
+        {
+          "carrier_closure_id": "58ec616fd614aac3b37d69e8afc1e59811bb82ef82f468e1fd3e4968d3ccaca4",
+          "carrier_claim_revision_id": "bc6fea24a8ad3d8a249de5fd5b57151bff9e5870016d398c87d4c77d135ae5e0",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "6afc1e7c1058903ab987ad746625f56f52365fbae9bf6ac7e0e038eb325835b5",
+                "claim_occurrence_id": "047deb9147e2b5a8fbf740d7c1805cb9188300b94bf8064ebe9690d5691c87b0",
+                "closure_id": "91327714a8c72f3be5001b97470b180842cd95143c5411e0168efae5d34b38e0",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "91327714a8c72f3be5001b97470b180842cd95143c5411e0168efae5d34b38e0",
+                  "reasons": [
+                    "PARTY_UNRESOLVED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "Annex-A",
+            "claim_evidence_id": "66755e3e3316386bb888c2ced2cfe32bab0bd6547226220850966f95701caa77",
+            "section_relative_byte_span": {
+              "start": 16884,
+              "end": 16990
+            },
+            "document_byte_span": {
+              "start": 326546,
+              "end": 326652
+            },
+            "quote_sha256": "sha256:aa60a282da80145481580a3cc9b936891b6d8ef3c5e40e106cf46ef228ce139b"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[2].assertion_quote",
+              "$.mae_definition_instances[0].carveout_assertions[0].quote"
+            ]
+          }
+        },
+        {
+          "carrier_closure_id": "64215a3397ff74fcb535fa6e88a7b38f65a858b56f8b60e97b58d20fee5336dc",
+          "carrier_claim_revision_id": "2fd20bd0877bb98dc44f9023bfc60069f32beb77394d59d4027748ea4423b752",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "3d368393a49cc3ea06e6ed0c7a8b512643634e1c6b684dfd3069915ff9e32ef6",
+                "claim_occurrence_id": "e46fe1eb4dc43a195638d4c4a170a3e1e0f6b7fbbd7e5c1c8838e4490ad1e3ee",
+                "closure_id": "19afd831a10816214f6a3430979e74c4b348cc9c09a9a9ea97fa21a4365c5f79",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "19afd831a10816214f6a3430979e74c4b348cc9c09a9a9ea97fa21a4365c5f79",
+                  "reasons": [
+                    "PARTY_UNRESOLVED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "Annex-A",
+            "claim_evidence_id": "d821b767fe14c2e38dd64ef1cfd4d5f1802f6ec608982704814e7a12c4a4fac3",
+            "section_relative_byte_span": {
+              "start": 18159,
+              "end": 18454
+            },
+            "document_byte_span": {
+              "start": 327821,
+              "end": 328116
+            },
+            "quote_sha256": "sha256:5566a7890145f7b7cc88f1007aab8f43b2598b73743bc55744a61e6db6acdfc5"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[7].assertion_quote",
+              "$.mae_definition_instances[0].carveout_assertions[6].quote"
+            ]
+          }
+        },
+        {
+          "carrier_closure_id": "89ab04b2436881ae3b798ac06cc9de726d4d3cf75fb8586fc88f15645185cb2d",
+          "carrier_claim_revision_id": "f3646a0e343a353e912c527dba68da3b0c1132bba7b40dd5d82c784e4bfc0b5b",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
+                "claim_revision_id": "0d69a727421d088b41c1a9f956fd5be9d9267b00abfebe3a96a5e1cf62b81abf",
+                "claim_occurrence_id": "1ec8b5e008f51f38b0fd8274265175d890865149cd49a72ce2bb859bbc2dd747",
+                "closure_id": "9a6dec6ebe1adc74af069b1618d54f9ed98ed2ea724b7c69cacaf6c573b2aa4b",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "9a6dec6ebe1adc74af069b1618d54f9ed98ed2ea724b7c69cacaf6c573b2aa4b",
+                  "reasons": [
+                    "PARTY_UNRESOLVED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "Annex-A",
+            "claim_evidence_id": "ec28297bbba2c195f7c227235c94ff2ddb5f7d4810d96a51a7bbf26cddfb026b",
+            "section_relative_byte_span": {
+              "start": 16245,
+              "end": 16406
+            },
+            "document_byte_span": {
+              "start": 325907,
+              "end": 326068
+            },
+            "quote_sha256": "sha256:9135fa3e33466d0571ceb1e679ceafe121bdd3171f87c3cb1c803b4a9bbd98e3"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[1].assertion_quote",
+              "$.mae_definition_instances[0].prong_assertions[1].quote"
+            ]
+          }
+        },
+        {
+          "carrier_closure_id": "9e064e04553effb6a0d27d490913d682cb1bd45871305086df15fd232057e0e4",
+          "carrier_claim_revision_id": "5cbac7fd4baf3502fa7676894769b12b624b95e5346af3fb81d35e1e556cc9bc",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "6087d1866a1ea88fcb32657a18bd0068283a47c9c9a1434b5df09ae18648b298",
+                "claim_occurrence_id": "4db08056e73aa23ea3eadd198dfa39947a2caa562ecf7f94b2b155810f505d88",
+                "closure_id": "2f6f4e8fff5cd4fd8c2936aa54a82af9f135711c92155e99bd9a779c79f66406",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "2f6f4e8fff5cd4fd8c2936aa54a82af9f135711c92155e99bd9a779c79f66406",
+                  "reasons": [
+                    "PARTY_UNRESOLVED"
+                  ]
+                }
+              },
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "0ba4703be2e45e3fdcac5df0c2b02763bc6796d09759f3ed3e6b8c6db8790817",
+                "claim_occurrence_id": "4afa76cf43c78edb93b81828f30409d15acc4ca190806a7145c3df161735d12d",
+                "closure_id": "2fd42b360cd54cf0f0beee7bcd91103b6ebe692461568b23c946379b38f2c21e",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "2fd42b360cd54cf0f0beee7bcd91103b6ebe692461568b23c946379b38f2c21e",
+                  "reasons": [
+                    "PARTY_UNRESOLVED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "Annex-A",
+            "claim_evidence_id": "1802e554f1798a262713f5063cd30556790b07315bb2d6766c419bb99278c043",
+            "section_relative_byte_span": {
+              "start": 19002,
+              "end": 19693
+            },
+            "document_byte_span": {
+              "start": 328664,
+              "end": 329355
+            },
+            "quote_sha256": "sha256:54f3b9ef296e2b743de663bb52866c34297caf2ee43446ae1431ccd63ea082a7"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[10].assertion_quote",
+              "$.mae_definition_instances[0].carveout_assertions[10].quote",
+              "$.mae_definition_instances[0].carveout_assertions[11].quote"
+            ]
+          }
+        },
+        {
+          "carrier_closure_id": "aa14f9c32d5286338c94879968b697e22c3725b607c83aeee0e57e4b019fe196",
+          "carrier_claim_revision_id": "9ec1d9ae2d9201e01d94cbff026b4248515c34a9037a39a9995ad52971ed9192",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "23d14a9c057292f7c9a5deab7e950a3d967bcd0d8be21201dfaec7d56defebcc",
+                "claim_occurrence_id": "1b339067cf49eb470790656798d05317a19fbea992f83ea0c6705370cb373af5",
+                "closure_id": "15f35cfab4d8494542095dfe8e71f8cd460db06efa1f3c4c94135b809778bbe5",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "15f35cfab4d8494542095dfe8e71f8cd460db06efa1f3c4c94135b809778bbe5",
+                  "reasons": [
+                    "PARTY_UNRESOLVED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "Annex-A",
+            "claim_evidence_id": "688b06db9b6c572fa58dc9a58d8babbdc3b0ace397cb539c6355a7d7be3cfe5f",
+            "section_relative_byte_span": {
+              "start": 16996,
+              "end": 17401
+            },
+            "document_byte_span": {
+              "start": 326658,
+              "end": 327063
+            },
+            "quote_sha256": "sha256:8a6e7fd560db340c800dd11c46dd881c2affcfaa4dcc7f573df2750eee79fcbd"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[3].assertion_quote",
+              "$.mae_definition_instances[0].carveout_assertions[1].quote"
+            ]
+          }
+        },
+        {
+          "carrier_closure_id": "bf61b94ab792a7017827040254d951017798b29a8e6aca5649fdd71346f7a086",
+          "carrier_claim_revision_id": "175e01761ead6a5c6e1e061dd1f9a4a7ff0cca3e2e5e74b03fa108054745c262",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "168f5af59895b12415caf6d6ec4d9981c0a88409c0407b4b13b5e30b9390e2e4",
+                "claim_occurrence_id": "423f4bb77e6a26d3ed78871ef5d1ba43fa88bd48dda11f88c0a3e82d66b85100",
+                "closure_id": "43112f9140df63427bee7f02ddeccf04713e11bb5e74611af10a34b9a754b44c",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "43112f9140df63427bee7f02ddeccf04713e11bb5e74611af10a34b9a754b44c",
+                  "reasons": [
+                    "PARTY_UNRESOLVED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "Annex-A",
+            "claim_evidence_id": "bad280d2e696ba5c3bd945b9c98780ac4558a38ae4bdadaf7004c4d7d6483511",
+            "section_relative_byte_span": {
+              "start": 17412,
+              "end": 17631
+            },
+            "document_byte_span": {
+              "start": 327074,
+              "end": 327293
+            },
+            "quote_sha256": "sha256:5d6f2de5064e7dcec65a362138d038bbd1d9a2c5bd18a776c5820b240df64549"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/concho-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[4].assertion_quote",
+              "$.mae_definition_instances[0].carveout_assertions[2].quote"
+            ]
+          }
+        }
       ]
     },
     {
@@ -343,7 +2133,8 @@
             "84a148acda7987a7135673ffa7216f3a0d148d2d7af3e6b5ef67d467547ea9f2"
           ]
         }
-      ]
+      ],
+      "retained_accounts": []
     },
     {
       "run_name": "redhat-mae-definition-20260809-2xk-final",
@@ -619,6 +2410,54 @@
           },
           "surviving_typed_claim_revision_ids": [],
           "surviving_provision_instance_ids": []
+        }
+      ],
+      "retained_accounts": [
+        {
+          "carrier_closure_id": "e888ece1abd0b49387faabb8bb762710f79a5f442ce4d20066fb5bb60d7fcc42",
+          "carrier_claim_revision_id": "a829f14f9db6278bc20c08df7bb771d92628ed0b9d6c39bf5a94f12c660fff7a",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "5ba2a29690a47ca9726241cc4ab166b39a234d421f5f8c2db9452e5a113705b2",
+                "claim_occurrence_id": "1eb9b10d116b95b22753a25573ddadc72c8eecbca887623b65eddcf73c2ad492",
+                "closure_id": "7f432594bcc594a4dae1c1685087730de647bf9f6aafb857c7080c6215f94c0f",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "7f432594bcc594a4dae1c1685087730de647bf9f6aafb857c7080c6215f94c0f",
+                  "reasons": [
+                    "MAE_CARVEOUT_UNCORROBORATED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/redhat-mae-definition-20260809-2xk-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "8.03(l)",
+            "claim_evidence_id": "f99d5e59d64e9e0193d2df1417d6db0574fde5052191524ece26bb6a4fe49ee8",
+            "section_relative_byte_span": {
+              "start": 4368,
+              "end": 4564
+            },
+            "document_byte_span": {
+              "start": 247511,
+              "end": 247707
+            },
+            "quote_sha256": "sha256:b99d3b7829c8df531fb490ca972190eb754af2e0de02a993c9b7ac86891d9069"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/redhat-mae-definition-20260809-2xk-final/native-producer-recorded-response-8.03_l_.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[11].assertion_quote",
+              "$.mae_definition_instances[0].carveout_assertions[11].quote"
+            ]
+          }
         }
       ]
     },
@@ -914,6 +2753,238 @@
           "surviving_provision_instance_ids": [
             "48c06d3ff5508a1127dc43bf6dc9c63849863f344efb0f6597d46552ebad6954"
           ]
+        }
+      ],
+      "retained_accounts": [
+        {
+          "carrier_closure_id": "0e1ae111e08dec501f72fd3b6cf2371ebe9d37cecea623f453f3084c6f3eb39c",
+          "carrier_claim_revision_id": "4597efb6197e87879409ff9741c4efb4fc4d74d7824c8adc04aaa43a26d8441d",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "0d836290b8d1ac1cd39d79bf63538dd20103dd9067f83bb094e59d1ee8545514",
+                "claim_occurrence_id": "d472b1e700ee2822edda62a09b800ce6d0846d2f5b6502337cedc52e846b3e13",
+                "closure_id": "57cdf9eb3cc92b62394f535a22256ceedcc5847bf1b53833aa13f3f3f0fd3548",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "57cdf9eb3cc92b62394f535a22256ceedcc5847bf1b53833aa13f3f3f0fd3548",
+                  "reasons": [
+                    "MAE_CARVEOUT_UNCORROBORATED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/skechers-mae-definition-20260809-2xk-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "1.1",
+            "claim_evidence_id": "0e4dd09eefae127b920fc287a2d76fe1b895eb088f59acb583c0a18c565af989",
+            "section_relative_byte_span": {
+              "start": 11596,
+              "end": 11677
+            },
+            "document_byte_span": {
+              "start": 20274,
+              "end": 20355
+            },
+            "quote_sha256": "sha256:4aadb3877781795ae012b99430cb635445ed33431c745334917c10d923168a9a"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/skechers-mae-definition-20260809-2xk-final/native-producer-recorded-response-1.1.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[13].assertion_quote",
+              "$.mae_definition_instances[0].carveout_assertions[15].quote"
+            ]
+          }
+        },
+        {
+          "carrier_closure_id": "5b2334a81e7f0fa27506da9d8a3e0ca2047b8bec8ddfe7a3abffd862b7fe748c",
+          "carrier_claim_revision_id": "4b50466a45f58a95df3a501c305b0f145178c4d379edb16b1c1cc4eafd8034f4",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "ee8ed3cc9ddc69a8627403e9698b7ea42a67dc73a5e13b44a994cce7884f65c6",
+                "claim_occurrence_id": "fc9905a30790475ca21363ec1bf3cfa7ce91d7179f1653652044024802161243",
+                "closure_id": "843a7d14eb6a27c4dbf8bfa8926495c1d3871ce12b591a27861073e1aaa936d2",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "843a7d14eb6a27c4dbf8bfa8926495c1d3871ce12b591a27861073e1aaa936d2",
+                  "reasons": [
+                    "MAE_CARVEOUT_UNCORROBORATED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/skechers-mae-definition-20260809-2xk-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "1.1",
+            "claim_evidence_id": "d7156a0d736d3688fdd69df738808d579a0c9a8630fe27ddfd666b0bf2c74bac",
+            "section_relative_byte_span": {
+              "start": 9992,
+              "end": 10303
+            },
+            "document_byte_span": {
+              "start": 18670,
+              "end": 18981
+            },
+            "quote_sha256": "sha256:9fea3c6e21c10e7dfc7e466a2900b79971830aae92f584622a38af9fb58b758a"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/skechers-mae-definition-20260809-2xk-final/native-producer-recorded-response-1.1.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[8].assertion_quote",
+              "$.mae_definition_instances[0].carveout_assertions[9].quote"
+            ]
+          }
+        },
+        {
+          "carrier_closure_id": "7c0ae6afa1502357efb9fb062f20521a16451f3d9b564b0bf7321d006ce14b2f",
+          "carrier_claim_revision_id": "7c305c4c96545de81f024aac0b59fe70da2b0bd87dde6a58e446427f30ccb722",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "7e25ca8a06df57af4ce98e9d343f7cc48181d71fee80c2b4dee42354d7af7ef8",
+                "claim_occurrence_id": "b8f5a79af321d5a740c7bdc2d2c92ab2f7fa1a9326f5bdc8f9ec539c10d55c23",
+                "closure_id": "8f064060519c93a79bca707fe35f5b012bccd2279c7b325f887e8a1d299b705e",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "8f064060519c93a79bca707fe35f5b012bccd2279c7b325f887e8a1d299b705e",
+                  "reasons": [
+                    "MAE_CARVEOUT_UNCORROBORATED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/skechers-mae-definition-20260809-2xk-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "1.1",
+            "claim_evidence_id": "363a86c2763c95a81f785080837e05b46966072b34a25c0764b328d96ae208b2",
+            "section_relative_byte_span": {
+              "start": 8465,
+              "end": 8589
+            },
+            "document_byte_span": {
+              "start": 17143,
+              "end": 17267
+            },
+            "quote_sha256": "sha256:29a20b64ac5097194550b238e81853f9d009cdcec192db10c6d6e56e5f1eb7b9"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/skechers-mae-definition-20260809-2xk-final/native-producer-recorded-response-1.1.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[3].assertion_quote",
+              "$.mae_definition_instances[0].carveout_assertions[3].quote"
+            ]
+          }
+        },
+        {
+          "carrier_closure_id": "a5c8affbf7e3bce9646954e0c20edaf0199c87cbef9c2b0bf75bb0f3071cb4c0",
+          "carrier_claim_revision_id": "b23e6f0366bb4c8441016f96468f2b69dbee958ebec014ec28ec5a7b7c4d2882",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "cee26c27f47b3f2a14af81cdf753a01efac23cbb228030c038b4790c2a7f719b",
+                "claim_occurrence_id": "282e4d09896857cdb162f2830377cdd220748ade99fea971318b127afdc8816b",
+                "closure_id": "75469b0282a4e1191eac4b338545e89de3a1908fda85d623719435791b4fa7c1",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "75469b0282a4e1191eac4b338545e89de3a1908fda85d623719435791b4fa7c1",
+                  "reasons": [
+                    "MAE_CARVEOUT_UNCORROBORATED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/skechers-mae-definition-20260809-2xk-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "1.1",
+            "claim_evidence_id": "8578e3f29a3f202140b1be7cdb26d092978d3c4f0fd3892c150272331c10027c",
+            "section_relative_byte_span": {
+              "start": 10308,
+              "end": 10469
+            },
+            "document_byte_span": {
+              "start": 18986,
+              "end": 19147
+            },
+            "quote_sha256": "sha256:b63058a63941620c9636dd175b3a87a82271fc9a2b1571084b946374505f028f"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/skechers-mae-definition-20260809-2xk-final/native-producer-recorded-response-1.1.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[9].assertion_quote",
+              "$.mae_definition_instances[0].carveout_assertions[10].quote"
+            ]
+          }
+        },
+        {
+          "carrier_closure_id": "eb8dae5961cebad3a56fff0c3eb14b10cfa4f9ee525e2ed4b5cbab5b48203924",
+          "carrier_claim_revision_id": "d1e1a0842a074b96fa6e8854fd89550ba5ce11ab7bfcad2c313a141a41eb2b4d",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "16a1fc76b88088f9fa938c9b3724c90b03e86211da353a22faddf7910014f409",
+                "claim_occurrence_id": "b3fd4ebcebb42c3644cd76f8d2872ba426386b61885256d4b594d490864a04b9",
+                "closure_id": "57f892c9c1ea13da7658a188cfc7a76d83a3f7b704c103f6ec04f879f1459f90",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "57f892c9c1ea13da7658a188cfc7a76d83a3f7b704c103f6ec04f879f1459f90",
+                  "reasons": [
+                    "MAE_CARVEOUT_UNCORROBORATED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/skechers-mae-definition-20260809-2xk-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "1.1",
+            "claim_evidence_id": "33c55e0d586ab6ceed61d7669895e457556dd31980a014df1209900cbcb22a23",
+            "section_relative_byte_span": {
+              "start": 10986,
+              "end": 11589
+            },
+            "document_byte_span": {
+              "start": 19664,
+              "end": 20267
+            },
+            "quote_sha256": "sha256:685131eea9929a20b5f1a49c53bc1ddeb673e32632d8d16c379be6a5be0de56b"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/skechers-mae-definition-20260809-2xk-final/native-producer-recorded-response-1.1.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[12].assertion_quote",
+              "$.mae_definition_instances[0].carveout_assertions[14].quote"
+            ]
+          }
         }
       ]
     },
@@ -1391,6 +3462,100 @@
           "surviving_provision_instance_ids": [
             "4bbcd871c62a83a361d7fb8c7ff8fd02ef60912f4626026ff4003924593e8a9c"
           ]
+        }
+      ],
+      "retained_accounts": [
+        {
+          "carrier_closure_id": "5139bfe887607e566eea60202c2cbe09927d611f8de2973a0a0de88c2dd64f08",
+          "carrier_claim_revision_id": "b97b131346579de4bb3059948265df0eceacc43ce4fa92f5d4769d1bc42ef3ff",
+          "reason_code": "NO_TYPED_PEER_FOR_OPERATIVE_SPAN",
+          "named_cause": {
+            "code": "OPEN_WORLD_PROPOSITION_WITH_SAME_EXACT_QUOTE",
+            "content_disposition": "SHAPED_UNDER_ANOTHER_OPEN_WORLD_KIND",
+            "non_typed_peer_rows": [
+              {
+                "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+                "claim_revision_id": "d3c6e478d83f69ab78029478a672755bac330e684946e2a7580b83b733f2f35a",
+                "claim_occurrence_id": "53a05b32a22229db8c7efd8f85e831dffa9741b67b5af8bc38a911452eb5f0bb",
+                "closure_id": "382fca5dfc218898768960875e7b5e87c9864f6bdb8428784daed64ee67423a4",
+                "resolution": {
+                  "state": "OPEN_WORLD",
+                  "closure_id": "382fca5dfc218898768960875e7b5e87c9864f6bdb8428784daed64ee67423a4",
+                  "reasons": [
+                    "NATIVE_OPEN_WORLD_PROPOSAL"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/skywater-mae-definition-20260809-2xk-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "Annex-A",
+            "claim_evidence_id": "5797cc69c925eb2ba966110c917cb37dfeed0ebea1e3319a50531ff2d4a51f31",
+            "section_relative_byte_span": {
+              "start": 8614,
+              "end": 8983
+            },
+            "document_byte_span": {
+              "start": 325640,
+              "end": 326009
+            },
+            "quote_sha256": "sha256:2e2bcfe3b94cf9b7a3ae495c7bd5b4870dc926a9a1d9968c52b2a6828387d942"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/skywater-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[10].assertion_quote",
+              "$.open_world_candidates[0].observed_quote"
+            ]
+          }
+        },
+        {
+          "carrier_closure_id": "85081d223c90966ba30076d6a2a2f0931794b89492ea2b48c254cabb73972e17",
+          "carrier_claim_revision_id": "e2d2705211ed4bef180a7867e3be1e75c53fce15a859cd611c9a8a9c1f04ba33",
+          "reason_code": "NO_TYPED_PEER_FOR_OPERATIVE_SPAN",
+          "named_cause": {
+            "code": "OPEN_WORLD_PROPOSITION_WITH_SAME_EXACT_QUOTE",
+            "content_disposition": "SHAPED_UNDER_ANOTHER_OPEN_WORLD_KIND",
+            "non_typed_peer_rows": [
+              {
+                "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+                "claim_revision_id": "428d62a2bc6c30e6d3cfec0d7853850cc794299680a1d242765150c920d1a1c5",
+                "claim_occurrence_id": "35e04b044c5cd99953cf4b375d200aade3f1f27b2c030a45b93e1b5545d67431",
+                "closure_id": "e9a95b16c4e19a375b66464321e03592281a96d93a4be9ceabe9b64b99fdc4b6",
+                "resolution": {
+                  "state": "OPEN_WORLD",
+                  "closure_id": "e9a95b16c4e19a375b66464321e03592281a96d93a4be9ceabe9b64b99fdc4b6",
+                  "reasons": [
+                    "NATIVE_OPEN_WORLD_PROPOSAL"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/skywater-mae-definition-20260809-2xk-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "Annex-A",
+            "claim_evidence_id": "a09fb6508a3f8b9393c1fc2f12866045b1082cd4a6140cd8c4c020669e9e31c0",
+            "section_relative_byte_span": {
+              "start": 29061,
+              "end": 29425
+            },
+            "document_byte_span": {
+              "start": 346087,
+              "end": 346451
+            },
+            "quote_sha256": "sha256:5f66a921ad8495e35585ec1d6ac09d56e4fb80dc08941860602fd7702226ae91"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/skywater-mae-definition-20260809-2xk-final/native-producer-recorded-response-Annex_A.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[1].limbs[10].assertion_quote",
+              "$.open_world_candidates[2].observed_quote"
+            ]
+          }
         }
       ]
     },
@@ -1880,6 +4045,268 @@
             "951336df37cac3ad2417bcf0cb6c1e2fc75f253a6d387e4490829d9581327563",
             "951336df37cac3ad2417bcf0cb6c1e2fc75f253a6d387e4490829d9581327563"
           ]
+        }
+      ],
+      "retained_accounts": [
+        {
+          "carrier_closure_id": "1bd241622a1f1d3d995a9747b52502a876740f8e724bad1997308a374301faf2",
+          "carrier_claim_revision_id": "cd48ca1a8077c6e2f06e08249f8c82a78cfb42029e624729a7edd83505eb521d",
+          "reason_code": "NO_TYPED_PEER_FOR_OPERATIVE_SPAN",
+          "named_cause": {
+            "code": "TYPED_PEER_DIFFERENT_OPERATIVE_SPAN",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_WITH_A_DIFFERENT_EXACT_QUOTE",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
+                "claim_revision_id": "2c6cb3aba02142b52407bacb63f7008cde44baf08b961b6459f0c04cf4a174dd",
+                "claim_occurrence_id": "60b782edd2af56e3b0467a482e4d698c8436fd177a53ad1327b9007a51d4632c",
+                "closure_id": "f70c4d4f905952ee938eaab5acce7b64ce6180b7d4deaa5ff1b15b9c156eedaf",
+                "resolution": {
+                  "state": "NOT_EMITTED",
+                  "closure_id": "f70c4d4f905952ee938eaab5acce7b64ce6180b7d4deaa5ff1b15b9c156eedaf"
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "3.1",
+            "claim_evidence_id": "f0f5ba49a8c39cfc4f797cb13790ceca4cf43638396310f65e185ead7801a9e9",
+            "section_relative_byte_span": {
+              "start": 3799,
+              "end": 4240
+            },
+            "document_byte_span": {
+              "start": 51554,
+              "end": 51995
+            },
+            "quote_sha256": "sha256:8a52c685bed84b8b1e660f92a0b9c12d8ad9801125ec6cc42c3831d8e00b43dc"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/native-producer-recorded-response-3.1.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[0].assertion_quote"
+            ]
+          }
+        },
+        {
+          "carrier_closure_id": "33ca99d0c5e45c357b56973e01b6df2ffec852ab13aa80a8c02ea4d2abc7cfde",
+          "carrier_claim_revision_id": "44d46fa8170d296c6685c3ae8b5c33ed87be2a8d9619894b561b07ccefaf1fca",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "c0fa830d0951c26fc8ce95489495f6fd5a32832425c1ea4fee692db092007ede",
+                "claim_occurrence_id": "231101fbdcdb7be9de46d6faf71a2d93473a660410ae9b2f5228a558a7eaad4e",
+                "closure_id": "a582e74c082977666a3d175c37bbd0bc448718fd76acc3b9c133d4e0e324fbd7",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "a582e74c082977666a3d175c37bbd0bc448718fd76acc3b9c133d4e0e324fbd7",
+                  "reasons": [
+                    "MAE_CARVEOUT_UNCORROBORATED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "3.1",
+            "claim_evidence_id": "65f9a9f467349b8ef13b4e8533297010a0fd5fada998d8ae63a687f6a7e3d118",
+            "section_relative_byte_span": {
+              "start": 7073,
+              "end": 7420
+            },
+            "document_byte_span": {
+              "start": 54828,
+              "end": 55175
+            },
+            "quote_sha256": "sha256:6b5cbed8f38aaf054980f65ce9d24a77d7766def826099996450261355ece6ef"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/native-producer-recorded-response-3.1.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[5].assertion_quote",
+              "$.mae_definition_instances[0].carveout_assertions[9].quote"
+            ]
+          }
+        },
+        {
+          "carrier_closure_id": "87d34b54f90dd98699834c2e78c0bbeef0b3619ab36c07de597c54e5431b0ae4",
+          "carrier_claim_revision_id": "ca0e74ea55baac17fe330b8ac5304f3c057915705c70ef25d89638ce28a09a79",
+          "reason_code": "NO_TYPED_PEER_FOR_OPERATIVE_SPAN",
+          "named_cause": {
+            "code": "TYPED_PEER_DIFFERENT_OPERATIVE_SPAN",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_WITH_A_DIFFERENT_EXACT_QUOTE",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
+                "claim_revision_id": "4949ccdda78127e49a8189b839052ce853f32d42c4274b33658fe92c1e10ba56",
+                "claim_occurrence_id": "3370376c59e6c1bc8f3946f542d9ecc2f84d4eb03ebdf2a3f66e22c454183fa8",
+                "closure_id": "cef4e6e2ec56186c25e6d5434e33a4147be0f2e8febd3069873cddbd56715482",
+                "resolution": {
+                  "state": "NOT_EMITTED",
+                  "closure_id": "cef4e6e2ec56186c25e6d5434e33a4147be0f2e8febd3069873cddbd56715482"
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "3.2",
+            "claim_evidence_id": "70c14cbf4d7ab93cd579869b6915a9af62cc179be4820764be809d2628fa9596",
+            "section_relative_byte_span": {
+              "start": 2495,
+              "end": 2778
+            },
+            "document_byte_span": {
+              "start": 134006,
+              "end": 134289
+            },
+            "quote_sha256": "sha256:6034dbcb028fd35883f72d1e988b0d5da88f767b2a7470157d568b8f9ef62ad4"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/native-producer-recorded-response-3.1.json",
+            "exact_quote_json_paths": []
+          }
+        },
+        {
+          "carrier_closure_id": "a883fb73f50790f6f5c3529b6feb06279410b97e87f8f2532d0426f35d890650",
+          "carrier_claim_revision_id": "15f903f1d4a69bb70fbb23af574ac0aac549135212dd17873cf47ac571487966",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "841112f33f4e9f268d9872679207cbe2c85f54d7b3e9f5cfd6bcc3f3a88b178a",
+                "claim_occurrence_id": "fcc4d5d85ec0a90b7d2a53696a57730942092fead777bafb268cf4e992eecaa3",
+                "closure_id": "cfadd24bcebf9aeb796fe2b4309a98985ea938a2239ca1fcc6acc5ecfc589650",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "cfadd24bcebf9aeb796fe2b4309a98985ea938a2239ca1fcc6acc5ecfc589650",
+                  "reasons": [
+                    "MAE_CARVEOUT_UNCORROBORATED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "3.2",
+            "claim_evidence_id": "146a6a88f8524f2ae4a77831a26e79aafaf11ed7df768a8f448513652912f7de",
+            "section_relative_byte_span": {
+              "start": 5642,
+              "end": 6023
+            },
+            "document_byte_span": {
+              "start": 137153,
+              "end": 137534
+            },
+            "quote_sha256": "sha256:84634151257aa865a032b1bb3015b2c7fedbd9642f83aeeb710fd8bba010d5ed"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/native-producer-recorded-response-3.1.json",
+            "exact_quote_json_paths": []
+          }
+        },
+        {
+          "carrier_closure_id": "a9b6e74ec30f7aeecdbc97caff35d5c3ad352dd50bcb5061044e030cfb531db3",
+          "carrier_claim_revision_id": "ecf5fda21511c7e16b3c0e71561dc8791a4bbd2acb0df5144cbf6765c05b4e50",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "4f2ce8fbcff20caaa6d6d957fa947c4e84b70369fdf81383f06e4e1af4263dda",
+                "claim_occurrence_id": "bbb54f78b6c5982b20c9bc43fb814415e145825d03d0b8f5a7fae5d7e9051f4c",
+                "closure_id": "d267e30d645a9fa8a4e2fecdd2bd9d8ae1fa21f49de0e80b3519309f3321bba1",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "d267e30d645a9fa8a4e2fecdd2bd9d8ae1fa21f49de0e80b3519309f3321bba1",
+                  "reasons": [
+                    "MAE_CARVEOUT_UNCORROBORATED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "3.1",
+            "claim_evidence_id": "2326df8985e9c5cf4ec64b58d716ce672d54ec17d6c5499f56a915c149afa2f8",
+            "section_relative_byte_span": {
+              "start": 7421,
+              "end": 7806
+            },
+            "document_byte_span": {
+              "start": 55176,
+              "end": 55561
+            },
+            "quote_sha256": "sha256:8232fc8368e4569b1df2e5f21314193e90d2a3267473133443843cb88e431a30"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/native-producer-recorded-response-3.1.json",
+            "exact_quote_json_paths": [
+              "$.mae_definition_instances[0].limbs[6].assertion_quote",
+              "$.mae_definition_instances[0].carveout_assertions[10].quote"
+            ]
+          }
+        },
+        {
+          "carrier_closure_id": "e9430f7a4f5f357982ac60e0a144d010f35bec42ebd10c550702f50060db9c35",
+          "carrier_claim_revision_id": "3e334ff137f56f81dfc375a6da59da0664a3d95d35d68b0c7b9fc92f30d56b7e",
+          "reason_code": "PARALLEL_TYPED_HELD",
+          "named_cause": {
+            "code": "TYPED_PEER_HELD_IN_REVIEW_QUEUE",
+            "content_disposition": "SHAPED_AS_TYPED_CANDIDATE_AND_HELD",
+            "typed_peer_rows": [
+              {
+                "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+                "claim_revision_id": "ecc2925112c0668c1d520174bbc2a1a40474337d6e74826e0c41db441d427dc5",
+                "claim_occurrence_id": "c4b7578d236fccab078fa53f88b66794e1ab3dcbb7a7e883254eb59f60c2f270",
+                "closure_id": "4555fca93bb6187e7635068c45f5b8a474a1e75def5bc4f0fc3101dd499ef9b7",
+                "resolution": {
+                  "state": "REVIEW_QUEUE",
+                  "closure_id": "4555fca93bb6187e7635068c45f5b8a474a1e75def5bc4f0fc3101dd499ef9b7",
+                  "reasons": [
+                    "MAE_CARVEOUT_UNCORROBORATED"
+                  ]
+                }
+              }
+            ]
+          },
+          "exact_source_link": {
+            "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/adapter-result.json",
+            "json_pointer": "/admitted_source_contexts/0/canonical_text/text",
+            "section_reference": "3.2",
+            "claim_evidence_id": "b56c5aea0a9eed01433b52ae807dfe6a7ea0d2e7cbbb3e838ad493b6fd110926",
+            "section_relative_byte_span": {
+              "start": 5579,
+              "end": 5637
+            },
+            "document_byte_span": {
+              "start": 137090,
+              "end": 137148
+            },
+            "quote_sha256": "sha256:2bb9e113a63b9b6ca58ff9063d1d17665be52f5056b44c026756c66024a8ff75"
+          },
+          "recorded_response": {
+            "artifact_path": "evidence/canonical-v2/topbuild-mae-definition-20260809-2xk-r4-final/native-producer-recorded-response-3.1.json",
+            "exact_quote_json_paths": []
+          }
         }
       ]
     }
