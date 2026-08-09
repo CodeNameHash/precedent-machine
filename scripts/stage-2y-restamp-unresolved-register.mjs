@@ -4,6 +4,24 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const REGISTER_PATH = resolve('docs/codex-program/notes/stage-2y/unresolved-register.json');
+const RESIDUAL_EVIDENCE_PATHS = [
+  'evidence/canonical-v2/stage-2y-k-residual-a.json',
+  'evidence/canonical-v2/stage-2y-k-residual-b.json',
+];
+const RESIDUAL_EVIDENCE_EXPECTED = {
+  artifacts: 2,
+  rows: 42,
+  occurrences: 212,
+  located: 212,
+  low_confidence: 0,
+  needs_source_adjudication: 0,
+  fix_classes: {
+    RESOLVER_SIDE: 98,
+    PROMPT_CHANGE: 63,
+    TAXONOMY_DESIGN: 23,
+    NO_FIX: 28,
+  },
+};
 const VALID_STATUSES = new Set([
   'MECHANISM_CONFIRMED',
   'LIKELY_MECHANISM',
@@ -475,6 +493,124 @@ for (const entry of entries) {
   PAIR_RESTAMPS.set(key, entry);
 }
 
+function countBy(values, keyForValue) {
+  const counts = {};
+  for (const value of values) {
+    const key = keyForValue(value);
+    counts[key] = (counts[key] ?? 0) + 1;
+  }
+  return counts;
+}
+
+function sameCounts(actual, expected) {
+  const actualKeys = Object.keys(actual).sort();
+  const expectedKeys = Object.keys(expected).sort();
+  return actualKeys.length === expectedKeys.length
+    && actualKeys.every((key, index) => key === expectedKeys[index] && actual[key] === expected[key]);
+}
+
+function formatPartition(counts) {
+  return Object.entries(counts)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([key, count]) => `${key} ${count}`)
+    .join('; ');
+}
+
+function loadResidualEvidence() {
+  const artifacts = RESIDUAL_EVIDENCE_PATHS.map((path) => ({
+    path,
+    evidence: JSON.parse(readFileSync(resolve(path), 'utf8')),
+  }));
+  if (artifacts.length !== RESIDUAL_EVIDENCE_EXPECTED.artifacts) {
+    throw new Error(`residual evidence artifact count drift: expected ${RESIDUAL_EVIDENCE_EXPECTED.artifacts}, got ${artifacts.length}`);
+  }
+
+  const occurrences = [];
+  const expectedByPair = new Map();
+  for (const { path, evidence } of artifacts) {
+    const meta = evidence.meta ?? evidence._meta;
+    if (!meta || !Array.isArray(evidence.occurrences)) throw new Error(`invalid residual evidence: ${path}`);
+    if (meta.expected_reason_code_occurrences !== evidence.occurrences.length
+      || meta.extracted_reason_code_occurrences !== evidence.occurrences.length
+      || meta.target_register_reason_code_occurrences !== evidence.occurrences.length) {
+      throw new Error(`residual evidence count drift: ${path}`);
+    }
+    const targetCounts = meta.target_counts_by_family_reason;
+    if (!targetCounts || !sameCounts(targetCounts, countBy(evidence.occurrences, (occurrence) => `${occurrence.family}:${occurrence.reason_code}`))) {
+      throw new Error(`residual evidence key/count drift: ${path}`);
+    }
+    for (const [pair, count] of Object.entries(targetCounts)) {
+      if (!Number.isInteger(count) || count < 1 || expectedByPair.has(pair)) {
+        throw new Error(`invalid or duplicate residual evidence pair: ${path}/${pair}`);
+      }
+      expectedByPair.set(pair, count);
+    }
+    occurrences.push(...evidence.occurrences.map((occurrence) => ({ ...occurrence, evidence_path: path })));
+  }
+
+  if (occurrences.length !== RESIDUAL_EVIDENCE_EXPECTED.occurrences) {
+    throw new Error(`residual evidence occurrence drift: expected ${RESIDUAL_EVIDENCE_EXPECTED.occurrences}, got ${occurrences.length}`);
+  }
+  if (new Set(occurrences.map((occurrence) => occurrence.id)).size !== occurrences.length) {
+    throw new Error('duplicate occurrence id in residual evidence');
+  }
+  if (expectedByPair.size !== RESIDUAL_EVIDENCE_EXPECTED.rows) {
+    throw new Error(`residual evidence row drift: expected ${RESIDUAL_EVIDENCE_EXPECTED.rows}, got ${expectedByPair.size}`);
+  }
+  if (occurrences.some((occurrence) => occurrence.location_status !== 'LOCATED')) {
+    throw new Error('residual evidence has an unlocated occurrence');
+  }
+  if (occurrences.some((occurrence) => !['HIGH', 'MEDIUM'].includes(occurrence.confidence))) {
+    throw new Error('residual evidence has a missing, invalid or LOW confidence');
+  }
+  if (occurrences.some((occurrence) => occurrence.mechanism_class === 'NEEDS_SOURCE_ADJUDICATION'
+    || occurrence.needs_source_adjudication === true)) {
+    throw new Error('residual evidence needs source adjudication');
+  }
+  if (occurrences.some((occurrence) => typeof occurrence.mechanism_verdict !== 'string'
+    || occurrence.mechanism_verdict.length === 0
+    || typeof occurrence.correct_abstention !== 'boolean')) {
+    throw new Error('residual evidence lacks an explicit mechanism or abstention disposition');
+  }
+  const fixClassCounts = countBy(occurrences, (occurrence) => occurrence.fix_class);
+  if (!sameCounts(fixClassCounts, RESIDUAL_EVIDENCE_EXPECTED.fix_classes)) {
+    throw new Error(`residual evidence fix-class partition drift: ${formatPartition(fixClassCounts)}`);
+  }
+
+  const byKey = new Map();
+  for (const occurrence of occurrences) {
+    const key = keyFor(occurrence.family, occurrence.reason_code);
+    const group = byKey.get(key) ?? [];
+    group.push(occurrence);
+    byKey.set(key, group);
+  }
+  const restamps = new Map();
+  for (const [key, group] of byKey) {
+    const allCorrectAbstentions = group.every((occurrence) => occurrence.correct_abstention === true);
+    const fixClasses = countBy(group, (occurrence) => occurrence.fix_class);
+    const mechanisms = countBy(group, (occurrence) => occurrence.mechanism_verdict);
+    const sourcePaths = [...new Set(group.map((occurrence) => occurrence.evidence_path))].sort();
+    const priorStatuses = new Set(group.map((occurrence) => occurrence.register_diagnosis_status));
+    if (priorStatuses.size !== 1 || ![...priorStatuses].every((status) => status === 'LIKELY_MECHANISM' || status === 'UNDIAGNOSED')) {
+      throw new Error(`invalid prior diagnosis status in residual evidence: ${key}`);
+    }
+    restamps.set(key, {
+      diagnosis_status: allCorrectAbstentions ? 'CORRECT_ABSTENTION' : 'MECHANISM_CONFIRMED',
+      diagnosis: `Exact occurrence census: ${formatPartition(mechanisms)}.`,
+      diagnosis_note: sourcePaths.join(', '),
+      fix: `Occurrence fix-class partition: ${formatPartition(fixClasses)}.`,
+      fix_class: Object.keys(fixClasses).length === 1 ? Object.keys(fixClasses)[0] : 'MIXED',
+      claims_recoverable: allCorrectAbstentions
+        ? '0; every located occurrence is an explicit correct abstention.'
+        : `Concrete occurrence partition recorded in ${sourcePaths.join(' and ')}.`,
+      prior_status: [...priorStatuses][0],
+    });
+  }
+  return { restamps, expectedByPair, fixClassCounts };
+}
+
+const RESIDUAL_EVIDENCE = loadResidualEvidence();
+
 function restamp(register) {
   if (!Array.isArray(register.rows)) throw new Error('register rows are missing');
   if (register.rows.length !== 155) throw new Error(`row count drift: expected 155, got ${register.rows.length}`);
@@ -485,10 +621,26 @@ function restamp(register) {
     const key = keyFor(row.family, row.reason_code);
     if (rowKeys.has(key)) throw new Error(`duplicate register key: ${row.family}/${row.reason_code}`);
     rowKeys.add(key);
+    const residualRestamp = RESIDUAL_EVIDENCE.restamps.get(key);
+    if (residualRestamp) {
+      const allowedStatuses = new Set([residualRestamp.prior_status, residualRestamp.diagnosis_status]);
+      if (!allowedStatuses.has(row.diagnosis_status)) {
+        throw new Error(`residual register status drift: ${row.family}/${row.reason_code}`);
+      }
+      const expectedCount = RESIDUAL_EVIDENCE.expectedByPair.get(`${row.family}:${row.reason_code}`);
+      if (row.count !== expectedCount) {
+        throw new Error(`residual register count drift: ${row.family}/${row.reason_code}: expected ${expectedCount}, got ${row.count}`);
+      }
+    }
     const mapping = PAIR_RESTAMPS.get(key);
     if (!mapping) throw new Error(`missing mapping key: ${row.family}/${row.reason_code}`);
     for (const [field, value] of Object.entries(mapping)) {
       if (field !== 'family' && field !== 'reasonCode') row[field] = value;
+    }
+    if (residualRestamp) {
+      for (const [field, value] of Object.entries(residualRestamp)) {
+        if (field !== 'prior_status') row[field] = value;
+      }
     }
     if (!VALID_STATUSES.has(row.diagnosis_status)) throw new Error(`invalid row status: ${row.family}/${row.reason_code}`);
     if (!VALID_FIX_CLASSES.has(row.fix_class)) throw new Error(`invalid fix class: ${row.family}/${row.reason_code}`);
@@ -499,6 +651,9 @@ function restamp(register) {
   for (const [key, mapping] of PAIR_RESTAMPS) {
     if (!rowKeys.has(key)) throw new Error(`mapping key absent from register: ${mapping.family}/${mapping.reasonCode}`);
   }
+  for (const [key] of RESIDUAL_EVIDENCE.restamps) {
+    if (!rowKeys.has(key)) throw new Error(`residual evidence key absent from register: ${key.replace('\u0000', '/')}`);
+  }
   const counts = Object.fromEntries([...VALID_STATUSES].map((status) => [status, { rows: 0, occurrences: 0 }]));
   for (const row of register.rows) {
     counts[row.diagnosis_status].rows += 1;
@@ -507,9 +662,19 @@ function restamp(register) {
   register._meta.diagnosis_status_counts = counts;
   register._meta.undiagnosed_rows_are_stale = {
     ...register._meta.undiagnosed_rows_are_stale,
-    finding: 'The prior 90 UNDIAGNOSED rows / 732 occurrences were not a residual count. This restamp applies the checked pair-level evidence from the four Stage 2Y diagnostic notes.',
-    consequence: 'The register now separates confirmed mechanisms, provisional mechanisms, confirmed correct refusals and the one row with no established mechanism.',
-    what_is_still_open: `Exact post-restamp residual: ${counts.LIKELY_MECHANISM.rows} rows / ${counts.LIKELY_MECHANISM.occurrences} occurrences are likely mechanisms pending occurrence-level confirmation; ${counts.UNDIAGNOSED.rows} row / ${counts.UNDIAGNOSED.occurrences} occurrences remains undiagnosed.`,
+    finding: 'The prior LIKELY_MECHANISM and UNDIAGNOSED tail is replaced with the exact Stage 2Y-K occurrence census.',
+    consequence: 'Every row now has a mechanism-confirmed or correct-abstention status. No row remains likely or undiagnosed.',
+    what_is_still_open: `Exact post-restamp residual: ${counts.LIKELY_MECHANISM.rows} rows / ${counts.LIKELY_MECHANISM.occurrences} occurrences likely; ${counts.UNDIAGNOSED.rows} rows / ${counts.UNDIAGNOSED.occurrences} occurrences undiagnosed.`,
+  };
+  register._meta.stage_2y_k_residual_census = {
+    evidence_artifacts: RESIDUAL_EVIDENCE_PATHS,
+    target_rows: RESIDUAL_EVIDENCE_EXPECTED.rows,
+    occurrences: RESIDUAL_EVIDENCE_EXPECTED.occurrences,
+    occurrence_fix_class_partition: RESIDUAL_EVIDENCE.fixClassCounts,
+    located: RESIDUAL_EVIDENCE_EXPECTED.located,
+    low_confidence: RESIDUAL_EVIDENCE_EXPECTED.low_confidence,
+    needs_source_adjudication: RESIDUAL_EVIDENCE_EXPECTED.needs_source_adjudication,
+    status_rule: 'CORRECT_ABSTENTION only when every occurrence in the row is an explicit correct abstention; otherwise MECHANISM_CONFIRMED.',
   };
   register._meta.restamp = {
     generated: '2026-08-09',

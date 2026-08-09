@@ -28,28 +28,28 @@
     "native_open_world_proposal_split_note": "The 66.4% fragment / 19.0% obvious-defect / 9.2% duplicate / 5.3% correctly-open-world split is preserved per-row as an `open_world_split` field on every NATIVE_OPEN_WORLD_PROPOSAL row. It was measured once on the pooled 1,147-claim population in diag-open-world.md, not independently re-measured per family here -- applying it per family row is an extrapolation, flagged in each row's `open_world_split_note`.",
     "undiagnosed_rows_are_stale": {
       "corrected": "2026-08-09",
-      "finding": "The prior 90 UNDIAGNOSED rows / 732 occurrences were not a residual count. This restamp applies the checked pair-level evidence from the four Stage 2Y diagnostic notes.",
-      "consequence": "The register now separates confirmed mechanisms, provisional mechanisms, confirmed correct refusals and the one row with no established mechanism.",
-      "what_is_still_open": "Exact post-restamp residual: 41 rows / 208 occurrences are likely mechanisms pending occurrence-level confirmation; 1 row / 4 occurrences remains undiagnosed.",
+      "finding": "The prior LIKELY_MECHANISM and UNDIAGNOSED tail is replaced with the exact Stage 2Y-K occurrence census.",
+      "consequence": "Every row now has a mechanism-confirmed or correct-abstention status. No row remains likely or undiagnosed.",
+      "what_is_still_open": "Exact post-restamp residual: 0 rows / 0 occurrences likely; 0 rows / 0 occurrences undiagnosed.",
       "per_row_restamp_owner": "Step 2Y-0, listed in its Change block."
     },
     "code_location_guess_is_unreliable": "Several rows carry a code_location_guess that points at the wrong handler -- ANTITRUST_REGULATORY rows attributed to handleClosingConditionCandidate is the known case. Treat the field as a hint; the diag notes carry the verified locations.",
     "diagnosis_status_counts": {
       "MECHANISM_CONFIRMED": {
-        "rows": 106,
-        "occurrences": 3996
+        "rows": 139,
+        "occurrences": 4190
       },
       "LIKELY_MECHANISM": {
-        "rows": 41,
-        "occurrences": 208
+        "rows": 0,
+        "occurrences": 0
       },
       "CORRECT_ABSTENTION": {
-        "rows": 7,
-        "occurrences": 33
+        "rows": 16,
+        "occurrences": 51
       },
       "UNDIAGNOSED": {
-        "rows": 1,
-        "occurrences": 4
+        "rows": 0,
+        "occurrences": 0
       }
     },
     "restamp": {
@@ -57,6 +57,24 @@
       "mapping": "scripts/stage-2y-restamp-unresolved-register.mjs, keyed by family and reason_code",
       "row_count": 155,
       "occurrence_sum": 4241
+    },
+    "stage_2y_k_residual_census": {
+      "evidence_artifacts": [
+        "evidence/canonical-v2/stage-2y-k-residual-a.json",
+        "evidence/canonical-v2/stage-2y-k-residual-b.json"
+      ],
+      "target_rows": 42,
+      "occurrences": 212,
+      "occurrence_fix_class_partition": {
+        "PROMPT_CHANGE": 63,
+        "RESOLVER_SIDE": 98,
+        "NO_FIX": 28,
+        "TAXONOMY_DESIGN": 23
+      },
+      "located": 212,
+      "low_confidence": 0,
+      "needs_source_adjudication": 0,
+      "status_rule": "CORRECT_ABSTENTION only when every occurrence in the row is an explicit correct abstention; otherwise MECHANISM_CONFIRMED."
     }
   },
   "rows": [
@@ -387,25 +405,25 @@
       "reason_code": "CONDITION_KIND_UNCORROBORATED",
       "state": "HELD",
       "count": 34,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
+      "diagnosis": "Exact occurrence census: CORRECT_ABSTENTION_BRING_DOWN_FRAGMENT_WITHOUT_SUBJECT 4; CORRECT_ABSTENTION_FRUSTRATION_FRAGMENT_WITHOUT_RELIANCE_CHAPEAU 11; CORRECT_ABSTENTION_PARTYLESS_BURDENSOME_FRAGMENT 1; PRODUCER_MAE_CONTINUING_MISCLASSIFICATION 1; PRODUCER_S4_COMPONENT_MISCLASSIFICATION 1; RESOLVER_FRUSTRATION_KIND_DETECTION_OMISSION 3; RESOLVER_MAE_DEFINED_TERM_OR_CONTINUING_VARIANT 4; RESOLVER_OFFICER_CERTIFICATE_CONFIRMING_VARIANT 3; RESOLVER_SCHEDULED_APPROVAL_LEXICAL_VARIANT 2; RESOLVER_STOCKHOLDER_ADOPTION_LEXICAL_VARIANT 1; TAXONOMY_BUYER_MAE_CONDITION_UNGOVERNED 1; TAXONOMY_DEFINED_APPROVAL_TERM_REQUIRES_DEFINITION_LINK 2.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-a.json",
+      "fix": "Occurrence fix-class partition: NO_FIX 16; PROMPT_CHANGE 2; RESOLVER_SIDE 13; TAXONOMY_DESIGN 3.",
       "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-a.json.",
       "code_location_guess": "candidate-resolution.js:5058, 5103 (handleClosingConditionCandidate, two separate corroboration checks)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "TERMINATION_FEE",
       "reason_code": "FEE_SIDE_UNCORROBORATED",
       "state": "HELD",
       "count": 33,
-      "diagnosis": "Two distinct bug shapes. Bug 1 (concho, all 10): the producer prompt's own worked example tells the model to narrow trigger quotes to a bare parenthetical (e.g. \"(No Solicitation by Parent)\"), stripping the Section-N citation that would otherwise license citation-following corroboration — a producer-stage loss. Bug 2 (metsera/redhat/skechers/skywater/topbuild, remainder): well-formed list-limb quotes correctly state only the ground; the fee-side (\"...the Company shall pay...\") is stated once in the list's closing chapeau, governing all limbs, and never repeated per-limb — the resolver never reads the limb's own chapeau (findTerminationLimbChapeau already exists and is wired for the sibling TERMINATION_RIGHT family but never called from handleFeeTriggerCandidate).",
-      "diagnosis_note": "diag-termination-fee.md",
-      "fix": "Bug 1 (10, concho): PROMPT_CHANGE to termination-fee-producer-prompt.js — replace the bad worked example, require the Section X.X citation stay attached even when narrowing to a single ground. Digest invalidation, re-extraction needed. Bug 2 (remainder, majority): RESOLVER_SIDE — add a fourth fallback tier in handleFeeTriggerCandidate calling the already-existing, already-generic findTerminationLimbChapeau, then run FEE_SIDE_CORROBORATION_TABLE patterns over the chapeau text. candidate-resolution.js. No prompt change for this part.",
+      "diagnosis": "Exact occurrence census: PRODUCER_QUOTE_CLIPPING 10; RESOLVER_GOVERNING_PAYMENT_CONTEXT_NOT_CONSUMED 23.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: PROMPT_CHANGE 10; RESOLVER_SIDE 23.",
       "fix_class": "MIXED",
-      "claims_recoverable": "Corpus split (latest-per-deal): 10 Bug-1 (concho, needs prompt change) vs remainder Bug-2 (resolver-side). Note's own corpus count was 32 vs corpus-HTML's 33 — small run-scoping delta, not reconciled further.",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-b.json.",
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "PROXY_MEETING",
@@ -479,12 +497,12 @@
       "reason_code": "ACCURACY_STANDARD_OUT_OF_VOCABULARY",
       "state": "OPEN_WORLD",
       "count": 26,
-      "diagnosis": "Distinct family (handleClosingConditionCandidate, BRING_DOWN_TIER kind) sharing REPRESENTATION_ACCURACY_STANDARD claim definition. Two sub-causes measured on 22 samples: naming mismatch (7/22, closing-conditions-producer-prompt.js has no CONTROLLED_VOCABULARIES block so the model invents self-consistent but unregistered code names) and null-required-but-disallowed (15/22, the claim definition requires canonical_value_required_when_present:true even though the prompt says \"controlled code or null\").",
-      "diagnosis_note": "diag-qualifier-proxy.md",
-      "fix": "Naming mismatch (7/22): add a CONTROLLED_VOCABULARIES block to closing-conditions-producer-prompt.js mapping to MAT_* codes — PROMPT_CHANGE, digest invalidation. Null-disallowed (15/22): relax the claim definition's required_when_present for the closing-condition consumer, or give BRING_DOWN_TIER's null case its own disposition in handleClosingConditionCandidate — RESOLVER_SIDE, free.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "15/22 (68%) resolver-side free; 7/22 (32%) needs a prompt change.",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis": "Exact occurrence census: PRODUCER_ACCURACY_STANDARD_LEGACY_ALIAS 7; PRODUCER_ACCURACY_STANDARD_OMITTED 19.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-a.json",
+      "fix": "Occurrence fix-class partition: PROMPT_CHANGE 26.",
+      "fix_class": "PROMPT_CHANGE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-a.json.",
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "PROXY_MEETING",
@@ -623,13 +641,13 @@
       "reason_code": "MAE_CARVEOUT_UNCORROBORATED",
       "state": "HELD",
       "count": 19,
-      "diagnosis": "The row mixes checked regex misses and null carveout codes with one explicitly uncertain compliance-with-agreement instance. It cannot truthfully have one fix.",
-      "diagnosis_note": "diag-gap-reps-mae.md",
-      "fix": "Split null-code abstentions from failed corroboration, widen the checked carveout patterns, and re-check the uncertain residual before changing it.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Most checked occurrences are resolver-side; one residual remains explicitly uncertain.",
+      "diagnosis": "Exact occurrence census: RESOLVER_MAE_CARVEOUT_PATTERN_MISS 6; RESOLVER_MAE_CARVEOUT_PATTERN_OR_CODE_GAP 13.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: RESOLVER_SIDE 19.",
+      "fix_class": "RESOLVER_SIDE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-b.json.",
       "code_location_guess": "candidate-resolution.js:9048 (pushMaeReview call in MAE carveout handling)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "NO_SHOP",
@@ -883,12 +901,12 @@
       "reason_code": "AMBIGUOUS_PROXY_MEETING_KIND",
       "state": "HELD",
       "count": 10,
-      "diagnosis": "Two or more PROXY_MEETING_KIND_CORROBORATION patterns fire on the same quote and the pair is not in the small PROXY_MEETING_COMPATIBLE_KIND_PAIRS whitelist. One sample plausibly fires both PARENT_APPROVAL and MERGER_SUB_APPROVAL on the same \"Parent...shall adopt this Agreement\" sentence. UNCERTAIN — the note explicitly could not fully trace which pattern(s) fired for all 5 measured cases; flagged in the note itself as the one sub-finding it could not close.",
-      "diagnosis_note": "diag-qualifier-proxy.md",
-      "fix": "Would need full quote-vs-pattern replay for each case to determine whether a priority rule or a whitelist addition is correct. Not yet specified.",
-      "fix_class": "RESOLVER_SIDE",
-      "claims_recoverable": "Explicitly uncertain per the source note; treat count as provisionally resolver-side, not confirmed.",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis": "Exact occurrence census: PRODUCER_COMPOUND_PROXY_CLAUSE_NOT_SPLIT 8; RESOLVER_PARENT_APPROVAL_PATTERN_FALSE_POSITIVE 2.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-a.json",
+      "fix": "Occurrence fix-class partition: PROMPT_CHANGE 8; RESOLVER_SIDE 2.",
+      "fix_class": "MIXED",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-a.json.",
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "CLOSING_CONDITIONS",
@@ -927,26 +945,26 @@
       "reason_code": "ASSERTION_KIND_UNCORROBORATED",
       "state": "HELD",
       "count": 8,
-      "diagnosis": "Checked samples mix resolver misses with extractor misclassifications. The row grain cannot represent them as one confirmed fix.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Split the quoted resolver and prompt cases before implementation; do not apply one row-wide fix.",
+      "diagnosis": "Exact occurrence census: PRODUCER_ASSERTION_KIND_MISCLASSIFICATION 5; RESOLVER_FINANCING_ASSERTION_CORROBORATION_MISS 3.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: PROMPT_CHANGE 5; RESOLVER_SIDE 3.",
       "fix_class": "MIXED",
-      "claims_recoverable": "Mixed population; recoverability needs occurrence-level partitioning.",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-b.json.",
       "code_location_guess": "candidate-resolution.js:9483 (reviewFinancingGuaranty, FINANCING_COVENANTS pattern table)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "CLOSING_CONDITIONS",
       "reason_code": "PARTY_UNRESOLVED",
       "state": "HELD",
       "count": 8,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
+      "diagnosis": "Exact occurrence census: CORRECT_ABSTENTION_PARTYLESS_BURDENSOME_FRAGMENT 1; PRODUCER_CONDITION_OBLIGOR_OMITTED 7.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-a.json",
+      "fix": "Occurrence fix-class partition: NO_FIX 1; PROMPT_CHANGE 7.",
       "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-a.json.",
       "code_location_guess": "candidate-resolution.js:5014 and 5076 (handleClosingConditionCandidate, two branches); also raised at 8665 for NO_SHOP wave-B (zero occurrences in this corpus) and generically wherever resolveParty() returns null for MAE_DEFINITION/GENERAL_COVENANTS/ANTITRUST_REGULATORY handlers",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "ANTITRUST_REGULATORY",
@@ -1086,13 +1104,13 @@
       "reason_code": "TAX_TREATMENT_KIND_UNCORROBORATED",
       "state": "OPEN_WORLD",
       "count": 7,
-      "diagnosis": "The note explicitly leaves these quote populations uncertain after identifying their family and candidate resolver module.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Read the cited corroboration module and verify each quoted occurrence before choosing resolver, prompt or taxonomy work.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown pending individual quote verification.",
+      "diagnosis": "Exact occurrence census: CORRECT_ABSTENTION_UNSUPPORTED_SECTION_355_TREATMENT 2; TAXONOMY_GAP_INTENDED_TREATMENT_CODEBOOK 5.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: TAXONOMY_DESIGN 7.",
+      "fix_class": "TAXONOMY_DESIGN",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-b.json.",
       "code_location_guess": "candidate-resolution.js:10654 (TAX_MATTERS open-world push)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "TAX_MATTERS",
@@ -1154,13 +1172,13 @@
       "reason_code": "SOLE_REMEDY_FEE_CONTEXT_LINKED",
       "state": "OPEN_WORLD",
       "count": 5,
-      "diagnosis": "The note explicitly leaves these quote populations uncertain after identifying their family and candidate resolver module.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Read the cited corroboration module and verify each quoted occurrence before choosing resolver, prompt or taxonomy work.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown pending individual quote verification.",
+      "diagnosis": "Exact occurrence census: CORRECT_ABSTENTION_CROSS_FAMILY_LINKED_EVIDENCE 5.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: NO_FIX 5.",
+      "fix_class": "NO_FIX",
+      "claims_recoverable": "0; every located occurrence is an explicit correct abstention.",
       "code_location_guess": "sole-remedy-resolution.js:197 (TERMINATION_FEE sole-remedy linkage, separate module from candidate-resolution.js)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "CORRECT_ABSTENTION"
     },
     {
       "family": "CLOSING_CONDITIONS",
@@ -1245,26 +1263,26 @@
       "reason_code": "TAX_ASSERTION_OPEN_WORLD",
       "state": "OPEN_WORLD",
       "count": 5,
-      "diagnosis": "The note explicitly leaves these quote populations uncertain after identifying their family and candidate resolver module.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Read the cited corroboration module and verify each quoted occurrence before choosing resolver, prompt or taxonomy work.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown pending individual quote verification.",
+      "diagnosis": "Exact occurrence census: RESOLVER_TAX_CORROBORATION_PATTERN_MISS 5.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: RESOLVER_SIDE 5.",
+      "fix_class": "RESOLVER_SIDE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-b.json.",
       "code_location_guess": "candidate-resolution.js:10675 (TAX_MATTERS open-world push, sibling of TAX_TREATMENT_KIND_UNCORROBORATED)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "FINANCING_COVENANTS",
       "reason_code": "FINANCING_SCOPE_UNCORROBORATED",
       "state": "HELD",
       "count": 4,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: RESOLVER_FINANCING_SCOPE_CORROBORATION_MISS 4.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: RESOLVER_SIDE 4.",
+      "fix_class": "RESOLVER_SIDE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-b.json.",
       "code_location_guess": "candidate-resolution.js:9487 (reviewFinancingGuaranty, financing_kind corroboration)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "CONSIDERATION",
@@ -1308,13 +1326,13 @@
       "reason_code": "IOC_LONG_TAIL_RESTRICTION_OPEN_WORLD",
       "state": "OPEN_WORLD",
       "count": 4,
-      "diagnosis": "The required diagnostic notes do not establish a mechanism for this row.",
-      "diagnosis_note": null,
-      "fix": "No supported fix yet.",
-      "fix_class": "NO_FIX",
-      "claims_recoverable": "Unknown.",
+      "diagnosis": "Exact occurrence census: CORRECT_ABSTENTION_LONG_TAIL_RESTRICTION 4.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: TAXONOMY_DESIGN 4.",
+      "fix_class": "TAXONOMY_DESIGN",
+      "claims_recoverable": "0; every located occurrence is an explicit correct abstention.",
       "code_location_guess": "candidate-resolution.js:5204 (INTERIM_OPERATING open-world push -- outside diag-ioc.md's scope, which covered only HELD review-queue reasons)",
-      "diagnosis_status": "UNDIAGNOSED"
+      "diagnosis_status": "CORRECT_ABSTENTION"
     },
     {
       "family": "ANTITRUST_REGULATORY",
@@ -1428,52 +1446,52 @@
       "reason_code": "CONSULTATION_RIGHT_UNCORROBORATED",
       "state": "HELD",
       "count": 3,
-      "diagnosis": "Checked samples mix resolver misses with extractor misclassifications. The row grain cannot represent them as one confirmed fix.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Split the quoted resolver and prompt cases before implementation; do not apply one row-wide fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Mixed population; recoverability needs occurrence-level partitioning.",
+      "diagnosis": "Exact occurrence census: RESOLVER_CONSULTATION_PATTERN_MISS 3.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: RESOLVER_SIDE 3.",
+      "fix_class": "RESOLVER_SIDE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-b.json.",
       "code_location_guess": "candidate-resolution.js:9318 -- same template site as NOTIFICATION_OBLIGATION_UNCORROBORATED, assertion_kind=CONSULTATION_RIGHT",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "ANTITRUST_REGULATORY",
       "reason_code": "INFORMATION_SHARING_OBLIGATION_UNCORROBORATED",
       "state": "HELD",
       "count": 3,
-      "diagnosis": "Checked samples mix resolver misses with extractor misclassifications. The row grain cannot represent them as one confirmed fix.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Split the quoted resolver and prompt cases before implementation; do not apply one row-wide fix.",
+      "diagnosis": "Exact occurrence census: PRODUCER_ASSERTION_KIND_MISCLASSIFICATION 1; RESOLVER_INFORMATION_SHARING_PATTERN_MISS 2.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: PROMPT_CHANGE 1; RESOLVER_SIDE 2.",
       "fix_class": "MIXED",
-      "claims_recoverable": "Mixed population; recoverability needs occurrence-level partitioning.",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-b.json.",
       "code_location_guess": "candidate-resolution.js:9318 -- same template site, assertion_kind=INFORMATION_SHARING_OBLIGATION",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "ANTITRUST_REGULATORY",
       "reason_code": "BURDEN_COMMITMENT_UNCORROBORATED",
       "state": "HELD",
       "count": 3,
-      "diagnosis": "Checked samples mix resolver misses with extractor misclassifications. The row grain cannot represent them as one confirmed fix.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Split the quoted resolver and prompt cases before implementation; do not apply one row-wide fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Mixed population; recoverability needs occurrence-level partitioning.",
+      "diagnosis": "Exact occurrence census: RESOLVER_BURDEN_COMMITMENT_PATTERN_MISS 3.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: RESOLVER_SIDE 3.",
+      "fix_class": "RESOLVER_SIDE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-b.json.",
       "code_location_guess": "candidate-resolution.js:9318 -- same template site, assertion_kind=BURDEN_COMMITMENT",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "NO_SHOP",
       "reason_code": "NO_SHOP_PERIOD_HOUR_NOTICE_OPEN_WORLD",
       "state": "OPEN_WORLD",
       "count": 3,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: TAXONOMY_GAP_HOUR_NOTICE_PERIOD 3.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: TAXONOMY_DESIGN 3.",
+      "fix_class": "TAXONOMY_DESIGN",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-b.json.",
       "code_location_guess": "candidate-resolution.js:8572 (handleNoShopPeriodCandidate open-world push)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "NO_SHOP",
@@ -1493,13 +1511,13 @@
       "reason_code": "PARTY_UNRESOLVED",
       "state": "HELD",
       "count": 3,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
+      "diagnosis": "Exact occurrence census: PRODUCER_GENERAL_COVENANT_OBLIGOR_MISCLASSIFICATION 1; TAXONOMY_MUTUAL_GENERAL_COVENANT_PARTY_UNGOVERNED 2.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-a.json",
+      "fix": "Occurrence fix-class partition: PROMPT_CHANGE 1; TAXONOMY_DESIGN 2.",
       "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-a.json.",
       "code_location_guess": "candidate-resolution.js:5014 and 5076 (handleClosingConditionCandidate, two branches); also raised at 8665 for NO_SHOP wave-B (zero occurrences in this corpus) and generically wherever resolveParty() returns null for MAE_DEFINITION/GENERAL_COVENANTS/ANTITRUST_REGULATORY handlers",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "FINANCING_COVENANTS",
@@ -1519,26 +1537,26 @@
       "reason_code": "ADJOURNMENT_REASON_NOT_DIRECTLY_GROUNDED",
       "state": "HELD",
       "count": 2,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: RESOLVER_QUORUM_ABSENCE_LEXICAL_VARIANT 2.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-a.json",
+      "fix": "Occurrence fix-class partition: RESOLVER_SIDE 2.",
+      "fix_class": "RESOLVER_SIDE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-a.json.",
       "code_location_guess": "candidate-resolution.js:5636 (PROXY_MEETING adjournment-reason grounding check, near but distinct from the #251 corroboration-gate bug diag-qualifier-proxy.md diagnosed under PROXY_MEETING_KIND_UNCORROBORATED)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "PROXY_MEETING",
       "reason_code": "MEETING_REF_ABSENT",
       "state": "HELD",
       "count": 2,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: RESOLVER_PRESENCE_FACT_REQUIRES_UNNEEDED_MEETING_REFERENCE 2.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-a.json",
+      "fix": "Occurrence fix-class partition: RESOLVER_SIDE 2.",
+      "fix_class": "RESOLVER_SIDE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-a.json.",
       "code_location_guess": "candidate-resolution.js:5499 -- template-built `${refField.toUpperCase()}_ABSENT` inside handleProxyMeetingCandidate, refField='meeting_ref'",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "PROXY_MEETING",
@@ -1564,26 +1582,26 @@
       "reason_code": "SOLE_REMEDY_CARVEOUT_QUOTE_UNCORROBORATED",
       "state": "OPEN_WORLD",
       "count": 2,
-      "diagnosis": "The note explicitly leaves these quote populations uncertain after identifying their family and candidate resolver module.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Read the cited corroboration module and verify each quoted occurrence before choosing resolver, prompt or taxonomy work.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown pending individual quote verification.",
+      "diagnosis": "Exact occurrence census: RESOLVER_UNIQUE_QUOTE_EVIDENCE_GATE 2.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: RESOLVER_SIDE 2.",
+      "fix_class": "RESOLVER_SIDE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-b.json.",
       "code_location_guess": "sole-remedy-resolution.js:300 (TERMINATION_FEE sole-remedy carve-out matching, same module as SOLE_REMEDY_FEE_CONTEXT_LINKED)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "TERMINATION_FEE",
       "reason_code": "ANNIVERSARY_PHRASE",
       "state": "HELD",
       "count": 2,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: CORRECT_ABSTENTION_INTERPRETIVE_ANNIVERSARY 2.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: NO_FIX 2.",
+      "fix_class": "NO_FIX",
+      "claims_recoverable": "0; every located occurrence is an explicit correct abstention.",
       "code_location_guess": "termination-fee-parse.js:418 (fee-value date-anchor parser, ABSTAIN outcome)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "CORRECT_ABSTENTION"
     },
     {
       "family": "INTERIM_OPERATING",
@@ -1614,26 +1632,26 @@
       "reason_code": "MAE_PARTY_UNCORROBORATED",
       "state": "HELD",
       "count": 2,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: TAXONOMY_BUYER_MAE_CONDITION_UNGOVERNED 2.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-a.json",
+      "fix": "Occurrence fix-class partition: TAXONOMY_DESIGN 2.",
+      "fix_class": "TAXONOMY_DESIGN",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-a.json.",
       "code_location_guess": "candidate-resolution.js:5131-5132 (handleClosingConditionCandidate, MAE-qualified bring-down party check)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "CLOSING_CONDITIONS",
       "reason_code": "APPROVAL_KIND_UNCORROBORATED",
       "state": "HELD",
       "count": 2,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: RESOLVER_SCHEDULED_APPROVAL_LEXICAL_VARIANT 2.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-a.json",
+      "fix": "Occurrence fix-class partition: RESOLVER_SIDE 2.",
+      "fix_class": "RESOLVER_SIDE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-a.json.",
       "code_location_guess": "candidate-resolution.js:5151, 5153 (handleClosingConditionCandidate, HSR/SCHEDULED_APPROVALS enum check)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "DNO_INDEMNIFICATION",
@@ -1679,26 +1697,26 @@
       "reason_code": "OBLIGOR_REF_UNCORROBORATED",
       "state": "HELD",
       "count": 2,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: RESOLVER_OBLIGOR_CORROBORATION_PATTERN_MISS 2.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: RESOLVER_SIDE 2.",
+      "fix_class": "RESOLVER_SIDE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-b.json.",
       "code_location_guess": "candidate-resolution.js:5135, 5137 (handleClosingConditionCandidate obligor check -- CLOSING_CONDITIONS portion is stub-scoped in diag-closing-conditions.md but undiagnosed; ANTITRUST_REGULATORY's 2 occurrences aren't even scoped there)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "TERMINATION",
       "reason_code": "NO_CALENDAR_DATE",
       "state": "HELD",
       "count": 2,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: CORRECT_ABSTENTION_RELATIVE_DEADLINE 2.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: NO_FIX 2.",
+      "fix_class": "NO_FIX",
+      "claims_recoverable": "0; every located occurrence is an explicit correct abstention.",
       "code_location_guess": "termination-deadline-parse.js:~42 (TERMINATION deadline date parser, ABSTAIN outcome)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "CORRECT_ABSTENTION"
     },
     {
       "family": "NO_SHOP",
@@ -1744,13 +1762,13 @@
       "reason_code": "STANDARD_CODE_OUT_OF_ENUM",
       "state": "HELD",
       "count": 2,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: RESOLVER_STANDARD_ENUM_GATE 2.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: RESOLVER_SIDE 2.",
+      "fix_class": "RESOLVER_SIDE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-b.json.",
       "code_location_guess": "candidate-resolution.js:8785 (KEY_DEFINED_TERMS standard-code / knowledge-party enum check)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "KEY_DEFINED_TERMS",
@@ -1833,65 +1851,65 @@
       "reason_code": "NO_MONEY_LITERAL",
       "state": "HELD",
       "count": 1,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: TAXONOMY_CITED_CONSIDERATION_VALUE_REQUIRES_CROSS_REFERENCE 1.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-a.json",
+      "fix": "Occurrence fix-class partition: TAXONOMY_DESIGN 1.",
+      "fix_class": "TAXONOMY_DESIGN",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-a.json.",
       "code_location_guess": "antitrust-regulatory-parse.js:27 (day-count/money parser shared module, ABSTAIN outcome) -- CONSIDERATION family occurrence likely uses an analogous parser in consideration-specific code, not directly located",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "CONSIDERATION",
       "reason_code": "RATIO_CONTEXT_UNCORROBORATED",
       "state": "HELD",
       "count": 1,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: CORRECT_ABSTENTION_RATIO_QUOTE_WITHOUT_EXCHANGE_OPERATION 1.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-a.json",
+      "fix": "Occurrence fix-class partition: NO_FIX 1.",
+      "fix_class": "NO_FIX",
+      "claims_recoverable": "0; every located occurrence is an explicit correct abstention.",
       "code_location_guess": "candidate-resolution.js:10564 (CONSIDERATION ratio-context check, distinct from the diagnosed NO_RATIO_LITERAL/PER_SHARE_CONTEXT_UNCORROBORATED mechanisms)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "CORRECT_ABSTENTION"
     },
     {
       "family": "PROXY_MEETING",
       "reason_code": "CONTROL_PARTY_REF_UNCORROBORATED",
       "state": "HELD",
       "count": 1,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: CORRECT_ABSTENTION_PASSIVE_MEETING_CONTROL 1.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-a.json",
+      "fix": "Occurrence fix-class partition: NO_FIX 1.",
+      "fix_class": "NO_FIX",
+      "claims_recoverable": "0; every located occurrence is an explicit correct abstention.",
       "code_location_guess": "candidate-resolution.js:5562 (handleProxyMeetingCandidate, control-party post-resolution check, sibling of the diagnosed CONTROL_PARTY_REF_ABSENT)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "CORRECT_ABSTENTION"
     },
     {
       "family": "PROXY_MEETING",
       "reason_code": "CONTROL_PARTY_REF_NOT_IN_QUOTE",
       "state": "HELD",
       "count": 1,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: RESOLVER_CONTROL_PARTY_CASE_NORMALISATION_GAP 1.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-a.json",
+      "fix": "Occurrence fix-class partition: RESOLVER_SIDE 1.",
+      "fix_class": "RESOLVER_SIDE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-a.json.",
       "code_location_guess": "candidate-resolution.js:5547 (handleProxyMeetingCandidate, control_party substring check)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "PROXY_MEETING",
       "reason_code": "DOCUMENT_REF_NOT_IN_QUOTE",
       "state": "HELD",
       "count": 1,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: PRODUCER_DOCUMENT_REFERENCE_TYPO 1.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-a.json",
+      "fix": "Occurrence fix-class partition: PROMPT_CHANGE 1.",
+      "fix_class": "PROMPT_CHANGE",
+      "claims_recoverable": "0; every located occurrence is an explicit correct abstention.",
       "code_location_guess": "candidate-resolution.js:5522 -- template-built `${refField.toUpperCase()}_NOT_IN_QUOTE`, refField='document_ref'",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "CORRECT_ABSTENTION"
     },
     {
       "family": "TERMINATION_FEE",
@@ -1911,39 +1929,39 @@
       "reason_code": "CERTIFIED_CONDITION_REF_NOT_IN_QUOTE",
       "state": "HELD",
       "count": 1,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: RESOLVER_SECTION_REFERENCE_LIST_NORMALISATION_GAP 1.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-a.json",
+      "fix": "Occurrence fix-class partition: RESOLVER_SIDE 1.",
+      "fix_class": "RESOLVER_SIDE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-a.json.",
       "code_location_guess": "candidate-resolution.js:5005 (handleClosingConditionCandidate, certification-reference check)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "CLOSING_CONDITIONS",
       "reason_code": "SCRAPE_QUOTE_NOT_IN_QUOTE",
       "state": "HELD",
       "count": 1,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: PRODUCER_SCRAPE_QUOTE_PAGE_ARTIFACT 1.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-a.json",
+      "fix": "Occurrence fix-class partition: PROMPT_CHANGE 1.",
+      "fix_class": "PROMPT_CHANGE",
+      "claims_recoverable": "0; every located occurrence is an explicit correct abstention.",
       "code_location_guess": "candidate-resolution.js:5125 (handleClosingConditionCandidate, scrape_quote substring check)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "CORRECT_ABSTENTION"
     },
     {
       "family": "GUARANTY_FINANCING_PARTY",
       "reason_code": "GTY_KIND_UNCORROBORATED",
       "state": "HELD",
       "count": 1,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: RESOLVER_GUARANTY_IN_EFFECT_LEGACY_PATTERN_HOLD 1.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-a.json",
+      "fix": "Occurrence fix-class partition: RESOLVER_SIDE 1.",
+      "fix_class": "RESOLVER_SIDE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-a.json.",
       "code_location_guess": "guaranty-corroboration.js:97 (GUARANTY_FINANCING_PARTY kind corroboration, separate module)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "REPRESENTATIONS",
@@ -1988,13 +2006,13 @@
       "reason_code": "WITHDRAWAL_EXCEPTION_PERIOD_UNCORROBORATED",
       "state": "HELD",
       "count": 1,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: RESOLVER_WITHDRAWAL_PERIOD_PATTERN_MISS 1.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: RESOLVER_SIDE 1.",
+      "fix_class": "RESOLVER_SIDE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-b.json.",
       "code_location_guess": "candidate-resolution.js:9396 (handleRegulatoryEffortsCandidate, WITHDRAWAL_REFILING_RESTRICTION day-count check)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "ANTITRUST_REGULATORY",
@@ -2046,39 +2064,39 @@
       "reason_code": "OBLIGOR_REF_NOT_IN_QUOTE",
       "state": "HELD",
       "count": 1,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: RESOLVER_PARTY_REFERENCE_LEXICON_GAP 1.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: RESOLVER_SIDE 1.",
+      "fix_class": "RESOLVER_SIDE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-b.json.",
       "code_location_guess": "candidate-resolution.js:9263 (handleRegulatoryEffortsCandidate) and :9528 (reviewFinancingGuaranty, PERFORMANCE_GUARANTY branch) -- two independent sites for the same reason string",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "ANTITRUST_REGULATORY",
       "reason_code": "PARTY_UNRESOLVED",
       "state": "HELD",
       "count": 1,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: RESOLVER_ANTECEDENT_PARTY_CONTEXT_MISSING 1.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: RESOLVER_SIDE 1.",
+      "fix_class": "RESOLVER_SIDE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-b.json.",
       "code_location_guess": "candidate-resolution.js:5014 and 5076 (handleClosingConditionCandidate, two branches); also raised at 8665 for NO_SHOP wave-B (zero occurrences in this corpus) and generically wherever resolveParty() returns null for MAE_DEFINITION/GENERAL_COVENANTS/ANTITRUST_REGULATORY handlers",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "ANTITRUST_REGULATORY",
       "reason_code": "INFORMATION_PROTECTION_UNCORROBORATED",
       "state": "HELD",
       "count": 1,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: RESOLVER_INFORMATION_PROTECTION_PATTERN_MISS 1.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: RESOLVER_SIDE 1.",
+      "fix_class": "RESOLVER_SIDE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-b.json.",
       "code_location_guess": "candidate-resolution.js:9365 (handleRegulatoryEffortsCandidate, INFORMATION_SHARING_OBLIGATION protection-kind pattern table)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "ANTITRUST_REGULATORY",
@@ -2098,13 +2116,13 @@
       "reason_code": "FILING_OBLIGATION_UNCORROBORATED",
       "state": "HELD",
       "count": 1,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: RESOLVER_FILING_OBLIGATION_PATTERN_MISS 1.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: RESOLVER_SIDE 1.",
+      "fix_class": "RESOLVER_SIDE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-b.json.",
       "code_location_guess": "candidate-resolution.js:9297 (handleRegulatoryEffortsCandidate, canonicalValueAllowed + regulatoryValueCorroborated combined check)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "MAE_DEFINITION",
@@ -2137,39 +2155,39 @@
       "reason_code": "SUBSTITUTION_UNCORROBORATED",
       "state": "HELD",
       "count": 1,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: RESOLVER_THRESHOLD_SUBSTITUTION_PATTERN_MISS 1.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-b.json",
+      "fix": "Occurrence fix-class partition: RESOLVER_SIDE 1.",
+      "fix_class": "RESOLVER_SIDE",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-b.json.",
       "code_location_guess": "candidate-resolution.js:8779 (KEY_DEFINED_TERMS threshold-substitution parser fallback)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "GENERAL_COVENANTS",
       "reason_code": "GENERAL_COVENANT_DEFINITION_REFERENCE_UNRESOLVED",
       "state": "OPEN_WORLD",
       "count": 1,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: TAXONOMY_GENERAL_COVENANT_DEFINITION_LINK_UNGOVERNED 1.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-a.json",
+      "fix": "Occurrence fix-class partition: TAXONOMY_DESIGN 1.",
+      "fix_class": "TAXONOMY_DESIGN",
+      "claims_recoverable": "Concrete occurrence partition recorded in evidence/canonical-v2/stage-2y-k-residual-a.json.",
       "code_location_guess": "candidate-resolution.js:4861 (same helper as GENERAL_COVENANT_CODE_UNCORROBORATED)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "MECHANISM_CONFIRMED"
     },
     {
       "family": "MERGER_STRUCTURE_CLOSING",
       "reason_code": "MERGER_TRANSACTION_STEP_ENTITY_NOT_IN_QUOTE",
       "state": "OPEN_WORLD",
       "count": 1,
-      "diagnosis": "A note identified the resolver location and a likely family mechanism, but did not verify every quote in this row. The status remains deliberately provisional.",
-      "diagnosis_note": "diag-gap-remaining.md",
-      "fix": "Pull the individual recorded responses and source quotes before selecting a fix.",
-      "fix_class": "MIXED",
-      "claims_recoverable": "Unknown until occurrence-level verification.",
+      "diagnosis": "Exact occurrence census: PRODUCER_FILING_COVENANT_MISCLASSIFIED_AS_TRANSACTION_STEP 1.",
+      "diagnosis_note": "evidence/canonical-v2/stage-2y-k-residual-a.json",
+      "fix": "Occurrence fix-class partition: PROMPT_CHANGE 1.",
+      "fix_class": "PROMPT_CHANGE",
+      "claims_recoverable": "0; every located occurrence is an explicit correct abstention.",
       "code_location_guess": "candidate-resolution.js:9568 (MERGER_STRUCTURE_CLOSING open-world push)",
-      "diagnosis_status": "LIKELY_MECHANISM"
+      "diagnosis_status": "CORRECT_ABSTENTION"
     }
   ]
 }

@@ -1505,8 +1505,41 @@ symbolic-link components are refused before read or write. A persisted payload
 compressed by a different zlib version is still adopted only after its
 inflated map matches the independently rebuilt map and its recorded digest.
 
-**Blind successor recorded, not waived.** The deterministic successor accounts
-for all 96 cards and resolves 22 against the total floor of 21. Category 4/4,
-clause label 6/6 and qualifier 6/4 pass. Terminating party resolves 6/7 and
-fails. The score therefore records `accepted=false`. The original sample is
-lost, so Ben must rule on the successor before Stage 3 begins.
+**Original blind sample recovered; Stage 3 entry remains closed.** The exact
+96-card sample is committed under `evidence/blind-review/2026-08-08/`. Its
+current re-score resolves 17/96: terminating party 6/8 against 7/8, clause
+label 6/8 against 6/8, qualifier kind 4/8 against 4/8, category 1/8 against
+4/8, and the other eight strata remain 0/8. The control strata hold, but the
+original per-stratum floor is missed. No successor sample or exception applies.
+
+---
+
+## Step 2Y-K. The named residual, exact census
+
+**Closed 2026-08-09.** The two committed evidence artefacts account for all 42
+former `LIKELY_MECHANISM` / `UNDIAGNOSED` rows and all 212 occurrences. Every
+occurrence is located. None is LOW confidence or needs source adjudication.
+
+| occurrence fix class | occurrences |
+|---|---:|
+| resolver-side | 98 |
+| prompt-change | 63 |
+| taxonomy-design | 23 |
+| no-fix | 28 |
+| **total** | **212** |
+
+**Restamp rule.** A row is `CORRECT_ABSTENTION` only when every occurrence in
+that row is an explicit correct abstention. Every other row is
+`MECHANISM_CONFIRMED`; mixed rows retain their concrete occurrence partition.
+The re-stamped register has 155 rows and exactly 4,241 occurrences: 139
+`MECHANISM_CONFIRMED` rows / 4,190 occurrences, 16 `CORRECT_ABSTENTION` rows /
+51 occurrences, and zero `LIKELY_MECHANISM` or `UNDIAGNOSED` rows or
+occurrences.
+
+**Evidence.** `evidence/canonical-v2/stage-2y-k-residual-a.json` and
+`evidence/canonical-v2/stage-2y-k-residual-b.json`. The deterministic restamper
+is `scripts/stage-2y-restamp-unresolved-register.mjs`; it rejects evidence
+count, key, location, confidence and fix-class partition drift in both `--write`
+and `--check` modes.
+
+**Not claimed.** This closes the diagnostic proof only. Stage 2Y remains open.

@@ -2347,9 +2347,9 @@ meets the original per-stratum floor or Ben expressly changes that floor.
 **Added 2026-08-09**, after the corpus's **4,241 reason-code occurrences** were
 inventoried. They are not 4,241 unique claims and not all are unresolved: 787
 are resolved claims carrying publication-quality flags. Most occurrences have
-a confirmed or likely mechanism; about 73 remain a named diagnostic tail owned
-by Step 2Y-K. Stage 2X asked why the resolver refuses. Stage 2Y is about what has
-to change so that it is correct at a scale where nobody is watching.
+a confirmed mechanism or an explicit correct abstention. Stage 2X asked why the
+resolver refuses. Stage 2Y is about what has to change so that it is correct at
+a scale where nobody is watching.
 
 **PROPOSED. Three rulings in §"What this stage needs from Ben" are open** (a
 fourth is answered). Each says what the default is if Ben says nothing, so
@@ -2369,12 +2369,10 @@ evidence must be re-derived from this integrated baseline before each edit.
 branches.* Re-derive before editing. Do not trust a citation merely because the
 named function exists.
 
-*The committed register still stamps 90 rows / 732 occurrences `UNDIAGNOSED`.*
-Those were closed afterwards by `diag-gap-remaining.md`, `diag-gap-reps-mae.md`
-and `diag-gap-defterms-contracts.md`, and the register was never re-stamped. So
-the evidence file currently tells a reader the opposite of what this stage says
-— which is precisely this repository's most expensive failure mode. `_meta`
-carries a correction note; the per-row re-stamp is owned by Step 2Y-0.
+*The register has been re-stamped from the exact Stage 2Y-K residual census.*
+`stage-2y-k-residual-a.json` and `stage-2y-k-residual-b.json` account for all 42
+former `LIKELY_MECHANISM` / `UNDIAGNOSED` rows and 212 occurrences. The register
+now has zero rows in either status. The completed proof is in `COMPLETED.md`.
 
 ## The target this stage is written against
 
@@ -2567,19 +2565,9 @@ About **25 occurrences**. Small, and the point is not the count. A denominator
 that includes correct behaviour cannot tell you when you are finished, and this
 programme has already been misled twice by a number that mixed the two.
 
-## The honest residual
+## Ownership gaps
 
-**About 73 occurrences (1.7%)** are named and located but not diagnosed to a
-fix: TAX_MATTERS' two codes (12), TERMINATION_FEE's sole-remedy codes in
-`sole-remedy-resolution.js` (7), a singleton tail across PROXY_MEETING /
-CONSIDERATION / GUARANTY_FINANCING_PARTY / MERGER_STRUCTURE_CLOSING (12),
-GENERAL_COVENANTS' `PARTY_UNRESOLVED` (3), TERMINATION's `NO_CALENDAR_DATE` (2),
-FINANCING_COVENANTS' `FINANCING_SCOPE_UNCORROBORATED` (4), eight
-CLOSING_CONDITIONS singletons, and 25 MAE orphans concentrated in one Concho run
-that may be content loss rather than a routing bug. They are listed rather than
-counted as diagnosed. Step 2Y-K closes them.
-
-**And a second residual Fable found, which is larger and which I had not
+**A residual Fable found, which is larger and which I had not
 stated: occurrences that are diagnosed but that no step owns.** "Diagnosed"
 and "owned by a step with an acceptance criterion that would notice if it were
 skipped" are different properties, and I had conflated them.
@@ -2918,7 +2906,7 @@ order is:
 
 1. integrate the evidence-producing code baseline and regenerate the register;
 2. define the resolution, review and publication state machine;
-3. complete 2Y-K and re-stamp register confidence honestly;
+3. preserve the completed 2Y-K census and re-stamp register confidence honestly;
 4. preserve exact evidence spans on held and open-world rows;
 5. build the calibration harness and immutable authority schema;
 6. build and sweep a small corroboration vertical slice;
@@ -3384,26 +3372,6 @@ quotes and recorded as approved, rejected or held. A new deal automatically
 creates or strengthens a promotion candidate without writing to the active
 registry. A separately approved appraisal-covenant registry version resolves
 across its three deals.
-
----
-
-## Step 2Y-K. The named residual, one quote-pull each
-
-**What it is.** The ~73 occurrences listed under "The honest residual" above.
-Each gets the same treatment the rest got: pull the quote from the agreement,
-read the code at the cited location, state the mechanism.
-
-**Why.** Because the alternative is what this repository does badly — a tail that
-is "probably the same as the others" and is quietly counted as understood.
-Density elsewhere makes it *likely* each is one of the three named mechanisms,
-but that is inference, not diagnosis, and it is recorded as inference.
-
-**Change.** None until diagnosed. Then wherever the diagnosis points.
-
-**Proves it is done.** Every one of the ~73 carries a mechanism and a fix class,
-or an explicit statement that it is correct behaviour. `sole-remedy-resolution.js`
-and the `TAX_TREATMENT_KIND` corroboration table are read directly, since both
-were flagged uncertain purely for want of time.
 
 ---
 
