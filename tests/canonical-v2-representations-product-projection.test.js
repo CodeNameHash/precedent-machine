@@ -8,6 +8,9 @@ const {
   RepresentationsProductProjectionError,
   projectRepresentationClaims,
 } = require('../lib/canonical-v2/representations-product-projection');
+const {
+  REPRESENTATION_TOPIC_REGISTRY_BINDING_V1,
+} = require('../lib/canonical-v2/contract-bundle');
 const { fieldsForCompareCell } = require('../lib/query/render/deal-compare-cell-fields');
 
 function entry({
@@ -20,9 +23,12 @@ function entry({
 } = {}) {
   const provisionId = `provision-${suffix}`;
   const parent = side === 'PARENT';
-  const quote = key === 'KNOWLEDGE_QUALIFIER'
-    ? `to the Knowledge of ${parent ? 'Parent' : 'the Company'}`
-    : 'true and correct in all material respects';
+  const topic = key === 'REPRESENTATION_TOPIC_PRESENT';
+  const quote = topic
+    ? `${parent ? 'Parent' : 'the Company'} has complied with applicable Law.`
+    : key === 'KNOWLEDGE_QUALIFIER'
+      ? `to the Knowledge of ${parent ? 'Parent' : 'the Company'}`
+      : 'true and correct in all material respects';
   return {
     resolved_claim_definition_key: key,
     concept_key: conceptKey,
@@ -49,6 +55,10 @@ function entry({
         party_making: parent ? 'Parent' : 'the Company',
         qualifier_kind: key === 'KNOWLEDGE_QUALIFIER' ? 'KNOWLEDGE' : 'ACCURACY',
         attachment: { position: 'CHAPEAU', governs_path: null },
+        ...(topic ? {
+          topic_registry_version: REPRESENTATION_TOPIC_REGISTRY_BINDING_V1.registry_version,
+          topic_registry_digest: REPRESENTATION_TOPIC_REGISTRY_BINDING_V1.registry_digest,
+        } : {}),
         ...attributes,
       },
     },
@@ -133,6 +143,109 @@ test('side identity is controlled by the representation maker and must agree wit
     () => projectRepresentationClaims({ resolved_entries: [unresolved] }),
     projectionError('UNRESOLVED_REPRESENTATION_SIDE'),
   );
+});
+
+test('target and parent topic tuples project only with the bound registry identity', () => {
+  const projection = projectRepresentationClaims({
+    resolved_entries: [
+      entry({
+        key: 'REPRESENTATION_TOPIC_PRESENT',
+        value: 'TAX',
+        conceptKey: 'REP-T-TOPIC',
+        suffix: 'target-topic',
+      }),
+      entry({
+        side: 'PARENT',
+        key: 'REPRESENTATION_TOPIC_PRESENT',
+        value: 'SEC_DISCLOSURE',
+        conceptKey: 'REP-B-TOPIC',
+        suffix: 'parent-topic',
+      }),
+    ],
+  });
+  assert.equal(projection.records.length, 2);
+  const target = projection.records.find((record) => record.representation_side === 'TARGET');
+  const parent = projection.records.find((record) => record.representation_side === 'PARENT');
+  assert.equal(target.review.row_key, 'TARGET:REPRESENTATION_TOPIC_PRESENT');
+  assert.equal(parent.review.row_key, 'PARENT:REPRESENTATION_TOPIC_PRESENT');
+  assert.equal(target.market.canonical_unit, 'REPRESENTATION_TOPIC_CODE');
+  assert.equal(parent.query.field_key, 'parentRepresentationFact');
+  assert.equal(target.query.value.dimensions.topic_registry_digest, REPRESENTATION_TOPIC_REGISTRY_BINDING_V1.registry_digest);
+  assert.equal(parent.query.value.dimensions.topic_registry_version, REPRESENTATION_TOPIC_REGISTRY_BINDING_V1.registry_version);
+});
+
+test('topic tuples reject wrong concepts, out-of-enum values, and registry drift', () => {
+  const wrongConcept = entry({
+    side: 'PARENT',
+    key: 'REPRESENTATION_TOPIC_PRESENT',
+    value: 'TAX',
+    conceptKey: 'REP-T-TOPIC',
+    suffix: 'wrong-topic-concept',
+  });
+  assert.throws(
+    () => projectRepresentationClaims({ resolved_entries: [wrongConcept] }),
+    projectionError('SIDE_IDENTITY_MISMATCH'),
+  );
+  const unrelatedConcept = entry({
+    key: 'REPRESENTATION_TOPIC_PRESENT',
+    value: 'TAX',
+    conceptKey: 'REP-T-CAP',
+    suffix: 'unrelated-topic-concept',
+  });
+  assert.throws(
+    () => projectRepresentationClaims({ resolved_entries: [unrelatedConcept] }),
+    projectionError('TOPIC_CONCEPT_MISMATCH'),
+  );
+  const outOfEnum = entry({
+    key: 'REPRESENTATION_TOPIC_PRESENT',
+    value: 'NOT_A_TOPIC',
+    conceptKey: 'REP-T-TOPIC',
+    suffix: 'topic-out-of-enum',
+  });
+  assert.throws(
+    () => projectRepresentationClaims({ resolved_entries: [outOfEnum] }),
+    projectionError('INVALID_GOVERNED_CLAIM'),
+  );
+  const registryDrift = entry({
+    key: 'REPRESENTATION_TOPIC_PRESENT',
+    value: 'TAX',
+    conceptKey: 'REP-T-TOPIC',
+    suffix: 'topic-registry-drift',
+    attributes: { topic_registry_digest: '0'.repeat(64) },
+  });
+  assert.throws(
+    () => projectRepresentationClaims({ resolved_entries: [registryDrift] }),
+    projectionError('TOPIC_REGISTRY_BINDING_MISMATCH'),
+  );
+  const duplicate = entry({
+    key: 'REPRESENTATION_TOPIC_PRESENT',
+    value: 'TAX',
+    conceptKey: 'REP-T-TOPIC',
+    suffix: 'duplicate-topic',
+  });
+  assert.throws(
+    () => projectRepresentationClaims({ resolved_entries: [duplicate, structuredClone(duplicate)] }),
+    projectionError('DUPLICATE_PRODUCT_CLAIM'),
+  );
+});
+
+test('topic concepts reject every non-topic representation claim', () => {
+  for (const [side, conceptKey] of [
+    ['TARGET', 'REP-T-TOPIC'],
+    ['PARENT', 'REP-B-TOPIC'],
+  ]) {
+    for (const [key, value] of [
+      ['REPRESENTATION_ACCURACY_STANDARD', 'MAT_ALL_MATERIAL'],
+      ['KNOWLEDGE_QUALIFIER', true],
+    ]) {
+      assert.throws(
+        () => projectRepresentationClaims({
+          resolved_entries: [entry({ side, key, value, conceptKey, suffix: `${side}-${key}-topic-concept` })],
+        }),
+        projectionError('TOPIC_CONCEPT_MISMATCH'),
+      );
+    }
+  }
 });
 
 test('scope, lookbacks, bring-downs and unfamiliar standards do not enter the governed projection', () => {
