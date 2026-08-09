@@ -21,6 +21,7 @@ const REVIEW_OUTPUT = 'evidence/canonical-v2/stage-2y-f-lexical-classification.h
 const DECISIONS = 'docs/codex-program/notes/stage-2y/lexical-classification-decisions.json';
 const REASON = 'LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE';
 const CLASSES = new Set(['SAME_CONCEPT_REPEAT', 'GENUINE_UNCAPTURED_ITEM', 'AMBIGUOUS_NEEDS_REVIEW']);
+const CLASSIFICATION_SOURCES = new Set(['HUMAN_REVIEW', 'TERRA_ADJUDICATION']);
 
 function json(path) { return JSON.parse(readFileSync(path, 'utf8')); }
 function hash(value) { return sha256Hex(Buffer.isBuffer(value) ? value : Buffer.from(value, 'utf8')); }
@@ -163,9 +164,19 @@ function buildLexicalClassificationInventory({ repoRoot = DEFAULT_ROOT } = {}) {
   return { schema_version: 'STAGE_2Y_F_LEXICAL_CLASSIFICATION/V1', selection_reconciliation: { selector: 'canonical-v2-corpus-review-artifact.mjs:isFinalCorpusRun', selected_run_count: stats.selected_run_count, historical_note_claimed_run_count: 151, difference: stats.selected_run_count - 151, status: 'COUNT_DISCREPANCY_UNRESOLVED' }, stats, roots: list.sort((a, b) => a.deal.localeCompare(b.deal) || a.section_reference.localeCompare(b.section_reference) || a.concept_key.localeCompare(b.concept_key) || a.run_name.localeCompare(b.run_name)) };
 }
 
-function decisionErrors(decision, root) {
+function decisionErrors(decision, root, terraAuthority = null) {
   if (!object(decision) || !CLASSES.has(decision.classification)) return ['DECISION_UNKNOWN_CLASS'];
   const errors = [];
+  const classificationSource = decision.classification_source === undefined ? 'HUMAN_REVIEW' : decision.classification_source;
+  if (!CLASSIFICATION_SOURCES.has(classificationSource)) errors.push('DECISION_CLASSIFICATION_SOURCE_INVALID');
+  if (classificationSource === 'TERRA_ADJUDICATION') {
+    const binding = terraAuthority?.bindings instanceof Map ? terraAuthority.bindings.get(root.root_id) : null;
+    if (!nonEmptyString(decision.terra_call_id) || !nonEmptyString(decision.terra_artifact_id) || !nonEmptyString(decision.terra_decision_id)) errors.push('DECISION_TERRA_PROVENANCE_MISSING');
+    if (!binding || terraAuthority?.kind !== 'STAGE_2Y_F_TERRA_ADJUDICATION_AUTHORITY/V1'
+      || decision.terra_artifact_id !== terraAuthority.artifact_id
+      || decision.terra_call_id !== binding.terra_call_id
+      || decision.terra_decision_id !== binding.terra_decision_id) errors.push('DECISION_TERRA_AUTHORITY_UNVERIFIED');
+  }
   if (decision.evidence_fingerprint !== evidenceFingerprint(root)) errors.push('DECISION_STALE');
   if (!nonEmptyString(decision.rationale)) errors.push('DECISION_RATIONALE_MISSING');
   if (!nonEmptyString(decision.reviewed_by)) errors.push('DECISION_REVIEWER_MISSING');
@@ -184,12 +195,12 @@ function decisionErrors(decision, root) {
   if (decision.classification === 'AMBIGUOUS_NEEDS_REVIEW' && !nonEmptyString(decision.review_question)) errors.push('DECISION_INCOMPLETE');
   return errors;
 }
-function applyClassificationDecisions(inventory, decisions) {
+function applyClassificationDecisions(inventory, decisions, { terraAuthority = null } = {}) {
   const input = decisions || { decisions: [] }; const errors = [];
   if (!object(input) || input.schema_version !== 'STAGE_2Y_F_LEXICAL_DECISIONS/V1' || !Array.isArray(input.decisions)) errors.push('DECISIONS_MALFORMED');
   const byId = new Map(); for (const decision of input.decisions || []) { if (byId.has(decision.root_id)) errors.push('DECISION_DUPLICATE'); byId.set(decision.root_id, decision); }
   const rootIds = new Set(inventory.roots.map((root) => root.root_id)); for (const id of byId.keys()) if (!rootIds.has(id)) errors.push('DECISION_UNKNOWN_ROOT');
-  const roots = inventory.roots.map((root) => { const decision = byId.get(root.root_id); const rootDecisionErrors = decision ? decisionErrors(decision, root) : []; let classification; let classification_source; if (!root.evidence_valid) { classification = 'INVALID_INPUT'; classification_source = 'EVIDENCE_VALIDATION'; } else if (!decision || rootDecisionErrors.length) { classification = 'AMBIGUOUS_NEEDS_REVIEW'; classification_source = 'DEFAULT_FAIL_CLOSED'; errors.push(...rootDecisionErrors); } else { classification = decision.classification; classification_source = 'HUMAN_REVIEW'; }
+  const roots = inventory.roots.map((root) => { const decision = byId.get(root.root_id); const rootDecisionErrors = decision ? decisionErrors(decision, root, terraAuthority) : []; let classification; let classification_source; if (!root.evidence_valid) { classification = 'INVALID_INPUT'; classification_source = 'EVIDENCE_VALIDATION'; } else if (!decision || rootDecisionErrors.length) { classification = 'AMBIGUOUS_NEEDS_REVIEW'; classification_source = 'DEFAULT_FAIL_CLOSED'; errors.push(...rootDecisionErrors); } else { classification = decision.classification; classification_source = decision.classification_source === undefined ? 'HUMAN_REVIEW' : decision.classification_source; }
     return { ...root, classification, classification_source, decision: decision || null, decision_error: rootDecisionErrors.length ? rootDecisionErrors : null }; });
   const counts = Object.fromEntries(['SAME_CONCEPT_REPEAT', 'GENUINE_UNCAPTURED_ITEM', 'AMBIGUOUS_NEEDS_REVIEW', 'INVALID_INPUT'].map((name) => [name, roots.filter((root) => root.classification === name).length]));
   return { ...inventory, roots, decision_validation_errors: [...new Set(errors)].sort(), classification_counts: counts };
