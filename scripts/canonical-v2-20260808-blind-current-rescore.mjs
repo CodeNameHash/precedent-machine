@@ -31,6 +31,71 @@ const OUTPUT_PATH = 'evidence/blind-review/2026-08-08/blind-current-rescore.json
 const TRACE_PATH = 'evidence/blind-review/2026-08-08/blind-current-rescore-trace.json';
 const SAMPLE_CUTOFF = '2026-08-08T23:59:59.999Z';
 const OUTPUT_KEYS = Object.freeze(['id', 'deal', 'family', 'orig_reason', 'now', 'source']);
+const SAMPLE_CARD_KEYS = Object.freeze(['deal', 'family', 'section', 'quote', 'claim_key', 'id']);
+const KEY_CARD_KEYS = Object.freeze([...SAMPLE_CARD_KEYS, '_reason']);
+const RESERVED_DISPOSITION_CODES = new Set(['NOT_LOCATED_IN_OUTPUT', 'ARTIFACT_MISSING']);
+
+// A family is replayed only when its resolver route changed after the sample
+// was drawn, or when the original rescore already replayed that route. The
+// commit identities make the choice reproducible without making a score depend
+// on the checkout's current git history.
+const FAMILY_SOURCE_MODES = Object.freeze({
+  TERMINATION: Object.freeze({
+    source: 'replay', baseline_source: 'replay',
+    resolver_paths: Object.freeze(['lib/canonical-v2/native-producer/candidate-resolution.js']),
+    change_commits: Object.freeze(['0076f460d01dc8f1c9b8bb4d70e7ca9cc92a33a7']),
+    reason: 'ORIGINAL_RESCORE_REPLAYED_CHANGED_TERMINATION_ROUTE',
+  }),
+  REPRESENTATIONS: Object.freeze({
+    source: 'replay', baseline_source: 'replay',
+    resolver_paths: Object.freeze([
+      'lib/canonical-v2/native-producer/candidate-resolution.js',
+      'lib/canonical-v2/native-producer/same-deal-defined-term-resolution.js',
+    ]),
+    change_commits: Object.freeze(['cfaf7433da71bb297d9d75ce68006a3746fd86b9']),
+    reason: 'ORIGINAL_RESCORE_REPLAYED_CHANGED_REPRESENTATIONS_ROUTE',
+  }),
+  INTERIM_OPERATING: Object.freeze({
+    source: 'replay', baseline_source: 'replay',
+    resolver_paths: Object.freeze(['lib/canonical-v2/native-producer/corroboration-ladder.js']),
+    change_commits: Object.freeze(['632374392f8df2e64a76d7ab000af4f092140b7d']),
+    reason: 'ORIGINAL_RESCORE_REPLAYED_CHANGED_INTERIM_OPERATING_ROUTE',
+  }),
+  MAE_DEFINITION: Object.freeze({
+    source: 'replay', baseline_source: 'replay',
+    resolver_paths: Object.freeze([
+      'lib/canonical-v2/native-producer/candidate-resolution.js',
+      'lib/canonical-v2/native-producer/duplicate-suppression.js',
+    ]),
+    change_commits: Object.freeze(['8e736cf833e4814939a6bc2f8911949d367e7d74']),
+    reason: 'CURRENT_ROUTE_CHANGED_AFTER_SAMPLE',
+  }),
+  DNO_INDEMNIFICATION: Object.freeze({
+    source: 'replay', baseline_source: 'committed',
+    resolver_paths: Object.freeze([
+      'lib/canonical-v2/native-producer/candidate-resolution.js',
+      'lib/normalize-numeric.js',
+    ]),
+    change_commits: Object.freeze(['7b6390bfb01ba3bebb7813071d16118523aaa4c0']),
+    reason: 'CURRENT_ROUTE_CHANGED_AFTER_SAMPLE',
+  }),
+  FINANCING_COVENANTS: Object.freeze({
+    source: 'committed', baseline_source: 'committed', resolver_paths: Object.freeze([]), change_commits: Object.freeze([]),
+    reason: 'NO_RESOLVER_ROUTE_CHANGE_AFTER_SAMPLE',
+  }),
+  CLOSING_CONDITIONS: Object.freeze({
+    source: 'committed', baseline_source: 'committed', resolver_paths: Object.freeze([]), change_commits: Object.freeze([]),
+    reason: 'NO_RESOLVER_ROUTE_CHANGE_AFTER_SAMPLE',
+  }),
+  NO_SHOP: Object.freeze({
+    source: 'committed', baseline_source: 'committed', resolver_paths: Object.freeze([]), change_commits: Object.freeze([]),
+    reason: 'NO_RESOLVER_ROUTE_CHANGE_AFTER_SAMPLE',
+  }),
+  PROXY_MEETING: Object.freeze({
+    source: 'committed', baseline_source: 'committed', resolver_paths: Object.freeze([]), change_commits: Object.freeze([]),
+    reason: 'NO_RESOLVER_ROUTE_CHANGE_AFTER_SAMPLE',
+  }),
+});
 
 class CurrentBlindRescoreError extends Error {
   constructor(code, message, details = {}) {
@@ -51,6 +116,59 @@ function readJson(path) {
   } catch (error) {
     fail('JSON_INPUT_INVALID', `cannot read ${path}`, { cause: error.message });
   }
+}
+
+function exactKeys(value, keys) {
+  return value && typeof value === 'object' && !Array.isArray(value)
+    && canonicalJson(Object.keys(value).sort()) === canonicalJson([...keys].sort());
+}
+
+function assertOriginalSampleJoin(sample, key) {
+  if (!Array.isArray(sample) || !Array.isArray(key) || sample.length !== 96 || key.length !== 96) {
+    fail('ORIGINAL_SAMPLE_CARD_COUNT_INVALID', 'sample and key must each contain exactly 96 cards');
+  }
+  const sampleById = new Map();
+  const keyById = new Map();
+  for (const card of sample) {
+    if (!exactKeys(card, SAMPLE_CARD_KEYS) || typeof card.id !== 'string' || sampleById.has(card.id)) {
+      fail('ORIGINAL_SAMPLE_SCHEMA_INVALID', 'every sample card must have the exact public card schema and unique id', { id: card?.id });
+    }
+    sampleById.set(card.id, card);
+  }
+  for (const card of key) {
+    if (!exactKeys(card, KEY_CARD_KEYS) || typeof card.id !== 'string' || keyById.has(card.id)
+      || typeof card._reason !== 'string' || card._reason.length === 0) {
+      fail('ORIGINAL_KEY_SCHEMA_INVALID', 'every key card must have the exact keyed card schema, reason, and unique id', { id: card?.id });
+    }
+    keyById.set(card.id, card);
+  }
+  if (sampleById.size !== 96 || keyById.size !== 96
+    || [...sampleById.keys()].some((id) => !keyById.has(id))) {
+    fail('ORIGINAL_SAMPLE_ID_JOIN_INVALID', 'sample and key must join exactly on 96 IDs');
+  }
+  for (const [id, card] of sampleById) {
+    const keyed = keyById.get(id);
+    for (const field of SAMPLE_CARD_KEYS) {
+      if (card[field] !== keyed[field]) {
+        fail('ORIGINAL_SAMPLE_KEY_CONTENT_MISMATCH', 'sample and key cards must agree on every non-blind field', { id, field });
+      }
+    }
+  }
+  return Object.freeze({ sampleById, keyById });
+}
+
+function assertStrata(key) {
+  const strata = Map.groupBy(key, (card) => card._reason);
+  if (strata.size !== 12 || [...strata.values()].some((cards) => cards.length !== 8)) {
+    fail('ORIGINAL_SAMPLE_STRATA_INVALID', 'the original sample must retain twelve strata of eight cards');
+  }
+  return strata;
+}
+
+function sourceModeForFamily(family) {
+  const mode = FAMILY_SOURCE_MODES[family];
+  if (!mode) fail('FAMILY_SOURCE_MODE_MISSING', 'every sample family must have an explicit source mode', { family });
+  return mode;
 }
 
 function normalise(value) {
@@ -260,11 +378,17 @@ async function resolveMatches({ repoRoot, card, matched, resolveRun = resolveSou
 }
 
 function familyModes(cards) {
-  return [...new Set(cards.map((card) => card.family))].sort().map((family) => Object.freeze({
-    family,
-    mode: 'replay',
-    reason: 'CURRENT_GENERIC_RESOLVER_AND_CONTRACT_BUNDLE_POSTDATE_2026_08_08_SAMPLE',
-  }));
+  return [...new Set(cards.map((card) => card.family))].sort().map((family) => {
+    const mode = sourceModeForFamily(family);
+    return Object.freeze({
+      family,
+      source: mode.source,
+      baseline_source: mode.baseline_source,
+      resolver_paths: mode.resolver_paths,
+      change_commits: mode.change_commits,
+      reason: mode.reason,
+    });
+  });
 }
 
 function successorComparison({ baseline, key, successor }) {
@@ -300,23 +424,45 @@ async function buildCurrentBlindRescore({
 } = {}) {
   const sample = readJson(resolve(repoRoot, samplePath));
   const key = readJson(resolve(repoRoot, keyPath));
-  if (!Array.isArray(sample) || !Array.isArray(key) || sample.length !== 96 || key.length !== 96) {
-    fail('ORIGINAL_SAMPLE_CARD_COUNT_INVALID', 'sample and key must each contain exactly 96 cards');
-  }
-  const keyById = new Map(key.map((row) => [row.id, row]));
-  if (keyById.size !== 96 || sample.some((row) => !keyById.has(row.id))) fail('ORIGINAL_SAMPLE_ID_JOIN_INVALID', 'sample and key must join exactly on 96 IDs');
+  const { keyById } = assertOriginalSampleJoin(sample, key);
+  assertStrata(key);
+  const baseline = readJson(resolve(repoRoot, baselinePath));
+  assertOutput(baseline, sample, key);
+  const baselineById = new Map(baseline.map((row) => [row.id, row]));
   const discovered = historicalCandidates({ repoRoot });
   const inventory = candidates || discovered.candidates;
-  const runner = runnerModule || await import(pathToFileURL(resolve(repoRoot, 'scripts/canonical-v2-live-extraction-run.mjs')));
+  let runner = runnerModule;
+  const getRunner = async () => {
+    if (!runner) runner = await import(pathToFileURL(resolve(repoRoot, 'scripts/canonical-v2-live-extraction-run.mjs')));
+    return runner;
+  };
   const replayCache = new Map();
   const cachedResolveRun = async (args) => {
-    if (!replayCache.has(args.sourceRun)) replayCache.set(args.sourceRun, Promise.resolve(resolveRun({ ...args, runner })));
+    if (!replayCache.has(args.sourceRun)) {
+      replayCache.set(args.sourceRun, getRunner().then((currentRunner) => resolveRun({ ...args, runner: currentRunner })));
+    }
     return replayCache.get(args.sourceRun);
   };
   const rows = [];
   const matchTrace = [];
   for (const card of sample) {
     const keyedCard = Object.freeze({ ...card, _reason: keyById.get(card.id)._reason });
+    const sourceMode = sourceModeForFamily(card.family);
+    const origReason = keyById.get(card.id)._reason;
+    if (sourceMode.source === 'committed') {
+      const committed = baselineById.get(card.id);
+      if (!committed) fail('COMMITTED_BASELINE_CARD_MISSING', 'committed source requires its original card disposition', { id: card.id });
+      rows.push(Object.freeze({ id: card.id, deal: card.deal, family: card.family, orig_reason: origReason, now: committed.now, source: 'committed' }));
+      matchTrace.push(Object.freeze({
+        id: card.id,
+        source: 'committed',
+        match_method: 'committed',
+        matched_candidates: [],
+        observations: [],
+        now: committed.now,
+      }));
+      continue;
+    }
     const match = matchCard(keyedCard, inventory);
     const resolved = match.method === 'not_located'
       ? {
@@ -325,10 +471,10 @@ async function buildCurrentBlindRescore({
         observations: [],
       }
       : await resolveMatches({ repoRoot, card, matched: match.candidates, resolveRun: cachedResolveRun });
-    const origReason = keyById.get(card.id)._reason;
     rows.push(Object.freeze({ id: card.id, deal: card.deal, family: card.family, orig_reason: origReason, now: resolved.now, source: 'replay' }));
     matchTrace.push(Object.freeze({
       id: card.id,
+      source: 'replay',
       match_method: match.method,
       matched_candidates: match.candidates.map((candidate) => ({ source_run: candidate.source_run, candidate_id: candidate.candidate_id, replayable: candidate.replayable })),
       observations: resolved.observations.map((observation) => ({
@@ -341,27 +487,48 @@ async function buildCurrentBlindRescore({
       now: resolved.now,
     }));
   }
-  assertOutput(rows, sample);
+  assertOutput(rows, sample, key);
   const trace = Object.freeze({
     schema_version: 'BLIND_CURRENT_RESCORE_TRACE/V1',
-    replay_family_modes: familyModes(sample),
-    matching: { exact_first: true, fallback_only_after_exact_miss: true, normaliser: 'zero-width-strip + NFKC + whitespace-collapse' },
+    family_source_modes: familyModes(sample),
+    matching: {
+      exact_first: true,
+      fallback_only_after_exact_miss: true,
+      normaliser: 'zero-width-strip + NFKC + whitespace-collapse',
+      fallback_card_ids: matchTrace.filter((card) => card.match_method === 'fallback').map((card) => card.id),
+    },
     cards: matchTrace,
     successor_comparison: successorComparison({
-      baseline: readJson(resolve(repoRoot, baselinePath)), key, successor: readJson(resolve(repoRoot, successorPath)),
+      baseline, key, successor: readJson(resolve(repoRoot, successorPath)),
     }),
   });
   return Object.freeze({ rows: Object.freeze(rows), trace });
 }
 
-function assertOutput(rows, sample) {
+function assertOutput(rows, sample, key = null) {
   if (!Array.isArray(rows) || rows.length !== 96) fail('OUTPUT_CARD_COUNT_INVALID', 'current output must contain exactly 96 rows');
+  const sampleById = new Map(sample.map((card) => [card.id, card]));
+  const keyById = key === null ? null : new Map(key.map((card) => [card.id, card]));
   const ids = new Set(rows.map((row) => row.id));
   if (ids.size !== 96 || sample.some((card) => !ids.has(card.id))) fail('OUTPUT_ID_SET_INVALID', 'current output must contain every original sample ID exactly once');
   for (const row of rows) {
     if (canonicalJson(Object.keys(row).sort()) !== canonicalJson([...OUTPUT_KEYS].sort())) fail('OUTPUT_SCHEMA_INVALID', 'each output row must have exactly the public schema keys', { id: row.id });
+    const card = sampleById.get(row.id);
+    if (!card || row.deal !== card.deal || row.family !== card.family) {
+      fail('OUTPUT_CARD_JOIN_INVALID', 'each output row must carry its original deal and family', { id: row.id });
+    }
+    if (keyById && row.orig_reason !== keyById.get(row.id)?._reason) {
+      fail('OUTPUT_REASON_JOIN_INVALID', 'each output row must carry its original reason from the key', { id: row.id });
+    }
+    if (!['replay', 'committed'].includes(row.source)) {
+      fail('OUTPUT_SOURCE_INVALID', 'each output row must declare replay or committed source', { id: row.id, source: row.source });
+    }
     if (!/^(RESOLVED \[[A-Z0-9_]+\]|REVIEW:[A-Z0-9_]+|OPEN_WORLD:[A-Z0-9_]+|NOT_LOCATED_IN_OUTPUT|ARTIFACT_MISSING)$/.test(row.now)) {
       fail('OUTPUT_DISPOSITION_INVALID', 'current disposition is outside the governed grammar', { id: row.id, now: row.now });
+    }
+    const qualifiedCode = row.now.match(/^(?:REVIEW|OPEN_WORLD):([A-Z0-9_]+)$/)?.[1];
+    if (qualifiedCode && RESERVED_DISPOSITION_CODES.has(qualifiedCode)) {
+      fail('OUTPUT_DISPOSITION_INVALID', 'location and artefact states must not be folded into review or open-world output', { id: row.id, now: row.now });
     }
   }
 }
@@ -381,13 +548,18 @@ if (isMain) main().catch((error) => {
 
 export {
   CurrentBlindRescoreError,
+  FAMILY_SOURCE_MODES,
   OUTPUT_KEYS,
+  assertOriginalSampleJoin,
   assertOutput,
+  assertStrata,
   buildCurrentBlindRescore,
   fallbackMatch,
   historicalCandidates,
   matchCard,
+  matchCurrentOutput,
   normalise,
   outcomeText,
   resolveMatches,
+  sourceModeForFamily,
 };
