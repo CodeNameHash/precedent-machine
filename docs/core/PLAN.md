@@ -2597,25 +2597,11 @@ modiv parallel two-step. Any deal the detector cannot place returns
 
 ## Step 2X-G. The open-world promotion loop
 
-**What it is.** Open-world capture works — 160 of 204 runs produce candidates,
-up to 194 in one run, 3,031 corpus-wide. **Nothing is ever promoted to a mapped
-concept.** One hand-authored pin exists, marked `NOT_YET_GOVERNED`.
-
-**Why.** Without promotion the same shape re-opens on every new deal forever,
-and supplying more approved phrases by hand is the only lever — which does not
-scale and is the wrong instrument. This is also the mechanism that makes the
-standing rule above pay off over time.
-
-**Change.** A promotion path gated on corpus recurrence, using the machinery in
-`lib/expected-sets.js`. **Ben's ruling, 2026-08-08:** promote when a concept
-appears in three or four deals, with a confidence check and a check that it does
-not collide with an existing concept — not a percentage. A percentage is the
-wrong instrument for a concept that surfaces a handful of times; at seven deals
-one recurrence is 14%.
-
-**Proves it is done.** A promotion produces a governed concept, and re-running
-an earlier deal resolves the shape that previously went to open world, with the
-before and after counts cited from evidence rather than asserted.
+**MOVED TO COMPLETED.md (2026-08-08)** — gate + first promotion
+(`REQUEST_RETURN_OR_DESTRUCTION_OF_INFORMATION` → `NOSOL-CEASE`). Skywater
+replay: open_world 11→10. Scan and further candidates:
+`docs/codex-program/notes/step-2x-g-open-world-promotion.md`. Remaining PASS
+scan rows need Ben/taxonomy before promote; do not auto-apply.
 
 ---
 

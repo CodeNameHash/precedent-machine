@@ -1303,3 +1303,30 @@ included the retired code). Post-regeneration counts unchanged: 2 trees, 7 path
 nodes, 6 assertion nodes, `resolved=32`, `open_world=100`, 1 adapter residual.
 
 Evidence and commands: `docs/codex-program/notes/step-2x-l1-limb-disposition.md`.
+
+---
+
+## Step 2X-G. The open-world promotion loop
+
+**Closed 2026-08-08** for the gate and the first landed promotion. Further
+shapes still need taxonomy or pattern work; the loop is the mechanism, not a
+one-shot empty of the open-world table.
+
+**Gate.** `lib/canonical-v2/open-world-promotion-gate.js`, re-exported from
+`lib/expected-sets.js`. Ben's ruling (DECISIONS.md §14): promote at **three or
+four deals**, with confidence and fail-closed collision — never a percentage.
+Refuses 2X-B HOLD scaffolds and new names that collide with 2X-J CONSUME.
+
+**Corpus scan.** `scripts/audit/step-2x-g-open-world-promotion-scan.js` over
+169 newest evidence resolutions: **27** shapes with ≥3 deals, **27** gate PASS.
+Only one PASS row names an ungate target today:
+`REQUEST_RETURN_OR_DESTRUCTION_OF_INFORMATION` (6 deals). The rest are
+`NEEDS_REVIEW` / `NEEDS_CLAIM_DEFINITION_TAXONOMY` / `PRIMARY_PATTERN_WIDEN`.
+
+**First promotion proved on replay.** Skywater no-shop committed evidence
+(`skywater-no-shop-20260808-r1`): open_world **11 → 10**,
+`NO_SHOP_RUBRIC_OPEN_WORLD` **1 → 0**, one resolved claim under `NOSOL-CEASE` /
+`NO_SHOP_CEASE_ACTION`. Test:
+`tests/canonical-v2-open-world-promotion-gate.test.js` (7/7).
+
+Evidence and commands: `docs/codex-program/notes/step-2x-g-open-world-promotion.md`.
