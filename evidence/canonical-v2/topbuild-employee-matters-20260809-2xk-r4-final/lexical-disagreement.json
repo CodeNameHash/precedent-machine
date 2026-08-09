@@ -1,0 +1,4279 @@
+{
+  "3.1": {
+    "schema_version": "LEXICAL_DISAGREEMENT_RECEIPT/V1",
+    "lexicon_version": 16,
+    "lexicon_content_hash": "4eb1bfb365d0aee6569e5c38ce4a4c40fb30bbb43caf5ee941a20cc6354e7ec3",
+    "section_ref": "3.1",
+    "text_sha256": "4ebe8295a6df8109ae876c13bcb97d8b44b1cfacc26e29769cd2777ecfd85a72",
+    "candidate_digest": "8f50e8441781b5ee628b47fc1fc3d07a812534d9fd32f1e811b28b5be7fda8d8",
+    "family_outcomes": [
+      {
+        "family": "ANTI-AGREEMENTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-BURDEN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-CONSULT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-COOPERATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-EFFORTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-FILING",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "ANTI-FILING",
+            "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+            "start": 16850,
+            "end": 16857,
+            "excerpt": " 1976, as amended, and the rules and regulations promulgated thereunder (the “HSR Act”), and any other applicable antitrust, competition or similar Laws of any for",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-INFO",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-LITIGATION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-NOACTION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-NOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-STRATEGY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-WITHDRAW",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-B-REP",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "COND-B-REP",
+            "pattern_id": "COND-B-REP:PHRASE:COMPANY_REPRESENTATIONS",
+            "start": 4,
+            "end": 49,
+            "excerpt": "3.1 Representations and Warranties of the Company. Except as set forth (i) in the Company Reports filed with the SEC from and aft",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-COV",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-MAE",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 2040,
+            "end": 2071,
+            "excerpt": "ority, are not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 2916,
+            "end": 2947,
+            "excerpt": "ority, are not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 3802,
+            "end": 3833,
+            "excerpt": "curities Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 4455,
+            "end": 4486,
+            "excerpt": " to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 8958,
+            "end": 8989,
+            "excerpt": "ment underlying such failure constitutes, has resulted in, or contributed to, a Company Material Adverse Effect; and\n(J) a decline in the price or trading volume of the Company’s common sto",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 9377,
+            "end": 9408,
+            "excerpt": "lying such decline or change constitutes, has resulted in, or contributed to, a Company Material Adverse Effect.\nAs used in this Agreement, “Affiliate” means with respect to any Person, a",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 18464,
+            "end": 18495,
+            "excerpt": "n would not, individually or in the aggregate, be reasonably expected to have a Company Material Adverse Effect or prevent or materially delay the ability of the Company to consummate the Tra",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 19790,
+            "end": 19821,
+            "excerpt": "t, individually or in the aggregate, would not be reasonably expected to have a Company Material Adverse Effect.\n(iii) No Default or Event of Default (each, as such term is defined in each ap",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:CONTINUING",
+            "start": 19938,
+            "end": 19951,
+            "excerpt": "t (each, as such term is defined in each applicable Indenture) has occurred and is continuing under any Indenture or the Senior Notes.\n(iv) Since September 29, 2024, neither",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 20528,
+            "end": 20559,
+            "excerpt": "s would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect.\n18\n(e) Company Reports; Financial Statements.\n(i) The Company has filed or fur",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 28249,
+            "end": 28280,
+            "excerpt": ", individually or in the aggregate, has had or is reasonably expected to have a Company Material Adverse Effect. (ii) Since January 1, 2026 through the date hereof, there has not been any act",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 29055,
+            "end": 29086,
+            "excerpt": "ries, which, individually or in the aggregate, is reasonably expected to have a Company Material Adverse Effect. Neither the Company nor any of its Subsidiaries is a party to or subject to th",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 29338,
+            "end": 29369,
+            "excerpt": "ntity which, individually or in the aggregate, is reasonably expected to have a Company Material Adverse Effect. Neither the Company nor any of its Subsidiaries or any of their respective pro",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 29578,
+            "end": 29609,
+            "excerpt": " default under, any Order which, individually or in the aggregate, would have a Company Material Adverse Effect.\n(ii) Neither the Company nor any of its Subsidiaries has any liabilities or ob",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 30191,
+            "end": 30222,
+            "excerpt": ") that, individually or in the aggregate, are not reasonably expected to have a Company Material Adverse Effect.\n(iii) The term “Knowledge,” when used in this Agreement (i) with respect t",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 30900,
+            "end": 30931,
+            "excerpt": "s would not, individually or in the aggregate, be reasonably expected to have a Company Material Adverse Effect, (A) all Benefit Plans are in compliance with their terms and with applicable L",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 32521,
+            "end": 32552,
+            "excerpt": "s would not, individually or in the aggregate, be reasonably expected to have a Company Material Adverse Effect, (A) each Benefit Plan that is an “employee pension benefit plan” within th",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 33213,
+            "end": 33244,
+            "excerpt": "s would not, individually or in the aggregate, be reasonably expected to have a Company Material Adverse Effect, there have been no “prohibited transactions,” as that term is defined in S",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 33696,
+            "end": 33727,
+            "excerpt": "s would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect, with respect to each Benefit Plan that is subject to Title IV or Section 302 o",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 34690,
+            "end": 34721,
+            "excerpt": "s would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect, there does not now exist, nor do any circumstances exist that would reasonably",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 35419,
+            "end": 35450,
+            "excerpt": "s would not, individually or in the aggregate, be reasonably expected to have a Company Material Adverse Effect, none of the Company and its Subsidiaries, nor any other entity which is requir",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 36641,
+            "end": 36672,
+            "excerpt": "s would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect, each Benefit Plan that constitutes a “nonqualified deferred compensation pla",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 37679,
+            "end": 37710,
+            "excerpt": "s would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect, any other Company Service Provider to any payment or benefit (including any en",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 38200,
+            "end": 38231,
+            "excerpt": "s would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect, any other Company Service Provider, or result in any limitation on the right o",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 39731,
+            "end": 39762,
+            "excerpt": "s would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect, no Benefit Plan provides welfare benefits, including death or medical benefits",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 40139,
+            "end": 40170,
+            "excerpt": "s would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect, each Benefit Plan maintained outside of the United States (A) that is required",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 41132,
+            "end": 41163,
+            "excerpt": "s would not, individually or in the aggregate, be reasonably expected to have a Company Material Adverse Effect, (A) the Company Options, Company Restricted Stock Awards, RSU Awards and PSU A",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 43012,
+            "end": 43043,
+            "excerpt": "t would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect. Except with respect to regulatory matters covered by Section ‎4.7, no invest",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 43469,
+            "end": 43500,
+            "excerpt": "s would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect. The Company and its Subsidiaries each has obtained and is in compliance with a",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 43911,
+            "end": 43942,
+            "excerpt": "s would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect.\n(ii) Without limiting the other provisions of this Section ‎3.1(i), and exce",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 44125,
+            "end": 44156,
+            "excerpt": "d would not be reasonably expected to, individually or in the aggregate, have a Company Material Adverse Effect, the Company and its Subsidiaries are and, since January 1, 2021, have been in ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 45086,
+            "end": 45117,
+            "excerpt": "s would not, individually or in the aggregate, be reasonably expected to have a Company Material Adverse Effect, each of the Company and its Subsidiaries is and will remain in compliance in a",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 47270,
+            "end": 47301,
+            "excerpt": "s that, individually or in the aggregate, are not reasonably expected to have a Company Material Adverse Effect: (A) the Company and its Subsidiaries are and since January 1, 2023 have been i",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 50923,
+            "end": 50954,
+            "excerpt": "s would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect:\n(i) The Company and each of its Subsidiaries (A) have prepared in good faith a",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 57635,
+            "end": 57666,
+            "excerpt": "s would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, neither the Company nor any of its Subsidiaries is the subject of any proceedi",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 58249,
+            "end": 58280,
+            "excerpt": "s would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, there has not been, since the Applicable Date, any labor strike, dispute, walk",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 58546,
+            "end": 58577,
+            "excerpt": "s would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, the Company and its Subsidiaries are in compliance with all applicable Laws in",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 58955,
+            "end": 58986,
+            "excerpt": "s that, individually or in the aggregate, are not reasonably expected to have a Company Material Adverse Effect, with respect to Company Employees and independent contractors, the Company and",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 60214,
+            "end": 60245,
+            "excerpt": "s would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, the Company and each of its Subsidiaries has the right to use all Intellectual",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 60706,
+            "end": 60737,
+            "excerpt": "s would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, since January 1, 2023: (A) no written claim of invalidity, unenforceability or",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 62491,
+            "end": 62522,
+            "excerpt": "s would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, the Company and its Subsidiaries have taken commercially reasonable measures t",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 63038,
+            "end": 63069,
+            "excerpt": "s would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect.\n30\n(iv) Except as would not be reasonably expected to have, individually or in",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 63167,
+            "end": 63198,
+            "excerpt": "s would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, (A) to the Knowledge of the Company, since January 1, 2023, the software, hard",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 63948,
+            "end": 63979,
+            "excerpt": "s would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, (i) since January 1, 2023, the Company and its Subsidiaries have not experienc",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 66485,
+            "end": 66516,
+            "excerpt": "s would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, all fire and casualty, general liability, motor carrier liability, business in",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 72978,
+            "end": 73009,
+            "excerpt": "s would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, (A) neither the Company nor any of its Subsidiaries nor, to the Knowledge of t",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 74085,
+            "end": 74116,
+            "excerpt": "s would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, (A) the Company or a Subsidiary of the Company, as applicable, owns good, defe",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 75290,
+            "end": 75321,
+            "excerpt": "s would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, (1) each Company Real Property Lease is valid, binding and in full force and e",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 76084,
+            "end": 76115,
+            "excerpt": "d would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, (A) there are no leases, subleases, licenses, rights or other agreements affec",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 76883,
+            "end": 76914,
+            "excerpt": "d would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, neither the Company nor any of its Subsidiaries is currently subleasing, licen",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 77658,
+            "end": 77689,
+            "excerpt": "h would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect.\n(v) Except as does not and would not be reasonably expected to have, individua",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 77796,
+            "end": 77827,
+            "excerpt": "d would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, all buildings, structures, fixtures and improvements and all other physical el",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COND-MAE",
+            "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+            "start": 78814,
+            "end": 78845,
+            "excerpt": "s would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, during the twelve (12) months prior to the date of this Agreement, no Major Cu",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 53,
+        "matched_count": 0,
+        "unmatched_count": 53,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-REG",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-S-REP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-DISSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-PERSHARE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-RATIO",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-16B",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-ACCESS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CONSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CVR",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DELIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-EMPLOYEE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FDACOMMS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FINANCING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FURTHER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-INDEMN",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "COV-INDEMN",
+            "pattern_id": "COV-INDEMN:PHRASE:INDEMN",
+            "start": 48620,
+            "end": 48635,
+            "excerpt": "any of its Subsidiaries (or any predecessor entity) has assumed or provided any indemnification with respect to or has otherwise become subject to, as a result of a Contract, ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-INDEMN",
+            "pattern_id": "COV-INDEMN:PHRASE:INDEMN",
+            "start": 72377,
+            "end": 72392,
+            "excerpt": "ch any Major Supplier is a counterparty (the “Supplier Contracts”); (Q) any indemnification agreement between any Indemnified Party, on the one hand, and the Company or an",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-INDEMN",
+            "pattern_id": "COV-INDEMN:PHRASE:INDEMN",
+            "start": 79987,
+            "end": 80002,
+            "excerpt": "der which such fee, commission or other like payment is payable and any related indemnification and other agreements.\n(t) Information Supplied. None of the information supplie",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 3,
+        "matched_count": 0,
+        "unmatched_count": 3,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LITNOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MARKETING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MEETING",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 17189,
+            "end": 17208,
+            "excerpt": "o the matters to be submitted to the stockholders of the Company at the Company Stockholder Meeting and the matters to be submitted to the stockholders of Parent at the Parent Sto",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 17285,
+            "end": 17304,
+            "excerpt": "ing and the matters to be submitted to the stockholders of Parent at the Parent Stockholder Meeting (together with any amendments or supplements thereto, the “Joint Proxy Statem",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 80719,
+            "end": 80738,
+            "excerpt": "stockholders and Parent’s stockholders and at the time of each of the Company Stockholder Meeting and Parent Stockholder Meeting, contain any untrue statement of a material fact",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 80750,
+            "end": 80769,
+            "excerpt": "ckholders and at the time of each of the Company Stockholder Meeting and Parent Stockholder Meeting, contain any untrue statement of a material fact or omit to state a material fa",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 4,
+        "matched_count": 0,
+        "unmatched_count": 4,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MERGESUB",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 1208,
+            "end": 1218,
+            "excerpt": "nably apparent), the Company hereby represents and warrants to Parent, Titanium Merger Sub and Forward Merger Sub that:\n(a) Organization, Good Standing and Qualification.",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 1231,
+            "end": 1241,
+            "excerpt": "mpany hereby represents and warrants to Parent, Titanium Merger Sub and Forward Merger Sub that:\n(a) Organization, Good Standing and Qualification. The Company is a corpo",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 15537,
+            "end": 15547,
+            "excerpt": " this Agreement constitutes the valid and binding agreement of Parent, Titanium Merger Sub and Forward Merger Sub, constitutes a valid and binding agreement of the Compan",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 15560,
+            "end": 15570,
+            "excerpt": "utes the valid and binding agreement of Parent, Titanium Merger Sub and Forward Merger Sub, constitutes a valid and binding agreement of the Company enforceable against t",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 46434,
+            "end": 46444,
+            "excerpt": " Statutes. Assuming that the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(m) are true and correct, (i)",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 46457,
+            "end": 46467,
+            "excerpt": "t the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(m) are true and correct, (i) no restrictions contai",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 81329,
+            "end": 81339,
+            "excerpt": "rporated by reference therein based on information supplied by Parent, Titanium Merger Sub or Forward Merger Sub for inclusion or incorporation by reference therein.\n(u) ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 81351,
+            "end": 81361,
+            "excerpt": "therein based on information supplied by Parent, Titanium Merger Sub or Forward Merger Sub for inclusion or incorporation by reference therein.\n(u) Opinion of Financial A",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 81784,
+            "end": 81794,
+            "excerpt": "on to be received by the holders of Company Shares (other than Parent, Titanium Merger Sub, Forward Merger Sub and their respective Affiliates) in the Mergers, taken toge",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 81804,
+            "end": 81814,
+            "excerpt": " the holders of Company Shares (other than Parent, Titanium Merger Sub, Forward Merger Sub and their respective Affiliates) in the Mergers, taken together as an integrate",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 82834,
+            "end": 82844,
+            "excerpt": "e certificate delivered pursuant to Section ‎5.3(b), none of Parent, Titanium Merger Sub, Forward Merger Sub nor any other Person on behalf of Parent, Titanium Merger S",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 82854,
+            "end": 82864,
+            "excerpt": "red pursuant to Section ‎5.3(b), none of Parent, Titanium Merger Sub, Forward Merger Sub nor any other Person on behalf of Parent, Titanium Merger Sub, Forward Merger S",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 82916,
+            "end": 82926,
+            "excerpt": "rger Sub, Forward Merger Sub nor any other Person on behalf of Parent, Titanium Merger Sub, Forward Merger Sub or any other Subsidiary of Parent makes any other express o",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 82936,
+            "end": 82946,
+            "excerpt": "rger Sub nor any other Person on behalf of Parent, Titanium Merger Sub, Forward Merger Sub or any other Subsidiary of Parent makes any other express or implied representa",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 83078,
+            "end": 83088,
+            "excerpt": "xpress or implied representation or warranty with respect to Parent or Titanium Merger Sub, Forward Merger Sub or any Subsidiary of Parent or the Transactions and any oth",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 83098,
+            "end": 83108,
+            "excerpt": "presentation or warranty with respect to Parent or Titanium Merger Sub, Forward Merger Sub or any Subsidiary of Parent or the Transactions and any other assets, rights or",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 83262,
+            "end": 83272,
+            "excerpt": "hts or obligations to be transferred hereunder or pursuant hereto, and Titanium Merger Sub and Forward Merger Sub disclaim any other representations or warranties, whethe",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 83285,
+            "end": 83295,
+            "excerpt": "e transferred hereunder or pursuant hereto, and Titanium Merger Sub and Forward Merger Sub disclaim any other representations or warranties, whether made by Parent, Titan",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 83379,
+            "end": 83389,
+            "excerpt": "claim any other representations or warranties, whether made by Parent, Titanium Merger Sub or Forward Merger Sub or any of their Affiliates or their respective directors,",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 83401,
+            "end": 83411,
+            "excerpt": "entations or warranties, whether made by Parent, Titanium Merger Sub or Forward Merger Sub or any of their Affiliates or their respective directors, officers, managers, e",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 20,
+        "matched_count": 0,
+        "unmatched_count": 20,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-NOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYAGENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYOFF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PROXY",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 17053,
+            "end": 17068,
+            "excerpt": "es of the New York Stock Exchange (the “NYSE”), (D) with the SEC of a joint proxy statement/prospectus in definitive form relating to the matters to be submitted to the st",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 17372,
+            "end": 17387,
+            "excerpt": "lder Meeting (together with any amendments or supplements thereto, the “Joint Proxy Statement/Prospectus”), and declaration of effectiveness under the Securities Act, of a",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+            "start": 17494,
+            "end": 17502,
+            "excerpt": "ation of effectiveness under the Securities Act, of a registration statement on Form S-4 with respect to the issuance of the Parent Shares in the Titanium Merger, in wh",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 17596,
+            "end": 17611,
+            "excerpt": "to the issuance of the Parent Shares in the Titanium Merger, in which the Joint Proxy Statement/Prospectus will be included as a prospectus (such Form S-4, and any amendments ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+            "start": 17662,
+            "end": 17670,
+            "excerpt": "ich the Joint Proxy Statement/Prospectus will be included as a prospectus (such Form S-4, and any amendments or supplements thereto, the “Form S-4”), (E) with the S",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+            "start": 17722,
+            "end": 17730,
+            "excerpt": " a prospectus (such Form S-4, and any amendments or supplements thereto, the “Form S-4”), (E) with the SEC under the Exchange Act and the rules and regulations prom",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+            "start": 80172,
+            "end": 80180,
+            "excerpt": " supplied by the Company for inclusion or incorporation by reference in (i) the Form S-4 will, at the time the Form S-4 or any amendment or supplement thereto is declar",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+            "start": 80203,
+            "end": 80211,
+            "excerpt": "clusion or incorporation by reference in (i) the Form S-4 will, at the time the Form S-4 or any amendment or supplement thereto is declared effective under the Securiti",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 80551,
+            "end": 80566,
+            "excerpt": " the circumstances under which they were made, not misleading or (ii) the Joint Proxy Statement/Prospectus will, at the time it is first distributed to the Company’s stockho",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 81016,
+            "end": 81031,
+            "excerpt": "ight of the circumstances under which they were made, not misleading. The Joint Proxy Statement/Prospectus will comply as to form in all material respects with the requirement",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 10,
+        "matched_count": 0,
+        "unmatched_count": 10,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PUBLICITY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-RESIGN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-SECREPORT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-TAKEOVER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-MAE",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 2048,
+            "end": 2071,
+            "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 2924,
+            "end": 2947,
+            "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 3810,
+            "end": 3833,
+            "excerpt": " Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 4085,
+            "end": 4108,
+            "excerpt": " aggregate with all other Effects, is or would reasonably be expected to have a material adverse effect on the business, condition (financial or otherwise) or results of operations of",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+            "start": 4396,
+            "end": 4429,
+            "excerpt": " of the following, alone or in combination, shall be deemed to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or dev",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 4463,
+            "end": 4486,
+            "excerpt": "titute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:REGEX:DISPROPORTIONATE_STEM",
+            "start": 5084,
+            "end": 5100,
+            "excerpt": "l government shutdown, except to the extent such changes or developments have a disproportionate effect on the Company and its Subsidiaries, taken as a whole, relative to other",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:GENERAL_ECONOMIC_CONDITIONS",
+            "start": 5445,
+            "end": 5472,
+            "excerpt": "its Subsidiaries operate (including such changes or developments resulting from general economic conditions), except to the extent that such changes or developments have a disproportionat",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:REGEX:DISPROPORTIONATE_STEM",
+            "start": 5537,
+            "end": 5553,
+            "excerpt": "omic conditions), except to the extent that such changes or developments have a disproportionate effect on the Company and its Subsidiaries, taken as a whole, relative to other",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+            "start": 6398,
+            "end": 6407,
+            "excerpt": "consummation of the Mergers;\n(D) changes or developments arising out of acts of terrorism or sabotage, civil disturbances or unrest, war (whether or not declared), the c",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+            "start": 6663,
+            "end": 6680,
+            "excerpt": "conditions or other acts of God (including storms, earthquakes, floods or other natural disasters or changes due to the outbreak or continuation of any epidemic, pandemic or oth",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+            "start": 6735,
+            "end": 6743,
+            "excerpt": "r other natural disasters or changes due to the outbreak or continuation of any epidemic, pandemic or other health crisis), including any actual or threatened material ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+            "start": 6745,
+            "end": 6753,
+            "excerpt": "tural disasters or changes due to the outbreak or continuation of any epidemic, pandemic or other health crisis), including any actual or threatened material worsening ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:REGEX:DISPROPORTIONATE_STEM",
+            "start": 6891,
+            "end": 6907,
+            "excerpt": "ed material worsening of such conditions, except to the extent that they have a disproportionate effect on the Company and its Subsidiaries, taken as a whole, relative to other",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:REGEX:DISPROPORTIONATE_STEM",
+            "start": 8002,
+            "end": 8018,
+            "excerpt": "etations thereof, except to the extent that such changes or developments have a disproportionate effect on the Company and its Subsidiaries, taken as a whole, relative to other",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:REGEX:DISPROPORTIONATE_STEM",
+            "start": 8438,
+            "end": 8454,
+            "excerpt": "etations thereof, except to the extent that such changes or developments have a disproportionate effect on the Company and its Subsidiaries, taken as a whole, relative to other",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+            "start": 8679,
+            "end": 8690,
+            "excerpt": "idiaries operate;\n(I) any failure by the Company to meet any internal or public projections, forecasts or estimates of revenues or earnings for any period; provided that t",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 8966,
+            "end": 8989,
+            "excerpt": "erlying such failure constitutes, has resulted in, or contributed to, a Company Material Adverse Effect; and\n(J) a decline in the price or trading volume of the Company’s common sto",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 9385,
+            "end": 9408,
+            "excerpt": "ch decline or change constitutes, has resulted in, or contributed to, a Company Material Adverse Effect.\nAs used in this Agreement, “Affiliate” means with respect to any Person, a",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 18472,
+            "end": 18495,
+            "excerpt": "not, individually or in the aggregate, be reasonably expected to have a Company Material Adverse Effect or prevent or materially delay the ability of the Company to consummate the Tra",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 19798,
+            "end": 19821,
+            "excerpt": "idually or in the aggregate, would not be reasonably expected to have a Company Material Adverse Effect.\n(iii) No Default or Event of Default (each, as such term is defined in each ap",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 20536,
+            "end": 20559,
+            "excerpt": "not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect.\n18\n(e) Company Reports; Financial Statements.\n(i) The Company has filed or fur",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 28257,
+            "end": 28280,
+            "excerpt": "dually or in the aggregate, has had or is reasonably expected to have a Company Material Adverse Effect. (ii) Since January 1, 2026 through the date hereof, there has not been any act",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 29063,
+            "end": 29086,
+            "excerpt": "ich, individually or in the aggregate, is reasonably expected to have a Company Material Adverse Effect. Neither the Company nor any of its Subsidiaries is a party to or subject to th",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 29346,
+            "end": 29369,
+            "excerpt": "ich, individually or in the aggregate, is reasonably expected to have a Company Material Adverse Effect. Neither the Company nor any of its Subsidiaries or any of their respective pro",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 29586,
+            "end": 29609,
+            "excerpt": " under, any Order which, individually or in the aggregate, would have a Company Material Adverse Effect.\n(ii) Neither the Company nor any of its Subsidiaries has any liabilities or ob",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 30199,
+            "end": 30222,
+            "excerpt": "individually or in the aggregate, are not reasonably expected to have a Company Material Adverse Effect.\n(iii) The term “Knowledge,” when used in this Agreement (i) with respect t",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 30908,
+            "end": 30931,
+            "excerpt": "not, individually or in the aggregate, be reasonably expected to have a Company Material Adverse Effect, (A) all Benefit Plans are in compliance with their terms and with applicable L",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 32529,
+            "end": 32552,
+            "excerpt": "not, individually or in the aggregate, be reasonably expected to have a Company Material Adverse Effect, (A) each Benefit Plan that is an “employee pension benefit plan” within th",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 33221,
+            "end": 33244,
+            "excerpt": "not, individually or in the aggregate, be reasonably expected to have a Company Material Adverse Effect, there have been no “prohibited transactions,” as that term is defined in S",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 33704,
+            "end": 33727,
+            "excerpt": "not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect, with respect to each Benefit Plan that is subject to Title IV or Section 302 o",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 34698,
+            "end": 34721,
+            "excerpt": "not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect, there does not now exist, nor do any circumstances exist that would reasonably",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 35427,
+            "end": 35450,
+            "excerpt": "not, individually or in the aggregate, be reasonably expected to have a Company Material Adverse Effect, none of the Company and its Subsidiaries, nor any other entity which is requir",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 36649,
+            "end": 36672,
+            "excerpt": "not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect, each Benefit Plan that constitutes a “nonqualified deferred compensation pla",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 37687,
+            "end": 37710,
+            "excerpt": "not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect, any other Company Service Provider to any payment or benefit (including any en",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 38208,
+            "end": 38231,
+            "excerpt": "not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect, any other Company Service Provider, or result in any limitation on the right o",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 39739,
+            "end": 39762,
+            "excerpt": "not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect, no Benefit Plan provides welfare benefits, including death or medical benefits",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 40147,
+            "end": 40170,
+            "excerpt": "not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect, each Benefit Plan maintained outside of the United States (A) that is required",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 41140,
+            "end": 41163,
+            "excerpt": "not, individually or in the aggregate, be reasonably expected to have a Company Material Adverse Effect, (A) the Company Options, Company Restricted Stock Awards, RSU Awards and PSU A",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 43020,
+            "end": 43043,
+            "excerpt": "not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect. Except with respect to regulatory matters covered by Section ‎4.7, no invest",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 43477,
+            "end": 43500,
+            "excerpt": "not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect. The Company and its Subsidiaries each has obtained and is in compliance with a",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 43919,
+            "end": 43942,
+            "excerpt": "not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect.\n(ii) Without limiting the other provisions of this Section ‎3.1(i), and exce",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 44133,
+            "end": 44156,
+            "excerpt": "not be reasonably expected to, individually or in the aggregate, have a Company Material Adverse Effect, the Company and its Subsidiaries are and, since January 1, 2021, have been in ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 45094,
+            "end": 45117,
+            "excerpt": "not, individually or in the aggregate, be reasonably expected to have a Company Material Adverse Effect, each of the Company and its Subsidiaries is and will remain in compliance in a",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+            "start": 45465,
+            "end": 45474,
+            "excerpt": "sets Control (“OFAC”), and all applicable anti-money laundering and counter-terrorism financing provisions of the Bank Secrecy Act and all regulations issued pursuan",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 47278,
+            "end": 47301,
+            "excerpt": "individually or in the aggregate, are not reasonably expected to have a Company Material Adverse Effect: (A) the Company and its Subsidiaries are and since January 1, 2023 have been i",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 50931,
+            "end": 50954,
+            "excerpt": "not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect:\n(i) The Company and each of its Subsidiaries (A) have prepared in good faith a",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 57643,
+            "end": 57666,
+            "excerpt": "not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, neither the Company nor any of its Subsidiaries is the subject of any proceedi",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 58257,
+            "end": 58280,
+            "excerpt": "not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, there has not been, since the Applicable Date, any labor strike, dispute, walk",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 58554,
+            "end": 58577,
+            "excerpt": "not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, the Company and its Subsidiaries are in compliance with all applicable Laws in",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 58963,
+            "end": 58986,
+            "excerpt": "individually or in the aggregate, are not reasonably expected to have a Company Material Adverse Effect, with respect to Company Employees and independent contractors, the Company and",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 60222,
+            "end": 60245,
+            "excerpt": "not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, the Company and each of its Subsidiaries has the right to use all Intellectual",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 60714,
+            "end": 60737,
+            "excerpt": "not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, since January 1, 2023: (A) no written claim of invalidity, unenforceability or",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 62499,
+            "end": 62522,
+            "excerpt": "not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, the Company and its Subsidiaries have taken commercially reasonable measures t",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 63046,
+            "end": 63069,
+            "excerpt": "not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect.\n30\n(iv) Except as would not be reasonably expected to have, individually or in",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 63175,
+            "end": 63198,
+            "excerpt": "not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, (A) to the Knowledge of the Company, since January 1, 2023, the software, hard",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 63956,
+            "end": 63979,
+            "excerpt": "not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, (i) since January 1, 2023, the Company and its Subsidiaries have not experienc",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 66493,
+            "end": 66516,
+            "excerpt": "not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, all fire and casualty, general liability, motor carrier liability, business in",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 72986,
+            "end": 73009,
+            "excerpt": "not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, (A) neither the Company nor any of its Subsidiaries nor, to the Knowledge of t",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 74093,
+            "end": 74116,
+            "excerpt": "not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, (A) the Company or a Subsidiary of the Company, as applicable, owns good, defe",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 75298,
+            "end": 75321,
+            "excerpt": "not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, (1) each Company Real Property Lease is valid, binding and in full force and e",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 76092,
+            "end": 76115,
+            "excerpt": "not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, (A) there are no leases, subleases, licenses, rights or other agreements affec",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 76891,
+            "end": 76914,
+            "excerpt": "not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, neither the Company nor any of its Subsidiaries is currently subleasing, licen",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 77666,
+            "end": 77689,
+            "excerpt": "not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect.\n(v) Except as does not and would not be reasonably expected to have, individua",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 77804,
+            "end": 77827,
+            "excerpt": "not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, all buildings, structures, fixtures and improvements and all other physical el",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+            "start": 78822,
+            "end": 78845,
+            "excerpt": "not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, during the twelve (12) months prior to the date of this Agreement, no Major Cu",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+            "start": 79555,
+            "end": 79570,
+            "excerpt": "nsactions, except that the Company has employed Goldman Sachs & Co. LLC and RBC Capital Markets, LLC (the “Company Financial Advisors”) as its financial advisors whose fee",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 67,
+        "matched_count": 0,
+        "unmatched_count": 67,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-WILLFUL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-COORD",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-SPECIAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-BENEF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-INDEM",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-DELIVERY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-PERF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ACCOUNTING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CAPEX",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "IOC-CAPEX",
+            "pattern_id": "IOC-CAPEX:PHRASE:CAPEX",
+            "start": 70135,
+            "end": 70155,
+            "excerpt": "ial to the Company and its Subsidiaries, taken as a whole; (K) any Contract for capital expenditures or the acquisition or construction of fixed assets which requires aggregate pay",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CHARTER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-COMP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CONTRACT",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "IOC-CONTRACT",
+            "pattern_id": "IOC-CONTRACT:PHRASE:CONTRACT",
+            "start": 19279,
+            "end": 19296,
+            "excerpt": "under, the creation or acceleration of any obligations pursuant to, any Company Material Contract binding upon the Company or any of its Subsidiaries or the creation of a Lien o",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "IOC-CONTRACT",
+            "pattern_id": "IOC-CONTRACT:PHRASE:CONTRACT",
+            "start": 72553,
+            "end": 72570,
+            "excerpt": " of its Subsidiaries, on the other hand; and (R) any Contract deemed to be a “material contract” (as such term is defined in Item 601(b)(10) of Regulation S-K of the SEC) (a",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "IOC-CONTRACT",
+            "pattern_id": "IOC-CONTRACT:PHRASE:CONTRACT",
+            "start": 73185,
+            "end": 73202,
+            "excerpt": "other party, is in material breach of or default under the terms of any Company Material Contract; (B) each Company Material Contract is a valid and binding obligation of the Co",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "IOC-CONTRACT",
+            "pattern_id": "IOC-CONTRACT:PHRASE:CONTRACT",
+            "start": 73221,
+            "end": 73238,
+            "excerpt": "f or default under the terms of any Company Material Contract; (B) each Company Material Contract is a valid and binding obligation of the Company or its Subsidiaries which is p",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "IOC-CONTRACT",
+            "pattern_id": "IOC-CONTRACT:PHRASE:CONTRACT",
+            "start": 73777,
+            "end": 73794,
+            "excerpt": "the Knowledge of the Company, no party has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "IOC-CONTRACT",
+            "pattern_id": "IOC-CONTRACT:PHRASE:CONTRACT",
+            "start": 73921,
+            "end": 73938,
+            "excerpt": "ed without redaction as exhibits to the Company Reports, a copy of each Company Material Contract has been made available to Parent.\n(q) Real Property.\n(i) Except as would not b",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 6,
+        "matched_count": 0,
+        "unmatched_count": 6,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DEBT",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "IOC-DEBT",
+            "pattern_id": "IOC-DEBT:PHRASE:DEBT",
+            "start": 67350,
+            "end": 67381,
+            "excerpt": "lowing Contracts (excluding any Benefit Plan): (A) any Contract with respect to indebtedness for borrowed money, any financial guaranty thereof or the mortgaging pledging or otherwise placing",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DIVIDEND",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ISSUE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-MERGE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-TAX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MERGER-STRUCTURE",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 28500,
+            "end": 28514,
+            "excerpt": "n during the period from the date of this Agreement through the Titanium Merger Effective Time, would have required the prior consent of Parent pursuant to Sections ‎4.1(vi",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MISC-BOILERPLATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-EXCEPT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-MATCH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-NOTICE",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:REGEX:NOTIFY_STEM",
+            "start": 49639,
+            "end": 49651,
+            "excerpt": " whether solid, liquid or gaseous in nature: (a) the presence of which requires notification, investigation, or remediation under any Environmental Law, (b) which is define",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 59102,
+            "end": 59116,
+            "excerpt": "and independent contractors, the Company and its Subsidiaries have not received written notice of any pending or threatened (A) unfair labor practice charge or complaint befo",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 61459,
+            "end": 61473,
+            "excerpt": "e or similar governmental agencies worldwide; (C) no person or entity has given written notice to the Company or any of its Subsidiaries that the use of any Material Intellec",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 75659,
+            "end": 75673,
+            "excerpt": " received from any lessor or sublessor of such Company Leased Real Property any written notice of, nor does there exist, any default, event or circumstance that with notice o",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 4,
+        "matched_count": 0,
+        "unmatched_count": 4,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-PROHIBIT",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:REGEX:SOLICIT_STEM",
+            "start": 82443,
+            "end": 82455,
+            "excerpt": "sition, joint venture or strategic alliance or other similar transaction or any solicitation of proxies in respect of such transactions with any third party or its Subsidia",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-REMATCH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REMEDY-SPECIFIC-PERFORMANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NOOTHERREPS",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "REP-B-NOOTHERREPS",
+            "pattern_id": "REP-B-NOOTHERREPS:PHRASE:NOOTHERREPS",
+            "start": 82559,
+            "end": 82583,
+            "excerpt": "f such transactions with any third party or its Subsidiaries or Affiliates.\n(w) No Other Representations or Warranties. The Company acknowledges that except for the representations and",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CAP",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:AUTHORIZED_CAPITAL_STOCK",
+            "start": 10039,
+            "end": 10063,
+            "excerpt": "wnership interests, by contract or otherwise.\n15\n(b) Capital Structure.\n(i) The authorized capital stock of the Company consists of (A) 250,000,000 Company Shares, of which 28,142,327 ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+            "start": 10050,
+            "end": 10063,
+            "excerpt": "terests, by contract or otherwise.\n15\n(b) Capital Structure.\n(i) The authorized capital stock of the Company consists of (A) 250,000,000 Company Shares, of which 28,142,327 ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:RESTRICTED_STOCK",
+            "start": 10274,
+            "end": 10290,
+            "excerpt": "business on April 17, 2026 (including 119,994 Company Shares subject to Company Restricted Stock Awards) and (B) 10,000,000 shares of preferred stock, par value $0.01 per share",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:PREFERRED_STOCK",
+            "start": 10328,
+            "end": 10343,
+            "excerpt": "Shares subject to Company Restricted Stock Awards) and (B) 10,000,000 shares of preferred stock, par value $0.01 per share, none of which were outstanding as of the date hereo",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:PAR_VALUE",
+            "start": 10345,
+            "end": 10354,
+            "excerpt": " Company Restricted Stock Awards) and (B) 10,000,000 shares of preferred stock, par value $0.01 per share, none of which were outstanding as of the date hereof. All of t",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:RESERVED_FOR_ISSUANCE",
+            "start": 10602,
+            "end": 10623,
+            "excerpt": "id and nonassessable. As of April 17, 2026, other than 1,600,514 Company Shares reserved for issuance under the Company’s Amended and Restated 2015 Long Term Stock Incentive Plan ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:INCENTIVE_PLAN",
+            "start": 10688,
+            "end": 10702,
+            "excerpt": "ed for issuance under the Company’s Amended and Restated 2015 Long Term Stock Incentive Plan (the “A&R 2015 Plan”), the Company has no Company Shares reserved for issua",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:RESERVED_FOR_ISSUANCE",
+            "start": 10764,
+            "end": 10785,
+            "excerpt": "ock Incentive Plan (the “A&R 2015 Plan”), the Company has no Company Shares reserved for issuance.\n(ii) As of April 17, 2026, (A) 54,756 Company Shares were issuable upon the ex",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:ACRONYM:RSU",
+            "start": 11002,
+            "end": 11005,
+            "excerpt": "se price of $96.60, (B) 44,526 Company Shares were issuable upon the vesting of RSU Awards and (C) 75,468 Company Shares were issuable upon the vesting of PSU Awar",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:ACRONYM:PSU",
+            "start": 11077,
+            "end": 11080,
+            "excerpt": "g of RSU Awards and (C) 75,468 Company Shares were issuable upon the vesting of PSU Awards (assuming achievement of the applicable performance goals at the target ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:RESTRICTED_STOCK",
+            "start": 11288,
+            "end": 11304,
+            "excerpt": "closure Letter contains a correct and complete list of Company Options, Company Restricted Stock Awards, RSU Awards and PSU Awards outstanding under the A&R 2015 Plan as of the",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:ACRONYM:RSU",
+            "start": 11313,
+            "end": 11316,
+            "excerpt": " correct and complete list of Company Options, Company Restricted Stock Awards, RSU Awards and PSU Awards outstanding under the A&R 2015 Plan as of the close of bu",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:ACRONYM:PSU",
+            "start": 11328,
+            "end": 11331,
+            "excerpt": "mplete list of Company Options, Company Restricted Stock Awards, RSU Awards and PSU Awards outstanding under the A&R 2015 Plan as of the close of business on April",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:RESTRICTED_STOCK",
+            "start": 11554,
+            "end": 11570,
+            "excerpt": " grant, term, number of Company Shares subject to such Company Options, Company Restricted Stock Awards, RSU Awards or PSU Awards (including the number of Company Shares assumi",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:ACRONYM:RSU",
+            "start": 11579,
+            "end": 11582,
+            "excerpt": "ompany Shares subject to such Company Options, Company Restricted Stock Awards, RSU Awards or PSU Awards (including the number of Company Shares assuming achieveme",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:ACRONYM:PSU",
+            "start": 11593,
+            "end": 11596,
+            "excerpt": "subject to such Company Options, Company Restricted Stock Awards, RSU Awards or PSU Awards (including the number of Company Shares assuming achievement of the appl",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+            "start": 11798,
+            "end": 11811,
+            "excerpt": "el), exercise price and the vesting schedule. Each of the outstanding shares of capital stock or other equity securities of each of the Company’s Subsidiaries is duly auth",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+            "start": 12637,
+            "end": 12650,
+            "excerpt": "et forth in Sections ‎3.1(b)(i) and ‎3.1(b)(ii), there are no (A) shares of capital stock or other equity securities of the Company, (B) preemptive or other outstanding ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+            "start": 13004,
+            "end": 13017,
+            "excerpt": "e Company or any of its Significant Subsidiaries to issue or sell any shares of capital stock or other equity securities of the Company or any of its Significant Subsidiarie",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+            "start": 13132,
+            "end": 13143,
+            "excerpt": "Company or any of its Significant Subsidiaries or (C) securities or obligations convertible or exchangeable into or exercisable for, or giving any Person a right to subscr",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+            "start": 13627,
+            "end": 13640,
+            "excerpt": ", issued or outstanding. None of the Company’s Subsidiaries own any shares of capital stock of the Company.\n16\n(iv) Upon any issuance of any Company Shares in accordance w",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+            "start": 13940,
+            "end": 13953,
+            "excerpt": "ompany nor any of its Subsidiaries owns beneficially or of record any shares of capital stock or other Company Equity Rights in any other Person that is not a Subsidiary of ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+            "start": 14315,
+            "end": 14326,
+            "excerpt": " or other obligations the holders of which have the right to vote (or which are convertible into or exercisable for securities having the right to vote) with the stockhold",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+            "start": 14602,
+            "end": 14615,
+            "excerpt": "Company or any of its Subsidiaries is a party with respect to the voting of the capital stock and other Company Equity Rights of the Company or any of its Subsidiaries.\n(c) ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+            "start": 15257,
+            "end": 15270,
+            "excerpt": " Stockholder Approval is the only vote of the holders of any of the Company’s capital stock or the capital stock of any of its Subsidiaries necessary in connection with co",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+            "start": 15278,
+            "end": 15291,
+            "excerpt": " is the only vote of the holders of any of the Company’s capital stock or the capital stock of any of its Subsidiaries necessary in connection with consummation of the Mer",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:STOCK_OPTION",
+            "start": 31832,
+            "end": 31844,
+            "excerpt": "pensation, deferred compensation, pension, retirement, severance, tax gross-up, stock option, stock purchase, stock appreciation rights, stock-based, incentive and bonus pl",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:RESTRICTED_STOCK",
+            "start": 41198,
+            "end": 41214,
+            "excerpt": "ted to have a Company Material Adverse Effect, (A) the Company Options, Company Restricted Stock Awards, RSU Awards and PSU Awards outstanding as of the date hereof have been g",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:ACRONYM:RSU",
+            "start": 41223,
+            "end": 41226,
+            "excerpt": "erial Adverse Effect, (A) the Company Options, Company Restricted Stock Awards, RSU Awards and PSU Awards outstanding as of the date hereof have been granted in ac",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:ACRONYM:PSU",
+            "start": 41238,
+            "end": 41241,
+            "excerpt": "ffect, (A) the Company Options, Company Restricted Stock Awards, RSU Awards and PSU Awards outstanding as of the date hereof have been granted in accordance with t",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+            "start": 56695,
+            "end": 56708,
+            "excerpt": "foreign income, profits, capital gain, franchise, gross receipts, customs duty, capital stock, severances, stamp, payroll, sales, employment, unemployment, disability, use, ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+            "start": 68603,
+            "end": 68616,
+            "excerpt": "ectly or indirectly (by merger or otherwise), of assets composing a business or capital stock or other equity interests of another Person (other than acquisitions or disposi",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+            "start": 68626,
+            "end": 68642,
+            "excerpt": " merger or otherwise), of assets composing a business or capital stock or other equity interests of another Person (other than acquisitions or dispositions of assets, capital s",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+            "start": 68713,
+            "end": 68726,
+            "excerpt": "interests of another Person (other than acquisitions or dispositions of assets, capital stock and other equity interests by and among the Company and its Subsidiaries) in an",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+            "start": 68737,
+            "end": 68753,
+            "excerpt": "son (other than acquisitions or dispositions of assets, capital stock and other equity interests by and among the Company and its Subsidiaries) in an amount in excess of $10,00",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+            "start": 69690,
+            "end": 69706,
+            "excerpt": "quired to, or have the option or right to, purchase or sell, as applicable, any equity interests, businesses, lines of business, divisions, joint ventures, partnerships or othe",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 36,
+        "matched_count": 0,
+        "unmatched_count": 36,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CONTRACTS",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "REP-T-CONTRACTS",
+            "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+            "start": 72850,
+            "end": 72876,
+            "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CONTRACTS",
+            "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+            "start": 72858,
+            "end": 72876,
+            "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CONTRACTS",
+            "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+            "start": 73811,
+            "end": 73837,
+            "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CONTRACTS",
+            "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+            "start": 73819,
+            "end": 73837,
+            "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 4,
+        "matched_count": 0,
+        "unmatched_count": 4,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NOOTHERREPS",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "REP-T-NOOTHERREPS",
+            "pattern_id": "REP-T-NOOTHERREPS:PHRASE:NOOTHERREPS",
+            "start": 82559,
+            "end": 82583,
+            "excerpt": "f such transactions with any third party or its Subsidiaries or Affiliates.\n(w) No Other Representations or Warranties. The Company acknowledges that except for the representations and",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-FIRPTA",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TRANSFER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TREATMENT",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "TAXM-TREATMENT",
+            "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+            "start": 56437,
+            "end": 56459,
+            "excerpt": "nably be expected to prevent the Integrated Transaction from qualifying for the Intended Tax Treatment.\n28\nAs used in this Agreement, (A) the term “Tax” (including, with correlat",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-REVERSE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TARGET",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-BREACH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-LEGAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-MUTUAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-NOVOTE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-OUTSIDE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-RECOMMEND",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-SUPERIOR",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      }
+    ],
+    "counts": {
+      "families_total": 98,
+      "families_all_matched": 79,
+      "families_unmatched_signals": 19,
+      "families_uncovered": 0,
+      "total_pattern_hits": 216,
+      "total_matched": 0,
+      "total_unmatched": 216,
+      "total_irreproducible": 0
+    },
+    "lexical_disagreement_receipt_id": "9679021228e63c0593aeb8aeaf3fcabf2f9e0b3cffa40716716ec822592a2ffe"
+  },
+  "4.11": {
+    "schema_version": "LEXICAL_DISAGREEMENT_RECEIPT/V1",
+    "lexicon_version": 16,
+    "lexicon_content_hash": "4eb1bfb365d0aee6569e5c38ce4a4c40fb30bbb43caf5ee941a20cc6354e7ec3",
+    "section_ref": "4.11",
+    "text_sha256": "33aee275dc15bf5715bea96cdbdfd963c965b14ad7eb431d42af97eccbf73d8e",
+    "candidate_digest": "27c91564d3e85dbae1350c7eb5a4e78c2a3dd035919fcf47de5771c6d9584d5e",
+    "family_outcomes": [
+      {
+        "family": "ANTI-AGREEMENTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-BURDEN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-CONSULT",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "ANTI-CONSULT",
+            "pattern_id": "ANTI-CONSULT:PHRASE:GOOD_FAITH_COMMENTS",
+            "start": 7864,
+            "end": 7886,
+            "excerpt": "s since the preliminary calculations were provided to Parent. The Company shall consider in good faith all reasonable comments reasonably promptly provided by Parent pursuant to this",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-COOPERATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-EFFORTS",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:COMMERCIAL_REASONABLE",
+            "start": 3217,
+            "end": 3248,
+            "excerpt": "ective Time, Parent shall, or shall cause the Forward Surviving Company to take commercially reasonable efforts to (i) recognize all service of such Continuing Employees with the Company or a",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-FILING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-INFO",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-LITIGATION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-NOACTION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-NOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-STRATEGY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-WITHDRAW",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-B-REP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-COV",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-MAE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-REG",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-S-REP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-DISSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-PERSHARE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-RATIO",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-16B",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-ACCESS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CONSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CVR",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DELIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-EMPLOYEE",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "COV-EMPLOYEE",
+            "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+            "start": 427,
+            "end": 447,
+            "excerpt": "Company and its Affiliates following the Titanium Merger Effective Time (the “Continuing Employees”) (i) a base salary or regular hourly wage rate, as applicable, that is not l",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-EMPLOYEE",
+            "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+            "start": 1036,
+            "end": 1056,
+            "excerpt": "ior to the Titanium Merger Effective Time, (iii) solely to the extent that such Continuing Employees are eligible for target long-term incentive compensation opportunities provided",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-EMPLOYEE",
+            "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+            "start": 1241,
+            "end": 1261,
+            "excerpt": "ubsidiaries as of immediately prior to the Titanium Merger Effective Time, such Continuing Employees shall be eligible for consideration to participate in Parent’s long-term ince",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-EMPLOYEE",
+            "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+            "start": 2140,
+            "end": 2160,
+            "excerpt": "use the Company or the Forward Surviving Company, as applicable, to provide the Continuing Employees who experience a qualifying termination of employment during the Continuation P",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-EMPLOYEE",
+            "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+            "start": 2387,
+            "end": 2407,
+            "excerpt": "(a) of the Company Disclosure Letter. Until such time as Parent shall cause the Continuing Employees to participate in the applicable compensation and employee benefit plans mainta",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-EMPLOYEE",
+            "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+            "start": 2613,
+            "end": 2633,
+            "excerpt": "llectively, the “Parent Benefit Plans”), the continued participation of the Continuing Employees in the Benefit Plans as in effect at the Titanium Merger Effective Time shall b",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-EMPLOYEE",
+            "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+            "start": 2981,
+            "end": 3001,
+            "excerpt": "arent Benefit Plans).\n(b) With respect to any Parent Benefit Plans in which the Continuing Employees or their respective beneficiaries and dependents are otherwise eligible to part",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-EMPLOYEE",
+            "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+            "start": 3286,
+            "end": 3306,
+            "excerpt": "ny to take commercially reasonable efforts to (i) recognize all service of such Continuing Employees with the Company or any of its Subsidiaries, and their respective predecessors ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-EMPLOYEE",
+            "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+            "start": 4930,
+            "end": 4950,
+            "excerpt": "and change of control programs, plans or agreements between the Company and the Continuing Employees, bonuses, incentives, severance payments or deferred compensation in existence ",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 10,
+        "matched_count": 1,
+        "unmatched_count": 9,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.06464230571281523
+      },
+      {
+        "family": "COV-FDACOMMS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FINANCING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FURTHER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-INDEMN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LITNOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MARKETING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MEETING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MERGESUB",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-NOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYAGENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYOFF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PROXY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PUBLICITY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-RESIGN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-SECREPORT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-TAKEOVER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-MAE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-WILLFUL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-COORD",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-SPECIAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-BENEF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-INDEM",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-DELIVERY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-PERF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ACCOUNTING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CAPEX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CHARTER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-COMP",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "IOC-COMP",
+            "pattern_id": "IOC-COMP:PHRASE:COMP",
+            "start": 458,
+            "end": 469,
+            "excerpt": "owing the Titanium Merger Effective Time (the “Continuing Employees”) (i) a base salary or regular hourly wage rate, as applicable, that is not less than the base sala",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "IOC-COMP",
+            "pattern_id": "IOC-COMP:PHRASE:COMP",
+            "start": 540,
+            "end": 551,
+            "excerpt": "se salary or regular hourly wage rate, as applicable, that is not less than the base salary or regular hourly wage rate provided to such Continuing Employees by the Compan",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 2,
+        "matched_count": 0,
+        "unmatched_count": 2,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CONTRACT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DIVIDEND",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ISSUE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-MERGE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-TAX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MERGER-STRUCTURE",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 83,
+            "end": 97,
+            "excerpt": "1 Employee Benefits.\n(a) Parent agrees that, from and after the Titanium Merger Effective Time and until the one (1)-year anniversary of the Titanium Merger Effective Time (t",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 160,
+            "end": 174,
+            "excerpt": "er Effective Time and until the one (1)-year anniversary of the Titanium Merger Effective Time (the “Continuation Period”), Parent will cause the Company or the Forward S",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 404,
+            "end": 418,
+            "excerpt": "remain employed by the Company and its Affiliates following the Titanium Merger Effective Time (the “Continuing Employees”) (i) a base salary or regular hourly wage rate,",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 695,
+            "end": 709,
+            "excerpt": "es by the Company and its Subsidiaries immediately prior to the Titanium Merger Effective Time, (ii) annual target cash incentive compensation opportunities (excluding equity",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 983,
+            "end": 997,
+            "excerpt": "the Company and its Subsidiaries as of immediately prior to the Titanium Merger Effective Time, (iii) solely to the extent that such Continuing Employees are eligible for tar",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 1220,
+            "end": 1234,
+            "excerpt": "the Company and its Subsidiaries as of immediately prior to the Titanium Merger Effective Time, such Continuing Employees shall be eligible for consideration to participate i",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 1802,
+            "end": 1816,
+            "excerpt": "ided to such Continuing Employee as of immediately prior to the Titanium Merger Effective Time (excluding, severance, equity-based incentive compensation opportunities, defin",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 2691,
+            "end": 2705,
+            "excerpt": "e Continuing Employees in the Benefit Plans as in effect at the Titanium Merger Effective Time shall be deemed to satisfy the requirements of Section ‎4.11(a)(iv) (it being",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 3134,
+            "end": 3148,
+            "excerpt": " otherwise eligible to participate effective as of or after the Titanium Merger Effective Time, Parent shall, or shall cause the Forward Surviving Company to take commerciall",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 4100,
+            "end": 4114,
+            "excerpt": " satisfied under similar Benefit Plans immediately prior to the Titanium Merger Effective Time and (iii) provide credit to each Continuing Employee and any covered dependent ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 4260,
+            "end": 4274,
+            "excerpt": "red dependent thereof for any co-payments and deductibles incurred prior to the effective time for the Continuing Employee’s coverage under the applicable Parent Benefit Pl",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 4538,
+            "end": 4552,
+            "excerpt": " such Parent Benefit Plan that may apply as of or following the Titanium Merger Effective Time.\n76\n(c) From and after the Titanium Merger Effective Time, the Company or the F",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 4596,
+            "end": 4610,
+            "excerpt": "g the Titanium Merger Effective Time.\n76\n(c) From and after the Titanium Merger Effective Time, the Company or the Forward Surviving Company, as applicable, will, and Parent ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 5154,
+            "end": 5168,
+            "excerpt": "anges are permitted under Section ‎4.1(xiv) hereof, as of the Titanium Merger Effective Time; provided that the foregoing shall not prohibit Parent, the Company or the Forw",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 5669,
+            "end": 5683,
+            "excerpt": " the Benefit Plans that contain such terms, will occur upon the Titanium Merger Effective Time.\n(d) Except if not permitted by a collective bargaining agreement, if requested",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 5846,
+            "end": 5860,
+            "excerpt": " Parent in writing at least ten (10) business days prior to the Titanium Merger Effective Time, then, solely to the extent that Parent has established a defined contribution ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 6113,
+            "end": 6127,
+            "excerpt": "(k) of the Code (a “Parent 401(k) Plan”) at or prior to the Titanium Merger Effective Time, the Company shall cause any Benefit Plan that is a defined contribution plan i",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 6376,
+            "end": 6390,
+            "excerpt": " be terminated effective as of the day immediately prior to the Titanium Merger Effective Time and contingent upon the occurrence of the Closing. Parent shall permit each Con",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 7222,
+            "end": 7236,
+            "excerpt": " be eligible to participate in the Parent 401(k) Plan as of the Titanium Merger Effective Time.\n(e) As soon as reasonably practicable after the date of this Agreement, the Co",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 7638,
+            "end": 7652,
+            "excerpt": "e) and on or prior to the third (3rd) business day prior to the Titanium Merger Effective Time, the Company shall provide Parent (for Parent’s review and comment) with a re",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 20,
+        "matched_count": 0,
+        "unmatched_count": 20,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MISC-BOILERPLATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-EXCEPT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-MATCH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-NOTICE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-PROHIBIT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-REMATCH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REMEDY-SPECIFIC-PERFORMANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NOOTHERREPS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CAP",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:INCENTIVE_PLAN",
+            "start": 1337,
+            "end": 1351,
+            "excerpt": "yees shall be eligible for consideration to participate in Parent’s long-term incentive plan, as determined by Parent in its reasonable discretion and (iv) employee benefit",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CONTRACTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NOOTHERREPS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-FIRPTA",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TRANSFER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TREATMENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-REVERSE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TARGET",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-BREACH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-LEGAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-MUTUAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-NOVOTE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-OUTSIDE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-RECOMMEND",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-SUPERIOR",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      }
+    ],
+    "counts": {
+      "families_total": 98,
+      "families_all_matched": 92,
+      "families_unmatched_signals": 6,
+      "families_uncovered": 0,
+      "total_pattern_hits": 35,
+      "total_matched": 1,
+      "total_unmatched": 34,
+      "total_irreproducible": 0
+    },
+    "lexical_disagreement_receipt_id": "5e12feff84da2906dbef0a3eb2fc99e2b5f99c8664dccb5080d69ab1e0f72eb5"
+  }
+}

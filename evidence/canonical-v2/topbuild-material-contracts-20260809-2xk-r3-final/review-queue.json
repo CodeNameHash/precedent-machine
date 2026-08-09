@@ -1,0 +1,1247 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "cedaa71dd6f143c0bcaca18cda068c4bafb909e227a4bb8900cd0088c5b60e19",
+  "review_queue": [
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "33ed744ad35af44e5ea4f19dabdaecf277cf7908e7ed86299fb7da2427bf1c31",
+      "closure_id": "49733080300d1834b07e1173c40cffe90ac475fe4ab490b36d4c378ce7b7253e",
+      "normalised_phrase": "any Company Real Property Lease material to the operation of the Company’s and its Subsidiaries’ business, taken as a whole",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 72850,
+          "end": 72876,
+          "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 72858,
+          "end": 72876,
+          "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 73811,
+          "end": 73837,
+          "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 73819,
+          "end": 73837,
+          "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "abc53f56c027997c404ac4a7adfc57a55a48a2dd257af11cc2e085bf20be9b92",
+      "closure_id": "5ad325bd75f5c88fbb3a7d795b7b76d661ecdaac67b46ae5e6a1856f47d3dd2b",
+      "normalised_phrase": "any Contract that involves any exchange-traded, over-the-counter or other swap, cap, floor, collar, futures contract, forward contract, option or any other derivative financial instrument with a fair market value in excess of $10,000,000",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 72850,
+          "end": 72876,
+          "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 72858,
+          "end": 72876,
+          "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 73811,
+          "end": 73837,
+          "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 73819,
+          "end": 73837,
+          "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "b48776b63c8ed8e043f169f1ec3ccb5f0f5ca523c122e12088901bb74722c9d0",
+      "closure_id": "62707dfb8d2668736ceb6bfa553d4d645ff14dd1406c08898f9984434d41e439",
+      "normalised_phrase": "any joint venture or partnership that is material to the Company and its Subsidiaries, taken as a whole",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 72850,
+          "end": 72876,
+          "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 72858,
+          "end": 72876,
+          "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 73811,
+          "end": 73837,
+          "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 73819,
+          "end": 73837,
+          "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "727daa19c87551c3b51a2983a353c6b95b2305687372b11ebd1424d9894b635b",
+      "closure_id": "73431d821c315573b98a0a45aae660476991a48afccb6132a2745020c498751b",
+      "normalised_phrase": "any Contract in excess of $10,000,000 per annum that (x) grants to any third Person any material exclusive license or supply or distribution agreement",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 72850,
+          "end": 72876,
+          "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 72858,
+          "end": 72876,
+          "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 73811,
+          "end": 73837,
+          "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 73819,
+          "end": 73837,
+          "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "b607e1a999631a2d1fd366de33c96801767e9d8892c98b57cacc64759c629b8a",
+      "closure_id": "86b595c8bbfdcb207d80e215a0362e684cf20d87ca208b793ccea4b2b76116c2",
+      "normalised_phrase": "any Contract for capital expenditures or the acquisition or construction of fixed assets which requires aggregate payments in excess of $10,000,000",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 72850,
+          "end": 72876,
+          "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 72858,
+          "end": 72876,
+          "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 73811,
+          "end": 73837,
+          "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 73819,
+          "end": 73837,
+          "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "3b787ae280b10d6de33133333e108905de93081b9f5fbe40246bc261ee7c1fab",
+      "closure_id": "8908960c9ef266b121bf23ce60a7f00b3059423717811ceb343b553c586e1a56",
+      "normalised_phrase": "any settlement agreement or similar Contract with a Governmental Entity or order to which the Company or any of its Subsidiaries is a party involving future performance by the Company or any of its Subsidiaries in any such case that is material to the Company and its Subsidiaries, taken as a whole",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 72850,
+          "end": 72876,
+          "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 72858,
+          "end": 72876,
+          "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 73811,
+          "end": 73837,
+          "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 73819,
+          "end": 73837,
+          "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "09ccaf06822092a44f4c4caa8977b685a9ba3b058710fdfbee2c66e5fe755108",
+      "closure_id": "92cb233b63b6b1f42d641f970aeb0041b49dc72421ec7c0f4f6a332fc41c9436",
+      "normalised_phrase": "any Contract with respect to indebtedness for borrowed money, any financial guaranty thereof or the mortgaging pledging or otherwise placing a Lien on any of their assets, in each case, in excess of $10,000,000",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 72850,
+          "end": 72876,
+          "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 72858,
+          "end": 72876,
+          "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 73811,
+          "end": 73837,
+          "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 73819,
+          "end": 73837,
+          "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "bc596b68781959ee12433dddee3a18ff3c324c7d9c22e7ebc356687be9fe849d",
+      "closure_id": "def268fcb0a490dca88145fca02fdb0605aca1d25dd739d2de16a52c710023a6",
+      "normalised_phrase": "any Contract that contains a put, call, right of first refusal or right of first negotiation, right of first offer, redemption, repurchase or similar right that is material to the Company and its Subsidiaries, taken as a whole, pursuant to which the Company or any of its Subsidiaries would be required to, or have the option or right to, purchase or sell, as applicable, any equity interests, businesses, lines of business, divisions, joint ventures, partnerships or other assets of any Person",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 72850,
+          "end": 72876,
+          "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 72858,
+          "end": 72876,
+          "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 73811,
+          "end": 73837,
+          "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 73819,
+          "end": 73837,
+          "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "32f29b0737696b3409d816d80a662fa86e397d84e2a475938a61076a838ec639",
+      "closure_id": "e45434cfdfc26965fe2abc004300e2547d9dc5cc509d1afb6914e74c87f7493e",
+      "normalised_phrase": "any Contract deemed to be a “material contract” (as such term is defined in Item 601(b)(10) of Regulation S-K of the SEC)",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 72850,
+          "end": 72876,
+          "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 72858,
+          "end": 72876,
+          "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 73811,
+          "end": 73837,
+          "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 73819,
+          "end": 73837,
+          "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "802614e2abfd935acc6a31cdf8ae126ffd9a7c28c721be4a0a1addc247332145",
+      "closure_id": "f21f648da11eeba5cb0fe0c065bb46279e6fe71a480a4b30aeaef283c82daa2b",
+      "normalised_phrase": "any Contract that purports to prohibit the Company or any of its Subsidiaries from competing in any material respect in any business line, with any Person or in any geographic area that, in either case, is material to the operation of the Company’s and its Subsidiaries’ business, taken as a whole",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 72850,
+          "end": 72876,
+          "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 72858,
+          "end": 72876,
+          "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 73811,
+          "end": 73837,
+          "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 73819,
+          "end": 73837,
+          "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8f0472ee4ae6b9c65fa676029de937b87ef686245036d789e504257b8e9b1371",
+      "closure_id": "0d50963998ae6283b08f8d562dfaefb1f3d4999fd46a366637f32dc463419ac5",
+      "normalised_phrase": "any Contract that purports to prohibit the Company or any of its Subsidiaries from competing in any material respect in any business line, with any Person or in any geographic area that, in either case, is material to the operation of the Company’s and its Subsidiaries’ business, taken as a whole",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 72850,
+          "end": 72876,
+          "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 72858,
+          "end": 72876,
+          "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 73811,
+          "end": 73837,
+          "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 73819,
+          "end": 73837,
+          "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c461bd80867d5ec70cfda78e9c966ed29e9225c444cedf38a7bdcd0373f74781",
+      "closure_id": "1459fbc65f77d03d78a45953825fa70559c59701d3863ba15c03954948624014",
+      "normalised_phrase": "any Contract for capital expenditures or the acquisition or construction of fixed assets which requires aggregate payments in excess of $10,000,000",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 72850,
+          "end": 72876,
+          "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 72858,
+          "end": 72876,
+          "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 73811,
+          "end": 73837,
+          "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 73819,
+          "end": 73837,
+          "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5287a2c8876827b1d549febd9ce8bf2e22c1c96a8ccbcde52d006c4a0bb11d68",
+      "closure_id": "367448fda69407edcc87d6195f96a6b533ede4dd7e36f468339ad2729603a689",
+      "normalised_phrase": "any settlement agreement or similar Contract with a Governmental Entity or order to which the Company or any of its Subsidiaries is a party involving future performance by the Company or any of its Subsidiaries in any such case that is material to the Company and its Subsidiaries, taken as a whole",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 72850,
+          "end": 72876,
+          "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 72858,
+          "end": 72876,
+          "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 73811,
+          "end": 73837,
+          "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 73819,
+          "end": 73837,
+          "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9ca62e372f7ccaa1704bba36d38a31a4f23e8f2a7766278b479671f139326ba8",
+      "closure_id": "4de31152f31ccc737e42c06592f58121050a2d6490f2e4f9b2d339907e952d13",
+      "normalised_phrase": "any Contract deemed to be a “material contract” (as such term is defined in Item 601(b)(10) of Regulation S-K of the SEC)",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 72850,
+          "end": 72876,
+          "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 72858,
+          "end": 72876,
+          "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 73811,
+          "end": 73837,
+          "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 73819,
+          "end": 73837,
+          "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e669e25dc8e65aa55952d099f30952c024dbb180a27cad8e5c7912188c9323f0",
+      "closure_id": "625ac50f9dc7fe46e800fe7ef59169086c00a06d037287ece6b0fa20a591ef6b",
+      "normalised_phrase": "any joint venture or partnership that is material to the Company and its Subsidiaries, taken as a whole",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 72850,
+          "end": 72876,
+          "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 72858,
+          "end": 72876,
+          "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 73811,
+          "end": 73837,
+          "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 73819,
+          "end": 73837,
+          "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "eca56ade1a1049b5516375d60e1250250e35d614dd508c174f4d6311019728f9",
+      "closure_id": "682690b003583f1939351a7cfaff44028fa27a43a7e2d326090b48dfac89f1ca",
+      "normalised_phrase": "any Contract that contains a put, call, right of first refusal or right of first negotiation, right of first offer, redemption, repurchase or similar right that is material to the Company and its Subsidiaries, taken as a whole, pursuant to which the Company or any of its Subsidiaries would be required to, or have the option or right to, purchase or sell, as applicable, any equity interests, businesses, lines of business, divisions, joint ventures, partnerships or other assets of any Person",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 72850,
+          "end": 72876,
+          "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 72858,
+          "end": 72876,
+          "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 73811,
+          "end": 73837,
+          "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 73819,
+          "end": 73837,
+          "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d436f1366fd2de5cfb60d5eb95b7f3faff9b9d5a69b30dc756297a4fe0e7fa3d",
+      "closure_id": "7bbeb194ee6c3ae6a13070ccdb472bc0aee1729511dc76b0fc2bac779bb2ec5a",
+      "normalised_phrase": "any Contract in excess of $10,000,000 per annum that (x) grants to any third Person any material exclusive license or supply or distribution agreement",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 72850,
+          "end": 72876,
+          "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 72858,
+          "end": 72876,
+          "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 73811,
+          "end": 73837,
+          "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 73819,
+          "end": 73837,
+          "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "b0caa77988c8574885a91a4331b72fc9de9d9a299ce406f2ae4b860ce4893859",
+      "closure_id": "a193d5a73ec17d85ddc5f2c3084af44b03509572489268b8bac28348d33318d4",
+      "normalised_phrase": "any Contract with respect to indebtedness for borrowed money, any financial guaranty thereof or the mortgaging pledging or otherwise placing a Lien on any of their assets, in each case, in excess of $10,000,000",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 72850,
+          "end": 72876,
+          "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 72858,
+          "end": 72876,
+          "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 73811,
+          "end": 73837,
+          "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 73819,
+          "end": 73837,
+          "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f031820045b83a82768d710276706b88cd0f7e9c7bc4e0e7d8bd803232aef594",
+      "closure_id": "cdb205346e8c110890f1d4e6ba42a2557c515059acc506ba85696a2126908f34",
+      "normalised_phrase": "any Contract that involves any exchange-traded, over-the-counter or other swap, cap, floor, collar, futures contract, forward contract, option or any other derivative financial instrument with a fair market value in excess of $10,000,000",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 72850,
+          "end": 72876,
+          "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 72858,
+          "end": 72876,
+          "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 73811,
+          "end": 73837,
+          "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 73819,
+          "end": 73837,
+          "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "b62b74858a696416a87f5a252b171ba6e09ac5eda5633c73062154572a6d7c7e",
+      "closure_id": "ed015bdf312b3b11000648d107e31fd6eed38f8eb1a282c4a86213d48ef9b349",
+      "normalised_phrase": "any Company Real Property Lease material to the operation of the Company’s and its Subsidiaries’ business, taken as a whole",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 72850,
+          "end": 72876,
+          "excerpt": ", guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 72858,
+          "end": 72876,
+          "excerpt": "tees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:COMPANY_MATERIAL_CONTRACTS",
+          "start": 73811,
+          "end": 73837,
+          "excerpt": "arty has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 73819,
+          "end": 73837,
+          "excerpt": " threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "da96505972bf18f844ac17265692541c047b8f4103a7b778fdbd08ca3ee782a7"
+}

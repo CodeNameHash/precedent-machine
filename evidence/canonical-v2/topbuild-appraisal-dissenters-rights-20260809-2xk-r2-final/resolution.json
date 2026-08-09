@@ -1,0 +1,696 @@
+{
+  "resolved": [
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1(d)",
+      "citation_context": {
+        "parent_section_reference": "2.1",
+        "child_section_reference": "2.1",
+        "parent_chapeau_quote": "2.1 Effect on Capital Stock.",
+        "child_clause_quote": "If any Dissenting Stockholder fails to perfect such stockholder’s dissenters’ rights under the DGCL or effectively withdraws or otherwise loses such rights to appraisal with respect to any Dissenting Shares, each such Dissenting Share shall thereupon automatically be deemed to have converted at the Titanium Merger Effective Time into the right to receive, without any interest thereon, the Per Share Merger Consideration to which the holder of such Company Share would be entitled pursuant to Section ‎2.1(a)(i), pursuant to the exchange procedures set forth in Section ‎2.2 and shall not thereafter be deemed to be Dissenting Shares."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_WITHDRAWAL_RECONVERSION",
+      "concept_key": "APPR-WITHDRAW",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "fea5b3a2ddcdabe19798ffc2339cef1284f3aab269b27de9c6c38de1899ae311",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 15784,
+        "absolute_end": 36185,
+        "concept_key": "APPR-WITHDRAW",
+        "ordinal": 1,
+        "source_anchor_id": "8163f9055e0af90e49e15193f287b19e9c9de226fec42ab6bbc1c8ed88631ade",
+        "provision_instance_id": "37dc74450fb40084a4e7a101b1be341924b1888bc00171d585279e80b0f0087a",
+        "closure_id": "bb4f6a2ef5fb5146361244adc22234c4be469e6490b831053e832269dfbc1365"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "917b8ff5da98c9a1c858614fd355018f4e81640ffed999eca75c135f975d3a7c",
+        "claim_occurrence_id": "59d2763b8016a75b13a1a3ddff218cfec3abbe866722203a3ef761cad7a400a3",
+        "subject_occurrence_id": "37dc74450fb40084a4e7a101b1be341924b1888bc00171d585279e80b0f0087a",
+        "claim_definition_key": "APPRAISAL_WITHDRAWAL_RECONVERSION",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "If any Dissenting Stockholder fails to perfect such stockholder’s dissenters’ rights under the DGCL or effectively withdraws or otherwise loses such rights to appraisal with respect to any Dissenting Shares, each such Dissenting Share shall thereupon automatically be deemed to have converted at the Titanium Merger Effective Time into the right to receive, without any interest thereon, the Per Share Merger Consideration to which the holder of such Company Share would be entitled pursuant to Section ‎2.1(a)(i), pursuant to the exchange procedures set forth in Section ‎2.2 and shall not thereafter be deemed to be Dissenting Shares.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "c89634902a0f91c1763a7d2ae48158812446daa1f8d4d7a8b06a439497658598"
+        ],
+        "attributes": {
+          "section_reference": "2.1",
+          "assertion_kind": "WITHDRAWAL_RECONVERSION",
+          "treatment_scope_ref": null,
+          "treatment_term_ref": null,
+          "tax_opinion_ref": null,
+          "representation_letter_ref": null,
+          "bearer_ref": null,
+          "dividend_term_ref": null,
+          "statute_ref": "Section 262 of the DGCL",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "c89634902a0f91c1763a7d2ae48158812446daa1f8d4d7a8b06a439497658598",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "aff1d6bc855b7a9c7fb2b6e7af6c64f2b53a5777611b964c6eb480d1aa68da13",
+            "document_ordinal": 0,
+            "absolute_start": 18568,
+            "absolute_end": 19212,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "1fe2b5dcd02054dd0c60e91d9a1d962ce9751d7001bbd0d08745c280349c2a77"
+      },
+      "compiled_candidate": {
+        "section_reference": "2.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "2.1",
+          "normalized_citation": "2.1",
+          "derived_citation": "2.1"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "917b8ff5da98c9a1c858614fd355018f4e81640ffed999eca75c135f975d3a7c",
+            "claim_occurrence_id": "59d2763b8016a75b13a1a3ddff218cfec3abbe866722203a3ef761cad7a400a3",
+            "subject_occurrence_id": "37dc74450fb40084a4e7a101b1be341924b1888bc00171d585279e80b0f0087a",
+            "claim_definition_key": "APPRAISAL_WITHDRAWAL_RECONVERSION",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "If any Dissenting Stockholder fails to perfect such stockholder’s dissenters’ rights under the DGCL or effectively withdraws or otherwise loses such rights to appraisal with respect to any Dissenting Shares, each such Dissenting Share shall thereupon automatically be deemed to have converted at the Titanium Merger Effective Time into the right to receive, without any interest thereon, the Per Share Merger Consideration to which the holder of such Company Share would be entitled pursuant to Section ‎2.1(a)(i), pursuant to the exchange procedures set forth in Section ‎2.2 and shall not thereafter be deemed to be Dissenting Shares.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "c89634902a0f91c1763a7d2ae48158812446daa1f8d4d7a8b06a439497658598"
+            ],
+            "attributes": {
+              "section_reference": "2.1",
+              "assertion_kind": "WITHDRAWAL_RECONVERSION",
+              "treatment_scope_ref": null,
+              "treatment_term_ref": null,
+              "tax_opinion_ref": null,
+              "representation_letter_ref": null,
+              "bearer_ref": null,
+              "dividend_term_ref": null,
+              "statute_ref": "Section 262 of the DGCL",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "c89634902a0f91c1763a7d2ae48158812446daa1f8d4d7a8b06a439497658598",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "aff1d6bc855b7a9c7fb2b6e7af6c64f2b53a5777611b964c6eb480d1aa68da13",
+                "document_ordinal": 0,
+                "absolute_start": 18568,
+                "absolute_end": 19212,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "1fe2b5dcd02054dd0c60e91d9a1d962ce9751d7001bbd0d08745c280349c2a77"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "APPRAISAL",
+            "prompt_digest": "fce18560e7e673c9fdcd26d40fe3b58b6fd80214857c4b15551625d902b903a8",
+            "producer_receipt_id": "d530cbe6a53e51975e6fb8bf5cd2c5bc7aa7103ffab0d945930f9b46a179300c",
+            "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+            "extraction_provenance_id": "51036e05cad266c3d0c54c364f53d1481014f5a32ca390d9cf845164712bc15c"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 88,
+        "materiality_label": "APPRAISAL_DISSENTERS_RIGHTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "2.1",
+          "normalized_citation": "2.1",
+          "derived_citation": "2.1(d)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "d",
+          "depth": 1,
+          "start_byte": 17724,
+          "end_byte": 20401
+        },
+        "chain": [
+          {
+            "path": "d",
+            "start_byte": 17724,
+            "end_byte": 20401,
+            "text": " Dissenters’ Rights. Notwithstanding anything in this Agreement to the contrary, any Company Share that is issued and outstanding immediately prior to the Titanium Merger Effective Time, held by a Company stockholder who is entitled to demand appraisal rights under Section 262 of the DGCL and who properly demands appraisal of such Company Shares pursuant to, and who complies in all respects with, Section 262 of the DGCL (such Company Share being a “Dissenting Share,” and such Company stockholder being a “Dissenting Stockholder”), shall not be converted into or represent the right to receive the Per Share Merger Consideration to which the holder of such Company Share would be entitled pursuant to Section ‎2.1(a)(i), but rather shall entitle the holder thereof to only such rights as are granted by Section 262 of the DGCL. If any Dissenting Stockholder fails to perfect such stockholder’s dissenters’ rights under the DGCL or effectively withdraws or otherwise loses such rights to appraisal with respect to any Dissenting Shares, each such Dissenting Share shall thereupon automatically be deemed to have converted at the Titanium Merger Effective Time into the right to receive, without any interest thereon, the Per Share Merger Consideration to which the holder of such Company Share would be entitled pursuant to Section ‎2.1(a)(i), pursuant to the exchange procedures set forth in Section ‎2.2 and shall not thereafter be deemed to be Dissenting Shares. Notwithstanding anything to the contrary contained in this Agreement, if, prior to its effective date, the Titanium Merger is rescinded or abandoned, then the right of a Company stockholder to be paid the fair value of such holder’s Dissenting Shares pursuant to Section 262 of the DGCL shall cease. The Company shall give Parent (i) prompt notice and copies of any demand for payment of the fair value of any Company Shares (or written threats thereof) or any attempted withdrawal of any such demand for payment and any other instrument served pursuant to the DGCL and received by the Company relating to any stockholder’s dissenters’ rights and (ii) the opportunity to lead all negotiations and proceedings with respect to any such demands for payment under the DGCL. The Company shall not, without the prior written consent of Parent, make any payment voluntarily with respect to any demand for appraisal with respect to any Dissenting Shares, offer to settle or settle, or approve the withdrawal of, any such demands or waive any failure to timely deliver a written demand for appraisal or otherwise to comply with Section 262 of the DGCL or agree to do any of the foregoing.\n9\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 29,
+            "text": "2.1 Effect on Capital Stock.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1(d)",
+      "citation_context": {
+        "parent_section_reference": "2.1",
+        "child_section_reference": "2.1",
+        "parent_chapeau_quote": "2.1 Effect on Capital Stock.",
+        "child_clause_quote": "The Company shall not, without the prior written consent of Parent, make any payment voluntarily with respect to any demand for appraisal with respect to any Dissenting Shares, offer to settle or settle, or approve the withdrawal of, any such demands or waive any failure to timely deliver a written demand for appraisal or otherwise to comply with Section 262 of the DGCL or agree to do any of the foregoing."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_SETTLEMENT_CONSENT",
+      "concept_key": "APPR-SETTLE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "fea5b3a2ddcdabe19798ffc2339cef1284f3aab269b27de9c6c38de1899ae311",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 15784,
+        "absolute_end": 36185,
+        "concept_key": "APPR-SETTLE",
+        "ordinal": 1,
+        "source_anchor_id": "8163f9055e0af90e49e15193f287b19e9c9de226fec42ab6bbc1c8ed88631ade",
+        "provision_instance_id": "518eeb43969a6e88bb708e175bfcd55a9cd8fa1f892c8fc87a8594d5700302cf",
+        "closure_id": "f9d7c9d80c3a41cd0ab53ed27b3789f7879adccf23c7c57f0e27726e42b213eb"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "274a57e21f5bc4a17b6a2de650c4fb802db34b17949add214ce7cf62a34175f2",
+        "claim_occurrence_id": "b1c1ba1b8242498b8631bdcb899e4f476322bbb7502a6b8f3d0924ecda901e12",
+        "subject_occurrence_id": "518eeb43969a6e88bb708e175bfcd55a9cd8fa1f892c8fc87a8594d5700302cf",
+        "claim_definition_key": "APPRAISAL_SETTLEMENT_CONSENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "The Company shall not, without the prior written consent of Parent, make any payment voluntarily with respect to any demand for appraisal with respect to any Dissenting Shares, offer to settle or settle, or approve the withdrawal of, any such demands or waive any failure to timely deliver a written demand for appraisal or otherwise to comply with Section 262 of the DGCL or agree to do any of the foregoing.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "456a9fd5eebb768814c5493c90fd9d788b8342ba9b4d9ccfb67daf80ce99767f"
+        ],
+        "attributes": {
+          "section_reference": "2.1",
+          "assertion_kind": "SETTLEMENT_CONSENT",
+          "treatment_scope_ref": null,
+          "treatment_term_ref": null,
+          "tax_opinion_ref": null,
+          "representation_letter_ref": null,
+          "bearer_ref": null,
+          "dividend_term_ref": null,
+          "statute_ref": "Section 262 of the DGCL",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "456a9fd5eebb768814c5493c90fd9d788b8342ba9b4d9ccfb67daf80ce99767f",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "01673f8ced50860ac8c1f4c4018241b39aaa3d88c2d48dbaba704aeec82f074a",
+            "document_ordinal": 0,
+            "absolute_start": 19989,
+            "absolute_end": 20398,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "fde94ee0f32d6c4040d68b340e08f7f60869c5ad6dc8019266193690d78f83ba"
+      },
+      "compiled_candidate": {
+        "section_reference": "2.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "2.1",
+          "normalized_citation": "2.1",
+          "derived_citation": "2.1"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "274a57e21f5bc4a17b6a2de650c4fb802db34b17949add214ce7cf62a34175f2",
+            "claim_occurrence_id": "b1c1ba1b8242498b8631bdcb899e4f476322bbb7502a6b8f3d0924ecda901e12",
+            "subject_occurrence_id": "518eeb43969a6e88bb708e175bfcd55a9cd8fa1f892c8fc87a8594d5700302cf",
+            "claim_definition_key": "APPRAISAL_SETTLEMENT_CONSENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "The Company shall not, without the prior written consent of Parent, make any payment voluntarily with respect to any demand for appraisal with respect to any Dissenting Shares, offer to settle or settle, or approve the withdrawal of, any such demands or waive any failure to timely deliver a written demand for appraisal or otherwise to comply with Section 262 of the DGCL or agree to do any of the foregoing.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "456a9fd5eebb768814c5493c90fd9d788b8342ba9b4d9ccfb67daf80ce99767f"
+            ],
+            "attributes": {
+              "section_reference": "2.1",
+              "assertion_kind": "SETTLEMENT_CONSENT",
+              "treatment_scope_ref": null,
+              "treatment_term_ref": null,
+              "tax_opinion_ref": null,
+              "representation_letter_ref": null,
+              "bearer_ref": null,
+              "dividend_term_ref": null,
+              "statute_ref": "Section 262 of the DGCL",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "456a9fd5eebb768814c5493c90fd9d788b8342ba9b4d9ccfb67daf80ce99767f",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "01673f8ced50860ac8c1f4c4018241b39aaa3d88c2d48dbaba704aeec82f074a",
+                "document_ordinal": 0,
+                "absolute_start": 19989,
+                "absolute_end": 20398,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "fde94ee0f32d6c4040d68b340e08f7f60869c5ad6dc8019266193690d78f83ba"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "APPRAISAL",
+            "prompt_digest": "fce18560e7e673c9fdcd26d40fe3b58b6fd80214857c4b15551625d902b903a8",
+            "producer_receipt_id": "d530cbe6a53e51975e6fb8bf5cd2c5bc7aa7103ffab0d945930f9b46a179300c",
+            "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+            "extraction_provenance_id": "51036e05cad266c3d0c54c364f53d1481014f5a32ca390d9cf845164712bc15c"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 88,
+        "materiality_label": "APPRAISAL_DISSENTERS_RIGHTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "2.1",
+          "normalized_citation": "2.1",
+          "derived_citation": "2.1(d)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "d",
+          "depth": 1,
+          "start_byte": 17724,
+          "end_byte": 20401
+        },
+        "chain": [
+          {
+            "path": "d",
+            "start_byte": 17724,
+            "end_byte": 20401,
+            "text": " Dissenters’ Rights. Notwithstanding anything in this Agreement to the contrary, any Company Share that is issued and outstanding immediately prior to the Titanium Merger Effective Time, held by a Company stockholder who is entitled to demand appraisal rights under Section 262 of the DGCL and who properly demands appraisal of such Company Shares pursuant to, and who complies in all respects with, Section 262 of the DGCL (such Company Share being a “Dissenting Share,” and such Company stockholder being a “Dissenting Stockholder”), shall not be converted into or represent the right to receive the Per Share Merger Consideration to which the holder of such Company Share would be entitled pursuant to Section ‎2.1(a)(i), but rather shall entitle the holder thereof to only such rights as are granted by Section 262 of the DGCL. If any Dissenting Stockholder fails to perfect such stockholder’s dissenters’ rights under the DGCL or effectively withdraws or otherwise loses such rights to appraisal with respect to any Dissenting Shares, each such Dissenting Share shall thereupon automatically be deemed to have converted at the Titanium Merger Effective Time into the right to receive, without any interest thereon, the Per Share Merger Consideration to which the holder of such Company Share would be entitled pursuant to Section ‎2.1(a)(i), pursuant to the exchange procedures set forth in Section ‎2.2 and shall not thereafter be deemed to be Dissenting Shares. Notwithstanding anything to the contrary contained in this Agreement, if, prior to its effective date, the Titanium Merger is rescinded or abandoned, then the right of a Company stockholder to be paid the fair value of such holder’s Dissenting Shares pursuant to Section 262 of the DGCL shall cease. The Company shall give Parent (i) prompt notice and copies of any demand for payment of the fair value of any Company Shares (or written threats thereof) or any attempted withdrawal of any such demand for payment and any other instrument served pursuant to the DGCL and received by the Company relating to any stockholder’s dissenters’ rights and (ii) the opportunity to lead all negotiations and proceedings with respect to any such demands for payment under the DGCL. The Company shall not, without the prior written consent of Parent, make any payment voluntarily with respect to any demand for appraisal with respect to any Dissenting Shares, offer to settle or settle, or approve the withdrawal of, any such demands or waive any failure to timely deliver a written demand for appraisal or otherwise to comply with Section 262 of the DGCL or agree to do any of the foregoing.\n9\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 29,
+            "text": "2.1 Effect on Capital Stock.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "2.1",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_WITHDRAWAL_RECONVERSION",
+      "concept_key": "APPR-WITHDRAW",
+      "reasons": [],
+      "materiality_rank": 88,
+      "materiality_label": "APPRAISAL_DISSENTERS_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "917b8ff5da98c9a1c858614fd355018f4e81640ffed999eca75c135f975d3a7c",
+      "closure_id": "1fe2b5dcd02054dd0c60e91d9a1d962ce9751d7001bbd0d08745c280349c2a77",
+      "normalised_phrase": "If any Dissenting Stockholder fails to perfect such stockholder’s dissenters’ rights under the DGCL or effectively withdraws or otherwise loses such rights to appraisal with respect to any Dissenting Shares, each such Dissenting Share shall thereupon automatically be deemed to have converted at the Titanium Merger Effective Time into the right to receive, without any interest thereon, the Per Share Merger Consideration to which the holder of such Company Share would be entitled pursuant to Section 2.1(a)(i), pursuant to the exchange procedures set forth in Section 2.2 and shall not thereafter be deemed to be Dissenting Shares.",
+      "attachment_position": null,
+      "concept_family": "APPR-WITHDRAW",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.1",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_SETTLEMENT_CONSENT",
+      "concept_key": "APPR-SETTLE",
+      "reasons": [],
+      "materiality_rank": 88,
+      "materiality_label": "APPRAISAL_DISSENTERS_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "274a57e21f5bc4a17b6a2de650c4fb802db34b17949add214ce7cf62a34175f2",
+      "closure_id": "fde94ee0f32d6c4040d68b340e08f7f60869c5ad6dc8019266193690d78f83ba",
+      "normalised_phrase": "The Company shall not, without the prior written consent of Parent, make any payment voluntarily with respect to any demand for appraisal with respect to any Dissenting Shares, offer to settle or settle, or approve the withdrawal of, any such demands or waive any failure to timely deliver a written demand for appraisal or otherwise to comply with Section 262 of the DGCL or agree to do any of the foregoing.",
+      "attachment_position": null,
+      "concept_family": "APPR-SETTLE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Notwithstanding anything in this Agreement to the contrary, any Company Share that is issued and outstanding immediately prior to the Titanium Merger Effective Time, held by a Company stockholder who is entitled to demand appraisal rights under Section 262 of the DGCL and who properly demands appraisal of such Company Shares pursuant to, and who complies in all respects with, Section 262 of the DGCL (such Company Share being a “Dissenting Share,” and such Company stockholder being a “Dissenting Stockholder”), shall not be converted into or represent the right to receive the Per Share Merger Consideration to which the holder of such Company Share would be entitled pursuant to Section ‎2.1(a)(i), but rather shall entitle the holder thereof to only such rights as are granted by Section 262 of the DGCL.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "APPRAISAL_STATUTE: Defines Dissenting Shares and Dissenting Stockholders by reference to Section 262 of the DGCL and provides their statutory rights.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b193701d50e89c157cb5371c2c0cafa33e234f71ca7ce4fed40ba39c9587e9ef",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "4c76f0e58b2ba851ea89116471e36aabbabd84896e8febaddcb7d95c1d9549d6",
+          "document_ordinal": 0,
+          "absolute_start": 17747,
+          "absolute_end": 18567,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "8cd953b975506cde03d92041d334e7da19d2c76cb7fce56b764b3e4080fc6fcb",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "fce18560e7e673c9fdcd26d40fe3b58b6fd80214857c4b15551625d902b903a8",
+        "producer_receipt_id": "d530cbe6a53e51975e6fb8bf5cd2c5bc7aa7103ffab0d945930f9b46a179300c",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "89dab7ddc4198281e16d0580b4822edfba8cf286b5b2194679c80c6395c86d7a"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "The Company shall give Parent (i) prompt notice and copies of any demand for payment of the fair value of any Company Shares (or written threats thereof) or any attempted withdrawal of any such demand for payment and any other instrument served pursuant to the DGCL and received by the Company relating to any stockholder’s dissenters’ rights",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "APPRAISAL_NOTICE: Company must promptly provide Parent notice and copies of specified appraisal-related demands, threats, withdrawals and instruments.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "46347257cbcfbd70921f0b2063063f1596a2f6b58f5054c62e0fdbf80dfc591a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "203eaeb23b212433d232434a39d38fe89b545da923d7fcdb92bcb44f08044880",
+          "document_ordinal": 0,
+          "absolute_start": 19515,
+          "absolute_end": 19861,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "bdd220edf315bc90aae08deb8dc16bb8b8f11b02684175f3605e2c9afbd1b445",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "fce18560e7e673c9fdcd26d40fe3b58b6fd80214857c4b15551625d902b903a8",
+        "producer_receipt_id": "d530cbe6a53e51975e6fb8bf5cd2c5bc7aa7103ffab0d945930f9b46a179300c",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "89dab7ddc4198281e16d0580b4822edfba8cf286b5b2194679c80c6395c86d7a"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "and (ii) the opportunity to lead all negotiations and proceedings with respect to any such demands for payment under the DGCL.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "APPRAISAL_INFORMATION_RIGHT: Parent has the opportunity to lead negotiations and proceedings regarding the demands.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "de056c81397c5afa0bd9b37d2e1efc4bd0e9b2d4f70719532072519f7db92892",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "0aafd3fff945ca58ece9e8b0b4e51fa22f49e970e587f33bbf511fed2214e3ab",
+          "document_ordinal": 0,
+          "absolute_start": 19862,
+          "absolute_end": 19988,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "e8c8e14a32352b39ea291f2af80fcc12544ab7ca0acfd813d3f10d7d61a558cf",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "fce18560e7e673c9fdcd26d40fe3b58b6fd80214857c4b15551625d902b903a8",
+        "producer_receipt_id": "d530cbe6a53e51975e6fb8bf5cd2c5bc7aa7103ffab0d945930f9b46a179300c",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "89dab7ddc4198281e16d0580b4822edfba8cf286b5b2194679c80c6395c86d7a"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "8e4016c270b8409183dfae944464123d988ef005dd7598eb2db5884159b66fcb",
+    "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 5,
+      "resolved": 2,
+      "auto_pass": 0,
+      "review_queue": 2,
+      "open_world": 3,
+      "residuals": 0,
+      "provisions": 2,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "2f238da4cabb29bed2b57f9f3471240bfd9f2b97140a0e94cbbd87643b73a8f4"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_SOURCE_REFERENCE/V1",
+  "deal": "topbuild",
+  "reused_committed_raw_html": "tests/fixtures/canonical-v2/mae-definition-family/topbuild-raw-fetched.htm",
+  "retrieval_url": "https://www.sec.gov/Archives/edgar/data/1236275/000110465926045111/tm2612209d1_ex2-1.htm",
+  "raw_bytes_length": 732686,
+  "raw_bytes_sha256": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+  "canonical_text_byte_length": 412860,
+  "canonical_text_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+  "verification_status": "PASS",
+  "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+  "pin_corroboration": "tests/fixtures/canonical-v2/mae-definition-family/topbuild-intake-pin.json -- both raw_bytes_sha256 and canonical_text_sha256 above were independently re-derived from the committed raw HTML and match that pin file exactly (raw_bytes_length 732686, canonical_text_byte_length 412860, verification_status PASS)",
+  "note": "REUSE, not a pinning fetch. No network call was made by this script.",
+  "admitted_source_capture_inputs": {
+    "schema_version": "ADMITTED_SOURCE_CAPTURE_INPUTS/V1",
+    "raw_html_path": "tests/fixtures/canonical-v2/mae-definition-family/topbuild-raw-fetched.htm",
+    "raw_bytes_sha256": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+    "retrieval_url": "https://www.sec.gov/Archives/edgar/data/1236275/000110465926045111/tm2612209d1_ex2-1.htm",
+    "content_type": "text/html; charset=UTF-8",
+    "retrieved_at": "2026-08-03T02:20:00.000Z",
+    "retrieval_policy_digest": "d94cccc13a2cde1ccdeb23efd2921f4d1a78b681a6ad329be875306245597b19",
+    "immutable_source_document_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+    "source_map_payload_path": "evidence/canonical-v2/_admitted-source-map-payloads/b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676.deflate",
+    "source_map_compressed_sha256": "36d360f56f75a100cafdbac9154a737080ff3df8aeac544c07ce913b4024d3bc",
+    "source_map_digest": "408e12506a3c4fcce08e516741e53c5824e58eb5562ec86846726052448efb2e"
+  }
+}

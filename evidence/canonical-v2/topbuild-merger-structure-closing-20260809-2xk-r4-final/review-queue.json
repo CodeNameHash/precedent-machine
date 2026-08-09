@@ -1,0 +1,619 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "1e1ca77a913a90574f8dd8f8da22446325e39215e8be598b7535ba72ef563483",
+  "review_queue": [
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "639e04050d69cd4dc66bf514fd287c302710790a63e7736aa3408db71dcca3b6",
+      "closure_id": "2f56ced211a9cabeec4f206239c67e346fa11c22dcb50fe56b3b5f5c5ee1974e",
+      "normalised_phrase": "Titanium Merger Sub shall be merged with and into the Company in accordance with the requirements of the DGCL and the separate corporate existence of Titanium Merger Sub shall thereupon cease.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "b73b38efd9e9a66ff3bc6826f5af1f3bbccebd7a3b3593d03f964d7ff0ba8a75",
+      "closure_id": "a35a3515fff805ef804a3131db24a463988c6bb6db1b0c03143bc73dcae571e7",
+      "normalised_phrase": "The Company shall be the surviving corporation in the Titanium Merger (sometimes hereinafter referred to as the “Titanium Surviving Corporation”), and the separate corporate existence of the Company under the Laws of the State of Delaware, with all of its rights, privileges, immunities, powers and franchises, shall continue unaffected by the Titanium Merger.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6317de26d61885c9f294323de4436164ad7d83d1a279829138d4b117d9ec1ee0",
+      "closure_id": "ac0d83a2f2aa6b4c705e59568e9ba4bc85354bd4adb4f617108cc3ca84c04839",
+      "normalised_phrase": "at the Titanium Merger Effective Time",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MERGER_TRANSACTION_STEP_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_TRANSACTION_STEP",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8e79bddbdcdac3d8f65a6814532a630180801ac070ebff580c8fbe7d12298086",
+      "closure_id": "16eabd8908b2ec1590fc03b66d44e34aef9ba82b1034f7d66acba08b2a595838",
+      "normalised_phrase": "Titanium Merger Sub shall be merged with and into the Company in accordance with the requirements of the DGCL and the separate corporate existence of Titanium Merger Sub shall thereupon cease. The Company shall be the surviving corporation in the Titanium Merger",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.2",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "597cedd672f60fb61f67c394d5dfb29ce87a1d1e5ca3e657b448f9b901cb41da",
+      "closure_id": "8d84a4f51648ca657d1b6eece6c61c6c549c9ac8b390f816ed212717d0415023",
+      "normalised_phrase": "the Titanium Surviving Corporation shall be merged with and into Forward Merger Sub and the separate corporate existence of the Titanium Surviving Corporation shall thereupon cease.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 120,
+          "end": 134,
+          "excerpt": "nd subject to the conditions set forth in this Agreement, at the Forward Merger Effective Time and in accordance with the DGCL and the DLLCA, the Titanium Surviving Corporati",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.2",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8f270ef892b40345b122f5a08ef70c1107239c189ead8131d7780e5fb8d88c86",
+      "closure_id": "e568948f53a874133d025d01eaaf75847561317be3552ad91af3764c38a11cf4",
+      "normalised_phrase": "Forward Merger Sub shall be the surviving company in the Forward Merger (sometimes hereinafter referred to as the “Forward Surviving Company”), and the separate existence of Forward Merger Sub under the Laws of the State of Delaware, with all of its rights, privileges, immunities, powers and franchises, shall continue unaffected by the Forward Merger.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 120,
+          "end": 134,
+          "excerpt": "nd subject to the conditions set forth in this Agreement, at the Forward Merger Effective Time and in accordance with the DGCL and the DLLCA, the Titanium Surviving Corporati",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.2",
+      "generic_claim_key": "NATIVE_MERGER_TRANSACTION_STEP_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_TRANSACTION_STEP",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "cc8834a5a42c67e49ca9248caed51da3a3b2c63b0fb0ce0fd29177c19b948525",
+      "closure_id": "2e813621a2269fca62f977ea7c74004fb2d9e790039f703f2f7bf764b8029f8a",
+      "normalised_phrase": "the Titanium Surviving Corporation shall be merged with and into Forward Merger Sub and the separate corporate existence of the Titanium Surviving Corporation shall thereupon cease. Forward Merger Sub shall be the surviving company in the Forward Merger (sometimes hereinafter referred to as the “Forward Surviving Company”)",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 120,
+          "end": 134,
+          "excerpt": "nd subject to the conditions set forth in this Agreement, at the Forward Merger Effective Time and in accordance with the DGCL and the DLLCA, the Titanium Surviving Corporati",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.3",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "34126f731407d5379e8bb55aa6399b5b9e50ffbe7480e5e435802cfae66af793",
+      "closure_id": "1efe6b14db162c9ff42006a64a18c2a0ba1cc0aecd87e0310f4c233dde810e39",
+      "normalised_phrase": "on the second (2nd) business day following the day on which the last to be fulfilled or, to the extent permitted by applicable Law, waived of the conditions set forth in Article V (other than those conditions that by their nature are to be fulfilled at the Closing, but subject to the fulfillment or waiver of such conditions) shall be fulfilled or, to the extent permitted by applicable Law, waived in accordance with this Agreement",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.3",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "539765a1c223a30c0f126fc70516a6f4549888735c3891eb817fe32edaf52e08",
+      "closure_id": "3444d12b41c2e4409ffb7813b4428842b378a6add101f8f1932acb7106213df8",
+      "normalised_phrase": "the closing for the Mergers (the “Closing”) shall take place (i) remotely by exchange of documents and signatures (or their electronic counterparts)",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.3",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "696b67b7d47455608b1bca262d68112582f2010cc46b8f27a9484c4e4116ecaf",
+      "closure_id": "d820beb15ed738796066b5209ee460bb1cd23546b5c72f1b90190ec726150147",
+      "normalised_phrase": "at such other place and time as the Company and Parent may agree in writing",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.4",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "80510659f5bf52568b3b01a2bbdd629b960599803a09b3feeb422a86cccf775b",
+      "closure_id": "ef96e509d920d6ad718b908ed1221c3ec872296dbb40e585e96567adbd43af49",
+      "normalised_phrase": "Each Merger shall become effective at such time as the applicable certificate of merger is duly filed with the Secretary of State of the State of Delaware or at such later time as Parent and the Company shall agree and specify in the certificate of merger (such time, for the Titanium Merger, “Titanium Merger Effective Time”, and such time, for the Forward Merger, the “Forward Merger Effective Time”).",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 4,
+          "end": 18,
+          "excerpt": "1.4 Effective Time. As soon as practicable following the Closing, the parties shall cause (i) a ce",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 1157,
+          "end": 1171,
+          "excerpt": "e Forward Merger, the “Forward Merger Effective Time”). The Titanium Merger Effective Time shall, in all events, precede the Forward Merger Effective Time.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 1221,
+          "end": 1235,
+          "excerpt": "Titanium Merger Effective Time shall, in all events, precede the Forward Merger Effective Time.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.4",
+      "generic_claim_key": "NATIVE_MERGER_TRANSACTION_STEP_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_TRANSACTION_STEP",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d1ac473e40fb89246bddeb10c6ae697e26ea4ab8fc48c54294789992093643e9",
+      "closure_id": "0bdb121a7d51be88a9d4a9c85438b79b0ab9218840ee904ea85a487b4b1ce980",
+      "normalised_phrase": "As soon as practicable following the Closing, the parties shall cause (i) a certificate of merger with respect to the Titanium Merger to be executed and filed with the Secretary of State of the State of Delaware as provided in the DGCL (the “Titanium Merger Certificate of Merger”) and (ii) following the filing of the Titanium Merger Certificate of Merger, a certificate of merger with respect to the Forward Merger to be executed and filed with the Secretary of State of the State of Delaware as provided in the DGCL and DLLCA (the “Forward Merger Certificate of Merger”), and the parties shall make all other filings or recordings required by the DGCL and DLLCA in connection with the Mergers.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 4,
+          "end": 18,
+          "excerpt": "1.4 Effective Time. As soon as practicable following the Closing, the parties shall cause (i) a ce",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 1157,
+          "end": 1171,
+          "excerpt": "e Forward Merger, the “Forward Merger Effective Time”). The Titanium Merger Effective Time shall, in all events, precede the Forward Merger Effective Time.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 1221,
+          "end": 1235,
+          "excerpt": "Titanium Merger Effective Time shall, in all events, precede the Forward Merger Effective Time.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.4",
+      "generic_claim_key": "NATIVE_MERGER_TRANSACTION_STEP_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_TRANSACTION_STEP",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "dcd7c903c17dcf9199dea168e1f986bfd63fa33abbc71412d7ff19f42f9c13ce",
+      "closure_id": "aa3a1e893c7915ff5b1326b43d5d76ab55a444720d54c05582ccb4b31c48eaaf",
+      "normalised_phrase": "As soon as practicable following the Closing, the parties shall cause (i) a certificate of merger with respect to the Titanium Merger to be executed and filed with the Secretary of State of the State of Delaware as provided in the DGCL (the “Titanium Merger Certificate of Merger”) and (ii) following the filing of the Titanium Merger Certificate of Merger, a certificate of merger with respect to the Forward Merger to be executed and filed with the Secretary of State of the State of Delaware as provided in the DGCL and DLLCA (the “Forward Merger Certificate of Merger”), and the parties shall make all other filings or recordings required by the DGCL and DLLCA in connection with the Mergers.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 4,
+          "end": 18,
+          "excerpt": "1.4 Effective Time. As soon as practicable following the Closing, the parties shall cause (i) a ce",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 1157,
+          "end": 1171,
+          "excerpt": "e Forward Merger, the “Forward Merger Effective Time”). The Titanium Merger Effective Time shall, in all events, precede the Forward Merger Effective Time.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 1221,
+          "end": 1235,
+          "excerpt": "Titanium Merger Effective Time shall, in all events, precede the Forward Merger Effective Time.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.5",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f243e4a590285ce3fe4d04e9e951b2163c9479d0afb56896a9785c306b497bf2",
+      "closure_id": "eec5c7d4b4e547180f18d9b092f42a71fb6c1ed7e69cde17bd9c984880150cee",
+      "normalised_phrase": "The Titanium Merger shall have the effects provided for in this Agreement, the Titanium Merger Certificate of Merger and the applicable provisions of the DGCL.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.5",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a467ea4cf86eda8d75dcdaef0cc4c6da95e37eb0e725be110e59215b0e6ea144",
+      "closure_id": "f0943504f1a2280442c21af881745e07d571b10671d7c85cb237010338468bfa",
+      "normalised_phrase": "The Forward Merger shall have the effects provided for in this Agreement, the Forward Merger Certificate of Merger and the applicable provisions of the DGCL and the DLLCA.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.6",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f114768ce4131fb24d4e535b3d7638a9cac5986d5f1c7375b58688bb03b9fb7d",
+      "closure_id": "03d4d835d1d6080c2cbf37b49e616563c1454453acf2bde252aeccd227fd9bc3",
+      "normalised_phrase": "at the Titanium Merger Effective Time, the Amended and Restated Certificate of Incorporation of the Company (the “Charter”) in effect immediately prior to the Titanium Merger Effective Time shall be amended and restated in its entirety to read as set forth in Annex B, until thereafter amended as provided therein or by applicable Laws.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.6",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ae4649e64bf5d0ccef888555e7ada37e80b2353e816f6293044fa714a1133058",
+      "closure_id": "50e2c4dce215bbfb292941a40183c46e4a64432e958cfedb06d5c4f28ea379de",
+      "normalised_phrase": "At the Titanium Merger Effective Time, the bylaws of the Company in effect immediately prior to the Titanium Merger Effective Time shall be amended and restated in their entirety to read as the bylaws of Titanium Merger Sub (the “Bylaws”) in effect immediately prior to the Titanium Merger Effective Time, except that all references therein to Titanium Merger Sub shall be automatically amended and shall become references to the Titanium Surviving Corporation, until thereafter amended as provided therein or by applicable Laws.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.7",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "af4f2585ab45e4ccac9feda6fe7a313550b40e2a85dde62880e40838817a8360",
+      "closure_id": "04e80bff7256039f64fbdc32b0381fe7d0251b09ed686ab4e05b56ab5313fb76",
+      "normalised_phrase": "at the Forward Merger Effective Time",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.7",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "99f1106b52640384b1955ea41067aee22dbad4e62e82214ac8f76ad3a8cc26a0",
+      "closure_id": "06ef54da8e6397da046d779d3e6a7ce436c81d5765f9cbd131a8b4931810fb2c",
+      "normalised_phrase": "the certificate of formation and the limited liability company agreement of Forward Merger Sub in effect immediately prior to the Forward Merger Effective Time, except for such changes as may be necessary to reflect any change of name of the Forward Surviving Company, shall be the certificate of formation and the limited liability company agreement of the Forward Surviving Company immediately following the Forward Merger Effective Time, until thereafter amended as provided therein or by applicable Laws.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.8",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e4ff19cbbedbfdf7382a868663f32d0cfaabcffc12f37e731156a62e1f7fb5d4",
+      "closure_id": "7c38ddaaafe252a7b15089d5591acbc95de1bb7e9571395b5e90271e6697aae0",
+      "normalised_phrase": "Subject to applicable Law, the parties shall take all requisite actions so that, from and after the Titanium Merger Effective Time, the directors of Titanium Merger Sub shall be the directors of the Titanium Surviving Corporation until their successors shall have been duly elected or appointed and qualified or until their earlier death, resignation or removal in accordance with the Charter and the Bylaws.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 212,
+          "end": 226,
+          "excerpt": "site actions so that the officers of Titanium Merger Sub at the Titanium Merger Effective Time shall, from and after the Titanium Merger Effective Time, be the officers of th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 269,
+          "end": 283,
+          "excerpt": "at the Titanium Merger Effective Time shall, from and after the Titanium Merger Effective Time, be the officers of the Titanium Surviving Corporation until their successors s",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 1041,
+          "end": 1055,
+          "excerpt": "uisite actions so that the officers of Forward Merger Sub at the Forward Merger Effective Time shall, from and after the Forward Merger Effective Time, be the officers of the",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 1097,
+          "end": 1111,
+          "excerpt": "b at the Forward Merger Effective Time shall, from and after the Forward Merger Effective Time, be the officers of the Forward Surviving Company until their successors shall ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "9f96decb097ee84391e7efe7dc6aaf73532b95fca921b309901874ef013471ec"
+}
