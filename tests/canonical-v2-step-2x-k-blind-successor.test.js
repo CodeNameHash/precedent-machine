@@ -128,9 +128,9 @@ function hermeticModules(fixture, disposition) {
       assert.equal(repoRoot, fixture.repoRoot);
       return resolve(repoRoot, path);
     },
-    adoptStoredSourceMapPayload({ verified, absolutePayloadPath }) {
+    adoptStoredSourceMapPayload({ verified, payloadBytes }) {
       calls.adopt += 1;
-      assert.deepEqual(readFileSync(absolutePayloadPath), fixture.payloadBytes);
+      assert.deepEqual(payloadBytes, fixture.payloadBytes);
       return { verified, sourceMapCompressedSha256: sha256(fixture.payloadBytes) };
     },
     buildAdmittedContext({ locallyValidatedConversion, recordedSourceMapProvenance }) {

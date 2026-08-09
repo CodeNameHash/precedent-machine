@@ -160,9 +160,9 @@
  */
 
 import {
-  readFileSync, writeFileSync, mkdirSync, existsSync, lstatSync, realpathSync,
+  readFileSync, writeFileSync, mkdirSync, existsSync, lstatSync,
 } from 'node:fs';
-import { resolve, dirname, relative, isAbsolute, sep } from 'node:path';
+import { resolve, relative, isAbsolute, sep } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
@@ -179,8 +179,11 @@ const {
 } = require('../lib/canonical-v2/sec-source-admission');
 const { buildAdmittedSemanticSourceContext } = require('../lib/canonical-v2/admitted-semantic-source');
 const {
-  retrievalPolicyDigestFor, sourceMapPayloadPathFor, adoptPersistedSourceMapPayload,
+  retrievalPolicyDigestFor, adoptPersistedSourceMapPayload,
 } = require('../lib/canonical-v2/admitted-source-chain-rebuild');
+const {
+  sourceMapPayloadPathFor, resolveContainedRepositoryPath, resolveSourceMapPayloadPath,
+} = require('../lib/canonical-v2/source-map-payload-store');
 const {
   sectionizeAdmittedSource, findSectionByReference,
 } = require('../lib/canonical-v2/native-producer/deterministic-sectionizer');
@@ -1393,8 +1396,7 @@ function buildAdmittedContext({
 // The local conversion has already passed the strict converter and verifier
 // checks. A payload from the shared store may differ only in DEFLATE bytes,
 // so adopt it only through the rebuild module's inflation-and-digest check.
-function adoptStoredSourceMapPayload({ verified, absolutePayloadPath }) {
-  const payloadBytes = readFileSync(absolutePayloadPath);
+function adoptStoredSourceMapPayload({ verified, payloadBytes }) {
   const sourceMapCompressedSha256 = sha256Hex(payloadBytes);
   return {
     verified: {
@@ -1547,35 +1549,12 @@ const REPLAY_LIVE_REQUIRED = Object.freeze(new Set([
 ]));
 const PROMPT_DIGEST_DOMAIN = 'NATIVE_PRODUCER_PROMPT/V1';
 
-function resolveContainedEvidenceFile(repoRoot, relativePath, label) {
-  if (typeof relativePath !== 'string' || relativePath.trim() === '' || relativePath.includes('\0')
-    || relativePath.includes('\\') || isAbsolute(relativePath) || /^[a-zA-Z]:/.test(relativePath)) {
-    throw new Error(`REPLAY_SOURCE_PATH_INVALID: ${label} must be a non-empty repository-relative path`);
-  }
-  const segments = relativePath.split('/');
-  if (segments.some((segment) => segment === '' || segment === '.' || segment === '..')) {
-    throw new Error(`REPLAY_SOURCE_PATH_TRAVERSAL: ${label} contains a forbidden path segment`);
-  }
-  const resolved = resolve(repoRoot, relativePath);
-  const lexicalRelative = relative(repoRoot, resolved);
-  if (lexicalRelative === '..' || lexicalRelative.startsWith('../') || isAbsolute(lexicalRelative)) {
-    throw new Error(`REPLAY_SOURCE_PATH_ESCAPE: ${label} escapes the repository root`);
-  }
-  const realRoot = realpathSync(repoRoot);
-  let cursor = repoRoot;
-  for (const segment of segments) {
-    cursor = resolve(cursor, segment);
-    if (lstatSync(cursor).isSymbolicLink()) {
-      throw new Error(`REPLAY_SOURCE_SYMLINK_REFUSED: ${label} contains symbolic-link component ${segment}`);
-    }
-  }
-  const realTarget = realpathSync(resolved);
-  const realRelative = relative(realRoot, realTarget);
-  if (realTarget !== realRoot
-    && (realRelative === '..' || realRelative.startsWith('../') || isAbsolute(realRelative))) {
-    throw new Error(`REPLAY_SOURCE_REALPATH_ESCAPE: ${label} resolves outside the repository root`);
-  }
-  return resolved;
+function resolveContainedEvidenceFile(repoRoot, relativePath, label, expectedType = 'file') {
+  return resolveContainedRepositoryPath(repoRoot, relativePath, {
+    codePrefix: 'REPLAY_SOURCE',
+    expectedType,
+    label,
+  });
 }
 
 function replaySourceManifestId(manifest) {
@@ -1659,7 +1638,9 @@ function loadSealedReplaySourceManifest({
     if (entry.source_call.prompt_digest !== currentDigest) {
       throw new Error(`REPLAY_PROMPT_DIGEST_MISMATCH: section ${entry.section_reference} source_call=${entry.source_call.prompt_digest} current=${currentDigest}`);
     }
-    const runDir = resolveContainedEvidenceFile(repoRoot, entry.source_run_dir, `sections[${index}].source_run_dir`);
+    const runDir = resolveContainedEvidenceFile(
+      repoRoot, entry.source_run_dir, `sections[${index}].source_run_dir`, 'directory',
+    );
     if (!lstatSync(runDir).isDirectory()) throw new Error(`REPLAY_SOURCE_NOT_DIRECTORY: ${entry.source_run_dir}`);
     const fixturePath = resolveContainedEvidenceFile(runDir, entry.fixture_file, `sections[${index}].fixture_file`);
     const receiptPath = resolveContainedEvidenceFile(runDir, entry.run_receipt_file, `sections[${index}].run_receipt_file`);
@@ -1745,6 +1726,7 @@ function providerModelIdForProfile(profileId) {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const config = resolveRunConfig(args);
+  const repoRoot = process.cwd();
   // Capture repository state before creating the output directory or writing
   // any run artefact. The artefacts are intentionally committed evidence, so
   // sampling at manifest-write time would make an initially clean run report
@@ -1837,11 +1819,15 @@ async function main() {
   // payload, because it has no write-set to import.
   if (outDir && !config.dryRun) {
     sourceMapPayloadPath = sourceMapPayloadPathFor(locallyVerified.conversion.canonical_text_id);
-    const absolutePayloadPath = resolve(sourceMapPayloadPath);
+    const absolutePayloadPath = resolveSourceMapPayloadPath({
+      repoRoot,
+      canonicalTextId: locallyVerified.conversion.canonical_text_id,
+      allowMissingLeaf: true,
+    });
     if (existsSync(absolutePayloadPath)) {
       const adopted = adoptStoredSourceMapPayload({
         verified: locallyVerified,
-        absolutePayloadPath,
+        payloadBytes: readFileSync(absolutePayloadPath),
       });
       verified = adopted.verified;
       recordedSourceMapProvenance = {
@@ -1849,10 +1835,10 @@ async function main() {
         source_map_compressed_sha256: adopted.sourceMapCompressedSha256,
       };
     } else {
-      mkdirSync(dirname(absolutePayloadPath), { recursive: true });
       writeFileSync(
         absolutePayloadPath,
         Buffer.from(locallyVerified.conversion.source_map_payload_base64, 'base64'),
+        { flag: 'wx' },
       );
       process.stderr.write(`${logPrefix} persisted compressed source map at ${sourceMapPayloadPath}\n`);
     }

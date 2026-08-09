@@ -532,11 +532,12 @@ async function resolveSourceRun({ repoRoot, sourceRun, runner, resolverModule = 
     const payloadPath = runner.resolveContainedEvidenceFile(
       repoRoot, captureInputs.source_map_payload_path, `${sourceRun}.source_map_payload_path`,
     );
-    const actual = digestFile(payloadPath);
+    const payloadBytes = readFileSync(payloadPath);
+    const actual = sha256Hex(payloadBytes);
     if (actual !== captureInputs.source_map_compressed_sha256) {
       fail('SOURCE_MAP_PAYLOAD_DIGEST_MISMATCH', `${sourceRun} names different compressed bytes`);
     }
-    const adopted = runner.adoptStoredSourceMapPayload({ verified: locallyVerified, absolutePayloadPath: payloadPath });
+    const adopted = runner.adoptStoredSourceMapPayload({ verified: locallyVerified, payloadBytes });
     verified = adopted.verified;
     recordedSourceMapProvenance = {
       source_map_payload_path: captureInputs.source_map_payload_path,

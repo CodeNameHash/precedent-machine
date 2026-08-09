@@ -11,6 +11,7 @@ const {
   buildVerifiedSecSourceAdmissionForRecordedSourceMapPayload,
   validateVerifiedSecSourceAdmission,
 } = require('../lib/canonical-v2/sec-source-admission');
+const { sourceMapPayloadPathFor } = require('../lib/canonical-v2/source-map-payload-store');
 
 function inputs(html = '<body><p>Section 5.2. Four business days.</p></body>') {
   const url = 'https://www.sec.gov/Archives/edgar/data/1/qxo.htm';
@@ -171,7 +172,7 @@ test('uses a run-recorded equivalent compressed map only after strict local conv
     adopted_conversion: adoptedConversion,
     verification: source.verification,
     recorded_source_map_provenance: {
-      source_map_payload_path: 'evidence/canonical-v2/example.deflate',
+      source_map_payload_path: sourceMapPayloadPathFor(source.conversion.canonical_text_id),
       source_map_compressed_sha256: sha256Hex(alternative),
     },
   };

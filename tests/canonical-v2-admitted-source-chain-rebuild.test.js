@@ -23,6 +23,10 @@ const {
   explainReferenceDivergence,
   createRebuildingSourceReferenceResolver,
 } = require('../lib/canonical-v2/admitted-source-chain-rebuild');
+const {
+  assertRecordedSourceMapProvenance,
+  resolveContainedRepositoryPath,
+} = require('../lib/canonical-v2/source-map-payload-store');
 const { CONVERTER_DIGEST } = require('../lib/canonical-v2/sec-html-canonical-text');
 
 const REPO = path.join(__dirname, '..');
@@ -41,6 +45,43 @@ test('the policy digest matches the string the runner actually hashes', () => {
   ).digest('hex');
   assert.equal(retrievalPolicyDigestFor('modiv'), expected);
   assert.notEqual(retrievalPolicyDigestFor('modiv'), retrievalPolicyDigestFor('topbuild'));
+});
+
+test('repository payload paths reject traversal and every symbolic-link component', (t) => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'payload-containment-'));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  fs.mkdirSync(path.join(root, 'store'));
+  fs.writeFileSync(path.join(root, 'store', 'payload.deflate'), 'payload');
+  fs.symlinkSync(path.join(root, 'store', 'payload.deflate'), path.join(root, 'store', 'linked.deflate'));
+  fs.symlinkSync(path.join(root, 'store'), path.join(root, 'linked-store'));
+
+  assert.equal(
+    resolveContainedRepositoryPath(root, 'store/payload.deflate'),
+    path.join(root, 'store', 'payload.deflate'),
+  );
+  assert.equal(
+    resolveContainedRepositoryPath(root, 'store/new.deflate', { allowMissingLeaf: true }),
+    path.join(root, 'store', 'new.deflate'),
+  );
+  for (const candidate of ['../payload.deflate', '/tmp/payload.deflate']) {
+    assert.throws(() => resolveContainedRepositoryPath(root, candidate), /PATH_(?:TRAVERSAL|INVALID)/);
+  }
+  for (const candidate of ['store/linked.deflate', 'linked-store/payload.deflate']) {
+    assert.throws(() => resolveContainedRepositoryPath(root, candidate), /SYMLINK_REFUSED/);
+  }
+});
+
+test('recorded payload provenance is bound to the canonical-text-addressed store path', () => {
+  const canonicalTextId = 'a'.repeat(64);
+  const expectedPath = sourceMapPayloadPathFor(canonicalTextId);
+  assert.doesNotThrow(() => assertRecordedSourceMapProvenance({
+    source_map_payload_path: expectedPath,
+    source_map_compressed_sha256: 'b'.repeat(64),
+  }, canonicalTextId));
+  assert.throws(() => assertRecordedSourceMapProvenance({
+    source_map_payload_path: 'evidence/canonical-v2/other.deflate',
+    source_map_compressed_sha256: 'b'.repeat(64),
+  }, canonicalTextId), (error) => error.code === 'PERSISTED_SOURCE_MAP_PATH_MISMATCH');
 });
 
 test('it rebuilds the four primitives the writer asks for, and nothing else', () => {
@@ -224,6 +265,25 @@ test('every regenerated run names a payload that is actually there', () => {
   }
 });
 
+test('a run cannot read its persisted payload through an absolute path', () => {
+  const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'chain-absolute-payload-'));
+  const runDirectory = path.join(scratch, 'run');
+  fs.mkdirSync(runDirectory);
+  const reference = JSON.parse(
+    fs.readFileSync(path.join(REBUILDABLE, 'source-reference.json'), 'utf8'),
+  );
+  reference.admitted_source_capture_inputs.source_map_payload_path = path.join(
+    REPO,
+    reference.admitted_source_capture_inputs.source_map_payload_path,
+  );
+  fs.writeFileSync(path.join(runDirectory, 'source-reference.json'), JSON.stringify(reference));
+  assert.throws(
+    () => rebuildAdmittedSourcePrimitives({ runDirectory }),
+    (error) => error.code === 'PERSISTED_SOURCE_MAP_PATH_INVALID',
+  );
+  fs.rmSync(scratch, { recursive: true, force: true });
+});
+
 test('a payload that inflates to something else is refused', () => {
   // The payload is the one input to the chain that does not come from the
   // source bytes, so it is the only one that has to earn its place. If it
@@ -296,15 +356,19 @@ test('a run naming a payload that is gone is refused, not quietly rebuilt', () =
   // would produce a different identity, which is the failure the payload
   // exists to prevent.
   const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'chain-payload-'));
+  const repoRoot = path.join(scratch, 'repo');
   const runDirectory = path.join(scratch, 'run');
   fs.mkdirSync(runDirectory);
   const reference = JSON.parse(
     fs.readFileSync(path.join(REBUILDABLE, 'source-reference.json'), 'utf8'),
   );
-  reference.admitted_source_capture_inputs.source_map_payload_path = `${SOURCE_MAP_PAYLOAD_STORE}/gone.deflate`;
+  const rawHtmlRelative = reference.admitted_source_capture_inputs.raw_html_path;
+  fs.mkdirSync(path.dirname(path.join(repoRoot, rawHtmlRelative)), { recursive: true });
+  fs.copyFileSync(path.join(REPO, rawHtmlRelative), path.join(repoRoot, rawHtmlRelative));
+  fs.mkdirSync(path.join(repoRoot, SOURCE_MAP_PAYLOAD_STORE), { recursive: true });
   fs.writeFileSync(path.join(runDirectory, 'source-reference.json'), JSON.stringify(reference));
   assert.throws(
-    () => rebuildAdmittedSourcePrimitives({ runDirectory }),
+    () => rebuildAdmittedSourcePrimitives({ runDirectory, repoRoot }),
     (error) => error.code === 'PERSISTED_SOURCE_MAP_NOT_FOUND',
   );
   fs.rmSync(scratch, { recursive: true, force: true });

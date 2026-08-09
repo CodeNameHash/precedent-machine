@@ -11,6 +11,7 @@ const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const { importRunEvidence } = require('../lib/canonical-v2/evidence-to-write-set-bridge');
 const { InMemoryCanonicalRepository } = require('../lib/canonical-v2/canonical-writer');
 const { compileFixtureContractV42 } = require('../lib/canonical-v2/contract-bundle');
+const { sourceMapPayloadPathFor } = require('../lib/canonical-v2/source-map-payload-store');
 
 const ROOT = path.resolve(__dirname, '..');
 const RUNNER = path.join(ROOT, 'scripts', 'canonical-v2-live-extraction-run.mjs');
@@ -171,7 +172,7 @@ exit 94
     );
     const adopted = runner.adoptStoredSourceMapPayload({
       verified: locallyVerified,
-      absolutePayloadPath: alternativePayload,
+      payloadBytes: fs.readFileSync(alternativePayload),
     });
     const adoptedContext = runner.buildAdmittedContext({
       deal: 'topbuild',
@@ -180,7 +181,7 @@ exit 94
       verified: adopted.verified,
       locallyValidatedConversion: locallyVerified.conversion,
       recordedSourceMapProvenance: {
-        source_map_payload_path: 'evidence/canonical-v2/example.deflate',
+        source_map_payload_path: sourceMapPayloadPathFor(locallyVerified.conversion.canonical_text_id),
         source_map_compressed_sha256: sha256Hex(alternativeBytes),
       },
     });
@@ -203,7 +204,7 @@ exit 94
     assert.throws(
       () => runner.adoptStoredSourceMapPayload({
         verified: locallyVerified,
-        absolutePayloadPath: hostilePayload,
+        payloadBytes: fs.readFileSync(hostilePayload),
       }),
       (error) => error.code === 'PERSISTED_SOURCE_MAP_DIVERGES',
       'a stored payload must inflate to the independently validated map before adoption',
