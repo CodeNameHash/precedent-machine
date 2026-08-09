@@ -1,0 +1,409 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "a6e3d88542dcff6c77de2186a6327efff9b386a8c2d48fe45c8b5771e9333d96",
+  "review_queue": [
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LEGAL_RESTRAINT_CONDITION",
+      "concept_key": "COND-M-LEGAL",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "bedb7da1a57897089b6288f84be4483982dbcc4da6fe4b3a0d17862eae51b9f1",
+      "closure_id": "107d388b26b8dbda87ce6b3a437786847083d3e029617800c09458afff69eabd",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "08f46fc84c675614081741a032f0ad51ed65b2806ba56738cfaf119e3818f2e7",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d7e5bf2d92c8474b26d1939039ea488adb96d0d9d0573850cd2d768ad9503a3c",
+          "document_ordinal": 0,
+          "absolute_start": 883,
+          "absolute_end": 1440,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "No temporary restraining order, preliminary or permanent injunction or other judgment or order issued by any court of competent jurisdiction or other legal or regulatory restraint or prohibition preventing the consummation of the Merger will be in effect, nor will any action have been taken by any Governmental Authority of competent jurisdiction, and no statute, rule, regulation or order will have been enacted, entered, enforced or deemed applicable to the Merger, that, in each case, prohibits, makes illegal, or enjoins the consummation of the Merger.",
+      "attachment_position": null,
+      "concept_family": "COND-M-LEGAL",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 846,
+          "end_byte": 1677
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 846,
+            "end_byte": 1677,
+            "text": " No Prohibitive Laws or Injunctions. No temporary restraining order, preliminary or permanent injunction or other judgment or order issued by any court of competent jurisdiction or other legal or regulatory restraint or prohibition preventing the consummation of the Merger will be in effect, nor will any action have been taken by any Governmental Authority of competent jurisdiction, and no statute, rule, regulation or order will have been enacted, entered, enforced or deemed applicable to the Merger, that, in each case, prohibits, makes illegal, or enjoins the consummation of the Merger. For the avoidance of doubt, the receipt of a Specified Letter by the Buyer Parties or the Company shall not be the basis for concluding that any conditions set forth in this Article VII to consummate the Merger have not been satisfied.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 282,
+            "text": "7.1 Conditions to Each Party’s Obligations to Effect the Merger. The respective obligations of the Buyer Parties and the Company to consummate the Merger are subject to the satisfaction or waiver (where permissible pursuant to applicable law) of each of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_APPROVAL_CONDITION",
+      "concept_key": "COND-REG",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "bdee49b357ba65881f064945dfffa75c42dfd478024f13885749f03b9b07864a",
+      "closure_id": "71b1dc3c166af69d2687845fb8b4c800693a1cb9229b13aed476b15b6c579765",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "8669ff31c3bee459889b0a13db2e04f96345836419a3449ce7c3f0124c8407c1",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "62ed402bd4efa0fa371ade1f3e66c9428df9aa3e49e575eab8a2dfc6c4bf219a",
+          "document_ordinal": 0,
+          "absolute_start": 412,
+          "absolute_end": 607,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The waiting period (and any extensions thereof) applicable to the Merger pursuant to the HSR Act will have expired or otherwise been terminated (including by way of a positive clearance decision)",
+      "attachment_position": null,
+      "concept_family": "COND-REG",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 358,
+          "end_byte": 843
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 358,
+            "end_byte": 843,
+            "text": " Antitrust and Foreign Investment Laws Clearance. (i) The waiting period (and any extensions thereof) applicable to the Merger pursuant to the HSR Act will have expired or otherwise been terminated (including by way of a positive clearance decision) and (ii) the approvals, clearances or expirations of waiting periods under any other applicable Antitrust and Foreign Investment Laws as set forth on Section 6.2(a) of the Company Disclosure Letter will have occurred or been obtained.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 282,
+            "text": "7.1 Conditions to Each Party’s Obligations to Effect the Merger. The respective obligations of the Buyer Parties and the Company to consummate the Merger are subject to the satisfaction or waiver (where permissible pursuant to applicable law) of each of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "source_citation": "7.1(b)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "APPROVAL_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the approvals, clearances or expirations of waiting periods under any other applicable Antitrust and Foreign Investment Laws as set forth on Section 6.2(a) of the Company Disclosure Letter will have occurred or been obtained.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "586edfdb8768fff043ac96b13800b775c1f0bcb1f489f5ec31f7229c357fcea9",
+      "closure_id": "948a56a9f8992ed25c544de08b1324b4a3d98737dc92ed681e36c656902c6087",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "02ff7ba4bc5bcac87b5900ff216e712171ce8227e3c108832ff366ce1c284d38",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "5d0affcc4ac86d15a92a17a8b0e663b6151958c7be1234aec2abc9db3dc1f533",
+          "document_ordinal": 0,
+          "absolute_start": 617,
+          "absolute_end": 842,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the approvals, clearances or expirations of waiting periods under any other applicable Antitrust and Foreign Investment Laws as set forth on Section 6.2(a) of the Company Disclosure Letter will have occurred or been obtained.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 358,
+          "end_byte": 843
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 358,
+            "end_byte": 843,
+            "text": " Antitrust and Foreign Investment Laws Clearance. (i) The waiting period (and any extensions thereof) applicable to the Merger pursuant to the HSR Act will have expired or otherwise been terminated (including by way of a positive clearance decision) and (ii) the approvals, clearances or expirations of waiting periods under any other applicable Antitrust and Foreign Investment Laws as set forth on Section 6.2(a) of the Company Disclosure Letter will have occurred or been obtained.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 282,
+            "text": "7.1 Conditions to Each Party’s Obligations to Effect the Merger. The respective obligations of the Buyer Parties and the Company to consummate the Merger are subject to the satisfaction or waiver (where permissible pursuant to applicable law) of each of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "source_citation": "7.1(a)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company will have received the Written Consent.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "c824a014a2a5792405bdb4dc42245453cd8440e9e0670d726853333b0cc62db0",
+      "closure_id": "bff1156076f4dd927c84dbf0c730301e67644a16ad3c01d1f72829e419ba2643",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "d3c77cab424c84771afbabb8b53fc54189fdd591b0943d11aa557f119de224ef",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "5a33e3358e4827e40cac41c3515533458b3e97625e5793118f33f1e63f80d3dd",
+          "document_ordinal": 0,
+          "absolute_start": 303,
+          "absolute_end": 354,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company will have received the Written Consent.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 285,
+          "end_byte": 355
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 285,
+            "end_byte": 355,
+            "text": " Written Consent. The Company will have received the Written Consent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 282,
+            "text": "7.1 Conditions to Each Party’s Obligations to Effect the Merger. The respective obligations of the Buyer Parties and the Company to consummate the Merger are subject to the satisfaction or waiver (where permissible pursuant to applicable law) of each of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "S4_CONDITION_COMPONENT",
+      "concept_key": "COND-M-S4",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "db97eecd67f438f508b8b12d10698fcf6d0fa847823eefe82d361b7c05867766",
+      "closure_id": "dc47752701db26a97667764f94a18ee4bc57df5cddb36c67320efddae38fdd38",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "322ee3be0e12f9e346ce97726f12b992cf88bc3e6725a40a7a57bbb4d74380e5",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "52d1e4e3fe8bc4dffa6ceb108cd866026f233f727c41655755f818bebcbd441e",
+          "document_ordinal": 0,
+          "absolute_start": 1705,
+          "absolute_end": 1816,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Registration Statement shall have become effective in accordance with the provisions of the Securities Act.",
+      "attachment_position": null,
+      "concept_family": "COND-M-S4",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "d",
+          "depth": 1,
+          "start_byte": 1680,
+          "end_byte": 2076
+        },
+        "chain": [
+          {
+            "path": "d",
+            "start_byte": 1680,
+            "end_byte": 2076,
+            "text": " Registration Statement. The Registration Statement shall have become effective in accordance with the provisions of the Securities Act. No stop order suspending the effectiveness of the Registration Statement shall have been issued and remain in effect, and no Legal Proceedings for that purpose shall have commenced or been threatened in writing by the SEC, unless subsequently withdrawn.\n-76-\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 282,
+            "text": "7.1 Conditions to Each Party’s Obligations to Effect the Merger. The respective obligations of the Buyer Parties and the Company to consummate the Merger are subject to the satisfaction or waiver (where permissible pursuant to applicable law) of each of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "S4_CONDITION_COMPONENT",
+      "concept_key": "COND-M-S4",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0c143742681ecdca1e63a149c99cdc255edf169eb20edae627f2f7f0d76b8015",
+      "closure_id": "e32c0d1b76a5f0e4f349f98b2ad50bfb3ac1326b446546700838e7139cb1ac1a",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e6a9b006d371c62bfb38867fee530bbda4ab00921fab783541da95b2e6dc6ec4",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2a52d1284a7594ebcad21ff28209e62cc2741000a09105a44c7101c9a8d9062d",
+          "document_ordinal": 0,
+          "absolute_start": 1817,
+          "absolute_end": 2070,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "No stop order suspending the effectiveness of the Registration Statement shall have been issued and remain in effect, and no Legal Proceedings for that purpose shall have commenced or been threatened in writing by the SEC, unless subsequently withdrawn.",
+      "attachment_position": null,
+      "concept_family": "COND-M-S4",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "d",
+          "depth": 1,
+          "start_byte": 1680,
+          "end_byte": 2076
+        },
+        "chain": [
+          {
+            "path": "d",
+            "start_byte": 1680,
+            "end_byte": 2076,
+            "text": " Registration Statement. The Registration Statement shall have become effective in accordance with the provisions of the Securities Act. No stop order suspending the effectiveness of the Registration Statement shall have been issued and remain in effect, and no Legal Proceedings for that purpose shall have commenced or been threatened in writing by the SEC, unless subsequently withdrawn.\n-76-\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 282,
+            "text": "7.1 Conditions to Each Party’s Obligations to Effect the Merger. The respective obligations of the Buyer Parties and the Company to consummate the Merger are subject to the satisfaction or waiver (where permissible pursuant to applicable law) of each of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "S4_CONDITION_COMPONENT",
+      "concept_key": "COND-M-S4",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "1e5bf47c2e4bdcdbbe548101452c8fc34c5a8efe68d30e0d5d2396dd1c6eed07",
+      "closure_id": "ff4d5978e3953eb98c6b9d947b28e6684e1f1204fc2d940a290b702ac2d80bca",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0cd190fb7be302ac6af571dd758a7b6359b662dc725f966db069818c13a15045",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2a52d1284a7594ebcad21ff28209e62cc2741000a09105a44c7101c9a8d9062d",
+          "document_ordinal": 0,
+          "absolute_start": 1817,
+          "absolute_end": 2070,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "No stop order suspending the effectiveness of the Registration Statement shall have been issued and remain in effect, and no Legal Proceedings for that purpose shall have commenced or been threatened in writing by the SEC, unless subsequently withdrawn.",
+      "attachment_position": null,
+      "concept_family": "COND-M-S4",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "d",
+          "depth": 1,
+          "start_byte": 1680,
+          "end_byte": 2076
+        },
+        "chain": [
+          {
+            "path": "d",
+            "start_byte": 1680,
+            "end_byte": 2076,
+            "text": " Registration Statement. The Registration Statement shall have become effective in accordance with the provisions of the Securities Act. No stop order suspending the effectiveness of the Registration Statement shall have been issued and remain in effect, and no Legal Proceedings for that purpose shall have commenced or been threatened in writing by the SEC, unless subsequently withdrawn.\n-76-\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 282,
+            "text": "7.1 Conditions to Each Party’s Obligations to Effect the Merger. The respective obligations of the Buyer Parties and the Company to consummate the Merger are subject to the satisfaction or waiver (where permissible pursuant to applicable law) of each of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "2e025f536fe6546d73d711abdbb0478aba03039e401cda431664fbf4f3237960"
+}

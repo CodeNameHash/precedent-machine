@@ -1,0 +1,1020 @@
+{
+  "resolved": [
+    {
+      "section_reference": "6.01",
+      "source_citation": "6.01(b)",
+      "citation_context": {
+        "parent_section_reference": "6.01",
+        "child_section_reference": "6.01(b)",
+        "parent_chapeau_quote": "Section 6.01 Conditions to Each Party’s Obligation to Effect the Merger. The respective obligation of each party to effect the Merger is subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:",
+        "child_clause_quote": "(b) Antitrust. (i) Any waiting period (and any extension thereof) applicable to the Merger under the HSR Act shall have been terminated or shall have expired and (ii) any other approval or waiting period under any other applicable Antitrust Law of any Governmental Entity in a jurisdiction set forth in Section 6.01"
+      },
+      "governing_context_quote": "Section 6.01 Conditions to Each Party’s Obligation to Effect the Merger. The respective obligation of each party to effect the Merger is subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_APPROVAL_CONDITION",
+      "concept_key": "COND-REG",
+      "party": {
+        "role": "CONDITION_BENEFICIARY",
+        "value": "Either Principal Party",
+        "capacity": "EITHER_PRINCIPAL_PARTY"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "266b15e89704968cc94b7c51196e00bd4ac4d0ebb774dbc59ef6b96c169daa86",
+        "canonical_text_id": "e2666a438a78125e141395f04e747e98ee7d64db7ad483a62383a22423c4f784",
+        "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+        "absolute_start": 218259,
+        "absolute_end": 220269,
+        "concept_key": "COND-REG",
+        "party": {
+          "role": "CONDITION_BENEFICIARY",
+          "value": "Either Principal Party",
+          "capacity": "EITHER_PRINCIPAL_PARTY"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "39f4aaebf1f130f12ebcdf38d4029b95f097399d8f0ac57204c06a791d33b28c",
+        "provision_instance_id": "57a3e23b080f87d717d91d310b620b14646f6d887d543c68b7835c5de1a79bfe",
+        "closure_id": "114600de9ff6e3903fe23427434d0ceb3d4f572bf00f0bde30989810cc45fae6"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "0cf704897dab67878579446af9406314bd64dbec2f1db944e992081a667132c6",
+        "claim_occurrence_id": "3d40883d92cfa6bff79a759a76334a6984898b901f29a7d766cd661538001c23",
+        "subject_occurrence_id": "57a3e23b080f87d717d91d310b620b14646f6d887d543c68b7835c5de1a79bfe",
+        "claim_definition_key": "REGULATORY_APPROVAL_CONDITION",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Any waiting period (and any extension thereof) applicable to the Merger under the HSR Act shall have been terminated or shall have expired",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "84aee7f51097826228e34704ee96202465c8867cb07a629118b80aeb5a9e8288"
+        ],
+        "attributes": {
+          "section_reference": "6.01",
+          "assertion_kind": "REGULATORY_APPROVAL",
+          "condition_obligor": null,
+          "accuracy_standard": null,
+          "rep_side": null,
+          "covered_scope_ref": null,
+          "scrape_quote": null,
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": null,
+          "obligor_ref": null,
+          "approval_kind": "HSR",
+          "approval_definition_ref": null,
+          "s4_component": null,
+          "listing_venue_ref": null,
+          "certificate_side": null,
+          "certifying_party_ref": null,
+          "certified_condition_refs": [],
+          "certificate_relationship_status": null,
+          "causation_standard": null,
+          "breach_standard": null,
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "REGULATORY_APPROVAL"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "84aee7f51097826228e34704ee96202465c8867cb07a629118b80aeb5a9e8288",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "e200dbb830e36779c2817325dc36642c719a5dd6d935c6965111f15893c7e18d",
+            "document_ordinal": 0,
+            "absolute_start": 378,
+            "absolute_end": 516,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "743ef9cb9f2ee582ba1d67955fbfaf3a3c6330672e1db98c657feec0ac008a9f"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.01",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.01",
+          "normalized_citation": "6.01",
+          "derived_citation": "6.01(b)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "0cf704897dab67878579446af9406314bd64dbec2f1db944e992081a667132c6",
+            "claim_occurrence_id": "3d40883d92cfa6bff79a759a76334a6984898b901f29a7d766cd661538001c23",
+            "subject_occurrence_id": "57a3e23b080f87d717d91d310b620b14646f6d887d543c68b7835c5de1a79bfe",
+            "claim_definition_key": "REGULATORY_APPROVAL_CONDITION",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Any waiting period (and any extension thereof) applicable to the Merger under the HSR Act shall have been terminated or shall have expired",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "84aee7f51097826228e34704ee96202465c8867cb07a629118b80aeb5a9e8288"
+            ],
+            "attributes": {
+              "section_reference": "6.01",
+              "assertion_kind": "REGULATORY_APPROVAL",
+              "condition_obligor": null,
+              "accuracy_standard": null,
+              "rep_side": null,
+              "covered_scope_ref": null,
+              "scrape_quote": null,
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": null,
+              "obligor_ref": null,
+              "approval_kind": "HSR",
+              "approval_definition_ref": null,
+              "s4_component": null,
+              "listing_venue_ref": null,
+              "certificate_side": null,
+              "certifying_party_ref": null,
+              "certified_condition_refs": [],
+              "certificate_relationship_status": null,
+              "causation_standard": null,
+              "breach_standard": null,
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "REGULATORY_APPROVAL"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "84aee7f51097826228e34704ee96202465c8867cb07a629118b80aeb5a9e8288",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "e200dbb830e36779c2817325dc36642c719a5dd6d935c6965111f15893c7e18d",
+                "document_ordinal": 0,
+                "absolute_start": 378,
+                "absolute_end": 516,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "743ef9cb9f2ee582ba1d67955fbfaf3a3c6330672e1db98c657feec0ac008a9f"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "3a972b2cabba09e047fbdca9f4dae7b663ac7468aadfb2f6faccb914c6947ab0",
+            "producer_receipt_id": "23d05e240e89d005dbfa8490486bdf6ff200619bbc9d4397f862d9303c06534d",
+            "governed_scope_digest": "397b32715f6358bba8fb702aed1bad28e1ff56d833da2c74188af953749211c1",
+            "extraction_provenance_id": "814033ffd24a4bc868d0d66a72e0e3f3a99ff5fe7722bc9b9b9eb96bcc3f1b03"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 70,
+        "materiality_label": "CLOSING_CONDITIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.01",
+          "normalized_citation": "6.01",
+          "derived_citation": "6.01(b)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 362,
+          "end_byte": 886
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 362,
+            "end_byte": 886,
+            "text": " Antitrust. (i) Any waiting period (and any extension thereof) applicable to the Merger under the HSR Act shall have been terminated or shall have expired and (ii) any other approval or waiting period under any other applicable Antitrust Law of any Governmental Entity in a jurisdiction set forth in Section 6.01(b) of the Company Letter shall have been obtained or terminated or shall have expired, in the case of each of (i) and (ii) without the imposition, individually or in the aggregate, of a Burdensome Condition.\n46\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 282,
+            "text": "Section 6.01 Conditions to Each Party’s Obligation to Effect the Merger. The respective obligation of each party to effect the Merger is subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.01",
+      "source_citation": "6.01(c)",
+      "citation_context": {
+        "parent_section_reference": "6.01",
+        "child_section_reference": "6.01(c)",
+        "parent_chapeau_quote": "Section 6.01 Conditions to Each Party’s Obligation to Effect the Merger. The respective obligation of each party to effect the Merger is subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:",
+        "child_clause_quote": "(c) No Injunctions or Legal Restraints. (i) No temporary restraining order, preliminary or permanent injunction or other Judgment or Law of, or issued by, any court of competent jurisdiction or other Governmental Entity shall be in effect, in each case having the effect of making the Merger illegal or otherwise prohibiting consummation of the Merger or imposing, individually or in the aggregate, a Burdensome Condition (collectively, “Legal Restraints”) and (ii) no Governmental Entity shall have instituted any action or proceeding (which remains pending at what would otherwise be the Closing Date) before any court or other Governmental Entity of competent jurisdiction seeking to temporarily or permanently enjoin, restrain or otherwise prohibit consummation of the Merger or impose a Legal Restraint (it being understood and agreed by the parties that only a court of competent jurisdiction or other Governmental Entity in the jurisdictions identified on Section 6.01"
+      },
+      "governing_context_quote": "Section 6.01 Conditions to Each Party’s Obligation to Effect the Merger. The respective obligation of each party to effect the Merger is subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LEGAL_RESTRAINT_CONDITION",
+      "concept_key": "COND-M-LEGAL",
+      "party": {
+        "role": "CONDITION_BENEFICIARY",
+        "value": "Either Principal Party",
+        "capacity": "EITHER_PRINCIPAL_PARTY"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "266b15e89704968cc94b7c51196e00bd4ac4d0ebb774dbc59ef6b96c169daa86",
+        "canonical_text_id": "e2666a438a78125e141395f04e747e98ee7d64db7ad483a62383a22423c4f784",
+        "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+        "absolute_start": 218259,
+        "absolute_end": 220269,
+        "concept_key": "COND-M-LEGAL",
+        "party": {
+          "role": "CONDITION_BENEFICIARY",
+          "value": "Either Principal Party",
+          "capacity": "EITHER_PRINCIPAL_PARTY"
+        },
+        "ordinal": 2,
+        "source_anchor_id": "39f4aaebf1f130f12ebcdf38d4029b95f097399d8f0ac57204c06a791d33b28c",
+        "provision_instance_id": "9680e57e0f88a66ecbd0c7e799168b988b6651c95ff25ba1ce36d9ff5e062bbc",
+        "closure_id": "06d47c64530dc03b1581d2596680a7cd558ade1275a6b6f41bcb14952afd1222"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "f2ba7571dbf24f4dd40e7ec203fe40dcb89cf5e22cc6a4c3fad23b054b914393",
+        "claim_occurrence_id": "6fea7e0136e90f8d5a2fe5f9a744b157a6a23528c2b1979a2b635787b3bf435a",
+        "subject_occurrence_id": "9680e57e0f88a66ecbd0c7e799168b988b6651c95ff25ba1ce36d9ff5e062bbc",
+        "claim_definition_key": "LEGAL_RESTRAINT_CONDITION",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "No temporary restraining order, preliminary or permanent injunction or other Judgment or Law of, or issued by, any court of competent jurisdiction or other Governmental Entity shall be in effect, in each case having the effect of making the Merger illegal or otherwise prohibiting consummation of the Merger or imposing, individually or in the aggregate, a Burdensome Condition (collectively, “Legal Restraints”)",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "fd9f63ebe5d3445fd0bdc133889ddc0d8442ce1d953e95e5c93b20f5375aafd7"
+        ],
+        "attributes": {
+          "section_reference": "6.01",
+          "assertion_kind": "LEGAL_RESTRAINT",
+          "condition_obligor": null,
+          "accuracy_standard": null,
+          "rep_side": null,
+          "covered_scope_ref": null,
+          "scrape_quote": null,
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": null,
+          "obligor_ref": null,
+          "approval_kind": null,
+          "approval_definition_ref": null,
+          "s4_component": null,
+          "listing_venue_ref": null,
+          "certificate_side": null,
+          "certifying_party_ref": null,
+          "certified_condition_refs": [],
+          "certificate_relationship_status": null,
+          "causation_standard": null,
+          "breach_standard": null,
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "LEGAL_RESTRAINT"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "fd9f63ebe5d3445fd0bdc133889ddc0d8442ce1d953e95e5c93b20f5375aafd7",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "1020527f7309fdd126e22aebef57f0b56a0170fcec38751289efec16e37d7a88",
+            "document_ordinal": 0,
+            "absolute_start": 930,
+            "absolute_end": 1346,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "8fa225761620fe362f2ba529c82811a17b3fb00f345b29e1802b4be95ca530fb"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.01",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.01",
+          "normalized_citation": "6.01",
+          "derived_citation": "6.01(c)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "f2ba7571dbf24f4dd40e7ec203fe40dcb89cf5e22cc6a4c3fad23b054b914393",
+            "claim_occurrence_id": "6fea7e0136e90f8d5a2fe5f9a744b157a6a23528c2b1979a2b635787b3bf435a",
+            "subject_occurrence_id": "9680e57e0f88a66ecbd0c7e799168b988b6651c95ff25ba1ce36d9ff5e062bbc",
+            "claim_definition_key": "LEGAL_RESTRAINT_CONDITION",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "No temporary restraining order, preliminary or permanent injunction or other Judgment or Law of, or issued by, any court of competent jurisdiction or other Governmental Entity shall be in effect, in each case having the effect of making the Merger illegal or otherwise prohibiting consummation of the Merger or imposing, individually or in the aggregate, a Burdensome Condition (collectively, “Legal Restraints”)",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "fd9f63ebe5d3445fd0bdc133889ddc0d8442ce1d953e95e5c93b20f5375aafd7"
+            ],
+            "attributes": {
+              "section_reference": "6.01",
+              "assertion_kind": "LEGAL_RESTRAINT",
+              "condition_obligor": null,
+              "accuracy_standard": null,
+              "rep_side": null,
+              "covered_scope_ref": null,
+              "scrape_quote": null,
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": null,
+              "obligor_ref": null,
+              "approval_kind": null,
+              "approval_definition_ref": null,
+              "s4_component": null,
+              "listing_venue_ref": null,
+              "certificate_side": null,
+              "certifying_party_ref": null,
+              "certified_condition_refs": [],
+              "certificate_relationship_status": null,
+              "causation_standard": null,
+              "breach_standard": null,
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "LEGAL_RESTRAINT"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "fd9f63ebe5d3445fd0bdc133889ddc0d8442ce1d953e95e5c93b20f5375aafd7",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "1020527f7309fdd126e22aebef57f0b56a0170fcec38751289efec16e37d7a88",
+                "document_ordinal": 0,
+                "absolute_start": 930,
+                "absolute_end": 1346,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "8fa225761620fe362f2ba529c82811a17b3fb00f345b29e1802b4be95ca530fb"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "3a972b2cabba09e047fbdca9f4dae7b663ac7468aadfb2f6faccb914c6947ab0",
+            "producer_receipt_id": "23d05e240e89d005dbfa8490486bdf6ff200619bbc9d4397f862d9303c06534d",
+            "governed_scope_digest": "397b32715f6358bba8fb702aed1bad28e1ff56d833da2c74188af953749211c1",
+            "extraction_provenance_id": "814033ffd24a4bc868d0d66a72e0e3f3a99ff5fe7722bc9b9b9eb96bcc3f1b03"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [],
+        "materiality_rank": 70,
+        "materiality_label": "CLOSING_CONDITIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.01",
+          "normalized_citation": "6.01",
+          "derived_citation": "6.01(c)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 889,
+          "end_byte": 2010
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 889,
+            "end_byte": 2010,
+            "text": " No Injunctions or Legal Restraints. (i) No temporary restraining order, preliminary or permanent injunction or other Judgment or Law of, or issued by, any court of competent jurisdiction or other Governmental Entity shall be in effect, in each case having the effect of making the Merger illegal or otherwise prohibiting consummation of the Merger or imposing, individually or in the aggregate, a Burdensome Condition (collectively, “Legal Restraints”) and (ii) no Governmental Entity shall have instituted any action or proceeding (which remains pending at what would otherwise be the Closing Date) before any court or other Governmental Entity of competent jurisdiction seeking to temporarily or permanently enjoin, restrain or otherwise prohibit consummation of the Merger or impose a Legal Restraint (it being understood and agreed by the parties that only a court of competent jurisdiction or other Governmental Entity in the jurisdictions identified on Section 6.01(c) of the Company Letter shall constitute a court of competent jurisdiction or other Governmental Entity for purposes of this Section 6.01(c)).\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 282,
+            "text": "Section 6.01 Conditions to Each Party’s Obligation to Effect the Merger. The respective obligation of each party to effect the Merger is subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "6.01",
+      "source_citation": "6.01(a)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Shareholder Approval shall have been obtained.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "6be81c66d907da18be9ecc0865028d12b9769cf1e83305409eb7313ed258df6f",
+      "closure_id": "236143df9b280e4b6dc2be181fe0d7096938a69e231da7e477eb7b44f27cabea",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "fba540b6eece4a290c6189c71825f443558368daff4eaf51dbd674d3ce180627",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9b72a6510deaabe607c058006e39b64782eef1e33c4b188bb70a8fb16146d3b6",
+          "document_ordinal": 0,
+          "absolute_start": 308,
+          "absolute_end": 358,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Shareholder Approval shall have been obtained.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 285,
+          "end_byte": 359
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 285,
+            "end_byte": 359,
+            "text": " Shareholder Approval. The Shareholder Approval shall have been obtained.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 282,
+            "text": "Section 6.01 Conditions to Each Party’s Obligation to Effect the Merger. The respective obligation of each party to effect the Merger is subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.01",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_APPROVAL_CONDITION",
+      "concept_key": "COND-REG",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0cf704897dab67878579446af9406314bd64dbec2f1db944e992081a667132c6",
+      "closure_id": "743ef9cb9f2ee582ba1d67955fbfaf3a3c6330672e1db98c657feec0ac008a9f",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "84aee7f51097826228e34704ee96202465c8867cb07a629118b80aeb5a9e8288",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "e200dbb830e36779c2817325dc36642c719a5dd6d935c6965111f15893c7e18d",
+          "document_ordinal": 0,
+          "absolute_start": 378,
+          "absolute_end": 516,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Any waiting period (and any extension thereof) applicable to the Merger under the HSR Act shall have been terminated or shall have expired",
+      "attachment_position": null,
+      "concept_family": "COND-REG",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 362,
+          "end_byte": 886
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 362,
+            "end_byte": 886,
+            "text": " Antitrust. (i) Any waiting period (and any extension thereof) applicable to the Merger under the HSR Act shall have been terminated or shall have expired and (ii) any other approval or waiting period under any other applicable Antitrust Law of any Governmental Entity in a jurisdiction set forth in Section 6.01(b) of the Company Letter shall have been obtained or terminated or shall have expired, in the case of each of (i) and (ii) without the imposition, individually or in the aggregate, of a Burdensome Condition.\n46\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 282,
+            "text": "Section 6.01 Conditions to Each Party’s Obligation to Effect the Merger. The respective obligation of each party to effect the Merger is subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.01",
+      "source_citation": "6.01(b)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "APPROVAL_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any other approval or waiting period under any other applicable Antitrust Law of any Governmental Entity in a jurisdiction set forth in Section 6.01(b) of the Company Letter shall have been obtained or terminated or shall have expired",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "fb42968ffed23a96d07803817c39787317428a3439055344188b24950abe9c34",
+      "closure_id": "83292a4eb3a0938f72a0912d80a25b2f3fd392f1d3c5b9969cf58d520d1ecbe7",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "c26e5cd05c2fa1a0d601ba6a551c1d700f3f409f298fd96581f0723f3a833a19",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "15df3212f9d998192fc0826c9ec27bb6f66e12119cab8a924a63cdd5538a1c81",
+          "document_ordinal": 0,
+          "absolute_start": 526,
+          "absolute_end": 760,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "any other approval or waiting period under any other applicable Antitrust Law of any Governmental Entity in a jurisdiction set forth in Section 6.01(b) of the Company Letter shall have been obtained or terminated or shall have expired",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 362,
+          "end_byte": 886
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 362,
+            "end_byte": 886,
+            "text": " Antitrust. (i) Any waiting period (and any extension thereof) applicable to the Merger under the HSR Act shall have been terminated or shall have expired and (ii) any other approval or waiting period under any other applicable Antitrust Law of any Governmental Entity in a jurisdiction set forth in Section 6.01(b) of the Company Letter shall have been obtained or terminated or shall have expired, in the case of each of (i) and (ii) without the imposition, individually or in the aggregate, of a Burdensome Condition.\n46\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 282,
+            "text": "Section 6.01 Conditions to Each Party’s Obligation to Effect the Merger. The respective obligation of each party to effect the Merger is subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.01",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LEGAL_RESTRAINT_CONDITION",
+      "concept_key": "COND-M-LEGAL",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f2ba7571dbf24f4dd40e7ec203fe40dcb89cf5e22cc6a4c3fad23b054b914393",
+      "closure_id": "8fa225761620fe362f2ba529c82811a17b3fb00f345b29e1802b4be95ca530fb",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "fd9f63ebe5d3445fd0bdc133889ddc0d8442ce1d953e95e5c93b20f5375aafd7",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "1020527f7309fdd126e22aebef57f0b56a0170fcec38751289efec16e37d7a88",
+          "document_ordinal": 0,
+          "absolute_start": 930,
+          "absolute_end": 1346,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "No temporary restraining order, preliminary or permanent injunction or other Judgment or Law of, or issued by, any court of competent jurisdiction or other Governmental Entity shall be in effect, in each case having the effect of making the Merger illegal or otherwise prohibiting consummation of the Merger or imposing, individually or in the aggregate, a Burdensome Condition (collectively, “Legal Restraints”)",
+      "attachment_position": null,
+      "concept_family": "COND-M-LEGAL",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 889,
+          "end_byte": 2010
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 889,
+            "end_byte": 2010,
+            "text": " No Injunctions or Legal Restraints. (i) No temporary restraining order, preliminary or permanent injunction or other Judgment or Law of, or issued by, any court of competent jurisdiction or other Governmental Entity shall be in effect, in each case having the effect of making the Merger illegal or otherwise prohibiting consummation of the Merger or imposing, individually or in the aggregate, a Burdensome Condition (collectively, “Legal Restraints”) and (ii) no Governmental Entity shall have instituted any action or proceeding (which remains pending at what would otherwise be the Closing Date) before any court or other Governmental Entity of competent jurisdiction seeking to temporarily or permanently enjoin, restrain or otherwise prohibit consummation of the Merger or impose a Legal Restraint (it being understood and agreed by the parties that only a court of competent jurisdiction or other Governmental Entity in the jurisdictions identified on Section 6.01(c) of the Company Letter shall constitute a court of competent jurisdiction or other Governmental Entity for purposes of this Section 6.01(c)).\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 282,
+            "text": "Section 6.01 Conditions to Each Party’s Obligation to Effect the Merger. The respective obligation of each party to effect the Merger is subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "6.01",
+      "source_citation": "6.01",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "without the imposition, individually or in the aggregate, of a Burdensome Condition",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "No controlled burdensome-condition scope applies.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "a1e44a29dae8d8f6f49383880864e2a68739cfab64ac17b14c7e00ae36c79a72",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "4b0ab331b2d2f0df89324fd6f3d8c1ea93e30e0640fadb0316ca429caa968f82",
+          "document_ordinal": 0,
+          "absolute_start": 798,
+          "absolute_end": 881,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "c4af5a8f44da7f9bf3886962120710b43c467a0164747e02b45a425cbd1aac71",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "3a972b2cabba09e047fbdca9f4dae7b663ac7468aadfb2f6faccb914c6947ab0",
+        "producer_receipt_id": "23d05e240e89d005dbfa8490486bdf6ff200619bbc9d4397f862d9303c06534d",
+        "governed_scope_digest": "397b32715f6358bba8fb702aed1bad28e1ff56d833da2c74188af953749211c1",
+        "extraction_provenance_id": "78f524cc19e70e252bfabb401656c6053cecf034ea22d12aab84bf130dd89853"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 362,
+          "end_byte": 886
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 362,
+            "end_byte": 886,
+            "text": " Antitrust. (i) Any waiting period (and any extension thereof) applicable to the Merger under the HSR Act shall have been terminated or shall have expired and (ii) any other approval or waiting period under any other applicable Antitrust Law of any Governmental Entity in a jurisdiction set forth in Section 6.01(b) of the Company Letter shall have been obtained or terminated or shall have expired, in the case of each of (i) and (ii) without the imposition, individually or in the aggregate, of a Burdensome Condition.\n46\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 282,
+            "text": "Section 6.01 Conditions to Each Party’s Obligation to Effect the Merger. The respective obligation of each party to effect the Merger is subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.01",
+      "source_citation": "6.01",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "no Governmental Entity shall have instituted any action or proceeding (which remains pending at what would otherwise be the Closing Date) before any court or other Governmental Entity of competent jurisdiction seeking to temporarily or permanently enjoin, restrain or otherwise prohibit consummation of the Merger or impose a Legal Restraint",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "The controlled GOVERNMENT_PROCEEDING shape does not specify a field for this condition.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "9e815de4ac2ffff8cce010d37c69823b55950454e075af352646511c7c9c99ca",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "726bf5635e1f1bf8cc0b7051893c691a8cfcbd05283432f2e56efe0a52f57774",
+          "document_ordinal": 0,
+          "absolute_start": 1356,
+          "absolute_end": 1697,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "a825f9a38b7d71741488d320af7026863b2d436f0a36995527383b3f9cb2c736",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "3a972b2cabba09e047fbdca9f4dae7b663ac7468aadfb2f6faccb914c6947ab0",
+        "producer_receipt_id": "23d05e240e89d005dbfa8490486bdf6ff200619bbc9d4397f862d9303c06534d",
+        "governed_scope_digest": "397b32715f6358bba8fb702aed1bad28e1ff56d833da2c74188af953749211c1",
+        "extraction_provenance_id": "78f524cc19e70e252bfabb401656c6053cecf034ea22d12aab84bf130dd89853"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 889,
+          "end_byte": 2010
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 889,
+            "end_byte": 2010,
+            "text": " No Injunctions or Legal Restraints. (i) No temporary restraining order, preliminary or permanent injunction or other Judgment or Law of, or issued by, any court of competent jurisdiction or other Governmental Entity shall be in effect, in each case having the effect of making the Merger illegal or otherwise prohibiting consummation of the Merger or imposing, individually or in the aggregate, a Burdensome Condition (collectively, “Legal Restraints”) and (ii) no Governmental Entity shall have instituted any action or proceeding (which remains pending at what would otherwise be the Closing Date) before any court or other Governmental Entity of competent jurisdiction seeking to temporarily or permanently enjoin, restrain or otherwise prohibit consummation of the Merger or impose a Legal Restraint (it being understood and agreed by the parties that only a court of competent jurisdiction or other Governmental Entity in the jurisdictions identified on Section 6.01(c) of the Company Letter shall constitute a court of competent jurisdiction or other Governmental Entity for purposes of this Section 6.01(c)).\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 282,
+            "text": "Section 6.01 Conditions to Each Party’s Obligation to Effect the Merger. The respective obligation of each party to effect the Merger is subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "fa83e063515f453d2892f7ddd9c208e227a025822fb1fcdd54c75f957084f567",
+    "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "registry_substrate": {
+      "schema_version": "RESOLUTION_REGISTRY_SUBSTRATE_MANIFEST/V1",
+      "modules": [
+        {
+          "name": "materiality-qualifier",
+          "version": "RESOLUTION_MATERIALITY_QUALIFIER_REGISTRY/V1",
+          "digest": "sha256:6368129c33917101e97979baa1836e222894af0fe4ed98244ded61c4a7802515"
+        },
+        {
+          "name": "closing-condition-kinds",
+          "version": "RESOLUTION_CLOSING_CONDITION_KINDS_REGISTRY/V1",
+          "digest": "sha256:66bb6592c2f0c21125df9b12a03991aebbe5ca1832bacfb427eadd2df2327efc"
+        },
+        {
+          "name": "general-covenant",
+          "version": "RESOLUTION_GENERAL_COVENANT_REGISTRY/V1",
+          "digest": "sha256:c10453c1b9f700ed7962b3c3f66a1560dcbbbe42aa41692113097a67fb903737"
+        },
+        {
+          "name": "material-contract",
+          "version": "RESOLUTION_MATERIAL_CONTRACT_REGISTRY/V1",
+          "digest": "sha256:85159bed1f96102ea00f2f2acc57e8336c6901797f91c2345a357dc923528d9e"
+        },
+        {
+          "name": "interim-operating",
+          "version": "RESOLUTION_INTERIM_OPERATING_REGISTRY/V1",
+          "digest": "sha256:77e80a8cca7ab4277e74181ef6ea2f0a5410b75d96ad9ae984b7653f5265efae"
+        },
+        {
+          "name": "party-capacity",
+          "version": "RESOLUTION_PARTY_CAPACITY_REGISTRY/V1",
+          "digest": "sha256:1b089c7a6cf30f540043352234cb4109fe27013a554423c8d3ecd652272db202"
+        },
+        {
+          "name": "representation-topic",
+          "version": "REPRESENTATION_TOPIC_REGISTRY/V1",
+          "digest": "sha256:2240a6cfa6ac63d3fbf6a96afce185aed40a1d9919f2437b85a844aa996e1f28"
+        }
+      ],
+      "preserved_v1_collisions": [
+        {
+          "path": "UNDISCLOSED_LIABILITIES_EXCEPTION_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not reasonably be expected to have an MAE",
+          "v1_only": true,
+          "no_delete": true
+        },
+        {
+          "path": "MATERIALITY_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not, individually or in aggregate, have MAE",
+          "v1_only": true,
+          "no_delete": true
+        }
+      ]
+    },
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 3,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 6,
+      "resolved": 2,
+      "auto_pass": 0,
+      "review_queue": 4,
+      "open_world": 2,
+      "residuals": 0,
+      "provisions": 2,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "f78c412333f949c3afb29cb0ea96310df4a8aa1f0d01f7b4f187d33b57d99ebf"
+  }
+}

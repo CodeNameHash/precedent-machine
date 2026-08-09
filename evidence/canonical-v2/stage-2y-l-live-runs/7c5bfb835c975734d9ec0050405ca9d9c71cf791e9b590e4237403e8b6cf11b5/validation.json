@@ -1,0 +1,208 @@
+{
+  "accepted": true,
+  "publishableWriteSet": {
+    "deal": {
+      "deal_admission_id": "b4e9c00e9404694a80145f6ae9b521271240a688ffb08f65012bf232e6dea39e",
+      "deal_key": "deal:metsera-closing-conditions:9db5e4cb091442c7",
+      "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac"
+    },
+    "excerpts": [
+      {
+        "absolute_end": 226288,
+        "absolute_start": 226066,
+        "canonical_text_id": "b92a7c3d217e7478d73693ae093ee4e8c75d72084a9e608bf3e6e820705fbf5a",
+        "closure_id": "8623ace97e0c4bd9a507962745162f13d2c4b37ea608abf358ec2a01a2c55cb1",
+        "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+        "exact_bytes_digest": "b67c5007f95eace06729f1a93574973be137a577e92c35aee3844f65ac0bf9e6",
+        "exact_text": "The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.",
+        "excerpt_definition_id": "0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02",
+        "excerpt_definition_key": "SINGLE_OPERATIVE_SPAN",
+        "excerpt_definition_payload_digest": "bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c",
+        "excerpt_definition_version": 1,
+        "excerpt_id": "e7bf465e4dc94dbec5a0ae93aa115ff3fc7f3fc3a469d31a79c9945e239044e8",
+        "excerpt_purpose": "LEGAL_EVIDENCE",
+        "ordered_component_assignments": [
+          {
+            "component_slot_key": "PRIMARY",
+            "governed_slot_ordinal": 0,
+            "semantic_span_id": "e90422d6e368e5cdb80a529f38554f6ceca88496a4c8760d8e5ab3f3a551acdc"
+          }
+        ],
+        "output_text_hash": "b67c5007f95eace06729f1a93574973be137a577e92c35aee3844f65ac0bf9e6",
+        "schema_version": "EXCERPT/V1",
+        "source_content_id": "f242e6b4299de0162c25a22318bd3e136c2595c97d166dfe2eb04c79498d71d3",
+        "source_occurrence_id": "1c7ff8a33f94981a72c9ec4321dd415cef00a50728a1369ad6d15bd5a7d8091c",
+        "transformation_or_redaction_version": "IDENTITY_UTF8/V1"
+      }
+    ],
+    "definition_occurrences": [],
+    "provisions": [
+      {
+        "absolute_end": 226294,
+        "absolute_start": 225755,
+        "canonical_text_id": "b92a7c3d217e7478d73693ae093ee4e8c75d72084a9e608bf3e6e820705fbf5a",
+        "closure_id": "e43e98c2134a9f32da8e19f9f0643784fcde1674b9aa159ae665909d2363914e",
+        "concept_key": "COND-FRUSTRATE",
+        "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+        "ordinal": 1,
+        "party": {
+          "capacity": "EITHER_PRINCIPAL_PARTY",
+          "role": "CONDITION_BENEFICIARY",
+          "value": "Either Principal Party"
+        },
+        "provision_instance_id": "f37f47e9de2487ef0783da49ce494df4f4cfdd07cee78bdca0684153d610b57e",
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_anchor_id": "46502758f7257bab27c67f204f6cbfd31f43d9984e6e8c5265a5e86ede9c9e33",
+        "source_occurrence_id": "1c7ff8a33f94981a72c9ec4321dd415cef00a50728a1369ad6d15bd5a7d8091c"
+      }
+    ],
+    "components": [],
+    "claims": [
+      {
+        "applicability": null,
+        "attributes": {
+          "accuracy_standard": null,
+          "answer_provenance": {
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            },
+            "tag": "MECHANICAL"
+          },
+          "approval_definition_ref": null,
+          "approval_kind": null,
+          "assertion_kind": "FRUSTRATION_BREACH",
+          "breach_standard": "MATERIAL_BREACH",
+          "burdensome_scope": null,
+          "causation_standard": null,
+          "certificate_relationship_status": null,
+          "certificate_side": null,
+          "certified_condition_refs": [],
+          "certifying_party_ref": null,
+          "condition_obligor": null,
+          "covered_scope_ref": null,
+          "explicit_clause_cross_reference": {
+            "clause_reference": "7.01",
+            "quote": "Section 7.01"
+          },
+          "listing_venue_ref": null,
+          "mae_party": null,
+          "mae_term_ref": null,
+          "obligor_ref": null,
+          "rep_side": null,
+          "s4_component": null,
+          "scrape_quote": null,
+          "section_reference": "7.04",
+          "standard": null,
+          "threshold_role": null
+        },
+        "canonical_value": "MATERIAL_BREACH",
+        "claim_definition_key": "FRUSTRATION_BREACH_STANDARD",
+        "claim_definition_version": 1,
+        "claim_occurrence_id": "7a5c6a0aed775a6d8d3a6662f261783680561406b6f6385a3cc52133cda36d4d",
+        "claim_revision_id": "555bc64eb69e0004911e03c5a9248e46028966ba4c586bd2d95c5f0d1498679d",
+        "closure_id": "51fb82ac91d3cd34df15a10aef7e75b267dbc9db75990bdf37d28a5c6402cbd7",
+        "day_basis": null,
+        "denominator": null,
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "absolute_end": 226288,
+            "absolute_start": 226066,
+            "claim_evidence_id": "d6fabf6b3eb8f8bd75a73887952bc60c0b5b21a983f020b1662b85efdc90f15b",
+            "document_ordinal": 0,
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "e7bf465e4dc94dbec5a0ae93aa115ff3fc7f3fc3a469d31a79c9945e239044e8",
+            "ordinal": 0,
+            "schema_version": "CLAIM_EVIDENCE/V1"
+          }
+        ],
+        "evidence_ids": [
+          "d6fabf6b3eb8f8bd75a73887952bc60c0b5b21a983f020b1662b85efdc90f15b"
+        ],
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "failure": null,
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "not_examined": null,
+        "ordinal": 0,
+        "publication_state": "VALIDATED",
+        "quarantine": null,
+        "raw_value": "The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.",
+        "retained_residuals": [],
+        "schema_version": "CLAIM_REVISION/V1",
+        "scope": null,
+        "state": "PRESENT",
+        "subject_occurrence_id": "f37f47e9de2487ef0783da49ce494df4f4cfdd07cee78bdca0684153d610b57e",
+        "taxonomy_codes": {
+          "assertion_kind": "FRUSTRATION_BREACH"
+        },
+        "unit": null
+      }
+    ],
+    "relationships": [],
+    "condition_groups": [],
+    "validated_semantic_graphs": [],
+    "open_world_candidates": [],
+    "open_world_candidate_occurrences": [],
+    "open_world_evidence_references": [],
+    "open_world_candidate_dispositions": [],
+    "open_world_primitives": [],
+    "semantic_impact_closures": [],
+    "reviewed_source_specific_rows": [],
+    "incomplete_canonical_result_rows": [],
+    "source_references": [
+      {
+        "canonical_text_id": "b92a7c3d217e7478d73693ae093ee4e8c75d72084a9e608bf3e6e820705fbf5a",
+        "deal_admission_id": "b4e9c00e9404694a80145f6ae9b521271240a688ffb08f65012bf232e6dea39e",
+        "governed_deal_key": "deal:metsera-closing-conditions:9db5e4cb091442c7",
+        "immutable_source_document_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+        "schema_version": "ADMITTED_SOURCE_REFERENCE/V1",
+        "semantic_extraction_input_envelope_id": "c5da88d0e5b2478b4971fd1d9ee6320d9aa2abe4d05bb6b07bfc39b71a132dc7",
+        "source_admission_manifest_id": "88343a8a7bb7b095d952f5456a4981748934b55b01e454ad7d3f06a47d7e836c",
+        "source_ordinal": 0
+      }
+    ],
+    "publication_dispositions": [
+      {
+        "authority_id": null,
+        "canonical_validation_state": "VALIDATED",
+        "claim_kind": "UNKNOWN",
+        "claim_revision_id": "555bc64eb69e0004911e03c5a9248e46028966ba4c586bd2d95c5f0d1498679d",
+        "decision_id": "5c08ab281fad9822c727dda6d3b39136f972669a8e4a0ce85b28a1ed44af3504",
+        "disposition": "WITHHELD",
+        "evaluated_at": "1970-01-01T00:00:00.000Z",
+        "family": "UNKNOWN",
+        "mechanism": "UNKNOWN",
+        "prior_eligible_decision": null,
+        "prior_eligible_decision_id": null,
+        "publication_input_digest": "fcb996b35fe15a3b32ea3e16a9b19a87a2cad4713f5a03a87c30685cb89280f8",
+        "reason_codes": [
+          "MISSING_CALIBRATION_AUTHORITY"
+        ],
+        "resolution_receipt_id": "54cffe4cc89b79749d6a2851cd79f0e8551bb7bbe07503839f0842759ca7c5ec",
+        "review_queue_artifact_id": "089d451f2fee1d87f3ff0f3c0852bd6d1f2b1a854e9843aa5fdbc860b40b418e",
+        "risk_signals": {
+          "definition_ambiguity": true,
+          "model_fallback": true,
+          "party_attribution_risk": true,
+          "structural_uncertainty": true
+        },
+        "run_receipt_id": "69bc3bc4fba0868816e9d864bc5e352051fd698a986c82644bdb31ee2a80d81c",
+        "schema_version": "CANONICAL_V2_PUBLICATION_DISPOSITION/V2",
+        "selected_rung": 1
+      }
+    ]
+  },
+  "unattendedPublicationCandidateWriteSet": {
+    "claims": [],
+    "publication_dispositions": []
+  },
+  "residuals": [],
+  "quarantines": [],
+  "quarantinedClosureIds": [],
+  "counts": {
+    "publishable": 3,
+    "residuals": 0,
+    "quarantinedClosures": 0
+  }
+}

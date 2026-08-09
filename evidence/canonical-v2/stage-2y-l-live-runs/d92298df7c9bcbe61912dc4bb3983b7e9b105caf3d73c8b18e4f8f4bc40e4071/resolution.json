@@ -1,0 +1,217 @@
+{
+  "resolved": [],
+  "review_queue": [
+    {
+      "section_reference": "8.4",
+      "source_citation": "8.4",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "such party’s breach in any material respect of any provision of this Agreement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "7c3d82e5a2bb420bf783657e33c123d6c2fcbeae06eb67d632e947adc8726f78",
+      "closure_id": "a81fed00ebf6e159e447397130c7206baa3d67c11533eed0680fbebbfda947dd",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "5dc5a6aa0c56a815008f293de2cfbe34c4b387ad206dacdcf0ba845e4dbd5f0b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "e84e01eb5eda4508d9c89b2ac7639e528df64dd840532cba8891956321b59689",
+          "document_ordinal": 0,
+          "absolute_start": 299,
+          "absolute_end": 380,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "such party’s breach in any material respect of any provision of this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 384
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 384,
+            "text": "Section 8.4 Frustration of Closing Conditions. None of the parties may rely, either as a basis for not consummating the Mergers or for terminating this Agreement, on the failure of any condition set forth in Section 8.1, 8.2 or 8.3, as the case may be, to be satisfied if such failure was caused by such party’s breach in any material respect of any provision of this Agreement.\n77\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "8.4",
+      "source_citation": "8.4",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "if such failure was caused by such party’s breach in any material respect of any provision of this Agreement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "5810e3fa1746ac8d0091d40195272e50424f68530598288dd150b71c0cac6666",
+      "closure_id": "d8543cad6200e43aff177deb878890ad8fcd712d48dbcfbe5f74b00c562d0d13",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b4a55564611af78a4cbdb34545aa679cc7210ffe8f8dd418e11fe26bd4f0d57e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2e593ae39f3f98ef51fc925e373ebac55ae4045c1f676c3debff73f5722d0e32",
+          "document_ordinal": 0,
+          "absolute_start": 269,
+          "absolute_end": 380,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "if such failure was caused by such party’s breach in any material respect of any provision of this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 384
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 384,
+            "text": "Section 8.4 Frustration of Closing Conditions. None of the parties may rely, either as a basis for not consummating the Mergers or for terminating this Agreement, on the failure of any condition set forth in Section 8.1, 8.2 or 8.3, as the case may be, to be satisfied if such failure was caused by such party’s breach in any material respect of any provision of this Agreement.\n77\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "open_world": [],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "c05133c74270ecccd8f1c50ce32f60f31af7b401eab3d33c050e304edd92a19e",
+    "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "registry_substrate": {
+      "schema_version": "RESOLUTION_REGISTRY_SUBSTRATE_MANIFEST/V1",
+      "modules": [
+        {
+          "name": "materiality-qualifier",
+          "version": "RESOLUTION_MATERIALITY_QUALIFIER_REGISTRY/V1",
+          "digest": "sha256:6368129c33917101e97979baa1836e222894af0fe4ed98244ded61c4a7802515"
+        },
+        {
+          "name": "closing-condition-kinds",
+          "version": "RESOLUTION_CLOSING_CONDITION_KINDS_REGISTRY/V1",
+          "digest": "sha256:66bb6592c2f0c21125df9b12a03991aebbe5ca1832bacfb427eadd2df2327efc"
+        },
+        {
+          "name": "general-covenant",
+          "version": "RESOLUTION_GENERAL_COVENANT_REGISTRY/V1",
+          "digest": "sha256:c10453c1b9f700ed7962b3c3f66a1560dcbbbe42aa41692113097a67fb903737"
+        },
+        {
+          "name": "material-contract",
+          "version": "RESOLUTION_MATERIAL_CONTRACT_REGISTRY/V1",
+          "digest": "sha256:85159bed1f96102ea00f2f2acc57e8336c6901797f91c2345a357dc923528d9e"
+        },
+        {
+          "name": "interim-operating",
+          "version": "RESOLUTION_INTERIM_OPERATING_REGISTRY/V1",
+          "digest": "sha256:77e80a8cca7ab4277e74181ef6ea2f0a5410b75d96ad9ae984b7653f5265efae"
+        },
+        {
+          "name": "party-capacity",
+          "version": "RESOLUTION_PARTY_CAPACITY_REGISTRY/V1",
+          "digest": "sha256:1b089c7a6cf30f540043352234cb4109fe27013a554423c8d3ecd652272db202"
+        },
+        {
+          "name": "representation-topic",
+          "version": "REPRESENTATION_TOPIC_REGISTRY/V1",
+          "digest": "sha256:2240a6cfa6ac63d3fbf6a96afce185aed40a1d9919f2437b85a844aa996e1f28"
+        }
+      ],
+      "preserved_v1_collisions": [
+        {
+          "path": "UNDISCLOSED_LIABILITIES_EXCEPTION_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not reasonably be expected to have an MAE",
+          "v1_only": true,
+          "no_delete": true
+        },
+        {
+          "path": "MATERIALITY_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not, individually or in aggregate, have MAE",
+          "v1_only": true,
+          "no_delete": true
+        }
+      ]
+    },
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 3,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 2,
+      "resolved": 0,
+      "auto_pass": 0,
+      "review_queue": 2,
+      "open_world": 0,
+      "residuals": 0,
+      "provisions": 0,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "a2c87198eeaa745ff05eb12cd293560a5c2584d070db032e685b6416e02736b7"
+  }
+}

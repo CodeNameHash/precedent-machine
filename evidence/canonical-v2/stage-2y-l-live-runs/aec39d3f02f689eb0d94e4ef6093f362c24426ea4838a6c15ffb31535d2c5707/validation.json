@@ -1,0 +1,130 @@
+{
+  "accepted": true,
+  "publishableWriteSet": {
+    "deal": {
+      "deal_admission_id": "a28e676541bbfd775196152043094508adb17a2fbff55ed7f246775f3a9bff32",
+      "deal_key": "deal:skechers-financing-covenants:5e1d6f13ab83e3f9",
+      "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833"
+    },
+    "excerpts": [
+      {
+        "absolute_end": 319447,
+        "absolute_start": 319401,
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "closure_id": "1a0e3ca39a2da7c91b796956e239c18184a029fcc6b4f73896aaecfd18382ab4",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "exact_bytes_digest": "5cdb13cf800b3d275c11041e88a0781516e0e777734c82fda70fe898de120eb3",
+        "exact_text": "at least one Business Day prior to the Closing",
+        "excerpt_definition_id": "0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02",
+        "excerpt_definition_key": "SINGLE_OPERATIVE_SPAN",
+        "excerpt_definition_payload_digest": "bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c",
+        "excerpt_definition_version": 1,
+        "excerpt_id": "85b7717f356f5236667e7b05838b34d347a4ef1bfeb37d9cadf2646cc2ff152a",
+        "excerpt_purpose": "LEGAL_EVIDENCE",
+        "ordered_component_assignments": [
+          {
+            "component_slot_key": "PRIMARY",
+            "governed_slot_ordinal": 0,
+            "semantic_span_id": "e346a4a4a570455cffd0be922c1e4478525e501ec93ff38fd732c9b66be76b03"
+          }
+        ],
+        "output_text_hash": "5cdb13cf800b3d275c11041e88a0781516e0e777734c82fda70fe898de120eb3",
+        "schema_version": "EXCERPT/V1",
+        "source_content_id": "5d272a761baf15bc2f25dcef52224171fbf753b819a99124394c8c2cf7ff7764",
+        "source_occurrence_id": "c8d99b105dc209b6dfe62d0443a84773f126a9d878c9e257b8e98bb1add03e00",
+        "transformation_or_redaction_version": "IDENTITY_UTF8/V1"
+      }
+    ],
+    "definition_occurrences": [],
+    "provisions": [],
+    "components": [],
+    "claims": [],
+    "relationships": [],
+    "condition_groups": [],
+    "validated_semantic_graphs": [],
+    "open_world_candidates": [
+      {
+        "attempted_claim_definition_key": "OPEN_WORLD_PROPOSITION",
+        "candidate_id": "f56a6da15cc9960509a76de9ba37e920ba349218c134e6bd84634cb69d78c6bc",
+        "canonical_value": null,
+        "closure_id": "796730a6a7d73e65a1820084f773eef2e023397399f9d70dd5ef2a67e35df8e6",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "raw_value": "at least one Business Day prior to the Closing",
+        "reason_code": "NATIVE_OPEN_WORLD_PROPOSAL",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE/V1",
+        "section_reference": "6.19"
+      }
+    ],
+    "open_world_candidate_occurrences": [
+      {
+        "attributes": {
+          "nearest_concept": null,
+          "why_unmapped": "Express lead time applies to delivery of payoff deliverables, not a financing covenant code."
+        },
+        "candidate_id": "f56a6da15cc9960509a76de9ba37e920ba349218c134e6bd84634cb69d78c6bc",
+        "canonical_value": null,
+        "closure_id": "796730a6a7d73e65a1820084f773eef2e023397399f9d70dd5ef2a67e35df8e6",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "open_world_candidate_occurrence_id": "8b81eec2131b688a076ca1c3531f6df9be6fc2f8c4a512a4e6a9c7fa9bac1da5",
+        "raw_value": "at least one Business Day prior to the Closing",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE_OCCURRENCE/V1"
+      }
+    ],
+    "open_world_evidence_references": [
+      {
+        "absolute_end": 319447,
+        "absolute_start": 319401,
+        "closure_id": "796730a6a7d73e65a1820084f773eef2e023397399f9d70dd5ef2a67e35df8e6",
+        "document_ordinal": 0,
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "evidence_reference_id": "6ce2c655d6cf616429a19850a99511cea7fc383b502d0453b5f278545f1ef228",
+        "evidence_role": "OPERATIVE_TEXT",
+        "excerpt_id": "85b7717f356f5236667e7b05838b34d347a4ef1bfeb37d9cadf2646cc2ff152a",
+        "open_world_candidate_occurrence_id": "8b81eec2131b688a076ca1c3531f6df9be6fc2f8c4a512a4e6a9c7fa9bac1da5",
+        "ordinal": 0
+      }
+    ],
+    "open_world_candidate_dispositions": [
+      {
+        "closure_id": "796730a6a7d73e65a1820084f773eef2e023397399f9d70dd5ef2a67e35df8e6",
+        "disposition_code": "UNGOVERNED_UNREVIEWED",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "final_disposition_id": "773faa98f97da0f69af3f4d8acc1614653171ab84236e6a603f032b61b71e0d7",
+        "open_world_candidate_occurrence_id": "8b81eec2131b688a076ca1c3531f6df9be6fc2f8c4a512a4e6a9c7fa9bac1da5",
+        "reason_code": "NATIVE_OPEN_WORLD_PROPOSAL",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE_DISPOSITION/V1"
+      }
+    ],
+    "open_world_primitives": [],
+    "semantic_impact_closures": [],
+    "reviewed_source_specific_rows": [],
+    "incomplete_canonical_result_rows": [],
+    "source_references": [
+      {
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "deal_admission_id": "a28e676541bbfd775196152043094508adb17a2fbff55ed7f246775f3a9bff32",
+        "governed_deal_key": "deal:skechers-financing-covenants:5e1d6f13ab83e3f9",
+        "immutable_source_document_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+        "schema_version": "ADMITTED_SOURCE_REFERENCE/V1",
+        "semantic_extraction_input_envelope_id": "a8663ed9e48231e088ab21faed3ebea3f1006b59b6dd6ef358511d319ceda18e",
+        "source_admission_manifest_id": "cd518ad18e64ffdead9f1a4aec266d05b5eec52a7f7c0e717cbac7f049ffb6cb",
+        "source_ordinal": 0
+      }
+    ],
+    "publication_dispositions": []
+  },
+  "unattendedPublicationCandidateWriteSet": {
+    "claims": [],
+    "publication_dispositions": []
+  },
+  "residuals": [],
+  "quarantines": [],
+  "quarantinedClosureIds": [],
+  "counts": {
+    "publishable": 5,
+    "residuals": 0,
+    "quarantinedClosures": 0
+  }
+}

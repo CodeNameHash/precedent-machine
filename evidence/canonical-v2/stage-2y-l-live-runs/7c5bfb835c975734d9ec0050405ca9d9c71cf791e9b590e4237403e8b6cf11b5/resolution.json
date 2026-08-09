@@ -1,0 +1,589 @@
+{
+  "resolved": [
+    {
+      "section_reference": "7.04",
+      "source_citation": "7.04",
+      "citation_context": {
+        "parent_section_reference": "7.04",
+        "child_section_reference": "7.04",
+        "parent_chapeau_quote": "SECTION 7.04. Frustration of Closing Conditions. Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement.",
+        "child_clause_quote": "The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "FRUSTRATION_BREACH_STANDARD",
+      "concept_key": "COND-FRUSTRATE",
+      "party": {
+        "role": "CONDITION_BENEFICIARY",
+        "value": "Either Principal Party",
+        "capacity": "EITHER_PRINCIPAL_PARTY"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "1c7ff8a33f94981a72c9ec4321dd415cef00a50728a1369ad6d15bd5a7d8091c",
+        "canonical_text_id": "b92a7c3d217e7478d73693ae093ee4e8c75d72084a9e608bf3e6e820705fbf5a",
+        "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+        "absolute_start": 225755,
+        "absolute_end": 226294,
+        "concept_key": "COND-FRUSTRATE",
+        "party": {
+          "role": "CONDITION_BENEFICIARY",
+          "value": "Either Principal Party",
+          "capacity": "EITHER_PRINCIPAL_PARTY"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "46502758f7257bab27c67f204f6cbfd31f43d9984e6e8c5265a5e86ede9c9e33",
+        "provision_instance_id": "f37f47e9de2487ef0783da49ce494df4f4cfdd07cee78bdca0684153d610b57e",
+        "closure_id": "e43e98c2134a9f32da8e19f9f0643784fcde1674b9aa159ae665909d2363914e"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "2709073f6204b56fb964ae32642eee5056c7e2d9c6bcb299e01730518e4fd65b",
+        "claim_occurrence_id": "7a5c6a0aed775a6d8d3a6662f261783680561406b6f6385a3cc52133cda36d4d",
+        "subject_occurrence_id": "f37f47e9de2487ef0783da49ce494df4f4cfdd07cee78bdca0684153d610b57e",
+        "claim_definition_key": "FRUSTRATION_BREACH_STANDARD",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.",
+        "canonical_value": "MATERIAL_BREACH",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "ea44b2120bf9adb4a762eb2d8c734b45fdf14e230c2077e190764901064da99c"
+        ],
+        "attributes": {
+          "section_reference": "7.04",
+          "assertion_kind": "FRUSTRATION_BREACH",
+          "condition_obligor": null,
+          "accuracy_standard": null,
+          "rep_side": null,
+          "covered_scope_ref": null,
+          "scrape_quote": null,
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": null,
+          "obligor_ref": null,
+          "approval_kind": null,
+          "approval_definition_ref": null,
+          "s4_component": null,
+          "listing_venue_ref": null,
+          "certificate_side": null,
+          "certifying_party_ref": null,
+          "certified_condition_refs": [],
+          "certificate_relationship_status": null,
+          "causation_standard": null,
+          "breach_standard": "MATERIAL_BREACH",
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": {
+            "clause_reference": "7.01",
+            "quote": "Section 7.01"
+          },
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "FRUSTRATION_BREACH"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "ea44b2120bf9adb4a762eb2d8c734b45fdf14e230c2077e190764901064da99c",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "1d16d40be2ab8ecbbdb50adb450340b4d9a5b662c3653886cf475354ef7d7032",
+            "document_ordinal": 0,
+            "absolute_start": 311,
+            "absolute_end": 533,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "51fb82ac91d3cd34df15a10aef7e75b267dbc9db75990bdf37d28a5c6402cbd7"
+      },
+      "compiled_candidate": {
+        "section_reference": "7.04",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "7.04",
+          "normalized_citation": "7.04",
+          "derived_citation": "7.04"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "2709073f6204b56fb964ae32642eee5056c7e2d9c6bcb299e01730518e4fd65b",
+            "claim_occurrence_id": "7a5c6a0aed775a6d8d3a6662f261783680561406b6f6385a3cc52133cda36d4d",
+            "subject_occurrence_id": "f37f47e9de2487ef0783da49ce494df4f4cfdd07cee78bdca0684153d610b57e",
+            "claim_definition_key": "FRUSTRATION_BREACH_STANDARD",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.",
+            "canonical_value": "MATERIAL_BREACH",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "ea44b2120bf9adb4a762eb2d8c734b45fdf14e230c2077e190764901064da99c"
+            ],
+            "attributes": {
+              "section_reference": "7.04",
+              "assertion_kind": "FRUSTRATION_BREACH",
+              "condition_obligor": null,
+              "accuracy_standard": null,
+              "rep_side": null,
+              "covered_scope_ref": null,
+              "scrape_quote": null,
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": null,
+              "obligor_ref": null,
+              "approval_kind": null,
+              "approval_definition_ref": null,
+              "s4_component": null,
+              "listing_venue_ref": null,
+              "certificate_side": null,
+              "certifying_party_ref": null,
+              "certified_condition_refs": [],
+              "certificate_relationship_status": null,
+              "causation_standard": null,
+              "breach_standard": "MATERIAL_BREACH",
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": {
+                "clause_reference": "7.01",
+                "quote": "Section 7.01"
+              },
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "FRUSTRATION_BREACH"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "ea44b2120bf9adb4a762eb2d8c734b45fdf14e230c2077e190764901064da99c",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "1d16d40be2ab8ecbbdb50adb450340b4d9a5b662c3653886cf475354ef7d7032",
+                "document_ordinal": 0,
+                "absolute_start": 311,
+                "absolute_end": 533,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "51fb82ac91d3cd34df15a10aef7e75b267dbc9db75990bdf37d28a5c6402cbd7"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "0e1c08e674c15ee58ddb70feda0e9bedce690c08b10844b82104044b41a45b5a",
+            "producer_receipt_id": "10c395ba393c72cf1934e25eb7efdc1a5257b72e251bb0e3d1a2c0d093249343",
+            "governed_scope_digest": "9869c22becc6dbcfe714caae8d06199016cc06d6907392858f5a9b9f548cd49b",
+            "extraction_provenance_id": "b31cad1d7b8ebdb4134f4c927cecab538b4d01e4d7f2affeaae70551f38d7383"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [],
+        "materiality_rank": 70,
+        "materiality_label": "CLOSING_CONDITIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "7.04",
+          "normalized_citation": "7.04",
+          "derived_citation": "7.04"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 539
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 539,
+            "text": "SECTION 7.04. Frustration of Closing Conditions. Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement. The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.\n-59-\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "7.04",
+      "source_citation": "7.04",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "16c5f9671e38bde12bff37b90fdf9a5a6690f341b155298727a8cf1c80ed2a7a",
+      "closure_id": "34548823014aceda3ba90ddba0b8f1cd88ea18f75f7e0716d31b63d8c290b9d8",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "f8be839948c2b7c9591b64c08d9175055f663377481b752ff87899db382f75f6",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "84be59d0d25ddd8e27a0052bc94ba2b18a046465482110bfbae6f6c34fd80f5b",
+          "document_ordinal": 0,
+          "absolute_start": 49,
+          "absolute_end": 310,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 539
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 539,
+            "text": "SECTION 7.04. Frustration of Closing Conditions. Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement. The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.\n-59-\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.04",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "FRUSTRATION_BREACH_STANDARD",
+      "concept_key": "COND-FRUSTRATE",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2709073f6204b56fb964ae32642eee5056c7e2d9c6bcb299e01730518e4fd65b",
+      "closure_id": "51fb82ac91d3cd34df15a10aef7e75b267dbc9db75990bdf37d28a5c6402cbd7",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "ea44b2120bf9adb4a762eb2d8c734b45fdf14e230c2077e190764901064da99c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "1d16d40be2ab8ecbbdb50adb450340b4d9a5b662c3653886cf475354ef7d7032",
+          "document_ordinal": 0,
+          "absolute_start": 311,
+          "absolute_end": 533,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COND-FRUSTRATE",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 539
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 539,
+            "text": "SECTION 7.04. Frustration of Closing Conditions. Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement. The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.\n-59-\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.04",
+      "source_citation": "7.04",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "791cd765093d31b02cbde705b5dc0d7562ffc487da1de7078268244ca0fbade6",
+      "closure_id": "96780a7fca369373185f400ac1eb0cafd1b47a3339ff56f12be1a0af5a56eef3",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "fb397501c146399089e56992a07b50e95495c6f6d6c2819ce1db81e9500a80ff",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "1d16d40be2ab8ecbbdb50adb450340b4d9a5b662c3653886cf475354ef7d7032",
+          "document_ordinal": 0,
+          "absolute_start": 311,
+          "absolute_end": 533,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 539
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 539,
+            "text": "SECTION 7.04. Frustration of Closing Conditions. Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement. The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.\n-59-\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.04",
+      "source_citation": "7.04",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "45133e6213c4c0f4691997b2e949991c1781c17a81144b4dae0a00db7bf8c202",
+      "closure_id": "dbc7eb3f99a3df384c1a855677f35b14734019d028e57a9cbb261ba17586e27f",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "a9248165e79c449340387904a486b34ef3d9285d03fe735c96232c71ed2dc3a2",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "84be59d0d25ddd8e27a0052bc94ba2b18a046465482110bfbae6f6c34fd80f5b",
+          "document_ordinal": 0,
+          "absolute_start": 49,
+          "absolute_end": 310,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 539
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 539,
+            "text": "SECTION 7.04. Frustration of Closing Conditions. Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement. The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.\n-59-\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "open_world": [],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "69bc3bc4fba0868816e9d864bc5e352051fd698a986c82644bdb31ee2a80d81c",
+    "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "registry_substrate": {
+      "schema_version": "RESOLUTION_REGISTRY_SUBSTRATE_MANIFEST/V1",
+      "modules": [
+        {
+          "name": "materiality-qualifier",
+          "version": "RESOLUTION_MATERIALITY_QUALIFIER_REGISTRY/V1",
+          "digest": "sha256:6368129c33917101e97979baa1836e222894af0fe4ed98244ded61c4a7802515"
+        },
+        {
+          "name": "closing-condition-kinds",
+          "version": "RESOLUTION_CLOSING_CONDITION_KINDS_REGISTRY/V1",
+          "digest": "sha256:66bb6592c2f0c21125df9b12a03991aebbe5ca1832bacfb427eadd2df2327efc"
+        },
+        {
+          "name": "general-covenant",
+          "version": "RESOLUTION_GENERAL_COVENANT_REGISTRY/V1",
+          "digest": "sha256:c10453c1b9f700ed7962b3c3f66a1560dcbbbe42aa41692113097a67fb903737"
+        },
+        {
+          "name": "material-contract",
+          "version": "RESOLUTION_MATERIAL_CONTRACT_REGISTRY/V1",
+          "digest": "sha256:85159bed1f96102ea00f2f2acc57e8336c6901797f91c2345a357dc923528d9e"
+        },
+        {
+          "name": "interim-operating",
+          "version": "RESOLUTION_INTERIM_OPERATING_REGISTRY/V1",
+          "digest": "sha256:77e80a8cca7ab4277e74181ef6ea2f0a5410b75d96ad9ae984b7653f5265efae"
+        },
+        {
+          "name": "party-capacity",
+          "version": "RESOLUTION_PARTY_CAPACITY_REGISTRY/V1",
+          "digest": "sha256:1b089c7a6cf30f540043352234cb4109fe27013a554423c8d3ecd652272db202"
+        },
+        {
+          "name": "representation-topic",
+          "version": "REPRESENTATION_TOPIC_REGISTRY/V1",
+          "digest": "sha256:2240a6cfa6ac63d3fbf6a96afce185aed40a1d9919f2437b85a844aa996e1f28"
+        }
+      ],
+      "preserved_v1_collisions": [
+        {
+          "path": "UNDISCLOSED_LIABILITIES_EXCEPTION_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not reasonably be expected to have an MAE",
+          "v1_only": true,
+          "no_delete": true
+        },
+        {
+          "path": "MATERIALITY_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not, individually or in aggregate, have MAE",
+          "v1_only": true,
+          "no_delete": true
+        }
+      ]
+    },
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 3,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 4,
+      "resolved": 1,
+      "auto_pass": 0,
+      "review_queue": 4,
+      "open_world": 0,
+      "residuals": 0,
+      "provisions": 1,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "54cffe4cc89b79749d6a2851cd79f0e8551bb7bbe07503839f0842759ca7c5ec"
+  }
+}

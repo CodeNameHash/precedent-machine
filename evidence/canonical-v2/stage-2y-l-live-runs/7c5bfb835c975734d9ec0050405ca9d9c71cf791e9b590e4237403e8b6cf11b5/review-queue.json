@@ -1,0 +1,222 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "69bc3bc4fba0868816e9d864bc5e352051fd698a986c82644bdb31ee2a80d81c",
+  "review_queue": [
+    {
+      "section_reference": "7.04",
+      "source_citation": "7.04",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "16c5f9671e38bde12bff37b90fdf9a5a6690f341b155298727a8cf1c80ed2a7a",
+      "closure_id": "34548823014aceda3ba90ddba0b8f1cd88ea18f75f7e0716d31b63d8c290b9d8",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "f8be839948c2b7c9591b64c08d9175055f663377481b752ff87899db382f75f6",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "84be59d0d25ddd8e27a0052bc94ba2b18a046465482110bfbae6f6c34fd80f5b",
+          "document_ordinal": 0,
+          "absolute_start": 49,
+          "absolute_end": 310,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 539
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 539,
+            "text": "SECTION 7.04. Frustration of Closing Conditions. Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement. The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.\n-59-\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.04",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "FRUSTRATION_BREACH_STANDARD",
+      "concept_key": "COND-FRUSTRATE",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2709073f6204b56fb964ae32642eee5056c7e2d9c6bcb299e01730518e4fd65b",
+      "closure_id": "51fb82ac91d3cd34df15a10aef7e75b267dbc9db75990bdf37d28a5c6402cbd7",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "ea44b2120bf9adb4a762eb2d8c734b45fdf14e230c2077e190764901064da99c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "1d16d40be2ab8ecbbdb50adb450340b4d9a5b662c3653886cf475354ef7d7032",
+          "document_ordinal": 0,
+          "absolute_start": 311,
+          "absolute_end": 533,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COND-FRUSTRATE",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 539
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 539,
+            "text": "SECTION 7.04. Frustration of Closing Conditions. Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement. The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.\n-59-\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.04",
+      "source_citation": "7.04",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "791cd765093d31b02cbde705b5dc0d7562ffc487da1de7078268244ca0fbade6",
+      "closure_id": "96780a7fca369373185f400ac1eb0cafd1b47a3339ff56f12be1a0af5a56eef3",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "fb397501c146399089e56992a07b50e95495c6f6d6c2819ce1db81e9500a80ff",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "1d16d40be2ab8ecbbdb50adb450340b4d9a5b662c3653886cf475354ef7d7032",
+          "document_ordinal": 0,
+          "absolute_start": 311,
+          "absolute_end": 533,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 539
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 539,
+            "text": "SECTION 7.04. Frustration of Closing Conditions. Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement. The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.\n-59-\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.04",
+      "source_citation": "7.04",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "45133e6213c4c0f4691997b2e949991c1781c17a81144b4dae0a00db7bf8c202",
+      "closure_id": "dbc7eb3f99a3df384c1a855677f35b14734019d028e57a9cbb261ba17586e27f",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "a9248165e79c449340387904a486b34ef3d9285d03fe735c96232c71ed2dc3a2",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "84be59d0d25ddd8e27a0052bc94ba2b18a046465482110bfbae6f6c34fd80f5b",
+          "document_ordinal": 0,
+          "absolute_start": 49,
+          "absolute_end": 310,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 539
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 539,
+            "text": "SECTION 7.04. Frustration of Closing Conditions. Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement. The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.\n-59-\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "089d451f2fee1d87f3ff0f3c0852bd6d1f2b1a854e9843aa5fdbc860b40b418e"
+}

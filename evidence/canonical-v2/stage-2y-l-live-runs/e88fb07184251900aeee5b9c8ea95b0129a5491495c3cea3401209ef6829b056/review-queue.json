@@ -1,0 +1,117 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "54090b101461f50dd7c30c13ab7119c088f3e611823b17d057a5c1ab932785a3",
+  "review_queue": [
+    {
+      "section_reference": "6.04",
+      "source_citation": "6.04",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "if such failure was caused by such party’s failure to use reasonable best efforts to consummate the Merger and the other transactions contemplated by this Agreement, as required by and subject to Section 5.03",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e86f03e04136b8d483641a82c45fdd6cc4b2a96de041fb28931ba758efbc9302",
+      "closure_id": "69b2c47eb9402f0ac99096a16802aa8123fcce3b0cfc5681e78a1128d691cc33",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e6a9b031759a1a3d602ca53eb4aed3b523a51478fca71989759f32be2211292b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "43ec8103966213519bc7a4e0166c153d4b70211b2b09e3eafde43b23e0b1d4e9",
+          "document_ordinal": 0,
+          "absolute_start": 218,
+          "absolute_end": 428,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "if such failure was caused by such party’s failure to use reasonable best efforts to consummate the Merger and the other transactions contemplated by this Agreement, as required by and subject to Section 5.03",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 500
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 500,
+            "text": "Section 6.04 Frustration of Closing Conditions. None of the Company, Parent or Sub may rely on the failure of any condition set forth in Section 6.01, Section 6.02, or Section 6.03, as the case may be, to be satisfied if such failure was caused by such party’s failure to use reasonable best efforts to consummate the Merger and the other transactions contemplated by this Agreement, as required by and subject to Section 5.03, or by such party’s breach of any other provision of this Agreement.\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.04",
+      "source_citation": "6.04",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "or by such party’s breach of any other provision of this Agreement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "257cff4426bd490876c85eed4c16b4ac51f3f0f8e203a37b116ad86da6366c23",
+      "closure_id": "c2966ab6d80b1268e94c9aabf8e0fb3bd8b47130721619d79b05505c9ccec695",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "a9b93d27aa6dcde3d2833ea66457711309e8a1c55314d9e7c4ab687f61653ba8",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "143e8047b34e6228821d1bffd27f7d9e01cbf6715e6b2d05d0bfa0a13e98f938",
+          "document_ordinal": 0,
+          "absolute_start": 430,
+          "absolute_end": 499,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "or by such party’s breach of any other provision of this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 500
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 500,
+            "text": "Section 6.04 Frustration of Closing Conditions. None of the Company, Parent or Sub may rely on the failure of any condition set forth in Section 6.01, Section 6.02, or Section 6.03, as the case may be, to be satisfied if such failure was caused by such party’s failure to use reasonable best efforts to consummate the Merger and the other transactions contemplated by this Agreement, as required by and subject to Section 5.03, or by such party’s breach of any other provision of this Agreement.\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "bf2c7bc4f31272c2dd80db0774de4a64767ada0e814b2fea438bd10516d5656b"
+}

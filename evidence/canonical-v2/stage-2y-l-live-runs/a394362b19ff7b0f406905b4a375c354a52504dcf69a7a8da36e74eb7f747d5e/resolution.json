@@ -1,0 +1,1237 @@
+{
+  "resolved": [
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(a)",
+      "citation_context": {
+        "parent_section_reference": "6.6",
+        "child_section_reference": "6.6",
+        "parent_chapeau_quote": "6.6 Cooperation with Financing.",
+        "child_clause_quote": "Prior to the Effective Time, the Company shall use reasonable best efforts to, and shall cause its Subsidiaries to use reasonable best efforts to, and shall use reasonable best efforts to cause its and their respective Representatives to, provide such cooperation as is reasonably requested by Parent, is necessary in connection with the Debt Financing and customarily provided for borrowers or issuers in financings of the type contemplated by the Debt Commitment Letter (or permanent take-out financing incurred in lieu of the bridge facility contemplated under the Debt Commitment Letter), including reasonable best efforts to:"
+      },
+      "governing_context_quote": "(a) Cooperation with Financing. Prior to the Effective Time, the Company shall use reasonable best efforts to, and shall cause its Subsidiaries to use reasonable best efforts to, and shall use reasonable best efforts to cause its and their respective Representatives to, provide such cooperation as is reasonably requested by Parent, is necessary in connection with the Debt Financing and customarily provided for borrowers or issuers in financings of the type contemplated by the Debt Commitment Letter (or permanent take-out financing incurred in lieu of the bridge facility contemplated under the Debt Commitment Letter), including reasonable best efforts to:",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_COOPERATION_PRESENT",
+      "concept_key": "COV-FINANCING",
+      "party": {
+        "role": "FINANCING_COVENANT_OBLIGOR",
+        "value": "the Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "c8d99b105dc209b6dfe62d0443a84773f126a9d878c9e257b8e98bb1add03e00",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 265190,
+        "absolute_end": 283305,
+        "concept_key": "COV-FINANCING",
+        "party": {
+          "role": "FINANCING_COVENANT_OBLIGOR",
+          "value": "the Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "c52f0546ccbd957feaa146b74e7dcc2ac8c243337f4b638792928af9067983c2",
+        "provision_instance_id": "25ec02ae9ba6b30c57b0d270c58354095a047e6a2e299ef43738dcc4d64d6d59",
+        "closure_id": "f63f8e5c742abac23a5bed281a183701a0c8b6b50cb15dab070ff0acb737c08e"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "944c961379d0d73b06742247f471d6fac9d2d438937f2d671266023b393a9a75",
+        "claim_occurrence_id": "29646212ad01c45900d05baf34da7e020471fd93e60731dbc03eefaa0e974664",
+        "subject_occurrence_id": "25ec02ae9ba6b30c57b0d270c58354095a047e6a2e299ef43738dcc4d64d6d59",
+        "claim_definition_key": "FINANCING_COOPERATION_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Prior to the Effective Time, the Company shall use reasonable best efforts to, and shall cause its Subsidiaries to use reasonable best efforts to, and shall use reasonable best efforts to cause its and their respective Representatives to, provide such cooperation as is reasonably requested by Parent, is necessary in connection with the Debt Financing and customarily provided for borrowers or issuers in financings of the type contemplated by the Debt Commitment Letter (or permanent take-out financing incurred in lieu of the bridge facility contemplated under the Debt Commitment Letter), including reasonable best efforts to:",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "8f493b67401628155211755cbc93286745a2fd5ca6afc61aeb338709bc1ee593"
+        ],
+        "attributes": {
+          "financing_kind": "DEBT",
+          "obligor_ref": "the Company",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "8f493b67401628155211755cbc93286745a2fd5ca6afc61aeb338709bc1ee593",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "f4786c6052f0c73765d2f7873422eb50811cf5df40a9304d958e3c837422ff30",
+            "document_ordinal": 0,
+            "absolute_start": 64,
+            "absolute_end": 694,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "ce3e84378c91fe5af94d871fc952eb473d6b9b14c881ae4fa6cc32aeaf24b35c"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.6",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.6",
+          "normalized_citation": "6.6",
+          "derived_citation": "6.6"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "944c961379d0d73b06742247f471d6fac9d2d438937f2d671266023b393a9a75",
+            "claim_occurrence_id": "29646212ad01c45900d05baf34da7e020471fd93e60731dbc03eefaa0e974664",
+            "subject_occurrence_id": "25ec02ae9ba6b30c57b0d270c58354095a047e6a2e299ef43738dcc4d64d6d59",
+            "claim_definition_key": "FINANCING_COOPERATION_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Prior to the Effective Time, the Company shall use reasonable best efforts to, and shall cause its Subsidiaries to use reasonable best efforts to, and shall use reasonable best efforts to cause its and their respective Representatives to, provide such cooperation as is reasonably requested by Parent, is necessary in connection with the Debt Financing and customarily provided for borrowers or issuers in financings of the type contemplated by the Debt Commitment Letter (or permanent take-out financing incurred in lieu of the bridge facility contemplated under the Debt Commitment Letter), including reasonable best efforts to:",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "8f493b67401628155211755cbc93286745a2fd5ca6afc61aeb338709bc1ee593"
+            ],
+            "attributes": {
+              "financing_kind": "DEBT",
+              "obligor_ref": "the Company",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "8f493b67401628155211755cbc93286745a2fd5ca6afc61aeb338709bc1ee593",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "f4786c6052f0c73765d2f7873422eb50811cf5df40a9304d958e3c837422ff30",
+                "document_ordinal": 0,
+                "absolute_start": 64,
+                "absolute_end": 694,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "ce3e84378c91fe5af94d871fc952eb473d6b9b14c881ae4fa6cc32aeaf24b35c"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "FINANCING_COVENANT",
+            "prompt_digest": "77596c5989f995b5b1488427d66a7db1acb1ca93754bf284114e0e4eae03d7f4",
+            "producer_receipt_id": "49bd0cfc0365b82e132ddc806ff3f9c8a48e9d2602f13d0415a12ac149ab306b",
+            "governed_scope_digest": "e33d12f102ffef4dbf1f0a800dd5922c48715e7fa00d2a31d0b5c2ee38e8c48f",
+            "extraction_provenance_id": "6d0e08e122bc6815baa5ae4c02eed8b71156c7c63b491b327a01dbe62209c762"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 75,
+        "materiality_label": "FINANCING_COVENANTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.6",
+          "normalized_citation": "6.6",
+          "derived_citation": "6.6(a)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 35,
+          "end_byte": 695
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 35,
+            "end_byte": 695,
+            "text": " Cooperation with Financing. Prior to the Effective Time, the Company shall use reasonable best efforts to, and shall cause its Subsidiaries to use reasonable best efforts to, and shall use reasonable best efforts to cause its and their respective Representatives to, provide such cooperation as is reasonably requested by Parent, is necessary in connection with the Debt Financing and customarily provided for borrowers or issuers in financings of the type contemplated by the Debt Commitment Letter (or permanent take-out financing incurred in lieu of the bridge facility contemplated under the Debt Commitment Letter), including reasonable best efforts to:\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 32,
+            "text": "6.6 Cooperation with Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(a)(ix)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "PAYOFF_DELIVERY_LEAD_TIME_DAYS",
+      "concept_key": "COV-PAYOFF",
+      "reasons": [
+        "NON_LITERAL_NUMERAL"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "furnishing Parent with the Payoff Deliverables (including providing Parent with drafts thereof at least three Business Days prior to the Closing)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "fd9425db3d77385a05f4ef5b40ea11b11b66f914ceae8833fe865a4b26a88ba9",
+      "closure_id": "1b677373403d3b777a7c9b7fd61e8a0ccd0ffccc614e54eaf34b8e8f92ee98db",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "5871cdd1d476f9cbbe9cd1ebb2734a4fd969107a58b79b083916a683e4f3f3a5",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d164899cb2dd376d27df6027f68d40214e7d55cd0466c061c51a7995f7d4deed",
+          "document_ordinal": 0,
+          "absolute_start": 6766,
+          "absolute_end": 6911,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "furnishing Parent with the Payoff Deliverables (including providing Parent with drafts thereof at least three Business Days prior to the Closing)",
+      "attachment_position": null,
+      "concept_family": "COV-PAYOFF",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.vii.B",
+          "depth": 3,
+          "start_byte": 5946,
+          "end_byte": 7323
+        },
+        "chain": [
+          {
+            "path": "a.vii.B",
+            "start_byte": 5946,
+            "end_byte": 7323,
+            "text": " assisting in the preparations for the pledging of collateral, including possessory collateral (it being understood that no such pledging of collateral will be effective until at or after the Closing), facilitating the obtaining of guarantees (it being understood that no such guarantees will be effective until at or after the Closing), and assistance in the preparation of any definitive financing documents and other matters ancillary to the Debt Financing as may be reasonably requested by Parent, including by providing access to information that is available to the Company without undue burden or expense for the completion of any schedules or certificates thereto;\n-65-\n(viii) assisting Parent in obtaining any corporate or facility ratings from any ratings agencies contemplated by the Debt Financing;\n(ix) (A) furnishing Parent with the Payoff Deliverables (including providing Parent with drafts thereof at least three Business Days prior to the Closing); (B) deliver notices of prepayment and redemption (which may be delivered at Parent’s request in advance of the Closing Date so long as they are contingent upon the occurrence of the Closing) within the time periods reasonably requested by Parent, in its discretion, and take any actions at or prior to the Effective Time reasonably requested by Parent to facilitate any such prepayment and/or redemption and "
+          },
+          {
+            "path": "a",
+            "start_byte": 35,
+            "end_byte": 695,
+            "text": " Cooperation with Financing. Prior to the Effective Time, the Company shall use reasonable best efforts to, and shall cause its Subsidiaries to use reasonable best efforts to, and shall use reasonable best efforts to cause its and their respective Representatives to, provide such cooperation as is reasonably requested by Parent, is necessary in connection with the Debt Financing and customarily provided for borrowers or issuers in financings of the type contemplated by the Debt Commitment Letter (or permanent take-out financing incurred in lieu of the bridge facility contemplated under the Debt Commitment Letter), including reasonable best efforts to:\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 32,
+            "text": "6.6 Cooperation with Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.6",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_COOPERATION_PRESENT",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "944c961379d0d73b06742247f471d6fac9d2d438937f2d671266023b393a9a75",
+      "closure_id": "ce3e84378c91fe5af94d871fc952eb473d6b9b14c881ae4fa6cc32aeaf24b35c",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "8f493b67401628155211755cbc93286745a2fd5ca6afc61aeb338709bc1ee593",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "f4786c6052f0c73765d2f7873422eb50811cf5df40a9304d958e3c837422ff30",
+          "document_ordinal": 0,
+          "absolute_start": 64,
+          "absolute_end": 694,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Prior to the Effective Time, the Company shall use reasonable best efforts to, and shall cause its Subsidiaries to use reasonable best efforts to, and shall use reasonable best efforts to cause its and their respective Representatives to, provide such cooperation as is reasonably requested by Parent, is necessary in connection with the Debt Financing and customarily provided for borrowers or issuers in financings of the type contemplated by the Debt Commitment Letter (or permanent take-out financing incurred in lieu of the bridge facility contemplated under the Debt Commitment Letter), including reasonable best efforts to:",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 1046,
+          "end": 1060,
+          "excerpt": "parties acting as lead arrangers or agents for, and prospective lenders of, the Debt Financing), drafting sessions, conference calls, presentations, road shows, due diligence",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 1461,
+          "end": 1475,
+          "excerpt": "e advance notice, and assist Parent in obtaining ratings in connection with the Debt Financing;\n(ii) (A) as promptly as reasonably practicable, furnish Parent with the Requir",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 2453,
+          "end": 2467,
+          "excerpt": "ial statements to the extent necessary or reasonably requested by Parent or the Debt Financing Sources, it being agreed that the Company will not be responsible for any infor",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 2935,
+          "end": 2949,
+          "excerpt": "nts desired to be incorporated into any information used in connection with the Debt Financing; or (C) any financial information related to Parent or any of its Subsidiaries ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 3217,
+          "end": 3231,
+          "excerpt": "e of and prior to the completion of the Marketing Period, assist Parent and the Debt Financing Sources in the preparation of customary bank information memoranda, lender or i",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 3476,
+          "end": 3490,
+          "excerpt": "cement memoranda and other customary marketing materials in connection with the Debt Financing (collectively, the “Marketing Material”) including delivering upon request ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 3630,
+          "end": 3644,
+          "excerpt": "vering upon request of Parent prior to the commencement of the marketing of the Debt Financing (A) customary executed authorization letters to accompany customary Marketing M",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 4554,
+          "end": 4568,
+          "excerpt": " with respect to any non-convertible high yield debt securities included in the Debt Financing issued on a “Rule 144A for life” basis (including using reasonable best eff",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 4772,
+          "end": 4786,
+          "excerpt": "nsents of accountants for use of their reports in any materials relating to the Debt Financing and accountants’ comfort letters, in each case as reasonably requested by Par",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 4877,
+          "end": 4891,
+          "excerpt": "tants’ comfort letters, in each case as reasonably requested by Parent or the Debt Financing Sources) and (y) reasonable assistance to Parent in connection with the Parent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 5318,
+          "end": 5332,
+          "excerpt": "ior to the Closing Date, and to the extent requested by Parent on behalf of the Debt Financing Sources no later than ten (10) Business Days prior to the Closing Date, provide",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 5871,
+          "end": 5893,
+          "excerpt": "assets of the Company (other than Permitted Liens) that are contemplated by the Debt Commitment Letter to become collateral for the Debt Financing; and (B) assisting in the preparati",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 5923,
+          "end": 5937,
+          "excerpt": "hat are contemplated by the Debt Commitment Letter to become collateral for the Debt Financing; and (B) assisting in the preparations for the pledging of collateral, includin",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 6391,
+          "end": 6405,
+          "excerpt": "ration of any definitive financing documents and other matters ancillary to the Debt Financing as may be reasonably requested by Parent, including by providing access to info",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 6741,
+          "end": 6755,
+          "excerpt": "any corporate or facility ratings from any ratings agencies contemplated by the Debt Financing;\n(ix) (A) furnishing Parent with the Payoff Deliverables (including providing P",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 7782,
+          "end": 7796,
+          "excerpt": "demption prior to the occurrence of the Closing);\n(x) furnish to Parent and the Debt Financing Sources (A) within 50 days after the end of any fiscal quarter that is not a fi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 8632,
+          "end": 8646,
+          "excerpt": "Date) of any definitive financing documentation required in connection with the Debt Financing and the schedules and exhibits thereto, in each case, required to be delivered ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 8998,
+          "end": 9012,
+          "excerpt": "other definitive financing documents and deliverables (including any Definitive Debt Financing Agreements); and\n(xii) assist in the taking of customary corporate and other si",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 9258,
+          "end": 9272,
+          "excerpt": "y necessary or reasonably requested by Parent to permit the consummation of the Debt Financing on the Closing Date (provided, that such actions will only be required by a dir",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 10798,
+          "end": 10812,
+          "excerpt": "ed to pass resolutions or consents to approve or authorize the execution of the Debt Financing (except to the extent they continue in such capacity immediately after the Clos",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 11709,
+          "end": 11723,
+          "excerpt": " information contained in the disclosure and marketing materials related to the Debt Financing); (C) any bank information memoranda and high-yield offering prospectuses or me",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 13246,
+          "end": 13260,
+          "excerpt": "d comment on marketing materials used in connection with the arrangement of the Debt Financing prior to the dissemination of such materials to potential lenders or other coun",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 13646,
+          "end": 13660,
+          "excerpt": "ble best efforts, to update any Required Information provided to Parent and the Debt Financing Sources as may be necessary so that such Required Information (i) is Compliant,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 14812,
+          "end": 14826,
+          "excerpt": "ce with the definition thereof (regardless of whether all or any portion of the Debt Financing was successfully allocated to investors or lenders during such Marketing Period",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 15849,
+          "end": 15863,
+          "excerpt": " not unreasonably object) to include in a customary offering memorandum for the Debt Financing, then, the Company shall file such Current Report on Form 8-K.\n-67-\n(d) Reimbur",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 17410,
+          "end": 17424,
+          "excerpt": "e Company hereby consents to the use of its logos solely in connection with the Debt Financing; provided, that Parent and Merger Sub shall ensure that such logos are used sol",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:PHRASE:NO_CONDITION",
+          "start": 17974,
+          "end": 17995,
+          "excerpt": "Merger Sub understands and acknowledges and agrees that obtaining the Financing is not a condition to the obligations of the parties to consummate the Merger in accordance with the ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 35,
+          "end_byte": 695
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 35,
+            "end_byte": 695,
+            "text": " Cooperation with Financing. Prior to the Effective Time, the Company shall use reasonable best efforts to, and shall cause its Subsidiaries to use reasonable best efforts to, and shall use reasonable best efforts to cause its and their respective Representatives to, provide such cooperation as is reasonably requested by Parent, is necessary in connection with the Debt Financing and customarily provided for borrowers or issuers in financings of the type contemplated by the Debt Commitment Letter (or permanent take-out financing incurred in lieu of the bridge facility contemplated under the Debt Commitment Letter), including reasonable best efforts to:\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 32,
+            "text": "6.6 Cooperation with Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(g)",
+      "reason": "FINANCING_SCOPE_OUT_OF_VOCABULARY",
+      "claim_definition_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "raw_value": "each of Parent and Merger Sub understands and acknowledges and agrees that obtaining the Financing is not a condition to the obligations of the parties to consummate the Merger in accordance with the terms and provisions of this Agreement.",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "6.6",
+        "assertion_kind": "NO_FINANCING_CONDITION_ACK",
+        "financing_kind": null,
+        "standard_code": null,
+        "obligor": "each of Parent and Merger Sub",
+        "day_kind": null,
+        "delivery_stage": null,
+        "deliverable_term": null,
+        "marketing_term": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "df80f2802408fcf8ce3121aa2d0d40d532102dee7a8f3748b3b3cbea8b7d90fe",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "45cff9ba6b6a1261f9ca3c8307ee5a6ada7f31d99cbdf00e3b7cafa0a63cb038",
+          "document_ordinal": 0,
+          "absolute_start": 17875,
+          "absolute_end": 18114,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "0fac438237e80f577cced0f9332b6f6343c9d8b00cd4280104c1ae25f82ae029",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "FINANCING_COVENANT",
+        "prompt_digest": "77596c5989f995b5b1488427d66a7db1acb1ca93754bf284114e0e4eae03d7f4",
+        "producer_receipt_id": "49bd0cfc0365b82e132ddc806ff3f9c8a48e9d2602f13d0415a12ac149ab306b",
+        "governed_scope_digest": "e33d12f102ffef4dbf1f0a800dd5922c48715e7fa00d2a31d0b5c2ee38e8c48f",
+        "extraction_provenance_id": "6d0e08e122bc6815baa5ae4c02eed8b71156c7c63b491b327a01dbe62209c762"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.6",
+        "normalized_citation": "6.6",
+        "derived_citation": "6.6(g)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "g",
+          "depth": 1,
+          "start_byte": 17790,
+          "end_byte": 18115
+        },
+        "chain": [
+          {
+            "path": "g",
+            "start_byte": 17790,
+            "end_byte": 18115,
+            "text": " No Financing Condition. Notwithstanding anything in this Agreement to the contrary, each of Parent and Merger Sub understands and acknowledges and agrees that obtaining the Financing is not a condition to the obligations of the parties to consummate the Merger in accordance with the terms and provisions of this Agreement.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 32,
+            "text": "6.6 Cooperation with Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "permanent take-out financing incurred in lieu of the bridge facility contemplated under the Debt Commitment Letter",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "ALTERNATIVE_FINANCING: Permanent take-out financing may be incurred instead of the contemplated bridge facility.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "7cd30c363760e135f1bf9faf80b0ae1681971770dc730579660258a589c52a53",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "a54cd8a0bac777840089f62f5c1fc09b5a93b0a288d0af5ff20f2a45cd80ccda",
+          "document_ordinal": 0,
+          "absolute_start": 540,
+          "absolute_end": 654,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "eb3930cfe116fb0ed0d0a7a75ce766ddbc45e6786705366862d44ed07abc2bf5",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "77596c5989f995b5b1488427d66a7db1acb1ca93754bf284114e0e4eae03d7f4",
+        "producer_receipt_id": "49bd0cfc0365b82e132ddc806ff3f9c8a48e9d2602f13d0415a12ac149ab306b",
+        "governed_scope_digest": "e33d12f102ffef4dbf1f0a800dd5922c48715e7fa00d2a31d0b5c2ee38e8c48f",
+        "extraction_provenance_id": "b1815af7c3cbd61cdb49489de5ca8ced84a6c401dd06bd1956cb194e9e088014"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 35,
+          "end_byte": 695
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 35,
+            "end_byte": 695,
+            "text": " Cooperation with Financing. Prior to the Effective Time, the Company shall use reasonable best efforts to, and shall cause its Subsidiaries to use reasonable best efforts to, and shall use reasonable best efforts to cause its and their respective Representatives to, provide such cooperation as is reasonably requested by Parent, is necessary in connection with the Debt Financing and customarily provided for borrowers or issuers in financings of the type contemplated by the Debt Commitment Letter (or permanent take-out financing incurred in lieu of the bridge facility contemplated under the Debt Commitment Letter), including reasonable best efforts to:\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 32,
+            "text": "6.6 Cooperation with Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the parties acting as lead arrangers or agents for, and prospective lenders of, the Debt Financing",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "LENDER_ARRANGEMENT: Debt Financing participants include lead arrangers, agents and prospective lenders.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "46582a9cb0a17f3839438c59b5b241b4558a48b0785f1745b93e09763e24799a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "f358ba9fbdde827b4aad8b409eb8e584a2c45c804dc6c7aeaa7242939d75cdfd",
+          "document_ordinal": 0,
+          "absolute_start": 962,
+          "absolute_end": 1060,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "00545010e61826b0c5625806b5b3d90520747c2d79ffbbcb67b5a43160d9d24d",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "77596c5989f995b5b1488427d66a7db1acb1ca93754bf284114e0e4eae03d7f4",
+        "producer_receipt_id": "49bd0cfc0365b82e132ddc806ff3f9c8a48e9d2602f13d0415a12ac149ab306b",
+        "governed_scope_digest": "e33d12f102ffef4dbf1f0a800dd5922c48715e7fa00d2a31d0b5c2ee38e8c48f",
+        "extraction_provenance_id": "b1815af7c3cbd61cdb49489de5ca8ced84a6c401dd06bd1956cb194e9e088014"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.i",
+          "depth": 2,
+          "start_byte": 698,
+          "end_byte": 1477
+        },
+        "chain": [
+          {
+            "path": "a.i",
+            "start_byte": 698,
+            "end_byte": 1477,
+            "text": " assist in preparation for and participate (and cause appropriate members of senior management of the Company to assist and participate) in a reasonable number of meetings (including customary one-on-one meetings and calls that are requested in advance with or by the parties acting as lead arrangers or agents for, and prospective lenders of, the Debt Financing), drafting sessions, conference calls, presentations, road shows, due diligence sessions, sessions with rating agencies or other customary financing activities, in each case, which shall be virtual (unless otherwise agreed by the Company) and shall be at reasonable times and locations mutually agreed and with reasonable advance notice, and assist Parent in obtaining ratings in connection with the Debt Financing;\n"
+          },
+          {
+            "path": "a",
+            "start_byte": 35,
+            "end_byte": 695,
+            "text": " Cooperation with Financing. Prior to the Effective Time, the Company shall use reasonable best efforts to, and shall cause its Subsidiaries to use reasonable best efforts to, and shall use reasonable best efforts to cause its and their respective Representatives to, provide such cooperation as is reasonably requested by Parent, is necessary in connection with the Debt Financing and customarily provided for borrowers or issuers in financings of the type contemplated by the Debt Commitment Letter (or permanent take-out financing incurred in lieu of the bridge facility contemplated under the Debt Commitment Letter), including reasonable best efforts to:\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 32,
+            "text": "6.6 Cooperation with Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Parent shall have notified the Company that it is commencing the Marketing Period on a date certain",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "MARKETING_PERIOD: Parent must notify the Company of a specified commencement date for each marketing attempt.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "324e78787970e7924ddc5a50cc1384cb332491b8ccaf906eee8a00a45f9c2b42",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "21a54d379a19f10fcdd23a7f2c05895505bbaf1456d84667e425eabb0e0def98",
+          "document_ordinal": 0,
+          "absolute_start": 14317,
+          "absolute_end": 14416,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "e4cd55277659575df29d195e0fc2a21cf76caa02e21ba0460d86937a30d15797",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "77596c5989f995b5b1488427d66a7db1acb1ca93754bf284114e0e4eae03d7f4",
+        "producer_receipt_id": "49bd0cfc0365b82e132ddc806ff3f9c8a48e9d2602f13d0415a12ac149ab306b",
+        "governed_scope_digest": "e33d12f102ffef4dbf1f0a800dd5922c48715e7fa00d2a31d0b5c2ee38e8c48f",
+        "extraction_provenance_id": "b1815af7c3cbd61cdb49489de5ca8ced84a6c401dd06bd1956cb194e9e088014"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 13437,
+          "end_byte": 15932
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 13437,
+            "end_byte": 15932,
+            "text": " Updates. The Company will use its reasonable best efforts, and will cause each of its Subsidiaries to use its respective reasonable best efforts, to update any Required Information provided to Parent and the Debt Financing Sources as may be necessary so that such Required Information (i) is Compliant, (ii) meets the applicable requirements set forth in the definition of “Required Information” and (iii) would not, after giving effect to such update(s), cause the Marketing Period to cease pursuant to the definition of “Marketing Period.” For the avoidance of doubt, Parent may, to most effectively access the financing markets, require the cooperation of the Company and its Subsidiaries under this Section 6.6 at any time, and from time to time and on multiple occasions, between the date hereof and the Closing Date; provided, that, for the avoidance of doubt, (A) Parent shall have notified the Company that it is commencing the Marketing Period on a date certain (in accordance with clause (A)(ii) of the definition thereof) in connection with the each such attempt to access the financing markets, in which case a Marketing Period shall be deemed to commence on such date specified for such attempt and (B) to the extent a Marketing Period is successfully completed in accordance with the definition thereof (regardless of whether all or any portion of the Debt Financing was successfully allocated to investors or lenders during such Marketing Period), the Marketing Period shall not be applicable as to any subsequent attempt to access the markets. The Company agrees to (i) file all reports on Form 10-K and Form 10-Q, and to the extent required to include financial information pursuant to Item 9.01 thereof, Form 8-K and (ii) use reasonable best efforts to file all other Forms 8-K, in each case, required to be filed with the SEC pursuant to the Exchange Act prior to the Closing Date in accordance with the time periods required by the Exchange Act. In addition, if, in connection with a marketing effort contemplated by the Debt Commitment Letters, Parent reasonably requests the Company to file a Current Report on Form 8-K pursuant to the Exchange Act that contains material non-public information with respect to the Company and its Subsidiaries, which Parent reasonably determines (and the Company does not unreasonably object) to include in a customary offering memorandum for the Debt Financing, then, the Company shall file such Current Report on Form 8-K.\n-67-\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 32,
+            "text": "6.6 Cooperation with Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Parent will reimburse the Company for any documented and reasonable out-of-pocket costs and expenses (including attorneys’ fees) incurred by the Company Group in connection with the cooperation of the Company Group contemplated by this Section (c)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "REIMBURSEMENT_OR_INDEMNITY: Parent reimburses documented and reasonable out-of-pocket cooperation costs after a valid termination.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "53e7c4a00272d4e83b1b66063a8e057bfd9253dd07796d9987577cec8843090c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2007c7b1040372e1b1af7a27fc5d057d91dc6b653845be3a984126bc535f7d58",
+          "document_ordinal": 0,
+          "absolute_start": 16081,
+          "absolute_end": 16330,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "183f1e6976864e6896488fb85bb66f353d59abf32d8b24137b54bdebbc8865b3",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "77596c5989f995b5b1488427d66a7db1acb1ca93754bf284114e0e4eae03d7f4",
+        "producer_receipt_id": "49bd0cfc0365b82e132ddc806ff3f9c8a48e9d2602f13d0415a12ac149ab306b",
+        "governed_scope_digest": "e33d12f102ffef4dbf1f0a800dd5922c48715e7fa00d2a31d0b5c2ee38e8c48f",
+        "extraction_provenance_id": "b1815af7c3cbd61cdb49489de5ca8ced84a6c401dd06bd1956cb194e9e088014"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "d",
+          "depth": 1,
+          "start_byte": 15935,
+          "end_byte": 16524
+        },
+        "chain": [
+          {
+            "path": "d",
+            "start_byte": 15935,
+            "end_byte": 16524,
+            "text": " Reimbursement. After any valid termination of this Agreement, promptly upon request (but in any event within 30 days thereafter) by the Company, Parent will reimburse the Company for any documented and reasonable out-of-pocket costs and expenses (including attorneys’ fees) incurred by the Company Group in connection with the cooperation of the Company Group contemplated by this Section (c) provided that the Company Group (and not Parent) shall be responsible for any amounts that would otherwise have been incurred in the absence of the transactions contemplated by this Agreement.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 32,
+            "text": "6.6 Cooperation with Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "The Company Group and their respective Representatives will be indemnified and held harmless by Parent from and against any and all liabilities, losses, damages, claims, costs, expenses (including attorneys’ fees), interest, awards, judgments, penalties and amounts paid in settlement suffered or incurred by them in connection with their cooperation in arranging the Financing pursuant to this Agreement or the provision of information utilized in connection therewith",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "REIMBURSEMENT_OR_INDEMNITY: Parent indemnifies the Company Group and its representatives for liabilities and losses connected to financing cooperation or information.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "d3e0c483e703bfeab3e5770fa118a82e9ab32dc815bc396c83986cfef1ff0a82",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "a2cbc99c3a6a38b7aced125ae1acf12cc76dcbe02f6877c22b780c221f42efec",
+          "document_ordinal": 0,
+          "absolute_start": 16545,
+          "absolute_end": 17016,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "d55a9583064a00d2f622f2c0aca01b1d3a137c6b46446162f804bd54c67df5ac",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "77596c5989f995b5b1488427d66a7db1acb1ca93754bf284114e0e4eae03d7f4",
+        "producer_receipt_id": "49bd0cfc0365b82e132ddc806ff3f9c8a48e9d2602f13d0415a12ac149ab306b",
+        "governed_scope_digest": "e33d12f102ffef4dbf1f0a800dd5922c48715e7fa00d2a31d0b5c2ee38e8c48f",
+        "extraction_provenance_id": "b1815af7c3cbd61cdb49489de5ca8ced84a6c401dd06bd1956cb194e9e088014"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "e",
+          "depth": 1,
+          "start_byte": 16527,
+          "end_byte": 17317
+        },
+        "chain": [
+          {
+            "path": "e",
+            "start_byte": 16527,
+            "end_byte": 17317,
+            "text": " Indemnification. The Company Group and their respective Representatives will be indemnified and held harmless by Parent from and against any and all liabilities, losses, damages, claims, costs, expenses (including attorneys’ fees), interest, awards, judgments, penalties and amounts paid in settlement suffered or incurred by them in connection with their cooperation in arranging the Financing pursuant to this Agreement or the provision of information utilized in connection therewith, in each case, other than as a result of (i) information relating to the Company Group provided expressly for use in connection with the Financing that is determined to be materially false or misleading or (ii) fraud, bad faith, gross negligence or willful misconduct by or on behalf of such Person.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 32,
+            "text": "6.6 Cooperation with Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "including credit agreements (or joinders thereto), note purchase agreements, engagement letters, fee letters, pledge and security documents, and other definitive financing documents and deliverables (including any Definitive Debt Financing Agreements)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Definitive financing-document basket, including fee letters.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b9c02c40cf0490f587de3f5244a5332ff501824180db0d2a466074e88d534cf6",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "8454dd60ed848e3b19a371960985195662a0f22e3597d17dd43aabcbb3cb3821",
+          "document_ordinal": 0,
+          "absolute_start": 8773,
+          "absolute_end": 9024,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "d59f9a5f28a5d7b3b98c14c1299c68c9b25ab178ef7f69f71f15a978e3eece7d",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "77596c5989f995b5b1488427d66a7db1acb1ca93754bf284114e0e4eae03d7f4",
+        "producer_receipt_id": "49bd0cfc0365b82e132ddc806ff3f9c8a48e9d2602f13d0415a12ac149ab306b",
+        "governed_scope_digest": "e33d12f102ffef4dbf1f0a800dd5922c48715e7fa00d2a31d0b5c2ee38e8c48f",
+        "extraction_provenance_id": "b1815af7c3cbd61cdb49489de5ca8ced84a6c401dd06bd1956cb194e9e088014"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.vii.C",
+          "depth": 3,
+          "start_byte": 7326,
+          "end_byte": 9508
+        },
+        "chain": [
+          {
+            "path": "a.vii.C",
+            "start_byte": 7326,
+            "end_byte": 9508,
+            "text": " cooperate with any back-stop, “roll-over” or termination of any existing letters of credit under any such agreements (it being understood and agreed that any prepayment and/or redemption are (and shall be) contingent upon the occurrence of the Closing and no actions shall be required which would obligate the Company or its subsidiaries to complete such prepayment or redemption prior to the occurrence of the Closing);\n(x) furnish to Parent and the Debt Financing Sources (A) within 50 days after the end of any fiscal quarter that is not a fiscal year end, the unaudited consolidated balance sheet of the Company as of the end of such quarter and the related unaudited statements of income and cash flows (which will have been reviewed by the Company’s independent public accountants as provided in SAS 100); and (B) within 75 days after the end of any fiscal year, the audited consolidated balance sheet of the Company as of the end of such fiscal year and the related audited statements of income and cash flows;\n(xi) assist in the preparation and facilitate the execution and delivery (in the case of execution and delivery, solely to the extent any such execution would only be effective on or after the Closing Date) of any definitive financing documentation required in connection with the Debt Financing and the schedules and exhibits thereto, in each case, required to be delivered under such definitive financing documentation, including credit agreements (or joinders thereto), note purchase agreements, engagement letters, fee letters, pledge and security documents, and other definitive financing documents and deliverables (including any Definitive Debt Financing Agreements); and\n(xii) assist in the taking of customary corporate and other similar actions, subject to and contingent upon the occurrence of the Closing, reasonably necessary or reasonably requested by Parent to permit the consummation of the Debt Financing on the Closing Date (provided, that such actions will only be required by a director, manager or any equivalent officer or employee of the Company or any Subsidiary of the Company who will continue in such position after the Closing).\n"
+          },
+          {
+            "path": "a",
+            "start_byte": 35,
+            "end_byte": 695,
+            "text": " Cooperation with Financing. Prior to the Effective Time, the Company shall use reasonable best efforts to, and shall cause its Subsidiaries to use reasonable best efforts to, and shall use reasonable best efforts to cause its and their respective Representatives to, provide such cooperation as is reasonably requested by Parent, is necessary in connection with the Debt Financing and customarily provided for borrowers or issuers in financings of the type contemplated by the Debt Commitment Letter (or permanent take-out financing incurred in lieu of the bridge facility contemplated under the Debt Commitment Letter), including reasonable best efforts to:\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 32,
+            "text": "6.6 Cooperation with Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "ed308d19d1e82fddcfab2668e1d2589edc63d3f4d7ee3232628fb11a44752d07",
+    "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "registry_substrate": {
+      "schema_version": "RESOLUTION_REGISTRY_SUBSTRATE_MANIFEST/V1",
+      "modules": [
+        {
+          "name": "materiality-qualifier",
+          "version": "RESOLUTION_MATERIALITY_QUALIFIER_REGISTRY/V1",
+          "digest": "sha256:6368129c33917101e97979baa1836e222894af0fe4ed98244ded61c4a7802515"
+        },
+        {
+          "name": "closing-condition-kinds",
+          "version": "RESOLUTION_CLOSING_CONDITION_KINDS_REGISTRY/V1",
+          "digest": "sha256:66bb6592c2f0c21125df9b12a03991aebbe5ca1832bacfb427eadd2df2327efc"
+        },
+        {
+          "name": "general-covenant",
+          "version": "RESOLUTION_GENERAL_COVENANT_REGISTRY/V1",
+          "digest": "sha256:c10453c1b9f700ed7962b3c3f66a1560dcbbbe42aa41692113097a67fb903737"
+        },
+        {
+          "name": "material-contract",
+          "version": "RESOLUTION_MATERIAL_CONTRACT_REGISTRY/V1",
+          "digest": "sha256:85159bed1f96102ea00f2f2acc57e8336c6901797f91c2345a357dc923528d9e"
+        },
+        {
+          "name": "interim-operating",
+          "version": "RESOLUTION_INTERIM_OPERATING_REGISTRY/V1",
+          "digest": "sha256:77e80a8cca7ab4277e74181ef6ea2f0a5410b75d96ad9ae984b7653f5265efae"
+        },
+        {
+          "name": "party-capacity",
+          "version": "RESOLUTION_PARTY_CAPACITY_REGISTRY/V1",
+          "digest": "sha256:1b089c7a6cf30f540043352234cb4109fe27013a554423c8d3ecd652272db202"
+        },
+        {
+          "name": "representation-topic",
+          "version": "REPRESENTATION_TOPIC_REGISTRY/V1",
+          "digest": "sha256:2240a6cfa6ac63d3fbf6a96afce185aed40a1d9919f2437b85a844aa996e1f28"
+        }
+      ],
+      "preserved_v1_collisions": [
+        {
+          "path": "UNDISCLOSED_LIABILITIES_EXCEPTION_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not reasonably be expected to have an MAE",
+          "v1_only": true,
+          "no_delete": true
+        },
+        {
+          "path": "MATERIALITY_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not, individually or in aggregate, have MAE",
+          "v1_only": true,
+          "no_delete": true
+        }
+      ]
+    },
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 3,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 9,
+      "resolved": 1,
+      "auto_pass": 0,
+      "review_queue": 2,
+      "open_world": 7,
+      "residuals": 0,
+      "provisions": 1,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "859c8acebf7855481d1690673e3ae26a06ca109b84db7f70427b4519c64528ca"
+  }
+}

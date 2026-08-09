@@ -1,0 +1,2182 @@
+{
+  "resolved": [
+    {
+      "section_reference": "5.3",
+      "source_citation": "5.3(a)(i)",
+      "citation_context": {
+        "parent_section_reference": "5.3",
+        "child_section_reference": "5.3(a)(i)",
+        "parent_chapeau_quote": "5.3 Additional Conditions to the Obligations of the Company. The obligations of the Company to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:",
+        "child_clause_quote": "(i) Parent shall have performed in all material respects all of its obligations hereunder required to be performed by it as of or prior to the Closing Date;"
+      },
+      "governing_context_quote": "(i) Parent shall have performed in all material respects all of its obligations hereunder required to be performed by it as of or prior to the Closing Date;",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "COVENANT_COMPLIANCE_STANDARD",
+      "concept_key": "COND-COV",
+      "party": {
+        "role": "CONDITION_OBLIGOR",
+        "value": "Parent",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "651c961bc29e093e89b1432767d5593c9f5a490ea4445fb2cde0a3bc173808e1",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 360620,
+        "absolute_end": 364124,
+        "concept_key": "COND-COV",
+        "party": {
+          "role": "CONDITION_OBLIGOR",
+          "value": "Parent",
+          "capacity": "BUYER"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "48849c14e12d1928e5daeb1578cc6b48d6fe2c672cc3bb566ef2ed45690c6f00",
+        "provision_instance_id": "65db1a5f3859308e60bca9afe14cf9486ddf9f7a13bb05f075c710473e050b41",
+        "closure_id": "7df9dfb3565a2307806236cf4fbeddffb0fdc6981d72a302f9bffdfc90cad986"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "0a0dbdb7f2eb6ebe7b88425c8b583b5ae072553dfdcb5bef9874c306852a6822",
+        "claim_occurrence_id": "df9a95e02b2ae5c1a273866ff43061258d829064a99c2c2bf0e7d98ad8f1aecc",
+        "subject_occurrence_id": "65db1a5f3859308e60bca9afe14cf9486ddf9f7a13bb05f075c710473e050b41",
+        "claim_definition_key": "COVENANT_COMPLIANCE_STANDARD",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Parent shall have performed in all material respects all of its obligations hereunder required to be performed by it as of or prior to the Closing Date;",
+        "canonical_value": "MAT_ALL_MATERIAL",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "fb1b8c895decdd0a1c88dfca9f7027025788626f9aa952b4645b0902088b1c79"
+        ],
+        "attributes": {
+          "section_reference": "5.3",
+          "assertion_kind": "COVENANT_COMPLIANCE",
+          "condition_obligor": null,
+          "accuracy_standard": null,
+          "rep_side": null,
+          "covered_scope_ref": null,
+          "scrape_quote": null,
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": "MAT_ALL_MATERIAL",
+          "obligor_ref": "Parent",
+          "approval_kind": null,
+          "approval_definition_ref": null,
+          "s4_component": null,
+          "listing_venue_ref": null,
+          "certificate_side": null,
+          "certifying_party_ref": null,
+          "certified_condition_refs": [],
+          "certificate_relationship_status": null,
+          "causation_standard": null,
+          "breach_standard": null,
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "COVENANT_COMPLIANCE"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "fb1b8c895decdd0a1c88dfca9f7027025788626f9aa952b4645b0902088b1c79",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "2b4b7bfe9b655435ab4ee3d429787480b15403e8dac65062ee12a58f8da10f3b",
+            "document_ordinal": 0,
+            "absolute_start": 259,
+            "absolute_end": 411,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "4b076dd13a5ec4891a03adac8ef62b42baf1dcf1b6f22d54ba4e73900fa9170e"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.3",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.3",
+          "normalized_citation": "5.3",
+          "derived_citation": "5.3(a)(i)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "0a0dbdb7f2eb6ebe7b88425c8b583b5ae072553dfdcb5bef9874c306852a6822",
+            "claim_occurrence_id": "df9a95e02b2ae5c1a273866ff43061258d829064a99c2c2bf0e7d98ad8f1aecc",
+            "subject_occurrence_id": "65db1a5f3859308e60bca9afe14cf9486ddf9f7a13bb05f075c710473e050b41",
+            "claim_definition_key": "COVENANT_COMPLIANCE_STANDARD",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Parent shall have performed in all material respects all of its obligations hereunder required to be performed by it as of or prior to the Closing Date;",
+            "canonical_value": "MAT_ALL_MATERIAL",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "fb1b8c895decdd0a1c88dfca9f7027025788626f9aa952b4645b0902088b1c79"
+            ],
+            "attributes": {
+              "section_reference": "5.3",
+              "assertion_kind": "COVENANT_COMPLIANCE",
+              "condition_obligor": null,
+              "accuracy_standard": null,
+              "rep_side": null,
+              "covered_scope_ref": null,
+              "scrape_quote": null,
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": "MAT_ALL_MATERIAL",
+              "obligor_ref": "Parent",
+              "approval_kind": null,
+              "approval_definition_ref": null,
+              "s4_component": null,
+              "listing_venue_ref": null,
+              "certificate_side": null,
+              "certifying_party_ref": null,
+              "certified_condition_refs": [],
+              "certificate_relationship_status": null,
+              "causation_standard": null,
+              "breach_standard": null,
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "COVENANT_COMPLIANCE"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "fb1b8c895decdd0a1c88dfca9f7027025788626f9aa952b4645b0902088b1c79",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "2b4b7bfe9b655435ab4ee3d429787480b15403e8dac65062ee12a58f8da10f3b",
+                "document_ordinal": 0,
+                "absolute_start": 259,
+                "absolute_end": 411,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "4b076dd13a5ec4891a03adac8ef62b42baf1dcf1b6f22d54ba4e73900fa9170e"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "2f76a19363af15ec1a115d901d383daa752195a7d9df79eafc44affb035f504d",
+            "producer_receipt_id": "c9fac727c32c233e7a9c07972be8ab646371690aaafad96d8a880ba373b950ea",
+            "governed_scope_digest": "432e560656a0e011c2992ba83dbf8eec3a4adb9b3073cdf0ec317372210caa29",
+            "extraction_provenance_id": "07dd48f675e59f5f230d617ec26ec84654b5a1890d19619dc15da555dce4c4a6"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 70,
+        "materiality_label": "CLOSING_CONDITIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.3",
+          "normalized_citation": "5.3",
+          "derived_citation": "5.3(a)(i)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.i",
+          "depth": 2,
+          "start_byte": 258,
+          "end_byte": 412
+        },
+        "chain": [
+          {
+            "path": "a.i",
+            "start_byte": 258,
+            "end_byte": 412,
+            "text": " Parent shall have performed in all material respects all of its obligations hereunder required to be performed by it as of or prior to the Closing Date;\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 251,
+            "text": "5.3 Additional Conditions to the Obligations of the Company. The obligations of the Company to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.3",
+      "source_citation": "5.3(a)(ii)",
+      "citation_context": {
+        "parent_section_reference": "5.3",
+        "child_section_reference": "5.3(a)(ii)",
+        "parent_chapeau_quote": "5.3 Additional Conditions to the Obligations of the Company. The obligations of the Company to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:",
+        "child_clause_quote": "(ii) (A) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(f)(i)(B) (Absence of Certain Changes) shall be true and correct in all respects at and as of the date of this Agreement and at and as the Closing Date as though made at and as of the Closing Date, (B) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) (Capital Structure) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date except for De Minimis Inaccuracies, (C) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(a) (Organization, Good Standing and Qualification), Section ‎3.2(b) (Capital Structure) (other than Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) thereof), Section ‎3.2(c) (Corporate Authority and Approval) and Section ‎3.2(n) (Brokers and Finders) shall be true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) in all material respects at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date and (D) any of the other representations and warranties of Parent set forth in this Agreement (other than those listed in the preceding clauses (A), (B) and (C)) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date, except where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect; provided, however, that, with respect to clauses (A), (B), (C) and (D) above, representations and warranties that are made as of a particular date or period shall be true and correct (in the manner set forth in clause (A), (B), (C) or (D), as applicable) only as of such date or period; and\n(iii) No Parent Material Adverse Effect shall have occurred since the date of this Agreement.\n96\n(b) The Company shall have received a certificate of Parent, executed on its behalf by an authorized officer of Parent, dated the Closing Date, certifying that the conditions set forth in Section ‎5.3(a)(i), Section ‎5.3(a)(ii) and Section ‎5.3(a)(iii) have been satisfied.\n(c) The Company shall have received an opinion of Jones Day (or another nationally recognized law firm reasonably satisfactory to the Company and Parent (it being understood and agreed that Paul, Weiss, Rifkind, Wharton & Garrison LLP is such a law firm reasonably satisfactory to the Company and Parent)) to the effect that for U.S. federal income Tax purposes, the Mergers, when taken together, will qualify as a reorganization within the meaning of Section 368(a) of the Code (the “Closing Tax Opinion”)."
+      },
+      "governing_context_quote": "(ii) (A) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(f)(i)(B) (Absence of Certain Changes) shall be true and correct in all respects at and as of the date of this Agreement and at and as the Closing Date as though made at and as of the Closing Date, (B) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) (Capital Structure) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date except for De Minimis Inaccuracies, (C) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(a) (Organization, Good Standing and Qualification), Section ‎3.2(b) (Capital Structure) (other than Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) thereof), Section ‎3.2(c) (Corporate Authority and Approval) and Section ‎3.2(n) (Brokers and Finders) shall be true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) in all material respects at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date and (D) any of the other representations and warranties of Parent set forth in this Agreement (other than those listed in the preceding clauses (A), (B) and (C)) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date, except where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect; provided, however, that, with respect to clauses (A), (B), (C) and (D) above, representations and warranties that are made as of a particular date or period shall be true and correct (in the manner set forth in clause (A), (B), (C) or (D), as applicable) only as of such date or period; and",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-S-REP",
+      "party": {
+        "role": "CONDITION_OBLIGOR",
+        "value": "Parent, Titanium Merger Sub and Forward Merger Sub",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "651c961bc29e093e89b1432767d5593c9f5a490ea4445fb2cde0a3bc173808e1",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 360620,
+        "absolute_end": 364124,
+        "concept_key": "COND-S-REP",
+        "party": {
+          "role": "CONDITION_OBLIGOR",
+          "value": "Parent, Titanium Merger Sub and Forward Merger Sub",
+          "capacity": "BUYER"
+        },
+        "ordinal": 2,
+        "source_anchor_id": "48849c14e12d1928e5daeb1578cc6b48d6fe2c672cc3bb566ef2ed45690c6f00",
+        "provision_instance_id": "d8299c7d68a0352901a719fbe4949f00e1eb6d8276b30ad2a0c77822454c900d",
+        "closure_id": "1239b0eee674cefe6eab51fe4fdef8091be36b7e7e7f3f7925b6f04ba33ce24a"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "0ec2fbd3753a019ab61a84b02d2f9ec14b828bb3cb15be6a551611415e383951",
+        "claim_occurrence_id": "f1b224ac772295ff481019bfe91cedcc544b6061676eff7aeebb15a1c025c2b0",
+        "subject_occurrence_id": "d8299c7d68a0352901a719fbe4949f00e1eb6d8276b30ad2a0c77822454c900d",
+        "claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(f)(i)(B) (Absence of Certain Changes) shall be true and correct in all respects at and as of the date of this Agreement and at and as the Closing Date as though made at and as of the Closing Date",
+        "canonical_value": "MAT_ALL_RESPECTS",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "9d30f42ada36914a333793d67021b19df277c995ca8c921f8f8247c369811d4c"
+        ],
+        "attributes": {
+          "section_reference": "5.3",
+          "assertion_kind": "BRING_DOWN_TIER",
+          "condition_obligor": "Parent, Titanium Merger Sub and Forward Merger Sub",
+          "accuracy_standard": "MAT_ALL_RESPECTS",
+          "rep_side": "BUYER_REPS",
+          "covered_scope_ref": "the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(f)(i)(B) (Absence of Certain Changes)",
+          "scrape_quote": "true and correct in all respects",
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": null,
+          "obligor_ref": null,
+          "approval_kind": null,
+          "approval_definition_ref": null,
+          "s4_component": null,
+          "listing_venue_ref": null,
+          "certificate_side": null,
+          "certifying_party_ref": null,
+          "certified_condition_refs": [],
+          "certificate_relationship_status": null,
+          "causation_standard": null,
+          "breach_standard": null,
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "BRING_DOWN_TIER"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "9d30f42ada36914a333793d67021b19df277c995ca8c921f8f8247c369811d4c",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "28a71d34d6512e71f733ad679c3015b8b561fc3ee3100e05b722e9391df606fe",
+            "document_ordinal": 0,
+            "absolute_start": 421,
+            "absolute_end": 733,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "26f7f3f098bfa236f17ccdb5c5e15ca3f2a0447c2e9fc3a06788e8bab3729258"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.3",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.3",
+          "normalized_citation": "5.3",
+          "derived_citation": "5.3(a)(ii)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "0ec2fbd3753a019ab61a84b02d2f9ec14b828bb3cb15be6a551611415e383951",
+            "claim_occurrence_id": "f1b224ac772295ff481019bfe91cedcc544b6061676eff7aeebb15a1c025c2b0",
+            "subject_occurrence_id": "d8299c7d68a0352901a719fbe4949f00e1eb6d8276b30ad2a0c77822454c900d",
+            "claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(f)(i)(B) (Absence of Certain Changes) shall be true and correct in all respects at and as of the date of this Agreement and at and as the Closing Date as though made at and as of the Closing Date",
+            "canonical_value": "MAT_ALL_RESPECTS",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "9d30f42ada36914a333793d67021b19df277c995ca8c921f8f8247c369811d4c"
+            ],
+            "attributes": {
+              "section_reference": "5.3",
+              "assertion_kind": "BRING_DOWN_TIER",
+              "condition_obligor": "Parent, Titanium Merger Sub and Forward Merger Sub",
+              "accuracy_standard": "MAT_ALL_RESPECTS",
+              "rep_side": "BUYER_REPS",
+              "covered_scope_ref": "the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(f)(i)(B) (Absence of Certain Changes)",
+              "scrape_quote": "true and correct in all respects",
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": null,
+              "obligor_ref": null,
+              "approval_kind": null,
+              "approval_definition_ref": null,
+              "s4_component": null,
+              "listing_venue_ref": null,
+              "certificate_side": null,
+              "certifying_party_ref": null,
+              "certified_condition_refs": [],
+              "certificate_relationship_status": null,
+              "causation_standard": null,
+              "breach_standard": null,
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "BRING_DOWN_TIER"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "9d30f42ada36914a333793d67021b19df277c995ca8c921f8f8247c369811d4c",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "28a71d34d6512e71f733ad679c3015b8b561fc3ee3100e05b722e9391df606fe",
+                "document_ordinal": 0,
+                "absolute_start": 421,
+                "absolute_end": 733,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "26f7f3f098bfa236f17ccdb5c5e15ca3f2a0447c2e9fc3a06788e8bab3729258"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "2f76a19363af15ec1a115d901d383daa752195a7d9df79eafc44affb035f504d",
+            "producer_receipt_id": "c9fac727c32c233e7a9c07972be8ab646371690aaafad96d8a880ba373b950ea",
+            "governed_scope_digest": "432e560656a0e011c2992ba83dbf8eec3a4adb9b3073cdf0ec317372210caa29",
+            "extraction_provenance_id": "07dd48f675e59f5f230d617ec26ec84654b5a1890d19619dc15da555dce4c4a6"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "BRING_DOWN_TIER_PROVENANCE_REVISIT_PENDING"
+        ],
+        "reasons": [],
+        "materiality_rank": 70,
+        "materiality_label": "CLOSING_CONDITIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.3",
+          "normalized_citation": "5.3",
+          "derived_citation": "5.3(a)(ii)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.ii.A",
+          "depth": 3,
+          "start_byte": 420,
+          "end_byte": 735
+        },
+        "chain": [
+          {
+            "path": "a.ii.A",
+            "start_byte": 420,
+            "end_byte": 735,
+            "text": " the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(f)(i)(B) (Absence of Certain Changes) shall be true and correct in all respects at and as of the date of this Agreement and at and as the Closing Date as though made at and as of the Closing Date, "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 251,
+            "text": "5.3 Additional Conditions to the Obligations of the Company. The obligations of the Company to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.3",
+      "source_citation": "5.3(a)(ii)",
+      "citation_context": {
+        "parent_section_reference": "5.3",
+        "child_section_reference": "5.3(a)(ii)",
+        "parent_chapeau_quote": "5.3 Additional Conditions to the Obligations of the Company. The obligations of the Company to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:",
+        "child_clause_quote": "(ii) (A) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(f)(i)(B) (Absence of Certain Changes) shall be true and correct in all respects at and as of the date of this Agreement and at and as the Closing Date as though made at and as of the Closing Date, (B) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) (Capital Structure) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date except for De Minimis Inaccuracies, (C) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(a) (Organization, Good Standing and Qualification), Section ‎3.2(b) (Capital Structure) (other than Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) thereof), Section ‎3.2(c) (Corporate Authority and Approval) and Section ‎3.2(n) (Brokers and Finders) shall be true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) in all material respects at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date and (D) any of the other representations and warranties of Parent set forth in this Agreement (other than those listed in the preceding clauses (A), (B) and (C)) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date, except where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect; provided, however, that, with respect to clauses (A), (B), (C) and (D) above, representations and warranties that are made as of a particular date or period shall be true and correct (in the manner set forth in clause (A), (B), (C) or (D), as applicable) only as of such date or period; and\n(iii) No Parent Material Adverse Effect shall have occurred since the date of this Agreement.\n96\n(b) The Company shall have received a certificate of Parent, executed on its behalf by an authorized officer of Parent, dated the Closing Date, certifying that the conditions set forth in Section ‎5.3(a)(i), Section ‎5.3(a)(ii) and Section ‎5.3(a)(iii) have been satisfied.\n(c) The Company shall have received an opinion of Jones Day (or another nationally recognized law firm reasonably satisfactory to the Company and Parent (it being understood and agreed that Paul, Weiss, Rifkind, Wharton & Garrison LLP is such a law firm reasonably satisfactory to the Company and Parent)) to the effect that for U.S. federal income Tax purposes, the Mergers, when taken together, will qualify as a reorganization within the meaning of Section 368(a) of the Code (the “Closing Tax Opinion”)."
+      },
+      "governing_context_quote": "(ii) (A) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(f)(i)(B) (Absence of Certain Changes) shall be true and correct in all respects at and as of the date of this Agreement and at and as the Closing Date as though made at and as of the Closing Date, (B) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) (Capital Structure) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date except for De Minimis Inaccuracies, (C) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(a) (Organization, Good Standing and Qualification), Section ‎3.2(b) (Capital Structure) (other than Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) thereof), Section ‎3.2(c) (Corporate Authority and Approval) and Section ‎3.2(n) (Brokers and Finders) shall be true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) in all material respects at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date and (D) any of the other representations and warranties of Parent set forth in this Agreement (other than those listed in the preceding clauses (A), (B) and (C)) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date, except where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect; provided, however, that, with respect to clauses (A), (B), (C) and (D) above, representations and warranties that are made as of a particular date or period shall be true and correct (in the manner set forth in clause (A), (B), (C) or (D), as applicable) only as of such date or period; and",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-S-REP",
+      "party": {
+        "role": "CONDITION_OBLIGOR",
+        "value": "Parent, Titanium Merger Sub and Forward Merger Sub",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "651c961bc29e093e89b1432767d5593c9f5a490ea4445fb2cde0a3bc173808e1",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 360620,
+        "absolute_end": 364124,
+        "concept_key": "COND-S-REP",
+        "party": {
+          "role": "CONDITION_OBLIGOR",
+          "value": "Parent, Titanium Merger Sub and Forward Merger Sub",
+          "capacity": "BUYER"
+        },
+        "ordinal": 2,
+        "source_anchor_id": "48849c14e12d1928e5daeb1578cc6b48d6fe2c672cc3bb566ef2ed45690c6f00",
+        "provision_instance_id": "d8299c7d68a0352901a719fbe4949f00e1eb6d8276b30ad2a0c77822454c900d",
+        "closure_id": "1239b0eee674cefe6eab51fe4fdef8091be36b7e7e7f3f7925b6f04ba33ce24a"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "c429c13bcc3723a3ed59a2d8ec76fdbbb8a626592bfe35333f8b866c8c3030b9",
+        "claim_occurrence_id": "a3c90589022a6c125a797e0d899aaccab109aa948f9065e1186b478e2a191249",
+        "subject_occurrence_id": "d8299c7d68a0352901a719fbe4949f00e1eb6d8276b30ad2a0c77822454c900d",
+        "claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) (Capital Structure) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date except for De Minimis Inaccuracies",
+        "canonical_value": "MAT_ALL_RESPECTS_DE_MINIMIS",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "bb1844a7fc659575327977d447c237d91a8c75be3b983924bdf809a94dff61db"
+        ],
+        "attributes": {
+          "section_reference": "5.3",
+          "assertion_kind": "BRING_DOWN_TIER",
+          "condition_obligor": "Parent, Titanium Merger Sub and Forward Merger Sub",
+          "accuracy_standard": "MAT_ALL_RESPECTS_DE_MINIMIS",
+          "rep_side": "BUYER_REPS",
+          "covered_scope_ref": "the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) (Capital Structure)",
+          "scrape_quote": "true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date except for De Minimis Inaccuracies",
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": null,
+          "obligor_ref": null,
+          "approval_kind": null,
+          "approval_definition_ref": null,
+          "s4_component": null,
+          "listing_venue_ref": null,
+          "certificate_side": null,
+          "certifying_party_ref": null,
+          "certified_condition_refs": [],
+          "certificate_relationship_status": null,
+          "causation_standard": null,
+          "breach_standard": null,
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "BRING_DOWN_TIER"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "bb1844a7fc659575327977d447c237d91a8c75be3b983924bdf809a94dff61db",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "c5d1c5a249b846dbb3e7460debfda4362ed3344b6ef5ac8e7d91fb7570607011",
+            "document_ordinal": 0,
+            "absolute_start": 739,
+            "absolute_end": 1074,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "020337b0c79dee5a5844f3265810cc5abfeef64f6aa12b21aac466fe7c5957ca"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.3",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.3",
+          "normalized_citation": "5.3",
+          "derived_citation": "5.3(a)(ii)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "c429c13bcc3723a3ed59a2d8ec76fdbbb8a626592bfe35333f8b866c8c3030b9",
+            "claim_occurrence_id": "a3c90589022a6c125a797e0d899aaccab109aa948f9065e1186b478e2a191249",
+            "subject_occurrence_id": "d8299c7d68a0352901a719fbe4949f00e1eb6d8276b30ad2a0c77822454c900d",
+            "claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) (Capital Structure) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date except for De Minimis Inaccuracies",
+            "canonical_value": "MAT_ALL_RESPECTS_DE_MINIMIS",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "bb1844a7fc659575327977d447c237d91a8c75be3b983924bdf809a94dff61db"
+            ],
+            "attributes": {
+              "section_reference": "5.3",
+              "assertion_kind": "BRING_DOWN_TIER",
+              "condition_obligor": "Parent, Titanium Merger Sub and Forward Merger Sub",
+              "accuracy_standard": "MAT_ALL_RESPECTS_DE_MINIMIS",
+              "rep_side": "BUYER_REPS",
+              "covered_scope_ref": "the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) (Capital Structure)",
+              "scrape_quote": "true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date except for De Minimis Inaccuracies",
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": null,
+              "obligor_ref": null,
+              "approval_kind": null,
+              "approval_definition_ref": null,
+              "s4_component": null,
+              "listing_venue_ref": null,
+              "certificate_side": null,
+              "certifying_party_ref": null,
+              "certified_condition_refs": [],
+              "certificate_relationship_status": null,
+              "causation_standard": null,
+              "breach_standard": null,
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "BRING_DOWN_TIER"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "bb1844a7fc659575327977d447c237d91a8c75be3b983924bdf809a94dff61db",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "c5d1c5a249b846dbb3e7460debfda4362ed3344b6ef5ac8e7d91fb7570607011",
+                "document_ordinal": 0,
+                "absolute_start": 739,
+                "absolute_end": 1074,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "020337b0c79dee5a5844f3265810cc5abfeef64f6aa12b21aac466fe7c5957ca"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "2f76a19363af15ec1a115d901d383daa752195a7d9df79eafc44affb035f504d",
+            "producer_receipt_id": "c9fac727c32c233e7a9c07972be8ab646371690aaafad96d8a880ba373b950ea",
+            "governed_scope_digest": "432e560656a0e011c2992ba83dbf8eec3a4adb9b3073cdf0ec317372210caa29",
+            "extraction_provenance_id": "07dd48f675e59f5f230d617ec26ec84654b5a1890d19619dc15da555dce4c4a6"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "BRING_DOWN_TIER_PROVENANCE_REVISIT_PENDING"
+        ],
+        "reasons": [],
+        "materiality_rank": 70,
+        "materiality_label": "CLOSING_CONDITIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.3",
+          "normalized_citation": "5.3",
+          "derived_citation": "5.3(a)(ii)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.ii.B",
+          "depth": 3,
+          "start_byte": 738,
+          "end_byte": 1076
+        },
+        "chain": [
+          {
+            "path": "a.ii.B",
+            "start_byte": 738,
+            "end_byte": 1076,
+            "text": " the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) (Capital Structure) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date except for De Minimis Inaccuracies, "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 251,
+            "text": "5.3 Additional Conditions to the Obligations of the Company. The obligations of the Company to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.3",
+      "source_citation": "5.3(a)(ii)",
+      "citation_context": {
+        "parent_section_reference": "5.3",
+        "child_section_reference": "5.3(a)(ii)",
+        "parent_chapeau_quote": "5.3 Additional Conditions to the Obligations of the Company. The obligations of the Company to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:",
+        "child_clause_quote": "(ii) (A) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(f)(i)(B) (Absence of Certain Changes) shall be true and correct in all respects at and as of the date of this Agreement and at and as the Closing Date as though made at and as of the Closing Date, (B) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) (Capital Structure) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date except for De Minimis Inaccuracies, (C) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(a) (Organization, Good Standing and Qualification), Section ‎3.2(b) (Capital Structure) (other than Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) thereof), Section ‎3.2(c) (Corporate Authority and Approval) and Section ‎3.2(n) (Brokers and Finders) shall be true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) in all material respects at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date and (D) any of the other representations and warranties of Parent set forth in this Agreement (other than those listed in the preceding clauses (A), (B) and (C)) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date, except where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect; provided, however, that, with respect to clauses (A), (B), (C) and (D) above, representations and warranties that are made as of a particular date or period shall be true and correct (in the manner set forth in clause (A), (B), (C) or (D), as applicable) only as of such date or period; and\n(iii) No Parent Material Adverse Effect shall have occurred since the date of this Agreement.\n96\n(b) The Company shall have received a certificate of Parent, executed on its behalf by an authorized officer of Parent, dated the Closing Date, certifying that the conditions set forth in Section ‎5.3(a)(i), Section ‎5.3(a)(ii) and Section ‎5.3(a)(iii) have been satisfied.\n(c) The Company shall have received an opinion of Jones Day (or another nationally recognized law firm reasonably satisfactory to the Company and Parent (it being understood and agreed that Paul, Weiss, Rifkind, Wharton & Garrison LLP is such a law firm reasonably satisfactory to the Company and Parent)) to the effect that for U.S. federal income Tax purposes, the Mergers, when taken together, will qualify as a reorganization within the meaning of Section 368(a) of the Code (the “Closing Tax Opinion”)."
+      },
+      "governing_context_quote": "(ii) (A) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(f)(i)(B) (Absence of Certain Changes) shall be true and correct in all respects at and as of the date of this Agreement and at and as the Closing Date as though made at and as of the Closing Date, (B) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) (Capital Structure) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date except for De Minimis Inaccuracies, (C) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(a) (Organization, Good Standing and Qualification), Section ‎3.2(b) (Capital Structure) (other than Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) thereof), Section ‎3.2(c) (Corporate Authority and Approval) and Section ‎3.2(n) (Brokers and Finders) shall be true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) in all material respects at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date and (D) any of the other representations and warranties of Parent set forth in this Agreement (other than those listed in the preceding clauses (A), (B) and (C)) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date, except where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect; provided, however, that, with respect to clauses (A), (B), (C) and (D) above, representations and warranties that are made as of a particular date or period shall be true and correct (in the manner set forth in clause (A), (B), (C) or (D), as applicable) only as of such date or period; and",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-S-REP",
+      "party": {
+        "role": "CONDITION_OBLIGOR",
+        "value": "Parent, Titanium Merger Sub and Forward Merger Sub",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "651c961bc29e093e89b1432767d5593c9f5a490ea4445fb2cde0a3bc173808e1",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 360620,
+        "absolute_end": 364124,
+        "concept_key": "COND-S-REP",
+        "party": {
+          "role": "CONDITION_OBLIGOR",
+          "value": "Parent, Titanium Merger Sub and Forward Merger Sub",
+          "capacity": "BUYER"
+        },
+        "ordinal": 2,
+        "source_anchor_id": "48849c14e12d1928e5daeb1578cc6b48d6fe2c672cc3bb566ef2ed45690c6f00",
+        "provision_instance_id": "d8299c7d68a0352901a719fbe4949f00e1eb6d8276b30ad2a0c77822454c900d",
+        "closure_id": "1239b0eee674cefe6eab51fe4fdef8091be36b7e7e7f3f7925b6f04ba33ce24a"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "4a78eeea6c365d346360e29dd98628e7546206f614c100eeef7934eedb1b4ad7",
+        "claim_occurrence_id": "1e18bb773aea97c8c89319304dd7f9100b5bd439092cc0ea38604b1c271446ad",
+        "subject_occurrence_id": "d8299c7d68a0352901a719fbe4949f00e1eb6d8276b30ad2a0c77822454c900d",
+        "claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+        "claim_definition_version": 1,
+        "ordinal": 2,
+        "state": "PRESENT",
+        "raw_value": "the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(a) (Organization, Good Standing and Qualification), Section ‎3.2(b) (Capital Structure) (other than Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) thereof), Section ‎3.2(c) (Corporate Authority and Approval) and Section ‎3.2(n) (Brokers and Finders) shall be true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) in all material respects at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date",
+        "canonical_value": "MAT_ALL_MATERIAL",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "d3068d3a02c899d92cda01a9c17b985159cd9822bfd6d0a2aa44f1f4cdb3a1f8"
+        ],
+        "attributes": {
+          "section_reference": "5.3",
+          "assertion_kind": "BRING_DOWN_TIER",
+          "condition_obligor": "Parent, Titanium Merger Sub and Forward Merger Sub",
+          "accuracy_standard": "MAT_ALL_MATERIAL",
+          "rep_side": "BUYER_REPS",
+          "covered_scope_ref": "the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(a) (Organization, Good Standing and Qualification), Section ‎3.2(b) (Capital Structure) (other than Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) thereof), Section ‎3.2(c) (Corporate Authority and Approval) and Section ‎3.2(n) (Brokers and Finders)",
+          "scrape_quote": "true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) in all material respects",
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": null,
+          "obligor_ref": null,
+          "approval_kind": null,
+          "approval_definition_ref": null,
+          "s4_component": null,
+          "listing_venue_ref": null,
+          "certificate_side": null,
+          "certifying_party_ref": null,
+          "certified_condition_refs": [],
+          "certificate_relationship_status": null,
+          "causation_standard": null,
+          "breach_standard": null,
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "BRING_DOWN_TIER"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "d3068d3a02c899d92cda01a9c17b985159cd9822bfd6d0a2aa44f1f4cdb3a1f8",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "717d153fb62cab31b558fc51f7c5cdfbcccfd2448e73e901daae4bbd8130f312",
+            "document_ordinal": 0,
+            "absolute_start": 1080,
+            "absolute_end": 1738,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "89df16f9b10f33fd8d5702cbc60d4ec87ce5c4eb21a6a0f42f2632f41b50837b"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.3",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.3",
+          "normalized_citation": "5.3",
+          "derived_citation": "5.3(a)(ii)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "4a78eeea6c365d346360e29dd98628e7546206f614c100eeef7934eedb1b4ad7",
+            "claim_occurrence_id": "1e18bb773aea97c8c89319304dd7f9100b5bd439092cc0ea38604b1c271446ad",
+            "subject_occurrence_id": "d8299c7d68a0352901a719fbe4949f00e1eb6d8276b30ad2a0c77822454c900d",
+            "claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+            "claim_definition_version": 1,
+            "ordinal": 2,
+            "state": "PRESENT",
+            "raw_value": "the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(a) (Organization, Good Standing and Qualification), Section ‎3.2(b) (Capital Structure) (other than Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) thereof), Section ‎3.2(c) (Corporate Authority and Approval) and Section ‎3.2(n) (Brokers and Finders) shall be true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) in all material respects at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date",
+            "canonical_value": "MAT_ALL_MATERIAL",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "d3068d3a02c899d92cda01a9c17b985159cd9822bfd6d0a2aa44f1f4cdb3a1f8"
+            ],
+            "attributes": {
+              "section_reference": "5.3",
+              "assertion_kind": "BRING_DOWN_TIER",
+              "condition_obligor": "Parent, Titanium Merger Sub and Forward Merger Sub",
+              "accuracy_standard": "MAT_ALL_MATERIAL",
+              "rep_side": "BUYER_REPS",
+              "covered_scope_ref": "the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(a) (Organization, Good Standing and Qualification), Section ‎3.2(b) (Capital Structure) (other than Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) thereof), Section ‎3.2(c) (Corporate Authority and Approval) and Section ‎3.2(n) (Brokers and Finders)",
+              "scrape_quote": "true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) in all material respects",
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": null,
+              "obligor_ref": null,
+              "approval_kind": null,
+              "approval_definition_ref": null,
+              "s4_component": null,
+              "listing_venue_ref": null,
+              "certificate_side": null,
+              "certifying_party_ref": null,
+              "certified_condition_refs": [],
+              "certificate_relationship_status": null,
+              "causation_standard": null,
+              "breach_standard": null,
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "BRING_DOWN_TIER"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "d3068d3a02c899d92cda01a9c17b985159cd9822bfd6d0a2aa44f1f4cdb3a1f8",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "717d153fb62cab31b558fc51f7c5cdfbcccfd2448e73e901daae4bbd8130f312",
+                "document_ordinal": 0,
+                "absolute_start": 1080,
+                "absolute_end": 1738,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "89df16f9b10f33fd8d5702cbc60d4ec87ce5c4eb21a6a0f42f2632f41b50837b"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "2f76a19363af15ec1a115d901d383daa752195a7d9df79eafc44affb035f504d",
+            "producer_receipt_id": "c9fac727c32c233e7a9c07972be8ab646371690aaafad96d8a880ba373b950ea",
+            "governed_scope_digest": "432e560656a0e011c2992ba83dbf8eec3a4adb9b3073cdf0ec317372210caa29",
+            "extraction_provenance_id": "07dd48f675e59f5f230d617ec26ec84654b5a1890d19619dc15da555dce4c4a6"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "BRING_DOWN_TIER_PROVENANCE_REVISIT_PENDING"
+        ],
+        "reasons": [],
+        "materiality_rank": 70,
+        "materiality_label": "CLOSING_CONDITIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.3",
+          "normalized_citation": "5.3",
+          "derived_citation": "5.3(a)(ii)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.ii.C",
+          "depth": 3,
+          "start_byte": 1079,
+          "end_byte": 1743
+        },
+        "chain": [
+          {
+            "path": "a.ii.C",
+            "start_byte": 1079,
+            "end_byte": 1743,
+            "text": " the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(a) (Organization, Good Standing and Qualification), Section ‎3.2(b) (Capital Structure) (other than Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) thereof), Section ‎3.2(c) (Corporate Authority and Approval) and Section ‎3.2(n) (Brokers and Finders) shall be true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) in all material respects at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date and "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 251,
+            "text": "5.3 Additional Conditions to the Obligations of the Company. The obligations of the Company to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.3",
+      "source_citation": "5.3(a)(ii)",
+      "citation_context": {
+        "parent_section_reference": "5.3",
+        "child_section_reference": "5.3(a)(ii)",
+        "parent_chapeau_quote": "5.3 Additional Conditions to the Obligations of the Company. The obligations of the Company to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:",
+        "child_clause_quote": "(ii) (A) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(f)(i)(B) (Absence of Certain Changes) shall be true and correct in all respects at and as of the date of this Agreement and at and as the Closing Date as though made at and as of the Closing Date, (B) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) (Capital Structure) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date except for De Minimis Inaccuracies, (C) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(a) (Organization, Good Standing and Qualification), Section ‎3.2(b) (Capital Structure) (other than Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) thereof), Section ‎3.2(c) (Corporate Authority and Approval) and Section ‎3.2(n) (Brokers and Finders) shall be true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) in all material respects at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date and (D) any of the other representations and warranties of Parent set forth in this Agreement (other than those listed in the preceding clauses (A), (B) and (C)) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date, except where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect; provided, however, that, with respect to clauses (A), (B), (C) and (D) above, representations and warranties that are made as of a particular date or period shall be true and correct (in the manner set forth in clause (A), (B), (C) or (D), as applicable) only as of such date or period; and\n(iii) No Parent Material Adverse Effect shall have occurred since the date of this Agreement.\n96\n(b) The Company shall have received a certificate of Parent, executed on its behalf by an authorized officer of Parent, dated the Closing Date, certifying that the conditions set forth in Section ‎5.3(a)(i), Section ‎5.3(a)(ii) and Section ‎5.3(a)(iii) have been satisfied.\n(c) The Company shall have received an opinion of Jones Day (or another nationally recognized law firm reasonably satisfactory to the Company and Parent (it being understood and agreed that Paul, Weiss, Rifkind, Wharton & Garrison LLP is such a law firm reasonably satisfactory to the Company and Parent)) to the effect that for U.S. federal income Tax purposes, the Mergers, when taken together, will qualify as a reorganization within the meaning of Section 368(a) of the Code (the “Closing Tax Opinion”)."
+      },
+      "governing_context_quote": "(ii) (A) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(f)(i)(B) (Absence of Certain Changes) shall be true and correct in all respects at and as of the date of this Agreement and at and as the Closing Date as though made at and as of the Closing Date, (B) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) (Capital Structure) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date except for De Minimis Inaccuracies, (C) the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(a) (Organization, Good Standing and Qualification), Section ‎3.2(b) (Capital Structure) (other than Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) thereof), Section ‎3.2(c) (Corporate Authority and Approval) and Section ‎3.2(n) (Brokers and Finders) shall be true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) in all material respects at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date and (D) any of the other representations and warranties of Parent set forth in this Agreement (other than those listed in the preceding clauses (A), (B) and (C)) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date, except where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect; provided, however, that, with respect to clauses (A), (B), (C) and (D) above, representations and warranties that are made as of a particular date or period shall be true and correct (in the manner set forth in clause (A), (B), (C) or (D), as applicable) only as of such date or period; and",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-S-REP",
+      "party": {
+        "role": "CONDITION_OBLIGOR",
+        "value": "Parent",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "651c961bc29e093e89b1432767d5593c9f5a490ea4445fb2cde0a3bc173808e1",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 360620,
+        "absolute_end": 364124,
+        "concept_key": "COND-S-REP",
+        "party": {
+          "role": "CONDITION_OBLIGOR",
+          "value": "Parent",
+          "capacity": "BUYER"
+        },
+        "ordinal": 3,
+        "source_anchor_id": "48849c14e12d1928e5daeb1578cc6b48d6fe2c672cc3bb566ef2ed45690c6f00",
+        "provision_instance_id": "aadc6bcfcb32bbeeebfba2345df69114aa7e7e1fddeb42e8bb6350bcd4bd702f",
+        "closure_id": "c3e7876b7a7813841502349a319a8329036f7adfbb966868117d09323983a3a5"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "016dd0a5fe2d6e8de2df8ec60ad54d4731e223236cc8abe810c225ec82f44832",
+        "claim_occurrence_id": "579b6b3327ba2e6897d450fd84b2464cef88e720192b3bb6eb0d421c52380e27",
+        "subject_occurrence_id": "aadc6bcfcb32bbeeebfba2345df69114aa7e7e1fddeb42e8bb6350bcd4bd702f",
+        "claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "any of the other representations and warranties of Parent set forth in this Agreement (other than those listed in the preceding clauses (A), (B) and (C)) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date, except where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect",
+        "canonical_value": "MAT_MAE_QUALIFIED",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "b67a7a194238eed7dc201a814e645edec2bbd5a091f4966ad13c6f550d848800"
+        ],
+        "attributes": {
+          "section_reference": "5.3",
+          "assertion_kind": "BRING_DOWN_TIER",
+          "condition_obligor": "Parent",
+          "accuracy_standard": "MAT_MAE_QUALIFIED",
+          "rep_side": "BUYER_REPS",
+          "covered_scope_ref": "any of the other representations and warranties of Parent set forth in this Agreement (other than those listed in the preceding clauses (A), (B) and (C))",
+          "scrape_quote": "true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date, except where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect",
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": null,
+          "obligor_ref": null,
+          "approval_kind": null,
+          "approval_definition_ref": null,
+          "s4_component": null,
+          "listing_venue_ref": null,
+          "certificate_side": null,
+          "certifying_party_ref": null,
+          "certified_condition_refs": [],
+          "certificate_relationship_status": null,
+          "causation_standard": null,
+          "breach_standard": null,
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "BRING_DOWN_TIER"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "b67a7a194238eed7dc201a814e645edec2bbd5a091f4966ad13c6f550d848800",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "16a5ff90746dd2fd375c9c523420dc2c969dc05a7cec6473ce84d2cb1d44e003",
+            "document_ordinal": 0,
+            "absolute_start": 1747,
+            "absolute_end": 2322,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "d4f02d12acf7a718175f5d18ca8ced6a15b4b1866a87d5c60aa225c353ed2a4a"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.3",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.3",
+          "normalized_citation": "5.3",
+          "derived_citation": "5.3(a)(ii)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "016dd0a5fe2d6e8de2df8ec60ad54d4731e223236cc8abe810c225ec82f44832",
+            "claim_occurrence_id": "579b6b3327ba2e6897d450fd84b2464cef88e720192b3bb6eb0d421c52380e27",
+            "subject_occurrence_id": "aadc6bcfcb32bbeeebfba2345df69114aa7e7e1fddeb42e8bb6350bcd4bd702f",
+            "claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "any of the other representations and warranties of Parent set forth in this Agreement (other than those listed in the preceding clauses (A), (B) and (C)) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date, except where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect",
+            "canonical_value": "MAT_MAE_QUALIFIED",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "b67a7a194238eed7dc201a814e645edec2bbd5a091f4966ad13c6f550d848800"
+            ],
+            "attributes": {
+              "section_reference": "5.3",
+              "assertion_kind": "BRING_DOWN_TIER",
+              "condition_obligor": "Parent",
+              "accuracy_standard": "MAT_MAE_QUALIFIED",
+              "rep_side": "BUYER_REPS",
+              "covered_scope_ref": "any of the other representations and warranties of Parent set forth in this Agreement (other than those listed in the preceding clauses (A), (B) and (C))",
+              "scrape_quote": "true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date, except where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect",
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": null,
+              "obligor_ref": null,
+              "approval_kind": null,
+              "approval_definition_ref": null,
+              "s4_component": null,
+              "listing_venue_ref": null,
+              "certificate_side": null,
+              "certifying_party_ref": null,
+              "certified_condition_refs": [],
+              "certificate_relationship_status": null,
+              "causation_standard": null,
+              "breach_standard": null,
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "BRING_DOWN_TIER"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "b67a7a194238eed7dc201a814e645edec2bbd5a091f4966ad13c6f550d848800",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "16a5ff90746dd2fd375c9c523420dc2c969dc05a7cec6473ce84d2cb1d44e003",
+                "document_ordinal": 0,
+                "absolute_start": 1747,
+                "absolute_end": 2322,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "d4f02d12acf7a718175f5d18ca8ced6a15b4b1866a87d5c60aa225c353ed2a4a"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "2f76a19363af15ec1a115d901d383daa752195a7d9df79eafc44affb035f504d",
+            "producer_receipt_id": "c9fac727c32c233e7a9c07972be8ab646371690aaafad96d8a880ba373b950ea",
+            "governed_scope_digest": "432e560656a0e011c2992ba83dbf8eec3a4adb9b3073cdf0ec317372210caa29",
+            "extraction_provenance_id": "07dd48f675e59f5f230d617ec26ec84654b5a1890d19619dc15da555dce4c4a6"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "BRING_DOWN_TIER_PROVENANCE_REVISIT_PENDING"
+        ],
+        "reasons": [],
+        "materiality_rank": 30,
+        "materiality_label": "MAE",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.3",
+          "normalized_citation": "5.3",
+          "derived_citation": "5.3(a)(ii)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.ii.D",
+          "depth": 3,
+          "start_byte": 1746,
+          "end_byte": 2615
+        },
+        "chain": [
+          {
+            "path": "a.ii.D",
+            "start_byte": 1746,
+            "end_byte": 2615,
+            "text": " any of the other representations and warranties of Parent set forth in this Agreement (other than those listed in the preceding clauses (A), (B) and (C)) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date, except where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect; provided, however, that, with respect to clauses (A), (B), (C) and (D) above, representations and warranties that are made as of a particular date or period shall be true and correct (in the manner set forth in clause (A), (B), (C) or (D), as applicable) only as of such date or period; and\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 251,
+            "text": "5.3 Additional Conditions to the Obligations of the Company. The obligations of the Company to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.3",
+      "source_citation": "5.3(b)",
+      "citation_context": {
+        "parent_section_reference": "5.3",
+        "child_section_reference": "5.3(b)",
+        "parent_chapeau_quote": "5.3 Additional Conditions to the Obligations of the Company. The obligations of the Company to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:",
+        "child_clause_quote": "(b) The Company shall have received a certificate of Parent, executed on its behalf by an authorized officer of Parent, dated the Closing Date, certifying that the conditions set forth in Section ‎5.3(a)(i), Section ‎5.3(a)(ii) and Section ‎5.3(a)(iii) have been satisfied.\n(c) The Company shall have received an opinion of Jones Day (or another nationally recognized law firm reasonably satisfactory to the Company and Parent (it being understood and agreed that Paul, Weiss, Rifkind, Wharton & Garrison LLP is such a law firm reasonably satisfactory to the Company and Parent)) to the effect that for U.S. federal income Tax purposes, the Mergers, when taken together, will qualify as a reorganization within the meaning of Section 368(a) of the Code (the “Closing Tax Opinion”)."
+      },
+      "governing_context_quote": "(b) The Company shall have received a certificate of Parent, executed on its behalf by an authorized officer of Parent, dated the Closing Date, certifying that the conditions set forth in Section ‎5.3(a)(i), Section ‎5.3(a)(ii) and Section ‎5.3(a)(iii) have been satisfied.",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+      "concept_key": "COND-S-CERT",
+      "party": {
+        "role": "CERTIFYING_PARTY",
+        "value": "Parent",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "651c961bc29e093e89b1432767d5593c9f5a490ea4445fb2cde0a3bc173808e1",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 360620,
+        "absolute_end": 364124,
+        "concept_key": "COND-S-CERT",
+        "party": {
+          "role": "CERTIFYING_PARTY",
+          "value": "Parent",
+          "capacity": "BUYER"
+        },
+        "ordinal": 4,
+        "source_anchor_id": "48849c14e12d1928e5daeb1578cc6b48d6fe2c672cc3bb566ef2ed45690c6f00",
+        "provision_instance_id": "54f84314f4423c211bff0e1c35b7f509105368bb79f85f7b2455e33346cee3fd",
+        "closure_id": "d1967af2102a89464e482a46f75444db78ba704fd789b17144a4ab7dc7b5b04c"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "b6e070e23aac18e78b6e1ff9011241bee09e0a7e4c98e63da3e8452b8956c28d",
+        "claim_occurrence_id": "4e3656257045dd22ad16339f1e728033f4d8ce4ce2469e2a164dc019b8404290",
+        "subject_occurrence_id": "54f84314f4423c211bff0e1c35b7f509105368bb79f85f7b2455e33346cee3fd",
+        "claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "The Company shall have received a certificate of Parent, executed on its behalf by an authorized officer of Parent, dated the Closing Date, certifying that the conditions set forth in Section ‎5.3(a)(i), Section ‎5.3(a)(ii) and Section ‎5.3(a)(iii) have been satisfied.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "d790f020ad1ed666984f517e8cef3542929c54284c2807d9aeabb26856ed3ced"
+        ],
+        "attributes": {
+          "section_reference": "5.3",
+          "assertion_kind": "OFFICER_CERTIFICATE",
+          "condition_obligor": null,
+          "accuracy_standard": null,
+          "rep_side": null,
+          "covered_scope_ref": null,
+          "scrape_quote": null,
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": null,
+          "obligor_ref": null,
+          "approval_kind": null,
+          "approval_definition_ref": null,
+          "s4_component": null,
+          "listing_venue_ref": null,
+          "certificate_side": "BUYER_CERTIFICATE",
+          "certifying_party_ref": "Parent",
+          "certified_condition_refs": [
+            "Section ‎5.3(a)(i)",
+            "Section ‎5.3(a)(ii)",
+            "Section ‎5.3(a)(iii)"
+          ],
+          "certificate_relationship_status": "VERBATIM_SECTION_REFERENCES",
+          "causation_standard": null,
+          "breach_standard": null,
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "OFFICER_CERTIFICATE"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "d790f020ad1ed666984f517e8cef3542929c54284c2807d9aeabb26856ed3ced",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "f8045624d5428fa653be911d7eb76e2f2498686b641c465496597785d99cf81b",
+            "document_ordinal": 0,
+            "absolute_start": 2716,
+            "absolute_end": 2991,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "891582f5901563a6e9af31a7e011edf1c3a5b7ddab255b470aa9b46fb9d0c118"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.3",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.3",
+          "normalized_citation": "5.3",
+          "derived_citation": "5.3(b)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "b6e070e23aac18e78b6e1ff9011241bee09e0a7e4c98e63da3e8452b8956c28d",
+            "claim_occurrence_id": "4e3656257045dd22ad16339f1e728033f4d8ce4ce2469e2a164dc019b8404290",
+            "subject_occurrence_id": "54f84314f4423c211bff0e1c35b7f509105368bb79f85f7b2455e33346cee3fd",
+            "claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "The Company shall have received a certificate of Parent, executed on its behalf by an authorized officer of Parent, dated the Closing Date, certifying that the conditions set forth in Section ‎5.3(a)(i), Section ‎5.3(a)(ii) and Section ‎5.3(a)(iii) have been satisfied.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "d790f020ad1ed666984f517e8cef3542929c54284c2807d9aeabb26856ed3ced"
+            ],
+            "attributes": {
+              "section_reference": "5.3",
+              "assertion_kind": "OFFICER_CERTIFICATE",
+              "condition_obligor": null,
+              "accuracy_standard": null,
+              "rep_side": null,
+              "covered_scope_ref": null,
+              "scrape_quote": null,
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": null,
+              "obligor_ref": null,
+              "approval_kind": null,
+              "approval_definition_ref": null,
+              "s4_component": null,
+              "listing_venue_ref": null,
+              "certificate_side": "BUYER_CERTIFICATE",
+              "certifying_party_ref": "Parent",
+              "certified_condition_refs": [
+                "Section ‎5.3(a)(i)",
+                "Section ‎5.3(a)(ii)",
+                "Section ‎5.3(a)(iii)"
+              ],
+              "certificate_relationship_status": "VERBATIM_SECTION_REFERENCES",
+              "causation_standard": null,
+              "breach_standard": null,
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "OFFICER_CERTIFICATE"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "d790f020ad1ed666984f517e8cef3542929c54284c2807d9aeabb26856ed3ced",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "f8045624d5428fa653be911d7eb76e2f2498686b641c465496597785d99cf81b",
+                "document_ordinal": 0,
+                "absolute_start": 2716,
+                "absolute_end": 2991,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "891582f5901563a6e9af31a7e011edf1c3a5b7ddab255b470aa9b46fb9d0c118"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "2f76a19363af15ec1a115d901d383daa752195a7d9df79eafc44affb035f504d",
+            "producer_receipt_id": "c9fac727c32c233e7a9c07972be8ab646371690aaafad96d8a880ba373b950ea",
+            "governed_scope_digest": "432e560656a0e011c2992ba83dbf8eec3a4adb9b3073cdf0ec317372210caa29",
+            "extraction_provenance_id": "07dd48f675e59f5f230d617ec26ec84654b5a1890d19619dc15da555dce4c4a6"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [],
+        "materiality_rank": 70,
+        "materiality_label": "CLOSING_CONDITIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.3",
+          "normalized_citation": "5.3",
+          "derived_citation": "5.3(b)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 2715,
+          "end_byte": 2992
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 2715,
+            "end_byte": 2992,
+            "text": " The Company shall have received a certificate of Parent, executed on its behalf by an authorized officer of Parent, dated the Closing Date, certifying that the conditions set forth in Section ‎5.3(a)(i), Section ‎5.3(a)(ii) and Section ‎5.3(a)(iii) have been satisfied.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 251,
+            "text": "5.3 Additional Conditions to the Obligations of the Company. The obligations of the Company to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "5.3",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-S-REP",
+      "reasons": [],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "016dd0a5fe2d6e8de2df8ec60ad54d4731e223236cc8abe810c225ec82f44832",
+      "closure_id": "d4f02d12acf7a718175f5d18ca8ced6a15b4b1866a87d5c60aa225c353ed2a4a",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b67a7a194238eed7dc201a814e645edec2bbd5a091f4966ad13c6f550d848800",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "16a5ff90746dd2fd375c9c523420dc2c969dc05a7cec6473ce84d2cb1d44e003",
+          "document_ordinal": 0,
+          "absolute_start": 1747,
+          "absolute_end": 2322,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "any of the other representations and warranties of Parent set forth in this Agreement (other than those listed in the preceding clauses (A), (B) and (C)) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date, except where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect",
+      "attachment_position": null,
+      "concept_family": "COND-S-REP",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.ii.D",
+          "depth": 3,
+          "start_byte": 1746,
+          "end_byte": 2615
+        },
+        "chain": [
+          {
+            "path": "a.ii.D",
+            "start_byte": 1746,
+            "end_byte": 2615,
+            "text": " any of the other representations and warranties of Parent set forth in this Agreement (other than those listed in the preceding clauses (A), (B) and (C)) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date, except where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect; provided, however, that, with respect to clauses (A), (B), (C) and (D) above, representations and warranties that are made as of a particular date or period shall be true and correct (in the manner set forth in clause (A), (B), (C) or (D), as applicable) only as of such date or period; and\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 251,
+            "text": "5.3 Additional Conditions to the Obligations of the Company. The obligations of the Company to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.3",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-S-REP",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c429c13bcc3723a3ed59a2d8ec76fdbbb8a626592bfe35333f8b866c8c3030b9",
+      "closure_id": "020337b0c79dee5a5844f3265810cc5abfeef64f6aa12b21aac466fe7c5957ca",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "bb1844a7fc659575327977d447c237d91a8c75be3b983924bdf809a94dff61db",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c5d1c5a249b846dbb3e7460debfda4362ed3344b6ef5ac8e7d91fb7570607011",
+          "document_ordinal": 0,
+          "absolute_start": 739,
+          "absolute_end": 1074,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section 3.2(b)(i) and Section 3.2(b)(iv) (Capital Structure) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date except for De Minimis Inaccuracies",
+      "attachment_position": null,
+      "concept_family": "COND-S-REP",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.ii.B",
+          "depth": 3,
+          "start_byte": 738,
+          "end_byte": 1076
+        },
+        "chain": [
+          {
+            "path": "a.ii.B",
+            "start_byte": 738,
+            "end_byte": 1076,
+            "text": " the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) (Capital Structure) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date except for De Minimis Inaccuracies, "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 251,
+            "text": "5.3 Additional Conditions to the Obligations of the Company. The obligations of the Company to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.3",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-S-REP",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0ec2fbd3753a019ab61a84b02d2f9ec14b828bb3cb15be6a551611415e383951",
+      "closure_id": "26f7f3f098bfa236f17ccdb5c5e15ca3f2a0447c2e9fc3a06788e8bab3729258",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "9d30f42ada36914a333793d67021b19df277c995ca8c921f8f8247c369811d4c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "28a71d34d6512e71f733ad679c3015b8b561fc3ee3100e05b722e9391df606fe",
+          "document_ordinal": 0,
+          "absolute_start": 421,
+          "absolute_end": 733,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section 3.2(f)(i)(B) (Absence of Certain Changes) shall be true and correct in all respects at and as of the date of this Agreement and at and as the Closing Date as though made at and as of the Closing Date",
+      "attachment_position": null,
+      "concept_family": "COND-S-REP",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.ii.A",
+          "depth": 3,
+          "start_byte": 420,
+          "end_byte": 735
+        },
+        "chain": [
+          {
+            "path": "a.ii.A",
+            "start_byte": 420,
+            "end_byte": 735,
+            "text": " the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(f)(i)(B) (Absence of Certain Changes) shall be true and correct in all respects at and as of the date of this Agreement and at and as the Closing Date as though made at and as of the Closing Date, "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 251,
+            "text": "5.3 Additional Conditions to the Obligations of the Company. The obligations of the Company to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.3",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "COVENANT_COMPLIANCE_STANDARD",
+      "concept_key": "COND-COV",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0a0dbdb7f2eb6ebe7b88425c8b583b5ae072553dfdcb5bef9874c306852a6822",
+      "closure_id": "4b076dd13a5ec4891a03adac8ef62b42baf1dcf1b6f22d54ba4e73900fa9170e",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "fb1b8c895decdd0a1c88dfca9f7027025788626f9aa952b4645b0902088b1c79",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2b4b7bfe9b655435ab4ee3d429787480b15403e8dac65062ee12a58f8da10f3b",
+          "document_ordinal": 0,
+          "absolute_start": 259,
+          "absolute_end": 411,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Parent shall have performed in all material respects all of its obligations hereunder required to be performed by it as of or prior to the Closing Date;",
+      "attachment_position": null,
+      "concept_family": "COND-COV",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.i",
+          "depth": 2,
+          "start_byte": 258,
+          "end_byte": 412
+        },
+        "chain": [
+          {
+            "path": "a.i",
+            "start_byte": 258,
+            "end_byte": 412,
+            "text": " Parent shall have performed in all material respects all of its obligations hereunder required to be performed by it as of or prior to the Closing Date;\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 251,
+            "text": "5.3 Additional Conditions to the Obligations of the Company. The obligations of the Company to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.3",
+      "source_citation": "5.3(a)(iii)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "No Parent Material Adverse Effect shall have occurred since the date of this Agreement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "3016e1ee070c74cd98d220997d5488b865fcdda9f3a8dfa72f1655e342f76e10",
+      "closure_id": "795da69f72172ee9cff775e3c8180d77b892a2f8b8edd9c90ff8d44d1986b0a5",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "d5c72ae8104e6f376ed1b737c3ef7922b8f1f8dbfbd0b4653f89aa4583927bce",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "cf7ec5fffdafd39904040188f89bef3a888cfbdf8a2f997fa45a8b3d0bcd1a0f",
+          "document_ordinal": 0,
+          "absolute_start": 2621,
+          "absolute_end": 2708,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "No Parent Material Adverse Effect shall have occurred since the date of this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.iii",
+          "depth": 2,
+          "start_byte": 2620,
+          "end_byte": 2712
+        },
+        "chain": [
+          {
+            "path": "a.iii",
+            "start_byte": 2620,
+            "end_byte": 2712,
+            "text": " No Parent Material Adverse Effect shall have occurred since the date of this Agreement.\n96\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 251,
+            "text": "5.3 Additional Conditions to the Obligations of the Company. The obligations of the Company to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.3",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+      "concept_key": "COND-S-CERT",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "b6e070e23aac18e78b6e1ff9011241bee09e0a7e4c98e63da3e8452b8956c28d",
+      "closure_id": "891582f5901563a6e9af31a7e011edf1c3a5b7ddab255b470aa9b46fb9d0c118",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "d790f020ad1ed666984f517e8cef3542929c54284c2807d9aeabb26856ed3ced",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "f8045624d5428fa653be911d7eb76e2f2498686b641c465496597785d99cf81b",
+          "document_ordinal": 0,
+          "absolute_start": 2716,
+          "absolute_end": 2991,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company shall have received a certificate of Parent, executed on its behalf by an authorized officer of Parent, dated the Closing Date, certifying that the conditions set forth in Section 5.3(a)(i), Section 5.3(a)(ii) and Section 5.3(a)(iii) have been satisfied.",
+      "attachment_position": null,
+      "concept_family": "COND-S-CERT",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 2715,
+          "end_byte": 2992
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 2715,
+            "end_byte": 2992,
+            "text": " The Company shall have received a certificate of Parent, executed on its behalf by an authorized officer of Parent, dated the Closing Date, certifying that the conditions set forth in Section ‎5.3(a)(i), Section ‎5.3(a)(ii) and Section ‎5.3(a)(iii) have been satisfied.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 251,
+            "text": "5.3 Additional Conditions to the Obligations of the Company. The obligations of the Company to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.3",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-S-REP",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4a78eeea6c365d346360e29dd98628e7546206f614c100eeef7934eedb1b4ad7",
+      "closure_id": "89df16f9b10f33fd8d5702cbc60d4ec87ce5c4eb21a6a0f42f2632f41b50837b",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "d3068d3a02c899d92cda01a9c17b985159cd9822bfd6d0a2aa44f1f4cdb3a1f8",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "717d153fb62cab31b558fc51f7c5cdfbcccfd2448e73e901daae4bbd8130f312",
+          "document_ordinal": 0,
+          "absolute_start": 1080,
+          "absolute_end": 1738,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section 3.2(a) (Organization, Good Standing and Qualification), Section 3.2(b) (Capital Structure) (other than Section 3.2(b)(i) and Section 3.2(b)(iv) thereof), Section 3.2(c) (Corporate Authority and Approval) and Section 3.2(n) (Brokers and Finders) shall be true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) in all material respects at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date",
+      "attachment_position": null,
+      "concept_family": "COND-S-REP",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.ii.C",
+          "depth": 3,
+          "start_byte": 1079,
+          "end_byte": 1743
+        },
+        "chain": [
+          {
+            "path": "a.ii.C",
+            "start_byte": 1079,
+            "end_byte": 1743,
+            "text": " the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(a) (Organization, Good Standing and Qualification), Section ‎3.2(b) (Capital Structure) (other than Section ‎3.2(b)(i) and Section ‎3.2(b)(iv) thereof), Section ‎3.2(c) (Corporate Authority and Approval) and Section ‎3.2(n) (Brokers and Finders) shall be true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) in all material respects at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date and "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 251,
+            "text": "5.3 Additional Conditions to the Obligations of the Company. The obligations of the Company to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "5.3",
+      "source_citation": "5.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "The Company shall have received an opinion of Jones Day (or another nationally recognized law firm reasonably satisfactory to the Company and Parent (it being understood and agreed that Paul, Weiss, Rifkind, Wharton & Garrison LLP is such a law firm reasonably satisfactory to the Company and Parent)) to the effect that for U.S. federal income Tax purposes, the Mergers, when taken together, will qualify as a reorganization within the meaning of Section 368(a) of the Code (the “Closing Tax Opinion”).",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Tax-opinion closing condition has no supported assertion_kind.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "6f4d379ffe60f75f25892303ba536ae43abfbe4d49edc4f113a3b1aedb3fcf0a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b6d496e899e0302336cbc23fdab1b20666939bf73a0f3bdfe5bf612dc90c5e44",
+          "document_ordinal": 0,
+          "absolute_start": 2996,
+          "absolute_end": 3503,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "68768f97b600dae9fbfb74df8b63c5c566e8ed81da8b22c8a9747140f5b320c4",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "2f76a19363af15ec1a115d901d383daa752195a7d9df79eafc44affb035f504d",
+        "producer_receipt_id": "c9fac727c32c233e7a9c07972be8ab646371690aaafad96d8a880ba373b950ea",
+        "governed_scope_digest": "432e560656a0e011c2992ba83dbf8eec3a4adb9b3073cdf0ec317372210caa29",
+        "extraction_provenance_id": "08f9e091e90952455af9e953a753464089f92e043cc9c583276a57aeeffe7266"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 2995,
+          "end_byte": 3504
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 2995,
+            "end_byte": 3504,
+            "text": " The Company shall have received an opinion of Jones Day (or another nationally recognized law firm reasonably satisfactory to the Company and Parent (it being understood and agreed that Paul, Weiss, Rifkind, Wharton & Garrison LLP is such a law firm reasonably satisfactory to the Company and Parent)) to the effect that for U.S. federal income Tax purposes, the Mergers, when taken together, will qualify as a reorganization within the meaning of Section 368(a) of the Code (the “Closing Tax Opinion”).\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 251,
+            "text": "5.3 Additional Conditions to the Obligations of the Company. The obligations of the Company to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "85850b36680d580d2461360d0c9958fef9c0ff051b2893154e7e26813f14f652",
+    "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "registry_substrate": {
+      "schema_version": "RESOLUTION_REGISTRY_SUBSTRATE_MANIFEST/V1",
+      "modules": [
+        {
+          "name": "materiality-qualifier",
+          "version": "RESOLUTION_MATERIALITY_QUALIFIER_REGISTRY/V1",
+          "digest": "sha256:6368129c33917101e97979baa1836e222894af0fe4ed98244ded61c4a7802515"
+        },
+        {
+          "name": "closing-condition-kinds",
+          "version": "RESOLUTION_CLOSING_CONDITION_KINDS_REGISTRY/V1",
+          "digest": "sha256:66bb6592c2f0c21125df9b12a03991aebbe5ca1832bacfb427eadd2df2327efc"
+        },
+        {
+          "name": "general-covenant",
+          "version": "RESOLUTION_GENERAL_COVENANT_REGISTRY/V1",
+          "digest": "sha256:c10453c1b9f700ed7962b3c3f66a1560dcbbbe42aa41692113097a67fb903737"
+        },
+        {
+          "name": "material-contract",
+          "version": "RESOLUTION_MATERIAL_CONTRACT_REGISTRY/V1",
+          "digest": "sha256:85159bed1f96102ea00f2f2acc57e8336c6901797f91c2345a357dc923528d9e"
+        },
+        {
+          "name": "interim-operating",
+          "version": "RESOLUTION_INTERIM_OPERATING_REGISTRY/V1",
+          "digest": "sha256:77e80a8cca7ab4277e74181ef6ea2f0a5410b75d96ad9ae984b7653f5265efae"
+        },
+        {
+          "name": "party-capacity",
+          "version": "RESOLUTION_PARTY_CAPACITY_REGISTRY/V1",
+          "digest": "sha256:1b089c7a6cf30f540043352234cb4109fe27013a554423c8d3ecd652272db202"
+        },
+        {
+          "name": "representation-topic",
+          "version": "REPRESENTATION_TOPIC_REGISTRY/V1",
+          "digest": "sha256:2240a6cfa6ac63d3fbf6a96afce185aed40a1d9919f2437b85a844aa996e1f28"
+        }
+      ],
+      "preserved_v1_collisions": [
+        {
+          "path": "UNDISCLOSED_LIABILITIES_EXCEPTION_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not reasonably be expected to have an MAE",
+          "v1_only": true,
+          "no_delete": true
+        },
+        {
+          "path": "MATERIALITY_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not, individually or in aggregate, have MAE",
+          "v1_only": true,
+          "no_delete": true
+        }
+      ]
+    },
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 3,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 8,
+      "resolved": 6,
+      "auto_pass": 0,
+      "review_queue": 7,
+      "open_world": 1,
+      "residuals": 0,
+      "provisions": 4,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "7cd82dec964e1619c4b1d2b928dc815c71d169ef6cd2555f25937123b7f7587b"
+  }
+}

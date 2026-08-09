@@ -1,0 +1,1675 @@
+{
+  "resolved": [
+    {
+      "section_reference": "6.5",
+      "source_citation": "6.5(a)",
+      "citation_context": {
+        "parent_section_reference": "6.5",
+        "child_section_reference": "6.5",
+        "parent_chapeau_quote": "6.5 Financing.",
+        "child_clause_quote": "Parent and Merger Sub shall use reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things necessary, advisable or proper to obtain the proceeds of the Debt Financing contemplated by the Debt Commitment Letter on or prior to the Closing Date on the terms and conditions and in the amounts described in the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that are not materially less favorable (taken as a whole) to the Company"
+      },
+      "governing_context_quote": "(a) Parent and Merger Sub shall use reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things necessary, advisable or proper to obtain the proceeds of the Debt Financing contemplated by the Debt Commitment Letter on or prior to the Closing Date on the terms and conditions and in the amounts described in the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that are not materially less favorable (taken as a whole) to the Company, including (i) maintaining in effect the Debt Commitment Letter and any Definitive Debt Financing Agreements (as defined below) and complying with its obligations thereunder, (ii) satisfying on a timely basis, taking into consideration the timing of the Closing and the completion of the Marketing Period, and in a manner that will not impede the ability of the parties hereto to consummate the Merger promptly upon the Closing Date, all conditions to the funding of the Debt Financing set forth in the Debt Commitment Letter and the Definitive",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_OBTAIN_EFFORTS_STANDARD",
+      "concept_key": "COV-FINANCING",
+      "party": {
+        "role": "FINANCING_COVENANT_OBLIGOR",
+        "value": "Parent and Merger Sub",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "c8d99b105dc209b6dfe62d0443a84773f126a9d878c9e257b8e98bb1add03e00",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 256233,
+        "absolute_end": 265190,
+        "concept_key": "COV-FINANCING",
+        "party": {
+          "role": "FINANCING_COVENANT_OBLIGOR",
+          "value": "Parent and Merger Sub",
+          "capacity": "BUYER"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "ba0da955d3c1e36bd4710cb20a84ce385395f591480df6dd6239d4a9887fd0f8",
+        "provision_instance_id": "6076996aaf16eb86330996b49f853e3d66efbac9b68f848c35cf0ebc7a6a0e99",
+        "closure_id": "0e7173485b5f578655c1d0ee5aef3a3a65d1241e015669485d6ec42bca3b1f49"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "e007e356e704d4f0bae9597fe05ea87377697531b0feaf71db876ed2af298e4e",
+        "claim_occurrence_id": "76ae92c8af02448efc17f9ba823e9f531ca74bb4164cfdc9668fdad6919ff747",
+        "subject_occurrence_id": "6076996aaf16eb86330996b49f853e3d66efbac9b68f848c35cf0ebc7a6a0e99",
+        "claim_definition_key": "FINANCING_OBTAIN_EFFORTS_STANDARD",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Parent and Merger Sub shall use reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things necessary, advisable or proper to obtain the proceeds of the Debt Financing contemplated by the Debt Commitment Letter on or prior to the Closing Date on the terms and conditions and in the amounts described in the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that are not materially less favorable (taken as a whole) to the Company",
+        "canonical_value": "REASONABLE_BEST_EFFORTS",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "eeb16a4f5eea3e7db49862bfd329d3eb1e9b45f260335e098d55e932a3af7763"
+        ],
+        "attributes": {
+          "financing_kind": "DEBT",
+          "obligor_ref": "Parent and Merger Sub",
+          "standard_code": "REASONABLE_BEST_EFFORTS",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "eeb16a4f5eea3e7db49862bfd329d3eb1e9b45f260335e098d55e932a3af7763",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "772988c16a02b9140a360d8aca21cff3178e4c598de645f405e7ac5966bcb177",
+            "document_ordinal": 0,
+            "absolute_start": 19,
+            "absolute_end": 541,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "528d307338d375e7a09f389a54959b3ea53b29219def134914817a221437c4e2"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.5",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.5",
+          "normalized_citation": "6.5",
+          "derived_citation": "6.5"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "e007e356e704d4f0bae9597fe05ea87377697531b0feaf71db876ed2af298e4e",
+            "claim_occurrence_id": "76ae92c8af02448efc17f9ba823e9f531ca74bb4164cfdc9668fdad6919ff747",
+            "subject_occurrence_id": "6076996aaf16eb86330996b49f853e3d66efbac9b68f848c35cf0ebc7a6a0e99",
+            "claim_definition_key": "FINANCING_OBTAIN_EFFORTS_STANDARD",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Parent and Merger Sub shall use reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things necessary, advisable or proper to obtain the proceeds of the Debt Financing contemplated by the Debt Commitment Letter on or prior to the Closing Date on the terms and conditions and in the amounts described in the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that are not materially less favorable (taken as a whole) to the Company",
+            "canonical_value": "REASONABLE_BEST_EFFORTS",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "eeb16a4f5eea3e7db49862bfd329d3eb1e9b45f260335e098d55e932a3af7763"
+            ],
+            "attributes": {
+              "financing_kind": "DEBT",
+              "obligor_ref": "Parent and Merger Sub",
+              "standard_code": "REASONABLE_BEST_EFFORTS",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "eeb16a4f5eea3e7db49862bfd329d3eb1e9b45f260335e098d55e932a3af7763",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "772988c16a02b9140a360d8aca21cff3178e4c598de645f405e7ac5966bcb177",
+                "document_ordinal": 0,
+                "absolute_start": 19,
+                "absolute_end": 541,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "528d307338d375e7a09f389a54959b3ea53b29219def134914817a221437c4e2"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "FINANCING_COVENANT",
+            "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+            "producer_receipt_id": "be5b5ff0da4baa86eb25fa19d83327e35085f44e8edaf3d6d10880c6a82b683b",
+            "governed_scope_digest": "d1a724c0172414d7cf379e73848637e90e4e1636dced1441244f17d376c4c013",
+            "extraction_provenance_id": "fb55225bd797b317fa0e116f3695fa7c9f7bc7e7e3884d0e9e5ac1ce04ae9668"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 75,
+        "materiality_label": "FINANCING_COVENANTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.5",
+          "normalized_citation": "6.5",
+          "derived_citation": "6.5(a)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 18,
+          "end_byte": 3750
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 18,
+            "end_byte": 3750,
+            "text": " Parent and Merger Sub shall use reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things necessary, advisable or proper to obtain the proceeds of the Debt Financing contemplated by the Debt Commitment Letter on or prior to the Closing Date on the terms and conditions and in the amounts described in the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that are not materially less favorable (taken as a whole) to the Company, including (i) maintaining in effect the Debt Commitment Letter and any Definitive Debt Financing Agreements (as defined below) and complying with its obligations thereunder, (ii) satisfying on a timely basis, taking into consideration the timing of the Closing and the completion of the Marketing Period, and in a manner that will not impede the ability of the parties hereto to consummate the Merger promptly upon the Closing Date, all conditions to the funding of the Debt Financing set forth in the Debt Commitment Letter and the Definitive\n-62-\nDebt Financing Agreements that are within its control, (iii) using reasonable best efforts to negotiate and enter into definitive debt financing agreements on the terms and conditions contemplated by the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that are not materially less favorable (taken as a whole) to the Company (the “Definitive Debt Financing Agreements”), (iv) if the conditions under the Debt Commitment Letter are satisfied, consummating the Debt Financing and causing the Debt Financing Sources to consummate their Debt Financing at the Closing, (v) complying with its obligations under the Debt Commitment Letter and Definitive Debt Financing Agreements in a timely and diligent manner, taking into consideration the timing of the Closing and the completion of the Marketing Period and (vi) keeping the Company informed on a regular and current basis and in reasonable detail of the status of its efforts to arrange the Debt Financing contemplated by the Debt Commitment Letter and any other financing (including, by, upon reasonable request of the Company, promptly providing to the Company drafts of material definitive agreements for the Debt Financing (and any amendments thereto entered into on or prior to the Closing)) and giving the Company prompt notice of (i) any fact, change, event or circumstance that is reasonably likely to have, individually or in the aggregate, a material and adverse impact on the Debt Financing contemplated by the Debt Commitment Letter, (ii) any breach by any party to the Debt Commitment Letter or Definitive Debt Financing Agreements of which Parent has become aware, (iii) the expiration or termination (or attempted or purported termination, whether or not valid) of the Debt Commitment Letter, (iv) any written or electronic (including email) notice or communication by any Debt Financing Source with respect to any actual or threatened breach, default (or allegation thereof), repudiation by any party to the Debt Commitment Letter or any Definitive Debt Financing Agreement or any refusal to provide, or stated intent that it will not provide, by any Debt Financing Source the full amount of the Debt Financing contemplated by the Debt Commitment Letter for any reason, (v) Parent’s good faith belief, for any reason, that it may no longer be able to obtain all or any portion of any Debt Financing contemplated by the Debt Commitment Letter on the terms and conditions described therein (after giving effect to any flex provisions), or (vi) receipt of any written notice or other written communication from any person with respect to any: "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 15,
+            "text": "6.5 Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "6.5",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_OBTAIN_EFFORTS_STANDARD",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e007e356e704d4f0bae9597fe05ea87377697531b0feaf71db876ed2af298e4e",
+      "closure_id": "528d307338d375e7a09f389a54959b3ea53b29219def134914817a221437c4e2",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "eeb16a4f5eea3e7db49862bfd329d3eb1e9b45f260335e098d55e932a3af7763",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "772988c16a02b9140a360d8aca21cff3178e4c598de645f405e7ac5966bcb177",
+          "document_ordinal": 0,
+          "absolute_start": 19,
+          "absolute_end": 541,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Parent and Merger Sub shall use reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things necessary, advisable or proper to obtain the proceeds of the Debt Financing contemplated by the Debt Commitment Letter on or prior to the Closing Date on the terms and conditions and in the amounts described in the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that are not materially less favorable (taken as a whole) to the Company",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 583,
+          "end": 605,
+          "excerpt": "able (taken as a whole) to the Company, including (i) maintaining in effect the Debt Commitment Letter and any Definitive Debt Financing Agreements (as defined below) and complying w",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 625,
+          "end": 639,
+          "excerpt": "cluding (i) maintaining in effect the Debt Commitment Letter and any Definitive Debt Financing Agreements (as defined below) and complying with its obligations thereunder, (i",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 1013,
+          "end": 1027,
+          "excerpt": "the Merger promptly upon the Closing Date, all conditions to the funding of the Debt Financing set forth in the Debt Commitment Letter and the Definitive\n-62-\nDebt Financing ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 1045,
+          "end": 1067,
+          "excerpt": "sing Date, all conditions to the funding of the Debt Financing set forth in the Debt Commitment Letter and the Definitive\n-62-\nDebt Financing Agreements that are within its control, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 1092,
+          "end": 1106,
+          "excerpt": " Debt Financing set forth in the Debt Commitment Letter and the Definitive\n-62-\nDebt Financing Agreements that are within its control, (iii) using reasonable best efforts to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 1222,
+          "end": 1236,
+          "excerpt": "rol, (iii) using reasonable best efforts to negotiate and enter into definitive debt financing agreements on the terms and conditions contemplated by the Debt Commitment Lett",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 1296,
+          "end": 1318,
+          "excerpt": "itive debt financing agreements on the terms and conditions contemplated by the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 1484,
+          "end": 1498,
+          "excerpt": " materially less favorable (taken as a whole) to the Company (the “Definitive Debt Financing Agreements”), (iv) if the conditions under the Debt Commitment Letter are sat",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 1548,
+          "end": 1570,
+          "excerpt": "e “Definitive Debt Financing Agreements”), (iv) if the conditions under the Debt Commitment Letter are satisfied, consummating the Debt Financing and causing the Debt Financing S",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 1603,
+          "end": 1617,
+          "excerpt": "the conditions under the Debt Commitment Letter are satisfied, consummating the Debt Financing and causing the Debt Financing Sources to consummate their Debt Financing at th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 1634,
+          "end": 1648,
+          "excerpt": "ommitment Letter are satisfied, consummating the Debt Financing and causing the Debt Financing Sources to consummate their Debt Financing at the Closing, (v) complying with i",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 1677,
+          "end": 1691,
+          "excerpt": "g the Debt Financing and causing the Debt Financing Sources to consummate their Debt Financing at the Closing, (v) complying with its obligations under the Debt Commitment Le",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 1753,
+          "end": 1775,
+          "excerpt": "eir Debt Financing at the Closing, (v) complying with its obligations under the Debt Commitment Letter and Definitive Debt Financing Agreements in a timely and diligent manner, takin",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 1791,
+          "end": 1805,
+          "excerpt": " complying with its obligations under the Debt Commitment Letter and Definitive Debt Financing Agreements in a timely and diligent manner, taking into consideration the timin",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 2083,
+          "end": 2097,
+          "excerpt": "rent basis and in reasonable detail of the status of its efforts to arrange the Debt Financing contemplated by the Debt Commitment Letter and any other financing (including, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 2118,
+          "end": 2140,
+          "excerpt": " of the status of its efforts to arrange the Debt Financing contemplated by the Debt Commitment Letter and any other financing (including, by, upon reasonable request of the Company,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 2304,
+          "end": 2318,
+          "excerpt": "mptly providing to the Company drafts of material definitive agreements for the Debt Financing (and any amendments thereto entered into on or prior to the Closing)) and givin",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 2579,
+          "end": 2593,
+          "excerpt": "to have, individually or in the aggregate, a material and adverse impact on the Debt Financing contemplated by the Debt Commitment Letter, (ii) any breach by any party to the",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 2614,
+          "end": 2636,
+          "excerpt": "regate, a material and adverse impact on the Debt Financing contemplated by the Debt Commitment Letter, (ii) any breach by any party to the Debt Commitment Letter or Definitive Debt ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 2674,
+          "end": 2696,
+          "excerpt": "contemplated by the Debt Commitment Letter, (ii) any breach by any party to the Debt Commitment Letter or Definitive Debt Financing Agreements of which Parent has become aware, (iii)",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 2711,
+          "end": 2725,
+          "excerpt": "etter, (ii) any breach by any party to the Debt Commitment Letter or Definitive Debt Financing Agreements of which Parent has become aware, (iii) the expiration or terminatio",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 2876,
+          "end": 2898,
+          "excerpt": "ermination (or attempted or purported termination, whether or not valid) of the Debt Commitment Letter, (iv) any written or electronic (including email) notice or communication by an",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 2980,
+          "end": 2994,
+          "excerpt": "(iv) any written or electronic (including email) notice or communication by any Debt Financing Source with respect to any actual or threatened breach, default (or allegation ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 3116,
+          "end": 3138,
+          "excerpt": "atened breach, default (or allegation thereof), repudiation by any party to the Debt Commitment Letter or any Definitive Debt Financing Agreement or any refusal to provide, or stated",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 3157,
+          "end": 3171,
+          "excerpt": "reof), repudiation by any party to the Debt Commitment Letter or any Definitive Debt Financing Agreement or any refusal to provide, or stated intent that it will not provide,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 3259,
+          "end": 3273,
+          "excerpt": "nt or any refusal to provide, or stated intent that it will not provide, by any Debt Financing Source the full amount of the Debt Financing contemplated by the Debt Commitmen",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 3304,
+          "end": 3318,
+          "excerpt": "t that it will not provide, by any Debt Financing Source the full amount of the Debt Financing contemplated by the Debt Commitment Letter for any reason, (v) Parent’s good ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 3339,
+          "end": 3361,
+          "excerpt": "Debt Financing Source the full amount of the Debt Financing contemplated by the Debt Commitment Letter for any reason, (v) Parent’s good faith belief, for any reason, that it may n",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 3494,
+          "end": 3508,
+          "excerpt": "r any reason, that it may no longer be able to obtain all or any portion of any Debt Financing contemplated by the Debt Commitment Letter on the terms and conditions describe",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 3529,
+          "end": 3551,
+          "excerpt": " be able to obtain all or any portion of any Debt Financing contemplated by the Debt Commitment Letter on the terms and conditions described therein (after giving effect to any flex ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 3838,
+          "end": 3860,
+          "excerpt": "al or potential breach, default, termination or repudiation by any party to the Debt Commitment Letter or any Definitive Debt Financing Agreement, (B) material dispute or disagreemen",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 3879,
+          "end": 3893,
+          "excerpt": "ion or repudiation by any party to the Debt Commitment Letter or any Definitive Debt Financing Agreement, (B) material dispute or disagreement between or among any parties to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 3978,
+          "end": 4000,
+          "excerpt": "ement, (B) material dispute or disagreement between or among any parties to the Debt Commitment Letter or any Definitive Debt Financing Agreement (other than ordinary course negotiat",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 4019,
+          "end": 4033,
+          "excerpt": "nt between or among any parties to the Debt Commitment Letter or any Definitive Debt Financing Agreement (other than ordinary course negotiations) and (C) the failure of any ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 4130,
+          "end": 4144,
+          "excerpt": " than ordinary course negotiations) and (C) the failure of any condition to the Debt Financing to be satisfied. Any breach of the Debt Commitment Letter, the Debt Financing a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 4180,
+          "end": 4202,
+          "excerpt": "ilure of any condition to the Debt Financing to be satisfied. Any breach of the Debt Commitment Letter, the Debt Financing agreements, any Alternative Financing commitment or any Def",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 4208,
+          "end": 4222,
+          "excerpt": "e Debt Financing to be satisfied. Any breach of the Debt Commitment Letter, the Debt Financing agreements, any Alternative Financing commitment or any Definitive Debt Financi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 4290,
+          "end": 4304,
+          "excerpt": "bt Financing agreements, any Alternative Financing commitment or any Definitive Debt Financing Agreements by Parent or Merger Sub shall be deemed a breach by Parent of this S",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 4614,
+          "end": 4636,
+          "excerpt": "ent, supplement or other modification of, or waive any of its rights under, the Debt Commitment Letter or Definitive Debt Financing Agreements without the Company’s prior written c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 4651,
+          "end": 4665,
+          "excerpt": " of, or waive any of its rights under, the Debt Commitment Letter or Definitive Debt Financing Agreements without the Company’s prior written consent; provided that Parent ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 4910,
+          "end": 4932,
+          "excerpt": "lacement, supplement or other modification to or waiver of any provision of the Debt Commitment Letter or any Definitive Debt Financing Agreements that would not, and would not reaso",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 4951,
+          "end": 4965,
+          "excerpt": "n to or waiver of any provision of the Debt Commitment Letter or any Definitive Debt Financing Agreements that would not, and would not reasonably be expected to, (A) reduce ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 5063,
+          "end": 5077,
+          "excerpt": "ould not, and would not reasonably be expected to, (A) reduce the amount of the Debt Financing contemplated by the Debt Commitment Letter, to an amount that will be less than",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 5098,
+          "end": 5120,
+          "excerpt": "be expected to, (A) reduce the amount of the Debt Financing contemplated by the Debt Commitment Letter, to an amount that will be less than the Required Amount, (B) adversely affect ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 5290,
+          "end": 5312,
+          "excerpt": "y of Parent and Merger Sub to enforce its rights against any other party to the Debt Commitment Letter or the Definitive Debt Financing Agreements, in each case, as so amended, repla",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 5331,
+          "end": 5345,
+          "excerpt": " rights against any other party to the Debt Commitment Letter or the Definitive Debt Financing Agreements, in each case, as so amended, replaced, supplemented or otherwise mo",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 5571,
+          "end": 5593,
+          "excerpt": "to the ability of Parent to enforce its rights against the other parties to the Debt Commitment Letter as in effect on the date hereof, (C) prevent, materially delay or impede the co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 5703,
+          "end": 5717,
+          "excerpt": "of, (C) prevent, materially delay or impede the consummation of the Merger, the Debt Financing or the other transactions contemplated by this Agreement upon the satisfaction ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 5843,
+          "end": 5865,
+          "excerpt": "s Agreement upon the satisfaction of the conditions set forth in the applicable Debt Commitment Letter, or (D) impose any new or additional conditions, or otherwise expand any of the",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 5993,
+          "end": 6007,
+          "excerpt": ", or otherwise expand any of the conditions, to the availability and funding of Debt Financing as contemplated by the Debt Commitment Letter, and (ii) amend, modify, suppleme",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 6031,
+          "end": 6053,
+          "excerpt": "tions, to the availability and funding of Debt Financing as contemplated by the Debt Commitment Letter, and (ii) amend, modify, supplement, restate, assign, substitute or replace the",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 6134,
+          "end": 6156,
+          "excerpt": " and (ii) amend, modify, supplement, restate, assign, substitute or replace the Debt Commitment Letter to add and appoint additional arrangers, bookrunners, underwriters, agents, len",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 6355,
+          "end": 6377,
+          "excerpt": "h amendment, replacement, supplement,\n-63-\nmodification or waiver, the terms “Debt Commitment Letter,” “Definitive Debt Financing Agreement,” as applicable, shall mean the De",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 6396,
+          "end": 6410,
+          "excerpt": "-\nmodification or waiver, the terms “Debt Commitment Letter,” “Definitive Debt Financing Agreement,” as applicable, shall mean the Debt Commitment Letter or Definitiv",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 6455,
+          "end": 6477,
+          "excerpt": "er,” “Definitive Debt Financing Agreement,” as applicable, shall mean the Debt Commitment Letter or Definitive Debt Financing Agreement, as applicable, as so amended, replaced,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 6492,
+          "end": 6506,
+          "excerpt": "greement,” as applicable, shall mean the Debt Commitment Letter or Definitive Debt Financing Agreement, as applicable, as so amended, replaced, supplemented or modified. Pa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 6712,
+          "end": 6734,
+          "excerpt": "ies of any such amendment, replacement, supplement or other modification of the Debt Commitment Letter and/or any such waiver of a provision of the Debt Commitment Letter.\n(c) If all",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 6780,
+          "end": 6802,
+          "excerpt": "tion of the Debt Commitment Letter and/or any such waiver of a provision of the Debt Commitment Letter.\n(c) If all or any portion of the Debt Financing becomes unavailable, or the De",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 6837,
+          "end": 6851,
+          "excerpt": " of a provision of the Debt Commitment Letter.\n(c) If all or any portion of the Debt Financing becomes unavailable, or the Debt Commitment Letter or any of the Definitive Deb",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 6880,
+          "end": 6902,
+          "excerpt": "er.\n(c) If all or any portion of the Debt Financing becomes unavailable, or the Debt Commitment Letter or any of the Definitive Debt Financing Agreements shall be withdrawn, repudiat",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 6928,
+          "end": 6942,
+          "excerpt": "ing becomes unavailable, or the Debt Commitment Letter or any of the Definitive Debt Financing Agreements shall be withdrawn, repudiated, terminated or rescinded, regardless ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:EQUITY_FINANCING",
+          "start": 7198,
+          "end": 7214,
+          "excerpt": " as promptly as practicable, from the same and/or alternative debt or preferred equity financing sources, as applicable, alternative financing in an amount, together with the a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 7583,
+          "end": 7605,
+          "excerpt": "ns not materially less favorable, taken as a whole, than those set forth in the Debt Commitment Letter (including, for the avoidance of doubt, any related “market flex” provision",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 7956,
+          "end": 7978,
+          "excerpt": "y more fees, OIDs or incur an increase in pricing than the pricing terms of the Debt Commitment Letter, as in effect on the date of this Agreement, taking into account any flex terms",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 8186,
+          "end": 8200,
+          "excerpt": "ined in accordance with this Section 6.5(c), references in this Agreement to “Debt Financing” shall also be deemed to refer to such Alternative Financing, as appropriate,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 8488,
+          "end": 8510,
+          "excerpt": "nection with such Alternative Financing, references in this Agreement to the “Debt Commitment Letter”, “Definitive Debt Financing Agreements” and any other relevant defined t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 8529,
+          "end": 8543,
+          "excerpt": "references in this Agreement to the “Debt Commitment Letter”, “Definitive Debt Financing Agreements” and any other relevant defined term or clause, as applicable, sha",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 8941,
+          "end": 8955,
+          "excerpt": "y pursuant to Section 6.6 shall be applicable thereto to the same extent as the Debt Financing.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 18,
+          "end_byte": 3750
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 18,
+            "end_byte": 3750,
+            "text": " Parent and Merger Sub shall use reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things necessary, advisable or proper to obtain the proceeds of the Debt Financing contemplated by the Debt Commitment Letter on or prior to the Closing Date on the terms and conditions and in the amounts described in the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that are not materially less favorable (taken as a whole) to the Company, including (i) maintaining in effect the Debt Commitment Letter and any Definitive Debt Financing Agreements (as defined below) and complying with its obligations thereunder, (ii) satisfying on a timely basis, taking into consideration the timing of the Closing and the completion of the Marketing Period, and in a manner that will not impede the ability of the parties hereto to consummate the Merger promptly upon the Closing Date, all conditions to the funding of the Debt Financing set forth in the Debt Commitment Letter and the Definitive\n-62-\nDebt Financing Agreements that are within its control, (iii) using reasonable best efforts to negotiate and enter into definitive debt financing agreements on the terms and conditions contemplated by the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that are not materially less favorable (taken as a whole) to the Company (the “Definitive Debt Financing Agreements”), (iv) if the conditions under the Debt Commitment Letter are satisfied, consummating the Debt Financing and causing the Debt Financing Sources to consummate their Debt Financing at the Closing, (v) complying with its obligations under the Debt Commitment Letter and Definitive Debt Financing Agreements in a timely and diligent manner, taking into consideration the timing of the Closing and the completion of the Marketing Period and (vi) keeping the Company informed on a regular and current basis and in reasonable detail of the status of its efforts to arrange the Debt Financing contemplated by the Debt Commitment Letter and any other financing (including, by, upon reasonable request of the Company, promptly providing to the Company drafts of material definitive agreements for the Debt Financing (and any amendments thereto entered into on or prior to the Closing)) and giving the Company prompt notice of (i) any fact, change, event or circumstance that is reasonably likely to have, individually or in the aggregate, a material and adverse impact on the Debt Financing contemplated by the Debt Commitment Letter, (ii) any breach by any party to the Debt Commitment Letter or Definitive Debt Financing Agreements of which Parent has become aware, (iii) the expiration or termination (or attempted or purported termination, whether or not valid) of the Debt Commitment Letter, (iv) any written or electronic (including email) notice or communication by any Debt Financing Source with respect to any actual or threatened breach, default (or allegation thereof), repudiation by any party to the Debt Commitment Letter or any Definitive Debt Financing Agreement or any refusal to provide, or stated intent that it will not provide, by any Debt Financing Source the full amount of the Debt Financing contemplated by the Debt Commitment Letter for any reason, (v) Parent’s good faith belief, for any reason, that it may no longer be able to obtain all or any portion of any Debt Financing contemplated by the Debt Commitment Letter on the terms and conditions described therein (after giving effect to any flex provisions), or (vi) receipt of any written notice or other written communication from any person with respect to any: "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 15,
+            "text": "6.5 Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "source_citation": "6.5(a)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_OBTAIN_EFFORTS_STANDARD",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "using reasonable best efforts to negotiate and enter into definitive debt financing agreements on the terms and conditions contemplated by the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that are not materially less favorable (taken as a whole) to the Company (the “Definitive Debt Financing Agreements”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "f10f1ac21a31d7076af1c726781e27cbba6fb870451e2bb665c76341a9096630",
+      "closure_id": "7fa2b574ff86adf5077598beee8ee00b7a589ada5a0b433472f4165f446095d3",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "a4b0a1a52dd2ee07ee5859dcd5d4757394555fd70eca0315a41f41d30df6d83c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "75b3dc4dc4521c1f68d864aae002f00c3ebf44f0cfd0208cf3e4676de24377fb",
+          "document_ordinal": 0,
+          "absolute_start": 1153,
+          "absolute_end": 1513,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "using reasonable best efforts to negotiate and enter into definitive debt financing agreements on the terms and conditions contemplated by the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that are not materially less favorable (taken as a whole) to the Company (the “Definitive Debt Financing Agreements”)",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 18,
+          "end_byte": 3750
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 18,
+            "end_byte": 3750,
+            "text": " Parent and Merger Sub shall use reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things necessary, advisable or proper to obtain the proceeds of the Debt Financing contemplated by the Debt Commitment Letter on or prior to the Closing Date on the terms and conditions and in the amounts described in the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that are not materially less favorable (taken as a whole) to the Company, including (i) maintaining in effect the Debt Commitment Letter and any Definitive Debt Financing Agreements (as defined below) and complying with its obligations thereunder, (ii) satisfying on a timely basis, taking into consideration the timing of the Closing and the completion of the Marketing Period, and in a manner that will not impede the ability of the parties hereto to consummate the Merger promptly upon the Closing Date, all conditions to the funding of the Debt Financing set forth in the Debt Commitment Letter and the Definitive\n-62-\nDebt Financing Agreements that are within its control, (iii) using reasonable best efforts to negotiate and enter into definitive debt financing agreements on the terms and conditions contemplated by the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that are not materially less favorable (taken as a whole) to the Company (the “Definitive Debt Financing Agreements”), (iv) if the conditions under the Debt Commitment Letter are satisfied, consummating the Debt Financing and causing the Debt Financing Sources to consummate their Debt Financing at the Closing, (v) complying with its obligations under the Debt Commitment Letter and Definitive Debt Financing Agreements in a timely and diligent manner, taking into consideration the timing of the Closing and the completion of the Marketing Period and (vi) keeping the Company informed on a regular and current basis and in reasonable detail of the status of its efforts to arrange the Debt Financing contemplated by the Debt Commitment Letter and any other financing (including, by, upon reasonable request of the Company, promptly providing to the Company drafts of material definitive agreements for the Debt Financing (and any amendments thereto entered into on or prior to the Closing)) and giving the Company prompt notice of (i) any fact, change, event or circumstance that is reasonably likely to have, individually or in the aggregate, a material and adverse impact on the Debt Financing contemplated by the Debt Commitment Letter, (ii) any breach by any party to the Debt Commitment Letter or Definitive Debt Financing Agreements of which Parent has become aware, (iii) the expiration or termination (or attempted or purported termination, whether or not valid) of the Debt Commitment Letter, (iv) any written or electronic (including email) notice or communication by any Debt Financing Source with respect to any actual or threatened breach, default (or allegation thereof), repudiation by any party to the Debt Commitment Letter or any Definitive Debt Financing Agreement or any refusal to provide, or stated intent that it will not provide, by any Debt Financing Source the full amount of the Debt Financing contemplated by the Debt Commitment Letter for any reason, (v) Parent’s good faith belief, for any reason, that it may no longer be able to obtain all or any portion of any Debt Financing contemplated by the Debt Commitment Letter on the terms and conditions described therein (after giving effect to any flex provisions), or (vi) receipt of any written notice or other written communication from any person with respect to any: "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 15,
+            "text": "6.5 Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "6.5",
+      "source_citation": "6.5(c)",
+      "reason": "FINANCING_SCOPE_OUT_OF_VOCABULARY",
+      "claim_definition_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "raw_value": "Parent shall (i) use reasonable best efforts to arrange and obtain, as promptly as practicable, from the same and/or alternative debt or preferred equity financing sources, as applicable, alternative financing in an amount, together with the amount of Financing remaining available and cash and cash equivalent on hand at the Company and its Subsidiaries, sufficient to pay the Required Amount on the Closing Date, in each case, upon terms and conditions not materially less favorable, taken as a whole, than those set forth in the Debt Commitment Letter (including, for the avoidance of doubt, any related “market flex” provisions) (“Alternative Financing”)",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "6.5",
+        "assertion_kind": "OBTAIN_EFFORTS",
+        "financing_kind": null,
+        "standard_code": "REASONABLE_BEST_EFFORTS",
+        "obligor": "Parent",
+        "day_kind": null,
+        "delivery_stage": null,
+        "deliverable_term": null,
+        "marketing_term": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "37bb2b6fbb877e4717c034c0a118267cc8dc3febf74104d6bf13df0f035d65f7",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "49de1c7bc2907bffb9bdd8ee1efb021aec5e60d837809a308d672f16e12ac4da",
+          "document_ordinal": 0,
+          "absolute_start": 7051,
+          "absolute_end": 7717,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "94c33b95057b5ff576167b288666526c5e2bb255d22afd6166881fb143954420",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "FINANCING_COVENANT",
+        "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+        "producer_receipt_id": "be5b5ff0da4baa86eb25fa19d83327e35085f44e8edaf3d6d10880c6a82b683b",
+        "governed_scope_digest": "d1a724c0172414d7cf379e73848637e90e4e1636dced1441244f17d376c4c013",
+        "extraction_provenance_id": "fb55225bd797b317fa0e116f3695fa7c9f7bc7e7e3884d0e9e5ac1ce04ae9668"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.5",
+        "normalized_citation": "6.5",
+        "derived_citation": "6.5(c)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 6807,
+          "end_byte": 8957
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 6807,
+            "end_byte": 8957,
+            "text": " If all or any portion of the Debt Financing becomes unavailable, or the Debt Commitment Letter or any of the Definitive Debt Financing Agreements shall be withdrawn, repudiated, terminated or rescinded, regardless of the reason therefor, then Parent shall (i) use reasonable best efforts to arrange and obtain, as promptly as practicable, from the same and/or alternative debt or preferred equity financing sources, as applicable, alternative financing in an amount, together with the amount of Financing remaining available and cash and cash equivalent on hand at the Company and its Subsidiaries, sufficient to pay the Required Amount on the Closing Date, in each case, upon terms and conditions not materially less favorable, taken as a whole, than those set forth in the Debt Commitment Letter (including, for the avoidance of doubt, any related “market flex” provisions) (“Alternative Financing”) and (ii) promptly notify the Company of such unavailability and the reason therefor; provided that such reasonable best efforts shall not require Parent to pay more fees, OIDs or incur an increase in pricing than the pricing terms of the Debt Commitment Letter, as in effect on the date of this Agreement, taking into account any flex terms. In the event any Alternative Financing is obtained in accordance with this Section 6.5(c), references in this Agreement to “Debt Financing” shall also be deemed to refer to such Alternative Financing, as appropriate, and if one or more commitment letters or definitive financing agreements are entered into or proposed to be entered into in connection with such Alternative Financing, references in this Agreement to the “Debt Commitment Letter”, “Definitive Debt Financing Agreements” and any other relevant defined term or clause, as applicable, shall also be deemed to refer to such commitment letters and definitive financing agreements relating to such Alternative Financing, as appropriate, and all obligations of Parent pursuant to this Section 6.5 and all obligations of the Company pursuant to Section 6.6 shall be applicable thereto to the same extent as the Debt Financing.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 15,
+            "text": "6.5 Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "source_citation": "6.5",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "(including any “flex” provisions)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "MARKET_FLEX: Debt Financing terms include flex provisions.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0c46665e0e991ed9e32b57454a4487dfc4fda8eee1fcc2d5466d0bbcf078cbaf",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "df3770e29dd859a1884793fabdd3aa5096dec986dd812edb16c3ee681dd333b3",
+          "document_ordinal": 0,
+          "absolute_start": 396,
+          "absolute_end": 433,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "0db9e70f3dfaaf1c858274756f44313c7de10f916cd2b2171578c85fbb34865a",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+        "producer_receipt_id": "be5b5ff0da4baa86eb25fa19d83327e35085f44e8edaf3d6d10880c6a82b683b",
+        "governed_scope_digest": "d1a724c0172414d7cf379e73848637e90e4e1636dced1441244f17d376c4c013",
+        "extraction_provenance_id": "e02f987f1a64b9b16d59c44682b78fd8f3e76862f85e0e6fe8dc1e2fb30ebd50"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 18,
+          "end_byte": 3750
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 18,
+            "end_byte": 3750,
+            "text": " Parent and Merger Sub shall use reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things necessary, advisable or proper to obtain the proceeds of the Debt Financing contemplated by the Debt Commitment Letter on or prior to the Closing Date on the terms and conditions and in the amounts described in the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that are not materially less favorable (taken as a whole) to the Company, including (i) maintaining in effect the Debt Commitment Letter and any Definitive Debt Financing Agreements (as defined below) and complying with its obligations thereunder, (ii) satisfying on a timely basis, taking into consideration the timing of the Closing and the completion of the Marketing Period, and in a manner that will not impede the ability of the parties hereto to consummate the Merger promptly upon the Closing Date, all conditions to the funding of the Debt Financing set forth in the Debt Commitment Letter and the Definitive\n-62-\nDebt Financing Agreements that are within its control, (iii) using reasonable best efforts to negotiate and enter into definitive debt financing agreements on the terms and conditions contemplated by the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that are not materially less favorable (taken as a whole) to the Company (the “Definitive Debt Financing Agreements”), (iv) if the conditions under the Debt Commitment Letter are satisfied, consummating the Debt Financing and causing the Debt Financing Sources to consummate their Debt Financing at the Closing, (v) complying with its obligations under the Debt Commitment Letter and Definitive Debt Financing Agreements in a timely and diligent manner, taking into consideration the timing of the Closing and the completion of the Marketing Period and (vi) keeping the Company informed on a regular and current basis and in reasonable detail of the status of its efforts to arrange the Debt Financing contemplated by the Debt Commitment Letter and any other financing (including, by, upon reasonable request of the Company, promptly providing to the Company drafts of material definitive agreements for the Debt Financing (and any amendments thereto entered into on or prior to the Closing)) and giving the Company prompt notice of (i) any fact, change, event or circumstance that is reasonably likely to have, individually or in the aggregate, a material and adverse impact on the Debt Financing contemplated by the Debt Commitment Letter, (ii) any breach by any party to the Debt Commitment Letter or Definitive Debt Financing Agreements of which Parent has become aware, (iii) the expiration or termination (or attempted or purported termination, whether or not valid) of the Debt Commitment Letter, (iv) any written or electronic (including email) notice or communication by any Debt Financing Source with respect to any actual or threatened breach, default (or allegation thereof), repudiation by any party to the Debt Commitment Letter or any Definitive Debt Financing Agreement or any refusal to provide, or stated intent that it will not provide, by any Debt Financing Source the full amount of the Debt Financing contemplated by the Debt Commitment Letter for any reason, (v) Parent’s good faith belief, for any reason, that it may no longer be able to obtain all or any portion of any Debt Financing contemplated by the Debt Commitment Letter on the terms and conditions described therein (after giving effect to any flex provisions), or (vi) receipt of any written notice or other written communication from any person with respect to any: "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 15,
+            "text": "6.5 Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "source_citation": "6.5",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "amend, modify, supplement, restate, assign, substitute or replace the Debt Commitment Letter to add and appoint additional arrangers, bookrunners, underwriters, agents, lenders and similar entities",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "LENDER_ARRANGEMENT: Parent may change the Debt Commitment Letter to add or appoint specified financing parties.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "211daae95ece99507a88fc7546ab8196e48a0039f91739063ab18667a9ede71f",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2a8b98e01a6ce78cbfd8357bcc0aaebfdea80a7c4cc1b0ebf894e79cc79b2ea7",
+          "document_ordinal": 0,
+          "absolute_start": 6064,
+          "absolute_end": 6261,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "db180b27a5b520ec7124e75fba744ff321a04e5d078053374abe2266753302ee",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+        "producer_receipt_id": "be5b5ff0da4baa86eb25fa19d83327e35085f44e8edaf3d6d10880c6a82b683b",
+        "governed_scope_digest": "d1a724c0172414d7cf379e73848637e90e4e1636dced1441244f17d376c4c013",
+        "extraction_provenance_id": "e02f987f1a64b9b16d59c44682b78fd8f3e76862f85e0e6fe8dc1e2fb30ebd50"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b.i",
+          "depth": 2,
+          "start_byte": 4800,
+          "end_byte": 6804
+        },
+        "chain": [
+          {
+            "path": "b.i",
+            "start_byte": 4800,
+            "end_byte": 6804,
+            "text": " enter into any amendment, replacement, supplement or other modification to or waiver of any provision of the Debt Commitment Letter or any Definitive Debt Financing Agreements that would not, and would not reasonably be expected to, (A) reduce the amount of the Debt Financing contemplated by the Debt Commitment Letter, to an amount that will be less than the Required Amount, (B) adversely affect the ability of Parent and Merger Sub to enforce its rights against any other party to the Debt Commitment Letter or the Definitive Debt Financing Agreements, in each case, as so amended, replaced, supplemented or otherwise modified, in each case, in accordance with this Agreement, relative to the ability of Parent to enforce its rights against the other parties to the Debt Commitment Letter as in effect on the date hereof, (C) prevent, materially delay or impede the consummation of the Merger, the Debt Financing or the other transactions contemplated by this Agreement upon the satisfaction of the conditions set forth in the applicable Debt Commitment Letter, or (D) impose any new or additional conditions, or otherwise expand any of the conditions, to the availability and funding of Debt Financing as contemplated by the Debt Commitment Letter, and (ii) amend, modify, supplement, restate, assign, substitute or replace the Debt Commitment Letter to add and appoint additional arrangers, bookrunners, underwriters, agents, lenders and similar entities. Upon any such amendment, replacement, supplement,\n-63-\nmodification or waiver, the terms “Debt Commitment Letter,” “Definitive Debt Financing Agreement,” as applicable, shall mean the Debt Commitment Letter or Definitive Debt Financing Agreement, as applicable, as so amended, replaced, supplemented or modified. Parent shall promptly deliver to the Company copies of any such amendment, replacement, supplement or other modification of the Debt Commitment Letter and/or any such waiver of a provision of the Debt Commitment Letter.\n"
+          },
+          {
+            "path": "b",
+            "start_byte": 4399,
+            "end_byte": 4797,
+            "text": " Prior to the Closing, Parent shall not, and shall cause its Affiliates not to, agree to or permit any termination, amendment, replacement, supplement or other modification of, or waive any of its rights under, the Debt Commitment Letter or Definitive Debt Financing Agreements without the Company’s prior written consent; provided that Parent may, without the Company’s prior written consent: "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 15,
+            "text": "6.5 Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "source_citation": "6.5",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "If all or any portion of the Debt Financing becomes unavailable, or the Debt Commitment Letter or any of the Definitive Debt Financing Agreements shall be withdrawn, repudiated, terminated or rescinded, regardless of the reason therefor, then Parent shall (i) use reasonable best efforts to arrange and obtain, as promptly as practicable, from the same and/or alternative debt or preferred equity financing sources, as applicable, alternative financing",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "ALTERNATIVE_FINANCING: Alternative financing mechanism applies if Debt Financing is unavailable or financing documents are withdrawn, repudiated, terminated or rescinded.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "4c78c1a349bffa84b0ce5078adb904b378b40256bd94e886836574542a6b67d6",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "fa7a3622d40177990718b3b0aaadc45b0ed515494bfb90f2d98427abaed597da",
+          "document_ordinal": 0,
+          "absolute_start": 6808,
+          "absolute_end": 7260,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "b93b4f8283fdf94af9f5ef1cfd95061a309cbbd0f5f400cbc9155d3e115da5ee",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+        "producer_receipt_id": "be5b5ff0da4baa86eb25fa19d83327e35085f44e8edaf3d6d10880c6a82b683b",
+        "governed_scope_digest": "d1a724c0172414d7cf379e73848637e90e4e1636dced1441244f17d376c4c013",
+        "extraction_provenance_id": "e02f987f1a64b9b16d59c44682b78fd8f3e76862f85e0e6fe8dc1e2fb30ebd50"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 6807,
+          "end_byte": 8957
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 6807,
+            "end_byte": 8957,
+            "text": " If all or any portion of the Debt Financing becomes unavailable, or the Debt Commitment Letter or any of the Definitive Debt Financing Agreements shall be withdrawn, repudiated, terminated or rescinded, regardless of the reason therefor, then Parent shall (i) use reasonable best efforts to arrange and obtain, as promptly as practicable, from the same and/or alternative debt or preferred equity financing sources, as applicable, alternative financing in an amount, together with the amount of Financing remaining available and cash and cash equivalent on hand at the Company and its Subsidiaries, sufficient to pay the Required Amount on the Closing Date, in each case, upon terms and conditions not materially less favorable, taken as a whole, than those set forth in the Debt Commitment Letter (including, for the avoidance of doubt, any related “market flex” provisions) (“Alternative Financing”) and (ii) promptly notify the Company of such unavailability and the reason therefor; provided that such reasonable best efforts shall not require Parent to pay more fees, OIDs or incur an increase in pricing than the pricing terms of the Debt Commitment Letter, as in effect on the date of this Agreement, taking into account any flex terms. In the event any Alternative Financing is obtained in accordance with this Section 6.5(c), references in this Agreement to “Debt Financing” shall also be deemed to refer to such Alternative Financing, as appropriate, and if one or more commitment letters or definitive financing agreements are entered into or proposed to be entered into in connection with such Alternative Financing, references in this Agreement to the “Debt Commitment Letter”, “Definitive Debt Financing Agreements” and any other relevant defined term or clause, as applicable, shall also be deemed to refer to such commitment letters and definitive financing agreements relating to such Alternative Financing, as appropriate, and all obligations of Parent pursuant to this Section 6.5 and all obligations of the Company pursuant to Section 6.6 shall be applicable thereto to the same extent as the Debt Financing.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 15,
+            "text": "6.5 Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "source_citation": "6.5",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "(including, for the avoidance of doubt, any related “market flex” provisions)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "MARKET_FLEX: Alternative Financing comparison includes related market flex provisions.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "f1a50a9882c079e4cb638e710a43778d1b6dadf0807aa09495d90f93cf35ec1f",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "80f078f719184392ba80ad2f9bac42b362b7813e58eb2838ca82f65ec636b118",
+          "document_ordinal": 0,
+          "absolute_start": 7606,
+          "absolute_end": 7687,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "d24ab0f08309b9411a88b8332b914f9aaec4b1aa7f61effaa7ef46addb25c07b",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+        "producer_receipt_id": "be5b5ff0da4baa86eb25fa19d83327e35085f44e8edaf3d6d10880c6a82b683b",
+        "governed_scope_digest": "d1a724c0172414d7cf379e73848637e90e4e1636dced1441244f17d376c4c013",
+        "extraction_provenance_id": "e02f987f1a64b9b16d59c44682b78fd8f3e76862f85e0e6fe8dc1e2fb30ebd50"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 6807,
+          "end_byte": 8957
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 6807,
+            "end_byte": 8957,
+            "text": " If all or any portion of the Debt Financing becomes unavailable, or the Debt Commitment Letter or any of the Definitive Debt Financing Agreements shall be withdrawn, repudiated, terminated or rescinded, regardless of the reason therefor, then Parent shall (i) use reasonable best efforts to arrange and obtain, as promptly as practicable, from the same and/or alternative debt or preferred equity financing sources, as applicable, alternative financing in an amount, together with the amount of Financing remaining available and cash and cash equivalent on hand at the Company and its Subsidiaries, sufficient to pay the Required Amount on the Closing Date, in each case, upon terms and conditions not materially less favorable, taken as a whole, than those set forth in the Debt Commitment Letter (including, for the avoidance of doubt, any related “market flex” provisions) (“Alternative Financing”) and (ii) promptly notify the Company of such unavailability and the reason therefor; provided that such reasonable best efforts shall not require Parent to pay more fees, OIDs or incur an increase in pricing than the pricing terms of the Debt Commitment Letter, as in effect on the date of this Agreement, taking into account any flex terms. In the event any Alternative Financing is obtained in accordance with this Section 6.5(c), references in this Agreement to “Debt Financing” shall also be deemed to refer to such Alternative Financing, as appropriate, and if one or more commitment letters or definitive financing agreements are entered into or proposed to be entered into in connection with such Alternative Financing, references in this Agreement to the “Debt Commitment Letter”, “Definitive Debt Financing Agreements” and any other relevant defined term or clause, as applicable, shall also be deemed to refer to such commitment letters and definitive financing agreements relating to such Alternative Financing, as appropriate, and all obligations of Parent pursuant to this Section 6.5 and all obligations of the Company pursuant to Section 6.6 shall be applicable thereto to the same extent as the Debt Financing.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 15,
+            "text": "6.5 Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "source_citation": "6.5",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "promptly providing to the Company drafts of material definitive agreements for the Debt Financing (and any amendments thereto entered into on or prior to the Closing)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Draft furnishing limb is not a governed delivery-stage fact.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "7d565bb6fa7766b2c0b48a1f4f7165c6bc59ff540bdc858c7a503a2449aef31f",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2f4cba24681f89017c26d6dc7a46db3aee4c6ca1fc8e97ef9a25ba914edb2601",
+          "document_ordinal": 0,
+          "absolute_start": 2221,
+          "absolute_end": 2387,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "9a5ec445c661ae3a04f58eec6ffb39e37fdd5b5be0826506cc765ada207612e4",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+        "producer_receipt_id": "be5b5ff0da4baa86eb25fa19d83327e35085f44e8edaf3d6d10880c6a82b683b",
+        "governed_scope_digest": "d1a724c0172414d7cf379e73848637e90e4e1636dced1441244f17d376c4c013",
+        "extraction_provenance_id": "e02f987f1a64b9b16d59c44682b78fd8f3e76862f85e0e6fe8dc1e2fb30ebd50"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 18,
+          "end_byte": 3750
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 18,
+            "end_byte": 3750,
+            "text": " Parent and Merger Sub shall use reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things necessary, advisable or proper to obtain the proceeds of the Debt Financing contemplated by the Debt Commitment Letter on or prior to the Closing Date on the terms and conditions and in the amounts described in the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that are not materially less favorable (taken as a whole) to the Company, including (i) maintaining in effect the Debt Commitment Letter and any Definitive Debt Financing Agreements (as defined below) and complying with its obligations thereunder, (ii) satisfying on a timely basis, taking into consideration the timing of the Closing and the completion of the Marketing Period, and in a manner that will not impede the ability of the parties hereto to consummate the Merger promptly upon the Closing Date, all conditions to the funding of the Debt Financing set forth in the Debt Commitment Letter and the Definitive\n-62-\nDebt Financing Agreements that are within its control, (iii) using reasonable best efforts to negotiate and enter into definitive debt financing agreements on the terms and conditions contemplated by the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that are not materially less favorable (taken as a whole) to the Company (the “Definitive Debt Financing Agreements”), (iv) if the conditions under the Debt Commitment Letter are satisfied, consummating the Debt Financing and causing the Debt Financing Sources to consummate their Debt Financing at the Closing, (v) complying with its obligations under the Debt Commitment Letter and Definitive Debt Financing Agreements in a timely and diligent manner, taking into consideration the timing of the Closing and the completion of the Marketing Period and (vi) keeping the Company informed on a regular and current basis and in reasonable detail of the status of its efforts to arrange the Debt Financing contemplated by the Debt Commitment Letter and any other financing (including, by, upon reasonable request of the Company, promptly providing to the Company drafts of material definitive agreements for the Debt Financing (and any amendments thereto entered into on or prior to the Closing)) and giving the Company prompt notice of (i) any fact, change, event or circumstance that is reasonably likely to have, individually or in the aggregate, a material and adverse impact on the Debt Financing contemplated by the Debt Commitment Letter, (ii) any breach by any party to the Debt Commitment Letter or Definitive Debt Financing Agreements of which Parent has become aware, (iii) the expiration or termination (or attempted or purported termination, whether or not valid) of the Debt Commitment Letter, (iv) any written or electronic (including email) notice or communication by any Debt Financing Source with respect to any actual or threatened breach, default (or allegation thereof), repudiation by any party to the Debt Commitment Letter or any Definitive Debt Financing Agreement or any refusal to provide, or stated intent that it will not provide, by any Debt Financing Source the full amount of the Debt Financing contemplated by the Debt Commitment Letter for any reason, (v) Parent’s good faith belief, for any reason, that it may no longer be able to obtain all or any portion of any Debt Financing contemplated by the Debt Commitment Letter on the terms and conditions described therein (after giving effect to any flex provisions), or (vi) receipt of any written notice or other written communication from any person with respect to any: "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 15,
+            "text": "6.5 Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "source_citation": "6.5",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Parent shall promptly deliver to the Company copies of any such amendment, replacement, supplement or other modification of the Debt Commitment Letter and/or any such waiver of a provision of the Debt Commitment Letter.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Delivery obligation does not state a governed financing-covenant assertion kind.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "fea4f5d63dda82ae156d66db85494e9d13e8d8a7365174c84b281e94ee50e72b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "e46b9cec715f3db91ae4109631ecdea712e91c2de2829e5d853c8b043930e04d",
+          "document_ordinal": 0,
+          "absolute_start": 6584,
+          "absolute_end": 6803,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "fb0a77c9779fdea7b6be0a16405ffed487a72a7b6d9310eb723ac63aab29aee8",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+        "producer_receipt_id": "be5b5ff0da4baa86eb25fa19d83327e35085f44e8edaf3d6d10880c6a82b683b",
+        "governed_scope_digest": "d1a724c0172414d7cf379e73848637e90e4e1636dced1441244f17d376c4c013",
+        "extraction_provenance_id": "e02f987f1a64b9b16d59c44682b78fd8f3e76862f85e0e6fe8dc1e2fb30ebd50"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b.i",
+          "depth": 2,
+          "start_byte": 4800,
+          "end_byte": 6804
+        },
+        "chain": [
+          {
+            "path": "b.i",
+            "start_byte": 4800,
+            "end_byte": 6804,
+            "text": " enter into any amendment, replacement, supplement or other modification to or waiver of any provision of the Debt Commitment Letter or any Definitive Debt Financing Agreements that would not, and would not reasonably be expected to, (A) reduce the amount of the Debt Financing contemplated by the Debt Commitment Letter, to an amount that will be less than the Required Amount, (B) adversely affect the ability of Parent and Merger Sub to enforce its rights against any other party to the Debt Commitment Letter or the Definitive Debt Financing Agreements, in each case, as so amended, replaced, supplemented or otherwise modified, in each case, in accordance with this Agreement, relative to the ability of Parent to enforce its rights against the other parties to the Debt Commitment Letter as in effect on the date hereof, (C) prevent, materially delay or impede the consummation of the Merger, the Debt Financing or the other transactions contemplated by this Agreement upon the satisfaction of the conditions set forth in the applicable Debt Commitment Letter, or (D) impose any new or additional conditions, or otherwise expand any of the conditions, to the availability and funding of Debt Financing as contemplated by the Debt Commitment Letter, and (ii) amend, modify, supplement, restate, assign, substitute or replace the Debt Commitment Letter to add and appoint additional arrangers, bookrunners, underwriters, agents, lenders and similar entities. Upon any such amendment, replacement, supplement,\n-63-\nmodification or waiver, the terms “Debt Commitment Letter,” “Definitive Debt Financing Agreement,” as applicable, shall mean the Debt Commitment Letter or Definitive Debt Financing Agreement, as applicable, as so amended, replaced, supplemented or modified. Parent shall promptly deliver to the Company copies of any such amendment, replacement, supplement or other modification of the Debt Commitment Letter and/or any such waiver of a provision of the Debt Commitment Letter.\n"
+          },
+          {
+            "path": "b",
+            "start_byte": 4399,
+            "end_byte": 4797,
+            "text": " Prior to the Closing, Parent shall not, and shall cause its Affiliates not to, agree to or permit any termination, amendment, replacement, supplement or other modification of, or waive any of its rights under, the Debt Commitment Letter or Definitive Debt Financing Agreements without the Company’s prior written consent; provided that Parent may, without the Company’s prior written consent: "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 15,
+            "text": "6.5 Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "source_citation": "6.5",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "such reasonable best efforts shall not require Parent to pay more fees, OIDs or incur an increase in pricing than the pricing terms of the Debt Commitment Letter, as in effect on the date of this Agreement, taking into account any flex terms.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Fees, OIDs and pricing limitations remain open world.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "6d68848902d61e8892e27d4d542da437d6ca1ba6c84560df0a80940ba1da1062",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c7cc3f85491ca30ce0f04ae7e3683a69127813442b85c0e69de12ec78c1cee06",
+          "document_ordinal": 0,
+          "absolute_start": 7817,
+          "absolute_end": 8059,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "f0ee6aa019475e3e2b6ea546a478f9e2f684615e2f4feb991f0a44a55c8130fa",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+        "producer_receipt_id": "be5b5ff0da4baa86eb25fa19d83327e35085f44e8edaf3d6d10880c6a82b683b",
+        "governed_scope_digest": "d1a724c0172414d7cf379e73848637e90e4e1636dced1441244f17d376c4c013",
+        "extraction_provenance_id": "e02f987f1a64b9b16d59c44682b78fd8f3e76862f85e0e6fe8dc1e2fb30ebd50"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 6807,
+          "end_byte": 8957
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 6807,
+            "end_byte": 8957,
+            "text": " If all or any portion of the Debt Financing becomes unavailable, or the Debt Commitment Letter or any of the Definitive Debt Financing Agreements shall be withdrawn, repudiated, terminated or rescinded, regardless of the reason therefor, then Parent shall (i) use reasonable best efforts to arrange and obtain, as promptly as practicable, from the same and/or alternative debt or preferred equity financing sources, as applicable, alternative financing in an amount, together with the amount of Financing remaining available and cash and cash equivalent on hand at the Company and its Subsidiaries, sufficient to pay the Required Amount on the Closing Date, in each case, upon terms and conditions not materially less favorable, taken as a whole, than those set forth in the Debt Commitment Letter (including, for the avoidance of doubt, any related “market flex” provisions) (“Alternative Financing”) and (ii) promptly notify the Company of such unavailability and the reason therefor; provided that such reasonable best efforts shall not require Parent to pay more fees, OIDs or incur an increase in pricing than the pricing terms of the Debt Commitment Letter, as in effect on the date of this Agreement, taking into account any flex terms. In the event any Alternative Financing is obtained in accordance with this Section 6.5(c), references in this Agreement to “Debt Financing” shall also be deemed to refer to such Alternative Financing, as appropriate, and if one or more commitment letters or definitive financing agreements are entered into or proposed to be entered into in connection with such Alternative Financing, references in this Agreement to the “Debt Commitment Letter”, “Definitive Debt Financing Agreements” and any other relevant defined term or clause, as applicable, shall also be deemed to refer to such commitment letters and definitive financing agreements relating to such Alternative Financing, as appropriate, and all obligations of Parent pursuant to this Section 6.5 and all obligations of the Company pursuant to Section 6.6 shall be applicable thereto to the same extent as the Debt Financing.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 15,
+            "text": "6.5 Financing.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "32d747ede0ea65ef0de1f9721348e9ed56543bd3f98bf45ab5965f12afe0a356",
+    "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "registry_substrate": {
+      "schema_version": "RESOLUTION_REGISTRY_SUBSTRATE_MANIFEST/V1",
+      "modules": [
+        {
+          "name": "materiality-qualifier",
+          "version": "RESOLUTION_MATERIALITY_QUALIFIER_REGISTRY/V1",
+          "digest": "sha256:6368129c33917101e97979baa1836e222894af0fe4ed98244ded61c4a7802515"
+        },
+        {
+          "name": "closing-condition-kinds",
+          "version": "RESOLUTION_CLOSING_CONDITION_KINDS_REGISTRY/V1",
+          "digest": "sha256:66bb6592c2f0c21125df9b12a03991aebbe5ca1832bacfb427eadd2df2327efc"
+        },
+        {
+          "name": "general-covenant",
+          "version": "RESOLUTION_GENERAL_COVENANT_REGISTRY/V1",
+          "digest": "sha256:c10453c1b9f700ed7962b3c3f66a1560dcbbbe42aa41692113097a67fb903737"
+        },
+        {
+          "name": "material-contract",
+          "version": "RESOLUTION_MATERIAL_CONTRACT_REGISTRY/V1",
+          "digest": "sha256:85159bed1f96102ea00f2f2acc57e8336c6901797f91c2345a357dc923528d9e"
+        },
+        {
+          "name": "interim-operating",
+          "version": "RESOLUTION_INTERIM_OPERATING_REGISTRY/V1",
+          "digest": "sha256:77e80a8cca7ab4277e74181ef6ea2f0a5410b75d96ad9ae984b7653f5265efae"
+        },
+        {
+          "name": "party-capacity",
+          "version": "RESOLUTION_PARTY_CAPACITY_REGISTRY/V1",
+          "digest": "sha256:1b089c7a6cf30f540043352234cb4109fe27013a554423c8d3ecd652272db202"
+        },
+        {
+          "name": "representation-topic",
+          "version": "REPRESENTATION_TOPIC_REGISTRY/V1",
+          "digest": "sha256:2240a6cfa6ac63d3fbf6a96afce185aed40a1d9919f2437b85a844aa996e1f28"
+        }
+      ],
+      "preserved_v1_collisions": [
+        {
+          "path": "UNDISCLOSED_LIABILITIES_EXCEPTION_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not reasonably be expected to have an MAE",
+          "v1_only": true,
+          "no_delete": true
+        },
+        {
+          "path": "MATERIALITY_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not, individually or in aggregate, have MAE",
+          "v1_only": true,
+          "no_delete": true
+        }
+      ]
+    },
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 3,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 10,
+      "resolved": 1,
+      "auto_pass": 0,
+      "review_queue": 2,
+      "open_world": 8,
+      "residuals": 0,
+      "provisions": 1,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "3af6745d5ad646dc1fef584063418d69c21da0ed2dd6e88808a4c3d6daa74bbc"
+  }
+}

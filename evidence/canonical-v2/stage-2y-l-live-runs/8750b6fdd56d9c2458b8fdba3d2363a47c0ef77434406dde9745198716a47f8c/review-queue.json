@@ -1,0 +1,117 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "bddcc9d79596b1852f3452185ea71df156e791ae4eb2a9ded893219f27cd1360",
+  "review_queue": [
+    {
+      "section_reference": "7.4",
+      "source_citation": "7.4",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "if such failure was caused by such Party’s breach in any material respect of any provision of this Agreement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "5f73312cb016b67ffbdeba41cc8dfcc72823d5767e14ee7a12e8628aede463d4",
+      "closure_id": "0b02dc6b6db692c663ac72ab8599d97c4b56c04304bdbf10084fe1de242cb80a",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "18f6c6da8e742dafcfc30765f7c0a1cc736da56781a859a92c330b8795e99178",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "4f91b3f3f78423aef1d14bd8b52d592dfb2d496db46064f360a297f859163bc3",
+          "document_ordinal": 0,
+          "absolute_start": 261,
+          "absolute_end": 372,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "if such failure was caused by such Party’s breach in any material respect of any provision of this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 373
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 373,
+            "text": "7.4 Frustration of Closing Conditions. None of the Parties may rely, either as a basis for not consummating the Merger or for terminating this Agreement, on the failure of any condition set forth in Sections 7.1, 7.2 or 7.3, as the case may be, to be satisfied if such failure was caused by such Party’s breach in any material respect of any provision of this Agreement.\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.4",
+      "source_citation": "7.4",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "such Party’s breach in any material respect of any provision of this Agreement",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "64a20c3d7e9ac5ea4d54487a67ca15015c3040d8b521910d28d07e70df855864",
+      "closure_id": "970edb940fdea93fa13243e35c84e108e866e65d10add178c222468c3f8484f0",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "2d03625590201dc39d4a68d813919d8b97527ca5d54cb32a571de5114552676a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "ad04d07ff6e5d08f7bd8189b0810cf36e517cc15eecddf6d9479fa05c8d4331d",
+          "document_ordinal": 0,
+          "absolute_start": 291,
+          "absolute_end": 371,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "such Party’s breach in any material respect of any provision of this Agreement",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 373
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 373,
+            "text": "7.4 Frustration of Closing Conditions. None of the Parties may rely, either as a basis for not consummating the Merger or for terminating this Agreement, on the failure of any condition set forth in Sections 7.1, 7.2 or 7.3, as the case may be, to be satisfied if such failure was caused by such Party’s breach in any material respect of any provision of this Agreement.\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "194affc4068dcce64c2f26535e4a773285125b0bd3faaf1b5187ac9ca264a4ca"
+}

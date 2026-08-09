@@ -1,0 +1,64 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "skywater",
+  "deal_label": "IonQ, Inc. / SkyWater Technology, Inc.",
+  "section_family": "CLOSING_CONDITIONS",
+  "purpose": "General extraction run: family CLOSING_CONDITIONS on deal skywater.",
+  "section_references": [
+    "8.3"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "8.3",
+      "family_id": "CLOSING_CONDITIONS"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV42",
+  "prompt_id": "native-producer-closing-conditions/v3",
+  "prompt_version": 5,
+  "agreement_date": "2026-01-25",
+  "requested_model_profile": "TERRA_MEDIUM",
+  "requested_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "requested_models": [
+    "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM"
+  ],
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-09T20:59:59.867Z",
+  "total_elapsed_ms": 30491,
+  "extraction_wall_clock_ms": 27746,
+  "replay": null,
+  "replay_eligibility": null,
+  "recorded_to": "recording.json",
+  "code_provenance": {
+    "commit": "64ede5c576d1fefb1182dec33cd2d411192cb508",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 1,
+  "run_receipt_id": "649e62aa900375eb70ec28ba5e1df282038d6edff5110a5c085bd6b276679ce5",
+  "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+  "source_sha256": "ffee664a374a1c18c35dabb9458bcffc8e5014a305eefc184b102bbbe5bcc8f1",
+  "publication_gate_mode": "INERT_WITHHELD",
+  "publication_dispositions": {
+    "content_id": "8411afb398b9262af3a53c6bd37b4b1c71b7005a043d0466cac782dac00dd919",
+    "count": 4
+  },
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 1,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

@@ -1,0 +1,1067 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "28b0956fb9be294ddf91928093794ddbf9f123487d0256fcebd4e7265e4a98ea",
+  "review_queue": [
+    {
+      "section_reference": "5.3",
+      "source_citation": "5.3(f)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "and the Board of Directors of the Company shall recommend to the Company’s stockholders the adoption of this Agreement (the “Company Recommendation”) and shall include such recommendation in the Company Proxy Statement;",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "d4c5eacdcc22237f9bad97ba340db42aa1064469ff3f066d0679ccc7fe69456b",
+      "closure_id": "0f609b5033fb1277c44fd98bffad1c8107b88821ce3c30685efdb48ae2e20dd0",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e18d4882c1e08b7c00dc1adb41608aa7f420952470eccb05577f4bd1e29db61a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "5e2f98bee205245170660db25ab2e1fb807cf5fe2e0257172f9ed81cb5dc8ab0",
+          "document_ordinal": 0,
+          "absolute_start": 14232,
+          "absolute_end": 14457,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "and the Board of Directors of the Company shall recommend to the Company’s stockholders the adoption of this Agreement (the “Company Recommendation”) and shall include such recommendation in the Company Proxy Statement;",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "f",
+          "depth": 1,
+          "start_byte": 13993,
+          "end_byte": 18463
+        },
+        "chain": [
+          {
+            "path": "f",
+            "start_byte": 13993,
+            "end_byte": 18463,
+            "text": " The Company shall, within 3 Business Days from the Form S-4 Clearance Date, duly call and give notice of a meeting of its stockholders (the “Company Stockholder Meeting”) for the purpose of obtaining the Company Stockholder Approval, and the Board of Directors of the Company shall recommend to the Company’s stockholders the adoption of this Agreement (the “Company Recommendation”) and shall include such recommendation in the Company Proxy Statement; provided, however, that the Board of Directors of the Company may fail to make such Company Recommendation or make a Change in the Company Recommendation if permitted by, and in accordance with, Section 5.3(b). Without limiting the generality of the foregoing, but subject to Section 5.3(b) and the Company’s rights to terminate this Agreement under the circumstances set forth in Section 9.1, the Company’s obligations pursuant to the first two sentences of this Section 5.3(f) or its other obligations under this Section 5.3 shall not be affected by the commencement, public proposal, public disclosure or communication to the Company or its stockholders or representatives of any Acquisition Proposal. The Company shall use its reasonable best efforts to hold the Company Stockholder Meeting as soon as practicable, and in any event within 40 days, after the Form S-4 Clearance Date and (subject to any Change in the Company Recommendation permitted by, and in accordance with, Section 5.3(b)) to obtain the Company Stockholder Approval. The Company shall not, without the prior written consent of Parent, adjourn, postpone or otherwise delay the Company Stockholder Meeting; provided, that the Company may, notwithstanding the foregoing, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting (i) if, after consultation with Parent, the Company believes in good faith that such adjournment or postponement is reasonably necessary to allow reasonable additional time to (A) solicit additional proxies necessary to obtain the Company Stockholder Approval or (B) distribute any supplement or amendment to the Company Proxy Statement the distribution of which the Board of Directors of the Company has determined in good faith to be necessary under applicable law after consultation with, and taking into account the advice of, outside legal counsel or (ii) for an absence of a quorum, and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable. Notwithstanding the foregoing, (x) the Company may not, without the prior written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed), adjourn or postpone the Company Stockholder Meeting more than a total of three times pursuant to clause (i)(A) or (ii) of the immediately preceding sentence, and no such postponement or adjournment pursuant to clause (i)(A) or (ii) of the immediately preceding sentence shall be, without the prior written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed), for a period exceeding 10 Business Days and in no event may the Company postpone the Company Stockholder Meeting without the written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed) if doing so would require the setting of a new record date, and (y) if the Company Stockholder Meeting is adjourned or postponed, the Company shall reconvene the Company Stockholder Meeting at the earliest practicable date on which the Board of Directors of the Company reasonably expects to have sufficient affirmative votes to obtain the Company Stockholder Approval. Without the prior written consent of Parent, the matters contemplated by the Company Stockholder Approval shall be the only matters (other than matters of procedure and matters required by applicable law to be voted on by the Company’s stockholders in connection therewith) that the Company shall propose to be voted on by the stockholders of the Company at the Company Stockholder Meeting. The\n63\nCompany shall otherwise coordinate and cooperate with Parent with respect to the timing of the Company Stockholder Meeting and shall otherwise comply with all legal requirements applicable to the Company Stockholder Meeting. The Company shall provide updates to Parent with respect to the proxy solicitation for the Company Stockholder Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 57,
+            "text": "Section 5.3 Company Stockholder Meeting; Proxy Material.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.3",
+      "source_citation": "5.3(f)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(B) distribute any supplement or amendment to the Company Proxy Statement the distribution of which the Board of Directors of the Company has determined in good faith to be necessary under applicable law after consultation with, and taking into account the advice of, outside legal counsel",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "672f72aee2277cace8e7b4f40632aa0d7011d6095f274bf3dd1168ea304d36cf",
+      "closure_id": "45fb67b610ad8f29f393a7eaab42b84044989dc4299317b38836a81bc14e233b",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "1d0a05dd7d16048af3f333149b3818a00732b05c5f5f79fc58f9f062ff4c830a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "736a61e3764daef5657a877913c1464d5cb280005e402a7d1b134ce859924e92",
+          "document_ordinal": 0,
+          "absolute_start": 16064,
+          "absolute_end": 16353,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "(B) distribute any supplement or amendment to the Company Proxy Statement the distribution of which the Board of Directors of the Company has determined in good faith to be necessary under applicable law after consultation with, and taking into account the advice of, outside legal counsel",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "f",
+          "depth": 1,
+          "start_byte": 13993,
+          "end_byte": 18463
+        },
+        "chain": [
+          {
+            "path": "f",
+            "start_byte": 13993,
+            "end_byte": 18463,
+            "text": " The Company shall, within 3 Business Days from the Form S-4 Clearance Date, duly call and give notice of a meeting of its stockholders (the “Company Stockholder Meeting”) for the purpose of obtaining the Company Stockholder Approval, and the Board of Directors of the Company shall recommend to the Company’s stockholders the adoption of this Agreement (the “Company Recommendation”) and shall include such recommendation in the Company Proxy Statement; provided, however, that the Board of Directors of the Company may fail to make such Company Recommendation or make a Change in the Company Recommendation if permitted by, and in accordance with, Section 5.3(b). Without limiting the generality of the foregoing, but subject to Section 5.3(b) and the Company’s rights to terminate this Agreement under the circumstances set forth in Section 9.1, the Company’s obligations pursuant to the first two sentences of this Section 5.3(f) or its other obligations under this Section 5.3 shall not be affected by the commencement, public proposal, public disclosure or communication to the Company or its stockholders or representatives of any Acquisition Proposal. The Company shall use its reasonable best efforts to hold the Company Stockholder Meeting as soon as practicable, and in any event within 40 days, after the Form S-4 Clearance Date and (subject to any Change in the Company Recommendation permitted by, and in accordance with, Section 5.3(b)) to obtain the Company Stockholder Approval. The Company shall not, without the prior written consent of Parent, adjourn, postpone or otherwise delay the Company Stockholder Meeting; provided, that the Company may, notwithstanding the foregoing, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting (i) if, after consultation with Parent, the Company believes in good faith that such adjournment or postponement is reasonably necessary to allow reasonable additional time to (A) solicit additional proxies necessary to obtain the Company Stockholder Approval or (B) distribute any supplement or amendment to the Company Proxy Statement the distribution of which the Board of Directors of the Company has determined in good faith to be necessary under applicable law after consultation with, and taking into account the advice of, outside legal counsel or (ii) for an absence of a quorum, and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable. Notwithstanding the foregoing, (x) the Company may not, without the prior written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed), adjourn or postpone the Company Stockholder Meeting more than a total of three times pursuant to clause (i)(A) or (ii) of the immediately preceding sentence, and no such postponement or adjournment pursuant to clause (i)(A) or (ii) of the immediately preceding sentence shall be, without the prior written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed), for a period exceeding 10 Business Days and in no event may the Company postpone the Company Stockholder Meeting without the written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed) if doing so would require the setting of a new record date, and (y) if the Company Stockholder Meeting is adjourned or postponed, the Company shall reconvene the Company Stockholder Meeting at the earliest practicable date on which the Board of Directors of the Company reasonably expects to have sufficient affirmative votes to obtain the Company Stockholder Approval. Without the prior written consent of Parent, the matters contemplated by the Company Stockholder Approval shall be the only matters (other than matters of procedure and matters required by applicable law to be voted on by the Company’s stockholders in connection therewith) that the Company shall propose to be voted on by the stockholders of the Company at the Company Stockholder Meeting. The\n63\nCompany shall otherwise coordinate and cooperate with Parent with respect to the timing of the Company Stockholder Meeting and shall otherwise comply with all legal requirements applicable to the Company Stockholder Meeting. The Company shall provide updates to Parent with respect to the proxy solicitation for the Company Stockholder Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 57,
+            "text": "Section 5.3 Company Stockholder Meeting; Proxy Material.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.3",
+      "source_citation": "5.3(f)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "ANCHOR_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company shall use its reasonable best efforts to hold the Company Stockholder Meeting as soon as practicable, and in any event within 40 days, after the Form S-4 Clearance Date",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "8950e07dfa4568adabc444deb1fa342c3c0763649ba3ed166a7b26ea5f79ec02",
+      "closure_id": "50c378c8b8dc072ce9f34d4843ed466186475881484d19fa5d41c7a4b92e5b7d",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e82e3f963a30c40f72384a7ee65792eec9f0cd9759f37a23ca05fda9949ce35b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "7fcd15b1a1492afc8de28be4d0b8281ab201908c87a5e5a552b29c838cb9e3fc",
+          "document_ordinal": 0,
+          "absolute_start": 15167,
+          "absolute_end": 15347,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company shall use its reasonable best efforts to hold the Company Stockholder Meeting as soon as practicable, and in any event within 40 days, after the Form S-4 Clearance Date",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "f",
+          "depth": 1,
+          "start_byte": 13993,
+          "end_byte": 18463
+        },
+        "chain": [
+          {
+            "path": "f",
+            "start_byte": 13993,
+            "end_byte": 18463,
+            "text": " The Company shall, within 3 Business Days from the Form S-4 Clearance Date, duly call and give notice of a meeting of its stockholders (the “Company Stockholder Meeting”) for the purpose of obtaining the Company Stockholder Approval, and the Board of Directors of the Company shall recommend to the Company’s stockholders the adoption of this Agreement (the “Company Recommendation”) and shall include such recommendation in the Company Proxy Statement; provided, however, that the Board of Directors of the Company may fail to make such Company Recommendation or make a Change in the Company Recommendation if permitted by, and in accordance with, Section 5.3(b). Without limiting the generality of the foregoing, but subject to Section 5.3(b) and the Company’s rights to terminate this Agreement under the circumstances set forth in Section 9.1, the Company’s obligations pursuant to the first two sentences of this Section 5.3(f) or its other obligations under this Section 5.3 shall not be affected by the commencement, public proposal, public disclosure or communication to the Company or its stockholders or representatives of any Acquisition Proposal. The Company shall use its reasonable best efforts to hold the Company Stockholder Meeting as soon as practicable, and in any event within 40 days, after the Form S-4 Clearance Date and (subject to any Change in the Company Recommendation permitted by, and in accordance with, Section 5.3(b)) to obtain the Company Stockholder Approval. The Company shall not, without the prior written consent of Parent, adjourn, postpone or otherwise delay the Company Stockholder Meeting; provided, that the Company may, notwithstanding the foregoing, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting (i) if, after consultation with Parent, the Company believes in good faith that such adjournment or postponement is reasonably necessary to allow reasonable additional time to (A) solicit additional proxies necessary to obtain the Company Stockholder Approval or (B) distribute any supplement or amendment to the Company Proxy Statement the distribution of which the Board of Directors of the Company has determined in good faith to be necessary under applicable law after consultation with, and taking into account the advice of, outside legal counsel or (ii) for an absence of a quorum, and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable. Notwithstanding the foregoing, (x) the Company may not, without the prior written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed), adjourn or postpone the Company Stockholder Meeting more than a total of three times pursuant to clause (i)(A) or (ii) of the immediately preceding sentence, and no such postponement or adjournment pursuant to clause (i)(A) or (ii) of the immediately preceding sentence shall be, without the prior written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed), for a period exceeding 10 Business Days and in no event may the Company postpone the Company Stockholder Meeting without the written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed) if doing so would require the setting of a new record date, and (y) if the Company Stockholder Meeting is adjourned or postponed, the Company shall reconvene the Company Stockholder Meeting at the earliest practicable date on which the Board of Directors of the Company reasonably expects to have sufficient affirmative votes to obtain the Company Stockholder Approval. Without the prior written consent of Parent, the matters contemplated by the Company Stockholder Approval shall be the only matters (other than matters of procedure and matters required by applicable law to be voted on by the Company’s stockholders in connection therewith) that the Company shall propose to be voted on by the stockholders of the Company at the Company Stockholder Meeting. The\n63\nCompany shall otherwise coordinate and cooperate with Parent with respect to the timing of the Company Stockholder Meeting and shall otherwise comply with all legal requirements applicable to the Company Stockholder Meeting. The Company shall provide updates to Parent with respect to the proxy solicitation for the Company Stockholder Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 57,
+            "text": "Section 5.3 Company Stockholder Meeting; Proxy Material.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.3",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "BROKER_SEARCH_OBLIGATION_PRESENT",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d81aecd26d06d39fab4be5ed2e17964e6657f92442663d2fc01b3933bdea3812",
+      "closure_id": "8b04ad1de6f1f7df5d5ab74fbf500c99aadbc67850b699e7fe93c3161efc0289",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "6f4eafe39252366bb7319dd3e3f259617e57e054134ee3072e5210cfd4e48ede",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c2a501a5f82ba4f289265d8b6556a777600c13d730f34ae3b66f47425735da9a",
+          "document_ordinal": 0,
+          "absolute_start": 11015,
+          "absolute_end": 11311,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "(ii) commence a broker search (and any additional broker searches, if necessary) pursuant to and in compliance with Rule 14a-13 under the Exchange Act as promptly as practicable but no later than 20 Business Days prior to the record date (unless Parent and the Company otherwise agree in writing)",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 20,
+          "end": 39,
+          "excerpt": "Section 5.3 Company Stockholder Meeting; Proxy Material.\n(a) Company Recommendation. Except as permitted by Section 5.3",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8058,
+          "end": 8077,
+          "excerpt": "ny for the purpose of obtaining the Company Stockholder Approval at the Company Stockholder Meeting.\n(c) Parent and the Company shall use reasonable best efforts to, as promptly a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15237,
+          "end": 15256,
+          "excerpt": "Proposal. The Company shall use its reasonable best efforts to hold the Company Stockholder Meeting as soon as practicable, and in any event within 40 days, after the Form S-4 Cle",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15620,
+          "end": 15639,
+          "excerpt": "ior written consent of Parent, adjourn, postpone or otherwise delay the Company Stockholder Meeting; provided, that the Company may, notwithstanding the foregoing, without the pri",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 15749,
+          "end": 15768,
+          "excerpt": "ay, notwithstanding the foregoing, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting (i) if, after consultation with Parent, the Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15781,
+          "end": 15800,
+          "excerpt": "g, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting (i) if, after consultation with Parent, the Company believes in good faith that",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 16668,
+          "end": 16687,
+          "excerpt": " Parent (such consent not to be unreasonably withheld, conditioned or delayed), adjourn or postpone the Company Stockholder Meeting more than a total of three times pursuant to cl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 16700,
+          "end": 16719,
+          "excerpt": "unreasonably withheld, conditioned or delayed), adjourn or postpone the Company Stockholder Meeting more than a total of three times pursuant to clause (i)(A) or (ii) of the immed",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 17157,
+          "end": 17176,
+          "excerpt": "exceeding 10 Business Days and in no event may the Company postpone the Company Stockholder Meeting without the written consent of Parent (such consent not to be unreasonably with",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 17333,
+          "end": 17344,
+          "excerpt": "ithheld, conditioned or delayed) if doing so would require the setting of a new record date, and (y) if the Company Stockholder Meeting is adjourned or postponed, the Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 17369,
+          "end": 17388,
+          "excerpt": "doing so would require the setting of a new record date, and (y) if the Company Stockholder Meeting is adjourned or postponed, the Company shall reconvene the Company Stockholder ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 17456,
+          "end": 17475,
+          "excerpt": "lder Meeting is adjourned or postponed, the Company shall reconvene the Company Stockholder Meeting at the earliest practicable date on which the Board of Directors of the Company",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 18028,
+          "end": 18047,
+          "excerpt": " shall propose to be voted on by the stockholders of the Company at the Company Stockholder Meeting. The\n63\nCompany shall otherwise coordinate and cooperate with Parent with respe",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 18159,
+          "end": 18178,
+          "excerpt": " coordinate and cooperate with Parent with respect to the timing of the Company Stockholder Meeting and shall otherwise comply with all legal requirements applicable to the Compan",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 18260,
+          "end": 18279,
+          "excerpt": "nd shall otherwise comply with all legal requirements applicable to the Company Stockholder Meeting. The Company shall provide updates to Parent with respect to the proxy solicita",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 18380,
+          "end": 18399,
+          "excerpt": "rovide updates to Parent with respect to the proxy solicitation for the Company Stockholder Meeting (including interim results) as reasonably requested by Parent.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 2555,
+          "end_byte": 11552
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 2555,
+            "end_byte": 11552,
+            "text": " unless, prior to taking such action, (1) the Company has provided written notice (which notice shall not constitute a Change in the Company Recommendation) to Parent advising Parent that the Board of Directors of the Company intends to make a Change in the Company Recommendation or terminate this Agreement pursuant to Section 9.1(f) and specifying the reasons therefor, including (x) if the basis of the proposed action by the Board of Directors of the Company is due to a Superior Proposal (such notice, a “Superior Proposal Notice”), the terms and conditions of any such Superior Proposal and the identity of the Person or group making such Superior Proposal together with summaries of all oral communications, copies of any written offer or correspondence and draft term sheets or agreements received (and the Company will also promptly give Parent such a notice with respect to any subsequent change in such proposal), or (y) if the basis of the proposed action by the Board of Directors of the Company is an Intervening Event (such notice, an “Intervening Event Notice”), a detailed description of such Intervening Event, (2) a period of five Business Days has elapsed (the “Match Period”) following Parent’s receipt of the Intervening Event Notice or Superior Proposal Notice, as applicable (it being understood and agreed that the event of (x) any amendment, revision or modification to the financial or other material terms of such Superior Proposal shall require a new Superior Proposal Notice and (y) any change in fact or material development with respect to such Intervening Event (other than in respect of any revisions or proposals made by Parent) shall require a new Intervening Event Notice, and, in each case, and the Company shall be required to comply again with the requirements of this Section 5.3(b)(i) with a Match Period of three Business Days (for the avoidance of doubt, if a new Superior Proposal Notice or Intervening Event Notice with respect to any such amendment or modification, change or development (as applicable) is delivered during the initial five Business Day Match Period, the Match Period shall end on the later of (a) the expiration of the initial five Business Day Match Period and (b) the expiration of the new three Business Day Match Period after delivery of such new Superior Proposal Notice or Intervening Event Notice)), (3) during such Match Period, if requested by Parent, the Company has negotiated, and has caused its representatives to negotiate, in good faith with Parent and its representatives regarding any changes to the terms and conditions of this Agreement and any other proposals by Parent so that either the failure to make a Change in the Company Recommendation in response to such Intervening Event would no longer be inconsistent with the directors’ fiduciary duties to the Company’s stockholders under applicable Delaware law or such Acquisition Proposal would\n60\nno longer constitute a Superior Proposal, as applicable, and (4) following such Match Period, and after considering in good faith any changes or proposals made by Parent, the Board of Directors of the Company shall have determined in good faith (after consultation with and taking into account the advice of its outside legal counsel and, in the case of clause (y), a financial advisor of nationally recognized reputation) that (x) the failure to make a Change in the Company Recommendation in response to such Intervening Event would be reasonably likely to be inconsistent with the directors’ fiduciary duties to the Company’s stockholders under applicable Delaware law or (y) such Acquisition Proposal continues to constitute a Superior Proposal (after taking into account any revisions to the terms of the Mergers or this Agreement proposed by Parent after being notified pursuant to this Section 5.3(b)(i)) and the failure to make a Change in the Company Recommendation or terminate this Agreement pursuant to Section 9.1(f) would be reasonably likely to be inconsistent with the directors’ fiduciary duties to the Company’s stockholders under applicable Delaware law, as applicable.\n(ii) Except as permitted under Section 5.2, notwithstanding (x) any Change in the Company Recommendation or (y) the making of any Acquisition Proposal, until the termination of this Agreement (A) in no event shall the Company or any of its Subsidiaries (1) enter into, approve or recommend or, except as set forth in Section 5.3(b), propose to approve or recommend, any letter of intent, agreement in principle, merger agreement, option agreement, acquisition agreement or other agreement constituting or relating to an Acquisition Proposal, (2) except as required by applicable law or Section 7.5, make, facilitate or provide information in connection with any SEC or other regulatory filings in connection with the transactions contemplated by any Acquisition Proposal or (3) seek any third-party consents in connection with any transactions contemplated by any Acquisition Proposal and (B) the Company shall otherwise remain subject to the terms of this Agreement; provided, however, for the avoidance of doubt, that without limiting the Company’s right to terminate this Agreement in the circumstances set forth in Section 9.1, a Change in the Company Recommendation shall not limit the Company’s obligation to submit this Agreement to the stockholders of the Company for the purpose of obtaining the Company Stockholder Approval at the Company Stockholder Meeting.\n(c) Parent and the Company shall use reasonable best efforts to, as promptly as practicable following the date of this Agreement, but (x) no earlier than the filing with the SEC of Parent’s Annual Report on Form 10-K for the fiscal year ended December 31, 2025, which filing shall occur no later than March 2, 2026, and (y) no later than 15 days after the filing with the SEC of the Company’s Annual Report on Form 10-K for the fiscal year ended December 28, 2025, prepare, and Parent shall file with the SEC, a Registration Statement on Form S-4 (the “Form S-4”), in which the Company Proxy Statement shall be included as a prospectus. Each of Parent and the Company shall use its reasonable best efforts to have the Form S-4 declared effective under the Securities Act, and for the Company Proxy Statement to be cleared by the SEC and its staff under the Exchange Act, in each case, as promptly as practicable after such filing. Parent shall promptly comply with all reasonable requests from the Company for information regarding Parent or the Merger Subsidiaries and required by applicable law for inclusion in the Company Proxy Statement and the Company shall promptly comply with all reasonable requests from Parent for information regarding the Company and its Subsidiaries and required by applicable law for inclusion in the Form S-4. Neither the Company (with respect to the Company Proxy Statement) nor Parent (with respect to the Form S-4) shall file such documents with the SEC without first providing the other party and its counsel a reasonable opportunity to review and\n61\ncomment thereon, and the filing party shall (i) include the reasonable additions, deletions or changes suggested by the other party or its counsel to the extent relating to such party or their respective affiliates and (ii) consider in good faith all other such reasonable additions, deletions or changes suggested by the other party or its counsel in connection therewith. Each of Parent and the Company shall use its reasonable best efforts to have the Company Proxy Statement and the Form S-4 cleared by the SEC and its staff as promptly as practicable after such initial filing and to keep the Form S-4 effective so long as necessary to consummate the Mergers. Without limiting any other provision herein, each of the Form S-4 and the Company Proxy Statement shall contain such information and disclosure reasonably requested by either Parent or the Company, as applicable, so that the Form S-4 conforms in form and substance to the requirements of the Securities Act and the Company Proxy Statement conforms in form and substance to the requirements of the Exchange Act. The Company shall, in consultation with Parent, (i) set a record date for the Company Stockholder Meeting, which record date shall be prior to the date the Form S-4 is declared effective (the “Form S-4 Clearance Date”) or as promptly as practicable thereafter, (ii) commence a broker search (and any additional broker searches, if necessary) pursuant to and in compliance with Rule 14a-13 under the Exchange Act as promptly as practicable but no later than 20 Business Days prior to the record date (unless Parent and the Company otherwise agree in writing) and (iii) thereafter cause the Company Proxy Statement to be mailed to holders of Company Common Stock as promptly as practicable after the Form S-4 Clearance Date in any event, within three Business Days after the Form S-4 Clearance Date.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 57,
+            "text": "Section 5.3 Company Stockholder Meeting; Proxy Material.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.3",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ba461000f8e78c13a69038e6f34e8813a55d6ac7b095ae569482af9c87b5160c",
+      "closure_id": "9bc4db7c948a1942500074e2b6e4c5ed7cc798e6991c919d8a54e00b809ff063",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "80117c6d4184c081a46ba0fcac2d5104c8abd515c0adb111d0c924d059d8db5a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "be9d94014f583a79a82456daf4ee208b197e068e43300a6fb4938a44d158af60",
+          "document_ordinal": 0,
+          "absolute_start": 16357,
+          "absolute_end": 16388,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "(ii) for an absence of a quorum",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 20,
+          "end": 39,
+          "excerpt": "Section 5.3 Company Stockholder Meeting; Proxy Material.\n(a) Company Recommendation. Except as permitted by Section 5.3",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8058,
+          "end": 8077,
+          "excerpt": "ny for the purpose of obtaining the Company Stockholder Approval at the Company Stockholder Meeting.\n(c) Parent and the Company shall use reasonable best efforts to, as promptly a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15237,
+          "end": 15256,
+          "excerpt": "Proposal. The Company shall use its reasonable best efforts to hold the Company Stockholder Meeting as soon as practicable, and in any event within 40 days, after the Form S-4 Cle",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15620,
+          "end": 15639,
+          "excerpt": "ior written consent of Parent, adjourn, postpone or otherwise delay the Company Stockholder Meeting; provided, that the Company may, notwithstanding the foregoing, without the pri",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 15749,
+          "end": 15768,
+          "excerpt": "ay, notwithstanding the foregoing, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting (i) if, after consultation with Parent, the Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15781,
+          "end": 15800,
+          "excerpt": "g, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting (i) if, after consultation with Parent, the Company believes in good faith that",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 16668,
+          "end": 16687,
+          "excerpt": " Parent (such consent not to be unreasonably withheld, conditioned or delayed), adjourn or postpone the Company Stockholder Meeting more than a total of three times pursuant to cl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 16700,
+          "end": 16719,
+          "excerpt": "unreasonably withheld, conditioned or delayed), adjourn or postpone the Company Stockholder Meeting more than a total of three times pursuant to clause (i)(A) or (ii) of the immed",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 17157,
+          "end": 17176,
+          "excerpt": "exceeding 10 Business Days and in no event may the Company postpone the Company Stockholder Meeting without the written consent of Parent (such consent not to be unreasonably with",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 17333,
+          "end": 17344,
+          "excerpt": "ithheld, conditioned or delayed) if doing so would require the setting of a new record date, and (y) if the Company Stockholder Meeting is adjourned or postponed, the Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 17369,
+          "end": 17388,
+          "excerpt": "doing so would require the setting of a new record date, and (y) if the Company Stockholder Meeting is adjourned or postponed, the Company shall reconvene the Company Stockholder ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 17456,
+          "end": 17475,
+          "excerpt": "lder Meeting is adjourned or postponed, the Company shall reconvene the Company Stockholder Meeting at the earliest practicable date on which the Board of Directors of the Company",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 18028,
+          "end": 18047,
+          "excerpt": " shall propose to be voted on by the stockholders of the Company at the Company Stockholder Meeting. The\n63\nCompany shall otherwise coordinate and cooperate with Parent with respe",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 18159,
+          "end": 18178,
+          "excerpt": " coordinate and cooperate with Parent with respect to the timing of the Company Stockholder Meeting and shall otherwise comply with all legal requirements applicable to the Compan",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 18260,
+          "end": 18279,
+          "excerpt": "nd shall otherwise comply with all legal requirements applicable to the Company Stockholder Meeting. The Company shall provide updates to Parent with respect to the proxy solicita",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 18380,
+          "end": 18399,
+          "excerpt": "rovide updates to Parent with respect to the proxy solicitation for the Company Stockholder Meeting (including interim results) as reasonably requested by Parent.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "f",
+          "depth": 1,
+          "start_byte": 13993,
+          "end_byte": 18463
+        },
+        "chain": [
+          {
+            "path": "f",
+            "start_byte": 13993,
+            "end_byte": 18463,
+            "text": " The Company shall, within 3 Business Days from the Form S-4 Clearance Date, duly call and give notice of a meeting of its stockholders (the “Company Stockholder Meeting”) for the purpose of obtaining the Company Stockholder Approval, and the Board of Directors of the Company shall recommend to the Company’s stockholders the adoption of this Agreement (the “Company Recommendation”) and shall include such recommendation in the Company Proxy Statement; provided, however, that the Board of Directors of the Company may fail to make such Company Recommendation or make a Change in the Company Recommendation if permitted by, and in accordance with, Section 5.3(b). Without limiting the generality of the foregoing, but subject to Section 5.3(b) and the Company’s rights to terminate this Agreement under the circumstances set forth in Section 9.1, the Company’s obligations pursuant to the first two sentences of this Section 5.3(f) or its other obligations under this Section 5.3 shall not be affected by the commencement, public proposal, public disclosure or communication to the Company or its stockholders or representatives of any Acquisition Proposal. The Company shall use its reasonable best efforts to hold the Company Stockholder Meeting as soon as practicable, and in any event within 40 days, after the Form S-4 Clearance Date and (subject to any Change in the Company Recommendation permitted by, and in accordance with, Section 5.3(b)) to obtain the Company Stockholder Approval. The Company shall not, without the prior written consent of Parent, adjourn, postpone or otherwise delay the Company Stockholder Meeting; provided, that the Company may, notwithstanding the foregoing, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting (i) if, after consultation with Parent, the Company believes in good faith that such adjournment or postponement is reasonably necessary to allow reasonable additional time to (A) solicit additional proxies necessary to obtain the Company Stockholder Approval or (B) distribute any supplement or amendment to the Company Proxy Statement the distribution of which the Board of Directors of the Company has determined in good faith to be necessary under applicable law after consultation with, and taking into account the advice of, outside legal counsel or (ii) for an absence of a quorum, and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable. Notwithstanding the foregoing, (x) the Company may not, without the prior written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed), adjourn or postpone the Company Stockholder Meeting more than a total of three times pursuant to clause (i)(A) or (ii) of the immediately preceding sentence, and no such postponement or adjournment pursuant to clause (i)(A) or (ii) of the immediately preceding sentence shall be, without the prior written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed), for a period exceeding 10 Business Days and in no event may the Company postpone the Company Stockholder Meeting without the written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed) if doing so would require the setting of a new record date, and (y) if the Company Stockholder Meeting is adjourned or postponed, the Company shall reconvene the Company Stockholder Meeting at the earliest practicable date on which the Board of Directors of the Company reasonably expects to have sufficient affirmative votes to obtain the Company Stockholder Approval. Without the prior written consent of Parent, the matters contemplated by the Company Stockholder Approval shall be the only matters (other than matters of procedure and matters required by applicable law to be voted on by the Company’s stockholders in connection therewith) that the Company shall propose to be voted on by the stockholders of the Company at the Company Stockholder Meeting. The\n63\nCompany shall otherwise coordinate and cooperate with Parent with respect to the timing of the Company Stockholder Meeting and shall otherwise comply with all legal requirements applicable to the Company Stockholder Meeting. The Company shall provide updates to Parent with respect to the proxy solicitation for the Company Stockholder Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 57,
+            "text": "Section 5.3 Company Stockholder Meeting; Proxy Material.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.3",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "RECORD_DATE_ESTABLISHMENT_PRESENT",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8ad9086752d55e6820183fa6172bc8dc2a205bb068febd78879f9b92f374d586",
+      "closure_id": "bc5ef82c57c29a7e3c19436fdd6a1f8c9f5c53e3f68730640910841d7501ad02",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "4c4393a97a0ce5fc7b0714aff7f2bf6ba4b4a0cefca02750cee6518647986e0a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "cd978707473ce1a71661c48417e85d4dec4817642c7d2d15e9108df9ee6a8a3b",
+          "document_ordinal": 0,
+          "absolute_start": 10750,
+          "absolute_end": 11013,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company shall, in consultation with Parent, (i) set a record date for the Company Stockholder Meeting, which record date shall be prior to the date the Form S-4 is declared effective (the “Form S-4 Clearance Date”) or as promptly as practicable thereafter",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 20,
+          "end": 39,
+          "excerpt": "Section 5.3 Company Stockholder Meeting; Proxy Material.\n(a) Company Recommendation. Except as permitted by Section 5.3",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8058,
+          "end": 8077,
+          "excerpt": "ny for the purpose of obtaining the Company Stockholder Approval at the Company Stockholder Meeting.\n(c) Parent and the Company shall use reasonable best efforts to, as promptly a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15237,
+          "end": 15256,
+          "excerpt": "Proposal. The Company shall use its reasonable best efforts to hold the Company Stockholder Meeting as soon as practicable, and in any event within 40 days, after the Form S-4 Cle",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15620,
+          "end": 15639,
+          "excerpt": "ior written consent of Parent, adjourn, postpone or otherwise delay the Company Stockholder Meeting; provided, that the Company may, notwithstanding the foregoing, without the pri",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 15749,
+          "end": 15768,
+          "excerpt": "ay, notwithstanding the foregoing, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting (i) if, after consultation with Parent, the Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15781,
+          "end": 15800,
+          "excerpt": "g, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting (i) if, after consultation with Parent, the Company believes in good faith that",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 16668,
+          "end": 16687,
+          "excerpt": " Parent (such consent not to be unreasonably withheld, conditioned or delayed), adjourn or postpone the Company Stockholder Meeting more than a total of three times pursuant to cl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 16700,
+          "end": 16719,
+          "excerpt": "unreasonably withheld, conditioned or delayed), adjourn or postpone the Company Stockholder Meeting more than a total of three times pursuant to clause (i)(A) or (ii) of the immed",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 17157,
+          "end": 17176,
+          "excerpt": "exceeding 10 Business Days and in no event may the Company postpone the Company Stockholder Meeting without the written consent of Parent (such consent not to be unreasonably with",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 17333,
+          "end": 17344,
+          "excerpt": "ithheld, conditioned or delayed) if doing so would require the setting of a new record date, and (y) if the Company Stockholder Meeting is adjourned or postponed, the Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 17369,
+          "end": 17388,
+          "excerpt": "doing so would require the setting of a new record date, and (y) if the Company Stockholder Meeting is adjourned or postponed, the Company shall reconvene the Company Stockholder ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 17456,
+          "end": 17475,
+          "excerpt": "lder Meeting is adjourned or postponed, the Company shall reconvene the Company Stockholder Meeting at the earliest practicable date on which the Board of Directors of the Company",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 18028,
+          "end": 18047,
+          "excerpt": " shall propose to be voted on by the stockholders of the Company at the Company Stockholder Meeting. The\n63\nCompany shall otherwise coordinate and cooperate with Parent with respe",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 18159,
+          "end": 18178,
+          "excerpt": " coordinate and cooperate with Parent with respect to the timing of the Company Stockholder Meeting and shall otherwise comply with all legal requirements applicable to the Compan",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 18260,
+          "end": 18279,
+          "excerpt": "nd shall otherwise comply with all legal requirements applicable to the Company Stockholder Meeting. The Company shall provide updates to Parent with respect to the proxy solicita",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 18380,
+          "end": 18399,
+          "excerpt": "rovide updates to Parent with respect to the proxy solicitation for the Company Stockholder Meeting (including interim results) as reasonably requested by Parent.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 2555,
+          "end_byte": 11552
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 2555,
+            "end_byte": 11552,
+            "text": " unless, prior to taking such action, (1) the Company has provided written notice (which notice shall not constitute a Change in the Company Recommendation) to Parent advising Parent that the Board of Directors of the Company intends to make a Change in the Company Recommendation or terminate this Agreement pursuant to Section 9.1(f) and specifying the reasons therefor, including (x) if the basis of the proposed action by the Board of Directors of the Company is due to a Superior Proposal (such notice, a “Superior Proposal Notice”), the terms and conditions of any such Superior Proposal and the identity of the Person or group making such Superior Proposal together with summaries of all oral communications, copies of any written offer or correspondence and draft term sheets or agreements received (and the Company will also promptly give Parent such a notice with respect to any subsequent change in such proposal), or (y) if the basis of the proposed action by the Board of Directors of the Company is an Intervening Event (such notice, an “Intervening Event Notice”), a detailed description of such Intervening Event, (2) a period of five Business Days has elapsed (the “Match Period”) following Parent’s receipt of the Intervening Event Notice or Superior Proposal Notice, as applicable (it being understood and agreed that the event of (x) any amendment, revision or modification to the financial or other material terms of such Superior Proposal shall require a new Superior Proposal Notice and (y) any change in fact or material development with respect to such Intervening Event (other than in respect of any revisions or proposals made by Parent) shall require a new Intervening Event Notice, and, in each case, and the Company shall be required to comply again with the requirements of this Section 5.3(b)(i) with a Match Period of three Business Days (for the avoidance of doubt, if a new Superior Proposal Notice or Intervening Event Notice with respect to any such amendment or modification, change or development (as applicable) is delivered during the initial five Business Day Match Period, the Match Period shall end on the later of (a) the expiration of the initial five Business Day Match Period and (b) the expiration of the new three Business Day Match Period after delivery of such new Superior Proposal Notice or Intervening Event Notice)), (3) during such Match Period, if requested by Parent, the Company has negotiated, and has caused its representatives to negotiate, in good faith with Parent and its representatives regarding any changes to the terms and conditions of this Agreement and any other proposals by Parent so that either the failure to make a Change in the Company Recommendation in response to such Intervening Event would no longer be inconsistent with the directors’ fiduciary duties to the Company’s stockholders under applicable Delaware law or such Acquisition Proposal would\n60\nno longer constitute a Superior Proposal, as applicable, and (4) following such Match Period, and after considering in good faith any changes or proposals made by Parent, the Board of Directors of the Company shall have determined in good faith (after consultation with and taking into account the advice of its outside legal counsel and, in the case of clause (y), a financial advisor of nationally recognized reputation) that (x) the failure to make a Change in the Company Recommendation in response to such Intervening Event would be reasonably likely to be inconsistent with the directors’ fiduciary duties to the Company’s stockholders under applicable Delaware law or (y) such Acquisition Proposal continues to constitute a Superior Proposal (after taking into account any revisions to the terms of the Mergers or this Agreement proposed by Parent after being notified pursuant to this Section 5.3(b)(i)) and the failure to make a Change in the Company Recommendation or terminate this Agreement pursuant to Section 9.1(f) would be reasonably likely to be inconsistent with the directors’ fiduciary duties to the Company’s stockholders under applicable Delaware law, as applicable.\n(ii) Except as permitted under Section 5.2, notwithstanding (x) any Change in the Company Recommendation or (y) the making of any Acquisition Proposal, until the termination of this Agreement (A) in no event shall the Company or any of its Subsidiaries (1) enter into, approve or recommend or, except as set forth in Section 5.3(b), propose to approve or recommend, any letter of intent, agreement in principle, merger agreement, option agreement, acquisition agreement or other agreement constituting or relating to an Acquisition Proposal, (2) except as required by applicable law or Section 7.5, make, facilitate or provide information in connection with any SEC or other regulatory filings in connection with the transactions contemplated by any Acquisition Proposal or (3) seek any third-party consents in connection with any transactions contemplated by any Acquisition Proposal and (B) the Company shall otherwise remain subject to the terms of this Agreement; provided, however, for the avoidance of doubt, that without limiting the Company’s right to terminate this Agreement in the circumstances set forth in Section 9.1, a Change in the Company Recommendation shall not limit the Company’s obligation to submit this Agreement to the stockholders of the Company for the purpose of obtaining the Company Stockholder Approval at the Company Stockholder Meeting.\n(c) Parent and the Company shall use reasonable best efforts to, as promptly as practicable following the date of this Agreement, but (x) no earlier than the filing with the SEC of Parent’s Annual Report on Form 10-K for the fiscal year ended December 31, 2025, which filing shall occur no later than March 2, 2026, and (y) no later than 15 days after the filing with the SEC of the Company’s Annual Report on Form 10-K for the fiscal year ended December 28, 2025, prepare, and Parent shall file with the SEC, a Registration Statement on Form S-4 (the “Form S-4”), in which the Company Proxy Statement shall be included as a prospectus. Each of Parent and the Company shall use its reasonable best efforts to have the Form S-4 declared effective under the Securities Act, and for the Company Proxy Statement to be cleared by the SEC and its staff under the Exchange Act, in each case, as promptly as practicable after such filing. Parent shall promptly comply with all reasonable requests from the Company for information regarding Parent or the Merger Subsidiaries and required by applicable law for inclusion in the Company Proxy Statement and the Company shall promptly comply with all reasonable requests from Parent for information regarding the Company and its Subsidiaries and required by applicable law for inclusion in the Form S-4. Neither the Company (with respect to the Company Proxy Statement) nor Parent (with respect to the Form S-4) shall file such documents with the SEC without first providing the other party and its counsel a reasonable opportunity to review and\n61\ncomment thereon, and the filing party shall (i) include the reasonable additions, deletions or changes suggested by the other party or its counsel to the extent relating to such party or their respective affiliates and (ii) consider in good faith all other such reasonable additions, deletions or changes suggested by the other party or its counsel in connection therewith. Each of Parent and the Company shall use its reasonable best efforts to have the Company Proxy Statement and the Form S-4 cleared by the SEC and its staff as promptly as practicable after such initial filing and to keep the Form S-4 effective so long as necessary to consummate the Mergers. Without limiting any other provision herein, each of the Form S-4 and the Company Proxy Statement shall contain such information and disclosure reasonably requested by either Parent or the Company, as applicable, so that the Form S-4 conforms in form and substance to the requirements of the Securities Act and the Company Proxy Statement conforms in form and substance to the requirements of the Exchange Act. The Company shall, in consultation with Parent, (i) set a record date for the Company Stockholder Meeting, which record date shall be prior to the date the Form S-4 is declared effective (the “Form S-4 Clearance Date”) or as promptly as practicable thereafter, (ii) commence a broker search (and any additional broker searches, if necessary) pursuant to and in compliance with Rule 14a-13 under the Exchange Act as promptly as practicable but no later than 20 Business Days prior to the record date (unless Parent and the Company otherwise agree in writing) and (iii) thereafter cause the Company Proxy Statement to be mailed to holders of Company Common Stock as promptly as practicable after the Form S-4 Clearance Date in any event, within three Business Days after the Form S-4 Clearance Date.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 57,
+            "text": "Section 5.3 Company Stockholder Meeting; Proxy Material.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.3",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_CONVENE_OBLIGATION",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e4c42f262e2fe957c166afae97a8006262e4f5824c73c21ac8af17275893871e",
+      "closure_id": "d73bc3216e375e7c8bacb4d9825d9df1050ad76fe6cf98e48895ea457a758cc3",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "8823212f2b180eabb3440c7f0086fcb4f37a85fcc1952973e639b7fd86804155",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "cc202c39b21ac2916ac3205808efb49c2efb892da1c8e50ed9928c1b6eb4d311",
+          "document_ordinal": 0,
+          "absolute_start": 13994,
+          "absolute_end": 14230,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company shall, within 3 Business Days from the Form S-4 Clearance Date, duly call and give notice of a meeting of its stockholders (the “Company Stockholder Meeting”) for the purpose of obtaining the Company Stockholder Approval",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 20,
+          "end": 39,
+          "excerpt": "Section 5.3 Company Stockholder Meeting; Proxy Material.\n(a) Company Recommendation. Except as permitted by Section 5.3",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8058,
+          "end": 8077,
+          "excerpt": "ny for the purpose of obtaining the Company Stockholder Approval at the Company Stockholder Meeting.\n(c) Parent and the Company shall use reasonable best efforts to, as promptly a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15237,
+          "end": 15256,
+          "excerpt": "Proposal. The Company shall use its reasonable best efforts to hold the Company Stockholder Meeting as soon as practicable, and in any event within 40 days, after the Form S-4 Cle",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15620,
+          "end": 15639,
+          "excerpt": "ior written consent of Parent, adjourn, postpone or otherwise delay the Company Stockholder Meeting; provided, that the Company may, notwithstanding the foregoing, without the pri",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 15749,
+          "end": 15768,
+          "excerpt": "ay, notwithstanding the foregoing, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting (i) if, after consultation with Parent, the Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15781,
+          "end": 15800,
+          "excerpt": "g, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting (i) if, after consultation with Parent, the Company believes in good faith that",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 16668,
+          "end": 16687,
+          "excerpt": " Parent (such consent not to be unreasonably withheld, conditioned or delayed), adjourn or postpone the Company Stockholder Meeting more than a total of three times pursuant to cl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 16700,
+          "end": 16719,
+          "excerpt": "unreasonably withheld, conditioned or delayed), adjourn or postpone the Company Stockholder Meeting more than a total of three times pursuant to clause (i)(A) or (ii) of the immed",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 17157,
+          "end": 17176,
+          "excerpt": "exceeding 10 Business Days and in no event may the Company postpone the Company Stockholder Meeting without the written consent of Parent (such consent not to be unreasonably with",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 17333,
+          "end": 17344,
+          "excerpt": "ithheld, conditioned or delayed) if doing so would require the setting of a new record date, and (y) if the Company Stockholder Meeting is adjourned or postponed, the Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 17369,
+          "end": 17388,
+          "excerpt": "doing so would require the setting of a new record date, and (y) if the Company Stockholder Meeting is adjourned or postponed, the Company shall reconvene the Company Stockholder ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 17456,
+          "end": 17475,
+          "excerpt": "lder Meeting is adjourned or postponed, the Company shall reconvene the Company Stockholder Meeting at the earliest practicable date on which the Board of Directors of the Company",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 18028,
+          "end": 18047,
+          "excerpt": " shall propose to be voted on by the stockholders of the Company at the Company Stockholder Meeting. The\n63\nCompany shall otherwise coordinate and cooperate with Parent with respe",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 18159,
+          "end": 18178,
+          "excerpt": " coordinate and cooperate with Parent with respect to the timing of the Company Stockholder Meeting and shall otherwise comply with all legal requirements applicable to the Compan",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 18260,
+          "end": 18279,
+          "excerpt": "nd shall otherwise comply with all legal requirements applicable to the Company Stockholder Meeting. The Company shall provide updates to Parent with respect to the proxy solicita",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 18380,
+          "end": 18399,
+          "excerpt": "rovide updates to Parent with respect to the proxy solicitation for the Company Stockholder Meeting (including interim results) as reasonably requested by Parent.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "f",
+          "depth": 1,
+          "start_byte": 13993,
+          "end_byte": 18463
+        },
+        "chain": [
+          {
+            "path": "f",
+            "start_byte": 13993,
+            "end_byte": 18463,
+            "text": " The Company shall, within 3 Business Days from the Form S-4 Clearance Date, duly call and give notice of a meeting of its stockholders (the “Company Stockholder Meeting”) for the purpose of obtaining the Company Stockholder Approval, and the Board of Directors of the Company shall recommend to the Company’s stockholders the adoption of this Agreement (the “Company Recommendation”) and shall include such recommendation in the Company Proxy Statement; provided, however, that the Board of Directors of the Company may fail to make such Company Recommendation or make a Change in the Company Recommendation if permitted by, and in accordance with, Section 5.3(b). Without limiting the generality of the foregoing, but subject to Section 5.3(b) and the Company’s rights to terminate this Agreement under the circumstances set forth in Section 9.1, the Company’s obligations pursuant to the first two sentences of this Section 5.3(f) or its other obligations under this Section 5.3 shall not be affected by the commencement, public proposal, public disclosure or communication to the Company or its stockholders or representatives of any Acquisition Proposal. The Company shall use its reasonable best efforts to hold the Company Stockholder Meeting as soon as practicable, and in any event within 40 days, after the Form S-4 Clearance Date and (subject to any Change in the Company Recommendation permitted by, and in accordance with, Section 5.3(b)) to obtain the Company Stockholder Approval. The Company shall not, without the prior written consent of Parent, adjourn, postpone or otherwise delay the Company Stockholder Meeting; provided, that the Company may, notwithstanding the foregoing, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting (i) if, after consultation with Parent, the Company believes in good faith that such adjournment or postponement is reasonably necessary to allow reasonable additional time to (A) solicit additional proxies necessary to obtain the Company Stockholder Approval or (B) distribute any supplement or amendment to the Company Proxy Statement the distribution of which the Board of Directors of the Company has determined in good faith to be necessary under applicable law after consultation with, and taking into account the advice of, outside legal counsel or (ii) for an absence of a quorum, and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable. Notwithstanding the foregoing, (x) the Company may not, without the prior written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed), adjourn or postpone the Company Stockholder Meeting more than a total of three times pursuant to clause (i)(A) or (ii) of the immediately preceding sentence, and no such postponement or adjournment pursuant to clause (i)(A) or (ii) of the immediately preceding sentence shall be, without the prior written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed), for a period exceeding 10 Business Days and in no event may the Company postpone the Company Stockholder Meeting without the written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed) if doing so would require the setting of a new record date, and (y) if the Company Stockholder Meeting is adjourned or postponed, the Company shall reconvene the Company Stockholder Meeting at the earliest practicable date on which the Board of Directors of the Company reasonably expects to have sufficient affirmative votes to obtain the Company Stockholder Approval. Without the prior written consent of Parent, the matters contemplated by the Company Stockholder Approval shall be the only matters (other than matters of procedure and matters required by applicable law to be voted on by the Company’s stockholders in connection therewith) that the Company shall propose to be voted on by the stockholders of the Company at the Company Stockholder Meeting. The\n63\nCompany shall otherwise coordinate and cooperate with Parent with respect to the timing of the Company Stockholder Meeting and shall otherwise comply with all legal requirements applicable to the Company Stockholder Meeting. The Company shall provide updates to Parent with respect to the proxy solicitation for the Company Stockholder Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 57,
+            "text": "Section 5.3 Company Stockholder Meeting; Proxy Material.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.3",
+      "source_citation": "5.3(f)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "if, after consultation with Parent, the Company believes in good faith that such adjournment or postponement is reasonably necessary to allow reasonable additional time to (A) solicit additional proxies necessary to obtain the Company Stockholder Approval",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "372ea35f46b0c3ae59969af068277ed8a4d8d07bce36b0061b68d9e8983c454d",
+      "closure_id": "f836b5f6590ffc9df82c035381f781742ec0c5f16ad1bb5df734ea47d8573fb7",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "c83772e6e15023f1748d481508c62521dc8a3d1f5b9aa62b146e4f908e383261",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "5f4bc9e8df1cfd143f92e1c952770da14ac9b48140df74a7ab90bd0bd406a5a6",
+          "document_ordinal": 0,
+          "absolute_start": 15805,
+          "absolute_end": 16060,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "if, after consultation with Parent, the Company believes in good faith that such adjournment or postponement is reasonably necessary to allow reasonable additional time to (A) solicit additional proxies necessary to obtain the Company Stockholder Approval",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "f",
+          "depth": 1,
+          "start_byte": 13993,
+          "end_byte": 18463
+        },
+        "chain": [
+          {
+            "path": "f",
+            "start_byte": 13993,
+            "end_byte": 18463,
+            "text": " The Company shall, within 3 Business Days from the Form S-4 Clearance Date, duly call and give notice of a meeting of its stockholders (the “Company Stockholder Meeting”) for the purpose of obtaining the Company Stockholder Approval, and the Board of Directors of the Company shall recommend to the Company’s stockholders the adoption of this Agreement (the “Company Recommendation”) and shall include such recommendation in the Company Proxy Statement; provided, however, that the Board of Directors of the Company may fail to make such Company Recommendation or make a Change in the Company Recommendation if permitted by, and in accordance with, Section 5.3(b). Without limiting the generality of the foregoing, but subject to Section 5.3(b) and the Company’s rights to terminate this Agreement under the circumstances set forth in Section 9.1, the Company’s obligations pursuant to the first two sentences of this Section 5.3(f) or its other obligations under this Section 5.3 shall not be affected by the commencement, public proposal, public disclosure or communication to the Company or its stockholders or representatives of any Acquisition Proposal. The Company shall use its reasonable best efforts to hold the Company Stockholder Meeting as soon as practicable, and in any event within 40 days, after the Form S-4 Clearance Date and (subject to any Change in the Company Recommendation permitted by, and in accordance with, Section 5.3(b)) to obtain the Company Stockholder Approval. The Company shall not, without the prior written consent of Parent, adjourn, postpone or otherwise delay the Company Stockholder Meeting; provided, that the Company may, notwithstanding the foregoing, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting (i) if, after consultation with Parent, the Company believes in good faith that such adjournment or postponement is reasonably necessary to allow reasonable additional time to (A) solicit additional proxies necessary to obtain the Company Stockholder Approval or (B) distribute any supplement or amendment to the Company Proxy Statement the distribution of which the Board of Directors of the Company has determined in good faith to be necessary under applicable law after consultation with, and taking into account the advice of, outside legal counsel or (ii) for an absence of a quorum, and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable. Notwithstanding the foregoing, (x) the Company may not, without the prior written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed), adjourn or postpone the Company Stockholder Meeting more than a total of three times pursuant to clause (i)(A) or (ii) of the immediately preceding sentence, and no such postponement or adjournment pursuant to clause (i)(A) or (ii) of the immediately preceding sentence shall be, without the prior written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed), for a period exceeding 10 Business Days and in no event may the Company postpone the Company Stockholder Meeting without the written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed) if doing so would require the setting of a new record date, and (y) if the Company Stockholder Meeting is adjourned or postponed, the Company shall reconvene the Company Stockholder Meeting at the earliest practicable date on which the Board of Directors of the Company reasonably expects to have sufficient affirmative votes to obtain the Company Stockholder Approval. Without the prior written consent of Parent, the matters contemplated by the Company Stockholder Approval shall be the only matters (other than matters of procedure and matters required by applicable law to be voted on by the Company’s stockholders in connection therewith) that the Company shall propose to be voted on by the stockholders of the Company at the Company Stockholder Meeting. The\n63\nCompany shall otherwise coordinate and cooperate with Parent with respect to the timing of the Company Stockholder Meeting and shall otherwise comply with all legal requirements applicable to the Company Stockholder Meeting. The Company shall provide updates to Parent with respect to the proxy solicitation for the Company Stockholder Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 57,
+            "text": "Section 5.3 Company Stockholder Meeting; Proxy Material.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "f9a3607eaf3b11012050670f0d745f944b208cbdc1f02650980569176a34c6a9"
+}

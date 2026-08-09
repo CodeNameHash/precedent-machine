@@ -1,0 +1,236 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "fe63d2812a0454c0bba1868c2f5e24455d5b9182a1f97ded9e99c4944ee22a0f",
+  "review_queue": [
+    {
+      "section_reference": "7.01",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LEGAL_RESTRAINT_CONDITION",
+      "concept_key": "COND-M-LEGAL",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0b7f32aa760e32512630f90c9ef4be7e33295a523185a07c8c596bfcfca12089",
+      "closure_id": "1e4f056b4cc8176d463b4ac3df2e678c7f60f7d4e69edccb3b3e0c7484054784",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "3061463d9221a27ce87e4dce4b4ec8996c7a319a80a2fdc76a9113b25bbc503b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9a0c86a07cb6d73021d99a467894bbb8cccbb1f809b88bc4798ffbc5c22de95a",
+          "document_ordinal": 0,
+          "absolute_start": 585,
+          "absolute_end": 800,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "No Judgment issued by any court of competent jurisdiction or Law enacted by any Governmental Entity (collectively, “Legal Restraints”) preventing or prohibiting the consummation of the Merger shall be in effect.",
+      "attachment_position": null,
+      "concept_family": "COND-M-LEGAL",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 563,
+          "end_byte": 801
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 563,
+            "end_byte": 801,
+            "text": " No Legal Restraints. No Judgment issued by any court of competent jurisdiction or Law enacted by any Governmental Entity (collectively, “Legal Restraints”) preventing or prohibiting the consummation of the Merger shall be in effect.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 220,
+            "text": "SECTION 7.01. Conditions to Each Party’s Obligation. The respective obligation of each party to effect the Merger is subject to the satisfaction or waiver on or prior to the Effective Time of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.01",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "STOCKHOLDER_APPROVAL_CONDITION",
+      "concept_key": "COND-M-STOCKHOLDER",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "018f2c306df0f93ddf3293b776673c81f6934e10148006189263f9f3c6df5211",
+      "closure_id": "524a87631a7f8df4ea08c4ebf258fa858449271e2e8a5a7f1721bb9c11a17382",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "277c7c443e36d764d93180021000bbefd9014af656593ac366365ce0f788957a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "57f1f2ad5b628fd9cdd524c955168d8b756a970c9b2daf0617f2234cb8850e8e",
+          "document_ordinal": 0,
+          "absolute_start": 827,
+          "absolute_end": 999,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company Stockholder Approval shall been duly obtained in accordance with applicable Law, the Company Charter and the Company By-laws at the Company Stockholder Meeting.",
+      "attachment_position": null,
+      "concept_family": "COND-M-STOCKHOLDER",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 804,
+          "end_byte": 1000
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 804,
+            "end_byte": 1000,
+            "text": " Stockholder Approval. The Company Stockholder Approval shall been duly obtained in accordance with applicable Law, the Company Charter and the Company By-laws at the Company Stockholder Meeting.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 220,
+            "text": "SECTION 7.01. Conditions to Each Party’s Obligation. The respective obligation of each party to effect the Merger is subject to the satisfaction or waiver on or prior to the Effective Time of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.01",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_APPROVAL_CONDITION",
+      "concept_key": "COND-REG",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d0bd4b43f037df132d7d0bd098d7e1ed5951565f991978f56923cae13a7f016c",
+      "closure_id": "7feb3cb4fd14ec2ad60bb7eaecf3d578ddb75b9889a392b2abd4c2825dc706ed",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "8fd20b417260a731fd97ddfdfb65f00ad868e50623812d4edd83cb1867efb297",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9c14c87b3bcbe1c740bbb24c1292557d564f0312295e0eb7081a1baf5c2e52af",
+          "document_ordinal": 0,
+          "absolute_start": 249,
+          "absolute_end": 368,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The waiting period applicable to the consummation of the Merger under the HSR Act shall have expired or been terminated",
+      "attachment_position": null,
+      "concept_family": "COND-REG",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 223,
+          "end_byte": 560
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 223,
+            "end_byte": 560,
+            "text": " Antitrust Clearance. (i) The waiting period applicable to the consummation of the Merger under the HSR Act shall have expired or been terminated and (ii) any approvals or clearances applicable to the Merger as set forth in Section 7.01(a) of the Company Disclosure Letter, will have expired, been terminated or obtained, as applicable.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 220,
+            "text": "SECTION 7.01. Conditions to Each Party’s Obligation. The respective obligation of each party to effect the Merger is subject to the satisfaction or waiver on or prior to the Effective Time of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.01",
+      "source_citation": "7.01(a)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any approvals or clearances applicable to the Merger as set forth in Section 7.01(a) of the Company Disclosure Letter, will have expired, been terminated or obtained, as applicable.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e31956a9f2cdb22711c8f42f737c6aab515ee23373b94e2115bc4aade2574d9b",
+      "closure_id": "d06f0d051bd8220ce1ce7cdd5433072e1891f6631c4bc26eb289f3a2b6b3da01",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "d1e9b658c3e384d6b7864db26acb300ed7a59856cb6521a452c0e8c95e1a147b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "a455616de7657d7b2a38681279c01434c1952277ac0b7b0448be106a3c5822a7",
+          "document_ordinal": 0,
+          "absolute_start": 378,
+          "absolute_end": 559,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "any approvals or clearances applicable to the Merger as set forth in Section 7.01(a) of the Company Disclosure Letter, will have expired, been terminated or obtained, as applicable.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 223,
+          "end_byte": 560
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 223,
+            "end_byte": 560,
+            "text": " Antitrust Clearance. (i) The waiting period applicable to the consummation of the Merger under the HSR Act shall have expired or been terminated and (ii) any approvals or clearances applicable to the Merger as set forth in Section 7.01(a) of the Company Disclosure Letter, will have expired, been terminated or obtained, as applicable.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 220,
+            "text": "SECTION 7.01. Conditions to Each Party’s Obligation. The respective obligation of each party to effect the Merger is subject to the satisfaction or waiver on or prior to the Effective Time of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "23e3f7cd9725c910f88021b4de0ec49a50cd422c48794b117c93c919407fa701"
+}

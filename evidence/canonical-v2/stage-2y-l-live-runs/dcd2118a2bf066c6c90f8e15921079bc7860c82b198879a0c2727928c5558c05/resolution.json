@@ -1,0 +1,2040 @@
+{
+  "resolved": [
+    {
+      "section_reference": "6.1",
+      "source_citation": "6.1(a)",
+      "citation_context": {
+        "parent_section_reference": "6.1",
+        "child_section_reference": "6.1(a)",
+        "parent_chapeau_quote": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81",
+        "child_clause_quote": "(a) Company Requisite Vote. The Company shall have obtained the Company Requisite Vote."
+      },
+      "governing_context_quote": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "STOCKHOLDER_APPROVAL_CONDITION",
+      "concept_key": "COND-M-STOCKHOLDER",
+      "party": {
+        "role": "CONDITION_BENEFICIARY",
+        "value": "Either Principal Party",
+        "capacity": "EITHER_PRINCIPAL_PARTY"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "1a625f0b3cdfb587318ae78276d39df42ac137a7687235f363a1947f3a67ae1f",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 306535,
+        "absolute_end": 307839,
+        "concept_key": "COND-M-STOCKHOLDER",
+        "party": {
+          "role": "CONDITION_BENEFICIARY",
+          "value": "Either Principal Party",
+          "capacity": "EITHER_PRINCIPAL_PARTY"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "7127d2bdcf6f65f31ed2f689f66d9aedf6963120402ed0f14a1c90be93df099a",
+        "provision_instance_id": "20294ca0a66ae3e684460bc75cfded8c1dc06414dceae4802ff8896e8983202f",
+        "closure_id": "a434671e8d5bce0047389d2af8cfd2480a7241bbebf38ae54a8058d2f2a874f0"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "ad5ca2cb0d582a9924fcb2364b9fa6b49e3a1aa55f6815ccf5b9227463d60e25",
+        "claim_occurrence_id": "5140a4fb4f906757dc7634d37f080ff1ab1eeb5ed34b20107f7e38ee6f7bd1c2",
+        "subject_occurrence_id": "20294ca0a66ae3e684460bc75cfded8c1dc06414dceae4802ff8896e8983202f",
+        "claim_definition_key": "STOCKHOLDER_APPROVAL_CONDITION",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "The Company shall have obtained the Company Requisite Vote.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "2539a5385865c639b1e4884178e0eb50601fefe70787319cc1ef41682b73b3e7"
+        ],
+        "attributes": {
+          "section_reference": "6.1",
+          "assertion_kind": "STOCKHOLDER_APPROVAL",
+          "condition_obligor": null,
+          "accuracy_standard": null,
+          "rep_side": null,
+          "covered_scope_ref": null,
+          "scrape_quote": null,
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": null,
+          "obligor_ref": null,
+          "approval_kind": null,
+          "approval_definition_ref": "Company Requisite Vote",
+          "s4_component": null,
+          "listing_venue_ref": null,
+          "certificate_side": null,
+          "certifying_party_ref": null,
+          "certified_condition_refs": [],
+          "certificate_relationship_status": null,
+          "causation_standard": null,
+          "breach_standard": null,
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "STOCKHOLDER_APPROVAL"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "2539a5385865c639b1e4884178e0eb50601fefe70787319cc1ef41682b73b3e7",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "7eb0fcbe9f7f11c9cec9f3741e12a7e0e2e428046a9ed0c4f1aa68dad99a2f51",
+            "document_ordinal": 0,
+            "absolute_start": 469,
+            "absolute_end": 528,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "00f7cb56b53d8ae111a2d3c4c14590aa59a86afbd45a37fb5210bccc383c17b9"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.1",
+          "normalized_citation": "6.1",
+          "derived_citation": "6.1(a)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "ad5ca2cb0d582a9924fcb2364b9fa6b49e3a1aa55f6815ccf5b9227463d60e25",
+            "claim_occurrence_id": "5140a4fb4f906757dc7634d37f080ff1ab1eeb5ed34b20107f7e38ee6f7bd1c2",
+            "subject_occurrence_id": "20294ca0a66ae3e684460bc75cfded8c1dc06414dceae4802ff8896e8983202f",
+            "claim_definition_key": "STOCKHOLDER_APPROVAL_CONDITION",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "The Company shall have obtained the Company Requisite Vote.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "2539a5385865c639b1e4884178e0eb50601fefe70787319cc1ef41682b73b3e7"
+            ],
+            "attributes": {
+              "section_reference": "6.1",
+              "assertion_kind": "STOCKHOLDER_APPROVAL",
+              "condition_obligor": null,
+              "accuracy_standard": null,
+              "rep_side": null,
+              "covered_scope_ref": null,
+              "scrape_quote": null,
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": null,
+              "obligor_ref": null,
+              "approval_kind": null,
+              "approval_definition_ref": "Company Requisite Vote",
+              "s4_component": null,
+              "listing_venue_ref": null,
+              "certificate_side": null,
+              "certifying_party_ref": null,
+              "certified_condition_refs": [],
+              "certificate_relationship_status": null,
+              "causation_standard": null,
+              "breach_standard": null,
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "STOCKHOLDER_APPROVAL"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "2539a5385865c639b1e4884178e0eb50601fefe70787319cc1ef41682b73b3e7",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "7eb0fcbe9f7f11c9cec9f3741e12a7e0e2e428046a9ed0c4f1aa68dad99a2f51",
+                "document_ordinal": 0,
+                "absolute_start": 469,
+                "absolute_end": 528,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "00f7cb56b53d8ae111a2d3c4c14590aa59a86afbd45a37fb5210bccc383c17b9"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "b07f447e592f06176a80721b0035b30597bd29e58bcfc1a36e707b5afc42e073",
+            "producer_receipt_id": "0f3cdb35f3ce4749c4db5a8bb9bfa0930cd49d39a9dd3b67928519bfee366c58",
+            "governed_scope_digest": "84e87f8385c030f014eb2e00170e0602e0bba727d7c5b6489d95148601c3a9e4",
+            "extraction_provenance_id": "d73e4b0ff00a769fe99b896aecade4580ef825f6910926ff4dd84a6e2a09adba"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [],
+        "materiality_rank": 70,
+        "materiality_label": "CLOSING_CONDITIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.1",
+          "normalized_citation": "6.1",
+          "derived_citation": "6.1(a)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 444,
+          "end_byte": 529
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 444,
+            "end_byte": 529,
+            "text": " Company Requisite Vote. The Company shall have obtained the Company Requisite Vote.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 441,
+            "text": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.1",
+      "source_citation": "6.1(b)",
+      "citation_context": {
+        "parent_section_reference": "6.1",
+        "child_section_reference": "6.1(b)",
+        "parent_chapeau_quote": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81",
+        "child_clause_quote": "(b) Registration Statement. The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order."
+      },
+      "governing_context_quote": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "S4_CONDITION_COMPONENT",
+      "concept_key": "COND-M-S4",
+      "party": {
+        "role": "CONDITION_BENEFICIARY",
+        "value": "Either Principal Party",
+        "capacity": "EITHER_PRINCIPAL_PARTY"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "1a625f0b3cdfb587318ae78276d39df42ac137a7687235f363a1947f3a67ae1f",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 306535,
+        "absolute_end": 307839,
+        "concept_key": "COND-M-S4",
+        "party": {
+          "role": "CONDITION_BENEFICIARY",
+          "value": "Either Principal Party",
+          "capacity": "EITHER_PRINCIPAL_PARTY"
+        },
+        "ordinal": 2,
+        "source_anchor_id": "7127d2bdcf6f65f31ed2f689f66d9aedf6963120402ed0f14a1c90be93df099a",
+        "provision_instance_id": "0bfd28ff225696b58040ed2eecba55d203f5b88be9058af53520ebeddd35fe2b",
+        "closure_id": "5ccefd46ba26edf5fcb809d672d06f388766b00487ae0deb57601fe0d361b05e"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "5d372f2a8f11f6e99a70041b425bd163d3e9e6d07271631d481ab0f90a38f14d",
+        "claim_occurrence_id": "2f4df9a6a65d49864083fb0ef7b23202cb6cf71c39303d2c01218b47d72249ba",
+        "subject_occurrence_id": "0bfd28ff225696b58040ed2eecba55d203f5b88be9058af53520ebeddd35fe2b",
+        "claim_definition_key": "S4_CONDITION_COMPONENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.",
+        "canonical_value": "FORM_EFFECTIVE",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "4d89394b02b953ed7a9dffa40e28a855e8fc479abe10f1b067f5a369a989cc6e"
+        ],
+        "attributes": {
+          "section_reference": "6.1",
+          "assertion_kind": "S4_COMPONENT",
+          "condition_obligor": null,
+          "accuracy_standard": null,
+          "rep_side": null,
+          "covered_scope_ref": null,
+          "scrape_quote": null,
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": null,
+          "obligor_ref": null,
+          "approval_kind": null,
+          "approval_definition_ref": null,
+          "s4_component": "FORM_EFFECTIVE",
+          "listing_venue_ref": null,
+          "certificate_side": null,
+          "certifying_party_ref": null,
+          "certified_condition_refs": [],
+          "certificate_relationship_status": null,
+          "causation_standard": null,
+          "breach_standard": null,
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "S4_COMPONENT"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "4d89394b02b953ed7a9dffa40e28a855e8fc479abe10f1b067f5a369a989cc6e",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "3f8b4332196e64f876a044cb11f69f52b0dcfaaeb51a7abf48aff4f0fd369eb1",
+            "document_ordinal": 0,
+            "absolute_start": 557,
+            "absolute_end": 745,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "7e9d113b701e99b3f50e3b512c69a583dd89dc35494c0b601d220abbac7f4926"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.1",
+          "normalized_citation": "6.1",
+          "derived_citation": "6.1(b)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "5d372f2a8f11f6e99a70041b425bd163d3e9e6d07271631d481ab0f90a38f14d",
+            "claim_occurrence_id": "2f4df9a6a65d49864083fb0ef7b23202cb6cf71c39303d2c01218b47d72249ba",
+            "subject_occurrence_id": "0bfd28ff225696b58040ed2eecba55d203f5b88be9058af53520ebeddd35fe2b",
+            "claim_definition_key": "S4_CONDITION_COMPONENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.",
+            "canonical_value": "FORM_EFFECTIVE",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "4d89394b02b953ed7a9dffa40e28a855e8fc479abe10f1b067f5a369a989cc6e"
+            ],
+            "attributes": {
+              "section_reference": "6.1",
+              "assertion_kind": "S4_COMPONENT",
+              "condition_obligor": null,
+              "accuracy_standard": null,
+              "rep_side": null,
+              "covered_scope_ref": null,
+              "scrape_quote": null,
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": null,
+              "obligor_ref": null,
+              "approval_kind": null,
+              "approval_definition_ref": null,
+              "s4_component": "FORM_EFFECTIVE",
+              "listing_venue_ref": null,
+              "certificate_side": null,
+              "certifying_party_ref": null,
+              "certified_condition_refs": [],
+              "certificate_relationship_status": null,
+              "causation_standard": null,
+              "breach_standard": null,
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "S4_COMPONENT"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "4d89394b02b953ed7a9dffa40e28a855e8fc479abe10f1b067f5a369a989cc6e",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "3f8b4332196e64f876a044cb11f69f52b0dcfaaeb51a7abf48aff4f0fd369eb1",
+                "document_ordinal": 0,
+                "absolute_start": 557,
+                "absolute_end": 745,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "7e9d113b701e99b3f50e3b512c69a583dd89dc35494c0b601d220abbac7f4926"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "b07f447e592f06176a80721b0035b30597bd29e58bcfc1a36e707b5afc42e073",
+            "producer_receipt_id": "0f3cdb35f3ce4749c4db5a8bb9bfa0930cd49d39a9dd3b67928519bfee366c58",
+            "governed_scope_digest": "84e87f8385c030f014eb2e00170e0602e0bba727d7c5b6489d95148601c3a9e4",
+            "extraction_provenance_id": "d73e4b0ff00a769fe99b896aecade4580ef825f6910926ff4dd84a6e2a09adba"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [],
+        "materiality_rank": 70,
+        "materiality_label": "CLOSING_CONDITIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.1",
+          "normalized_citation": "6.1",
+          "derived_citation": "6.1(b)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 532,
+          "end_byte": 746
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 532,
+            "end_byte": 746,
+            "text": " Registration Statement. The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 441,
+            "text": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.1",
+      "source_citation": "6.1(b)",
+      "citation_context": {
+        "parent_section_reference": "6.1",
+        "child_section_reference": "6.1(b)",
+        "parent_chapeau_quote": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81",
+        "child_clause_quote": "(b) Registration Statement. The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order."
+      },
+      "governing_context_quote": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "S4_CONDITION_COMPONENT",
+      "concept_key": "COND-M-S4",
+      "party": {
+        "role": "CONDITION_BENEFICIARY",
+        "value": "Either Principal Party",
+        "capacity": "EITHER_PRINCIPAL_PARTY"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "1a625f0b3cdfb587318ae78276d39df42ac137a7687235f363a1947f3a67ae1f",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 306535,
+        "absolute_end": 307839,
+        "concept_key": "COND-M-S4",
+        "party": {
+          "role": "CONDITION_BENEFICIARY",
+          "value": "Either Principal Party",
+          "capacity": "EITHER_PRINCIPAL_PARTY"
+        },
+        "ordinal": 2,
+        "source_anchor_id": "7127d2bdcf6f65f31ed2f689f66d9aedf6963120402ed0f14a1c90be93df099a",
+        "provision_instance_id": "0bfd28ff225696b58040ed2eecba55d203f5b88be9058af53520ebeddd35fe2b",
+        "closure_id": "5ccefd46ba26edf5fcb809d672d06f388766b00487ae0deb57601fe0d361b05e"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "23420f3be6cc2a2c7b3a070dc256df3fae8296188c2e2849fd2b613db487a009",
+        "claim_occurrence_id": "362cb911d1ab6db1516b5aa45a03dc9a914fb8282b0d3edbeb20ddaf7d02bf0b",
+        "subject_occurrence_id": "0bfd28ff225696b58040ed2eecba55d203f5b88be9058af53520ebeddd35fe2b",
+        "claim_definition_key": "S4_CONDITION_COMPONENT",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.",
+        "canonical_value": "NO_STOP_ORDER",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "234b77f5f4ead4084066033592e1476549ce6b37df1f63a1791d08c2e1a53e71"
+        ],
+        "attributes": {
+          "section_reference": "6.1",
+          "assertion_kind": "S4_COMPONENT",
+          "condition_obligor": null,
+          "accuracy_standard": null,
+          "rep_side": null,
+          "covered_scope_ref": null,
+          "scrape_quote": null,
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": null,
+          "obligor_ref": null,
+          "approval_kind": null,
+          "approval_definition_ref": null,
+          "s4_component": "NO_STOP_ORDER",
+          "listing_venue_ref": null,
+          "certificate_side": null,
+          "certifying_party_ref": null,
+          "certified_condition_refs": [],
+          "certificate_relationship_status": null,
+          "causation_standard": null,
+          "breach_standard": null,
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "S4_COMPONENT"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "234b77f5f4ead4084066033592e1476549ce6b37df1f63a1791d08c2e1a53e71",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "3f8b4332196e64f876a044cb11f69f52b0dcfaaeb51a7abf48aff4f0fd369eb1",
+            "document_ordinal": 0,
+            "absolute_start": 557,
+            "absolute_end": 745,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "6ff59b158c37a3f6f7746beb8e0522a4181ca3bd6220e1bfbb751e09c96ca480"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.1",
+          "normalized_citation": "6.1",
+          "derived_citation": "6.1(b)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "23420f3be6cc2a2c7b3a070dc256df3fae8296188c2e2849fd2b613db487a009",
+            "claim_occurrence_id": "362cb911d1ab6db1516b5aa45a03dc9a914fb8282b0d3edbeb20ddaf7d02bf0b",
+            "subject_occurrence_id": "0bfd28ff225696b58040ed2eecba55d203f5b88be9058af53520ebeddd35fe2b",
+            "claim_definition_key": "S4_CONDITION_COMPONENT",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.",
+            "canonical_value": "NO_STOP_ORDER",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "234b77f5f4ead4084066033592e1476549ce6b37df1f63a1791d08c2e1a53e71"
+            ],
+            "attributes": {
+              "section_reference": "6.1",
+              "assertion_kind": "S4_COMPONENT",
+              "condition_obligor": null,
+              "accuracy_standard": null,
+              "rep_side": null,
+              "covered_scope_ref": null,
+              "scrape_quote": null,
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": null,
+              "obligor_ref": null,
+              "approval_kind": null,
+              "approval_definition_ref": null,
+              "s4_component": "NO_STOP_ORDER",
+              "listing_venue_ref": null,
+              "certificate_side": null,
+              "certifying_party_ref": null,
+              "certified_condition_refs": [],
+              "certificate_relationship_status": null,
+              "causation_standard": null,
+              "breach_standard": null,
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "S4_COMPONENT"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "234b77f5f4ead4084066033592e1476549ce6b37df1f63a1791d08c2e1a53e71",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "3f8b4332196e64f876a044cb11f69f52b0dcfaaeb51a7abf48aff4f0fd369eb1",
+                "document_ordinal": 0,
+                "absolute_start": 557,
+                "absolute_end": 745,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "6ff59b158c37a3f6f7746beb8e0522a4181ca3bd6220e1bfbb751e09c96ca480"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "b07f447e592f06176a80721b0035b30597bd29e58bcfc1a36e707b5afc42e073",
+            "producer_receipt_id": "0f3cdb35f3ce4749c4db5a8bb9bfa0930cd49d39a9dd3b67928519bfee366c58",
+            "governed_scope_digest": "84e87f8385c030f014eb2e00170e0602e0bba727d7c5b6489d95148601c3a9e4",
+            "extraction_provenance_id": "d73e4b0ff00a769fe99b896aecade4580ef825f6910926ff4dd84a6e2a09adba"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [],
+        "materiality_rank": 70,
+        "materiality_label": "CLOSING_CONDITIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.1",
+          "normalized_citation": "6.1",
+          "derived_citation": "6.1(b)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 532,
+          "end_byte": 746
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 532,
+            "end_byte": 746,
+            "text": " Registration Statement. The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 441,
+            "text": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.1",
+      "source_citation": "6.1(b)",
+      "citation_context": {
+        "parent_section_reference": "6.1",
+        "child_section_reference": "6.1(b)",
+        "parent_chapeau_quote": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81",
+        "child_clause_quote": "(b) Registration Statement. The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order."
+      },
+      "governing_context_quote": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "S4_CONDITION_COMPONENT",
+      "concept_key": "COND-M-S4",
+      "party": {
+        "role": "CONDITION_BENEFICIARY",
+        "value": "Either Principal Party",
+        "capacity": "EITHER_PRINCIPAL_PARTY"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "1a625f0b3cdfb587318ae78276d39df42ac137a7687235f363a1947f3a67ae1f",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 306535,
+        "absolute_end": 307839,
+        "concept_key": "COND-M-S4",
+        "party": {
+          "role": "CONDITION_BENEFICIARY",
+          "value": "Either Principal Party",
+          "capacity": "EITHER_PRINCIPAL_PARTY"
+        },
+        "ordinal": 2,
+        "source_anchor_id": "7127d2bdcf6f65f31ed2f689f66d9aedf6963120402ed0f14a1c90be93df099a",
+        "provision_instance_id": "0bfd28ff225696b58040ed2eecba55d203f5b88be9058af53520ebeddd35fe2b",
+        "closure_id": "5ccefd46ba26edf5fcb809d672d06f388766b00487ae0deb57601fe0d361b05e"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "98c8088291e2fd22e1513423d33550626cf1738e144f55e47a525d6dff008aaa",
+        "claim_occurrence_id": "ed16ede2d0023033729c72f0b70e6f4fe2c55f47635c690fb06e21ec3f9c54cd",
+        "subject_occurrence_id": "0bfd28ff225696b58040ed2eecba55d203f5b88be9058af53520ebeddd35fe2b",
+        "claim_definition_key": "S4_CONDITION_COMPONENT",
+        "claim_definition_version": 1,
+        "ordinal": 2,
+        "state": "PRESENT",
+        "raw_value": "The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.",
+        "canonical_value": "NO_PENDING_OR_THREATENED_PROCEEDING",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "777f33da7b5eebc3f7e7be867f3f2b13c82604f56b6d745cb66d785775294570"
+        ],
+        "attributes": {
+          "section_reference": "6.1",
+          "assertion_kind": "S4_COMPONENT",
+          "condition_obligor": null,
+          "accuracy_standard": null,
+          "rep_side": null,
+          "covered_scope_ref": null,
+          "scrape_quote": null,
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": null,
+          "obligor_ref": null,
+          "approval_kind": null,
+          "approval_definition_ref": null,
+          "s4_component": "NO_PENDING_OR_THREATENED_PROCEEDING",
+          "listing_venue_ref": null,
+          "certificate_side": null,
+          "certifying_party_ref": null,
+          "certified_condition_refs": [],
+          "certificate_relationship_status": null,
+          "causation_standard": null,
+          "breach_standard": null,
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "S4_COMPONENT"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "777f33da7b5eebc3f7e7be867f3f2b13c82604f56b6d745cb66d785775294570",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "3f8b4332196e64f876a044cb11f69f52b0dcfaaeb51a7abf48aff4f0fd369eb1",
+            "document_ordinal": 0,
+            "absolute_start": 557,
+            "absolute_end": 745,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "0e3c4f24e4bed131f8fd6a7dad9e04f95e1f5aa94f4fa824b1624fa6460b7c12"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.1",
+          "normalized_citation": "6.1",
+          "derived_citation": "6.1(b)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "98c8088291e2fd22e1513423d33550626cf1738e144f55e47a525d6dff008aaa",
+            "claim_occurrence_id": "ed16ede2d0023033729c72f0b70e6f4fe2c55f47635c690fb06e21ec3f9c54cd",
+            "subject_occurrence_id": "0bfd28ff225696b58040ed2eecba55d203f5b88be9058af53520ebeddd35fe2b",
+            "claim_definition_key": "S4_CONDITION_COMPONENT",
+            "claim_definition_version": 1,
+            "ordinal": 2,
+            "state": "PRESENT",
+            "raw_value": "The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.",
+            "canonical_value": "NO_PENDING_OR_THREATENED_PROCEEDING",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "777f33da7b5eebc3f7e7be867f3f2b13c82604f56b6d745cb66d785775294570"
+            ],
+            "attributes": {
+              "section_reference": "6.1",
+              "assertion_kind": "S4_COMPONENT",
+              "condition_obligor": null,
+              "accuracy_standard": null,
+              "rep_side": null,
+              "covered_scope_ref": null,
+              "scrape_quote": null,
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": null,
+              "obligor_ref": null,
+              "approval_kind": null,
+              "approval_definition_ref": null,
+              "s4_component": "NO_PENDING_OR_THREATENED_PROCEEDING",
+              "listing_venue_ref": null,
+              "certificate_side": null,
+              "certifying_party_ref": null,
+              "certified_condition_refs": [],
+              "certificate_relationship_status": null,
+              "causation_standard": null,
+              "breach_standard": null,
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "S4_COMPONENT"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "777f33da7b5eebc3f7e7be867f3f2b13c82604f56b6d745cb66d785775294570",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "3f8b4332196e64f876a044cb11f69f52b0dcfaaeb51a7abf48aff4f0fd369eb1",
+                "document_ordinal": 0,
+                "absolute_start": 557,
+                "absolute_end": 745,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "0e3c4f24e4bed131f8fd6a7dad9e04f95e1f5aa94f4fa824b1624fa6460b7c12"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "b07f447e592f06176a80721b0035b30597bd29e58bcfc1a36e707b5afc42e073",
+            "producer_receipt_id": "0f3cdb35f3ce4749c4db5a8bb9bfa0930cd49d39a9dd3b67928519bfee366c58",
+            "governed_scope_digest": "84e87f8385c030f014eb2e00170e0602e0bba727d7c5b6489d95148601c3a9e4",
+            "extraction_provenance_id": "d73e4b0ff00a769fe99b896aecade4580ef825f6910926ff4dd84a6e2a09adba"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [],
+        "materiality_rank": 70,
+        "materiality_label": "CLOSING_CONDITIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.1",
+          "normalized_citation": "6.1",
+          "derived_citation": "6.1(b)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 532,
+          "end_byte": 746
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 532,
+            "end_byte": 746,
+            "text": " Registration Statement. The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 441,
+            "text": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.1",
+      "source_citation": "6.1(c)",
+      "citation_context": {
+        "parent_section_reference": "6.1",
+        "child_section_reference": "6.1(c)",
+        "parent_chapeau_quote": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81",
+        "child_clause_quote": "(c) No Injunctions, Orders or Restraints; Illegality. No Governmental Entity of competent jurisdiction shall have enacted, issued, promulgated, enforced or entered any Law or order (whether temporary, preliminary or permanent) which is then in effect and has the effect of making the Mergers illegal or otherwise restricting, preventing or prohibiting consummation of the Mergers."
+      },
+      "governing_context_quote": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LEGAL_RESTRAINT_CONDITION",
+      "concept_key": "COND-M-LEGAL",
+      "party": {
+        "role": "CONDITION_BENEFICIARY",
+        "value": "Either Principal Party",
+        "capacity": "EITHER_PRINCIPAL_PARTY"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "1a625f0b3cdfb587318ae78276d39df42ac137a7687235f363a1947f3a67ae1f",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 306535,
+        "absolute_end": 307839,
+        "concept_key": "COND-M-LEGAL",
+        "party": {
+          "role": "CONDITION_BENEFICIARY",
+          "value": "Either Principal Party",
+          "capacity": "EITHER_PRINCIPAL_PARTY"
+        },
+        "ordinal": 3,
+        "source_anchor_id": "7127d2bdcf6f65f31ed2f689f66d9aedf6963120402ed0f14a1c90be93df099a",
+        "provision_instance_id": "2e76f06502f3b43d608350f6736aea338b0de2ab66c929610269035352085018",
+        "closure_id": "6af3591f334af124ea86f0a76e007b675665be210394c6ad722ce15d92e352ec"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "e625fed1bb352b4ae3bfc3229d55555e5febbcc6ca0b0c3adf682fa93a0d2dd7",
+        "claim_occurrence_id": "5a0c4cf3562667baae49d936f605cdccf1af3275ea157bde711de7af1b4cd79a",
+        "subject_occurrence_id": "2e76f06502f3b43d608350f6736aea338b0de2ab66c929610269035352085018",
+        "claim_definition_key": "LEGAL_RESTRAINT_CONDITION",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "No Governmental Entity of competent jurisdiction shall have enacted, issued, promulgated, enforced or entered any Law or order (whether temporary, preliminary or permanent) which is then in effect and has the effect of making the Mergers illegal or otherwise restricting, preventing or prohibiting consummation of the Mergers.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "bc1e88443475ca30f1c3944454e16794f6da4af4ad30574cb204cc3d2422bec2"
+        ],
+        "attributes": {
+          "section_reference": "6.1",
+          "assertion_kind": "LEGAL_RESTRAINT",
+          "condition_obligor": null,
+          "accuracy_standard": null,
+          "rep_side": null,
+          "covered_scope_ref": null,
+          "scrape_quote": null,
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": null,
+          "obligor_ref": null,
+          "approval_kind": null,
+          "approval_definition_ref": null,
+          "s4_component": null,
+          "listing_venue_ref": null,
+          "certificate_side": null,
+          "certifying_party_ref": null,
+          "certified_condition_refs": [],
+          "certificate_relationship_status": null,
+          "causation_standard": null,
+          "breach_standard": null,
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "LEGAL_RESTRAINT"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "bc1e88443475ca30f1c3944454e16794f6da4af4ad30574cb204cc3d2422bec2",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "8eb1cdd397ddc4a873273972fc52c4fa4009818c696385f55a41ead48007b282",
+            "document_ordinal": 0,
+            "absolute_start": 800,
+            "absolute_end": 1126,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "404c85905d5c56d15e0b24128dd16906076c3590952bf18348a3719d8d9b8a62"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.1",
+          "normalized_citation": "6.1",
+          "derived_citation": "6.1(c)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "e625fed1bb352b4ae3bfc3229d55555e5febbcc6ca0b0c3adf682fa93a0d2dd7",
+            "claim_occurrence_id": "5a0c4cf3562667baae49d936f605cdccf1af3275ea157bde711de7af1b4cd79a",
+            "subject_occurrence_id": "2e76f06502f3b43d608350f6736aea338b0de2ab66c929610269035352085018",
+            "claim_definition_key": "LEGAL_RESTRAINT_CONDITION",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "No Governmental Entity of competent jurisdiction shall have enacted, issued, promulgated, enforced or entered any Law or order (whether temporary, preliminary or permanent) which is then in effect and has the effect of making the Mergers illegal or otherwise restricting, preventing or prohibiting consummation of the Mergers.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "bc1e88443475ca30f1c3944454e16794f6da4af4ad30574cb204cc3d2422bec2"
+            ],
+            "attributes": {
+              "section_reference": "6.1",
+              "assertion_kind": "LEGAL_RESTRAINT",
+              "condition_obligor": null,
+              "accuracy_standard": null,
+              "rep_side": null,
+              "covered_scope_ref": null,
+              "scrape_quote": null,
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": null,
+              "obligor_ref": null,
+              "approval_kind": null,
+              "approval_definition_ref": null,
+              "s4_component": null,
+              "listing_venue_ref": null,
+              "certificate_side": null,
+              "certifying_party_ref": null,
+              "certified_condition_refs": [],
+              "certificate_relationship_status": null,
+              "causation_standard": null,
+              "breach_standard": null,
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "LEGAL_RESTRAINT"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "bc1e88443475ca30f1c3944454e16794f6da4af4ad30574cb204cc3d2422bec2",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "8eb1cdd397ddc4a873273972fc52c4fa4009818c696385f55a41ead48007b282",
+                "document_ordinal": 0,
+                "absolute_start": 800,
+                "absolute_end": 1126,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "404c85905d5c56d15e0b24128dd16906076c3590952bf18348a3719d8d9b8a62"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "b07f447e592f06176a80721b0035b30597bd29e58bcfc1a36e707b5afc42e073",
+            "producer_receipt_id": "0f3cdb35f3ce4749c4db5a8bb9bfa0930cd49d39a9dd3b67928519bfee366c58",
+            "governed_scope_digest": "84e87f8385c030f014eb2e00170e0602e0bba727d7c5b6489d95148601c3a9e4",
+            "extraction_provenance_id": "d73e4b0ff00a769fe99b896aecade4580ef825f6910926ff4dd84a6e2a09adba"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [],
+        "materiality_rank": 70,
+        "materiality_label": "CLOSING_CONDITIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.1",
+          "normalized_citation": "6.1",
+          "derived_citation": "6.1(c)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 749,
+          "end_byte": 1127
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 749,
+            "end_byte": 1127,
+            "text": " No Injunctions, Orders or Restraints; Illegality. No Governmental Entity of competent jurisdiction shall have enacted, issued, promulgated, enforced or entered any Law or order (whether temporary, preliminary or permanent) which is then in effect and has the effect of making the Mergers illegal or otherwise restricting, preventing or prohibiting consummation of the Mergers.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 441,
+            "text": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.1",
+      "source_citation": "6.1(d)",
+      "citation_context": {
+        "parent_section_reference": "6.1",
+        "child_section_reference": "6.1(d)",
+        "parent_chapeau_quote": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81",
+        "child_clause_quote": "(d) NYSE Listing. The shares of Parent Common Stock to be issued in the Company Merger shall have been approved for listing on the NYSE, subject to official notice of issuance."
+      },
+      "governing_context_quote": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LISTING_CONDITION",
+      "concept_key": "COND-M-LISTING",
+      "party": {
+        "role": "CONDITION_BENEFICIARY",
+        "value": "Either Principal Party",
+        "capacity": "EITHER_PRINCIPAL_PARTY"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "1a625f0b3cdfb587318ae78276d39df42ac137a7687235f363a1947f3a67ae1f",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 306535,
+        "absolute_end": 307839,
+        "concept_key": "COND-M-LISTING",
+        "party": {
+          "role": "CONDITION_BENEFICIARY",
+          "value": "Either Principal Party",
+          "capacity": "EITHER_PRINCIPAL_PARTY"
+        },
+        "ordinal": 4,
+        "source_anchor_id": "7127d2bdcf6f65f31ed2f689f66d9aedf6963120402ed0f14a1c90be93df099a",
+        "provision_instance_id": "8a9db46dff3cf1cb10fa7b08a088b391f0364d555b6adb4d02e0fab4f7c4e1ac",
+        "closure_id": "f167ffb0e0f917e0cf46e31bf1bd2eeb688dc694a95423ebc2fc06a327b858e5"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "3112ad8409e0fc3e91ca1d7668b11b89493b33bfb0e955cc0960ac11a40490e9",
+        "claim_occurrence_id": "2dbbf002a0c34f91606498b0fd90bda8434f071ce037711165a461ea5759d11e",
+        "subject_occurrence_id": "8a9db46dff3cf1cb10fa7b08a088b391f0364d555b6adb4d02e0fab4f7c4e1ac",
+        "claim_definition_key": "LISTING_CONDITION",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "The shares of Parent Common Stock to be issued in the Company Merger shall have been approved for listing on the NYSE, subject to official notice of issuance.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "5d8214145215b1461aa0a0b3fc48208a8b048d0667c0142d01d06573ad1ff384"
+        ],
+        "attributes": {
+          "section_reference": "6.1",
+          "assertion_kind": "LISTING",
+          "condition_obligor": null,
+          "accuracy_standard": null,
+          "rep_side": null,
+          "covered_scope_ref": null,
+          "scrape_quote": null,
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": null,
+          "obligor_ref": null,
+          "approval_kind": null,
+          "approval_definition_ref": null,
+          "s4_component": null,
+          "listing_venue_ref": "NYSE",
+          "certificate_side": null,
+          "certifying_party_ref": null,
+          "certified_condition_refs": [],
+          "certificate_relationship_status": null,
+          "causation_standard": null,
+          "breach_standard": null,
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "LISTING"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "5d8214145215b1461aa0a0b3fc48208a8b048d0667c0142d01d06573ad1ff384",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "afad35337b107391691faf3a6671268cdd956b04bfaa779ba32055155f07fb5f",
+            "document_ordinal": 0,
+            "absolute_start": 1145,
+            "absolute_end": 1303,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "f9ed1d17dc1a16e15729163ff94105e7a793d6399da262b31f720c36bf8e6c02"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.1",
+          "normalized_citation": "6.1",
+          "derived_citation": "6.1(d)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "3112ad8409e0fc3e91ca1d7668b11b89493b33bfb0e955cc0960ac11a40490e9",
+            "claim_occurrence_id": "2dbbf002a0c34f91606498b0fd90bda8434f071ce037711165a461ea5759d11e",
+            "subject_occurrence_id": "8a9db46dff3cf1cb10fa7b08a088b391f0364d555b6adb4d02e0fab4f7c4e1ac",
+            "claim_definition_key": "LISTING_CONDITION",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "The shares of Parent Common Stock to be issued in the Company Merger shall have been approved for listing on the NYSE, subject to official notice of issuance.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "5d8214145215b1461aa0a0b3fc48208a8b048d0667c0142d01d06573ad1ff384"
+            ],
+            "attributes": {
+              "section_reference": "6.1",
+              "assertion_kind": "LISTING",
+              "condition_obligor": null,
+              "accuracy_standard": null,
+              "rep_side": null,
+              "covered_scope_ref": null,
+              "scrape_quote": null,
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": null,
+              "obligor_ref": null,
+              "approval_kind": null,
+              "approval_definition_ref": null,
+              "s4_component": null,
+              "listing_venue_ref": "NYSE",
+              "certificate_side": null,
+              "certifying_party_ref": null,
+              "certified_condition_refs": [],
+              "certificate_relationship_status": null,
+              "causation_standard": null,
+              "breach_standard": null,
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "LISTING"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "5d8214145215b1461aa0a0b3fc48208a8b048d0667c0142d01d06573ad1ff384",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "afad35337b107391691faf3a6671268cdd956b04bfaa779ba32055155f07fb5f",
+                "document_ordinal": 0,
+                "absolute_start": 1145,
+                "absolute_end": 1303,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "f9ed1d17dc1a16e15729163ff94105e7a793d6399da262b31f720c36bf8e6c02"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "b07f447e592f06176a80721b0035b30597bd29e58bcfc1a36e707b5afc42e073",
+            "producer_receipt_id": "0f3cdb35f3ce4749c4db5a8bb9bfa0930cd49d39a9dd3b67928519bfee366c58",
+            "governed_scope_digest": "84e87f8385c030f014eb2e00170e0602e0bba727d7c5b6489d95148601c3a9e4",
+            "extraction_provenance_id": "d73e4b0ff00a769fe99b896aecade4580ef825f6910926ff4dd84a6e2a09adba"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [],
+        "materiality_rank": 70,
+        "materiality_label": "CLOSING_CONDITIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.1",
+          "normalized_citation": "6.1",
+          "derived_citation": "6.1(d)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "d",
+          "depth": 1,
+          "start_byte": 1130,
+          "end_byte": 1304
+        },
+        "chain": [
+          {
+            "path": "d",
+            "start_byte": 1130,
+            "end_byte": 1304,
+            "text": " NYSE Listing. The shares of Parent Common Stock to be issued in the Company Merger shall have been approved for listing on the NYSE, subject to official notice of issuance.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 441,
+            "text": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "6.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "STOCKHOLDER_APPROVAL_CONDITION",
+      "concept_key": "COND-M-STOCKHOLDER",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ad5ca2cb0d582a9924fcb2364b9fa6b49e3a1aa55f6815ccf5b9227463d60e25",
+      "closure_id": "00f7cb56b53d8ae111a2d3c4c14590aa59a86afbd45a37fb5210bccc383c17b9",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "2539a5385865c639b1e4884178e0eb50601fefe70787319cc1ef41682b73b3e7",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "7eb0fcbe9f7f11c9cec9f3741e12a7e0e2e428046a9ed0c4f1aa68dad99a2f51",
+          "document_ordinal": 0,
+          "absolute_start": 469,
+          "absolute_end": 528,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company shall have obtained the Company Requisite Vote.",
+      "attachment_position": null,
+      "concept_family": "COND-M-STOCKHOLDER",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 444,
+          "end_byte": 529
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 444,
+            "end_byte": 529,
+            "text": " Company Requisite Vote. The Company shall have obtained the Company Requisite Vote.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 441,
+            "text": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "S4_CONDITION_COMPONENT",
+      "concept_key": "COND-M-S4",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "98c8088291e2fd22e1513423d33550626cf1738e144f55e47a525d6dff008aaa",
+      "closure_id": "0e3c4f24e4bed131f8fd6a7dad9e04f95e1f5aa94f4fa824b1624fa6460b7c12",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "777f33da7b5eebc3f7e7be867f3f2b13c82604f56b6d745cb66d785775294570",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "3f8b4332196e64f876a044cb11f69f52b0dcfaaeb51a7abf48aff4f0fd369eb1",
+          "document_ordinal": 0,
+          "absolute_start": 557,
+          "absolute_end": 745,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.",
+      "attachment_position": null,
+      "concept_family": "COND-M-S4",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 532,
+          "end_byte": 746
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 532,
+            "end_byte": 746,
+            "text": " Registration Statement. The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 441,
+            "text": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LEGAL_RESTRAINT_CONDITION",
+      "concept_key": "COND-M-LEGAL",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e625fed1bb352b4ae3bfc3229d55555e5febbcc6ca0b0c3adf682fa93a0d2dd7",
+      "closure_id": "404c85905d5c56d15e0b24128dd16906076c3590952bf18348a3719d8d9b8a62",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "bc1e88443475ca30f1c3944454e16794f6da4af4ad30574cb204cc3d2422bec2",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "8eb1cdd397ddc4a873273972fc52c4fa4009818c696385f55a41ead48007b282",
+          "document_ordinal": 0,
+          "absolute_start": 800,
+          "absolute_end": 1126,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "No Governmental Entity of competent jurisdiction shall have enacted, issued, promulgated, enforced or entered any Law or order (whether temporary, preliminary or permanent) which is then in effect and has the effect of making the Mergers illegal or otherwise restricting, preventing or prohibiting consummation of the Mergers.",
+      "attachment_position": null,
+      "concept_family": "COND-M-LEGAL",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 749,
+          "end_byte": 1127
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 749,
+            "end_byte": 1127,
+            "text": " No Injunctions, Orders or Restraints; Illegality. No Governmental Entity of competent jurisdiction shall have enacted, issued, promulgated, enforced or entered any Law or order (whether temporary, preliminary or permanent) which is then in effect and has the effect of making the Mergers illegal or otherwise restricting, preventing or prohibiting consummation of the Mergers.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 441,
+            "text": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "S4_CONDITION_COMPONENT",
+      "concept_key": "COND-M-S4",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "23420f3be6cc2a2c7b3a070dc256df3fae8296188c2e2849fd2b613db487a009",
+      "closure_id": "6ff59b158c37a3f6f7746beb8e0522a4181ca3bd6220e1bfbb751e09c96ca480",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "234b77f5f4ead4084066033592e1476549ce6b37df1f63a1791d08c2e1a53e71",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "3f8b4332196e64f876a044cb11f69f52b0dcfaaeb51a7abf48aff4f0fd369eb1",
+          "document_ordinal": 0,
+          "absolute_start": 557,
+          "absolute_end": 745,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.",
+      "attachment_position": null,
+      "concept_family": "COND-M-S4",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 532,
+          "end_byte": 746
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 532,
+            "end_byte": 746,
+            "text": " Registration Statement. The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 441,
+            "text": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "S4_CONDITION_COMPONENT",
+      "concept_key": "COND-M-S4",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5d372f2a8f11f6e99a70041b425bd163d3e9e6d07271631d481ab0f90a38f14d",
+      "closure_id": "7e9d113b701e99b3f50e3b512c69a583dd89dc35494c0b601d220abbac7f4926",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "4d89394b02b953ed7a9dffa40e28a855e8fc479abe10f1b067f5a369a989cc6e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "3f8b4332196e64f876a044cb11f69f52b0dcfaaeb51a7abf48aff4f0fd369eb1",
+          "document_ordinal": 0,
+          "absolute_start": 557,
+          "absolute_end": 745,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.",
+      "attachment_position": null,
+      "concept_family": "COND-M-S4",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 532,
+          "end_byte": 746
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 532,
+            "end_byte": 746,
+            "text": " Registration Statement. The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 441,
+            "text": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LISTING_CONDITION",
+      "concept_key": "COND-M-LISTING",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "3112ad8409e0fc3e91ca1d7668b11b89493b33bfb0e955cc0960ac11a40490e9",
+      "closure_id": "f9ed1d17dc1a16e15729163ff94105e7a793d6399da262b31f720c36bf8e6c02",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "5d8214145215b1461aa0a0b3fc48208a8b048d0667c0142d01d06573ad1ff384",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "afad35337b107391691faf3a6671268cdd956b04bfaa779ba32055155f07fb5f",
+          "document_ordinal": 0,
+          "absolute_start": 1145,
+          "absolute_end": 1303,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The shares of Parent Common Stock to be issued in the Company Merger shall have been approved for listing on the NYSE, subject to official notice of issuance.",
+      "attachment_position": null,
+      "concept_family": "COND-M-LISTING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "d",
+          "depth": 1,
+          "start_byte": 1130,
+          "end_byte": 1304
+        },
+        "chain": [
+          {
+            "path": "d",
+            "start_byte": 1130,
+            "end_byte": 1304,
+            "text": " NYSE Listing. The shares of Parent Common Stock to be issued in the Company Merger shall have been approved for listing on the NYSE, subject to official notice of issuance.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 441,
+            "text": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "open_world": [],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "1fafa437bbf097125c2d49f6e6ad4299de1101f2cb9475087a0dcbb7d198b924",
+    "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "registry_substrate": {
+      "schema_version": "RESOLUTION_REGISTRY_SUBSTRATE_MANIFEST/V1",
+      "modules": [
+        {
+          "name": "materiality-qualifier",
+          "version": "RESOLUTION_MATERIALITY_QUALIFIER_REGISTRY/V1",
+          "digest": "sha256:6368129c33917101e97979baa1836e222894af0fe4ed98244ded61c4a7802515"
+        },
+        {
+          "name": "closing-condition-kinds",
+          "version": "RESOLUTION_CLOSING_CONDITION_KINDS_REGISTRY/V1",
+          "digest": "sha256:66bb6592c2f0c21125df9b12a03991aebbe5ca1832bacfb427eadd2df2327efc"
+        },
+        {
+          "name": "general-covenant",
+          "version": "RESOLUTION_GENERAL_COVENANT_REGISTRY/V1",
+          "digest": "sha256:c10453c1b9f700ed7962b3c3f66a1560dcbbbe42aa41692113097a67fb903737"
+        },
+        {
+          "name": "material-contract",
+          "version": "RESOLUTION_MATERIAL_CONTRACT_REGISTRY/V1",
+          "digest": "sha256:85159bed1f96102ea00f2f2acc57e8336c6901797f91c2345a357dc923528d9e"
+        },
+        {
+          "name": "interim-operating",
+          "version": "RESOLUTION_INTERIM_OPERATING_REGISTRY/V1",
+          "digest": "sha256:77e80a8cca7ab4277e74181ef6ea2f0a5410b75d96ad9ae984b7653f5265efae"
+        },
+        {
+          "name": "party-capacity",
+          "version": "RESOLUTION_PARTY_CAPACITY_REGISTRY/V1",
+          "digest": "sha256:1b089c7a6cf30f540043352234cb4109fe27013a554423c8d3ecd652272db202"
+        },
+        {
+          "name": "representation-topic",
+          "version": "REPRESENTATION_TOPIC_REGISTRY/V1",
+          "digest": "sha256:2240a6cfa6ac63d3fbf6a96afce185aed40a1d9919f2437b85a844aa996e1f28"
+        }
+      ],
+      "preserved_v1_collisions": [
+        {
+          "path": "UNDISCLOSED_LIABILITIES_EXCEPTION_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not reasonably be expected to have an MAE",
+          "v1_only": true,
+          "no_delete": true
+        },
+        {
+          "path": "MATERIALITY_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not, individually or in aggregate, have MAE",
+          "v1_only": true,
+          "no_delete": true
+        }
+      ]
+    },
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 3,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 6,
+      "resolved": 6,
+      "auto_pass": 0,
+      "review_queue": 6,
+      "open_world": 0,
+      "residuals": 0,
+      "provisions": 4,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "9e1b31af3ca3effe502a63e4c2f893d47810219a9d6a14c830030896f1394768"
+  }
+}

@@ -1,0 +1,248 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+  "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e",
+  "source_byte_length": 428768,
+  "root_section_id": "15320594801b671dd24dd2404e88ede8dcdd874cb28fc7283ceab4909d9c407b",
+  "requested_section_references": [
+    "4.13"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "4.13",
+      "section_id": "ac8a2266b6da413e17a04b5ac41fdee8202b0db791e9244f0947e232b0ded71d",
+      "parent_section_id": "112c50dd75d9e6d09cbc9a789e959534a176b4bb96ae989372e10eacae517851",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 183512,
+      "end": 184427,
+      "text_sha256": "11d1508d29c37cd4a328926969ffab409c4614114897356324dccfa37304b656",
+      "section_family": "FINANCING_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-financing/v1",
+      "prompt_version": 3,
+      "prompt_digest": "048c4ad4e02cd7e951dc80289936f2f548810f9299f023fe04e451d465e96b02",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "048c4ad4e02cd7e951dc80289936f2f548810f9299f023fe04e451d465e96b02",
+        "input_scope_digest": "e3297d3405cb094b5c3104aa53cb83626f1869fbb0a8ad72ae192a87506c90c3",
+        "proposal_count": 2,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "8ecc24535aa387c292a922c52c0071fe10ab2f6e2786efdd601036cb9dc068f8"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "4.13",
+      "citation_validation": null,
+      "section_family": "FINANCING_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "f6896ce6154ba01c127f02928b4e072a9a59d0b0d22427faef2555d2d4aa38c1",
+          "claim_occurrence_id": "c21b100ef99bee382f4000be6fe8a0e957b96a895cf882c33d592432f7e37bd1",
+          "subject_occurrence_id": "31b5377a1061392a954f19b5af9deb5465b0ff821858f831437862c8e8c9a3b6",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the availability of the Parent Credit Facility",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "3186b99368c74d50f39940debbb30cfcbf5e4a764b8968c0f8d271bb689f53f2"
+          ],
+          "attributes": {
+            "why_unmapped": "Bare financing availability statement; no governed positive financing covenant.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "3186b99368c74d50f39940debbb30cfcbf5e4a764b8968c0f8d271bb689f53f2",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "85bbbd6c6bd393bc1dadf5e0fa6c5e3439c766f0273de368634fd91f49a803a0",
+              "document_ordinal": 0,
+              "absolute_start": 351,
+              "absolute_end": 397,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "d49e6bc3bab243d9fc20d5c6fe55fa630c4a2e2766d8aea4f28e84d8e96ef14a"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "048c4ad4e02cd7e951dc80289936f2f548810f9299f023fe04e451d465e96b02",
+          "producer_receipt_id": "8ecc24535aa387c292a922c52c0071fe10ab2f6e2786efdd601036cb9dc068f8",
+          "governed_scope_digest": "6b104e15ad2d8ceb19b0f9dba3a876acb895e5696e0e88779008a8756bdf2ffc",
+          "extraction_provenance_id": "0c2423cb6974674ad947758c44d3626de795c9ac13147caa0d1031b8d000c026"
+        }
+      }
+    },
+    {
+      "section_reference": "4.13",
+      "citation_validation": null,
+      "section_family": "FINANCING_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "d133b8a6935492ecdedf7bcfcd8f80e2fab88400468f7c9716c2b54f5fa8b063",
+          "claim_occurrence_id": "16d4c81d06501ad9d65541ead0bfb56b7f87d6c2cae4b4ba0e842d52b40adf4a",
+          "subject_occurrence_id": "94e8cf67fea54f1ecd9f5de793e13831a1694fdb27d64587d6add17680c083de",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Payoff Amount",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "09de13d658e6c6bcd8f33e1b4f1b59e04e5324aca78dc1506a875135a4ccca51"
+          ],
+          "attributes": {
+            "why_unmapped": "Bare payoff reference; no express advance day count.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "09de13d658e6c6bcd8f33e1b4f1b59e04e5324aca78dc1506a875135a4ccca51",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "6157a1c219187f84b963000cc8eb12a95e15381654ef1166b957d245b68e4021",
+              "document_ordinal": 0,
+              "absolute_start": 624,
+              "absolute_end": 641,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "2e9b3803eb85db176f35005e634229b728c433c2902d3573e1cfe707a8acad0e"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "048c4ad4e02cd7e951dc80289936f2f548810f9299f023fe04e451d465e96b02",
+          "producer_receipt_id": "8ecc24535aa387c292a922c52c0071fe10ab2f6e2786efdd601036cb9dc068f8",
+          "governed_scope_digest": "6b104e15ad2d8ceb19b0f9dba3a876acb895e5696e0e88779008a8756bdf2ffc",
+          "extraction_provenance_id": "0c2423cb6974674ad947758c44d3626de795c9ac13147caa0d1031b8d000c026"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "4.13",
+      "source_byte_length": 915,
+      "covered_byte_length": 63,
+      "coverage_share": 0.06885245901639345,
+      "marker_counts": {
+        "as of": 1,
+        "except": 0,
+        "knowledge": 0,
+        "material": 0,
+        "total": 1
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "LOW_SPAN_COVERAGE",
+          "coverage_share": 0.06885245901639345,
+          "threshold": 0.5
+        },
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 1,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "4.13",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 186,
+          "end": 189
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 205,
+          "end": 208
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 0,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 2
+      },
+      "proposed_tokens": [],
+      "disagreements": [],
+      "disagreement_count": 0
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 2,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "b3a5282a2a5d186b023e50e2adc2d324769bba7847a42f143bbfa419bf9165b3"
+}

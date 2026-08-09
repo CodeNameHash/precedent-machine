@@ -1,0 +1,349 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "209de71baa97acd0dfd5e81b7ac741e48d6694667602fafdd45d5216173c883d",
+  "review_queue": [
+    {
+      "section_reference": "6.02",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-B-REP",
+      "reasons": [],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a49862b4b3eba8758a2422a38f583adc72f987bca6b84202bd6d49cf573e0f60",
+      "closure_id": "278eb2303e4ab314ac216c02b9976e030c0a4ec2caadd1a9b5987443def5d54e",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0bbd795aadec9f9474ea6757325c49b8a4b16b56bdd9d3f80a74f6b05738e3c4",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "6bee84affce5e1d86e375d405c157c4d98cc72a5f305e2f88efa800a62b4bed5",
+          "document_ordinal": 0,
+          "absolute_start": 304,
+          "absolute_end": 1813,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The representations and warranties of the Company:\n(i) set forth in Section 3.01(f)(ii) of this Agreement shall be true and correct in all respects as of the date of this Agreement and as of the Closing Date with the same effect as though made as of the Closing Date;\n(ii) set forth in Section 3.01(a), Section 3.01(b), Section 3.01(c), Section 3.01(d)(i), Section 3.01(d)(ii), Section 3.01(s), Section 3.01(t) and Section 3.01(u) of this Agreement shall be true and correct in all material respects as of the date of this Agreement and as of the Closing Date with the same effect as though made as of the Closing Date (except to the extent expressly made as of an earlier date, in which case as of such earlier date); and\n(iii) all other representations and warranties of the Company set forth in this Agreement, other than those Sections specifically identified in clauses (i) and (ii) of this Section 6.02(a), shall be true and correct (disregarding all qualifications or limitations as to “material,” “materiality,” “Material Adverse Effect” and words of similar import set forth therein) as of the date of this Agreement and as of the Closing Date with the same effect as though made as of the Closing Date (except to the extent expressly made as of an earlier date, in which case as of such earlier date), except, in the case of this clause (iii), where the failure to be true and correct would not reasonably be expected to have, individually or in the aggregate, a Material Adverse Effect.",
+      "attachment_position": null,
+      "concept_family": "COND-B-REP",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "SPAN_CROSSES_LEAVES",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "path": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.02",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-B-REP",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "23f05c9c842dc95c450eb50e973e10d78426215c7ac2b0b9b7ac1a799ed7d33e",
+      "closure_id": "270b6af2001e91a4bfc71d5549bdd140fd813a78aceefe2ec78505677eb2b66d",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "125b32ef93ea11cfc2f1dd4aa5d4398dfa92ae8faa7f8372c67e24252a128afd",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "37b5811eb97860819ef65df98260a0b4fbcfc81bcd2d238c6d363c4d77553367",
+          "document_ordinal": 0,
+          "absolute_start": 304,
+          "absolute_end": 571,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The representations and warranties of the Company:\n(i) set forth in Section 3.01(f)(ii) of this Agreement shall be true and correct in all respects as of the date of this Agreement and as of the Closing Date with the same effect as though made as of the Closing Date;",
+      "attachment_position": null,
+      "concept_family": "COND-B-REP",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "SPAN_CROSSES_LEAVES",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "path": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.02",
+      "source_citation": "6.02(c)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Since the date of this Agreement, no Effect has occurred that would reasonably be expected to have, individually or in the aggregate, a Material Adverse Effect, of which the existence or consequences are still continuing.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "b6ce65c4e976347f16554afa9b7723a3b2f1a6bd63d5d358d100a9d6fb32adbd",
+      "closure_id": "330964c4d03bb1337c61ce0e75c8863474fe6c682b78bfd5173971c5e229566b",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b8ac429e9c1eb4bb467c58471f522227be3967c6422c5a2026ac89951687ffb9",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2f8f362bbd72edcd857eb2363a8bf0449c709b971004680ac51840d858149949",
+          "document_ordinal": 0,
+          "absolute_start": 2052,
+          "absolute_end": 2273,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Since the date of this Agreement, no Effect has occurred that would reasonably be expected to have, individually or in the aggregate, a Material Adverse Effect, of which the existence or consequences are still continuing.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 2023,
+          "end_byte": 2274
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 2023,
+            "end_byte": 2274,
+            "text": " No Material Adverse Effect. Since the date of this Agreement, no Effect has occurred that would reasonably be expected to have, individually or in the aggregate, a Material Adverse Effect, of which the existence or consequences are still continuing.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 268,
+            "text": "Section 6.02 Conditions to Obligations of Parent and Sub. The obligations of Parent and Sub to effect the Merger are further subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.02",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+      "concept_key": "COND-B-CERT",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0d2eded43f3cc8d2fa58c88034e05edc4b504ffd87554adf9baa2fb986912d51",
+      "closure_id": "6f7806adc4fe23862d1c99cfa503a889f4f1d338da05fb20ee42318c53e99212",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "a0488a7ffb91a2dc4088edab72c2538ee985fa55cce9bd77951254908f164e5d",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2c42d1c5d7d88f850493fedd165ccd4c3495effadf38bf2d28d46e939b3fea25",
+          "document_ordinal": 0,
+          "absolute_start": 2303,
+          "absolute_end": 2572,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Parent shall have received a certificate signed on behalf of the Company by the Chief Executive Officer and the Chief Financial Officer of the Company, certifying that the conditions set forth in Section 6.02(a), Section 6.02(b) and Section 6.02(c) have been satisfied.",
+      "attachment_position": null,
+      "concept_family": "COND-B-CERT",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "d",
+          "depth": 1,
+          "start_byte": 2277,
+          "end_byte": 2573
+        },
+        "chain": [
+          {
+            "path": "d",
+            "start_byte": 2277,
+            "end_byte": 2573,
+            "text": " Officer’s Certificate. Parent shall have received a certificate signed on behalf of the Company by the Chief Executive Officer and the Chief Financial Officer of the Company, certifying that the conditions set forth in Section 6.02(a), Section 6.02(b) and Section 6.02(c) have been satisfied.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 268,
+            "text": "Section 6.02 Conditions to Obligations of Parent and Sub. The obligations of Parent and Sub to effect the Merger are further subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.02",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-B-REP",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c8bfb63f9ba7bdc80393aa5aadb5369504d16583f5eeee55dabf718a97cca498",
+      "closure_id": "80d6281b5bf931ac5969956d3151185088c2b147a62bb1e50e4c9c07490c93f5",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "fcd4053ba076573d672ddfe5366e017ec1a1a26a5a0be093b5f1c5bda88efa1e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "028455652a007f6e33bef96745f09a5f7e26009b0b42672814d6b766bed4f41b",
+          "document_ordinal": 0,
+          "absolute_start": 304,
+          "absolute_end": 1022,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The representations and warranties of the Company:\n(i) set forth in Section 3.01(f)(ii) of this Agreement shall be true and correct in all respects as of the date of this Agreement and as of the Closing Date with the same effect as though made as of the Closing Date;\n(ii) set forth in Section 3.01(a), Section 3.01(b), Section 3.01(c), Section 3.01(d)(i), Section 3.01(d)(ii), Section 3.01(s), Section 3.01(t) and Section 3.01(u) of this Agreement shall be true and correct in all material respects as of the date of this Agreement and as of the Closing Date with the same effect as though made as of the Closing Date (except to the extent expressly made as of an earlier date, in which case as of such earlier date);",
+      "attachment_position": null,
+      "concept_family": "COND-B-REP",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "SPAN_CROSSES_LEAVES",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "path": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.02",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "COVENANT_COMPLIANCE_STANDARD",
+      "concept_key": "COND-COV",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "70366b076b9d4da4315e62fac4c2d031b5056960f9f2d7a9ec37947510b731fb",
+      "closure_id": "e062c4be9f28ecdc3e14a527bcc579f487559a6dd30b0f59e74bf500dc3b30fd",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "4c82703a3fe656a9dc44854b77b31e383f5d6461422c27b78348e41daceda533",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "295fa32b39dd07542bb0b613840d7058ca60b1a02c592076ea3da4fab27ccb42",
+          "document_ordinal": 0,
+          "absolute_start": 1861,
+          "absolute_end": 2019,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company shall have performed in all material respects all obligations required to be performed by it under this Agreement at or prior to the Closing Date.",
+      "attachment_position": null,
+      "concept_family": "COND-COV",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 1817,
+          "end_byte": 2020
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 1817,
+            "end_byte": 2020,
+            "text": " Performance of Obligations of the Company. The Company shall have performed in all material respects all obligations required to be performed by it under this Agreement at or prior to the Closing Date.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 268,
+            "text": "Section 6.02 Conditions to Obligations of Parent and Sub. The obligations of Parent and Sub to effect the Merger are further subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.02",
+      "source_citation": "6.02(c)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Since the date of this Agreement, no Effect has occurred that would reasonably be expected to have, individually or in the aggregate, a Material Adverse Effect, of which the existence or consequences are still continuing.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "509e8589b2acec7ffbfca055eaa516e7996392543cb53831c5a118b8264c4b20",
+      "closure_id": "f050c81329a5bde5a306d10931c2d02f866cc28afb065115ef20d6bcaf5a4e38",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "7f4506c85b6c72b33817d1005bd5d7a1686388780a5d96fc50a23880cc056926",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2f8f362bbd72edcd857eb2363a8bf0449c709b971004680ac51840d858149949",
+          "document_ordinal": 0,
+          "absolute_start": 2052,
+          "absolute_end": 2273,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Since the date of this Agreement, no Effect has occurred that would reasonably be expected to have, individually or in the aggregate, a Material Adverse Effect, of which the existence or consequences are still continuing.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 2023,
+          "end_byte": 2274
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 2023,
+            "end_byte": 2274,
+            "text": " No Material Adverse Effect. Since the date of this Agreement, no Effect has occurred that would reasonably be expected to have, individually or in the aggregate, a Material Adverse Effect, of which the existence or consequences are still continuing.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 268,
+            "text": "Section 6.02 Conditions to Obligations of Parent and Sub. The obligations of Parent and Sub to effect the Merger are further subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "405651e1b0bc9d6a5ddfdd1c6da4513f47f9d1850622a743c387aebc7bcf9cfd"
+}

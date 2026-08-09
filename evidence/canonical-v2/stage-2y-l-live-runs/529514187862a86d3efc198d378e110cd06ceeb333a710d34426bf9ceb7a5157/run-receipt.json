@@ -1,0 +1,171 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+  "source_sha256": "4ac7a2b193c291ca692fb1b5f082a245d02474c7db3136bfcebaf5bd7b686ca3",
+  "source_byte_length": 348692,
+  "root_section_id": "410154e958abb541763453319b67e678175ca4416aa50744fa3dd7fe3e93c3d8",
+  "requested_section_references": [
+    "6.01"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "6.01",
+      "section_id": "bf93882dcd4ff39fe0746c1e11225bf13c2216ee688c86af3f9dbd12f1737a87",
+      "parent_section_id": "51909e68f44303e3b490eb8e812b975f0166175764ae1c477858af919f74fdc9",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 179861,
+      "end": 180030,
+      "text_sha256": "f2501d5241c9803d256326ba27db8aee7f376c1dd43968b4bf6a81e398d317a3",
+      "section_family": "PROXY_MEETING",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-proxy-meeting/v1",
+      "prompt_version": 2,
+      "prompt_digest": "363122bbc603069d5c6bbe4126fc1fd299ccaa798715df496611ff6591719994",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "363122bbc603069d5c6bbe4126fc1fd299ccaa798715df496611ff6591719994",
+        "input_scope_digest": "10d7ff5c6df8dd6d469156829762367e95f2f2c5482a9edceac6d42e5404ca24",
+        "proposal_count": 1,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "4be9fd112f83f4bcf34c27314d8cfaec12d60bf4f72765a09627b16494831eae"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "6.01",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.01",
+        "normalized_citation": "6.01",
+        "derived_citation": "6.01"
+      },
+      "section_family": "PROXY_MEETING",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "1cf9cfd7a7c945095d05a35a23e3f55591ee8dc3785d8e60bf7a41a617ee6843",
+          "claim_occurrence_id": "186367339e7bf4d7a0513b9dc173161fca24401fc97f210b2a39e04c9e7591a9",
+          "subject_occurrence_id": "741460f78fc7e3ef3ce5b681196a4dc6c3d3cbec38500154eacc312245335c33",
+          "claim_definition_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Immediately following the execution of this Agreement, Parent, as sole stockholder of Merger Sub, shall adopt this Agreement.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "03b64027a487f782d15cae3669b1771dbcf28ad0340293e7e68bde6145d2f9f0"
+          ],
+          "attributes": {
+            "section_reference": "6.01",
+            "assertion_kind": "MERGER_SUB_APPROVAL",
+            "anchor_kind": null,
+            "day_kind": null,
+            "limit_basis": null,
+            "control_party": null,
+            "consenting_party": null,
+            "reason_kind": null,
+            "meeting_ref": null,
+            "document_ref": "this Agreement",
+            "obligated_party": "Parent",
+            "adoption_mechanism": "SOLE_STOCKHOLDER_ADOPTION",
+            "adoption_timing": "Immediately following the execution of this Agreement"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "MERGER_SUB_APPROVAL"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "03b64027a487f782d15cae3669b1771dbcf28ad0340293e7e68bde6145d2f9f0",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "a5644141cc550baf9f98c31c3c0e0a1fa562e604643f2bb348bf9d072a6b2d5b",
+              "document_ordinal": 0,
+              "absolute_start": 38,
+              "absolute_end": 163,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "8ede8602c03c210fb36235dcf62d93f24097c645a2402118bd45e9e1e2e5b9a7"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "PROXY_MEETING_COVENANT",
+          "prompt_digest": "363122bbc603069d5c6bbe4126fc1fd299ccaa798715df496611ff6591719994",
+          "producer_receipt_id": "4be9fd112f83f4bcf34c27314d8cfaec12d60bf4f72765a09627b16494831eae",
+          "governed_scope_digest": "8d3a06a7757c582ec23e3ef4fbf64695cb0733ef8ba070ba1754500ccd94283d",
+          "extraction_provenance_id": "aacc37e4c46a360d7068a522db3254d6f6eabbf9df5d8a1bd132820ee10e8143"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "6.01",
+      "source_byte_length": 169,
+      "covered_byte_length": 125,
+      "coverage_share": 0.7396449704142012,
+      "marker_counts": {
+        "as of": 0,
+        "except": 0,
+        "knowledge": 0,
+        "material": 0,
+        "total": 0
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": null,
+      "signals": []
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "6.01",
+      "markers_found": [],
+      "classification_counts": {
+        "enumeration_marker": 0,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [],
+      "disagreement_count": 0
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 1,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "eac048c3508dd38e7957fba9701cc4965677e11c2d6c52e164b03394351fa23b"
+}

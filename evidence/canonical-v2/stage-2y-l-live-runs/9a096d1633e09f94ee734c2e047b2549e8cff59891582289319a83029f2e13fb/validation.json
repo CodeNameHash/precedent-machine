@@ -1,0 +1,310 @@
+{
+  "accepted": true,
+  "publishableWriteSet": {
+    "deal": {
+      "deal_admission_id": "b4e9c00e9404694a80145f6ae9b521271240a688ffb08f65012bf232e6dea39e",
+      "deal_key": "deal:metsera-closing-conditions:9db5e4cb091442c7",
+      "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac"
+    },
+    "excerpts": [
+      {
+        "absolute_end": 225215,
+        "absolute_start": 224103,
+        "canonical_text_id": "b92a7c3d217e7478d73693ae093ee4e8c75d72084a9e608bf3e6e820705fbf5a",
+        "closure_id": "898f8b1d037bdd7579e90b9e62701ef0b26b7f85993b844f6b5f3731a0fcb3ca",
+        "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+        "exact_bytes_digest": "5b05984d8baff04c48db248f762590a7c89eff7c6770acf6b3de64f660c33598",
+        "exact_text": "Each of (i) the representations and warranties of Parent and Merger Sub contained in Section 4.01 and Section 4.03 are true and correct in all material respects as of the date of this Agreement and as of the Effective Time as if made as of such date (except for those representations and warranties which address matters only as of an earlier date which shall have been true and correct as of such earlier date); and (ii) each of the other representations and warranties of Parent and Merger Sub contained in Article IV of this Agreement are true and correct, without giving effect to the words “materially” or “material” or to any qualification based on the defined term “Parent Material Adverse Effect,” as of the date of this Agreement and as of the Effective Time as if made as of such date (except for those representations and warranties which address matters only as of an earlier date which shall have been true and correct as of such earlier date), except where the failure to be so true and correct has not had, or would not reasonably be expected to have, a Parent Material Adverse Effect.",
+        "excerpt_definition_id": "0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02",
+        "excerpt_definition_key": "SINGLE_OPERATIVE_SPAN",
+        "excerpt_definition_payload_digest": "bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c",
+        "excerpt_definition_version": 1,
+        "excerpt_id": "e24871ec3171ba236e0d5e72298a14a7e3a713386360ae9bf8a4665564099696",
+        "excerpt_purpose": "LEGAL_EVIDENCE",
+        "ordered_component_assignments": [
+          {
+            "component_slot_key": "PRIMARY",
+            "governed_slot_ordinal": 0,
+            "semantic_span_id": "e9116e540636c54fe4289f74e232c09ccbc74bd18e0ea91f44e148bdec5be6ba"
+          }
+        ],
+        "output_text_hash": "5b05984d8baff04c48db248f762590a7c89eff7c6770acf6b3de64f660c33598",
+        "schema_version": "EXCERPT/V1",
+        "source_content_id": "f242e6b4299de0162c25a22318bd3e136c2595c97d166dfe2eb04c79498d71d3",
+        "source_occurrence_id": "1c7ff8a33f94981a72c9ec4321dd415cef00a50728a1369ad6d15bd5a7d8091c",
+        "transformation_or_redaction_version": "IDENTITY_UTF8/V1"
+      }
+    ],
+    "definition_occurrences": [],
+    "provisions": [
+      {
+        "absolute_end": 225755,
+        "absolute_start": 223841,
+        "canonical_text_id": "b92a7c3d217e7478d73693ae093ee4e8c75d72084a9e608bf3e6e820705fbf5a",
+        "closure_id": "8a16c796dfe5857b5bdc6ffbc4df70f001a8f14aa753b59625326d28f8d48a92",
+        "concept_key": "COND-S-REP",
+        "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+        "ordinal": 1,
+        "party": {
+          "capacity": "BUYER",
+          "role": "CONDITION_OBLIGOR",
+          "value": "Parent and Merger Sub"
+        },
+        "provision_instance_id": "f23e589d62f4ef6df39066de243b4a61208954813d699f5e91a9237e444fcc91",
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_anchor_id": "c2ac856072aba2ce5cc46ae8ed5c2ab903b6cfc51a7509dedc33b09856466b95",
+        "source_occurrence_id": "1c7ff8a33f94981a72c9ec4321dd415cef00a50728a1369ad6d15bd5a7d8091c"
+      }
+    ],
+    "components": [],
+    "claims": [
+      {
+        "applicability": null,
+        "attributes": {
+          "accuracy_standard": "MAT_ALL_MATERIAL",
+          "answer_provenance": {
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            },
+            "tag": "MECHANICAL"
+          },
+          "approval_definition_ref": null,
+          "approval_kind": null,
+          "assertion_kind": "BRING_DOWN_TIER",
+          "breach_standard": null,
+          "burdensome_scope": null,
+          "causation_standard": null,
+          "certificate_relationship_status": null,
+          "certificate_side": null,
+          "certified_condition_refs": [],
+          "certifying_party_ref": null,
+          "condition_obligor": "Parent and Merger Sub",
+          "covered_scope_ref": "the representations and warranties of Parent and Merger Sub contained in Section 4.01 and Section 4.03",
+          "explicit_clause_cross_reference": null,
+          "listing_venue_ref": null,
+          "mae_party": null,
+          "mae_term_ref": null,
+          "obligor_ref": null,
+          "rep_side": "BUYER_REPS",
+          "s4_component": null,
+          "scrape_quote": "true and correct in all material respects",
+          "section_reference": "7.03",
+          "standard": null,
+          "threshold_role": null
+        },
+        "canonical_value": "MAT_ALL_MATERIAL",
+        "claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+        "claim_definition_version": 1,
+        "claim_occurrence_id": "776b7e19aca42e768395ab8d78ec666f21429f96286da3864884b122464ce076",
+        "claim_revision_id": "83be333af6d7bd19cbdd701ff839d7a7c88697fe1ffbda3c12ab4faf6e6f0619",
+        "closure_id": "bcda49c878e9ccfd3d36a9f4571150cf651e756c4c74ea0ab5e9d87c018ab0e8",
+        "day_basis": null,
+        "denominator": null,
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "absolute_end": 225215,
+            "absolute_start": 224103,
+            "claim_evidence_id": "ab0f1b911b5519aaebc8fcbba5a914d94d4d5f302692a36df286fbc29a7bbdd1",
+            "document_ordinal": 0,
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "e24871ec3171ba236e0d5e72298a14a7e3a713386360ae9bf8a4665564099696",
+            "ordinal": 0,
+            "schema_version": "CLAIM_EVIDENCE/V1"
+          }
+        ],
+        "evidence_ids": [
+          "ab0f1b911b5519aaebc8fcbba5a914d94d4d5f302692a36df286fbc29a7bbdd1"
+        ],
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "failure": null,
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "not_examined": null,
+        "ordinal": 0,
+        "publication_state": "VALIDATED",
+        "quarantine": null,
+        "raw_value": "Each of (i) the representations and warranties of Parent and Merger Sub contained in Section 4.01 and Section 4.03 are true and correct in all material respects as of the date of this Agreement and as of the Effective Time as if made as of such date (except for those representations and warranties which address matters only as of an earlier date which shall have been true and correct as of such earlier date); and (ii) each of the other representations and warranties of Parent and Merger Sub contained in Article IV of this Agreement are true and correct, without giving effect to the words “materially” or “material” or to any qualification based on the defined term “Parent Material Adverse Effect,” as of the date of this Agreement and as of the Effective Time as if made as of such date (except for those representations and warranties which address matters only as of an earlier date which shall have been true and correct as of such earlier date), except where the failure to be so true and correct has not had, or would not reasonably be expected to have, a Parent Material Adverse Effect.",
+        "retained_residuals": [],
+        "schema_version": "CLAIM_REVISION/V1",
+        "scope": null,
+        "state": "PRESENT",
+        "subject_occurrence_id": "f23e589d62f4ef6df39066de243b4a61208954813d699f5e91a9237e444fcc91",
+        "taxonomy_codes": {
+          "assertion_kind": "BRING_DOWN_TIER"
+        },
+        "unit": null
+      },
+      {
+        "applicability": null,
+        "attributes": {
+          "accuracy_standard": "MAT_MAE_QUALIFIED",
+          "answer_provenance": {
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            },
+            "tag": "MECHANICAL"
+          },
+          "approval_definition_ref": null,
+          "approval_kind": null,
+          "assertion_kind": "BRING_DOWN_TIER",
+          "breach_standard": null,
+          "burdensome_scope": null,
+          "causation_standard": null,
+          "certificate_relationship_status": null,
+          "certificate_side": null,
+          "certified_condition_refs": [],
+          "certifying_party_ref": null,
+          "condition_obligor": "Parent and Merger Sub",
+          "covered_scope_ref": "each of the other representations and warranties of Parent and Merger Sub contained in Article IV of this Agreement",
+          "explicit_clause_cross_reference": null,
+          "listing_venue_ref": null,
+          "mae_party": null,
+          "mae_term_ref": null,
+          "obligor_ref": null,
+          "rep_side": "BUYER_REPS",
+          "s4_component": null,
+          "scrape_quote": "except where the failure to be so true and correct has not had, or would not reasonably be expected to have, a Parent Material Adverse Effect",
+          "section_reference": "7.03",
+          "standard": null,
+          "threshold_role": null
+        },
+        "canonical_value": "MAT_MAE_QUALIFIED",
+        "claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+        "claim_definition_version": 1,
+        "claim_occurrence_id": "3ecafeb103c67c9336e04649383bc07a626986571d023385e2259c2174511916",
+        "claim_revision_id": "ea9836031e29c58972b1e6d937ada8daaffca3580ee7b9912fa83aa2a70022a2",
+        "closure_id": "8bed63a9abd728b36d9ff11f9eddd1bd1b5ed057140d4529b140a5bb0ea2f8dd",
+        "day_basis": null,
+        "denominator": null,
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "absolute_end": 225215,
+            "absolute_start": 224103,
+            "claim_evidence_id": "9c00b95e52ad9efaef016b711d3f90b7e1b8c76de2397b6dab8f06628cae0dd4",
+            "document_ordinal": 0,
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "e24871ec3171ba236e0d5e72298a14a7e3a713386360ae9bf8a4665564099696",
+            "ordinal": 0,
+            "schema_version": "CLAIM_EVIDENCE/V1"
+          }
+        ],
+        "evidence_ids": [
+          "9c00b95e52ad9efaef016b711d3f90b7e1b8c76de2397b6dab8f06628cae0dd4"
+        ],
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "failure": null,
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "not_examined": null,
+        "ordinal": 1,
+        "publication_state": "VALIDATED",
+        "quarantine": null,
+        "raw_value": "Each of (i) the representations and warranties of Parent and Merger Sub contained in Section 4.01 and Section 4.03 are true and correct in all material respects as of the date of this Agreement and as of the Effective Time as if made as of such date (except for those representations and warranties which address matters only as of an earlier date which shall have been true and correct as of such earlier date); and (ii) each of the other representations and warranties of Parent and Merger Sub contained in Article IV of this Agreement are true and correct, without giving effect to the words “materially” or “material” or to any qualification based on the defined term “Parent Material Adverse Effect,” as of the date of this Agreement and as of the Effective Time as if made as of such date (except for those representations and warranties which address matters only as of an earlier date which shall have been true and correct as of such earlier date), except where the failure to be so true and correct has not had, or would not reasonably be expected to have, a Parent Material Adverse Effect.",
+        "retained_residuals": [],
+        "schema_version": "CLAIM_REVISION/V1",
+        "scope": null,
+        "state": "PRESENT",
+        "subject_occurrence_id": "f23e589d62f4ef6df39066de243b4a61208954813d699f5e91a9237e444fcc91",
+        "taxonomy_codes": {
+          "assertion_kind": "BRING_DOWN_TIER"
+        },
+        "unit": null
+      }
+    ],
+    "relationships": [],
+    "condition_groups": [],
+    "validated_semantic_graphs": [],
+    "open_world_candidates": [],
+    "open_world_candidate_occurrences": [],
+    "open_world_evidence_references": [],
+    "open_world_candidate_dispositions": [],
+    "open_world_primitives": [],
+    "semantic_impact_closures": [],
+    "reviewed_source_specific_rows": [],
+    "incomplete_canonical_result_rows": [],
+    "source_references": [
+      {
+        "canonical_text_id": "b92a7c3d217e7478d73693ae093ee4e8c75d72084a9e608bf3e6e820705fbf5a",
+        "deal_admission_id": "b4e9c00e9404694a80145f6ae9b521271240a688ffb08f65012bf232e6dea39e",
+        "governed_deal_key": "deal:metsera-closing-conditions:9db5e4cb091442c7",
+        "immutable_source_document_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+        "schema_version": "ADMITTED_SOURCE_REFERENCE/V1",
+        "semantic_extraction_input_envelope_id": "c5da88d0e5b2478b4971fd1d9ee6320d9aa2abe4d05bb6b07bfc39b71a132dc7",
+        "source_admission_manifest_id": "88343a8a7bb7b095d952f5456a4981748934b55b01e454ad7d3f06a47d7e836c",
+        "source_ordinal": 0
+      }
+    ],
+    "publication_dispositions": [
+      {
+        "authority_id": null,
+        "canonical_validation_state": "VALIDATED",
+        "claim_kind": "UNKNOWN",
+        "claim_revision_id": "83be333af6d7bd19cbdd701ff839d7a7c88697fe1ffbda3c12ab4faf6e6f0619",
+        "decision_id": "d544d71a090ec0d7a166535f5baa965e252739632fa1a03fadc541495ef71076",
+        "disposition": "WITHHELD",
+        "evaluated_at": "1970-01-01T00:00:00.000Z",
+        "family": "UNKNOWN",
+        "mechanism": "UNKNOWN",
+        "prior_eligible_decision": null,
+        "prior_eligible_decision_id": null,
+        "publication_input_digest": "fcb996b35fe15a3b32ea3e16a9b19a87a2cad4713f5a03a87c30685cb89280f8",
+        "reason_codes": [
+          "MISSING_CALIBRATION_AUTHORITY"
+        ],
+        "resolution_receipt_id": "8e142ab28c940a8993d3067d2b349e47eb43ba8dcf755239ea86940bed7d216a",
+        "review_queue_artifact_id": "1e1305a869fb71c3799685dd43422622058b140e905e448b5b08143428758654",
+        "risk_signals": {
+          "definition_ambiguity": true,
+          "model_fallback": true,
+          "party_attribution_risk": true,
+          "structural_uncertainty": true
+        },
+        "run_receipt_id": "0143f7efd3c84586f1254f2bb7de076b13f5a4d69d68425ff53d935efe185a67",
+        "schema_version": "CANONICAL_V2_PUBLICATION_DISPOSITION/V2",
+        "selected_rung": 1
+      },
+      {
+        "authority_id": null,
+        "canonical_validation_state": "VALIDATED",
+        "claim_kind": "UNKNOWN",
+        "claim_revision_id": "ea9836031e29c58972b1e6d937ada8daaffca3580ee7b9912fa83aa2a70022a2",
+        "decision_id": "ee6fe3fce4d6e7266436976ecff2c14bdbd98cd372f6e71f88cff140397528a6",
+        "disposition": "WITHHELD",
+        "evaluated_at": "1970-01-01T00:00:00.000Z",
+        "family": "UNKNOWN",
+        "mechanism": "UNKNOWN",
+        "prior_eligible_decision": null,
+        "prior_eligible_decision_id": null,
+        "publication_input_digest": "fcb996b35fe15a3b32ea3e16a9b19a87a2cad4713f5a03a87c30685cb89280f8",
+        "reason_codes": [
+          "MISSING_CALIBRATION_AUTHORITY"
+        ],
+        "resolution_receipt_id": "8e142ab28c940a8993d3067d2b349e47eb43ba8dcf755239ea86940bed7d216a",
+        "review_queue_artifact_id": "1e1305a869fb71c3799685dd43422622058b140e905e448b5b08143428758654",
+        "risk_signals": {
+          "definition_ambiguity": true,
+          "model_fallback": true,
+          "party_attribution_risk": true,
+          "structural_uncertainty": true
+        },
+        "run_receipt_id": "0143f7efd3c84586f1254f2bb7de076b13f5a4d69d68425ff53d935efe185a67",
+        "schema_version": "CANONICAL_V2_PUBLICATION_DISPOSITION/V2",
+        "selected_rung": 1
+      }
+    ]
+  },
+  "unattendedPublicationCandidateWriteSet": {
+    "claims": [],
+    "publication_dispositions": []
+  },
+  "residuals": [],
+  "quarantines": [],
+  "quarantinedClosureIds": [],
+  "counts": {
+    "publishable": 4,
+    "residuals": 0,
+    "quarantinedClosures": 0
+  }
+}

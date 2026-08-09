@@ -1,0 +1,471 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "19245f4913ba39c7d472d7230d65357f2ea9e2f47fa67ce62d0531e62e15265a",
+  "review_queue": [
+    {
+      "section_reference": "7.02",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-B-REP",
+      "reasons": [],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2811d9c5944b2c992e1dfd1a6b1e310bd97e2a051bd3431f6533cae9ad8bbae4",
+      "closure_id": "c2c25d624eb1a9b731978e2e14ecd0d3913fd0f6bd9edc0321a8275479041c91",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "2f06b4e1b7d2c4ba121fcd12ecd5a72e67148b2733bdb10452b126d292266c73",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "02f94e097ec1269d260377565cdae9e4833a71402d79cf20542d7e91bfffb069",
+          "document_ordinal": 0,
+          "absolute_start": 289,
+          "absolute_end": 1090,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Each of (i) the representations and warranties of the Company contained in this Agreement, other than those set forth in Section 3.01 (first sentence only), Section 3.02, Section 3.04, Section 3.05(a)(i)(x) and Section 3.22, are true and correct, without giving effect to the words “materially” or “material” or to any qualification based on the defined term “Company Material Adverse Effect,” as of the date of this Agreement and as of the Effective Time as if made as of such date (except for those representations and warranties which address matters only as of an earlier date which shall have been true and correct as of such earlier date), except where the failure to be so true and correct has not had, or would not reasonably be expected to have, a Company Material Adverse Effect;",
+      "attachment_position": null,
+      "concept_family": "COND-B-REP",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 256,
+          "end_byte": 2012
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 256,
+            "end_byte": 2012,
+            "text": " Representations and Warranties. Each of (i) the representations and warranties of the Company contained in this Agreement, other than those set forth in Section 3.01 (first sentence only), Section 3.02, Section 3.04, Section 3.05(a)(i)(x) and Section 3.22, are true and correct, without giving effect to the words “materially” or “material” or to any qualification based on the defined term “Company Material Adverse Effect,” as of the date of this Agreement and as of the Effective Time as if made as of such date (except for those representations and warranties which address matters only as of an earlier date which shall have been true and correct as of such earlier date), except where the failure to be so true and correct has not had, or would not reasonably be expected to have, a Company Material Adverse Effect; (ii) the representations and warranties of the Company contained in Section 3.01(first sentence only), Section 3.02(b) through Section 3.02(e), Section 3.04, Section 3.05(a)(i)(x), and Section 3.22 are true and correct in all material respects as of the date of this Agreement and as of the Effective Time as if made as of such date (except for those representations and warranties which address matters only as of an earlier date which shall have been true and correct as of such earlier date); and (iii) the representations and warranties of the Company contained in Section 3.02(a) are true and correct in all respects, as of the date of this Agreement and as of the Effective Time as if made as of such date (except for those representations and warranties which address matters only as of an earlier date which shall have been true and correct as of such earlier date), subject only to de minimis inaccuracies.\n-58-\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 253,
+            "text": "SECTION 7.02. Additional Conditions to the Obligations of Parent and Merger Sub. The respective obligation of Parent and Merger to effect the Merger is subject to the satisfaction or waiver on or prior to the Effective Time of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.02",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "NO_MAE_CONDITION",
+      "concept_key": "COND-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f16d1be067791f190cad9c5caad0a30ed15edc090d38bd1876dfa78c6c364de5",
+      "closure_id": "2f5fbe9078768b1eddda5c0de8091864750e5d04995c9462493be669dc03a55c",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "f7b0e98f49f9aaa234c3fb6f49664efeeaa423fa49ee2833720e08040d6091a5",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "fe31649f74f96d19006b916b3868ec29ce918a1ca6ea71e912370bca95a60911",
+          "document_ordinal": 0,
+          "absolute_start": 2305,
+          "absolute_end": 2424,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Since the date of this Agreement, there shall not have occurred any Company Material Adverse Effect that is continuing.",
+      "attachment_position": null,
+      "concept_family": "COND-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COND-MAE",
+          "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+          "start": 659,
+          "end": 690,
+          "excerpt": "ially” or “material” or to any qualification based on the defined term “Company Material Adverse Effect,” as of the date of this Agreement and as of the Effective Time as if made as",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COND-MAE",
+          "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+          "start": 1058,
+          "end": 1089,
+          "excerpt": "so true and correct has not had, or would not reasonably be expected to have, a Company Material Adverse Effect; (ii) the representations and warranties of the Company contained in Section 3.",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COND-MAE",
+          "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+          "start": 2272,
+          "end": 2303,
+          "excerpt": " performed by it under this Agreement at or prior to the Effective Time.\n(c) No Company Material Adverse Effect. Since the date of this Agreement, there shall not have occurred any Company Ma",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 2268,
+          "end_byte": 2425
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 2268,
+            "end_byte": 2425,
+            "text": " No Company Material Adverse Effect. Since the date of this Agreement, there shall not have occurred any Company Material Adverse Effect that is continuing.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 253,
+            "text": "SECTION 7.02. Additional Conditions to the Obligations of Parent and Merger Sub. The respective obligation of Parent and Merger to effect the Merger is subject to the satisfaction or waiver on or prior to the Effective Time of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.02",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "NO_MAE_CONDITION_CONTINUING",
+      "concept_key": "COND-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6d3fe25e050ca6ba521ae0d6b86f999d726758b28b728cbe7fd324c9cfc5a297",
+      "closure_id": "4c6030cc7f649f8fb3cce2ccd5dc234a61e2160630ae09f27fd27b0c9ab0ae5d",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e02f50085565939c8cb96aa4fdca287a1b58fc3b4e4a42cb4b146b35bf5e0e6a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "fe31649f74f96d19006b916b3868ec29ce918a1ca6ea71e912370bca95a60911",
+          "document_ordinal": 0,
+          "absolute_start": 2305,
+          "absolute_end": 2424,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Since the date of this Agreement, there shall not have occurred any Company Material Adverse Effect that is continuing.",
+      "attachment_position": null,
+      "concept_family": "COND-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COND-MAE",
+          "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+          "start": 659,
+          "end": 690,
+          "excerpt": "ially” or “material” or to any qualification based on the defined term “Company Material Adverse Effect,” as of the date of this Agreement and as of the Effective Time as if made as",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COND-MAE",
+          "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+          "start": 1058,
+          "end": 1089,
+          "excerpt": "so true and correct has not had, or would not reasonably be expected to have, a Company Material Adverse Effect; (ii) the representations and warranties of the Company contained in Section 3.",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COND-MAE",
+          "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+          "start": 2272,
+          "end": 2303,
+          "excerpt": " performed by it under this Agreement at or prior to the Effective Time.\n(c) No Company Material Adverse Effect. Since the date of this Agreement, there shall not have occurred any Company Ma",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 2268,
+          "end_byte": 2425
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 2268,
+            "end_byte": 2425,
+            "text": " No Company Material Adverse Effect. Since the date of this Agreement, there shall not have occurred any Company Material Adverse Effect that is continuing.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 253,
+            "text": "SECTION 7.02. Additional Conditions to the Obligations of Parent and Merger Sub. The respective obligation of Parent and Merger to effect the Merger is subject to the satisfaction or waiver on or prior to the Effective Time of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.02",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-B-REP",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d7a1089d353b971b6a9f1fc9e47b314ec6db58dd2ce25e2349c9bb438b43053b",
+      "closure_id": "869887926d7b5c037cb6c115a6a3c7abb4483bb3e51a6a52ad9984c727957173",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "8ada3160d674ba5f0194cd75332af40dbdf49a2d632baa91ecbd961463807d8b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "abcb860bd2797a235d78c7b9af2fea6ae7d18f9fbcc0ac9891ff7d0eb4fc59cf",
+          "document_ordinal": 0,
+          "absolute_start": 1591,
+          "absolute_end": 2006,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "(iii) the representations and warranties of the Company contained in Section 3.02(a) are true and correct in all respects, as of the date of this Agreement and as of the Effective Time as if made as of such date (except for those representations and warranties which address matters only as of an earlier date which shall have been true and correct as of such earlier date), subject only to de minimis inaccuracies.",
+      "attachment_position": null,
+      "concept_family": "COND-B-REP",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 256,
+          "end_byte": 2012
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 256,
+            "end_byte": 2012,
+            "text": " Representations and Warranties. Each of (i) the representations and warranties of the Company contained in this Agreement, other than those set forth in Section 3.01 (first sentence only), Section 3.02, Section 3.04, Section 3.05(a)(i)(x) and Section 3.22, are true and correct, without giving effect to the words “materially” or “material” or to any qualification based on the defined term “Company Material Adverse Effect,” as of the date of this Agreement and as of the Effective Time as if made as of such date (except for those representations and warranties which address matters only as of an earlier date which shall have been true and correct as of such earlier date), except where the failure to be so true and correct has not had, or would not reasonably be expected to have, a Company Material Adverse Effect; (ii) the representations and warranties of the Company contained in Section 3.01(first sentence only), Section 3.02(b) through Section 3.02(e), Section 3.04, Section 3.05(a)(i)(x), and Section 3.22 are true and correct in all material respects as of the date of this Agreement and as of the Effective Time as if made as of such date (except for those representations and warranties which address matters only as of an earlier date which shall have been true and correct as of such earlier date); and (iii) the representations and warranties of the Company contained in Section 3.02(a) are true and correct in all respects, as of the date of this Agreement and as of the Effective Time as if made as of such date (except for those representations and warranties which address matters only as of an earlier date which shall have been true and correct as of such earlier date), subject only to de minimis inaccuracies.\n-58-\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 253,
+            "text": "SECTION 7.02. Additional Conditions to the Obligations of Parent and Merger Sub. The respective obligation of Parent and Merger to effect the Merger is subject to the satisfaction or waiver on or prior to the Effective Time of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.02",
+      "source_citation": "7.02(b)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "OBLIGOR_REF_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company will have performed and complied with, in all material respects, its agreements, obligations and covenants required to be performed by it under this Agreement at or prior to the Effective Time.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "2b5a61ace9c69d10c201c9b9400bc4be0b5e99c43c93532f8e3af9547ed03c17",
+      "closure_id": "93df565e3fdcd62c1cb67a631f1c31f32cd80c0e51b92d9081cae7f42ee2e707",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "36f5afade3ba49bf7bb02f9a0550079b849ebd068112ac34a8f615e5cb92f4c9",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "cefa33a08226beb4d9cb7f642b0b79931b8b583ebe69fe35a7c1f5d96e95b5f7",
+          "document_ordinal": 0,
+          "absolute_start": 2059,
+          "absolute_end": 2264,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company will have performed and complied with, in all material respects, its agreements, obligations and covenants required to be performed by it under this Agreement at or prior to the Effective Time.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 2015,
+          "end_byte": 2265
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 2015,
+            "end_byte": 2265,
+            "text": " Performance of Obligations of the Company. The Company will have performed and complied with, in all material respects, its agreements, obligations and covenants required to be performed by it under this Agreement at or prior to the Effective Time.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 253,
+            "text": "SECTION 7.02. Additional Conditions to the Obligations of Parent and Merger Sub. The respective obligation of Parent and Merger to effect the Merger is subject to the satisfaction or waiver on or prior to the Effective Time of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.02",
+      "source_citation": "7.02(d)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CERTIFYING_PARTY_REF_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company will have furnished Parent with a certificate dated as of the Closing Date signed on its behalf by its Chief Executive Officer or Chief Financial Officer to the effect that the conditions set forth in Section 7.02(a), Section 7.02(b) and Section 7.02(c) have been satisfied.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "30d96cfa17964a12e969fc13b8c710c12ae6c0c8e03d7b02f3260bb19f29b44f",
+      "closure_id": "de9dd9c619fe5b291cca64c1e8e07d47ff24159d488d7bf9c7e6cb7d0fd0d7ac",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e584841562b537234629039f64f00a1a6a940d31709b78fe05eab06b0a3c57fa",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c83076cf6be822c9f5b50290a479c61ea118982cbeb3f24c9666d5ca628a4fcf",
+          "document_ordinal": 0,
+          "absolute_start": 2450,
+          "absolute_end": 2736,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company will have furnished Parent with a certificate dated as of the Closing Date signed on its behalf by its Chief Executive Officer or Chief Financial Officer to the effect that the conditions set forth in Section 7.02(a), Section 7.02(b) and Section 7.02(c) have been satisfied.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "d",
+          "depth": 1,
+          "start_byte": 2428,
+          "end_byte": 2737
+        },
+        "chain": [
+          {
+            "path": "d",
+            "start_byte": 2428,
+            "end_byte": 2737,
+            "text": " Closing Certificate. The Company will have furnished Parent with a certificate dated as of the Closing Date signed on its behalf by its Chief Executive Officer or Chief Financial Officer to the effect that the conditions set forth in Section 7.02(a), Section 7.02(b) and Section 7.02(c) have been satisfied.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 253,
+            "text": "SECTION 7.02. Additional Conditions to the Obligations of Parent and Merger Sub. The respective obligation of Parent and Merger to effect the Merger is subject to the satisfaction or waiver on or prior to the Effective Time of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.02",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-B-REP",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9535ebd6d300396adbbde935ed8ac9d1940d7dba1295dff63c2c6c37daef9144",
+      "closure_id": "ffce530b9f84fd026692acf3ec5c892c0e6af37ed4314a34cd94d3ce846c6f51",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "95c1943866639b29e97852700e77e98cd635fd3f92f5fd2da1d4e7eb77a95f00",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "f13f0046c86469a801e6fb502dfbbb1aa5ab92ca3ce14440412a0e834bdbfb31",
+          "document_ordinal": 0,
+          "absolute_start": 1091,
+          "absolute_end": 1586,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "(ii) the representations and warranties of the Company contained in Section 3.01(first sentence only), Section 3.02(b) through Section 3.02(e), Section 3.04, Section 3.05(a)(i)(x), and Section 3.22 are true and correct in all material respects as of the date of this Agreement and as of the Effective Time as if made as of such date (except for those representations and warranties which address matters only as of an earlier date which shall have been true and correct as of such earlier date);",
+      "attachment_position": null,
+      "concept_family": "COND-B-REP",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 256,
+          "end_byte": 2012
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 256,
+            "end_byte": 2012,
+            "text": " Representations and Warranties. Each of (i) the representations and warranties of the Company contained in this Agreement, other than those set forth in Section 3.01 (first sentence only), Section 3.02, Section 3.04, Section 3.05(a)(i)(x) and Section 3.22, are true and correct, without giving effect to the words “materially” or “material” or to any qualification based on the defined term “Company Material Adverse Effect,” as of the date of this Agreement and as of the Effective Time as if made as of such date (except for those representations and warranties which address matters only as of an earlier date which shall have been true and correct as of such earlier date), except where the failure to be so true and correct has not had, or would not reasonably be expected to have, a Company Material Adverse Effect; (ii) the representations and warranties of the Company contained in Section 3.01(first sentence only), Section 3.02(b) through Section 3.02(e), Section 3.04, Section 3.05(a)(i)(x), and Section 3.22 are true and correct in all material respects as of the date of this Agreement and as of the Effective Time as if made as of such date (except for those representations and warranties which address matters only as of an earlier date which shall have been true and correct as of such earlier date); and (iii) the representations and warranties of the Company contained in Section 3.02(a) are true and correct in all respects, as of the date of this Agreement and as of the Effective Time as if made as of such date (except for those representations and warranties which address matters only as of an earlier date which shall have been true and correct as of such earlier date), subject only to de minimis inaccuracies.\n-58-\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 253,
+            "text": "SECTION 7.02. Additional Conditions to the Obligations of Parent and Merger Sub. The respective obligation of Parent and Merger to effect the Merger is subject to the satisfaction or waiver on or prior to the Effective Time of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "6121a78bbe49aca04b5201feec1b0133127c0de58d99152f0d32061677a85602"
+}

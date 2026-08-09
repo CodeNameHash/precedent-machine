@@ -1,0 +1,345 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+  "source_sha256": "a7d76e8a7f6efed945208b5870ddfa848438a7542806878bb2bc10646b557660",
+  "source_byte_length": 380704,
+  "root_section_id": "47ba18d9fc592beec8d2bfeed3ee881b60d80543a9f7a6f4c13add1c990edeeb",
+  "requested_section_references": [
+    "6.4"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "6.4",
+      "section_id": "eac1edfab42234ca602afaf63c2f24b2e60b5a19fe4e2a284842e02bf3e80f27",
+      "parent_section_id": "fed3d688610a82aaf6e069d335625d873cc33b0faafa7526fd14f4c9cb0da533",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 251245,
+      "end": 256233,
+      "text_sha256": "d4ac5c5de9181b108e1fe409bbc90c15d807b49ef404309c46112c1f9aa68e5d",
+      "section_family": "PROXY_MEETING",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-proxy-meeting/v1",
+      "prompt_version": 2,
+      "prompt_digest": "c90e22d48ae3766e9181783408fbe68998b610e4a94ef58a9e2e3e88da8cc8aa",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "c90e22d48ae3766e9181783408fbe68998b610e4a94ef58a9e2e3e88da8cc8aa",
+        "input_scope_digest": "da7cbc4ea35e9d6062a1a39eafe73885ef338b21083a164ddeec706ccc89a471",
+        "proposal_count": 2,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "623c288261797d36c3b6f484e2a8139f3da76ea56e21584e2f2538425853fbdd"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "6.4",
+      "citation_validation": null,
+      "section_family": "PROXY_MEETING",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "e96af509f5cd2d5842ff7a1690e28d8ad8a1fdd5516ac6dd31a26cd9a958daca",
+          "claim_occurrence_id": "da507ea19561918797c812c78a0257c7d0dda30a626a843c37d4a2079095834a",
+          "subject_occurrence_id": "c047d4287300c44cddb1b7968af21637680f3868910794549d7d5b5668b5f488",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "As promptly as practicable following the execution of this Agreement, Parent shall file with the SEC a registration statement on Form S-4 (the “Registration Statement”),",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "c8d42247a396dd8caa915d52f4fc22a5f7077bcb49ece2abcd72dc9e580e4130"
+          ],
+          "attributes": {
+            "why_unmapped": "Qualitative timing phrase has no governed day count or timing direction.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "c8d42247a396dd8caa915d52f4fc22a5f7077bcb49ece2abcd72dc9e580e4130",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "e78fa97802559738d51fd8811dbc649e8e83b1fa6d7d0b1d2590d65219cea947",
+              "document_ordinal": 0,
+              "absolute_start": 127,
+              "absolute_end": 300,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "94db995d418bf66acf7548e899fbbe43f42fba98cc5c325d7e1f296b3d65a015"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "c90e22d48ae3766e9181783408fbe68998b610e4a94ef58a9e2e3e88da8cc8aa",
+          "producer_receipt_id": "623c288261797d36c3b6f484e2a8139f3da76ea56e21584e2f2538425853fbdd",
+          "governed_scope_digest": "23d5a69de4e6bcf5801e0694e58d2416383b7d879050cdce833f020030055fa2",
+          "extraction_provenance_id": "1ce043fe11eb07a034cba7be1723eb43ca51ca5079eb959448495dcf090051e0"
+        }
+      }
+    },
+    {
+      "section_reference": "6.4",
+      "citation_validation": null,
+      "section_family": "PROXY_MEETING",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "75ce38fe4f3f37e1fddc406324e2926d3b8e4db6919facc49d59046e1425c913",
+          "claim_occurrence_id": "b30e4fff35db1d5be974d7dff81860d775d6d419ed7fe7540361855eb69e6e43",
+          "subject_occurrence_id": "b46dca1d72a4c97b0fae9262cb71e0068912abb3e02d8fd2ca81a5e776a3fbaf",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The Company shall use its reasonable best efforts to cause the Information Statement/Prospectus to be mailed to the Company Stockholders as promptly as practicable after the Registration Statement is declared effective.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "da7e406540019f090079e413ae3e8338cb896bca93d53e847a659b8084836d5e"
+          ],
+          "attributes": {
+            "why_unmapped": "Qualitative timing phrase has no governed day count or timing direction.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "da7e406540019f090079e413ae3e8338cb896bca93d53e847a659b8084836d5e",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "9fc11a0124d47f36cb41f4e5210131016280dc993e0d3c44c6b7b349648ab9ca",
+              "document_ordinal": 0,
+              "absolute_start": 2358,
+              "absolute_end": 2577,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "93d31f3d61fc6c9828423b99f8738255a33ac0370c487ec27f3c2bc5fbedc43f"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "c90e22d48ae3766e9181783408fbe68998b610e4a94ef58a9e2e3e88da8cc8aa",
+          "producer_receipt_id": "623c288261797d36c3b6f484e2a8139f3da76ea56e21584e2f2538425853fbdd",
+          "governed_scope_digest": "23d5a69de4e6bcf5801e0694e58d2416383b7d879050cdce833f020030055fa2",
+          "extraction_provenance_id": "1ce043fe11eb07a034cba7be1723eb43ca51ca5079eb959448495dcf090051e0"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "6.4",
+      "source_byte_length": 4988,
+      "covered_byte_length": 392,
+      "coverage_share": 0.07858861267040898,
+      "marker_counts": {
+        "as of": 0,
+        "except": 0,
+        "knowledge": 0,
+        "material": 2,
+        "total": 2
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "LOW_SPAN_COVERAGE",
+          "coverage_share": 0.07858861267040898,
+          "threshold": 0.5
+        },
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 2,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "6.4",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 62,
+          "end": 65
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 320,
+          "end": 323
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 605,
+          "end": 609
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 1522,
+          "end": 1525
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 2578,
+          "end": 2581
+        },
+        {
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 3893,
+          "end": 3896
+        },
+        {
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 4478,
+          "end": 4481
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4602,
+          "end": 4605
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4762,
+          "end": 4766
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4896,
+          "end": 4901
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 5,
+        "section_paragraph_marker": 5,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 320,
+          "end": 323
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 605,
+          "end": 609
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 4602,
+          "end": 4605
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 4762,
+          "end": 4766
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 4896,
+          "end": 4901
+        }
+      ],
+      "disagreement_count": 5
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 2,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "d7c010614c6191168a958378a0745e5c50791cc9ddfb8ecf57b79de8279ad259"
+}

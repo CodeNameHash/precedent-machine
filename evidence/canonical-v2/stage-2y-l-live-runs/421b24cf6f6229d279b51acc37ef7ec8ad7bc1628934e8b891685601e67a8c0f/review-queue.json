@@ -1,0 +1,129 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "f854c054986e1f686cf1acfbde74d2e4d59a816f2f08e9203d9b2caadeaea39b",
+  "review_queue": [
+    {
+      "section_reference": "5.8",
+      "source_citation": "5.8(b)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_COOPERATION_PRESENT",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company and Parent shall cooperate with each other with respect to customary actions for transactions of this type that are reasonably requested by Parent to be taken by the Company or its Subsidiaries under the various tool financing loans the Company or its Subsidiaries have entered into with financing lenders party thereto or any of the Company’s other loan arrangements.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "0405307eb356e3df66a9ccf291e52ae977a29b6941e78ade04b262365d04ee88",
+      "closure_id": "e1d7bccea9c4c99d6de9fca086048a8d6304b7425ac6bf56f6b5131eeeaa4024",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b1eab4a25d61182aca465b0361f0762be277152e792bf09a516111316a583ade",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "68fcb40c8f8bccb6b68fe365af8495835ed3c234ddc4777dfbbf3434fd209e45",
+          "document_ordinal": 0,
+          "absolute_start": 1346,
+          "absolute_end": 1728,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the Company and Parent shall cooperate with each other with respect to customary actions for transactions of this type that are reasonably requested by Parent to be taken by the Company or its Subsidiaries under the various tool financing loans the Company or its Subsidiaries have entered into with financing lenders party thereto or any of the Company’s other loan arrangements.",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 1313,
+          "end_byte": 1729
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 1313,
+            "end_byte": 1729,
+            "text": " Without limiting the foregoing, the Company and Parent shall cooperate with each other with respect to customary actions for transactions of this type that are reasonably requested by Parent to be taken by the Company or its Subsidiaries under the various tool financing loans the Company or its Subsidiaries have entered into with financing lenders party thereto or any of the Company’s other loan arrangements.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 47,
+            "text": "Section 5.8 Treatment of Company Indebtedness.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.8",
+      "source_citation": "5.8(a)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "PAYOFF_DELIVERY_LEAD_TIME_DAYS",
+      "concept_key": "COV-PAYOFF",
+      "reasons": [
+        "NON_LITERAL_NUMERAL"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company shall, and shall cause its Subsidiaries to, deliver to Parent at least three Business Days prior to the Closing Date a copy of a payoff letter",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "86bed61924ed25194710f3ea27c767201044199fb7f2066157c6520201b21531",
+      "closure_id": "f445317e61818d64523741aa2fceb6da0ce5499ab71b83f3e77769dd73834b6f",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "39ee8f402092a08332150ddd22ea06137dd69da1519b3e65ad40fadc1f3a067e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9aad387f3724e612923663b5f4e94f9c6115456f6f31a5bb9cf4c2909dd89d48",
+          "document_ordinal": 0,
+          "absolute_start": 51,
+          "absolute_end": 205,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company shall, and shall cause its Subsidiaries to, deliver to Parent at least three Business Days prior to the Closing Date a copy of a payoff letter",
+      "attachment_position": null,
+      "concept_family": "COV-PAYOFF",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 50,
+          "end_byte": 1310
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 50,
+            "end_byte": 1310,
+            "text": " The Company shall, and shall cause its Subsidiaries to, deliver to Parent at least three Business Days prior to the Closing Date a copy of a payoff letter (subject to the delivery of funds as arranged by Parent) with respect to the Amended and Restated Loan and Security Agreement, dated as of June 30, 2025, by and between the Company, Siena Lending Group LLC and certain other parties (the “Subject Indebtedness”) in customary form, which payoff letter shall (i) indicate the total amount required to be paid to fully satisfy all principal, interest, prepayment premiums, penalties, breakage costs and any other monetary obligations then due and payable under the Subject Indebtedness as of the anticipated Closing Date (and the daily accrual thereafter) (the “Payoff Amount”), (ii) state that upon receipt of the Payoff Amount under such payoff letter, the Subject Indebtedness and all related loan documents shall be terminated and (iii) provide that all Liens and guarantees in connection with the Subject Indebtedness relating to the assets and properties of the Company or any of its Subsidiaries securing the obligations under the Subject Indebtedness shall be released and terminated upon payment of the Payoff Amount on the Closing Date.\n64\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 47,
+            "text": "Section 5.8 Treatment of Company Indebtedness.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "df63a7909276dde3c3c34ccf06db0d7256be17b11f9a91b5b2e6453e4124d13d"
+}

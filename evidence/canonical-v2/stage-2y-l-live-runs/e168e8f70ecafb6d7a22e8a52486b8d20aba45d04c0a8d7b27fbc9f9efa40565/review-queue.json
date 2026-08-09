@@ -1,0 +1,119 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "6f2fe281dbb07dde3d1e0c8958696e7d60a6367f53aab5cc23cccc29b8b86a2c",
+  "review_queue": [
+    {
+      "section_reference": "6.03",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+      "concept_key": "COND-S-CERT",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "357da53bfca2a9a5994d3389641307480c10d480f8e0019d46933c95aa059e1a",
+      "closure_id": "90c242dccd1f0aac1d0881f6a2e07cde241e44d8fce0c776d283e468609740a1",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "3329b3b6ebddb4f90fea3aafe174230e4f44a3ed0fcebc229093c6d0b1bb0ad4",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "7c4d4bf60d5c4b210353bd509a28794b6b89b6c727dc02b6bc15ee1b84fd4aae",
+          "document_ordinal": 0,
+          "absolute_start": 1190,
+          "absolute_end": 1437,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company shall have received a certificate signed on behalf of Parent by the Chief Executive Officer and the Chief Financial Officer of Parent, certifying that the conditions set forth in Section 6.03(a) and Section 6.03(b) have been satisfied.",
+      "attachment_position": null,
+      "concept_family": "COND-S-CERT",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 1164,
+          "end_byte": 1438
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 1164,
+            "end_byte": 1438,
+            "text": " Officer’s Certificate. The Company shall have received a certificate signed on behalf of Parent by the Chief Executive Officer and the Chief Financial Officer of Parent, certifying that the conditions set forth in Section 6.03(a) and Section 6.03(b) have been satisfied.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 259,
+            "text": "Section 6.03 Conditions to Obligation of the Company. The obligation of the Company to effect the Merger is further subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.03",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "COVENANT_COMPLIANCE_STANDARD",
+      "concept_key": "COND-COV",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "48f00335b05bbd0324adf7027156ea1268c36a8915982a55845fe0d935d81466",
+      "closure_id": "b1be7c9a2c4d2fadbeedd0f7a3c50e67a2419eb3946c554ffe2ae6deb69b57f5",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "075d1114df3cc9cb0444ffcb61997cd2cfd45896ea7932e9a99e5addf265133b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b2c075305e64e58359dd890d37b7dc6cc1150d09bed35f9b063456f1d8b3218e",
+          "document_ordinal": 0,
+          "absolute_start": 997,
+          "absolute_end": 1160,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Parent and Sub shall have performed in all material respects all obligations required to be performed by them under this Agreement at or prior to the Closing Date.",
+      "attachment_position": null,
+      "concept_family": "COND-COV",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 950,
+          "end_byte": 1161
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 950,
+            "end_byte": 1161,
+            "text": " Performance of Obligations of Parent and Sub. Parent and Sub shall have performed in all material respects all obligations required to be performed by them under this Agreement at or prior to the Closing Date.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 259,
+            "text": "Section 6.03 Conditions to Obligation of the Company. The obligation of the Company to effect the Merger is further subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "a88b303abe304b4462ff38740fd8db74468616a9ce8694edd04995d8ee1d8b61"
+}

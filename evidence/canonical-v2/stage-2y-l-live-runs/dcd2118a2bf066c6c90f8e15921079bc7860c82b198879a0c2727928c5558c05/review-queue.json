@@ -1,0 +1,343 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "1fafa437bbf097125c2d49f6e6ad4299de1101f2cb9475087a0dcbb7d198b924",
+  "review_queue": [
+    {
+      "section_reference": "6.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "STOCKHOLDER_APPROVAL_CONDITION",
+      "concept_key": "COND-M-STOCKHOLDER",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ad5ca2cb0d582a9924fcb2364b9fa6b49e3a1aa55f6815ccf5b9227463d60e25",
+      "closure_id": "00f7cb56b53d8ae111a2d3c4c14590aa59a86afbd45a37fb5210bccc383c17b9",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "2539a5385865c639b1e4884178e0eb50601fefe70787319cc1ef41682b73b3e7",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "7eb0fcbe9f7f11c9cec9f3741e12a7e0e2e428046a9ed0c4f1aa68dad99a2f51",
+          "document_ordinal": 0,
+          "absolute_start": 469,
+          "absolute_end": 528,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company shall have obtained the Company Requisite Vote.",
+      "attachment_position": null,
+      "concept_family": "COND-M-STOCKHOLDER",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 444,
+          "end_byte": 529
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 444,
+            "end_byte": 529,
+            "text": " Company Requisite Vote. The Company shall have obtained the Company Requisite Vote.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 441,
+            "text": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "S4_CONDITION_COMPONENT",
+      "concept_key": "COND-M-S4",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "98c8088291e2fd22e1513423d33550626cf1738e144f55e47a525d6dff008aaa",
+      "closure_id": "0e3c4f24e4bed131f8fd6a7dad9e04f95e1f5aa94f4fa824b1624fa6460b7c12",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "777f33da7b5eebc3f7e7be867f3f2b13c82604f56b6d745cb66d785775294570",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "3f8b4332196e64f876a044cb11f69f52b0dcfaaeb51a7abf48aff4f0fd369eb1",
+          "document_ordinal": 0,
+          "absolute_start": 557,
+          "absolute_end": 745,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.",
+      "attachment_position": null,
+      "concept_family": "COND-M-S4",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 532,
+          "end_byte": 746
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 532,
+            "end_byte": 746,
+            "text": " Registration Statement. The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 441,
+            "text": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LEGAL_RESTRAINT_CONDITION",
+      "concept_key": "COND-M-LEGAL",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e625fed1bb352b4ae3bfc3229d55555e5febbcc6ca0b0c3adf682fa93a0d2dd7",
+      "closure_id": "404c85905d5c56d15e0b24128dd16906076c3590952bf18348a3719d8d9b8a62",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "bc1e88443475ca30f1c3944454e16794f6da4af4ad30574cb204cc3d2422bec2",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "8eb1cdd397ddc4a873273972fc52c4fa4009818c696385f55a41ead48007b282",
+          "document_ordinal": 0,
+          "absolute_start": 800,
+          "absolute_end": 1126,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "No Governmental Entity of competent jurisdiction shall have enacted, issued, promulgated, enforced or entered any Law or order (whether temporary, preliminary or permanent) which is then in effect and has the effect of making the Mergers illegal or otherwise restricting, preventing or prohibiting consummation of the Mergers.",
+      "attachment_position": null,
+      "concept_family": "COND-M-LEGAL",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 749,
+          "end_byte": 1127
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 749,
+            "end_byte": 1127,
+            "text": " No Injunctions, Orders or Restraints; Illegality. No Governmental Entity of competent jurisdiction shall have enacted, issued, promulgated, enforced or entered any Law or order (whether temporary, preliminary or permanent) which is then in effect and has the effect of making the Mergers illegal or otherwise restricting, preventing or prohibiting consummation of the Mergers.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 441,
+            "text": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "S4_CONDITION_COMPONENT",
+      "concept_key": "COND-M-S4",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "23420f3be6cc2a2c7b3a070dc256df3fae8296188c2e2849fd2b613db487a009",
+      "closure_id": "6ff59b158c37a3f6f7746beb8e0522a4181ca3bd6220e1bfbb751e09c96ca480",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "234b77f5f4ead4084066033592e1476549ce6b37df1f63a1791d08c2e1a53e71",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "3f8b4332196e64f876a044cb11f69f52b0dcfaaeb51a7abf48aff4f0fd369eb1",
+          "document_ordinal": 0,
+          "absolute_start": 557,
+          "absolute_end": 745,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.",
+      "attachment_position": null,
+      "concept_family": "COND-M-S4",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 532,
+          "end_byte": 746
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 532,
+            "end_byte": 746,
+            "text": " Registration Statement. The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 441,
+            "text": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "S4_CONDITION_COMPONENT",
+      "concept_key": "COND-M-S4",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5d372f2a8f11f6e99a70041b425bd163d3e9e6d07271631d481ab0f90a38f14d",
+      "closure_id": "7e9d113b701e99b3f50e3b512c69a583dd89dc35494c0b601d220abbac7f4926",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "4d89394b02b953ed7a9dffa40e28a855e8fc479abe10f1b067f5a369a989cc6e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "3f8b4332196e64f876a044cb11f69f52b0dcfaaeb51a7abf48aff4f0fd369eb1",
+          "document_ordinal": 0,
+          "absolute_start": 557,
+          "absolute_end": 745,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.",
+      "attachment_position": null,
+      "concept_family": "COND-M-S4",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 532,
+          "end_byte": 746
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 532,
+            "end_byte": 746,
+            "text": " Registration Statement. The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 441,
+            "text": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LISTING_CONDITION",
+      "concept_key": "COND-M-LISTING",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "3112ad8409e0fc3e91ca1d7668b11b89493b33bfb0e955cc0960ac11a40490e9",
+      "closure_id": "f9ed1d17dc1a16e15729163ff94105e7a793d6399da262b31f720c36bf8e6c02",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "5d8214145215b1461aa0a0b3fc48208a8b048d0667c0142d01d06573ad1ff384",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "afad35337b107391691faf3a6671268cdd956b04bfaa779ba32055155f07fb5f",
+          "document_ordinal": 0,
+          "absolute_start": 1145,
+          "absolute_end": 1303,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The shares of Parent Common Stock to be issued in the Company Merger shall have been approved for listing on the NYSE, subject to official notice of issuance.",
+      "attachment_position": null,
+      "concept_family": "COND-M-LISTING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "d",
+          "depth": 1,
+          "start_byte": 1130,
+          "end_byte": 1304
+        },
+        "chain": [
+          {
+            "path": "d",
+            "start_byte": 1130,
+            "end_byte": 1304,
+            "text": " NYSE Listing. The shares of Parent Common Stock to be issued in the Company Merger shall have been approved for listing on the NYSE, subject to official notice of issuance.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 441,
+            "text": "Section 6.1 Conditions to Each Party’s Obligations to Effect the Mergers. The respective obligations of each party hereto to consummate the Mergers are subject to the fulfillment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the party being benefited thereby (which waiver shall be in such party’s sole discretion), to the extent permitted by applicable Law:\n81\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "b2d0ee8271ae8cc4ff035d29068a1d3a8e3b0b880ee3cd0b82601ac8a1ccc0b5"
+}

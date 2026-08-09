@@ -1,0 +1,348 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "8534544a8dc7e04f7f0a65cdd099e92e3f8aee6188cf52af4b077a46551546c6",
+  "review_queue": [
+    {
+      "section_reference": "5.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "STOCKHOLDER_APPROVAL_CONDITION",
+      "concept_key": "COND-M-STOCKHOLDER",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e0bb5f0b95165f5e2780071d229e1b5f366b217a511fa72d478040de6d4d9202",
+      "closure_id": "0dbd9509691b60cf688316917c13130f402f1d9a7f9c630457f3ef0077e04304",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0b50432b95c726a832cb212e274018412b160f58ff71309991cc438db58d888b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "f8688598f0c2216a55a939e05a49e0715cac6f411e68b7daf2117f9c822af896",
+          "document_ordinal": 0,
+          "absolute_start": 283,
+          "absolute_end": 377,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company Stockholder Approval and the Parent Stockholder Approval shall have been obtained;",
+      "attachment_position": null,
+      "concept_family": "COND-M-STOCKHOLDER",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 260,
+          "end_byte": 378
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 260,
+            "end_byte": 378,
+            "text": " Stockholder Approval. The Company Stockholder Approval and the Parent Stockholder Approval shall have been obtained;\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 257,
+            "text": "5.1 Conditions to Each Party’s Obligation to Effect the Mergers. The respective obligation of each party to effect the Mergers is subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LISTING_CONDITION",
+      "concept_key": "COND-M-LISTING",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2f5a01181e3a0974bf8682f5c6519d69058db5814c07d66b97e024afccc2c7d3",
+      "closure_id": "363451c22940469a4c9fee1b3152d8a51b893a6ee194135e1c1f88c028197c2c",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "bc39455536c9cf8052fe4577bab0791ef617cf550dbe14e83f0cc660c9fc2277",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "e95b806c85d7807d64810c72518582824f20def030e98ef7cf4f663d7e23ffee",
+          "document_ordinal": 0,
+          "absolute_start": 391,
+          "absolute_end": 526,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Parent Shares issuable as Stock Consideration shall have been approved for listing on NYSE, subject to official notice of issuance;",
+      "attachment_position": null,
+      "concept_family": "COND-M-LISTING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 381,
+          "end_byte": 527
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 381,
+            "end_byte": 527,
+            "text": " Listing. The Parent Shares issuable as Stock Consideration shall have been approved for listing on NYSE, subject to official notice of issuance;\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 257,
+            "text": "5.1 Conditions to Each Party’s Obligation to Effect the Mergers. The respective obligation of each party to effect the Mergers is subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.1",
+      "source_citation": "5.1(c)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any consents, registrations, approvals, permits and authorizations set forth on Section ‎5.1(c) of the Company Disclosure Letter shall have been obtained;",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "885d520d98ffecd45bcbdfc12c7887027cd4b694d7e002ff445ee51aef7b421c",
+      "closure_id": "44f721cfd64958e2a2328ac8d63655e20c7ef73f89df1ec37f4c4f0b7e1e51da",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "9cf5a10aaaaa4366b4924ea55844ca748880b9161e171e05e6bc781650767064",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "6c559e80f99cb637545931bb6bb86eb0134cc5ea3095831ba1c48313d9121c84",
+          "document_ordinal": 0,
+          "absolute_start": 876,
+          "absolute_end": 1032,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "any consents, registrations, approvals, permits and authorizations set forth on Section 5.1(c) of the Company Disclosure Letter shall have been obtained;",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 530,
+          "end_byte": 1036
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 530,
+            "end_byte": 1036,
+            "text": " Governmental Approvals. (i) Any waiting period (including any extension thereof and any timing agreement entered into with a Governmental Entity to delay or not to consummate the transactions entered in connection therewith) applicable to the consummation of the Mergers under the HSR Act shall have expired or been earlier terminated; and (ii) any consents, registrations, approvals, permits and authorizations set forth on Section ‎5.1(c) of the Company Disclosure Letter shall have been obtained;\n94\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 257,
+            "text": "5.1 Conditions to Each Party’s Obligation to Effect the Mergers. The respective obligation of each party to effect the Mergers is subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_APPROVAL_CONDITION",
+      "concept_key": "COND-REG",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "edce23e4ad22f4c8b88626f5fd37843c101f9126832b3dadeacc45957976d62d",
+      "closure_id": "57830f3c721213c26ed96731f650360da954c2d2d16e998d9f5bebef4a361b43",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "70c803bcd475ce0394102866b626eb63b725946f9627093abe2587cef61d7138",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "7df993eb1bdb50304122865b8ea85401ac109b562c661418831f0bf3b98abeae",
+          "document_ordinal": 0,
+          "absolute_start": 559,
+          "absolute_end": 866,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Any waiting period (including any extension thereof and any timing agreement entered into with a Governmental Entity to delay or not to consummate the transactions entered in connection therewith) applicable to the consummation of the Mergers under the HSR Act shall have expired or been earlier terminated;",
+      "attachment_position": null,
+      "concept_family": "COND-REG",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 530,
+          "end_byte": 1036
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 530,
+            "end_byte": 1036,
+            "text": " Governmental Approvals. (i) Any waiting period (including any extension thereof and any timing agreement entered into with a Governmental Entity to delay or not to consummate the transactions entered in connection therewith) applicable to the consummation of the Mergers under the HSR Act shall have expired or been earlier terminated; and (ii) any consents, registrations, approvals, permits and authorizations set forth on Section ‎5.1(c) of the Company Disclosure Letter shall have been obtained;\n94\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 257,
+            "text": "5.1 Conditions to Each Party’s Obligation to Effect the Mergers. The respective obligation of each party to effect the Mergers is subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "STOCKHOLDER_APPROVAL_CONDITION",
+      "concept_key": "COND-M-STOCKHOLDER",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c3f27cb38d3537b263370d6613ba8275a427e88bba0cc91d45c290ae8417b7b8",
+      "closure_id": "b1822e495f563ccef09ebedf27716ef4c469a2a018b3f046eedca2751d970807",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "7484f76e9d9944a98709d660c6f5a85e4083e95c034cae55b6a5063ad4b80efb",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "f8688598f0c2216a55a939e05a49e0715cac6f411e68b7daf2117f9c822af896",
+          "document_ordinal": 0,
+          "absolute_start": 283,
+          "absolute_end": 377,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company Stockholder Approval and the Parent Stockholder Approval shall have been obtained;",
+      "attachment_position": null,
+      "concept_family": "COND-M-STOCKHOLDER",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 260,
+          "end_byte": 378
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 260,
+            "end_byte": 378,
+            "text": " Stockholder Approval. The Company Stockholder Approval and the Parent Stockholder Approval shall have been obtained;\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 257,
+            "text": "5.1 Conditions to Each Party’s Obligation to Effect the Mergers. The respective obligation of each party to effect the Mergers is subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LEGAL_RESTRAINT_CONDITION",
+      "concept_key": "COND-M-LEGAL",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ae6f4ed7f981c180d7d4da7c739942c1a208d1717e10f77fb97f91837eeba3da",
+      "closure_id": "f737759151eeadcc47b5b8c4770ec6abab827f4e9835c8f3afe0dc909fec6977",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "9916e79fc6bc9dd0ce157a4f6a115d2fb465bbdc3df1add9b84b21b0a8fa79aa",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "376a358db50e722aa5ee8730d252f8a54e3fa22b36faab23825500bf3bc4b380",
+          "document_ordinal": 0,
+          "absolute_start": 1082,
+          "absolute_end": 1391,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "No court or other Governmental Entity of competent jurisdiction shall have enacted, issued, promulgated, enforced or entered any Law (whether temporary, preliminary or permanent) that shall be in effect that restrains, enjoins or otherwise prohibits consummation of the Mergers (collectively, an “Order”);",
+      "attachment_position": null,
+      "concept_family": "COND-M-LEGAL",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "d",
+          "depth": 1,
+          "start_byte": 1039,
+          "end_byte": 1396
+        },
+        "chain": [
+          {
+            "path": "d",
+            "start_byte": 1039,
+            "end_byte": 1396,
+            "text": " No Injunctions or Restraints; Illegality. No court or other Governmental Entity of competent jurisdiction shall have enacted, issued, promulgated, enforced or entered any Law (whether temporary, preliminary or permanent) that shall be in effect that restrains, enjoins or otherwise prohibits consummation of the Mergers (collectively, an “Order”); and\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 257,
+            "text": "5.1 Conditions to Each Party’s Obligation to Effect the Mergers. The respective obligation of each party to effect the Mergers is subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "342b4e727bd693343e473a6f442fa15e5df48152a1863d0c8d317d69d4b9cbd4"
+}

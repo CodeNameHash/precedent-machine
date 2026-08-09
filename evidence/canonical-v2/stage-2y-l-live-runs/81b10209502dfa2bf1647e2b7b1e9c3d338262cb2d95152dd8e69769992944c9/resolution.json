@@ -1,0 +1,2391 @@
+{
+  "resolved": [
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(c)",
+      "citation_context": {
+        "parent_section_reference": "5.01",
+        "child_section_reference": "5.01",
+        "parent_chapeau_quote": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.",
+        "child_clause_quote": "(i) the Company is unable to obtain a quorum of its shareholders at such time, to the extent (and only to the extent) necessary in order to obtain a quorum of its shareholders"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+      "concept_key": "COV-MEETING",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "c9c85e399d38d722fd50123347e4c9675293d30f550e83060a362d27ea72a240",
+        "canonical_text_id": "e2666a438a78125e141395f04e747e98ee7d64db7ad483a62383a22423c4f784",
+        "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+        "absolute_start": 147787,
+        "absolute_end": 156859,
+        "concept_key": "COV-MEETING",
+        "ordinal": 1,
+        "source_anchor_id": "2e596fb62a4e336836368e8909d0ed03e4b22cb74ff06b735face9ed579c4d67",
+        "provision_instance_id": "f9d42cd457e5bc14c5cdb8a841d866e96c19237a682bf27ce9bc352fbf9ae3aa",
+        "closure_id": "1494022d0b2ec3dddad1d174463e0c7aeeb919b14f92c143dbc96bb5db65caba"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "50e121c3d3aa91f688fcd01fcaade1e98f8bad512223d9cbc47fd1fe8718d069",
+        "claim_occurrence_id": "6f4c60ce2a02d0a798d1acd93a9d71d16eccb73c6f821ba54afed10caebbb35b",
+        "subject_occurrence_id": "f9d42cd457e5bc14c5cdb8a841d866e96c19237a682bf27ce9bc352fbf9ae3aa",
+        "claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "(i) the Company is unable to obtain a quorum of its shareholders at such time, to the extent (and only to the extent) necessary in order to obtain a quorum of its shareholders",
+        "canonical_value": "QUORUM_ABSENT",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "3fadb7ccae22b3e5c1541690a97fa54815a2a508141c58b826364e0ffdbdbf2c"
+        ],
+        "attributes": {
+          "section_reference": "5.01",
+          "assertion_kind": "ADJOURNMENT_REASON",
+          "anchor_kind": null,
+          "day_kind": null,
+          "limit_basis": null,
+          "control_party": "The Company",
+          "consenting_party": null,
+          "reason_kind": "QUORUM_ABSENT",
+          "meeting_ref": "the Shareholders Meeting",
+          "document_ref": null,
+          "obligated_party": null,
+          "adoption_mechanism": null,
+          "adoption_timing": null,
+          "proxy_meeting_parse_version": 1,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "ADJOURNMENT_REASON"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "3fadb7ccae22b3e5c1541690a97fa54815a2a508141c58b826364e0ffdbdbf2c",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "8d9660cc975e606f8d58782daee09ab03100f68076ade19b5b518c573be88636",
+            "document_ordinal": 0,
+            "absolute_start": 5071,
+            "absolute_end": 5246,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "68ea29f0d71202d102a080d684709183f945f5a5343a0079fb8e87697eca9b4c"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.01",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.01",
+          "normalized_citation": "5.01",
+          "derived_citation": "5.01"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "50e121c3d3aa91f688fcd01fcaade1e98f8bad512223d9cbc47fd1fe8718d069",
+            "claim_occurrence_id": "6f4c60ce2a02d0a798d1acd93a9d71d16eccb73c6f821ba54afed10caebbb35b",
+            "subject_occurrence_id": "f9d42cd457e5bc14c5cdb8a841d866e96c19237a682bf27ce9bc352fbf9ae3aa",
+            "claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "(i) the Company is unable to obtain a quorum of its shareholders at such time, to the extent (and only to the extent) necessary in order to obtain a quorum of its shareholders",
+            "canonical_value": "QUORUM_ABSENT",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "3fadb7ccae22b3e5c1541690a97fa54815a2a508141c58b826364e0ffdbdbf2c"
+            ],
+            "attributes": {
+              "section_reference": "5.01",
+              "assertion_kind": "ADJOURNMENT_REASON",
+              "anchor_kind": null,
+              "day_kind": null,
+              "limit_basis": null,
+              "control_party": "The Company",
+              "consenting_party": null,
+              "reason_kind": "QUORUM_ABSENT",
+              "meeting_ref": "the Shareholders Meeting",
+              "document_ref": null,
+              "obligated_party": null,
+              "adoption_mechanism": null,
+              "adoption_timing": null,
+              "proxy_meeting_parse_version": 1,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "ADJOURNMENT_REASON"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "3fadb7ccae22b3e5c1541690a97fa54815a2a508141c58b826364e0ffdbdbf2c",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "8d9660cc975e606f8d58782daee09ab03100f68076ade19b5b518c573be88636",
+                "document_ordinal": 0,
+                "absolute_start": 5071,
+                "absolute_end": 5246,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "68ea29f0d71202d102a080d684709183f945f5a5343a0079fb8e87697eca9b4c"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "PROXY_MEETING_COVENANT",
+            "prompt_digest": "f3c3f3acc6ae054955a6ac405f919a435ac0688161b4c6c558b4d84a3dc18a89",
+            "producer_receipt_id": "ead4ecde03b6b4c3a3ec1a852ceda8cca25c817193a7c66112a57c85dd955847",
+            "governed_scope_digest": "969f4787ce294d83dda19cac88c438c2d8a8c8d04498642cbc3dd3c37c015691",
+            "extraction_provenance_id": "bdb10670a505736b241915509f6f53442a143d76e8ffdf97f180f14bc5d8f9a2"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 80,
+        "materiality_label": "PROXY_MEETING_COVENANTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.01",
+          "normalized_citation": "5.01",
+          "derived_citation": "5.01(c)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 4417,
+          "end_byte": 9072
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 4417,
+            "end_byte": 9072,
+            "text": " The Company shall, as promptly as reasonably practicable after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”). The Company shall cause the Shareholders Meeting to be held\n32\nas promptly as reasonably practicable following the date of mailing of the Proxy Statement to the Company Shareholders, for the purpose of obtaining the Shareholder Approval. Notwithstanding anything to the contrary in this Agreement, the Company will be permitted to postpone or adjourn the Shareholders Meeting if, but only if, (i) the Company is unable to obtain a quorum of its shareholders at such time, to the extent (and only to the extent) necessary in order to obtain a quorum of its shareholders and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable, (ii) there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval, (iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law (A) to comply with comments made by the SEC with respect to the Proxy Statement or (B) to allow reasonable additional time for the filing or mailing of any supplemental or amended disclosure that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting or (iv) the Company is required to do so by a court of competent jurisdiction in connection with any Transaction Litigation; provided, however, that in no event will the Shareholders Meeting be postponed or adjourned (x) with respect to Section 5.01(c)(i) or (c)(ii), by more than thirty (30) days after the date on which the Shareholders Meeting was (or was required to be) originally scheduled, without the prior written consent of Parent, (y) with respect to Section 5.01(c)(iii), by more than ten (10) Business Days, or such other amount of time reasonably agreed by the Company and Parent to be necessary to comply with applicable Law (it being agreed by the parties that such ten (10) Business Day period shall recommence if the Company (after consultation with outside legal counsel) shall determine supplemental or amended disclosure is required to be disseminated and reviewed by stockholders of the Company during such original ten (10) Business Day period) or (z) except with respect to postponements or adjournments pursuant to Section 5.01(c)(iv), by more than ten (10) days at a time without the prior written consent of Parent. The Company shall, at the instruction of Parent, postpone or adjourn the Shareholders Meeting if there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval. In no event will the record date of the Shareholders Meeting be changed without Parent’s prior written consent (which consent shall not be unreasonably withheld, conditioned or delayed); provided, however, that the Company may change the record date of the Shareholders Meeting without prior written consent of Parent in the event that (1) supplemental or amended disclosure is required to be disseminated to shareholders, the meeting is postponed or adjourned, in accordance with this Section 5.01(c) or (2) the Company postpones the Shareholders Meeting at the instruction of Parent and, in either case, as a result, the initial record date fixed by the Company Board is more than 60 days before the date of the subsequent meeting. The notice of such Shareholders Meeting shall state that a resolution to adopt this Agreement will be considered at the Shareholders Meeting. Except to the extent an Adverse Recommendation Change expressly permitted by Section 4.02(c) or Section 4.02(d) has been effected, (A) the Company Board shall include the Company Board Recommendation in the Proxy Statement and (B) the Company shall use its reasonable best efforts to solicit votes of the Company Shareholders in favor of obtaining the Shareholder Approval. The Company shall provide updates to Parent with respect to the proxy solicitation for the Shareholders Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 71,
+            "text": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(c)",
+      "citation_context": {
+        "parent_section_reference": "5.01",
+        "child_section_reference": "5.01",
+        "parent_chapeau_quote": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.",
+        "child_clause_quote": "(iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+      "concept_key": "COV-MEETING",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "c9c85e399d38d722fd50123347e4c9675293d30f550e83060a362d27ea72a240",
+        "canonical_text_id": "e2666a438a78125e141395f04e747e98ee7d64db7ad483a62383a22423c4f784",
+        "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+        "absolute_start": 147787,
+        "absolute_end": 156859,
+        "concept_key": "COV-MEETING",
+        "ordinal": 1,
+        "source_anchor_id": "2e596fb62a4e336836368e8909d0ed03e4b22cb74ff06b735face9ed579c4d67",
+        "provision_instance_id": "f9d42cd457e5bc14c5cdb8a841d866e96c19237a682bf27ce9bc352fbf9ae3aa",
+        "closure_id": "1494022d0b2ec3dddad1d174463e0c7aeeb919b14f92c143dbc96bb5db65caba"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "50e51679c947bf8607c543199d62eb8425533a9311f99e5ce9258fdedbbd81a4",
+        "claim_occurrence_id": "4d9fb595f1df433f6ebe60fba750a1eb7967661cb3a4846b52415205e265effa",
+        "subject_occurrence_id": "f9d42cd457e5bc14c5cdb8a841d866e96c19237a682bf27ce9bc352fbf9ae3aa",
+        "claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "(iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law",
+        "canonical_value": "LEGAL_REQUIREMENT",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "06332764636dcc7c3afbe5b819dfe75372de50363e422a347be17fd61f3b3a9f"
+        ],
+        "attributes": {
+          "section_reference": "5.01",
+          "assertion_kind": "ADJOURNMENT_REASON",
+          "anchor_kind": null,
+          "day_kind": null,
+          "limit_basis": null,
+          "control_party": "The Company",
+          "consenting_party": null,
+          "reason_kind": "LEGAL_REQUIREMENT",
+          "meeting_ref": "the Shareholders Meeting",
+          "document_ref": null,
+          "obligated_party": null,
+          "adoption_mechanism": null,
+          "adoption_timing": null,
+          "proxy_meeting_parse_version": 1,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "ADJOURNMENT_REASON"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "06332764636dcc7c3afbe5b819dfe75372de50363e422a347be17fd61f3b3a9f",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "fc734a4c87ff7d8ea74fb3c61cdbccfcc703bed4f1f1a810d2d7ec2bef0bccef",
+            "document_ordinal": 0,
+            "absolute_start": 5572,
+            "absolute_end": 5718,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "96d538893e46f4eb8a24ee2b256be1faa4859e574fcda1266455b94d0e97bd7e"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.01",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.01",
+          "normalized_citation": "5.01",
+          "derived_citation": "5.01"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "50e51679c947bf8607c543199d62eb8425533a9311f99e5ce9258fdedbbd81a4",
+            "claim_occurrence_id": "4d9fb595f1df433f6ebe60fba750a1eb7967661cb3a4846b52415205e265effa",
+            "subject_occurrence_id": "f9d42cd457e5bc14c5cdb8a841d866e96c19237a682bf27ce9bc352fbf9ae3aa",
+            "claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "(iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law",
+            "canonical_value": "LEGAL_REQUIREMENT",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "06332764636dcc7c3afbe5b819dfe75372de50363e422a347be17fd61f3b3a9f"
+            ],
+            "attributes": {
+              "section_reference": "5.01",
+              "assertion_kind": "ADJOURNMENT_REASON",
+              "anchor_kind": null,
+              "day_kind": null,
+              "limit_basis": null,
+              "control_party": "The Company",
+              "consenting_party": null,
+              "reason_kind": "LEGAL_REQUIREMENT",
+              "meeting_ref": "the Shareholders Meeting",
+              "document_ref": null,
+              "obligated_party": null,
+              "adoption_mechanism": null,
+              "adoption_timing": null,
+              "proxy_meeting_parse_version": 1,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "ADJOURNMENT_REASON"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "06332764636dcc7c3afbe5b819dfe75372de50363e422a347be17fd61f3b3a9f",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "fc734a4c87ff7d8ea74fb3c61cdbccfcc703bed4f1f1a810d2d7ec2bef0bccef",
+                "document_ordinal": 0,
+                "absolute_start": 5572,
+                "absolute_end": 5718,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "96d538893e46f4eb8a24ee2b256be1faa4859e574fcda1266455b94d0e97bd7e"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "PROXY_MEETING_COVENANT",
+            "prompt_digest": "f3c3f3acc6ae054955a6ac405f919a435ac0688161b4c6c558b4d84a3dc18a89",
+            "producer_receipt_id": "ead4ecde03b6b4c3a3ec1a852ceda8cca25c817193a7c66112a57c85dd955847",
+            "governed_scope_digest": "969f4787ce294d83dda19cac88c438c2d8a8c8d04498642cbc3dd3c37c015691",
+            "extraction_provenance_id": "bdb10670a505736b241915509f6f53442a143d76e8ffdf97f180f14bc5d8f9a2"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 80,
+        "materiality_label": "PROXY_MEETING_COVENANTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.01",
+          "normalized_citation": "5.01",
+          "derived_citation": "5.01(c)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 4417,
+          "end_byte": 9072
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 4417,
+            "end_byte": 9072,
+            "text": " The Company shall, as promptly as reasonably practicable after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”). The Company shall cause the Shareholders Meeting to be held\n32\nas promptly as reasonably practicable following the date of mailing of the Proxy Statement to the Company Shareholders, for the purpose of obtaining the Shareholder Approval. Notwithstanding anything to the contrary in this Agreement, the Company will be permitted to postpone or adjourn the Shareholders Meeting if, but only if, (i) the Company is unable to obtain a quorum of its shareholders at such time, to the extent (and only to the extent) necessary in order to obtain a quorum of its shareholders and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable, (ii) there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval, (iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law (A) to comply with comments made by the SEC with respect to the Proxy Statement or (B) to allow reasonable additional time for the filing or mailing of any supplemental or amended disclosure that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting or (iv) the Company is required to do so by a court of competent jurisdiction in connection with any Transaction Litigation; provided, however, that in no event will the Shareholders Meeting be postponed or adjourned (x) with respect to Section 5.01(c)(i) or (c)(ii), by more than thirty (30) days after the date on which the Shareholders Meeting was (or was required to be) originally scheduled, without the prior written consent of Parent, (y) with respect to Section 5.01(c)(iii), by more than ten (10) Business Days, or such other amount of time reasonably agreed by the Company and Parent to be necessary to comply with applicable Law (it being agreed by the parties that such ten (10) Business Day period shall recommence if the Company (after consultation with outside legal counsel) shall determine supplemental or amended disclosure is required to be disseminated and reviewed by stockholders of the Company during such original ten (10) Business Day period) or (z) except with respect to postponements or adjournments pursuant to Section 5.01(c)(iv), by more than ten (10) days at a time without the prior written consent of Parent. The Company shall, at the instruction of Parent, postpone or adjourn the Shareholders Meeting if there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval. In no event will the record date of the Shareholders Meeting be changed without Parent’s prior written consent (which consent shall not be unreasonably withheld, conditioned or delayed); provided, however, that the Company may change the record date of the Shareholders Meeting without prior written consent of Parent in the event that (1) supplemental or amended disclosure is required to be disseminated to shareholders, the meeting is postponed or adjourned, in accordance with this Section 5.01(c) or (2) the Company postpones the Shareholders Meeting at the instruction of Parent and, in either case, as a result, the initial record date fixed by the Company Board is more than 60 days before the date of the subsequent meeting. The notice of such Shareholders Meeting shall state that a resolution to adopt this Agreement will be considered at the Shareholders Meeting. Except to the extent an Adverse Recommendation Change expressly permitted by Section 4.02(c) or Section 4.02(d) has been effected, (A) the Company Board shall include the Company Board Recommendation in the Proxy Statement and (B) the Company shall use its reasonable best efforts to solicit votes of the Company Shareholders in favor of obtaining the Shareholder Approval. The Company shall provide updates to Parent with respect to the proxy solicitation for the Shareholders Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 71,
+            "text": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(c)",
+      "citation_context": {
+        "parent_section_reference": "5.01",
+        "child_section_reference": "5.01",
+        "parent_chapeau_quote": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.",
+        "child_clause_quote": "(A) the Company Board shall include the Company Board Recommendation in the Proxy Statement"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "BOARD_RECOMMENDATION_INCLUSION",
+      "concept_key": "COV-PROXY",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "c9c85e399d38d722fd50123347e4c9675293d30f550e83060a362d27ea72a240",
+        "canonical_text_id": "e2666a438a78125e141395f04e747e98ee7d64db7ad483a62383a22423c4f784",
+        "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+        "absolute_start": 147787,
+        "absolute_end": 156859,
+        "concept_key": "COV-PROXY",
+        "ordinal": 1,
+        "source_anchor_id": "2e596fb62a4e336836368e8909d0ed03e4b22cb74ff06b735face9ed579c4d67",
+        "provision_instance_id": "7f8e8104bdd2fbb0790a38158057e1f748b4f3f7d1207ccbc2cc5ca85538f772",
+        "closure_id": "577a833340a94fca0b5c9d59d0d8a756ecfc8d248acb21f8dd775c1e8506a0f5"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "2a5ac4205216a8fd99fd0f65925cf23196e6051386215bc931b45e4d21700976",
+        "claim_occurrence_id": "f9d2f2ece1d53b77183892160c4baea0ef1c12b740587a96e3e0ad5cc27a79f5",
+        "subject_occurrence_id": "7f8e8104bdd2fbb0790a38158057e1f748b4f3f7d1207ccbc2cc5ca85538f772",
+        "claim_definition_key": "BOARD_RECOMMENDATION_INCLUSION",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "(A) the Company Board shall include the Company Board Recommendation in the Proxy Statement",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "5ec0ff55464eab21603a2158c2bf9095e2c5a6226f8620bc47b22d7591edd388"
+        ],
+        "attributes": {
+          "section_reference": "5.01",
+          "assertion_kind": "RECOMMENDATION_INCLUSION",
+          "anchor_kind": null,
+          "day_kind": null,
+          "limit_basis": null,
+          "control_party": null,
+          "consenting_party": null,
+          "reason_kind": null,
+          "meeting_ref": null,
+          "document_ref": "the Proxy Statement",
+          "obligated_party": "the Company Board",
+          "adoption_mechanism": null,
+          "adoption_timing": null,
+          "proxy_meeting_parse_version": 1,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "RECOMMENDATION_INCLUSION"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "5ec0ff55464eab21603a2158c2bf9095e2c5a6226f8620bc47b22d7591edd388",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "97b31c60623bacd2aac11ea2c0a7215721a3c6d00a1d0f1d5e5ba34067e203ce",
+            "document_ordinal": 0,
+            "absolute_start": 8654,
+            "absolute_end": 8745,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "8cba71e7b3dfb8e753783cebece33bb52846be539edaffe9ddc9e48d83144331"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.01",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.01",
+          "normalized_citation": "5.01",
+          "derived_citation": "5.01"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "2a5ac4205216a8fd99fd0f65925cf23196e6051386215bc931b45e4d21700976",
+            "claim_occurrence_id": "f9d2f2ece1d53b77183892160c4baea0ef1c12b740587a96e3e0ad5cc27a79f5",
+            "subject_occurrence_id": "7f8e8104bdd2fbb0790a38158057e1f748b4f3f7d1207ccbc2cc5ca85538f772",
+            "claim_definition_key": "BOARD_RECOMMENDATION_INCLUSION",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "(A) the Company Board shall include the Company Board Recommendation in the Proxy Statement",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "5ec0ff55464eab21603a2158c2bf9095e2c5a6226f8620bc47b22d7591edd388"
+            ],
+            "attributes": {
+              "section_reference": "5.01",
+              "assertion_kind": "RECOMMENDATION_INCLUSION",
+              "anchor_kind": null,
+              "day_kind": null,
+              "limit_basis": null,
+              "control_party": null,
+              "consenting_party": null,
+              "reason_kind": null,
+              "meeting_ref": null,
+              "document_ref": "the Proxy Statement",
+              "obligated_party": "the Company Board",
+              "adoption_mechanism": null,
+              "adoption_timing": null,
+              "proxy_meeting_parse_version": 1,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "RECOMMENDATION_INCLUSION"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "5ec0ff55464eab21603a2158c2bf9095e2c5a6226f8620bc47b22d7591edd388",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "97b31c60623bacd2aac11ea2c0a7215721a3c6d00a1d0f1d5e5ba34067e203ce",
+                "document_ordinal": 0,
+                "absolute_start": 8654,
+                "absolute_end": 8745,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "8cba71e7b3dfb8e753783cebece33bb52846be539edaffe9ddc9e48d83144331"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "PROXY_MEETING_COVENANT",
+            "prompt_digest": "f3c3f3acc6ae054955a6ac405f919a435ac0688161b4c6c558b4d84a3dc18a89",
+            "producer_receipt_id": "ead4ecde03b6b4c3a3ec1a852ceda8cca25c817193a7c66112a57c85dd955847",
+            "governed_scope_digest": "969f4787ce294d83dda19cac88c438c2d8a8c8d04498642cbc3dd3c37c015691",
+            "extraction_provenance_id": "bdb10670a505736b241915509f6f53442a143d76e8ffdf97f180f14bc5d8f9a2"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 80,
+        "materiality_label": "PROXY_MEETING_COVENANTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.01",
+          "normalized_citation": "5.01",
+          "derived_citation": "5.01(c)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 4417,
+          "end_byte": 9072
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 4417,
+            "end_byte": 9072,
+            "text": " The Company shall, as promptly as reasonably practicable after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”). The Company shall cause the Shareholders Meeting to be held\n32\nas promptly as reasonably practicable following the date of mailing of the Proxy Statement to the Company Shareholders, for the purpose of obtaining the Shareholder Approval. Notwithstanding anything to the contrary in this Agreement, the Company will be permitted to postpone or adjourn the Shareholders Meeting if, but only if, (i) the Company is unable to obtain a quorum of its shareholders at such time, to the extent (and only to the extent) necessary in order to obtain a quorum of its shareholders and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable, (ii) there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval, (iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law (A) to comply with comments made by the SEC with respect to the Proxy Statement or (B) to allow reasonable additional time for the filing or mailing of any supplemental or amended disclosure that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting or (iv) the Company is required to do so by a court of competent jurisdiction in connection with any Transaction Litigation; provided, however, that in no event will the Shareholders Meeting be postponed or adjourned (x) with respect to Section 5.01(c)(i) or (c)(ii), by more than thirty (30) days after the date on which the Shareholders Meeting was (or was required to be) originally scheduled, without the prior written consent of Parent, (y) with respect to Section 5.01(c)(iii), by more than ten (10) Business Days, or such other amount of time reasonably agreed by the Company and Parent to be necessary to comply with applicable Law (it being agreed by the parties that such ten (10) Business Day period shall recommence if the Company (after consultation with outside legal counsel) shall determine supplemental or amended disclosure is required to be disseminated and reviewed by stockholders of the Company during such original ten (10) Business Day period) or (z) except with respect to postponements or adjournments pursuant to Section 5.01(c)(iv), by more than ten (10) days at a time without the prior written consent of Parent. The Company shall, at the instruction of Parent, postpone or adjourn the Shareholders Meeting if there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval. In no event will the record date of the Shareholders Meeting be changed without Parent’s prior written consent (which consent shall not be unreasonably withheld, conditioned or delayed); provided, however, that the Company may change the record date of the Shareholders Meeting without prior written consent of Parent in the event that (1) supplemental or amended disclosure is required to be disseminated to shareholders, the meeting is postponed or adjourned, in accordance with this Section 5.01(c) or (2) the Company postpones the Shareholders Meeting at the instruction of Parent and, in either case, as a result, the initial record date fixed by the Company Board is more than 60 days before the date of the subsequent meeting. The notice of such Shareholders Meeting shall state that a resolution to adopt this Agreement will be considered at the Shareholders Meeting. Except to the extent an Adverse Recommendation Change expressly permitted by Section 4.02(c) or Section 4.02(d) has been effected, (A) the Company Board shall include the Company Board Recommendation in the Proxy Statement and (B) the Company shall use its reasonable best efforts to solicit votes of the Company Shareholders in favor of obtaining the Shareholder Approval. The Company shall provide updates to Parent with respect to the proxy solicitation for the Shareholders Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 71,
+            "text": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(ii) there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "4fe308066f66678621f487748b8abe778038ef53a5c6f9375bf8631d76d4083f",
+      "closure_id": "285a2bd9eb5d2bf70dc7365802cde04f22f92ce74af0ce5b9be378e374d6756e",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0ff0d19bcbd5a06c1702892c8264557fcab5d6b3d08dc6bdc7a5123f5ad42ff0",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "6a201c09cdbf1b4da6d6e4b6daffbcd1089773ca55fa2115a2fbaeaad58630cb",
+          "document_ordinal": 0,
+          "absolute_start": 5353,
+          "absolute_end": 5570,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "(ii) there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 4417,
+          "end_byte": 9072
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 4417,
+            "end_byte": 9072,
+            "text": " The Company shall, as promptly as reasonably practicable after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”). The Company shall cause the Shareholders Meeting to be held\n32\nas promptly as reasonably practicable following the date of mailing of the Proxy Statement to the Company Shareholders, for the purpose of obtaining the Shareholder Approval. Notwithstanding anything to the contrary in this Agreement, the Company will be permitted to postpone or adjourn the Shareholders Meeting if, but only if, (i) the Company is unable to obtain a quorum of its shareholders at such time, to the extent (and only to the extent) necessary in order to obtain a quorum of its shareholders and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable, (ii) there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval, (iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law (A) to comply with comments made by the SEC with respect to the Proxy Statement or (B) to allow reasonable additional time for the filing or mailing of any supplemental or amended disclosure that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting or (iv) the Company is required to do so by a court of competent jurisdiction in connection with any Transaction Litigation; provided, however, that in no event will the Shareholders Meeting be postponed or adjourned (x) with respect to Section 5.01(c)(i) or (c)(ii), by more than thirty (30) days after the date on which the Shareholders Meeting was (or was required to be) originally scheduled, without the prior written consent of Parent, (y) with respect to Section 5.01(c)(iii), by more than ten (10) Business Days, or such other amount of time reasonably agreed by the Company and Parent to be necessary to comply with applicable Law (it being agreed by the parties that such ten (10) Business Day period shall recommence if the Company (after consultation with outside legal counsel) shall determine supplemental or amended disclosure is required to be disseminated and reviewed by stockholders of the Company during such original ten (10) Business Day period) or (z) except with respect to postponements or adjournments pursuant to Section 5.01(c)(iv), by more than ten (10) days at a time without the prior written consent of Parent. The Company shall, at the instruction of Parent, postpone or adjourn the Shareholders Meeting if there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval. In no event will the record date of the Shareholders Meeting be changed without Parent’s prior written consent (which consent shall not be unreasonably withheld, conditioned or delayed); provided, however, that the Company may change the record date of the Shareholders Meeting without prior written consent of Parent in the event that (1) supplemental or amended disclosure is required to be disseminated to shareholders, the meeting is postponed or adjourned, in accordance with this Section 5.01(c) or (2) the Company postpones the Shareholders Meeting at the instruction of Parent and, in either case, as a result, the initial record date fixed by the Company Board is more than 60 days before the date of the subsequent meeting. The notice of such Shareholders Meeting shall state that a resolution to adopt this Agreement will be considered at the Shareholders Meeting. Except to the extent an Adverse Recommendation Change expressly permitted by Section 4.02(c) or Section 4.02(d) has been effected, (A) the Company Board shall include the Company Board Recommendation in the Proxy Statement and (B) the Company shall use its reasonable best efforts to solicit votes of the Company Shareholders in favor of obtaining the Shareholder Approval. The Company shall provide updates to Parent with respect to the proxy solicitation for the Shareholders Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 71,
+            "text": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(B) to allow reasonable additional time for the filing or mailing of any supplemental or amended disclosure that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "f54f12766b19484e6d9747b3a304e77c683f237f0983275b849adf9e10802527",
+      "closure_id": "360af65c62fd4d60deb8edb5ce75ac293d2aa7d0c978254eacf4a23359ee591b",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "261458dfcacd92576d5114498fee6c87393af519bafb32c3ad0a388b78433ee0",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "6d6a673dd1554260b68e0cb201014f0d1cd8fb7511be99cc822cf11cf22d1c55",
+          "document_ordinal": 0,
+          "absolute_start": 5802,
+          "absolute_end": 6190,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "(B) to allow reasonable additional time for the filing or mailing of any supplemental or amended disclosure that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 4417,
+          "end_byte": 9072
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 4417,
+            "end_byte": 9072,
+            "text": " The Company shall, as promptly as reasonably practicable after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”). The Company shall cause the Shareholders Meeting to be held\n32\nas promptly as reasonably practicable following the date of mailing of the Proxy Statement to the Company Shareholders, for the purpose of obtaining the Shareholder Approval. Notwithstanding anything to the contrary in this Agreement, the Company will be permitted to postpone or adjourn the Shareholders Meeting if, but only if, (i) the Company is unable to obtain a quorum of its shareholders at such time, to the extent (and only to the extent) necessary in order to obtain a quorum of its shareholders and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable, (ii) there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval, (iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law (A) to comply with comments made by the SEC with respect to the Proxy Statement or (B) to allow reasonable additional time for the filing or mailing of any supplemental or amended disclosure that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting or (iv) the Company is required to do so by a court of competent jurisdiction in connection with any Transaction Litigation; provided, however, that in no event will the Shareholders Meeting be postponed or adjourned (x) with respect to Section 5.01(c)(i) or (c)(ii), by more than thirty (30) days after the date on which the Shareholders Meeting was (or was required to be) originally scheduled, without the prior written consent of Parent, (y) with respect to Section 5.01(c)(iii), by more than ten (10) Business Days, or such other amount of time reasonably agreed by the Company and Parent to be necessary to comply with applicable Law (it being agreed by the parties that such ten (10) Business Day period shall recommence if the Company (after consultation with outside legal counsel) shall determine supplemental or amended disclosure is required to be disseminated and reviewed by stockholders of the Company during such original ten (10) Business Day period) or (z) except with respect to postponements or adjournments pursuant to Section 5.01(c)(iv), by more than ten (10) days at a time without the prior written consent of Parent. The Company shall, at the instruction of Parent, postpone or adjourn the Shareholders Meeting if there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval. In no event will the record date of the Shareholders Meeting be changed without Parent’s prior written consent (which consent shall not be unreasonably withheld, conditioned or delayed); provided, however, that the Company may change the record date of the Shareholders Meeting without prior written consent of Parent in the event that (1) supplemental or amended disclosure is required to be disseminated to shareholders, the meeting is postponed or adjourned, in accordance with this Section 5.01(c) or (2) the Company postpones the Shareholders Meeting at the instruction of Parent and, in either case, as a result, the initial record date fixed by the Company Board is more than 60 days before the date of the subsequent meeting. The notice of such Shareholders Meeting shall state that a resolution to adopt this Agreement will be considered at the Shareholders Meeting. Except to the extent an Adverse Recommendation Change expressly permitted by Section 4.02(c) or Section 4.02(d) has been effected, (A) the Company Board shall include the Company Board Recommendation in the Proxy Statement and (B) the Company shall use its reasonable best efforts to solicit votes of the Company Shareholders in favor of obtaining the Shareholder Approval. The Company shall provide updates to Parent with respect to the proxy solicitation for the Shareholders Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 71,
+            "text": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "AMBIGUOUS_PROXY_MEETING_KIND"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company shall, as promptly as reasonably practicable after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”).",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "0a0b12a2f596cbd50578c93768f234c23779ef53f49b6f8297b9aef6e8f61ac8",
+      "closure_id": "4eb27dc3c499fd8930e98ae9d1e8877a8bb3311cefad9106b23e20bfe8a7cbc8",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "f084e394040ba8735c686585af5b4a112b8108718c43b8d2cb03ee8af2750455",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "166d1d53ebba042cdacff6dffe4040c60f3efea7fd3e8ab8270878a18cc145f7",
+          "document_ordinal": 0,
+          "absolute_start": 4418,
+          "absolute_end": 4677,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company shall, as promptly as reasonably practicable after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”).",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 4417,
+          "end_byte": 9072
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 4417,
+            "end_byte": 9072,
+            "text": " The Company shall, as promptly as reasonably practicable after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”). The Company shall cause the Shareholders Meeting to be held\n32\nas promptly as reasonably practicable following the date of mailing of the Proxy Statement to the Company Shareholders, for the purpose of obtaining the Shareholder Approval. Notwithstanding anything to the contrary in this Agreement, the Company will be permitted to postpone or adjourn the Shareholders Meeting if, but only if, (i) the Company is unable to obtain a quorum of its shareholders at such time, to the extent (and only to the extent) necessary in order to obtain a quorum of its shareholders and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable, (ii) there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval, (iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law (A) to comply with comments made by the SEC with respect to the Proxy Statement or (B) to allow reasonable additional time for the filing or mailing of any supplemental or amended disclosure that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting or (iv) the Company is required to do so by a court of competent jurisdiction in connection with any Transaction Litigation; provided, however, that in no event will the Shareholders Meeting be postponed or adjourned (x) with respect to Section 5.01(c)(i) or (c)(ii), by more than thirty (30) days after the date on which the Shareholders Meeting was (or was required to be) originally scheduled, without the prior written consent of Parent, (y) with respect to Section 5.01(c)(iii), by more than ten (10) Business Days, or such other amount of time reasonably agreed by the Company and Parent to be necessary to comply with applicable Law (it being agreed by the parties that such ten (10) Business Day period shall recommence if the Company (after consultation with outside legal counsel) shall determine supplemental or amended disclosure is required to be disseminated and reviewed by stockholders of the Company during such original ten (10) Business Day period) or (z) except with respect to postponements or adjournments pursuant to Section 5.01(c)(iv), by more than ten (10) days at a time without the prior written consent of Parent. The Company shall, at the instruction of Parent, postpone or adjourn the Shareholders Meeting if there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval. In no event will the record date of the Shareholders Meeting be changed without Parent’s prior written consent (which consent shall not be unreasonably withheld, conditioned or delayed); provided, however, that the Company may change the record date of the Shareholders Meeting without prior written consent of Parent in the event that (1) supplemental or amended disclosure is required to be disseminated to shareholders, the meeting is postponed or adjourned, in accordance with this Section 5.01(c) or (2) the Company postpones the Shareholders Meeting at the instruction of Parent and, in either case, as a result, the initial record date fixed by the Company Board is more than 60 days before the date of the subsequent meeting. The notice of such Shareholders Meeting shall state that a resolution to adopt this Agreement will be considered at the Shareholders Meeting. Except to the extent an Adverse Recommendation Change expressly permitted by Section 4.02(c) or Section 4.02(d) has been effected, (A) the Company Board shall include the Company Board Recommendation in the Proxy Statement and (B) the Company shall use its reasonable best efforts to solicit votes of the Company Shareholders in favor of obtaining the Shareholder Approval. The Company shall provide updates to Parent with respect to the proxy solicitation for the Shareholders Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 71,
+            "text": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "50e121c3d3aa91f688fcd01fcaade1e98f8bad512223d9cbc47fd1fe8718d069",
+      "closure_id": "68ea29f0d71202d102a080d684709183f945f5a5343a0079fb8e87697eca9b4c",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "3fadb7ccae22b3e5c1541690a97fa54815a2a508141c58b826364e0ffdbdbf2c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "8d9660cc975e606f8d58782daee09ab03100f68076ade19b5b518c573be88636",
+          "document_ordinal": 0,
+          "absolute_start": 5071,
+          "absolute_end": 5246,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "(i) the Company is unable to obtain a quorum of its shareholders at such time, to the extent (and only to the extent) necessary in order to obtain a quorum of its shareholders",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 49,
+          "end": 69,
+          "excerpt": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.\n(a) As promptly as reasonably practicable following the date of this Agreement",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 1832,
+          "end": 1852,
+          "excerpt": " be unreasonably withheld, conditioned or delayed. If, at any time prior to the Shareholders Meeting, any information relating to the Company, Parent or any of their respective aff",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 3256,
+          "end": 3276,
+          "excerpt": "with the SEC or mailed to the shareholders of the Company or at the time of the Shareholders Meeting, or at the time of any amendment or supplement thereof, contain any untrue stat",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 4097,
+          "end": 4117,
+          "excerpt": "with the SEC or mailed to the shareholders of the Company or at the time of the Shareholders Meeting, or at the time of any amendment or supplement thereof, contain any untrue stat",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4553,
+          "end": 4564,
+          "excerpt": "e after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 4652,
+          "end": 4672,
+          "excerpt": "ly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”). The Company shall cause the Shareholders Meeting to be held\n32\nas promptly",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 4706,
+          "end": 4726,
+          "excerpt": " its shareholders (the “Shareholders Meeting”). The Company shall cause the Shareholders Meeting to be held\n32\nas promptly as reasonably practicable following the date of maili",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONE_OR_ADJOURN",
+          "start": 5009,
+          "end": 5028,
+          "excerpt": "ng anything to the contrary in this Agreement, the Company will be permitted to postpone or adjourn the Shareholders Meeting if, but only if, (i) the Company is unable to obtain a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 5033,
+          "end": 5053,
+          "excerpt": "ary in this Agreement, the Company will be permitted to postpone or adjourn the Shareholders Meeting if, but only if, (i) the Company is unable to obtain a quorum of its shareholde",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 6171,
+          "end": 6190,
+          "excerpt": "ure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting or (iv) the Company is required to do so by a court of competent jurisdiction i",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 6361,
+          "end": 6381,
+          "excerpt": "n with any Transaction Litigation; provided, however, that in no event will the Shareholders Meeting be postponed or adjourned (x) with respect to Section 5.01(c)(i) or (c)(ii), by",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONED_OR_ADJOURNED",
+          "start": 6385,
+          "end": 6407,
+          "excerpt": "itigation; provided, however, that in no event will the Shareholders Meeting be postponed or adjourned (x) with respect to Section 5.01(c)(i) or (c)(ii), by more than thirty (30) day",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 6517,
+          "end": 6537,
+          "excerpt": ".01(c)(i) or (c)(ii), by more than thirty (30) days after the date on which the Shareholders Meeting was (or was required to be) originally scheduled, without the prior written con",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONE_OR_ADJOURN",
+          "start": 7383,
+          "end": 7402,
+          "excerpt": "ior written consent of Parent. The Company shall, at the instruction of Parent, postpone or adjourn the Shareholders Meeting if there are not sufficient affirmative votes in perso",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 7407,
+          "end": 7427,
+          "excerpt": "arent. The Company shall, at the instruction of Parent, postpone or adjourn the Shareholders Meeting if there are not sufficient affirmative votes in person or by proxy at such mee",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 7666,
+          "end": 7677,
+          "excerpt": "roxies for purposes of obtaining the Shareholder Approval. In no event will the record date of the Shareholders Meeting be changed without Parent’s prior written consent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 7685,
+          "end": 7705,
+          "excerpt": " of obtaining the Shareholder Approval. In no event will the record date of the Shareholders Meeting be changed without Parent’s prior written consent (which consent shall not be",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 7885,
+          "end": 7896,
+          "excerpt": "ld, conditioned or delayed); provided, however, that the Company may change the record date of the Shareholders Meeting without prior written consent of Parent in the even",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 7904,
+          "end": 7924,
+          "excerpt": "delayed); provided, however, that the Company may change the record date of the Shareholders Meeting without prior written consent of Parent in the event that (1) supplemental or a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONED_OR_ADJOURNED",
+          "start": 8085,
+          "end": 8107,
+          "excerpt": "ended disclosure is required to be disseminated to shareholders, the meeting is postponed or adjourned, in accordance with this Section 5.01(c) or (2) the Company postpones the Share",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 8182,
+          "end": 8202,
+          "excerpt": "urned, in accordance with this Section 5.01(c) or (2) the Company postpones the Shareholders Meeting at the instruction of Parent and, in either case, as a result, the initial reco",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8278,
+          "end": 8289,
+          "excerpt": "ting at the instruction of Parent and, in either case, as a result, the initial record date fixed by the Company Board is more than 60 days before the date of the subseque",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 8400,
+          "end": 8420,
+          "excerpt": "more than 60 days before the date of the subsequent meeting. The notice of such Shareholders Meeting shall state that a resolution to adopt this Agreement will be considered at the",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 8501,
+          "end": 8521,
+          "excerpt": "shall state that a resolution to adopt this Agreement will be considered at the Shareholders Meeting. Except to the extent an Adverse Recommendation Change expressly permitted by S",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 8988,
+          "end": 9008,
+          "excerpt": " shall provide updates to Parent with respect to the proxy solicitation for the Shareholders Meeting (including interim results) as reasonably requested by Parent.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 4417,
+          "end_byte": 9072
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 4417,
+            "end_byte": 9072,
+            "text": " The Company shall, as promptly as reasonably practicable after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”). The Company shall cause the Shareholders Meeting to be held\n32\nas promptly as reasonably practicable following the date of mailing of the Proxy Statement to the Company Shareholders, for the purpose of obtaining the Shareholder Approval. Notwithstanding anything to the contrary in this Agreement, the Company will be permitted to postpone or adjourn the Shareholders Meeting if, but only if, (i) the Company is unable to obtain a quorum of its shareholders at such time, to the extent (and only to the extent) necessary in order to obtain a quorum of its shareholders and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable, (ii) there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval, (iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law (A) to comply with comments made by the SEC with respect to the Proxy Statement or (B) to allow reasonable additional time for the filing or mailing of any supplemental or amended disclosure that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting or (iv) the Company is required to do so by a court of competent jurisdiction in connection with any Transaction Litigation; provided, however, that in no event will the Shareholders Meeting be postponed or adjourned (x) with respect to Section 5.01(c)(i) or (c)(ii), by more than thirty (30) days after the date on which the Shareholders Meeting was (or was required to be) originally scheduled, without the prior written consent of Parent, (y) with respect to Section 5.01(c)(iii), by more than ten (10) Business Days, or such other amount of time reasonably agreed by the Company and Parent to be necessary to comply with applicable Law (it being agreed by the parties that such ten (10) Business Day period shall recommence if the Company (after consultation with outside legal counsel) shall determine supplemental or amended disclosure is required to be disseminated and reviewed by stockholders of the Company during such original ten (10) Business Day period) or (z) except with respect to postponements or adjournments pursuant to Section 5.01(c)(iv), by more than ten (10) days at a time without the prior written consent of Parent. The Company shall, at the instruction of Parent, postpone or adjourn the Shareholders Meeting if there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval. In no event will the record date of the Shareholders Meeting be changed without Parent’s prior written consent (which consent shall not be unreasonably withheld, conditioned or delayed); provided, however, that the Company may change the record date of the Shareholders Meeting without prior written consent of Parent in the event that (1) supplemental or amended disclosure is required to be disseminated to shareholders, the meeting is postponed or adjourned, in accordance with this Section 5.01(c) or (2) the Company postpones the Shareholders Meeting at the instruction of Parent and, in either case, as a result, the initial record date fixed by the Company Board is more than 60 days before the date of the subsequent meeting. The notice of such Shareholders Meeting shall state that a resolution to adopt this Agreement will be considered at the Shareholders Meeting. Except to the extent an Adverse Recommendation Change expressly permitted by Section 4.02(c) or Section 4.02(d) has been effected, (A) the Company Board shall include the Company Board Recommendation in the Proxy Statement and (B) the Company shall use its reasonable best efforts to solicit votes of the Company Shareholders in favor of obtaining the Shareholder Approval. The Company shall provide updates to Parent with respect to the proxy solicitation for the Shareholders Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 71,
+            "text": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "CONTROL_PARTY_REF_ABSENT"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(z) except with respect to postponements or adjournments pursuant to Section 5.01(c)(iv), by more than ten (10) days at a time without the prior written consent of Parent.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "fd3cb21e272f0581b6a8f9f36ff7b7be7f713e515b8057c684847792fde2060b",
+      "closure_id": "77a6bd222122257112a3bbffa30d59d61d47879a1fbfebe0dd01fb90fee6693e",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "613d737114674af643cef727f6759d9ee269801731eb05ddea7bdce13204f3da",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "1606ba39699ced5ce85791dad837b3ac564e28795a09a67e0abd65841d4b0b8c",
+          "document_ordinal": 0,
+          "absolute_start": 7162,
+          "absolute_end": 7333,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "(z) except with respect to postponements or adjournments pursuant to Section 5.01(c)(iv), by more than ten (10) days at a time without the prior written consent of Parent.",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 4417,
+          "end_byte": 9072
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 4417,
+            "end_byte": 9072,
+            "text": " The Company shall, as promptly as reasonably practicable after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”). The Company shall cause the Shareholders Meeting to be held\n32\nas promptly as reasonably practicable following the date of mailing of the Proxy Statement to the Company Shareholders, for the purpose of obtaining the Shareholder Approval. Notwithstanding anything to the contrary in this Agreement, the Company will be permitted to postpone or adjourn the Shareholders Meeting if, but only if, (i) the Company is unable to obtain a quorum of its shareholders at such time, to the extent (and only to the extent) necessary in order to obtain a quorum of its shareholders and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable, (ii) there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval, (iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law (A) to comply with comments made by the SEC with respect to the Proxy Statement or (B) to allow reasonable additional time for the filing or mailing of any supplemental or amended disclosure that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting or (iv) the Company is required to do so by a court of competent jurisdiction in connection with any Transaction Litigation; provided, however, that in no event will the Shareholders Meeting be postponed or adjourned (x) with respect to Section 5.01(c)(i) or (c)(ii), by more than thirty (30) days after the date on which the Shareholders Meeting was (or was required to be) originally scheduled, without the prior written consent of Parent, (y) with respect to Section 5.01(c)(iii), by more than ten (10) Business Days, or such other amount of time reasonably agreed by the Company and Parent to be necessary to comply with applicable Law (it being agreed by the parties that such ten (10) Business Day period shall recommence if the Company (after consultation with outside legal counsel) shall determine supplemental or amended disclosure is required to be disseminated and reviewed by stockholders of the Company during such original ten (10) Business Day period) or (z) except with respect to postponements or adjournments pursuant to Section 5.01(c)(iv), by more than ten (10) days at a time without the prior written consent of Parent. The Company shall, at the instruction of Parent, postpone or adjourn the Shareholders Meeting if there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval. In no event will the record date of the Shareholders Meeting be changed without Parent’s prior written consent (which consent shall not be unreasonably withheld, conditioned or delayed); provided, however, that the Company may change the record date of the Shareholders Meeting without prior written consent of Parent in the event that (1) supplemental or amended disclosure is required to be disseminated to shareholders, the meeting is postponed or adjourned, in accordance with this Section 5.01(c) or (2) the Company postpones the Shareholders Meeting at the instruction of Parent and, in either case, as a result, the initial record date fixed by the Company Board is more than 60 days before the date of the subsequent meeting. The notice of such Shareholders Meeting shall state that a resolution to adopt this Agreement will be considered at the Shareholders Meeting. Except to the extent an Adverse Recommendation Change expressly permitted by Section 4.02(c) or Section 4.02(d) has been effected, (A) the Company Board shall include the Company Board Recommendation in the Proxy Statement and (B) the Company shall use its reasonable best efforts to solicit votes of the Company Shareholders in favor of obtaining the Shareholder Approval. The Company shall provide updates to Parent with respect to the proxy solicitation for the Shareholders Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 71,
+            "text": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "BOARD_RECOMMENDATION_INCLUSION",
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2a5ac4205216a8fd99fd0f65925cf23196e6051386215bc931b45e4d21700976",
+      "closure_id": "8cba71e7b3dfb8e753783cebece33bb52846be539edaffe9ddc9e48d83144331",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "5ec0ff55464eab21603a2158c2bf9095e2c5a6226f8620bc47b22d7591edd388",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "97b31c60623bacd2aac11ea2c0a7215721a3c6d00a1d0f1d5e5ba34067e203ce",
+          "document_ordinal": 0,
+          "absolute_start": 8654,
+          "absolute_end": 8745,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "(A) the Company Board shall include the Company Board Recommendation in the Proxy Statement",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 32,
+          "end": 47,
+          "excerpt": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.\n(a) As promptly as reasonably practicable following the ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 215,
+          "end": 230,
+          "excerpt": "this Agreement, the Company shall prepare and file with the SEC the preliminary Proxy Statement. Each of the Company and Parent shall furnish all information concerning such p",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 427,
+          "end": 442,
+          "excerpt": "ly requested in connection with the preparation, filing and distribution of the Proxy Statement. The Company shall promptly notify Parent upon the receipt of any comments from",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 622,
+          "end": 637,
+          "excerpt": "f or any request from the SEC or its staff for amendments or supplements to the Proxy Statement and shall provide Parent with copies of all correspondence between it and its r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 932,
+          "end": 947,
+          "excerpt": "spond as promptly as practicable to any comments of the SEC with respect to the Proxy Statement and the Company shall cause the definitive Proxy Statement to be mailed to the ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 991,
+          "end": 1006,
+          "excerpt": " with respect to the Proxy Statement and the Company shall cause the definitive Proxy Statement to be mailed to the Company Shareholders as promptly as reasonably practicable ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:PHRASE:NO_FURTHER_COMMENTS",
+          "start": 1135,
+          "end": 1154,
+          "excerpt": "ptly as reasonably practicable after the date the SEC staff advises that it has no further comments thereon and that the Company may commence mailing the Proxy Statement. Notwiths",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 1209,
+          "end": 1224,
+          "excerpt": "t has no further comments thereon and that the Company may commence mailing the Proxy Statement. Notwithstanding the foregoing, prior to filing or mailing the Proxy Statement ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 1288,
+          "end": 1303,
+          "excerpt": " Proxy Statement. Notwithstanding the foregoing, prior to filing or mailing the Proxy Statement (or any amendment or supplement thereto) or responding to any comments of the S",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 2072,
+          "end": 2087,
+          "excerpt": "ompany or Parent which should be set forth in an amendment or supplement to the Proxy Statement, so that the Proxy Statement shall not contain any untrue statement of a materi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 2101,
+          "end": 2116,
+          "excerpt": " be set forth in an amendment or supplement to the Proxy Statement, so that the Proxy Statement shall not contain any untrue statement of a material fact or omit to state any ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 2746,
+          "end": 2761,
+          "excerpt": "ection with an Adverse Recommendation Change, no amendment or supplement to the Proxy Statement will be made by the Company without the approval of Parent, which approval shal",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 2929,
+          "end": 2944,
+          "excerpt": " unreasonably withheld, conditioned or delayed.\n(b) The Company agrees that the Proxy Statement will comply as to form in all material respects with the requirements of the Ex",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 3113,
+          "end": 3128,
+          "excerpt": "t and that none of the information included or incorporated by reference in the Proxy Statement will, at the date the Proxy Statement is filed with the SEC or mailed to the sh",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 3151,
+          "end": 3166,
+          "excerpt": "luded or incorporated by reference in the Proxy Statement will, at the date the Proxy Statement is filed with the SEC or mailed to the shareholders of the Company or at the ti",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 3659,
+          "end": 3674,
+          "excerpt": " that no covenant is made by the Company with respect to statements made in the Proxy Statement based on information supplied in writing by or on behalf of Parent specifically",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 3954,
+          "end": 3969,
+          "excerpt": "half of Parent specifically for inclusion or incorporation for reference in the Proxy Statement will, at the date the Proxy Statement is filed with the SEC or mailed to the sh",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 3992,
+          "end": 4007,
+          "excerpt": "ion or incorporation for reference in the Proxy Statement will, at the date the Proxy Statement is filed with the SEC or mailed to the shareholders of the Company or at the ti",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 4511,
+          "end": 4526,
+          "excerpt": "hall, as promptly as reasonably practicable after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 4816,
+          "end": 4831,
+          "excerpt": "d\n32\nas promptly as reasonably practicable following the date of mailing of the Proxy Statement to the Company Shareholders, for the purpose of obtaining the Shareholder Appro",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 5783,
+          "end": 5798,
+          "excerpt": " applicable Law (A) to comply with comments made by the SEC with respect to the Proxy Statement or (B) to allow reasonable additional time for the filing or mailing of any sup",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 4417,
+          "end_byte": 9072
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 4417,
+            "end_byte": 9072,
+            "text": " The Company shall, as promptly as reasonably practicable after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”). The Company shall cause the Shareholders Meeting to be held\n32\nas promptly as reasonably practicable following the date of mailing of the Proxy Statement to the Company Shareholders, for the purpose of obtaining the Shareholder Approval. Notwithstanding anything to the contrary in this Agreement, the Company will be permitted to postpone or adjourn the Shareholders Meeting if, but only if, (i) the Company is unable to obtain a quorum of its shareholders at such time, to the extent (and only to the extent) necessary in order to obtain a quorum of its shareholders and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable, (ii) there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval, (iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law (A) to comply with comments made by the SEC with respect to the Proxy Statement or (B) to allow reasonable additional time for the filing or mailing of any supplemental or amended disclosure that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting or (iv) the Company is required to do so by a court of competent jurisdiction in connection with any Transaction Litigation; provided, however, that in no event will the Shareholders Meeting be postponed or adjourned (x) with respect to Section 5.01(c)(i) or (c)(ii), by more than thirty (30) days after the date on which the Shareholders Meeting was (or was required to be) originally scheduled, without the prior written consent of Parent, (y) with respect to Section 5.01(c)(iii), by more than ten (10) Business Days, or such other amount of time reasonably agreed by the Company and Parent to be necessary to comply with applicable Law (it being agreed by the parties that such ten (10) Business Day period shall recommence if the Company (after consultation with outside legal counsel) shall determine supplemental or amended disclosure is required to be disseminated and reviewed by stockholders of the Company during such original ten (10) Business Day period) or (z) except with respect to postponements or adjournments pursuant to Section 5.01(c)(iv), by more than ten (10) days at a time without the prior written consent of Parent. The Company shall, at the instruction of Parent, postpone or adjourn the Shareholders Meeting if there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval. In no event will the record date of the Shareholders Meeting be changed without Parent’s prior written consent (which consent shall not be unreasonably withheld, conditioned or delayed); provided, however, that the Company may change the record date of the Shareholders Meeting without prior written consent of Parent in the event that (1) supplemental or amended disclosure is required to be disseminated to shareholders, the meeting is postponed or adjourned, in accordance with this Section 5.01(c) or (2) the Company postpones the Shareholders Meeting at the instruction of Parent and, in either case, as a result, the initial record date fixed by the Company Board is more than 60 days before the date of the subsequent meeting. The notice of such Shareholders Meeting shall state that a resolution to adopt this Agreement will be considered at the Shareholders Meeting. Except to the extent an Adverse Recommendation Change expressly permitted by Section 4.02(c) or Section 4.02(d) has been effected, (A) the Company Board shall include the Company Board Recommendation in the Proxy Statement and (B) the Company shall use its reasonable best efforts to solicit votes of the Company Shareholders in favor of obtaining the Shareholder Approval. The Company shall provide updates to Parent with respect to the proxy solicitation for the Shareholders Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 71,
+            "text": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "50e51679c947bf8607c543199d62eb8425533a9311f99e5ce9258fdedbbd81a4",
+      "closure_id": "96d538893e46f4eb8a24ee2b256be1faa4859e574fcda1266455b94d0e97bd7e",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "06332764636dcc7c3afbe5b819dfe75372de50363e422a347be17fd61f3b3a9f",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "fc734a4c87ff7d8ea74fb3c61cdbccfcc703bed4f1f1a810d2d7ec2bef0bccef",
+          "document_ordinal": 0,
+          "absolute_start": 5572,
+          "absolute_end": 5718,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "(iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 49,
+          "end": 69,
+          "excerpt": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.\n(a) As promptly as reasonably practicable following the date of this Agreement",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 1832,
+          "end": 1852,
+          "excerpt": " be unreasonably withheld, conditioned or delayed. If, at any time prior to the Shareholders Meeting, any information relating to the Company, Parent or any of their respective aff",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 3256,
+          "end": 3276,
+          "excerpt": "with the SEC or mailed to the shareholders of the Company or at the time of the Shareholders Meeting, or at the time of any amendment or supplement thereof, contain any untrue stat",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 4097,
+          "end": 4117,
+          "excerpt": "with the SEC or mailed to the shareholders of the Company or at the time of the Shareholders Meeting, or at the time of any amendment or supplement thereof, contain any untrue stat",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4553,
+          "end": 4564,
+          "excerpt": "e after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 4652,
+          "end": 4672,
+          "excerpt": "ly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”). The Company shall cause the Shareholders Meeting to be held\n32\nas promptly",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 4706,
+          "end": 4726,
+          "excerpt": " its shareholders (the “Shareholders Meeting”). The Company shall cause the Shareholders Meeting to be held\n32\nas promptly as reasonably practicable following the date of maili",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONE_OR_ADJOURN",
+          "start": 5009,
+          "end": 5028,
+          "excerpt": "ng anything to the contrary in this Agreement, the Company will be permitted to postpone or adjourn the Shareholders Meeting if, but only if, (i) the Company is unable to obtain a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 5033,
+          "end": 5053,
+          "excerpt": "ary in this Agreement, the Company will be permitted to postpone or adjourn the Shareholders Meeting if, but only if, (i) the Company is unable to obtain a quorum of its shareholde",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 6171,
+          "end": 6190,
+          "excerpt": "ure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting or (iv) the Company is required to do so by a court of competent jurisdiction i",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 6361,
+          "end": 6381,
+          "excerpt": "n with any Transaction Litigation; provided, however, that in no event will the Shareholders Meeting be postponed or adjourned (x) with respect to Section 5.01(c)(i) or (c)(ii), by",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONED_OR_ADJOURNED",
+          "start": 6385,
+          "end": 6407,
+          "excerpt": "itigation; provided, however, that in no event will the Shareholders Meeting be postponed or adjourned (x) with respect to Section 5.01(c)(i) or (c)(ii), by more than thirty (30) day",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 6517,
+          "end": 6537,
+          "excerpt": ".01(c)(i) or (c)(ii), by more than thirty (30) days after the date on which the Shareholders Meeting was (or was required to be) originally scheduled, without the prior written con",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONE_OR_ADJOURN",
+          "start": 7383,
+          "end": 7402,
+          "excerpt": "ior written consent of Parent. The Company shall, at the instruction of Parent, postpone or adjourn the Shareholders Meeting if there are not sufficient affirmative votes in perso",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 7407,
+          "end": 7427,
+          "excerpt": "arent. The Company shall, at the instruction of Parent, postpone or adjourn the Shareholders Meeting if there are not sufficient affirmative votes in person or by proxy at such mee",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 7666,
+          "end": 7677,
+          "excerpt": "roxies for purposes of obtaining the Shareholder Approval. In no event will the record date of the Shareholders Meeting be changed without Parent’s prior written consent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 7685,
+          "end": 7705,
+          "excerpt": " of obtaining the Shareholder Approval. In no event will the record date of the Shareholders Meeting be changed without Parent’s prior written consent (which consent shall not be",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 7885,
+          "end": 7896,
+          "excerpt": "ld, conditioned or delayed); provided, however, that the Company may change the record date of the Shareholders Meeting without prior written consent of Parent in the even",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 7904,
+          "end": 7924,
+          "excerpt": "delayed); provided, however, that the Company may change the record date of the Shareholders Meeting without prior written consent of Parent in the event that (1) supplemental or a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONED_OR_ADJOURNED",
+          "start": 8085,
+          "end": 8107,
+          "excerpt": "ended disclosure is required to be disseminated to shareholders, the meeting is postponed or adjourned, in accordance with this Section 5.01(c) or (2) the Company postpones the Share",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 8182,
+          "end": 8202,
+          "excerpt": "urned, in accordance with this Section 5.01(c) or (2) the Company postpones the Shareholders Meeting at the instruction of Parent and, in either case, as a result, the initial reco",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8278,
+          "end": 8289,
+          "excerpt": "ting at the instruction of Parent and, in either case, as a result, the initial record date fixed by the Company Board is more than 60 days before the date of the subseque",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 8400,
+          "end": 8420,
+          "excerpt": "more than 60 days before the date of the subsequent meeting. The notice of such Shareholders Meeting shall state that a resolution to adopt this Agreement will be considered at the",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 8501,
+          "end": 8521,
+          "excerpt": "shall state that a resolution to adopt this Agreement will be considered at the Shareholders Meeting. Except to the extent an Adverse Recommendation Change expressly permitted by S",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:SHAREHOLDERS_MEETING",
+          "start": 8988,
+          "end": 9008,
+          "excerpt": " shall provide updates to Parent with respect to the proxy solicitation for the Shareholders Meeting (including interim results) as reasonably requested by Parent.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 4417,
+          "end_byte": 9072
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 4417,
+            "end_byte": 9072,
+            "text": " The Company shall, as promptly as reasonably practicable after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”). The Company shall cause the Shareholders Meeting to be held\n32\nas promptly as reasonably practicable following the date of mailing of the Proxy Statement to the Company Shareholders, for the purpose of obtaining the Shareholder Approval. Notwithstanding anything to the contrary in this Agreement, the Company will be permitted to postpone or adjourn the Shareholders Meeting if, but only if, (i) the Company is unable to obtain a quorum of its shareholders at such time, to the extent (and only to the extent) necessary in order to obtain a quorum of its shareholders and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable, (ii) there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval, (iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law (A) to comply with comments made by the SEC with respect to the Proxy Statement or (B) to allow reasonable additional time for the filing or mailing of any supplemental or amended disclosure that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting or (iv) the Company is required to do so by a court of competent jurisdiction in connection with any Transaction Litigation; provided, however, that in no event will the Shareholders Meeting be postponed or adjourned (x) with respect to Section 5.01(c)(i) or (c)(ii), by more than thirty (30) days after the date on which the Shareholders Meeting was (or was required to be) originally scheduled, without the prior written consent of Parent, (y) with respect to Section 5.01(c)(iii), by more than ten (10) Business Days, or such other amount of time reasonably agreed by the Company and Parent to be necessary to comply with applicable Law (it being agreed by the parties that such ten (10) Business Day period shall recommence if the Company (after consultation with outside legal counsel) shall determine supplemental or amended disclosure is required to be disseminated and reviewed by stockholders of the Company during such original ten (10) Business Day period) or (z) except with respect to postponements or adjournments pursuant to Section 5.01(c)(iv), by more than ten (10) days at a time without the prior written consent of Parent. The Company shall, at the instruction of Parent, postpone or adjourn the Shareholders Meeting if there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval. In no event will the record date of the Shareholders Meeting be changed without Parent’s prior written consent (which consent shall not be unreasonably withheld, conditioned or delayed); provided, however, that the Company may change the record date of the Shareholders Meeting without prior written consent of Parent in the event that (1) supplemental or amended disclosure is required to be disseminated to shareholders, the meeting is postponed or adjourned, in accordance with this Section 5.01(c) or (2) the Company postpones the Shareholders Meeting at the instruction of Parent and, in either case, as a result, the initial record date fixed by the Company Board is more than 60 days before the date of the subsequent meeting. The notice of such Shareholders Meeting shall state that a resolution to adopt this Agreement will be considered at the Shareholders Meeting. Except to the extent an Adverse Recommendation Change expressly permitted by Section 4.02(c) or Section 4.02(d) has been effected, (A) the Company Board shall include the Company Board Recommendation in the Proxy Statement and (B) the Company shall use its reasonable best efforts to solicit votes of the Company Shareholders in favor of obtaining the Shareholder Approval. The Company shall provide updates to Parent with respect to the proxy solicitation for the Shareholders Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 71,
+            "text": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(x) with respect to Section 5.01(c)(i) or (c)(ii), by more than thirty (30) days after the date on which the Shareholders Meeting was (or was required to be) originally scheduled, without the prior written consent of Parent",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "49c9baec61f514bfcadd82cf0699d8b557cb250b3553f04dc767bd62f9d64cf9",
+      "closure_id": "9e5b31a40d630121b993b754f1dc2e6d3a28c4c05e4890999e3f58c29abf1835",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "ecf3ae124c4861e3601ab8aa2644bf915a6e0e983be3bc36f8b6f98194040559",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b902ad682fde90d5a07f9fc662f5e64801f7a2765838afa93bb57bdb19ed3b46",
+          "document_ordinal": 0,
+          "absolute_start": 6408,
+          "absolute_end": 6631,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "(x) with respect to Section 5.01(c)(i) or (c)(ii), by more than thirty (30) days after the date on which the Shareholders Meeting was (or was required to be) originally scheduled, without the prior written consent of Parent",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 4417,
+          "end_byte": 9072
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 4417,
+            "end_byte": 9072,
+            "text": " The Company shall, as promptly as reasonably practicable after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”). The Company shall cause the Shareholders Meeting to be held\n32\nas promptly as reasonably practicable following the date of mailing of the Proxy Statement to the Company Shareholders, for the purpose of obtaining the Shareholder Approval. Notwithstanding anything to the contrary in this Agreement, the Company will be permitted to postpone or adjourn the Shareholders Meeting if, but only if, (i) the Company is unable to obtain a quorum of its shareholders at such time, to the extent (and only to the extent) necessary in order to obtain a quorum of its shareholders and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable, (ii) there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval, (iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law (A) to comply with comments made by the SEC with respect to the Proxy Statement or (B) to allow reasonable additional time for the filing or mailing of any supplemental or amended disclosure that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting or (iv) the Company is required to do so by a court of competent jurisdiction in connection with any Transaction Litigation; provided, however, that in no event will the Shareholders Meeting be postponed or adjourned (x) with respect to Section 5.01(c)(i) or (c)(ii), by more than thirty (30) days after the date on which the Shareholders Meeting was (or was required to be) originally scheduled, without the prior written consent of Parent, (y) with respect to Section 5.01(c)(iii), by more than ten (10) Business Days, or such other amount of time reasonably agreed by the Company and Parent to be necessary to comply with applicable Law (it being agreed by the parties that such ten (10) Business Day period shall recommence if the Company (after consultation with outside legal counsel) shall determine supplemental or amended disclosure is required to be disseminated and reviewed by stockholders of the Company during such original ten (10) Business Day period) or (z) except with respect to postponements or adjournments pursuant to Section 5.01(c)(iv), by more than ten (10) days at a time without the prior written consent of Parent. The Company shall, at the instruction of Parent, postpone or adjourn the Shareholders Meeting if there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval. In no event will the record date of the Shareholders Meeting be changed without Parent’s prior written consent (which consent shall not be unreasonably withheld, conditioned or delayed); provided, however, that the Company may change the record date of the Shareholders Meeting without prior written consent of Parent in the event that (1) supplemental or amended disclosure is required to be disseminated to shareholders, the meeting is postponed or adjourned, in accordance with this Section 5.01(c) or (2) the Company postpones the Shareholders Meeting at the instruction of Parent and, in either case, as a result, the initial record date fixed by the Company Board is more than 60 days before the date of the subsequent meeting. The notice of such Shareholders Meeting shall state that a resolution to adopt this Agreement will be considered at the Shareholders Meeting. Except to the extent an Adverse Recommendation Change expressly permitted by Section 4.02(c) or Section 4.02(d) has been effected, (A) the Company Board shall include the Company Board Recommendation in the Proxy Statement and (B) the Company shall use its reasonable best efforts to solicit votes of the Company Shareholders in favor of obtaining the Shareholder Approval. The Company shall provide updates to Parent with respect to the proxy solicitation for the Shareholders Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 71,
+            "text": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "AMBIGUOUS_PROXY_MEETING_KIND"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company shall, as promptly as reasonably practicable after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”).",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "0445551b6921d5e466e566b4f11b72149c7e5ca42dc3b4f9eac93bcc51dccf70",
+      "closure_id": "e6cdbd651d084bd8d2b398838f684bc12b69a6e8a4784122b2fc7a3b592cfe3d",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "ddf1266ba6dc64f32fc75c29e470f7daa0169e7def3568c3fab559dee9d13a1a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "166d1d53ebba042cdacff6dffe4040c60f3efea7fd3e8ab8270878a18cc145f7",
+          "document_ordinal": 0,
+          "absolute_start": 4418,
+          "absolute_end": 4677,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company shall, as promptly as reasonably practicable after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”).",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 4417,
+          "end_byte": 9072
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 4417,
+            "end_byte": 9072,
+            "text": " The Company shall, as promptly as reasonably practicable after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”). The Company shall cause the Shareholders Meeting to be held\n32\nas promptly as reasonably practicable following the date of mailing of the Proxy Statement to the Company Shareholders, for the purpose of obtaining the Shareholder Approval. Notwithstanding anything to the contrary in this Agreement, the Company will be permitted to postpone or adjourn the Shareholders Meeting if, but only if, (i) the Company is unable to obtain a quorum of its shareholders at such time, to the extent (and only to the extent) necessary in order to obtain a quorum of its shareholders and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable, (ii) there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval, (iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law (A) to comply with comments made by the SEC with respect to the Proxy Statement or (B) to allow reasonable additional time for the filing or mailing of any supplemental or amended disclosure that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting or (iv) the Company is required to do so by a court of competent jurisdiction in connection with any Transaction Litigation; provided, however, that in no event will the Shareholders Meeting be postponed or adjourned (x) with respect to Section 5.01(c)(i) or (c)(ii), by more than thirty (30) days after the date on which the Shareholders Meeting was (or was required to be) originally scheduled, without the prior written consent of Parent, (y) with respect to Section 5.01(c)(iii), by more than ten (10) Business Days, or such other amount of time reasonably agreed by the Company and Parent to be necessary to comply with applicable Law (it being agreed by the parties that such ten (10) Business Day period shall recommence if the Company (after consultation with outside legal counsel) shall determine supplemental or amended disclosure is required to be disseminated and reviewed by stockholders of the Company during such original ten (10) Business Day period) or (z) except with respect to postponements or adjournments pursuant to Section 5.01(c)(iv), by more than ten (10) days at a time without the prior written consent of Parent. The Company shall, at the instruction of Parent, postpone or adjourn the Shareholders Meeting if there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval. In no event will the record date of the Shareholders Meeting be changed without Parent’s prior written consent (which consent shall not be unreasonably withheld, conditioned or delayed); provided, however, that the Company may change the record date of the Shareholders Meeting without prior written consent of Parent in the event that (1) supplemental or amended disclosure is required to be disseminated to shareholders, the meeting is postponed or adjourned, in accordance with this Section 5.01(c) or (2) the Company postpones the Shareholders Meeting at the instruction of Parent and, in either case, as a result, the initial record date fixed by the Company Board is more than 60 days before the date of the subsequent meeting. The notice of such Shareholders Meeting shall state that a resolution to adopt this Agreement will be considered at the Shareholders Meeting. Except to the extent an Adverse Recommendation Change expressly permitted by Section 4.02(c) or Section 4.02(d) has been effected, (A) the Company Board shall include the Company Board Recommendation in the Proxy Statement and (B) the Company shall use its reasonable best efforts to solicit votes of the Company Shareholders in favor of obtaining the Shareholder Approval. The Company shall provide updates to Parent with respect to the proxy solicitation for the Shareholders Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 71,
+            "text": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(c)",
+      "reason": "PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "raw_value": "The Company shall, at the instruction of Parent, postpone or adjourn the Shareholders Meeting if there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval.",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "5.01",
+        "assertion_kind": "ADJOURNMENT_CONTROL",
+        "anchor_kind": null,
+        "day_kind": null,
+        "limit_basis": null,
+        "control_party": "Parent",
+        "consenting_party": null,
+        "reason_kind": "INSUFFICIENT_VOTES",
+        "meeting_ref": "the Shareholders Meeting",
+        "document_ref": null,
+        "obligated_party": "The Company",
+        "adoption_mechanism": null,
+        "adoption_timing": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "9588401763f599a8375f186c0a6901e4e53a3da37ea9c9c343a8aaecec74608f",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "8e1d511856fdd34f66c1c8aacf2483dc1e7c6aca16ceaf2714ce1b63fc471186",
+          "document_ordinal": 0,
+          "absolute_start": 7334,
+          "absolute_end": 7644,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "34009c1c4a8f6b0da0bb970eca19552b14da4eb5c98d5f5db3c0c6e3d2b88b59",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "PROXY_MEETING_COVENANT",
+        "prompt_digest": "f3c3f3acc6ae054955a6ac405f919a435ac0688161b4c6c558b4d84a3dc18a89",
+        "producer_receipt_id": "ead4ecde03b6b4c3a3ec1a852ceda8cca25c817193a7c66112a57c85dd955847",
+        "governed_scope_digest": "969f4787ce294d83dda19cac88c438c2d8a8c8d04498642cbc3dd3c37c015691",
+        "extraction_provenance_id": "bdb10670a505736b241915509f6f53442a143d76e8ffdf97f180f14bc5d8f9a2"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.01",
+        "normalized_citation": "5.01",
+        "derived_citation": "5.01(c)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 4417,
+          "end_byte": 9072
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 4417,
+            "end_byte": 9072,
+            "text": " The Company shall, as promptly as reasonably practicable after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”). The Company shall cause the Shareholders Meeting to be held\n32\nas promptly as reasonably practicable following the date of mailing of the Proxy Statement to the Company Shareholders, for the purpose of obtaining the Shareholder Approval. Notwithstanding anything to the contrary in this Agreement, the Company will be permitted to postpone or adjourn the Shareholders Meeting if, but only if, (i) the Company is unable to obtain a quorum of its shareholders at such time, to the extent (and only to the extent) necessary in order to obtain a quorum of its shareholders and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable, (ii) there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval, (iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law (A) to comply with comments made by the SEC with respect to the Proxy Statement or (B) to allow reasonable additional time for the filing or mailing of any supplemental or amended disclosure that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting or (iv) the Company is required to do so by a court of competent jurisdiction in connection with any Transaction Litigation; provided, however, that in no event will the Shareholders Meeting be postponed or adjourned (x) with respect to Section 5.01(c)(i) or (c)(ii), by more than thirty (30) days after the date on which the Shareholders Meeting was (or was required to be) originally scheduled, without the prior written consent of Parent, (y) with respect to Section 5.01(c)(iii), by more than ten (10) Business Days, or such other amount of time reasonably agreed by the Company and Parent to be necessary to comply with applicable Law (it being agreed by the parties that such ten (10) Business Day period shall recommence if the Company (after consultation with outside legal counsel) shall determine supplemental or amended disclosure is required to be disseminated and reviewed by stockholders of the Company during such original ten (10) Business Day period) or (z) except with respect to postponements or adjournments pursuant to Section 5.01(c)(iv), by more than ten (10) days at a time without the prior written consent of Parent. The Company shall, at the instruction of Parent, postpone or adjourn the Shareholders Meeting if there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval. In no event will the record date of the Shareholders Meeting be changed without Parent’s prior written consent (which consent shall not be unreasonably withheld, conditioned or delayed); provided, however, that the Company may change the record date of the Shareholders Meeting without prior written consent of Parent in the event that (1) supplemental or amended disclosure is required to be disseminated to shareholders, the meeting is postponed or adjourned, in accordance with this Section 5.01(c) or (2) the Company postpones the Shareholders Meeting at the instruction of Parent and, in either case, as a result, the initial record date fixed by the Company Board is more than 60 days before the date of the subsequent meeting. The notice of such Shareholders Meeting shall state that a resolution to adopt this Agreement will be considered at the Shareholders Meeting. Except to the extent an Adverse Recommendation Change expressly permitted by Section 4.02(c) or Section 4.02(d) has been effected, (A) the Company Board shall include the Company Board Recommendation in the Proxy Statement and (B) the Company shall use its reasonable best efforts to solicit votes of the Company Shareholders in favor of obtaining the Shareholder Approval. The Company shall provide updates to Parent with respect to the proxy solicitation for the Shareholders Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 71,
+            "text": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "As promptly as reasonably practicable following the date of this Agreement, the Company shall prepare and file with the SEC the preliminary Proxy Statement.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Qualitative timing phrase has no governed day count or timing direction.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e4889da51c93a8da9f77149d56157e7e99a22ecd3a826b2b71d60955723f73cf",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "3ff480b37622d11a9951dce44def053eaabcae5dab42fbf410d2c59a691f44b1",
+          "document_ordinal": 0,
+          "absolute_start": 75,
+          "absolute_end": 231,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "4c5920ca205151816bcbb5552b46429abf2053508459f0d11ba423ebeb1184a9",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "f3c3f3acc6ae054955a6ac405f919a435ac0688161b4c6c558b4d84a3dc18a89",
+        "producer_receipt_id": "ead4ecde03b6b4c3a3ec1a852ceda8cca25c817193a7c66112a57c85dd955847",
+        "governed_scope_digest": "969f4787ce294d83dda19cac88c438c2d8a8c8d04498642cbc3dd3c37c015691",
+        "extraction_provenance_id": "41c38488e4a99ca000f395d98ef2564717e8845f15083998b81c4c89dadd41a0"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 74,
+          "end_byte": 2897
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 74,
+            "end_byte": 2897,
+            "text": " As promptly as reasonably practicable following the date of this Agreement, the Company shall prepare and file with the SEC the preliminary Proxy Statement. Each of the Company and Parent shall furnish all information concerning such person to the other as may be reasonably requested in connection with the preparation, filing and distribution of the Proxy Statement. The Company shall promptly notify Parent upon the receipt of any comments from the SEC or its staff or any request from the SEC or its staff for amendments or supplements to the Proxy Statement and shall provide Parent with copies of all correspondence between it and its representatives, on the one hand, and the SEC, on the other hand. Each of the Company and Parent shall use reasonable best efforts to respond as promptly as practicable to any comments of the SEC with respect to the Proxy Statement and the Company shall cause the definitive Proxy Statement to be mailed to the Company Shareholders as promptly as reasonably practicable after the date the SEC staff advises that it has no further comments thereon and that the Company may commence mailing the Proxy Statement. Notwithstanding the foregoing, prior to filing or mailing the Proxy Statement (or any amendment or supplement thereto) or responding to any comments of the SEC with respect thereto, the Company (i) shall provide Parent an opportunity to review and comment on such document or response, (ii) shall give reasonable and good faith consideration to all comments reasonably proposed by Parent and (iii) shall not file or mail such document, or respond to the SEC, prior to receiving the approval of Parent, which approval shall not be unreasonably withheld, conditioned or delayed. If, at any time prior to the Shareholders Meeting, any information relating to the Company, Parent or any of their respective affiliates, officers or directors should be discovered by the Company or Parent which should be set forth in an amendment or supplement to the Proxy Statement, so that the Proxy Statement shall not contain any untrue statement of a material fact or omit to state any material fact required to be stated therein or necessary in order to make the statements therein, in light of the circumstances under which they are made, not misleading, the party that discovers such information shall promptly notify the other parties hereto, and an appropriate amendment or supplement describing such information shall be filed with the SEC and, to the extent required by applicable Law, disseminated to the shareholders of the Company. Except in connection with an Adverse Recommendation Change, no amendment or supplement to the Proxy Statement will be made by the Company without the approval of Parent, which approval shall not be unreasonably withheld, conditioned or delayed.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 71,
+            "text": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the Company shall cause the definitive Proxy Statement to be mailed to the Company Shareholders as promptly as reasonably practicable after the date the SEC staff advises that it has no further comments thereon and that the Company may commence mailing the Proxy Statement.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Qualitative timing phrase has no governed day count or timing direction.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "272408a7c5cc28c10f438a17839e471c735dfc11030be66aca72ea018a1e5ff4",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "7c2c280d1b684046115ac2ec44694eaf62e67bed345efb9ec25727d9db17ce3e",
+          "document_ordinal": 0,
+          "absolute_start": 952,
+          "absolute_end": 1225,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "411fb6035d85d66965847bd6127e514250506ad521f6e833c83a1bbe191e2fc8",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "f3c3f3acc6ae054955a6ac405f919a435ac0688161b4c6c558b4d84a3dc18a89",
+        "producer_receipt_id": "ead4ecde03b6b4c3a3ec1a852ceda8cca25c817193a7c66112a57c85dd955847",
+        "governed_scope_digest": "969f4787ce294d83dda19cac88c438c2d8a8c8d04498642cbc3dd3c37c015691",
+        "extraction_provenance_id": "41c38488e4a99ca000f395d98ef2564717e8845f15083998b81c4c89dadd41a0"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 74,
+          "end_byte": 2897
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 74,
+            "end_byte": 2897,
+            "text": " As promptly as reasonably practicable following the date of this Agreement, the Company shall prepare and file with the SEC the preliminary Proxy Statement. Each of the Company and Parent shall furnish all information concerning such person to the other as may be reasonably requested in connection with the preparation, filing and distribution of the Proxy Statement. The Company shall promptly notify Parent upon the receipt of any comments from the SEC or its staff or any request from the SEC or its staff for amendments or supplements to the Proxy Statement and shall provide Parent with copies of all correspondence between it and its representatives, on the one hand, and the SEC, on the other hand. Each of the Company and Parent shall use reasonable best efforts to respond as promptly as practicable to any comments of the SEC with respect to the Proxy Statement and the Company shall cause the definitive Proxy Statement to be mailed to the Company Shareholders as promptly as reasonably practicable after the date the SEC staff advises that it has no further comments thereon and that the Company may commence mailing the Proxy Statement. Notwithstanding the foregoing, prior to filing or mailing the Proxy Statement (or any amendment or supplement thereto) or responding to any comments of the SEC with respect thereto, the Company (i) shall provide Parent an opportunity to review and comment on such document or response, (ii) shall give reasonable and good faith consideration to all comments reasonably proposed by Parent and (iii) shall not file or mail such document, or respond to the SEC, prior to receiving the approval of Parent, which approval shall not be unreasonably withheld, conditioned or delayed. If, at any time prior to the Shareholders Meeting, any information relating to the Company, Parent or any of their respective affiliates, officers or directors should be discovered by the Company or Parent which should be set forth in an amendment or supplement to the Proxy Statement, so that the Proxy Statement shall not contain any untrue statement of a material fact or omit to state any material fact required to be stated therein or necessary in order to make the statements therein, in light of the circumstances under which they are made, not misleading, the party that discovers such information shall promptly notify the other parties hereto, and an appropriate amendment or supplement describing such information shall be filed with the SEC and, to the extent required by applicable Law, disseminated to the shareholders of the Company. Except in connection with an Adverse Recommendation Change, no amendment or supplement to the Proxy Statement will be made by the Company without the approval of Parent, which approval shall not be unreasonably withheld, conditioned or delayed.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 71,
+            "text": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "The Company shall cause the Shareholders Meeting to be held\n32\nas promptly as reasonably practicable following the date of mailing of the Proxy Statement to the Company Shareholders, for the purpose of obtaining the Shareholder Approval.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Qualitative timing phrase has no governed day count or timing direction.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "c5befbf7a06765d22751c5e3fb3ff8aa5596c15dd310789136c27668854af195",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d4d54f43a08d904f772e2d9b5e4d6cc620e85b15656b7cecb53ce77e74baa6fe",
+          "document_ordinal": 0,
+          "absolute_start": 4678,
+          "absolute_end": 4915,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "d48c20c9f5608edba961ea0dda9512f9111473b464826fe94938f4f412ec7c1b",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "f3c3f3acc6ae054955a6ac405f919a435ac0688161b4c6c558b4d84a3dc18a89",
+        "producer_receipt_id": "ead4ecde03b6b4c3a3ec1a852ceda8cca25c817193a7c66112a57c85dd955847",
+        "governed_scope_digest": "969f4787ce294d83dda19cac88c438c2d8a8c8d04498642cbc3dd3c37c015691",
+        "extraction_provenance_id": "41c38488e4a99ca000f395d98ef2564717e8845f15083998b81c4c89dadd41a0"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 4417,
+          "end_byte": 9072
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 4417,
+            "end_byte": 9072,
+            "text": " The Company shall, as promptly as reasonably practicable after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”). The Company shall cause the Shareholders Meeting to be held\n32\nas promptly as reasonably practicable following the date of mailing of the Proxy Statement to the Company Shareholders, for the purpose of obtaining the Shareholder Approval. Notwithstanding anything to the contrary in this Agreement, the Company will be permitted to postpone or adjourn the Shareholders Meeting if, but only if, (i) the Company is unable to obtain a quorum of its shareholders at such time, to the extent (and only to the extent) necessary in order to obtain a quorum of its shareholders and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable, (ii) there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval, (iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law (A) to comply with comments made by the SEC with respect to the Proxy Statement or (B) to allow reasonable additional time for the filing or mailing of any supplemental or amended disclosure that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting or (iv) the Company is required to do so by a court of competent jurisdiction in connection with any Transaction Litigation; provided, however, that in no event will the Shareholders Meeting be postponed or adjourned (x) with respect to Section 5.01(c)(i) or (c)(ii), by more than thirty (30) days after the date on which the Shareholders Meeting was (or was required to be) originally scheduled, without the prior written consent of Parent, (y) with respect to Section 5.01(c)(iii), by more than ten (10) Business Days, or such other amount of time reasonably agreed by the Company and Parent to be necessary to comply with applicable Law (it being agreed by the parties that such ten (10) Business Day period shall recommence if the Company (after consultation with outside legal counsel) shall determine supplemental or amended disclosure is required to be disseminated and reviewed by stockholders of the Company during such original ten (10) Business Day period) or (z) except with respect to postponements or adjournments pursuant to Section 5.01(c)(iv), by more than ten (10) days at a time without the prior written consent of Parent. The Company shall, at the instruction of Parent, postpone or adjourn the Shareholders Meeting if there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval. In no event will the record date of the Shareholders Meeting be changed without Parent’s prior written consent (which consent shall not be unreasonably withheld, conditioned or delayed); provided, however, that the Company may change the record date of the Shareholders Meeting without prior written consent of Parent in the event that (1) supplemental or amended disclosure is required to be disseminated to shareholders, the meeting is postponed or adjourned, in accordance with this Section 5.01(c) or (2) the Company postpones the Shareholders Meeting at the instruction of Parent and, in either case, as a result, the initial record date fixed by the Company Board is more than 60 days before the date of the subsequent meeting. The notice of such Shareholders Meeting shall state that a resolution to adopt this Agreement will be considered at the Shareholders Meeting. Except to the extent an Adverse Recommendation Change expressly permitted by Section 4.02(c) or Section 4.02(d) has been effected, (A) the Company Board shall include the Company Board Recommendation in the Proxy Statement and (B) the Company shall use its reasonable best efforts to solicit votes of the Company Shareholders in favor of obtaining the Shareholder Approval. The Company shall provide updates to Parent with respect to the proxy solicitation for the Shareholders Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 71,
+            "text": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "(y) with respect to Section 5.01(c)(iii), by more than ten (10) Business Days, or such other amount of time reasonably agreed by the Company and Parent to be necessary to comply with applicable Law (it being agreed by the parties that such ten (10) Business Day period shall recommence if the Company (after consultation with outside legal counsel) shall determine supplemental or amended disclosure is required to be disseminated and reviewed by stockholders of the Company during such original ten (10) Business Day period)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "The duration is qualified by an alternative amount and recommencement provision.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "4aaebf6816bcad4d400fc65a1c6935f27ccc6d109861f58986adc98ab1de4b96",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b327431869bd26a78825ed7869ceb8bf60b2058afee1f6589f705c1342792057",
+          "document_ordinal": 0,
+          "absolute_start": 6633,
+          "absolute_end": 7158,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "f8afb3243132b299f2367215dfbd7a29baa6999797d6ed3046ead53261037206",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "f3c3f3acc6ae054955a6ac405f919a435ac0688161b4c6c558b4d84a3dc18a89",
+        "producer_receipt_id": "ead4ecde03b6b4c3a3ec1a852ceda8cca25c817193a7c66112a57c85dd955847",
+        "governed_scope_digest": "969f4787ce294d83dda19cac88c438c2d8a8c8d04498642cbc3dd3c37c015691",
+        "extraction_provenance_id": "41c38488e4a99ca000f395d98ef2564717e8845f15083998b81c4c89dadd41a0"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 4417,
+          "end_byte": 9072
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 4417,
+            "end_byte": 9072,
+            "text": " The Company shall, as promptly as reasonably practicable after the filing of the preliminary Proxy Statement with the SEC, establish a record date for, duly call, give notice of, convene and hold a meeting of its shareholders (the “Shareholders Meeting”). The Company shall cause the Shareholders Meeting to be held\n32\nas promptly as reasonably practicable following the date of mailing of the Proxy Statement to the Company Shareholders, for the purpose of obtaining the Shareholder Approval. Notwithstanding anything to the contrary in this Agreement, the Company will be permitted to postpone or adjourn the Shareholders Meeting if, but only if, (i) the Company is unable to obtain a quorum of its shareholders at such time, to the extent (and only to the extent) necessary in order to obtain a quorum of its shareholders and the Company shall use its reasonable best efforts to obtain such a quorum as promptly as practicable, (ii) there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval, (iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law (A) to comply with comments made by the SEC with respect to the Proxy Statement or (B) to allow reasonable additional time for the filing or mailing of any supplemental or amended disclosure that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting or (iv) the Company is required to do so by a court of competent jurisdiction in connection with any Transaction Litigation; provided, however, that in no event will the Shareholders Meeting be postponed or adjourned (x) with respect to Section 5.01(c)(i) or (c)(ii), by more than thirty (30) days after the date on which the Shareholders Meeting was (or was required to be) originally scheduled, without the prior written consent of Parent, (y) with respect to Section 5.01(c)(iii), by more than ten (10) Business Days, or such other amount of time reasonably agreed by the Company and Parent to be necessary to comply with applicable Law (it being agreed by the parties that such ten (10) Business Day period shall recommence if the Company (after consultation with outside legal counsel) shall determine supplemental or amended disclosure is required to be disseminated and reviewed by stockholders of the Company during such original ten (10) Business Day period) or (z) except with respect to postponements or adjournments pursuant to Section 5.01(c)(iv), by more than ten (10) days at a time without the prior written consent of Parent. The Company shall, at the instruction of Parent, postpone or adjourn the Shareholders Meeting if there are not sufficient affirmative votes in person or by proxy at such meeting to adopt this Agreement to allow reasonable time for the solicitation of proxies for purposes of obtaining the Shareholder Approval. In no event will the record date of the Shareholders Meeting be changed without Parent’s prior written consent (which consent shall not be unreasonably withheld, conditioned or delayed); provided, however, that the Company may change the record date of the Shareholders Meeting without prior written consent of Parent in the event that (1) supplemental or amended disclosure is required to be disseminated to shareholders, the meeting is postponed or adjourned, in accordance with this Section 5.01(c) or (2) the Company postpones the Shareholders Meeting at the instruction of Parent and, in either case, as a result, the initial record date fixed by the Company Board is more than 60 days before the date of the subsequent meeting. The notice of such Shareholders Meeting shall state that a resolution to adopt this Agreement will be considered at the Shareholders Meeting. Except to the extent an Adverse Recommendation Change expressly permitted by Section 4.02(c) or Section 4.02(d) has been effected, (A) the Company Board shall include the Company Board Recommendation in the Proxy Statement and (B) the Company shall use its reasonable best efforts to solicit votes of the Company Shareholders in favor of obtaining the Shareholder Approval. The Company shall provide updates to Parent with respect to the proxy solicitation for the Shareholders Meeting (including interim results) as reasonably requested by Parent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 71,
+            "text": "Section 5.01 Preparation of the Proxy Statement; Shareholders Meeting.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "4d7fbae2132736b6c58b6c23de6f2adfa7daf07d195159d68a4ac3b204d21d89",
+    "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "registry_substrate": {
+      "schema_version": "RESOLUTION_REGISTRY_SUBSTRATE_MANIFEST/V1",
+      "modules": [
+        {
+          "name": "materiality-qualifier",
+          "version": "RESOLUTION_MATERIALITY_QUALIFIER_REGISTRY/V1",
+          "digest": "sha256:6368129c33917101e97979baa1836e222894af0fe4ed98244ded61c4a7802515"
+        },
+        {
+          "name": "closing-condition-kinds",
+          "version": "RESOLUTION_CLOSING_CONDITION_KINDS_REGISTRY/V1",
+          "digest": "sha256:66bb6592c2f0c21125df9b12a03991aebbe5ca1832bacfb427eadd2df2327efc"
+        },
+        {
+          "name": "general-covenant",
+          "version": "RESOLUTION_GENERAL_COVENANT_REGISTRY/V1",
+          "digest": "sha256:c10453c1b9f700ed7962b3c3f66a1560dcbbbe42aa41692113097a67fb903737"
+        },
+        {
+          "name": "material-contract",
+          "version": "RESOLUTION_MATERIAL_CONTRACT_REGISTRY/V1",
+          "digest": "sha256:85159bed1f96102ea00f2f2acc57e8336c6901797f91c2345a357dc923528d9e"
+        },
+        {
+          "name": "interim-operating",
+          "version": "RESOLUTION_INTERIM_OPERATING_REGISTRY/V1",
+          "digest": "sha256:77e80a8cca7ab4277e74181ef6ea2f0a5410b75d96ad9ae984b7653f5265efae"
+        },
+        {
+          "name": "party-capacity",
+          "version": "RESOLUTION_PARTY_CAPACITY_REGISTRY/V1",
+          "digest": "sha256:1b089c7a6cf30f540043352234cb4109fe27013a554423c8d3ecd652272db202"
+        },
+        {
+          "name": "representation-topic",
+          "version": "REPRESENTATION_TOPIC_REGISTRY/V1",
+          "digest": "sha256:2240a6cfa6ac63d3fbf6a96afce185aed40a1d9919f2437b85a844aa996e1f28"
+        }
+      ],
+      "preserved_v1_collisions": [
+        {
+          "path": "UNDISCLOSED_LIABILITIES_EXCEPTION_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not reasonably be expected to have an MAE",
+          "v1_only": true,
+          "no_delete": true
+        },
+        {
+          "path": "MATERIALITY_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not, individually or in aggregate, have MAE",
+          "v1_only": true,
+          "no_delete": true
+        }
+      ]
+    },
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 3,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 14,
+      "resolved": 3,
+      "auto_pass": 0,
+      "review_queue": 9,
+      "open_world": 5,
+      "residuals": 0,
+      "provisions": 2,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "55029eb5f3b2dac49632064beb91490c1a7ff945feade042be6555c4a748f241"
+  }
+}

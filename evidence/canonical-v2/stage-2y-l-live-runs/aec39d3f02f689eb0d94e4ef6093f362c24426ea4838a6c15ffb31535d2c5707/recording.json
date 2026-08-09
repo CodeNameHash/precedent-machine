@@ -1,0 +1,26 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RUN/V3",
+  "model": "TERRA_MEDIUM",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "provider_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "call_count": 1,
+  "calls": [
+    {
+      "request_key": "8293fa45aacdc0ff42e1ece40837ebbf774f6c28aa7599c6f49f124b656aa35d",
+      "request_identity_version": "SYSTEM_AND_MESSAGES/V1",
+      "request_system": [
+        {
+          "type": "text",
+          "text": "You are a JSON extraction engine. Output ONLY the requested valid JSON. Do not use tools or inspect files. Use only the source text in the request. No explanation, no commentary, no markdown fences, no reasoning — JSON only."
+        }
+      ],
+      "request_messages": [
+        {
+          "role": "user",
+          "content": "GOVERNED SECTION REFERENCE: 6.19\n\nEvery emitted section_reference must equal \"6.19\" exactly. Do not use a relative subsection label and do not add a child reference.\n\nQUOTE FIDELITY: Every quote must be one contiguous byte-identical substring of SOURCE TEXT. Preserve punctuation exactly. Do not complete, shorten, normalise, or re-punctuate a quote. Omit the assertion if you cannot copy its quote exactly.\n\nExtract positive financing-covenant facts only. Copy quotes exactly. Split each fact. Do not infer an absent financing condition. Only set financing_kind when the quote expressly names the matching kind: DEBT for Debt Financing, EQUITY for Equity Financing, or DEBT_AND_EQUITY for both. Otherwise use null. Do not use UNSPECIFIED. Use PAYOFF_LEAD_TIME only with an express numeric advance day count. Use OBTAIN_EFFORTS only for an express effort to obtain financing. Use COOPERATION_GRANT only for an express cooperation duty. Use NO_FINANCING_CONDITION_ACK only for express no-condition language. Use MARKETING_PERIOD_LENGTH only for an express numeric Marketing Period. Bare payoff or furnishing limbs belong in open_world_candidates. Keep fees, specific performance and debt baskets open world. For a Marketing Period, quote only the first-period length limb. Preserve alternative-financing, lender-arrangement, market-flex, marketing-period and reimbursement or indemnity mechanisms in financing_mechanics as exact evidence. The surface label routes evidence only and is not a governed legal code.\n\nRESPONSE SHAPE:\n\n{\"financing_assertions\":[{\"section_reference\":\"<verbatim>\",\"assertion_kind\":\"OBTAIN_EFFORTS | COOPERATION_GRANT | NO_FINANCING_CONDITION_ACK | PAYOFF_LEAD_TIME | MARKETING_PERIOD_LENGTH\",\"financing_kind\":\"DEBT | EQUITY | DEBT_AND_EQUITY | null\",\"standard_code\":\"REASONABLE_BEST_EFFORTS | COMMERCIALLY_REASONABLE_EFFORTS | null\",\"obligor\":\"<verbatim or null>\",\"day_kind\":\"CALENDAR | BUSINESS | null\",\"delivery_stage\":\"FINAL | DRAFT | null\",\"deliverable_term\":\"<verbatim or null>\",\"marketing_term\":\"<verbatim or null>\",\"quote\":\"<one exact fact>\"}],\"financing_mechanics\":[{\"surface\":\"ALTERNATIVE_FINANCING | LENDER_ARRANGEMENT | MARKET_FLEX | MARKETING_PERIOD | REIMBURSEMENT_OR_INDEMNITY\",\"quote\":\"<one verbatim mechanism>\",\"detail\":\"<factual description only>\"}],\"open_world_candidates\":[{\"observed_quote\":\"<verbatim>\",\"why_unmapped\":\"<brief>\",\"nearest_concept\":null}]}\n\nSOURCE TEXT:\n\n6.19 Repaid Indebtedness. The Company shall use reasonable best efforts to deliver Payoff Deliverables with respect to the Repaid Indebtedness (giving due regard to local market practice in connection with the repayment in full and termination of commitments of a debt facility in the applicable jurisdiction), at least one Business Day prior to the Closing.\n"
+        }
+      ],
+      "raw_response_text": "{\"financing_assertions\":[{\"section_reference\":\"6.19\",\"assertion_kind\":\"OBTAIN_EFFORTS\",\"financing_kind\":null,\"standard_code\":\"REASONABLE_BEST_EFFORTS\",\"obligor\":\"The Company\",\"day_kind\":null,\"delivery_stage\":null,\"deliverable_term\":\"Payoff Deliverables\",\"marketing_term\":null,\"quote\":\"The Company shall use reasonable best efforts to deliver Payoff Deliverables with respect to the Repaid Indebtedness\"}],\"financing_mechanics\":[],\"open_world_candidates\":[{\"observed_quote\":\"at least one Business Day prior to the Closing\",\"why_unmapped\":\"Express lead time applies to delivery of payoff deliverables, not a financing covenant code.\",\"nearest_concept\":null}]}"
+    }
+  ]
+}

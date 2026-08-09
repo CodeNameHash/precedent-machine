@@ -1,0 +1,64 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "topbuild",
+  "deal_label": "QXO, Inc. / TopBuild Corp.",
+  "section_family": "PROXY_MEETING",
+  "purpose": "General extraction run: family PROXY_MEETING on deal topbuild.",
+  "section_references": [
+    "4.5"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "4.5",
+      "family_id": "PROXY_MEETING"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV42",
+  "prompt_id": "native-producer-proxy-meeting/v1",
+  "prompt_version": 2,
+  "agreement_date": "2026-04-18",
+  "requested_model_profile": "TERRA_MEDIUM",
+  "requested_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "requested_models": [
+    "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM"
+  ],
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-09T21:02:16.295Z",
+  "total_elapsed_ms": 74472,
+  "extraction_wall_clock_ms": 70206,
+  "replay": null,
+  "replay_eligibility": null,
+  "recorded_to": "recording.json",
+  "code_provenance": {
+    "commit": "2b4c668b23de4a5a4678728b903ca10c7792e806",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 1,
+  "run_receipt_id": "a4f7e9640082c421932c602dc0d1ed44c103d5e4bef2a7f19733c64a14944557",
+  "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+  "source_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+  "publication_gate_mode": "INERT_WITHHELD",
+  "publication_dispositions": {
+    "content_id": "0f6a7786d7b5fd1167092a104b19345ff2281667591e7c27e15a0182a092fb03",
+    "count": 11
+  },
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 1,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

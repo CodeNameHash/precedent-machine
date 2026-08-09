@@ -1,0 +1,246 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "7a6be111e19919b9aa66f7b24c0d9da6380579b5d0c296dd67232888aae40026",
+  "review_queue": [
+    {
+      "section_reference": "7.3",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+      "concept_key": "COND-S-CERT",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "159ae1d3b815ae95099f2de5dae403d2db843acfb86372bd2881b0d4bbb4f605",
+      "closure_id": "32a48654a25d1b7eddf42f3acb3f9801b6b1b5e166732efc19f5ba224fb755cb",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "7ee0eaf591af8c6c6dbf0ad266f9dab1239a1a42b750aa41e7722e890256f3f0",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "4c03759427bc175f18c10a3265f34b7347da24ad0c96d7a94e335a2e81b228c5",
+          "document_ordinal": 0,
+          "absolute_start": 3463,
+          "absolute_end": 3771,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company will have received a certificate of the Buyer Parties, validly executed for and on behalf of the Buyer Parties and in the respective names of the Buyer Parties by a duly authorized officer thereof, certifying that the conditions set forth in Section 7.3(a) and Section 7.3(b) have been satisfied.",
+      "attachment_position": null,
+      "concept_family": "COND-S-CERT",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 3437,
+          "end_byte": 3777
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 3437,
+            "end_byte": 3777,
+            "text": " Officer’s Certificate. The Company will have received a certificate of the Buyer Parties, validly executed for and on behalf of the Buyer Parties and in the respective names of the Buyer Parties by a duly authorized officer thereof, certifying that the conditions set forth in Section 7.3(a) and Section 7.3(b) have been satisfied.\n-78-\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 308,
+            "text": "7.3 Conditions to the Obligations of the Company to Effect the Merger. The obligations of the Company to consummate the Merger are subject to the satisfaction or waiver (where permissible pursuant to applicable law) of each of the following conditions, any of which may be waived exclusively by the Company:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3(b)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "OBLIGOR_REF_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Buyer Parties will have performed and complied in all material respects with all covenants, obligations and conditions of this Agreement required to be performed and complied with by the Buyer Parties at or prior to the Closing.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a1c8a237e521693de8d661276392c713d6deabb6eebf2609f4fbdd497f2924bf",
+      "closure_id": "85a4a8b0124944c8efc9e4eb4fb01fc78cdd15388ca16832c949fa9e1ef8a096",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0f354f8225c062eaee3c038b37fafca5ef9222f6145de63899f296384f5702f3",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "add2d9f88437422a06a148434fffd29bf7ab61755f2535c4803063a31d904cf9",
+          "document_ordinal": 0,
+          "absolute_start": 3201,
+          "absolute_end": 3433,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Buyer Parties will have performed and complied in all material respects with all covenants, obligations and conditions of this Agreement required to be performed and complied with by the Buyer Parties at or prior to the Closing.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 3151,
+          "end_byte": 3434
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 3151,
+            "end_byte": 3434,
+            "text": " Performance of Obligations of the Buyer Parties. The Buyer Parties will have performed and complied in all material respects with all covenants, obligations and conditions of this Agreement required to be performed and complied with by the Buyer Parties at or prior to the Closing.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 308,
+            "text": "7.3 Conditions to the Obligations of the Company to Effect the Merger. The obligations of the Company to consummate the Merger are subject to the satisfaction or waiver (where permissible pursuant to applicable law) of each of the following conditions, any of which may be waived exclusively by the Company:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3(a)(iii)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "REP_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The representations and warranties of the Buyer Parties set forth in Section 4.15 will be true and correct in all respects as of the date hereof and as of the Closing Date as if made and at and as of the Closing Date, except for any inaccuracies that are de minimis in nature and amount.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "c9f9e1604c8a1f6d5228422e33ddcea2b89b1b0b594ffd7eab87a8991f2fb88a",
+      "closure_id": "d6b681ca1461908003a4c13ff28b7260574fb49c7946bd7cd13a3aeaf41b3045",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b39cf5bfd625d5b50eba20ac1810fb8d269838a312f81c7feac0a56b5ef2a9e8",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "42c4fde222dd270fcf369443b40522483b974c9a5573228580ef7e849670aff2",
+          "document_ordinal": 0,
+          "absolute_start": 2860,
+          "absolute_end": 3147,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The representations and warranties of the Buyer Parties set forth in Section 4.15 will be true and correct in all respects as of the date hereof and as of the Closing Date as if made and at and as of the Closing Date, except for any inaccuracies that are de minimis in nature and amount.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 311,
+          "end_byte": 3148
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 311,
+            "end_byte": 3148,
+            "text": " Representations and Warranties.\n(i) Other than the representations and warranties set forth in Section 4.14(c) and Section 4.15, the representations and warranties of the Buyer Parties set forth in this Agreement will be true and correct on and as of the Closing Date with the same force and effect as if made on and as of such date, except for (i) any failure to be so true and correct that would not, individually or in the aggregate, prevent or materially delay the consummation of the Merger or the ability of the Buyer Parties to fully perform their respective covenants and obligations pursuant to this Agreement; and (ii) those representations and warranties that address matters only as of a particular date, which representations will have been true and correct as of such particular date, except for any failure to be so true and correct that would not, individually or in the aggregate, prevent or materially delay the consummation of the Merger or the ability of the Buyer Parties to fully perform their respective covenants and obligations pursuant to this Agreement.\n(ii) The representations and warranties of the Buyer Parties set forth in Section 4.14(c) will be true and correct in all material respects as of the date hereof and as of the Closing Date as if made at and as of the Closing Date, other than to the extent the failure of such representations and warranties to be true and correct as of the Closing (A) is a result of a change in applicable law after the date of this Agreement, (B) does not cause the Merger to fail to qualify for the Intended Tax Treatment, it being understood and agreed that such failure of such representations and warranties to be true and correct as of the Closing will not be considered to cause the Merger to fail to so qualify if Paul, Weiss, Rifkind, Wharton & Garrison LLP opines that the Merger “should” qualify for the Intended Tax Treatment based on customary Tax representation letters which shall be delivered by Parent and the Company which are satisfactory to such counsel, it being further understood that if Parent proposes an alternative structure that could be utilized in lieu of the current transaction structure that leaves all of the Company’s stockholders in substantially the same economic and tax position had the Merger qualified for the Intended Tax Treatment, Parent and the Company shall use reasonable best efforts to implement such alternative structure or (C) is a result of any action taken by the Company, its Affiliates or the Company Stockholders.\n(iii) The representations and warranties of the Buyer Parties set forth in Section 4.15 will be true and correct in all respects as of the date hereof and as of the Closing Date as if made and at and as of the Closing Date, except for any inaccuracies that are de minimis in nature and amount.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 308,
+            "text": "7.3 Conditions to the Obligations of the Company to Effect the Merger. The obligations of the Company to consummate the Merger are subject to the satisfaction or waiver (where permissible pursuant to applicable law) of each of the following conditions, any of which may be waived exclusively by the Company:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3(a)(ii)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "REP_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The representations and warranties of the Buyer Parties set forth in Section 4.14(c) will be true and correct in all material respects as of the date hereof and as of the Closing Date as if made at and as of the Closing Date",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "c71bfb9a3ffcdb48b0ac4c899be1f1fce0ba785d66a20c2e8fe85e184b8e9a2b",
+      "closure_id": "fb11b62193224eb46b117d6ed7e7fa8f7c3dc72671aeb7384f9bb5895ac64245",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e6f1eaccbb5492d8dee9f0e8e03807656820438d039f0af4a8b64f0e163c06b8",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "6fb3ee24846d15eee9e2583405caa0a792cd16473c8545adef34592c31ebdcbe",
+          "document_ordinal": 0,
+          "absolute_start": 1398,
+          "absolute_end": 1622,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The representations and warranties of the Buyer Parties set forth in Section 4.14(c) will be true and correct in all material respects as of the date hereof and as of the Closing Date as if made at and as of the Closing Date",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 311,
+          "end_byte": 3148
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 311,
+            "end_byte": 3148,
+            "text": " Representations and Warranties.\n(i) Other than the representations and warranties set forth in Section 4.14(c) and Section 4.15, the representations and warranties of the Buyer Parties set forth in this Agreement will be true and correct on and as of the Closing Date with the same force and effect as if made on and as of such date, except for (i) any failure to be so true and correct that would not, individually or in the aggregate, prevent or materially delay the consummation of the Merger or the ability of the Buyer Parties to fully perform their respective covenants and obligations pursuant to this Agreement; and (ii) those representations and warranties that address matters only as of a particular date, which representations will have been true and correct as of such particular date, except for any failure to be so true and correct that would not, individually or in the aggregate, prevent or materially delay the consummation of the Merger or the ability of the Buyer Parties to fully perform their respective covenants and obligations pursuant to this Agreement.\n(ii) The representations and warranties of the Buyer Parties set forth in Section 4.14(c) will be true and correct in all material respects as of the date hereof and as of the Closing Date as if made at and as of the Closing Date, other than to the extent the failure of such representations and warranties to be true and correct as of the Closing (A) is a result of a change in applicable law after the date of this Agreement, (B) does not cause the Merger to fail to qualify for the Intended Tax Treatment, it being understood and agreed that such failure of such representations and warranties to be true and correct as of the Closing will not be considered to cause the Merger to fail to so qualify if Paul, Weiss, Rifkind, Wharton & Garrison LLP opines that the Merger “should” qualify for the Intended Tax Treatment based on customary Tax representation letters which shall be delivered by Parent and the Company which are satisfactory to such counsel, it being further understood that if Parent proposes an alternative structure that could be utilized in lieu of the current transaction structure that leaves all of the Company’s stockholders in substantially the same economic and tax position had the Merger qualified for the Intended Tax Treatment, Parent and the Company shall use reasonable best efforts to implement such alternative structure or (C) is a result of any action taken by the Company, its Affiliates or the Company Stockholders.\n(iii) The representations and warranties of the Buyer Parties set forth in Section 4.15 will be true and correct in all respects as of the date hereof and as of the Closing Date as if made and at and as of the Closing Date, except for any inaccuracies that are de minimis in nature and amount.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 308,
+            "text": "7.3 Conditions to the Obligations of the Company to Effect the Merger. The obligations of the Company to consummate the Merger are subject to the satisfaction or waiver (where permissible pursuant to applicable law) of each of the following conditions, any of which may be waived exclusively by the Company:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "3843f9e16bf4d8c1aab101ec2e0af4fc75581d47737104ebd1b501f55dddc855"
+}

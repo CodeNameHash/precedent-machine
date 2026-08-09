@@ -1,0 +1,64 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "metsera",
+  "deal_label": "Pfizer Inc. / Metsera, Inc.",
+  "section_family": "CLOSING_CONDITIONS",
+  "purpose": "General extraction run: family CLOSING_CONDITIONS on deal metsera.",
+  "section_references": [
+    "7.03"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "7.03",
+      "family_id": "CLOSING_CONDITIONS"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV42",
+  "prompt_id": "native-producer-closing-conditions/v3",
+  "prompt_version": 5,
+  "agreement_date": "2025-09-21",
+  "requested_model_profile": "TERRA_MEDIUM",
+  "requested_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "requested_models": [
+    "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM"
+  ],
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-09T20:57:44.962Z",
+  "total_elapsed_ms": 35360,
+  "extraction_wall_clock_ms": 32845,
+  "replay": null,
+  "replay_eligibility": null,
+  "recorded_to": "recording.json",
+  "code_provenance": {
+    "commit": "64ede5c576d1fefb1182dec33cd2d411192cb508",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 1,
+  "run_receipt_id": "0143f7efd3c84586f1254f2bb7de076b13f5a4d69d68425ff53d935efe185a67",
+  "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+  "source_sha256": "4ac7a2b193c291ca692fb1b5f082a245d02474c7db3136bfcebaf5bd7b686ca3",
+  "publication_gate_mode": "INERT_WITHHELD",
+  "publication_dispositions": {
+    "content_id": "23d82fe2c741f474d4b479bf29f43a33c624a80f3b81f64e8fd46d43a27d44b7",
+    "count": 2
+  },
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 1,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

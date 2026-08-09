@@ -1,0 +1,404 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "dbf1e5fc5d4ee3d3e83ab396e7e80302fe9337bcde6c9af2dcabfc201a0dfe1a",
+  "review_queue": [
+    {
+      "section_reference": "5.2",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-B-REP",
+      "reasons": [],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c003ba3a56dc1c2e010a675ce09ef563d952612638b1f651c3be088fbdf2fac8",
+      "closure_id": "32f210b5926b2fed2c8cf182211daae76bbc541e0cc7cbb964782927d277fcdd",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e3904fd581c613e6f3032cd1b3d4e6b7be9d7117f35601be1a447ba51f2fbb87",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "1d61f7c2aa31b8d208cc2471af6a9bfb4a93f2cbe34aee8f5796ace275e59d45",
+          "document_ordinal": 0,
+          "absolute_start": 1716,
+          "absolute_end": 2299,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "any of the other representations and warranties of the Company set forth in this Agreement (other than those listed in the preceding clauses (A), (B) and (C)) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date, except where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Company Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect;",
+      "attachment_position": null,
+      "concept_family": "COND-B-REP",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.ii.D",
+          "depth": 3,
+          "start_byte": 1715,
+          "end_byte": 2836
+        },
+        "chain": [
+          {
+            "path": "a.ii.D",
+            "start_byte": 1715,
+            "end_byte": 2836,
+            "text": " any of the other representations and warranties of the Company set forth in this Agreement (other than those listed in the preceding clauses (A), (B) and (C)) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date, except where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Company Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect; provided, however, that, with respect to clauses (A), (B), (C) and (D) above, representations and warranties that are made as of a particular date or period shall be true and correct (in the manner set forth in clause (A), (B), (C) or (D), as applicable) only as of such date or period. For purposes of this Agreement, “De Minimis Inaccuracies” means any inaccuracies that individually or in the aggregate are de minimis relative to the total fully diluted equity capitalization of the Company or Parent, as the case may be; and\n95\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 329,
+            "text": "5.2 Additional Conditions to the Obligations of Parent, Titanium Merger Sub and Forward Merger Sub. The obligations of Parent, Titanium Merger Sub and Forward Merger Sub to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.2",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "COVENANT_COMPLIANCE_STANDARD",
+      "concept_key": "COND-COV",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d7a1a17487f2291947ae5fa88f01d7b1ba0bbf9e4a8991bedc1ba81debe1266e",
+      "closure_id": "37fee51bd9d1e1d864070353a7c05e0c9b40c8427d89ab38158b1dcc83483eea",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "d7c32c0cc3c5e839285163b1883f7fe24fcf46620f3a298eef52d00628d5624b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "ac9ff0c5907ff98da29bc568413846552ed7e5d7bf8243084f8d0d6269b5d749",
+          "document_ordinal": 0,
+          "absolute_start": 337,
+          "absolute_end": 494,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company shall have performed in all material respects all of its obligations hereunder required to be performed by it as of or prior to the Closing Date;",
+      "attachment_position": null,
+      "concept_family": "COND-COV",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.i",
+          "depth": 2,
+          "start_byte": 336,
+          "end_byte": 495
+        },
+        "chain": [
+          {
+            "path": "a.i",
+            "start_byte": 336,
+            "end_byte": 495,
+            "text": " The Company shall have performed in all material respects all of its obligations hereunder required to be performed by it as of or prior to the Closing Date;\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 329,
+            "text": "5.2 Additional Conditions to the Obligations of Parent, Titanium Merger Sub and Forward Merger Sub. The obligations of Parent, Titanium Merger Sub and Forward Merger Sub to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.2",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-B-REP",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6a07aa997628010565909ad2a8259e246616c84ca0a448a6b30448551349e60d",
+      "closure_id": "4b11b8cecc9f026f0f8c102ce13deb255346fd5266e3b06a7049fa5cfde3eb99",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "cd90c15630269c259b2e9009779da2525a61d342e98ef56ca1461dc97907b8ba",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "32511d49773da599778ab9ae9e28a26754e21efa3c8f0bc6f1cbeb7193cd0bc9",
+          "document_ordinal": 0,
+          "absolute_start": 783,
+          "absolute_end": 1080,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the representations and warranties of the Company set forth in Section 3.1(b)(i) and Section 3.1(b)(iii) (Capital Structure) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date except for De Minimis Inaccuracies",
+      "attachment_position": null,
+      "concept_family": "COND-B-REP",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.ii.B",
+          "depth": 3,
+          "start_byte": 782,
+          "end_byte": 1082
+        },
+        "chain": [
+          {
+            "path": "a.ii.B",
+            "start_byte": 782,
+            "end_byte": 1082,
+            "text": " the representations and warranties of the Company set forth in Section ‎3.1(b)(i) and Section ‎3.1(b)(iii) (Capital Structure) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date except for De Minimis Inaccuracies, "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 329,
+            "text": "5.2 Additional Conditions to the Obligations of Parent, Titanium Merger Sub and Forward Merger Sub. The obligations of Parent, Titanium Merger Sub and Forward Merger Sub to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.2",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-B-REP",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "b685d5ea484ff80839a453b80c538fe4d1964f42c7ee02d4a5a19a1e96c91dbf",
+      "closure_id": "4b25ce34d1e2a4cb1d8afc33e1d0f151dea46b6a67d75ec2f47d7d0718e4129d",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "7a1d2c1148a4c5f97a71897658d7daf038ec31a25068e7616b3b246eca2a983b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "e4bde7c53f963841f848f01408e2a00042a18b34fea4c76e1a34689530129647",
+          "document_ordinal": 0,
+          "absolute_start": 1086,
+          "absolute_end": 1707,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the representations and warranties of the Company set forth in Section 3.1(a) (Organization, Good Standing and Qualification), Section 3.1(b) (Capital Structure) (other than Section 3.1(b)(i) and Section 3.1(b)(iii) thereof), Section 3.1(c) (Corporate Authority and Approval) and Section 3.1(s) (Brokers and Finders) shall be true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Company Material Adverse Effect”) in all material respects at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date",
+      "attachment_position": null,
+      "concept_family": "COND-B-REP",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.ii.C",
+          "depth": 3,
+          "start_byte": 1085,
+          "end_byte": 1712
+        },
+        "chain": [
+          {
+            "path": "a.ii.C",
+            "start_byte": 1085,
+            "end_byte": 1712,
+            "text": " the representations and warranties of the Company set forth in Section ‎3.1(a) (Organization, Good Standing and Qualification), Section ‎3.1(b) (Capital Structure) (other than Section ‎3.1(b)(i) and Section ‎3.1(b)(iii) thereof), Section ‎3.1(c) (Corporate Authority and Approval) and Section ‎3.1(s) (Brokers and Finders) shall be true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Company Material Adverse Effect”) in all material respects at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date and "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 329,
+            "text": "5.2 Additional Conditions to the Obligations of Parent, Titanium Merger Sub and Forward Merger Sub. The obligations of Parent, Titanium Merger Sub and Forward Merger Sub to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.2",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-B-REP",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2cc7de69878f819b4f32923f08ab19f2e2ab147237857703c14cf7503af36dd2",
+      "closure_id": "58b6a4859d1ca5f7d0306825d44e16d8b8f58b756f1b0ac8619351d053056b0d",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "ba52995051b918a1ad66e2c35c38f1aeb47bc20b48f262765d4c99e3fda488ac",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "7225fa889f52b3e051303edb9b715580822267200e4d30ca8b883adfa8adf692",
+          "document_ordinal": 0,
+          "absolute_start": 504,
+          "absolute_end": 777,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the representations and warranties of the Company set forth in Section 3.1(f)(i)(B) (Absence of Certain Changes) shall be true and correct in all respects at and as of the date of this Agreement and at and as the Closing Date as though made at and as of the Closing Date",
+      "attachment_position": null,
+      "concept_family": "COND-B-REP",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.ii.A",
+          "depth": 3,
+          "start_byte": 503,
+          "end_byte": 779
+        },
+        "chain": [
+          {
+            "path": "a.ii.A",
+            "start_byte": 503,
+            "end_byte": 779,
+            "text": " the representations and warranties of the Company set forth in Section ‎3.1(f)(i)(B) (Absence of Certain Changes) shall be true and correct in all respects at and as of the date of this Agreement and at and as the Closing Date as though made at and as of the Closing Date, "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 329,
+            "text": "5.2 Additional Conditions to the Obligations of Parent, Titanium Merger Sub and Forward Merger Sub. The obligations of Parent, Titanium Merger Sub and Forward Merger Sub to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.2",
+      "source_citation": "5.2(a)(iii)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "No Company Material Adverse Effect shall have occurred since the date of this Agreement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "5a07ab874834c43796508cf9c632c9daafe89c78585026acb9a2a43fc13f262b",
+      "closure_id": "713365e5874c6c7d2dd54788fae04c03ca93ae99c771ca9fec8ec41e07915ba7",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "994aa2c92754de724fb761c2a37534048cb05d0b0abff6b171e074145f55ada6",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d05270673c685f0020e2597320b67f40ce055c98a4c76403353d12bd6bdcd269",
+          "document_ordinal": 0,
+          "absolute_start": 2842,
+          "absolute_end": 2930,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "No Company Material Adverse Effect shall have occurred since the date of this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.iii",
+          "depth": 2,
+          "start_byte": 2841,
+          "end_byte": 2931
+        },
+        "chain": [
+          {
+            "path": "a.iii",
+            "start_byte": 2841,
+            "end_byte": 2931,
+            "text": " No Company Material Adverse Effect shall have occurred since the date of this Agreement.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 329,
+            "text": "5.2 Additional Conditions to the Obligations of Parent, Titanium Merger Sub and Forward Merger Sub. The obligations of Parent, Titanium Merger Sub and Forward Merger Sub to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.2",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+      "concept_key": "COND-B-CERT",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "b9facd1dc2bda10a32db14b89c16e8c07fd3f5d6ca101b894c0835c69d84b9ec",
+      "closure_id": "75731a697251401deb316ec316d3d6abff6200345924b15a864084a2c0083a4c",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "63273f5901ce62ff4d981310d32d938b3e0f0dc3b3e6ef09f4cc4aebfff57984",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2be84b0cc3124ec04ef32a57dba463e9827f66b1d433cb8a2ab63452908bffe3",
+          "document_ordinal": 0,
+          "absolute_start": 2935,
+          "absolute_end": 3215,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Parent shall have received a certificate of the Company, executed on its behalf by an authorized officer of the Company, dated the Closing Date, certifying that the conditions set forth in Section 5.2(a)(i), Section 5.2(a)(ii) and Section 5.2(a)(iii) have been satisfied.",
+      "attachment_position": null,
+      "concept_family": "COND-B-CERT",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 2934,
+          "end_byte": 3216
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 2934,
+            "end_byte": 3216,
+            "text": " Parent shall have received a certificate of the Company, executed on its behalf by an authorized officer of the Company, dated the Closing Date, certifying that the conditions set forth in Section ‎5.2(a)(i), Section ‎5.2(a)(ii) and Section ‎5.2(a)(iii) have been satisfied.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 329,
+            "text": "5.2 Additional Conditions to the Obligations of Parent, Titanium Merger Sub and Forward Merger Sub. The obligations of Parent, Titanium Merger Sub and Forward Merger Sub to effect the Mergers are subject to the satisfaction or waiver at or prior to the Titanium Merger Effective Time of each of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "457b5254d469d83900bb3afeacb14f1c5dec20f44f216ef4f5a2abf536ba0a76"
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RUN/V3",
+  "model": "TERRA_MEDIUM",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "provider_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "call_count": 1,
+  "calls": [
+    {
+      "request_key": "c3c41b409b5b5df4eef5795a81ea5583b9a0ee7e6bb29688b43b0c2c661f82d3",
+      "request_identity_version": "SYSTEM_AND_MESSAGES/V1",
+      "request_system": [
+        {
+          "type": "text",
+          "text": "You are a JSON extraction engine. Output ONLY the requested valid JSON. Do not use tools or inspect files. Use only the source text in the request. No explanation, no commentary, no markdown fences, no reasoning — JSON only."
+        }
+      ],
+      "request_messages": [
+        {
+          "role": "user",
+          "content": "GOVERNED SECTION REFERENCE: 6.3\n\nEvery emitted section_reference must equal \"6.3\" exactly. Do not use a relative subsection label and do not add a child reference.\n\nQUOTE FIDELITY: Every quote must be one contiguous byte-identical substring of SOURCE TEXT. Preserve punctuation exactly. Do not complete, shorten, normalise, or re-punctuate a quote. Omit the assertion if you cannot copy its quote exactly.\n\nExtract only positive proxy-statement, stockholder-meeting and Parent or Merger Sub approval covenants. Copy every quote exactly. Split independent filing, mailing, record-date, broker-search and adjournment facts. Parent shareholder approval and Parent acting as Merger Sub's stockholder are different kinds and must never be merged. Store a quoted approval mechanism and timing separately. Never split a respectively-paired cap. Record-date and broker-search assertions are presence facts only; do not publish their timing direction or number. A qualitative timing phrase, including “as promptly as reasonably practicable”, has no governed day count or timing direction: preserve it in open_world_candidates, not a deadline or cap assertion. Adjournment reasons resolve only when the quote directly states quorum absence, insufficient votes, supplemental disclosure or legal requirement. A cross-reference-only reason stays open world. In bundled sections, do not extract antitrust, CVR, recommendation-change, vote-failure termination, closing-condition or tender-offer structure material. Schedule TO, Schedule 14D-9, offer commencement, acceptance/payment and stockholder-list mechanics belong to the merger-structure family. A tender-offer minimum condition belongs to closing conditions. When a kind, anchor, basis, reason, mechanism or party is uncertain, use open_world_candidates. Never assert an absence. Return JSON only.\n\n\n\nRESPONSE SHAPE:\n\n{\n  \"proxy_meeting_assertions\": [{\n    \"section_reference\":\"<verbatim>\",\n    \"assertion_kind\":\"FILING_DEADLINE | MAILING_DEADLINE | MEETING_DEADLINE | RECORD_DATE_ESTABLISHMENT | BROKER_SEARCH_OBLIGATION | ADJOURNMENT_COUNT_CAP | ADJOURNMENT_DURATION_CAP | ADJOURNMENT_REASON | ADJOURNMENT_CONTROL | ADJOURNMENT_CONSENT_OVERRIDE | RECOMMENDATION_INCLUSION | CONVENE_OBLIGATION | PARENT_APPROVAL | MERGER_SUB_APPROVAL\",\n    \"anchor_kind\":\"AGREEMENT_DATE | MAILING | SEC_CLEARANCE | null\",\n    \"day_kind\":\"CALENDAR | BUSINESS | null\", \"limit_basis\":\"PER_OCCASION | AGGREGATE | null\",\n    \"reason_kind\":\"QUORUM_ABSENT | INSUFFICIENT_VOTES | SUPPLEMENTAL_DISCLOSURE | LEGAL_REQUIREMENT | null\",\n    \"control_party\":\"<verbatim or null>\", \"consenting_party\":\"<verbatim or null>\", \"obligated_party\":\"<verbatim or null>\",\n    \"meeting_ref\":\"<verbatim or null>\", \"document_ref\":\"<verbatim or null>\",\n    \"adoption_mechanism\":\"SHAREHOLDER_VOTE | SOLE_HOLDER_WRITTEN_CONSENT | ALL_RECORD_HOLDERS_WRITTEN_CONSENT | SOLE_STOCKHOLDER_ADOPTION | WRITTEN_CONSENT | null\", \"adoption_timing\":\"<verbatim or null>\",\n    \"quote\":\"<one verbatim legal fact>\"\n  }], \"open_world_candidates\":[{\"observed_quote\":\"<verbatim>\",\"why_unmapped\":\"<brief>\",\"nearest_concept\":null}]\n}\n\nSOURCE TEXT:\n\n6.3 Written Consent. Immediately after the execution of this Agreement, in lieu of calling a meeting of the Company Stockholders, the Company shall use reasonable best efforts to obtain the Written Consent. Promptly following the receipt of the Written Consent, the Company will provide Parent with a copy of such Written Consent. In connection with the Written Consent, the Company shall take actions necessary or advisable to comply, and shall comply in all respects, with the DGCL, including Section 228 and Section 262 thereof, and the Charter and Bylaws of the Company.\n"
+        }
+      ],
+      "raw_response_text": "{\"proxy_meeting_assertions\":[],\"open_world_candidates\":[{\"observed_quote\":\"Immediately after the execution of this Agreement, in lieu of calling a meeting of the Company Stockholders, the Company shall use reasonable best efforts to obtain the Written Consent.\",\"why_unmapped\":\"Company consent mechanism and approval status are not defined in the source text.\",\"nearest_concept\":null}]}"
+    }
+  ]
+}

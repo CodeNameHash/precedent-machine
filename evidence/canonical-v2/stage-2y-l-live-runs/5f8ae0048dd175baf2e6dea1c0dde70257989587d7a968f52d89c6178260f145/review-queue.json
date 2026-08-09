@@ -1,0 +1,341 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "5fed662f258dac7bd3c1b39366aef722f141dc441bb8f1f27bc4ef7dd5a7a208",
+  "review_queue": [
+    {
+      "section_reference": "7.2",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-B-REP",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "374b5a5be22513984f22f54690b3519ee4d5c678bdd024073161920209b9e02a",
+      "closure_id": "91065cb8db065bb88c374ff344c9b8e9df17a4ac5eb8b0c611fb2630b06f91a3",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0372379042cc20ed8c99fbf64b62a270eb26cbfbc57a41e6cf4544ab65f36cd0",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c4137f1e266c881d8f1963ef074e2a72a4d4d49bd8353b4509485753b30e5fd4",
+          "document_ordinal": 0,
+          "absolute_start": 1774,
+          "absolute_end": 2587,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "all other representations and warranties of the Company set forth in Article IV shall have been true and correct as of the date of this Agreement and shall be true and correct as of the Closing Date, as though made on and as of the Closing Date (except that representations and warranties that speak as of a specified date or period of time shall have been true and correct only as of such date or period of time), except, in the case of this clause (iii), where the failure of such representations and warranties to be so true and correct (without regard to qualification or exceptions contained therein as to “materiality”, “in all material respects” or “Company Material Adverse Effect”) would not reasonably be expected to have, individually or in the aggregate, a Company Material Adverse Effect.",
+      "attachment_position": null,
+      "concept_family": "COND-B-REP",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COND-B-REP",
+          "pattern_id": "COND-B-REP:PHRASE:COMPANY_REPRESENTATIONS",
+          "start": 358,
+          "end": 403,
+          "excerpt": "arent, in whole or in part, to the extent permitted by applicable Law:\n-75-\n(a) Representations and Warranties of the Company. (i) The representations and warranties of the Company set forth in the first s",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COND-B-REP",
+          "pattern_id": "COND-B-REP:PHRASE:COMPANY_REPRESENTATIONS",
+          "start": 413,
+          "end": 458,
+          "excerpt": "applicable Law:\n-75-\n(a) Representations and Warranties of the Company. (i) The representations and warranties of the Company set forth in the first sentence of Section 4.1 (Organization, Standing and Powe",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 357,
+          "end_byte": 2588
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 357,
+            "end_byte": 2588,
+            "text": " Representations and Warranties of the Company. (i) The representations and warranties of the Company set forth in the first sentence of Section 4.1 (Organization, Standing and Power), Section 4.2(a) (Capital Structure), the third and fifth sentences of Section 4.2(b) (Capital Structure), Section 4.3(a) (Authority), and Section 4.6(a) (Absence of Certain Changes or Events) shall have been true and correct as of the date of this Agreement and shall be true and correct as of the Closing Date, as though made on and as of the Closing Date (except, with respect to Section 4.2(a) and the third and fifth sentences of Section 4.2(b), for any De Minimis Inaccuracies) (except that representations and warranties that speak as of a specified date or period of time shall have been true and correct only as of such date or period of time), (ii) all other representations and warranties of the Company set forth in Section 4.2(b) (Capital Structure) (except for the second sentence of Section 4.2(b)) shall have been true and correct in all material respects as of the date of this Agreement and shall be true and correct in all material respects as of the Closing Date, as though made on and as of the Closing Date (except that representations and warranties that speak as of a specified date or period of time shall have been true and correct in all material respects only as of such date or period of time), and (iii) all other representations and warranties of the Company set forth in Article IV shall have been true and correct as of the date of this Agreement and shall be true and correct as of the Closing Date, as though made on and as of the Closing Date (except that representations and warranties that speak as of a specified date or period of time shall have been true and correct only as of such date or period of time), except, in the case of this clause (iii), where the failure of such representations and warranties to be so true and correct (without regard to qualification or exceptions contained therein as to “materiality”, “in all material respects” or “Company Material Adverse Effect”) would not reasonably be expected to have, individually or in the aggregate, a Company Material Adverse Effect.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 354,
+            "text": "7.2 Additional Conditions to Obligations of Parent and Merger Sub. The obligations of Parent and Merger Sub to consummate the Merger are subject to the satisfaction at or prior to the Effective Time of the following conditions, any or all of which may be waived exclusively by Parent, in whole or in part, to the extent permitted by applicable Law:\n-75-\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.2",
+      "source_citation": "7.2(a)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "COVERED_SCOPE_REF_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The representations and warranties of the Company set forth in the first sentence of Section 4.1 (Organization, Standing and Power), Section 4.2(a) (Capital Structure), the third and fifth sentences of Section 4.2(b) (Capital Structure), Section 4.3(a) (Authority), and Section 4.6(a) (Absence of Certain Changes or Events) shall have been true and correct as of the date of this Agreement and shall be true and correct as of the Closing Date, as though made on and as of the Closing Date (except, with respect to Section 4.2(a) and the third and fifth sentences of Section 4.2(b), for any De Minimis Inaccuracies) (except that representations and warranties that speak as of a specified date or period of time shall have been true and correct only as of such date or period of time)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "55cda5086271301af45c3f0b3abad7a45de5b552ab1363eb76b54a8081c9f8e7",
+      "closure_id": "0a1185ebb13cdecdeccf39696e9f4a16ebff7eaef7952a4c3fd71aa9eefbb8a9",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "25269e629c48bf4dea08a41ea01494bd7ecc5e605be9e24e3c11692796045ea9",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "1e615bcfad91b1d7c7bedbbff69d3233c2f6bf496674702152e29adfe4151848",
+          "document_ordinal": 0,
+          "absolute_start": 409,
+          "absolute_end": 1192,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The representations and warranties of the Company set forth in the first sentence of Section 4.1 (Organization, Standing and Power), Section 4.2(a) (Capital Structure), the third and fifth sentences of Section 4.2(b) (Capital Structure), Section 4.3(a) (Authority), and Section 4.6(a) (Absence of Certain Changes or Events) shall have been true and correct as of the date of this Agreement and shall be true and correct as of the Closing Date, as though made on and as of the Closing Date (except, with respect to Section 4.2(a) and the third and fifth sentences of Section 4.2(b), for any De Minimis Inaccuracies) (except that representations and warranties that speak as of a specified date or period of time shall have been true and correct only as of such date or period of time)",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 357,
+          "end_byte": 2588
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 357,
+            "end_byte": 2588,
+            "text": " Representations and Warranties of the Company. (i) The representations and warranties of the Company set forth in the first sentence of Section 4.1 (Organization, Standing and Power), Section 4.2(a) (Capital Structure), the third and fifth sentences of Section 4.2(b) (Capital Structure), Section 4.3(a) (Authority), and Section 4.6(a) (Absence of Certain Changes or Events) shall have been true and correct as of the date of this Agreement and shall be true and correct as of the Closing Date, as though made on and as of the Closing Date (except, with respect to Section 4.2(a) and the third and fifth sentences of Section 4.2(b), for any De Minimis Inaccuracies) (except that representations and warranties that speak as of a specified date or period of time shall have been true and correct only as of such date or period of time), (ii) all other representations and warranties of the Company set forth in Section 4.2(b) (Capital Structure) (except for the second sentence of Section 4.2(b)) shall have been true and correct in all material respects as of the date of this Agreement and shall be true and correct in all material respects as of the Closing Date, as though made on and as of the Closing Date (except that representations and warranties that speak as of a specified date or period of time shall have been true and correct in all material respects only as of such date or period of time), and (iii) all other representations and warranties of the Company set forth in Article IV shall have been true and correct as of the date of this Agreement and shall be true and correct as of the Closing Date, as though made on and as of the Closing Date (except that representations and warranties that speak as of a specified date or period of time shall have been true and correct only as of such date or period of time), except, in the case of this clause (iii), where the failure of such representations and warranties to be so true and correct (without regard to qualification or exceptions contained therein as to “materiality”, “in all material respects” or “Company Material Adverse Effect”) would not reasonably be expected to have, individually or in the aggregate, a Company Material Adverse Effect.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 354,
+            "text": "7.2 Additional Conditions to Obligations of Parent and Merger Sub. The obligations of Parent and Merger Sub to consummate the Merger are subject to the satisfaction at or prior to the Effective Time of the following conditions, any or all of which may be waived exclusively by Parent, in whole or in part, to the extent permitted by applicable Law:\n-75-\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.2",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-B-REP",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4f67faec440aaed27fed03af0487a9ded5a2595f28e6b323412288e74546ae72",
+      "closure_id": "16df27f13f7ecda85d0f75b7b7b36add83a72c220bf54b4a81a20f1f93544454",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "12dc2f491f1d409fa7215dfc0839c101af5a738b8b9892a812d6f53b94e549c7",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "07c75d95d7aad44fb3d416d10cd407199ea39f271eba51c4609af2361968f115",
+          "document_ordinal": 0,
+          "absolute_start": 1199,
+          "absolute_end": 1762,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "all other representations and warranties of the Company set forth in Section 4.2(b) (Capital Structure) (except for the second sentence of Section 4.2(b)) shall have been true and correct in all material respects as of the date of this Agreement and shall be true and correct in all material respects as of the Closing Date, as though made on and as of the Closing Date (except that representations and warranties that speak as of a specified date or period of time shall have been true and correct in all material respects only as of such date or period of time)",
+      "attachment_position": null,
+      "concept_family": "COND-B-REP",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COND-B-REP",
+          "pattern_id": "COND-B-REP:PHRASE:COMPANY_REPRESENTATIONS",
+          "start": 358,
+          "end": 403,
+          "excerpt": "arent, in whole or in part, to the extent permitted by applicable Law:\n-75-\n(a) Representations and Warranties of the Company. (i) The representations and warranties of the Company set forth in the first s",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COND-B-REP",
+          "pattern_id": "COND-B-REP:PHRASE:COMPANY_REPRESENTATIONS",
+          "start": 413,
+          "end": 458,
+          "excerpt": "applicable Law:\n-75-\n(a) Representations and Warranties of the Company. (i) The representations and warranties of the Company set forth in the first sentence of Section 4.1 (Organization, Standing and Powe",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 357,
+          "end_byte": 2588
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 357,
+            "end_byte": 2588,
+            "text": " Representations and Warranties of the Company. (i) The representations and warranties of the Company set forth in the first sentence of Section 4.1 (Organization, Standing and Power), Section 4.2(a) (Capital Structure), the third and fifth sentences of Section 4.2(b) (Capital Structure), Section 4.3(a) (Authority), and Section 4.6(a) (Absence of Certain Changes or Events) shall have been true and correct as of the date of this Agreement and shall be true and correct as of the Closing Date, as though made on and as of the Closing Date (except, with respect to Section 4.2(a) and the third and fifth sentences of Section 4.2(b), for any De Minimis Inaccuracies) (except that representations and warranties that speak as of a specified date or period of time shall have been true and correct only as of such date or period of time), (ii) all other representations and warranties of the Company set forth in Section 4.2(b) (Capital Structure) (except for the second sentence of Section 4.2(b)) shall have been true and correct in all material respects as of the date of this Agreement and shall be true and correct in all material respects as of the Closing Date, as though made on and as of the Closing Date (except that representations and warranties that speak as of a specified date or period of time shall have been true and correct in all material respects only as of such date or period of time), and (iii) all other representations and warranties of the Company set forth in Article IV shall have been true and correct as of the date of this Agreement and shall be true and correct as of the Closing Date, as though made on and as of the Closing Date (except that representations and warranties that speak as of a specified date or period of time shall have been true and correct only as of such date or period of time), except, in the case of this clause (iii), where the failure of such representations and warranties to be so true and correct (without regard to qualification or exceptions contained therein as to “materiality”, “in all material respects” or “Company Material Adverse Effect”) would not reasonably be expected to have, individually or in the aggregate, a Company Material Adverse Effect.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 354,
+            "text": "7.2 Additional Conditions to Obligations of Parent and Merger Sub. The obligations of Parent and Merger Sub to consummate the Merger are subject to the satisfaction at or prior to the Effective Time of the following conditions, any or all of which may be waived exclusively by Parent, in whole or in part, to the extent permitted by applicable Law:\n-75-\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.2",
+      "source_citation": "7.2(c)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent shall have received a certificate of the Company signed by an executive officer of the Company, dated the Closing Date, confirming that the conditions in Sections 7.2(a) and (b) have been satisfied.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "1bc07f06459e01f1a3ea7717072f8b78899188baabe4bd5d923b37314108462e",
+      "closure_id": "d288874759b2017c5bb51f7d0ba447ae7d27cad1d915b6c30eb71d62e438c3eb",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "c00a26e2c94313fee8e719a440b2a11197ba41453f01edd8ac3bf9f5b2fea521",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "639de359ac85011506f7ae20e3c01c402d9c2c9e0be246b4d5f312a0f776ffc0",
+          "document_ordinal": 0,
+          "absolute_start": 2873,
+          "absolute_end": 3078,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Parent shall have received a certificate of the Company signed by an executive officer of the Company, dated the Closing Date, confirming that the conditions in Sections 7.2(a) and (b) have been satisfied.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 2848,
+          "end_byte": 3079
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 2848,
+            "end_byte": 3079,
+            "text": " Compliance Certificate. Parent shall have received a certificate of the Company signed by an executive officer of the Company, dated the Closing Date, confirming that the conditions in Sections 7.2(a) and (b) have been satisfied.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 354,
+            "text": "7.2 Additional Conditions to Obligations of Parent and Merger Sub. The obligations of Parent and Merger Sub to consummate the Merger are subject to the satisfaction at or prior to the Effective Time of the following conditions, any or all of which may be waived exclusively by Parent, in whole or in part, to the extent permitted by applicable Law:\n-75-\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.2",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "COVENANT_COMPLIANCE_STANDARD",
+      "concept_key": "COND-COV",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "13ce50f3f720cae4b0025d667aa9d24a68ddf0d44dcb260c4a48a427febd9392",
+      "closure_id": "f19ff3cdc5b1bac691d2a2042897f13d87c11e1aafd42f9c81100b5d13096adc",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "af78be558965ee494814440e58727539d384da1c9dff0908a5b4f882c41c06ab",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "6cc76535ac6dbee5aead3f2a2864f95a4dc8c40a1f928dbff93a4b975e0b15a1",
+          "document_ordinal": 0,
+          "absolute_start": 2635,
+          "absolute_end": 2844,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company shall have performed, or complied with, in all material respects all agreements and covenants required to be performed or complied with by it under this Agreement on or prior to the Effective Time.",
+      "attachment_position": null,
+      "concept_family": "COND-COV",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 2591,
+          "end_byte": 2845
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 2591,
+            "end_byte": 2845,
+            "text": " Performance of Obligations of the Company. The Company shall have performed, or complied with, in all material respects all agreements and covenants required to be performed or complied with by it under this Agreement on or prior to the Effective Time.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 354,
+            "text": "7.2 Additional Conditions to Obligations of Parent and Merger Sub. The obligations of Parent and Merger Sub to consummate the Merger are subject to the satisfaction at or prior to the Effective Time of the following conditions, any or all of which may be waived exclusively by Parent, in whole or in part, to the extent permitted by applicable Law:\n-75-\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "bc5de67b62c2dff051e66b388bf42b8f17d890621ffe88ac1bd2b305f91048f3"
+}

@@ -1,0 +1,831 @@
+{
+  "resolved": [
+    {
+      "section_reference": "6.03",
+      "source_citation": "6.03(b)",
+      "citation_context": {
+        "parent_section_reference": "6.03",
+        "child_section_reference": "6.03(b)",
+        "parent_chapeau_quote": "Section 6.03 Conditions to Obligation of the Company. The obligation of the Company to effect the Merger is further subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:",
+        "child_clause_quote": "(b) Performance of Obligations of Parent and Sub. Parent and Sub shall have performed in all material respects all obligations required to be performed by them under this Agreement at or prior to the Closing Date."
+      },
+      "governing_context_quote": "(b) Performance of Obligations of Parent and Sub. Parent and Sub shall have performed in all material respects all obligations required to be performed by them under this Agreement at or prior to the Closing Date.",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "COVENANT_COMPLIANCE_STANDARD",
+      "concept_key": "COND-COV",
+      "party": {
+        "role": "CONDITION_OBLIGOR",
+        "value": "Parent and Sub",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "266b15e89704968cc94b7c51196e00bd4ac4d0ebb774dbc59ef6b96c169daa86",
+        "canonical_text_id": "e2666a438a78125e141395f04e747e98ee7d64db7ad483a62383a22423c4f784",
+        "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+        "absolute_start": 222842,
+        "absolute_end": 224280,
+        "concept_key": "COND-COV",
+        "party": {
+          "role": "CONDITION_OBLIGOR",
+          "value": "Parent and Sub",
+          "capacity": "BUYER"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "e67853460ad520228a34107500121b4ea575c40acd5878722f38aca1e0b5d31c",
+        "provision_instance_id": "8eaa35e2f4b7b526c2a91684d12b76c30024367d739c2a0c11dcefdc7fbe5af0",
+        "closure_id": "533eaf2de47e93f9fad4cd52dc46b4a31005fadb1151ec3809277c68f7e0fbe3"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "48f00335b05bbd0324adf7027156ea1268c36a8915982a55845fe0d935d81466",
+        "claim_occurrence_id": "d79902abefcc9038e3f8ce5c1cf327a84d034eb2b065ad84f02c75288a68b183",
+        "subject_occurrence_id": "8eaa35e2f4b7b526c2a91684d12b76c30024367d739c2a0c11dcefdc7fbe5af0",
+        "claim_definition_key": "COVENANT_COMPLIANCE_STANDARD",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Parent and Sub shall have performed in all material respects all obligations required to be performed by them under this Agreement at or prior to the Closing Date.",
+        "canonical_value": "MAT_ALL_MATERIAL",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "075d1114df3cc9cb0444ffcb61997cd2cfd45896ea7932e9a99e5addf265133b"
+        ],
+        "attributes": {
+          "section_reference": "6.03",
+          "assertion_kind": "COVENANT_COMPLIANCE",
+          "condition_obligor": null,
+          "accuracy_standard": null,
+          "rep_side": null,
+          "covered_scope_ref": null,
+          "scrape_quote": null,
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": "MAT_ALL_MATERIAL",
+          "obligor_ref": "Parent and Sub",
+          "approval_kind": null,
+          "approval_definition_ref": null,
+          "s4_component": null,
+          "listing_venue_ref": null,
+          "certificate_side": null,
+          "certifying_party_ref": null,
+          "certified_condition_refs": [],
+          "certificate_relationship_status": null,
+          "causation_standard": null,
+          "breach_standard": null,
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "COVENANT_COMPLIANCE"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "075d1114df3cc9cb0444ffcb61997cd2cfd45896ea7932e9a99e5addf265133b",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "b2c075305e64e58359dd890d37b7dc6cc1150d09bed35f9b063456f1d8b3218e",
+            "document_ordinal": 0,
+            "absolute_start": 997,
+            "absolute_end": 1160,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "b1be7c9a2c4d2fadbeedd0f7a3c50e67a2419eb3946c554ffe2ae6deb69b57f5"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.03",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.03",
+          "normalized_citation": "6.03",
+          "derived_citation": "6.03(b)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "48f00335b05bbd0324adf7027156ea1268c36a8915982a55845fe0d935d81466",
+            "claim_occurrence_id": "d79902abefcc9038e3f8ce5c1cf327a84d034eb2b065ad84f02c75288a68b183",
+            "subject_occurrence_id": "8eaa35e2f4b7b526c2a91684d12b76c30024367d739c2a0c11dcefdc7fbe5af0",
+            "claim_definition_key": "COVENANT_COMPLIANCE_STANDARD",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Parent and Sub shall have performed in all material respects all obligations required to be performed by them under this Agreement at or prior to the Closing Date.",
+            "canonical_value": "MAT_ALL_MATERIAL",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "075d1114df3cc9cb0444ffcb61997cd2cfd45896ea7932e9a99e5addf265133b"
+            ],
+            "attributes": {
+              "section_reference": "6.03",
+              "assertion_kind": "COVENANT_COMPLIANCE",
+              "condition_obligor": null,
+              "accuracy_standard": null,
+              "rep_side": null,
+              "covered_scope_ref": null,
+              "scrape_quote": null,
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": "MAT_ALL_MATERIAL",
+              "obligor_ref": "Parent and Sub",
+              "approval_kind": null,
+              "approval_definition_ref": null,
+              "s4_component": null,
+              "listing_venue_ref": null,
+              "certificate_side": null,
+              "certifying_party_ref": null,
+              "certified_condition_refs": [],
+              "certificate_relationship_status": null,
+              "causation_standard": null,
+              "breach_standard": null,
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "COVENANT_COMPLIANCE"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "075d1114df3cc9cb0444ffcb61997cd2cfd45896ea7932e9a99e5addf265133b",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "b2c075305e64e58359dd890d37b7dc6cc1150d09bed35f9b063456f1d8b3218e",
+                "document_ordinal": 0,
+                "absolute_start": 997,
+                "absolute_end": 1160,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "b1be7c9a2c4d2fadbeedd0f7a3c50e67a2419eb3946c554ffe2ae6deb69b57f5"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "92a2dab1f1ff07392ea89ce0e6bdd6255d8b53f6bc2d32d17ea1615ed679c57b",
+            "producer_receipt_id": "abc13d1a27474c62edb52fd42c9328ad8d6dd56367d67aa8ae232a495f270047",
+            "governed_scope_digest": "1de3f5b1a0681e3ba0518b2c91a3f651df234bcf5a4d790b2706549a5dc6e848",
+            "extraction_provenance_id": "4365da72351731620ce94053e7bd6639ab8b96d84e11afa64feaeb9ed7307155"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 70,
+        "materiality_label": "CLOSING_CONDITIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.03",
+          "normalized_citation": "6.03",
+          "derived_citation": "6.03(b)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 950,
+          "end_byte": 1161
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 950,
+            "end_byte": 1161,
+            "text": " Performance of Obligations of Parent and Sub. Parent and Sub shall have performed in all material respects all obligations required to be performed by them under this Agreement at or prior to the Closing Date.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 259,
+            "text": "Section 6.03 Conditions to Obligation of the Company. The obligation of the Company to effect the Merger is further subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.03",
+      "source_citation": "6.03(c)",
+      "citation_context": {
+        "parent_section_reference": "6.03",
+        "child_section_reference": "6.03(c)",
+        "parent_chapeau_quote": "Section 6.03 Conditions to Obligation of the Company. The obligation of the Company to effect the Merger is further subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:",
+        "child_clause_quote": "(c) Officer’s Certificate. The Company shall have received a certificate signed on behalf of Parent by the Chief Executive Officer and the Chief Financial Officer of Parent, certifying that the conditions set forth in Section 6.03(a) and Section 6.03(b) have been satisfied."
+      },
+      "governing_context_quote": "(c) Officer’s Certificate. The Company shall have received a certificate signed on behalf of Parent by the Chief Executive Officer and the Chief Financial Officer of Parent, certifying that the conditions set forth in Section 6.03(a) and Section 6.03(b) have been satisfied.",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+      "concept_key": "COND-S-CERT",
+      "party": {
+        "role": "CERTIFYING_PARTY",
+        "value": "Parent",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "266b15e89704968cc94b7c51196e00bd4ac4d0ebb774dbc59ef6b96c169daa86",
+        "canonical_text_id": "e2666a438a78125e141395f04e747e98ee7d64db7ad483a62383a22423c4f784",
+        "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+        "absolute_start": 222842,
+        "absolute_end": 224280,
+        "concept_key": "COND-S-CERT",
+        "party": {
+          "role": "CERTIFYING_PARTY",
+          "value": "Parent",
+          "capacity": "BUYER"
+        },
+        "ordinal": 2,
+        "source_anchor_id": "e67853460ad520228a34107500121b4ea575c40acd5878722f38aca1e0b5d31c",
+        "provision_instance_id": "5e5de3df4b9edf2f2d9288d9aafde46b1a10686a57788f46c40aa98ae5f60335",
+        "closure_id": "45f97f15eeeb95e7c0d62d8cc053474dea414bb47ebcb1228d589ed9eaae30bf"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "357da53bfca2a9a5994d3389641307480c10d480f8e0019d46933c95aa059e1a",
+        "claim_occurrence_id": "af20d8a096c23a7fb0be679c1c5e961e561dbc7699e64f2b96c71e41d2953107",
+        "subject_occurrence_id": "5e5de3df4b9edf2f2d9288d9aafde46b1a10686a57788f46c40aa98ae5f60335",
+        "claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "The Company shall have received a certificate signed on behalf of Parent by the Chief Executive Officer and the Chief Financial Officer of Parent, certifying that the conditions set forth in Section 6.03(a) and Section 6.03(b) have been satisfied.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "3329b3b6ebddb4f90fea3aafe174230e4f44a3ed0fcebc229093c6d0b1bb0ad4"
+        ],
+        "attributes": {
+          "section_reference": "6.03",
+          "assertion_kind": "OFFICER_CERTIFICATE",
+          "condition_obligor": null,
+          "accuracy_standard": null,
+          "rep_side": null,
+          "covered_scope_ref": null,
+          "scrape_quote": null,
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": null,
+          "obligor_ref": null,
+          "approval_kind": null,
+          "approval_definition_ref": null,
+          "s4_component": null,
+          "listing_venue_ref": null,
+          "certificate_side": "BUYER_CERTIFICATE",
+          "certifying_party_ref": "Parent",
+          "certified_condition_refs": [
+            "Section 6.03(a)",
+            "Section 6.03(b)"
+          ],
+          "certificate_relationship_status": "VERBATIM_SECTION_REFERENCES",
+          "causation_standard": null,
+          "breach_standard": null,
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "OFFICER_CERTIFICATE"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "3329b3b6ebddb4f90fea3aafe174230e4f44a3ed0fcebc229093c6d0b1bb0ad4",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "7c4d4bf60d5c4b210353bd509a28794b6b89b6c727dc02b6bc15ee1b84fd4aae",
+            "document_ordinal": 0,
+            "absolute_start": 1190,
+            "absolute_end": 1437,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "90c242dccd1f0aac1d0881f6a2e07cde241e44d8fce0c776d283e468609740a1"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.03",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.03",
+          "normalized_citation": "6.03",
+          "derived_citation": "6.03(c)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "357da53bfca2a9a5994d3389641307480c10d480f8e0019d46933c95aa059e1a",
+            "claim_occurrence_id": "af20d8a096c23a7fb0be679c1c5e961e561dbc7699e64f2b96c71e41d2953107",
+            "subject_occurrence_id": "5e5de3df4b9edf2f2d9288d9aafde46b1a10686a57788f46c40aa98ae5f60335",
+            "claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "The Company shall have received a certificate signed on behalf of Parent by the Chief Executive Officer and the Chief Financial Officer of Parent, certifying that the conditions set forth in Section 6.03(a) and Section 6.03(b) have been satisfied.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "3329b3b6ebddb4f90fea3aafe174230e4f44a3ed0fcebc229093c6d0b1bb0ad4"
+            ],
+            "attributes": {
+              "section_reference": "6.03",
+              "assertion_kind": "OFFICER_CERTIFICATE",
+              "condition_obligor": null,
+              "accuracy_standard": null,
+              "rep_side": null,
+              "covered_scope_ref": null,
+              "scrape_quote": null,
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": null,
+              "obligor_ref": null,
+              "approval_kind": null,
+              "approval_definition_ref": null,
+              "s4_component": null,
+              "listing_venue_ref": null,
+              "certificate_side": "BUYER_CERTIFICATE",
+              "certifying_party_ref": "Parent",
+              "certified_condition_refs": [
+                "Section 6.03(a)",
+                "Section 6.03(b)"
+              ],
+              "certificate_relationship_status": "VERBATIM_SECTION_REFERENCES",
+              "causation_standard": null,
+              "breach_standard": null,
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "OFFICER_CERTIFICATE"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "3329b3b6ebddb4f90fea3aafe174230e4f44a3ed0fcebc229093c6d0b1bb0ad4",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "7c4d4bf60d5c4b210353bd509a28794b6b89b6c727dc02b6bc15ee1b84fd4aae",
+                "document_ordinal": 0,
+                "absolute_start": 1190,
+                "absolute_end": 1437,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "90c242dccd1f0aac1d0881f6a2e07cde241e44d8fce0c776d283e468609740a1"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "92a2dab1f1ff07392ea89ce0e6bdd6255d8b53f6bc2d32d17ea1615ed679c57b",
+            "producer_receipt_id": "abc13d1a27474c62edb52fd42c9328ad8d6dd56367d67aa8ae232a495f270047",
+            "governed_scope_digest": "1de3f5b1a0681e3ba0518b2c91a3f651df234bcf5a4d790b2706549a5dc6e848",
+            "extraction_provenance_id": "4365da72351731620ce94053e7bd6639ab8b96d84e11afa64feaeb9ed7307155"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [],
+        "materiality_rank": 70,
+        "materiality_label": "CLOSING_CONDITIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.03",
+          "normalized_citation": "6.03",
+          "derived_citation": "6.03(c)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 1164,
+          "end_byte": 1438
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 1164,
+            "end_byte": 1438,
+            "text": " Officer’s Certificate. The Company shall have received a certificate signed on behalf of Parent by the Chief Executive Officer and the Chief Financial Officer of Parent, certifying that the conditions set forth in Section 6.03(a) and Section 6.03(b) have been satisfied.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 259,
+            "text": "Section 6.03 Conditions to Obligation of the Company. The obligation of the Company to effect the Merger is further subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "6.03",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+      "concept_key": "COND-S-CERT",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "357da53bfca2a9a5994d3389641307480c10d480f8e0019d46933c95aa059e1a",
+      "closure_id": "90c242dccd1f0aac1d0881f6a2e07cde241e44d8fce0c776d283e468609740a1",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "3329b3b6ebddb4f90fea3aafe174230e4f44a3ed0fcebc229093c6d0b1bb0ad4",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "7c4d4bf60d5c4b210353bd509a28794b6b89b6c727dc02b6bc15ee1b84fd4aae",
+          "document_ordinal": 0,
+          "absolute_start": 1190,
+          "absolute_end": 1437,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company shall have received a certificate signed on behalf of Parent by the Chief Executive Officer and the Chief Financial Officer of Parent, certifying that the conditions set forth in Section 6.03(a) and Section 6.03(b) have been satisfied.",
+      "attachment_position": null,
+      "concept_family": "COND-S-CERT",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 1164,
+          "end_byte": 1438
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 1164,
+            "end_byte": 1438,
+            "text": " Officer’s Certificate. The Company shall have received a certificate signed on behalf of Parent by the Chief Executive Officer and the Chief Financial Officer of Parent, certifying that the conditions set forth in Section 6.03(a) and Section 6.03(b) have been satisfied.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 259,
+            "text": "Section 6.03 Conditions to Obligation of the Company. The obligation of the Company to effect the Merger is further subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.03",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "COVENANT_COMPLIANCE_STANDARD",
+      "concept_key": "COND-COV",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "48f00335b05bbd0324adf7027156ea1268c36a8915982a55845fe0d935d81466",
+      "closure_id": "b1be7c9a2c4d2fadbeedd0f7a3c50e67a2419eb3946c554ffe2ae6deb69b57f5",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "075d1114df3cc9cb0444ffcb61997cd2cfd45896ea7932e9a99e5addf265133b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b2c075305e64e58359dd890d37b7dc6cc1150d09bed35f9b063456f1d8b3218e",
+          "document_ordinal": 0,
+          "absolute_start": 997,
+          "absolute_end": 1160,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Parent and Sub shall have performed in all material respects all obligations required to be performed by them under this Agreement at or prior to the Closing Date.",
+      "attachment_position": null,
+      "concept_family": "COND-COV",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 950,
+          "end_byte": 1161
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 950,
+            "end_byte": 1161,
+            "text": " Performance of Obligations of Parent and Sub. Parent and Sub shall have performed in all material respects all obligations required to be performed by them under this Agreement at or prior to the Closing Date.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 259,
+            "text": "Section 6.03 Conditions to Obligation of the Company. The obligation of the Company to effect the Merger is further subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "6.03",
+      "source_citation": "6.03",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "The representations and warranties of Parent and Sub set forth in this Agreement shall be true and correct (disregarding all qualifications or limitations as to “material,” “materiality,” “Material Adverse Effect” and words of similar import set forth therein) as of date of this\n47\nAgreement and as of the Closing Date with the same effect as though made as of the Closing Date (except to the extent expressly made as of an earlier date, in which case as of such earlier date), except for any such failure to be true and correct that would not, individually or in the aggregate, prevent or materially delay the consummation of the Merger.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "The stated standard is “prevent or materially delay,” which is not a controlled BRING_DOWN_TIER accuracy standard.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "51d7eec9a5f038edf89bbf4b08bf331bd825228ee6cbaf5ff549b7ebf6c79b37",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "02536b1e8785664154119918335b9324a5a53d432768d6c91d6dce30dd9fa61d",
+          "document_ordinal": 0,
+          "absolute_start": 295,
+          "absolute_end": 946,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "3e96e7c533bab890d60408b07fde102d363c1ca3d025710bee323541dd2e137f",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "92a2dab1f1ff07392ea89ce0e6bdd6255d8b53f6bc2d32d17ea1615ed679c57b",
+        "producer_receipt_id": "abc13d1a27474c62edb52fd42c9328ad8d6dd56367d67aa8ae232a495f270047",
+        "governed_scope_digest": "1de3f5b1a0681e3ba0518b2c91a3f651df234bcf5a4d790b2706549a5dc6e848",
+        "extraction_provenance_id": "d1f872116ab0207b3e3493243e6328ebf8766d091a72a8e4966d59396fd21a31"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 262,
+          "end_byte": 947
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 262,
+            "end_byte": 947,
+            "text": " Representations and Warranties. The representations and warranties of Parent and Sub set forth in this Agreement shall be true and correct (disregarding all qualifications or limitations as to “material,” “materiality,” “Material Adverse Effect” and words of similar import set forth therein) as of date of this\n47\nAgreement and as of the Closing Date with the same effect as though made as of the Closing Date (except to the extent expressly made as of an earlier date, in which case as of such earlier date), except for any such failure to be true and correct that would not, individually or in the aggregate, prevent or materially delay the consummation of the Merger.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 259,
+            "text": "Section 6.03 Conditions to Obligation of the Company. The obligation of the Company to effect the Merger is further subject to the satisfaction or waiver (to the extent permitted by applicable Law) on or prior to the Closing Date of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "6f2fe281dbb07dde3d1e0c8958696e7d60a6367f53aab5cc23cccc29b8b86a2c",
+    "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "registry_substrate": {
+      "schema_version": "RESOLUTION_REGISTRY_SUBSTRATE_MANIFEST/V1",
+      "modules": [
+        {
+          "name": "materiality-qualifier",
+          "version": "RESOLUTION_MATERIALITY_QUALIFIER_REGISTRY/V1",
+          "digest": "sha256:6368129c33917101e97979baa1836e222894af0fe4ed98244ded61c4a7802515"
+        },
+        {
+          "name": "closing-condition-kinds",
+          "version": "RESOLUTION_CLOSING_CONDITION_KINDS_REGISTRY/V1",
+          "digest": "sha256:66bb6592c2f0c21125df9b12a03991aebbe5ca1832bacfb427eadd2df2327efc"
+        },
+        {
+          "name": "general-covenant",
+          "version": "RESOLUTION_GENERAL_COVENANT_REGISTRY/V1",
+          "digest": "sha256:c10453c1b9f700ed7962b3c3f66a1560dcbbbe42aa41692113097a67fb903737"
+        },
+        {
+          "name": "material-contract",
+          "version": "RESOLUTION_MATERIAL_CONTRACT_REGISTRY/V1",
+          "digest": "sha256:85159bed1f96102ea00f2f2acc57e8336c6901797f91c2345a357dc923528d9e"
+        },
+        {
+          "name": "interim-operating",
+          "version": "RESOLUTION_INTERIM_OPERATING_REGISTRY/V1",
+          "digest": "sha256:77e80a8cca7ab4277e74181ef6ea2f0a5410b75d96ad9ae984b7653f5265efae"
+        },
+        {
+          "name": "party-capacity",
+          "version": "RESOLUTION_PARTY_CAPACITY_REGISTRY/V1",
+          "digest": "sha256:1b089c7a6cf30f540043352234cb4109fe27013a554423c8d3ecd652272db202"
+        },
+        {
+          "name": "representation-topic",
+          "version": "REPRESENTATION_TOPIC_REGISTRY/V1",
+          "digest": "sha256:2240a6cfa6ac63d3fbf6a96afce185aed40a1d9919f2437b85a844aa996e1f28"
+        }
+      ],
+      "preserved_v1_collisions": [
+        {
+          "path": "UNDISCLOSED_LIABILITIES_EXCEPTION_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not reasonably be expected to have an MAE",
+          "v1_only": true,
+          "no_delete": true
+        },
+        {
+          "path": "MATERIALITY_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not, individually or in aggregate, have MAE",
+          "v1_only": true,
+          "no_delete": true
+        }
+      ]
+    },
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 3,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 3,
+      "resolved": 2,
+      "auto_pass": 0,
+      "review_queue": 2,
+      "open_world": 1,
+      "residuals": 0,
+      "provisions": 2,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "e12d2a4b9c64aec00c1c4dcbb1e9fc0cfb2994f1242a7faf8780eb98ff397776"
+  }
+}

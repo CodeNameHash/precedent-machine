@@ -1,0 +1,64 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "redhat",
+  "deal_label": "International Business Machines Corporation / Red Hat, Inc.",
+  "section_family": "PROXY_MEETING",
+  "purpose": "General extraction run: family PROXY_MEETING on deal redhat.",
+  "section_references": [
+    "5.01"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "5.01",
+      "family_id": "PROXY_MEETING"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV42",
+  "prompt_id": "native-producer-proxy-meeting/v1",
+  "prompt_version": 2,
+  "agreement_date": "2018-10-28",
+  "requested_model_profile": "TERRA_MEDIUM",
+  "requested_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "requested_models": [
+    "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM"
+  ],
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-09T21:01:36.462Z",
+  "total_elapsed_ms": 48025,
+  "extraction_wall_clock_ms": 43837,
+  "replay": null,
+  "replay_eligibility": null,
+  "recorded_to": "recording.json",
+  "code_provenance": {
+    "commit": "2b4c668b23de4a5a4678728b903ca10c7792e806",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 1,
+  "run_receipt_id": "4d7fbae2132736b6c58b6c23de6f2adfa7daf07d195159d68a4ac3b204d21d89",
+  "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+  "source_sha256": "dcdbf66142d25cbe56ed2bc1fbd26939aaf86056bf34188176c48b5944d31c5e",
+  "publication_gate_mode": "INERT_WITHHELD",
+  "publication_dispositions": {
+    "content_id": "5cdf1ebe71c9bb10dbb40ac8988b65957aca8371c6a6b151d42634da502f30a9",
+    "count": 3
+  },
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 1,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

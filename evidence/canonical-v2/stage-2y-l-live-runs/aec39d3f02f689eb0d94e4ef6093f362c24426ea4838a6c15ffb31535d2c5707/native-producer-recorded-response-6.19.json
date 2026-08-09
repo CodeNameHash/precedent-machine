@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T20:49:40.105Z",
+  "section_reference": "6.19",
+  "prompt_id": "native-producer-financing/v1",
+  "prompt_version": 3,
+  "raw_response_text": "{\"financing_assertions\":[{\"section_reference\":\"6.19\",\"assertion_kind\":\"OBTAIN_EFFORTS\",\"financing_kind\":null,\"standard_code\":\"REASONABLE_BEST_EFFORTS\",\"obligor\":\"The Company\",\"day_kind\":null,\"delivery_stage\":null,\"deliverable_term\":\"Payoff Deliverables\",\"marketing_term\":null,\"quote\":\"The Company shall use reasonable best efforts to deliver Payoff Deliverables with respect to the Repaid Indebtedness\"}],\"financing_mechanics\":[],\"open_world_candidates\":[{\"observed_quote\":\"at least one Business Day prior to the Closing\",\"why_unmapped\":\"Express lead time applies to delivery of payoff deliverables, not a financing covenant code.\",\"nearest_concept\":null}]}"
+}

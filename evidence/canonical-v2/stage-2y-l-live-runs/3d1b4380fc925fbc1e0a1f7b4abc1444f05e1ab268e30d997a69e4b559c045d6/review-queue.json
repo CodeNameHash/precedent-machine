@@ -1,0 +1,62 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "a265da1db1cbaa79e7a0e52b1a6f147c40355d348e5aff4b6bdf3675ee5c3ff3",
+  "review_queue": [
+    {
+      "section_reference": "6.17",
+      "source_citation": "6.17",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY-MERGERSUB-APPROVAL",
+      "reasons": [
+        "AMBIGUOUS_PROXY_MEETING_KIND"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent will cause the sole stockholder of Merger Sub to execute and deliver to Merger Sub and the Company a written consent approving the Merger in accordance with the DGCL (the “Parent Written Consent”).",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "0bca34bdb41a7dbb89ff765acf90b6686a697dc3330ca15232624b873022497c",
+      "closure_id": "cfd0e9b63251b68f2b07893b9b097be0bc00970c2c22322fc0f82e6bc981b428",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0ae9f97e980cb4512aa2c9dd476a5095c576eced6fbd3659d47300bd49918d3d",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "a2f421cc6b9f35f104eb6316de91b119fc8056779fb6b2306cfffb271b61e36b",
+          "document_ordinal": 0,
+          "absolute_start": 86,
+          "absolute_end": 294,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Parent will cause the sole stockholder of Merger Sub to execute and deliver to Merger Sub and the Company a written consent approving the Merger in accordance with the DGCL (the “Parent Written Consent”).",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY-MERGERSUB-APPROVAL",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 965
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 965,
+            "text": "6.17 Parent Vote. Immediately following the execution and delivery of this Agreement, Parent will cause the sole stockholder of Merger Sub to execute and deliver to Merger Sub and the Company a written consent approving the Merger in accordance with the DGCL (the “Parent Written Consent”). Parent shall vote or cause to be voted any shares of Company Common Stock beneficially owned by it or any of its Subsidiaries or which it or any of its Subsidiaries has the power to cause to be voted, in favor of the adoption of this Agreement at any meeting of stockholders of the Company at which this Agreement shall be submitted for adoption, including all adjournments, recesses or postponements thereof; provided that, such agreement to vote in favor of the adoption of this Agreement shall terminate, and Parent and its Subsidiaries shall have no obligation with respect thereto, in the event that the Company Board effects a Company Board Recommendation Change.\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "50c79d6d8f7ffb8d7db5d197da004b7326ef48d1583bee31840e41b6866e95d6"
+}

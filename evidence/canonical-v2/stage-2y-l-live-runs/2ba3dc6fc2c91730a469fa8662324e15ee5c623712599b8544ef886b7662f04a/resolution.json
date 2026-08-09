@@ -1,0 +1,1384 @@
+{
+  "resolved": [
+    {
+      "section_reference": "6.10",
+      "source_citation": "6.10",
+      "citation_context": {
+        "parent_section_reference": "6.10",
+        "child_section_reference": "6.10",
+        "parent_chapeau_quote": "SECTION 6.10. Proxy Statement. The Company will, as soon as practicable following the date of this Agreement and in any event within ten",
+        "child_clause_quote": "The Company will, as soon as practicable following the date of this Agreement and in any event within ten (10) business days, prepare and file with the SEC the Proxy Statement in preliminary form"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "PROXY_FILING_DEADLINE_DAYS",
+      "concept_key": "COV-PROXY",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "56f76a0594fb77de6f4e41ba565b1020fb1b9c0f76232e806fe00e40100e9edb",
+        "canonical_text_id": "b92a7c3d217e7478d73693ae093ee4e8c75d72084a9e608bf3e6e820705fbf5a",
+        "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+        "absolute_start": 213653,
+        "absolute_end": 215928,
+        "concept_key": "COV-PROXY",
+        "ordinal": 1,
+        "source_anchor_id": "30e5a05e8acdf9090da338342a3877afc2dcb27003c81f28bc6e87978428d4ab",
+        "provision_instance_id": "6a5027e620d1cb9cabcf68795f0ecfd6e547e79b97b97447a9d9e15b258c5dda",
+        "closure_id": "00c6a42564c0fcf4ad0cc703ba2a862bc12f771693c03522c9a1af223dcedaf4"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "80a30fcd5e3c6d36293d40ebb102c57bc4dc2f352ccd2fd6a226de6d78a7835c",
+        "claim_occurrence_id": "92842bc703614c374faec28b5ee40b3020773a1cf2463db6e77f250b408283a8",
+        "subject_occurrence_id": "6a5027e620d1cb9cabcf68795f0ecfd6e547e79b97b97447a9d9e15b258c5dda",
+        "claim_definition_key": "PROXY_FILING_DEADLINE_DAYS",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "The Company will, as soon as practicable following the date of this Agreement and in any event within ten (10) business days, prepare and file with the SEC the Proxy Statement in preliminary form",
+        "canonical_value": "10",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "45987bc2c1955fca321942ea60b7a5e8c59c0a15f81aa7fb5ae54f7d916fb1b3"
+        ],
+        "attributes": {
+          "section_reference": "6.10",
+          "assertion_kind": "FILING_DEADLINE",
+          "anchor_kind": "AGREEMENT_DATE",
+          "day_kind": "BUSINESS",
+          "limit_basis": null,
+          "control_party": null,
+          "consenting_party": null,
+          "reason_kind": null,
+          "meeting_ref": null,
+          "document_ref": "the Proxy Statement in preliminary form",
+          "obligated_party": "The Company",
+          "adoption_mechanism": null,
+          "adoption_timing": null,
+          "proxy_meeting_parse_version": 1,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "FILING_DEADLINE"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "45987bc2c1955fca321942ea60b7a5e8c59c0a15f81aa7fb5ae54f7d916fb1b3",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "784b17ec03f1ab4400f166205a0fd27478fedf911cbeaba0dce0dfe7dc719320",
+            "document_ordinal": 0,
+            "absolute_start": 31,
+            "absolute_end": 226,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "f738c9caa33f00d48db0bd03c4581651c9d8ee303e3131c8b4284bd7fbb916ff"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.10",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.10",
+          "normalized_citation": "6.10",
+          "derived_citation": "6.10"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "80a30fcd5e3c6d36293d40ebb102c57bc4dc2f352ccd2fd6a226de6d78a7835c",
+            "claim_occurrence_id": "92842bc703614c374faec28b5ee40b3020773a1cf2463db6e77f250b408283a8",
+            "subject_occurrence_id": "6a5027e620d1cb9cabcf68795f0ecfd6e547e79b97b97447a9d9e15b258c5dda",
+            "claim_definition_key": "PROXY_FILING_DEADLINE_DAYS",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "The Company will, as soon as practicable following the date of this Agreement and in any event within ten (10) business days, prepare and file with the SEC the Proxy Statement in preliminary form",
+            "canonical_value": "10",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "45987bc2c1955fca321942ea60b7a5e8c59c0a15f81aa7fb5ae54f7d916fb1b3"
+            ],
+            "attributes": {
+              "section_reference": "6.10",
+              "assertion_kind": "FILING_DEADLINE",
+              "anchor_kind": "AGREEMENT_DATE",
+              "day_kind": "BUSINESS",
+              "limit_basis": null,
+              "control_party": null,
+              "consenting_party": null,
+              "reason_kind": null,
+              "meeting_ref": null,
+              "document_ref": "the Proxy Statement in preliminary form",
+              "obligated_party": "The Company",
+              "adoption_mechanism": null,
+              "adoption_timing": null,
+              "proxy_meeting_parse_version": 1,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "FILING_DEADLINE"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "45987bc2c1955fca321942ea60b7a5e8c59c0a15f81aa7fb5ae54f7d916fb1b3",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "784b17ec03f1ab4400f166205a0fd27478fedf911cbeaba0dce0dfe7dc719320",
+                "document_ordinal": 0,
+                "absolute_start": 31,
+                "absolute_end": 226,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "f738c9caa33f00d48db0bd03c4581651c9d8ee303e3131c8b4284bd7fbb916ff"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "PROXY_MEETING_COVENANT",
+            "prompt_digest": "8fc84da31a8ba6e2eb09ca8429a04a39b94c751932a614a4020f6b33c945eb9c",
+            "producer_receipt_id": "512eb053db88399a31224b0a5ca19ae1ec8d9e3f6a7c2b678e883a4645d12935",
+            "governed_scope_digest": "66c834791ec6111b571f2a856f27303fc2eb5b4dc9b3e735f35d9cf6e09cf74e",
+            "extraction_provenance_id": "62541fd892328b52d2c697f14eed574af31174f6c25e7e36d9be7bbd64b2a0ed"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 80,
+        "materiality_label": "PROXY_MEETING_COVENANTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.10",
+          "normalized_citation": "6.10",
+          "derived_citation": "6.10"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 1451
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 1451,
+            "text": "SECTION 6.10. Proxy Statement. The Company will, as soon as practicable following the date of this Agreement and in any event within ten (10) business days, prepare and file with the SEC the Proxy Statement in preliminary form, and the Company will use its reasonable best efforts to respond as promptly as practicable to any comments of the SEC with respect thereto. The Company will notify Parent promptly of the receipt of any comments from the SEC or its staff and of any request by the SEC or its staff for amendments or supplements to the Proxy Statement or for additional information and will supply Parent with copies of all correspondence between the Company or any of its representatives, on the one hand, and the SEC or its staff, on the other hand, with respect to the Proxy Statement. If at any time prior to receipt of the Company Stockholder Approval there shall occur any event that should be set forth in an amendment or supplement to the Proxy Statement, including correcting any information that has become false or misleading in any material respect, the Company will promptly prepare and mail to its stockholders such an amendment or supplement. Parent and its counsel shall be given a reasonable opportunity to review the Proxy Statement before it is filed with the SEC and the Company shall give due consideration to all reasonable additions, deletions, or changes thereto suggested by Parent and its counsel. The Company shall "
+          }
+        ],
+        "markerless": false,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.10",
+      "source_citation": "6.10",
+      "citation_context": {
+        "parent_section_reference": "6.10",
+        "child_section_reference": "6.10",
+        "parent_chapeau_quote": "SECTION 6.10. Proxy Statement. The Company will, as soon as practicable following the date of this Agreement and in any event within ten",
+        "child_clause_quote": "the Proxy Statement will include the Company Board Recommendation"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "BOARD_RECOMMENDATION_INCLUSION",
+      "concept_key": "COV-PROXY",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "56f76a0594fb77de6f4e41ba565b1020fb1b9c0f76232e806fe00e40100e9edb",
+        "canonical_text_id": "b92a7c3d217e7478d73693ae093ee4e8c75d72084a9e608bf3e6e820705fbf5a",
+        "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+        "absolute_start": 213653,
+        "absolute_end": 215928,
+        "concept_key": "COV-PROXY",
+        "ordinal": 1,
+        "source_anchor_id": "30e5a05e8acdf9090da338342a3877afc2dcb27003c81f28bc6e87978428d4ab",
+        "provision_instance_id": "6a5027e620d1cb9cabcf68795f0ecfd6e547e79b97b97447a9d9e15b258c5dda",
+        "closure_id": "00c6a42564c0fcf4ad0cc703ba2a862bc12f771693c03522c9a1af223dcedaf4"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "6a4baaf6d3ac1f04bc214a21fdbe29b3f633d164c8927f0625b2062e352be3e5",
+        "claim_occurrence_id": "14deb3b6fc5709b2a2516eac9ccb8ee52120f5f29ac27a0c70cd65ab4f9801d0",
+        "subject_occurrence_id": "6a5027e620d1cb9cabcf68795f0ecfd6e547e79b97b97447a9d9e15b258c5dda",
+        "claim_definition_key": "BOARD_RECOMMENDATION_INCLUSION",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "the Proxy Statement will include the Company Board Recommendation",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "ba2ef75c6b0dd226bc8b0c9a7aaa49961c2bba9954026603bd863802dfac6eaa"
+        ],
+        "attributes": {
+          "section_reference": "6.10",
+          "assertion_kind": "RECOMMENDATION_INCLUSION",
+          "anchor_kind": null,
+          "day_kind": null,
+          "limit_basis": null,
+          "control_party": null,
+          "consenting_party": null,
+          "reason_kind": null,
+          "meeting_ref": null,
+          "document_ref": "the Proxy Statement",
+          "obligated_party": null,
+          "adoption_mechanism": null,
+          "adoption_timing": null,
+          "proxy_meeting_parse_version": 1,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "RECOMMENDATION_INCLUSION"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "ba2ef75c6b0dd226bc8b0c9a7aaa49961c2bba9954026603bd863802dfac6eaa",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "88eec25927900d70673a99d5a85669c7dbf8fdce9ceb7f6c88590642a41bed88",
+            "document_ordinal": 0,
+            "absolute_start": 2203,
+            "absolute_end": 2268,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "a38f7dd9d591dd5feab0a19f4c2a702570506fd03bb43a00ca4f74462b8c1215"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.10",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.10",
+          "normalized_citation": "6.10",
+          "derived_citation": "6.10"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "6a4baaf6d3ac1f04bc214a21fdbe29b3f633d164c8927f0625b2062e352be3e5",
+            "claim_occurrence_id": "14deb3b6fc5709b2a2516eac9ccb8ee52120f5f29ac27a0c70cd65ab4f9801d0",
+            "subject_occurrence_id": "6a5027e620d1cb9cabcf68795f0ecfd6e547e79b97b97447a9d9e15b258c5dda",
+            "claim_definition_key": "BOARD_RECOMMENDATION_INCLUSION",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "the Proxy Statement will include the Company Board Recommendation",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "ba2ef75c6b0dd226bc8b0c9a7aaa49961c2bba9954026603bd863802dfac6eaa"
+            ],
+            "attributes": {
+              "section_reference": "6.10",
+              "assertion_kind": "RECOMMENDATION_INCLUSION",
+              "anchor_kind": null,
+              "day_kind": null,
+              "limit_basis": null,
+              "control_party": null,
+              "consenting_party": null,
+              "reason_kind": null,
+              "meeting_ref": null,
+              "document_ref": "the Proxy Statement",
+              "obligated_party": null,
+              "adoption_mechanism": null,
+              "adoption_timing": null,
+              "proxy_meeting_parse_version": 1,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "RECOMMENDATION_INCLUSION"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "ba2ef75c6b0dd226bc8b0c9a7aaa49961c2bba9954026603bd863802dfac6eaa",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "88eec25927900d70673a99d5a85669c7dbf8fdce9ceb7f6c88590642a41bed88",
+                "document_ordinal": 0,
+                "absolute_start": 2203,
+                "absolute_end": 2268,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "a38f7dd9d591dd5feab0a19f4c2a702570506fd03bb43a00ca4f74462b8c1215"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "PROXY_MEETING_COVENANT",
+            "prompt_digest": "8fc84da31a8ba6e2eb09ca8429a04a39b94c751932a614a4020f6b33c945eb9c",
+            "producer_receipt_id": "512eb053db88399a31224b0a5ca19ae1ec8d9e3f6a7c2b678e883a4645d12935",
+            "governed_scope_digest": "66c834791ec6111b571f2a856f27303fc2eb5b4dc9b3e735f35d9cf6e09cf74e",
+            "extraction_provenance_id": "62541fd892328b52d2c697f14eed574af31174f6c25e7e36d9be7bbd64b2a0ed"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 80,
+        "materiality_label": "PROXY_MEETING_COVENANTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.10",
+          "normalized_citation": "6.10",
+          "derived_citation": "6.10"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "i",
+          "depth": 1,
+          "start_byte": 1454,
+          "end_byte": 2275
+        },
+        "chain": [
+          {
+            "path": "i",
+            "start_byte": 1454,
+            "end_byte": 2275,
+            "text": " commence mailing the Proxy Statement to the Company’s stockholders as promptly as practicable after filing with the SEC, and, in any event, either (a) the first (1st) business day after the date that is ten (10) calendar days after filing the Proxy Statement in preliminary form if, prior to such date, the SEC does not provide comments or indicates that it does not plan to provide comments or (b) within three (3) business days of being informed by the SEC staff that it has no further comments on the document, and (ii) take all necessary action, including establishing a record date and completing a broker search pursuant to Section 14a-13 of the Exchange Act, to permit the foregoing. Subject to the terms and conditions of this Agreement, the Proxy Statement will include the Company Board Recommendation.\n-56-\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 1451,
+            "text": "SECTION 6.10. Proxy Statement. The Company will, as soon as practicable following the date of this Agreement and in any event within ten (10) business days, prepare and file with the SEC the Proxy Statement in preliminary form, and the Company will use its reasonable best efforts to respond as promptly as practicable to any comments of the SEC with respect thereto. The Company will notify Parent promptly of the receipt of any comments from the SEC or its staff and of any request by the SEC or its staff for amendments or supplements to the Proxy Statement or for additional information and will supply Parent with copies of all correspondence between the Company or any of its representatives, on the one hand, and the SEC or its staff, on the other hand, with respect to the Proxy Statement. If at any time prior to receipt of the Company Stockholder Approval there shall occur any event that should be set forth in an amendment or supplement to the Proxy Statement, including correcting any information that has become false or misleading in any material respect, the Company will promptly prepare and mail to its stockholders such an amendment or supplement. Parent and its counsel shall be given a reasonable opportunity to review the Proxy Statement before it is filed with the SEC and the Company shall give due consideration to all reasonable additions, deletions, or changes thereto suggested by Parent and its counsel. The Company shall "
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "6.10",
+      "source_citation": "6.10",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "MEETING_REF_ABSENT"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "take all necessary action, including establishing a record date",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "39fb7a5aee93ff059dbdda03e93dc6307e2731631c693a069f43f335085ff051",
+      "closure_id": "3233c28555e7ebec40e7f00a27534a2b02fad59f26a4a8cd5d587eeeb2bfb82d",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "c630d76a978eeef8f8e1318e968a1eaf6757be160c7e3ddad43390c5f2f0804f",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "11a8dcd6e67d8ee25214781360985f7e19a30da06f23819ae02b876596741920",
+          "document_ordinal": 0,
+          "absolute_start": 1980,
+          "absolute_end": 2043,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "take all necessary action, including establishing a record date",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "i",
+          "depth": 1,
+          "start_byte": 1454,
+          "end_byte": 2275
+        },
+        "chain": [
+          {
+            "path": "i",
+            "start_byte": 1454,
+            "end_byte": 2275,
+            "text": " commence mailing the Proxy Statement to the Company’s stockholders as promptly as practicable after filing with the SEC, and, in any event, either (a) the first (1st) business day after the date that is ten (10) calendar days after filing the Proxy Statement in preliminary form if, prior to such date, the SEC does not provide comments or indicates that it does not plan to provide comments or (b) within three (3) business days of being informed by the SEC staff that it has no further comments on the document, and (ii) take all necessary action, including establishing a record date and completing a broker search pursuant to Section 14a-13 of the Exchange Act, to permit the foregoing. Subject to the terms and conditions of this Agreement, the Proxy Statement will include the Company Board Recommendation.\n-56-\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 1451,
+            "text": "SECTION 6.10. Proxy Statement. The Company will, as soon as practicable following the date of this Agreement and in any event within ten (10) business days, prepare and file with the SEC the Proxy Statement in preliminary form, and the Company will use its reasonable best efforts to respond as promptly as practicable to any comments of the SEC with respect thereto. The Company will notify Parent promptly of the receipt of any comments from the SEC or its staff and of any request by the SEC or its staff for amendments or supplements to the Proxy Statement or for additional information and will supply Parent with copies of all correspondence between the Company or any of its representatives, on the one hand, and the SEC or its staff, on the other hand, with respect to the Proxy Statement. If at any time prior to receipt of the Company Stockholder Approval there shall occur any event that should be set forth in an amendment or supplement to the Proxy Statement, including correcting any information that has become false or misleading in any material respect, the Company will promptly prepare and mail to its stockholders such an amendment or supplement. Parent and its counsel shall be given a reasonable opportunity to review the Proxy Statement before it is filed with the SEC and the Company shall give due consideration to all reasonable additions, deletions, or changes thereto suggested by Parent and its counsel. The Company shall "
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.10",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "BOARD_RECOMMENDATION_INCLUSION",
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6a4baaf6d3ac1f04bc214a21fdbe29b3f633d164c8927f0625b2062e352be3e5",
+      "closure_id": "a38f7dd9d591dd5feab0a19f4c2a702570506fd03bb43a00ca4f74462b8c1215",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "ba2ef75c6b0dd226bc8b0c9a7aaa49961c2bba9954026603bd863802dfac6eaa",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "88eec25927900d70673a99d5a85669c7dbf8fdce9ceb7f6c88590642a41bed88",
+          "document_ordinal": 0,
+          "absolute_start": 2203,
+          "absolute_end": 2268,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the Proxy Statement will include the Company Board Recommendation",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 14,
+          "end": 29,
+          "excerpt": "SECTION 6.10. Proxy Statement. The Company will, as soon as practicable following the date of this Agreement ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 545,
+          "end": 560,
+          "excerpt": "and of any request by the SEC or its staff for amendments or supplements to the Proxy Statement or for additional information and will supply Parent with copies of all corresp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 781,
+          "end": 796,
+          "excerpt": " the one hand, and the SEC or its staff, on the other hand, with respect to the Proxy Statement. If at any time prior to receipt of the Company Stockholder Approval there shal",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 956,
+          "end": 971,
+          "excerpt": "l occur any event that should be set forth in an amendment or supplement to the Proxy Statement, including correcting any information that has become false or misleading in an",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 1244,
+          "end": 1259,
+          "excerpt": "t. Parent and its counsel shall be given a reasonable opportunity to review the Proxy Statement before it is filed with the SEC and the Company shall give due consideration to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 1476,
+          "end": 1491,
+          "excerpt": "suggested by Parent and its counsel. The Company shall (i) commence mailing the Proxy Statement to the Company’s stockholders as promptly as practicable after filing with th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 1700,
+          "end": 1715,
+          "excerpt": "st) business day after the date that is ten (10) calendar days after filing the Proxy Statement in preliminary form if, prior to such date, the SEC does not provide comments o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:PHRASE:PRELIMINARY_FORM",
+          "start": 1716,
+          "end": 1735,
+          "excerpt": " after the date that is ten (10) calendar days after filing the Proxy Statement in preliminary form if, prior to such date, the SEC does not provide comments or indicates that it ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:PHRASE:NO_FURTHER_COMMENTS",
+          "start": 1934,
+          "end": 1953,
+          "excerpt": ") within three (3) business days of being informed by the SEC staff that it has no further comments on the document, and (ii) take all necessary action, including establishing a r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:PHRASE:BROKER_SEARCH",
+          "start": 2061,
+          "end": 2074,
+          "excerpt": "ake all necessary action, including establishing a record date and completing a broker search pursuant to Section 14a-13 of the Exchange Act, to permit the foregoing. Subjec",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "i",
+          "depth": 1,
+          "start_byte": 1454,
+          "end_byte": 2275
+        },
+        "chain": [
+          {
+            "path": "i",
+            "start_byte": 1454,
+            "end_byte": 2275,
+            "text": " commence mailing the Proxy Statement to the Company’s stockholders as promptly as practicable after filing with the SEC, and, in any event, either (a) the first (1st) business day after the date that is ten (10) calendar days after filing the Proxy Statement in preliminary form if, prior to such date, the SEC does not provide comments or indicates that it does not plan to provide comments or (b) within three (3) business days of being informed by the SEC staff that it has no further comments on the document, and (ii) take all necessary action, including establishing a record date and completing a broker search pursuant to Section 14a-13 of the Exchange Act, to permit the foregoing. Subject to the terms and conditions of this Agreement, the Proxy Statement will include the Company Board Recommendation.\n-56-\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 1451,
+            "text": "SECTION 6.10. Proxy Statement. The Company will, as soon as practicable following the date of this Agreement and in any event within ten (10) business days, prepare and file with the SEC the Proxy Statement in preliminary form, and the Company will use its reasonable best efforts to respond as promptly as practicable to any comments of the SEC with respect thereto. The Company will notify Parent promptly of the receipt of any comments from the SEC or its staff and of any request by the SEC or its staff for amendments or supplements to the Proxy Statement or for additional information and will supply Parent with copies of all correspondence between the Company or any of its representatives, on the one hand, and the SEC or its staff, on the other hand, with respect to the Proxy Statement. If at any time prior to receipt of the Company Stockholder Approval there shall occur any event that should be set forth in an amendment or supplement to the Proxy Statement, including correcting any information that has become false or misleading in any material respect, the Company will promptly prepare and mail to its stockholders such an amendment or supplement. Parent and its counsel shall be given a reasonable opportunity to review the Proxy Statement before it is filed with the SEC and the Company shall give due consideration to all reasonable additions, deletions, or changes thereto suggested by Parent and its counsel. The Company shall "
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.10",
+      "source_citation": "6.10",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "MEETING_REF_ABSENT"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "and completing a broker search pursuant to Section 14a-13 of the Exchange Act",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "74a7725e86494b31edae1c369b85249e187c575719b463d87fbf7ea2bab27a1f",
+      "closure_id": "d0332dff5d20cfa61ac5b32c8ef5da83061e5c0780e7adb80737a48a052fd147",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "493bb26e2e0e9215fcd95869909bb6bc36c76b2a489b232ac5cf1800afea30a9",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "7f4fb52219a5dbb75319a7ed26069507bbe803dc7392debdb6db6d77f1d75a9c",
+          "document_ordinal": 0,
+          "absolute_start": 2044,
+          "absolute_end": 2121,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "and completing a broker search pursuant to Section 14a-13 of the Exchange Act",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "i",
+          "depth": 1,
+          "start_byte": 1454,
+          "end_byte": 2275
+        },
+        "chain": [
+          {
+            "path": "i",
+            "start_byte": 1454,
+            "end_byte": 2275,
+            "text": " commence mailing the Proxy Statement to the Company’s stockholders as promptly as practicable after filing with the SEC, and, in any event, either (a) the first (1st) business day after the date that is ten (10) calendar days after filing the Proxy Statement in preliminary form if, prior to such date, the SEC does not provide comments or indicates that it does not plan to provide comments or (b) within three (3) business days of being informed by the SEC staff that it has no further comments on the document, and (ii) take all necessary action, including establishing a record date and completing a broker search pursuant to Section 14a-13 of the Exchange Act, to permit the foregoing. Subject to the terms and conditions of this Agreement, the Proxy Statement will include the Company Board Recommendation.\n-56-\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 1451,
+            "text": "SECTION 6.10. Proxy Statement. The Company will, as soon as practicable following the date of this Agreement and in any event within ten (10) business days, prepare and file with the SEC the Proxy Statement in preliminary form, and the Company will use its reasonable best efforts to respond as promptly as practicable to any comments of the SEC with respect thereto. The Company will notify Parent promptly of the receipt of any comments from the SEC or its staff and of any request by the SEC or its staff for amendments or supplements to the Proxy Statement or for additional information and will supply Parent with copies of all correspondence between the Company or any of its representatives, on the one hand, and the SEC or its staff, on the other hand, with respect to the Proxy Statement. If at any time prior to receipt of the Company Stockholder Approval there shall occur any event that should be set forth in an amendment or supplement to the Proxy Statement, including correcting any information that has become false or misleading in any material respect, the Company will promptly prepare and mail to its stockholders such an amendment or supplement. Parent and its counsel shall be given a reasonable opportunity to review the Proxy Statement before it is filed with the SEC and the Company shall give due consideration to all reasonable additions, deletions, or changes thereto suggested by Parent and its counsel. The Company shall "
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.10",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "PROXY_FILING_DEADLINE_DAYS",
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "80a30fcd5e3c6d36293d40ebb102c57bc4dc2f352ccd2fd6a226de6d78a7835c",
+      "closure_id": "f738c9caa33f00d48db0bd03c4581651c9d8ee303e3131c8b4284bd7fbb916ff",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "45987bc2c1955fca321942ea60b7a5e8c59c0a15f81aa7fb5ae54f7d916fb1b3",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "784b17ec03f1ab4400f166205a0fd27478fedf911cbeaba0dce0dfe7dc719320",
+          "document_ordinal": 0,
+          "absolute_start": 31,
+          "absolute_end": 226,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company will, as soon as practicable following the date of this Agreement and in any event within ten (10) business days, prepare and file with the SEC the Proxy Statement in preliminary form",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 14,
+          "end": 29,
+          "excerpt": "SECTION 6.10. Proxy Statement. The Company will, as soon as practicable following the date of this Agreement ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 545,
+          "end": 560,
+          "excerpt": "and of any request by the SEC or its staff for amendments or supplements to the Proxy Statement or for additional information and will supply Parent with copies of all corresp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 781,
+          "end": 796,
+          "excerpt": " the one hand, and the SEC or its staff, on the other hand, with respect to the Proxy Statement. If at any time prior to receipt of the Company Stockholder Approval there shal",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 956,
+          "end": 971,
+          "excerpt": "l occur any event that should be set forth in an amendment or supplement to the Proxy Statement, including correcting any information that has become false or misleading in an",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 1244,
+          "end": 1259,
+          "excerpt": "t. Parent and its counsel shall be given a reasonable opportunity to review the Proxy Statement before it is filed with the SEC and the Company shall give due consideration to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 1476,
+          "end": 1491,
+          "excerpt": "suggested by Parent and its counsel. The Company shall (i) commence mailing the Proxy Statement to the Company’s stockholders as promptly as practicable after filing with th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 1700,
+          "end": 1715,
+          "excerpt": "st) business day after the date that is ten (10) calendar days after filing the Proxy Statement in preliminary form if, prior to such date, the SEC does not provide comments o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:PHRASE:PRELIMINARY_FORM",
+          "start": 1716,
+          "end": 1735,
+          "excerpt": " after the date that is ten (10) calendar days after filing the Proxy Statement in preliminary form if, prior to such date, the SEC does not provide comments or indicates that it ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:PHRASE:NO_FURTHER_COMMENTS",
+          "start": 1934,
+          "end": 1953,
+          "excerpt": ") within three (3) business days of being informed by the SEC staff that it has no further comments on the document, and (ii) take all necessary action, including establishing a r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:PHRASE:BROKER_SEARCH",
+          "start": 2061,
+          "end": 2074,
+          "excerpt": "ake all necessary action, including establishing a record date and completing a broker search pursuant to Section 14a-13 of the Exchange Act, to permit the foregoing. Subjec",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 1451
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 1451,
+            "text": "SECTION 6.10. Proxy Statement. The Company will, as soon as practicable following the date of this Agreement and in any event within ten (10) business days, prepare and file with the SEC the Proxy Statement in preliminary form, and the Company will use its reasonable best efforts to respond as promptly as practicable to any comments of the SEC with respect thereto. The Company will notify Parent promptly of the receipt of any comments from the SEC or its staff and of any request by the SEC or its staff for amendments or supplements to the Proxy Statement or for additional information and will supply Parent with copies of all correspondence between the Company or any of its representatives, on the one hand, and the SEC or its staff, on the other hand, with respect to the Proxy Statement. If at any time prior to receipt of the Company Stockholder Approval there shall occur any event that should be set forth in an amendment or supplement to the Proxy Statement, including correcting any information that has become false or misleading in any material respect, the Company will promptly prepare and mail to its stockholders such an amendment or supplement. Parent and its counsel shall be given a reasonable opportunity to review the Proxy Statement before it is filed with the SEC and the Company shall give due consideration to all reasonable additions, deletions, or changes thereto suggested by Parent and its counsel. The Company shall "
+          }
+        ],
+        "markerless": false,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "6.10",
+      "source_citation": "6.10",
+      "reason": "PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "raw_value": "(a) the first (1st) business day after the date that is ten (10) calendar days after filing the Proxy Statement in preliminary form if, prior to such date, the SEC does not provide comments or indicates that it does not plan to provide comments",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "6.10",
+        "assertion_kind": "MAILING_DEADLINE",
+        "anchor_kind": "SEC_CLEARANCE",
+        "day_kind": "BUSINESS",
+        "limit_basis": null,
+        "control_party": null,
+        "consenting_party": null,
+        "reason_kind": null,
+        "meeting_ref": null,
+        "document_ref": "the Proxy Statement",
+        "obligated_party": "The Company",
+        "adoption_mechanism": null,
+        "adoption_timing": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "c2bb0c3f2776322f8e6cfebd43d2ffb329e9adb209541f23308143b211adb28f",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "4ce5143c2315b92a753d7cef5edb57b5e402e64b2db1eb3730ec24a6dbd00756",
+          "document_ordinal": 0,
+          "absolute_start": 1604,
+          "absolute_end": 1848,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "31c9fe60c531c766c09b3c0a9738ff97419d38b36e3031381794448db10de0eb",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "PROXY_MEETING_COVENANT",
+        "prompt_digest": "8fc84da31a8ba6e2eb09ca8429a04a39b94c751932a614a4020f6b33c945eb9c",
+        "producer_receipt_id": "512eb053db88399a31224b0a5ca19ae1ec8d9e3f6a7c2b678e883a4645d12935",
+        "governed_scope_digest": "66c834791ec6111b571f2a856f27303fc2eb5b4dc9b3e735f35d9cf6e09cf74e",
+        "extraction_provenance_id": "62541fd892328b52d2c697f14eed574af31174f6c25e7e36d9be7bbd64b2a0ed"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.10",
+        "normalized_citation": "6.10",
+        "derived_citation": "6.10"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "i",
+          "depth": 1,
+          "start_byte": 1454,
+          "end_byte": 2275
+        },
+        "chain": [
+          {
+            "path": "i",
+            "start_byte": 1454,
+            "end_byte": 2275,
+            "text": " commence mailing the Proxy Statement to the Company’s stockholders as promptly as practicable after filing with the SEC, and, in any event, either (a) the first (1st) business day after the date that is ten (10) calendar days after filing the Proxy Statement in preliminary form if, prior to such date, the SEC does not provide comments or indicates that it does not plan to provide comments or (b) within three (3) business days of being informed by the SEC staff that it has no further comments on the document, and (ii) take all necessary action, including establishing a record date and completing a broker search pursuant to Section 14a-13 of the Exchange Act, to permit the foregoing. Subject to the terms and conditions of this Agreement, the Proxy Statement will include the Company Board Recommendation.\n-56-\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 1451,
+            "text": "SECTION 6.10. Proxy Statement. The Company will, as soon as practicable following the date of this Agreement and in any event within ten (10) business days, prepare and file with the SEC the Proxy Statement in preliminary form, and the Company will use its reasonable best efforts to respond as promptly as practicable to any comments of the SEC with respect thereto. The Company will notify Parent promptly of the receipt of any comments from the SEC or its staff and of any request by the SEC or its staff for amendments or supplements to the Proxy Statement or for additional information and will supply Parent with copies of all correspondence between the Company or any of its representatives, on the one hand, and the SEC or its staff, on the other hand, with respect to the Proxy Statement. If at any time prior to receipt of the Company Stockholder Approval there shall occur any event that should be set forth in an amendment or supplement to the Proxy Statement, including correcting any information that has become false or misleading in any material respect, the Company will promptly prepare and mail to its stockholders such an amendment or supplement. Parent and its counsel shall be given a reasonable opportunity to review the Proxy Statement before it is filed with the SEC and the Company shall give due consideration to all reasonable additions, deletions, or changes thereto suggested by Parent and its counsel. The Company shall "
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.10",
+      "source_citation": "6.10",
+      "reason": "PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "raw_value": "(b) within three (3) business days of being informed by the SEC staff that it has no further comments on the document",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "6.10",
+        "assertion_kind": "MAILING_DEADLINE",
+        "anchor_kind": "SEC_CLEARANCE",
+        "day_kind": "BUSINESS",
+        "limit_basis": null,
+        "control_party": null,
+        "consenting_party": null,
+        "reason_kind": null,
+        "meeting_ref": null,
+        "document_ref": "the Proxy Statement",
+        "obligated_party": "The Company",
+        "adoption_mechanism": null,
+        "adoption_timing": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "ee586248eebb5c7ad259bb2384c4252e9716ab67363991f3d77dbc084e94db8d",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "e98ca75112cddd83fa4754648419b9880d5ae3a06c70c0fc0166b157f5072c0a",
+          "document_ordinal": 0,
+          "absolute_start": 1852,
+          "absolute_end": 1969,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "db1314630b57f874982ec731efb34949ede657a765bdda74ffdbddd0d3c0ea8a",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "PROXY_MEETING_COVENANT",
+        "prompt_digest": "8fc84da31a8ba6e2eb09ca8429a04a39b94c751932a614a4020f6b33c945eb9c",
+        "producer_receipt_id": "512eb053db88399a31224b0a5ca19ae1ec8d9e3f6a7c2b678e883a4645d12935",
+        "governed_scope_digest": "66c834791ec6111b571f2a856f27303fc2eb5b4dc9b3e735f35d9cf6e09cf74e",
+        "extraction_provenance_id": "62541fd892328b52d2c697f14eed574af31174f6c25e7e36d9be7bbd64b2a0ed"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.10",
+        "normalized_citation": "6.10",
+        "derived_citation": "6.10"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "i",
+          "depth": 1,
+          "start_byte": 1454,
+          "end_byte": 2275
+        },
+        "chain": [
+          {
+            "path": "i",
+            "start_byte": 1454,
+            "end_byte": 2275,
+            "text": " commence mailing the Proxy Statement to the Company’s stockholders as promptly as practicable after filing with the SEC, and, in any event, either (a) the first (1st) business day after the date that is ten (10) calendar days after filing the Proxy Statement in preliminary form if, prior to such date, the SEC does not provide comments or indicates that it does not plan to provide comments or (b) within three (3) business days of being informed by the SEC staff that it has no further comments on the document, and (ii) take all necessary action, including establishing a record date and completing a broker search pursuant to Section 14a-13 of the Exchange Act, to permit the foregoing. Subject to the terms and conditions of this Agreement, the Proxy Statement will include the Company Board Recommendation.\n-56-\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 1451,
+            "text": "SECTION 6.10. Proxy Statement. The Company will, as soon as practicable following the date of this Agreement and in any event within ten (10) business days, prepare and file with the SEC the Proxy Statement in preliminary form, and the Company will use its reasonable best efforts to respond as promptly as practicable to any comments of the SEC with respect thereto. The Company will notify Parent promptly of the receipt of any comments from the SEC or its staff and of any request by the SEC or its staff for amendments or supplements to the Proxy Statement or for additional information and will supply Parent with copies of all correspondence between the Company or any of its representatives, on the one hand, and the SEC or its staff, on the other hand, with respect to the Proxy Statement. If at any time prior to receipt of the Company Stockholder Approval there shall occur any event that should be set forth in an amendment or supplement to the Proxy Statement, including correcting any information that has become false or misleading in any material respect, the Company will promptly prepare and mail to its stockholders such an amendment or supplement. Parent and its counsel shall be given a reasonable opportunity to review the Proxy Statement before it is filed with the SEC and the Company shall give due consideration to all reasonable additions, deletions, or changes thereto suggested by Parent and its counsel. The Company shall "
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.10",
+      "source_citation": "6.10",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "respond as promptly as practicable to any comments of the SEC with respect thereto",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Qualitative timing phrase has no governed day count or timing direction.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "d9671cbec0ff216cdb3d0cfdb67660193f85049ca2128370bfb90558fa4e67c0",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "e4d28b1498fc4153e34728b7f8fcdb8febe2e457cdedc3475c467f7f10034e4f",
+          "document_ordinal": 0,
+          "absolute_start": 284,
+          "absolute_end": 366,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "1bc364625c9159ca7b8a359477df47bfa8f5f7f63e2c6952206ab02c4d429344",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "8fc84da31a8ba6e2eb09ca8429a04a39b94c751932a614a4020f6b33c945eb9c",
+        "producer_receipt_id": "512eb053db88399a31224b0a5ca19ae1ec8d9e3f6a7c2b678e883a4645d12935",
+        "governed_scope_digest": "66c834791ec6111b571f2a856f27303fc2eb5b4dc9b3e735f35d9cf6e09cf74e",
+        "extraction_provenance_id": "3e935a29717f8fcb32aa6585fd9409ad569b2239ff70a6c811840af6d8646497"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 1451
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 1451,
+            "text": "SECTION 6.10. Proxy Statement. The Company will, as soon as practicable following the date of this Agreement and in any event within ten (10) business days, prepare and file with the SEC the Proxy Statement in preliminary form, and the Company will use its reasonable best efforts to respond as promptly as practicable to any comments of the SEC with respect thereto. The Company will notify Parent promptly of the receipt of any comments from the SEC or its staff and of any request by the SEC or its staff for amendments or supplements to the Proxy Statement or for additional information and will supply Parent with copies of all correspondence between the Company or any of its representatives, on the one hand, and the SEC or its staff, on the other hand, with respect to the Proxy Statement. If at any time prior to receipt of the Company Stockholder Approval there shall occur any event that should be set forth in an amendment or supplement to the Proxy Statement, including correcting any information that has become false or misleading in any material respect, the Company will promptly prepare and mail to its stockholders such an amendment or supplement. Parent and its counsel shall be given a reasonable opportunity to review the Proxy Statement before it is filed with the SEC and the Company shall give due consideration to all reasonable additions, deletions, or changes thereto suggested by Parent and its counsel. The Company shall "
+          }
+        ],
+        "markerless": false,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.10",
+      "source_citation": "6.10",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "commence mailing the Proxy Statement to the Company’s stockholders as promptly as practicable after filing with the SEC",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Qualitative timing phrase has no governed day count or timing direction.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "f56db0cde8db384c0d36c2a9f492e32b293bc26fc62d13ab1476c445906802bc",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "3f20c2d0c2fefaec85a4cd252f01e82190be418832784ead5d7f3e669ffef1de",
+          "document_ordinal": 0,
+          "absolute_start": 1455,
+          "absolute_end": 1576,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "d80c4ba68dd6aec2d38508673a86555310c022e2bf81bb0eed3276be91218157",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "8fc84da31a8ba6e2eb09ca8429a04a39b94c751932a614a4020f6b33c945eb9c",
+        "producer_receipt_id": "512eb053db88399a31224b0a5ca19ae1ec8d9e3f6a7c2b678e883a4645d12935",
+        "governed_scope_digest": "66c834791ec6111b571f2a856f27303fc2eb5b4dc9b3e735f35d9cf6e09cf74e",
+        "extraction_provenance_id": "3e935a29717f8fcb32aa6585fd9409ad569b2239ff70a6c811840af6d8646497"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "i",
+          "depth": 1,
+          "start_byte": 1454,
+          "end_byte": 2275
+        },
+        "chain": [
+          {
+            "path": "i",
+            "start_byte": 1454,
+            "end_byte": 2275,
+            "text": " commence mailing the Proxy Statement to the Company’s stockholders as promptly as practicable after filing with the SEC, and, in any event, either (a) the first (1st) business day after the date that is ten (10) calendar days after filing the Proxy Statement in preliminary form if, prior to such date, the SEC does not provide comments or indicates that it does not plan to provide comments or (b) within three (3) business days of being informed by the SEC staff that it has no further comments on the document, and (ii) take all necessary action, including establishing a record date and completing a broker search pursuant to Section 14a-13 of the Exchange Act, to permit the foregoing. Subject to the terms and conditions of this Agreement, the Proxy Statement will include the Company Board Recommendation.\n-56-\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 1451,
+            "text": "SECTION 6.10. Proxy Statement. The Company will, as soon as practicable following the date of this Agreement and in any event within ten (10) business days, prepare and file with the SEC the Proxy Statement in preliminary form, and the Company will use its reasonable best efforts to respond as promptly as practicable to any comments of the SEC with respect thereto. The Company will notify Parent promptly of the receipt of any comments from the SEC or its staff and of any request by the SEC or its staff for amendments or supplements to the Proxy Statement or for additional information and will supply Parent with copies of all correspondence between the Company or any of its representatives, on the one hand, and the SEC or its staff, on the other hand, with respect to the Proxy Statement. If at any time prior to receipt of the Company Stockholder Approval there shall occur any event that should be set forth in an amendment or supplement to the Proxy Statement, including correcting any information that has become false or misleading in any material respect, the Company will promptly prepare and mail to its stockholders such an amendment or supplement. Parent and its counsel shall be given a reasonable opportunity to review the Proxy Statement before it is filed with the SEC and the Company shall give due consideration to all reasonable additions, deletions, or changes thereto suggested by Parent and its counsel. The Company shall "
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.10",
+      "source_citation": "6.10",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the Company will promptly prepare and mail to its stockholders such an amendment or supplement",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Qualitative timing phrase has no governed day count or timing direction.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "871cd1caa035cf3f1979e4c094d920afafc2e71e8cf737bfa0dd32b8ad6c9ed0",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "add240d4b31e3b5326ab9c4ec47adcc23821021bf30cb7493c8f3ee0483eb30e",
+          "document_ordinal": 0,
+          "absolute_start": 1071,
+          "absolute_end": 1165,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "899461e81486ae5f83ae3baf861053e6c5a63c22254b199c3ffc0bbe12246cd4",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "8fc84da31a8ba6e2eb09ca8429a04a39b94c751932a614a4020f6b33c945eb9c",
+        "producer_receipt_id": "512eb053db88399a31224b0a5ca19ae1ec8d9e3f6a7c2b678e883a4645d12935",
+        "governed_scope_digest": "66c834791ec6111b571f2a856f27303fc2eb5b4dc9b3e735f35d9cf6e09cf74e",
+        "extraction_provenance_id": "3e935a29717f8fcb32aa6585fd9409ad569b2239ff70a6c811840af6d8646497"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 1451
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 1451,
+            "text": "SECTION 6.10. Proxy Statement. The Company will, as soon as practicable following the date of this Agreement and in any event within ten (10) business days, prepare and file with the SEC the Proxy Statement in preliminary form, and the Company will use its reasonable best efforts to respond as promptly as practicable to any comments of the SEC with respect thereto. The Company will notify Parent promptly of the receipt of any comments from the SEC or its staff and of any request by the SEC or its staff for amendments or supplements to the Proxy Statement or for additional information and will supply Parent with copies of all correspondence between the Company or any of its representatives, on the one hand, and the SEC or its staff, on the other hand, with respect to the Proxy Statement. If at any time prior to receipt of the Company Stockholder Approval there shall occur any event that should be set forth in an amendment or supplement to the Proxy Statement, including correcting any information that has become false or misleading in any material respect, the Company will promptly prepare and mail to its stockholders such an amendment or supplement. Parent and its counsel shall be given a reasonable opportunity to review the Proxy Statement before it is filed with the SEC and the Company shall give due consideration to all reasonable additions, deletions, or changes thereto suggested by Parent and its counsel. The Company shall "
+          }
+        ],
+        "markerless": false,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "0bde00b4e6b09068eec63b4d1d0c1a09cccdb3d8503bd1fbc23aea435aa05366",
+    "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "registry_substrate": {
+      "schema_version": "RESOLUTION_REGISTRY_SUBSTRATE_MANIFEST/V1",
+      "modules": [
+        {
+          "name": "materiality-qualifier",
+          "version": "RESOLUTION_MATERIALITY_QUALIFIER_REGISTRY/V1",
+          "digest": "sha256:6368129c33917101e97979baa1836e222894af0fe4ed98244ded61c4a7802515"
+        },
+        {
+          "name": "closing-condition-kinds",
+          "version": "RESOLUTION_CLOSING_CONDITION_KINDS_REGISTRY/V1",
+          "digest": "sha256:66bb6592c2f0c21125df9b12a03991aebbe5ca1832bacfb427eadd2df2327efc"
+        },
+        {
+          "name": "general-covenant",
+          "version": "RESOLUTION_GENERAL_COVENANT_REGISTRY/V1",
+          "digest": "sha256:c10453c1b9f700ed7962b3c3f66a1560dcbbbe42aa41692113097a67fb903737"
+        },
+        {
+          "name": "material-contract",
+          "version": "RESOLUTION_MATERIAL_CONTRACT_REGISTRY/V1",
+          "digest": "sha256:85159bed1f96102ea00f2f2acc57e8336c6901797f91c2345a357dc923528d9e"
+        },
+        {
+          "name": "interim-operating",
+          "version": "RESOLUTION_INTERIM_OPERATING_REGISTRY/V1",
+          "digest": "sha256:77e80a8cca7ab4277e74181ef6ea2f0a5410b75d96ad9ae984b7653f5265efae"
+        },
+        {
+          "name": "party-capacity",
+          "version": "RESOLUTION_PARTY_CAPACITY_REGISTRY/V1",
+          "digest": "sha256:1b089c7a6cf30f540043352234cb4109fe27013a554423c8d3ecd652272db202"
+        },
+        {
+          "name": "representation-topic",
+          "version": "REPRESENTATION_TOPIC_REGISTRY/V1",
+          "digest": "sha256:2240a6cfa6ac63d3fbf6a96afce185aed40a1d9919f2437b85a844aa996e1f28"
+        }
+      ],
+      "preserved_v1_collisions": [
+        {
+          "path": "UNDISCLOSED_LIABILITIES_EXCEPTION_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not reasonably be expected to have an MAE",
+          "v1_only": true,
+          "no_delete": true
+        },
+        {
+          "path": "MATERIALITY_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not, individually or in aggregate, have MAE",
+          "v1_only": true,
+          "no_delete": true
+        }
+      ]
+    },
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 3,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 9,
+      "resolved": 2,
+      "auto_pass": 0,
+      "review_queue": 4,
+      "open_world": 5,
+      "residuals": 0,
+      "provisions": 1,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "89a6fb02243fa3947cdf55e20b8864c917464878d28888345bc69f27e8bd9065"
+  }
+}

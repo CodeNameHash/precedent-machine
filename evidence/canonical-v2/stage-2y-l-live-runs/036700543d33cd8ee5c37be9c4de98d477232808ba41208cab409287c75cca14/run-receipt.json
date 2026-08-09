@@ -1,0 +1,1212 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+  "source_sha256": "a7d76e8a7f6efed945208b5870ddfa848438a7542806878bb2bc10646b557660",
+  "source_byte_length": 380704,
+  "root_section_id": "47ba18d9fc592beec8d2bfeed3ee881b60d80543a9f7a6f4c13add1c990edeeb",
+  "requested_section_references": [
+    "6.5"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "6.5",
+      "section_id": "be730f39bac728a330daf54a551ff5b27ca73c91b5758621960ef72365691c35",
+      "parent_section_id": "fed3d688610a82aaf6e069d335625d873cc33b0faafa7526fd14f4c9cb0da533",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 256233,
+      "end": 265190,
+      "text_sha256": "06c843f9934dfb73b69ad59f5bea7ec67e52a8c69cb5ce97f2c768ec7ebe82c2",
+      "section_family": "FINANCING_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-financing/v1",
+      "prompt_version": 3,
+      "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+        "input_scope_digest": "cadbc4d5ff165e629fefe9ac2485a79ca5b2dabf8dfac8b2f58c3057dbd69c5f",
+        "proposal_count": 10,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "be5b5ff0da4baa86eb25fa19d83327e35085f44e8edaf3d6d10880c6a82b683b"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "6.5",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.5",
+        "normalized_citation": "6.5",
+        "derived_citation": "6.5(a)"
+      },
+      "section_family": "FINANCING_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "d7b4f9a3a7c64398cc48f64859694f6a40d2323abe0894089e3c85df5d194dd9",
+          "claim_occurrence_id": "621061d304f014c3a93891721b4cc6c1192f92688dfffee7f733d6cbd25ada0f",
+          "subject_occurrence_id": "86b6bbb1f574bd0e3af3503f1e2da6311d861a5c0691bacf58c9bd2d13b91e21",
+          "claim_definition_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Parent and Merger Sub shall use reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things necessary, advisable or proper to obtain the proceeds of the Debt Financing contemplated by the Debt Commitment Letter on or prior to the Closing Date on the terms and conditions and in the amounts described in the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that are not materially less favorable (taken as a whole) to the Company",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "2c12772f025cbe5f3f1ed9d5322f3f1f3d0794503588a5693f344ce1cd5f4f79"
+          ],
+          "attributes": {
+            "section_reference": "6.5",
+            "assertion_kind": "OBTAIN_EFFORTS",
+            "financing_kind": "DEBT",
+            "standard_code": "REASONABLE_BEST_EFFORTS",
+            "obligor": "Parent and Merger Sub",
+            "day_kind": null,
+            "delivery_stage": null,
+            "deliverable_term": null,
+            "marketing_term": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "2c12772f025cbe5f3f1ed9d5322f3f1f3d0794503588a5693f344ce1cd5f4f79",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "772988c16a02b9140a360d8aca21cff3178e4c598de645f405e7ac5966bcb177",
+              "document_ordinal": 0,
+              "absolute_start": 19,
+              "absolute_end": 541,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "9ce5176ef7c0311f84ea7d14c07fc6732b702cfb5ef19525920a30ee4f604504"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "FINANCING_COVENANT",
+          "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+          "producer_receipt_id": "be5b5ff0da4baa86eb25fa19d83327e35085f44e8edaf3d6d10880c6a82b683b",
+          "governed_scope_digest": "d1a724c0172414d7cf379e73848637e90e4e1636dced1441244f17d376c4c013",
+          "extraction_provenance_id": "fb55225bd797b317fa0e116f3695fa7c9f7bc7e7e3884d0e9e5ac1ce04ae9668"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.5",
+        "normalized_citation": "6.5",
+        "derived_citation": "6.5(a)"
+      },
+      "section_family": "FINANCING_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "8c40a23e7e09cca010db5bf8070c303a0fb4e07a74d3bcb4f4f3fe4d0ed1bf85",
+          "claim_occurrence_id": "f10f1ac21a31d7076af1c726781e27cbba6fb870451e2bb665c76341a9096630",
+          "subject_occurrence_id": "7c52c0d1ca60bc514eb5eb941f76f3fc68fa29b1d60ebfa38d328329adba1b2a",
+          "claim_definition_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "using reasonable best efforts to negotiate and enter into definitive debt financing agreements on the terms and conditions contemplated by the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that are not materially less favorable (taken as a whole) to the Company (the “Definitive Debt Financing Agreements”)",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "a4b0a1a52dd2ee07ee5859dcd5d4757394555fd70eca0315a41f41d30df6d83c"
+          ],
+          "attributes": {
+            "section_reference": "6.5",
+            "assertion_kind": "OBTAIN_EFFORTS",
+            "financing_kind": "DEBT",
+            "standard_code": "REASONABLE_BEST_EFFORTS",
+            "obligor": "Parent",
+            "day_kind": null,
+            "delivery_stage": null,
+            "deliverable_term": null,
+            "marketing_term": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "a4b0a1a52dd2ee07ee5859dcd5d4757394555fd70eca0315a41f41d30df6d83c",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "75b3dc4dc4521c1f68d864aae002f00c3ebf44f0cfd0208cf3e4676de24377fb",
+              "document_ordinal": 0,
+              "absolute_start": 1153,
+              "absolute_end": 1513,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "7fa2b574ff86adf5077598beee8ee00b7a589ada5a0b433472f4165f446095d3"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "FINANCING_COVENANT",
+          "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+          "producer_receipt_id": "be5b5ff0da4baa86eb25fa19d83327e35085f44e8edaf3d6d10880c6a82b683b",
+          "governed_scope_digest": "d1a724c0172414d7cf379e73848637e90e4e1636dced1441244f17d376c4c013",
+          "extraction_provenance_id": "fb55225bd797b317fa0e116f3695fa7c9f7bc7e7e3884d0e9e5ac1ce04ae9668"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.5",
+        "normalized_citation": "6.5",
+        "derived_citation": "6.5(c)"
+      },
+      "section_family": "FINANCING_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "f55e4105a94faa901283e6d09f05641413c8fed7f98795540671b6a7a828deec",
+          "claim_occurrence_id": "0f4477e143da638de458ecf52f95102d375a73ac811e048b08e8381c0118a6f9",
+          "subject_occurrence_id": "ff43bb3f1789de0297381aa1530c3ed1af4ae62e7cb8408dc8701a1711cb1636",
+          "claim_definition_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Parent shall (i) use reasonable best efforts to arrange and obtain, as promptly as practicable, from the same and/or alternative debt or preferred equity financing sources, as applicable, alternative financing in an amount, together with the amount of Financing remaining available and cash and cash equivalent on hand at the Company and its Subsidiaries, sufficient to pay the Required Amount on the Closing Date, in each case, upon terms and conditions not materially less favorable, taken as a whole, than those set forth in the Debt Commitment Letter (including, for the avoidance of doubt, any related “market flex” provisions) (“Alternative Financing”)",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "37bb2b6fbb877e4717c034c0a118267cc8dc3febf74104d6bf13df0f035d65f7"
+          ],
+          "attributes": {
+            "section_reference": "6.5",
+            "assertion_kind": "OBTAIN_EFFORTS",
+            "financing_kind": null,
+            "standard_code": "REASONABLE_BEST_EFFORTS",
+            "obligor": "Parent",
+            "day_kind": null,
+            "delivery_stage": null,
+            "deliverable_term": null,
+            "marketing_term": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "37bb2b6fbb877e4717c034c0a118267cc8dc3febf74104d6bf13df0f035d65f7",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "49de1c7bc2907bffb9bdd8ee1efb021aec5e60d837809a308d672f16e12ac4da",
+              "document_ordinal": 0,
+              "absolute_start": 7051,
+              "absolute_end": 7717,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "94c33b95057b5ff576167b288666526c5e2bb255d22afd6166881fb143954420"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "FINANCING_COVENANT",
+          "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+          "producer_receipt_id": "be5b5ff0da4baa86eb25fa19d83327e35085f44e8edaf3d6d10880c6a82b683b",
+          "governed_scope_digest": "d1a724c0172414d7cf379e73848637e90e4e1636dced1441244f17d376c4c013",
+          "extraction_provenance_id": "fb55225bd797b317fa0e116f3695fa7c9f7bc7e7e3884d0e9e5ac1ce04ae9668"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": null,
+      "section_family": "FINANCING_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "f12ce7759c80f4ba02e9deac6ee7192677a95105950c1478e36f141db1c65b8e",
+          "claim_occurrence_id": "12469354b6961260d145531a01f79f6e83737a2623700615ce69556c4e6e4d51",
+          "subject_occurrence_id": "ba7d3ed6347444e4333aff332f95a1c5fdeb8830373aa5bda430e29eef05a20a",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "(including any “flex” provisions)",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "0c46665e0e991ed9e32b57454a4487dfc4fda8eee1fcc2d5466d0bbcf078cbaf"
+          ],
+          "attributes": {
+            "why_unmapped": "MARKET_FLEX: Debt Financing terms include flex provisions.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "0c46665e0e991ed9e32b57454a4487dfc4fda8eee1fcc2d5466d0bbcf078cbaf",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "df3770e29dd859a1884793fabdd3aa5096dec986dd812edb16c3ee681dd333b3",
+              "document_ordinal": 0,
+              "absolute_start": 396,
+              "absolute_end": 433,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "0db9e70f3dfaaf1c858274756f44313c7de10f916cd2b2171578c85fbb34865a"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+          "producer_receipt_id": "be5b5ff0da4baa86eb25fa19d83327e35085f44e8edaf3d6d10880c6a82b683b",
+          "governed_scope_digest": "d1a724c0172414d7cf379e73848637e90e4e1636dced1441244f17d376c4c013",
+          "extraction_provenance_id": "e02f987f1a64b9b16d59c44682b78fd8f3e76862f85e0e6fe8dc1e2fb30ebd50"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": null,
+      "section_family": "FINANCING_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "8b08ebd804a6b7636474582fa294df0fbfd2530595685b6fdc79ce46e40b9d75",
+          "claim_occurrence_id": "3902635446c46b9873ba86cb3dac323902ce54b6da09516b7ee57fad14a051cd",
+          "subject_occurrence_id": "ddf9cefd7cf2c0df94c0d99de1d5d757cc18cf673211267d0d1fb9d126778d4f",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "amend, modify, supplement, restate, assign, substitute or replace the Debt Commitment Letter to add and appoint additional arrangers, bookrunners, underwriters, agents, lenders and similar entities",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "211daae95ece99507a88fc7546ab8196e48a0039f91739063ab18667a9ede71f"
+          ],
+          "attributes": {
+            "why_unmapped": "LENDER_ARRANGEMENT: Parent may change the Debt Commitment Letter to add or appoint specified financing parties.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "211daae95ece99507a88fc7546ab8196e48a0039f91739063ab18667a9ede71f",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "2a8b98e01a6ce78cbfd8357bcc0aaebfdea80a7c4cc1b0ebf894e79cc79b2ea7",
+              "document_ordinal": 0,
+              "absolute_start": 6064,
+              "absolute_end": 6261,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "db180b27a5b520ec7124e75fba744ff321a04e5d078053374abe2266753302ee"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+          "producer_receipt_id": "be5b5ff0da4baa86eb25fa19d83327e35085f44e8edaf3d6d10880c6a82b683b",
+          "governed_scope_digest": "d1a724c0172414d7cf379e73848637e90e4e1636dced1441244f17d376c4c013",
+          "extraction_provenance_id": "e02f987f1a64b9b16d59c44682b78fd8f3e76862f85e0e6fe8dc1e2fb30ebd50"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": null,
+      "section_family": "FINANCING_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "acaf7b08cfec52961247dfe656ccf44595262b3ec60eb567101901aeb895941f",
+          "claim_occurrence_id": "e5a85bb3231d96c213b5fc14d49276adbc381c7bd6bff0eed7895d1b85ecef52",
+          "subject_occurrence_id": "34390331ac21ad9294dd73c8013169057d237098195f9bb533e46c117e880873",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "If all or any portion of the Debt Financing becomes unavailable, or the Debt Commitment Letter or any of the Definitive Debt Financing Agreements shall be withdrawn, repudiated, terminated or rescinded, regardless of the reason therefor, then Parent shall (i) use reasonable best efforts to arrange and obtain, as promptly as practicable, from the same and/or alternative debt or preferred equity financing sources, as applicable, alternative financing",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "4c78c1a349bffa84b0ce5078adb904b378b40256bd94e886836574542a6b67d6"
+          ],
+          "attributes": {
+            "why_unmapped": "ALTERNATIVE_FINANCING: Alternative financing mechanism applies if Debt Financing is unavailable or financing documents are withdrawn, repudiated, terminated or rescinded.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "4c78c1a349bffa84b0ce5078adb904b378b40256bd94e886836574542a6b67d6",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "fa7a3622d40177990718b3b0aaadc45b0ed515494bfb90f2d98427abaed597da",
+              "document_ordinal": 0,
+              "absolute_start": 6808,
+              "absolute_end": 7260,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "b93b4f8283fdf94af9f5ef1cfd95061a309cbbd0f5f400cbc9155d3e115da5ee"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+          "producer_receipt_id": "be5b5ff0da4baa86eb25fa19d83327e35085f44e8edaf3d6d10880c6a82b683b",
+          "governed_scope_digest": "d1a724c0172414d7cf379e73848637e90e4e1636dced1441244f17d376c4c013",
+          "extraction_provenance_id": "e02f987f1a64b9b16d59c44682b78fd8f3e76862f85e0e6fe8dc1e2fb30ebd50"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": null,
+      "section_family": "FINANCING_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "7e64650a51b774ea46464218c0369c0521ecb99d3f0e86e3e7594d712e4cf224",
+          "claim_occurrence_id": "0fa238526e19bcef65936942cfeca79e4234e5eb280f35bf85f79401582289ea",
+          "subject_occurrence_id": "4fc3f84f40ae950d1d1e9e6ec61b2e2230c01d45e76bb26019df5978a676bedf",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "(including, for the avoidance of doubt, any related “market flex” provisions)",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "f1a50a9882c079e4cb638e710a43778d1b6dadf0807aa09495d90f93cf35ec1f"
+          ],
+          "attributes": {
+            "why_unmapped": "MARKET_FLEX: Alternative Financing comparison includes related market flex provisions.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "f1a50a9882c079e4cb638e710a43778d1b6dadf0807aa09495d90f93cf35ec1f",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "80f078f719184392ba80ad2f9bac42b362b7813e58eb2838ca82f65ec636b118",
+              "document_ordinal": 0,
+              "absolute_start": 7606,
+              "absolute_end": 7687,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "d24ab0f08309b9411a88b8332b914f9aaec4b1aa7f61effaa7ef46addb25c07b"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+          "producer_receipt_id": "be5b5ff0da4baa86eb25fa19d83327e35085f44e8edaf3d6d10880c6a82b683b",
+          "governed_scope_digest": "d1a724c0172414d7cf379e73848637e90e4e1636dced1441244f17d376c4c013",
+          "extraction_provenance_id": "e02f987f1a64b9b16d59c44682b78fd8f3e76862f85e0e6fe8dc1e2fb30ebd50"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": null,
+      "section_family": "FINANCING_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "d4ca130bd9ba61b7b91907b2722db3350f5dc1644fea534517e96529f03cdba0",
+          "claim_occurrence_id": "1f5a08f1b3009fc0f67009babe409845a6672a14f00d05b3c41c59d05188b213",
+          "subject_occurrence_id": "0e4021126bf11bdd3f657bafbbf9b9f3373276a8f0acb8cf820b4a683ecd57c1",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "promptly providing to the Company drafts of material definitive agreements for the Debt Financing (and any amendments thereto entered into on or prior to the Closing)",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "7d565bb6fa7766b2c0b48a1f4f7165c6bc59ff540bdc858c7a503a2449aef31f"
+          ],
+          "attributes": {
+            "why_unmapped": "Draft furnishing limb is not a governed delivery-stage fact.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "7d565bb6fa7766b2c0b48a1f4f7165c6bc59ff540bdc858c7a503a2449aef31f",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "2f4cba24681f89017c26d6dc7a46db3aee4c6ca1fc8e97ef9a25ba914edb2601",
+              "document_ordinal": 0,
+              "absolute_start": 2221,
+              "absolute_end": 2387,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "9a5ec445c661ae3a04f58eec6ffb39e37fdd5b5be0826506cc765ada207612e4"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+          "producer_receipt_id": "be5b5ff0da4baa86eb25fa19d83327e35085f44e8edaf3d6d10880c6a82b683b",
+          "governed_scope_digest": "d1a724c0172414d7cf379e73848637e90e4e1636dced1441244f17d376c4c013",
+          "extraction_provenance_id": "e02f987f1a64b9b16d59c44682b78fd8f3e76862f85e0e6fe8dc1e2fb30ebd50"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": null,
+      "section_family": "FINANCING_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "8a1d842b1309d8f234d065ff6ce2d59bc3c8bfe2211b022ad9441edec86521b5",
+          "claim_occurrence_id": "bb45095617ec1ec24ce296f708911e5ff52e8e27045554bf0a7fb6ff3a296b03",
+          "subject_occurrence_id": "e43e0cb502530bfccfce22df267e228ecab96fec0bde13253140b8033869dd5d",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Parent shall promptly deliver to the Company copies of any such amendment, replacement, supplement or other modification of the Debt Commitment Letter and/or any such waiver of a provision of the Debt Commitment Letter.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "fea4f5d63dda82ae156d66db85494e9d13e8d8a7365174c84b281e94ee50e72b"
+          ],
+          "attributes": {
+            "why_unmapped": "Delivery obligation does not state a governed financing-covenant assertion kind.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "fea4f5d63dda82ae156d66db85494e9d13e8d8a7365174c84b281e94ee50e72b",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "e46b9cec715f3db91ae4109631ecdea712e91c2de2829e5d853c8b043930e04d",
+              "document_ordinal": 0,
+              "absolute_start": 6584,
+              "absolute_end": 6803,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "fb0a77c9779fdea7b6be0a16405ffed487a72a7b6d9310eb723ac63aab29aee8"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+          "producer_receipt_id": "be5b5ff0da4baa86eb25fa19d83327e35085f44e8edaf3d6d10880c6a82b683b",
+          "governed_scope_digest": "d1a724c0172414d7cf379e73848637e90e4e1636dced1441244f17d376c4c013",
+          "extraction_provenance_id": "e02f987f1a64b9b16d59c44682b78fd8f3e76862f85e0e6fe8dc1e2fb30ebd50"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": null,
+      "section_family": "FINANCING_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "c1dec6a91304262ddcfd196c8324b9c6db92f5ebebc75695e257105cd0de2796",
+          "claim_occurrence_id": "64cd6409c6d44bdd9c459cc9c1e069c9ecbda8584a1152f5e6ac4cd4c37603ea",
+          "subject_occurrence_id": "d615f4a881674345e2cdf559616de76bcf93dd8cf1967b924cae2f71363569d8",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "such reasonable best efforts shall not require Parent to pay more fees, OIDs or incur an increase in pricing than the pricing terms of the Debt Commitment Letter, as in effect on the date of this Agreement, taking into account any flex terms.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "6d68848902d61e8892e27d4d542da437d6ca1ba6c84560df0a80940ba1da1062"
+          ],
+          "attributes": {
+            "why_unmapped": "Fees, OIDs and pricing limitations remain open world.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "6d68848902d61e8892e27d4d542da437d6ca1ba6c84560df0a80940ba1da1062",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "c7cc3f85491ca30ce0f04ae7e3683a69127813442b85c0e69de12ec78c1cee06",
+              "document_ordinal": 0,
+              "absolute_start": 7817,
+              "absolute_end": 8059,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "f0ee6aa019475e3e2b6ea546a478f9e2f684615e2f4feb991f0a44a55c8130fa"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "77bccacc29b0bc4c462a4699dea526fa7a2af14ef7f6ed54370195503d5a5d05",
+          "producer_receipt_id": "be5b5ff0da4baa86eb25fa19d83327e35085f44e8edaf3d6d10880c6a82b683b",
+          "governed_scope_digest": "d1a724c0172414d7cf379e73848637e90e4e1636dced1441244f17d376c4c013",
+          "extraction_provenance_id": "e02f987f1a64b9b16d59c44682b78fd8f3e76862f85e0e6fe8dc1e2fb30ebd50"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "6.5",
+      "source_byte_length": 8957,
+      "covered_byte_length": 2615,
+      "coverage_share": 0.2919504298314168,
+      "marker_counts": {
+        "as of": 0,
+        "except": 0,
+        "knowledge": 0,
+        "material": 7,
+        "total": 7
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "LOW_SPAN_COVERAGE",
+          "coverage_share": 0.2919504298314168,
+          "threshold": 0.5
+        },
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 7,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "6.5",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 15,
+          "end": 18
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 553,
+          "end": 556
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 717,
+          "end": 721
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1147,
+          "end": 1152
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1515,
+          "end": 1519
+        },
+        {
+          "token": "(v)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1708,
+          "end": 1711
+        },
+        {
+          "token": "(vi)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1949,
+          "end": 1953
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2429,
+          "end": 2432
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2638,
+          "end": 2642
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2771,
+          "end": 2776
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2900,
+          "end": 2904
+        },
+        {
+          "token": "(v)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3378,
+          "end": 3381
+        },
+        {
+          "token": "(vi)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3647,
+          "end": 3651
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3750,
+          "end": 3753
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3905,
+          "end": 3908
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4090,
+          "end": 4093
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 4396,
+          "end": 4399
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4797,
+          "end": 4800
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5034,
+          "end": 5037
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5179,
+          "end": 5182
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5627,
+          "end": 5630
+        },
+        {
+          "token": "(D)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5870,
+          "end": 5873
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6059,
+          "end": 6063
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6804,
+          "end": 6807
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7064,
+          "end": 7067
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7722,
+          "end": 7726
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 8146,
+          "end": 8149
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 24,
+        "section_paragraph_marker": 2,
+        "cross_reference_marker": 1
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 553,
+          "end": 556
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 717,
+          "end": 721
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 1147,
+          "end": 1152
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iv)",
+          "family": "ROMAN",
+          "start": 1515,
+          "end": 1519
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(v)",
+          "family": "ROMAN",
+          "start": 1708,
+          "end": 1711
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(vi)",
+          "family": "ROMAN",
+          "start": 1949,
+          "end": 1953
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 2429,
+          "end": 2432
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 2638,
+          "end": 2642
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 2771,
+          "end": 2776
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iv)",
+          "family": "ROMAN",
+          "start": 2900,
+          "end": 2904
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(v)",
+          "family": "ROMAN",
+          "start": 3378,
+          "end": 3381
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(vi)",
+          "family": "ROMAN",
+          "start": 3647,
+          "end": 3651
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 3750,
+          "end": 3753
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 3905,
+          "end": 3908
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 4090,
+          "end": 4093
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 4797,
+          "end": 4800
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 5034,
+          "end": 5037
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 5179,
+          "end": 5182
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 5627,
+          "end": 5630
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(D)",
+          "family": "ALPHA_UPPER",
+          "start": 5870,
+          "end": 5873
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 6059,
+          "end": 6063
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6804,
+          "end": 6807
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 6804,
+          "end": 6807
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 7064,
+          "end": 7067
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 7722,
+          "end": 7726
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 8146,
+          "end": 8149
+        }
+      ],
+      "disagreement_count": 26
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 10,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "32d747ede0ea65ef0de1f9721348e9ed56543bd3f98bf45ab5965f12afe0a356"
+}

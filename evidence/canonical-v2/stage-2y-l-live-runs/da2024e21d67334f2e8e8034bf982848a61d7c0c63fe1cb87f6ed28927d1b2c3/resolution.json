@@ -1,0 +1,241 @@
+{
+  "resolved": [],
+  "review_queue": [],
+  "open_world": [
+    {
+      "section_reference": "4.13",
+      "source_citation": "4.13",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the availability of the Parent Credit Facility",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Bare financing availability statement; no governed positive financing covenant.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "3186b99368c74d50f39940debbb30cfcbf5e4a764b8968c0f8d271bb689f53f2",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "85bbbd6c6bd393bc1dadf5e0fa6c5e3439c766f0273de368634fd91f49a803a0",
+          "document_ordinal": 0,
+          "absolute_start": 351,
+          "absolute_end": 397,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "d49e6bc3bab243d9fc20d5c6fe55fa630c4a2e2766d8aea4f28e84d8e96ef14a",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "048c4ad4e02cd7e951dc80289936f2f548810f9299f023fe04e451d465e96b02",
+        "producer_receipt_id": "8ecc24535aa387c292a922c52c0071fe10ab2f6e2786efdd601036cb9dc068f8",
+        "governed_scope_digest": "6b104e15ad2d8ceb19b0f9dba3a876acb895e5696e0e88779008a8756bdf2ffc",
+        "extraction_provenance_id": "0c2423cb6974674ad947758c44d3626de795c9ac13147caa0d1031b8d000c026"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 915
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 915,
+            "text": "Section 4.13 Sufficient Funds. Assuming the conditions to the obligation of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub to consummate the Mergers set forth in Section 6.2(a) and Section 6.2(b) have been satisfied or waived, as of the date hereof and at the Closing, Parent, together with the amount of the Company’s cash on hand and the availability of the Parent Credit Facility, will have sufficient cash for the payment of the Company Preferred Share Merger Consideration, the cash portion of the Company Common Share Merger Consideration, the cash portion of the OpCo Common Unit Merger Consideration, the Payoff Amount, all other amounts required to be paid by Parent in connection with the consummation of the Transactions and all fees and expenses of Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub, the Company and the Partnership incurred in connection with the Transactions.\n49\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "4.13",
+      "source_citation": "4.13",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the Payoff Amount",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Bare payoff reference; no express advance day count.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "09de13d658e6c6bcd8f33e1b4f1b59e04e5324aca78dc1506a875135a4ccca51",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "6157a1c219187f84b963000cc8eb12a95e15381654ef1166b957d245b68e4021",
+          "document_ordinal": 0,
+          "absolute_start": 624,
+          "absolute_end": 641,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "2e9b3803eb85db176f35005e634229b728c433c2902d3573e1cfe707a8acad0e",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "048c4ad4e02cd7e951dc80289936f2f548810f9299f023fe04e451d465e96b02",
+        "producer_receipt_id": "8ecc24535aa387c292a922c52c0071fe10ab2f6e2786efdd601036cb9dc068f8",
+        "governed_scope_digest": "6b104e15ad2d8ceb19b0f9dba3a876acb895e5696e0e88779008a8756bdf2ffc",
+        "extraction_provenance_id": "0c2423cb6974674ad947758c44d3626de795c9ac13147caa0d1031b8d000c026"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 915
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 915,
+            "text": "Section 4.13 Sufficient Funds. Assuming the conditions to the obligation of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub to consummate the Mergers set forth in Section 6.2(a) and Section 6.2(b) have been satisfied or waived, as of the date hereof and at the Closing, Parent, together with the amount of the Company’s cash on hand and the availability of the Parent Credit Facility, will have sufficient cash for the payment of the Company Preferred Share Merger Consideration, the cash portion of the Company Common Share Merger Consideration, the cash portion of the OpCo Common Unit Merger Consideration, the Payoff Amount, all other amounts required to be paid by Parent in connection with the consummation of the Transactions and all fees and expenses of Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub, the Company and the Partnership incurred in connection with the Transactions.\n49\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "b3a5282a2a5d186b023e50e2adc2d324769bba7847a42f143bbfa419bf9165b3",
+    "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "registry_substrate": {
+      "schema_version": "RESOLUTION_REGISTRY_SUBSTRATE_MANIFEST/V1",
+      "modules": [
+        {
+          "name": "materiality-qualifier",
+          "version": "RESOLUTION_MATERIALITY_QUALIFIER_REGISTRY/V1",
+          "digest": "sha256:6368129c33917101e97979baa1836e222894af0fe4ed98244ded61c4a7802515"
+        },
+        {
+          "name": "closing-condition-kinds",
+          "version": "RESOLUTION_CLOSING_CONDITION_KINDS_REGISTRY/V1",
+          "digest": "sha256:66bb6592c2f0c21125df9b12a03991aebbe5ca1832bacfb427eadd2df2327efc"
+        },
+        {
+          "name": "general-covenant",
+          "version": "RESOLUTION_GENERAL_COVENANT_REGISTRY/V1",
+          "digest": "sha256:c10453c1b9f700ed7962b3c3f66a1560dcbbbe42aa41692113097a67fb903737"
+        },
+        {
+          "name": "material-contract",
+          "version": "RESOLUTION_MATERIAL_CONTRACT_REGISTRY/V1",
+          "digest": "sha256:85159bed1f96102ea00f2f2acc57e8336c6901797f91c2345a357dc923528d9e"
+        },
+        {
+          "name": "interim-operating",
+          "version": "RESOLUTION_INTERIM_OPERATING_REGISTRY/V1",
+          "digest": "sha256:77e80a8cca7ab4277e74181ef6ea2f0a5410b75d96ad9ae984b7653f5265efae"
+        },
+        {
+          "name": "party-capacity",
+          "version": "RESOLUTION_PARTY_CAPACITY_REGISTRY/V1",
+          "digest": "sha256:1b089c7a6cf30f540043352234cb4109fe27013a554423c8d3ecd652272db202"
+        },
+        {
+          "name": "representation-topic",
+          "version": "REPRESENTATION_TOPIC_REGISTRY/V1",
+          "digest": "sha256:2240a6cfa6ac63d3fbf6a96afce185aed40a1d9919f2437b85a844aa996e1f28"
+        }
+      ],
+      "preserved_v1_collisions": [
+        {
+          "path": "UNDISCLOSED_LIABILITIES_EXCEPTION_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not reasonably be expected to have an MAE",
+          "v1_only": true,
+          "no_delete": true
+        },
+        {
+          "path": "MATERIALITY_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not, individually or in aggregate, have MAE",
+          "v1_only": true,
+          "no_delete": true
+        }
+      ]
+    },
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 3,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 2,
+      "resolved": 0,
+      "auto_pass": 0,
+      "review_queue": 0,
+      "open_world": 2,
+      "residuals": 0,
+      "provisions": 0,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "0bc9bfd9b65570719bf1e9db88519b12b1706f8c1915dda14cdd7cc4e9b9efa5"
+  }
+}

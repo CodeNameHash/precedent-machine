@@ -1,0 +1,62 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "eac048c3508dd38e7957fba9701cc4965677e11c2d6c52e164b03394351fa23b",
+  "review_queue": [
+    {
+      "section_reference": "6.01",
+      "source_citation": "6.01",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY-MERGERSUB-APPROVAL",
+      "reasons": [
+        "AMBIGUOUS_PROXY_MEETING_KIND"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Immediately following the execution of this Agreement, Parent, as sole stockholder of Merger Sub, shall adopt this Agreement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "186367339e7bf4d7a0513b9dc173161fca24401fc97f210b2a39e04c9e7591a9",
+      "closure_id": "8ede8602c03c210fb36235dcf62d93f24097c645a2402118bd45e9e1e2e5b9a7",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "03b64027a487f782d15cae3669b1771dbcf28ad0340293e7e68bde6145d2f9f0",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "a5644141cc550baf9f98c31c3c0e0a1fa562e604643f2bb348bf9d072a6b2d5b",
+          "document_ordinal": 0,
+          "absolute_start": 38,
+          "absolute_end": 163,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Immediately following the execution of this Agreement, Parent, as sole stockholder of Merger Sub, shall adopt this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY-MERGERSUB-APPROVAL",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 169
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 169,
+            "text": "SECTION 6.01. Approval of the Merger. Immediately following the execution of this Agreement, Parent, as sole stockholder of Merger Sub, shall adopt this Agreement.\n-47-\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "f5673353a1aca6388de1b4d5c35fdd941eb08fa399623b9382b944f61fd273ec"
+}

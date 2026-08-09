@@ -1,0 +1,230 @@
+{
+  "resolved": [],
+  "review_queue": [
+    {
+      "section_reference": "6.19",
+      "source_citation": "6.19",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_OBTAIN_EFFORTS_STANDARD",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company shall use reasonable best efforts to deliver Payoff Deliverables with respect to the Repaid Indebtedness",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "db89bd61990eec21d0102965531649f123dbb97d7d7e3936e80835a95300982e",
+      "closure_id": "397abe49e578e7a700544b901352af72d6ebdb3b70d889c02298b9c4bde1316d",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "387ce22adef992a98553a7faeb93dcce91fe5a9157af34eb50950a8cd2ca8bfd",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "29dfa50413b78210220daf6e0b77884033c8e012b6e91c323992321bddd52f44",
+          "document_ordinal": 0,
+          "absolute_start": 26,
+          "absolute_end": 142,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company shall use reasonable best efforts to deliver Payoff Deliverables with respect to the Repaid Indebtedness",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 359
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 359,
+            "text": "6.19 Repaid Indebtedness. The Company shall use reasonable best efforts to deliver Payoff Deliverables with respect to the Repaid Indebtedness (giving due regard to local market practice in connection with the repayment in full and termination of commitments of a debt facility in the applicable jurisdiction), at least one Business Day prior to the Closing.\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "6.19",
+      "source_citation": "6.19",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "at least one Business Day prior to the Closing",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Express lead time applies to delivery of payoff deliverables, not a financing covenant code.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e94c721b0b16c0a304f16348299cbd14ceb738ed555876a2faf1ba4e1f3bbe2a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9255089b163252c6092f5134bde2f157387b71094bfd6be709cd9f90fc4d91ee",
+          "document_ordinal": 0,
+          "absolute_start": 311,
+          "absolute_end": 357,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "796730a6a7d73e65a1820084f773eef2e023397399f9d70dd5ef2a67e35df8e6",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "6d0354365691aac9bc8cbc264b79c6976b9809a7c1844ad46170a9e1b5715c32",
+        "producer_receipt_id": "62e2dd437feb3267e7146464b29af6585867349fec94b3cbfb0c742f8556e201",
+        "governed_scope_digest": "c25073be347eec5b4e69a07f8b8af1fe61c9bf509bb1b423dc9ec92d440c8aa8",
+        "extraction_provenance_id": "152baedb231c3c84f697568419e3b0d6fb99fec9ba87c3890e5b97de3bbcd3fa"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 359
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 359,
+            "text": "6.19 Repaid Indebtedness. The Company shall use reasonable best efforts to deliver Payoff Deliverables with respect to the Repaid Indebtedness (giving due regard to local market practice in connection with the repayment in full and termination of commitments of a debt facility in the applicable jurisdiction), at least one Business Day prior to the Closing.\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "dd1717be2d06ff7a7c1698a4302d523a8992782fd73f00af7d868dbf1608b0f4",
+    "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "registry_substrate": {
+      "schema_version": "RESOLUTION_REGISTRY_SUBSTRATE_MANIFEST/V1",
+      "modules": [
+        {
+          "name": "materiality-qualifier",
+          "version": "RESOLUTION_MATERIALITY_QUALIFIER_REGISTRY/V1",
+          "digest": "sha256:6368129c33917101e97979baa1836e222894af0fe4ed98244ded61c4a7802515"
+        },
+        {
+          "name": "closing-condition-kinds",
+          "version": "RESOLUTION_CLOSING_CONDITION_KINDS_REGISTRY/V1",
+          "digest": "sha256:66bb6592c2f0c21125df9b12a03991aebbe5ca1832bacfb427eadd2df2327efc"
+        },
+        {
+          "name": "general-covenant",
+          "version": "RESOLUTION_GENERAL_COVENANT_REGISTRY/V1",
+          "digest": "sha256:c10453c1b9f700ed7962b3c3f66a1560dcbbbe42aa41692113097a67fb903737"
+        },
+        {
+          "name": "material-contract",
+          "version": "RESOLUTION_MATERIAL_CONTRACT_REGISTRY/V1",
+          "digest": "sha256:85159bed1f96102ea00f2f2acc57e8336c6901797f91c2345a357dc923528d9e"
+        },
+        {
+          "name": "interim-operating",
+          "version": "RESOLUTION_INTERIM_OPERATING_REGISTRY/V1",
+          "digest": "sha256:77e80a8cca7ab4277e74181ef6ea2f0a5410b75d96ad9ae984b7653f5265efae"
+        },
+        {
+          "name": "party-capacity",
+          "version": "RESOLUTION_PARTY_CAPACITY_REGISTRY/V1",
+          "digest": "sha256:1b089c7a6cf30f540043352234cb4109fe27013a554423c8d3ecd652272db202"
+        },
+        {
+          "name": "representation-topic",
+          "version": "REPRESENTATION_TOPIC_REGISTRY/V1",
+          "digest": "sha256:2240a6cfa6ac63d3fbf6a96afce185aed40a1d9919f2437b85a844aa996e1f28"
+        }
+      ],
+      "preserved_v1_collisions": [
+        {
+          "path": "UNDISCLOSED_LIABILITIES_EXCEPTION_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not reasonably be expected to have an MAE",
+          "v1_only": true,
+          "no_delete": true
+        },
+        {
+          "path": "MATERIALITY_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not, individually or in aggregate, have MAE",
+          "v1_only": true,
+          "no_delete": true
+        }
+      ]
+    },
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 3,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 2,
+      "resolved": 0,
+      "auto_pass": 0,
+      "review_queue": 1,
+      "open_world": 1,
+      "residuals": 0,
+      "provisions": 0,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "5b29c3f914d5ed19c50ccdc56fcc0963f80d9b22388371e34c569628de1a8356"
+  }
+}

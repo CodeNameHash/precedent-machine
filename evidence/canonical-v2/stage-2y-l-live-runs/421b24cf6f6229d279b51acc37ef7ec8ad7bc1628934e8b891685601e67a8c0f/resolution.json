@@ -1,0 +1,376 @@
+{
+  "resolved": [],
+  "review_queue": [
+    {
+      "section_reference": "5.8",
+      "source_citation": "5.8(b)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_COOPERATION_PRESENT",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company and Parent shall cooperate with each other with respect to customary actions for transactions of this type that are reasonably requested by Parent to be taken by the Company or its Subsidiaries under the various tool financing loans the Company or its Subsidiaries have entered into with financing lenders party thereto or any of the Company’s other loan arrangements.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "0405307eb356e3df66a9ccf291e52ae977a29b6941e78ade04b262365d04ee88",
+      "closure_id": "e1d7bccea9c4c99d6de9fca086048a8d6304b7425ac6bf56f6b5131eeeaa4024",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b1eab4a25d61182aca465b0361f0762be277152e792bf09a516111316a583ade",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "68fcb40c8f8bccb6b68fe365af8495835ed3c234ddc4777dfbbf3434fd209e45",
+          "document_ordinal": 0,
+          "absolute_start": 1346,
+          "absolute_end": 1728,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the Company and Parent shall cooperate with each other with respect to customary actions for transactions of this type that are reasonably requested by Parent to be taken by the Company or its Subsidiaries under the various tool financing loans the Company or its Subsidiaries have entered into with financing lenders party thereto or any of the Company’s other loan arrangements.",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 1313,
+          "end_byte": 1729
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 1313,
+            "end_byte": 1729,
+            "text": " Without limiting the foregoing, the Company and Parent shall cooperate with each other with respect to customary actions for transactions of this type that are reasonably requested by Parent to be taken by the Company or its Subsidiaries under the various tool financing loans the Company or its Subsidiaries have entered into with financing lenders party thereto or any of the Company’s other loan arrangements.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 47,
+            "text": "Section 5.8 Treatment of Company Indebtedness.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.8",
+      "source_citation": "5.8(a)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "PAYOFF_DELIVERY_LEAD_TIME_DAYS",
+      "concept_key": "COV-PAYOFF",
+      "reasons": [
+        "NON_LITERAL_NUMERAL"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company shall, and shall cause its Subsidiaries to, deliver to Parent at least three Business Days prior to the Closing Date a copy of a payoff letter",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "86bed61924ed25194710f3ea27c767201044199fb7f2066157c6520201b21531",
+      "closure_id": "f445317e61818d64523741aa2fceb6da0ce5499ab71b83f3e77769dd73834b6f",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "39ee8f402092a08332150ddd22ea06137dd69da1519b3e65ad40fadc1f3a067e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9aad387f3724e612923663b5f4e94f9c6115456f6f31a5bb9cf4c2909dd89d48",
+          "document_ordinal": 0,
+          "absolute_start": 51,
+          "absolute_end": 205,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company shall, and shall cause its Subsidiaries to, deliver to Parent at least three Business Days prior to the Closing Date a copy of a payoff letter",
+      "attachment_position": null,
+      "concept_family": "COV-PAYOFF",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 50,
+          "end_byte": 1310
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 50,
+            "end_byte": 1310,
+            "text": " The Company shall, and shall cause its Subsidiaries to, deliver to Parent at least three Business Days prior to the Closing Date a copy of a payoff letter (subject to the delivery of funds as arranged by Parent) with respect to the Amended and Restated Loan and Security Agreement, dated as of June 30, 2025, by and between the Company, Siena Lending Group LLC and certain other parties (the “Subject Indebtedness”) in customary form, which payoff letter shall (i) indicate the total amount required to be paid to fully satisfy all principal, interest, prepayment premiums, penalties, breakage costs and any other monetary obligations then due and payable under the Subject Indebtedness as of the anticipated Closing Date (and the daily accrual thereafter) (the “Payoff Amount”), (ii) state that upon receipt of the Payoff Amount under such payoff letter, the Subject Indebtedness and all related loan documents shall be terminated and (iii) provide that all Liens and guarantees in connection with the Subject Indebtedness relating to the assets and properties of the Company or any of its Subsidiaries securing the obligations under the Subject Indebtedness shall be released and terminated upon payment of the Payoff Amount on the Closing Date.\n64\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 47,
+            "text": "Section 5.8 Treatment of Company Indebtedness.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "5.8",
+      "source_citation": "5.8",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the various tool financing loans the Company or its Subsidiaries have entered into with financing lenders party thereto or any of the Company’s other loan arrangements.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "LENDER_ARRANGEMENT: Company or Subsidiary financing loans and other loan arrangements.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "fd214900a06d0f3983be0730575d95e69794d454205e53ed41819adc1f4d2b56",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "911008de0e1056a61553cba77b21bbb04c01288fd2e0b614a64cc1e7e4d7da54",
+          "document_ordinal": 0,
+          "absolute_start": 1558,
+          "absolute_end": 1728,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "68272f26a8dd61b85012dc496e965982859daaa36d026d90124e85812caab00d",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "47120c475ef2acf2da34c36bd235eea0d3a1dabaed52ea828ec4666ddbb069ab",
+        "producer_receipt_id": "9949470cdd14d6d7a697d052edb55bf9a7ef85dbbe52ddd95ac8dadff8b462db",
+        "governed_scope_digest": "89817b7414746ff9f2cbcabc5ab405def9c377f8ac6504d0ad56d55e864ae86d",
+        "extraction_provenance_id": "ce91f478aa16997b75913cb83f8d976e4317987ca2d82779570cf1282bb61605"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 1313,
+          "end_byte": 1729
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 1313,
+            "end_byte": 1729,
+            "text": " Without limiting the foregoing, the Company and Parent shall cooperate with each other with respect to customary actions for transactions of this type that are reasonably requested by Parent to be taken by the Company or its Subsidiaries under the various tool financing loans the Company or its Subsidiaries have entered into with financing lenders party thereto or any of the Company’s other loan arrangements.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 47,
+            "text": "Section 5.8 Treatment of Company Indebtedness.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.8",
+      "source_citation": "5.8",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "which payoff letter shall (i) indicate the total amount required to be paid to fully satisfy all principal, interest, prepayment premiums, penalties, breakage costs and any other monetary obligations then due and payable under the Subject Indebtedness as of the anticipated Closing Date (and the daily accrual thereafter) (the “Payoff Amount”), (ii) state that upon receipt of the Payoff Amount under such payoff letter, the Subject Indebtedness and all related loan documents shall be terminated and (iii) provide that all Liens and guarantees in connection with the Subject Indebtedness relating to the assets and properties of the Company or any of its Subsidiaries securing the obligations under the Subject Indebtedness shall be released and terminated upon payment of the Payoff Amount on the Closing Date.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Payoff letter content and debt release mechanics are outside the governed financing assertion types.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "29e0d3d39dbc5ddd8deff65b3cbf92b21aa32998675b5a017a0bbd1187202889",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "891cd0694a952c23225d433f6dd0b4656110a7b54517ba7bad0d646690e69488",
+          "document_ordinal": 0,
+          "absolute_start": 490,
+          "absolute_end": 1306,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "7d6f0df7e3269c569043765e6e5d38686a632f9ba9c91003a040d5038395a6a8",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "47120c475ef2acf2da34c36bd235eea0d3a1dabaed52ea828ec4666ddbb069ab",
+        "producer_receipt_id": "9949470cdd14d6d7a697d052edb55bf9a7ef85dbbe52ddd95ac8dadff8b462db",
+        "governed_scope_digest": "89817b7414746ff9f2cbcabc5ab405def9c377f8ac6504d0ad56d55e864ae86d",
+        "extraction_provenance_id": "ce91f478aa16997b75913cb83f8d976e4317987ca2d82779570cf1282bb61605"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 50,
+          "end_byte": 1310
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 50,
+            "end_byte": 1310,
+            "text": " The Company shall, and shall cause its Subsidiaries to, deliver to Parent at least three Business Days prior to the Closing Date a copy of a payoff letter (subject to the delivery of funds as arranged by Parent) with respect to the Amended and Restated Loan and Security Agreement, dated as of June 30, 2025, by and between the Company, Siena Lending Group LLC and certain other parties (the “Subject Indebtedness”) in customary form, which payoff letter shall (i) indicate the total amount required to be paid to fully satisfy all principal, interest, prepayment premiums, penalties, breakage costs and any other monetary obligations then due and payable under the Subject Indebtedness as of the anticipated Closing Date (and the daily accrual thereafter) (the “Payoff Amount”), (ii) state that upon receipt of the Payoff Amount under such payoff letter, the Subject Indebtedness and all related loan documents shall be terminated and (iii) provide that all Liens and guarantees in connection with the Subject Indebtedness relating to the assets and properties of the Company or any of its Subsidiaries securing the obligations under the Subject Indebtedness shall be released and terminated upon payment of the Payoff Amount on the Closing Date.\n64\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 47,
+            "text": "Section 5.8 Treatment of Company Indebtedness.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "f854c054986e1f686cf1acfbde74d2e4d59a816f2f08e9203d9b2caadeaea39b",
+    "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "registry_substrate": {
+      "schema_version": "RESOLUTION_REGISTRY_SUBSTRATE_MANIFEST/V1",
+      "modules": [
+        {
+          "name": "materiality-qualifier",
+          "version": "RESOLUTION_MATERIALITY_QUALIFIER_REGISTRY/V1",
+          "digest": "sha256:6368129c33917101e97979baa1836e222894af0fe4ed98244ded61c4a7802515"
+        },
+        {
+          "name": "closing-condition-kinds",
+          "version": "RESOLUTION_CLOSING_CONDITION_KINDS_REGISTRY/V1",
+          "digest": "sha256:66bb6592c2f0c21125df9b12a03991aebbe5ca1832bacfb427eadd2df2327efc"
+        },
+        {
+          "name": "general-covenant",
+          "version": "RESOLUTION_GENERAL_COVENANT_REGISTRY/V1",
+          "digest": "sha256:c10453c1b9f700ed7962b3c3f66a1560dcbbbe42aa41692113097a67fb903737"
+        },
+        {
+          "name": "material-contract",
+          "version": "RESOLUTION_MATERIAL_CONTRACT_REGISTRY/V1",
+          "digest": "sha256:85159bed1f96102ea00f2f2acc57e8336c6901797f91c2345a357dc923528d9e"
+        },
+        {
+          "name": "interim-operating",
+          "version": "RESOLUTION_INTERIM_OPERATING_REGISTRY/V1",
+          "digest": "sha256:77e80a8cca7ab4277e74181ef6ea2f0a5410b75d96ad9ae984b7653f5265efae"
+        },
+        {
+          "name": "party-capacity",
+          "version": "RESOLUTION_PARTY_CAPACITY_REGISTRY/V1",
+          "digest": "sha256:1b089c7a6cf30f540043352234cb4109fe27013a554423c8d3ecd652272db202"
+        },
+        {
+          "name": "representation-topic",
+          "version": "REPRESENTATION_TOPIC_REGISTRY/V1",
+          "digest": "sha256:2240a6cfa6ac63d3fbf6a96afce185aed40a1d9919f2437b85a844aa996e1f28"
+        }
+      ],
+      "preserved_v1_collisions": [
+        {
+          "path": "UNDISCLOSED_LIABILITIES_EXCEPTION_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not reasonably be expected to have an MAE",
+          "v1_only": true,
+          "no_delete": true
+        },
+        {
+          "path": "MATERIALITY_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not, individually or in aggregate, have MAE",
+          "v1_only": true,
+          "no_delete": true
+        }
+      ]
+    },
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 3,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 4,
+      "resolved": 0,
+      "auto_pass": 0,
+      "review_queue": 2,
+      "open_world": 2,
+      "residuals": 0,
+      "provisions": 0,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "cf7b11b28aa6871cd71ab7fa256353170aedffe5073340587b64dbe340201e5b"
+  }
+}

@@ -1,0 +1,460 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "af13ad1f2cab1342f095e7a5b69b4682f4d3a5a8fa3a23c3dbcf4de48c23c278",
+  "review_queue": [
+    {
+      "section_reference": "6.3",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-S-REP",
+      "reasons": [],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4c351179638fa3d2a7a527f84faebc5772a283992c0520d0e1b7205f15b0ea59",
+      "closure_id": "81e9c8d3cb199a7d27d50a822c7a35cc05d8228515f9115101b6b86f32a0ee5d",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "4aa257795230fd7552cd89d464ad139ced916d34de8e266bcc700c98c0492f1b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "eb0a27ec8b9dc8837357ca839d100679b0e3f2b52a63d9fd01ba9229e3aed665",
+          "document_ordinal": 0,
+          "absolute_start": 2361,
+          "absolute_end": 3322,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "except for the Parent Fundamental Representations referred to in clause (i) above, and the representations and warranties in the foregoing clauses (ii) and (iii), each of the representations and warranties of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub contained in Article IV shall be true and correct (determined without regard to any qualification by any of the terms “material” or “Parent Material Adverse Effect” therein) as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be true and correct at and as of such date, without regard to any such qualifications therein), except where the failure of such representations and warranties to be true and correct has not had, or would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect.",
+      "attachment_position": null,
+      "concept_family": "COND-S-REP",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 365,
+          "end_byte": 3323
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 365,
+            "end_byte": 3323,
+            "text": " Representations and Warranties.\n(i) Each of the representations and warranties made by Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub in Section 4.1(a), Section 4.1(b), Section 4.2(c), the first sentence of Section 4.2(d), Section 4.3, and Section 4.11 (collectively, the “Parent Fundamental Representations”) (x) that are qualified by materiality or by Parent Material Adverse Effect shall be true and correct as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be so true and correct at and as of such date), and (y) that are not qualified by materiality or Parent Material Adverse Effect shall be true and correct in all material respects as of the Closing Date as if made on the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be so true and correct at and as of such date);\n(ii) the representations and warranties of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub contained in Section 4.2(a), Section 4.2(b) and Section 4.2(f) shall be true and correct in all but de minimis respects as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be true and correct in all but de minimis respects at and as of such date);\n(iii) the representations and warranties of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub contained in Section 4.7(b) shall be true and correct in all respects as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be true and correct in all respects at and as of such date); and\n84\n(iv) except for the Parent Fundamental Representations referred to in clause (i) above, and the representations and warranties in the foregoing clauses (ii) and (iii), each of the representations and warranties of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub contained in Article IV shall be true and correct (determined without regard to any qualification by any of the terms “material” or “Parent Material Adverse Effect” therein) as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be true and correct at and as of such date, without regard to any such qualifications therein), except where the failure of such representations and warranties to be true and correct has not had, or would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 362,
+            "text": "Section 6.3 Conditions to Obligations of the Company and the Partnership. The obligations of the Company and the Partnership to effect the Mergers are further subject to the fulfilment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the Company, to the extent permitted by applicable Law:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.3",
+      "source_citation": "6.3(e)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "MAE_PARTY_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "From the date of this Agreement through the Closing Date, there shall not have occurred a change, event, state of facts or development that has had or would reasonably be expected to have, individually or in the aggregate, a Parent Material Adverse Effect.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "16c51c3921b1420ffac3e579ffc83fcf070e2ee769c9cd0b65b775a92f36320f",
+      "closure_id": "0a82d428cc9b14b0e7206ea32105c9ac5234a9118a5c97dac7bcd8080ce01b52",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "eadffe8df3f9910a6289116a5b495d95a25e5197f16d60d44afbd2b1c35e403c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "50c1d45e8516c20b2ca4baff8e1a70059157467d59a88e1135ddef683bf4135c",
+          "document_ordinal": 0,
+          "absolute_start": 6088,
+          "absolute_end": 6344,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "From the date of this Agreement through the Closing Date, there shall not have occurred a change, event, state of facts or development that has had or would reasonably be expected to have, individually or in the aggregate, a Parent Material Adverse Effect.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "e",
+          "depth": 1,
+          "start_byte": 6051,
+          "end_byte": 6345
+        },
+        "chain": [
+          {
+            "path": "e",
+            "start_byte": 6051,
+            "end_byte": 6345,
+            "text": " Absence of Material Adverse Change. From the date of this Agreement through the Closing Date, there shall not have occurred a change, event, state of facts or development that has had or would reasonably be expected to have, individually or in the aggregate, a Parent Material Adverse Effect.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 362,
+            "text": "Section 6.3 Conditions to Obligations of the Company and the Partnership. The obligations of the Company and the Partnership to effect the Mergers are further subject to the fulfilment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the Company, to the extent permitted by applicable Law:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.3",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-S-REP",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "afa5b8a6ada5ed904d0a707de90056d47861157e4740bcd626289a40f9385e4e",
+      "closure_id": "4a8bfff0a48f686c244c6f44362b33b68188fd909ddb4dfb55feea82ae76aee0",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "2614848f5f8ece7578e75f716d363e865f01bc65d513a06dc8f5cae23c586529",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "56802cdd0f7a8c373ce07f15c0efddb8209ef5a79339536691e20d72eb78a703",
+          "document_ordinal": 0,
+          "absolute_start": 402,
+          "absolute_end": 1410,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Each of the representations and warranties made by Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub in Section 4.1(a), Section 4.1(b), Section 4.2(c), the first sentence of Section 4.2(d), Section 4.3, and Section 4.11 (collectively, the “Parent Fundamental Representations”) (x) that are qualified by materiality or by Parent Material Adverse Effect shall be true and correct as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be so true and correct at and as of such date), and (y) that are not qualified by materiality or Parent Material Adverse Effect shall be true and correct in all material respects as of the Closing Date as if made on the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be so true and correct at and as of such date);",
+      "attachment_position": null,
+      "concept_family": "COND-S-REP",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 365,
+          "end_byte": 3323
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 365,
+            "end_byte": 3323,
+            "text": " Representations and Warranties.\n(i) Each of the representations and warranties made by Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub in Section 4.1(a), Section 4.1(b), Section 4.2(c), the first sentence of Section 4.2(d), Section 4.3, and Section 4.11 (collectively, the “Parent Fundamental Representations”) (x) that are qualified by materiality or by Parent Material Adverse Effect shall be true and correct as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be so true and correct at and as of such date), and (y) that are not qualified by materiality or Parent Material Adverse Effect shall be true and correct in all material respects as of the Closing Date as if made on the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be so true and correct at and as of such date);\n(ii) the representations and warranties of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub contained in Section 4.2(a), Section 4.2(b) and Section 4.2(f) shall be true and correct in all but de minimis respects as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be true and correct in all but de minimis respects at and as of such date);\n(iii) the representations and warranties of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub contained in Section 4.7(b) shall be true and correct in all respects as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be true and correct in all respects at and as of such date); and\n84\n(iv) except for the Parent Fundamental Representations referred to in clause (i) above, and the representations and warranties in the foregoing clauses (ii) and (iii), each of the representations and warranties of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub contained in Article IV shall be true and correct (determined without regard to any qualification by any of the terms “material” or “Parent Material Adverse Effect” therein) as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be true and correct at and as of such date, without regard to any such qualifications therein), except where the failure of such representations and warranties to be true and correct has not had, or would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 362,
+            "text": "Section 6.3 Conditions to Obligations of the Company and the Partnership. The obligations of the Company and the Partnership to effect the Mergers are further subject to the fulfilment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the Company, to the extent permitted by applicable Law:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.3",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "COVENANT_COMPLIANCE_STANDARD",
+      "concept_key": "COND-COV",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ca89a39281bf2c123ccafccf5616e3b18e94eb03b86aca2c7b7dc6da8f5d5e87",
+      "closure_id": "5e7bc59810a313766b4ba3af1a728e027d5138d5f2ef6cb0e3abbd54b18a7184",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "3b738d43f9a151266144b87dcd386fc6b0857842a358a19ebaf998e2225fb08e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b2578b4713050e099183d8a3d1c01c28cedba02e9b4281bbdae22c65d8a6c3d9",
+          "document_ordinal": 0,
+          "absolute_start": 3419,
+          "absolute_end": 3685,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Each of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub shall have performed or complied in all material respects with all obligations, agreements and covenants required by this Agreement to be performed or complied with by it on or prior to the Closing.",
+      "attachment_position": null,
+      "concept_family": "COND-COV",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 3326,
+          "end_byte": 3686
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 3326,
+            "end_byte": 3686,
+            "text": " Performance and Obligations of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub. Each of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub shall have performed or complied in all material respects with all obligations, agreements and covenants required by this Agreement to be performed or complied with by it on or prior to the Closing.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 362,
+            "text": "Section 6.3 Conditions to Obligations of the Company and the Partnership. The obligations of the Company and the Partnership to effect the Mergers are further subject to the fulfilment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the Company, to the extent permitted by applicable Law:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.3",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-S-REP",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "92c7471bd211c0b28b468db0f31cde00784e5f1f699f755acb103e48ae6927b2",
+      "closure_id": "6436b9b1beba7ff1edfa349bb4ec5c56a427753efdce72a832c5dafc5c8e36ff",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "60587f6ecdbbf3c87c9129daa5f5d8192d3c1d4be8898cd2df831882e3397827",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2e7d947819ae037f25c423752ef4dc02a14faea4fe38fd5a0241955fd1694d3a",
+          "document_ordinal": 0,
+          "absolute_start": 1416,
+          "absolute_end": 1911,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the representations and warranties of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub contained in Section 4.2(a), Section 4.2(b) and Section 4.2(f) shall be true and correct in all but de minimis respects as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be true and correct in all but de minimis respects at and as of such date);",
+      "attachment_position": null,
+      "concept_family": "COND-S-REP",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 365,
+          "end_byte": 3323
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 365,
+            "end_byte": 3323,
+            "text": " Representations and Warranties.\n(i) Each of the representations and warranties made by Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub in Section 4.1(a), Section 4.1(b), Section 4.2(c), the first sentence of Section 4.2(d), Section 4.3, and Section 4.11 (collectively, the “Parent Fundamental Representations”) (x) that are qualified by materiality or by Parent Material Adverse Effect shall be true and correct as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be so true and correct at and as of such date), and (y) that are not qualified by materiality or Parent Material Adverse Effect shall be true and correct in all material respects as of the Closing Date as if made on the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be so true and correct at and as of such date);\n(ii) the representations and warranties of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub contained in Section 4.2(a), Section 4.2(b) and Section 4.2(f) shall be true and correct in all but de minimis respects as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be true and correct in all but de minimis respects at and as of such date);\n(iii) the representations and warranties of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub contained in Section 4.7(b) shall be true and correct in all respects as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be true and correct in all respects at and as of such date); and\n84\n(iv) except for the Parent Fundamental Representations referred to in clause (i) above, and the representations and warranties in the foregoing clauses (ii) and (iii), each of the representations and warranties of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub contained in Article IV shall be true and correct (determined without regard to any qualification by any of the terms “material” or “Parent Material Adverse Effect” therein) as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be true and correct at and as of such date, without regard to any such qualifications therein), except where the failure of such representations and warranties to be true and correct has not had, or would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 362,
+            "text": "Section 6.3 Conditions to Obligations of the Company and the Partnership. The obligations of the Company and the Partnership to effect the Mergers are further subject to the fulfilment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the Company, to the extent permitted by applicable Law:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.3",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-S-REP",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f92956be25af21eb0f8855deb72039ef0be079041ab09778883c80b1f9ed61ee",
+      "closure_id": "6d84dd9f1e0da96234f031cc8e6c2a8a95dd0b5a98553e508ded4768724829bf",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "1963c03404f17ba10267ae3dcd2cce80791dfa5825c51e91817ea327069eb3a6",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "486a092e5355d31e3fb7e902fe1cc0bdca3353455c215388d850b1ce7dd0643a",
+          "document_ordinal": 0,
+          "absolute_start": 1918,
+          "absolute_end": 2348,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the representations and warranties of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub contained in Section 4.7(b) shall be true and correct in all respects as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be true and correct in all respects at and as of such date);",
+      "attachment_position": null,
+      "concept_family": "COND-S-REP",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 365,
+          "end_byte": 3323
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 365,
+            "end_byte": 3323,
+            "text": " Representations and Warranties.\n(i) Each of the representations and warranties made by Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub in Section 4.1(a), Section 4.1(b), Section 4.2(c), the first sentence of Section 4.2(d), Section 4.3, and Section 4.11 (collectively, the “Parent Fundamental Representations”) (x) that are qualified by materiality or by Parent Material Adverse Effect shall be true and correct as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be so true and correct at and as of such date), and (y) that are not qualified by materiality or Parent Material Adverse Effect shall be true and correct in all material respects as of the Closing Date as if made on the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be so true and correct at and as of such date);\n(ii) the representations and warranties of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub contained in Section 4.2(a), Section 4.2(b) and Section 4.2(f) shall be true and correct in all but de minimis respects as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be true and correct in all but de minimis respects at and as of such date);\n(iii) the representations and warranties of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub contained in Section 4.7(b) shall be true and correct in all respects as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be true and correct in all respects at and as of such date); and\n84\n(iv) except for the Parent Fundamental Representations referred to in clause (i) above, and the representations and warranties in the foregoing clauses (ii) and (iii), each of the representations and warranties of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub contained in Article IV shall be true and correct (determined without regard to any qualification by any of the terms “material” or “Parent Material Adverse Effect” therein) as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be true and correct at and as of such date, without regard to any such qualifications therein), except where the failure of such representations and warranties to be true and correct has not had, or would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 362,
+            "text": "Section 6.3 Conditions to Obligations of the Company and the Partnership. The obligations of the Company and the Partnership to effect the Mergers are further subject to the fulfilment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the Company, to the extent permitted by applicable Law:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.3",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-S-REP",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4e2cc955b10c1947fd5b826ac98c76adcbf191004c5ff9bc256b69fad890444f",
+      "closure_id": "8eab7278d007c4889f6816de196706f59d27b7b776a5f2fe086a88e185033a03",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e0a9c05519d5b6be779e4a04a1a7b27e7069517d731995c4a49a23299dc2b6c0",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "56802cdd0f7a8c373ce07f15c0efddb8209ef5a79339536691e20d72eb78a703",
+          "document_ordinal": 0,
+          "absolute_start": 402,
+          "absolute_end": 1410,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Each of the representations and warranties made by Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub in Section 4.1(a), Section 4.1(b), Section 4.2(c), the first sentence of Section 4.2(d), Section 4.3, and Section 4.11 (collectively, the “Parent Fundamental Representations”) (x) that are qualified by materiality or by Parent Material Adverse Effect shall be true and correct as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be so true and correct at and as of such date), and (y) that are not qualified by materiality or Parent Material Adverse Effect shall be true and correct in all material respects as of the Closing Date as if made on the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be so true and correct at and as of such date);",
+      "attachment_position": null,
+      "concept_family": "COND-S-REP",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 365,
+          "end_byte": 3323
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 365,
+            "end_byte": 3323,
+            "text": " Representations and Warranties.\n(i) Each of the representations and warranties made by Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub in Section 4.1(a), Section 4.1(b), Section 4.2(c), the first sentence of Section 4.2(d), Section 4.3, and Section 4.11 (collectively, the “Parent Fundamental Representations”) (x) that are qualified by materiality or by Parent Material Adverse Effect shall be true and correct as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be so true and correct at and as of such date), and (y) that are not qualified by materiality or Parent Material Adverse Effect shall be true and correct in all material respects as of the Closing Date as if made on the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be so true and correct at and as of such date);\n(ii) the representations and warranties of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub contained in Section 4.2(a), Section 4.2(b) and Section 4.2(f) shall be true and correct in all but de minimis respects as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be true and correct in all but de minimis respects at and as of such date);\n(iii) the representations and warranties of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub contained in Section 4.7(b) shall be true and correct in all respects as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be true and correct in all respects at and as of such date); and\n84\n(iv) except for the Parent Fundamental Representations referred to in clause (i) above, and the representations and warranties in the foregoing clauses (ii) and (iii), each of the representations and warranties of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub contained in Article IV shall be true and correct (determined without regard to any qualification by any of the terms “material” or “Parent Material Adverse Effect” therein) as of the Closing Date as though made on and as of the Closing Date (except to the extent a representation or warranty is made as of a specific date, in which case such representation or warranty shall be true and correct at and as of such date, without regard to any such qualifications therein), except where the failure of such representations and warranties to be true and correct has not had, or would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 362,
+            "text": "Section 6.3 Conditions to Obligations of the Company and the Partnership. The obligations of the Company and the Partnership to effect the Mergers are further subject to the fulfilment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the Company, to the extent permitted by applicable Law:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.3",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+      "concept_key": "COND-S-CERT",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f054d68ad5ec9c5917d4666d7bfb85a17fd6c759b28e053dd108f3fa275d061e",
+      "closure_id": "e8c355a7d2a9861689d27124144727c0c6ed923ca5d9daf8cd41a5cfbe4c156c",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "f6865e358bba771b73dc08d73b91abd6ee5bc85b04a0638a5c136c203e0fe3d2",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "89ed2bfb4f1679279b4ab0f53629360c9ce4622007c24f215bb9ccbcdd2f18bd",
+          "document_ordinal": 0,
+          "absolute_start": 6370,
+          "absolute_end": 6722,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company shall have received a certificate signed on behalf of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub by an executive officer of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub, dated as of the Closing Date, certifying that the conditions set forth in Section 6.3(a), Section 6.3(b) and Section 6.3(e) are satisfied.",
+      "attachment_position": null,
+      "concept_family": "COND-S-CERT",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "f",
+          "depth": 1,
+          "start_byte": 6348,
+          "end_byte": 6723
+        },
+        "chain": [
+          {
+            "path": "f",
+            "start_byte": 6348,
+            "end_byte": 6723,
+            "text": " Closing Certificate. The Company shall have received a certificate signed on behalf of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub by an executive officer of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub, dated as of the Closing Date, certifying that the conditions set forth in Section 6.3(a), Section 6.3(b) and Section 6.3(e) are satisfied.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 362,
+            "text": "Section 6.3 Conditions to Obligations of the Company and the Partnership. The obligations of the Company and the Partnership to effect the Mergers are further subject to the fulfilment at or prior to the Closing of each of the following conditions, any or all of which may be waived in whole or in part by the Company, to the extent permitted by applicable Law:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "693e9e425159c4ad75aa691c24cf4d1a1c38f2a63e7141aa645e9a971636ed94"
+}

@@ -1,0 +1,1462 @@
+{
+  "resolved": [
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(a)(i)",
+      "citation_context": {
+        "parent_section_reference": "8.3",
+        "child_section_reference": "8.3(a)(i)",
+        "parent_chapeau_quote": "Section 8.3 Additional Conditions to the Obligations of the Company. The obligation of the Company to consummate the Mergers is subject to the satisfaction (or, to the extent permitted by law, waiver) of the following further conditions:",
+        "child_clause_quote": "(i) Parent shall have performed in all material respects all of its obligations hereunder required to be performed by it as of or prior to the Closing Date and"
+      },
+      "governing_context_quote": "(i) Parent shall have performed in all material respects all of its obligations hereunder required to be performed by it as of or prior to the Closing Date and",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "COVENANT_COMPLIANCE_STANDARD",
+      "concept_key": "COND-COV",
+      "party": {
+        "role": "CONDITION_OBLIGOR",
+        "value": "Parent",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "9b33f38d62f02f1e4d115c0ea8c8a1c759e14d804f885b05a9379e8074d40077",
+        "canonical_text_id": "8c51d2b4f94705d55dc616f5a7841bf6c0a8c00f92a425dcc78e11043af87149",
+        "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+        "absolute_start": 282337,
+        "absolute_end": 284260,
+        "concept_key": "COND-COV",
+        "party": {
+          "role": "CONDITION_OBLIGOR",
+          "value": "Parent",
+          "capacity": "BUYER"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "d3f1fa06dc20a7d3915b9c815fcb1078ecbfc8e50aacaa4af4e90685d44142d7",
+        "provision_instance_id": "dfbe08fb972f79efb0f3adeb7c9f98c7eb77873b58dccb6ca992e40b4e8b0afe",
+        "closure_id": "da77ef67d0fcfa3baeed9b4fb1e7c6f249f3adfd34bacb4a34fb2c262d5b65d3"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "ff4f7d73a862925f5e7ea5535067753712b27fd8c319d4c936953ee83315c9f9",
+        "claim_occurrence_id": "ce10c1de08cf2874c72f86f7487f7f3294844a01063c1183f0a1fa393ded6b4d",
+        "subject_occurrence_id": "dfbe08fb972f79efb0f3adeb7c9f98c7eb77873b58dccb6ca992e40b4e8b0afe",
+        "claim_definition_key": "COVENANT_COMPLIANCE_STANDARD",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Parent shall have performed in all material respects all of its obligations hereunder required to be performed by it as of or prior to the Closing Date",
+        "canonical_value": "MAT_ALL_MATERIAL",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "35dbbb1fd92a51fdb0d52be2a875057ed87bfc37f326dbd679be4d6ac81a9726"
+        ],
+        "attributes": {
+          "section_reference": "8.3",
+          "assertion_kind": "COVENANT_COMPLIANCE",
+          "condition_obligor": null,
+          "accuracy_standard": null,
+          "rep_side": null,
+          "covered_scope_ref": null,
+          "scrape_quote": null,
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": "MAT_ALL_MATERIAL",
+          "obligor_ref": "Parent",
+          "approval_kind": null,
+          "approval_definition_ref": null,
+          "s4_component": null,
+          "listing_venue_ref": null,
+          "certificate_side": null,
+          "certifying_party_ref": null,
+          "certified_condition_refs": [],
+          "certificate_relationship_status": null,
+          "causation_standard": null,
+          "breach_standard": null,
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "COVENANT_COMPLIANCE"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "35dbbb1fd92a51fdb0d52be2a875057ed87bfc37f326dbd679be4d6ac81a9726",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "584ff81d19dab12ad380d1454a1ae37ad8c08ff392064dc3624095834b599bac",
+            "document_ordinal": 0,
+            "absolute_start": 246,
+            "absolute_end": 397,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "c2ff1f50379ed214d5a69a0b8fd04792325c3192b39225822de70370b4ee8684"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.3",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "8.3",
+          "normalized_citation": "8.3",
+          "derived_citation": "8.3(a)(i)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "ff4f7d73a862925f5e7ea5535067753712b27fd8c319d4c936953ee83315c9f9",
+            "claim_occurrence_id": "ce10c1de08cf2874c72f86f7487f7f3294844a01063c1183f0a1fa393ded6b4d",
+            "subject_occurrence_id": "dfbe08fb972f79efb0f3adeb7c9f98c7eb77873b58dccb6ca992e40b4e8b0afe",
+            "claim_definition_key": "COVENANT_COMPLIANCE_STANDARD",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Parent shall have performed in all material respects all of its obligations hereunder required to be performed by it as of or prior to the Closing Date",
+            "canonical_value": "MAT_ALL_MATERIAL",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "35dbbb1fd92a51fdb0d52be2a875057ed87bfc37f326dbd679be4d6ac81a9726"
+            ],
+            "attributes": {
+              "section_reference": "8.3",
+              "assertion_kind": "COVENANT_COMPLIANCE",
+              "condition_obligor": null,
+              "accuracy_standard": null,
+              "rep_side": null,
+              "covered_scope_ref": null,
+              "scrape_quote": null,
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": "MAT_ALL_MATERIAL",
+              "obligor_ref": "Parent",
+              "approval_kind": null,
+              "approval_definition_ref": null,
+              "s4_component": null,
+              "listing_venue_ref": null,
+              "certificate_side": null,
+              "certifying_party_ref": null,
+              "certified_condition_refs": [],
+              "certificate_relationship_status": null,
+              "causation_standard": null,
+              "breach_standard": null,
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "COVENANT_COMPLIANCE"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "35dbbb1fd92a51fdb0d52be2a875057ed87bfc37f326dbd679be4d6ac81a9726",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "584ff81d19dab12ad380d1454a1ae37ad8c08ff392064dc3624095834b599bac",
+                "document_ordinal": 0,
+                "absolute_start": 246,
+                "absolute_end": 397,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "c2ff1f50379ed214d5a69a0b8fd04792325c3192b39225822de70370b4ee8684"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "c14c3b94b5005dd37190cf367658bf35cef34103995f60dec90043fc7244a4ab",
+            "producer_receipt_id": "388e285416fd995ec09e8f1a7df86b4aaa9211cb7ec7c2e8b4a5c66dc360422f",
+            "governed_scope_digest": "0c22170b16ba901e34e9b7526490c745ece71264d99f28b0fbca5b41f6ace5fa",
+            "extraction_provenance_id": "a0b787875c3c6a4ce8b6c79f748a12692b5161db794c7cbf62e8db4bfa3c40f3"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 70,
+        "materiality_label": "CLOSING_CONDITIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "8.3",
+          "normalized_citation": "8.3",
+          "derived_citation": "8.3(a)(i)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.i",
+          "depth": 2,
+          "start_byte": 245,
+          "end_byte": 402
+        },
+        "chain": [
+          {
+            "path": "a.i",
+            "start_byte": 245,
+            "end_byte": 402,
+            "text": " Parent shall have performed in all material respects all of its obligations hereunder required to be performed by it as of or prior to the Closing Date and\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 238,
+            "text": "Section 8.3 Additional Conditions to the Obligations of the Company. The obligation of the Company to consummate the Mergers is subject to the satisfaction (or, to the extent permitted by law, waiver) of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(a)(ii)",
+      "citation_context": {
+        "parent_section_reference": "8.3",
+        "child_section_reference": "8.3(a)(ii)",
+        "parent_chapeau_quote": "Section 8.3 Additional Conditions to the Obligations of the Company. The obligation of the Company to consummate the Mergers is subject to the satisfaction (or, to the extent permitted by law, waiver) of the following further conditions:",
+        "child_clause_quote": "(ii) (A) the representations and warranties of Parent and the Merger Subsidiaries set forth in Section 4.10 shall be true and correct in all material respects at and as of the date of this Agreement and at and as of the Closing Date as though made at and as of the Closing Date, and (B) the representations and warranties of Parent and the Merger Subsidiaries set forth in this Agreement (other than those described in the preceding clause (A)) shall be true and correct at and as of the date of this Agreement and at and as of the Closing Date as though made at and as of the Closing Date, except for where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect; provided, however, that, with respect to clauses (A) and (B) above, representations and warranties that are made as of a particular date or period shall be true and correct (in the manner set forth in clause (A) or (B) as applicable) only as of such date or period."
+      },
+      "governing_context_quote": "(ii) (A) the representations and warranties of Parent and the Merger Subsidiaries set forth in Section 4.10 shall be true and correct in all material respects at and as of the date of this Agreement and at and as of the Closing Date as though made at and as of the Closing Date, and (B) the representations and warranties of Parent and the Merger Subsidiaries set forth in this Agreement (other than those described in the preceding clause (A)) shall be true and correct at and as of the date of this Agreement and at and as of the Closing Date as though made at and as of the Closing Date, except for where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect; provided, however, that, with respect to clauses (A) and (B) above, representations and warranties that are made as of a particular date or period shall be true and correct (in the manner set forth in clause (A) or (B) as applicable) only as of such date or period.",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-S-REP",
+      "party": {
+        "role": "CONDITION_OBLIGOR",
+        "value": "Parent and the Merger Subsidiaries",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "9b33f38d62f02f1e4d115c0ea8c8a1c759e14d804f885b05a9379e8074d40077",
+        "canonical_text_id": "8c51d2b4f94705d55dc616f5a7841bf6c0a8c00f92a425dcc78e11043af87149",
+        "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+        "absolute_start": 282337,
+        "absolute_end": 284260,
+        "concept_key": "COND-S-REP",
+        "party": {
+          "role": "CONDITION_OBLIGOR",
+          "value": "Parent and the Merger Subsidiaries",
+          "capacity": "BUYER"
+        },
+        "ordinal": 2,
+        "source_anchor_id": "d3f1fa06dc20a7d3915b9c815fcb1078ecbfc8e50aacaa4af4e90685d44142d7",
+        "provision_instance_id": "7799a5f8c7e0253ebc7a9286882b0d76ef79a663733cb80fbaf10a6a78db7d4c",
+        "closure_id": "59457e7ce71798d44fa0477677478ffc209856759408903cbafe97ea034c929a"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "0345a458c9d2bde7056e2d51b94bd9824d93856cdc53e36dc0712720a824f024",
+        "claim_occurrence_id": "22aa72fc6d4f628f62be55fd2ac58878c974dd2d2863329631648470f9fbba57",
+        "subject_occurrence_id": "7799a5f8c7e0253ebc7a9286882b0d76ef79a663733cb80fbaf10a6a78db7d4c",
+        "claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "the representations and warranties of Parent and the Merger Subsidiaries set forth in Section 4.10 shall be true and correct in all material respects at and as of the date of this Agreement and at and as of the Closing Date as though made at and as of the Closing Date",
+        "canonical_value": "MAT_ALL_MATERIAL",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "eb45f422d2818bfe075bdae09cf4aac798a837ad6817dd93de47f31e4e9d4f80"
+        ],
+        "attributes": {
+          "section_reference": "8.3",
+          "assertion_kind": "BRING_DOWN_TIER",
+          "condition_obligor": "Parent and the Merger Subsidiaries",
+          "accuracy_standard": "MAT_ALL_MATERIAL",
+          "rep_side": "BUYER_REPS",
+          "covered_scope_ref": "the representations and warranties of Parent and the Merger Subsidiaries set forth in Section 4.10",
+          "scrape_quote": "true and correct in all material respects",
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": null,
+          "obligor_ref": null,
+          "approval_kind": null,
+          "approval_definition_ref": null,
+          "s4_component": null,
+          "listing_venue_ref": null,
+          "certificate_side": null,
+          "certifying_party_ref": null,
+          "certified_condition_refs": [],
+          "certificate_relationship_status": null,
+          "causation_standard": null,
+          "breach_standard": null,
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "BRING_DOWN_TIER"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "eb45f422d2818bfe075bdae09cf4aac798a837ad6817dd93de47f31e4e9d4f80",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "7fb090cce04ce13bb39dad7e0914d76e04f7c3e432b63809c7688484279e204f",
+            "document_ordinal": 0,
+            "absolute_start": 411,
+            "absolute_end": 679,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "0565952052f6a0720e508f2c37b3e866fdeeed14410dc5aa98764b17af62f4e5"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.3",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "8.3",
+          "normalized_citation": "8.3",
+          "derived_citation": "8.3(a)(ii)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "0345a458c9d2bde7056e2d51b94bd9824d93856cdc53e36dc0712720a824f024",
+            "claim_occurrence_id": "22aa72fc6d4f628f62be55fd2ac58878c974dd2d2863329631648470f9fbba57",
+            "subject_occurrence_id": "7799a5f8c7e0253ebc7a9286882b0d76ef79a663733cb80fbaf10a6a78db7d4c",
+            "claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "the representations and warranties of Parent and the Merger Subsidiaries set forth in Section 4.10 shall be true and correct in all material respects at and as of the date of this Agreement and at and as of the Closing Date as though made at and as of the Closing Date",
+            "canonical_value": "MAT_ALL_MATERIAL",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "eb45f422d2818bfe075bdae09cf4aac798a837ad6817dd93de47f31e4e9d4f80"
+            ],
+            "attributes": {
+              "section_reference": "8.3",
+              "assertion_kind": "BRING_DOWN_TIER",
+              "condition_obligor": "Parent and the Merger Subsidiaries",
+              "accuracy_standard": "MAT_ALL_MATERIAL",
+              "rep_side": "BUYER_REPS",
+              "covered_scope_ref": "the representations and warranties of Parent and the Merger Subsidiaries set forth in Section 4.10",
+              "scrape_quote": "true and correct in all material respects",
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": null,
+              "obligor_ref": null,
+              "approval_kind": null,
+              "approval_definition_ref": null,
+              "s4_component": null,
+              "listing_venue_ref": null,
+              "certificate_side": null,
+              "certifying_party_ref": null,
+              "certified_condition_refs": [],
+              "certificate_relationship_status": null,
+              "causation_standard": null,
+              "breach_standard": null,
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "BRING_DOWN_TIER"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "eb45f422d2818bfe075bdae09cf4aac798a837ad6817dd93de47f31e4e9d4f80",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "7fb090cce04ce13bb39dad7e0914d76e04f7c3e432b63809c7688484279e204f",
+                "document_ordinal": 0,
+                "absolute_start": 411,
+                "absolute_end": 679,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "0565952052f6a0720e508f2c37b3e866fdeeed14410dc5aa98764b17af62f4e5"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "c14c3b94b5005dd37190cf367658bf35cef34103995f60dec90043fc7244a4ab",
+            "producer_receipt_id": "388e285416fd995ec09e8f1a7df86b4aaa9211cb7ec7c2e8b4a5c66dc360422f",
+            "governed_scope_digest": "0c22170b16ba901e34e9b7526490c745ece71264d99f28b0fbca5b41f6ace5fa",
+            "extraction_provenance_id": "a0b787875c3c6a4ce8b6c79f748a12692b5161db794c7cbf62e8db4bfa3c40f3"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "BRING_DOWN_TIER_PROVENANCE_REVISIT_PENDING"
+        ],
+        "reasons": [],
+        "materiality_rank": 70,
+        "materiality_label": "CLOSING_CONDITIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "8.3",
+          "normalized_citation": "8.3",
+          "derived_citation": "8.3(a)(ii)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.ii.A",
+          "depth": 3,
+          "start_byte": 410,
+          "end_byte": 685
+        },
+        "chain": [
+          {
+            "path": "a.ii.A",
+            "start_byte": 410,
+            "end_byte": 685,
+            "text": " the representations and warranties of Parent and the Merger Subsidiaries set forth in Section 4.10 shall be true and correct in all material respects at and as of the date of this Agreement and at and as of the Closing Date as though made at and as of the Closing Date, and "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 238,
+            "text": "Section 8.3 Additional Conditions to the Obligations of the Company. The obligation of the Company to consummate the Mergers is subject to the satisfaction (or, to the extent permitted by law, waiver) of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(a)(ii)",
+      "citation_context": {
+        "parent_section_reference": "8.3",
+        "child_section_reference": "8.3(a)(ii)",
+        "parent_chapeau_quote": "Section 8.3 Additional Conditions to the Obligations of the Company. The obligation of the Company to consummate the Mergers is subject to the satisfaction (or, to the extent permitted by law, waiver) of the following further conditions:",
+        "child_clause_quote": "(ii) (A) the representations and warranties of Parent and the Merger Subsidiaries set forth in Section 4.10 shall be true and correct in all material respects at and as of the date of this Agreement and at and as of the Closing Date as though made at and as of the Closing Date, and (B) the representations and warranties of Parent and the Merger Subsidiaries set forth in this Agreement (other than those described in the preceding clause (A)) shall be true and correct at and as of the date of this Agreement and at and as of the Closing Date as though made at and as of the Closing Date, except for where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect; provided, however, that, with respect to clauses (A) and (B) above, representations and warranties that are made as of a particular date or period shall be true and correct (in the manner set forth in clause (A) or (B) as applicable) only as of such date or period."
+      },
+      "governing_context_quote": "(ii) (A) the representations and warranties of Parent and the Merger Subsidiaries set forth in Section 4.10 shall be true and correct in all material respects at and as of the date of this Agreement and at and as of the Closing Date as though made at and as of the Closing Date, and (B) the representations and warranties of Parent and the Merger Subsidiaries set forth in this Agreement (other than those described in the preceding clause (A)) shall be true and correct at and as of the date of this Agreement and at and as of the Closing Date as though made at and as of the Closing Date, except for where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect; provided, however, that, with respect to clauses (A) and (B) above, representations and warranties that are made as of a particular date or period shall be true and correct (in the manner set forth in clause (A) or (B) as applicable) only as of such date or period.",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-S-REP",
+      "party": {
+        "role": "CONDITION_OBLIGOR",
+        "value": "Parent and the Merger Subsidiaries",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "9b33f38d62f02f1e4d115c0ea8c8a1c759e14d804f885b05a9379e8074d40077",
+        "canonical_text_id": "8c51d2b4f94705d55dc616f5a7841bf6c0a8c00f92a425dcc78e11043af87149",
+        "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+        "absolute_start": 282337,
+        "absolute_end": 284260,
+        "concept_key": "COND-S-REP",
+        "party": {
+          "role": "CONDITION_OBLIGOR",
+          "value": "Parent and the Merger Subsidiaries",
+          "capacity": "BUYER"
+        },
+        "ordinal": 2,
+        "source_anchor_id": "d3f1fa06dc20a7d3915b9c815fcb1078ecbfc8e50aacaa4af4e90685d44142d7",
+        "provision_instance_id": "7799a5f8c7e0253ebc7a9286882b0d76ef79a663733cb80fbaf10a6a78db7d4c",
+        "closure_id": "59457e7ce71798d44fa0477677478ffc209856759408903cbafe97ea034c929a"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "88bfd0937acabefcaadcbdec201fc465766510ae0673682efd08b5bdc0c4a435",
+        "claim_occurrence_id": "686dd8be789a337cad0f30375a1a0ae19cd8c583225c49871c2a28361bcfe0f3",
+        "subject_occurrence_id": "7799a5f8c7e0253ebc7a9286882b0d76ef79a663733cb80fbaf10a6a78db7d4c",
+        "claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "the representations and warranties of Parent and the Merger Subsidiaries set forth in this Agreement (other than those described in the preceding clause (A)) shall be true and correct at and as of the date of this Agreement and at and as of the Closing Date as though made at and as of the Closing Date, except for where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect",
+        "canonical_value": "MAT_MAE_QUALIFIED",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "167be95b8dd25b7bc53f74935aaf85db5db9fd78a986c3106751620c6a1f324d"
+        ],
+        "attributes": {
+          "section_reference": "8.3",
+          "assertion_kind": "BRING_DOWN_TIER",
+          "condition_obligor": "Parent and the Merger Subsidiaries",
+          "accuracy_standard": "MAT_MAE_QUALIFIED",
+          "rep_side": "BUYER_REPS",
+          "covered_scope_ref": "the representations and warranties of Parent and the Merger Subsidiaries set forth in this Agreement (other than those described in the preceding clause (A))",
+          "scrape_quote": "except for where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect",
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": null,
+          "obligor_ref": null,
+          "approval_kind": null,
+          "approval_definition_ref": null,
+          "s4_component": null,
+          "listing_venue_ref": null,
+          "certificate_side": null,
+          "certifying_party_ref": null,
+          "certified_condition_refs": [],
+          "certificate_relationship_status": null,
+          "causation_standard": null,
+          "breach_standard": null,
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "BRING_DOWN_TIER"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "167be95b8dd25b7bc53f74935aaf85db5db9fd78a986c3106751620c6a1f324d",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "402c04309b2d6c2eb080895901de2778ca20715e023d0c62a2a3410d8a6bc115",
+            "document_ordinal": 0,
+            "absolute_start": 689,
+            "absolute_end": 1285,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "7f5b2e0b9b52022f429de42af5ea3b17802c81b5e249a7ff47918ee2b64ba9c8"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.3",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "8.3",
+          "normalized_citation": "8.3",
+          "derived_citation": "8.3(a)(ii)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "88bfd0937acabefcaadcbdec201fc465766510ae0673682efd08b5bdc0c4a435",
+            "claim_occurrence_id": "686dd8be789a337cad0f30375a1a0ae19cd8c583225c49871c2a28361bcfe0f3",
+            "subject_occurrence_id": "7799a5f8c7e0253ebc7a9286882b0d76ef79a663733cb80fbaf10a6a78db7d4c",
+            "claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "the representations and warranties of Parent and the Merger Subsidiaries set forth in this Agreement (other than those described in the preceding clause (A)) shall be true and correct at and as of the date of this Agreement and at and as of the Closing Date as though made at and as of the Closing Date, except for where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect",
+            "canonical_value": "MAT_MAE_QUALIFIED",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "167be95b8dd25b7bc53f74935aaf85db5db9fd78a986c3106751620c6a1f324d"
+            ],
+            "attributes": {
+              "section_reference": "8.3",
+              "assertion_kind": "BRING_DOWN_TIER",
+              "condition_obligor": "Parent and the Merger Subsidiaries",
+              "accuracy_standard": "MAT_MAE_QUALIFIED",
+              "rep_side": "BUYER_REPS",
+              "covered_scope_ref": "the representations and warranties of Parent and the Merger Subsidiaries set forth in this Agreement (other than those described in the preceding clause (A))",
+              "scrape_quote": "except for where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect",
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": null,
+              "obligor_ref": null,
+              "approval_kind": null,
+              "approval_definition_ref": null,
+              "s4_component": null,
+              "listing_venue_ref": null,
+              "certificate_side": null,
+              "certifying_party_ref": null,
+              "certified_condition_refs": [],
+              "certificate_relationship_status": null,
+              "causation_standard": null,
+              "breach_standard": null,
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "BRING_DOWN_TIER"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "167be95b8dd25b7bc53f74935aaf85db5db9fd78a986c3106751620c6a1f324d",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "402c04309b2d6c2eb080895901de2778ca20715e023d0c62a2a3410d8a6bc115",
+                "document_ordinal": 0,
+                "absolute_start": 689,
+                "absolute_end": 1285,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "7f5b2e0b9b52022f429de42af5ea3b17802c81b5e249a7ff47918ee2b64ba9c8"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "c14c3b94b5005dd37190cf367658bf35cef34103995f60dec90043fc7244a4ab",
+            "producer_receipt_id": "388e285416fd995ec09e8f1a7df86b4aaa9211cb7ec7c2e8b4a5c66dc360422f",
+            "governed_scope_digest": "0c22170b16ba901e34e9b7526490c745ece71264d99f28b0fbca5b41f6ace5fa",
+            "extraction_provenance_id": "a0b787875c3c6a4ce8b6c79f748a12692b5161db794c7cbf62e8db4bfa3c40f3"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "BRING_DOWN_TIER_PROVENANCE_REVISIT_PENDING"
+        ],
+        "reasons": [],
+        "materiality_rank": 30,
+        "materiality_label": "MAE",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "8.3",
+          "normalized_citation": "8.3",
+          "derived_citation": "8.3(a)(ii)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.ii.B",
+          "depth": 3,
+          "start_byte": 688,
+          "end_byte": 1553
+        },
+        "chain": [
+          {
+            "path": "a.ii.B",
+            "start_byte": 688,
+            "end_byte": 1553,
+            "text": " the representations and warranties of Parent and the Merger Subsidiaries set forth in this Agreement (other than those described in the preceding clause (A)) shall be true and correct at and as of the date of this Agreement and at and as of the Closing Date as though made at and as of the Closing Date, except for where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect; provided, however, that, with respect to clauses (A) and (B) above, representations and warranties that are made as of a particular date or period shall be true and correct (in the manner set forth in clause (A) or (B) as applicable) only as of such date or period.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 238,
+            "text": "Section 8.3 Additional Conditions to the Obligations of the Company. The obligation of the Company to consummate the Mergers is subject to the satisfaction (or, to the extent permitted by law, waiver) of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(c)",
+      "citation_context": {
+        "parent_section_reference": "8.3",
+        "child_section_reference": "8.3(c)",
+        "parent_chapeau_quote": "Section 8.3 Additional Conditions to the Obligations of the Company. The obligation of the Company to consummate the Mergers is subject to the satisfaction (or, to the extent permitted by law, waiver) of the following further conditions:",
+        "child_clause_quote": "(c) The Company shall have received a certificate of Parent, executed on its behalf by an authorized officer of Parent, dated the Closing Date, certifying that the conditions set forth in Section 8.3(a)(i) and Section 8.3(a)(ii) have been satisfied."
+      },
+      "governing_context_quote": "(c) The Company shall have received a certificate of Parent, executed on its behalf by an authorized officer of Parent, dated the Closing Date, certifying that the conditions set forth in Section 8.3(a)(i) and Section 8.3(a)(ii) have been satisfied.",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+      "concept_key": "COND-S-CERT",
+      "party": {
+        "role": "CERTIFYING_PARTY",
+        "value": "Parent",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "9b33f38d62f02f1e4d115c0ea8c8a1c759e14d804f885b05a9379e8074d40077",
+        "canonical_text_id": "8c51d2b4f94705d55dc616f5a7841bf6c0a8c00f92a425dcc78e11043af87149",
+        "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+        "absolute_start": 282337,
+        "absolute_end": 284260,
+        "concept_key": "COND-S-CERT",
+        "party": {
+          "role": "CERTIFYING_PARTY",
+          "value": "Parent",
+          "capacity": "BUYER"
+        },
+        "ordinal": 3,
+        "source_anchor_id": "d3f1fa06dc20a7d3915b9c815fcb1078ecbfc8e50aacaa4af4e90685d44142d7",
+        "provision_instance_id": "de01e53c56fa3f386492277160b5a9c5e835f2b9c0697e62fa0f87b241be6123",
+        "closure_id": "462ec5bc0d33326bbc33a7146ada192da2043902c8a1b0670a9b0935dec05b87"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "12aa9b541cf46ab29cbdd23aa784e2399fe76affcf258b14187d5cf020601d1a",
+        "claim_occurrence_id": "2e8c1ebe8ce189ab63d41b5dfefb3765139e112c18f17165bf00cf5dabe6a9ea",
+        "subject_occurrence_id": "de01e53c56fa3f386492277160b5a9c5e835f2b9c0697e62fa0f87b241be6123",
+        "claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "The Company shall have received a certificate of Parent, executed on its behalf by an authorized officer of Parent, dated the Closing Date, certifying that the conditions set forth in Section 8.3(a)(i) and Section 8.3(a)(ii) have been satisfied.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "6cd913e15302ec66f196acc6c03884d426a12b614def1061bf3c5c81e15c73c2"
+        ],
+        "attributes": {
+          "section_reference": "8.3",
+          "assertion_kind": "OFFICER_CERTIFICATE",
+          "condition_obligor": null,
+          "accuracy_standard": null,
+          "rep_side": null,
+          "covered_scope_ref": null,
+          "scrape_quote": null,
+          "mae_term_ref": null,
+          "mae_party": null,
+          "standard": null,
+          "obligor_ref": null,
+          "approval_kind": null,
+          "approval_definition_ref": null,
+          "s4_component": null,
+          "listing_venue_ref": null,
+          "certificate_side": "BUYER_CERTIFICATE",
+          "certifying_party_ref": "Parent",
+          "certified_condition_refs": [
+            "Section 8.3(a)(i)",
+            "Section 8.3(a)(ii)"
+          ],
+          "certificate_relationship_status": "VERBATIM_SECTION_REFERENCES",
+          "causation_standard": null,
+          "breach_standard": null,
+          "threshold_role": null,
+          "burdensome_scope": null,
+          "explicit_clause_cross_reference": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "OFFICER_CERTIFICATE"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "6cd913e15302ec66f196acc6c03884d426a12b614def1061bf3c5c81e15c73c2",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "cb06134386febb451b706a18a719135ed69940c4fdfd1197d49c4d4c97d9fcad",
+            "document_ordinal": 0,
+            "absolute_start": 1677,
+            "absolute_end": 1922,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "828c1168a93f02b72465ca6f5ed38e50d730a6cbe76c3bcc905d3bf0adf7655d"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.3",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "8.3",
+          "normalized_citation": "8.3",
+          "derived_citation": "8.3(c)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "12aa9b541cf46ab29cbdd23aa784e2399fe76affcf258b14187d5cf020601d1a",
+            "claim_occurrence_id": "2e8c1ebe8ce189ab63d41b5dfefb3765139e112c18f17165bf00cf5dabe6a9ea",
+            "subject_occurrence_id": "de01e53c56fa3f386492277160b5a9c5e835f2b9c0697e62fa0f87b241be6123",
+            "claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "The Company shall have received a certificate of Parent, executed on its behalf by an authorized officer of Parent, dated the Closing Date, certifying that the conditions set forth in Section 8.3(a)(i) and Section 8.3(a)(ii) have been satisfied.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "6cd913e15302ec66f196acc6c03884d426a12b614def1061bf3c5c81e15c73c2"
+            ],
+            "attributes": {
+              "section_reference": "8.3",
+              "assertion_kind": "OFFICER_CERTIFICATE",
+              "condition_obligor": null,
+              "accuracy_standard": null,
+              "rep_side": null,
+              "covered_scope_ref": null,
+              "scrape_quote": null,
+              "mae_term_ref": null,
+              "mae_party": null,
+              "standard": null,
+              "obligor_ref": null,
+              "approval_kind": null,
+              "approval_definition_ref": null,
+              "s4_component": null,
+              "listing_venue_ref": null,
+              "certificate_side": "BUYER_CERTIFICATE",
+              "certifying_party_ref": "Parent",
+              "certified_condition_refs": [
+                "Section 8.3(a)(i)",
+                "Section 8.3(a)(ii)"
+              ],
+              "certificate_relationship_status": "VERBATIM_SECTION_REFERENCES",
+              "causation_standard": null,
+              "breach_standard": null,
+              "threshold_role": null,
+              "burdensome_scope": null,
+              "explicit_clause_cross_reference": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "OFFICER_CERTIFICATE"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "6cd913e15302ec66f196acc6c03884d426a12b614def1061bf3c5c81e15c73c2",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "cb06134386febb451b706a18a719135ed69940c4fdfd1197d49c4d4c97d9fcad",
+                "document_ordinal": 0,
+                "absolute_start": 1677,
+                "absolute_end": 1922,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "828c1168a93f02b72465ca6f5ed38e50d730a6cbe76c3bcc905d3bf0adf7655d"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CLOSING_CONDITION",
+            "prompt_digest": "c14c3b94b5005dd37190cf367658bf35cef34103995f60dec90043fc7244a4ab",
+            "producer_receipt_id": "388e285416fd995ec09e8f1a7df86b4aaa9211cb7ec7c2e8b4a5c66dc360422f",
+            "governed_scope_digest": "0c22170b16ba901e34e9b7526490c745ece71264d99f28b0fbca5b41f6ace5fa",
+            "extraction_provenance_id": "a0b787875c3c6a4ce8b6c79f748a12692b5161db794c7cbf62e8db4bfa3c40f3"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [],
+        "materiality_rank": 70,
+        "materiality_label": "CLOSING_CONDITIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "8.3",
+          "normalized_citation": "8.3",
+          "derived_citation": "8.3(c)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 1676,
+          "end_byte": 1923
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 1676,
+            "end_byte": 1923,
+            "text": " The Company shall have received a certificate of Parent, executed on its behalf by an authorized officer of Parent, dated the Closing Date, certifying that the conditions set forth in Section 8.3(a)(i) and Section 8.3(a)(ii) have been satisfied.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 238,
+            "text": "Section 8.3 Additional Conditions to the Obligations of the Company. The obligation of the Company to consummate the Mergers is subject to the satisfaction (or, to the extent permitted by law, waiver) of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "8.3",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-S-REP",
+      "reasons": [],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "88bfd0937acabefcaadcbdec201fc465766510ae0673682efd08b5bdc0c4a435",
+      "closure_id": "7f5b2e0b9b52022f429de42af5ea3b17802c81b5e249a7ff47918ee2b64ba9c8",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "167be95b8dd25b7bc53f74935aaf85db5db9fd78a986c3106751620c6a1f324d",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "402c04309b2d6c2eb080895901de2778ca20715e023d0c62a2a3410d8a6bc115",
+          "document_ordinal": 0,
+          "absolute_start": 689,
+          "absolute_end": 1285,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the representations and warranties of Parent and the Merger Subsidiaries set forth in this Agreement (other than those described in the preceding clause (A)) shall be true and correct at and as of the date of this Agreement and at and as of the Closing Date as though made at and as of the Closing Date, except for where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect",
+      "attachment_position": null,
+      "concept_family": "COND-S-REP",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.ii.B",
+          "depth": 3,
+          "start_byte": 688,
+          "end_byte": 1553
+        },
+        "chain": [
+          {
+            "path": "a.ii.B",
+            "start_byte": 688,
+            "end_byte": 1553,
+            "text": " the representations and warranties of Parent and the Merger Subsidiaries set forth in this Agreement (other than those described in the preceding clause (A)) shall be true and correct at and as of the date of this Agreement and at and as of the Closing Date as though made at and as of the Closing Date, except for where the failure to be so true and correct (disregarding all qualifications or limitations as to “material”, “materiality” or “Parent Material Adverse Effect”) would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect; provided, however, that, with respect to clauses (A) and (B) above, representations and warranties that are made as of a particular date or period shall be true and correct (in the manner set forth in clause (A) or (B) as applicable) only as of such date or period.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 238,
+            "text": "Section 8.3 Additional Conditions to the Obligations of the Company. The obligation of the Company to consummate the Mergers is subject to the satisfaction (or, to the extent permitted by law, waiver) of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "COND-S-REP",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0345a458c9d2bde7056e2d51b94bd9824d93856cdc53e36dc0712720a824f024",
+      "closure_id": "0565952052f6a0720e508f2c37b3e866fdeeed14410dc5aa98764b17af62f4e5",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "eb45f422d2818bfe075bdae09cf4aac798a837ad6817dd93de47f31e4e9d4f80",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "7fb090cce04ce13bb39dad7e0914d76e04f7c3e432b63809c7688484279e204f",
+          "document_ordinal": 0,
+          "absolute_start": 411,
+          "absolute_end": 679,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the representations and warranties of Parent and the Merger Subsidiaries set forth in Section 4.10 shall be true and correct in all material respects at and as of the date of this Agreement and at and as of the Closing Date as though made at and as of the Closing Date",
+      "attachment_position": null,
+      "concept_family": "COND-S-REP",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.ii.A",
+          "depth": 3,
+          "start_byte": 410,
+          "end_byte": 685
+        },
+        "chain": [
+          {
+            "path": "a.ii.A",
+            "start_byte": 410,
+            "end_byte": 685,
+            "text": " the representations and warranties of Parent and the Merger Subsidiaries set forth in Section 4.10 shall be true and correct in all material respects at and as of the date of this Agreement and at and as of the Closing Date as though made at and as of the Closing Date, and "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 238,
+            "text": "Section 8.3 Additional Conditions to the Obligations of the Company. The obligation of the Company to consummate the Mergers is subject to the satisfaction (or, to the extent permitted by law, waiver) of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+      "concept_key": "COND-S-CERT",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "12aa9b541cf46ab29cbdd23aa784e2399fe76affcf258b14187d5cf020601d1a",
+      "closure_id": "828c1168a93f02b72465ca6f5ed38e50d730a6cbe76c3bcc905d3bf0adf7655d",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "6cd913e15302ec66f196acc6c03884d426a12b614def1061bf3c5c81e15c73c2",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "cb06134386febb451b706a18a719135ed69940c4fdfd1197d49c4d4c97d9fcad",
+          "document_ordinal": 0,
+          "absolute_start": 1677,
+          "absolute_end": 1922,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company shall have received a certificate of Parent, executed on its behalf by an authorized officer of Parent, dated the Closing Date, certifying that the conditions set forth in Section 8.3(a)(i) and Section 8.3(a)(ii) have been satisfied.",
+      "attachment_position": null,
+      "concept_family": "COND-S-CERT",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 1676,
+          "end_byte": 1923
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 1676,
+            "end_byte": 1923,
+            "text": " The Company shall have received a certificate of Parent, executed on its behalf by an authorized officer of Parent, dated the Closing Date, certifying that the conditions set forth in Section 8.3(a)(i) and Section 8.3(a)(ii) have been satisfied.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 238,
+            "text": "Section 8.3 Additional Conditions to the Obligations of the Company. The obligation of the Company to consummate the Mergers is subject to the satisfaction (or, to the extent permitted by law, waiver) of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(b)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Since the date of this Agreement, there shall not have occurred and be continuing a Parent Material Adverse Effect.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e344268476ecc73efbe32e3a8517b15e5bb2c058f5d8518a05b2bc93d6a3b464",
+      "closure_id": "bfe8018790b5e9f6c0400817f854a030030dd7a9a13d3729ecc542fe3fddf6ec",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b4668228e150d00963b94f2fd812ef399e68a4eefdd0af44db8930a078a43b8e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "6eaf42a24ca5db64a87425c5fd95a4a5bd003512a52901f0729ac12fb2ca9b13",
+          "document_ordinal": 0,
+          "absolute_start": 1557,
+          "absolute_end": 1672,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Since the date of this Agreement, there shall not have occurred and be continuing a Parent Material Adverse Effect.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 1556,
+          "end_byte": 1673
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 1556,
+            "end_byte": 1673,
+            "text": " Since the date of this Agreement, there shall not have occurred and be continuing a Parent Material Adverse Effect.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 238,
+            "text": "Section 8.3 Additional Conditions to the Obligations of the Company. The obligation of the Company to consummate the Mergers is subject to the satisfaction (or, to the extent permitted by law, waiver) of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "COVENANT_COMPLIANCE_STANDARD",
+      "concept_key": "COND-COV",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ff4f7d73a862925f5e7ea5535067753712b27fd8c319d4c936953ee83315c9f9",
+      "closure_id": "c2ff1f50379ed214d5a69a0b8fd04792325c3192b39225822de70370b4ee8684",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "35dbbb1fd92a51fdb0d52be2a875057ed87bfc37f326dbd679be4d6ac81a9726",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "584ff81d19dab12ad380d1454a1ae37ad8c08ff392064dc3624095834b599bac",
+          "document_ordinal": 0,
+          "absolute_start": 246,
+          "absolute_end": 397,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Parent shall have performed in all material respects all of its obligations hereunder required to be performed by it as of or prior to the Closing Date",
+      "attachment_position": null,
+      "concept_family": "COND-COV",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a.i",
+          "depth": 2,
+          "start_byte": 245,
+          "end_byte": 402
+        },
+        "chain": [
+          {
+            "path": "a.i",
+            "start_byte": 245,
+            "end_byte": 402,
+            "text": " Parent shall have performed in all material respects all of its obligations hereunder required to be performed by it as of or prior to the Closing Date and\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 238,
+            "text": "Section 8.3 Additional Conditions to the Obligations of the Company. The obligation of the Company to consummate the Mergers is subject to the satisfaction (or, to the extent permitted by law, waiver) of the following further conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "open_world": [],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "649e62aa900375eb70ec28ba5e1df282038d6edff5110a5c085bd6b276679ce5",
+    "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "registry_substrate": {
+      "schema_version": "RESOLUTION_REGISTRY_SUBSTRATE_MANIFEST/V1",
+      "modules": [
+        {
+          "name": "materiality-qualifier",
+          "version": "RESOLUTION_MATERIALITY_QUALIFIER_REGISTRY/V1",
+          "digest": "sha256:6368129c33917101e97979baa1836e222894af0fe4ed98244ded61c4a7802515"
+        },
+        {
+          "name": "closing-condition-kinds",
+          "version": "RESOLUTION_CLOSING_CONDITION_KINDS_REGISTRY/V1",
+          "digest": "sha256:66bb6592c2f0c21125df9b12a03991aebbe5ca1832bacfb427eadd2df2327efc"
+        },
+        {
+          "name": "general-covenant",
+          "version": "RESOLUTION_GENERAL_COVENANT_REGISTRY/V1",
+          "digest": "sha256:c10453c1b9f700ed7962b3c3f66a1560dcbbbe42aa41692113097a67fb903737"
+        },
+        {
+          "name": "material-contract",
+          "version": "RESOLUTION_MATERIAL_CONTRACT_REGISTRY/V1",
+          "digest": "sha256:85159bed1f96102ea00f2f2acc57e8336c6901797f91c2345a357dc923528d9e"
+        },
+        {
+          "name": "interim-operating",
+          "version": "RESOLUTION_INTERIM_OPERATING_REGISTRY/V1",
+          "digest": "sha256:77e80a8cca7ab4277e74181ef6ea2f0a5410b75d96ad9ae984b7653f5265efae"
+        },
+        {
+          "name": "party-capacity",
+          "version": "RESOLUTION_PARTY_CAPACITY_REGISTRY/V1",
+          "digest": "sha256:1b089c7a6cf30f540043352234cb4109fe27013a554423c8d3ecd652272db202"
+        },
+        {
+          "name": "representation-topic",
+          "version": "REPRESENTATION_TOPIC_REGISTRY/V1",
+          "digest": "sha256:2240a6cfa6ac63d3fbf6a96afce185aed40a1d9919f2437b85a844aa996e1f28"
+        }
+      ],
+      "preserved_v1_collisions": [
+        {
+          "path": "UNDISCLOSED_LIABILITIES_EXCEPTION_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not reasonably be expected to have an MAE",
+          "v1_only": true,
+          "no_delete": true
+        },
+        {
+          "path": "MATERIALITY_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not, individually or in aggregate, have MAE",
+          "v1_only": true,
+          "no_delete": true
+        }
+      ]
+    },
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 3,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 5,
+      "resolved": 4,
+      "auto_pass": 0,
+      "review_queue": 5,
+      "open_world": 0,
+      "residuals": 0,
+      "provisions": 3,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "a5b55a339bdb252bff0524f500d314ebe660ff72a40994f449b56f3e472ecd30"
+  }
+}

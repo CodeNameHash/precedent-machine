@@ -1,0 +1,62 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "dd1717be2d06ff7a7c1698a4302d523a8992782fd73f00af7d868dbf1608b0f4",
+  "review_queue": [
+    {
+      "section_reference": "6.19",
+      "source_citation": "6.19",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_OBTAIN_EFFORTS_STANDARD",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company shall use reasonable best efforts to deliver Payoff Deliverables with respect to the Repaid Indebtedness",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "db89bd61990eec21d0102965531649f123dbb97d7d7e3936e80835a95300982e",
+      "closure_id": "397abe49e578e7a700544b901352af72d6ebdb3b70d889c02298b9c4bde1316d",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "387ce22adef992a98553a7faeb93dcce91fe5a9157af34eb50950a8cd2ca8bfd",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "29dfa50413b78210220daf6e0b77884033c8e012b6e91c323992321bddd52f44",
+          "document_ordinal": 0,
+          "absolute_start": 26,
+          "absolute_end": 142,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company shall use reasonable best efforts to deliver Payoff Deliverables with respect to the Repaid Indebtedness",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 359
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 359,
+            "text": "6.19 Repaid Indebtedness. The Company shall use reasonable best efforts to deliver Payoff Deliverables with respect to the Repaid Indebtedness (giving due regard to local market practice in connection with the repayment in full and termination of commitments of a debt facility in the applicable jurisdiction), at least one Business Day prior to the Closing.\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "1c95d9874e9b5669b6cb79430804645e874b32ce13bb0319f171ed490d264049"
+}

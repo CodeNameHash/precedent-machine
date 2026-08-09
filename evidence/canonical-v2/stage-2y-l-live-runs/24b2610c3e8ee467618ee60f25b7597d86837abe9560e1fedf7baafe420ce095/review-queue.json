@@ -1,0 +1,460 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "80f744648bc652c78f185563bf27fc668ebfda78ec1b7121e028dd4acaaa5d06",
+  "review_queue": [
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_APPROVAL_CONDITION",
+      "concept_key": "COND-REG",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a3c5a61a65757766ac9db88dea2468b9c227239a39127809a830730f4a274dee",
+      "closure_id": "10220445b808b24bed8625455e0af85d2cfa7ff381ea6b0b91854efc278b1fe5",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "9aeffe242c0059b2b5afb44048f24a80d21ed9c8ff61cab2fdb794fa17ab8399",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "606882c97f42d7e2bc5531fe4e4cba7776f6c2cd25f2e3c38ee19e6c461d7a86",
+          "document_ordinal": 0,
+          "absolute_start": 606,
+          "absolute_end": 723,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Any waiting period applicable to the Transactions under the HSR Act shall have been terminated or shall have expired.",
+      "attachment_position": null,
+      "concept_family": "COND-REG",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 584,
+          "end_byte": 724
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 584,
+            "end_byte": 724,
+            "text": " Regulatory Approval. Any waiting period applicable to the Transactions under the HSR Act shall have been terminated or shall have expired.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 351,
+            "text": "7.1 Conditions to Each Party’s Obligation to Consummate the Merger. The respective obligation of each Party to consummate the Merger is subject to the satisfaction at or prior to the Effective Time of the following conditions, any or all of which may be waived jointly by the Parties, in whole or in part, to the extent permitted by applicable Law:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "source_citation": "7.1(d)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Registration Statement shall have been declared effective by the SEC under the Securities Act and shall not be the subject of any stop order or Proceedings seeking a stop order.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "9c969d25db431588e9981e4a7b01a56c7146d146f1621331eea8cbb18d3b791c",
+      "closure_id": "34418a26acffad6bbd08f8a23ffd6c3a368067254ec42667ab1eaf37944d4f3d",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "3be9ee6837b47ce020927d623fb0da70f044ec38711aac38c7180afb164a159d",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9c668d7c22aee4fc3c6d774a6e4cdc9b6b704d91d7a1f1c0a6828ccce570f58f",
+          "document_ordinal": 0,
+          "absolute_start": 1165,
+          "absolute_end": 1346,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Registration Statement shall have been declared effective by the SEC under the Securities Act and shall not be the subject of any stop order or Proceedings seeking a stop order.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "d",
+          "depth": 1,
+          "start_byte": 1140,
+          "end_byte": 1347
+        },
+        "chain": [
+          {
+            "path": "d",
+            "start_byte": 1140,
+            "end_byte": 1347,
+            "text": " Registration Statement. The Registration Statement shall have been declared effective by the SEC under the Securities Act and shall not be the subject of any stop order or Proceedings seeking a stop order.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 351,
+            "text": "7.1 Conditions to Each Party’s Obligation to Consummate the Merger. The respective obligation of each Party to consummate the Merger is subject to the satisfaction at or prior to the Effective Time of the following conditions, any or all of which may be waived jointly by the Parties, in whole or in part, to the extent permitted by applicable Law:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LISTING_CONDITION",
+      "concept_key": "COND-M-LISTING",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "1394f4234de4ef0797bae407fe522d2f6fd63c086b7b7c5377de77e223674e11",
+      "closure_id": "a0d0556e4e2f51d4844152970fc4b29ae444c650a55e04de325f1965c5590f1f",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e46fe49b8c7e9034279689e46a352c4065d3d17230ea58ff7a62a52d9791ca13",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b0d90a002429da62d4bbaf1f567e862a38b639e4724f20fe4b44412999f03838",
+          "document_ordinal": 0,
+          "absolute_start": 1365,
+          "absolute_end": 1569,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The shares of Parent Common Stock issuable to the holders of shares of Company Common Stock pursuant to this Agreement shall have been authorized for listing on the NYSE, upon official notice of issuance.",
+      "attachment_position": null,
+      "concept_family": "COND-M-LISTING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "e",
+          "depth": 1,
+          "start_byte": 1350,
+          "end_byte": 1570
+        },
+        "chain": [
+          {
+            "path": "e",
+            "start_byte": 1350,
+            "end_byte": 1570,
+            "text": " NYSE Listing. The shares of Parent Common Stock issuable to the holders of shares of Company Common Stock pursuant to this Agreement shall have been authorized for listing on the NYSE, upon official notice of issuance.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 351,
+            "text": "7.1 Conditions to Each Party’s Obligation to Consummate the Merger. The respective obligation of each Party to consummate the Merger is subject to the satisfaction at or prior to the Effective Time of the following conditions, any or all of which may be waived jointly by the Parties, in whole or in part, to the extent permitted by applicable Law:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LEGAL_RESTRAINT_CONDITION",
+      "concept_key": "COND-M-LEGAL",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0213cf9af73275e06c7f4d66dce48f383b6d22c4ad25b413955769d1092f4297",
+      "closure_id": "acced8209f96b949850933ee024ac01faf4e18eebc1bd6adde3ad866a43d5463",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "ac246ad3a8f4a152c4e86ae2fed624ed361c93ed7eeb226e1e0ddb95f4253649",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "ead2a454d6458f3bf6eeb09010f842d7034717174244ed89f4ea26be58167462",
+          "document_ordinal": 0,
+          "absolute_start": 758,
+          "absolute_end": 1030,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "No Governmental Entity having jurisdiction over any Party shall have issued any order, decree, ruling, injunction or other action that is in effect (whether temporary, preliminary or permanent) restraining, enjoining or otherwise prohibiting the consummation of the Merger",
+      "attachment_position": null,
+      "concept_family": "COND-M-LEGAL",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 727,
+          "end_byte": 1137
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 727,
+            "end_byte": 1137,
+            "text": " No Injunctions or Restraints. No Governmental Entity having jurisdiction over any Party shall have issued any order, decree, ruling, injunction or other action that is in effect (whether temporary, preliminary or permanent) restraining, enjoining or otherwise prohibiting the consummation of the Merger and no Law shall have been adopted that makes consummation of the Merger illegal or otherwise prohibited.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 351,
+            "text": "7.1 Conditions to Each Party’s Obligation to Consummate the Merger. The respective obligation of each Party to consummate the Merger is subject to the satisfaction at or prior to the Effective Time of the following conditions, any or all of which may be waived jointly by the Parties, in whole or in part, to the extent permitted by applicable Law:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "S4_CONDITION_COMPONENT",
+      "concept_key": "COND-M-S4",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "067c130f856603a190711dfe12ff20cff2d7eee1c31b7795b202c7404e42d228",
+      "closure_id": "bf46c55045a4a2d4447391f36c53cc41779f213d57f0a95cb4ee75755543099c",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "cf884102f499f0f111781d721758d18337f1d40b2b22941c750da0a7ee1cb7b4",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9c668d7c22aee4fc3c6d774a6e4cdc9b6b704d91d7a1f1c0a6828ccce570f58f",
+          "document_ordinal": 0,
+          "absolute_start": 1165,
+          "absolute_end": 1346,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Registration Statement shall have been declared effective by the SEC under the Securities Act and shall not be the subject of any stop order or Proceedings seeking a stop order.",
+      "attachment_position": null,
+      "concept_family": "COND-M-S4",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "d",
+          "depth": 1,
+          "start_byte": 1140,
+          "end_byte": 1347
+        },
+        "chain": [
+          {
+            "path": "d",
+            "start_byte": 1140,
+            "end_byte": 1347,
+            "text": " Registration Statement. The Registration Statement shall have been declared effective by the SEC under the Securities Act and shall not be the subject of any stop order or Proceedings seeking a stop order.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 351,
+            "text": "7.1 Conditions to Each Party’s Obligation to Consummate the Merger. The respective obligation of each Party to consummate the Merger is subject to the satisfaction at or prior to the Effective Time of the following conditions, any or all of which may be waived jointly by the Parties, in whole or in part, to the extent permitted by applicable Law:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "STOCKHOLDER_APPROVAL_CONDITION",
+      "concept_key": "COND-M-STOCKHOLDER",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f288c525abae29e288ea81a579c29bd3e2aec6f792dfe2d09b25922b9598f8d8",
+      "closure_id": "d015d0f523bf993263dcdf2391e6b5d9387ebc1ac91c1f56ef9e7173ebf709c3",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "6e830237b6c463c459d7a12b4faf847fb535f5fd4a656b7de5f3e94b86be8457",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "a241d42b18a47aef6568745894e03a01ae4a8a7129d0cacd2be27d1901b0bc99",
+          "document_ordinal": 0,
+          "absolute_start": 378,
+          "absolute_end": 580,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Company Stockholder Approval and the Parent Stockholder Approval shall have been obtained in accordance with applicable Law and the Organizational Documents of the Company and Parent, as applicable.",
+      "attachment_position": null,
+      "concept_family": "COND-M-STOCKHOLDER",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 354,
+          "end_byte": 581
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 354,
+            "end_byte": 581,
+            "text": " Stockholder Approvals. The Company Stockholder Approval and the Parent Stockholder Approval shall have been obtained in accordance with applicable Law and the Organizational Documents of the Company and Parent, as applicable.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 351,
+            "text": "7.1 Conditions to Each Party’s Obligation to Consummate the Merger. The respective obligation of each Party to consummate the Merger is subject to the satisfaction at or prior to the Effective Time of the following conditions, any or all of which may be waived jointly by the Parties, in whole or in part, to the extent permitted by applicable Law:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "S4_CONDITION_COMPONENT",
+      "concept_key": "COND-M-S4",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "cee693891bdc880760d326ed7daab5569a4a78179ae21efd19d6461285e68f12",
+      "closure_id": "de66cbce43a6812c5bbbcbaa778f8f7ac5eceb13a816c7487c499a55b3dd09a9",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "d666c942b889a348b5bf0ae299c72539e20f7256f32ae87da558dda103621191",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9c668d7c22aee4fc3c6d774a6e4cdc9b6b704d91d7a1f1c0a6828ccce570f58f",
+          "document_ordinal": 0,
+          "absolute_start": 1165,
+          "absolute_end": 1346,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "The Registration Statement shall have been declared effective by the SEC under the Securities Act and shall not be the subject of any stop order or Proceedings seeking a stop order.",
+      "attachment_position": null,
+      "concept_family": "COND-M-S4",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "d",
+          "depth": 1,
+          "start_byte": 1140,
+          "end_byte": 1347
+        },
+        "chain": [
+          {
+            "path": "d",
+            "start_byte": 1140,
+            "end_byte": 1347,
+            "text": " Registration Statement. The Registration Statement shall have been declared effective by the SEC under the Securities Act and shall not be the subject of any stop order or Proceedings seeking a stop order.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 351,
+            "text": "7.1 Conditions to Each Party’s Obligation to Consummate the Merger. The respective obligation of each Party to consummate the Merger is subject to the satisfaction at or prior to the Effective Time of the following conditions, any or all of which may be waived jointly by the Parties, in whole or in part, to the extent permitted by applicable Law:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LEGAL_RESTRAINT_CONDITION",
+      "concept_key": "COND-M-LEGAL",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "eaf62e614f5b1cfde069d957fe07ffb0c1d090d43aea2d5eb7342f0d049d32cc",
+      "closure_id": "ee75cf26a5fe36a21edb9efdad5de4152c828f075deff2da121b870847098b07",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "1f0c8329a407f67b31d4d6764cebbf690ccdf0bc27bcbd9d25b0af2d35619c86",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c5aa36a1b891cedef175d4e63f83754d09d8449afc101b9f03c1808ef3403ff5",
+          "document_ordinal": 0,
+          "absolute_start": 1035,
+          "absolute_end": 1136,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "no Law shall have been adopted that makes consummation of the Merger illegal or otherwise prohibited.",
+      "attachment_position": null,
+      "concept_family": "COND-M-LEGAL",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 727,
+          "end_byte": 1137
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 727,
+            "end_byte": 1137,
+            "text": " No Injunctions or Restraints. No Governmental Entity having jurisdiction over any Party shall have issued any order, decree, ruling, injunction or other action that is in effect (whether temporary, preliminary or permanent) restraining, enjoining or otherwise prohibiting the consummation of the Merger and no Law shall have been adopted that makes consummation of the Merger illegal or otherwise prohibited.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 351,
+            "text": "7.1 Conditions to Each Party’s Obligation to Consummate the Merger. The respective obligation of each Party to consummate the Merger is subject to the satisfaction at or prior to the Effective Time of the following conditions, any or all of which may be waived jointly by the Parties, in whole or in part, to the extent permitted by applicable Law:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "f1841e1ac1ae5430669847dd67cd4e8e602d74d779430ae5e337d8b28c82ae8e"
+}

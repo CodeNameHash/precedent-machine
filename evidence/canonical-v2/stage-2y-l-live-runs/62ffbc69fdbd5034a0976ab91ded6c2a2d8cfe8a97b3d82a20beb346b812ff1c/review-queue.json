@@ -1,0 +1,117 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "d751c7ee6b8f6b4acc9e2955c7cfe1a212d336920c8ab01215486c8fe04ffb8b",
+  "review_queue": [
+    {
+      "section_reference": "6.4",
+      "source_citation": "6.4",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "such party’s failure to act in good faith or to perform in all material respects such party’s covenants and obligations set forth in this Agreement",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "315fe1b7bec236547bcfa83e38de21011826030b35a79446b9326a1adc93b874",
+      "closure_id": "4231a3aa6540acc19fd6493cac46b6d29824e92b905fc7d05217f96d7d99eb4f",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "9589f604858d735cccac23cb2aa8c6772d05c6c954b050b855dd331986ed56bc",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c02c41155c0540972b0f8225e01d9dc3e308e168f2d77e02d30c726ab7d8ffa5",
+          "document_ordinal": 0,
+          "absolute_start": 385,
+          "absolute_end": 536,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "such party’s failure to act in good faith or to perform in all material respects such party’s covenants and obligations set forth in this Agreement",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 593
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 593,
+            "text": "Section 6.4 Frustration of Closing Conditions. No party may rely, either as a basis for not consummating the Mergers or the other Transactions or terminating this Agreement and abandoning the Mergers, on the failure of any condition set forth in Section 6.1, Section 6.2 or Section 6.3, as the case may be, to be satisfied if such failure of any such condition was primarily caused by such party’s failure to act in good faith or to perform in all material respects such party’s covenants and obligations set forth in this Agreement, subject to the terms and conditions of this Agreement.\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.4",
+      "source_citation": "6.4",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "failure of any such condition was primarily caused by such party’s failure to act in good faith or to perform in all material respects such party’s covenants and obligations set forth in this Agreement",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "933059825578544406cc4de0c3e968df01c8b022b4d7c5233124065d9acb85e7",
+      "closure_id": "4ddd0166ab9003e7efb90a8237fa89355eef6d188beb1b61de989181ee280d3d",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "07c93f59a90af18f5b43bec6192ece85db33cb9b2c74f0937e9752c72eb41ff9",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "0c0960f7e5d93fafb2e2a999028934675646907a00ba475ed8f3596df6540dc6",
+          "document_ordinal": 0,
+          "absolute_start": 331,
+          "absolute_end": 536,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "failure of any such condition was primarily caused by such party’s failure to act in good faith or to perform in all material respects such party’s covenants and obligations set forth in this Agreement",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 593
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 593,
+            "text": "Section 6.4 Frustration of Closing Conditions. No party may rely, either as a basis for not consummating the Mergers or the other Transactions or terminating this Agreement and abandoning the Mergers, on the failure of any condition set forth in Section 6.1, Section 6.2 or Section 6.3, as the case may be, to be satisfied if such failure of any such condition was primarily caused by such party’s failure to act in good faith or to perform in all material respects such party’s covenants and obligations set forth in this Agreement, subject to the terms and conditions of this Agreement.\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "cff3e8ce2f8d22f79792e67bcde49838974943ad792d8390f1f4a79b771339b1"
+}

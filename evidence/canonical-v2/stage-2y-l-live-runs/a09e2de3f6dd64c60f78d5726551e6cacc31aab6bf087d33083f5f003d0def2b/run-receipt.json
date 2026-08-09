@@ -1,0 +1,158 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+  "source_sha256": "a7d76e8a7f6efed945208b5870ddfa848438a7542806878bb2bc10646b557660",
+  "source_byte_length": 380704,
+  "root_section_id": "47ba18d9fc592beec8d2bfeed3ee881b60d80543a9f7a6f4c13add1c990edeeb",
+  "requested_section_references": [
+    "6.3"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "6.3",
+      "section_id": "ed7cb2b8ce02f9c25e4aca5f3abed8f24404276a75cdd37f011a5984fe083e18",
+      "parent_section_id": "fed3d688610a82aaf6e069d335625d873cc33b0faafa7526fd14f4c9cb0da533",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 250670,
+      "end": 251245,
+      "text_sha256": "dd8a6d32b8eebd76d676afecca8101b0aea53f2cd91946c09f87229fc3d07db7",
+      "section_family": "PROXY_MEETING",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-proxy-meeting/v1",
+      "prompt_version": 2,
+      "prompt_digest": "862001b7248c1d8a4c87c8481dcc4a9bc2c8542512ae74d7171d79a953cb60ca",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "862001b7248c1d8a4c87c8481dcc4a9bc2c8542512ae74d7171d79a953cb60ca",
+        "input_scope_digest": "9cc581ef21ca0205ba4d40648c3a57bb5e53ad24ed9a2cd6ebee5839361770c4",
+        "proposal_count": 1,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "d7f961c7549d57d41e1639a841594727b6131319cf249d90cf8f14cf61f1475c"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "6.3",
+      "citation_validation": null,
+      "section_family": "PROXY_MEETING",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "dcd9f73e754f4d16b7d5b6b2abd11a034075b6e803cdd33c0b491202e8c435fd",
+          "claim_occurrence_id": "3ab9c4e98eaa4073984f58f3c978ab9894d71a24b57fe684b106f905f7a5a8f5",
+          "subject_occurrence_id": "9249002e0b7854c7653fc56cb1c52468467015738c127200e19c460b293c3fbb",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Immediately after the execution of this Agreement, in lieu of calling a meeting of the Company Stockholders, the Company shall use reasonable best efforts to obtain the Written Consent.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "97e9d7c24c369d1f5ff94258cdc01876793d0b687b9c140216bbf68934483f35"
+          ],
+          "attributes": {
+            "why_unmapped": "Company consent mechanism and approval status are not defined in the source text.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "97e9d7c24c369d1f5ff94258cdc01876793d0b687b9c140216bbf68934483f35",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "c59563fb25e550082d7b0cb364a43ec02d6ece25630e4d8793120d0323cfdafb",
+              "document_ordinal": 0,
+              "absolute_start": 21,
+              "absolute_end": 206,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "fd5251d25ef4032062e687f435e917a93fe358418b53b7fea0533d4034afe18e"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "862001b7248c1d8a4c87c8481dcc4a9bc2c8542512ae74d7171d79a953cb60ca",
+          "producer_receipt_id": "d7f961c7549d57d41e1639a841594727b6131319cf249d90cf8f14cf61f1475c",
+          "governed_scope_digest": "f3905949286b4e1b6d9bac2585f998b0ea32d3ab743f1575e147307c1d341c5f",
+          "extraction_provenance_id": "8112a0129812fd72dbb8c994139698d6393469017da8b493d08341fb5869155a"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "6.3",
+      "source_byte_length": 575,
+      "covered_byte_length": 185,
+      "coverage_share": 0.3217391304347826,
+      "marker_counts": {
+        "as of": 0,
+        "except": 0,
+        "knowledge": 0,
+        "material": 0,
+        "total": 0
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": null,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "LOW_SPAN_COVERAGE",
+          "coverage_share": 0.3217391304347826,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "6.3",
+      "markers_found": [],
+      "classification_counts": {
+        "enumeration_marker": 0,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [],
+      "disagreement_count": 0
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 1,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "45628ca4f9b34eaf21e1381a79b9e3207321b0c9ad66a4db2fc5bf0902307aad"
+}

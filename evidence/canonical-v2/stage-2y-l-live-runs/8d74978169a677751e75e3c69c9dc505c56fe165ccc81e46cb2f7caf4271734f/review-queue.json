@@ -1,0 +1,460 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "5c60b788b654a240bb240d8231b4d880128f17ecf0fa5bed1352e901626caecc",
+  "review_queue": [
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LEGAL_RESTRAINT_CONDITION",
+      "concept_key": "COND-M-LEGAL",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "3035f5a1ff7fc0043fadb5c008e1bae600a9aaa9da85544a9ee89195f66d8631",
+      "closure_id": "3201d47313eda2fd05b071b8a2e11fa07753d36f463f171bdabbcc80b85236d2",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "34db8eed419e3e017e7063b0c16fa01cba1ec3045dd542bd718f238634df4d08",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "fc1f807b9d777b88fcd84b9498e714640045907ab635399a7f427ffb9e123440",
+          "document_ordinal": 0,
+          "absolute_start": 641,
+          "absolute_end": 808,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "no provision of any applicable law or regulation enacted or deemed applicable to the Mergers by a Governmental Authority shall make consummation of the Mergers illegal",
+      "attachment_position": null,
+      "concept_family": "COND-M-LEGAL",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 640,
+          "end_byte": 912
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 640,
+            "end_byte": 912,
+            "text": " no provision of any applicable law or regulation enacted or deemed applicable to the Mergers by a Governmental Authority shall make consummation of the Mergers illegal and no judgment, injunction, order or decree shall prohibit or enjoin the consummation of the Mergers;\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 264,
+            "text": "Section 8.1 Conditions to the Obligations of Each Party. The obligations of each of the Company, Parent and the Merger Subsidiaries to consummate the Mergers are subject to the satisfaction (or, to the extent permitted by law, waiver) of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_APPROVAL_CONDITION",
+      "concept_key": "COND-REG",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c46c82e621d78abb324f38d705e5be6fc0ee2454f9d03a31f42d32282e8b72b9",
+      "closure_id": "55a1a2865bd58308bb9f3096e7c83a95f26c613541b37fbd422afe5e0044e8cb",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "1b885a0e426c4a0c8663fbd2208acd5b6451c03d73a8ba34c56fce7ee91dd4f5",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "03c137158226f0be7ffa6c4468993b4d13dac2432e9c325ee28c9a72f89541b0",
+          "document_ordinal": 0,
+          "absolute_start": 375,
+          "absolute_end": 636,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "any applicable waiting period (and any extensions thereof, including any agreements or commitments with any Governmental Authority regarding the timing of consummating the Mergers) under the HSR Act relating to the Mergers shall have expired or been terminated;",
+      "attachment_position": null,
+      "concept_family": "COND-REG",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 374,
+          "end_byte": 637
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 374,
+            "end_byte": 637,
+            "text": " any applicable waiting period (and any extensions thereof, including any agreements or commitments with any Governmental Authority regarding the timing of consummating the Mergers) under the HSR Act relating to the Mergers shall have expired or been terminated;\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 264,
+            "text": "Section 8.1 Conditions to the Obligations of Each Party. The obligations of each of the Company, Parent and the Merger Subsidiaries to consummate the Mergers are subject to the satisfaction (or, to the extent permitted by law, waiver) of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LISTING_CONDITION",
+      "concept_key": "COND-M-LISTING",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a4f3fb0ee1b0cc575a3aefbe71b4c9cd49aaba054a1577464d6adf5e7b9cd52f",
+      "closure_id": "6b607f6d7c4c795f56eb92566eebcb3dd6b971d0d3704b9d740e94cbbb053a18",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e99eda3d7b4c99bdb55d66bd2e56fec7ac70c0e1755d95991979f81dd3ebf287",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "decd7b30bda821397f7f429f4273ad8c428937739e37261d40cfdc40d38c6a95",
+          "document_ordinal": 0,
+          "absolute_start": 1176,
+          "absolute_end": 1327,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the shares of Parent Common Stock to be issued in the Mergers shall have been approved for listing on the NYSE, subject to official notice of issuance.",
+      "attachment_position": null,
+      "concept_family": "COND-M-LISTING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "e",
+          "depth": 1,
+          "start_byte": 1175,
+          "end_byte": 1328
+        },
+        "chain": [
+          {
+            "path": "e",
+            "start_byte": 1175,
+            "end_byte": 1328,
+            "text": " the shares of Parent Common Stock to be issued in the Mergers shall have been approved for listing on the NYSE, subject to official notice of issuance.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 264,
+            "text": "Section 8.1 Conditions to the Obligations of Each Party. The obligations of each of the Company, Parent and the Merger Subsidiaries to consummate the Mergers are subject to the satisfaction (or, to the extent permitted by law, waiver) of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "source_citation": "8.1(a)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "this Agreement shall have been adopted by the stockholders of the Company in accordance with the DGCL;",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e29edc9ae2916ec1e4e2daa312806e4018a493ac8bb4148dedd8802681bd96da",
+      "closure_id": "7f032bab756faa2035a6664b20622a776a1988bb28cb53ea942a19c85bd857d2",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "7e1227503c7bafc806362af8f7642a72b2f2295559a1647464a4673cc8d5db5b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "139e647855e726cb08067ae8d54b6326f11d654ac2c4c299daedc6e7c6b713a2",
+          "document_ordinal": 0,
+          "absolute_start": 268,
+          "absolute_end": 370,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "this Agreement shall have been adopted by the stockholders of the Company in accordance with the DGCL;",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 267,
+          "end_byte": 371
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 267,
+            "end_byte": 371,
+            "text": " this Agreement shall have been adopted by the stockholders of the Company in accordance with the DGCL;\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 264,
+            "text": "Section 8.1 Conditions to the Obligations of Each Party. The obligations of each of the Company, Parent and the Merger Subsidiaries to consummate the Mergers are subject to the satisfaction (or, to the extent permitted by law, waiver) of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "S4_CONDITION_COMPONENT",
+      "concept_key": "COND-M-S4",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f7001d3baf189316a696b57151a0f3f8a678ee9f357d4c86ee75e126f8a3c77a",
+      "closure_id": "b12b77ae15d8800b6c51ffcb2f6a8fcf8be26aa4c0cb77ef9b1a81c3bb9c9675",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "1aa3e4ee4cf7a7cad426f8c353ef6799ea9393ddb281ce9870a1b901ba99fd51",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9b36c08f20824102a23d0161d82b570e6980acc091f8bae32878c2df2005739e",
+          "document_ordinal": 0,
+          "absolute_start": 916,
+          "absolute_end": 1171,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the Form S-4 shall have been declared effective by the SEC under the Securities Act and no stop order suspending the effectiveness of the Form S-4 shall be in effect and no proceedings for such purpose shall be pending before or threatened by the SEC; and",
+      "attachment_position": null,
+      "concept_family": "COND-M-S4",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "d",
+          "depth": 1,
+          "start_byte": 915,
+          "end_byte": 1172
+        },
+        "chain": [
+          {
+            "path": "d",
+            "start_byte": 915,
+            "end_byte": 1172,
+            "text": " the Form S-4 shall have been declared effective by the SEC under the Securities Act and no stop order suspending the effectiveness of the Form S-4 shall be in effect and no proceedings for such purpose shall be pending before or threatened by the SEC; and\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 264,
+            "text": "Section 8.1 Conditions to the Obligations of Each Party. The obligations of each of the Company, Parent and the Merger Subsidiaries to consummate the Mergers are subject to the satisfaction (or, to the extent permitted by law, waiver) of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "S4_CONDITION_COMPONENT",
+      "concept_key": "COND-M-S4",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "41a23b42408c96b8e8e98492249d1d4724d1afe80e2e54e5b31e79d4dc9a69b3",
+      "closure_id": "b920a1167577ce8444ed83462ff0ad150b7c3cb14df9ae4802412198ab1d8dd1",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "c0a9d4802c76e9920ca50e88b3bee384539a8e6432a60acd7be5852edb8ab89d",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9b36c08f20824102a23d0161d82b570e6980acc091f8bae32878c2df2005739e",
+          "document_ordinal": 0,
+          "absolute_start": 916,
+          "absolute_end": 1171,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the Form S-4 shall have been declared effective by the SEC under the Securities Act and no stop order suspending the effectiveness of the Form S-4 shall be in effect and no proceedings for such purpose shall be pending before or threatened by the SEC; and",
+      "attachment_position": null,
+      "concept_family": "COND-M-S4",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "d",
+          "depth": 1,
+          "start_byte": 915,
+          "end_byte": 1172
+        },
+        "chain": [
+          {
+            "path": "d",
+            "start_byte": 915,
+            "end_byte": 1172,
+            "text": " the Form S-4 shall have been declared effective by the SEC under the Securities Act and no stop order suspending the effectiveness of the Form S-4 shall be in effect and no proceedings for such purpose shall be pending before or threatened by the SEC; and\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 264,
+            "text": "Section 8.1 Conditions to the Obligations of Each Party. The obligations of each of the Company, Parent and the Merger Subsidiaries to consummate the Mergers are subject to the satisfaction (or, to the extent permitted by law, waiver) of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "S4_CONDITION_COMPONENT",
+      "concept_key": "COND-M-S4",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "054493075440723f78c7200b8af9e8dbeee67fcaa99d3634d7534854cd2ff2fb",
+      "closure_id": "efa3648429e6840cf01b41494e76dd838d7b09739115a7cace7a68570e790d57",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "ce0ee66419e615e69d82c445d33bccab941bbdcbe3d7aa59fcc252a3db962046",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9b36c08f20824102a23d0161d82b570e6980acc091f8bae32878c2df2005739e",
+          "document_ordinal": 0,
+          "absolute_start": 916,
+          "absolute_end": 1171,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the Form S-4 shall have been declared effective by the SEC under the Securities Act and no stop order suspending the effectiveness of the Form S-4 shall be in effect and no proceedings for such purpose shall be pending before or threatened by the SEC; and",
+      "attachment_position": null,
+      "concept_family": "COND-M-S4",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "d",
+          "depth": 1,
+          "start_byte": 915,
+          "end_byte": 1172
+        },
+        "chain": [
+          {
+            "path": "d",
+            "start_byte": 915,
+            "end_byte": 1172,
+            "text": " the Form S-4 shall have been declared effective by the SEC under the Securities Act and no stop order suspending the effectiveness of the Form S-4 shall be in effect and no proceedings for such purpose shall be pending before or threatened by the SEC; and\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 264,
+            "text": "Section 8.1 Conditions to the Obligations of Each Party. The obligations of each of the Company, Parent and the Merger Subsidiaries to consummate the Mergers are subject to the satisfaction (or, to the extent permitted by law, waiver) of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LEGAL_RESTRAINT_CONDITION",
+      "concept_key": "COND-M-LEGAL",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0678b2fd5dcce545c8e681fd5b6b407ded4bbc72303d3fb7fd193cf56a002fbe",
+      "closure_id": "fed5c3f94deed0edb1b2aabb999c0a51e57a1636852bf194aa440ee5326e61d7",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0fa0cce5e65b6b32efd203632121e3bafffe736d4752c7323fc84b21da0e82ee",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "93c87411c12617fc5cd9bca792f9575ceb0bbceac63cb40641e54422cd5e1136",
+          "document_ordinal": 0,
+          "absolute_start": 813,
+          "absolute_end": 911,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "no judgment, injunction, order or decree shall prohibit or enjoin the consummation of the Mergers;",
+      "attachment_position": null,
+      "concept_family": "COND-M-LEGAL",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 640,
+          "end_byte": 912
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 640,
+            "end_byte": 912,
+            "text": " no provision of any applicable law or regulation enacted or deemed applicable to the Mergers by a Governmental Authority shall make consummation of the Mergers illegal and no judgment, injunction, order or decree shall prohibit or enjoin the consummation of the Mergers;\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 264,
+            "text": "Section 8.1 Conditions to the Obligations of Each Party. The obligations of each of the Company, Parent and the Merger Subsidiaries to consummate the Mergers are subject to the satisfaction (or, to the extent permitted by law, waiver) of the following conditions:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "f86c1991850d324954e7c6289aee0887b62ff0cb58e9e88057747fcf93838456"
+}

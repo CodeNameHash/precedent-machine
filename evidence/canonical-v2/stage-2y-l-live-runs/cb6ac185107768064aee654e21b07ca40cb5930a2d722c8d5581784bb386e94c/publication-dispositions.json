@@ -1,0 +1,30 @@
+[
+  {
+    "schema_version": "CANONICAL_V2_PUBLICATION_DISPOSITION/V2",
+    "claim_revision_id": "10982819d782c8906c64adba9794b21253c0ab6f5c29caef4058fa879bebddc3",
+    "run_receipt_id": "6c819893f09af309f327c1d2c4733dc8bf0b973facfe7160aaae043ed64e59d0",
+    "resolution_receipt_id": "46d40feb0cf8fad5558c720de7edef15dc03589d61e3ece8aa66f55f11cfd99c",
+    "review_queue_artifact_id": "1ca2aa460054dc89acd36a34980a2879e4127894a2e219f63981d9e1365c258f",
+    "publication_input_digest": "fcb996b35fe15a3b32ea3e16a9b19a87a2cad4713f5a03a87c30685cb89280f8",
+    "canonical_validation_state": "VALIDATED",
+    "family": "UNKNOWN",
+    "claim_kind": "UNKNOWN",
+    "mechanism": "UNKNOWN",
+    "selected_rung": 1,
+    "risk_signals": {
+      "structural_uncertainty": true,
+      "definition_ambiguity": true,
+      "model_fallback": true,
+      "party_attribution_risk": true
+    },
+    "evaluated_at": "1970-01-01T00:00:00.000Z",
+    "authority_id": null,
+    "disposition": "WITHHELD",
+    "reason_codes": [
+      "MISSING_CALIBRATION_AUTHORITY"
+    ],
+    "prior_eligible_decision_id": null,
+    "prior_eligible_decision": null,
+    "decision_id": "e8b934e8c56d68048ada3879a23dc29814a077eb050d1b011074f4cca11b5b6f"
+  }
+]
