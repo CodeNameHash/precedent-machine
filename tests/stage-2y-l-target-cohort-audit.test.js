@@ -47,7 +47,7 @@ function fixture() {
   const accuracy = sourceCard({ id: 'accuracy', family: 'CLOSING_CONDITIONS', reason: 'ACCURACY_STANDARD_OUT_OF_VOCABULARY' });
   const obligor = sourceCard({ id: 'obligor', family: 'CLOSING_CONDITIONS', reason: 'PARTY_UNRESOLVED', mechanism: 'PRODUCER_CONDITION_OBLIGOR_OMITTED', start: 30, end: 40 });
   const proxy = sourceCard({ id: 'proxy', family: 'PROXY_MEETING', reason: 'NO_DAY_COUNT' });
-  const noFix = sourceCard({ id: 'burdensome', deal: 'redhat', family: 'CLOSING_CONDITIONS', reason: 'PARTY_UNRESOLVED', mechanism: 'CORRECT_ABSTENTION_PARTYLESS_BURDENSOME_FRAGMENT', start: 50, end: 60 });
+  const noFix = sourceCard({ id: 'condition-residual', deal: 'redhat', family: 'CLOSING_CONDITIONS', reason: 'PARTY_UNRESOLVED', mechanism: 'CORRECT_ABSTENTION_PARTYLESS_BURDENSOME_FRAGMENT', start: 50, end: 60 });
   const diffArtifact = {
     schema_version: 'STAGE_2Y_L_PER_FAMILY_DIFF/V1', artifact_id: 'diff-id', actual_call_count: 5,
     sections: [

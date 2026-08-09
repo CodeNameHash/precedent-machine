@@ -164,7 +164,7 @@ function sourceTargets({ residualA, residualB, proxyCards }) {
     closing_obligor: a.filter((row) => row.family === 'CLOSING_CONDITIONS' && row.mechanism_verdict === 'PRODUCER_CONDITION_OBLIGOR_OMITTED'),
     proxy_qualitative_day_count: proxyCards,
     redhat_accuracy_no_fix: a.filter((row) => row.deal === 'redhat' && row.family === 'CLOSING_CONDITIONS' && row.reason_code === 'ACCURACY_STANDARD_OUT_OF_VOCABULARY' && /prevent or materially delay/i.test(row.raw_quote || '')),
-    redhat_burdensome_no_fix: a.filter((row) => row.deal === 'redhat' && row.family === 'CLOSING_CONDITIONS' && row.mechanism_verdict === 'CORRECT_ABSTENTION_PARTYLESS_BURDENSOME_FRAGMENT'),
+    redhat_condition_residual_no_fix: a.filter((row) => row.deal === 'redhat' && row.family === 'CLOSING_CONDITIONS' && row.mechanism_verdict === 'CORRECT_ABSTENTION_PARTYLESS_BURDENSOME_FRAGMENT'),
   };
 }
 function uniqueTargetCards(cards) {
@@ -227,7 +227,7 @@ function auditTargetCohort({ batchArtifact, diffArtifact, residualA, residualB, 
   cohorts.financing.new_current_holds = newFinancingHolds({ diffArtifact, financingCards: cohorts.financing.cards, readResolution, resolutionDigest });
   const redhatNoFix = uniqueTargetCards([
     ...cardsFor(targets.redhat_accuracy_no_fix, 'STAGE_2Y_K_RESIDUAL_A'),
-    ...cardsFor(targets.redhat_burdensome_no_fix, 'STAGE_2Y_K_RESIDUAL_A'),
+    ...cardsFor(targets.redhat_condition_residual_no_fix, 'STAGE_2Y_K_RESIDUAL_A'),
   ]);
   const output = {
     schema_version: SCHEMA_VERSION,

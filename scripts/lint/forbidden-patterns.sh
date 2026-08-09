@@ -86,6 +86,14 @@ const RECORDED_LIVE_RUN_DIR = /^tests\/fixtures\/canonical-v2\/(f28-live-run|f28
 // says "Qualification" and "litigation" in the same breath.
 const LIVE_RUN_SOURCE_TEXT_FILE = /^evidence\/canonical-v2\/[^/]+\/(adapter-result|recording|native-producer-recorded-response-[^/]+)\.json$/;
 const DETERMINISTIC_DERIVED_PROSE_EVIDENCE_FILE = /^evidence\/canonical-v2\/(stage-2y-f-lexical-classification|stage-2y-f-terra-adjudication|stage-2y-h-representation-topic-replay)\.json$/;
+const CONCEPT_COVERAGE_SIMULATION_FILE = 'evidence/canonical-v2/stage-2y-f-concept-coverage-simulation.json';
+const CONCEPT_COVERAGE_SIMULATION_SCHEMA = 'STAGE_2Y_F_CONCEPT_COVERAGE_SIMULATION/V1';
+const HASH_ADDRESSED_STAGE_2Y_L_SOURCE_FILE = /^evidence\/canonical-v2\/stage-2y-l-live-runs\/[a-f0-9]{64}\/(adapter-result|recording|native-producer-recorded-response-[^/]+)\.json$/;
+const STAGE_2Y_L_SOURCE_SCHEMAS = Object.freeze({
+  'adapter-result': 'NATIVE_WRITE_SET_ADAPTER_RESULT/V1',
+  recording: 'NATIVE_PRODUCER_RECORDED_RUN/V3',
+  'native-producer-recorded-response': 'NATIVE_PRODUCER_RECORDED_RESPONSE/V1',
+});
 const PROSE_CLASS_FINGERPRINTS = [
   'QUALIFICATION.*litigation',
   'Must defend \\(incl\\. appeals/final judgment\\)',
@@ -122,6 +130,28 @@ function walk(dir, files = []) {
 
 function normalize(file) {
   return String(file || '').replace(/\\/g, '/').replace(/^\.\//, '').trim();
+}
+
+function isConceptCoverageSimulation(rel, src) {
+  if (rel !== CONCEPT_COVERAGE_SIMULATION_FILE) return false;
+  try {
+    return JSON.parse(src).schema_version === CONCEPT_COVERAGE_SIMULATION_SCHEMA;
+  } catch (_) {
+    return false;
+  }
+}
+
+function isHashAddressedStage2yLSourceFile(rel, src) {
+  const match = rel.match(HASH_ADDRESSED_STAGE_2Y_L_SOURCE_FILE);
+  if (!match) return false;
+  const sourceKind = match[1].startsWith('native-producer-recorded-response-')
+    ? 'native-producer-recorded-response'
+    : match[1];
+  try {
+    return JSON.parse(src).schema_version === STAGE_2Y_L_SOURCE_SCHEMAS[sourceKind];
+  } catch (_) {
+    return false;
+  }
 }
 
 function changedFiles() {
@@ -411,6 +441,8 @@ for (const rel of changedFiles()) {
     // fingerprint can bridge unrelated source quotes across the artifact.
     // Keep every code fingerprint, and every other evidence file, in scope.
     if (DETERMINISTIC_DERIVED_PROSE_EVIDENCE_FILE.test(rel) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
+    if (isConceptCoverageSimulation(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
+    if (isHashAddressedStage2yLSourceFile(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (new RegExp(pattern, 'im').test(src)) {
       failures.push(`${rel} :: ${pattern}`);
     }
