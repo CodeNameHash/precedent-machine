@@ -7,7 +7,7 @@ const SECTION_LABELS = Object.freeze({
 });
 
 function formatCode(value) {
-  if (value === null || value === undefined) return 'Not captured';
+  if (value === null || value === undefined) return 'Not applicable';
   if (typeof value === 'object') return Object.values(value).map(formatCode).join(' · ');
   const text = String(value)
     .toLowerCase()

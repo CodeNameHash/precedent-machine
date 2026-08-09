@@ -104,10 +104,9 @@ test('the F26 preview is compact, inactive and uses one bounded provision layout
   assert.match(component, /Relationship:/);
   assert.match(component, /Qualifies .* limb-B prohibited-action outcomes/);
   assert.match(component, /item\.raw_value\?\.text|raw_value\?\.text/);
-  assert.match(component, /value === null \|\| value === undefined\) return 'Not captured';/);
+  assert.match(component, /value === null \|\| value === undefined\) return 'Not applicable';/);
   assert.match(component, /return 'Party not captured';/);
   assert.match(component, /return 'Trigger not captured';/);
-  assert.doesNotMatch(component, /return 'Not applicable';/);
   assert.doesNotMatch(component, /No market data/);
   assert.match(route, /designPreviewServerSideProps/);
   assert.match(route, /NoShopCrossViewPreview/);
@@ -115,6 +114,22 @@ test('the F26 preview is compact, inactive and uses one bounded provision layout
   assert.match(route, /CanonicalV2NoShopF26\.noLayout = true/);
   assert.doesNotMatch(route, /fetch\s*\(/);
   assert.doesNotMatch(route, /\/api\//);
+});
+
+test('the No-Shop governed code formatter distinguishes null from non-null codes', () => {
+  const component = fs.readFileSync(
+    'components/review-v2/NoShopCrossViewPreview.jsx',
+    'utf8',
+  );
+  const start = component.indexOf('function formatCode(value) {');
+  const end = component.indexOf('\n\nfunction formatParty', start);
+  assert.notEqual(start, -1);
+  assert.notEqual(end, -1);
+  const formatCode = Function(`${component.slice(start, end)}\nreturn formatCode;`)();
+
+  assert.equal(formatCode(null), 'Not applicable');
+  assert.equal(formatCode(undefined), 'Not applicable');
+  assert.equal(formatCode('NO_SHOP_MAE'), 'No shop MAE');
 });
 
 test('the real Material Contracts fixture exposes its relative threshold and criterion everywhere', () => {
