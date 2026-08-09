@@ -6,6 +6,8 @@ const assert = require('node:assert/strict');
 const { IOC_CATEGORIES_CANONICAL } = require('../lib/vocab/ioc-categories');
 const {
   RESTRICTION_CATEGORY_TO_CONCEPT,
+  SETTLE_INSURANCE_CASUALTY_REPLAY_QUOTE,
+  normaliseRestrictionCategory,
   corroborateRestrictionCategory,
   corroborateThresholdBasis,
 } = require('../lib/canonical-v2/native-producer/ioc-corroboration');
@@ -56,6 +58,41 @@ test('label-to-text drift and out-of-enum values cannot resolve', () => {
     corroborateRestrictionCategory({ quote: 'make loans or investments', asserted_category: 'INVESTMENT' }),
     { outcome: 'OPEN_WORLD', reason: 'RESTRICTION_CATEGORY_OUT_OF_ENUM' },
   );
+});
+
+test('recorded legacy IOC aliases normalise only to canonical categories and remain quote-corroborated', () => {
+  const cases = [
+    ['TAX', 'consent to any extension or waiver of any limitation period with respect to any material Tax claim or assessment', 'TAX_ELECTIONS'],
+    ['COMP', 'enter into any change in control, severance or similar agreement or any retention or similar agreement with any officer, employee, director, individual independent contractor, individual consultant, or other individual service provider of the Company Group', 'EMPLOYEE_COMPENSATION'],
+    ['MERGE', 'merge or consolidate the Company or any Company Subsidiary with any Person or adopt a plan of complete or partial liquidation, dissolution, restructuring, recapitalization or other reorganization of the Company or any Company Subsidiary', 'ACQUISITIONS_BUSINESS_COMBINATIONS'],
+  ];
+  for (const [legacy, quote, canonical] of cases) {
+    assert.equal(normaliseRestrictionCategory(legacy, quote), canonical);
+    assert.equal(corroborateRestrictionCategory({ quote, asserted_category: normaliseRestrictionCategory(legacy, quote) }).outcome, 'RESOLVED');
+    assert.equal(normaliseRestrictionCategory(legacy, `${quote}.`), legacy, 'nearby prose does not cross the frozen compatibility boundary');
+  }
+  assert.equal(normaliseRestrictionCategory('ISSUE'), 'ISSUE', 'unapproved legacy codes stay outside the compatibility boundary');
+  assert.notEqual(
+    corroborateRestrictionCategory({
+      quote: 'enter into any change in control agreement',
+      asserted_category: 'ACQUISITIONS_BUSINESS_COMBINATIONS',
+    }).outcome,
+    'RESOLVED',
+    'a normalised label still cannot bypass quote corroboration',
+  );
+});
+
+test('the recorded Modiv SETTLE insurance-casualty replay quote alone normalises to INSURANCE', () => {
+  assert.equal(normaliseRestrictionCategory('SETTLE', SETTLE_INSURANCE_CASUALTY_REPLAY_QUOTE), 'INSURANCE');
+  assert.equal(
+    corroborateRestrictionCategory({
+      quote: SETTLE_INSURANCE_CASUALTY_REPLAY_QUOTE,
+      asserted_category: normaliseRestrictionCategory('SETTLE', SETTLE_INSURANCE_CASUALTY_REPLAY_QUOTE),
+    }).outcome,
+    'RESOLVED',
+  );
+  assert.equal(normaliseRestrictionCategory('SETTLE', 'settle any insurance claim'), 'SETTLE');
+  assert.equal(normaliseRestrictionCategory('SETTLE', SETTLE_INSURANCE_CASUALTY_REPLAY_QUOTE.replace('casualty', 'loss')), 'SETTLE');
 });
 
 test('near-miss issuance wording does not make a debt quote ambiguous', () => {

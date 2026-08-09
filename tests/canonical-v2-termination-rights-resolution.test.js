@@ -714,5 +714,5 @@ test('additivity re-pin: the resolution receipt threads mapping_table_version 17
   });
   assert.equal(resolution.resolution_receipt.mapping_table_version, 21);
   assert.equal(resolution.resolution_receipt.termination_deadline_parse_version, 1);
-  assert.equal(resolution.resolution_receipt.cure_period_parse_version, 1);
+  assert.equal(resolution.resolution_receipt.cure_period_parse_version, 2);
 });
