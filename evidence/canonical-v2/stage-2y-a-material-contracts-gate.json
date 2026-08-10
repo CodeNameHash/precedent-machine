@@ -10,7 +10,7 @@
     "attempted": 116,
     "resolved": 116,
     "open_world": 102,
-    "review": 116,
+    "review": 0,
     "resolved_claims_reaching_content": 116,
     "distinct_rendered_rows_with_content": 53,
     "unique_matched_rendered_rows": 53
@@ -22,7 +22,7 @@
       "attempted": 16,
       "resolved": 16,
       "open_world": 15,
-      "review": 16,
+      "review": 0,
       "resolved_claims_reaching_content": 16,
       "distinct_rendered_rows_with_content": 6,
       "unique_matched_rendered_rows": 6,
@@ -38,7 +38,7 @@
       "attempted": 32,
       "resolved": 32,
       "open_world": 19,
-      "review": 32,
+      "review": 0,
       "resolved_claims_reaching_content": 32,
       "distinct_rendered_rows_with_content": 15,
       "unique_matched_rendered_rows": 15,
@@ -54,7 +54,7 @@
       "attempted": 20,
       "resolved": 20,
       "open_world": 11,
-      "review": 20,
+      "review": 0,
       "resolved_claims_reaching_content": 20,
       "distinct_rendered_rows_with_content": 10,
       "unique_matched_rendered_rows": 10,
@@ -70,7 +70,7 @@
       "attempted": 6,
       "resolved": 6,
       "open_world": 19,
-      "review": 6,
+      "review": 0,
       "resolved_claims_reaching_content": 6,
       "distinct_rendered_rows_with_content": 4,
       "unique_matched_rendered_rows": 4,
@@ -102,7 +102,7 @@
       "attempted": 22,
       "resolved": 22,
       "open_world": 16,
-      "review": 22,
+      "review": 0,
       "resolved_claims_reaching_content": 22,
       "distinct_rendered_rows_with_content": 8,
       "unique_matched_rendered_rows": 8,
@@ -118,7 +118,7 @@
       "attempted": 20,
       "resolved": 20,
       "open_world": 21,
-      "review": 20,
+      "review": 0,
       "resolved_claims_reaching_content": 20,
       "distinct_rendered_rows_with_content": 10,
       "unique_matched_rendered_rows": 10,
@@ -133,25 +133,49 @@
     {
       "deal": "concho",
       "run": "concho-material-contracts-20260809-2xk-final",
-      "claim_revision_id": "70183657f249b4888ccee2b733e28c0dbcb96d9fc8b9f4e83a72f3595e2446a2",
+      "claim_revision_id": "5ca6174c446d64f730b1eb9df4ba67ede6c040a99fc5eafff2c6b60506477144",
       "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
       "collection": "resolved",
       "state": "PRESENT",
       "canonical_value": "AGGREGATE_PAYMENTS",
       "bucket_code": "AGGREGATE_PAYMENTS",
       "row_id": "material-contracts-AGGREGATE_PAYMENTS-0",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Contracts above an aggregate-payments threshold Excludes: Oil and Gas Properties"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$100,000,000 (annual); $100,000,000 (aggregate)"
+        }
+      ],
       "renders_with_content": true
     },
     {
       "deal": "concho",
       "run": "concho-material-contracts-20260809-2xk-final",
-      "claim_revision_id": "e3a66fdbfbc4dd0952f8474b9e17bcbd70b1c85daf27c78c6218c9ec1ef405e6",
+      "claim_revision_id": "2046c601c7df1f789ba91b45789349a9bb995929cd79d61794161820c4d70caa",
       "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
       "collection": "resolved",
       "state": "PRESENT",
       "canonical_value": "USD",
       "bucket_code": "AGGREGATE_PAYMENTS",
       "row_id": "material-contracts-AGGREGATE_PAYMENTS-0",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Contracts above an aggregate-payments threshold Excludes: Oil and Gas Properties"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$100,000,000 (annual); $100,000,000 (aggregate)"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -164,6 +188,18 @@
       "canonical_value": "INDEBTEDNESS",
       "bucket_code": "INDEBTEDNESS",
       "row_id": "material-contracts-INDEBTEDNESS-2",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Indebtedness contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$100,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -176,54 +212,114 @@
       "canonical_value": "USD",
       "bucket_code": "INDEBTEDNESS",
       "row_id": "material-contracts-INDEBTEDNESS-2",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Indebtedness contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$100,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
       "deal": "concho",
       "run": "concho-material-contracts-20260809-2xk-final",
-      "claim_revision_id": "8894a4e6595a5a606e2f4e4002f443839fd38f1111468aec6be1aa4102059909",
+      "claim_revision_id": "4bdd61d406784538e7402288464ba804bebcbac1aa6a7298ccd1397e1fca81f8",
       "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
       "collection": "resolved",
       "state": "PRESENT",
       "canonical_value": "REAL_ESTATE",
       "bucket_code": "REAL_ESTATE",
       "row_id": "material-contracts-REAL_ESTATE-5",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Real estate leases Excludes: Oil and Gas Properties"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$100,000,000 (aggregate); $100,000,000 (annual)"
+        }
+      ],
       "renders_with_content": true
     },
     {
       "deal": "concho",
       "run": "concho-material-contracts-20260809-2xk-final",
-      "claim_revision_id": "401d6608ea12990e3d8ca98f1bca713b80523e9b59e3d8d5d8f44cc7a4f5b6d9",
+      "claim_revision_id": "e2b3292e252456ef681de72b148d9209680651e7c9fa8ec560a9f8aae5fb8068",
       "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
       "collection": "resolved",
       "state": "PRESENT",
       "canonical_value": "USD",
       "bucket_code": "REAL_ESTATE",
       "row_id": "material-contracts-REAL_ESTATE-5",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Real estate leases Excludes: Oil and Gas Properties"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$100,000,000 (aggregate); $100,000,000 (annual)"
+        }
+      ],
       "renders_with_content": true
     },
     {
       "deal": "concho",
       "run": "concho-material-contracts-20260809-2xk-final",
-      "claim_revision_id": "fc0d19df7330e77b83e6d0394d1c10eb9400adb6e22559fe7e108c4c202beac2",
+      "claim_revision_id": "ae1f863d949816f6ea7d81158c19c079073c0aa28aeaadc742b1f8c1ce064f55",
       "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
       "collection": "resolved",
       "state": "PRESENT",
       "canonical_value": "REAL_ESTATE",
       "bucket_code": "REAL_ESTATE",
       "row_id": "material-contracts-REAL_ESTATE-5",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Real estate leases Excludes: Oil and Gas Properties"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$100,000,000 (aggregate); $100,000,000 (annual)"
+        }
+      ],
       "renders_with_content": true
     },
     {
       "deal": "concho",
       "run": "concho-material-contracts-20260809-2xk-final",
-      "claim_revision_id": "804f70941491b7bc2e8d6dcd8fe2ba48cdb904e95a589031d6c8cfc2af7536db",
+      "claim_revision_id": "2d9490f9f2e32f53562aef2a77db1c18f190860f5c10cfe07c1245896340dff3",
       "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
       "collection": "resolved",
       "state": "PRESENT",
       "canonical_value": "USD",
       "bucket_code": "REAL_ESTATE",
       "row_id": "material-contracts-REAL_ESTATE-5",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Real estate leases Excludes: Oil and Gas Properties"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$100,000,000 (aggregate); $100,000,000 (annual)"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -236,6 +332,18 @@
       "canonical_value": "NONCOMPETE",
       "bucket_code": "NONCOMPETE",
       "row_id": "material-contracts-NONCOMPETE-4",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Non-competition / non-solicitation agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -248,6 +356,18 @@
       "canonical_value": "ANY",
       "bucket_code": "NONCOMPETE",
       "row_id": "material-contracts-NONCOMPETE-4",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Non-competition / non-solicitation agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -260,6 +380,18 @@
       "canonical_value": "JV_PARTNERSHIPS",
       "bucket_code": "JV_PARTNERSHIPS",
       "row_id": "material-contracts-JV_PARTNERSHIPS-3",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Joint ventures / partnerships"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -272,6 +404,18 @@
       "canonical_value": "ANY",
       "bucket_code": "JV_PARTNERSHIPS",
       "row_id": "material-contracts-JV_PARTNERSHIPS-3",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Joint ventures / partnerships"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -284,6 +428,18 @@
       "canonical_value": "AGGREGATE_PAYMENTS",
       "bucket_code": "AGGREGATE_PAYMENTS",
       "row_id": "material-contracts-AGGREGATE_PAYMENTS-0",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Contracts above an aggregate-payments threshold Excludes: Oil and Gas Properties"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$100,000,000 (annual); $100,000,000 (aggregate)"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -296,6 +452,18 @@
       "canonical_value": "USD",
       "bucket_code": "AGGREGATE_PAYMENTS",
       "row_id": "material-contracts-AGGREGATE_PAYMENTS-0",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Contracts above an aggregate-payments threshold Excludes: Oil and Gas Properties"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$100,000,000 (annual); $100,000,000 (aggregate)"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -308,6 +476,18 @@
       "canonical_value": "EXCLUSIVITY_MFN",
       "bucket_code": "EXCLUSIVITY_MFN",
       "row_id": "material-contracts-EXCLUSIVITY_MFN-1",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Exclusivity / most-favored-nation / standstill"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -320,6 +500,18 @@
       "canonical_value": "ANY",
       "bucket_code": "EXCLUSIVITY_MFN",
       "row_id": "material-contracts-EXCLUSIVITY_MFN-1",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Exclusivity / most-favored-nation / standstill"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -578,310 +770,6 @@
       "renders_with_content": false
     },
     {
-      "deal": "concho",
-      "run": "concho-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "062a2d9d78a43131b2b1d6e8ee71fbf1df2d96ee9c848aa8a3cdf3b77fb87b5d",
-      "claim_revision_id": "062a2d9d78a43131b2b1d6e8ee71fbf1df2d96ee9c848aa8a3cdf3b77fb87b5d",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each material partnership, joint venture or limited liability company agreement",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "concho",
-      "run": "concho-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "953f63e75a7f1abc49f83101401be95cc1211c9983f2ee0b1dbac18b4ec522c2",
-      "claim_revision_id": "953f63e75a7f1abc49f83101401be95cc1211c9983f2ee0b1dbac18b4ec522c2",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each contract that constitutes a commitment relating to Indebtedness or the deferred purchase price of property by the Company or any of its Subsidiaries (whether incurred, assumed, guaranteed or secured by any asset) in excess of $100,000,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "concho",
-      "run": "concho-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "d07ba8e59bfce6b7ec73d9fa4c8bc08070ce23527743862d7ea1443782fe4d6d",
-      "claim_revision_id": "d07ba8e59bfce6b7ec73d9fa4c8bc08070ce23527743862d7ea1443782fe4d6d",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each agreement that contains any “most favored nation” or most favored customer provision, call or put option, preferential right or rights of first or last offer, negotiation or refusal",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "concho",
-      "run": "concho-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "70183657f249b4888ccee2b733e28c0dbcb96d9fc8b9f4e83a72f3595e2446a2",
-      "claim_revision_id": "70183657f249b4888ccee2b733e28c0dbcb96d9fc8b9f4e83a72f3595e2446a2",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each contract that provides for the acquisition, disposition, license, use, distribution or outsourcing of assets, services, rights or properties (other than Oil and Gas Properties) with respect to which the Company reasonably expects that the Company and its Subsidiaries will make annual payments in excess of $100,000,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "concho",
-      "run": "concho-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "a17b81b2397b2df865ca9e37ba9e6976860cb79372d7c4477f00522b0f30224f",
-      "claim_revision_id": "a17b81b2397b2df865ca9e37ba9e6976860cb79372d7c4477f00522b0f30224f",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each contract that is a non-competition contract or other contract that (A) purports to limit in any material respect either the type of business in which the Company or its Subsidiaries (or, after the Effective Time, Parent or its Subsidiaries) may engage or the manner or locations in which any of them may so engage in any business (including any contract containing any area of mutual interest, joint bidding area, joint acquisition area, or non-compete or similar type of provision), (B) could require the disposition of any material assets or line of business of the Company or its Subsidiaries (or, after the Effective Time, Parent or its Subsidiaries) or (C) prohibits or limits the rights of the Company or any of its Subsidiaries to make, sell or distribute any products or services, or use, transfer or distribute, or enforce any of their rights with respect to, any of their material assets",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "concho",
-      "run": "concho-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "6f0db0f7ac77f98a274ecaccf93369c0de1ca895efbb6d70064b660f685bd50e",
-      "claim_revision_id": "6f0db0f7ac77f98a274ecaccf93369c0de1ca895efbb6d70064b660f685bd50e",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "(B) which the Company reasonably expects that it will make aggregate payments in excess of $100,000,000 in any of the next three succeeding fiscal years or over the life of the contract",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "concho",
-      "run": "concho-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "8894a4e6595a5a606e2f4e4002f443839fd38f1111468aec6be1aa4102059909",
-      "claim_revision_id": "8894a4e6595a5a606e2f4e4002f443839fd38f1111468aec6be1aa4102059909",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each contract for lease of personal property or real property (other than Oil and Gas Properties) involving payments in excess of $100,000,000 in any calendar year or over the life of the contract",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "concho",
-      "run": "concho-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "fc0d19df7330e77b83e6d0394d1c10eb9400adb6e22559fe7e108c4c202beac2",
-      "claim_revision_id": "fc0d19df7330e77b83e6d0394d1c10eb9400adb6e22559fe7e108c4c202beac2",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each contract for lease of personal property or real property (other than Oil and Gas Properties) involving payments in excess of $100,000,000 in any calendar year or over the life of the contract",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "concho",
-      "run": "concho-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "860424301b9d28083df198414a7c171480be2e14074fabf998a6fee704fa3c03",
-      "claim_revision_id": "860424301b9d28083df198414a7c171480be2e14074fabf998a6fee704fa3c03",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each material partnership, joint venture or limited liability company agreement",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "concho",
-      "run": "concho-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "9bb855a7cb9e5e3ca3efe1b4585a33d4586df3a878febfc76ab73ac31fecef6b",
-      "claim_revision_id": "9bb855a7cb9e5e3ca3efe1b4585a33d4586df3a878febfc76ab73ac31fecef6b",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each contract that is a non-competition contract or other contract that (A) purports to limit in any material respect either the type of business in which the Company or its Subsidiaries (or, after the Effective Time, Parent or its Subsidiaries) may engage or the manner or locations in which any of them may so engage in any business (including any contract containing any area of mutual interest, joint bidding area, joint acquisition area, or non-compete or similar type of provision), (B) could require the disposition of any material assets or line of business of the Company or its Subsidiaries (or, after the Effective Time, Parent or its Subsidiaries) or (C) prohibits or limits the rights of the Company or any of its Subsidiaries to make, sell or distribute any products or services, or use, transfer or distribute, or enforce any of their rights with respect to, any of their material assets",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "concho",
-      "run": "concho-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "d864471746179f014268c63c781f814cee541213583ecb0fcbfa35103244a976",
-      "claim_revision_id": "d864471746179f014268c63c781f814cee541213583ecb0fcbfa35103244a976",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each agreement that contains any “most favored nation” or most favored customer provision, call or put option, preferential right or rights of first or last offer, negotiation or refusal",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "concho",
-      "run": "concho-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "401d6608ea12990e3d8ca98f1bca713b80523e9b59e3d8d5d8f44cc7a4f5b6d9",
-      "claim_revision_id": "401d6608ea12990e3d8ca98f1bca713b80523e9b59e3d8d5d8f44cc7a4f5b6d9",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each contract for lease of personal property or real property (other than Oil and Gas Properties) involving payments in excess of $100,000,000 in any calendar year or over the life of the contract",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "concho",
-      "run": "concho-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "e3a66fdbfbc4dd0952f8474b9e17bcbd70b1c85daf27c78c6218c9ec1ef405e6",
-      "claim_revision_id": "e3a66fdbfbc4dd0952f8474b9e17bcbd70b1c85daf27c78c6218c9ec1ef405e6",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each contract that provides for the acquisition, disposition, license, use, distribution or outsourcing of assets, services, rights or properties (other than Oil and Gas Properties) with respect to which the Company reasonably expects that the Company and its Subsidiaries will make annual payments in excess of $100,000,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "concho",
-      "run": "concho-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "dda4a70df5c3cead56d296f22b7e7b736488e3b778bcc88ff47a49d01e1b4ea7",
-      "claim_revision_id": "dda4a70df5c3cead56d296f22b7e7b736488e3b778bcc88ff47a49d01e1b4ea7",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each contract that constitutes a commitment relating to Indebtedness or the deferred purchase price of property by the Company or any of its Subsidiaries (whether incurred, assumed, guaranteed or secured by any asset) in excess of $100,000,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "concho",
-      "run": "concho-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "97fd97f1865952df990cf8ac79c959ed31cf46672b0bd782d1eaef01a944ab43",
-      "claim_revision_id": "97fd97f1865952df990cf8ac79c959ed31cf46672b0bd782d1eaef01a944ab43",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "(B) which the Company reasonably expects that it will make aggregate payments in excess of $100,000,000 in any of the next three succeeding fiscal years or over the life of the contract",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "concho",
-      "run": "concho-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "804f70941491b7bc2e8d6dcd8fe2ba48cdb904e95a589031d6c8cfc2af7536db",
-      "claim_revision_id": "804f70941491b7bc2e8d6dcd8fe2ba48cdb904e95a589031d6c8cfc2af7536db",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each contract for lease of personal property or real property (other than Oil and Gas Properties) involving payments in excess of $100,000,000 in any calendar year or over the life of the contract",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
       "deal": "metsera",
       "run": "metsera-material-contracts-20260809-2xk-final",
       "claim_revision_id": "bfb939b903115d2d214b4b74783e717879d9de1b1a9d44df17dde0fbc5ea7f7f",
@@ -891,6 +779,18 @@
       "canonical_value": "NONCOMPETE",
       "bucket_code": "NONCOMPETE",
       "row_id": "material-contracts-NONCOMPETE-9",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Non-competition / non-solicitation agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -903,6 +803,18 @@
       "canonical_value": "ANY",
       "bucket_code": "NONCOMPETE",
       "row_id": "material-contracts-NONCOMPETE-9",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Non-competition / non-solicitation agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -915,6 +827,18 @@
       "canonical_value": "EXCLUSIVITY_MFN",
       "bucket_code": "EXCLUSIVITY_MFN",
       "row_id": "material-contracts-EXCLUSIVITY_MFN-3",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Exclusivity / most-favored-nation / standstill"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -927,6 +851,18 @@
       "canonical_value": "ANY",
       "bucket_code": "EXCLUSIVITY_MFN",
       "row_id": "material-contracts-EXCLUSIVITY_MFN-3",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Exclusivity / most-favored-nation / standstill"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -939,6 +875,18 @@
       "canonical_value": "EXCLUSIVITY_MFN",
       "bucket_code": "EXCLUSIVITY_MFN",
       "row_id": "material-contracts-EXCLUSIVITY_MFN-3",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Exclusivity / most-favored-nation / standstill"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -951,6 +899,18 @@
       "canonical_value": "ANY",
       "bucket_code": "EXCLUSIVITY_MFN",
       "row_id": "material-contracts-EXCLUSIVITY_MFN-3",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Exclusivity / most-favored-nation / standstill"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -963,6 +923,18 @@
       "canonical_value": "IP_DEVELOPMENT",
       "bucket_code": "IP_DEVELOPMENT",
       "row_id": "material-contracts-IP_DEVELOPMENT-6",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "IP development contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -975,6 +947,18 @@
       "canonical_value": "ANY",
       "bucket_code": "IP_DEVELOPMENT",
       "row_id": "material-contracts-IP_DEVELOPMENT-6",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "IP development contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -987,6 +971,18 @@
       "canonical_value": "SINGLE_SOURCE",
       "bucket_code": "SINGLE_SOURCE",
       "row_id": "material-contracts-SINGLE_SOURCE-13",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Single source procurement contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -999,6 +995,18 @@
       "canonical_value": "ANY",
       "bucket_code": "SINGLE_SOURCE",
       "row_id": "material-contracts-SINGLE_SOURCE-13",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Single source procurement contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1011,6 +1019,18 @@
       "canonical_value": "CRO",
       "bucket_code": "CRO",
       "row_id": "material-contracts-CRO-1",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Clinical research organization contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$2,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1023,6 +1043,18 @@
       "canonical_value": "USD",
       "bucket_code": "CRO",
       "row_id": "material-contracts-CRO-1",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Clinical research organization contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$2,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1035,6 +1067,18 @@
       "canonical_value": "MANUFACTURE",
       "bucket_code": "MANUFACTURE",
       "row_id": "material-contracts-MANUFACTURE-8",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Manufacturing agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$2,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1047,6 +1091,18 @@
       "canonical_value": "USD",
       "bucket_code": "MANUFACTURE",
       "row_id": "material-contracts-MANUFACTURE-8",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Manufacturing agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$2,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1059,6 +1115,18 @@
       "canonical_value": "INDEBTEDNESS",
       "bucket_code": "INDEBTEDNESS",
       "row_id": "material-contracts-INDEBTEDNESS-5",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Indebtedness contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$500,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1071,6 +1139,18 @@
       "canonical_value": "USD",
       "bucket_code": "INDEBTEDNESS",
       "row_id": "material-contracts-INDEBTEDNESS-5",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Indebtedness contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$500,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1083,6 +1163,18 @@
       "canonical_value": "SETTLEMENT",
       "bucket_code": "SETTLEMENT",
       "row_id": "material-contracts-SETTLEMENT-12",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Settlement / consent agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$2,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1095,6 +1187,18 @@
       "canonical_value": "USD",
       "bucket_code": "SETTLEMENT",
       "row_id": "material-contracts-SETTLEMENT-12",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Settlement / consent agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$2,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1107,6 +1211,18 @@
       "canonical_value": "ROFR_ROFN",
       "bucket_code": "ROFR_ROFN",
       "row_id": "material-contracts-ROFR_ROFN-11",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Agreements with ROFO/ROFN"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1119,6 +1235,18 @@
       "canonical_value": "ANY",
       "bucket_code": "ROFR_ROFN",
       "row_id": "material-contracts-ROFR_ROFN-11",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Agreements with ROFO/ROFN"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1131,6 +1259,18 @@
       "canonical_value": "COLLABORATION",
       "bucket_code": "COLLABORATION",
       "row_id": "material-contracts-COLLABORATION-0",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Collaboration / R&D agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1143,6 +1283,18 @@
       "canonical_value": "ANY",
       "bucket_code": "COLLABORATION",
       "row_id": "material-contracts-COLLABORATION-0",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Collaboration / R&D agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1155,6 +1307,18 @@
       "canonical_value": "HEDGING",
       "bucket_code": "HEDGING",
       "row_id": "material-contracts-HEDGING-4",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Hedging and derivative contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1167,6 +1331,18 @@
       "canonical_value": "ANY",
       "bucket_code": "HEDGING",
       "row_id": "material-contracts-HEDGING-4",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Hedging and derivative contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1179,6 +1355,18 @@
       "canonical_value": "EMPLOYEE_LOANS",
       "bucket_code": "EMPLOYEE_LOANS",
       "row_id": "material-contracts-EMPLOYEE_LOANS-2",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Employee loans and advances"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$50,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1191,6 +1379,18 @@
       "canonical_value": "USD",
       "bucket_code": "EMPLOYEE_LOANS",
       "row_id": "material-contracts-EMPLOYEE_LOANS-2",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Employee loans and advances"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$50,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1203,6 +1403,18 @@
       "canonical_value": "REAL_ESTATE",
       "bucket_code": "REAL_ESTATE",
       "row_id": "material-contracts-REAL_ESTATE-10",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Real estate leases"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$500,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1215,6 +1427,18 @@
       "canonical_value": "USD",
       "bucket_code": "REAL_ESTATE",
       "row_id": "material-contracts-REAL_ESTATE-10",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Real estate leases"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$500,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1227,6 +1451,18 @@
       "canonical_value": "VOTING_REGISTRATION_RIGHTS",
       "bucket_code": "VOTING_REGISTRATION_RIGHTS",
       "row_id": "material-contracts-VOTING_REGISTRATION_RIGHTS-14",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Voting / registration-rights / stockholder agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1239,6 +1475,18 @@
       "canonical_value": "ANY",
       "bucket_code": "VOTING_REGISTRATION_RIGHTS",
       "row_id": "material-contracts-VOTING_REGISTRATION_RIGHTS-14",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Voting / registration-rights / stockholder agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1251,6 +1499,18 @@
       "canonical_value": "JV_PARTNERSHIPS",
       "bucket_code": "JV_PARTNERSHIPS",
       "row_id": "material-contracts-JV_PARTNERSHIPS-7",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Joint ventures / partnerships"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1263,6 +1523,18 @@
       "canonical_value": "ANY",
       "bucket_code": "JV_PARTNERSHIPS",
       "row_id": "material-contracts-JV_PARTNERSHIPS-7",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Joint ventures / partnerships"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -1456,7 +1728,7 @@
       "deal": "metsera",
       "run": "metsera-material-contracts-20260809-2xk-final",
       "collection": "open_world",
-      "item_id": "a2d343c94fef1bb032622b98e052dcb56f2023851d026b89389e2f6b7c8fa0ef",
+      "item_id": "700c016191b2f75eacb9429987ad6fc5f8d5229ee35d2885db3c0f816ee59ba1",
       "claim_revision_id": null,
       "claim_definition_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
       "state": "OPEN_WORLD",
@@ -1473,7 +1745,7 @@
       "deal": "metsera",
       "run": "metsera-material-contracts-20260809-2xk-final",
       "collection": "open_world",
-      "item_id": "623320d023673461952215b8f3d804803bfb6422a506938a75c856b25aab35f9",
+      "item_id": "bab95d92956e253b8f16872ca5822590c9a23e6e31cc11f96e8ef3710d57934d",
       "claim_revision_id": null,
       "claim_definition_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
       "state": "OPEN_WORLD",
@@ -1589,550 +1861,6 @@
       "renders_with_content": false
     },
     {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "0ecf71fd9626a6bf691e9c71e39bbde6c68f2be1f1486603e9cda4a08b99739a",
-      "claim_revision_id": "0ecf71fd9626a6bf691e9c71e39bbde6c68f2be1f1486603e9cda4a08b99739a",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "that otherwise creates future payment obligations, including settlement agreements, in excess of $2,000,000;",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "09c9c0b076ba78e35d69936ef57689a58ec382c51132cd06a06955fc11854166",
-      "claim_revision_id": "09c9c0b076ba78e35d69936ef57689a58ec382c51132cd06a06955fc11854166",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each Contract that imposes any co-promotion or collaboration obligations with respect to any Company Product or product candidate of the Company or Company Subsidiary, which obligations are material to the Company and the Company Subsidiaries, taken as a whole;",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "2b496f156ec421b027b7bcc5929d5fbdda5f1bc89d95510faf350536b492ecf7",
-      "claim_revision_id": "2b496f156ec421b027b7bcc5929d5fbdda5f1bc89d95510faf350536b492ecf7",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each Contract to which the Company or any Company Subsidiary is a party relating to indebtedness (or commitments in respect thereof) or any financial guaranty, in each case with respect to an outstanding principal amount in excess of $500,000",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "5bad0821ec7ecf16f423b586c1b935082ebd1b48d8cfbd5c76f368a1518d43e0",
-      "claim_revision_id": "5bad0821ec7ecf16f423b586c1b935082ebd1b48d8cfbd5c76f368a1518d43e0",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "requires the Company or any Company Subsidiary to conduct any business on a “most favored nations” basis with any third party",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "580eb97965caf86e55467e46213a2f39db5f4289a6e0453bc15f790f544d81af",
-      "claim_revision_id": "580eb97965caf86e55467e46213a2f39db5f4289a6e0453bc15f790f544d81af",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each hedging, swap, collar, cap, derivative or similar Contract;",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "c7f3bb673be3ed11f52d2fe30d45e77fc92d4e010892b986aa4f0adcd2d82ce3",
-      "claim_revision_id": "c7f3bb673be3ed11f52d2fe30d45e77fc92d4e010892b986aa4f0adcd2d82ce3",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each Contract pursuant to which material Intellectual Property has been or is expected to be developed (whether solely or jointly) for or at the direction of the Company or any Company Subsidiary",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "40b9594b46c2e09409868bcecd659f2e274a7259aea800e74cc02e3186ac0313",
-      "claim_revision_id": "40b9594b46c2e09409868bcecd659f2e274a7259aea800e74cc02e3186ac0313",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "provides for “exclusivity” or any similar requirement in favor of any third party",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "7095ed2ee3a84a543c8a20fb5ae3da60c02d0f770d81f934fe40ec8ba835d6e8",
-      "claim_revision_id": "7095ed2ee3a84a543c8a20fb5ae3da60c02d0f770d81f934fe40ec8ba835d6e8",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each lease, sublease, license or similar use, co-working service and occupancy Contract, in accordance with which the Company or any Company Subsidiary uses or occupies any real property with annual payments in excess of $500,000;",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "b4deec5ee91396c27da06c5bb313f1a8251903b63abf503673cf137a3ce363ab",
-      "claim_revision_id": "b4deec5ee91396c27da06c5bb313f1a8251903b63abf503673cf137a3ce363ab",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each partnership or joint venture agreement to which the Company or any Company Subsidiary is a party that relates to the formation, creation, operation, management or control of any partnership or joint venture or any other alliance, shareholder, development, co-development or similar profit-sharing Contract.",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "eb4875da54481e6dd4498c2bd655a5aec8412ff74eea57672b7a419586e6e5aa",
-      "claim_revision_id": "eb4875da54481e6dd4498c2bd655a5aec8412ff74eea57672b7a419586e6e5aa",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each Contract containing a right of first refusal, right of first negotiation or right of first offer with respect to any equity interest or material assets of the Company or any Company Subsidiary;",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "0f328973e88af4864980836ab9832f1f06bd07d849ee6d875b96a95d20fce58a",
-      "claim_revision_id": "0f328973e88af4864980836ab9832f1f06bd07d849ee6d875b96a95d20fce58a",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each Contract, including any ancillary or subagreements thereto, with any supplier or contract manufacturing organization or other agreement, including any ancillary or subagreements thereto, with a third party which is manufacturing any Company Product or product candidate on behalf of the Company or any Company Subsidiary and is reasonably expected to require payment of more than $2,000,000 within twelve (12) months prior to or after the date of this Agreement;",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "79e7f83e44b4d6dd2bbc929f6af9c53841fd55eba5767e6a01ce60a75a23c401",
-      "claim_revision_id": "79e7f83e44b4d6dd2bbc929f6af9c53841fd55eba5767e6a01ce60a75a23c401",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each Contract, including any ancillary or subagreements thereto, with any contract research organization or other agreement, including any ancillary or subagreements thereto, with a third party which is conducting one or more clinical studies on behalf of the Company or any Company Subsidiary and is reasonably expected to require payment of more than $2,000,000 within twelve (12) months prior to or after the date of this Agreement;",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "829a938a7668f0e4d202a2e386016c077bdba389e8b83acccc01578626383115",
-      "claim_revision_id": "829a938a7668f0e4d202a2e386016c077bdba389e8b83acccc01578626383115",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each Contract under which the Company or any Company Subsidiary has granted any Person registration rights (including demand and piggy-back registration rights) that does not terminate by its terms in connection with the Transactions;",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "47d03e54089ffa26ac61923d6f8cec34a5deddea762e9f65f1bd2e3408c78607",
-      "claim_revision_id": "47d03e54089ffa26ac61923d6f8cec34a5deddea762e9f65f1bd2e3408c78607",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each Contract which provides for a loan or advance in excess of $50,000 to any employee of the Company or any temporary agency employee, consultant or other independent contractor of the Company or any Company Subsidiary",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "bfb939b903115d2d214b4b74783e717879d9de1b1a9d44df17dde0fbc5ea7f7f",
-      "claim_revision_id": "bfb939b903115d2d214b4b74783e717879d9de1b1a9d44df17dde0fbc5ea7f7f",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "materially restricts the ability of the Company or any Company Subsidiary to compete in any business or with any Person in any geographical area",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "128ce68fa5480b22c47bdcf34e6e8efd559da6ede1ee45dde46d5b85cbf78183",
-      "claim_revision_id": "128ce68fa5480b22c47bdcf34e6e8efd559da6ede1ee45dde46d5b85cbf78183",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each Contract that is a “single source” Contract relating to the procurement of materials or services utilized in connection with the exploitation of a Company Product on a Company Product-by-Company Product basis;",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "4dc962604275c923bc16b49dd8492e36118f84774cd5a288078fcc6df7e35bcf",
-      "claim_revision_id": "4dc962604275c923bc16b49dd8492e36118f84774cd5a288078fcc6df7e35bcf",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each hedging, swap, collar, cap, derivative or similar Contract;",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "09699566fc14d997e38e123d1b2798211ca89e3d3a052bc231949ea1d428e4da",
-      "claim_revision_id": "09699566fc14d997e38e123d1b2798211ca89e3d3a052bc231949ea1d428e4da",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each Contract pursuant to which material Intellectual Property has been or is expected to be developed (whether solely or jointly) for or at the direction of the Company or any Company Subsidiary",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "096b3204ac7a4afb843b4505f2bd3b1ce85cb1dd2b65eb954631d61a8dd34e81",
-      "claim_revision_id": "096b3204ac7a4afb843b4505f2bd3b1ce85cb1dd2b65eb954631d61a8dd34e81",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "requires the Company or any Company Subsidiary to conduct any business on a “most favored nations” basis with any third party",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "30979815199433bc51fb18785cd6360a6143d45518e333f17c571252764c242b",
-      "claim_revision_id": "30979815199433bc51fb18785cd6360a6143d45518e333f17c571252764c242b",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each Contract under which the Company or any Company Subsidiary has granted any Person registration rights (including demand and piggy-back registration rights) that does not terminate by its terms in connection with the Transactions;",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "2efdd254f3f6128587c1eb4a106837a1aa8c930385746bd476ae29daa33dd55f",
-      "claim_revision_id": "2efdd254f3f6128587c1eb4a106837a1aa8c930385746bd476ae29daa33dd55f",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each Contract, including any ancillary or subagreements thereto, with any contract research organization or other agreement, including any ancillary or subagreements thereto, with a third party which is conducting one or more clinical studies on behalf of the Company or any Company Subsidiary and is reasonably expected to require payment of more than $2,000,000 within twelve (12) months prior to or after the date of this Agreement;",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "fb09c0d1a13d30e39f51021b3ec1a3b3f03b076c44b9b76c4cf4275d8202aa8c",
-      "claim_revision_id": "fb09c0d1a13d30e39f51021b3ec1a3b3f03b076c44b9b76c4cf4275d8202aa8c",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each Contract which provides for a loan or advance in excess of $50,000 to any employee of the Company or any temporary agency employee, consultant or other independent contractor of the Company or any Company Subsidiary",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "b085faf2b1eeb82bc06f55d8f8928a4cab8d4b3539c678a2d95c672192267680",
-      "claim_revision_id": "b085faf2b1eeb82bc06f55d8f8928a4cab8d4b3539c678a2d95c672192267680",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each Contract containing a right of first refusal, right of first negotiation or right of first offer with respect to any equity interest or material assets of the Company or any Company Subsidiary;",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "9a529465a12c9e1ac4782b5f3eff2cc67fe075c00d338438e1033b7806c9c617",
-      "claim_revision_id": "9a529465a12c9e1ac4782b5f3eff2cc67fe075c00d338438e1033b7806c9c617",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each Contract to which the Company or any Company Subsidiary is a party relating to indebtedness (or commitments in respect thereof) or any financial guaranty, in each case with respect to an outstanding principal amount in excess of $500,000",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "d735c19dc61095fcacb8eccd8536355dc594ae69f9a4f715dc8bcc3f96a7e9cb",
-      "claim_revision_id": "d735c19dc61095fcacb8eccd8536355dc594ae69f9a4f715dc8bcc3f96a7e9cb",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each Contract, including any ancillary or subagreements thereto, with any supplier or contract manufacturing organization or other agreement, including any ancillary or subagreements thereto, with a third party which is manufacturing any Company Product or product candidate on behalf of the Company or any Company Subsidiary and is reasonably expected to require payment of more than $2,000,000 within twelve (12) months prior to or after the date of this Agreement;",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "a99959a039d15cd47ed3d9103d5ab32830ee1c1d8ed0f00b5ee564f55eda8703",
-      "claim_revision_id": "a99959a039d15cd47ed3d9103d5ab32830ee1c1d8ed0f00b5ee564f55eda8703",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each Contract that imposes any co-promotion or collaboration obligations with respect to any Company Product or product candidate of the Company or Company Subsidiary, which obligations are material to the Company and the Company Subsidiaries, taken as a whole;",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "6978a855da6a7310fc70ded3c8647e0be9bd1bdc1f9b30da561333c61b18426d",
-      "claim_revision_id": "6978a855da6a7310fc70ded3c8647e0be9bd1bdc1f9b30da561333c61b18426d",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "provides for “exclusivity” or any similar requirement in favor of any third party",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "6e4bc376d6eb4fd84a6eb17bf36fd70d76c593d2a7081bc537fbba6bf0968239",
-      "claim_revision_id": "6e4bc376d6eb4fd84a6eb17bf36fd70d76c593d2a7081bc537fbba6bf0968239",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each Contract that is a “single source” Contract relating to the procurement of materials or services utilized in connection with the exploitation of a Company Product on a Company Product-by-Company Product basis;",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "e71c6dd49616ff28caf919294eed91807e94ad6c10085e8a0d839bc2e8067045",
-      "claim_revision_id": "e71c6dd49616ff28caf919294eed91807e94ad6c10085e8a0d839bc2e8067045",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each lease, sublease, license or similar use, co-working service and occupancy Contract, in accordance with which the Company or any Company Subsidiary uses or occupies any real property with annual payments in excess of $500,000;",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "c0c048c2a470b4b040cce83017f18b8399778f0f48d2dadd5f6f29dc6f36f7dc",
-      "claim_revision_id": "c0c048c2a470b4b040cce83017f18b8399778f0f48d2dadd5f6f29dc6f36f7dc",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "each partnership or joint venture agreement to which the Company or any Company Subsidiary is a party that relates to the formation, creation, operation, management or control of any partnership or joint venture or any other alliance, shareholder, development, co-development or similar profit-sharing Contract.",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "6e2c8bbb0d68b740f8dc3d9cde518d6410d14cd26d32a34e57b5499e8435ca1b",
-      "claim_revision_id": "6e2c8bbb0d68b740f8dc3d9cde518d6410d14cd26d32a34e57b5499e8435ca1b",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "that otherwise creates future payment obligations, including settlement agreements, in excess of $2,000,000;",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "metsera",
-      "run": "metsera-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "85ddf69b825b0489488d201e6d03a472b7b0ac66d251d999f675527e30908d98",
-      "claim_revision_id": "85ddf69b825b0489488d201e6d03a472b7b0ac66d251d999f675527e30908d98",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "materially restricts the ability of the Company or any Company Subsidiary to compete in any business or with any Person in any geographical area",
-      "reason": null,
-      "reasons": [],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
       "deal": "modiv",
       "run": "modiv-material-contracts-20260809-2xk-final",
       "claim_revision_id": "b14f4ab9b39517500df814d27d99306c0ebaadd494586096fd0960e54c01ad9c",
@@ -2142,6 +1870,18 @@
       "canonical_value": "SEC_ITEM_601",
       "bucket_code": "SEC_ITEM_601",
       "row_id": "material-contracts-SEC_ITEM_601-0",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "SEC Item 601(b) contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2154,6 +1894,18 @@
       "canonical_value": "ANY",
       "bucket_code": "SEC_ITEM_601",
       "row_id": "material-contracts-SEC_ITEM_601-0",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "SEC Item 601(b) contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2166,6 +1918,18 @@
       "canonical_value": "NONCOMPETE",
       "bucket_code": "NONCOMPETE",
       "row_id": "material-contracts-NONCOMPETE-6",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Non-competition / non-solicitation agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2178,6 +1942,18 @@
       "canonical_value": "ANY",
       "bucket_code": "NONCOMPETE",
       "row_id": "material-contracts-NONCOMPETE-6",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Non-competition / non-solicitation agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2190,6 +1966,18 @@
       "canonical_value": "INDEBTEDNESS",
       "bucket_code": "INDEBTEDNESS",
       "row_id": "material-contracts-INDEBTEDNESS-1",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Indebtedness contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$200,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2202,6 +1990,18 @@
       "canonical_value": "USD",
       "bucket_code": "INDEBTEDNESS",
       "row_id": "material-contracts-INDEBTEDNESS-1",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Indebtedness contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$200,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2214,6 +2014,18 @@
       "canonical_value": "MA_AGREEMENTS",
       "bucket_code": "MA_AGREEMENTS",
       "row_id": "material-contracts-MA_AGREEMENTS-4",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "M&A / acquisition agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2226,6 +2038,18 @@
       "canonical_value": "ANY",
       "bucket_code": "MA_AGREEMENTS",
       "row_id": "material-contracts-MA_AGREEMENTS-4",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "M&A / acquisition agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2238,6 +2062,18 @@
       "canonical_value": "MA_ONGOING_OBLIGATIONS",
       "bucket_code": "MA_ONGOING_OBLIGATIONS",
       "row_id": "material-contracts-MA_ONGOING_OBLIGATIONS-5",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "M&A agreements with ongoing obligations"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2250,6 +2086,18 @@
       "canonical_value": "ANY",
       "bucket_code": "MA_ONGOING_OBLIGATIONS",
       "row_id": "material-contracts-MA_ONGOING_OBLIGATIONS-5",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "M&A agreements with ongoing obligations"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2262,6 +2110,18 @@
       "canonical_value": "SETTLEMENT",
       "bucket_code": "SETTLEMENT",
       "row_id": "material-contracts-SETTLEMENT-7",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Settlement / consent agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2274,6 +2134,18 @@
       "canonical_value": "ANY",
       "bucket_code": "SETTLEMENT",
       "row_id": "material-contracts-SETTLEMENT-7",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Settlement / consent agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2286,6 +2158,18 @@
       "canonical_value": "IP_LICENSES_IN",
       "bucket_code": "IP_LICENSES_IN",
       "row_id": "material-contracts-IP_LICENSES_IN-2",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Inbound IP licenses"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2298,6 +2182,18 @@
       "canonical_value": "ANY",
       "bucket_code": "IP_LICENSES_IN",
       "row_id": "material-contracts-IP_LICENSES_IN-2",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Inbound IP licenses"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2310,6 +2206,18 @@
       "canonical_value": "IP_LICENSES_OUT",
       "bucket_code": "IP_LICENSES_OUT",
       "row_id": "material-contracts-IP_LICENSES_OUT-3",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Outbound IP licenses"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2322,6 +2230,18 @@
       "canonical_value": "ANY",
       "bucket_code": "IP_LICENSES_OUT",
       "row_id": "material-contracts-IP_LICENSES_OUT-3",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Outbound IP licenses"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2334,6 +2254,18 @@
       "canonical_value": "HEDGING",
       "bucket_code": "HEDGING",
       "row_id": "material-contracts-HEDGING-0",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Hedging and derivative contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2346,6 +2278,18 @@
       "canonical_value": "ANY",
       "bucket_code": "HEDGING",
       "row_id": "material-contracts-HEDGING-0",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Hedging and derivative contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2358,6 +2302,18 @@
       "canonical_value": "AGGREGATE_PAYMENTS",
       "bucket_code": "AGGREGATE_PAYMENTS",
       "row_id": "material-contracts-AGGREGATE_PAYMENTS-0",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Contracts above an aggregate-payments threshold"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$200,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2370,6 +2326,18 @@
       "canonical_value": "USD",
       "bucket_code": "AGGREGATE_PAYMENTS",
       "row_id": "material-contracts-AGGREGATE_PAYMENTS-0",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Contracts above an aggregate-payments threshold"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$200,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2560,386 +2528,6 @@
       "renders_with_content": false
     },
     {
-      "deal": "modiv",
-      "run": "modiv-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "05deca150388c97143a3017669de889dc3e435d396e346c467bdf6444e5d31f6",
-      "claim_revision_id": "05deca150388c97143a3017669de889dc3e435d396e346c467bdf6444e5d31f6",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "relate to an acquisition, divestiture, merger or similar transaction that (A) was entered into since January 1, 2025 or (B) that has any continuing indemnification, guarantee, “earn-out” or other contingent payment obligations of the Company or any of the Company Subsidiaries;",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "modiv",
-      "run": "modiv-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "008acb8dfc5e8d4320d0fc5bdfdd2c5fe83e3499f045c3126a72ed4f7f73221a",
-      "claim_revision_id": "008acb8dfc5e8d4320d0fc5bdfdd2c5fe83e3499f045c3126a72ed4f7f73221a",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "evidences Indebtedness for borrowed money of the Company or any of the Company Subsidiaries with a principal amount, individually or in the aggregate, greater than $200,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "modiv",
-      "run": "modiv-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "8711898783996cbdc7b76dfc10aad7be10257720101801b1bb5d8613a496855a",
-      "claim_revision_id": "8711898783996cbdc7b76dfc10aad7be10257720101801b1bb5d8613a496855a",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any material Contract pursuant to which (i) the Company or any of the Company Subsidiaries licenses, acquires or is otherwise permitted to use the Intellectual Property of any third party",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "modiv",
-      "run": "modiv-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "522f9fd25cfe2b0938bbe41af078d91c84114a96b43350eeb9882c843421098e",
-      "claim_revision_id": "522f9fd25cfe2b0938bbe41af078d91c84114a96b43350eeb9882c843421098e",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "constitutes an interest rate cap, interest rate collar, interest rate, currency or commodity derivative or other contract or agreement relating to a hedging;",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "modiv",
-      "run": "modiv-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "e81132165a5329c551c83ad872e319cd0445b23145b9b5bad35bbe48946d35c9",
-      "claim_revision_id": "e81132165a5329c551c83ad872e319cd0445b23145b9b5bad35bbe48946d35c9",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "has any continuing indemnification, guarantee, “earn-out” or other contingent payment obligations of the Company or any of the Company Subsidiaries;",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "modiv",
-      "run": "modiv-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "000fba97fd1c428c22ba8a73a302034cd71d2920389f5e9fcaf935f5a01b0c63",
-      "claim_revision_id": "000fba97fd1c428c22ba8a73a302034cd71d2920389f5e9fcaf935f5a01b0c63",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "relates to the settlement (or proposed settlement) of any pending or threatened suit or proceeding, in cash (net of any amount covered by insurance or indemnification that is reasonably expected to be received by the Company or any Company Subsidiary);",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "modiv",
-      "run": "modiv-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "106ec63e6c28174f12d2a1ffaa73b17f71f4a2554eabbfa929df8ccc483aab49",
-      "claim_revision_id": "106ec63e6c28174f12d2a1ffaa73b17f71f4a2554eabbfa929df8ccc483aab49",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "contains covenants of the Company or any of the Company Subsidiaries purporting to limit, in any material respect, either the type of business in which the Company or any of the Company Subsidiaries or any of their controlled affiliates may engage or the geographic area in which any of them may so engage",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "modiv",
-      "run": "modiv-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "2941cfda2cbb8e2883c0616e8af672cde6bb359770aa0ea6170d49305a367eaf",
-      "claim_revision_id": "2941cfda2cbb8e2883c0616e8af672cde6bb359770aa0ea6170d49305a367eaf",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "pursuant to which a third party licenses or is otherwise permitted to use any Company Intellectual Property",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "modiv",
-      "run": "modiv-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "b14f4ab9b39517500df814d27d99306c0ebaadd494586096fd0960e54c01ad9c",
-      "claim_revision_id": "b14f4ab9b39517500df814d27d99306c0ebaadd494586096fd0960e54c01ad9c",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "All Contracts, including amendments thereto, required to be filed as an exhibit to any report of the Company filed on or after January 1, 2023 pursuant to the Exchange Act of the type described in Item 601(b)(10) of Regulation S-K promulgated by the SEC have been filed.",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "modiv",
-      "run": "modiv-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "db0d974759ded66d89bb632babdcf297958d3a5789b2c1834303634eb3db1abb",
-      "claim_revision_id": "db0d974759ded66d89bb632babdcf297958d3a5789b2c1834303634eb3db1abb",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "involves fixed or minimum payment obligations of the Company or the Company Subsidiaries in excess of $200,000 in the aggregate over the remaining term of such Contract.",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "modiv",
-      "run": "modiv-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "11545f823e6f31f75b8b441ec1add6e7be6924d6e0ee71eeb6bdbc6eabf6d207",
-      "claim_revision_id": "11545f823e6f31f75b8b441ec1add6e7be6924d6e0ee71eeb6bdbc6eabf6d207",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "pursuant to which a third party licenses or is otherwise permitted to use any Company Intellectual Property",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "modiv",
-      "run": "modiv-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "72d84141912395e12224599128b9635f85aa8882f913ec5ded972a76b27583a2",
-      "claim_revision_id": "72d84141912395e12224599128b9635f85aa8882f913ec5ded972a76b27583a2",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "All Contracts, including amendments thereto, required to be filed as an exhibit to any report of the Company filed on or after January 1, 2023 pursuant to the Exchange Act of the type described in Item 601(b)(10) of Regulation S-K promulgated by the SEC have been filed.",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "modiv",
-      "run": "modiv-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "a0a811224d1c1b537fcbd6ed603cc0a1172b6bc3dc4631dd46d9fd17cfa0ba22",
-      "claim_revision_id": "a0a811224d1c1b537fcbd6ed603cc0a1172b6bc3dc4631dd46d9fd17cfa0ba22",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "evidences Indebtedness for borrowed money of the Company or any of the Company Subsidiaries with a principal amount, individually or in the aggregate, greater than $200,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "modiv",
-      "run": "modiv-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "8e1c48495338917b8002860e9210fa5bf30555b905382715105eacd3ddb79752",
-      "claim_revision_id": "8e1c48495338917b8002860e9210fa5bf30555b905382715105eacd3ddb79752",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "relate to an acquisition, divestiture, merger or similar transaction that (A) was entered into since January 1, 2025 or (B) that has any continuing indemnification, guarantee, “earn-out” or other contingent payment obligations of the Company or any of the Company Subsidiaries;",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "modiv",
-      "run": "modiv-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "eee50a94147be2477244c6b2a57b6106e4ca307f24cb152f363a1f759a598766",
-      "claim_revision_id": "eee50a94147be2477244c6b2a57b6106e4ca307f24cb152f363a1f759a598766",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "relates to the settlement (or proposed settlement) of any pending or threatened suit or proceeding, in cash (net of any amount covered by insurance or indemnification that is reasonably expected to be received by the Company or any Company Subsidiary);",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "modiv",
-      "run": "modiv-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "5af393e1dd0ccbd511571089d2b068aeaf4a593e7e412f4575daaf1f49d5b18b",
-      "claim_revision_id": "5af393e1dd0ccbd511571089d2b068aeaf4a593e7e412f4575daaf1f49d5b18b",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "contains covenants of the Company or any of the Company Subsidiaries purporting to limit, in any material respect, either the type of business in which the Company or any of the Company Subsidiaries or any of their controlled affiliates may engage or the geographic area in which any of them may so engage",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "modiv",
-      "run": "modiv-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "6e31817d3176cd71c0ea6efcb4c49f9754ce07d34e06217a4aa37d857ba78cd5",
-      "claim_revision_id": "6e31817d3176cd71c0ea6efcb4c49f9754ce07d34e06217a4aa37d857ba78cd5",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "constitutes an interest rate cap, interest rate collar, interest rate, currency or commodity derivative or other contract or agreement relating to a hedging;",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "modiv",
-      "run": "modiv-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "d5ab34dad5cfd4955957b143f2d45e668e99316d9c5939c5645830b06b539bb5",
-      "claim_revision_id": "d5ab34dad5cfd4955957b143f2d45e668e99316d9c5939c5645830b06b539bb5",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any material Contract pursuant to which (i) the Company or any of the Company Subsidiaries licenses, acquires or is otherwise permitted to use the Intellectual Property of any third party",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "modiv",
-      "run": "modiv-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "7e92017f3fc71ec5e17a70a10d8bdd158d578803de3ebc323736c175bdbce1b1",
-      "claim_revision_id": "7e92017f3fc71ec5e17a70a10d8bdd158d578803de3ebc323736c175bdbce1b1",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "has any continuing indemnification, guarantee, “earn-out” or other contingent payment obligations of the Company or any of the Company Subsidiaries;",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "modiv",
-      "run": "modiv-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "61045cee871b3769575965adbf535ab3e5c52f7cc28c50a397c7e2cef2056cb1",
-      "claim_revision_id": "61045cee871b3769575965adbf535ab3e5c52f7cc28c50a397c7e2cef2056cb1",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "involves fixed or minimum payment obligations of the Company or the Company Subsidiaries in excess of $200,000 in the aggregate over the remaining term of such Contract.",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
       "deal": "redhat",
       "run": "redhat-material-contracts-20260809-2xk-final",
       "claim_revision_id": "440358d35c7815b4d4a65674bb212955e11667b1156c3a86e5fa4d3912c79993",
@@ -2949,6 +2537,18 @@
       "canonical_value": "NONCOMPETE",
       "bucket_code": "NONCOMPETE",
       "row_id": "material-contracts-NONCOMPETE-3",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Non-competition / non-solicitation agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2961,6 +2561,18 @@
       "canonical_value": "EXCLUSIVITY_MFN",
       "bucket_code": "EXCLUSIVITY_MFN",
       "row_id": "material-contracts-EXCLUSIVITY_MFN-0",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Exclusivity / most-favored-nation / standstill"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2973,6 +2585,18 @@
       "canonical_value": "INDEBTEDNESS",
       "bucket_code": "INDEBTEDNESS",
       "row_id": "material-contracts-INDEBTEDNESS-1",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Indebtedness contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$50,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2985,6 +2609,18 @@
       "canonical_value": "USD",
       "bucket_code": "INDEBTEDNESS",
       "row_id": "material-contracts-INDEBTEDNESS-1",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Indebtedness contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$50,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -2997,6 +2633,18 @@
       "canonical_value": "MA_ONGOING_OBLIGATIONS",
       "bucket_code": "MA_ONGOING_OBLIGATIONS",
       "row_id": "material-contracts-MA_ONGOING_OBLIGATIONS-2",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "M&A agreements with ongoing obligations"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$10,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -3009,6 +2657,18 @@
       "canonical_value": "USD",
       "bucket_code": "MA_ONGOING_OBLIGATIONS",
       "row_id": "material-contracts-MA_ONGOING_OBLIGATIONS-2",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "M&A agreements with ongoing obligations"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$10,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -3335,120 +2995,6 @@
       "renders_with_content": false
     },
     {
-      "deal": "redhat",
-      "run": "redhat-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "2b4a8a037663e85465e90aede0febea786c0983dcc689bd023522438778b297d",
-      "claim_revision_id": "2b4a8a037663e85465e90aede0febea786c0983dcc689bd023522438778b297d",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "(2) obligates the Company or its Subsidiaries (or following the Effective Time, Parent or its Subsidiaries) to conduct business with any third party on a preferential or exclusive basis or which contains “most favored nation” rights or similar rights, in each case, other than any such Contracts that are not material to the Company and its Subsidiaries, taken as a whole",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "redhat",
-      "run": "redhat-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "440358d35c7815b4d4a65674bb212955e11667b1156c3a86e5fa4d3912c79993",
-      "claim_revision_id": "440358d35c7815b4d4a65674bb212955e11667b1156c3a86e5fa4d3912c79993",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Contract that (1) materially limits the right or ability of the Company, any of its Subsidiaries or any affiliate of any of them to compete with any other person in any line of business or geographic region that is material to the Company and its Subsidiaries, taken as a whole",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "redhat",
-      "run": "redhat-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "55cb5095ddbdfed44cb97bfe3dce445ffc978b02b41ff539974d708bfa025ee1",
-      "claim_revision_id": "55cb5095ddbdfed44cb97bfe3dce445ffc978b02b41ff539974d708bfa025ee1",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Contract to or by which the Company or any of its Subsidiaries is a party or bound providing for the acquisition or disposition of any assets (other than obligations set forth in the capital expenditure budget set forth on Section 4.01(a)(vii) of the Company Letter and acquisitions or dispositions of inventory in the ordinary course of business) or business (whether by merger, sale of stock, sale of assets or otherwise) and that contains continuing indemnities or other obligations (including “earnout” or other contingent payment obligations) outstanding as of the date of this Agreement in each case that could result in payments in excess of $10,000,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "redhat",
-      "run": "redhat-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "25fac94a17bd8a4e6002e39f96917ab24efea95dd03d0409410491d0c46b27e5",
-      "claim_revision_id": "25fac94a17bd8a4e6002e39f96917ab24efea95dd03d0409410491d0c46b27e5",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Contract relating to Indebtedness of the Company or any of its Subsidiaries having an outstanding principal amount in excess of $50,000,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "redhat",
-      "run": "redhat-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "0d75cbae3a12c13fc276a1d6551e5fc2b19163b860122c1214cf22ed4e9e8e71",
-      "claim_revision_id": "0d75cbae3a12c13fc276a1d6551e5fc2b19163b860122c1214cf22ed4e9e8e71",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Contract relating to Indebtedness of the Company or any of its Subsidiaries having an outstanding principal amount in excess of $50,000,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "redhat",
-      "run": "redhat-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "1bc305d59d657057785c6997527bc90b5e089375282b2a78372687ad4400a94d",
-      "claim_revision_id": "1bc305d59d657057785c6997527bc90b5e089375282b2a78372687ad4400a94d",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Contract to or by which the Company or any of its Subsidiaries is a party or bound providing for the acquisition or disposition of any assets (other than obligations set forth in the capital expenditure budget set forth on Section 4.01(a)(vii) of the Company Letter and acquisitions or dispositions of inventory in the ordinary course of business) or business (whether by merger, sale of stock, sale of assets or otherwise) and that contains continuing indemnities or other obligations (including “earnout” or other contingent payment obligations) outstanding as of the date of this Agreement in each case that could result in payments in excess of $10,000,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
       "deal": "skechers",
       "run": "skechers-material-contracts-20260809-2xk-final",
       "collection": "open_world",
@@ -3475,6 +3021,18 @@
       "canonical_value": "SEC_ITEM_601",
       "bucket_code": "SEC_ITEM_601",
       "row_id": "material-contracts-SEC_ITEM_601-7",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "SEC Item 601(b) contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -3487,30 +3045,66 @@
       "canonical_value": "ANY",
       "bucket_code": "SEC_ITEM_601",
       "row_id": "material-contracts-SEC_ITEM_601-7",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "SEC Item 601(b) contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
       "deal": "skywater",
       "run": "skywater-material-contracts-20260809-2xk-final",
-      "claim_revision_id": "eacaaa5b2daf23bc6c3132d169a85b0deed73b418dd6892199f81feb354d0a25",
+      "claim_revision_id": "95e15fdfac10b172a725a4638a6d97da9c0154e79fede014fd4755a0f44a3f21",
       "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
       "collection": "resolved",
       "state": "PRESENT",
       "canonical_value": "MA_ONGOING_OBLIGATIONS",
       "bucket_code": "MA_ONGOING_OBLIGATIONS",
       "row_id": "material-contracts-MA_ONGOING_OBLIGATIONS-4",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "M&A agreements with ongoing obligations Excludes: the Company, a wholly-owned Subsidiary of the Company, Parent or any Subsidiary of Parent"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$1,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
       "deal": "skywater",
       "run": "skywater-material-contracts-20260809-2xk-final",
-      "claim_revision_id": "72ccbcf864f1ab0203ff654174b8f4bdb2ab945b15e7469fb8e4f5f7b85577fd",
+      "claim_revision_id": "402c8388883aca44dec98ec852cb30238673f1fd7f6bd371d14e4abcaa319dbf",
       "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
       "collection": "resolved",
       "state": "PRESENT",
       "canonical_value": "USD",
       "bucket_code": "MA_ONGOING_OBLIGATIONS",
       "row_id": "material-contracts-MA_ONGOING_OBLIGATIONS-4",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "M&A agreements with ongoing obligations Excludes: the Company, a wholly-owned Subsidiary of the Company, Parent or any Subsidiary of Parent"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$1,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -3523,6 +3117,18 @@
       "canonical_value": "NONCOMPETE",
       "bucket_code": "NONCOMPETE",
       "row_id": "material-contracts-NONCOMPETE-5",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Non-competition / non-solicitation agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -3535,6 +3141,18 @@
       "canonical_value": "ANY",
       "bucket_code": "NONCOMPETE",
       "row_id": "material-contracts-NONCOMPETE-5",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Non-competition / non-solicitation agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -3547,6 +3165,18 @@
       "canonical_value": "EXCLUSIVITY_MFN",
       "bucket_code": "EXCLUSIVITY_MFN",
       "row_id": "material-contracts-EXCLUSIVITY_MFN-1",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Exclusivity / most-favored-nation / standstill Excludes: the Company, a wholly-owned Subsidiary of the Company, Parent or any Subsidiary of Parent"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -3559,30 +3189,66 @@
       "canonical_value": "ANY",
       "bucket_code": "EXCLUSIVITY_MFN",
       "row_id": "material-contracts-EXCLUSIVITY_MFN-1",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Exclusivity / most-favored-nation / standstill Excludes: the Company, a wholly-owned Subsidiary of the Company, Parent or any Subsidiary of Parent"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
       "deal": "skywater",
       "run": "skywater-material-contracts-20260809-2xk-final",
-      "claim_revision_id": "a21c5709ee1f2671e6507c5d23083c033d80dbd37ccde09802516d970727c394",
+      "claim_revision_id": "5341a0ccd374a07b02a4cb2b82d77d45244c7403c1a0523e5360e9e013f306bb",
       "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
       "collection": "resolved",
       "state": "PRESENT",
       "canonical_value": "EXCLUSIVITY_MFN",
       "bucket_code": "EXCLUSIVITY_MFN",
       "row_id": "material-contracts-EXCLUSIVITY_MFN-1",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Exclusivity / most-favored-nation / standstill Excludes: the Company, a wholly-owned Subsidiary of the Company, Parent or any Subsidiary of Parent"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
       "deal": "skywater",
       "run": "skywater-material-contracts-20260809-2xk-final",
-      "claim_revision_id": "1a1072c31739dcb1c0367de28d3ba07d4843d696e99ac22b1cbe61e1efe20727",
+      "claim_revision_id": "c21b191d82530d1e9f1ba8a54adbb36f9cc001e37e5072dc9db11453d1441249",
       "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
       "collection": "resolved",
       "state": "PRESENT",
       "canonical_value": "ANY",
       "bucket_code": "EXCLUSIVITY_MFN",
       "row_id": "material-contracts-EXCLUSIVITY_MFN-1",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Exclusivity / most-favored-nation / standstill Excludes: the Company, a wholly-owned Subsidiary of the Company, Parent or any Subsidiary of Parent"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -3595,6 +3261,18 @@
       "canonical_value": "INDEBTEDNESS",
       "bucket_code": "INDEBTEDNESS",
       "row_id": "material-contracts-INDEBTEDNESS-2",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Indebtedness contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$1,000,000 (aggregate)"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -3607,6 +3285,18 @@
       "canonical_value": "USD",
       "bucket_code": "INDEBTEDNESS",
       "row_id": "material-contracts-INDEBTEDNESS-2",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Indebtedness contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$1,000,000 (aggregate)"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -3619,6 +3309,18 @@
       "canonical_value": "INDEBTEDNESS",
       "bucket_code": "INDEBTEDNESS",
       "row_id": "material-contracts-INDEBTEDNESS-2",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Indebtedness contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$1,000,000 (aggregate)"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -3631,54 +3333,114 @@
       "canonical_value": "USD",
       "bucket_code": "INDEBTEDNESS",
       "row_id": "material-contracts-INDEBTEDNESS-2",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Indebtedness contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$1,000,000 (aggregate)"
+        }
+      ],
       "renders_with_content": true
     },
     {
       "deal": "skywater",
       "run": "skywater-material-contracts-20260809-2xk-final",
-      "claim_revision_id": "debcd21edaaa2115028abf00fe15f17e398b55a7b297cebc545841e0b7a6d341",
+      "claim_revision_id": "f87f41a32deb2e50adca204d8facf3bece115f95dae38f91673583a41ef8ca9f",
       "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
       "collection": "resolved",
       "state": "PRESENT",
       "canonical_value": "ROFR_ROFN",
       "bucket_code": "ROFR_ROFN",
       "row_id": "material-contracts-ROFR_ROFN-6",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Agreements with ROFO/ROFN Excludes: the Company, a wholly-owned Subsidiary of the Company"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
       "deal": "skywater",
       "run": "skywater-material-contracts-20260809-2xk-final",
-      "claim_revision_id": "378b45e1d330cc0f8856ac34aae7016e672ff38b08b0319f653e6fa0b0bc435a",
+      "claim_revision_id": "986925acbc626428cde06e58afc533bc1259dddd4eeed9f2b0a7d3062b47c2d0",
       "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
       "collection": "resolved",
       "state": "PRESENT",
       "canonical_value": "ANY",
       "bucket_code": "ROFR_ROFN",
       "row_id": "material-contracts-ROFR_ROFN-6",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Agreements with ROFO/ROFN Excludes: the Company, a wholly-owned Subsidiary of the Company"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
       "deal": "skywater",
       "run": "skywater-material-contracts-20260809-2xk-final",
-      "claim_revision_id": "836ecabff86c67fdd0f685b9ffdea106c971bd5ae112fb76852b4101bd0cadc1",
+      "claim_revision_id": "82631b84149e5d13aa991f69c7c3b30fda0af047c10b7a9e331bbfb1534d3685",
       "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
       "collection": "resolved",
       "state": "PRESENT",
       "canonical_value": "JV_PARTNERSHIPS",
       "bucket_code": "JV_PARTNERSHIPS",
       "row_id": "material-contracts-JV_PARTNERSHIPS-3",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Joint ventures / partnerships Excludes: any such agreement solely between or among the Company and any wholly-owned Subsidiary of the Company"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
       "deal": "skywater",
       "run": "skywater-material-contracts-20260809-2xk-final",
-      "claim_revision_id": "2dd626d4789b39f0bd89a6fbe3000b3ca47f24994dca8b7068a24908a480a3c9",
+      "claim_revision_id": "f27581e320c36c892cbaf3dd223f6fa7b126a30e02c9f59f510772f7fc67db06",
       "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
       "collection": "resolved",
       "state": "PRESENT",
       "canonical_value": "ANY",
       "bucket_code": "JV_PARTNERSHIPS",
       "row_id": "material-contracts-JV_PARTNERSHIPS-3",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Joint ventures / partnerships Excludes: any such agreement solely between or among the Company and any wholly-owned Subsidiary of the Company"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -3691,6 +3453,18 @@
       "canonical_value": "CAPEX_COMMITMENTS",
       "bucket_code": "CAPEX_COMMITMENTS",
       "row_id": "material-contracts-CAPEX_COMMITMENTS-0",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Capital expenditure commitments"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$1,000,000 (aggregate); $250,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -3703,6 +3477,18 @@
       "canonical_value": "USD",
       "bucket_code": "CAPEX_COMMITMENTS",
       "row_id": "material-contracts-CAPEX_COMMITMENTS-0",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Capital expenditure commitments"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$1,000,000 (aggregate); $250,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -3715,6 +3501,18 @@
       "canonical_value": "CAPEX_COMMITMENTS",
       "bucket_code": "CAPEX_COMMITMENTS",
       "row_id": "material-contracts-CAPEX_COMMITMENTS-0",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Capital expenditure commitments"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$1,000,000 (aggregate); $250,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -3727,6 +3525,18 @@
       "canonical_value": "USD",
       "bucket_code": "CAPEX_COMMITMENTS",
       "row_id": "material-contracts-CAPEX_COMMITMENTS-0",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Capital expenditure commitments"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$1,000,000 (aggregate); $250,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4002,424 +3812,6 @@
       "renders_with_content": false
     },
     {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "836ecabff86c67fdd0f685b9ffdea106c971bd5ae112fb76852b4101bd0cadc1",
-      "claim_revision_id": "836ecabff86c67fdd0f685b9ffdea106c971bd5ae112fb76852b4101bd0cadc1",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "is a partnership, limited liability company, joint venture or other similar agreement or arrangement relating to the formation, creation, operation, management or control of any partnership, limited liability company or joint venture (other than any such agreement solely between or among the Company and any wholly-owned Subsidiary of the Company)",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "4523a6baa21788caa45887ad03315225b935a151daf762fc097b50022b448f0a",
-      "claim_revision_id": "4523a6baa21788caa45887ad03315225b935a151daf762fc097b50022b448f0a",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "would be required to be filed by the Company as a “material contract” (as such term is defined in item 601(b)(10) of Regulation S-K of the SEC)",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "fc8362f7293252500dce61f97e72467f7f773057edfac06c4ffbbe3b476aaf9e",
-      "claim_revision_id": "fc8362f7293252500dce61f97e72467f7f773057edfac06c4ffbbe3b476aaf9e",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "is an indenture, loan or credit Contract, loan note, mortgage Contract, repurchase agreement or other Contract representing, or any guarantee of, indebtedness for borrowed money of the Company or any Subsidiary of the Company in excess of, individually or in the aggregate, $1,000,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "debcd21edaaa2115028abf00fe15f17e398b55a7b297cebc545841e0b7a6d341",
-      "claim_revision_id": "debcd21edaaa2115028abf00fe15f17e398b55a7b297cebc545841e0b7a6d341",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "grants (A) rights of first refusal, rights of first negotiation or similar rights, or (B) puts, calls or similar rights, to any person (other than the Company, a wholly-owned Subsidiary of the Company) with respect to any asset that is material to the Company",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "a21c5709ee1f2671e6507c5d23083c033d80dbd37ccde09802516d970727c394",
-      "claim_revision_id": "a21c5709ee1f2671e6507c5d23083c033d80dbd37ccde09802516d970727c394",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "grants “most favored nation” status with respect to any material obligations that, after the Closing, would apply to Parent or any of its Subsidiaries, including the Company and its affiliates, and would run in the favor of any Person (other than the Company, a wholly-owned Subsidiary of the Company, Parent or any Subsidiary of Parent)",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "feab3f4d00af8e2b6971ea870e298755dc9f1f60e0c107cbd2cb394daf8d6c3d",
-      "claim_revision_id": "feab3f4d00af8e2b6971ea870e298755dc9f1f60e0c107cbd2cb394daf8d6c3d",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "limits in any material respect either the type of business in which the Company or its affiliates (or in which Parent or any of its Subsidiaries after the Closing) may engage or the manner or locations in which any of them may so engage in any business (including through “non-competition” or “exclusivity” provisions)",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "eacaaa5b2daf23bc6c3132d169a85b0deed73b418dd6892199f81feb354d0a25",
-      "claim_revision_id": "eacaaa5b2daf23bc6c3132d169a85b0deed73b418dd6892199f81feb354d0a25",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "includes any contingent payment obligations or similar payment obligations (including any “earn-out” obligations) that would require payments to any Person (other than the Company, a wholly-owned Subsidiary of the Company, Parent or any Subsidiary of Parent) arising in connection with the acquisition or disposition by the Company or any of its Subsidiaries of any business which payment obligations would reasonably be expected to result in future payments by the Company or its Subsidiaries that exceed, individually or in the aggregate, $1,000,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "03c36f0b232c63c4361e0efdd2a2ca84bf07aed5e3e2eaa7f3ae62766ce22d81",
-      "claim_revision_id": "03c36f0b232c63c4361e0efdd2a2ca84bf07aed5e3e2eaa7f3ae62766ce22d81",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "provides for or constitutes capital expenditures and requires future payments to or from the Company of any of its Subsidiaries in excess of $250,000 individually or $1,000,000 in the aggregate",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "71ff1a31c900d844d39ca4066c8353c71fc9249f93932de5ba7a9cf11219e41b",
-      "claim_revision_id": "71ff1a31c900d844d39ca4066c8353c71fc9249f93932de5ba7a9cf11219e41b",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "is a guarantee by the Company or any of its Subsidiaries of such indebtedness of any person other than the Company or a wholly-owned Subsidiary of the Company in excess of, individually or in the aggregate, $1,000,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "bd22255c8587143e0c27c55da1f461de6319610b936e786ab4df866d66f3cf61",
-      "claim_revision_id": "bd22255c8587143e0c27c55da1f461de6319610b936e786ab4df866d66f3cf61",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "provides for or constitutes capital expenditures and requires future payments to or from the Company of any of its Subsidiaries in excess of $250,000 individually or $1,000,000 in the aggregate",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "c1d30d42142e715ca853b05bfacdfc13c46ec9f8b66a8cc40cc1586f1395ca6a",
-      "claim_revision_id": "c1d30d42142e715ca853b05bfacdfc13c46ec9f8b66a8cc40cc1586f1395ca6a",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "limits in any material respect either the type of business in which the Company or its affiliates (or in which Parent or any of its Subsidiaries after the Closing) may engage or the manner or locations in which any of them may so engage in any business (including through “non-competition” or “exclusivity” provisions)",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "28bacb4086c13a4e2bf287a7d4337059157a5abe7c50b0174af68bacfcb75dcc",
-      "claim_revision_id": "28bacb4086c13a4e2bf287a7d4337059157a5abe7c50b0174af68bacfcb75dcc",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "provides for or constitutes capital expenditures and requires future payments to or from the Company of any of its Subsidiaries in excess of $250,000 individually or $1,000,000 in the aggregate",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "72ccbcf864f1ab0203ff654174b8f4bdb2ab945b15e7469fb8e4f5f7b85577fd",
-      "claim_revision_id": "72ccbcf864f1ab0203ff654174b8f4bdb2ab945b15e7469fb8e4f5f7b85577fd",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "includes any contingent payment obligations or similar payment obligations (including any “earn-out” obligations) that would require payments to any Person (other than the Company, a wholly-owned Subsidiary of the Company, Parent or any Subsidiary of Parent) arising in connection with the acquisition or disposition by the Company or any of its Subsidiaries of any business which payment obligations would reasonably be expected to result in future payments by the Company or its Subsidiaries that exceed, individually or in the aggregate, $1,000,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "378b45e1d330cc0f8856ac34aae7016e672ff38b08b0319f653e6fa0b0bc435a",
-      "claim_revision_id": "378b45e1d330cc0f8856ac34aae7016e672ff38b08b0319f653e6fa0b0bc435a",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "grants (A) rights of first refusal, rights of first negotiation or similar rights, or (B) puts, calls or similar rights, to any person (other than the Company, a wholly-owned Subsidiary of the Company) with respect to any asset that is material to the Company",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "2dd626d4789b39f0bd89a6fbe3000b3ca47f24994dca8b7068a24908a480a3c9",
-      "claim_revision_id": "2dd626d4789b39f0bd89a6fbe3000b3ca47f24994dca8b7068a24908a480a3c9",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "is a partnership, limited liability company, joint venture or other similar agreement or arrangement relating to the formation, creation, operation, management or control of any partnership, limited liability company or joint venture (other than any such agreement solely between or among the Company and any wholly-owned Subsidiary of the Company)",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "8b72672db136aa011e18f41fcf72e91e031066307e1203f25a33090ff1a1b985",
-      "claim_revision_id": "8b72672db136aa011e18f41fcf72e91e031066307e1203f25a33090ff1a1b985",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "limits in any material respect either the type of business in which the Company or its affiliates (or in which Parent or any of its Subsidiaries after the Closing) may engage or the manner or locations in which any of them may so engage in any business (including through “non-competition” or “exclusivity” provisions)",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "f5c4b200e2d386af23df637a1740560b402c6cc58753fdeeb31af6820e8682ae",
-      "claim_revision_id": "f5c4b200e2d386af23df637a1740560b402c6cc58753fdeeb31af6820e8682ae",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "would be required to be filed by the Company as a “material contract” (as such term is defined in item 601(b)(10) of Regulation S-K of the SEC)",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "a814bfc7adf6ad4f688cff1ce7f7965246e36d61ebce76185d298ca563abceaa",
-      "claim_revision_id": "a814bfc7adf6ad4f688cff1ce7f7965246e36d61ebce76185d298ca563abceaa",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "is a guarantee by the Company or any of its Subsidiaries of such indebtedness of any person other than the Company or a wholly-owned Subsidiary of the Company in excess of, individually or in the aggregate, $1,000,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "33e15e246933a645644996d047ff3fb9323f8a302170ef71b9514a762b3df355",
-      "claim_revision_id": "33e15e246933a645644996d047ff3fb9323f8a302170ef71b9514a762b3df355",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "limits in any material respect either the type of business in which the Company or its affiliates (or in which Parent or any of its Subsidiaries after the Closing) may engage or the manner or locations in which any of them may so engage in any business (including through “non-competition” or “exclusivity” provisions)",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "b4c1225416c329b19badd3dd744cde6d4e9ab625c3a7fc9541774af3f7fe5851",
-      "claim_revision_id": "b4c1225416c329b19badd3dd744cde6d4e9ab625c3a7fc9541774af3f7fe5851",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "is an indenture, loan or credit Contract, loan note, mortgage Contract, repurchase agreement or other Contract representing, or any guarantee of, indebtedness for borrowed money of the Company or any Subsidiary of the Company in excess of, individually or in the aggregate, $1,000,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "56098e795c4c07200e587a4c337aab7df341cb594819ef4f56e3a6ea69d9ab50",
-      "claim_revision_id": "56098e795c4c07200e587a4c337aab7df341cb594819ef4f56e3a6ea69d9ab50",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "provides for or constitutes capital expenditures and requires future payments to or from the Company of any of its Subsidiaries in excess of $250,000 individually or $1,000,000 in the aggregate",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "skywater",
-      "run": "skywater-material-contracts-20260809-2xk-final",
-      "collection": "review",
-      "item_id": "1a1072c31739dcb1c0367de28d3ba07d4843d696e99ac22b1cbe61e1efe20727",
-      "claim_revision_id": "1a1072c31739dcb1c0367de28d3ba07d4843d696e99ac22b1cbe61e1efe20727",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "grants “most favored nation” status with respect to any material obligations that, after the Closing, would apply to Parent or any of its Subsidiaries, including the Company and its affiliates, and would run in the favor of any Person (other than the Company, a wholly-owned Subsidiary of the Company, Parent or any Subsidiary of Parent)",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
       "deal": "topbuild",
       "run": "topbuild-material-contracts-20260809-2xk-r3-final",
       "claim_revision_id": "09ccaf06822092a44f4c4caa8977b685a9ba3b058710fdfbee2c66e5fe755108",
@@ -4429,6 +3821,18 @@
       "canonical_value": "INDEBTEDNESS",
       "bucket_code": "INDEBTEDNESS",
       "row_id": "material-contracts-INDEBTEDNESS-3",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Indebtedness contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$10,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4441,6 +3845,18 @@
       "canonical_value": "USD",
       "bucket_code": "INDEBTEDNESS",
       "row_id": "material-contracts-INDEBTEDNESS-3",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Indebtedness contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$10,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4453,6 +3869,18 @@
       "canonical_value": "NONCOMPETE",
       "bucket_code": "NONCOMPETE",
       "row_id": "material-contracts-NONCOMPETE-5",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Non-competition / non-solicitation agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4465,6 +3893,18 @@
       "canonical_value": "ANY",
       "bucket_code": "NONCOMPETE",
       "row_id": "material-contracts-NONCOMPETE-5",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Non-competition / non-solicitation agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4477,6 +3917,18 @@
       "canonical_value": "HEDGING",
       "bucket_code": "HEDGING",
       "row_id": "material-contracts-HEDGING-2",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Hedging and derivative contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$10,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4489,6 +3941,18 @@
       "canonical_value": "USD",
       "bucket_code": "HEDGING",
       "row_id": "material-contracts-HEDGING-2",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Hedging and derivative contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$10,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4501,6 +3965,18 @@
       "canonical_value": "JV_PARTNERSHIPS",
       "bucket_code": "JV_PARTNERSHIPS",
       "row_id": "material-contracts-JV_PARTNERSHIPS-4",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Joint ventures / partnerships"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4513,6 +3989,18 @@
       "canonical_value": "ANY",
       "bucket_code": "JV_PARTNERSHIPS",
       "row_id": "material-contracts-JV_PARTNERSHIPS-4",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Joint ventures / partnerships"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4525,6 +4013,18 @@
       "canonical_value": "REAL_ESTATE",
       "bucket_code": "REAL_ESTATE",
       "row_id": "material-contracts-REAL_ESTATE-6",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Real estate leases"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4537,6 +4037,18 @@
       "canonical_value": "ANY",
       "bucket_code": "REAL_ESTATE",
       "row_id": "material-contracts-REAL_ESTATE-6",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Real estate leases"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4549,6 +4061,18 @@
       "canonical_value": "ROFR_ROFN",
       "bucket_code": "ROFR_ROFN",
       "row_id": "material-contracts-ROFR_ROFN-7",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Agreements with ROFO/ROFN"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4561,6 +4085,18 @@
       "canonical_value": "ANY",
       "bucket_code": "ROFR_ROFN",
       "row_id": "material-contracts-ROFR_ROFN-7",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Agreements with ROFO/ROFN"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4573,6 +4109,18 @@
       "canonical_value": "SETTLEMENT",
       "bucket_code": "SETTLEMENT",
       "row_id": "material-contracts-SETTLEMENT-9",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Settlement / consent agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4585,6 +4133,18 @@
       "canonical_value": "ANY",
       "bucket_code": "SETTLEMENT",
       "row_id": "material-contracts-SETTLEMENT-9",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Settlement / consent agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4597,6 +4157,18 @@
       "canonical_value": "CAPEX_COMMITMENTS",
       "bucket_code": "CAPEX_COMMITMENTS",
       "row_id": "material-contracts-CAPEX_COMMITMENTS-0",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Capital expenditure commitments"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$10,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4609,6 +4181,18 @@
       "canonical_value": "USD",
       "bucket_code": "CAPEX_COMMITMENTS",
       "row_id": "material-contracts-CAPEX_COMMITMENTS-0",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Capital expenditure commitments"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$10,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4621,6 +4205,18 @@
       "canonical_value": "DISTRIBUTION",
       "bucket_code": "DISTRIBUTION",
       "row_id": "material-contracts-DISTRIBUTION-1",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Distribution / reseller agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$10,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4633,6 +4229,18 @@
       "canonical_value": "USD",
       "bucket_code": "DISTRIBUTION",
       "row_id": "material-contracts-DISTRIBUTION-1",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "Distribution / reseller agreements"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "$10,000,000"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4645,6 +4253,18 @@
       "canonical_value": "SEC_ITEM_601",
       "bucket_code": "SEC_ITEM_601",
       "row_id": "material-contracts-SEC_ITEM_601-8",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "SEC Item 601(b) contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4657,6 +4277,18 @@
       "canonical_value": "ANY",
       "bucket_code": "SEC_ITEM_601",
       "row_id": "material-contracts-SEC_ITEM_601-8",
+      "rendered_cells": [
+        {
+          "id": "bucket",
+          "header": "Contract Type",
+          "text": "SEC Item 601(b) contracts"
+        },
+        {
+          "id": "threshold",
+          "header": "Threshold",
+          "text": "Any"
+        }
+      ],
       "renders_with_content": true
     },
     {
@@ -4731,7 +4363,7 @@
       "deal": "topbuild",
       "run": "topbuild-material-contracts-20260809-2xk-r3-final",
       "collection": "open_world",
-      "item_id": "aaae5bdc0b4b7c334c77522035bbe1af89c191c8ca847640663ce63ce2f0fce5",
+      "item_id": "e16d9f3c7930e62ddb97fc22c68611799196e2d25b7dacb039925ed6ff2d3bbe",
       "claim_revision_id": null,
       "claim_definition_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
       "state": "OPEN_WORLD",
@@ -4748,7 +4380,7 @@
       "deal": "topbuild",
       "run": "topbuild-material-contracts-20260809-2xk-r3-final",
       "collection": "open_world",
-      "item_id": "4a174b3c94c544347ba43abbbfeda8ab81e6058dceb11f8ffa7a76c66b04d0d8",
+      "item_id": "ff0e6708c12ed1bde8ba4427049185bf770446c29fb442ab8e61499a6821d0d0",
       "claim_revision_id": null,
       "claim_definition_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
       "state": "OPEN_WORLD",
@@ -5015,387 +4647,7 @@
       "has_resolution": null,
       "row_id": null,
       "renders_with_content": false
-    },
-    {
-      "deal": "topbuild",
-      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
-      "collection": "review",
-      "item_id": "33ed744ad35af44e5ea4f19dabdaecf277cf7908e7ed86299fb7da2427bf1c31",
-      "claim_revision_id": "33ed744ad35af44e5ea4f19dabdaecf277cf7908e7ed86299fb7da2427bf1c31",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Company Real Property Lease material to the operation of the Company’s and its Subsidiaries’ business, taken as a whole",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "topbuild",
-      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
-      "collection": "review",
-      "item_id": "abc53f56c027997c404ac4a7adfc57a55a48a2dd257af11cc2e085bf20be9b92",
-      "claim_revision_id": "abc53f56c027997c404ac4a7adfc57a55a48a2dd257af11cc2e085bf20be9b92",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Contract that involves any exchange-traded, over-the-counter or other swap, cap, floor, collar, futures contract, forward contract, option or any other derivative financial instrument with a fair market value in excess of $10,000,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "topbuild",
-      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
-      "collection": "review",
-      "item_id": "b48776b63c8ed8e043f169f1ec3ccb5f0f5ca523c122e12088901bb74722c9d0",
-      "claim_revision_id": "b48776b63c8ed8e043f169f1ec3ccb5f0f5ca523c122e12088901bb74722c9d0",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any joint venture or partnership that is material to the Company and its Subsidiaries, taken as a whole",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "topbuild",
-      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
-      "collection": "review",
-      "item_id": "727daa19c87551c3b51a2983a353c6b95b2305687372b11ebd1424d9894b635b",
-      "claim_revision_id": "727daa19c87551c3b51a2983a353c6b95b2305687372b11ebd1424d9894b635b",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Contract in excess of $10,000,000 per annum that (x) grants to any third Person any material exclusive license or supply or distribution agreement",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "topbuild",
-      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
-      "collection": "review",
-      "item_id": "b607e1a999631a2d1fd366de33c96801767e9d8892c98b57cacc64759c629b8a",
-      "claim_revision_id": "b607e1a999631a2d1fd366de33c96801767e9d8892c98b57cacc64759c629b8a",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Contract for capital expenditures or the acquisition or construction of fixed assets which requires aggregate payments in excess of $10,000,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "topbuild",
-      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
-      "collection": "review",
-      "item_id": "3b787ae280b10d6de33133333e108905de93081b9f5fbe40246bc261ee7c1fab",
-      "claim_revision_id": "3b787ae280b10d6de33133333e108905de93081b9f5fbe40246bc261ee7c1fab",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any settlement agreement or similar Contract with a Governmental Entity or order to which the Company or any of its Subsidiaries is a party involving future performance by the Company or any of its Subsidiaries in any such case that is material to the Company and its Subsidiaries, taken as a whole",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "topbuild",
-      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
-      "collection": "review",
-      "item_id": "09ccaf06822092a44f4c4caa8977b685a9ba3b058710fdfbee2c66e5fe755108",
-      "claim_revision_id": "09ccaf06822092a44f4c4caa8977b685a9ba3b058710fdfbee2c66e5fe755108",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Contract with respect to indebtedness for borrowed money, any financial guaranty thereof or the mortgaging pledging or otherwise placing a Lien on any of their assets, in each case, in excess of $10,000,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "topbuild",
-      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
-      "collection": "review",
-      "item_id": "bc596b68781959ee12433dddee3a18ff3c324c7d9c22e7ebc356687be9fe849d",
-      "claim_revision_id": "bc596b68781959ee12433dddee3a18ff3c324c7d9c22e7ebc356687be9fe849d",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Contract that contains a put, call, right of first refusal or right of first negotiation, right of first offer, redemption, repurchase or similar right that is material to the Company and its Subsidiaries, taken as a whole, pursuant to which the Company or any of its Subsidiaries would be required to, or have the option or right to, purchase or sell, as applicable, any equity interests, businesses, lines of business, divisions, joint ventures, partnerships or other assets of any Person",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "topbuild",
-      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
-      "collection": "review",
-      "item_id": "32f29b0737696b3409d816d80a662fa86e397d84e2a475938a61076a838ec639",
-      "claim_revision_id": "32f29b0737696b3409d816d80a662fa86e397d84e2a475938a61076a838ec639",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Contract deemed to be a “material contract” (as such term is defined in Item 601(b)(10) of Regulation S-K of the SEC)",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "topbuild",
-      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
-      "collection": "review",
-      "item_id": "802614e2abfd935acc6a31cdf8ae126ffd9a7c28c721be4a0a1addc247332145",
-      "claim_revision_id": "802614e2abfd935acc6a31cdf8ae126ffd9a7c28c721be4a0a1addc247332145",
-      "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Contract that purports to prohibit the Company or any of its Subsidiaries from competing in any material respect in any business line, with any Person or in any geographic area that, in either case, is material to the operation of the Company’s and its Subsidiaries’ business, taken as a whole",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "topbuild",
-      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
-      "collection": "review",
-      "item_id": "8f0472ee4ae6b9c65fa676029de937b87ef686245036d789e504257b8e9b1371",
-      "claim_revision_id": "8f0472ee4ae6b9c65fa676029de937b87ef686245036d789e504257b8e9b1371",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Contract that purports to prohibit the Company or any of its Subsidiaries from competing in any material respect in any business line, with any Person or in any geographic area that, in either case, is material to the operation of the Company’s and its Subsidiaries’ business, taken as a whole",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "topbuild",
-      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
-      "collection": "review",
-      "item_id": "c461bd80867d5ec70cfda78e9c966ed29e9225c444cedf38a7bdcd0373f74781",
-      "claim_revision_id": "c461bd80867d5ec70cfda78e9c966ed29e9225c444cedf38a7bdcd0373f74781",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Contract for capital expenditures or the acquisition or construction of fixed assets which requires aggregate payments in excess of $10,000,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "topbuild",
-      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
-      "collection": "review",
-      "item_id": "5287a2c8876827b1d549febd9ce8bf2e22c1c96a8ccbcde52d006c4a0bb11d68",
-      "claim_revision_id": "5287a2c8876827b1d549febd9ce8bf2e22c1c96a8ccbcde52d006c4a0bb11d68",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any settlement agreement or similar Contract with a Governmental Entity or order to which the Company or any of its Subsidiaries is a party involving future performance by the Company or any of its Subsidiaries in any such case that is material to the Company and its Subsidiaries, taken as a whole",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "topbuild",
-      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
-      "collection": "review",
-      "item_id": "9ca62e372f7ccaa1704bba36d38a31a4f23e8f2a7766278b479671f139326ba8",
-      "claim_revision_id": "9ca62e372f7ccaa1704bba36d38a31a4f23e8f2a7766278b479671f139326ba8",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Contract deemed to be a “material contract” (as such term is defined in Item 601(b)(10) of Regulation S-K of the SEC)",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "topbuild",
-      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
-      "collection": "review",
-      "item_id": "e669e25dc8e65aa55952d099f30952c024dbb180a27cad8e5c7912188c9323f0",
-      "claim_revision_id": "e669e25dc8e65aa55952d099f30952c024dbb180a27cad8e5c7912188c9323f0",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any joint venture or partnership that is material to the Company and its Subsidiaries, taken as a whole",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "topbuild",
-      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
-      "collection": "review",
-      "item_id": "eca56ade1a1049b5516375d60e1250250e35d614dd508c174f4d6311019728f9",
-      "claim_revision_id": "eca56ade1a1049b5516375d60e1250250e35d614dd508c174f4d6311019728f9",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Contract that contains a put, call, right of first refusal or right of first negotiation, right of first offer, redemption, repurchase or similar right that is material to the Company and its Subsidiaries, taken as a whole, pursuant to which the Company or any of its Subsidiaries would be required to, or have the option or right to, purchase or sell, as applicable, any equity interests, businesses, lines of business, divisions, joint ventures, partnerships or other assets of any Person",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "topbuild",
-      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
-      "collection": "review",
-      "item_id": "d436f1366fd2de5cfb60d5eb95b7f3faff9b9d5a69b30dc756297a4fe0e7fa3d",
-      "claim_revision_id": "d436f1366fd2de5cfb60d5eb95b7f3faff9b9d5a69b30dc756297a4fe0e7fa3d",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Contract in excess of $10,000,000 per annum that (x) grants to any third Person any material exclusive license or supply or distribution agreement",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "topbuild",
-      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
-      "collection": "review",
-      "item_id": "b0caa77988c8574885a91a4331b72fc9de9d9a299ce406f2ae4b860ce4893859",
-      "claim_revision_id": "b0caa77988c8574885a91a4331b72fc9de9d9a299ce406f2ae4b860ce4893859",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Contract with respect to indebtedness for borrowed money, any financial guaranty thereof or the mortgaging pledging or otherwise placing a Lien on any of their assets, in each case, in excess of $10,000,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "topbuild",
-      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
-      "collection": "review",
-      "item_id": "f031820045b83a82768d710276706b88cd0f7e9c7bc4e0e7d8bd803232aef594",
-      "claim_revision_id": "f031820045b83a82768d710276706b88cd0f7e9c7bc4e0e7d8bd803232aef594",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Contract that involves any exchange-traded, over-the-counter or other swap, cap, floor, collar, futures contract, forward contract, option or any other derivative financial instrument with a fair market value in excess of $10,000,000",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
-    },
-    {
-      "deal": "topbuild",
-      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
-      "collection": "review",
-      "item_id": "b62b74858a696416a87f5a252b171ba6e09ac5eda5633c73062154572a6d7c7e",
-      "claim_revision_id": "b62b74858a696416a87f5a252b171ba6e09ac5eda5633c73062154572a6d7c7e",
-      "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
-      "state": "RESOLVED_PENDING_REVIEW",
-      "canonical_value": null,
-      "bucket_code": null,
-      "raw_value": "any Company Real Property Lease material to the operation of the Company’s and its Subsidiaries’ business, taken as a whole",
-      "reason": null,
-      "reasons": [
-        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
-      ],
-      "has_resolution": true,
-      "row_id": null,
-      "renders_with_content": false
     }
   ],
-  "gate_digest": "sha256:a5e7648d7b3f1f499c5269cefd9d075b5fcd0302eb578d2855d76541f7264bac"
+  "gate_digest": "sha256:a1e547c740d445b7e3c267a6e5162544a68193a53af260e5b9fdfd21516068ad"
 }

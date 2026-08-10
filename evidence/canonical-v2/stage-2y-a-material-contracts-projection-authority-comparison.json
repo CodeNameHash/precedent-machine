@@ -1,0 +1,107 @@
+{
+  "schema_version": "STAGE_2Y_A_MATERIAL_CONTRACTS_PROJECTION_AUTHORITY_COMPARISON/V1",
+  "authority": "OFFLINE_FIXTURE_COMPARISON_ONLY",
+  "publication_authorisation": "NONE",
+  "generation_command": "node scripts/stage-2y-a-material-contracts-pin-comparison.mjs --write-authority-comparison",
+  "fixture": "tests/fixtures/review-parity/cases/material-contracts/landos-abbvie.projection.json",
+  "comparison": "COMMITTED_V2_FIXTURE_TO_CURRENT_PROVIDER_RESOLVER_PROJECTION",
+  "before_digest": "sha256:b51ff005910564c5a89383298d4b0e942d113f46e3d18189fbde0ab3428c9097",
+  "after_digest": "sha256:c7f31461df222e54f70c6882fccde0040e4fc0b974311b3088e82fcf357ca5dc",
+  "counts": {
+    "before_cards": 1,
+    "after_cards": 1,
+    "before_claims": 1,
+    "after_claims": 1,
+    "before_open_items": 0,
+    "after_open_items": 0
+  },
+  "stable_semantics": {
+    "schema_unchanged": true,
+    "deal_id_unchanged": true,
+    "card_identity_unchanged": true,
+    "provision_identity_unchanged": true,
+    "bucket_code_unchanged": true,
+    "bucket_text_unchanged": true,
+    "threshold_unchanged": true,
+    "exclusions_unchanged": true
+  },
+  "cause": "The corrected provider keeps a historical response field absent when no byte-explicit parenthetical exclusion exists. It no longer normalises that absence to an explicit empty array.",
+  "expected_changes": [
+    "Historical claim revision identities return to their pre-normalisation values.",
+    "Dependent feature-claim and projection identities return to values derived from those claim identities.",
+    "No rendered value, state, source text, bucket, threshold or exclusion changes."
+  ],
+  "field_differences": [
+    {
+      "path": "$.cards[0].ai_metadata.features.materialContractsBuckets[0].criteria[0].source_claim_revision_ids[0]",
+      "before": "12e5b49ed7735e4202c70d443341635fceb45bc366aaf5dd1a366dfbce7adb2b",
+      "after": "40e04608c3c5ba90e7759356f797ed540dd0b527581b672cc4180dbc9d31299d"
+    },
+    {
+      "path": "$.cards[0].ai_metadata.features.materialContractsBuckets[0].criteria[0].source_claim_revision_ids[1]",
+      "before": "f82744556610ff4d7cc9d84c30639e7bd96ffacd67866a8fdb1d818c36a64ed5",
+      "after": "47c864fc69737bb62aa77d31dff218d1f7a566fde10d66c154ce0364dc2b8097"
+    },
+    {
+      "path": "$.cards[0].canonical_v2_lineage.bucket_claim_revision_ids.INDEBTEDNESS[0]",
+      "before": "12e5b49ed7735e4202c70d443341635fceb45bc366aaf5dd1a366dfbce7adb2b",
+      "after": "40e04608c3c5ba90e7759356f797ed540dd0b527581b672cc4180dbc9d31299d"
+    },
+    {
+      "path": "$.cards[0].canonical_v2_lineage.bucket_claim_revision_ids.INDEBTEDNESS[1]",
+      "before": "f82744556610ff4d7cc9d84c30639e7bd96ffacd67866a8fdb1d818c36a64ed5",
+      "after": "47c864fc69737bb62aa77d31dff218d1f7a566fde10d66c154ce0364dc2b8097"
+    },
+    {
+      "path": "$.cards[0].canonical_v2_lineage.claim_revision_ids[0]",
+      "before": "12e5b49ed7735e4202c70d443341635fceb45bc366aaf5dd1a366dfbce7adb2b",
+      "after": "40e04608c3c5ba90e7759356f797ed540dd0b527581b672cc4180dbc9d31299d"
+    },
+    {
+      "path": "$.cards[0].canonical_v2_lineage.claim_revision_ids[1]",
+      "before": "f82744556610ff4d7cc9d84c30639e7bd96ffacd67866a8fdb1d818c36a64ed5",
+      "after": "47c864fc69737bb62aa77d31dff218d1f7a566fde10d66c154ce0364dc2b8097"
+    },
+    {
+      "path": "$.cards[0].features.materialContractsBuckets[0].criteria[0].source_claim_revision_ids[0]",
+      "before": "12e5b49ed7735e4202c70d443341635fceb45bc366aaf5dd1a366dfbce7adb2b",
+      "after": "40e04608c3c5ba90e7759356f797ed540dd0b527581b672cc4180dbc9d31299d"
+    },
+    {
+      "path": "$.cards[0].features.materialContractsBuckets[0].criteria[0].source_claim_revision_ids[1]",
+      "before": "f82744556610ff4d7cc9d84c30639e7bd96ffacd67866a8fdb1d818c36a64ed5",
+      "after": "47c864fc69737bb62aa77d31dff218d1f7a566fde10d66c154ce0364dc2b8097"
+    },
+    {
+      "path": "$.claims[0].canonical[0].criteria[0].source_claim_revision_ids[0]",
+      "before": "12e5b49ed7735e4202c70d443341635fceb45bc366aaf5dd1a366dfbce7adb2b",
+      "after": "40e04608c3c5ba90e7759356f797ed540dd0b527581b672cc4180dbc9d31299d"
+    },
+    {
+      "path": "$.claims[0].canonical[0].criteria[0].source_claim_revision_ids[1]",
+      "before": "f82744556610ff4d7cc9d84c30639e7bd96ffacd67866a8fdb1d818c36a64ed5",
+      "after": "47c864fc69737bb62aa77d31dff218d1f7a566fde10d66c154ce0364dc2b8097"
+    },
+    {
+      "path": "$.claims[0].id",
+      "before": "1137671f80c496a4f6739e1cfec96b4d16331d23af5c76fc82cc51351b59b0b9",
+      "after": "efb2b7df809de8ab4c8872c226c94394f477544273221177e88d1ecabfd0e3aa"
+    },
+    {
+      "path": "$.claims[0].provenance.source_claim_revision_ids[0]",
+      "before": "12e5b49ed7735e4202c70d443341635fceb45bc366aaf5dd1a366dfbce7adb2b",
+      "after": "40e04608c3c5ba90e7759356f797ed540dd0b527581b672cc4180dbc9d31299d"
+    },
+    {
+      "path": "$.claims[0].provenance.source_claim_revision_ids[1]",
+      "before": "f82744556610ff4d7cc9d84c30639e7bd96ffacd67866a8fdb1d818c36a64ed5",
+      "after": "47c864fc69737bb62aa77d31dff218d1f7a566fde10d66c154ce0364dc2b8097"
+    },
+    {
+      "path": "$.projection_id",
+      "before": "10d234c786478e82c24af951090203b8b8e23edb64ff23d55218dc609a2a83bb",
+      "after": "dd5168029b1af71c9569ec08b85281f076abae21c6f1cfc8b9dc911f5023edbb"
+    }
+  ],
+  "comparison_digest": "sha256:7cf4253d5f783ab15d4298e5f5c386184f3e1f54549262fe31b8a3420b677c04"
+}

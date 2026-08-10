@@ -52,10 +52,12 @@ const runs = pinnedRuns();
 const items = [];
 const deals = [];
 for (const run of runs) {
+  const replay = await replayRun(run.run);
+  const currentResolution = replay.replayed;
   const signatures = new Set();
   const contentSignatures = new Set();
-  for (const entry of run.resolution.resolved) {
-    const preview = previewClaimSection({ run: { manifest: run.manifest, resolution: run.resolution }, resolved_entry: entry });
+  for (const entry of currentResolution.resolved) {
+    const preview = previewClaimSection({ run: { manifest: run.manifest, resolution: currentResolution }, resolved_entry: entry });
     const matches = preview.rows.filter((row) => row.matches_claim_key);
     if (matches.length !== 1) throw new Error(`ROW_MATCH_COUNT:${run.run}:${entry.claim.claim_revision_id}:${matches.length}`);
     const row = matches[0];
@@ -73,12 +75,13 @@ for (const run of runs) {
       canonical_value: entry.claim.canonical_value,
       bucket_code: entry.claim.attributes?.bucket_code || null,
       row_id: row.id,
+      rendered_cells: row.cells,
       renders_with_content: content,
     });
   }
   for (const [collection, entries] of [
-    ['open_world', run.resolution.open_world],
-    ['review', run.resolution.review_queue],
+    ['open_world', currentResolution.open_world],
+    ['review', currentResolution.review_queue.filter((entry) => entry.has_resolution !== true)],
   ]) {
     for (const entry of entries) {
       const openWorld = collection === 'open_world';
@@ -101,18 +104,17 @@ for (const run of runs) {
       });
     }
   }
-  const replay = await replayRun(run.run);
   const beforeOpenWorld = replay.committed.open_world.length;
-  const afterOpenWorld = replay.replayed.open_world.length;
+  const afterOpenWorld = currentResolution.open_world.length;
   if (afterOpenWorld > beforeOpenWorld) throw new Error(`OPEN_WORLD_RISE:${run.run}:${beforeOpenWorld}:${afterOpenWorld}`);
-  const resolved = run.resolution.resolved.length;
+  const resolved = currentResolution.resolved.length;
   deals.push({
     deal: run.manifest.deal,
     run: run.run,
-    attempted: run.resolution.review_queue.length,
+    attempted: currentResolution.review_queue.length,
     resolved,
-    open_world: run.resolution.open_world.length,
-    review: run.resolution.review_queue.length,
+    open_world: currentResolution.open_world.length,
+    review: currentResolution.review_queue.filter((entry) => entry.has_resolution !== true).length,
     resolved_claims_reaching_content: [...items].filter((item) => item.run === run.run && item.collection === 'resolved' && item.renders_with_content).length,
     distinct_rendered_rows_with_content: contentSignatures.size,
     unique_matched_rendered_rows: signatures.size,
@@ -134,6 +136,11 @@ for (const [deal, expected] of Object.entries({
   }
 }
 if (deals.some((row) => row.resolved_claims_reaching_content !== row.resolved)) throw new Error('RENDERED_CONTENT_GATE_FAILED');
+const conchoExclusionRows = items.filter((item) => item.deal === 'concho'
+  && item.collection === 'resolved'
+  && item.bucket_code === 'REAL_ESTATE'
+  && item.rendered_cells?.some((cell) => /Excludes: Oil and Gas Properties/.test(cell.text || '')));
+if (conchoExclusionRows.length !== 4) throw new Error(`CONCHO_EXCLUSION_NOT_RENDERED:${conchoExclusionRows.length}`);
 
 const body = {
   schema_version: 'STAGE_2Y_A_MATERIAL_CONTRACTS_GATE/V1',

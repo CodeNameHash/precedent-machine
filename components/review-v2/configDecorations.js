@@ -135,11 +135,18 @@ function decorateRepsConfig(config, agreementMs) {
 // Contract type as plain first-column text (13px medium ink comes from the
 // .mtx first-column rule), keeping the evidence hover the old pill carried.
 function renderContractTypeText(row) {
-  return React.createElement(
+  const term = React.createElement(
     EvidenceHoverSource,
     { value: row.code, evidence: row.evidence, source: row.source, highlight: null, as: 'span', className: 'font-medium text-ink' },
     row.label,
   );
+  const exclusionText = Array.isArray(row.scopeExclusions) && row.scopeExclusions.length
+    ? `Excludes: ${row.scopeExclusions.join(', ')}`
+    : null;
+  if (!exclusionText) return term;
+  return React.createElement(React.Fragment, null,
+    React.createElement('div', null, term),
+    React.createElement('div', null, exclusionText));
 }
 
 // Threshold as the pill: amber family (warning tone) for monetary amounts,

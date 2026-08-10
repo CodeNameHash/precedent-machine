@@ -384,14 +384,20 @@ function evidenceOnlyRows(cards, previewEnabled) {
 // the title renders exactly once, here.
 function renderTerm(row, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
-  if (!PillCell) return row.label;
-  return React.createElement(PillCell, {
+  const term = PillCell ? React.createElement(PillCell, {
     label: row.label,
     value: row.code,
     tone: 'present',
     evidence: row.evidence,
     source: row.source,
-  });
+  }) : row.label;
+  const exclusionText = Array.isArray(row.scopeExclusions) && row.scopeExclusions.length
+    ? `Excludes: ${row.scopeExclusions.join(', ')}`
+    : null;
+  if (!exclusionText) return term;
+  return React.createElement(React.Fragment, null,
+    React.createElement('div', null, term),
+    React.createElement('div', null, exclusionText));
 }
 
 // MC2: threshold text renders in the agreement's normal body font, not the

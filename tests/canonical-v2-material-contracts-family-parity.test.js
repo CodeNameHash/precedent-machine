@@ -30,6 +30,7 @@ const {
 } = require('../lib/canonical-v2/material-contracts-product-projection');
 const { executeDealCompare } = require('../lib/query/executors/deal-compare');
 const { calculateMarketStats } = require('../lib/row-market-stats/service');
+const { previewClaimSection } = require('../lib/review-parity/rendered-row-preview');
 const {
   LEXICAL_FAMILY_LEXICON,
   LEXICAL_FAMILY_LEXICON_VERSION,
@@ -314,6 +315,96 @@ test('Concho scope exclusions stay structured, grounded and visible without a ne
     },
   }));
   assert.match(markup, /<div><span>.*<\/span><\/div><div>Excludes: Oil and Gas Properties<\/div>/);
+});
+
+test('the committed Concho cohort replays its recorded oil and gas exclusion', async () => {
+  const { replayRun } = await import('../scripts/stage-2y-resolution-set-diff.mjs');
+  const { replayed: resolution } = await replayRun('concho-material-contracts-20260809-2xk-final');
+  const projection = projectMaterialContractsProductSurfaces({ resolution, deal_id: 'concho' });
+  const config = await import('../components/review/table-configs/material-contracts.config.js');
+  const row = config.materialContractsConfig.selectRows({ cards: projection.cards })
+    .find((candidate) => candidate.code === 'REAL_ESTATE');
+  assert.deepEqual(row.scopeExclusions, ['Oil and Gas Properties']);
+  assert.match(renderToStaticMarkup(config.renderTerm(row, {})), /Excludes: Oil and Gas Properties/);
+  assert.match(config.renderEvidence(row, {}), /Excludes: Oil and Gas Properties/);
+  const manifest = JSON.parse(fs.readFileSync(path.join(
+    __dirname,
+    '../evidence/canonical-v2/concho-material-contracts-20260809-2xk-final/run-manifest.json',
+  ), 'utf8'));
+  const entry = resolution.resolved.find((candidate) => candidate.claim.attributes.bucket_code === 'REAL_ESTATE');
+  const preview = previewClaimSection({ run: { manifest, resolution }, resolved_entry: entry });
+  const rendered = preview.rows.find((candidate) => candidate.matches_claim_key);
+  assert.match(rendered.cells.find((cell) => cell.id === 'bucket').text, /Excludes: Oil and Gas Properties/);
+});
+
+test('legacy omission derives only a byte-explicit parenthetical exclusion at the provider boundary', () => {
+  const legacyCriterion = criterion({
+    bucket_code: 'REAL_ESTATE',
+    threshold_value: '$100,000,000',
+    cadence_kind: null,
+    quote: EXCLUDED_QUOTE,
+  });
+  delete legacyCriterion.scope_exclusions;
+  const shaped = shapeMaterialContractsProposals({
+    material_contract_criteria: [legacyCriterion],
+    open_world_candidates: [],
+  }, EXCLUDED_QUOTE);
+  assert.ok(shaped.proposals.length > 0);
+  assert.ok(shaped.proposals.every((proposal) => (
+    proposal.raw_value === EXCLUDED_QUOTE
+      && JSON.stringify(proposal.attributes.scope_exclusions) === JSON.stringify(['Oil and Gas Properties'])
+  )));
+
+  const nonParentheticalQuote = 'each real property contract other than Oil and Gas Properties';
+  const noCueCriterion = criterion({
+    bucket_code: 'REAL_ESTATE',
+    threshold_kind: 'ANY',
+    threshold_value: 'Any',
+    cadence_kind: null,
+    quote: nonParentheticalQuote,
+  });
+  delete noCueCriterion.scope_exclusions;
+  const noCue = shapeMaterialContractsProposals({
+    material_contract_criteria: [noCueCriterion],
+    open_world_candidates: [],
+  }, nonParentheticalQuote);
+  assert.ok(noCue.proposals.every((proposal) => !Object.hasOwn(proposal.attributes, 'scope_exclusions')));
+});
+
+test('explicit empty exclusions remain empty and the projection does not infer from raw text', async () => {
+  const shaped = shapeMaterialContractsProposals({
+    material_contract_criteria: [criterion({
+      bucket_code: 'REAL_ESTATE',
+      threshold_value: '$100,000,000',
+      cadence_kind: null,
+      scope_exclusions: [],
+      quote: EXCLUDED_QUOTE,
+    })],
+    open_world_candidates: [],
+  }, EXCLUDED_QUOTE);
+  assert.ok(shaped.proposals.length > 0);
+  assert.ok(shaped.proposals.every((proposal) => (
+    Object.hasOwn(proposal.attributes, 'scope_exclusions')
+      && proposal.attributes.scope_exclusions.length === 0
+  )));
+
+  const { resolution } = await resolveFixture();
+  const explicitEmpty = structuredClone(resolution);
+  for (const entry of explicitEmpty.resolved) {
+    entry.claim.raw_value = EXCLUDED_QUOTE;
+    entry.claim.attributes.bucket_code = 'REAL_ESTATE';
+    entry.claim.attributes.scope_exclusions = [];
+  }
+  const explicitProjection = projectMaterialContractsProductSurfaces({ resolution: explicitEmpty, deal_id: 'explicit-empty' });
+  assert.ok(explicitProjection.cards.flatMap((card) => card.features.materialContractsBuckets || [])
+    .every((bucket) => bucket.scope_exclusions.length === 0
+      && bucket.criteria.every((item) => item.scope_exclusions.length === 0)));
+
+  for (const entry of explicitEmpty.resolved) delete entry.claim.attributes.scope_exclusions;
+  const absentProjection = projectMaterialContractsProductSurfaces({ resolution: explicitEmpty, deal_id: 'absent-field' });
+  assert.ok(absentProjection.cards.flatMap((card) => card.features.materialContractsBuckets || [])
+    .every((bucket) => bucket.scope_exclusions.length === 0
+      && bucket.criteria.every((item) => item.scope_exclusions.length === 0)));
 });
 
 test('ungrounded Material Contracts exclusions fail closed', async () => {
