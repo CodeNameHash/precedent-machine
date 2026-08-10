@@ -1654,3 +1654,29 @@ non-empty ledger must cover every card — but it is a complete result about the
 about AI adjudicators, which is what the gate actually runs on. Fable's concern
 that zero-tolerance plus adjudicator noise fails every large rung stands
 untested until the three adjudicators are scored.
+
+### Addendum, same day: the unit of judgement is the rendered row, not the code
+
+Ben, after the sitting: *"I want to see what it is proposing to render — not just
+that it has coded it one way or the other… Otherwise we're saying it categorized
+correctly but like, what is the output?"* And: *"I might even need a very light
+weight render of what it would output about the contract in the review page."*
+
+**Accepted, and it is a correction to ruling 7's measurement, not a UI request.**
+Ruling 7 sets a rate of false *publication*, and what publishes is a row on the
+review page. Every calibration mechanism in this stage judged an internal code
+instead. That is the same class of error as the `review_queue` denominator: right
+arithmetic over the wrong population.
+
+Two documented cases show a code-level anchor cannot see what matters. Stage 2X
+found 14 absence wordings across 11 configs telling a reviewer the agreement
+*lacks* a provision when extraction had merely found nothing — every one of those
+claims was coded correctly, and the defect was entirely in the render.
+`conditions.config.js` carries a `bandAligned` guard written against live Metsera
+data because correctly-coded rows were rendering under the **wrong party's band**.
+
+**Step 2Y-N** builds the headless row preview, and Phase 0.1 now depends on it:
+no regenerated anchor card ships without the row it would produce. The anchor
+question changes from "is this code right" to "is this what the agreement says,
+and is this what a lawyer should see" — which is answerable without knowing the
+taxonomy, and so widens who can adjudicate.

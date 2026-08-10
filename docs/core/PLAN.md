@@ -2752,6 +2752,12 @@ does not.
 - **Do not touch `MATERIALITY_CODE`.** It scored 4 of 4 detection and 0 of 16
   false alarms. It is the control that proves the rubric and the tool are sound;
   changing it destroys the only clean baseline the programme has.
+- **Show what the claim would RENDER, not only how it was coded.** Ben,
+  2026-08-09: *"I want to see what it is proposing to render — not just that it
+  has coded it one way or the other… otherwise we're saying it categorized
+  correctly but like, what is the output?"* This is the sharpest correction to
+  the anchor's design so far and it is dealt with in full by **Step 2Y-N**, which
+  0.1 depends on. Every card carries the row a lawyer would see.
 
 *Gate:* a re-sit in which **every class has ≥90% of cards answered** and
 party-attribution detection reaches the materiality baseline.
@@ -2820,6 +2826,11 @@ calibrate, authorise, publish — on one family before a second is attempted.
 
 Requires the **immutable release-receipt adapter**, which does not exist:
 `REQUIRE_PUBLISHED` returns false unconditionally until it does.
+
+**The unit of the 1% is the rendered row, not the internal code** — see Step
+2Y-N. Measuring false publication on codes measures the wrong object: a claim can
+carry a defensible code and still render wrongly, and nothing about a code says
+what a lawyer read.
 
 **The size of the acceptance sample follows from ruling 7 and it is large.**
 Under 1% overall with no class exempt means demonstrating a rate below 1% at 95%
@@ -3771,6 +3782,65 @@ quotes and recorded as approved, rejected or held. A new deal automatically
 creates or strengthens a promotion candidate without writing to the active
 registry. A separately approved appraisal-covenant registry version resolves
 across its three deals.
+
+---
+
+## Step 2Y-N. Judge the rendered row, not the code. A headless row preview.
+
+**Ben's ruling, 2026-08-09**, after the anchor sitting: *"I want to see what it
+is proposing to render — not just that it has coded it one way or the other…
+Otherwise we're saying it categorized correctly but like, what is the output?"*
+
+**What it is.** A headless service that takes a resolved claim and returns
+**the row a lawyer would see on the review page** — the section it lands in, the
+row label, and the text of every cell — as plain data, with no React and no
+database round trip. Used in two places: on every anchor card, and as the unit
+the publication gate measures.
+
+**Why this is a correction and not a nicety.** Every calibration mechanism in
+this stage judges an internal code. The product is not an internal code. Three
+consequences, and the third decides it:
+
+1. **A defensible code can render wrongly.** Stage 2X found 14 absence wordings
+   across 11 configs telling a reviewer the agreement *lacks* a provision when
+   all we knew was that extraction found nothing. Every one of those claims was
+   coded correctly. The defect lived entirely in the render.
+2. **A correct code can land in the wrong place.** `conditions.config.js`
+   carries a `bandAligned` guard written against live Metsera data because rows
+   whose own canonical code was right were rendering under the **wrong party's
+   band**. Invisible at code level; obvious in a render.
+3. **The 1% in ruling 7 is a rate of false *publication*, and what publishes is
+   the row.** Measuring it on codes measures a different object and would report
+   a number that does not describe what a lawyer read. Same class of error as the
+   `review_queue` denominator and the corpus-rate headline: correct arithmetic
+   over the wrong population.
+
+**Change.** A module that composes what already exists rather than inventing a
+second render path — reusing the real one is the whole point, because a preview
+that diverges from the page is worse than no preview.
+`config.selectRows(reviewDeal)` in `components/review-v2/sectionList.js:482`
+already builds every row from a deal-shaped object; the missing piece is a
+claim → `reviewDeal`-slice projection that does not require the database, plus
+cell-text extraction for configs whose cells return React nodes.
+`decorateConfigForV2` must run, since `configDecorations.js` computes
+legal-adjacent facts at render time and those are exactly the values a preview
+must not skip.
+
+**Direction of risk: none to the product, high leverage on every gate.** It
+ships no behaviour change. It changes what every other step is judged by.
+
+**Proves it is done.** For a claim whose code is right and whose row is wrong,
+the preview shows the wrong row — demonstrated on one of the 14 known absence
+cases and on a `bandAligned` case, both documented and reproducible. Preview
+output for a deal matches the rendered review page cell for cell, proven by a
+test that fails if the two paths diverge.
+
+**And it changes the anchor question.** A card stops asking "is
+`qualifier_code = MAT_ALL_MATERIAL` right?" and asks **"is this what the
+agreement says, and is this what a lawyer should see?"** — showing the excerpt,
+its governing chapeau, and the row it produces. That is answerable without
+knowing the taxonomy, which widens who can adjudicate beyond the two people who
+know the codes.
 
 ---
 
