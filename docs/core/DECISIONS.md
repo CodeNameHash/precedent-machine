@@ -1680,3 +1680,46 @@ no regenerated anchor card ships without the row it would produce. The anchor
 question changes from "is this code right" to "is this what the agreement says,
 and is this what a lawyer should see" — which is answerable without knowing the
 taxonomy, and so widens who can adjudicate.
+
+### Second addendum, 2026-08-10: the 1% is tracked, not a per-family gate
+
+Ben: *"on accuracy — we're not hiding any families so that's not a starter. I
+think we just track this data point for now."*
+
+I had proposed sequencing publication by sample volume, so a family would stay
+unpublished until it had enough adjudicated rows to demonstrate its own bound.
+Ben rejected it, and the arithmetic shows why the proposal was unworkable rather
+than merely unattractive: demonstrating <1% at 95% confidence needs ~300 rows
+with zero errors, Closing Conditions has 94 across all seven deals, and its best
+achievable bound today is 3.2%. **At seven deals no family clears it**, so the
+gate would have withheld everything.
+
+Settled:
+
+- Every family publishes together. None is held back for sample size.
+- The rate is measured and **reported with its sample size and confidence
+  bound** — "≤3.2% at 95%, n=94", never a bare "no errors found".
+- The control protecting the user is the **calibrated rung** from 2Y-0. The 1% is
+  the instrument that tells us the rung was wrong.
+- 2Y-N's preview generates rows without serving them, so the sample accumulates
+  against real output ahead of the flip. That is measurement discipline, not
+  family gating.
+
+Ruling 7 therefore stands as the **target and the alarm**, not as a precondition
+for shipping. Recorded plainly: the first families publish without a demonstrable
+bound, which is a real and accepted cost.
+
+### Row shape confirmed, 2026-08-10
+
+Ben, on IOC: *"so it renders as Party band → Covenant label → two sub-columns?
+perfect."* Confirmed against `ioc-exceptions.config.js`: a party band (Company /
+Parent / Both parties, derived from evidence, falling back to the section
+reference where a deck does not split cleanly), then the covenant label with its
+code as a tooltip, then two sub-columns — **Specific restrictions** (where
+thresholds render as pills) and **Exceptions** ("None specified" when empty).
+
+This is why 2Y-N matters for IOC specifically: the category a claim carries
+determines **which covenant label it lands under and which party band it appears
+in**, and neither is visible from `ioc_category`. A defensible code can still
+surface a covenant under the wrong party — the exact defect
+`conditions.config.js`'s `bandAligned` guard exists to stop.

@@ -2832,18 +2832,50 @@ Requires the **immutable release-receipt adapter**, which does not exist:
 carry a defensible code and still render wrongly, and nothing about a code says
 what a lawyer read.
 
-**The size of the acceptance sample follows from ruling 7 and it is large.**
-Under 1% overall with no class exempt means demonstrating a rate below 1% at 95%
-confidence, which by the rule of three takes **roughly 300 consecutive correct
-published claims** — more once any error appears. No family publishes on a
-sample of thirty. Budget the adjudication accordingly: three adjudicators over
-~300 claims is the real cost of this phase, and it is larger than the extraction.
+**The 1% is a tracked metric, not a per-family publication gate. Ben's ruling,
+2026-08-10: *"we're not hiding any families so that's not a starter. I think we
+just track this data point for now."*** This supersedes what I proposed and it
+needs stating precisely, because it changes what protects the user.
+
+Why I raised it. Demonstrating a rate under 1% at 95% confidence takes, by the
+rule of three, **~300 adjudicated rows with zero errors** — and ~475 if one error
+appears, ~630 if two. Closing Conditions has **94 resolved claims across all seven
+deals**, so its best achievable bound today is **3.2%**. Reaching 300 CC rows
+needs roughly 22 deals. **At seven deals no single family can demonstrate 1%**,
+so a per-family volume gate would have withheld every family, which is not a
+product.
+
+So the arrangement is:
+
+- **Every family publishes together.** No family is held back for want of
+  sample size, and none is hidden.
+- **The rate is measured and reported** — corpus-wide, and per family with its
+  confidence bound stated wherever volume allows. A family with 94 rows reports
+  "≤3.2% at 95%", not a bare "0 errors", so nobody reads thin evidence as strong
+  evidence.
+- **The control that actually protects the user is the calibrated rung**, chosen
+  in 2Y-0, not the 1% number. The 1% is how we notice the rung was wrong.
+- **Measure before serving.** 2Y-N's preview generates the row without serving
+  it, so the sample accumulates against real output ahead of the flip rather than
+  after it. That is measurement discipline, not family-by-family gating.
+
+**Budget the adjudication accordingly:** three adjudicators over a few hundred
+rows is the real cost of this phase, and it is larger than the extraction.
+
+**The honest consequence, recorded rather than glossed.** Publishing before the
+bound is demonstrable means the first families ship without that assurance. That
+is Ben's call and it is defensible — the alternative ships nothing for a year —
+but the reported bound must always carry its sample size, and the first time a
+family's measured rate rises the rung gets revisited, not the number.
 
 *Gate:* Closing Conditions publishes unattended; every claim's disposition is
-reproducible from stored evidence; the measured false-publication rate is under
-1%; and the four-state table for the family is unchanged or better.
-*Kill criterion:* if CC cannot clear 1% after the Phase 0 fixes, no family can
-yet, and the honest response is to say so rather than to loosen the number.
+reproducible from stored evidence; **the false-publication rate is measured and
+reported with its confidence bound and sample size**; and the four-state table
+for the family is unchanged or better. The rate is a tracked figure, not a
+threshold that withholds the family.
+*Kill criterion:* if CC's measured rate comes in far above 1% after the Phase 0
+fixes, the calibrated rung is wrong and 2Y-0's curve is re-read — the response is
+to tighten the rung, never to loosen the number.
 
 ---
 
