@@ -177,6 +177,137 @@ should be produced this week.
 
 ---
 
+## 1b. ROUTE 5 DOMINATES. Decided on evidence 2026-08-10, and it changes the ceiling.
+
+Ben proposed "more AI in extraction". Tested against the corpus, **it dominates
+the resolver side of the plan** — and two pieces of evidence make it much
+stronger than it looked.
+
+### The loss is concentrated exactly where a model corroborator is native
+
+Of the **3,454 non-resolved occurrences, roughly 2,700–2,800 are content that
+already exists** and is blocked by regex coverage or by placement — the two
+things a model corroborator does natively. 91 of 91 knowledge derivations
+returned null with zero genuine conflicts. The 485 qualifier rows block content
+the model already tagged correctly. The 623 limbs are correctly extracted text
+with subjects attached, waiting only for placement.
+
+Only ~400–500 (taxonomy absence, correct abstentions) plus unmeasured producer
+recall loss sit outside a model corroborator's reach.
+
+### The determinism objection is already answered, in this repository
+
+`evidence/canonical-v2/stage-2y-f-terra-adjudication.json` holds **164 recorded
+model adjudications**, each binding `input_digest`, `prompt_digest`,
+`response_digest`, `provider_request_id`, `requested_model_id` and
+`evidence_fingerprint`. That is a content-addressed, replayable
+model-in-the-loop decision record — **already built, already committed, and
+already load-bearing**, since 2Y-F's activation rests on it.
+
+Replay was never "run the same execution twice". It is **bind the response,
+replay off the artefact** — and the producer has always been a model. The same
+pattern extends to a corroborator unchanged, and `corroboration-ladder.js` rungs
+3–4 are analysis-only *solely for want of the adapter*.
+
+### The extraction has never been run at lead tier
+
+Producer prompts were authored against **claude-sonnet-5** CLI constraints
+(`anthropic-provider.js:158`). The committed run manifests show execution on
+**`gpt-5.6-terra; reasoning=medium`** — **worker tier, medium effort**.
+
+**Nobody has ever run this pipeline's extraction at lead tier.** Some part of
+what ~100 hand-written regex tables exist to catch may simply be worker-tier
+error that a lead-tier run does not make. That possibility has never been
+tested, and testing it costs 46 calls.
+
+### The honest counter-evidence, which shapes containment rather than killing it
+
+- The Closing Conditions batch cut both ways: +37 / −23 on one family, +35
+  open-world across two others, three claims silently gone. **Model-behaviour
+  shifts are family-correlated — regressions arrive batch-shaped.** Per-family
+  four-state gates and per-family prompt versioning are non-negotiable.
+- The Terra adjudication returned **52 of 164 AMBIGUOUS**. A third of cases the
+  model honestly declined. Model-in-loop does not mean everything resolves.
+- The blind floor's strict-matching result — `PARTY_UNRESOLVED` 5/8 → 1/8
+  without fallback matching — shows **model precision is weakest exactly where
+  errors are worst: party attribution, the reversed-covenant class.** This is
+  why the byte-verifier layer stays.
+
+### What breaks
+
+| asset | breaks? |
+|---|---|
+| Replay at zero model calls | **No** — replay off bound decision artefacts, the 2Y-F pattern already in the repo |
+| `closure_id` / `excerpt_id` identity | **No** — content-addressed on responses, not on re-execution |
+| Byte-for-byte receipt pins | **Rung-0 pins survive**; model corroboration is a different rung, versioned in the receipt |
+| Fresh-run reproducibility | **Yes, genuinely** — two live runs may differ. Already true of the producer; managed, not fatal |
+| Cross-deal consistency | **New real risk** — same clause, different verdicts on two deals. Mitigated by a decision cache keyed on `input_digest`, plus the lexical net retained as a contradiction detector |
+| The gates | **Unchanged** — four-state per family measures a model corroborator exactly as it measures a regex |
+
+**The target architecture: deterministic layer = byte-verifier (quote matches
+bytes, evidence span, negation-boundary guard) plus contradiction tables; model
+= placement and corroboration; the record = the model's decision plus a
+verifiable quote.** What gets recorded becomes *more* auditable than a regex
+verdict, not less, because every verdict carries cited bytes a lawyer can check.
+
+### The decisive experiment, and it needs almost no new human time
+
+**The ground truth already exists**: the 96-card blind floor (human-scored) and
+Ben's 54 decided anchor cards — **~150 adjudicated rows, zero new sittings.**
+
+- **Run** rung-4-shape recorded calls over those 150 rows plus a stratified ~150
+  from the deterministic-blocked cohorts (the 91 knowledge rows whole, samples
+  of qualifiers, held codes, fragments). Report-only, bound with the 2Y-F
+  artefact schema. Plus **one lead-tier re-run of the 46-call CC batch** to test
+  the stronger-model variant separately.
+- **Score** agreement against the existing human verdicts; a cross-vendor second
+  model on disagreements; residue to Ben — **expect under 20 cards, 30 minutes,
+  not a sitting.**
+- **Cost: ~350–400 calls, 2–3 days.**
+- **Decision rule, written before the run:** ≥60% recovery of the blocked sample
+  at ≥95% agreement on the scored subset, with party-attribution agreement at or
+  above the materiality baseline → **route 5 becomes the primary mechanism.**
+  Below that it stays rung 3 only, and the plan reverts to its earlier shape.
+
+**This displaces the 2Y-A binding census as the week-1 priority** — the fragment
+sample is inside it anyway.
+
+### The ceiling, and the more important change
+
+If the experiment passes at the decision rule, the band moves from **51–77% to
+roughly 70–85% placed at seven deals**.
+
+**But the scaling term matters more than the band.** No per-drafter regex
+maintenance means the 385-unmapped-per-agreement backlog **stops growing
+linearly with the corpus**. The residue becomes taxonomy absence and producer
+recall — exactly the two things humans should own. **85% stops being unreachable
+and becomes the top of the measured band.**
+
+### What to stop, if it passes
+
+- The 2Y-C synonym-widening grind. *(Keep the registry and lint for taxonomy
+  values; drop per-kind corroboration regex expansion.)*
+- New per-kind derivation functions — the `parseFilingDeadlineDays` class of work.
+- A deterministic 2Y-A binder beyond evidence preservation and typed context.
+  The model needs that same context, so **the preservation work is shared; the
+  binder is not.**
+
+### What to keep regardless
+
+Per-family producer prompts **at lead tier** — route 5 makes the Closing
+Conditions playbook more valuable, not less. The byte-verifier and negation
+guard. Duplicate suppression. Taxonomy governance and promotion — **a model
+cannot place into homes that do not exist.** 2Y-N and the joined-cluster
+projection, because **route 5 changes who classifies, not the fact that limbs
+without their qualifier join are presence checkboxes.**
+
+And the anchor and adjudicator work, which stops being deferred bureaucracy and
+becomes **the calibration of the main mechanism.** That is the sharpest
+consequence for Ben: the instrument work he has been angry about is the enabling
+component of the strongest route to the number he wants.
+
+---
+
 ## 2. What is measured, and what is a guess
 
 This table is the reason the ceiling is uncertain. Plan against the middle
