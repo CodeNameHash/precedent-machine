@@ -5,7 +5,7 @@
   "authority": "OFFLINE_REPLAY_COMPARISON_ONLY",
   "publication_authorisation": "NONE",
   "comparison": "COMMITTED_RESOLUTION_ARTIFACTS_TO_CURRENT_OFFLINE_REPLAY",
-  "resolver_source_digest": "sha256:4f79552535a6bf29c45d092d3114015d576afcbb10f5eae95f5db8e14f1e62c5",
+  "resolver_source_digest": "sha256:04825fea85e77f376c26cad6af6564e7a72d5ed045e98285b93f4bd33b4dd976",
   "run_names": [
     "concho-antitrust-regulatory-20260809-2xk-final",
     "concho-appraisal-dissenters-rights-20260809-2xk-final",
@@ -179,7 +179,7 @@
     "run_count": 157,
     "previously_resolved_claim_count": 1571,
     "moved_previously_resolved_claim_count": 0,
-    "newly_resolved_claim_count": 10,
+    "newly_resolved_claim_count": 11,
     "replay_error_count": 0,
     "open_world_rise_family_count": 0
   },
@@ -220,6 +220,44 @@
         "claim_occurrence_id": "9d51d0551e65dcabace1dbf8c4fcbdb7098afb28515c96bb417959180b95c083",
         "claim_revision_id": "cba82900e47296d71271f5d046e41b26c2722998d06d1d3609eb9b739fc8268f",
         "source_candidate_id": "9d51d0551e65dcabace1dbf8c4fcbdb7098afb28515c96bb417959180b95c083",
+        "reasons": []
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-closing-conditions-20260809-2xk-final",
+      "family": "CLOSING_CONDITIONS",
+      "section": "7.04",
+      "semantic_locator": {
+        "section": "7.04",
+        "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+        "raw_value": "The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement."
+      },
+      "semantic_locator_digest": "sha256:26f5ed23a15dcc1425843ed7674b168b541bb0f976052932f86ce02518d5f672",
+      "source_candidate_id": "c6ddfbfefa0126faeaab1f4ef77e3f5bb739eb7f0620f934b6705835941c40bc",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "before": {
+        "collection": "review_queue",
+        "resolved_claim_definition_key": null,
+        "state": null,
+        "canonical_value": null,
+        "raw_value": "The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.",
+        "claim_occurrence_id": null,
+        "claim_revision_id": null,
+        "source_candidate_id": "791cd765093d31b02cbde705b5dc0d7562ffc487da1de7078268244ca0fbade6",
+        "reasons": [
+          "CONDITION_KIND_UNCORROBORATED"
+        ]
+      },
+      "after": {
+        "collection": "resolved",
+        "resolved_claim_definition_key": "FRUSTRATION_CAUSATION_STANDARD",
+        "state": "PRESENT",
+        "canonical_value": "PRIMARILY_CAUSED",
+        "raw_value": "The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.",
+        "claim_occurrence_id": "c6ddfbfefa0126faeaab1f4ef77e3f5bb739eb7f0620f934b6705835941c40bc",
+        "claim_revision_id": "13f7560f11880f77a4a1613f044c98fd05c87e9dc783ecea70f857f9013b5a72",
+        "source_candidate_id": "c6ddfbfefa0126faeaab1f4ef77e3f5bb739eb7f0620f934b6705835941c40bc",
         "reasons": []
       }
     },
@@ -1201,7 +1239,7 @@
         "residuals": 0
       },
       "after": {
-        "resolved": 5,
+        "resolved": 6,
         "review_queue": 13,
         "open_world": 5,
         "residuals": 0
@@ -3384,5 +3422,5 @@
       }
     }
   ],
-  "comparison_digest": "sha256:00504c8e92ec005d7c402519c7b0080339f36d281e9174ef241a0050974639e5"
+  "comparison_digest": "sha256:179a108afec0a8ffccf33ec610f33370862ef9fb8598eb17c8a190027aecd53c"
 }

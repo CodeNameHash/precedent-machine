@@ -205,7 +205,7 @@ const { bindNativePromptToGovernedScope } = require('../lib/canonical-v2/native-
 // Same reason the V34 -> V38 move recorded above: resolving against an
 // older bundle turns already-governed vocabulary into open-world rows
 // for want of a home that exists.
-const { compileFixtureContractV42 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV44 } = require('../lib/canonical-v2/contract-bundle');
 const { createAnthropicProvider, normalizeProviderUsage } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { createCodexCliProvider, PROVIDER_ID: CODEX_PROVIDER_ID, resolveProfile } = require('../lib/canonical-v2/native-producer/codex-cli-provider');
 const { createCodexCliClient, JSON_ONLY_INSTRUCTION } = require('../lib/llm-cli-client');
@@ -251,6 +251,11 @@ const {
 
 const DEFAULT_DEAL = 'modiv';
 const DEFAULT_FAMILY = 'TERMINATION_FEE';
+const LIVE_CONTRACT_BUNDLE_VERSION = 'compileFixtureContractV44';
+
+function compileLiveContractBundle() {
+  return compileFixtureContractV44();
+}
 
 /**
  * This script's own path, relative to the current working directory --
@@ -1103,6 +1108,7 @@ function parseArgs(argv) {
     sameDealDefinedTermReceiptPaths: [],
     sameDealDefinedTermCalibrationPath: null,
     duplicateSuppressionReportOnly: false,
+    duplicateSuppressionEnforce: false,
     phaseBLeadProbe: false,
   };
   for (let i = 0; i < argv.length; i += 1) {
@@ -1139,6 +1145,7 @@ function parseArgs(argv) {
       case '--same-deal-defined-terms-receipt': out.sameDealDefinedTermReceiptPaths.push(argv[++i]); break;
       case '--same-deal-defined-terms-calibration': out.sameDealDefinedTermCalibrationPath = argv[++i]; break;
       case '--duplicate-suppression-report-only': out.duplicateSuppressionReportOnly = true; break;
+      case '--duplicate-suppression-enforce': out.duplicateSuppressionEnforce = true; break;
       case '--phase-b-lead-probe': out.phaseBLeadProbe = true; break;
       default: throw new Error(`unrecognised argument: ${arg}`);
     }
@@ -1165,6 +1172,9 @@ function parseArgs(argv) {
   if (out.sectionRefs && out.sectionRefs.length === 0) throw new Error('--section-refs must name at least one section reference');
   if (Boolean(out.sameDealDefinedTermCalibrationPath) !== Boolean(out.sameDealDefinedTermReceiptPaths.length)) {
     throw new Error('SAME_DEAL_DEFINED_TERMS_PIN_REQUIRED: --same-deal-defined-terms-receipt and --same-deal-defined-terms-calibration must be supplied together');
+  }
+  if (out.duplicateSuppressionReportOnly && out.duplicateSuppressionEnforce) {
+    throw new Error('MUTUALLY_EXCLUSIVE: --duplicate-suppression-report-only and --duplicate-suppression-enforce cannot be supplied together');
   }
   return out;
 }
@@ -1238,7 +1248,9 @@ function resolveRunConfig(args) {
     v1SnapshotPath: args.v1SnapshotPath || null,
     sameDealDefinedTermReceiptPaths: Object.freeze([...args.sameDealDefinedTermReceiptPaths]),
     sameDealDefinedTermCalibrationPath: args.sameDealDefinedTermCalibrationPath || null,
-    duplicateSuppressionMode: args.duplicateSuppressionReportOnly ? 'REPORT_ONLY' : 'OFF',
+    duplicateSuppressionMode: args.duplicateSuppressionEnforce
+      ? 'ENFORCE'
+      : args.duplicateSuppressionReportOnly ? 'REPORT_ONLY' : 'OFF',
     phaseBLeadProbe: args.phaseBLeadProbe,
   });
 }
@@ -1536,6 +1548,7 @@ function buildDryRunReport({
     agreement_date: config.agreementDate,
     requested_model_profile: config.profileId,
     follow_citations: config.followCitations,
+    duplicate_suppression_mode: config.duplicateSuppressionMode,
     source: {
       raw_bytes_length: verified.rawBytes.length,
       raw_bytes_sha256: verified.rawBytesSha256,
@@ -1975,7 +1988,7 @@ async function main() {
 
   // ─── Step 3: LIVE model calls, one per pinned section, all dispatched under the chosen family ───
 
-  const contractBundle = compileFixtureContractV42();
+  const contractBundle = compileLiveContractBundle();
   const definitions = { known_definitions: [] };
   const telemetry = { calls: [] };
 
@@ -2245,7 +2258,7 @@ async function main() {
       : `General extraction run: family ${config.family} on deal ${config.deal}.`,
     section_references: config.sectionRefs,
     section_family_assignments: sectionFamilyAssignments,
-    contract_bundle_version: 'compileFixtureContractV42',
+    contract_bundle_version: LIVE_CONTRACT_BUNDLE_VERSION,
     prompt_id: promptInfo.prompt_id,
     prompt_version: promptInfo.prompt_version,
     agreement_date: config.agreementDate,
@@ -2255,6 +2268,7 @@ async function main() {
       replayIdentity ? replayIdentity.model_id : liveProviderModelId,
     ]),
     follow_citations: config.followCitations,
+    duplicate_suppression_mode: config.duplicateSuppressionMode,
     max_retries: 0,
     run_started_at: new Date(runStartedAt).toISOString(),
     total_elapsed_ms: totalElapsedMs,
@@ -2339,6 +2353,8 @@ export {
   DEAL_PINS,
   DEFAULT_DEAL,
   DEFAULT_FAMILY,
+  LIVE_CONTRACT_BUNDLE_VERSION,
+  compileLiveContractBundle,
   scriptRelativePath,
   parseArgs,
   resolveRunConfig,

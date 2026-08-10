@@ -29,6 +29,13 @@ const {
   validateAntitrustV1SurfaceDispositions,
 } = require('../lib/canonical-v2/antitrust-v1-surface-disposition');
 
+const PARENT_REGULATORY_PARTY = Object.freeze({
+  role: 'REGULATORY_COVENANT_OBLIGOR', value: 'Parent', capacity: 'BUYER',
+});
+const MUTUAL_REGULATORY_PARTY = Object.freeze({
+  role: 'REGULATORY_COVENANT_OBLIGOR', value: 'Neither party', capacity: 'EITHER_PRINCIPAL_PARTY',
+});
+
 const ADAPTER_PATH = path.join(__dirname, 'fixtures', 'canonical-v2', 'skechers-first-live-run', 'adapter-result.json');
 const DESIGN_PATH = path.join(__dirname, '..', 'docs', 'superpowers', 'specs', '2026-08-02-family-antitrust-regulatory-efforts-design.md');
 
@@ -329,11 +336,12 @@ test('real Skechers bytes produce separate cooperation, information, notificatio
 });
 
 test('filing timing, HSR day kind, provisos, burden baselines and currency stay exact and non-derived', () => {
-  const resolved = (id, conceptKey, definitionKey, value, quote, attributes) => ({
+  const resolved = (id, conceptKey, definitionKey, value, quote, attributes, party = PARENT_REGULATORY_PARTY) => ({
     resolved_claim_definition_key: definitionKey,
     concept_key: conceptKey,
     section_reference: '6.2',
-    provision_instance: { provision_instance_id: `provision:${id}` },
+    party,
+    provision_instance: { provision_instance_id: `provision:${id}`, party },
     claim: { claim_revision_id: `claim:${id}`, raw_value: quote, canonical_value: value, attributes },
   });
   const projection = projectAntitrustProductSurfaces({
@@ -345,7 +353,7 @@ test('filing timing, HSR day kind, provisos, burden baselines and currency stay 
       resolved('cap-eur', 'ANTI-BURDEN', 'REGULATORY_DIVESTITURE_CAP_AMOUNT', '10000000', 'Parent shall not be required to accept a remedy above €10,000,000.', { currency: 'EUR' }),
       resolved('cap-usd-decimal', 'ANTI-BURDEN', 'REGULATORY_DIVESTITURE_CAP_AMOUNT', '1500000.50', 'Parent shall not be required to accept a remedy above $1,500,000.50.', { currency: 'USD' }),
       resolved('baseline', 'ANTI-BURDEN', 'REGULATORY_BURDEN_COMMITMENT', 'BURDENSOME_CONDITION', 'Parent shall not be required to accept a Detriment measured against the Company and its Subsidiaries, taken as a whole.', { burden_term_ref: 'Detriment', burden_baseline: 'TARGET_ONLY', burden_baseline_ref: 'the Company and its Subsidiaries, taken as a whole' }),
-      resolved('refile', 'ANTI-AGREEMENTS', 'REGULATORY_WITHDRAWAL_REFILING_RESTRICTION', 'MUTUAL_CONSENT', 'Neither party shall withdraw and refile without consent, provided Parent may withdraw if it refiles within 2 business days.', { withdrawal_exception_ref: 'provided Parent may withdraw if it refiles within 2 business days', withdrawal_refile_period_days: '2', withdrawal_refile_day_kind: 'BUSINESS' }),
+      resolved('refile', 'ANTI-AGREEMENTS', 'REGULATORY_WITHDRAWAL_REFILING_RESTRICTION', 'MUTUAL_CONSENT', 'Neither party shall withdraw and refile without consent, provided Parent may withdraw if it refiles within 2 business days.', { withdrawal_exception_ref: 'provided Parent may withdraw if it refiles within 2 business days', withdrawal_refile_period_days: '2', withdrawal_refile_day_kind: 'BUSINESS' }, MUTUAL_REGULATORY_PARTY),
     ], open_world: [] },
   });
   const hsr = projection.cards.find((card) => card.id === 'provision:hsr-calendar');
@@ -496,7 +504,8 @@ test('modern Review renders burden architecture, exact amount, currency and base
     resolved_claim_definition_key: definitionKey,
     concept_key: 'ANTI-BURDEN',
     section_reference: '6.2',
-    provision_instance: { provision_instance_id: 'provision:burden-review' },
+    party: PARENT_REGULATORY_PARTY,
+    provision_instance: { provision_instance_id: 'provision:burden-review', party: PARENT_REGULATORY_PARTY },
     claim: { claim_revision_id: `claim:${id}`, raw_value: quote, canonical_value: value, attributes },
   });
   const baselineRef = 'the Company and its Subsidiaries, taken as a whole';

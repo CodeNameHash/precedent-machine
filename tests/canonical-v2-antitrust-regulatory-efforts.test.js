@@ -20,6 +20,10 @@ const { provisionFieldValue } = require('../lib/query/types');
 const { calculateMarketStats } = require('../lib/row-market-stats/service');
 const { buildIdentityAdmittedSourceContext } = require('./helpers/identity-admitted-source');
 
+const PARENT_REGULATORY_PARTY = Object.freeze({
+  role: 'REGULATORY_COVENANT_OBLIGOR', value: 'Parent', capacity: 'BUYER',
+});
+
 test('antitrust parser preserves scaled-money safety and exact literal money', () => {
   assert.deepEqual(parseDivestitureCapAmount('greater than $700 million in lost value'), { outcome: 'ABSTAIN', reason: 'SCALED_MONEY_LITERAL' });
   assert.equal(parseDivestitureCapAmount('$326,000,000').canonical_value, '326000000');
@@ -128,7 +132,7 @@ test('native antitrust candidates reach Review, Query, Compare and market statis
     litigation: 'Parent shall vigorously contest and defend through litigation any regulatory challenge.',
     timing: "Parent shall not enter into any timing agreement without the Company's prior written consent, not to be unreasonably withheld.",
     withdrawal: 'Parent may withdraw and refile in good faith under the HSR Act.',
-    hsr: 'Parent shall file under the Hart-Scott-Rodino Antitrust Improvements Act of 1976 within ten (10) Business Days.',
+    hsr: 'Parent shall file under the Hart-Scott-Rodino Antitrust Improvements Act of 1976 within ten (10) Business Days after signing.',
     foreign: 'Parent shall file under the Foreign Competition Act.',
     foreignDeadline: 'Parent shall file under the Foreign Competition Act within fifteen (15) Calendar Days.',
     foreignQualitative: 'Parent shall file under the German Foreign Trade and Payments Act as promptly as reasonably practicable after signing.',
@@ -154,7 +158,12 @@ test('native antitrust candidates reach Review, Query, Compare and market statis
     at('LITIGATION_OBLIGATION', quotes.litigation, 'MANDATORY_DEFEND'),
     at('TIMING_AGREEMENT_RESTRICTION', quotes.timing, 'NOT_UNREASONABLY_WITHHELD'),
     at('WITHDRAWAL_REFILING_RESTRICTION', quotes.withdrawal, 'BUYER_UNILATERAL_GF'),
-    at('HSR_FILING_DEADLINE', quotes.hsr, null, { day_kind: 'BUSINESS', filing_regime_ref: 'Hart-Scott-Rodino Antitrust Improvements Act of 1976' }),
+    at('HSR_FILING_DEADLINE', quotes.hsr, null, {
+      day_kind: 'BUSINESS',
+      filing_regime_ref: 'Hart-Scott-Rodino Antitrust Improvements Act of 1976',
+      timing_relation: 'within ten (10) Business Days',
+      timing_trigger: 'after signing',
+    }),
     at('REGULATORY_FILING_OBLIGATION', quotes.foreign, true, { filing_regime_ref: 'Foreign Competition Act' }),
     at('REGULATORY_FILING_DEADLINE', quotes.foreignDeadline, null, { day_kind: 'CALENDAR', filing_regime_ref: 'Foreign Competition Act' }),
     at('REGULATORY_FILING_TIMING_STANDARD', quotes.foreignQualitative, 'AS_PROMPTLY_AS_REASONABLY_PRACTICABLE', {
@@ -238,7 +247,7 @@ test('native antitrust candidates reach Review, Query, Compare and market statis
   assert.deepEqual(pullRow.signals.map((signal) => signal.label), ['Buyer may pull-and-refile (good-faith gated)']);
   const filingRow = rows.find((row) => row.id === 'antitrust-regulatory-foreign-filings');
   const hsrRow = rows.find((row) => row.id === 'antitrust-regulatory-hsr-deadline');
-  assert.deepEqual(hsrRow.signals.map((signal) => signal.label), ['10 business days']);
+  assert.deepEqual(hsrRow.signals.map((signal) => signal.label), ['10 business days after signing']);
   assert.ok(filingRow.signals.some((signal) => signal.label === 'Foreign Competition Act: 15 calendar days'));
   assert.ok(filingRow.signals.some((signal) => signal.label === 'German Foreign Trade and Payments Act: As promptly as reasonably practicable'));
   assert.ok(filingRow.signals.some((signal) => signal.label === 'FCC Rules: September 1, 2026'));
@@ -400,7 +409,8 @@ function resolvedNonHsrDeadline({ id, regime, value, dayKind, quote, timingRelat
     resolved_claim_definition_key: 'REGULATORY_FILING_DEADLINE_DAYS',
     concept_key: 'ANTI-FILING',
     section_reference: '6.1',
-    provision_instance: { provision_instance_id: `provision:${id}` },
+    party: PARENT_REGULATORY_PARTY,
+    provision_instance: { provision_instance_id: `provision:${id}`, party: PARENT_REGULATORY_PARTY },
     claim: {
       claim_revision_id: `claim:${id}`,
       raw_value: quote,

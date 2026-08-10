@@ -1,5 +1,5 @@
 import React from 'react';
-import { cardCode, cardFeatures, cardType, firstFeature, selectCards, textOf } from './card-utils.js';
+import { cardCode, cardFeatures, cardType, firstFeature, selectCards, textOf, valueText } from './card-utils.js';
 import p0Routing from '../../../lib/canonical-v2/p0-product-surface-routing.js';
 import { DARK_PREVIEW_MARKET_STATE, isCanonicalV2PreviewEnabled } from './canonical-v2-preview-lane.js';
 
@@ -7,6 +7,24 @@ const { isDedicatedFamilyCovenantCode, routeGeneralCovenantCode } = p0Routing;
 const NATIVE_SOURCE = 'CANONICAL_V2_NATIVE_CLAIM';
 const EVIDENCE_SOURCE = 'CANONICAL_V2_OPEN_WORLD_EVIDENCE';
 const DARK_AUTHORITY_STATE = 'VALIDATED_NOT_SERVED';
+
+const DURATION_TRIGGER_LABELS = Object.freeze({
+  effective_time: 'Effective Time',
+});
+
+function structuredDurationText(card) {
+  const features = cardFeatures(card);
+  for (const key of ['indemnificationPeriod', 'insurancePeriod']) {
+    const duration = features[key];
+    if (!duration || typeof duration !== 'object' || Array.isArray(duration)) continue;
+    const amount = valueText(duration.value);
+    const unit = duration.unit === 'years' ? 'year' : null;
+    const trigger = DURATION_TRIGGER_LABELS[duration.trigger];
+    if (!amount || !unit || !trigger) continue;
+    return `${amount} ${unit}${String(amount) === '1' ? '' : 's'} from ${trigger}`;
+  }
+  return null;
+}
 
 // Dark Canonical V2 preview only -- see lib/canonical-v2/general-covenants-
 // dark-bridge.js. A card only ever carries this when something upstream
@@ -97,10 +115,10 @@ function generalCovenantMarket(card) {
       {
         key: 'tail-period',
         label: 'D&O protection period',
-        featureKeys: ['indemnificationPeriod'],
+        featureKeys: ['indemnificationPeriod', 'insurancePeriod'],
         kind: 'duration',
-        value: { strategy: 'feature_value', featureKeys: ['indemnificationPeriod'], normalizer: 'deadline_duration', unit: 'years', trigger: 'closing' },
-        semantics: { unit: 'years', calendarBasis: 'elapsed', trigger: 'closing', requiredDimensions: ['unit'] },
+        value: { strategy: 'feature_value', featureKeys: ['indemnificationPeriod', 'insurancePeriod'], normalizer: 'deadline_duration', unit: 'years', trigger: 'effective_time' },
+        semantics: { unit: 'years', calendarBasis: 'elapsed', trigger: 'effective_time', requiredDimensions: ['unit'] },
       },
       {
         key: 'insurance-cap',
@@ -255,6 +273,10 @@ function linkRow(idSuffix, label, card, evidenceOverride) {
   if (!card) return null;
   const dark = isDarkV2Card(card);
   const rowLabel = dark ? `${label} (Canonical V2 preview)` : label;
+  const partyLabel = typeof card?.party?.value === 'string' && card.party.value.trim()
+    ? card.party.value.trim()
+    : null;
+  const durationDetail = structuredDurationText(card);
   if (card?.canonical_v2_lineage?.source === EVIDENCE_SOURCE) {
     return {
       id: `general-covenants-${idSuffix}`,
@@ -264,6 +286,8 @@ function linkRow(idSuffix, label, card, evidenceOverride) {
       isLink: true,
       evidence: textOf(card) || evidenceOverride || '',
       sourceCard: card,
+      partyLabel,
+      durationDetail,
       present: true,
       marketState: 'OPEN_NATIVE_FIELD',
       ...darkPreviewFields(card),
@@ -279,6 +303,8 @@ function linkRow(idSuffix, label, card, evidenceOverride) {
     isLink: true,
     evidence: textOf(card) || evidenceOverride || '',
     sourceCard: card,
+    partyLabel,
+    durationDetail,
     present: true,
     ownerFamily: ownership.owner_id,
     ownershipState: ownership.route_state,
@@ -327,8 +353,21 @@ function renderLink(row, ctx) {
     row.detail,
     React.createElement('span', { 'aria-hidden': 'true' }, '→'),
   );
-  if (!EvidenceHoverSource) return linkNode;
-  return React.createElement(EvidenceHoverSource, { evidence: row.evidence, source: row.sourceCard, as: 'span' }, linkNode);
+  const renderedLink = EvidenceHoverSource
+    ? React.createElement(EvidenceHoverSource, { evidence: row.evidence, source: row.sourceCard, as: 'span' }, linkNode)
+    : linkNode;
+  if (!row.partyLabel && !row.durationDetail) return renderedLink;
+  return React.createElement(
+    'div',
+    { className: 'flex flex-wrap items-center gap-x-2 gap-y-1' },
+    renderedLink,
+    row.durationDetail
+      ? React.createElement('span', { className: 'text-[11px] text-inkLight' }, row.durationDetail)
+      : null,
+    row.partyLabel
+      ? React.createElement('span', { className: 'text-[11px] text-inkLight' }, `Party: ${row.partyLabel}`)
+      : null,
+  );
 }
 
 // FEEDBACK-2-PUNCHLIST.md #33: this section now sits at the VERY END of the

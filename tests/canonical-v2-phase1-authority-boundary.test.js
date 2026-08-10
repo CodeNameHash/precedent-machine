@@ -979,6 +979,7 @@ test('read-only Git inspectors launch only whitelisted inspection commands', () 
 test('read-only Git artefact writers have their exact capability boundary', () => {
   assert.deepEqual(READ_ONLY_GIT_ARTIFACT_WRITERS, [
     'scripts/audit/canonical-v2-termination-render-diagnosis.mjs',
+    'scripts/stage-2y-h-representation-topic-compare.mjs',
     'scripts/stage-2y-registry-substrate-replay.mjs',
   ]);
   for (const relativePath of READ_ONLY_GIT_ARTIFACT_WRITERS) {

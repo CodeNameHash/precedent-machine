@@ -470,9 +470,24 @@ function partitionIocCardsByParty(cards, allCards) {
 
 function iocCardsForParty(reviewDeal, party) {
   const cards = (reviewDeal?.cards || []).filter(isIocCard);
-  const split = partitionIocCardsByParty(cards, reviewDeal?.cards);
-  if (!split) return party === 'Company' ? cards : [];
-  return split[party] || [];
+  const governed = [];
+  const legacy = [];
+  for (const card of cards) {
+    if (card?.party === null || card?.party === undefined) {
+      legacy.push(card);
+      continue;
+    }
+    const capacity = card.party?.capacity;
+    if (card.party?.role !== 'IOC_COVENANT_OBLIGOR' || !['TARGET', 'BUYER'].includes(capacity)) {
+      throw new TypeError('IOC card party must be a governed target or buyer covenant obligor');
+    }
+    if ((party === 'Company' && capacity === 'TARGET')
+      || (party === 'Parent' && capacity === 'BUYER')) governed.push(card);
+  }
+  if (!legacy.length) return governed;
+  const split = partitionIocCardsByParty(legacy, reviewDeal?.cards);
+  if (!split) return party === 'Company' ? [...governed, ...legacy] : governed;
+  return [...governed, ...(split[party] || [])];
 }
 
 // Ben-facing band heading for an unsplit multi-band deck's negative
@@ -695,7 +710,7 @@ function renderNegativeRow(entry, ctx) {
         'div',
         { className: 'grid grid-cols-1 gap-2 sm:grid-cols-2', 'data-testid': 'ioc-negative-columns' },
         negativeCovenantColumn(`${entry.code}-restrictions`, 'Specific restrictions', restrictionPills, null),
-        negativeCovenantColumn(`${entry.code}-exceptions`, 'Exceptions', exceptionPills, 'None specified'),
+        negativeCovenantColumn(`${entry.code}-exceptions`, 'Exceptions', exceptionPills, null),
       ),
     ),
     // r9: "See provision" lives in the LEFT column (GroupedSubRows'

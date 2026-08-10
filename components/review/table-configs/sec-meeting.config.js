@@ -32,6 +32,26 @@ function cardFeatures(card) {
 function textOf(card) {
   return String(card?.primary_quote || card?.region_full_text || '').trim();
 }
+function cardPartyLabel(card) {
+  if (typeof card?.canonical_v2_lineage?.obligated_party === 'string'
+    && card.canonical_v2_lineage.obligated_party.trim()) {
+    return card.canonical_v2_lineage.obligated_party.trim();
+  }
+  return typeof card?.party?.value === 'string' && card.party.value.trim()
+    ? card.party.value.trim()
+    : null;
+}
+function featureClaimRevisionIds(card, featureKey) {
+  const ids = card?.canonical_v2_lineage?.feature_claim_revision_ids?.[featureKey];
+  return Array.isArray(ids) ? ids : [];
+}
+function exactFeatureClaimRevisionId(card, featureKey, value = null) {
+  if (typeof value?.claim_revision_id === 'string' && value.claim_revision_id) {
+    return value.claim_revision_id;
+  }
+  const ids = featureClaimRevisionIds(card, featureKey);
+  return ids.length === 1 ? ids[0] : null;
+}
 // valueText is imported from card-utils.js (see above) rather than defined
 // locally: this config's own copy read `.text` before `.label`/`.code` (no
 // redundancy check) and also fell back to formatDeadline(value) for a bare
@@ -89,7 +109,9 @@ function deadlineRow(id, label, deadline, featureKey, sourceCard = null) {
     sourceCard,
     present: true,
     deadline,
+    featureKey,
     featureKeys: [featureKey],
+    claimRevisionId: exactFeatureClaimRevisionId(sourceCard, featureKey, cardFeatures(sourceCard)[featureKey]),
     marketSubterms: [
       {
         key: 'timing',
@@ -124,12 +146,44 @@ function deadlineRow(id, label, deadline, featureKey, sourceCard = null) {
   };
   return withSignal(row);
 }
+function deadlineRows(cards, id, label, featureKey) {
+  const rows = [];
+  for (const card of cards) {
+    const raw = cardFeatures(card)[featureKey];
+    const deadlines = Array.isArray(raw) ? raw : [raw];
+    for (const deadline of deadlines.filter(Boolean)) {
+      rows.push(deadlineRow(
+        typeof deadline.claim_revision_id === 'string' && deadline.claim_revision_id
+          ? `${id}-${deadline.claim_revision_id}`
+          : rows.length === 0 ? id : `${id}-${rows.length}`,
+        label,
+        deadline,
+        featureKey,
+        card,
+      ));
+    }
+  }
+  return rows;
+}
 function adjournmentPartyIdentity(right) {
   const party = String(right?.party || 'UNSPECIFIED').trim().toUpperCase().replace(/[^A-Z0-9]+/g, '_');
   return `ADJOURNMENT_PARTY:${party || 'UNSPECIFIED'}`;
 }
 function adjournmentRows(rights, sourceCard = null) {
-  return (rights || []).map((right, idx) => {
+  const rowItems = (rights || []).flatMap((right) => {
+    const exactReasons = (right.reasons || []).filter(
+      (reason) => typeof reason?.claim_revision_id === 'string' && reason.claim_revision_id,
+    );
+    if (!exactReasons.length) {
+      const ids = Array.isArray(right.claim_revision_ids) ? right.claim_revision_ids : [];
+      return [{ right, claimRevisionId: ids.length === 1 ? ids[0] : null }];
+    }
+    return exactReasons.map((reason) => ({
+      right: { ...right, reasons: [reason], text: reason.text || right.text },
+      claimRevisionId: reason.claim_revision_id,
+    }));
+  });
+  return rowItems.map(({ right, claimRevisionId }, idx) => {
     const reasons = (right.reasons || []).map((reason) => valueText(reason)).filter(Boolean).join('; ');
     const limits = formatAdjournmentLimits(right).join('; ');
     const itemMatch = {
@@ -137,14 +191,16 @@ function adjournmentRows(rights, sourceCard = null) {
       identityKind: 'adjournment_party',
     };
     return withSignal({
-      id: `sec-meeting-adjournment-${idx}`,
+      id: `sec-meeting-adjournment-${claimRevisionId || idx}`,
       label: 'Adjournment rights',
       subject: right.party ? enumLabel(right.party) : 'Meeting',
       detail: [reasons, limits, right.text].filter(Boolean).join('\n'),
       evidence: textOf(sourceCard) || right.text || reasons || limits,
       sourceCard,
       present: true,
+      featureKey: 'adjournmentRights',
       featureKeys: ['adjournmentRights'],
+      claimRevisionId,
       marketPresence: {
         strategy: 'list_item',
         featureKeys: ['adjournmentRights'],
@@ -255,6 +311,8 @@ function directRows(cards) {
       evidence: textOf(hit.card),
       sourceCard: hit.card,
       featureKeys: [key],
+      featureKey: key,
+      claimRevisionId: exactFeatureClaimRevisionId(hit.card, key, cardFeatures(hit.card)[key]),
       marketProvisionCodes: key === 'tenderOfferMinimumCondition'
         ? ['COND-M-STOCKHOLDER']
         : ['STRUCT-OFFER'],
@@ -285,18 +343,19 @@ function governedPresenceRows(cards) {
     ['boardRecommendationInclusion', 'Board recommendation in proxy statement', 'Proxy / meeting'],
     ['meetingConveneObligation', 'Convene and hold stockholder meeting', 'Meeting'],
   ];
-  return definitions.flatMap(([key, label, subject]) => {
-    const hit = firstFeature(cards, key);
-    if (!hit || cardFeatures(hit.card)[key] !== true) return [];
-    return [withSignal({
-      id: `sec-meeting-${key}`,
+  return definitions.flatMap(([key, label, subject]) => cards
+    .filter((card) => cardFeatures(card)[key] === true)
+    .map((card, index) => withSignal({
+      id: `sec-meeting-${key}-${exactFeatureClaimRevisionId(card, key, cardFeatures(card)[key]) || index}`,
       label,
       subject,
       detail: 'Required',
-      evidence: textOf(hit.card),
-      sourceCard: hit.card,
+      evidence: textOf(card),
+      sourceCard: card,
       present: true,
+      featureKey: key,
       featureKeys: [key],
+      claimRevisionId: exactFeatureClaimRevisionId(card, key, cardFeatures(card)[key]),
       marketProvisionCodes: [key === 'boardRecommendationInclusion' ? 'COV-PROXY' : 'COV-MEETING'],
       marketPresence: {
         strategy: 'feature_non_empty',
@@ -311,8 +370,7 @@ function governedPresenceRows(cards) {
         role: 'treatment',
         value: { strategy: 'feature_value', featureKeys: [key] },
       }],
-    })];
-  });
+    })));
 }
 
 function evidenceFact(cards, pattern) {
@@ -322,59 +380,85 @@ function evidenceFact(cards, pattern) {
 
 function meetingMechanicFactRows(cards) {
   const rows = [];
-  const recordFeature = firstFeature(cards, 'meetingRecordDate') || firstFeature(cards, 'recordDate');
-  const recordCard = recordFeature?.card || evidenceFact(
+  const recordFeatures = cards.flatMap((card) => {
+    const key = cardFeatures(card).meetingRecordDate ? 'meetingRecordDate'
+      : cardFeatures(card).recordDate ? 'recordDate' : null;
+    return key ? [{ card, key, text: valueText(cardFeatures(card)[key]) }] : [];
+  });
+  const recordFallbackCard = recordFeatures.length ? null : evidenceFact(
     cards,
     /\b(?:establish|set|fix|select)(?:es|ed|ing)?\b[\s\S]{0,120}\brecord date\b|\brecord date\b[\s\S]{0,120}\b(?:establish|set|fix|select)(?:es|ed|ing)?\b/i,
   );
-  if (recordCard) {
+  for (const [index, recordFeature] of recordFeatures.entries()) {
     const coverage = coverageForSecRowId('sec-meeting-record-date');
     rows.push(withSignal({
-      id: 'sec-meeting-record-date',
+      id: `sec-meeting-record-date-${exactFeatureClaimRevisionId(recordFeature.card, recordFeature.key, cardFeatures(recordFeature.card)[recordFeature.key]) || index}`,
       label: 'Meeting record date',
       subject: 'Meeting',
-      detail: recordFeature?.text || 'Required',
-      evidence: textOf(recordCard),
-      sourceCard: recordCard,
-      featureKeys: recordFeature ? ['meetingRecordDate', 'recordDate'] : [],
+      detail: recordFeature.text || 'Required',
+      evidence: textOf(recordFeature.card),
+      sourceCard: recordFeature.card,
+      featureKey: recordFeature.key,
+      featureKeys: [recordFeature.key],
+      claimRevisionId: exactFeatureClaimRevisionId(recordFeature.card, recordFeature.key, cardFeatures(recordFeature.card)[recordFeature.key]),
       ownerFamily: coverage?.owner_id || null,
       governanceState: coverage?.governance_state || null,
       targetClaimKeys: coverage ? [...coverage.claim_keys] : [],
-      marketState: recordFeature ? 'FEATURE_BACKED' : 'OPEN_NATIVE_FIELD',
-      marketPresence: recordFeature ? {
+      marketState: 'FEATURE_BACKED',
+      marketPresence: {
         strategy: 'feature_non_empty',
         featureKeys: ['meetingRecordDate', 'recordDate'],
         missingState: 'absent',
-      } : undefined,
+      },
       present: true,
     }));
   }
+  if (recordFallbackCard) {
+    rows.push(withSignal({
+      id: 'sec-meeting-record-date', label: 'Meeting record date', subject: 'Meeting',
+      detail: 'Required', evidence: textOf(recordFallbackCard), sourceCard: recordFallbackCard,
+      featureKey: null, featureKeys: [], claimRevisionId: null,
+      marketState: 'OPEN_NATIVE_FIELD', present: true,
+    }));
+  }
 
-  const brokerFeature = firstFeature(cards, 'brokerSearchObligation');
-  const brokerCard = brokerFeature?.card || evidenceFact(
+  const brokerFeatures = cards
+    .filter((card) => cardFeatures(card).brokerSearchObligation)
+    .map((card) => ({ card, text: valueText(cardFeatures(card).brokerSearchObligation) }));
+  const brokerFallbackCard = brokerFeatures.length ? null : evidenceFact(
     cards,
     /\b(?:complet\w*|conduct\w*|perform\w*|commenc\w*|initiat\w*|undertak\w*)\b[\s\S]{0,100}\bbroker search\b|\bbroker search\b[\s\S]{0,100}\b(?:complet\w*|conduct\w*|perform\w*|commenc\w*|initiat\w*|undertak\w*)\b/i,
   );
-  if (brokerCard) {
+  for (const [index, brokerFeature] of brokerFeatures.entries()) {
     const coverage = coverageForSecRowId('sec-meeting-broker-search');
     rows.push(withSignal({
-      id: 'sec-meeting-broker-search',
+      id: `sec-meeting-broker-search-${exactFeatureClaimRevisionId(brokerFeature.card, 'brokerSearchObligation', cardFeatures(brokerFeature.card).brokerSearchObligation) || index}`,
       label: 'Broker search',
       subject: 'Proxy / meeting',
       detail: 'Required',
-      evidence: textOf(brokerCard),
-      sourceCard: brokerCard,
-      featureKeys: brokerFeature ? ['brokerSearchObligation'] : [],
+      evidence: textOf(brokerFeature.card),
+      sourceCard: brokerFeature.card,
+      featureKey: 'brokerSearchObligation',
+      featureKeys: ['brokerSearchObligation'],
+      claimRevisionId: exactFeatureClaimRevisionId(brokerFeature.card, 'brokerSearchObligation', cardFeatures(brokerFeature.card).brokerSearchObligation),
       ownerFamily: coverage?.owner_id || null,
       governanceState: coverage?.governance_state || null,
       targetClaimKeys: coverage ? [...coverage.claim_keys] : [],
-      marketState: brokerFeature ? 'FEATURE_BACKED' : 'OPEN_NATIVE_FIELD',
-      marketPresence: brokerFeature ? {
+      marketState: 'FEATURE_BACKED',
+      marketPresence: {
         strategy: 'feature_non_empty',
         featureKeys: ['brokerSearchObligation'],
         missingState: 'absent',
-      } : undefined,
+      },
       present: true,
+    }));
+  }
+  if (brokerFallbackCard) {
+    rows.push(withSignal({
+      id: 'sec-meeting-broker-search', label: 'Broker search', subject: 'Proxy / meeting',
+      detail: 'Required', evidence: textOf(brokerFallbackCard), sourceCard: brokerFallbackCard,
+      featureKey: null, featureKeys: [], claimRevisionId: null,
+      marketState: 'OPEN_NATIVE_FIELD', present: true,
     }));
   }
   return rows;
@@ -419,29 +503,38 @@ const secMeetingConfig = {
     const cards = (reviewDeal?.cards || []).filter(hasSecSignal);
     if (!cards.length) return [];
     const summary = deriveSecMeetingSummary(cards.map(pseudoProvision));
-    const proxyCard = firstCardWithFeature(cards, 'proxyFilingDeadline', summary.proxyFilingDeadline);
     const mailingCard = firstCardWithFeature(cards, 'mailingDeadline', summary.mailingDeadline);
-    const meetingCard = firstCardWithFeature(cards, 'meetingDeadline', summary.meetingDeadline);
-    const adjournmentCard = firstCardWithFeature(cards, 'adjournmentRights');
     const controlCard = firstCardWithFeature(cards, 'meetingControlNotes');
     return [
-      deadlineRow('proxy-filing', summary.proxyFilingDeadline?.term || 'Proxy filing deadline', summary.proxyFilingDeadline, 'proxyFilingDeadline', proxyCard),
+      ...deadlineRows(cards, 'proxy-filing', summary.proxyFilingDeadline?.term || 'Proxy filing deadline', 'proxyFilingDeadline'),
       deadlineRow('mailing', summary.mailingDeadline?.term || 'Proxy mailing', summary.mailingDeadline, 'mailingDeadline', mailingCard),
-      deadlineRow('meeting', summary.meetingDeadline?.term || 'Shareholder meeting', summary.meetingDeadline, 'meetingDeadline', meetingCard),
+      ...deadlineRows(cards, 'meeting', summary.meetingDeadline?.term || 'Shareholder meeting', 'meetingDeadline'),
       ...governedPresenceRows(cards),
       ...meetingMechanicFactRows(cards),
-      ...adjournmentRows(summary.adjournmentRights, adjournmentCard),
+      ...cards.flatMap((card) => adjournmentRows(cardFeatures(card).adjournmentRights, card)),
       summary.meetingControlNotes ? withSignal({ id: 'sec-meeting-control', label: 'Meeting control notes', subject: 'Meeting', detail: summary.meetingControlNotes, evidence: textOf(controlCard) || summary.meetingControlNotes, sourceCard: controlCard, featureKeys: ['meetingControlNotes'], present: true }) : null,
       ...directRows(cards),
-    ].filter(Boolean);
+    ].filter(Boolean).map((row) => ({ ...row, partyLabel: cardPartyLabel(row.sourceCard) }));
   },
   fixedLayout: true,
   columns: [
     { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX, renderCell: (row) => row.label },
-    { id: 'subject', header: 'Subject', width: '12rem', renderCell: (row) => row.subject },
+    {
+      id: 'subject',
+      header: 'Subject',
+      width: '12rem',
+      renderCell: (row) => row.partyLabel
+        ? React.createElement(
+            'div',
+            { className: 'space-y-1' },
+            React.createElement('div', null, row.subject),
+            React.createElement('div', { className: 'text-[11px] text-inkLight' }, `Party: ${row.partyLabel}`),
+          )
+        : row.subject,
+    },
     { id: 'signals', header: 'Provision', renderCell: renderSignals },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
 };
 
-export { renderDetail, renderSignals, secMeetingConfig, signalFor };
+export { cardPartyLabel, renderDetail, renderSignals, secMeetingConfig, signalFor };

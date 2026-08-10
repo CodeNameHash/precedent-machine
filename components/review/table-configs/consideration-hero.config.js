@@ -416,6 +416,13 @@ function makeRow(id, label, kind, value, card, electionOption) {
   if (electionOption) row.electionOption = electionOption;
   return row;
 }
+
+function bindFeatureRow(row, featureKey, sourceCard) {
+  if (!row || !featureKey || !sourceCard) return row;
+  row.featureKey = featureKey;
+  row.sourceCard = sourceCard;
+  return row;
+}
 // Shared with the rollup: CVR max is normally read off a dedicated
 // CONSID-CVR card, but several deals (Metsera included) fold the CVR max
 // payment onto the SAME card as perShareAmount (CONSID-CONVERT) with no
@@ -732,7 +739,19 @@ const considerationHeroConfig = {
     const perShareText = parts.map((part) => part.text).join(' ');
     if (perShareText) {
       const perShareRawValue = mergedFeatures.perShareAmount ?? mergedFeatures.cashAmount ?? mergedFeatures.offerPrice;
-      const row = makeRow('per-share', 'Per-share consideration', 'Economics', perShareText, cards[0], electionAttributionLabel(electionMechanism, 'perShareAmount', perShareRawValue));
+      const perShareHit = firstFeature(cards, 'perShareAmount');
+      const row = bindFeatureRow(
+        makeRow(
+          'per-share',
+          'Per-share consideration',
+          'Economics',
+          perShareText,
+          perShareHit?.card || cards[0],
+          electionAttributionLabel(electionMechanism, 'perShareAmount', perShareRawValue),
+        ),
+        perShareHit ? 'perShareAmount' : null,
+        perShareHit?.card,
+      );
       if (row) {
         row.parts = parts;
         // Max consideration (cash + CVR max) renders on the right of THIS
@@ -764,21 +783,25 @@ const considerationHeroConfig = {
             row.detail = summary;
             row.prorationSummary = true;
             row.evidence = prorationEvidence(hits) || row.evidence;
-            rows.push(row);
+            rows.push(bindFeatureRow(row, key, hits[0]?.card || hit.card));
           }
           continue;
         }
       }
       if (key === 'cvrMilestonePayments') {
         const items = meaningfulCvrMilestones(hit.value);
-        if (items.length) rows.push(makeRow(key, label, kind, items, hit.card));
+        if (items.length) rows.push(bindFeatureRow(makeRow(key, label, kind, items, hit.card), key, hit.card));
         continue;
       }
 // Ben (Bioverativ, round 2): 'offerPrice' occasionally arrives corrupted —
       // a whole unrelated clause instead of a price. A genuine price never
       // runs to multiple sentences; a >200-char value here is prose, so drop.
       if (key === 'offerPrice' && String(valueText(hit.value) || '').length > 200) continue;
-      rows.push(makeRow(key, label, kind, hit.value, hit.card, electionAttributionLabel(electionMechanism, key, hit.value)));
+      rows.push(bindFeatureRow(
+        makeRow(key, label, kind, hit.value, hit.card, electionAttributionLabel(electionMechanism, key, hit.value)),
+        key,
+        hit.card,
+      ));
     }
     const cvrCard = cards.find((card) => cardCode(card) === 'CONSID-CVR');
     if (cvrCard) {

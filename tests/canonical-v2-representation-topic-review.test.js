@@ -27,8 +27,8 @@ test('review packet conserves all 623 limbs without forced classification', asyn
   const classified = packet.cards.filter((card) => card.state === 'CLASSIFIED');
   const unclassified = packet.cards.filter((card) => card.state === 'UNCLASSIFIED');
   assert.equal(packet.cards.length, 623);
-  assert.equal(classified.length, 324);
-  assert.equal(unclassified.length, 299);
+  assert.equal(classified.length, 336);
+  assert.equal(unclassified.length, 287);
   assert.equal(classified.length + unclassified.length, packet.cards.length);
   assert.equal(unclassified.every((card) => card.proposed_topic === null && card.unclassified_reason), true);
   assert.equal(packet.cards.every((card, index) => card.card_number === index + 1 && card.decision_key && card.raw_value), true);

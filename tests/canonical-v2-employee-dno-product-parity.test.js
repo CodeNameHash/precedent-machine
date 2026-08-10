@@ -89,7 +89,16 @@ test('governed Employee Matters and D&O claims project to product cards without 
   assert.equal(employee.features.eligibilityWaiver, true);
   assert.equal(employee.features.compensationItems[0].standard_code, 'NO_LESS_FAVORABLE');
   assert.equal(dno.features.doInsurance, true);
-  assert.equal(dno.features.insurancePeriod, 6);
+  assert.deepEqual(dno.features.insurancePeriod, {
+    value: 6,
+    unit: 'years',
+    trigger: 'effective_time',
+  });
+  assert.deepEqual(dno.features.indemnificationPeriod, {
+    value: 6,
+    unit: 'years',
+    trigger: 'effective_time',
+  });
   assert.equal(dno.features.insuranceCap, '300%');
   assert.equal(dno.features.advancementOfExpenses, true);
   const evidenceCards = projection.cards.filter((card) => card.canonical_v2_lineage.source === EVIDENCE_SOURCE);

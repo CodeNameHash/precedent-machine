@@ -34,11 +34,11 @@ Mode: `INERT_REPLAY_ONLY`. No adjudication or rung selection occurred. Every ass
 
 | Rung | MATCH | EMPTY | AMBIGUOUS | POSITIVE_CONTRADICTION | INAPPLICABLE | RESOLVED | MODEL_DEFERRED | WITHHELD | Total deferred | Marginal deferred |
 | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 0 | 127 | 61 | 0 | 17 | 0 | 127 | 0 | 78 | 0 | 0 |
-| 1 | 127 | 61 | 0 | 17 | 0 | 127 | 0 | 78 | 0 | 0 |
-| 2 | 131 | 56 | 0 | 18 | 0 | 131 | 0 | 74 | 0 | 0 |
-| 3 | 131 | 56 | 0 | 18 | 0 | 131 | 56 | 18 | 56 | 56 |
-| 4 | 131 | 56 | 0 | 18 | 0 | 131 | 56 | 18 | 56 | 0 |
+| 0 | 128 | 60 | 0 | 17 | 0 | 128 | 0 | 77 | 0 | 0 |
+| 1 | 128 | 60 | 0 | 17 | 0 | 128 | 0 | 77 | 0 | 0 |
+| 2 | 132 | 55 | 0 | 18 | 0 | 132 | 0 | 73 | 0 | 0 |
+| 3 | 132 | 55 | 0 | 18 | 0 | 132 | 55 | 18 | 55 | 55 |
+| 4 | 132 | 55 | 0 | 18 | 0 | 132 | 55 | 18 | 55 | 0 |
 
 
 Selected runs: 21. Model calls: 0. Writes: false. Serving activated: false.

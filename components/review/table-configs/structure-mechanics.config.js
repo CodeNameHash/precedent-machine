@@ -11,6 +11,7 @@ const ROWS = [
   ['surviving-entity', 'Surviving entity', 'Merger mechanics', ['survivingEntity']],
   ['closing-location', 'Closing location', 'Closing', ['closingLocation']],
   ['closing-timing', 'Closing timing', 'Closing', ['closingTimingProvisions', 'closingTiming', 'closingDeadline']],
+  ['closing-actions', 'Closing actions', 'Closing', ['closingActions']],
   ['effective-time', 'Effective time', 'Closing', ['effectiveTimeShort', 'effectiveTime', 'mainConcept']],
   ['effects', 'Effects of merger', 'Merger mechanics', ['effectsOfMergerReference']],
   ['section-251h', 'DGCL 251(h) / back-end merger', 'Tender offer', ['section251h', 'backendMergerMechanic']],
@@ -76,6 +77,10 @@ const EFFECTIVE_TIME_CODE_RE = /EFF(?:TIME|ECTIVE)/i;
 function effectiveTimeHit(cards) {
   const candidates = cards.filter((card) => EFFECTIVE_TIME_CODE_RE.test(cardCode(card)));
   const pool = candidates.length ? candidates : cards;
+  for (const card of pool) {
+    const clause = valueText(cardFeatures(card).clause);
+    if (clause) return { key: 'clause', value: clause, detail: clause, card };
+  }
   for (const key of EFFECTIVE_TIME_KEYS) {
     for (const card of pool) {
       const features = cardFeatures(card);
@@ -232,10 +237,13 @@ function claimedMergerFormRow(cards) {
     }],
   };
 }
-function stepsMergerFormRow(steps) {
+function stepsMergerFormRow(steps, cards) {
   if (!Array.isArray(steps) || !steps.length) return null;
   const ordered = [...steps].sort((a, b) => (Number(a.step_order) || 0) - (Number(b.step_order) || 0));
   const lines = ordered.map((step, index) => stepLine(step, index));
+  const sourceCard = cards.length === 1 ? cards[0] : null;
+  const featureClaimIds = sourceCard?.canonical_v2_lineage
+    ?.feature_claim_revision_ids?.transactionSteps;
   return {
     id: 'structure-mechanics-merger-form',
     label: 'Merger form',
@@ -246,7 +254,10 @@ function stepsMergerFormRow(steps) {
     present: true,
     value: null,
     featureKey: 'transactionSteps',
-    sourceCard: null,
+    sourceCard,
+    claimRevisionId: Array.isArray(featureClaimIds) && featureClaimIds.length === 1
+      ? featureClaimIds[0]
+      : null,
     signals: lines.map((line, index) => ({
       id: `structure-mechanics-merger-form-step-${index}`,
       label: line,
@@ -265,7 +276,7 @@ function mappedStructureRows(cards, transactionSteps) {
       // 'merger-form' whenever the deal's transaction_steps genuinely carry
       // MORE structure than the mergerForm claims do.
       if (id === 'merger-form' && Array.isArray(transactionSteps) && transactionSteps.length > mergerFormClaimCount(cards)) {
-        return stepsMergerFormRow(transactionSteps);
+        return stepsMergerFormRow(transactionSteps, cards);
       }
       if (id === 'merger-form') return claimedMergerFormRow(cards);
       const hit = id === 'effective-time' ? effectiveTimeHit(cards) : firstFeature(cards, keys || id);

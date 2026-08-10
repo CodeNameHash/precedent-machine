@@ -52,7 +52,7 @@ function terminationCard() {
   };
 }
 
-test('a known absence-copy defect class is visible in the rendered row preview', () => {
+test('termination-rights renders present rights only and keeps absence copy out of the body', () => {
   const card = terminationCard();
   const preview = previewReviewDealRow({
     family_id: 'TERMINATION',
@@ -62,9 +62,32 @@ test('a known absence-copy defect class is visible in the rendered row preview',
 
   assert.equal(preview.section.id, 'termination-rights');
   assert.equal(preview.row.id, 'termination-rights-body');
-  assert.match(preview.row.cells[0].text, new RegExp(ABSENCE_COPY.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-  assert.match(preview.row.cells[0].text, /Mutual consent/);
-  assert.match(preview.row.cells[0].text, /Legal restraint \/ order/);
+  assert.doesNotMatch(preview.row.cells[0].text, new RegExp(ABSENCE_COPY.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.match(preview.row.cells[0].text, /Outside \/ End Date/);
+  assert.doesNotMatch(preview.row.cells[0].text, /Mutual consent/);
+  assert.doesNotMatch(preview.row.cells[0].text, /Legal restraint \/ order/);
+});
+
+test('termination-rights reports missing canonical rights in the coverage footer', () => {
+  const card = terminationCard();
+  const deal = reviewDeal([card]);
+  const sectionList = loadEsmModule(resolveRepoPath('components/review-v2/sectionList.js'));
+  const decorations = loadEsmModule(resolveRepoPath('components/review-v2/configDecorations.js'));
+  const primitives = loadEsmModule(resolveRepoPath('components/review/primitives/ProvisionTablePrimitives.jsx'));
+  const baseConfig = sectionList.REVIEW_V2_CONFIGS.find((config) => config.id === 'termination-rights');
+  const config = decorations.decorateConfigForV2(baseConfig, { agreementIso: null });
+  const rows = config.selectRows(deal);
+  const footerHtml = renderToStaticMarkup(React.createElement(
+    React.Fragment,
+    null,
+    config.renderFooter(rows, { reviewDeal: deal, config, primitives }),
+  ));
+  const footerText = humanVisibleTextFromHtml(footerHtml);
+
+  assert.match(footerText, /1 of 7 termination rights present/);
+  assert.match(footerText, /6 not included/);
+  assert.match(footerHtml, /Mutual \/ Either Party: Mutual consent/);
+  assert.doesNotMatch(footerText, new RegExp(ABSENCE_COPY.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 });
 
 test('bandAligned prevents a Buyer condition from appearing in the Target band', () => {

@@ -559,7 +559,11 @@ test('the tail-period claim (the one entry actually in resolution.resolved) stil
   const projection = projectTerminationFeeProductSurfaces({ resolution: MODIV_RESOLUTION, deal_id: MODIV_DEAL_ID });
   const tail = projection.cards.find((card) => card.provision_subtype === 'TERMF-TAIL');
   assert.ok(tail);
-  assert.equal(tail.features.tailFeeWindowMonths, '12');
+  assert.deepEqual(tail.features.tailFeeWindowMonths, {
+    value: '12',
+    unit: 'months',
+    trigger: 'qualifying_termination',
+  });
 });
 
 test('review_queue triggers (out of scope per the brief -- a manifest fix, not a projection fix) are still not projected', () => {

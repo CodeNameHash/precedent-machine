@@ -1,4 +1,5 @@
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 
@@ -28,6 +29,59 @@ test('probe runner uses the explicit report-only Sol flag', async () => {
   const args = runnerArgs(initial().call_manifest[0], '/tmp/stage-2y-phase-b-test');
   assert.equal(args[args.indexOf('--profile') + 1], 'SOL_MEDIUM');
   assert.ok(args.includes('--phase-b-lead-probe'));
+});
+
+test('existing deferred evidence cannot be reset or bypassed by a fresh live start', async () => {
+  const { assertProbeWriteAllowed } = await load();
+  assert.throws(
+    () => assertProbeWriteAllowed({ resume: false, outputExists: true }),
+    /SOL_PROBE_RESUME_REQUIRED/,
+  );
+  assert.doesNotThrow(() => assertProbeWriteAllowed({ resume: true, outputExists: true }));
+  assert.doesNotThrow(() => assertProbeWriteAllowed({ resume: false, outputExists: false }));
+});
+
+test('historical calls keep their sealed prompt while every resumed call uses the current prompt', async () => {
+  const {
+    check, hash, initial, outputDirectory, refreshUnattemptedSpecs, runnerArgs,
+  } = await load();
+  const historical = JSON.parse(fs.readFileSync(path.join(
+    ROOT, 'evidence/canonical-v2/stage-2y-phase-b/sol-probe.json',
+  ), 'utf8'));
+  assert.deepEqual(check(historical), { ok: true, errors: [], status: 'STOPPED' });
+
+  const refreshed = refreshUnattemptedSpecs(historical);
+  const current = initial();
+  assert.deepEqual(refreshed.calls, historical.calls);
+  assert.deepEqual(refreshed.call_manifest[8], current.call_manifest[8]);
+  assert.equal(historical.call_manifest[8].prompt_identity.prompt_version, 5);
+  assert.equal(refreshed.call_manifest[8].prompt_identity.prompt_version, 6);
+  assert.deepEqual(check(refreshed), { ok: true, errors: [], status: 'STOPPED' });
+
+  const hostile = structuredClone(refreshed);
+  hostile.call_manifest[8] = historical.call_manifest[8];
+  for (let index = 1; index <= 8; index += 1) {
+    const spec = hostile.call_manifest[index];
+    const body = {
+      call_id: spec.call_id,
+      spec,
+      generation_command: [process.execPath, ...runnerArgs(spec, outputDirectory(spec))],
+      state: 'CALL_FAILED',
+      output: null,
+      errors: ['hostile old-prompt call'],
+      started_at: '2026-08-10T20:00:00.000Z',
+      completed_at: '2026-08-10T20:00:01.000Z',
+    };
+    hostile.calls.push({ ...body, receipt_id: hash(body) });
+  }
+  const last = hostile.calls.at(-1).spec;
+  hostile.stopped = {
+    code: 'CALL_FAILED', call_id: last.call_id, deal: last.deal, family: last.family,
+    section_reference: last.section_reference, stopped_at: '2026-08-10T20:00:01.000Z',
+  };
+  const { manifest_id: ignoredManifest, ...manifestBody } = hostile;
+  hostile.manifest_id = hash({ ...manifestBody, calls: [], stopped: null });
+  assert.ok(check(hostile).errors.includes('HISTORICAL_CALL_SCOPE_INVALID'));
 });
 
 test('section comparison stops on open-world rise or a resolved value change', async () => {

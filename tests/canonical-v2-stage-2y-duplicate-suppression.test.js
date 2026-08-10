@@ -5,6 +5,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const { spawnSync } = require('node:child_process');
 const path = require('node:path');
+const { pathToFileURL } = require('node:url');
 const { canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
 const { compileFixtureContractV42 } = require('../lib/canonical-v2/contract-bundle');
 const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
@@ -89,7 +90,7 @@ test('every retained carrier has a named cause and exact source link, and the pl
   );
 });
 
-test('OFF is referentially byte-identical, REPORT_ONLY changes no output, and the live runner excludes ENFORCE', () => {
+test('OFF is referentially byte-identical, REPORT_ONLY changes no output, and the live runner accepts ENFORCE', () => {
   const input = fixture(); const before = JSON.stringify(input.open_world);
   const off = applyDuplicateSuppression({ ...input, mode: MODES.OFF });
   assert.strictEqual(off.open_world, input.open_world); assert.equal(off.records.length, 0);
@@ -97,8 +98,22 @@ test('OFF is referentially byte-identical, REPORT_ONLY changes no output, and th
   const enforced = applyDuplicateSuppression({ ...input, mode: MODES.ENFORCE });
   assert.equal(enforced.open_world.length, 0); assert.equal(enforced.records[0].disposition, 'SUPPRESSED');
   const runner = path.resolve(__dirname, '..', 'scripts/canonical-v2-live-extraction-run.mjs');
-  const normalRunner = spawnSync(process.execPath, [runner, '--duplicate-suppression-enforce'], { encoding: 'utf8' });
-  assert.notEqual(normalRunner.status, 0); assert.match(normalRunner.stderr, /unrecognised argument/);
+  const normalRunner = spawnSync(process.execPath, [runner, '--dry-run', '--duplicate-suppression-enforce'], { encoding: 'utf8' });
+  assert.equal(normalRunner.status, 0, normalRunner.stderr);
+  assert.equal(JSON.parse(normalRunner.stdout).duplicate_suppression_mode, 'ENFORCE');
+});
+
+test('live-runner duplicate suppression defaults OFF and keeps REPORT_ONLY and ENFORCE exclusive', async () => {
+  const runner = path.resolve(__dirname, '..', 'scripts/canonical-v2-live-extraction-run.mjs');
+  const { parseArgs, resolveRunConfig } = await import(pathToFileURL(runner).href);
+  const config = (extra = []) => resolveRunConfig(parseArgs(['--dry-run', ...extra])).duplicateSuppressionMode;
+  assert.equal(config(), 'OFF');
+  assert.equal(config(['--duplicate-suppression-report-only']), 'REPORT_ONLY');
+  assert.equal(config(['--duplicate-suppression-enforce']), 'ENFORCE');
+  assert.throws(
+    () => parseArgs(['--dry-run', '--duplicate-suppression-report-only', '--duplicate-suppression-enforce']),
+    /MUTUALLY_EXCLUSIVE/,
+  );
 });
 
 test('public resolver finalisation activates only ENFORCE and preserves every non-carrier output', () => {

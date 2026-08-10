@@ -22,10 +22,17 @@ const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 // individual carve-out rows in the carve-outs table -- both standalone rows
 // were restating information already shown elsewhere on this same card.
 const ROWS = [
+  ['prongs', 'Definition prongs', 'Definition', ['maeDefinitionProngs']],
   ['limbs', 'MAE Test', 'Definition', ['maeLimbType', 'maeLimbs']],
   ['carveouts', 'Carve-outs', 'Carve-outs', ['carveouts', 'maeCarveouts']],
+  ['disproportionality-relationships', 'Disproportionality relationships', 'Carve-outs', ['maeDisproportionalityRelationships']],
   ['exceptions', 'Exceptions to carve-outs', 'Carve-outs', ['carveoutExceptions', 'maeCarveoutExceptions']],
 ];
+
+const MAE_PRONG_CODE_LABELS = {
+  BUSINESS_EFFECTS: 'Business effects',
+  CONSUMMATION_PREVENTION: 'Consummation prevention',
+};
 
 // MAE_LIMB_TEXT: friendly translation for the two-limb / one-limb code so
 // the summary pill reads like the old-site "MAE Test: Two-limb: effect on
@@ -337,8 +344,40 @@ function limbFriendlyText(value) {
   return code ? MAE_LIMB_TEXT[code] || null : null;
 }
 
+function governedFeatureLabel(item, featureKey) {
+  if (!item || typeof item !== 'object') return valueText(item);
+  if (featureKey === 'maeDefinitionProngs') {
+    return MAE_PRONG_CODE_LABELS[item.code] || item.label || sentenceCaseLabel(item.code);
+  }
+  return item.label || sentenceCaseLabel(item.code) || 'Disproportionality carveback';
+}
+
+function governedFeatureListNode(row, ctx) {
+  const items = Array.isArray(row.value) ? row.value : [];
+  if (!items.length) return null;
+  const PillCell = ctx?.primitives?.PillCell;
+  if (!PillCell) return items.map((item) => governedFeatureLabel(item, row.featureKey)).filter(Boolean).join('\n');
+  return React.createElement(
+    'div',
+    { className: 'flex flex-wrap gap-1.5' },
+    items.map((item, index) => React.createElement(PillCell, {
+      key: item.claim_revision_id || `${row.id}-${index}`,
+      label: governedFeatureLabel(item, row.featureKey),
+      value: item.code,
+      tone: row.featureKey === 'maeDisproportionalityRelationships' ? 'warning' : 'info',
+      evidence: exactItemEvidence(item, row.evidence),
+      source: row.sourceCard,
+    })),
+  );
+}
+
 function renderSignals(row, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
+
+  if (row.featureKey === 'maeDefinitionProngs'
+    || row.featureKey === 'maeDisproportionalityRelationships') {
+    return governedFeatureListNode(row, ctx);
+  }
 
   // Carve-outs: a proper CARVE-OUT | TEXT table (with a per-row "Disp.
   // carveback applies" pill) instead of one giant joined-string pill.
@@ -379,7 +418,9 @@ function renderDetail(row, ctx) {
   // The carve-outs row already renders its full text per-item (with its own
   // "see text" expanders) inside the signals cell -- a second, whole-row
   // "see text" copy of the raw feature array would be redundant/unreadable.
-  if (row.featureKey === 'carveouts') return null;
+  if (row.featureKey === 'carveouts'
+    || row.featureKey === 'maeDefinitionProngs'
+    || row.featureKey === 'maeDisproportionalityRelationships') return null;
   const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
   if (!EvidenceHoverSource || !row.evidence) return row.detail;
   return React.createElement(EvidenceHoverSource, { value: row.value, evidence: row.evidence, source: row.sourceCard, as: 'span' }, row.detail);

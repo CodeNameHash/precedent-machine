@@ -119,8 +119,9 @@ test('native Proxy and Meeting claims reach Review, Query, Compare and market st
   assert.equal(projection.claims.some((claim) => claim.verbatim.includes('record date')), true);
 
   const proxyCard = nativeCards.find((card) => card.features.proxyFilingDeadline);
+  const recommendationCard = nativeCards.find((card) => card.features.boardRecommendationInclusion);
   assert.equal(provisionFieldValue(proxyCard, 'SEC_FILING_MEETING', 'proxyFilingDeadline').value, '30');
-  assert.equal(provisionFieldValue(proxyCard, 'SEC_FILING_MEETING', 'boardRecommendationInclusion').value, true);
+  assert.equal(provisionFieldValue(recommendationCard, 'SEC_FILING_MEETING', 'boardRecommendationInclusion').value, true);
 
   const config = await import('../components/review/table-configs/sec-meeting.config.js');
   const rows = config.secMeetingConfig.selectRows({ cards: projection.cards });
@@ -132,15 +133,15 @@ test('native Proxy and Meeting claims reach Review, Query, Compare and market st
     'sec-meeting-adjournment-0',
     'sec-meeting-record-date',
     'sec-meeting-broker-search',
-  ]) assert.ok(rows.some((row) => row.id === rowId), rowId);
+  ]) assert.ok(rows.some((row) => row.id === rowId || row.id.startsWith(`${rowId}-`)), rowId);
   const composite = await import('../components/review/table-configs/votes-approvals-meeting.config.js');
   const compositeRows = composite.votesApprovalsMeetingConfig.selectRows({ cards: projection.cards });
-  assert.ok(compositeRows.some((row) => row.id === 'votes-approvals-meeting-boardRecommendationInclusion'));
-  assert.ok(compositeRows.some((row) => row.id === 'votes-approvals-meeting-meetingConveneObligation'));
+  assert.ok(compositeRows.some((row) => row.id.startsWith('votes-approvals-meeting-boardRecommendationInclusion')));
+  assert.ok(compositeRows.some((row) => row.id.startsWith('votes-approvals-meeting-meetingConveneObligation')));
   assert.ok(compositeRows.some((row) => row.id === 'votes-approvals-meeting-parent-approval'));
   assert.ok(compositeRows.some((row) => row.id === 'votes-approvals-meeting-merger-sub-approval'));
-  const recordRow = rows.find((row) => row.id === 'sec-meeting-record-date');
-  const brokerRow = rows.find((row) => row.id === 'sec-meeting-broker-search');
+  const recordRow = rows.find((row) => row.id.startsWith('sec-meeting-record-date'));
+  const brokerRow = rows.find((row) => row.id.startsWith('sec-meeting-broker-search'));
   assert.equal(recordRow.marketState, 'FEATURE_BACKED');
   assert.equal(brokerRow.marketState, 'FEATURE_BACKED');
 
@@ -189,18 +190,14 @@ test('native Proxy and Meeting claims reach Review, Query, Compare and market st
 });
 
 // ─────────────────────────────────────────────────────────────────────────
-// Step 3F1 (docs/core/PLAN.md, "give the marker a downstream contract"):
-// meetingParty()'s `adjournmentRights[].party` field is COMPANY/PARENT-
-// shaped and rendered directly to a user. A JOINT_MULTI_PARTY_CAPACITY (or
-// any other unrecognised) capacity must never leak through as a raw
-// internal marker string. Built directly against
+// meetingParty() renders the exact resolved party value, never the internal
+// capacity marker. Built directly against
 // projectProxyMeetingProductSurfaces rather than the full extraction
 // pipeline, since no committed evidence reaches this path with a joint
-// capacity today (the point of the test is to prove the guard, not to
-// reproduce a live symptom).
+// capacity today.
 // ─────────────────────────────────────────────────────────────────────────
 
-test('JOINT_MULTI_PARTY capacity: adjournmentRights[].party is null, never the raw internal marker string', () => {
+test('JOINT_MULTI_PARTY capacity renders its exact party value, never the raw internal marker string', () => {
   const resolution = {
     resolved: [{
       resolved_claim_definition_key: 'MEETING_ADJOURNMENT_MAX_COUNT',
@@ -218,8 +215,8 @@ test('JOINT_MULTI_PARTY capacity: adjournmentRights[].party is null, never the r
     open_world: [],
   };
   const projection = projectProxyMeetingProductSurfaces({ resolution, deal_id: 'proxy-meeting-joint-capacity' });
-  assert.equal(projection.cards.length, 1, 'the row itself must still project -- only the party field is refused');
+  assert.equal(projection.cards.length, 1);
   const [card] = projection.cards;
-  assert.equal(card.features.adjournmentRights[0].party, null);
-  assert.equal(JSON.stringify(card.features).includes('JOINT_MULTI_PARTY'), false, 'the raw internal marker must never reach a served field');
+  assert.equal(card.features.adjournmentRights[0].party, 'Parent and Company Merger Sub');
+  assert.equal(JSON.stringify(card.features).includes('JOINT_MULTI_PARTY'), false, 'the raw internal marker must never reach the rendered feature');
 });

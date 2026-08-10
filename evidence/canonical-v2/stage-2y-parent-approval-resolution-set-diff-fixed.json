@@ -5,7 +5,7 @@
   "authority": "OFFLINE_REPLAY_COMPARISON_ONLY",
   "publication_authorisation": "NONE",
   "comparison": "COMMITTED_RESOLUTION_ARTIFACTS_TO_CURRENT_OFFLINE_REPLAY",
-  "resolver_source_digest": "sha256:e1439fb87110c1c16794f58087053550c5b2098ce90f8e70956b7aff3e565bdc",
+  "resolver_source_digest": "sha256:04825fea85e77f376c26cad6af6564e7a72d5ed045e98285b93f4bd33b4dd976",
   "run_names": [
     "concho-antitrust-regulatory-20260809-2xk-final",
     "concho-appraisal-dissenters-rights-20260809-2xk-final",
@@ -179,8 +179,9 @@
     "run_count": 157,
     "previously_resolved_claim_count": 1571,
     "moved_previously_resolved_claim_count": 0,
-    "newly_resolved_claim_count": 10,
-    "replay_error_count": 0
+    "newly_resolved_claim_count": 11,
+    "replay_error_count": 0,
+    "open_world_rise_family_count": 0
   },
   "moved_previously_resolved_claims": [],
   "newly_resolved_claims": [
@@ -219,6 +220,44 @@
         "claim_occurrence_id": "9d51d0551e65dcabace1dbf8c4fcbdb7098afb28515c96bb417959180b95c083",
         "claim_revision_id": "cba82900e47296d71271f5d046e41b26c2722998d06d1d3609eb9b739fc8268f",
         "source_candidate_id": "9d51d0551e65dcabace1dbf8c4fcbdb7098afb28515c96bb417959180b95c083",
+        "reasons": []
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-closing-conditions-20260809-2xk-final",
+      "family": "CLOSING_CONDITIONS",
+      "section": "7.04",
+      "semantic_locator": {
+        "section": "7.04",
+        "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+        "raw_value": "The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement."
+      },
+      "semantic_locator_digest": "sha256:26f5ed23a15dcc1425843ed7674b168b541bb0f976052932f86ce02518d5f672",
+      "source_candidate_id": "c6ddfbfefa0126faeaab1f4ef77e3f5bb739eb7f0620f934b6705835941c40bc",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "before": {
+        "collection": "review_queue",
+        "resolved_claim_definition_key": null,
+        "state": null,
+        "canonical_value": null,
+        "raw_value": "The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.",
+        "claim_occurrence_id": null,
+        "claim_revision_id": null,
+        "source_candidate_id": "791cd765093d31b02cbde705b5dc0d7562ffc487da1de7078268244ca0fbade6",
+        "reasons": [
+          "CONDITION_KIND_UNCORROBORATED"
+        ]
+      },
+      "after": {
+        "collection": "resolved",
+        "resolved_claim_definition_key": "FRUSTRATION_CAUSATION_STANDARD",
+        "state": "PRESENT",
+        "canonical_value": "PRIMARILY_CAUSED",
+        "raw_value": "The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.",
+        "claim_occurrence_id": "c6ddfbfefa0126faeaab1f4ef77e3f5bb739eb7f0620f934b6705835941c40bc",
+        "claim_revision_id": "13f7560f11880f77a4a1613f044c98fd05c87e9dc783ecea70f857f9013b5a72",
+        "source_candidate_id": "c6ddfbfefa0126faeaab1f4ef77e3f5bb739eb7f0620f934b6705835941c40bc",
         "reasons": []
       }
     },
@@ -566,5 +605,2822 @@
     }
   ],
   "replay_errors": [],
-  "comparison_digest": "sha256:a1c2ec65d5064c6e5413980bf0720fefe4889baac152980b0bba2d9b1b733be2"
+  "open_world_by_family": [
+    {
+      "family": "ANTITRUST_REGULATORY",
+      "before": 1,
+      "after": 1,
+      "delta": 0
+    },
+    {
+      "family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "before": 21,
+      "after": 21,
+      "delta": 0
+    },
+    {
+      "family": "CLOSING_CONDITIONS",
+      "before": 36,
+      "after": 36,
+      "delta": 0
+    },
+    {
+      "family": "CONSIDERATION",
+      "before": 187,
+      "after": 187,
+      "delta": 0
+    },
+    {
+      "family": "DIVIDENDS",
+      "before": 4,
+      "after": 4,
+      "delta": 0
+    },
+    {
+      "family": "DNO_INDEMNIFICATION",
+      "before": 42,
+      "after": 42,
+      "delta": 0
+    },
+    {
+      "family": "EMPLOYEE_MATTERS",
+      "before": 29,
+      "after": 29,
+      "delta": 0
+    },
+    {
+      "family": "FINANCING_COVENANTS",
+      "before": 19,
+      "after": 19,
+      "delta": 0
+    },
+    {
+      "family": "GENERAL_COVENANTS",
+      "before": 49,
+      "after": 49,
+      "delta": 0
+    },
+    {
+      "family": "GUARANTY_FINANCING_PARTY",
+      "before": 14,
+      "after": 14,
+      "delta": 0
+    },
+    {
+      "family": "INTERIM_OPERATING",
+      "before": 162,
+      "after": 162,
+      "delta": 0
+    },
+    {
+      "family": "KEY_DEFINED_TERMS",
+      "before": 94,
+      "after": 94,
+      "delta": 0
+    },
+    {
+      "family": "MAE_DEFINITION",
+      "before": 90,
+      "after": 90,
+      "delta": 0
+    },
+    {
+      "family": "MATERIAL_CONTRACTS",
+      "before": 102,
+      "after": 102,
+      "delta": 0
+    },
+    {
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "before": 8,
+      "after": 8,
+      "delta": 0
+    },
+    {
+      "family": "MISC_BOILERPLATE",
+      "before": 29,
+      "after": 29,
+      "delta": 0
+    },
+    {
+      "family": "NO_OTHER_REPS_FRAUD",
+      "before": 6,
+      "after": 6,
+      "delta": 0
+    },
+    {
+      "family": "NO_SHOP",
+      "before": 16,
+      "after": 16,
+      "delta": 0
+    },
+    {
+      "family": "PROXY_MEETING",
+      "before": 26,
+      "after": 26,
+      "delta": 0
+    },
+    {
+      "family": "REPRESENTATIONS",
+      "before": 1632,
+      "after": 1632,
+      "delta": 0
+    },
+    {
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "before": 13,
+      "after": 13,
+      "delta": 0
+    },
+    {
+      "family": "TAX_MATTERS",
+      "before": 28,
+      "after": 28,
+      "delta": 0
+    },
+    {
+      "family": "TERMINATION",
+      "before": 54,
+      "after": 54,
+      "delta": 0
+    },
+    {
+      "family": "TERMINATION_FEE",
+      "before": 30,
+      "after": 30,
+      "delta": 0
+    }
+  ],
+  "collection_counts_per_run": [
+    {
+      "deal": "concho",
+      "run": "concho-antitrust-regulatory-20260809-2xk-final",
+      "family": "ANTITRUST_REGULATORY",
+      "before": {
+        "resolved": 11,
+        "review_queue": 17,
+        "open_world": 0,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 11,
+        "review_queue": 17,
+        "open_world": 0,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-appraisal-dissenters-rights-20260809-2xk-final",
+      "family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "before": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 1,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 1,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-closing-conditions-20260809-2xk-final",
+      "family": "CLOSING_CONDITIONS",
+      "before": {
+        "resolved": 8,
+        "review_queue": 15,
+        "open_world": 5,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 8,
+        "review_queue": 15,
+        "open_world": 5,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-consideration-20260809-2xk-final",
+      "family": "CONSIDERATION",
+      "before": {
+        "resolved": 0,
+        "review_queue": 2,
+        "open_world": 25,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 0,
+        "review_queue": 2,
+        "open_world": 25,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-dividends-20260809-2xk-final",
+      "family": "DIVIDENDS",
+      "before": {
+        "resolved": 1,
+        "review_queue": 1,
+        "open_world": 2,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 1,
+        "review_queue": 1,
+        "open_world": 2,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-dno-indemnification-20260809-2xk-final",
+      "family": "DNO_INDEMNIFICATION",
+      "before": {
+        "resolved": 5,
+        "review_queue": 8,
+        "open_world": 6,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 5,
+        "review_queue": 8,
+        "open_world": 6,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-employee-matters-20260809-2xk-final",
+      "family": "EMPLOYEE_MATTERS",
+      "before": {
+        "resolved": 6,
+        "review_queue": 9,
+        "open_world": 8,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 6,
+        "review_queue": 9,
+        "open_world": 8,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-financing-covenants-20260809-2xk-final",
+      "family": "FINANCING_COVENANTS",
+      "before": {
+        "resolved": 2,
+        "review_queue": 5,
+        "open_world": 4,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 2,
+        "review_queue": 5,
+        "open_world": 4,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-general-covenants-20260809-2xk-final",
+      "family": "GENERAL_COVENANTS",
+      "before": {
+        "resolved": 9,
+        "review_queue": 10,
+        "open_world": 7,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 9,
+        "review_queue": 10,
+        "open_world": 7,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-interim-operating-20260809-2xk-final",
+      "family": "INTERIM_OPERATING",
+      "before": {
+        "resolved": 18,
+        "review_queue": 70,
+        "open_world": 44,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 18,
+        "review_queue": 70,
+        "open_world": 44,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-key-defined-terms-20260809-2xk-final",
+      "family": "KEY_DEFINED_TERMS",
+      "before": {
+        "resolved": 23,
+        "review_queue": 24,
+        "open_world": 4,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 23,
+        "review_queue": 24,
+        "open_world": 4,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-mae-definition-20260809-2xk-final",
+      "family": "MAE_DEFINITION",
+      "before": {
+        "resolved": 0,
+        "review_queue": 15,
+        "open_world": 11,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 0,
+        "review_queue": 15,
+        "open_world": 11,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-material-contracts-20260809-2xk-final",
+      "family": "MATERIAL_CONTRACTS",
+      "before": {
+        "resolved": 16,
+        "review_queue": 16,
+        "open_world": 15,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 16,
+        "review_queue": 16,
+        "open_world": 15,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-merger-structure-closing-20260809-2xk-final",
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "before": {
+        "resolved": 13,
+        "review_queue": 13,
+        "open_world": 1,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 13,
+        "review_queue": 13,
+        "open_world": 1,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-misc-boilerplate-20260809-2xk-final",
+      "family": "MISC_BOILERPLATE",
+      "before": {
+        "resolved": 17,
+        "review_queue": 17,
+        "open_world": 6,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 17,
+        "review_queue": 17,
+        "open_world": 6,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-no-other-reps-fraud-20260809-2xk-final",
+      "family": "NO_OTHER_REPS_FRAUD",
+      "before": {
+        "resolved": 7,
+        "review_queue": 7,
+        "open_world": 2,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 7,
+        "review_queue": 7,
+        "open_world": 2,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-no-shop-20260809-2xk-final",
+      "family": "NO_SHOP",
+      "before": {
+        "resolved": 58,
+        "review_queue": 86,
+        "open_world": 4,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 59,
+        "review_queue": 86,
+        "open_world": 4,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-proxy-meeting-20260809-2xk-final",
+      "family": "PROXY_MEETING",
+      "before": {
+        "resolved": 6,
+        "review_queue": 20,
+        "open_world": 5,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 6,
+        "review_queue": 20,
+        "open_world": 5,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-representations-r1a-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "before": {
+        "resolved": 8,
+        "review_queue": 14,
+        "open_world": 157,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 8,
+        "review_queue": 14,
+        "open_world": 157,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-representations-r1b-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "before": {
+        "resolved": 12,
+        "review_queue": 21,
+        "open_world": 130,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 12,
+        "review_queue": 21,
+        "open_world": 130,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-representations-r1c-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "before": {
+        "resolved": 8,
+        "review_queue": 11,
+        "open_world": 61,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 8,
+        "review_queue": 11,
+        "open_world": 61,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-representations-r1d-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "before": {
+        "resolved": 1,
+        "review_queue": 2,
+        "open_world": 34,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 1,
+        "review_queue": 2,
+        "open_world": 34,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-specific-performance-remedies-20260809-2xk-final",
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "before": {
+        "resolved": 1,
+        "review_queue": 1,
+        "open_world": 3,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 1,
+        "review_queue": 1,
+        "open_world": 3,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-tax-matters-20260809-2xk-final",
+      "family": "TAX_MATTERS",
+      "before": {
+        "resolved": 3,
+        "review_queue": 3,
+        "open_world": 3,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 3,
+        "review_queue": 3,
+        "open_world": 3,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-termination-20260809-2xk-final",
+      "family": "TERMINATION",
+      "before": {
+        "resolved": 18,
+        "review_queue": 21,
+        "open_world": 6,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 18,
+        "review_queue": 21,
+        "open_world": 6,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "concho",
+      "run": "concho-termination-fee-20260809-2xk-final",
+      "family": "TERMINATION_FEE",
+      "before": {
+        "resolved": 2,
+        "review_queue": 12,
+        "open_world": 10,
+        "residuals": 1
+      },
+      "after": {
+        "resolved": 2,
+        "review_queue": 12,
+        "open_world": 10,
+        "residuals": 1
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-antitrust-regulatory-20260809-2xk-final",
+      "family": "ANTITRUST_REGULATORY",
+      "before": {
+        "resolved": 10,
+        "review_queue": 11,
+        "open_world": 0,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 10,
+        "review_queue": 11,
+        "open_world": 0,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-appraisal-dissenters-rights-20260809-2xk-final",
+      "family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "before": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 5,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 5,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-closing-conditions-20260809-2xk-final",
+      "family": "CLOSING_CONDITIONS",
+      "before": {
+        "resolved": 5,
+        "review_queue": 13,
+        "open_world": 5,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 6,
+        "review_queue": 13,
+        "open_world": 5,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-consideration-20260809-2xk-final",
+      "family": "CONSIDERATION",
+      "before": {
+        "resolved": 1,
+        "review_queue": 3,
+        "open_world": 30,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 1,
+        "review_queue": 3,
+        "open_world": 30,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-dividends-20260809-2xk-final",
+      "family": "DIVIDENDS",
+      "before": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 0,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 0,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-dno-indemnification-20260809-2xk-final",
+      "family": "DNO_INDEMNIFICATION",
+      "before": {
+        "resolved": 5,
+        "review_queue": 7,
+        "open_world": 7,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 5,
+        "review_queue": 7,
+        "open_world": 7,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-employee-matters-20260809-2xk-final",
+      "family": "EMPLOYEE_MATTERS",
+      "before": {
+        "resolved": 5,
+        "review_queue": 9,
+        "open_world": 4,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 6,
+        "review_queue": 9,
+        "open_world": 4,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-general-covenants-20260809-2xk-final",
+      "family": "GENERAL_COVENANTS",
+      "before": {
+        "resolved": 8,
+        "review_queue": 10,
+        "open_world": 9,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 8,
+        "review_queue": 10,
+        "open_world": 9,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-interim-operating-20260809-2xk-final",
+      "family": "INTERIM_OPERATING",
+      "before": {
+        "resolved": 18,
+        "review_queue": 56,
+        "open_world": 21,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 18,
+        "review_queue": 56,
+        "open_world": 21,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-key-defined-terms-20260809-2xk-final",
+      "family": "KEY_DEFINED_TERMS",
+      "before": {
+        "resolved": 12,
+        "review_queue": 14,
+        "open_world": 28,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 12,
+        "review_queue": 14,
+        "open_world": 28,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-mae-definition-20260809-2xk-final",
+      "family": "MAE_DEFINITION",
+      "before": {
+        "resolved": 15,
+        "review_queue": 19,
+        "open_world": 4,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 15,
+        "review_queue": 19,
+        "open_world": 4,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-material-contracts-20260809-2xk-final",
+      "family": "MATERIAL_CONTRACTS",
+      "before": {
+        "resolved": 32,
+        "review_queue": 32,
+        "open_world": 19,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 32,
+        "review_queue": 32,
+        "open_world": 19,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-merger-structure-closing-20260809-2xk-final",
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "before": {
+        "resolved": 10,
+        "review_queue": 10,
+        "open_world": 0,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 10,
+        "review_queue": 10,
+        "open_world": 0,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-misc-boilerplate-20260809-2xk-final",
+      "family": "MISC_BOILERPLATE",
+      "before": {
+        "resolved": 16,
+        "review_queue": 16,
+        "open_world": 8,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 16,
+        "review_queue": 16,
+        "open_world": 8,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-no-other-reps-fraud-20260809-2xk-final",
+      "family": "NO_OTHER_REPS_FRAUD",
+      "before": {
+        "resolved": 3,
+        "review_queue": 3,
+        "open_world": 2,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 3,
+        "review_queue": 3,
+        "open_world": 2,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-no-shop-20260809-2xk-final",
+      "family": "NO_SHOP",
+      "before": {
+        "resolved": 42,
+        "review_queue": 57,
+        "open_world": 2,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 42,
+        "review_queue": 57,
+        "open_world": 2,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-proxy-meeting-20260809-2xk-final",
+      "family": "PROXY_MEETING",
+      "before": {
+        "resolved": 4,
+        "review_queue": 9,
+        "open_world": 5,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 7,
+        "review_queue": 9,
+        "open_world": 5,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-representations-r1a-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "before": {
+        "resolved": 10,
+        "review_queue": 17,
+        "open_world": 131,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 10,
+        "review_queue": 17,
+        "open_world": 131,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-representations-r1b-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "before": {
+        "resolved": 9,
+        "review_queue": 17,
+        "open_world": 226,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 9,
+        "review_queue": 17,
+        "open_world": 226,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-representations-r1c-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "before": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 56,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 56,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-specific-performance-remedies-20260809-2xk-final",
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "before": {
+        "resolved": 2,
+        "review_queue": 2,
+        "open_world": 1,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 2,
+        "review_queue": 2,
+        "open_world": 1,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-tax-matters-20260809-2xk-final",
+      "family": "TAX_MATTERS",
+      "before": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 3,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 3,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-termination-20260809-2xk-final",
+      "family": "TERMINATION",
+      "before": {
+        "resolved": 12,
+        "review_queue": 15,
+        "open_world": 10,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 12,
+        "review_queue": 15,
+        "open_world": 10,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "metsera",
+      "run": "metsera-termination-fee-20260809-2xk-final",
+      "family": "TERMINATION_FEE",
+      "before": {
+        "resolved": 5,
+        "review_queue": 9,
+        "open_world": 4,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 5,
+        "review_queue": 9,
+        "open_world": 4,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "modiv",
+      "run": "modiv-antitrust-regulatory-20260809-2xk-final",
+      "family": "ANTITRUST_REGULATORY",
+      "before": {
+        "resolved": 12,
+        "review_queue": 19,
+        "open_world": 0,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 12,
+        "review_queue": 19,
+        "open_world": 0,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "modiv",
+      "run": "modiv-closing-conditions-20260809-2xk-final",
+      "family": "CLOSING_CONDITIONS",
+      "before": {
+        "resolved": 11,
+        "review_queue": 16,
+        "open_world": 12,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 11,
+        "review_queue": 16,
+        "open_world": 12,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "modiv",
+      "run": "modiv-dno-indemnification-20260809-2xk-final",
+      "family": "DNO_INDEMNIFICATION",
+      "before": {
+        "resolved": 5,
+        "review_queue": 9,
+        "open_world": 7,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 5,
+        "review_queue": 9,
+        "open_world": 7,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "modiv",
+      "run": "modiv-general-covenants-20260809-2xk-final",
+      "family": "GENERAL_COVENANTS",
+      "before": {
+        "resolved": 6,
+        "review_queue": 6,
+        "open_world": 14,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 6,
+        "review_queue": 6,
+        "open_world": 14,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "modiv",
+      "run": "modiv-material-contracts-20260809-2xk-final",
+      "family": "MATERIAL_CONTRACTS",
+      "before": {
+        "resolved": 20,
+        "review_queue": 20,
+        "open_world": 11,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 20,
+        "review_queue": 20,
+        "open_world": 11,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "modiv",
+      "run": "modiv-merger-structure-closing-20260809-2xk-final",
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "before": {
+        "resolved": 14,
+        "review_queue": 14,
+        "open_world": 2,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 14,
+        "review_queue": 14,
+        "open_world": 2,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "modiv",
+      "run": "modiv-misc-boilerplate-20260809-2xk-final",
+      "family": "MISC_BOILERPLATE",
+      "before": {
+        "resolved": 14,
+        "review_queue": 14,
+        "open_world": 4,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 14,
+        "review_queue": 14,
+        "open_world": 4,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "modiv",
+      "run": "modiv-no-other-reps-fraud-20260809-2xk-final",
+      "family": "NO_OTHER_REPS_FRAUD",
+      "before": {
+        "resolved": 3,
+        "review_queue": 3,
+        "open_world": 0,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 3,
+        "review_queue": 3,
+        "open_world": 0,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "modiv",
+      "run": "modiv-no-shop-20260809-2xk-final",
+      "family": "NO_SHOP",
+      "before": {
+        "resolved": 33,
+        "review_queue": 37,
+        "open_world": 2,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 33,
+        "review_queue": 37,
+        "open_world": 2,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "modiv",
+      "run": "modiv-proxy-meeting-20260809-2xk-final",
+      "family": "PROXY_MEETING",
+      "before": {
+        "resolved": 5,
+        "review_queue": 13,
+        "open_world": 3,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 6,
+        "review_queue": 13,
+        "open_world": 3,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "redhat",
+      "run": "redhat-antitrust-regulatory-20260809-2xk-final",
+      "family": "ANTITRUST_REGULATORY",
+      "before": {
+        "resolved": 10,
+        "review_queue": 19,
+        "open_world": 0,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 10,
+        "review_queue": 19,
+        "open_world": 0,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "redhat",
+      "run": "redhat-appraisal-dissenters-rights-20260809-2xk-final",
+      "family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "before": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 5,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 5,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "redhat",
+      "run": "redhat-closing-conditions-20260809-2xk-final",
+      "family": "CLOSING_CONDITIONS",
+      "before": {
+        "resolved": 7,
+        "review_queue": 16,
+        "open_world": 2,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 7,
+        "review_queue": 16,
+        "open_world": 2,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "redhat",
+      "run": "redhat-consideration-20260809-2xk-final",
+      "family": "CONSIDERATION",
+      "before": {
+        "resolved": 2,
+        "review_queue": 6,
+        "open_world": 23,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 2,
+        "review_queue": 6,
+        "open_world": 23,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "redhat",
+      "run": "redhat-dno-indemnification-20260809-2xk-final",
+      "family": "DNO_INDEMNIFICATION",
+      "before": {
+        "resolved": 3,
+        "review_queue": 6,
+        "open_world": 2,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 3,
+        "review_queue": 6,
+        "open_world": 2,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "redhat",
+      "run": "redhat-employee-matters-20260809-2xk-final",
+      "family": "EMPLOYEE_MATTERS",
+      "before": {
+        "resolved": 3,
+        "review_queue": 8,
+        "open_world": 3,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 3,
+        "review_queue": 8,
+        "open_world": 3,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "redhat",
+      "run": "redhat-general-covenants-20260809-2xk-final",
+      "family": "GENERAL_COVENANTS",
+      "before": {
+        "resolved": 3,
+        "review_queue": 3,
+        "open_world": 4,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 3,
+        "review_queue": 3,
+        "open_world": 4,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "redhat",
+      "run": "redhat-interim-operating-20260809-2xk-final",
+      "family": "INTERIM_OPERATING",
+      "before": {
+        "resolved": 13,
+        "review_queue": 32,
+        "open_world": 16,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 14,
+        "review_queue": 32,
+        "open_world": 16,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "redhat",
+      "run": "redhat-key-defined-terms-20260809-2xk-final",
+      "family": "KEY_DEFINED_TERMS",
+      "before": {
+        "resolved": 4,
+        "review_queue": 4,
+        "open_world": 13,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 4,
+        "review_queue": 4,
+        "open_world": 13,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "redhat",
+      "run": "redhat-mae-definition-20260809-2xk-final",
+      "family": "MAE_DEFINITION",
+      "before": {
+        "resolved": 15,
+        "review_queue": 18,
+        "open_world": 13,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 15,
+        "review_queue": 18,
+        "open_world": 13,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "redhat",
+      "run": "redhat-material-contracts-20260809-2xk-final",
+      "family": "MATERIAL_CONTRACTS",
+      "before": {
+        "resolved": 6,
+        "review_queue": 6,
+        "open_world": 19,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 6,
+        "review_queue": 6,
+        "open_world": 19,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "redhat",
+      "run": "redhat-merger-structure-closing-20260809-2xk-final",
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "before": {
+        "resolved": 15,
+        "review_queue": 15,
+        "open_world": 0,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 15,
+        "review_queue": 15,
+        "open_world": 0,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "redhat",
+      "run": "redhat-no-other-reps-fraud-20260809-2xk-final",
+      "family": "NO_OTHER_REPS_FRAUD",
+      "before": {
+        "resolved": 5,
+        "review_queue": 5,
+        "open_world": 1,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 5,
+        "review_queue": 5,
+        "open_world": 1,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "redhat",
+      "run": "redhat-no-shop-20260809-2xk-final",
+      "family": "NO_SHOP",
+      "before": {
+        "resolved": 40,
+        "review_queue": 48,
+        "open_world": 2,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 40,
+        "review_queue": 48,
+        "open_world": 2,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "redhat",
+      "run": "redhat-proxy-meeting-20260809-2xk-final",
+      "family": "PROXY_MEETING",
+      "before": {
+        "resolved": 4,
+        "review_queue": 12,
+        "open_world": 3,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 4,
+        "review_queue": 12,
+        "open_world": 3,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "redhat",
+      "run": "redhat-representations-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "before": {
+        "resolved": 9,
+        "review_queue": 11,
+        "open_world": 36,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 9,
+        "review_queue": 11,
+        "open_world": 36,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "redhat",
+      "run": "redhat-specific-performance-remedies-20260809-2xk-final",
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "before": {
+        "resolved": 1,
+        "review_queue": 1,
+        "open_world": 3,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 1,
+        "review_queue": 1,
+        "open_world": 3,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "redhat",
+      "run": "redhat-tax-matters-20260809-2xk-final",
+      "family": "TAX_MATTERS",
+      "before": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 3,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 3,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "redhat",
+      "run": "redhat-termination-20260809-2xk-final",
+      "family": "TERMINATION",
+      "before": {
+        "resolved": 11,
+        "review_queue": 18,
+        "open_world": 8,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 11,
+        "review_queue": 18,
+        "open_world": 8,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "redhat",
+      "run": "redhat-termination-fee-20260809-2xk-final",
+      "family": "TERMINATION_FEE",
+      "before": {
+        "resolved": 4,
+        "review_queue": 8,
+        "open_world": 4,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 4,
+        "review_queue": 8,
+        "open_world": 4,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-antitrust-regulatory-20260809-2xk-final",
+      "family": "ANTITRUST_REGULATORY",
+      "before": {
+        "resolved": 8,
+        "review_queue": 11,
+        "open_world": 1,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 8,
+        "review_queue": 11,
+        "open_world": 1,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-appraisal-dissenters-rights-20260809-2xk-final",
+      "family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "before": {
+        "resolved": 2,
+        "review_queue": 2,
+        "open_world": 3,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 2,
+        "review_queue": 2,
+        "open_world": 3,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-closing-conditions-20260809-2xk-final",
+      "family": "CLOSING_CONDITIONS",
+      "before": {
+        "resolved": 7,
+        "review_queue": 20,
+        "open_world": 1,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 7,
+        "review_queue": 20,
+        "open_world": 1,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-consideration-20260809-2xk-final",
+      "family": "CONSIDERATION",
+      "before": {
+        "resolved": 3,
+        "review_queue": 7,
+        "open_world": 40,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 3,
+        "review_queue": 7,
+        "open_world": 40,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-dividends-20260809-2xk-final",
+      "family": "DIVIDENDS",
+      "before": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 0,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 0,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-dno-indemnification-20260809-2xk-final",
+      "family": "DNO_INDEMNIFICATION",
+      "before": {
+        "resolved": 5,
+        "review_queue": 7,
+        "open_world": 7,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 5,
+        "review_queue": 7,
+        "open_world": 7,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-employee-matters-20260809-2xk-final",
+      "family": "EMPLOYEE_MATTERS",
+      "before": {
+        "resolved": 5,
+        "review_queue": 8,
+        "open_world": 3,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 5,
+        "review_queue": 8,
+        "open_world": 3,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-financing-covenants-20260809-2xk-final",
+      "family": "FINANCING_COVENANTS",
+      "before": {
+        "resolved": 2,
+        "review_queue": 8,
+        "open_world": 10,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 2,
+        "review_queue": 8,
+        "open_world": 10,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-general-covenants-20260809-2xk-final",
+      "family": "GENERAL_COVENANTS",
+      "before": {
+        "resolved": 7,
+        "review_queue": 7,
+        "open_world": 8,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 7,
+        "review_queue": 7,
+        "open_world": 8,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-guaranty-financing-party-20260809-2xk-final",
+      "family": "GUARANTY_FINANCING_PARTY",
+      "before": {
+        "resolved": 1,
+        "review_queue": 2,
+        "open_world": 11,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 1,
+        "review_queue": 2,
+        "open_world": 11,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-interim-operating-20260809-2xk-final",
+      "family": "INTERIM_OPERATING",
+      "before": {
+        "resolved": 19,
+        "review_queue": 42,
+        "open_world": 19,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 19,
+        "review_queue": 42,
+        "open_world": 19,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-key-defined-terms-20260809-2xk-final",
+      "family": "KEY_DEFINED_TERMS",
+      "before": {
+        "resolved": 6,
+        "review_queue": 11,
+        "open_world": 1,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 6,
+        "review_queue": 11,
+        "open_world": 1,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-mae-definition-20260809-2xk-final",
+      "family": "MAE_DEFINITION",
+      "before": {
+        "resolved": 12,
+        "review_queue": 18,
+        "open_world": 14,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 12,
+        "review_queue": 18,
+        "open_world": 14,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-material-contracts-20260809-2xk-final",
+      "family": "MATERIAL_CONTRACTS",
+      "before": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 1,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 1,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-merger-structure-closing-20260809-2xk-final",
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "before": {
+        "resolved": 14,
+        "review_queue": 14,
+        "open_world": 2,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 14,
+        "review_queue": 14,
+        "open_world": 2,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-misc-boilerplate-20260809-2xk-final",
+      "family": "MISC_BOILERPLATE",
+      "before": {
+        "resolved": 24,
+        "review_queue": 24,
+        "open_world": 6,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 24,
+        "review_queue": 24,
+        "open_world": 6,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-no-other-reps-fraud-20260809-2xk-final",
+      "family": "NO_OTHER_REPS_FRAUD",
+      "before": {
+        "resolved": 8,
+        "review_queue": 8,
+        "open_world": 1,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 8,
+        "review_queue": 8,
+        "open_world": 1,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-no-shop-20260809-2xk-final",
+      "family": "NO_SHOP",
+      "before": {
+        "resolved": 38,
+        "review_queue": 47,
+        "open_world": 1,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 38,
+        "review_queue": 47,
+        "open_world": 1,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-proxy-meeting-20260809-2xk-final",
+      "family": "PROXY_MEETING",
+      "before": {
+        "resolved": 0,
+        "review_queue": 2,
+        "open_world": 2,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 1,
+        "review_queue": 2,
+        "open_world": 2,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-representations-r1a-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "before": {
+        "resolved": 5,
+        "review_queue": 15,
+        "open_world": 76,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 5,
+        "review_queue": 15,
+        "open_world": 76,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-representations-r1b-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "before": {
+        "resolved": 23,
+        "review_queue": 35,
+        "open_world": 175,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 23,
+        "review_queue": 35,
+        "open_world": 175,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-representations-r1c-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "before": {
+        "resolved": 5,
+        "review_queue": 7,
+        "open_world": 47,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 5,
+        "review_queue": 7,
+        "open_world": 47,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-representations-r1d-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "before": {
+        "resolved": 1,
+        "review_queue": 4,
+        "open_world": 58,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 1,
+        "review_queue": 4,
+        "open_world": 58,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-specific-performance-remedies-20260809-2xk-final",
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "before": {
+        "resolved": 1,
+        "review_queue": 1,
+        "open_world": 2,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 1,
+        "review_queue": 1,
+        "open_world": 2,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-tax-matters-20260809-2xk-final",
+      "family": "TAX_MATTERS",
+      "before": {
+        "resolved": 7,
+        "review_queue": 7,
+        "open_world": 8,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 7,
+        "review_queue": 7,
+        "open_world": 8,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-termination-20260809-2xk-final",
+      "family": "TERMINATION",
+      "before": {
+        "resolved": 14,
+        "review_queue": 20,
+        "open_world": 11,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 14,
+        "review_queue": 20,
+        "open_world": 11,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skechers",
+      "run": "skechers-termination-fee-20260809-2xk-final",
+      "family": "TERMINATION_FEE",
+      "before": {
+        "resolved": 3,
+        "review_queue": 9,
+        "open_world": 4,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 3,
+        "review_queue": 9,
+        "open_world": 4,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-antitrust-regulatory-20260809-2xk-final",
+      "family": "ANTITRUST_REGULATORY",
+      "before": {
+        "resolved": 9,
+        "review_queue": 17,
+        "open_world": 0,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 9,
+        "review_queue": 17,
+        "open_world": 0,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-appraisal-dissenters-rights-20260809-2xk-final",
+      "family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "before": {
+        "resolved": 1,
+        "review_queue": 1,
+        "open_world": 4,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 1,
+        "review_queue": 1,
+        "open_world": 4,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-closing-conditions-20260809-2xk-final",
+      "family": "CLOSING_CONDITIONS",
+      "before": {
+        "resolved": 8,
+        "review_queue": 19,
+        "open_world": 4,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 8,
+        "review_queue": 19,
+        "open_world": 4,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-consideration-20260809-2xk-final",
+      "family": "CONSIDERATION",
+      "before": {
+        "resolved": 0,
+        "review_queue": 2,
+        "open_world": 36,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 0,
+        "review_queue": 2,
+        "open_world": 36,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-dividends-20260809-2xk-final",
+      "family": "DIVIDENDS",
+      "before": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 0,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 0,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-dno-indemnification-20260809-2xk-final",
+      "family": "DNO_INDEMNIFICATION",
+      "before": {
+        "resolved": 4,
+        "review_queue": 8,
+        "open_world": 8,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 4,
+        "review_queue": 8,
+        "open_world": 8,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-employee-matters-20260809-2xk-final",
+      "family": "EMPLOYEE_MATTERS",
+      "before": {
+        "resolved": 4,
+        "review_queue": 8,
+        "open_world": 5,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 5,
+        "review_queue": 8,
+        "open_world": 5,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-financing-covenants-20260809-2xk-final",
+      "family": "FINANCING_COVENANTS",
+      "before": {
+        "resolved": 0,
+        "review_queue": 2,
+        "open_world": 1,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 0,
+        "review_queue": 2,
+        "open_world": 1,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-general-covenants-20260809-2xk-final",
+      "family": "GENERAL_COVENANTS",
+      "before": {
+        "resolved": 12,
+        "review_queue": 12,
+        "open_world": 5,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 12,
+        "review_queue": 12,
+        "open_world": 5,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-interim-operating-20260809-2xk-final",
+      "family": "INTERIM_OPERATING",
+      "before": {
+        "resolved": 19,
+        "review_queue": 45,
+        "open_world": 28,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 19,
+        "review_queue": 45,
+        "open_world": 28,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-key-defined-terms-20260809-2xk-final",
+      "family": "KEY_DEFINED_TERMS",
+      "before": {
+        "resolved": 9,
+        "review_queue": 11,
+        "open_world": 6,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 9,
+        "review_queue": 11,
+        "open_world": 6,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-mae-definition-20260809-2xk-final",
+      "family": "MAE_DEFINITION",
+      "before": {
+        "resolved": 28,
+        "review_queue": 30,
+        "open_world": 25,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 28,
+        "review_queue": 30,
+        "open_world": 25,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-material-contracts-20260809-2xk-final",
+      "family": "MATERIAL_CONTRACTS",
+      "before": {
+        "resolved": 22,
+        "review_queue": 22,
+        "open_world": 16,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 22,
+        "review_queue": 22,
+        "open_world": 16,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-merger-structure-closing-20260809-2xk-final",
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "before": {
+        "resolved": 17,
+        "review_queue": 17,
+        "open_world": 0,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 17,
+        "review_queue": 17,
+        "open_world": 0,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-misc-boilerplate-20260809-2xk-final",
+      "family": "MISC_BOILERPLATE",
+      "before": {
+        "resolved": 17,
+        "review_queue": 17,
+        "open_world": 4,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 17,
+        "review_queue": 17,
+        "open_world": 4,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-no-other-reps-fraud-20260809-2xk-final",
+      "family": "NO_OTHER_REPS_FRAUD",
+      "before": {
+        "resolved": 7,
+        "review_queue": 7,
+        "open_world": 0,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 7,
+        "review_queue": 7,
+        "open_world": 0,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-no-shop-20260809-2xk-final",
+      "family": "NO_SHOP",
+      "before": {
+        "resolved": 49,
+        "review_queue": 59,
+        "open_world": 4,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 49,
+        "review_queue": 59,
+        "open_world": 4,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-proxy-meeting-20260809-2xk-final",
+      "family": "PROXY_MEETING",
+      "before": {
+        "resolved": 4,
+        "review_queue": 12,
+        "open_world": 3,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 4,
+        "review_queue": 12,
+        "open_world": 3,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-representations-r1a-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "before": {
+        "resolved": 5,
+        "review_queue": 10,
+        "open_world": 84,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 5,
+        "review_queue": 10,
+        "open_world": 84,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-representations-r1b-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "before": {
+        "resolved": 6,
+        "review_queue": 35,
+        "open_world": 201,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 6,
+        "review_queue": 35,
+        "open_world": 201,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-representations-r1c-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "before": {
+        "resolved": 1,
+        "review_queue": 3,
+        "open_world": 47,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 1,
+        "review_queue": 3,
+        "open_world": 47,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-representations-r1d-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "before": {
+        "resolved": 2,
+        "review_queue": 3,
+        "open_world": 47,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 2,
+        "review_queue": 3,
+        "open_world": 47,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-specific-performance-remedies-20260809-2xk-final",
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "before": {
+        "resolved": 1,
+        "review_queue": 1,
+        "open_world": 0,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 1,
+        "review_queue": 1,
+        "open_world": 0,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-tax-matters-20260809-2xk-final",
+      "family": "TAX_MATTERS",
+      "before": {
+        "resolved": 2,
+        "review_queue": 2,
+        "open_world": 7,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 2,
+        "review_queue": 2,
+        "open_world": 7,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-termination-20260809-2xk-final",
+      "family": "TERMINATION",
+      "before": {
+        "resolved": 16,
+        "review_queue": 17,
+        "open_world": 11,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 16,
+        "review_queue": 17,
+        "open_world": 11,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "skywater",
+      "run": "skywater-termination-fee-20260809-2xk-final",
+      "family": "TERMINATION_FEE",
+      "before": {
+        "resolved": 1,
+        "review_queue": 7,
+        "open_world": 3,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 1,
+        "review_queue": 7,
+        "open_world": 3,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-antitrust-regulatory-20260809-2xk-r4-final",
+      "family": "ANTITRUST_REGULATORY",
+      "before": {
+        "resolved": 10,
+        "review_queue": 14,
+        "open_world": 0,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 10,
+        "review_queue": 14,
+        "open_world": 0,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-appraisal-dissenters-rights-20260809-2xk-r2-final",
+      "family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "before": {
+        "resolved": 2,
+        "review_queue": 2,
+        "open_world": 3,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 2,
+        "review_queue": 2,
+        "open_world": 3,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-closing-conditions-20260809-2xk-r3-final",
+      "family": "CLOSING_CONDITIONS",
+      "before": {
+        "resolved": 11,
+        "review_queue": 18,
+        "open_world": 7,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 11,
+        "review_queue": 18,
+        "open_world": 7,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-consideration-20260809-2xk-r2-final",
+      "family": "CONSIDERATION",
+      "before": {
+        "resolved": 1,
+        "review_queue": 4,
+        "open_world": 33,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 1,
+        "review_queue": 4,
+        "open_world": 33,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-dividends-20260809-2xk-r4-final",
+      "family": "DIVIDENDS",
+      "before": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 2,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 2,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-dno-indemnification-20260809-2xk-r4-final",
+      "family": "DNO_INDEMNIFICATION",
+      "before": {
+        "resolved": 4,
+        "review_queue": 8,
+        "open_world": 5,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 4,
+        "review_queue": 8,
+        "open_world": 5,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-employee-matters-20260809-2xk-r4-final",
+      "family": "EMPLOYEE_MATTERS",
+      "before": {
+        "resolved": 4,
+        "review_queue": 9,
+        "open_world": 6,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 4,
+        "review_queue": 9,
+        "open_world": 6,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-financing-covenants-20260809-2xk-r4-final",
+      "family": "FINANCING_COVENANTS",
+      "before": {
+        "resolved": 1,
+        "review_queue": 5,
+        "open_world": 4,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 1,
+        "review_queue": 5,
+        "open_world": 4,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-general-covenants-20260809-2xk-r3-final",
+      "family": "GENERAL_COVENANTS",
+      "before": {
+        "resolved": 9,
+        "review_queue": 9,
+        "open_world": 2,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 9,
+        "review_queue": 9,
+        "open_world": 2,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-guaranty-financing-party-20260809-2xk-r4-final",
+      "family": "GUARANTY_FINANCING_PARTY",
+      "before": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 3,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 0,
+        "review_queue": 0,
+        "open_world": 3,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-interim-operating-20260809-2xk-r3-final",
+      "family": "INTERIM_OPERATING",
+      "before": {
+        "resolved": 26,
+        "review_queue": 68,
+        "open_world": 34,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 26,
+        "review_queue": 68,
+        "open_world": 34,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-key-defined-terms-20260809-2xk-r2-final",
+      "family": "KEY_DEFINED_TERMS",
+      "before": {
+        "resolved": 22,
+        "review_queue": 28,
+        "open_world": 42,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 22,
+        "review_queue": 28,
+        "open_world": 42,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-mae-definition-20260809-2xk-r4-final",
+      "family": "MAE_DEFINITION",
+      "before": {
+        "resolved": 38,
+        "review_queue": 42,
+        "open_world": 23,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 38,
+        "review_queue": 42,
+        "open_world": 23,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
+      "family": "MATERIAL_CONTRACTS",
+      "before": {
+        "resolved": 20,
+        "review_queue": 20,
+        "open_world": 21,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 20,
+        "review_queue": 20,
+        "open_world": 21,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-merger-structure-closing-20260809-2xk-r4-final",
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "before": {
+        "resolved": 20,
+        "review_queue": 20,
+        "open_world": 3,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 20,
+        "review_queue": 20,
+        "open_world": 3,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-misc-boilerplate-20260809-2xk-r4-final",
+      "family": "MISC_BOILERPLATE",
+      "before": {
+        "resolved": 26,
+        "review_queue": 26,
+        "open_world": 1,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 26,
+        "review_queue": 26,
+        "open_world": 1,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-no-other-reps-fraud-20260809-2xk-r4-final",
+      "family": "NO_OTHER_REPS_FRAUD",
+      "before": {
+        "resolved": 3,
+        "review_queue": 3,
+        "open_world": 0,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 3,
+        "review_queue": 3,
+        "open_world": 0,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-no-shop-20260809-2xk-r4-final",
+      "family": "NO_SHOP",
+      "before": {
+        "resolved": 105,
+        "review_queue": 119,
+        "open_world": 1,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 106,
+        "review_queue": 119,
+        "open_world": 1,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-proxy-meeting-20260809-2xk-r4-final",
+      "family": "PROXY_MEETING",
+      "before": {
+        "resolved": 8,
+        "review_queue": 21,
+        "open_world": 5,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 8,
+        "review_queue": 21,
+        "open_world": 5,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-representations-20260809-2xk-r3-final",
+      "family": "REPRESENTATIONS",
+      "before": {
+        "resolved": 10,
+        "review_queue": 13,
+        "open_world": 66,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 10,
+        "review_queue": 13,
+        "open_world": 66,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-specific-performance-remedies-20260809-2xk-r3-final",
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "before": {
+        "resolved": 2,
+        "review_queue": 2,
+        "open_world": 4,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 2,
+        "review_queue": 2,
+        "open_world": 4,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-tax-matters-20260809-2xk-r3-final",
+      "family": "TAX_MATTERS",
+      "before": {
+        "resolved": 5,
+        "review_queue": 5,
+        "open_world": 4,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 5,
+        "review_queue": 5,
+        "open_world": 4,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-termination-20260809-2xk-r3-final",
+      "family": "TERMINATION",
+      "before": {
+        "resolved": 20,
+        "review_queue": 24,
+        "open_world": 8,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 20,
+        "review_queue": 24,
+        "open_world": 8,
+        "residuals": 0
+      }
+    },
+    {
+      "deal": "topbuild",
+      "run": "topbuild-termination-fee-20260809-2xk-r1-final",
+      "family": "TERMINATION_FEE",
+      "before": {
+        "resolved": 5,
+        "review_queue": 11,
+        "open_world": 5,
+        "residuals": 0
+      },
+      "after": {
+        "resolved": 5,
+        "review_queue": 11,
+        "open_world": 5,
+        "residuals": 0
+      }
+    }
+  ],
+  "comparison_digest": "sha256:527cd6b8d314e03393068b661b95c583b19e25a84b867994946bee3380ef3fed"
 }

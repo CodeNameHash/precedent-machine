@@ -256,7 +256,17 @@ function materialityLabel(code, raw) {
 
 function resolveMateriality(card) {
   const hit = firstFeature([card], ['materialityQualifier']);
-  if (!hit) return null;
+  if (!hit) {
+    const generalHit = firstFeature([card], ['generalMaterialityQualifier']);
+    const general = generalHit?.value;
+    if (!general || typeof general !== 'object' || general.value !== true) return null;
+    return {
+      label: 'General materiality qualifier',
+      color: 'sky',
+      evidence: general.text || textOf(card),
+      featureKey: 'generalMaterialityQualifier',
+    };
+  }
   const code = codeOf(hit.value);
   const baseLabel = materialityLabel(code, hit.value);
   if (!baseLabel) return null;
@@ -352,10 +362,28 @@ function formatIsoDate(iso) {
 // produce the "N days" / "Since <date>" mixture this fix removes.
 function resolveLookback(card) {
   const dateHit = firstFeature([card], ['lookbackDateISO']);
-  if (!dateHit) return null;
-  const formatted = formatIsoDate(dateHit.value);
-  if (!formatted) return null;
-  return { label: `Since ${formatted}`, evidence: textOf(card) };
+  if (dateHit) {
+    const formatted = formatIsoDate(dateHit.value);
+    if (formatted) return { label: `Since ${formatted}`, evidence: textOf(card), featureKey: 'lookbackDateISO' };
+  }
+  const measurementHit = firstFeature([card], ['representationMeasurementDate']);
+  const measurement = measurementHit?.value;
+  const formattedMeasurement = formatIsoDate(measurement?.value);
+  if (formattedMeasurement) {
+    return {
+      label: `As of ${formattedMeasurement}`,
+      evidence: measurement.text || textOf(card),
+      featureKey: 'representationMeasurementDate',
+    };
+  }
+  const lookbackHit = firstFeature([card], ['retrospectiveLookback']);
+  const lookback = lookbackHit?.value;
+  if (lookback?.value !== true) return null;
+  return {
+    label: lookback.text || 'Retrospective lookback',
+    evidence: lookback.text || textOf(card),
+    featureKey: 'retrospectiveLookback',
+  };
 }
 
 // -- term ------------------------------------------------------------------------
@@ -366,7 +394,9 @@ function resolveTerm(card) {
   // paraphrase (Ben round 6: the summary "isn't the full rep"). textOf(card)
   // is the card's full primary_quote / region_full_text.
   const mainConcept = textOf(card) || valueText(firstFeature([card], ['mainConcept'])?.value);
-  return { label: labelOf(card), party, mainConcept };
+  const topicCode = codeOf(firstFeature([card], ['representationTopic'])?.value);
+  const joinedLabel = String(card?.short_title || '').trim();
+  return { label: joinedLabel || (topicCode ? humanizeCode(topicCode) : labelOf(card)), party, mainConcept };
 }
 
 // -- section-level Knowledge standard / persons / scope (R4) -----------------
@@ -1395,9 +1425,10 @@ function buildRepRow(id, card, { bringDownMap, bringDownCode, hasBringDownContex
   const lookback = resolveLookback(card);
   const bringDown = hasBringDownContext ? resolveBringDown(card, bringDownMap) : null;
   const featureKeys = [];
-  if (materiality) featureKeys.push('materialityQualifier');
+  if (materiality) featureKeys.push(materiality.featureKey || 'materialityQualifier');
   if (knowledge) featureKeys.push('knowledgeQualifier');
-  if (lookback) featureKeys.push('lookbackDateISO');
+  if (lookback) featureKeys.push(lookback.featureKey || 'lookbackDateISO');
+  if (firstFeature([card], ['representationTopic'])) featureKeys.push('representationTopic');
   return {
     id: `${id}-${card.id}`,
     kind: 'rep',

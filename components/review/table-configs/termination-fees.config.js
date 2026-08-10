@@ -460,6 +460,59 @@ function scalarRows(cards) {
     .filter(Boolean);
 }
 
+const DURATION_TRIGGER_SUFFIXES = Object.freeze({
+  qualifying_termination: 'after qualifying termination',
+});
+
+function structuredTailDurationRows(cards) {
+  const hit = firstFeature(cards, ['tailFeeWindowMonths']);
+  const duration = hit?.value;
+  if (!duration || typeof duration !== 'object' || Array.isArray(duration)) return [];
+  const amount = duration.value;
+  const suffix = DURATION_TRIGGER_SUFFIXES[duration.trigger];
+  if (amount === null || amount === undefined || amount === '' || duration.unit !== 'months' || !suffix) return [];
+  const detail = `${amount} month${String(amount) === '1' ? '' : 's'} ${suffix}`;
+  return [{
+    id: 'termination-fees-tail-window',
+    label: 'Tail fee window',
+    kind: 'Duration',
+    detail,
+    evidence: textOf(hit.card),
+    sourceCard: hit.card,
+    value: amount,
+    featureKey: hit.key,
+    present: true,
+    marketProvisionCodes: ['TERMF-TAIL'],
+    marketSubterms: [{
+      key: 'tail-window',
+      label: 'Tail fee window',
+      featureKeys: ['tailFeeWindowMonths'],
+      kind: 'duration',
+      value: {
+        strategy: 'feature_value',
+        featureKeys: ['tailFeeWindowMonths'],
+        normalizer: 'deadline_duration',
+        unit: 'months',
+        trigger: 'qualifying_termination',
+      },
+      semantics: {
+        unit: 'months',
+        calendarBasis: 'elapsed',
+        trigger: 'qualifying_termination',
+        requiredDimensions: ['unit'],
+      },
+    }],
+    signals: [{
+      id: 'termination-fees-tail-window-signal',
+      label: detail,
+      value: amount,
+      tone: 'info',
+      evidence: textOf(hit.card),
+      source: hit.card,
+    }],
+  }];
+}
+
 function deferredEvidenceRows(cards) {
   return cards
     .filter((card) => card?.canonical_v2_lineage?.source === 'CANONICAL_V2_OPEN_WORLD_EVIDENCE')
@@ -806,7 +859,12 @@ function canonicalServedRows(cards, dealValueUsd) {
     const coverage = byId.has(row.id) ? feeRowCoverageSignal(byId.get(row.id)) : null;
     return coverage ? { ...row, signals: [...row.signals, coverage] } : row;
   });
-  return [...fees, ...scalarRows(cards).map((row) => withInterestCoverage(row, cards)), ...deferredEvidenceRows(cards)];
+  return [
+    ...fees,
+    ...structuredTailDurationRows(cards),
+    ...scalarRows(cards).map((row) => withInterestCoverage(row, cards)),
+    ...deferredEvidenceRows(cards),
+  ];
 }
 
 // Builds the canonical-served rows: the same builders the legacy path uses,
@@ -823,7 +881,12 @@ function canonicalRows(cards, dealValueUsd) {
 // `[...feeTableRows(cards, v), ...scalarRows(cards), ...deferredEvidenceRows(cards)]`
 // selectRows() used inline before, and still uses via this function.
 function legacyServedRows(cards, dealValueUsd) {
-  return [...feeTableRows(cards, dealValueUsd), ...scalarRows(cards), ...deferredEvidenceRows(cards)];
+  return [
+    ...feeTableRows(cards, dealValueUsd),
+    ...structuredTailDurationRows(cards),
+    ...scalarRows(cards),
+    ...deferredEvidenceRows(cards),
+  ];
 }
 
 function renderPills(signals, ctx) {

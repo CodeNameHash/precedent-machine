@@ -8,6 +8,7 @@ const { contentId, sha256Hex, canonicalJson, utf8Slice } = require('../lib/canon
 const {
   compileFixtureContract,
   compileFixtureContractV13,
+  compileFixtureContractV42,
 } = require('../lib/canonical-v2/contract-bundle');
 const { validateResolvedCanonicalWriteSet } = require('../lib/canonical-v2/validate-write-set');
 const { buildAdmittedSemanticSourceContext } = require('../lib/canonical-v2/admitted-semantic-source');
@@ -17,6 +18,7 @@ const { buildNativeWriteSet } = require('../lib/canonical-v2/native-producer/nat
 const {
   shapeProposals,
   QUALIFIER_CLAIM_KEY,
+  REPRESENTATION_QUALIFIER_CLAIM_KEY,
   LIMB_ASSERTION_CLAIM_KEY,
   BRING_DOWN_TIER_CLAIM_KEY,
   shapeRepresentationQualifierProposals,
@@ -828,7 +830,7 @@ async function resolveSingleQualifier({ quote, attachment, modelKind = null, mod
   });
 }
 
-test('representation qualifier dispatch is default-off, report-only, and rejects activation modes', async () => {
+test('representation qualifier dispatch preserves OFF and REPORT_ONLY, then enforces only safe decisions', async () => {
   const quotes = [
     ['THRESHOLD', 'material to the Company'],
     ['TEMPORAL', 'As of April 17, 2026'],
@@ -843,11 +845,12 @@ test('representation qualifier dispatch is default-off, report-only, and rejects
     dealAdmissionId: sha256Hex('deal-admission:representation-qualifier-dispatch'),
     sourceOrdinal: 0,
   });
+  const dispatchContract = compileFixtureContractV42();
   const receipt = await runNativeExtraction({
     source_text: source,
     document_hash: documentHash,
     section_references: ['3.1(b)'],
-    contract_bundle: CONTRACT_BUNDLE,
+    contract_bundle: dispatchContract,
     definitions: DEFINITIONS,
     provider: async ({ governed_scope: governedScope }) => {
       const { proposals, evidence_residuals: evidenceResiduals } = shapeRepresentationQualifierProposals({
@@ -873,7 +876,7 @@ test('representation qualifier dispatch is default-off, report-only, and rejects
   });
   const baseArgs = {
     run_receipt: receipt,
-    contract_vocabulary: CONTRACT_BUNDLE,
+    contract_vocabulary: dispatchContract,
     admitted_source_context: admittedSourceContext,
     agreement_date: '2026-04-18',
   };
@@ -916,8 +919,47 @@ test('representation qualifier dispatch is default-off, report-only, and rejects
   );
   const conflict = reportOnly.representation_qualifier_dispatch_decisions.find((decision) => decision.disposition === 'REVIEW');
   assert.equal(conflict.reason, 'QUALIFIER_KIND_DISAGREEMENT');
-  assert.throws(() => resolveCandidates({ ...baseArgs, representation_qualifier_dispatch_mode: 'ENFORCE' }), /OFF or REPORT_ONLY/);
-  assert.throws(() => resolveCandidates({ ...baseArgs, representation_qualifier_dispatch_mode: null }), /OFF or REPORT_ONLY/);
+  const enforced = resolveCandidates({
+    ...baseArgs,
+    representation_qualifier_dispatch_mode: REPRESENTATION_QUALIFIER_DISPATCH_MODES.ENFORCE,
+  });
+  assert.equal(
+    canonicalJson(enforced.representation_qualifier_dispatch_decisions),
+    canonicalJson(reportOnly.representation_qualifier_dispatch_decisions),
+  );
+  const enforcedQualifierClaims = enforced.resolved.filter(
+    (entry) => entry.generic_claim_key === REPRESENTATION_QUALIFIER_CLAIM_KEY,
+  );
+  assert.deepEqual(
+    enforcedQualifierClaims.map((entry) => [
+      entry.resolved_claim_definition_key,
+      entry.claim.canonical_value,
+      entry.claim.attributes.qualifier_dispatch,
+    ]).sort((left, right) => left[0].localeCompare(right[0])),
+    [
+      ['GENERAL_MATERIALITY_QUALIFIER', true, 'THRESHOLD_MATERIALITY'],
+      ['REPRESENTATION_MEASUREMENT_DATE', '2026-04-17', 'TEMPORAL_MEASUREMENT_DATE'],
+      ['RETROSPECTIVE_LOOKBACK', true, 'TEMPORAL_RETROSPECTIVE_LOOKBACK'],
+    ],
+  );
+  const qualifierReviews = enforced.review_queue.filter(
+    (entry) => entry.generic_claim_key === REPRESENTATION_QUALIFIER_CLAIM_KEY
+      && entry.reasons.includes('MODEL_KIND_CONFLICTS_WITH_MAE_TOLERANCE'),
+  );
+  assert.equal(qualifierReviews.length, 1);
+  assert.deepEqual(qualifierReviews[0].reasons, ['MODEL_KIND_CONFLICTS_WITH_MAE_TOLERANCE']);
+  const heldQualifiers = enforced.open_world.filter(
+    (entry) => entry.claim_definition_key === REPRESENTATION_QUALIFIER_CLAIM_KEY
+      && entry.reason === 'REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED',
+  );
+  assert.equal(heldQualifiers.length, 1);
+  assert.equal(heldQualifiers[0].raw_value, 'Material Contract');
+  assert.equal(heldQualifiers[0].reason, 'REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED');
+  assert.equal(
+    enforced.resolution_receipt.representation_qualifier_dispatch_mode,
+    REPRESENTATION_QUALIFIER_DISPATCH_MODES.ENFORCE,
+  );
+  assert.throws(() => resolveCandidates({ ...baseArgs, representation_qualifier_dispatch_mode: null }), /OFF, REPORT_ONLY, or ENFORCE/);
 });
 
 test('(QUALIFIER, ACCURACY, ITEM) mints a LIMB-level claim on the assertion-node subject -- never rep-level -- and a pathless ITEM accuracy still routes to review (Stage 3, Ben rulings 4/5)', async () => {

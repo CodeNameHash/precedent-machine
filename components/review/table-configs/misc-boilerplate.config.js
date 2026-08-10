@@ -3,6 +3,7 @@ import {
   allFeatures,
   buildSectionSubjectResolver,
   cardCode,
+  cardFeatures,
   cardType,
   extractSectionCites,
   firstFeature,
@@ -11,6 +12,7 @@ import {
   selectCards,
   splitForCell,
   textOf,
+  valueText,
 } from './card-utils.js';
 import { buildExpenseExceptionsRow, isAdvisersFeesCard } from './advisers-fees-expenses.config.js';
 import taxonomy from '../../../lib/taxonomy.js';
@@ -167,6 +169,7 @@ const ROWS_BOTTOM = [
 ];
 
 const GOVERNED_CONCEPT_ROWS = [
+  ['REM-SOLE', 'sole-remedy', 'Sole and exclusive remedy', 'Remedies'],
   ['REM-NONRECOURSE', 'non-recourse', 'Non-recourse protections', 'Remedies'],
   ['ADMIN-NOTICES', 'notices', 'Notices provision', 'Boilerplate'],
   ['ADMIN-ENTIRE', 'entire-agreement', 'Entire agreement', 'Boilerplate'],
@@ -311,6 +314,38 @@ function governedConceptRows(cards) {
       sourceCard: card,
       signals: [miscBoilerplateSignal({ ...row, sourceCard: card })].filter(Boolean),
     }];
+  });
+}
+
+const ASSERTION_KIND_LABELS = Object.freeze({
+  GOVERNING_LAW: 'Governing law',
+  FORUM_FALLBACK: 'Forum / jurisdiction',
+  WAIVER_OR_SURVIVAL: 'Waiver or survival provision',
+  CONSTRUCTION_OR_EXPENSES: 'Construction or expenses provision',
+  TPB_EXCEPTION: 'Third-party beneficiary exception',
+  ASSIGNMENT_DETAIL: 'Assignment provision',
+  NOTICE: 'Notices provision',
+});
+
+function genericCarrierRows(cards) {
+  return cards.flatMap((card) => {
+    if (cardCode(card) !== 'MISC-BOILERPLATE') return [];
+    const features = cardFeatures(card);
+    const assertionKind = features.assertionKind;
+    const detail = valueText(features.mainConcept);
+    if (!ASSERTION_KIND_LABELS[assertionKind] || !detail) return [];
+    const row = {
+      id: `misc-boilerplate-generic-${card.id}`,
+      label: ASSERTION_KIND_LABELS[assertionKind],
+      kind: 'Boilerplate',
+      assertionKind,
+      detail,
+      evidence: textOf(card),
+      source: labelOf(card),
+      sourceCard: card,
+      present: true,
+    };
+    return [{ ...row, signals: [miscBoilerplateSignal(row)] }];
   });
 }
 
@@ -691,6 +726,7 @@ const miscBoilerplateConfig = {
       ...(feeRow ? [feeRow] : []),
       ...mappedBoilerplateRows(cards, ROWS_BOTTOM),
       ...governedConceptRows(cards),
+      ...genericCarrierRows(cards),
       ...(assignmentRow ? [assignmentRow] : []),
       ...evidenceOnlyRows(cards),
     ];

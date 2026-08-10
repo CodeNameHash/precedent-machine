@@ -37,12 +37,15 @@ test('every V1 raw anchor classifies its declared code from byte-verified eviden
   }
 });
 
-test('normalisation is match-only and subject alone never classifies', () => {
+test('normalisation is match-only and a clean subject can classify without a raw anchor', () => {
   const normalised = classifyRepresentationTopic(input('  DULY\nORGANIZED  '));
   assert.equal(normalised.canonical_value, 'CORPORATE_ORGANISATION');
   const subjectOnly = classifyRepresentationTopic(input('A novel commercial assertion.', { subject: 'Tax matters' }));
-  assert.equal(subjectOnly.state, UNCLASSIFIED);
-  assert.equal(subjectOnly.reason, UNCLASSIFIED_REASONS.NO_RAW_ANCHOR);
+  assert.equal(subjectOnly.state, CLASSIFIED);
+  assert.equal(subjectOnly.canonical_value, 'TAX');
+  assert.equal(subjectOnly.topic_match_rule_id, 'REP_TOPIC_V1_TAX');
+  assert.deepEqual(subjectOnly.raw_anchor_matches, []);
+  assert.equal(subjectOnly.subject_corroborated, true);
 });
 
 test('exclusions and precedence are explicit, while non-hierarchical ties fail closed', () => {
@@ -62,6 +65,23 @@ test('exclusions and precedence are explicit, while non-hierarchical ties fail c
   assert.equal(subjectBreak.canonical_value, 'FINANCIAL_REPORTING');
 });
 
+test('clean subject and raw topics agree or fail closed on a deterministic conflict', () => {
+  const agreement = classifyRepresentationTopic(input('The Company filed every tax return.', { subject: 'Tax matters' }));
+  assert.equal(agreement.state, CLASSIFIED);
+  assert.equal(agreement.canonical_value, 'TAX');
+  assert.equal(agreement.subject_corroborated, true);
+
+  const conflict = classifyRepresentationTopic(input('The Company filed every tax return.', { subject: 'Employee benefits' }));
+  assert.equal(conflict.state, UNCLASSIFIED);
+  assert.equal(conflict.reason, UNCLASSIFIED_REASONS.SUBJECT_RAW_CONFLICT);
+  assert.deepEqual(conflict.matched_rule_ids, ['REP_TOPIC_V1_EMPLOYMENT_BENEFITS', 'REP_TOPIC_V1_TAX']);
+
+  const ambiguousSubject = classifyRepresentationTopic(input('The Company filed every tax return.', { subject: 'Tax and employee benefits' }));
+  assert.equal(ambiguousSubject.state, CLASSIFIED);
+  assert.equal(ambiguousSubject.canonical_value, 'TAX');
+  assert.equal(ambiguousSubject.subject_corroborated, true);
+});
+
 test('family, key, clipped, invalid, and multibyte evidence gates return typed abstentions', () => {
   assert.equal(classifyRepresentationTopic(input('duly organized', { family: 'MAE_DEFINITION' })).reason, UNCLASSIFIED_REASONS.WRONG_FAMILY);
   assert.equal(classifyRepresentationTopic(input('duly organized', { generic_claim_key: 'OTHER' })).reason, UNCLASSIFIED_REASONS.WRONG_KEY);
@@ -75,6 +95,25 @@ test('registry identity is deterministic and versioned', () => {
   assert.equal(REGISTRY_VERSION, 'REPRESENTATION_TOPIC_REGISTRY/V1');
   assert.match(REGISTRY_DIGEST, /^[a-f0-9]{64}$/);
   assert.equal(classifyRepresentationTopic(input('duly organized')).registry_digest, REGISTRY_DIGEST);
+});
+
+test('the registry subject tie-break contract is enforced by the classifier', () => {
+  const vocabulary = require('../lib/vocab/resolution/representation-topic-registry');
+  assert.deepEqual(vocabulary.SUBJECT_TIE_BREAKS, [
+    ['SEC_DISCLOSURE', 'FINANCIAL_REPORTING'],
+    ['LIABILITIES', 'FINANCIAL_REPORTING'],
+    ['LIABILITIES', 'EMPLOYMENT_BENEFITS'],
+  ]);
+  const unapproved = classifyRepresentationTopic(input(
+    'The Company has real property and material contracts.',
+    { subject: 'Real property' },
+  ));
+  assert.equal(unapproved.state, UNCLASSIFIED);
+  assert.equal(unapproved.reason, UNCLASSIFIED_REASONS.NON_HIERARCHICAL_TIE);
+  assert.deepEqual(unapproved.matched_rule_ids, [
+    'REP_TOPIC_V1_MATERIAL_CONTRACTS',
+    'REP_TOPIC_V1_REAL_PROPERTY',
+  ]);
 });
 
 test('canonical-v2 compatibility module reexports the resolution vocabulary registry exactly', () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { approvalsVotesConfig } from './approvals-votes.config.js';
-import { secMeetingConfig } from './sec-meeting.config.js';
+import { cardPartyLabel, secMeetingConfig } from './sec-meeting.config.js';
 import { enumLabel } from '../../../lib/sec-meeting.js';
 import { cardCode, cardFeatures, textOf, valueText } from './card-utils.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
@@ -30,6 +30,40 @@ const { COMPOSITE_SEC_ROW_IDS, enrichProxyMeetingRow } = productCoverage;
 
 function byId(rows, id) {
   return (rows || []).find((row) => row.id === id) || null;
+}
+function byIdOrClaimSuffix(rows, id) {
+  return byId(rows, id) || (rows || []).find((row) => row.id.startsWith(`${id}-`)) || null;
+}
+
+function listedMeetingDeadlineRows(reviewDeal) {
+  const rows = [];
+  for (const card of reviewDeal?.cards || []) {
+    const raw = cardFeatures(card).meetingDeadline;
+    if (!Array.isArray(raw) && !(raw && typeof raw.claim_revision_id === 'string' && raw.claim_revision_id)) continue;
+    const deadlines = Array.isArray(raw) ? raw : [raw];
+    for (const deadline of deadlines) {
+      if (!deadline || typeof deadline !== 'object' || Array.isArray(deadline)) continue;
+      const partyLabel = typeof deadline.party === 'string' && deadline.party.trim()
+        ? deadline.party.trim()
+        : cardPartyLabel(card);
+      rows.push({
+        id: `votes-approvals-meeting-meeting-${typeof deadline.claim_revision_id === 'string' && deadline.claim_revision_id
+          ? deadline.claim_revision_id
+          : rows.length}`,
+        label: 'Meeting',
+        kind: 'deadline',
+        deadline,
+        evidence: deadline.text || textOf(card),
+        source: card,
+        sourceCard: card,
+        featureKey: 'meetingDeadline',
+        featureKeys: ['meetingDeadline'],
+        claimRevisionId: typeof deadline.claim_revision_id === 'string' ? deadline.claim_revision_id : null,
+        partyLabel,
+      });
+    }
+  }
+  return rows;
 }
 
 // number + [unit pill] + "after" + [reference pill]. Falls back to the
@@ -353,17 +387,18 @@ function detailNode(text, ctx, evidence, source) {
 function buildRows(reviewDeal) {
   const approvalRows = approvalsVotesConfig.selectRows(reviewDeal) || [];
   const meetingRows = secMeetingConfig.selectRows(reviewDeal) || [];
+  const listedMeetingRows = listedMeetingDeadlineRows(reviewDeal);
 
   const approvalDefRow = byId(approvalRows, 'approvals-votes-approval-definition');
   const consentRow = byId(approvalRows, 'approvals-votes-written-consent-required');
   const voteThresholdRow = byId(approvalRows, 'approvals-votes-vote-threshold');
-  const proxyRow = byId(meetingRows, 'sec-meeting-proxy-filing');
+  const proxyRow = byIdOrClaimSuffix(meetingRows, 'sec-meeting-proxy-filing');
   const mailingRow = byId(meetingRows, 'sec-meeting-mailing');
-  const meetingRow = byId(meetingRows, 'sec-meeting-meeting');
-  const recommendationInclusionRow = byId(meetingRows, 'sec-meeting-boardRecommendationInclusion');
-  const conveneObligationRow = byId(meetingRows, 'sec-meeting-meetingConveneObligation');
-  const recordDateRow = byId(meetingRows, 'sec-meeting-record-date');
-  const brokerSearchRow = byId(meetingRows, 'sec-meeting-broker-search');
+  const meetingRow = byIdOrClaimSuffix(meetingRows, 'sec-meeting-meeting');
+  const recommendationInclusionRows = meetingRows.filter((row) => row.id.startsWith('sec-meeting-boardRecommendationInclusion'));
+  const conveneObligationRows = meetingRows.filter((row) => row.id.startsWith('sec-meeting-meetingConveneObligation'));
+  const recordDateRows = meetingRows.filter((row) => row.id.startsWith('sec-meeting-record-date'));
+  const brokerSearchRows = meetingRows.filter((row) => row.id.startsWith('sec-meeting-broker-search'));
   const adjournmentRowList = meetingRows.filter((row) => row.id.startsWith('sec-meeting-adjournment-'));
   const offerRows = COMPOSITE_SEC_ROW_IDS.map((id) => byId(meetingRows, id)).filter(Boolean);
   const parentApprovalCard = findParentApprovalCard(reviewDeal);
@@ -415,7 +450,11 @@ function buildRows(reviewDeal) {
       kind: 'parent-approval',
       card: parentApprovalCard,
       sourceCard: parentApprovalCard,
+      featureKey: 'parentApprovalRequired',
       featureKeys: parentFeatureKeys,
+      claimRevisionId: parentApprovalCard.canonical_v2_lineage?.feature_claim_revision_ids?.parentApprovalRequired?.length === 1
+        ? parentApprovalCard.canonical_v2_lineage.feature_claim_revision_ids.parentApprovalRequired[0]
+        : null,
       marketSubterms: PARENT_APPROVAL_MARKET_SUBTERMS,
     });
   } else {
@@ -436,31 +475,40 @@ function buildRows(reviewDeal) {
       kind: 'parent-approval',
       card: mergerSubApprovalCard,
       sourceCard: mergerSubApprovalCard,
+      featureKey: 'mergerSubApprovalRequired',
       featureKeys,
+      claimRevisionId: mergerSubApprovalCard.canonical_v2_lineage?.feature_claim_revision_ids?.mergerSubApprovalRequired?.length === 1
+        ? mergerSubApprovalCard.canonical_v2_lineage.feature_claim_revision_ids.mergerSubApprovalRequired[0]
+        : null,
     });
   }
   if (proxyRow) {
     rows.push({
       id: 'votes-approvals-meeting-proxy-filing', label: proxyRow.label, kind: 'deadline',
       deadline: proxyRow.deadline, evidence: proxyRow.evidence, source: proxyRow.sourceCard,
-      sourceCard: proxyRow.sourceCard, featureKeys: proxyRow.featureKeys, marketSubterms: proxyRow.marketSubterms,
+      sourceCard: proxyRow.sourceCard, featureKey: proxyRow.featureKey, featureKeys: proxyRow.featureKeys,
+      claimRevisionId: proxyRow.claimRevisionId, marketSubterms: proxyRow.marketSubterms,
     });
   }
   if (mailingRow) {
     rows.push({
       id: 'votes-approvals-meeting-mailing', label: 'Mailing', kind: 'deadline',
       deadline: mailingRow.deadline, evidence: mailingRow.evidence, source: mailingRow.sourceCard,
-      sourceCard: mailingRow.sourceCard, featureKeys: mailingRow.featureKeys, marketSubterms: mailingRow.marketSubterms,
+      sourceCard: mailingRow.sourceCard, featureKey: mailingRow.featureKey, featureKeys: mailingRow.featureKeys,
+      claimRevisionId: mailingRow.claimRevisionId, marketSubterms: mailingRow.marketSubterms,
     });
   }
-  if (meetingRow) {
+  if (listedMeetingRows.length) {
+    rows.push(...listedMeetingRows);
+  } else if (meetingRow) {
     rows.push({
       id: 'votes-approvals-meeting-meeting', label: 'Meeting', kind: 'deadline',
       deadline: meetingRow.deadline, evidence: meetingRow.evidence, source: meetingRow.sourceCard,
-      sourceCard: meetingRow.sourceCard, featureKeys: meetingRow.featureKeys, marketSubterms: meetingRow.marketSubterms,
+      sourceCard: meetingRow.sourceCard, featureKey: meetingRow.featureKey, featureKeys: meetingRow.featureKeys,
+      claimRevisionId: meetingRow.claimRevisionId, marketSubterms: meetingRow.marketSubterms,
     });
   }
-  for (const presenceRow of [recommendationInclusionRow, conveneObligationRow].filter(Boolean)) {
+  for (const presenceRow of [...recommendationInclusionRows, ...conveneObligationRows]) {
     rows.push({
       id: `votes-approvals-meeting-${presenceRow.id.slice('sec-meeting-'.length)}`,
       label: presenceRow.label,
@@ -469,26 +517,30 @@ function buildRows(reviewDeal) {
       evidence: presenceRow.evidence,
       source: presenceRow.sourceCard,
       sourceCard: presenceRow.sourceCard,
+      featureKey: presenceRow.featureKey,
       featureKeys: presenceRow.featureKeys,
+      claimRevisionId: presenceRow.claimRevisionId,
       marketPresence: presenceRow.marketPresence,
       marketSubterms: presenceRow.marketSubterms,
       marketProvisionCodes: presenceRow.marketProvisionCodes,
     });
   }
-  if (recordDateRow) {
+  for (const recordDateRow of recordDateRows) {
     rows.push({
-      id: 'votes-approvals-meeting-record-date', label: 'Meeting record date', kind: 'detail',
+      id: `votes-approvals-meeting-${recordDateRow.id.slice('sec-meeting-'.length)}`, label: 'Meeting record date', kind: 'detail',
       text: recordDateRow.detail, evidence: recordDateRow.evidence, source: recordDateRow.sourceCard,
-      sourceCard: recordDateRow.sourceCard, featureKeys: recordDateRow.featureKeys,
+      sourceCard: recordDateRow.sourceCard, featureKey: recordDateRow.featureKey, featureKeys: recordDateRow.featureKeys,
+      claimRevisionId: recordDateRow.claimRevisionId,
       marketState: recordDateRow.marketState,
       marketPresence: recordDateRow.marketPresence,
     });
   }
-  if (brokerSearchRow) {
+  for (const brokerSearchRow of brokerSearchRows) {
     rows.push({
-      id: 'votes-approvals-meeting-broker-search', label: 'Broker search', kind: 'detail',
+      id: `votes-approvals-meeting-${brokerSearchRow.id.slice('sec-meeting-'.length)}`, label: 'Broker search', kind: 'detail',
       text: brokerSearchRow.detail, evidence: brokerSearchRow.evidence, source: brokerSearchRow.sourceCard,
-      sourceCard: brokerSearchRow.sourceCard, featureKeys: brokerSearchRow.featureKeys,
+      sourceCard: brokerSearchRow.sourceCard, featureKey: brokerSearchRow.featureKey, featureKeys: brokerSearchRow.featureKeys,
+      claimRevisionId: brokerSearchRow.claimRevisionId,
       marketState: brokerSearchRow.marketState,
       marketPresence: brokerSearchRow.marketPresence,
     });
@@ -497,7 +549,8 @@ function buildRows(reviewDeal) {
     rows.push({
       id: `votes-approvals-meeting-adjournment-${index}`, label: 'Adjournment rights', kind: 'adjournment',
       adjournment: row.adjournment, evidence: row.evidence, source: row.sourceCard,
-      sourceCard: row.sourceCard, featureKeys: row.featureKeys, marketPresence: row.marketPresence,
+      sourceCard: row.sourceCard, featureKey: row.featureKey, featureKeys: row.featureKeys,
+      claimRevisionId: row.claimRevisionId, marketPresence: row.marketPresence,
       marketSubterms: row.marketSubterms,
     });
   });
@@ -516,19 +569,30 @@ function buildRows(reviewDeal) {
       marketProvisionCodes: offerRow.marketProvisionCodes,
     });
   }
-  return rows.map(enrichProxyMeetingRow);
+  return rows.map((row) => ({
+    ...enrichProxyMeetingRow(row),
+    partyLabel: row.partyLabel || cardPartyLabel(row.sourceCard || row.card),
+  }));
 }
 
 function renderProvisionCell(row, ctx) {
+  let node;
   switch (row.kind) {
-    case 'bool': return boolPillNode(row.text, ctx, row.evidence, row.source);
-    case 'vote-standard': return voteStandardNode(row.text, row.fallbackText, ctx, row.evidence, row.source);
-    case 'deadline': return deadlinePillNode(row.deadline, ctx, row.evidence, row.source);
-    case 'adjournment': return adjournmentGroupedNode(row.adjournment, ctx, row.evidence, row.source);
-    case 'parent-approval': return parentApprovalNode(row.card, ctx);
-    case 'detail': return detailNode(row.text, ctx, row.evidence, row.source);
-    default: return row.text || null;
+    case 'bool': node = boolPillNode(row.text, ctx, row.evidence, row.source); break;
+    case 'vote-standard': node = voteStandardNode(row.text, row.fallbackText, ctx, row.evidence, row.source); break;
+    case 'deadline': node = deadlinePillNode(row.deadline, ctx, row.evidence, row.source); break;
+    case 'adjournment': node = adjournmentGroupedNode(row.adjournment, ctx, row.evidence, row.source); break;
+    case 'parent-approval': node = parentApprovalNode(row.card, ctx); break;
+    case 'detail': node = detailNode(row.text, ctx, row.evidence, row.source); break;
+    default: node = row.text || null;
   }
+  if (!row.partyLabel) return node;
+  return React.createElement(
+    'div',
+    { className: 'space-y-1.5' },
+    React.createElement('div', { className: 'text-[11px] text-inkLight' }, `Party: ${row.partyLabel}`),
+    node,
+  );
 }
 
 const votesApprovalsMeetingConfig = {

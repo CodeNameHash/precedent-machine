@@ -19,6 +19,10 @@ const PROFILE = Object.freeze({
   model: 'gpt-5.6-sol', reasoning_effort: 'medium',
   requested_model_id: 'gpt-5.6-sol;reasoning=medium;profile=SOL_MEDIUM',
 });
+const HISTORICAL_CALL_RECEIPTS = Object.freeze({
+  '1951ca1d38a0c01dcfd79fcc3e6ed34d90d32a7e2c276cb4af19acabf5c8aee5':
+    '088f91a941f7870efb1fce1246379948bfe028383caf7d260180118eb20ad54a',
+});
 const REQUIRED_FILES = Object.freeze(['run-manifest.json', 'source-reference.json', 'run-receipt.json', 'adapter-result.json', 'call-telemetry.json', 'recording.json', 'resolution.json', 'review-queue.json', 'validation.json']);
 let sequence = 0;
 
@@ -89,8 +93,43 @@ function initial() {
   const body = { schema_version: 'STAGE_2Y_PHASE_B_SOL_PROBE/V1', purpose: 'Report-only same-vendor lead-tier probe. No publication or activation authority.', cohort: { authoritative_name: 'STAGE_2Y_L_CALLS', programme_shorthand: '46-call Closing Conditions batch', exact_composition: { CLOSING_CONDITIONS: 26, FINANCING_COVENANTS: 8, PROXY_MEETING: 12 } }, commands: { prepare: 'node scripts/stage-2y-phase-b-sol-probe.mjs --prepare', live: 'node scripts/stage-2y-phase-b-sol-probe.mjs --live --resume', check: 'node scripts/stage-2y-phase-b-sol-probe.mjs --check' }, expected_call_count: 46, provider: PROFILE, source_batch_digest: fileHash(resolve(ROOT, TERRA_BATCH)), calls: [], call_manifest: calls, stopped: null, publication_authorisation: 'NONE', product_writes: false, serving_activated: false };
   return { ...body, manifest_id: hash(body) };
 }
+function manifestIdentity(artifact) {
+  const { manifest_id: ignored, ...body } = artifact;
+  return hash({ ...body, calls: [], stopped: null });
+}
+function manifestStaticFields(artifact) {
+  const {
+    manifest_id: ignoredManifest, call_manifest: ignoredManifestCalls,
+    calls: ignoredCalls, stopped: ignoredStop, ...fields
+  } = artifact;
+  return fields;
+}
+function knownManifestSpec(spec, currentSpec, terraCall) {
+  if (!object(spec) || !object(terraCall?.spec)) return false;
+  const historicalBody = { ...terraCall.spec, provider: PROFILE, phase_b_lead_probe: true };
+  const historicalSpec = { ...historicalBody, call_id: hash(historicalBody) };
+  return canonical(spec) === canonical(currentSpec) || canonical(spec) === canonical(historicalSpec);
+}
+function refreshUnattemptedSpecs(artifact) {
+  const validation = check(artifact);
+  if (!validation.ok) throw new Error(validation.errors.join(','));
+  const current = initial();
+  const recorded = new Set(artifact.calls.map((call) => call.call_id));
+  const callManifest = artifact.call_manifest.map((spec, index) => (
+    recorded.has(spec.call_id) ? spec : current.call_manifest[index]
+  ));
+  const next = { ...artifact, call_manifest: callManifest };
+  return { ...next, manifest_id: manifestIdentity(next) };
+}
+function assertProbeWriteAllowed({ resume, outputExists = existsSync(resolve(ROOT, OUTPUT)) }) {
+  if (!resume && outputExists) throw new Error('SOL_PROBE_RESUME_REQUIRED: existing probe evidence must be preserved');
+}
 async function run({ resume }) {
-  const artifact = resume && existsSync(resolve(ROOT, OUTPUT)) ? readJson(OUTPUT) : initial(); const terra = terraCallMap(); const completed = new Set(artifact.calls.map((row) => row.call_id));
+  assertProbeWriteAllowed({ resume });
+  const artifact = resume && existsSync(resolve(ROOT, OUTPUT))
+    ? refreshUnattemptedSpecs(readJson(OUTPUT))
+    : initial();
+  const terra = terraCallMap(); const completed = new Set(artifact.calls.map((row) => row.call_id));
   const validation = check(artifact); if (!validation.ok) throw new Error(validation.errors.join(',')); if (artifact.stopped) throw new Error(`SOL_PROBE_STOPPED:${artifact.stopped.code}`);
   for (const call of artifact.call_manifest) {
     if (completed.has(call.call_id)) continue; const directory = outputDirectory(call); mkdirSync(directory, { recursive: true }); const started = new Date().toISOString(); let state = 'COMPLETE'; let output = null; let errors = [];
@@ -106,17 +145,31 @@ async function run({ resume }) {
   return artifact;
 }
 function check(artifact) {
-  const errors = []; const expected = initial();
-  if (!object(artifact) || artifact.schema_version !== expected.schema_version || artifact.manifest_id !== expected.manifest_id
-    || artifact.expected_call_count !== 46 || canonical(artifact.call_manifest) !== canonical(expected.call_manifest)
-    || artifact.source_batch_digest !== expected.source_batch_digest || canonical(artifact.commands) !== canonical(expected.commands)
-    || canonical(artifact.cohort) !== canonical(expected.cohort)) errors.push('MANIFEST_INVALID');
+  const errors = []; const expected = initial(); let terra = null;
+  if (!object(artifact) || artifact.manifest_id !== manifestIdentity(artifact)
+    || canonical(manifestStaticFields(artifact)) !== canonical(manifestStaticFields(expected))
+    || !Array.isArray(artifact.call_manifest) || artifact.call_manifest.length !== expected.call_manifest.length) {
+    errors.push('MANIFEST_INVALID');
+  } else {
+    try {
+      terra = terraCallMap();
+      for (const [index, spec] of artifact.call_manifest.entries()) {
+        const currentSpec = expected.call_manifest[index];
+        const terraCall = terra.get(`${currentSpec.deal}|${currentSpec.family}|${currentSpec.section_reference}`);
+        if (!knownManifestSpec(spec, currentSpec, terraCall)) errors.push('MANIFEST_INVALID');
+      }
+    } catch { errors.push('MANIFEST_INVALID'); }
+  }
   if (canonical(artifact.provider) !== canonical(PROFILE) || artifact.publication_authorisation !== 'NONE' || artifact.product_writes !== false || artifact.serving_activated !== false) errors.push('AUTHORITY_OR_PROVIDER_INVALID');
   if (!Array.isArray(artifact.calls) || artifact.calls.length > 46) errors.push('CALL_SET_INVALID');
-  const requestIds = new Set(); let terra = null;
+  const requestIds = new Set();
   for (const [index, call] of (artifact.calls || []).entries()) {
-    const spec = expected.call_manifest[index]; const directory = outputDirectory(spec); const { receipt_id: ignored, ...body } = call;
-    if (!spec || call.call_id !== spec.call_id || canonical(call.spec) !== canonical(spec) || call.receipt_id !== hash(body)) errors.push('CALL_BINDING_INVALID');
+    const spec = artifact.call_manifest?.[index]; const currentSpec = expected.call_manifest[index]; const { receipt_id: ignored, ...body } = call;
+    if (!spec) { errors.push('CALL_BINDING_INVALID'); continue; }
+    const directory = outputDirectory(spec);
+    if (call.call_id !== spec.call_id || canonical(call.spec) !== canonical(spec) || call.receipt_id !== hash(body)) errors.push('CALL_BINDING_INVALID');
+    if (spec && canonical(spec) !== canonical(currentSpec)
+      && HISTORICAL_CALL_RECEIPTS[call.call_id] !== call.receipt_id) errors.push('HISTORICAL_CALL_SCOPE_INVALID');
     if (canonical(call.generation_command) !== canonical([process.execPath, ...runnerArgs(spec, directory)])) errors.push('GENERATION_COMMAND_INVALID');
     if (!['COMPLETE', 'CALL_FAILED'].includes(call.state) || !Array.isArray(call.errors)) errors.push('CALL_STATE_INVALID');
     if (call.state === 'COMPLETE') {
@@ -142,10 +195,10 @@ function check(artifact) {
   return { ok: errors.length === 0, errors: [...new Set(errors)], status: artifact.calls?.length === 46 && !artifact.stopped ? 'COMPLETE' : artifact.stopped ? 'STOPPED' : 'READY_OR_PARTIAL' };
 }
 function parseArgs(argv) { const mode = argv.find((arg) => ['--prepare', '--live', '--check'].includes(arg)); if (!mode || argv.some((arg) => ![mode, '--resume'].includes(arg)) || (mode !== '--live' && argv.includes('--resume'))) throw new Error('USAGE: --prepare | --live [--resume] | --check'); return { mode, resume: argv.includes('--resume') }; }
-async function main() { const args = parseArgs(process.argv.slice(2)); if (args.mode === '--prepare') { const artifact = initial(); writeAtomic(OUTPUT, artifact); process.stdout.write('Sol probe prepared: 0/46\n'); return; } if (args.mode === '--check') { const result = check(readJson(OUTPUT)); if (!result.ok) throw new Error(result.errors.join(',')); return; } const result = await run(args); process.stdout.write(`Sol probe: ${result.calls.length}/46; stopped=${result.stopped?.code || 'no'}\n`); }
+async function main() { const args = parseArgs(process.argv.slice(2)); if (args.mode === '--prepare') { assertProbeWriteAllowed({ resume: false }); const artifact = initial(); writeAtomic(OUTPUT, artifact); process.stdout.write('Sol probe prepared: 0/46\n'); return; } if (args.mode === '--check') { const result = check(readJson(OUTPUT)); if (!result.ok) throw new Error(result.errors.join(',')); return; } const result = await run(args); process.stdout.write(`Sol probe: ${result.calls.length}/46; stopped=${result.stopped?.code || 'no'}\n`); }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main().catch((error) => { process.stderr.write(`${error.stack || error}\n`); process.exitCode = 1; });
 
 export {
   PROFILE, canonical, collect, compareSection, hash, initial, outputDirectory,
-  runnerArgs, check, parseArgs, terraCallMap,
+  runnerArgs, assertProbeWriteAllowed, check, parseArgs, refreshUnattemptedSpecs, terraCallMap,
 };

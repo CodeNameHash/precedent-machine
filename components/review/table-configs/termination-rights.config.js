@@ -2,7 +2,6 @@ import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
 import { cardCode, cardFeatures, cardType, selectCards, textOf, valueText } from './card-utils.js';
 import { voteStandard } from './vote-standard.js';
-import { CONDITION_ABSENT_COPY } from '../../../lib/canonical-conditions.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -132,7 +131,7 @@ function keyTermsForRight(key, card) {
     const threshold = readableValue('voteThreshold', f.voteThreshold);
     bits.push(threshold ? `Required vote: ${threshold}` : 'Required stockholder vote not obtained');
   } else if (key === 'breachT' || key === 'breachB') {
-    const cure = readableValue('curePeriod', f.curePeriod);
+    const cure = durationText(f.curePeriod, 'day');
     if (cure) bits.push(`Cure period: ${cure}`);
     const standard = readableValue('breachStandard', f.breachStandard) || readableValue('materialityStandard', f.materialityStandard);
     if (standard) bits.push(standard);
@@ -221,6 +220,18 @@ function withUnit(raw, unit) {
   return new RegExp(unit, 'i').test(s) ? s : `${s} ${unit}${/^1(\s|$)/.test(s) ? '' : 's'}`;
 }
 
+const DURATION_TRIGGER_SUFFIXES = Object.freeze({
+  written_notice: 'after written notice',
+});
+
+function durationText(raw, unit) {
+  const duration = withUnit(raw, unit);
+  if (!duration) return null;
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return duration;
+  const suffix = DURATION_TRIGGER_SUFFIXES[raw.trigger];
+  return suffix ? `${duration} ${suffix}` : duration;
+}
+
 function formatIsoDate(iso) {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || '').trim());
   if (!m) return null;
@@ -287,11 +298,7 @@ function proseSeeText(label, text) {
 }
 
 function keyTermsNode(key, card, PillCell) {
-  // Per-cell absence: `card` being null here only means the extractor found
-  // no card for this key term -- not that the agreement lacks it. Same
-  // UNSAFE-copy class as the table-level empty strings above; fixed the same
-  // way (cross-family-consistency sweep, Task 1).
-  if (!card) return React.createElement('span', { className: 'italic text-inkFaint' }, CONDITION_ABSENT_COPY);
+  if (!card) return null;
   const f = cardFeatures(card);
   const factBlocks = [];
   const proseBlocks = [];
@@ -373,7 +380,7 @@ function keyTermsNode(key, card, PillCell) {
     addFact('Vote threshold', (parsed || threshold) && { label: parsed || 'Stockholder vote not obtained', tone: 'warning' });
     addProse('Vote requirement', threshold);
   } else if (key === 'breachT' || key === 'breachB') {
-    const cure = withUnit(valueText(f.curePeriod), 'day');
+    const cure = durationText(f.curePeriod, 'day');
     addFact('Cure period', cure && { label: cure, tone: 'info' });
     const standard = valueText(f.breachStandard) || valueText(f.materialityStandard);
     addProse('Materiality standard', standard);
@@ -510,12 +517,12 @@ function marketSubtermsForRight(key) {
     legal: [categoricalSubterm('finality', 'Finality standard', ['restraintFinality'])],
     vote: [stockholderVoteSubterm()],
     breachT: [
-      durationSubterm('cure-period', 'Cure period', ['curePeriod'], 'days', 'breach_notice'),
+      durationSubterm('cure-period', 'Cure period', ['curePeriod'], 'days', 'written_notice'),
       categoricalSubterm('breach-standard', 'Breach standard', ['breachStandard', 'materialityStandard']),
       categoricalSubterm('fault-exclusion', 'Fault-based exclusion', ['faultBasedExclusion']),
     ],
     breachB: [
-      durationSubterm('cure-period', 'Cure period', ['curePeriod'], 'days', 'breach_notice'),
+      durationSubterm('cure-period', 'Cure period', ['curePeriod'], 'days', 'written_notice'),
       categoricalSubterm('breach-standard', 'Breach standard', ['breachStandard', 'materialityStandard']),
       categoricalSubterm('fault-exclusion', 'Fault-based exclusion', ['faultBasedExclusion']),
     ],
@@ -556,7 +563,7 @@ function governedMarketSubtermsForRight(key) {
     ];
   }
   if (key === 'breachT' || key === 'breachB') {
-    return [durationSubterm('cure-period', 'Cure period', ['curePeriod'], 'days', 'breach_notice')];
+    return [durationSubterm('cure-period', 'Cure period', ['curePeriod'], 'days', 'written_notice')];
   }
   return [
     categoricalSubterm('trigger', 'Termination trigger', ['terminationTriggers']),
@@ -747,6 +754,33 @@ function familyGroups(cards, PillCell) {
     .filter((group) => group.rows.some((row) => row.present));
 }
 
+function visibleFamilyGroups(cards, PillCell) {
+  return familyGroups(cards, PillCell)
+    .map((group) => ({ ...group, rows: group.rows.filter((row) => row.present) }))
+    .filter((group) => group.rows.length > 0);
+}
+
+function renderTerminationRightsFooter(rows, ctx) {
+  const CoverageFooter = ctx?.primitives?.CoverageFooter;
+  const reviewDeal = rows && rows[0] && rows[0].reviewDeal;
+  if (!CoverageFooter || !reviewDeal) return null;
+  const cards = selectCards(reviewDeal, isTerminationRight);
+  const canonicalRows = TERMR_CANONICAL.map((spec) => rowForSpec(spec, cards));
+  const presentRows = canonicalRows.filter((row) => row.present);
+  const absentItems = canonicalRows
+    .filter((row) => !row.present)
+    .map((row) => ({
+      id: row.id,
+      label: `${FAMILY_LABELS[row.spec.family]}: ${row.label}`,
+    }));
+  return React.createElement(CoverageFooter, {
+    presentCount: presentRows.length,
+    totalCount: canonicalRows.length,
+    absentItems,
+    label: 'termination rights present',
+  });
+}
+
 function deferredEvidenceGroup(cards) {
   const rows = cards
     .filter((card) => card?.canonical_v2_lineage?.source === 'CANONICAL_V2_OPEN_WORLD_EVIDENCE')
@@ -769,7 +803,7 @@ function deferredEvidenceGroup(cards) {
 }
 
 function buildGroups(reviewDeal, cards, PillCell) {
-  const groups = familyGroups(cards, PillCell);
+  const groups = visibleFamilyGroups(cards, PillCell);
   const remedies = crossCuttingGroup(reviewDeal, PillCell);
   if (remedies) groups.push(remedies);
   const fiduciaryOut = fiduciaryOutGroup(reviewDeal, PillCell);
@@ -806,7 +840,6 @@ const terminationRightsConfig = {
         // as conditions.config.js/ioc-exceptions.config.js.
         return React.createElement(GroupedSubRows, {
           groups,
-          emptyCopy: CONDITION_ABSENT_COPY,
           onSelectCard: ctx.onSelectCard,
           resolveCard: ctx.resolveCard,
           selectedCardId: ctx.selectedCardId,
@@ -814,6 +847,7 @@ const terminationRightsConfig = {
       },
     },
   ],
+  renderFooter: renderTerminationRightsFooter,
 };
 
 export {
@@ -828,6 +862,7 @@ export {
   deferredEvidenceGroup,
   isTerminationRight,
   keyTermsForRight,
+  renderTerminationRightsFooter,
   rowForSpec,
   terminationRightsConfig,
 };

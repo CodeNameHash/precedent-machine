@@ -37,8 +37,9 @@ test('closing-condition producer preserves a byte-exact positive candidate', () 
 
 test('closing-condition prompt limits the closed accuracy vocabulary and obligor requirement to bring-down tiers', () => {
   const prompt = buildClosingConditionsProducerPrompt({ source_text: QUOTE, governed_scope: { section_reference: '7.2' } });
-  assert.equal(PROMPT_VERSION, 5);
-  assert.equal(prompt.prompt_version, 5);
+  assert.equal(PROMPT_VERSION, 6);
+  assert.equal(prompt.prompt_version, 6);
+  assert.match(prompt.messages[0].content, /PRINCIPALLY_CAUSED \| PRIMARILY_CAUSED \| PRIMARILY_RESULTED/);
   assert.match(prompt.messages[0].content, /MAT_ALL_RESPECTS \| MAT_ALL_RESPECTS_DE_MINIMIS \| MAT_ALL_MATERIAL \| MAT_MAE_QUALIFIED/);
   assert.match(prompt.messages[0].content, /Only a BRING_DOWN_TIER requires a non-empty condition_obligor quoted in its own quote/);
   assert.match(prompt.messages[0].content, /For BRING_DOWN_TIER, accuracy_standard must be exactly one of those four values and may not be null/);

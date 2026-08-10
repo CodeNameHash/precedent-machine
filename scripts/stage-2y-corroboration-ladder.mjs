@@ -13,9 +13,10 @@ const OUTPUT_JSON = 'evidence/canonical-v2/stage-2y-corroboration-ladder.json';
 const OUTPUT_MD = 'evidence/canonical-v2/stage-2y-corroboration-ladder.md';
 const REPORT_SCHEMA = 'STAGE_2Y_CORROBORATION_LADDER_REPORT/V1';
 const MODE = 'INERT_REPLAY_ONLY';
+const REPLAY_CONTRACT_BUNDLE_VERSION = 'compileFixtureContractV44';
 
 const { canonicalJson, sha256Hex, utf8Slice } = require('../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContractV42 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV44 } = require('../lib/canonical-v2/contract-bundle');
 const { createReplayClient, replayCoverage, resolveOriginalProviderIdentity } = require('../lib/canonical-v2/native-producer/provider-record-replay');
 const { createAnthropicProvider } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
@@ -24,6 +25,10 @@ const { assessCorroborationLadder, criterionIdentity, PUBLICATION_DISPOSITION, A
 
 const { isFinalCorpusRun } = await import('./canonical-v2-corpus-review-artifact.mjs');
 const liveRunner = await import('./canonical-v2-live-extraction-run.mjs');
+
+function compileReplayContractBundle() {
+  return compileFixtureContractV44();
+}
 
 const FAMILIES = Object.freeze(['GENERAL_COVENANTS', 'MATERIAL_CONTRACTS', 'INTERIM_OPERATING']);
 const DERIVATIONS = Object.freeze(['MATCH', 'EMPTY', 'AMBIGUOUS', 'POSITIVE_CONTRADICTION', 'INAPPLICABLE']);
@@ -297,7 +302,7 @@ async function replayReceipt({ family, runName, manifest, sourceReference, recor
     document_hash: admittedSourceContext.document_hash,
     section_references: sectionReferences,
     section_family_assignments: sectionReferences.map((section_reference) => ({ section_reference, family_id: family })),
-    contract_bundle: compileFixtureContractV42(),
+    contract_bundle: compileReplayContractBundle(),
     definitions: { known_definitions: [] },
     provider,
   });
@@ -314,7 +319,7 @@ async function replayReceipt({ family, runName, manifest, sourceReference, recor
   // Keep the replayed receipt immutable as the experimental candidate source.
   const resolution = resolveCandidates({
     run_receipt: JSON.parse(JSON.stringify(receipt)),
-    contract_vocabulary: compileFixtureContractV42(),
+    contract_vocabulary: compileReplayContractBundle(),
     admitted_source_context: admittedSourceContext,
     agreement_date: manifest.agreement_date,
   });
@@ -583,6 +588,7 @@ if (isMain) main().catch((error) => { process.stderr.write(`${error.stack || err
 
 export {
   OUTPUT_JSON, OUTPUT_MD, SELECTED_RUNS, REPORT_SCHEMA, EXPECTED_SELECTED_RUN_COUNT,
+  REPLAY_CONTRACT_BUNDLE_VERSION, compileReplayContractBundle,
   deriveSelectedRuns, selectOfficialRuns, mergeExactCriteria, curves, buildReport, renderMarkdown, parseArgs, main,
   replayInput, replayReceipt, createRecordedPromptTransformer,
 };

@@ -260,6 +260,25 @@ test('a duplicate trailing-list label with two full limb paths routes to relatio
   assert.equal(rollup.query.value.dimensions.relationship_state, 'REVIEW_REQUIRED');
 });
 
+test('an ambiguous MAE relationship stays out of review-card features and lineage', () => {
+  const ambiguousClaimId = 'claim:ambiguous-card-relationship';
+  const projection = projectKeyTermsMaeClaims({
+    resolved_entries: [
+      maeEntry('MAE_CARVEOUT', { id: 'card-outer-a', canonicalValue: 'ECONOMY_GENERAL', attributes: { carveout_code: 'ECONOMY_GENERAL', clause_label: '(a)', limb_path: ['outer', '(a)'] } }),
+      maeEntry('MAE_CARVEOUT', { id: 'card-inner-a', canonicalValue: 'INDUSTRY_GENERAL', attributes: { carveout_code: 'INDUSTRY_GENERAL', clause_label: '(a)', limb_path: ['inner', '(a)'] } }),
+      maeEntry('MAE_DISPROPORTIONALITY_CARVEBACK', {
+        id: 'ambiguous-card-relationship',
+        attributes: { carveback_source_form: 'TRAILING_LIST', applies_to_clause_labels: ['(a)'], comparison_baseline_phrase: 'peers', limb_path: [] },
+        rawValue: 'clauses (a) disproportionately affect the Company relative to peers',
+      }),
+    ],
+  });
+
+  assert.equal(projection.mae_disproportionality_rollups[0].relationship_review_items.length, 1);
+  assert.equal(projection.records.some((record) => record.claim_revision_id === ambiguousClaimId), false);
+  assert.equal(JSON.stringify(projection.mae_review_cards).includes(ambiguousClaimId), false);
+});
+
 test('tampered MAE relationship baseline fails closed at product projection', () => {
   const entry = maeEntry('MAE_DISPROPORTIONALITY_CARVEBACK', {
     id: 'tampered',

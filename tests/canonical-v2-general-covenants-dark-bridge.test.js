@@ -126,6 +126,7 @@ function reconstructedSourceProjectionId(bridgeLike) {
     type: card.type,
     provision_type: card.provision_type,
     provision_subtype: card.provision_subtype,
+    party: card.party,
     section_ref: card.section_ref,
     short_title: card.short_title,
     primary_quote: card.primary_quote,
@@ -342,11 +343,17 @@ test('a real General Covenants V2 result reaches Review through the dark bridge 
       card.canonical_v2_lineage.owner_id,
       GENERAL_COVENANT_FOLLOW_ON_OWNERS[card.provision_subtype],
     );
+    assert.deepEqual(card.party, {
+      role: 'COVENANT_OBLIGOR',
+      value: 'The Company',
+      capacity: 'TARGET',
+    });
     assert.equal(card.features.mainConcept, card.primary_quote);
   }
   const evidenceCards = bridge.cards.filter((card) => card.canonical_v2_lineage.source === EVIDENCE_SOURCE);
   assert.equal(evidenceCards.length, 2);
   for (const card of evidenceCards) {
+    assert.equal(card.party, null);
     assert.deepEqual(card.features, {});
     assert.equal('owner_id' in card.canonical_v2_lineage, false);
   }
@@ -498,6 +505,25 @@ test('the dark bridge fails closed on altered authority, altered claim content/l
   assert.throws(
     () => bridgeGeneralCovenantsCardsToLegacyShape(missingField, ENABLED_ENV),
     bridgeError('MISSING_REQUIRED_FIELD'),
+  );
+
+  // The new party field is closed and validated. It does not open the card
+  // envelope to unrelated fields.
+  const unknownCardField = structuredClone(projection);
+  unknownCardField.cards[0].unexpected_party_note = 'not admitted';
+  resealProjection(unknownCardField);
+  assert.throws(
+    () => bridgeGeneralCovenantsCardsToLegacyShape(unknownCardField, ENABLED_ENV),
+    bridgeError('INVALID_ENVELOPE_FIELDS'),
+  );
+
+  const invalidParty = structuredClone(projection);
+  const invalidPartyCard = invalidParty.cards.find((card) => card.canonical_v2_lineage.source === NATIVE_SOURCE);
+  invalidPartyCard.party.capacity = 'UNKNOWN';
+  resealProjection(invalidParty);
+  assert.throws(
+    () => bridgeGeneralCovenantsCardsToLegacyShape(invalidParty, ENABLED_ENV),
+    bridgeError('INVALID_PARTY'),
   );
 
   // Malformed projection identity: any tamper without resealing

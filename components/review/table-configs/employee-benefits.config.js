@@ -47,8 +47,20 @@ const CONTINUATION_ITEMS = [
 const PROTECTION_ITEMS = [
   ['continuedService', 'Continued service crediting'],
   ['eligibilityWaiver', 'Eligibility / waiting-period waiver'],
+  ['welfarePlanExpenseCredit', 'Welfare-plan expense credit'],
   ['severanceProtection', 'Severance protection'],
+  ['employeeMattersThirdPartyBeneficiaryDisclaimer', 'No employee third-party beneficiary rights'],
 ];
+
+function featureClaimRevisionIds(card, featureKey) {
+  const ids = card?.canonical_v2_lineage?.feature_claim_revision_ids?.[featureKey];
+  return Array.isArray(ids) ? ids : [];
+}
+function exactFeatureClaimRevisionId(card, featureKey, value = null) {
+  if (typeof value?.claim_revision_id === 'string' && value.claim_revision_id) return value.claim_revision_id;
+  const ids = featureClaimRevisionIds(card, featureKey);
+  return ids.length === 1 ? ids[0] : null;
+}
 
 function isEmployeeBenefitsCard(card) {
   const code = cardCode(card);
@@ -86,7 +98,7 @@ function firstFeature(cards, keys) {
     const features = cardFeatures(card);
     for (const key of keys) {
       const text = valueText(features[key]);
-      if (text) return { text, card };
+      if (text) return { text, card, key, value: features[key] };
     }
   }
   return null;
@@ -248,6 +260,8 @@ function rowsFromCompensationItems(cards, headline) {
           detail: detailBits(raw) || 'Present, detail not extracted',
           evidence: raw.text || textOf(card),
           sourceCard: card,
+          featureKey: 'compensationItems',
+          claimRevisionId: exactFeatureClaimRevisionId(card, 'compensationItems', raw),
           present: true,
           headlineProtectionPeriod: headline?.text || null,
           ...structuredItemMarket(type.code || itemCode(raw)),
@@ -272,12 +286,14 @@ function fallbackRows(cards, headline) {
       detail: textOf(hit.card),
       evidence: textOf(hit.card),
       sourceCard: hit.card,
+      featureKey: hit.key,
+      claimRevisionId: exactFeatureClaimRevisionId(hit.card, hit.key, hit.value),
       present: true,
       headlineProtectionPeriod: headline?.text || null,
       ...flatBenefitMarket(keys),
     });
   }
-  const period = firstFeature(cards, ['employeeBenefitPeriod', 'protectionPeriod', 'protectionPeriodMonths']);
+  const period = firstFeature(cards, ['protectionPeriodMonths', 'employeeBenefitPeriod', 'protectionPeriod']);
   if (period) {
     rows.unshift({
       id: 'employee-benefits-period',
@@ -289,6 +305,8 @@ function fallbackRows(cards, headline) {
       detail: textOf(period.card),
       evidence: textOf(period.card),
       sourceCard: period.card,
+      featureKey: period.key,
+      claimRevisionId: exactFeatureClaimRevisionId(period.card, period.key, period.value),
       present: true,
       headlineProtectionPeriod: headline?.text || null,
       featureKeys: ['protectionPeriodMonths', 'employeeBenefitPeriod', 'protectionPeriod'],
@@ -313,6 +331,8 @@ function checklistRows(cards, items, comparison, headline) {
       detail: textOf(hit.card) || hit.text,
       evidence: textOf(hit.card),
       sourceCard: hit.card,
+      featureKey: key,
+      claimRevisionId: exactFeatureClaimRevisionId(hit.card, key, hit.value),
       present: true,
       headlineProtectionPeriod: headline?.text || null,
       ...protectionMarket(key, label),

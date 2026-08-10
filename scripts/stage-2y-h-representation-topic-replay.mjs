@@ -230,9 +230,16 @@ function buildRepresentationTopicReplay({ repoRoot = DEFAULT_ROOT } = {}) {
 function renderRepresentationTopicReplay(ledger) { return `${canonicalJson(ledger)}\n`; }
 function main() {
   const mode = process.argv[2];
-  if (!['--write', '--check'].includes(mode) || process.argv.length !== 3) throw new Error('usage: --write | --check');
-  const ledger = buildRepresentationTopicReplay(); const output = renderRepresentationTopicReplay(ledger); const path = resolve(DEFAULT_ROOT, OUTPUT);
-  if (mode === '--write') writeFileSync(path, output);
+  const temporaryOutput = mode === '--write-to' && process.argv.length === 4
+    ? resolve(process.argv[3])
+    : null;
+  if ((!['--write', '--check'].includes(mode) || process.argv.length !== 3) && !temporaryOutput) {
+    throw new Error('usage: --write | --check | --write-to <path>');
+  }
+  const ledger = buildRepresentationTopicReplay();
+  const output = renderRepresentationTopicReplay(ledger);
+  const path = temporaryOutput || resolve(DEFAULT_ROOT, OUTPUT);
+  if (mode === '--write' || temporaryOutput) writeFileSync(path, output);
   if (!existsSync(path) || readFileSync(path, 'utf8') !== output) fail('STALE_OUTPUT');
   process.stdout.write(`representation rows: ${ledger.conservation.input_rows} = ${ledger.conservation.classified_rows} classified + ${ledger.conservation.unclassified_rows} unclassified\nrungs: ${ledger.rungs.map((rung) => `${rung.topic_rung}:${rung.classified_rows}`).join(', ')}\nMAE excluded: ${ledger.exclusions.mae_native_limb_rows.actual}; NO_OTHER excluded: ${ledger.exclusions.no_other_generic_rows.actual}\n`);
 }

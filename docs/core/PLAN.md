@@ -2871,6 +2871,31 @@ projection fix.
 
 ### Phase B — the model experiment. Report-only, runs in parallel with A.
 
+**DEFERRED 2026-08-10 by Ben, after the complete Financing family stop.**
+The corrected GPT-5.6 Sol continuation completed all eight Financing Covenants
+sections before applying the family gate. Resolved stayed **5 → 5**, review
+stayed **12 → 12**, attempted stayed **17 → 17**, and open-world rose
+**35 → 46**. No previously-resolved claim changed value or state. Exact
+duplicate excess was zero; nested quote overlap increased by one row, so it
+does not explain the eleven-row rise. The separate blocked-row baseline is
+valid but partial at **43/150** attempts. Evidence is
+`evidence/canonical-v2/stage-2y-phase-b/sol-financing-continuation.json`,
+with the partial baseline in
+`evidence/canonical-v2/stage-2y-phase-b-v2/terra-calls.json`, preserved at
+commit `ba09c1d8`. The stop code is `OPEN_WORLD_RISE`. Authority remains
+report-only, with no product write or publication activation. Do not run more
+Phase B model calls while this deferral stands. On resumption, first produce
+the eight-section semantic diff from the recorded responses; do not repeat
+completed calls. Phase C and Phase D may proceed while Phase B is deferred.
+The old Terra comparator uses Closing Conditions prompt V5. The current Sol
+runner uses V6, so the existing comparator binding will reject a resumed live
+call. Decide the comparison policy before resuming Phase B; do not weaken the
+sealed historical-call validation to make V5 available for new calls.
+The paused runner preserves the one completed V5 call exactly and refreshes
+only unattempted call specifications to V6. A hostile test rejects any new V5
+call. This is safety scaffolding, not permission to resume: the recorded stop
+and the unresolved comparison policy still block further model calls.
+
 Ben's ruling, and his own instinct first: *"I really do wonder if we can get to
 process these deterministically or if we need to ping into an LLM."*
 
@@ -2947,14 +2972,25 @@ Ordered by how many families they touch, not by size.
   cards-shaped projection whose review config was not identified; NO_SHOP's 365
   need a projection built; IOC and MAE need a card adapter because their
   projections return no cards array at all.
+
+  **Measured correction, 2026-08-10.** The pinned 130-run baseline contains
+  **1,052**, not 738, resolved claims without a route. The earlier sentence
+  omitted 314 claims. DNO's 31 claims already belong in `general-covenants`.
+  Misc Boilerplate's 114 already belong in `misc-boilerplate`, but its generic
+  cards matched no row. Consideration's seven governed records need an adapter,
+  not a config lookup. The remaining omitted families must be named in the
+  Phase E result; they must not disappear from the denominator.
 - **2Y-I's 104 measured dispatches**, **2Y-G's duplicate suppression**,
   **2Y-F's 57 concept-covered roots** — each reported in its own column, never
   summed. 2Y-F and 2Y-G have a resolved delta of zero by construction.
-- **2Y-H, respecced.** The topic vocabulary **already exists** — 25 governed
-  `REP_TOPIC_V1_*` codes with a classifier, a projection, and a replay already
-  run over all 623 rows. It classifies on `raw_value` when the topic lives in
-  `subject`, which is why **252 of its 299 failures have a clean topic sitting
-  unread.** Fix the field first; the joined projection second.
+- **2Y-H, respecced and replayed.** The topic vocabulary **already exists** —
+  25 governed `REP_TOPIC_V1_*` codes with a classifier and a projection. The
+  earlier replay classified only on `raw_value`; **252 of its 299 failures had
+  a clean topic sitting unread in `subject`.** The field-aware replay now
+  classifies **336 of 623** and leaves **287 unclassified**. Its remaining
+  failures are 174 non-hierarchical ties, 37 rows with no raw anchor, and 76
+  subject/raw conflicts. The comparison records 155 changed rows. It remains
+  report-only and does not activate serving or publication.
 - **Recall floors come from `lib/rubric.js` via `expected-sets.js`**, not
   `category-summary-features.js`, which has **zero representations rows**.
 
@@ -2964,6 +3000,57 @@ The headline metric is **rendered rows a lawyer can use**, not placed percent.
 Report four states per family before and after every item — attempted, resolved,
 open-world, review — plus the rendered-row count and the duplicate-collapse rate.
 Never a single rate.
+
+**STATUS 2026-08-10 — strict Phase C/D/E report.** Phase B remains deferred
+under the stop recorded above. The pinned 130-run baseline had **229 exact
+rows, all 229 with content**. The current tree has **1,241 exact rows, all
+1,241 with content**: **+1,012** on both measures, or **15.0% → 81.3%** of the
+1,526 resolved claims. Approved route coverage moved **474 → 1,351**. The four
+extraction states did not move: attempted **2,201**, resolved **1,526**,
+open-world **1,701**, review **675**. Duplicate collapse moved **33.19% →
+20.95%**.
+
+That 1,241 is the strict mechanical content count, not the lawyer-acceptance
+count. A follow-on legal-value and party audit identified **244 claims with a
+known information loss**: D&O 25; No Shop 75; No Other Reps / Fraud 36; and MAE
+108. The No Shop total is the union of 21 collapsed action values and 59 Buyer
+party omissions, with five claims in both sets. The stricter claim-lineage gate
+already excludes 100 of the MAE claims from the mechanical row count, so only
+the **144 rendered claims** are deducted. The known-loss-adjusted result is
+therefore **1,097**, or **71.9%**, before any human acceptance sitting. The exact
+claim inventory and intersection are in
+`evidence/canonical-v2/stage-2y-cd-known-loss-adjustment.json`. Five further
+Closing Conditions rows retain the governed boolean but hide a secondary
+relationship detail. Do not describe 81.3% or 71.9% as lawyer-usable coverage
+until those losses are repaired and the remainder is adjudicated.
+
+The claim-lineage gate now fails closed on **109 grouped feature claims** that
+the earlier count wrongly treated as exact: MAE 100, Antitrust 7, and Employee
+Matters 2. Proxy / Meeting now preserves the exact legal-person party on
+**29/31** claims, up from 2/31; the other two subjects are documents, not legal
+parties. The live extraction runner now uses contract V44, so the new
+`PRIMARILY_CAUSED` value can survive a real run rather than only a replay test.
+
+One routed claim still projects a card but no exact Review V2 row: TopBuild
+`TERMINATION_RIGHT_GRANT` / `TERMR-NOSOL-BREACH` in §6.3. A further **175
+claims have no approved Review V2 owner**: Key Defined Terms 76,
+Representations 70, Tax Matters 17, Appraisal / Dissenters' Rights 5,
+Financing Covenants 5, Dividends 1, and Guaranty / Financing Party 1.
+
+Phase C acceptance is deliberately mixed: **Parties — PARTIAL; Chapeau —
+OPEN; Operative detail — PARTIAL; Absence copy — COMPLETE; Date anchors —
+PARTIAL; Raw enums — COMPLETE.** A partial item is not complete. The post-Phase
+D architecture review below remains required before another build is funded.
+
+**Review point after the Phase D report.** Stop before funding the next build.
+Explain the complete extraction path in plain technical English, from source
+text through candidates, resolution, product projection and the rendered row.
+Use the Phase C and Phase D measurements to decide whether the present layer
+boundaries remain suitable or need redesign. Include the planned limb-inheritance
+work from 2Y-A: byte-bound governing context, inheritance through the derived
+limb tree, explicit handling of model paths that are headings rather than outline
+markers, and the 69-limb disposition table required by 2X-L1. This is a design
+review, not permission to activate serving or publication.
 
 ---
 
@@ -3056,8 +3143,8 @@ calibration at all.
 | 2Y-B corroboration defers on empty derivation | 91 knowledge-standard + the dead ternary | not landed |
 | 2Y-D agreement-defined terms | works where evidence exists | landed, blocked on 18 KDT records |
 | 2Y-F lexical matcher | **57 safe** (55 genuine gaps stay held, 52 ambiguous) | report-only |
-| 2Y-G duplicate suppression | **59 would suppress**, 25 retained | report-only, zero suppression |
-| 2Y-I qualifier dispatch | **104 safe**, 23 conflicts to review, 336 held | `ENFORCE` throws by design |
+| 2Y-G duplicate suppression | **59 would suppress**, 25 retained | enforcement path built; default `OFF`; Phase E did not enable it |
+| 2Y-I qualifier dispatch | **104 safe**, 23 conflicts to review, 336 held | enforcement path built; default `OFF`; Phase E did not enable it |
 
 *Gate, and it is four-state per family, never one rate:* **no family's open-world
 count rises**; **no previously-resolved claim regresses**; and resolved rises by
@@ -3945,6 +4032,12 @@ classified as a genuine gap is carried forward as its own named item, not closed
 
 ## Step 2Y-G. Suppress duplicates where they are minted
 
+**Status: enforcement path built, default inactive.** The resolver and live
+runner accept an explicit `ENFORCE` mode, but the default remains `OFF` and the
+Phase E measurement did not enable it. No corpus resolution state, serving
+state or publication state changed. Any enforced campaign must still pass the
+four-state family gate before its result can be accepted.
+
 **What it is.** 59 `UNMAPPED_GENERIC_CLAIM_KEY` occurrences in MAE_DEFINITION are
 **byte-identical** to an already-resolved `MAE_CARVEOUT` / `PRONG` claim in the
 same instance, minted twice by `shapeMaeDefinitionLimbAssertionProposals`. A
@@ -3969,19 +4062,20 @@ into the duplicate fix.
 
 **Direction of risk: additive.** Nothing resolved is touched.
 
-**Proves it is done.** Report-only evidence records 59 `WOULD_SUPPRESS`, actual
-suppression remains zero, the resolved set is unchanged, and the retained 25 are
-accounted for as above. Any activation requires a separate decision.
+**Proves the report-only measurement is done.** Its evidence records 59
+`WOULD_SUPPRESS`, actual suppression in that measurement remains zero, the
+resolved set is unchanged, and the retained 25 are accounted for as above.
 
 ---
 
 ## Step 2Y-H. Build the reconciliation stage that was deferred
 
-**Status: registry substrate only.** The representation-topic registry is now a
-shared vocabulary module, while the former module remains a compatibility
-export. Its 324 classified and 299 unclassified replay rows remain withheld.
-No classifier has been connected to candidate resolution, no topic claim has
-been published and the hand-adjudicated acceptance sample is still absent.
+**Status: field-aware report-only replay.** The representation-topic registry is
+now a shared vocabulary module, while the former module remains a compatibility
+export. Candidate resolution can run the classifier in `REPORT_ONLY` mode. The
+current replay classifies 336 of 623 rows and leaves 287 unclassified; all rows
+remain withheld. No topic claim has been published and the hand-adjudicated
+acceptance sample is still absent.
 
 **What it is.** Register a controlled "representation topic present" claim family
 and a resolver-side lexical classifier over `attributes.subject` / `raw_value`,
@@ -4021,12 +4115,13 @@ remaining open-world rather than being forced into the nearest bucket.
 
 ## Step 2Y-I. Dispatch the representation qualifier kinds that exist
 
-**Status: report-only implementation.** The resolver accepts only `OFF` and
-`REPORT_ONLY`; the default is `OFF`, and `ENFORCE` is rejected. The fixed
-463-row measurement cohort reports 104 safe proposed dispatches, 23 model-kind
-conflicts routed to review and 336 held rows. It creates no claims, writes no
-data, changes no resolution receipt and activates no taxonomy. The 157-run
-campaign cohort remains separately counted at 485 occurrences.
+**Status: enforcement path built, default inactive.** The resolver accepts
+`OFF`, `REPORT_ONLY` and explicit `ENFORCE`; the default remains `OFF`. The fixed
+463-row report-only cohort records 104 safe proposed dispatches, 23 model-kind
+conflicts and 336 held rows. The Phase E measurement did not enable enforcement,
+so it created no new claims and changed no corpus resolution state. No serving
+or publication state was activated. The 157-run campaign cohort remains
+separately counted at 485 occurrences.
 
 **What it is.** In the fixed 157-run selected campaign cohort,
 `REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED` has 485 occurrences, all accounted

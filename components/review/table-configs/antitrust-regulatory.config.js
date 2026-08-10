@@ -78,6 +78,33 @@ function isNativeProjection(card) {
   return card?.canonical_v2_lineage?.source === 'CANONICAL_V2_NATIVE_CLAIM';
 }
 
+function cardPartyLabel(card) {
+  const party = card?.party || null;
+  if (!party) {
+    if (isNativeProjection(card)) throw new TypeError('Antitrust row party is ambiguous');
+    return null;
+  }
+  if (typeof party.role !== 'string' || !party.role.trim()
+    || typeof party.value !== 'string' || !party.value.trim()
+    || typeof party.capacity !== 'string' || !party.capacity.trim()) {
+    throw new TypeError('Antitrust row party is ambiguous');
+  }
+  return party.value.trim();
+}
+
+function rowPartyLabels(row) {
+  const sourceCards = [
+    row.sourceCard,
+    row.source,
+    ...(row.signals || []).map((signal) => signal.source),
+  ].filter(Boolean);
+  const uniqueCards = [...new Map(sourceCards.map((card) => [
+    card.provision_instance_id || card.id || card,
+    card,
+  ])).values()];
+  return [...new Set(uniqueCards.map(cardPartyLabel).filter(Boolean))];
+}
+
 // Fallback ONLY -- lib/schema/features.js documents mainConcept as "Fallback
 // one-sentence provision summary ... when no more specific structured field
 // explains the provision." It is an AI paraphrase, not verbatim clause text,
@@ -301,29 +328,42 @@ function hsrDaysLabel(raw) {
 
 function hsrDeadlineRow(cards) {
   const hit = firstFeature(cards, ['hsrFilingDeadlineDays', 'hsrFilingDeadlineBusinessDays', 'hsrFilingDeadline', 'exHsrFilingDeadline']);
-  if (!hit) return null;
-  const dayKind = valueText(cardFeatures(hit.card).hsrFilingDeadlineDayKind);
-  const numeric = typeof hit.value === 'object' ? null : Number(hit.value);
-  const label = Number.isFinite(numeric) && dayKind
-    ? `${numeric} ${dayKind.toLowerCase()} days`
-    : hsrDaysLabel(hit.value) || shortText(hit.detail, 40);
+  const requiredHit = firstFeature(cards, ['hsrFilingRequired']);
+  if (!hit && (!requiredHit || !isTruthy(requiredHit.value))) return null;
+  const sourceHit = hit || requiredHit;
+  const dayKind = valueText(cardFeatures(sourceHit.card).hsrFilingDeadlineDayKind);
+  const numeric = hit && typeof hit.value !== 'object' ? Number(hit.value) : null;
+  const label = hit
+    ? (Number.isFinite(numeric) && dayKind
+      ? `${numeric} ${dayKind.toLowerCase()} days`
+      : hsrDaysLabel(hit.value) || shortText(hit.detail, 40))
+    : 'Required';
   if (!label) return null;
+  const timingTrigger = valueText(cardFeatures(sourceHit.card).hsrFilingDeadlineTimingTrigger);
+  const anchoredLabel = timingTrigger ? `${label} ${timingTrigger}` : label;
   return {
     id: 'antitrust-regulatory-hsr-deadline',
-    label: 'HSR filing deadline',
-    detail: hit.detail || mainConceptOf(hit.card),
-    evidence: textOf(hit.card),
-    source: hit.card,
-    featureKeys: ['hsrFilingDeadlineDays', 'hsrFilingDeadlineDayKind', 'hsrFilingDeadlineBusinessDays'],
+    label: hit ? 'HSR filing deadline' : 'HSR filing',
+    detail: sourceHit.detail || mainConceptOf(sourceHit.card),
+    evidence: textOf(sourceHit.card),
+    source: sourceHit.card,
+    featureKeys: [
+      'hsrFilingDeadlineDays',
+      'hsrFilingRequired',
+      'hsrFilingDeadlineDayKind',
+      'hsrFilingDeadlineBusinessDays',
+      'hsrFilingDeadlineTimingRelation',
+      'hsrFilingDeadlineTimingTrigger',
+    ],
     marketProvisionCodes: ['ANTI-FILING'],
     present: true,
     signals: [{
       id: 'antitrust-regulatory-hsr-deadline-signal',
-      label,
-      value: hit.value,
+      label: anchoredLabel,
+      value: sourceHit.value,
       tone: 'info',
-      evidence: textOf(hit.card),
-      source: hit.card,
+      evidence: textOf(sourceHit.card),
+      source: sourceHit.card,
     }],
   };
 }
@@ -424,7 +464,7 @@ function foreignFilingsRow(cards) {
       detail: signals.map(({ label }) => label).join('; '),
       evidence: first.fact.exactEvidence || textOf(first.card),
       source: first.card,
-      featureKeys: ['regulatoryFilingFacts'],
+      featureKeys: ['regulatoryFilingFacts', 'regulatoryFilingTimingStandard'],
       marketProvisionCodes: ['ANTI-FILING'],
       present: true,
       signals,
@@ -884,23 +924,49 @@ const ROW_BUILDERS = [
 // only reads card/sourceCard/sourceCards -- copy `source` onto `sourceCard`
 // here, once, rather than touching all eight row builders individually.
 function mappedAntitrustRows(cards) {
-  return [...ROW_BUILDERS.map((build) => build(cards)).filter(Boolean), ...deferredEvidenceRows(cards)].map((row) => (
-    row.sourceCard || !row.source ? row : { ...row, sourceCard: row.source }
-  ));
+  for (const card of cards) cardPartyLabel(card);
+  return [...ROW_BUILDERS.map((build) => build(cards)).filter(Boolean), ...deferredEvidenceRows(cards)].map((row) => {
+    const sourcedRow = row.sourceCard || !row.source ? row : { ...row, sourceCard: row.source };
+    const partyLabels = rowPartyLabels(sourcedRow);
+    return {
+      ...sourcedRow,
+      partyLabel: partyLabels.length === 1 ? partyLabels[0] : null,
+      partyLabels,
+    };
+  });
 }
 
 function renderSignals(row, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
-  if (!PillCell) return (row.signals || []).map((item) => item.label).join('\n');
-  return (row.signals || []).map((item) => React.createElement(PillCell, {
-    key: item.id,
-    label: item.label,
-    value: item.value,
-    tone: item.tone,
-    color: item.color,
-    evidence: item.evidence,
-    source: item.source,
-  }));
+  const partyLabels = row.partyLabels || (row.partyLabel ? [row.partyLabel] : []);
+  if (!PillCell) {
+    return [
+      ...partyLabels.map((partyLabel) => `Party: ${partyLabel}`),
+      ...(row.signals || []).map((item) => item.label),
+    ].join('\n');
+  }
+  return React.createElement(
+    'div',
+    { className: 'space-y-1.5' },
+    partyLabels.map((partyLabel) => React.createElement(
+      'div',
+      { key: partyLabel, className: 'text-[11px] text-inkLight' },
+      `Party: ${partyLabel}`,
+    )),
+    React.createElement(
+      'div',
+      { className: 'flex flex-wrap gap-1' },
+      (row.signals || []).map((item) => React.createElement(PillCell, {
+        key: item.id,
+        label: item.label,
+        value: item.value,
+        tone: item.tone,
+        color: item.color,
+        evidence: item.evidence,
+        source: item.source,
+      })),
+    ),
+  );
 }
 
 function renderDetail(row, ctx) {

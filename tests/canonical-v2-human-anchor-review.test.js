@@ -53,14 +53,14 @@ test('anchor packet preserves the 80-card core and appends 16 hard-class seeds',
   const renderedCards = machine.cards.filter((card) => card.rendered_row !== null);
   // Was 12 cards across {CLOSING_CONDITIONS, TERMINATION}, the only two families
   // 2Y-N could render when this packet was first built. Re-pinned 2026-08-10
-  // after FAMILY_ROUTES gained seven more, and the new number is the point: the
-  // re-sit now carries a rendered row on 34 of 96 cards across nine families
-  // rather than 12 across two, so a reviewer judges output rather than a code on
-  // a third of the packet instead of an eighth. Assert the SET as a superset
+  // after the current FAMILY_ROUTES were added. The new number is the point: the
+  // re-sit now carries a rendered row on 54 of 96 cards across seventeen families,
+  // so a reviewer judges the current output for more than half of the packet.
+  // Assert the SET as a superset
   // check rather than an equality, so adding a route is not a test failure --
   // but keep the count exact, because a silent DROP in rendered coverage is
   // exactly what this pin exists to catch.
-  assert.equal(renderedCards.length, 34);
+  assert.equal(renderedCards.length, 54);
   const renderedFamilies = [...new Set(renderedCards.map((card) => card.family))].sort();
   for (const required of ['CLOSING_CONDITIONS', 'TERMINATION']) {
     assert.ok(renderedFamilies.includes(required), `${required} must still render`);

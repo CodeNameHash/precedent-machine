@@ -6,7 +6,7 @@
   "not_included_on_purpose": "No timestamp, commit hash, or other value that would change without a corresponding change to one of the source files this script actually reads -- see this script's own header for why.",
   "summary": {
     "section_families": 25,
-    "product_projection_modules": 16,
+    "product_projection_modules": 18,
     "resolver_exports": 106,
     "review_table_configs": 26,
     "dark_bridge_leaves": 4,
@@ -149,7 +149,7 @@
   "product_projections": {
     "method": "lists lib/canonical-v2/*-product-projection.js, extracts each file's module.exports identifiers (informational, listed in full), then resolves the real import graph (every require()/from target elsewhere in the tree that resolves to this file's own basename) to find genuine importers -- not a text search on export names, which this codebase's many same-named local constants (SOURCE, PROJECTION_SCHEMA, ...) would make unreliable. 'imported_outside_scripts_and_tests' means something other than a script or a test imports it -- i.e. it is reachable from product code.",
     "glob": "lib/canonical-v2/*-product-projection.js",
-    "count": 16,
+    "count": 18,
     "modules": [
       {
         "path": "lib/canonical-v2/antitrust-product-projection.js",
@@ -171,7 +171,9 @@
           "scripts": [],
           "tests": [
             "tests/canonical-v2-antitrust-expanded-package.test.js",
-            "tests/canonical-v2-antitrust-regulatory-efforts.test.js"
+            "tests/canonical-v2-antitrust-party-slice.test.js",
+            "tests/canonical-v2-antitrust-regulatory-efforts.test.js",
+            "tests/canonical-v2-antitrust-rendered-row-preview.test.js"
           ],
           "other": []
         },
@@ -194,7 +196,9 @@
           "lib": [],
           "scripts": [],
           "tests": [
-            "tests/canonical-v2-closing-conditions-wave-b-resolution.test.js"
+            "tests/canonical-v2-closing-conditions-party-slice.test.js",
+            "tests/canonical-v2-closing-conditions-wave-b-resolution.test.js",
+            "tests/canonical-v2-metsera-closing-conditions-operative-detail.test.js"
           ],
           "other": []
         },
@@ -234,8 +238,10 @@
         "path": "lib/canonical-v2/consideration-wave-a-product-projection.js",
         "exports": [
           "AUTHORITY_STATE",
+          "CARD_SCHEMA",
           "ConsiderationWaveAProjectionError",
           "FIELD_DEFINITIONS",
+          "NATIVE_SOURCE",
           "PROJECTION_SCHEMA",
           "RECORD_SCHEMA",
           "projectConsiderationWaveAClaims"
@@ -251,6 +257,7 @@
             "scripts/canonical-v2-reader-resolution-contract-check.js"
           ],
           "tests": [
+            "tests/canonical-v2-consideration-card-adapter.test.js",
             "tests/canonical-v2-consideration-wave-a.test.js"
           ],
           "other": []
@@ -276,7 +283,9 @@
           "lib": [],
           "scripts": [],
           "tests": [
-            "tests/canonical-v2-employee-dno-product-parity.test.js"
+            "tests/canonical-v2-employee-dno-product-parity.test.js",
+            "tests/canonical-v2-employee-matters-rendered-row-preview.test.js",
+            "tests/canonical-v2-fixed-date-anchor-card-path.test.js"
           ],
           "other": []
         },
@@ -330,7 +339,8 @@
           "scripts": [],
           "tests": [
             "tests/canonical-v2-general-covenants-dark-bridge.test.js",
-            "tests/canonical-v2-general-covenants-family-parity.test.js"
+            "tests/canonical-v2-general-covenants-family-parity.test.js",
+            "tests/canonical-v2-general-covenants-party-slice.test.js"
           ],
           "other": []
         },
@@ -340,9 +350,11 @@
         "path": "lib/canonical-v2/ioc-wave-a-product-projection.js",
         "exports": [
           "AUTHORITY_STATE",
+          "CARD_SCHEMA",
           "CLAIM_DEFINITION_KEY",
           "CONCEPT_LABELS",
           "IocWaveAProjectionError",
+          "NATIVE_SOURCE",
           "PROJECTION_SCHEMA",
           "RECORD_SCHEMA",
           "projectIocWaveAClaims"
@@ -359,6 +371,7 @@
           ],
           "tests": [
             "tests/canonical-v2-ioc-parent-child-resolution.test.js",
+            "tests/canonical-v2-ioc-wave-a-card-adapter.test.js",
             "tests/canonical-v2-step-2d1-defects-3-4.test.js"
           ],
           "other": []
@@ -393,6 +406,7 @@
             "tests/canonical-v2-defined-terms-family-seam.test.js",
             "tests/canonical-v2-defined-terms-later-slices.test.js",
             "tests/canonical-v2-key-terms-mae-product-projection.test.js",
+            "tests/canonical-v2-mae-card-adapter.test.js",
             "tests/canonical-v2-mae-definition-resolution.test.js",
             "tests/canonical-v2-step-2f-breaks-5-6.test.js"
           ],
@@ -429,6 +443,30 @@
         "imported_outside_scripts_and_tests": true
       },
       {
+        "path": "lib/canonical-v2/merger-structure-closing-product-projection.js",
+        "exports": [
+          "FEATURE_BY_ASSERTION_KIND",
+          "MergerStructureClosingProductProjectionError",
+          "NATIVE_SOURCE",
+          "PROJECTION_SCHEMA",
+          "projectMergerStructureClosingProductSurfaces"
+        ],
+        "projection_entry_points": [
+          "projectMergerStructureClosingProductSurfaces"
+        ],
+        "imported_by": {
+          "components": [],
+          "pages": [],
+          "lib": [],
+          "scripts": [],
+          "tests": [
+            "tests/canonical-v2-merger-structure-closing-product-projection.test.js"
+          ],
+          "other": []
+        },
+        "imported_outside_scripts_and_tests": false
+      },
+      {
         "path": "lib/canonical-v2/no-other-reps-fraud-product-projection.js",
         "exports": [
           "AUTHORITY_STATE",
@@ -462,6 +500,30 @@
         "imported_outside_scripts_and_tests": true
       },
       {
+        "path": "lib/canonical-v2/no-shop-product-projection.js",
+        "exports": [
+          "CLAIM_TO_CONCEPTS",
+          "NATIVE_SOURCE",
+          "NoShopProductProjectionError",
+          "PROJECTION_SCHEMA",
+          "projectNoShopProductSurfaces"
+        ],
+        "projection_entry_points": [
+          "projectNoShopProductSurfaces"
+        ],
+        "imported_by": {
+          "components": [],
+          "pages": [],
+          "lib": [],
+          "scripts": [],
+          "tests": [
+            "tests/canonical-v2-no-shop-product-projection.test.js"
+          ],
+          "other": []
+        },
+        "imported_outside_scripts_and_tests": false
+      },
+      {
         "path": "lib/canonical-v2/proxy-meeting-product-projection.js",
         "exports": [
           "EVIDENCE_SOURCE",
@@ -479,7 +541,10 @@
           "lib": [],
           "scripts": [],
           "tests": [
-            "tests/canonical-v2-proxy-meeting-product-parity.test.js"
+            "tests/canonical-v2-proxy-meeting-deadline-display.test.js",
+            "tests/canonical-v2-proxy-meeting-party-slice.test.js",
+            "tests/canonical-v2-proxy-meeting-product-parity.test.js",
+            "tests/canonical-v2-proxy-meeting-rendered-row-preview.test.js"
           ],
           "other": []
         },
@@ -527,6 +592,7 @@
           "PROJECTION_SCHEMA",
           "RECORD_SCHEMA",
           "RepresentationsProductProjectionError",
+          "isGovernedCanonicalValue",
           "projectRepresentationClaims"
         ],
         "projection_entry_points": [
@@ -542,6 +608,8 @@
           "scripts": [],
           "tests": [
             "tests/canonical-v2-m3-representations-merger-remedies-resolution.test.js",
+            "tests/canonical-v2-representation-qualifier-card-path.test.js",
+            "tests/canonical-v2-representation-topic-card-path.test.js",
             "tests/canonical-v2-representations-dark-bridge.test.js",
             "tests/canonical-v2-representations-product-projection.test.js",
             "tests/canonical-v2-review-preview-end-to-end.test.js",
@@ -625,6 +693,7 @@
           ],
           "tests": [
             "tests/canonical-v2-fee-required-prose-classification.test.js",
+            "tests/canonical-v2-fixed-date-anchor-card-path.test.js",
             "tests/canonical-v2-payment-timing-guard-wiring.test.js",
             "tests/canonical-v2-payment-timing-split.test.js",
             "tests/canonical-v2-publication-serving-filter.test.js",

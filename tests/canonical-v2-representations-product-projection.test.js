@@ -248,10 +248,8 @@ test('topic concepts reject every non-topic representation claim', () => {
   }
 });
 
-test('scope, lookbacks, bring-downs and unfamiliar standards do not enter the governed projection', () => {
+test('unrelated scope and bring-down claims do not enter the governed projection', () => {
   for (const key of [
-    'REPRESENTATION_MEASUREMENT_DATE',
-    'RETROSPECTIVE_LOOKBACK',
     'DISCLOSURE_SCHEDULE_CARVEOUT',
     'REPRESENTATION_MATERIALITY_SCRAPE',
     'NO_OTHER_REPRESENTATIONS_PRESENT',

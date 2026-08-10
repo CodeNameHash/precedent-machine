@@ -2329,7 +2329,7 @@ test('I6: ioc-exceptions negative-covenant row renders Specific restrictions and
   assert.ok(exceptionsIdx < exceptionPillIdx, 'the exception pill renders after the Exceptions heading');
 });
 
-test('I6: an empty restrictions or exceptions sub-column renders an honest placeholder, not a blank cell', () => {
+test('I6: an empty exceptions sub-column stays absent rather than inventing an exception', () => {
   const cards = [
     { id: 'div-1', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-DIVIDEND', short_title: 'Dividends and Distributions', features: {
       restrictionComponents: ['ACQUISITIONS'],
@@ -2339,7 +2339,7 @@ test('I6: an empty restrictions or exceptions sub-column renders an honest place
   const [group] = iocMod.negativeCovenantGroups(cards);
   const row = iocMod.renderNegativeRow({ id: 'ioc-neg-IOC-DIVIDEND', code: group.code, cards: group.cards }, { primitives: iocPrimitives });
   const html = renderToStaticMarkup(React.createElement(React.Fragment, null, row.children));
-  assert.match(html, /None specified/, 'no permittedExceptions -> the Exceptions sub-column says so honestly');
+  assert.doesNotMatch(html, /None specified/, 'no permittedExceptions -> the row does not fabricate an exception value');
 });
 
 // FEEDBACK-3-PUNCHLIST.md #I2/#I4/#I3/#I5 (G4 colouring audit): affirmative

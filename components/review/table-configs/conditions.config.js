@@ -98,6 +98,21 @@ function firstDefined(matches, key) {
   return undefined;
 }
 
+function conditionPartyLabels(matches) {
+  const parties = (matches || [])
+    .map((provision) => provision?.sourceCard?.party)
+    .filter(Boolean);
+  if (!parties.length) return [];
+  if (parties.some((party) => (
+    typeof party.role !== 'string' || !party.role.trim()
+    || typeof party.value !== 'string' || !party.value.trim()
+    || typeof party.capacity !== 'string' || !party.capacity.trim()
+  ))) {
+    throw new TypeError('Closing Conditions row party is ambiguous');
+  }
+  return [...new Set(parties.map((party) => party.value.trim()))];
+}
+
 function isTruthyBoolLike(value) {
   return value === true || value === 'true';
 }
@@ -148,6 +163,23 @@ const BRINGDOWN_CODES_BY_RANK = {
   2.5: ['MATERIALITY_SCRAPE', 'MAT_MATERIALITY_SCRAPE'],
   3: ['MAE_QUALIFIED', 'MAT_MAE_QUALIFIED'],
 };
+
+const FRUSTRATION_STANDARD_LABELS = Object.freeze({
+  CAUSED_BY_BREACH: 'Caused by breach',
+  PROXIMATELY_CAUSED: 'Proximately caused',
+  PRINCIPALLY_CAUSED: 'Principally caused',
+  PRIMARILY_CAUSED: 'Primarily caused',
+  PRIMARILY_RESULTED: 'Primarily resulted',
+  BREACH: 'Breach',
+  MATERIAL_BREACH: 'Material breach',
+  FAILURE_TO_PERFORM: 'Failure to perform',
+});
+
+function frustrationStandardLabel(value) {
+  return typeof value === 'string' && Object.hasOwn(FRUSTRATION_STANDARD_LABELS, value)
+    ? FRUSTRATION_STANDARD_LABELS[value]
+    : valueText(value);
+}
 
 function tierCode(tier) {
   return String((tier && (tier.standard || tier.code || tier.label)) || '').toUpperCase();
@@ -759,6 +791,7 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
   const PillCell = ctx?.primitives?.PillCell;
   const matches = row.matches || [];
   const primary = matches[0];
+  const partyLabels = conditionPartyLabels(matches);
   const chips = [];
   let mainNode = null;
   // r13 (featureKey threading parity): the registry attribute(s) that
@@ -908,8 +941,8 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
     if (generic.keys.length === 1 && !featureKeys) featureKeys = [generic.keys[0]];
     else if (generic.keys.length) featureKeys = null;
   } else if (family === 'FRUSTRATE') {
-    const causation = valueText(firstDefined(matches, 'frustrationCausationStandard'));
-    const breach = valueText(firstDefined(matches, 'frustrationBreachStandard'));
+    const causation = frustrationStandardLabel(firstDefined(matches, 'frustrationCausationStandard'));
+    const breach = frustrationStandardLabel(firstDefined(matches, 'frustrationBreachStandard'));
     if (causation) chips.push(mkChip(PillCell, 'frustration-causation', causation, 'warning', primary));
     if (breach) chips.push(mkChip(PillCell, 'frustration-breach', breach, 'warning', primary));
     if (causation && !breach) featureKeys = ['frustrationCausationStandard'];
@@ -941,6 +974,11 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
   const node = React.createElement(
     'div',
     { className: 'space-y-1.5' },
+    partyLabels.map((partyLabel) => React.createElement(
+      'div',
+      { key: partyLabel, className: 'text-[11px] text-inkLight' },
+      `Party: ${partyLabel}`,
+    )),
     validChips.length ? React.createElement('div', { className: 'flex flex-wrap gap-1' }, validChips) : null,
     mainNode,
   );
@@ -958,6 +996,8 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
     seeTextContent: mainConditionText,
     card: primary?.sourceCard || null,
     evidence: mainConditionText || primary?.full_text || null,
+    partyLabel: partyLabels.length === 1 ? partyLabels[0] : null,
+    partyLabels,
     featureKeys,
     marketSubterms: marketSubterms?.length ? marketSubterms : null,
   };
@@ -997,6 +1037,8 @@ function conditionGroups(reviewDeal, ctx) {
         // see GroupedSubRows in ProvisionTablePrimitives.jsx.
         card: detail.card,
         evidence: detail.evidence,
+        partyLabel: detail.partyLabel,
+        partyLabels: detail.partyLabels,
         // r13: see buildStandardDetail's featureKeys comment -- null for
         // families whose row value is synthesized from more than one field.
         featureKeys: detail.featureKeys,

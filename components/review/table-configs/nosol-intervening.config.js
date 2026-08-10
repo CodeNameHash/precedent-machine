@@ -95,6 +95,9 @@ function isInterveningCard(card) {
   const code = cardCode(card);
   if (['NOSOL-INTERVENING', 'DEF-INTERVENING'].includes(code)) return true;
   if (card?.provision_type !== 'COVENANT_NO_SOLICITATION' && !/^NOSOL(?:-|$)/.test(code)) return false;
+  const features = cardFeatures(card);
+  if (valueText(features.interveningEventProvision)
+    || valueText(features.boardChangeForInterveningEvent)) return true;
   return /intervening\s+event/i.test(`${card?.short_title || ''} ${textOf(card)}`);
 }
 // textOf is imported from card-utils.js (see above) rather than defined

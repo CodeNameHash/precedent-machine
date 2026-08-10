@@ -10,7 +10,7 @@ const { execFileSync } = require('node:child_process');
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const { importRunEvidence } = require('../lib/canonical-v2/evidence-to-write-set-bridge');
 const { InMemoryCanonicalRepository } = require('../lib/canonical-v2/canonical-writer');
-const { compileFixtureContractV42 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV44 } = require('../lib/canonical-v2/contract-bundle');
 const { sourceMapPayloadPathFor } = require('../lib/canonical-v2/source-map-payload-store');
 
 const ROOT = path.resolve(__dirname, '..');
@@ -130,7 +130,7 @@ exit 94
     assert.deepEqual(runManifest.requested_models, [MODEL_ID]);
     assert.equal(runManifest.requested_model_id, MODEL_ID);
     assert.deepEqual(runManifest.resolved_models, []);
-    assert.equal(runManifest.contract_bundle_version, 'compileFixtureContractV42');
+    assert.equal(runManifest.contract_bundle_version, 'compileFixtureContractV44');
     assert.deepEqual(runManifest.code_provenance, {
       commit: 'fake-clean-commit',
       working_tree_clean: true,
@@ -151,7 +151,7 @@ exit 94
       (await importRunEvidence({
         runDirectory: liveOut,
         repository: new InMemoryCanonicalRepository(),
-        contractBundle: compileFixtureContractV42(),
+        contractBundle: compileFixtureContractV44(),
         dryRun: true,
       })).receipt.validation.accepted,
       true,

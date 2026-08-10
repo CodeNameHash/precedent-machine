@@ -30,6 +30,14 @@ test('runner syntax and committed output are deterministic check inputs', () => 
   assert.match(fs.readFileSync(MARKDOWN, 'utf8'), /No adjudication or rung selection occurred/);
 });
 
+test('recorded replay uses the current V44 extraction contract', async () => {
+  const { REPLAY_CONTRACT_BUNDLE_VERSION, compileReplayContractBundle } = await runner();
+  assert.equal(REPLAY_CONTRACT_BUNDLE_VERSION, 'compileFixtureContractV44');
+  const definition = compileReplayContractBundle().claim_definitions
+    .find((entry) => entry.claim_definition_key === 'FRUSTRATION_CAUSATION_STANDARD');
+  assert.equal(definition.allowed_canonical_values.includes('PRIMARILY_CAUSED'), true);
+});
+
 test('recorded replay cannot make a live call and missing or exhausted recordings fail closed', async () => {
   assert.throws(() => createReplayClient({ recording: { schema_version: 'BAD/V1', calls: [] } }), /REPLAY_SCHEMA_MISMATCH/);
   const replay = createReplayClient({ recording: {

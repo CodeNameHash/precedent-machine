@@ -77,6 +77,14 @@ test('topic ladder is cumulative and rung 0 never invokes the classifier', () =>
   assert.equal(classifyRepresentationTopicAtRung(evidenceOnly, 3).state, 'CLASSIFIED');
 });
 
+test('subject-only topics enter at the high-confidence rung and preserve cumulative admission', () => {
+  const subjectOnly = exactInput('A novel commercial assertion.', 'Tax matters');
+
+  assert.equal(classifyRepresentationTopicAtRung(subjectOnly, 1).reason, 'REPRESENTATION_TOPIC_BELOW_RUNG_THRESHOLD');
+  assert.equal(classifyRepresentationTopicAtRung(subjectOnly, 2).canonical_value, 'TAX');
+  assert.equal(classifyRepresentationTopicAtRung(subjectOnly, 3).canonical_value, 'TAX');
+});
+
 test('resolver topic ladder is default-off, report-only, V43-bound, and never changes resolution', () => {
   const input = finalRun();
   const omitted = resolveCandidates(input);
@@ -165,14 +173,14 @@ test('623-row replay is deterministic, cumulative, V42-only, and blocked on huma
   assert.equal(evidence.schema_version, 'STAGE_2Y_H_REPRESENTATION_TOPIC_REPLAY_LEDGER/V2');
   assert.deepEqual(evidence.rungs.map((rung) => [rung.classified_rows, rung.unclassified_rows]), [
     [0, 623],
-    [152, 471],
-    [231, 392],
-    [324, 299],
+    [151, 472],
+    [280, 343],
+    [336, 287],
   ]);
   assert.deepEqual(evidence.rung_diffs.map((diff) => [diff.newly_classified_count, diff.regressed_count]), [
-    [152, 0],
-    [79, 0],
-    [93, 0],
+    [151, 0],
+    [129, 0],
+    [56, 0],
   ]);
   assert.equal(evidence.representation_rows.length, 623);
   assert.equal(evidence.representation_rows.every((row) => row.rung_outcomes.length === 4), true);

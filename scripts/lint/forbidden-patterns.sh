@@ -90,9 +90,15 @@ const CONCEPT_COVERAGE_SIMULATION_FILE = 'evidence/canonical-v2/stage-2y-f-conce
 const CONCEPT_COVERAGE_SIMULATION_SCHEMA = 'STAGE_2Y_F_CONCEPT_COVERAGE_SIMULATION/V1';
 const HUMAN_ANCHOR_MACHINE_PACKET_FILE = 'evidence/blind-review/2026-08-10/stage-2y-0-human-anchor-machine-packet.json';
 const HUMAN_ANCHOR_MACHINE_PACKET_SCHEMA = 'CANONICAL_V2_HUMAN_ANCHOR_MACHINE_PACKET/V3';
-const STAGE_2Y_PHASE_B_MANIFEST_FILE = 'evidence/canonical-v2/stage-2y-phase-b/manifest.json';
-const STAGE_2Y_PHASE_B_MANIFEST_SCHEMA = 'STAGE_2Y_PHASE_B_MANIFEST/V1';
+const STAGE_2Y_PHASE_B_MANIFESTS = Object.freeze({
+  'evidence/canonical-v2/stage-2y-phase-b/manifest.json': 'STAGE_2Y_PHASE_B_MANIFEST/V1',
+  'evidence/canonical-v2/stage-2y-phase-b-v2/manifest.json': 'STAGE_2Y_PHASE_B_MANIFEST/V2',
+});
+const STAGE_2Y_PHASE_B_MODEL_EVIDENCE = Object.freeze({
+  'evidence/canonical-v2/stage-2y-phase-b-v2/terra-calls.json': 'STAGE_2Y_PHASE_B_TERRA_CALLS/V2',
+});
 const HASH_ADDRESSED_STAGE_2Y_L_SOURCE_FILE = /^evidence\/canonical-v2\/stage-2y-l-live-runs\/[a-f0-9]{64}\/(adapter-result|recording|native-producer-recorded-response-[^/]+)\.json$/;
+const HASH_ADDRESSED_PHASE_B_SOURCE_FILE = /^evidence\/canonical-v2\/stage-2y-phase-b\/sol-probe-runs\/[a-f0-9]{64}\/(adapter-result|recording|native-producer-recorded-response-[^/]+)\.json$/;
 const STAGE_2Y_L_SOURCE_SCHEMAS = Object.freeze({
   'adapter-result': 'NATIVE_WRITE_SET_ADAPTER_RESULT/V1',
   recording: 'NATIVE_PRODUCER_RECORDED_RUN/V3',
@@ -155,10 +161,11 @@ function isHumanAnchorMachinePacket(rel, src) {
 }
 
 function isStage2yPhaseBManifest(rel, src) {
-  if (rel !== STAGE_2Y_PHASE_B_MANIFEST_FILE) return false;
+  const schema = STAGE_2Y_PHASE_B_MANIFESTS[rel];
+  if (!schema) return false;
   try {
     const parsed = JSON.parse(src);
-    return parsed.schema_version === STAGE_2Y_PHASE_B_MANIFEST_SCHEMA &&
+    return parsed.schema_version === schema &&
       Array.isArray(parsed.rows) &&
       parsed.rows.some((row) =>
         row.source_text_status === 'FULL_RECORDED_SECTION' &&
@@ -169,8 +176,34 @@ function isStage2yPhaseBManifest(rel, src) {
   }
 }
 
+function isStage2yPhaseBModelEvidence(rel, src) {
+  const schema = STAGE_2Y_PHASE_B_MODEL_EVIDENCE[rel];
+  if (!schema) return false;
+  try {
+    const parsed = JSON.parse(src);
+    return parsed.schema_version === schema &&
+      Array.isArray(parsed.attempts) &&
+      parsed.attempts.some((attempt) => typeof attempt.response_text === 'string');
+  } catch (_) {
+    return false;
+  }
+}
+
 function isHashAddressedStage2yLSourceFile(rel, src) {
   const match = rel.match(HASH_ADDRESSED_STAGE_2Y_L_SOURCE_FILE);
+  if (!match) return false;
+  const sourceKind = match[1].startsWith('native-producer-recorded-response-')
+    ? 'native-producer-recorded-response'
+    : match[1];
+  try {
+    return JSON.parse(src).schema_version === STAGE_2Y_L_SOURCE_SCHEMAS[sourceKind];
+  } catch (_) {
+    return false;
+  }
+}
+
+function isHashAddressedPhaseBSourceFile(rel, src) {
+  const match = rel.match(HASH_ADDRESSED_PHASE_B_SOURCE_FILE);
   if (!match) return false;
   const sourceKind = match[1].startsWith('native-producer-recorded-response-')
     ? 'native-producer-recorded-response'
@@ -482,7 +515,9 @@ for (const rel of changedFiles()) {
     if (isConceptCoverageSimulation(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (isHumanAnchorMachinePacket(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (isStage2yPhaseBManifest(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
+    if (isStage2yPhaseBModelEvidence(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (isHashAddressedStage2yLSourceFile(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
+    if (isHashAddressedPhaseBSourceFile(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (new RegExp(pattern, 'im').test(src)) {
       failures.push(`${rel} :: ${pattern}`);
     }
