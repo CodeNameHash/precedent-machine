@@ -116,14 +116,13 @@ test('the gate reports all twelve original strata and keeps Stage 3 closed on th
   const termination = gate.strata.find((row) => row.reason === 'TERMINATING_PARTY_REF_NOT_IN_QUOTE');
   const category = gate.strata.find((row) => row.reason === 'CATEGORY_UNCORROBORATED');
   assert.deepEqual(termination.resolved, { current: 6, baseline: 7 });
-  assert.deepEqual(category.resolved, { current: 1, baseline: 4 });
+  assert.deepEqual(category.resolved, { current: 5, baseline: 4 });
   for (const row of gate.strata) {
     assert.equal(typeof row.review, 'number');
     assert.equal(typeof row.not_located_in_output, 'number');
     assert.equal(typeof row.artifact_missing, 'number');
   }
   assert.deepEqual(gate.failures.map((row) => row.reason).sort(), [
-    'CATEGORY_UNCORROBORATED',
     'CONDITION_KIND_UNCORROBORATED',
     'PARTY_UNRESOLVED',
     'PROXY_MEETING_KIND_UNCORROBORATED',

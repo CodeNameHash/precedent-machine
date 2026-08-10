@@ -29,7 +29,6 @@ function read(name, json = true) {
 function artefacts() {
   return {
     machine: read('stage-2y-0-human-anchor-machine-packet.json'),
-    review: read('stage-2y-0-human-anchor-review.html', false),
     key: read('stage-2y-0-human-anchor-key.json'),
     ledger: read('stage-2y-0-human-anchor-decision-ledger.json'),
   };
@@ -51,6 +50,12 @@ test('anchor packet preserves the 80-card core and appends 16 hard-class seeds',
     && card.governing_context.governing_sentence.document_start_byte
       === card.governing_context.section_start_byte + card.governing_context.governing_sentence.start_byte), true);
   assert.ok(Object.keys(machine.strata.by_family).length >= 20);
+  const renderedCards = machine.cards.filter((card) => card.rendered_row !== null);
+  assert.equal(renderedCards.length, 12);
+  assert.deepEqual([...new Set(renderedCards.map((card) => card.family))].sort(), ['CLOSING_CONDITIONS', 'TERMINATION']);
+  assert.equal(renderedCards.every((card) => card.rendered_row_absent === null), true);
+  assert.equal(machine.cards.filter((card) => card.rendered_row === null)
+    .every((card) => card.rendered_row_absent === 'FAMILY_NOT_RENDERABLE'), true);
   const materialityCore = machine.cards.filter((card) => card.error_class === 'MATERIALITY_CODE' && !card.seed_extension)
     .map(({ source_id, proposed_analysis, seed_type, seeded_wrong }) => ({ source_id, proposed_analysis, seed_type, seeded_wrong }))
     .sort((left, right) => left.source_id.localeCompare(right.source_id));
@@ -99,23 +104,9 @@ test('unseeded cards are not pre-judged and nested packet objects reject added f
   shifted.cards[0].governing_context.governing_sentence.document_start_byte += 1;
   shifted.cards[0].governing_context.governing_sentence.document_end_byte += 1;
   assert.throws(() => validateHumanAnchorMachinePacket(shifted));
-});
-
-test('reviewer HTML is self-contained, numbered, filterable, and has no machine or answer leakage', () => {
-  const { machine, review } = artefacts();
-  assert.equal((review.match(/<h2>Card /g) || []).length, machine.cards.length);
-  assert.match(review, /id="family-filter"/);
-  assert.match(review, /id="class-filter"/);
-  assert.match(review, /Content-Security-Policy/);
-  assert.match(review, /Governing context/);
-  assert.match(review, /TOO_NARROW \/ TOO_WIDE \/ WRONG_LOCATION \/ CORRECT \/ CANT_JUDGE/);
-  assert.match(review, /<style>/);
-  assert.match(review, /<script>/);
-  assert.equal(/https?:\/\//.test(review), false);
-  assert.equal(/seeded_wrong|seed_type|seed_extension|expected_verdict|machine_packet|source_id/i.test(review), false);
-  for (const seed of machine.cards.filter((card) => card.seeded_wrong)) {
-    assert.match(review, new RegExp(seed.decision_key));
-  }
+  const omittedRenderedRow = JSON.parse(JSON.stringify(machine));
+  delete omittedRenderedRow.cards[0].rendered_row;
+  assert.throws(() => validateHumanAnchorMachinePacket(omittedRenderedRow));
 });
 
 test('stale and partial decision ledgers fail closed', async () => {

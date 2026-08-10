@@ -1,0 +1,52 @@
+{
+  "schema_version": "STAGE_2Y_F28_RECEIPT_PIN_COMPARISON/V1",
+  "authority": "OFFLINE_COMPARISON_ONLY",
+  "publication_authorisation": "NONE",
+  "generation_command": "node scripts/stage-2y-f28-receipt-pin-comparison.mjs --write",
+  "baseline_commit": "9b48148536ea3081f741148e57e26944c9231195",
+  "fixture": "tests/fixtures/canonical-v2/f28-third-live-run/resolution.json",
+  "inputs": {
+    "fixture_sha256_before_repin": "sha256:1d1bf5f6789bbfc1d98d412c0890b0523839d26fe829b8fe986423da21208035",
+    "run_receipt_sha256": "sha256:a4210ab3c110f39d564cf111b105052588f39f1566e63b99ad1eb0ef6fa86d6c",
+    "adapter_result_sha256": "sha256:2ba7bf7c0d0a37ef805059e844a217b3c653cbc945a6708e8a3f666a508552da"
+  },
+  "comparison_method": "Replay the committed run receipt and admitted source context through resolveCandidates with compileFixtureContractV13 and agreement_date 2026-04-18, then recursively compare the complete resolution object by JSON pointer.",
+  "differing_field_count": 2,
+  "differences": [
+    {
+      "json_pointer": "/resolution_receipt/registry_substrate/modules/4/digest",
+      "field_meaning": "interim-operating registry digest",
+      "committed_value": "sha256:77e80a8cca7ab4277e74181ef6ea2f0a5410b75d96ad9ae984b7653f5265efae",
+      "current_replay_value": "sha256:ea94d6af99cbef3d463133fc875f75fcc8cd462fe81d0db87e9358aac9852f47"
+    },
+    {
+      "json_pointer": "/resolution_receipt/resolution_receipt_id",
+      "field_meaning": "content identity derived from the changed registry digest",
+      "committed_value": "444542e5e5b5cec373274d366bdc9fd1e5414135185d21738ee0df86084391f3",
+      "current_replay_value": "199d69445be17fbf43fe46229c6e753a3dc9c829cc8344b60e0338577fadb7f6"
+    }
+  ],
+  "unchanged_collections": {
+    "resolved": "sha256:d01078433917cbf69c40b72741cc63fd57704a3bc00a6359821ea1d0b1882269",
+    "review_queue": "sha256:69122500ab00a6cd8021d2c90bd20375b096857558a20893872f43be440143b8",
+    "open_world": "sha256:f9c6b003d85b6ae4bc671f414d4b07c111a4e0c4902d1f26dce58c918d2d673c",
+    "residuals": "sha256:3be9ca5646006573f08a3100fa65a9c2bcec3252d672be5fe46ecde4b27007b1"
+  },
+  "unchanged_counts": {
+    "compiled_candidates": 38,
+    "resolved": 3,
+    "auto_pass": 0,
+    "review_queue": 6,
+    "open_world": 31,
+    "residuals": 1,
+    "provisions": 1,
+    "limb_component_trees": 1,
+    "ioc_restriction_components": 0
+  },
+  "cause": {
+    "source": "lib/vocab/resolution/interim-operating-registry.js",
+    "change_commit": "1401d7a3",
+    "description": "Four byte-exact legacy restriction-category quote aliases were added to the interim-operating registry fingerprint. The F28 fixture has zero interim-operating restriction components, so only registry provenance and its dependent receipt identity moved."
+  },
+  "conclusion": "Within F28, only registry provenance and its dependent receipt identity moved. Re-pinning is withheld because the separate seven-deal resolution-set comparison found broader semantic movement that requires human review."
+}

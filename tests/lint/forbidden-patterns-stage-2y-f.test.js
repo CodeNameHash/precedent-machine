@@ -15,6 +15,8 @@ const TERRA_ADJUDICATION = 'evidence/canonical-v2/stage-2y-f-terra-adjudication.
 const REPRESENTATION_REPLAY = 'evidence/canonical-v2/stage-2y-h-representation-topic-replay.json';
 const CONCEPT_COVERAGE_SIMULATION = 'evidence/canonical-v2/stage-2y-f-concept-coverage-simulation.json';
 const CONCEPT_COVERAGE_SCHEMA = 'STAGE_2Y_F_CONCEPT_COVERAGE_SIMULATION/V1';
+const HUMAN_ANCHOR_PACKET = 'evidence/blind-review/2026-08-10/stage-2y-0-human-anchor-machine-packet.json';
+const HUMAN_ANCHOR_PACKET_SCHEMA = 'CANONICAL_V2_HUMAN_ANCHOR_MACHINE_PACKET/V3';
 const HASHED_RUN_ID = '0'.repeat(64);
 const STAGE_2Y_L_ADAPTER = `evidence/canonical-v2/stage-2y-l-live-runs/${HASHED_RUN_ID}/adapter-result.json`;
 const STAGE_2Y_L_RECORDING = `evidence/canonical-v2/stage-2y-l-live-runs/${HASHED_RUN_ID}/recording.json`;
@@ -119,6 +121,34 @@ test('adjacent code with the concept-coverage prose fingerprint still fails', ()
   const result = lintFixture({ relativePath: adjacentCode, source: `const value = ${JSON.stringify(PROSE_FINGERPRINT_TEXT)};` });
   assert.notEqual(result.status, 0);
   assert.ok(result.stdout.includes(`${adjacentCode} :: ${PROSE_FINGERPRINT_PATTERN}`));
+});
+
+test('the exact V3 human-anchor machine packet ignores prose-only fingerprints', () => {
+  const source = JSON.stringify({ schema_version: HUMAN_ANCHOR_PACKET_SCHEMA, source_text: PROSE_FINGERPRINT_TEXT });
+  const result = lintFixture({ relativePath: HUMAN_ANCHOR_PACKET, source });
+  assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+  assert.match(result.stdout, /INVARIANT-4: PASS/);
+
+  const wrongSchema = lintFixture({
+    relativePath: HUMAN_ANCHOR_PACKET,
+    source: JSON.stringify({ schema_version: 'OTHER/V1', source_text: PROSE_FINGERPRINT_TEXT }),
+  });
+  assert.notEqual(wrongSchema.status, 0);
+  assert.ok(wrongSchema.stdout.includes(`${HUMAN_ANCHOR_PACKET} :: ${PROSE_FINGERPRINT_PATTERN}`));
+});
+
+test('the human-anchor packet exemption keeps code fingerprints and adjacent evidence in scope', () => {
+  const unsafePacket = lintFixture({
+    relativePath: HUMAN_ANCHOR_PACKET,
+    source: JSON.stringify({ schema_version: HUMAN_ANCHOR_PACKET_SCHEMA, source_text: CODE_FINGERPRINT_TEXT }),
+  });
+  assert.notEqual(unsafePacket.status, 0);
+  assert.ok(unsafePacket.stdout.includes(`${HUMAN_ANCHOR_PACKET} :: ${CODE_FINGERPRINT_PATTERN}`));
+
+  const adjacent = 'evidence/blind-review/2026-08-10/stage-2y-0-human-anchor-machine-packet-copy.json';
+  const adjacentResult = lintFixture({ relativePath: adjacent, source: PROSE_FINGERPRINT_TEXT });
+  assert.notEqual(adjacentResult.status, 0);
+  assert.ok(adjacentResult.stdout.includes(`${adjacent} :: ${PROSE_FINGERPRINT_PATTERN}`));
 });
 
 test('hash-addressed Stage 2Y-L source evidence ignores prose-only fingerprints under exact schemas', () => {

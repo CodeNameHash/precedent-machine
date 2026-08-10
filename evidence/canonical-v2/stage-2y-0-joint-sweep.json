@@ -1,5 +1,5 @@
 {
-  "artifact_id": "4762b63b02a9a51d022cfe1c8d25731910872527752dfe35fa6e84a47999a83d",
+  "artifact_id": "4fb4a0e25bc2899ea22c76b0b1024425d34a8c9540dc157b07381092a2ed1315",
   "calibration_authority": null,
   "evidence_blockers": {
     "b_d": {
@@ -135,17 +135,46 @@
     }
   },
   "human_anchor_gate": {
+    "answer_rate_floor": 0.9,
+    "answered_cards": 0,
+    "by_error_class": {
+      "MATERIALITY_CODE": {
+        "answered": 0,
+        "rate": 0,
+        "total": 24
+      },
+      "OTHER": {
+        "answered": 0,
+        "rate": 0,
+        "total": 16
+      },
+      "PARTY_ATTRIBUTION": {
+        "answered": 0,
+        "rate": 0,
+        "total": 24
+      },
+      "SPAN": {
+        "answered": 0,
+        "rate": 0,
+        "total": 16
+      },
+      "TOPIC_BUCKET": {
+        "answered": 0,
+        "rate": 0,
+        "total": 16
+      }
+    },
     "closed": true,
     "publication_authorisation": "NONE",
     "reason": "HUMAN_ANCHOR_REVIEW_PENDING",
     "reviewed_cards": 0,
-    "total_cards": 80
+    "total_cards": 96
   },
   "input_digests": {
     "config": "9569c3a57edf7a6ec024ffe598b1077aa6e69cfd65dff2a334149851d613a725",
     "defined_term_replay": "11bc31c15583e2f5567de006979892c150f2737f0bfa27226181e42dc8307e29",
-    "human_anchor_decision_ledger": "32340d933a17fe57696bb50696021ac78438c1a8b2329b2be53c06bef3ef1031",
-    "human_anchor_machine_packet": "02fb53c2f3a41bab23b42fbde346fcb9b90dffa1131aeb89eb6d6b86633aa250"
+    "human_anchor_decision_ledger": "72de5e385765c0a8a4fafb8bacd4a44a511e578d873491f6caec7b6a87b6fb86",
+    "human_anchor_machine_packet": "273af02054b7156b0e4485a43a136a1bf137bcd536686eda00b92f1204c9d45f"
   },
   "joint_confirmation": null,
   "model_calls": 0,

@@ -1,0 +1,21 @@
+First local fix hypothesis, reconstructed exactly after unwind.
+Not committed. No authority. Recorded before corpus-wide validation.
+
+diff --git a/lib/canonical-v2/native-producer/candidate-resolution.js b/lib/canonical-v2/native-producer/candidate-resolution.js
+--- a/lib/canonical-v2/native-producer/candidate-resolution.js
++++ b/lib/canonical-v2/native-producer/candidate-resolution.js
+@@
+-  PARENT_APPROVAL: /\b(?:obtain(?:ing)?\s+(?:the\s+)?Parent\s+(?:Stockholder|Shareholder)\s+Approval|Parent\s+(?:Stockholder|Shareholder)\s+Approval[\s\S]{0,120}(?:obtain|approve|adopt|vote|consent)\w*)\b/i,
++  PARENT_APPROVAL: /\b(?:obtain(?:ing)?\s+(?:the\s+)?Parent\s+(?:Stockholder|Shareholder)\s+Approval|Parent\s+(?:Stockholder|Shareholder)\s+Approval[\s\S]{0,120}(?:obtain|approve|adopt|vote|consent)\w*|(?:Parent(?:'s|’s)?\s+(?:stockholders?|shareholders?)|(?:stockholders?|shareholders?)\s+of\s+Parent)\s+(?:shall|will|must)\s+(?:approve|adopt|vote|consent)\w*)\b/i,
+
+diff --git a/tests/fixtures/canonical-v2/f28-third-live-run/resolution.json b/tests/fixtures/canonical-v2/f28-third-live-run/resolution.json
+--- a/tests/fixtures/canonical-v2/f28-third-live-run/resolution.json
++++ b/tests/fixtures/canonical-v2/f28-third-live-run/resolution.json
+@@
+-          "digest": "sha256:77e80a8cca7ab4277e74181ef6ea2f0a5410b75d96ad9ae984b7653f5265efae"
++          "digest": "sha256:ea94d6af99cbef3d463133fc875f75fcc8cd462fe81d0db87e9358aac9852f47"
+@@
+-    "resolution_receipt_id": "444542e5e5b5cec373274d366bdc9fd1e5414135185d21738ee0df86084391f3"
++    "resolution_receipt_id": "199d69445be17fbf43fe46229c6e753a3dc9c829cc8344b60e0338577fadb7f6"
+
+The same 444542... to 199d69... literal change was made in both F28 pin tests.

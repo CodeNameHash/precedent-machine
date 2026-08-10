@@ -88,6 +88,8 @@ const LIVE_RUN_SOURCE_TEXT_FILE = /^evidence\/canonical-v2\/[^/]+\/(adapter-resu
 const DETERMINISTIC_DERIVED_PROSE_EVIDENCE_FILE = /^evidence\/canonical-v2\/(stage-2y-f-lexical-classification|stage-2y-f-terra-adjudication|stage-2y-h-representation-topic-replay)\.json$/;
 const CONCEPT_COVERAGE_SIMULATION_FILE = 'evidence/canonical-v2/stage-2y-f-concept-coverage-simulation.json';
 const CONCEPT_COVERAGE_SIMULATION_SCHEMA = 'STAGE_2Y_F_CONCEPT_COVERAGE_SIMULATION/V1';
+const HUMAN_ANCHOR_MACHINE_PACKET_FILE = 'evidence/blind-review/2026-08-10/stage-2y-0-human-anchor-machine-packet.json';
+const HUMAN_ANCHOR_MACHINE_PACKET_SCHEMA = 'CANONICAL_V2_HUMAN_ANCHOR_MACHINE_PACKET/V3';
 const HASH_ADDRESSED_STAGE_2Y_L_SOURCE_FILE = /^evidence\/canonical-v2\/stage-2y-l-live-runs\/[a-f0-9]{64}\/(adapter-result|recording|native-producer-recorded-response-[^/]+)\.json$/;
 const STAGE_2Y_L_SOURCE_SCHEMAS = Object.freeze({
   'adapter-result': 'NATIVE_WRITE_SET_ADAPTER_RESULT/V1',
@@ -136,6 +138,15 @@ function isConceptCoverageSimulation(rel, src) {
   if (rel !== CONCEPT_COVERAGE_SIMULATION_FILE) return false;
   try {
     return JSON.parse(src).schema_version === CONCEPT_COVERAGE_SIMULATION_SCHEMA;
+  } catch (_) {
+    return false;
+  }
+}
+
+function isHumanAnchorMachinePacket(rel, src) {
+  if (rel !== HUMAN_ANCHOR_MACHINE_PACKET_FILE) return false;
+  try {
+    return JSON.parse(src).schema_version === HUMAN_ANCHOR_MACHINE_PACKET_SCHEMA;
   } catch (_) {
     return false;
   }
@@ -442,6 +453,7 @@ for (const rel of changedFiles()) {
     // Keep every code fingerprint, and every other evidence file, in scope.
     if (DETERMINISTIC_DERIVED_PROSE_EVIDENCE_FILE.test(rel) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (isConceptCoverageSimulation(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
+    if (isHumanAnchorMachinePacket(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (isHashAddressedStage2yLSourceFile(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (new RegExp(pattern, 'im').test(src)) {
       failures.push(`${rel} :: ${pattern}`);

@@ -31,6 +31,7 @@ const {
 } = require('../lib/canonical-v2/publication-disposition');
 const { canonicalJson, contentId, sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const {
+  DECISION_LEDGER_SCHEMA,
   buildHumanAnchorReviewPacket,
   buildHumanAnchorKey,
 } = require('../lib/canonical-v2/human-anchor-review');
@@ -64,7 +65,7 @@ function authorityProof() {
   const reviewPacket = buildHumanAnchorReviewPacket({ machine_packet: machinePacket });
   const seedKey = buildHumanAnchorKey({ machine_packet: machinePacket, review_packet: reviewPacket });
   const ledgerBody = {
-    schema_version: 'CANONICAL_V2_HUMAN_ANCHOR_DECISION_LEDGER/V2',
+    schema_version: DECISION_LEDGER_SCHEMA,
     review_packet_id: reviewPacket.review_packet_id,
     machine_packet_id: reviewPacket.machine_packet_id,
     decision_keys_digest: reviewPacket.decision_keys_digest,
