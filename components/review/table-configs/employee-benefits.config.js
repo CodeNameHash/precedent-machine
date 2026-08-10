@@ -1,5 +1,5 @@
 import React from 'react';
-import { comparisonGroupForStandardCode } from '../../../lib/employee-benefits.js';
+import { comparisonGroupForStandardCode, comparisonGroupLabel } from '../../../lib/employee-benefits.js';
 import { cardCode, cardFeatures, splitForCell, textOf, valueText } from './card-utils.js';
 import { standardColorKey } from './standard-colors.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
@@ -242,7 +242,7 @@ function rowsFromCompensationItems(cards, headline) {
           id: `employee-benefits-${type.code || rows.length}`,
           kind: 'item',
           benefit: type.label,
-          comparison: raw.comparison_group || raw.comparisonGroup || comparisonGroupForStandardCode(stdCode) || 'Not specified',
+          comparison: comparisonGroupLabel(raw.comparison_group || raw.comparisonGroup) || comparisonGroupForStandardCode(stdCode) || 'Not specified',
           standard: stdLabel || 'Not specified',
           period,
           detail: detailBits(raw) || 'Present, detail not extracted',
