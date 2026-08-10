@@ -2710,8 +2710,17 @@ separately as *narrow → limb → clause* — recorded in
 file, which is why an earlier draft's bare cross-reference to "Ruling 3" pointed
 at nothing a reader of `PLAN.md` could find. `provision_components` are flat
 under an instance with no component-to-component parent; that shape supports two
-levels, and `lib/bring-down-tiers.js` stores exactly two. *No default — but note
-this blocks 152 occurrences, so silence here is not free.*
+levels, and `lib/bring-down-tiers.js` stores exactly two.
+
+***Default taken 2026-08-10 rather than left blocking, since silence here costs
+152 occurrences.*** **Two stored levels — fact plus whole clause — and the
+three-level narrow → limb → clause expansion is display, not storage.** Three
+things support it: `bring-down-tiers.js` already stores exactly two and is the
+pattern this stage copies elsewhere; `ClauseSidebar.jsx` already implements
+fact → limb → clause expansion as a rendering behaviour, so the reference
+implementation exists rather than needing design; and Fable confirmed two-span
+claims already publish and persist, so nothing needs building to support them.
+Ben can overturn this, but the work no longer waits on it.
 
 ---
 
