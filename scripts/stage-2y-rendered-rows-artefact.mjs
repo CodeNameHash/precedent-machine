@@ -59,6 +59,7 @@ function claimExcerpt(entry) {
 
 const runs = latestRunsPerDealFamily();
 const records = [];
+const renderedSignatures = new Map();
 const tally = new Map();
 
 for (const run of runs) {
@@ -78,7 +79,6 @@ for (const run of runs) {
       continue;
     }
     if (takenForThisRun >= PER_FAMILY) continue;
-    takenForThisRun += 1;
     // Pick the row the claim actually FILLS, not the section's catalogue.
     //
     // Catalogue configs (material contracts, employee benefits, termination
@@ -98,7 +98,7 @@ for (const run of runs) {
     }));
     const keyMatched = rendered.rows.filter((row) => row.matches_claim_key);
     const chosen = populated.length ? populated : keyMatched;
-    records.push({
+    const record = {
       deal: run.manifest.deal,
       family,
       run: run.dir,
@@ -114,7 +114,26 @@ for (const run of runs) {
         matched: row.matches_claim_key,
         cells: row.cells.filter((cell) => cell.text && cell.text.trim()).slice(0, 6),
       })),
-    });
+    };
+    // Collapse claims whose RENDERED OUTPUT is identical. Ben reviewed 65 cards
+    // and wrote "dupe of 29", "dupe of 33", "dupe of 44" a dozen times: three
+    // different Material Contracts claims -- acquisition/disposition,
+    // indebtedness, leases -- render byte-identical rows, because the catalogue
+    // table is not driven by the individual claim. Showing them as separate
+    // cards wastes a reviewer's time on the same output and buries the finding.
+    // One card, with the count and every claim it covers named.
+    const signature = JSON.stringify({ rows: record.rows, sel: record.row_selection });
+    const seen = renderedSignatures.get(`${family}|${run.manifest.deal}|${signature}`);
+    if (seen) {
+      seen.duplicate_count += 1;
+      seen.also_covers.push({ section: record.section, claim_definition_key: record.claim_definition_key, excerpt: record.excerpt });
+      continue;
+    }
+    takenForThisRun += 1;
+    record.duplicate_count = 1;
+    record.also_covers = [];
+    renderedSignatures.set(`${family}|${run.manifest.deal}|${signature}`, record);
+    records.push(record);
   }
 }
 
@@ -144,9 +163,10 @@ const familyRows = families.map((f) => `<tr><th>${esc(f.family)}</th><td class="
 const cards = records.map((r, i) => `
 <article class="card" data-key="${esc(r.deal)}|${esc(r.family)}|${esc(r.section)}|${i}">
   <header><span class="num">${i + 1}</span><div><h3>${esc(r.deal)} · ${esc(r.family)} · §${esc(r.section)}</h3>
-  <p class="meta">${esc(r.claim_definition_key || 'no claim key')} · section renders ${r.row_count} row${r.row_count === 1 ? '' : 's'}</p></div></header>
+  <p class="meta">${esc(r.claim_definition_key || 'no claim key')} · section renders ${r.row_count} row${r.row_count === 1 ? '' : 's'}${r.duplicate_count > 1 ? ` · <strong class="dupe">${r.duplicate_count} claims render this identical output</strong>` : ''}</p></div></header>
   <div class="lbl">What was extracted</div>
   <blockquote>${esc(r.excerpt)}</blockquote>
+  ${r.also_covers.length ? `<details class="also"><summary>${r.also_covers.length} other claim${r.also_covers.length === 1 ? '' : 's'} produce exactly this — click to read them</summary>${r.also_covers.map((o) => `<blockquote>${esc(o.excerpt)}</blockquote>`).join('')}</details>` : ''}
   <div class="lbl">What a lawyer sees</div>
   ${r.row_selection === 'NONE_IDENTIFIED' ? '<p class="empty">No row in this section carries content for this claim. That is the finding — the claim resolved and fills nothing a reader would see.</p>' : ''}
   ${r.rows.map((row) => `<div class="row${row.matched ? ' matched' : ''}">
@@ -189,6 +209,10 @@ blockquote{margin:0;padding:12px 14px;background:#f7f8fa;border-left:3px solid v
 .cells{min-width:0}.cells th{width:34%;color:var(--muted);font-weight:600;font-size:13px;vertical-align:top}
 .empty{color:var(--bad);font-size:13.5px;margin:0}
 .note{background:#fff;border:1px solid var(--line);border-left:3px solid var(--bad);border-radius:6px;padding:14px 16px;margin:16px 0;font-size:14.5px}
+.dupe{color:var(--bad)}
+details.also{margin:8px 0 0;font-size:14px}
+details.also summary{cursor:pointer;color:var(--bad);font-weight:600;padding:6px 0}
+details.also blockquote{font-size:14.5px;margin-top:7px}
 .verdict{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0 8px}
 .verdict button{font:600 13px/1 sans-serif;padding:9px 13px;border-radius:6px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
 .verdict button:hover{border-color:var(--accent)}
