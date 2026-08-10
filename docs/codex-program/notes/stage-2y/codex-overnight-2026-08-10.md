@@ -54,14 +54,32 @@ item, and write evidence as you go so an interrupted run leaves usable work.
    rather than the surface heuristic that produced that figure, and report the
    corrected number whichever way it moves.
 
-4. ROOT-CAUSE THE THREE REGRESSIONS, and re-run the batch (46 model calls)
+4. FINISH 2Y-N AND EMIT THE RENDERED-ROWS ARTEFACT
+   You already have a working headless rendered-row service locally, using the
+   real decorated Review V2 configs and cell renderers, with six passing tests
+   including the absence-copy and `bandAligned` wrong-row cases. Two things
+   remain:
+   (a) extend coverage beyond Closing Conditions and Termination to every
+       family in the anchor set;
+   (b) emit a committed, browsable artefact under `evidence/` showing 30-50
+       REAL claims across families as: excerpt -> governing chapeau -> the row
+       it renders (section, row label, every cell).
+   Include at least one known-bad case where the CODE is right and the ROW is
+   wrong — one absence-copy row and one mis-banded `bandAligned` row. That
+   contrast is the point of the whole step.
+   Before writing new projection code, check `codex/m3-employee-dno-build`
+   (pushed as 3978f282) for Closing Conditions projections and parity work that
+   may already do part of the claim -> reviewDeal projection. This programme's
+   most expensive habit is rebuilding what it already has.
+
+5. ROOT-CAUSE THE THREE REGRESSIONS, and re-run the batch (46 model calls)
    CATEGORY_UNCORROBORATED 4/8 -> 1/8 — three SETTLE and one CHARTER fell to
    open-world. Three Proxy claims absent from producer output entirely: Concho
    §6.6 board recommendation, Concho §6.6 record date, Red Hat §5.01(c)
    supplemental-disclosure adjournment. 35 claims into open-world across
    Financing and Proxy.
 
-5. MEASURE, and make it openable
+6. MEASURE, and make it openable
    A single committed HTML artefact under `evidence/` showing, per family,
    FOUR states before and after: attempted, resolved, open-world, review.
    Never a single rate. Never resolved-count alone — that is exactly what hid
@@ -70,8 +88,11 @@ item, and write evidence as you go so an interrupted run leaves usable work.
    the twelve strata of eight in `evidence/blind-review/2026-08-08/README.md`.
 
 NOT THIS RUN
-  The anchor packet regeneration. It produces no product change and blocks
-  nothing until the publication flip. It comes next, not tonight.
+  The anchor packet REGENERATION ARTEFACT. Keep the design work already done --
+  the byte-bound chapeaux, the per-class questions, the SPAN redesign, the
+  96-card 12-seed layout -- commit it, and stop there. Writing the regenerated
+  packet produces no product change and blocks nothing until the publication
+  flip. It is the first item of the NEXT run, not this one.
   2Y-H topic classification — Claude is writing the topic list.
   Anything that serves or publishes.
 
@@ -120,6 +141,11 @@ after, with the corpus totals and the per-stratum blind re-score. If items 1–3
 land, the recovered population should be in the high hundreds against the
 4,241 unresolved occurrences — an order of magnitude more than the 36 the last
 run produced.
+
+And a second artefact: 30–50 real claims shown as excerpt → governing chapeau →
+the row a lawyer would see, including cases where the code is right and the row
+is wrong. That is the answer to "it categorised correctly, but what is the
+output?".
 
 If it is not, the stop conditions above will say which of them fired, and that
 is itself the finding.
