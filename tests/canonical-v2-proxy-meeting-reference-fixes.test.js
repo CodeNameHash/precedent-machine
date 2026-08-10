@@ -142,11 +142,12 @@ test('REPLAY (evidence/canonical-v2/modiv-proxy-meeting-20260806/): narrowed ref
   const resolution = runReplay(runReceipt, manifest);
 
   assert.equal(resolution.resolution_receipt.counts.compiled_candidates, 21);
-  assert.equal(resolution.resolved.length, 4, 'two narrowed references and two Boolean presence facts resolve');
+  assert.equal(resolution.resolved.length, 5, 'two narrowed references, two Boolean presence facts and one supplemental-disclosure reason resolve');
   assert.equal(resolution.open_world.length, 8, 'unaffected by this fix');
 
   const resolvedPhrases = resolution.resolved.map((entry) => entry.claim.raw_value).sort();
   assert.deepEqual(resolvedPhrases, [
+    'allow reasonable additional time for the filing and distribution of any supplemental or amended disclosure which the Company Board has determined in good faith (after consultation with its outside legal counsel) is necessary under applicable Laws or the duties of the Company’s directors',
     'commence a broker search (and any additional broker searches, if necessary) pursuant to Section 14a-13 of the Exchange Act',
     'establish a record date for and give notice of a meeting of its stockholders',
     'for the absence of a quorum',

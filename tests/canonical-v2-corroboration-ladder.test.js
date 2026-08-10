@@ -6,6 +6,7 @@ const crypto = require('node:crypto');
 
 const {
   assessCorroborationLadder,
+  assessDeterministicCorroborationAtRung,
   ANCHOR_STEM_DECLARATION_DIGEST,
   normaliseForm,
   criterionIdentity,
@@ -69,6 +70,22 @@ test('normalisation changes form, never topic vocabulary', () => {
   assert.equal(assess('GENERAL_COVENANTS', 'Merger Sub will issue a press release.', 'COV-MERGESUB').rungs[1].derivation, 'POSITIVE_CONTRADICTION');
   const strictTax = assess('INTERIM_OPERATING', 'The Company shall not file any Tax Returns.', 'TAX_ELECTIONS');
   assert.deepEqual(rungs(strictTax).slice(0, 3), ['MATCH', 'MATCH', 'MATCH']);
+});
+
+test('the runtime seam admits deterministic rungs only and preserves contradictions', () => {
+  const modalVariant = 'Merger Sub will not conduct other business activities.';
+  assert.equal(assessDeterministicCorroborationAtRung({
+    family: 'GENERAL_COVENANTS', quote: modalVariant, code: 'COV-MERGESUB', selected_rung: 0,
+  }).derivation, 'EMPTY');
+  assert.equal(assessDeterministicCorroborationAtRung({
+    family: 'GENERAL_COVENANTS', quote: modalVariant, code: 'COV-MERGESUB', selected_rung: 1,
+  }).derivation, 'MATCH');
+  assert.equal(assessDeterministicCorroborationAtRung({
+    family: 'GENERAL_COVENANTS', quote: 'Merger Sub will issue a press release.', code: 'COV-MERGESUB', selected_rung: 1,
+  }).derivation, 'POSITIVE_CONTRADICTION');
+  assert.throws(() => assessDeterministicCorroborationAtRung({
+    family: 'GENERAL_COVENANTS', quote: modalVariant, code: 'COV-MERGESUB', selected_rung: 3,
+  }), /integer from 0 through 2/);
 });
 
 test('anchor and stem declarations require both signals and have a stable digest', () => {

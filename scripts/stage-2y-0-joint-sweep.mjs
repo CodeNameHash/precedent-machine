@@ -9,7 +9,7 @@ const require = createRequire(import.meta.url);
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUTPUT = 'evidence/canonical-v2/stage-2y-0-joint-sweep.json';
 const CONFIG = 'evidence/canonical-v2/stage-2y-0-joint-sweep-config.json';
-const HUMAN_ANCHOR_DIRECTORY = 'evidence/blind-review/2026-08-09';
+const HUMAN_ANCHOR_DIRECTORY = 'evidence/blind-review/2026-08-10';
 const DEFINED_TERM_REPLAY = 'evidence/canonical-v2/stage-2y-d-defined-term-replay.json';
 
 const { canonicalJson, sha256Hex } = require('../lib/canonical-v2/canonical-bytes');

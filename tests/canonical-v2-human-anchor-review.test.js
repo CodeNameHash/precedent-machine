@@ -7,7 +7,7 @@ const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const test = require('node:test');
 
-const { canonicalJson, contentId } = require('../lib/canonical-v2/canonical-bytes');
+const { canonicalJson, contentId, sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const {
   DECISION_LEDGER_SCHEMA,
   validateHumanAnchorMachinePacket,
@@ -18,7 +18,7 @@ const {
 } = require('../lib/canonical-v2/human-anchor-review');
 
 const ROOT = path.resolve(__dirname, '..');
-const OUTPUT_DIR = path.join(ROOT, 'evidence/blind-review/2026-08-09');
+const OUTPUT_DIR = path.join(ROOT, 'evidence/blind-review/2026-08-10');
 const SCRIPT = path.join(ROOT, 'scripts/stage-2y-0-human-anchor-review.mjs');
 
 function read(name, json = true) {
@@ -35,19 +35,26 @@ function artefacts() {
   };
 }
 
-test('anchor packet conserves an 80-card, 5-class stratified selection with exact source evidence', () => {
+test('anchor packet preserves the 80-card core and appends 16 hard-class seeds', () => {
   const { machine } = artefacts();
   assert.doesNotThrow(() => validateHumanAnchorMachinePacket(machine));
-  assert.equal(machine.cards.length, 80);
+  assert.equal(machine.cards.length, 96);
   assert.deepEqual(machine.strata.by_error_class, {
-    MATERIALITY_CODE: 16, OTHER: 16, PARTY_ATTRIBUTION: 16, SPAN: 16, TOPIC_BUCKET: 16,
+    MATERIALITY_CODE: 24, OTHER: 16, PARTY_ATTRIBUTION: 24, SPAN: 16, TOPIC_BUCKET: 16,
   });
   assert.equal(Object.values(machine.strata.by_error_class).reduce((total, count) => total + count, 0), machine.cards.length);
   assert.equal(machine.cards.every((card, index) => card.card_number === index + 1
     && card.evidence.excerpt.length > 0
     && card.evidence.absolute_end > card.evidence.absolute_start
-    && card.evidence.excerpt_digest.length === 64), true);
+    && card.evidence.excerpt_digest.length === 64
+    && card.governing_context.governing_sentence.text.length > 0
+    && card.governing_context.governing_sentence.document_start_byte
+      === card.governing_context.section_start_byte + card.governing_context.governing_sentence.start_byte), true);
   assert.ok(Object.keys(machine.strata.by_family).length >= 20);
+  const materialityCore = machine.cards.filter((card) => card.error_class === 'MATERIALITY_CODE' && !card.seed_extension)
+    .map(({ source_id, proposed_analysis, seed_type, seeded_wrong }) => ({ source_id, proposed_analysis, seed_type, seeded_wrong }))
+    .sort((left, right) => left.source_id.localeCompare(right.source_id));
+  assert.equal(sha256Hex(canonicalJson(materialityCore)), 'd5f35cc91efd304fca75fe3a3544f6f2c982d5085c3f7b00e6ebb854b80cf0f0');
 });
 
 test('recorded hard-error variants are visible in the machine packet and bound by a separate sealed key', async () => {
@@ -59,11 +66,16 @@ test('recorded hard-error variants are visible in the machine packet and bound b
   for (const errorClass of ['PARTY_ATTRIBUTION', 'MATERIALITY_CODE']) {
     const machineSeeds = machine.cards.filter((card) => card.seeded_wrong && card.seed_type === errorClass);
     const keyedSeeds = key.entries.filter((entry) => entry.seeded_wrong && entry.seed_type === errorClass);
-    assert.equal(machineSeeds.length, 4, errorClass);
-    assert.equal(keyedSeeds.length, 4, errorClass);
+    assert.equal(machineSeeds.length, 12, errorClass);
+    assert.equal(keyedSeeds.length, 12, errorClass);
+    assert.equal(machineSeeds.filter((card) => !card.seed_extension).length, 4, errorClass);
     assert.equal(keyedSeeds.every((entry) => entry.planted_expected_verdict === 'ERROR'), true);
   }
   assert.equal(key.entries.filter((entry) => !entry.seeded_wrong).every((entry) => entry.planted_expected_verdict === null), true);
+  assert.equal(machine.cards.filter((card) => card.seed_extension && card.error_class === 'MATERIALITY_CODE')
+    .every((card) => ['MAT_ALL_MATERIAL', 'MAT_MAE_QUALIFIED'].includes(card.proposed_analysis.proposed_value)), true);
+  assert.equal(machine.cards.filter((card) => card.seed_extension && card.error_class === 'PARTY_ATTRIBUTION')
+    .every((card) => ['Company', 'Parent'].includes(card.proposed_analysis.proposed_value)), true);
   const forged = JSON.parse(JSON.stringify(key));
   forged.entries[0].planted_expected_verdict = forged.entries[0].planted_expected_verdict === 'ERROR' ? null : 'ERROR';
   assert.throws(() => validateHumanAnchorKey({ key: forged, machine_packet: machine, review_packet: generated.reviewPacket }));
@@ -83,6 +95,10 @@ test('unseeded cards are not pre-judged and nested packet objects reject added f
   const forged = JSON.parse(JSON.stringify(machine));
   forged.cards[0].identity.unchecked = 'leak';
   assert.throws(() => validateHumanAnchorMachinePacket(forged));
+  const shifted = JSON.parse(JSON.stringify(machine));
+  shifted.cards[0].governing_context.governing_sentence.document_start_byte += 1;
+  shifted.cards[0].governing_context.governing_sentence.document_end_byte += 1;
+  assert.throws(() => validateHumanAnchorMachinePacket(shifted));
 });
 
 test('reviewer HTML is self-contained, numbered, filterable, and has no machine or answer leakage', () => {
@@ -91,10 +107,12 @@ test('reviewer HTML is self-contained, numbered, filterable, and has no machine 
   assert.match(review, /id="family-filter"/);
   assert.match(review, /id="class-filter"/);
   assert.match(review, /Content-Security-Policy/);
+  assert.match(review, /Governing context/);
+  assert.match(review, /TOO_NARROW \/ TOO_WIDE \/ WRONG_LOCATION \/ CORRECT \/ CANT_JUDGE/);
   assert.match(review, /<style>/);
   assert.match(review, /<script>/);
   assert.equal(/https?:\/\//.test(review), false);
-  assert.equal(/seeded_wrong|seed_type|expected_verdict|machine_packet|source_id/i.test(review), false);
+  assert.equal(/seeded_wrong|seed_type|seed_extension|expected_verdict|machine_packet|source_id/i.test(review), false);
   for (const seed of machine.cards.filter((card) => card.seeded_wrong)) {
     assert.match(review, new RegExp(seed.decision_key));
   }
@@ -128,14 +146,50 @@ test('empty ledger validates and the review gate remains closed without publicat
   const { buildHumanAnchorArtefacts } = await import(`${path.toNamespacedPath(SCRIPT)}?gate=${Date.now()}`);
   const { reviewPacket } = buildHumanAnchorArtefacts({ repoRoot: ROOT });
   assert.doesNotThrow(() => validateHumanAnchorDecisionLedger({ ledger, review_packet: reviewPacket }));
-  assert.deepEqual(humanAnchorReviewGate({ ledger, review_packet: reviewPacket }), {
-    closed: true,
-    reason: 'HUMAN_ANCHOR_REVIEW_PENDING',
-    reviewed_cards: 0,
-    total_cards: 80,
-    publication_authorisation: 'NONE',
-  });
+  const gate = humanAnchorReviewGate({ ledger, review_packet: reviewPacket });
+  assert.equal(gate.closed, true);
+  assert.equal(gate.reason, 'HUMAN_ANCHOR_REVIEW_PENDING');
+  assert.equal(gate.reviewed_cards, 0);
+  assert.equal(gate.answered_cards, 0);
+  assert.equal(gate.total_cards, 96);
+  assert.equal(gate.answer_rate_floor, 0.9);
+  assert.equal(gate.publication_authorisation, 'NONE');
+  assert.equal(Object.values(gate.by_error_class).every((entry) => entry.answered === 0), true);
   assert.equal(canonicalJson(ledger.decisions), '[]');
+});
+
+test('the review gate measures at least 90 percent answered per class without turning CANT_JUDGE into truth', async () => {
+  const { buildHumanAnchorArtefacts } = await import(`${path.toNamespacedPath(SCRIPT)}?answer-rate=${Date.now()}`);
+  const { reviewPacket } = buildHumanAnchorArtefacts({ repoRoot: ROOT });
+  const makeLedger = (cantJudgeByClass) => {
+    const seen = new Map();
+    const body = {
+      schema_version: DECISION_LEDGER_SCHEMA,
+      review_packet_id: reviewPacket.review_packet_id,
+      machine_packet_id: reviewPacket.machine_packet_id,
+      decision_keys_digest: reviewPacket.decision_keys_digest,
+      decisions: reviewPacket.cards.map((card) => {
+        const index = seen.get(card.error_class) || 0;
+        seen.set(card.error_class, index + 1);
+        return {
+          decision_key: card.decision_key,
+          reviewer_id: 'test-human',
+          reviewed_at: '2026-08-10T12:00:00.000Z',
+          verdict: index < (cantJudgeByClass[card.error_class] || 0) ? 'CANT_JUDGE' : 'CORRECT',
+        };
+      }),
+    };
+    return { ...body, decision_ledger_id: contentId(DECISION_LEDGER_SCHEMA, body) };
+  };
+  const passing = humanAnchorReviewGate({
+    ledger: makeLedger({ MATERIALITY_CODE: 2, PARTY_ATTRIBUTION: 2, SPAN: 1, TOPIC_BUCKET: 1, OTHER: 1 }),
+    review_packet: reviewPacket,
+  });
+  assert.equal(passing.reason, 'CALIBRATION_AUTHORITY_NOT_IMPLEMENTED');
+  assert.equal(Object.values(passing.by_error_class).every((entry) => entry.rate >= 0.9), true);
+  const failing = humanAnchorReviewGate({ ledger: makeLedger({ SPAN: 2 }), review_packet: reviewPacket });
+  assert.equal(failing.reason, 'HUMAN_ANCHOR_ANSWER_RATE_BELOW_FLOOR');
+  assert.equal(failing.by_error_class.SPAN.rate, 0.875);
 });
 
 test('completed imported ledger validates without rebuilding the empty ledger template', async () => {
@@ -160,7 +214,7 @@ test('completed imported ledger validates without rebuilding the empty ledger te
     fs.writeFileSync(ledgerPath, `${canonicalJson(ledger)}\n`);
     const validation = spawnSync(process.execPath, [SCRIPT, '--validate-ledger', ledgerPath], { cwd: ROOT, encoding: 'utf8' });
     assert.equal(validation.status, 0, validation.stderr);
-    assert.match(validation.stdout, /human anchor ledger validated: 80; anchor set: [a-f0-9]{64}/);
+    assert.match(validation.stdout, /human anchor ledger validated: 96; anchor set: [a-f0-9]{64}/);
   } finally {
     fs.rmSync(directory, { recursive: true, force: true });
   }

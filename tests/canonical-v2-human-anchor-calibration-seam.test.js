@@ -58,7 +58,7 @@ test('a complete human ledger becomes the exact anchor truth used to score adjud
   const anchorSet = buildAnchorSetFromHumanAnchorLedger({
     machine_packet: machinePacket, review_packet: reviewPacket, seed_key: key, decision_ledger: ledger,
   });
-  assert.equal(anchorSet.anchors.length, 80);
+  assert.equal(anchorSet.anchors.length, 96);
   assert.equal(anchorSet.anchors.find((anchor) => anchor.anchor_id === unseededOther.decision_key).human_verdict, 'ERROR');
   const adjudicators = ['a', 'b', 'c'].map((adjudicator_id, index) => ({
     adjudicator_id,
@@ -91,6 +91,16 @@ test('empty, partial, stale, and seed-key-mismatched inputs cannot become an anc
   const stale = { ...staleBody, decision_ledger_id: contentId(DECISION_LEDGER_SCHEMA, staleBody) };
   calibrationError('HUMAN_ANCHOR_LEDGER_INVALID', () => buildAnchorSetFromHumanAnchorLedger({
     machine_packet: machinePacket, review_packet: reviewPacket, seed_key: key, decision_ledger: stale,
+  }));
+  const cantJudge = completedLedger({
+    reviewPacket,
+    seedKey: key,
+    verdictFor: (card) => card.decision_key === reviewPacket.cards.find((item) => item.error_class === 'SPAN').decision_key
+      ? 'CANT_JUDGE'
+      : (key.entries.find((entry) => entry.decision_key === card.decision_key).seeded_wrong ? 'ERROR' : 'CORRECT'),
+  });
+  calibrationError('HUMAN_ANCHOR_UNJUDGEABLE', () => buildAnchorSetFromHumanAnchorLedger({
+    machine_packet: machinePacket, review_packet: reviewPacket, seed_key: key, decision_ledger: cantJudge,
   }));
   const mismatchedKey = JSON.parse(JSON.stringify(key));
   const seed = mismatchedKey.entries.find((entry) => entry.seeded_wrong);

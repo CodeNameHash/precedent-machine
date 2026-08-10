@@ -59,12 +59,12 @@ function digest(value) {
 function authorityProof() {
   const machinePacket = JSON.parse(fs.readFileSync(path.join(
     __dirname,
-    '../evidence/blind-review/2026-08-09/stage-2y-0-human-anchor-machine-packet.json',
+    '../evidence/blind-review/2026-08-10/stage-2y-0-human-anchor-machine-packet.json',
   ), 'utf8'));
   const reviewPacket = buildHumanAnchorReviewPacket({ machine_packet: machinePacket });
   const seedKey = buildHumanAnchorKey({ machine_packet: machinePacket, review_packet: reviewPacket });
   const ledgerBody = {
-    schema_version: 'CANONICAL_V2_HUMAN_ANCHOR_DECISION_LEDGER/V1',
+    schema_version: 'CANONICAL_V2_HUMAN_ANCHOR_DECISION_LEDGER/V2',
     review_packet_id: reviewPacket.review_packet_id,
     machine_packet_id: reviewPacket.machine_packet_id,
     decision_keys_digest: reviewPacket.decision_keys_digest,
