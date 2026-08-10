@@ -1,0 +1,39 @@
+{
+  "schema_version": "STAGE_2Y_JOINT_SWEEP_PIN_COMPARISON/V1",
+  "generation_command": "node --input-type=module -e 'import { execFileSync } from \"node:child_process\"; import { buildReport } from \"./scripts/stage-2y-0-joint-sweep.mjs\"; const before=JSON.parse(execFileSync(\"git\",[\"show\",\"eb8e02e142fe40c517bf35dabafe3134d7078278:evidence/canonical-v2/stage-2y-0-joint-sweep.json\"],{encoding:\"utf8\"})); const after=buildReport(); const diffs=[]; function walk(a,b,p=\"$\"){if(Object.is(a,b))return;if(Array.isArray(a)&&Array.isArray(b)){for(let i=0;i<Math.max(a.length,b.length);i++)walk(a[i],b[i],`${p}[${i}]`);return}if(a&&b&&typeof a===\"object\"&&typeof b===\"object\"){for(const k of [...new Set([...Object.keys(a),...Object.keys(b)])].sort())walk(a[k],b[k],`${p}.${k}`);return}diffs.push({path:p,before:a===undefined?\"__ABSENT__\":a,after:b===undefined?\"__ABSENT__\":b})}walk(before,after);console.log(JSON.stringify({difference_count:diffs.length,differences:diffs},null,2));'",
+  "checkout_head": "eb8e02e142fe40c517bf35dabafe3134d7078278",
+  "comparison": "COMMITTED_JOINT_SWEEP_RECEIPT_TO_CURRENT_DETERMINISTIC_BUILD",
+  "difference_count": 3,
+  "semantic_difference_count": 0,
+  "differences": [
+    {
+      "path": "$.artifact_id",
+      "before": "4fb4a0e25bc2899ea22c76b0b1024425d34a8c9540dc157b07381092a2ed1315",
+      "after": "984366c688b12e68ad372acacd372bec5d3bb908b8500584e68dcd932f2b6e7b",
+      "classification": "DERIVED_RECEIPT_IDENTITY"
+    },
+    {
+      "path": "$.input_digests.human_anchor_decision_ledger",
+      "before": "72de5e385765c0a8a4fafb8bacd4a44a511e578d873491f6caec7b6a87b6fb86",
+      "after": "afc9b0c00ccfaaa0a6919fbdbb8fedfe191582c07bdccc80f6c6b6b35033e766",
+      "classification": "INPUT_PROVENANCE"
+    },
+    {
+      "path": "$.input_digests.human_anchor_machine_packet",
+      "before": "273af02054b7156b0e4485a43a136a1bf137bcd536686eda00b92f1204c9d45f",
+      "after": "ccfba592c1acaff416876fa0717635a2929425a600513d8ede7fff3690890a3e",
+      "classification": "INPUT_PROVENANCE"
+    }
+  ],
+  "unchanged": {
+    "status": "BLOCKED_HUMAN_ANCHOR_UNREVIEWED",
+    "publication_authorisation": "NONE",
+    "replay_driver_calls": 0,
+    "false_no_definition_missing_kdt_evidence_count": 18,
+    "true_agreement_definition_absence_count": 3,
+    "not_assessable_count": 1,
+    "all_other_fields_byte_identical": true
+  },
+  "conclusion": "STALE_PROVENANCE_ONLY",
+  "publication_authorisation": "NONE"
+}
