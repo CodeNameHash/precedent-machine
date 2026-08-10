@@ -1,0 +1,62 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "6a96e337f01c85f4269a278269c534f3e65578fd9465a2bb37c96a5cd3c6d054",
+  "review_queue": [
+    {
+      "section_reference": "5.20",
+      "source_citation": "5.20",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_COOPERATION_PRESENT",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company shall cooperate with Parent",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a96963e6f69c301319593dc91dccdb2944375fe550ee3126b70935ec85d5f8d4",
+      "closure_id": "0cb7dac2cc7d9b069647be1b19c82e149ffaaa65ec0080707f0c8cc4f6bd1245",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "ce506bb712e2b17f79e248678930aafd61a0f3ddac7973beb50e42e71e718ce5",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "065ae47e8deb19e4ce0871fd697fdfd23f81127d812520b58602b76a8a8874ea",
+          "document_ordinal": 0,
+          "absolute_start": 109,
+          "absolute_end": 148,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the Company shall cooperate with Parent",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 420
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 420,
+            "text": "Section 5.20 Interest Rate Swap Transaction Cooperation Efforts. Prior to the Company Merger Effective Time, the Company shall cooperate with Parent and use its commercially reasonable efforts to assist Parent in undertaking all things reasonably necessary, proper or advisable, in each case, as reasonably requested by Parent to maintain the interest rate swap transactions described under Section 5. 1(v)(i)(A – C).\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "5d057674fd79f8f2f25c2ff3da4328b03ea270ad81941b22425514258ee9be59"
+}

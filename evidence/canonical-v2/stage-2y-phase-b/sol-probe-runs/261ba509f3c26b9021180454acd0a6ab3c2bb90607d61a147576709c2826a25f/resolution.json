@@ -1,0 +1,230 @@
+{
+  "resolved": [],
+  "review_queue": [
+    {
+      "section_reference": "5.20",
+      "source_citation": "5.20",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_COOPERATION_PRESENT",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company shall cooperate with Parent",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a96963e6f69c301319593dc91dccdb2944375fe550ee3126b70935ec85d5f8d4",
+      "closure_id": "0cb7dac2cc7d9b069647be1b19c82e149ffaaa65ec0080707f0c8cc4f6bd1245",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "ce506bb712e2b17f79e248678930aafd61a0f3ddac7973beb50e42e71e718ce5",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "065ae47e8deb19e4ce0871fd697fdfd23f81127d812520b58602b76a8a8874ea",
+          "document_ordinal": 0,
+          "absolute_start": 109,
+          "absolute_end": 148,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the Company shall cooperate with Parent",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 420
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 420,
+            "text": "Section 5.20 Interest Rate Swap Transaction Cooperation Efforts. Prior to the Company Merger Effective Time, the Company shall cooperate with Parent and use its commercially reasonable efforts to assist Parent in undertaking all things reasonably necessary, proper or advisable, in each case, as reasonably requested by Parent to maintain the interest rate swap transactions described under Section 5. 1(v)(i)(A – C).\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "5.20",
+      "source_citation": "5.20",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "use its commercially reasonable efforts to assist Parent in undertaking all things reasonably necessary, proper or advisable, in each case, as reasonably requested by Parent to maintain the interest rate swap transactions described under Section 5. 1(v)(i)(A – C).",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Efforts concern maintaining interest rate swap transactions, not obtaining financing.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "c021dead767d0e1efcce2122409ae8127e628b5219947c80d8648f171eedfb5f",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b5a7414eb10c3bb71ebb5b1ee1ca6e1598aadf488b41760dcb822eb0df4afa66",
+          "document_ordinal": 0,
+          "absolute_start": 153,
+          "absolute_end": 419,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "91a7bbe9278178c7234464719353cc7a4018c5941dd6e63b5bb3e64a20ebe0e3",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "fbd7a8a463342704ae3bf1a2955d6e46d4123f27120d9107ac2ea0711934eb11",
+        "producer_receipt_id": "1368f4cdff8b727037aafb5e766555f8bcce48ed4dbd7d5871ff1176b50eab97",
+        "governed_scope_digest": "77225420edf6aeb5d24293e71ea6e086091d47d8161cf18bbf8004dd89a89782",
+        "extraction_provenance_id": "68363774ddbf61c86227150fc25ccc9bf418124502d1fef3087a1d20af79417a"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 420
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 420,
+            "text": "Section 5.20 Interest Rate Swap Transaction Cooperation Efforts. Prior to the Company Merger Effective Time, the Company shall cooperate with Parent and use its commercially reasonable efforts to assist Parent in undertaking all things reasonably necessary, proper or advisable, in each case, as reasonably requested by Parent to maintain the interest rate swap transactions described under Section 5. 1(v)(i)(A – C).\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "6a96e337f01c85f4269a278269c534f3e65578fd9465a2bb37c96a5cd3c6d054",
+    "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "registry_substrate": {
+      "schema_version": "RESOLUTION_REGISTRY_SUBSTRATE_MANIFEST/V1",
+      "modules": [
+        {
+          "name": "materiality-qualifier",
+          "version": "RESOLUTION_MATERIALITY_QUALIFIER_REGISTRY/V1",
+          "digest": "sha256:6368129c33917101e97979baa1836e222894af0fe4ed98244ded61c4a7802515"
+        },
+        {
+          "name": "closing-condition-kinds",
+          "version": "RESOLUTION_CLOSING_CONDITION_KINDS_REGISTRY/V1",
+          "digest": "sha256:66bb6592c2f0c21125df9b12a03991aebbe5ca1832bacfb427eadd2df2327efc"
+        },
+        {
+          "name": "general-covenant",
+          "version": "RESOLUTION_GENERAL_COVENANT_REGISTRY/V1",
+          "digest": "sha256:c10453c1b9f700ed7962b3c3f66a1560dcbbbe42aa41692113097a67fb903737"
+        },
+        {
+          "name": "material-contract",
+          "version": "RESOLUTION_MATERIAL_CONTRACT_REGISTRY/V1",
+          "digest": "sha256:85159bed1f96102ea00f2f2acc57e8336c6901797f91c2345a357dc923528d9e"
+        },
+        {
+          "name": "interim-operating",
+          "version": "RESOLUTION_INTERIM_OPERATING_REGISTRY/V1",
+          "digest": "sha256:ea94d6af99cbef3d463133fc875f75fcc8cd462fe81d0db87e9358aac9852f47"
+        },
+        {
+          "name": "party-capacity",
+          "version": "RESOLUTION_PARTY_CAPACITY_REGISTRY/V1",
+          "digest": "sha256:1b089c7a6cf30f540043352234cb4109fe27013a554423c8d3ecd652272db202"
+        },
+        {
+          "name": "representation-topic",
+          "version": "REPRESENTATION_TOPIC_REGISTRY/V1",
+          "digest": "sha256:2240a6cfa6ac63d3fbf6a96afce185aed40a1d9919f2437b85a844aa996e1f28"
+        }
+      ],
+      "preserved_v1_collisions": [
+        {
+          "path": "UNDISCLOSED_LIABILITIES_EXCEPTION_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not reasonably be expected to have an MAE",
+          "v1_only": true,
+          "no_delete": true
+        },
+        {
+          "path": "MATERIALITY_CODES.MAT_MAE_AGGREGATE",
+          "label": "Would not, individually or in aggregate, have MAE",
+          "v1_only": true,
+          "no_delete": true
+        }
+      ]
+    },
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 3,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 2,
+      "resolved": 0,
+      "auto_pass": 0,
+      "review_queue": 1,
+      "open_world": 1,
+      "residuals": 0,
+      "provisions": 0,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "84bc8ea3925cc0d05b999a64f63cd74b861f6b1332557e800e0f12b256d670db"
+  }
+}

@@ -30,6 +30,10 @@ async function load() {
   return import(path.join(ROOT, 'scripts/stage-2y-phase-b-v2-model-experiment.mjs'));
 }
 
+async function loadSol() {
+  return import(path.join(ROOT, 'scripts/stage-2y-phase-b-sol-probe.mjs'));
+}
+
 function hash(value) {
   return sha256Hex(Buffer.from(typeof value === 'string' ? value : canonicalJson(value), 'utf8'));
 }
@@ -272,6 +276,8 @@ test('V2 report keeps the Phase B recovery gates, thresholds, and no-publication
     baselineBinding, baseBaselineArtifact, buildManifest, buildReport,
   } = await load();
   const manifest = buildManifest({ sourceManifest: v1Manifest(), sourceManifestDigest: V1_MANIFEST_DIGEST });
+  const { initial: initialSolProbe } = await loadSol();
+  const solProbe = initialSolProbe();
   const baseline = baseBaselineArtifact(manifest);
   for (const [index, row] of manifest.rows.entries()) {
     const output = index < 90 ? resolvedOutput(row) : {
@@ -280,7 +286,13 @@ test('V2 report keeps the Phase B recovery gates, thresholds, and no-publication
     };
     baseline.attempts.push(baselineAttempt({ row, binding: baselineBinding(row), output }));
   }
-  const report = buildReport({ manifest, baseline, generatedAt: '2026-08-10T00:00:00.000Z' });
+  const report = buildReport({
+    manifest,
+    baseline,
+    solProbe,
+    solProbeArtifactDigest: 'a'.repeat(64),
+    generatedAt: '2026-08-10T00:00:00.000Z',
+  });
   assert.equal(report.counts.blocked_selected, 150);
   assert.equal(report.counts.blocked_model_proposed_placements, 90);
   assert.equal(report.recovery.denominator, 150);
@@ -302,7 +314,7 @@ test('V2 report keeps the Phase B recovery gates, thresholds, and no-publication
   assert.equal(report.gates.recovered_human_adjudications_at_least_50, false);
   assert.equal(report.gates.recovered_human_correctness_at_least_95_percent, null);
   assert.equal(report.gates.cross_vendor_to_human_agreement_at_least_95_percent, null);
-  assert.equal(report.gates.lead_tier_probe_complete_without_stop, null);
+  assert.equal(report.gates.lead_tier_probe_complete_without_stop, false);
   assert.equal(report.gates.publication_authorised, false);
   assert.deepEqual(report.gate_thresholds, {
     recovery_rate_minimum: 0.6,
@@ -313,7 +325,39 @@ test('V2 report keeps the Phase B recovery gates, thresholds, and no-publication
   });
   assert.equal(report.confidence_method.method_id, 'WILSON_SCORE_ONE_SIDED_LOWER_BOUND/V1');
   assert.ok(report.recovery.lower_confidence_bound > 0 && report.recovery.lower_confidence_bound < 0.6);
+  assert.equal(report.counts.sol_probe_selected, 46);
+  assert.equal(report.counts.sol_probe_attempted, 0);
+  assert.equal(report.counts.sol_probe_complete, 0);
+  assert.equal(report.lead_tier_probe.artifact_path, 'evidence/canonical-v2/stage-2y-phase-b/sol-probe.json');
+  assert.equal(report.lead_tier_probe.artifact_digest, 'a'.repeat(64));
+  assert.equal(report.lead_tier_probe.validation_status, 'READY_OR_PARTIAL');
+  assert.equal(report.lead_tier_probe.provider.requested_model_id, 'gpt-5.6-sol;reasoning=medium;profile=SOL_MEDIUM');
+  assert.deepEqual(report.lead_tier_probe.composition, {
+    CLOSING_CONDITIONS: 26, FINANCING_COVENANTS: 8, PROXY_MEETING: 12,
+  });
   assert.equal(report.publication_authorisation, 'NONE');
+});
+
+test('V2 report strictly validates the Sol artefact and rejects missing or fabricated evidence', async () => {
+  const { buildManifest, buildReport, validateSolForReport } = await load();
+  const { initial: initialSolProbe } = await loadSol();
+  const manifest = buildManifest({ sourceManifest: v1Manifest(), sourceManifestDigest: V1_MANIFEST_DIGEST });
+  const solProbe = initialSolProbe();
+  assert.deepEqual(validateSolForReport(solProbe, 'a'.repeat(64)), {
+    ok: true, errors: [], status: 'READY_OR_PARTIAL',
+  });
+  assert.throws(() => buildReport({ manifest }), /SOL_PROBE_DIGEST_INVALID/);
+  assert.throws(() => validateSolForReport(solProbe, 'not-a-digest'), /SOL_PROBE_DIGEST_INVALID/);
+  assert.throws(() => validateSolForReport({
+    ...solProbe, provider: { ...solProbe.provider, model: 'gpt-5.6-terra' },
+  }, 'a'.repeat(64)), /SOL_PROBE_ARTIFACT_INVALID:.*AUTHORITY_OR_PROVIDER_INVALID/);
+  const fabricatedComplete = {
+    ...solProbe,
+    calls: solProbe.call_manifest.map((spec) => ({
+      call_id: spec.call_id, spec, state: 'COMPLETE', output: {}, errors: [], receipt_id: 'fabricated',
+    })),
+  };
+  assert.throws(() => validateSolForReport(fabricatedComplete, 'a'.repeat(64)), /SOL_PROBE_ARTIFACT_INVALID/);
 });
 
 test('V2 commands and output paths do not write into the V1 evidence directory', async () => {

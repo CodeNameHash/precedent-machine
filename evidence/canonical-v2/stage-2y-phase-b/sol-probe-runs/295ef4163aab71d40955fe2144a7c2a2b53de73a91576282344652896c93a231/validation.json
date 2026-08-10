@@ -1,0 +1,130 @@
+{
+  "accepted": true,
+  "publishableWriteSet": {
+    "deal": {
+      "deal_admission_id": "577d2b9955305089ff2855312aa18348d9459539fac68f626076e6020ecf278b",
+      "deal_key": "deal:modiv-financing-covenants:32065211e4688625",
+      "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968"
+    },
+    "excerpts": [
+      {
+        "absolute_end": 184423,
+        "absolute_start": 183794,
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "closure_id": "5996f1dc8ca8f96073ed33a703c009e6316920ee0a6d77b0add1fe5ec26c621c",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "exact_bytes_digest": "38eb835da078d923ac67674ac3bcb6aa819006eb327a07c3d370f8eba9f7c334",
+        "exact_text": "Parent, together with the amount of the Company’s cash on hand and the availability of the Parent Credit Facility, will have sufficient cash for the payment of the Company Preferred Share Merger Consideration, the cash portion of the Company Common Share Merger Consideration, the cash portion of the OpCo Common Unit Merger Consideration, the Payoff Amount, all other amounts required to be paid by Parent in connection with the consummation of the Transactions and all fees and expenses of Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub, the Company and the Partnership incurred in connection with the Transactions.",
+        "excerpt_definition_id": "0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02",
+        "excerpt_definition_key": "SINGLE_OPERATIVE_SPAN",
+        "excerpt_definition_payload_digest": "bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c",
+        "excerpt_definition_version": 1,
+        "excerpt_id": "9584897f7113fbfb33aea9e5ee50f78c5e19c1ddcf43a582e1977f487f63dbe7",
+        "excerpt_purpose": "LEGAL_EVIDENCE",
+        "ordered_component_assignments": [
+          {
+            "component_slot_key": "PRIMARY",
+            "governed_slot_ordinal": 0,
+            "semantic_span_id": "e411545bd0ade60b37cb8798842293c600fb5d806c6429d8e956643160ef5185"
+          }
+        ],
+        "output_text_hash": "38eb835da078d923ac67674ac3bcb6aa819006eb327a07c3d370f8eba9f7c334",
+        "schema_version": "EXCERPT/V1",
+        "source_content_id": "0174701fd4c2d921098954888d530a00efabc017434a5bcd0c7b2ff91bc96a77",
+        "source_occurrence_id": "d21ea8f60bee856632f92aa312f913e462e0b48872fcf06427523e6efffc68c1",
+        "transformation_or_redaction_version": "IDENTITY_UTF8/V1"
+      }
+    ],
+    "definition_occurrences": [],
+    "provisions": [],
+    "components": [],
+    "claims": [],
+    "relationships": [],
+    "condition_groups": [],
+    "validated_semantic_graphs": [],
+    "open_world_candidates": [
+      {
+        "attempted_claim_definition_key": "OPEN_WORLD_PROPOSITION",
+        "candidate_id": "544a1c3ad93995c9a90e4852c7c36250a6afd068b9dfcbc0c1ffbb446d00402d",
+        "canonical_value": null,
+        "closure_id": "e7d3138de95b4e76cbe7b4932be06e68cd0b502f3f984ef9920bb9fcda7e7b30",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "raw_value": "Parent, together with the amount of the Company’s cash on hand and the availability of the Parent Credit Facility, will have sufficient cash for the payment of the Company Preferred Share Merger Consideration, the cash portion of the Company Common Share Merger Consideration, the cash portion of the OpCo Common Unit Merger Consideration, the Payoff Amount, all other amounts required to be paid by Parent in connection with the consummation of the Transactions and all fees and expenses of Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub, the Company and the Partnership incurred in connection with the Transactions.",
+        "reason_code": "NATIVE_OPEN_WORLD_PROPOSAL",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE/V1",
+        "section_reference": "4.13"
+      }
+    ],
+    "open_world_candidate_occurrences": [
+      {
+        "attributes": {
+          "nearest_concept": null,
+          "why_unmapped": "Sufficient-funds representation, including payoff amounts and fees, is outside the governed assertion kinds."
+        },
+        "candidate_id": "544a1c3ad93995c9a90e4852c7c36250a6afd068b9dfcbc0c1ffbb446d00402d",
+        "canonical_value": null,
+        "closure_id": "e7d3138de95b4e76cbe7b4932be06e68cd0b502f3f984ef9920bb9fcda7e7b30",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "open_world_candidate_occurrence_id": "fb5cd9ade63aa29eae8988d5288f3bdec9c059b8f4379f88e4f181340e88ce6c",
+        "raw_value": "Parent, together with the amount of the Company’s cash on hand and the availability of the Parent Credit Facility, will have sufficient cash for the payment of the Company Preferred Share Merger Consideration, the cash portion of the Company Common Share Merger Consideration, the cash portion of the OpCo Common Unit Merger Consideration, the Payoff Amount, all other amounts required to be paid by Parent in connection with the consummation of the Transactions and all fees and expenses of Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub, the Company and the Partnership incurred in connection with the Transactions.",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE_OCCURRENCE/V1"
+      }
+    ],
+    "open_world_evidence_references": [
+      {
+        "absolute_end": 184423,
+        "absolute_start": 183794,
+        "closure_id": "e7d3138de95b4e76cbe7b4932be06e68cd0b502f3f984ef9920bb9fcda7e7b30",
+        "document_ordinal": 0,
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "evidence_reference_id": "5f7745a6750f1f3097ff0d6233e6cc86d11c79e308fd945269d97959b1ba0973",
+        "evidence_role": "OPERATIVE_TEXT",
+        "excerpt_id": "9584897f7113fbfb33aea9e5ee50f78c5e19c1ddcf43a582e1977f487f63dbe7",
+        "open_world_candidate_occurrence_id": "fb5cd9ade63aa29eae8988d5288f3bdec9c059b8f4379f88e4f181340e88ce6c",
+        "ordinal": 0
+      }
+    ],
+    "open_world_candidate_dispositions": [
+      {
+        "closure_id": "e7d3138de95b4e76cbe7b4932be06e68cd0b502f3f984ef9920bb9fcda7e7b30",
+        "disposition_code": "UNGOVERNED_UNREVIEWED",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "final_disposition_id": "0bbce869f13dad181014f2d1943d17afd9ef2c15b2645b4bcef8021786c34ccb",
+        "open_world_candidate_occurrence_id": "fb5cd9ade63aa29eae8988d5288f3bdec9c059b8f4379f88e4f181340e88ce6c",
+        "reason_code": "NATIVE_OPEN_WORLD_PROPOSAL",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE_DISPOSITION/V1"
+      }
+    ],
+    "open_world_primitives": [],
+    "semantic_impact_closures": [],
+    "reviewed_source_specific_rows": [],
+    "incomplete_canonical_result_rows": [],
+    "source_references": [
+      {
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "deal_admission_id": "577d2b9955305089ff2855312aa18348d9459539fac68f626076e6020ecf278b",
+        "governed_deal_key": "deal:modiv-financing-covenants:32065211e4688625",
+        "immutable_source_document_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+        "schema_version": "ADMITTED_SOURCE_REFERENCE/V1",
+        "semantic_extraction_input_envelope_id": "05ca7582d6a8ae52caddab9e0875d1efc47704672fdcc6ee51ad815c15c3caa8",
+        "source_admission_manifest_id": "7a99b9cb562d4cc87ba208d6b41c9ebc7fec9988aa4a91136df4a1e4c5ad0739",
+        "source_ordinal": 0
+      }
+    ],
+    "publication_dispositions": []
+  },
+  "unattendedPublicationCandidateWriteSet": {
+    "claims": [],
+    "publication_dispositions": []
+  },
+  "residuals": [],
+  "quarantines": [],
+  "quarantinedClosureIds": [],
+  "counts": {
+    "publishable": 5,
+    "residuals": 0,
+    "quarantinedClosures": 0
+  }
+}

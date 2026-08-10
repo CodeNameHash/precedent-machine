@@ -1,0 +1,23 @@
+{
+  "run_wall_clock_ms": 10495,
+  "calls": [
+    {
+      "call_index": 0,
+      "section_reference": "5.20",
+      "wall_clock_ms": 10437,
+      "usage": {
+        "input_tokens": 17215,
+        "cached_input_tokens": 9984,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 323,
+        "reasoning_output_tokens": 153
+      },
+      "requested_model_profile": "SOL_MEDIUM",
+      "requested_model_id": "gpt-5.6-sol;reasoning=medium;profile=SOL_MEDIUM",
+      "served_model": null,
+      "served_model_status": "NOT_REPORTED_BY_CODEX_JSONL",
+      "provider_request_id": "019fed4f-9933-7e50-8cba-d648ab3c60e0",
+      "attribution_basis": "ORDERED_PINNED_SECTION"
+    }
+  ]
+}

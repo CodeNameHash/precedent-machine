@@ -13,6 +13,7 @@ const {
   RECORDED_PROVIDER_REPLAY_WRITERS,
   LIVE_MODEL_ADJUDICATION_RUNS,
   LIVE_MODEL_EXPERIMENT_RUNS,
+  LIVE_MODEL_CLI_EXPERIMENT_RUNS,
   LIVE_EXTRACTION_ORCHESTRATORS,
   READ_ONLY_GIT_INSPECTORS,
   READ_ONLY_GIT_ARTIFACT_WRITERS,
@@ -708,6 +709,7 @@ test('every production source changed from the fixed Phase 1 base is classified 
     'RECORDED_PROVIDER_REPLAY_WRITER',
     'LIVE_MODEL_ADJUDICATION_RUN',
     'LIVE_MODEL_EXPERIMENT_RUN',
+    'LIVE_MODEL_CLI_EXPERIMENT_RUN',
     'LIVE_EXTRACTION_ORCHESTRATOR',
     'READ_ONLY_GIT_INSPECTOR',
     'READ_ONLY_GIT_ARTIFACT_WRITER',
@@ -803,9 +805,24 @@ test('live model experiment runs have their exact capability boundary', () => {
   }
 });
 
+test('direct-CLI live model experiment runs have their exact capability boundary', () => {
+  assert.deepEqual(LIVE_MODEL_CLI_EXPERIMENT_RUNS, ['scripts/stage-2y-phase-b-v2-model-experiment.mjs']);
+  for (const relativePath of LIVE_MODEL_CLI_EXPERIMENT_RUNS) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assertNoCapabilities(source, LIVE_MODEL_EXPERIMENT_RUN_FORBIDDEN_CAPABILITIES, relativePath);
+    const counts = capabilityCounts(source);
+    assert.equal(counts.provider, 0, `${relativePath} provider authority is bound by literal CLI calls below`);
+    assert.ok(counts.external_process > 0, `${relativePath} must invoke model CLIs`);
+    assert.ok(counts.filesystem_write > 0, `${relativePath} must write local experiment evidence`);
+    assert.match(source, /processCall\(\s*['"]codex['"]/, `${relativePath} must invoke the Codex CLI`);
+    assert.match(source, /processCall\(\s*['"]claude['"]/, `${relativePath} must invoke the Claude CLI`);
+  }
+});
+
 test('live extraction orchestrators have their exact capability boundary', () => {
   assert.deepEqual(LIVE_EXTRACTION_ORCHESTRATORS, [
     'scripts/stage-2y-l-live-batch.mjs',
+    'scripts/stage-2y-phase-b-sol-financing-continuation.mjs',
     'scripts/stage-2y-phase-b-sol-probe.mjs',
   ]);
   for (const relativePath of LIVE_EXTRACTION_ORCHESTRATORS) {
@@ -960,7 +977,10 @@ test('read-only Git inspectors launch only whitelisted inspection commands', () 
 });
 
 test('read-only Git artefact writers have their exact capability boundary', () => {
-  assert.deepEqual(READ_ONLY_GIT_ARTIFACT_WRITERS, ['scripts/stage-2y-registry-substrate-replay.mjs']);
+  assert.deepEqual(READ_ONLY_GIT_ARTIFACT_WRITERS, [
+    'scripts/audit/canonical-v2-termination-render-diagnosis.mjs',
+    'scripts/stage-2y-registry-substrate-replay.mjs',
+  ]);
   for (const relativePath of READ_ONLY_GIT_ARTIFACT_WRITERS) {
     assertReadOnlyGitArtifactWriter(fs.readFileSync(path.join(ROOT, relativePath), 'utf8'), relativePath);
   }
@@ -1069,9 +1089,9 @@ test('hostile inventory and capability changes fail closed', () => {
     () => assertPureProposalSignatureVerificationBoundary("fetch('https://evil.example');", 'hostile proposal network'),
     /network/,
   );
-  // Moved 12 -> 17 with the Stage 2Y authority classes. This assertion
+  // Moved 12 -> 18 with the Stage 2Y authority classes. This assertion
   // exists precisely so that adding an authority class cannot happen quietly.
-  assert.equal(Object.keys(EXPLICIT_NEW_SOURCE_CLASSES).length, 17);
+  assert.equal(Object.keys(EXPLICIT_NEW_SOURCE_CLASSES).length, 18);
 });
 
 // ---------------------------------------------------------------------------------------

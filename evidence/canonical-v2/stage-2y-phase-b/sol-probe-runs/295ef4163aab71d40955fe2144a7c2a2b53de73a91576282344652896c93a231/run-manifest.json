@@ -1,0 +1,64 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "modiv",
+  "deal_label": "Modiv, Inc. / Global Net Lease, Inc.",
+  "section_family": "FINANCING_COVENANTS",
+  "purpose": "General extraction run: family FINANCING_COVENANTS on deal modiv.",
+  "section_references": [
+    "4.13"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "4.13",
+      "family_id": "FINANCING_COVENANTS"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV42",
+  "prompt_id": "native-producer-financing/v1",
+  "prompt_version": 3,
+  "agreement_date": "2026-05-03",
+  "requested_model_profile": "SOL_MEDIUM",
+  "requested_model_id": "gpt-5.6-sol;reasoning=medium;profile=SOL_MEDIUM",
+  "requested_models": [
+    "gpt-5.6-sol;reasoning=medium;profile=SOL_MEDIUM"
+  ],
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-10T20:13:47.474Z",
+  "total_elapsed_ms": 13299,
+  "extraction_wall_clock_ms": 10293,
+  "replay": null,
+  "replay_eligibility": null,
+  "recorded_to": "recording.json",
+  "code_provenance": {
+    "commit": "cfa3aa07657caeef7f67309f2f7f6c00de1dd1f1",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 1,
+  "run_receipt_id": "5476958f9a54ea135051b227f5dafadaa5e2b279e614dcec7bccaed272ae4bd9",
+  "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+  "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e",
+  "publication_gate_mode": "INERT_WITHHELD",
+  "publication_dispositions": {
+    "content_id": "a9cbb9a132b02d39c6df66efad9acbd17fbcc4708a9f31fc95fb220510d15607",
+    "count": 0
+  },
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 1,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

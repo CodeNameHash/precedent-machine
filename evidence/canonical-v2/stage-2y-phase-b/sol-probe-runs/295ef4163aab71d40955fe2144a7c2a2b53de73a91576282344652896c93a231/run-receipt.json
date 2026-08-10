@@ -1,0 +1,175 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+  "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e",
+  "source_byte_length": 428768,
+  "root_section_id": "15320594801b671dd24dd2404e88ede8dcdd874cb28fc7283ceab4909d9c407b",
+  "requested_section_references": [
+    "4.13"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "4.13",
+      "section_id": "ac8a2266b6da413e17a04b5ac41fdee8202b0db791e9244f0947e232b0ded71d",
+      "parent_section_id": "112c50dd75d9e6d09cbc9a789e959534a176b4bb96ae989372e10eacae517851",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 183512,
+      "end": 184427,
+      "text_sha256": "11d1508d29c37cd4a328926969ffab409c4614114897356324dccfa37304b656",
+      "section_family": "FINANCING_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-financing/v1",
+      "prompt_version": 3,
+      "prompt_digest": "048c4ad4e02cd7e951dc80289936f2f548810f9299f023fe04e451d465e96b02",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-sol;reasoning=medium;profile=SOL_MEDIUM",
+        "prompt_digest": "048c4ad4e02cd7e951dc80289936f2f548810f9299f023fe04e451d465e96b02",
+        "input_scope_digest": "e3297d3405cb094b5c3104aa53cb83626f1869fbb0a8ad72ae192a87506c90c3",
+        "proposal_count": 1,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "f081f76f1ca3528843881d310c959ce1dbcf8f9d79ca6e0bcd50e03418881797"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "4.13",
+      "citation_validation": null,
+      "section_family": "FINANCING_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "c179a8c6151839d15b033e628d16fff90dfcf6af27fedc3c8c3a2ea8a2ca1f06",
+          "claim_occurrence_id": "6d0e71a4777d55ef81482eaf953810d2e8fe80c0adbf2fd480f4892930537935",
+          "subject_occurrence_id": "4aedd150a9e1dce64c7e9526870af02dd49e0da4ae4c35ef8599e59b467eaf8a",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Parent, together with the amount of the Company’s cash on hand and the availability of the Parent Credit Facility, will have sufficient cash for the payment of the Company Preferred Share Merger Consideration, the cash portion of the Company Common Share Merger Consideration, the cash portion of the OpCo Common Unit Merger Consideration, the Payoff Amount, all other amounts required to be paid by Parent in connection with the consummation of the Transactions and all fees and expenses of Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub, the Company and the Partnership incurred in connection with the Transactions.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "f73b5572330c9432dfc5d655a40ef525c68c873993568e8d9929d929a8aa8da5"
+          ],
+          "attributes": {
+            "why_unmapped": "Sufficient-funds representation, including payoff amounts and fees, is outside the governed assertion kinds.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "f73b5572330c9432dfc5d655a40ef525c68c873993568e8d9929d929a8aa8da5",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "15d5ff138e14b6349ae7a28309548ef45e89fc25216d78a0a701788574127207",
+              "document_ordinal": 0,
+              "absolute_start": 282,
+              "absolute_end": 911,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "e7d3138de95b4e76cbe7b4932be06e68cd0b502f3f984ef9920bb9fcda7e7b30"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "048c4ad4e02cd7e951dc80289936f2f548810f9299f023fe04e451d465e96b02",
+          "producer_receipt_id": "f081f76f1ca3528843881d310c959ce1dbcf8f9d79ca6e0bcd50e03418881797",
+          "governed_scope_digest": "6b104e15ad2d8ceb19b0f9dba3a876acb895e5696e0e88779008a8756bdf2ffc",
+          "extraction_provenance_id": "4d397719343b66546132f31c12987d51d7941b257f1261dcb8a688e68168e235"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "4.13",
+      "source_byte_length": 915,
+      "covered_byte_length": 629,
+      "coverage_share": 0.687431693989071,
+      "marker_counts": {
+        "as of": 1,
+        "except": 0,
+        "knowledge": 0,
+        "material": 0,
+        "total": 1
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 1,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "4.13",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 186,
+          "end": 189
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 205,
+          "end": 208
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 0,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 2
+      },
+      "proposed_tokens": [],
+      "disagreements": [],
+      "disagreement_count": 0
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 1,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "5476958f9a54ea135051b227f5dafadaa5e2b279e614dcec7bccaed272ae4bd9"
+}

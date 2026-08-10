@@ -1,0 +1,579 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "7183bf999820feb247a59132b00ab4a42a1558b5af1e54cacc99b1c231b57cb4",
+  "review_queue": [
+    {
+      "section_reference": "4.17",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_OBTAIN_EFFORTS_STANDARD",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d1ef18ad77bcf3739660693210b2d688cd7eb4775381177deb77dbf1208944e2",
+      "closure_id": "03003a7df605a9bdab44e0307e37af4b8efb9627e85f60a48f5b0820620c654b",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "01cff51ba78a25d2ef142686d8fcff15ed72f430e36008db84e8f8c0cb3f4b44",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d0235b6ba126a42cc8f6f9e50de2e86f39d35f383a47d88f77132e5ec654fb29",
+          "document_ordinal": 0,
+          "absolute_start": 25351,
+          "absolute_end": 25984,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Parent shall use its reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done all things reasonably necessary, proper or advisable to obtain the Debt Financing on or prior to the Closing Date in an amount required to pay the Required Amount (after taking into account any other Financing, if any, and any available cash and cash equivalents of Parent and the Company), on the terms and conditions described in the Commitment Letter (including the related “flex” provisions), including using reasonable best efforts to enforce its rights and exercise any remedies under the Commitment Letter.",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:PHRASE:CUSTOMARY_COOPERATION",
+          "start": 358,
+          "end": 379,
+          "excerpt": "o cause its and its Subsidiaries’ respective Representatives to, provide such customary cooperation in connection with any debt and/or equity financing (including the Debt Financi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:EQUITY_FINANCING",
+          "start": 415,
+          "end": 431,
+          "excerpt": "tives to, provide such customary cooperation in connection with any debt and/or equity financing (including the Debt Financing) by Parent or any of its Subsidiaries or Affiliat",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 447,
+          "end": 461,
+          "excerpt": " cooperation in connection with any debt and/or equity financing (including the Debt Financing) by Parent or any of its Subsidiaries or Affiliates in connection with the Tran",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:EQUITY_FINANCING",
+          "start": 7153,
+          "end": 7169,
+          "excerpt": "rmation or assistance relating to (x) the proposed aggregate amount of debt and equity financing, together with assumed interest rates, dividends (if any) and fees and expenses",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:EQUITY_FINANCING",
+          "start": 7293,
+          "end": 7309,
+          "excerpt": "dends (if any) and fees and expenses relating to the incurrence of such debt or equity financing, (y) any post-Closing or pro forma cost savings, synergies, capitalization or o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 7615,
+          "end": 7629,
+          "excerpt": ";\n(xi) facilitate the pledging of collateral and granting of guarantees for any debt financing, including to deliver any original stock certificates and related powers and an",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 26188,
+          "end": 26202,
+          "excerpt": "n in effect the Commitment Letter (provided, that the Commitment Letter and the Debt Financing, as applicable, may be amended, modified, supplemented, substituted or replaced",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 26418,
+          "end": 26432,
+          "excerpt": " timely basis or obtain a waiver of all of the conditions to the funding of the Debt Financing required to pay the Required Amount (after taking into account any other Financ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 27083,
+          "end": 27097,
+          "excerpt": "have been satisfied, enter into definitive documentation in connection with the Debt Financing required to pay the Required Amount (after taking into account any other Financ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 27419,
+          "end": 27433,
+          "excerpt": "een satisfied or waived or, upon the Closing would be satisfied, consummate the Debt Financing (including by instructing the Financing Sources to fund the Debt Financing in a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 27494,
+          "end": 27508,
+          "excerpt": " the Debt Financing (including by instructing the Financing Sources to fund the Debt Financing in accordance with the Commitment Letter, and enforcing Parent’s rights and r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 27670,
+          "end": 27684,
+          "excerpt": "edies under the Commitment Letter and the definitive agreements relating to the Debt Financing) in an amount required to pay the Required Amount (after taking into account an",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 28045,
+          "end": 28059,
+          "excerpt": "rent basis and in reasonable detail of the status of its efforts to arrange the Debt Financing (or replacement thereof). Without limiting the generality of the foregoing, Par",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 28340,
+          "end": 28354,
+          "excerpt": "dividually or in the aggregate, a material adverse impact on any portion of the Debt Financing necessary to pay the Required Amount (after taking into account any other Finan",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 28657,
+          "end": 28671,
+          "excerpt": "t by any party to the Commitment Letter or definitive agreements related to the Debt Financing. Notwithstanding anything contained in this Agreement to the contrary, Parent a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 28916,
+          "end": 28930,
+          "excerpt": " Parent obtaining any financing.\n87\n(iv) In the event all or any portion of the Debt Financing becomes unavailable on the terms and conditions contemplated by the Commitment ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 29501,
+          "end": 29515,
+          "excerpt": "nable best efforts to obtain alternative financing from the same or alternative debt financing sources on terms and conditions not materially less favorable to Parent, taken ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 31408,
+          "end": 31422,
+          "excerpt": "rued to require, Parent to pay any fees or any interest rates applicable to the Debt Financing in excess of those contemplated by the Commitment Letter (including the “mark",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 31931,
+          "end": 31945,
+          "excerpt": " the Commitment Letter which would (i) reduce the aggregate cash amounts of the Debt Financing to an aggregate amount less than the amount necessary to pay the Required Amoun",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 32260,
+          "end": 32274,
+          "excerpt": "ions, or otherwise amend, modify or expand any condition, to the funding of the Debt Financing on the Closing Date, (iii) otherwise adversely affect the ability of Parent to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 36812,
+          "end": 36826,
+          "excerpt": "and its Subsidiaries on or after the Closing Date), (ii) any description of the Debt Financing (including any such descriptions to be included in liquidity and capital resour",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 38094,
+          "end": 38108,
+          "excerpt": "v) risk factors relating to, or any description of, all or any component of the Debt Financing or any related financing contemplated thereby, (v) “segment reporting” (to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 41901,
+          "end": 41915,
+          "excerpt": " cooperation in connection with the arrangement of any financing (including the Debt Financing) to be obtained by Parent and/or Titanium Merger Sub with respect to the transa",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "f.i",
+          "depth": 2,
+          "start_byte": 25350,
+          "end_byte": 25985
+        },
+        "chain": [
+          {
+            "path": "f.i",
+            "start_byte": 25350,
+            "end_byte": 25985,
+            "text": " Parent shall use its reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done all things reasonably necessary, proper or advisable to obtain the Debt Financing on or prior to the Closing Date in an amount required to pay the Required Amount (after taking into account any other Financing, if any, and any available cash and cash equivalents of Parent and the Company), on the terms and conditions described in the Commitment Letter (including the related “flex” provisions), including using reasonable best efforts to enforce its rights and exercise any remedies under the Commitment Letter.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 27,
+            "text": "4.17 Financing Provisions.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "4.17",
+      "source_citation": "4.17(c)(i)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "PAYOFF_DELIVERY_LEAD_TIME_DAYS",
+      "concept_key": "COV-PAYOFF",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "deliver to Parent not later than two (2) business days (or such shorter period as reasonably agreed by Parent) prior to the Titanium Merger Effective Time",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a7309d15220a3dbccee20e07b2f09a2b3ee0d08706e7f8917c1ade6e7fd037ce",
+      "closure_id": "0328e1a53623e368e0303c1e3b11fe24f3797cff134412c18f00844eea00b945",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "58387737f226b36aed658a6535afeb92a51044430021f0426fcde45f77e70999",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d721668f56967e4919e9b24dbc85144319468da3c815237f1df17a244b471ff6",
+          "document_ordinal": 0,
+          "absolute_start": 10495,
+          "absolute_end": 10649,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "deliver to Parent not later than two (2) business days (or such shorter period as reasonably agreed by Parent) prior to the Titanium Merger Effective Time",
+      "attachment_position": null,
+      "concept_family": "COV-PAYOFF",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c.i",
+          "depth": 2,
+          "start_byte": 9648,
+          "end_byte": 12717
+        },
+        "chain": [
+          {
+            "path": "c.i",
+            "start_byte": 9648,
+            "end_byte": 12717,
+            "text": " The Company shall and shall cause its Subsidiaries to (x) conditioned upon the occurrence of the Closing, deliver all notices (after giving effect to any waiver of notice periods by the agent and/or lenders) and take all other actions required to facilitate the termination of commitments under the Existing Company Credit Agreement, the repayment in full of all obligations then outstanding thereunder (other than any letter of credit obligations that are backstopped, “rolled over” or cash collateralized) and the release of all Liens in connection therewith on the Closing Date (and the Company shall use reasonable best efforts to cooperate with any back-stop, “roll-over”, cash collateralization or termination arrangements of Parent in connection with existing letters of credit under the Existing Company Credit Agreement) and (y) deliver to Parent not later than two (2) business days (or such shorter period as reasonably agreed by Parent) prior to the Titanium Merger Effective Time (with drafts being delivered at least five (5) business days (or such shorter period as reasonably agreed by Parent) prior to the Titanium Merger Effective Time at the reasonable request of Parent) customary payoff letters in respect of the Existing Company Credit Agreement from all financial institutions and other persons (or the agents or trustees authorized to act on behalf thereof) parties to the Existing Company Credit Agreement, together with all documentation relating to the release of all Liens with respect to the Existing Company Credit Agreement (including any termination statements on Form UCC-3, mortgage releases, Intellectual Property security agreement releases or other applicable releases), in each case, in a customary form, which payoff letters shall (I) indicate the total amount required to be paid to fully satisfy all principal, interest, prepayment premiums, penalties, breakage costs or other similar obligations related to such Indebtedness as of the Closing Date (the “Payoff Amount”) (which Payoff Amount, for the avoidance of doubt, shall be paid by Parent) and (II) state that all obligations (including guarantees) in respect thereof (other than those contingent indemnification obligations and other liabilities that customarily remain following termination of a credit agreement) and Liens in connection therewith on the assets of the Company or any of its Subsidiaries (to the extent applicable, other than any cash collateral or other arrangements to backstop any letters of credit issued and outstanding thereunder that are not terminated at Closing) shall be, substantially concurrently with the receipt of the Payoff Amount on the Closing Date by the Persons holding such Indebtedness (or the agents or trustees authorized to act on behalf thereof), released or arrangements reasonably satisfactory to Parent for such release shall have been made by such time, subject, as applicable, to the replacement (or cash collateralization or backstopping) of any then-outstanding letters of credit or similar Indebtedness.\n83\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 27,
+            "text": "4.17 Financing Provisions.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "4.17",
+      "source_citation": "4.17(a)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_COOPERATION_PRESENT",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "FINANCING_SCOPE_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company shall use reasonable best efforts to, shall cause its Subsidiaries to use reasonable best efforts to, and the Company shall use reasonable best efforts to cause its and its Subsidiaries’ respective Representatives to, provide such customary cooperation in connection with any debt and/or equity financing (including the Debt Financing) by Parent or any of its Subsidiaries or Affiliates in connection with the Transactions (a “Financing”) as may be reasonably requested by Parent or its Representatives",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "650e66950e6cb7166d4a58a80b9fab891dfccbaa616b15418e6ef669bf6473d0",
+      "closure_id": "239389d956d7dd4df54b27be8f88e72c39ccefe892da6620eab50dda24507d34",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "f0d4bde7fe7f68b09a6e408b32496cff2d5a3c529f7f56b5f6e167bcff0277af",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "309801691456bf8a9ae197fe3671b04d4f265cd7f8be4950de2eb295f53486cf",
+          "document_ordinal": 0,
+          "absolute_start": 113,
+          "absolute_end": 633,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the Company shall use reasonable best efforts to, shall cause its Subsidiaries to use reasonable best efforts to, and the Company shall use reasonable best efforts to cause its and its Subsidiaries’ respective Representatives to, provide such customary cooperation in connection with any debt and/or equity financing (including the Debt Financing) by Parent or any of its Subsidiaries or Affiliates in connection with the Transactions (a “Financing”) as may be reasonably requested by Parent or its Representatives",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 30,
+          "end_byte": 679
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 30,
+            "end_byte": 679,
+            "text": " Prior to the Titanium Merger Effective Time, at Parent’s sole cost and expense, the Company shall use reasonable best efforts to, shall cause its Subsidiaries to use reasonable best efforts to, and the Company shall use reasonable best efforts to cause its and its Subsidiaries’ respective Representatives to, provide such customary cooperation in connection with any debt and/or equity financing (including the Debt Financing) by Parent or any of its Subsidiaries or Affiliates in connection with the Transactions (a “Financing”) as may be reasonably requested by Parent or its Representatives, including using reasonable best efforts to:\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 27,
+            "text": "4.17 Financing Provisions.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "4.17",
+      "source_citation": "4.17(f)(iv)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_OBTAIN_EFFORTS_STANDARD",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "FINANCING_SCOPE_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "use reasonable best efforts to obtain alternative financing from the same or alternative debt financing sources on terms and conditions not materially less favorable to Parent, taken as a whole, than the terms and conditions set forth in the Commitment Letter, not impose any additional conditions as compared to those set forth in the Commitment Letter delivered to the Company on the date hereof, and that, when taken together with the portion of the Financing that remains available, if any, and available cash and cash equivalents of Parent and the Company, is at least equal to the Required Amount, as promptly as practicable following the occurrence of such event",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "b1fc0a5c6d2531641975b38583c90e9cf2112cd020836549b5d8fcafdb230f3d",
+      "closure_id": "8c62e73fb904dd93609ae12997005e53fe34213e8590f2b336d8359f43dee3c4",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "795a27cf46da0bf8d022d15938cd9d20fa8d8c6d7f52c83ff8c1322ffb2e67ea",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "29fd2615de907b88d68949032f1f76931ea0c7208ee2c6bbd94a6a9bd475bfba",
+          "document_ordinal": 0,
+          "absolute_start": 29412,
+          "absolute_end": 30081,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "use reasonable best efforts to obtain alternative financing from the same or alternative debt financing sources on terms and conditions not materially less favorable to Parent, taken as a whole, than the terms and conditions set forth in the Commitment Letter, not impose any additional conditions as compared to those set forth in the Commitment Letter delivered to the Company on the date hereof, and that, when taken together with the portion of the Financing that remains available, if any, and available cash and cash equivalents of Parent and the Company, is at least equal to the Required Amount, as promptly as practicable following the occurrence of such event",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "f.iv",
+          "depth": 2,
+          "start_byte": 28876,
+          "end_byte": 31602
+        },
+        "chain": [
+          {
+            "path": "f.iv",
+            "start_byte": 28876,
+            "end_byte": 31602,
+            "text": " In the event all or any portion of the Debt Financing becomes unavailable on the terms and conditions contemplated by the Commitment Letter (including the flex provisions (if any)) (other than as a result of the Company’s breach of any provision of this Agreement) and such portion is required to pay the Required Amount (after taking into account any other Financing, if any, and available cash and cash equivalents of Parent and the Company), then Parent shall (x) promptly notify the Company thereof and the reasons therefor, (y) use reasonable best efforts to obtain alternative financing from the same or alternative debt financing sources on terms and conditions not materially less favorable to Parent, taken as a whole, than the terms and conditions set forth in the Commitment Letter, not impose any additional conditions as compared to those set forth in the Commitment Letter delivered to the Company on the date hereof, and that, when taken together with the portion of the Financing that remains available, if any, and available cash and cash equivalents of Parent and the Company, is at least equal to the Required Amount, as promptly as practicable following the occurrence of such event and (z) use reasonable best efforts to obtain, and when obtained, provide the Company with a true and complete copy of, a new financing commitment that provides for such alternative financing; provided that any provisions set forth in such new financing commitment relating to fees, pricing terms, “market flex” provisions (if any) and other terms that are customarily redacted (including any dates related thereto) may be redacted, so long as such redaction does not extend to any terms that would reasonably be expected to reduce the aggregate principal amount of such alternative financing to be funded on the Closing Date below the amount required to pay the Required Amount (after taking into account any other Financing, if any, and available cash and cash equivalents of Parent and the Company) or impose additional conditions precedent, or otherwise amend, modify or expand and condition, to the funding of such alternative financing on the Closing Date that makes the funding of such alternative financing less likely to occur. Notwithstanding anything to the contrary contained in this Agreement, nothing contained in this Section ‎4.17 shall require, and in no event shall the reasonable best efforts of Parent be deemed or construed to require, Parent to pay any fees or any interest rates applicable to the Debt Financing in excess of those contemplated by the Commitment Letter (including the “market flex” provisions) (whether to secure waiver of any conditions contained therein or otherwise).\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 27,
+            "text": "4.17 Financing Provisions.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "4.17",
+      "source_citation": "4.17(f)(iii)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "NO_FINANCING_CONDITION_ACKNOWLEDGMENT",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent and Titanium Merger Sub acknowledge and agree that the Closing is not conditioned upon Parent obtaining any financing.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "cd5dd8d9c1d42a66a0d7af17d3b022b49ac55b0a9598234c5dc9d9702e69fd2a",
+      "closure_id": "d1a301a6f77650c6d90285bb82836bc5cc7de53c8b5f581a623cd7abcaacce91",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "80bc238c219dcc7d08013e7ca65722f0b128829c9d10edec9e5dae353f9edd34",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "783a01aa8955523fff2f2c0dec7378dca770c405512f9fe3e85b401bbd3272fd",
+          "document_ordinal": 0,
+          "absolute_start": 28743,
+          "absolute_end": 28868,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Parent and Titanium Merger Sub acknowledge and agree that the Closing is not conditioned upon Parent obtaining any financing.",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "f.iii",
+          "depth": 2,
+          "start_byte": 27864,
+          "end_byte": 28872
+        },
+        "chain": [
+          {
+            "path": "f.iii",
+            "start_byte": 27864,
+            "end_byte": 28872,
+            "text": " Parent shall use reasonable best efforts to keep the Company reasonably informed on a reasonably current basis and in reasonable detail of the status of its efforts to arrange the Debt Financing (or replacement thereof). Without limiting the generality of the foregoing, Parent shall give the Company prompt notice of any fact, change, event or circumstance that is reasonably likely to have, individually or in the aggregate, a material adverse impact on any portion of the Debt Financing necessary to pay the Required Amount (after taking into account any other Financing, if any, and available cash and cash equivalents of Parent and the Company) or upon becoming aware of any actual material breach or default by any party to the Commitment Letter or definitive agreements related to the Debt Financing. Notwithstanding anything contained in this Agreement to the contrary, Parent and Titanium Merger Sub acknowledge and agree that the Closing is not conditioned upon Parent obtaining any financing.\n87\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 27,
+            "text": "4.17 Financing Provisions.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "4.17",
+      "source_citation": "4.17(c)(i)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "PAYOFF_DELIVERY_LEAD_TIME_DAYS",
+      "concept_key": "COV-PAYOFF",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "with drafts being delivered at least five (5) business days (or such shorter period as reasonably agreed by Parent) prior to the Titanium Merger Effective Time at the reasonable request of Parent",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a5f111286a73dccb650c0d2afaa02a6d0794cda19d7ad48f9bfdae7e8b774243",
+      "closure_id": "fe16957e4722001f54e23c190300d1465c06de14fd94b55597a438a4d08ee7c3",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b7c60a51268170f005cab0274a7c1c1957d2f2e4c0fde1b56009b344f06880f3",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "76c3b39721c5101dd6f0d10458db15ce1a8ecd81d8003986478767ef86af999b",
+          "document_ordinal": 0,
+          "absolute_start": 10651,
+          "absolute_end": 10846,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "with drafts being delivered at least five (5) business days (or such shorter period as reasonably agreed by Parent) prior to the Titanium Merger Effective Time at the reasonable request of Parent",
+      "attachment_position": null,
+      "concept_family": "COV-PAYOFF",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c.i",
+          "depth": 2,
+          "start_byte": 9648,
+          "end_byte": 12717
+        },
+        "chain": [
+          {
+            "path": "c.i",
+            "start_byte": 9648,
+            "end_byte": 12717,
+            "text": " The Company shall and shall cause its Subsidiaries to (x) conditioned upon the occurrence of the Closing, deliver all notices (after giving effect to any waiver of notice periods by the agent and/or lenders) and take all other actions required to facilitate the termination of commitments under the Existing Company Credit Agreement, the repayment in full of all obligations then outstanding thereunder (other than any letter of credit obligations that are backstopped, “rolled over” or cash collateralized) and the release of all Liens in connection therewith on the Closing Date (and the Company shall use reasonable best efforts to cooperate with any back-stop, “roll-over”, cash collateralization or termination arrangements of Parent in connection with existing letters of credit under the Existing Company Credit Agreement) and (y) deliver to Parent not later than two (2) business days (or such shorter period as reasonably agreed by Parent) prior to the Titanium Merger Effective Time (with drafts being delivered at least five (5) business days (or such shorter period as reasonably agreed by Parent) prior to the Titanium Merger Effective Time at the reasonable request of Parent) customary payoff letters in respect of the Existing Company Credit Agreement from all financial institutions and other persons (or the agents or trustees authorized to act on behalf thereof) parties to the Existing Company Credit Agreement, together with all documentation relating to the release of all Liens with respect to the Existing Company Credit Agreement (including any termination statements on Form UCC-3, mortgage releases, Intellectual Property security agreement releases or other applicable releases), in each case, in a customary form, which payoff letters shall (I) indicate the total amount required to be paid to fully satisfy all principal, interest, prepayment premiums, penalties, breakage costs or other similar obligations related to such Indebtedness as of the Closing Date (the “Payoff Amount”) (which Payoff Amount, for the avoidance of doubt, shall be paid by Parent) and (II) state that all obligations (including guarantees) in respect thereof (other than those contingent indemnification obligations and other liabilities that customarily remain following termination of a credit agreement) and Liens in connection therewith on the assets of the Company or any of its Subsidiaries (to the extent applicable, other than any cash collateral or other arrangements to backstop any letters of credit issued and outstanding thereunder that are not terminated at Closing) shall be, substantially concurrently with the receipt of the Payoff Amount on the Closing Date by the Persons holding such Indebtedness (or the agents or trustees authorized to act on behalf thereof), released or arrangements reasonably satisfactory to Parent for such release shall have been made by such time, subject, as applicable, to the replacement (or cash collateralization or backstopping) of any then-outstanding letters of credit or similar Indebtedness.\n83\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 27,
+            "text": "4.17 Financing Provisions.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "293b12444beb10e055c20505e36fcfd772b596752e3abe962b7e778c504705cc"
+}

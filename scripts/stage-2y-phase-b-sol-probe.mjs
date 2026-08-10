@@ -145,4 +145,7 @@ function parseArgs(argv) { const mode = argv.find((arg) => ['--prepare', '--live
 async function main() { const args = parseArgs(process.argv.slice(2)); if (args.mode === '--prepare') { const artifact = initial(); writeAtomic(OUTPUT, artifact); process.stdout.write('Sol probe prepared: 0/46\n'); return; } if (args.mode === '--check') { const result = check(readJson(OUTPUT)); if (!result.ok) throw new Error(result.errors.join(',')); return; } const result = await run(args); process.stdout.write(`Sol probe: ${result.calls.length}/46; stopped=${result.stopped?.code || 'no'}\n`); }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main().catch((error) => { process.stderr.write(`${error.stack || error}\n`); process.exitCode = 1; });
 
-export { PROFILE, compareSection, initial, runnerArgs, check, parseArgs };
+export {
+  PROFILE, canonical, collect, compareSection, hash, initial, outputDirectory,
+  runnerArgs, check, parseArgs, terraCallMap,
+};

@@ -9,6 +9,8 @@ import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { check as checkSolArtifact } from './stage-2y-phase-b-sol-probe.mjs';
+
 const require = createRequire(import.meta.url);
 const { canonicalJson, sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 
@@ -19,12 +21,19 @@ const V1_MANIFEST_PATH = `${V1_ROOT}/manifest.json`;
 const MANIFEST_PATH = `${OUTPUT_ROOT}/manifest.json`;
 const BASELINE_PATH = `${OUTPUT_ROOT}/terra-calls.json`;
 const CROSS_VENDOR_PATH = `${OUTPUT_ROOT}/cross-vendor-calls.json`;
+const HUMAN_PACKET_PATH = `${OUTPUT_ROOT}/recovered-blocked-human-packet.json`;
+const HUMAN_LEDGER_PATH = `${OUTPUT_ROOT}/recovered-blocked-human-ledger.json`;
+const HIDDEN_COMPARISON_PATH = `${OUTPUT_ROOT}/recovered-blocked-hidden-comparison.json`;
 const REPORT_PATH = `${OUTPUT_ROOT}/report.json`;
 const REPORT_MD_PATH = `${OUTPUT_ROOT}/report.md`;
+const SOL_PROBE_PATH = `${V1_ROOT}/sol-probe.json`;
 const PROTOCOL_VERSION = 'STAGE_2Y_PHASE_B_PROTOCOL/V2';
 const MANIFEST_SCHEMA = 'STAGE_2Y_PHASE_B_MANIFEST/V2';
 const BASELINE_SCHEMA = 'STAGE_2Y_PHASE_B_TERRA_CALLS/V2';
 const CROSS_VENDOR_SCHEMA = 'STAGE_2Y_PHASE_B_CROSS_VENDOR_CALLS/V2';
+const HUMAN_PACKET_SCHEMA = 'STAGE_2Y_PHASE_B_RECOVERED_HUMAN_PACKET/V2';
+const HUMAN_LEDGER_SCHEMA = 'STAGE_2Y_PHASE_B_RECOVERED_HUMAN_LEDGER/V2';
+const HIDDEN_COMPARISON_SCHEMA = 'STAGE_2Y_PHASE_B_HIDDEN_COMPARISON/V2';
 const REPORT_SCHEMA = 'STAGE_2Y_PHASE_B_REPORT/V2';
 const BASELINE_PROMPT_ID = 'STAGE_2Y_PHASE_B_BLOCKED_RECOVERY';
 const BASELINE_PROMPT_VERSION = 'STAGE_2Y_PHASE_B_BLOCKED_RECOVERY_PROMPT/V2';
@@ -267,6 +276,7 @@ function buildManifest({ sourceManifest, sourceManifestDigest }) {
       prepare: 'node scripts/stage-2y-phase-b-v2-model-experiment.mjs --prepare',
       baseline: 'node scripts/stage-2y-phase-b-v2-model-experiment.mjs --run-baseline --resume',
       cross_vendor: 'node scripts/stage-2y-phase-b-v2-model-experiment.mjs --run-cross-vendor --resume',
+      seal_human_ledger: 'node scripts/stage-2y-phase-b-v2-model-experiment.mjs --seal-human-ledger',
       report: 'node scripts/stage-2y-phase-b-v2-model-experiment.mjs --report',
     },
     row_bindings: rowBindings,
@@ -649,8 +659,84 @@ function wilsonLowerBound(successes, n, z = 1.6448536269514722) {
   return (centre - margin) / denominator;
 }
 
-function buildReport({ manifest, baseline = null, crossVendor = null, baselineArtifactDigest = null, generatedAt = new Date().toISOString() }) {
+function validateSolForReport(solProbe, solProbeArtifactDigest) {
+  if (!/^[a-f0-9]{64}$/.test(solProbeArtifactDigest || '')) throw new Error('PHASE_B_V2_SOL_PROBE_DIGEST_INVALID');
+  let validation;
+  try {
+    validation = checkSolArtifact(solProbe);
+  } catch (error) {
+    throw new Error(`PHASE_B_V2_SOL_PROBE_ARTIFACT_INVALID:${String(error?.message || error)}`);
+  }
+  if (!validation.ok) throw new Error(`PHASE_B_V2_SOL_PROBE_ARTIFACT_INVALID:${validation.errors.join(',')}`);
+  return validation;
+}
+
+function countBy(values, key) {
+  return Object.fromEntries([...values.reduce((counts, value) => {
+    const item = key(value);
+    counts.set(item, (counts.get(item) || 0) + 1);
+    return counts;
+  }, new Map())].sort(([left], [right]) => left.localeCompare(right)));
+}
+
+function solProbeReport(solProbe, solProbeArtifactDigest, validation) {
+  const perItem = solProbe.calls.map((call) => ({
+    call_id: call.call_id,
+    deal: call.spec.deal,
+    family: call.spec.family,
+    section_reference: call.spec.section_reference,
+    state: call.state,
+    before: call.output?.comparison?.before || null,
+    after: call.output?.comparison?.after || null,
+    delta: call.output?.comparison?.delta || null,
+    stop: call.output?.comparison?.stop || null,
+  }));
+  const perFamily = [...new Set(perItem.map((row) => row.family))].sort().map((family) => {
+    const items = perItem.filter((row) => row.family === family && row.before && row.after);
+    const total = (side, key) => items.reduce((sum, row) => sum + row[side][key], 0);
+    return {
+      family,
+      attempted_sections: items.length,
+      before: {
+        attempted: total('before', 'attempted'), resolved: total('before', 'resolved'),
+        open_world: total('before', 'open_world'), review: total('before', 'review'),
+      },
+      after: {
+        attempted: total('after', 'attempted'), resolved: total('after', 'resolved'),
+        open_world: total('after', 'open_world'), review: total('after', 'review'),
+      },
+    };
+  });
+  return {
+    artifact_path: SOL_PROBE_PATH,
+    artifact_digest: solProbeArtifactDigest,
+    artifact_schema_version: solProbe.schema_version,
+    manifest_id: solProbe.manifest_id,
+    validation_status: validation.status,
+    provider: solProbe.provider,
+    cohort_name: solProbe.cohort.authoritative_name,
+    composition: countBy(solProbe.call_manifest, (call) => call.family),
+    selected_sections: solProbe.expected_call_count,
+    attempted_sections: solProbe.calls.length,
+    complete_sections: solProbe.calls.filter((call) => call.state === 'COMPLETE').length,
+    stopped: solProbe.stopped,
+    per_family: perFamily,
+    per_item: perItem,
+  };
+}
+
+function buildReport({
+  manifest,
+  baseline = null,
+  crossVendor = null,
+  baselineArtifactDigest = null,
+  solProbe,
+  solProbeArtifactDigest,
+  generatedAt = new Date().toISOString(),
+}) {
   validateManifest(manifest);
+  const solValidation = validateSolForReport(solProbe, solProbeArtifactDigest);
+  const leadTierProbe = solProbeReport(solProbe, solProbeArtifactDigest, solValidation);
   if (baseline) validateBaselineArtifact(manifest, baseline);
   if (crossVendor) {
     if (!baseline || !baselineArtifactDigest) throw new Error('PHASE_B_V2_REPORT_CROSS_VENDOR_WITHOUT_BASELINE');
@@ -689,13 +775,15 @@ function buildReport({ manifest, baseline = null, crossVendor = null, baselineAr
     recovered_human_correctness_at_least_95_percent: null,
     cross_vendor_to_human_agreement_at_least_95_percent: null,
     party_attribution: 'UNMEASURED_PENDING_JUDGEABLE_RE_SIT',
-    lead_tier_probe_complete_without_stop: null,
+    lead_tier_probe_complete_without_stop: solValidation.status === 'COMPLETE',
     publication_authorised: false,
   };
   const status = baseline?.stopped ? 'STOPPED_BASELINE'
-    : !baselineDone ? 'INCOMPLETE_BASELINE'
+    : solProbe.stopped ? 'STOPPED_LEAD_TIER_PROBE'
+      : !baselineDone ? 'INCOMPLETE_BASELINE'
       : crossVendor?.stopped ? 'STOPPED_CROSS_VENDOR'
         : !crossDone ? 'INCOMPLETE_CROSS_VENDOR'
+          : !gates.lead_tier_probe_complete_without_stop ? 'INCOMPLETE_LEAD_TIER_PROBE'
           : 'PENDING_HUMAN_ADJUDICATION';
   return {
     schema_version: REPORT_SCHEMA,
@@ -726,6 +814,9 @@ function buildReport({ manifest, baseline = null, crossVendor = null, baselineAr
       cross_vendor_unique_attempted: crossLatest.size,
       cross_vendor_complete: crossComplete.length,
       cross_vendor_correct: crossCorrect,
+      sol_probe_selected: solProbe.expected_call_count,
+      sol_probe_attempted: solProbe.calls.length,
+      sol_probe_complete: solProbe.calls.filter((call) => call.state === 'COMPLETE').length,
     },
     recovery: {
       metric: 'MODEL_PROPOSED_GOVERNED_PLACEMENT_RATE',
@@ -736,6 +827,7 @@ function buildReport({ manifest, baseline = null, crossVendor = null, baselineAr
       cross_vendor_correctness_lower_confidence_bound: wilsonLowerBound(crossCorrect, crossComplete.length),
     },
     per_family: perFamily,
+    lead_tier_probe: leadTierProbe,
     gates,
     publication_authorisation: 'NONE',
   };
@@ -743,7 +835,7 @@ function buildReport({ manifest, baseline = null, crossVendor = null, baselineAr
 
 function markdownReport(reportValue) {
   const percent = (value) => value === null ? 'not measured' : `${(value * 100).toFixed(1)}%`;
-  return `# Stage 2Y Phase B V2 model experiment\n\nStatus: **${reportValue.status}**. Publication authority: **NONE**.\n\n- Blocked rows selected: ${reportValue.counts.blocked_selected}\n- Baseline rows complete: ${reportValue.counts.baseline_complete}\n- Proposed placements: ${reportValue.counts.blocked_model_proposed_placements}/${reportValue.recovery.denominator} (${percent(reportValue.recovery.rate)})\n- Cross-vendor scores complete: ${reportValue.counts.cross_vendor_complete}/${reportValue.counts.cross_vendor_selected}\n\nA RESOLVED result means a model-proposed governed placement. It does not mean resolver acceptance or a lawyer-visible row.\n`;
+  return `# Stage 2Y Phase B V2 model experiment\n\nStatus: **${reportValue.status}**. Publication authority: **NONE**.\n\n- Blocked rows selected: ${reportValue.counts.blocked_selected}\n- Baseline rows complete: ${reportValue.counts.baseline_complete}\n- Proposed placements: ${reportValue.counts.blocked_model_proposed_placements}/${reportValue.recovery.denominator} (${percent(reportValue.recovery.rate)})\n- Cross-vendor scores complete: ${reportValue.counts.cross_vendor_complete}/${reportValue.counts.cross_vendor_selected}\n- GPT-5.6 Sol lead-tier probe: ${reportValue.counts.sol_probe_complete}/${reportValue.counts.sol_probe_selected}\n\nA RESOLVED result means a model-proposed governed placement. It does not mean resolver acceptance or a lawyer-visible row.\n`;
 }
 
 function prepare() {
@@ -756,12 +848,17 @@ function prepare() {
 
 function report() {
   const manifest = readAndValidateManifest();
+  if (!existsSync(resolve(ROOT, SOL_PROBE_PATH))) throw new Error('PHASE_B_V2_SOL_PROBE_MISSING');
+  const solProbe = readJson(SOL_PROBE_PATH);
+  const solProbeArtifactDigest = fileHash(resolve(ROOT, SOL_PROBE_PATH));
   const baselinePresent = existsSync(resolve(ROOT, BASELINE_PATH));
   const crossPresent = existsSync(resolve(ROOT, CROSS_VENDOR_PATH));
   const baseline = baselinePresent ? readJson(BASELINE_PATH) : null;
   const baselineArtifactDigest = baselinePresent ? fileHash(resolve(ROOT, BASELINE_PATH)) : null;
   const crossVendor = crossPresent ? readJson(CROSS_VENDOR_PATH) : null;
-  const value = buildReport({ manifest, baseline, crossVendor, baselineArtifactDigest });
+  const value = buildReport({
+    manifest, baseline, crossVendor, baselineArtifactDigest, solProbe, solProbeArtifactDigest,
+  });
   writeAtomic(REPORT_PATH, value);
   writeFileSync(resolve(ROOT, REPORT_MD_PATH), markdownReport(value));
   return value;
@@ -823,5 +920,6 @@ export {
   validateCrossVendorArtifact,
   validateCrossVendorOutput,
   validateManifest,
+  validateSolForReport,
   wilsonLowerBound,
 };

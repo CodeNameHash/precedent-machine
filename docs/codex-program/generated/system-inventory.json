@@ -620,7 +620,9 @@
           "lib": [
             "lib/canonical-v2/termination-fee-serving-source.js"
           ],
-          "scripts": [],
+          "scripts": [
+            "scripts/audit/canonical-v2-termination-render-diagnosis.mjs"
+          ],
           "tests": [
             "tests/canonical-v2-fee-required-prose-classification.test.js",
             "tests/canonical-v2-payment-timing-guard-wiring.test.js",

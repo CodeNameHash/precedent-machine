@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import crypto from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
@@ -363,7 +364,7 @@ async function diagnoseRuns({ evidenceRoot, runIds = DEFAULT_RUN_IDS }) {
     schema_version: 'CANONICAL_V2_TERMINATION_RENDER_DIAGNOSIS/V1',
     scope: {
       run_ids: [...runIds],
-      current_code_commit: require('node:child_process').execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
+      current_code_commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
       claimed_missing_row_count: 79,
       reproduced_missing_row_count: totals.resolved_claims_without_rendered_row_content,
       claimed_count_reproduced: totals.resolved_claims_without_rendered_row_content === 79,

@@ -1,0 +1,180 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "12cfebc64fc9c20fc0ba00dc416bba8c91c40326aea12f70298f8963a1c95592",
+  "review_queue": [
+    {
+      "section_reference": "6.17",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "PAYOFF_DELIVERY_LEAD_TIME_DAYS",
+      "concept_key": "COV-PAYOFF",
+      "reasons": [],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "25c43b3d5be55b12918b4f8aaaa2b8c5fdfc0f7a940e0d818c6861ae9875c244",
+      "closure_id": "48ce74cb539b7fa5ad5be7b9d9c7a035f618f36326fb1ba6273547f0e075a101",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "d8059f40eed449f629a08ae999533e13ea78d81f6db77702e618c3e1069dd58c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2ecf0db81e999aa52ed792940aed09d35c5c9c9c524e600e5ea5d80dd2e3d5b2",
+          "document_ordinal": 0,
+          "absolute_start": 1127,
+          "absolute_end": 1303,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "the Company and its Subsidiaries shall use commercially reasonable efforts to deliver to Parent at least three (3) Business Days prior to the Closing Date a draft payoff letter",
+      "attachment_position": null,
+      "concept_family": "COV-PAYOFF",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 30,
+          "end_byte": 1657
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 30,
+            "end_byte": 1657,
+            "text": " If requested by Parent in writing, the Company shall, and shall cause its Subsidiaries to deliver all notices and take all other actions reasonably necessary to facilitate (i) the termination at the Closing Date of all commitments in respect of the Second Amended and Restated Credit Agreement, dated as of May 9, 2014, among the Company, the lenders from time to time party thereto and JPMorgan Chase Bank, N.A., as administrative agent (as amended, supplemented, restated or otherwise modified from time to time (the “Existing Credit Facility”)), (ii) the repayment in full on the Closing Date of all obligations with respect to the Existing Credit Facility and (iii) the release on the Closing Date of any liens securing such Existing Credit Facility and guarantees, if any, in connection therewith; provided that to the extent the Company does not have unrestricted cash on hand in an amount sufficient to make such repayment in full, the Company shall have received funds from Parent in an amount sufficient to make such repayment. In furtherance and not in limitation of the foregoing, the Company and its Subsidiaries shall use commercially reasonable efforts to deliver to Parent at least three (3) Business Days prior to the Closing Date a draft payoff letter (and, at least one (1) Business Day prior to the Closing Date, a payoff letter that has been executed by the applicable agent for the lenders thereunder) with respect to the Existing Credit Facility in form and substance customary for transactions of this type, from the applicable agent on behalf of the persons to whom such indebtedness is owed.\n-71-\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 27,
+            "text": "6.17 Certain Indebtedness.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.17",
+      "source_citation": "6.17(e)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "NO_FINANCING_CONDITION_ACKNOWLEDGMENT",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent and Merger Sub acknowledge and agree that their obligations to consummate the Transactions are not conditioned on the consummation of any Company Note Offer and Consent.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "bf10835bb43d716620d073d432f501d9e2a09e5be0f887ff670840fbed5b5197",
+      "closure_id": "74799b177f74b43ad666a45442e2dc091577dbe6ebea4a3b48c62a8e57cf7df0",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "ef2049101238f571937a789190998a73b483a57687554d2014be2deb99abb206",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "617c3c476a57ac4be1943381873680737b77e0cf5cfdf2a7a4b58ff24f6ffd61",
+          "document_ordinal": 0,
+          "absolute_start": 11031,
+          "absolute_end": 11207,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "Parent and Merger Sub acknowledge and agree that their obligations to consummate the Transactions are not conditioned on the consummation of any Company Note Offer and Consent.",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "e",
+          "depth": 1,
+          "start_byte": 11030,
+          "end_byte": 11208
+        },
+        "chain": [
+          {
+            "path": "e",
+            "start_byte": 11030,
+            "end_byte": 11208,
+            "text": " Parent and Merger Sub acknowledge and agree that their obligations to consummate the Transactions are not conditioned on the consummation of any Company Note Offer and Consent.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 27,
+            "text": "6.17 Certain Indebtedness.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.17",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "PAYOFF_DELIVERY_LEAD_TIME_DAYS",
+      "concept_key": "COV-PAYOFF",
+      "reasons": [],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a94651a81d1ca425ccdae0046b408edc2367a81e2d38687b58caaf875d0e3173",
+      "closure_id": "c69b66869e5ed1e89e8866b2353ab1017eb329214c505f33920f157a25bc2d09",
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "97f83531780a0f5cbf1b47b072df61096414b6e46dde0b13dcc084938dd7c678",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9090ec1302ba904b53c453296d487ef31c7bdf7c05eabb1cd2aeebaebc95e371",
+          "document_ordinal": 0,
+          "absolute_start": 1310,
+          "absolute_end": 1456,
+          "ordinal": 0
+        }
+      ],
+      "normalised_phrase": "at least one (1) Business Day prior to the Closing Date, a payoff letter that has been executed by the applicable agent for the lenders thereunder",
+      "attachment_position": null,
+      "concept_family": "COV-PAYOFF",
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "a",
+          "depth": 1,
+          "start_byte": 30,
+          "end_byte": 1657
+        },
+        "chain": [
+          {
+            "path": "a",
+            "start_byte": 30,
+            "end_byte": 1657,
+            "text": " If requested by Parent in writing, the Company shall, and shall cause its Subsidiaries to deliver all notices and take all other actions reasonably necessary to facilitate (i) the termination at the Closing Date of all commitments in respect of the Second Amended and Restated Credit Agreement, dated as of May 9, 2014, among the Company, the lenders from time to time party thereto and JPMorgan Chase Bank, N.A., as administrative agent (as amended, supplemented, restated or otherwise modified from time to time (the “Existing Credit Facility”)), (ii) the repayment in full on the Closing Date of all obligations with respect to the Existing Credit Facility and (iii) the release on the Closing Date of any liens securing such Existing Credit Facility and guarantees, if any, in connection therewith; provided that to the extent the Company does not have unrestricted cash on hand in an amount sufficient to make such repayment in full, the Company shall have received funds from Parent in an amount sufficient to make such repayment. In furtherance and not in limitation of the foregoing, the Company and its Subsidiaries shall use commercially reasonable efforts to deliver to Parent at least three (3) Business Days prior to the Closing Date a draft payoff letter (and, at least one (1) Business Day prior to the Closing Date, a payoff letter that has been executed by the applicable agent for the lenders thereunder) with respect to the Existing Credit Facility in form and substance customary for transactions of this type, from the applicable agent on behalf of the persons to whom such indebtedness is owed.\n-71-\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 27,
+            "text": "6.17 Certain Indebtedness.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue_artifact_id": "ca4af9d3c22e13ad825244ebb8f89bca8a4d2be85e20cc630063369437a1a255"
+}
