@@ -154,10 +154,19 @@ test('parseArgs: extraction refuses a Sol profile', () => {
   );
 });
 
-test('parseArgs: the report-only Phase B flag permits only SOL_MEDIUM', () => {
-  const args = mod.parseArgs(['--out-dir', '/tmp/whatever', '--profile', 'SOL_MEDIUM', '--phase-b-lead-probe']);
-  assert.equal(args.profileId, 'SOL_MEDIUM');
-  assert.equal(args.phaseBLeadProbe, true);
+test('parseArgs: the deferred Phase B flag permits only zero-call dry runs or sealed replay', () => {
+  assert.throws(
+    () => mod.parseArgs(['--out-dir', '/tmp/whatever', '--profile', 'SOL_MEDIUM', '--phase-b-lead-probe']),
+    /PHASE_B_LIVE_DEFERRED:GENERIC_LEAD_PROBE/,
+  );
+  const dryRun = mod.parseArgs(['--dry-run', '--profile', 'SOL_MEDIUM', '--phase-b-lead-probe']);
+  assert.equal(dryRun.profileId, 'SOL_MEDIUM');
+  assert.equal(dryRun.phaseBLeadProbe, true);
+  const replay = mod.parseArgs([
+    '--out-dir', '/tmp/whatever', '--profile', 'SOL_MEDIUM', '--phase-b-lead-probe',
+    '--replay-source-manifest', 'manifest.json', '--replay-manifest-id', 'manifest-id',
+  ]);
+  assert.equal(replay.replaySourceManifestPath, 'manifest.json');
   assert.throws(
     () => mod.parseArgs(['--out-dir', '/tmp/whatever', '--profile', 'SOL_HIGH', '--phase-b-lead-probe']),
     /LIVE_PROFILE_FORBIDDEN/,
