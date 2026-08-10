@@ -2724,6 +2724,160 @@ Ben can overturn this, but the work no longer waits on it.
 
 ---
 
+## Stage 2Y — the execution order. REVISED 2026-08-10 after a lawyer read the output.
+
+**This supersedes the 2026-08-09 order below.** It is revised because Ben
+reviewed 65 rendered rows and because two measurements landed that the earlier
+order was not built on. Read this first; the older section is kept for its
+reasoning, not its sequence.
+
+### The four things that changed the order
+
+**1. Only 28.8% of resolved claims reach a row a lawyer sees.** Measured over
+130 runs: 439 of 1,526. Within the nine wired families it is 92%, so the
+mechanism works where it is connected — but 16 families are not connected, and
+NO_SHOP, the largest family in the corpus at 365 resolved claims, has no
+canonical-V2 product projection at all. **Recovering more claims into families
+that cannot render them adds nothing to the product.** Every count in the older
+order was denominated in resolved claims; that was the wrong denominator.
+
+**2. 58% of sampled claims render output identical to another claim.** 250 of
+430. Thirty-two Metsera material-contract claims collapse to one row; 17 Concho
+termination claims all render "by mutual written consent". The catalogue tables
+cannot express which claim they are showing. This is why Ben wrote "dupe of 29",
+"dupe of 33", "dupe of 44" a dozen times.
+
+**3. The representations join pays out far less than recorded.** The
+`subject_occurrence_id` join asserted in §1a of
+`ROUTE-TO-GOOD-EXTRACTION.md` **does not exist** — zero shared ids across all 39
+committed runs. The join that does work reaches 92.6% of limbs but fills all
+three cells **14.8%** of the time and leaves **43.3%** as a bare checkbox. 2Y-H
+is worth roughly a third of what the plan claimed.
+
+**4. A lawyer's read produced a defect taxonomy the register never surfaced.**
+Six classes, from 65 cards: the chapeau is dropped so parties and periods never
+reach the limb; parties are missing across nearly every family; the model's raw
+enums reach the page; the negotiated words are lost; absence copy is dumped
+inline into unreadable runs; and durations carry no anchor event — *"30 business
+days but not from WHEN"*.
+
+### Ben's rulings, 2026-08-10
+
+| question | ruling |
+|---|---|
+| Where does the catalogue rebuild sit | **First, before the smaller fixes** |
+| Deterministic or model | **Run the decisive experiment first** |
+| Operative words | **Extracted as detail, not stored verbatim** |
+| Granularity | Rule below, agreed in principle |
+
+**The granularity rule.** Searchability is *not* the discriminator — I claimed
+sub-fields were harder to search and that was wrong; `lib/query/resolve.js`
+resolves feature keys with aliases and `field_paths` are first-class. The real
+discriminators are **evidence, absence semantics and independent revision**. So:
+**split an element into its own claim when it is separately negotiated AND you
+would want to cite it or count its absence; keep it as a field when it is a
+property of something you would cite whole.** On the access covenant that gives
+purpose limitation and access scope their own claims, and leaves "at reasonable
+times" and "upon reasonable prior notice" as fields.
+
+---
+
+### Phase A — the catalogue rebuild. Ben's ruling: first.
+
+A claim must map to a row that identifies it. Today three different Material
+Contracts claims — acquisition/disposition, indebtedness, leases — render
+byte-identical rows, because the table is a fixed bucket catalogue populated
+from deal-level data rather than driven by the claim.
+
+- Rebuild the material-contracts projection so each claim produces a
+  distinguishable row carrying its own bucket, threshold and exclusions. Concho
+  excludes oil and gas properties and that exclusion is not captured anywhere.
+- **Then check whether TERMINATION and EMPLOYEE_MATTERS share the shape** — 17
+  Concho termination claims rendering one row says they probably do.
+- Re-run `scripts/stage-2y-rendered-rows-artefact.mjs` and confirm the duplicate
+  collapse count falls.
+
+*Gate:* the 32-, 22- and 20-claim collapses break into distinct rows, and the
+corpus duplicate rate drops from 58%.
+*Kill criterion:* if per-claim rows require the review page's table contract to
+change, stop and bring the design back — that is a product decision, not a
+projection fix.
+
+### Phase B — the model experiment. Report-only, runs in parallel with A.
+
+Ben's ruling, and his own instinct first: *"I really do wonder if we can get to
+process these deterministically or if we need to ping into an LLM."*
+
+The ground truth already exists — the 96-card human-scored blind floor plus
+Ben's 54 decided anchor cards, **~150 adjudicated rows, no new sitting.** Run
+rung-4-shape recorded calls over those plus ~150 stratified rows from the
+deterministic-blocked cohorts, bound with the schema already proven in
+`evidence/canonical-v2/stage-2y-f-terra-adjudication.json` — 164 recorded model
+adjudications each binding input, prompt, response and evidence digests. That
+file is the proof determinism survives a model in the loop.
+
+Also: **one lead-tier re-run of the 46-call Closing Conditions batch.** The
+producer prompts were authored against claude-sonnet-5 constraints and the
+manifests show execution on `gpt-5.6-terra; reasoning=medium` — worker tier.
+**This pipeline has never run extraction at lead tier.** Test it separately so
+the two effects do not confound.
+
+*Decision rule, fixed before the run:* ≥60% recovery of the blocked sample at
+≥95% agreement on the scored subset, with party-attribution agreement at or above
+the materiality baseline. Cost ~350–400 calls, 2–3 days.
+
+*If it passes:* the ceiling moves from 51–77% to roughly 70–85% placed, and the
+scaling term flips — no per-drafter regex maintenance, so the backlog stops
+growing with the corpus. **Stop the 2Y-C synonym grind and new per-kind
+derivation functions.** Keep the byte-verifier, taxonomy governance, and 2Y-N.
+
+### Phase C — the six defects a lawyer found
+
+Ordered by how many families they touch, not by size.
+
+1. **Parties.** Missing across nearly every family; 11 of Ben's 65 notes.
+2. **The chapeau.** Ben caught it three times unprompted — *"you didn't give me
+   the lead-in"*, *"the period was in the intro language which is dropped"*,
+   *"wasn't inherited down to these limbs"*. This is 2Y-A, now confirmed by a
+   lawyer rather than inferred from a register.
+3. **Operative detail.** Capture the causation standard, the finality, the
+   permanence — *"primarily caused"*, *"final and nonappealable"*,
+   *"permanently"* — as extracted detail per Ben's ruling, not as stored quote
+   fragments.
+4. **Absence copy dumped inline.** Cards 43 and 49 run "Not found (may not be
+   present, or not yet extracted)" together into unreadable text.
+5. **Date anchors.** Every duration carries its trigger event. Ben: *"we have 30
+   business days but not from WHEN — this is a global point for all date related
+   items."* Schema change, corpus-wide.
+6. **Raw enums on the page.** **DONE** — `comparisonGroupLabel` maps them to the
+   human labels that already existed and were bypassed.
+
+### Phase D — what the earlier order had queued, re-ranked by rendered rows
+
+- **Wire the unrouted families**, cheapest first. ~152 claims sit behind a
+  cards-shaped projection whose review config was not identified; NO_SHOP's 365
+  need a projection built; IOC and MAE need a card adapter because their
+  projections return no cards array at all.
+- **2Y-I's 104 measured dispatches**, **2Y-G's duplicate suppression**,
+  **2Y-F's 57 concept-covered roots** — each reported in its own column, never
+  summed. 2Y-F and 2Y-G have a resolved delta of zero by construction.
+- **2Y-H, respecced.** The topic vocabulary **already exists** — 25 governed
+  `REP_TOPIC_V1_*` codes with a classifier, a projection, and a replay already
+  run over all 623 rows. It classifies on `raw_value` when the topic lives in
+  `subject`, which is why **252 of its 299 failures have a clean topic sitting
+  unread.** Fix the field first; the joined projection second.
+- **Recall floors come from `lib/rubric.js` via `expected-sets.js`**, not
+  `category-summary-features.js`, which has **zero representations rows**.
+
+### Phase E — measure, and gate on what a lawyer sees
+
+The headline metric is **rendered rows a lawyer can use**, not placed percent.
+Report four states per family before and after every item — attempted, resolved,
+open-world, review — plus the rendered-row count and the duplicate-collapse rate.
+Never a single rate.
+
+---
+
 ## Stage 2Y — the execution order. DECIDED 2026-08-09, every ruling is in.
 
 All seven rulings are answered (`DECISIONS.md` entry 17) and the anchor sitting
