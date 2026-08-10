@@ -1,0 +1,205 @@
+{
+  "schema_version": "STAGE_2Y_A_REGISTRY_BASELINE_PIN_COMPARISON/V1",
+  "authority": "OFFLINE_REPLAY_COMPARISON_ONLY",
+  "publication_authorisation": "NONE",
+  "baseline_pin": "evidence/canonical-v2/stage-2y-registry-substrate-head-baseline.json",
+  "replay_pin": "evidence/canonical-v2/stage-2y-registry-substrate-replay.json",
+  "before": {
+    "baseline_file_sha256": "sha256:3c8a86dfbfa0e7f546c4995abd3e6b97e5df043cf44fdd40ed34d430b7a07af5",
+    "replay_file_sha256": "sha256:3e945dcf6eeafd6fa176a73caf5fa9213472748b8e662e36ec480666614e9186",
+    "frozen_head": "a73a943c66e6e12a2b08f60b0de4abc0afeb89eb",
+    "accepted_resolution_diff": {
+      "path": "evidence/canonical-v2/stage-2y-parent-approval-resolution-set-diff-fixed.json",
+      "file_sha256": "sha256:e5b3c9bd7caf9286babf0a70ce6b1a99ba391f0f38e7987046f6373fe411b41b",
+      "comparison_digest": "sha256:a1c2ec65d5064c6e5413980bf0720fefe4889baac152980b0bba2d9b1b733be2",
+      "run_count": 157
+    },
+    "adopted_replay_digest": "sha256:9c928e730978096543cc3921a25e30dfd5cdb22b645c3a07dfd3da8a718c3556"
+  },
+  "after": {
+    "baseline_file_sha256": "sha256:169db982b72df87d88e838e835009998352fa0497c87ff46714f0433990eda09",
+    "replay_file_sha256": "sha256:8a4585b19fdd660eef5e85ad1022d925b3184ba05442ef713791e514753b4672",
+    "frozen_head": "fa2f6e312415229771c3cb17243a4b4f3252c464",
+    "accepted_resolution_diff": {
+      "path": "evidence/canonical-v2/stage-2y-a-resolution-set-diff.json",
+      "file_sha256": "sha256:909ad9a76ac2459e9af2ce3c10af845ba9bbe6aadbcce632c99ff1d986840617",
+      "comparison_digest": "sha256:00504c8e92ec005d7c402519c7b0080339f36d281e9174ef241a0050974639e5",
+      "run_count": 157
+    },
+    "adopted_replay_digest": "sha256:40474a179eaa0ca01f5cbcb4c90609e301f3ba5bf70de4cd183358e8b86e1773"
+  },
+  "counts": {
+    "runs_before": 157,
+    "runs_after": 157,
+    "included_after": 157,
+    "excluded_after": 0,
+    "receipt_only_differences_after": 0,
+    "semantic_digest_changes": 4,
+    "receipt_projection_digest_changes": 7
+  },
+  "semantic_digest_changes": [
+    {
+      "run": "concho-material-contracts-20260809-2xk-final",
+      "before": "sha256:6bd3d9bc35ebb38048da483de9faa92e000ac7fc55c5de24fe222bb751579a89",
+      "after": "sha256:fea17e795470c6a70268a6f6df6bb740f35228b73fc92a7b218877e028a5f126"
+    },
+    {
+      "run": "metsera-material-contracts-20260809-2xk-final",
+      "before": "sha256:deeedbc2a9623a22396e2d5e480974cae5f9c2f4cd5644e85e0e64d51cfc93bf",
+      "after": "sha256:bb0821bb4b2a002c802f4a694204c3bf13a5ae432e64f86f29c1161d9b9bf76d"
+    },
+    {
+      "run": "skywater-material-contracts-20260809-2xk-final",
+      "before": "sha256:70825fd8c8b41631fa597a74ea6e0265df5a6585470523341e64a07b4c2d952b",
+      "after": "sha256:a0dd333b67cc925c7959a119de2f4f2dd1dc5684c9f7a2938c9ca4d5cd306618"
+    },
+    {
+      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
+      "before": "sha256:73224ee2a77b59dd9e3ca7418f45eb0c04c6ce9b8ada9768d991d303c63a10e2",
+      "after": "sha256:f3d8234dfecf2788af9c74d5fab83f5562e0a06f348ec80c9212dc397fe85999"
+    }
+  ],
+  "receipt_projection_digest_changes": [
+    {
+      "run": "concho-material-contracts-20260809-2xk-final",
+      "before": "sha256:b199edc1b43e3e09e983e128f4f4233710f92786c3ecb928dcc8ee75ede25aa4",
+      "after": "sha256:07add7bf9eac09a7cd49fa18810a03ad2142571c42e43833219567a6d1ac2179",
+      "resolution_receipt_differences": [
+        {
+          "path": "$.run_receipt_id",
+          "before": "09b4a105a87c3d39b61f372f2eded5ed86ea4186eeced3a5b73d9685701f7747",
+          "after": "d978f2d4c65105006223ea4853f71fd84c1e397961bc35ff80fe48356704bdc2"
+        }
+      ],
+      "run_receipt_difference_count": 20,
+      "run_receipt_changed_field_patterns": {
+        "$.compiled_candidates[*].candidate.claim.attributes.scope_exclusions": 6,
+        "$.compiled_candidates[*].candidate.claim.claim_revision_id": 6,
+        "$.compiled_candidates[*].candidate.claim.closure_id": 6,
+        "$.resolved_sections[*].prompt_version": 1,
+        "$.run_receipt_id": 1
+      }
+    },
+    {
+      "run": "metsera-material-contracts-20260809-2xk-final",
+      "before": "sha256:c11f08b1434f7f6933cccf0f174aed694298fb5f352464537747aeb0dee80044",
+      "after": "sha256:55ef348bd54477644271d8baa62719562bac60d84a3333b46e885eb47bf78d46",
+      "resolution_receipt_differences": [
+        {
+          "path": "$.run_receipt_id",
+          "before": "a352e3a76bb159225ac9a58ac6c6a17f409208132ab419e4bd8480468ff2170d",
+          "after": "abdb83f52d0add25e1425e638d80d78838b7c18a5d3aa41d72b8bb5cc01e1e17"
+        }
+      ],
+      "run_receipt_difference_count": 8,
+      "run_receipt_changed_field_patterns": {
+        "$.compiled_candidates[*].candidate.claim.attributes.scope_exclusions": 2,
+        "$.compiled_candidates[*].candidate.claim.claim_revision_id": 2,
+        "$.compiled_candidates[*].candidate.claim.closure_id": 2,
+        "$.resolved_sections[*].prompt_version": 1,
+        "$.run_receipt_id": 1
+      }
+    },
+    {
+      "run": "modiv-material-contracts-20260809-2xk-final",
+      "before": "sha256:80f56a583a58ea6710afddbf66d124f45e0526fc4b1f2f2ccd1b9ffac8d7f7cc",
+      "after": "sha256:a5d6ab08806144170f4fbd9cb42030ba8f013408f4378d36c0372b13d7b5f543",
+      "resolution_receipt_differences": [
+        {
+          "path": "$.run_receipt_id",
+          "before": "8dff05d716f4bef3bd1c076709136340522f0c0bb2428ac63d0c3afa5df7583e",
+          "after": "830e18c0ced3c6e7958b64191e7ee33b502bcf4a0f27434242b0f296e21eed03"
+        }
+      ],
+      "run_receipt_difference_count": 2,
+      "run_receipt_changed_field_patterns": {
+        "$.resolved_sections[*].prompt_version": 1,
+        "$.run_receipt_id": 1
+      }
+    },
+    {
+      "run": "redhat-material-contracts-20260809-2xk-final",
+      "before": "sha256:45f6bdf34936e0de4c6ce48e1c7d68d7bf6a1e986113688ad78187a32a96d5b6",
+      "after": "sha256:7e9ba3c926b303ce8f23dab8acef766ac460b546e34217876c5a88da855f9c2e",
+      "resolution_receipt_differences": [
+        {
+          "path": "$.run_receipt_id",
+          "before": "57133c1fecad8a8eaad8e9f69749a96e2137523f171579fce42058f641854982",
+          "after": "d05738609b33f8cfdb5904fddf0666469e20668200e7748bb56247db1e0f55ac"
+        }
+      ],
+      "run_receipt_difference_count": 3,
+      "run_receipt_changed_field_patterns": {
+        "$.resolved_sections[*].prompt_version": 2,
+        "$.run_receipt_id": 1
+      }
+    },
+    {
+      "run": "skechers-material-contracts-20260809-2xk-final",
+      "before": "sha256:5c9e1d1621bcdc9fbd77b31ddb741f4c2e777bef1558a0e7797b639d5710dc8b",
+      "after": "sha256:7579c141ccd4169c4266075886fca55a05000e1c6b49bdba1606c27688ad0be1",
+      "resolution_receipt_differences": [
+        {
+          "path": "$.run_receipt_id",
+          "before": "35b83fb42067e5a617d9729c2f742715708e6a59162600f2b63606ad7c4429c9",
+          "after": "4c57c9ca853b0aba7f61f38757629f1c9d465fc9d6e88ddbfd07c34f8140e418"
+        }
+      ],
+      "run_receipt_difference_count": 2,
+      "run_receipt_changed_field_patterns": {
+        "$.resolved_sections[*].prompt_version": 1,
+        "$.run_receipt_id": 1
+      }
+    },
+    {
+      "run": "skywater-material-contracts-20260809-2xk-final",
+      "before": "sha256:5c7b25974febb554fdfd39f1a838720cd15a6ba51cd79ff80731a66bfe7bde36",
+      "after": "sha256:db43ac43a2fef5bcae1aef86e6e89a0ea7f76c4a98ff9b0a14f8de8dde199581",
+      "resolution_receipt_differences": [
+        {
+          "path": "$.run_receipt_id",
+          "before": "bcfb64e63fb0734eefda64cd9d8772eb36fdc9f143ffb93e42674716d54378f0",
+          "after": "d1dc7f7cabd46a8d23a2714809e3d9aa464eb930f1ee062184346bbe296e23a5"
+        }
+      ],
+      "run_receipt_difference_count": 26,
+      "run_receipt_changed_field_patterns": {
+        "$.compiled_candidates[*].candidate.claim.attributes.scope_exclusions": 8,
+        "$.compiled_candidates[*].candidate.claim.claim_revision_id": 8,
+        "$.compiled_candidates[*].candidate.claim.closure_id": 8,
+        "$.resolved_sections[*].prompt_version": 1,
+        "$.run_receipt_id": 1
+      }
+    },
+    {
+      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
+      "before": "sha256:8ae313a57c2238cf49cc660929c2acfe7ddfbed6a9c517b85fc925c1fde39597",
+      "after": "sha256:43ec869f3f88361ce11292ca80b29d41400480dc0f6d2e5566262fb2ea7b768c",
+      "resolution_receipt_differences": [
+        {
+          "path": "$.run_receipt_id",
+          "before": "cedaa71dd6f143c0bcaca18cda068c4bafb909e227a4bb8900cd0088c5b60e19",
+          "after": "4c1e0872f7e0ddc5ec0dc1be53e7e3bcd078ef91f477e0d638c9b9946d282afe"
+        }
+      ],
+      "run_receipt_difference_count": 8,
+      "run_receipt_changed_field_patterns": {
+        "$.compiled_candidates[*].candidate.claim.attributes.scope_exclusions": 2,
+        "$.compiled_candidates[*].candidate.claim.claim_revision_id": 2,
+        "$.compiled_candidates[*].candidate.claim.closure_id": 2,
+        "$.resolved_sections[*].prompt_version": 1,
+        "$.run_receipt_id": 1
+      }
+    }
+  ],
+  "exact_cause": {
+    "prompt_version": "Material Contracts prompt version moves from 2 to 3 in eight resolved sections across seven runs.",
+    "extracted_detail": "Eighteen compiled candidates gain byte-present scope_exclusions detail from an explicit parenthetical exclusion cue.",
+    "derived_run_receipt_fields": "Those candidate changes derive claim_revision_id and closure_id changes. Every Material Contracts run also derives a new run_receipt_id from prompt_version 3.",
+    "resolution_receipt_projection": "Across all seven runs, run_receipt_id is the only differing leaf in the projected resolution receipt.",
+    "semantic_output": "Only Concho, Metsera, SkyWater and TopBuild semantic digests move. The separate registry comparison matches all affected rows and proves zero resolved value or state changes, zero collection movement and no open-world increase."
+  },
+  "semantic_comparison_evidence": "evidence/canonical-v2/stage-2y-a-registry-pin-comparison.json",
+  "accepted_resolution_evidence": "evidence/canonical-v2/stage-2y-a-resolution-set-diff.json",
+  "conclusion": "The stale baseline changes only for the 18 byte-explicit Material Contracts exclusion rows, their derived identities, prompt version 3 and dependent receipt identities. All 157 runs verify against the new baseline with no exclusions or receipt drift."
+}
