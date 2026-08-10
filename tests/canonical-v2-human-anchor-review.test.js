@@ -51,8 +51,20 @@ test('anchor packet preserves the 80-card core and appends 16 hard-class seeds',
       === card.governing_context.section_start_byte + card.governing_context.governing_sentence.start_byte), true);
   assert.ok(Object.keys(machine.strata.by_family).length >= 20);
   const renderedCards = machine.cards.filter((card) => card.rendered_row !== null);
-  assert.equal(renderedCards.length, 12);
-  assert.deepEqual([...new Set(renderedCards.map((card) => card.family))].sort(), ['CLOSING_CONDITIONS', 'TERMINATION']);
+  // Was 12 cards across {CLOSING_CONDITIONS, TERMINATION}, the only two families
+  // 2Y-N could render when this packet was first built. Re-pinned 2026-08-10
+  // after FAMILY_ROUTES gained seven more, and the new number is the point: the
+  // re-sit now carries a rendered row on 34 of 96 cards across nine families
+  // rather than 12 across two, so a reviewer judges output rather than a code on
+  // a third of the packet instead of an eighth. Assert the SET as a superset
+  // check rather than an equality, so adding a route is not a test failure --
+  // but keep the count exact, because a silent DROP in rendered coverage is
+  // exactly what this pin exists to catch.
+  assert.equal(renderedCards.length, 34);
+  const renderedFamilies = [...new Set(renderedCards.map((card) => card.family))].sort();
+  for (const required of ['CLOSING_CONDITIONS', 'TERMINATION']) {
+    assert.ok(renderedFamilies.includes(required), `${required} must still render`);
+  }
   assert.equal(renderedCards.every((card) => card.rendered_row_absent === null), true);
   assert.equal(machine.cards.filter((card) => card.rendered_row === null)
     .every((card) => card.rendered_row_absent === 'FAMILY_NOT_RENDERABLE'), true);

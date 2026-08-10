@@ -2678,8 +2678,9 @@ human-adjudicated anchor set** that scores the adjudicators before their verdict
 count, and a decision on the disagreement set the adjudicators will route to him.
 One remaining open question is named in 2Y-0: **whether each family carries a
 stated recall floor** alongside the precision gate, since a precision rule alone
-is a ratchet. *Default: yes, floors derived from
-`lib/category-summary-features.js`.*
+is a ratchet. *Default: yes — but from `lib/rubric.js` via `lib/expected-sets.js`, NOT from
+`lib/category-summary-features.js`, which has zero representations rows. Source
+corrected 2026-08-10; see Phase D.*
 
 **3. Open-world promotion threshold.** 2X-G left this open and 2Y-J cannot
 proceed without it. The evidence now says a concept-recurrence rule reads better
@@ -2733,19 +2734,32 @@ reasoning, not its sequence.
 
 ### The four things that changed the order
 
-**1. Only 28.8% of resolved claims reach a row a lawyer sees.** Measured over
-130 runs: 439 of 1,526. Within the nine wired families it is 92%, so the
-mechanism works where it is connected — but 16 families are not connected, and
+**1. About 23% of resolved claims reach a row with content in it.** Measured
+over 130 runs: 439 of 1,526 "render", but **79 of those render an EMPTY row** —
+every TERMINATION_RIGHT_GRANT claim on all six deals returns
+`NONE_IDENTIFIED` with `rows: []`. An earlier draft of this section said those
+17 Concho claims "all render 'by mutual written consent'". **That string is the
+claim's input excerpt, not its output. Its output is nothing.** Corrected after
+adversarial review, 2026-08-10 — and it is the same error the placed-percent
+made one level down: counting a state as success without checking what is in it.
+
+**So Phase E reports "renders" and "renders with content" separately, or this
+metric repeats the mistake it was created to fix.** And "92% within the wired
+families" is misleading: TERMINATION is 91% empty, TERMINATION_FEE is 6 of 20,
+CLOSING_CONDITIONS 40 of 57. The mechanism demonstrably works in about five
+families, not nine. 16 families are not connected at all, and
 NO_SHOP, the largest family in the corpus at 365 resolved claims, has no
 canonical-V2 product projection at all. **Recovering more claims into families
 that cannot render them adds nothing to the product.** Every count in the older
 order was denominated in resolved claims; that was the wrong denominator.
 
-**2. 58% of sampled claims render output identical to another claim.** 250 of
-430. Thirty-two Metsera material-contract claims collapse to one row; 17 Concho
-termination claims all render "by mutual written consent". The catalogue tables
-cannot express which claim they are showing. This is why Ben wrote "dupe of 29",
-"dupe of 33", "dupe of 44" a dozen times.
+**2. 58% of sampled claims are redundant duplicates of a retained claim.** 250
+of 430 — and the looser phrasing "render output identical to another claim" is
+303 of 430, or 70%. Thirty-two Metsera material-contract claims collapse to one
+**card** (the section itself shows 15 distinct rows). This is why Ben wrote "dupe
+of 29", "dupe of 33", "dupe of 44" a dozen times. One caveat on the measurement:
+the dedupe signature truncates to the first three rows and six cells before
+hashing, so "identical" means identical-after-truncation.
 
 **3. The representations join pays out far less than recorded.** The
 `subject_occurrence_id` join asserted in §1a of
@@ -2774,31 +2788,83 @@ days but not from WHEN"*.
 sub-fields were harder to search and that was wrong; `lib/query/resolve.js`
 resolves feature keys with aliases and `field_paths` are first-class. The real
 discriminators are **evidence, absence semantics and independent revision**. So:
-**split an element into its own claim when it is separately negotiated AND you
-would want to cite it or count its absence; keep it as a field when it is a
-property of something you would cite whole.** On the access covenant that gives
-purpose limitation and access scope their own claims, and leaves "at reasonable
-times" and "upon reasonable prior notice" as fields.
+**REPLACED 2026-08-10 — the first wording was not operable.** "Separately
+negotiated" is market knowledge, not observable in one agreement, and "would want
+to cite it" is reader-relative; two reviewers would not agree. The test now
+anchors on the rubric:
+
+> **Split into its own claim when at least two of these hold: (1) it carries its
+> own evidence span distinct from the host's; (2) its presence or absence is a
+> countable item in `lib/rubric.js` / `expected-sets.js`, or would be added to
+> it; (3) it can be revised without re-adjudicating the host claim. Otherwise it
+> is a field.**
+>
+> Before adoption, two people apply this independently to 20 covenants. Adopt
+> only at ≥90% agreement, and record the disagreements as the rule's known edge.
+
+On the access covenant this still gives purpose limitation and access scope their
+own claims and leaves "at reasonable times" as a field — but now for a reason a
+second person can check.
+
+**And a correction to discriminator (1), from Ben, 2026-08-10: "why don't we
+track language / evidence / citation for sub claims?"** Nothing prevents it. A
+claim's `evidence` is already an array of role-tagged spans carrying
+`excerpt_id` and byte offsets; `attributes` are bare scalars with no link to it.
+Wiring attributes to their own spans is a schema change, not an architectural
+one, and for values appearing verbatim in the operative text — obligor, party,
+lexically-derived codes — the span is locатable deterministically at zero model
+cost. **That would weaken discriminator (1) considerably**, which is an argument
+for doing it: it lets structure be fine-grained without multiplying claims.
+Owned in Phase C.
 
 ---
 
+### Phase 0 — a green tree. Nothing below is measurable without it.
+
+`tests/canonical-v2-human-anchor-review.test.js` is **red on this branch right
+now**: "anchor packet preserves the 80-card core" asserts 12 rendered cards and
+gets **34**, because the `FAMILY_ROUTES` expansion in 2Y-N made seven more
+families renderable. It also pins the rendered set to exactly
+{CLOSING_CONDITIONS, TERMINATION}.
+
+The pin is stale and the fix is a deliberate decision, not a silent regen — **34
+rendered anchor cards instead of 12 is itself a finding**, because it means Ben's
+re-sit will carry rendered rows for nine families rather than two. Update the pin
+saying so, then run the full suite before Phase A starts.
+
 ### Phase A — the catalogue rebuild. Ben's ruling: first.
 
-A claim must map to a row that identifies it. Today three different Material
-Contracts claims — acquisition/disposition, indebtedness, leases — render
-byte-identical rows, because the table is a fixed bucket catalogue populated
-from deal-level data rather than driven by the claim.
+**RESPECCED 2026-08-10 after adversarial review. It is smaller than the earlier
+draft claimed, and I had the mechanism wrong.** The table is **not** a fixed
+catalogue populated from deal-level data — `material-contracts-product-projection.js`
+reads `claim.attributes.bucket_code` and `threshold_value` off each claim, and
+Metsera's 32 claims resolve **16 distinct buckets with distinct thresholds**
+("CRO | $2,000,000", "Employee loans | $50,000"), rendering 15 distinct
+populated rows. It is claim-driven already.
 
-- Rebuild the material-contracts projection so each claim produces a
-  distinguishable row carrying its own bucket, threshold and exclusions. Concho
-  excludes oil and gas properties and that exclusion is not captured anywhere.
-- **Then check whether TERMINATION and EMPLOYEE_MATTERS share the shape** — 17
-  Concho termination claims rendering one row says they probably do.
-- Re-run `scripts/stage-2y-rendered-rows-artefact.mjs` and confirm the duplicate
-  collapse count falls.
+The three real defects:
 
-*Gate:* the 32-, 22- and 20-claim collapses break into distinct rows, and the
-corpus duplicate rate drops from 58%.
+1. **One card per provision.** The projection emits a single card whose
+   `canonical_v2_lineage.claim_revision_ids` lists all 32 claims, so a per-claim
+   preview is identical *by construction*. Emit a card per bucket, or carry
+   lineage at row level.
+2. **`matches_claim_key` cannot discriminate.** `rendered-row-preview.js` compares
+   the claim *definition* key — `MATERIAL_CONTRACT_BUCKET_PRESENT`, identical for
+   all 16 buckets — against row ids. It can never match. Compare on the bucket.
+3. **Exclusions have no field.** Concho excludes oil and gas properties; nothing
+   in the schema holds it. This is the one genuine extraction-schema gap here.
+
+- **Do NOT assume the fix transfers to TERMINATION.** Its defect is the opposite:
+  79 claims across six deals render *no row at all*. Diagnose it separately.
+  Separately note that Concho's 17 grant claims cover only **9 distinct
+  excerpts**, so part of that collapse is duplicate claims — 2Y-G's territory,
+  not the projection's.
+
+*Gate:* the 32-, 22- and 20-claim collapses break into distinct rows; the
+duplicate rate falls; and the gate is reported as **renders-with-content**, not
+renders. *(Note the gate is weakly discriminating on its own: material contracts
+and termination account for 183 of the 250 excess duplicates, so almost any fix
+to either moves it.)*
 *Kill criterion:* if per-claim rows require the review page's table contract to
 change, stop and bring the design back — that is a product decision, not a
 projection fix.
@@ -2822,9 +2888,32 @@ manifests show execution on `gpt-5.6-terra; reasoning=medium` — worker tier.
 **This pipeline has never run extraction at lead tier.** Test it separately so
 the two effects do not confound.
 
-*Decision rule, fixed before the run:* ≥60% recovery of the blocked sample at
-≥95% agreement on the scored subset, with party-attribution agreement at or above
-the materiality baseline. Cost ~350–400 calls, 2–3 days.
+*Decision rule, fixed before the run — CORRECTED 2026-08-10, the first version
+was gameable.* Recovery was measured on the blocked rows and agreement on the
+adjudicated rows, which are different populations: **a model that recovers
+aggressively and wrongly on blocked rows while agreeing politely on the easy
+adjudicated ones would have passed.** The blocked rows have no ground truth at
+all. So:
+
+- ≥60% recovery of the blocked sample, **and**
+- **every recovered blocked-row placement is scored by a cross-vendor model**,
+  with **≥50 of them human-adjudicated**, and the ≥95% agreement bar applies to
+  **that recovered-blocked subset** — not only to the pre-adjudicated rows.
+- Party attribution: ground truth is **7 decided cards** (9 of 16 were
+  `CANT_JUDGE` because the old packet dropped the chapeau). Comparing n=7 against
+  n=16 is not a test. Either the anchor re-sit happens first, or this criterion
+  is recorded as unmeasured rather than passed.
+- ≥95% at n≈150 has a binomial standard error near 1.8%, so a genuinely 94%
+  mechanism passes about half the time. State it as a lower-confidence bound.
+- **A pass licenses the mechanism, not publication.** Ruling 7's <1% needs ~300
+  consecutive correct rows and is a separate gate.
+- **Name the lead-tier model.** The baseline is `gpt-5.6-terra; reasoning=medium`;
+  a re-run at a different vendor *and* tier confounds the two. GPT-5.6 Sol keeps
+  it within vendor. n=46 on one family is a probe, and this plan's own evidence
+  says model shifts are family-correlated — do not generalise it.
+
+Expect the residue to Ben to exceed the "under 20 cards" earlier claimed. Cost
+~350–400 calls, 2–3 days.
 
 *If it passes:* the ceiling moves from 51–77% to roughly 70–85% placed, and the
 scaling term flips — no per-drafter regex maintenance, so the backlog stops
