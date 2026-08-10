@@ -14,6 +14,7 @@ const {
   LIVE_MODEL_ADJUDICATION_RUNS,
   LIVE_EXTRACTION_ORCHESTRATORS,
   READ_ONLY_GIT_INSPECTORS,
+  READ_ONLY_GIT_ARTIFACT_WRITERS,
   PRODUCTION_PATH_PURE_ANALYSIS_SOURCES,
   LIVE_EXTRACTION_RUN_SOURCES,
   LOCAL_DATABASE_PROOF_SOURCES,
@@ -221,6 +222,7 @@ const RECORDED_PROVIDER_REPLAY_WRITER_FORBIDDEN_CAPABILITIES = Object.freeze(PUR
 const LIVE_MODEL_ADJUDICATION_RUN_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => !['provider', 'filesystem_write'].includes(name)));
 const LIVE_EXTRACTION_ORCHESTRATOR_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => !['external_process', 'filesystem_write'].includes(name)));
 const GIT_INSPECTOR_FORBIDDEN_CAPABILITIES = Object.freeze(LOCAL_WRITER_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'external_process').concat('filesystem_write'));
+const GIT_ARTIFACT_WRITER_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => !['external_process', 'filesystem_write'].includes(name)));
 // A live extraction run is allowed exactly the three capabilities that make
 // it what it is -- provider (the real model call), external_process (the
 // `claude` CLI it spawns) and filesystem_write (its receipts/evidence) --
@@ -610,15 +612,49 @@ function extractedGitCommands(source) {
   return commands;
 }
 
-function assertReadOnlyGitInspector(source, label) {
-  assertNoCapabilities(source, GIT_INSPECTOR_FORBIDDEN_CAPABILITIES, label);
+function assertReadOnlyGitCommands(source, label) {
   const processLaunches = source.match(/\bexecFileSync\s*\(/g) || [];
-  const gitLaunches = source.match(/\bexecFileSync\(\s*['"]git['"]/g) || [];
+  const gitLaunches = source.match(/\b(?:[A-Za-z_$][\w$]*\.)?execFileSync\(\s*['"]git['"]/g) || [];
   assert.equal(processLaunches.length, gitLaunches.length, `${label} may launch only the Git executable`);
   assert.ok(processLaunches.length > 0, `${label} must contain an explicit Git inspection`);
   const commands = extractedGitCommands(source);
   assert.ok(commands.length > 0, `${label} must declare Git commands as literal array heads`);
   assert.deepEqual(commands.filter((command) => !ALLOWED_GIT_COMMANDS.has(command)), [], `${label} contains a non-read-only Git command`);
+}
+
+function assertLiteralExecFileGitCommands(source, label) {
+  const childProcessSpecifiers = source.match(/['"](?:node:)?child_process['"]/g) || [];
+  assert.equal(childProcessSpecifiers.length, 1, `${label} must import child-process authority exactly once`);
+  assert.match(
+    source,
+    /import\s*\{\s*execFileSync\s*\}\s*from\s*['"]node:child_process['"]\s*;/,
+    `${label} may import only execFileSync from node:child_process`,
+  );
+  const processLaunches = source.match(/\b(?:execFileSync|execSync|spawnSync|spawn)\s*\(/g) || [];
+  const gitLaunches = source.match(/\bexecFileSync\(\s*['"]git['"]/g) || [];
+  assert.equal(processLaunches.length, gitLaunches.length, `${label} may launch only the Git executable`);
+  assert.equal(
+    capabilityCounts(source, label).external_process,
+    gitLaunches.length + 1,
+    `${label} may use child-process authority only for its literal Git launches`,
+  );
+  assert.ok(processLaunches.length > 0, `${label} must contain an explicit Git inspection`);
+  const commands = extractedGitCommands(source);
+  assert.ok(commands.length > 0, `${label} must declare Git commands as literal array heads`);
+  assert.deepEqual(commands.filter((command) => !ALLOWED_GIT_COMMANDS.has(command)), [], `${label} contains a non-read-only Git command`);
+}
+
+function assertReadOnlyGitInspector(source, label) {
+  assertNoCapabilities(source, GIT_INSPECTOR_FORBIDDEN_CAPABILITIES, label);
+  assertReadOnlyGitCommands(source, label);
+}
+
+function assertReadOnlyGitArtifactWriter(source, label) {
+  assertNoCapabilities(source, GIT_ARTIFACT_WRITER_FORBIDDEN_CAPABILITIES, label);
+  const counts = capabilityCounts(source, label);
+  assert.ok(counts.external_process > 0, `${label} must inspect Git through an external process`);
+  assert.ok(counts.filesystem_write > 0, `${label} must write only local evidence`);
+  assertLiteralExecFileGitCommands(source, label);
 }
 
 // The session-signing carve-out (LIVE_REQUEST_AUTHORIZATION_SESSION_SOURCES)
@@ -671,6 +707,7 @@ test('every production source changed from the fixed Phase 1 base is classified 
     'LIVE_MODEL_ADJUDICATION_RUN',
     'LIVE_EXTRACTION_ORCHESTRATOR',
     'READ_ONLY_GIT_INSPECTOR',
+    'READ_ONLY_GIT_ARTIFACT_WRITER',
     'PRODUCTION_PATH_PURE_ANALYSIS',
     'LIVE_EXTRACTION_RUN',
     'LOCAL_DATABASE_PROOF',
@@ -904,6 +941,13 @@ test('read-only Git inspectors launch only whitelisted inspection commands', () 
   }
 });
 
+test('read-only Git artefact writers have their exact capability boundary', () => {
+  assert.deepEqual(READ_ONLY_GIT_ARTIFACT_WRITERS, ['scripts/stage-2y-registry-substrate-replay.mjs']);
+  for (const relativePath of READ_ONLY_GIT_ARTIFACT_WRITERS) {
+    assertReadOnlyGitArtifactWriter(fs.readFileSync(path.join(ROOT, relativePath), 'utf8'), relativePath);
+  }
+});
+
 test('modified pre-existing production sources do not add authority capabilities', () => {
   const inventory = classifyChangedProductionSources({
     changedSources: mechanicallyDerivedChangedProductionSources(),
@@ -955,7 +999,10 @@ test('hostile inventory and capability changes fail closed', () => {
   );
   assert.throws(() => assertNoCapabilities('fetch("https://example.invalid")', PURE_FORBIDDEN_CAPABILITIES, 'hostile pure'), /network/);
   assert.throws(() => assertNoCapabilities('createClient(url, key)', LOCAL_WRITER_FORBIDDEN_CAPABILITIES, 'hostile writer'), /database/);
-  assert.throws(() => assertReadOnlyGitInspector("execFileSync('git', ['push'])", 'hostile inspector'), /non-read-only Git command/);
+  assert.throws(() => assertReadOnlyGitInspector("import { execFileSync } from 'node:child_process'; execFileSync('git', ['push'])", 'hostile inspector'), /non-read-only Git command/);
+  assert.throws(() => assertReadOnlyGitArtifactWriter("import { execFileSync } from 'node:child_process'; execFileSync('git', ['push']); writeFileSync('evidence.json', '{}')", 'hostile Git writer'), /non-read-only Git command/);
+  assert.throws(() => assertReadOnlyGitArtifactWriter("import { execFileSync, execSync } from 'node:child_process'; execSync('git status'); writeFileSync('evidence.json', '{}')", 'hostile alternate launcher'), /may import only execFileSync|may launch only the Git executable/);
+  assert.throws(() => assertReadOnlyGitArtifactWriter("import { execFileSync } from 'node:child_process'; const launch = execFileSync; execFileSync('git', ['status']); launch('sh', ['-c', 'true']); writeFileSync('evidence.json', '{}')", 'hostile aliased launcher'), /child-process authority only for its literal Git launches/);
   assert.throws(() => assertNoCapabilityGrowth('', 'fetch(url)', 'hostile legacy'), /network/);
   assert.throws(() => assertNoModuleDependencies("const fs = require('node:fs');", 'hostile analysis'), /no module dependencies/);
   assert.throws(() => assertNoModuleDependencies("import fs from 'node:fs';", 'hostile analysis'), /no module dependencies/);
@@ -1004,10 +1051,9 @@ test('hostile inventory and capability changes fail closed', () => {
     () => assertPureProposalSignatureVerificationBoundary("fetch('https://evil.example');", 'hostile proposal network'),
     /network/,
   );
-  // Moved 12 -> 15 with the Stage 2Y recorded-replay writer, Terra
-  // adjudication runner, and live-extraction orchestrator. This assertion
+  // Moved 12 -> 16 with the Stage 2Y authority classes. This assertion
   // exists precisely so that adding an authority class cannot happen quietly.
-  assert.equal(Object.keys(EXPLICIT_NEW_SOURCE_CLASSES).length, 15);
+  assert.equal(Object.keys(EXPLICIT_NEW_SOURCE_CLASSES).length, 16);
 });
 
 // ---------------------------------------------------------------------------------------

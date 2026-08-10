@@ -15,6 +15,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUTPUT = resolve(ROOT, 'evidence/canonical-v2/stage-2y-registry-substrate-replay.json');
 const BASELINE_OUTPUT = resolve(ROOT, 'evidence/canonical-v2/stage-2y-registry-substrate-head-baseline.json');
 const REPLAY_HARNESS = resolve(ROOT, 'scripts/stage-2y-corroboration-ladder.mjs');
+const BASELINE_COMMAND = (acceptedDiffPath) => `node scripts/stage-2y-registry-substrate-replay.mjs --write-baseline --accepted-diff ${acceptedDiffPath}`;
 const REQUIRED = Object.freeze(['run-manifest.json', 'run-receipt.json', 'resolution.json', 'source-reference.json', 'recording.json']);
 const hash = (value) => `sha256:${sha256Hex(Buffer.from(canonicalJson(value), 'utf8'))}`;
 const json = (file) => JSON.parse(readFileSync(file, 'utf8'));
@@ -62,7 +63,7 @@ async function replayRun(name, baselineRun = null) {
   }
 }
 
-async function build({ baseline = null } = {}) {
+async function build({ baseline = null, generation_command: generationCommand = null } = {}) {
   const base = resolve(ROOT, 'evidence/canonical-v2');
   const run_names = readdirSync(base).filter(isFinalCorpusRun).sort();
   const runs = [];
@@ -74,7 +75,7 @@ async function build({ baseline = null } = {}) {
   }
   const included = runs.filter((run) => run.outcome === 'INCLUDED');
   const excluded = runs.filter((run) => run.outcome === 'EXCLUDED');
-  return { schema_version: 'STAGE_2Y_REGISTRY_SUBSTRATE_REPLAY/V3', model_calls: 0, comparison_baseline: baseline ? { schema_version: baseline.schema_version, head_commit: baseline.head_commit, replay_harness_sha256: baseline.replay_harness_sha256 || baseline.harness_patch_sha256, accepted_resolution_diff: baseline.accepted_resolution_diff || null, run_count: baseline.run_names.length } : { kind: 'COMMITTED_RESOLUTION_ARTIFACTS' }, registry_substrate: { manifest: MANIFEST, manifest_digest }, discovered_run_names: run_names, included_run_names: included.map((run) => run.name), excluded_runs: excluded.map(({ name, reason, detail }) => ({ name, reason, detail })), receipt_only_differences: included.filter((run) => run.receipt_projection_match === false).map((run) => ({ name: run.name, expected_receipt_projection_digest: run.expected_receipt_projection_digest, replayed_receipt_projection_digest: run.receipt_projection_digest })), runs };
+  return { schema_version: 'STAGE_2Y_REGISTRY_SUBSTRATE_REPLAY/V3', generation_command: generationCommand, model_calls: 0, comparison_baseline: baseline ? { schema_version: baseline.schema_version, head_commit: baseline.head_commit, replay_harness_sha256: baseline.replay_harness_sha256 || baseline.harness_patch_sha256, accepted_resolution_diff: baseline.accepted_resolution_diff || null, run_count: baseline.run_names.length } : { kind: 'COMMITTED_RESOLUTION_ARTIFACTS' }, registry_substrate: { manifest: MANIFEST, manifest_digest }, discovered_run_names: run_names, included_run_names: included.map((run) => run.name), excluded_runs: excluded.map(({ name, reason, detail }) => ({ name, reason, detail })), receipt_only_differences: included.filter((run) => run.receipt_projection_match === false).map((run) => ({ name: run.name, expected_receipt_projection_digest: run.expected_receipt_projection_digest, replayed_receipt_projection_digest: run.receipt_projection_digest })), runs };
 }
 
 function assertBaselineAcceptance(value, baseline) {
@@ -177,8 +178,10 @@ function buildAcceptedBaseline({
     if (run.name !== acceptedDiff.run_names[index]) throw new Error('BASELINE_SOURCE_RUN_ORDER_MISMATCH');
     return [run.name, baselineRun(run)];
   }));
+  const generationCommand = BASELINE_COMMAND(acceptedDiffPath);
   return {
     schema_version: 'STAGE_2Y_REGISTRY_BASELINE/V2',
+    generation_command: generationCommand,
     head_commit: headCommit,
     replay_harness_sha256: replayHarnessSha256,
     adopted_replay_digest: adoptedReplayDigest(acceptedDiff.run_names, runs),
@@ -191,6 +194,7 @@ function buildAcceptedBaseline({
     run_names: acceptedDiff.run_names,
     runs,
     baseline_provenance: {
+      generation_command: generationCommand,
       frozen_head: headCommit,
       replay_harness_path: 'scripts/stage-2y-corroboration-ladder.mjs',
       replay_harness_sha256: replayHarnessSha256,
@@ -225,7 +229,8 @@ async function writeAcceptedBaseline(acceptedDiffArgument) {
   const initialSourceState = sourceState();
   const headCommit = assertCleanCommittedTree(initialSourceState);
   const acceptedDiff = json(acceptedDiffFile);
-  const replay = await build();
+  const generationCommand = BASELINE_COMMAND(acceptedDiffPath);
+  const replay = await build({ generation_command: generationCommand });
   const baseline = buildAcceptedBaseline({
     replay,
     accepted_diff: acceptedDiff,
@@ -235,7 +240,7 @@ async function writeAcceptedBaseline(acceptedDiffArgument) {
     replay_harness_sha256: bytes(REPLAY_HARNESS),
     resolver_source_digest: bytes(resolve(ROOT, 'lib/canonical-v2/native-producer/candidate-resolution.js')),
   });
-  const verifiedReplay = await build({ baseline });
+  const verifiedReplay = await build({ baseline, generation_command: generationCommand });
   assertBaselineAcceptance(verifiedReplay, baseline);
   if (verifiedReplay.receipt_only_differences.length !== 0) throw new Error('BASELINE_VERIFICATION_RECEIPT_DRIFT');
   assertAdoptedReplayMatch(verifiedReplay, baseline);
@@ -259,7 +264,7 @@ async function main() {
   const baseline = baselineIndex === -1 ? null : json(resolve(ROOT, args[baselineIndex + 1] || 'BASELINE_PATH_REQUIRED'));
   const mode = args.find((arg) => arg === '--write' || arg === '--check');
   if (!mode || args.filter((arg) => arg === '--write' || arg === '--check').length !== 1 || (baselineIndex !== -1 && !args[baselineIndex + 1])) throw new Error('USAGE: use --write|--check [--baseline path]');
-  const value = await build({ baseline });
+  const value = await build({ baseline, generation_command: baseline?.baseline_provenance?.generation_command || null });
   assertBaselineAcceptance(value, baseline);
   const text = `${JSON.stringify(value, null, 2)}\n`;
   if (mode === '--write') {

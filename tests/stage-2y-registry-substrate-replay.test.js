@@ -108,6 +108,8 @@ test('the audited writer derives a complete baseline from accepted semantic move
     resolver_source_digest: 'sha256:resolver',
   });
   assert.equal(baseline.schema_version, 'STAGE_2Y_REGISTRY_BASELINE/V2');
+  assert.equal(baseline.generation_command, 'node scripts/stage-2y-registry-substrate-replay.mjs --write-baseline --accepted-diff evidence/canonical-v2/stage-2y-parent-approval-resolution-set-diff-fixed.json');
+  assert.equal(baseline.baseline_provenance.generation_command, baseline.generation_command);
   assert.deepEqual(baseline.run_names, ['one', 'two']);
   assert.equal(baseline.runs.two.semantic_output_digest, 'sha256:two-semantic');
   assert.deepEqual(baseline.runs.two.input_digests, { 'run-receipt.json': 'sha256:two-input' });
