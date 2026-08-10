@@ -79,7 +79,25 @@ for (const run of runs) {
     }
     if (takenForThisRun >= PER_FAMILY) continue;
     takenForThisRun += 1;
-    const matched = rendered.rows.filter((row) => row.matches_claim_key);
+    // Pick the row the claim actually FILLS, not the section's catalogue.
+    //
+    // Catalogue configs (material contracts, employee benefits, termination
+    // rights) emit their whole fixed row set whatever the claim is. The first
+    // version of this artefact showed the first three of them, so 297 of 310
+    // cards displayed rows belonging to other provisions entirely — which read
+    // as cross-contamination in the product and was not. It was this bug.
+    //
+    // The reviewDeal here is already sliced to the claim's own provision, so a
+    // row the claim does not fill renders empty or renders the absence copy.
+    // Keep rows with real content; fall back to the key match; and if neither
+    // finds anything, say so on the card rather than showing a catalogue.
+    const ABSENT = /not found \(may not be present|not yet extracted|not specified|none specified/i;
+    const populated = rendered.rows.filter((row) => row.cells.some((cell) => {
+      const text = (cell.text || '').trim();
+      return text && !ABSENT.test(text);
+    }));
+    const keyMatched = rendered.rows.filter((row) => row.matches_claim_key);
+    const chosen = populated.length ? populated : keyMatched;
     records.push({
       deal: run.manifest.deal,
       family,
@@ -89,7 +107,8 @@ for (const run of runs) {
       excerpt: claimExcerpt(entry),
       section_title: rendered.section.title,
       row_count: rendered.row_count,
-      rows: (matched.length ? matched : rendered.rows).slice(0, 3).map((row) => ({
+      row_selection: populated.length ? 'POPULATED' : (keyMatched.length ? 'KEY_MATCH' : 'NONE_IDENTIFIED'),
+      rows: chosen.slice(0, 3).map((row) => ({
         id: row.id,
         label: row.label,
         matched: row.matches_claim_key,
@@ -129,6 +148,7 @@ const cards = records.map((r, i) => `
   <div class="lbl">What was extracted</div>
   <blockquote>${esc(r.excerpt)}</blockquote>
   <div class="lbl">What a lawyer sees</div>
+  ${r.row_selection === 'NONE_IDENTIFIED' ? '<p class="empty">No row in this section carries content for this claim. That is the finding — the claim resolved and fills nothing a reader would see.</p>' : ''}
   ${r.rows.map((row) => `<div class="row${row.matched ? ' matched' : ''}">
     <div class="rl">${esc(row.label || row.id)}${row.matched ? ' <span class="tag">matches claim</span>' : ''}</div>
     ${row.cells.length ? `<table class="cells">${row.cells.map((c) => `<tr><th>${esc(c.header || c.id)}</th><td>${esc(c.text)}</td></tr>`).join('')}</table>` : '<p class="empty">every cell empty</p>'}
