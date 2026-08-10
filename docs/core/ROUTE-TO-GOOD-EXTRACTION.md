@@ -62,6 +62,121 @@ giving a firmer number today is doing what the last two plans did.
 
 ---
 
+## 1a. AMENDED 2026-08-10, after a second adversarial pass tested the plan on real rendered rows
+
+Three amendments, and one of them changes the headline metric.
+
+### The metric is wrong, and a real row proved it
+
+Running the actual 2Y-N preview service on a real Concho claim produced this:
+
+```
+deal: concho | section: conditions | row label: "Stockholder Approval"
+cell: "Mutual conditions | Stockholder Approval | See provision |
+       Stockholder approval required"
+```
+
+That is what a resolved claim is worth when the chain works. But the same run
+found that **2 of Concho's 8 resolved Closing Conditions claims project to ZERO
+review cards** (`CLAIM_PROJECTED_CARD_NOT_UNIQUE`), and `COND-REG` does the same
+on Metsera.
+
+**Resolved-but-invisible already exists.** The percentage and the product are
+already two different numbers, today, before any new work adds a single row.
+
+**So the headline metric becomes rendered rows a lawyer can use — not placed
+percent.** Nobody has ever counted it. That count is a day of work over stored
+runs and configs, and it should be the number this programme reports from now on.
+
+### Ben's suspicion about the limb work was half right, and the other half is the finding
+
+He asked whether the limb resolution really helps the percentages. Tested
+directly:
+
+**2Y-H alone mints a presence checkbox.** The limb claim carries only
+`{section_reference, party_making, limb_path, subject}` plus the quote, with
+`canonical_value: null`. For a real Metsera §3.13(a) limb it renders as:
+
+> TERM: "Material Contracts — *Specified Contract list and copies*" |
+> MATERIALITY: — | LOOKBACK: —
+
+**He is right: 623 of those would move the percentage ~23% and the product very
+little.**
+
+**But the qualifiers are not missing. They are one join away.** Verified on the
+Metsera representations run: **86 of 86 limb claims share a
+`subject_occurrence_id` with qualifier claims — 107 of them** — and those
+qualifier claims carry exactly the cells the row needs:
+`MAT_MAE_QUALIFIED`, `MAT_ALL_MATERIAL`, accuracy standards, temporal qualifiers
+for the LOOKBACK column, each with an `attachment` naming its `limb_path`.
+
+**Those qualifier claims are the 2Y-I cohort** — the 485 open-world
+`QUALIFIER_KIND_NOT_GOVERNED` rows. Joined, §3.13 becomes:
+
+> TERM: "Material Contracts (§3.13, Company)" | MATERIALITY: MAE-qualified |
+> LOOKBACK: as of the Agreement date — with the operative text attached.
+
+**That is a row a lawyer uses. The value is in the join, the join key already
+exists in the data model, and nobody has specced the joined projection.**
+
+Consequences:
+
+1. **2Y-H's spec changes.** Not a standalone "topic present" claim family —
+   **topic as the routing key that projects the instance cluster** (limbs plus
+   attached qualifiers) into the reps table. The classifier is the cheap part;
+   the joined projection is the real work and the real value.
+2. **2Y-H and 2Y-I ship together for REPRESENTATIONS.** Either alone produces
+   thin rows: topics without qualifiers, or qualifiers with no rep to hang on.
+3. **A 2Y-N route for REPRESENTATIONS is built before the classifier bakes
+   topics in**, so Ben judges the joined row rather than the code.
+4. **Value-honest restatement:** of the 623, ~324 classify (measured), and they
+   upgrade to full rows only via the join; the 299 unclassifiable stay
+   open-world. So "623 recovered" is really **~300 valuable rows and ~300
+   unmoved** — the percentage flatters by roughly **2×** on this cohort.
+
+**Same test on 2Y-A's bound fragments.** IOC (129), CONSIDERATION (89),
+TERMINATION (19), DNO (27) and MATERIAL_CONTRACTS (15) attach into row shapes
+that already render their payload — an IOC row is party band → covenant label →
+restriction and exception pills, and a bound fragment fills a pill. **Those ~280
+convert placed → useful immediately.** The 281 REPRESENTATIONS fragments are
+gated on the same 2Y-H join; the 88 KEY_DEFINED_TERMS land in the definitions
+sidebar, modestly. **Roughly half of 2Y-A converts to value directly.**
+
+### The route the evidence most supports is more AI, and the plan already contains it — parked
+
+Ben proposed "more AI in extraction" as a fifth route. Tested against the
+corpus, **it is the strongest of the five**, and the architecture already has the
+seam: `corroboration-ladder.js` states in its own header that rungs 3–4 are
+analysis-only *"because the resolver has no calibrated model-deferral adapter."*
+
+The evidence that the deterministic layer is the wrong tool: 91 of 91 knowledge
+derivations returned null with **zero genuine conflicts**; ~350 occurrences of
+one-drafter's-habit regexes; the dead ternary; the qualifier dispatch gap. **The
+deterministic layer's failures are overwhelmingly "I have nothing to say" scored
+as "the model is wrong."**
+
+Two honest qualifications:
+
+- **Rung 3 — defer only where derivation is empty — is intrinsically bounded**
+  (it can never override a contradiction) and **could activate resolve-only,
+  corpus-wide, now**, as 2Y-B generalised.
+- **Rung 4, and publication on model placement, need exactly the calibration
+  apparatus that has been the source of frustration.** The false-placement rate
+  of model placement **has never been measured.**
+
+**The reframe that matters: the anchor and adjudicator work is not bureaucracy
+delaying the fix. It is the enabling instrument of the fastest structural
+route.** It was sequenced wrong — placed in front of recovery instead of
+alongside it — not wrongly conceived.
+
+**And there is a cheap test that settles its priority with a number instead of an
+argument:** sweep the model rungs over the 2,692 open-world rows **analysis-only**
+and measure the per-family upper bound on what model placement recovers. Same
+species of census as the one that produced 2Y-I's measured 104. That artefact
+should be produced this week.
+
+---
+
 ## 2. What is measured, and what is a guess
 
 This table is the reason the ceiling is uncertain. Plan against the middle
