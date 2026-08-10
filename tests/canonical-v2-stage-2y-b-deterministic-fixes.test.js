@@ -62,3 +62,35 @@ test('2Y-B keeps genuine Parent shareholder approval distinct from Merger Sub ap
   const quote = 'Parent stockholders shall approve this Agreement by shareholder vote at the Parent Meeting.';
   assert.deepEqual(proxyMeetingCorroboratedKinds(quote), ['PARENT_APPROVAL']);
 });
+
+test('2Y-B preserves combined Parent approval and meeting obligations in the two recorded corpus runs', () => {
+  const fixtures = [
+    {
+      run: 'concho-proxy-meeting-20260809-2xk-final',
+      quote: 'Parent shall take all action necessary in accordance with applicable Laws and the Organizational Documents of Parent to duly give notice of, convene and hold (in person or virtually, in accordance with applicable Law) a meeting of its stockholders for the purpose of obtaining the Parent Stockholder Approval',
+      parent_review_reason: 'APPROVAL_TIMING_NOT_IN_QUOTE',
+    },
+    {
+      run: 'topbuild-proxy-meeting-20260809-2xk-r4-final',
+      quote: 'Parent shall, no later than twenty-one (21) business days following the mailing of the Joint Proxy Statement/Prospectus, duly call, give notice of, convene and hold a meeting of its stockholders (the “Parent Stockholder Meeting”) for the purpose of obtaining the Parent Stockholder Approval',
+      parent_review_reason: 'APPROVAL_MECHANISM_UNCORROBORATED',
+    },
+  ];
+
+  for (const { run, quote, parent_review_reason: parentReviewReason } of fixtures) {
+    assert.deepEqual(proxyMeetingCorroboratedKinds(quote), [
+      'MEETING_DEADLINE',
+      'CONVENE_OBLIGATION',
+      'PARENT_APPROVAL',
+    ]);
+    const result = replay(run);
+    const resolved = result.resolved.filter((entry) => entry.claim.raw_value === quote);
+    assert.deepEqual(resolved.map((entry) => entry.resolved_claim_definition_key), [
+      'MEETING_CONVENE_OBLIGATION',
+    ], run);
+    assert.equal(result.review_queue.some((entry) => entry.raw_value === quote
+      && entry.reasons.includes(parentReviewReason)), true, run);
+    assert.equal(result.review_queue.some((entry) => entry.raw_value === quote
+      && entry.reasons.includes('AMBIGUOUS_PROXY_MEETING_KIND')), false, run);
+  }
+});

@@ -164,7 +164,7 @@ test('FIXTURE PIN (test 4, additivity): the no-lexical-input resolveCandidates()
   // replaying the same run-receipt through resolveCandidates. Bucket counts
   // remain 3/6/31/1 while current evidence context and registry provenance
   // are retained in the fixture.
-  assert.equal(resolutionFixture.resolution_receipt.resolution_receipt_id, '444542e5e5b5cec373274d366bdc9fd1e5414135185d21738ee0df86084391f3');
+  assert.equal(resolutionFixture.resolution_receipt.resolution_receipt_id, '199d69445be17fbf43fe46229c6e753a3dc9c829cc8344b60e0338577fadb7f6');
   // MAPPING_TABLE_VERSION 4 -> 5 (family-termination-fee slice, three fee
   // entries -- docs/superpowers/specs/2026-08-02-family-termination-fee-
   // design.md section 4).
@@ -173,7 +173,7 @@ test('FIXTURE PIN (test 4, additivity): the no-lexical-input resolveCandidates()
   assert.equal(baseline.resolution_receipt.zero_pattern_table_version, 1);
   assert.equal(
     baseline.resolution_receipt.resolution_receipt_id,
-    '444542e5e5b5cec373274d366bdc9fd1e5414135185d21738ee0df86084391f3',
+    '199d69445be17fbf43fe46229c6e753a3dc9c829cc8344b60e0338577fadb7f6',
     // Re-pinned again (Stage 3, QUALIFIER_KIND_LEXICON_VERSION 2 -> 3): the
     // lexicon version is folded into every mechanically-resolved claim's
     // answer_provenance, so the version bump re-keys claim_revision_ids and
