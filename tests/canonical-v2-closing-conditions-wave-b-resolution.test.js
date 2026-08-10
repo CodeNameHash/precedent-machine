@@ -102,7 +102,17 @@ test('Closing Conditions Wave B resolves grounded facts and keeps dissent and ce
 
   const projection = projectClosingConditionProductSurfaces({ resolution, deal_id: dealKey });
   assert.ok(projection.cards.every((card) => card.canonical_v2_lineage.source === 'CANONICAL_V2_NATIVE_CLAIM'));
-  assert.ok(projection.open_items.every((item) => item.state === 'BLOCKED'));
+  const dissentThreshold = projection.open_items.find((item) => item.item === 'DISSENT_THRESHOLD');
+  assert.deepEqual(dissentThreshold, {
+    item: 'DISSENT_THRESHOLD',
+    state: 'OPEN_WORLD',
+    reason: 'NO_GROUNDED_CORPUS_QUOTE',
+    disposition: 'APPROVED_RETIRED_OPEN_WORLD',
+    decision_id: 'closing-dissent-threshold-retirement',
+  });
+  assert.ok(projection.open_items
+    .filter((item) => item.item !== 'DISSENT_THRESHOLD')
+    .every((item) => item.state === 'BLOCKED'));
 
   const conditions = await import('../components/review/table-configs/conditions.config.js');
   const groups = conditions.conditionGroups({ cards: projection.cards }, {});

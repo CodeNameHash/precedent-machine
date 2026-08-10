@@ -1,9 +1,13 @@
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const test = require('node:test');
 
 const {
+  DECISION_RECONCILIATION_BINDINGS,
   DECISION_GROUPS,
   DECISIONS,
+  DISSENT_THRESHOLD_RETIREMENT_PROVENANCE,
   M3_STAGES,
   RECORDED_RULINGS,
   decisionById,
@@ -30,7 +34,7 @@ test('decision console has one complete, unique recommendation per decision', ()
 });
 
 test('recorded rulings stay fixed and follow-on rulings are added without duplicates', () => {
-  assert.equal(Object.keys(RECORDED_RULINGS).length, 40);
+  assert.equal(Object.keys(RECORDED_RULINGS).length, 41);
   assert.deepEqual(
     DECISIONS.filter((decision) => !RECORDED_RULINGS[decision.id]).map((decision) => decision.id),
     [
@@ -47,6 +51,33 @@ test('recorded rulings stay fixed and follow-on rulings are added without duplic
   for (const [decisionId, optionId] of Object.entries(RECORDED_RULINGS)) {
     assert.ok(decisionById(decisionId).options.some((option) => option.id === optionId));
   }
+});
+
+test('the dissent-threshold retirement is recorded once and reconciled to its consumers', () => {
+  const decisionId = 'closing-dissent-threshold-retirement';
+  const choice = 'APPROVED_RETIRED_OPEN_WORLD';
+  const decision = decisionById(decisionId);
+  assert.ok(decision);
+  assert.equal(RECORDED_RULINGS[decisionId], choice);
+  assert.equal(decision.options.find((option) => option.recommended).id, choice);
+  assert.equal(decision.provenance, DISSENT_THRESHOLD_RETIREMENT_PROVENANCE);
+  assert.deepEqual(DISSENT_THRESHOLD_RETIREMENT_PROVENANCE, {
+    assistant_prompt_timestamp: '2026-08-04T13:13:05.876Z',
+    response_timestamp: '2026-08-04T13:21:06.252Z',
+    session_log_path: '/Users/bengoodchild/.codex/sessions/2026/08/03/rollout-2026-08-03T06-01-47-019fc5ff-dc06-70b3-bc8a-6f6afc627632.jsonl',
+    assistant_prompt_line: 21490,
+    response_line: 21496,
+    assistant_prompt_excerpt: 'One decision is needed now: approve retiring `DISSENT_THRESHOLD` as a comparable M3 field. Exact future language remains preserved as open-world evidence. My recommendation remains to approve.',
+    response_excerpt: 'Approved. Proceed with all speed, using agents to maximize speed and manage cost',
+  });
+
+  const binding = DECISION_RECONCILIATION_BINDINGS[decisionId];
+  assert.equal(binding.recorded_choice, choice);
+  assert.equal(binding.field, 'DISSENT_THRESHOLD');
+  assert.equal(binding.product_surface_id, 'closing-conditions-dissent-threshold');
+  assert.ok(binding.consumers.every((consumer) => (
+    fs.existsSync(path.resolve(__dirname, '..', consumer))
+  )));
 });
 
 test('follow-on rulings carry corpus counts, clause examples and a promotion horizon', () => {

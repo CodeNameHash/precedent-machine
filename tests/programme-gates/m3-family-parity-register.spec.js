@@ -17,6 +17,10 @@ const {
   validateM3FamilyParityStatus,
 } = require('../../lib/canonical-v2/native-producer/m3-family-parity-register');
 const { contentId } = require('../../lib/canonical-v2/canonical-bytes');
+const {
+  DECISION_RECONCILIATION_BINDINGS,
+  RECORDED_RULINGS,
+} = require('../../lib/programme-decision-console');
 
 const ROOT = path.resolve(__dirname, '../..');
 const EXPECTED_FAMILIES = Object.freeze([
@@ -227,6 +231,26 @@ test('parity blocker inventory is exact and never treats open-world evidence as 
     [...blockers.map((blocker) => blocker.surface_id)].sort(),
   );
   assert.deepEqual(listM3ProductParityBlockers(completedRegister()), []);
+});
+
+test('the retired dissent-threshold field reconciles to the recorded open-world choice', () => {
+  const decisionId = 'closing-dissent-threshold-retirement';
+  const binding = DECISION_RECONCILIATION_BINDINGS[decisionId];
+  const closing = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
+    (family) => family.family_id === 'CLOSING_CONDITIONS',
+  );
+  const surface = closing.product_surfaces.find(
+    (entry) => entry.surface_id === binding.product_surface_id,
+  );
+  assert.equal(RECORDED_RULINGS[decisionId], binding.recorded_choice);
+  assert.equal(binding.field, surface.source_locator);
+  assert.equal(surface.state, 'PASS');
+  assert.equal(surface.disposition, 'APPROVED_RETIRED');
+  assert.equal(
+    listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER)
+      .some((blocker) => blocker.surface_id === surface.surface_id),
+    false,
+  );
 });
 
 test('Consideration Wave A and grounded product projections pass while Wave B stays open world', () => {

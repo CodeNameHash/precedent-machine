@@ -96,7 +96,14 @@ test('the central compiler accepts Closing Conditions proposals end to end', asy
 test('Wave B prompt keeps dissent thresholds open world and owns every grounded product surface', () => {
   const prompt = buildClosingConditionsProducerPrompt({ source_text: QUOTE, governed_scope: { section_reference: '7.2' } });
   assert.match(prompt.messages[0].content, /Dissent thresholds remain open world/);
-  assert.ok(OPEN_WORLD_SURFACE_GAPS.some((row) => row.item === 'DISSENT_THRESHOLD' && row.reason === 'NO_GROUNDED_CORPUS_QUOTE'));
+  const dissentThreshold = OPEN_WORLD_SURFACE_GAPS.find((row) => row.item === 'DISSENT_THRESHOLD');
+  assert.deepEqual(dissentThreshold, {
+    item: 'DISSENT_THRESHOLD',
+    reason: 'NO_GROUNDED_CORPUS_QUOTE',
+    v1_feature_key: 'dissentingSharesThreshold',
+    disposition: 'APPROVED_RETIRED_OPEN_WORLD',
+    decision_id: 'closing-dissent-threshold-retirement',
+  });
   for (const row of CLOSING_CONDITION_SURFACE_OWNERSHIP) {
     for (const surfacePath of Object.values(row.surfaces)) {
       assert.equal(fs.existsSync(path.resolve(__dirname, '..', surfacePath)), true, `${row.claim_definition_key}: ${surfacePath}`);

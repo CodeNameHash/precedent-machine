@@ -83,8 +83,9 @@ parser.** That shape is forced by the evidence, in both directions:
   percentage literal co-occurring with dissent vocabulary found only
   non-family numbers (a 19.9% Share Cap, 90% Top-Up thresholds, a 45%
   cash-election proration cap, note coupons, PSU vesting). **No threshold
-  concept and no percentage parser ship. FLAGGED FOR BEN as the family
-  brief's "numeric, typed-abstain" limb answered honestly with zero.**
+  concept and no percentage parser ship. The recorded successor choice
+  retires the comparable M3 field and preserves future exact language as
+  open-world evidence.**
 - The brief's "DGCL 262 vs other-state regimes (enum)" is NOT shipped as
   an enum (Grounding correction 4): the consideration spec already ruled
   statutory citations are a verbatim OPTIONAL `statute_ref` attribute and
@@ -355,8 +356,10 @@ the right to receive the merger consideration (recurring value-shape:
    NO enum. FLAGGED FOR BEN as a family-brief deviation.
 5. **The family brief's max-dissent closing-condition threshold is
    zero-population** (receipt E; COND-B-DISSENT 0/0; the closing-
-   conditions spec's independent zero). No concept, no percentage parser.
-   FLAGGED FOR BEN as a family-brief deviation, honestly stated.
+   conditions spec's independent zero). No concept and no percentage parser
+   ship in M3. The later recorded choice retires `DISSENT_THRESHOLD` as a
+   comparable M3 field and keeps any future exact language open world. The
+   decision register carries the adjacent session-message provenance.
 6. **Bundle version numbering:** this spec binds to "the next frozen
    version at this slice's merge"; every superset-diff acceptance test is
    written against CONTENT (sorted key sets), never the numeral.
@@ -525,9 +528,10 @@ grab-bag ruling).
 NOT added (each a legal ruling, not an omission):
 
 - **A max-dissent closing-condition threshold concept** — zero corpus
-  population (receipt E; COND-B-DISSENT 0/0; boundary 2). If it ever
-  appears, it is closing-conditions territory besides. FLAGGED FOR BEN
-  as a family-brief deviation.
+  population (receipt E; COND-B-DISSENT 0/0; boundary 2). It is retired as
+  a comparable M3 field. If it appears later, it remains exact open-world
+  evidence in closing-conditions territory until a separately reviewed
+  governed shape exists.
 - **A statutory-regime enum** — Grounding correction 4: one deal per
   non-DGCL regime, and the consideration spec's `statute_ref` ruling
   stands; regime vocabulary is a Ben adjudication over observed verbatim
