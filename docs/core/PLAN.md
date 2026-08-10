@@ -2812,9 +2812,12 @@ count rises**; **no previously-resolved claim regresses**; and resolved rises by
 at least the measured cohorts less a stated, explained shortfall. The 55 genuine
 coverage gaps 2Y-F found stay held and are carried forward as findings — they
 are the safety net's true positives and must not be quietly loosened away.
-*Kill criterion:* if activating the measured-safe cohorts moves resolved by
-materially less than 271, the report-only measurements are not predictive and
-every remaining cohort estimate is suspect.
+*Kill criterion:* the measured-safe cohorts sum to **220** (2Y-F 57 + 2Y-I 104 +
+2Y-G 59), or **311** including 2Y-B's 91 knowledge-standard deferrals. If
+activating them moves resolved by materially less than that, the report-only
+measurements are not predictive and every remaining cohort estimate is suspect.
+*(An earlier draft said 271, which matched neither sum. Corrected 2026-08-10 —
+a gate whose arithmetic does not close cannot be checked.)*
 
 ---
 
@@ -2826,6 +2829,14 @@ calibrate, authorise, publish — on one family before a second is attempted.
 
 Requires the **immutable release-receipt adapter**, which does not exist:
 `REQUIRE_PUBLISHED` returns false unconditionally until it does.
+
+**Split the build from the flip, decided 2026-08-10.** Everything in this phase
+except the flip itself is machine work and needs no human input: the
+release-receipt adapter, the shadow-measurement harness that generates rows via
+2Y-N without serving them, and per-claim disposition reproducibility. All of it
+can land ahead of the sitting. **Only the flip waits on Ben's re-sit**, and that
+is a named switch-on condition with a named owner, which is what rule 4 requires
+of anything landing inert.
 
 **The unit of the 1% is the rendered row, not the internal code** — see Step
 2Y-N. Measuring false publication on codes measures the wrong object: a claim can
@@ -2881,8 +2892,26 @@ to tighten the rung, never to loosen the number.
 
 ### Phase 3 — The two mechanisms that carry the corpus.
 
-Neither is built. Both are where the mass is, and Phase 2 must have proven the
-chain before either is funded.
+Neither is built. Both are where the mass is.
+
+**Resequenced 2026-08-10, after Ben asked why these wait for Phase 2.** They do
+not, and my original reason conflated two different things. Ruling 4's *vertical
+slice* rule exists to stop thirteen mechanisms being built horizontally and none
+activated. **2Y-A is one mechanism, not thirteen**, it touches the resolver while
+Phase 2 touches the serving path, and the two are independent. It also fixes a
+**live regression on the committed control** — ITEM-009 is why the blind floor's
+`TERMINATING_PARTY` stratum fell 7/8 to 6/8 — so deferring it leaves a known
+regression standing. **2Y-A runs as soon as Phase 0's instruments and the gate
+split are in place.**
+
+**2Y-H still waits, and for a substantive reason rather than sequencing
+preference.** Its topic list is taxonomy design: the code list and
+`canonical_value` shape are judgement, a wrong list bakes into hundreds of claims,
+and taxonomy errors corrupt precedent search — which is the product, and the
+expensive thing to undo. It needs a design step against the corpus evidence and
+`lib/category-summary-features.js`'s expected rows before anything is wired. That
+design is Opus-level work per `CLAUDE.md`'s routing and runs in parallel; the
+wiring is replay-validatable and cheap once the list is right.
 
 - **2Y-A host reattachment.** The census finds structural host context for **575
   of 756** fragment exclusions but performs no binding —
