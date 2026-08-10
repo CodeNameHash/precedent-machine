@@ -8,6 +8,7 @@ import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 
 import { STAGE_2Y_L_CALLS } from './stage-2y-l-live-batch.mjs';
+import { PHASE_B_LIVE_DEFERRED, assertPhaseBLiveAllowed } from './stage-2y-phase-b-live-authority.mjs';
 
 const execFile = promisify(execFileCallback);
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -19,7 +20,6 @@ const PROFILE = Object.freeze({
   model: 'gpt-5.6-sol', reasoning_effort: 'medium',
   requested_model_id: 'gpt-5.6-sol;reasoning=medium;profile=SOL_MEDIUM',
 });
-const PHASE_B_LIVE_DEFERRED = true;
 const HISTORICAL_CALL_RECEIPTS = Object.freeze({
   '1951ca1d38a0c01dcfd79fcc3e6ed34d90d32a7e2c276cb4af19acabf5c8aee5':
     '088f91a941f7870efb1fce1246379948bfe028383caf7d260180118eb20ad54a',
@@ -126,7 +126,7 @@ function assertProbeWriteAllowed({ resume, outputExists = existsSync(resolve(ROO
   if (!resume && outputExists) throw new Error('SOL_PROBE_RESUME_REQUIRED: existing probe evidence must be preserved');
 }
 function assertLiveProbeAllowed() {
-  if (PHASE_B_LIVE_DEFERRED) throw new Error('SOL_PROBE_DEFERRED: Phase B model calls require a new programme decision');
+  assertPhaseBLiveAllowed('SOL_PROBE');
 }
 async function run({ resume }) {
   assertLiveProbeAllowed();

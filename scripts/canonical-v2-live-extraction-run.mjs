@@ -166,6 +166,7 @@ import { dirname, resolve, relative, isAbsolute, sep } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { assertPhaseBLiveAllowed } from './stage-2y-phase-b-live-authority.mjs';
 
 const require = createRequire(import.meta.url);
 
@@ -1168,6 +1169,9 @@ function parseArgs(argv) {
   }
   if (out.phaseBLeadProbe && out.profileId !== 'SOL_MEDIUM') {
     throw new Error('PHASE_B_LEAD_PROBE_PROFILE_REQUIRED: --phase-b-lead-probe requires --profile SOL_MEDIUM.');
+  }
+  if (out.phaseBLeadProbe && !out.dryRun && !out.replaySourceManifestPath) {
+    assertPhaseBLiveAllowed('GENERIC_LEAD_PROBE');
   }
   if (out.sectionRefs && out.sectionRefs.length === 0) throw new Error('--section-refs must name at least one section reference');
   if (Boolean(out.sameDealDefinedTermCalibrationPath) !== Boolean(out.sameDealDefinedTermReceiptPaths.length)) {

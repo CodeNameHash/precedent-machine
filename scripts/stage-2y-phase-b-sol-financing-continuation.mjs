@@ -11,6 +11,7 @@ import {
   PROFILE, canonical, collect, hash, outputDirectory, runnerArgs, terraCallMap,
   check as checkLegacy,
 } from './stage-2y-phase-b-sol-probe.mjs';
+import { assertPhaseBLiveAllowed } from './stage-2y-phase-b-live-authority.mjs';
 
 const execFile = promisify(execFileCallback);
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -179,6 +180,7 @@ function check(artifact) {
   return { ok: errors.length === 0, errors: [...new Set(errors)], status: artifact.stopped ? 'STOPPED' : artifact.calls?.length === 8 ? 'COMPLETE' : 'READY_OR_PARTIAL' };
 }
 async function run({ resume }) {
+  assertPhaseBLiveAllowed('SOL_FINANCING_CONTINUATION');
   const artifact = resume && existsSync(resolve(ROOT, OUTPUT)) ? readJson(OUTPUT) : initial();
   const validation = check(artifact); if (!validation.ok) throw new Error(validation.errors.join(','));
   if (artifact.stopped) throw new Error(`SOL_FINANCING_CONTINUATION_STOPPED:${artifact.stopped.code}`);

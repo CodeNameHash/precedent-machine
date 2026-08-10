@@ -10,6 +10,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { check as checkSolArtifact } from './stage-2y-phase-b-sol-probe.mjs';
+import { assertPhaseBLiveAllowed } from './stage-2y-phase-b-live-authority.mjs';
 
 const require = createRequire(import.meta.url);
 const { canonicalJson, sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
@@ -604,6 +605,7 @@ async function runAttempts({ manifest, artifact, rows, promptFor, bindingFor, va
 }
 
 async function runBaseline({ resume, invoke = invokeBaseline } = {}) {
+  assertPhaseBLiveAllowed('V2_BASELINE');
   const manifest = readAndValidateManifest();
   const outputExists = existsSync(resolve(ROOT, BASELINE_PATH));
   if (outputExists && !resume) throw new Error('PHASE_B_V2_BASELINE_EXISTS_USE_RESUME');
@@ -624,6 +626,7 @@ async function runBaseline({ resume, invoke = invokeBaseline } = {}) {
 }
 
 async function runCrossVendor({ resume, invoke = invokeCrossVendor } = {}) {
+  assertPhaseBLiveAllowed('V2_CROSS_VENDOR');
   const manifest = readAndValidateManifest();
   const baseline = readJson(BASELINE_PATH);
   validateBaselineArtifact(manifest, baseline);

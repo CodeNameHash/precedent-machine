@@ -11,6 +11,7 @@ import { fileURLToPath } from 'node:url';
 
 import { isFinalCorpusRun } from './canonical-v2-corpus-review-artifact.mjs';
 import { check as checkSolArtifact } from './stage-2y-phase-b-sol-probe.mjs';
+import { assertPhaseBLiveAllowed } from './stage-2y-phase-b-live-authority.mjs';
 
 const require = createRequire(import.meta.url);
 const { canonicalJson, sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
@@ -348,6 +349,7 @@ function validateTerraArtifact(manifest, artifact) {
   return true;
 }
 async function runTerra({ resume }) {
+  assertPhaseBLiveAllowed('V1_TERRA');
   const manifest = readJson(MANIFEST_PATH); const output = resume && existsSync(resolve(ROOT, TERRA_PATH)) ? readJson(TERRA_PATH) : baseCallArtifact(manifest);
   validateTerraArtifact(manifest, output);
   if (output.stopped) throw new Error(`TERRA_ARTIFACT_STOPPED:${output.stopped.code}`);
@@ -440,6 +442,7 @@ function validateSolForReport(sol) {
   const result = checkSolArtifact(sol); if (!result.ok) throw new Error(`SOL_PROBE_ARTIFACT_INVALID:${result.errors.join(',')}`); return true;
 }
 async function runCrossVendor({ resume }) {
+  assertPhaseBLiveAllowed('V1_CROSS_VENDOR');
   const manifest = readJson(MANIFEST_PATH); const terra = readJson(TERRA_PATH); const rows = new Map(manifest.rows.map((row) => [row.row_id, row]));
   validateTerraArtifact(manifest, terra);
   const recovered = terra.calls.filter((call) => call.cohort === 'DETERMINISTIC_BLOCKED' && call.state === 'COMPLETE' && call.output?.disposition === 'RESOLVED');

@@ -2893,9 +2893,10 @@ call. Decide the comparison policy before resuming Phase B; do not weaken the
 sealed historical-call validation to make V5 available for new calls.
 The paused runner preserves the one completed V5 call exactly and refreshes
 only unattempted call specifications to V6. A hostile test rejects any new V5
-call. This is safety scaffolding, not permission to resume. A code-level
-`PHASE_B_LIVE_DEFERRED` lock blocks every live route even if the stored stop
-file is missing or altered. Removing that lock requires a new programme
+call. This is safety scaffolding, not permission to resume. A shared
+`PHASE_B_LIVE_DEFERRED` authority check blocks every Phase B experiment
+executor and the generic runner's direct lead-probe route, even if stored stop
+evidence is missing or altered. Removing that lock requires a new programme
 decision after the comparison policy is settled.
 
 Ben's ruling, and his own instinct first: *"I really do wonder if we can get to
@@ -3021,10 +3022,10 @@ already excludes 100 of the MAE claims from the mechanical row count, so only
 the **144 rendered claims** are deducted. The known-loss-adjusted result is
 therefore **1,097**, or **71.9%**, before any human acceptance sitting. The exact
 claim inventory and intersection are in
-`evidence/canonical-v2/stage-2y-cd-known-loss-adjustment.json`. Five further
-Closing Conditions rows retain the governed boolean but hide a secondary
-relationship detail. Do not describe 81.3% or 71.9% as lawyer-usable coverage
-until those losses are repaired and the remainder is adjudicated.
+`evidence/canonical-v2/stage-2y-cd-known-loss-adjustment.json`. That adjustment
+does not measure secondary relationship detail in Closing Conditions. Do not
+describe 81.3% or 71.9% as lawyer-usable coverage until the named losses are
+repaired and the remainder is adjudicated.
 
 The claim-lineage gate now fails closed on **109 grouped feature claims** that
 the earlier count wrongly treated as exact: MAE 100, Antitrust 7, and Employee
