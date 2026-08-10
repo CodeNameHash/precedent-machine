@@ -35,7 +35,61 @@ they are outside the 623 and outside the committed replay ledger. Deal-spread
 below is therefore reported **out of 6**, with modiv noted separately where it
 adds signal.
 
+For the record, modiv's 10 limb subjects all fall inside clusters the other
+six deals already establish (6 organisation/subsidiaries at §3.1, 4
+non-contravention/consents at §3.4) — e.g. "organisation, existence and good
+standing of Company Subsidiaries", "Governmental Entity consents, approvals,
+permits, filings, registrations and notifications". **Adding modiv would lift
+two clusters' deal-spread but introduce no new topic.**
+
 `subject` is non-null on **609 of 623** (97.8%). 14 rows carry no subject.
+
+---
+
+## Executive summary — the five things that change the decision
+
+1. **The topic vocabulary already exists, built and committed.**
+   `lib/vocab/resolution/representation-topic-registry.js` holds 25
+   `REP_TOPIC_V1_*` codes with a precedence table, tie-breaks, exclusions and
+   a classifier; the same 25 are governed in `contract-bundle.js` as
+   `REPRESENTATION_TOPIC_CODES_V1`, with a claim definition
+   (`REPRESENTATION_TOPIC_PRESENT`), concepts (`REP-T-TOPIC`, `REP-B-TOPIC`)
+   and a product projection. It has already been run over all 623 rows and
+   the output is committed. **Designing a new list from scratch would be a
+   rebuild.** (§4)
+
+2. **The corpus broadly validates those 25 codes** — my independent clustering
+   of all 623 subjects produced 28 clusters that map almost one-to-one onto
+   them. The evidenced gaps are small and specific: no proxy/registration
+   code, no anti-takeover code, labour not split from benefits. (§1, §4)
+
+3. **The registry classifies on the wrong field.** It reads `raw_value` regex;
+   the topic signal is in `subject`. **252 of the 299 rows it failed to
+   classify have a clean or precedence-resolvable topic in `subject`.** Its
+   single worst defect is that `material adverse effect` is an anchor for
+   `BUSINESS_CONDUCT_CHANGES` — MAE appears in nearly every rep's exception
+   clause, so 27 of that code's 33 wins are drafting convention, not topic.
+   (§4)
+
+4. **`lib/category-summary-features.js` has no representations rows at all.**
+   15 categories, 182 rows, zero REPS/REP-T/REP-B key, and no machine-readable
+   PW question numbers anywhere (PW ranges appear only in five prose
+   comments). The module that *does* carry expected representation rows is
+   `lib/rubric.js` (50 REP-T + 32 REP-B codes) via `lib/expected-sets.js`, and
+   the three-way comparison runs cleanly against it: **39 of 50 REP-T rows
+   have mined evidence, 11 do not (4 excluded by design, 2 present-but-absorbed,
+   4 genuine zeros, 1 structural), and exactly 1 mined cluster has no home in
+   the rubric.** (§3)
+
+5. **The `subject_occurrence_id` join does not exist — the "86 of 86" figure in
+   `ROUTE-TO-GOOD-EXTRACTION.md` §1a does not reproduce.** Measured across all
+   39 committed representations runs: **0 shared `subject_occurrence_id`
+   between limb and qualifier claims**, because the two are minted with
+   different `kind` discriminators. The join that does work is
+   `governs_path` ↔ `limb_path` (92.6% reach) — but **only 14.8% of limbs get
+   a full TERM + MATERIALITY + LOOKBACK row, and 43.3% stay bare presence
+   checkboxes even after joining.** All 536 TEMPORAL qualifiers are uncoded.
+   **This is the number that should move the value estimate.** (§5)
 
 ---
 
@@ -516,6 +570,31 @@ Two further quality caveats, both counted:
   qualifiers broadcast to every limb in the instance. metsera §3.19 attaches
   **25 chapeau qualifiers to each of its limbs**. The MATERIALITY cell needs a
   precedence rule of its own, or it renders a contradiction.
+
+
+### The join primitive that IS already built: `limb_component_trees`
+
+`resolution.json` carries a `limb_component_trees` array
+(`LIMB_COMPONENT_TREE/V1`) that mints a `limb_component_id` for every
+`(provision_instance_id, limb_path)` node and links assertion nodes back by
+`claim_occurrence_id`. Several reviewed slices already use exactly this as the
+join key — `reviewed-material-contracts-slice.js`, `reviewed-ioc-capex-slice.js`
+and `reviewed-termination-fee-slice.js` all set
+`subject_occurrence_id: component.provision_component_id`.
+
+**So the intended mechanism exists and is proven elsewhere in the codebase.**
+Measured over the 17 final representations runs: **181 trees, 396 assertion
+nodes, and 396 of the 623 limb claims (63.6%) already appear as an assertion
+node** with a stable component id. Only **115 claims resolve** across all 17
+runs, which is why none of this reaches a rendered row today.
+
+**The honest restatement of §1a's claim:** the qualifiers are not "one join
+away" on an existing key. The pieces are: a working attachment model
+(`governs_path`, 92.6% reach), a working component-identity model
+(`limb_component_trees`, 63.6% reach), and a proven pattern for binding the
+two in other families. **What does not exist is the binding itself for
+REPRESENTATIONS.** That is a build, not a query — and the 14.8% full-row rate
+above caps what it can pay out even when built.
 
 ### The ten sampled joins
 
