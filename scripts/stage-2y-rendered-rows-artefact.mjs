@@ -123,7 +123,7 @@ const pct = (a, b) => (b ? `${((100 * a) / b).toFixed(1)}%` : 'n/a');
 const familyRows = families.map((f) => `<tr><th>${esc(f.family)}</th><td class="n">${f.renderable}</td><td class="n">${f.attempted}</td><td class="n">${pct(f.renderable, f.attempted)}</td><td>${esc(Object.entries(f.errors).map(([k, v]) => `${k} ${v}`).join(', ') || '—')}</td></tr>`).join('\n');
 
 const cards = records.map((r, i) => `
-<article class="card">
+<article class="card" data-key="${esc(r.deal)}|${esc(r.family)}|${esc(r.section)}|${i}">
   <header><span class="num">${i + 1}</span><div><h3>${esc(r.deal)} · ${esc(r.family)} · §${esc(r.section)}</h3>
   <p class="meta">${esc(r.claim_definition_key || 'no claim key')} · section renders ${r.row_count} row${r.row_count === 1 ? '' : 's'}</p></div></header>
   <div class="lbl">What was extracted</div>
@@ -133,6 +133,13 @@ const cards = records.map((r, i) => `
     <div class="rl">${esc(row.label || row.id)}${row.matched ? ' <span class="tag">matches claim</span>' : ''}</div>
     ${row.cells.length ? `<table class="cells">${row.cells.map((c) => `<tr><th>${esc(c.header || c.id)}</th><td>${esc(c.text)}</td></tr>`).join('')}</table>` : '<p class="empty">every cell empty</p>'}
   </div>`).join('\n')}
+  <div class="verdict">
+    <button type="button" class="v" data-v="RIGHT">Right</button>
+    <button type="button" class="v" data-v="WRONG">Wrong</button>
+    <button type="button" class="v" data-v="THIN">Right but thin</button>
+    <button type="button" class="v" data-v="UNSURE">Can't tell</button>
+  </div>
+  <textarea class="note" rows="2" placeholder="What is wrong with it, or what is missing? Free text — as long as you like."></textarea>
 </article>`).join('\n');
 
 fs.writeFileSync(OUT_HTML, `<!doctype html><html lang="en"><head><meta charset="utf-8">
@@ -162,6 +169,20 @@ blockquote{margin:0;padding:12px 14px;background:#f7f8fa;border-left:3px solid v
 .cells{min-width:0}.cells th{width:34%;color:var(--muted);font-weight:600;font-size:13px;vertical-align:top}
 .empty{color:var(--bad);font-size:13.5px;margin:0}
 .note{background:#fff;border:1px solid var(--line);border-left:3px solid var(--bad);border-radius:6px;padding:14px 16px;margin:16px 0;font-size:14.5px}
+.verdict{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0 8px}
+.verdict button{font:600 13px/1 sans-serif;padding:9px 13px;border-radius:6px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.verdict button:hover{border-color:var(--accent)}
+.verdict button.on[data-v=RIGHT]{background:#e6f1ea;border-color:var(--good);color:var(--good)}
+.verdict button.on[data-v=WRONG]{background:#fae9e8;border-color:var(--bad);color:var(--bad)}
+.verdict button.on[data-v=THIN]{background:#faf0dc;border-color:#8a5a0b;color:#8a5a0b}
+.verdict button.on[data-v=UNSURE]{background:#eef0f3;border-color:var(--muted);color:var(--muted)}
+textarea.note{width:100%;font:14px/1.5 sans-serif;padding:10px 12px;border:1px solid var(--line);border-left:1px solid var(--line);border-radius:6px;resize:vertical;color:var(--ink);background:#fcfdfe}
+textarea.note:focus{outline:2px solid var(--accent);outline-offset:1px}
+#bar{position:sticky;top:0;z-index:9;background:rgba(238,240,243,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:11px 0;margin:0 0 8px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+#bar b{font-variant-numeric:tabular-nums}
+#bar button{font:600 13px/1 sans-serif;padding:9px 14px;border-radius:6px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+#bar button.ghost{background:#fff;color:var(--ink);border-color:var(--line)}
+#out{width:100%;min-height:220px;font:12.5px/1.5 ui-monospace,Menlo,monospace;padding:14px;border:1px solid var(--line);border-radius:8px;white-space:pre;overflow:auto;background:#fff;color:var(--ink)}
 </style></head><body><main>
 <h1>What the system proposes to render</h1>
 <p class="lede">Every resolved claim below is run through the <strong>real</strong> Review V2 config path — the same
@@ -182,7 +203,64 @@ largest families with no path from a resolved claim to a rendered row. Building 
 not scheduled.</div>
 
 <h2>${records.length} claims, end to end</h2>
+<div id="bar">
+  <span>Reviewed <b id="cnt">0</b> of ${records.length}</span>
+  <span style="color:var(--muted);font-size:13.5px">Saves as you type. Keys: nothing to learn — just click and write.</span>
+  <button type="button" id="build">Build export</button>
+  <button type="button" class="ghost" id="copy">Select all &amp; copy</button>
+</div>
 ${cards}
+<h2>Export</h2>
+<p class="lede">Click <strong>Build export</strong>, then <strong>Select all &amp; copy</strong>. If the copy is
+refused the text stays selected — press ⌘C.</p>
+<textarea id="out" readonly spellcheck="false">Nothing built yet.</textarea>
+<script>
+const KEY='pm-2yn-feedback-v1';
+let state={};
+try{state=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}};
+const cards=[...document.querySelectorAll('article.card')];
+function paint(){
+  document.getElementById('cnt').textContent=Object.values(state).filter(v=>v&&(v.verdict||v.note)).length;
+}
+for(const card of cards){
+  const k=card.dataset.key;
+  state[k]=state[k]||{};
+  const ta=card.querySelector('textarea.note');
+  ta.value=state[k].note||'';
+  ta.addEventListener('input',()=>{state[k].note=ta.value;save();paint()});
+  for(const b of card.querySelectorAll('.verdict button')){
+    if(state[k].verdict===b.dataset.v)b.classList.add('on');
+    b.addEventListener('click',()=>{
+      const v=b.dataset.v;
+      state[k].verdict=state[k].verdict===v?null:v;
+      for(const o of card.querySelectorAll('.verdict button'))o.classList.toggle('on',o.dataset.v===state[k].verdict);
+      save();paint();
+    });
+  }
+}
+const out=document.getElementById('out');
+function build(){
+  const rows=[];
+  for(const card of cards){
+    const k=card.dataset.key; const v=state[k]||{};
+    if(!v.verdict&&!v.note)continue;
+    const [deal,family,section]=k.split('|');
+    rows.push({deal,family,section,card_index:Number(k.split('|')[3]),verdict:v.verdict||null,note:v.note||null});
+  }
+  out.value=JSON.stringify({schema:'PM_STAGE_2Y_N_ROW_FEEDBACK/V1',produced_at:new Date().toISOString(),reviewed:rows.length,of:cards.length,rows},null,1);
+}
+document.getElementById('build').addEventListener('click',build);
+out.addEventListener('focus',e=>e.target.select());
+out.addEventListener('click',e=>e.target.select());
+document.getElementById('copy').addEventListener('click',async()=>{
+  if(out.value==='Nothing built yet.')build();
+  out.removeAttribute('readonly');out.focus();out.setSelectionRange(0,out.value.length);out.select();out.setAttribute('readonly','');
+  try{await navigator.clipboard.writeText(out.value);return}catch(e){}
+  try{document.execCommand('copy')}catch(e){}
+});
+paint();
+</script>
 </main></body></html>
 `);
 
