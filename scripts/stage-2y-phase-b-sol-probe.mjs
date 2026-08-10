@@ -19,6 +19,7 @@ const PROFILE = Object.freeze({
   model: 'gpt-5.6-sol', reasoning_effort: 'medium',
   requested_model_id: 'gpt-5.6-sol;reasoning=medium;profile=SOL_MEDIUM',
 });
+const PHASE_B_LIVE_DEFERRED = true;
 const HISTORICAL_CALL_RECEIPTS = Object.freeze({
   '1951ca1d38a0c01dcfd79fcc3e6ed34d90d32a7e2c276cb4af19acabf5c8aee5':
     '088f91a941f7870efb1fce1246379948bfe028383caf7d260180118eb20ad54a',
@@ -124,7 +125,11 @@ function refreshUnattemptedSpecs(artifact) {
 function assertProbeWriteAllowed({ resume, outputExists = existsSync(resolve(ROOT, OUTPUT)) }) {
   if (!resume && outputExists) throw new Error('SOL_PROBE_RESUME_REQUIRED: existing probe evidence must be preserved');
 }
+function assertLiveProbeAllowed() {
+  if (PHASE_B_LIVE_DEFERRED) throw new Error('SOL_PROBE_DEFERRED: Phase B model calls require a new programme decision');
+}
 async function run({ resume }) {
+  assertLiveProbeAllowed();
   assertProbeWriteAllowed({ resume });
   const artifact = resume && existsSync(resolve(ROOT, OUTPUT))
     ? refreshUnattemptedSpecs(readJson(OUTPUT))
@@ -199,6 +204,6 @@ async function main() { const args = parseArgs(process.argv.slice(2)); if (args.
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main().catch((error) => { process.stderr.write(`${error.stack || error}\n`); process.exitCode = 1; });
 
 export {
-  PROFILE, canonical, collect, compareSection, hash, initial, outputDirectory,
-  runnerArgs, assertProbeWriteAllowed, check, parseArgs, refreshUnattemptedSpecs, terraCallMap,
+  PROFILE, PHASE_B_LIVE_DEFERRED, canonical, collect, compareSection, hash, initial, outputDirectory,
+  runnerArgs, assertLiveProbeAllowed, assertProbeWriteAllowed, check, parseArgs, refreshUnattemptedSpecs, terraCallMap,
 };

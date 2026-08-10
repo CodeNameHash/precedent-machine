@@ -2893,8 +2893,10 @@ call. Decide the comparison policy before resuming Phase B; do not weaken the
 sealed historical-call validation to make V5 available for new calls.
 The paused runner preserves the one completed V5 call exactly and refreshes
 only unattempted call specifications to V6. A hostile test rejects any new V5
-call. This is safety scaffolding, not permission to resume: the recorded stop
-and the unresolved comparison policy still block further model calls.
+call. This is safety scaffolding, not permission to resume. A code-level
+`PHASE_B_LIVE_DEFERRED` lock blocks every live route even if the stored stop
+file is missing or altered. Removing that lock requires a new programme
+decision after the comparison policy is settled.
 
 Ben's ruling, and his own instinct first: *"I really do wonder if we can get to
 process these deterministically or if we need to ping into an LLM."*

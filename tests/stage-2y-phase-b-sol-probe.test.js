@@ -32,7 +32,9 @@ test('probe runner uses the explicit report-only Sol flag', async () => {
 });
 
 test('existing deferred evidence cannot be reset or bypassed by a fresh live start', async () => {
-  const { assertProbeWriteAllowed } = await load();
+  const { PHASE_B_LIVE_DEFERRED, assertLiveProbeAllowed, assertProbeWriteAllowed } = await load();
+  assert.equal(PHASE_B_LIVE_DEFERRED, true);
+  assert.throws(() => assertLiveProbeAllowed(), /SOL_PROBE_DEFERRED/);
   assert.throws(
     () => assertProbeWriteAllowed({ resume: false, outputExists: true }),
     /SOL_PROBE_RESUME_REQUIRED/,
