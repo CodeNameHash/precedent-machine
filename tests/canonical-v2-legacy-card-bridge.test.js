@@ -7,7 +7,10 @@ const path = require('node:path');
 
 const { contentId, sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const { MATERIAL_CONTRACT_BUCKET_CODES } = require('../lib/taxonomy');
-const { compileFixtureContractV27 } = require('../lib/canonical-v2/contract-bundle');
+const {
+  MATERIAL_CONTRACT_BUCKET_PRESENT_CLAIM_DEFINITION_V1,
+  compileFixtureContractV27,
+} = require('../lib/canonical-v2/contract-bundle');
 const {
   BRIDGE_SCHEMA,
   AUTHORITY_STATE,
@@ -73,6 +76,8 @@ const NORF_FIXTURE_PATH = path.join(
 );
 const NORF_FIXTURE = JSON.parse(fs.readFileSync(NORF_FIXTURE_PATH, 'utf8'));
 const DARK_BRIDGE_ENABLED_ENV = Object.freeze({ CANONICAL_V2_DARK_BRIDGE: 'ENABLED_LOCAL_PREPRODUCTION' });
+const MATERIAL_CRITERION_SCHEMA = 'CANONICAL_V2_MATERIAL_CONTRACT_CRITERION/V1';
+const MATERIAL_FEATURE_CLAIM_SCHEMA = 'CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_FEATURE_CLAIM/V2';
 
 function bridgeError(code) {
   return (error) => error instanceof LegacyCardBridgeError && error.code === code;
@@ -86,6 +91,92 @@ function resealProjection(projection) {
     claims: projection.claims,
     open_items: projection.open_items,
   });
+  return projection;
+}
+
+function rawCanonicalId(value) {
+  return value.startsWith(ID_PREFIX) ? value.slice(ID_PREFIX.length) : value;
+}
+
+function resealCriterion(card, bucket, criterion) {
+  criterion.criterion_id = contentId(MATERIAL_CRITERION_SCHEMA, {
+    provision_instance_id: rawCanonicalId(card.provision_instance_id),
+    bucket_code: bucket.code,
+    text: criterion.text,
+    threshold: criterion.threshold,
+    threshold_kind: criterion.threshold_kind,
+    cadence_kind: criterion.cadence_kind,
+    scope_exclusions: criterion.scope_exclusions,
+  });
+}
+
+function syncMaterialCard(card, { syncQuote = false } = {}) {
+  const bucketLineage = {};
+  for (const bucket of card.features.materialContractsBuckets) {
+    bucket.criteria.forEach((criterion) => resealCriterion(card, bucket, criterion));
+    bucket.text = bucket.criteria[0].text;
+    bucket.quotes = [...new Set(bucket.criteria.map((criterion) => criterion.text))];
+    bucket.scope_exclusions = [...new Set(
+      bucket.criteria.flatMap((criterion) => criterion.scope_exclusions),
+    )].sort();
+    const thresholdTuples = new Map(bucket.criteria.map((criterion) => [JSON.stringify({
+      threshold: criterion.threshold,
+      threshold_kind: criterion.threshold_kind,
+      cadence_kind: criterion.cadence_kind,
+    }), criterion]));
+    const rollup = thresholdTuples.size === 1 ? bucket.criteria[0] : null;
+    bucket.threshold = rollup?.threshold ?? null;
+    bucket.threshold_kind = rollup?.threshold_kind ?? null;
+    bucket.cadence_kind = rollup?.cadence_kind ?? null;
+    bucketLineage[bucket.code] = [...new Set(
+      bucket.criteria.flatMap((criterion) => criterion.source_claim_revision_ids),
+    )].sort();
+  }
+  card.canonical_v2_lineage.bucket_claim_revision_ids = Object.fromEntries(
+    Object.entries(bucketLineage).sort(([a], [b]) => a.localeCompare(b)),
+  );
+  card.canonical_v2_lineage.claim_revision_ids = [...new Set(
+    Object.values(bucketLineage).flat(),
+  )].sort();
+  if (syncQuote) {
+    const quote = [...new Set(card.features.materialContractsBuckets.flatMap(
+      (bucket) => bucket.criteria.map((criterion) => criterion.text),
+    ))].join('\n');
+    card.primary_quote = quote;
+    card.region_full_text = quote;
+    card.full_text = quote;
+  }
+  card.ai_metadata.features = card.features;
+  return card;
+}
+
+function syncMaterialClaim(claim, card, { syncQuote = false } = {}) {
+  claim.canonical = card.features.materialContractsBuckets;
+  claim.provenance.source_claim_revision_ids = card.canonical_v2_lineage.claim_revision_ids;
+  if (syncQuote) {
+    claim.verbatim = card.primary_quote;
+    claim.evidence_quote = card.primary_quote;
+  }
+  const rawClaimId = contentId(MATERIAL_FEATURE_CLAIM_SCHEMA, {
+    provision_instance_id: rawCanonicalId(card.provision_instance_id),
+    materialContractsBuckets: card.features.materialContractsBuckets,
+  });
+  claim.id = claim.id.startsWith(ID_PREFIX) ? `${ID_PREFIX}${rawClaimId}` : rawClaimId;
+  return claim;
+}
+
+function replaceFirstCriterionText(projection, text, { clearThreshold = false, syncQuote = false } = {}) {
+  const card = projection.cards[0];
+  const criterion = card.features.materialContractsBuckets[0].criteria[0];
+  criterion.text = text;
+  if (clearThreshold) {
+    criterion.threshold = null;
+    criterion.threshold_kind = null;
+    criterion.cadence_kind = null;
+  }
+  syncMaterialCard(card, { syncQuote });
+  syncMaterialClaim(projection.claims[0], card, { syncQuote });
+  resealProjection(projection);
   return projection;
 }
 
@@ -351,6 +442,87 @@ test('a real Material Contracts V2 result joins a legacy reviewDeal and reaches 
     id: 'representations-qualifiers',
     config: representationsConfig,
   }, merged).some(({ row }) => row.card?.id === bridge.cards[0].id), false);
+});
+
+test('a built V2 projection with nested criteria produces a bridge envelope that validates', async () => {
+  const projection = await buildRealProjection();
+  assert.equal(projection.schema_version, PROJECTION_SCHEMA);
+  const bucket = projection.cards[0].features.materialContractsBuckets[0];
+  const [criterion] = bucket.criteria;
+  assert.equal(criterion.criterion_id, contentId(MATERIAL_CRITERION_SCHEMA, {
+    provision_instance_id: projection.cards[0].provision_instance_id,
+    bucket_code: bucket.code,
+    text: criterion.text,
+    threshold: criterion.threshold,
+    threshold_kind: criterion.threshold_kind,
+    cadence_kind: criterion.cadence_kind,
+    scope_exclusions: criterion.scope_exclusions,
+  }));
+  const bridge = bridgeMaterialContractsCardsToLegacyShape(projection, DARK_BRIDGE_ENABLED_ENV);
+  assert.equal(bridge.source_projection_schema, PROJECTION_SCHEMA);
+  assert.doesNotThrow(() => validateBridgeEnvelope(bridge, DARK_BRIDGE_ENABLED_ENV));
+});
+
+test('the bridge rejects hostile nested criterion identities, exclusions, fields and lineage', async () => {
+  const projection = await buildRealProjection();
+
+  const identityDrift = structuredClone(projection);
+  identityDrift.cards[0].features.materialContractsBuckets[0].criteria[0].criterion_id = 'a'.repeat(64);
+  identityDrift.cards[0].ai_metadata.features = identityDrift.cards[0].features;
+  syncMaterialClaim(identityDrift.claims[0], identityDrift.cards[0]);
+  resealProjection(identityDrift);
+  assert.throws(
+    () => bridgeMaterialContractsCardsToLegacyShape(identityDrift, DARK_BRIDGE_ENABLED_ENV),
+    bridgeError('INVALID_NATIVE_FEATURES'),
+  );
+
+  const ungroundedExclusion = structuredClone(projection);
+  ungroundedExclusion.cards[0].features.materialContractsBuckets[0]
+    .criteria[0].scope_exclusions = ['Oil and Gas Properties'];
+  syncMaterialCard(ungroundedExclusion.cards[0]);
+  syncMaterialClaim(ungroundedExclusion.claims[0], ungroundedExclusion.cards[0]);
+  resealProjection(ungroundedExclusion);
+  assert.throws(
+    () => bridgeMaterialContractsCardsToLegacyShape(ungroundedExclusion, DARK_BRIDGE_ENABLED_ENV),
+    bridgeError('INVALID_NATIVE_FEATURES'),
+  );
+
+  const duplicatedCriterionLineage = structuredClone(projection);
+  const duplicatedBucket = duplicatedCriterionLineage.cards[0].features.materialContractsBuckets[0];
+  const duplicatedCriterion = structuredClone(duplicatedBucket.criteria[0]);
+  duplicatedCriterion.threshold = null;
+  duplicatedCriterion.threshold_kind = null;
+  duplicatedCriterion.cadence_kind = null;
+  duplicatedBucket.criteria.push(duplicatedCriterion);
+  syncMaterialCard(duplicatedCriterionLineage.cards[0]);
+  syncMaterialClaim(duplicatedCriterionLineage.claims[0], duplicatedCriterionLineage.cards[0]);
+  resealProjection(duplicatedCriterionLineage);
+  assert.throws(
+    () => bridgeMaterialContractsCardsToLegacyShape(duplicatedCriterionLineage, DARK_BRIDGE_ENABLED_ENV),
+    bridgeError('INVALID_LINEAGE'),
+  );
+
+  const missingCriterionField = structuredClone(projection);
+  delete missingCriterionField.cards[0].features.materialContractsBuckets[0]
+    .criteria[0].scope_exclusions;
+  missingCriterionField.cards[0].ai_metadata.features = missingCriterionField.cards[0].features;
+  syncMaterialClaim(missingCriterionField.claims[0], missingCriterionField.cards[0]);
+  resealProjection(missingCriterionField);
+  assert.throws(
+    () => bridgeMaterialContractsCardsToLegacyShape(missingCriterionField, DARK_BRIDGE_ENABLED_ENV),
+    bridgeError('INVALID_ENVELOPE_FIELDS'),
+  );
+
+  const criterionLineageDrift = structuredClone(projection);
+  criterionLineageDrift.cards[0].features.materialContractsBuckets[0]
+    .criteria[0].source_claim_revision_ids = [sha256Hex('hostile-criterion-lineage-drift')];
+  criterionLineageDrift.cards[0].ai_metadata.features = criterionLineageDrift.cards[0].features;
+  syncMaterialClaim(criterionLineageDrift.claims[0], criterionLineageDrift.cards[0]);
+  resealProjection(criterionLineageDrift);
+  assert.throws(
+    () => bridgeMaterialContractsCardsToLegacyShape(criterionLineageDrift, DARK_BRIDGE_ENABLED_ENV),
+    bridgeError('INVALID_LINEAGE'),
+  );
 });
 
 // --- F3 regression coverage: chained-merge receipt accumulation ------------
@@ -627,18 +799,14 @@ test('the bridge rejects identity drift, hostile review inputs and numeric byte-
 
   const fabricatedBucketEvidence = structuredClone(projection);
   const fabricated = 'fabricated bucket evidence';
-  const fabricatedBucket = fabricatedBucketEvidence.cards[0].features.materialContractsBuckets[0];
-  fabricatedBucket.text = fabricated;
-  fabricatedBucket.quotes = [fabricated];
-  fabricatedBucketEvidence.cards[0].ai_metadata.features = fabricatedBucketEvidence.cards[0].features;
-  fabricatedBucketEvidence.claims[0].canonical = fabricatedBucketEvidence.cards[0].features.materialContractsBuckets;
-  fabricatedBucketEvidence.claims[0].id = contentId(
-    'CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_FEATURE_CLAIM/V1',
-    {
-      provision_instance_id: fabricatedBucketEvidence.cards[0].provision_instance_id,
-      materialContractsBuckets: fabricatedBucketEvidence.cards[0].features.materialContractsBuckets,
-    },
-  );
+  const fabricatedCard = fabricatedBucketEvidence.cards[0];
+  const fabricatedCriterion = fabricatedCard.features.materialContractsBuckets[0].criteria[0];
+  fabricatedCriterion.text = fabricated;
+  fabricatedCriterion.threshold = null;
+  fabricatedCriterion.threshold_kind = null;
+  fabricatedCriterion.cadence_kind = null;
+  syncMaterialCard(fabricatedCard);
+  syncMaterialClaim(fabricatedBucketEvidence.claims[0], fabricatedCard);
   resealProjection(fabricatedBucketEvidence);
   assert.throws(
     () => bridgeMaterialContractsCardsToLegacyShape(fabricatedBucketEvidence, DARK_BRIDGE_ENABLED_ENV),
@@ -648,22 +816,13 @@ test('the bridge rejects identity drift, hostile review inputs and numeric byte-
   const coordinatedQuoteForgery = structuredClone(projection);
   const forgedCard = coordinatedQuoteForgery.cards[0];
   forgedCard.primary_quote = fabricated;
-  forgedCard.features.materialContractsBuckets[0].text = fabricated;
-  forgedCard.features.materialContractsBuckets[0].quotes = [fabricated];
-  forgedCard.features.materialContractsBuckets[0].threshold = null;
-  forgedCard.features.materialContractsBuckets[0].threshold_kind = null;
-  forgedCard.features.materialContractsBuckets[0].cadence_kind = null;
-  forgedCard.ai_metadata.features = forgedCard.features;
-  coordinatedQuoteForgery.claims[0].canonical = forgedCard.features.materialContractsBuckets;
-  coordinatedQuoteForgery.claims[0].verbatim = fabricated;
-  coordinatedQuoteForgery.claims[0].evidence_quote = fabricated;
-  coordinatedQuoteForgery.claims[0].id = contentId(
-    'CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_FEATURE_CLAIM/V1',
-    {
-      provision_instance_id: forgedCard.provision_instance_id,
-      materialContractsBuckets: forgedCard.features.materialContractsBuckets,
-    },
-  );
+  const forgedCriterion = forgedCard.features.materialContractsBuckets[0].criteria[0];
+  forgedCriterion.text = fabricated;
+  forgedCriterion.threshold = null;
+  forgedCriterion.threshold_kind = null;
+  forgedCriterion.cadence_kind = null;
+  syncMaterialCard(forgedCard);
+  syncMaterialClaim(coordinatedQuoteForgery.claims[0], forgedCard, { syncQuote: true });
   resealProjection(coordinatedQuoteForgery);
   assert.throws(
     () => bridgeMaterialContractsCardsToLegacyShape(coordinatedQuoteForgery, DARK_BRIDGE_ENABLED_ENV),
@@ -713,25 +872,20 @@ test('the bridge rejects identity drift, hostile review inputs and numeric byte-
   );
 });
 
-test('the bridge accepts every governed Material Contracts bucket and keeps OTHER open-world', async () => {
+test('the bridge accepts every governed Material Contracts bucket and refuses OTHER from governed lineage', async () => {
   const projection = await buildRealProjection();
   assert.equal(Object.keys(MATERIAL_CONTRACT_BUCKET_CODES).length, 29);
-  for (const [code, label] of Object.entries(MATERIAL_CONTRACT_BUCKET_CODES)
-    .filter(([candidateCode]) => candidateCode !== 'OTHER')) {
+  const governedCodes = MATERIAL_CONTRACT_BUCKET_PRESENT_CLAIM_DEFINITION_V1.allowed_canonical_values;
+  assert.equal(governedCodes.length, 28);
+  for (const code of governedCodes) {
+    const label = MATERIAL_CONTRACT_BUCKET_CODES[code];
     const candidate = structuredClone(projection);
     const card = candidate.cards[0];
     const bucket = card.features.materialContractsBuckets[0];
     bucket.code = code;
     bucket.label = label;
-    card.ai_metadata.features = card.features;
-    candidate.claims[0].canonical = card.features.materialContractsBuckets;
-    candidate.claims[0].id = contentId(
-      'CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_FEATURE_CLAIM/V1',
-      {
-        provision_instance_id: card.provision_instance_id,
-        materialContractsBuckets: card.features.materialContractsBuckets,
-      },
-    );
+    syncMaterialCard(card);
+    syncMaterialClaim(candidate.claims[0], card);
     resealProjection(candidate);
     assert.doesNotThrow(
       () => bridgeMaterialContractsCardsToLegacyShape(candidate, DARK_BRIDGE_ENABLED_ENV),
@@ -742,19 +896,12 @@ test('the bridge accepts every governed Material Contracts bucket and keeps OTHE
   const otherCard = other.cards[0];
   otherCard.features.materialContractsBuckets[0].code = 'OTHER';
   otherCard.features.materialContractsBuckets[0].label = MATERIAL_CONTRACT_BUCKET_CODES.OTHER;
-  otherCard.ai_metadata.features = otherCard.features;
-  other.claims[0].canonical = otherCard.features.materialContractsBuckets;
-  other.claims[0].id = contentId(
-    'CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_FEATURE_CLAIM/V1',
-    {
-      provision_instance_id: otherCard.provision_instance_id,
-      materialContractsBuckets: otherCard.features.materialContractsBuckets,
-    },
-  );
+  syncMaterialCard(otherCard);
+  syncMaterialClaim(other.claims[0], otherCard);
   resealProjection(other);
   assert.throws(
     () => bridgeMaterialContractsCardsToLegacyShape(other, DARK_BRIDGE_ENABLED_ENV),
-    bridgeError('UNGOVERNED_MATERIAL_BUCKET'),
+    bridgeError('INVALID_LINEAGE'),
   );
 });
 
@@ -780,25 +927,17 @@ test('excerpt_id is not identity: two distinct cards may legitimately share one 
   const siblingRawProvisionId = sha256Hex(`${card.id}:excerpt-sharing-sibling`);
   const siblingClaimRevisionId = sha256Hex(`${card.id}:excerpt-sharing-sibling:claim-revision`);
   const siblingId = `${ID_PREFIX}${siblingRawProvisionId}`;
-  const siblingCard = {
-    ...card,
-    id: siblingId,
-    provision_instance_id: siblingId,
-    canonical_v2_lineage: {
-      ...card.canonical_v2_lineage,
-      claim_revision_ids: [siblingClaimRevisionId],
-    },
-  };
-  const siblingClaimId = `${ID_PREFIX}${contentId(
-    'CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_FEATURE_CLAIM/V1',
-    {
-      provision_instance_id: siblingRawProvisionId,
-      materialContractsBuckets: siblingCard.features.materialContractsBuckets,
-    },
-  )}`;
+  const siblingCard = structuredClone(card);
+  siblingCard.id = siblingId;
+  siblingCard.provision_instance_id = siblingId;
+  siblingCard.features.materialContractsBuckets.forEach((bucket) => {
+    bucket.criteria.forEach((criterion) => {
+      criterion.source_claim_revision_ids = [siblingClaimRevisionId];
+    });
+  });
+  syncMaterialCard(siblingCard);
   const siblingClaim = {
     ...claim,
-    id: siblingClaimId,
     excerpt_id: card.excerpt_id,
     provision_instance_id: siblingId,
     provenance: {
@@ -806,6 +945,7 @@ test('excerpt_id is not identity: two distinct cards may legitimately share one 
       source_claim_revision_ids: [siblingClaimRevisionId],
     },
   };
+  syncMaterialClaim(siblingClaim, siblingCard);
   assert.equal(siblingCard.excerpt_id, card.excerpt_id);
   assert.notEqual(siblingCard.id, card.id);
   assert.notEqual(siblingCard.provision_instance_id, card.provision_instance_id);
@@ -828,8 +968,13 @@ test('excerpt_id is not identity: two distinct cards may legitimately share one 
   // Genuine identity collisions must still fail closed: forcing the
   // sibling's provision_instance_id (not just its excerpt_id) to collide
   // with the first card must still throw ID_COLLISION.
-  const collidingSiblingCard = { ...siblingCard, id: card.id, provision_instance_id: card.provision_instance_id };
-  const collidingSiblingClaim = { ...siblingClaim, provision_instance_id: card.provision_instance_id };
+  const collidingSiblingCard = structuredClone(siblingCard);
+  collidingSiblingCard.id = card.id;
+  collidingSiblingCard.provision_instance_id = card.provision_instance_id;
+  syncMaterialCard(collidingSiblingCard);
+  const collidingSiblingClaim = structuredClone(siblingClaim);
+  collidingSiblingClaim.provision_instance_id = card.provision_instance_id;
+  syncMaterialClaim(collidingSiblingClaim, collidingSiblingCard);
   const genuineCollisionDraft = {
     ...bridge,
     cards: [card, collidingSiblingCard],
@@ -1057,16 +1202,7 @@ test('quote grounding: a negation-style truncation of a bucket\'s own text (drop
   assert.notEqual(truncated, original);
 
   const tampered = structuredClone(projection);
-  const bucket = tampered.cards[0].features.materialContractsBuckets[0];
-  bucket.text = truncated;
-  bucket.quotes = [truncated];
-  tampered.cards[0].ai_metadata.features = tampered.cards[0].features;
-  tampered.claims[0].canonical = tampered.cards[0].features.materialContractsBuckets;
-  tampered.claims[0].id = contentId('CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_FEATURE_CLAIM/V1', {
-    provision_instance_id: tampered.cards[0].provision_instance_id,
-    materialContractsBuckets: tampered.cards[0].features.materialContractsBuckets,
-  });
-  resealProjection(tampered);
+  replaceFirstCriterionText(tampered, truncated);
   assert.throws(
     () => bridgeMaterialContractsCardsToLegacyShape(tampered, DARK_BRIDGE_ENABLED_ENV),
     bridgeError('INVALID_NATIVE_FEATURES'),
@@ -1079,16 +1215,7 @@ test('quote grounding: a word-boundary flip ("debtedness" sliced out of "Indebte
   assert.ok(original.includes('Indebtedness'));
   const flipped = original.replace('Indebtedness', 'debtedness');
   const tampered = structuredClone(projection);
-  const bucket = tampered.cards[0].features.materialContractsBuckets[0];
-  bucket.text = flipped;
-  bucket.quotes = [flipped];
-  tampered.cards[0].ai_metadata.features = tampered.cards[0].features;
-  tampered.claims[0].canonical = tampered.cards[0].features.materialContractsBuckets;
-  tampered.claims[0].id = contentId('CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_FEATURE_CLAIM/V1', {
-    provision_instance_id: tampered.cards[0].provision_instance_id,
-    materialContractsBuckets: tampered.cards[0].features.materialContractsBuckets,
-  });
-  resealProjection(tampered);
+  replaceFirstCriterionText(tampered, flipped);
   assert.throws(
     () => bridgeMaterialContractsCardsToLegacyShape(tampered, DARK_BRIDGE_ENABLED_ENV),
     bridgeError('INVALID_NATIVE_FEATURES'),
@@ -1100,15 +1227,7 @@ test('quote grounding: a truncated prefix ("any C" sliced out of "any Company Co
   const tampered = structuredClone(projection);
   const bucket = tampered.cards[0].features.materialContractsBuckets[0];
   assert.ok(bucket.text.startsWith('any C'));
-  bucket.text = 'any C';
-  bucket.quotes = ['any C'];
-  tampered.cards[0].ai_metadata.features = tampered.cards[0].features;
-  tampered.claims[0].canonical = tampered.cards[0].features.materialContractsBuckets;
-  tampered.claims[0].id = contentId('CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_FEATURE_CLAIM/V1', {
-    provision_instance_id: tampered.cards[0].provision_instance_id,
-    materialContractsBuckets: tampered.cards[0].features.materialContractsBuckets,
-  });
-  resealProjection(tampered);
+  replaceFirstCriterionText(tampered, 'any C', { clearThreshold: true });
   assert.throws(
     () => bridgeMaterialContractsCardsToLegacyShape(tampered, DARK_BRIDGE_ENABLED_ENV),
     bridgeError('INVALID_NATIVE_FEATURES'),
@@ -1121,16 +1240,7 @@ test('quote grounding: an arbitrary mid-quote substring is rejected', async () =
   const midWord = 'elating to Indebtedness in excess o';
   assert.ok(original.includes(midWord));
   const tampered = structuredClone(projection);
-  const bucket = tampered.cards[0].features.materialContractsBuckets[0];
-  bucket.text = midWord;
-  bucket.quotes = [midWord];
-  tampered.cards[0].ai_metadata.features = tampered.cards[0].features;
-  tampered.claims[0].canonical = tampered.cards[0].features.materialContractsBuckets;
-  tampered.claims[0].id = contentId('CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_FEATURE_CLAIM/V1', {
-    provision_instance_id: tampered.cards[0].provision_instance_id,
-    materialContractsBuckets: tampered.cards[0].features.materialContractsBuckets,
-  });
-  resealProjection(tampered);
+  replaceFirstCriterionText(tampered, midWord, { clearThreshold: true });
   assert.throws(
     () => bridgeMaterialContractsCardsToLegacyShape(tampered, DARK_BRIDGE_ENABLED_ENV),
     bridgeError('INVALID_NATIVE_FEATURES'),
@@ -1143,16 +1253,7 @@ test("quote grounding: a fragment that appears only in a DIFFERENT card's text (
   assert.ok(FIXTURE.legacy_cards[0].primary_quote.includes(foreignFragment));
   assert.ok(!FIXTURE.material_contract_criterion.quote.includes(foreignFragment));
   const tampered = structuredClone(projection);
-  const bucket = tampered.cards[0].features.materialContractsBuckets[0];
-  bucket.text = foreignFragment;
-  bucket.quotes = [foreignFragment];
-  tampered.cards[0].ai_metadata.features = tampered.cards[0].features;
-  tampered.claims[0].canonical = tampered.cards[0].features.materialContractsBuckets;
-  tampered.claims[0].id = contentId('CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_FEATURE_CLAIM/V1', {
-    provision_instance_id: tampered.cards[0].provision_instance_id,
-    materialContractsBuckets: tampered.cards[0].features.materialContractsBuckets,
-  });
-  resealProjection(tampered);
+  replaceFirstCriterionText(tampered, foreignFragment, { clearThreshold: true });
   assert.throws(
     () => bridgeMaterialContractsCardsToLegacyShape(tampered, DARK_BRIDGE_ENABLED_ENV),
     bridgeError('INVALID_NATIVE_FEATURES'),
@@ -1186,22 +1287,24 @@ test('quote grounding: threshold scoped to a sibling bucket\'s unrelated text is
   // scoped to the whole (joined) primary_quote instead of the owning
   // bucket's own text.
   const siblingText = 'a separate, unrelated obligation not to exceed $100,000 in the aggregate.';
+  const siblingClaimRevisionId = sha256Hex('legacy-card-bridge:sibling-bucket:claim-revision');
   const sibling = {
     code: 'IP_LICENSES_IN', label: MATERIAL_CONTRACT_BUCKET_CODES.IP_LICENSES_IN,
     text: siblingText, quotes: [siblingText], threshold: null, threshold_kind: null, cadence_kind: null,
+    scope_exclusions: [],
+    criteria: [{
+      criterion_id: '',
+      text: siblingText,
+      threshold: null,
+      threshold_kind: null,
+      cadence_kind: null,
+      scope_exclusions: [],
+      source_claim_revision_ids: [siblingClaimRevisionId],
+    }],
   };
   tampered.cards[0].features.materialContractsBuckets = [bucket, sibling].sort((a, b) => a.code.localeCompare(b.code));
-  tampered.cards[0].primary_quote = [bucket.text, siblingText].join('\n');
-  tampered.cards[0].region_full_text = tampered.cards[0].primary_quote;
-  tampered.cards[0].full_text = tampered.cards[0].primary_quote;
-  tampered.cards[0].ai_metadata.features = tampered.cards[0].features;
-  tampered.claims[0].verbatim = tampered.cards[0].primary_quote;
-  tampered.claims[0].evidence_quote = tampered.cards[0].primary_quote;
-  tampered.claims[0].canonical = tampered.cards[0].features.materialContractsBuckets;
-  tampered.claims[0].id = contentId('CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_FEATURE_CLAIM/V1', {
-    provision_instance_id: tampered.cards[0].provision_instance_id,
-    materialContractsBuckets: tampered.cards[0].features.materialContractsBuckets,
-  });
+  syncMaterialCard(tampered.cards[0], { syncQuote: true });
+  syncMaterialClaim(tampered.claims[0], tampered.cards[0], { syncQuote: true });
   // Sanity: this construction is internally self-consistent (both buckets'
   // own text/quotes genuinely occur as exact joined segments) up to this
   // point -- resealProjection alone would otherwise mask a shape mistake.
@@ -1215,23 +1318,10 @@ test('quote grounding: threshold scoped to a sibling bucket\'s unrelated text is
   // within the SAME joined primary_quote.
   const misscoped = structuredClone(tampered);
   const indebtedness = misscoped.cards[0].features.materialContractsBuckets.find((b) => b.code === 'INDEBTEDNESS');
-  const strippedText = indebtedness.text.replace('$100,000', 'the applicable threshold');
-  indebtedness.text = strippedText;
-  indebtedness.quotes = [strippedText];
-  misscoped.cards[0].features.materialContractsBuckets = misscoped.cards[0].features.materialContractsBuckets
-    .map((b) => (b.code === 'INDEBTEDNESS' ? indebtedness : b));
-  const rejoined = misscoped.cards[0].features.materialContractsBuckets.map((b) => b.text).join('\n');
-  misscoped.cards[0].primary_quote = rejoined;
-  misscoped.cards[0].region_full_text = rejoined;
-  misscoped.cards[0].full_text = rejoined;
-  misscoped.cards[0].ai_metadata.features = misscoped.cards[0].features;
-  misscoped.claims[0].verbatim = rejoined;
-  misscoped.claims[0].evidence_quote = rejoined;
-  misscoped.claims[0].canonical = misscoped.cards[0].features.materialContractsBuckets;
-  misscoped.claims[0].id = contentId('CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_FEATURE_CLAIM/V1', {
-    provision_instance_id: misscoped.cards[0].provision_instance_id,
-    materialContractsBuckets: misscoped.cards[0].features.materialContractsBuckets,
-  });
+  indebtedness.criteria[0].text = indebtedness.criteria[0].text
+    .replace('$100,000', 'the applicable threshold');
+  syncMaterialCard(misscoped.cards[0], { syncQuote: true });
+  syncMaterialClaim(misscoped.claims[0], misscoped.cards[0], { syncQuote: true });
   resealProjection(misscoped);
   assert.throws(
     () => bridgeMaterialContractsCardsToLegacyShape(misscoped, DARK_BRIDGE_ENABLED_ENV),
@@ -1281,21 +1371,7 @@ test('KNOWN LIMITATION: threshold containment does not detect that its own bucke
   assert.notEqual(negatedText, original);
 
   const tampered = structuredClone(projection);
-  const bucket = tampered.cards[0].features.materialContractsBuckets[0];
-  bucket.text = negatedText;
-  bucket.quotes = [negatedText];
-  tampered.cards[0].primary_quote = negatedText;
-  tampered.cards[0].region_full_text = negatedText;
-  tampered.cards[0].full_text = negatedText;
-  tampered.cards[0].ai_metadata.features = tampered.cards[0].features;
-  tampered.claims[0].verbatim = negatedText;
-  tampered.claims[0].evidence_quote = negatedText;
-  tampered.claims[0].canonical = tampered.cards[0].features.materialContractsBuckets;
-  tampered.claims[0].id = contentId('CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_FEATURE_CLAIM/V1', {
-    provision_instance_id: tampered.cards[0].provision_instance_id,
-    materialContractsBuckets: tampered.cards[0].features.materialContractsBuckets,
-  });
-  resealProjection(tampered);
+  replaceFirstCriterionText(tampered, negatedText, { syncQuote: true });
   // Documented as NOT throwing today -- this assertion records the residual
   // gap; it is not a claim that this input is safe.
   assert.doesNotThrow(

@@ -154,6 +154,20 @@ test('parseArgs: extraction refuses a Sol profile', () => {
   );
 });
 
+test('parseArgs: the report-only Phase B flag permits only SOL_MEDIUM', () => {
+  const args = mod.parseArgs(['--out-dir', '/tmp/whatever', '--profile', 'SOL_MEDIUM', '--phase-b-lead-probe']);
+  assert.equal(args.profileId, 'SOL_MEDIUM');
+  assert.equal(args.phaseBLeadProbe, true);
+  assert.throws(
+    () => mod.parseArgs(['--out-dir', '/tmp/whatever', '--profile', 'SOL_HIGH', '--phase-b-lead-probe']),
+    /LIVE_PROFILE_FORBIDDEN/,
+  );
+  assert.throws(
+    () => mod.parseArgs(['--out-dir', '/tmp/whatever', '--phase-b-lead-probe']),
+    /PHASE_B_LEAD_PROBE_PROFILE_REQUIRED/,
+  );
+});
+
 test('parseArgs: a replay manifest requires an independent manifest-id pin', () => {
   assert.throws(
     () => mod.parseArgs(['--out-dir', '/tmp/whatever', '--replay-source-manifest', 'manifest.json']),

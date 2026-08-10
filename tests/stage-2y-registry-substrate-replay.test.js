@@ -70,6 +70,7 @@ function acceptedDiff(overrides = {}) {
     moved_previously_resolved_claims: [],
     newly_resolved_claims: [{}],
     replay_errors: [],
+    open_world_by_family: [{ family: 'ONE', before: 1, after: 1, delta: 0 }],
     ...overrides,
   };
   return { ...body, comparison_digest: `sha256:${sha256Hex(Buffer.from(canonicalJson(body), 'utf8'))}` };
@@ -129,6 +130,11 @@ test('the audited writer rejects unaccepted movement, bad evidence identity and 
   });
   assert.throws(() => buildAcceptedBaseline({ ...args, accepted_diff: moved }), /ACCEPTED_DIFF_MOVED_PREVIOUSLY_RESOLVED/);
   assert.throws(() => buildAcceptedBaseline({ ...args, accepted_diff: { ...acceptedDiff(), comparison_digest: 'sha256:bad' } }), /ACCEPTED_DIFF_DIGEST_MISMATCH/);
+  const openWorldRise = acceptedDiff({
+    summary: { ...acceptedDiff().summary, open_world_rise_family_count: 1 },
+    open_world_by_family: [{ family: 'ONE', before: 1, after: 2, delta: 1 }],
+  });
+  assert.throws(() => buildAcceptedBaseline({ ...args, accepted_diff: openWorldRise }), /ACCEPTED_DIFF_OPEN_WORLD_RISE/);
   const erroredReplay = baselineSourceReplay({
     excluded_runs: [{ name: 'two', reason: 'INPUT_REJECTED' }],
     runs: [baselineSourceReplay().runs[0], { name: 'two', outcome: 'EXCLUDED', reason: 'INPUT_REJECTED' }],

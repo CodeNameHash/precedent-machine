@@ -4,6 +4,8 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const React = require('react');
+const { renderToStaticMarkup } = require('react-dom/server');
 
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const { compileFixtureContractV27, validateContractBundle } = require('../lib/canonical-v2/contract-bundle');
@@ -38,6 +40,7 @@ const CONTRACT = compileFixtureContractV27();
 const DEAL_ID = 'material-contracts-family-deal';
 const SECTION_REFERENCE = '3.13';
 const GROUNDED_QUOTE = 'any supply agreement requiring annual payments by the Company of more than $10,000,000;';
+const EXCLUDED_QUOTE = 'each contract for lease of personal property or real property (other than Oil and Gas Properties) involving payments in excess of $100,000,000';
 const DEFINITION_QUOTE = 'any supply agreement that is a Specified Customer Contract;';
 const SOURCE_TEXT = `Section 3.13 Material Contracts.\n\n${GROUNDED_QUOTE}\n${DEFINITION_QUOTE}\n`;
 
@@ -49,6 +52,7 @@ function criterion(overrides = {}) {
     threshold_kind: 'USD',
     threshold_value: '$10,000,000',
     cadence_kind: 'ANNUAL',
+    scope_exclusions: [],
     definition_cross_references: [],
     quote: GROUNDED_QUOTE,
     ...overrides,
@@ -162,13 +166,15 @@ test('Material Contracts registers its exact contract, producer and title route'
   assert.equal(getProducerPromptModule('MATERIAL_CONTRACTS'), buildMaterialContractsProducerPrompt);
   assert.ok(MATERIAL_CONTRACT_BUCKET_KINDS.includes('SUPPLY'));
   assert.equal(MATERIAL_CONTRACT_BUCKET_KINDS.includes('OTHER'), false);
-  assert.equal(PROMPT_VERSION, 2);
+  assert.equal(PROMPT_VERSION, 3);
   const prompt = buildMaterialContractsProducerPrompt({
     source_text: GROUNDED_QUOTE,
     governed_scope: { section_reference: SECTION_REFERENCE },
   });
   assert.match(prompt.messages[0].content, /Every discrete contract-inclusion list item without a quantitative floor is an ANY threshold/);
   assert.match(prompt.messages[0].content, /Never list a term merely because it is capitalised, appears in the quote, or affects only the parties or scope/);
+  assert.match(prompt.messages[0].content, /scope_exclusions/);
+  assert.match(prompt.messages[0].content, /extracted detail/i);
   assert.equal(MAPPING_TABLE_VERSION, 21);
   const classification = await classifySectionFamily({ title: 'Material Contracts' });
   assert.equal(classification.section_family, 'MATERIAL_CONTRACTS');
@@ -197,7 +203,8 @@ test('governed Material Contracts claims reach Review, Query, Compare and market
   const projection = projectMaterialContractsProductSurfaces({ resolution, deal_id: DEAL_ID });
   const governedCard = projection.cards.find((card) => card.provision_subtype === 'REP-T-MATERIAL-CONTRACTS');
   assert.equal(governedCard.features.materialContractsBuckets.length, 1);
-  assert.deepEqual(governedCard.features.materialContractsBuckets[0], {
+  const supplyBucket = governedCard.features.materialContractsBuckets[0];
+  assert.deepEqual({ ...supplyBucket, criteria: undefined }, {
     code: 'SUPPLY',
     label: 'Supplier agreements',
     text: GROUNDED_QUOTE,
@@ -205,6 +212,14 @@ test('governed Material Contracts claims reach Review, Query, Compare and market
     threshold: '$10,000,000',
     threshold_kind: 'USD',
     cadence_kind: 'ANNUAL',
+    scope_exclusions: [],
+    criteria: undefined,
+  });
+  assert.equal(supplyBucket.criteria.length, 1);
+  assert.equal(supplyBucket.criteria[0].text, GROUNDED_QUOTE);
+  assert.deepEqual(supplyBucket.criteria[0].source_claim_revision_ids, governedCard.canonical_v2_lineage.claim_revision_ids);
+  assert.deepEqual(governedCard.canonical_v2_lineage.bucket_claim_revision_ids, {
+    SUPPLY: governedCard.canonical_v2_lineage.claim_revision_ids,
   });
   const evidenceCard = projection.cards.find((card) => card.canonical_v2_lineage.source === EVIDENCE_SOURCE);
   assert.ok(evidenceCard);
@@ -239,6 +254,134 @@ test('governed Material Contracts claims reach Review, Query, Compare and market
   });
   assert.ok(Object.values(market.byRow).flatMap((row) => Object.values(row.metrics))
     .some((result) => result.coverage?.observedCount === 1));
+});
+
+test('Concho scope exclusions stay structured, grounded and visible without a new column', async () => {
+  const response = {
+    material_contract_criteria: [criterion({
+      bucket_code: 'REAL_ESTATE',
+      threshold_value: '$100,000,000',
+      cadence_kind: null,
+      scope_exclusions: ['Oil and Gas Properties'],
+      quote: EXCLUDED_QUOTE,
+    })],
+    open_world_candidates: [],
+  };
+  const sourceText = `Section ${SECTION_REFERENCE} Material Contracts.\n\n${EXCLUDED_QUOTE}`;
+  const source = buildImmutableSource({ sourceBytes: sourceText, sourceOccurrenceKey: 'concho-exclusion-test' });
+  const receipt = await runNativeExtraction({
+    source_text: sourceText,
+    document_hash: sha256Hex(Buffer.from(sourceText, 'utf8')),
+    section_references: [SECTION_REFERENCE],
+    contract_bundle: CONTRACT,
+    definitions: { known_definitions: [] },
+    section_family_classifier: async () => ({ declined: true }),
+    provider: async ({ governed_scope: governedScope }) => {
+      const shaped = shapeMaterialContractsProposals(response, governedScope.source_text);
+      return {
+        provider_id: 'material-contracts-exclusion-test/v1',
+        model_id: 'stub-model',
+        prompt: 'material-contracts-exclusion-test/v1',
+        proposals: shaped.proposals,
+        evidence_residuals: shaped.evidence_residuals,
+      };
+    },
+  });
+  const resolution = resolveCandidates({
+    run_receipt: receipt,
+    contract_vocabulary: CONTRACT,
+    admitted_source_context: Object.freeze({
+      ...source,
+      governed_deal_key: 'deal:concho-exclusion-test',
+      deal_admission_id: sha256Hex('deal-admission:concho-exclusion-test'),
+      source_ordinal: 0,
+    }),
+  });
+  assert.equal(resolution.open_world.length, 0);
+  assert.ok(resolution.resolved.every((entry) => (
+    entry.claim.attributes.scope_exclusions[0] === 'Oil and Gas Properties'
+  )));
+  const projection = projectMaterialContractsProductSurfaces({ resolution, deal_id: 'concho-exclusion-test' });
+  const bucket = projection.cards[0].features.materialContractsBuckets[0];
+  assert.deepEqual(bucket.scope_exclusions, ['Oil and Gas Properties']);
+  const config = await import('../components/review/table-configs/material-contracts.config.js');
+  const rows = config.materialContractsConfig.selectRows({ cards: projection.cards });
+  assert.deepEqual(rows[0].scopeExclusions, ['Oil and Gas Properties']);
+  assert.match(config.renderEvidence(rows[0], {}), /Excludes: Oil and Gas Properties/);
+  const markup = renderToStaticMarkup(config.renderEvidence(rows[0], {
+    primitives: {
+      EvidenceHoverSource: ({ children }) => React.createElement('span', null, children),
+    },
+  }));
+  assert.match(markup, /<div><span>.*<\/span><\/div><div>Excludes: Oil and Gas Properties<\/div>/);
+});
+
+test('ungrounded Material Contracts exclusions fail closed', async () => {
+  const positiveMention = 'any supply agreement concerning Oil and Gas Properties requiring annual payments of more than $10,000,000;';
+  const sourceText = `Section ${SECTION_REFERENCE} Material Contracts.\n\n${positiveMention}`;
+  const shaped = shapeMaterialContractsProposals({
+    material_contract_criteria: [criterion({
+      scope_exclusions: ['Oil and Gas Properties'],
+      quote: positiveMention,
+    })],
+    open_world_candidates: [],
+  }, sourceText);
+  const source = buildImmutableSource({ sourceBytes: sourceText, sourceOccurrenceKey: 'ungrounded-exclusion-test' });
+  const receipt = await runNativeExtraction({
+    source_text: sourceText,
+    document_hash: sha256Hex(Buffer.from(sourceText, 'utf8')),
+    section_references: [SECTION_REFERENCE],
+    contract_bundle: CONTRACT,
+    definitions: { known_definitions: [] },
+    section_family_classifier: async () => ({ declined: true }),
+    provider: async () => ({
+      provider_id: 'ungrounded-exclusion-test/v1', model_id: 'stub-model', prompt: 'test',
+      proposals: shaped.proposals, evidence_residuals: shaped.evidence_residuals,
+    }),
+  });
+  const resolution = resolveCandidates({
+    run_receipt: receipt,
+    contract_vocabulary: CONTRACT,
+    admitted_source_context: Object.freeze({
+      ...source,
+      governed_deal_key: 'deal:ungrounded-exclusion-test',
+      deal_admission_id: sha256Hex('deal-admission:ungrounded-exclusion-test'),
+      source_ordinal: 0,
+    }),
+  });
+  assert.equal(resolution.resolved.length, 0);
+  assert.equal(resolution.open_world.length, 2);
+  assert.ok(resolution.open_world.every((entry) => entry.reason === 'MATERIAL_CONTRACT_EXCLUSION_UNCORROBORATED'));
+});
+
+test('historical Material Contracts candidates without the V3 exclusion field keep their semantic resolution', async () => {
+  const { receipt, resolution: current } = await resolveFixture();
+  const legacyReceipt = structuredClone(receipt);
+  for (const row of legacyReceipt.compiled_candidates) {
+    if (row?.ok && row.candidate?.claim?.attributes) delete row.candidate.claim.attributes.scope_exclusions;
+  }
+  const source = buildImmutableSource({
+    sourceBytes: SOURCE_TEXT,
+    sourceOccurrenceKey: 'material-contracts-family-test',
+  });
+  const legacy = resolveCandidates({
+    run_receipt: legacyReceipt,
+    contract_vocabulary: CONTRACT,
+    admitted_source_context: Object.freeze({
+      ...source,
+      governed_deal_key: `deal:${DEAL_ID}`,
+      deal_admission_id: sha256Hex(`deal-admission:${DEAL_ID}`),
+      source_ordinal: 0,
+    }),
+  });
+  const semantics = (resolution) => resolution.resolved.map((entry) => ({
+    definition: entry.resolved_claim_definition_key,
+    state: entry.claim.state,
+    value: entry.claim.canonical_value,
+    raw: entry.claim.raw_value,
+  })).sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
+  assert.deepEqual(semantics(legacy), semantics(current));
+  assert.deepEqual(legacy.open_world.map((entry) => entry.reason), current.open_world.map((entry) => entry.reason));
 });
 
 test('the projector keeps contract-excluded OTHER material exact and open-world', async () => {

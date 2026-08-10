@@ -429,7 +429,7 @@ test('the legacy view builds rows from real committed production provision cards
 test('the V2 view builds rows from a real projection through the same table config', () => {
   const mapping = compileMapping(JSON.parse(fs.readFileSync(MAPPING_FILE, 'utf8')));
   const projection = JSON.parse(fs.readFileSync(LANDOS_PROJECTION, 'utf8'));
-  assert.equal(projection.schema_version, 'CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_PROJECTION/V1');
+  assert.equal(projection.schema_version, 'CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_PROJECTION/V2');
   const rows = buildV2Rows({ mapping, deal_id: 'landos-abbvie', projection });
   assert.equal(rows.length, 1);
   assert.equal(rows[0].code, 'INDEBTEDNESS');

@@ -120,6 +120,7 @@ async function buildResolutionSetDiff({ phase }) {
   const movedClaims = [];
   const newlyResolvedClaims = [];
   const errors = [];
+  const collectionCountsPerRun = [];
   let previouslyResolvedClaimCount = 0;
   const replayResults = new Array(runNames.length);
   let cursor = 0;
@@ -147,6 +148,15 @@ async function buildResolutionSetDiff({ phase }) {
     }
     try {
       const { manifest, committed, replayed } = result.value;
+      collectionCountsPerRun.push({
+        deal: manifest.deal,
+        run: runName,
+        family: manifest.section_family,
+        before: Object.fromEntries(['resolved', 'review_queue', 'open_world', 'residuals']
+          .map((collection) => [collection, committed?.[collection]?.length || 0])),
+        after: Object.fromEntries(['resolved', 'review_queue', 'open_world', 'residuals']
+          .map((collection) => [collection, replayed?.[collection]?.length || 0])),
+      });
       const beforeRows = indexedResolution(committed);
       const afterRows = indexedResolution(replayed);
       const locatorKeys = [...new Set([...beforeRows.keys(), ...afterRows.keys()])].sort();
@@ -189,6 +199,17 @@ async function buildResolutionSetDiff({ phase }) {
     || left.run.localeCompare(right.run) || String(left.section).localeCompare(String(right.section))
     || left.semantic_locator_digest.localeCompare(right.semantic_locator_digest));
   sortRows(movedClaims); sortRows(newlyResolvedClaims);
+  collectionCountsPerRun.sort((a, b) => a.deal.localeCompare(b.deal) || a.run.localeCompare(b.run));
+  const familyOpenWorld = new Map();
+  for (const row of collectionCountsPerRun) {
+    const counts = familyOpenWorld.get(row.family) || { family: row.family, before: 0, after: 0 };
+    counts.before += row.before.open_world;
+    counts.after += row.after.open_world;
+    familyOpenWorld.set(row.family, counts);
+  }
+  const openWorldByFamily = [...familyOpenWorld.values()]
+    .map((row) => ({ ...row, delta: row.after - row.before }))
+    .sort((a, b) => a.family.localeCompare(b.family));
   const body = {
     schema_version: 'STAGE_2Y_RESOLUTION_SET_DIFF/V1',
     generation_command: `node scripts/stage-2y-resolution-set-diff.mjs --write ${phase}`,
@@ -206,10 +227,13 @@ async function buildResolutionSetDiff({ phase }) {
       moved_previously_resolved_claim_count: movedClaims.length,
       newly_resolved_claim_count: newlyResolvedClaims.length,
       replay_error_count: errors.length,
+      open_world_rise_family_count: openWorldByFamily.filter((row) => row.delta > 0).length,
     },
     moved_previously_resolved_claims: movedClaims,
     newly_resolved_claims: newlyResolvedClaims,
     replay_errors: errors,
+    open_world_by_family: openWorldByFamily,
+    collection_counts_per_run: collectionCountsPerRun,
   };
   return { ...body, comparison_digest: valueDigest(body) };
 }
@@ -232,4 +256,4 @@ if (isMain) {
   process.stdout.write(`${mode} ${destination}\n`);
 }
 
-export { buildResolutionSetDiff, changedResolution, indexedResolution, semanticLocator, snapshot, sourceCandidateId };
+export { buildResolutionSetDiff, changedResolution, indexedResolution, replayRun, semanticLocator, snapshot, sourceCandidateId };

@@ -52,12 +52,16 @@ printf '%s\\n' '{"type":"turn.completed","usage":{"input_tokens":12,"cached_inpu
   process.env.CODEX_API_KEY = 'must-not-reach-child';
   process.env.CODEX_ACCESS_TOKEN = 'must-not-reach-child';
   try {
-    const client = createCodexCliClient({ model: 'gpt-5.6-terra', maxAttempts: 1 });
+    const client = createCodexCliClient({ model: 'gpt-5.6-terra', reasoningEffort: 'medium', maxAttempts: 1 });
     const response = await client.messages.create({ messages: [{ role: 'user', content: 'extract' }] });
     assert.equal(response.content[0].text, '{"ok":true}');
     assert.equal(response.codex_thread_id, 'thread-123');
     assert.deepEqual(response.usage, {
       input_tokens: 12, cached_input_tokens: 3, output_tokens: 4, reasoning_output_tokens: 5,
+    });
+    assert.deepEqual(response.codex_invocation_identity, {
+      identity_basis: 'EXPLICIT_CODEX_EXEC_ARGUMENTS', model: 'gpt-5.6-terra', reasoning_effort: 'medium',
+      model_argument: ['-m', 'gpt-5.6-terra'], reasoning_argument: ['-c', 'model_reasoning_effort="medium"'],
     });
   } finally {
     process.env.PATH = originalPath;

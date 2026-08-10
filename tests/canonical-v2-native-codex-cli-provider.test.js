@@ -13,7 +13,7 @@ const {
   createCodexCliProvider,
 } = require('../lib/canonical-v2/native-producer/codex-cli-provider');
 const { NativeProducerAnthropicError } = require('../lib/canonical-v2/native-producer/anthropic-provider');
-const { createCodexCliClient, buildCodexExecArgs } = require('../lib/llm-cli-client');
+const { createCodexCliClient, buildCodexExecArgs, codexInvocationIdentity } = require('../lib/llm-cli-client');
 
 const CONTRACT_BUNDLE = compileFixtureContract();
 const INPUT = Object.freeze({
@@ -44,11 +44,14 @@ function successfulClient(onRequest = () => {}) {
 }
 
 test('profiles pin the approved model and reasoning combinations', () => {
-  assert.deepEqual(Object.keys(PROFILES), ['TERRA_MEDIUM', 'SOL_HIGH', 'SOL_XHIGH']);
+  assert.deepEqual(Object.keys(PROFILES), ['TERRA_MEDIUM', 'SOL_MEDIUM', 'SOL_HIGH', 'SOL_XHIGH']);
   assert.deepEqual(resolveProfile('TERRA_MEDIUM'), {
     profile_id: 'TERRA_MEDIUM',
     model: 'gpt-5.6-terra',
     reasoning_effort: 'medium',
+  });
+  assert.deepEqual(resolveProfile('SOL_MEDIUM'), {
+    profile_id: 'SOL_MEDIUM', model: 'gpt-5.6-sol', reasoning_effort: 'medium',
   });
   assert.deepEqual(resolveProfile('SOL_HIGH'), {
     profile_id: 'SOL_HIGH',
@@ -60,6 +63,13 @@ test('profiles pin the approved model and reasoning combinations', () => {
   });
   assert.ok(Object.isFrozen(PROFILES));
   assert.ok(Object.isFrozen(PROFILES.TERRA_MEDIUM));
+});
+
+test('Codex transport identity binds the explicit model and effort arguments', () => {
+  assert.deepEqual(codexInvocationIdentity({ model: 'gpt-5.6-terra', reasoningEffort: 'medium' }), {
+    identity_basis: 'EXPLICIT_CODEX_EXEC_ARGUMENTS', model: 'gpt-5.6-terra', reasoning_effort: 'medium',
+    model_argument: ['-m', 'gpt-5.6-terra'], reasoning_argument: ['-c', 'model_reasoning_effort="medium"'],
+  });
 });
 
 test('unknown profiles fail closed before a client can run', () => {

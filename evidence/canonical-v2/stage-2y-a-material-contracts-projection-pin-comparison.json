@@ -1,0 +1,164 @@
+{
+  "schema_version": "STAGE_2Y_A_MATERIAL_CONTRACTS_PROJECTION_PIN_COMPARISON/V1",
+  "authority": "OFFLINE_FIXTURE_COMPARISON_ONLY",
+  "publication_authorisation": "NONE",
+  "generation_command": "node scripts/stage-2y-a-material-contracts-pin-comparison.mjs --write",
+  "fixture": "tests/fixtures/review-parity/cases/material-contracts/landos-abbvie.projection.json",
+  "before_digest": "sha256:98a30ec51dd2510248f684fe5a32adfa4835ee887d1718094755b1669892a08f",
+  "after_digest": "sha256:b51ff005910564c5a89383298d4b0e942d113f46e3d18189fbde0ab3428c9097",
+  "before_schema": "CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_PROJECTION/V1",
+  "after_schema": "CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_PROJECTION/V2",
+  "counts": {
+    "before_cards": 1,
+    "after_cards": 1,
+    "before_claims": 1,
+    "after_claims": 1,
+    "before_open_items": 0,
+    "after_open_items": 0
+  },
+  "stable_semantics": {
+    "deal_id_unchanged": true,
+    "card_identity_unchanged": true,
+    "provision_identity_unchanged": true,
+    "bucket_code_unchanged": true,
+    "bucket_text_unchanged": true,
+    "threshold_unchanged": true
+  },
+  "expected_changes": [
+    "Projection schema V1 to V2.",
+    "Prompt V3 adds explicit empty scope exclusions, so claim revision identities move while value, state and source text stay fixed.",
+    "Bucket criterion detail and bucket-level claim lineage become explicit.",
+    "Dependent feature-claim and projection identities move."
+  ],
+  "field_differences": [
+    {
+      "path": "$.cards[0].ai_metadata.features.materialContractsBuckets[0].criteria",
+      "before": {
+        "field_absent": true
+      },
+      "after": [
+        {
+          "cadence_kind": null,
+          "criterion_id": "ee3a59a87358e42a63f9041d32d8a8c522d4e8087493051f0e42baf8c7a1d341",
+          "scope_exclusions": [],
+          "source_claim_revision_ids": [
+            "12e5b49ed7735e4202c70d443341635fceb45bc366aaf5dd1a366dfbce7adb2b",
+            "f82744556610ff4d7cc9d84c30639e7bd96ffacd67866a8fdb1d818c36a64ed5"
+          ],
+          "text": "any Company Contract relating to Indebtedness in excess of $100,000 (whether incurred, assumed, guaranteed, or secured by\nany asset) of the Company or any Company Subsidiary;",
+          "threshold": "$100,000",
+          "threshold_kind": "USD"
+        }
+      ]
+    },
+    {
+      "path": "$.cards[0].ai_metadata.features.materialContractsBuckets[0].scope_exclusions",
+      "before": {
+        "field_absent": true
+      },
+      "after": []
+    },
+    {
+      "path": "$.cards[0].canonical_v2_lineage.bucket_claim_revision_ids",
+      "before": {
+        "field_absent": true
+      },
+      "after": {
+        "INDEBTEDNESS": [
+          "12e5b49ed7735e4202c70d443341635fceb45bc366aaf5dd1a366dfbce7adb2b",
+          "f82744556610ff4d7cc9d84c30639e7bd96ffacd67866a8fdb1d818c36a64ed5"
+        ]
+      }
+    },
+    {
+      "path": "$.cards[0].canonical_v2_lineage.claim_revision_ids[0]",
+      "before": "40e04608c3c5ba90e7759356f797ed540dd0b527581b672cc4180dbc9d31299d",
+      "after": "12e5b49ed7735e4202c70d443341635fceb45bc366aaf5dd1a366dfbce7adb2b"
+    },
+    {
+      "path": "$.cards[0].canonical_v2_lineage.claim_revision_ids[1]",
+      "before": "47c864fc69737bb62aa77d31dff218d1f7a566fde10d66c154ce0364dc2b8097",
+      "after": "f82744556610ff4d7cc9d84c30639e7bd96ffacd67866a8fdb1d818c36a64ed5"
+    },
+    {
+      "path": "$.cards[0].features.materialContractsBuckets[0].criteria",
+      "before": {
+        "field_absent": true
+      },
+      "after": [
+        {
+          "cadence_kind": null,
+          "criterion_id": "ee3a59a87358e42a63f9041d32d8a8c522d4e8087493051f0e42baf8c7a1d341",
+          "scope_exclusions": [],
+          "source_claim_revision_ids": [
+            "12e5b49ed7735e4202c70d443341635fceb45bc366aaf5dd1a366dfbce7adb2b",
+            "f82744556610ff4d7cc9d84c30639e7bd96ffacd67866a8fdb1d818c36a64ed5"
+          ],
+          "text": "any Company Contract relating to Indebtedness in excess of $100,000 (whether incurred, assumed, guaranteed, or secured by\nany asset) of the Company or any Company Subsidiary;",
+          "threshold": "$100,000",
+          "threshold_kind": "USD"
+        }
+      ]
+    },
+    {
+      "path": "$.cards[0].features.materialContractsBuckets[0].scope_exclusions",
+      "before": {
+        "field_absent": true
+      },
+      "after": []
+    },
+    {
+      "path": "$.claims[0].canonical[0].criteria",
+      "before": {
+        "field_absent": true
+      },
+      "after": [
+        {
+          "cadence_kind": null,
+          "criterion_id": "ee3a59a87358e42a63f9041d32d8a8c522d4e8087493051f0e42baf8c7a1d341",
+          "scope_exclusions": [],
+          "source_claim_revision_ids": [
+            "12e5b49ed7735e4202c70d443341635fceb45bc366aaf5dd1a366dfbce7adb2b",
+            "f82744556610ff4d7cc9d84c30639e7bd96ffacd67866a8fdb1d818c36a64ed5"
+          ],
+          "text": "any Company Contract relating to Indebtedness in excess of $100,000 (whether incurred, assumed, guaranteed, or secured by\nany asset) of the Company or any Company Subsidiary;",
+          "threshold": "$100,000",
+          "threshold_kind": "USD"
+        }
+      ]
+    },
+    {
+      "path": "$.claims[0].canonical[0].scope_exclusions",
+      "before": {
+        "field_absent": true
+      },
+      "after": []
+    },
+    {
+      "path": "$.claims[0].id",
+      "before": "16295ab4e949029660a528f02c96cfc62853d8dfba5865b3c27c813f44d6f398",
+      "after": "1137671f80c496a4f6739e1cfec96b4d16331d23af5c76fc82cc51351b59b0b9"
+    },
+    {
+      "path": "$.claims[0].provenance.source_claim_revision_ids[0]",
+      "before": "40e04608c3c5ba90e7759356f797ed540dd0b527581b672cc4180dbc9d31299d",
+      "after": "12e5b49ed7735e4202c70d443341635fceb45bc366aaf5dd1a366dfbce7adb2b"
+    },
+    {
+      "path": "$.claims[0].provenance.source_claim_revision_ids[1]",
+      "before": "47c864fc69737bb62aa77d31dff218d1f7a566fde10d66c154ce0364dc2b8097",
+      "after": "f82744556610ff4d7cc9d84c30639e7bd96ffacd67866a8fdb1d818c36a64ed5"
+    },
+    {
+      "path": "$.projection_id",
+      "before": "4ac1bee0e1c2885b6274497198338f2cac74ca19190ecc4fbb4c15513ecd879d",
+      "after": "10d234c786478e82c24af951090203b8b8e23edb64ff23d55218dc609a2a83bb"
+    },
+    {
+      "path": "$.schema_version",
+      "before": "CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_PROJECTION/V1",
+      "after": "CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_PROJECTION/V2"
+    }
+  ],
+  "comparison_digest": "sha256:3c1f1ce0b7592d1ff25dadf85ab19612649a7d5bb3c35c329f80f5febefcd4d5"
+}

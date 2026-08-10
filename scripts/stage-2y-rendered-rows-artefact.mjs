@@ -97,7 +97,7 @@ for (const run of runs) {
       return text && !ABSENT.test(text);
     }));
     const keyMatched = rendered.rows.filter((row) => row.matches_claim_key);
-    const chosen = populated.length ? populated : keyMatched;
+    const chosen = keyMatched.length ? keyMatched : populated;
     const record = {
       deal: run.manifest.deal,
       family,
@@ -107,7 +107,7 @@ for (const run of runs) {
       excerpt: claimExcerpt(entry),
       section_title: rendered.section.title,
       row_count: rendered.row_count,
-      row_selection: populated.length ? 'POPULATED' : (keyMatched.length ? 'KEY_MATCH' : 'NONE_IDENTIFIED'),
+      row_selection: keyMatched.length ? 'KEY_MATCH' : (populated.length ? 'POPULATED' : 'NONE_IDENTIFIED'),
       rows: chosen.slice(0, 3).map((row) => ({
         id: row.id,
         label: row.label,

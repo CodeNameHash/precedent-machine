@@ -9,6 +9,7 @@ const { renderToStaticMarkup } = require('react-dom/server');
 
 const {
   humanVisibleTextFromHtml,
+  previewClaimSection,
   previewResolvedClaimRow,
   previewReviewDealRow,
 } = require('../lib/review-parity/rendered-row-preview');
@@ -147,4 +148,27 @@ test('an unsupported family fails closed', () => {
     }),
     (error) => error.code === 'FAMILY_NOT_RENDERABLE',
   );
+});
+
+test('Material Contracts claim previews match exactly one bucket row', () => {
+  for (const [deal, runName, expectedRows] of [
+    ['metsera', 'metsera-material-contracts-20260809-2xk-final', 15],
+    ['skywater', 'skywater-material-contracts-20260809-2xk-final', 8],
+    ['topbuild', 'topbuild-material-contracts-20260809-2xk-r3-final', 10],
+  ]) {
+    const runDir = path.join(ROOT, 'evidence/canonical-v2', runName);
+    const run = {
+      manifest: JSON.parse(fs.readFileSync(path.join(runDir, 'run-manifest.json'), 'utf8')),
+      resolution: JSON.parse(fs.readFileSync(path.join(runDir, 'resolution.json'), 'utf8')),
+    };
+    const signatures = new Set();
+    for (const entry of run.resolution.resolved) {
+      const preview = previewClaimSection({ run, resolved_entry: entry });
+      const matches = preview.rows.filter((row) => row.matches_claim_key);
+      assert.equal(matches.length, 1, `${deal}:${entry.claim.claim_revision_id}`);
+      assert.equal(matches[0].id.includes(entry.claim.attributes.bucket_code), true);
+      signatures.add(matches[0].id);
+    }
+    assert.equal(signatures.size, expectedRows, deal);
+  }
 });

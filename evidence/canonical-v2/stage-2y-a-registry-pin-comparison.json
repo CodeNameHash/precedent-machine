@@ -1,0 +1,173 @@
+{
+  "schema_version": "STAGE_2Y_A_REGISTRY_PIN_COMPARISON/V1",
+  "authority": "OFFLINE_REPLAY_COMPARISON_ONLY",
+  "publication_authorisation": "NONE",
+  "baseline_commit": "cf0cf1d969a33f08c455203698a1a7d1dc7bcf17",
+  "comparison": "BASELINE_COMMIT_REPLAY_TO_PHASE_A_WORKTREE_REPLAY",
+  "inputs": {
+    "baseline_snapshot_sha256": "sha256:3a580d117e81ffc63051644cc21282170b59ee8dcf8e95ce8a80c3d9e7ab66f9",
+    "current_snapshot_sha256": "sha256:ed10c00f9acf18dd8869044883f071325a7c601dfb13009c121f0237946d75f0",
+    "phase_a_resolution_set_diff": "evidence/canonical-v2/stage-2y-a-resolution-set-diff.json"
+  },
+  "method": "Replay the seven Material Contracts runs at baseline commit cf0cf1d9 and in the Phase A worktree. Remove resolution_receipt. Match every row within each collection by section, generic key, resolved definition key, raw value, canonical value, bucket and reasons. Recursively compare each matched row by JSON pointer.",
+  "summary": {
+    "material_contract_runs": 7,
+    "changed_runs": 6,
+    "unchanged_runs": [
+      "skechers-material-contracts-20260809-2xk-final"
+    ],
+    "differing_leaf_fields": 1094,
+    "collection_counts_before_and_after": {
+      "resolved": 116,
+      "review_queue": 116,
+      "open_world": 102,
+      "residuals": 0
+    },
+    "semantic_rows_matched": 334,
+    "semantic_rows_unmatched": 0,
+    "previously_resolved_value_or_state_changes": 0,
+    "open_world_count_delta": 0
+  },
+  "runs": [
+    {
+      "run": "concho-material-contracts-20260809-2xk-final",
+      "before_semantic_output_digest": "sha256:6bd3d9bc35ebb38048da483de9faa92e000ac7fc55c5de24fe222bb751579a89",
+      "after_semantic_output_digest": "sha256:329a52a2e4f85d5383fd1a756b41a6680783fdd9212f7ad264ea43b549fd14c6",
+      "collection_counts_before_and_after": { "resolved": 16, "review_queue": 16, "open_world": 15, "residuals": 0 },
+      "differing_leaf_field_count": 154,
+      "changed_field_patterns": {
+        "/open_world/{item}/attributes/scope_exclusions": 12,
+        "/open_world/{item}/closure_id": 12,
+        "/resolved/{item}/claim/attributes/scope_exclusions": 16,
+        "/resolved/{item}/claim/claim_revision_id": 16,
+        "/resolved/{item}/claim/closure_id": 16,
+        "/resolved/{item}/compiled_candidate/candidate/claim/attributes/scope_exclusions": 16,
+        "/resolved/{item}/compiled_candidate/candidate/claim/claim_revision_id": 16,
+        "/resolved/{item}/compiled_candidate/candidate/claim/closure_id": 16,
+        "/review_queue/{item}/claim_revision_id": 16,
+        "/review_queue/{item}/closure_id": 16,
+        "/review_queue/{item}/evidence/*/claim_evidence_id": 2
+      }
+    },
+    {
+      "run": "metsera-material-contracts-20260809-2xk-final",
+      "before_semantic_output_digest": "sha256:deeedbc2a9623a22396e2d5e480974cae5f9c2f4cd5644e85e0e64d51cfc93bf",
+      "after_semantic_output_digest": "sha256:d677fedfb4639a2ee2fdd4d1843482fc43c50e0f1f25a8aad5eca6f418f439ae",
+      "collection_counts_before_and_after": { "resolved": 32, "review_queue": 32, "open_world": 19, "residuals": 0 },
+      "differing_leaf_field_count": 286,
+      "changed_field_patterns": {
+        "/open_world/{item}/attributes/scope_exclusions": 15,
+        "/open_world/{item}/closure_id": 15,
+        "/resolved/{item}/claim/attributes/scope_exclusions": 32,
+        "/resolved/{item}/claim/claim_revision_id": 32,
+        "/resolved/{item}/claim/closure_id": 32,
+        "/resolved/{item}/compiled_candidate/candidate/claim/attributes/scope_exclusions": 32,
+        "/resolved/{item}/compiled_candidate/candidate/claim/claim_revision_id": 32,
+        "/resolved/{item}/compiled_candidate/candidate/claim/closure_id": 32,
+        "/review_queue/{item}/claim_revision_id": 32,
+        "/review_queue/{item}/closure_id": 32
+      }
+    },
+    {
+      "run": "modiv-material-contracts-20260809-2xk-final",
+      "before_semantic_output_digest": "sha256:fa1890dc789ffea4599642998b5cf18b1b42d5734c425615781aab72e154a0a4",
+      "after_semantic_output_digest": "sha256:3b715341b60b55628b0cd409f6d96d12e01739bdd62aba0323f7fe1c78dae381",
+      "collection_counts_before_and_after": { "resolved": 20, "review_queue": 20, "open_world": 11, "residuals": 0 },
+      "differing_leaf_field_count": 176,
+      "changed_field_patterns": {
+        "/open_world/{item}/attributes/scope_exclusions": 8,
+        "/open_world/{item}/closure_id": 8,
+        "/resolved/{item}/claim/attributes/scope_exclusions": 20,
+        "/resolved/{item}/claim/claim_revision_id": 20,
+        "/resolved/{item}/claim/closure_id": 20,
+        "/resolved/{item}/compiled_candidate/candidate/claim/attributes/scope_exclusions": 20,
+        "/resolved/{item}/compiled_candidate/candidate/claim/claim_revision_id": 20,
+        "/resolved/{item}/compiled_candidate/candidate/claim/closure_id": 20,
+        "/review_queue/{item}/claim_revision_id": 20,
+        "/review_queue/{item}/closure_id": 20
+      }
+    },
+    {
+      "run": "redhat-material-contracts-20260809-2xk-final",
+      "before_semantic_output_digest": "sha256:e1e3b3fa35f1e7f8337af0a6ad7dd6a8633b5dd56963f0a0f8b5eae8133a7e72",
+      "after_semantic_output_digest": "sha256:42ee8f22200a1b1031e266abf77bf39a1d42bc890c0020f83f5063a5e194af1b",
+      "collection_counts_before_and_after": { "resolved": 6, "review_queue": 6, "open_world": 19, "residuals": 0 },
+      "differing_leaf_field_count": 80,
+      "changed_field_patterns": {
+        "/open_world/{item}/attributes/scope_exclusions": 16,
+        "/open_world/{item}/closure_id": 16,
+        "/resolved/{item}/claim/attributes/scope_exclusions": 6,
+        "/resolved/{item}/claim/claim_revision_id": 6,
+        "/resolved/{item}/claim/closure_id": 6,
+        "/resolved/{item}/compiled_candidate/candidate/claim/attributes/scope_exclusions": 6,
+        "/resolved/{item}/compiled_candidate/candidate/claim/claim_revision_id": 6,
+        "/resolved/{item}/compiled_candidate/candidate/claim/closure_id": 6,
+        "/review_queue/{item}/claim_revision_id": 6,
+        "/review_queue/{item}/closure_id": 6
+      }
+    },
+    {
+      "run": "skechers-material-contracts-20260809-2xk-final",
+      "before_semantic_output_digest": "sha256:e70ef0c73d9f61e89e7c92b6b0461126aa89125100a4ae585cbfdbfde3936289",
+      "after_semantic_output_digest": "sha256:e70ef0c73d9f61e89e7c92b6b0461126aa89125100a4ae585cbfdbfde3936289",
+      "collection_counts_before_and_after": { "resolved": 0, "review_queue": 0, "open_world": 1, "residuals": 0 },
+      "differing_leaf_field_count": 0,
+      "changed_field_patterns": {}
+    },
+    {
+      "run": "skywater-material-contracts-20260809-2xk-final",
+      "before_semantic_output_digest": "sha256:70825fd8c8b41631fa597a74ea6e0265df5a6585470523341e64a07b4c2d952b",
+      "after_semantic_output_digest": "sha256:c43004535364615392a69d4b1e20e6ac48a1d2ec3964f9e0eb4c74d9056696cd",
+      "collection_counts_before_and_after": { "resolved": 22, "review_queue": 22, "open_world": 16, "residuals": 0 },
+      "differing_leaf_field_count": 202,
+      "changed_field_patterns": {
+        "/open_world/{item}/attributes/scope_exclusions": 12,
+        "/open_world/{item}/closure_id": 12,
+        "/resolved/{item}/claim/attributes/scope_exclusions": 22,
+        "/resolved/{item}/claim/claim_revision_id": 22,
+        "/resolved/{item}/claim/closure_id": 22,
+        "/resolved/{item}/compiled_candidate/candidate/claim/attributes/scope_exclusions": 22,
+        "/resolved/{item}/compiled_candidate/candidate/claim/claim_revision_id": 22,
+        "/resolved/{item}/compiled_candidate/candidate/claim/closure_id": 22,
+        "/review_queue/{item}/claim_revision_id": 22,
+        "/review_queue/{item}/closure_id": 22,
+        "/review_queue/{item}/evidence/*/claim_evidence_id": 2
+      }
+    },
+    {
+      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
+      "before_semantic_output_digest": "sha256:73224ee2a77b59dd9e3ca7418f45eb0c04c6ce9b8ada9768d991d303c63a10e2",
+      "after_semantic_output_digest": "sha256:4cdd6de59a034eb785312b4014cff1484ea7cfabeda228db476e8583f084356d",
+      "collection_counts_before_and_after": { "resolved": 20, "review_queue": 20, "open_world": 21, "residuals": 0 },
+      "differing_leaf_field_count": 196,
+      "changed_field_patterns": {
+        "/open_world/{item}/attributes/scope_exclusions": 18,
+        "/open_world/{item}/closure_id": 18,
+        "/resolved/{item}/claim/attributes/scope_exclusions": 20,
+        "/resolved/{item}/claim/claim_revision_id": 20,
+        "/resolved/{item}/claim/closure_id": 20,
+        "/resolved/{item}/compiled_candidate/candidate/claim/attributes/scope_exclusions": 20,
+        "/resolved/{item}/compiled_candidate/candidate/claim/claim_revision_id": 20,
+        "/resolved/{item}/compiled_candidate/candidate/claim/closure_id": 20,
+        "/review_queue/{item}/claim_revision_id": 20,
+        "/review_queue/{item}/closure_id": 20
+      }
+    }
+  ],
+  "cause": {
+    "source_change": "Historical Material Contracts provider responses now carry attributes.scope_exclusions as an explicit empty array when absent.",
+    "direct_fields": [
+      "/resolved/{item}/claim/attributes/scope_exclusions",
+      "/resolved/{item}/compiled_candidate/candidate/claim/attributes/scope_exclusions",
+      "/open_world/{item}/attributes/scope_exclusions"
+    ],
+    "derived_fields": [
+      "claim_revision_id",
+      "closure_id",
+      "review_queue claim_revision_id and closure_id",
+      "claim_evidence_id where evidence identity derives from the revised claim identity"
+    ],
+    "non_derived_semantic_changes": []
+  },
+  "conclusion": "All 334 collection rows retain the same collection and semantic identity. Counts, resolved values, resolved states, open-world counts and review counts are unchanged. Six run digests move because an explicit empty exclusions carrier changes content identities. Skechers is byte-identical because its one open-world row is not a Material Contracts candidate."
+}

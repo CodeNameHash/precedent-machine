@@ -111,6 +111,10 @@ function validateAcceptedDiff({ acceptedDiff, resolverSourceDigest }) {
   if (acceptedDiff.summary?.replay_error_count !== 0 || acceptedDiff.replay_errors?.length !== 0) {
     throw new Error('ACCEPTED_DIFF_REPLAY_ERRORS');
   }
+  if (acceptedDiff.summary?.open_world_rise_family_count !== 0
+      || acceptedDiff.open_world_by_family?.some((row) => row.delta > 0)) {
+    throw new Error('ACCEPTED_DIFF_OPEN_WORLD_RISE');
+  }
   if (!Array.isArray(acceptedDiff.run_names)
       || acceptedDiff.summary?.run_count !== acceptedDiff.run_names.length) throw new Error('ACCEPTED_DIFF_RUN_SET_INVALID');
   return comparisonDigest;

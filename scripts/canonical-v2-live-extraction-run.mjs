@@ -1103,6 +1103,7 @@ function parseArgs(argv) {
     sameDealDefinedTermReceiptPaths: [],
     sameDealDefinedTermCalibrationPath: null,
     duplicateSuppressionReportOnly: false,
+    phaseBLeadProbe: false,
   };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -1138,6 +1139,7 @@ function parseArgs(argv) {
       case '--same-deal-defined-terms-receipt': out.sameDealDefinedTermReceiptPaths.push(argv[++i]); break;
       case '--same-deal-defined-terms-calibration': out.sameDealDefinedTermCalibrationPath = argv[++i]; break;
       case '--duplicate-suppression-report-only': out.duplicateSuppressionReportOnly = true; break;
+      case '--phase-b-lead-probe': out.phaseBLeadProbe = true; break;
       default: throw new Error(`unrecognised argument: ${arg}`);
     }
   }
@@ -1154,8 +1156,11 @@ function parseArgs(argv) {
   if (out.dryRun && (out.recordPath || out.replaySourceManifestPath)) {
     throw new Error('--dry-run never reaches a model, so it cannot --record or --replay');
   }
-  if (out.profileId !== 'TERRA_MEDIUM') {
-    throw new Error('LIVE_PROFILE_FORBIDDEN: extraction only permits --profile TERRA_MEDIUM. Sol is reserved for review and escalation.');
+  if (out.profileId !== 'TERRA_MEDIUM' && !(out.phaseBLeadProbe && out.profileId === 'SOL_MEDIUM')) {
+    throw new Error('LIVE_PROFILE_FORBIDDEN: extraction permits TERRA_MEDIUM, or SOL_MEDIUM only with --phase-b-lead-probe for the authorised report-only experiment.');
+  }
+  if (out.phaseBLeadProbe && out.profileId !== 'SOL_MEDIUM') {
+    throw new Error('PHASE_B_LEAD_PROBE_PROFILE_REQUIRED: --phase-b-lead-probe requires --profile SOL_MEDIUM.');
   }
   if (out.sectionRefs && out.sectionRefs.length === 0) throw new Error('--section-refs must name at least one section reference');
   if (Boolean(out.sameDealDefinedTermCalibrationPath) !== Boolean(out.sameDealDefinedTermReceiptPaths.length)) {
@@ -1234,6 +1239,7 @@ function resolveRunConfig(args) {
     sameDealDefinedTermReceiptPaths: Object.freeze([...args.sameDealDefinedTermReceiptPaths]),
     sameDealDefinedTermCalibrationPath: args.sameDealDefinedTermCalibrationPath || null,
     duplicateSuppressionMode: args.duplicateSuppressionReportOnly ? 'REPORT_ONLY' : 'OFF',
+    phaseBLeadProbe: args.phaseBLeadProbe,
   });
 }
 

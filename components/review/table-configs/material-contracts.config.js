@@ -287,6 +287,15 @@ function rowFromBucket(item, index, source, thresholds) {
   // the actual §3.13 clause lives in `.quotes[0]`.
   const evidence = (tagged && (Array.isArray(item.quotes) && item.quotes[0])) || (tagged && item.text) || textOf(source);
   const structuredThreshold = thresholdText((tagged && (item.threshold ?? item.qualifier)) ?? thresholds.get(code));
+  const criteria = tagged && Array.isArray(item.criteria) ? item.criteria : [];
+  const criterionThresholds = [...new Set(criteria.map((criterion) => {
+    const value = thresholdText(criterion?.threshold);
+    if (!value) return null;
+    const display = formatThresholdDisplay(value);
+    const cadence = String(criterion?.cadence_kind || '').toLowerCase().replace(/_/g, ' ');
+    return criteria.length > 1 && cadence ? `${display} (${cadence})` : display;
+  }).filter(Boolean))];
+  const scopeExclusions = tagged && Array.isArray(item.scope_exclusions) ? item.scope_exclusions : [];
   const meta = code && MATERIAL_CONTRACT_BUCKET_META[code];
   return {
     id: `material-contracts-${code || index}-${index}`,
@@ -294,8 +303,12 @@ function rowFromBucket(item, index, source, thresholds) {
     itemCode: code || null,
     featureKeys: ['materialContractsBuckets'],
     label,
-    threshold: resolveThreshold(structuredThreshold, evidence, textOf(source), meta),
+    threshold: criterionThresholds.length
+      ? criterionThresholds.join('; ')
+      : resolveThreshold(structuredThreshold, evidence, textOf(source), meta),
     evidence,
+    evidenceDetails: criteria.length ? [...new Set(criteria.map((criterion) => criterion.text))] : [evidence],
+    scopeExclusions,
     source,
     sourceCard: source,
     present: true,
@@ -397,8 +410,22 @@ function renderThreshold(row, ctx) {
 
 function renderEvidence(row, ctx) {
   const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
-  if (!EvidenceHoverSource || !row.evidence) return row.evidence;
-  return React.createElement(EvidenceHoverSource, { evidence: row.evidence, source: row.source, as: 'span' }, row.evidence);
+  const evidenceDetails = Array.isArray(row.evidenceDetails) && row.evidenceDetails.length
+    ? row.evidenceDetails
+    : [row.evidence].filter(Boolean);
+  const exclusionText = Array.isArray(row.scopeExclusions) && row.scopeExclusions.length
+    ? `Excludes: ${row.scopeExclusions.join(', ')}`
+    : null;
+  if (!EvidenceHoverSource) return [...evidenceDetails, exclusionText].filter(Boolean).join('\n');
+  return React.createElement(React.Fragment, null,
+    ...evidenceDetails.map((evidence, index) => React.createElement('div', { key: `evidence-${index}` },
+      React.createElement(EvidenceHoverSource, {
+        evidence,
+        source: row.source,
+        as: 'span',
+      }, evidence))),
+    exclusionText ? React.createElement('div', { key: 'scope-exclusions' }, exclusionText) : null,
+  );
 }
 
 // Footer strip (outside the table body, via config.renderFooter -- never a
