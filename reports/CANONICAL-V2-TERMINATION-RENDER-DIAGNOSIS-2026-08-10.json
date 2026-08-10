@@ -1,9 +1,9 @@
 {
   "schema_version": "CANONICAL_V2_TERMINATION_RENDER_DIAGNOSIS_SUMMARY/V1",
-  "diagnostic_code_commit": "3978f282e9cd0b1e67df89030131adcd759246ae",
+  "diagnostic_code_commit": "6a0efc83deb942f096fde52f17b55102dc574787",
   "counting_rule": "A resolved claim renders with content only when its claim_revision_id is in the native card selected by a present Review row. A deal projection error marks all resolved claims in that deal as not rendered.",
   "claimed_missing_row_count": 79,
-  "reproduced_missing_row_count": 49,
+  "reproduced_missing_row_count": 38,
   "claimed_count_reproduced": false,
   "closest_count_reconciliation": {
     "resolved_termination_right_grant_claims": 78,
@@ -16,24 +16,32 @@
     "review_queue_total": 115,
     "review_queue_resolved_overlap": 91,
     "review_queue_unresolved": 24,
-    "projected_governed_cards": 54,
-    "rendered_governed_rows_with_content": 32,
-    "resolved_claims_with_rendered_row_content": 42,
-    "resolved_claims_without_rendered_row_content": 49,
-    "projected_deferred_cards": 32,
-    "rendered_deferred_rows_with_content": 32,
+    "projected_governed_cards": 67,
+    "rendered_governed_rows_with_content": 39,
+    "resolved_claims_with_rendered_row_content": 53,
+    "resolved_claims_without_rendered_row_content": 38,
+    "projected_deferred_cards": 40,
+    "rendered_deferred_rows_with_content": 40,
     "duplicate_legal_fact_groups": 34,
-    "claims_in_duplicate_legal_fact_groups": 68
+    "claims_in_duplicate_legal_fact_groups": 68,
+    "paired_legal_fact_groups_contributing_to_row_loss": 31
   },
   "no_row_reasons": {
-    "PROJECTION_ABORTED_FOR_DEAL": 20,
+    "NO_TERMINATION_RIGHT_ROW_FOR_CODE": 1,
     "ROUTED_TO_NO_SHOP_SECTION": 3,
-    "ROW_SELECTS_ONE_CARD_FOR_CODE": 26
+    "ROW_SELECTS_ONE_CARD_FOR_CODE": 34
+  },
+  "row_selection_hidden_by_concept": {
+    "TERMR-LEGAL": 9,
+    "TERMR-MUTUAL": 6,
+    "TERMR-NOVOTE": 6,
+    "TERMR-OUTSIDE": 10,
+    "TERMR-RECOMMEND": 3
   },
   "resolved_items_by_definition": {
-    "TERMINATION_RIGHT_GRANT": { "total": 78, "renders_with_content": 35, "no_row": 43 },
-    "TERMINATION_OUTSIDE_DATE": { "total": 8, "renders_with_content": 3, "no_row": 5 },
-    "TERMINATION_CURE_PERIOD_DAYS": { "total": 5, "renders_with_content": 4, "no_row": 1 }
+    "TERMINATION_RIGHT_GRANT": { "total": 78, "renders_with_content": 44, "no_row": 34 },
+    "TERMINATION_OUTSIDE_DATE": { "total": 8, "renders_with_content": 4, "no_row": 4 },
+    "TERMINATION_CURE_PERIOD_DAYS": { "total": 5, "renders_with_content": 5, "no_row": 0 }
   },
   "duplicate_legal_fact_groups_by_concept": {
     "TERMR-BREACH": { "groups": 3, "claims": 6 },
@@ -45,9 +53,9 @@
   "open_world": {
     "total": 54,
     "projection_eligible": 40,
-    "rendered": 32,
+    "rendered": 40,
     "not_routed": 14,
-    "eligible_but_blocked_by_topbuild_projection_error": 8
+    "eligible_but_not_rendered": 0
   },
   "deals": [
     {
@@ -141,19 +149,18 @@
       "producer_commit": "7e933cb6d6f15474ec61d6df1633a7e68c0d65bc",
       "resolution_sha256": "f4cfe057087fb817a12c6a664339ea275b07222963719269d52b4c87a83f9370",
       "run_manifest_sha256": "baf4e1740652b8d1b693e5638bd3d09f2ebdb1b63f6ade846287654d3354827f",
-      "item_outcomes_sha256": "626db7c05c7b7d8708173fdefbb461534d645b58ac046da5177ad019a5881f9f",
+      "item_outcomes_sha256": "e68132198ea0d2947a8cb86362c1d57c3bb363ada6e6645ea3c46adceb74aeab",
       "attempted": 26,
       "resolved": 20,
       "open_world": 8,
       "review_total": 24,
       "review_unresolved": 4,
-      "rendered_rows_with_content": 0,
-      "resolved_claims_with_row_content": 0,
-      "resolved_claims_without_row_content": 20,
-      "rendered_deferred_rows": 0,
-      "projection_error": "canonical JSON does not support undefined",
-      "projection_error_claim_revision_id": "0259692458a71a8817779823b10936ebfce9beb047a6232d0a28113f7cc4f9d3",
-      "projection_error_concept_key": "TERMR-NOSOL-BREACH"
+      "rendered_rows_with_content": 7,
+      "resolved_claims_with_row_content": 11,
+      "resolved_claims_without_row_content": 9,
+      "rendered_deferred_rows": 8,
+      "unrendered_code": "TERMR-NOSOL-BREACH",
+      "unrendered_claim_revision_id": "0259692458a71a8817779823b10936ebfce9beb047a6232d0a28113f7cc4f9d3"
     }
   ]
 }

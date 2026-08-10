@@ -308,6 +308,27 @@ function aggregate(deals) {
     (sum, deal) => sum + deal.duplicate_claim_groups.reduce((dealSum, group) => dealSum + group.claim_revision_ids.length, 0),
     0,
   );
+  counts.row_selection_hidden_by_concept = Object.fromEntries(
+    [...new Set(resolvedItems
+      .filter((item) => item.no_row_reason === 'ROW_SELECTS_ONE_CARD_FOR_CODE')
+      .map((item) => item.concept_key))]
+      .sort()
+      .map((concept) => [
+        concept,
+        resolvedItems.filter((item) => (
+          item.no_row_reason === 'ROW_SELECTS_ONE_CARD_FOR_CODE' && item.concept_key === concept
+        )).length,
+      ]),
+  );
+  const rowSelectionHiddenIds = new Set(resolvedItems
+    .filter((item) => item.no_row_reason === 'ROW_SELECTS_ONE_CARD_FOR_CODE')
+    .map((item) => item.claim_revision_id));
+  counts.paired_legal_fact_groups_contributing_to_row_loss = deals.reduce(
+    (sum, deal) => sum + deal.duplicate_claim_groups.filter((group) => (
+      group.claim_revision_ids.some((id) => rowSelectionHiddenIds.has(id))
+    )).length,
+    0,
+  );
   return counts;
 }
 

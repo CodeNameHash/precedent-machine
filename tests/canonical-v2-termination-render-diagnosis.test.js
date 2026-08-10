@@ -47,7 +47,7 @@ test('diagnosis proves that one canonical row hides later cards with the same co
   assert.equal(report.resolved_items.find((item) => !item.renders_with_content).no_row_reason, 'ROW_SELECTS_ONE_CARD_FOR_CODE');
 });
 
-test('diagnosis isolates a projection-wide failure to the unsupported right code', async () => {
+test('diagnosis reports a projected no-shop breach card that has no Termination Rights row', async () => {
   const { diagnoseResolution } = await import('../scripts/audit/canonical-v2-termination-render-diagnosis.mjs');
   const report = await diagnoseResolution({
     resolution: resolution([
@@ -58,9 +58,15 @@ test('diagnosis isolates a projection-wide failure to the unsupported right code
     runId: 'test-run',
   });
 
-  assert.equal(report.projection_error.message, 'canonical JSON does not support undefined');
-  assert.deepEqual(report.projection_error_attribution.map((item) => item.concept_key), ['TERMR-NOSOL-BREACH']);
-  assert.equal(report.counts.resolved_claims_without_rendered_row_content, 2);
+  assert.equal(report.projection_error, null);
+  assert.deepEqual(report.projection_error_attribution, []);
+  assert.equal(report.counts.projected_governed_cards, 2);
+  assert.equal(report.counts.resolved_claims_with_rendered_row_content, 1);
+  assert.equal(report.counts.resolved_claims_without_rendered_row_content, 1);
+  assert.equal(
+    report.resolved_items.find((item) => item.concept_key === 'TERMR-NOSOL-BREACH').no_row_reason,
+    'NO_TERMINATION_RIGHT_ROW_FOR_CODE',
+  );
 });
 
 test('review totals separate resolved overlap from unresolved work', async () => {
