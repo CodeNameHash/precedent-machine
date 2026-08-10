@@ -1723,3 +1723,55 @@ determines **which covenant label it lands under and which party band it appears
 in**, and neither is visible from `ioc_category`. A defensible code can still
 surface a covenant under the wrong party — the exact defect
 `conditions.config.js`'s `bandAligned` guard exists to stop.
+
+
+### Third addendum, 2026-08-10: the representations join does not exist as recorded
+
+The addendum above states that limb claims and qualifier claims share a
+`subject_occurrence_id`, measured at 86 of 86 on the Metsera run. **That does not
+reproduce.** An independent mining pass across all 39 committed representations
+runs found **zero shared ids**, and they cannot collide by construction —
+`anthropic-provider.js` gives limbs `kind:'REPRESENTATION_INSTANCE'` and
+qualifiers `kind:'REPRESENTATION_QUALIFIER'`.
+
+A join does exist on `(section, party)` plus `governs_path ↔ limb_path`, reaching
+92.6% of limbs. It fills all three cells of the representations row **14.8% of
+the time**, and leaves **43.3% as a bare TERM-only checkbox**. No deal exceeds
+21%. All 536 TEMPORAL qualifiers carry no canonical value, so LOOKBACK renders
+raw text; 19 limbs get contradictory materiality codes because chapeau qualifiers
+broadcast to every limb.
+
+**Ben's original question — "should the limb issue resolution really help the
+%s?" — was more right than the correction I gave him.** 2Y-H's spec still changes
+as recorded (topic as routing key, not a claim family), but the value it unlocks
+is roughly a third of what the addendum implied, and the join is a build rather
+than a query.
+
+Recorded prominently because the failure is the one `CLAUDE.md` names: I accepted
+a reviewer's measurement, propagated it into two core documents, and did not
+verify it. The rule against exactly this was written the previous day.
+
+### And: the representation topic vocabulary already exists
+
+`lib/vocab/resolution/representation-topic-registry.js` holds **25 governed
+`REP_TOPIC_V1_*` codes** with 18 precedence pairs, 3 subject tie-breaks and a
+classifier; `contract-bundle.js` governs them as `REPRESENTATION_TOPIC_CODES_V1`
+with claim definition `REPRESENTATION_TOPIC_PRESENT`; a product projection
+exists; and `scripts/stage-2y-h-representation-topic-replay.mjs` has **already
+run it over all 623 rows** with committed output. I was about to design this list
+from scratch.
+
+**The registry classifies on the wrong field.** It regexes `raw_value`; the topic
+lives in `subject`. Of the 299 rows it failed to classify, **252 have a clean or
+precedence-resolvable topic in `subject`**. The dominant defect: `material
+adverse effect` is an anchor for `BUSINESS_CONDUCT_CHANGES` and wins 27 of its 33
+rows, because MAE sits in nearly every rep's exception clause — so it routes by
+drafting convention rather than by subject.
+
+**And the recall-floor source in the plan is wrong for representations.**
+`category-summary-features.js` has 182 rows across 15 categories and **zero
+REPS/REP-T/REP-B key**. The checklist that does cover reps is `lib/rubric.js` (50
+REP-T + 32 REP-B) via `lib/expected-sets.js`, whose header says it "exists only
+for reps". Against it: 39 of 50 REP-T rows have mined evidence, 11 do not (4
+excluded by design, 2 present but absorbed, 4 genuine zeros, 1 structural), and
+exactly one mined cluster has no rubric home.

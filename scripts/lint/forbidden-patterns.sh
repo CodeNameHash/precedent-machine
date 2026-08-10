@@ -231,6 +231,16 @@ function scopedFile(rel) {
 // trips the pattern against its own, correct, single definition. Exempt
 // only that pattern for that file; every other check still applies.
 const FILE_PATTERN_EXEMPTIONS = {
+  // Same class, one step further out. The Stage 2Y-N artefact is a RENDERING of
+  // real review rows -- its entire purpose is to show the text a lawyer would
+  // see -- so it necessarily reproduces product label strings, including
+  // taxonomy.js's own `LITIGATION_OBLIGATION.MANDATORY_DEFEND` label on a D&O
+  // row. That is the artefact working, not a mis-copied label. It is generated
+  // by scripts/stage-2y-rendered-rows-artefact.mjs and hand-editing it would be
+  // pointless, so the fingerprint is exempted for that one generated path.
+  // Every other check still applies to it.
+  'evidence/canonical-v2/stage-2y-n-rendered-rows.html': ['Must defend \\(incl\\. appeals/final judgment\\)'],
+  'evidence/canonical-v2/stage-2y-n-rendered-rows.json': ['Must defend \\(incl\\. appeals/final judgment\\)'],
   // TOOLTIP_MAX=600 is the bug-fingerprint for tooltip truncation on the
   // NEW (Mergertrace) review surface — item 8 of UI-FEEDBACK-R3 killed
   // tooltips there entirely. The constant legitimately survives in

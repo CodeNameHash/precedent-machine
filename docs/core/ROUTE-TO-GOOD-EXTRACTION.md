@@ -103,9 +103,43 @@ directly:
 **He is right: 623 of those would move the percentage ~23% and the product very
 little.**
 
-**But the qualifiers are not missing. They are one join away.** Verified on the
+> ### ⚠ CORRECTED 2026-08-10. The claim below does not reproduce, and Ben's
+> ### original instinct was more right than the correction to it.
+>
+> An independent mining pass measured the join across **all 39 committed
+> representations runs** and found **zero shared `subject_occurrence_id`s** —
+> including the exact Metsera run that has 86 limbs. They *cannot* collide:
+> `anthropic-provider.js` mints limb ids as
+> `{kind:'REPRESENTATION_INSTANCE', section, party, chapeau_quote}` and
+> qualifier ids as `{kind:'REPRESENTATION_QUALIFIER', section, party, side,
+> quote}`. Different `kind` discriminators.
+>
+> **A join does exist**, on `(section, party)` plus `governs_path ↔ limb_path`,
+> and it reaches **92.6% of limbs**. But it does not fill the row:
+>
+> | cell | filled | share |
+> |---|---:|---:|
+> | TERM | 609 | 97.8% |
+> | MATERIALITY | 203 | 32.6% |
+> | LOOKBACK | 233 | 37.4% |
+> | **all three** | **92** | **14.8%** |
+> | **TERM only — a bare checkbox** | **270** | **43.3%** |
+>
+> No deal exceeds 21% on all-three. All **536 TEMPORAL qualifiers are uncoded**
+> (zero canonical values), so LOOKBACK renders raw text. And **19 limbs receive
+> contradictory materiality codes** because CHAPEAU qualifiers broadcast to
+> every limb — Metsera §3.19 attaches 25 to each.
+>
+> **So the honest position is Ben's: 43% of these become presence checkboxes and
+> only 15% become the row a lawyer wants.** The join is a build, not a query,
+> and 14.8% caps what it pays out. I took the correction below on one reviewer's
+> assertion and wrote it into two core documents without measuring it. That was
+> the error this programme keeps making, committed by me, one day after writing
+> a rule against it.
+
+~~**But the qualifiers are not missing. They are one join away.** Verified on the
 Metsera representations run: **86 of 86 limb claims share a
-`subject_occurrence_id` with qualifier claims — 107 of them** — and those
+`subject_occurrence_id` with qualifier claims — 107 of them**~~ — and those
 qualifier claims carry exactly the cells the row needs:
 `MAT_MAE_QUALIFIED`, `MAT_ALL_MATERIAL`, accuracy standards, temporal qualifiers
 for the LOOKBACK column, each with an `attachment` naming its `limb_path`.
