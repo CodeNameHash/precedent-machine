@@ -98,8 +98,11 @@ function assertSourceStateUnchanged(initial, final) {
 }
 
 function validateAcceptedDiff({ acceptedDiff, resolverSourceDigest }) {
-  if (!acceptedDiff || acceptedDiff.schema_version !== 'STAGE_2Y_RESOLUTION_SET_DIFF/V1'
-      || acceptedDiff.phase !== 'fixed' || acceptedDiff.authority !== 'OFFLINE_REPLAY_COMPARISON_ONLY'
+  const recognisedSchema = (acceptedDiff?.schema_version === 'STAGE_2Y_RESOLUTION_SET_DIFF/V1'
+      && acceptedDiff?.phase === 'fixed')
+    || (acceptedDiff?.schema_version === 'STAGE_2Y_A_RESOLUTION_SET_DIFF/V1'
+      && acceptedDiff?.phase === 'PHASE_A_MATERIAL_CONTRACTS');
+  if (!recognisedSchema || acceptedDiff.authority !== 'OFFLINE_REPLAY_COMPARISON_ONLY'
       || acceptedDiff.publication_authorisation !== 'NONE') throw new Error('ACCEPTED_DIFF_INVALID');
   const { comparison_digest: comparisonDigest, ...body } = acceptedDiff;
   if (comparisonDigest !== hash(body)) throw new Error('ACCEPTED_DIFF_DIGEST_MISMATCH');
@@ -111,7 +114,8 @@ function validateAcceptedDiff({ acceptedDiff, resolverSourceDigest }) {
   if (acceptedDiff.summary?.replay_error_count !== 0 || acceptedDiff.replay_errors?.length !== 0) {
     throw new Error('ACCEPTED_DIFF_REPLAY_ERRORS');
   }
-  if (acceptedDiff.summary?.open_world_rise_family_count !== 0
+  if (!Array.isArray(acceptedDiff.open_world_by_family)
+      || acceptedDiff.summary?.open_world_rise_family_count !== 0
       || acceptedDiff.open_world_by_family?.some((row) => row.delta > 0)) {
     throw new Error('ACCEPTED_DIFF_OPEN_WORLD_RISE');
   }
@@ -234,6 +238,8 @@ async function writeAcceptedBaseline(acceptedDiffArgument) {
   const headCommit = assertCleanCommittedTree(initialSourceState);
   const acceptedDiff = json(acceptedDiffFile);
   const generationCommand = BASELINE_COMMAND(acceptedDiffPath);
+  const resolverSourceDigest = bytes(resolve(ROOT, 'lib/canonical-v2/native-producer/candidate-resolution.js'));
+  validateAcceptedDiff({ acceptedDiff, resolverSourceDigest });
   const replay = await build({ generation_command: generationCommand });
   const baseline = buildAcceptedBaseline({
     replay,
@@ -242,7 +248,7 @@ async function writeAcceptedBaseline(acceptedDiffArgument) {
     accepted_diff_sha256: bytes(acceptedDiffFile),
     head_commit: headCommit,
     replay_harness_sha256: bytes(REPLAY_HARNESS),
-    resolver_source_digest: bytes(resolve(ROOT, 'lib/canonical-v2/native-producer/candidate-resolution.js')),
+    resolver_source_digest: resolverSourceDigest,
   });
   const verifiedReplay = await build({ baseline, generation_command: generationCommand });
   assertBaselineAcceptance(verifiedReplay, baseline);

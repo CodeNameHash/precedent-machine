@@ -66,6 +66,7 @@ function acceptedDiff(overrides = {}) {
       moved_previously_resolved_claim_count: 0,
       newly_resolved_claim_count: 1,
       replay_error_count: 0,
+      open_world_rise_family_count: 0,
     },
     moved_previously_resolved_claims: [],
     newly_resolved_claims: [{}],
@@ -118,6 +119,24 @@ test('the audited writer derives a complete baseline from accepted semantic move
   assert.equal(baseline.accepted_resolution_diff.comparison_digest, acceptedDiff().comparison_digest);
 });
 
+test('the audited writer accepts the Phase A resolution diff shape', async () => {
+  const { buildAcceptedBaseline } = await import(path.resolve(__dirname, '..', 'scripts/stage-2y-registry-substrate-replay.mjs'));
+  const phaseA = acceptedDiff({
+    schema_version: 'STAGE_2Y_A_RESOLUTION_SET_DIFF/V1',
+    phase: 'PHASE_A_MATERIAL_CONTRACTS',
+  });
+  const baseline = buildAcceptedBaseline({
+    replay: baselineSourceReplay(),
+    accepted_diff: phaseA,
+    accepted_diff_path: 'evidence/canonical-v2/stage-2y-a-resolution-set-diff.json',
+    accepted_diff_sha256: 'sha256:phase-a-diff-file',
+    head_commit: 'a'.repeat(40),
+    replay_harness_sha256: 'sha256:harness',
+    resolver_source_digest: 'sha256:resolver',
+  });
+  assert.equal(baseline.accepted_resolution_diff.comparison_digest, phaseA.comparison_digest);
+});
+
 test('the audited writer rejects unaccepted movement, bad evidence identity and replay errors', async () => {
   const { buildAcceptedBaseline } = await import(path.resolve(__dirname, '..', 'scripts/stage-2y-registry-substrate-replay.mjs'));
   const args = {
@@ -135,6 +154,12 @@ test('the audited writer rejects unaccepted movement, bad evidence identity and 
     open_world_by_family: [{ family: 'ONE', before: 1, after: 2, delta: 1 }],
   });
   assert.throws(() => buildAcceptedBaseline({ ...args, accepted_diff: openWorldRise }), /ACCEPTED_DIFF_OPEN_WORLD_RISE/);
+  const { comparison_digest: _digest, open_world_by_family: _openWorld, ...missingOpenWorldBody } = acceptedDiff();
+  const missingOpenWorldEvidence = {
+    ...missingOpenWorldBody,
+    comparison_digest: `sha256:${sha256Hex(Buffer.from(canonicalJson(missingOpenWorldBody), 'utf8'))}`,
+  };
+  assert.throws(() => buildAcceptedBaseline({ ...args, accepted_diff: missingOpenWorldEvidence }), /ACCEPTED_DIFF_OPEN_WORLD_RISE/);
   const erroredReplay = baselineSourceReplay({
     excluded_runs: [{ name: 'two', reason: 'INPUT_REJECTED' }],
     runs: [baselineSourceReplay().runs[0], { name: 'two', outcome: 'EXCLUDED', reason: 'INPUT_REJECTED' }],
