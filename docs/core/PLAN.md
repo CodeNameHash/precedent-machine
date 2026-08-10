@@ -2715,6 +2715,193 @@ this blocks 152 occurrences, so silence here is not free.*
 
 ---
 
+## Stage 2Y — the execution order. DECIDED 2026-08-09, every ruling is in.
+
+All seven rulings are answered (`DECISIONS.md` entry 17) and the anchor sitting
+has been run and scored. **This section is the spine: what happens, in what
+order, and what must be true before the next thing is funded.** The lettered
+steps below are the work; this is the sequence they run in.
+
+**Read the gates as hard.** Each phase names what must be true before the next
+is funded, and a **kill criterion** — the result that means stop and re-plan
+rather than push on. The first attempt at this stage built thirteen mechanisms
+and activated one; the gates exist so that cannot recur without someone
+noticing at the phase boundary.
+
+---
+
+### Phase 0 — Make the instruments trustworthy. Nothing after this is measurable until these land.
+
+Three tracks, no dependencies between them, all three run in parallel.
+
+**0.1 Regenerate the anchor packet** *(ruling 1: REGENERATE)*
+
+The sitting proved exactly what needs to change and, just as importantly, what
+does not.
+
+- **Add a context window per card** — governing sentence plus chapeau,
+  byte-bound like the excerpt. This is the same governing-context lookup 2Y-A
+  needs, so it is not throwaway work.
+- **State the question on the card, per error class.** `SPAN` returned 0 of 16
+  answered because the class has no criterion: "is this span correct?" cannot be
+  answered without saying correct *against what*. **Redesign `SPAN` as a
+  structured question — too narrow / too wide / wrong location / correct — or
+  drop it from the anchor.** It is not a well-formed binary and no amount of
+  context fixes that.
+- **Raise seeds to ≥12 per hard class.** Four cannot measure a detection rate.
+- **Do not touch `MATERIALITY_CODE`.** It scored 4 of 4 detection and 0 of 16
+  false alarms. It is the control that proves the rubric and the tool are sound;
+  changing it destroys the only clean baseline the programme has.
+
+*Gate:* a re-sit in which **every class has ≥90% of cards answered** and
+party-attribution detection reaches the materiality baseline.
+*Kill criterion:* if party detection stays below ~75% with full context, the
+error class is not human-judgeable from a card at all, and the gate needs a
+different instrument — not a bigger packet.
+
+**0.2 Root-cause the three regressions** *(ruling 3: FIX_FIRST)*
+
+- `CATEGORY_UNCORROBORATED` **4/8 → 1/8** — three `SETTLE` and one `CHARTER`
+  dropped to open-world. Confirmed as compatibility regressions, not the known
+  unreachable-category gap.
+- **Three Proxy claims absent from producer output** — Concho §6.6 board
+  recommendation, Concho §6.6 record date, Red Hat §5.01(c) supplemental
+  disclosure. Not held, not open-world: gone.
+- **35 claims into open-world** across Financing and Proxy, reported as "flat"
+  and "−1" because only the resolved line was shown.
+
+*Gate:* each has a named cause and either a fix or a written accepted reason,
+then the batch re-runs. It was 46 model calls, so re-running is cheap.
+*Kill criterion:* if the category regressions trace to prompt V5 and cannot be
+separated from its Closing Conditions gain, V5 does not ship as one artefact —
+it splits per family or it is rebuilt.
+
+**0.3 Split the gate in code** *(ruling 2: SPLIT)*
+
+Two distinct dispositions where there is now one: **RESOLVE** — a claim enters
+the review queue, live, no calibration required — and **PUBLISH** — unattended,
+gated on calibration authority. Everything already built and parked is a
+RESOLVE-class change and none of it puts an unchecked claim in front of anyone.
+
+*Gate:* a test proving a loosened check can move a claim to resolved while
+`REQUIRE_PUBLISHED` stays false.
+
+---
+
+### Phase 1 — Turn on what is already built, into the queue only.
+
+This is the first real number this stage will produce, and it needs no human
+calibration at all.
+
+| step | measured cohort | state today |
+|---|---|---|
+| 2Y-B corroboration defers on empty derivation | 91 knowledge-standard + the dead ternary | not landed |
+| 2Y-D agreement-defined terms | works where evidence exists | landed, blocked on 18 KDT records |
+| 2Y-F lexical matcher | **57 safe** (55 genuine gaps stay held, 52 ambiguous) | report-only |
+| 2Y-G duplicate suppression | **59 would suppress**, 25 retained | report-only, zero suppression |
+| 2Y-I qualifier dispatch | **104 safe**, 23 conflicts to review, 336 held | `ENFORCE` throws by design |
+
+*Gate, and it is four-state per family, never one rate:* **no family's open-world
+count rises**; **no previously-resolved claim regresses**; and resolved rises by
+at least the measured cohorts less a stated, explained shortfall. The 55 genuine
+coverage gaps 2Y-F found stay held and are carried forward as findings — they
+are the safety net's true positives and must not be quietly loosened away.
+*Kill criterion:* if activating the measured-safe cohorts moves resolved by
+materially less than 271, the report-only measurements are not predictive and
+every remaining cohort estimate is suspect.
+
+---
+
+### Phase 2 — One family, end to end, published. *(ruling 4: VERTICAL)*
+
+**Closing Conditions**, because it is the only family with a measured win and
+its prompt work is already done. This phase proves the entire chain — recover,
+calibrate, authorise, publish — on one family before a second is attempted.
+
+Requires the **immutable release-receipt adapter**, which does not exist:
+`REQUIRE_PUBLISHED` returns false unconditionally until it does.
+
+**The size of the acceptance sample follows from ruling 7 and it is large.**
+Under 1% overall with no class exempt means demonstrating a rate below 1% at 95%
+confidence, which by the rule of three takes **roughly 300 consecutive correct
+published claims** — more once any error appears. No family publishes on a
+sample of thirty. Budget the adjudication accordingly: three adjudicators over
+~300 claims is the real cost of this phase, and it is larger than the extraction.
+
+*Gate:* Closing Conditions publishes unattended; every claim's disposition is
+reproducible from stored evidence; the measured false-publication rate is under
+1%; and the four-state table for the family is unchanged or better.
+*Kill criterion:* if CC cannot clear 1% after the Phase 0 fixes, no family can
+yet, and the honest response is to say so rather than to loosen the number.
+
+---
+
+### Phase 3 — The two mechanisms that carry the corpus.
+
+Neither is built. Both are where the mass is, and Phase 2 must have proven the
+chain before either is funded.
+
+- **2Y-A host reattachment.** The census finds structural host context for **575
+  of 756** fragment exclusions but performs no binding —
+  `candidate_host_binding_performed: false`. **ITEM-009 is the acceptance test**:
+  its quote lacks the terminating party while "by Parent" sits in the governing
+  chapeau of the same §8.1, and it is the card that regressed the blind floor's
+  `TERMINATING_PARTY` stratum from 7/8 to 6/8.
+- **2Y-H topic classification.** Registry and V43 binding exist; 324 classify,
+  299 do not, no resolver classifier is connected, no topic claim is minted.
+
+*Gate:* ITEM-009 resolves, and the 762 open-world fragments are **re-derived by
+actual chapeau detachment** rather than by the surface heuristic that produced
+the figure — reporting the corrected number whichever way it moves.
+*Kill criterion:* if reattachment recovers materially fewer than the 575 the
+census predicts, mechanism 1 is smaller than the diagnosis claimed and the
+stage's ordering was wrong.
+
+---
+
+### Phase 4 — Roll out by measured cohort, and re-test the floor.
+
+- **2Y-J promotions at three deals** *(ruling 5)* — the 21 concepts and the 15
+  held cards, each adjudicated against its quotes, each reversible.
+- **Recall floors, conditional on deal features** *(ruling 6)* — never flat, or
+  they fail a correct deal. Guaranty on an unfinanced deal returns zero and is
+  right.
+- **The 18 missing KDT records** — SkyWater 13, TopBuild 5. One contained live
+  `KEY_DEFINED_TERMS` recording, after which integration replays at zero model
+  cost. Projected `NO_DEFINITION` 21 → 3, `RESOLVED` 70 → 88.
+- **2Y-C migration acceptance** — eleven runs still show semantic-digest
+  differences across Interim Operating and Termination Fee. Counts and
+  reason-distributions are unchanged so metadata drift is likely, **but likely is
+  not proved and the gate was correctly not waived.**
+- **2Y-M ladder and the blind floor**, re-scored **per stratum** against the
+  twelve strata of eight. Never a bare total: the current "24 beats 21" depends
+  on fallback quote matching, and under strict matching `PARTY_UNRESOLVED` falls
+  from 5/8 to 1/8.
+
+---
+
+### What would tell us this stage is failing
+
+Written now, while it is cheap to be honest, and checked at every phase gate.
+
+1. **Open-world rises anywhere.** It is the count of content the system saw and
+   could not place, and it scales worst of all — 385 per agreement is 385,000 at
+   a thousand. A step that raises it has moved the problem, not solved it.
+2. **A measured cohort comes in far under its register estimate again.** 2Y-I
+   was planned at 463 and measures 104. One instance is a bad estimate; a second
+   means the register's recoverability column is not evidence and every ranking
+   built on it must be redone.
+3. **The adjudicators cannot be calibrated.** Zero human false alarms across 54
+   decisions is encouraging and says nothing about AI adjudicators, which is what
+   the gate actually runs on. If three adjudicators cannot clear the anchor,
+   Phase 2 has no gate and unattended publication is not available at any rung.
+4. **The blind floor stays failed per stratum after Phase 3.** Two regressions
+   are live now — `CATEGORY` 4/8 → 1/8 and `TERMINATING_PARTY` 7/8 → 6/8. If
+   they survive the phase built to fix them, the diagnosis is wrong somewhere it
+   matters.
+
+---
+
 ## Step 2Y-0. Find the cutoff by sweeping it, not by choosing it
 
 **Ben's ruling, 2026-08-09**, replacing what I proposed. I offered a rule —
@@ -2967,6 +3154,24 @@ each would have produced a confident wrong answer.
    Until both are fixed, the sitting produces reliable verdicts on 16 cards and
    guesses on 64, and the calibration authority built on it would be worth less
    than it appears.
+
+   **MEASURED 2026-08-09, and the prediction held exactly.** Ben ran the sitting:
+   54 decided, 24 `CANT_JUDGE`, scored at
+   `evidence/blind-review/2026-08-09/stage-2y-0-human-anchor-scoring.json`.
+   `MATERIALITY_CODE` — the one class whose card is self-contained — returned
+   **4 of 4 seeds detected and 0 of 16 false alarms**. `PARTY_ATTRIBUTION`
+   returned **1 of 4**, and the three missed are precisely the cards whose
+   excerpt names no party. The one caught carried *"Parent shall be entitled to
+   direct any Proceedings"* against a proposed `Company` — judgeable because it
+   was self-contained. **The instrument is sound; the packet is not.**
+
+   **And one finding neither I nor Fable anticipated: `SPAN` is a missing-
+   question problem, not a missing-context problem.** 0 of 16 answered, and the
+   reviewer's note is *"I wasn't sure what you wanted."* "Is this span correct?"
+   has no answer without a criterion — too narrow, too wide, wrong location.
+   Adding context would not have helped. **`SPAN` must be redesigned as a
+   structured question or dropped from the anchor**, and every other class's
+   question must be stated on the card rather than assumed.
 1. **The anchor set must contain deliberately wrong claims.** As specified it
    could not validate the thing the gate depends on. 60–100 claims across ~20
    families × 5 error classes gives cells of nought to two, and criterion 3

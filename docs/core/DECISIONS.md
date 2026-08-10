@@ -1584,3 +1584,73 @@ Pattern narrowed to Merger Sub *compliance* content.
 **Enforcement of primary multi-match refusal** still waits until held
 collisions are zero after these fixes (or only residual HOLD pairs remain that
 are not specificity-resolved).
+
+---
+
+## 17. Stage 2Y: seven rulings and the calibration result — DECIDED 2026-08-09
+
+Ben ran the 80-card anchor sitting and answered every open ruling in the same
+pass. Export and scoring are committed at
+`evidence/blind-review/2026-08-09/stage-2y-0-human-anchor-scoring.json`.
+
+### The rulings
+
+| # | question | ruling |
+|---|---|---|
+| 1 | Sit with the packet as built, or fix it first | **REGENERATE.** Fix the packet, then sit once |
+| 2 | May resolver loosenings land live into the review queue with publication still gated | **SPLIT.** Yes — resolving is not publishing |
+| 3 | What happens to prompt V5 and the three families it touched | **FIX_FIRST.** Root-cause all three regressions before anything activates |
+| 4 | What gets built next | **VERTICAL.** One family end to end, then replicate |
+| 5 | Open-world promotion threshold | **THREE deals**, revisit at fifty |
+| 6 | Per-family recall floor | **YES, conditional on deal features** |
+| 7 | Acceptable false-publication rate for an unattended claim | **Under 1% overall, no class exempt** |
+
+**Ruling 7 is stricter than the option I recommended and it has a consequence
+worth stating.** I offered zero-tolerance on party and materiality with ~2%
+elsewhere; Ben took a single 1% number with no exemptions. That is simpler to
+hold, and it means a party-attribution error is *permitted* up to 1% rather than
+banned — at a thousand agreements, still a meaningful number of reversed
+covenants. It also sets the size of every acceptance sample: demonstrating a
+rate below 1% with 95% confidence needs **roughly 300 consecutive correct
+claims** (the rule of three), or a larger sample once any error appears. No
+family publishes on a sample of thirty.
+
+### What the sitting measured
+
+54 decided, 24 `CANT_JUDGE`, 2 unanswered. Not a submittable ledger — a
+non-empty ledger must cover every card — but it is a complete result about the
+**instrument**, which is what it was for.
+
+| class | decided | can't judge | seeds | detected | false alarms |
+|---|---|---|---|---|---|
+| MATERIALITY_CODE | 16 | 0 | 4 | **4** | **0** |
+| PARTY_ATTRIBUTION | 7 | 9 | 4 | **1** | 0 |
+| SPAN | 0 | 15 | 0 | — | 0 |
+| TOPIC_BUCKET | 15 | 0 | 0 | — | 0 |
+| OTHER | 16 | 0 | 0 | — | 0 |
+
+**Three findings, all load-bearing.**
+
+1. **The instrument works where the card is well formed.** 4 of 4 seeds caught
+   on `MATERIALITY_CODE`, and **zero false alarms across all 54 decisions** —
+   Ben called ERROR on exactly five cards and all five were planted. The rubric
+   and the tool are sound.
+2. **The packet defect is now measured rather than asserted.** Party detection
+   falls from 100% to 25%, and the three misses are exactly the cards whose
+   excerpt names no party: *"in all material respects"*, *"each material
+   partnership, joint venture or limited liabilit…"*. The one caught, card 34,
+   carried *"Parent shall be entitled to direct any Proceedings"* against a
+   proposed `Company` — self-contained, so judgeable. Ben's own words: *"you
+   were missing the intro language so I didn't know what the limb was attached
+   to."*
+3. **`SPAN` is a worse failure than context, and a different one.** 15 of 16
+   unjudgeable, zero answered, and Ben's note is *"I wasn't sure what you
+   wanted"* — the class has **no stated question**. "Is this span correct?" is
+   unanswerable without saying correct against what: too narrow, too wide, wrong
+   location. `SPAN` is not a well-formed error class in its present shape and
+   must be redesigned or dropped, not merely given context.
+
+**And one thing this does not settle.** Zero human false alarms says nothing
+about AI adjudicators, which is what the gate actually runs on. Fable's concern
+that zero-tolerance plus adjudicator noise fails every large rung stands
+untested until the three adjudicators are scored.

@@ -1,0 +1,76 @@
+{
+ "schema": "STAGE_2Y_HUMAN_ANCHOR_SCORING/V1",
+ "scored_at": "2026-08-09",
+ "reviewer_id": "ben",
+ "machine_packet_id": "a7c7d55c3bfaac28faafd9d7553acc7f1f31db704a4fbe41762f1daabf73a47c",
+ "status": "PARTIAL — 54 of 80 decided, 24 CANT_JUDGE, 2 unanswered. NOT a submittable ledger; a non-empty ledger must cover every card.",
+ "headline": {
+  "seeded_total": 8,
+  "seeded_detected": 5,
+  "seeded_unjudgeable": 3,
+  "false_alarms": 0,
+  "false_alarm_note": "Ben called ERROR on exactly 5 cards. All 5 were seeded. Zero non-seeded cards were called wrong across 54 decisions.",
+  "materiality_code": "4 of 4 seeds detected, 0 false alarms, 16 of 16 decided. Perfect on the only class whose card is self-contained.",
+  "party_attribution": "1 of 4 seeds detected. The 3 missed are exactly the cards whose excerpt names no party at all. 9 of 16 unjudgeable.",
+  "span": "15 of 16 unjudgeable. Zero seeds in this class. Reviewer note: the QUESTION was undefined, not merely the context."
+ },
+ "by_error_class": {
+  "MATERIALITY_CODE": {
+   "cards": 16,
+   "decided": 16,
+   "cant_judge": 0,
+   "called_error": 4,
+   "seeds": 4,
+   "seeds_detected": 4,
+   "seeds_cant_judge": 0,
+   "false_alarms": 0
+  },
+  "OTHER": {
+   "cards": 16,
+   "decided": 16,
+   "cant_judge": 0,
+   "called_error": 0,
+   "seeds": 0,
+   "seeds_detected": 0,
+   "seeds_cant_judge": 0,
+   "false_alarms": 0
+  },
+  "PARTY_ATTRIBUTION": {
+   "cards": 16,
+   "decided": 7,
+   "cant_judge": 9,
+   "called_error": 1,
+   "seeds": 4,
+   "seeds_detected": 1,
+   "seeds_cant_judge": 3,
+   "false_alarms": 0
+  },
+  "SPAN": {
+   "cards": 16,
+   "decided": 0,
+   "cant_judge": 15,
+   "called_error": 0,
+   "seeds": 0,
+   "seeds_detected": 0,
+   "seeds_cant_judge": 0,
+   "false_alarms": 0
+  },
+  "TOPIC_BUCKET": {
+   "cards": 16,
+   "decided": 15,
+   "cant_judge": 0,
+   "called_error": 0,
+   "seeds": 0,
+   "seeds_detected": 0,
+   "seeds_cant_judge": 0,
+   "false_alarms": 0
+  }
+ },
+ "reviewer_note": "For the proposals that were just proposed spans I was not sure what you wanted. For the ones re: which party you were missing the intro language so I did not know what the limb was attached to.",
+ "conclusions": [
+  "The instrument works where the card is well formed: 4/4 detection and 0/16 false alarms on MATERIALITY_CODE.",
+  "The packet defect predicted in PLAN.md 2Y-0 amendment 0 is now MEASURED, not asserted: party-attribution detection collapses from 100% to 25% precisely where the excerpt carries no party.",
+  "SPAN is a distinct and worse failure: not a missing-context problem but a missing-question problem. 0 of 16 answered. The class has no stated criterion, so it cannot be scored at all in its current form.",
+  "Zero false alarms across 54 decisions materially weakens the concern that zero-tolerance criteria would fail every rung on adjudicator noise -- for a HUMAN adjudicator. It says nothing yet about AI adjudicators."
+ ]
+}
