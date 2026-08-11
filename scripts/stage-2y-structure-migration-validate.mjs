@@ -4,12 +4,20 @@
 
 import { existsSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { resolve } from 'node:path';
+import { dirname, relative, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
 const { listRegisteredSectionFamilies } = require(
   '../lib/canonical-v2/native-producer/producer-prompt-registry',
 );
+const {
+  canonicalJson,
+  contentId,
+  sha256Hex,
+} = require('../lib/canonical-v2/canonical-bytes');
+
+const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 const RECEIPT_SCHEMA = 'STAGE_2Y_STRUCTURE_MIGRATION_PACKET_RECEIPT/V1';
 const STAGES = new Set(['M0', 'M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7', 'M8', 'M9']);
@@ -23,6 +31,39 @@ const ZERO_FIELDS = Object.freeze([
   'release_receipts_created',
   'current_selector_changes',
   'serving_changes',
+]);
+const M0_RECEIPT_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m0-control-freeze.json';
+const M1_OUTPUT_ROOT =
+  'evidence/canonical-v2/stage-2y-structure-migration/prototype/m1';
+const M1_SOL_REVIEW_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/reviews/stage-2y-structure-m1-sol-technical-review.json';
+const M1_SOL_REVIEW_SCHEMA = 'STAGE_2Y_STRUCTURE_SOL_TECHNICAL_REVIEW/V1';
+const M1_OUTPUT_SET_DOMAIN = 'STAGE_2Y_STRUCTURE_M1_FINAL_OUTPUT_SET/V1';
+const M1_UNSIGNED_DECISION_DOMAIN = 'STAGE_2Y_STRUCTURE_M1_UNSIGNED_DECISION/V1';
+const M1_CHECKS = Object.freeze([
+  'PROTOTYPE_INTERNAL_ASSERTIONS',
+  'PROTOTYPE_OUTPUT_SCHEMA',
+  'STAGE_2Y_STRUCTURE_PROTOTYPE_TEST',
+  'STRUCTURE_AND_INHERITANCE_GATE',
+  'TERMINATION_INHERITANCE_ADDITION',
+  'SOL_TECHNICAL_REVIEW',
+]);
+const M1_OUTPUT_SCHEMAS = Object.freeze({
+  'agreement-index.json': 'STAGE_2Y_STRUCTURE_PROTOTYPE_INDEX/V1',
+  'byte-ownership.json': 'STAGE_2Y_STRUCTURE_BYTE_OWNERSHIP/V1',
+  'node-aliases.json': 'STAGE_2Y_STRUCTURE_NODE_ALIASES/V1',
+  'structure-alternatives.json': 'STAGE_2Y_STRUCTURE_ALTERNATIVES/V1',
+  'reference-edges.json': 'STAGE_2Y_STRUCTURE_REFERENCE_EDGES/V1',
+  'context-facts.json': 'STAGE_2Y_STRUCTURE_CONTEXT_FACTS/V1',
+  'current-semantic-mapping.json': 'STAGE_2Y_STRUCTURE_SEMANTIC_MAPPING/V1',
+  'source-to-row-diff.json': 'STAGE_2Y_STRUCTURE_SOURCE_TO_ROW_DIFF/V1',
+  'decision.json': 'STAGE_2Y_STRUCTURE_PROTOTYPE_DECISION/V1',
+});
+const M1_REVIEW_CHECKS = Object.freeze([
+  'STAGE_2Y_STRUCTURE_PROTOTYPE_TEST',
+  'STRUCTURE_AND_INHERITANCE_GATE',
+  'TERMINATION_INHERITANCE_ADDITION',
 ]);
 
 function fail(message) {
@@ -42,6 +83,157 @@ function requireString(value, field) {
 
 function requireArray(value, field) {
   if (!Array.isArray(value)) fail(`${field} must be an array`);
+}
+
+function repositoryFile(repositoryPath, field) {
+  requireString(repositoryPath, field);
+  const absolutePath = resolve(REPO_ROOT, repositoryPath);
+  const localPath = relative(REPO_ROOT, absolutePath);
+  if (!localPath || localPath.startsWith('..')) fail(`${field} is outside the repository`);
+  if (!existsSync(absolutePath)) fail(`${field} does not exist: ${repositoryPath}`);
+  return absolutePath;
+}
+
+function readBoundJson(binding, field) {
+  if (!binding || typeof binding !== 'object' || Array.isArray(binding)) {
+    fail(`${field} must be an object`);
+  }
+  requireString(binding.path, `${field}.path`);
+  requireString(binding.schema_version, `${field}.schema_version`);
+  if (!Number.isInteger(binding.byte_length) || binding.byte_length <= 0) {
+    fail(`${field}.byte_length must be a positive integer`);
+  }
+  if (!/^[0-9a-f]{64}$/.test(binding.sha256 || '')) {
+    fail(`${field}.sha256 is not sha256`);
+  }
+  const absolutePath = repositoryFile(binding.path, `${field}.path`);
+  const bytes = readFileSync(absolutePath);
+  if (bytes.length !== binding.byte_length || sha256Hex(bytes) !== binding.sha256) {
+    fail(`${field} does not match its bound repository file`);
+  }
+  let value;
+  try {
+    value = JSON.parse(bytes.toString('utf8'));
+  } catch (error) {
+    fail(`${field} is not valid JSON: ${error.message}`);
+  }
+  if (value?.schema_version !== binding.schema_version) {
+    fail(`${field}.schema_version does not match the bound file`);
+  }
+  return value;
+}
+
+function orderedM1Bindings(value, field) {
+  requireArray(value, field);
+  const names = Object.keys(M1_OUTPUT_SCHEMAS);
+  if (value.length !== names.length) fail(`${field} must contain exactly nine outputs`);
+  return value.map((binding, index) => {
+    const name = names[index];
+    if (binding?.name !== name) fail(`${field}[${index}].name must be ${name}`);
+    const expectedPath = `${M1_OUTPUT_ROOT}/${name}`;
+    if (binding.path !== expectedPath) fail(`${field}[${index}].path must be ${expectedPath}`);
+    if (binding.schema_version !== M1_OUTPUT_SCHEMAS[name]) {
+      fail(`${field}[${index}].schema_version drift`);
+    }
+    readBoundJson(binding, `${field}[${index}]`);
+    return {
+      name: binding.name,
+      path: binding.path,
+      schema_version: binding.schema_version,
+      byte_length: binding.byte_length,
+      sha256: binding.sha256,
+    };
+  });
+}
+
+function unsignedDecisionDigest(decision) {
+  const { technical_review: ignored, ...unsigned } = decision;
+  return contentId(M1_UNSIGNED_DECISION_DOMAIN, {
+    ...unsigned,
+    lifecycle_state: 'REVIEW_PENDING_DRAFT',
+  });
+}
+
+function validatePassedM1(receipt) {
+  if (receipt.lifecycle_state !== 'SEALED') fail('PASS M1 lifecycle_state must be SEALED');
+
+  const suppliedChecks = receipt.focused_checks.map((check) => check.check);
+  if (suppliedChecks.length !== M1_CHECKS.length
+    || new Set(suppliedChecks).size !== M1_CHECKS.length
+    || M1_CHECKS.some((name) => !suppliedChecks.includes(name))) {
+    fail('PASS M1 focused_checks must contain the exact six approved checks');
+  }
+  if (receipt.focused_checks.some((check) => check.result !== 'PASS')) {
+    fail('PASS M1 focused_checks must all be PASS');
+  }
+
+  const m0ReceiptBytes = readFileSync(repositoryFile(M0_RECEIPT_PATH, 'M0 receipt'));
+  if (receipt.input_digests.m0_receipt !== sha256Hex(m0ReceiptBytes)) {
+    fail('PASS M1 input_digests.m0_receipt does not bind the M0 receipt');
+  }
+
+  const outputBindings = orderedM1Bindings(receipt.output_bindings, 'output_bindings');
+  const outputSetDigest = contentId(M1_OUTPUT_SET_DOMAIN, outputBindings);
+  if (receipt.output_set_digest !== outputSetDigest) {
+    fail('PASS M1 output_set_digest does not bind the ordered nine outputs');
+  }
+
+  const decisionBinding = outputBindings.find((binding) => binding.name === 'decision.json');
+  const decision = readBoundJson(decisionBinding, 'decision output binding');
+  const decisionUnsignedDigest = unsignedDecisionDigest(decision);
+  if (decision.lifecycle_state !== 'SEALED'
+    || decision.proposed_decision !== 'INCREMENTAL_RESTRUCTURE'
+    || decision.technical_review?.status !== 'SIGNED_APPROVED'
+    || decision.technical_review?.reviewer?.role !== 'SOL'
+    || typeof decision.technical_review?.reviewer?.identity !== 'string'
+    || decision.technical_review.reviewer.identity.length === 0
+    || decision.technical_review?.review_evidence_path !== M1_SOL_REVIEW_PATH
+    || decision.technical_review?.unsigned_decision_payload_digest !== decisionUnsignedDigest
+    || decision.m2_authorised !== false
+    || decision.publication_authorisation !== 'NONE') {
+    fail('PASS M1 decision is not the sealed signed incremental-restructure decision');
+  }
+
+  const reviewBinding = receipt.technical_review_binding;
+  if (reviewBinding?.path !== M1_SOL_REVIEW_PATH
+    || reviewBinding?.schema_version !== M1_SOL_REVIEW_SCHEMA) {
+    fail('PASS M1 technical_review_binding path or schema drift');
+  }
+  const review = readBoundJson(reviewBinding, 'technical_review_binding');
+  const { review_id: ignoredReviewId, ...reviewPayload } = review;
+  if (review.review_id !== contentId(M1_SOL_REVIEW_SCHEMA, reviewPayload)
+    || review.lifecycle_state !== 'SEALED'
+    || review.stage !== 'M1'
+    || review.packet_id !== receipt.packet_id
+    || review.base_commit !== receipt.base_commit
+    || review.reviewer?.role !== 'SOL'
+    || typeof review.reviewer?.identity !== 'string'
+    || review.reviewer.identity.length === 0
+    || review.status !== 'APPROVED'
+    || review.verdict !== 'APPROVED'
+    || review.technical_decision !== 'INCREMENTAL_RESTRUCTURE'
+    || review.unsigned_decision_payload_digest !== decisionUnsignedDigest
+    || canonicalJson(review.reviewer) !== canonicalJson(decision.technical_review.reviewer)
+    || !Array.isArray(review.exceptions)
+    || review.exceptions.length !== 0) {
+    fail('PASS M1 Sol review evidence is not approved');
+  }
+  const reviewChecks = review.focused_checks || [];
+  if (reviewChecks.length !== M1_REVIEW_CHECKS.length
+    || reviewChecks.some((check, index) =>
+      check?.check !== M1_REVIEW_CHECKS[index] || check.result !== 'PASS')) {
+    fail('PASS M1 Sol review evidence does not bind the three approved gates');
+  }
+  const reviewedBindings = orderedM1Bindings(
+    review.output_bindings,
+    'technical review output_bindings',
+  );
+  if (canonicalJson(reviewedBindings) !== canonicalJson(outputBindings)) {
+    fail('PASS M1 Sol review evidence does not bind the receipt output set');
+  }
+  if (review.output_set_digest !== outputSetDigest) {
+    fail('PASS M1 Sol review evidence output_set_digest drift');
+  }
 }
 
 function validate(receipt) {
@@ -126,6 +318,7 @@ function validate(receipt) {
   if (!['PASS', 'STOPPED', 'ESCALATED'].includes(receipt.status)) {
     fail('status must be PASS, STOPPED or ESCALATED');
   }
+  if (receipt.stage === 'M1' && receipt.status === 'PASS') validatePassedM1(receipt);
   return Object.freeze({
     schema_version: RECEIPT_SCHEMA,
     packet_id: receipt.packet_id,
