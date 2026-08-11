@@ -1,0 +1,304 @@
+{
+  "schema_version": "STAGE_2Y_STRUCTURE_M3_BOUNDED_SOL_GATE/V1",
+  "gate_review_id": "a461674182520ac65e6d88dcfb313e55f550c6664fed74d8f98667a93fd7341a",
+  "stage": "M3",
+  "gate": "TOPBUILD_6_2_BOUNDED_CONTEXT_COMPILATION",
+  "lifecycle_state": "SEALED",
+  "status": "APPROVED",
+  "verdict": "PASS",
+  "technical_decision": "BOUNDED_CONTEXT_COMPILATION_CONTRACT_ACCEPTED",
+  "checkpoint_commit": "d6c2bce0f4f0673035090df621078e2950dd2b07",
+  "reviewer": {
+    "role": "SOL",
+    "identity": "SOL:stage-2y-m3-bounded-contract-freeze-independent",
+    "independent_of_implementation": true,
+    "file_edits": 0,
+    "test_reruns": 0
+  },
+  "checkpoint_bindings": {
+    "authority": {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m3-authority.json",
+      "byte_length": 9166,
+      "sha256": "5098cea068a688c0988ca0b36cdc280e2231a3e425af6527ed5d9b77843e7a04",
+      "schema_version": "STAGE_2Y_M3_AUTHORITY/V1",
+      "authority_digest": "86d1cb6df25476b811f37fa6eb8c2c58a5923cfff964745cd53b6ea513b2833b"
+    },
+    "semantic_policy": {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/control/semantic-policy.json",
+      "byte_length": 13232,
+      "sha256": "6f72599799f6e50f50342f6db84e752bb4df03ae8b341298fa2f3a623ce26fd9",
+      "schema_version": "STAGE_2Y_SEMANTIC_POLICY/V1",
+      "policy_version": 1,
+      "policy_digest": "61059146df8f847b344d4480a4a60863c075367dd9ffa683dcaf513ca180733c"
+    },
+    "context_compilation_module": {
+      "path": "lib/canonical-v2/context-compilation.js",
+      "byte_length": 29092,
+      "sha256": "9cafb5bf954e48a31738733f02b45e8be9134085b6a3421ae4dcefdceadbbcdf"
+    },
+    "focused_test": {
+      "path": "tests/canonical-v2-context-compilation.test.js",
+      "byte_length": 18140,
+      "sha256": "966b547d8c55ada88de60551a5f15d8938bf17dbe0bd24fca14a0e98b39f781a"
+    }
+  },
+  "focused_check": {
+    "command": "node --test --test-name-pattern=\"TopBuild 6.2\" tests/canonical-v2-context-compilation.test.js",
+    "run_count": 1,
+    "result": "PASS",
+    "tests": 8,
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "bounded_acceptance": {
+    "exact_chapeau_facts": 6,
+    "target_limbs": 4,
+    "inherited_context_facts": 24,
+    "explicit_scope_edges": 24,
+    "false_local_evidence_facts": 0,
+    "sibling_qualification_leaks": 0,
+    "duplicate_primary_ids": 0,
+    "dangling_id_references": 0,
+    "repeated_compilation_byte_identical": true,
+    "unknown_focus_fails_closed": true,
+    "duplicate_focus_fails_closed": true,
+    "wrong_kind_focus_fails_closed": true,
+    "out_of_order_focus_fails_closed": true,
+    "changed_index_fails_closed": true,
+    "changed_policy_fails_closed": true,
+    "private_interface_unchanged": true
+  },
+  "frozen_bounded_contract": {
+    "schema_version": "STAGE_2Y_STRUCTURE_M3_BOUNDED_CONTRACT/V1",
+    "public_interface": "compileContext(focusNodeIds, AgreementIndex, semanticPolicy)",
+    "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+    "record_schema_versions": {
+      "compilation": "CONTEXT_COMPILATION/V1",
+      "frame": "CONTEXT_FRAME/V1",
+      "fact": "CONTEXT_FACT/V1",
+      "scope_edge": "CONTEXT_SCOPE_EDGE/V1"
+    },
+    "context_role_order": [
+      "SUBJECT",
+      "ACTOR",
+      "CAPACITY",
+      "MODAL",
+      "VERB",
+      "OBJECT",
+      "NEGATION",
+      "CONNECTIVE",
+      "TIME",
+      "CONDITION",
+      "SCOPE"
+    ],
+    "context_states": [
+      "DIRECT",
+      "INHERITED",
+      "OVERRIDDEN",
+      "AMBIGUOUS",
+      "UNRESOLVED"
+    ],
+    "scope_edge_states": [
+      "RESOLVED",
+      "AMBIGUOUS",
+      "UNRESOLVED"
+    ],
+    "bounded_required_scope_edge_kind": "CHAPEAU_GOVERNS_LIMB",
+    "bounded_required_scope_proof_kind": "AUTHORED_CHAPEAU_CONTIGUOUS_LIMB_SIBLINGS",
+    "fail_closed_error_codes": [
+      "CONTEXT_COMPILATION_INDEX_SCHEMA_MISMATCH",
+      "CONTEXT_COMPILATION_INDEX_DIGEST_MISMATCH",
+      "CONTEXT_COMPILATION_POLICY_SCHEMA_MISMATCH",
+      "CONTEXT_COMPILATION_POLICY_DIGEST_MISMATCH",
+      "CONTEXT_COMPILATION_FOCUS_UNKNOWN",
+      "CONTEXT_COMPILATION_FOCUS_DUPLICATE",
+      "CONTEXT_COMPILATION_FOCUS_KIND_MISMATCH",
+      "CONTEXT_COMPILATION_FOCUS_ORDER_MISMATCH",
+      "CONTEXT_COMPILATION_EXPERIMENT_BINDING_MISMATCH",
+      "CONTEXT_COMPILATION_SOURCE_PROOF_MISMATCH"
+    ],
+    "output_fields": {
+      "context_compilation": [
+        "schema_version",
+        "context_compilation_id",
+        "agreement_index_binding",
+        "semantic_policy_binding",
+        "focus_node_occurrence_ids",
+        "frames_by_focus_node_id",
+        "context_facts",
+        "scope_edges",
+        "ambiguities",
+        "residuals",
+        "reference_edges",
+        "definition_edges",
+        "semantic_relationships",
+        "diagnostics"
+      ],
+      "agreement_index_binding": [
+        "agreement_index_id",
+        "agreement_index_sha256",
+        "canonical_text_sha256",
+        "structural_policy_digest"
+      ],
+      "semantic_policy_binding": [
+        "schema_version",
+        "policy_version",
+        "policy_digest"
+      ],
+      "context_frame": [
+        "schema_version",
+        "context_frame_id",
+        "focus_node_occurrence_id",
+        "focus_node_kind",
+        "focus_node_span",
+        "context_fact_ids",
+        "scope_edge_ids",
+        "ambiguity_ids",
+        "residual_ids"
+      ],
+      "context_fact": [
+        "schema_version",
+        "context_fact_id",
+        "role",
+        "value",
+        "state",
+        "source_node_occurrence_id",
+        "source_span",
+        "target_node_occurrence_id",
+        "scope_edge_id",
+        "rule_id",
+        "rule_version",
+        "overridden_fact_ids",
+        "alternative_fact_ids"
+      ],
+      "scope_edge": [
+        "schema_version",
+        "scope_edge_id",
+        "edge_kind",
+        "state",
+        "governing_role",
+        "source_node_occurrence_id",
+        "governing_source_span",
+        "target_node_occurrence_id",
+        "proof",
+        "rule_id",
+        "rule_version"
+      ],
+      "scope_edge_proof": [
+        "proof_kind",
+        "shared_parent_node_occurrence_id",
+        "source_node_kind",
+        "target_node_kind",
+        "source_extent_span",
+        "target_extent_span",
+        "connective_span",
+        "ordered_target_node_occurrence_ids"
+      ],
+      "span": [
+        "coordinate_system",
+        "start_byte",
+        "end_byte",
+        "text_sha256"
+      ]
+    },
+    "identity": {
+      "implementation": "lib/canonical-v2/canonical-bytes.js#contentId",
+      "compilation_domain": "CONTEXT_COMPILATION/V1",
+      "frame_domain": "CONTEXT_FRAME/V1",
+      "fact_domain": "CONTEXT_FACT/V1",
+      "scope_edge_domain": "CONTEXT_SCOPE_EDGE/V1",
+      "identity_payload_rule": "COMPLETE_RECORD_EXCLUDING_ITS_OWN_ID",
+      "agreement_index_sha256_rule": "SHA256_OF_CANONICAL_JSON_PLUS_SINGLE_LF",
+      "span_text_sha256_rule": "SHA256_OF_EXACT_UTF8_HALF_OPEN_SLICE",
+      "value_rule": "EXACT_SOURCE_TEXT_WITH_NO_NORMALISATION_OR_TRIMMING",
+      "duplicate_primary_ids_allowed": false,
+      "dangling_id_references_allowed": false
+    },
+    "ordering": {
+      "focus_node_occurrence_ids": "SOURCE_EXTENT_START_THEN_END_THEN_NODE_OCCURRENCE_ID",
+      "context_facts": "FOCUS_SOURCE_ORDER_THEN_CONTEXT_ROLE_ORDER_THEN_SOURCE_START_THEN_END_THEN_ID",
+      "scope_edges": "TARGET_SOURCE_ORDER_THEN_CONTEXT_ROLE_ORDER_THEN_GOVERNING_SOURCE_START_THEN_END_THEN_ID",
+      "context_frame_context_fact_ids": "FILTERED_GLOBAL_CONTEXT_FACT_ORDER",
+      "context_frame_scope_edge_ids": "FILTERED_GLOBAL_SCOPE_EDGE_ORDER",
+      "frames_by_focus_node_id": "KEYS_INSERTED_IN_FOCUS_SOURCE_ORDER",
+      "empty_arrays": "PRESENT_AND_EMPTY",
+      "deterministic_serialisation": "CANONICAL_JSON"
+    },
+    "inheritance": {
+      "inherited_state": "INHERITED",
+      "source_is_governing_authored_node": true,
+      "target_is_focus_node": true,
+      "false_local_evidence_forbidden": true,
+      "one_scope_edge_per_inherited_fact": true,
+      "sibling_inheritance_requires_explicit_source_proof": true,
+      "ambiguous_or_unresolved_values_must_not_propagate": true,
+      "qualification_scope_requires_its_own_rule": true
+    }
+  },
+  "frozen_bounded_contract_digest": "ca1e382b38433b5f3037b5682583b89199b77f5e6f0236b905868be54426417a",
+  "frozen_contract_unchanged": true,
+  "current_state_bindings": {
+    "baseline_manifest": {
+      "path": "evidence/canonical-v2/stage-2y-cd-baseline-manifest.json",
+      "byte_length": 68041,
+      "sha256": "634064b5a8f6c223edd1c3c2f4faa9ae0ab7be181a6b3d0ef086354eb37b7fe9"
+    },
+    "current_baseline": {
+      "path": "evidence/canonical-v2/stage-2y-cd-baseline.json",
+      "byte_length": 293218,
+      "sha256": "892d258699ab933051e135d66c9a515fadd7983f6d2e11e2e7d4804871424dcb"
+    },
+    "current_measurement": {
+      "path": "evidence/canonical-v2/stage-2y-cd-report.json",
+      "byte_length": 1222512,
+      "sha256": "63a6bd818edc1e77780261c021d3b9b33ec65ef483deee4ee1bc18b9582df4f3"
+    },
+    "current_rendered_rows": {
+      "path": "evidence/canonical-v2/stage-2y-n-rendered-rows.json",
+      "byte_length": 327082,
+      "sha256": "537b1f132f4fcfa7df50cc9536f68fc615a81c7334929b4cbb55fd70f2f884d4"
+    }
+  },
+  "zero_effects": {
+    "model_calls": 0,
+    "phase_b_route_calls": 0,
+    "network_calls": 0,
+    "current_extractor_changes": 0,
+    "current_selector_changes": 0,
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "database_writes": 0,
+    "product_writes": 0,
+    "serving_changes": 0,
+    "publication_authorisation": "NONE",
+    "m0_m1_m2_sealed_artefact_mutations": 0,
+    "structure_selector": "current",
+    "context_selector": "current",
+    "analysis_selector": "current",
+    "projection_selector": "current",
+    "phase_b_status": "DEFERRED_LOCKED"
+  },
+  "full_run_contracts_not_yet_frozen": [
+    "FULL_FOCUS_NODE_DERIVATION",
+    "DIRECT_OVERRIDDEN_AMBIGUOUS_AND_UNRESOLVED_RULES",
+    "REMAINING_CONTEXT_ROLE_EXTRACTION_RULES",
+    "GENERAL_ANCESTOR_QUALIFICATION_EXCEPTION_TRAILING_SCOPE_AND_NESTED_LIMB_RULES",
+    "REFERENCE_EDGE_SCHEMA_IDENTITY_AND_RESOLUTION_RULES",
+    "DEFINITION_EDGE_SCHEMA_IDENTITY_AND_RESOLUTION_RULES",
+    "PARTY_TOPOLOGY_ENTITY_RELATIONSHIP_AND_TEMPORAL_SCOPE_RULES",
+    "AMBIGUITY_RESIDUAL_RELATIONSHIP_AND_DIAGNOSTIC_MEMBER_CONTRACTS",
+    "SEVEN_AGREEMENT_DEPENDENCY_RUNNER_OUTPUT_AND_RECEIPT_CONTRACTS",
+    "PREDECESSOR_RECEIPT_TRUST_ROOT_VALIDATION_SEAM"
+  ],
+  "full_run_authority": {
+    "seven_agreement_runner_authorised": false,
+    "seven_agreement_outputs_authorised": false,
+    "m3_final_receipt_authorised": false,
+    "required_next_gate": "SOL_FREEZES_COMPLETE_FULL_RUN_CONTRACT_AND_AUTHORITY_REVISION"
+  },
+  "ben_legal_escalation_required": false,
+  "exceptions": []
+}
