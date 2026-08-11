@@ -1,8 +1,9 @@
 # Decisions from Ben
 
-As at 2026-08-11. Every item below, numbered and smaller alike, has now been
-decided. Each entry keeps the original ask, why it mattered, and the options
-considered, then records the decision and the reasoning behind it.
+As at 2026-08-11. Numbered decisions and items marked `DECIDED` or `RULED` are
+binding. Each such entry keeps the original ask, why it mattered, and the
+options considered, then records the decision and the reasoning behind it.
+Items under an `Open rulings` heading remain open.
 
 Cross-references are to stages and steps in `docs/core/PLAN.md`. They
 previously pointed at `ROADMAP.md`, which is archived; the mapping used is
@@ -805,12 +806,9 @@ now decided, 2026-08-05.
   Made Available and Ordinary Course (`DEF-MADE-AVAILABLE`,
   `DEF-ORDINARY-COURSE`) both at rank 66, General Covenants at rank 95, the
   highest of any tier. Pinned by
-  `tests/canonical-v2-approved-family-materiality-ranks.test.js` (re-run for
-  this audit, passes). One live contradiction worth flagging:
-  `docs/codex-program/OPERATING-RULES.md`, in its "Ben's legal and taxonomy
-  rulings" section, still states these four "remain at rank 99 because no
-  exact rank was ever approved. Do not invent one." That line is stale; the
-  pinned test above is the current, enforced answer and should govern.
+  `tests/canonical-v2-approved-family-materiality-ranks.test.js`. The former
+  rank-99 statement in `docs/core/OPERATING-RULES.md` was removed during the
+  2026-08-11 reconciliation. The pinned values above govern.
 
 - **The four no-shop concepts, all approved:** Cease Existing Discussions,
   Change of Recommendation, Enforcement of Standstills, and Standstill
@@ -1799,8 +1797,8 @@ Every authored block has a stable node where the source permits one. This
 includes a separate unnumbered sentence. Marker tokens, section-reference
 occurrences and definition-use occurrences are exact span annotations, not
 children in the containment tree. Page numbers and conversion artefacts are
-recorded in a separate byte ledger. A heading remains distinguishable from an
-outline marker.
+records in `source_artefacts`. The byte ledger accounts for their spans by
+owner reference. A heading remains distinguishable from an outline marker.
 
 The Red Hat 3.01 parentage question is resolved. The first roman `(i)` is
 `3.01(h)(i)` under `(h) Contracts`, with `(A)` to `(M)` beneath it. The later
@@ -1946,6 +1944,20 @@ model route, serving, publication or external access. M0 and M1 remain sealed.
 M1 proved the source/context seam and an identity-preserving migration path. It
 did not prove complete-proposition semantics.
 
+Ben then clarified that M2 implementation and canonical-document
+reconciliation were both authorised tasks. A post-seal source-to-tree audit
+showed that inline authored lists were missing across the corpus. Ben's source
+rule makes those lists authored source blocks, not optional semantic fragments.
+This authorised one bounded generic M2 amendment. A Concho-only exception was
+not acceptable. The amendment reused the existing deterministic parser rules
+behind the private shadow index, rebuilt all seven indexes, recorded every
+candidate sequence as admitted, non-structural or typed unresolved, obtained a
+fresh independent review and sealed a corrective receipt. The first local seal
+attempt was superseded before delivery. Commit
+`9a0bb6479f56ba4d17ad134fad7da27b75ba31d2` and receipt SHA-256
+`dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585`
+are the current M2 closure. This amendment did not authorise M3.
+
 The planned M10 state is `PRIVATE_INTERNAL_EXTRACTOR_ACTIVE`. It means that
 the M9-certified extractor is selected for named private internal consumers,
 rollback is proven, product-data writes remain zero, publication authority is
@@ -1956,11 +1968,31 @@ separate stages in `PLAN.md`.
 
 ### Open rulings
 
-Ben still needs to decide:
+#### Legal and legal-review rulings
 
-1. the exact size and composition of the modest risk-weighted blind sample
+1. each family's and provision subtype's required semantic roles before a
+   claim can resolve;
+2. the exact size and composition of the modest risk-weighted blind sample
    required before private internal activation;
-2. each family's required display roles and approved compact omissions as its
-   calibration pack is prepared; and
-3. any new legal ambiguity that remains after source structure, provenance and
-   complete roles are shown in plain English.
+3. each family's required display roles and approved compact omissions as its
+   calibration pack is prepared;
+4. each proposed no-output disposition.
+
+#### Authority and operational decisions
+
+5. the exact M3 work order and, later, each subsequent implementation-stage
+   work order, including governed deal memberships and SEC source-read scope
+   for M7 generalisation;
+6. any later Phase B or other model run;
+7. the exact M10 selector and named private internal consumers, if M9 passes;
+8. later authority for hosted staging and production database operations;
+9. whether the live site requires login and whether the exposed service key
+   has been rotated before external activation;
+10. the exact serving, publication and production-cutover authority packet;
+11. whether legacy V1 quotation spans require backfill before V1 retirement;
+12. and whether any of the possible 128 legacy database rows may be deleted, or
+    must instead remain with an alias or retention record.
+
+Any new legal ambiguity that remains after source structure, provenance and
+complete roles are shown in plain English also requires a narrow ruling on the
+full source provision.

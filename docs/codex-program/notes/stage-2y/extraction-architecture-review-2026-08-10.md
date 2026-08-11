@@ -1,9 +1,24 @@
 # Stage 2Y extraction architecture review
 
-Date: 2026-08-10
-Review commit: `853b9e83b1bf067eabb5b2c86a10918e47a7d7e6`
-Review branch: `codex/extraction-architecture-review-2026-08-10`
-Authority: architecture recommendation only. No production implementation, model call, pin-manifest change, baseline change, product write, publication change, pull request or merge.
+Date: 2026-08-10, amended 2026-08-11
+Start-state commit: `853b9e83b1bf067eabb5b2c86a10918e47a7d7e6`
+Initial report commit: `7ba2b9d4612cf95be5d0da4b06a56773e33d2f4e`
+Original review branch: `codex/extraction-architecture-review-2026-08-10`
+Amendment branch: `codex/stage-2y-structure-m2`
+M2 implementation commit: `9a0bb6479f56ba4d17ad134fad7da27b75ba31d2`
+Original authority: architecture recommendation only. Later authority permitted
+the bounded shadow-only M2 implementation and canonical-document
+reconciliation. It did not permit a production extractor change, model call,
+pin-manifest change, baseline change, product write, serving or publication
+change, pull request or merge.
+
+> **Decision 18 amendment, 2026-08-11.** Sections 3 to 8 remain the evidence
+> record reviewed on 2026-08-10. This amendment changes no measurement or
+> historical finding. Decision 18 updates the target contracts, acceptance
+> tests, technical work-order specification and Ben-ruling status in sections
+> 11, 16, 18 and 20.
+> Where older recommendation text conflicts with this amendment, the amendment
+> controls. M0 to M2 are now complete. M3 remains unauthorised.
 
 ## 1. Executive decision
 
@@ -16,14 +31,25 @@ The target is one source index built by fixed rules, plus graphs. A **source ind
 The recommended module exposes three main entry points:
 
 ```text
-indexAgreement(exactSource) -> AgreementIndex
-analyseAgreement(AgreementIndex, task) -> AgreementAnalysis
-projectAgreement(AgreementAnalysis, view) -> AgreementProjection
+indexAgreement(exactSource, structuralPolicy) -> AgreementIndex
+analyseAgreement(AgreementIndex, analysisTask) -> AgreementAnalysis
+projectAgreement(AgreementAnalysis, viewPolicy) -> AgreementProjection
 ```
 
 This design does not authorise publication. Publication remains separate and requires a later approval.
 
-A **shadow prototype** is an isolated comparison tool. It cannot alter current extracted statements, product data, the extractor in use or publication. The first implementation experiment should use this prototype on five real sets of source text: Concho 6.9(a), TopBuild 6.2, Red Hat 3.01 and 3.02 as one set, Metsera 7.04, and Concho 4.10 with its Annex A knowledge definition. It should extend the strongest useful parts of the current article-and-section parser and context code before creating a new module. It must prove a complete map in which every selected source byte belongs to one written block, separate sentence blocks, correct passage of a list introduction's actor and verb to its list items with an exact source record, cross-reference and defined-term links, links from extracted statements to source blocks, and every source detail lost before the comparison row. If the existing modules can meet these technical requirements by adding behaviour without changing their responsibilities, the programme should change the decision to **targeted repair**, which means correcting behaviour within the current module responsibilities. The evidence makes that result unlikely.
+A **shadow prototype** is an isolated comparison tool. It cannot alter current
+extracted statements, product data, the extractor in use or publication. At the
+time of this review, the first implementation experiment was to test five real
+source sets: Concho 6.9(a), TopBuild 6.2, Red Hat 3.01 and 3.02 as one set,
+Metsera 7.04, and Concho 4.10 with its Annex A knowledge definition. M1 and M2
+have now completed that structural falsification work. They extended the
+useful deterministic parser code and proved that a shared source index is
+required. The proof keeps authored blocks in a containment tree and accounts
+for every byte in a separate byte ledger. Parent and child spans may overlap.
+Page or conversion bytes belong to source artefacts, not invented legal
+blocks. This evidence confirms incremental restructuring. It does not support
+targeted repair of the selected legacy extractor.
 
 ## 2. Terms and representations
 
@@ -33,12 +59,17 @@ This report uses these terms:
 - **Canonical text** is the UTF-8 text accepted by the conversion process. Its byte positions are the extraction coordinate system.
 - **Deterministic** means that the same input and rule versions always produce the same output.
 - **Digest** is a fixed-length value calculated from content. The system uses it to detect a changed file or result.
-- **Source node** is one stable written block. Examples are an article, section, sentence, chapeau, limb, proviso or heading.
+- **Authored block** is one block written by the drafter. Examples are an
+  article, annex, section, sentence, chapeau, limb, proviso or heading.
+- **Source node** is the stable record for one authored block.
 - **Chapeau** is introductory text that governs a following list. For example, “Parent shall” can govern limbs `(i)` to `(iv)`.
 - **Limb** is one item in a written list. A **sub-limb** is a list item inside another limb.
 - **Proviso** is a qualification introduced by language such as “provided that”.
 - **Evidence span** is an exact half-open byte interval, from an included start byte to an excluded end byte.
 - **Claim** is a structured statement of legal meaning extracted from source text.
+- **Complete proposition** is a claim that contains every semantic role
+  required by its versioned family rule. A role is one necessary part of the
+  meaning, such as actor, restriction, object, threshold or qualification.
 - **Claim vocabulary** is the approved list of claim types and values that the system can resolve.
 - **Provision family** is a category of agreement terms handled together, such as Termination or Employee Matters.
 - **Resolution** is the deterministic decision that a proposed claim is resolved, remains for review, or is open-world under the current approved extraction rules.
@@ -250,7 +281,12 @@ Do not add all four numbers. They are not four disjoint parts of one recovery to
 
 The correct statement is: **1,241 of 1,526 resolved claim revisions, or 81.3%, pass the current route, card, exact-row-lineage and weak content checks.** This is not 1,241 distinct physical rows. There are 981 distinct full-output signatures in that result. It is not source recall, legal completeness, human acceptance or publication.
 
-The 109 failures split into 100 MAE Definition claims, 7 Antitrust or Regulatory claims and 2 Employee Matters claims. The saved aggregate proves only that the match count was not one. PLAN diagnoses grouped feature claims, but the aggregate does not retain enough member data to prove grouping as the cause in every case.
+The 109 failures split into 100 MAE Definition claims, 7 Antitrust or
+Regulatory claims and 2 Employee Matters claims. The saved aggregate proves
+only that the match count was not one. It does not retain member identifiers,
+feature keys or observed match counts, so it does not prove grouping as the
+cause. M6 must reproduce all 109 at member level before assigning a cause or
+changing output.
 
 The one routed no-row case is corroborated as TopBuild section 6.3, `TERMINATION_RIGHT_GRANT`, `TERMR-NOSOL-BREACH`, claim revision `0259692458a71a8817779823b10936ebfce9beb047a6232d0a28113f7cc4f9d3`. The aggregate retains the error count, not the failed claim identifier.
 
@@ -344,6 +380,26 @@ The Parent claim is `3ccd0cd6650e6d4b94b65e8cb16edd70c659bd9e07de1b5242d810a0dcb
 
 **Source.** Section 6.3 grants the Company a termination right. Subsection `(a)` contains alternative nested grounds, including `(i)` with sub-limbs `(A)` and `(B)`, and `(ii)` with sub-limbs `(A)` and `(B)`. The relevant ground concerns a material breach by Parent or its Representatives of section 4.4. It is subject to cure and notice timing before the Outside Date.
 
+The separate settled proviso-scope example is the full 6.3(b) block. The
+governing chapeau is bytes `[365813, 365953)`:
+
+> This Agreement may be terminated and the Mergers may be abandoned at any time prior to the Titanium Merger Effective Time by the Company if:
+
+The complete 6.3(b) node is
+`9f447b48d4ba8907edbf078abd719875bb6e9b47b63bbdd459a4f36f951d275b`,
+bytes `[366615, 367588)`, in the sealed TopBuild M2 index:
+`evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb.agreement-index.json`.
+For readable display, the quote omits three invisible U+200E directional marks
+before the section references. The sealed node and span are authoritative.
+
+> (b) there has been a breach or inaccuracy of any representation, warranty, covenant or agreement made by Parent, Titanium Merger Sub or Forward Merger Sub in this Agreement, or any such representation or warranty shall have become untrue after the date of this Agreement, such that (i) such breach or inaccuracy or failure to be true would result in the failure to satisfy one or more of the conditions set forth in Sections 5.3(a)(i) or 5.3(a)(ii) and (ii) such breach or inaccuracy or failure to be true is not curable by the Outside Date or, if capable of being cured by the Outside Date, shall not have been cured prior to the earlier of (x) thirty (30) days after written notice thereof is given by the Company to Parent or (y) the Outside Date (provided that the Company is not then in breach of any representation, warranty, covenant or agreement under this Agreement such that Parent would have the right to terminate this Agreement under Section 6.4(b)).
+
+The qualification node is
+`da4732d59d811adfc7cda5ab4ce1fe4d40fe0b4bef9e3a5c8a29b094708d52e0`,
+bytes `[367372, 367587)`. Ben's ruling is that it conditions the complete
+6.3(b) termination right. Its written location beneath `(y)` does not limit its
+semantic scope to `(y)`.
+
 | Step | Result |
 |---|---|
 | Structural parent | Section 6.3 under Article VI. The current direct children are 6.3(a) and 6.3(b). |
@@ -381,6 +437,19 @@ The marker-path audit found 66 marker paths, 3 descriptive paths and no mixed pa
 ### 6.5 Red Hat section 5.07, separate bare sentences and trailing exception
 
 **Source.** The section contains an initial press-release sentence. A separate reciprocal sentence requires consultation, review and an opportunity to comment before a public announcement, subject to Law and stock-listing exceptions. A proviso concerns statements that are substantially similar to earlier approved statements.
+
+The full section node is
+`631099a608f1824b31839d66fbe93ca77465d041e327c11d08d36c4fc76bb090`,
+bytes `[197134, 198597)`, in the sealed Red Hat M2 index:
+`evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a.agreement-index.json`.
+
+> Section 5.07 Public Announcements. The parties agree that the initial press release to be issued with respect to the transactions contemplated by this Agreement shall be in the form heretofore agreed to by the parties. Thereafter, the Company, on the one hand, and Parent and Sub, on the other hand, shall, to the extent at all reasonably practicable, consult with the other parties to this Agreement before making, and give such other parties to this Agreement a reasonable opportunity to review and comment upon, any press release or other public statements with respect to this Agreement, the Merger and the other transactions contemplated by this Agreement, and shall not issue any such press release or make any such public statement prior to such reasonably practicable consultation, except as may be required by applicable Law, court process or by obligations pursuant to any listing agreement with any national securities exchange or national securities quotation system; provided that the foregoing shall not apply to any press release or public statement so long as the statements contained therein concerning this Agreement, the Merger and the other transactions contemplated by this Agreement are substantially similar to previous releases or statements made by the applicable party with respect to which such party has complied with the provisions of this sentence and would not otherwise require the other party to make additional public disclosure
+
+The complete second operative block is `[197353, 198596)`. The qualification
+node is `42a47173ff9ec87207abdda6167430f1f9668ad99a20d97746c1b6961d58316a`,
+bytes `[198114, 198596)`. Ben's ruling is that the substantially-similar proviso
+governs every operative duty before it in the second block. It does not govern
+the initial-release sentence.
 
 | Step | Result |
 |---|---|
@@ -478,6 +547,21 @@ Evidence: `evidence/canonical-v2/stage-2y-d-defined-term-replay.json`, ledger ro
 
 **Source.** The section has two independent unnumbered sentences. The second gives Parent participation and consultation rights in Transaction Litigation. It ends with a proviso that restricts the Company's ability to stop defending, consent to judgment or settle without Parent's written consent, which may not be unreasonably withheld, conditioned or delayed.
 
+The full section node is
+`8a7edf9909a731e67073c585e5d2fed139bf3601a8a4423c37563fb7ea06c02f`,
+bytes `[242010, 243106)`, in the sealed Concho M2 index:
+`evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116.agreement-index.json`.
+
+> 6.11 Transaction Litigation. In the event any Proceeding by any Governmental Entity or other Person is commenced or, to the knowledge of the Company or Parent, as applicable, threatened, that questions the validity or legality of the Transactions or seeks damages in connection therewith, including stockholder litigation (“Transaction Litigation”), the Company or Parent, as applicable, shall promptly notify the other Party of such Transaction Litigation and shall keep the other Party reasonably informed with respect to the status thereof. The Company shall give Parent a reasonable opportunity to participate in the defense or settlement of any Transaction Litigation and shall consult regularly with Parent in good faith and give reasonable consideration to Parent’s advice with respect to such Transaction Litigation; provided, that the Company shall not cease to defend, consent to the entry of any judgment, settle or offer to settle any Transaction Litigation without the prior written consent of Parent (which consent shall not be unreasonably withheld, conditioned or delayed).
+
+Sentence one is `[242039, 242557)`. Sentence two is node
+`be2cf74eac8f1cd81be57c57799f7b465d68333d79f0b6b345e7d86222782302`,
+bytes `[242558, 243105)`. The qualification node is
+`9c0669b13907004d1c48aa573ab26e9e428f8de0a080f2a42ab6fa557addf285`,
+bytes `[242841, 243105)`. Ben's ruling is that it is an additional Company
+covenant attached to sentence two. It is not an exception to the participation
+and consultation covenant, and it is not part of sentence one.
+
 | Step | Result |
 |---|---|
 | Structural parent | Section 6.11 under Article VI. The proviso is a child or scoped qualification of sentence two, not of sentence one. |
@@ -539,7 +623,7 @@ This is the direct controlling-party trace. “Control” here means control of 
 | Nested sub-limb parentage | Exact text and marker candidates | Persistent and temporary parsers disagree; corroboration proves token, not parent | Wrong parent or oversized leaf | Use one parser authority with typed alternatives on ambiguity. |
 | Heading versus marker | Exact text | Model descriptive path and authored marker share `limb_path` channel | Model summary can masquerade as written structure | Separate source roles from semantic proposition labels. |
 | Proviso and exception scope | Exact text | Often remains trailing text or inside a broad leaf | Row omits or broadcasts qualification | Create qualification nodes and scoped semantic edges. |
-| Defined-term reference | Use text and definition text | Definitions passed as flat prompt context; no complete source graph | Use and definition lineage can detach | Link occurrence node to exact definition node. Do not copy definition as local text. |
+| Defined-term reference | Use text and definition text | Definitions passed as flat prompt context; no complete source graph | Use and definition lineage can detach | Link the occurrence annotation to the exact definition source node. Do not copy definition as local text. |
 | Section cross-reference | Exact reference occurrence | Some claims record one reference from a multi-reference sentence | Missing targets and dependency scope | Store every occurrence and target, with unresolved or ambiguous state. |
 | Party and capacity | Chapeau or direct sentence | Family-specific resolver recovery; some source spans not persisted | Party omitted, collapsed or untraceable | Context fact with source node, span, path and rule. |
 | Corporate or regulatory control | Definition or direct control sentence | Flattened into a label or not represented | Definition-use link or controlled scope disappears | Typed control edges with exact source support. |
@@ -636,7 +720,12 @@ If limb `(ii)` inherits “Parent shall”, its claim cites the chapeau span for
 
 ### 8.5 Qualification and exception flow
 
-A proviso, exception or trailing qualification is a source node with a scoped semantic edge. Scope is computed from parentage, punctuation, connective text and deterministic rules. A local proviso flows only to its limb. A list-wide qualification can flow to several children. A trailing qualification can point to non-contiguous claims.
+A proviso, exception or trailing qualification uses an authored
+`QUALIFICATION` source node, when its boundary is admitted, plus an explicit
+qualification role and scoped semantic edge. Scope is computed from parentage,
+punctuation, connective text and deterministic rules. A local proviso flows
+only to its limb. A list-wide qualification can flow to several children. A
+trailing qualification can point to non-contiguous claims.
 
 When two readings remain plausible, both scope alternatives must be retained. Dependent claims fail closed. Unrelated claims continue. A model may later propose a semantic reading if authorised, but it may not alter the source boundary or state that the inherited words occur in the child.
 
@@ -657,16 +746,20 @@ This design treats the complete extraction system as one deep module. A **deep m
 The public interface has no more than three main calls:
 
 ```text
-indexAgreement(exactSource, policy) -> AgreementIndex
-analyseAgreement(index, task) -> AgreementAnalysis
-projectAgreement(analysis, view) -> AgreementProjection
+indexAgreement(exactSource, structuralPolicy) -> AgreementIndex
+analyseAgreement(index, analysisTask) -> AgreementAnalysis
+projectAgreement(analysis, viewPolicy) -> AgreementProjection
 ```
 
 Internal modules handle byte validation, parsing, stable identity, reference resolution, context, claims, family policy, rows and diagnostics. Publication is deliberately outside the three calls.
 
 #### Source-to-semantic seam
 
-`AgreementIndex` contains immutable source, an ordered node tree, reference edges, boundary alternatives and byte-coverage proof. `analyseAgreement` receives only this index and a versioned semantic task. It cannot accept unstructured section text as a substitute.
+`AgreementIndex` contains immutable source, an ordered authored-node tree,
+reference annotations, boundary alternatives and byte-coverage proof.
+`analyseAgreement` receives only this index and a versioned semantic task. It
+cannot accept unstructured section text as a substitute. M3 resolves the
+annotations into reference edges.
 
 #### Semantic-to-output seam
 
@@ -674,7 +767,15 @@ Internal modules handle byte validation, parsing, stable identity, reference res
 
 #### Nodes, identifiers and links
 
-It uses agreement, article, section, paragraph, sentence, chapeau, limb, sub-limb, proviso, exception, trailing-qualification, heading, marker and source-artefact nodes. Stable occurrence identifiers are based on canonical text identity, node kind and exact start anchor. A separate revision identifies boundary or classification changes. Parent links form a tree. Cross-references and definitions form typed edges.
+It uses authored `AGREEMENT`, `ARTICLE`, `ANNEX`, `SECTION`, `HEADING`,
+`PARAGRAPH`, `SENTENCE`, `CHAPEAU`, `LIMB` and `QUALIFICATION` nodes. A nested
+sub-limb is a `LIMB` whose parent is another `LIMB`. Proviso, exception and
+trailing-qualification are roles on `QUALIFICATION` nodes, not separate node
+kinds. Markers and reference occurrences are separate span annotations. Page
+and conversion material is separate source-artefact data. Stable occurrence
+identifiers are based on canonical text identity, node kind and exact start
+anchor. A separate revision identifies boundary or classification changes.
+Parent links form a tree. Cross-references and definitions form typed edges.
 
 #### Inheritance and provenance
 
@@ -686,7 +787,13 @@ Callers receive typed results such as `BOUNDARY_AMBIGUOUS`, `REFERENCE_UNRESOLVE
 
 #### Worked example
 
-For TopBuild 6.2(d), `indexAgreement` returns section, sentence, chapeau, limb and proviso nodes. `analyseAgreement` creates two termination-right claims. Their actor and governing verb facts cite the chapeau. Their trigger cites limb `(d)`. Their causation limit cites the proviso. `projectAgreement` either displays all three parts or declares the proviso omitted. The caller never parses a marker or searches backwards for `may terminate`.
+For TopBuild 6.2(d), `indexAgreement` returns section, sentence, chapeau, limb
+and qualification nodes. The qualification has a proviso role.
+`analyseAgreement` creates two termination-right claims. Their actor and
+governing verb facts cite the chapeau. Their trigger cites limb `(d)`. Their
+causation limit cites the qualification. `projectAgreement` either displays all
+three parts or declares the proviso omitted. The caller never parses a marker
+or searches backwards for `may terminate`.
 
 #### Migration risk
 
@@ -726,11 +833,18 @@ The semantic coordinator receives a source subtree, ordered governing ancestors,
 
 #### Semantic-to-output seam
 
-The claim ledger contains atomic claims, multi-node evidence, relationships and unresolved dependencies. Projections receive that ledger and cannot access raw source except through cited nodes.
+The claim ledger contains individual complete claims, multi-node evidence,
+relationships and unresolved dependencies. Projections receive that ledger and
+cannot access raw source except through cited nodes.
 
 #### Nodes, identifiers and links
 
-The tree includes all written block types and source order. Every independent unnumbered sentence is a node. A node occurrence identifier remains anchored to canonical text and marker or start byte. Parent changes are recorded in a structure revision and alias ledger. Cross-references and defined-term uses sit in a separate reference graph.
+The tree includes all written block types and source order. Every independent
+unnumbered sentence is a node. A node occurrence identifier remains anchored to
+canonical text and its exact start byte. Parent changes are recorded in a
+structure revision and alias ledger. Cross-reference and defined-term
+occurrences are annotations. Their resolved targets sit in a separate reference
+graph.
 
 #### Inheritance and provenance
 
@@ -742,7 +856,12 @@ The parser retains competing boundaries or parent choices as alternatives. Conte
 
 #### Worked example
 
-For Concho 6.9(a), the tree contains a sentence, chapeau, four limb nodes and two provisos. The context engine passes the 31 December period, Parent, `shall`, and `cause ... to be provided with` to each limb. The `(i)` proviso stays local. The compensation claim keeps direct limb evidence plus inherited chapeau provenance. The row can show the period without expanding the evidence quote falsely.
+For Concho 6.9(a), the tree contains a sentence, chapeau, four limb nodes and
+two qualification nodes with proviso roles. The context engine passes the 31
+December period, Parent, `shall`, and `cause ... to be provided with` to each
+limb. The `(i)` proviso stays local. The compensation claim keeps direct limb
+evidence plus inherited chapeau provenance. The row can show the period without
+expanding the evidence quote falsely.
 
 #### Migration risk
 
@@ -777,11 +896,36 @@ The claim-graph builder selects one or more source nodes for each expected claim
 
 #### Semantic-to-output seam
 
-Rows consume a resolved graph. Each claim node has typed edges for actor, object, condition, qualification, support, definition, cross-reference and derivation. Grouped rows remain derived nodes with links to their atomic branches.
+Rows consume a resolved graph. Each claim node has typed edges for actor,
+object, condition, qualification, support, definition, cross-reference and
+derivation. Grouped rows remain derived nodes with links to their complete
+branch claims.
 
 #### Nodes, identifiers and links
 
-Source node identifiers follow the same exact-source scheme. Semantic identifiers derive from claim definition, governed subject, evidence set and semantic attributes. Parent-child source links remain a tree. Legal dependency edges form the primary graph.
+Design C uses two disjoint node sets. Source-node types are authored document
+blocks only: `AGREEMENT`, `ARTICLE`, `ANNEX`, `SECTION`, `HEADING`, `PARAGRAPH`,
+`SENTENCE`, `CHAPEAU`, `LIMB` and `QUALIFICATION`. A nested sub-limb is a
+`LIMB` with a `LIMB` parent. Proviso, exception and trailing-qualification are
+qualification roles. Outline markers, cross-reference occurrences
+and defined-term occurrences are annotations. Page and conversion material are
+source artefacts. None is a source-tree child.
+
+Semantic-node types are `CLAIM`, `RELATIONSHIP`, `ENTITY`,
+`DEFINED_TERM_MEANING`, `EVENT_OR_CONDITION`, `QUALIFICATION_SCOPE`,
+`ALTERNATIVE_READING` and `GROUPED_CLAIM`. Actor, operative act or restriction,
+object, trigger, threshold, obligation, qualification and exception are typed
+roles or edges. They are not structural children. Fragments such as `material
+breach` or `may not rely` cannot resolve or render alone.
+
+Every semantic node and edge cites one or more source-node identifiers and exact
+spans. An inherited role also cites its derivation rule and the source block
+that contains the words. A source occurrence identifier derives from canonical
+text, node type and start anchor. Its revision binds extent, parent, order and
+policy version. A semantic occurrence identifier derives from its versioned
+definition, governed subject and ordered provenance anchors. Its revision binds
+roles, state and relationship closure. Parent-child source links remain a tree.
+Legal dependency edges form the primary graph.
 
 #### Inheritance and provenance
 
@@ -793,7 +937,15 @@ Missing dependencies produce `REQUIRED_DEPENDENCY_MISSING`. Competing readings p
 
 #### Worked example
 
-For Metsera 7.04, the source tree has two sentence nodes. The graph builds two atomic prevention claims, not one mutual fact. Claim A links Parent and Merger Sub to conditions 7.01 and 7.02. Claim B links Company to 7.01 and 7.03. Each keeps `may not rely`, material breach and primary causation. A reciprocal output node derives from both claims. A single mutual row is allowed only if it retains branch lineage and declares any omitted branch detail.
+For Metsera 7.04, the source tree has two sentence nodes. The graph builds two
+complete branch claims, not one mutual fact. Claim A links Parent and Merger
+Sub to conditions 7.01 and 7.02. Claim B links Company to 7.01 and 7.03. Each
+claim must contain actor, operative restriction, object of reliance, complete
+referenced condition set, causal threshold, breaching actor and breached
+obligation. Recognising only `may not rely`, material breach or primary
+causation cannot resolve the claim. A reciprocal output node may derive from
+both complete claims only under the approved grouping rule and with both
+branches retained in lineage and expansion.
 
 #### Migration risk
 
@@ -805,7 +957,9 @@ Tests cover graph closure, multi-node evidence, reciprocal branches, definition 
 
 #### Complexity hidden from callers
 
-It hides dependency discovery, graph traversal, atomic-to-grouped derivation, relationship identity, alternative interpretations and partial failure isolation.
+It hides dependency discovery, graph traversal, individual-to-grouped
+derivation, relationship identity, alternative interpretations and partial
+failure isolation.
 
 ## 10. Design comparison
 
@@ -839,13 +993,14 @@ flowchart LR
   subgraph S["Source structure"]
     A["Exact admitted UTF-8 bytes"] --> B["Authoritative source index"]
     B --> C["Containment tree and source order"]
-    B --> D["Reference graph: sections and definitions"]
+    B --> D["Reference and defined-term occurrence annotations"]
     C --> N["Collapse and expand navigation"]
   end
 
   subgraph M["Semantic analysis"]
     C --> E["Context engine"]
-    D --> E
+    D --> R["Resolved reference and definition graph"]
+    R --> E
     E --> F["Provenance-bearing context facts"]
     F --> G["Claim and relationship graph"]
     G --> H["Deterministic resolution"]
@@ -862,20 +1017,51 @@ flowchart LR
 
 ### 11.2 Authoritative source index
 
-The index preserves exact source bytes. It creates stable nodes for the agreement, article, section, paragraph, sentence, chapeau, limb, sub-limb, proviso, exception, trailing qualification, heading, marker and source artefact where the source requires them. One neutral node can have several source roles. For example, a sentence can also be a chapeau. This avoids copying the same bytes into competing nodes.
+The index preserves exact source bytes and keeps four collections separate:
 
-Every independent source block gets a stable node, including an unnumbered sentence. Parent nodes can span their descendants. Leaf-owned spans must cover all admitted bytes exactly once or assign a typed source-artefact owner. This permits both exact reconstruction and collapsible navigation.
+1. `nodes` for authored containment;
+2. `annotations` for outline markers, section-reference occurrences and
+   defined-term occurrences;
+3. `source_artefacts` for page and conversion material; and
+4. `byte_coverage` for an exact, non-overlapping partition of all admitted
+   bytes.
+
+The containment tree contains authored document blocks only. These include the
+agreement, article, annex, section, heading, paragraph, sentence, chapeau,
+limb, nested limb and an authored qualification clause. A nested sub-limb uses
+the `LIMB` kind with a `LIMB` parent. A proviso, exception or trailing
+qualification uses the `QUALIFICATION` kind with its authored role recorded.
+One node may have more than one authored role. For example, a sentence may
+also be a chapeau.
+
+Marker tokens, reference occurrences, defined-term occurrences, page numbers,
+conversion artefacts and byte-owner records are not containment-tree nodes.
+Extracted meanings such as `may not rely`, `material breach` and `primarily
+caused` exist only in semantic analysis. They are not structural children.
+
+Every independent authored block has a stable node, including an unnumbered
+sentence. Parent extents may contain descendant extents. The byte ledger, not
+the containment tree, proves complete source ownership and reconstruction.
 
 Use two identities:
 
-1. A stable **occurrence identifier**, anchored to canonical text, node kind and exact start byte or authored marker start.
-2. A **structure revision identifier**, which includes current end, parent, roles and parser version.
+1. A stable **occurrence identifier**, bound to canonical-text identity, node
+   kind and exact start byte.
+2. A **structure revision identifier**, which also binds end byte, parent,
+   child order, roles and structural-policy version.
 
-This keeps an occurrence stable when a parent classification changes, while recording that the structure changed. Follow Decision 15 for marker-derived identity only after marker-start stability is proven. Maintain explicit aliases from current section and subsection identifiers.
+A changed parent or end creates a new structure revision without silently
+changing occurrence identity. Maintain explicit aliases from current
+sectionizer nodes.
 
 ### 11.3 Tree plus graphs
 
-The containment tree answers “what is written inside what?” It is the source for collapse and expansion. A reference graph answers “what written block names what other block or definition?” A semantic graph answers “what actor, condition, qualification or control relationship belongs to what claim?”
+The containment tree answers “what is written inside what?” It is the source
+for collapse and expansion. The source index records reference and defined-term
+occurrences as annotations. M3 resolves those occurrences into a reference
+graph that answers “what written block names what other block or definition?”
+A semantic graph answers “what actor, condition, qualification or control
+relationship belongs to what claim?”
 
 A tree alone is inadequate. Concho 6.20 connects Parent to two performance entities through a cause-to-perform relationship. It does not by itself prove corporate control. Metsera 7.04 points to three other sections. A defined-term use points outside its parent. None of these is a containment relationship.
 
@@ -887,20 +1073,33 @@ Analysis then visits child nodes with an explicit context frame and closes requi
 
 ### 11.5 Claim and evidence contract
 
-A claim can point to one or several source nodes. Each evidence edge has a role. Existing roles such as `OPERATIVE_TEXT`, `DEFINITION`, `EXCEPTION`, `CROSS_REFERENCE` and `DERIVATION_INPUT` should be kept. Extend each edge with `source_node_id`, coordinate type and exact span.
+Each claim definition has a versioned, family-specific required-role schema. A
+role is one necessary part of the legal proposition, such as actor, operative
+restriction, object, trigger, condition set, timing, threshold, breaching
+actor, breached obligation, qualification or exception.
 
-For example, a termination-right claim can have:
+A claim resolves only when it contains every required role. Each role links to
+direct or inherited provenance that names the exact source node and span. An
+inherited role cites the node in which the words occur. It does not claim that
+those words occur in the child node.
 
-- chapeau evidence for the holder and governing verb;
-- limb evidence for the trigger;
-- proviso evidence for the exception; and
-- reference evidence for section 4.4.
+A claim may cite one or several source nodes. Each evidence edge keeps its
+semantic role, source-node identifier, coordinate type and exact span. Ordered,
+discontiguous spans remain separate. Do not replace them with one
+minimum-to-maximum envelope.
 
-Do not replace these spans with one minimum-to-maximum envelope. Do not state that inherited chapeau words occur in the limb.
+If a required role is absent or unresolved, resolution returns
+`MISSING_REQUIRED_ROLE`. Fragment recognition is not enough. The claim is not
+renderable.
 
 ### 11.6 Projection contract
 
-A family projection receives resolved claims and relationships. It does not parse source text or infer missing context. It returns rows with exact atomic lineage, field provenance and an omission ledger. If the schema cannot show a material qualification, the row may remain useful, but the omission must be explicit and measurable.
+A family projection receives resolved, role-complete claims and relationships.
+It does not parse source text, infer missing context or repair an incomplete
+claim. It must fail closed and produce no row if required-role validation
+fails. A display policy may hide a known role in a compact row, with exact
+lineage and an approved omission record. It may not invent a role that the
+claim never contained.
 
 Source navigation uses the same source-node identifiers as analysis. No separate navigation hierarchy is needed.
 
@@ -922,9 +1121,13 @@ If model reasoning is later authorised, it may propose novel semantic facts, pro
 
 ## 12. Direct answers
 
+In answers 1 and 2, **current system** means the extractor selected at the
+start-state and still selected now. The completed M2 `AgreementIndex` is
+additive shadow code. It does not change those answers or the live extractor.
+
 1. **Does the current system have a complete structural representation?** No. It has exact bytes and a coarse section tree, plus temporary and model-shaped partial structures.
-2. **What is missing?** The source structure lacks stable paragraphs, unnumbered sentences, chapeaux, inline limbs, sub-limbs, provisos, exceptions, trailing qualifications, heading and marker roles, and byte-complete leaf ownership. Cross-reference and provenance-bearing governance links belong in the separate reference and semantic graphs.
-3. **Should every source block have a stable node, including an unnumbered sentence?** Yes. Source artefacts such as page footers also need typed ownership so no admitted byte disappears.
+2. **What is missing?** The source structure lacks stable paragraphs, unnumbered sentences, chapeaux, inline and nested limbs, authored qualification nodes with proviso, exception or trailing roles, and distinct heading and marker roles. Cross-reference and provenance-bearing governance links belong in separate reference and semantic graphs. The byte ledger, not leaf-node structure, must prove the non-overlapping source partition.
+3. **Should every source block have a stable node, including an unnumbered sentence?** Yes. Source artefacts such as page footers need separate typed records and byte-ledger owners. They are not authored-block nodes.
 4. **Should sentences be children of sections when not numbered?** Yes, when they are independent written blocks. Metsera 7.04 and Red Hat 5.07 prove the need.
 5. **Can a tree represent the contract adequately?** A tree represents written containment. A tree plus cross-reference and semantic graphs is required for definitions, references, control, reciprocal relationships and multi-node claims.
 6. **At what node should analysis begin?** At the smallest node that contains the complete governing grammar for the task, then down its subtree and across declared graph dependencies.
@@ -970,7 +1173,9 @@ Historical candidates, current states and human decisions belong in a separate e
 | SEC intake, source admission and source maps | **Keep** | Continue to bind raw source, conversion and canonical text. |
 | `lib/canonical-v2/source-structure.js` immutable source, semantic span and excerpt primitives | **Keep** | Retain exact byte validation and excerpt identity. Source-node evidence links belong in `claims-relationships.js` and `AgreementAnalysis`. |
 | `lib/parser-v2/structural.js` | **Keep as an internal detector** | Reuse article and section recognition. It is not the final authority. The source-index adapter declares and converts its character coordinates. |
-| `lib/canonical-v2/native-producer/deterministic-sectionizer.js` | **Change and deepen** | Make this module the one authoritative source index behind the facade. Add all block types, child order, byte ownership, stable occurrence identity and ambiguity records. |
+| `lib/canonical-v2/native-producer/deterministic-sectionizer.js` | **Keep as an internal detector** | Continue article, section and labelled-subsection detection behind `AgreementIndex`. It is not a public source authority. |
+| `lib/canonical-v2/agreement-index.js` | **Keep and deepen** | This is the completed M2 source-index facade. M3 must consume its sealed nodes and ledgers, not raw section text. |
+| `lib/canonical-v2/agreement-inline-structure.js` | **Keep private** | Reuse the existing marker, style and depth technology behind `indexAgreement`. Keep its closed disposition policy, exact candidate partition and fail-closed ambiguity records. Do not expose it as a fourth main entry point or a second hierarchy. |
 | `lib/parser-v2/subclauses.js` | **Replace as an independent representation** | Reuse marker heuristics inside the source-index parser. Do not publish a second leaf hierarchy. |
 | `lib/canonical-v2/native-producer/governing-structure.js` | **Replace as a public authority** | Reuse fail-closed reasons and parser tests in a context engine that consumes stable source nodes. |
 | `lib/canonical-v2/native-producer/candidate-governing-context.js` | **Replace its public responsibility** | Reuse byte validators and context-record builders in a migration adapter. The target context engine starts from source nodes, not a candidate with one operative edge. |
@@ -1016,6 +1221,10 @@ No file requires wholesale deletion before its replacement responsibility proves
 ## 15. Safe migration sequence
 
 The migration is additive. **Shadow mode** means the new path runs beside the current path and cannot change the current result.
+
+The M0 to M2 descriptions below are the completed historical sequence. The
+only live execution sequence is in `docs/core/PLAN.md`. Its next described
+stage is M3, which remains unauthorised.
 
 ### M0. Freeze the migration contract
 
@@ -1071,7 +1280,11 @@ Rollback: retain the prior accepted artefacts and keep the new result report-onl
 
 ### M8. Phase B readiness, still deferred
 
-Only after Ben separately authorises Phase B, verify the structural input packet and experiment comparator. Use recorded responses first. Do not ask a model to repair structure. The current Phase B lock remains binding until an explicit programme decision changes it.
+Only after Ben authorises the exact M8 packet-preparation work order, verify the
+structural input packet and experiment comparator. Use recorded responses
+only. Do not ask a model to repair structure. Packet preparation does not
+authorise Phase B. The current Phase B lock remains binding until Ben
+separately authorises a later experiment.
 
 ### M9. Stage 2Y certification
 
@@ -1079,21 +1292,36 @@ Certify the release candidate for source completeness, semantic preservation, ou
 
 ### M10. Post-Stage-2Y internal deployment
 
-After M9 closes Stage 2Y, request separate authority to make the accepted extractor authoritative for private internal extraction. Change one versioned selector. If a new pin manifest is required, create and select one new immutable version under that authority. Never overwrite the control baseline or an existing pin manifest. Run one focused smoke check, verify that publication and external serving remain inactive, and retain immediate rollback to the prior selector and manifest. The product is mission ready only after this deployment. This report does not authorise it.
+After M9 closes Stage 2Y, request separate authority to make the accepted
+extractor authoritative for named private internal consumers. Change one
+versioned selector. If a new pin manifest is required, create and select one
+new immutable version under that authority. Never overwrite the control
+baseline or an existing pin manifest. Run one focused smoke check, verify that
+publication and external serving remain inactive, and retain immediate rollback
+to the prior selector and manifest. This deployment ends only in
+`PRIVATE_INTERNAL_EXTRACTOR_ACTIVE`. Retained Stages 3 to 9 still govern
+durable writes, serving, product, security and go-live. This report does not
+authorise M10.
 
 ## 16. Acceptance tests and measurements
 
 ### 16.1 Source-structure tests
 
-- Exact source reconstructs byte-for-byte from ordered leaf-owned spans and typed source artefacts.
+- Exact source reconstructs byte-for-byte from the byte ledger and typed source artefacts.
 - Every node slice matches its stored digest.
 - Every non-root node has one containment parent, lies within that parent and has a deterministic source order.
-- Parent extents may overlap descendants. Leaf-owned bytes have no gaps or overlap.
+- Parent extents may overlap descendants. The byte ledger has no gap or overlap.
 - Every independent unnumbered sentence in the named fixtures has a stable node.
-- Chapeaux, limbs, sub-limbs, provisos, exceptions and trailing qualifications have exact nodes or a typed ambiguity.
+- Chapeaux and limbs have exact nodes or a typed ambiguity. Nested sub-limbs
+  use `LIMB` parentage. Provisos, exceptions and trailing qualifications use
+  `QUALIFICATION` nodes with explicit roles or a typed ambiguity.
 - A heading is never treated as a marker or grammatical fact without evidence.
 - Correcting parentage does not silently change a stable occurrence identity.
 - Repeated runs on the same bytes produce identical nodes, revisions and graph edges.
+- A real nested provision collapses from sub-limb to section and from section to
+  article, then re-expands with identical identifiers, source order and spans.
+  The test uses the containment tree directly and creates no second navigation
+  hierarchy.
 
 ### 16.2 Context and semantic tests
 
@@ -1104,10 +1332,22 @@ After M9 closes Stage 2Y, request separate authority to make the accepted extrac
 - Red Hat 3.01 gives roman `(i)` the correct written parent.
 - Red Hat 3.02 gives the three bare sentences source nodes and keeps descriptive model labels semantic only.
 - All 69 Red Hat inputs bind to a source node or have a typed unbound status while preserving the 1, 62 and 6 dispositions.
-- Metsera 7.04 retains both branch actors, both condition-reference sets, `may not rely`, material breach and primary causation.
+- Metsera 7.04 produces two complete branch claims. Each branch contains actor,
+  operative restriction, object of reliance, complete referenced condition set,
+  causal threshold, breaching actor and breached obligation.
+- The Metsera golden deletes each required role in turn. Every deletion returns
+  `MISSING_REQUIRED_ROLE` and produces no renderable claim or row.
+- Metsera acceptance compares the complete branch propositions. Recognising
+  `may not rely`, `material breach`, `primarily caused` or another fragment does
+  not pass.
+- The two branch claims remain separate. One mutual projection is permitted
+  only when a family-specific equivalence signature proves that legal
+  operation, threshold, breached-obligation standard, timing and qualifications
+  do not differ. Expansion retains both actor sets and both condition sets.
 - Concho 4.10 and Annex A keep the defined-term use and definition nodes separate and linked. Metsera 9.03 separately scopes the disproportionate-effects qualification.
 - Concho 6.20 retains both performance entities and the cause-to-perform relationship without asserting corporate control.
-- One claim can cite several role-tagged source nodes. One source node can support several atomic claims.
+- One complete claim can cite several role-tagged source nodes. One source node
+  can support several complete claims.
 - An ambiguous required fact blocks only dependent claims.
 - Model proposal order cannot change deterministic claims.
 
@@ -1175,10 +1415,11 @@ For this review, one bounded replay-only batch covered 17 existing test files ac
 
 ### 17.2 Immediate stop conditions
 
-A Terra agent stops the current packet and does not refresh evidence when any of these occurs:
+For M0 to M10, a Terra agent stops the current packet and does not refresh
+evidence when any of these occurs:
 
 - a control source, manifest, policy, code or saved-response digest differs;
-- admitted bytes have a gap, overlap, digest mismatch or undeclared coordinate type;
+- the byte ledger has a gap, overlap, digest mismatch or undeclared coordinate type;
 - an old identifier maps many-to-many without a pre-approved rule;
 - a previously resolved claim changes value, state, party, capacity, scope, attributes, evidence or relationship unexpectedly;
 - a claim disappears, duplicates or appears without an expected-difference entry;
@@ -1189,6 +1430,10 @@ A Terra agent stops the current packet and does not refresh evidence when any of
 - any model or Phase B route is invoked;
 - any product write, release receipt, external-serving switch or publication authority changes; or
 - the work requires a disputed legal interpretation.
+
+Product Stages 3 to 9 use their own signed work orders. Such a work order may
+permit only the exact product write, receipt, serving or publication effect
+named for that stage. Every unnamed stop condition remains in force.
 
 Terra records the exact failing diff once. It does not rerun unchanged inputs to seek a pass. Sol handles technical architecture, identity and parser escalations. Ben handles legal meaning.
 
@@ -1203,26 +1448,74 @@ Pause the restructuring programme and reconsider replacement only if the prototy
 
 A cleaner design is not a reason for replacement. Failure of an incremental preservation seam is.
 
-## 18. Questions that require Ben's legal judgement
+## 18. Ben's rulings after Decision 18
 
-These questions affect legal presentation or meaning. Code should not decide them:
+### 18.1 Resolved on 2026-08-11
 
-1. Which qualifications must every lawyer-facing row display? Examples include `primarily caused`, `material breach`, `permanent`, `final and nonappealable`, and `having jurisdiction`.
-2. May the two reciprocal branches in Metsera 7.04 appear as one “mutual” row, or must both named party branches and their different condition sets remain visible?
-3. When may a defined group such as `Either Principal Party` replace the named source actors without losing material allocation?
-4. When, if ever, does a cause-to-perform covenant support a corporate-control conclusion? In all cases, should the causing party and each performance entity remain separate comparison facts?
-5. Where punctuation and indentation permit more than one reading, which limbs does a proviso or trailing qualification govern?
-6. For a cross-reference, should a lawyer-facing row show the citations, the incorporated legal content, or both? Does the answer differ by family?
-7. Which atomic claims may be combined into one market-comparison row, and which must remain separate?
-8. Which open-world proposition types should receive new approved claim definitions and output owners, including Representations, Key Defined Terms, Tax, Appraisal, Financing, Dividends and Guaranty?
-9. For Red Hat 3.02, should the three independent source sentences also remain three legal assertions for comparison, or may a topic rule group them?
-10. What governed human-review sample and acceptance threshold defines “mission ready”, subject to Decision 17's rendered-row unit and 1% tracking rule?
-11. For the 175 resolved claims without an approved output owner, and the TopBuild 6.3 claim that produces no row, which should receive a named output owner and which should receive an approved no-output disposition?
-12. Apart from qualifications, which facts may a lawyer-facing row omit? This includes parties, capacities, periods, thresholds, relationships, remedies and operative mechanics. What explicit omission label is required in each permitted case?
-13. For each proposed migration difference that changes legal value or scope, which old or new reading is correct on the exact source? Approval must be recorded for that member. A general migration approval is not enough.
-14. When two source hierarchies are technically plausible and they change legal meaning, which parentage governs? This includes the Red Hat 3.01 relationship between paragraph `(h)` and the following roman `(i)` item.
+- Source structure contains authored blocks only. Semantic facts remain in
+  analysis.
+- Metsera 7.04 remains two source sentences and two complete branch claims. It
+  may appear as one mutual row because its two branches use the same operative
+  restriction, threshold and breached-obligation standard. Different legal
+  standards or qualifications require separate output.
+- Red Hat 3.02(b)(i) remains three source sentences and three semantic
+  propositions. They may sit under one expandable topic heading.
+- Red Hat 3.01 has `3.01(h)(i)` beneath `(h) Contracts`; the later titled `(i)`
+  is top-level `3.01(i)`.
+- Red Hat 5.07's substantially-similar proviso governs all operative duties
+  before it in the second sentence.
+- TopBuild 6.3(b)'s cross-default proviso conditions the complete 6.3(b)
+  termination right.
+- Concho 6.11's proviso is an additional Company covenant attached to sentence
+  two. It is not an exception to the participation and consultation covenant,
+  and it is not part of sentence one.
+- `Parent` may be compact shorthand for a Parent and Merger Sub side only when
+  proven party topology shows the subsidiary relationship, no distinct duty or
+  remedy is hidden, and expansion shows both actors.
+- `CAUSES_TO_PERFORM` does not itself prove ownership or control.
+- A cross-reference row must state useful incorporated legal content. The exact
+  citation remains available as a label and link. Expansion shows the target
+  heading and relevant words.
+- Every approved claim definition needs one output owner or an approved
+  no-output disposition. TopBuild 6.3 must render as a Termination row.
+- Legal review is source-first and family-specific. Use small calibration packs
+  of deliberately different full provisions. The earlier roughly 300-row
+  pre-launch gate is superseded.
 
-The following are technical decisions and do not require Ben: source-node types, byte coordinates, stable identifier mechanics, tree plus graph structure, provenance fields, alias validation, rollback mechanics and deterministic diff format.
+### 18.2 Open legal and legal-review rulings
+
+Ben still needs to decide:
+
+1. each family's and provision subtype's required semantic roles before a
+   claim can resolve;
+2. the exact size and composition of the modest risk-weighted blind sample
+   required before private internal activation;
+3. each family's required display roles and approved compact omissions when
+   its calibration pack is prepared;
+4. each proposed no-output disposition; and
+5. any new legal ambiguity that remains after source structure, provenance and
+   complete roles are shown in plain English, on the full source provision.
+
+### 18.3 Open authority and operational decisions
+
+Ben still needs to decide or authorise:
+
+1. the exact M3 work order and, later, each subsequent implementation-stage
+   work order, including governed deal memberships and SEC source-read scope
+   for the M7 generalisation packet;
+2. any later Phase B or other model run;
+3. the exact M10 selector and named private internal consumers, if M9 passes;
+4. later hosted staging and production database operations;
+5. whether the live site requires login and whether the exposed service key
+   has been rotated before external activation;
+6. the exact serving, publication and production-cutover authority packet;
+7. whether legacy V1 quotation spans require backfill before V1 retirement;
+8. and whether any of the possible 128 legacy database rows may be deleted, or
+   must instead remain with an alias or retention record.
+
+Source-node mechanics, byte coordinates, stable identifiers, tree-plus-graph
+mechanics, provenance fields, aliases, rollback and deterministic diff format
+remain technical decisions.
 
 ## 19. Explanation for a non-technical M&A lawyer
 
@@ -1234,34 +1527,65 @@ Legal links sit beside the outline. A reference to another section links to that
 
 Claims are machine-readable legal statements, each with a status and exact source support. Review tables are selected views of those claims. A table may be shorter than the agreement, but every material omission needs an explicit approved disposition. The table cannot become the source of legal meaning. Publication remains a separate final control.
 
-## 20. Complete executable plan from Stage 2Y to a mission-ready product
+Each provision family defines the legal parts that a complete claim must
+contain. For Metsera 7.04, these include the actor, restriction, reliance
+object, condition set, causal threshold, breaching actor and breached
+obligation. If any required part is missing, the system withholds both the
+claim and the row instead of presenting recognised fragments as a legal answer.
 
-This is the implementation plan. It is written for Terra-level agents. A **Terra agent** is the standard implementation agent. A **Sol reviewer** is the escalation owner for difficult technical architecture or semantic-diff questions. Ben remains the legal judgement owner.
+## 20. Detailed implementation specification and dated plan snapshot
+
+This is the complete technical specification delivered with the review. It is
+not a second source of execution authority. `docs/core/PLAN.md` is the sole
+live executable plan and controls every conflict. A stage becomes executable
+only when PLAN incorporates the relevant packet and its named authority gate
+passes. Terra must not act on this section alone. This dated specification is
+written for Terra-level agents. A **Terra agent** is the standard implementation agent.
+A **Sol reviewer** is the escalation owner for difficult technical architecture
+or semantic-diff questions. Ben remains the legal judgement owner.
 
 ### 20.1 Mission and completion definition
 
-Mission: create a mission-ready extraction system that preserves the agreement as written, derives claims with exact provenance, produces complete governed output, and remains safely withheld until publication is separately authorised.
+Mission: create a certified extraction system that preserves the agreement as
+written, derives complete claims with exact provenance and produces governed
+output. Activate it for named private internal consumers under separate
+authority. Then complete durable write, serving, corpus, security, product and
+production cutover through Product Stages 3 to 9.
 
 Stage 2Y is complete only when all of these are true:
 
 1. The accepted corpus has an exact, deterministic source index with typed ownership of every admitted byte.
 2. Every independent written block has a stable source node or a reviewed typed ambiguity.
 3. Every inherited semantic fact has exact source provenance.
-4. Every resolved claim has complete required evidence and relationship closure.
+4. Every resolved claim satisfies its versioned family required-role schema,
+   with complete provenance and relationship closure.
 5. The old and new paths have a reviewed resolution-set diff, with no unexplained change.
-6. Official open-world does not increase in any family during migration.
+6. Official open-world does not increase in any family on the same fixed
+   comparison cohort.
 7. Every approved claim definition has exactly one output owner or an approved no-output disposition.
 8. Every material fact reaches a rendered field or an approved omission record.
-9. The governed human review meets the threshold Ben approves under Decision 17.
+9. Every family has an approved calibration or no-output policy. Every known
+   material information loss has a verified fix. All changed or genuinely
+   ambiguous results are reviewed. The risk-weighted blind sample approved by
+   Ben is complete and passes its pre-approved threshold.
 10. Rollback works after every migration stage.
 11. Phase B remains deferred unless separately authorised.
 12. Publication and external serving remain inactive throughout Stage 2Y.
 
-M9 completes Stage 2Y certification when conditions 1 to 12 pass. The complete product mission also requires the separately authorised M10 internal deployment. M10 is outside Stage 2Y. It does not authorise publication.
+M9 completes Stage 2Y certification when conditions 1 to 12 pass. M10
+separately activates the certified extractor for named private internal
+consumers only. The complete product still requires the retained Stages 3 to 9
+described below. `docs/core/PLAN.md` remains the sole live authority. M10 does
+not authorise product-data writes, publication or external serving.
 
-### 20.2 Fixed authority and prohibitions for every work packet
+The complete mission is reached only when Product Stage 9 also passes its
+production, security, source-lineage, backup and rollback acceptance gates for
+the authorised family set. Capitalisation remains under an approved
+non-serving disposition until the separate post-cutover Stage 9F passes.
 
-Every Terra task starts by recording:
+### 20.2 Fixed authority and prohibitions for M0 to M10
+
+Every M0 to M10 Terra task starts by recording:
 
 - source branch and exact commit;
 - allowed files;
@@ -1273,7 +1597,7 @@ Every Terra task starts by recording:
 - rollback action; and
 - escalation owner.
 
-Every Terra task is prohibited from:
+Every M0 to M10 Terra task is prohibited from:
 
 - calling a live model or Phase B route;
 - changing, selecting or regenerating a pin manifest or baseline during M0 to M9. M10 may create one new immutable pin manifest and select it only when its signed authority names its path and digest. No stage may overwrite a baseline or existing pin manifest;
@@ -1285,6 +1609,13 @@ Every Terra task is prohibited from:
 - using a family renderer to repair source structure;
 - using a model path as source parentage; or
 - running the full suite unless the packet is an integration gate.
+
+Product Stages 3 to 9 are outside M0 to M10. Each requires its own signed work
+order. That work order may override only a prohibition that it names exactly,
+for example a Stage 4 write to one named non-production database. Every
+unnamed prohibition remains in force. A live model or Phase B call always
+requires separate Ben authority. No later work order may overwrite a baseline,
+pin, sealed receipt or production record.
 
 ### 20.3 Standard packet output
 
@@ -1317,6 +1648,8 @@ changed_files
 focused_checks and results
 model_calls = 0
 phase_b_route_calls = 0
+network_calls = 0 | exact authorised M7 source-read count
+network_read_bindings = [] | M7-only source-read bindings
 product_writes = 0
 pin_changes = 0
 baseline_changes = 0
@@ -1336,6 +1669,35 @@ rollback_command and rollback_result
 status = PASS | STOPPED | ESCALATED
 ```
 
+From M3 onward, the final passing stage receipt is the machine trust root for
+the next stage. A **trust root** is the exact signed-off file from which later
+input authority is checked. Draft receipts, rollback receipts and review files
+are evidence, but they are not predecessor trust roots. Each final receipt
+uses `sealed_predecessor_bindings`, `output_bindings` and
+`output_set_digest`. A predecessor binding records path, schema, byte length,
+SHA-256, packet identifier, stage and `status: PASS`. An output binding records
+path, schema, byte length and SHA-256. A downstream runner accepts an explicit
+receipt for every upstream output root that it reads. It rejects an unbound,
+extra, missing or wrong-cohort file, a non-passing receipt or a digest mismatch.
+Each final receipt binds its immediate predecessor, which makes the chain
+transitive. If a stage also reads an earlier output root, it accepts that
+earlier receipt directly. M2 remains sealed.
+
+| Stage output | Final passing receipt | Required predecessor trust root |
+|---|---|---|
+| M3 context | `receipts/stage-2y-structure-m3-context-compilation.json` | M2 final receipt |
+| M4 analysis | `receipts/stage-2y-structure-m4-agreement-analysis.json` | M2 and M3 final receipts |
+| M5 families | `receipts/stage-2y-structure-m5-family-adapters.json` | M4 final receipt |
+| M6 projection | `receipts/stage-2y-structure-m6-agreement-projection.json` | M5 final receipt, which binds M4 |
+| M7 corpus | `receipts/stage-2y-structure-m7-corpus-verification.json` | Direct M2, M3, M5 and M6 final receipts, transitive M4 through M5, and M7 generalisation |
+| M8 Phase B readiness | `receipts/stage-2y-structure-m8-phase-b-readiness.json` | Direct M2, M5 and M7 final receipts |
+| M9 certification | `shadow/m9/stage-2y-certificate.json` | M7 and, if run, M8 final receipt |
+
+M9 is the one path exception to `receipts/<packet_id>.json`. Its signed
+`STAGE_2Y_CERTIFICATE/V1` contains the standard final-receipt fields plus the
+certification measurements and is the M10 trust root. Do not create a second
+M9 receipt that could disagree with the certificate.
+
 Validate each receipt with:
 
 ```bash
@@ -1343,7 +1705,22 @@ node scripts/stage-2y-structure-migration-validate.mjs \
   --receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/<packet_id>.json
 ```
 
-That validator is a required M0 deliverable. Until it exists, the first M0 receipt must be checked against the schema by the integrator and Sol. `serving_changes` means external-serving changes. For M0 to M8, `database_target` must be `NONE`. M9 may use `THROWAWAY_LOCAL` only for its approved database gate. Production and staging are never valid values.
+The validator is a completed M0 deliverable. `serving_changes` means
+external-serving changes. For M0 to M8, `database_target` must be `NONE`. M9
+may use `THROWAWAY_LOCAL` only for its approved database gate. Production and
+staging are never valid values.
+
+At M3, extend the validator to verify each expected predecessor stage and
+packet identifier, exact predecessor receipt bytes, passing status, unique and
+complete output bindings, canonical output-set digest, absence of unbound
+files under each consumed root and the complete transitive chain.
+
+`network_calls` and `network_read_bindings` are prospective stage-specific
+fields. They do not reopen or invalidate the sealed M0 to M2 receipts. M3 to
+M6 and M8 to M9 require zero calls and an empty binding list. Only the
+separately authorised M7 source-admission receipt may record non-zero reads.
+The final M7 corpus receipt records zero new reads and binds the source-admission
+receipt.
 
 An expected difference records an intended old-new difference. A Terra agent may propose one with exact source evidence. Sol must approve technical identity or equivalence. Ben must approve any changed legal value, scope, grouping or material omission. An entry never authorises a pin-manifest change, baseline change, product write, extractor cutover or publication change.
 
@@ -1440,10 +1817,13 @@ Run the database gate only against an approved throwaway local database. Never p
 **Full integration gate**
 
 ```bash
-npm test
+bash scripts/ci/run-all-invariants.sh
+npm run build
 ```
 
-Run the full integration gate once at M9. Do not repeat it without a code or control-input change.
+Run this gate once at M9. `run-all-invariants.sh` already runs `npm test`; do
+not run it separately. Do not repeat either command without a code or
+control-input change.
 
 ### 20.6 Stage M0: freeze the migration contract
 
@@ -1575,6 +1955,8 @@ Disable or remove only the prototype command. Confirm current output digests are
 **Owner:** Terra A, with Terra C on fixtures and Terra B on API review.
 **Dependency:** M1 contains a signed `INCREMENTAL_RESTRUCTURE` decision.
 **Production effect:** additive and unused by extraction.
+**Status:** completed and sealed on 2026-08-11. `docs/core/COMPLETED.md`
+records the implemented result.
 
 #### Public contract
 
@@ -1584,21 +1966,46 @@ Create one entry point:
 indexAgreement(exactSource, structuralPolicy) -> AgreementIndex
 ```
 
-Implement it in `lib/canonical-v2/agreement-index.js`. The index includes immutable source binding, nodes, parent-child order, roles, exact spans, reference-occurrence nodes, ambiguity records, aliases, diagnostics and byte-coverage proof. It does not choose cross-reference or definition targets. M3 owns those edges. Keep internal parsing helpers private.
+Implement it in `lib/canonical-v2/agreement-index.js`. The index includes
+immutable source binding, authored `nodes`, parent-child order, roles and exact
+spans; separate `annotations`; separate `source_artefacts`; `byte_coverage`;
+ambiguity records; aliases; and diagnostics. It does not choose cross-reference
+or definition targets. M3 owns those edges. Keep internal parsing helpers
+private.
 
 #### Tasks
 
-1. Define `AGREEMENT_INDEX/V1`, source-node and tree-revision schemas.
+1. Define `AGREEMENT_INDEX/V1` plus source-node, annotation, source-artefact,
+   byte-coverage and tree-revision schemas. Authored node kinds include
+   agreement, article, annex, section, heading, paragraph, sentence, chapeau,
+   limb and qualification. A nested sub-limb is a limb with a limb parent.
 2. Implement stable occurrence and revision identifiers.
 3. Integrate article and section parsing.
-4. Integrate marker parsing without retaining `subclauses.js` as a second authority.
-5. Add deterministic sentence and source-artefact segmentation.
-6. Add chapeau, qualification and marker roles.
+4. Integrate marker detection as span annotations without retaining
+   `subclauses.js` as a second authority.
+5. Add deterministic authored sentence segmentation and separate
+   source-artefact classification.
+6. Add chapeau and qualification roles to authored nodes. Add marker,
+   reference and defined-term occurrence kinds to annotations.
 7. Produce child arrays or an indexed child operation from the same parent records.
 8. Generate old section and subsection aliases.
 9. Create `control/structural-policy.json`, schema `STAGE_2Y_STRUCTURAL_POLICY/V1`, with a version and digest. Bind both into every index.
 10. Create `scripts/stage-2y-agreement-index-shadow.mjs` and `tests/canonical-v2-agreement-index.test.js`. The script accepts only `--control`, `--agreement-manifest`, `--policy` and `--output-root`.
 11. Run the script for every entry in `control/cohort-agreements.json`. Seal each result at `shadow/m2/<agreement_id>.agreement-index.json`. Do not use a database, staging writer or product reader. Do not modify current claim records.
+12. Add the private deterministic inline-list parser behind `indexAgreement`.
+    Reuse the existing parser's marker, style and depth rules, but return
+    authored containers and children instead of leaf-only clauses.
+13. Give every scanned marker candidate exactly one closed disposition:
+    `AUTHORED_INLINE_LIST`, `NON_STRUCTURAL_MARKER` or
+    `UNRESOLVED_INLINE_LIST`. Record the exact candidate-to-disposition
+    partition in the index identity.
+14. Materialise every accepted marker sequence once. Reuse reviewed source
+    nodes when they already exist. Do not create a parallel tree. A typed
+    unresolved sequence creates no limbs.
+15. Bind the private parser, its focused test, policy, runner, finaliser and
+    validator into the receipt. Regenerate all seven indexes, obtain an
+    independent Sol review, then seal a new receipt. Preserve the superseded
+    historical receipt as evidence.
 
 #### Focused checks
 
@@ -1611,7 +2018,9 @@ node scripts/stage-2y-agreement-index-shadow.mjs \
   --policy evidence/canonical-v2/stage-2y-structure-migration/control/structural-policy.json \
   --output-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m2
 
-node --test tests/canonical-v2-agreement-index.test.js
+node --test \
+  tests/canonical-v2-agreement-inline-structure.test.js \
+  tests/canonical-v2-agreement-index.test.js
 ```
 
 The new test must cover real fixture round trips and repeated-run determinism. Then run the structure and inheritance gate in section 20.5 once.
@@ -1620,11 +2029,76 @@ The new test must cover real fixture round trips and repeated-run determinism. T
 
 - Exact byte coverage is 100% for every agreement in `control/cohort-agreements.json`.
 - Every agreement in that file has exactly one sealed index with the expected source digest.
-- Node and parent invariants pass.
+- Every containment-tree node is an authored block. Marker, reference,
+  defined-term, artefact and byte-owner records do not appear in `nodes`.
+- Node and parent invariants pass. The six authored annexes are retained and
+  synthetic Annex article or section wrappers are retired through one-to-one
+  aliases.
 - Unnumbered sentence fixtures pass.
 - Heading and marker roles are separate.
+- Concho 6.9(a) has one sentence, one chapeau, four sibling limbs and two local
+  provisos. The provisos do not reach limbs `(iii)` or `(iv)`.
+- Concho 4.19(a) keeps outer Roman `(i)` to `(xiii)`, nested `(A)/(B)` and
+  nested `(x)/(y)` under `(ix)`. The true outer `(x)` remains separate.
+- The Concho Annex A definitions keep outer, nested and trailing blocks once,
+  with no duplicate occurrence identifiers.
+- Red Hat 6.01(b) creates two authored limbs. Its later words `each of (i) and
+  (ii)` remain non-structural markers.
+- Skechers 4.10 keeps separate nested `(i)/(ii)` sequences under outer `(a)`
+  and `(b)`.
+- Same-style restarts, missing sequence members, excess depth and uncertain
+  scope fail closed with a typed disposition.
+- Candidate spans equal disposition spans exactly. Accepted marker sets equal
+  produced limb and outline-marker sets exactly.
 - Alias collisions are zero.
 - Current extraction output digest is unchanged.
+
+#### Implemented result
+
+The first local seal attempt was reopened before delivery after a generic
+inline-list audit found that the authored-block hierarchy was incomplete. The
+corrective M2 implementation reused the existing deterministic section and
+marker parser rules behind the private `AgreementIndex` interface. It did not
+replace or activate the current extractor.
+
+| Frozen M2 inventory | Count |
+|---|---:|
+| agreements | 7 |
+| exact source references | 130 |
+| exact source bytes | 2,547,781 |
+| authored nodes | 15,730 |
+| annotations | 37,591 |
+| source artefacts | 1,397 |
+| current-structure aliases | 2,878 |
+| marker-sequence dispositions | 5,184 |
+| mechanically admitted authored inline lists | 1,376 |
+| non-structural marker records | 3,785 |
+| unresolved inline lists and linked ambiguities | 23 |
+| authored inline limbs produced or reused | 3,963 |
+| diagnostics | 2 |
+
+The separate raw marker-token count is 7,871. A disposition is one deterministic
+parser decision about a candidate sequence. These counts are not human legal
+acceptance. The 23 parser ambiguities are not the historical 69 Red Hat
+semantic limb cases.
+
+The final cohort has zero duplicate primary identifiers, marker spans or
+produced limb identifiers, and zero authored inline limbs without an owning
+disposition. The exact Concho 6.9(a), Red Hat 3.01 and Skechers nested-list
+goldens pass. The private parser tests pass 27 of 27. The AgreementIndex tests
+pass 9 of 9. The structure and inheritance gate passes 120 of 120. An
+independent Sol review approved the packet with no exception.
+
+The output-set digest is
+`5746d28d800d83f60619e947677f70d65c7c4daf902a88c4ec3515adf069be30`.
+The corrective M2 commit is
+`9a0bb6479f56ba4d17ad134fad7da27b75ba31d2`.
+The review SHA-256 is
+`f4681de2e43e447cc2d376e630303903989e8cdbdd77621fb336a40b62f8fd3d`.
+The final receipt SHA-256 is
+`dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585`.
+The receipt records zero model, Phase B, network, product, selector, pin,
+baseline, serving and publication effects. Phase B remains locked.
 
 #### Stop and escalation
 
@@ -1637,8 +2111,10 @@ Revert only the M2 stage commit, or leave `agreement-index.js` and its sealed ou
 ### 20.9 Stage M3: add source links and context engine
 
 **Owner:** Terra B, with Terra A on node API and Terra C on legal fixtures.
-**Dependency:** M2 passed.
+**Dependency:** M2 passed, Ben authorises the exact M3 work order, and Sol
+freezes the contracts listed in section 20.20.
 **Production effect:** additive and shadow-only.
+**Status:** not authorised.
 
 #### Public contract
 
@@ -1649,6 +2125,22 @@ compileContext(focusNodeIds, AgreementIndex, semanticPolicy) -> ContextCompilati
 ```
 
 Implement it in `lib/canonical-v2/context-compilation.js`. It remains behind `analyseAgreement` when integration begins. `ContextCompilation` is a keyed result with `frames_by_focus_node_id`, `ambiguities`, `residuals`, `reference_edges`, `definition_edges` and `semantic_relationships`.
+
+Before Terra writes the module, Sol seals
+`control/m3-authority.json`, schema `STAGE_2Y_M3_AUTHORITY/V1`, and
+`control/semantic-policy.json`, schema `STAGE_2Y_SEMANTIC_POLICY/V1`. The
+authority binds the exact base commit, allowed files, M2 receipt and policy,
+semantic-policy digest, TopBuild index and 6.2 golden nodes, commands, outputs,
+expected zero effects and rollback. The first experiment implements only the
+TopBuild 6.2 fixture defined in `docs/core/PLAN.md`. Run it once:
+
+```bash
+node --test --test-name-pattern="TopBuild 6.2" \
+  tests/canonical-v2-context-compilation.test.js
+```
+
+Do not run the seven-agreement command until that exact fixture passes and Sol
+confirms that the frozen interface did not change.
 
 #### Tasks
 
@@ -1661,9 +2153,24 @@ Implement it in `lib/canonical-v2/context-compilation.js`. It remains behind `an
 7. Create typed control and reciprocal-party relationships where direct source supports them.
 8. Retain competing scope or target alternatives. Do not choose silently.
 9. Compare common context with current family-specific chapeau and party repairs.
-10. Create `control/semantic-policy.json`, schema `STAGE_2Y_SEMANTIC_POLICY/V1`, with a version and digest. It defines `focusNodeIds` as the source-ordered identifiers of every paragraph, sentence, chapeau, limb, sub-limb, proviso, exception and trailing-qualification node, plus any section with none of those descendants. Bind the policy and derived focus list into every compilation.
-11. Create `scripts/stage-2y-context-compilation-shadow.mjs` and `tests/canonical-v2-context-compilation.test.js`. The script accepts only `--control`, `--agreement-manifest`, `--index-root`, `--policy` and `--output-root`.
+10. Validate the frozen `control/semantic-policy.json`. It defines
+    `focusNodeIds` as the source-ordered identifiers of every `PARAGRAPH`,
+    `SENTENCE`, `CHAPEAU`, `LIMB` and `QUALIFICATION` node, plus any `SECTION`
+    with none of those descendants. Derive nested limb depth from parentage.
+    M3 classifies proviso, exception and trailing scope from qualification roles
+    and exact source provenance. Bind the policy and derived focus list into
+    every compilation.
+11. After the bounded experiment passes, create
+    `scripts/stage-2y-context-compilation-shadow.mjs`. The script accepts only
+    `--authority`, `--m2-receipt`, `--control`, `--agreement-manifest`,
+    `--index-root`, `--policy` and `--output-root`. It validates the authority
+    and M2 receipt before reading an index.
 12. Compile context for every sealed M2 index named by `control/cohort-agreements.json`. Seal each result at `shadow/m3/<agreement_id>.context-compilation.json` with schema `CONTEXT_COMPILATION/V1`.
+13. Seal
+    `receipts/stage-2y-structure-m3-context-compilation.json` under the standard
+    receipt contract. It binds the M2 receipt, authority, semantic policy,
+    implementation and test digests, all seven context outputs, diagnostics,
+    independent Sol review and unchanged current-state digests.
 
 #### Focused checks
 
@@ -1671,6 +2178,8 @@ Run these commands once:
 
 ```bash
 node scripts/stage-2y-context-compilation-shadow.mjs \
+  --authority evidence/canonical-v2/stage-2y-structure-migration/control/m3-authority.json \
+  --m2-receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json \
   --control evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json \
   --agreement-manifest evidence/canonical-v2/stage-2y-structure-migration/control/cohort-agreements.json \
   --index-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m2 \
@@ -1678,6 +2187,9 @@ node scripts/stage-2y-context-compilation-shadow.mjs \
   --output-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m3
 
 node --test tests/canonical-v2-context-compilation.test.js
+
+node scripts/stage-2y-structure-migration-validate.mjs \
+  --receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json
 ```
 
 Then run the structure and inheritance gate and the termination inheritance addition in section 20.5 once. Do not run row tests.
@@ -1690,6 +2202,7 @@ Then run the structure and inheritance gate and the termination inheritance addi
 - Child override retains both old and new provenance.
 - All named reference occurrences are represented.
 - Every agreement in `control/cohort-agreements.json` has exactly one sealed context compilation bound to its M2 index digest.
+- The passing M3 receipt re-hashes the M2 trust root and every M3 output.
 - Ambiguity blocks only dependent facts.
 - Current claims and rows remain unchanged.
 
@@ -1701,25 +2214,69 @@ Sol reviews any general rule that changes more than one family or creates compet
 
 Revert only the M3 stage commit, or leave `context-compilation.js` and its sealed outputs unused. Confirm current claim and row digests. The M2 source index remains report-only.
 
-### 20.10 Stage M4: attach current claims and persist provenance
+### 20.10 Stage M4: create the base AgreementAnalysis and proposition validator
 
 **Owner:** integrator and Terra C.
-**Dependency:** M3 passed.
+**Dependency:** the final M3 context-compilation receipt passes and a separate
+M4 work order exists.
 **Production effect:** none. This stage uses shadow memory and sealed JSON only.
+
+M4 proves the common claim schema, Metsera complete-proposition golden and
+current-state diff. It is not projection-ready for families whose required-role
+schema remains `SCHEMA_APPROVAL_PENDING`. M5 produces the consolidated
+AgreementAnalysis after family approval.
 
 #### Tasks
 
-1. Create `control/analysis-policy.json`, schema `STAGE_2Y_STRUCTURE_ANALYSIS_POLICY/V1`. It binds the exact `control/semantic-policy.json`, `control/diff-contract.json`, `control/expected-differences.json`, contract-bundle and current resolver-configuration digests. This file is the `analysisPolicy` input below.
-2. Create `lib/canonical-v2/agreement-analysis.js` with the public call `analyseAgreement(index, analysisPolicy) -> AgreementAnalysis`.
-3. Create an in-memory `ShadowAgreementRepository` for tests. Do not connect it to a database, staging writer or product reader.
-4. Extend shadow evidence edges with source-node identifier and coordinate type.
-5. Permit ordered multi-node evidence without a min-to-max envelope.
-6. Extend shadow claims with context-fact and relationship links.
-7. Preserve existing claim revision identifiers where the semantic result is unchanged. Otherwise use an explicit alias and semantic-equivalence record.
-8. Round-trip `party_source_span`, governing context, source citation, inherited facts and reference edges in the shadow repository.
-9. Implement `scripts/stage-2y-structure-analysis-shadow.mjs` and `tests/stage-2y-structure-analysis-shadow.test.js`. The script accepts only `--control`, `--agreement-manifest`, `--index-root`, `--context-root`, `--policy` and `--output-root`. It rejects any input whose digest is not bound by the control files.
-10. Run the script for every agreement in `control/cohort-agreements.json`. Seal each result at `shadow/m4/<agreement_id>.agreement-analysis.json` with schema `AGREEMENT_ANALYSIS/V1`.
-11. Seal the complete old-to-shadow diff at `shadow/m4/resolution-set-diff.json`, schema `STAGE_2Y_STRUCTURE_RESOLUTION_SET_DIFF/V1`. It contains member identifiers and every field in `control/diff-contract.json`. Stage 2Y does not change or select a pin manifest. Any later request requires separate post-Stage-2Y authority after M9 certification.
+1. Freeze `control/analysis-policy.json`. Bind the accepted M2 and M3 outputs,
+   diff contract, contract bundle and current resolver configuration.
+   `analysisTask` names the requested scope and binds the exact analysis-policy
+   digest. Policy is a controlled dependency of the task, not a second public
+   argument.
+2. Define the versioned required-role schema contract. It records claim
+   definition, required roles, role types, provenance requirements and legal
+   authority. M4 does not invent the role list for every family.
+3. Define `MISSING_REQUIRED_ROLE` as a fail-closed resolution result and a
+   non-renderable state. Build the common validator.
+4. Create `lib/canonical-v2/agreement-analysis.js` with
+   `analyseAgreement(index, analysisTask) -> AgreementAnalysis`.
+5. Create an in-memory `ShadowAgreementRepository` for tests. Do not connect it
+   to a database, staging writer or product reader.
+6. Give each shadow claim two separate states. `legacy_resolution_state`
+   preserves the immutable current state for parity and never authorises a
+   shadow row. `proposition_validation_state` is `COMPLETE`,
+   `SCHEMA_APPROVAL_PENDING`, `MISSING_REQUIRED_ROLE` or `UNRESOLVED`. Only
+   `COMPLETE` can reach projection.
+7. Permit one claim to cite one or more source nodes and ordered,
+   discontiguous evidence spans. Do not replace them with one envelope.
+8. Link every semantic role to direct or inherited source provenance.
+9. Link claims to context facts, definitions, references, qualifications and
+   party-topology relationships.
+10. Preserve an existing claim revision identifier only when the complete legal
+   proposition is unchanged. Otherwise create an explicit alias and
+   equivalence record.
+11. Round-trip every claim, role, evidence edge, relationship and provenance
+    record through the in-memory shadow repository.
+12. Implement `scripts/stage-2y-structure-analysis-shadow.mjs` and
+    `tests/stage-2y-structure-analysis-shadow.test.js`. The script accepts only
+    `--m2-receipt`, `--m3-receipt`, `--control`, `--agreement-manifest`,
+    `--index-root`, `--context-root`, `--policy` and `--output-root`. It
+    validates both receipts and rejects any input whose path, schema, byte
+    length or digest is not bound by them and the control files.
+13. Seal one `AGREEMENT_ANALYSIS/V1` per agreement and a field-level
+    resolution-set diff before any later selector or pin decision.
+14. Seal `receipts/stage-2y-structure-m4-agreement-analysis.json` under the
+    standard receipt contract. It binds the final M2 and M3 receipts, analysis
+    policy, all seven analyses, the field-level diff, implementation and test
+    digests, independent Sol review and unchanged current-state digests.
+
+#### Metsera 7.04 golden
+
+Produce two complete branch propositions. Each branch requires actor,
+operative restriction, object of reliance, complete referenced condition set,
+causal threshold, breaching actor and breached obligation. Delete each role in
+turn. Every deletion must return `MISSING_REQUIRED_ROLE` and no renderable
+claim. Fragment recognition does not pass.
 
 #### Focused checks
 
@@ -1727,12 +2284,17 @@ Run this command once:
 
 ```bash
 node scripts/stage-2y-structure-analysis-shadow.mjs \
+  --m2-receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json \
+  --m3-receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json \
   --control evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json \
   --agreement-manifest evidence/canonical-v2/stage-2y-structure-migration/control/cohort-agreements.json \
   --index-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m2 \
   --context-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m3 \
   --policy evidence/canonical-v2/stage-2y-structure-migration/control/analysis-policy.json \
   --output-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m4
+
+node scripts/stage-2y-structure-migration-validate.mjs \
+  --receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json
 ```
 
 Run `node --test tests/stage-2y-structure-analysis-shadow.test.js`, the evidence and resolution gate, and `node --test tests/canonical-v2-agreement-index.test.js` once each. The new analysis test must round-trip every new field in memory.
@@ -1741,14 +2303,28 @@ Run `node --test tests/stage-2y-structure-analysis-shadow.test.js`, the evidence
 
 - Every current exact evidence slice still matches the same bytes.
 - All 1,526 resolved claim revisions are accounted for by identifier or approved alias.
-- No unexpected state, value, party, attribute, evidence or relationship change exists.
+- No unexpected `legacy_resolution_state`, value, party, attribute, evidence
+  or relationship change exists.
 - Official family open-world counts do not rise.
-- The current readers and records are unchanged. The shadow reader round-trips every new field.
+- Metsera 7.04 satisfies its approved golden schema and records
+  `proposition_validation_state: COMPLETE`. Other family claims retain their
+  immutable legacy comparison state and record
+  `proposition_validation_state: SCHEMA_APPROVAL_PENDING` until their M5 family
+  pack is approved. They are not shadow-renderable.
+- No claim with a missing required role is renderable.
+- The Metsera complete-proposition and role-deletion golden passes.
+- The current records, readers, rows, selectors, pins and baselines are
+  unchanged. The shadow reader round-trips every new field.
 - Rollback reproduces the old result digest.
+- The passing M4 receipt re-hashes its M3 trust root and every M4 output.
 
 #### Stop and escalation
 
-Any semantic difference not in the expected ledger stops the stage. Sol decides technical identity equivalence. Ben decides legal-value or scope changes.
+Any semantic difference not in the expected ledger stops the stage. Stop if
+Metsera 7.04 lacks a required role, if a claim marked
+`SCHEMA_APPROVAL_PENDING` is called resolved, or if any renderer accepts an
+incomplete claim. Sol decides technical identity equivalence. Ben decides
+legal value, scope and family required roles.
 
 #### Rollback
 
@@ -1757,7 +2333,7 @@ Revert only the M4 stage commit, or disable the shadow analysis command. Confirm
 ### 20.11 Stage M5: migrate family resolution in waves
 
 **Owner:** one integrator. Give each Terra agent disjoint family files.
-**Dependency:** M4 passed.
+**Dependency:** the final M4 agreement-analysis receipt passes.
 **Production effect:** shadow-only. The current resolver remains the default throughout M5 to M9.
 
 #### Common family packet
@@ -1766,26 +2342,101 @@ For each family:
 
 1. Inventory every current source-reconstruction rule in its provider, resolver and projection.
 2. State the equivalent source node or context fact.
-3. Change the shadow family adapter to consume the common context. The product default remains current.
-4. Replay saved responses. Do not call a model.
-5. The M5 integrator creates `scripts/stage-2y-structure-family-compare.mjs`. It accepts required `--family`, `--family-manifest`, `--control` and `--output-root` arguments. It rejects keys absent from `control/family-keys.json`. It runs both isolated engines and has no product write mode or runtime-selector effect.
-6. For each exact registry key in the wave table, run:
+3. Prepare a source-first legal calibration pack with three to ten materially
+   different full provisions and one proposed required-role schema.
+4. Obtain Ben's approval of that family schema. Until approval, mapped claims
+   remain `SCHEMA_APPROVAL_PENDING` and are not resolved complete propositions.
+5. Ben seals the approved schema before the comparison run as
+   `control/family-role-schemas/<family_key>.json`, schema
+   `STAGE_2Y_FAMILY_REQUIRED_ROLE_SCHEMA/V1`. It records the family key,
+   versioned schema identifier, exact required roles and types, provenance
+   rules, ruling identifiers, Ben approval identifier and complete payload
+   digest. Compare the complete legal proposition, not recognised fragments.
+6. Make the shadow family adapter return `MISSING_REQUIRED_ROLE` before
+   resolution when a required role is absent or unresolved. The adapter may
+   not reconstruct that role from detached raw text or a renderer.
+7. Change the shadow family adapter to consume the common context. The product default remains current.
+8. Replay saved responses. Do not call a model.
+9. The M5 integrator creates `scripts/stage-2y-structure-family-compare.mjs`.
+   It accepts only `--family`, `--family-manifest`, `--control`,
+   `--role-schema`, `--m4-receipt`, `--analysis-root` and `--output-root`. It
+   validates the signed role-schema identifier, digest and Ben approval before
+   analysis, validates the M4 receipt, rejects keys absent from
+   `control/family-keys.json`, runs both isolated engines and has no product
+   write mode or runtime-selector effect.
+10. For each exact registry key in the wave table, run:
 
    ```bash
    node scripts/stage-2y-structure-family-compare.mjs \
      --family <family_key> \
      --family-manifest evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json \
      --control evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json \
+     --role-schema evidence/canonical-v2/stage-2y-structure-migration/control/family-role-schemas/<family_key>.json \
+     --m4-receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json \
+     --analysis-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m4 \
      --output-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m5/<family_key>
    ```
 
    Here `<family_key>` means one exact uppercase key in the next table. The command writes every packet file in the schema table below that output root.
-7. Verify that the diff covers every claim and row field in `control/diff-contract.json`.
-8. Propose intended improvements with exact source evidence. Apply only entries with the approvals required by section 20.3.
-9. Run only the common seam tests and affected family tests.
-10. Rehearse rollback in the isolated comparison harness and write the standard rollback receipt.
-11. Remove duplicate source reparsing from the shadow implementation only after two-path parity.
-12. Seal `shadow/m5/<family_key>/current.json`, `shadow.json`, `adapter.json`, `claim-diff.json`, `row-diff.json`, `reparse-retirement.json`, `open-world.json`, `selector-state.json` and the standard rollback receipt. Bind the adapter version and policy digests in every file.
+11. Verify that the diff covers every claim and row field in
+   `control/diff-contract.json`, every required role, its direct or inherited
+   provenance and its role-validation result.
+12. Propose intended improvements with exact source evidence. Apply only entries with the approvals required by section 20.3.
+13. Run only the common seam tests and affected family tests.
+14. Rehearse rollback in the isolated comparison harness and write the standard rollback receipt.
+15. Remove duplicate source reparsing from the shadow implementation only after two-path parity.
+16. Seal `shadow/m5/<family_key>/current.json`, `shadow.json`, `adapter.json`,
+    `claim-diff.json`, `row-diff.json`,
+    `reparse-retirement.json`, `open-world.json`, `selector-state.json` and the
+    standard rollback receipt. Bind the adapter, schema and policy digests in
+    every file.
+17. Seal one standard packet receipt at
+    `receipts/stage-2y-structure-m5-<family_key>.json`. It binds the exact
+    signed role-schema input, M4 receipt and every file in that family packet.
+18. After all 25 registered family receipts pass, create
+    `scripts/stage-2y-structure-family-aggregate.mjs` and
+    `tests/stage-2y-structure-family-aggregate.test.js`. The bounded aggregate
+    finaliser accepts only `--m4-receipt`, `--family-manifest`,
+    `--receipt-root`, `--family-root` and `--output`. It derives one receipt
+    filename from each registered family key and rejects a missing, duplicate
+    or extra family before it writes
+    `receipts/stage-2y-structure-m5-family-adapters.json`. The aggregate receipt
+    binds the M4 receipt, all 25 packet receipts, their output sets,
+    implementation and test digests and independent Sol review.
+19. Create `lib/canonical-v2/agreement-analysis-consolidation.js` with one
+    internal call:
+    `consolidateAnalysis(baseAnalysis, approvedFamilyPackets) -> AgreementAnalysis`.
+    It is the only module that applies M5 family results to M4 analysis. The
+    aggregate finaliser and M7 generalisation runner must both call it.
+20. The aggregate finaliser also writes one consolidated
+    `shadow/m5/analysis/<agreement_id>.agreement-analysis.json`, schema
+    `AGREEMENT_ANALYSIS/V1`, for each agreement. It begins from the exact M4
+    analysis, preserves `legacy_resolution_state`, and applies only the
+    approved family required-role schema and result bound by that family's
+    receipt. It changes `proposition_validation_state` only through that
+    governed family result. It preserves exact role provenance and records the
+    M4 analysis revision plus every applied family packet. It rejects a
+    duplicate family claim, an unapproved schema, a missing family packet or an
+    attempt to obtain a semantic role from projection. Every governed claim
+    records its applied required-role schema identifier and digest. This
+    consolidated AgreementAnalysis, not a hidden combination of M4 analysis
+    and family packets, is the semantic input to M6.
+
+Run the aggregate finaliser and validator once after wave 4:
+
+```bash
+node --test tests/stage-2y-structure-family-aggregate.test.js
+
+node scripts/stage-2y-structure-family-aggregate.mjs \
+  --m4-receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json \
+  --family-manifest evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json \
+  --receipt-root evidence/canonical-v2/stage-2y-structure-migration/receipts \
+  --family-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m5 \
+  --output evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m5-family-adapters.json
+
+node scripts/stage-2y-structure-migration-validate.mjs \
+  --receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m5-family-adapters.json
+```
 
 | File below `shadow/m5/<family_key>/` | Schema |
 |---|---|
@@ -1812,14 +2463,24 @@ For each family:
 - Zero unexpected resolved changes.
 - Zero official open-world increase in every family.
 - Every inherited field is source-provenanced.
+- Every resolved shadow claim satisfies its bound family required-role schema.
+- Every missing or unresolved required role returns `MISSING_REQUIRED_ROLE` and
+  remains non-renderable.
+- No family adapter or projection fills a missing role by reparsing raw source.
 - No family source parser remains the only source of a material fact.
 - Every material output change has an expected-difference entry or omission record.
 - The current control claims, rows, selector and pin manifest remain unchanged.
 - Rollback returns exact prior output.
+- The aggregate M5 receipt accounts for every registered family exactly once
+  and re-hashes the M4 trust root, all family packet outputs and every
+  consolidated AgreementAnalysis.
 
 #### Stop and escalation
 
-Stop the affected family only. Do not block unrelated family analysis unless a shared contract failed. Sol handles shared or identity changes. Ben handles legal meaning and grouping.
+Stop the affected family only. Stop it if a fragment-only claim resolves, an
+incomplete claim becomes renderable or required-role provenance is absent. Do
+not block unrelated family analysis unless a shared contract failed. Sol
+handles shared or identity changes. Ben handles legal meaning and grouping.
 
 #### Rollback
 
@@ -1828,7 +2489,7 @@ Keep the current resolver selected. Disable the affected shadow adapter in the i
 ### 20.12 Stage M6: complete output ownership and rows
 
 **Owner:** the integrator owns the output contract. Terra C prepares the ledgers and focused tests.
-**Dependency:** relevant family passed M5.
+**Dependency:** the aggregate M5 family-adapter receipt passes.
 **Production effect:** shadow-only throughout M6 to M9.
 
 #### Tasks
@@ -1836,16 +2497,35 @@ Keep the current resolver selected. Disable the affected shadow adapter in the i
 1. Create `control/output-decisions.json`, schema `STAGE_2Y_OUTPUT_DECISIONS/V1`. Freeze Ben's answers on output ownership, no-output dispositions, material detail, omissions and permitted grouping. Each answer names its section 18 question, source evidence, affected claim definitions and signature. If an answer is missing, record a legal blocker. Terra must not infer it.
 2. Create `control/view-policy.json`, schema `STAGE_2Y_VIEW_POLICY/V1`. It binds `control/output-decisions.json`, the claim vocabulary, route registry, projection versions, source-index version and `control/diff-contract.json`. This file is the `viewPolicy` input below.
 3. Create `lib/canonical-v2/agreement-projection.js` with the public call `projectAgreement(analysis, viewPolicy) -> AgreementProjection`.
-4. Create `scripts/stage-2y-structure-projection-shadow.mjs` and `tests/stage-2y-structure-projection-shadow.test.js`. The script accepts only `--control`, `--analysis-root`, `--family-root`, `--view-policy` and `--output-root`.
-5. Recompute the current row outcome for every one of the 1,526 resolved claim identifiers by using the same current projection and exact row-matching functions. Do not derive members from the saved aggregate. Record each observed match count, including all reproduced 109 non-unique results, the one no-row result and the 175 no-route results.
-6. Add explicit output-owner or approved no-output status for every governed claim definition.
-7. Resolve the current 175 claims in families absent from the route registry through the signed output decisions. Do not infer approval from an existing user interface.
-8. Give the TopBuild 6.3 claim an explicit row owner or approved no-output disposition.
-9. Make every row field name its contributing claims and source nodes.
-10. For grouped rows, retain all atomic branch identities.
-11. Emit an omission ledger for material facts that the row schema cannot display.
-12. Add lawyer-approved completeness fixtures for the four known-loss classes and the traces in section 6.
-13. Seal the outputs in the next table. Bind the claim vocabulary, projection, source-index, analysis, family-adapter, view-policy and output-decision digests.
+4. Create `scripts/stage-2y-structure-projection-shadow.mjs` and
+   `tests/stage-2y-structure-projection-shadow.test.js`. The script accepts
+   only `--control`, `--m5-receipt`, `--analysis-root`, `--view-policy` and
+   `--output-root`. It validates the M5 receipt and its transitive M4, M3 and
+   M2 trust roots before reading a consolidated AgreementAnalysis. The call to
+   `projectAgreement` receives only that analysis and the view policy.
+5. Validate every input claim against its bound required-role schema before
+   routing or projection. Route and project only
+   `proposition_validation_state: COMPLETE`. Treat `legacy_resolution_state`
+   as comparison evidence only. Produce no row for `MISSING_REQUIRED_ROLE`,
+   `SCHEMA_APPROVAL_PENDING`, `UNRESOLVED` or any incomplete claim.
+6. Recompute the current row outcome for every one of the 1,526 resolved claim identifiers by using the same current projection and exact row-matching functions. Do not derive members from the saved aggregate. Record each observed match count, including all reproduced 109 non-unique results, the one no-row result and the 175 no-route results.
+7. Add explicit output-owner or approved no-output status for every governed claim definition.
+8. Resolve the current 175 claims in families absent from the route registry through the signed output decisions. Do not infer approval from an existing user interface.
+9. Give the TopBuild 6.3 claim an explicit row owner or approved no-output disposition.
+10. Make every row field name its contributing claims and source nodes.
+11. For grouped rows, retain every complete branch-claim identity. Group only
+    after a family-specific equivalence signature proves that the relevant
+    legal operation, threshold, timing, qualifications and breached-obligation
+    standard do not differ.
+12. Emit an omission ledger for known roles that an approved compact display
+    does not show. A missing required role is not an omission and cannot be
+    repaired by projection.
+13. Add lawyer-approved completeness fixtures for the four known-loss classes and the traces in section 6.
+14. Seal the outputs in the next table. Bind the claim vocabulary, projection, source-index, analysis, family-adapter, view-policy and output-decision digests.
+15. Seal `receipts/stage-2y-structure-m6-agreement-projection.json` under the
+    standard receipt contract. It binds the aggregate M5 receipt, every M6
+    output, implementation and test digests, independent Sol review and
+    unchanged current-state digests.
 
 | Path below `shadow/m6/` | Schema |
 |---|---|
@@ -1863,12 +2543,15 @@ Run these commands once:
 ```bash
 node scripts/stage-2y-structure-projection-shadow.mjs \
   --control evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json \
-  --analysis-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m4 \
-  --family-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m5 \
+  --m5-receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m5-family-adapters.json \
+  --analysis-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m5/analysis \
   --view-policy evidence/canonical-v2/stage-2y-structure-migration/control/view-policy.json \
   --output-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m6
 
 node --test tests/stage-2y-structure-projection-shadow.test.js
+
+node scripts/stage-2y-structure-migration-validate.mjs \
+  --receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m6-agreement-projection.json
 ```
 
 Then run the generic row and measurement gate and only the affected family previews. Do not regenerate the 130-run baseline. Compare field content, not only counts.
@@ -1877,15 +2560,24 @@ Then run the generic row and measurement gate and only the affected family previ
 
 - Zero approved claim definitions lack an owner or no-output disposition.
 - Zero silent no-row results.
+- Zero rows derive from claims that fail required-role validation.
+- Every row field traces to a role-complete claim and exact role provenance.
+- Every grouped row retains all complete member claims and its approved
+  equivalence signature.
 - The member ledger contains 1,526 unique claim identifiers and reproduces the 109 non-unique, one no-row and 175 no-route aggregate counts before approved changes.
 - Exact row lineage is unique or has an approved grouped-lineage contract.
 - Every material fact is rendered or deliberately omitted.
 - The current control resolution set and rows are unchanged. The shadow set may contain only approved expected improvements.
 - Publication remains inactive.
+- The passing M6 receipt re-hashes its M5 trust root, its transitive M4 chain,
+  every consolidated AgreementAnalysis and every M6 output.
 
 #### Stop and escalation
 
-Ben must answer row grouping and material-detail questions. Sol handles lineage mechanics. Terra may not choose a legal display rule.
+Stop if any incomplete claim renders, a grouped row hides a material difference
+or projection reconstructs a missing semantic role. Ben must answer row
+grouping and material-detail questions. Sol handles lineage mechanics. Terra
+may not choose a legal display rule.
 
 #### Rollback
 
@@ -1897,13 +2589,185 @@ Disable the shadow route and projection in the isolated harness. Confirm unchang
 **Dependency:** M6 passed for all families.
 **Production effect:** report-only.
 
+#### M7 entry packet: add three fully admitted generalisation agreements
+
+M7 cannot claim ten-agreement coverage from the seven agreements sealed by M2.
+Before the lawyer sample is frozen, this packet must pass. Passing this packet
+does not amend or reopen M2. Ben may later revise the numeric gate, but that
+decision must update `docs/core/PLAN.md` and the M7 runner contract before work
+continues. The current work order has no fewer-than-ten fallback.
+
+The exact three candidates are:
+
+| Candidate | Fixed evidence now | Required admission before it counts |
+|---|---|---|
+| Lilly / Verve | `VERVE_AGREEMENT`; locator deal ID `320a3899-0d74-42d6-a412-3a962997d6ca`; SEC URL `https://www.sec.gov/Archives/edgar/data/1840574/000119312525141748/d30505dex21.htm`; raw SHA-256 `0c5317d92be7616364e801ecff9b90c950e466d3e4787f6821294b6bf095317c`, 600,876 bytes; canonical SHA-256 `90242bd60f9a28464c42344f4f92a7e024b0c5825ca9b8374f72e7dc754203a4`, 369,081 bytes; canonical ID `0ec7f053b719c7091b24f3ccee8df3a5290e53f9cb895ccfbb6264587d98fdff`; immutable-source ID `3b0819e1c9e115b08f68ab0c7c782d55ad2488ba612cf11491ccc0f41f390199`; verified bundle `887fb7b4bd52a148bcb65543440153dc36782fc526906776690ac6aee7df7f39` | Its source chain is verified, but `deal_membership_status` is `NOT_ATTEMPTED`. Ben must approve a governed deal membership. Do not invent a `deal:*` key. |
+| AbbVie / Landos | `__fixtures__/demo-deal/landos-abbvie-agreement.txt`; SEC URL `https://www.sec.gov/Archives/edgar/data/1785345/000119312524075991/d779916dex21.htm`; canonical SHA-256 `fa2c0a883c64001e792cbed7b03077cfc4fc31909ac7a1d9e63c0e67b2c233be`, 394,336 bytes; canonical ID `2af56ad568b4a7464599380182021dc74fa6d4a64329427472c46427bf7365bd`; immutable-source ID `0c90f2297654b4549fadea120e0b5e15a1fd81230c6a2173d48398cf49097163`; governed key `deal:landos-abbvie` | The complete real agreement has fixture-level admission only. Re-admit it through the verified SEC source route and bind the new receipt. |
+| Rocket / Redfin | Candidate `455b0ad3-b798-4bfb-9d1a-9dc4d87459f4` in `docs/ingest/seed-50-manifest-2026-07-05.json`; proposed key `rocket-redfin-2025`; SEC URL `https://www.sec.gov/Archives/edgar/data/1382821/000162828025011457/exhibit21-8xk31025.htm`; selection fingerprint `c2a12299a2d24b7a671b91640f09faf0d82d5fdfb305ec3ce00d163fb79286fb` | Candidate metadata is not source admission. Acquire and admit the full exhibit, create its source map and approve governed deal membership. Do not treat the selection fingerprint as a source receipt. |
+
+Ben first authorises the exact source-admission and generalisation work order.
+Sol freezes `control/m7-generalisation-authority.json`, schema
+`STAGE_2Y_M7_GENERALISATION_AUTHORITY/V1`. It binds the base commit, allowed
+files, exact SEC URLs and existing fingerprints, permitted evidence-only reads,
+source-chain commands, M2-M6 implementation and policy digests, output paths,
+time and memory limits, prohibited effects, rollback and approvers. The only
+network effects are reads from the named SEC URLs. Model and Phase B calls,
+database and product writes, selectors, pins, baselines, serving and
+publication remain prohibited.
+
+Implement `scripts/stage-2y-generalisation-source-admit.mjs` and
+`tests/stage-2y-generalisation-source-admit.test.js`. Reuse
+`scripts/lib/canonical-v2-staging-sec-source.mjs`. Preserve the exact raw
+response, canonical UTF-8 text and source map under
+`source/m7-generalisation/<candidate>/`. Produce a source receipt that binds
+the governed deal key, source role `AGREEMENT`, URL, local paths, byte lengths,
+SHA-256 values, converter and verifier digests, canonical-text ID,
+immutable-source ID, source-map digest and admission-manifest ID. Rebuild twice
+from fixed local bytes and require byte-identical canonical output. Reject a
+redirect or content change, incomplete document, amendment uncertainty,
+missing deal membership, duplicate identity or missing source-map coverage.
+
+The source-admission runner takes no URL argument. It reads URLs only from the
+signed M7 authority. Each candidate source receipt records
+`network_read_status`, the authority path and SHA-256, requested URL, final
+URL, redirect count, HTTP status, response byte length and SHA-256, and the
+preserved raw path, byte length and SHA-256. `network_read_status` is
+`PERFORMED` or `NOT_PERFORMED_BOUND_EXISTING_SOURCE`. `PERFORMED` requires HTTP
+200, zero redirects, identical requested and final URLs, and response bytes
+identical to the preserved raw bytes. `NOT_PERFORMED_BOUND_EXISTING_SOURCE`
+requires a prior verified source receipt bound by path, schema, byte length and
+SHA-256. It cannot be inferred from a fixture or candidate record.
+
+The generalisation receipt records `network_calls` as the exact count of
+`PERFORMED` reads. Its `network_read_bindings` are sorted bytewise by requested
+URL and bind every candidate source receipt, status and response. Extend the
+migration validator and source-admission test in this packet. The validator
+re-hashes the authority and each source receipt; requires one status per
+candidate, exact call-count equality, zero redirects and matching response and
+raw bytes; and rejects an unbound URL, call, receipt or source. The later M7
+corpus receipt records zero new calls and binds this receipt.
+
+After all three source receipts pass, Sol seals
+`control/m7-generalisation-cohort.json`, schema
+`STAGE_2Y_M7_GENERALISATION_COHORT/V1`. It contains exactly three unique full
+agreements not present in M2. Each member binds its source receipt and one input
+status for every registered family. The status is an exact recorded-input
+binding, `DETERMINISTIC_NO_PROVIDER` or `INPUT_NOT_AVAILABLE`. The last state
+does not authorise a model call and does not count as semantic family coverage.
+
+Implement only `scripts/stage-2y-structure-generalisation-shadow.mjs` and
+`tests/stage-2y-structure-generalisation-shadow.test.js`. Run:
+
+```bash
+node --test tests/stage-2y-generalisation-source-admit.test.js
+
+node scripts/stage-2y-generalisation-source-admit.mjs \
+  --authority evidence/canonical-v2/stage-2y-structure-migration/control/m7-generalisation-authority.json \
+  --output-root evidence/canonical-v2/stage-2y-structure-migration/source/m7-generalisation
+
+node --test tests/stage-2y-structure-generalisation-shadow.test.js
+
+node scripts/stage-2y-structure-generalisation-shadow.mjs \
+  --authority evidence/canonical-v2/stage-2y-structure-migration/control/m7-generalisation-authority.json \
+  --agreement-manifest evidence/canonical-v2/stage-2y-structure-migration/control/m7-generalisation-cohort.json \
+  --output-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation
+
+node scripts/stage-2y-structure-migration-validate.mjs \
+  --receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-generalisation.json
+```
+
+The second runner imports and calls the frozen M2-M6 interfaces and policies:
+`indexAgreement(exactSource, structuralPolicy)`, the M3 context compiler,
+`analyseAgreement(index, analysisTask)`, the approved M5 adapters,
+`consolidateAnalysis(baseAnalysis, approvedFamilyPackets)` and then
+`projectAgreement(consolidatedAnalysis, viewPolicy)`. It must not call the sealed M2 runner,
+which deliberately binds the original seven and their output root. It must not
+change an accepted M2-M6 module or policy. Such a need returns to the owning
+stage under a new work order.
+
+Write only:
+
+- `shadow/m7-generalisation/m2/<agreement_id>.agreement-index.json`;
+- `shadow/m7-generalisation/m3/<agreement_id>.context-compilation.json`;
+- `shadow/m7-generalisation/m4/<agreement_id>.agreement-analysis.json`;
+- the M5 family packet files under
+  `shadow/m7-generalisation/m5/<family_key>/<agreement_id>/`;
+- `shadow/m7-generalisation/m5/analysis/<agreement_id>.agreement-analysis.json`,
+  the consolidated M5 semantic input to projection;
+- `shadow/m7-generalisation/m6/<agreement_id>.agreement-projection.json`;
+- `shadow/m7-generalisation/generalisation-ledger.json`, ambiguity ledger,
+  claim-closure ledger, resolution-set diff and open-world-by-family ledger
+  under matching V1 schemas;
+- `reviews/stage-2y-structure-m7-generalisation-sol-review.json`; and
+- `receipts/stage-2y-structure-m7-generalisation.json`, using the standard
+  receipt contract with `stage=M7`.
+
+The generalisation receipt binds every additive output, the three additive
+agreement identities, the unchanged sealed-seven cohort digest and one
+combined ten-agreement corpus digest.
+
+The generalisation runner records `NO_LEGACY_BASELINE` where a comparable
+current result does not exist. The no-increase check compares current and
+shadow results only for the same sealed seven agreements, by family. Record
+every unresolved additive occurrence in the combined ten-agreement ledger.
+Do not add it to, subtract it from or compare it with the historical
+seven-agreement total of 1,701. `shadow/m7/open-world-by-family.json` has two
+explicit views: the sealed-seven current-to-shadow comparison by family, and
+the combined-ten absolute members and counts by family. Every combined member
+has one unique `open_world_occurrence_id`; do not deduplicate. M7 fails if a
+sealed-seven family delta is positive. An additive occurrence is not a
+migration increase, but it remains in the combined ledger and any dependent
+incomplete claim still fails closed. M9 consumes the combined-ten members, not
+the seven-agreement comparator. A candidate counts towards ten only if its full
+structure and context pass, every family has an explicit input state, and at
+least one complete role-valid proposition reaches a fully lineaged projection
+without a model call.
+
+Run the standard receipt validator once. Do not repeat unchanged M2-M6 test
+suites. M9 remains the one full-suite gate.
+
+Acceptance requires exactly ten distinct agreement identities, seven sealed
+plus three additive; complete source receipts; exact byte reconstruction;
+deterministic identifiers; valid parentage; exact marker partitions; typed
+ambiguities; proven or typed-unresolved context for every focus node; zero
+incomplete rendered claims; zero unexpected differences where a baseline
+exists; explicit no-baseline states elsewhere; at least one complete
+source-to-row proposition per new agreement; all new ambiguities in the M7
+lawyer packet; byte-identical sealed-seven digests; and a passing Sol review and
+receipt. If any source or deal membership is missing, fewer than three qualify,
+a required accepted module would change, or an agreement lacks the end-to-end
+proposition, stop below ten. Ben may approve a replacement agreement or revise
+the numeric gate. A replacement requires an updated exact work order,
+authority and cohort contract before execution. A numeric revision requires a
+new PLAN entry and work order. Terra and Sol may not infer either decision.
+Rollback excludes the additive receipt from M9 and leaves all failed evidence
+inert.
+
 #### Machine tasks
 
-1. Implement `scripts/stage-2y-structure-corpus-compare.mjs` and `tests/stage-2y-structure-corpus-compare.test.js`. The script accepts only `--control`, `--agreement-manifest`, `--index-root`, `--context-root`, `--analysis-root`, `--family-root`, `--projection-root` and `--output-root`. It uses saved responses and runs both isolated paths.
-2. Run the full frozen cohort through current and shadow paths with the exact command below.
+1. Implement `scripts/stage-2y-structure-corpus-compare.mjs` and
+   `tests/stage-2y-structure-corpus-compare.test.js`. The script accepts only
+   `--control`, `--agreement-manifest`, `--m2-receipt`, `--index-root`,
+   `--m3-receipt`, `--context-root`, `--m5-receipt`, `--analysis-root`,
+   `--family-root`, `--m6-receipt`, `--projection-root`,
+   `--generalisation-receipt`, `--generalisation-root` and `--output-root`. It
+   validates each sealed-seven root against its own passing receipt, uses saved
+   responses and runs both isolated paths for the sealed seven, then verifies
+   and imports the passing additive receipt and outputs into one combined M7
+   measurement set without changing them. Every output binds the same combined
+   corpus digest. `--family-root` is audit evidence only. Claim, resolution and
+   projection results come only from the consolidated AgreementAnalysis under
+   `--analysis-root`; the runner fails if a family packet is used as a second
+   semantic input.
+2. Run the full frozen seven-agreement cohort through current and shadow paths
+   with the exact command below. Bind the separate M7 generalisation receipt
+   and combined ten-agreement corpus digest.
 3. Produce source-node coverage, context provenance, claim closure, resolution diffs, open-world counts, output owners, row fields and omission measurements at the exact paths in the next table.
-4. Verify the 69 Red Hat cases and all 244 known-loss claims individually.
-5. Before any lawyer answer is opened, create `control/lawyer-sample-policy.json`, schema `STAGE_2Y_LAWYER_SAMPLE_POLICY/V1`. Freeze the corpus digest, strata, sample sizes, random seed, acceptance threshold, Decision 17 error-class rule and the identity and authority of any delegated qualified lawyer.
+4. Verify the 69 Red Hat cases, all 244 known-loss claims and all 23 M2 inline
+   parser ambiguities individually. For each M2 ambiguity, record its source
+   span, parser reason, competing structure, affected claims, dependent-claim
+   block and reviewed disposition.
+5. Before any lawyer answer is opened, create `control/lawyer-sample-policy.json`, schema `STAGE_2Y_LAWYER_SAMPLE_POLICY/V1`. Freeze the combined seven-plus-three corpus digest, strata, sample sizes, random seed, acceptance threshold, Decision 17 error-class rule and the identity and authority of any delegated qualified lawyer. Include at least one source-to-row case from each additive agreement.
 6. Select the sample under that frozen policy. Cover every family, every structure type, every known-loss class, grouped rows, no-output dispositions and ambiguity.
 7. Seal `shadow/m7/lawyer-review-packet.json`, schema `STAGE_2Y_LAWYER_REVIEW_PACKET/V1`, before review. Keep source excerpt, row and lineage visible in each record.
 8. Store answers separately in `shadow/m7/lawyer-decision-ledger.json`, schema `STAGE_2Y_LAWYER_DECISION_LEDGER/V1`. Do not modify the sealed packet.
@@ -1921,6 +2785,7 @@ Disable the shadow route and projection in the isolated harness. Confirm unchang
 | `shadow/m7/omission-measurement.json` | `STAGE_2Y_OMISSION_MEASUREMENT/V1` |
 | `shadow/m7/red-hat-69-ledger.json` | `STAGE_2Y_RED_HAT_LIMB_LEDGER/V1` |
 | `shadow/m7/known-loss-244-ledger.json` | `STAGE_2Y_KNOWN_LOSS_LEDGER/V1` |
+| `shadow/m7/m2-inline-23-ledger.json` | `STAGE_2Y_M2_INLINE_AMBIGUITY_LEDGER/V1` |
 
 #### Focused checks
 
@@ -1932,11 +2797,17 @@ node --test tests/stage-2y-structure-corpus-compare.test.js
 node scripts/stage-2y-structure-corpus-compare.mjs \
   --control evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json \
   --agreement-manifest evidence/canonical-v2/stage-2y-structure-migration/control/cohort-agreements.json \
+  --m2-receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json \
   --index-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m2 \
+  --m3-receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json \
   --context-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m3 \
-  --analysis-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m4 \
+  --m5-receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m5-family-adapters.json \
+  --analysis-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m5/analysis \
   --family-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m5 \
+  --m6-receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m6-agreement-projection.json \
   --projection-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m6 \
+  --generalisation-receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-generalisation.json \
+  --generalisation-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation \
   --output-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m7
 ```
 
@@ -1945,15 +2816,45 @@ node scripts/stage-2y-structure-corpus-compare.mjs \
 1. Judge the rendered row as required by Decision 17.
 2. Record correct, incorrect or cannot judge.
 3. State the exact missing or wrong legal fact.
-4. Resolve only the legal questions in section 18.
+4. Resolve only the legal questions in section 18.2.
+
+#### Final M7 receipt
+
+After the machine and lawyer gates pass, Sol seals
+`reviews/stage-2y-structure-m7-sol-technical-review.json` and
+`receipts/stage-2y-structure-m7-corpus-verification.json`. The receipt uses the
+standard packet schema with `stage=M7`. It binds the generalisation receipt,
+the direct final M2, M3, M5 and M6 receipts, the M4 receipt transitively through
+M5, the combined ten-agreement corpus
+digest, every machine output path, schema, byte length and SHA-256, the sample
+policy, sealed lawyer packet, lawyer decision ledger, legal rulings, technical
+review and Ben's legal sign-off. The receipt must bind
+`shadow/m7/open-world-by-family.json`,
+`shadow/m7/claim-closure.json` and `shadow/m7/source-coverage.json` as combined
+ten-agreement outputs. It also binds `control/family-keys.json` by path, schema,
+byte length and SHA-256. Run the standard receipt validator once after sealing.
 
 #### Acceptance
 
 - Every M0 to M6 machine gate passes.
-- All eleven M7 machine outputs validate against their named schemas and account for every frozen cohort member.
-- Unexpected differences are zero and official open-world does not increase in any family.
-- Each of the 69 Red Hat cases and 244 known-loss claims has a member-level disposition.
+- All twelve M7 machine outputs validate against their named schemas and account for every frozen cohort member.
+- The separate M7 generalisation receipt proves three distinct admitted
+  additions and the combined corpus has ten agreements.
+- The final M7 receipt and Sol review pass and bind the same combined corpus
+  digest as every M7 output and the lawyer sample.
+- Unexpected semantic differences on the sealed-seven current-to-shadow
+  comparison are zero.
+- No sealed-seven family has a positive open-world delta. Every additive-three
+  unresolved occurrence appears in the combined-ten ledger with
+  `NO_LEGACY_BASELINE`; the combined absolute count is not compared with
+  1,701.
+- Each of the 69 Red Hat cases and 23 M2 parser ambiguities has a reviewed
+  member-level disposition. Every known material information loss in the 244
+  known-loss set has a verified fix. A non-material or false-positive member
+  has an evidenced disposition.
+- Every family has an approved calibration policy or approved no-output policy.
 - Ben approves the sample policy and threshold before answers are opened.
+- The frozen blind sample is complete and passes its pre-approved threshold.
 - Human acceptance is labelled as human acceptance, not inferred from 1,097.
 - Any error class is tracked under Decision 17. No class is hidden by an overall average.
 
@@ -1967,27 +2868,59 @@ No cutover has occurred. Retain both sealed result sets.
 
 ### 20.14 Stage M8: Phase B readiness, still locked
 
-**Owner:** Sol reviewer. Terra may prepare deterministic packets only.
-**Dependency:** M7 machine and legal gates passed.
-**Production effect:** none unless Ben later creates separate authority.
+**Owner:** Sol reviewer. Terra may prepare deterministic packets only under an
+explicit M8 work order.
+**Dependency:** M7 machine and legal gates passed, and Ben authorises the exact
+M8 work order.
+**Production effect:** none.
+**Status:** not authorised. M8 packet preparation and a later Phase B model
+experiment require separate authority decisions.
 
-#### Tasks before asking for authority
+#### Tasks after M8 authority and before any Phase B experiment authority
 
-1. Implement the deterministic `PhaseBInputPacket` builder in `lib/canonical-v2/phase-b-input-packet.js` and create `tests/stage-2y-phase-b-input-packet.test.js`. Seal one no-call example at `shadow/m8/phase-b-input-packet.json`, schema `STAGE_2Y_PHASE_B_INPUT_PACKET/V1`.
-2. Prove source, tree, context, definition and reference scope closure.
+1. Implement the deterministic `PhaseBInputPacket` builder in
+   `lib/canonical-v2/phase-b-input-packet.js`, create
+   `scripts/stage-2y-phase-b-packet-shadow.mjs` and
+   `tests/stage-2y-phase-b-input-packet.test.js`. Freeze
+   `control/m8-recorded-inputs.json`, schema
+   `STAGE_2Y_M8_RECORDED_INPUTS/V1`, with every saved evaluation-input path,
+   schema, byte length and SHA-256. The runner accepts only `--m2-receipt`,
+   `--index-root`, `--m5-receipt`, `--analysis-root`, `--m7-receipt`,
+   `--recorded-inputs` and `--output-root`. Seal one no-call example at
+   `shadow/m8/phase-b-input-packet.json`, schema
+   `STAGE_2Y_PHASE_B_INPUT_PACKET/V1`.
+2. Consume the final M5 family-adapter receipt and prove source, tree, context,
+   definition, reference and approved required-role-schema closure. Reject a
+   `SCHEMA_APPROVAL_PENDING` or unbound family schema.
 3. Keep historical candidates and decisions in `shadow/m8/phase-b-evaluation-packet.json`, schema `STAGE_2Y_PHASE_B_EVALUATION_PACKET/V1`.
 4. Verify proposal-only output and deterministic evidence anchoring.
 5. Use recorded responses for interface tests.
 6. Sol records the technical comparator decision between the prior Terra and Sol protocol versions in `shadow/m8/comparator-decision.json`, schema `STAGE_2Y_PHASE_B_COMPARATOR_DECISION/V1`.
 7. Present `shadow/m8/experiment-plan.json`, schema `STAGE_2Y_PHASE_B_EXPERIMENT_PLAN/V1`, with one bounded experiment, call cap, cost cap and stop conditions, to Ben.
+8. Seal `receipts/stage-2y-structure-m8-phase-b-readiness.json` under the
+   standard receipt contract. It binds the direct final M2, M5 and M7 receipts,
+   every M8 packet file, builder and test digests, zero model and provider
+   calls, and the passing Phase B route-lock proof.
 
-Every file binds the accepted M7 artefact digests and the exact source-index, analysis and projection versions proposed for M9. M9 must stop if its candidate does not match them. Preparing these files grants no authority to run Phase B.
+Every file binds the accepted M7 artefact digests, final M5 receipt and the
+exact source-index, consolidated analysis and projection versions proposed for
+M9. M9 must stop if its candidate does not match them. Preparing these files
+grants no authority to run Phase B.
 
 #### Focused checks
 
 Run this command once with recorded responses only:
 
 ```bash
+node scripts/stage-2y-phase-b-packet-shadow.mjs \
+  --m2-receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json \
+  --index-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m2 \
+  --m5-receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m5-family-adapters.json \
+  --analysis-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m5/analysis \
+  --m7-receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-corpus-verification.json \
+  --recorded-inputs evidence/canonical-v2/stage-2y-structure-migration/control/m8-recorded-inputs.json \
+  --output-root evidence/canonical-v2/stage-2y-structure-migration/shadow/m8
+
 node --test \
   tests/stage-2y-phase-b-input-packet.test.js \
   tests/canonical-v2-provider-record-replay.test.js \
@@ -2018,14 +2951,37 @@ No model call or live route exists to roll back. Disable the packet builder if r
 
 #### Tasks
 
-1. Implement `scripts/stage-2y-structure-candidate-harness.mjs` and `tests/stage-2y-structure-candidate-harness.test.js`. The script accepts a required `--candidate`, the flag `--rehearse-rollback`, and a required `--output`. It can select current and shadow adapters only inside an isolated in-memory harness. It has no runtime-selector, pin-manifest, database or product-write operation.
-2. Seal `shadow/m9/release-candidate.json`, schema `STAGE_2Y_RELEASE_CANDIDATE/V1`. Bind the exact commit, source-index version, policy digests, family-adapter versions, projection versions, candidate-harness and test digests, and M0 to M7 receipts. Bind the M8 receipt if M8 ran. Otherwise record `M8_NOT_RUN_PHASE_B_LOCKED` in the release candidate.
-3. Run `node --test tests/stage-2y-structure-candidate-harness.test.js` once.
-4. Run each required focused seam gate once on that exact candidate only if it has not already run against the same commit and input digests. Do not repeat an unchanged check.
-5. Run `npm test` once as the full integration gate.
-6. If shadow persistence changed, run the database-backed writer gate once against an approved throwaway local database. If none is available, record `NOT_RUN` and stop certification.
-7. Verify control hashes and all migration receipts.
-8. Run this isolated rollback rehearsal once:
+1. Implement `scripts/stage-2y-remaining-open-world-ledger.mjs` and `tests/stage-2y-remaining-open-world-ledger.test.js`. The builder accepts only `--m7-receipt`, `--open-world`, `--claim-closure`, `--source-coverage`, `--family-manifest` and `--output`. It validates the M7 receipt itself as the signed passing trust root, then computes and records that receipt's path, schema, byte length and SHA-256. The receipt must bind the other four input paths, schemas, byte lengths and SHA-256 values. The builder also verifies the combined certified agreement-ID set and corpus digest. An arbitrary file with the right schema is rejected.
+2. Build `shadow/m9/remaining-open-world.json`, schema `STAGE_2Y_PRIVATE_INTERNAL_REMAINING_OPEN_WORLD/V1`, once. Its exact top-level keys are `schema_version`, `ledger_id`, `source_corpus_digest`, `input_bindings`, `items`, `total` and `by_family`. `input_bindings` is sorted bytewise by path and records the path, schema, byte length and SHA-256 of the M7 receipt, combined open-world, combined claim-closure, combined source-coverage and family-manifest inputs.
+
+   The M7 open-world output must give every upstream member one unique `open_world_occurrence_id`. Preserve exactly one item per upstream member. Do not deduplicate. Each item has the exact keys `item_id`, `upstream_occurrence_id`, `family_key`, `related_family_keys`, `source_anchors`, `claim_ids`, `proposal_ids`, `reason_code` and `state`. Derive `item_id` as `contentId('STAGE_2Y_REMAINING_OPEN_WORLD_ITEM/V1', { upstream_occurrence_id })`. `state` is exactly `OPEN_WORLD`. `family_key` is one registered governed family or `UNOWNED`; related families do not affect the primary count.
+
+   Each `source_anchors` member has the exact keys `source_node_id`, `start_byte`, `end_byte` and `text_sha256`, in canonical UTF-8 half-open byte coordinates. Validate the node, bounds and slice hash against the exact sources bound by `source-coverage.json`. Sort anchors by source-node ID, start byte, end byte and hash. Sort related-family, claim and proposal identifier arrays bytewise. Require at least one source anchor and at least one claim or proposal identifier. Reject duplicate item or upstream identifiers.
+
+   Sort `items` bytewise by `item_id`. `by_family` is an array sorted by `family_key` with one row for every registered family plus `UNOWNED`; its counts form an exact one-bucket partition and sum to `total`, which equals `items.length`. Derive `ledger_id` with domain `STAGE_2Y_PRIVATE_INTERNAL_REMAINING_OPEN_WORLD/V1` from the complete payload excluding `ledger_id`. Emit canonical JSON bytes. The test requires byte-identical repeated output, exact receipt-bound inputs, slice validation, duplicate rejection and a complete partition.
+3. Run the ledger test once:
+
+   ```bash
+   node --test tests/stage-2y-remaining-open-world-ledger.test.js
+
+   node scripts/stage-2y-remaining-open-world-ledger.mjs \
+     --m7-receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-corpus-verification.json \
+     --open-world evidence/canonical-v2/stage-2y-structure-migration/shadow/m7/open-world-by-family.json \
+     --claim-closure evidence/canonical-v2/stage-2y-structure-migration/shadow/m7/claim-closure.json \
+     --source-coverage evidence/canonical-v2/stage-2y-structure-migration/shadow/m7/source-coverage.json \
+     --family-manifest evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json \
+     --output evidence/canonical-v2/stage-2y-structure-migration/shadow/m9/remaining-open-world.json
+   ```
+
+4. Implement `scripts/stage-2y-structure-candidate-harness.mjs` and `tests/stage-2y-structure-candidate-harness.test.js`. The script accepts a required `--candidate`, the flag `--rehearse-rollback`, and a required `--output`. It can select current and shadow adapters only inside an isolated in-memory harness. It has no runtime-selector, pin-manifest, database or product-write operation.
+5. Seal `shadow/m9/release-candidate.json`, schema `STAGE_2Y_RELEASE_CANDIDATE/V1`. Bind the exact commit, source-index version, policy digests, family-adapter versions, projection versions, candidate-harness and test digests, remaining-open-world builder and test digests, M0 to M7 receipts, the M7 generalisation receipt and combined ten-agreement corpus digest, and the remaining-open-world ledger path, schema, byte length, SHA-256, `ledger_id`, total and family counts. Bind the M8 receipt if M8 ran. Otherwise record `M8_NOT_RUN_PHASE_B_LOCKED` in the release candidate.
+6. Run `node --test tests/stage-2y-structure-candidate-harness.test.js` once.
+7. Run each required focused seam gate once on that exact candidate only if it has not already run against the same commit and input digests. Do not repeat an unchanged check.
+8. Run `bash scripts/ci/run-all-invariants.sh` once, then `npm run build` once.
+   The invariants script already runs `npm test`; do not run it separately.
+9. If shadow persistence changed, run the database-backed writer gate once against an approved throwaway local database. If none is available, record `NOT_RUN` and stop certification.
+10. Verify control hashes and all migration receipts.
+11. Run this isolated rollback rehearsal once:
 
    ```bash
    node scripts/stage-2y-structure-candidate-harness.mjs \
@@ -2034,18 +2990,21 @@ No model call or live route exists to roll back. Disable the packet builder if r
      --output evidence/canonical-v2/stage-2y-structure-migration/shadow/m9/rollback-receipt.json
    ```
 
-   The command must select current, then shadow, then current inside the harness and record all claim and row digests. It must not change the current runtime selector or pin manifest.
-9. Verify and seal `shadow/m9/rollback-receipt.json`, schema `STAGE_2Y_ROLLBACK_RECEIPT/V1`.
-10. Seal `shadow/m9/stage-2y-certificate.json`, schema `STAGE_2Y_CERTIFICATE/V1`, with all measurements and legal sign-off.
-11. Record remaining typed ambiguities and approved no-output cases.
-12. Confirm internal cutover authority remains `NONE`, publication authorisation remains `NONE` and external serving remains disabled.
+   The command must select current, then shadow, then current inside the harness and record all claim, row and open-world digests. It must not change the current runtime selector or pin manifest.
+12. Verify and seal `shadow/m9/rollback-receipt.json`, schema `STAGE_2Y_ROLLBACK_RECEIPT/V1`.
+13. Seal `shadow/m9/stage-2y-certificate.json`, schema `STAGE_2Y_CERTIFICATE/V1`, with all measurements and legal sign-off. Bind the remaining-open-world ledger path, schema, byte length, SHA-256, `ledger_id`, total and family counts.
+14. Record remaining typed ambiguities and approved no-output cases.
+15. Confirm internal cutover authority remains `NONE`, publication authorisation remains `NONE` and external serving remains disabled.
 
 #### Acceptance
 
 - Completion conditions 1 to 12 in section 20.1 pass.
+- At least ten agreements pass certification.
+- The certificate proves seven sealed plus three additive agreement identities
+  and binds the passing M7 generalisation receipt.
 - All unexpected-difference lists are empty.
 - Every expected difference has technical and, where needed, legal approval.
-- Full rollback and restore are proven.
+- Full rollback restores the old claim, row and open-world digests.
 - The final certificate states whether Phase B was unused or separately authorised.
 - The certificate states that M10 is ready for an authority decision. It does not grant that authority.
 
@@ -2063,7 +3022,14 @@ If any gate fails, do not certify and do not publish. Return only the affected w
 
 Before Ben decides whether to authorise M10, the integrator creates `tests/stage-2y-internal-extractor-cutover.test.js`. The integrator then creates `evidence/canonical-v2/stage-2y-internal-cutover/smoke-plan.json`, schema `STAGE_2Y_INTERNAL_CUTOVER_SMOKE_PLAN/V1`. It names the test path and digest, one saved-response case from each M5 wave, the exact commands, the expected claim, row and open-world digests, and controls that require zero model calls, zero product-data writes, no publication authority and no external serving.
 
+The M9 certificate already binds `evidence/canonical-v2/stage-2y-structure-migration/shadow/m9/remaining-open-world.json`, schema `STAGE_2Y_PRIVATE_INTERNAL_REMAINING_OPEN_WORLD/V1`. The smoke plan repeats its path, schema, byte length, SHA-256, `ledger_id`, total and counts by family. M10 does not rebuild or copy it.
+
 If the proposed selector requires a new pin manifest, the integrator also creates `scripts/stage-2y-internal-pin-manifest-build.mjs`, `scripts/stage-2y-internal-pin-manifest-install.mjs` and `tests/stage-2y-internal-pin-manifest.test.js`. The builder accepts only `--release-candidate` and `--output`. It writes the complete proposed bytes to `evidence/canonical-v2/stage-2y-internal-cutover/candidate-pin-manifest.json`, schema `STAGE_2Y_INTERNAL_EXTRACTOR_PIN_MANIFEST/V1`. It uses only the sorted saved-run paths and digests bound by the M9 release candidate. Run the builder and test once before authority:
+
+This evidence file contains inert proposed bytes. Before Ben grants the exact
+M10 authority, it is not installed, registered or selected as a pin manifest,
+and the packet records `pin_changes: 0`. Only the post-authority atomic install
+to the named immutable target counts as pin-manifest creation.
 
 ```bash
 node scripts/stage-2y-internal-pin-manifest-build.mjs \
@@ -2089,10 +3055,13 @@ Before any selector, pin-manifest, runtime or product-state change, Ben signs `e
 - the exact current and target selector values;
 - the selector file and key;
 - the exact current and target extractor, source-index, analysis and projection versions;
+- the exact remaining-open-world ledger path, schema, byte length, SHA-256,
+  `ledger_id`, total and counts by family;
 - whether creation and selection of one new immutable pin manifest is authorised. If yes, it names the candidate-manifest, builder, installer and test paths and digests, the approved build and install commands, the exact target path, schema and expected digest. If no, it records `NOT_REQUIRED`;
 - the exact private internal consumers in scope;
 - publication authority `NONE` and external serving authority `NONE`; and
-- the rollback command, prior selector, prior manifest and expected old digests.
+- the rollback command, prior selector, prior manifest and expected old claim,
+  row and open-world digests.
 
 This report is not that authority. If the selector or its consumers cannot be identified exactly, stop and escalate to Sol.
 
@@ -2104,17 +3073,39 @@ This report is not that authority. If the selector or its consumers cannot be id
 4. Change only the named versioned selector for the authorised private internal consumers. If a new pin manifest was authorised, select only that named manifest.
 5. Run the cutover test once against the changed selector with the publication and Phase B lock gate. This is a new selector state, not a repeat of the isolated rehearsal.
 6. Run one saved-response private extraction smoke case from each M5 wave. Do not call a model. Compare exact claim, row and open-world results with the M9 candidate.
-7. Confirm zero unexpected semantic changes, zero family open-world increase, zero product-data write, publication authority `NONE` and external serving disabled.
-8. Seal `evidence/canonical-v2/stage-2y-internal-cutover/cutover-receipt.json`, schema `STAGE_2Y_INTERNAL_CUTOVER_RECEIPT/V1`, and `evidence/canonical-v2/stage-2y-internal-cutover/mission-ready-certificate.json`, schema `STAGE_2Y_MISSION_READY_CERTIFICATE/V1`. Record the old and new selectors, optional new manifest, commands, digests and rollback result.
+7. Verify that the sealed M9 `remaining-open-world.json` still matches the M9 candidate and the signed path, schema, byte length, SHA-256, `ledger_id`, total and family counts. Bind those unchanged measurements in both the cutover receipt and activation certificate. The historical 1,701 count is the M0 comparison baseline, not this ledger's required size.
+8. Confirm zero unexpected semantic changes, zero family open-world increase, zero product-data write, publication authority `NONE` and external serving disabled.
+9. Seal `evidence/canonical-v2/stage-2y-internal-cutover/cutover-receipt.json`,
+   schema `STAGE_2Y_INTERNAL_CUTOVER_RECEIPT/V1`, and
+   `evidence/canonical-v2/stage-2y-internal-cutover/private-internal-extractor-active-certificate.json`,
+   schema `STAGE_2Y_PRIVATE_INTERNAL_EXTRACTOR_ACTIVE_CERTIFICATE/V1`. Record
+   the old and new selectors, optional new manifest, commands, digests and
+   rollback result. The activation certificate binds the exact signed M10
+   authority and final M9 certificate by path, schema, byte length and SHA-256,
+   and records the M9 packet identifier and candidate digest. Reject any
+   mismatch between authority, M9 trust root, installed target and observed
+   selector.
+
+Both M10 outputs also bind the M9 release candidate and smoke plan by path,
+schema, byte length and SHA-256. The cutover receipt records the authority ID,
+old and new selector, optional manifest, commands, results and rollback proof.
+The activation certificate binds the cutover receipt and repeats the same
+authority ID, M9 certificate digest and release-candidate digest. The validator
+rejects any mismatch. Product Stage 3 validates this equality before reading
+the activation certificate.
 
 #### Acceptance
 
 - The authorised private internal path selects the certified extractor version.
 - All four smoke cases match the M9 candidate exactly.
 - The prior extractor and any prior manifest remain available.
-- Rollback restores the old claim and row digests.
+- Rollback restores the old claim, row and open-world digests.
 - No current control baseline was modified.
 - No model route, publication path or external serving path was activated.
+- The activation certificate binds the exact path, schema, byte length,
+  SHA-256, `ledger_id`, total and family counts of the remaining M10 open-world
+  ledger.
+- The achieved state is only `PRIVATE_INTERNAL_EXTRACTOR_ACTIVE`.
 
 #### Stop and escalation
 
@@ -2122,9 +3113,685 @@ Stop before task 3 on stale authority, unknown consumer scope, a selector or pin
 
 #### Rollback
 
-Restore the exact prior selector and prior versioned manifest named in the authority. Run `node --test tests/stage-2y-internal-extractor-cutover.test.js` once. Confirm the old claim, row, publication and external-serving digests. Record the result in `evidence/canonical-v2/stage-2y-internal-cutover/rollback-receipt.json`, schema `STAGE_2Y_INTERNAL_CUTOVER_ROLLBACK_RECEIPT/V1`. Do not delete the failed candidate or overwrite evidence.
+Restore the exact prior selector and prior versioned manifest named in the authority. Run `node --test tests/stage-2y-internal-extractor-cutover.test.js` once. Confirm the old claim, row, open-world, publication and external-serving digests. Record the result in `evidence/canonical-v2/stage-2y-internal-cutover/rollback-receipt.json`, schema `STAGE_2Y_INTERNAL_CUTOVER_ROLLBACK_RECEIPT/V1`. Do not delete the failed candidate or overwrite evidence.
 
-### 20.17 Sol escalation list
+#### Product work retained after M10
+
+M10 ends at `PRIVATE_INTERNAL_EXTRACTOR_ACTIVE`. It does not write product
+data, serve new data, complete product views, security or operations, enable
+publication, or make the product ready for external use. The retained route in
+`docs/core/PLAN.md`, section 16, still follows: Stage 3 semantic and taxonomy
+work; Stage 4 durable validation and import; Stage 5 database reading, serving
+and rendered rows; Stage 6 source integrity and corpus certification; Stage 7
+security and operations; Stage 8 product features; and Stage 9 production
+cutover and rollback. Each stage requires its own work order and any authority
+named by that stage.
+
+### 20.17 Product Stages 3 to 9
+
+The following packets continue from M10 to a mission-ready product. They are
+proposed only. No stage below is currently authorised. Before Terra starts a
+stage, the integrator freezes the exact base commit, allowed files, input and
+policy digests, output paths, commands, expected differences, prohibited
+effects and rollback. No model or Phase B call is permitted without separate
+Ben authority. No stage may overwrite a baseline, pin, sealed receipt or
+production record. Run focused checks once. Run the full suite only at the
+Stage 9 integration gate, or when focused checks cannot bound the change.
+
+Each Product Stage has one final machine trust root. It uses schema
+`PRODUCT_STAGE_PACKET_RECEIPT/V1` and records the stage, exact base commit,
+authority binding, predecessor receipt bindings, input and output bindings,
+environment, permitted effects, focused checks, rollback result and
+`status: PASS | STOPPED | ESCALATED`. Each binding records path, schema, byte
+length and SHA-256. A downstream work order accepts and validates the final
+receipt for every earlier output root that it reads. It rejects a missing,
+extra or changed file. A prose statement that a stage passed is not enough.
+
+| Product Stage | Final trust root | Required predecessor trust root |
+|---|---|---|
+| 3 | `evidence/canonical-v2/product-stage-3/receipt.json` | Direct M9 certificate, Stage 2Y M6 receipt and M10 activation certificate |
+| 4 | `evidence/canonical-v2/product-stage-4/receipt.json` | Stage 3 receipt |
+| 5 | `evidence/canonical-v2/product-stage-5/receipt.json` | Direct Stage 3 and Stage 4 receipts |
+| 6 | `evidence/canonical-v2/product-stage-6/receipt.json` | Direct Stage 3, Stage 4 and Stage 5 receipts; binds `corpus-certificate.json` and `certified-corpus-candidate.json` |
+| 7 | `evidence/canonical-v2/product-stage-7/receipt.json` | Stage 6 receipt |
+| 8 | `evidence/canonical-v2/product-stage-8/receipt.json` | Stages 5, 6 and 7 receipts; binds `preview-import-state.json` |
+| 9 | `evidence/canonical-v2/product-stage-9/production-cutover-receipt.json` | Stages 3 to 8 receipts and the exact one-use production authority |
+| 9F | `evidence/canonical-v2/product-stage-9f/receipt.json` | Direct Stage 6 and Stage 9 receipts, separate Capitalisation work order and exact one-use Stage 9F authority |
+
+Sol reviews every final receipt. Ben signs any legal ruling or external effect
+required by that stage. Rollback keeps the failed receipt and outputs as inert
+evidence; it never rewrites an earlier passing receipt.
+
+An additive product-stage revision writes
+`evidence/canonical-v2/product-stage-<stage>/revisions/<revision_id>/receipt.json`.
+It binds the exact prior receipt and never overwrites it. Every downstream work
+order names the exact base or revision receipt that it consumes. There is no
+mutable `current` alias.
+
+#### Product Stage 3: close semantic and taxonomy work
+
+**Owner:** one integrator; Terra agents on disjoint families; Sol for shared
+schemas; Ben for legal roles and dispositions.
+
+**Dependency:** unchanged final M9 certificate, final Stage 2Y M6 receipt,
+unchanged M10 activation certificate, its exact bound
+`remaining-open-world.json` ledger and an approved Stage 3 work order. Stage 3
+stops if a trust root changes or if the ledger path, schema, byte length,
+SHA-256, `ledger_id`, total or family counts do not match.
+
+**Permitted effect:** versioned shadow semantic policies, claim definitions,
+decision ledgers and additive output-owner and view-policy extensions only. Do
+not change the active extractor selector, sealed M6 controls, product data,
+serving or publication.
+
+Tasks:
+
+1. Apply the approved payment-trigger and structured-delay rulings inside
+   complete Termination Fee propositions.
+2. Cluster every member of the M10-bound remaining-open-world ledger by
+   proposed legal or comparison type. The 1,701 figure is the historical M0
+   baseline only. It is not the Stage 3 input count.
+3. For each cluster, prepare a source-first family pack. Record an approved
+   claim definition, approved no-output disposition or typed unresolved legal
+   question.
+4. Require a family required-role schema and exact provenance before any new
+   claim resolves.
+5. Keep Capitalisation parked until Stage 9F.
+6. Produce a field-level current-to-shadow resolution diff and open-world counts
+   by family.
+7. Before decisions are sealed, Ben seals
+   `evidence/canonical-v2/product-stage-3/semantic-disposition-targets.json`,
+   schema `PRODUCT_STAGE_3_SEMANTIC_DISPOSITION_TARGETS/V1`. Its three sorted
+   collections are `claim_definitions`, `no_output_dispositions` and
+   `legal_questions`. Every target has exactly `target_id`, `target_kind`,
+   `family_key`, `definition`, `required_roles`, `provenance_rules`,
+   `ruling_ids` and `approver_ids`. A claim-definition target has a non-empty
+   family required-role schema and provenance rules. The other target kinds
+   have an empty required-role list. Derive each target ID under its versioned
+   target-kind domain, sort each collection by target ID and reject an ID that
+   appears twice or in more than one collection. The top-level target-set ID
+   binds the complete payload. This is the legal authority for target meaning;
+   the builder cannot create it.
+8. Seal `evidence/canonical-v2/product-stage-3/open-world-decisions.json`,
+   schema `PRODUCT_STAGE_3_OPEN_WORLD_DECISIONS/V1`. It contains one proposed
+   decision for every M10 `item_id` and no other item. Its exact top-level keys
+   are `schema_version`, `decision_set_id`, `input_binding`, `items` and
+   `total`. The input binding records the activation certificate, M10 ledger
+   and semantic-target-set paths, schemas, byte lengths, SHA-256 values and
+   identifiers. Sort items by
+   `item_id`; require `total=items.length`; and derive `decision_set_id` under
+   domain `PRODUCT_STAGE_3_OPEN_WORLD_DECISIONS/V1` from the complete payload
+   excluding that ID. Each decision has the exact keys `item_id`,
+   `disposition`, `target_id`, `ruling_ids` and `approver_ids`. The closed disposition values are
+   `APPROVED_CLAIM_DEFINITION`, `APPROVED_NO_OUTPUT` and
+   `OPEN_LEGAL_QUESTION`. `target_id` identifies the approved claim definition,
+   no-output disposition or legal-question record of the matching target kind.
+   Reject an unknown, duplicate or wrong-kind target. Sort ruling and approver
+   identifiers bytewise and require both arrays to be non-empty. Approval of an
+   open-question disposition does not answer the legal question. Require every
+   target in the target set to be referenced by at least one M10 item. Reject
+   an extra unreferenced target.
+9. Implement `scripts/product-stage-3-open-world-disposition.mjs` and
+   `tests/product-stage-3-open-world-disposition.test.js`. The builder accepts
+   only `--activation-certificate`, `--input-ledger`, `--targets`,
+   `--decisions` and `--output`. It verifies the exact M10 ledger path, schema, byte length,
+   SHA-256 and `ledger_id` against the activation certificate. It writes
+   `evidence/canonical-v2/product-stage-3/open-world-disposition-ledger.json`,
+   schema `PRODUCT_STAGE_3_OPEN_WORLD_DISPOSITION_LEDGER/V1`. Its exact
+   top-level keys are `schema_version`, `ledger_id`, `input_binding`,
+   `targets_binding`, `decisions_binding`, `items`, `total` and
+   `by_disposition`. Sort items by
+   `item_id`. Each item has exactly the five decision keys `item_id`,
+   `disposition`, `target_id`, `ruling_ids` and `approver_ids`; it preserves the
+   validated decision bytes. `by_disposition` has exactly one
+   `{ disposition, count }` row for each of the three closed values, sorted
+   bytewise by `disposition`, including zero counts. Require a one-to-one match
+   with the M10 input and reject every duplicate, missing or extra item. Derive
+   `ledger_id` under domain
+   `PRODUCT_STAGE_3_OPEN_WORLD_DISPOSITION_LEDGER/V1` from the complete payload
+   excluding `ledger_id` and emit canonical JSON.
+   `input_binding` records the activation-certificate and remaining-open-world
+   paths, schemas, byte lengths, SHA-256 values and ledger ID.
+   `decisions_binding` records the decisions path, schema, byte length, SHA-256
+   and decision-set ID.
+   `targets_binding` records the target-set path, schema, byte length, SHA-256
+   and target-set ID.
+10. Seal
+   `evidence/canonical-v2/product-stage-3/output-owner-extension.json`, schema
+   `PRODUCT_STAGE_3_OUTPUT_OWNER_EXTENSION/V1`, and
+   `evidence/canonical-v2/product-stage-3/view-policy-extension.json`, schema
+   `PRODUCT_STAGE_3_VIEW_POLICY_EXTENSION/V1`. For every
+   `APPROVED_CLAIM_DEFINITION`, record exactly one approved output owner or an
+   approved no-output disposition. Bind each projected field to its complete
+   claim and exact source lineage. Record each approved compact omission. These
+   files extend the sealed M6 controls. They do not mutate them.
+   The two extensions contain exactly one governed entry for every reachable
+   `APPROVED_CLAIM_DEFINITION` target and no extra entry.
+11. Implement `scripts/product-stage-3-semantic-candidate.mjs` and
+    `tests/product-stage-3-semantic-candidate.test.js`. The builder accepts only
+    `--activation-certificate`, `--m9-certificate`, `--m6-receipt`,
+    `--base-owner-registry`, `--base-view-policy`, `--disposition-ledger`,
+    `--targets`, `--owner-extension`, `--view-extension` and `--output-root`.
+    It uses only the M9-bound deterministic inputs and accepted M5/M6 modules.
+    It makes no provider call. It writes role-complete claims, relationships,
+    projections, resolution diff and open-world-by-family outputs. It also
+    applies the approved Stage 3 extensions to the sealed M6 controls and
+    writes one consolidated output-owner registry and one consolidated view
+    policy. Later product stages read these consolidated controls, not the base
+    and extension as separate semantic inputs. It then seals
+    `evidence/canonical-v2/product-stage-3/semantic-candidate.json`, schema
+    `PRODUCT_STAGE_3_SEMANTIC_CANDIDATE/V1`. That manifest binds every output by
+    path, schema, byte length and SHA-256, the exact source corpus, semantic
+    target set, disposition ledger and owner/view-policy extensions. A claim
+    that is not `COMPLETE` cannot enter its projection set. A candidate claim
+    may arise only from a reachable matching-kind claim-definition target.
+    Bind this candidate and all outputs in the final Stage 3 receipt.
+
+**Focused check:** run the affected family tests,
+`tests/canonical-v2-open-world-promotion-gate.test.js`,
+`tests/canonical-v2-canonical-contract-bundle-current-root.test.js` and the
+registry drift test once. Then run this focused disposition check once:
+
+```bash
+node --test tests/product-stage-3-open-world-disposition.test.js
+node scripts/product-stage-3-open-world-disposition.mjs \
+  --activation-certificate evidence/canonical-v2/stage-2y-internal-cutover/private-internal-extractor-active-certificate.json \
+  --input-ledger evidence/canonical-v2/stage-2y-structure-migration/shadow/m9/remaining-open-world.json \
+  --targets evidence/canonical-v2/product-stage-3/semantic-disposition-targets.json \
+  --decisions evidence/canonical-v2/product-stage-3/open-world-decisions.json \
+  --output evidence/canonical-v2/product-stage-3/open-world-disposition-ledger.json
+
+node --test tests/product-stage-3-semantic-candidate.test.js
+node scripts/product-stage-3-semantic-candidate.mjs \
+  --activation-certificate evidence/canonical-v2/stage-2y-internal-cutover/private-internal-extractor-active-certificate.json \
+  --m9-certificate evidence/canonical-v2/stage-2y-structure-migration/shadow/m9/stage-2y-certificate.json \
+  --m6-receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m6-agreement-projection.json \
+  --base-owner-registry evidence/canonical-v2/stage-2y-structure-migration/shadow/m6/output-owner-registry.json \
+  --base-view-policy evidence/canonical-v2/stage-2y-structure-migration/control/view-policy.json \
+  --disposition-ledger evidence/canonical-v2/product-stage-3/open-world-disposition-ledger.json \
+  --targets evidence/canonical-v2/product-stage-3/semantic-disposition-targets.json \
+  --owner-extension evidence/canonical-v2/product-stage-3/output-owner-extension.json \
+  --view-extension evidence/canonical-v2/product-stage-3/view-policy-extension.json \
+  --output-root evidence/canonical-v2/product-stage-3
+```
+
+**Acceptance:** the disposition ledger validates; every member of the bound
+ledger is accounted for exactly once and its digest is unchanged; every
+remaining proposed concept has one governed disposition; incomplete
+propositions remain non-renderable; unexpected resolved changes are zero; no
+family open-world count rises; every new approved claim definition passes the
+M6-equivalent output-owner, lineage and omission checks before Stage 4; the
+semantic candidate and its complete output bindings validate; the M10 selector
+is unchanged.
+
+**Stop and escalation:** stop on a missing or mismatched M10 ledger binding.
+Stop the affected family on a missing role schema, legal ambiguity or
+unexpected diff. Ben decides legal meaning. Sol decides shared identity or
+bundle mechanics.
+
+**Rollback:** disable the Stage 3 shadow policy and reproduce the M10 claim,
+row, open-world and selector digests. Reverify the unchanged
+`remaining-open-world` path, schema, byte length, SHA-256, `ledger_id`, total
+and family-count binding. Leave the Stage 3 decision, disposition, output-owner
+and view-policy extension files, semantic target set, semantic candidate and
+candidate output set inert as evidence.
+
+#### Product Stage 4: validate and import safely
+
+**Owner:** one import integrator, one Terra writer agent and one independent
+audit agent.
+
+**Dependency:** the final Stage 3 receipt and its exact bound
+`semantic-candidate.json` pass, and Ben authorises one exact non-production
+database target.
+
+**Permitted effect:** writes only to the named throwaway or approved
+non-production database. No production, serving or publication effect.
+
+Tasks:
+
+1. Make the import driver require `--stage-3-receipt` and `--candidate`. Reject
+   any candidate path, schema, byte length, SHA-256, corpus or output binding
+   that differs from the receipt. Then harden batching, restart and
+   partial-failure handling.
+2. Prove idempotency and resume against the named database.
+3. Refuse unresolved, quarantined and role-incomplete claims. Review-queue
+   presence alone is not a refusal rule.
+4. Persist the import receipt, complete claim, relationships, source nodes and
+   evidence spans.
+5. Close the conditional-termination-fee deal-scope defect before a second deal
+   writes.
+6. Prove backup and restore, then write a second deal.
+7. Seal `evidence/canonical-v2/product-stage-4/import-state.json`, schema
+   `PRODUCT_STAGE_4_IMPORT_STATE/V1`. It binds the exact Stage 3 candidate,
+   non-secret authorised database target and namespace identity, one stable
+   `import_run_id`, before and after snapshot and table digests, source-lineage
+   checks, both deal identities, idempotency and resume results and backup and
+   rollback proof. Derive `import_state_id` from the complete payload excluding
+   that ID. Imported rows store `import_run_id`, not the later stage-receipt ID.
+   Bind it and the same post-import digest in the final Stage 4 receipt.
+
+**Focused check:** run `tests/canonical-v2-candidate-release-import.test.js`,
+`tests/ingest-local-dedupe.test.js`, the affected canonical-writer tests and the
+SQL identity gate once against the authorised database.
+
+**Acceptance:** the exact Stage 3 candidate is the only imported source; the
+immutable import-state file and final Stage 4 receipt validate;
+repeated and resumed imports are byte-equivalent; incomplete claims are
+refused; two deals remain isolated; every row is traceable; backup restore
+reproduces the pre-import digest.
+
+**Stop and escalation:** stop on production credentials, identity collision,
+partial commit, non-idempotency or failed restore. Sol owns writer and identity
+faults. Ben owns any destructive legacy-row decision.
+
+**Rollback:** restore the named pre-stage database snapshot and prior writer
+version. Retain failed receipts. Do not delete evidence.
+
+#### Product Stage 5: read, serve and render certified data
+
+**Owner:** one serving integrator; Terra agents on reader and row fixtures.
+
+**Dependency:** the final Stage 3 and Stage 4 receipts and Stage 4 import-state
+file pass. Stage 5 rejects a live database state that differs from the bound
+post-import digest. The bounded first slice contains two deals.
+
+**Permitted effect:** protected local or preview serving only under a signed
+Stage 5 work order. No production selector, publication or external activation.
+
+Tasks:
+
+1. Read complete claims and relationship graphs without reparsing raw text.
+2. Serve a second deal without a hand-written serving file.
+3. Prove database to HTTP response to rendered row for one family, then a
+   second family.
+4. Migrate each approved serving family through the consolidated output-owner
+   registry and view policy bound by the Stage 3 semantic candidate. Do not
+   combine the sealed M6 base and Stage 3 extension in the serving layer.
+5. Keep compact and expanded source lineage accessible.
+
+**Focused check:** run `tests/canonical-v2-serving-client.test.js`,
+`tests/canonical-v2-serving-projection.test.js`,
+`tests/canonical-v2-shared-serving-row.test.js`,
+`tests/canonical-v2-serving-exact-detail.test.js` and only the affected family
+serving tests.
+
+**Acceptance:** two deals and two families first pass as the bounded initial
+slice. Stage 5 completes only after every approved serving family has the same
+database-to-HTTP-to-row proof and uses its governed M6 or Product Stage 3 owner
+or approved no-output disposition. No hand-written deal source remains on
+those paths; every displayed field reaches a complete claim and exact source;
+publication filtering remains closed.
+
+**Stop and escalation:** stop on source reparsing, missing lineage, stale data,
+cross-deal leakage or an unapproved route. Sol owns serving seams. Ben owns
+display omissions or grouping.
+
+**Rollback:** restore the prior reader and preview route selection. Confirm the
+prior HTTP and row digests.
+
+#### Product Stage 6: certify identity, source integrity and the product corpus
+
+**Owner:** one corpus integrator; Terra agents on identity, source QA and corpus
+evidence; Sol reviews.
+
+**Dependency:** the final Stage 3, Stage 4 and Stage 5 receipts pass. Validate
+all three before reading their controls, import state or results.
+
+**Permitted effect:** report-only corpus runs and approved non-production
+reads. No production import, serving or publication.
+
+Tasks:
+
+1. Freeze `evidence/canonical-v2/product-stage-6/product-corpus-manifest.json`,
+   schema `PRODUCT_STAGE_6_CORPUS_MANIFEST/V1`. It contains exactly 40 unique,
+   fully admitted agreement identities. Each member binds its source receipt,
+   canonical text and source-map digests, governed deal key and recorded input
+   state for every family. Forty is the retained product target from the prior
+   roadmap, not a current measured cohort. A different number requires an
+   evidenced PLAN revision before this stage starts.
+2. Decide whether legacy V1 quote spans need backfill before V1 retirement.
+3. Bind M4 and M5 aliases to future claim identity. List the possible 128
+   legacy rows. Do not delete one without Ben approval.
+4. Make amendment and restatement warnings reach a human and close bypasses.
+5. Run all 25 families over the exact 40-member manifest using the sealed Stage
+   3 semantic-target, schema and policy contract and approved deterministic or
+   recorded inputs. The ten-agreement Stage 3 candidate is evidence, not
+   40-agreement coverage.
+6. Write
+   `evidence/canonical-v2/product-stage-6/discovery/<discovery_id>/corpus-open-world-ledger.json`,
+   schema `PRODUCT_STAGE_6_CORPUS_OPEN_WORLD_LEDGER/V1`, with one
+   source-anchored item for every new drafting variant or open-world occurrence
+   outside the governed Stage 3 contract. Each item has one stable identifier
+   and one closed `governance_state`: `UNREVIEWED`, `COMPLETE_CLAIM`,
+   `APPROVED_NO_OUTPUT` or `OPEN_LEGAL_QUESTION`. An `UNREVIEWED` member stops
+   Stage 6. Seal
+   `evidence/canonical-v2/product-stage-6/discovery/<discovery_id>/receipt.json`,
+   schema `PRODUCT_STAGE_6_DISCOVERY_RECEIPT/V1`, with
+   `status: RETURN_TO_STAGE_3`. It binds the exact Stage 3, Stage 4 and Stage 5 inputs,
+   40-member manifest and corpus digest, run outputs and ledger. Feed those
+   members to `scripts/product-stage-3-revision.mjs`. Its closed inputs are the
+   prior Stage 3 receipt, discovery receipt, fixed manifest, ledger, successor
+   target and decision files and one revision output root. It applies the same one-to-one target,
+   disposition, complete-proposition, owner and view-policy gates as the base
+   Stage 3 packet. It writes a successor semantic candidate and
+   `evidence/canonical-v2/product-stage-3/revisions/<revision_id>/receipt.json`.
+   Rerun the affected Stage 4 packet into
+   `evidence/canonical-v2/product-stage-4/revisions/<revision_id>/receipt.json`,
+   which binds the Stage 3 revision, and the Stage 5 packet into
+   `evidence/canonical-v2/product-stage-5/revisions/<revision_id>/receipt.json`,
+   which binds both revision receipts. Then rerun this fixed 40-agreement pass
+   against those exact successors and the unchanged manifest and corpus digest.
+   Never mutate an earlier receipt. A typed legal question remains non-serving.
+7. Run ingest QA, exact quote verification and the golden evaluation harness.
+8. Seal
+   `evidence/canonical-v2/product-stage-6/certified-corpus-candidate.json`,
+   schema `PRODUCT_STAGE_6_CERTIFIED_CORPUS_CANDIDATE/V1`. It lists every
+   importable 40-agreement claim, relationship, source-node, evidence-span and
+   projection file by path, schema, byte length and SHA-256. It binds the
+   consolidated controls, exact corpus digest and complete open-world ledger,
+   total and counts by family.
+9. Seal `evidence/canonical-v2/product-stage-6/corpus-certificate.json`, schema
+   `PRODUCT_STAGE_6_CORPUS_CERTIFICATE/V1`. It binds the Stage 5 receipt, exact
+   manifest and corpus digest, all 25 family results, source, identity and QA
+   measurements, certified corpus candidate, every file that it lists,
+   implementation and test digests and independent Sol review. Bind both files
+   and the exact final Stage 3, Stage 4 and Stage 5 base-or-revision receipt
+   paths in the final Stage 6 receipt.
+
+**Focused check:** run the source-identity, deal-source-binding, ingest-QA,
+quote-span and corpus-review tests once, plus the governed 40-deal corpus
+command named by the stage authority.
+
+**Acceptance:** all 40 manifest members and 25 families are accounted for; the
+open-world ledger is fully governed; every served claim is complete; the
+certified corpus candidate, certificate and Stage 6 receipt pass against the
+same corpus and open-world digests; exact quotes have zero unexplained flags;
+aliases have no unresolved collision; amendment warnings cannot be bypassed;
+every result reaches exact admitted source.
+
+**Stop and escalation:** stop on source drift, an identity collision, an
+unreviewed amendment, a missing deal or any proposed deletion. Sol owns
+technical identity. Ben decides backfill and deletion.
+
+**Rollback:** retain the prior corpus certificate and disable the new candidate.
+Restore no database because this stage writes none.
+
+#### Product Stage 7: close security and operating controls
+
+**Owner:** one security integrator; Terra agents on authentication and hostile
+tests; Sol reviews security architecture; Ben decides the open security
+rulings.
+
+**Dependency:** Stage 6 passes and the exact Stage 7 authority names a protected
+non-production environment.
+
+**Permitted effect:** code and protected preview configuration only. No
+production credential, production route or publication change.
+
+Tasks:
+
+1. Record Ben's login requirement and service-key rotation decision.
+2. Configure authentication in the named environment and prove outside refusal.
+3. Repair and hostile-test the four contained routes before any re-enable
+   decision.
+4. Preserve the completed dispositions of the seven deferred security gates.
+5. Prepare incident, monitoring and credential-rotation procedures.
+
+**Focused check:** run `tests/auth-route-enforcement.test.js`,
+`tests/auth-route-scan.test.js`, `tests/auth-critical-routes-repair.test.js`,
+the auth session and credential tests, and
+`tests/programme-gates/security-dispositions.spec.js` once.
+
+**Acceptance:** unauthorised requests fail; no service credential reaches
+browser code; all four routes pass hostile tests or remain contained; rotation
+and incident procedures have named owners.
+
+**Stop and escalation:** stop on any production credential, external exposure,
+bypass or unresolved key state. Ben decides login and rotation. Sol owns
+technical security defects.
+
+**Rollback:** re-contain affected routes, restore the prior protected-preview
+configuration and rotate any credential exposed during testing.
+
+#### Product Stage 8: prove product features in protected preview
+
+**Owner:** one product integrator; Terra agents on market statistics, search and
+comparison.
+
+**Dependency:** the final Stage 5, Stage 6 and Stage 7 receipts pass. Stage 8
+validates the Stage 6 corpus certificate through the Stage 6 receipt and proves
+that preview reads the same certified corpus digest.
+
+**Permitted effect:** protected preview features and a write of the exact Stage
+6 certified corpus candidate to one named protected-preview data namespace.
+No production, publication or external activation.
+
+Tasks:
+
+1. Run `scripts/product-stage-8-preview-import.mjs` with the exact Stage 6
+   receipt, certified corpus candidate, named protected-preview target and one
+   output path. It rejects a candidate not bound by that receipt. Seal
+   `evidence/canonical-v2/product-stage-8/preview-import-state.json`, schema
+   `PRODUCT_STAGE_8_PREVIEW_IMPORT_STATE/V1`, with the candidate, namespace,
+   import-run identity, before and after state digests, idempotency, lineage and
+   rollback proof. Bind it in the Stage 8 receipt.
+2. Enable market statistics with corpus and selected-deal scopes.
+3. Enable search only after load and query guards pass.
+4. Build comparison with selected terms, no three-deal limit, horizontal
+   scrolling and source-completeness indicators.
+5. Prove every feature reads that same certified corpus and open-world digest
+   and exposes compact and expanded source lineage.
+
+**Focused check:** run the market-statistics API and numeric tests,
+`tests/search.test.js`, query registry parity, derived-comparison and
+hostile-comparison tests, and `tests/hover-source-context.test.js` once.
+
+**Acceptance:** each feature works in protected preview on certified data;
+scopes are correct; search guards hold; comparison has no three-deal cap; every
+result opens its source context.
+
+**Stop and escalation:** stop on uncertified data, scope leakage, an unbounded
+query, missing lineage or an authority-boundary failure. Sol owns query and
+data-path faults. Ben owns material display choices.
+
+**Rollback:** disable the affected preview feature flag or route and restore the
+prior preview digest.
+
+#### Product Stage 9: production cutover and rollback
+
+**Owner:** programme integrator; Sol verifies; Ben signs the exact one-use
+production authority after the hosted-staging rehearsal and staging backup
+procedure gates pass.
+
+**Dependency:** Stages 3 to 8 pass; one hosted-staging target and Stage 9
+rehearsal work order are approved; draft backup, rollback and production
+authority packets are sealed. Hosted-staging rehearsal is an in-stage gate,
+not a dependency already assumed to have passed.
+
+**Permitted effect:** tasks 1 and 2 may affect only the named hosted-staging
+target. Production remains
+prohibited. After task 3, only the production writes, selectors, families and
+publication transitions named in Ben's signed one-use authority are allowed.
+No model call.
+
+Before hosted-staging work, derive `candidate_id` from the complete payload
+excluding that field and seal
+`evidence/canonical-v2/product-stage-9/candidates/<candidate_id>/production-candidate.json`,
+schema
+`PRODUCT_STAGE_9_PRODUCTION_CANDIDATE/V1`. It binds the final Stage 3 to Stage 8
+receipts, Stage 4 import state, Stage 6 corpus certificate and certified corpus
+candidate, Stage 8 preview import state, corpus and family set, expected claim,
+row and open-world digests and open-world counts by family, current and target
+reader and extractor selectors, serving-family allow-list, publication
+transition, import command and rollback command. It accepts no independent
+import-file list. Every import file must be listed in and bound by the Stage 6
+candidate. It records `CAPITALISATION=PARKED`, with zero Capitalisation import,
+serving or publication effect.
+
+Tasks 1 and 2 derive `rehearsal_id` from the complete receipt payload excluding
+that field and seal
+`evidence/canonical-v2/product-stage-9/rehearsals/<rehearsal_id>/receipt.json`,
+schema `PRODUCT_STAGE_9_STAGING_REHEARSAL_RECEIPT/V1`. It binds the candidate,
+named staging target, commands, backup and restore proof, state digests and
+results. Ben then signs
+`evidence/canonical-v2/product-stage-9/attempts/<authority_id>/production-authority.json`,
+schema
+`PRODUCT_STAGE_9_PRODUCTION_AUTHORITY/V1`. It binds the candidate and staging
+receipt, exact production target and dark namespace, allowed commands and
+files, selector changes, serving families, publication transition, backup,
+rollback and move-forward scope, expiry and unique one-use `authority_id`. It
+prohibits every unnamed effect and repeats `CAPITALISATION=PARKED`. Authority
+permits one cutover run, not one command.
+`scripts/product-stage-9-cutover.mjs` atomically creates
+`evidence/canonical-v2/product-stage-9/attempts/<authority_id>/authority-consumption.json`,
+schema
+`PRODUCT_STAGE_9_AUTHORITY_CONSUMPTION/V1`, before the first production effect.
+It binds the authority, candidate and one `cutover_run_id` to an append-only
+expected-state sequence for tasks 4 to 9. No second run may start under the
+same authority ID. A new attempt requires a new authority. After a
+crash, allow only `--resume <cutover_run_id>` at the next signed state or
+`--rollback <cutover_run_id>`. Expiry blocks a new run but never safety
+rollback. Every command and selector state records the same run ID.
+
+Tasks:
+
+1. Rehearse the exact import and rollback against hosted staging.
+2. Prove the proposed production backup and restore procedure against hosted
+   staging. Do not access production.
+3. Seal the named staging rehearsal receipt. Stop. Ben reviews that exact
+   receipt and signs or rejects the named one-use production authority. A changed
+   receipt or authority field requires a new signature.
+4. Under that signed authority, perform and verify the production backup and
+   restore drill.
+5. Import only the exact Stage 6 certified-corpus files named by the production
+   candidate into the authorised dark
+   production namespace that no live reader uses.
+6. Verify counts, identities, source lineage, security and the bound open-world
+   total and family counts at dark import and after every selector state.
+7. Enable V2 serving only for the authorised families.
+8. Run signed outside-in smoke tests.
+9. Roll back once in production, prove restoration, then move forward only if
+   the authority permits it.
+10. Seal
+    `evidence/canonical-v2/product-stage-9/attempts/<authority_id>/production-cutover-receipt.json`.
+    It uses schema `PRODUCT_STAGE_9_CUTOVER_ATTEMPT_RECEIPT/V1` and binds the
+    authority, production candidate, staging receipt, production backup,
+    attempt-scoped `authority-consumption.json`, the single
+    `cutover_run_id` and full state sequence, every selector state, command,
+    open-world comparison, result and rollback or move-forward result. On PASS,
+    install the top-level
+    `evidence/canonical-v2/product-stage-9/production-cutover-receipt.json` once
+    under `PRODUCT_STAGE_PACKET_RECEIPT/V1`. That immutable final trust root
+    directly binds, by path, schema, byte length and SHA-256, the production
+    authority, attempt authority-consumption record, attempt cutover receipt,
+    rollback receipt and `cutover_run_id`. Never overwrite a failed or
+    successful attempt.
+
+**Focused check:** run the signed cutover test, publication and serving-boundary
+tests, authentication gate and one full integration suite on the exact
+candidate. Run the signed outside-in HTTP checks after each selector state.
+
+**Acceptance:** production writes, serves and renders only the authorised V2
+data; every field retains lineage; no unexpected semantic change or family
+open-world rise occurs; backup and rollback restore exact prior digests;
+security remains closed; Capitalisation remains parked; the final receipt
+records the real selector states. Stage 9 is mission-ready for its authorised
+family set. Stage 9F is a governed post-cutover extension, not a hidden Stage 9
+dependency.
+
+**Stop and escalation:** before authority, any production action stops. After
+cutover, immediately roll back on a digest mismatch, missing row, lineage loss,
+security failure, unexpected claim change, open-world rise or unauthorised
+publication. Sol may diagnose. Only Ben may expand production scope.
+
+**Rollback:** restore the exact prior database namespace and reader, extractor
+selector, serving-family allow-list and routes, publication state, feature
+flags and security configuration. Verify their exact prior digests and the
+prior open-world total and family counts. Leave the dark namespace intact,
+restore from the verified backup only if the signed rollback requires it, run
+outside-in proof and seal
+`evidence/canonical-v2/product-stage-9/attempts/<authority_id>/rollback-receipt.json`,
+schema
+`PRODUCT_STAGE_9_ROLLBACK_RECEIPT/V1`, against the same `cutover_run_id`. Do
+not destructively delete the failed candidate.
+
+#### Product Stage 9F: Capitalisation
+
+Stage 9F is separate from Stage 9. Stage 9 grants it no authority.
+
+**Dependency:** the direct Stage 6 and Stage 9 receipts, the exact Stage 6
+40-member manifest, a separate Ben-approved Capitalisation required-role
+schema and a signed Stage 9F work order.
+
+**Permitted effect:** candidate construction and the same bounded
+non-production effects used in Product Stages 3 to 8. Production remains
+prohibited until a separate one-use authority passes.
+
+Tasks:
+
+1. Derive `candidate_id` from the complete payload excluding that field and
+   build
+   `evidence/canonical-v2/product-stage-9f/candidates/<candidate_id>/capitalisation-candidate.json`,
+   schema `PRODUCT_STAGE_9F_CAPITALISATION_CANDIDATE/V1`, from every parked
+   Capitalisation member in the Stage 6 manifest.
+2. Bind complete propositions, exact provenance, output owner and view policy,
+   40-agreement results, same-cohort open-world comparison and exact import
+   files.
+3. Pass the semantic, non-production import, serving, corpus, security,
+   protected-preview, hosted-staging and rollback gates used in Product Stages
+   3 to 9.
+4. Derive `rehearsal_id` from the complete receipt payload excluding that
+   field and seal
+   `evidence/canonical-v2/product-stage-9f/rehearsals/<rehearsal_id>/receipt.json`,
+   schema `PRODUCT_STAGE_9F_STAGING_REHEARSAL_RECEIPT/V1`, after the
+   Capitalisation candidate imports, serves and rolls back on the named
+   hosted-staging target.
+5. Seal
+   `evidence/canonical-v2/product-stage-9f/rehearsals/<rehearsal_id>/readiness-receipt.json`,
+   schema
+   `PRODUCT_STAGE_9F_READINESS_RECEIPT/V1`, after the non-production and
+   hosted-staging gates pass. It binds the staging receipt.
+6. Ben signs
+   `evidence/canonical-v2/product-stage-9f/attempts/<authority_id>/production-authority.json`,
+   schema `PRODUCT_STAGE_9F_PRODUCTION_AUTHORITY/V1`. It binds the candidate and
+   readiness receipt, exact production target and dark namespace, allowed
+   commands and files, current and target selectors and routes,
+   Capitalisation serving and publication scope, backup, rollback and
+   move-forward scope, expiry and one unique `authority_id`. It prohibits every
+   other effect.
+7. Run `scripts/product-stage-9f-cutover.mjs`. It accepts only the Stage 9F
+   candidate and authority schemas and writes
+   `evidence/canonical-v2/product-stage-9f/attempts/<authority_id>/authority-consumption.json`,
+   schema `PRODUCT_STAGE_9F_AUTHORITY_CONSUMPTION/V1`,
+   `production-cutover-receipt.json`, schema
+   `PRODUCT_STAGE_9F_CUTOVER_ATTEMPT_RECEIPT/V1`, and
+   `rollback-receipt.json`, schema `PRODUCT_STAGE_9F_ROLLBACK_RECEIPT/V1`, under
+   the same attempt root, using Stage 9's one-run and safety-rollback state
+   model.
+8. After the authorised cutover, real rollback and authorised move-forward all
+   pass, seal
+   `evidence/canonical-v2/product-stage-9f/receipt.json` under
+   `PRODUCT_STAGE_PACKET_RECEIPT/V1`, binding all three Stage 9F control
+   receipts, the signed Stage 9F production authority, staging and readiness
+   receipts, the single cutover run, the final active Capitalisation selector,
+   serving-family allow-list and publication state, all final digests and the
+   signed outside-in result.
+
+**Acceptance:** every governed Capitalisation claim is complete, traceable,
+owned or expressly omitted; the independent cutover and rollback receipts
+pass; and the authorised move-forward leaves Capitalisation actively serving.
+Without move-forward approval, status remains `PARKED`, not `PASS`.
+
+**Stop and escalation:** stop on a missing role, source lineage, owner,
+same-cohort comparison, receipt or authority. Ben owns the legal role schema.
+Sol owns shared identity and cutover mechanics.
+
+**Rollback:** keep Capitalisation under its approved non-serving disposition,
+leave the failed candidate inert and restore the exact Stage 9 production
+digests.
+
+### 20.18 Sol escalation list
 
 Terra must escalate to Sol when:
 
@@ -2141,7 +3808,7 @@ Terra must escalate to Sol when:
 
 Sol cannot approve a disputed legal meaning. It must split that question and send only the legal part to Ben.
 
-### 20.18 Ben escalation list
+### 20.19 Ben escalation list
 
 For a legal-meaning question in M0 to M9, Terra or Sol sends Ben only:
 
@@ -2149,12 +3816,24 @@ For a legal-meaning question in M0 to M9, Terra or Sol sends Ben only:
 - the competing legal readings;
 - the affected claim and row;
 - the practical output effect; and
-- the narrow question from section 18.
+- the narrow question from section 18.2.
 
 Do not ask Ben to decide byte coordinates, parser class names, identifier formats, graph storage, diff mechanics or rollback design.
 
 M10 uses a separate authority packet, not the legal-question format. The integrator sends Ben the complete draft authority file defined in section 20.16, plus the M9 certificate, M10 smoke plan and M9 rollback receipt named by that file. Ben may approve or reject that exact packet. A change to any authority field requires a new signed file.
 
-### 20.19 First work order
+### 20.20 Current next work order
 
-The first authorised implementation work order should be M0 and M1 only. It should end with the falsification decision and a read-only artefact. It must not integrate the new structure into extraction. This is the smallest useful experiment and the earliest safe point to confirm or reject the recommended restructuring.
+M0 to M2 are complete. M3 is next, but it is not authorised. Before a Terra
+agent starts M3, Sol must freeze the `ContextCompilation` schema, identity and
+ordering rules, semantic-role vocabulary, scope-edge proof rule, reference and
+definition resolution rules, topology identity rules, diagnostic vocabulary
+and complete receipt contract.
+
+The smallest M3 experiment is TopBuild 6.2. It passes the exact chapeau object,
+modal, verb, time, actor and connective to four child limbs, with source-node
+and span provenance, while proving that the local provisos in limbs `(a)` and
+`(d)` do not reach siblings. Concho 6.9(a) is now a required regression case.
+M3 consumes its sealed sentence, chapeau, four limb nodes and two local
+provisos. It must not reconstruct them from raw text. `docs/core/PLAN.md`,
+section 8, is the live work order.

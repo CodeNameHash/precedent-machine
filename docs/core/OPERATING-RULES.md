@@ -1,7 +1,7 @@
 # Operating rules
 
-What anyone must know before starting work on this programme. Self-contained:
-read this document on its own, before reading anything else.
+What anyone must know before starting work on this programme. Read this file
+with `docs/CODEX-PROGRAM.md`. That document carries additional governing rules.
 
 ---
 
@@ -26,12 +26,12 @@ or real credentials, so an import can be built and proved offline or against a
 non-production database, and running one against production remains a separate
 act needing its own explicit authorisation. See lane D's import steps.
 
-**Current narrower rule, 2026-08-11.** Stage M2 alone is authorised for the
-Stage 2Y structure migration. It is additive, shadow-only and unused by the
-current extractor. M3 and later stages require their own work order. Phase B
-and every model-call route remain deferred and locked. M2 may not change a
-selector, pin, baseline, database, product data, serving state, publication
-state or external route. The sealed M0 and M1 artefacts must not be changed.
+**Current narrower rule, 2026-08-11.** Stage M2 is complete and sealed. No M3
+or later implementation stage is authorised. The current extractor and all
+selectors remain unchanged. Phase B and every model-call route remain deferred
+and locked. No selector, pin, baseline, database, product-data, serving,
+publication or external-route change is authorised. The sealed M0, M1 and M2
+artefacts must not be changed.
 
 Everything else stays prohibited regardless of those carve-outs:
 
@@ -712,8 +712,9 @@ Antitrust 63, Interim Operating Covenants 65, Dividends 84, D&O 85, Merger
 Structure 87, Appraisal 88. Where a ruling below is enforced by a test, the test
 governs; where it is not, this list is the only record and must be honoured.
 
-Made Available, Ordinary Course, Material Contracts and General Covenants remain
-at rank 99 because no exact rank was ever approved. Do not invent one.
+The approved additional ranks are Material Contracts 54, Made Available 66,
+Ordinary Course 66 and General Covenants 95. The pinned test governs these
+values. Do not replace them with an unevidenced default.
 
 
 - Start v1 reclassification apply: go, fixtures first.
@@ -829,8 +830,10 @@ while another lane is still editing produces a manifest that is stale on arrival
 None of these change anything. Run them before believing a claim about state,
 including a claim in these documents.
 
-**The outstanding count.** The single number that measures distance from
-release. It must be 104 unless real work moved it.
+**The legacy product-parity register count.** This read-only command currently
+returns 102 blockers. It measures one legacy product-parity register. It is not
+the sole measure of distance to release. The Stage 2Y M-gates and the retained
+product, security and cutover gates are separate measures.
 
 ```text
 node --input-type=module -e "
@@ -842,8 +845,9 @@ console.log('blockers=' + b.length, JSON.stringify(v));
 "
 ```
 
-**Full acceptance.** The invariants script runs the whole test suite first, so it
-is the single command that proves the tree is sound. Then build.
+**Full-candidate acceptance.** Run the complete invariants and build only at the
+M9 certification gate, or when focused checks cannot bound the affected seam.
+Do not repeat them against unchanged code and inputs.
 
 ```text
 bash scripts/ci/run-all-invariants.sh
@@ -893,28 +897,29 @@ important sentence in this programme:
 That is why adversarial review is not optional polish. A confidently wrong
 extraction reads exactly like a correct one.
 
-### Mechanical gates on every change
+### Proportionate mechanical gates
 
-The full required set, wider than the acceptance commands listed earlier in this
-file:
+Each bounded packet runs its named focused seam checks once against the exact
+code and input digests. These packet checks do not replace the merge gates in
+`programme-gates.yaml`. If an M3 to M8 branch is merged before M9, run the
+governing merge gates then. At M9, run the complete invariants and build once.
+If that evidence binds the same unchanged commit, do not run `npm test` or the
+build again. Run change-specific gates only when that seam changes:
 
-- `npm test`
-- `npm run build`
-- INVARIANT lint, post-commit
-- **golden evals** (`node scripts/eval.js`) for anything touching extraction
-- **drift tests** for anything touching registries
-- **quote verification at zero flags** and **ingest-QA gates** for ingestion
-  changes
-- **`npm run gate:baseline`** for anything touching the extraction runner, the
-  resolver, the validators, the canonical writer or the evidence bridge
+- golden evaluations for extraction semantics;
+- drift tests for registries;
+- quote verification and ingest QA for ingestion; and
+- `npm run gate:baseline` for an extraction runner, resolver, validator,
+  canonical writer or evidence-bridge change that can affect current output.
 
-The acceptance runbook above covers the first three. The last four are
-change-specific and must not be skipped because the general runbook passed.
+Do not regenerate a golden, registry or baseline when the packet forbids that
+effect. A failing focused check requires one diagnosis and a bounded fix. It
+does not justify repeated unchanged full-suite runs.
 
 `gate:baseline` re-derives what every committed run WOULD publish if imported
 and diffs it against `evidence/canonical-v2/baseline-manifest.json`, naming the
 run that moved. It takes about two minutes, so it is a named gate rather than
-part of `npm test` — but it runs in CI beside the invariants, because a gate
+part of `npm test`. It runs in CI beside the invariants, because a gate
 enforced only by this document is a gate that gets skipped. Regenerate with
 `npm run generate:baseline` and commit the diff, but read it first: a count
 that fell is the finding, not the noise.
@@ -933,16 +938,23 @@ A failed review produces one bounded fix list, and only the fix diff is
 re-reviewed. A normal legal-semantic diff review is a merge requirement, not a
 milestone.
 
-Ben's approval is required for exactly four things, and nothing else:
+The Stage 2Y labels M0 to M10 are bounded work packets, not additional
+programme-gate review milestones. The exact four milestones above remain
+unchanged.
 
-1. the material contract bundle freeze;
-2. material taxonomy or codebook changes;
-3. production import, where the governing import contract requires it;
-4. the one-use production cutover authorisation.
+Decision 18 adds scoped task-authority and legal-ruling points for the Stage 2Y
+roadmap. These include each new M-stage work order, family required-role rules,
+compact omissions and grouping, no-output dispositions, the blind-sample
+policy, any Phase B or model run, the exact M10 private-internal selector
+packet, and any production, serving or publication act. The active list is in
+`PLAN.md`, section 20.
 
-The M1 Markdown acknowledgement is the only pre-production approval artefact. No
-signed status, signer record or publication record carries pre-production
-authority.
+The M1 Markdown acknowledgement remains the only programme-gate
+pre-production approval artefact. An M-stage work order, technical review or
+sealed receipt records packet scope and evidence. It is not another review
+milestone, programme-gate acknowledgement, signed programme status,
+publication authority or merge approval. The exact M10 authority packet is a
+separate scoped control and grants only what it names.
 
 ### Security tiers
 

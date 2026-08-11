@@ -1573,7 +1573,7 @@ source-to-row baseline. It did not measure human acceptance.
 | review | 675 |
 | mechanical row matches | 1,241 |
 | cautious known-loss-adjusted rows | 1,097 |
-| grouped feature claims that fail closed | 109 |
+| feature-row lineage not unique | 109 |
 | routed claim with no row | 1 |
 | claims with no approved output owner | 175 |
 
@@ -1582,6 +1582,10 @@ known-loss evidence identifies 244 affected claims. It subtracts 144 rendered
 claims from the 1,241 mechanical matches. Another 100 were already not
 rendered. The resulting 1,097 of 1,526 is 71.9 per cent. The evidence records
 `human_acceptance_status: NOT_MEASURED`.
+
+For the 109 cases, the saved aggregate proves only that feature-to-row lineage
+was not unique. It does not retain member identifiers or observed match counts
+and does not prove that grouping caused every failure.
 
 Phase B stopped and remains locked. No later programme text may treat the
 deferred live-call instructions as authority.
@@ -1674,3 +1678,58 @@ provenance and exposed two material resolved information-loss cases.
 Required-role schemas, complete branch propositions and render fail-closed
 behaviour remain M4-M6 work. M1 changed no current extractor, row, pin,
 baseline, model route, database, serving or publication state.
+
+---
+
+## Stage 2Y M2 shadow AgreementIndex
+
+**Closed 2026-08-11.** M2 added the pure
+`indexAgreement(exactSource, structuralPolicy) -> AgreementIndex` interface and
+sealed one shadow index for each of the seven controlled agreements. The
+indexes bind all 130 admitted source references and preserve 2,547,781 exact
+source bytes.
+
+The seven indexes contain 15,730 authored nodes, including six authored
+annexes, 37,591 annotations, 1,397 source artefacts and 2,878 one-to-one aliases
+from current structure records. The byte ledger covers 2,547,781 exact source
+bytes with zero gap or overlap. The indexes retain 23 typed structural
+ambiguities and two reviewed source-specific diagnostics.
+
+The private inline parser recorded 5,184 marker-sequence dispositions: 1,376
+mechanically admitted authored lists, 3,785 non-structural marker records and
+23 unresolved lists. The admitted lists produced or reused 3,963 authored limb
+nodes. The separate raw marker-token count is 7,871. These are structural
+parser measurements, not human legal acceptance. They are not the historical
+69 Red Hat semantic limb cases.
+
+The first local seal attempt was reopened before delivery after the generic
+inline-list audit found incomplete authored structure. The corrective commit
+supersedes that attempt. Sol approved `AGREEMENT_INDEX_M2_ACCEPTED` with zero
+exceptions. All ten final receipt checks passed. The receipt records zero model
+calls, zero Phase B route calls and zero pin, baseline, selector, product-data,
+serving or publication effects.
+
+**Policy, outputs, review and receipt.**
+
+- `evidence/canonical-v2/stage-2y-structure-migration/control/structural-policy.json`
+- `evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/`
+- `evidence/canonical-v2/stage-2y-structure-migration/reviews/stage-2y-structure-m2-sol-technical-review.json`
+- `evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json`
+
+**Commit.** `9a0bb6479f56ba4d17ad134fad7da27b75ba31d2`.
+
+**Final receipt SHA-256.**
+`dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585`.
+
+**Proof.**
+
+```bash
+node scripts/stage-2y-structure-migration-validate.mjs \
+  --receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json
+```
+
+**Not claimed.** M2 does not compile inherited context, reference targets,
+definition targets or party topology. It does not create complete semantic
+propositions, migrate family resolution or produce new rows. It changes no
+current extractor, selector, pin, baseline, database, product, model route,
+serving or publication state. It does not authorise M3.

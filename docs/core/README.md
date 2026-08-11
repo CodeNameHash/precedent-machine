@@ -5,13 +5,14 @@ nothing in this folder is history (for that, see `archive/` at the repo
 root). Read in this order.
 
 1. **`OPERATING-RULES.md`.** What anyone must know before starting work:
-   authority boundary, working conventions, glossary. Self-contained, and
-   meant to be read on its own before anything else here.
-2. **`PLAN.md`.** The open work: what is still to do. One page, updated as
-   steps close.
+   authority boundary, working conventions and glossary. Read it with
+   `docs/CODEX-PROGRAM.md`, which carries additional governing rules.
+2. **`PLAN.md`.** The sole live Stage 2Y and post-M10 product roadmap. It owns
+   the open sequence and bounded work packets. `docs/CODEX-PROGRAM.md` and
+   `docs/codex-program/programme-gates.yaml` retain overall architecture,
+   governance, the four review milestones and merge gates.
 3. **`COMPLETED.md`.** The closed work: what has been done, and the
-   evidence and commit that closed it. `PLAN.md` and this document together
-   are the whole picture; nothing sits in both.
+   evidence and commit that closed it. It owns the detailed closure record.
 4. **`DECISIONS.md`.** Rulings Ben has already made, with the reasoning.
    Read before proposing anything that sounds like a fresh design choice,
    in case it is already settled here.
@@ -44,9 +45,8 @@ three blockers closed, gates re-run after the merge because `main` had moved.
 and where every 2X artefact lives.
 
 **The open work is the Stage 2Y M-sequence in `PLAN.md`.** The architecture
-decision is settled. M0 and M1 are complete. M2 is the first authorised shadow
-implementation stage. Phase B and all model-call routes remain deferred and
-locked.
+decision and M0 to M2 are complete. M3 is next, but it is not authorised.
+Phase B and all model-call routes remain deferred and locked.
 
 The current architecture evidence is
 `docs/codex-program/notes/stage-2y/extraction-architecture-review-2026-08-10.md`.

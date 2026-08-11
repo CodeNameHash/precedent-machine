@@ -34,11 +34,23 @@ the spine:
 The manifest records the current specification files and their SHA-256 values.
 It detects accidental drift. It is not a signed permission system.
 
+**Scoped Stage 2Y roadmap reconciliation, 2026-08-11.** For the Stage 2Y
+extraction migration and the retained product work after its private-internal
+cutover, `docs/core/PLAN.md` is the sole live execution roadmap. This document
+remains the overall architecture and governance spine, and
+`docs/codex-program/programme-gates.yaml` remains the sole authority for
+programme gates and work classes. The Stage 2Y labels M0 to M10 are bounded
+work packets. They are not additional programme-gate review milestones and do
+not amend the four milestones below. Where an older execution sequence in this
+document conflicts with the scoped Stage 2Y roadmap, `docs/core/PLAN.md`
+controls. This statement does not authorise an unauthorised work packet, model
+call, data write, selector change, serving change or publication.
+
 Production cutover and programme completion remain blocked until the Phase 9
 certification gates are mechanically green. The
 factual review covered admin pages, registry typing, identity and lineage,
 schema-shape documentation, comparison-layer normalisers and active query
-routes. `docs/PLAN.md` work packages WP-R1 through WP-R10 fold into the phases
+routes. `docs/archive/PLAN.md` work packages WP-R1 through WP-R10 fold into the phases
 below.
 
 ## Verification results (what we confirmed, corrected, or sharpened)
@@ -133,7 +145,7 @@ CORRECTED (the plan below rests on these, not the review's wording):
   plausible-but-wrong legal answer is the worst failure class, worse
   than no output. Nothing merges unreviewed.
 - Every Codex prompt is self-contained (no session history, no secrets)
-  and carries the repo primer from docs/PLAN.md.
+  and carries the repo primer from `docs/core/PLAN.md`.
 - Corpus writes run only on Ben's machine, dry-run-first, using the
   established delivery-script pattern (embedded human-reviewed tables,
   paginated reads, per-deal diffs, --apply).
@@ -187,8 +199,13 @@ Ben approval remains required only for:
 - the one-use production cutover authorisation.
 
 The M1 Markdown acknowledgement is the only pre-production approval artefact.
-It records Ben's exact-bundle approval. No signed status, signer record,
-publication record or separate approval carrier is pre-production authority.
+It records Ben's exact-bundle approval within the programme-gate milestone
+model. Decision 18 also requires scoped Stage 2Y task authority and
+source-contextualised legal rulings before named work packets proceed. A Stage
+2Y work order, technical review, receipt or authority record is a packet
+instruction or evidence record. It is not a fifth review milestone, a
+programme-gate acknowledgement, signed programme status, publication
+authority or merge approval.
 
 ## Security tiers
 
@@ -2200,7 +2217,7 @@ live-route guard assertions also remain active.
 - Product work continues while the milestone queue advances. No slice may
   introduce a second write path or bypass the canonical writer and release
   contracts.
-- The existing WP-R punchlist in docs/PLAN.md maps: R1/R2→Phase 5,
+- The existing WP-R punchlist in `docs/archive/PLAN.md` maps: R1/R2→Phase 5,
   R3/R8→Phase 3 data passes, R4→Phase 3, R5→Phase 5, R6→Phase 3,
   R7→Phase 3 (reviewed by Fable or an independent 5.6 Sol reviewer using
   high reasoning), R9→Phase 1 vocabulary work
