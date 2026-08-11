@@ -82,7 +82,7 @@ two clusters' deal-spread but introduce no new topic.**
    the rubric.** (§3)
 
 5. **The `subject_occurrence_id` join does not exist — the "86 of 86" figure in
-   `ROUTE-TO-GOOD-EXTRACTION.md` §1a does not reproduce.** Measured across all
+   `route-to-good-extraction-2026-08-10.md` §1a does not reproduce.** Measured across all
    39 committed representations runs: **0 shared `subject_occurrence_id`
    between limb and qualifier claims**, because the two are minted with
    different `kind` discriminators. The join that does work is
@@ -481,7 +481,7 @@ registry's own corroboration signal disagrees with its verdict on 118.
 
 ### `subject_occurrence_id` does not join limbs to qualifiers. It cannot.
 
-The brief states, from `ROUTE-TO-GOOD-EXTRACTION.md` §1a, that *"86 of 86
+The brief states, from `route-to-good-extraction-2026-08-10.md` §1a, that *"86 of 86
 limb claims share a `subject_occurrence_id` with qualifier claims — 107 of
 them"* on the Metsera representations run. **I could not reproduce this, and
 the code says it is impossible.**

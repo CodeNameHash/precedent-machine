@@ -1,6 +1,6 @@
 # Decisions from Ben
 
-As at 2026-08-05. Every item below, numbered and smaller alike, has now been
+As at 2026-08-11. Every item below, numbered and smaller alike, has now been
 decided. Each entry keeps the original ask, why it mattered, and the options
 considered, then records the decision and the reasoning behind it.
 
@@ -1775,3 +1775,192 @@ REP-T + 32 REP-B) via `lib/expected-sets.js`, whose header says it "exists only
 for reps". Against it: 39 of 50 REP-T rows have mined evidence, 11 do not (4
 excluded by design, 2 present but absorbed, 4 genuine zeros, 1 structural), and
 exactly one mined cluster has no rubric home.
+
+---
+
+## 18. Agreement structure, complete propositions and Stage 2Y migration authority: DECIDED 2026-08-11
+
+This decision records Ben's rulings after the extraction architecture review.
+It also records the narrow authority to start Stage M2. A **source block** is a
+piece of the agreement written by the drafter, such as a section, sentence,
+heading or list limb. A **semantic claim** is the system's statement of the
+legal meaning of one or more source blocks. A **projection** is the compact or
+expanded row shown to a lawyer.
+
+### Source structure and identifiers
+
+The collapsible source tree contains authored source blocks only. It does not
+turn extracted meanings into structural children. For example, the words
+`may not rely`, `material breach` and `primarily caused` may supply semantic
+roles, but they are not child nodes merely because the analyser recognises
+them.
+
+Every authored block has a stable node where the source permits one. This
+includes a separate unnumbered sentence. Marker tokens, section-reference
+occurrences and definition-use occurrences are exact span annotations, not
+children in the containment tree. Page numbers and conversion artefacts are
+recorded in a separate byte ledger. A heading remains distinguishable from an
+outline marker.
+
+The Red Hat 3.01 parentage question is resolved. The first roman `(i)` is
+`3.01(h)(i)` under `(h) Contracts`, with `(A)` to `(M)` beneath it. The later
+titled `(i) Permits; Compliance with Laws` is top-level `3.01(i)`, followed by
+top-level `(j)`. The missing `(h)(ii)` does not outweigh the titles,
+indentation and surrounding sequence. This is a ruling on this source, not a
+universal numeral-only parser rule.
+
+### Complete legal propositions
+
+A resolved claim must state a complete legal proposition. Each claim
+definition has a versioned list of required semantic roles. A **role** is a
+part of the proposition, such as actor, legal restriction, object, trigger,
+condition, timing or qualification. Every role keeps exact source provenance,
+including provenance for inherited context. Resolution returns
+`MISSING_REQUIRED_ROLE` and rendering produces no row when a required role is
+missing. A display policy may hide a known role in a compact row. It may not
+repair a claim that never contained the role.
+
+Metsera 7.04 is the golden example. It remains two authored sentence nodes and
+two semantic branch claims. Each branch must contain:
+
+- actor;
+- operative restriction;
+- object of reliance;
+- complete referenced condition set;
+- causal threshold;
+- breaching actor; and
+- breached obligation.
+
+Acceptance compares the complete propositions. Recognising fragments such as
+`may not rely`, `material breach` or `primarily caused` is not enough. The
+golden tests remove each required role in turn and require a fail-closed result.
+
+Metsera 7.04 may render as one collapsed mutual rule because its two branches
+use the same operative restriction, threshold and breached-obligation
+standard. The two complete claims, exact actors and separate condition sets
+remain available in lineage and expansion. If actor, legal operation, trigger,
+condition, timing, threshold or qualification differs materially, the claims
+remain separate in the output. Grouping is a projection rule, not a source or
+claim identity rule.
+
+Red Hat 3.02(b)(i) remains three authored sentence nodes and three semantic
+propositions: power and authority, due authorisation, and execution and
+enforceability. They may appear under one expandable topic heading.
+
+### Party and transaction relationships
+
+The semantic analysis contains a party and transaction relationship graph.
+It records typed relationships including `PARENT_OF`,
+`WHOLLY_OWNED_SUBSIDIARY_OF`, `CONTROLS`, `MERGES_INTO` and `SURVIVES_AS`.
+Each relationship has exact source provenance and an effective time. This
+party relationship graph is separate from the authored source tree and from
+Decision 14's ordered transaction-step topology.
+
+A cause-to-perform covenant is recorded as a separate
+`CAUSES_TO_PERFORM` relationship. It does not, without separate source
+evidence, prove ownership or control.
+
+A compact row may use `Parent` as shorthand for a Parent and Merger Sub side
+only if independent party-relationship evidence proves the subsidiary
+relationship, no distinct duty, condition or remedy is hidden, and expansion
+shows both exact actors. Source and semantic records always retain both actors.
+
+### Qualifications and cross-references
+
+Qualifications keep exact source spans and explicit scope relationships.
+`Attach` means a semantic scope edge. It does not mean that an extracted
+qualification fact becomes a structural child.
+
+The following scope rulings are confirmed:
+
+- Red Hat 5.07's substantially-similar proviso governs all operative duties
+  before it in the second sentence.
+- TopBuild 6.3(b)'s cross-default proviso conditions the complete 6.3(b)
+  termination right.
+- Concho 6.11's proviso is an additional Company covenant attached to
+  sentence two. It is not an exception to the participation and consultation
+  covenant, and it is not part of sentence one.
+- Express named-section language controls where the agreement supplies it.
+
+Lawyer-facing output must state the referenced legal content in useful words.
+A bare section number or `See provision` is not an acceptable row. The exact
+citation remains available as a secondary label and link. Expansion shows the
+target heading and relevant source text. Hover and click behaviour remains a
+product-design question, not a legal ruling.
+
+### Output ownership and legal review
+
+Every approved claim definition has exactly one output owner or an approved
+no-output disposition. Renderer inability is not an approved no-output reason.
+TopBuild 6.3's resolved Company termination right must render as a Termination
+row. A compact row must not say `Not specified` when the source specifies the
+fact. Legal-review cards and rows use ordinary legal English, not internal
+phrases such as `Either Principal Party, Section 7.01`.
+
+Review is source-first and family-specific. The exact display detail can vary
+by family and provision subtype. The programme uses a versioned calibration
+pack containing full, deliberately different provisions, their hierarchy,
+complete claims, inherited context, compact and expanded rows, proposed
+omissions and narrow legal questions. Each pack contains three to ten
+provisions. Its individual family rules still require Ben's approval.
+
+The earlier statement that roughly 300 consecutive correct rows are a
+pre-launch gate is superseded. The overall one per cent false-publication
+target remains a tracked metric and alarm, reported with sample size and
+confidence. Before private internal activation, each family needs an approved
+calibration policy or no-output policy, every changed or genuinely ambiguous
+result must be reviewed, every known material information loss must be fixed,
+and all rows affected by a discovered rule defect must be checked. A modest,
+risk-weighted blind sample is also required. Its exact size remains open and
+must not be presented as Ben-approved until he rules on it.
+
+### Effect on earlier decisions
+
+This decision makes these scoped corrections:
+
+- Decision 13's equivalence harness remains a regression comparator. It is
+  not the legal-correctness oracle. Exact source plus the approved required-
+  role schema is the oracle.
+- Decision 17's vertical build order is superseded for this migration only.
+  M2 and M3 create shared source and context seams before M5 migrates semantic
+  families in waves.
+- Decision 17's permission for live resolver loosening does not apply to M2
+  through M9. Those stages remain shadow-only.
+- The general extraction permission does not unlock Phase B. Phase B and all
+  model-call routes remain deferred and locked unless Ben gives new explicit
+  authority.
+- A section reference may provide evidence used before resolution. A renderer
+  may not use it to invent a missing required actor or other required role.
+
+The three-deal threshold in Decision 17 for open-world promotion remains in
+force. The programme must cluster the 1,701 open-world records by proposed
+legal or comparison type. Ben is not expected to classify technical records
+one by one.
+
+### M2 authority and the meaning of M10
+
+Ben's instruction on 2026-08-11 authorises the additive, shadow-only M2 source
+index after this decision is recorded. It does not authorise M3 or later work,
+selector changes, pins, baselines, product-data writes, Phase B or another
+model route, serving, publication or external access. M0 and M1 remain sealed.
+M1 proved the source/context seam and an identity-preserving migration path. It
+did not prove complete-proposition semantics.
+
+The planned M10 state is `PRIVATE_INTERNAL_EXTRACTOR_ACTIVE`. It means that
+the M9-certified extractor is selected for named private internal consumers,
+rollback is proven, product-data writes remain zero, publication authority is
+`NONE`, and external serving remains disabled. It does not prove durable
+production import, new-data serving, production-ready product surfaces,
+security or operations, publication, or full product go-live. Those remain
+separate stages in `PLAN.md`.
+
+### Open rulings
+
+Ben still needs to decide:
+
+1. the exact size and composition of the modest risk-weighted blind sample
+   required before private internal activation;
+2. each family's required display roles and approved compact omissions as its
+   calibration pack is prepared; and
+3. any new legal ambiguity that remains after source structure, provenance and
+   complete roles are shown in plain English.

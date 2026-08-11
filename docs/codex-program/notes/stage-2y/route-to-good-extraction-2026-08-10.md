@@ -1,5 +1,9 @@
 # The route from here to extraction that is actually good
 
+> Historical note. This was the 2026-08-10 route before the architecture
+> review and Decision 18. It is not an executable plan. Use
+> `docs/core/PLAN.md`.
+
 Written 2026-08-10, after two runs that produced plans and no movement, and
 after an adversarial review commissioned specifically to say the uncomfortable
 thing rather than the encouraging one.

@@ -43,16 +43,14 @@ three blockers closed, gates re-run after the merge because `main` had moved.
 `docs/codex-program/notes/HANDOFF-2026-08-08.md` records how that was reached
 and where every 2X artefact lives.
 
-**The open work is Stage 2Y in `PLAN.md`, and it is PROPOSED, not settled.**
-Added 2026-08-09 after every one of the **4,241 unresolved reason-code
-occurrences** in the corpus was diagnosed to a mechanism. It is written against
-the standard Ben set on 2026-08-09 — *"at thousands of agreements this doesn't
-work; the system needs to be fucking good"* — so its measure is unattended
-correctness, not what a reviewer sees. Four rulings are open at the top of the
-stage, each with a stated default.
+**The open work is the Stage 2Y M-sequence in `PLAN.md`.** The architecture
+decision is settled. M0 and M1 are complete. M2 is the first authorised shadow
+implementation stage. Phase B and all model-call routes remain deferred and
+locked.
 
-The evidence sits in `docs/codex-program/notes/stage-2y/`:
-`unresolved-register.json` is the row-level register (155 rows, one per
-family/reason-code pair, summing to exactly 4,241); the `diag-*.md` files carry
-the per-cluster diagnoses; `done-reaudit.md` re-audits the 2X sweep's DONE rows
-and finds three false closes.
+The current architecture evidence is
+`docs/codex-program/notes/stage-2y/extraction-architecture-review-2026-08-10.md`.
+The sealed migration controls, prototype, reviews and receipts are under
+`evidence/canonical-v2/stage-2y-structure-migration/`. Historical Stage 2Y
+diagnosis remains under `docs/codex-program/notes/stage-2y/`; it is evidence,
+not a second executable plan.

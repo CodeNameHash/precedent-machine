@@ -1554,21 +1554,123 @@ and `--check` modes.
 
 **Not claimed.** This closes the diagnostic proof only. Stage 2Y remains open.
 
-**Inert Stage 2Y evidence, not step closures.** The current human-anchor packet
-has 80 cards and an empty decision ledger. The calibration and publication-
-disposition substrate therefore fails closed: no authority artefact, eligible
-claim, publication release or serving activation exists. Other replay evidence
-remains inert: the duplicate census is report-only, the representation-topic
-replay is 324 classified / 299 unclassified, and the promotion collector holds
-15 cards. The defined-term replay binds six exact final receipts and preserves
-70 `RESOLVED` / 21 `NO_DEFINITION`, with 80 `RESOLVED` / 11 `REVIEW` integration
-dispositions. Qualifier dispatch is report-only: 104 safe proposals, 23 review
-conflicts and 336 held rows from its fixed 463-row cohort. The lexical concept
-adjudication completed 164 recorded Terra calls and classified the roots as 57
-concept-covered, 55 genuine gaps and 52 ambiguous. The Stage 2Y-L batch completed
-46 recorded Terra calls and its offline target audit records closing accuracy
-24 resolved / 1 open-world / 1 held, closing obligor 7 resolved, financing 2
-resolved / 4 held / 2 not emitted, and proxy day count 3 open-world. The joint
-sweep is blocked before replay because the 80-card human anchor has zero reviewed
-decisions. Golden evaluation was **NOT RUN** because Supabase credentials were
-absent. No credentials were requested. None of this authorises Stage 3.
+**Evidence and commits.** The two residual artefacts were added in
+`b340f3ae732d679d995b566eaa72bbfba0e0172b`. Closure and restamping were
+completed in `44648747ca8292e6fac67fdd118e4a977c1eb11e`.
+
+---
+
+## Stage 2Y Phase C/D/E measurement and Phase B stop
+
+**Closed 2026-08-10.** The 130-run measurement established the current
+source-to-row baseline. It did not measure human acceptance.
+
+| measure | count |
+|---|---:|
+| attempted | 2,201 |
+| resolved | 1,526 |
+| open-world | 1,701 |
+| review | 675 |
+| mechanical row matches | 1,241 |
+| cautious known-loss-adjusted rows | 1,097 |
+| grouped feature claims that fail closed | 109 |
+| routed claim with no row | 1 |
+| claims with no approved output owner | 175 |
+
+The four extraction states are separate measures and are not additive. The
+known-loss evidence identifies 244 affected claims. It subtracts 144 rendered
+claims from the 1,241 mechanical matches. Another 100 were already not
+rendered. The resulting 1,097 of 1,526 is 71.9 per cent. The evidence records
+`human_acceptance_status: NOT_MEASURED`.
+
+Phase B stopped and remains locked. No later programme text may treat the
+deferred live-call instructions as authority.
+
+**Evidence.**
+
+- `evidence/canonical-v2/stage-2y-cd-report.json`
+- `evidence/canonical-v2/stage-2y-cd-known-loss-adjustment.json`
+- `evidence/canonical-v2/stage-2y-phase-b/sol-financing-continuation.json`
+
+**Commits.** Measurement:
+`633560206a1392741e0c5ecbcab74d2aa2a7c241`. Phase B stop and lock:
+`ba09c1d85af68c47156be500077bf04258af2919`,
+`9ad19b43861c8d09d443e844bc358d2b5cb2b581` and
+`1771ca7b4b6e2d7978d3776615446d99deddfb57`.
+
+**Proof.**
+
+```bash
+node --test \
+  tests/canonical-v2-rendered-row-preview.test.js \
+  tests/canonical-v2-claim-scoped-single-row-preview.test.js \
+  tests/stage-2y-cd-measurement.test.js \
+  tests/stage-2y-cd-known-loss-adjustment.test.js
+```
+
+---
+
+## Stage 2Y extraction architecture recommendation
+
+**Closed 2026-08-10.** The review recommended incremental restructuring. The
+source tree, semantic analysis and output projections become separate
+representations. The current runtime remains in place until shadow parity,
+legal calibration, certification and a separate internal cutover.
+
+**Evidence.**
+`docs/codex-program/notes/stage-2y/extraction-architecture-review-2026-08-10.md`.
+
+**Commit.** `7ba2b9d4612cf95be5d0da4b06a56773e33d2f4e`.
+
+**Not claimed.** The review is a recommendation and work order. It does not
+implement the target architecture or authorise production.
+
+---
+
+## Stage 2Y M0 authority freeze
+
+**Closed 2026-08-10.** M0 froze the seven-agreement cohort, 25-family registry,
+130-run baseline, current measurements, current rows, semantic diff contract,
+expected-difference ledger and zero-effect authority.
+
+**Evidence.**
+`evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m0-control-freeze.json`.
+
+**Commit.** `7e4b064c2f0f82f28f1ab83dfae90ece74934a8f`.
+
+**Proof.**
+
+```bash
+node scripts/stage-2y-structure-migration-validate.mjs \
+  --receipt evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m0-control-freeze.json
+```
+
+**Effect.** No model call, Phase B call, selector, pin, baseline, database,
+serving or publication change.
+
+---
+
+## Stage 2Y M1 structure falsification prototype
+
+**Closed 2026-08-11.** Sol signed `INCREMENTAL_RESTRUCTURE`. M1 proved that a
+shared source and provenanced-context seam is required and that current
+identities can migrate through explicit aliases.
+
+M1 preserved 359 selected current claim records and all 13 frozen rows. It
+linked 481 current evidence spans to source nodes, proved exact byte ownership
+for the selected 157,670 bytes, delivered 72 inherited context facts with exact
+provenance and exposed two material resolved information-loss cases.
+
+**Decision, review and receipt.**
+
+- `evidence/canonical-v2/stage-2y-structure-migration/prototype/m1/decision.json`
+- `evidence/canonical-v2/stage-2y-structure-migration/reviews/stage-2y-structure-m1-sol-technical-review.json`
+- `evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m1-falsification-prototype.json`
+
+**Commit.** `5c61c51b81f8983d3f18c6dcef2086eff29e661c`.
+
+**Not claimed.** M1 did not prove complete legal propositions. Its Metsera
+7.04 mapping preserved the defective current fragments and row for comparison.
+Required-role schemas, complete branch propositions and render fail-closed
+behaviour remain M4-M6 work. M1 changed no current extractor, row, pin,
+baseline, model route, database, serving or publication state.

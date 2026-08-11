@@ -7,8 +7,9 @@ read this document on its own, before reading anything else.
 
 ## Exact working location and authority boundary
 
-Branch: `codex/m3-production-phase1`. Worktree:
-`/Users/bengoodchild/Documents/Claude/precedent-machine-m3-production-phase1`.
+Use the active task branch in the current worktree. Confirm it with
+`git status --short --branch` before reading or changing project files. Do not
+infer authority from a branch name.
 
 **Production authority is NONE.** Since 2026-08-05, building and activating
 routes locally and on Vercel preview deployments is permitted. Also since
@@ -24,6 +25,13 @@ carve-outs below, and in particular it does not grant production data access
 or real credentials, so an import can be built and proved offline or against a
 non-production database, and running one against production remains a separate
 act needing its own explicit authorisation. See lane D's import steps.
+
+**Current narrower rule, 2026-08-11.** Stage M2 alone is authorised for the
+Stage 2Y structure migration. It is additive, shadow-only and unused by the
+current extractor. M3 and later stages require their own work order. Phase B
+and every model-call route remain deferred and locked. M2 may not change a
+selector, pin, baseline, database, product data, serving state, publication
+state or external route. The sealed M0 and M1 artefacts must not be changed.
 
 Everything else stays prohibited regardless of those carve-outs:
 
@@ -776,32 +784,16 @@ at rank 99 because no exact rank was ever approved. Do not invent one.
 
 ## The document set, and which document owns what
 
-Nine planning documents exist. Only four are live. Read this before editing any
-of them.
+The six files named by `docs/core/README.md` are the live core documents.
+`PLAN.md` contains open executable work. `COMPLETED.md` contains closed work
+and its evidence. `DECISIONS.md` contains Ben's binding rulings. This file owns
+authority, working rules and shared definitions. `CODEBASE-GUIDE.md` describes
+the implementation. `GRAVEYARD.md` records unused or contained code.
 
-**The four live documents.**
-
-| Document | Owns | Editable |
-| --- | --- | --- |
-| `docs/core/OPERATING-RULES.md` | This file. Authority, rulings, architectural decisions, conventions | Freely |
-| `archive/ROADMAP.md` | The sequence to publication, decisions needed, open risks, current state | Freely |
-| `docs/codex-program/WORK-COMPLETED.md` | History. Append-only | Freely |
-| `docs/codex-program/adversarial-tests.md` | The register of adversarial testing and what it found | **Governed, see below** |
-
-**Five stubs.** `archive/MASTER-PLAN.md`, `archive/ROADMAP-TO-PUBLICATION.md`,
-`archive/CANONICAL-V2-ACTIVATION-PACKAGE.md`,
-`archive/ADR-001-dark-bridge-flattening-is-scaffolding.md`
-and `docs/archive/handoffs/CODEX-TO-CLAUDE-HANDOFF-2026-08-04.md` are superseded
-pointers, moved into `archive/` on 2026-08-06 along with the rest of the
-repository's unused root-level documents. They are kept, not deleted, because
-commit messages and other sessions reference them by name. Do not add content
-to them. The handoff stub additionally carries the authority boundary at its
-top, so a session that reads only that file cannot infer more authority than
-it has.
-
-**Full historical detail** beyond what `WORK-COMPLETED.md` condenses is in commit
-`59568f92`, which holds the original 3,629-line handoff. Recover it with
-`git show 59568f92:docs/handoffs/CODEX-TO-CLAUDE-HANDOFF-2026-08-04.md`.
+Files under `archive/` and dated notes under `docs/codex-program/notes/` are
+historical evidence. They do not override the live core documents. The
+governed specification files below remain live for their stated technical
+purpose, but they are not parallel programme plans.
 
 ## Governed documents and the specification manifest
 
