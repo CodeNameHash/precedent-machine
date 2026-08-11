@@ -3055,6 +3055,14 @@ limb tree, explicit handling of model paths that are headings rather than outlin
 markers, and the 69-limb disposition table required by 2X-L1. This is a design
 review, not permission to activate serving or publication.
 
+Also review the registry replay gate. Keep the baseline writer's two complete
+corpus passes: the first calculates the proposed baseline and the second proves
+that the resolver is deterministic against it. Remove the later duplicate
+full-corpus work from the separate `--check`, the focused unit test and the full
+suite, or make those checks consume the writer's sealed verification result.
+The target is two 157-run passes for an accepted baseline change, not four or
+five passes that prove the same result again.
+
 ---
 
 ## Stage 2Y — the execution order. DECIDED 2026-08-09, every ruling is in.
