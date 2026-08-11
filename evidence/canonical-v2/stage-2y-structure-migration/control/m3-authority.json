@@ -1,0 +1,235 @@
+{
+  "schema_version": "STAGE_2Y_M3_AUTHORITY/V1",
+  "authority_version": 1,
+  "authority_digest": "86d1cb6df25476b811f37fa6eb8c2c58a5923cfff964745cd53b6ea513b2833b",
+  "stage": "M3",
+  "authority_state": "ACTIVE_FOR_BOUNDED_EXPERIMENT_ONLY",
+  "authorised_scope": "TOPBUILD_6_2_SHADOW_CONTEXT_COMPILATION_EXPERIMENT",
+  "effect": "ADDITIVE_SHADOW_IN_MEMORY_ONLY",
+  "base_commit": "6b6163429d1358f827dd54e9cb50613b19651889",
+  "authorising_instruction": {
+    "author": "BEN_GOODCHILD",
+    "date": "2026-08-11",
+    "verbatim": "I authorise M3 as specified in section 8 of docs/core/PLAN.md. Start with the bounded TopBuild 6.2 shadow experiment. If that exact fixture passes and Sol confirms that the frozen technical contract has not changed, continue with the seven-agreement shadow M3 run and seal the M3 receipt. Do not call a model or Phase B route. Do not change the current extractor, selector, pins, baselines, database, product data, serving or publication. Stop and return to me only if two legally plausible scope readings remain."
+  },
+  "bindings": {
+    "m2_receipt": {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+      "byte_length": 20126,
+      "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585",
+      "schema_version": "STAGE_2Y_STRUCTURE_MIGRATION_PACKET_RECEIPT/V1",
+      "stage": "M2",
+      "status": "PASS",
+      "output_set_digest": "5746d28d800d83f60619e947677f70d65c7c4daf902a88c4ec3515adf069be30"
+    },
+    "topbuild_agreement_index": {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb.agreement-index.json",
+      "byte_length": 7576859,
+      "sha256": "e8f03463e792220b421bf8ccae1cb9a55e8e05a41396c60512cf63ae50b031af",
+      "schema_version": "AGREEMENT_INDEX/V1",
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "agreement_index_id": "e5ca967c6d1af76f53fdd6bb0c402aef416272f7757fcdbaa11d3e8968d0c29a",
+      "canonical_text_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+      "structural_policy_digest": "39c2972a1cd0e30989b6acd21bce120ca818d834f98a446abfa729f662cdac4c"
+    },
+    "semantic_policy": {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/control/semantic-policy.json",
+      "byte_length": 13232,
+      "sha256": "6f72599799f6e50f50342f6db84e752bb4df03ae8b341298fa2f3a623ce26fd9",
+      "schema_version": "STAGE_2Y_SEMANTIC_POLICY/V1",
+      "policy_version": 1,
+      "policy_digest": "61059146df8f847b344d4480a4a60863c075367dd9ffa683dcaf513ca180733c"
+    }
+  },
+  "current_state_bindings": {
+    "baseline_manifest": {
+      "path": "evidence/canonical-v2/stage-2y-cd-baseline-manifest.json",
+      "byte_length": 68041,
+      "sha256": "634064b5a8f6c223edd1c3c2f4faa9ae0ab7be181a6b3d0ef086354eb37b7fe9"
+    },
+    "current_baseline": {
+      "path": "evidence/canonical-v2/stage-2y-cd-baseline.json",
+      "byte_length": 293218,
+      "sha256": "892d258699ab933051e135d66c9a515fadd7983f6d2e11e2e7d4804871424dcb"
+    },
+    "current_measurement": {
+      "path": "evidence/canonical-v2/stage-2y-cd-report.json",
+      "byte_length": 1222512,
+      "sha256": "63a6bd818edc1e77780261c021d3b9b33ec65ef483deee4ee1bc18b9582df4f3"
+    },
+    "current_rendered_rows": {
+      "path": "evidence/canonical-v2/stage-2y-n-rendered-rows.json",
+      "byte_length": 327082,
+      "sha256": "537b1f132f4fcfa7df50cc9536f68fc615a81c7334929b4cbb55fd70f2f884d4"
+    }
+  },
+  "permitted_changed_files": [
+    "evidence/canonical-v2/stage-2y-structure-migration/control/m3-authority.json",
+    "evidence/canonical-v2/stage-2y-structure-migration/control/semantic-policy.json",
+    "lib/canonical-v2/context-compilation.js",
+    "tests/canonical-v2-context-compilation.test.js"
+  ],
+  "permitted_command": "node --test --test-name-pattern=\"TopBuild 6.2\" tests/canonical-v2-context-compilation.test.js",
+  "command_run_limit": 1,
+  "permitted_output": {
+    "kind": "IN_MEMORY_CONTEXT_COMPILATION_AND_TEST_TAP_ONLY",
+    "schema_version": "CONTEXT_COMPILATION/V1",
+    "persistent_compilation_path": null,
+    "persistent_shadow_output_root": null,
+    "receipt_path": null
+  },
+  "experiment_binding": {
+    "experiment_id": "TOPBUILD_6_2_CHAPEAU_INHERITANCE/V1",
+    "shared_parent_node_occurrence_id": "aba8638fecd2e57e5b079313e56379fbe8727764830af1b011c37525cbad28dd",
+    "chapeau_node_occurrence_id": "8807b25eb5ce3da6a2a6d0f014f5930becc74921e722316337b60e76fc283096",
+    "chapeau_span": {
+      "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+      "start_byte": 364423,
+      "end_byte": 364547,
+      "text_sha256": "a48f2e266c0e917d58e697dd37a9add4b75cffecac2a8fafb5f193ddd63def22"
+    },
+    "ordered_limb_node_occurrence_ids": [
+      "20800cde2e005201e9182939b5ea73785f0e25b4b3051b0695cba9a52e1f1cd7",
+      "81fff54644db6c9cdd8dc553c389a464489ed04e2a993a8df46c25e5f327636b",
+      "492c594ec9814564bf30d5657ea5d774b760aabe20acbd29f02c61d763b74d4d",
+      "e1491fafffa0d5e77e4e703aeac3c211e2bc48518dcd05a6bc32572cebe11c9d"
+    ],
+    "inherited_facts": [
+      {
+        "role": "OBJECT",
+        "value": "This Agreement",
+        "source_span": [
+          364423,
+          364437
+        ]
+      },
+      {
+        "role": "MODAL",
+        "value": "may",
+        "source_span": [
+          364438,
+          364441
+        ]
+      },
+      {
+        "role": "VERB",
+        "value": "be terminated",
+        "source_span": [
+          364442,
+          364455
+        ]
+      },
+      {
+        "role": "TIME",
+        "value": "at any time prior to the Titanium Merger Effective Time",
+        "source_span": [
+          364456,
+          364511
+        ]
+      },
+      {
+        "role": "ACTOR",
+        "value": "either Parent or the Company",
+        "source_span": [
+          364515,
+          364543
+        ]
+      },
+      {
+        "role": "CONNECTIVE",
+        "value": "if",
+        "source_span": [
+          364544,
+          364546
+        ]
+      }
+    ],
+    "expected_fact_count": 24,
+    "expected_scope_edge_count": 24,
+    "local_qualification_node_occurrence_ids": [
+      "3ec9665fb69c128973815664167bd850be0f4d25d3b5c2d0cbe8f404902fd8c8",
+      "460996c5e2936d40712046653018df828228f7e493eadbde51e16a155bc25fe5"
+    ],
+    "sibling_qualification_scope_edges_expected": 0
+  },
+  "sol_contract_freeze": {
+    "reviewer_role": "SOL",
+    "status": "FROZEN_FOR_BOUNDED_EXPERIMENT",
+    "frozen_contracts": [
+      "CONTEXT_COMPILATION_SCHEMA",
+      "IDENTITY_RULES",
+      "ORDERING_RULES",
+      "CONTEXT_ROLE_VOCABULARY",
+      "CONTEXT_STATE_VOCABULARY",
+      "SCOPE_EDGE_PROOF_RULE",
+      "FAIL_CLOSED_ERROR_CODES"
+    ]
+  },
+  "post_experiment_sol_gate": {
+    "status": "PENDING_EXACT_FIXTURE_RESULT",
+    "requirements": [
+      "EXACT_TOPBUILD_6_2_FIXTURE_PASS",
+      "REPEATED_COMPILATION_BYTE_IDENTICAL",
+      "FROZEN_INTERFACE_UNCHANGED",
+      "SEMANTIC_POLICY_DIGEST_UNCHANGED",
+      "M2_RECEIPT_AND_INDEX_BINDINGS_UNCHANGED",
+      "CURRENT_STATE_BINDINGS_UNCHANGED",
+      "SOL_CONFIRMATION_RECORDED"
+    ],
+    "seven_agreement_runner_authorised_by_this_file": false,
+    "seven_agreement_persistent_outputs_authorised_by_this_file": false,
+    "m3_final_receipt_authorised_by_this_file": false,
+    "next_control_requirement": "POST_EXPERIMENT_M3_AUTHORITY_REVISION_AFTER_GATE_PASS"
+  },
+  "prohibitions": {
+    "model_calls": 0,
+    "phase_b_route_calls": 0,
+    "network_calls": 0,
+    "external_access_authorisation": "NONE",
+    "current_extractor_changes": 0,
+    "current_selector_changes": 0,
+    "structure_selector": "current",
+    "context_selector": "current",
+    "analysis_selector": "current",
+    "projection_selector": "current",
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "database_target": "NONE",
+    "database_writes": 0,
+    "product_writes": 0,
+    "serving_changes": 0,
+    "publication_authorisation": "NONE",
+    "release_receipts_created": 0,
+    "m0_m1_m2_sealed_artefact_mutations": 0,
+    "phase_b_status": "DEFERRED_LOCKED",
+    "m4_or_later_stage_authorised": false
+  },
+  "zero_effect_expectations": {
+    "current_claims_unchanged": true,
+    "current_rows_unchanged": true,
+    "current_open_world_unchanged": true,
+    "current_extractors_unchanged": true,
+    "current_selectors_unchanged": true,
+    "pins_unchanged": true,
+    "baselines_unchanged": true,
+    "database_unchanged": true,
+    "product_data_unchanged": true,
+    "serving_unchanged": true,
+    "publication_unchanged": true
+  },
+  "stop_conditions": [
+    "TWO_LEGALLY_PLAUSIBLE_SCOPE_READINGS_REMAIN",
+    "M2_CHANGE_REQUIRED",
+    "FROZEN_SHARED_CONTRACT_CHANGE_REQUIRED",
+    "IDENTITY_OR_DIGEST_RULE_INCOMPLETE",
+    "UNBOUND_OR_CHANGED_INPUT",
+    "UNAUTHORISED_FILE_CHANGE",
+    "UNAUTHORISED_PERSISTENT_OUTPUT",
+    "ANY_PROHIBITED_EFFECT"
+  ],
+  "rollback": {
+    "command": "git revert --no-edit <M3_BOUNDED_EXPERIMENT_COMMIT_SHA>",
+    "result": "NOT_RUN_ADDITIVE_SHADOW_ONLY",
+    "required_postcondition": "ALL_CURRENT_STATE_BINDINGS_MATCH"
+  }
+}

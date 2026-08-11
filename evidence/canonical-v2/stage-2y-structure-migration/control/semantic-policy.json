@@ -1,0 +1,371 @@
+{
+  "schema_version": "STAGE_2Y_SEMANTIC_POLICY/V1",
+  "policy_version": 1,
+  "policy_digest": "61059146df8f847b344d4480a4a60863c075367dd9ffa683dcaf513ca180733c",
+  "effect": "SHADOW_IN_MEMORY_ONLY",
+  "scope": "M3_BOUNDED_TOPBUILD_6_2_EXPERIMENT_ONLY",
+  "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+  "compilation_schema_version": "CONTEXT_COMPILATION/V1",
+  "frame_schema_version": "CONTEXT_FRAME/V1",
+  "fact_schema_version": "CONTEXT_FACT/V1",
+  "scope_edge_schema_version": "CONTEXT_SCOPE_EDGE/V1",
+  "context_role_order": [
+    "SUBJECT",
+    "ACTOR",
+    "CAPACITY",
+    "MODAL",
+    "VERB",
+    "OBJECT",
+    "NEGATION",
+    "CONNECTIVE",
+    "TIME",
+    "CONDITION",
+    "SCOPE"
+  ],
+  "context_states": [
+    "DIRECT",
+    "INHERITED",
+    "OVERRIDDEN",
+    "AMBIGUOUS",
+    "UNRESOLVED"
+  ],
+  "scope_edge_kinds": [
+    "CHAPEAU_GOVERNS_LIMB"
+  ],
+  "scope_edge_states": [
+    "RESOLVED",
+    "AMBIGUOUS",
+    "UNRESOLVED"
+  ],
+  "scope_proof_kinds": [
+    "AUTHORED_CHAPEAU_CONTIGUOUS_LIMB_SIBLINGS"
+  ],
+  "fail_closed_error_codes": [
+    "CONTEXT_COMPILATION_INDEX_SCHEMA_MISMATCH",
+    "CONTEXT_COMPILATION_INDEX_DIGEST_MISMATCH",
+    "CONTEXT_COMPILATION_POLICY_SCHEMA_MISMATCH",
+    "CONTEXT_COMPILATION_POLICY_DIGEST_MISMATCH",
+    "CONTEXT_COMPILATION_FOCUS_UNKNOWN",
+    "CONTEXT_COMPILATION_FOCUS_DUPLICATE",
+    "CONTEXT_COMPILATION_FOCUS_KIND_MISMATCH",
+    "CONTEXT_COMPILATION_FOCUS_ORDER_MISMATCH",
+    "CONTEXT_COMPILATION_EXPERIMENT_BINDING_MISMATCH",
+    "CONTEXT_COMPILATION_SOURCE_PROOF_MISMATCH"
+  ],
+  "output_diagnostic_types": [],
+  "input_contract": {
+    "interface": "compileContext(focusNodeIds, AgreementIndex, semanticPolicy)",
+    "agreement_index_schema_version": "AGREEMENT_INDEX/V1",
+    "focus_node_kind": "LIMB",
+    "focus_node_occurrence_ids": [
+      "20800cde2e005201e9182939b5ea73785f0e25b4b3051b0695cba9a52e1f1cd7",
+      "81fff54644db6c9cdd8dc553c389a464489ed04e2a993a8df46c25e5f327636b",
+      "492c594ec9814564bf30d5657ea5d774b760aabe20acbd29f02c61d763b74d4d",
+      "e1491fafffa0d5e77e4e703aeac3c211e2bc48518dcd05a6bc32572cebe11c9d"
+    ],
+    "focus_order_rule": "SOURCE_EXTENT_START_THEN_END_THEN_NODE_OCCURRENCE_ID",
+    "reject_unknown_focus": true,
+    "reject_duplicate_focus": true,
+    "reject_wrong_kind_focus": true,
+    "reject_out_of_source_order_focus": true,
+    "reject_extra_focus": true,
+    "reject_missing_focus": true,
+    "reject_unbound_index": true,
+    "reject_policy_digest_mismatch": true
+  },
+  "bound_experiment": {
+    "experiment_id": "TOPBUILD_6_2_CHAPEAU_INHERITANCE/V1",
+    "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+    "agreement_index_id": "e5ca967c6d1af76f53fdd6bb0c402aef416272f7757fcdbaa11d3e8968d0c29a",
+    "agreement_index_sha256": "e8f03463e792220b421bf8ccae1cb9a55e8e05a41396c60512cf63ae50b031af",
+    "canonical_text_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+    "structural_policy_digest": "39c2972a1cd0e30989b6acd21bce120ca818d834f98a446abfa729f662cdac4c",
+    "shared_parent_node_occurrence_id": "aba8638fecd2e57e5b079313e56379fbe8727764830af1b011c37525cbad28dd",
+    "chapeau_node_occurrence_id": "8807b25eb5ce3da6a2a6d0f014f5930becc74921e722316337b60e76fc283096",
+    "chapeau_span": {
+      "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+      "start_byte": 364423,
+      "end_byte": 364547,
+      "text_sha256": "a48f2e266c0e917d58e697dd37a9add4b75cffecac2a8fafb5f193ddd63def22"
+    },
+    "ordered_limb_node_occurrence_ids": [
+      "20800cde2e005201e9182939b5ea73785f0e25b4b3051b0695cba9a52e1f1cd7",
+      "81fff54644db6c9cdd8dc553c389a464489ed04e2a993a8df46c25e5f327636b",
+      "492c594ec9814564bf30d5657ea5d774b760aabe20acbd29f02c61d763b74d4d",
+      "e1491fafffa0d5e77e4e703aeac3c211e2bc48518dcd05a6bc32572cebe11c9d"
+    ],
+    "local_qualification_isolation": [
+      {
+        "qualification_node_occurrence_id": "3ec9665fb69c128973815664167bd850be0f4d25d3b5c2d0cbe8f404902fd8c8",
+        "permitted_target_node_occurrence_ids": [
+          "20800cde2e005201e9182939b5ea73785f0e25b4b3051b0695cba9a52e1f1cd7"
+        ],
+        "forbidden_target_node_occurrence_ids": [
+          "81fff54644db6c9cdd8dc553c389a464489ed04e2a993a8df46c25e5f327636b",
+          "492c594ec9814564bf30d5657ea5d774b760aabe20acbd29f02c61d763b74d4d",
+          "e1491fafffa0d5e77e4e703aeac3c211e2bc48518dcd05a6bc32572cebe11c9d"
+        ],
+        "span": {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "start_byte": 364643,
+          "end_byte": 364924,
+          "text_sha256": "736aedfdd5abe4e74dd584e08abb08eb495d605724a40932c2ae757c9460afaa"
+        }
+      },
+      {
+        "qualification_node_occurrence_id": "460996c5e2936d40712046653018df828228f7e493eadbde51e16a155bc25fe5",
+        "permitted_target_node_occurrence_ids": [
+          "e1491fafffa0d5e77e4e703aeac3c211e2bc48518dcd05a6bc32572cebe11c9d"
+        ],
+        "forbidden_target_node_occurrence_ids": [
+          "20800cde2e005201e9182939b5ea73785f0e25b4b3051b0695cba9a52e1f1cd7",
+          "81fff54644db6c9cdd8dc553c389a464489ed04e2a993a8df46c25e5f327636b",
+          "492c594ec9814564bf30d5657ea5d774b760aabe20acbd29f02c61d763b74d4d"
+        ],
+        "span": {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "start_byte": 365508,
+          "end_byte": 365780,
+          "text_sha256": "576394857c2bda550bcecb85a2b5dcc5fa993d72eb8b2c90318e608416413401"
+        }
+      }
+    ],
+    "expected_inherited_fact_count": 24,
+    "expected_scope_edge_count": 24,
+    "expected_output_diagnostic_count": 0,
+    "reference_resolution": "DISABLED_IN_BOUNDED_EXPERIMENT",
+    "definition_resolution": "DISABLED_IN_BOUNDED_EXPERIMENT",
+    "party_topology": "DISABLED_IN_BOUNDED_EXPERIMENT",
+    "child_override": "NOT_EXERCISED_IN_BOUNDED_EXPERIMENT"
+  },
+  "context_rules": [
+    {
+      "rule_id": "TOPBUILD_6_2_CHAPEAU_FLOW",
+      "rule_version": 1,
+      "source_node_kind": "CHAPEAU",
+      "required_source_roles": [
+        "GOVERNING_TEXT"
+      ],
+      "target_node_kind": "LIMB",
+      "structural_relation": "PRECEDING_CHAPEAU_CONTIGUOUS_LIMB_SIBLINGS_SAME_PARENT",
+      "edge_kind": "CHAPEAU_GOVERNS_LIMB",
+      "edge_state": "RESOLVED",
+      "proof_kind": "AUTHORED_CHAPEAU_CONTIGUOUS_LIMB_SIBLINGS",
+      "full_match_pattern": "^(?<object>This Agreement) (?<modal>may) (?<verb>be terminated) (?<time>at any time prior to the Titanium Merger Effective Time) by (?<actor>either Parent or the Company) (?<connective>if):$",
+      "pattern_flags": "u",
+      "capture_roles": [
+        {
+          "capture_name": "object",
+          "role": "OBJECT"
+        },
+        {
+          "capture_name": "modal",
+          "role": "MODAL"
+        },
+        {
+          "capture_name": "verb",
+          "role": "VERB"
+        },
+        {
+          "capture_name": "time",
+          "role": "TIME"
+        },
+        {
+          "capture_name": "actor",
+          "role": "ACTOR"
+        },
+        {
+          "capture_name": "connective",
+          "role": "CONNECTIVE"
+        }
+      ],
+      "expected_capture_spans": [
+        {
+          "role": "OBJECT",
+          "value": "This Agreement",
+          "span": {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "start_byte": 364423,
+            "end_byte": 364437,
+            "text_sha256": "62db433223b2514b2ee2c70377ca1f3e8e712bd12b4bb63127b0bc6fd17b134c"
+          }
+        },
+        {
+          "role": "MODAL",
+          "value": "may",
+          "span": {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "start_byte": 364438,
+            "end_byte": 364441,
+            "text_sha256": "ee4d988c65de860fabbfbcd27f73d50bbebe3fba37fe419284f4811389c30bdc"
+          }
+        },
+        {
+          "role": "VERB",
+          "value": "be terminated",
+          "span": {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "start_byte": 364442,
+            "end_byte": 364455,
+            "text_sha256": "78f10c7f8e5098b594d2f69087ebbc3542b960663ce4e888c3de25246dafb254"
+          }
+        },
+        {
+          "role": "TIME",
+          "value": "at any time prior to the Titanium Merger Effective Time",
+          "span": {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "start_byte": 364456,
+            "end_byte": 364511,
+            "text_sha256": "eb5aaa0971b19ae6f0590fac208a388ed3f4d1aaa7148af76487ffd69148f1f6"
+          }
+        },
+        {
+          "role": "ACTOR",
+          "value": "either Parent or the Company",
+          "span": {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "start_byte": 364515,
+            "end_byte": 364543,
+            "text_sha256": "222db478c301155dff95710110140472441d71f088b5a1cbb99c157ac922429a"
+          }
+        },
+        {
+          "role": "CONNECTIVE",
+          "value": "if",
+          "span": {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "start_byte": 364544,
+            "end_byte": 364546,
+            "text_sha256": "935f68319d4f227e02bfd54a0ddf85b8a242e42a4277aa5ef5eaab691710924e"
+          }
+        }
+      ]
+    }
+  ],
+  "inheritance_contract": {
+    "inherited_state": "INHERITED",
+    "source_is_governing_authored_node": true,
+    "target_is_focus_node": true,
+    "false_local_evidence_forbidden": true,
+    "one_scope_edge_per_inherited_fact": true,
+    "sibling_inheritance_requires_explicit_source_proof": true,
+    "ambiguous_or_unresolved_values_must_not_propagate": true,
+    "qualification_scope_requires_its_own_rule": true
+  },
+  "output_contract": {
+    "context_compilation_fields": [
+      "schema_version",
+      "context_compilation_id",
+      "agreement_index_binding",
+      "semantic_policy_binding",
+      "focus_node_occurrence_ids",
+      "frames_by_focus_node_id",
+      "context_facts",
+      "scope_edges",
+      "ambiguities",
+      "residuals",
+      "reference_edges",
+      "definition_edges",
+      "semantic_relationships",
+      "diagnostics"
+    ],
+    "agreement_index_binding_fields": [
+      "agreement_index_id",
+      "agreement_index_sha256",
+      "canonical_text_sha256",
+      "structural_policy_digest"
+    ],
+    "semantic_policy_binding_fields": [
+      "schema_version",
+      "policy_version",
+      "policy_digest"
+    ],
+    "context_frame_fields": [
+      "schema_version",
+      "context_frame_id",
+      "focus_node_occurrence_id",
+      "focus_node_kind",
+      "focus_node_span",
+      "context_fact_ids",
+      "scope_edge_ids",
+      "ambiguity_ids",
+      "residual_ids"
+    ],
+    "context_fact_fields": [
+      "schema_version",
+      "context_fact_id",
+      "role",
+      "value",
+      "state",
+      "source_node_occurrence_id",
+      "source_span",
+      "target_node_occurrence_id",
+      "scope_edge_id",
+      "rule_id",
+      "rule_version",
+      "overridden_fact_ids",
+      "alternative_fact_ids"
+    ],
+    "scope_edge_fields": [
+      "schema_version",
+      "scope_edge_id",
+      "edge_kind",
+      "state",
+      "governing_role",
+      "source_node_occurrence_id",
+      "governing_source_span",
+      "target_node_occurrence_id",
+      "proof",
+      "rule_id",
+      "rule_version"
+    ],
+    "scope_edge_proof_fields": [
+      "proof_kind",
+      "shared_parent_node_occurrence_id",
+      "source_node_kind",
+      "target_node_kind",
+      "source_extent_span",
+      "target_extent_span",
+      "connective_span",
+      "ordered_target_node_occurrence_ids"
+    ],
+    "span_fields": [
+      "coordinate_system",
+      "start_byte",
+      "end_byte",
+      "text_sha256"
+    ],
+    "empty_in_bounded_experiment": [
+      "ambiguities",
+      "residuals",
+      "reference_edges",
+      "definition_edges",
+      "semantic_relationships",
+      "diagnostics"
+    ]
+  },
+  "identity_contract": {
+    "content_id_implementation": "lib/canonical-v2/canonical-bytes.js#contentId",
+    "context_compilation_id_domain": "CONTEXT_COMPILATION/V1",
+    "context_frame_id_domain": "CONTEXT_FRAME/V1",
+    "context_fact_id_domain": "CONTEXT_FACT/V1",
+    "scope_edge_id_domain": "CONTEXT_SCOPE_EDGE/V1",
+    "identity_payload_rule": "COMPLETE_RECORD_EXCLUDING_ITS_OWN_ID",
+    "agreement_index_sha256_rule": "SHA256_OF_CANONICAL_JSON_PLUS_SINGLE_LF",
+    "span_text_sha256_rule": "SHA256_OF_EXACT_UTF8_HALF_OPEN_SLICE",
+    "value_rule": "EXACT_SOURCE_TEXT_WITH_NO_NORMALISATION_OR_TRIMMING",
+    "duplicate_primary_ids_allowed": false,
+    "dangling_id_references_allowed": false
+  },
+  "ordering_contract": {
+    "focus_node_occurrence_ids": "SOURCE_EXTENT_START_THEN_END_THEN_NODE_OCCURRENCE_ID",
+    "context_facts": "FOCUS_SOURCE_ORDER_THEN_CONTEXT_ROLE_ORDER_THEN_SOURCE_START_THEN_END_THEN_ID",
+    "scope_edges": "TARGET_SOURCE_ORDER_THEN_CONTEXT_ROLE_ORDER_THEN_GOVERNING_SOURCE_START_THEN_END_THEN_ID",
+    "context_frame_context_fact_ids": "FILTERED_GLOBAL_CONTEXT_FACT_ORDER",
+    "context_frame_scope_edge_ids": "FILTERED_GLOBAL_SCOPE_EDGE_ORDER",
+    "frames_by_focus_node_id": "KEYS_INSERTED_IN_FOCUS_SOURCE_ORDER",
+    "empty_arrays": "PRESENT_AND_EMPTY",
+    "deterministic_serialisation": "CANONICAL_JSON"
+  }
+}
