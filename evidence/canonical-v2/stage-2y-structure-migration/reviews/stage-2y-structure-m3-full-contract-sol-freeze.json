@@ -1,0 +1,1129 @@
+{
+  "schema_version": "STAGE_2Y_STRUCTURE_M3_FULL_CONTRACT_SOL_FREEZE/V1",
+  "review_id": "152369a86bd71428835b727fcedd05a5d3fd67c264c3d02a19eec667bd3d7f5e",
+  "stage": "M3",
+  "lifecycle_state": "SEALED",
+  "status": "APPROVED",
+  "verdict": "PASS",
+  "technical_decision": "SEVEN_AGREEMENT_CONTEXT_COMPILATION_CONTRACT_V2_FROZEN",
+  "checkpoint_commit": "33137fd57bec3243757e90bb45f039ec182c3d1a",
+  "reviewer": {
+    "role": "SOL",
+    "identity": "gpt-5.6-sol:xhigh:stage-2y-m3-full-contract-freeze",
+    "independent_of_implementation": true,
+    "file_edits": 3,
+    "test_reruns": 0
+  },
+  "bounded_gate_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/reviews/stage-2y-structure-m3-bounded-sol-gate.json",
+    "byte_length": 10825,
+    "sha256": "22f9c9c9e24a5c9d2186aed26dea74b5b53f30824ba383c54f9bd235c01164bb",
+    "schema_version": "STAGE_2Y_STRUCTURE_M3_BOUNDED_SOL_GATE/V1",
+    "gate_review_id": "a461674182520ac65e6d88dcfb313e55f550c6664fed74d8f98667a93fd7341a",
+    "checkpoint_commit": "d6c2bce0f4f0673035090df621078e2950dd2b07",
+    "verdict": "PASS"
+  },
+  "external_interface": {
+    "signature": "compileContext(focusNodeIds, AgreementIndex, semanticPolicy) -> ContextCompilation",
+    "visibility": "PRIVATE_BEHIND_ANALYSE_AGREEMENT",
+    "additional_public_entry_points_permitted": false,
+    "implementation_role": "CLOSED_INTERPRETER_AND_VALIDATOR_ONLY",
+    "agreement_specific_semantics_permitted_in_implementation": false
+  },
+  "semantic_policy_contract": {
+    "top_level_fields": [
+      "schema_version",
+      "policy_version",
+      "policy_digest",
+      "effect",
+      "scope",
+      "coordinate_system",
+      "compilation_schema_version",
+      "frame_schema_version",
+      "fact_schema_version",
+      "scope_edge_schema_version",
+      "ambiguity_schema_version",
+      "residual_schema_version",
+      "reference_edge_schema_version",
+      "definition_edge_schema_version",
+      "semantic_relationship_schema_version",
+      "diagnostic_schema_version",
+      "diagnostics_ledger_schema_version",
+      "context_role_order",
+      "context_states",
+      "focus_node_kinds",
+      "scope_edge_kinds",
+      "scope_edge_states",
+      "scope_proof_kinds",
+      "relationship_types",
+      "relationship_states",
+      "endpoint_kinds",
+      "temporal_scope_states",
+      "temporal_scope_codes",
+      "ambiguity_types",
+      "ambiguity_states",
+      "residual_kinds",
+      "reason_codes",
+      "diagnostic_types",
+      "diagnostic_severities",
+      "fail_closed_error_codes",
+      "input_contract",
+      "bound_experiment",
+      "bounded_projection_contract",
+      "capture_rules",
+      "scope_rules",
+      "fixture_scope_rules",
+      "reference_resolution_contract",
+      "definition_resolution_contract",
+      "topology_rules",
+      "inheritance_contract",
+      "output_contract",
+      "identity_contract",
+      "ordering_contract"
+    ],
+    "context_capture_rule_fields": [
+      "rule_id",
+      "rule_version",
+      "priority",
+      "applies_to_node_kinds",
+      "source_byte_mode",
+      "match_mode",
+      "pattern",
+      "pattern_flags",
+      "capture_roles",
+      "required_source_roles",
+      "blocked_by_m2_ambiguity"
+    ],
+    "capture_role_fields": [
+      "capture_name",
+      "role",
+      "value_mode",
+      "occurrence"
+    ],
+    "capture_rule_contract": {
+      "source_byte_mode": "AUTHORED_BYTES_EXCLUDING_SOURCE_ARTEFACTS",
+      "match_modes": [
+        "FULL",
+        "FIRST",
+        "ALL_NON_OVERLAPPING"
+      ],
+      "permitted_pattern_flags": [
+        "u",
+        "iu"
+      ],
+      "interpreter_added_flag": "d",
+      "caller_supplied_forbidden_flags": [
+        "g",
+        "y",
+        "d"
+      ],
+      "capture_value_mode": "EXACT_SOURCE_TEXT",
+      "capture_occurrence": "POSITIVE_ORDINAL_OR_ALL",
+      "duplicate_role_capture_rule": "DISTINCT_POSITIVE_OCCURRENCE_ORDINALS_REQUIRED"
+    },
+    "context_scope_rule_fields": [
+      "rule_id",
+      "rule_version",
+      "priority",
+      "source_node_kinds",
+      "target_node_kinds",
+      "structural_relation",
+      "edge_kind",
+      "edge_state",
+      "proof_kind",
+      "governing_roles",
+      "connective_pattern",
+      "pattern_flags",
+      "requires_same_parent",
+      "requires_contiguous_targets",
+      "allows_sibling_propagation",
+      "maximum_ancestor_distance",
+      "stop_node_kinds"
+    ],
+    "scope_rule_contract": {
+      "connective_pattern": "STRING_OR_NULL",
+      "maximum_ancestor_distance": "NON_NEGATIVE_INTEGER_OR_NULL",
+      "sibling_rule_requires_same_parent": true,
+      "sibling_rule_requires_explicit_allows_sibling_propagation": true,
+      "generic_rule_allows_sibling_propagation": false,
+      "only_sibling_rule": "AUTHORED_CHAPEAU_CONTIGUOUS_LIMBS/V1"
+    },
+    "fixture_scope_rule_fields": [
+      "rule_id",
+      "rule_version",
+      "agreement_id",
+      "agreement_index_id",
+      "source_node_occurrence_id",
+      "source_span",
+      "target_node_occurrence_ids",
+      "target_spans",
+      "edge_kind",
+      "proof_kind",
+      "governing_roles",
+      "connective_span",
+      "legal_ruling_code",
+      "expected_edge_count"
+    ],
+    "fixture_scope_rule_contract": {
+      "ids_spans_and_target_order_exact": true,
+      "regex_target_selection_permitted": false,
+      "duplicate_rule_id_and_version_permitted": true,
+      "duplicate_rule_id_condition": "DISTINCT_SOURCE_NODE_OCCURRENCE_ID"
+    },
+    "topology_rule_fields": [
+      "rule_id",
+      "rule_version",
+      "priority",
+      "applies_to_node_kinds",
+      "relationship_type",
+      "directed",
+      "pattern",
+      "pattern_flags",
+      "source_endpoint_capture",
+      "target_endpoint_capture",
+      "temporal_capture",
+      "endpoint_resolution",
+      "time_absence_disposition",
+      "forbidden_inferences"
+    ],
+    "topology_rule_contract": {
+      "endpoint_resolution": "UNIQUE_EXACT_DEFINITION_ELSE_SOURCE_LOCAL",
+      "time_absence_disposition": "EMIT_UNSTATED_WITH_RESIDUAL",
+      "forbidden_inferences_always_present": true,
+      "generic_affiliate_control_or_subsidiary_definition_inference_permitted": false
+    },
+    "required_capture_rule_ids": [
+      "TOPBUILD_6_2_CHAPEAU_FLOW",
+      "EXACT_MODAL_CAPTURE/V1",
+      "EXACT_NEGATION_CAPTURE/V1",
+      "EXACT_CONNECTIVE_CAPTURE/V1",
+      "EXACT_CAPACITY_CAPTURE/V1",
+      "EXACT_TIME_CAPTURE/V1"
+    ],
+    "generic_subject_verb_object_grammar_permitted": false,
+    "subject_verb_object_rule": "EXACT_FULL_MATCH_FIXTURE_CAPTURE_RULES_OR_LATER_SOL_APPROVED_POLICY_REVISION_ONLY",
+    "sparse_frame_disposition": "NO_CONTEXT_RULE_APPLIED_RESIDUAL",
+    "required_generic_scope_rule_ids": [
+      "DIRECT_AT/V1",
+      "AUTHORED_ANCESTOR_DESCENDANT/V1",
+      "AUTHORED_CHAPEAU_CONTIGUOUS_LIMBS/V1",
+      "NEAREST_FOCUS_QUALIFICATION_ONLY/V1"
+    ],
+    "required_fixture_scope_rule_ids": [
+      "CONCHO_6_9_A_CHAPEAU_FLOW/V1",
+      "TOPBUILD_6_2_CHAPEAU_FLOW",
+      "TOPBUILD_6_3_CHAPEAU_FLOW/V1",
+      "REDHAT_5_07_SUBSTANTIALLY_SIMILAR_SCOPE/V1",
+      "TOPBUILD_6_3_B_CROSS_DEFAULT_SCOPE/V1",
+      "CONCHO_6_11_ADDITIONAL_COVENANT_SCOPE/V1",
+      "METSERA_7_04_PARENT_SENTENCE_SCOPE/V1"
+    ],
+    "required_topology_rule_ids": [
+      "EXACT_WHOLLY_OWNED_SUBSIDIARY/V1",
+      "EXACT_SOLE_STOCKHOLDER_OWNS/V1",
+      "EXACT_CAUSES_TO_PERFORM/V1",
+      "EXACT_EXPRESS_CONTROL/V1",
+      "EXACT_CO_PARTY_STATEMENT/V1"
+    ],
+    "reference_and_definition_rules_are_annotation_contracts_not_regex_arrays": true
+  },
+  "common_types": {
+    "digest": "LOWERCASE_64_CHARACTER_SHA256_HEX",
+    "node_id": "DIGEST",
+    "annotation_id": "DIGEST",
+    "rule_id": "GOVERNED_NON_EMPTY_STRING",
+    "rule_version": "POSITIVE_SAFE_INTEGER",
+    "span_fields": [
+      "coordinate_system",
+      "start_byte",
+      "end_byte",
+      "text_sha256"
+    ],
+    "span_contract": {
+      "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+      "start_byte": "NON_NEGATIVE_SAFE_INTEGER",
+      "end_byte": "SAFE_INTEGER_GREATER_THAN_START_BYTE",
+      "text_sha256": "SHA256_OF_EXACT_CANONICAL_UTF8_HALF_OPEN_SLICE",
+      "trimming_permitted": false,
+      "normalisation_permitted": false
+    }
+  },
+  "focus_contract": {
+    "kind_order": [
+      "PARAGRAPH",
+      "SENTENCE",
+      "CHAPEAU",
+      "LIMB",
+      "QUALIFICATION",
+      "SECTION"
+    ],
+    "derivation": [
+      "SELECT_EVERY_PARAGRAPH_SENTENCE_CHAPEAU_LIMB_AND_QUALIFICATION",
+      "ADD_SECTION_ONLY_WHEN_IT_HAS_NO_STRICT_DESCENDANT_OF_THE_OTHER_FIVE_FOCUS_KINDS",
+      "SORT_BY_EXTENT_START_THEN_EXTENT_END_THEN_NODE_OCCURRENCE_ID",
+      "REQUIRE_SUPPLIED_FOCUS_IDS_TO_EQUAL_THE_DERIVED_LIST_EXACTLY"
+    ],
+    "reject": [
+      "MISSING",
+      "EXTRA",
+      "DUPLICATE",
+      "FOREIGN",
+      "WRONG_KIND",
+      "OUT_OF_ORDER"
+    ]
+  },
+  "independent_measurements": {
+    "focus_nodes": {
+      "by_agreement": [
+        {
+          "deal": "concho",
+          "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+          "focus_count": 1880,
+          "fallback_section_count": 0
+        },
+        {
+          "deal": "metsera",
+          "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+          "focus_count": 1972,
+          "fallback_section_count": 0
+        },
+        {
+          "deal": "modiv",
+          "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+          "focus_count": 2235,
+          "fallback_section_count": 0
+        },
+        {
+          "deal": "redhat",
+          "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+          "focus_count": 1399,
+          "fallback_section_count": 0
+        },
+        {
+          "deal": "skechers",
+          "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+          "focus_count": 2302,
+          "fallback_section_count": 0
+        },
+        {
+          "deal": "skywater",
+          "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+          "focus_count": 2014,
+          "fallback_section_count": 0
+        },
+        {
+          "deal": "topbuild",
+          "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+          "focus_count": 2194,
+          "fallback_section_count": 0
+        }
+      ],
+      "total_focus_count": 13996,
+      "total_fallback_section_count": 0
+    },
+    "section_references": {
+      "annotation_count": 2000,
+      "resolved_unique": 1856,
+      "unresolved_no_target": 133,
+      "ambiguous_multiple_targets": 11
+    },
+    "defined_terms": {
+      "definition_annotation_count": 969,
+      "use_annotation_count": 27836,
+      "resolved_unique": 25781,
+      "ambiguous_multiple_definitions": 2055,
+      "unresolved_no_definition": 0
+    },
+    "m2_structure_ambiguity_count": 23
+  },
+  "output_contract": {
+    "context_compilation": {
+      "schema_version": "CONTEXT_COMPILATION/V1",
+      "id_field": "context_compilation_id",
+      "fields": [
+        "schema_version",
+        "context_compilation_id",
+        "agreement_index_binding",
+        "semantic_policy_binding",
+        "focus_node_occurrence_ids",
+        "frames_by_focus_node_id",
+        "context_facts",
+        "scope_edges",
+        "ambiguities",
+        "residuals",
+        "reference_edges",
+        "definition_edges",
+        "semantic_relationships",
+        "diagnostics"
+      ]
+    },
+    "agreement_index_binding": {
+      "fields": [
+        "agreement_index_id",
+        "agreement_index_sha256",
+        "canonical_text_sha256",
+        "structural_policy_digest"
+      ]
+    },
+    "semantic_policy_binding": {
+      "fields": [
+        "schema_version",
+        "policy_version",
+        "policy_digest"
+      ],
+      "schema_version": "STAGE_2Y_SEMANTIC_POLICY/V1",
+      "policy_version": 2
+    },
+    "context_frame": {
+      "schema_version": "CONTEXT_FRAME/V1",
+      "id_field": "context_frame_id",
+      "fields": [
+        "schema_version",
+        "context_frame_id",
+        "focus_node_occurrence_id",
+        "focus_node_kind",
+        "focus_node_span",
+        "context_fact_ids",
+        "scope_edge_ids",
+        "ambiguity_ids",
+        "residual_ids"
+      ]
+    },
+    "context_fact": {
+      "schema_version": "CONTEXT_FACT/V1",
+      "id_field": "context_fact_id",
+      "fields": [
+        "schema_version",
+        "context_fact_id",
+        "role",
+        "value",
+        "state",
+        "source_node_occurrence_id",
+        "source_span",
+        "target_node_occurrence_id",
+        "scope_edge_id",
+        "rule_id",
+        "rule_version",
+        "overridden_fact_ids",
+        "alternative_fact_ids"
+      ]
+    },
+    "context_scope_edge": {
+      "schema_version": "CONTEXT_SCOPE_EDGE/V1",
+      "id_field": "scope_edge_id",
+      "fields": [
+        "schema_version",
+        "scope_edge_id",
+        "edge_kind",
+        "state",
+        "governing_role",
+        "source_node_occurrence_id",
+        "governing_source_span",
+        "target_node_occurrence_id",
+        "proof",
+        "rule_id",
+        "rule_version"
+      ]
+    },
+    "scope_proof": {
+      "fields": [
+        "proof_kind",
+        "shared_parent_node_occurrence_id",
+        "source_node_kind",
+        "target_node_kind",
+        "source_extent_span",
+        "target_extent_span",
+        "connective_span",
+        "ordered_target_node_occurrence_ids"
+      ]
+    },
+    "context_ambiguity": {
+      "schema_version": "CONTEXT_AMBIGUITY/V1",
+      "id_field": "ambiguity_id",
+      "fields": [
+        "schema_version",
+        "ambiguity_id",
+        "ambiguity_type",
+        "state",
+        "reason_codes",
+        "source_node_occurrence_ids",
+        "source_spans",
+        "target_node_occurrence_ids",
+        "affected_roles",
+        "alternative_fact_ids",
+        "alternative_scope_edge_ids",
+        "alternative_target_ids",
+        "blocked_dependency_ids",
+        "predecessor_ambiguity_id",
+        "predecessor_detail_digest",
+        "rule_id",
+        "rule_version"
+      ]
+    },
+    "context_residual": {
+      "schema_version": "CONTEXT_RESIDUAL/V1",
+      "id_field": "residual_id",
+      "fields": [
+        "schema_version",
+        "residual_id",
+        "residual_kind",
+        "reason_code",
+        "focus_node_occurrence_id",
+        "source_node_occurrence_ids",
+        "source_spans",
+        "affected_roles",
+        "related_ambiguity_ids",
+        "attempted_rule_ids",
+        "blocked_dependency_ids"
+      ]
+    },
+    "context_reference_edge": {
+      "schema_version": "CONTEXT_REFERENCE_EDGE/V1",
+      "id_field": "reference_edge_id",
+      "fields": [
+        "schema_version",
+        "reference_edge_id",
+        "source_annotation_occurrence_id",
+        "owner_node_occurrence_id",
+        "source_span",
+        "raw_text",
+        "normalised_reference",
+        "state",
+        "target_node_occurrence_ids",
+        "selected_target_node_occurrence_id",
+        "reason_code",
+        "rule_id",
+        "rule_version"
+      ]
+    },
+    "context_definition_edge": {
+      "schema_version": "CONTEXT_DEFINITION_EDGE/V1",
+      "id_field": "definition_edge_id",
+      "fields": [
+        "schema_version",
+        "definition_edge_id",
+        "source_annotation_occurrence_id",
+        "owner_node_occurrence_id",
+        "source_span",
+        "raw_text",
+        "term",
+        "state",
+        "target_definition_annotation_occurrence_ids",
+        "target_owner_node_occurrence_ids",
+        "selected_definition_annotation_occurrence_id",
+        "reason_code",
+        "rule_id",
+        "rule_version"
+      ]
+    },
+    "semantic_endpoint": {
+      "fields": [
+        "entity_id",
+        "entity_kind",
+        "canonical_label",
+        "definition_annotation_occurrence_id",
+        "source_node_occurrence_id",
+        "source_span"
+      ]
+    },
+    "temporal_scope": {
+      "fields": [
+        "state",
+        "code",
+        "raw_text",
+        "source_span",
+        "alternative_codes"
+      ]
+    },
+    "semantic_relationship": {
+      "schema_version": "CONTEXT_SEMANTIC_RELATIONSHIP/V1",
+      "id_field": "semantic_relationship_id",
+      "fields": [
+        "schema_version",
+        "semantic_relationship_id",
+        "relationship_type",
+        "state",
+        "directed",
+        "source_endpoint",
+        "target_endpoint",
+        "temporal_scope",
+        "source_node_occurrence_ids",
+        "source_spans",
+        "reason_code",
+        "rule_id",
+        "rule_version"
+      ]
+    },
+    "context_diagnostic": {
+      "schema_version": "CONTEXT_DIAGNOSTIC/V1",
+      "id_field": "diagnostic_id",
+      "fields": [
+        "schema_version",
+        "diagnostic_id",
+        "diagnostic_type",
+        "severity",
+        "reason_code",
+        "source_node_occurrence_ids",
+        "source_spans",
+        "related_ids",
+        "detail"
+      ]
+    },
+    "diagnostics_ledger": {
+      "schema_version": "STAGE_2Y_M3_CONTEXT_DIAGNOSTICS/V1",
+      "id_field": "diagnostics_ledger_id",
+      "fields": [
+        "schema_version",
+        "diagnostics_ledger_id",
+        "agreement_ids",
+        "diagnostic_count",
+        "counts_by_type",
+        "diagnostics"
+      ],
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m3/context-compilation-diagnostics.json"
+    }
+  },
+  "closed_vocabularies": {
+    "context_roles": [
+      "SUBJECT",
+      "ACTOR",
+      "CAPACITY",
+      "MODAL",
+      "VERB",
+      "OBJECT",
+      "NEGATION",
+      "CONNECTIVE",
+      "TIME",
+      "CONDITION",
+      "SCOPE"
+    ],
+    "context_states": [
+      "DIRECT",
+      "INHERITED",
+      "OVERRIDDEN",
+      "AMBIGUOUS",
+      "UNRESOLVED"
+    ],
+    "scope_edge_kinds": [
+      "DIRECT_AT",
+      "CHAPEAU_GOVERNS_LIMB",
+      "ANCESTOR_GOVERNS_DESCENDANT",
+      "QUALIFICATION_GOVERNS_NODE",
+      "EXCEPTION_GOVERNS_NODE",
+      "TRAILING_QUALIFICATION_GOVERNS_NODE",
+      "ADDITIONAL_COVENANT_GOVERNS_NODE"
+    ],
+    "scope_edge_states": [
+      "RESOLVED",
+      "AMBIGUOUS",
+      "UNRESOLVED"
+    ],
+    "scope_proof_kinds": [
+      "AUTHORED_NODE_LOCAL_SPAN",
+      "AUTHORED_ANCESTOR_DESCENDANT",
+      "AUTHORED_CHAPEAU_CONTIGUOUS_LIMB_SIBLINGS",
+      "AUTHORED_QUALIFICATION_NEAREST_FOCUS_ANCESTOR",
+      "SEALED_LEGAL_SCOPE_RULING"
+    ],
+    "ambiguity_types": [
+      "M2_STRUCTURE_AMBIGUITY",
+      "MULTIPLE_SCOPE_READINGS",
+      "CONTEXT_CAPTURE_CONFLICT",
+      "TOPOLOGY_SOURCE_CONFLICT"
+    ],
+    "ambiguity_states": [
+      "OPEN",
+      "CARRIED_FORWARD"
+    ],
+    "residual_kinds": [
+      "NO_CONTEXT_RULE_APPLIED",
+      "NO_SCOPE_PROOF",
+      "REFERENCE_TARGET_UNAVAILABLE",
+      "DEFINITION_TARGET_UNAVAILABLE",
+      "TOPOLOGY_ENDPOINT_UNAVAILABLE",
+      "TEMPORAL_SCOPE_UNSTATED"
+    ],
+    "edge_resolution_states": [
+      "RESOLVED",
+      "AMBIGUOUS",
+      "UNRESOLVED"
+    ],
+    "reference_reason_codes": [
+      "UNIQUE_EXACT_REFERENCE_TARGET",
+      "MULTIPLE_EXACT_REFERENCE_TARGETS",
+      "TARGET_NOT_IN_AGREEMENT_INDEX"
+    ],
+    "definition_reason_codes": [
+      "UNIQUE_EXACT_DEFINITION_TARGET",
+      "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "TARGET_NOT_IN_AGREEMENT_INDEX"
+    ],
+    "relationship_types": [
+      "SUBSIDIARY_OF",
+      "OWNS",
+      "CONTROLS",
+      "CAUSES_TO_PERFORM",
+      "CO_PARTY_WITH"
+    ],
+    "endpoint_kinds": [
+      "DEFINED_ENTITY",
+      "SOURCE_LOCAL_ENTITY",
+      "AGREEMENT_ROOT"
+    ],
+    "relationship_states": [
+      "RESOLVED",
+      "AMBIGUOUS",
+      "UNRESOLVED"
+    ],
+    "temporal_states": [
+      "STATED",
+      "UNSTATED",
+      "AMBIGUOUS"
+    ],
+    "temporal_codes": [
+      "AT_SIGNING",
+      "PRE_CLOSING",
+      "AT_EFFECTIVE_TIME",
+      "POST_EFFECTIVE_TIME",
+      "UNTIL_TERMINATION",
+      "AGREEMENT_LIFETIME",
+      "SOURCE_STATED_OTHER",
+      "UNSTATED"
+    ],
+    "relationship_reason_codes": [
+      "EXACT_SOURCE_RELATIONSHIP",
+      "TOPOLOGY_SOURCE_CONFLICT",
+      "TOPOLOGY_ENDPOINT_UNAVAILABLE",
+      "TEMPORAL_SCOPE_UNSTATED"
+    ],
+    "reason_codes": [
+      "M2_STRUCTURE_AMBIGUITY",
+      "MULTIPLE_SCOPE_READINGS",
+      "NO_SCOPE_PROOF",
+      "MULTIPLE_EXACT_REFERENCE_TARGETS",
+      "TARGET_NOT_IN_AGREEMENT_INDEX",
+      "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "NO_CONTEXT_RULE_APPLIED",
+      "CONTEXT_CAPTURE_CONFLICT",
+      "TOPOLOGY_SOURCE_CONFLICT",
+      "TOPOLOGY_ENDPOINT_UNAVAILABLE",
+      "TEMPORAL_SCOPE_UNSTATED",
+      "UPSTREAM_REFERENCE_ANNOTATION_ABSENT"
+    ],
+    "diagnostic_types": [
+      "M2_AMBIGUITY_CARRIED",
+      "CONTEXT_AMBIGUITY_RECORDED",
+      "CONTEXT_RESIDUAL_RECORDED",
+      "REFERENCE_AMBIGUOUS",
+      "REFERENCE_UNRESOLVED",
+      "DEFINITION_AMBIGUOUS",
+      "DEFINITION_UNRESOLVED",
+      "TOPOLOGY_AMBIGUOUS",
+      "TOPOLOGY_UNRESOLVED",
+      "TEMPORAL_SCOPE_UNSTATED",
+      "UPSTREAM_REFERENCE_ANNOTATION_ABSENT"
+    ],
+    "diagnostic_severities": [
+      "INFO",
+      "WARNING"
+    ]
+  },
+  "context_resolution_rules": {
+    "precedence": [
+      "DIRECT_TARGET_EVIDENCE",
+      "NEAREST_PROVEN_GOVERNING_SOURCE",
+      "MORE_DISTANT_PROVEN_GOVERNING_SOURCE"
+    ],
+    "equal_precedence_equal_values": "COEXIST_WITHOUT_AMBIGUITY",
+    "equal_precedence_different_values": "EMIT_AMBIGUITY_AND_SELECT_NONE",
+    "direct_means_words_within_target_authored_bytes": true,
+    "inherited_requires_resolved_scope_edge": true,
+    "overridden_winner_retains_losing_fact_ids": true,
+    "ambiguous_is_consumable": false,
+    "unresolved_is_propagated": false,
+    "source_artefact_bytes_capturable": false,
+    "sibling_propagation_without_resolved_scope_edge": false,
+    "alternative_fact_ids_rule": "EARLIER_SOURCE_ORDERED_ALTERNATIVES_ONLY_COMPLETE_SET_IN_CONTEXT_AMBIGUITY"
+  },
+  "scope_edge_proof_rule": {
+    "resolved_requirements": [
+      "EXACT_SOURCE_NODE_AND_SPAN",
+      "EXACT_TARGET_NODE_AND_SPAN",
+      "VALID_M2_PARENTAGE",
+      "POLICY_LISTED_STRUCTURAL_RULE_OR_SEALED_FIXTURE_RULING",
+      "SOURCE_CONNECTIVE_WHEN_RULE_REQUIRES_ONE",
+      "NO_COMPETING_EQUALLY_VALID_TARGET_SET"
+    ]
+  },
+  "qualification_rules": {
+    "default": [
+      "QUALIFICATION_NEAREST_FOCUS_ANCESTOR_LIMB_SENTENCE_OR_PARAGRAPH_GOVERNS_ONLY_THAT_NODE",
+      "NO_SIBLING_REACH_BY_PARENTAGE_ALONE",
+      "TRAILING_QUALIFICATION_REQUIRES_POLICY_RULE_EXACT_CONNECTIVE_AND_EXACT_TARGET_SET",
+      "MULTIPLE_SURVIVING_TARGET_SETS_EMIT_MULTIPLE_SCOPE_READINGS_WITH_NO_SELECTION_OR_PROPAGATION",
+      "NO_RULE_EMITS_NO_SCOPE_PROOF_WITH_NO_UNRELATED_EFFECT"
+    ],
+    "sealed_legal_rulings": [
+      {
+        "fixture": "CONCHO_6_9_A",
+        "ruling": "EACH_OF_TWO_PROVISOS_GOVERNS_ONLY_ITS_OWNING_LIMB"
+      },
+      {
+        "fixture": "TOPBUILD_6_2_A_AND_D",
+        "ruling": "EACH_PROVISO_GOVERNS_ONLY_ITS_OWNING_LIMB"
+      },
+      {
+        "fixture": "RED_HAT_5_07",
+        "ruling": "SUBSTANTIALLY_SIMILAR_PROVISO_GOVERNS_ALL_OPERATIVE_DUTIES_IN_COMPLETE_SECOND_SENTENCE_PARAGRAPH"
+      },
+      {
+        "fixture": "TOPBUILD_6_3_B",
+        "ruling": "CROSS_DEFAULT_PROVISO_GOVERNS_COMPLETE_6_3_B_TERMINATION_RIGHT"
+      },
+      {
+        "fixture": "CONCHO_6_11",
+        "ruling": "PROVISO_IS_ADDITIONAL_COMPANY_COVENANT_ATTACHED_ONLY_TO_SENTENCE_TWO"
+      },
+      {
+        "fixture": "METSERA_7_04",
+        "ruling": "EACH_SENTENCE_RETAINS_ITS_OWN_ACTOR_CONDITION_AND_REFERENCE_SET"
+      },
+      {
+        "fixture": "PARENT_AND_MERGER_SUB",
+        "ruling": "SHORTHAND_UNAVAILABLE_WITHOUT_RESOLVED_SUBSIDIARY_RELATIONSHIP_AND_PROOF_THAT_EXPANSION_HIDES_NO_DISTINCT_DUTY_OR_REMEDY"
+      }
+    ]
+  },
+  "topbuild_6_3_non_blocking_ruling": {
+    "textual_citation_count": 4,
+    "m2_section_reference_annotation_count": 0,
+    "m3_must_invent_annotations": false,
+    "context_capture": "CAPTURE_COMPLETE_CROSS_DEFAULT_CONDITION_AS_EXACT_CONTEXT",
+    "reference_link_claim": "UNAVAILABLE",
+    "required_diagnostic": "UPSTREAM_REFERENCE_ANNOTATION_ABSENT",
+    "required_fixture_span_count": 4,
+    "blocks_context_fact": false,
+    "requires_m2_change": false
+  },
+  "reference_resolution_rule": {
+    "inventory": "EVERY_SEALED_M2_SECTION_REFERENCE_ANNOTATION",
+    "validate_span_and_owner": true,
+    "match": "CASE_SENSITIVE_ANNOTATION_VALUE_TO_SAME_INDEX_NODE_REFERENCE",
+    "candidate_order": "SOURCE_START_THEN_SOURCE_END_THEN_NODE_ID",
+    "selection": "EXACTLY_ONE_CANDIDATE_ONLY",
+    "edge_for_every_annotation": true,
+    "rule_id": "EXACT_M2_SECTION_REFERENCE/V1",
+    "rule_version": 1
+  },
+  "definition_resolution_rule": {
+    "inventory": "EVERY_SEALED_M2_DEFINED_TERM_USE_ANNOTATION",
+    "match": "EXACT_CASE_SENSITIVE_USE_VALUE_TO_SAME_AGREEMENT_DEFINED_TERM_DEFINITION_VALUE",
+    "heuristics_forbidden": [
+      "PLURAL",
+      "CASE",
+      "PUNCTUATION",
+      "LEXICAL_DISTANCE",
+      "NEAREST_SECTION"
+    ],
+    "rule_id": "EXACT_M2_DEFINED_TERM_USE/V1",
+    "rule_version": 1
+  },
+  "party_topology_rules": {
+    "directed_relationship_types": [
+      "SUBSIDIARY_OF",
+      "OWNS",
+      "CONTROLS",
+      "CAUSES_TO_PERFORM"
+    ],
+    "undirected_relationship_types": [
+      "CO_PARTY_WITH"
+    ],
+    "undirected_endpoint_order": "ASCENDING_ENTITY_ID",
+    "relationship_requires_exact_source_words_and_endpoint_spans": true,
+    "unique_definition_edge_used_when_available": true,
+    "ambiguous_definition_blocks_only_affected_endpoint_and_relationship": true,
+    "missing_temporal_words": "UNSTATED_RELATIONSHIP_PLUS_LOCAL_RESIDUAL_AND_DIAGNOSTIC",
+    "causes_to_perform_implies": [],
+    "parent_merger_sub_shorthand_requires_direct_resolved_subsidiary_of": true,
+    "concho_6_20": "SEPARATE_PARENT_TO_MERGER_SUB_AND_PARENT_TO_SURVIVING_CORPORATION_CAUSES_TO_PERFORM_RELATIONSHIPS"
+  },
+  "identity_contract": {
+    "implementation": "lib/canonical-v2/canonical-bytes.js#contentId",
+    "domains": [
+      "CONTEXT_COMPILATION/V1",
+      "CONTEXT_FRAME/V1",
+      "CONTEXT_FACT/V1",
+      "CONTEXT_SCOPE_EDGE/V1",
+      "CONTEXT_AMBIGUITY/V1",
+      "CONTEXT_RESIDUAL/V1",
+      "CONTEXT_REFERENCE_EDGE/V1",
+      "CONTEXT_DEFINITION_EDGE/V1",
+      "CONTEXT_TOPOLOGY_ENTITY/V1",
+      "CONTEXT_SEMANTIC_RELATIONSHIP/V1",
+      "CONTEXT_DIAGNOSTIC/V1",
+      "STAGE_2Y_M3_CONTEXT_DIAGNOSTICS/V1"
+    ],
+    "record_payload_rule": "COMPLETE_CLOSED_RECORD_INCLUDING_SCHEMA_VERSION_EXCLUDING_ONLY_ITS_OWN_ID_FIELD",
+    "endpoint_payloads": {
+      "DEFINED_ENTITY": [
+        "agreement_id",
+        "definition_annotation_occurrence_id"
+      ],
+      "SOURCE_LOCAL_ENTITY": [
+        "agreement_id",
+        "source_node_occurrence_id",
+        "source_span"
+      ],
+      "AGREEMENT_ROOT": [
+        "agreement_id",
+        "root_node_occurrence_id"
+      ]
+    },
+    "agreement_index_sha256": "SHA256_OF_CANONICAL_JSON_PLUS_SINGLE_LF",
+    "sealed_output_bytes": "CANONICAL_JSON_PLUS_SINGLE_LF",
+    "policy_digest": "SHA256_OF_CANONICAL_JSON_WITH_POLICY_DIGEST_OMITTED",
+    "duplicate_primary_ids_allowed": false,
+    "dangling_id_references_allowed": false,
+    "cross_agreement_node_or_annotation_references_allowed": false,
+    "nondeterministic_identity_inputs": []
+  },
+  "ordering_contract": {
+    "focus_node_occurrence_ids": "SOURCE_START_THEN_SOURCE_END_THEN_NODE_ID",
+    "context_facts": "TARGET_FOCUS_ORDER_THEN_CONTEXT_ROLE_ORDER_THEN_SOURCE_START_THEN_SOURCE_END_THEN_FACT_ID",
+    "scope_edges": "TARGET_FOCUS_ORDER_THEN_CONTEXT_ROLE_ORDER_THEN_GOVERNING_SOURCE_START_THEN_GOVERNING_SOURCE_END_THEN_EDGE_ID",
+    "ambiguities": "FIRST_SOURCE_START_THEN_FIRST_SOURCE_END_THEN_AMBIGUITY_TYPE_THEN_AMBIGUITY_ID",
+    "residuals": "FOCUS_ORDER_THEN_RESIDUAL_KIND_THEN_RESIDUAL_ID",
+    "reference_edges": "ANNOTATION_SOURCE_START_THEN_SOURCE_END_THEN_ANNOTATION_ID",
+    "definition_edges": "USE_SOURCE_START_THEN_SOURCE_END_THEN_ANNOTATION_ID",
+    "semantic_relationships": "FIRST_SOURCE_START_THEN_FIRST_SOURCE_END_THEN_RELATIONSHIP_TYPE_THEN_SOURCE_ENTITY_ID_THEN_TARGET_ENTITY_ID_THEN_RELATIONSHIP_ID",
+    "diagnostics": "FIRST_SOURCE_START_WITH_NO_SPAN_LAST_THEN_DIAGNOSTIC_TYPE_THEN_DIAGNOSTIC_ID",
+    "frames_by_focus_node_id": "INSERT_IN_FOCUS_SOURCE_ORDER_CANONICAL_JSON_SORTS_OBJECT_KEYS",
+    "frame_arrays": "FILTER_FROM_CORRESPONDING_GLOBAL_ARRAY_AND_RETAIN_GLOBAL_ORDER",
+    "empty_arrays": "PRESENT"
+  },
+  "fail_closed_error_codes": [
+    "CONTEXT_COMPILATION_INDEX_SCHEMA_MISMATCH",
+    "CONTEXT_COMPILATION_INDEX_DIGEST_MISMATCH",
+    "CONTEXT_COMPILATION_POLICY_SCHEMA_MISMATCH",
+    "CONTEXT_COMPILATION_POLICY_DIGEST_MISMATCH",
+    "CONTEXT_COMPILATION_FOCUS_UNKNOWN",
+    "CONTEXT_COMPILATION_FOCUS_DUPLICATE",
+    "CONTEXT_COMPILATION_FOCUS_KIND_MISMATCH",
+    "CONTEXT_COMPILATION_FOCUS_ORDER_MISMATCH",
+    "CONTEXT_COMPILATION_FOCUS_SET_MISMATCH",
+    "CONTEXT_COMPILATION_EXPERIMENT_BINDING_MISMATCH",
+    "CONTEXT_COMPILATION_SOURCE_PROOF_MISMATCH",
+    "CONTEXT_COMPILATION_MEMBER_SCHEMA_MISMATCH",
+    "CONTEXT_COMPILATION_DUPLICATE_PRIMARY_ID",
+    "CONTEXT_COMPILATION_DANGLING_ID_REFERENCE",
+    "CONTEXT_COMPILATION_CROSS_AGREEMENT_REFERENCE",
+    "CONTEXT_COMPILATION_REFERENCE_INVENTORY_MISMATCH",
+    "CONTEXT_COMPILATION_DEFINITION_INVENTORY_MISMATCH",
+    "CONTEXT_COMPILATION_M2_AMBIGUITY_INVENTORY_MISMATCH",
+    "CONTEXT_COMPILATION_OUTPUT_ORDER_MISMATCH",
+    "CONTEXT_COMPILATION_OUTPUT_IDENTITY_MISMATCH"
+  ],
+  "unknown_scope_behaviour": {
+    "throws": false,
+    "output": "TYPED_AMBIGUITY",
+    "dependency_effect": "BLOCK_ONLY_DEPENDENT_FACTS"
+  },
+  "runner_contract": {
+    "cli_flags_exactly_once": [
+      "--authority",
+      "--m2-receipt",
+      "--control",
+      "--agreement-manifest",
+      "--index-root",
+      "--policy",
+      "--output-root"
+    ],
+    "reject": [
+      "ABSOLUTE_PATH",
+      "PATH_ESCAPE",
+      "DUPLICATE_FLAG",
+      "MISSING_FLAG",
+      "UNKNOWN_FLAG",
+      "EXTRA_INDEX_FILE",
+      "SYMLINK",
+      "DIVERGENT_SEALED_OUTPUT_OVERWRITE"
+    ],
+    "agreement_order": "SEVEN_COHORT_AGREEMENT_IDS_IN_MANIFEST_ORDER",
+    "output_bindings_order": "SEVEN_CONTEXT_COMPILATIONS_IN_COHORT_ORDER_THEN_DIAGNOSTICS_LEDGER",
+    "output_set_digest": "SHA256_OF_CANONICAL_JSON_OF_OUTPUT_BINDINGS",
+    "persistent_outputs": [
+      "evidence/canonical-v2/stage-2y-structure-migration/shadow/m3/<agreement_id>.context-compilation.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/shadow/m3/context-compilation-diagnostics.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation-draft.json"
+    ],
+    "zero_effects": [
+      "MODEL",
+      "PHASE_B",
+      "NETWORK",
+      "DATABASE",
+      "PRODUCT",
+      "SERVING",
+      "PUBLICATION"
+    ]
+  },
+  "predecessor_trust_root_validation": {
+    "m2_receipt_path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+    "m2_receipt_sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585",
+    "requirements": [
+      "PIN_EXACT_RECEIPT_BYTES_SCHEMA_STAGE_LIFECYCLE_STATE_STATUS_AND_COHORT",
+      "REHASH_EXACT_SEVEN_BOUND_OUTPUTS",
+      "RECOMPUTE_OUTPUT_SET_DIGEST",
+      "REJECT_UNBOUND_EXTRA_MISSING_WRONG_COHORT_OR_DIGEST_MISMATCH"
+    ],
+    "compare_historic_m2_implementation_hashes_with_current_workspace": false,
+    "stage_being_sealed_rehashes_current_implementation": true,
+    "reason": "THE_SHARED_VALIDATOR_IS_A_SEALED_M2_IMPLEMENTATION_BINDING_AND_CURRENT_WORKSPACE_COMPARISON_WOULD_MAKE_EVERY_LATER_VALIDATOR_EDIT_INVALIDATE_M2"
+  },
+  "receipt_contract": {
+    "draft_schema_version": "STAGE_2Y_STRUCTURE_M3_DRAFT_RECEIPT/V1",
+    "final_schema_version": "STAGE_2Y_STRUCTURE_MIGRATION_PACKET_RECEIPT/V1",
+    "final_fields": [
+      "schema_version",
+      "packet_id",
+      "stage",
+      "lifecycle_state",
+      "status",
+      "base_commit",
+      "authority_binding",
+      "semantic_policy_binding",
+      "agreement_manifest_binding",
+      "sealed_predecessor_bindings",
+      "current_state_bindings",
+      "implementation_bindings",
+      "draft_receipt_binding",
+      "technical_review_binding",
+      "agreement_count",
+      "source_reference_count",
+      "output_root",
+      "output_bindings",
+      "diagnostics_binding",
+      "output_set_digest",
+      "context_metrics",
+      "runtime_measurements",
+      "input_digests",
+      "changed_files",
+      "expected_differences",
+      "unexpected_differences",
+      "open_world_by_family",
+      "old_result_digest",
+      "new_shadow_result_digest",
+      "focused_checks",
+      "pin_changes",
+      "baseline_changes",
+      "saved_control_mutations",
+      "release_receipts_created",
+      "current_selector_changes",
+      "model_calls",
+      "phase_b_route_calls",
+      "network_calls",
+      "product_writes",
+      "serving_changes",
+      "m0_m1_m2_sealed_artefact_mutations",
+      "structure_selector",
+      "context_selector",
+      "analysis_selector",
+      "projection_selector",
+      "database_target",
+      "phase_b_status",
+      "publication_authorisation",
+      "internal_cutover_authorisation",
+      "external_access_authorisation",
+      "rollback_result",
+      "rollback_command"
+    ],
+    "required_constants": {
+      "packet_id": "stage-2y-structure-m3-context-compilation",
+      "stage": "M3",
+      "lifecycle_state": "SEALED",
+      "status": "PASS",
+      "agreement_count": 7,
+      "source_reference_count": 130,
+      "pin_changes": 0,
+      "baseline_changes": 0,
+      "saved_control_mutations": 0,
+      "release_receipts_created": 0,
+      "current_selector_changes": 0,
+      "model_calls": 0,
+      "phase_b_route_calls": 0,
+      "network_calls": 0,
+      "product_writes": 0,
+      "serving_changes": 0,
+      "m0_m1_m2_sealed_artefact_mutations": 0,
+      "structure_selector": "current",
+      "context_selector": "current",
+      "analysis_selector": "current",
+      "projection_selector": "current",
+      "database_target": "NONE",
+      "phase_b_status": "DEFERRED_LOCKED",
+      "publication_authorisation": "NONE",
+      "internal_cutover_authorisation": "NONE",
+      "external_access_authorisation": "NONE",
+      "rollback_result": "NOT_RUN_ADDITIVE_SHADOW_ONLY"
+    },
+    "context_metric_members": [
+      "FOCUS_COUNT",
+      "FACT_COUNT_BY_STATE_AND_ROLE",
+      "SCOPE_EDGE_COUNT_BY_STATE_AND_KIND",
+      "AMBIGUITY_COUNT",
+      "RESIDUAL_COUNT",
+      "REFERENCE_COUNT_BY_STATE",
+      "DEFINITION_COUNT_BY_STATE",
+      "RELATIONSHIP_COUNT_BY_STATE_AND_TYPE",
+      "DIAGNOSTIC_COUNT_BY_TYPE",
+      "CARRIED_M2_AMBIGUITY_COUNT",
+      "REFERENCE_CLOSURE_TOTALS",
+      "DEFINITION_CLOSURE_TOTALS"
+    ]
+  },
+  "bounded_projection_preservation": {
+    "schema_version": "TOPBUILD_6_2_BOUNDED_PROJECTION/V1",
+    "fields": [
+      "schema_version",
+      "agreement_index_binding",
+      "focus_node_occurrence_ids",
+      "frames",
+      "context_facts",
+      "scope_edges"
+    ],
+    "frame_fields": [
+      "focus_node_occurrence_id",
+      "focus_node_kind",
+      "focus_node_span",
+      "context_fact_ids",
+      "scope_edge_ids"
+    ],
+    "selection": {
+      "focus_node_occurrence_ids": [
+        "20800cde2e005201e9182939b5ea73785f0e25b4b3051b0695cba9a52e1f1cd7",
+        "81fff54644db6c9cdd8dc553c389a464489ed04e2a993a8df46c25e5f327636b",
+        "492c594ec9814564bf30d5657ea5d774b760aabe20acbd29f02c61d763b74d4d",
+        "e1491fafffa0d5e77e4e703aeac3c211e2bc48518dcd05a6bc32572cebe11c9d"
+      ],
+      "source_node_occurrence_id": "8807b25eb5ce3da6a2a6d0f014f5930becc74921e722316337b60e76fc283096",
+      "rule_id": "TOPBUILD_6_2_CHAPEAU_FLOW",
+      "fact_state": "INHERITED",
+      "scope_edge_state": "RESOLVED",
+      "fact_count": 24,
+      "scope_edge_count": 24
+    },
+    "content_id": "737fbd0c7ab3f3944e1344381faf6bcb656f66cc20467e018d5e668c9b7f2c3c",
+    "canonical_sha256_without_lf": "c3accf60dee6750fe0d7e9397022fbe4f700f399cf1449b2b208f611aa0ffd8e",
+    "canonical_sha256_with_lf": "85b5a2f33895de241b81db98ab7b26044d491621cb460934f275abf13bc21916",
+    "canonical_byte_length_without_lf": 65691,
+    "canonical_byte_length_with_lf": 65692,
+    "whole_compilation_id_comparison_required": false,
+    "reason": "POLICY_BINDING_CHANGES_FROM_VERSION_1_TO_VERSION_2"
+  },
+  "gate_decision": {
+    "ben_legal_escalation_required": false,
+    "two_legally_plausible_scope_readings_remaining": false,
+    "unknown_scope_handling": "TYPED_FAIL_CLOSED_AMBIGUITY_WITH_NO_SELECTION",
+    "seven_agreement_shadow_run_may_proceed_after_revised_AUTHORITY_AND_POLICY_BIND_THIS_FREEZE": true
+  },
+  "exceptions": []
+}

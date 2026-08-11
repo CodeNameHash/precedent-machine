@@ -1,14 +1,21 @@
 {
   "schema_version": "STAGE_2Y_SEMANTIC_POLICY/V1",
-  "policy_version": 1,
-  "policy_digest": "61059146df8f847b344d4480a4a60863c075367dd9ffa683dcaf513ca180733c",
-  "effect": "SHADOW_IN_MEMORY_ONLY",
-  "scope": "M3_BOUNDED_TOPBUILD_6_2_EXPERIMENT_ONLY",
+  "policy_version": 2,
+  "policy_digest": "efe0cddf74d9648215ee41051f98bd64e8c935f064521e42431c6200d337a034",
+  "effect": "ADDITIVE_SHADOW_SEALED_JSON_ONLY",
+  "scope": "M3_SEVEN_AGREEMENT_CONTEXT_COMPILATION",
   "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
   "compilation_schema_version": "CONTEXT_COMPILATION/V1",
   "frame_schema_version": "CONTEXT_FRAME/V1",
   "fact_schema_version": "CONTEXT_FACT/V1",
   "scope_edge_schema_version": "CONTEXT_SCOPE_EDGE/V1",
+  "ambiguity_schema_version": "CONTEXT_AMBIGUITY/V1",
+  "residual_schema_version": "CONTEXT_RESIDUAL/V1",
+  "reference_edge_schema_version": "CONTEXT_REFERENCE_EDGE/V1",
+  "definition_edge_schema_version": "CONTEXT_DEFINITION_EDGE/V1",
+  "semantic_relationship_schema_version": "CONTEXT_SEMANTIC_RELATIONSHIP/V1",
+  "diagnostic_schema_version": "CONTEXT_DIAGNOSTIC/V1",
+  "diagnostics_ledger_schema_version": "STAGE_2Y_M3_CONTEXT_DIAGNOSTICS/V1",
   "context_role_order": [
     "SUBJECT",
     "ACTOR",
@@ -29,8 +36,22 @@
     "AMBIGUOUS",
     "UNRESOLVED"
   ],
+  "focus_node_kinds": [
+    "PARAGRAPH",
+    "SENTENCE",
+    "CHAPEAU",
+    "LIMB",
+    "QUALIFICATION",
+    "SECTION"
+  ],
   "scope_edge_kinds": [
-    "CHAPEAU_GOVERNS_LIMB"
+    "DIRECT_AT",
+    "CHAPEAU_GOVERNS_LIMB",
+    "ANCESTOR_GOVERNS_DESCENDANT",
+    "QUALIFICATION_GOVERNS_NODE",
+    "EXCEPTION_GOVERNS_NODE",
+    "TRAILING_QUALIFICATION_GOVERNS_NODE",
+    "ADDITIONAL_COVENANT_GOVERNS_NODE"
   ],
   "scope_edge_states": [
     "RESOLVED",
@@ -38,7 +59,92 @@
     "UNRESOLVED"
   ],
   "scope_proof_kinds": [
-    "AUTHORED_CHAPEAU_CONTIGUOUS_LIMB_SIBLINGS"
+    "AUTHORED_NODE_LOCAL_SPAN",
+    "AUTHORED_ANCESTOR_DESCENDANT",
+    "AUTHORED_CHAPEAU_CONTIGUOUS_LIMB_SIBLINGS",
+    "AUTHORED_QUALIFICATION_NEAREST_FOCUS_ANCESTOR",
+    "SEALED_LEGAL_SCOPE_RULING"
+  ],
+  "relationship_types": [
+    "SUBSIDIARY_OF",
+    "OWNS",
+    "CONTROLS",
+    "CAUSES_TO_PERFORM",
+    "CO_PARTY_WITH"
+  ],
+  "relationship_states": [
+    "RESOLVED",
+    "AMBIGUOUS",
+    "UNRESOLVED"
+  ],
+  "endpoint_kinds": [
+    "DEFINED_ENTITY",
+    "SOURCE_LOCAL_ENTITY",
+    "AGREEMENT_ROOT"
+  ],
+  "temporal_scope_states": [
+    "STATED",
+    "UNSTATED",
+    "AMBIGUOUS"
+  ],
+  "temporal_scope_codes": [
+    "AT_SIGNING",
+    "PRE_CLOSING",
+    "AT_EFFECTIVE_TIME",
+    "POST_EFFECTIVE_TIME",
+    "UNTIL_TERMINATION",
+    "AGREEMENT_LIFETIME",
+    "SOURCE_STATED_OTHER",
+    "UNSTATED"
+  ],
+  "ambiguity_types": [
+    "M2_STRUCTURE_AMBIGUITY",
+    "MULTIPLE_SCOPE_READINGS",
+    "CONTEXT_CAPTURE_CONFLICT",
+    "TOPOLOGY_SOURCE_CONFLICT"
+  ],
+  "ambiguity_states": [
+    "OPEN",
+    "CARRIED_FORWARD"
+  ],
+  "residual_kinds": [
+    "NO_CONTEXT_RULE_APPLIED",
+    "NO_SCOPE_PROOF",
+    "REFERENCE_TARGET_UNAVAILABLE",
+    "DEFINITION_TARGET_UNAVAILABLE",
+    "TOPOLOGY_ENDPOINT_UNAVAILABLE",
+    "TEMPORAL_SCOPE_UNSTATED"
+  ],
+  "reason_codes": [
+    "M2_STRUCTURE_AMBIGUITY",
+    "MULTIPLE_SCOPE_READINGS",
+    "NO_SCOPE_PROOF",
+    "MULTIPLE_EXACT_REFERENCE_TARGETS",
+    "TARGET_NOT_IN_AGREEMENT_INDEX",
+    "MULTIPLE_EXACT_DEFINITION_TARGETS",
+    "NO_CONTEXT_RULE_APPLIED",
+    "CONTEXT_CAPTURE_CONFLICT",
+    "TOPOLOGY_SOURCE_CONFLICT",
+    "TOPOLOGY_ENDPOINT_UNAVAILABLE",
+    "TEMPORAL_SCOPE_UNSTATED",
+    "UPSTREAM_REFERENCE_ANNOTATION_ABSENT"
+  ],
+  "diagnostic_types": [
+    "M2_AMBIGUITY_CARRIED",
+    "CONTEXT_AMBIGUITY_RECORDED",
+    "CONTEXT_RESIDUAL_RECORDED",
+    "REFERENCE_AMBIGUOUS",
+    "REFERENCE_UNRESOLVED",
+    "DEFINITION_AMBIGUOUS",
+    "DEFINITION_UNRESOLVED",
+    "TOPOLOGY_AMBIGUOUS",
+    "TOPOLOGY_UNRESOLVED",
+    "TEMPORAL_SCOPE_UNSTATED",
+    "UPSTREAM_REFERENCE_ANNOTATION_ABSENT"
+  ],
+  "diagnostic_severities": [
+    "INFO",
+    "WARNING"
   ],
   "fail_closed_error_codes": [
     "CONTEXT_COMPILATION_INDEX_SCHEMA_MISMATCH",
@@ -49,29 +155,804 @@
     "CONTEXT_COMPILATION_FOCUS_DUPLICATE",
     "CONTEXT_COMPILATION_FOCUS_KIND_MISMATCH",
     "CONTEXT_COMPILATION_FOCUS_ORDER_MISMATCH",
+    "CONTEXT_COMPILATION_FOCUS_SET_MISMATCH",
     "CONTEXT_COMPILATION_EXPERIMENT_BINDING_MISMATCH",
-    "CONTEXT_COMPILATION_SOURCE_PROOF_MISMATCH"
+    "CONTEXT_COMPILATION_SOURCE_PROOF_MISMATCH",
+    "CONTEXT_COMPILATION_MEMBER_SCHEMA_MISMATCH",
+    "CONTEXT_COMPILATION_DUPLICATE_PRIMARY_ID",
+    "CONTEXT_COMPILATION_DANGLING_ID_REFERENCE",
+    "CONTEXT_COMPILATION_CROSS_AGREEMENT_REFERENCE",
+    "CONTEXT_COMPILATION_REFERENCE_INVENTORY_MISMATCH",
+    "CONTEXT_COMPILATION_DEFINITION_INVENTORY_MISMATCH",
+    "CONTEXT_COMPILATION_M2_AMBIGUITY_INVENTORY_MISMATCH",
+    "CONTEXT_COMPILATION_OUTPUT_ORDER_MISMATCH",
+    "CONTEXT_COMPILATION_OUTPUT_IDENTITY_MISMATCH"
   ],
-  "output_diagnostic_types": [],
   "input_contract": {
     "interface": "compileContext(focusNodeIds, AgreementIndex, semanticPolicy)",
     "agreement_index_schema_version": "AGREEMENT_INDEX/V1",
-    "focus_node_kind": "LIMB",
-    "focus_node_occurrence_ids": [
-      "20800cde2e005201e9182939b5ea73785f0e25b4b3051b0695cba9a52e1f1cd7",
-      "81fff54644db6c9cdd8dc553c389a464489ed04e2a993a8df46c25e5f327636b",
-      "492c594ec9814564bf30d5657ea5d774b760aabe20acbd29f02c61d763b74d4d",
-      "e1491fafffa0d5e77e4e703aeac3c211e2bc48518dcd05a6bc32572cebe11c9d"
+    "exact_agreement_count": 7,
+    "agreement_order": [
+      "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb"
     ],
-    "focus_order_rule": "SOURCE_EXTENT_START_THEN_END_THEN_NODE_OCCURRENCE_ID",
-    "reject_unknown_focus": true,
-    "reject_duplicate_focus": true,
-    "reject_wrong_kind_focus": true,
-    "reject_out_of_source_order_focus": true,
-    "reject_extra_focus": true,
-    "reject_missing_focus": true,
-    "reject_unbound_index": true,
-    "reject_policy_digest_mismatch": true
+    "agreement_indexes": [
+      {
+        "deal": "concho",
+        "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+        "agreement_index_id": "1400cec3b1e8f5a9eda6f1a02e7c059743c9ced6fe4f5fae7eea12f8364b4ec8",
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116.agreement-index.json",
+        "byte_length": 6293909,
+        "sha256": "e669bffcb6e697e75b2860cf96cbd22d159cc2ce45f63403459e534d43f36432",
+        "canonical_text_sha256": "30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5",
+        "structural_policy_digest": "39c2972a1cd0e30989b6acd21bce120ca818d834f98a446abfa729f662cdac4c",
+        "focus_count": 1880,
+        "m2_ambiguity_count": 0
+      },
+      {
+        "deal": "metsera",
+        "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+        "agreement_index_id": "158641104eed32537aa8e821eba55dcf5c23d7d4089dbacefc9feb1317abb129",
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c.agreement-index.json",
+        "byte_length": 6685888,
+        "sha256": "b41da5e0fa4e005909f385c6240a59198af38018b471d85ea9f1d2d8f5e82903",
+        "canonical_text_sha256": "4ac7a2b193c291ca692fb1b5f082a245d02474c7db3136bfcebaf5bd7b686ca3",
+        "structural_policy_digest": "39c2972a1cd0e30989b6acd21bce120ca818d834f98a446abfa729f662cdac4c",
+        "focus_count": 1972,
+        "m2_ambiguity_count": 1
+      },
+      {
+        "deal": "modiv",
+        "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+        "agreement_index_id": "2c0d477e56759b58d46c3abefc60f6195d097ea1609213b1a8eabc31d431ce23",
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c.agreement-index.json",
+        "byte_length": 8346748,
+        "sha256": "74b52e7024d41d3ea75039d01a89f7512dcf0ac32fbb7db9c1b0065c4696347f",
+        "canonical_text_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e",
+        "structural_policy_digest": "39c2972a1cd0e30989b6acd21bce120ca818d834f98a446abfa729f662cdac4c",
+        "focus_count": 2235,
+        "m2_ambiguity_count": 3
+      },
+      {
+        "deal": "redhat",
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "agreement_index_id": "e50464fb97dbd7ead5afc66292a42e5c37f47d3ccdc87d5842df7abef666b3b2",
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a.agreement-index.json",
+        "byte_length": 4631977,
+        "sha256": "06c649dec40e3391f1d1da16b7b6eed6392f736a1d80a775fc9a141aa803e6a9",
+        "canonical_text_sha256": "dcdbf66142d25cbe56ed2bc1fbd26939aaf86056bf34188176c48b5944d31c5e",
+        "structural_policy_digest": "39c2972a1cd0e30989b6acd21bce120ca818d834f98a446abfa729f662cdac4c",
+        "focus_count": 1399,
+        "m2_ambiguity_count": 5
+      },
+      {
+        "deal": "skechers",
+        "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+        "agreement_index_id": "0a16f4f9c57c2c138b6154593a91e4dcd146f067d29877bf77f75508332fb469",
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154.agreement-index.json",
+        "byte_length": 7421038,
+        "sha256": "db49bd11cfe25bfb10824d282df1152583980ad1a0f5bcca472c39425744d8d0",
+        "canonical_text_sha256": "a7d76e8a7f6efed945208b5870ddfa848438a7542806878bb2bc10646b557660",
+        "structural_policy_digest": "39c2972a1cd0e30989b6acd21bce120ca818d834f98a446abfa729f662cdac4c",
+        "focus_count": 2302,
+        "m2_ambiguity_count": 8
+      },
+      {
+        "deal": "skywater",
+        "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+        "agreement_index_id": "7e36ccac16a70c49e1c4815d4c20fd6815702c753d2c3cc23ab95a81c7756862",
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363.agreement-index.json",
+        "byte_length": 6542434,
+        "sha256": "4c5607a4c75f35f32bb08098a578cff70d926b4d0c72252e4af33964b29938e2",
+        "canonical_text_sha256": "ffee664a374a1c18c35dabb9458bcffc8e5014a305eefc184b102bbbe5bcc8f1",
+        "structural_policy_digest": "39c2972a1cd0e30989b6acd21bce120ca818d834f98a446abfa729f662cdac4c",
+        "focus_count": 2014,
+        "m2_ambiguity_count": 2
+      },
+      {
+        "deal": "topbuild",
+        "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+        "agreement_index_id": "e5ca967c6d1af76f53fdd6bb0c402aef416272f7757fcdbaa11d3e8968d0c29a",
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb.agreement-index.json",
+        "byte_length": 7576859,
+        "sha256": "e8f03463e792220b421bf8ccae1cb9a55e8e05a41396c60512cf63ae50b031af",
+        "canonical_text_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+        "structural_policy_digest": "39c2972a1cd0e30989b6acd21bce120ca818d834f98a446abfa729f662cdac4c",
+        "focus_count": 2194,
+        "m2_ambiguity_count": 4
+      }
+    ],
+    "predecessor_trust_root": {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+      "byte_length": 20126,
+      "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585",
+      "schema_version": "STAGE_2Y_STRUCTURE_MIGRATION_PACKET_RECEIPT/V1",
+      "stage": "M2",
+      "lifecycle_state": "SEALED",
+      "status": "PASS",
+      "output_set_digest": "5746d28d800d83f60619e947677f70d65c7c4daf902a88c4ec3515adf069be30",
+      "validation": "PIN_RECEIPT_BYTES_AND_REHASH_SEVEN_OUTPUTS_WITHOUT_CURRENT_WORKSPACE_M2_IMPLEMENTATION_COMPARISON"
+    },
+    "cohort_manifest_binding": {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/control/cohort-agreements.json",
+      "byte_length": 22805,
+      "sha256": "0dd150d57da4894f30cd94df53c1983395abc98474b716332e71aa40375f2ecc",
+      "source_manifest_id": "57c92c68b3e3b0ce63c036ebb15effa892612a28c1b149bf6154e2989d058b30"
+    },
+    "control_manifest_binding": {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json",
+      "byte_length": 379235,
+      "sha256": "62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41"
+    },
+    "bounded_gate_binding": {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/reviews/stage-2y-structure-m3-bounded-sol-gate.json",
+      "byte_length": 10825,
+      "sha256": "22f9c9c9e24a5c9d2186aed26dea74b5b53f30824ba383c54f9bd235c01164bb",
+      "review_id": "a461674182520ac65e6d88dcfb313e55f550c6664fed74d8f98667a93fd7341a"
+    },
+    "full_contract_review_binding": {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/reviews/stage-2y-structure-m3-full-contract-sol-freeze.json",
+      "byte_length": 36641,
+      "sha256": "67d329b918b8852a2b64c02617ad25d76ebca9a9fbf5d02e2bd395694b85c622",
+      "review_id": "152369a86bd71428835b727fcedd05a5d3fd67c264c3d02a19eec667bd3d7f5e"
+    },
+    "focus_derivation": {
+      "selected_kinds": ["PARAGRAPH", "SENTENCE", "CHAPEAU", "LIMB", "QUALIFICATION"],
+      "section_fallback": "ADD_SECTION_ONLY_WHEN_NO_STRICT_DESCENDANT_HAS_A_SELECTED_KIND",
+      "ordering": "EXTENT_START_THEN_EXTENT_END_THEN_NODE_OCCURRENCE_ID",
+      "supplied_list": "MUST_EQUAL_DERIVED_LIST_EXACTLY"
+    },
+    "expected_totals": {
+      "focus_count": 13996,
+      "fallback_section_count": 0,
+      "m2_structure_ambiguity_count": 23,
+      "section_reference_annotations": 2000,
+      "section_reference_unique": 1856,
+      "section_reference_none": 133,
+      "section_reference_multiple": 11,
+      "defined_term_definitions": 969,
+      "defined_term_uses": 27836,
+      "defined_term_unique": 25781,
+      "defined_term_multiple": 2055,
+      "defined_term_none": 0
+    },
+    "fixture_key": ["rule_id", "rule_version", "source_node_occurrence_id"],
+    "fixture_key_uniqueness": "DUPLICATE_RULE_ID_AND_VERSION_ALLOWED_ONLY_WHEN_SOURCE_NODE_OCCURRENCE_ID_DIFFERS",
+    "scope_proof_templates": {
+      "DIRECT_AT/V1": {
+        "shared_parent_node_occurrence_id": null,
+        "connective_span": null,
+        "ordered_target_node_occurrence_ids": "SINGLE_SOURCE_NODE_ID",
+        "source_and_target_spans": "SAME_EXACT_NODE_EXTENT"
+      },
+      "AUTHORED_ANCESTOR_DESCENDANT/V1": {
+        "shared_parent_node_occurrence_id": "SOURCE_PARENT_OR_NULL_FOR_ROOT",
+        "connective_span": null,
+        "ordered_target_node_occurrence_ids": "SINGLE_EXACT_TARGET_ID",
+        "source_and_target_spans": "EXACT_BOUND_NODE_EXTENTS"
+      },
+      "AUTHORED_CHAPEAU_CONTIGUOUS_LIMBS/V1": {
+        "shared_parent_node_occurrence_id": "EXACT_COMMON_PARENT",
+        "connective_span": "EXACT_CAPTURE_OR_NULL_ONLY_WHEN_RULE_HAS_NO_CONNECTIVE",
+        "ordered_target_node_occurrence_ids": "COMPLETE_CONTIGUOUS_TARGET_SET_IN_SOURCE_ORDER",
+        "source_and_target_spans": "EXACT_BOUND_NODE_EXTENTS"
+      },
+      "NEAREST_FOCUS_QUALIFICATION_ONLY/V1": {
+        "shared_parent_node_occurrence_id": "NEAREST_COMMON_ANCESTOR",
+        "connective_span": "EXACT_REQUIRED_CONNECTIVE",
+        "ordered_target_node_occurrence_ids": "SINGLE_EXACT_TARGET_ID",
+        "source_and_target_spans": "EXACT_BOUND_NODE_EXTENTS"
+      }
+    },
+    "fixture_scope_proof_construction": {
+      "proof_kind": "EXACT_FIXTURE_PROOF_KIND",
+      "shared_parent_node_occurrence_id": "NEAREST_COMMON_ANCESTOR_OF_EXACT_SOURCE_AND_TARGET",
+      "source_node_kind": "EXACT_BOUND_SOURCE_NODE_KIND",
+      "target_node_kind": "EXACT_BOUND_TARGET_NODE_KIND",
+      "source_extent_span": "EXACT_FIXTURE_SOURCE_SPAN",
+      "target_extent_span": "EXACT_CORRESPONDING_FIXTURE_TARGET_SPAN",
+      "connective_span": "EXACT_FIXTURE_CONNECTIVE_SPAN_INCLUDING_NULL",
+      "ordered_target_node_occurrence_ids": "EXACT_COMPLETE_FIXTURE_TARGET_LIST",
+      "one_proof_per_emitted_edge": true
+    },
+    "m2_ambiguity_carry": {
+      "rule_id": "CARRY_M2_STRUCTURE_AMBIGUITY/V1",
+      "rule_version": 1,
+      "inventory": "EVERY_SEALED_M2_AMBIGUITY",
+      "predecessor_detail_digest": "SHA256_OF_CANONICAL_JSON_OF_EXACT_M2_DETAIL_WITHOUT_LF",
+      "target_focuses": "FOCUS_EQUAL_TO_OR_DESCENDANT_OF_A_PREDECESSOR_NODE_OR_WHOSE_EXTENT_IS_WITHIN_THE_PREDECESSOR_SPAN",
+      "frame_attachment": "ATTACH_TO_EVERY_TARGET_FOCUS",
+      "blocked_dependencies": "ONLY_FACTS_AND_SCOPE_EDGES_WITH_SOURCE_OR_TARGET_INTERSECTING_THE_PREDECESSOR_SCOPE"
+    },
+    "residual_attachment": {
+      "NO_CONTEXT_RULE_APPLIED": "EXACTLY_ONE_FOR_EVERY_FACTLESS_FOCUS_EVEN_IF_AMBIGUITY_ATTACHED",
+      "NO_SCOPE_PROOF": "ONLY_CAPTURED_NON_LOCAL_FACT_WITH_APPLICABLE_TARGET_AND_NO_RESOLVED_SCOPE_EDGE",
+      "owner_focus_order": ["OWNER_IF_FOCUS", "NEAREST_FOCUS_ANCESTOR", "FIRST_CONTAINING_FOCUS_DESCENDANT", "FAIL"],
+      "reference_and_definition": "SOURCE_ANNOTATION_OWNER_TO_FOCUS",
+      "topology_and_time": "RELATIONSHIP_SOURCE_NODE_TO_FOCUS"
+    },
+    "topology_endpoint_nullability": {
+      "DEFINED_ENTITY": "DEFINITION_ID_NON_NULL_SOURCE_NODE_AND_SPAN_NULL",
+      "SOURCE_LOCAL_ENTITY": "DEFINITION_ID_NULL_SOURCE_NODE_AND_SPAN_NON_NULL",
+      "AGREEMENT_ROOT": "ROOT_NODE_NON_NULL_DEFINITION_ID_AND_SOURCE_SPAN_NULL"
+    },
+    "topology_rule_execution": [
+      {"rule_id": "EXACT_WHOLLY_OWNED_SUBSIDIARY/V1", "rule_version": 1, "source_byte_mode": "AUTHORED_BYTES_EXCLUDING_SOURCE_ARTEFACTS", "match_mode": "FIRST"},
+      {"rule_id": "EXACT_SOLE_STOCKHOLDER_OWNS/V1", "rule_version": 1, "source_byte_mode": "AUTHORED_BYTES_EXCLUDING_SOURCE_ARTEFACTS", "match_mode": "FIRST"},
+      {"rule_id": "EXACT_CAUSES_TO_PERFORM/V1", "rule_version": 1, "source_byte_mode": "AUTHORED_BYTES_EXCLUDING_SOURCE_ARTEFACTS", "match_mode": "FULL"},
+      {"rule_id": "CONCHO_6_20_SECOND_CAUSES_TO_PERFORM/V1", "rule_version": 1, "source_byte_mode": "AUTHORED_BYTES_EXCLUDING_SOURCE_ARTEFACTS", "match_mode": "FULL"},
+      {"rule_id": "EXACT_EXPRESS_CONTROL/V1", "rule_version": 1, "source_byte_mode": "AUTHORED_BYTES_EXCLUDING_SOURCE_ARTEFACTS", "match_mode": "FIRST"},
+      {"rule_id": "EXACT_CO_PARTY_STATEMENT/V1", "rule_version": 1, "source_byte_mode": "AUTHORED_BYTES_EXCLUDING_SOURCE_ARTEFACTS", "match_mode": "FIRST"}
+    ],
+    "capture_fixture_bindings": [
+      {
+        "rule_id": "TOPBUILD_6_2_CHAPEAU_FLOW",
+        "rule_version": 1,
+        "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+        "agreement_index_id": "e5ca967c6d1af76f53fdd6bb0c402aef416272f7757fcdbaa11d3e8968d0c29a",
+        "source_node_occurrence_id": "8807b25eb5ce3da6a2a6d0f014f5930becc74921e722316337b60e76fc283096",
+        "source_span": {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 364547,
+          "start_byte": 364423,
+          "text_sha256": "a48f2e266c0e917d58e697dd37a9add4b75cffecac2a8fafb5f193ddd63def22"
+        },
+        "expected_captures": [
+          {
+            "capture_name": "object",
+            "role": "OBJECT",
+            "occurrence": 1,
+            "value": "This Agreement",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 364423,
+              "end_byte": 364437,
+              "text_sha256": "62db433223b2514b2ee2c70377ca1f3e8e712bd12b4bb63127b0bc6fd17b134c"
+            }
+          },
+          {
+            "capture_name": "modal",
+            "role": "MODAL",
+            "occurrence": 1,
+            "value": "may",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 364438,
+              "end_byte": 364441,
+              "text_sha256": "ee4d988c65de860fabbfbcd27f73d50bbebe3fba37fe419284f4811389c30bdc"
+            }
+          },
+          {
+            "capture_name": "verb",
+            "role": "VERB",
+            "occurrence": 1,
+            "value": "be terminated",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 364442,
+              "end_byte": 364455,
+              "text_sha256": "78f10c7f8e5098b594d2f69087ebbc3542b960663ce4e888c3de25246dafb254"
+            }
+          },
+          {
+            "capture_name": "time",
+            "role": "TIME",
+            "occurrence": 1,
+            "value": "at any time prior to the Titanium Merger Effective Time",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 364456,
+              "end_byte": 364511,
+              "text_sha256": "eb5aaa0971b19ae6f0590fac208a388ed3f4d1aaa7148af76487ffd69148f1f6"
+            }
+          },
+          {
+            "capture_name": "actor",
+            "role": "ACTOR",
+            "occurrence": 1,
+            "value": "either Parent or the Company",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 364515,
+              "end_byte": 364543,
+              "text_sha256": "222db478c301155dff95710110140472441d71f088b5a1cbb99c157ac922429a"
+            }
+          },
+          {
+            "capture_name": "connective",
+            "role": "CONNECTIVE",
+            "occurrence": 1,
+            "value": "if",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 364544,
+              "end_byte": 364546,
+              "text_sha256": "935f68319d4f227e02bfd54a0ddf85b8a242e42a4277aa5ef5eaab691710924e"
+            }
+          }
+        ]
+      },
+      {
+        "rule_id": "CONCHO_6_9_A_CHAPEAU_CAPTURE/V1",
+        "rule_version": 1,
+        "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+        "agreement_index_id": "1400cec3b1e8f5a9eda6f1a02e7c059743c9ced6fe4f5fae7eea12f8364b4ec8",
+        "source_node_occurrence_id": "c04b786e89681416b1ffc955c472fa8d560ef66b7ddaaa0398897ca724b77e2e",
+        "source_span": {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 227831,
+          "start_byte": 227469,
+          "text_sha256": "66cf52091ee1719d01dcc13fa396875ade708c45f8fde9b8530754c20078583b"
+        },
+        "expected_captures": [
+          {
+            "capture_name": "time",
+            "role": "TIME",
+            "occurrence": 1,
+            "value": "Until December 31 of the calendar year in which the Effective Time occurs",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 227469,
+              "end_byte": 227542,
+              "text_sha256": "a2aa02dc3f81d5adc2c204350600fd50e43617864b0313add9b315d3689fd09d"
+            }
+          },
+          {
+            "capture_name": "actor",
+            "role": "ACTOR",
+            "occurrence": 1,
+            "value": "Parent",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 227544,
+              "end_byte": 227550,
+              "text_sha256": "5f7953f7c9b6ba16602898e540795140db39847cf03fd10d32ef636cded0360e"
+            }
+          },
+          {
+            "capture_name": "modal",
+            "role": "MODAL",
+            "occurrence": 1,
+            "value": "shall",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 227551,
+              "end_byte": 227556,
+              "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71"
+            }
+          },
+          {
+            "capture_name": "verb",
+            "role": "VERB",
+            "occurrence": 1,
+            "value": "cause",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 227557,
+              "end_byte": 227562,
+              "text_sha256": "6a7ef1ed9f15c2f59ab7bfaf50f5b51f695d736a7f2e5ada6470e695190b8f83"
+            }
+          },
+          {
+            "capture_name": "object",
+            "role": "OBJECT",
+            "occurrence": 1,
+            "value": "each individual who is employed as of the Closing Date by the Company or a Subsidiary thereof (a “Company Employee”) and who remains employed by Parent or any of its Subsidiaries (including the Surviving Corporation or any of its Subsidiaries) to be provided with",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 227563,
+              "end_byte": 227830,
+              "text_sha256": "418f61e9a45903ba1fc3439d937da9e97bc2e0073925a28b693e935be59cb729"
+            }
+          }
+        ]
+      },
+      {
+        "rule_id": "TOPBUILD_6_3_CHAPEAU_CAPTURE/V1",
+        "rule_version": 1,
+        "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+        "agreement_index_id": "e5ca967c6d1af76f53fdd6bb0c402aef416272f7757fcdbaa11d3e8968d0c29a",
+        "source_node_occurrence_id": "059d1227f8053c1a670cafb67c72b87b54affd8193633b71d27d2f63835016ad",
+        "source_span": {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 365953,
+          "start_byte": 365813,
+          "text_sha256": "39fb5fe46727f15a7070d7c2fad4b5a9d51a1335c69edae71fdc9daadbb8767a"
+        },
+        "expected_captures": [
+          {
+            "capture_name": "object1",
+            "role": "OBJECT",
+            "occurrence": 1,
+            "value": "This Agreement",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 365813,
+              "end_byte": 365827,
+              "text_sha256": "62db433223b2514b2ee2c70377ca1f3e8e712bd12b4bb63127b0bc6fd17b134c"
+            }
+          },
+          {
+            "capture_name": "modal1",
+            "role": "MODAL",
+            "occurrence": 1,
+            "value": "may",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 365828,
+              "end_byte": 365831,
+              "text_sha256": "ee4d988c65de860fabbfbcd27f73d50bbebe3fba37fe419284f4811389c30bdc"
+            }
+          },
+          {
+            "capture_name": "verb1",
+            "role": "VERB",
+            "occurrence": 1,
+            "value": "be terminated",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 365832,
+              "end_byte": 365845,
+              "text_sha256": "78f10c7f8e5098b594d2f69087ebbc3542b960663ce4e888c3de25246dafb254"
+            }
+          },
+          {
+            "capture_name": "object2",
+            "role": "OBJECT",
+            "occurrence": 2,
+            "value": "the Mergers",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 365850,
+              "end_byte": 365861,
+              "text_sha256": "4521ff459ac9c72c7a9c5948ef78860c2565980094ccb6f6b3c34c5796256647"
+            }
+          },
+          {
+            "capture_name": "modal2",
+            "role": "MODAL",
+            "occurrence": 2,
+            "value": "may",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 365862,
+              "end_byte": 365865,
+              "text_sha256": "ee4d988c65de860fabbfbcd27f73d50bbebe3fba37fe419284f4811389c30bdc"
+            }
+          },
+          {
+            "capture_name": "verb2",
+            "role": "VERB",
+            "occurrence": 2,
+            "value": "be abandoned",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 365866,
+              "end_byte": 365878,
+              "text_sha256": "5fec3ba466db6583ac5e7d22690d50e6faa40277a51170aa43e388a0e94fa952"
+            }
+          },
+          {
+            "capture_name": "time",
+            "role": "TIME",
+            "occurrence": 1,
+            "value": "at any time prior to the Titanium Merger Effective Time",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 365879,
+              "end_byte": 365934,
+              "text_sha256": "eb5aaa0971b19ae6f0590fac208a388ed3f4d1aaa7148af76487ffd69148f1f6"
+            }
+          },
+          {
+            "capture_name": "actor",
+            "role": "ACTOR",
+            "occurrence": 1,
+            "value": "the Company",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 365938,
+              "end_byte": 365949,
+              "text_sha256": "5f918f5d004e525a45432ead3686c97cc2f00a542b39914965063eb8a0cc2ddb"
+            }
+          },
+          {
+            "capture_name": "connective",
+            "role": "CONNECTIVE",
+            "occurrence": 1,
+            "value": "if",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 365950,
+              "end_byte": 365952,
+              "text_sha256": "935f68319d4f227e02bfd54a0ddf85b8a242e42a4277aa5ef5eaab691710924e"
+            }
+          }
+        ]
+      },
+      {
+        "rule_id": "METSERA_7_04_CONDITION_CAPTURE/V1",
+        "rule_version": 1,
+        "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+        "agreement_index_id": "158641104eed32537aa8e821eba55dcf5c23d7d4089dbacefc9feb1317abb129",
+        "source_node_occurrence_id": "b1945773d653312c21e6ae26fee76039c1a5f6da79bb5eb59161e58ffe73cd66",
+        "source_span": {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 226065,
+          "start_byte": 225933,
+          "text_sha256": "fee7a5e8d36797cadeb9aeb65ec18815b9bd3c593808a79e0f190e3f701e9f32"
+        },
+        "expected_captures": [
+          {
+            "capture_name": "connective",
+            "role": "CONNECTIVE",
+            "occurrence": 1,
+            "value": "if",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 225933,
+              "end_byte": 225935,
+              "text_sha256": "935f68319d4f227e02bfd54a0ddf85b8a242e42a4277aa5ef5eaab691710924e"
+            }
+          },
+          {
+            "capture_name": "condition",
+            "role": "CONDITION",
+            "occurrence": 1,
+            "value": "such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement.",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 225936,
+              "end_byte": 226065,
+              "text_sha256": "c026d629265524acdfb4b5543aff609ceeafa794200eb5061e90131482103620"
+            }
+          }
+        ]
+      },
+      {
+        "rule_id": "METSERA_7_04_CONDITION_CAPTURE/V1",
+        "rule_version": 1,
+        "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+        "agreement_index_id": "158641104eed32537aa8e821eba55dcf5c23d7d4089dbacefc9feb1317abb129",
+        "source_node_occurrence_id": "bd503fe8b93a495b7881d17f93b98083461f93d0f5a5ca4c4bf5f373ac08ab5c",
+        "source_span": {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 226288,
+          "start_byte": 226181,
+          "text_sha256": "8316c526993ca7cddedb7b955449ead69d3bd206841604c2c23d15994982e89b"
+        },
+        "expected_captures": [
+          {
+            "capture_name": "connective",
+            "role": "CONNECTIVE",
+            "occurrence": 1,
+            "value": "if",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 226181,
+              "end_byte": 226183,
+              "text_sha256": "935f68319d4f227e02bfd54a0ddf85b8a242e42a4277aa5ef5eaab691710924e"
+            }
+          },
+          {
+            "capture_name": "condition",
+            "role": "CONDITION",
+            "occurrence": 1,
+            "value": "such failure was primarily caused by its material breach of any of its obligations under this Agreement.",
+            "span": {
+              "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+              "start_byte": 226184,
+              "end_byte": 226288,
+              "text_sha256": "ff91a2d642a62708227ae542a1d9666fb1215da1895adb6a92db7cde8fb1951a"
+            }
+          }
+        ]
+      },
+      {
+        "rule_id": "TOPBUILD_6_3_B_CROSS_DEFAULT_CONDITION_CAPTURE/V1",
+        "rule_version": 1,
+        "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+        "agreement_index_id": "e5ca967c6d1af76f53fdd6bb0c402aef416272f7757fcdbaa11d3e8968d0c29a",
+        "source_node_occurrence_id": "da4732d59d811adfc7cda5ab4ce1fe4d40fe0b4bef9e3a5c8a29b094708d52e0",
+        "source_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 367372, "end_byte": 367587, "text_sha256": "201909ccb554ef9d2d4a89667b305c94615034c49a24e5e94a9e8ec58ff8c7c1"},
+        "expected_captures": [{
+          "capture_name": "condition", "role": "CONDITION", "occurrence": 1,
+          "value": "provided that the Company is not then in breach of any representation, warranty, covenant or agreement under this Agreement such that Parent would have the right to terminate this Agreement under Section ‎6.4(b)).",
+          "span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 367372, "end_byte": 367587, "text_sha256": "201909ccb554ef9d2d4a89667b305c94615034c49a24e5e94a9e8ec58ff8c7c1"}
+        }]
+      },
+      {
+        "rule_id": "CONCHO_6_11_ADDITIONAL_COVENANT_CONDITION_CAPTURE/V1",
+        "rule_version": 1,
+        "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+        "agreement_index_id": "1400cec3b1e8f5a9eda6f1a02e7c059743c9ced6fe4f5fae7eea12f8364b4ec8",
+        "source_node_occurrence_id": "9c0669b13907004d1c48aa573ab26e9e428f8de0a080f2a42ab6fa557addf285",
+        "source_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 242841, "end_byte": 243105, "text_sha256": "b298f2071850e78eb80af79ea479a9d7bec0c076b836f8a2d21bb2ae06f1e609"},
+        "expected_captures": [{
+          "capture_name": "condition", "role": "CONDITION", "occurrence": 1,
+          "value": "provided, that the Company shall not cease to defend, consent to the entry of any judgment, settle or offer to settle any Transaction Litigation without the prior written consent of Parent (which consent shall not be unreasonably withheld, conditioned or delayed).",
+          "span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 242841, "end_byte": 243105, "text_sha256": "b298f2071850e78eb80af79ea479a9d7bec0c076b836f8a2d21bb2ae06f1e609"}
+        }]
+      }
+    ],
+    "topology_fixture": {
+      "rule_ids": [
+        "EXACT_CAUSES_TO_PERFORM/V1",
+        "CONCHO_6_20_SECOND_CAUSES_TO_PERFORM/V1"
+      ],
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "agreement_index_id": "1400cec3b1e8f5a9eda6f1a02e7c059743c9ced6fe4f5fae7eea12f8364b4ec8",
+      "source_node_occurrence_id": "484283fb311f47185bf6cf6707969fd5fcfe5167cceee6a319bd050aaf17a6bf",
+      "source_span": {
+        "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+        "end_byte": 263763,
+        "start_byte": 263613,
+        "text_sha256": "54ffdb685690e6cb7488d107afb4cf2b24834f8642a76520a47cab212ff3a6aa"
+      },
+      "relationship_type": "CAUSES_TO_PERFORM",
+      "directed": true,
+      "expected_relationship_count": 2,
+      "source_endpoint": {
+        "entity_id": "df599b8bb25dbfe96d2d4ff56e40de8428c788405168903a1c28578a52f79e98",
+        "entity_kind": "SOURCE_LOCAL_ENTITY",
+        "canonical_label": "Parent",
+        "definition_annotation_occurrence_id": null,
+        "source_node_occurrence_id": "484283fb311f47185bf6cf6707969fd5fcfe5167cceee6a319bd050aaf17a6bf",
+        "source_span": {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "start_byte": 263613,
+          "end_byte": 263619,
+          "text_sha256": "5f7953f7c9b6ba16602898e540795140db39847cf03fd10d32ef636cded0360e"
+        }
+      },
+      "target_endpoints": [
+        {
+          "entity_id": "386684aaa6e127f2ce7f4357a325bb8e0129386570b2fc3ccb975266a4925beb",
+          "entity_kind": "SOURCE_LOCAL_ENTITY",
+          "canonical_label": "Merger Sub",
+          "definition_annotation_occurrence_id": null,
+          "source_node_occurrence_id": "484283fb311f47185bf6cf6707969fd5fcfe5167cceee6a319bd050aaf17a6bf",
+          "source_span": {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "start_byte": 263661,
+            "end_byte": 263671,
+            "text_sha256": "9b49967a2bf586752cee9e6f6a05e20d9ed54be6aa01cbc4d8ef6ef575573586"
+          }
+        },
+        {
+          "entity_id": "174df13971a06ee6a4463e7229b5ff6088ac1da9734e03c8cb8fddd4c0c8d36b",
+          "entity_kind": "DEFINED_ENTITY",
+          "canonical_label": "Surviving Corporation",
+          "definition_annotation_occurrence_id": "df49ba2e0c4356d6de2aeb09c9c22f6ceda82607cb88af9578271ec9b64aa33d",
+          "source_node_occurrence_id": null,
+          "source_span": null
+        }
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "start_byte": 263613,
+          "end_byte": 263619,
+          "text_sha256": "5f7953f7c9b6ba16602898e540795140db39847cf03fd10d32ef636cded0360e"
+        },
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "start_byte": 263661,
+          "end_byte": 263671,
+          "text_sha256": "9b49967a2bf586752cee9e6f6a05e20d9ed54be6aa01cbc4d8ef6ef575573586"
+        },
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "start_byte": 263680,
+          "end_byte": 263701,
+          "text_sha256": "7000709b28530d603c3baf5eed93e35b08c00f6621bd5382a1568e0bfedf50cd"
+        },
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "start_byte": 263702,
+          "end_byte": 263762,
+          "text_sha256": "078acd1aaf48e4451a56ad6951d7a0ba4f73ac035d4811f15136410ccbd318e2"
+        }
+      ],
+      "temporal_scope": {
+        "state": "UNSTATED",
+        "code": "UNSTATED",
+        "raw_text": null,
+        "source_span": null,
+        "alternative_codes": []
+      },
+      "reason_code": "TEMPORAL_SCOPE_UNSTATED",
+      "expected_residual_kind": "TEMPORAL_SCOPE_UNSTATED",
+      "expected_diagnostic_type": "TEMPORAL_SCOPE_UNSTATED",
+      "forbidden_relationship_types": [
+        "SUBSIDIARY_OF",
+        "OWNS",
+        "CONTROLS",
+        "CO_PARTY_WITH"
+      ],
+      "surviving_corporation_definition_binding": {
+        "definition_annotation_occurrence_id": "df49ba2e0c4356d6de2aeb09c9c22f6ceda82607cb88af9578271ec9b64aa33d",
+        "owner_node_occurrence_id": "ec169ee7488fd63d2fb481a1ee0a8a514cdafc3dc89040922738063c31a69a18",
+        "source_span": {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 10877,
+          "start_byte": 10850,
+          "text_sha256": "8c0239ddd462d307b4632d2622c216019a00ac794a64d16c87bd2b100bafeb1f"
+        },
+        "value": "Surviving Corporation"
+      }
+    },
+    "diagnostic_construction": {
+      "M2_AMBIGUITY_CARRIED": {
+        "severity": "INFO",
+        "reason_code": "M2_STRUCTURE_AMBIGUITY",
+        "related_ids": "OUTPUT_AMBIGUITY_ID"
+      },
+      "CONTEXT_AMBIGUITY_RECORDED": {
+        "severity": "WARNING",
+        "reason_code": "SAME_AS_AMBIGUITY_PRIMARY_REASON",
+        "related_ids": "OUTPUT_AMBIGUITY_ID"
+      },
+      "CONTEXT_RESIDUAL_RECORDED": {
+        "severity": "INFO",
+        "reason_code": "SAME_AS_RESIDUAL_REASON",
+        "related_ids": "OUTPUT_RESIDUAL_ID"
+      },
+      "REFERENCE_AMBIGUOUS": {
+        "severity": "WARNING",
+        "reason_code": "MULTIPLE_EXACT_REFERENCE_TARGETS",
+        "related_ids": "REFERENCE_EDGE_ID"
+      },
+      "REFERENCE_UNRESOLVED": {
+        "severity": "WARNING",
+        "reason_code": "TARGET_NOT_IN_AGREEMENT_INDEX",
+        "related_ids": "REFERENCE_EDGE_ID"
+      },
+      "DEFINITION_AMBIGUOUS": {
+        "severity": "WARNING",
+        "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+        "related_ids": "DEFINITION_EDGE_ID"
+      },
+      "DEFINITION_UNRESOLVED": {
+        "severity": "WARNING",
+        "reason_code": "TARGET_NOT_IN_AGREEMENT_INDEX",
+        "related_ids": "DEFINITION_EDGE_ID"
+      },
+      "TOPOLOGY_AMBIGUOUS": {
+        "severity": "WARNING",
+        "reason_code": "TOPOLOGY_SOURCE_CONFLICT",
+        "related_ids": "SEMANTIC_RELATIONSHIP_ID"
+      },
+      "TOPOLOGY_UNRESOLVED": {
+        "severity": "WARNING",
+        "reason_code": "TOPOLOGY_ENDPOINT_UNAVAILABLE",
+        "related_ids": "SEMANTIC_RELATIONSHIP_ID"
+      },
+      "TEMPORAL_SCOPE_UNSTATED": {
+        "severity": "INFO",
+        "reason_code": "TEMPORAL_SCOPE_UNSTATED",
+        "related_ids": "SEMANTIC_RELATIONSHIP_ID_AND_RESIDUAL_ID"
+      },
+      "UPSTREAM_REFERENCE_ANNOTATION_ABSENT": {
+        "severity": "WARNING",
+        "reason_code": "UPSTREAM_REFERENCE_ANNOTATION_ABSENT",
+        "related_ids": "EMPTY"
+      }
+    },
+    "closed_interpreter": {
+      "module": "lib/canonical-v2/context-compilation.js",
+      "exports_exactly": ["compileContext"],
+      "policy_is_only_semantic_source": true,
+      "regex": "POLICY_PATTERN_WITH_POLICY_FLAGS_PLUS_D_AND_G_ONLY_FOR_ALL_NON_OVERLAPPING",
+      "capture_value": "EXACT_SOURCE_BYTES_NO_TRIM_OR_NORMALISATION",
+      "hidden_defaults": false,
+      "unknown_member_or_value": "CONTEXT_COMPILATION_MEMBER_SCHEMA_MISMATCH"
+    }
   },
   "bound_experiment": {
     "experiment_id": "TOPBUILD_6_2_CHAPEAU_INHERITANCE/V1",
@@ -138,120 +1019,643 @@
     "party_topology": "DISABLED_IN_BOUNDED_EXPERIMENT",
     "child_override": "NOT_EXERCISED_IN_BOUNDED_EXPERIMENT"
   },
-  "context_rules": [
+  "bounded_projection_contract": {
+    "schema_version": "TOPBUILD_6_2_BOUNDED_PROJECTION/V1",
+    "fields": [
+      "schema_version",
+      "agreement_index_binding",
+      "focus_node_occurrence_ids",
+      "frames",
+      "context_facts",
+      "scope_edges"
+    ],
+    "frame_fields": [
+      "focus_node_occurrence_id",
+      "focus_node_kind",
+      "focus_node_span",
+      "context_fact_ids",
+      "scope_edge_ids"
+    ],
+    "selection": {
+      "focus_node_occurrence_ids": [
+        "20800cde2e005201e9182939b5ea73785f0e25b4b3051b0695cba9a52e1f1cd7",
+        "81fff54644db6c9cdd8dc553c389a464489ed04e2a993a8df46c25e5f327636b",
+        "492c594ec9814564bf30d5657ea5d774b760aabe20acbd29f02c61d763b74d4d",
+        "e1491fafffa0d5e77e4e703aeac3c211e2bc48518dcd05a6bc32572cebe11c9d"
+      ],
+      "source_node_occurrence_id": "8807b25eb5ce3da6a2a6d0f014f5930becc74921e722316337b60e76fc283096",
+      "rule_id": "TOPBUILD_6_2_CHAPEAU_FLOW",
+      "fact_state": "INHERITED",
+      "scope_edge_state": "RESOLVED",
+      "fact_count": 24,
+      "scope_edge_count": 24
+    },
+    "content_id": "737fbd0c7ab3f3944e1344381faf6bcb656f66cc20467e018d5e668c9b7f2c3c",
+    "canonical_sha256_without_lf": "c3accf60dee6750fe0d7e9397022fbe4f700f399cf1449b2b208f611aa0ffd8e",
+    "canonical_sha256_with_lf": "85b5a2f33895de241b81db98ab7b26044d491621cb460934f275abf13bc21916",
+    "canonical_byte_length_without_lf": 65691,
+    "canonical_byte_length_with_lf": 65692,
+    "whole_compilation_id_comparison_required": false,
+    "reason": "POLICY_BINDING_CHANGES_FROM_VERSION_1_TO_VERSION_2",
+    "proof": {
+      "projection_function": "SELECT_EXACT_FOUR_TOPBUILD_6_2_LIMB_FRAMES_AND_ONLY_FACTS_AND_SCOPE_EDGES_WITH_SOURCE_RULE_TOPBUILD_6_2_CHAPEAU_FLOW",
+      "omit_v2_only_members": [
+        "ambiguity_ids",
+        "residual_ids",
+        "ambiguities",
+        "residuals",
+        "reference_edges",
+        "definition_edges",
+        "semantic_relationships",
+        "diagnostics",
+        "semantic_policy_binding"
+      ],
+      "canonicalisation": "CANONICAL_JSON",
+      "any_difference": "CONTEXT_COMPILATION_EXPERIMENT_BINDING_MISMATCH"
+    }
+  },
+  "capture_rules": [
     {
       "rule_id": "TOPBUILD_6_2_CHAPEAU_FLOW",
       "rule_version": 1,
-      "source_node_kind": "CHAPEAU",
+      "priority": 1000,
+      "applies_to_node_kinds": ["CHAPEAU"],
+      "source_byte_mode": "AUTHORED_BYTES_EXCLUDING_SOURCE_ARTEFACTS",
+      "match_mode": "FULL",
+      "pattern": "^(?<object>This Agreement) (?<modal>may) (?<verb>be terminated) (?<time>at any time prior to the Titanium Merger Effective Time) by (?<actor>either Parent or the Company) (?<connective>if):$",
+      "pattern_flags": "u",
+      "capture_roles": [
+        {"capture_name": "object", "role": "OBJECT", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1},
+        {"capture_name": "modal", "role": "MODAL", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1},
+        {"capture_name": "verb", "role": "VERB", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1},
+        {"capture_name": "time", "role": "TIME", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1},
+        {"capture_name": "actor", "role": "ACTOR", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1},
+        {"capture_name": "connective", "role": "CONNECTIVE", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1}
+      ],
       "required_source_roles": [
         "GOVERNING_TEXT"
       ],
-      "target_node_kind": "LIMB",
-      "structural_relation": "PRECEDING_CHAPEAU_CONTIGUOUS_LIMB_SIBLINGS_SAME_PARENT",
-      "edge_kind": "CHAPEAU_GOVERNS_LIMB",
-      "edge_state": "RESOLVED",
-      "proof_kind": "AUTHORED_CHAPEAU_CONTIGUOUS_LIMB_SIBLINGS",
-      "full_match_pattern": "^(?<object>This Agreement) (?<modal>may) (?<verb>be terminated) (?<time>at any time prior to the Titanium Merger Effective Time) by (?<actor>either Parent or the Company) (?<connective>if):$",
+      "blocked_by_m2_ambiguity": true
+    },
+    {
+      "rule_id": "CONCHO_6_9_A_CHAPEAU_CAPTURE/V1",
+      "rule_version": 1,
+      "priority": 990,
+      "applies_to_node_kinds": ["CHAPEAU"],
+      "source_byte_mode": "AUTHORED_BYTES_EXCLUDING_SOURCE_ARTEFACTS",
+      "match_mode": "FULL",
+      "pattern": "^(?<time>Until December 31 of the calendar year in which the Effective Time occurs), (?<actor>Parent) (?<modal>shall) (?<verb>cause) (?<object>each individual who is employed as of the Closing Date by the Company or a Subsidiary thereof \\(a “Company Employee”\\) and who remains employed by Parent or any of its Subsidiaries \\(including the Surviving Corporation or any of its Subsidiaries\\) to be provided with) $",
       "pattern_flags": "u",
       "capture_roles": [
-        {
-          "capture_name": "object",
-          "role": "OBJECT"
-        },
-        {
-          "capture_name": "modal",
-          "role": "MODAL"
-        },
-        {
-          "capture_name": "verb",
-          "role": "VERB"
-        },
-        {
-          "capture_name": "time",
-          "role": "TIME"
-        },
-        {
-          "capture_name": "actor",
-          "role": "ACTOR"
-        },
-        {
-          "capture_name": "connective",
-          "role": "CONNECTIVE"
-        }
+        {"capture_name": "time", "role": "TIME", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1},
+        {"capture_name": "actor", "role": "ACTOR", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1},
+        {"capture_name": "modal", "role": "MODAL", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1},
+        {"capture_name": "verb", "role": "VERB", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1},
+        {"capture_name": "object", "role": "OBJECT", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1}
       ],
-      "expected_capture_spans": [
-        {
-          "role": "OBJECT",
-          "value": "This Agreement",
-          "span": {
-            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
-            "start_byte": 364423,
-            "end_byte": 364437,
-            "text_sha256": "62db433223b2514b2ee2c70377ca1f3e8e712bd12b4bb63127b0bc6fd17b134c"
-          }
-        },
-        {
-          "role": "MODAL",
-          "value": "may",
-          "span": {
-            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
-            "start_byte": 364438,
-            "end_byte": 364441,
-            "text_sha256": "ee4d988c65de860fabbfbcd27f73d50bbebe3fba37fe419284f4811389c30bdc"
-          }
-        },
-        {
-          "role": "VERB",
-          "value": "be terminated",
-          "span": {
-            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
-            "start_byte": 364442,
-            "end_byte": 364455,
-            "text_sha256": "78f10c7f8e5098b594d2f69087ebbc3542b960663ce4e888c3de25246dafb254"
-          }
-        },
-        {
-          "role": "TIME",
-          "value": "at any time prior to the Titanium Merger Effective Time",
-          "span": {
-            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
-            "start_byte": 364456,
-            "end_byte": 364511,
-            "text_sha256": "eb5aaa0971b19ae6f0590fac208a388ed3f4d1aaa7148af76487ffd69148f1f6"
-          }
-        },
-        {
-          "role": "ACTOR",
-          "value": "either Parent or the Company",
-          "span": {
-            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
-            "start_byte": 364515,
-            "end_byte": 364543,
-            "text_sha256": "222db478c301155dff95710110140472441d71f088b5a1cbb99c157ac922429a"
-          }
-        },
-        {
-          "role": "CONNECTIVE",
-          "value": "if",
-          "span": {
-            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
-            "start_byte": 364544,
-            "end_byte": 364546,
-            "text_sha256": "935f68319d4f227e02bfd54a0ddf85b8a242e42a4277aa5ef5eaab691710924e"
-          }
-        }
-      ]
+      "required_source_roles": ["GOVERNING_TEXT"],
+      "blocked_by_m2_ambiguity": true
+    },
+    {
+      "rule_id": "TOPBUILD_6_3_CHAPEAU_CAPTURE/V1",
+      "rule_version": 1,
+      "priority": 990,
+      "applies_to_node_kinds": ["CHAPEAU"],
+      "source_byte_mode": "AUTHORED_BYTES_EXCLUDING_SOURCE_ARTEFACTS",
+      "match_mode": "FULL",
+      "pattern": "^(?<object1>This Agreement) (?<modal1>may) (?<verb1>be terminated) and (?<object2>the Mergers) (?<modal2>may) (?<verb2>be abandoned) (?<time>at any time prior to the Titanium Merger Effective Time) by (?<actor>the Company) (?<connective>if):$",
+      "pattern_flags": "u",
+      "capture_roles": [
+        {"capture_name": "object1", "role": "OBJECT", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1},
+        {"capture_name": "modal1", "role": "MODAL", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1},
+        {"capture_name": "verb1", "role": "VERB", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1},
+        {"capture_name": "object2", "role": "OBJECT", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 2},
+        {"capture_name": "modal2", "role": "MODAL", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 2},
+        {"capture_name": "verb2", "role": "VERB", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 2},
+        {"capture_name": "time", "role": "TIME", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1},
+        {"capture_name": "actor", "role": "ACTOR", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1},
+        {"capture_name": "connective", "role": "CONNECTIVE", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1}
+      ],
+      "required_source_roles": ["GOVERNING_TEXT"],
+      "blocked_by_m2_ambiguity": true
+    },
+    {
+      "rule_id": "METSERA_7_04_CONDITION_CAPTURE/V1",
+      "rule_version": 1,
+      "priority": 990,
+      "applies_to_node_kinds": ["QUALIFICATION"],
+      "source_byte_mode": "AUTHORED_BYTES_EXCLUDING_SOURCE_ARTEFACTS",
+      "match_mode": "FULL",
+      "pattern": "^(?<connective>if) (?<condition>such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement\\.)$",
+      "pattern_flags": "u",
+      "capture_roles": [
+        {"capture_name": "connective", "role": "CONNECTIVE", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1},
+        {"capture_name": "condition", "role": "CONDITION", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1}
+      ],
+      "required_source_roles": [],
+      "blocked_by_m2_ambiguity": true
+    },
+    {
+      "rule_id": "METSERA_7_04_CONDITION_CAPTURE/V1",
+      "rule_version": 1,
+      "priority": 990,
+      "applies_to_node_kinds": ["QUALIFICATION"],
+      "source_byte_mode": "AUTHORED_BYTES_EXCLUDING_SOURCE_ARTEFACTS",
+      "match_mode": "FULL",
+      "pattern": "^(?<connective>if) (?<condition>such failure was primarily caused by its material breach of any of its obligations under this Agreement\\.)$",
+      "pattern_flags": "u",
+      "capture_roles": [
+        {"capture_name": "connective", "role": "CONNECTIVE", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1},
+        {"capture_name": "condition", "role": "CONDITION", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1}
+      ],
+      "required_source_roles": [],
+      "blocked_by_m2_ambiguity": true
+    },
+    {
+      "rule_id": "TOPBUILD_6_3_B_CROSS_DEFAULT_CONDITION_CAPTURE/V1",
+      "rule_version": 1,
+      "priority": 990,
+      "applies_to_node_kinds": ["QUALIFICATION"],
+      "source_byte_mode": "AUTHORED_BYTES_EXCLUDING_SOURCE_ARTEFACTS",
+      "match_mode": "FULL",
+      "pattern": "^(?<condition>[\\s\\S]+)$",
+      "pattern_flags": "u",
+      "capture_roles": [{"capture_name": "condition", "role": "CONDITION", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1}],
+      "required_source_roles": [],
+      "blocked_by_m2_ambiguity": true
+    },
+    {
+      "rule_id": "CONCHO_6_11_ADDITIONAL_COVENANT_CONDITION_CAPTURE/V1",
+      "rule_version": 1,
+      "priority": 990,
+      "applies_to_node_kinds": ["QUALIFICATION"],
+      "source_byte_mode": "AUTHORED_BYTES_EXCLUDING_SOURCE_ARTEFACTS",
+      "match_mode": "FULL",
+      "pattern": "^(?<condition>[\\s\\S]+)$",
+      "pattern_flags": "u",
+      "capture_roles": [{"capture_name": "condition", "role": "CONDITION", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1}],
+      "required_source_roles": [],
+      "blocked_by_m2_ambiguity": true
+    },
+    {
+      "rule_id": "EXACT_MODAL_CAPTURE/V1",
+      "rule_version": 1,
+      "priority": 100,
+      "applies_to_node_kinds": ["PARAGRAPH", "SENTENCE", "CHAPEAU", "LIMB", "QUALIFICATION", "SECTION"],
+      "source_byte_mode": "AUTHORED_BYTES_EXCLUDING_SOURCE_ARTEFACTS",
+      "match_mode": "ALL_NON_OVERLAPPING",
+      "pattern": "\\b(?<modal>shall|will|may|must)\\b",
+      "pattern_flags": "iu",
+      "capture_roles": [{"capture_name": "modal", "role": "MODAL", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": "ALL"}],
+      "required_source_roles": [],
+      "blocked_by_m2_ambiguity": true
+    },
+    {
+      "rule_id": "EXACT_NEGATION_CAPTURE/V1",
+      "rule_version": 1,
+      "priority": 90,
+      "applies_to_node_kinds": ["PARAGRAPH", "SENTENCE", "CHAPEAU", "LIMB", "QUALIFICATION", "SECTION"],
+      "source_byte_mode": "AUTHORED_BYTES_EXCLUDING_SOURCE_ARTEFACTS",
+      "match_mode": "ALL_NON_OVERLAPPING",
+      "pattern": "\\b(?<negation>neither|not|no|never)\\b",
+      "pattern_flags": "iu",
+      "capture_roles": [{"capture_name": "negation", "role": "NEGATION", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": "ALL"}],
+      "required_source_roles": [],
+      "blocked_by_m2_ambiguity": true
+    },
+    {
+      "rule_id": "EXACT_CONNECTIVE_CAPTURE/V1",
+      "rule_version": 1,
+      "priority": 80,
+      "applies_to_node_kinds": ["PARAGRAPH", "SENTENCE", "CHAPEAU", "LIMB", "QUALIFICATION", "SECTION"],
+      "source_byte_mode": "AUTHORED_BYTES_EXCLUDING_SOURCE_ARTEFACTS",
+      "match_mode": "ALL_NON_OVERLAPPING",
+      "pattern": "(?<connective>\\b(?:if|unless|except|until|before|after|subject\\s+to|so\\s+long\\s+as)\\b|\\bprovided(?:,)?\\s+that\\b)",
+      "pattern_flags": "iu",
+      "capture_roles": [{"capture_name": "connective", "role": "CONNECTIVE", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": "ALL"}],
+      "required_source_roles": [],
+      "blocked_by_m2_ambiguity": true
+    },
+    {
+      "rule_id": "EXACT_CAPACITY_CAPTURE/V1",
+      "rule_version": 1,
+      "priority": 70,
+      "applies_to_node_kinds": ["PARAGRAPH", "SENTENCE", "CHAPEAU", "LIMB", "QUALIFICATION", "SECTION"],
+      "source_byte_mode": "AUTHORED_BYTES_EXCLUDING_SOURCE_ARTEFACTS",
+      "match_mode": "ALL_NON_OVERLAPPING",
+      "pattern": "(?<capacity>\\b(?:on behalf of|acting on behalf of|in (?:his|her|its|their) capacity as|as (?:the )?sole (?:stockholder|member) of)\\b)",
+      "pattern_flags": "iu",
+      "capture_roles": [{"capture_name": "capacity", "role": "CAPACITY", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": "ALL"}],
+      "required_source_roles": [],
+      "blocked_by_m2_ambiguity": true
+    },
+    {
+      "rule_id": "EXACT_TIME_CAPTURE/V1",
+      "rule_version": 1,
+      "priority": 60,
+      "applies_to_node_kinds": ["PARAGRAPH", "SENTENCE", "CHAPEAU", "LIMB", "QUALIFICATION", "SECTION"],
+      "source_byte_mode": "AUTHORED_BYTES_EXCLUDING_SOURCE_ARTEFACTS",
+      "match_mode": "ALL_NON_OVERLAPPING",
+      "pattern": "(?<time>\\b(?:at any time\\s+)?(?:prior to|before|after|from and after|until|upon|at)\\s+(?:the\\s+)?(?:Closing(?: Date)?|Effective Time|date of this Agreement|execution of this Agreement|termination of this Agreement|Outside Date)\\b)",
+      "pattern_flags": "iu",
+      "capture_roles": [{"capture_name": "time", "role": "TIME", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": "ALL"}],
+      "required_source_roles": [],
+      "blocked_by_m2_ambiguity": true
+    },
+    {
+      "rule_id": "EXACT_QUALIFICATION_TEXT/V1",
+      "rule_version": 1,
+      "priority": 50,
+      "applies_to_node_kinds": ["QUALIFICATION"],
+      "source_byte_mode": "AUTHORED_BYTES_EXCLUDING_SOURCE_ARTEFACTS",
+      "match_mode": "FULL",
+      "pattern": "^(?<scope>[\\s\\S]+)$",
+      "pattern_flags": "u",
+      "capture_roles": [{"capture_name": "scope", "role": "SCOPE", "value_mode": "EXACT_SOURCE_TEXT", "occurrence": 1}],
+      "required_source_roles": [],
+      "blocked_by_m2_ambiguity": true
+    }
+  ],
+  "scope_rules": [
+    {
+      "rule_id": "DIRECT_AT/V1", "rule_version": 1, "priority": 1000,
+      "source_node_kinds": ["PARAGRAPH", "SENTENCE", "CHAPEAU", "LIMB", "QUALIFICATION", "SECTION"],
+      "target_node_kinds": ["PARAGRAPH", "SENTENCE", "CHAPEAU", "LIMB", "QUALIFICATION", "SECTION"],
+      "structural_relation": "SAME_AUTHORED_NODE", "edge_kind": "DIRECT_AT", "edge_state": "RESOLVED",
+      "proof_kind": "AUTHORED_NODE_LOCAL_SPAN",
+      "governing_roles": ["SUBJECT", "ACTOR", "CAPACITY", "MODAL", "VERB", "OBJECT", "NEGATION", "CONNECTIVE", "TIME", "CONDITION", "SCOPE"],
+      "connective_pattern": null, "pattern_flags": "u", "requires_same_parent": false,
+      "requires_contiguous_targets": false, "allows_sibling_propagation": false,
+      "maximum_ancestor_distance": 0, "stop_node_kinds": []
+    },
+    {
+      "rule_id": "AUTHORED_ANCESTOR_DESCENDANT/V1", "rule_version": 1, "priority": 800,
+      "source_node_kinds": ["PARAGRAPH", "SENTENCE", "CHAPEAU"],
+      "target_node_kinds": ["PARAGRAPH", "SENTENCE", "CHAPEAU", "LIMB", "QUALIFICATION", "SECTION"],
+      "structural_relation": "STRICT_AUTHORED_ANCESTOR_DESCENDANT", "edge_kind": "ANCESTOR_GOVERNS_DESCENDANT", "edge_state": "RESOLVED",
+      "proof_kind": "AUTHORED_ANCESTOR_DESCENDANT",
+      "governing_roles": ["SUBJECT", "ACTOR", "CAPACITY", "MODAL", "VERB", "OBJECT", "NEGATION", "CONNECTIVE", "TIME", "CONDITION", "SCOPE"],
+      "connective_pattern": null, "pattern_flags": "u", "requires_same_parent": false,
+      "requires_contiguous_targets": false, "allows_sibling_propagation": false,
+      "maximum_ancestor_distance": null, "stop_node_kinds": ["SECTION"]
+    },
+    {
+      "rule_id": "AUTHORED_CHAPEAU_CONTIGUOUS_LIMBS/V1", "rule_version": 1, "priority": 900,
+      "source_node_kinds": ["CHAPEAU"], "target_node_kinds": ["LIMB"],
+      "structural_relation": "PRECEDING_CHAPEAU_CONTIGUOUS_LIMB_SIBLINGS_SAME_PARENT",
+      "edge_kind": "CHAPEAU_GOVERNS_LIMB", "edge_state": "RESOLVED",
+      "proof_kind": "AUTHORED_CHAPEAU_CONTIGUOUS_LIMB_SIBLINGS",
+      "governing_roles": ["SUBJECT", "ACTOR", "CAPACITY", "MODAL", "VERB", "OBJECT", "NEGATION", "CONNECTIVE", "TIME", "CONDITION", "SCOPE"],
+      "connective_pattern": "(?<connective>if|unless|when|where|that|:)", "pattern_flags": "iu",
+      "requires_same_parent": true, "requires_contiguous_targets": true, "allows_sibling_propagation": true,
+      "maximum_ancestor_distance": 1, "stop_node_kinds": ["SECTION", "PARAGRAPH", "SENTENCE"]
+    },
+    {
+      "rule_id": "NEAREST_FOCUS_QUALIFICATION_ONLY/V1", "rule_version": 1, "priority": 950,
+      "source_node_kinds": ["QUALIFICATION"], "target_node_kinds": ["LIMB", "SENTENCE", "PARAGRAPH"],
+      "structural_relation": "NEAREST_FOCUS_ANCESTOR_ONLY",
+      "edge_kind": "QUALIFICATION_GOVERNS_NODE", "edge_state": "RESOLVED",
+      "proof_kind": "AUTHORED_QUALIFICATION_NEAREST_FOCUS_ANCESTOR",
+      "governing_roles": ["CONDITION", "SCOPE"],
+      "connective_pattern": "^(?<connective>if|unless|except|provided(?:,)?\\s+that|subject\\s+to|so\\s+long\\s+as)\\b",
+      "pattern_flags": "iu", "requires_same_parent": false, "requires_contiguous_targets": false,
+      "allows_sibling_propagation": false, "maximum_ancestor_distance": null,
+      "stop_node_kinds": ["LIMB", "SENTENCE", "PARAGRAPH"]
+    }
+  ],
+  "fixture_scope_rules": [
+    {
+      "rule_id": "CONCHO_6_9_A_CHAPEAU_FLOW/V1", "rule_version": 1,
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "agreement_index_id": "1400cec3b1e8f5a9eda6f1a02e7c059743c9ced6fe4f5fae7eea12f8364b4ec8",
+      "source_node_occurrence_id": "c04b786e89681416b1ffc955c472fa8d560ef66b7ddaaa0398897ca724b77e2e",
+      "source_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 227469, "end_byte": 227831, "text_sha256": "66cf52091ee1719d01dcc13fa396875ade708c45f8fde9b8530754c20078583b"},
+      "target_node_occurrence_ids": ["c3e6e12758c83ce9e9d3f48bfa664dbe4a1bb89ac8cfbf3b5b8fd18aec618b5d", "8c8751bd56e28cf960484a71b50ac250793cb64cbdbd578662a8ed9149ccd6f0", "d7fff90ce5abf74fc530c39631ea6aed6e5904b2f381c6d26fc402254cd934d4", "5fcb9144000b8c2b9a80381759afd9056390258705370bcc6cc1ac9a0bbd2fe4"],
+      "target_spans": [
+        {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 227831, "end_byte": 228285, "text_sha256": "66e5e7d8f90a7a55ed26f7b107a64d07c7976349e20900eb861e9dd004bee132"},
+        {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 228285, "end_byte": 228670, "text_sha256": "b5ed67cbdc5ae953ac83eab1643cb6549a3ec14b696db5920246dab5ac011449"},
+        {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 228670, "end_byte": 228912, "text_sha256": "4aea8b9cf00b720b0f42ea17453215024a3058ae12470a4f8ec1fd5891a9c344"},
+        {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 228912, "end_byte": 229032, "text_sha256": "b8a9be89d4a7e0149df2e295b58e99ac5d3596886f009a5089620622eea6e32e"}
+      ],
+      "edge_kind": "CHAPEAU_GOVERNS_LIMB", "proof_kind": "SEALED_LEGAL_SCOPE_RULING",
+      "governing_roles": ["TIME", "ACTOR", "MODAL", "VERB", "OBJECT"], "connective_span": null,
+      "legal_ruling_code": "CONCHO_6_9_A_CHAPEAU_GOVERNS_FOUR_CONTIGUOUS_LIMBS", "expected_edge_count": 20
+    },
+    {
+      "rule_id": "CONCHO_6_9_A_LOCAL_PROVISO/V1", "rule_version": 1,
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116", "agreement_index_id": "1400cec3b1e8f5a9eda6f1a02e7c059743c9ced6fe4f5fae7eea12f8364b4ec8",
+      "source_node_occurrence_id": "4c41b716855ef7bc89c7ad620484c7abc7c1368494181ee7ba6c89ad86f9841c",
+      "source_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 228079, "end_byte": 228284, "text_sha256": "f43f75a7119299476307052aa5eae98b591780b61e623d82f04aa9c2f7e1e6c0"},
+      "target_node_occurrence_ids": ["c3e6e12758c83ce9e9d3f48bfa664dbe4a1bb89ac8cfbf3b5b8fd18aec618b5d"],
+      "target_spans": [{"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 227831, "end_byte": 228285, "text_sha256": "66e5e7d8f90a7a55ed26f7b107a64d07c7976349e20900eb861e9dd004bee132"}],
+      "edge_kind": "QUALIFICATION_GOVERNS_NODE", "proof_kind": "SEALED_LEGAL_SCOPE_RULING", "governing_roles": ["SCOPE"],
+      "connective_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 228079, "end_byte": 228092, "text_sha256": "d5201236a8320664f0bdef3b6e559767277acb6de9a70dbe5ba14a4409776b1a"},
+      "legal_ruling_code": "EACH_OF_TWO_PROVISOS_GOVERNS_ONLY_ITS_OWNING_LIMB", "expected_edge_count": 1
+    },
+    {
+      "rule_id": "CONCHO_6_9_A_LOCAL_PROVISO/V1", "rule_version": 1,
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116", "agreement_index_id": "1400cec3b1e8f5a9eda6f1a02e7c059743c9ced6fe4f5fae7eea12f8364b4ec8",
+      "source_node_occurrence_id": "7e84161c77a8986deaf2ca6f4593eec078d0c9d271d964d2158934b9ea4cf5b8",
+      "source_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 228420, "end_byte": 228669, "text_sha256": "76fe7d946a6749d8548a33c46999795fd7842c1800e1144a2f23f3159e9406cc"},
+      "target_node_occurrence_ids": ["8c8751bd56e28cf960484a71b50ac250793cb64cbdbd578662a8ed9149ccd6f0"],
+      "target_spans": [{"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 228285, "end_byte": 228670, "text_sha256": "b5ed67cbdc5ae953ac83eab1643cb6549a3ec14b696db5920246dab5ac011449"}],
+      "edge_kind": "QUALIFICATION_GOVERNS_NODE", "proof_kind": "SEALED_LEGAL_SCOPE_RULING", "governing_roles": ["SCOPE"],
+      "connective_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 228420, "end_byte": 228433, "text_sha256": "d5201236a8320664f0bdef3b6e559767277acb6de9a70dbe5ba14a4409776b1a"},
+      "legal_ruling_code": "EACH_OF_TWO_PROVISOS_GOVERNS_ONLY_ITS_OWNING_LIMB", "expected_edge_count": 1
+    },
+    {
+      "rule_id": "TOPBUILD_6_2_CHAPEAU_FLOW", "rule_version": 1,
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb", "agreement_index_id": "e5ca967c6d1af76f53fdd6bb0c402aef416272f7757fcdbaa11d3e8968d0c29a",
+      "source_node_occurrence_id": "8807b25eb5ce3da6a2a6d0f014f5930becc74921e722316337b60e76fc283096",
+      "source_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 364423, "end_byte": 364547, "text_sha256": "a48f2e266c0e917d58e697dd37a9add4b75cffecac2a8fafb5f193ddd63def22"},
+      "target_node_occurrence_ids": ["20800cde2e005201e9182939b5ea73785f0e25b4b3051b0695cba9a52e1f1cd7", "81fff54644db6c9cdd8dc553c389a464489ed04e2a993a8df46c25e5f327636b", "492c594ec9814564bf30d5657ea5d774b760aabe20acbd29f02c61d763b74d4d", "e1491fafffa0d5e77e4e703aeac3c211e2bc48518dcd05a6bc32572cebe11c9d"],
+      "target_spans": [
+        {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 364548, "end_byte": 364925, "text_sha256": "59df046aa9991b728b38400ed87c0acabdc525b16f90ee19ed12d575f6165bd7"},
+        {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 364925, "end_byte": 365137, "text_sha256": "8aa1f56c761a45914ea3fd7913b8e5a61b8c60ace216628cd1e8d3e601e4165c"},
+        {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 365137, "end_byte": 365354, "text_sha256": "01ebc70196982238b19de37b7ed6ef2f89858dee404384d8a277501df1716a45"},
+        {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 365354, "end_byte": 365781, "text_sha256": "68b2e739c779f4db5e93a385822543d40f7d1f0ae1fea5670108e65e5a066183"}
+      ],
+      "edge_kind": "CHAPEAU_GOVERNS_LIMB", "proof_kind": "AUTHORED_CHAPEAU_CONTIGUOUS_LIMB_SIBLINGS",
+      "governing_roles": ["OBJECT", "MODAL", "VERB", "TIME", "ACTOR", "CONNECTIVE"],
+      "connective_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 364544, "end_byte": 364546, "text_sha256": "935f68319d4f227e02bfd54a0ddf85b8a242e42a4277aa5ef5eaab691710924e"},
+      "legal_ruling_code": "BOUNDED_V1_PROJECTION_EXACTLY_PRESERVED", "expected_edge_count": 24
+    },
+    {
+      "rule_id": "TOPBUILD_6_2_LOCAL_PROVISO/V1", "rule_version": 1,
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb", "agreement_index_id": "e5ca967c6d1af76f53fdd6bb0c402aef416272f7757fcdbaa11d3e8968d0c29a",
+      "source_node_occurrence_id": "3ec9665fb69c128973815664167bd850be0f4d25d3b5c2d0cbe8f404902fd8c8",
+      "source_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 364643, "end_byte": 364924, "text_sha256": "736aedfdd5abe4e74dd584e08abb08eb495d605724a40932c2ae757c9460afaa"},
+      "target_node_occurrence_ids": ["20800cde2e005201e9182939b5ea73785f0e25b4b3051b0695cba9a52e1f1cd7"],
+      "target_spans": [{"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 364548, "end_byte": 364925, "text_sha256": "59df046aa9991b728b38400ed87c0acabdc525b16f90ee19ed12d575f6165bd7"}],
+      "edge_kind": "QUALIFICATION_GOVERNS_NODE", "proof_kind": "SEALED_LEGAL_SCOPE_RULING", "governing_roles": ["SCOPE"],
+      "connective_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 364643, "end_byte": 364656, "text_sha256": "d5201236a8320664f0bdef3b6e559767277acb6de9a70dbe5ba14a4409776b1a"},
+      "legal_ruling_code": "EACH_PROVISO_GOVERNS_ONLY_ITS_OWNING_LIMB", "expected_edge_count": 1
+    },
+    {
+      "rule_id": "TOPBUILD_6_2_LOCAL_PROVISO/V1", "rule_version": 1,
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb", "agreement_index_id": "e5ca967c6d1af76f53fdd6bb0c402aef416272f7757fcdbaa11d3e8968d0c29a",
+      "source_node_occurrence_id": "460996c5e2936d40712046653018df828228f7e493eadbde51e16a155bc25fe5",
+      "source_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 365508, "end_byte": 365780, "text_sha256": "576394857c2bda550bcecb85a2b5dcc5fa993d72eb8b2c90318e608416413401"},
+      "target_node_occurrence_ids": ["e1491fafffa0d5e77e4e703aeac3c211e2bc48518dcd05a6bc32572cebe11c9d"],
+      "target_spans": [{"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 365354, "end_byte": 365781, "text_sha256": "68b2e739c779f4db5e93a385822543d40f7d1f0ae1fea5670108e65e5a066183"}],
+      "edge_kind": "QUALIFICATION_GOVERNS_NODE", "proof_kind": "SEALED_LEGAL_SCOPE_RULING", "governing_roles": ["SCOPE"],
+      "connective_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 365508, "end_byte": 365522, "text_sha256": "c1224bb7b1ce87762e8b712e41c535927cacc4785ca65946a12b23fb3e21de41"},
+      "legal_ruling_code": "EACH_PROVISO_GOVERNS_ONLY_ITS_OWNING_LIMB", "expected_edge_count": 1
+    },
+    {
+      "rule_id": "TOPBUILD_6_3_CHAPEAU_FLOW/V1", "rule_version": 1,
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb", "agreement_index_id": "e5ca967c6d1af76f53fdd6bb0c402aef416272f7757fcdbaa11d3e8968d0c29a",
+      "source_node_occurrence_id": "059d1227f8053c1a670cafb67c72b87b54affd8193633b71d27d2f63835016ad",
+      "source_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 365813, "end_byte": 365953, "text_sha256": "39fb5fe46727f15a7070d7c2fad4b5a9d51a1335c69edae71fdc9daadbb8767a"},
+      "target_node_occurrence_ids": ["108c75adda1396f0140813aa72e1664d073163ba4c0fc51d298f564045ecfaf7", "9f447b48d4ba8907edbf078abd719875bb6e9b47b63bbdd459a4f36f951d275b"],
+      "target_spans": [
+        {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 365954, "end_byte": 366615, "text_sha256": "f3057479b30677c14f7cd1667475761e4008c429f92a9774e64f002861d98ce6"},
+        {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 366615, "end_byte": 367588, "text_sha256": "8ec874deccbac045c68257ba2c11d9d53d0ea5d490d27ee32892bfc20d15db21"}
+      ],
+      "edge_kind": "CHAPEAU_GOVERNS_LIMB", "proof_kind": "SEALED_LEGAL_SCOPE_RULING",
+      "governing_roles": ["OBJECT", "MODAL", "VERB", "OBJECT", "MODAL", "VERB", "TIME", "ACTOR", "CONNECTIVE"],
+      "connective_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 365950, "end_byte": 365952, "text_sha256": "935f68319d4f227e02bfd54a0ddf85b8a242e42a4277aa5ef5eaab691710924e"},
+      "legal_ruling_code": "TOPBUILD_6_3_CHAPEAU_GOVERNS_TWO_CONTIGUOUS_LIMBS", "expected_edge_count": 18
+    },
+    {
+      "rule_id": "TOPBUILD_6_3_B_CROSS_DEFAULT_SCOPE/V1", "rule_version": 1,
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb", "agreement_index_id": "e5ca967c6d1af76f53fdd6bb0c402aef416272f7757fcdbaa11d3e8968d0c29a",
+      "source_node_occurrence_id": "da4732d59d811adfc7cda5ab4ce1fe4d40fe0b4bef9e3a5c8a29b094708d52e0",
+      "source_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 367372, "end_byte": 367587, "text_sha256": "201909ccb554ef9d2d4a89667b305c94615034c49a24e5e94a9e8ec58ff8c7c1"},
+      "target_node_occurrence_ids": ["9f447b48d4ba8907edbf078abd719875bb6e9b47b63bbdd459a4f36f951d275b"],
+      "target_spans": [{"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 366615, "end_byte": 367588, "text_sha256": "8ec874deccbac045c68257ba2c11d9d53d0ea5d490d27ee32892bfc20d15db21"}],
+      "edge_kind": "TRAILING_QUALIFICATION_GOVERNS_NODE", "proof_kind": "SEALED_LEGAL_SCOPE_RULING", "governing_roles": ["CONDITION"],
+      "connective_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 367372, "end_byte": 367385, "text_sha256": "d5201236a8320664f0bdef3b6e559767277acb6de9a70dbe5ba14a4409776b1a"},
+      "legal_ruling_code": "CROSS_DEFAULT_PROVISO_GOVERNS_COMPLETE_6_3_B_TERMINATION_RIGHT", "expected_edge_count": 1
+    },
+    {
+      "rule_id": "REDHAT_5_07_SUBSTANTIALLY_SIMILAR_SCOPE/V1", "rule_version": 1,
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a", "agreement_index_id": "e50464fb97dbd7ead5afc66292a42e5c37f47d3ccdc87d5842df7abef666b3b2",
+      "source_node_occurrence_id": "42a47173ff9ec87207abdda6167430f1f9668ad99a20d97746c1b6961d58316a",
+      "source_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 198114, "end_byte": 198596, "text_sha256": "af78493a429aa33ba6b5afce46e34b188c4aaa1eae23502627abdc7cd1ccf639"},
+      "target_node_occurrence_ids": ["d4cce6a933b77eee2040fc65a11f5eb19c316dd901685b5ab48bf7ce2f41a8eb"],
+      "target_spans": [{"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 197353, "end_byte": 198596, "text_sha256": "14c328e132201dadd2b6ba4c1d0dbe9e505dec6644bfbad48f65505e73b268bd"}],
+      "edge_kind": "TRAILING_QUALIFICATION_GOVERNS_NODE", "proof_kind": "SEALED_LEGAL_SCOPE_RULING", "governing_roles": ["SCOPE"],
+      "connective_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 198114, "end_byte": 198127, "text_sha256": "d5201236a8320664f0bdef3b6e559767277acb6de9a70dbe5ba14a4409776b1a"},
+      "legal_ruling_code": "SUBSTANTIALLY_SIMILAR_PROVISO_GOVERNS_ALL_OPERATIVE_DUTIES_IN_COMPLETE_SECOND_SENTENCE_PARAGRAPH", "expected_edge_count": 1
+    },
+    {
+      "rule_id": "CONCHO_6_11_ADDITIONAL_COVENANT_SCOPE/V1", "rule_version": 1,
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116", "agreement_index_id": "1400cec3b1e8f5a9eda6f1a02e7c059743c9ced6fe4f5fae7eea12f8364b4ec8",
+      "source_node_occurrence_id": "9c0669b13907004d1c48aa573ab26e9e428f8de0a080f2a42ab6fa557addf285",
+      "source_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 242841, "end_byte": 243105, "text_sha256": "b298f2071850e78eb80af79ea479a9d7bec0c076b836f8a2d21bb2ae06f1e609"},
+      "target_node_occurrence_ids": ["be2cf74eac8f1cd81be57c57799f7b465d68333d79f0b6b345e7d86222782302"],
+      "target_spans": [{"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 242558, "end_byte": 243105, "text_sha256": "5ea063a6f2843e67e8d591a35e9a6a2d11f7e66366dce8874b33fa72ca545493"}],
+      "edge_kind": "ADDITIONAL_COVENANT_GOVERNS_NODE", "proof_kind": "SEALED_LEGAL_SCOPE_RULING", "governing_roles": ["CONDITION"],
+      "connective_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 242841, "end_byte": 242855, "text_sha256": "c1224bb7b1ce87762e8b712e41c535927cacc4785ca65946a12b23fb3e21de41"},
+      "legal_ruling_code": "PROVISO_IS_ADDITIONAL_COMPANY_COVENANT_ATTACHED_ONLY_TO_SENTENCE_TWO", "expected_edge_count": 1
+    },
+    {
+      "rule_id": "METSERA_7_04_PARENT_SENTENCE_SCOPE/V1", "rule_version": 1,
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c", "agreement_index_id": "158641104eed32537aa8e821eba55dcf5c23d7d4089dbacefc9feb1317abb129",
+      "source_node_occurrence_id": "b1945773d653312c21e6ae26fee76039c1a5f6da79bb5eb59161e58ffe73cd66",
+      "source_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 225933, "end_byte": 226065, "text_sha256": "fee7a5e8d36797cadeb9aeb65ec18815b9bd3c593808a79e0f190e3f701e9f32"},
+      "target_node_occurrence_ids": ["a133fc2f7b6d94cb441f4913eb17bdce7e0f3a7f119af8f641d306337d9a050e"],
+      "target_spans": [{"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 225804, "end_byte": 226065, "text_sha256": "8812da15cd603586f4d9d60d8864aeece22e5295df4ffd8687fe4dde1ab1b85b"}],
+      "edge_kind": "QUALIFICATION_GOVERNS_NODE", "proof_kind": "SEALED_LEGAL_SCOPE_RULING", "governing_roles": ["CONDITION"],
+      "connective_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 225933, "end_byte": 225935, "text_sha256": "935f68319d4f227e02bfd54a0ddf85b8a242e42a4277aa5ef5eaab691710924e"},
+      "legal_ruling_code": "EACH_SENTENCE_RETAINS_ITS_OWN_ACTOR_CONDITION_AND_REFERENCE_SET", "expected_edge_count": 1
+    },
+    {
+      "rule_id": "METSERA_7_04_PARENT_SENTENCE_SCOPE/V1", "rule_version": 1,
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c", "agreement_index_id": "158641104eed32537aa8e821eba55dcf5c23d7d4089dbacefc9feb1317abb129",
+      "source_node_occurrence_id": "bd503fe8b93a495b7881d17f93b98083461f93d0f5a5ca4c4bf5f373ac08ab5c",
+      "source_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 226181, "end_byte": 226288, "text_sha256": "8316c526993ca7cddedb7b955449ead69d3bd206841604c2c23d15994982e89b"},
+      "target_node_occurrence_ids": ["13edd4735a500bf1eb956e616ab04971b0e82beb767da29dcccd5760ffe10686"],
+      "target_spans": [{"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 226066, "end_byte": 226288, "text_sha256": "b67c5007f95eace06729f1a93574973be137a577e92c35aee3844f65ac0bf9e6"}],
+      "edge_kind": "QUALIFICATION_GOVERNS_NODE", "proof_kind": "SEALED_LEGAL_SCOPE_RULING", "governing_roles": ["CONDITION"],
+      "connective_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 226181, "end_byte": 226183, "text_sha256": "935f68319d4f227e02bfd54a0ddf85b8a242e42a4277aa5ef5eaab691710924e"},
+      "legal_ruling_code": "EACH_SENTENCE_RETAINS_ITS_OWN_ACTOR_CONDITION_AND_REFERENCE_SET", "expected_edge_count": 1
+    }
+  ],
+  "reference_resolution_contract": {
+    "rule_id": "EXACT_M2_SECTION_REFERENCE/V1",
+    "rule_version": 1,
+    "inventory": "EVERY_SEALED_M2_SECTION_REFERENCE_ANNOTATION",
+    "annotation_only": true,
+    "regex_discovery_forbidden": true,
+    "validate_source_span_owner_and_value": true,
+    "candidate_domain": "SAME_AGREEMENT_INDEX_NODES_WITH_NON_NULL_REFERENCE",
+    "candidate_match": "CASE_SENSITIVE_EXACT_ANNOTATION_VALUE_TO_NODE_REFERENCE",
+    "candidate_order": "SOURCE_START_THEN_SOURCE_END_THEN_NODE_OCCURRENCE_ID",
+    "edge_count_per_annotation": 1,
+    "selection_rule": "EXACTLY_ONE_CANDIDATE_ONLY",
+    "state_by_candidate_count": {"one": "RESOLVED", "zero": "UNRESOLVED", "multiple": "AMBIGUOUS"},
+    "reason_by_candidate_count": {"one": "UNIQUE_EXACT_REFERENCE_TARGET", "zero": "TARGET_NOT_IN_AGREEMENT_INDEX", "multiple": "MULTIPLE_EXACT_REFERENCE_TARGETS"},
+    "expected_totals": {"annotation_count": 2000, "resolved_unique": 1856, "unresolved_no_target": 133, "ambiguous_multiple_targets": 11},
+    "per_agreement_expected": [
+      {"agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116", "annotation_count": 268, "resolved_unique": 268, "unresolved_no_target": 0, "ambiguous_multiple_targets": 0},
+      {"agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c", "annotation_count": 313, "resolved_unique": 250, "unresolved_no_target": 62, "ambiguous_multiple_targets": 1},
+      {"agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c", "annotation_count": 510, "resolved_unique": 467, "unresolved_no_target": 34, "ambiguous_multiple_targets": 9},
+      {"agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a", "annotation_count": 275, "resolved_unique": 264, "unresolved_no_target": 10, "ambiguous_multiple_targets": 1},
+      {"agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154", "annotation_count": 289, "resolved_unique": 282, "unresolved_no_target": 7, "ambiguous_multiple_targets": 0},
+      {"agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363", "annotation_count": 328, "resolved_unique": 313, "unresolved_no_target": 15, "ambiguous_multiple_targets": 0},
+      {"agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb", "annotation_count": 17, "resolved_unique": 12, "unresolved_no_target": 5, "ambiguous_multiple_targets": 0}
+    ],
+    "upstream_annotation_omissions": [
+      {
+        "rule_id": "TOPBUILD_6_3_UPSTREAM_REFERENCE_OMISSION/V1", "rule_version": 1,
+        "owner_node_occurrence_id": "1b63e96401cdf923a4b738c194e8bb7e69396ce25337bc9d7640be9d150a6f72",
+        "source_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 366320, "end_byte": 366329, "text_sha256": "4355a61200882d149b34c0a8f5d7db816ac3f0836a20bc63ce393bd478ed81b6"},
+        "raw_text": "‎‎4.4", "expected_reference": "4.4"
+      },
+      {
+        "rule_id": "TOPBUILD_6_3_UPSTREAM_REFERENCE_OMISSION/V1", "rule_version": 1,
+        "owner_node_occurrence_id": "f81a8b9aeb12ab6de7265ef6d44f115398aaa4824dfb7f9b331bb1c9b9e1f5d2",
+        "source_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 367040, "end_byte": 367052, "text_sha256": "8aa170c602855f0b89a72e69717c8b2a85700fe3fe2032708dfe0768f70b07d7"},
+        "raw_text": "‎5.3(a)(i)", "expected_reference": "5.3(a)(i)"
+      },
+      {
+        "rule_id": "TOPBUILD_6_3_UPSTREAM_REFERENCE_OMISSION/V1", "rule_version": 1,
+        "owner_node_occurrence_id": "f81a8b9aeb12ab6de7265ef6d44f115398aaa4824dfb7f9b331bb1c9b9e1f5d2",
+        "source_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 367056, "end_byte": 367069, "text_sha256": "929327b0e891e37b2dfbc59b5384035341d26aaa1b941cab14c4978ed8ef9467"},
+        "raw_text": "‎5.3(a)(ii)", "expected_reference": "5.3(a)(ii)"
+      },
+      {
+        "rule_id": "TOPBUILD_6_3_UPSTREAM_REFERENCE_OMISSION/V1", "rule_version": 1,
+        "owner_node_occurrence_id": "da4732d59d811adfc7cda5ab4ce1fe4d40fe0b4bef9e3a5c8a29b094708d52e0",
+        "source_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 367576, "end_byte": 367585, "text_sha256": "5eaf23a32edb27db6b70d9b3e75b58efa943ff5498d7e1a24d3288c852cf2819"},
+        "raw_text": "‎6.4(b)", "expected_reference": "6.4(b)"
+      }
+    ],
+    "omission_disposition": "EMIT_ONE_UPSTREAM_REFERENCE_ANNOTATION_ABSENT_DIAGNOSTIC_PER_LISTED_SPAN_NO_REFERENCE_EDGE_NO_RESIDUAL_NO_CONTEXT_BLOCK"
+  },
+  "definition_resolution_contract": {
+    "rule_id": "EXACT_M2_DEFINED_TERM_USE/V1",
+    "rule_version": 1,
+    "inventory": "EVERY_SEALED_M2_DEFINED_TERM_USE_ANNOTATION",
+    "annotation_only": true,
+    "regex_discovery_forbidden": true,
+    "validate_source_span_owner_and_value": true,
+    "candidate_domain": "SAME_AGREEMENT_INDEX_DEFINED_TERM_DEFINITION_ANNOTATIONS",
+    "candidate_match": "CASE_SENSITIVE_EXACT_USE_VALUE_TO_DEFINITION_VALUE",
+    "forbidden_normalisations": ["PLURAL", "CASE", "PUNCTUATION", "LEXICAL_DISTANCE", "NEAREST_SECTION"],
+    "candidate_order": "SOURCE_START_THEN_SOURCE_END_THEN_ANNOTATION_OCCURRENCE_ID",
+    "edge_count_per_use_annotation": 1,
+    "selection_rule": "EXACTLY_ONE_CANDIDATE_ONLY",
+    "state_by_candidate_count": {"one": "RESOLVED", "zero": "UNRESOLVED", "multiple": "AMBIGUOUS"},
+    "reason_by_candidate_count": {"one": "UNIQUE_EXACT_DEFINITION_TARGET", "zero": "TARGET_NOT_IN_AGREEMENT_INDEX", "multiple": "MULTIPLE_EXACT_DEFINITION_TARGETS"},
+    "expected_totals": {"definition_annotation_count": 969, "use_annotation_count": 27836, "resolved_unique": 25781, "ambiguous_multiple_definitions": 2055, "unresolved_no_definition": 0},
+    "per_agreement_expected": [
+      {"agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116", "definitions": 121, "uses": 3745, "resolved_unique": 3732, "ambiguous_multiple": 13},
+      {"agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c", "definitions": 160, "uses": 4422, "resolved_unique": 2459, "ambiguous_multiple": 1963},
+      {"agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c", "definitions": 172, "uses": 5928, "resolved_unique": 5882, "ambiguous_multiple": 46},
+      {"agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a", "definitions": 96, "uses": 2334, "resolved_unique": 2301, "ambiguous_multiple": 33},
+      {"agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154", "definitions": 147, "uses": 4092, "resolved_unique": 4092, "ambiguous_multiple": 0},
+      {"agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363", "definitions": 148, "uses": 3754, "resolved_unique": 3754, "ambiguous_multiple": 0},
+      {"agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb", "definitions": 125, "uses": 3561, "resolved_unique": 3561, "ambiguous_multiple": 0}
+    ]
+  },
+  "topology_rules": [
+    {
+      "rule_id": "EXACT_WHOLLY_OWNED_SUBSIDIARY/V1", "rule_version": 1, "priority": 500,
+      "applies_to_node_kinds": ["PARAGRAPH", "SENTENCE", "CHAPEAU", "LIMB", "QUALIFICATION", "SECTION"],
+      "relationship_type": "SUBSIDIARY_OF", "directed": true,
+      "pattern": "^(?<target>[^.;]{1,160}?), (?:a|an) [^.;]{0,80}?wholly owned Subsidiary of (?<source>[^.;,()]{1,120})(?:[,.]|$)",
+      "pattern_flags": "iu", "source_endpoint_capture": "source", "target_endpoint_capture": "target", "temporal_capture": null,
+      "endpoint_resolution": "UNIQUE_EXACT_DEFINITION_ELSE_SOURCE_LOCAL", "time_absence_disposition": "EMIT_UNSTATED_WITH_RESIDUAL",
+      "forbidden_inferences": ["OWNS", "CONTROLS", "CAUSES_TO_PERFORM", "CO_PARTY_WITH"]
+    },
+    {
+      "rule_id": "EXACT_SOLE_STOCKHOLDER_OWNS/V1", "rule_version": 1, "priority": 500,
+      "applies_to_node_kinds": ["PARAGRAPH", "SENTENCE", "CHAPEAU", "LIMB", "QUALIFICATION", "SECTION"],
+      "relationship_type": "OWNS", "directed": true,
+      "pattern": "^(?<source>[^.;]{1,160}) (?:is|was) the sole stockholder of (?<target>[^.;]{1,160})(?:[.;]|$)",
+      "pattern_flags": "iu", "source_endpoint_capture": "source", "target_endpoint_capture": "target", "temporal_capture": null,
+      "endpoint_resolution": "UNIQUE_EXACT_DEFINITION_ELSE_SOURCE_LOCAL", "time_absence_disposition": "EMIT_UNSTATED_WITH_RESIDUAL",
+      "forbidden_inferences": ["SUBSIDIARY_OF", "CONTROLS", "CAUSES_TO_PERFORM", "CO_PARTY_WITH"]
+    },
+    {
+      "rule_id": "EXACT_CAUSES_TO_PERFORM/V1", "rule_version": 1, "priority": 1000,
+      "applies_to_node_kinds": ["SENTENCE"], "relationship_type": "CAUSES_TO_PERFORM", "directed": true,
+      "pattern": "^(?<source>Parent) shall take all action necessary to cause (?<target>Merger Sub) and the Surviving Corporation to perform their respective obligations under this Agreement\\.$",
+      "pattern_flags": "u", "source_endpoint_capture": "source", "target_endpoint_capture": "target", "temporal_capture": null,
+      "endpoint_resolution": "UNIQUE_EXACT_DEFINITION_ELSE_SOURCE_LOCAL", "time_absence_disposition": "EMIT_UNSTATED_WITH_RESIDUAL",
+      "forbidden_inferences": ["SUBSIDIARY_OF", "OWNS", "CONTROLS", "CO_PARTY_WITH"]
+    },
+    {
+      "rule_id": "CONCHO_6_20_SECOND_CAUSES_TO_PERFORM/V1", "rule_version": 1, "priority": 1000,
+      "applies_to_node_kinds": ["SENTENCE"], "relationship_type": "CAUSES_TO_PERFORM", "directed": true,
+      "pattern": "^(?<source>Parent) shall take all action necessary to cause Merger Sub and the (?<target>Surviving Corporation) to perform their respective obligations under this Agreement\\.$",
+      "pattern_flags": "u", "source_endpoint_capture": "source", "target_endpoint_capture": "target", "temporal_capture": null,
+      "endpoint_resolution": "UNIQUE_EXACT_DEFINITION_ELSE_SOURCE_LOCAL", "time_absence_disposition": "EMIT_UNSTATED_WITH_RESIDUAL",
+      "forbidden_inferences": ["SUBSIDIARY_OF", "OWNS", "CONTROLS", "CO_PARTY_WITH"]
+    },
+    {
+      "rule_id": "EXACT_EXPRESS_CONTROL/V1", "rule_version": 1, "priority": 500,
+      "applies_to_node_kinds": ["PARAGRAPH", "SENTENCE", "CHAPEAU", "LIMB", "QUALIFICATION", "SECTION"],
+      "relationship_type": "CONTROLS", "directed": true,
+      "pattern": "^(?<source>[^.;]{1,160}) (?:directly )?(?:controls|Controlled) (?<target>[^.;]{1,160})(?:[.;]|$)",
+      "pattern_flags": "iu", "source_endpoint_capture": "source", "target_endpoint_capture": "target", "temporal_capture": null,
+      "endpoint_resolution": "UNIQUE_EXACT_DEFINITION_ELSE_SOURCE_LOCAL", "time_absence_disposition": "EMIT_UNSTATED_WITH_RESIDUAL",
+      "forbidden_inferences": ["SUBSIDIARY_OF", "OWNS", "CAUSES_TO_PERFORM", "CO_PARTY_WITH"]
+    },
+    {
+      "rule_id": "EXACT_CO_PARTY_STATEMENT/V1", "rule_version": 1, "priority": 500,
+      "applies_to_node_kinds": ["PARAGRAPH", "SENTENCE", "CHAPEAU", "LIMB", "QUALIFICATION", "SECTION"],
+      "relationship_type": "CO_PARTY_WITH", "directed": false,
+      "pattern": "^(?<source>[^.;]{1,120}) and (?<target>[^.;]{1,120}) (?:are each|are collectively|are) (?:a )?(?:party|parties) to this Agreement(?:[.;]|$)",
+      "pattern_flags": "iu", "source_endpoint_capture": "source", "target_endpoint_capture": "target", "temporal_capture": null,
+      "endpoint_resolution": "UNIQUE_EXACT_DEFINITION_ELSE_SOURCE_LOCAL", "time_absence_disposition": "EMIT_UNSTATED_WITH_RESIDUAL",
+      "forbidden_inferences": ["SUBSIDIARY_OF", "OWNS", "CONTROLS", "CAUSES_TO_PERFORM"]
     }
   ],
   "inheritance_contract": {
+    "precedence": [
+      "DIRECT_TARGET_EVIDENCE",
+      "NEAREST_PROVEN_GOVERNING_SOURCE",
+      "MORE_DISTANT_PROVEN_GOVERNING_SOURCE"
+    ],
+    "capture_rule_selection": "FOR_EACH_SOURCE_NODE_AND_ROLE_SELECT_ONLY_MATCHING_CAPTURE_RULES_AT_THE_HIGHEST_PRIORITY_RETAIN_ALL_DISTINCT_OCCURRENCES_FROM_RULES_TIED_AT_THAT_PRIORITY_DEDUPLICATE_IDENTICAL_ROLE_VALUE_AND_SPAN_BOUND_FIXTURE_RULES_EXECUTE_ONLY_ON_BOUND_SOURCE",
+    "scope_rule_selection": "EXACT_FIXTURE_RULE_EXCLUSIVELY_SUPPRESSES_GENERIC_SCOPE_RULES_FOR_SAME_SOURCE_ROLE_AND_TARGET_CANDIDATE_OTHERWISE_HIGHEST_PRIORITY_VALID_RULE_WINS",
+    "chapeau_vs_ancestor": "AUTHORED_CHAPEAU_CONTIGUOUS_LIMBS_PRIORITY_900_SUPPRESSES_AUTHORED_ANCESTOR_DESCENDANT_PRIORITY_800_FOR_SAME_SOURCE_ROLE_AND_TARGET",
+    "concho_6_9_no_connective": "EXACT_CONCHO_6_9_A_CHAPEAU_FLOW_FIXTURE_IS_A_SEALED_LEGAL_SCOPE_RULING_AND_DOES_NOT_REQUIRE_GENERIC_CONNECTIVE_MATCH",
+    "emitted_context_fact_rule_id": "CAPTURE_RULE_ID_AND_VERSION",
+    "emitted_scope_edge_rule_id": "SELECTED_SCOPE_RULE_OR_FIXTURE_RULE_ID_AND_VERSION",
+    "bounded_topbuild_rule_ids": "FACT_AND_EDGE_BOTH_REMAIN_TOPBUILD_6_2_CHAPEAU_FLOW_VERSION_1",
+    "direct_state": "DIRECT",
     "inherited_state": "INHERITED",
-    "source_is_governing_authored_node": true,
-    "target_is_focus_node": true,
-    "false_local_evidence_forbidden": true,
+    "overridden_state": "OVERRIDDEN",
+    "equal_precedence_equal_values": "COEXIST_WITHOUT_AMBIGUITY",
+    "equal_precedence_different_values": "EMIT_CONTEXT_CAPTURE_CONFLICT_AND_SELECT_NONE",
+    "direct_over_inherited": "DIRECT_FACT_RETAINS_INHERITED_FACT_IDS_IN_OVERRIDDEN_FACT_IDS_AND_INHERITED_FACTS_REMAIN_OVERRIDDEN",
+    "nearest_over_distant": "NEAREST_RESOLVED_SCOPE_SOURCE_WINS_AND_RETAINS_LOSING_FACT_IDS",
+    "alternative_fact_ids": "COMPLETE_EARLIER_SOURCE_ORDERED_ALTERNATIVE_SET",
     "one_scope_edge_per_inherited_fact": true,
-    "sibling_inheritance_requires_explicit_source_proof": true,
+    "false_local_evidence_forbidden": true,
     "ambiguous_or_unresolved_values_must_not_propagate": true,
-    "qualification_scope_requires_its_own_rule": true
+    "sibling_inheritance_requires_explicit_resolved_scope_edge": true,
+    "qualification_scope_requires_exact_RULE_OR_FIXTURE_AND_NEVER_PARENTAGE_ONLY": true,
+    "ambiguity_carry": {
+      "rule_id": "CARRY_M2_STRUCTURE_AMBIGUITY/V1",
+      "rule_version": 1,
+      "inventory": "EVERY_SEALED_M2_AMBIGUITY",
+      "predecessor_detail_digest": "SHA256_OF_CANONICAL_JSON_OF_EXACT_M2_DETAIL_WITHOUT_LF",
+      "target_focuses": "FOCUS_EQUAL_TO_OR_DESCENDANT_OF_A_PREDECESSOR_NODE_OR_WHOSE_EXTENT_IS_WITHIN_THE_PREDECESSOR_SPAN",
+      "frame_attachment": "ATTACH_TO_EVERY_TARGET_FOCUS",
+      "blocked_dependencies": "ONLY_FACTS_AND_SCOPE_EDGES_WITH_SOURCE_OR_TARGET_INTERSECTING_THE_PREDECESSOR_SCOPE"
+    },
+    "residual_completeness": {
+      "NO_CONTEXT_RULE_APPLIED": "EXACTLY_ONE_FOR_EVERY_FACTLESS_FOCUS_EVEN_IF_AMBIGUITY_ATTACHED",
+      "NO_SCOPE_PROOF": "ONLY_CAPTURED_NON_LOCAL_FACT_WITH_APPLICABLE_TARGET_AND_NO_RESOLVED_SCOPE_EDGE",
+      "owner_focus_order": [
+        "OWNER_IF_FOCUS",
+        "NEAREST_FOCUS_ANCESTOR",
+        "FIRST_CONTAINING_FOCUS_DESCENDANT",
+        "FAIL"
+      ],
+      "reference_and_definition": "SOURCE_ANNOTATION_OWNER_TO_FOCUS",
+      "topology_and_time": "RELATIONSHIP_SOURCE_NODE_TO_FOCUS"
+    },
+    "dependency_effect": "BLOCK_ONLY_LISTED_DEPENDENCIES_ALL_UNRELATED_OUTPUTS_CONTINUE",
+    "topology_endpoint_resolution": "ONE_EXACT_DEFINITION_YIELDS_DEFINED_ENTITY_ZERO_DEFINITIONS_YIELDS_SOURCE_LOCAL_ENTITY_MULTIPLE_DEFINITIONS_BLOCK_ONLY_AFFECTED_ENDPOINT_AND_RELATIONSHIP",
+    "parent_merger_sub_shorthand": "REQUIRES_DIRECT_RESOLVED_SUBSIDIARY_OF_AND_PROOF_EXPANSION_HIDES_NO_DISTINCT_DUTY_OR_REMEDY",
+    "causes_to_perform_implies": []
   },
   "output_contract": {
     "context_compilation_fields": [
@@ -330,42 +1734,590 @@
       "connective_span",
       "ordered_target_node_occurrence_ids"
     ],
+    "context_ambiguity_fields": [
+      "schema_version",
+      "ambiguity_id",
+      "ambiguity_type",
+      "state",
+      "reason_codes",
+      "source_node_occurrence_ids",
+      "source_spans",
+      "target_node_occurrence_ids",
+      "affected_roles",
+      "alternative_fact_ids",
+      "alternative_scope_edge_ids",
+      "alternative_target_ids",
+      "blocked_dependency_ids",
+      "predecessor_ambiguity_id",
+      "predecessor_detail_digest",
+      "rule_id",
+      "rule_version"
+    ],
+    "context_residual_fields": [
+      "schema_version",
+      "residual_id",
+      "residual_kind",
+      "reason_code",
+      "focus_node_occurrence_id",
+      "source_node_occurrence_ids",
+      "source_spans",
+      "affected_roles",
+      "related_ambiguity_ids",
+      "attempted_rule_ids",
+      "blocked_dependency_ids"
+    ],
+    "context_reference_edge_fields": [
+      "schema_version",
+      "reference_edge_id",
+      "source_annotation_occurrence_id",
+      "owner_node_occurrence_id",
+      "source_span",
+      "raw_text",
+      "normalised_reference",
+      "state",
+      "target_node_occurrence_ids",
+      "selected_target_node_occurrence_id",
+      "reason_code",
+      "rule_id",
+      "rule_version"
+    ],
+    "context_definition_edge_fields": [
+      "schema_version",
+      "definition_edge_id",
+      "source_annotation_occurrence_id",
+      "owner_node_occurrence_id",
+      "source_span",
+      "raw_text",
+      "term",
+      "state",
+      "target_definition_annotation_occurrence_ids",
+      "target_owner_node_occurrence_ids",
+      "selected_definition_annotation_occurrence_id",
+      "reason_code",
+      "rule_id",
+      "rule_version"
+    ],
+    "semantic_endpoint_fields": [
+      "entity_id",
+      "entity_kind",
+      "canonical_label",
+      "definition_annotation_occurrence_id",
+      "source_node_occurrence_id",
+      "source_span"
+    ],
+    "temporal_scope_fields": [
+      "state",
+      "code",
+      "raw_text",
+      "source_span",
+      "alternative_codes"
+    ],
+    "semantic_relationship_fields": [
+      "schema_version",
+      "semantic_relationship_id",
+      "relationship_type",
+      "state",
+      "directed",
+      "source_endpoint",
+      "target_endpoint",
+      "temporal_scope",
+      "source_node_occurrence_ids",
+      "source_spans",
+      "reason_code",
+      "rule_id",
+      "rule_version"
+    ],
+    "context_diagnostic_fields": [
+      "schema_version",
+      "diagnostic_id",
+      "diagnostic_type",
+      "severity",
+      "reason_code",
+      "source_node_occurrence_ids",
+      "source_spans",
+      "related_ids",
+      "detail"
+    ],
+    "diagnostics_ledger_fields": [
+      "schema_version",
+      "diagnostics_ledger_id",
+      "agreement_ids",
+      "diagnostic_count",
+      "counts_by_type",
+      "diagnostics"
+    ],
+    "diagnostics_ledger_schema_version": "STAGE_2Y_M3_CONTEXT_DIAGNOSTICS/V1",
+    "diagnostics_ledger_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m3/context-compilation-diagnostics.json",
     "span_fields": [
       "coordinate_system",
       "start_byte",
       "end_byte",
       "text_sha256"
     ],
-    "empty_in_bounded_experiment": [
-      "ambiguities",
-      "residuals",
-      "reference_edges",
-      "definition_edges",
-      "semantic_relationships",
-      "diagnostics"
-    ]
+    "empty_arrays": "PRESENT",
+    "member_construction": {
+      "identity": {
+        "ambiguity_id": "contentId(CONTEXT_AMBIGUITY/V1, COMPLETE_RECORD_EXCLUDING_AMBIGUITY_ID)",
+        "residual_id": "contentId(CONTEXT_RESIDUAL/V1, COMPLETE_RECORD_EXCLUDING_RESIDUAL_ID)",
+        "diagnostic_id": "contentId(CONTEXT_DIAGNOSTIC/V1, COMPLETE_RECORD_EXCLUDING_DIAGNOSTIC_ID)"
+      },
+      "ambiguity_by_type": {
+        "M2_STRUCTURE_AMBIGUITY": {
+          "schema_version": "CONTEXT_AMBIGUITY/V1",
+          "state": "CARRIED_FORWARD",
+          "reason_codes": [
+            "M2_STRUCTURE_AMBIGUITY"
+          ],
+          "source_node_occurrence_ids": "EXACT_PREDECESSOR_NODE_OCCURRENCE_IDS_IN_SOURCE_ORDER",
+          "source_spans": "SINGLE_EXACT_PREDECESSOR_SPAN",
+          "target_node_occurrence_ids": "EXACT_INPUT_CONTRACT_M2_CARRY_TARGET_FOCUSES",
+          "affected_roles": [
+            "SUBJECT",
+            "ACTOR",
+            "CAPACITY",
+            "MODAL",
+            "VERB",
+            "OBJECT",
+            "NEGATION",
+            "CONNECTIVE",
+            "TIME",
+            "CONDITION",
+            "SCOPE"
+          ],
+          "alternative_fact_ids": [],
+          "alternative_scope_edge_ids": [],
+          "alternative_target_ids": [],
+          "blocked_dependency_ids": "EXACT_INPUT_CONTRACT_M2_CARRY_BLOCKED_FACT_AND_SCOPE_EDGE_IDS_IN_GLOBAL_MEMBER_ORDER",
+          "predecessor_ambiguity_id": "EXACT_PREDECESSOR_AMBIGUITY_ID",
+          "predecessor_detail_digest": "SHA256_OF_CANONICAL_JSON_OF_EXACT_M2_DETAIL_WITHOUT_LF",
+          "rule_id": "CARRY_M2_STRUCTURE_AMBIGUITY/V1",
+          "rule_version": 1
+        },
+        "MULTIPLE_SCOPE_READINGS": {
+          "schema_version": "CONTEXT_AMBIGUITY/V1",
+          "state": "OPEN",
+          "reason_codes": [
+            "MULTIPLE_SCOPE_READINGS"
+          ],
+          "source_node_occurrence_ids": "COMPETING_SOURCE_NODE_IDS_IN_SOURCE_ORDER",
+          "source_spans": "COMPETING_SOURCE_SPANS_IN_SOURCE_ORDER",
+          "target_node_occurrence_ids": "UNION_OF_COMPETING_TARGET_IDS_IN_FOCUS_ORDER",
+          "affected_roles": "COMPETING_GOVERNING_ROLES_IN_CONTEXT_ROLE_ORDER",
+          "alternative_fact_ids": [],
+          "alternative_scope_edge_ids": "ALL_COMPETING_UNSELECTED_SCOPE_EDGE_IDS_IN_SCOPE_EDGE_ORDER",
+          "alternative_target_ids": "ALL_COMPETING_TARGET_IDS_IN_SOURCE_ORDER",
+          "blocked_dependency_ids": "ALL_FACT_IDS_DEPENDENT_ON_A_SCOPE_SELECTION_IN_CONTEXT_FACT_ORDER",
+          "predecessor_ambiguity_id": null,
+          "predecessor_detail_digest": null,
+          "rule_id": "HIGHEST_PRIORITY_COMPETING_SCOPE_RULE_ID_LEXICOGRAPHICALLY_FIRST",
+          "rule_version": "CORRESPONDING_RULE_VERSION"
+        },
+        "CONTEXT_CAPTURE_CONFLICT": {
+          "schema_version": "CONTEXT_AMBIGUITY/V1",
+          "state": "OPEN",
+          "reason_codes": [
+            "CONTEXT_CAPTURE_CONFLICT"
+          ],
+          "source_node_occurrence_ids": "CONFLICTING_FACT_SOURCE_NODE_IDS_IN_SOURCE_ORDER",
+          "source_spans": "CONFLICTING_FACT_SOURCE_SPANS_IN_SOURCE_ORDER",
+          "target_node_occurrence_ids": [
+            "EXACT_AFFECTED_FOCUS_NODE_ID"
+          ],
+          "affected_roles": [
+            "EXACT_CONFLICTING_ROLE"
+          ],
+          "alternative_fact_ids": "COMPLETE_CONFLICTING_FACT_IDS_IN_CONTEXT_FACT_ORDER",
+          "alternative_scope_edge_ids": [],
+          "alternative_target_ids": [],
+          "blocked_dependency_ids": "FACT_IDS_THAT_REQUIRE_A_SELECTED_VALUE_IN_CONTEXT_FACT_ORDER",
+          "predecessor_ambiguity_id": null,
+          "predecessor_detail_digest": null,
+          "rule_id": "HIGHEST_PRIORITY_CONFLICTING_CAPTURE_RULE_ID_LEXICOGRAPHICALLY_FIRST",
+          "rule_version": "CORRESPONDING_RULE_VERSION"
+        },
+        "TOPOLOGY_SOURCE_CONFLICT": {
+          "schema_version": "CONTEXT_AMBIGUITY/V1",
+          "state": "OPEN",
+          "reason_codes": [
+            "TOPOLOGY_SOURCE_CONFLICT"
+          ],
+          "source_node_occurrence_ids": "CONFLICTING_RELATIONSHIP_SOURCE_NODE_IDS_IN_SOURCE_ORDER",
+          "source_spans": "CONFLICTING_RELATIONSHIP_SOURCE_SPANS_IN_SOURCE_ORDER",
+          "target_node_occurrence_ids": [],
+          "affected_roles": [],
+          "alternative_fact_ids": [],
+          "alternative_scope_edge_ids": [],
+          "alternative_target_ids": "COMPETING_ENDPOINT_ENTITY_IDS_ASCENDING",
+          "blocked_dependency_ids": "COMPETING_SEMANTIC_RELATIONSHIP_IDS_IN_RELATIONSHIP_ORDER",
+          "predecessor_ambiguity_id": null,
+          "predecessor_detail_digest": null,
+          "rule_id": "HIGHEST_PRIORITY_CONFLICTING_TOPOLOGY_RULE_ID_LEXICOGRAPHICALLY_FIRST",
+          "rule_version": "CORRESPONDING_RULE_VERSION"
+        }
+      },
+      "residual_by_kind": {
+        "NO_CONTEXT_RULE_APPLIED": {
+          "schema_version": "CONTEXT_RESIDUAL/V1",
+          "reason_code": "NO_CONTEXT_RULE_APPLIED",
+          "trigger_rule_id": "NO_CONTEXT_RULE_APPLIED/V1",
+          "trigger_rule_version": 1,
+          "multiplicity": "EXACTLY_ONE_PER_FACTLESS_FOCUS",
+          "focus_node_occurrence_id": "EXACT_FACTLESS_FOCUS_ID",
+          "source_node_occurrence_ids": [
+            "EXACT_FACTLESS_FOCUS_ID"
+          ],
+          "source_spans": [
+            "EXACT_FACTLESS_FOCUS_EXTENT_SPAN"
+          ],
+          "affected_roles": [
+            "SUBJECT",
+            "ACTOR",
+            "CAPACITY",
+            "MODAL",
+            "VERB",
+            "OBJECT",
+            "NEGATION",
+            "CONNECTIVE",
+            "TIME",
+            "CONDITION",
+            "SCOPE"
+          ],
+          "related_ambiguity_ids": [],
+          "attempted_rule_ids": "ALL_CAPTURE_RULE_IDS_APPLICABLE_TO_FOCUS_KIND_IN_PRIORITY_DESCENDING_THEN_RULE_ID_ORDER",
+          "blocked_dependency_ids": []
+        },
+        "NO_SCOPE_PROOF": {
+          "schema_version": "CONTEXT_RESIDUAL/V1",
+          "reason_code": "NO_SCOPE_PROOF",
+          "trigger_rule_id": "NO_SCOPE_PROOF/V1",
+          "trigger_rule_version": 1,
+          "multiplicity": "EXACTLY_ONE_PER_CAPTURED_NON_LOCAL_FACT_WITH_ZERO_VALID_SCOPE_PROOFS_MULTIPLE_PROOFS_USE_MULTIPLE_SCOPE_READINGS_INSTEAD",
+          "focus_node_occurrence_id": "OWNER_TO_FOCUS_OF_CAPTURE_SOURCE",
+          "source_node_occurrence_ids": [
+            "CAPTURE_FACT_SOURCE_NODE_ID"
+          ],
+          "source_spans": [
+            "CAPTURE_FACT_SOURCE_SPAN"
+          ],
+          "affected_roles": [
+            "CAPTURE_FACT_ROLE"
+          ],
+          "related_ambiguity_ids": [],
+          "attempted_rule_ids": "ALL_APPLICABLE_SCOPE_RULE_IDS_IN_PRIORITY_DESCENDING_THEN_RULE_ID_ORDER",
+          "blocked_dependency_ids": [
+            "CAPTURED_CONTEXT_FACT_ID"
+          ]
+        },
+        "REFERENCE_TARGET_UNAVAILABLE": {
+          "schema_version": "CONTEXT_RESIDUAL/V1",
+          "reason_code": "REFERENCE_EDGE_REASON_CODE",
+          "multiplicity": "EXACTLY_ONE_PER_AMBIGUOUS_OR_UNRESOLVED_REFERENCE_EDGE",
+          "focus_node_occurrence_id": "OWNER_TO_FOCUS_OF_REFERENCE_ANNOTATION_OWNER",
+          "source_node_occurrence_ids": [
+            "REFERENCE_ANNOTATION_OWNER_NODE_ID"
+          ],
+          "source_spans": [
+            "REFERENCE_ANNOTATION_SOURCE_SPAN"
+          ],
+          "affected_roles": [],
+          "related_ambiguity_ids": [],
+          "attempted_rule_ids": [
+            "EXACT_M2_SECTION_REFERENCE/V1"
+          ],
+          "blocked_dependency_ids": [
+            "REFERENCE_EDGE_ID"
+          ]
+        },
+        "DEFINITION_TARGET_UNAVAILABLE": {
+          "schema_version": "CONTEXT_RESIDUAL/V1",
+          "reason_code": "DEFINITION_EDGE_REASON_CODE",
+          "multiplicity": "EXACTLY_ONE_PER_AMBIGUOUS_OR_UNRESOLVED_DEFINITION_EDGE",
+          "focus_node_occurrence_id": "OWNER_TO_FOCUS_OF_DEFINITION_USE_OWNER",
+          "source_node_occurrence_ids": [
+            "DEFINITION_USE_OWNER_NODE_ID"
+          ],
+          "source_spans": [
+            "DEFINITION_USE_SOURCE_SPAN"
+          ],
+          "affected_roles": [],
+          "related_ambiguity_ids": [],
+          "attempted_rule_ids": [
+            "EXACT_M2_DEFINED_TERM_USE/V1"
+          ],
+          "blocked_dependency_ids": [
+            "DEFINITION_EDGE_ID"
+          ]
+        },
+        "TOPOLOGY_ENDPOINT_UNAVAILABLE": {
+          "schema_version": "CONTEXT_RESIDUAL/V1",
+          "reason_code": "TOPOLOGY_ENDPOINT_UNAVAILABLE",
+          "multiplicity": "EXACTLY_ONE_PER_TOPOLOGY_MATCH_WITH_A_MULTIPLE_DEFINITION_ENDPOINT_ZERO_DEFINITIONS_USES_SOURCE_LOCAL_AND_EMITS_NO_ENDPOINT_RESIDUAL",
+          "focus_node_occurrence_id": "OWNER_TO_FOCUS_OF_TOPOLOGY_SOURCE_NODE",
+          "source_node_occurrence_ids": [
+            "TOPOLOGY_SOURCE_NODE_ID"
+          ],
+          "source_spans": "ALL_MATCHED_TOPOLOGY_SOURCE_SPANS_IN_SOURCE_ORDER",
+          "affected_roles": [],
+          "related_ambiguity_ids": [],
+          "attempted_rule_ids": [
+            "MATCHED_TOPOLOGY_RULE_ID"
+          ],
+          "blocked_dependency_ids": []
+        },
+        "TEMPORAL_SCOPE_UNSTATED": {
+          "schema_version": "CONTEXT_RESIDUAL/V1",
+          "reason_code": "TEMPORAL_SCOPE_UNSTATED",
+          "multiplicity": "EXACTLY_ONE_PER_EMITTED_RELATIONSHIP_WITH_UNSTATED_TIME",
+          "focus_node_occurrence_id": "OWNER_TO_FOCUS_OF_RELATIONSHIP_SOURCE_NODE",
+          "source_node_occurrence_ids": "RELATIONSHIP_SOURCE_NODE_IDS_IN_SOURCE_ORDER",
+          "source_spans": "RELATIONSHIP_SOURCE_SPANS_IN_SOURCE_ORDER",
+          "affected_roles": [],
+          "related_ambiguity_ids": [],
+          "attempted_rule_ids": [
+            "RELATIONSHIP_RULE_ID"
+          ],
+          "blocked_dependency_ids": [
+            "SEMANTIC_RELATIONSHIP_ID"
+          ]
+        }
+      },
+      "diagnostic_by_type": {
+        "M2_AMBIGUITY_CARRIED": {
+          "multiplicity": "EXACTLY_ONE_PER_CARRIED_M2_AMBIGUITY_NO_CONTEXT_AMBIGUITY_RECORDED_DUPLICATE",
+          "severity": "INFO",
+          "reason_code": "M2_STRUCTURE_AMBIGUITY",
+          "source_node_occurrence_ids": "COPY_RELATED_AMBIGUITY_SOURCE_NODE_OCCURRENCE_IDS",
+          "source_spans": "COPY_RELATED_AMBIGUITY_SOURCE_SPANS",
+          "related_ids": [
+            "AMBIGUITY_ID"
+          ],
+          "detail": "M2_AMBIGUITY_CARRIED",
+          "rule_id": "CARRY_M2_STRUCTURE_AMBIGUITY/V1",
+          "rule_version": 1
+        },
+        "CONTEXT_AMBIGUITY_RECORDED": {
+          "multiplicity": "EXACTLY_ONE_PER_NON_M2_CONTEXT_AMBIGUITY",
+          "severity": "WARNING",
+          "reason_code": "RELATED_AMBIGUITY_PRIMARY_REASON_CODE",
+          "source_node_occurrence_ids": "COPY_RELATED_AMBIGUITY_SOURCE_NODE_OCCURRENCE_IDS",
+          "source_spans": "COPY_RELATED_AMBIGUITY_SOURCE_SPANS",
+          "related_ids": [
+            "AMBIGUITY_ID"
+          ],
+          "detail": "CONTEXT_AMBIGUITY_RECORDED",
+          "rule_id": "RELATED_AMBIGUITY_RULE_ID",
+          "rule_version": "RELATED_AMBIGUITY_RULE_VERSION"
+        },
+        "CONTEXT_RESIDUAL_RECORDED": {
+          "multiplicity": "EXACTLY_ONE_PER_NO_CONTEXT_RULE_APPLIED_OR_NO_SCOPE_PROOF_RESIDUAL_ONLY",
+          "severity": "INFO",
+          "reason_code": "RELATED_RESIDUAL_REASON_CODE",
+          "source_node_occurrence_ids": "COPY_RELATED_RESIDUAL_SOURCE_NODE_OCCURRENCE_IDS",
+          "source_spans": "COPY_RELATED_RESIDUAL_SOURCE_SPANS",
+          "related_ids": [
+            "RESIDUAL_ID"
+          ],
+          "detail": "CONTEXT_RESIDUAL_RECORDED",
+          "rule_id": "NO_CONTEXT_RULE_APPLIED/V1_WHEN_RELATED_KIND_IS_NO_CONTEXT_RULE_APPLIED_ELSE_NO_SCOPE_PROOF/V1",
+          "rule_version": 1
+        },
+        "REFERENCE_AMBIGUOUS": {
+          "multiplicity": "EXACTLY_ONE_PER_AMBIGUOUS_REFERENCE_EDGE",
+          "severity": "WARNING",
+          "reason_code": "MULTIPLE_EXACT_REFERENCE_TARGETS",
+          "source_node_occurrence_ids": [
+            "REFERENCE_EDGE_OWNER_NODE_ID"
+          ],
+          "source_spans": [
+            "REFERENCE_EDGE_SOURCE_SPAN"
+          ],
+          "related_ids": [
+            "REFERENCE_EDGE_ID"
+          ],
+          "detail": "REFERENCE_AMBIGUOUS",
+          "rule_id": "EXACT_M2_SECTION_REFERENCE/V1",
+          "rule_version": 1
+        },
+        "REFERENCE_UNRESOLVED": {
+          "multiplicity": "EXACTLY_ONE_PER_UNRESOLVED_REFERENCE_EDGE",
+          "severity": "WARNING",
+          "reason_code": "TARGET_NOT_IN_AGREEMENT_INDEX",
+          "source_node_occurrence_ids": [
+            "REFERENCE_EDGE_OWNER_NODE_ID"
+          ],
+          "source_spans": [
+            "REFERENCE_EDGE_SOURCE_SPAN"
+          ],
+          "related_ids": [
+            "REFERENCE_EDGE_ID"
+          ],
+          "detail": "REFERENCE_UNRESOLVED",
+          "rule_id": "EXACT_M2_SECTION_REFERENCE/V1",
+          "rule_version": 1
+        },
+        "DEFINITION_AMBIGUOUS": {
+          "multiplicity": "EXACTLY_ONE_PER_AMBIGUOUS_DEFINITION_EDGE",
+          "severity": "WARNING",
+          "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+          "source_node_occurrence_ids": [
+            "DEFINITION_EDGE_OWNER_NODE_ID"
+          ],
+          "source_spans": [
+            "DEFINITION_EDGE_SOURCE_SPAN"
+          ],
+          "related_ids": [
+            "DEFINITION_EDGE_ID"
+          ],
+          "detail": "DEFINITION_AMBIGUOUS",
+          "rule_id": "EXACT_M2_DEFINED_TERM_USE/V1",
+          "rule_version": 1
+        },
+        "DEFINITION_UNRESOLVED": {
+          "multiplicity": "EXACTLY_ONE_PER_UNRESOLVED_DEFINITION_EDGE",
+          "severity": "WARNING",
+          "reason_code": "TARGET_NOT_IN_AGREEMENT_INDEX",
+          "source_node_occurrence_ids": [
+            "DEFINITION_EDGE_OWNER_NODE_ID"
+          ],
+          "source_spans": [
+            "DEFINITION_EDGE_SOURCE_SPAN"
+          ],
+          "related_ids": [
+            "DEFINITION_EDGE_ID"
+          ],
+          "detail": "DEFINITION_UNRESOLVED",
+          "rule_id": "EXACT_M2_DEFINED_TERM_USE/V1",
+          "rule_version": 1
+        },
+        "TOPOLOGY_AMBIGUOUS": {
+          "multiplicity": "EXACTLY_ONE_PER_TOPOLOGY_SOURCE_CONFLICT_AMBIGUITY",
+          "severity": "WARNING",
+          "reason_code": "TOPOLOGY_SOURCE_CONFLICT",
+          "source_node_occurrence_ids": "COPY_RELATED_AMBIGUITY_SOURCE_NODE_OCCURRENCE_IDS",
+          "source_spans": "COPY_RELATED_AMBIGUITY_SOURCE_SPANS",
+          "related_ids": [
+            "AMBIGUITY_ID"
+          ],
+          "detail": "TOPOLOGY_AMBIGUOUS",
+          "rule_id": "RELATED_AMBIGUITY_RULE_ID",
+          "rule_version": "RELATED_AMBIGUITY_RULE_VERSION"
+        },
+        "TOPOLOGY_UNRESOLVED": {
+          "multiplicity": "EXACTLY_ONE_PER_TOPOLOGY_ENDPOINT_UNAVAILABLE_RESIDUAL",
+          "severity": "WARNING",
+          "reason_code": "TOPOLOGY_ENDPOINT_UNAVAILABLE",
+          "source_node_occurrence_ids": "COPY_RELATED_RESIDUAL_SOURCE_NODE_OCCURRENCE_IDS",
+          "source_spans": "COPY_RELATED_RESIDUAL_SOURCE_SPANS",
+          "related_ids": [
+            "RESIDUAL_ID"
+          ],
+          "detail": "TOPOLOGY_UNRESOLVED",
+          "rule_id": "FIRST_RELATED_RESIDUAL_ATTEMPTED_RULE_ID",
+          "rule_version": 1
+        },
+        "TEMPORAL_SCOPE_UNSTATED": {
+          "multiplicity": "EXACTLY_ONE_PER_TEMPORAL_SCOPE_UNSTATED_RESIDUAL",
+          "severity": "INFO",
+          "reason_code": "TEMPORAL_SCOPE_UNSTATED",
+          "source_node_occurrence_ids": "COPY_RELATED_RESIDUAL_SOURCE_NODE_OCCURRENCE_IDS",
+          "source_spans": "COPY_RELATED_RESIDUAL_SOURCE_SPANS",
+          "related_ids": [
+            "RESIDUAL_ID",
+            "SEMANTIC_RELATIONSHIP_ID"
+          ],
+          "detail": "TEMPORAL_SCOPE_UNSTATED",
+          "rule_id": "SEMANTIC_RELATIONSHIP_RULE_ID",
+          "rule_version": "SEMANTIC_RELATIONSHIP_RULE_VERSION"
+        },
+        "UPSTREAM_REFERENCE_ANNOTATION_ABSENT": {
+          "multiplicity": "EXACTLY_ONE_PER_FOUR_LISTED_TOPBUILD_6_3_OMISSION_SPANS",
+          "severity": "WARNING",
+          "reason_code": "UPSTREAM_REFERENCE_ANNOTATION_ABSENT",
+          "source_node_occurrence_ids": [
+            "LISTED_OMISSION_OWNER_NODE_ID"
+          ],
+          "source_spans": [
+            "LISTED_OMISSION_SOURCE_SPAN"
+          ],
+          "related_ids": [],
+          "detail": "UPSTREAM_REFERENCE_ANNOTATION_ABSENT",
+          "rule_id": "TOPBUILD_6_3_UPSTREAM_REFERENCE_OMISSION/V1",
+          "rule_version": 1
+        }
+      }
+    }
   },
   "identity_contract": {
-    "content_id_implementation": "lib/canonical-v2/canonical-bytes.js#contentId",
-    "context_compilation_id_domain": "CONTEXT_COMPILATION/V1",
-    "context_frame_id_domain": "CONTEXT_FRAME/V1",
-    "context_fact_id_domain": "CONTEXT_FACT/V1",
-    "scope_edge_id_domain": "CONTEXT_SCOPE_EDGE/V1",
-    "identity_payload_rule": "COMPLETE_RECORD_EXCLUDING_ITS_OWN_ID",
-    "agreement_index_sha256_rule": "SHA256_OF_CANONICAL_JSON_PLUS_SINGLE_LF",
-    "span_text_sha256_rule": "SHA256_OF_EXACT_UTF8_HALF_OPEN_SLICE",
-    "value_rule": "EXACT_SOURCE_TEXT_WITH_NO_NORMALISATION_OR_TRIMMING",
+    "implementation": "lib/canonical-v2/canonical-bytes.js#contentId",
+    "domains": [
+      "CONTEXT_COMPILATION/V1",
+      "CONTEXT_FRAME/V1",
+      "CONTEXT_FACT/V1",
+      "CONTEXT_SCOPE_EDGE/V1",
+      "CONTEXT_AMBIGUITY/V1",
+      "CONTEXT_RESIDUAL/V1",
+      "CONTEXT_REFERENCE_EDGE/V1",
+      "CONTEXT_DEFINITION_EDGE/V1",
+      "CONTEXT_TOPOLOGY_ENTITY/V1",
+      "CONTEXT_SEMANTIC_RELATIONSHIP/V1",
+      "CONTEXT_DIAGNOSTIC/V1",
+      "STAGE_2Y_M3_CONTEXT_DIAGNOSTICS/V1"
+    ],
+    "record_payload_rule": "COMPLETE_CLOSED_RECORD_INCLUDING_SCHEMA_VERSION_EXCLUDING_ONLY_ITS_OWN_ID_FIELD",
+    "endpoint_payloads": {
+      "DEFINED_ENTITY": [
+        "agreement_id",
+        "definition_annotation_occurrence_id"
+      ],
+      "SOURCE_LOCAL_ENTITY": [
+        "agreement_id",
+        "source_node_occurrence_id",
+        "source_span"
+      ],
+      "AGREEMENT_ROOT": [
+        "agreement_id",
+        "root_node_occurrence_id"
+      ]
+    },
+    "agreement_index_sha256": "SHA256_OF_CANONICAL_JSON_PLUS_SINGLE_LF",
+    "sealed_output_bytes": "CANONICAL_JSON_PLUS_SINGLE_LF",
+    "policy_digest": "SHA256_OF_CANONICAL_JSON_WITH_POLICY_DIGEST_OMITTED",
     "duplicate_primary_ids_allowed": false,
-    "dangling_id_references_allowed": false
+    "dangling_id_references_allowed": false,
+    "cross_agreement_node_or_annotation_references_allowed": false,
+    "nondeterministic_identity_inputs": [],
+    "predecessor_detail_digest": "SHA256_OF_CANONICAL_JSON_OF_EXACT_M2_AMBIGUITY_DETAIL_WITHOUT_LF",
+    "topology_entity_payload_construction": {
+      "domain": "CONTEXT_TOPOLOGY_ENTITY/V1",
+      "DEFINED_ENTITY": [
+        "agreement_id",
+        "definition_annotation_occurrence_id"
+      ],
+      "SOURCE_LOCAL_ENTITY": [
+        "agreement_id",
+        "source_node_occurrence_id",
+        "source_span"
+      ],
+      "AGREEMENT_ROOT": [
+        "agreement_id",
+        "root_node_occurrence_id"
+      ],
+      "payload_includes_schema_version": false,
+      "payload_includes_entity_id": false
+    }
   },
   "ordering_contract": {
-    "focus_node_occurrence_ids": "SOURCE_EXTENT_START_THEN_END_THEN_NODE_OCCURRENCE_ID",
-    "context_facts": "FOCUS_SOURCE_ORDER_THEN_CONTEXT_ROLE_ORDER_THEN_SOURCE_START_THEN_END_THEN_ID",
-    "scope_edges": "TARGET_SOURCE_ORDER_THEN_CONTEXT_ROLE_ORDER_THEN_GOVERNING_SOURCE_START_THEN_END_THEN_ID",
-    "context_frame_context_fact_ids": "FILTERED_GLOBAL_CONTEXT_FACT_ORDER",
-    "context_frame_scope_edge_ids": "FILTERED_GLOBAL_SCOPE_EDGE_ORDER",
-    "frames_by_focus_node_id": "KEYS_INSERTED_IN_FOCUS_SOURCE_ORDER",
-    "empty_arrays": "PRESENT_AND_EMPTY",
-    "deterministic_serialisation": "CANONICAL_JSON"
+    "focus_node_occurrence_ids": "SOURCE_START_THEN_SOURCE_END_THEN_NODE_ID",
+    "context_facts": "TARGET_FOCUS_ORDER_THEN_CONTEXT_ROLE_ORDER_THEN_SOURCE_START_THEN_SOURCE_END_THEN_FACT_ID",
+    "scope_edges": "TARGET_FOCUS_ORDER_THEN_CONTEXT_ROLE_ORDER_THEN_GOVERNING_SOURCE_START_THEN_GOVERNING_SOURCE_END_THEN_EDGE_ID",
+    "ambiguities": "FIRST_SOURCE_START_THEN_FIRST_SOURCE_END_THEN_AMBIGUITY_TYPE_THEN_AMBIGUITY_ID",
+    "residuals": "FOCUS_ORDER_THEN_RESIDUAL_KIND_THEN_RESIDUAL_ID",
+    "reference_edges": "ANNOTATION_SOURCE_START_THEN_SOURCE_END_THEN_ANNOTATION_ID",
+    "definition_edges": "USE_SOURCE_START_THEN_SOURCE_END_THEN_ANNOTATION_ID",
+    "semantic_relationships": "FIRST_SOURCE_START_THEN_FIRST_SOURCE_END_THEN_RELATIONSHIP_TYPE_THEN_SOURCE_ENTITY_ID_THEN_TARGET_ENTITY_ID_THEN_RELATIONSHIP_ID",
+    "diagnostics": "FIRST_SOURCE_START_WITH_NO_SPAN_LAST_THEN_DIAGNOSTIC_TYPE_THEN_DIAGNOSTIC_ID",
+    "frames_by_focus_node_id": "INSERT_IN_FOCUS_SOURCE_ORDER_CANONICAL_JSON_SORTS_OBJECT_KEYS",
+    "frame_arrays": "FILTER_FROM_CORRESPONDING_GLOBAL_ARRAY_AND_RETAIN_GLOBAL_ORDER",
+    "empty_arrays": "PRESENT"
   }
 }
