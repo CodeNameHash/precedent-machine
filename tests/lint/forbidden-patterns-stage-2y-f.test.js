@@ -15,6 +15,10 @@ const TERRA_ADJUDICATION = 'evidence/canonical-v2/stage-2y-f-terra-adjudication.
 const REPRESENTATION_REPLAY = 'evidence/canonical-v2/stage-2y-h-representation-topic-replay.json';
 const CONCEPT_COVERAGE_SIMULATION = 'evidence/canonical-v2/stage-2y-f-concept-coverage-simulation.json';
 const CONCEPT_COVERAGE_SCHEMA = 'STAGE_2Y_F_CONCEPT_COVERAGE_SIMULATION/V1';
+const STAGE_2Y_CD_REPORT = 'evidence/canonical-v2/stage-2y-cd-report.json';
+const STAGE_2Y_CD_REPORT_SCHEMA = 'STAGE_2Y_CD_REPORT/V1';
+const STAGE_2Y_H_TOPIC_COMPARISON = 'evidence/canonical-v2/stage-2y-h-representation-topic-comparison.json';
+const STAGE_2Y_H_TOPIC_COMPARISON_SCHEMA = 'STAGE_2Y_H_REPRESENTATION_TOPIC_COMPARISON/V1';
 const HUMAN_ANCHOR_PACKET = 'evidence/blind-review/2026-08-10/stage-2y-0-human-anchor-machine-packet.json';
 const HUMAN_ANCHOR_PACKET_SCHEMA = 'CANONICAL_V2_HUMAN_ANCHOR_MACHINE_PACKET/V3';
 const HASHED_RUN_ID = '0'.repeat(64);
@@ -121,6 +125,42 @@ test('adjacent code with the concept-coverage prose fingerprint still fails', ()
   const result = lintFixture({ relativePath: adjacentCode, source: `const value = ${JSON.stringify(PROSE_FINGERPRINT_TEXT)};` });
   assert.notEqual(result.status, 0);
   assert.ok(result.stdout.includes(`${adjacentCode} :: ${PROSE_FINGERPRINT_PATTERN}`));
+});
+
+test('the exact Phase C/D report ignores prose fingerprints only under its schema', () => {
+  const source = JSON.stringify({ schema_version: STAGE_2Y_CD_REPORT_SCHEMA, source_text: PROSE_FINGERPRINT_TEXT });
+  const result = lintFixture({ relativePath: STAGE_2Y_CD_REPORT, source });
+  assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+
+  for (const [relativePath, schemaVersion] of [
+    [STAGE_2Y_CD_REPORT, 'OTHER/V1'],
+    ['evidence/canonical-v2/stage-2y-cd-report-copy.json', STAGE_2Y_CD_REPORT_SCHEMA],
+  ]) {
+    const rejected = lintFixture({
+      relativePath,
+      source: JSON.stringify({ schema_version: schemaVersion, source_text: PROSE_FINGERPRINT_TEXT }),
+    });
+    assert.notEqual(rejected.status, 0);
+    assert.ok(rejected.stdout.includes(`${relativePath} :: ${PROSE_FINGERPRINT_PATTERN}`));
+  }
+});
+
+test('the exact representation-topic comparison ignores prose fingerprints only under its schema', () => {
+  const source = JSON.stringify({ schema_version: STAGE_2Y_H_TOPIC_COMPARISON_SCHEMA, source_text: PROSE_FINGERPRINT_TEXT });
+  const result = lintFixture({ relativePath: STAGE_2Y_H_TOPIC_COMPARISON, source });
+  assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+
+  for (const [relativePath, schemaVersion] of [
+    [STAGE_2Y_H_TOPIC_COMPARISON, 'OTHER/V1'],
+    ['evidence/canonical-v2/stage-2y-h-representation-topic-comparison-copy.json', STAGE_2Y_H_TOPIC_COMPARISON_SCHEMA],
+  ]) {
+    const rejected = lintFixture({
+      relativePath,
+      source: JSON.stringify({ schema_version: schemaVersion, source_text: PROSE_FINGERPRINT_TEXT }),
+    });
+    assert.notEqual(rejected.status, 0);
+    assert.ok(rejected.stdout.includes(`${relativePath} :: ${PROSE_FINGERPRINT_PATTERN}`));
+  }
 });
 
 test('the exact V3 human-anchor machine packet ignores prose-only fingerprints', () => {
