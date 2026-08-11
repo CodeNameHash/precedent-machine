@@ -1,6 +1,6 @@
 {
   "schema_version": "STAGE_2Y_STRUCTURE_M3_FULL_CONTRACT_SOL_FREEZE/V1",
-  "review_id": "152369a86bd71428835b727fcedd05a5d3fd67c264c3d02a19eec667bd3d7f5e",
+  "review_id": "a2a13e83836fab4ba051a6cbda479b51a405dd53bb3b168300f27b793c1a2bbb",
   "stage": "M3",
   "lifecycle_state": "SEALED",
   "status": "APPROVED",
@@ -119,7 +119,16 @@
       ],
       "capture_value_mode": "EXACT_SOURCE_TEXT",
       "capture_occurrence": "POSITIVE_ORDINAL_OR_ALL",
-      "duplicate_role_capture_rule": "DISTINCT_POSITIVE_OCCURRENCE_ORDINALS_REQUIRED"
+      "duplicate_role_capture_rule": "DISTINCT_POSITIVE_OCCURRENCE_ORDINALS_REQUIRED",
+      "artefact_excluded_capture_mapping": {
+        "match_stream": "AUTHORED_BYTES_WITH_BOUND_SOURCE_ARTEFACT_INTERVALS_OMITTED",
+        "capture_interval_mapping": "FILTERED_INTERVAL_TO_ORDERED_CANONICAL_SOURCE_SEGMENTS",
+        "emit_condition": "EXACTLY_ONE_CONTIGUOUS_CANONICAL_INTERVAL_AND_RAW_SLICE_EQUALS_CAPTURE_VALUE",
+        "multiple_segment_disposition": "OMIT_CAPTURE",
+        "source_artefact_bytes_capturable": false,
+        "structural_proof_extent_may_include_source_artefact_bytes": true,
+        "structural_proof_extent_is_semantic_capture": false
+      }
     },
     "context_scope_rule_fields": [
       "rule_id",
@@ -705,6 +714,7 @@
       "MULTIPLE_EXACT_DEFINITION_TARGETS",
       "NO_CONTEXT_RULE_APPLIED",
       "CONTEXT_CAPTURE_CONFLICT",
+      "EXACT_SOURCE_RELATIONSHIP",
       "TOPOLOGY_SOURCE_CONFLICT",
       "TOPOLOGY_ENDPOINT_UNAVAILABLE",
       "TEMPORAL_SCOPE_UNSTATED",
@@ -734,8 +744,55 @@
       "NEAREST_PROVEN_GOVERNING_SOURCE",
       "MORE_DISTANT_PROVEN_GOVERNING_SOURCE"
     ],
-    "equal_precedence_equal_values": "COEXIST_WITHOUT_AMBIGUITY",
-    "equal_precedence_different_values": "EMIT_AMBIGUITY_AND_SELECT_NONE",
+    "precedence_without_replacement_rule": "ORDER_EVIDENCE_ONLY_DO_NOT_CHANGE_STATE_OR_SUPPRESS_FACT",
+    "capture_conflict_construction": {
+      "preselection": "HIGHEST_PRIORITY_PER_SOURCE_NODE_AND_ROLE_THEN_DEDUPLICATE_IDENTICAL_ROLE_VALUE_AND_SPAN",
+      "conflict_partition_key": [
+        "target_node_occurrence_id",
+        "role",
+        "precedence_tier",
+        "source_node_occurrence_id"
+      ],
+      "component_relation": "HALF_OPEN_SOURCE_SPANS_OVERLAP_TRANSITIVELY",
+      "conflict_condition": "COMPONENT_HAS_CANDIDATES_FROM_DIFFERENT_RULES_AND_UNEQUAL_VALUE_START_OR_END",
+      "disjoint_occurrences": "COEXIST_EVEN_WHEN_VALUES_DIFFER",
+      "conflicting_fact_state": "AMBIGUOUS",
+      "selection": "NONE",
+      "propagation": "NONE",
+      "overridden_fact_ids": [],
+      "alternative_fact_ids": "ONLY_EARLIER_COMPONENT_FACT_IDS_IN_GLOBAL_CONTEXT_FACT_ORDER"
+    },
+    "override_construction": {
+      "semantic_slot_alignment_required": true,
+      "replacement_relation_source": "EXPLICIT_EXECUTABLE_POLICY_RULE_ONLY",
+      "target_and_role_equality_is_replacement_proof": false,
+      "source_span_overlap_is_replacement_proof": false,
+      "direct_and_inherited_without_replacement_rule": "COEXIST_IN_ORIGINAL_STATES",
+      "near_and_distant_inherited_without_replacement_rule": "COEXIST_IN_ORIGINAL_STATES",
+      "replacement_rule_ids": [],
+      "m3_overridden_fact_count": 0,
+      "non_overridden_fact_overridden_fact_ids": [],
+      "non_ambiguous_fact_alternative_fact_ids": []
+    },
+    "owner_focus_attachment": {
+      "order": [
+        "OWNER_IF_FOCUS",
+        "NEAREST_FOCUS_ANCESTOR",
+        "FIRST_FOLLOWING_FOCUS_WITHIN_NEAREST_STRUCTURAL_CONTAINER",
+        "FAIL"
+      ],
+      "container_selection": "NEAREST_ACTUAL_ANCESTOR_IN_PARENT_CHAIN",
+      "permitted_container_kinds": [
+        "SECTION",
+        "ARTICLE",
+        "AGREEMENT"
+      ],
+      "candidate_relation": "STRICT_DESCENDANT_OF_SELECTED_CONTAINER",
+      "candidate_start": "GREATER_THAN_OR_EQUAL_TO_OWNER_EXTENT_END_BYTE",
+      "candidate_order": "EXTENT_START_THEN_EXTENT_END_THEN_NODE_OCCURRENCE_ID",
+      "ascend_beyond_selected_container": false,
+      "no_candidate": "FAIL"
+    },
     "direct_means_words_within_target_authored_bytes": true,
     "inherited_requires_resolved_scope_edge": true,
     "overridden_winner_retains_losing_fact_ids": true,
@@ -763,6 +820,18 @@
       "MULTIPLE_SURVIVING_TARGET_SETS_EMIT_MULTIPLE_SCOPE_READINGS_WITH_NO_SELECTION_OR_PROPAGATION",
       "NO_RULE_EMITS_NO_SCOPE_PROOF_WITH_NO_UNRELATED_EFFECT"
     ],
+    "artefact_safe_fixture_execution": {
+      "governing_role": "CONNECTIVE",
+      "source_node_occurrence_ids": [
+        "7e84161c77a8986deaf2ca6f4593eec078d0c9d271d964d2158934b9ea4cf5b8",
+        "3ec9665fb69c128973815664167bd850be0f4d25d3b5c2d0cbe8f404902fd8c8",
+        "460996c5e2936d40712046653018df828228f7e493eadbde51e16a155bc25fe5",
+        "da4732d59d811adfc7cda5ab4ce1fe4d40fe0b4bef9e3a5c8a29b094708d52e0"
+      ],
+      "connective_capture_is_exactly_one_contiguous_canonical_interval": true,
+      "full_source_extent_is_structural_proof_only": true,
+      "full_span_condition_or_scope_capture_forbidden": true
+    },
     "sealed_legal_rulings": [
       {
         "fixture": "CONCHO_6_9_A",
@@ -798,7 +867,9 @@
     "textual_citation_count": 4,
     "m2_section_reference_annotation_count": 0,
     "m3_must_invent_annotations": false,
-    "context_capture": "CAPTURE_COMPLETE_CROSS_DEFAULT_CONDITION_AS_EXACT_CONTEXT",
+    "context_capture": "CAPTURE_EXACT_CONTIGUOUS_CONNECTIVE_ONLY",
+    "full_condition_capture": "FORBIDDEN",
+    "removed_capture_rule_id": "TOPBUILD_6_3_B_CROSS_DEFAULT_CONDITION_CAPTURE/V1",
     "reference_link_claim": "UNAVAILABLE",
     "required_diagnostic": "UPSTREAM_REFERENCE_ANNOTATION_ABSENT",
     "required_fixture_span_count": 4,
@@ -845,7 +916,75 @@
     "missing_temporal_words": "UNSTATED_RELATIONSHIP_PLUS_LOCAL_RESIDUAL_AND_DIAGNOSTIC",
     "causes_to_perform_implies": [],
     "parent_merger_sub_shorthand_requires_direct_resolved_subsidiary_of": true,
-    "concho_6_20": "SEPARATE_PARENT_TO_MERGER_SUB_AND_PARENT_TO_SURVIVING_CORPORATION_CAUSES_TO_PERFORM_RELATIONSHIPS"
+    "concho_6_20": "SEPARATE_PARENT_TO_MERGER_SUB_AND_PARENT_TO_SURVIVING_CORPORATION_CAUSES_TO_PERFORM_RELATIONSHIPS",
+    "record_construction": {
+      "resolved_relationship_state": "RESOLVED",
+      "resolved_relationship_reason_by_temporal_scope_state": {
+        "STATED": "EXACT_SOURCE_RELATIONSHIP",
+        "UNSTATED": "TEMPORAL_SCOPE_UNSTATED"
+      },
+      "unstated_temporal_scope": {
+        "state": "UNSTATED",
+        "code": "UNSTATED",
+        "raw_text": null,
+        "source_span": null,
+        "alternative_codes": []
+      },
+      "unstated_temporal_effect": "EMIT_RELATIONSHIP_RESIDUAL_AND_DIAGNOSTIC",
+      "conflict_construction": {
+        "candidate": "ONE_SUCCESSFUL_TOPOLOGY_RULE_MATCH_WITH_BOTH_ENDPOINTS_RESOLVED",
+        "initial_partition_key": [
+          "source_node_occurrence_id",
+          "relationship_type",
+          "directed"
+        ],
+        "endpoint_slot_alignment": {
+          "half_open_overlap": "LEFT_START_LESS_THAN_RIGHT_END_AND_LEFT_END_GREATER_THAN_RIGHT_START",
+          "directed": "SOURCE_CAPTURE_SPANS_OVERLAP_AND_TARGET_CAPTURE_SPANS_OVERLAP",
+          "undirected": "DIRECT_OR_REVERSED_SOURCE_AND_TARGET_CAPTURE_SPAN_OVERLAP",
+          "component_relation": "TRANSITIVE_CLOSURE"
+        },
+        "priority_selection": "WITHIN_EACH_ALIGNMENT_COMPONENT_RETAIN_ONLY_MAXIMUM_RULE_PRIORITY_THEN_REBUILD_ALIGNMENT_COMPONENTS_WITHOUT_SUPPRESSED_CANDIDATES",
+        "reading_identity": "ORDERED_ENDPOINT_ENTITY_ID_PAIR_AND_CANONICAL_TEMPORAL_SCOPE",
+        "identical_reading_tie_break": "RULE_ID_ASCENDING_THEN_RULE_VERSION_ASCENDING",
+        "conflict_condition": "REBUILT_COMPONENT_HAS_TWO_OR_MORE_DISTINCT_READING_IDENTITIES",
+        "disjoint_endpoint_slots": "COEXIST_INCLUDING_EXPLICIT_MULTI_TARGET_SENTENCES",
+        "concho_6_20_disposition": "TWO_DISJOINT_TARGET_CAPTURE_SPANS_COEXIST_AND_ARE_NOT_A_CONFLICT",
+        "conflicting_relationship_emission": "ONE_PER_DISTINCT_READING_IDENTITY_NO_RESOLVED_WINNER",
+        "conflicting_relationship_state": "AMBIGUOUS",
+        "conflicting_relationship_reason_code": "TOPOLOGY_SOURCE_CONFLICT",
+        "conflicting_relationship_other_fields": "COPY_EXACT_CANDIDATE_RELATIONSHIP_FIELDS",
+        "semantic_relationship_id": "contentId(CONTEXT_SEMANTIC_RELATIONSHIP/V1, COMPLETE_RECORD_EXCLUDING_SEMANTIC_RELATIONSHIP_ID)",
+        "ambiguity": {
+          "multiplicity": "EXACTLY_ONE_PER_CONFLICTING_REBUILT_ALIGNMENT_COMPONENT",
+          "ambiguity_type": "TOPOLOGY_SOURCE_CONFLICT",
+          "state": "OPEN",
+          "reason_codes": [
+            "TOPOLOGY_SOURCE_CONFLICT"
+          ],
+          "source_node_occurrence_ids": "UNIQUE_CONFLICTING_RELATIONSHIP_SOURCE_NODE_IDS_IN_SOURCE_ORDER",
+          "source_spans": "UNIQUE_UNION_OF_CONFLICTING_RELATIONSHIP_SOURCE_SPANS_IN_SOURCE_ORDER",
+          "target_node_occurrence_ids": [],
+          "affected_roles": [],
+          "alternative_fact_ids": [],
+          "alternative_scope_edge_ids": [],
+          "alternative_target_ids": "UNIQUE_UNION_OF_ALL_CONFLICTING_SOURCE_AND_TARGET_ENDPOINT_ENTITY_IDS_ASCENDING",
+          "blocked_dependency_ids": "CONFLICTING_AMBIGUOUS_SEMANTIC_RELATIONSHIP_IDS_IN_GLOBAL_RELATIONSHIP_ORDER",
+          "predecessor_ambiguity_id": null,
+          "predecessor_detail_digest": null,
+          "rule_id": "MAXIMUM_PRIORITY_CONFLICTING_TOPOLOGY_RULE_ID_LEXICOGRAPHICALLY_FIRST",
+          "rule_version": "CORRESPONDING_RULE_VERSION",
+          "ambiguity_id": "contentId(CONTEXT_AMBIGUITY/V1, COMPLETE_RECORD_EXCLUDING_AMBIGUITY_ID)"
+        },
+        "residual_effect": "NO_TOPOLOGY_CONFLICT_RESIDUAL_ENDPOINT_AND_TEMPORAL_RESIDUAL_RULES_REMAIN_INDEPENDENT",
+        "diagnostic_effect": [
+          "EXACTLY_ONE_CONTEXT_AMBIGUITY_RECORDED_PER_CONFLICT_AMBIGUITY",
+          "EXACTLY_ONE_TOPOLOGY_AMBIGUOUS_PER_CONFLICT_AMBIGUITY"
+        ],
+        "frame_attachment": "NONE_TARGET_NODE_OCCURRENCE_IDS_IS_EMPTY",
+        "hidden_defaults": false
+      }
+    }
   },
   "identity_contract": {
     "implementation": "lib/canonical-v2/canonical-bytes.js#contentId",
@@ -929,6 +1068,42 @@
     "dependency_effect": "BLOCK_ONLY_DEPENDENT_FACTS"
   },
   "runner_contract": {
+    "process_invocation_contract": {
+      "total_shadow_runner_process_invocation_limit": 2,
+      "effectful_shadow_run_limit": 1,
+      "invocation_1": {
+        "status": "CONSUMED_FAILED_PRE_EFFECT",
+        "failure_stage": "VALIDATE_POLICY",
+        "failure_reason": "RUNNER_REQUIRED_NONEXISTENT_PREDECESSOR_TRUST_ROOT_MEMBER_M2_RECEIPT_SHA256_INSTEAD_OF_SEALED_SHA256",
+        "completed_before_failure": [
+          "CLI_PARSE",
+          "AUTHORITY_READ_AND_VALIDATION",
+          "CHANGED_FILE_SUBSET_READ_ONLY_CHECK",
+          "SEMANTIC_POLICY_READ"
+        ],
+        "not_started": [
+          "M2_RECEIPT_READ",
+          "M2_TRUST_ROOT_VALIDATION",
+          "INPUT_ROOT_VALIDATION",
+          "OUTPUT_ROOT_INVENTORY_VALIDATION",
+          "CONTEXT_COMPILATION",
+          "DIRECTORY_CREATION",
+          "OUTPUT_WRITE",
+          "DRAFT_RECEIPT_WRITE"
+        ],
+        "persistent_effects": 0
+      },
+      "invocation_2": {
+        "status": "AUTHORISED_ONCE_CORRECTIVE",
+        "required_fix": "VALIDATE_POLICY_READS_POLICY_INPUT_CONTRACT_PREDECESSOR_TRUST_ROOT_SHA256",
+        "forbidden_member": "m2_receipt_sha256",
+        "must_use_same_EXACTLY_ONCE_cli_contract": true,
+        "must_complete_full_preflight_before_any_write": true,
+        "divergent_existing_output_overwrite_forbidden": true
+      },
+      "invocation_3_or_later": "NOT_AUTHORISED",
+      "reason_no_semantic_reapproval": "PRE_EFFECT_RUNNER_FIELD_ACCESS_CORRECTION_ONLY_NO_LEGAL_POLICY_IDENTITY_OR_OUTPUT_RULE_CHANGED"
+    },
     "cli_flags_exactly_once": [
       "--authority",
       "--m2-receipt",
@@ -1117,7 +1292,39 @@
     "canonical_byte_length_without_lf": 65691,
     "canonical_byte_length_with_lf": 65692,
     "whole_compilation_id_comparison_required": false,
-    "reason": "POLICY_BINDING_CHANGES_FROM_VERSION_1_TO_VERSION_2"
+    "reason": "POLICY_BINDING_CHANGES_FROM_VERSION_1_TO_VERSION_2",
+    "override_regression_ruling": {
+      "rejected_rule": "TARGET_AND_ROLE_AUTOMATIC_OVERRIDE",
+      "legal_and_structural_reason": "LOCAL_SHALL_AND_PROVIDED_THAT_FACTS_QUALIFY_OR_COMPLETE_THE_INHERITED_MAY_IF_TERMINATION_PROPOSITION_AND_DO_NOT_REPLACE_IT",
+      "affected_bounded_fact_count": 6,
+      "affected_bounded_facts": [
+        {
+          "role": "MODAL",
+          "value": "may",
+          "source_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 364438, "end_byte": 364441, "text_sha256": "ee4d988c65de860fabbfbcd27f73d50bbebe3fba37fe419284f4811389c30bdc"},
+          "target_node_occurrence_ids": [
+            "20800cde2e005201e9182939b5ea73785f0e25b4b3051b0695cba9a52e1f1cd7",
+            "81fff54644db6c9cdd8dc553c389a464489ed04e2a993a8df46c25e5f327636b",
+            "492c594ec9814564bf30d5657ea5d774b760aabe20acbd29f02c61d763b74d4d",
+            "e1491fafffa0d5e77e4e703aeac3c211e2bc48518dcd05a6bc32572cebe11c9d"
+          ],
+          "non_replacement_local_values": ["shall"]
+        },
+        {
+          "role": "CONNECTIVE",
+          "value": "if",
+          "source_span": {"coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN", "start_byte": 364544, "end_byte": 364546, "text_sha256": "935f68319d4f227e02bfd54a0ddf85b8a242e42a4277aa5ef5eaab691710924e"},
+          "target_node_occurrence_ids": [
+            "20800cde2e005201e9182939b5ea73785f0e25b4b3051b0695cba9a52e1f1cd7",
+            "e1491fafffa0d5e77e4e703aeac3c211e2bc48518dcd05a6bc32572cebe11c9d"
+          ],
+          "non_replacement_local_values": ["provided that", "provided, that"]
+        }
+      ],
+      "invalid_automatic_override_state_counts": {"INHERITED": 18, "OVERRIDDEN": 6},
+      "frozen_generic_result": "ZERO_EXECUTABLE_REPLACEMENT_RULES_ALL_24_BOUND_FACTS_REMAIN_INHERITED_WITH_V1_IDS",
+      "topbuild_specific_immunity": false
+    }
   },
   "gate_decision": {
     "ben_legal_escalation_required": false,

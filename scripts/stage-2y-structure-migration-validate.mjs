@@ -2,7 +2,13 @@
 
 // Validates one Stage 2Y migration receipt. This command is read-only.
 
-import { existsSync, readFileSync } from 'node:fs';
+import {
+  existsSync,
+  lstatSync,
+  readFileSync,
+  readdirSync,
+} from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { dirname, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -20,6 +26,12 @@ import {
   validateManifest,
   validateReport,
 } from './stage-2y-cd-measurement.mjs';
+import {
+  aggregateMetrics as aggregateM3Metrics,
+  buildDiagnosticsLedger as buildM3DiagnosticsLedger,
+  compilationMetrics as m3CompilationMetrics,
+  deriveFocusNodeIds as deriveM3FocusNodeIds,
+} from './stage-2y-context-compilation-shadow.mjs';
 
 const require = createRequire(import.meta.url);
 const { listRegisteredSectionFamilies } = require(
@@ -31,6 +43,7 @@ const {
   sha256Hex,
 } = require('../lib/canonical-v2/canonical-bytes');
 const { indexAgreement } = require('../lib/canonical-v2/agreement-index');
+const { compileContext } = require('../lib/canonical-v2/context-compilation');
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -49,6 +62,8 @@ const ZERO_FIELDS = Object.freeze([
 ]);
 const M0_RECEIPT_PATH =
   'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m0-control-freeze.json';
+const M1_FINAL_RECEIPT_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m1-falsification-prototype.json';
 const M1_OUTPUT_ROOT =
   'evidence/canonical-v2/stage-2y-structure-migration/prototype/m1';
 const M1_SOL_REVIEW_PATH =
@@ -82,6 +97,10 @@ const M1_REVIEW_CHECKS = Object.freeze([
 ]);
 const M2_PACKET_ID = 'stage-2y-structure-m2-agreement-index';
 const M2_BASE_COMMIT = '5c61c51b81f8983d3f18c6dcef2086eff29e661c';
+const M2_FINAL_RECEIPT_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json';
+const M2_FINAL_RECEIPT_SHA256 =
+  'dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585';
 const M2_DRAFT_PATH =
   'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index-draft.json';
 const M2_REVIEW_PATH =
@@ -169,6 +188,75 @@ const M2_BINDINGS = Object.freeze({
     }),
   }),
 });
+const M3_PACKET_ID = 'stage-2y-structure-m3-context-compilation';
+const M3_BASE_COMMIT = '33137fd57bec3243757e90bb45f039ec182c3d1a';
+const M3_DRAFT_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation-draft.json';
+const M3_REVIEW_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/reviews/stage-2y-structure-m3-sol-technical-review.json';
+const M3_FULL_CONTRACT_REVIEW_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/reviews/stage-2y-structure-m3-full-contract-sol-freeze.json';
+const M3_OUTPUT_ROOT = 'evidence/canonical-v2/stage-2y-structure-migration/shadow/m3';
+const M3_DIAGNOSTICS_PATH = `${M3_OUTPUT_ROOT}/context-compilation-diagnostics.json`;
+const M3_DRAFT_SCHEMA = 'STAGE_2Y_STRUCTURE_M3_DRAFT_RECEIPT/V1';
+const M3_REVIEW_SCHEMA = 'STAGE_2Y_STRUCTURE_SOL_TECHNICAL_REVIEW/V1';
+const M3_CONTEXT_SCHEMA = 'CONTEXT_COMPILATION/V1';
+const M3_DIAGNOSTICS_SCHEMA = 'STAGE_2Y_M3_CONTEXT_DIAGNOSTICS/V1';
+const M3_FINAL_CHECKS = Object.freeze([
+  'BOUNDED_CONTRACT_REGRESSION',
+  'SEVEN_AGREEMENT_SCHEMA_IDENTITY',
+  'PROVENANCE_AND_SCOPE',
+  'REFERENCE_DEFINITION_TOPOLOGY_CLOSURE',
+  'REQUIRED_REAL_FIXTURES',
+  'DETERMINISM',
+  'FROZEN_CURRENT_STATE',
+  'NO_PRODUCTION_EFFECTS',
+  'SOL_TECHNICAL_REVIEW',
+]);
+const M3_REVIEW_CHECKS = Object.freeze(M3_FINAL_CHECKS.slice(0, -1));
+const M3_CONTEXT_METRIC_KEYS = Object.freeze([
+  'FOCUS_COUNT',
+  'FACT_COUNT_BY_STATE_AND_ROLE',
+  'SCOPE_EDGE_COUNT_BY_STATE_AND_KIND',
+  'AMBIGUITY_COUNT',
+  'RESIDUAL_COUNT',
+  'REFERENCE_COUNT_BY_STATE',
+  'DEFINITION_COUNT_BY_STATE',
+  'RELATIONSHIP_COUNT_BY_STATE_AND_TYPE',
+  'DIAGNOSTIC_COUNT_BY_TYPE',
+  'CARRIED_M2_AMBIGUITY_COUNT',
+  'REFERENCE_CLOSURE_TOTALS',
+  'DEFINITION_CLOSURE_TOTALS',
+]);
+const M3_IMPLEMENTATION_PATHS = Object.freeze({
+  context_compilation_module: 'lib/canonical-v2/context-compilation.js',
+  focused_test: 'tests/canonical-v2-context-compilation.test.js',
+  shadow_runner: 'scripts/stage-2y-context-compilation-shadow.mjs',
+  finaliser: 'scripts/stage-2y-context-compilation-m3-finalise.mjs',
+  validator: 'scripts/stage-2y-structure-migration-validate.mjs',
+});
+const M3_DRAFT_IMPLEMENTATION_KEYS = Object.freeze([
+  'context_compilation_module',
+  'focused_test',
+  'shadow_runner',
+]);
+const M3_BINDINGS = Object.freeze({
+  authority: Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m3-authority.json',
+    sha256: '959c09a62ac376ed19504b6fcf3d4e1b44054ba7599436dc322a2524117a6b06',
+  }),
+  semantic_policy: Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/semantic-policy.json',
+    sha256: 'd00b971f240a9d8d67f559533d685e9ad2801fdfd1e5986de810dbe803e58bdb',
+  }),
+  m2_receipt: Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json',
+    sha256: 'dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585',
+  }),
+  agreement_manifest: M2_BINDINGS.agreement_manifest,
+  control_manifest: M2_BINDINGS.sealed_predecessors.m0_control_manifest,
+  current_state: M2_BINDINGS.current_state,
+});
 
 function fail(message) {
   throw new Error(`STAGE_2Y_STRUCTURE_RECEIPT_INVALID: ${message}`);
@@ -178,7 +266,16 @@ function parseArgs(argv) {
   if (argv.length !== 4 || argv[2] !== '--receipt' || !argv[3]) {
     fail('usage: node scripts/stage-2y-structure-migration-validate.mjs --receipt <path>');
   }
-  return resolve(argv[3]);
+  const allowed = new Set([
+    M0_RECEIPT_PATH,
+    M1_FINAL_RECEIPT_PATH,
+    M2_FINAL_RECEIPT_PATH,
+    'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json',
+  ]);
+  if (!allowed.has(argv[3])) fail('receipt path is not an exact governed receipt path');
+  const absolutePath = resolve(REPO_ROOT, argv[3]);
+  repositoryFile(argv[3], 'receipt path');
+  return absolutePath;
 }
 
 function requireString(value, field) {
@@ -195,7 +292,39 @@ function repositoryFile(repositoryPath, field) {
   const localPath = relative(REPO_ROOT, absolutePath);
   if (!localPath || localPath.startsWith('..')) fail(`${field} is outside the repository`);
   if (!existsSync(absolutePath)) fail(`${field} does not exist: ${repositoryPath}`);
+  let cursor = REPO_ROOT;
+  for (const component of localPath.split('/')) {
+    cursor = resolve(cursor, component);
+    if (lstatSync(cursor).isSymbolicLink()) fail(`${field} contains symlink component ${component}`);
+  }
   return absolutePath;
+}
+
+function repositoryDirectory(repositoryPath, field) {
+  const absolutePath = repositoryFile(repositoryPath, field);
+  if (!lstatSync(absolutePath).isDirectory()) fail(`${field} is not a directory`);
+  return absolutePath;
+}
+
+function assertDirectoryInventory(repositoryPath, expectedNames, field) {
+  const absolutePath = repositoryDirectory(repositoryPath, field);
+  const actualNames = readdirSync(absolutePath, { withFileTypes: true }).map((entry) => {
+    if (!entry.isFile() || entry.isSymbolicLink()) {
+      fail(`${field} contains non-file or symlink member ${entry.name}`);
+    }
+    return entry.name;
+  }).sort();
+  const expected = [...expectedNames].sort();
+  if (canonicalJson(actualNames) !== canonicalJson(expected)) {
+    fail(`${field} inventory drift`);
+  }
+}
+
+function assertCanonicalJsonFile(binding, value, field) {
+  const absolutePath = repositoryFile(binding.path, `${field}.path`);
+  const bytes = readFileSync(absolutePath);
+  const expected = Buffer.from(`${canonicalJson(value)}\n`, 'utf8');
+  if (!bytes.equals(expected)) fail(`${field} is not canonical JSON with one LF`);
 }
 
 function readBoundJson(binding, field) {
@@ -391,7 +520,7 @@ function validatePassedM1(receipt) {
   }
 }
 
-function validatePassedM2(receipt) {
+function validatePassedM2HistoricalSeal(receipt) {
   if (receipt.lifecycle_state !== 'SEALED'
     || receipt.packet_id !== M2_PACKET_ID
     || receipt.base_commit !== M2_BASE_COMMIT
@@ -691,6 +820,463 @@ function validatePassedM2(receipt) {
   }
 }
 
+function validatePassedM2(receipt) {
+  const receiptPath = repositoryFile(M2_FINAL_RECEIPT_PATH, 'M2 predecessor receipt');
+  const receiptBytes = readFileSync(receiptPath);
+  if (sha256Hex(receiptBytes) !== M2_FINAL_RECEIPT_SHA256) {
+    fail('M2 predecessor receipt digest drift');
+  }
+  let pinnedReceipt;
+  try {
+    pinnedReceipt = JSON.parse(receiptBytes.toString('utf8'));
+  } catch (error) {
+    fail(`M2 predecessor receipt is not valid JSON: ${error.message}`);
+  }
+  if (canonicalJson(receipt) !== canonicalJson(pinnedReceipt)
+    || receipt.schema_version !== RECEIPT_SCHEMA
+    || receipt.packet_id !== M2_PACKET_ID
+    || receipt.stage !== 'M2'
+    || receipt.base_commit !== M2_BASE_COMMIT
+    || receipt.lifecycle_state !== 'SEALED'
+    || receipt.status !== 'PASS'
+    || receipt.agreement_count !== 7
+    || receipt.output_root !== M2_OUTPUT_ROOT) {
+    fail('M2 predecessor receipt identity or state drift');
+  }
+  const cohort = readPinnedJson(
+    receipt.agreement_manifest_binding,
+    M2_BINDINGS.agreement_manifest,
+    'M2 predecessor agreement manifest',
+  );
+  const expectedPaths = cohort.agreements.map((agreement) =>
+    `${M2_OUTPUT_ROOT}/${agreement.agreement_id}.agreement-index.json`);
+  requireArray(receipt.output_bindings, 'M2 predecessor output_bindings');
+  if (receipt.output_bindings.length !== expectedPaths.length) {
+    fail('M2 predecessor must bind exactly seven indexes');
+  }
+  assertDirectoryInventory(
+    M2_OUTPUT_ROOT,
+    expectedPaths.map((path) => path.split('/').at(-1)),
+    'M2 predecessor output root',
+  );
+  const normalised = receipt.output_bindings.map((binding, index) => {
+    assertExactKeys(binding, ['path', 'byte_length', 'sha256'],
+      `M2 predecessor output_bindings[${index}]`);
+    if (binding.path !== expectedPaths[index]) {
+      fail(`M2 predecessor output path ${index} drift`);
+    }
+    const agreementIndex = readLooseBoundJson(
+      binding,
+      `M2 predecessor output_bindings[${index}]`,
+    );
+    if (agreementIndex.schema_version !== M2_INDEX_SCHEMA
+      || agreementIndex.source_binding?.agreement_id !== cohort.agreements[index].agreement_id) {
+      fail(`M2 predecessor index identity drift at ${index}`);
+    }
+    return {
+      path: binding.path,
+      byte_length: binding.byte_length,
+      sha256: binding.sha256,
+    };
+  });
+  const outputSetDigest = sha256Hex(Buffer.from(canonicalJson(normalised), 'utf8'));
+  if (outputSetDigest !== receipt.output_set_digest
+    || receipt.new_shadow_result_digest !== outputSetDigest) {
+    fail('M2 predecessor output-set digest drift');
+  }
+  return Object.freeze({ receipt: pinnedReceipt, cohort });
+}
+
+function assertM3Binding(binding, expectedPath, field) {
+  if (binding?.path !== expectedPath) fail(`${field}.path drift`);
+  return readBoundJson(binding, field);
+}
+
+function assertM3Checks(checks, expected, field) {
+  const wanted = expected.map((check) => ({ check, result: 'PASS' }));
+  if (canonicalJson(checks) !== canonicalJson(wanted)) {
+    fail(`${field} check set drift`);
+  }
+}
+
+function assertM3ZeroEffects(record, field) {
+  for (const name of [
+    ...ZERO_FIELDS,
+    'network_calls',
+    'm0_m1_m2_sealed_artefact_mutations',
+  ]) {
+    if (record[name] !== 0) fail(`${field}.${name} must be zero`);
+  }
+  for (const name of [
+    'structure_selector',
+    'context_selector',
+    'analysis_selector',
+    'projection_selector',
+  ]) {
+    if (record[name] !== 'current') fail(`${field}.${name} must remain current`);
+  }
+  if (record.database_target !== 'NONE'
+    || record.phase_b_status !== 'DEFERRED_LOCKED'
+    || record.publication_authorisation !== 'NONE'
+    || record.internal_cutover_authorisation !== 'NONE'
+    || record.external_access_authorisation !== 'NONE') {
+    fail(`${field} changes a locked M3 authority boundary`);
+  }
+}
+
+function assertCurrentFileBinding(binding, expectedPath, field) {
+  if (binding?.path !== expectedPath) fail(`${field}.path drift`);
+  const absolutePath = repositoryFile(expectedPath, `${field}.path`);
+  const bytes = readFileSync(absolutePath);
+  if (binding.byte_length !== bytes.length || binding.sha256 !== sha256Hex(bytes)) {
+    fail(`${field} digest drift`);
+  }
+}
+
+function currentChangedFiles(baseCommit) {
+  let tracked;
+  let untracked;
+  try {
+    tracked = execFileSync('git', ['diff', '--name-only', baseCommit, '--'], {
+      cwd: REPO_ROOT,
+      encoding: 'utf8',
+    });
+    untracked = execFileSync('git', ['ls-files', '--others', '--exclude-standard'], {
+      cwd: REPO_ROOT,
+      encoding: 'utf8',
+    });
+  } catch (error) {
+    fail(`cannot inspect M3 changed-file set: ${error.message}`);
+  }
+  return [...new Set(`${tracked}\n${untracked}`.split('\n').filter(Boolean))].sort();
+}
+
+function validatePassedM3(receipt) {
+  if (receipt.packet_id !== M3_PACKET_ID
+    || receipt.stage !== 'M3'
+    || receipt.base_commit !== M3_BASE_COMMIT
+    || receipt.lifecycle_state !== 'SEALED'
+    || receipt.status !== 'PASS'
+    || receipt.agreement_count !== 7
+    || receipt.source_reference_count !== 130
+    || receipt.output_root !== M3_OUTPUT_ROOT) {
+    fail('PASS M3 identity, lifecycle or cohort drift');
+  }
+  assertM3ZeroEffects(receipt, 'PASS M3 receipt');
+  assertM3Checks(receipt.focused_checks, M3_FINAL_CHECKS, 'PASS M3 receipt');
+
+  const authority = readPinnedJson(
+    receipt.authority_binding,
+    M3_BINDINGS.authority,
+    'PASS M3 authority',
+  );
+  const policy = readPinnedJson(
+    receipt.semantic_policy_binding,
+    M3_BINDINGS.semantic_policy,
+    'PASS M3 semantic policy',
+  );
+  const cohort = readPinnedJson(
+    receipt.agreement_manifest_binding,
+    M3_BINDINGS.agreement_manifest,
+    'PASS M3 agreement manifest',
+  );
+  const control = readPinnedJson(
+    authority.bindings?.control_manifest,
+    M3_BINDINGS.control_manifest,
+    'PASS M3 control manifest',
+  );
+  if (authority.schema_version !== 'STAGE_2Y_M3_AUTHORITY/V1'
+    || authority.authority_version !== 2
+    || authority.stage !== 'M3'
+    || authority.base_commit !== M3_BASE_COMMIT
+    || authority.authority_digest !== sha256Hex(Buffer.from(canonicalJson((() => {
+      const value = structuredClone(authority);
+      delete value.authority_digest;
+      return value;
+    })()), 'utf8'))
+    || authority.post_experiment_sol_gate?.status !== 'PASS'
+    || authority.post_experiment_sol_gate?.seven_agreement_runner_authorised_by_this_file
+      !== true) {
+    fail('PASS M3 authority is not the active sealed seven-agreement authority');
+  }
+  if (receipt.authority_binding.schema_version !== authority.schema_version
+    || receipt.authority_binding.authority_version !== authority.authority_version
+    || receipt.authority_binding.authority_digest !== authority.authority_digest) {
+    fail('PASS M3 authority binding metadata drift');
+  }
+  if (policy.schema_version !== 'STAGE_2Y_SEMANTIC_POLICY/V1'
+    || policy.policy_version !== 2
+    || policy.policy_digest !== sha256Hex(Buffer.from(canonicalJson((() => {
+      const value = structuredClone(policy);
+      delete value.policy_digest;
+      return value;
+    })()), 'utf8'))
+    || policy.policy_digest !== receipt.semantic_policy_binding.policy_digest) {
+    fail('PASS M3 semantic policy identity drift');
+  }
+  if (receipt.semantic_policy_binding.schema_version !== policy.schema_version
+    || receipt.semantic_policy_binding.policy_version !== policy.policy_version) {
+    fail('PASS M3 semantic policy binding metadata drift');
+  }
+  if (receipt.agreement_manifest_binding.schema_version !== cohort.schema_version
+    || receipt.agreement_manifest_binding.source_manifest_id !== cohort.source_manifest_id) {
+    fail('PASS M3 agreement manifest binding metadata drift');
+  }
+  if (canonicalJson(authority.permitted_changed_files)
+      !== canonicalJson(receipt.changed_files)
+    || canonicalJson(receipt.expected_differences) !== canonicalJson([])
+    || canonicalJson(receipt.unexpected_differences) !== canonicalJson([])
+    || receipt.rollback_result !== authority.rollback?.result
+    || receipt.rollback_command !== authority.rollback?.command) {
+    fail('PASS M3 changed-file, difference or rollback contract drift');
+  }
+  const changedFiles = currentChangedFiles(M3_BASE_COMMIT);
+  if (canonicalJson(changedFiles)
+      !== canonicalJson([...authority.permitted_changed_files].sort())) {
+    fail('PASS M3 live changed-file set does not equal the authority allow-list');
+  }
+
+  const fullContractBinding = authority.bindings?.full_contract_review;
+  if (fullContractBinding?.path !== M3_FULL_CONTRACT_REVIEW_PATH) {
+    fail('PASS M3 full-contract review path drift');
+  }
+  const fullContractReview = readBoundJson(
+    fullContractBinding,
+    'PASS M3 full-contract review',
+  );
+  assertExactKeys(receipt, fullContractReview.receipt_contract?.final_fields || [],
+    'PASS M3 final receipt');
+  if (fullContractReview.status !== 'APPROVED'
+    || fullContractReview.verdict !== 'PASS'
+    || fullContractReview.review_id !== contentId(
+      fullContractReview.schema_version,
+      (() => {
+        const value = structuredClone(fullContractReview);
+        delete value.review_id;
+        return value;
+      })(),
+    )
+    || canonicalJson(fullContractReview.receipt_contract?.context_metric_members)
+      !== canonicalJson(M3_CONTEXT_METRIC_KEYS)) {
+    fail('PASS M3 full-contract review is not approved or has metric drift');
+  }
+
+  const predecessorBinding = receipt.sealed_predecessor_bindings?.m2_receipt;
+  if (predecessorBinding?.path !== M2_FINAL_RECEIPT_PATH
+    || predecessorBinding.sha256 !== M2_FINAL_RECEIPT_SHA256
+    || canonicalJson(predecessorBinding) !== canonicalJson(authority.bindings.m2_receipt)) {
+    fail('PASS M3 M2 predecessor binding drift');
+  }
+  const m2Receipt = readBoundJson(predecessorBinding, 'PASS M3 M2 predecessor');
+  const predecessor = validatePassedM2(m2Receipt);
+  if (canonicalJson(predecessor.cohort) !== canonicalJson(cohort)) {
+    fail('PASS M3 cohort differs from the M2 predecessor cohort');
+  }
+  if (canonicalJson(receipt.current_state_bindings)
+      !== canonicalJson(authority.current_state_bindings)
+    || canonicalJson(receipt.open_world_by_family)
+      !== canonicalJson(m2Receipt.open_world_by_family)
+    || receipt.old_result_digest !== m2Receipt.old_result_digest) {
+    fail('PASS M3 frozen current state or open-world values drift');
+  }
+  assertExactKeys(receipt.current_state_bindings,
+    Object.keys(M3_BINDINGS.current_state), 'PASS M3 current_state_bindings');
+  for (const [name, pinned] of Object.entries(M3_BINDINGS.current_state)) {
+    readPinnedJson(receipt.current_state_bindings[name], pinned, `PASS M3 current state ${name}`);
+  }
+  if (control.schema_version !== 'STAGE_2Y_STRUCTURE_MIGRATION_CONTROL/V1') {
+    fail('PASS M3 control manifest schema drift');
+  }
+
+  const draftBinding = receipt.draft_receipt_binding;
+  const draft = assertM3Binding(draftBinding, M3_DRAFT_PATH, 'PASS M3 draft receipt');
+  if (draft.schema_version !== M3_DRAFT_SCHEMA
+    || draft.packet_id !== M3_PACKET_ID
+    || draft.stage !== 'M3'
+    || draft.base_commit !== M3_BASE_COMMIT
+    || draft.lifecycle_state !== 'REVIEW_PENDING_DRAFT'
+    || draft.status !== 'STOPPED'
+    || draft.technical_review !== 'PENDING_SOL_REVIEW') {
+    fail('PASS M3 draft state drift');
+  }
+  const expectedDraftKeys = fullContractReview.receipt_contract.final_fields
+    .filter((field) => !['draft_receipt_binding', 'technical_review_binding'].includes(field))
+    .concat('technical_review');
+  assertExactKeys(draft, expectedDraftKeys, 'PASS M3 draft receipt');
+  const transformedDraftFields = new Set([
+    'schema_version',
+    'lifecycle_state',
+    'status',
+    'implementation_bindings',
+    'input_digests',
+    'focused_checks',
+    'technical_review',
+  ]);
+  for (const field of Object.keys(draft)) {
+    if (!transformedDraftFields.has(field)
+      && canonicalJson(draft[field]) !== canonicalJson(receipt[field])) {
+      fail(`PASS M3 final receipt drifted from draft field ${field}`);
+    }
+  }
+  assertExactKeys(draft.implementation_bindings, M3_DRAFT_IMPLEMENTATION_KEYS,
+    'PASS M3 draft implementation_bindings');
+  assertM3Checks(draft.focused_checks, [
+    'SEVEN_AGREEMENT_SCHEMA_IDENTITY_AND_FOCUS',
+    'REFERENCE_DEFINITION_AND_AMBIGUITY_CLOSURE',
+    'FROZEN_CURRENT_STATE',
+    'NO_PRODUCTION_EFFECTS',
+  ], 'PASS M3 draft');
+  assertM3ZeroEffects(draft, 'PASS M3 draft');
+
+  assertExactKeys(receipt.implementation_bindings, Object.keys(M3_IMPLEMENTATION_PATHS),
+    'PASS M3 implementation_bindings');
+  for (const [name, expectedPath] of Object.entries(M3_IMPLEMENTATION_PATHS)) {
+    const binding = receipt.implementation_bindings[name];
+    assertCurrentFileBinding(binding, expectedPath, `PASS M3 implementation ${name}`);
+    if (draft.implementation_bindings[name]
+      && canonicalJson(draft.implementation_bindings[name]) !== canonicalJson(binding)) {
+      fail(`PASS M3 draft implementation binding drift: ${name}`);
+    }
+  }
+
+  const reviewBinding = receipt.technical_review_binding;
+  const review = assertM3Binding(reviewBinding, M3_REVIEW_PATH, 'PASS M3 Sol review');
+  const { review_id: ignoredReviewId, ...reviewPayload } = review;
+  if (review.schema_version !== M3_REVIEW_SCHEMA
+    || review.review_id !== contentId(M3_REVIEW_SCHEMA, reviewPayload)
+    || review.stage !== 'M3'
+    || review.packet_id !== M3_PACKET_ID
+    || review.base_commit !== M3_BASE_COMMIT
+    || review.lifecycle_state !== 'SEALED'
+    || review.status !== 'APPROVED'
+    || review.verdict !== 'APPROVED'
+    || review.technical_decision !== 'CONTEXT_COMPILATION_M3_ACCEPTED'
+    || review.reviewer?.role !== 'SOL'
+    || typeof review.reviewer?.identity !== 'string'
+    || review.reviewer.identity.length === 0
+    || canonicalJson(review.draft_receipt_binding) !== canonicalJson(draftBinding)
+    || canonicalJson(review.authority_binding) !== canonicalJson(receipt.authority_binding)
+    || canonicalJson(review.semantic_policy_binding)
+      !== canonicalJson(receipt.semantic_policy_binding)
+    || canonicalJson(review.m2_receipt_binding) !== canonicalJson(predecessorBinding)
+    || canonicalJson(review.agreement_manifest_binding)
+      !== canonicalJson(receipt.agreement_manifest_binding)
+    || canonicalJson(review.current_state_bindings)
+      !== canonicalJson(receipt.current_state_bindings)
+    || canonicalJson(review.implementation_bindings)
+      !== canonicalJson(receipt.implementation_bindings)
+    || canonicalJson(review.output_bindings) !== canonicalJson(receipt.output_bindings)
+    || canonicalJson(review.diagnostics_binding) !== canonicalJson(receipt.diagnostics_binding)
+    || review.output_set_digest !== receipt.output_set_digest
+    || canonicalJson(review.context_metrics) !== canonicalJson(receipt.context_metrics)
+    || canonicalJson(review.exceptions) !== canonicalJson([])) {
+    fail('PASS M3 Sol review is stale, qualified or does not bind the final result');
+  }
+  assertM3Checks(review.focused_checks, M3_REVIEW_CHECKS, 'PASS M3 Sol review');
+
+  const expectedOutputPaths = [
+    ...authority.permitted_output.context_compilation_paths,
+    authority.permitted_output.diagnostics_path,
+  ];
+  requireArray(receipt.output_bindings, 'PASS M3 output_bindings');
+  if (receipt.output_bindings.length !== 8
+    || canonicalJson(receipt.output_bindings.map((binding) => binding.path))
+      !== canonicalJson(expectedOutputPaths)) {
+    fail('PASS M3 output binding count or order drift');
+  }
+  assertDirectoryInventory(
+    M3_OUTPUT_ROOT,
+    expectedOutputPaths.map((path) => path.split('/').at(-1)),
+    'PASS M3 output root',
+  );
+  const compilations = [];
+  const metricRows = [];
+  for (let index = 0; index < 7; index += 1) {
+    const binding = receipt.output_bindings[index];
+    assertExactKeys(binding, [
+      'path',
+      'byte_length',
+      'sha256',
+      'schema_version',
+      'agreement_id',
+      'agreement_index_id',
+      'context_compilation_id',
+    ], `PASS M3 output_bindings[${index}]`);
+    const compilation = readBoundJson(binding, `PASS M3 output_bindings[${index}]`);
+    assertCanonicalJsonFile(binding, compilation, `PASS M3 output_bindings[${index}]`);
+    const inputBinding = policy.input_contract.agreement_indexes[index];
+    const indexBinding = m2Receipt.output_bindings[index];
+    const agreementIndex = readLooseBoundJson(indexBinding, `PASS M3 input index ${index}`);
+    if (binding.schema_version !== M3_CONTEXT_SCHEMA
+      || binding.agreement_id !== inputBinding.agreement_id
+      || binding.agreement_index_id !== agreementIndex.agreement_index_id
+      || binding.context_compilation_id !== compilation.context_compilation_id) {
+      fail(`PASS M3 output identity drift at ${index}`);
+    }
+    let rebuilt;
+    try {
+      const focusNodeIds = deriveM3FocusNodeIds(agreementIndex, policy);
+      rebuilt = compileContext(focusNodeIds, agreementIndex, policy);
+    } catch (error) {
+      fail(`PASS M3 recompilation failed at ${index}: ${error.message}`);
+    }
+    if (canonicalJson(rebuilt) !== canonicalJson(compilation)) {
+      fail(`PASS M3 output ${index} is not byte-deterministic from its sealed input`);
+    }
+    compilations.push(compilation);
+    metricRows.push(m3CompilationMetrics(
+      compilation,
+      inputBinding.deal,
+      inputBinding.agreement_id,
+    ));
+  }
+  const diagnosticsBinding = receipt.output_bindings[7];
+  assertExactKeys(diagnosticsBinding, [
+    'path',
+    'byte_length',
+    'sha256',
+    'schema_version',
+    'diagnostics_ledger_id',
+  ], 'PASS M3 diagnostics output binding');
+  const diagnostics = readBoundJson(diagnosticsBinding, 'PASS M3 diagnostics output binding');
+  assertCanonicalJsonFile(diagnosticsBinding, diagnostics, 'PASS M3 diagnostics output binding');
+  const rebuiltDiagnostics = buildM3DiagnosticsLedger(
+    policy.input_contract.agreement_order,
+    compilations,
+    policy,
+  );
+  if (canonicalJson(diagnostics) !== canonicalJson(rebuiltDiagnostics)
+    || diagnosticsBinding.schema_version !== M3_DIAGNOSTICS_SCHEMA
+    || diagnosticsBinding.diagnostics_ledger_id !== diagnostics.diagnostics_ledger_id
+    || canonicalJson(receipt.diagnostics_binding) !== canonicalJson(diagnosticsBinding)) {
+    fail('PASS M3 diagnostics ledger drift');
+  }
+  const outputSetDigest = sha256Hex(Buffer.from(canonicalJson(receipt.output_bindings), 'utf8'));
+  const metrics = aggregateM3Metrics(metricRows, policy);
+  assertExactKeys(receipt.context_metrics, M3_CONTEXT_METRIC_KEYS, 'PASS M3 context_metrics');
+  if (receipt.output_set_digest !== outputSetDigest
+    || receipt.new_shadow_result_digest !== outputSetDigest
+    || draft.output_set_digest !== outputSetDigest
+    || canonicalJson(draft.output_bindings) !== canonicalJson(receipt.output_bindings)
+    || canonicalJson(receipt.context_metrics) !== canonicalJson(metrics)) {
+    fail('PASS M3 output-set digest or context metrics drift');
+  }
+
+  const expectedInputDigests = {
+    authority: receipt.authority_binding.sha256,
+    semantic_policy: receipt.semantic_policy_binding.sha256,
+    control_manifest: authority.bindings.control_manifest.sha256,
+    agreement_manifest: receipt.agreement_manifest_binding.sha256,
+    m2_receipt: predecessorBinding.sha256,
+    m2_output_set: m2Receipt.output_set_digest,
+    draft_receipt: draftBinding.sha256,
+    technical_review: reviewBinding.sha256,
+  };
+  if (canonicalJson(receipt.input_digests) !== canonicalJson(expectedInputDigests)) {
+    fail('PASS M3 input_digests do not exactly bind the finaliser inputs');
+  }
+}
+
 function validate(receipt) {
   if (receipt.schema_version !== RECEIPT_SCHEMA) fail('schema_version drift');
   requireString(receipt.packet_id, 'packet_id');
@@ -775,6 +1361,7 @@ function validate(receipt) {
   }
   if (receipt.stage === 'M1' && receipt.status === 'PASS') validatePassedM1(receipt);
   if (receipt.stage === 'M2' && receipt.status === 'PASS') validatePassedM2(receipt);
+  if (receipt.stage === 'M3' && receipt.status === 'PASS') validatePassedM3(receipt);
   return Object.freeze({
     schema_version: RECEIPT_SCHEMA,
     packet_id: receipt.packet_id,

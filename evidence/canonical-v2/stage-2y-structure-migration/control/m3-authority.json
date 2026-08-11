@@ -1,7 +1,7 @@
 {
   "schema_version": "STAGE_2Y_M3_AUTHORITY/V1",
   "authority_version": 2,
-  "authority_digest": "09d5b593a1aeb8f1895ef1f6fef119313cd12dc8e6a2343212b5d92473e9cbd5",
+  "authority_digest": "17bd15bd51d0a490168e4678d80cf0c653bdfa9e5e6150e5b01485801ad624da",
   "stage": "M3",
   "authority_state": "ACTIVE_FOR_SEVEN_AGREEMENT_SHADOW_AND_FINAL_M3_RECEIPT",
   "authorised_scope": "SEVEN_AGREEMENT_SHADOW_CONTEXT_COMPILATION_DIAGNOSTICS_REVIEW_AND_FINAL_M3_RECEIPT",
@@ -134,20 +134,20 @@
     },
     "full_contract_review": {
       "path": "evidence/canonical-v2/stage-2y-structure-migration/reviews/stage-2y-structure-m3-full-contract-sol-freeze.json",
-      "byte_length": 36641,
-      "sha256": "67d329b918b8852a2b64c02617ad25d76ebca9a9fbf5d02e2bd395694b85c622",
+      "byte_length": 47361,
+      "sha256": "f870d4e5a8fed1752403aa33d68a3dad3bc09c6b47f21a1beb30509a5fb7dc16",
       "schema_version": "STAGE_2Y_STRUCTURE_M3_FULL_CONTRACT_SOL_FREEZE/V1",
-      "review_id": "152369a86bd71428835b727fcedd05a5d3fd67c264c3d02a19eec667bd3d7f5e",
+      "review_id": "a2a13e83836fab4ba051a6cbda479b51a405dd53bb3b168300f27b793c1a2bbb",
       "status": "APPROVED",
       "verdict": "PASS"
     },
     "semantic_policy": {
       "path": "evidence/canonical-v2/stage-2y-structure-migration/control/semantic-policy.json",
-      "byte_length": 119402,
-      "sha256": "4ba6fc789d35ff8812ee9a90ab2a3a6c9fea75ab5357ef8d239a78d5ac8c67ac",
+      "byte_length": 126298,
+      "sha256": "d00b971f240a9d8d67f559533d685e9ad2801fdfd1e5986de810dbe803e58bdb",
       "schema_version": "STAGE_2Y_SEMANTIC_POLICY/V1",
       "policy_version": 2,
-      "policy_digest": "efe0cddf74d9648215ee41051f98bd64e8c935f064521e42431c6200d337a034"
+      "policy_digest": "2538c810b5aee2ee3edc318e77abd2ceaee3a4e9a48929aec9ccdb28ab491d54"
     },
     "bounded_projection": {
       "schema_version": "TOPBUILD_6_2_BOUNDED_PROJECTION/V1",
@@ -236,10 +236,41 @@
     }
   },
   "command_run_limit": {
-    "shadow_runner": 1,
+    "shadow_runner": 2,
     "finaliser": 1,
     "validator_after_finaliser": 1,
     "tests": "AS_REQUIRED_WITHOUT_MUTATING_NON_TAP_STATE"
+  },
+  "corrective_shadow_runner_authorisation": {
+    "status": "AUTHORISED_ONCE_FOR_PROCESS_INVOCATION_2",
+    "total_shadow_runner_process_invocation_limit": 2,
+    "effectful_shadow_run_limit": 1,
+    "invocation_1": {
+      "status": "CONSUMED_FAILED_PRE_EFFECT",
+      "failure_stage": "VALIDATE_POLICY",
+      "failure_reason": "RUNNER_REQUIRED_NONEXISTENT_PREDECESSOR_TRUST_ROOT_MEMBER_M2_RECEIPT_SHA256_INSTEAD_OF_SEALED_SHA256",
+      "runner_control_flow_proof": "VALIDATE_POLICY_PRECEDES_M2_RECEIPT_READ_INPUT_ROOT_VALIDATION_OUTPUT_ROOT_INVENTORY_COMPILATION_MKDIR_AND_ALL_WRITES",
+      "m2_receipt_reads": 0,
+      "context_compilations": 0,
+      "directory_creations": 0,
+      "persistent_output_writes": 0,
+      "draft_receipt_writes": 0,
+      "prohibited_effects": 0
+    },
+    "invocation_2": {
+      "status": "ONLY_REMAINING_AUTHORISED_SHADOW_RUNNER_INVOCATION",
+      "required_fix": "VALIDATE_POLICY_READS_POLICY_INPUT_CONTRACT_PREDECESSOR_TRUST_ROOT_SHA256",
+      "forbidden_member": "m2_receipt_sha256",
+      "required_targeted_test": "shadow runner accepts the sealed predecessor trust-root binding",
+      "targeted_test_result": "PASS",
+      "targeted_test_duration_milliseconds": 5,
+      "must_use_permitted_command_shadow_runner_EXACTLY_ONCE_cli_contract": true,
+      "must_complete_all_preflight_checks_before_any_write": true,
+      "divergent_existing_output_overwrite_forbidden": true
+    },
+    "invocation_3_or_later": "NOT_AUTHORISED",
+    "legal_or_semantic_rule_change": false,
+    "ben_escalation_required": false
   },
   "permitted_output": {
     "kind": "SEALED_ADDITIVE_SHADOW_CONTEXT_COMPILATIONS_DIAGNOSTICS_AND_M3_RECEIPTS_ONLY",
@@ -339,9 +370,9 @@
   "sol_contract_freeze": {
     "reviewer_role": "SOL",
     "status": "FROZEN_FULL_M3_CONTRACT",
-    "review_id": "152369a86bd71428835b727fcedd05a5d3fd67c264c3d02a19eec667bd3d7f5e",
-    "review_sha256": "67d329b918b8852a2b64c02617ad25d76ebca9a9fbf5d02e2bd395694b85c622",
-    "policy_digest": "efe0cddf74d9648215ee41051f98bd64e8c935f064521e42431c6200d337a034",
+    "review_id": "a2a13e83836fab4ba051a6cbda479b51a405dd53bb3b168300f27b793c1a2bbb",
+    "review_sha256": "f870d4e5a8fed1752403aa33d68a3dad3bc09c6b47f21a1beb30509a5fb7dc16",
+    "policy_digest": "2538c810b5aee2ee3edc318e77abd2ceaee3a4e9a48929aec9ccdb28ab491d54",
     "independent_module_audit": "PASS",
     "testability_audit": "PASS",
     "ben_legal_escalation_required": false,
@@ -365,8 +396,8 @@
     "status": "PASS",
     "bounded_gate_sha256": "22f9c9c9e24a5c9d2186aed26dea74b5b53f30824ba383c54f9bd235c01164bb",
     "bounded_projection_content_id": "737fbd0c7ab3f3944e1344381faf6bcb656f66cc20467e018d5e668c9b7f2c3c",
-    "full_contract_review_id": "152369a86bd71428835b727fcedd05a5d3fd67c264c3d02a19eec667bd3d7f5e",
-    "semantic_policy_digest": "efe0cddf74d9648215ee41051f98bd64e8c935f064521e42431c6200d337a034",
+    "full_contract_review_id": "a2a13e83836fab4ba051a6cbda479b51a405dd53bb3b168300f27b793c1a2bbb",
+    "semantic_policy_digest": "2538c810b5aee2ee3edc318e77abd2ceaee3a4e9a48929aec9ccdb28ab491d54",
     "seven_agreement_runner_authorised_by_this_file": true,
     "seven_agreement_persistent_outputs_authorised_by_this_file": true,
     "m3_final_receipt_authorised_by_this_file": true,
