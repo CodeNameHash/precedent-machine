@@ -1,0 +1,151 @@
+{
+  "annotation_kinds": [
+    "OUTLINE_MARKER",
+    "SECTION_REFERENCE",
+    "DEFINED_TERM_DEFINITION",
+    "DEFINED_TERM_USE"
+  ],
+  "authored_node_kinds": [
+    "AGREEMENT",
+    "ARTICLE",
+    "ANNEX",
+    "SECTION",
+    "LIMB",
+    "HEADING",
+    "CHAPEAU",
+    "PARAGRAPH",
+    "SENTENCE",
+    "QUALIFICATION"
+  ],
+  "byte_coverage_owner_kinds": [
+    "AUTHORED_NODE",
+    "SOURCE_ARTEFACT"
+  ],
+  "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+  "diagnostic_types": [
+    "SECTIONIZER_REJECTED_INLINE_HEADING",
+    "SECTIONIZER_SWALLOWED_HEADING",
+    "DUPLICATE_MARKER_SEQUENCE_REPAIRED",
+    "REVIEWED_STRUCTURE_OVERRIDE_APPLIED",
+    "UNREPRESENTED_OUTLINE_MARKER",
+    "SOURCE_ARTEFACT_INTERRUPTS_AUTHORED_BLOCK",
+    "PARENT_REPAIRED",
+    "NODE_COLLISION_DROPPED"
+  ],
+  "inline_list_policy": {
+    "authored_reasons": [
+      "CORROBORATED_SUBSTANTIVE_SEQUENCE"
+    ],
+    "dispositions": [
+      "AUTHORED_INLINE_LIST",
+      "NON_STRUCTURAL_MARKER",
+      "UNRESOLVED_INLINE_LIST"
+    ],
+    "maximum_depth": 5,
+    "parser_version": "AGREEMENT_INLINE_STRUCTURE_PARSER/V1",
+    "non_structural_reasons": [
+      "AMBIGUOUS_MARKER_STYLE",
+      "BARE_CLAUSE_REFERENCE",
+      "GLUED_SECTION_REFERENCE",
+      "TABLE_OF_CONTENTS_REFERENCE",
+      "UNCORROBORATED_FIRST_MARKER"
+    ],
+    "schema_version": "STAGE_2Y_INLINE_LIST_POLICY/V1",
+    "styles": [
+      "UNCLASSIFIED",
+      "alphaLower",
+      "alphaUpper",
+      "digit",
+      "romanLower",
+      "romanUpper",
+      "xyz"
+    ],
+    "unresolved_reasons": [
+      "AMBIGUOUS_SAME_STYLE_RESTART",
+      "CROSSING_LIST_BOUNDARY",
+      "DEPTH_LIMIT",
+      "INSUFFICIENT_ITEM_PAYLOAD",
+      "OUT_OF_ORDER_MARKER_SEQUENCE",
+      "SOURCE_ARTEFACT_BOUNDARY_AMBIGUOUS"
+    ]
+  },
+  "policy_digest": "39c2972a1cd0e30989b6acd21bce120ca818d834f98a446abfa729f662cdac4c",
+  "policy_version": 2,
+  "reviewed_structure_overrides": [
+    {
+      "annex_reference": "ANNEX A",
+      "canonical_text_sha256": "30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5",
+      "groups": [
+        {
+          "chapeau_end_byte": 325766,
+          "chapeau_start_byte": 325611,
+          "chapeau_text_sha256": "2670fc3138333505668a71f3f7486183d2980b76484e9843f64118ecaa7e94b5",
+          "outer_limbs": [
+            { "end_byte": 325903, "marker": "(a)", "reference": "Annex-A::Material Adverse Effect(a)", "start_byte": 325766 },
+            { "end_byte": 330452, "marker": "(b)", "reference": "Annex-A::Material Adverse Effect(b)", "start_byte": 325903 }
+          ],
+          "limbs": [
+            { "end_byte": 326653, "marker": "(i)", "reference": "Annex-A::Material Adverse Effect(b)(i)", "start_byte": 326542 },
+            { "end_byte": 327068, "marker": "(ii)", "reference": "Annex-A::Material Adverse Effect(b)(ii)", "start_byte": 326653 },
+            { "end_byte": 327294, "marker": "(iii)", "reference": "Annex-A::Material Adverse Effect(b)(iii)", "start_byte": 327068 },
+            { "end_byte": 327613, "marker": "(iv)", "reference": "Annex-A::Material Adverse Effect(b)(iv)", "start_byte": 327294 },
+            { "end_byte": 327816, "marker": "(v)", "reference": "Annex-A::Material Adverse Effect(b)(v)", "start_byte": 327613 },
+            { "end_byte": 328117, "marker": "(vi)", "reference": "Annex-A::Material Adverse Effect(b)(vi)", "start_byte": 327816 },
+            { "end_byte": 328387, "marker": "(vii)", "reference": "Annex-A::Material Adverse Effect(b)(vii)", "start_byte": 328117 },
+            { "end_byte": 328659, "marker": "(viii)", "reference": "Annex-A::Material Adverse Effect(b)(viii)", "start_byte": 328387 },
+            { "end_byte": 329356, "marker": "(ix)", "reference": "Annex-A::Material Adverse Effect(b)(ix)", "start_byte": 328659 }
+          ],
+          "next_text": "“NYSE”",
+          "paragraph_end_byte": 330452,
+          "paragraph_start_byte": 325611,
+          "reference": "Annex-A::Material Adverse Effect",
+          "trailing_qualification": {
+            "end_byte": 330447,
+            "start_byte": 329356,
+            "text_sha256": "d501dc928cbdd4f899e295ff9f459b848fee09345245b9b47d9750341825dd09"
+          }
+        },
+        {
+          "chapeau_end_byte": 339811,
+          "chapeau_start_byte": 339776,
+          "chapeau_text_sha256": "ce63f37dcfb40a418681e040d9ed6591ecaf151b08fbc84c817d0d7324e64b06",
+          "limbs": [
+            { "end_byte": 340224, "marker": "(a)", "reference": "Annex-A::Permitted Encumbrances(a)", "start_byte": 339812 },
+            { "end_byte": 340759, "marker": "(b)", "reference": "Annex-A::Permitted Encumbrances(b)", "start_byte": 340224 },
+            { "end_byte": 341063, "marker": "(c)", "reference": "Annex-A::Permitted Encumbrances(c)", "start_byte": 340759 },
+            { "end_byte": 341903, "marker": "(d)", "reference": "Annex-A::Permitted Encumbrances(d)", "start_byte": 341063 },
+            { "end_byte": 342203, "marker": "(e)", "reference": "Annex-A::Permitted Encumbrances(e)", "start_byte": 341903 },
+            { "end_byte": 342774, "marker": "(f)", "reference": "Annex-A::Permitted Encumbrances(f)", "start_byte": 342203 },
+            { "end_byte": 342941, "marker": "(g)", "reference": "Annex-A::Permitted Encumbrances(g)", "start_byte": 342774 },
+            { "end_byte": 343112, "marker": "(h)", "reference": "Annex-A::Permitted Encumbrances(h)", "start_byte": 342941 },
+            { "end_byte": 343879, "marker": "(i)", "reference": "Annex-A::Permitted Encumbrances(i)", "start_byte": 343112 }
+          ],
+          "next_text": "“Person”",
+          "paragraph_end_byte": 343879,
+          "paragraph_start_byte": 339776,
+          "reference": "Annex-A::Permitted Encumbrances"
+        }
+      ],
+      "operation": "GROUP_ANNEX_DEFINITION_LISTS",
+      "override_id": "CONCHO_ANNEX_A_DEFINITION_LISTS/V1",
+      "required": true
+    },
+    {
+      "canonical_text_sha256": "dcdbf66142d25cbe56ed2bc1fbd26939aaf86056bf34188176c48b5944d31c5e",
+      "nested_marker_start_byte": 55634,
+      "next_sibling_start_byte": 64040,
+      "operation": "SPLIT_AND_REPARENT_DUPLICATE_LIMB",
+      "override_id": "REDHAT_3_01_H_I_PARENTAGE/V1",
+      "parent_marker_start_byte": 55619,
+      "required": true,
+      "section_reference": "3.01",
+      "sibling_marker_start_byte": 62303
+    }
+  ],
+  "schema_version": "STAGE_2Y_STRUCTURAL_POLICY/V1",
+  "source_artefact_kinds": [
+    "PAGE_NUMBER",
+    "FORM_FEED",
+    "CONVERSION_CONTROL"
+  ]
+}

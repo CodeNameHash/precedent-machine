@@ -6,6 +6,20 @@ import { existsSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { dirname, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  assertAgreementIndex,
+  assertAgreementManifest,
+  assertM0AndM1,
+  assertM2Authority,
+  assertStructuralPolicy,
+  buildInlineParserMetrics,
+  exactSourceForAgreement,
+} from './stage-2y-agreement-index-shadow.mjs';
+import {
+  validateBaseline,
+  validateManifest,
+  validateReport,
+} from './stage-2y-cd-measurement.mjs';
 
 const require = createRequire(import.meta.url);
 const { listRegisteredSectionFamilies } = require(
@@ -16,6 +30,7 @@ const {
   contentId,
   sha256Hex,
 } = require('../lib/canonical-v2/canonical-bytes');
+const { indexAgreement } = require('../lib/canonical-v2/agreement-index');
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -65,6 +80,95 @@ const M1_REVIEW_CHECKS = Object.freeze([
   'STRUCTURE_AND_INHERITANCE_GATE',
   'TERMINATION_INHERITANCE_ADDITION',
 ]);
+const M2_PACKET_ID = 'stage-2y-structure-m2-agreement-index';
+const M2_BASE_COMMIT = '5c61c51b81f8983d3f18c6dcef2086eff29e661c';
+const M2_DRAFT_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index-draft.json';
+const M2_REVIEW_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/reviews/stage-2y-structure-m2-sol-technical-review.json';
+const M2_OUTPUT_ROOT = 'evidence/canonical-v2/stage-2y-structure-migration/shadow/m2';
+const M2_REVIEW_SCHEMA = 'STAGE_2Y_STRUCTURE_SOL_TECHNICAL_REVIEW/V1';
+const M2_DRAFT_SCHEMA = 'STAGE_2Y_STRUCTURE_M2_DRAFT_RECEIPT/V1';
+const M2_INDEX_SCHEMA = 'AGREEMENT_INDEX/V1';
+const M2_REVIEW_CHECKS = Object.freeze([
+  'PUBLIC_API_AND_SYNTHETIC',
+  'SEVEN_AGREEMENT_EXACT_SOURCE',
+  'METSERA_7_04_GOLDEN',
+  'RED_HAT_STRUCTURE_GOLDEN',
+  'CONCHO_6_9_A_GOLDEN',
+  'INLINE_MARKER_DISPOSITION_GATE',
+  'FROZEN_CURRENT_STATE',
+  'STRUCTURE_AND_INHERITANCE_GATE',
+  'NO_PRODUCTION_EFFECTS',
+]);
+const M2_FINAL_CHECKS = Object.freeze([...M2_REVIEW_CHECKS, 'SOL_TECHNICAL_REVIEW']);
+const M2_IMPLEMENTATION_PATHS = Object.freeze({
+  agreement_index_module: 'lib/canonical-v2/agreement-index.js',
+  private_inline_structure_module: 'lib/canonical-v2/agreement-inline-structure.js',
+  private_inline_structure_test: 'tests/canonical-v2-agreement-inline-structure.test.js',
+  shadow_runner: 'scripts/stage-2y-agreement-index-shadow.mjs',
+  focused_test: 'tests/canonical-v2-agreement-index.test.js',
+  finaliser: 'scripts/stage-2y-agreement-index-m2-finalise.mjs',
+  validator: 'scripts/stage-2y-structure-migration-validate.mjs',
+});
+const M2_DRAFT_IMPLEMENTATION_KEYS = Object.freeze([
+  'agreement_index_module', 'private_inline_structure_module', 'private_inline_structure_test',
+  'shadow_runner', 'focused_test',
+]);
+const M2_BINDINGS = Object.freeze({
+  authority: Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m2-authority.json',
+    sha256: 'f62bd067a53fa1fb67dcb6859d9586a18a58e01360fa4179b9e485446bf75b20',
+  }),
+  structural_policy: Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/structural-policy.json',
+    sha256: 'cd4523d0f39bed64b9dce99eb9df571b262478bc2a2adf36bf7f4a9d955ec732',
+  }),
+  agreement_manifest: Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/cohort-agreements.json',
+    sha256: '0dd150d57da4894f30cd94df53c1983395abc98474b716332e71aa40375f2ecc',
+  }),
+  sealed_predecessors: Object.freeze({
+    m0_control_manifest: Object.freeze({
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json',
+      sha256: '62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41',
+    }),
+    m0_receipt: Object.freeze({
+      path: M0_RECEIPT_PATH,
+      sha256: 'b2b054ba1b67179873f029b85e8d556dfcb1339659145620a6e499a9a1d3acc6',
+    }),
+    m1_decision: Object.freeze({
+      path: `${M1_OUTPUT_ROOT}/decision.json`,
+      sha256: 'd11b4e2878d976d96d11948a4561d572ddc313116faa94593dda7b4784a5e3c3',
+    }),
+    m1_receipt: Object.freeze({
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m1-falsification-prototype.json',
+      sha256: '75e07e2f0cfcacf6f58a88213c36a5424a4fdd8d662772c4074b57ef0183375e',
+    }),
+    m1_sol_review: Object.freeze({
+      path: M1_SOL_REVIEW_PATH,
+      sha256: 'aac25e1b7687bcccb50efe1bbbfa46664e9ffee3d088f6d47126ffecdead2a23',
+    }),
+  }),
+  current_state: Object.freeze({
+    baseline_manifest: Object.freeze({
+      path: 'evidence/canonical-v2/stage-2y-cd-baseline-manifest.json',
+      sha256: '634064b5a8f6c223edd1c3c2f4faa9ae0ab7be181a6b3d0ef086354eb37b7fe9',
+    }),
+    current_baseline: Object.freeze({
+      path: 'evidence/canonical-v2/stage-2y-cd-baseline.json',
+      sha256: '892d258699ab933051e135d66c9a515fadd7983f6d2e11e2e7d4804871424dcb',
+    }),
+    current_measurement: Object.freeze({
+      path: 'evidence/canonical-v2/stage-2y-cd-report.json',
+      sha256: '63a6bd818edc1e77780261c021d3b9b33ec65ef483deee4ee1bc18b9582df4f3',
+    }),
+    current_rendered_rows: Object.freeze({
+      path: 'evidence/canonical-v2/stage-2y-n-rendered-rows.json',
+      sha256: '537b1f132f4fcfa7df50cc9536f68fc615a81c7334929b4cbb55fd70f2f884d4',
+    }),
+  }),
+});
 
 function fail(message) {
   throw new Error(`STAGE_2Y_STRUCTURE_RECEIPT_INVALID: ${message}`);
@@ -121,6 +225,57 @@ function readBoundJson(binding, field) {
     fail(`${field}.schema_version does not match the bound file`);
   }
   return value;
+}
+
+function readLooseBoundJson(binding, field) {
+  if (!binding || typeof binding !== 'object' || Array.isArray(binding)) {
+    fail(`${field} must be an object`);
+  }
+  requireString(binding.path, `${field}.path`);
+  if (!/^[0-9a-f]{64}$/.test(binding.sha256 || '')) fail(`${field}.sha256 is not sha256`);
+  const absolutePath = repositoryFile(binding.path, `${field}.path`);
+  const bytes = readFileSync(absolutePath);
+  if ((binding.byte_length !== undefined && bytes.length !== binding.byte_length)
+    || sha256Hex(bytes) !== binding.sha256) {
+    fail(`${field} does not match its bound repository file`);
+  }
+  try {
+    return JSON.parse(bytes.toString('utf8'));
+  } catch (error) {
+    fail(`${field} is not valid JSON: ${error.message}`);
+  }
+}
+
+function assertExactKeys(value, expected, field) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)
+    || canonicalJson(Object.keys(value).sort()) !== canonicalJson([...expected].sort())) {
+    fail(`${field} key set drift`);
+  }
+}
+
+function readPinnedJson(binding, pinned, field) {
+  if (binding?.path !== pinned.path || binding?.sha256 !== pinned.sha256) {
+    fail(`${field} path or pinned digest drift`);
+  }
+  return readLooseBoundJson(binding, field);
+}
+
+function assertM2ZeroEffects(value, field) {
+  for (const name of [...ZERO_FIELDS, 'network_calls', 'm0_m1_sealed_artefact_mutations']) {
+    if (value[name] !== 0) fail(`${field}.${name} must be zero`);
+  }
+  for (const selector of [
+    'structure_selector', 'context_selector', 'analysis_selector', 'projection_selector',
+  ]) {
+    if (value[selector] !== 'current') fail(`${field}.${selector} must remain current`);
+  }
+  if (value.database_target !== 'NONE'
+    || value.publication_authorisation !== 'NONE'
+    || value.internal_cutover_authorisation !== 'NONE'
+    || value.external_access_authorisation !== 'NONE'
+    || value.phase_b_status !== 'DEFERRED_LOCKED') {
+    fail(`${field} changes a locked authority boundary`);
+  }
 }
 
 function orderedM1Bindings(value, field) {
@@ -236,6 +391,306 @@ function validatePassedM1(receipt) {
   }
 }
 
+function validatePassedM2(receipt) {
+  if (receipt.lifecycle_state !== 'SEALED'
+    || receipt.packet_id !== M2_PACKET_ID
+    || receipt.base_commit !== M2_BASE_COMMIT
+    || receipt.agreement_count !== 7
+    || receipt.source_reference_count !== 130
+    || receipt.output_root !== M2_OUTPUT_ROOT) {
+    fail('PASS M2 identity, lifecycle or cohort drift');
+  }
+  assertM2ZeroEffects(receipt, 'PASS M2 receipt');
+  const suppliedChecks = receipt.focused_checks || [];
+  if (canonicalJson(suppliedChecks) !== canonicalJson(
+    M2_FINAL_CHECKS.map((check) => ({ check, result: 'PASS' })),
+  )) fail('PASS M2 focused_checks must contain the exact approved check set');
+
+  const draftBinding = receipt.draft_receipt_binding;
+  if (draftBinding?.path !== M2_DRAFT_PATH
+    || draftBinding?.schema_version !== M2_DRAFT_SCHEMA) {
+    fail('PASS M2 draft receipt binding path or schema drift');
+  }
+  const draft = readBoundJson(draftBinding, 'PASS M2 draft receipt binding');
+  if (draft.stage !== 'M2'
+    || draft.lifecycle_state !== 'REVIEW_PENDING_DRAFT'
+    || draft.status !== 'STOPPED'
+    || draft.technical_review !== 'PENDING_SOL_REVIEW'
+    || draft.base_commit !== M2_BASE_COMMIT
+    || draft.agreement_count !== 7
+    || draft.source_reference_count !== 130) {
+    fail('PASS M2 draft receipt is not the sealed stopped draft');
+  }
+  assertM2ZeroEffects(draft, 'PASS M2 draft receipt');
+
+  for (const field of [
+    'authority_binding',
+    'structural_policy_binding',
+    'agreement_manifest_binding',
+    'sealed_predecessor_bindings',
+    'current_state_bindings',
+    'runtime_measurements',
+    'inline_parser_metrics',
+  ]) {
+    if (canonicalJson(receipt[field]) !== canonicalJson(draft[field])) {
+      fail(`PASS M2 ${field} drifted from the draft`);
+    }
+  }
+
+  const predecessorKeys = Object.keys(M2_BINDINGS.sealed_predecessors);
+  const currentStateKeys = Object.keys(M2_BINDINGS.current_state);
+  assertExactKeys(receipt.sealed_predecessor_bindings, predecessorKeys,
+    'PASS M2 sealed_predecessor_bindings');
+  assertExactKeys(receipt.current_state_bindings, currentStateKeys,
+    'PASS M2 current_state_bindings');
+  assertExactKeys(receipt.implementation_bindings, Object.keys(M2_IMPLEMENTATION_PATHS),
+    'PASS M2 implementation_bindings');
+  assertExactKeys(draft.implementation_bindings, M2_DRAFT_IMPLEMENTATION_KEYS,
+    'PASS M2 draft implementation_bindings');
+
+  const authority = readPinnedJson(receipt.authority_binding, M2_BINDINGS.authority,
+    'PASS M2 authority');
+  const policy = readPinnedJson(receipt.structural_policy_binding, M2_BINDINGS.structural_policy,
+    'PASS M2 structural policy');
+  const cohort = readPinnedJson(receipt.agreement_manifest_binding,
+    M2_BINDINGS.agreement_manifest, 'PASS M2 agreement manifest');
+  const predecessorValues = {};
+  for (const name of predecessorKeys) {
+    predecessorValues[name] = readPinnedJson(
+      receipt.sealed_predecessor_bindings[name],
+      M2_BINDINGS.sealed_predecessors[name],
+      `PASS M2 ${name}`,
+    );
+  }
+  const currentStateValues = {};
+  for (const name of currentStateKeys) {
+    currentStateValues[name] = readPinnedJson(
+      receipt.current_state_bindings[name],
+      M2_BINDINGS.current_state[name],
+      `PASS M2 ${name}`,
+    );
+  }
+
+  try {
+    assertM0AndM1(predecessorValues.m0_control_manifest);
+    assertM2Authority(authority);
+    assertStructuralPolicy(policy);
+    assertAgreementManifest(cohort);
+    validate(predecessorValues.m1_receipt);
+    validateManifest(currentStateValues.baseline_manifest, { verifyFiles: false });
+    validateBaseline(currentStateValues.current_baseline, currentStateValues.baseline_manifest);
+    validateReport(
+      currentStateValues.current_measurement,
+      currentStateValues.baseline_manifest,
+      currentStateValues.current_baseline,
+      currentStateValues.current_measurement.current,
+    );
+  } catch (error) {
+    fail(`PASS M2 carried control validation failed: ${error.message}`);
+  }
+  if (canonicalJson(authority.bindings) !== canonicalJson(receipt.sealed_predecessor_bindings)) {
+    fail('PASS M2 authority does not bind the sealed predecessor set');
+  }
+  const control = predecessorValues.m0_control_manifest;
+  const expectedCurrentState = {
+    baseline_manifest: control.baseline_manifest,
+    current_baseline: control.current_baseline_binding,
+    current_measurement: control.current_measurement_binding,
+    current_rendered_rows: control.current_projection_binding,
+  };
+  if (canonicalJson(expectedCurrentState) !== canonicalJson(receipt.current_state_bindings)) {
+    fail('PASS M2 current-state bindings do not match the M0 control');
+  }
+  const controlledCohort = control.control_bindings?.['cohort-agreements.json'];
+  if (receipt.agreement_manifest_binding.path !== controlledCohort?.path
+    || receipt.agreement_manifest_binding.sha256 !== controlledCohort?.sha256
+    || receipt.agreement_manifest_binding.byte_length !== controlledCohort?.byte_length
+    || receipt.agreement_manifest_binding.source_manifest_id
+      !== currentStateValues.baseline_manifest.manifest_id
+    || cohort.source_manifest_id !== currentStateValues.baseline_manifest.manifest_id) {
+    fail('PASS M2 cohort, M0 control and baseline manifest do not cross-bind');
+  }
+  if (receipt.authority_binding.authorised_stage !== 'M2'
+    || receipt.authority_binding.instruction_date !== '2026-08-11'
+    || receipt.structural_policy_binding.policy_version !== policy.policy_version
+    || receipt.structural_policy_binding.policy_digest !== policy.policy_digest) {
+    fail('PASS M2 authority or policy binding metadata drift');
+  }
+
+  const totals = currentStateValues.current_measurement.current?.totals;
+  const fixed = control.fixed_measurements;
+  if (currentStateValues.current_measurement.current?.run_count !== 130
+    || totals?.attempted !== fixed.attempted
+    || totals?.resolved !== fixed.resolved
+    || totals?.open_world !== fixed.open_world
+    || totals?.review !== fixed.review
+    || totals?.rendering_funnel?.route_available !== fixed.route_available
+    || totals?.rendering_funnel?.row_emitted !== fixed.mechanical_successes
+    || totals?.render_failures?.CLAIM_FEATURE_ROW_NOT_UNIQUE
+      !== fixed.grouped_feature_fail_closed
+    || totals?.render_failures?.CLAIM_RENDERED_NO_ROW !== fixed.routed_no_row
+    || totals?.render_failures?.FAMILY_NOT_RENDERABLE !== fixed.no_approved_output_owner) {
+    fail('PASS M2 frozen extraction measurements drift');
+  }
+  const renderedRows = currentStateValues.current_rendered_rows;
+  if (renderedRows.schema_version !== 'STAGE_2Y_N_RENDERED_ROWS/V1'
+    || renderedRows.authority !== 'REPORT_ONLY'
+    || renderedRows.publication_authorisation !== 'NONE'
+    || renderedRows.run_count !== 130) {
+    fail('PASS M2 rendered-row authority drift');
+  }
+
+  const expectedPaths = cohort.agreements.map((agreement) =>
+    `${M2_OUTPUT_ROOT}/${agreement.agreement_id}.agreement-index.json`);
+  requireArray(receipt.output_bindings, 'PASS M2 output_bindings');
+  if (receipt.output_bindings.length !== expectedPaths.length) {
+    fail('PASS M2 output_bindings must contain seven indexes');
+  }
+  let sourceReferenceCount = 0;
+  const inlineParserMetricEntries = [];
+  const normalisedBindings = receipt.output_bindings.map((binding, index) => {
+    if (binding.path !== expectedPaths[index]) fail(`PASS M2 output path ${index} drift`);
+    const agreementIndex = readLooseBoundJson(binding, `PASS M2 output_bindings[${index}]`);
+    const agreement = cohort.agreements[index];
+    let exactSource;
+    try {
+      exactSource = exactSourceForAgreement({ agreement, agreementManifest: cohort, control });
+      sourceReferenceCount += exactSource.source_bindings.source_references.length;
+      assertAgreementIndex(agreementIndex, exactSource, policy);
+      const rebuiltIndex = indexAgreement(exactSource, policy);
+      if (canonicalJson(rebuiltIndex) !== canonicalJson(agreementIndex)) {
+        fail(`PASS M2 agreement index ${index} is not reproducible from exact source`);
+      }
+      inlineParserMetricEntries.push({ agreement, index: agreementIndex });
+    } catch (error) {
+      fail(`PASS M2 agreement index ${index} source or identity drift: ${error.message}`);
+    }
+    return {
+      path: binding.path,
+      byte_length: binding.byte_length,
+      sha256: binding.sha256,
+    };
+  });
+  if (sourceReferenceCount !== 130) fail('PASS M2 exact-source reference count drift');
+  const inlineParserMetrics = buildInlineParserMetrics(inlineParserMetricEntries);
+  if (canonicalJson(receipt.inline_parser_metrics) !== canonicalJson(inlineParserMetrics)
+    || canonicalJson(draft.inline_parser_metrics) !== canonicalJson(inlineParserMetrics)) {
+    fail('PASS M2 inline parser metrics drift');
+  }
+  const outputSetDigest = sha256Hex(Buffer.from(canonicalJson(normalisedBindings), 'utf8'));
+  if (receipt.output_set_digest !== outputSetDigest
+    || draft.output_set_digest !== outputSetDigest
+    || canonicalJson(draft.output_bindings) !== canonicalJson(normalisedBindings)
+    || receipt.new_shadow_result_digest !== outputSetDigest) {
+    fail('PASS M2 output set or shadow digest drift');
+  }
+
+  const reviewBinding = receipt.technical_review_binding;
+  if (reviewBinding?.path !== M2_REVIEW_PATH
+    || reviewBinding?.schema_version !== M2_REVIEW_SCHEMA) {
+    fail('PASS M2 technical review path or schema drift');
+  }
+  const review = readBoundJson(reviewBinding, 'PASS M2 technical review binding');
+  const { review_id: ignored, ...reviewPayload } = review;
+  if (review.review_id !== contentId(M2_REVIEW_SCHEMA, reviewPayload)
+    || review.stage !== 'M2'
+    || review.packet_id !== M2_PACKET_ID
+    || review.base_commit !== M2_BASE_COMMIT
+    || review.lifecycle_state !== 'SEALED'
+    || review.status !== 'APPROVED'
+    || review.verdict !== 'APPROVED'
+    || review.technical_decision !== 'AGREEMENT_INDEX_M2_ACCEPTED'
+    || review.reviewer?.role !== 'SOL'
+    || typeof review.reviewer?.identity !== 'string'
+    || review.reviewer.identity.length === 0
+    || canonicalJson(review.draft_receipt_binding) !== canonicalJson(draftBinding)
+    || review.output_set_digest !== outputSetDigest
+    || canonicalJson(review.output_bindings) !== canonicalJson(normalisedBindings)
+    || canonicalJson(review.inline_parser_metrics) !== canonicalJson(inlineParserMetrics)
+    || canonicalJson(review.focused_checks) !== canonicalJson(
+      M2_REVIEW_CHECKS.map((check) => ({ check, result: 'PASS' })),
+    )
+    || !Array.isArray(review.exceptions)
+    || review.exceptions.length !== 0) {
+    fail('PASS M2 Sol review is missing, stale or qualified');
+  }
+  assertExactKeys(review.implementation_bindings, Object.keys(M2_IMPLEMENTATION_PATHS),
+    'PASS M2 review implementation_bindings');
+
+  for (const [name, expectedPath] of Object.entries(M2_IMPLEMENTATION_PATHS)) {
+    const binding = receipt.implementation_bindings?.[name];
+    if (binding?.path !== expectedPath) fail(`PASS M2 implementation path drift: ${name}`);
+    const absolutePath = repositoryFile(expectedPath, `PASS M2 implementation ${name}`);
+    const bytes = readFileSync(absolutePath);
+    if (binding.byte_length !== bytes.length || binding.sha256 !== sha256Hex(bytes)) {
+      fail(`PASS M2 implementation digest drift: ${name}`);
+    }
+    const reviewed = review.implementation_bindings?.[name];
+    if (canonicalJson(reviewed) !== canonicalJson(binding)) {
+      fail(`PASS M2 review implementation binding drift: ${name}`);
+    }
+    if (draft.implementation_bindings?.[name]
+      && canonicalJson(draft.implementation_bindings[name]) !== canonicalJson(binding)) {
+      fail(`PASS M2 draft implementation binding drift: ${name}`);
+    }
+  }
+
+  const expectedInputDigests = {
+    control_manifest: M2_BINDINGS.sealed_predecessors.m0_control_manifest.sha256,
+    m0_receipt: M2_BINDINGS.sealed_predecessors.m0_receipt.sha256,
+    m1_receipt: M2_BINDINGS.sealed_predecessors.m1_receipt.sha256,
+    m2_authority: M2_BINDINGS.authority.sha256,
+    structural_policy: M2_BINDINGS.structural_policy.sha256,
+    agreement_manifest: M2_BINDINGS.agreement_manifest.sha256,
+    draft_receipt: draftBinding.sha256,
+    technical_review: reviewBinding.sha256,
+  };
+  if (canonicalJson(receipt.input_digests) !== canonicalJson(expectedInputDigests)) {
+    fail('PASS M2 input_digests do not exactly bind the finaliser inputs');
+  }
+  const expectedChangedFiles = [
+    M2_BINDINGS.authority.path,
+    M2_BINDINGS.structural_policy.path,
+    M2_IMPLEMENTATION_PATHS.agreement_index_module,
+    M2_IMPLEMENTATION_PATHS.private_inline_structure_module,
+    M2_IMPLEMENTATION_PATHS.private_inline_structure_test,
+    M2_IMPLEMENTATION_PATHS.shadow_runner,
+    M2_IMPLEMENTATION_PATHS.finaliser,
+    M2_IMPLEMENTATION_PATHS.validator,
+    M2_IMPLEMENTATION_PATHS.focused_test,
+    ...expectedPaths,
+    M2_DRAFT_PATH,
+    M2_REVIEW_PATH,
+    'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json',
+  ];
+  if (canonicalJson(receipt.changed_files) !== canonicalJson(expectedChangedFiles)
+    || canonicalJson(receipt.expected_differences) !== canonicalJson([])
+    || canonicalJson(receipt.unexpected_differences) !== canonicalJson([])
+    || receipt.rollback_result !== 'NOT_RUN_ADDITIVE_SHADOW_ONLY'
+    || receipt.rollback_command !== 'git revert --no-edit <M2_COMMIT_SHA>') {
+    fail('PASS M2 change allow-list, diff or rollback contract drift');
+  }
+  const runtimeKeys = [
+    'elapsed_milliseconds',
+    'rss_before_bytes',
+    'rss_after_bytes',
+    'heap_used_before_bytes',
+    'heap_used_after_bytes',
+    'process_peak_rss_kibibytes',
+  ];
+  assertExactKeys(receipt.runtime_measurements, runtimeKeys, 'PASS M2 runtime_measurements');
+  if (runtimeKeys.some((name) => !Number.isSafeInteger(receipt.runtime_measurements[name])
+    || receipt.runtime_measurements[name] < 0)) {
+    fail('PASS M2 runtime measurements must be non-negative integers');
+  }
+
+  if (canonicalJson(receipt.open_world_by_family)
+      !== canonicalJson(predecessorValues.m1_receipt.open_world_by_family)
+    || receipt.old_result_digest !== receipt.current_state_bindings.current_measurement.sha256) {
+    fail('PASS M2 changes the frozen semantic measurements');
+  }
+}
+
 function validate(receipt) {
   if (receipt.schema_version !== RECEIPT_SCHEMA) fail('schema_version drift');
   requireString(receipt.packet_id, 'packet_id');
@@ -319,6 +774,7 @@ function validate(receipt) {
     fail('status must be PASS, STOPPED or ESCALATED');
   }
   if (receipt.stage === 'M1' && receipt.status === 'PASS') validatePassedM1(receipt);
+  if (receipt.stage === 'M2' && receipt.status === 'PASS') validatePassedM2(receipt);
   return Object.freeze({
     schema_version: RECEIPT_SCHEMA,
     packet_id: receipt.packet_id,
