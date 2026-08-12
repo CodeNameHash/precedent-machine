@@ -50,7 +50,10 @@ function writeCanonical(path, value) {
   mkdirSync(dirname(path), { recursive: true });
   const next = `${canonicalJson(value)}\n`;
   if (existsSync(path)) {
-    if (readFileSync(path, 'utf8') !== next) fail('EXISTING_OUTPUT_DRIFT', repoPath(path));
+    if (readFileSync(path, 'utf8') !== next) {
+      if (!CORRECTION_MODE) fail('EXISTING_OUTPUT_DRIFT', repoPath(path));
+      writeFileSync(path, next);
+    }
     return;
   }
   writeFileSync(path, next, { flag: 'wx' });
