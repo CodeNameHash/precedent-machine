@@ -300,3 +300,74 @@ test('the gate keys on family and node together, not the node alone', () => {
   assert.equal(gated[1].proposition_validation_state, 'COMPLETE',
     'a different family sharing the same authored unit must not be dragged into review');
 });
+
+// --- one authored sentence is one legal unit ---------------------------------
+
+function unitText(index, unit) {
+  return Buffer.from(index.source_binding.canonical_text, 'utf8')
+    .subarray(unit.source_span.start_byte, unit.source_span.end_byte)
+    .toString('utf8')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+test('a container states as many rules as it has sentences', () => {
+  const order = familyOrder();
+  const counts = {};
+  let total = 0;
+  for (const index of indexes()) {
+    const binding = selectFamilySections(index, order)
+      .find((entry) => entry.family_key === 'REPRESENTATIONS');
+    assert.ok(binding.authored_units.length >= 1, 'a bound family states at least one rule');
+    counts[index.source_binding.deal] = binding.authored_units.length;
+    total += binding.authored_units.length;
+  }
+  // modiv's article is "…OF THE COMPANY PARTIES" and represents separately for
+  // the Company, the Partnership, every other Subsidiary, and qualification to
+  // do business. Binding one unit kept only the first of the four.
+  assert.equal(counts.modiv, 4, 'modiv states four organisation representations');
+  assert.equal(counts.topbuild, 2, 'topbuild represents for the Company and its Subsidiaries');
+  assert.equal(total, 11);
+});
+
+test('no rule text opens with a sub-heading label', () => {
+  const order = familyOrder();
+  for (const index of indexes()) {
+    const binding = selectFamilySections(index, order)
+      .find((entry) => entry.family_key === 'REPRESENTATIONS');
+    for (const unit of binding.authored_units) {
+      assert.doesNotMatch(unitText(index, unit), /^\([a-z0-9]+\)\s+[A-Z][^.]{0,60}\.\s+[A-Z]/,
+        `a sub-heading is being read as part of the rule: ${unitText(index, unit).slice(0, 80)}`);
+    }
+  }
+});
+
+test('every unit states the representation its container was selected for', () => {
+  const order = familyOrder();
+  for (const index of indexes()) {
+    const binding = selectFamilySections(index, order)
+      .find((entry) => entry.family_key === 'REPRESENTATIONS');
+    for (const unit of binding.authored_units) {
+      assert.match(unitText(index, unit),
+        /\b(?:duly (?:organi[sz]ed|incorporated|formed)|validly existing|good standing)\b/i,
+        // TopBuild's organisation limb runs on into an MAE carve-out and an
+        // "Affiliate" definition; neither is a representation.
+        `off-topic sentence bound as a representation: ${unitText(index, unit).slice(0, 90)}`);
+    }
+  }
+});
+
+test('the container and its chapeau stay reachable as evidence', () => {
+  const order = familyOrder();
+  for (const index of indexes()) {
+    const binding = selectFamilySections(index, order)
+      .find((entry) => entry.family_key === 'REPRESENTATIONS');
+    assert.ok(binding.source_node_occurrence_id, 'the container is recorded');
+    assert.ok(binding.context_chapeau_node_occurrence_id, 'the governing chapeau is recorded');
+    for (const unit of binding.authored_units) {
+      assert.ok(unit.source_span.start_byte >= binding.source_span.start_byte
+        && unit.source_span.end_byte <= binding.source_span.end_byte,
+      'every unit lies inside the container that is cited as its evidence');
+    }
+  }
+});
