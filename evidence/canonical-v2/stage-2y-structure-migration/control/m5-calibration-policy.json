@@ -1,0 +1,1062 @@
+{
+  "schema_version": "STAGE_2Y_M5_CALIBRATION_POLICY/V1",
+  "policy_version": 1,
+  "policy_digest": "29235e0a0fac4b5a3096f11f84c0c05e681a031191ef9588fe2745f3b3572a91",
+  "stage": "M5_PREPARATION",
+  "hidden_defaults": false,
+  "full_contract_review_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/reviews/stage-2y-structure-m5-preparation-sol-freeze.json",
+    "byte_length": 30283,
+    "sha256": "0df3384046347bc0f80bb7a7e36b44928ba67f0b9134632b6e6f9e2923549b8f",
+    "schema_version": "STAGE_2Y_M5_PREPARATION_FULL_CONTRACT_SOL_FREEZE/V1",
+    "review_id": "66c84855ae665b4297e49b9a860687248ebb0a69a70e7c779e4ca23c20504013",
+    "verdict": "PASS_PREPARATION_CONTRACT_ONLY"
+  },
+  "dependency_contract": {
+    "required_receipts": [
+      {
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+        "byte_length": 20126,
+        "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585",
+        "stage": "M2",
+        "schema_version": "STAGE_2Y_STRUCTURE_MIGRATION_PACKET_RECEIPT/V1",
+        "lifecycle_state": "SEALED",
+        "status": "PASS",
+        "output_set_digest": "5746d28d800d83f60619e947677f70d65c7c4daf902a88c4ec3515adf069be30",
+        "output_count": 7
+      },
+      {
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+        "byte_length": 17449,
+        "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855",
+        "stage": "M3",
+        "schema_version": "STAGE_2Y_STRUCTURE_MIGRATION_PACKET_RECEIPT/V1",
+        "lifecycle_state": "SEALED",
+        "status": "PASS",
+        "output_set_digest": "6d47a766c49eacaedbbfa4c4db9ad0169dcfc286eaebea424bfea2a64988a376",
+        "output_count": 8
+      },
+      {
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json",
+        "byte_length": 13670,
+        "sha256": "54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41",
+        "stage": "M4",
+        "schema_version": "STAGE_2Y_STRUCTURE_MIGRATION_PACKET_RECEIPT/V1",
+        "lifecycle_state": "SEALED",
+        "status": "PASS",
+        "output_set_digest": "c38c29e268c2da56ba99f44cf5b6663e305cff418bdddc529842610f3290074a",
+        "output_count": 8
+      }
+    ],
+    "recursive_receipt_validation": [
+      "READ_EXACT_BOUND_RECEIPT_BYTES",
+      "REQUIRE_SCHEMA_STAGE_LIFECYCLE_STATUS",
+      "REQUIRE_RECEIPT_OUTPUT_BINDINGS_EXACT_ARRAY",
+      "REHASH_EVERY_OUTPUT_PATH_AND_REQUIRE_BYTE_LENGTH_AND_SHA256",
+      "RECOMPUTE_SHA256_OF_CANONICAL_OUTPUT_BINDINGS",
+      "REQUIRE_OUTPUT_SET_DIGEST_EQUALITY",
+      "REQUIRE_M3_BOUND_M2_RECEIPT_EQUAL_EXPLICIT_M2",
+      "REQUIRE_M4_BOUND_M2_AND_M3_RECEIPTS_EQUAL_EXPLICIT_PREDECESSORS"
+    ],
+    "agreement_count": 7,
+    "m2_output_count": 7,
+    "m3_output_count": 8,
+    "m4_output_count": 8,
+    "m4_agreement_analysis_count": 7,
+    "m4_resolution_diff_count": 1
+  },
+  "repository_contract": {
+    "base_commit": "81de892f86af8eaead83b7b320b6a36e6729d747",
+    "controls": [
+      {
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/control/analysis-policy.json",
+        "byte_length": 252175,
+        "sha256": "2ac70b72546cb8acb8bb2e031368c7128e2ccad659c1cf1ec1fc6042b53c7927",
+        "schema_version": "STAGE_2Y_ANALYSIS_POLICY/V1",
+        "policy_version": 1,
+        "policy_digest": "c4e0f233d7e247ebe348b811fa774d07a7618b8501859039b73cb4c931d014cd"
+      },
+      {
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m4-authority.json",
+        "byte_length": 24067,
+        "sha256": "adeb24bf047a5fb462a71b6b5a0994d3ca88bdfab48d66ce6f7a8d8a51b4bc0f",
+        "schema_version": "STAGE_2Y_M4_AUTHORITY/V1",
+        "authority_version": 1,
+        "authority_digest": "b97a2e78617813d4806fb755c841dabbb7b88c62a13fb37a43eb148057088f60"
+      },
+      {
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json",
+        "byte_length": 827,
+        "sha256": "7aa5ff41eb778884cdbb6f18ba72138c20420a2475949aca5dcbc0d2098a938d",
+        "schema_version": "STAGE_2Y_STRUCTURE_FAMILY_KEYS/V1"
+      },
+      {
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/control/cohort-agreements.json",
+        "byte_length": 22805,
+        "sha256": "0dd150d57da4894f30cd94df53c1983395abc98474b716332e71aa40375f2ecc",
+        "source_manifest_id": "57c92c68b3e3b0ce63c036ebb15effa892612a28c1b149bf6154e2989d058b30"
+      },
+      {
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json",
+        "byte_length": 379235,
+        "sha256": "62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41"
+      },
+      {
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/control/diff-contract.json",
+        "byte_length": 1171,
+        "sha256": "2585c7af9e47c4f7a6915ef1667f5eb8dbce26a8a30829bae15e42a7d41ab0c8"
+      }
+    ],
+    "path_rule": "REPOSITORY_RELATIVE_NORMALISED_PATH_NO_SYMLINK_COMPONENT_AND_RESOLVES_WITHIN_REPOSITORY",
+    "exact_preparation_output_count": 50,
+    "preparation_outputs": [
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/EMPLOYEE_MATTERS.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/EMPLOYEE_MATTERS.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/TERMINATION.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/TERMINATION.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/GENERAL_COVENANTS.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/GENERAL_COVENANTS.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/CLOSING_CONDITIONS.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/CLOSING_CONDITIONS.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/MAE_DEFINITION.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/MAE_DEFINITION.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/KEY_DEFINED_TERMS.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/KEY_DEFINED_TERMS.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/REPRESENTATIONS.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/REPRESENTATIONS.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/INTERIM_OPERATING.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/INTERIM_OPERATING.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/NO_SHOP.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/NO_SHOP.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/DNO_INDEMNIFICATION.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/DNO_INDEMNIFICATION.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/NO_OTHER_REPS_FRAUD.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/NO_OTHER_REPS_FRAUD.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/ANTITRUST_REGULATORY.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/ANTITRUST_REGULATORY.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/APPRAISAL_DISSENTERS_RIGHTS.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/APPRAISAL_DISSENTERS_RIGHTS.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/CAPITALISATION.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/CAPITALISATION.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/CONSIDERATION.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/CONSIDERATION.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/DIVIDENDS.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/DIVIDENDS.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/FINANCING_COVENANTS.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/FINANCING_COVENANTS.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/GUARANTY_FINANCING_PARTY.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/GUARANTY_FINANCING_PARTY.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/MATERIAL_CONTRACTS.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/MATERIAL_CONTRACTS.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/MERGER_STRUCTURE_CLOSING.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/MERGER_STRUCTURE_CLOSING.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/MISC_BOILERPLATE.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/MISC_BOILERPLATE.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/PROXY_MEETING.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/PROXY_MEETING.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/SPECIFIC_PERFORMANCE_REMEDIES.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/SPECIFIC_PERFORMANCE_REMEDIES.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/TAX_MATTERS.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/TAX_MATTERS.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/TERMINATION_FEE.json",
+      "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/TERMINATION_FEE.json"
+    ],
+    "approved_role_schema_path_pattern": "evidence/canonical-v2/stage-2y-structure-migration/control/family-role-schemas/<family_key>.json",
+    "approved_role_schema_paths_allowed_during_preparation": false,
+    "shadow_m5_paths_allowed_during_preparation": false,
+    "family_receipt_paths_allowed_during_preparation": false
+  },
+  "family_order_contract": {
+    "family_count": 25,
+    "wave_count": 4,
+    "exact_comparator_run_count": 130,
+    "ordering_rule": "ASCENDING_ORDINAL_AS_LISTED_IN_PLAN_SECTION_10",
+    "families": [
+      {
+        "ordinal": 1,
+        "wave": 1,
+        "family_key": "EMPLOYEE_MATTERS",
+        "exact_comparator_run_count": 6,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/EMPLOYEE_MATTERS.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/EMPLOYEE_MATTERS.json"
+      },
+      {
+        "ordinal": 2,
+        "wave": 1,
+        "family_key": "TERMINATION",
+        "exact_comparator_run_count": 6,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/TERMINATION.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/TERMINATION.json"
+      },
+      {
+        "ordinal": 3,
+        "wave": 1,
+        "family_key": "GENERAL_COVENANTS",
+        "exact_comparator_run_count": 7,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/GENERAL_COVENANTS.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/GENERAL_COVENANTS.json"
+      },
+      {
+        "ordinal": 4,
+        "wave": 2,
+        "family_key": "CLOSING_CONDITIONS",
+        "exact_comparator_run_count": 7,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/CLOSING_CONDITIONS.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/CLOSING_CONDITIONS.json"
+      },
+      {
+        "ordinal": 5,
+        "wave": 2,
+        "family_key": "MAE_DEFINITION",
+        "exact_comparator_run_count": 5,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/MAE_DEFINITION.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/MAE_DEFINITION.json"
+      },
+      {
+        "ordinal": 6,
+        "wave": 2,
+        "family_key": "KEY_DEFINED_TERMS",
+        "exact_comparator_run_count": 6,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/KEY_DEFINED_TERMS.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/KEY_DEFINED_TERMS.json"
+      },
+      {
+        "ordinal": 7,
+        "wave": 2,
+        "family_key": "REPRESENTATIONS",
+        "exact_comparator_run_count": 6,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/REPRESENTATIONS.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/REPRESENTATIONS.json"
+      },
+      {
+        "ordinal": 8,
+        "wave": 3,
+        "family_key": "INTERIM_OPERATING",
+        "exact_comparator_run_count": 6,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/INTERIM_OPERATING.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/INTERIM_OPERATING.json"
+      },
+      {
+        "ordinal": 9,
+        "wave": 3,
+        "family_key": "NO_SHOP",
+        "exact_comparator_run_count": 7,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/NO_SHOP.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/NO_SHOP.json"
+      },
+      {
+        "ordinal": 10,
+        "wave": 3,
+        "family_key": "DNO_INDEMNIFICATION",
+        "exact_comparator_run_count": 7,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/DNO_INDEMNIFICATION.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/DNO_INDEMNIFICATION.json"
+      },
+      {
+        "ordinal": 11,
+        "wave": 3,
+        "family_key": "NO_OTHER_REPS_FRAUD",
+        "exact_comparator_run_count": 7,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/NO_OTHER_REPS_FRAUD.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/NO_OTHER_REPS_FRAUD.json"
+      },
+      {
+        "ordinal": 12,
+        "wave": 3,
+        "family_key": "ANTITRUST_REGULATORY",
+        "exact_comparator_run_count": 7,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/ANTITRUST_REGULATORY.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/ANTITRUST_REGULATORY.json"
+      },
+      {
+        "ordinal": 13,
+        "wave": 4,
+        "family_key": "APPRAISAL_DISSENTERS_RIGHTS",
+        "exact_comparator_run_count": 3,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/APPRAISAL_DISSENTERS_RIGHTS.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/APPRAISAL_DISSENTERS_RIGHTS.json"
+      },
+      {
+        "ordinal": 14,
+        "wave": 4,
+        "family_key": "CAPITALISATION",
+        "exact_comparator_run_count": 0,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/CAPITALISATION.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/CAPITALISATION.json"
+      },
+      {
+        "ordinal": 15,
+        "wave": 4,
+        "family_key": "CONSIDERATION",
+        "exact_comparator_run_count": 4,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/CONSIDERATION.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/CONSIDERATION.json"
+      },
+      {
+        "ordinal": 16,
+        "wave": 4,
+        "family_key": "DIVIDENDS",
+        "exact_comparator_run_count": 1,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/DIVIDENDS.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/DIVIDENDS.json"
+      },
+      {
+        "ordinal": 17,
+        "wave": 4,
+        "family_key": "FINANCING_COVENANTS",
+        "exact_comparator_run_count": 3,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/FINANCING_COVENANTS.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/FINANCING_COVENANTS.json"
+      },
+      {
+        "ordinal": 18,
+        "wave": 4,
+        "family_key": "GUARANTY_FINANCING_PARTY",
+        "exact_comparator_run_count": 1,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/GUARANTY_FINANCING_PARTY.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/GUARANTY_FINANCING_PARTY.json"
+      },
+      {
+        "ordinal": 19,
+        "wave": 4,
+        "family_key": "MATERIAL_CONTRACTS",
+        "exact_comparator_run_count": 6,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/MATERIAL_CONTRACTS.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/MATERIAL_CONTRACTS.json"
+      },
+      {
+        "ordinal": 20,
+        "wave": 4,
+        "family_key": "MERGER_STRUCTURE_CLOSING",
+        "exact_comparator_run_count": 7,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/MERGER_STRUCTURE_CLOSING.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/MERGER_STRUCTURE_CLOSING.json"
+      },
+      {
+        "ordinal": 21,
+        "wave": 4,
+        "family_key": "MISC_BOILERPLATE",
+        "exact_comparator_run_count": 6,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/MISC_BOILERPLATE.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/MISC_BOILERPLATE.json"
+      },
+      {
+        "ordinal": 22,
+        "wave": 4,
+        "family_key": "PROXY_MEETING",
+        "exact_comparator_run_count": 6,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/PROXY_MEETING.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/PROXY_MEETING.json"
+      },
+      {
+        "ordinal": 23,
+        "wave": 4,
+        "family_key": "SPECIFIC_PERFORMANCE_REMEDIES",
+        "exact_comparator_run_count": 6,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/SPECIFIC_PERFORMANCE_REMEDIES.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/SPECIFIC_PERFORMANCE_REMEDIES.json"
+      },
+      {
+        "ordinal": 24,
+        "wave": 4,
+        "family_key": "TAX_MATTERS",
+        "exact_comparator_run_count": 4,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/TAX_MATTERS.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/TAX_MATTERS.json"
+      },
+      {
+        "ordinal": 25,
+        "wave": 4,
+        "family_key": "TERMINATION_FEE",
+        "exact_comparator_run_count": 6,
+        "calibration_pack_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/TERMINATION_FEE.json",
+        "proposed_role_schema_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/TERMINATION_FEE.json"
+      }
+    ]
+  },
+  "comparator_contract": {
+    "registry_path": "evidence/canonical-v2/stage-2y-structure-migration/control/analysis-policy.json",
+    "registry_json_pointer": "/input_contract/legacy_run_bindings",
+    "exact_run_count": 130,
+    "binding_set_digest": "e25fd2189079628fdbdc45d4fa5678aec60270f9c044d8e62f67a522bec3d449",
+    "binding_set_digest_rule": "VALUE_MUST_EQUAL_SEALED_ANALYSIS_POLICY_LITERAL_AND_RECOMPUTED_VALUE_UNDER_ITS_FROZEN_ALGORITHM",
+    "family_run_selection": "FILTER_EXACT_REGISTRY_ARRAY_BY_EXACT_FAMILY_KEY_AND_RETAIN_REGISTRY_ARRAY_ORDER",
+    "run_binding_exact_members": [
+      "agreement_id",
+      "deal",
+      "run_identifier",
+      "family",
+      "resolution_binding",
+      "adapter_result_binding",
+      "validation_binding",
+      "expected_counts"
+    ],
+    "bound_file_members": [
+      "path",
+      "byte_length",
+      "sha256"
+    ],
+    "expected_counts_exact_members": [
+      "resolution_claims",
+      "write_set_claims",
+      "validation_claims",
+      "resolution_evidence",
+      "supplemental_claims"
+    ],
+    "supplemental_contract": {
+      "classification": "SUPPLEMENTAL_NON_COMPARATOR",
+      "may_supply_complete_source_example": true,
+      "may_supply_legal_question": true,
+      "may_affect_comparator_run_count": false,
+      "may_affect_current_shadow_parity": false,
+      "may_affect_official_open_world": false,
+      "may_affect_resolved_change": false,
+      "may_unlock_family_runner": false
+    },
+    "capitalisation_contract": {
+      "exact_comparator_run_count": 0,
+      "all_inputs": "SUPPLEMENTAL_NON_COMPARATOR",
+      "product_status": "PARKED_NON_SERVING"
+    }
+  },
+  "state_vocabularies": {
+    "calibration_pack_status": [
+      "PROPOSED_AWAITING_BEN_APPROVAL",
+      "REVISION_REQUESTED",
+      "SUPERSEDED"
+    ],
+    "proposed_role_schema_status": [
+      "PROPOSED_AWAITING_BEN_APPROVAL",
+      "REVISION_REQUESTED",
+      "SUPERSEDED"
+    ],
+    "legal_question_status": [
+      "OPEN_REQUIRES_BEN_RULING",
+      "RESOLVED_BY_BEN_RULING",
+      "NOT_APPLICABLE"
+    ],
+    "input_classification": [
+      "SEALED_COMPARATOR",
+      "SUPPLEMENTAL_NON_COMPARATOR"
+    ],
+    "cross_family_dependency_kind": [
+      "DEFINITION_OWNER",
+      "DEFINITION_CONSUMER",
+      "REFERENCE_OWNER",
+      "REFERENCE_CONSUMER",
+      "QUALIFICATION_SCOPE",
+      "SHARED_PARTY_TOPOLOGY",
+      "CLAIM_IDENTITY_LINK",
+      "OUTPUT_OWNERSHIP_BOUNDARY"
+    ],
+    "cross_family_disposition": [
+      "LINK_ONLY_DO_NOT_DUPLICATE",
+      "OWNED_BY_OTHER_FAMILY",
+      "CONSUMED_FROM_STABLE_ID",
+      "BLOCKED_AMBIGUOUS_OR_UNRESOLVED"
+    ],
+    "missing_role_disposition": [
+      "MISSING_REQUIRED_ROLE"
+    ],
+    "renderability": [
+      "NEVER_RENDER_FROM_PROPOSAL",
+      "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+    ],
+    "approval_state": [
+      "NOT_APPROVED",
+      "BEN_APPROVED_AND_SEALED"
+    ]
+  },
+  "identity_contract": {
+    "canonical_json": "lib/canonical-v2/canonical-bytes.js canonicalJson",
+    "sha256": "LOWERCASE_HEX_SHA256_UTF8_BYTES",
+    "content_id": "contentId(schema_version,payload)",
+    "calibration_pack": {
+      "unsigned_payload": "COMPLETE_RECORD_EXCLUDING_calibration_pack_id_AND_calibration_pack_digest",
+      "digest": "SHA256_CANONICAL_JSON_UNSIGNED_PAYLOAD",
+      "id_payload": "UNSIGNED_PAYLOAD_PLUS_calibration_pack_digest",
+      "id": "contentId(schema_version,id_payload)"
+    },
+    "proposed_role_schema": {
+      "unsigned_payload": "COMPLETE_RECORD_EXCLUDING_proposed_role_schema_id_AND_proposal_digest",
+      "digest": "SHA256_CANONICAL_JSON_UNSIGNED_PAYLOAD",
+      "id_payload": "UNSIGNED_PAYLOAD_PLUS_proposal_digest",
+      "id": "contentId(schema_version,id_payload)"
+    },
+    "preparation_receipt": {
+      "unsigned_payload": "COMPLETE_RECORD_EXCLUDING_receipt_id_AND_receipt_digest",
+      "digest": "SHA256_CANONICAL_JSON_UNSIGNED_PAYLOAD",
+      "id_payload": "UNSIGNED_PAYLOAD_PLUS_receipt_digest",
+      "id": "contentId(schema_version,id_payload)"
+    },
+    "cross_family_references_must_resolve": true,
+    "cross_family_record_identity_may_not_be_equated_without_exact_link": true,
+    "duplicate_ids_allowed": false
+  },
+  "ordering_contract": {
+    "calibration_packs": "EXACT_FAMILY_ORDER",
+    "proposed_role_schemas": "EXACT_FAMILY_ORDER",
+    "receipt_output_bindings": "FOR_EACH_EXACT_FAMILY_ORDER_CALIBRATION_PACK_THEN_PROPOSED_ROLE_SCHEMA",
+    "comparator_run_bindings": "SEALED_ANALYSIS_POLICY_REGISTRY_ORDER_FILTERED_BY_FAMILY",
+    "supplemental_input_bindings": "LEXICAL_ASCENDING_supplemental_id",
+    "provision_examples": "ASCENDING_AGREEMENT_ORDINAL_THEN_MINIMUM_SOURCE_START_BYTE_THEN_example_id",
+    "complete_source_node_occurrence_ids": "SOURCE_ORDER",
+    "source_spans": "ASCENDING_start_byte_THEN_end_byte",
+    "m3_dependency_ids": "LEXICAL_ASCENDING",
+    "m4_claim_ids": "LEXICAL_ASCENDING",
+    "cross_family_dependencies": "LEXICAL_ASCENDING_dependency_id",
+    "legal_questions": "LEXICAL_ASCENDING_question_id",
+    "subtype_profiles": "DECLARED_PROFILE_ORDER",
+    "required_roles": "DECLARED_ROLE_ORDER",
+    "optional_roles": "DECLARED_ROLE_ORDER",
+    "open_legal_question_ids": "LEXICAL_ASCENDING",
+    "diagnostics": "LEXICAL_ASCENDING_code_THEN_related_id"
+  },
+  "calibration_pack_contract": {
+    "schema_version": "STAGE_2Y_FAMILY_CALIBRATION_PACK/V1",
+    "exact_top_level_members": [
+      "schema_version",
+      "calibration_pack_id",
+      "calibration_pack_digest",
+      "family_key",
+      "wave",
+      "pack_version",
+      "status",
+      "purpose",
+      "authority_binding",
+      "calibration_policy_binding",
+      "m4_receipt_binding",
+      "m2_receipt_binding",
+      "m3_receipt_binding",
+      "family_manifest_binding",
+      "control_manifest_binding",
+      "diff_contract_binding",
+      "comparator_run_bindings",
+      "supplemental_input_bindings",
+      "provision_examples",
+      "cross_family_dependencies",
+      "proposed_output_policy",
+      "narrow_legal_questions",
+      "preparation_diagnostics",
+      "preparation_effects"
+    ],
+    "required_literals": {
+      "pack_version": 1,
+      "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+      "purpose": "LEGAL_CALIBRATION_PREPARATION_ONLY"
+    },
+    "binding_exact_members": [
+      "path",
+      "byte_length",
+      "sha256"
+    ],
+    "supplemental_input_binding_exact_members": [
+      "supplemental_id",
+      "classification",
+      "reason",
+      "agreement_id",
+      "source_binding",
+      "m2_node_bindings",
+      "m3_dependency_bindings",
+      "may_affect_comparator_metrics"
+    ],
+    "supplemental_literals": {
+      "classification": "SUPPLEMENTAL_NON_COMPARATOR",
+      "may_affect_comparator_metrics": false
+    },
+    "m2_node_binding_exact_members": [
+      "agreement_id",
+      "agreement_index_id",
+      "node_occurrence_id",
+      "node_kind",
+      "reference",
+      "extent_span",
+      "structure_revision_id"
+    ],
+    "m3_dependency_binding_exact_members": [
+      "agreement_id",
+      "context_compilation_id",
+      "dependency_kind",
+      "dependency_id",
+      "state",
+      "reason_code"
+    ],
+    "provision_example_exact_members": [
+      "example_id",
+      "agreement_id",
+      "deal",
+      "printed_reference",
+      "complete_source_node_occurrence_ids",
+      "source_spans",
+      "source_text_sha256s",
+      "structure_revision_ids",
+      "m3_dependency_ids",
+      "m4_claim_ids",
+      "comparator_run_identifiers",
+      "material_difference_tags",
+      "proposed_subtype",
+      "legal_question_ids"
+    ],
+    "source_span_exact_members": [
+      "coordinate_system",
+      "start_byte",
+      "end_byte",
+      "text_sha256"
+    ],
+    "source_span_literals": {
+      "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN"
+    },
+    "example_count": {
+      "minimum": 3,
+      "maximum": 10
+    },
+    "complete_provision_rule": "Every example must bind all M2 nodes needed to reconstruct the complete authored provision. A recognised fragment is not an example.",
+    "source_validation_rule": "Every node ID, structure revision, half-open span and text hash must equal the sealed M2 index. Every M3 dependency must exist in the same agreement context output and be RESOLVED unless the example explicitly records a blocker.",
+    "cross_family_dependency_exact_members": [
+      "dependency_id",
+      "kind",
+      "owning_family",
+      "consuming_family",
+      "source_identity",
+      "required_edge_ids",
+      "disposition"
+    ],
+    "source_identity_exact_members": [
+      "agreement_id",
+      "node_occurrence_ids",
+      "annotation_or_claim_ids"
+    ],
+    "proposed_output_policy_exact_members": [
+      "candidate_claim_definition_keys",
+      "candidate_subtype_profile_ids",
+      "non_output_dispositions",
+      "family_ownership_boundary",
+      "renderability",
+      "complete_transition"
+    ],
+    "proposed_output_policy_literals": {
+      "renderability": "NEVER_RENDER_FROM_PROPOSAL",
+      "complete_transition": "NOT_AUTHORISED"
+    },
+    "legal_question_exact_members": [
+      "question_id",
+      "question",
+      "affected_example_ids",
+      "two_plausible_readings",
+      "recommended_reading",
+      "status",
+      "ben_ruling_id"
+    ],
+    "open_question_literals": {
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    "diagnostic_exact_members": [
+      "code",
+      "severity",
+      "related_id",
+      "detail"
+    ],
+    "preparation_effects_exact_members": [
+      "model_calls",
+      "family_runner_calls",
+      "database_writes",
+      "product_writes",
+      "selector_changes",
+      "pin_changes",
+      "baseline_changes",
+      "serving_changes",
+      "publication_actions"
+    ],
+    "preparation_effects_required_zero": true,
+    "no_absence_claims": true
+  },
+  "proposed_role_schema_contract": {
+    "schema_version": "STAGE_2Y_PROPOSED_FAMILY_REQUIRED_ROLE_SCHEMA/V1",
+    "exact_top_level_members": [
+      "schema_version",
+      "proposed_role_schema_id",
+      "proposal_digest",
+      "family_key",
+      "role_schema_version",
+      "status",
+      "runner_eligible",
+      "complete_transition_authorised",
+      "approval_id",
+      "schema_authority",
+      "authority_binding",
+      "calibration_policy_binding",
+      "calibration_pack_binding",
+      "claim_definition_scope",
+      "subtype_profiles",
+      "cross_family_dependencies",
+      "renderability_rule",
+      "approval_requirements",
+      "prohibitions",
+      "open_legal_question_ids"
+    ],
+    "required_literals": {
+      "role_schema_version": 1,
+      "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+      "runner_eligible": false,
+      "complete_transition_authorised": false,
+      "approval_id": null,
+      "schema_authority": null,
+      "renderability_rule": "NEVER_RENDER_FROM_PROPOSAL"
+    },
+    "claim_definition_scope_exact_members": [
+      "included_claim_definition_keys",
+      "excluded_claim_definition_keys",
+      "source_first_rule",
+      "proposition_unit_rule"
+    ],
+    "subtype_profile_exact_members": [
+      "profile_id",
+      "profile_version",
+      "claim_definition_keys",
+      "proposition_unit",
+      "applicability_rule",
+      "required_roles",
+      "optional_roles",
+      "role_order",
+      "cross_family_rules",
+      "unresolved_legal_question_ids"
+    ],
+    "role_exact_members": [
+      "role_key",
+      "value_type",
+      "cardinality",
+      "required_for_complete",
+      "allowed_sources",
+      "provenance_requirements",
+      "definition_or_reference_edge_requirement",
+      "scope_requirement",
+      "missing_disposition",
+      "renderability_on_missing"
+    ],
+    "role_literals": {
+      "missing_disposition": "MISSING_REQUIRED_ROLE",
+      "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+    },
+    "allowed_sources": [
+      "M2_SOURCE_NODE",
+      "M3_CONTEXT_FACT",
+      "M3_SCOPE_EDGE",
+      "M3_REFERENCE_EDGE",
+      "M3_DEFINITION_EDGE",
+      "M3_SEMANTIC_RELATIONSHIP",
+      "M4_ROLE_PROVENANCE"
+    ],
+    "provenance_minimum": [
+      "agreement_id",
+      "source_node_occurrence_id",
+      "source_span",
+      "source_text_sha256",
+      "source_role"
+    ],
+    "approval_requirements_exact_members": [
+      "required_approver",
+      "required_approval_id",
+      "required_ruling_ids",
+      "required_payload_digest",
+      "required_sealed_path",
+      "new_family_execution_authority_required"
+    ],
+    "approval_requirements_literals": {
+      "required_approver": "BEN_GOODCHILD",
+      "required_approval_id": "NON_NULL",
+      "required_payload_digest": "RECOMPUTED",
+      "required_sealed_path": "control/family-role-schemas/<family_key>.json",
+      "new_family_execution_authority_required": true
+    },
+    "prohibitions": [
+      "NO_RUNNER_INPUT",
+      "NO_COMPLETE_TRANSITION",
+      "NO_RENDERING",
+      "NO_APPROVAL_INFERENCE",
+      "NO_RAW_SOURCE_REPARSE",
+      "NO_PROJECTION_ROLE_FILL",
+      "NO_CROSS_FAMILY_CONTENT_DUPLICATION"
+    ]
+  },
+  "cross_family_dependency_contract": {
+    "rule": "One family owns each authored proposition or definition. Other families link to its stable identity and resolved M3 edges. They do not copy its contents.",
+    "required_for_definition_consumers": "EXACT_RESOLVED_M3_DEFINITION_EDGE",
+    "required_for_reference_consumers": "EXACT_RESOLVED_M3_REFERENCE_EDGE",
+    "ambiguous_or_unresolved_disposition": "BLOCKED_AMBIGUOUS_OR_UNRESOLVED",
+    "projection_may_supply_missing_role": false,
+    "known_boundaries": [
+      "MAE_DEFINITION_OWNS_COMPLETE_MAE_DEFINITION",
+      "KEY_DEFINED_TERMS_OWNS_NON_MAE_KEY_DEFINITIONS",
+      "REPRESENTATIONS_OWNS_REPRESENTATION_USE_OF_KNOWLEDGE",
+      "CLOSING_CONDITIONS_OWNS_CLOSING_CONDITION",
+      "INTERIM_OPERATING_OWNS_OPERATIONAL_RESTRICTION",
+      "CONSIDERATION_OWNS_MERGER_VALUE_AND_EXCHANGE_MECHANICS",
+      "DIVIDENDS_OWNS_ONLY_APPROVED_STANDALONE_COORDINATION_OR_PAYMENT_PROPOSITION",
+      "CAPITALISATION_REMAINS_PARKED_NON_SERVING"
+    ]
+  },
+  "approval_transition_contract": {
+    "proposal_never_mutates_in_place": true,
+    "proposal_source_path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/proposed-role-schemas/<family_key>.json",
+    "approved_destination_path": "evidence/canonical-v2/stage-2y-structure-migration/control/family-role-schemas/<family_key>.json",
+    "approved_schema_version": "STAGE_2Y_FAMILY_REQUIRED_ROLE_SCHEMA/V1",
+    "approved_schema_required_members": [
+      "schema_version",
+      "family_role_schema_id",
+      "payload_digest",
+      "family_key",
+      "role_schema_version",
+      "approval_state",
+      "approval_id",
+      "approver",
+      "approved_at",
+      "source_proposal_binding",
+      "calibration_pack_binding",
+      "ruling_bindings",
+      "claim_definition_scope",
+      "subtype_profiles",
+      "cross_family_dependencies",
+      "prohibitions"
+    ],
+    "required_literals": {
+      "approval_state": "BEN_APPROVED_AND_SEALED",
+      "approver": "BEN_GOODCHILD"
+    },
+    "required_checks": [
+      "SOURCE_PROPOSAL_EXACT_BYTES",
+      "CALIBRATION_PACK_EXACT_BYTES",
+      "ALL_OPEN_LEGAL_QUESTIONS_BOUND_TO_BEN_RULINGS",
+      "RECOMPUTED_PAYLOAD_DIGEST",
+      "RECOMPUTED_FAMILY_ROLE_SCHEMA_ID",
+      "EXACT_FAMILY_KEY",
+      "NEW_FAMILY_EXECUTION_AUTHORITY_BINDS_APPROVED_SCHEMA_BYTES"
+    ],
+    "copy_or_status_edit_disposition": "REJECT",
+    "proposal_can_unlock_runner": false
+  },
+  "family_role_schema_authority_interface_contract": {
+    "module_path": "lib/canonical-v2/family-role-schema-authority.js",
+    "state": "AUTHORISED_FOR_LATER_PREPARATION_IMPLEMENTATION_NOT_YET_PRESENT",
+    "private_interface": "validateApprovedFamilyRoleSchema(roleSchemaBytes, familyExecutionAuthority) -> ApprovedFamilyRoleSchema",
+    "proposal_rejection": "FAIL_BEFORE_JSON_SEMANTIC_USE_IF_SCHEMA_VERSION_IS_PROPOSED_OR_APPROVAL_BINDINGS_ARE_ABSENT",
+    "no_public_mutation": true
+  },
+  "future_adapter_interface_contract": {
+    "state": "DEFINED_BUT_NOT_AUTHORISED_OR_CALLABLE",
+    "private_interface": "adaptFamily(baseAnalysis, familyTask) -> FamilyAdapterResult",
+    "runner_path": "scripts/stage-2y-structure-family-compare.mjs",
+    "runner_exists_or_is_authorised": false,
+    "runner_cli_exact_members": [
+      "--family",
+      "--family-manifest",
+      "--control",
+      "--role-schema",
+      "--m4-receipt",
+      "--analysis-root",
+      "--output-root"
+    ],
+    "family_task_schema_version": "STAGE_2Y_FAMILY_ADAPTER_TASK/V1",
+    "family_task_exact_members": [
+      "schema_version",
+      "family_task_id",
+      "family_key",
+      "agreement_id",
+      "requested_scope",
+      "family_execution_authority_binding",
+      "approved_role_schema_binding",
+      "m4_receipt_binding",
+      "base_analysis_binding",
+      "m2_index_binding",
+      "m3_context_binding",
+      "comparator_run_bindings",
+      "calibration_policy_binding",
+      "diff_contract_binding"
+    ],
+    "requested_scope": "ONE_APPROVED_FAMILY_ONE_AGREEMENT",
+    "role_failure_state": "MISSING_REQUIRED_ROLE",
+    "proposal_disposition": "REJECT_BEFORE_ANALYSIS",
+    "raw_source_reparse_allowed": false,
+    "projection_role_fill_allowed": false,
+    "model_calls_allowed": false
+  },
+  "preparation_receipt_contract": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m5-preparation.json",
+    "schema_version": "STAGE_2Y_M5_PREPARATION_RECEIPT/V1",
+    "exact_top_level_members": [
+      "schema_version",
+      "receipt_id",
+      "receipt_digest",
+      "stage",
+      "lifecycle_state",
+      "status",
+      "base_commit",
+      "authority_binding",
+      "calibration_policy_binding",
+      "full_contract_review_binding",
+      "predecessor_receipt_bindings",
+      "family_manifest_binding",
+      "control_manifest_binding",
+      "diff_contract_binding",
+      "family_order",
+      "output_bindings",
+      "output_set_digest",
+      "metrics",
+      "checks",
+      "diagnostics",
+      "m5_family_execution_state",
+      "runner_eligible_family_count",
+      "approved_role_schema_count",
+      "effects",
+      "changed_files"
+    ],
+    "required_literals": {
+      "stage": "M5_PREPARATION",
+      "lifecycle_state": "SEALED_PREPARATION_ONLY",
+      "status": "PASS_PREPARATION_ONLY",
+      "m5_family_execution_state": "NOT_AUTHORISED",
+      "runner_eligible_family_count": 0,
+      "approved_role_schema_count": 0
+    },
+    "output_binding_exact_members": [
+      "path",
+      "byte_length",
+      "sha256",
+      "schema_version",
+      "family_key",
+      "record_id",
+      "record_digest",
+      "status"
+    ],
+    "output_binding_count": 50,
+    "output_binding_order": "EXACT_FAMILY_ORDER_PACK_THEN_PROPOSAL",
+    "output_set_digest": "SHA256_CANONICAL_JSON_output_bindings",
+    "metrics_exact_members": [
+      "family_count",
+      "wave_count",
+      "calibration_pack_count",
+      "proposed_role_schema_count",
+      "comparator_run_count",
+      "supplemental_input_count",
+      "open_legal_question_count",
+      "runner_eligible_family_count",
+      "approved_role_schema_count",
+      "model_call_count",
+      "family_runner_call_count"
+    ],
+    "metrics_required": {
+      "family_count": 25,
+      "wave_count": 4,
+      "calibration_pack_count": 25,
+      "proposed_role_schema_count": 25,
+      "comparator_run_count": 130,
+      "runner_eligible_family_count": 0,
+      "approved_role_schema_count": 0,
+      "model_call_count": 0,
+      "family_runner_call_count": 0
+    },
+    "check_exact_members": [
+      "check_id",
+      "status",
+      "detail"
+    ],
+    "diagnostic_exact_members": [
+      "code",
+      "severity",
+      "related_id",
+      "detail"
+    ],
+    "effects_exact_members": [
+      "model_calls",
+      "family_runner_calls",
+      "aggregate_runner_calls",
+      "phase_b_calls",
+      "network_calls",
+      "database_writes",
+      "product_writes",
+      "current_state_writes",
+      "selector_changes",
+      "pin_changes",
+      "baseline_changes",
+      "serving_changes",
+      "publication_actions",
+      "complete_transitions"
+    ],
+    "effects_required_zero": true,
+    "changed_files": "EXACT_58_PATH_ARRAY_IN_M5_PREPARATION_AUTHORITY",
+    "receipt_is_family_execution_trust_root": false
+  },
+  "effect": {
+    "mode": "PREPARATION_ARTEFACTS_ONLY",
+    "may_read": [
+      "SEALED_M2_OUTPUTS",
+      "SEALED_M3_OUTPUTS",
+      "SEALED_M4_OUTPUTS",
+      "SEALED_LEGACY_COMPARATOR_RUNS",
+      "SAVED_SUPPLEMENTAL_SOURCE_EVIDENCE"
+    ],
+    "may_write": [
+      "25_CALIBRATION_PACKS",
+      "25_PROPOSED_ROLE_SCHEMAS",
+      "SHARED_PREPARATION_MODULE_TEST_FINALISER_VALIDATOR",
+      "ONE_PREPARATION_RECEIPT",
+      "THREE_SHARED_CONTROL_FILES"
+    ],
+    "may_resolve_claims": false,
+    "may_change_complete_state": false,
+    "may_render": false,
+    "may_run_family_adapter": false,
+    "may_call_model": false
+  },
+  "no_run_contract": {
+    "family_runner_invocation_limit": 0,
+    "aggregate_runner_invocation_limit": 0,
+    "model_call_limit": 0,
+    "phase_b_call_limit": 0,
+    "approved_role_schema_count": 0,
+    "runner_eligible_family_count": 0,
+    "required_negative_tests": [
+      "DIRECT_PROPOSAL_REJECTED",
+      "COPIED_PROPOSAL_REJECTED",
+      "MUTATED_STATUS_REJECTED",
+      "FAKE_APPROVAL_REJECTED",
+      "CROSS_FAMILY_SCHEMA_REJECTED",
+      "SUPPLEMENTAL_INPUT_EXCLUDED_FROM_PARITY",
+      "M4_TRUST_ROOT_MUTATION_STOPS",
+      "PROHIBITED_PATH_ABSENCE",
+      "EXACT_58_PATH_SET",
+      "M2_M3_M4_BYTES_UNCHANGED",
+      "NO_NON_TAP_TEST_WRITES",
+      "COMPLETE_COUNT_UNCHANGED",
+      "EXACT_130_COMPARATOR_PARTITION",
+      "CAPITALISATION_ZERO_COMPARATORS",
+      "EXACT_50_ARTEFACT_ORDER_AND_DIGEST"
+    ],
+    "required_absent_paths": [
+      "evidence/canonical-v2/stage-2y-structure-migration/control/family-role-schemas",
+      "evidence/canonical-v2/stage-2y-structure-migration/shadow/m5",
+      "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m5-family-adapters.json"
+    ],
+    "proposal_status_cannot_unlock_runner": true
+  },
+  "stop_conditions": [
+    "M4_RECEIPT_NOT_SEALED_PASS",
+    "M2_M3_M4_RECEIPT_OR_OUTPUT_BINDING_DRIFT",
+    "M4_CURRENT_STATE_CHANGED",
+    "FAMILY_REGISTRY_OR_ORDER_DRIFT",
+    "LEGACY_COMPARATOR_SET_OR_FAMILY_PARTITION_DRIFT",
+    "PROVISION_EXAMPLE_NOT_COMPLETE",
+    "SOURCE_SPAN_OR_HASH_DRIFT",
+    "REQUIRED_ROLE_WITHOUT_EXACT_PROVENANCE",
+    "AMBIGUOUS_OR_UNRESOLVED_EDGE_USED_TO_SATISFY_ROLE",
+    "TWO_PLAUSIBLE_LEGAL_READINGS_WITHOUT_BEN_RULING",
+    "PROPOSAL_ASSERTS_APPROVAL_OR_RUNNER_ELIGIBILITY",
+    "BEN_APPROVAL_OR_RULING_INFERRED",
+    "SUPPLEMENTAL_INPUT_AFFECTS_COMPARATOR_METRICS",
+    "OPEN_WORLD_BASELINE_INCREASE",
+    "PATH_OUTSIDE_EXACT_PREPARATION_ALLOW_LIST",
+    "FAMILY_RUNNER_OR_AGGREGATE_RUNNER_INVOCATION",
+    "MODEL_OR_PHASE_B_CALL",
+    "PRODUCT_DATABASE_SELECTOR_PIN_BASELINE_SERVING_OR_PUBLICATION_EFFECT"
+  ]
+}
