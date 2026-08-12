@@ -32,6 +32,11 @@ import {
   compilationMetrics as m3CompilationMetrics,
   deriveFocusNodeIds as deriveM3FocusNodeIds,
 } from './stage-2y-context-compilation-shadow.mjs';
+import {
+  aggregate as aggregateM4Metrics,
+  buildDiff as buildM4Diff,
+  buildTask as buildM4Task,
+} from './stage-2y-structure-analysis-shadow.mjs';
 
 const require = createRequire(import.meta.url);
 const { listRegisteredSectionFamilies } = require(
@@ -44,6 +49,7 @@ const {
 } = require('../lib/canonical-v2/canonical-bytes');
 const { indexAgreement } = require('../lib/canonical-v2/agreement-index');
 const { compileContext } = require('../lib/canonical-v2/context-compilation');
+const { analyseAgreement } = require('../lib/canonical-v2/agreement-analysis');
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -271,6 +277,7 @@ function parseArgs(argv) {
     M1_FINAL_RECEIPT_PATH,
     M2_FINAL_RECEIPT_PATH,
     'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json',
+    'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json',
   ]);
   if (!allowed.has(argv[3])) fail('receipt path is not an exact governed receipt path');
   const absolutePath = resolve(REPO_ROOT, argv[3]);
@@ -357,6 +364,15 @@ function readBoundJson(binding, field) {
 }
 
 function readLooseBoundJson(binding, field) {
+  const bytes = readLooseBindingBytes(binding, field);
+  try {
+    return JSON.parse(bytes.toString('utf8'));
+  } catch (error) {
+    fail(`${field} is not valid JSON: ${error.message}`);
+  }
+}
+
+function readLooseBindingBytes(binding, field) {
   if (!binding || typeof binding !== 'object' || Array.isArray(binding)) {
     fail(`${field} must be an object`);
   }
@@ -368,11 +384,7 @@ function readLooseBoundJson(binding, field) {
     || sha256Hex(bytes) !== binding.sha256) {
     fail(`${field} does not match its bound repository file`);
   }
-  try {
-    return JSON.parse(bytes.toString('utf8'));
-  } catch (error) {
-    fail(`${field} is not valid JSON: ${error.message}`);
-  }
+  return bytes;
 }
 
 function assertExactKeys(value, expected, field) {
@@ -1277,6 +1289,182 @@ function validatePassedM3(receipt) {
   }
 }
 
+function validatePassedM4(receipt) {
+  const expected = {
+    packet_id: 'stage-2y-structure-m4-agreement-analysis',
+    base_commit: 'b5f1d5b1f7641d94fe63dbfb0d0400b4b5b3751a',
+    output_root: 'evidence/canonical-v2/stage-2y-structure-migration/shadow/m4',
+    authority: 'evidence/canonical-v2/stage-2y-structure-migration/control/m4-authority.json',
+    policy: 'evidence/canonical-v2/stage-2y-structure-migration/control/analysis-policy.json',
+    draft: 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis-draft.json',
+    review: 'evidence/canonical-v2/stage-2y-structure-migration/reviews/stage-2y-structure-m4-sol-technical-review.json',
+    authority_sha: 'adeb24bf047a5fb462a71b6b5a0994d3ca88bdfab48d66ce6f7a8d8a51b4bc0f',
+    authority_digest: 'b97a2e78617813d4806fb755c841dabbb7b88c62a13fb37a43eb148057088f60',
+    policy_sha: '2ac70b72546cb8acb8bb2e031368c7128e2ccad659c1cf1ec1fc6042b53c7927',
+    policy_digest: 'c4e0f233d7e247ebe348b811fa774d07a7618b8501859039b73cb4c931d014cd',
+    full_review_sha: '40f4291e953c9d0abb2ee537a1169ba4e45769c0277c310b4cfe2f55e7f7b262',
+    full_review_id: '193a2cb061e0d382b4f1c9de633eeb279a89d36e1f95fee417ee4f0067b96b65',
+  };
+  if (receipt.packet_id !== expected.packet_id || receipt.base_commit !== expected.base_commit
+    || receipt.lifecycle_state !== 'SEALED' || receipt.status !== 'PASS'
+    || receipt.output_root !== expected.output_root || receipt.output_bindings?.length !== 8) {
+    fail('PASS M4 identity, lifecycle or output-root drift');
+  }
+  if (receipt.authority_binding?.path !== expected.authority
+    || receipt.authority_binding?.sha256 !== expected.authority_sha
+    || receipt.analysis_policy_binding?.path !== expected.policy
+    || receipt.analysis_policy_binding?.sha256 !== expected.policy_sha
+    || receipt.draft_receipt_binding?.path !== expected.draft
+    || receipt.technical_review_binding?.path !== expected.review) {
+    fail('PASS M4 control, draft or review path drift');
+  }
+  const authority = readBoundJson(receipt.authority_binding, 'PASS M4 authority');
+  const policy = readBoundJson(receipt.analysis_policy_binding, 'PASS M4 policy');
+  const draft = readBoundJson(receipt.draft_receipt_binding, 'PASS M4 draft');
+  const review = readBoundJson(receipt.technical_review_binding, 'PASS M4 review');
+  const unsignedAuthority = structuredClone(authority);
+  delete unsignedAuthority.authority_digest;
+  const unsignedPolicy = structuredClone(policy);
+  delete unsignedPolicy.policy_digest;
+  if (authority.stage !== 'M4' || authority.authority_digest !== expected.authority_digest
+    || authority.authority_digest !== sha256Hex(Buffer.from(canonicalJson(unsignedAuthority), 'utf8'))
+    || policy.stage !== 'M4' || policy.policy_digest !== expected.policy_digest
+    || policy.policy_digest !== sha256Hex(Buffer.from(canonicalJson(unsignedPolicy), 'utf8'))
+    || authority.bindings.analysis_policy.sha256 !== receipt.analysis_policy_binding.sha256
+    || authority.bindings.full_contract_review?.sha256 !== expected.full_review_sha
+    || authority.bindings.full_contract_review?.review_id !== expected.full_review_id) {
+    fail('PASS M4 control or review identity drift');
+  }
+  const fullReview = readBoundJson(authority.bindings.full_contract_review, 'PASS M4 full-contract review');
+  const { review_id: ignoredFullReviewId, ...fullReviewPayload } = fullReview;
+  if (fullReview.review_id !== expected.full_review_id
+    || fullReview.review_id !== contentId(fullReview.schema_version, fullReviewPayload)) {
+    fail('PASS M4 full-contract review identity drift');
+  }
+  const reviewFields = [
+    'schema_version', 'review_id', 'packet_id', 'stage', 'base_commit', 'lifecycle_state',
+    'status', 'verdict', 'technical_decision', 'reviewer', 'draft_receipt_binding',
+    'authority_binding', 'analysis_policy_binding', 'predecessor_receipt_bindings',
+    'agreement_manifest_binding', 'control_manifest_binding', 'current_state_bindings',
+    'implementation_bindings', 'output_bindings', 'resolution_set_diff_binding',
+    'output_set_digest', 'metrics', 'focused_checks', 'exceptions',
+  ];
+  assertExactKeys(review, reviewFields, 'PASS M4 technical review');
+  const { review_id: ignoredReviewId, ...reviewPayload } = review;
+  if (review.review_id !== contentId(review.schema_version, reviewPayload)
+    || review.schema_version !== 'STAGE_2Y_STRUCTURE_SOL_TECHNICAL_REVIEW/V1'
+    || review.packet_id !== expected.packet_id || review.stage !== 'M4'
+    || review.base_commit !== expected.base_commit || review.lifecycle_state !== 'SEALED'
+    || review.status !== 'APPROVED' || review.verdict !== 'APPROVED'
+    || review.technical_decision !== 'AGREEMENT_ANALYSIS_M4_ACCEPTED'
+    || canonicalJson(review.reviewer)
+      !== canonicalJson({ identity: 'gpt-5.6-sol:xhigh:stage-2y-m4-technical-review', role: 'SOL' })
+    || canonicalJson(review.exceptions) !== canonicalJson([])) {
+    fail('PASS M4 technical review identity, state or decision drift');
+  }
+  if (canonicalJson(review.draft_receipt_binding) !== canonicalJson(receipt.draft_receipt_binding)
+    || canonicalJson(review.authority_binding) !== canonicalJson(receipt.authority_binding)
+    || canonicalJson(review.analysis_policy_binding) !== canonicalJson(receipt.analysis_policy_binding)
+    || canonicalJson(review.predecessor_receipt_bindings) !== canonicalJson(receipt.predecessor_receipt_bindings)
+    || canonicalJson(review.agreement_manifest_binding) !== canonicalJson(receipt.agreement_manifest_binding)
+    || canonicalJson(review.control_manifest_binding) !== canonicalJson(receipt.control_manifest_binding)
+    || canonicalJson(review.current_state_bindings) !== canonicalJson(receipt.current_state_bindings)
+    || canonicalJson(review.resolution_set_diff_binding) !== canonicalJson(receipt.resolution_set_diff_binding)
+    || canonicalJson(review.resolution_set_diff_binding) !== canonicalJson(review.output_bindings[7])) {
+    fail('PASS M4 technical review binding chain drift');
+  }
+  const reviewChecks = [
+    'TRUST_ROOT_CHAIN', 'OUTPUT_SCHEMA_IDENTITY_AND_ORDER',
+    'LEGACY_CLAIM_IDENTITY_AND_STAGE_IDS', 'EVIDENCE_BYTE_RECONSTRUCTION',
+    'METSERA_COMPLETE_PROPOSITION_AND_ROLE_DELETION', 'FIELD_LEVEL_DIFF_AND_OPEN_WORLD',
+    'REPOSITORY_ROUND_TRIP', 'ZERO_EFFECT_AND_CHANGED_FILE_SCOPE',
+  ].map((check) => ({ check, result: 'PASS' }));
+  if (canonicalJson(review.focused_checks) !== canonicalJson(reviewChecks)) {
+    fail('PASS M4 technical review check set drift');
+  }
+  const m2Binding = receipt.predecessor_receipt_bindings?.m2;
+  const m3Binding = receipt.predecessor_receipt_bindings?.m3;
+  if (m2Binding?.path !== M2_FINAL_RECEIPT_PATH || m2Binding.sha256 !== M2_FINAL_RECEIPT_SHA256
+    || m3Binding?.path !== 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json'
+    || m3Binding.sha256 !== '5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855') {
+    fail('PASS M4 predecessor binding drift');
+  }
+  const m2Receipt = readBoundJson(m2Binding, 'PASS M4 M2 receipt');
+  const m3Receipt = readBoundJson(m3Binding, 'PASS M4 M3 receipt');
+  for (const [stage, predecessor] of [['M2', m2Receipt], ['M3', m3Receipt]]) {
+    if (predecessor.stage !== stage || predecessor.status !== 'PASS' || predecessor.lifecycle_state !== 'SEALED') {
+      fail(`PASS M4 ${stage} state drift`);
+    }
+    for (const [index, output] of predecessor.output_bindings.entries()) {
+      readLooseBoundJson(output, `PASS M4 ${stage} output[${index}]`);
+    }
+    if (sha256Hex(Buffer.from(canonicalJson(predecessor.output_bindings), 'utf8')) !== predecessor.output_set_digest) {
+      fail(`PASS M4 ${stage} output-set drift`);
+    }
+  }
+  if (m3Receipt.sealed_predecessor_bindings?.m2_receipt?.sha256 !== m2Binding.sha256) {
+    fail('PASS M4 M3 does not bind the explicit M2 trust root');
+  }
+  assertExactKeys(receipt.implementation_bindings,
+    ['agreement_analysis_module', 'focused_test', 'shadow_runner', 'finaliser', 'validator'],
+    'PASS M4 implementation_bindings');
+  if (canonicalJson(review.implementation_bindings) !== canonicalJson(receipt.implementation_bindings)) {
+    fail('PASS M4 technical review implementation binding drift');
+  }
+  for (const [key, implementation] of Object.entries(receipt.implementation_bindings)) {
+    readLooseBindingBytes(implementation, `PASS M4 implementation.${key}`);
+  }
+  const outputNames = policy.output_contract.output_paths.map((path) => path.split('/').at(-1));
+  assertDirectoryInventory(expected.output_root, outputNames, 'PASS M4 output root');
+  const policyBinding = receipt.analysis_policy_binding;
+  const analyses = [];
+  for (let index = 0; index < policy.input_contract.agreement_inputs.length; index += 1) {
+    const input = policy.input_contract.agreement_inputs[index];
+    const outputBinding = receipt.output_bindings[index];
+    if (outputBinding.path !== policy.output_contract.output_paths[index]
+      || outputBinding.schema_version !== 'AGREEMENT_ANALYSIS/V1'
+      || outputBinding.agreement_id !== input.agreement_id) fail(`PASS M4 output[${index}] order drift`);
+    const persisted = readBoundJson(outputBinding, `PASS M4 analysis[${index}]`);
+    const agreementIndex = JSON.parse(readFileSync(repositoryFile(input.agreement_index_binding.path, `PASS M4 M2 input[${index}]`), 'utf8'));
+    const context = JSON.parse(readFileSync(repositoryFile(input.context_compilation_binding.path, `PASS M4 M3 input[${index}]`), 'utf8'));
+    const runs = policy.input_contract.legacy_run_bindings.filter((run) => run.agreement_id === input.agreement_id);
+    const task = buildM4Task(policy, policyBinding, input, context, runs);
+    const rebuilt = analyseAgreement(agreementIndex, task);
+    if (canonicalJson(rebuilt) !== canonicalJson(persisted)) fail(`PASS M4 analysis[${index}] deterministic rebuild drift`);
+    assertCanonicalJsonFile(outputBinding, persisted, `PASS M4 analysis[${index}]`);
+    analyses.push(rebuilt);
+  }
+  const diffBinding = receipt.output_bindings[7];
+  if (diffBinding.path !== policy.output_contract.output_paths[7]
+    || diffBinding.schema_version !== 'STAGE_2Y_M4_RESOLUTION_SET_DIFF/V1') fail('PASS M4 diff binding drift');
+  const persistedDiff = readBoundJson(diffBinding, 'PASS M4 diff');
+  const rebuiltDiff = buildM4Diff(policy, analyses, authority.current_state_bindings);
+  if (canonicalJson(persistedDiff) !== canonicalJson(rebuiltDiff)) fail('PASS M4 diff deterministic rebuild drift');
+  assertCanonicalJsonFile(diffBinding, persistedDiff, 'PASS M4 diff');
+  const rebuiltMetrics = aggregateM4Metrics(analyses, policy);
+  if (canonicalJson(receipt.metrics) !== canonicalJson(rebuiltMetrics)
+    || canonicalJson(draft.metrics) !== canonicalJson(rebuiltMetrics)
+    || canonicalJson(review.metrics) !== canonicalJson(rebuiltMetrics)) fail('PASS M4 metrics drift');
+  if (sha256Hex(Buffer.from(canonicalJson(receipt.output_bindings), 'utf8')) !== receipt.output_set_digest
+    || receipt.new_shadow_result_digest !== receipt.output_set_digest
+    || draft.output_set_digest !== receipt.output_set_digest
+    || canonicalJson(draft.output_bindings) !== canonicalJson(receipt.output_bindings)
+    || canonicalJson(review.output_bindings) !== canonicalJson(receipt.output_bindings)) fail('PASS M4 output-set chain drift');
+  if (persistedDiff.counts.UNEXPECTED_CHANGE !== 0 || persistedDiff.counts.MISSING !== 0
+    || persistedDiff.counts.alias_count !== 0 || persistedDiff.counts.equivalence_count !== 0
+    || persistedDiff.counts.positive_family_open_world_delta_count !== 0
+    || persistedDiff.unexpected_differences.length !== 0) fail('PASS M4 diff is not fail-closed');
+  for (const [name, current] of Object.entries(authority.current_state_bindings)) {
+    assertCurrentFileBinding(current, current.path, `PASS M4 current.${name}`);
+  }
+  const actualChanged = currentChangedFiles(receipt.base_commit);
+  const allowedChanged = [...authority.permitted_changed_files].sort();
+  if (canonicalJson(actualChanged) !== canonicalJson(allowedChanged)
+    || canonicalJson(receipt.changed_files) !== canonicalJson(authority.permitted_changed_files)) {
+    fail('PASS M4 changed-file allow-list drift');
+  }
+}
+
 function validate(receipt) {
   if (receipt.schema_version !== RECEIPT_SCHEMA) fail('schema_version drift');
   requireString(receipt.packet_id, 'packet_id');
@@ -1362,6 +1550,7 @@ function validate(receipt) {
   if (receipt.stage === 'M1' && receipt.status === 'PASS') validatePassedM1(receipt);
   if (receipt.stage === 'M2' && receipt.status === 'PASS') validatePassedM2(receipt);
   if (receipt.stage === 'M3' && receipt.status === 'PASS') validatePassedM3(receipt);
+  if (receipt.stage === 'M4' && receipt.status === 'PASS') validatePassedM4(receipt);
   return Object.freeze({
     schema_version: RECEIPT_SCHEMA,
     packet_id: receipt.packet_id,

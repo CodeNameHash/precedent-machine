@@ -1,0 +1,914 @@
+{
+  "schema_version": "STAGE_2Y_STRUCTURE_M4_FULL_CONTRACT_SOL_FREEZE/V1",
+  "review_id": "193a2cb061e0d382b4f1c9de633eeb279a89d36e1f95fee417ee4f0067b96b65",
+  "stage": "M4",
+  "lifecycle_state": "SEALED",
+  "status": "APPROVED",
+  "verdict": "PASS",
+  "technical_decision": "BASE_AGREEMENT_ANALYSIS_AND_METSERA_COMPLETE_PROPOSITION_CONTRACT_FROZEN",
+  "checkpoint_commit": "b5f1d5b1f7641d94fe63dbfb0d0400b4b5b3751a",
+  "reviewer": {
+    "role": "SOL",
+    "identity": "gpt-5.6-sol:xhigh:stage-2y-m4-full-contract-freeze",
+    "independent_of_implementation": true,
+    "file_edits": 3,
+    "test_reruns": 0
+  },
+  "authority_basis": {
+    "author": "BEN_GOODCHILD",
+    "date": "2026-08-11",
+    "verbatim": "I authorise M4 as specified in section 9 of docs/core/PLAN.md, but only after the final M3 receipt passes. M4 remains shadow-only. It may build the base AgreementAnalysis and complete-proposition validator, using Metsera 7.04 as the settled golden case. Other family schemas must remain SCHEMA_APPROVAL_PENDING. Do not call a model, change current states, render incomplete propositions, or affect product data, serving or publication. Stop on an unexpected claim change, an open-world increase, or a legally ambiguous required role.",
+    "activation_gate": "FINAL_M3_RECEIPT_LIFECYCLE_STATE_SEALED_AND_STATUS_PASS",
+    "activation_result": "PASS",
+    "plan": {
+      "path": "docs/core/PLAN.md",
+      "byte_length": 86407,
+      "sha256": "a407b53b3902e7d9330d48fde6475530de4d58a007bf7f9a85d287e855444c6e",
+      "section": "9"
+    },
+    "report": {
+      "path": "docs/codex-program/notes/stage-2y/extraction-architecture-review-2026-08-10.md",
+      "byte_length": 267303,
+      "sha256": "48149c6e773315476b65fbc6a25df00b328d6ea1366b25fcd3ed7eb31785ea74",
+      "section": "20.10"
+    },
+    "decision": {
+      "path": "docs/core/DECISIONS.md",
+      "byte_length": 109151,
+      "sha256": "4c240217bdf2a0d5545dce2b078e3b83339d01fc3e79413082676b7dd928903f",
+      "decision": 18
+    }
+  },
+  "predecessor_trust_roots": {
+    "rule": "PIN_RECEIPT_BYTES_SCHEMA_STAGE_SEALED_PASS_AND_REHASH_COMPLETE_OUTPUT_SET_WITHOUT_CURRENT_WORKSPACE_PREDECESSOR_IMPLEMENTATION_COMPARISON",
+    "m2": {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+      "byte_length": 20126,
+      "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585",
+      "schema_version": "STAGE_2Y_STRUCTURE_MIGRATION_PACKET_RECEIPT/V1",
+      "stage": "M2",
+      "lifecycle_state": "SEALED",
+      "status": "PASS",
+      "output_set_digest": "5746d28d800d83f60619e947677f70d65c7c4daf902a88c4ec3515adf069be30",
+      "output_count": 7
+    },
+    "m3": {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+      "byte_length": 17449,
+      "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855",
+      "schema_version": "STAGE_2Y_STRUCTURE_MIGRATION_PACKET_RECEIPT/V1",
+      "stage": "M3",
+      "lifecycle_state": "SEALED",
+      "status": "PASS",
+      "output_set_digest": "6d47a766c49eacaedbbfa4c4db9ad0169dcfc286eaebea424bfea2a64988a376",
+      "output_count": 8,
+      "m2_binding_must_equal_explicit_m2_input": true
+    }
+  },
+  "interface_contract": {
+    "signature": "analyseAgreement(agreementIndex, analysisTask) -> AgreementAnalysis",
+    "module": "lib/canonical-v2/agreement-analysis.js",
+    "exports": [
+      "analyseAgreement"
+    ],
+    "third_argument": false,
+    "additional_exports": false,
+    "pure": true,
+    "deterministic": true,
+    "m3_context": "PRIVATE_ANALYSIS_TASK_MEMBER",
+    "input_mutation": false,
+    "output_deep_freeze": true
+  },
+  "analysis_task_contract": {
+    "schema_version": "AGREEMENT_ANALYSIS_TASK/V1",
+    "members": [
+      "schema_version",
+      "analysis_task_id",
+      "requested_scope",
+      "analysis_policy_binding",
+      "analysis_policy",
+      "context_compilation_binding",
+      "context_compilation",
+      "legacy_resolution_runs",
+      "execution"
+    ],
+    "requested_scope_members": [
+      "scope_kind",
+      "agreement_id",
+      "root_node_occurrence_id"
+    ],
+    "requested_scope_construction": {
+      "scope_kind": "AGREEMENT",
+      "agreement_id": "EXACT_MATCHING_AGREEMENT_INPUT_AGREEMENT_ID",
+      "root_node_occurrence_id": "EXACT_MATCHING_AGREEMENT_INPUT_ROOT_NODE_OCCURRENCE_ID"
+    },
+    "analysis_policy_binding_members": [
+      "path",
+      "byte_length",
+      "sha256",
+      "schema_version",
+      "policy_version",
+      "policy_digest"
+    ],
+    "context_compilation_binding_members": [
+      "agreement_id",
+      "agreement_index_id",
+      "byte_length",
+      "context_compilation_id",
+      "path",
+      "schema_version",
+      "sha256"
+    ],
+    "legacy_file_binding_members": [
+      "byte_length",
+      "path",
+      "sha256"
+    ],
+    "legacy_run_members": [
+      "run_identifier",
+      "family",
+      "resolution_binding",
+      "resolution",
+      "adapter_result_binding",
+      "adapter_result",
+      "validation_binding",
+      "validation"
+    ],
+    "legacy_resolution_binding_members": [
+      "run_identifier",
+      "family",
+      "resolution_binding",
+      "adapter_result_binding",
+      "validation_binding"
+    ],
+    "legacy_resolution_bindings_construction": "ORDERED_PROJECTION_OF_LEGACY_RESOLUTION_RUNS_TO_LEGACY_RESOLUTION_BINDING_MEMBERS",
+    "legacy_resolution_bindings_order": "EXACT_MATCHING_AGREEMENT_INPUT_RUN_IDENTIFIERS_ORDER",
+    "analysis_task_id_construction": "contentId(AGREEMENT_ANALYSIS_TASK/V1,{requested_scope,analysis_policy_binding,context_compilation_binding,legacy_resolution_bindings,execution})",
+    "analysis_task_identity_payload_members": [
+      "requested_scope",
+      "analysis_policy_binding",
+      "context_compilation_binding",
+      "legacy_resolution_bindings",
+      "execution"
+    ],
+    "raw_bound_objects_in_analysis_task_identity_payload": false,
+    "raw_bound_object_rule": "ANALYSIS_POLICY_CONTEXT_COMPILATION_AND_EACH_LEGACY_RUN_OBJECT_MUST_PARSE_FROM_THE_EXACT_BYTES_NAMED_BY_ITS_SHA256_AND_BYTE_LENGTH_BINDING",
+    "analysis_task_binding_members": [
+      "schema_version",
+      "analysis_task_id"
+    ],
+    "analysis_task_binding_construction": {
+      "schema_version": "AGREEMENT_ANALYSIS_TASK/V1",
+      "analysis_task_id": "EXACT_INPUT_ANALYSIS_TASK_ID"
+    },
+    "execution": {
+      "mode": "SHADOW_REPLAY",
+      "repository_mode": "ROUND_TRIP_VERIFY",
+      "inference_adapter": "NONE",
+      "model_calls_authorised": 0,
+      "phase_b_calls_authorised": 0
+    }
+  },
+  "agreement_analysis_container_contract": {
+    "analysis_task_binding_members": [
+      "schema_version",
+      "analysis_task_id"
+    ],
+    "legacy_resolution_binding_members": [
+      "run_identifier",
+      "family",
+      "resolution_binding",
+      "adapter_result_binding",
+      "validation_binding"
+    ],
+    "legacy_resolution_bindings_order": "EXACT_MATCHING_AGREEMENT_INPUT_RUN_IDENTIFIERS_ORDER",
+    "diagnostics": [],
+    "claim_diagnostic_codes": [],
+    "diagnostic_construction": "ANY_CONDITION_THAT_WOULD_REQUIRE_A_DIAGNOSTIC_IS_A_STOP_CONDITION_AND_NO_AGREEMENT_ANALYSIS_IS_RETURNED_OR_WRITTEN",
+    "counts_members": [
+      "legacy_resolution_run_count",
+      "legacy_claim_count",
+      "adapter_present_claim_count",
+      "supplemental_claim_count",
+      "analysis_claim_count",
+      "pending_claim_count",
+      "complete_claim_count",
+      "legacy_evidence_count",
+      "analysis_evidence_count",
+      "role_count",
+      "role_provenance_count",
+      "dependency_edge_count",
+      "baseline_validation_count",
+      "role_deletion_validation_count",
+      "alias_count",
+      "equivalence_count",
+      "diagnostic_count"
+    ],
+    "counts_construction": {
+      "legacy_resolution_run_count": "legacy_resolution_bindings.length",
+      "legacy_claim_count": "COUNT(claims WHERE identity_state=PRESERVED)",
+      "adapter_present_claim_count": "COUNT(claims WHERE identity_state=PRESERVED AND stage_claim_revision_ids.write_set_claim_revision_id IS NOT NULL)",
+      "supplemental_claim_count": "COUNT(claims WHERE identity_state=PRESERVED AND stage_claim_revision_ids.stage_identity_disposition=SUPPLEMENTAL_RESOLUTION_ONLY)",
+      "analysis_claim_count": "claims.length",
+      "pending_claim_count": "COUNT(claims WHERE proposition_validation_state=SCHEMA_APPROVAL_PENDING)",
+      "complete_claim_count": "COUNT(claims WHERE proposition_validation_state=COMPLETE)",
+      "legacy_evidence_count": "COUNT(evidence_edges WHOSE analysis_claim_id REFERENCES A claim WITH identity_state=PRESERVED)",
+      "analysis_evidence_count": "evidence_edges.length",
+      "role_count": "roles.length",
+      "role_provenance_count": "role_provenance.length",
+      "dependency_edge_count": "dependency_edges.length",
+      "baseline_validation_count": "COUNT(proposition_validation_results WHERE scenario=BASELINE)",
+      "role_deletion_validation_count": "COUNT(proposition_validation_results WHERE scenario=ROLE_DELETION)",
+      "alias_count": "claim_aliases.length",
+      "equivalence_count": "claim_equivalences.length",
+      "diagnostic_count": "diagnostics.length"
+    }
+  },
+  "state_vocabularies": {
+    "legacy_resolution_state": [
+      "PRESENT",
+      "ABSENT",
+      "NOT_APPLICABLE",
+      "NOT_EXAMINED",
+      "FAILED",
+      "NO_LEGACY_COUNTERPART"
+    ],
+    "proposition_validation_state": [
+      "COMPLETE",
+      "SCHEMA_APPROVAL_PENDING",
+      "MISSING_REQUIRED_ROLE",
+      "UNRESOLVED"
+    ],
+    "identity_state": [
+      "PRESERVED",
+      "NEW_GOLDEN_PROPOSITION"
+    ],
+    "role_validation_state": [
+      "SATISFIED",
+      "MISSING",
+      "UNRESOLVED",
+      "AMBIGUOUS"
+    ],
+    "projection_eligibility": [
+      "ELIGIBLE",
+      "BLOCKED"
+    ],
+    "dependency_kind": [
+      "CONTEXT_FACT",
+      "SCOPE_EDGE",
+      "REFERENCE_EDGE",
+      "DEFINITION_EDGE",
+      "SEMANTIC_RELATIONSHIP",
+      "SOURCE_NODE",
+      "LEGACY_CLAIM_REVISION"
+    ],
+    "dependency_use": [
+      "REQUIRED_ROLE",
+      "DERIVED_FROM",
+      "RELATED_NON_BLOCKING"
+    ],
+    "provenance_kind": [
+      "DIRECT",
+      "INHERITED"
+    ],
+    "validation_scenario": [
+      "BASELINE",
+      "ROLE_DELETION"
+    ],
+    "diff_classification": [
+      "IDENTICAL",
+      "APPROVED_ADDITIVE_GOLDEN_PROPOSITION",
+      "UNEXPECTED_CHANGE",
+      "MISSING"
+    ],
+    "proposal_identity_state": [
+      "UNAVAILABLE_NO_SEALED_LINKAGE"
+    ]
+  },
+  "output_member_contract": {
+    "AGREEMENT_ANALYSIS/V1": [
+      "schema_version",
+      "agreement_analysis_id",
+      "coordinate_system",
+      "agreement_id",
+      "agreement_index_binding",
+      "context_compilation_binding",
+      "analysis_task_binding",
+      "analysis_policy_binding",
+      "requested_scope",
+      "legacy_resolution_bindings",
+      "claims",
+      "roles",
+      "role_provenance",
+      "evidence_edges",
+      "dependency_edges",
+      "proposition_validation_results",
+      "claim_aliases",
+      "claim_equivalences",
+      "repository_round_trip_proof",
+      "diagnostics",
+      "counts"
+    ],
+    "AGREEMENT_ANALYSIS_CLAIM/V1": [
+      "schema_version",
+      "analysis_claim_id",
+      "agreement_id",
+      "deal",
+      "family",
+      "source_run_identifier",
+      "section_reference",
+      "claim_definition_key",
+      "claim_definition_version",
+      "claim_occurrence_id",
+      "complete_proposition_claim_revision_id",
+      "stage_claim_revision_ids",
+      "identity_state",
+      "legacy_resolution_state",
+      "proposition_validation_state",
+      "required_role_schema_id",
+      "projection_eligibility",
+      "projection_block_reason",
+      "legacy_claim_revision",
+      "legacy_party",
+      "legacy_capacity",
+      "complete_proposition",
+      "source_node_occurrence_ids",
+      "evidence_edge_ids",
+      "role_ids",
+      "dependency_edge_ids",
+      "diagnostic_codes"
+    ],
+    "AGREEMENT_ANALYSIS_EVIDENCE_EDGE/V1": [
+      "schema_version",
+      "analysis_evidence_edge_id",
+      "analysis_claim_id",
+      "evidence_role",
+      "ordinal",
+      "stage_evidence_ids",
+      "source_node_occurrence_id",
+      "source_span",
+      "span_provenance",
+      "source_bytes_match"
+    ],
+    "AGREEMENT_ANALYSIS_ROLE/V1": [
+      "schema_version",
+      "role_id",
+      "analysis_claim_id",
+      "required_role_schema_id",
+      "role_key",
+      "role_type",
+      "ordinal",
+      "cardinality_state",
+      "normalised_value",
+      "provenance_ids",
+      "dependency_edge_ids",
+      "validation_state"
+    ],
+    "AGREEMENT_ANALYSIS_ROLE_PROVENANCE/V1": [
+      "schema_version",
+      "role_provenance_id",
+      "role_id",
+      "provenance_kind",
+      "source_node_occurrence_id",
+      "source_spans",
+      "context_fact_ids",
+      "scope_edge_ids",
+      "reference_edge_ids",
+      "definition_edge_ids",
+      "semantic_relationship_ids",
+      "derivation_rule_id",
+      "derivation_rule_version"
+    ],
+    "AGREEMENT_ANALYSIS_DEPENDENCY_EDGE/V1": [
+      "schema_version",
+      "dependency_edge_id",
+      "analysis_claim_id",
+      "role_id",
+      "dependency_kind",
+      "dependency_use",
+      "target_id",
+      "target_state",
+      "source_node_occurrence_ids",
+      "source_spans",
+      "blocking",
+      "reason_code"
+    ],
+    "PROPOSITION_VALIDATION_RESULT/V1": [
+      "schema_version",
+      "validation_result_id",
+      "analysis_claim_id",
+      "scenario",
+      "removed_role_key",
+      "required_role_schema_id",
+      "required_role_states",
+      "proposition_validation_state",
+      "missing_role_keys",
+      "unresolved_role_keys",
+      "renderable",
+      "projection_eligible"
+    ],
+    "SHADOW_AGREEMENT_REPOSITORY_ROUND_TRIP_PROOF/V1": [
+      "schema_version",
+      "repository_round_trip_proof_id",
+      "pre_round_trip_digest",
+      "post_round_trip_digest",
+      "record_counts",
+      "field_loss_count",
+      "status"
+    ],
+    "STAGE_2Y_M4_RESOLUTION_SET_DIFF/V1": [
+      "schema_version",
+      "resolution_set_diff_id",
+      "diff_contract_binding",
+      "analysis_policy_binding",
+      "legacy_resolution_source_count",
+      "legacy_claim_count",
+      "analysis_claim_count",
+      "claim_diffs",
+      "family_open_world",
+      "expected_differences",
+      "unexpected_differences",
+      "current_state_bindings",
+      "counts"
+    ],
+    "STAGE_2Y_M4_CLAIM_DIFF/V1": [
+      "schema_version",
+      "claim_diff_id",
+      "agreement_id",
+      "deal",
+      "family",
+      "claim_identity_fields",
+      "stage_claim_revision_ids",
+      "analysis_claim_id",
+      "classification",
+      "stage_identity_disposition",
+      "field_diffs",
+      "expected_difference_code",
+      "alias_id",
+      "equivalence_id"
+    ]
+  },
+  "identity_contract": {
+    "content_id": "contentId(SCHEMA_VERSION,IDENTITY_PAYLOAD)",
+    "cross_agreement_references": false,
+    "dangling_ids": false,
+    "proposal_claim_revision_id_rule": "NULL_FOR_ALL_1526_LEGACY_CLAIMS",
+    "proposal_identity_state": "UNAVAILABLE_NO_SEALED_LINKAGE",
+    "ordinary_proposal_reason": "RESOLVER_DID_NOT_PRESERVE_PROPOSAL_LINK",
+    "supplemental_proposal_reason": "SUPPLEMENTAL_RESOLUTION_HAS_NO_PRODUCER_PROPOSAL_LINK",
+    "proposal_matching_by_order_or_inference": false,
+    "adapter_present": "RESOLUTION_ID_DISTINCT_FROM_WRITE_SET_ID_VALIDATION_ID_EQUALS_WRITE_SET_ID",
+    "semantic_equality": "REMOVE_ONLY_CLAIM_REVISION_ID_EVIDENCE_IDS_EVIDENCE_THEN_COMPARE_EVIDENCE_AFTER_CANONICAL_REBASE",
+    "supplemental": "RESOLUTION_ID_PRESERVED_WRITE_SET_AND_VALIDATION_NULL",
+    "new_golden": "ALL_STAGE_IDS_NULL_AND_NO_LEGACY_COUNTERPART",
+    "fragment": {
+      "claim_revision_id": "7490a23a2cc41cb78ce7260d45ae80a7795b2453bd2fe45672243a61107eddb9",
+      "state": "SCHEMA_APPROVAL_PENDING",
+      "company_branch_link": "DERIVED_FROM",
+      "alias": false,
+      "equivalence": false
+    },
+    "alias_count": 0,
+    "equivalence_count": 0
+  },
+  "measured_identity": {
+    "run_count": 130,
+    "legacy_claim_count": 1526,
+    "adapter_present_claim_count": 1516,
+    "supplemental_claim_count": 10,
+    "supplemental_claims": [
+      {
+        "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+        "deal": "concho",
+        "run_identifier": "concho-termination-fee-20260809-2xk-final",
+        "section_reference": "8.3",
+        "claim_definition_key": "SOLE_REMEDY_LEGAL_EFFECT_PRESENT",
+        "claim_occurrence_id": "5b6d48f4a3977d0f6afa262dcba5f02b27a7c2f6f6447be1933d537cb559c5a5",
+        "proposal_claim_revision_id": null,
+        "proposal_identity_state": "UNAVAILABLE_NO_SEALED_LINKAGE",
+        "proposal_identity_reason": "SUPPLEMENTAL_RESOLUTION_HAS_NO_PRODUCER_PROPOSAL_LINK",
+        "resolution_claim_revision_id": "39a979713ce9557d847e88f9467c0c7c90a99c84f29ccd103d748a7d2f47d01f",
+        "write_set_claim_revision_id": null,
+        "validation_claim_revision_id": null,
+        "stage_identity_disposition": "SUPPLEMENTAL_RESOLUTION_ONLY"
+      },
+      {
+        "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+        "deal": "metsera",
+        "run_identifier": "metsera-termination-fee-20260809-2xk-final",
+        "section_reference": "8.02",
+        "claim_definition_key": "SOLE_REMEDY_LEGAL_EFFECT_PRESENT",
+        "claim_occurrence_id": "11ae8dc1d7173e247f98df96ea90180a462b505ae1f69f37810d9c4ce6791825",
+        "proposal_claim_revision_id": null,
+        "proposal_identity_state": "UNAVAILABLE_NO_SEALED_LINKAGE",
+        "proposal_identity_reason": "SUPPLEMENTAL_RESOLUTION_HAS_NO_PRODUCER_PROPOSAL_LINK",
+        "resolution_claim_revision_id": "91266891bd60147ab952f2c0fcc95b3cec0302a92e7c4f8552bc370958794e1a",
+        "write_set_claim_revision_id": null,
+        "validation_claim_revision_id": null,
+        "stage_identity_disposition": "SUPPLEMENTAL_RESOLUTION_ONLY"
+      },
+      {
+        "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+        "deal": "metsera",
+        "run_identifier": "metsera-termination-fee-20260809-2xk-final",
+        "section_reference": "8.02",
+        "claim_definition_key": "SOLE_REMEDY_CARVEOUT_KIND",
+        "claim_occurrence_id": "1508c240c63b5cfe8d47286ab816f0d21446b0e628be02c16861cd2acef1e3ba",
+        "proposal_claim_revision_id": null,
+        "proposal_identity_state": "UNAVAILABLE_NO_SEALED_LINKAGE",
+        "proposal_identity_reason": "SUPPLEMENTAL_RESOLUTION_HAS_NO_PRODUCER_PROPOSAL_LINK",
+        "resolution_claim_revision_id": "c25a1a5e57010ce48aa1cf4842dd5e16dde1ff12d2300c9e5f36426515277bfb",
+        "write_set_claim_revision_id": null,
+        "validation_claim_revision_id": null,
+        "stage_identity_disposition": "SUPPLEMENTAL_RESOLUTION_ONLY"
+      },
+      {
+        "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+        "deal": "metsera",
+        "run_identifier": "metsera-termination-fee-20260809-2xk-final",
+        "section_reference": "8.02",
+        "claim_definition_key": "SOLE_REMEDY_CARVEOUT_KIND",
+        "claim_occurrence_id": "d92ebbb2c80eb3383d14625038eabf773e9f66da2aba430a6d7f124f6b8204e8",
+        "proposal_claim_revision_id": null,
+        "proposal_identity_state": "UNAVAILABLE_NO_SEALED_LINKAGE",
+        "proposal_identity_reason": "SUPPLEMENTAL_RESOLUTION_HAS_NO_PRODUCER_PROPOSAL_LINK",
+        "resolution_claim_revision_id": "ef2a54f704baf9b545d473d83778651c7fd0880919568596c88df4ca197b07ea",
+        "write_set_claim_revision_id": null,
+        "validation_claim_revision_id": null,
+        "stage_identity_disposition": "SUPPLEMENTAL_RESOLUTION_ONLY"
+      },
+      {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "deal": "redhat",
+        "run_identifier": "redhat-termination-fee-20260809-2xk-final",
+        "section_reference": "5.06",
+        "claim_definition_key": "SOLE_REMEDY_LEGAL_EFFECT_PRESENT",
+        "claim_occurrence_id": "75e23076f31965a1aa16184bb30d23617e19fc467bdc1fcc4fb8da5e48e4bba4",
+        "proposal_claim_revision_id": null,
+        "proposal_identity_state": "UNAVAILABLE_NO_SEALED_LINKAGE",
+        "proposal_identity_reason": "SUPPLEMENTAL_RESOLUTION_HAS_NO_PRODUCER_PROPOSAL_LINK",
+        "resolution_claim_revision_id": "435944b3668d19bdbdf47fa0d4d5e8f3935a358f190324805ee039e3417a5109",
+        "write_set_claim_revision_id": null,
+        "validation_claim_revision_id": null,
+        "stage_identity_disposition": "SUPPLEMENTAL_RESOLUTION_ONLY"
+      },
+      {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "deal": "redhat",
+        "run_identifier": "redhat-termination-fee-20260809-2xk-final",
+        "section_reference": "5.06",
+        "claim_definition_key": "SOLE_REMEDY_CARVEOUT_KIND",
+        "claim_occurrence_id": "afedb2655bdf2d48e51d8528c01d8f9e4735d103f4c69052e51ac62d292d2f2f",
+        "proposal_claim_revision_id": null,
+        "proposal_identity_state": "UNAVAILABLE_NO_SEALED_LINKAGE",
+        "proposal_identity_reason": "SUPPLEMENTAL_RESOLUTION_HAS_NO_PRODUCER_PROPOSAL_LINK",
+        "resolution_claim_revision_id": "d1289b03fd05dd9ceb51958a5b7de251b54ed160f828c73d8b68b3b90ca02390",
+        "write_set_claim_revision_id": null,
+        "validation_claim_revision_id": null,
+        "stage_identity_disposition": "SUPPLEMENTAL_RESOLUTION_ONLY"
+      },
+      {
+        "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+        "deal": "skechers",
+        "run_identifier": "skechers-termination-fee-20260809-2xk-final",
+        "section_reference": "8.3",
+        "claim_definition_key": "SOLE_REMEDY_LEGAL_EFFECT_PRESENT",
+        "claim_occurrence_id": "863e4e182f047c319ca6dc85d74ac250571ed1ab5cb28a4970fe1efe0b288081",
+        "proposal_claim_revision_id": null,
+        "proposal_identity_state": "UNAVAILABLE_NO_SEALED_LINKAGE",
+        "proposal_identity_reason": "SUPPLEMENTAL_RESOLUTION_HAS_NO_PRODUCER_PROPOSAL_LINK",
+        "resolution_claim_revision_id": "edc8a7555ff8e4032c035cdb3e8f609cc9c840823fe0082ab9e59f2e397074bb",
+        "write_set_claim_revision_id": null,
+        "validation_claim_revision_id": null,
+        "stage_identity_disposition": "SUPPLEMENTAL_RESOLUTION_ONLY"
+      },
+      {
+        "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+        "deal": "topbuild",
+        "run_identifier": "topbuild-termination-fee-20260809-2xk-r1-final",
+        "section_reference": "6.5",
+        "claim_definition_key": "SOLE_REMEDY_LEGAL_EFFECT_PRESENT",
+        "claim_occurrence_id": "99614b15f90fb4f3828c5f7f059d114d517deb8f345fc7334714451a14ae79ad",
+        "proposal_claim_revision_id": null,
+        "proposal_identity_state": "UNAVAILABLE_NO_SEALED_LINKAGE",
+        "proposal_identity_reason": "SUPPLEMENTAL_RESOLUTION_HAS_NO_PRODUCER_PROPOSAL_LINK",
+        "resolution_claim_revision_id": "29262a05b21e5838ef525ed64033230ba1d90e32b189e1a0aff7c3f82996bea6",
+        "write_set_claim_revision_id": null,
+        "validation_claim_revision_id": null,
+        "stage_identity_disposition": "SUPPLEMENTAL_RESOLUTION_ONLY"
+      },
+      {
+        "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+        "deal": "topbuild",
+        "run_identifier": "topbuild-termination-fee-20260809-2xk-r1-final",
+        "section_reference": "6.5",
+        "claim_definition_key": "SOLE_REMEDY_CARVEOUT_KIND",
+        "claim_occurrence_id": "d94aee47dde036cdb1d8f83358ea6f7b7697d20a8c4e38ed424c9d3e36f9bfb4",
+        "proposal_claim_revision_id": null,
+        "proposal_identity_state": "UNAVAILABLE_NO_SEALED_LINKAGE",
+        "proposal_identity_reason": "SUPPLEMENTAL_RESOLUTION_HAS_NO_PRODUCER_PROPOSAL_LINK",
+        "resolution_claim_revision_id": "b12de5398596d1782ab7c350185daec0a538d1c4230d97b0b276c5feb0d9ddb2",
+        "write_set_claim_revision_id": null,
+        "validation_claim_revision_id": null,
+        "stage_identity_disposition": "SUPPLEMENTAL_RESOLUTION_ONLY"
+      },
+      {
+        "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+        "deal": "topbuild",
+        "run_identifier": "topbuild-termination-fee-20260809-2xk-r1-final",
+        "section_reference": "6.5",
+        "claim_definition_key": "SOLE_REMEDY_CARVEOUT_KIND",
+        "claim_occurrence_id": "d4d2da0ba6cdc4c318975a6624b34a2cd79e9e4da5a59450b502d66e2aef946a",
+        "proposal_claim_revision_id": null,
+        "proposal_identity_state": "UNAVAILABLE_NO_SEALED_LINKAGE",
+        "proposal_identity_reason": "SUPPLEMENTAL_RESOLUTION_HAS_NO_PRODUCER_PROPOSAL_LINK",
+        "resolution_claim_revision_id": "ff07c4253445e6dbce702a37965cde10e5351e05c1cd9e27a6e4ed9834173e1a",
+        "write_set_claim_revision_id": null,
+        "validation_claim_revision_id": null,
+        "stage_identity_disposition": "SUPPLEMENTAL_RESOLUTION_ONLY"
+      }
+    ],
+    "proposal_linked_count": 0,
+    "write_validation_equal_count": 1516,
+    "resolution_write_equal_count": 0
+  },
+  "evidence_contract": {
+    "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+    "resolution_rebase": {
+      "start": "provision_instance.absolute_start + evidence.absolute_start",
+      "end": "provision_instance.absolute_start + evidence.absolute_end"
+    },
+    "legacy_evidence_count": 1602,
+    "new_golden_evidence_count": 2,
+    "total_evidence_count": 1604,
+    "envelope": false,
+    "source_bytes_match": true,
+    "node_selection": [
+      "FULLY_CONTAINING",
+      "SMALLEST_EXTENT",
+      "DEEPEST_DEPTH",
+      "QUALIFICATION",
+      "SENTENCE",
+      "LIMB",
+      "CHAPEAU",
+      "PARAGRAPH",
+      "HEADING",
+      "SECTION",
+      "ARTICLE",
+      "ANNEX",
+      "AGREEMENT",
+      "NODE_ID"
+    ]
+  },
+  "required_role_contract": {
+    "schema_version": "STAGE_2Y_REQUIRED_ROLE_SCHEMA/V1",
+    "claim_definition_key": "METSERA_7_04_FRUSTRATION_BRANCH",
+    "claim_definition_version": 1,
+    "family": "CLOSING_CONDITIONS",
+    "scope": "EXACT_METSERA_7_04_FIXTURE_ONLY",
+    "roles": [
+      [
+        "ACTOR",
+        "PARTY_SET"
+      ],
+      [
+        "OPERATIVE_RESTRICTION",
+        "LEGAL_OPERATION"
+      ],
+      [
+        "OBJECT_OF_RELIANCE",
+        "LEGAL_OBJECT"
+      ],
+      [
+        "REFERENCED_CONDITION_SET",
+        "ORDERED_REFERENCE_SET"
+      ],
+      [
+        "CAUSAL_THRESHOLD",
+        "CAUSAL_STANDARD"
+      ],
+      [
+        "BREACHING_ACTOR",
+        "PARTY_SET"
+      ],
+      [
+        "BREACHED_OBLIGATION",
+        "OBLIGATION_STANDARD"
+      ]
+    ],
+    "other_families": "SCHEMA_APPROVAL_PENDING",
+    "other_required_role_schema_id": null
+  },
+  "metsera_fixture_summary": {
+    "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+    "section_node_occurrence_id": "72d1ae2b98c83cfd3d1ba7f6720571d52993a98343d975514806407cac91df6f",
+    "branch_sentence_ids": [
+      "a133fc2f7b6d94cb441f4913eb17bdce7e0f3a7f119af8f641d306337d9a050e",
+      "13edd4735a500bf1eb956e616ab04971b0e82beb767da29dcccd5760ffe10686"
+    ],
+    "qualification_ids": [
+      "b1945773d653312c21e6ae26fee76039c1a5f6da79bb5eb59161e58ffe73cd66",
+      "bd503fe8b93a495b7881d17f93b98083461f93d0f5a5ca4c4bf5f373ac08ab5c"
+    ],
+    "reference_edge_ids": [
+      "ab0f4b84a542887a54b09d5e938f9d928ca8fa80102605476b09a8444f37b582",
+      "ab44b322817fcb41a7cf6c0ab76a86f1aa2e7c129dd672a448191c8b3cba0ed1",
+      "688146c694afc3ba879ef7498dee2397f30cd93d810faa4d5d792ea0d775f90a",
+      "7ceec6107208e1cf12dd454892df3622ae053b461e192aa61f7d164889f6ea20"
+    ],
+    "related_non_blocking_definition_edge_id": "3a689a6a3ea9aba47c8b4806058a844af389875e55cd8be9dcb68d97c8008d51",
+    "derived_fragment_claim_revision_id": "7490a23a2cc41cb78ce7260d45ae80a7795b2453bd2fe45672243a61107eddb9",
+    "baseline_results": 2,
+    "deletion_results": 14,
+    "deletion_state": "MISSING_REQUIRED_ROLE",
+    "deletion_renderable": false
+  },
+  "diff_contract": {
+    "binding": {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/control/diff-contract.json",
+      "byte_length": 1171,
+      "sha256": "2585c7af9e47c4f7a6915ef1667f5eb8dbce26a8a30829bae15e42a7d41ab0c8"
+    },
+    "classifications": {
+      "IDENTICAL": 1526,
+      "APPROVED_ADDITIVE_GOLDEN_PROPOSITION": 2,
+      "UNEXPECTED_CHANGE": 0,
+      "MISSING": 0
+    },
+    "expected_code": "METSERA_7_04_SETTLED_GOLDEN_ADDITION",
+    "open_world_total": 1701,
+    "positive_family_delta_count": 0
+  },
+  "expected_metrics": {
+    "agreement_count": 7,
+    "legacy_run_count": 130,
+    "legacy_claim_count": 1526,
+    "analysis_claim_count": 1528,
+    "pending_claim_count": 1526,
+    "complete_claim_count": 2,
+    "legacy_evidence_count": 1602,
+    "analysis_evidence_count": 1604,
+    "role_count": 14,
+    "role_provenance_count": 14,
+    "baseline_validation_count": 2,
+    "role_deletion_validation_count": 14,
+    "alias_count": 0,
+    "equivalence_count": 0,
+    "claims_by_deal": {
+      "concho": 236,
+      "metsera": 217,
+      "modiv": 123,
+      "redhat": 155,
+      "skechers": 209,
+      "skywater": 236,
+      "topbuild": 352
+    }
+  },
+  "ordering_contract": {
+    "outputs": "SEVEN_ANALYSES_IN_COHORT_ORDER_THEN_DIFF",
+    "claims": [
+      "MIN_EVIDENCE_START",
+      "MIN_EVIDENCE_END",
+      "FAMILY_ORDER",
+      "CLAIM_KEY",
+      "CLAIM_VERSION",
+      "CLAIM_ID"
+    ],
+    "evidence": [
+      "CLAIM_ORDER",
+      "ORDINAL",
+      "ID"
+    ],
+    "roles": [
+      "CLAIM_ORDER",
+      "ROLE_ORDINAL",
+      "ID"
+    ],
+    "provenance": [
+      "ROLE_ORDER",
+      "ORDINAL",
+      "ID"
+    ],
+    "dependencies": [
+      "CLAIM_ORDER",
+      "ROLE_ORDINAL_NULL_LAST",
+      "KIND_RANK",
+      "SOURCE_START",
+      "TARGET_ID",
+      "ID"
+    ],
+    "validations": [
+      "CLAIM_ORDER",
+      "BASELINE_FIRST",
+      "REMOVED_ROLE_ORDINAL",
+      "ID"
+    ],
+    "output_set_digest": "SHA256_CANONICAL_JSON_OUTPUT_BINDINGS"
+  },
+  "permitted_changed_files": [
+    "evidence/canonical-v2/stage-2y-structure-migration/control/m4-authority.json",
+    "evidence/canonical-v2/stage-2y-structure-migration/control/analysis-policy.json",
+    "evidence/canonical-v2/stage-2y-structure-migration/reviews/stage-2y-structure-m4-full-contract-sol-freeze.json",
+    "lib/canonical-v2/agreement-analysis.js",
+    "tests/stage-2y-structure-analysis-shadow.test.js",
+    "scripts/stage-2y-structure-analysis-shadow.mjs",
+    "scripts/stage-2y-structure-analysis-m4-finalise.mjs",
+    "scripts/stage-2y-structure-migration-validate.mjs",
+    "evidence/canonical-v2/stage-2y-structure-migration/shadow/m4/1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116.agreement-analysis.json",
+    "evidence/canonical-v2/stage-2y-structure-migration/shadow/m4/f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c.agreement-analysis.json",
+    "evidence/canonical-v2/stage-2y-structure-migration/shadow/m4/fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c.agreement-analysis.json",
+    "evidence/canonical-v2/stage-2y-structure-migration/shadow/m4/06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a.agreement-analysis.json",
+    "evidence/canonical-v2/stage-2y-structure-migration/shadow/m4/08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154.agreement-analysis.json",
+    "evidence/canonical-v2/stage-2y-structure-migration/shadow/m4/b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363.agreement-analysis.json",
+    "evidence/canonical-v2/stage-2y-structure-migration/shadow/m4/3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb.agreement-analysis.json",
+    "evidence/canonical-v2/stage-2y-structure-migration/shadow/m4/resolution-set-diff.json",
+    "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis-draft.json",
+    "evidence/canonical-v2/stage-2y-structure-migration/reviews/stage-2y-structure-m4-sol-technical-review.json",
+    "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json"
+  ],
+  "command_limits": {
+    "shadow_runner": 1,
+    "finaliser": 1,
+    "validator_after_finaliser": 1,
+    "tests": "AS_REQUIRED_WITHOUT_MUTATING_NON_TAP_STATE"
+  },
+  "runner_contract": {
+    "script": "scripts/stage-2y-structure-analysis-shadow.mjs",
+    "flags": [
+      "--m2-receipt",
+      "--m3-receipt",
+      "--control",
+      "--agreement-manifest",
+      "--index-root",
+      "--context-root",
+      "--policy",
+      "--output-root"
+    ]
+  },
+  "review_contract": {
+    "schema_version": "STAGE_2Y_STRUCTURE_SOL_TECHNICAL_REVIEW/V1",
+    "checks": [
+      "TRUST_ROOT_CHAIN",
+      "OUTPUT_SCHEMA_IDENTITY_AND_ORDER",
+      "LEGACY_CLAIM_IDENTITY_AND_STAGE_IDS",
+      "EVIDENCE_BYTE_RECONSTRUCTION",
+      "METSERA_COMPLETE_PROPOSITION_AND_ROLE_DELETION",
+      "FIELD_LEVEL_DIFF_AND_OPEN_WORLD",
+      "REPOSITORY_ROUND_TRIP",
+      "ZERO_EFFECT_AND_CHANGED_FILE_SCOPE"
+    ],
+    "write_only_if_pass": true
+  },
+  "receipt_contract": {
+    "draft_schema_version": "STAGE_2Y_STRUCTURE_M4_DRAFT_RECEIPT/V1",
+    "final_schema_version": "STAGE_2Y_STRUCTURE_MIGRATION_PACKET_RECEIPT/V1",
+    "output_count": 8,
+    "active_implementation_rehash": true,
+    "predecessor_implementation_rehash": false,
+    "prospective_allow_list_equality": true
+  },
+  "zero_effects": {
+    "model_calls": 0,
+    "phase_b_route_calls": 0,
+    "network_calls": 0,
+    "database_target": "NONE",
+    "database_writes": 0,
+    "product_writes": 0,
+    "current_selector_changes": 0,
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "serving_changes": 0,
+    "publication_authorisation": "NONE",
+    "release_receipts_created": 0,
+    "m0_m1_m2_m3_sealed_artefact_mutations": 0
+  },
+  "stop_conditions": [
+    "M2_OR_M3_TRUST_ROOT_DRIFT",
+    "UNBOUND_OR_CHANGED_INPUT",
+    "EXTRA_OR_MISSING_COHORT_MEMBER",
+    "EVIDENCE_SPAN_NOT_CONSTRUCTIBLE",
+    "SOURCE_BYTES_MISMATCH",
+    "LEGACY_CLAIM_IDENTITY_CHANGE",
+    "STAGE_IDENTITY_COLLAPSE",
+    "UNEXPECTED_SEMANTIC_FIELD_CHANGE",
+    "UNAPPROVED_ALIAS_OR_EQUIVALENCE",
+    "NON_METSERA_REQUIRED_ROLE_SCHEMA",
+    "METSERA_REQUIRED_ROLE_MISSING_OR_AMBIGUOUS",
+    "ROLE_DELETION_REMAINS_COMPLETE_OR_RENDERABLE",
+    "INCOMPLETE_CLAIM_PROJECTION_ELIGIBLE",
+    "OPEN_WORLD_INCREASE_IN_ANY_FAMILY",
+    "CURRENT_STATE_DIGEST_CHANGE",
+    "THIRD_PUBLIC_ARGUMENT_REQUIRED",
+    "EXTRA_PUBLIC_EXPORT_REQUIRED",
+    "UNAUTHORISED_FILE_OR_OUTPUT",
+    "MODEL_OR_PHASE_B_CALL",
+    "DATABASE_PRODUCT_SELECTOR_SERVING_OR_PUBLICATION_EFFECT",
+    "LEGAL_VALUE_SCOPE_OR_ROLE_AMBIGUITY"
+  ],
+  "gate_decision": {
+    "result": "PASS",
+    "legal_blockers": [],
+    "technical_blockers": [],
+    "control_freeze_authorised": true
+  }
+}
