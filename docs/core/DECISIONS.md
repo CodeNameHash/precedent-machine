@@ -1980,9 +1980,8 @@ separate stages in `PLAN.md`.
 
 #### Authority and operational decisions
 
-5. the exact M3 work order and, later, each subsequent implementation-stage
-   work order, including governed deal memberships and SEC source-read scope
-   for M7 generalisation;
+5. the exact M9 work order after recovery and M7 legal acceptance; M8 remains
+   a separate optional readiness stage with no authority;
 6. any later Phase B or other model run;
 7. the exact M10 selector and named private internal consumers, if M9 passes;
 8. later authority for hosted staging and production database operations;
@@ -1996,3 +1995,36 @@ separate stages in `PLAN.md`.
 Any new legal ambiguity that remains after source structure, provenance and
 complete roles are shown in plain English also requires a narrow ruling on the
 full source provision.
+
+---
+
+## 19. M5-M7 authority and comparison-text standard: DECIDED 2026-08-12
+
+Ben authorised M5 after the final M4 receipt passed. He approved three common
+rules for all 25 families:
+
+1. Keep each independently operative legal unit together. Preserve separate
+   standards inside that unit instead of flattening them.
+2. Store one authoritative fact and let other family views link to it. Do not
+   create conflicting copies under different topics.
+3. If a required definition, cross-reference or condition is absent or
+   ambiguous, leave only the dependent proposition incomplete and flag the
+   exact absence or ambiguity.
+
+Ben then authorised M6 and M7 as shadow-only stages. He authorised the next two
+M7 source admissions without another pause unless a real issue arose. This did
+not authorise a model call, database write, selector change, serving change,
+publication or M8.
+
+During M7 lawyer review, Ben rejected comparison text that merely repeated the
+source clause. A comparison row must instead state the extracted legal rule in
+ordinary legal English. It must identify only the direct actor, retain material
+timing and qualifications, and cite the correct authored source unit. The
+source quote remains separate evidence. It is not the comparison answer.
+
+The first replacement packet was also not accepted. Ben identified the same
+context problem across the cards. M7 legal review therefore remains open until
+the row-correction recovery in
+`docs/codex-program/notes/HANDOFF-2026-08-12.md` is complete.
+
+M8 is not authorised.

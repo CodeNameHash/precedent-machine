@@ -1733,3 +1733,49 @@ definition targets or party topology. It does not create complete semantic
 propositions, migrate family resolution or produce new rows. It changes no
 current extractor, selector, pin, baseline, database, product, model route,
 serving or publication state. It does not authorise M3.
+
+---
+
+## Stage 2Y M3 context compilation
+
+**Closed 2026-08-11.** M3 compiled provenance-backed context, scope,
+cross-references, defined terms and party relationships for all seven sealed
+agreements. The final receipt records 13,996 focus nodes, 25,781 uniquely
+resolved definition uses, 1,856 uniquely resolved references and 81,390
+resolved scope edges. It preserved 23 M2 ambiguities and recorded unresolved or
+ambiguous dependencies instead of guessing.
+
+**Evidence.**
+`evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json`.
+
+**Commit.** `b5f1d5b1f7641d94fe63dbfb0d0400b4b5b3751a`.
+
+**Final receipt SHA-256.**
+`5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855`.
+
+**Effect.** All nine focused checks passed. No model, network, Phase B,
+database, selector, pin, baseline, serving or publication effect occurred.
+
+---
+
+## Stage 2Y M4 base AgreementAnalysis
+
+**Closed 2026-08-11.** M4 preserved all 1,526 legacy claim identities and
+created two complete calibration propositions. The seven analyses contain
+1,528 analysis claims and 1,604 exact evidence edges. All 1,526 legacy claims
+remain pending family-schema approval. The official open-world count remains
+1,701, with no positive family increase.
+
+**Evidence.**
+`evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json`.
+
+**Commit.** `81de892f86af8eaead83b7b320b6a36e6729d747`.
+
+**Final receipt SHA-256.**
+`54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41`.
+
+**Effect.** All nine focused checks passed. No model, network, Phase B,
+database, selector, pin, baseline, serving or publication effect occurred.
+
+**Not claimed.** M4 did not approve the 25 family schemas or authorise normal
+comparison rows. Those remained M5 and M6 work.

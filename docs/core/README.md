@@ -25,10 +25,10 @@ root). Read in this order.
    vocabulary, so read that one first.
 
 **Returning after time away?** Read
-`docs/codex-program/notes/handoff-2026-08-07.md` first. It is a dated working
-note, not a seventh core document: it records where things stood on that date
-and what is waiting on a decision. If its date is old, trust the six documents
-above over it.
+`docs/codex-program/notes/HANDOFF-2026-08-12.md` first. It records the iCloud
+recovery, the recovered M6-M7 files, the missing M5 inputs and the exact next
+task. It is a dated working note, not a seventh core document. If its date is
+old, trust the six documents above over it.
 
 Everything enumerable (registered families, product-projection modules,
 review table configs, dark bridges, serving sources, live-run scripts) is
@@ -44,8 +44,11 @@ three blockers closed, gates re-run after the merge because `main` had moved.
 `docs/codex-program/notes/HANDOFF-2026-08-08.md` records how that was reached
 and where every 2X artefact lives.
 
-**The open work is the Stage 2Y M-sequence in `PLAN.md`.** The architecture
-decision and M0 to M2 are complete. M3 is next, but it is not authorised.
+**The open work is recovery of the Stage 2Y M5-M7 row-correction state.** The
+architecture decision and M0 to M4 are complete. M5-M7 ran locally, but their
+uncommitted working tree moved into iCloud Drive. Fourteen critical M6-M7 files
+are recovered on `codex/recover-m7-20260812`. Recover the final M5 input batch,
+rebuild the corrected M6-M7 output and resume lawyer review. Do not start M8.
 Phase B and all model-call routes remain deferred and locked.
 
 The current architecture evidence is

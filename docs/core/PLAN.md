@@ -96,11 +96,23 @@ M9 stage changes the current selector.
 
 ## 3. Current state and authority
 
-The architecture review and M0 to M2 are complete. Their evidence and commits
+The architecture review and M0 to M4 are complete. Their evidence and commits
 are in `COMPLETED.md`.
 
-No implementation stage is currently authorised. M3 is the next planned
-stage. It needs a new work order. A passing M2 receipt does not authorise M3.
+Ben authorised M5, M6 and M7. Those stages ran locally. M6 produced 1,111
+complete shadow comparison rows. M7 admitted three additional agreements and
+created a 50-item lawyer-review packet. Ben then found that the comparison text
+was too close to the source clause. A first row correction ran, but a second
+review found over-broad actor text and one wrong source-unit match.
+
+The local repository then moved into iCloud Drive and became unavailable. The
+exact M4 base commit is recovered. Fourteen M6-M7 files are recovered on branch
+`codex/recover-m7-20260812`. The remaining M5 inputs are still required before
+the row correction can be rebuilt and verified. The dated handover at
+`docs/codex-program/notes/HANDOFF-2026-08-12.md` is the recovery work order.
+
+M8 is not authorised. Do not start M8 while recovery or M7 legal review is
+open.
 
 The following controls apply through M9:
 
@@ -247,11 +259,11 @@ Analysis does not start from a detached evidence line.
 | M0 | Complete | Frozen authority, cohort, baseline and diff contract. |
 | M1 | Complete | `INCREMENTAL_RESTRUCTURE` decision with identity and provenance proof. |
 | M2 | Complete | Seven sealed shadow `AgreementIndex` files, with exact source and authored-block trees. |
-| M3 | Next, not authorised | Provenanced context, references, definitions and party topology. |
-| M4 | Not authorised | Base AgreementAnalysis, required-role validator and resolution-set diff. |
-| M5 | Not authorised | All 25 family adapters plus consolidated role-complete analyses. |
-| M6 | Not authorised | Complete output ownership, grouping and row lineage. |
-| M7 | Not authorised | Corpus comparison and governed legal review. |
+| M3 | Complete | Provenanced context, references, definitions and party topology. |
+| M4 | Complete | Base AgreementAnalysis, required-role validator and resolution-set diff. |
+| M5 | Recovery open | The local run completed, but its uncommitted inputs must be recovered before verification. |
+| M6 | Correction recovery open | The recovered receipt records 1,111 complete rows. Rebuild after M5 recovery. |
+| M7 | Lawyer review paused | Ten-agreement output and a 50-item packet exist. The comparison-text correction is not accepted. |
 | M8 | Not authorised; locked readiness only | Phase B packet, no call. Optional for M9. |
 | M9 | Not authorised | Certified shadow candidate and rollback proof. |
 | M10 | Separate authority required | `PRIVATE_INTERNAL_EXTRACTOR_ACTIVE`. |
@@ -1602,9 +1614,9 @@ Return the work to the owning stage.
 
 ### Authority and operational decisions
 
-5. Does Ben authorise the exact M3 work order and, later, each subsequent
-   implementation stage after its predecessor passes, including governed deal
-   memberships and SEC source-read scope for M7 generalisation?
+5. After recovery and M7 legal acceptance, does Ben authorise the exact M9
+   work order? M8 remains a separate optional readiness stage and has no
+   authority.
 6. Does Ben authorise any later Phase B or other model run?
 7. If M9 passes, does Ben approve the exact M10 selector and named private
    internal consumers?
