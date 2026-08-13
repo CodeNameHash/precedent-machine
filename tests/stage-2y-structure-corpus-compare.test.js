@@ -156,7 +156,9 @@ test('review-only volume cannot crowd parser ambiguities out of the lawyer sampl
     source_node_occurrence_ids: [`node-${index}`],
     title: `Row ${index}`,
   });
-  const sealedRows = Array.from({ length: 70 }, (_, index) => row(index));
+  const reviewOnlyFamily = 'FAMILY_20';
+  const sealedRows = Array.from({ length: 70 }, (_, index) => row(index))
+    .filter((entry) => entry.family_key !== reviewOnlyFamily);
   const additiveRows = ['abbvie-landos', 'lilly-verve', 'rocket-redfin'].map((candidateKey, index) => ({
     ...row(index + 100),
     _candidate_key: candidateKey,
@@ -194,4 +196,6 @@ test('review-only volume cannot crowd parser ambiguities out of the lawyer sampl
   });
   assert.ok(sample.some((entry) => entry.item_kind === 'REVIEW_ONLY_NO_NORMAL_ROW'));
   assert.ok(sample.some((entry) => entry.item_kind === 'PARSER_AMBIGUITY'));
+  assert.ok(sample.some((entry) => entry.family_key === reviewOnlyFamily
+    && entry.item_kind === 'REVIEW_ONLY_NO_NORMAL_ROW'));
 });

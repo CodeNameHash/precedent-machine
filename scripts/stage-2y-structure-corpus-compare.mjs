@@ -373,7 +373,14 @@ export function selectLawyerSample({ familyOrder, sealedRows, additiveRows, addi
   const allRows = [...additiveRows, ...sealedRows];
   for (const family of familyOrder) {
     const row = allRows.find((entry) => entry.family_key === family.family_key);
-    add(sampleRow(row, additiveRows.includes(row) ? 'ADDITIVE_THREE' : 'SEALED_SEVEN', row?._candidate_key ?? null), `row:${row?.row_id}`);
+    if (row) {
+      add(sampleRow(row, additiveRows.includes(row) ? 'ADDITIVE_THREE' : 'SEALED_SEVEN', row._candidate_key ?? null), `row:${row.row_id}`);
+      continue;
+    }
+    const review = additiveReviews.find((entry) => entry.review.family_key === family.family_key);
+    if (review) {
+      add(sampleNoOutput(review.review, review.candidateKey), `review:${review.candidateKey}:${review.index}`);
+    }
   }
   for (const candidateKey of ['abbvie-landos', 'lilly-verve', 'rocket-redfin']) {
     const row = additiveRows.find((entry) => entry._candidate_key === candidateKey);
