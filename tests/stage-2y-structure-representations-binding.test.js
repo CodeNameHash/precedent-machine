@@ -312,22 +312,6 @@ function unitText(index, unit) {
     .trim();
 }
 
-test('a container states as many rules as it has sentences', () => {
-  const order = familyOrder();
-  let total = 0;
-  for (const index of indexes()) {
-    const binding = selectFamilySections(index, order)
-      .find((entry) => entry.family_key === 'REPRESENTATIONS');
-    assert.ok(binding.authored_units.length >= 1, 'a bound family states at least one rule');
-    total += binding.authored_units.length;
-  }
-  // Every agreement here writes no-conflicts as a single formula covering all
-  // the obligated entities, so the per-sentence machinery yields one unit each.
-  // It still matters: it is what keeps a sub-heading out of the rule, and what
-  // would carry modiv's Company / Partnership / Subsidiary split if the bound
-  // representation were written per entity, as organisation and existence is.
-  assert.equal(total, 7);
-});
 
 test('no rule text opens with a sub-heading label', () => {
   const order = familyOrder();
@@ -341,70 +325,95 @@ test('no rule text opens with a sub-heading label', () => {
   }
 });
 
-test('every unit states the representation its container was selected for', () => {
+// --- the article is enumerated, and each sentence classifies itself ----------
+
+test('every authored sentence in the representations article becomes a unit', () => {
+  const order = familyOrder();
+  let total = 0;
+  for (const index of indexes()) {
+    const binding = selectFamilySections(index, order)
+      .find((entry) => entry.family_key === 'REPRESENTATIONS');
+    // redhat and topbuild attribute on a section, the other five on an article.
+    // Both widen to the article, so the same sentences are enumerated either way.
+    assert.ok(binding.authored_units.length > 100,
+      `${index.source_binding.deal} enumerated only ${binding.authored_units.length} sentences`);
+    total += binding.authored_units.length;
+  }
+  assert.equal(total, 1130);
+});
+
+test('a sentence is classified by what it says, never by its heading', () => {
+  const order = familyOrder();
+  const counts = { SINGLE_TOPIC: 0, COMPOUND_TOPICS: 0, NO_TOPIC: 0 };
+  for (const index of indexes()) {
+    const binding = selectFamilySections(index, order)
+      .find((entry) => entry.family_key === 'REPRESENTATIONS');
+    for (const unit of binding.authored_units) {
+      counts[unit.topic_state] += 1;
+      assert.equal(unit.classified_via, 'REPRESENTATION_TOPIC_REGISTRY/V1');
+      if (unit.topic_state === 'NO_TOPIC') assert.deepEqual(unit.topics, []);
+      else assert.ok(unit.topics.length > 0);
+    }
+  }
+  // Letting the heading arbitrate drops this to 50%: a heading naming one topic
+  // sits above sentences stating several.
+  assert.equal(counts.SINGLE_TOPIC, 495);
+  assert.equal(counts.COMPOUND_TOPICS, 456);
+  assert.equal(counts.NO_TOPIC, 179);
+});
+
+test('a compound sentence carries every topic it states', () => {
+  const order = familyOrder();
+  let compound = 0;
+  for (const index of indexes()) {
+    const binding = selectFamilySections(index, order)
+      .find((entry) => entry.family_key === 'REPRESENTATIONS');
+    for (const unit of binding.authored_units) {
+      if (unit.topic_state !== 'COMPOUND_TOPICS') continue;
+      compound += 1;
+      // This is what lets an HSR statement compounded into a no-conflicts
+      // representation line up against a standalone HSR representation.
+      assert.ok(unit.topics.length > 1, 'a compound states more than one topic');
+      assert.deepEqual([...unit.topics].sort(), [...unit.topics], 'topics are stable-ordered');
+    }
+  }
+  assert.equal(compound, 456);
+});
+
+test('every sentence inherits the chapeau that governs it', () => {
   const order = familyOrder();
   for (const index of indexes()) {
     const binding = selectFamilySections(index, order)
       .find((entry) => entry.family_key === 'REPRESENTATIONS');
     for (const unit of binding.authored_units) {
-      // A container can be wider than the provision that matched it, so units
-      // are filtered by the same test that selected it.
-      assert.ok(statesNoConflicts(unitText(index, unit)),
-        `off-topic sentence bound as a representation: ${unitText(index, unit).slice(0, 90)}`);
+      assert.ok(unit.context_chapeau_node_occurrence_id,
+        `a sentence with no governing chapeau: ${unit.node_occurrence_id}`);
+      assert.ok(unit.context_chapeau_span.start_byte <= unit.source_span.start_byte,
+        'the governing chapeau opens at or before the sentence it qualifies');
+      assert.notEqual(unit.context_chapeau_node_occurrence_id, unit.node_occurrence_id);
     }
   }
 });
 
-test('a chapeau that states the rule is not treated as a disclosure chapeau', () => {
+test('a representation with no nameable topic is reviewable, not comparable', () => {
   const order = familyOrder();
-  const metsera = indexes().find((index) => index.source_binding.deal === 'metsera');
-  const binding = selectFamilySections(metsera, order)
-    .find((entry) => entry.family_key === 'REPRESENTATIONS');
-  // metsera writes no-conflicts as a chapeau introducing enumerated limbs.
-  assert.equal(binding.authored_units[0].node_kind, 'CHAPEAU');
-  assert.equal(binding.review_required_reason, null,
-    'an operative chapeau states a rule and must not be routed to review');
-  assert.ok(binding.context_chapeau_node_occurrence_id,
-    'it still sits under the disclosure chapeau, which stays linked as context');
-});
-
-test('the container and its chapeau stay reachable as evidence', () => {
-  const order = familyOrder();
-  for (const index of indexes()) {
-    const binding = selectFamilySections(index, order)
-      .find((entry) => entry.family_key === 'REPRESENTATIONS');
-    assert.ok(binding.source_node_occurrence_id, 'the container is recorded');
-    assert.ok(binding.context_chapeau_node_occurrence_id, 'the governing chapeau is recorded');
-    for (const unit of binding.authored_units) {
-      assert.ok(unit.source_span.start_byte >= binding.source_span.start_byte
-        && unit.source_span.end_byte <= binding.source_span.end_byte,
-      'every unit lies inside the container that is cited as its evidence');
-    }
-  }
-});
-
-test('a sentence the filter excludes is named, not silently absent', () => {
-  const order = familyOrder();
-  let bound = 0;
-  let setAside = 0;
-  for (const index of indexes()) {
-    const binding = selectFamilySections(index, order)
-      .find((entry) => entry.family_key === 'REPRESENTATIONS');
-    bound += binding.authored_units.length;
-    setAside += binding.set_aside_units.length;
-    for (const unit of binding.set_aside_units) {
-      assert.equal(unit.reason, 'DOES_NOT_STATE_THE_BOUND_RULE');
-      assert.ok(unit.node_occurrence_id && unit.source_span,
-        'a set-aside sentence keeps its identity and span so it can be found again');
-      assert.ok(!binding.authored_units.some((kept) => kept.node_occurrence_id === unit.node_occurrence_id),
-        'a sentence is either bound or set aside, never both');
-    }
-  }
-  // redhat's container bundles the authority, board-authorisation,
-  // enforceability, board-approval and governmental-consents representations
-  // alongside no-conflicts; topbuild's adds HSR filings, no-Default and the
-  // board recommendation. Nine genuine representations in total, excluded from
-  // this binding and recorded rather than discarded.
-  assert.equal(bound, 7);
-  assert.equal(setAside, 9);
+  const index = indexes()[0];
+  const inputs = selectFamilySections(index, order);
+  const binding = inputs.find((entry) => entry.family_key === 'REPRESENTATIONS');
+  const propositions = binding.authored_units.map((unit, ordinal) => ({
+    schema_version: 'STAGE_2Y_M5_COMPOUND_PROPOSITION/V1',
+    compound_proposition_id: `proposition-${ordinal}`,
+    family_key: 'REPRESENTATIONS',
+    source_node_occurrence_ids: [unit.node_occurrence_id],
+    proposition_validation_state: 'COMPLETE',
+    missing_required_roles: [],
+    diagnostic_codes: [],
+    projection_eligibility: 'ELIGIBLE',
+  }));
+  const gated = applySelectionModeGate(inputs, propositions);
+  const blocked = gated.filter((entry) => entry.proposition_validation_state !== 'COMPLETE');
+  const unnameable = binding.authored_units.filter((unit) => unit.topic_state === 'NO_TOPIC');
+  assert.equal(blocked.length, unnameable.length);
+  assert.ok(blocked.every((entry) => entry.diagnostic_codes.includes('M7_REPRESENTATION_TOPIC_UNCLASSIFIED')));
+  assert.ok(blocked.every((entry) => entry.missing_required_roles.includes('REPRESENTATION_TOPIC')));
 });
