@@ -260,7 +260,7 @@ function main() {
       if (COMPARISON_ENTRY_CORRECTION_MODE) {
         return source === expanded
           || !expanded.startsWith('Comparison point:')
-          || /M7_DETERMINISTIC|SOURCE_PROVISION|\b[A-Z][A-Z0-9]+_[A-Z0-9_]+\b/.test(expanded)
+          || /M7_DETERMINISTIC|SOURCE_PROVISION|\b[A-Z][A-Z0-9]+_[A-Z0-9_]+\b|\b(?:IOC|TPB)\b|\b[a-f0-9]{24,}\b/i.test(expanded)
           || (source.length > 160 && expanded.includes(source.slice(0, 120)));
       }
       return source === expanded || !expanded.startsWith('Rule:');

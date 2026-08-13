@@ -49,7 +49,7 @@ test('M6 projects every complete authored proposition with exact lineage', () =>
       assert.notEqual(expandedText, sourceText, 'expanded comparison row must not repeat the source clause');
       assert.match(compactText, /^Comparison point:/, 'compact row must identify the comparison point');
       assert.match(expandedText, /^Comparison point:/, 'expanded row must identify the comparison point');
-      assert.doesNotMatch(expandedText, /M7_DETERMINISTIC|SOURCE_PROVISION|_/,
+      assert.doesNotMatch(expandedText, /M7_DETERMINISTIC|SOURCE_PROVISION|_|\b(?:IOC|TPB)\b|\b[a-f0-9]{24,}\b/i,
         'comparison text must not expose internal schema names');
       if (sourceText.length > 160) {
         assert.equal(expandedText.includes(sourceText.slice(0, 120)), false,
