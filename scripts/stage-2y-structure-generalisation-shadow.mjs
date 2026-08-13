@@ -56,11 +56,15 @@ function writeJson(relativePath, value) {
 
 function validateAuthority(authority) {
   const unsigned = structuredClone(authority);
-  const idKey = authority.schema_version === 'STAGE_2Y_M7_ROW_CORRECTION_AUTHORITY/V1'
+  const correctionSchemas = [
+    'STAGE_2Y_M7_ROW_CORRECTION_AUTHORITY/V1',
+    'STAGE_2Y_M7_COMPARISON_ENTRY_CORRECTION_AUTHORITY/V1',
+  ];
+  const idKey = correctionSchemas.includes(authority.schema_version)
     ? 'correction_authority_id'
     : 'authority_digest';
   delete unsigned[idKey];
-  if (!['STAGE_2Y_M7_GENERALISATION_AUTHORITY/V1', 'STAGE_2Y_M7_ROW_CORRECTION_AUTHORITY/V1'].includes(authority.schema_version)
+  if (!['STAGE_2Y_M7_GENERALISATION_AUTHORITY/V1', ...correctionSchemas].includes(authority.schema_version)
     || authority.authority_state !== 'BEN_AUTHORISED_REPORT_ONLY'
     || contentId(authority.schema_version, unsigned) !== authority[idKey]
     || authority.limits.model_call_count !== 0
@@ -137,16 +141,22 @@ const args = argsFrom(process.argv.slice(2));
 const authorityPath = args['--authority'];
 const manifestPath = args['--agreement-manifest'];
 const outputRoot = args['--output-root'];
-const correctionMode = authorityPath === `${BASE}/control/m7-row-correction-authority.json`
+const rowCorrectionMode = authorityPath === `${BASE}/control/m7-row-correction-authority.json`
   && manifestPath === `${BASE}/control/m7-generalisation-cohort-row-correction.json`
   && outputRoot === `${BASE}/shadow/m7-generalisation-row-correction`;
+const comparisonEntryCorrectionMode = authorityPath === `${BASE}/control/m7-comparison-entry-correction-authority.json`
+  && manifestPath === `${BASE}/control/m7-generalisation-cohort-comparison-entry-correction.json`
+  && outputRoot === `${BASE}/shadow/m7-generalisation-comparison-entry-correction`;
+const correctionMode = rowCorrectionMode || comparisonEntryCorrectionMode;
 const originalMode = authorityPath === `${BASE}/control/m7-generalisation-authority.json`
   && manifestPath === `${BASE}/control/m7-generalisation-cohort.json`
   && outputRoot === `${BASE}/shadow/m7-generalisation`;
 if (!correctionMode && !originalMode) {
   throw new Error('governed M7 path mismatch');
 }
-const RECEIPT_PATH = `${BASE}/receipts/stage-2y-structure-m7-generalisation${correctionMode ? '-row-correction' : ''}.json`;
+const RECEIPT_PATH = `${BASE}/receipts/stage-2y-structure-m7-generalisation${comparisonEntryCorrectionMode
+  ? '-comparison-entry-correction'
+  : rowCorrectionMode ? '-row-correction' : ''}.json`;
 
 const authority = readJson(authorityPath);
 validateAuthority(authority);
@@ -308,7 +318,9 @@ const sealedReceiptPaths = [
   `${BASE}/receipts/stage-2y-structure-m2-agreement-index.json`,
   `${BASE}/receipts/stage-2y-structure-m3-context-compilation.json`,
   `${BASE}/receipts/stage-2y-structure-m5-family-adapters-correction.json`,
-  `${BASE}/receipts/stage-2y-structure-m6-agreement-projection${correctionMode ? '-row-correction' : ''}.json`,
+  `${BASE}/receipts/stage-2y-structure-m6-agreement-projection${comparisonEntryCorrectionMode
+    ? '-comparison-entry-correction'
+    : rowCorrectionMode ? '-row-correction' : ''}.json`,
 ];
 const sealedReceiptBindings = sealedReceiptPaths.map(fileBinding);
 const sealedSevenDigest = contentId('STAGE_2Y_M7_SEALED_SEVEN_DIGEST/V1', sealedReceiptBindings);
@@ -318,7 +330,9 @@ const combinedCorpusDigest = contentId('STAGE_2Y_M7_COMBINED_TEN_CORPUS/V1', {
 });
 const generalisation = {
   schema_version: 'STAGE_2Y_M7_GENERALISATION_RESULT/V1',
-  stage: correctionMode ? 'M7_ROW_CORRECTION' : 'M7',
+  stage: comparisonEntryCorrectionMode
+    ? 'M7_COMPARISON_ENTRY_CORRECTION'
+    : rowCorrectionMode ? 'M7_ROW_CORRECTION' : 'M7',
   status: 'PASS_ADDITIVE_ENTRY',
   authority_binding: fileBinding(authorityPath),
   cohort_binding: fileBinding(manifestPath),
@@ -352,7 +366,9 @@ const resultBinding = writeJson(`${outputRoot}/generalisation-result.json`, gene
 
 const receipt = {
   schema_version: 'STAGE_2Y_STRUCTURE_MIGRATION_PACKET_RECEIPT/V1',
-  stage: correctionMode ? 'M7_GENERALISATION_ROW_CORRECTION' : 'M7_GENERALISATION',
+  stage: comparisonEntryCorrectionMode
+    ? 'M7_GENERALISATION_COMPARISON_ENTRY_CORRECTION'
+    : rowCorrectionMode ? 'M7_GENERALISATION_ROW_CORRECTION' : 'M7_GENERALISATION',
   lifecycle_state: 'SEALED_REPORT_ONLY',
   status: 'PASS',
   authority_binding: fileBinding(authorityPath),

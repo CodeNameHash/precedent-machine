@@ -13,14 +13,24 @@ const preview = require('../lib/review-parity/rendered-row-preview');
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ROOT = resolve(REPO_ROOT, 'evidence/canonical-v2/stage-2y-structure-migration');
-const CORRECTION_MODE = process.argv.length === 3 && process.argv[2] === '--row-correction';
+const ROW_CORRECTION_MODE = process.argv.length === 3 && process.argv[2] === '--row-correction';
+const COMPARISON_ENTRY_CORRECTION_MODE = process.argv.length === 3 && process.argv[2] === '--comparison-entry-correction';
+const CORRECTION_MODE = ROW_CORRECTION_MODE || COMPARISON_ENTRY_CORRECTION_MODE;
 const CORRECTED_M5_RECEIPT = resolve(ROOT, 'receipts/stage-2y-structure-m5-family-adapters-correction.json');
 const ORIGINAL_M6_RECEIPT = resolve(ROOT, 'receipts/stage-2y-structure-m6-agreement-projection.json');
-const RECEIPT_PATH = resolve(ROOT, `receipts/stage-2y-structure-m6-agreement-projection${CORRECTION_MODE ? '-row-correction' : ''}.json`);
+const ROW_CORRECTION_M6_RECEIPT = resolve(ROOT, 'receipts/stage-2y-structure-m6-agreement-projection-row-correction.json');
+const CORRECTION_SUFFIX = COMPARISON_ENTRY_CORRECTION_MODE
+  ? '-comparison-entry-correction'
+  : ROW_CORRECTION_MODE ? '-row-correction' : '';
+const RECEIPT_PATH = resolve(ROOT, `receipts/stage-2y-structure-m6-agreement-projection${CORRECTION_SUFFIX}.json`);
 const ANALYSIS_ROOT = resolve(ROOT, 'shadow/m5-correction/analysis');
-const OUTPUT_ROOT = resolve(ROOT, CORRECTION_MODE ? 'shadow/m6-row-correction' : 'shadow/m6');
+const OUTPUT_ROOT = resolve(ROOT, COMPARISON_ENTRY_CORRECTION_MODE
+  ? 'shadow/m6-comparison-entry-correction'
+  : ROW_CORRECTION_MODE ? 'shadow/m6-row-correction' : 'shadow/m6');
 const POLICY_PATH = resolve(ROOT, 'control/m6-view-policy.json');
-const CORRECTION_AUTHORITY_PATH = resolve(ROOT, 'control/m6-row-correction-authority.json');
+const CORRECTION_AUTHORITY_PATH = resolve(ROOT, COMPARISON_ENTRY_CORRECTION_MODE
+  ? 'control/m6-comparison-entry-correction-authority.json'
+  : 'control/m6-row-correction-authority.json');
 
 function fail(code, detail) {
   throw new Error(`STAGE_2Y_M6_PROJECTION:${code}: ${detail}`);
@@ -51,7 +61,7 @@ function writeCanonical(path, value) {
   const next = `${canonicalJson(value)}\n`;
   if (existsSync(path)) {
     if (readFileSync(path, 'utf8') !== next) {
-      if (!CORRECTION_MODE) fail('EXISTING_OUTPUT_DRIFT', repoPath(path));
+      if (!COMPARISON_ENTRY_CORRECTION_MODE) fail('EXISTING_OUTPUT_DRIFT', repoPath(path));
       writeFileSync(path, next);
     }
     return;
@@ -176,8 +186,8 @@ function changedFiles() {
 
 function main() {
   if ((!CORRECTION_MODE && process.argv.length !== 2)
-    || (CORRECTION_MODE && (process.argv.length !== 3 || process.argv[2] !== '--row-correction'))) {
-    fail('ARGUMENTS', 'use no arguments for the original run or --row-correction for the authorised correction');
+    || (CORRECTION_MODE && process.argv.length !== 3)) {
+    fail('ARGUMENTS', 'use no arguments, --row-correction, or --comparison-entry-correction');
   }
   const m5 = json(CORRECTED_M5_RECEIPT);
   if (m5.packet_id !== 'stage-2y-structure-m5-family-adapters-correction' || m5.status !== 'PASS' || m5.lifecycle_state !== 'SEALED') fail('M5_RECEIPT', m5.status);
@@ -187,23 +197,46 @@ function main() {
   writeCanonical(POLICY_PATH, viewPolicy);
   let correctionAuthority = null;
   if (CORRECTION_MODE) {
+    const comparisonEntryScope = [
+      'PRESERVE_THE_ORIGINAL_M6_AND_FIRST_ROW_CORRECTION_RECEIPTS_AND_OUTPUTS',
+      'KEEP_EXACT_SOURCE_TEXT_AS_EVIDENCE',
+      'REPLACE_CLAUSE_COPY_WITH_SHORT_SOURCE_BACKED_COMPARISON_POINTS_AND_STRUCTURED_FACTS',
+      'REMOVE_INTERNAL_SCHEMA_CODES_FROM_LAWYER_FACING_TEXT',
+      'RERUN_M7_AND_REPLACE_THE_WITHDRAWN_LAWYER_PACKET',
+    ];
+    const rowCorrectionScope = [
+      'PRESERVE_THE_ORIGINAL_M6_RECEIPT_AND_OUTPUTS',
+      'SEPARATE_COMPARISON_FIELDS_FROM_EXACT_SOURCE_EVIDENCE',
+      'USE_PLAIN_LABELLED_LEGAL_FIELDS',
+      'RERUN_M7_AND_REPLACE_THE_WITHDRAWN_LAWYER_PACKET',
+    ];
     const unsigned = {
-      stage: 'M6_ROW_CORRECTION',
+      stage: COMPARISON_ENTRY_CORRECTION_MODE ? 'M6_COMPARISON_ENTRY_CORRECTION' : 'M6_ROW_CORRECTION',
       authority_state: 'BEN_AUTHORISED',
-      ben_approval_id: 'BEN-M6-ROW-CORRECTION-2026-08-12',
-      approval_text: 'ok',
-      discovered_defect: 'ALL_38_LAWYER_SAMPLE_COMPARISON_ROWS_REPEATED_THE_SOURCE_CLAUSE',
-      authorised_scope: [
-        'PRESERVE_THE_ORIGINAL_M6_RECEIPT_AND_OUTPUTS',
-        'SEPARATE_COMPARISON_FIELDS_FROM_EXACT_SOURCE_EVIDENCE',
-        'USE_PLAIN_LABELLED_LEGAL_FIELDS',
-        'RERUN_M7_AND_REPLACE_THE_WITHDRAWN_LAWYER_PACKET',
-      ],
+      ben_approval_id: COMPARISON_ENTRY_CORRECTION_MODE
+        ? 'BEN-M6-COMPARISON-ENTRY-CORRECTION-2026-08-13'
+        : 'BEN-M6-ROW-CORRECTION-2026-08-12',
+      approval_text: COMPARISON_ENTRY_CORRECTION_MODE
+        ? 'I think same issue on all of the cards? ok'
+        : 'ok',
+      discovered_defect: COMPARISON_ENTRY_CORRECTION_MODE
+        ? 'COMPARISON_TEXT_COPIED_SOURCE_OR_EXPOSED_INTERNAL_CLAIM_LABELS_WITHOUT_A_USABLE_COMPARISON_ENTRY'
+        : 'ALL_38_LAWYER_SAMPLE_COMPARISON_ROWS_REPEATED_THE_SOURCE_CLAUSE',
+      authorised_scope: COMPARISON_ENTRY_CORRECTION_MODE ? comparisonEntryScope : rowCorrectionScope,
       prohibited_scope: ['M8', 'M9', 'M10', 'MODEL_CALL', 'PRODUCT_WRITE', 'SERVING', 'PUBLICATION'],
       original_m6_receipt_binding: binding(ORIGINAL_M6_RECEIPT),
+      ...(COMPARISON_ENTRY_CORRECTION_MODE
+        ? { prior_row_correction_receipt_binding: binding(ROW_CORRECTION_M6_RECEIPT) }
+        : {}),
       corrected_m5_receipt_binding: binding(CORRECTED_M5_RECEIPT),
     };
-    correctionAuthority = selfRecord('STAGE_2Y_M6_ROW_CORRECTION_AUTHORITY/V1', 'correction_authority_id', unsigned);
+    correctionAuthority = selfRecord(
+      COMPARISON_ENTRY_CORRECTION_MODE
+        ? 'STAGE_2Y_M6_COMPARISON_ENTRY_CORRECTION_AUTHORITY/V1'
+        : 'STAGE_2Y_M6_ROW_CORRECTION_AUTHORITY/V1',
+      'correction_authority_id',
+      unsigned,
+    );
     writeCanonical(CORRECTION_AUTHORITY_PATH, correctionAuthority);
   }
 
@@ -221,12 +254,18 @@ function main() {
     outputBindings.push(binding(path, { agreement_id: analysis.agreement_id, agreement_projection_id: projection.agreement_projection_id }));
   }
   if (CORRECTION_MODE) {
-    const copiedRows = projections.flatMap((projection) => projection.rows).filter((row) => {
+    const invalidRows = projections.flatMap((projection) => projection.rows).filter((row) => {
       const source = normaliseText(row.citations.map((citation) => citation.exact_text).join('\n\n'));
       const expanded = normaliseText(row.fields.find((field) => field.field_key === 'expanded_text')?.value);
-      return source === expanded || !expanded.includes('Rule:');
+      if (COMPARISON_ENTRY_CORRECTION_MODE) {
+        return source === expanded
+          || !expanded.startsWith('Comparison point:')
+          || /M7_DETERMINISTIC|SOURCE_PROVISION|\b[A-Z][A-Z0-9]+_[A-Z0-9_]+\b/.test(expanded)
+          || (source.length > 160 && expanded.includes(source.slice(0, 120)));
+      }
+      return source === expanded || !expanded.startsWith('Rule:');
     });
-    if (copiedRows.length > 0) fail('SOURCE_COPY_ROW', copiedRows.length);
+    if (invalidRows.length > 0) fail('COMPARISON_ENTRY_ROW', invalidRows.length);
   }
 
   const analysisClaimById = new Map();
@@ -329,8 +368,12 @@ function main() {
   const outputSetDigest = sha256Hex(canonicalJson(outputBindings));
   const receipt = {
     schema_version: 'STAGE_2Y_STRUCTURE_MIGRATION_PACKET_RECEIPT/V1',
-    packet_id: CORRECTION_MODE ? 'stage-2y-structure-m6-agreement-projection-row-correction' : 'stage-2y-structure-m6-agreement-projection',
-    stage: CORRECTION_MODE ? 'M6_ROW_CORRECTION' : 'M6',
+    packet_id: COMPARISON_ENTRY_CORRECTION_MODE
+      ? 'stage-2y-structure-m6-agreement-projection-comparison-entry-correction'
+      : ROW_CORRECTION_MODE ? 'stage-2y-structure-m6-agreement-projection-row-correction' : 'stage-2y-structure-m6-agreement-projection',
+    stage: COMPARISON_ENTRY_CORRECTION_MODE
+      ? 'M6_COMPARISON_ENTRY_CORRECTION'
+      : ROW_CORRECTION_MODE ? 'M6_ROW_CORRECTION' : 'M6',
     lifecycle_state: 'SEALED',
     status: 'PASS',
     base_commit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: REPO_ROOT, encoding: 'utf8' }).trim(),
@@ -343,6 +386,9 @@ function main() {
     predecessor_receipt_bindings: {
       corrected_m5: binding(CORRECTED_M5_RECEIPT, { packet_id: m5.packet_id }),
       ...(CORRECTION_MODE ? { original_m6: binding(ORIGINAL_M6_RECEIPT, { packet_id: json(ORIGINAL_M6_RECEIPT).packet_id }) } : {}),
+      ...(COMPARISON_ENTRY_CORRECTION_MODE ? {
+        prior_row_correction_m6: binding(ROW_CORRECTION_M6_RECEIPT, { packet_id: json(ROW_CORRECTION_M6_RECEIPT).packet_id }),
+      } : {}),
     },
     ...(CORRECTION_MODE ? { correction_authority_binding: binding(CORRECTION_AUTHORITY_PATH, { correction_authority_id: correctionAuthority.correction_authority_id }) } : {}),
     corrected_analysis_bindings: m5.corrected_analysis_bindings,
@@ -362,7 +408,9 @@ function main() {
       'PARTIAL_REVIEW_LANE_FAILS_CLOSED',
       'CURRENT_ROWS_AND_SELECTORS_UNCHANGED',
       'PUBLICATION_INACTIVE',
-      CORRECTION_MODE ? 'ALL_COMPARISON_ROWS_DISTINCT_FROM_SOURCE_EVIDENCE' : 'M7_NOT_STARTED',
+      COMPARISON_ENTRY_CORRECTION_MODE
+        ? 'ALL_COMPARISON_ENTRIES_READABLE_DISTINCT_FROM_SOURCE_AND_FREE_OF_INTERNAL_CODES'
+        : CORRECTION_MODE ? 'ALL_COMPARISON_ROWS_DISTINCT_FROM_SOURCE_EVIDENCE' : 'M7_NOT_STARTED',
     ].map((check) => ({ check, result: 'PASS' })),
     metrics: {
       agreement_count: 7,

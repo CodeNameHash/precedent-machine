@@ -445,13 +445,19 @@ function baseOutput(schemaVersion, idKey, combinedDigest, agreements, payload) {
 export function run(argv) {
   const args = argsFrom(argv);
   const outputRoot = args['--output-root'];
-  const correctionMode = outputRoot === `${BASE}/shadow/m7-row-correction`;
+  const rowCorrectionMode = outputRoot === `${BASE}/shadow/m7-row-correction`;
+  const comparisonEntryCorrectionMode = outputRoot === `${BASE}/shadow/m7-comparison-entry-correction`;
+  const correctionMode = rowCorrectionMode || comparisonEntryCorrectionMode;
   if (!correctionMode && outputRoot !== `${BASE}/shadow/m7`) throw new Error('M7 output root mismatch');
   const m2Receipt = validateReceipt(args['--m2-receipt'], 'M2');
   const m3Receipt = validateReceipt(args['--m3-receipt'], 'M3');
   const m5Receipt = validateReceipt(args['--m5-receipt'], 'M5');
-  const m6Receipt = validateReceipt(args['--m6-receipt'], correctionMode ? 'M6_ROW_CORRECTION' : 'M6');
-  const generalisationReceipt = validateReceipt(args['--generalisation-receipt'], correctionMode ? 'M7_GENERALISATION_ROW_CORRECTION' : 'M7_GENERALISATION');
+  const m6Receipt = validateReceipt(args['--m6-receipt'], comparisonEntryCorrectionMode
+    ? 'M6_COMPARISON_ENTRY_CORRECTION'
+    : rowCorrectionMode ? 'M6_ROW_CORRECTION' : 'M6');
+  const generalisationReceipt = validateReceipt(args['--generalisation-receipt'], comparisonEntryCorrectionMode
+    ? 'M7_GENERALISATION_COMPARISON_ENTRY_CORRECTION'
+    : rowCorrectionMode ? 'M7_GENERALISATION_ROW_CORRECTION' : 'M7_GENERALISATION');
   const combinedDigest = generalisationReceipt.combined_ten_corpus_digest;
   if (!combinedDigest || generalisationReceipt.counts.combined_agreements !== 10) {
     throw new Error('passing ten-agreement generalisation receipt required');
@@ -538,7 +544,9 @@ export function run(argv) {
     expected_projection_id: projection.agreement_projection_id,
     observed_projection_id: projectionsByAgreement.get(projection.agreement_id).agreement_projection_id,
     semantic_difference_count: 0,
-    disposition: correctionMode ? 'AUTHORISED_M6_ROW_TEXT_CORRECTION_NO_CLAIM_SEMANTIC_CHANGE' : 'BYTE_BOUND_SEALED_SHADOW_UNCHANGED',
+    disposition: comparisonEntryCorrectionMode
+      ? 'AUTHORISED_M6_COMPARISON_ENTRY_CORRECTION_NO_CLAIM_SEMANTIC_CHANGE'
+      : rowCorrectionMode ? 'AUTHORISED_M6_ROW_TEXT_CORRECTION_NO_CLAIM_SEMANTIC_CHANGE' : 'BYTE_BOUND_SEALED_SHADOW_UNCHANGED',
   }));
   const additiveDiffs = additive.map((entry) => ({
     agreement_id: entry.analysis.agreement_id,

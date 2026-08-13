@@ -10,12 +10,16 @@ const require = createRequire(import.meta.url);
 const { canonicalJson, contentId, sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BASE = 'evidence/canonical-v2/stage-2y-structure-migration';
-const CORRECTION_MODE = process.argv.length === 3 && process.argv[2] === '--row-correction';
+const ROW_CORRECTION_MODE = process.argv.length === 3 && process.argv[2] === '--row-correction';
+const COMPARISON_ENTRY_CORRECTION_MODE = process.argv.length === 3 && process.argv[2] === '--comparison-entry-correction';
+const CORRECTION_MODE = ROW_CORRECTION_MODE || COMPARISON_ENTRY_CORRECTION_MODE;
 if ((!CORRECTION_MODE && process.argv.length !== 2)
-  || (CORRECTION_MODE && (process.argv.length !== 3 || process.argv[2] !== '--row-correction'))) {
-  throw new Error('use no arguments for the withdrawn packet or --row-correction for the replacement packet');
+  || (CORRECTION_MODE && process.argv.length !== 3)) {
+  throw new Error('use no arguments, --row-correction, or --comparison-entry-correction');
 }
-const REVIEW_ROOT = `${BASE}/shadow/m7${CORRECTION_MODE ? '-row-correction' : ''}`;
+const REVIEW_ROOT = `${BASE}/shadow/m7${COMPARISON_ENTRY_CORRECTION_MODE
+  ? '-comparison-entry-correction'
+  : ROW_CORRECTION_MODE ? '-row-correction' : ''}`;
 const PACKET_PATH = `${REVIEW_ROOT}/lawyer-review-packet.json`;
 const LEDGER_PATH = `${REVIEW_ROOT}/lawyer-decision-ledger.json`;
 const PORT = Number(process.env.M7_REVIEW_PORT || 4315);

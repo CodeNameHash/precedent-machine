@@ -10,7 +10,9 @@ const require = createRequire(import.meta.url);
 const { canonicalJson, contentId, sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BASE = 'evidence/canonical-v2/stage-2y-structure-migration';
-const CORRECTION_MODE = process.argv.length === 3 && process.argv[2] === '--row-correction';
+const ROW_CORRECTION_MODE = process.argv.length === 3 && process.argv[2] === '--row-correction';
+const COMPARISON_ENTRY_CORRECTION_MODE = process.argv.length === 3 && process.argv[2] === '--comparison-entry-correction';
+const CORRECTION_MODE = ROW_CORRECTION_MODE || COMPARISON_ENTRY_CORRECTION_MODE;
 
 function absolute(relativePath) {
   return path.join(ROOT, relativePath);
@@ -37,10 +39,14 @@ function record(schemaVersion, idKey, payload) {
 }
 
 function projectionSets() {
-  const sealedRoot = `${BASE}/shadow/${CORRECTION_MODE ? 'm6-row-correction' : 'm6'}/projection`;
+  const sealedRoot = `${BASE}/shadow/${COMPARISON_ENTRY_CORRECTION_MODE
+    ? 'm6-comparison-entry-correction'
+    : ROW_CORRECTION_MODE ? 'm6-row-correction' : 'm6'}/projection`;
   const sealed = fs.readdirSync(absolute(sealedRoot)).filter((name) => name.endsWith('.agreement-projection.json')).sort()
     .map((name) => readJson(`${sealedRoot}/${name}`));
-  const additiveRoot = `${BASE}/shadow/m7-generalisation${CORRECTION_MODE ? '-row-correction' : ''}`;
+  const additiveRoot = `${BASE}/shadow/m7-generalisation${COMPARISON_ENTRY_CORRECTION_MODE
+    ? '-comparison-entry-correction'
+    : ROW_CORRECTION_MODE ? '-row-correction' : ''}`;
   const additive = fs.readdirSync(absolute(additiveRoot)).sort().flatMap((candidateKey) => {
     const relativePath = `${additiveRoot}/${candidateKey}/m6/agreement-projection.json`;
     if (!fs.existsSync(absolute(relativePath))) return [];
@@ -60,18 +66,24 @@ function sourceTextForAmbiguity(item, indexByAgreement) {
 }
 
 if ((!CORRECTION_MODE && process.argv.length !== 2)
-  || (CORRECTION_MODE && (process.argv.length !== 3 || process.argv[2] !== '--row-correction'))) {
-  throw new Error('use no arguments for the original sample or --row-correction for the authorised replacement');
+  || (CORRECTION_MODE && process.argv.length !== 3)) {
+  throw new Error('use no arguments, --row-correction, or --comparison-entry-correction');
 }
 
 const authorityPath = `${BASE}/control/m7-generalisation-authority.json`;
-const correctionAuthorityPath = `${BASE}/control/m7-row-correction-authority.json`;
-const generalisationReceiptPath = `${BASE}/receipts/stage-2y-structure-m7-generalisation${CORRECTION_MODE ? '-row-correction' : ''}.json`;
+const correctionAuthorityPath = `${BASE}/control/m7-${COMPARISON_ENTRY_CORRECTION_MODE
+  ? 'comparison-entry-correction'
+  : 'row-correction'}-authority.json`;
+const generalisationReceiptPath = `${BASE}/receipts/stage-2y-structure-m7-generalisation${COMPARISON_ENTRY_CORRECTION_MODE
+  ? '-comparison-entry-correction'
+  : ROW_CORRECTION_MODE ? '-row-correction' : ''}.json`;
 const authority = readJson(authorityPath);
 const correctionAuthority = CORRECTION_MODE ? readJson(correctionAuthorityPath) : null;
 const generalisationReceipt = readJson(generalisationReceiptPath);
 const familyOrder = readJson(`${BASE}/control/m5-calibration-policy.json`).family_order_contract.families;
-const reviewRoot = `${BASE}/shadow/m7${CORRECTION_MODE ? '-row-correction' : ''}`;
+const reviewRoot = `${BASE}/shadow/m7${COMPARISON_ENTRY_CORRECTION_MODE
+  ? '-comparison-entry-correction'
+  : ROW_CORRECTION_MODE ? '-row-correction' : ''}`;
 const knownLossLedger = readJson(`${reviewRoot}/known-loss-244-ledger.json`);
 const ambiguityLedger = readJson(`${reviewRoot}/m2-inline-23-ledger.json`);
 const { sealed, additive } = projectionSets();
@@ -117,14 +129,18 @@ const samplePolicyPayload = {
     approver: 'BEN_GOODCHILD',
     approved_at: '2026-08-12',
     approval_text: 'Ok',
-    approval_context: CORRECTION_MODE
+    approval_context: COMPARISON_ENTRY_CORRECTION_MODE
+      ? 'Approved correction of the unusable comparison entries across the lawyer packet. Exact source remains separate evidence.'
+      : CORRECTION_MODE
       ? 'Approved correction of the withdrawn source-copy rows and reuse of the unchanged 50-of-50 legal threshold.'
       : 'Approved the recommended M7 rule that all 50 items must be legally correct and cannot-judge fails the affected type.',
   },
   answers_opened: false,
 };
 const samplePolicy = record('STAGE_2Y_LAWYER_SAMPLE_POLICY/V1', 'lawyer_sample_policy_id', samplePolicyPayload);
-const policyPath = `${BASE}/control/lawyer-sample-policy${CORRECTION_MODE ? '-row-correction' : ''}.json`;
+const policyPath = `${BASE}/control/lawyer-sample-policy${COMPARISON_ENTRY_CORRECTION_MODE
+  ? '-comparison-entry-correction'
+  : ROW_CORRECTION_MODE ? '-row-correction' : ''}.json`;
 const policyBinding = writeJson(policyPath, samplePolicy);
 
 const sealedRows = sealed.flatMap((projection) => projection.rows);
@@ -168,10 +184,17 @@ items = items.map((item) => ({
 }));
 
 if (CORRECTION_MODE) {
-  const sourceCopyItems = items.filter((item) => item.item_kind === 'SOURCE_TO_ROW'
-    && String(item.expanded_row || '').replace(/\s+/g, ' ').trim()
-      === String(item.source_excerpt || '').replace(/\s+/g, ' ').trim());
-  if (sourceCopyItems.length > 0) throw new Error(`replacement sample contains ${sourceCopyItems.length} source-copy rows`);
+  const invalidItems = items.filter((item) => {
+    if (item.item_kind !== 'SOURCE_TO_ROW') return false;
+    const expanded = String(item.expanded_row || '').replace(/\s+/g, ' ').trim();
+    const source = String(item.source_excerpt || '').replace(/\s+/g, ' ').trim();
+    if (!COMPARISON_ENTRY_CORRECTION_MODE) return expanded === source;
+    return expanded === source
+      || !expanded.startsWith('Comparison point:')
+      || /M7_DETERMINISTIC|SOURCE_PROVISION|\b[A-Z][A-Z0-9]+_[A-Z0-9_]+\b/.test(expanded)
+      || (source.length > 160 && expanded.includes(source.slice(0, 120)));
+  });
+  if (invalidItems.length > 0) throw new Error(`replacement sample contains ${invalidItems.length} invalid comparison entries`);
 }
 
 const familyCoverage = new Set(items.filter((item) => item.family_key).map((item) => item.family_key));

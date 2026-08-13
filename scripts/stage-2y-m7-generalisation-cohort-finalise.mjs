@@ -11,14 +11,23 @@ const { selectFamilySections } = require('../lib/canonical-v2/m7-deterministic-g
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const BASE = 'evidence/canonical-v2/stage-2y-structure-migration';
-const CORRECTION_MODE = process.argv.length === 3 && process.argv[2] === '--row-correction';
+const ROW_CORRECTION_MODE = process.argv.length === 3 && process.argv[2] === '--row-correction';
+const COMPARISON_ENTRY_CORRECTION_MODE = process.argv.length === 3 && process.argv[2] === '--comparison-entry-correction';
+const CORRECTION_MODE = ROW_CORRECTION_MODE || COMPARISON_ENTRY_CORRECTION_MODE;
 const AUTHORITY_PATH = `${BASE}/control/m7-generalisation-authority.json`;
-const CORRECTION_AUTHORITY_PATH = `${BASE}/control/m7-row-correction-authority.json`;
+const CORRECTION_AUTHORITY_PATH = COMPARISON_ENTRY_CORRECTION_MODE
+  ? `${BASE}/control/m7-comparison-entry-correction-authority.json`
+  : `${BASE}/control/m7-row-correction-authority.json`;
 const ADMISSION_RECEIPT_PATH = `${BASE}/receipts/stage-2y-structure-m7-source-admission.json`;
-const M6_CORRECTION_RECEIPT_PATH = `${BASE}/receipts/stage-2y-structure-m6-agreement-projection-row-correction.json`;
+const M6_CORRECTION_RECEIPT_PATH = `${BASE}/receipts/stage-2y-structure-m6-agreement-projection${COMPARISON_ENTRY_CORRECTION_MODE
+  ? '-comparison-entry-correction'
+  : '-row-correction'}.json`;
+const PRIOR_M7_CORRECTION_RECEIPT_PATH = `${BASE}/receipts/stage-2y-structure-m7-generalisation-row-correction.json`;
 const FAMILY_POLICY_PATH = `${BASE}/control/m5-calibration-policy.json`;
 const STRUCTURAL_POLICY_PATH = `${BASE}/control/structural-policy.json`;
-const OUTPUT_PATH = `${BASE}/control/m7-generalisation-cohort${CORRECTION_MODE ? '-row-correction' : ''}.json`;
+const OUTPUT_PATH = `${BASE}/control/m7-generalisation-cohort${COMPARISON_ENTRY_CORRECTION_MODE
+  ? '-comparison-entry-correction'
+  : ROW_CORRECTION_MODE ? '-row-correction' : ''}.json`;
 
 function readJson(relativePath) {
   return JSON.parse(fs.readFileSync(path.join(ROOT, relativePath), 'utf8'));
@@ -38,20 +47,31 @@ function sourceBinding(candidate, suffix) {
 }
 
 if ((!CORRECTION_MODE && process.argv.length !== 2)
-  || (CORRECTION_MODE && (process.argv.length !== 3 || process.argv[2] !== '--row-correction'))) {
-  throw new Error('use no arguments for the original cohort or --row-correction for the authorised correction');
+  || (CORRECTION_MODE && process.argv.length !== 3)) {
+  throw new Error('use no arguments, --row-correction, or --comparison-entry-correction');
 }
 
 const originalAuthority = readJson(AUTHORITY_PATH);
 let authority = originalAuthority;
 if (CORRECTION_MODE) {
   const unsigned = {
-    stage: 'M7_ROW_CORRECTION',
+    stage: COMPARISON_ENTRY_CORRECTION_MODE ? 'M7_COMPARISON_ENTRY_CORRECTION' : 'M7_ROW_CORRECTION',
     authority_state: 'BEN_AUTHORISED_REPORT_ONLY',
-    ben_approval_id: 'BEN-M7-ROW-CORRECTION-2026-08-12',
-    approval_text: 'ok',
-    discovered_defect: 'ALL_38_SOURCE_TO_ROW_REVIEW_ITEMS_REPEATED_SOURCE_TEXT',
-    authorised_scope: [
+    ben_approval_id: COMPARISON_ENTRY_CORRECTION_MODE
+      ? 'BEN-M7-COMPARISON-ENTRY-CORRECTION-2026-08-13'
+      : 'BEN-M7-ROW-CORRECTION-2026-08-12',
+    approval_text: COMPARISON_ENTRY_CORRECTION_MODE
+      ? 'I think same issue on all of the cards? ok'
+      : 'ok',
+    discovered_defect: COMPARISON_ENTRY_CORRECTION_MODE
+      ? 'LAWYER_PACKET_COMPARISON_ENTRIES_WERE_NOT_USABLE_AS_CROSS_AGREEMENT_FACTS'
+      : 'ALL_38_SOURCE_TO_ROW_REVIEW_ITEMS_REPEATED_SOURCE_TEXT',
+    authorised_scope: COMPARISON_ENTRY_CORRECTION_MODE ? [
+      'PRESERVE_ORIGINAL_AND_FIRST_CORRECTION_M7_OUTPUTS_AND_PACKETS',
+      'USE_THE_M6_COMPARISON_ENTRY_CORRECTION',
+      'KEEP_SOURCE_CLAUSES_AS_EXACT_EVIDENCE',
+      'FREEZE_A_NEW_50_ITEM_LAWYER_PACKET_WITH_READABLE_COMPARISON_ENTRIES',
+    ] : [
       'PRESERVE_ORIGINAL_M7_GENERALISATION_AND_REVIEW_PACKET',
       'SELECT_A_SMALL_AUTHORED_LEGAL_UNIT_FROM_A_MATCHING_SECTION_HEADING',
       'USE_THE_CORRECTED_M6_ROW_BUILDER',
@@ -61,6 +81,7 @@ if (CORRECTION_MODE) {
       binding(AUTHORITY_PATH),
       binding(ADMISSION_RECEIPT_PATH),
       binding(M6_CORRECTION_RECEIPT_PATH),
+      ...(COMPARISON_ENTRY_CORRECTION_MODE ? [binding(PRIOR_M7_CORRECTION_RECEIPT_PATH)] : []),
     ],
     limits: {
       model_call_count: 0,
@@ -72,7 +93,9 @@ if (CORRECTION_MODE) {
     },
     prohibited_effects: ['MODEL_CALL', 'DATABASE_WRITE', 'PRODUCT_WRITE', 'SERVING_CHANGE', 'PUBLICATION', 'M8', 'M9', 'M10'],
   };
-  const schemaVersion = 'STAGE_2Y_M7_ROW_CORRECTION_AUTHORITY/V1';
+  const schemaVersion = COMPARISON_ENTRY_CORRECTION_MODE
+    ? 'STAGE_2Y_M7_COMPARISON_ENTRY_CORRECTION_AUTHORITY/V1'
+    : 'STAGE_2Y_M7_ROW_CORRECTION_AUTHORITY/V1';
   authority = {
     schema_version: schemaVersion,
     correction_authority_id: contentId(schemaVersion, { schema_version: schemaVersion, ...unsigned }),
@@ -131,7 +154,9 @@ const agreements = admissionReceipt.candidates
   .sort((left, right) => left.candidate_key.localeCompare(right.candidate_key));
 
 const unsigned = {
-  stage: 'M7',
+  stage: COMPARISON_ENTRY_CORRECTION_MODE
+    ? 'M7_COMPARISON_ENTRY_CORRECTION'
+    : ROW_CORRECTION_MODE ? 'M7_ROW_CORRECTION' : 'M7',
   state: 'SEALED_ADDITIVE_THREE_AGREEMENT_COHORT',
   authority_binding: binding(CORRECTION_MODE ? CORRECTION_AUTHORITY_PATH : AUTHORITY_PATH),
   source_admission_receipt_binding: binding(ADMISSION_RECEIPT_PATH),
