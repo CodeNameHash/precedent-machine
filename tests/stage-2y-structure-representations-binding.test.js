@@ -382,3 +382,29 @@ test('the container and its chapeau stay reachable as evidence', () => {
     }
   }
 });
+
+test('a sentence the filter excludes is named, not silently absent', () => {
+  const order = familyOrder();
+  let bound = 0;
+  let setAside = 0;
+  for (const index of indexes()) {
+    const binding = selectFamilySections(index, order)
+      .find((entry) => entry.family_key === 'REPRESENTATIONS');
+    bound += binding.authored_units.length;
+    setAside += binding.set_aside_units.length;
+    for (const unit of binding.set_aside_units) {
+      assert.equal(unit.reason, 'DOES_NOT_STATE_THE_BOUND_RULE');
+      assert.ok(unit.node_occurrence_id && unit.source_span,
+        'a set-aside sentence keeps its identity and span so it can be found again');
+      assert.ok(!binding.authored_units.some((kept) => kept.node_occurrence_id === unit.node_occurrence_id),
+        'a sentence is either bound or set aside, never both');
+    }
+  }
+  // redhat's container bundles the authority, board-authorisation,
+  // enforceability, board-approval and governmental-consents representations
+  // alongside no-conflicts; topbuild's adds HSR filings, no-Default and the
+  // board recommendation. Nine genuine representations in total, excluded from
+  // this binding and recorded rather than discarded.
+  assert.equal(bound, 7);
+  assert.equal(setAside, 9);
+});
