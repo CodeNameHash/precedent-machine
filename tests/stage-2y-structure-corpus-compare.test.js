@@ -131,3 +131,67 @@ test('risk-weighted lawyer sample is frozen at 50 and covers all 25 families', a
   assert.ok(sample.some((entry) => entry.item_kind === 'PARSER_AMBIGUITY'));
 });
 
+test('review-only volume cannot crowd parser ambiguities out of the lawyer sample', async () => {
+  const { selectLawyerSample } = await auditModule();
+  const requiredLossFamilies = ['DNO_INDEMNIFICATION', 'MAE_DEFINITION', 'NO_OTHER_REPS_FRAUD', 'NO_SHOP'];
+  const familyOrder = [
+    ...requiredLossFamilies.map((family_key) => ({ family_key })),
+    ...Array.from({ length: 21 }, (_, index) => ({ family_key: `FAMILY_${index}` })),
+  ];
+  const row = (index) => ({
+    agreement_id: `agreement-${index}`,
+    citations: [{ exact_text: `Source ${index}` }],
+    family_key: familyOrder[index % familyOrder.length].family_key,
+    fields: [
+      { field_key: 'compact_text', value: `Compact ${index}` },
+      { field_key: 'expanded_text', value: `Expanded ${index}` },
+      { field_key: 'member_facts', value: [{ analysis_claim_id: `claim-${index}` }] },
+    ],
+    grouping_decision: 'SEPARATE_AUTHORED_LEGAL_UNIT',
+    member_analysis_claim_ids: [`claim-${index}`],
+    row_id: `row-${index}`,
+    section_reference: String(index),
+    source_compound_proposition_id: `proposition-${index}`,
+    source_evidence_edge_ids: [`edge-${index}`],
+    source_node_occurrence_ids: [`node-${index}`],
+    title: `Row ${index}`,
+  });
+  const sealedRows = Array.from({ length: 70 }, (_, index) => row(index));
+  const additiveRows = ['abbvie-landos', 'lilly-verve', 'rocket-redfin'].map((candidateKey, index) => ({
+    ...row(index + 100),
+    _candidate_key: candidateKey,
+  }));
+  const additiveReviews = Array.from({ length: 30 }, (_, index) => ({
+    candidateKey: 'abbvie-landos',
+    index,
+    review: {
+      agreement_id: 'additive',
+      family_key: familyOrder[index % familyOrder.length].family_key,
+      source_excerpt: `Review source ${index}`,
+    },
+  }));
+  const ambiguityLedger = { members: [{
+    agreement_id: 'sealed',
+    ambiguity_id: 'required-ambiguity',
+    source_span: { start_byte: 1, end_byte: 2 },
+    parser_reason: 'TEST_REASON',
+    competing_structures: ['A', 'B'],
+    affected_compound_proposition_ids: [],
+    dependent_claim_block: [],
+  }] };
+  const knownLossLedger = { members: requiredLossFamilies.map((family_key) => ({
+    family_key,
+    row_id: sealedRows.find((entry) => entry.family_key === family_key).row_id,
+  })) };
+  const sample = selectLawyerSample({
+    familyOrder,
+    sealedRows,
+    additiveRows,
+    additiveReviews,
+    ambiguityLedger,
+    knownLossLedger,
+    samplePolicy: { sample_size: 50 },
+  });
+  assert.ok(sample.some((entry) => entry.item_kind === 'REVIEW_ONLY_NO_NORMAL_ROW'));
+  assert.ok(sample.some((entry) => entry.item_kind === 'PARSER_AMBIGUITY'));
+});

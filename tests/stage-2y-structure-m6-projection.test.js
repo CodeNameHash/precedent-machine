@@ -47,8 +47,14 @@ test('M6 projects every complete authored proposition with exact lineage', () =>
       const compactText = normaliseText(row.fields.find((field) => field.field_key === 'compact_text')?.value);
       const expandedText = normaliseText(row.fields.find((field) => field.field_key === 'expanded_text')?.value);
       assert.notEqual(expandedText, sourceText, 'expanded comparison row must not repeat the source clause');
-      assert.match(compactText, /^Rule:/, 'compact comparison row must identify the legal rule');
-      assert.match(expandedText, /\bRule:/, 'expanded comparison row must identify the legal rule');
+      assert.match(compactText, /^Comparison point:/, 'compact row must identify the comparison point');
+      assert.match(expandedText, /^Comparison point:/, 'expanded row must identify the comparison point');
+      assert.doesNotMatch(expandedText, /M7_DETERMINISTIC|SOURCE_PROVISION|_/,
+        'comparison text must not expose internal schema names');
+      if (sourceText.length > 160) {
+        assert.equal(expandedText.includes(sourceText.slice(0, 120)), false,
+          'comparison text must not copy the opening of a long source clause');
+      }
       memberIds.push(...row.member_analysis_claim_ids);
     }
     propositions += analysis.compound_propositions.length;

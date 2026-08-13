@@ -389,10 +389,18 @@ export function selectLawyerSample({ familyOrder, sealedRows, additiveRows, addi
   for (const row of allRows.filter((entry) => entry.member_analysis_claim_ids.length > 1).slice(0, 7)) {
     add(sampleRow(row, additiveRows.includes(row) ? 'ADDITIVE_THREE' : 'SEALED_SEVEN', row._candidate_key ?? null), `row:${row.row_id}`);
   }
-  for (const entry of additiveReviews) {
+  const [firstReview, ...remainingReviews] = additiveReviews;
+  const [firstAmbiguity, ...remainingAmbiguities] = ambiguityLedger.members;
+  if (firstReview) {
+    add(sampleNoOutput(firstReview.review, firstReview.candidateKey), `review:${firstReview.candidateKey}:${firstReview.index}`);
+  }
+  if (firstAmbiguity) {
+    add(sampleAmbiguity(firstAmbiguity), `ambiguity:${firstAmbiguity.ambiguity_id}`);
+  }
+  for (const entry of remainingReviews) {
     add(sampleNoOutput(entry.review, entry.candidateKey), `review:${entry.candidateKey}:${entry.index}`);
   }
-  for (const ambiguity of ambiguityLedger.members.slice(0, 10)) {
+  for (const ambiguity of remainingAmbiguities.slice(0, 9)) {
     add(sampleAmbiguity(ambiguity), `ambiguity:${ambiguity.ambiguity_id}`);
   }
   for (const row of allRows) {

@@ -108,7 +108,7 @@ test('the matcher excludes the phrase that also heads survival and non-reliance'
 
 // The recovered readability edits, pinned against real projected rows so a
 // future change cannot quietly undo them. 1,111 rows is the sealed M6 count.
-test('every projected row leads with Rule and caps its actor list', () => {
+test('every projected row leads with a comparison point and caps its actor list', () => {
   const viewPolicy = viewPolicyFor(familyOrder());
   const dir = path.join(ROOT, 'shadow/m5-correction/analysis');
   let rows = 0;
@@ -117,7 +117,7 @@ test('every projected row leads with Rule and caps its actor list', () => {
     for (const row of projection.rows) {
       rows += 1;
       const expanded = row.fields.find((field) => field.field_key === 'expanded_text').value;
-      assert.ok(expanded.startsWith('Rule:'), `row ${row.row_id} does not lead with Rule`);
+      assert.ok(expanded.startsWith('Comparison point:'), `row ${row.row_id} does not lead with a comparison point`);
       const applies = expanded.split('\n').find((line) => line.startsWith('Applies to: '));
       if (applies) {
         assert.ok(applies.replace('Applies to: ', '').split('; ').length <= 2,
