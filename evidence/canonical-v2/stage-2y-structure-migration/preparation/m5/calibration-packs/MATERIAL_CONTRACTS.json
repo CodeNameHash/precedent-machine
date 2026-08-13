@@ -1,0 +1,671 @@
+{
+  "schema_version": "STAGE_2Y_FAMILY_CALIBRATION_PACK/V1",
+  "calibration_pack_id": "5d496e6ccfbdd04862ae7086ec08ba57d506b20b91602996047032d9265c7df2",
+  "calibration_pack_digest": "32a1e28f326c7aad1dc327c1b87756418ecad5f4029275468522f7150d4cd996",
+  "family_key": "MATERIAL_CONTRACTS",
+  "wave": 4,
+  "pack_version": 1,
+  "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+  "purpose": "LEGAL_CALIBRATION_PREPARATION_ONLY",
+  "authority_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-preparation-authority.json",
+    "byte_length": 22922,
+    "sha256": "d10f095429cdbb1006bfbe1e789c267ffa3a98b12b4bd33c2afb550e7beeea79"
+  },
+  "calibration_policy_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-calibration-policy.json",
+    "byte_length": 45512,
+    "sha256": "102534446774dfa0661ad186d27c25507befedca80807e42cf584fa412e6bf78"
+  },
+  "m4_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json",
+    "byte_length": 13670,
+    "sha256": "54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41"
+  },
+  "m2_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+    "byte_length": 20126,
+    "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585"
+  },
+  "m3_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+    "byte_length": 17449,
+    "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855"
+  },
+  "family_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json",
+    "byte_length": 827,
+    "sha256": "7aa5ff41eb778884cdbb6f18ba72138c20420a2475949aca5dcbc0d2098a938d"
+  },
+  "control_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json",
+    "byte_length": 379235,
+    "sha256": "62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41"
+  },
+  "diff_contract_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/diff-contract.json",
+    "byte_length": 1171,
+    "sha256": "2585c7af9e47c4f7a6915ef1667f5eb8dbce26a8a30829bae15e42a7d41ab0c8"
+  },
+  "comparator_run_bindings": [
+    {
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "run_identifier": "concho-material-contracts-20260809-2xk-final",
+      "family": "MATERIAL_CONTRACTS",
+      "resolution_binding": {
+        "byte_length": 296588,
+        "path": "evidence/canonical-v2/concho-material-contracts-20260809-2xk-final/resolution.json",
+        "sha256": "f612abb626b8ce8fb8b70b4d669125da86db3ddbb974f6091f21af24f68b80b3"
+      },
+      "adapter_result_binding": {
+        "byte_length": 473306,
+        "path": "evidence/canonical-v2/concho-material-contracts-20260809-2xk-final/adapter-result.json",
+        "sha256": "505c6c20b0c459b206c83d7309a1e3b748b9d00d5b7158113e65688635f252c4"
+      },
+      "validation_binding": {
+        "byte_length": 118634,
+        "path": "evidence/canonical-v2/concho-material-contracts-20260809-2xk-final/validation.json",
+        "sha256": "30285ffe76c8370b168dcf8b67f9622eca38e18c67d94eef8f145fc71750b86a"
+      },
+      "expected_counts": {
+        "resolution_claims": 16,
+        "write_set_claims": 16,
+        "validation_claims": 16,
+        "resolution_evidence": 16,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "run_identifier": "metsera-material-contracts-20260809-2xk-final",
+      "family": "MATERIAL_CONTRACTS",
+      "resolution_binding": {
+        "byte_length": 563856,
+        "path": "evidence/canonical-v2/metsera-material-contracts-20260809-2xk-final/resolution.json",
+        "sha256": "cffe39a2bba2cf1029fac3b5ec19e0c00f14be0c821a10049e4ff177628fd083"
+      },
+      "adapter_result_binding": {
+        "byte_length": 550577,
+        "path": "evidence/canonical-v2/metsera-material-contracts-20260809-2xk-final/adapter-result.json",
+        "sha256": "7dc24c4ea75979d711171b39a3ea4b17c8aafc5a3eefb770cb41e8d37890a21f"
+      },
+      "validation_binding": {
+        "byte_length": 198784,
+        "path": "evidence/canonical-v2/metsera-material-contracts-20260809-2xk-final/validation.json",
+        "sha256": "b4852401542e3c7bf76a2a71e31cc3f748001746728c07eb7015900af15ad194"
+      },
+      "expected_counts": {
+        "resolution_claims": 32,
+        "write_set_claims": 32,
+        "validation_claims": 32,
+        "resolution_evidence": 32,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "deal": "modiv",
+      "run_identifier": "modiv-material-contracts-20260809-2xk-final",
+      "family": "MATERIAL_CONTRACTS",
+      "resolution_binding": {
+        "byte_length": 406351,
+        "path": "evidence/canonical-v2/modiv-material-contracts-20260809-2xk-final/resolution.json",
+        "sha256": "a8d10b42e3f6d077b94a444e64a2a5d4df2a77b719ca349d97739d8fe81095aa"
+      },
+      "adapter_result_binding": {
+        "byte_length": 554360,
+        "path": "evidence/canonical-v2/modiv-material-contracts-20260809-2xk-final/adapter-result.json",
+        "sha256": "b61824cabb818deac23d474c362268ee5c622f78b71793919228c1d53d77d22d"
+      },
+      "validation_binding": {
+        "byte_length": 124183,
+        "path": "evidence/canonical-v2/modiv-material-contracts-20260809-2xk-final/validation.json",
+        "sha256": "cf1eced3a38cf48183d9b561f42514c7240ff40c5cffde2a8e67224248d0a801"
+      },
+      "expected_counts": {
+        "resolution_claims": 20,
+        "write_set_claims": 20,
+        "validation_claims": 20,
+        "resolution_evidence": 20,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "run_identifier": "redhat-material-contracts-20260809-2xk-final",
+      "family": "MATERIAL_CONTRACTS",
+      "resolution_binding": {
+        "byte_length": 140340,
+        "path": "evidence/canonical-v2/redhat-material-contracts-20260809-2xk-final/resolution.json",
+        "sha256": "38d460aa8db20842d71c852c6ab47782a7e4992240f66b4f14ff805495221162"
+      },
+      "adapter_result_binding": {
+        "byte_length": 375314,
+        "path": "evidence/canonical-v2/redhat-material-contracts-20260809-2xk-final/adapter-result.json",
+        "sha256": "6e3bff4d62ffae41d0131b8072f14c07b6c20fe9c225d8556db005a3ca8bb980"
+      },
+      "validation_binding": {
+        "byte_length": 108202,
+        "path": "evidence/canonical-v2/redhat-material-contracts-20260809-2xk-final/validation.json",
+        "sha256": "5ebdcdefc53022a1a75132b31e9b32d190b6df3f5208c980f78bf8c2ee5ed94c"
+      },
+      "expected_counts": {
+        "resolution_claims": 6,
+        "write_set_claims": 6,
+        "validation_claims": 6,
+        "resolution_evidence": 6,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "run_identifier": "skywater-material-contracts-20260809-2xk-final",
+      "family": "MATERIAL_CONTRACTS",
+      "resolution_binding": {
+        "byte_length": 331200,
+        "path": "evidence/canonical-v2/skywater-material-contracts-20260809-2xk-final/resolution.json",
+        "sha256": "0eb209e648ba39be460675128ac9b7bf0d135bd93593481efbeca1d37729d4f0"
+      },
+      "adapter_result_binding": {
+        "byte_length": 512339,
+        "path": "evidence/canonical-v2/skywater-material-contracts-20260809-2xk-final/adapter-result.json",
+        "sha256": "4b402209c040c8cbca5b87c713abedb7aeefaa2646ebdeb625935dcb16670649"
+      },
+      "validation_binding": {
+        "byte_length": 148759,
+        "path": "evidence/canonical-v2/skywater-material-contracts-20260809-2xk-final/validation.json",
+        "sha256": "719b46931685bbd6a43855daf5b1d846ecc618c99ce0346130395827632aecb0"
+      },
+      "expected_counts": {
+        "resolution_claims": 22,
+        "write_set_claims": 22,
+        "validation_claims": 22,
+        "resolution_evidence": 22,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "run_identifier": "topbuild-material-contracts-20260809-2xk-r3-final",
+      "family": "MATERIAL_CONTRACTS",
+      "resolution_binding": {
+        "byte_length": 775672,
+        "path": "evidence/canonical-v2/topbuild-material-contracts-20260809-2xk-r3-final/resolution.json",
+        "sha256": "9edfdf6ac903e4cba40593f84b30f17018dbd6da0c8d8f1e59148eccfe166ca6"
+      },
+      "adapter_result_binding": {
+        "byte_length": 580881,
+        "path": "evidence/canonical-v2/topbuild-material-contracts-20260809-2xk-r3-final/adapter-result.json",
+        "sha256": "735473ef7e8401617ff682a2b3b4d1bc8c5494e9ab689b959eb8f03b0f555638"
+      },
+      "validation_binding": {
+        "byte_length": 165068,
+        "path": "evidence/canonical-v2/topbuild-material-contracts-20260809-2xk-r3-final/validation.json",
+        "sha256": "3f7c673ec581e8821ef710bfadd6b10dc03e37b0e03515a9540f0d61f45d52f3"
+      },
+      "expected_counts": {
+        "resolution_claims": 20,
+        "write_set_claims": 20,
+        "validation_claims": 20,
+        "resolution_evidence": 20,
+        "supplemental_claims": 0
+      }
+    }
+  ],
+  "supplemental_input_bindings": [],
+  "provision_examples": [
+    {
+      "example_id": "MATERIAL_CONTRACTS-EX-01",
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "printed_reference": "4.19",
+      "complete_source_node_occurrence_ids": [
+        "6a31fc13315fd34c2f5b246d1ba50bf2dcb551ab32a8b8669bd5b2f4fd76fa17"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 98165,
+          "start_byte": 90856,
+          "text_sha256": "0ad6895d1cde4c4918d2a8a48882eea7437a315ea5ad1019da36992da2d37c5b"
+        }
+      ],
+      "source_text_sha256s": [
+        "0ad6895d1cde4c4918d2a8a48882eea7437a315ea5ad1019da36992da2d37c5b"
+      ],
+      "structure_revision_ids": [
+        "0d110e1668611fd79505cf61ac10e29f96da5b7e1c243b9bf773fbb5e41f4cc4"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "0993f8eb23b7b3be18680957653dcf87a5fa1de2e5c32cf155b6fb57979e8feb",
+        "2b30a018584cf0c9fd4d39ffee34217d0c722963563abe6b349b3222ac2f9026",
+        "35f9a9944c87da987ee29fbe7d65fa3bd8f41737c7a7921b1050360f9c4b0115",
+        "3c4e1b91339ad3234dafe1207e94442f46356f969f4cb2772ec84e2f2cb9f34a",
+        "4efcc7098ee8c681c9241f97d2abdf3c3c5b4bc8c5d89b217feee873a4e05035",
+        "5f28a04d2d4583a341a1c26051afec0599da2fbcfd61745775e973e8663b4f1e",
+        "7343bc79754d1d2fc1a7923626eff88118bf592ba4b2cdb1c6622ee40e35faa9",
+        "855050bbfecaca7d4555405a904899c660cd3927ab3ba87d0f554447d3c42c6f",
+        "92148e1053f2a8f4c056c46c427dc2848c28fe93ac0ae165714b86e7e2fef914",
+        "b0d68ad19fe749529faeb64cbf5df5fbd2d559b0603562bc6ae28d7224aae3b0",
+        "bd13e166854d1a05271a59572257ea90854365f9d401aa3977d1577352a92a33",
+        "be31804f09ac7f4a26cb9fbd1aa1b9889f076e21b556fdb531280fe31e8313f1",
+        "c20625ac3be9355e4acdf90348a2344d603f3d4bed200c5ba529bfe128a4c2c3",
+        "ec771301f9db87c6ffec2b1125f9bf997ae938a1a008e63c12db90626b5a12f1",
+        "f503cbdd6decc8ed665386fd4fe6285a7d118775737eae65d266bcc2f6bfceb2",
+        "fc6faeee2b9417779ff1f81a9554ec4b4c0a1f9f3cd0e8621e4756de8edce448"
+      ],
+      "comparator_run_identifiers": [
+        "concho-material-contracts-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "MATERIAL_CONTRACT_CATEGORY_CRITERION",
+      "legal_question_ids": [
+        "MATERIAL_CONTRACTS-Q01",
+        "MATERIAL_CONTRACTS-Q02",
+        "MATERIAL_CONTRACTS-Q03"
+      ]
+    },
+    {
+      "example_id": "MATERIAL_CONTRACTS-EX-02",
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "printed_reference": "3.13",
+      "complete_source_node_occurrence_ids": [
+        "5d1192c83c1bd74ef0895ca36bff1656fb9ef7f85a171ec173f69bed5e4a578d"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 95887,
+          "start_byte": 86396,
+          "text_sha256": "8b55dc4f22564ca7b01c1752ec9bc6cf403ce4fddcc6ed8c27757781e00336ee"
+        }
+      ],
+      "source_text_sha256s": [
+        "8b55dc4f22564ca7b01c1752ec9bc6cf403ce4fddcc6ed8c27757781e00336ee"
+      ],
+      "structure_revision_ids": [
+        "c3517b175a2b8d16a67b3eca97a50e92aa13bc66f6966d7f4d7f7c899e3b5154"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "00bab8bd45fe5f685eb06c2ca3fda522df06fa79386644b39da96fbaae559d01",
+        "0ae47157f75b8ce6d52725b6f238a2166ab3d1023eaba36211235ee581685e2e",
+        "130733fceeded36347a119f888779b2b90586c85ca8e911072b990ebd85de964",
+        "358bd6b3a6866c203856dea846118fa1b3febc7688d1d3abefb1e09a077fbbee",
+        "375c81e5a142c123044a2143d8ff0be202bbe433968e09861e0b8b3f93974a68",
+        "37dd4492d3574a99bbfec27111b41fb0ca6a0bdf92b4712f47a3e7cce9af2cf0",
+        "4e011b3d8f2086dfa9b58df828dc87abc2265683a500b16a48cd49e6adf54370",
+        "4e32da133ad05620013da416c0037df823677cec012e2031dae81c9bd59d5495",
+        "5bc3c680c17044db3411c94455b630f5ebc7531e824ff9f1ccfeca0f71a5c9a7",
+        "61fc6db20aa4db87afc9ef672e8879edef73f7012d801ae841e781b0b86acb29",
+        "655e57ff963d509cd0ad7df8845a4acedd6223636fe5686deefcc17b695ea349",
+        "67b39163642934d861d0cdd0d8484d01d8fe8f1ee0743d0d40c3b9b0111f1c29",
+        "6b23692b069ad33b3f7c7c31ba6370c4d08b96d0918b1c75dcee3d8a9497a754",
+        "6fb0acac23bd3b6bdf7a0fc0864064628ccef0823c0285cc3a4bcb97d8001616",
+        "77f365150d4bf1cf0d0a5d7a7df12db3aa41819e427a0b5f5d5f7627cffe1e53",
+        "79b2275135fe48cf93e02be115bbf7be5e8522fa41a9c16e46473688a50881bc",
+        "81e16aec58a3ee6055ebeb8005b38cbcce57950197972b2df9b1176948c5a09a",
+        "8c72ebafc29afa87608d56361cad7ea66b1c74a599bb61c78bf51101c8816466",
+        "9982ecc93f5c1a04f0132932c9437706c8f4f74eab7eae41c6a2e7e0a9e41638",
+        "a39bdf6b3e079644f11a4e7eecf7244dcf2d2d064638a12efc84c9e6945dc5dc",
+        "a55798c3873c12521b255b19e0cc7a7af5dd4302a2c7115f085cd79dff679818",
+        "afbf7ae78ce172d368c6eceb26091efa7a1c3d4870e6d3c83530fe3df1b121bd",
+        "b4e57607c3de5217518b8b8e343f1df1fff676482983960eea73134584f700bb",
+        "b8d7e808948ffcba91c5867099a5892897082f249b0fad7350f9ff8000251235",
+        "e0eb282fa3a2d4dfab88eee5986257e03507a34710c1d610c7090243162d0201",
+        "e4883d2346d178ad653e63f509166de38ce63a8d45f8a59ef09d9c2389ed7373",
+        "f474a53e2de0e7345fa4eb3d7d84af5422df40a419dd675576465337f35f5521",
+        "f885c33d031f2b4731958cce5e1a900afecf9d44ddcf275e8209b81c12bbdb9f",
+        "fbbbcefda069c9c69322fd649dfa3035f61767565322c3461d33dcb0b5529d18",
+        "fcd9be1ebf6e12058cc554f4477de31438746fe760e4cd7a7ae19725917bc1b5",
+        "ff9ec99d21baad6d5f4058666e2bd9527b26b316e5ac960d626dffb626369fa0",
+        "fff73808ec28e56f51b3704a59515128a2609ae8066f55d99d9edc78cc028098"
+      ],
+      "comparator_run_identifiers": [
+        "metsera-material-contracts-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "MATERIAL_CONTRACT_CATEGORY_CRITERION",
+      "legal_question_ids": [
+        "MATERIAL_CONTRACTS-Q01",
+        "MATERIAL_CONTRACTS-Q02",
+        "MATERIAL_CONTRACTS-Q03"
+      ]
+    },
+    {
+      "example_id": "MATERIAL_CONTRACTS-EX-03",
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "deal": "modiv",
+      "printed_reference": "3.17",
+      "complete_source_node_occurrence_ids": [
+        "c5cf0a46ad35e17212f02d44df53d062172511cbc11ed731627f6f61d61fd351"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 139496,
+          "start_byte": 131146,
+          "text_sha256": "d42206a0ed7df66d7ee73f8bf33ef047a4032029cd13b327f2bf83e2db84cd29"
+        }
+      ],
+      "source_text_sha256s": [
+        "d42206a0ed7df66d7ee73f8bf33ef047a4032029cd13b327f2bf83e2db84cd29"
+      ],
+      "structure_revision_ids": [
+        "5c643ccbf1ff4a199d13b384851287aeb0d1d9c6a00532f17b48b2ec5a8718d0"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "0520408e2e02e8637b46680897823e351a392dac6e9bc36c282808a2c0b1d90d",
+        "30eeb66c3ee2a40d6d786697b1942256325aef66491497a8f7d0dec07ea2c7cc",
+        "3e3b9afaab6bd819c72773dfb95fc692f513485b654798fa47ae82106da117b5",
+        "4148074c9df959ee3cbe32363b84f284e409b986d841486cf8f02db30b43a981",
+        "4153ba145880411773119ee7b0afabec0bcea60098e4eee8378a725b71d452bd",
+        "4798effa0506d94acce7d831eb294c886942908b0b5b12dcb2e81bb48f5aa793",
+        "4bd11dfb817c0e0a14264f706372fdd0733969ae81c3eb569e52e3b1d49e8fc7",
+        "51177918d6a38ed3a30fe3a8833da55ddd7a0b62f48ed4e041bab62d3909a981",
+        "582f80c42a595bc62e05a7933b24c60b8f6140fc973798621e076fed390f44b0",
+        "69395331f627185ba823f27b85995a71a0e246a2eae6b19826843cd546e3ca75",
+        "79d92be130b50ffefed223a1954e70b29f664dd00bd6a4cc13eab883e5e73383",
+        "8500814f5eb73588c8e58691e9ee94e48363aad4959e5281bccab11e555f37a4",
+        "95b2c4986e1da9dfcb908327a43ffe72c585e6d2256f2addcf428da2ae62c14f",
+        "98a1992c2377e3064ba4a441dcfc6ee9cfd5b439549a569f45bd61889335062b",
+        "ceef670e8c5c8d752e0bee65f02e31d10e1833979e950a53b8c05332df18a5eb",
+        "cfa9712c06ba31cf3dbe68e03deca6cd45fd601daa025cb4f37172b063c5ea41",
+        "d5ecd8966f5d6406d3e266ced5dc06a769509f22e14fc8423677e617e84cdcde",
+        "df8c05de64a57dca90d2befd88452d4f7b1f29f323bd8ccb497b4cb068bec7d7",
+        "e64d236dfc0fa1de51a1ca561688024eed9c8b72ee6d56b4c7aa861b946b0d7e",
+        "ed3385d3f9d48621f1af77767eb0ebea1917941e701a7847bc5ed3b5ec775121"
+      ],
+      "comparator_run_identifiers": [
+        "modiv-material-contracts-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "MATERIAL_CONTRACT_CATEGORY_CRITERION",
+      "legal_question_ids": [
+        "MATERIAL_CONTRACTS-Q01",
+        "MATERIAL_CONTRACTS-Q02",
+        "MATERIAL_CONTRACTS-Q03"
+      ]
+    },
+    {
+      "example_id": "MATERIAL_CONTRACTS-EX-04",
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "printed_reference": "3.01",
+      "complete_source_node_occurrence_ids": [
+        "3bd5017a187fef6badf5c39945c20b9340897a06422317a00eb6c07bea9504ca"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 104301,
+          "start_byte": 28259,
+          "text_sha256": "b800cb57763e92bb3278cb5d424eeb221930b44c6bb079aa7096b68c7ec3de18"
+        }
+      ],
+      "source_text_sha256s": [
+        "b800cb57763e92bb3278cb5d424eeb221930b44c6bb079aa7096b68c7ec3de18"
+      ],
+      "structure_revision_ids": [
+        "1c3b9352c7879ad0006134aaa3bd47fca56730315020727b5902a1bd83c37ad5"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "4564f34b2fb9b4359503979b3be492577a0da07e5eed2bd6259fd8939f10b4d9",
+        "59e2e621d151df5ef9629ad189f3b091003878a56571c8c161933d5a00778817",
+        "88c379b47bbff87260aa2932696339461098320f61eb758ca65c3983dcfa81ba",
+        "d7b5e5644cf85c1d45bc41db059095f28624b3ca9e3fdff33d372fbc70b402e2",
+        "e37a00ff10771836e808d0191e40a94596f8d82516e5e2b925d7c7b5880d2f59",
+        "f90fbceafc9b16fde7e87806dbcf5779e79bf22f30ba80fc0b0861a3a0bf2bbe"
+      ],
+      "comparator_run_identifiers": [
+        "redhat-material-contracts-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "MATERIAL_CONTRACT_CATEGORY_CRITERION",
+      "legal_question_ids": [
+        "MATERIAL_CONTRACTS-Q01",
+        "MATERIAL_CONTRACTS-Q02",
+        "MATERIAL_CONTRACTS-Q03"
+      ]
+    },
+    {
+      "example_id": "MATERIAL_CONTRACTS-EX-05",
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "printed_reference": "3.20",
+      "complete_source_node_occurrence_ids": [
+        "41ba177671b40aab31e0c7efbfe8d7df707325c3929c5793effacb36193cc3be"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 106339,
+          "start_byte": 100150,
+          "text_sha256": "7329f6cd0a09ca86a811531638cb50e50abd4aced415e0df08958ba908b482f0"
+        }
+      ],
+      "source_text_sha256s": [
+        "7329f6cd0a09ca86a811531638cb50e50abd4aced415e0df08958ba908b482f0"
+      ],
+      "structure_revision_ids": [
+        "c53f6b2dfe3697d52ce4d97f25bd47d8f058ccc217d736988831ae17967e5725"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "0461c5ea384debe440a31d0bd90880e7bdcde712186a59da1369808cd0bf4126",
+        "0e817aa1dac96adf61510c9b747d23dc419bc27bfeb41c321785c99d60337e3a",
+        "1c60a66f9aeff4a39808e4fb45d9baf71a72e1340217e58d5460a6106e4bdacd",
+        "1d5cb4ed6db01c79ee339364636177a4c3ed9d67fa1872b5c93103dc43ea6e96",
+        "28cf30d3800b8c3256ebc6b42d1b525cc18c9e14ed5fda7389c5ef3ae62c035b",
+        "4d60280e5b7bf03b7ce28f7d43a5ed1891893340ce1830fc6b1fab645d1182f2",
+        "53febb070fa4683b3521d0756886e6814d8fe30b56983992c7094c95e8e5dc3d",
+        "65aefb669cc02dd2804faf518a77026078ad52b5f8b7bcf8e68d236c80651222",
+        "78f20e1c222412c4733b7d0bea0e421b283fa3a4509ba2c00ff63751a15e1417",
+        "85f7857e89f6165d4d3d8420c77f7033f2880a0c256c03e6069385b9c353fcb0",
+        "9446b04144860382e5a5393b4180df40642532777556e84accb11e5a26d47abc",
+        "97e086f9266c30892e5004a01a5ff67f4f6de988a91f5fc53a7d7509aa07fddf",
+        "988878a8de40eb701caa4dfac39ff2ba45429f18ea7198695c750e184bd80f5b",
+        "9cb06b82aa1ab5c7aaca4255ad90b01101f9e3d3f26881b17b393f33e6e9102e",
+        "a37b402ef959c6087635348d21ecc4e67ac17eb37f03dc1d2891f7810cb645c2",
+        "a6970d7ab741099b3608f7f2f75fd9f8a00458e961332132eb4b0a7d84064167",
+        "b629bfe344436000ca9df4c76c05ea1fc6f63b187564fbe822cf1bf9dc189f6e",
+        "ba9533adf1fd711f3d6ffde85ec22e5b551fdb45be58bfec940d152e6cdde19d",
+        "de2440333617f40f8f51f58c655f32437f746323401edf270e42c5269c75f742",
+        "eee4c183b18f3d7c45d04fcdf86b5ab9706b5bf58f79755434e1432bf424e9d6",
+        "ef9750f9dfac04aa144159a81b0759bf05b29b287f8d1d1ed2c872774e4f01c9",
+        "f6d49feee4dc6bf068832787b698ba66d26c4b2e0ebb2ccf196b3bde2de39031"
+      ],
+      "comparator_run_identifiers": [
+        "skywater-material-contracts-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "MATERIAL_CONTRACT_CATEGORY_CRITERION",
+      "legal_question_ids": [
+        "MATERIAL_CONTRACTS-Q01",
+        "MATERIAL_CONTRACTS-Q02",
+        "MATERIAL_CONTRACTS-Q03"
+      ]
+    },
+    {
+      "example_id": "MATERIAL_CONTRACTS-EX-06",
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "printed_reference": "3.1",
+      "complete_source_node_occurrence_ids": [
+        "a257b4d1202cb775af7513904e59d29d3fca2fa4b34026b44b5c89814eeecbbf"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 131511,
+          "start_byte": 47755,
+          "text_sha256": "4ebe8295a6df8109ae876c13bcb97d8b44b1cfacc26e29769cd2777ecfd85a72"
+        }
+      ],
+      "source_text_sha256s": [
+        "4ebe8295a6df8109ae876c13bcb97d8b44b1cfacc26e29769cd2777ecfd85a72"
+      ],
+      "structure_revision_ids": [
+        "59456dcbe15cce144583d48677dfaecac77dfb8ca02f18e249edb17cf2cf3034"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "02a7ca6df26a84baa8afd8747c6b1907e67135146622b180a1355d95fa2d7c0e",
+        "04dc00b3f6da6e68e7de822c72f02dbda888423457dc75345f286c8061e4b7a7",
+        "063385ea4dc0b96286dc01f3dfecec6ebea971656c0b019a789fd09f308e69b7",
+        "0dac9a75a0b28a324b421a4b35194165fc11f8f83bfbaf584af88472200ee9b2",
+        "39db6f46aab4d346f183b0b26cc301d06b4986b1064c8a30d4bc67682eb262ee",
+        "4f7bf8ec98a02802bb109de667f540e0856cc2f1eda3a04fbf57e3448068b895",
+        "512a3599d0a5342393ea6c07f3f3a9c69e952eac9829a4b73acb7cba0369ad57",
+        "515d96e79b5af727afd36180666d6cfda7e4b274b3cf4d58052a0b5da7b4e881",
+        "670744431d6e3ab42273c6501d7a499a250982a7a82fb3ee78e80f4039012114",
+        "7276fa58e57563527b9cf76fac70c2db4de067ab9884b00401ed11d4dba59b4f",
+        "7bec59228c7ce390d8148440e33fa3f4187c9d280fc30f8c400d4b00274a58f9",
+        "89b89fe95e8f805f655263c07135f2cf1fcfe9657bf50993d0bb0b3845881e4f",
+        "9a789932ac25a0196cef9765cdfe5ba87ad66d87e5e0a0d849007f4910c8f6a5",
+        "b8073bb55b8b009a2d1217581c5cb46df2e3a0c8f7178d21c0f1c12e5ea210b9",
+        "bba072fded98acbd604f0311d22f20a48800843e6f13538f03f9f66c41bf3626",
+        "bc54288968e7884fe69fc199007ffbd93cc08dc3a78fb5851f5ceebdf3cc1949",
+        "d8e8a504b5caec4bcc5f09fa7922bd5e02a8d3938fd93f35905873375b887714",
+        "e857517bf57822a502a3d4349f81475c46982997dac9cceff11c6c3762362b89",
+        "e8db8e4b6012fa905682aff46ca64d3e4d008ccc041d5e92e00d5cd87bb2ee85",
+        "f95c4b083e287310e7c864e9f9e81beb492d34e23c1258bc799d688df0fbc791"
+      ],
+      "comparator_run_identifiers": [
+        "topbuild-material-contracts-20260809-2xk-r3-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "MATERIAL_CONTRACT_CATEGORY_CRITERION",
+      "legal_question_ids": [
+        "MATERIAL_CONTRACTS-Q01",
+        "MATERIAL_CONTRACTS-Q02",
+        "MATERIAL_CONTRACTS-Q03"
+      ]
+    }
+  ],
+  "cross_family_dependencies": [],
+  "proposed_output_policy": {
+    "candidate_claim_definition_keys": [
+      "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE"
+    ],
+    "candidate_subtype_profile_ids": [
+      "MATERIAL_CONTRACTS::MATERIAL_CONTRACT_CATEGORY_CRITERION",
+      "MATERIAL_CONTRACTS::MATERIAL_CONTRACT_DISCLOSURE_LIST",
+      "MATERIAL_CONTRACTS::MATERIAL_CONTRACT_STATUS_REPRESENTATION",
+      "MATERIAL_CONTRACTS::MATERIAL_CONTRACT_BREACH_TERMINATION_RIGHT"
+    ],
+    "non_output_dispositions": [
+      "LEGACY_FRAGMENTS_REMAIN_SCHEMA_APPROVAL_PENDING",
+      "UNRESOLVED_REQUIRED_ROLE_IS_NON_RENDERABLE"
+    ],
+    "family_ownership_boundary": "MATERIAL_CONTRACTS owns only approved complete propositions. Overlapping content is link-only.",
+    "renderability": "NEVER_RENDER_FROM_PROPOSAL",
+    "complete_transition": "NOT_AUTHORISED"
+  },
+  "narrow_legal_questions": [
+    {
+      "question_id": "MATERIAL_CONTRACTS-Q01",
+      "question": "Should one independently operative authored unit be one proposition, with coordinated elements stored as roles or linked children?",
+      "affected_example_ids": [
+        "MATERIAL_CONTRACTS-EX-01",
+        "MATERIAL_CONTRACTS-EX-02",
+        "MATERIAL_CONTRACTS-EX-03",
+        "MATERIAL_CONTRACTS-EX-04",
+        "MATERIAL_CONTRACTS-EX-05",
+        "MATERIAL_CONTRACTS-EX-06"
+      ],
+      "two_plausible_readings": [
+        "ONE_COMPOUND_PROPOSITION",
+        "LINKED_INDEPENDENT_PROPOSITIONS"
+      ],
+      "recommended_reading": "Use one proposition per independently operative authored unit.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "MATERIAL_CONTRACTS-Q02",
+      "question": "Which family owns overlapping content, and which families may only link to its stable identity?",
+      "affected_example_ids": [
+        "MATERIAL_CONTRACTS-EX-01",
+        "MATERIAL_CONTRACTS-EX-02",
+        "MATERIAL_CONTRACTS-EX-03",
+        "MATERIAL_CONTRACTS-EX-04",
+        "MATERIAL_CONTRACTS-EX-05",
+        "MATERIAL_CONTRACTS-EX-06"
+      ],
+      "two_plausible_readings": [
+        "DUPLICATE_IN_EACH_FAMILY",
+        "ONE_OWNER_WITH_LINKED_CONSUMERS"
+      ],
+      "recommended_reading": "Use one semantic owner and stable links.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "MATERIAL_CONTRACTS-Q03",
+      "question": "Can an ambiguous or unresolved M3 edge fill a required role?",
+      "affected_example_ids": [
+        "MATERIAL_CONTRACTS-EX-01",
+        "MATERIAL_CONTRACTS-EX-02",
+        "MATERIAL_CONTRACTS-EX-03",
+        "MATERIAL_CONTRACTS-EX-04",
+        "MATERIAL_CONTRACTS-EX-05",
+        "MATERIAL_CONTRACTS-EX-06"
+      ],
+      "two_plausible_readings": [
+        "ALLOW_CONTEXTUAL_INFERENCE",
+        "FAIL_ONLY_THE_DEPENDENT_PROPOSITION"
+      ],
+      "recommended_reading": "Fail only the dependent proposition and do not infer the role.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    }
+  ],
+  "preparation_diagnostics": [
+    {
+      "code": "BEN_FAMILY_ROLE_APPROVAL_REQUIRED",
+      "severity": "STOP",
+      "related_id": "MATERIAL_CONTRACTS",
+      "detail": "No family adapter may run until Ben approves the open rulings and a separate approved schema is sealed."
+    }
+  ],
+  "preparation_effects": {
+    "model_calls": 0,
+    "family_runner_calls": 0,
+    "database_writes": 0,
+    "product_writes": 0,
+    "selector_changes": 0,
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "serving_changes": 0,
+    "publication_actions": 0
+  }
+}

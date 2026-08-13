@@ -1,0 +1,911 @@
+{
+  "schema_version": "STAGE_2Y_FAMILY_CALIBRATION_PACK/V1",
+  "calibration_pack_id": "edfeb53ba435c3f610e8709d634e17d4bdc701e2b809424ae49dc47ce1568686",
+  "calibration_pack_digest": "cba2fa436be60c57d07ee80e6c7071b9a3e81f882c7d2415ae89c5976306263d",
+  "family_key": "NO_SHOP",
+  "wave": 3,
+  "pack_version": 1,
+  "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+  "purpose": "LEGAL_CALIBRATION_PREPARATION_ONLY",
+  "authority_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-preparation-authority.json",
+    "byte_length": 22922,
+    "sha256": "d10f095429cdbb1006bfbe1e789c267ffa3a98b12b4bd33c2afb550e7beeea79"
+  },
+  "calibration_policy_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-calibration-policy.json",
+    "byte_length": 45512,
+    "sha256": "102534446774dfa0661ad186d27c25507befedca80807e42cf584fa412e6bf78"
+  },
+  "m4_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json",
+    "byte_length": 13670,
+    "sha256": "54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41"
+  },
+  "m2_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+    "byte_length": 20126,
+    "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585"
+  },
+  "m3_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+    "byte_length": 17449,
+    "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855"
+  },
+  "family_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json",
+    "byte_length": 827,
+    "sha256": "7aa5ff41eb778884cdbb6f18ba72138c20420a2475949aca5dcbc0d2098a938d"
+  },
+  "control_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json",
+    "byte_length": 379235,
+    "sha256": "62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41"
+  },
+  "diff_contract_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/diff-contract.json",
+    "byte_length": 1171,
+    "sha256": "2585c7af9e47c4f7a6915ef1667f5eb8dbce26a8a30829bae15e42a7d41ab0c8"
+  },
+  "comparator_run_bindings": [
+    {
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "run_identifier": "concho-no-shop-20260809-2xk-final",
+      "family": "NO_SHOP",
+      "resolution_binding": {
+        "byte_length": 914913,
+        "path": "evidence/canonical-v2/concho-no-shop-20260809-2xk-final/resolution.json",
+        "sha256": "5c46ac877408801f48ca2b0872708a5686a9379fbbd12dec12e458cdf086afaa"
+      },
+      "adapter_result_binding": {
+        "byte_length": 618268,
+        "path": "evidence/canonical-v2/concho-no-shop-20260809-2xk-final/adapter-result.json",
+        "sha256": "e62b9eafdb5fb2e91886938a592fc0db00f23d22afb10da28fee538e7387b2fe"
+      },
+      "validation_binding": {
+        "byte_length": 277232,
+        "path": "evidence/canonical-v2/concho-no-shop-20260809-2xk-final/validation.json",
+        "sha256": "149990e8f9693866f7d49814d6984caaf7331e50ce9f5dd35b3a3e4b6f365814"
+      },
+      "expected_counts": {
+        "resolution_claims": 58,
+        "write_set_claims": 58,
+        "validation_claims": 58,
+        "resolution_evidence": 58,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "run_identifier": "metsera-no-shop-20260809-2xk-final",
+      "family": "NO_SHOP",
+      "resolution_binding": {
+        "byte_length": 950707,
+        "path": "evidence/canonical-v2/metsera-no-shop-20260809-2xk-final/resolution.json",
+        "sha256": "2162569544f9c45c414551f16833c154abce6ec14a3aa18fcbf26ca28f72d6c5"
+      },
+      "adapter_result_binding": {
+        "byte_length": 532922,
+        "path": "evidence/canonical-v2/metsera-no-shop-20260809-2xk-final/adapter-result.json",
+        "sha256": "f921ea6df8966675122e53a033979bf20384c70da33c92348d41cad5689976e8"
+      },
+      "validation_binding": {
+        "byte_length": 190698,
+        "path": "evidence/canonical-v2/metsera-no-shop-20260809-2xk-final/validation.json",
+        "sha256": "266a06690ac69285f407dbc8bfc8dd50fdee11f44f0a4baa78b60737b5a8ef22"
+      },
+      "expected_counts": {
+        "resolution_claims": 42,
+        "write_set_claims": 42,
+        "validation_claims": 42,
+        "resolution_evidence": 42,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "deal": "modiv",
+      "run_identifier": "modiv-no-shop-20260809-2xk-final",
+      "family": "NO_SHOP",
+      "resolution_binding": {
+        "byte_length": 824607,
+        "path": "evidence/canonical-v2/modiv-no-shop-20260809-2xk-final/resolution.json",
+        "sha256": "dd913920703037a0767df3a0ce6c48d4f2f7382685bf39db38a26adcf3b60a5a"
+      },
+      "adapter_result_binding": {
+        "byte_length": 580591,
+        "path": "evidence/canonical-v2/modiv-no-shop-20260809-2xk-final/adapter-result.json",
+        "sha256": "f79447f167f2b0b0c8170691d99624ba876b7b7a3f387f6b3a65fb603fa5c958"
+      },
+      "validation_binding": {
+        "byte_length": 156716,
+        "path": "evidence/canonical-v2/modiv-no-shop-20260809-2xk-final/validation.json",
+        "sha256": "ae19fafc07a70ba6d438bfd1626cbfc875e4537a14b36fc7b32a962740d80439"
+      },
+      "expected_counts": {
+        "resolution_claims": 33,
+        "write_set_claims": 33,
+        "validation_claims": 33,
+        "resolution_evidence": 33,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "run_identifier": "redhat-no-shop-20260809-2xk-final",
+      "family": "NO_SHOP",
+      "resolution_binding": {
+        "byte_length": 910669,
+        "path": "evidence/canonical-v2/redhat-no-shop-20260809-2xk-final/resolution.json",
+        "sha256": "7c22b9be68ac935981bb4e54c4b577c5547516f5cafbe3783df4db8d033bc18d"
+      },
+      "adapter_result_binding": {
+        "byte_length": 431461,
+        "path": "evidence/canonical-v2/redhat-no-shop-20260809-2xk-final/adapter-result.json",
+        "sha256": "4589a0cc3394e01566f957db4bc5a43084dca472e5a7b5f7eb960fde24f66648"
+      },
+      "validation_binding": {
+        "byte_length": 172532,
+        "path": "evidence/canonical-v2/redhat-no-shop-20260809-2xk-final/validation.json",
+        "sha256": "53b56deaabf01b70c8316eee9165009623d91ef5cf7e4e12b0e56f414c00b7a1"
+      },
+      "expected_counts": {
+        "resolution_claims": 40,
+        "write_set_claims": 40,
+        "validation_claims": 40,
+        "resolution_evidence": 40,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "run_identifier": "skechers-no-shop-20260809-2xk-final",
+      "family": "NO_SHOP",
+      "resolution_binding": {
+        "byte_length": 841436,
+        "path": "evidence/canonical-v2/skechers-no-shop-20260809-2xk-final/resolution.json",
+        "sha256": "277aeb498acb7bed924afb9dda315ba64596ded9398a5599d75162fef68e52d8"
+      },
+      "adapter_result_binding": {
+        "byte_length": 542530,
+        "path": "evidence/canonical-v2/skechers-no-shop-20260809-2xk-final/adapter-result.json",
+        "sha256": "81b80393adb5634cdacdd7cab0511e4d70e7129c0d34703248023b572eaf46f1"
+      },
+      "validation_binding": {
+        "byte_length": 164222,
+        "path": "evidence/canonical-v2/skechers-no-shop-20260809-2xk-final/validation.json",
+        "sha256": "cdceb5a053eb86252afcdbe0c7742d9ea4bbf70d0cf241a9da28c72198837b68"
+      },
+      "expected_counts": {
+        "resolution_claims": 38,
+        "write_set_claims": 38,
+        "validation_claims": 38,
+        "resolution_evidence": 38,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "run_identifier": "skywater-no-shop-20260809-2xk-final",
+      "family": "NO_SHOP",
+      "resolution_binding": {
+        "byte_length": 1140243,
+        "path": "evidence/canonical-v2/skywater-no-shop-20260809-2xk-final/resolution.json",
+        "sha256": "3c4c6269cd18f191361272e9fabaf4da68df338ca65c50d3a444548cf0d28542"
+      },
+      "adapter_result_binding": {
+        "byte_length": 574494,
+        "path": "evidence/canonical-v2/skywater-no-shop-20260809-2xk-final/adapter-result.json",
+        "sha256": "adee0513979f3f71ecfef97929c3fb1d5c93db11228136c074b0e9ee9cd59fb5"
+      },
+      "validation_binding": {
+        "byte_length": 219165,
+        "path": "evidence/canonical-v2/skywater-no-shop-20260809-2xk-final/validation.json",
+        "sha256": "e6cb3fb347d4dff5961691d805c3d3e4777caa16f6749c502135ec902916b2d3"
+      },
+      "expected_counts": {
+        "resolution_claims": 49,
+        "write_set_claims": 49,
+        "validation_claims": 49,
+        "resolution_evidence": 49,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "run_identifier": "topbuild-no-shop-20260809-2xk-r4-final",
+      "family": "NO_SHOP",
+      "resolution_binding": {
+        "byte_length": 2928230,
+        "path": "evidence/canonical-v2/topbuild-no-shop-20260809-2xk-r4-final/resolution.json",
+        "sha256": "203242a266730d1f5aa86b766a7ea2eb20987ba9852b09d5f03dbb3b6133902d"
+      },
+      "adapter_result_binding": {
+        "byte_length": 834134,
+        "path": "evidence/canonical-v2/topbuild-no-shop-20260809-2xk-r4-final/adapter-result.json",
+        "sha256": "3269fedc95b84661ebc4ad78959f2582fd28479f49d4fb1cfe184fa9b99b9e84"
+      },
+      "validation_binding": {
+        "byte_length": 439091,
+        "path": "evidence/canonical-v2/topbuild-no-shop-20260809-2xk-r4-final/validation.json",
+        "sha256": "94f136c27a69ac41d7f7a8bf8a7092b6c4c899940a29bf84ac3e2a2137fd2bba"
+      },
+      "expected_counts": {
+        "resolution_claims": 105,
+        "write_set_claims": 105,
+        "validation_claims": 105,
+        "resolution_evidence": 105,
+        "supplemental_claims": 0
+      }
+    }
+  ],
+  "supplemental_input_bindings": [],
+  "provision_examples": [
+    {
+      "example_id": "NO_SHOP-EX-01",
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "printed_reference": "6.3",
+      "complete_source_node_occurrence_ids": [
+        "199ed61867e4920b3f8ae47b617853ecbd5956984048ca5c2e930089ac3b05d3"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 177321,
+          "start_byte": 157047,
+          "text_sha256": "83d337c245af9334050e75758ffbe1f5b7b064783c5485fd77f1bacc9485c9a5"
+        }
+      ],
+      "source_text_sha256s": [
+        "83d337c245af9334050e75758ffbe1f5b7b064783c5485fd77f1bacc9485c9a5"
+      ],
+      "structure_revision_ids": [
+        "a26330da9edc5834cfa1ababe28819d33077e4bcd2f90c7ad253d3198d1ddc77"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "02d845a929f777e26fafd722a4e1637d9c9ae0caf6ea71bff87ce270049c65ab",
+        "03da5baebed2f518018c45403941ab36268fdf045b372aaba488488ebee08381",
+        "13a8282a8fefe2d3aca69df1e4ec227b1425b8c18e49642c4c2bf6a86b709fbf",
+        "1c297ec924feac086e73477a76a843e6a69b0a3fef61017bf17c8cd6305da0e2",
+        "1f1754271e14e814eabb28cdd01836e976e484daad19bdf52a6f170a15d527f5",
+        "2afe969f9ae3e8bf4375e38e51d8ccf8e4f88b8bad6322290f0d2dd705e595db",
+        "2f9cc5e7f2d4b151b3b9b73d001047ddedd028e1ace7c77eafb1bc225b5298ae",
+        "35019deee46446c68d28a9f4a2d28501adfc83a5f3c930e4b12fe6172a6bdc9a",
+        "3709aec2caa0f6f404428d2cdd0b274da3155d2139c49bb8431395f1ff94eb8c",
+        "3cea8e7b1dc65bbdbfbb720dc8a2c1380f4ca9251437c06c10f88d2ab89b8318",
+        "52e9488a737d7c19f7120b20d5d29754e6b7428b00dcfaf65d58ffd1fc7f1fca",
+        "62c5af521f254d88d6f347900eb19d883d9e9b5036caadc8bd71532d48d28d0d",
+        "6a5763a427bae980af9dbe8d1d81006524d6f28e82ec05a79c4631372fa9e366",
+        "6f76d3390948bb5386aa49b2af586483bc8c4c2a4f4a5f40523850c8d6f81c5a",
+        "72d2839f95d08bccb3970ca4d4d85551e1bac60e78b912315ea0b407a49598cc",
+        "76fb116791cb78dbe337204f024097de4fdc96b7e793d6b63926638295aef1ef",
+        "7a1136653230059486c4baec80baa35187f37729d347e649489b856369dd506e",
+        "918473e56a46a616ba293ffa8d72ebe845618d27e4de57c1c5eaeb20d7fc8f23",
+        "93eee34b4a717ba905a12a9747a4d31a25b953d0fe8b7425043a3de2717642cb",
+        "9729a71b1bf2608d168e0bd86bde001fe1f8b7871df3befb24a6b9e8d46123f0",
+        "9d45470ce09a674f2a61543934c3c0b560ff8013e0fecaeec1e1464523e4c058",
+        "9de0030ba549d5084ef4b2862da65110269636abfc8d3f7eb371c3bbc05e9664",
+        "a4c29d5b515c8e64d67b771729e16b202b17fdf9696dc5bbe18070d494240d1c",
+        "b01157a37c7839d3a2d5096b7546c57f8b30e22b4d6a94d1ff6da3a169c6b45f",
+        "b65fa69359fb165825813513608289af8398f1d12e4333e56b34a1671a177303",
+        "bfb3799e14ea075c9a78fb1caa2dd0fdd21ad191e0db0d5510e3bb4a8d098032",
+        "d0a2fb189f2fb3b5de7ce9ab0bc7a29d7a86b4fa17337ce02cc710927cc54cb2",
+        "f284cc12011435d525ded011783b6eb61d3958b35ca2a6bef93a4b6ef802bbad",
+        "f49ac74b45562f9149d3baa5d2341b7a57ea07417a06a477f536fb97c92fbc15",
+        "fa5f98aa2a0981d7f14df3d58e72aabe4452729468d85355555c7b33616b99b9",
+        "ff68de253748ca49b2aee9dff2e1ed78b12165a7bfe412de7100b66d63773d1e"
+      ],
+      "comparator_run_identifiers": [
+        "concho-no-shop-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "RESTRICTION",
+      "legal_question_ids": [
+        "NO_SHOP-Q01",
+        "NO_SHOP-Q02",
+        "NO_SHOP-Q03"
+      ]
+    },
+    {
+      "example_id": "NO_SHOP-EX-02",
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "printed_reference": "5.02",
+      "complete_source_node_occurrence_ids": [
+        "7bb2cbdec5dd016560ceb819b2812f86f5248cff833a14e235231f1cab5f509e"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 179828,
+          "start_byte": 159408,
+          "text_sha256": "298940b23c71c55c05902d6cdd127ecca1cc5f3614367477e33bc3979490a703"
+        }
+      ],
+      "source_text_sha256s": [
+        "298940b23c71c55c05902d6cdd127ecca1cc5f3614367477e33bc3979490a703"
+      ],
+      "structure_revision_ids": [
+        "7c30aaf5c66588ad7f43be9866d84411666a698e1dfdfff88cec33ccf3a88cd8"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "08ea4f5b7e50a709c111757f75be9dcaf1939a1aa13471de2874c3b0c4239016",
+        "1a0349e1afbdce04f7ebee669576122dc1d7532d5906610b19490352ce25edd4",
+        "1af3d4f3af2830f15db811f50b52b604ccdad501a24400924a665c6b52679d03",
+        "1dfaf1f3657c72a1c6ea755dce3530d40942040e755a2bae2b8a2aee0ed6f486",
+        "33d6b56359d50ffb1f34c7a93d5bf510979eb325215fe4abbcce06e20c22346f",
+        "3f834d2e0711cd93bcbebe702c440379ac2ff2a8017b459b1196aa57bab1581d",
+        "43ebb33d665c2934d27439db57e1950c8ba4cb59e969ae259f017a40e2fc8e51",
+        "4887f4dfde81b0075ffee6f62ae6c2af8d5963cfe0d6d53b5063142240feb007",
+        "49e9393e9b7bb198af969cc759c13d35bc31dd4b90efe4582eb582775de867cc",
+        "4b4bbf9f43384799d0bbc9b54575662f179335305b2a05360d2b21af78c655c1",
+        "4ce89c98bab333b880dc26f94f3ce1974c16e06d2d6fddbf3cb9362a3f90e632",
+        "5def1b020e38518c8f6f136431bc6e7c834ebe0ba44acc281e58db6d9de09186",
+        "6009b3e31c037a6bacc3fc527834345b6b19279e7437bcf3ccf8d534b22b5d36",
+        "60321f8219b6c627a99e4ef0759ff46ff8373996e084bb18f31ce2e0c296cca5",
+        "690c30a8449599efca59f1e6439ab9501f5d78ae19c1825770d813608d2d7226",
+        "729a2296991432bd328d000168f1d7042c541b535397e999e921dfff795b1758",
+        "7afaa3093a5546cfea51bb1141e5314afbea7089aadf960f4355657366764cc4",
+        "7df1e5d46d20e460a9e456e98d01d2753ea0312729d54d90d4e074b70ee1fe8e",
+        "8b8eea266d06c33457944a0d02fe738567ea1acfec26594c6b4472ae68049d3d",
+        "8e5cd621c5811a757d91fc78112358a077cf0a74d5477c64bb3957ecc6e55bb8",
+        "9a2a693f4c8d76e87e900aea89cec624d680fae50a8a0c80d1529ecf5329ed88",
+        "9e50474999c3480220271255f30be2be595aa376e1569750e76a1086de435e86",
+        "9ee88524f908f0306f86348c7e98d4538c6f3f3349b0078039012a2df79ff9bd",
+        "9f6401ce07ccec6c60b91d22c1d0c2995d0712362becf8a61b70a946fbcd1c32",
+        "a23c354b56adc05a048f5eae017522c277d4afb5a410a108cd61ab9226ab9476",
+        "ac47e9e9c6699d5c1f8d6f7db9dfc4032f0190f2c724215a2cb7e1a78e18b805",
+        "adb2cdb2f4b2483526c87ea5764220d8e23d61abe2d8b3cdc6ca4ae3ee9f2939",
+        "b32d65826ba132d05791c35e2dc8b58110cc148c80224663b9e7dbdc3e5eb3a0",
+        "b922f1ebc7aae733408115977559502f3a0c3f87e1cc4362f9e312c956d8bce7",
+        "bfb3cd5ab40016fbc8051d642c646dd5e8b9aa064c1c84237a03fcbd5253f230",
+        "c24cd5a4144b3c352d9ae859743e5eebcaed918d8450fd3b5d06ce7816668179",
+        "c262e433e8ffe0e092ec85d040b8952eb46661dc08f9618bd0a9c6e0dabfd029",
+        "c5be9e66eb27cf2e34d62b166efd3651ab23118603afbcd8975a327765df49f8",
+        "c850c20af796b7f67b2c638736e2261fec4dee6e624093cbca82a2cf14162bfd",
+        "c9de5e44e383773da1c7f9105effeed9b8ee54277ad6aa356170ade5bb822323",
+        "ce7522b22d5ddc704264f845bdac1f0423800bc439d8c50b28f45c23409723f0",
+        "cf7109d826b06d28e7c3649087353349f919e61df8c4b618e6200cc64eaefbb1",
+        "db44ae195d798ca7cf44c13d21551e4af684dc6a4151529486b6ff9ce1bc0dfb",
+        "ddf28d2944281f8921db76c7554ce06cc595643de182121f6e7029b8516ef173",
+        "e26e5913ddf5aab8ab08ce7e0e85d1db27a80fbd2b2b5330ef156bd661c5989f",
+        "ec256dc18165ec4b98ef8bd3b8abf595875a021d6cebccce654fb0b5599c1a9b",
+        "f2c7eef201cae63861ec57bdb9403c5975b24a971683530a5767b63ffbd4dc2a"
+      ],
+      "comparator_run_identifiers": [
+        "metsera-no-shop-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "RESTRICTION",
+      "legal_question_ids": [
+        "NO_SHOP-Q01",
+        "NO_SHOP-Q02",
+        "NO_SHOP-Q03"
+      ]
+    },
+    {
+      "example_id": "NO_SHOP-EX-03",
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "deal": "modiv",
+      "printed_reference": "5.6",
+      "complete_source_node_occurrence_ids": [
+        "af11dde50298c0d9e1a7114971e96c42630d25be6d1133c421d54232f6402a66"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 273330,
+          "start_byte": 258498,
+          "text_sha256": "b48c7ae37a28d0f70547eabea61be45d893604d23204da0fbee78aaa264a5aea"
+        }
+      ],
+      "source_text_sha256s": [
+        "b48c7ae37a28d0f70547eabea61be45d893604d23204da0fbee78aaa264a5aea"
+      ],
+      "structure_revision_ids": [
+        "7059c5a56cde3006b5ce351ee3b50b8458ed5c759e870aba0b230b3905369820"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "0231d522bddb9c1d3e874ee64dd50f5214d6616a8985a52092393ca157cfac21",
+        "2841c8068b6ae9b65c2906b1f5d1d6a598a84d5297bc067988bc1786fd2e4489",
+        "2d05fb2bc395be411e3a5a35fb68d968408c6a5d8cdef0f36313ff1dd59f0477",
+        "33095d6204181f622fc15b29eebd836ca1dcc27fa718c84ec0f59203703420f9",
+        "362894e3ea9326614751e99703c73883fde50c549ca50890b6c85cc77946c663",
+        "3642a6ce10e31ac03b9b6218485b9a4ac47e6d5fbb372665ee50f8cf048cdf2e",
+        "36be0daea495332340ad23ffd970c77fad913153fe57542197464a34c7b92ede",
+        "4f15fc83b4c18877265b0ea02f63080e7b59b47f075f17eb65f7e00636e2fbba",
+        "598ce2a5e249f2ea0e95699f5f91c6b85b0d3fad346b4e20b2105b50a50cee1c",
+        "5d73559c1e84beca01a2a2f1ae95ecb47ed91950c06c23e1674545b95326a099",
+        "622060008de44610031bc20243e0b46526d56065e9a73c49d1eec7ea34583d3a",
+        "65a7d4e18e21cf4e249f507f731c37215d1ea2758f5b2bd7637a9fcfddfba0d7",
+        "6ee0fd37fdd5aecec459c3c25eb6a1b8f2e43c2dd2875a91426ac652facd742a",
+        "70f3608bec462ea7c02aebbc7a1c5268c0bc023c3a479201c903ac47bd6b306b",
+        "731316b066f859b75d0a0a46f98e9dd0d43a846d713764ae5d177fb8ef6b42b8",
+        "843c69ccb11274e679ff0dee522da9173c0e483d2f092b702851581751a927f3",
+        "8a06aefef5afc1079fa0c3a9f52a23bbd2c9b874d601ee35eefca83748d4b801",
+        "8f4c5bf5ee289c6ebbc3f44d66980b69cdf7f5a0b88df2449231101defa803a2",
+        "98585f6b93031a4f0637fd917a0e892ed13926753e5b191b4d9779831d87c4ca",
+        "a43658890b9a85ad68b4037ee0b1284917d9c434876d08a0a663acff091587c1",
+        "a5b16fb44eedff87c59f0babd4a03e4fe57c9d85e52202b77823a5ab92e53f73",
+        "aac0e546c8a801c248c06a71363ec795caf10f7b8352bd1bf7d1656f756dadab",
+        "b007da2208d9c113e5163438ad6386c0a12aa070c5e49af44c892016fd6e3425",
+        "c090d9a0591d62ee748d94a2c4411a9f55cf8b2b1ddab2c741769d195bb2bd99",
+        "c3b4620f4ca7f419cb45326042df4b9fdfd1d80dbb81df7039a3d2c88ab75745",
+        "c72cc8001dbeb891a1b7af4cca2e6c0b5ba0bc4cd122ce9d1501decace59ec51",
+        "cae2f20b96757180a88555464ad70790f28c05106ccaf5e0dafa063a1a2325fa",
+        "cb144a128e43292149c722918b3c7410d78ea7e4815e449e461d2dc05b4cfecd",
+        "ccf942af29a7cc3a88271c5f8abcfdd916a67a648f26db0a26c0efe28db34d9c",
+        "d1e21c94a2cd1a46f36880b1a46f3dd16dc5341f61201506b4fc30cff89defb2",
+        "e2572e432d7e1e46eb80226886937ea2e9cd9a4317c9f5fb9330d907ea0e18e1",
+        "e6d6847bd0a0712c4e25e2c81d140ea35f56b39f1993a28386b92388f0bde6e0",
+        "efdcaa7b0d00aaa50a9ed8b18b4f2d0b2354f48049d50f554c107ab9433373ca"
+      ],
+      "comparator_run_identifiers": [
+        "modiv-no-shop-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "RESTRICTION",
+      "legal_question_ids": [
+        "NO_SHOP-Q01",
+        "NO_SHOP-Q02",
+        "NO_SHOP-Q03"
+      ]
+    },
+    {
+      "example_id": "NO_SHOP-EX-04",
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "printed_reference": "4.02",
+      "complete_source_node_occurrence_ids": [
+        "9861c6e77127a62397944f1ab4c3b64790b3c61903eed358e2fc98fbef31c60b"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 147755,
+          "start_byte": 129121,
+          "text_sha256": "a4717320a4ad007579d52b973eaa498e8e2a89539a25b648443e8f802e46fb3f"
+        }
+      ],
+      "source_text_sha256s": [
+        "a4717320a4ad007579d52b973eaa498e8e2a89539a25b648443e8f802e46fb3f"
+      ],
+      "structure_revision_ids": [
+        "9387f6db4619252e59c52f4f8253370a012825cdbedf72bd77c2fd901e514f20"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "0302373028e024668c332d70509e3ace6713627847834156e6e678df52ffad25",
+        "069bf4c975303df82cfa12214c0a871d6240e059c5fb62e2fe62268643528e7e",
+        "09871fb7abeb05da63aa9e03d864e1d39d9fbdb01c9b430eb0d01951e3905780",
+        "0e539635846981c7da7cadb3be429f60b5d36aeb8c57c3a7db06eac316e77b94",
+        "17832b00c589d5bd0296b9b73f73c4bb00911e126f2b638efd686fc367a33219",
+        "19cfaf80785ef19bd018fdd1cf490601646f4f8b44386669a1c35748ff0372d5",
+        "201d05a9ec6b71853f1026a304e86bbad7101afd21a7ceb99aa11f1ee5c73212",
+        "23f5e572c69ea2bcb8e3c74593151022944f874caca3d2c773799a59b552814d",
+        "243c7b01dbc6f54d1d0cb64ef51f14605ceec358bf8f4c190494b524a7ad6cf5",
+        "259adc7eece6ed1c4dee42f92d5a9531bda6047d050f2530a66cca045a3e6970",
+        "2d0e7bf88f05f325bf4838f617bccaa80bf32ad50d192eded2b9e96f81218dd0",
+        "2dec6e2dbe8da20d0f2808b4c1cd7f4735d55f03187d6678a2ce68bcf1c903da",
+        "32f9c2e9d7f2d23617a6bb8b6d24042a1657041f2aaa2c8caa6687d23f1b7c33",
+        "33ce16b849e8afcc6eb0b9798bc9b33f396899a946796223715f434cd1276e4f",
+        "3d6efaac990d229a74bbf38e66ac7c9147077bd3d60a5eb30dbe4df2b348f748",
+        "3d77549d58e329b9c2195c41d89012a6dfe9efb653018808415e8b943d46b6c4",
+        "43b660817119af545788a4e596594dffebf77b649fd83270d8a2c9fa4888fddb",
+        "44a8e6a052244898017d0e9acfa4596f350e49ff4f979a94a73b6818a6851708",
+        "55d3c7ddb4258f5688adda71bee7aa6c09e7a828a46ce5f9a6616a3b4951d08a",
+        "6830d53aa2079dffac27e1cb7ca07fc148806bd06c59b923c4252625e74693ef",
+        "684b2a42465da1eef9262ea6d5bab2dea202da28c8b9204b72716e4d98b1855c",
+        "93a963d8994d53dfd675d261784f14f40c6b3cdac10ac3dc09a3dacb861d0255",
+        "9732441ac94a9f65b806889d280621afb161d383a1c640cb0cc11dbbc69106f3",
+        "a59ddd837d902f24fa23c08289edbc662b026fa054b6cfa00ec03daefd9b4720",
+        "af885daea4dc04e9eca414ca34611cb5d2dd5854a9ba1680f2a7b4b26f3dd0c3",
+        "b0874c36022b22a71c0c273aaa74df7385ca6062c6adae968bf0f6b0b9f0cea8",
+        "b601bdc1b827915910626d32c43af6155b07f5e3cfceab8ca53a2a647ee97595",
+        "b832080f5eafdc87ee02b5d41deda3f57302fa9e246799466b22672092b682ee",
+        "cdd8e68444b95ac788cad56390360cdea2a7c78a5f77a47df864cf9de1906abe",
+        "d5513918031ee2f5570228115acb0ac4a6bd2136434d9002533297c886a58ee5",
+        "d5bd33dd708686c43051d9982489eefd3c40ef7f719f66ae226ddbfdd32da60a",
+        "e319894a54ce3f7b01239aff77cc90adac1ea92cd8507bbbdee7fa5188f5a249",
+        "e4e3bd071f073634b2c1d9debf256c185bf4a0331f2e81d7f365fac85eb041de",
+        "e5f3184520c9b297f6dea965f5477736393b4a8fa67a466e45969356ef2b39a1",
+        "e9327f5c1870a3672760aeb0790ce307365b75a3f7789c113951c3f95cca0683",
+        "f098241fc6eac29fdb8eb68becc12ee846770057ec5f3752b8d7a714db2eae0a",
+        "f18d0555792aa9d992ee69a4133f78459cf26f587fda23e4db8df9ebdee92e7a",
+        "f2985a0a97c458617b6fc6dbb7ebd084c9fbfcff9da91fa075ad773c06606f80",
+        "f33f89e2bf1175315c7b2036871529f648c59afcb86b31a3cba7b4f1a00e8e76",
+        "ff13e368af3b2423f4d3698f456374fb6b0d5ebd4ce298f1c7a4a768e188c127"
+      ],
+      "comparator_run_identifiers": [
+        "redhat-no-shop-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "RESTRICTION",
+      "legal_question_ids": [
+        "NO_SHOP-Q01",
+        "NO_SHOP-Q02",
+        "NO_SHOP-Q03"
+      ]
+    },
+    {
+      "example_id": "NO_SHOP-EX-05",
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "printed_reference": "5.3",
+      "complete_source_node_occurrence_ids": [
+        "41fd3a441bd44e1b90190cf9ac58fc14616f3a964791c9f9f4cec4ebd7f5c01e"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 238278,
+          "start_byte": 220337,
+          "text_sha256": "5052ecc09f15825237660ec5e6b469aa8ca11423d6220ac7688f2ad42568080d"
+        }
+      ],
+      "source_text_sha256s": [
+        "5052ecc09f15825237660ec5e6b469aa8ca11423d6220ac7688f2ad42568080d"
+      ],
+      "structure_revision_ids": [
+        "79535dbd903529974cf546e1b53c19cf927464ef976c3494f65664862ebc6ddb"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "061afa10327677bf16c1a6341883c9d8c502dfbfd13695c0e64e23e8371f8c05",
+        "1809b96670ce6ab1b89efe625ed7ef3a13e1627707d915c85ff4dd35e9f8feb3",
+        "1a8d9f6643870c3367e94530e36d9332f27a9f9149c35170a685386a181279c6",
+        "1e096fcabe30d010abe216371b85eef608f378a82a92145c859de2ce916f1f9e",
+        "1efcc98600c2e0033dcc87c25386701ec9c4cea8204d8c885e1650f2b69a72db",
+        "267e9794cdce2a433f42a41fdfc4e9190344935b4819e50aed6c6786f58103b7",
+        "271b36c01ab332a99a93e38c8acdac6da3869dd7dadfd51a81e9989bc433cf29",
+        "2abeaad1b4b45d1a80138def6a2389b82a5627a993c9727be7909d43ef7185ab",
+        "3047d1b243abf074f3ae5d8c47e675e5ca7dfdd97c32b0b839a35bd05941fb36",
+        "3409e2e19d6a474e15140846e5a3751a9fe2db5081f69c7484bea29577e8e9f0",
+        "354db66d2d819c5bb4587decbbc25790ea575d8b6bc686a51a98e21fcbb00045",
+        "35cf4d18a49e866e123b7ec50aa59170655b479563dceeb087f1248fe587e0d3",
+        "41084099d4fe6de7f24fc35b32342269dec266c1a68cbc9fb8479e2fb05cebd2",
+        "51e081bf3b69e2908f31697a3b34ad40aede4c561ba0dc0ab7a92941f6e17bad",
+        "55189340f5c32e6116a8211a7800b6000cdb1aafa9c261c9047715c8706d3779",
+        "61484c04301abc23d1c15772d81070a34d6d6215545931e4cef810e11aff8f44",
+        "6596a2a10d26751225d76dcad3d4faca6ad18b8ab3264ed19b316701b3864ddd",
+        "66c8e751cdfce182f1ebc932a819e7ae8436e66d1076149181ade7f8f6489055",
+        "68e30b826cfbe4483f605af641e9e7fbe99f30b7f0bbe6475208e0fab2f64fe4",
+        "6ee86729338569253c7446ed4de4d8c3da604b4ce16ead9f59b2db890e96d9c9",
+        "7dce7cbd1552426926a3990f264994e1217105a93b5d2ccc39ebff82c25f4597",
+        "7f4c51e7d39b6bdf57f6fa2c5db605d75579eb30e61356266c88af164b3ee0fe",
+        "805e856cfffae5adf8cb2a2480fb65312768c16ca087492c064cfe0f8a1cd463",
+        "809fc4f6d7b2a941b16f884f985b2f9825d17bdfa2ae59f70cf0d3992af2f919",
+        "81432cea318dd7107a1275acd4564743ff0347857d82636f32d7ab11ec2b1b41",
+        "8d25e69d4beb6d514d9bdc6f50caa2e846a67f4d55e15a51abd55e4d660f0341",
+        "8e8bb300a14a6cfc004735fae0cf058b117d91a480fc17b753e5ba50c939645d",
+        "966b3cea02ad9d760f044256fbba2a4c04933a4391998917638867cea9700d87",
+        "997aee636642bc95d5816ceddb8d6d5fe827bb0e3a8ea490b25536e918cb5995",
+        "b003664e281f7466ca45c49abf581c1bdac56a84f331417a7007e65a9d2ee986",
+        "b1ec0c4003161931fdafd60bcbd1dbd627ea1dc1242fe0d679a9ac9d7afdd894",
+        "b4864c6bee712db1b8631e496dc2c32a70ad0222b1c09d2e379cab658e61973e",
+        "d0e1c2008d0b29996d541c0a93def65b7c971ded3b1fda1e77ab0777e8260873",
+        "da385fbe5212d2cf826ff91465247e3e9b86120ac2d1ec274c6af411606d2dbd",
+        "e6c3f86cc21e24a523b76564ac0ccc56f516df21dc5503441c20f61a3b7f114e",
+        "ef9b882b1da84f2fdf7ff9f131e9dfb26aa755a2795937a1938569c63d853de2",
+        "f7526b6e6d9ac29057f9b1b3a894833d420abb99dfac84b73d0c9e62c2144600",
+        "fcb431d7ba5229bb0fde8672af5d1bfc24fa44cf3b92c4cfa3a7ce78da8893f1"
+      ],
+      "comparator_run_identifiers": [
+        "skechers-no-shop-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "RESTRICTION",
+      "legal_question_ids": [
+        "NO_SHOP-Q01",
+        "NO_SHOP-Q02",
+        "NO_SHOP-Q03"
+      ]
+    },
+    {
+      "example_id": "NO_SHOP-EX-06",
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "printed_reference": "5.2",
+      "complete_source_node_occurrence_ids": [
+        "87c3c4b7bb86a3e7877e3903b7ab0dd196c771ae3f311474ac09a7f8ce55b10b"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 216055,
+          "start_byte": 207311,
+          "text_sha256": "ba254b0770cfa5d6d37e8c18619d1170a752815f53f1dae7175728aee199bd5a"
+        }
+      ],
+      "source_text_sha256s": [
+        "ba254b0770cfa5d6d37e8c18619d1170a752815f53f1dae7175728aee199bd5a"
+      ],
+      "structure_revision_ids": [
+        "4eabac39b3eb0d65c77819b827b1a6d934eec8a4e40b76dbebcbeea51da32d3b"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "1666585b891d4f0c303fb3f441df2a0869d9d7c30e79908e145849a77cc48a45",
+        "1a234fdcd5cb9beedae99ce839ff87e9534846d54dc4e5152779a92f0df38ddd",
+        "1bdc8f9af49bd2b8f84f094ebef5fe2d956dba08b27c2846636727aaa7366ff6",
+        "1e10acf1d9d3e4aae085cbe40d88f6ff340d6f179f0f8fad3fdaad5dba7fe17d",
+        "20bf56703f569bbb0dcba2c9351cb02604fbadea44c7a6f24be507c9effa321b",
+        "31065aac77d277fe3961a7ad1a73d640e62af047b0ec892fadf464ee3c551a84",
+        "329d7e0fd8c3c83c7cb27d8b1baf57d3d63c993c9df4dac2c1d55085cc5d4450",
+        "3e908c635122385a81fa3fb78f949887d03a5a4d4c18339930974ef485f07af9",
+        "3ff0980ee3b0e2e60f6abe303f0eb0e9a8bea5daf59deefba9fd9f656a0eb086",
+        "40a347305af55aae863c89c37135c1c7126937311ce509f73eb1764920efebd6",
+        "47888992dd0eba8da6c32d1adb2eb56caecb04395e8d237b27217fbdef485f32",
+        "480b1a0dc77fe374606b98740bcf6a00bcda68cdec683ef687c60f72f3b4f320",
+        "4ebd8281e13ac18890fb6326ef1555c5c4db8f3649a62a894afb03aad3af0cc6",
+        "4fea073580281ddd7b683c580786c6a83309025b0a637f5f733a9608f2a39d2b",
+        "5713cb5992cb474f7f058bba3e00943d695d959124f553ceabc84748b53ce11e",
+        "58be26e887f8de9435bcf0092637eb40e51cf1919fe649b8d51b2afaefa0b626",
+        "691a183d8a1b6e60479b9f89cb5c615c0a7b4326eaffb32fcaec22433b26f8f5",
+        "6d59f91cd1670b304ffe058bfb6543a746099371c0062b7be4a373f8e59e6767",
+        "7938ef4f3ca222a44f1addc4e282ed3301efd06641eb59d169ae2c762eac743c",
+        "7fdd97c957afd9483c1b742e36e8eb1a90cb543e9e18284e8832df53738408b8",
+        "8b14d0802b5f0bf8938628bf9fea1dd13f729cf7d68993758dc9ea9a8a02301f",
+        "90f3404758836390ef92698568523b3e352b2be3b82bf3b9c24d05f9222add3c",
+        "9237481d8ad1f6173aaa5383716878a9c24b0217dfe4cd83e95c9a0d24d2e0a7",
+        "b2cdf2b1a8da0fde551ce5314b670afaacfc07eba4a0c588142b6d6d40fafd30",
+        "b3cf8b7bf1b3d5711aad5c853f857a297f5662aca44c82b2106c3e78999c4dce",
+        "b607d761d1e7bac025631bb5987bf0e8168ebe7580081ff153b34c2260f383b4",
+        "bf71a7b4c8a1f401e4bd97a6282602ff4d1f2f8491d7d6d7ee4e569e6e48abd3",
+        "c718132439ee735916d58bea6a0b04bab14d88baeea2c83527763c890a473dbf",
+        "cb16dcef0eb589c10ab1381000ae863c4c118d9884093c367df4ac0874eb8731",
+        "d0b00fb81fb217c24ea2b82afd90587a0d76f0898902268485ba8ca31eee5101",
+        "de932d6071e7b52bf28c6f520bc128cd3f8ea3ccdc0dad42ec85d1eaf6a624af",
+        "ec2b996ffb982518e8c186c0d14c7e9634325df05f46425440512d50bd525aa1",
+        "ee2f3d5f08e6ec97cbfbbaa3f39ec26458880c7f6d2c2c4b405c39b3fc3e2ef4"
+      ],
+      "comparator_run_identifiers": [
+        "skywater-no-shop-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "RESTRICTION",
+      "legal_question_ids": [
+        "NO_SHOP-Q01",
+        "NO_SHOP-Q02",
+        "NO_SHOP-Q03"
+      ]
+    },
+    {
+      "example_id": "NO_SHOP-EX-07",
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "printed_reference": "4.3",
+      "complete_source_node_occurrence_ids": [
+        "86fa4e9acea9eb60cc25a8125cfc4f809281f0e156703879b8733fce31c151d6"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 226391,
+          "start_byte": 200934,
+          "text_sha256": "c9a33bfe0529501c90d97963daf6bdf83c1f28957ed13dc331a29b928a07ca31"
+        }
+      ],
+      "source_text_sha256s": [
+        "c9a33bfe0529501c90d97963daf6bdf83c1f28957ed13dc331a29b928a07ca31"
+      ],
+      "structure_revision_ids": [
+        "8057d4adc0c7952631c2c166f7a75df723af6d049541d56a3998c6bbf375a591"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "09c6fd3f7db3ebbfcb53f1e59ab45d7b1fe9a57c78eaa388535f822265e8bbdc",
+        "0cd5ac92dd337801b99d88cfa2ac8ce2b7bc3c6c95c50b1ac29d79172820433d",
+        "2956a408d3833a94a9c367e6e013f2fb5111e075be022c029f5c1143e46404f0",
+        "2d62aac5e9bece18d0acf7821c5e3bdbb7559046975127e3e7ccadfa668455f2",
+        "37b2668d4233ee848478daed74f04c1b090ee89bce787b2821562dba10a54bfd",
+        "3c7d49bc285e37fcaf26b4b8c428fed08b260b17657866308d10f48a523aecf3",
+        "42eb5e5a698943660bdb77aca9b75b82722127d0bf04a6002bff26f329ebc62d",
+        "4bf5197bfdb2ac535041f5071f0a39b860e9ef4ad2f1e03d20c36fe734a23108",
+        "52a9005b8784d76c4446d374af48f4cefd330c44b085119ba854edf8f2f310e4",
+        "53f85ab4f4d866641f5bc5a3592d6abfa3aca0cee6294fd251db0eae3ae80ddb",
+        "55c9ec3d9f9ad0cce4fe9f7eb4973cde87f1c7c60e8d24522f8d72b9bbfd264c",
+        "581e43f0c95092d18d995bbb33a255cc97b531d26c7f9988c1af746ec9ffef5c",
+        "5926ca3b68a8f5967b7ea12c81101d61f04b41e44041eaae6d244b710cf4addc",
+        "5b17f763557452b0559a25cac0ec0940902b4bbf3451c08251fd2dde084e7c81",
+        "5b93a399ab30252f73250e272d826e38c0efdba43ccab9b4d32c85f2bed8be3d",
+        "5c1da53d3ffbb5d79c539128b63fcfe96817376c16c188404a2cbf31590940f5",
+        "608f1daa831e93d9bd0dac43781a68f0ec92862d98174358271fc1936915c622",
+        "6934cf4c4b7c666fddc8b7fcf8ed0352147ed95b56c9f69d0a639435322b32bd",
+        "6f7e67bc43f89d942da19ef96e714ffb62d641f5c1c1015bdee7603232a4ac53",
+        "6ff03186789caf604910d34b846e799e845dbb00038a48c6238f289d93fc4028",
+        "713b6763907aadef81195982b35b77dc4405056977110d4179748e2883ad2dd0",
+        "7543e68b022d5294627216cc4a40e908dde10cba128f2bcbcb2e2386f2c22192",
+        "755eeaf65afabbef148e087bdf0cdd8e8ef16d4bff3fd68477f1eef8065f6f62",
+        "7988503284e4e699e8f9cc928cb3ea95957a5b4404706636b7a667c98779f6a8",
+        "80980a9fc2abeaf1f7c123068ca746d0c345ebea1ce6d7a030b98cb3a8e3417f",
+        "83da29c051b8d214deaac21ce68f3de049aa0f3b2f1ecd20e8fc1ccd221b6c71",
+        "8ada21b940b3bde06165cce4e187d0d1556d58d5c97a6a3de2955e5dc2e76040",
+        "8c0d7833147cd474565dde0b5daee6c5c0c63df2b8d0643f5f1b23b78de26865",
+        "8c64b0f2c593d0feca64134321618c28a5d92dbebd3a0a23aeefb9d1c760fee6",
+        "930ce95abdc9a650d5a2f7a26406d473f24b36363e6ca9dfd4a8a9c34e3ffb70",
+        "93667e7fc07b508109f42ebc75b510f4822c7dffe25dcf45d5fa477ab72d9f43",
+        "987ce68d1520915eb86aebe7e787afae6cba36530ce26d5f8abd527457f1ba7e",
+        "a933794786cfb03fa4142aca30b355aba9b8b861e76cd49a39628ed666d0b9cd",
+        "ab098d3b2a990327459849c36b1566bd955e99518256b6a3959dafd8546bdd59",
+        "ac82ff3cc7aee7c6cfb3e4f313ab9b343b17e591c7d3bf2735e076f7d71cc678",
+        "ae5bd1c5dd2373ca63f46991bd8d5f6fb2582c08e4d80f254f2addd06f58a16c",
+        "b730acc0c76502afdcdeb495214194450df969457f69a1036b19e355dfbe6b26",
+        "c0d31e943935ec8866c5f0d21bd234812197ab154f955888a04e679c34c65e70",
+        "c4c6a3d8ad195862daf3e50dc3bb09ceadd9122c2e45ceba02d86b87eaf642b6",
+        "ce97c517dc527a629d0a60a99f58956de97f1babbd025755f848650b4c2a9946",
+        "cf0027ccbd3dca40ea43c6ab0a94886765229fabc4928ef5938f1f828b399409",
+        "d0778b693bd8b701b33caee7e705da02ecae08b505c12e572baf37df362c4606",
+        "d8c17ed1c5fd8b7983953bfc042b97bf5d24593fd63a49d42d89a529d46c507b",
+        "d9cd784c48b8e0b53dc19f8d57d409340c026e0f58c612aec3b1450514dde20d",
+        "dec9096ba80238c6f3e0f291600df4637c57c28b0f3f1a4f70ca3122034224ce",
+        "e099afbc5c7778a3e0d7f5ea46f647dd48a3787941795eda369df86ce8bb8cfb",
+        "e30f2f99a4d6d5199000cbfd6f7ffed09af3c3dbf6f65a9dd145e69a119c1dff",
+        "e3f7aeced706aed083a6a9581f4365ea132b98d081d207be4694a63c16fde121",
+        "ec2dfc668bb1402926a081ae2d7da86f0e72dca2d49aa4f02e686b57ccf58acd",
+        "ede78825ae90c053aef30b2a653d04b78f63f973041875b5c7ceaafe980762bd",
+        "f332061ba3146939fc1684e47364a8861564b3c8a42187f2683d60090f7e6498",
+        "f507db74d28c57a83ccdc965b8d66c7dd6a03d58b4486c3d807a892adc21e8eb",
+        "f9e7faabc66dcc4159e5ae6c387cb4a19915ee16634f21482997c6615af80e0e",
+        "fd7b4188fe7bd41ec6158b9400f560df40568584150bc356f54a1047ae198487"
+      ],
+      "comparator_run_identifiers": [
+        "topbuild-no-shop-20260809-2xk-r4-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "RESTRICTION",
+      "legal_question_ids": [
+        "NO_SHOP-Q01",
+        "NO_SHOP-Q02",
+        "NO_SHOP-Q03"
+      ]
+    }
+  ],
+  "cross_family_dependencies": [],
+  "proposed_output_policy": {
+    "candidate_claim_definition_keys": [
+      "NO_SHOP_CEASE_ACTION",
+      "NO_SHOP_EXCEPTION_PREREQUISITE",
+      "NO_SHOP_FIDUCIARY_ENGAGEMENT_STANDARD",
+      "NO_SHOP_INITIAL_MATCH_PERIOD_DAYS",
+      "NO_SHOP_PROHIBITED_ACTION",
+      "NO_SHOP_RECOMMENDATION_CHANGE_ACTION",
+      "NO_SHOP_RECOMMENDATION_CHANGE_FIDUCIARY_STANDARD",
+      "NO_SHOP_RECOMMENDATION_CHANGE_TRIGGER",
+      "NO_SHOP_RECOMMENDATION_SAFE_DISCLOSURE",
+      "NO_SHOP_REPRESENTATIVE_BREACH_ATTRIBUTION",
+      "NO_SHOP_REPRESENTATIVE_CONTROL_STANDARD",
+      "NO_SHOP_STANDSTILL_ACTION",
+      "NO_SHOP_SUBSEQUENT_MATCH_PERIOD_DAYS"
+    ],
+    "candidate_subtype_profile_ids": [
+      "NO_SHOP::RESTRICTION",
+      "NO_SHOP::ENGAGEMENT_PERMISSION",
+      "NO_SHOP::NOTICE",
+      "NO_SHOP::STANDSTILL",
+      "NO_SHOP::RECOMMENDATION_CHANGE",
+      "NO_SHOP::SAFE_DISCLOSURE",
+      "NO_SHOP::REPRESENTATIVE_CONTROL",
+      "NO_SHOP::GO_SHOP_WINDOW"
+    ],
+    "non_output_dispositions": [
+      "LEGACY_FRAGMENTS_REMAIN_SCHEMA_APPROVAL_PENDING",
+      "UNRESOLVED_REQUIRED_ROLE_IS_NON_RENDERABLE"
+    ],
+    "family_ownership_boundary": "NO_SHOP owns only approved complete propositions. Overlapping content is link-only.",
+    "renderability": "NEVER_RENDER_FROM_PROPOSAL",
+    "complete_transition": "NOT_AUTHORISED"
+  },
+  "narrow_legal_questions": [
+    {
+      "question_id": "NO_SHOP-Q01",
+      "question": "Should one independently operative authored unit be one proposition, with coordinated elements stored as roles or linked children?",
+      "affected_example_ids": [
+        "NO_SHOP-EX-01",
+        "NO_SHOP-EX-02",
+        "NO_SHOP-EX-03",
+        "NO_SHOP-EX-04",
+        "NO_SHOP-EX-05",
+        "NO_SHOP-EX-06",
+        "NO_SHOP-EX-07"
+      ],
+      "two_plausible_readings": [
+        "ONE_COMPOUND_PROPOSITION",
+        "LINKED_INDEPENDENT_PROPOSITIONS"
+      ],
+      "recommended_reading": "Use one proposition per independently operative authored unit.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "NO_SHOP-Q02",
+      "question": "Which family owns overlapping content, and which families may only link to its stable identity?",
+      "affected_example_ids": [
+        "NO_SHOP-EX-01",
+        "NO_SHOP-EX-02",
+        "NO_SHOP-EX-03",
+        "NO_SHOP-EX-04",
+        "NO_SHOP-EX-05",
+        "NO_SHOP-EX-06",
+        "NO_SHOP-EX-07"
+      ],
+      "two_plausible_readings": [
+        "DUPLICATE_IN_EACH_FAMILY",
+        "ONE_OWNER_WITH_LINKED_CONSUMERS"
+      ],
+      "recommended_reading": "Use one semantic owner and stable links.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "NO_SHOP-Q03",
+      "question": "Can an ambiguous or unresolved M3 edge fill a required role?",
+      "affected_example_ids": [
+        "NO_SHOP-EX-01",
+        "NO_SHOP-EX-02",
+        "NO_SHOP-EX-03",
+        "NO_SHOP-EX-04",
+        "NO_SHOP-EX-05",
+        "NO_SHOP-EX-06",
+        "NO_SHOP-EX-07"
+      ],
+      "two_plausible_readings": [
+        "ALLOW_CONTEXTUAL_INFERENCE",
+        "FAIL_ONLY_THE_DEPENDENT_PROPOSITION"
+      ],
+      "recommended_reading": "Fail only the dependent proposition and do not infer the role.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    }
+  ],
+  "preparation_diagnostics": [
+    {
+      "code": "BEN_FAMILY_ROLE_APPROVAL_REQUIRED",
+      "severity": "STOP",
+      "related_id": "NO_SHOP",
+      "detail": "No family adapter may run until Ben approves the open rulings and a separate approved schema is sealed."
+    }
+  ],
+  "preparation_effects": {
+    "model_calls": 0,
+    "family_runner_calls": 0,
+    "database_writes": 0,
+    "product_writes": 0,
+    "selector_changes": 0,
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "serving_changes": 0,
+    "publication_actions": 0
+  }
+}

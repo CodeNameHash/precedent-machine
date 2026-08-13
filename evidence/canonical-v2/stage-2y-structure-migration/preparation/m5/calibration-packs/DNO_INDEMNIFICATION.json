@@ -1,0 +1,666 @@
+{
+  "schema_version": "STAGE_2Y_FAMILY_CALIBRATION_PACK/V1",
+  "calibration_pack_id": "d0bb2b1fe67c32d4a3e683279a0bc6488a882821aacf41822ea437e7f11604a9",
+  "calibration_pack_digest": "66bfccfcc64bcebef4c51f1922f64aabd95cf5c5d9d9bcda10da176c82853afb",
+  "family_key": "DNO_INDEMNIFICATION",
+  "wave": 3,
+  "pack_version": 1,
+  "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+  "purpose": "LEGAL_CALIBRATION_PREPARATION_ONLY",
+  "authority_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-preparation-authority.json",
+    "byte_length": 22922,
+    "sha256": "d10f095429cdbb1006bfbe1e789c267ffa3a98b12b4bd33c2afb550e7beeea79"
+  },
+  "calibration_policy_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-calibration-policy.json",
+    "byte_length": 45512,
+    "sha256": "102534446774dfa0661ad186d27c25507befedca80807e42cf584fa412e6bf78"
+  },
+  "m4_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json",
+    "byte_length": 13670,
+    "sha256": "54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41"
+  },
+  "m2_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+    "byte_length": 20126,
+    "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585"
+  },
+  "m3_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+    "byte_length": 17449,
+    "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855"
+  },
+  "family_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json",
+    "byte_length": 827,
+    "sha256": "7aa5ff41eb778884cdbb6f18ba72138c20420a2475949aca5dcbc0d2098a938d"
+  },
+  "control_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json",
+    "byte_length": 379235,
+    "sha256": "62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41"
+  },
+  "diff_contract_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/diff-contract.json",
+    "byte_length": 1171,
+    "sha256": "2585c7af9e47c4f7a6915ef1667f5eb8dbce26a8a30829bae15e42a7d41ab0c8"
+  },
+  "comparator_run_bindings": [
+    {
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "run_identifier": "concho-dno-indemnification-20260809-2xk-final",
+      "family": "DNO_INDEMNIFICATION",
+      "resolution_binding": {
+        "byte_length": 80049,
+        "path": "evidence/canonical-v2/concho-dno-indemnification-20260809-2xk-final/resolution.json",
+        "sha256": "9282fd512d2bc2a784949aa6bb6a2d9b2c6317e0a2e2292f5c9d3f23f82a0cac"
+      },
+      "adapter_result_binding": {
+        "byte_length": 407974,
+        "path": "evidence/canonical-v2/concho-dno-indemnification-20260809-2xk-final/adapter-result.json",
+        "sha256": "3d66a71f8461655341d76fec5eef176e438984229193cd684116d176dbfe17be"
+      },
+      "validation_binding": {
+        "byte_length": 53953,
+        "path": "evidence/canonical-v2/concho-dno-indemnification-20260809-2xk-final/validation.json",
+        "sha256": "630e037f686f94d8dc968190ff127eadf9d41c5dc6754ae7cf23df7cdb7b9ea4"
+      },
+      "expected_counts": {
+        "resolution_claims": 5,
+        "write_set_claims": 5,
+        "validation_claims": 5,
+        "resolution_evidence": 5,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "run_identifier": "metsera-dno-indemnification-20260809-2xk-final",
+      "family": "DNO_INDEMNIFICATION",
+      "resolution_binding": {
+        "byte_length": 82642,
+        "path": "evidence/canonical-v2/metsera-dno-indemnification-20260809-2xk-final/resolution.json",
+        "sha256": "141932b8cca9ce89ab57bb66849754157a962f661cb0e9bb37f0f62b52b2b4ac"
+      },
+      "adapter_result_binding": {
+        "byte_length": 409833,
+        "path": "evidence/canonical-v2/metsera-dno-indemnification-20260809-2xk-final/adapter-result.json",
+        "sha256": "82e46508f8a57b90586a9b05bdfc5314ed98ee3429b4099d1e61355283a2a278"
+      },
+      "validation_binding": {
+        "byte_length": 58690,
+        "path": "evidence/canonical-v2/metsera-dno-indemnification-20260809-2xk-final/validation.json",
+        "sha256": "65413af26fc8f00e9a44c384b4a014f4ba1c8de6b60ecda567a47e48d3af1c60"
+      },
+      "expected_counts": {
+        "resolution_claims": 5,
+        "write_set_claims": 5,
+        "validation_claims": 5,
+        "resolution_evidence": 5,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "deal": "modiv",
+      "run_identifier": "modiv-dno-indemnification-20260809-2xk-final",
+      "family": "DNO_INDEMNIFICATION",
+      "resolution_binding": {
+        "byte_length": 90166,
+        "path": "evidence/canonical-v2/modiv-dno-indemnification-20260809-2xk-final/resolution.json",
+        "sha256": "906b0d4ccb7cfbf9b55a29c0568e6d38ec5bc13c6da52cfe86d24ff31ff4815d"
+      },
+      "adapter_result_binding": {
+        "byte_length": 492910,
+        "path": "evidence/canonical-v2/modiv-dno-indemnification-20260809-2xk-final/adapter-result.json",
+        "sha256": "be2e30fca2ef73edff31b56a84a8728b8d440383312e9c3029fca0cb710c93e3"
+      },
+      "validation_binding": {
+        "byte_length": 62276,
+        "path": "evidence/canonical-v2/modiv-dno-indemnification-20260809-2xk-final/validation.json",
+        "sha256": "220c238eb2ee42024e81203e94223afcac1d0e2aeaa9a19668b463289e980ee0"
+      },
+      "expected_counts": {
+        "resolution_claims": 5,
+        "write_set_claims": 5,
+        "validation_claims": 5,
+        "resolution_evidence": 5,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "run_identifier": "redhat-dno-indemnification-20260809-2xk-final",
+      "family": "DNO_INDEMNIFICATION",
+      "resolution_binding": {
+        "byte_length": 46421,
+        "path": "evidence/canonical-v2/redhat-dno-indemnification-20260809-2xk-final/resolution.json",
+        "sha256": "bb826aaf6299fcf42ce499800260b21b15b2fc5ab964be6c64171a9880581d29"
+      },
+      "adapter_result_binding": {
+        "byte_length": 292772,
+        "path": "evidence/canonical-v2/redhat-dno-indemnification-20260809-2xk-final/adapter-result.json",
+        "sha256": "df074d4732e33f84b44e8a0c10987414b0712308ade90643b6654057e30c7db1"
+      },
+      "validation_binding": {
+        "byte_length": 26310,
+        "path": "evidence/canonical-v2/redhat-dno-indemnification-20260809-2xk-final/validation.json",
+        "sha256": "53db8bd811bb283cc2c76f787b6a9ae9076996d832d1fe4c62c7f803e66dfbfd"
+      },
+      "expected_counts": {
+        "resolution_claims": 3,
+        "write_set_claims": 3,
+        "validation_claims": 3,
+        "resolution_evidence": 3,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "run_identifier": "skechers-dno-indemnification-20260809-2xk-final",
+      "family": "DNO_INDEMNIFICATION",
+      "resolution_binding": {
+        "byte_length": 87988,
+        "path": "evidence/canonical-v2/skechers-dno-indemnification-20260809-2xk-final/resolution.json",
+        "sha256": "c31923a603ea0e1a7135a0b069e0561d60b70bdcbf36a993d549440dc2e9f7dd"
+      },
+      "adapter_result_binding": {
+        "byte_length": 446023,
+        "path": "evidence/canonical-v2/skechers-dno-indemnification-20260809-2xk-final/adapter-result.json",
+        "sha256": "f3917e376f8cb33458c5def6b70470411805838b7291d260b58d5750f7adcbfa"
+      },
+      "validation_binding": {
+        "byte_length": 63683,
+        "path": "evidence/canonical-v2/skechers-dno-indemnification-20260809-2xk-final/validation.json",
+        "sha256": "3723c71b90a4e832769dfff8b0ac120cdfb11e0be1fe1d58cbea7a40cadd359e"
+      },
+      "expected_counts": {
+        "resolution_claims": 5,
+        "write_set_claims": 5,
+        "validation_claims": 5,
+        "resolution_evidence": 5,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "run_identifier": "skywater-dno-indemnification-20260809-2xk-final",
+      "family": "DNO_INDEMNIFICATION",
+      "resolution_binding": {
+        "byte_length": 74491,
+        "path": "evidence/canonical-v2/skywater-dno-indemnification-20260809-2xk-final/resolution.json",
+        "sha256": "1edb93cded8515b6c779148b9c6c4553f8de5230941e570166f9ec8487e17999"
+      },
+      "adapter_result_binding": {
+        "byte_length": 423641,
+        "path": "evidence/canonical-v2/skywater-dno-indemnification-20260809-2xk-final/adapter-result.json",
+        "sha256": "854c2c616a8b1ece0fc7b9760c18ab07da42f48446b267be417327aa6416c874"
+      },
+      "validation_binding": {
+        "byte_length": 60673,
+        "path": "evidence/canonical-v2/skywater-dno-indemnification-20260809-2xk-final/validation.json",
+        "sha256": "cc594a7b158e8edbdd98ad9ae57518864f086c79c82696db0bdac3bc92107ad2"
+      },
+      "expected_counts": {
+        "resolution_claims": 4,
+        "write_set_claims": 4,
+        "validation_claims": 4,
+        "resolution_evidence": 4,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "run_identifier": "topbuild-dno-indemnification-20260809-2xk-r4-final",
+      "family": "DNO_INDEMNIFICATION",
+      "resolution_binding": {
+        "byte_length": 66518,
+        "path": "evidence/canonical-v2/topbuild-dno-indemnification-20260809-2xk-r4-final/resolution.json",
+        "sha256": "0a9ece8f2e4e2e43ee0d3498d93f17c44e0150ad75cd60e798298c5ed4d92020"
+      },
+      "adapter_result_binding": {
+        "byte_length": 460067,
+        "path": "evidence/canonical-v2/topbuild-dno-indemnification-20260809-2xk-r4-final/adapter-result.json",
+        "sha256": "c93b8b5dc404273e1bfa57550753183ebc40b718b6baa7b1ef82caf7c931b1b8"
+      },
+      "validation_binding": {
+        "byte_length": 45108,
+        "path": "evidence/canonical-v2/topbuild-dno-indemnification-20260809-2xk-r4-final/validation.json",
+        "sha256": "dfad57f487caf885ecb3650e8a460be5d8bb0f18bac17700d4ab621008f116e6"
+      },
+      "expected_counts": {
+        "resolution_claims": 4,
+        "write_set_claims": 4,
+        "validation_claims": 4,
+        "resolution_evidence": 4,
+        "supplemental_claims": 0
+      }
+    }
+  ],
+  "supplemental_input_bindings": [],
+  "provision_examples": [
+    {
+      "example_id": "DNO_INDEMNIFICATION-EX-01",
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "printed_reference": "6.10",
+      "complete_source_node_occurrence_ids": [
+        "1eb40f428afc4539613be665694454f17004d1edff866cb52c5a3a98c3aa96e7"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 242010,
+          "start_byte": 234134,
+          "text_sha256": "ce85072530cebbf3d20f40f0dfb75eca20f97143bba851a4e9a1455fb9541f68"
+        }
+      ],
+      "source_text_sha256s": [
+        "ce85072530cebbf3d20f40f0dfb75eca20f97143bba851a4e9a1455fb9541f68"
+      ],
+      "structure_revision_ids": [
+        "4db71f53062ec502d28bdbc4837a2c4e1cd5b42c87ed69a554f630bc2e30275b"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "24d28d05734c4497a7ade91f023581922148dc12c4f0969cc1784c41f571243f",
+        "5be90055129bbd0c053b0522b6cc1c518253d635816eeb89e4b62aa61a537ecc",
+        "5d3593b600240fd8b36ff916161e51991b7f7c34b55b21e7725aeede0538de23",
+        "ca19ac475c0251894d9fad6dfc6e8420295e29a6a3a3ab353c00a05203e76c0a",
+        "dc4ac2b050377aaae3779ecd28c65147b4c1bf8fe40d13b2b351803ed688273f"
+      ],
+      "comparator_run_identifiers": [
+        "concho-dno-indemnification-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "INDEMNIFICATION_AND_EXCULPATION",
+      "legal_question_ids": [
+        "DNO_INDEMNIFICATION-Q01",
+        "DNO_INDEMNIFICATION-Q02",
+        "DNO_INDEMNIFICATION-Q03"
+      ]
+    },
+    {
+      "example_id": "DNO_INDEMNIFICATION-EX-02",
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "printed_reference": "6.05",
+      "complete_source_node_occurrence_ids": [
+        "2dd048fe50407efbd2bd6c862f480def4cd07ab624b2b4ad8b0d74410e269b4e"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 210557,
+          "start_byte": 201808,
+          "text_sha256": "7d2728b442c7ba48eb7ff3f021d949ef7715d3c4cc53795ca4fe63a0cb57d4ba"
+        }
+      ],
+      "source_text_sha256s": [
+        "7d2728b442c7ba48eb7ff3f021d949ef7715d3c4cc53795ca4fe63a0cb57d4ba"
+      ],
+      "structure_revision_ids": [
+        "b58785281e45cb84bf313b2d651f2cf2550ba02f154b64f8449132e54d6035ab"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "0815f3f1c92e5db866a1dc9106fa60ca65c9557285bf25239aac2fdc7006abc9",
+        "17d970d94b595559e6a911480f732469bf958403ae49ef3c3676a18cbffb0ab6",
+        "7c134ea8ba53a22f1ce174be59199b8f8eff4e2bf3c99f389e003e0408914e5c",
+        "e741e1ef03bcaae353eaa17446c05ed2b1c6ef286f6c553522e9ce089fb79a84",
+        "ed84404e1f7cb3184973e32dd93b6f8a92d0d0c6ead112fb7c39db4a596b0099"
+      ],
+      "comparator_run_identifiers": [
+        "metsera-dno-indemnification-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "INDEMNIFICATION_AND_EXCULPATION",
+      "legal_question_ids": [
+        "DNO_INDEMNIFICATION-Q01",
+        "DNO_INDEMNIFICATION-Q02",
+        "DNO_INDEMNIFICATION-Q03"
+      ]
+    },
+    {
+      "example_id": "DNO_INDEMNIFICATION-EX-03",
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "deal": "modiv",
+      "printed_reference": "5.8",
+      "complete_source_node_occurrence_ids": [
+        "3afe2a4bdde379231fc9df8102bbd11c5f789a2044f087609cdfca223b55c019"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 285691,
+          "start_byte": 275823,
+          "text_sha256": "62a2f5b13705b557168feb3ee426776c3f4e8b500d952a3a7fa04628a71e038e"
+        }
+      ],
+      "source_text_sha256s": [
+        "62a2f5b13705b557168feb3ee426776c3f4e8b500d952a3a7fa04628a71e038e"
+      ],
+      "structure_revision_ids": [
+        "44ef3fefb45718e90a12bca2e16bc365928c5972bdd54b9ab463ce742bd0c2f4"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "2e697d983bb8cc7c56554530da7bc62c8e08133aaeb247c9da799088c6ca1590",
+        "701cec297b3ca7cd30012a9fa43dccffb9d236e61daa5d1309b8b6e7484200c8",
+        "a13bafc913a70ce33a45cb2639f80a68c5f6e36aeeae5e0a9340947a881a28f5",
+        "e0bf77729636c105ed82be590806e75825cd4b8f714391ce204d76b8034d3567",
+        "e5547d182d4a2a839df6e268b0b31fcf5ad14d81d71152870532badc47c5dab6"
+      ],
+      "comparator_run_identifiers": [
+        "modiv-dno-indemnification-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "INDEMNIFICATION_AND_EXCULPATION",
+      "legal_question_ids": [
+        "DNO_INDEMNIFICATION-Q01",
+        "DNO_INDEMNIFICATION-Q02",
+        "DNO_INDEMNIFICATION-Q03"
+      ]
+    },
+    {
+      "example_id": "DNO_INDEMNIFICATION-EX-04",
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "printed_reference": "5.05",
+      "complete_source_node_occurrence_ids": [
+        "c178f6c08b4c17cb000368238f4dcf33d2fbc4633ba2629fba0e56a5384f29c3"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 192483,
+          "start_byte": 189504,
+          "text_sha256": "3b93682cd92065cda5c39dbbfda93bc0b724db3a531734c63266dfe8418336dd"
+        }
+      ],
+      "source_text_sha256s": [
+        "3b93682cd92065cda5c39dbbfda93bc0b724db3a531734c63266dfe8418336dd"
+      ],
+      "structure_revision_ids": [
+        "c6bb4eb93c0b7316a886dbbe3701779038fb39f70d70d404f458aea136738230"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "8ba2e29d755476ece460639cf83f5c380d741aaebb6b6808be151ec8ae0c60a7",
+        "9602f000e7574e08e0dffbd8fb422df2408a3fcfbd5bd0267d5b15bb5bbf69c5",
+        "fd7913f41adf1d9dcc2fc6c40ba8ecafe6993f4ebc6a8e54a830915bea1158ca"
+      ],
+      "comparator_run_identifiers": [
+        "redhat-dno-indemnification-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "INDEMNIFICATION_AND_EXCULPATION",
+      "legal_question_ids": [
+        "DNO_INDEMNIFICATION-Q01",
+        "DNO_INDEMNIFICATION-Q02",
+        "DNO_INDEMNIFICATION-Q03"
+      ]
+    },
+    {
+      "example_id": "DNO_INDEMNIFICATION-EX-05",
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "printed_reference": "6.10",
+      "complete_source_node_occurrence_ids": [
+        "2d01be7d3d507ac52e18bc4836383b55667f5ddfe26dd89f6fc3b236940e88a3"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 298230,
+          "start_byte": 287771,
+          "text_sha256": "31f07801df7b452a1ad7f30c55fa03a5325d679629b78c0f9755e23d87bb921a"
+        }
+      ],
+      "source_text_sha256s": [
+        "31f07801df7b452a1ad7f30c55fa03a5325d679629b78c0f9755e23d87bb921a"
+      ],
+      "structure_revision_ids": [
+        "8f376e69bf4721af9e785f94d62406a5e4e7584fdc09f3dfa96bd9fd2fb5d69e"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "027361ebd356b95ddc212a51fe8cc02e29ed9eb9564731296cbf5526b1698d4b",
+        "89d2d0aca744415748c6ff1be81a4740a53346e1dce4591d7bf291e7b03a801a",
+        "b4e6de756877e0a5cfc9c022c12239d31eddf939de992d3c944721c3526d2ffa",
+        "c7df57715a0135a689932990a2a7bfa0caf6eaca2aef9b03334f55bbcb220ab3",
+        "d61eaf41a82046081d6611f49b67f8f5cf8f12799ee764be844057a3565318b0"
+      ],
+      "comparator_run_identifiers": [
+        "skechers-dno-indemnification-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "INDEMNIFICATION_AND_EXCULPATION",
+      "legal_question_ids": [
+        "DNO_INDEMNIFICATION-Q01",
+        "DNO_INDEMNIFICATION-Q02",
+        "DNO_INDEMNIFICATION-Q03"
+      ]
+    },
+    {
+      "example_id": "DNO_INDEMNIFICATION-EX-06",
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "printed_reference": "6.3",
+      "complete_source_node_occurrence_ids": [
+        "f1461e32e0fb31c3986b3bf6bc649219c12b430468fdde38cb93546191b6695a"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 247951,
+          "start_byte": 240301,
+          "text_sha256": "36318dd08c55ad8d9645a5024b8fc0d36bc600f47c3932249b4c4da89016247a"
+        }
+      ],
+      "source_text_sha256s": [
+        "36318dd08c55ad8d9645a5024b8fc0d36bc600f47c3932249b4c4da89016247a"
+      ],
+      "structure_revision_ids": [
+        "de6787d1409285306b038acb6f015ac33e3e1d09732083f509109fbb8159c872"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "382d9a46e0c1bf1ce8abd66b65209c0163f73fbdf7a744a3aa2b502f1fe7b586",
+        "7256f125885eb917e9578741ba7de58e4109075a59e9afd37dfd7ae8a49f7662",
+        "a3442ef21b17b8238d42cbf84f16b157b7db8a247a10cb82e74d86c9c9e95e78",
+        "b9e57a1f07529ca7a645a8add3ab5cfd21c0b61432c3de3f7ae957ae38622909"
+      ],
+      "comparator_run_identifiers": [
+        "skywater-dno-indemnification-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "INDEMNIFICATION_AND_EXCULPATION",
+      "legal_question_ids": [
+        "DNO_INDEMNIFICATION-Q01",
+        "DNO_INDEMNIFICATION-Q02",
+        "DNO_INDEMNIFICATION-Q03"
+      ]
+    },
+    {
+      "example_id": "DNO_INDEMNIFICATION-EX-07",
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "printed_reference": "4.13",
+      "complete_source_node_occurrence_ids": [
+        "c4a82634d0b1407568ab72edb725c7f3373e6d58fbc5c7405123438e5a7ca8a7"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 301877,
+          "start_byte": 295773,
+          "text_sha256": "67c107138caf76e0066b3cab99a87b12ed59d2ba1d8203208fce250df8572a40"
+        }
+      ],
+      "source_text_sha256s": [
+        "67c107138caf76e0066b3cab99a87b12ed59d2ba1d8203208fce250df8572a40"
+      ],
+      "structure_revision_ids": [
+        "c5ad0737db8737bd9d598cdd3f9425c8d6ee948538480b8bfb19ae330ddd01a9"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "2fc2de741a11346afb655b5eb9271fe2c7501a7c1375a098689311f1627a2c85",
+        "89bf2d9c0efbda026d080778f8d5bc1af3c217d1cbfc463eec563a98cd008e5e",
+        "b1fb5effb78f2f95a2da51e91dda19b6028772a7c231fed27b67b539127fa1b3",
+        "f7d008ee9a97cbf37ef1066d4eb8326903e3473bc26b834e7b87270298bde1eb"
+      ],
+      "comparator_run_identifiers": [
+        "topbuild-dno-indemnification-20260809-2xk-r4-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "INDEMNIFICATION_AND_EXCULPATION",
+      "legal_question_ids": [
+        "DNO_INDEMNIFICATION-Q01",
+        "DNO_INDEMNIFICATION-Q02",
+        "DNO_INDEMNIFICATION-Q03"
+      ]
+    }
+  ],
+  "cross_family_dependencies": [],
+  "proposed_output_policy": {
+    "candidate_claim_definition_keys": [
+      "ADVANCEMENT_OF_EXPENSES",
+      "CHARTER_PROTECTION_CONTINUATION",
+      "COVERED_PERSON_TPB_RIGHTS",
+      "INDEMNIFICATION_CONTINUATION",
+      "INDEMNIFICATION_SURVIVAL_YEARS",
+      "TAIL_POLICY_OBLIGATION",
+      "TAIL_POLICY_PERIOD_YEARS",
+      "TAIL_PREMIUM_CAP_OFF_AGREEMENT",
+      "TAIL_PREMIUM_CAP_PERCENT"
+    ],
+    "candidate_subtype_profile_ids": [
+      "DNO_INDEMNIFICATION::INDEMNIFICATION_AND_EXCULPATION",
+      "DNO_INDEMNIFICATION::EXPENSE_ADVANCEMENT",
+      "DNO_INDEMNIFICATION::CHARTER_AND_CONTRACT_CONTINUATION",
+      "DNO_INDEMNIFICATION::DNO_INSURANCE_TAIL",
+      "DNO_INDEMNIFICATION::CLAIMS_PROCEDURE",
+      "DNO_INDEMNIFICATION::SUCCESSOR_ASSUMPTION",
+      "DNO_INDEMNIFICATION::THIRD_PARTY_ENFORCEMENT"
+    ],
+    "non_output_dispositions": [
+      "LEGACY_FRAGMENTS_REMAIN_SCHEMA_APPROVAL_PENDING",
+      "UNRESOLVED_REQUIRED_ROLE_IS_NON_RENDERABLE"
+    ],
+    "family_ownership_boundary": "DNO_INDEMNIFICATION owns only approved complete propositions. Overlapping content is link-only.",
+    "renderability": "NEVER_RENDER_FROM_PROPOSAL",
+    "complete_transition": "NOT_AUTHORISED"
+  },
+  "narrow_legal_questions": [
+    {
+      "question_id": "DNO_INDEMNIFICATION-Q01",
+      "question": "Should one independently operative authored unit be one proposition, with coordinated elements stored as roles or linked children?",
+      "affected_example_ids": [
+        "DNO_INDEMNIFICATION-EX-01",
+        "DNO_INDEMNIFICATION-EX-02",
+        "DNO_INDEMNIFICATION-EX-03",
+        "DNO_INDEMNIFICATION-EX-04",
+        "DNO_INDEMNIFICATION-EX-05",
+        "DNO_INDEMNIFICATION-EX-06",
+        "DNO_INDEMNIFICATION-EX-07"
+      ],
+      "two_plausible_readings": [
+        "ONE_COMPOUND_PROPOSITION",
+        "LINKED_INDEPENDENT_PROPOSITIONS"
+      ],
+      "recommended_reading": "Use one proposition per independently operative authored unit.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "DNO_INDEMNIFICATION-Q02",
+      "question": "Which family owns overlapping content, and which families may only link to its stable identity?",
+      "affected_example_ids": [
+        "DNO_INDEMNIFICATION-EX-01",
+        "DNO_INDEMNIFICATION-EX-02",
+        "DNO_INDEMNIFICATION-EX-03",
+        "DNO_INDEMNIFICATION-EX-04",
+        "DNO_INDEMNIFICATION-EX-05",
+        "DNO_INDEMNIFICATION-EX-06",
+        "DNO_INDEMNIFICATION-EX-07"
+      ],
+      "two_plausible_readings": [
+        "DUPLICATE_IN_EACH_FAMILY",
+        "ONE_OWNER_WITH_LINKED_CONSUMERS"
+      ],
+      "recommended_reading": "Use one semantic owner and stable links.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "DNO_INDEMNIFICATION-Q03",
+      "question": "Can an ambiguous or unresolved M3 edge fill a required role?",
+      "affected_example_ids": [
+        "DNO_INDEMNIFICATION-EX-01",
+        "DNO_INDEMNIFICATION-EX-02",
+        "DNO_INDEMNIFICATION-EX-03",
+        "DNO_INDEMNIFICATION-EX-04",
+        "DNO_INDEMNIFICATION-EX-05",
+        "DNO_INDEMNIFICATION-EX-06",
+        "DNO_INDEMNIFICATION-EX-07"
+      ],
+      "two_plausible_readings": [
+        "ALLOW_CONTEXTUAL_INFERENCE",
+        "FAIL_ONLY_THE_DEPENDENT_PROPOSITION"
+      ],
+      "recommended_reading": "Fail only the dependent proposition and do not infer the role.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    }
+  ],
+  "preparation_diagnostics": [
+    {
+      "code": "BEN_FAMILY_ROLE_APPROVAL_REQUIRED",
+      "severity": "STOP",
+      "related_id": "DNO_INDEMNIFICATION",
+      "detail": "No family adapter may run until Ben approves the open rulings and a separate approved schema is sealed."
+    }
+  ],
+  "preparation_effects": {
+    "model_calls": 0,
+    "family_runner_calls": 0,
+    "database_writes": 0,
+    "product_writes": 0,
+    "selector_changes": 0,
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "serving_changes": 0,
+    "publication_actions": 0
+  }
+}

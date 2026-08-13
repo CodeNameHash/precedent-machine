@@ -1,0 +1,565 @@
+{
+  "schema_version": "STAGE_2Y_FAMILY_CALIBRATION_PACK/V1",
+  "calibration_pack_id": "3ac8cd56f803ece2015d3dd1b800e30a49c5862fbbef7a93baa359a6cd200b98",
+  "calibration_pack_digest": "bc040345aee02fac46fbbe9bdd172518a5078cd6334a81d057a4641e34248a35",
+  "family_key": "SPECIFIC_PERFORMANCE_REMEDIES",
+  "wave": 4,
+  "pack_version": 1,
+  "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+  "purpose": "LEGAL_CALIBRATION_PREPARATION_ONLY",
+  "authority_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-preparation-authority.json",
+    "byte_length": 22922,
+    "sha256": "d10f095429cdbb1006bfbe1e789c267ffa3a98b12b4bd33c2afb550e7beeea79"
+  },
+  "calibration_policy_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-calibration-policy.json",
+    "byte_length": 45512,
+    "sha256": "102534446774dfa0661ad186d27c25507befedca80807e42cf584fa412e6bf78"
+  },
+  "m4_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json",
+    "byte_length": 13670,
+    "sha256": "54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41"
+  },
+  "m2_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+    "byte_length": 20126,
+    "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585"
+  },
+  "m3_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+    "byte_length": 17449,
+    "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855"
+  },
+  "family_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json",
+    "byte_length": 827,
+    "sha256": "7aa5ff41eb778884cdbb6f18ba72138c20420a2475949aca5dcbc0d2098a938d"
+  },
+  "control_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json",
+    "byte_length": 379235,
+    "sha256": "62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41"
+  },
+  "diff_contract_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/diff-contract.json",
+    "byte_length": 1171,
+    "sha256": "2585c7af9e47c4f7a6915ef1667f5eb8dbce26a8a30829bae15e42a7d41ab0c8"
+  },
+  "comparator_run_bindings": [
+    {
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "run_identifier": "concho-specific-performance-remedies-20260809-2xk-final",
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "resolution_binding": {
+        "byte_length": 24225,
+        "path": "evidence/canonical-v2/concho-specific-performance-remedies-20260809-2xk-final/resolution.json",
+        "sha256": "4addcbe59e17ee1c35945ae9480ac28bb72237c639ebabcb69ff90b107303ad2"
+      },
+      "adapter_result_binding": {
+        "byte_length": 378232,
+        "path": "evidence/canonical-v2/concho-specific-performance-remedies-20260809-2xk-final/adapter-result.json",
+        "sha256": "228774d3fccea379fd69cb7a3b936af607ad095c76278212ecbc734c66628dde"
+      },
+      "validation_binding": {
+        "byte_length": 23442,
+        "path": "evidence/canonical-v2/concho-specific-performance-remedies-20260809-2xk-final/validation.json",
+        "sha256": "4b0fb08dd4b3f0fe914c7793c65ef00b9c2737ed635384a09dc0786babe5b75b"
+      },
+      "expected_counts": {
+        "resolution_claims": 1,
+        "write_set_claims": 1,
+        "validation_claims": 1,
+        "resolution_evidence": 1,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "run_identifier": "metsera-specific-performance-remedies-20260809-2xk-final",
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "resolution_binding": {
+        "byte_length": 30022,
+        "path": "evidence/canonical-v2/metsera-specific-performance-remedies-20260809-2xk-final/resolution.json",
+        "sha256": "a62384d93bfa893971defb5fc552017ed55d17c8beb96b57132ddde45459839c"
+      },
+      "adapter_result_binding": {
+        "byte_length": 369127,
+        "path": "evidence/canonical-v2/metsera-specific-performance-remedies-20260809-2xk-final/adapter-result.json",
+        "sha256": "e66ba6b06a2a2736b71b80d669f5f1a706898c163e85dfb52514b0a19395c82b"
+      },
+      "validation_binding": {
+        "byte_length": 17215,
+        "path": "evidence/canonical-v2/metsera-specific-performance-remedies-20260809-2xk-final/validation.json",
+        "sha256": "bbdc0f1bdcb5583f27a140227ef798defff63b614b0b7b9da241a7a7c0b7a304"
+      },
+      "expected_counts": {
+        "resolution_claims": 2,
+        "write_set_claims": 2,
+        "validation_claims": 2,
+        "resolution_evidence": 2,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "run_identifier": "redhat-specific-performance-remedies-20260809-2xk-final",
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "resolution_binding": {
+        "byte_length": 22531,
+        "path": "evidence/canonical-v2/redhat-specific-performance-remedies-20260809-2xk-final/resolution.json",
+        "sha256": "cf583fa8dc499c147118eaa622853f53b87896166007fa7d79d77bae763bbebd"
+      },
+      "adapter_result_binding": {
+        "byte_length": 290929,
+        "path": "evidence/canonical-v2/redhat-specific-performance-remedies-20260809-2xk-final/adapter-result.json",
+        "sha256": "e19596396bfd365777922a427365816d63cb5d201f2c6836c548fdfc404b5ada"
+      },
+      "validation_binding": {
+        "byte_length": 23697,
+        "path": "evidence/canonical-v2/redhat-specific-performance-remedies-20260809-2xk-final/validation.json",
+        "sha256": "40d127dc67f82a952524877afe496c0686f90260eb1a2b0b2712a2f3679b8e41"
+      },
+      "expected_counts": {
+        "resolution_claims": 1,
+        "write_set_claims": 1,
+        "validation_claims": 1,
+        "resolution_evidence": 1,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "run_identifier": "skechers-specific-performance-remedies-20260809-2xk-final",
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "resolution_binding": {
+        "byte_length": 42370,
+        "path": "evidence/canonical-v2/skechers-specific-performance-remedies-20260809-2xk-final/resolution.json",
+        "sha256": "ccceee52eb7b91e123e82e87963927de13b3e4f37c5c5a3f09a06a84117504a9"
+      },
+      "adapter_result_binding": {
+        "byte_length": 410314,
+        "path": "evidence/canonical-v2/skechers-specific-performance-remedies-20260809-2xk-final/adapter-result.json",
+        "sha256": "186106ae3787ea85e6bcf08a6d32002cf75aec5d83905d468175b8a88d634e5c"
+      },
+      "validation_binding": {
+        "byte_length": 26426,
+        "path": "evidence/canonical-v2/skechers-specific-performance-remedies-20260809-2xk-final/validation.json",
+        "sha256": "c112a987a8a87d5a56da8d3dc68dcb702714f89b87c220fb4bad2bec8ab9cf94"
+      },
+      "expected_counts": {
+        "resolution_claims": 1,
+        "write_set_claims": 1,
+        "validation_claims": 1,
+        "resolution_evidence": 1,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "run_identifier": "skywater-specific-performance-remedies-20260809-2xk-final",
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "resolution_binding": {
+        "byte_length": 15309,
+        "path": "evidence/canonical-v2/skywater-specific-performance-remedies-20260809-2xk-final/resolution.json",
+        "sha256": "ce9ed064f820ede16d390963325acfd023d178c3a5f9aca8b7cfcc3b4d07116f"
+      },
+      "adapter_result_binding": {
+        "byte_length": 371178,
+        "path": "evidence/canonical-v2/skywater-specific-performance-remedies-20260809-2xk-final/adapter-result.json",
+        "sha256": "2ec0f1ea9866f6e9360180dd402de9af84ae90791f4e290a7882850a46e13d18"
+      },
+      "validation_binding": {
+        "byte_length": 7440,
+        "path": "evidence/canonical-v2/skywater-specific-performance-remedies-20260809-2xk-final/validation.json",
+        "sha256": "11182924a0c95a87b9e92e9f2d12ecff4805dfb4b943f913f0bfd5f66efe335c"
+      },
+      "expected_counts": {
+        "resolution_claims": 1,
+        "write_set_claims": 1,
+        "validation_claims": 1,
+        "resolution_evidence": 1,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "run_identifier": "topbuild-specific-performance-remedies-20260809-2xk-r3-final",
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "resolution_binding": {
+        "byte_length": 46835,
+        "path": "evidence/canonical-v2/topbuild-specific-performance-remedies-20260809-2xk-r3-final/resolution.json",
+        "sha256": "5f9cbbb768f8ca2d90b8e0beb315ccdf343dd782205980d3382ac6c7ec8466d3"
+      },
+      "adapter_result_binding": {
+        "byte_length": 454179,
+        "path": "evidence/canonical-v2/topbuild-specific-performance-remedies-20260809-2xk-r3-final/adapter-result.json",
+        "sha256": "8cf4fa7ad63c263e92f50aeba2bca984665b433722f4936e585a40f94de8d7a1"
+      },
+      "validation_binding": {
+        "byte_length": 38450,
+        "path": "evidence/canonical-v2/topbuild-specific-performance-remedies-20260809-2xk-r3-final/validation.json",
+        "sha256": "cbdf010f69a7246fb40d925a9e0196de78474af759eeef7843955f376c3e360a"
+      },
+      "expected_counts": {
+        "resolution_claims": 2,
+        "write_set_claims": 2,
+        "validation_claims": 2,
+        "resolution_evidence": 2,
+        "supplemental_claims": 0
+      }
+    }
+  ],
+  "supplemental_input_bindings": [],
+  "provision_examples": [
+    {
+      "example_id": "SPECIFIC_PERFORMANCE_REMEDIES-EX-01",
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "printed_reference": "9.11",
+      "complete_source_node_occurrence_ids": [
+        "f07e3c37cdf66b4f456fd8067eb44620e02d035753d09807bb106868d4bd28cb"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 307740,
+          "start_byte": 305887,
+          "text_sha256": "fe13d3e521ac2b3d3bcc7d7e2f37d9fa00c9fd962e81d3e65e738882294a6895"
+        }
+      ],
+      "source_text_sha256s": [
+        "fe13d3e521ac2b3d3bcc7d7e2f37d9fa00c9fd962e81d3e65e738882294a6895"
+      ],
+      "structure_revision_ids": [
+        "31727ab6d2237c1134f82e7c44378f6e4b4ffe7ee4ce8af7f474eec6d8250939"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "85f38496569511d2c8c7077ab0ef8ed72328e6adb60876b6a060f239fee078e8"
+      ],
+      "comparator_run_identifiers": [
+        "concho-specific-performance-remedies-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "GENERAL_EQUITABLE_RELIEF",
+      "legal_question_ids": [
+        "SPECIFIC_PERFORMANCE_REMEDIES-Q01",
+        "SPECIFIC_PERFORMANCE_REMEDIES-Q02",
+        "SPECIFIC_PERFORMANCE_REMEDIES-Q03"
+      ]
+    },
+    {
+      "example_id": "SPECIFIC_PERFORMANCE_REMEDIES-EX-02",
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "printed_reference": "9.10",
+      "complete_source_node_occurrence_ids": [
+        "3b2456287f4691c7b779cc16b9a69ee598789d709dd9801b40ec9a16704edcee"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 269710,
+          "start_byte": 265913,
+          "text_sha256": "dfeedb4a55226e9077f6c041cac382d172e29cf9e1c26fbf5da9ddb9f8547459"
+        }
+      ],
+      "source_text_sha256s": [
+        "dfeedb4a55226e9077f6c041cac382d172e29cf9e1c26fbf5da9ddb9f8547459"
+      ],
+      "structure_revision_ids": [
+        "c5744b785634d6f69a6ccfcaa3356f504755d99fc8269957f20466209a936455"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "12c17385403f31531a1252b5e07c563f2ffa787014ac311129c96a8b571b5f5b",
+        "f49887bc76155e7595a3564c0b81d6fbc837635652c51e46bf91dc5f720b8f12"
+      ],
+      "comparator_run_identifiers": [
+        "metsera-specific-performance-remedies-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "GENERAL_EQUITABLE_RELIEF",
+      "legal_question_ids": [
+        "SPECIFIC_PERFORMANCE_REMEDIES-Q01",
+        "SPECIFIC_PERFORMANCE_REMEDIES-Q02",
+        "SPECIFIC_PERFORMANCE_REMEDIES-Q03"
+      ]
+    },
+    {
+      "example_id": "SPECIFIC_PERFORMANCE_REMEDIES-EX-03",
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "printed_reference": "8.11",
+      "complete_source_node_occurrence_ids": [
+        "f5632803bdc78d9a3a119bf4ac4651f568c8c984778f2569a260cf6346c16423"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 263174,
+          "start_byte": 260908,
+          "text_sha256": "fb4543acb95ada02b3dc5b69d91bce0ed03492d99a21a1c0e04627088a5b976e"
+        }
+      ],
+      "source_text_sha256s": [
+        "fb4543acb95ada02b3dc5b69d91bce0ed03492d99a21a1c0e04627088a5b976e"
+      ],
+      "structure_revision_ids": [
+        "e66c85f3cf07828c99a89f3f7d6132621f55fd1967481fb8fd3276416576227b"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "2079c3ced58beb08ebb65e6e7936a9a06c78b58fc0874fb9e05d1300bbf3bac6"
+      ],
+      "comparator_run_identifiers": [
+        "redhat-specific-performance-remedies-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "GENERAL_EQUITABLE_RELIEF",
+      "legal_question_ids": [
+        "SPECIFIC_PERFORMANCE_REMEDIES-Q01",
+        "SPECIFIC_PERFORMANCE_REMEDIES-Q02",
+        "SPECIFIC_PERFORMANCE_REMEDIES-Q03"
+      ]
+    },
+    {
+      "example_id": "SPECIFIC_PERFORMANCE_REMEDIES-EX-04",
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "printed_reference": "9.8",
+      "complete_source_node_occurrence_ids": [
+        "519f00e842452996fcfa9f87028e13980b548ca20dfc2181f2db2f7e12a9e923"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 367876,
+          "start_byte": 362234,
+          "text_sha256": "650748894a1d146b47ac3d5dc6db58d5c5103112576836c08491c82722859e98"
+        }
+      ],
+      "source_text_sha256s": [
+        "650748894a1d146b47ac3d5dc6db58d5c5103112576836c08491c82722859e98"
+      ],
+      "structure_revision_ids": [
+        "215e7f07f9cb0a7af60db0787b0ff1788fbc673c582e625458c61ff6eacdab0e"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "79db9a98fd5ea91d6e6a29211d51c5060ce9bfcfc7837b2f7052de49d2c523b8"
+      ],
+      "comparator_run_identifiers": [
+        "skechers-specific-performance-remedies-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "GENERAL_EQUITABLE_RELIEF",
+      "legal_question_ids": [
+        "SPECIFIC_PERFORMANCE_REMEDIES-Q01",
+        "SPECIFIC_PERFORMANCE_REMEDIES-Q02",
+        "SPECIFIC_PERFORMANCE_REMEDIES-Q03"
+      ]
+    },
+    {
+      "example_id": "SPECIFIC_PERFORMANCE_REMEDIES-EX-05",
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "printed_reference": "10.9",
+      "complete_source_node_occurrence_ids": [
+        "4a74d3983c56c18d77722dcfd8e274f4131b01382134e4c08e4fab21cc32b9fb"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 308371,
+          "start_byte": 306056,
+          "text_sha256": "abdb785e64d811c41b89a4db35dc8e9afd9b25b912b0c14052f8b100fb843fa0"
+        }
+      ],
+      "source_text_sha256s": [
+        "abdb785e64d811c41b89a4db35dc8e9afd9b25b912b0c14052f8b100fb843fa0"
+      ],
+      "structure_revision_ids": [
+        "a9d38905aee5c2170b1e93ebccd4784174a01760f5c133acc30f04e4ae92e526"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "8661cd4be2fc1c71f4eedf6e94df2565cde5b200273a441ac680738cda154261"
+      ],
+      "comparator_run_identifiers": [
+        "skywater-specific-performance-remedies-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "GENERAL_EQUITABLE_RELIEF",
+      "legal_question_ids": [
+        "SPECIFIC_PERFORMANCE_REMEDIES-Q01",
+        "SPECIFIC_PERFORMANCE_REMEDIES-Q02",
+        "SPECIFIC_PERFORMANCE_REMEDIES-Q03"
+      ]
+    },
+    {
+      "example_id": "SPECIFIC_PERFORMANCE_REMEDIES-EX-06",
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "printed_reference": "7.6",
+      "complete_source_node_occurrence_ids": [
+        "2b61246c1d9644d7428bebcaa63192ca7029c126c284b2d9cc2bb256dcb9b7db"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 393229,
+          "start_byte": 389293,
+          "text_sha256": "9d375b85093b476fbecb795ababa596001919093729231adb190ec369094312c"
+        }
+      ],
+      "source_text_sha256s": [
+        "9d375b85093b476fbecb795ababa596001919093729231adb190ec369094312c"
+      ],
+      "structure_revision_ids": [
+        "4be3dc05e52024c3e9c2e1b106c6b6bec87ab7b666fc234303fd15ae79ab04d2"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "0981cbac5433d9187b958b2ee76ffa6aa47c58f40c1029e8ed08bb012f855052",
+        "eda94ae7cfab50e811ff1c6e950ee4993fd5295066f0f8e6a1ab2387f69c7e8b"
+      ],
+      "comparator_run_identifiers": [
+        "topbuild-specific-performance-remedies-20260809-2xk-r3-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "GENERAL_EQUITABLE_RELIEF",
+      "legal_question_ids": [
+        "SPECIFIC_PERFORMANCE_REMEDIES-Q01",
+        "SPECIFIC_PERFORMANCE_REMEDIES-Q02",
+        "SPECIFIC_PERFORMANCE_REMEDIES-Q03"
+      ]
+    }
+  ],
+  "cross_family_dependencies": [],
+  "proposed_output_policy": {
+    "candidate_claim_definition_keys": [
+      "SPECIFIC_PERFORMANCE_REMEDY_PRESENT"
+    ],
+    "candidate_subtype_profile_ids": [
+      "SPECIFIC_PERFORMANCE_REMEDIES::GENERAL_EQUITABLE_RELIEF",
+      "SPECIFIC_PERFORMANCE_REMEDIES::CLOSING_ENFORCEMENT",
+      "SPECIFIC_PERFORMANCE_REMEDIES::NON_OBJECTION",
+      "SPECIFIC_PERFORMANCE_REMEDIES::BOND_SECURITY_WAIVER",
+      "SPECIFIC_PERFORMANCE_REMEDIES::REMEDY_COORDINATION",
+      "SPECIFIC_PERFORMANCE_REMEDIES::REMEDY_ACTION_EXTENSION",
+      "SPECIFIC_PERFORMANCE_REMEDIES::COST_SHIFT"
+    ],
+    "non_output_dispositions": [
+      "LEGACY_FRAGMENTS_REMAIN_SCHEMA_APPROVAL_PENDING",
+      "UNRESOLVED_REQUIRED_ROLE_IS_NON_RENDERABLE"
+    ],
+    "family_ownership_boundary": "SPECIFIC_PERFORMANCE_REMEDIES owns only approved complete propositions. Overlapping content is link-only.",
+    "renderability": "NEVER_RENDER_FROM_PROPOSAL",
+    "complete_transition": "NOT_AUTHORISED"
+  },
+  "narrow_legal_questions": [
+    {
+      "question_id": "SPECIFIC_PERFORMANCE_REMEDIES-Q01",
+      "question": "Should one independently operative authored unit be one proposition, with coordinated elements stored as roles or linked children?",
+      "affected_example_ids": [
+        "SPECIFIC_PERFORMANCE_REMEDIES-EX-01",
+        "SPECIFIC_PERFORMANCE_REMEDIES-EX-02",
+        "SPECIFIC_PERFORMANCE_REMEDIES-EX-03",
+        "SPECIFIC_PERFORMANCE_REMEDIES-EX-04",
+        "SPECIFIC_PERFORMANCE_REMEDIES-EX-05",
+        "SPECIFIC_PERFORMANCE_REMEDIES-EX-06"
+      ],
+      "two_plausible_readings": [
+        "ONE_COMPOUND_PROPOSITION",
+        "LINKED_INDEPENDENT_PROPOSITIONS"
+      ],
+      "recommended_reading": "Use one proposition per independently operative authored unit.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "SPECIFIC_PERFORMANCE_REMEDIES-Q02",
+      "question": "Which family owns overlapping content, and which families may only link to its stable identity?",
+      "affected_example_ids": [
+        "SPECIFIC_PERFORMANCE_REMEDIES-EX-01",
+        "SPECIFIC_PERFORMANCE_REMEDIES-EX-02",
+        "SPECIFIC_PERFORMANCE_REMEDIES-EX-03",
+        "SPECIFIC_PERFORMANCE_REMEDIES-EX-04",
+        "SPECIFIC_PERFORMANCE_REMEDIES-EX-05",
+        "SPECIFIC_PERFORMANCE_REMEDIES-EX-06"
+      ],
+      "two_plausible_readings": [
+        "DUPLICATE_IN_EACH_FAMILY",
+        "ONE_OWNER_WITH_LINKED_CONSUMERS"
+      ],
+      "recommended_reading": "Use one semantic owner and stable links.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "SPECIFIC_PERFORMANCE_REMEDIES-Q03",
+      "question": "Can an ambiguous or unresolved M3 edge fill a required role?",
+      "affected_example_ids": [
+        "SPECIFIC_PERFORMANCE_REMEDIES-EX-01",
+        "SPECIFIC_PERFORMANCE_REMEDIES-EX-02",
+        "SPECIFIC_PERFORMANCE_REMEDIES-EX-03",
+        "SPECIFIC_PERFORMANCE_REMEDIES-EX-04",
+        "SPECIFIC_PERFORMANCE_REMEDIES-EX-05",
+        "SPECIFIC_PERFORMANCE_REMEDIES-EX-06"
+      ],
+      "two_plausible_readings": [
+        "ALLOW_CONTEXTUAL_INFERENCE",
+        "FAIL_ONLY_THE_DEPENDENT_PROPOSITION"
+      ],
+      "recommended_reading": "Fail only the dependent proposition and do not infer the role.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    }
+  ],
+  "preparation_diagnostics": [
+    {
+      "code": "BEN_FAMILY_ROLE_APPROVAL_REQUIRED",
+      "severity": "STOP",
+      "related_id": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "detail": "No family adapter may run until Ben approves the open rulings and a separate approved schema is sealed."
+    }
+  ],
+  "preparation_effects": {
+    "model_calls": 0,
+    "family_runner_calls": 0,
+    "database_writes": 0,
+    "product_writes": 0,
+    "selector_changes": 0,
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "serving_changes": 0,
+    "publication_actions": 0
+  }
+}

@@ -1,0 +1,581 @@
+{
+  "schema_version": "STAGE_2Y_FAMILY_CALIBRATION_PACK/V1",
+  "calibration_pack_id": "1ec81087f1085f19dbcb71be0b8ef3311935784376c0915bba13fa0cd4f66409",
+  "calibration_pack_digest": "ea2029b86ba3213efbca5e1681a1e524b24a2f1a4636bd96d9bca66a65580d4a",
+  "family_key": "TERMINATION_FEE",
+  "wave": 4,
+  "pack_version": 1,
+  "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+  "purpose": "LEGAL_CALIBRATION_PREPARATION_ONLY",
+  "authority_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-preparation-authority.json",
+    "byte_length": 22922,
+    "sha256": "d10f095429cdbb1006bfbe1e789c267ffa3a98b12b4bd33c2afb550e7beeea79"
+  },
+  "calibration_policy_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-calibration-policy.json",
+    "byte_length": 45512,
+    "sha256": "102534446774dfa0661ad186d27c25507befedca80807e42cf584fa412e6bf78"
+  },
+  "m4_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json",
+    "byte_length": 13670,
+    "sha256": "54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41"
+  },
+  "m2_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+    "byte_length": 20126,
+    "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585"
+  },
+  "m3_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+    "byte_length": 17449,
+    "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855"
+  },
+  "family_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json",
+    "byte_length": 827,
+    "sha256": "7aa5ff41eb778884cdbb6f18ba72138c20420a2475949aca5dcbc0d2098a938d"
+  },
+  "control_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json",
+    "byte_length": 379235,
+    "sha256": "62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41"
+  },
+  "diff_contract_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/diff-contract.json",
+    "byte_length": 1171,
+    "sha256": "2585c7af9e47c4f7a6915ef1667f5eb8dbce26a8a30829bae15e42a7d41ab0c8"
+  },
+  "comparator_run_bindings": [
+    {
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "run_identifier": "concho-termination-fee-20260809-2xk-final",
+      "family": "TERMINATION_FEE",
+      "resolution_binding": {
+        "byte_length": 73421,
+        "path": "evidence/canonical-v2/concho-termination-fee-20260809-2xk-final/resolution.json",
+        "sha256": "0ae00bebe296527b61acd2f282648f6a37e58b8de1c39f4e15c2fc4dafa4cc26"
+      },
+      "adapter_result_binding": {
+        "byte_length": 422681,
+        "path": "evidence/canonical-v2/concho-termination-fee-20260809-2xk-final/adapter-result.json",
+        "sha256": "440ae41b3784c2812c6e0c324e8c8f5bb4dbc79aa2aa5702412b7a0915570ebe"
+      },
+      "validation_binding": {
+        "byte_length": 68613,
+        "path": "evidence/canonical-v2/concho-termination-fee-20260809-2xk-final/validation.json",
+        "sha256": "72ac394f7c3209d77d6e3aa7dc5a13d7f2a31d6e96231978be2e1b709d70e8a3"
+      },
+      "expected_counts": {
+        "resolution_claims": 2,
+        "write_set_claims": 1,
+        "validation_claims": 1,
+        "resolution_evidence": 2,
+        "supplemental_claims": 1
+      }
+    },
+    {
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "run_identifier": "metsera-termination-fee-20260809-2xk-final",
+      "family": "TERMINATION_FEE",
+      "resolution_binding": {
+        "byte_length": 68554,
+        "path": "evidence/canonical-v2/metsera-termination-fee-20260809-2xk-final/resolution.json",
+        "sha256": "3ae50c87dd7102777d215a678aa4d59e1549b3b4a861fab34908cdc0103965aa"
+      },
+      "adapter_result_binding": {
+        "byte_length": 388341,
+        "path": "evidence/canonical-v2/metsera-termination-fee-20260809-2xk-final/adapter-result.json",
+        "sha256": "574c7a9189036c0e44018082858021fcf5d043193c05a80aa2a761aed0c9b08a"
+      },
+      "validation_binding": {
+        "byte_length": 37722,
+        "path": "evidence/canonical-v2/metsera-termination-fee-20260809-2xk-final/validation.json",
+        "sha256": "546daedbd48fa90e92bf1f54e74e10de09143c177805c48a877e28e5e4c3d341"
+      },
+      "expected_counts": {
+        "resolution_claims": 5,
+        "write_set_claims": 2,
+        "validation_claims": 2,
+        "resolution_evidence": 5,
+        "supplemental_claims": 3
+      }
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "run_identifier": "redhat-termination-fee-20260809-2xk-final",
+      "family": "TERMINATION_FEE",
+      "resolution_binding": {
+        "byte_length": 68955,
+        "path": "evidence/canonical-v2/redhat-termination-fee-20260809-2xk-final/resolution.json",
+        "sha256": "38323de024bfd77b70c0d44c6062b3bbaae7774ad2f1589666480ace17dadce9"
+      },
+      "adapter_result_binding": {
+        "byte_length": 304876,
+        "path": "evidence/canonical-v2/redhat-termination-fee-20260809-2xk-final/adapter-result.json",
+        "sha256": "99728b260b3b8c23cb81d6b5dec5cf698e8653c9b78e657e6897f3a1a08a84b4"
+      },
+      "validation_binding": {
+        "byte_length": 39101,
+        "path": "evidence/canonical-v2/redhat-termination-fee-20260809-2xk-final/validation.json",
+        "sha256": "9ea4b4a93cac89201ebe27b0b6a1b00318645de31259c3cb201d49f650262d0b"
+      },
+      "expected_counts": {
+        "resolution_claims": 4,
+        "write_set_claims": 2,
+        "validation_claims": 2,
+        "resolution_evidence": 4,
+        "supplemental_claims": 2
+      }
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "run_identifier": "skechers-termination-fee-20260809-2xk-final",
+      "family": "TERMINATION_FEE",
+      "resolution_binding": {
+        "byte_length": 68987,
+        "path": "evidence/canonical-v2/skechers-termination-fee-20260809-2xk-final/resolution.json",
+        "sha256": "dda21576d4f41689fd8b7573534eaad495bd8c3d08c07114449c63a8cdce5b3b"
+      },
+      "adapter_result_binding": {
+        "byte_length": 420931,
+        "path": "evidence/canonical-v2/skechers-termination-fee-20260809-2xk-final/adapter-result.json",
+        "sha256": "e0416cc1156e6314b61622af4843fd56ceaa5809b15256b6e5ff73efb49baf91"
+      },
+      "validation_binding": {
+        "byte_length": 38661,
+        "path": "evidence/canonical-v2/skechers-termination-fee-20260809-2xk-final/validation.json",
+        "sha256": "b4c8c952407211655dae74d4611e008010496ff4cba8422eba6b2dd797cd2677"
+      },
+      "expected_counts": {
+        "resolution_claims": 3,
+        "write_set_claims": 2,
+        "validation_claims": 2,
+        "resolution_evidence": 3,
+        "supplemental_claims": 1
+      }
+    },
+    {
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "run_identifier": "skywater-termination-fee-20260809-2xk-final",
+      "family": "TERMINATION_FEE",
+      "resolution_binding": {
+        "byte_length": 35183,
+        "path": "evidence/canonical-v2/skywater-termination-fee-20260809-2xk-final/resolution.json",
+        "sha256": "98b3d4b76c8c000f926f77ab6e74262b0e6a171701bf5f877c26d6260e69f89f"
+      },
+      "adapter_result_binding": {
+        "byte_length": 387848,
+        "path": "evidence/canonical-v2/skywater-termination-fee-20260809-2xk-final/adapter-result.json",
+        "sha256": "a8add3beeb54beda13cc47dc5a099fc0719d55c1949a4f654fd9aaef92a3cdc8"
+      },
+      "validation_binding": {
+        "byte_length": 24223,
+        "path": "evidence/canonical-v2/skywater-termination-fee-20260809-2xk-final/validation.json",
+        "sha256": "51cb7bd4f5fb102e4369b001db00b927de28477b5377a2a07ec39c577e580039"
+      },
+      "expected_counts": {
+        "resolution_claims": 1,
+        "write_set_claims": 1,
+        "validation_claims": 1,
+        "resolution_evidence": 1,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "run_identifier": "topbuild-termination-fee-20260809-2xk-r1-final",
+      "family": "TERMINATION_FEE",
+      "resolution_binding": {
+        "byte_length": 94996,
+        "path": "evidence/canonical-v2/topbuild-termination-fee-20260809-2xk-r1-final/resolution.json",
+        "sha256": "b9a725087ac4a1cd17e5bf39b39785c855b25bf2e373f8cfb96adb70861d7b9c"
+      },
+      "adapter_result_binding": {
+        "byte_length": 457088,
+        "path": "evidence/canonical-v2/topbuild-termination-fee-20260809-2xk-r1-final/adapter-result.json",
+        "sha256": "b920aa823d4bb5cd3f4e746f5e67778dc67bc751cf42f7009af3c6d2de775157"
+      },
+      "validation_binding": {
+        "byte_length": 42186,
+        "path": "evidence/canonical-v2/topbuild-termination-fee-20260809-2xk-r1-final/validation.json",
+        "sha256": "e4958a9330af875cd116194611530903738a41bcf19123cf23c20e51c10f67b8"
+      },
+      "expected_counts": {
+        "resolution_claims": 5,
+        "write_set_claims": 2,
+        "validation_claims": 2,
+        "resolution_evidence": 5,
+        "supplemental_claims": 3
+      }
+    }
+  ],
+  "supplemental_input_bindings": [],
+  "provision_examples": [
+    {
+      "example_id": "TERMINATION_FEE-EX-01",
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "printed_reference": "8.3",
+      "complete_source_node_occurrence_ids": [
+        "f38af4631c653df6048f0686a0839453da68ee4e980db04b5008b9dff50826a0"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 288557,
+          "start_byte": 277922,
+          "text_sha256": "dcbb17251a5730918ed661edcc701259a00942c502ef7d3966f65efd5b76b005"
+        }
+      ],
+      "source_text_sha256s": [
+        "dcbb17251a5730918ed661edcc701259a00942c502ef7d3966f65efd5b76b005"
+      ],
+      "structure_revision_ids": [
+        "38f16499ff28441f34f8b3660ed8a3942438b53c164d18c67b76cef628d6abb5"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "741c5a007188dadb1340fd903e828267cc5af4bb7c29904b3c5140e1d9d65aac",
+        "ed9cf50a4b0ab1c85e35a548b2d6f3007aad0817db2ef7cbcc7b941fb8dc6636"
+      ],
+      "comparator_run_identifiers": [
+        "concho-termination-fee-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "FEE_AMOUNT",
+      "legal_question_ids": [
+        "TERMINATION_FEE-Q01",
+        "TERMINATION_FEE-Q02",
+        "TERMINATION_FEE-Q03"
+      ]
+    },
+    {
+      "example_id": "TERMINATION_FEE-EX-02",
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "printed_reference": "8.02",
+      "complete_source_node_occurrence_ids": [
+        "f2521594b09bbef08e617bd319509d4732da1c48f8eb7a8d85d5adf00774e36a"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 235430,
+          "start_byte": 230820,
+          "text_sha256": "034b6c6c3d61e5506afd7a4e177e1ef4f6c87d9e5349c55ebaa6ca18e12fd8f3"
+        }
+      ],
+      "source_text_sha256s": [
+        "034b6c6c3d61e5506afd7a4e177e1ef4f6c87d9e5349c55ebaa6ca18e12fd8f3"
+      ],
+      "structure_revision_ids": [
+        "be98a3570e18ccd6ce04d9b3f01fcd2a601f562eb374b3af0498d9e16890e06e"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "243ec4654521a10e146eea5b5e9c91df89249eadfb8e35e182cc908f8b95e034",
+        "25311aa9c84446728274cddb3bb7253b044077196d8926a2b2592cbffebdc0fe",
+        "551263121dd766199530b7f26dda322160e3f02f9148be88290e2f1ed3beca2f",
+        "755a392cea9b21850bc750b27851f42c794f2e77d1cedd17d1b9bbec7bd9b2a0",
+        "aae57a85b1e3e36615061236cc9ffdb12f3d91a272912799e323499356a0bb07"
+      ],
+      "comparator_run_identifiers": [
+        "metsera-termination-fee-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "FEE_AMOUNT",
+      "legal_question_ids": [
+        "TERMINATION_FEE-Q01",
+        "TERMINATION_FEE-Q02",
+        "TERMINATION_FEE-Q03"
+      ]
+    },
+    {
+      "example_id": "TERMINATION_FEE-EX-03",
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "printed_reference": "5.06",
+      "complete_source_node_occurrence_ids": [
+        "4b862b43a1c9e1698a77a8a95b147648ca12cb79d126e8f8cf7fca7e8b729898"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 197134,
+          "start_byte": 192483,
+          "text_sha256": "fed5e254693f1a266c62bce5be03c947923e4aa8927668c7d3126a7606ecb6ef"
+        }
+      ],
+      "source_text_sha256s": [
+        "fed5e254693f1a266c62bce5be03c947923e4aa8927668c7d3126a7606ecb6ef"
+      ],
+      "structure_revision_ids": [
+        "3d12486afd790f9e1d776eeacfbd1112b750a89ee8e684d4df5f287fe74cae64"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "09d6a0f59cfc4f462bc9c85a1d86bc00317a7d68719f1ff69c9b2f19e1ccc811",
+        "1546aab3940bdae1ab0cc4c3b53bd64339a35b88156b1df90fbc9981f45eb3a9",
+        "6e6387c5a22cf060785cab394c5853c71de2583d2dcb929eb169b2fe39b7a1d0",
+        "84ff43409059134adb23400f45fafa74069ff724a5ef0113fa9089b6d8d834d7"
+      ],
+      "comparator_run_identifiers": [
+        "redhat-termination-fee-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "FEE_AMOUNT",
+      "legal_question_ids": [
+        "TERMINATION_FEE-Q01",
+        "TERMINATION_FEE-Q02",
+        "TERMINATION_FEE-Q03"
+      ]
+    },
+    {
+      "example_id": "TERMINATION_FEE-EX-04",
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "printed_reference": "8.3",
+      "complete_source_node_occurrence_ids": [
+        "551ce32bef9c09c0bcda025c8f3e0fed083460a624d2a43ddbfe82f98d75d5e7"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 350352,
+          "start_byte": 341013,
+          "text_sha256": "d12fd387c576372b7f04bd1dfc65bfa563fe1c3960f986829d4857d4ae7b3509"
+        }
+      ],
+      "source_text_sha256s": [
+        "d12fd387c576372b7f04bd1dfc65bfa563fe1c3960f986829d4857d4ae7b3509"
+      ],
+      "structure_revision_ids": [
+        "894b4bcb97953de9d96ce48dcf0edd0d774f67ecd09d38941a1da732673189fb"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "43b773dff3f7212daa22d4d326d788b3d7b8a3cecfefd697371bd1c94e4fbd54",
+        "4d8ad62f0289206fc080b51001642aedba2cbe3e4828fe96297fafa725c8c8e8",
+        "c13450207ae8072051915b409a16cd3e71ab4a44da9a83141ea4ef3ccc3a8638"
+      ],
+      "comparator_run_identifiers": [
+        "skechers-termination-fee-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "FEE_AMOUNT",
+      "legal_question_ids": [
+        "TERMINATION_FEE-Q01",
+        "TERMINATION_FEE-Q02",
+        "TERMINATION_FEE-Q03"
+      ]
+    },
+    {
+      "example_id": "TERMINATION_FEE-EX-05",
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "printed_reference": "10.5",
+      "complete_source_node_occurrence_ids": [
+        "55457912ba26ab500dad156c928e640a7c0eed6527f18891d9ca7906ad53902c"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 296970,
+          "start_byte": 294129,
+          "text_sha256": "6841b7d6eaad4236bd850c70e9ad9f8c01c7a9f6db54dcbe4cb82cae2b69ce6c"
+        }
+      ],
+      "source_text_sha256s": [
+        "6841b7d6eaad4236bd850c70e9ad9f8c01c7a9f6db54dcbe4cb82cae2b69ce6c"
+      ],
+      "structure_revision_ids": [
+        "411372fbfd69e87f10753434309207debc5fab7c5fab92d7032f0a1fc6be8a33"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "1ae0c40af2ba5ecf184d130a6c1c1df1e3e07274c308fb4354bc17993d68c1e1"
+      ],
+      "comparator_run_identifiers": [
+        "skywater-termination-fee-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "FEE_AMOUNT",
+      "legal_question_ids": [
+        "TERMINATION_FEE-Q01",
+        "TERMINATION_FEE-Q02",
+        "TERMINATION_FEE-Q03"
+      ]
+    },
+    {
+      "example_id": "TERMINATION_FEE-EX-06",
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "printed_reference": "6.5",
+      "complete_source_node_occurrence_ids": [
+        "1e59aa84046a4fec353e9734e4d891ef78b48571e1dd57881228f511e6b39dc7"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 381113,
+          "start_byte": 369416,
+          "text_sha256": "6083932f8cfc15a52ee25634940def973cdbe8f8a37ca3639b97f7cb6d3e2b7f"
+        }
+      ],
+      "source_text_sha256s": [
+        "6083932f8cfc15a52ee25634940def973cdbe8f8a37ca3639b97f7cb6d3e2b7f"
+      ],
+      "structure_revision_ids": [
+        "05f987681192d51aee15881894b1277729523b8aaa3829929c0b4d12b95af89f"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "00ed2b80fd4c437401b6cb64090f403638a9a7540bbbfaed53c9010adb2fd886",
+        "2de2b44de2c9abaf288f2437e5feade4dd04b4a85e62f452f194e9c44016a039",
+        "34442b38327793b138d1a5e11bb34026187f1f12a5fe127c355fd3c025ed353e",
+        "d1d89e90eeca94c9d7636444211d506743270e7084ab2fd30eac6ec12aa783f2",
+        "e4895dcb98408fc836d606b8bc29b571eb9f15b22ab7b269e51b38e453bd7df3"
+      ],
+      "comparator_run_identifiers": [
+        "topbuild-termination-fee-20260809-2xk-r1-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "FEE_AMOUNT",
+      "legal_question_ids": [
+        "TERMINATION_FEE-Q01",
+        "TERMINATION_FEE-Q02",
+        "TERMINATION_FEE-Q03"
+      ]
+    }
+  ],
+  "cross_family_dependencies": [],
+  "proposed_output_policy": {
+    "candidate_claim_definition_keys": [
+      "SOLE_REMEDY_CARVEOUT_KIND",
+      "SOLE_REMEDY_LEGAL_EFFECT_PRESENT",
+      "TERMINATION_FEE_AMOUNT",
+      "TERMINATION_FEE_TAIL_PERIOD_MONTHS"
+    ],
+    "candidate_subtype_profile_ids": [
+      "TERMINATION_FEE::FEE_AMOUNT",
+      "TERMINATION_FEE::FEE_TRIGGER",
+      "TERMINATION_FEE::TAIL_FEE",
+      "TERMINATION_FEE::SOLE_REMEDY_LINK",
+      "TERMINATION_FEE::CARVEOUT",
+      "TERMINATION_FEE::EXPENSE_REIMBURSEMENT",
+      "TERMINATION_FEE::LATE_INTEREST",
+      "TERMINATION_FEE::CONDITIONAL_FEE_SCHEDULE"
+    ],
+    "non_output_dispositions": [
+      "LEGACY_FRAGMENTS_REMAIN_SCHEMA_APPROVAL_PENDING",
+      "UNRESOLVED_REQUIRED_ROLE_IS_NON_RENDERABLE"
+    ],
+    "family_ownership_boundary": "TERMINATION_FEE owns only approved complete propositions. Overlapping content is link-only.",
+    "renderability": "NEVER_RENDER_FROM_PROPOSAL",
+    "complete_transition": "NOT_AUTHORISED"
+  },
+  "narrow_legal_questions": [
+    {
+      "question_id": "TERMINATION_FEE-Q01",
+      "question": "Should one independently operative authored unit be one proposition, with coordinated elements stored as roles or linked children?",
+      "affected_example_ids": [
+        "TERMINATION_FEE-EX-01",
+        "TERMINATION_FEE-EX-02",
+        "TERMINATION_FEE-EX-03",
+        "TERMINATION_FEE-EX-04",
+        "TERMINATION_FEE-EX-05",
+        "TERMINATION_FEE-EX-06"
+      ],
+      "two_plausible_readings": [
+        "ONE_COMPOUND_PROPOSITION",
+        "LINKED_INDEPENDENT_PROPOSITIONS"
+      ],
+      "recommended_reading": "Use one proposition per independently operative authored unit.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "TERMINATION_FEE-Q02",
+      "question": "Which family owns overlapping content, and which families may only link to its stable identity?",
+      "affected_example_ids": [
+        "TERMINATION_FEE-EX-01",
+        "TERMINATION_FEE-EX-02",
+        "TERMINATION_FEE-EX-03",
+        "TERMINATION_FEE-EX-04",
+        "TERMINATION_FEE-EX-05",
+        "TERMINATION_FEE-EX-06"
+      ],
+      "two_plausible_readings": [
+        "DUPLICATE_IN_EACH_FAMILY",
+        "ONE_OWNER_WITH_LINKED_CONSUMERS"
+      ],
+      "recommended_reading": "Use one semantic owner and stable links.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "TERMINATION_FEE-Q03",
+      "question": "Can an ambiguous or unresolved M3 edge fill a required role?",
+      "affected_example_ids": [
+        "TERMINATION_FEE-EX-01",
+        "TERMINATION_FEE-EX-02",
+        "TERMINATION_FEE-EX-03",
+        "TERMINATION_FEE-EX-04",
+        "TERMINATION_FEE-EX-05",
+        "TERMINATION_FEE-EX-06"
+      ],
+      "two_plausible_readings": [
+        "ALLOW_CONTEXTUAL_INFERENCE",
+        "FAIL_ONLY_THE_DEPENDENT_PROPOSITION"
+      ],
+      "recommended_reading": "Fail only the dependent proposition and do not infer the role.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    }
+  ],
+  "preparation_diagnostics": [
+    {
+      "code": "BEN_FAMILY_ROLE_APPROVAL_REQUIRED",
+      "severity": "STOP",
+      "related_id": "TERMINATION_FEE",
+      "detail": "No family adapter may run until Ben approves the open rulings and a separate approved schema is sealed."
+    }
+  ],
+  "preparation_effects": {
+    "model_calls": 0,
+    "family_runner_calls": 0,
+    "database_writes": 0,
+    "product_writes": 0,
+    "selector_changes": 0,
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "serving_changes": 0,
+    "publication_actions": 0
+  }
+}
