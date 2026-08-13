@@ -185,6 +185,7 @@ const HTML = String.raw`<!doctype html>
     const esc = (value) => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
     const decisionFor = id => state.ledger.decisions.find(d => d.review_item_id === id);
     function explanation(item) {
+      if (item.review_reason === 'SOURCE_PROVISION_IDENTIFIED_BUT_SPECIFIC_COMPARISON_POINT_NOT_YET_PROVED') return 'Corpus found the relevant source clause, but it has not yet proved a specific comparison point. The clause stays out of the normal comparison until that detail is extracted.';
       if (item.item_kind === 'REVIEW_ONLY_NO_NORMAL_ROW') return 'Corpus proposes not to show this as a normal comparison item because a required legal fact is missing or unclear.';
       if (item.item_kind === 'PARSER_AMBIGUITY') return 'Corpus found that the numbering could be read in more than one way. It flags the issue and blocks only a comparison that depends on that reading.';
       return item.expanded_row || item.compact_row;

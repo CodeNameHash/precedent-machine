@@ -52,7 +52,7 @@ test('M2 repairs an orphaned Lilly / Verve annex limb without changing authored 
   assert.ok(index.diagnostics.some((entry) => entry.diagnostic_type === 'NODE_COLLISION_DROPPED'));
 });
 
-test('M7 deterministic additive path produces a complete source-backed row without a model', () => {
+test('M7 deterministic additive path identifies source without pretending it proved a comparison point', () => {
   const structuralPolicy = readJson(`${BASE}/control/structural-policy.json`);
   const semanticPolicy = readJson(`${BASE}/control/semantic-policy.json`);
   const viewPolicy = readJson(`${BASE}/control/m6-view-policy.json`);
@@ -91,12 +91,10 @@ test('M7 deterministic additive path produces a complete source-backed row witho
     m5_correction: { semantic_projection_collection: 'compound_propositions' },
   };
   const projection = projectAgreement(corrected, viewPolicy);
-  assert.ok(projection.counts.normal_row_count >= 1);
-  assert.ok(projection.rows.every((row) => {
-    const source = row.citations.map((citation) => citation.exact_text).join('\n\n').replace(/\s+/g, ' ').trim();
-    const expanded = row.fields.find((field) => field.field_key === 'expanded_text').value.replace(/\s+/g, ' ').trim();
-    return source !== expanded;
-  }), 'comparison rows must not repeat source excerpts');
+  assert.equal(projection.counts.normal_row_count, 0);
+  assert.ok(projection.counts.review_row_count >= 1);
+  assert.ok(projection.review_rows.every((row) =>
+    row.review_reason === 'SOURCE_PROVISION_IDENTIFIED_BUT_SPECIFIC_COMPARISON_POINT_NOT_YET_PROVED'));
   assert.equal(projection.projection_state, 'SHADOW_ONLY_NOT_SERVED');
 });
 

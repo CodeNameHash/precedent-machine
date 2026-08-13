@@ -91,6 +91,41 @@ test('partial propositions use the review lane and never a normal row', () => {
   assert.equal(review.review_state, 'REVIEWABLE_PARTIAL_NOT_A_COMPLETE_LEGAL_ANSWER');
 });
 
+test('a generic M7 source provision stays in review until a comparison point is proved', () => {
+  const analysis = json(resolve(ROOT, 'shadow/m5-correction/analysis/3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb.agreement-analysis.json'));
+  const altered = structuredClone(analysis);
+  const target = altered.compound_propositions[0];
+  target.claim_definition_keys = ['M7_DETERMINISTIC_EMPLOYEE_MATTERS_SOURCE_PROVISION'];
+  target.roles.LEGAL_EFFECT_OR_MECHANIC = [{
+    assertion_kind: 'M7_DETERMINISTIC_SOURCE_PROVISION',
+    claim_definition_key: 'M7_DETERMINISTIC_EMPLOYEE_MATTERS_SOURCE_PROVISION',
+  }];
+  const projection = projectAgreement(altered, policy());
+  assert.equal(projection.rows.some((row) => row.source_compound_proposition_id === target.compound_proposition_id), false);
+  const review = projection.review_rows.find((row) => row.source_compound_proposition_id === target.compound_proposition_id);
+  assert.ok(review);
+  assert.equal(review.review_reason, 'SOURCE_PROVISION_IDENTIFIED_BUT_SPECIFIC_COMPARISON_POINT_NOT_YET_PROVED');
+  assert.ok(review.missing_required_roles.includes('COMPARISON_POINT_DETAIL'));
+});
+
+test('a classified M7 representation topic is a specific comparison point', () => {
+  const analysis = json(resolve(ROOT, 'shadow/m5-correction/analysis/3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb.agreement-analysis.json'));
+  const altered = structuredClone(analysis);
+  const target = altered.compound_propositions[0];
+  target.family_key = 'REPRESENTATIONS';
+  target.claim_definition_keys = ['M7_DETERMINISTIC_REPRESENTATIONS_SOURCE_PROVISION'];
+  target.roles.LEGAL_EFFECT_OR_MECHANIC = [{
+    assertion_kind: 'M7_DETERMINISTIC_SOURCE_PROVISION',
+    claim_definition_key: 'M7_DETERMINISTIC_REPRESENTATIONS_SOURCE_PROVISION',
+  }];
+  target.roles.MEMBER_FACTS[0].attributes.representation_topics = ['CAPITALISATION'];
+  const projection = projectAgreement(altered, policy());
+  const row = projection.rows.find((entry) => entry.source_compound_proposition_id === target.compound_proposition_id);
+  assert.ok(row);
+  const expanded = row.fields.find((field) => field.field_key === 'expanded_text').value;
+  assert.match(expanded, /^Comparison point: Representation: Capitalisation/);
+});
+
 test('Capitalisation remains parked and publication remains disabled', () => {
   const viewPolicy = policy();
   const capitalisation = viewPolicy.family_display_policies.find((entry) => entry.family_key === 'CAPITALISATION');
