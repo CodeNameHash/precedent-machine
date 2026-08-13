@@ -21,6 +21,7 @@ const {
   SELECTION_MODES,
   applySelectionModeGate,
   selectFamilySections,
+  statesNoConflicts,
 } = require('../lib/canonical-v2/m7-deterministic-generalisation');
 const { projectAgreement, viewPolicyFor } = require('../lib/canonical-v2/agreement-projection');
 
@@ -195,15 +196,15 @@ test('the gate routes to review through the same door partials already use', () 
 
 // --- family-specific selection rules -----------------------------------------
 
-test('REPRESENTATIONS binds the organisation and existence representation', () => {
+test('REPRESENTATIONS binds the no-conflicts representation', () => {
   const order = familyOrder();
   for (const index of indexes()) {
     const binding = selectFamilySections(index, order)
       .find((entry) => entry.family_key === 'REPRESENTATIONS');
     const text = Buffer.from(index.source_binding.canonical_text, 'utf8')
       .subarray(binding.source_span.start_byte, binding.source_span.end_byte).toString('utf8');
-    assert.match(text, /\b(?:duly (?:organi[sz]ed|incorporated|formed)|validly existing|good standing)\b/i,
-      `${index.source_binding.deal} did not bind an organisation/existence representation`);
+    assert.ok(statesNoConflicts(text),
+      `${index.source_binding.deal} did not bind a no-conflicts representation`);
     assert.equal(binding.selection_mode, SELECTION_MODES.AUTHORED_UNIT_MATCH);
     assert.equal(binding.review_required_reason, null);
   }
@@ -313,21 +314,19 @@ function unitText(index, unit) {
 
 test('a container states as many rules as it has sentences', () => {
   const order = familyOrder();
-  const counts = {};
   let total = 0;
   for (const index of indexes()) {
     const binding = selectFamilySections(index, order)
       .find((entry) => entry.family_key === 'REPRESENTATIONS');
     assert.ok(binding.authored_units.length >= 1, 'a bound family states at least one rule');
-    counts[index.source_binding.deal] = binding.authored_units.length;
     total += binding.authored_units.length;
   }
-  // modiv's article is "…OF THE COMPANY PARTIES" and represents separately for
-  // the Company, the Partnership, every other Subsidiary, and qualification to
-  // do business. Binding one unit kept only the first of the four.
-  assert.equal(counts.modiv, 4, 'modiv states four organisation representations');
-  assert.equal(counts.topbuild, 2, 'topbuild represents for the Company and its Subsidiaries');
-  assert.equal(total, 11);
+  // Every agreement here writes no-conflicts as a single formula covering all
+  // the obligated entities, so the per-sentence machinery yields one unit each.
+  // It still matters: it is what keeps a sub-heading out of the rule, and what
+  // would carry modiv's Company / Partnership / Subsidiary split if the bound
+  // representation were written per entity, as organisation and existence is.
+  assert.equal(total, 7);
 });
 
 test('no rule text opens with a sub-heading label', () => {
@@ -348,13 +347,25 @@ test('every unit states the representation its container was selected for', () =
     const binding = selectFamilySections(index, order)
       .find((entry) => entry.family_key === 'REPRESENTATIONS');
     for (const unit of binding.authored_units) {
-      assert.match(unitText(index, unit),
-        /\b(?:duly (?:organi[sz]ed|incorporated|formed)|validly existing|good standing)\b/i,
-        // TopBuild's organisation limb runs on into an MAE carve-out and an
-        // "Affiliate" definition; neither is a representation.
+      // A container can be wider than the provision that matched it, so units
+      // are filtered by the same test that selected it.
+      assert.ok(statesNoConflicts(unitText(index, unit)),
         `off-topic sentence bound as a representation: ${unitText(index, unit).slice(0, 90)}`);
     }
   }
+});
+
+test('a chapeau that states the rule is not treated as a disclosure chapeau', () => {
+  const order = familyOrder();
+  const metsera = indexes().find((index) => index.source_binding.deal === 'metsera');
+  const binding = selectFamilySections(metsera, order)
+    .find((entry) => entry.family_key === 'REPRESENTATIONS');
+  // metsera writes no-conflicts as a chapeau introducing enumerated limbs.
+  assert.equal(binding.authored_units[0].node_kind, 'CHAPEAU');
+  assert.equal(binding.review_required_reason, null,
+    'an operative chapeau states a rule and must not be routed to review');
+  assert.ok(binding.context_chapeau_node_occurrence_id,
+    'it still sits under the disclosure chapeau, which stays linked as context');
 });
 
 test('the container and its chapeau stay reachable as evidence', () => {
