@@ -12,6 +12,7 @@ const { adaptCompoundFamily, policyForFamily } = require('../lib/canonical-v2/fa
 const { projectAgreement } = require('../lib/canonical-v2/agreement-projection');
 const {
   applyAmbiguityGate,
+  applySelectionModeGate,
   buildBaseAnalysis,
   deriveSemanticPolicy,
   selectFamilySections,
@@ -73,8 +74,11 @@ function validateAuthority(authority) {
   }
 }
 
-function updateAdapterForAmbiguity(index, result) {
-  const propositions = applyAmbiguityGate(index, result.propositions);
+function updateAdapterForGates(index, selectedInputs, result) {
+  const propositions = applySelectionModeGate(
+    selectedInputs,
+    applyAmbiguityGate(index, result.propositions),
+  );
   const stateByClaim = new Map(propositions.flatMap((proposition) =>
     proposition.member_analysis_claim_ids.map((id) => [id, proposition])));
   const memberLedger = result.member_ledger.map((entry) => {
@@ -206,7 +210,7 @@ for (const agreement of manifest.agreements) {
   for (const family of familyOrder) {
     const policy = policyForFamily(family.family_key, family.wave);
     const rawResult = adaptCompoundFamily(baseAnalysis, index, context, policy);
-    const result = updateAdapterForAmbiguity(index, rawResult);
+    const result = updateAdapterForGates(index, selectedInputs, rawResult);
     familyResults.push(result);
     allBindings.push(writeJson(`${agreementRoot}/m5/families/${String(family.ordinal).padStart(2, '0')}-${family.family_key}.json`, result));
   }
