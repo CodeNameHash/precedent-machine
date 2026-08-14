@@ -99,17 +99,22 @@ M9 stage changes the current selector.
 The architecture review and M0 to M4 are complete. Their evidence and commits
 are in `COMPLETED.md`.
 
-Ben authorised M5, M6 and M7. Those stages ran locally. M6 produced 1,111
-complete shadow comparison rows. M7 admitted three additional agreements and
-created a 50-item lawyer-review packet. Ben then found that the comparison text
-was too close to the source clause. A first row correction ran, but a second
-review found over-broad actor text and one wrong source-unit match.
+Ben authorised M5, M6 and M7. Those stages ran locally. The recovered M5
+correction labelled 1,111 shadow propositions complete, and M6 projected 1,111
+normal rows. M7 admitted three additional agreements and created a fixed
+50-item lawyer-review packet.
 
-The local repository then moved into iCloud Drive and became unavailable. The
-exact M4 base commit is recovered. Fourteen M6-M7 files are recovered on branch
-`codex/recover-m7-20260812`. The remaining M5 inputs are still required before
-the row correction can be rebuilt and verified. The dated handover at
-`docs/codex-program/notes/HANDOFF-2026-08-12.md` is the recovery work order.
+Ben completed that review on 14 August 2026. He marked 19 items correct and 31
+incorrect. Six items marked correct also contain a substantive missing-law
+note, and one contains a page-number artefact. The M7 gate is
+`FAILED_RETURN_AFFECTED_ITEM_TYPES_FOR_REPAIR`. Only 12 items are clean
+regression controls. The correction's definition of complete is not accepted.
+
+The repair must return to the M5-M6 semantic seam. The proposed work order is
+`docs/codex-program/notes/M7-CORE-SEMANTIC-REPAIR-PLAN-2026-08-14.md`. The exact
+questions, source text, failed cards and Ben answers are in
+`docs/codex-program/notes/M7-LAWYER-REVIEW-QUESTIONS-AND-ANSWERS-2026-08-14.md`.
+Both documents await adversarial review before implementation authority.
 
 M8 is not authorised. Do not start M8 while recovery or M7 legal review is
 open.
@@ -261,9 +266,9 @@ Analysis does not start from a detached evidence line.
 | M2 | Complete | Seven sealed shadow `AgreementIndex` files, with exact source and authored-block trees. |
 | M3 | Complete | Provenanced context, references, definitions and party topology. |
 | M4 | Complete | Base AgreementAnalysis, required-role validator and resolution-set diff. |
-| M5 | Recovery open | The local run completed, but its uncommitted inputs must be recovered before verification. |
-| M6 | Correction recovery open | The recovered receipt records 1,111 complete rows. Rebuild after M5 recovery. |
-| M7 | Lawyer review paused | Ten-agreement output and a 50-item packet exist. The comparison-text correction is not accepted. |
+| M5 | Ran; successor repair required | The correction bypassed the sealed subtype schemas and accepted coarse role buckets as complete. Its 1,111 complete labels are not legally accepted. |
+| M6 | Ran; successor repair required | The 1,111 shadow rows are evidence only. Projection performed legal inference and did not prove zero material omissions. |
+| M7 | Failed lawyer review | Ben completed the fixed 50-item review: 19 correct, 31 incorrect, six substantive qualified passes and one source artefact. Return affected classes to M5-M6. |
 | M8 | Not authorised; locked readiness only | Phase B packet, no call. Optional for M9. |
 | M9 | Not authorised | Certified shadow candidate and rollback proof. |
 | M10 | Separate authority required | `PRIVATE_INTERNAL_EXTRACTOR_ACTIVE`. |
