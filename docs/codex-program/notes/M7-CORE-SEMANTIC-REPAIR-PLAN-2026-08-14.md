@@ -2,8 +2,11 @@
 
 **Date:** 14 August 2026
 
-**State:** Amended after Fable's adversarial review. Targeted second review
-passed. Awaiting Ben adoption and explicit bootstrap and Work 1-7 authorities.
+**State:** Amended after Fable's adversarial review. The amendment-integrity
+recheck completed. Fable then verified that all 22 plan dispositions are
+genuine, subject to the two document-level conditions recorded in section 13.
+This is not implementation acceptance. Awaiting Ben adoption and explicit
+bootstrap and Work 1-7 authorities.
 
 **Adversarial review:**
 [M7-CORE-SEMANTIC-REPAIR-PLAN-ADVERSARIAL-REVIEW-2026-08-14.md](./M7-CORE-SEMANTIC-REPAIR-PLAN-ADVERSARIAL-REVIEW-2026-08-14.md),
@@ -153,15 +156,22 @@ Every V2 rule and receipt binds all six inputs to `consolidateAnalysis`:
 6. the approved structure-disposition set.
 
 Each binding records path, schema, record ID where present, byte length and
-SHA-256. A separate sealed candidate registration binds the compiler,
-validator, runner, tests, all six input sets and allowed output root. The
+SHA-256. Before a Work 2-6 run can create evidence used by a later gate, an
+immutable `CANDIDATE_PENDING_REVIEW` registration must exist outside the
+compiler. It binds the exact compiler, deterministic generator, validators,
+runners, tests, all six input sets, profile set, structure-disposition set,
+approved M6 view policy, predecessor receipts and allowed output root by path,
+byte length and SHA-256.
+Every Work 2-6 output and receipt binds that candidate-registration ID. A
+change to any bound byte creates a new candidate-registration ID. The
 compiler's own stamped digest is not proof. An independent verifier recomputes
 the registered bytes before any receipt can pass.
 
 The V1 analysis and 1,111-row projection remain historical evidence. They must
 be registered as `FAILED_HUMAN_REVIEW_NOT_CONSUMABLE`. The M7 V2 projection
-stage accepts only a fully bound `AGREEMENT_ANALYSIS/V2`. Any retained V1 runner is
-legacy-verification-only and cannot feed V2 or a future serving path.
+stage accepts only a fully bound `AGREEMENT_ANALYSIS/V2`. Any retained V1
+runner is legacy-verification-only and cannot feed V2 or a future serving
+path.
 
 ## 2. Verified but not yet sealed review result
 
@@ -526,6 +536,15 @@ Every profile also contains:
 - the Ben ruling for each legal-text exclusion, no-comparison rule or
   family-wide no-output rule.
 
+Each family profile set owns exactly one digest-bound, versioned subtype-tree
+declaration. Each subtype profile references that declaration's ID and digest.
+The declaration names every known output-relevant subtype and parent-child
+edge in the approved calibration and adversarial-fixture scope, marks each
+node `ABSTRACT` or `TERMINAL_OUTPUT_PERMITTED`, and states whether the tree is
+`TREE_OUTPUT_COMPLETE`. Conflicting, missing or stale profile references fail
+the profile set. Any `GENERIC_LEVEL_OUTPUT_APPROVED` exception binds an exact
+Ben ruling, profile-set version and covered occurrence class.
+
 No profile may omit an express actor, subject, legal effect, operative object,
 condition, exception, timing term, standard, threshold, materiality qualifier,
 scope qualifier or definition or reference needed for meaning. This is the
@@ -546,8 +565,20 @@ candidates for every bound authored unit. Deterministic pruning is allowed
 only under an approved rule with negative tests.
 
 Within one family, an ancestor and descendant resolve to the descendant only
-when the descendant's own test passes. A generic ancestor cannot produce a
-normal row when registered child profiles exist but no child is proved.
+when the descendant's own test passes. A generic ancestor can produce
+`NORMAL` or `APPROVED_LIMITED` output only when either:
+
+1. the exact approved profile-set version declares its governed subtype tree
+   `TREE_OUTPUT_COMPLETE`, marks that ancestor `TERMINAL_OUTPUT_PERMITTED` and
+   proves that no more-specific descendant matches; or
+2. Ben expressly approves generic-level output for the named ancestor, exact
+   profile-set version, covered occurrence class, legal reason, inclusion
+   fixtures and exclusion fixtures under `GENERIC_LEVEL_OUTPUT_APPROVED`, and
+   that ruling marks the named ancestor `TERMINAL_OUTPUT_PERMITTED` for only
+   that covered occurrence class.
+
+The presence or absence of registered child profiles is not proof. If neither
+route passes, an ancestor-only match is `INCOMPLETE` and `REVIEW_ONLY`.
 Matching siblings or overlapping families for the same effect are ambiguous.
 Profiles for separate effects create linked child rules. A cross-family change
 creates a typed `FAMILY_CORRECTION` with old family, new family, proof, rule ID
@@ -631,8 +662,8 @@ The allowed combinations are:
 
 | Extraction | Source | Extra authority | Output |
 |---|---|---|---|
-| `COMPLETE` | `SUFFICIENT` | None | `NORMAL` |
-| `COMPLETE` | `SOURCE_LIMITED` | Exact lawyer ruling and absence-proof record | `APPROVED_LIMITED` |
+| `COMPLETE` | `SUFFICIENT` | Approved most-specific terminal profile; section 5 generic-ancestor gate where applicable | `NORMAL` |
+| `COMPLETE` | `SOURCE_LIMITED` | Same profile gate; exact lawyer ruling and absence-proof record | `APPROVED_LIMITED` |
 | `INCOMPLETE` | Any | Not applicable | `REVIEW_ONLY` |
 | `AMBIGUOUS` | Any | Not applicable | `REVIEW_ONLY` |
 | Any | `DRAFTING_AMBIGUOUS` | Unresolved | `REVIEW_ONLY` |
@@ -692,12 +723,17 @@ M5 may return `COMPLETE` only when all of these tests pass:
 14. The deterministic generator, compiler and validators pass independently.
 15. The same complete bound inputs produce byte-identical rules and IDs on a
     repeated run.
-16. The rule binds the exact compiler, deterministic generator, validators,
-    all six inputs, profile set, structure-disposition set and predecessor
-    receipts registered outside the compiler.
-17. A dependency-light independent verifier recomputes every registered digest
+16. The rule binds one immutable `CANDIDATE_PENDING_REVIEW` registration ID
+    created outside the compiler. That registration binds the exact compiler,
+    deterministic generator, validators, runners, tests, all six inputs,
+    profile set, structure-disposition set, approved M6 view policy,
+    predecessor receipts and allowed output root.
+17. Every Work 2-6 output and receipt binds that same registration ID. A
+    changed candidate-bound byte creates a new registration and invalidates
+    the prior candidate's review evidence.
+18. A dependency-light independent verifier recomputes every registered digest
     and rejects any missing, extra, stale or changed binding.
-18. The result passes invariant validation before it leaves the module.
+19. The result passes invariant validation before it leaves the module.
 
 Expected legal limits return typed results. They do not crash the run. Input,
 identity, source-hash, authority and impossible-state defects stop the run.
@@ -882,6 +918,15 @@ expressly permits it.
 - Add profile positive, near-negative, wrong-family, wrong-subtype and
   declared-exclusion fixtures. Item 41 is the positive no-comparison fixture;
   item 15 is a required negative fixture.
+- Add a rollout-window fixture in which a generic ancestor matches while a
+  known subtype is not yet registered. It must remain `REVIEW_ONLY` unless the
+  exact profile set is `TREE_OUTPUT_COMPLETE` for that scope and marks the
+  ancestor `TERMINAL_OUTPUT_PERMITTED`, or carries exact Ben
+  `GENERIC_LEVEL_OUTPUT_APPROVED` authority. Prove that an absent, false,
+  stale or profile-digest-mismatched tree declaration, an abstract ancestor
+  that has not been made terminal by the applicable ruling, and an uncovered
+  Ben ruling each return `REVIEW_ONLY`. The absence of a child profile cannot
+  produce a generic normal row.
 - Add M6 truncation, label-swap, compact-floor and per-layout reconciliation
   negatives.
 - Prove that every governed no-output occurrence receives the exact `NO_OUTPUT`
@@ -928,9 +973,10 @@ expressly permits it.
 - Use deterministic compilation only. A resistant unit becomes review-only;
   it never triggers or waits for a model.
 - Bind the compiler, deterministic generator, validators, all six input sets,
-  profile set, structure-disposition set, predecessor receipts and validation
-  result under the separately sealed registration. Reject any unbound or
-  bypassed path.
+  profile set, structure-disposition set, approved M6 view policy, predecessor
+  receipts and validation result under the immutable
+  `CANDIDATE_PENDING_REVIEW` registration. Reject any unbound or bypassed path.
+  Every Work 2-6 output binds its registration ID.
 
 Do not expose 25 family functions or parser helpers to callers. Family logic
 stays behind the compiler interface.
@@ -968,7 +1014,11 @@ Do not edit the sealed V1 profiles in place. Create V2 profiles. Ben must
 approve the legal field contract for each subtype before that subtype can
 produce a normal row. Each approval includes the positive and negative
 fixtures, captured dimensions, finite excluded-dimension declaration,
-legal-text exclusions, no-comparison rules and family-correction rules.
+legal-text exclusions, no-comparison rules, family-correction rules and a
+digest-bound subtype-tree declaration with node terminality for every
+ancestor. A knowingly incomplete tree cannot emit generic-level normal output
+without exact Ben approval for the profile-set version and covered occurrence
+class that marks the named ancestor `TERMINAL_OUTPUT_PERMITTED` for that class.
 
 Before building new termination-fee timing types, inspect and reuse the
 graveyarded V3/V4 typed payment-timing schemas where they satisfy this V2
@@ -991,6 +1041,8 @@ exact source plus an approved role schema is the oracle.
 
 ### Work 5: replay the fixed 50
 
+- Bind the V2 review packet and decision ledger to the immutable
+  `CANDIDATE_PENDING_REVIEW` registration ID and exact output set shown to Ben.
 - Compare the replay field by field against the fixed-sample identity manifest.
   Fail on a missing, added, reordered or remapped item.
 - Map each old item to its complete linked M7 V2 rule set, not one
@@ -1013,6 +1065,8 @@ exact source plus an approved role schema is the oracle.
 
 ### Work 6: audit the whole affected corpus
 
+- Bind the corpus audit and every audit output to the same
+  `CANDIDATE_PENDING_REVIEW` registration ID used in Work 5.
 - Check every row touched by a corrected rule, not only the sample.
 - Recheck all 244 known-loss cases.
 - Recheck all 69 historical limb cases.
@@ -1042,7 +1096,15 @@ exact source plus an approved role schema is the oracle.
 - Ben reviews all 50 fixed cards, changed legal results, family corrections,
   legal-text exclusions, no-comparison tests, family-wide no-output policies
   and per-family disposition counts.
-- Register the exact approved candidate only after technical and legal review.
+- Work 7 does not create or rewrite the candidate registration. The independent
+  verifier proves that the proposed final candidate is byte-identical to the
+  candidate registered for Work 5 and audited in Work 6. Technical and legal
+  approval promote that same registration ID from `CANDIDATE_PENDING_REVIEW`
+  to sealed.
+- Any change to a candidate-bound byte after Work 5 begins invalidates the Work
+  5 decisions, creates a new candidate-registration ID and reopens the full
+  fixed-50 Work 5 review. If the change occurs after Work 6, rerun Work 6 for
+  the new candidate before Work 7.
 - Seal M7 V2 repair receipts only after both gates pass.
 - Do not start M8.
 
@@ -1148,6 +1210,13 @@ remain only a profile-design or review aid.
 25. Every governed no-output occurrence has one exact `NO_OUTPUT` record after
     all-family classification. It cannot disappear, become `NO_COMPARISON` or
     suppress a compatible cross-family normal rule.
+26. Work 5, Work 6, Work 7 and the final M7 V2 receipt bind the same
+    candidate-registration ID. A one-byte candidate change creates a new ID,
+    invalidates the prior review and reopens Work 5.
+27. A generic ancestor cannot emit `NORMAL` or `APPROVED_LIMITED` during an
+    incomplete subtype-tree rollout. It can do so only under
+    `TREE_OUTPUT_COMPLETE` or exact `GENERIC_LEVEL_OUTPUT_APPROVED` authority
+    that marks the named ancestor terminal for the covered occurrence class.
 
 ## 11. Final acceptance gate
 
@@ -1165,6 +1234,9 @@ M7 can pass only when:
 - items 2, 4 and 45 have fresh answers with their record conflict visible;
 - all 12 controls receive fresh Ben approval under the defined non-regression
   test;
+- the candidate-registration ID bound by Work 5, Work 6, Work 7 and the final
+  M7 V2 receipt is identical. Any candidate-bound byte change created a new
+  registration and reopened Work 5 before approval;
 - the page-number span is governed as `SOURCE_ARTEFACT`, absent from legal
   facts and display, and the sealed source bytes and offsets are unchanged;
 - no normal row has the wrong family or subtype;
@@ -1194,9 +1266,19 @@ M7 can pass only when:
 - all 25 families have approved V2 classification profile sets. A family with
   intentionally suppressed occurrences also has an expressly Ben-approved
   classification-only no-output policy;
-- every rule and receipt binds the registered compiler, deterministic
-  generator, validators, all six input sets, profile set, overlay set and
-  predecessor receipts;
+- every family profile set has a digest-bound subtype-tree declaration before
+  use. Every generic normal or approved-limited result binds either the exact
+  `TREE_OUTPUT_COMPLETE` declaration marking that ancestor
+  `TERMINAL_OUTPUT_PERMITTED`, or exact Ben `GENERIC_LEVEL_OUTPUT_APPROVED`
+  authority for its profile-set version and covered occurrence class that
+  marks the named ancestor `TERMINAL_OUTPUT_PERMITTED` for that class. No
+  incomplete tree emitted consumable output outside the exact class covered by
+  `GENERIC_LEVEL_OUTPUT_APPROVED`, and no abstract ancestor emitted consumable
+  output;
+- every rule and receipt binds the immutable candidate-registration ID and its
+  registered compiler, deterministic generator, validators, runners, tests,
+  all six input sets, profile set, overlay set, approved M6 view policy,
+  predecessor receipts and allowed output root;
 - the same complete bound inputs reproduce byte-identical rules;
 - the V1 output set is fully superseded and has zero active M7 V2 consumer
   routes;
@@ -1235,11 +1317,11 @@ Stop the whole repair only if:
 - an unauthorised effect occurs; or
 - the repair would require M8.
 
-## 13. Questions for Fable's second adversarial review
+## 13. Fable's document-level adversarial review
 
-Fable should review only this amendment and try to disprove it, not polish it.
-Re-run the original seven attack routes and verify every section 14
-disposition.
+The review instruction was to test only this amendment and try to disprove it,
+not polish it. The review repeated the original attack routes, checked every
+section 14 disposition and used these questions:
 
 1. Can any catch-all source value still make an incomplete rule look complete?
 2. Can a heading, cross-reference or first-in-document fallback still select
@@ -1270,6 +1352,27 @@ disposition.
 18. Does deterministic Work 0-7 have any model-call route, and is the deferred
     experiment clearly outside current authority?
 
+### Recorded document-level result
+
+Fable verified all 22 dispositions in section 14 as genuine. Fable also
+confirmed that the correction to F2 is accurate: the sealed programme-ruling
+record already contains all three rulings and the Q2 clarification. This was a
+review of the amended plan text, not an implementation, evidence or legal-
+acceptance gate.
+
+| Question | Result | Condition |
+|---|---|---|
+| 1-12 | Plan disposition verified | Attack the implemented candidate again in Work 7. |
+| 13 | Closed at plan level | Registration continuity: any candidate-bound byte change after Work 5 creates a new registration and reopens Work 5. |
+| 14 | Closed at plan level | Apply the stated effect-ledger and suppression controls. |
+| 15 | Closed at plan level | The family subtype tree must be output-complete, or Ben must expressly approve generic-level output and terminality for the exact scope. |
+| 16 | Closed at plan level | Apply render-binding validation. |
+| 17 | Closed at plan level | Apply the fixed-sample and fresh-decision rules. |
+| 18 | Closed at plan level | Keep Work 0-7 model-free and the experiment separately locked. |
+
+This result does not adopt the plan, authorise Work 0 or Work 1-7, permit a
+model call, start M8 or satisfy the future Work 7 gate.
+
 ## 14. Disposition of Fable's findings
 
 Every material finding is accepted or qualified. None is ignored.
@@ -1278,7 +1381,7 @@ Every material finding is accepted or qualified. None is ignored.
 |---|---|---|
 | F1 | Accept | Work 0 creates the repair evidence root and fixed-sample manifest before V2 runs. |
 | F2 | Qualify | The premise was incomplete. The three rulings already exist in a sealed record and receipt. Section 4 cites them; Work 0 re-binds rather than replaces them. |
-| F3 | Accept | Sections 1, 7, 9 and 11 bind all six inputs plus code, profiles, overlays and predecessor receipts under independent recomputation. |
+| F3 | Accept | Sections 1, 7, 9 and 11 bind all six inputs plus code, profiles, overlays and predecessor receipts under independent recomputation. One immutable candidate-registration ID continues through Works 5-7 and the final receipt. |
 | F4 | Qualify | Section 3.6 defines a closed overlay set and only item 39. The other 22 ambiguities may be inspected, not silently overlaid. |
 | F5 | Accept | Work 0 supersedes the historical 1,111 rows; M6 V2 rejects V1 and no active M7 V2 route consumes it. |
 | F6 | Qualify | Sealed M3/M4 receipts already exist. Work 0 corrects the stale authority summary and binds those receipts without inventing a new historical seal. |
@@ -1290,7 +1393,7 @@ Every material finding is accepted or qualified. None is ignored.
 | F12 | Accept | Source limitation is per field over a complete digest-bound source closure and all required dependencies. |
 | F13 | Qualify | Missing context becomes `CONTEXT_EDGE_UNPROVED`. M3 stays sealed; any later context disposition needs separate authority. |
 | F14 | Accept | The old unresolved-count limit is removed. Input occurrence identity stays fixed; review-only counts may rise and are reported. |
-| F15 | Accept | All 25 families are candidates, compatibility is defined, generic ancestors cannot hide missing children and family corrections need legal rulings. |
+| F15 | Accept | All 25 families are candidates, compatibility is defined, and family corrections need legal rulings. Generic output also requires an output-complete subtype tree or exact Ben approval for its scope. |
 | F16 | Accept | No-output is a distinct occurrence disposition after all-family classification. It has a full governed record, cannot replace no-comparison and cannot defeat a compatible cross-family normal rule. |
 | F17 | Accept | Section 5.2 expands and versions the operator vocabulary and adds determinism and convergence tests. |
 | F18 | Qualify | Section 5.2 defines a stronger family-neutral semantic fact key and validated ownership links. Existing sealed ruling 2 remains controlling. |
