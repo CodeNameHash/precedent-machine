@@ -121,10 +121,15 @@ qualifies all 22. An amendment-integrity recheck completed. Fable then verified
 all 22 plan dispositions and identified two final document-level conditions:
 candidate registration must remain byte-identical from Work 5 through Work 7,
 and generic output needs an output-complete subtype tree or exact Ben approval.
-Both conditions are now operative plan gates. This is not implementation
-acceptance. Ben must adopt the plan and approve a bootstrap authority for Work
-0 first. After the Work 0 evidence root passes, Ben must approve a separate
-evidence-root-bound authority for Work 1-7.
+Both conditions are now operative plan gates. Ben adopted the amended M7 V2
+repair plan and confirmed the exact bootstrap authority for Work 0 only. Work
+0 passed under
+`evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-evidence-root.json`.
+The receipt binds the failed review, the fixed 50-item sample, the 38 repair
+items, the 12 controls, the sealed programme rulings and the sealed M3 and M4
+trust roots. Work 0 preserves that evidence. It does not repair or accept M7.
+Work 1 to Work 7 remain locked. Ben must give a separate authority that binds
+the completed Work 0 evidence root before any Work 1 command or write.
 
 The amended M7 V2 plan remains deterministic. Model calls remain zero. A
 model-proposed shadow experiment is recorded only as a later decision path and
@@ -133,8 +138,8 @@ authority before any call. Experiment output remains isolated and
 non-consumable. A later adoption decision would require a blind sample and a
 further programme amendment.
 
-M8 is not authorised. Do not start M8 while recovery or M7 legal review is
-open.
+M8 is not authorised and remains locked. Do not start M8 while M7 has a failed
+legal-review gate or while the M7 V2 repair is incomplete.
 
 The following controls apply through M9:
 
@@ -285,7 +290,7 @@ Analysis does not start from a detached evidence line.
 | M4 | Complete | Base AgreementAnalysis, required-role validator and resolution-set diff. |
 | M5 | Ran; M7 V2 repair required | The correction bypassed the sealed subtype schemas and accepted coarse role buckets as complete. Its 1,111 complete labels are not legally accepted. |
 | M6 | Ran; M7 V2 repair required | The 1,111 shadow rows are evidence only. Projection performed legal inference and did not prove zero material omissions. |
-| M7 | Failed lawyer review; plan dispositions verified, implementation not accepted | Ben completed the fixed 50-item review: 19 correct, 31 incorrect, six substantive qualified passes and one source artefact. Fable verified all 22 amended dispositions and added two final document-level conditions, now incorporated. Ben adoption, Work 0 authority and later Work 1-7 authority are still required. No implementation authority yet. |
+| M7 | Failed lawyer review; Work 0 passed; Work 1-7 locked | Ben completed the fixed 50-item review: 19 correct and 31 incorrect. The repair baseline contains 38 repair items and 12 controls. Work 0 froze the evidence under its passing evidence-root receipt. M7 is not accepted. A separate evidence-root-bound authority is required before Work 1. |
 | M8 | Not authorised; locked readiness only | Phase B packet, no call. Optional for M9. |
 | M9 | Not authorised | Certified shadow candidate and rollback proof. |
 | M10 | Separate authority required | `PRIVATE_INTERNAL_EXTRACTOR_ACTIVE`. |
