@@ -57,7 +57,7 @@ The three repeated questions in this packet were:
 2. Review-only: `Is it correct to keep this item out of the normal comparison because an important fact is missing or unclear?`
 3. Parser: `Is it correct to flag this source structure and block only a comparison item that depends on the unclear wording?`
 
-The successor review must replace these broad questions with subtype-specific field questions.
+The V2 review must retain the broad legal-meaning question, add an explicit family-and-subtype question, and supplement both with subtype-specific field questions.
 
 ### 1. EMPLOYEE_MATTERS, SOURCE_TO_ROW
 
@@ -319,7 +319,7 @@ Key facts - what is important here is that it is doubel knowledge -y ouh ave to 
 
 **Required repair disposition**
 
-Add subtype-required fields and source coverage. The repaired rule must expose every material condition, exception, scope, party and timing term identified by Ben.
+Add subtype-required fields and source coverage. The repaired rule must expose every material condition, exception, scope, party and timing term identified by Ben. For this definition, preserve an `ALL_OF` relationship between the intentional act-or-omission branch and the knowledge-and-causation branch. The knowledge choice must scope over the stated material-breach causation alternatives. A flat list of intent and knowledge facts is not complete.
 
 ### 7. REPRESENTATIONS, SOURCE_TO_ROW
 
@@ -707,7 +707,7 @@ Correct but note you have a page number "3" in there
 
 **Required repair disposition**
 
-Remove the page-number artefact before semantic compilation and prove that exact legal text is unchanged.
+Cover the page-number span with a governed `SOURCE_ARTEFACT` non-modelled disposition. Keep the sealed canonical bytes and every downstream offset unchanged. Exclude only that approved span from legal facts and display.
 
 ### 16. DIVIDENDS, SOURCE_TO_ROW
 
@@ -1781,7 +1781,7 @@ this is a nesting number issues - there is a (i) inside of (B) which I assume yo
 
 **Required repair disposition**
 
-Scope numbering labels to their parent. Repeated (i) under a different parent must parse normally.
+Apply the governed M5 parent-scoping overlay to this exact ambiguity. Keep the M2 parser, bytes and ambiguity record unchanged.
 
 ### 40. CLOSING_CONDITIONS, REVIEW_ONLY_NO_NORMAL_ROW
 

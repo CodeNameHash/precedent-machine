@@ -110,11 +110,25 @@ note, and one contains a page-number artefact. The M7 gate is
 `FAILED_RETURN_AFFECTED_ITEM_TYPES_FOR_REPAIR`. Only 12 items are clean
 regression controls. The correction's definition of complete is not accepted.
 
-The repair must return to the M5-M6 semantic seam. The proposed work order is
+The repair must return to the M5-M6 semantic seam. The proposed repair plan is
 `docs/codex-program/notes/M7-CORE-SEMANTIC-REPAIR-PLAN-2026-08-14.md`. The exact
 questions, source text, failed cards and Ben answers are in
 `docs/codex-program/notes/M7-LAWYER-REVIEW-QUESTIONS-AND-ANSWERS-2026-08-14.md`.
-Both documents await adversarial review before implementation authority.
+Fable's independent review is in
+`docs/codex-program/notes/M7-CORE-SEMANTIC-REPAIR-PLAN-ADVERSARIAL-REVIEW-2026-08-14.md`.
+It found 22 material gaps in the first plan. The plan now incorporates or
+qualifies all 22, and a targeted second review passed. Neither the review nor
+the amended plan gives implementation authority. Ben must adopt the plan and
+approve a bootstrap authority for Work 0 first. After the Work 0 evidence root
+passes, Ben must approve a separate evidence-root-bound authority for Work
+1-7.
+
+The amended M7 V2 plan remains deterministic. Model calls remain zero. A
+model-proposed shadow experiment is recorded only as a later decision path and
+requires an explicit PLAN/Decision exception plus separate Ben experiment
+authority before any call. Experiment output remains isolated and
+non-consumable. A later adoption decision would require a blind sample and a
+further programme amendment.
 
 M8 is not authorised. Do not start M8 while recovery or M7 legal review is
 open.
@@ -266,9 +280,9 @@ Analysis does not start from a detached evidence line.
 | M2 | Complete | Seven sealed shadow `AgreementIndex` files, with exact source and authored-block trees. |
 | M3 | Complete | Provenanced context, references, definitions and party topology. |
 | M4 | Complete | Base AgreementAnalysis, required-role validator and resolution-set diff. |
-| M5 | Ran; successor repair required | The correction bypassed the sealed subtype schemas and accepted coarse role buckets as complete. Its 1,111 complete labels are not legally accepted. |
-| M6 | Ran; successor repair required | The 1,111 shadow rows are evidence only. Projection performed legal inference and did not prove zero material omissions. |
-| M7 | Failed lawyer review | Ben completed the fixed 50-item review: 19 correct, 31 incorrect, six substantive qualified passes and one source artefact. Return affected classes to M5-M6. |
+| M5 | Ran; M7 V2 repair required | The correction bypassed the sealed subtype schemas and accepted coarse role buckets as complete. Its 1,111 complete labels are not legally accepted. |
+| M6 | Ran; M7 V2 repair required | The 1,111 shadow rows are evidence only. Projection performed legal inference and did not prove zero material omissions. |
+| M7 | Failed lawyer review; amended repair plan passed targeted second review | Ben completed the fixed 50-item review: 19 correct, 31 incorrect, six substantive qualified passes and one source artefact. Fable found 22 plan gaps. All are addressed or qualified in the amended deterministic M5-M6 repair plan. Ben adoption, Work 0 authority and later Work 1-7 authority are still required. No implementation authority yet. |
 | M8 | Not authorised; locked readiness only | Phase B packet, no call. Optional for M9. |
 | M9 | Not authorised | Certified shadow candidate and rollback proof. |
 | M10 | Separate authority required | `PRIVATE_INTERNAL_EXTRACTOR_ACTIVE`. |
