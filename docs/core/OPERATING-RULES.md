@@ -34,14 +34,19 @@ and M4 is sealed by
 `evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json`.
 Those receipts and all sealed M0 to M4 artefacts must not change. The M7
 lawyer-review gate failed as `FAILED_RETURN_AFFECTED_ITEM_TYPES_FOR_REPAIR`.
-Ben adopted the M7 V2 repair plan and authorised Work 0 only. Work 0 passed
-under
+Ben adopted the M7 V2 repair plan. Work 0 passed under
 `evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-evidence-root.json`.
-That receipt freezes the failure evidence and repair inputs. It does not
-accept M7 and does not authorise repair implementation. Work 1 to Work 7, M8,
-Phase B and every model-call route remain locked. No selector, pin, baseline,
-database, product-data, serving, publication or external-route change is
-authorised.
+That receipt freezes the failure evidence and repair inputs. Ben then
+authorised deterministic Work 1 to Work 7 under
+`evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work1-7-authority.json`.
+That authority becomes usable only after its activation receipt passes, its
+exact activation file set is committed and the authorised branch push
+succeeds. The adopted V2 repair plan and this evidence-root-bound authority
+supersede the historical V1 M5 and M6 implementation directions for this
+repair only. They do not accept M7 or supply any reserved legal decision.
+M8, Phase B and every model-call route remain locked. No selector, pin,
+baseline, database, product-data, serving, publication or external-route
+change is authorised.
 
 Everything else stays prohibited regardless of those carve-outs:
 

@@ -122,14 +122,20 @@ all 22 plan dispositions and identified two final document-level conditions:
 candidate registration must remain byte-identical from Work 5 through Work 7,
 and generic output needs an output-complete subtype tree or exact Ben approval.
 Both conditions are now operative plan gates. Ben adopted the amended M7 V2
-repair plan and confirmed the exact bootstrap authority for Work 0 only. Work
-0 passed under
+repair plan and confirmed the bootstrap authority for Work 0. Work 0 passed
+under
 `evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-evidence-root.json`.
 The receipt binds the failed review, the fixed 50-item sample, the 38 repair
 items, the 12 controls, the sealed programme rulings and the sealed M3 and M4
 trust roots. Work 0 preserves that evidence. It does not repair or accept M7.
-Work 1 to Work 7 remain locked. Ben must give a separate authority that binds
-the completed Work 0 evidence root before any Work 1 command or write.
+Ben then authorised deterministic Work 1 to Work 7 under
+`evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work1-7-authority.json`.
+Work 1 starts only after the authority activation receipt passes, the exact
+activation set is committed and the authorised branch push succeeds. The
+adopted V2 repair plan and that evidence-root-bound authority supersede the
+historical V1 M5 and M6 implementation directions below for this repair only.
+They do not alter the sealed M0 to M4 contracts or supply a reserved legal
+decision.
 
 The amended M7 V2 plan remains deterministic. Model calls remain zero. A
 model-proposed shadow experiment is recorded only as a later decision path and
@@ -290,7 +296,7 @@ Analysis does not start from a detached evidence line.
 | M4 | Complete | Base AgreementAnalysis, required-role validator and resolution-set diff. |
 | M5 | Ran; M7 V2 repair required | The correction bypassed the sealed subtype schemas and accepted coarse role buckets as complete. Its 1,111 complete labels are not legally accepted. |
 | M6 | Ran; M7 V2 repair required | The 1,111 shadow rows are evidence only. Projection performed legal inference and did not prove zero material omissions. |
-| M7 | Failed lawyer review; Work 0 passed; Work 1-7 locked | Ben completed the fixed 50-item review: 19 correct and 31 incorrect. The repair baseline contains 38 repair items and 12 controls. Work 0 froze the evidence under its passing evidence-root receipt. M7 is not accepted. A separate evidence-root-bound authority is required before Work 1. |
+| M7 | Failed lawyer review; Work 0 passed; Work 1-7 authorised under activation gate | Ben completed the fixed 50-item review: 19 correct and 31 incorrect. The repair baseline contains 38 repair items and 12 controls. Work 0 froze the evidence under its passing evidence-root receipt. The V2 repair may run only after the Work 1-7 activation receipt passes and its exact commit is pushed. M7 is not accepted. |
 | M8 | Not authorised; locked readiness only | Phase B packet, no call. Optional for M9. |
 | M9 | Not authorised | Certified shadow candidate and rollback proof. |
 | M10 | Separate authority required | `PRIVATE_INTERNAL_EXTRACTOR_ACTIVE`. |
