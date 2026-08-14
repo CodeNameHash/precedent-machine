@@ -830,3 +830,67 @@ measurement of this pipeline was Ben's 50-card review. The plan's core move —
 making completeness a falsifiable, profile-bound, coverage-partitioned claim —
 is the right one; the amendments above exist to keep the V2 guarantees from
 becoming satisfiable by construction in their turn.
+
+---
+
+## 7. The generator question (auditor recommendation, recorded after Ben's query of 14 August 2026)
+
+Recorded here because it is in neither the plan nor findings F1-F22 beyond the
+gap noted in F22, and this programme's documented failure mode is losing
+unrecorded conclusions.
+
+**The gap.** The plan specifies what a complete V2 rule looks like and how it
+is validated. It never says how rules are *generated*. Two facts constrain
+that silently: model calls are fixed at zero through M9 (PLAN.md:124;
+Decision 18), so V2 compilation as authorised must be deterministic; and the
+plan's own state machine means clauses that resist deterministic compilation
+land `INCOMPLETE`/`REVIEW_ONLY` and stop their class under §12. The plan
+states neither the constraint nor its consequence.
+
+**Expectation to record.** The repair makes shallow extraction *visible*; it
+does not make extraction deeper. On the first honest V2 run a large share of
+the 1,111 rows should fall to `REVIEW_ONLY` — that is the system working. The
+open question is what closes that pile. Deterministic per-subtype compilation
+is expected to hold on stereotyped drafting (the MAE disproportionality
+formula, termination-fee amounts, match-period day counts) and to struggle on
+judgment-shaped compound provisions — the exact items Ben flagged hardest
+(2, 23, 31, 44, 47). The V1 shallowness was itself deterministic extraction
+(regex buckets); hand-encoding legal comprehension per subtype is the
+subtype-explosion cost the plan's own Q9 worries about, and the pressure it
+creates is F10 (thinned profiles).
+
+**Recommendation: model-proposed, deterministically verified.** The V2
+contract is generator-agnostic — every §7 invariant checks the output, not
+the producer. That is what makes model assistance safe *after* the amended
+validation layer exists, and only then:
+
+- **Deterministic and sealed, never a model:** unit bounding, M2 structure,
+  M3 context edges, the coverage / provenance / profile validators, the state
+  machine, rule identity, equivalence signatures.
+- **Model-proposed, under a narrow new authority:** effect enumeration,
+  subtype proposal, fact spans, expression-tree shape. Every proposal must
+  cite exact byte spans; the deterministic layer verifies each against sealed
+  text and the profile. A hallucinated fact fails span verification and the
+  rule lands `REVIEW_ONLY` — bad model output costs a review item, never a
+  silent wrong row.
+- **Governance:** bind the proposal-generator identity (model ID, prompt
+  digest) into the rule's governance block and successor receipts, extending
+  F3's amendment. Rule identity derives from verified content, so the F17
+  convergence tests apply unchanged.
+- **Ordering is the whole answer:** a model behind the V1 checks would have
+  produced 1,111 fluent wrong rows just the same. Validators first, generator
+  second.
+
+**Decision path.** Model calls are locked through M9 and the roadmap already
+anticipates a model extractor at M10 (`PRIVATE_INTERNAL_EXTRACTOR_ACTIVE`),
+so this is pulling a planned capability behind the new verification wall, not
+a rule change from nowhere. It requires an explicit Ben authority note and
+should start as an experiment, not a commitment: after Work 1's validators
+and the four archetype profiles exist, run both generators over the 38 repair
+items — deterministic-only versus model-proposed-deterministically-verified —
+shadow-only, non-serving, and put both result sets through the same Work 5
+replay in front of Ben. If the deterministic arm holds on the archetypes,
+nothing is lost; where it cannot reach the flagged items, the comparison
+shows exactly where the model belongs. The plan should be amended to state
+the generator constraint, this consequence, and this experiment as the
+decision mechanism; the decision itself is Ben's.
