@@ -6,7 +6,9 @@ const { resolve } = require('node:path');
 const test = require('node:test');
 
 const { canonicalJson, contentId, sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
-const { consolidateAnalysis } = require('../lib/canonical-v2/agreement-analysis-consolidation');
+const {
+  consolidateLegacyAnalysisV1,
+} = require('../lib/canonical-v2/agreement-analysis-consolidation');
 
 const ROOT = resolve(__dirname, '..');
 const MIGRATION = resolve(ROOT, 'evidence/canonical-v2/stage-2y-structure-migration');
@@ -69,7 +71,7 @@ test('consolidation accounts for every claim once and preserves immutable M4 mea
   let missing = 0;
   for (const name of basePaths) {
     const base = json(resolve(MIGRATION, 'shadow/m4', name));
-    const consolidated = consolidateAnalysis(base, packetsFor(base, families));
+    const consolidated = consolidateLegacyAnalysisV1(base, packetsFor(base, families));
     assert.equal(consolidated.schema_version, 'AGREEMENT_ANALYSIS/V1');
     assert.equal(consolidated.agreement_id, base.agreement_id);
     assert.equal(consolidated.m5_consolidation.base_analysis_id, base.agreement_analysis_id);
@@ -116,11 +118,17 @@ test('consolidation accounts for every claim once and preserves immutable M4 mea
   assert.equal(missing, 1526);
 });
 
-test('Capitalisation stays parked and M6 outputs do not exist', () => {
+test('Capitalisation stays parked and M5 consolidation has no M6 effects', () => {
   const capitalisation = json(resolve(MIGRATION, 'shadow/m5/CAPITALISATION/selector-state.json'));
   assert.equal(capitalisation.capitalisation_parked, true);
   assert.equal(capitalisation.product_import_authorised, false);
   assert.equal(capitalisation.serving_authorised, false);
   assert.equal(capitalisation.publication_authorised, false);
-  assert.throws(() => readFileSync(resolve(MIGRATION, 'receipts/stage-2y-structure-m6-agreement-projection.json')));
+  const baseName = readdirSync(resolve(MIGRATION, 'shadow/m4'))
+    .filter((name) => name.endsWith('.agreement-analysis.json'))
+    .sort()[0];
+  const base = json(resolve(MIGRATION, 'shadow/m4', baseName));
+  const consolidated = consolidateLegacyAnalysisV1(base, packetsFor(base, familyOrder()));
+  assert.equal(consolidated.m5_consolidation.m6_started, false);
+  assert.equal(consolidated.m5_consolidation.current_product_effects, 0);
 });

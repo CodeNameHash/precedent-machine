@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import canonicalModule from '../lib/canonical-v2/canonical-bytes.js';
+import { validateWork2ReceiptBinding } from './stage-2y-structure-m7-v2-repair-work2-validate.mjs';
 
 const { canonicalJson, contentId, sha256Hex } = canonicalModule;
 
@@ -24,6 +25,23 @@ const ACTIVATION_SHA256 = 'f0401bb7f75fe72b7719663573ab75581aecffeb2949618b991ec
 const WORK0_ID = '885d404502276d85af385fce20cd93b601f09a30a3300c371df870337f7d5fab';
 const WORK0_SHA256 = '04e010105dcb4b449b7f8e3aa05fb3bec69cdada8d385999e7c86a8150eaff83';
 const HEX_256 = /^[0-9a-f]{64}$/;
+const WORK1_RECEIPT_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK1_CONTRACT_RECEIPT/V1';
+const WORK1_RECEIPT_KEYS = Object.freeze([
+  'schema_version', 'work1_contract_receipt_id', 'work1_contract_receipt_digest',
+  'stage', 'state', 'status', 'activation_commit_binding', 'work0_evidence_root_binding',
+  'work1_7_authority_binding', 'activation_receipt_binding', 'contract_policy_binding',
+  'family_packet_set_binding', 'artifact_bindings', 'artifact_set_digest',
+  'command_execution_ledger', 'drafting_command_audit', 'combined_test_result',
+  'repository_precondition', 'counts', 'checks', 'effects', 'next_work',
+]);
+const WORK2_RECEIPT_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK2_COMPILER_RECEIPT/V1';
+const WORK3_RECEIPT_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK3_RECEIPT/V1';
+const WORK3_RECEIPT_KEYS = Object.freeze([
+  'schema_version', 'state', 'status', 'work', 'execution_manifest_id',
+  'execution_manifest_digest', 'candidate_ordering_correction_authority_binding',
+  'candidate_registration_id', 'candidate_transition', 'counts', 'effects',
+  'work3_receipt_id',
+]);
 const BINDING_KEYS = [
   'byte_length',
   'git_blob_oid',
@@ -391,27 +409,75 @@ function validateExecutionManifestBasis(root, work) {
   assert(new RegExp(`^evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-${work.toLowerCase()}-[a-z0-9-]+\\.json$`).test(
     record.work_receipt_path,
   ), 'BINDING_DRIFT', `${repositoryPath}:receipt path`);
-  return record.work_receipt_path;
+  return { path: record.work_receipt_path, record };
 }
 
 function expectedReceiptContract(root, work) {
-  const number = Number(work.slice(4));
-  if (number === 1) {
+  if (work === 'WORK1') {
     return {
       path: WORK1_RECEIPT_PATH,
-      schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK1_CONTRACT_RECEIPT/V1',
+      schema_version: WORK1_RECEIPT_SCHEMA,
       record_id_field: 'work1_contract_receipt_id',
+      manifest: null,
     };
   }
+  const manifest = validateExecutionManifestBasis(root, work);
+  if (work === 'WORK2') {
+    return {
+      path: manifest.path,
+      schema_version: WORK2_RECEIPT_SCHEMA,
+      record_id_field: 'work2_receipt_id',
+      manifest: manifest.record,
+    };
+  }
+  assert(work === 'WORK3', 'REGISTRATION_CONTRACT_DRIFT', 'predecessor work');
   return {
-    path: validateExecutionManifestBasis(root, work),
-    schema_version: `STAGE_2Y_M7_V2_REPAIR_WORK${number}_RECEIPT/V1`,
-    record_id_field: `work${number}_receipt_id`,
+    path: manifest.path,
+    schema_version: WORK3_RECEIPT_SCHEMA,
+    record_id_field: 'work3_receipt_id',
+    manifest: manifest.record,
   };
 }
 
+function validateClosedPredecessorReceipt(receipt, work, expected) {
+  if (work === 'WORK1') {
+    const unsigned = structuredClone(receipt);
+    delete unsigned.work1_contract_receipt_digest;
+    delete unsigned.work1_contract_receipt_id;
+    const digest = sha256Hex(canonicalJson(unsigned));
+    const withDigest = { ...unsigned, work1_contract_receipt_digest: digest };
+    assert(exactKeys(receipt, WORK1_RECEIPT_KEYS)
+      && receipt.schema_version === WORK1_RECEIPT_SCHEMA
+      && receipt.work1_contract_receipt_digest === digest
+      && receipt.work1_contract_receipt_id === contentId(WORK1_RECEIPT_SCHEMA, withDigest)
+      && receipt.stage === 'M7_V2_REPAIR_WORK1'
+      && receipt.state === 'PASS_WORK1_CONTRACTS'
+      && receipt.status === 'PASS',
+    'BINDING_DRIFT', 'WORK1:receipt state');
+    return;
+  }
+  if (work === 'WORK2') return;
+  const manifest = expected.manifest;
+  assert(exactKeys(receipt, WORK3_RECEIPT_KEYS)
+    && receipt.schema_version === WORK3_RECEIPT_SCHEMA
+    && receipt.state === 'PASS_WORK3_BUILD_ONLY_NULL_CANDIDATE'
+    && receipt.status === 'PASS'
+    && receipt.work === 'WORK3'
+    && receipt.execution_manifest_id === manifest.execution_manifest_id
+    && receipt.execution_manifest_digest === manifest.execution_manifest_digest
+    && isPlainObject(manifest.candidate_ordering_correction_authority_binding)
+    && isPlainObject(receipt.candidate_ordering_correction_authority_binding)
+    && same(receipt.candidate_ordering_correction_authority_binding,
+      manifest.candidate_ordering_correction_authority_binding)
+    && manifest.candidate_registration_binding === null
+    && manifest.candidate_transition === null
+    && receipt.candidate_registration_id === null
+    && receipt.candidate_transition === null,
+  'BINDING_DRIFT', 'WORK3:receipt state');
+}
+
 function verifyPredecessors(root, entries) {
-  assert(Array.isArray(entries) && entries.length > 0 && entries.length <= 5,
+  assert(Array.isArray(entries) && entries.length === 3,
     'REGISTRATION_CONTRACT_DRIFT', 'predecessor_receipt_bindings');
   const expectedOrder = [...entries].sort(
     (left, right) => Number(left.work.slice(4)) - Number(right.work.slice(4)),
@@ -431,12 +497,15 @@ function verifyPredecessors(root, entries) {
       && entry.binding.record_id_field === expected.record_id_field,
     'REGISTRATION_CONTRACT_DRIFT', `${entry.work}:receipt contract`);
     const bytes = verifyBinding(root, entry.binding, expected);
+    if (entry.work === 'WORK2') {
+      try {
+        validateWork2ReceiptBinding({ repoRoot: root, binding: entry.binding });
+      } catch (error) {
+        fail('BINDING_DRIFT', `WORK2:receipt validation:${error.code ?? error.message}`);
+      }
+    }
     const receipt = parseJson(bytes, 'BINDING_DRIFT', entry.binding.path);
-    assert(receipt.status === 'PASS'
-      && typeof receipt.state === 'string' && receipt.state.startsWith('PASS')
-      && (receipt.stage === undefined || receipt.stage === `M7_V2_REPAIR_${entry.work}`)
-      && (receipt.work === undefined || receipt.work === entry.work),
-    'BINDING_DRIFT', `${entry.work}:receipt state`);
+    validateClosedPredecessorReceipt(receipt, entry.work, expected);
   }
 }
 

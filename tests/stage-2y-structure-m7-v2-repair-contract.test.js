@@ -15,6 +15,10 @@ const {
   validateAnalysisV2,
   validateProjectionV2,
 } = require('../lib/canonical-v2/m7-v2-contract');
+const {
+  buildSourceSets,
+  consolidateAnalysis,
+} = require('../lib/canonical-v2/agreement-analysis-consolidation');
 const cases = require('./fixtures/canonical-v2/m7-v2-repair/work1-acceptance-cases.json');
 
 const FAMILY_KEYS = [
@@ -2761,7 +2765,8 @@ function buildSourceBundle({ store, agreementId, drafts, scenarioKey, options = 
       'ownership-link dependency must be one dedicated consumer-local segment');
   }
   const dependencySourceSpan = ownershipDependencySegment?.span
-    ?? spans.find((_, index) => segments[index].field_key === 'FAMILY_MARKER')
+    ?? spans.find((_, index) => segments[index].field_key === 'FAMILY_MARKER'
+      && /\S/u.test(segments[index].text))
     ?? spans[0];
   const dependencyState = options.requiredDependencyState
     ?? (options.unresolvedDependency === true ? 'UNRESOLVED' : null);
@@ -2772,7 +2777,7 @@ function buildSourceBundle({ store, agreementId, drafts, scenarioKey, options = 
     state: dependencyState,
     target_id: dependencyState === 'RESOLVED'
       ? options.requiredDependencyTargetId ?? 'DEFINED_MATCH_PERIOD'
-      : 'UNRESOLVED_SECTION_REFERENCE',
+      : null,
     source_support_ids: [dependencySourceSpan.span_id],
   } : null;
   if (item42Temporal) {
@@ -4377,13 +4382,187 @@ function buildViewPolicy(
 }
 
 function buildSemanticInputBindings({
-  store, agreementId, occurrenceId, source, profiles, structure,
+  store, agreementId, occurrenceId, source, profiles, structure, effectDrafts,
 }) {
-  const baseSet = sealBoundRecord('AGREEMENT_ANALYSIS_SET/V1', 'agreement_analysis_set_id', {
-    members: [{
+  const spanById = new Map(source.segments.map((segment) => [segment.span.span_id, segment.span]));
+  const nativeSpan = (spanId) => {
+    const span = spanById.get(spanId);
+    assert.ok(span, `native context input cannot resolve source span ${spanId}`);
+    return {
+      coordinate_system: 'UTF8_CANONICAL_TEXT_HALF_OPEN',
+      start_byte: span.start_byte,
+      end_byte: span.end_byte,
+      text_sha256: span.text_sha256,
+    };
+  };
+  const referenceEdges = [];
+  const semanticRelationships = [];
+  const replaceContextEdgeId = (previousId, nextId) => {
+    for (const draft of effectDrafts) {
+      for (const spec of draft.fact_specs) {
+        spec.context_edge_ids = spec.context_edge_ids.map(
+          (edgeId) => edgeId === previousId ? nextId : edgeId,
+        );
+      }
+    }
+    for (const segment of source.segments) {
+      if (segment.context_edge_id === previousId) segment.context_edge_id = nextId;
+    }
+    for (const dependency of source.dependencies) {
+      if (dependency.context_edge_id === previousId) dependency.context_edge_id = nextId;
+    }
+  };
+  const segmentBySpanId = new Map(source.segments.map(
+    (segment) => [segment.span.span_id, segment],
+  ));
+  for (const edge of source.contextEdges) {
+    if (edge.edge_type === 'DURATION_REFERENCE_TARGET') continue;
+    if (edge.edge_type === 'REFERENCE_TARGET') {
+      const supports = edge.source_support_ids.map((spanId) => {
+        const span = spanById.get(spanId);
+        const segment = segmentBySpanId.get(spanId);
+        assert.ok(span && segment, `native reference edge ${edge.edge_id} has no source span`);
+        return { span, segment };
+      });
+      assert.equal(supports.length > 0, true,
+        `native reference edge ${edge.edge_id} has no source evidence`);
+      assert.deepEqual(supports.map(({ span }) => span.span_id),
+        [...supports].sort((left, right) =>
+          left.span.start_byte - right.span.start_byte).map(({ span }) => span.span_id),
+      `native reference edge ${edge.edge_id} support is not in source order`);
+      assert.equal(supports.every(({ span }, index) => index === 0
+        || supports[index - 1].span.source_node_occurrence_id
+          === span.source_node_occurrence_id
+        && supports[index - 1].span.end_byte === span.start_byte), true,
+      `native reference edge ${edge.edge_id} support is not contiguous`);
+      const materialSupports = supports.filter(({ segment }) => /\S/u.test(segment.text));
+      assert.equal(materialSupports.length, 1,
+        `native reference edge ${edge.edge_id} must contain one exact reference token`);
+      assert.equal(supports.every(({ segment }) => /\S/u.test(segment.text)
+        || /^\s+$/u.test(segment.text)), true,
+      `native reference edge ${edge.edge_id} has a non-whitespace boundary span`);
+      for (const { span, segment } of supports) {
+        referenceEdges.push({
+          schema_version: 'CONTEXT_REFERENCE_EDGE/V1',
+          reference_edge_id: edge.edge_id,
+          owner_node_occurrence_id: span.source_node_occurrence_id,
+          source_annotation_occurrence_id: null,
+          source_span: nativeSpan(span.span_id),
+          raw_text: segment.text,
+          normalised_reference: edge.target_id,
+          target_node_occurrence_ids: edge.target_id === null ? [] : [edge.target_id],
+          selected_target_node_occurrence_id: edge.target_id,
+          state: edge.state,
+          reason_code: edge.state === 'RESOLVED'
+            ? 'UNIQUE_EXACT_REFERENCE_TARGET' : 'NO_UNIQUE_REFERENCE_TARGET',
+          rule_id: 'EXACT_M2_SECTION_REFERENCE/V1',
+          rule_version: 1,
+        });
+      }
+    } else {
+      assert.equal(edge.edge_type, 'PARTY_ALIAS',
+        `fixture cannot encode unsupported native context edge ${edge.edge_type}`);
+      assert.equal(edge.source_support_ids.length, 1,
+        `native party edge ${edge.edge_id} must have one atomic source span`);
+      const support = spanById.get(edge.source_support_ids[0]);
+      assert.ok(support, `native party edge ${edge.edge_id} has no source span`);
+      const sourceSpan = nativeSpan(support.span_id);
+      const sourceText = segmentBySpanId.get(support.span_id).text;
+      const relationshipId = edge.edge_id;
+      semanticRelationships.push({
+        schema_version: 'CONTEXT_SEMANTIC_RELATIONSHIP/V1',
+        semantic_relationship_id: relationshipId,
+        relationship_type: 'BOUND_ENTITY',
+        state: edge.state,
+        directed: true,
+        reason_code: 'EXACT_BOUND_ENTITY',
+        rule_id: 'EXACT_BOUND_ENTITY/V1',
+        rule_version: 1,
+        source_endpoint: {
+          canonical_label: 'BOUND_ENTITY_SOURCE',
+          definition_annotation_occurrence_id: null,
+          entity_id: `source:${relationshipId}`,
+          entity_kind: 'SOURCE_LOCAL_ENTITY',
+          source_node_occurrence_id: null,
+          source_span: null,
+        },
+        target_endpoint: {
+          canonical_label: sourceText,
+          definition_annotation_occurrence_id: null,
+          entity_id: edge.target_id,
+          entity_kind: 'SOURCE_LOCAL_ENTITY',
+          source_node_occurrence_id: support.source_node_occurrence_id,
+          source_span: sourceSpan,
+        },
+        source_node_occurrence_ids: [support.source_node_occurrence_id],
+        source_spans: [sourceSpan],
+        temporal_scope: {
+          alternative_codes: [], code: 'UNSTATED', raw_text: null,
+          source_span: null, state: 'UNSTATED',
+        },
+      });
+      edge.edge_id = `${relationshipId}:${edge.target_id}`;
+      replaceContextEdgeId(relationshipId, edge.edge_id);
+    }
+  }
+  const contextCompilation = sealBoundRecord(
+    'CONTEXT_COMPILATION/V1', 'context_compilation_id', {
+      agreement_index_binding: {
+        agreement_index_id: source.agreementIndexBinding.record_id,
+        agreement_index_sha256: source.agreementIndexBinding.sha256,
+        canonical_text_sha256: source.agreementIndex.source_binding.canonical_text_sha256,
+        structural_policy_digest: source.agreementIndex.structural_policy.policy_digest,
+      },
+      semantic_policy_binding: {
+        schema_version: 'STAGE_2Y_SEMANTIC_POLICY/V1',
+        policy_version: 1,
+        policy_digest: 'fixture-m7-v2-semantic-policy',
+      },
+      focus_node_occurrence_ids: [source.nodeId],
+      frames_by_focus_node_id: {},
+      context_facts: [],
+      scope_edges: [],
+      ambiguities: [],
+      residuals: [],
+      reference_edges: referenceEdges,
+      definition_edges: [],
+      semantic_relationships: semanticRelationships,
+      diagnostics: [],
+    },
+  );
+  const contextCompilationBinding = addRecord(
+    store, `fixture/inputs/${agreementId}.context-compilation.json`, contextCompilation,
+    'context_compilation_id',
+  );
+  const agreementAnalysis = sealBoundRecord(
+    'AGREEMENT_ANALYSIS/V1', 'agreement_analysis_id', {
+      coordinate_system: 'UTF8_CANONICAL_TEXT_HALF_OPEN',
       agreement_id: agreementId,
-      governed_input_occurrence_ids: [occurrenceId],
-    }],
+      context_compilation_binding: {
+        agreement_id: agreementId,
+        agreement_index_id: contextCompilation.agreement_index_binding.agreement_index_id,
+        byte_length: contextCompilationBinding.byte_length,
+        context_compilation_id: contextCompilation.context_compilation_id,
+        path: contextCompilationBinding.path,
+        schema_version: contextCompilation.schema_version,
+        sha256: contextCompilationBinding.sha256,
+      },
+      claims: [{
+        claim_occurrence_id: occurrenceId,
+        source_node_occurrence_ids: [source.nodeId],
+      }],
+    },
+  );
+  const agreementAnalysisBinding = addRecord(
+    store, `fixture/inputs/${agreementId}.agreement-analysis.json`, agreementAnalysis,
+    'agreement_analysis_id',
+  );
+  const {
+    agreementAnalysisSet: baseSet,
+    contextCompilationSet: contextSet,
+  } = buildSourceSets({
+    baseAnalyses: [{ record: agreementAnalysis, binding: agreementAnalysisBinding }],
+    contextCompilations: [{ record: contextCompilation, binding: contextCompilationBinding }],
   });
   const agreementIndexMembers = [
     source.agreementIndexBinding,
@@ -4396,11 +4575,6 @@ function buildSemanticInputBindings({
   const agreementIndexSet = sealBoundRecord(
     'AGREEMENT_INDEX_SET/V1', 'agreement_index_set_id', {
       members: agreementIndexMembers,
-    },
-  );
-  const contextSet = sealBoundRecord(
-    'CONTEXT_COMPILATION_SET/V1', 'context_compilation_set_id', {
-      members: [{ agreement_id: agreementId, edges: source.contextEdges }],
     },
   );
   const records = new Map([
@@ -4654,7 +4828,10 @@ function buildScenario(rawDefinition, options = {}) {
   };
   const store = new Map();
   const agreementId = definition.work0_authority?.agreement_id
-    ?? `${cases.governance_constants.agreement_id}:${definition.case_id}`;
+    ?? contentId('FIXTURE_AGREEMENT/V1', {
+      base_agreement_id: cases.governance_constants.agreement_id,
+      case_id: definition.case_id,
+    });
   const occurrenceId = `${cases.governance_constants.input_occurrence_id}:${definition.case_id}`;
   const priorFamilyKey = cases.governance_constants.prior_family_key;
   const drafts = makeEffectDrafts(definition, scenarioOptions);
@@ -4708,7 +4885,7 @@ function buildScenario(rawDefinition, options = {}) {
     store, profiles.snapshots, scenarioOptions, requiredClassificationLevels,
   );
   const semanticInputs = buildSemanticInputBindings({
-    store, agreementId, occurrenceId, source, profiles, structure,
+    store, agreementId, occurrenceId, source, profiles, structure, effectDrafts: drafts,
   });
   const candidate = buildCandidateGovernance({
     store, semanticInputs, profiles, structure, viewPolicy, options: scenarioOptions,
@@ -5074,9 +5251,14 @@ function buildItem39SemanticCore({
   const actorSegment = source.segments.find(
     (segment) => segment.kind === 'FACT' && segment.field_key === 'APPLIES_TO',
   );
+  const actorContextEdge = source.contextEdges.find(
+    (edge) => edge.edge_type === 'PARTY_ALIAS' && edge.target_id === 'PARENT',
+  );
+  assert.ok(actorContextEdge,
+    'item39 actor must retain its sealed native relationship-to-entity projection');
   const actorSpec = factSpec(
     'APPLIES_TO', 'PARTY', 'Parent', 'PARENT', 'BOUND_PARTY_ALIAS/V1',
-    ['edge-item39-local-parent'],
+    [actorContextEdge.edge_id],
   );
   const actorFact = buildFact(agreementId, actorSpec, [actorSegment.span]);
   const selectedTree = structure.item39.member.inline_list_overlay.candidate_trees.find(
@@ -5353,7 +5535,7 @@ function buildItem39ConsumptionScenario() {
     store, profiles.snapshots, profileOptions, requiredClassificationLevels,
   );
   const semanticInputs = buildSemanticInputBindings({
-    store, agreementId, occurrenceId, source, profiles, structure,
+    store, agreementId, occurrenceId, source, profiles, structure, effectDrafts: [draft],
   });
   const candidate = buildCandidateGovernance({
     store, semanticInputs, profiles, structure, viewPolicy, options: {},
@@ -5669,13 +5851,52 @@ function mutateContextCompilationInput(scenario, mutate) {
   );
   assert.ok(governanceInput);
   const contextPath = governanceInput.binding.path;
-  const contextRecord = JSON.parse(store.get(contextPath).toString('utf8'));
-  mutate(contextRecord);
-  restampBound(contextRecord, 'CONTEXT_COMPILATION_SET/V1', 'context_compilation_set_id');
+  const contextSet = JSON.parse(store.get(contextPath).toString('utf8'));
+  const contextMember = contextSet.members.find(
+    (entry) => entry.agreement_id === analysis.agreement_id,
+  );
+  assert.ok(contextMember);
+  const nativePath = contextMember.context_compilation_binding.path;
+  const contextRecord = JSON.parse(store.get(nativePath).toString('utf8'));
+  mutate(contextRecord, analysis);
+  restampBound(contextRecord, 'CONTEXT_COMPILATION/V1', 'context_compilation_id');
+  contextMember.context_compilation_binding = addRecord(
+    store, nativePath, contextRecord, 'context_compilation_id',
+  );
+  restampBound(contextSet, 'CONTEXT_COMPILATION_SET/V1', 'context_compilation_set_id');
   const contextBinding = addRecord(
-    store, contextPath, contextRecord, 'context_compilation_set_id',
+    store, contextPath, contextSet, 'context_compilation_set_id',
   );
   governanceInput.binding = contextBinding;
+
+  const baseGovernanceInput = analysis.governance.semantic_input_bindings.find(
+    (entry) => entry.role === 'BASE_ANALYSIS_SET',
+  );
+  assert.ok(baseGovernanceInput);
+  const baseSetPath = baseGovernanceInput.binding.path;
+  const baseSet = JSON.parse(store.get(baseSetPath).toString('utf8'));
+  const baseMember = baseSet.members.find((entry) => entry.agreement_id === analysis.agreement_id);
+  assert.ok(baseMember);
+  const basePath = baseMember.agreement_analysis_binding.path;
+  const baseRecord = JSON.parse(store.get(basePath).toString('utf8'));
+  baseRecord.context_compilation_binding = {
+    agreement_id: analysis.agreement_id,
+    agreement_index_id: contextRecord.agreement_index_binding.agreement_index_id,
+    byte_length: contextMember.context_compilation_binding.byte_length,
+    context_compilation_id: contextMember.context_compilation_binding.record_id,
+    path: contextMember.context_compilation_binding.path,
+    schema_version: contextMember.context_compilation_binding.schema_version,
+    sha256: contextMember.context_compilation_binding.sha256,
+  };
+  restampBound(baseRecord, 'AGREEMENT_ANALYSIS/V1', 'agreement_analysis_id');
+  baseMember.agreement_analysis_binding = addRecord(
+    store, basePath, baseRecord, 'agreement_analysis_id',
+  );
+  restampBound(baseSet, 'AGREEMENT_ANALYSIS_SET/V1', 'agreement_analysis_set_id');
+  const baseBinding = addRecord(
+    store, baseSetPath, baseSet, 'agreement_analysis_set_id',
+  );
+  baseGovernanceInput.binding = baseBinding;
 
   const oldCandidateBinding = analysis.governance.candidate_registration_binding;
   const candidate = JSON.parse(store.get(oldCandidateBinding.path).toString('utf8'));
@@ -5684,6 +5905,11 @@ function mutateContextCompilationInput(scenario, mutate) {
   );
   assert.ok(candidateInput);
   candidateInput.binding = contextBinding;
+  const candidateBaseInput = candidate.semantic_input_bindings.find(
+    (entry) => entry.input_role === 'BASE_ANALYSIS_SET',
+  );
+  assert.ok(candidateBaseInput);
+  candidateBaseInput.binding = baseBinding;
   restampBound(
     candidate, 'STAGE_2Y_M7_V2_CANDIDATE_REGISTRATION/V1', 'candidate_registration_id',
   );
@@ -5856,23 +6082,32 @@ function factOrSourceMutationForCase(selectedScenario, caseId) {
   }
   if (caseId === 'party-alias-edge-support-does-not-equal-token') {
     fact('APPLIES_TO').normalisation_proof.input_context_edge_ids = [
-      'edge-party-value-company-0',
+      'edge-party-value-company-0:COMPANY',
     ];
     return result();
   }
   if (caseId === 'party-alias-target-is-duplicated') {
-    return mutateContextCompilationInput(selectedScenario, (record) => {
-      const member = record.members.find(
-        (entry) => entry.agreement_id === selectedScenario.analysis.agreement_id,
+    return mutateContextCompilationInput(selectedScenario, (record, mutatedAnalysis) => {
+      const company = record.semantic_relationships.find(
+        (relationship) => relationship.semantic_relationship_id
+          === 'edge-applies-to-company-0',
       );
-      const company = member.edges.find(
-        (edge) => edge.edge_id === 'edge-applies-to-company-0',
-      );
-      const parent = member.edges.find(
-        (edge) => edge.edge_id === 'edge-applies-to-parent-0',
+      const parent = record.semantic_relationships.find(
+        (relationship) => relationship.semantic_relationship_id
+          === 'edge-applies-to-parent-0',
       );
       assert.ok(company && parent);
-      parent.target_id = company.target_id;
+      const priorParentEdgeId = `${parent.semantic_relationship_id}:${parent.target_endpoint.entity_id}`;
+      parent.target_endpoint.entity_id = company.target_endpoint.entity_id;
+      const nextParentEdgeId = `${parent.semantic_relationship_id}:${parent.target_endpoint.entity_id}`;
+      const appliesTo = mutatedAnalysis.facts.find(
+        (entry) => entry.field_key === 'APPLIES_TO',
+      );
+      assert.ok(appliesTo);
+      appliesTo.normalisation_proof.input_context_edge_ids =
+        appliesTo.normalisation_proof.input_context_edge_ids.map(
+          (edgeId) => edgeId === priorParentEdgeId ? nextParentEdgeId : edgeId,
+        );
     });
   }
   if (caseId === 'reference-source-contains-two-reference-tokens') {
@@ -5883,16 +6118,10 @@ function factOrSourceMutationForCase(selectedScenario, caseId) {
     return result();
   }
   if (caseId === 'reference-edge-has-wrong-edge-type') {
-    return mutateContextCompilationInput(selectedScenario, (record) => {
-      const member = record.members.find(
-        (entry) => entry.agreement_id === selectedScenario.analysis.agreement_id,
-      );
-      const edge = member.edges.find(
-        (entry) => entry.edge_id === 'edge-reference-value-0',
-      );
-      assert.ok(edge);
-      edge.edge_type = 'PARTY_ALIAS';
-    });
+    fact('REFERENCE_VALUE').normalisation_proof.input_context_edge_ids = [
+      'edge-party-value-company-0:COMPANY',
+    ];
+    return result();
   }
   if (caseId === 'reference-edge-support-differs-from-fact-support') {
     const selected = fact('REFERENCE_VALUE');
@@ -6774,6 +7003,76 @@ test(cases.baseline_case.case_id, () => {
   assert.equal(projectionResult.status, 'PASS');
   assert.equal(projectionResult.normal_row_count,
     cases.baseline_case.expected_normal_row_count);
+});
+
+test('consolidateAnalysis compiles one exact V2 analysis from six resolved inputs and verified governance', () => {
+  const scenario = buildScenario(
+    stateById.get('generic-ancestor-tree-output-complete'),
+  );
+  const governedInput = (role) => scenario.semanticInputs.records.get(role).record;
+  const resolveRecord = (binding) => JSON.parse(
+    scenario.resolveBinding(binding).toString('utf8'),
+  );
+  const baseAnalysisSet = governedInput('BASE_ANALYSIS_SET');
+  const contextCompilationSet = governedInput('CONTEXT_COMPILATION_SET');
+  assert.equal(baseAnalysisSet.members.length, 1);
+  assert.equal(contextCompilationSet.members.length, 1);
+  const baseAnalysisBinding = baseAnalysisSet.members[0].agreement_analysis_binding;
+  const contextCompilationBinding =
+    contextCompilationSet.members[0].context_compilation_binding;
+  const baseAnalysis = {
+    record: resolveRecord(baseAnalysisBinding),
+    binding: baseAnalysisBinding,
+  };
+  const contextCompilation = {
+    record: resolveRecord(contextCompilationBinding),
+    binding: contextCompilationBinding,
+  };
+  const agreementIndexSet = governedInput('AGREEMENT_INDEX_SET');
+  const agreementIndexBinding = agreementIndexSet.members.find(
+    (binding) => binding.record_id
+      === contextCompilation.record.agreement_index_binding.agreement_index_id,
+  );
+  assert.ok(agreementIndexBinding);
+  const input = {
+    baseAnalysis,
+    agreementIndex: {
+      record: resolveRecord(agreementIndexBinding),
+      binding: agreementIndexBinding,
+    },
+    contextCompilation,
+    approvedFamilyPackets: scenario.semanticInputs.records.get(
+      'APPROVED_FAMILY_PACKET_SET',
+    ),
+    approvedFamilyProfileSet: scenario.semanticInputs.records.get(
+      'APPROVED_FAMILY_PROFILE_SET',
+    ),
+    approvedStructureDispositions: scenario.semanticInputs.records.get(
+      'APPROVED_STRUCTURE_DISPOSITION_SET',
+    ),
+    governance: scenario.candidate.governance,
+  };
+  assert.deepEqual(Object.keys(input), [
+    'baseAnalysis',
+    'agreementIndex',
+    'contextCompilation',
+    'approvedFamilyPackets',
+    'approvedFamilyProfileSet',
+    'approvedStructureDispositions',
+    'governance',
+  ]);
+  const before = clone(input);
+
+  const compiled = consolidateAnalysis(input);
+  const repeated = consolidateAnalysis(input);
+
+  assert.deepEqual(compiled, scenario.analysis);
+  assert.deepEqual(repeated, compiled);
+  assert.deepEqual(input, before);
+  assert.equal(validateAnalysisV2({
+    analysis: compiled,
+    resolveBinding: scenario.resolveBinding,
+  }).status, 'PASS');
 });
 
 test(cases.structure_overlay_case.case_id, () => {
@@ -8168,9 +8467,26 @@ function twoActorPositiveScenario() {
   assert.equal(scenario.source.segments.some(
     (segment) => segment.kind === 'EXPRESSION' && segment.text === ' and ',
   ), true);
-  assert.deepEqual(scenario.source.contextEdges.filter(
-    (edge) => ['edge-two-actor-company-0', 'edge-two-actor-parent-0'].includes(edge.edge_id),
-  ).map((edge) => [edge.edge_type, edge.target_id]), [
+  const contextSet = scenario.semanticInputs.records.get('CONTEXT_COMPILATION_SET').record;
+  const contextMember = contextSet.members.find(
+    (member) => member.agreement_id === scenario.analysis.agreement_id,
+  );
+  assert.ok(contextMember);
+  const nativeContext = JSON.parse(scenario.resolveBinding(
+    contextMember.context_compilation_binding,
+  ).toString('utf8'));
+  const relationshipByProjectedId = new Map(nativeContext.semantic_relationships.map(
+    (relationship) => [
+      `${relationship.semantic_relationship_id}:${relationship.target_endpoint.entity_id}`,
+      relationship,
+    ],
+  ));
+  assert.deepEqual(actorFacts.flatMap((fact) =>
+    fact.normalisation_proof.input_context_edge_ids).map((edgeId) => {
+    const relationship = relationshipByProjectedId.get(edgeId);
+    assert.ok(relationship, `two-actor proof lacks sealed native relationship ${edgeId}`);
+    return ['PARTY_ALIAS', relationship.target_endpoint.entity_id];
+  }), [
     ['PARTY_ALIAS', 'COMPANY'],
     ['PARTY_ALIAS', 'PARENT'],
   ]);
@@ -8239,19 +8555,7 @@ function omitItem42ClaimContinuation(scenario) {
   );
   assert.ok(originalDependency,
     'claim-continuation omission requires the exact deictic duration dependency');
-  const contextMutation = mutateContextCompilationInput(scenario, (record) => {
-    const member = record.members.find(
-      (entry) => entry.agreement_id === scenario.analysis.agreement_id,
-    );
-    assert.ok(member);
-    const before = member.edges.length;
-    member.edges = member.edges.filter(
-      (edge) => edge.edge_id !== originalDependency.context_edge_id,
-    );
-    assert.equal(member.edges.length, before - 1,
-      'claim-continuation omission must remove exactly its deictic context edge');
-  });
-  const analysis = contextMutation.analysis;
+  const analysis = clone(scenario.analysis);
   const claim = item42Rule(analysis, 'CLAIM_CONTINUATION');
   const claimEffectId = claim.effect_id;
   const claimRuleId = claim.rule_id;
@@ -8427,7 +8731,7 @@ function omitItem42ClaimContinuation(scenario) {
   analysis.counts.shared_fact_coverages = analysis.shared_fact_coverages.length;
   return Object.freeze({
     analysis: restampAnalysis(analysis),
-    resolveBinding: contextMutation.resolveBinding,
+    resolveBinding: scenario.resolveBinding,
   });
 }
 
@@ -8605,46 +8909,86 @@ function temporalMutationForCase(scenario, caseId) {
       ledger, 'STAGE_2Y_M7_V2_AUTHORED_UNIT_EFFECT_LEDGER/V1', 'effect_ledger_id',
     );
   } else if (caseId.startsWith('item-42-duration-reference-')) {
-    const dependency = analysis.dependencies[0];
-    const contextMutation = new Set([
-      'item-42-duration-reference-is-unresolved',
-      'item-42-duration-reference-targets-wrong-role',
-      'item-42-duration-reference-support-drift',
-      'item-42-duration-reference-edge-type-drift',
-      'item-42-duration-reference-edge-target-disagrees',
-    ]).has(caseId);
-    if (contextMutation) {
+    if (caseId === 'item-42-duration-reference-edge-type-drift') {
+      const dependency = scenario.analysis.dependencies[0];
       const mutated = mutateContextCompilationInput(scenario, (record) => {
-        const edge = record.members[0].edges.find(
-          (entry) => entry.edge_id === dependency.context_edge_id,
+        const closure = scenario.analysis.source_closures[0];
+        const support = closure.spans.find(
+          (span) => span.span_id === dependency.source_support_ids[0],
         );
-        assert.ok(edge);
-        if (caseId === 'item-42-duration-reference-is-unresolved') {
-          edge.state = 'UNRESOLVED';
-        } else if (caseId === 'item-42-duration-reference-targets-wrong-role') {
-          edge.target_id = item42Fact(analysis, 'NO_ADVERSE_AMENDMENT_DURATION')
-            .semantic_fact_key;
-        } else if (caseId === 'item-42-duration-reference-support-drift') {
-          edge.source_support_ids = item42ClaimModalSupportIds(analysis);
-        } else if (caseId === 'item-42-duration-reference-edge-type-drift') {
-          edge.edge_type = 'REFERENCE_TARGET';
-        } else {
-          edge.target_id = 'f'.repeat(64);
-        }
+        assert.ok(support, 'duration edge-type mutation requires its deictic source span');
+        const sourceBytes = Buffer.from(
+          scenario.source.agreementIndex.source_binding.canonical_text, 'utf8',
+        );
+        const rawText = sourceBytes.subarray(
+          support.start_byte, support.end_byte,
+        ).toString('utf8');
+        record.reference_edges.push({
+          schema_version: 'CONTEXT_REFERENCE_EDGE/V1',
+          reference_edge_id: dependency.context_edge_id,
+          owner_node_occurrence_id: support.source_node_occurrence_id,
+          source_annotation_occurrence_id: null,
+          source_span: {
+            coordinate_system: 'UTF8_CANONICAL_TEXT_HALF_OPEN',
+            start_byte: support.start_byte,
+            end_byte: support.end_byte,
+            text_sha256: support.text_sha256,
+          },
+          raw_text: rawText,
+          normalised_reference: dependency.target_id,
+          target_node_occurrence_ids: [dependency.target_id],
+          selected_target_node_occurrence_id: dependency.target_id,
+          state: dependency.state,
+          reason_code: 'UNIQUE_EXACT_REFERENCE_TARGET',
+          rule_id: 'EXACT_M2_SECTION_REFERENCE/V1',
+          rule_version: 1,
+        });
       });
       analysis = mutated.analysis;
       resolveBinding = mutated.resolveBinding;
     }
     const selected = analysis.dependencies[0];
+    const claim = item42Rule(analysis, 'CLAIM_CONTINUATION');
+    const link = analysis.ownership_links.find(
+      (entry) => entry.consumer_dependency_ids.includes(selected.dependency_id),
+    );
+    assert.ok(link, `${caseId} requires the Claim duration ownership link`);
+    const restampDurationLink = () => {
+      restampOwnershipLink(analysis, link, claim);
+      const claimProfile = analysis.profile_snapshots.find(
+        (profile) => profile.profile_id === claim.profile_id,
+      );
+      assert.ok(claimProfile, `${caseId} requires the Claim approved profile`);
+      claim.equivalence_signature = derivedEquivalenceSignature(
+        claimProfile,
+        claim.expression_signature,
+        analysis.facts.filter((fact) => claim.fact_ids.includes(fact.fact_id)),
+        {
+          ownershipLinks: analysis.ownership_links,
+          allFacts: analysis.facts,
+          consumerRuleId: claim.rule_id,
+        },
+      );
+    };
     if (caseId === 'item-42-duration-reference-dependency-type-drift') {
       selected.dependency_type = 'REFERENCE_TARGET';
     } else if (caseId === 'item-42-duration-reference-is-unresolved') {
       selected.state = 'UNRESOLVED';
     } else if (caseId === 'item-42-duration-reference-targets-wrong-role') {
-      selected.target_id = item42Fact(analysis, 'NO_ADVERSE_AMENDMENT_DURATION')
+      const wrongTarget = item42Fact(analysis, 'NO_ADVERSE_AMENDMENT_DURATION')
         .semantic_fact_key;
+      selected.target_id = wrongTarget;
+      link.resolved_owner_target_id = wrongTarget;
+      restampDurationLink();
     } else if (caseId === 'item-42-duration-reference-support-drift') {
       selected.source_support_ids = item42ClaimModalSupportIds(analysis);
+      link.consumer_reference_span_ids = [...selected.source_support_ids];
+      restampDurationLink();
+    } else if (caseId === 'item-42-duration-reference-edge-target-disagrees') {
+      link.resolved_owner_target_id = 'f'.repeat(64);
+      restampDurationLink();
+    } else {
+      assert.equal(caseId, 'item-42-duration-reference-edge-type-drift');
     }
   } else if (caseId.startsWith('item-42-duration-link-')
       || caseId === 'item-42-duration-ownership-link-missing') {

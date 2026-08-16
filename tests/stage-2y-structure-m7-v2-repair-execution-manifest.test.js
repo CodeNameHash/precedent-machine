@@ -5,6 +5,7 @@ const {
   copyFileSync,
   existsSync,
   lstatSync,
+  linkSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -40,9 +41,143 @@ const WORK1_FINALISER_PATH = 'scripts/stage-2y-structure-m7-v2-repair-work1-fina
 const WORK1_VALIDATOR_PATH = 'scripts/stage-2y-structure-m7-v2-repair-work1-validate.mjs';
 const WORK1_RECOVERY_PATH = 'scripts/stage-2y-structure-m7-v2-repair-work1-recover.mjs';
 const WORK1_CORRECTION_AUTHORITY_PATH = 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work1-correction-authority.json';
+const WORK2_ENTRY_CORRECTION_AUTHORITY_PATH = 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work2-entry-correction-authority.json';
+const WORK2_ENTRY_CORRECTION_AUTHORITY_SCHEMA =
+  'STAGE_2Y_M7_V2_REPAIR_WORK2_ENTRY_CORRECTION_AUTHORITY/V1';
+const WORK2_ENTRY_CORRECTION_APPROVAL =
+  'Hokay, proceed and keep proceeding. You should merge as you see fir';
+const CANDIDATE_ORDERING_AUTHORITY_PATH = 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work2-4-candidate-ordering-correction-authority.json';
+const CANDIDATE_ORDERING_AUTHORITY_SCHEMA =
+  'STAGE_2Y_M7_V2_REPAIR_WORK2_4_CANDIDATE_ORDERING_CORRECTION_AUTHORITY/V1';
+const CANDIDATE_ORDERING_AUTHORITY_ID =
+  'e719db5a25968cc255d35e9e797e44885f72f9e24a4926957360e06987c01943';
+const CANDIDATE_ORDERING_AUTHORITY_BYTE_LENGTH = 17487;
+const CANDIDATE_ORDERING_AUTHORITY_SHA256 =
+  '174b4b9dae612e46a2f80d12f82e5e4d54bbd4925d1459d5fed1a34dd97f6173';
+const CANDIDATE_ORDERING_AUTHORITY_GIT_BLOB_OID =
+  '84778f8efdb302032eadda5c59cbae7b4fb01591';
+const CANDIDATE_ORDERING_FOCUSED_ARGV = Object.freeze([
+  'node', '--test',
+  '--test-name-pattern=Work2 and Work3 stay build-only and Work4 owns the first candidate transition',
+  'tests/stage-2y-structure-m7-v2-repair-execution-manifest.test.js',
+]);
+const REGISTER_CANDIDATE_PATH =
+  'scripts/stage-2y-structure-m7-v2-repair-register-candidate.mjs';
+const VERIFY_CANDIDATE_PATH =
+  'scripts/stage-2y-structure-m7-v2-repair-verify-candidate.mjs';
+const REGISTRATION_TEST_PATH =
+  'tests/stage-2y-structure-m7-v2-repair-registration.test.js';
+const CANDIDATE_REGISTRATION_FOCUSED_ARGV = Object.freeze([
+  'node', '--test',
+  '--test-name-pattern=M7 V2 candidate registration is immutable, content-addressed and independently verified',
+  REGISTRATION_TEST_PATH,
+]);
+const WORK2_AGREEMENT_ANALYSIS_SET_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work2-agreement-analysis-set.json';
+const WORK2_CONTEXT_COMPILATION_SET_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work2-context-compilation-set.json';
+const WORK2_SOURCE_SET_PATHS = Object.freeze([
+  WORK2_AGREEMENT_ANALYSIS_SET_PATH,
+  WORK2_CONTEXT_COMPILATION_SET_PATH,
+]);
+const WORK2_EXECUTION_MANIFEST_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work2-execution-manifest.json';
+const WORK2_RECEIPT_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-work2-compiler.json';
+const WORK2_GENERALISATION_SHADOW_PATH =
+  'scripts/stage-2y-structure-generalisation-shadow.mjs';
+const WORK2_FINALISER_PATH =
+  'scripts/stage-2y-structure-m7-v2-repair-work2-finalise.mjs';
+const WORK2_VALIDATOR_PATH =
+  'scripts/stage-2y-structure-m7-v2-repair-work2-validate.mjs';
+const WORK2_RECOVERY_PATH =
+  'scripts/stage-2y-structure-m7-v2-repair-work2-recover.mjs';
+const WORK2_RECOVERY_AUTHORITY_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work2-recovery-authority.json';
+const WORK2_RECOVERY_AUTHORITY_SCHEMA =
+  'STAGE_2Y_M7_V2_REPAIR_WORK2_COMMIT_DELTA_RECOVERY_AUTHORITY/V1';
+const WORK2_RECEIPT_RECOVERY_SCHEMA =
+  'STAGE_2Y_M7_V2_REPAIR_WORK2_RECEIPT_RECOVERY/V1';
+const WORK2_RECOVERY_TARGET_PATHS = Object.freeze([
+  WORK2_AGREEMENT_ANALYSIS_SET_PATH,
+  WORK2_CONTEXT_COMPILATION_SET_PATH,
+  WORK2_RECEIPT_PATH,
+]);
+const WORK2_RECOVERY_LEDGER_RUN_COUNTS = Object.freeze([
+  5, 1, 1, 1, 1, 1, 10, 10, 22, 3, 10, 3, 2, 2, 1,
+]);
+const WORK2_RECOVERY_PRIOR_RUN_COUNTS = Object.freeze([
+  5, 1, 1, 1, 1, 1, 10, 10, 22, 3, 10, 3, 1, 1,
+]);
+const WORK2_STALE_RECEIPT_RUN_COUNTS = Object.freeze([
+  4, 1, 1, 1, 1, 1, 1, 1, 13, 3, 8, 2, 1, 0,
+]);
+const WORK2_RECEIPT_KEYS = Object.freeze([
+  'activation_receipt_binding',
+  'artifact_bindings',
+  'artifact_set_digest',
+  'candidate_ordering_correction_authority_binding',
+  'candidate_registration_id',
+  'candidate_transition',
+  'checks',
+  'combined_test_result',
+  'command_execution_ledger',
+  'compiler_evidence',
+  'counts',
+  'effects',
+  'execution_manifest_digest',
+  'execution_manifest_id',
+  'next_work',
+  'parent_authority_binding',
+  'predecessor_receipt_binding',
+  'repository_precondition',
+  'schema_version',
+  'source_set_evidence',
+  'stage',
+  'state',
+  'status',
+  'work',
+  'work2_entry_correction_authority_binding',
+  'work2_receipt_id',
+]);
+const WORK2_RECEIPT_RECOVERY_KEYS = Object.freeze([
+  'schema_version',
+  'correction_authority_binding',
+  'recovery_runner_binding',
+  'superseded_receipt_binding',
+  'superseded_source_set_bindings',
+  'excluded_generalisation_binding',
+  'prior_command_run_counts',
+  'prior_post_receipt_validator_run_count',
+  'recovery_argv',
+  'recovery_run_count',
+  'finaliser_cumulative_run_count',
+  'validator_cumulative_run_count',
+  'replaced_output_paths',
+  'effective_work2_paths',
+  'backup_state',
+  'rollback_state',
+]);
+const WORK4_CANDIDATE_TRANSITION_PATH =
+  'scripts/stage-2y-structure-m7-v2-repair-work4-bind-candidate.mjs';
+const WORK4_CANDIDATE_TRANSITION_ARGV = Object.freeze([
+  'node', WORK4_CANDIDATE_TRANSITION_PATH,
+  '--authority', CANDIDATE_ORDERING_AUTHORITY_PATH,
+]);
+const WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work4-candidate-transition-authority.json';
+const WORK4_CANDIDATE_TRANSITION_AUTHORITY_SCHEMA =
+  'STAGE_2Y_M7_V2_REPAIR_WORK4_CANDIDATE_TRANSITION_AUTHORITY/V1';
+const M3_RECEIPT_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json';
+const M4_RECEIPT_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json';
 const CONTRACT_POLICY_PATH = 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-policy.json';
 const FAMILY_PACKET_PATH = 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-packet-set.json';
 const EXECUTION_MANIFEST_TEST_PATH = 'tests/stage-2y-structure-m7-v2-repair-execution-manifest.test.js';
+const CONTRACT_PATH = 'lib/canonical-v2/m7-v2-contract.js';
+const CONTRACT_TEST_PATH = 'tests/stage-2y-structure-m7-v2-repair-contract.test.js';
+const LEGACY_M5_AGGREGATE_TEST_PATH = 'tests/stage-2y-structure-m5-aggregate.test.js';
 const CANONICAL_BYTES_PATH = 'lib/canonical-v2/canonical-bytes.js';
 const CORRECTION_AUTHORITY_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK1_CORRECTION_AUTHORITY/V1';
 const CORRECTION_APPROVAL_ID = 'BEN-STAGE-2Y-M7-V2-WORK1-RECOVERY-2026-08-15';
@@ -102,6 +237,8 @@ const FAMILIES = [
 
 let validatorPromise;
 let recoveryPromise;
+let work2FinaliserPromise;
+let work2RecoveryPromise;
 
 function loadValidator() {
   validatorPromise ??= import('../scripts/stage-2y-structure-m7-v2-repair-execution-manifest-validate.mjs');
@@ -111,6 +248,20 @@ function loadValidator() {
 function loadRecovery() {
   recoveryPromise ??= import('../scripts/stage-2y-structure-m7-v2-repair-work1-recover.mjs');
   return recoveryPromise;
+}
+
+function loadWork2Finaliser() {
+  work2FinaliserPromise ??= import(
+    '../scripts/stage-2y-structure-m7-v2-repair-work2-finalise.mjs'
+  );
+  return work2FinaliserPromise;
+}
+
+function loadWork2Recovery() {
+  work2RecoveryPromise ??= import(
+    '../scripts/stage-2y-structure-m7-v2-repair-work2-recover.mjs'
+  );
+  return work2RecoveryPromise;
 }
 
 function clone(value) {
@@ -146,6 +297,30 @@ function copyRepositoryFile(root, repositoryPath) {
   const destination = absolute(root, repositoryPath);
   mkdirSync(path.dirname(destination), { recursive: true });
   copyFileSync(path.join(REPO_ROOT, repositoryPath), destination);
+}
+
+function linkRepositoryFile(root, repositoryPath) {
+  const destination = absolute(root, repositoryPath);
+  mkdirSync(path.dirname(destination), { recursive: true });
+  linkSync(path.join(REPO_ROOT, repositoryPath), destination);
+}
+
+function linkNativeWork2SourceRecords(fixture) {
+  for (const [receiptPath, schemaVersion] of [
+    [M3_RECEIPT_PATH, 'CONTEXT_COMPILATION/V1'],
+    [M4_RECEIPT_PATH, 'AGREEMENT_ANALYSIS/V1'],
+  ]) {
+    const receipt = JSON.parse(readFileSync(absolute(fixture.root, receiptPath)));
+    const nativeBindings = receipt.output_bindings.filter(
+      (binding) => binding.schema_version === schemaVersion,
+    );
+    assert.equal(nativeBindings.length, 7);
+    for (const binding of nativeBindings) {
+      if (!existsSync(absolute(fixture.root, binding.path))) {
+        linkRepositoryFile(fixture.root, binding.path);
+      }
+    }
+  }
 }
 
 function standardBinding(repositoryPath, bytes, schemaVersion, idField, id) {
@@ -208,6 +383,9 @@ function manifestPath(work) {
 }
 
 function workReceiptPath(work) {
+  if (work === 'WORK2') {
+    return 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-work2-compiler.json';
+  }
   return `evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-work${workNumber(work)}-fixture.json`;
 }
 
@@ -378,7 +556,7 @@ function deriveRealMilestone(fixture) {
   };
 }
 
-function makeFixture(t) {
+function makeUnrecoveredFixture(t) {
   const root = realpathSync(mkdtempSync(path.join(tmpdir(), 'm7-v2-work-manifest-')));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   copyRepositoryFile(root, AUTHORITY_PATH);
@@ -440,6 +618,204 @@ function makeFixture(t) {
   };
 }
 
+function makeRecoveredWork1Fixture(t) {
+  const fixture = makeUnrecoveredFixture(t);
+  copyRepositoryFile(fixture.root, WORK1_CORRECTION_AUTHORITY_PATH);
+  copyRepositoryFile(fixture.root, WORK1_RECEIPT_PATH);
+  copyRepositoryFile(fixture.root, M3_RECEIPT_PATH);
+  copyRepositoryFile(fixture.root, M4_RECEIPT_PATH);
+  copyRepositoryFile(fixture.root, EXECUTION_MANIFEST_VALIDATOR_PATH);
+  copyRepositoryFile(fixture.root, EXECUTION_MANIFEST_TEST_PATH);
+  for (const repositoryPath of [
+    CONTRACT_PATH,
+    CONTRACT_TEST_PATH,
+    LEGACY_M5_AGGREGATE_TEST_PATH,
+    'lib/canonical-v2/agreement-analysis-consolidation.js',
+    'lib/canonical-v2/m7-v2-deterministic-generator.js',
+    'scripts/stage-2y-structure-family-aggregate.mjs',
+    'scripts/stage-2y-structure-generalisation-shadow.mjs',
+    REGISTER_CANDIDATE_PATH,
+    VERIFY_CANDIDATE_PATH,
+    'scripts/stage-2y-structure-m7-v2-repair-work2-finalise.mjs',
+    'scripts/stage-2y-structure-m7-v2-repair-work2-validate.mjs',
+    'tests/fixtures/canonical-v2/m7-v2-repair/work2-compiler-cases.json',
+    REGISTRATION_TEST_PATH,
+    'tests/stage-2y-structure-m7-v2-repair-work2.test.js',
+  ]) copyRepositoryFile(fixture.root, repositoryPath);
+  fixture.work1Bytes = readFileSync(absolute(fixture.root, WORK1_RECEIPT_PATH));
+  fixture.work1Receipt = JSON.parse(fixture.work1Bytes);
+  fixture.work1ValidationResult = {
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK1_VALIDATION/V1',
+    status: 'PASS_WORK1_CONTRACTS',
+    contract_policy_id: fixture.work1Receipt.contract_policy_binding.record_id,
+    family_packet_set_id: fixture.work1Receipt.family_packet_set_binding.record_id,
+    work1_contract_receipt_id: fixture.work1Receipt.work1_contract_receipt_id,
+    counts: clone(fixture.work1Receipt.counts),
+    effects: clone(fixture.work1Receipt.effects),
+  };
+  const requiredWork1CommitDeltaPaths = [
+    ...fixture.work1Receipt.repository_precondition.required_commit_and_push.commit_delta_paths,
+  ];
+  const sourcePreconditionBindings = [
+    EXECUTION_MANIFEST_VALIDATOR_PATH,
+    EXECUTION_MANIFEST_TEST_PATH,
+    CONTRACT_PATH,
+    CONTRACT_TEST_PATH,
+  ].map((repositoryPath) => fixture.work1Receipt.artifact_bindings.find(
+    (binding) => binding.path === repositoryPath,
+  )).concat({
+    path: LEGACY_M5_AGGREGATE_TEST_PATH,
+    schema_version: null,
+    record_id_field: null,
+    record_id: null,
+    byte_length: 6356,
+    sha256: 'bfea7cb02c3472fdf45eb6f8c6a88f419eab4b993bb2a7c46bc73b78a926f040',
+    git_blob_oid: '194de847c95b5e9727b8663510cc0ba33dd2f819',
+  });
+  assert.equal(sourcePreconditionBindings.every(Boolean), true);
+  const exactBootstrapCorrectionPaths = [
+    WORK2_ENTRY_CORRECTION_AUTHORITY_PATH,
+    EXECUTION_MANIFEST_VALIDATOR_PATH,
+    EXECUTION_MANIFEST_TEST_PATH,
+  ];
+  const authorisedWork2Work1WriteExceptions = [
+    EXECUTION_MANIFEST_VALIDATOR_PATH,
+    EXECUTION_MANIFEST_TEST_PATH,
+    CONTRACT_PATH,
+    CONTRACT_TEST_PATH,
+  ];
+  const authorisedWork2ParentWriteExtensions = [LEGACY_M5_AGGREGATE_TEST_PATH];
+  const authorisedWork2CommandExtensions = [
+    {
+      argv: [
+        'node', '--test', CONTRACT_TEST_PATH,
+        'tests/stage-2y-structure-m7-v2-repair-work2.test.js',
+      ],
+      max_runs: 30,
+    },
+    { argv: ['node', '--test', LEGACY_M5_AGGREGATE_TEST_PATH], max_runs: 30 },
+  ];
+  const authorisedWritePaths = [...new Set([
+    ...exactBootstrapCorrectionPaths,
+    ...authorisedWork2Work1WriteExceptions,
+    ...authorisedWork2ParentWriteExtensions,
+  ])].sort();
+  const correctionAuthority = sealRecord({
+    schema_version: WORK2_ENTRY_CORRECTION_AUTHORITY_SCHEMA,
+    stage: 'M7_V2_REPAIR_WORK2_ENTRY_CORRECTION',
+    authority_state: 'BEN_AUTHORISED_SINGLE_WORK2_ENTRY_CORRECTION',
+    approved_on: '2026-08-15',
+    approver: 'BEN_GOODCHILD',
+    ben_approval_id: 'BEN-M7-V2-WORK2-ENTRY-CORRECTION-20260815',
+    approval_text: WORK2_ENTRY_CORRECTION_APPROVAL,
+    discovered_defects: [
+      {
+        code: 'WORK2_PREDECESSOR_COMMIT_DELTA_SOURCE_STALE',
+        first_gate: 'BASE_TIP_DRIFT',
+        validator_expected_path_count: 13,
+        observed_work1_commit_path_count: 15,
+      },
+      {
+        code: 'WORK2_NULL_CANDIDATE_SURVIVES_EXISTING_REGISTRATION',
+        first_gate: 'CANDIDATE_BINDING_DRIFT',
+      },
+      {
+        code: 'WORK2_SOURCE_SETS_FLATTEN_SEALED_M3_M4_RECORDS',
+        first_gate: 'M7_V2_INPUT_CONSUMPTION',
+      },
+      {
+        code: 'WORK2_PARENT_SCOPE_OMITS_LEGACY_M5_AGGREGATE_TEST',
+        first_gate: 'PATH_SCOPE_DRIFT',
+      },
+    ],
+    parent_authority_binding: clone(fixture.work1Receipt.work1_7_authority_binding),
+    activation_receipt_binding: clone(fixture.work1Receipt.activation_receipt_binding),
+    work1_receipt_binding: recoveryBinding(fixture.root, WORK1_RECEIPT_PATH),
+    work1_correction_authority_binding: clone(
+      fixture.work1Receipt.repository_precondition.recovery.correction_authority_binding,
+    ),
+    base_tip_binding: {
+      commit: '21d9c29c47130090dbbf345dd028e030b61b9e44',
+      parent_commit: ACTIVATION_COMMIT,
+      branch: BRANCH,
+      commit_message: 'Define M7 V2 repair Work 1 contracts',
+      origin_ref: ORIGIN_REF,
+    },
+    source_precondition_bindings: clone(sourcePreconditionBindings),
+    required_work1_commit_delta_paths: requiredWork1CommitDeltaPaths,
+    authorised_scope: [
+      'BIND_WORK2_MILESTONE_TO_RECOVERED_WORK1_EFFECTIVE_FIFTEEN_PATH_LINEAGE',
+      'PATCH_WORK2_ENTRY_VALIDATOR_AND_ITS_ACCEPTANCE_TEST',
+      'REQUIRE_CANDIDATE_BINDING_AFTER_ANY_REGISTRATION_EXISTS',
+      'CLOSE_M3_M4_SOURCE_BINDINGS_IN_THE_M7_V2_CONTRACT_AND_TEST',
+      'MIGRATE_LEGACY_M5_CONSOLIDATION_TEST_TO_THE_CLOSED_SEVEN_INPUT_INTERFACE',
+      'INCLUDE_CORRECTION_PATHS_IN_EVENTUAL_WORK2_COMMIT',
+    ],
+    exact_bootstrap_correction_paths: exactBootstrapCorrectionPaths,
+    authorised_work2_work1_write_exceptions: authorisedWork2Work1WriteExceptions,
+    authorised_work2_parent_write_extensions: authorisedWork2ParentWriteExtensions,
+    authorised_work2_command_extensions: authorisedWork2CommandExtensions,
+    exact_argv_with_run_limits: [
+      {
+        argv: [
+          'node', '--test',
+          '--test-name-pattern=Work2 milestone binds the recovered Work1 exact fifteen-path commit lineage',
+          EXECUTION_MANIFEST_TEST_PATH,
+        ],
+        max_runs: 3,
+      },
+      {
+        argv: [
+          'node', '--test',
+          '--test-name-pattern=a clean null candidate cannot survive an existing registration',
+          EXECUTION_MANIFEST_TEST_PATH,
+        ],
+        max_runs: 3,
+      },
+      { argv: ['node', '--check', EXECUTION_MANIFEST_VALIDATOR_PATH], max_runs: 7 },
+      { argv: ['node', '--test', EXECUTION_MANIFEST_TEST_PATH], max_runs: 7 },
+    ],
+    allowed_effects: {
+      deterministic_local_reads: true,
+      named_repository_writes: authorisedWritePaths,
+      local_commits: 0,
+      repository_pushes: 0,
+      model_calls: 0,
+      network_reads: 0,
+      network_writes: 0,
+      database_writes: 0,
+      product_writes: 0,
+      m0_m4_mutations: 0,
+      m8_actions: 0,
+    },
+    prohibited_effects: clone(fixture.authority.prohibited_effects),
+    success_conditions: [
+      'TRUTHFUL_FIFTEEN_PATH_WORK1_MILESTONE_ACCEPTED',
+      'THIRTEEN_PATH_HISTORY_REJECTED',
+      'EXISTING_CANDIDATE_REGISTRATION_REQUIRES_EXACT_BINDING',
+      'M3_M4_SOURCE_SET_BINDINGS_REPLACE_FLATTENED_COPIES',
+      'LEGACY_M5_ADAPTER_AND_TEST_REMAIN_GREEN',
+      'REQUIRED_WORK2_TEST_COMMANDS_ARE_EXACT_AND_PATH_SCOPED',
+      'CORRECTION_PATHS_INCLUDED_IN_WORK2_MANIFEST',
+      'NO_SEPARATE_CORRECTION_COMMIT',
+      'ZERO_EXTERNAL_EFFECTS',
+    ],
+  }, 'correction_authority_id');
+  writeCanonical(fixture.root, WORK2_ENTRY_CORRECTION_AUTHORITY_PATH, correctionAuthority);
+  fixture.work2EntryCorrectionAuthority = correctionAuthority;
+  const candidateOrderingAuthorityBytes = readFileSync(
+    absolute(REPO_ROOT, CANDIDATE_ORDERING_AUTHORITY_PATH),
+  );
+  writeBytes(fixture.root, CANDIDATE_ORDERING_AUTHORITY_PATH, candidateOrderingAuthorityBytes);
+  fixture.candidateOrderingAuthority = JSON.parse(candidateOrderingAuthorityBytes);
+  fixture.candidateOrderingAuthorityBytes = candidateOrderingAuthorityBytes;
+  return fixture;
+}
+
+function makeFixture(t) {
+  return makeRecoveredWork1Fixture(t);
+}
+
 function allowedEffects(authority) {
   return {
     deterministic_local_reads: true,
@@ -457,15 +833,25 @@ function allowedEffects(authority) {
   };
 }
 
-function baseWork2Manifest(fixture) {
+function baseUnrecoveredWork2Manifest(fixture) {
   const work = 'WORK2';
   const currentManifestPath = manifestPath(work);
   const receiptPath = workReceiptPath(work);
-  const compilerPath = 'lib/canonical-v2/m7-v2-compiler.js';
+  const compilerPath = 'lib/canonical-v2/agreement-analysis-consolidation.js';
+  const contractPath = 'lib/canonical-v2/m7-v2-contract.js';
+  const generatorPath = 'lib/canonical-v2/m7-v2-deterministic-generator.js';
+  const familyAggregatePath = 'scripts/stage-2y-structure-family-aggregate.mjs';
+  const shadowPath = 'scripts/stage-2y-structure-generalisation-shadow.mjs';
   const finaliserPath = 'scripts/stage-2y-structure-m7-v2-repair-work2-finalise.mjs';
   const validatorPath = 'scripts/stage-2y-structure-m7-v2-repair-work2-validate.mjs';
   const testPath = 'tests/stage-2y-structure-m7-v2-repair-work2.test.js';
-  const writePaths = [compilerPath, finaliserPath, validatorPath, testPath, receiptPath];
+  const fixturePath = 'tests/fixtures/canonical-v2/m7-v2-repair/work2-compiler-cases.json';
+  const writePaths = [
+    CANDIDATE_ORDERING_AUTHORITY_PATH,
+    ...WORK2_SOURCE_SET_PATHS,
+    compilerPath, contractPath, generatorPath, familyAggregatePath, shadowPath,
+    finaliserPath, validatorPath, testPath, fixturePath, receiptPath,
+  ];
   const activationBinding = standardBinding(
     ACTIVATION_PATH,
     fixture.activationBytes,
@@ -511,15 +897,21 @@ function baseWork2Manifest(fixture) {
       currentManifestPath,
       AUTHORITY_PATH,
       ACTIVATION_PATH,
+      CANDIDATE_ORDERING_AUTHORITY_PATH,
       WORK1_RECEIPT_PATH,
     ].sort(),
     permitted_write_paths: [...writePaths].sort(),
     exact_argv_with_run_limits: [
-      { argv: ['node', EXECUTION_MANIFEST_VALIDATOR_PATH, currentManifestPath], max_runs: 3 },
+      { argv: ['node', EXECUTION_MANIFEST_VALIDATOR_PATH, currentManifestPath], max_runs: 4 },
       { argv: ['node', '--check', compilerPath], max_runs: 20 },
+      { argv: ['node', '--check', contractPath], max_runs: 20 },
+      { argv: ['node', '--check', generatorPath], max_runs: 20 },
+      { argv: ['node', '--check', familyAggregatePath], max_runs: 20 },
+      { argv: ['node', '--check', shadowPath], max_runs: 20 },
       { argv: ['node', '--check', finaliserPath], max_runs: 20 },
       { argv: ['node', '--check', validatorPath], max_runs: 20 },
       { argv: ['node', '--test', testPath], max_runs: 30 },
+      { argv: [...CANDIDATE_ORDERING_FOCUSED_ARGV], max_runs: 8 },
       { argv: ['node', finaliserPath], max_runs: 1 },
       { argv: ['node', validatorPath], max_runs: 3 },
     ],
@@ -539,9 +931,102 @@ function baseWork2Manifest(fixture) {
       activation_receipt_id: fixture.activation.activation_receipt_id,
     },
     candidate_registration_binding: null,
+    candidate_ordering_correction_authority_binding: standardBinding(
+      CANDIDATE_ORDERING_AUTHORITY_PATH,
+      fixture.candidateOrderingAuthorityBytes,
+      CANDIDATE_ORDERING_AUTHORITY_SCHEMA,
+      'correction_authority_id',
+      CANDIDATE_ORDERING_AUTHORITY_ID,
+    ),
+    candidate_transition: null,
     work_receipt_path: receiptPath,
     success_conditions: [DEFERRED_GIT_PROOF, 'WORK2_RECEIPT_PASS'],
   });
+}
+
+function recoveredWork2Manifest(fixture) {
+  const manifest = baseUnrecoveredWork2Manifest(fixture);
+  const correctedBaseTip = fixture.work2EntryCorrectionAuthority.base_tip_binding;
+  manifest.base_tip_binding.commit = correctedBaseTip.commit;
+  manifest.base_tip_binding.parent_commit = correctedBaseTip.parent_commit;
+  manifest.base_tip_binding.branch = correctedBaseTip.branch;
+  manifest.base_tip_binding.commit_message = correctedBaseTip.commit_message;
+  const attestation = manifest.base_tip_binding.milestone_attestation;
+  attestation.commit = correctedBaseTip.commit;
+  attestation.parent_commit = correctedBaseTip.parent_commit;
+  attestation.branch = correctedBaseTip.branch;
+  attestation.commit_message = correctedBaseTip.commit_message;
+  attestation.origin_ref = correctedBaseTip.origin_ref;
+  for (const entry of attestation.observed_command_result_ledger) {
+    if (entry.check_id === 'SINGLE_PARENT' || entry.check_id === 'EXPECTED_PARENT') {
+      entry.observed_result = `${correctedBaseTip.commit} ${correctedBaseTip.parent_commit}`;
+      entry.argv[entry.argv.length - 1] = correctedBaseTip.commit;
+    }
+    if (entry.check_id === 'EXPECTED_MESSAGE') {
+      entry.observed_result = correctedBaseTip.commit_message;
+      entry.argv[entry.argv.length - 1] = correctedBaseTip.commit;
+    }
+    if (entry.check_id === 'EXACT_TREE_DELTA') {
+      entry.argv[entry.argv.length - 1] = correctedBaseTip.commit;
+    }
+    if (entry.check_id === 'RECEIPT_BLOB_IN_COMMIT') entry.argv[4] = correctedBaseTip.commit;
+    if (entry.check_id === 'ORIGIN_REF_EQUALS_COMMIT') {
+      entry.observed_result = correctedBaseTip.commit;
+    }
+  }
+  const exactCommitDeltaPaths = [
+    ...fixture.work1Receipt.repository_precondition.required_commit_and_push.commit_delta_paths,
+  ].sort();
+  manifest.permitted_read_paths.push(
+    WORK1_CORRECTION_AUTHORITY_PATH,
+    WORK2_ENTRY_CORRECTION_AUTHORITY_PATH,
+  );
+  manifest.permitted_read_paths.sort();
+  manifest.permitted_write_paths.push(
+    WORK2_ENTRY_CORRECTION_AUTHORITY_PATH,
+    EXECUTION_MANIFEST_VALIDATOR_PATH,
+    EXECUTION_MANIFEST_TEST_PATH,
+    CONTRACT_TEST_PATH,
+    LEGACY_M5_AGGREGATE_TEST_PATH,
+    REGISTER_CANDIDATE_PATH,
+    VERIFY_CANDIDATE_PATH,
+    REGISTRATION_TEST_PATH,
+  );
+  manifest.permitted_write_paths.sort();
+  const work2TestPath = 'tests/stage-2y-structure-m7-v2-repair-work2.test.js';
+  const work2TestEntry = manifest.exact_argv_with_run_limits.find(
+    (entry) => entry.argv[0] === 'node'
+      && entry.argv[1] === '--test'
+      && entry.argv.includes(work2TestPath),
+  );
+  work2TestEntry.argv = ['node', '--test', CONTRACT_TEST_PATH, work2TestPath];
+  const focusedCommandIndex = manifest.exact_argv_with_run_limits.findIndex(
+    (entry) => canonicalJson(entry.argv) === canonicalJson(CANDIDATE_ORDERING_FOCUSED_ARGV),
+  );
+  manifest.exact_argv_with_run_limits.splice(focusedCommandIndex, 0, {
+    argv: ['node', '--test', LEGACY_M5_AGGREGATE_TEST_PATH],
+    max_runs: 30,
+  });
+  const orderingCommandIndex = manifest.exact_argv_with_run_limits.findIndex(
+    (entry) => canonicalJson(entry.argv) === canonicalJson(CANDIDATE_ORDERING_FOCUSED_ARGV),
+  );
+  manifest.exact_argv_with_run_limits.splice(orderingCommandIndex + 1, 0, {
+    argv: [...CANDIDATE_REGISTRATION_FOCUSED_ARGV],
+    max_runs: 2,
+  });
+  manifest.exact_git_commit_and_push_argv[0] = [
+    'git', 'add', '--',
+    ...[manifestPath('WORK2'), ...manifest.permitted_write_paths].sort(),
+  ];
+  attestation.exact_commit_delta_paths = exactCommitDeltaPaths;
+  attestation.observed_command_result_ledger
+    .find((entry) => entry.check_id === 'EXACT_TREE_DELTA')
+    .observed_result = exactCommitDeltaPaths;
+  return restamp(manifest);
+}
+
+function baseWork2Manifest(fixture) {
+  return recoveredWork2Manifest(fixture);
 }
 
 function writeManifest(fixture, manifest) {
@@ -571,6 +1056,12 @@ function writeFixtureRecord(root, repositoryPath, schemaVersion, idField, body =
 async function makeCandidate(fixture, seed = 'candidate-a') {
   const builder = await import('../scripts/stage-2y-structure-m7-v2-repair-register-candidate.mjs');
   const verifier = await import('../scripts/stage-2y-structure-m7-v2-repair-verify-candidate.mjs');
+  const work2 = baseWork2Manifest(fixture);
+  writeManifest(fixture, work2);
+  const work2ReceiptBinding = await writePassingLaterReceipt(fixture, work2);
+  const work3 = laterNullCandidateManifest(fixture, 'WORK3', work2, work2ReceiptBinding);
+  writeManifest(fixture, work3);
+  const work3ReceiptBinding = await writePassingLaterReceipt(fixture, work3);
   const code = {
     compiler: 'lib/canonical-v2/agreement-analysis-consolidation.js',
     deterministic_generator: 'lib/canonical-v2/m7-v2-deterministic-generator.js',
@@ -587,12 +1078,18 @@ async function makeCandidate(fixture, seed = 'candidate-a') {
       'tests/stage-2y-structure-m7-v2-repair-execution-manifest.test.js',
       'tests/stage-2y-structure-m7-v2-repair-registration.test.js',
       'tests/stage-2y-structure-m7-v2-repair-work2.test.js',
+      'tests/stage-2y-structure-m7-v2-repair-work3.test.js',
+      'tests/stage-2y-structure-m7-v2-repair-work4.test.js',
     ],
   };
   for (const repositoryPath of [
     code.compiler, code.deterministic_generator, code.contract_validator, code.projector,
     ...code.runners, ...code.tests,
-  ]) writeBytes(fixture.root, repositoryPath, Buffer.from(`fixture:${seed}:${repositoryPath}\n`));
+  ]) {
+    if (!existsSync(absolute(fixture.root, repositoryPath))) {
+      writeBytes(fixture.root, repositoryPath, Buffer.from(`fixture:${seed}:${repositoryPath}\n`));
+    }
+  }
   copyRepositoryFile(fixture.root, code.independent_verifier);
   const semantic_inputs = [
     ['BASE_ANALYSIS_SET', 'AGREEMENT_ANALYSIS_SET/V1', 'analysis_set_id'],
@@ -601,16 +1098,30 @@ async function makeCandidate(fixture, seed = 'candidate-a') {
     ['APPROVED_FAMILY_PACKET_SET', 'STAGE_2Y_M7_V2_REPAIR_FAMILY_PACKET_SET/V1', 'family_packet_set_id'],
     ['APPROVED_FAMILY_PROFILE_SET', 'STAGE_2Y_M7_V2_APPROVED_FAMILY_PROFILE_SET/V1', 'family_profile_set_id'],
     ['APPROVED_STRUCTURE_DISPOSITION_SET', 'STAGE_2Y_M7_V2_STRUCTURE_DISPOSITION_SET/V1', 'structure_disposition_set_id'],
-  ].map(([input_role, schemaVersion, idField]) => ({
-    input_role,
-    ...writeFixtureRecord(
-      fixture.root,
-      `evidence/canonical-v2/stage-2y-structure-migration/m7-v2-repair/inputs/${seed}-${input_role.toLowerCase()}.json`,
-      schemaVersion,
-      idField,
-      { state: 'FIXTURE' },
-    ),
-  }));
+  ].map(([input_role, schemaVersion, idField]) => {
+    if (input_role === 'BASE_ANALYSIS_SET') return {
+      input_role,
+      path: WORK2_AGREEMENT_ANALYSIS_SET_PATH,
+      schema_version: schemaVersion,
+      record_id_field: 'agreement_analysis_set_id',
+    };
+    if (input_role === 'CONTEXT_COMPILATION_SET') return {
+      input_role,
+      path: WORK2_CONTEXT_COMPILATION_SET_PATH,
+      schema_version: schemaVersion,
+      record_id_field: 'context_compilation_set_id',
+    };
+    return {
+      input_role,
+      ...writeFixtureRecord(
+        fixture.root,
+        `evidence/canonical-v2/stage-2y-structure-migration/m7-v2-repair/inputs/${seed}-${input_role.toLowerCase()}.json`,
+        schemaVersion,
+        idField,
+        { state: 'FIXTURE' },
+      ),
+    };
+  });
   const subtype_trees = FAMILIES.map((family_key) => ({
     family_key,
     ...writeFixtureRecord(
@@ -638,12 +1149,26 @@ async function makeCandidate(fixture, seed = 'candidate-a') {
       semantic_inputs,
       subtype_trees,
       view_policy,
-      predecessor_receipts: [{
-        work: 'WORK1',
-        path: WORK1_RECEIPT_PATH,
-        schema_version: fixture.work1Receipt.schema_version,
-        record_id_field: 'work1_contract_receipt_id',
-      }],
+      predecessor_receipts: [
+        {
+          work: 'WORK1',
+          path: WORK1_RECEIPT_PATH,
+          schema_version: fixture.work1Receipt.schema_version,
+          record_id_field: 'work1_contract_receipt_id',
+        },
+        {
+          work: 'WORK2',
+          path: work2ReceiptBinding.path,
+          schema_version: work2ReceiptBinding.schema_version,
+          record_id_field: work2ReceiptBinding.record_id_field,
+        },
+        {
+          work: 'WORK3',
+          path: work3ReceiptBinding.path,
+          schema_version: work3ReceiptBinding.schema_version,
+          record_id_field: work3ReceiptBinding.record_id_field,
+        },
+      ],
       allowed_output_root,
     },
     write: true,
@@ -656,6 +1181,10 @@ async function makeCandidate(fixture, seed = 'candidate-a') {
     record: written.registration,
     repositoryPath: written.registration_path,
     binding: written.binding,
+    work2,
+    work2ReceiptBinding,
+    work3,
+    work3ReceiptBinding,
     wrapper: {
       registration_binding: written.binding,
       independent_verification: independentVerification,
@@ -767,19 +1296,386 @@ function priorManifestFor(fixture, work, candidateBinding) {
   return restamp(previous);
 }
 
+async function writePassingLaterReceipt(fixture, manifest, mutate = null) {
+  const number = workNumber(manifest.work);
+  const idField = `work${number}_receipt_id`;
+  if (number === 2) {
+    linkNativeWork2SourceRecords(fixture);
+    const executionFixturePath =
+      'tests/fixtures/canonical-v2/m7-v2-repair/work2-compiler-cases.json';
+    const executionFixture = JSON.parse(readFileSync(
+      absolute(fixture.root, executionFixturePath),
+    ));
+    executionFixture.state = 'BUILD_ONLY_SOURCE_SET_AND_RECEIPT_ACCEPTANCE';
+    executionFixture.combined_test_result = {
+      semantic_run_count: 0,
+      status: 'PASS',
+      test_file_count: 2,
+    };
+    executionFixture.command_run_counts = [...WORK2_STALE_RECEIPT_RUN_COUNTS];
+    writeCanonical(fixture.root, executionFixturePath, executionFixture);
+    const finaliser = await loadWork2Finaliser();
+    finaliser.finaliseWork2({ repoRoot: fixture.root, write: true });
+    const receiptPath = absolute(fixture.root, manifest.work_receipt_path);
+    let receipt = JSON.parse(readFileSync(receiptPath));
+    if (mutate) {
+      delete receipt[idField];
+      mutate(receipt);
+      receipt = sealRecord(receipt, idField);
+      writeCanonical(fixture.root, manifest.work_receipt_path, receipt);
+    }
+    const bytes = readFileSync(receiptPath);
+    return standardBinding(
+      manifest.work_receipt_path,
+      bytes,
+      receipt.schema_version,
+      idField,
+      receipt[idField],
+    );
+  }
+  const body = {
+    schema_version: `STAGE_2Y_M7_V2_REPAIR_WORK${number}_RECEIPT/V1`,
+    state: number === 3 ? 'PASS_WORK3_BUILD_ONLY_NULL_CANDIDATE' : `PASS_WORK${number}`,
+    status: 'PASS',
+    work: manifest.work,
+    execution_manifest_id: manifest.execution_manifest_id,
+    execution_manifest_digest: manifest.execution_manifest_digest,
+    counts: { fixture: 1 },
+    effects: { files_written: 1 },
+    candidate_ordering_correction_authority_binding:
+      clone(manifest.candidate_ordering_correction_authority_binding),
+    candidate_registration_id:
+      manifest.candidate_registration_binding?.registration_binding?.record_id ?? null,
+    candidate_transition: clone(manifest.candidate_transition),
+  };
+  if (mutate) mutate(body);
+  const receipt = sealRecord(body, idField);
+  writeCanonical(fixture.root, manifest.work_receipt_path, receipt);
+  const bytes = readFileSync(absolute(fixture.root, manifest.work_receipt_path));
+  return standardBinding(
+    manifest.work_receipt_path,
+    bytes,
+    receipt.schema_version,
+    idField,
+    receipt[idField],
+  );
+}
+
+function replaceWork2SourceSet(
+  fixture,
+  receiptBinding,
+  repositoryPath,
+  record,
+  idField,
+  evidenceKey,
+) {
+  writeCanonical(fixture.root, repositoryPath, record);
+  const setBytes = readFileSync(absolute(fixture.root, repositoryPath));
+  const setBinding = standardBinding(
+    repositoryPath,
+    setBytes,
+    record.schema_version,
+    idField,
+    record[idField],
+  );
+  const receipt = JSON.parse(readFileSync(absolute(fixture.root, receiptBinding.path)));
+  delete receipt.work2_receipt_id;
+  receipt.source_set_evidence[evidenceKey] = setBinding;
+  receipt.compiler_evidence.source_set_ids[idField] = record[idField];
+  const artifactIndex = receipt.artifact_bindings.findIndex(
+    (binding) => binding.path === repositoryPath,
+  );
+  receipt.artifact_bindings[artifactIndex] = setBinding;
+  receipt.artifact_set_digest = sha256Hex(canonicalJson(receipt.artifact_bindings));
+  const driftedReceipt = sealRecord(receipt, 'work2_receipt_id');
+  writeCanonical(fixture.root, receiptBinding.path, driftedReceipt);
+  const receiptBytes = readFileSync(absolute(fixture.root, receiptBinding.path));
+  return standardBinding(
+    receiptBinding.path,
+    receiptBytes,
+    driftedReceipt.schema_version,
+    'work2_receipt_id',
+    driftedReceipt.work2_receipt_id,
+  );
+}
+
+function laterNullCandidateManifest(fixture, work, prior, predecessorReceiptBinding) {
+  const number = workNumber(work);
+  const record = priorManifestFor(fixture, `WORK${number + 1}`, null);
+  const finaliserPath = `scripts/stage-2y-structure-m7-v2-repair-work${number}-finalise.mjs`;
+  const validatorPath = `scripts/stage-2y-structure-m7-v2-repair-work${number}-validate.mjs`;
+  const testPath = `tests/stage-2y-structure-m7-v2-repair-work${number}.test.js`;
+  record.predecessor_receipt_binding = predecessorReceiptBinding;
+  record.candidate_registration_binding = null;
+  record.candidate_transition = null;
+  record.work_receipt_path = workReceiptPath(work);
+  record.permitted_read_paths = [
+    manifestPath(work),
+    manifestPath(prior.work),
+    AUTHORITY_PATH,
+    ACTIVATION_PATH,
+    CANDIDATE_ORDERING_AUTHORITY_PATH,
+    EXECUTION_MANIFEST_TEST_PATH,
+    M3_RECEIPT_PATH,
+    M4_RECEIPT_PATH,
+    ...WORK2_SOURCE_SET_PATHS,
+    predecessorReceiptBinding.path,
+  ].sort();
+  record.permitted_write_paths = [
+    finaliserPath,
+    validatorPath,
+    testPath,
+    record.work_receipt_path,
+  ].sort();
+  record.exact_argv_with_run_limits = [
+    { argv: ['node', EXECUTION_MANIFEST_VALIDATOR_PATH, manifestPath(work)], max_runs: 3 },
+    { argv: ['node', '--test', testPath], max_runs: 30 },
+    { argv: ['node', finaliserPath], max_runs: 1 },
+    { argv: ['node', validatorPath], max_runs: 3 },
+  ];
+  record.base_tip_binding = {
+    commit: `${number}`.repeat(40),
+    branch: BRANCH,
+    parent_commit: prior.base_tip_binding.commit,
+    commit_message: prior.exact_git_commit_and_push_argv[1][3],
+    milestone_attestation: milestoneAttestation({
+      repoRoot: fixture.root,
+      predecessorWork: prior.work,
+      commit: `${number}`.repeat(40),
+      parentCommit: prior.base_tip_binding.commit,
+      commitMessage: prior.exact_git_commit_and_push_argv[1][3],
+      predecessorReceiptBinding,
+      predecessorExecutionManifestBinding: standardBinding(
+        manifestPath(prior.work),
+        canonicalBytes(prior),
+        SCHEMA,
+        'execution_manifest_id',
+        prior.execution_manifest_id,
+      ),
+      predecessorValidationResult: predecessorValidationResult(
+        prior.work,
+        predecessorReceiptBinding,
+        fixture,
+      ),
+      exactCommitDeltaPaths: [
+        manifestPath(prior.work),
+        ...prior.permitted_write_paths,
+      ].sort(),
+    }),
+  };
+  record.exact_git_commit_and_push_argv = [
+    ['git', 'add', '--', ...[manifestPath(work), ...record.permitted_write_paths].sort()],
+    ['git', 'commit', '-m', `Implement M7 V2 repair Work ${number}`],
+    ['git', 'push', 'origin', BRANCH],
+  ];
+  record.success_conditions = [DEFERRED_GIT_PROOF, `WORK${number}_RECEIPT_PASS`];
+  return restamp(record);
+}
+
+async function prepareWork3(fixture) {
+  const work2 = baseWork2Manifest(fixture);
+  writeManifest(fixture, work2);
+  const work2ReceiptBinding = await writePassingLaterReceipt(fixture, work2);
+  const work3 = laterNullCandidateManifest(
+    fixture,
+    'WORK3',
+    work2,
+    work2ReceiptBinding,
+  );
+  return { work2, work2ReceiptBinding, work3 };
+}
+
+async function prepareWork4Bootstrap(fixture, prepared = null) {
+  const work3State = prepared ?? await prepareWork3(fixture);
+  const { work3 } = work3State;
+  writeManifest(fixture, work3);
+  const work3ReceiptBinding = work3State.work3ReceiptBinding
+    ?? await writePassingLaterReceipt(fixture, work3);
+  const work4 = laterNullCandidateManifest(
+    fixture,
+    'WORK4',
+    work3,
+    work3ReceiptBinding,
+  );
+  work4.candidate_transition = {
+    authority_binding: clone(work4.candidate_ordering_correction_authority_binding),
+    state: 'AUTHORISED_PENDING',
+    transition_argv: [...WORK4_CANDIDATE_TRANSITION_ARGV],
+    transition_run_limit: 1,
+  };
+  work4.exact_argv_with_run_limits = [
+    {
+      argv: ['node', EXECUTION_MANIFEST_VALIDATOR_PATH, manifestPath('WORK4')],
+      max_runs: 3,
+    },
+    { argv: [...WORK4_CANDIDATE_TRANSITION_ARGV], max_runs: 1 },
+  ];
+  work4.permitted_write_paths = [
+    WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
+    prepared?.repositoryPath
+      ?? `${CANDIDATE_ROOT_FOR_TESTS}/${'4'.repeat(64)}.json`,
+    WORK4_CANDIDATE_TRANSITION_PATH,
+  ].sort();
+  work4.exact_git_commit_and_push_argv[0] = [
+    'git', 'add', '--',
+    ...[manifestPath('WORK4'), ...work4.permitted_write_paths].sort(),
+  ];
+  return restamp(work4);
+}
+
+function writeWork4TransitionAuthority(fixture, bootstrap, candidate) {
+  const bootstrapBinding = standardBinding(
+    manifestPath('WORK4'),
+    canonicalBytes(bootstrap),
+    SCHEMA,
+    'execution_manifest_id',
+    bootstrap.execution_manifest_id,
+  );
+  const authority = sealRecord({
+    schema_version: WORK4_CANDIDATE_TRANSITION_AUTHORITY_SCHEMA,
+    state: 'AUTHORISED_ONE_SHOT_WORK4_CANDIDATE_TRANSITION',
+    candidate_ordering_correction_authority_binding:
+      clone(bootstrap.candidate_ordering_correction_authority_binding),
+    superseded_bootstrap_manifest_binding: bootstrapBinding,
+    candidate_registration_preview_binding: clone(candidate.binding),
+    candidate_registration_binding: clone(candidate.binding),
+    transition_argv: [...WORK4_CANDIDATE_TRANSITION_ARGV],
+    transition_run_limit: 1,
+    effects: {
+      transition_authority_writes: 1,
+      candidate_registration_writes: 1,
+      manifest_replacements: 1,
+      model_calls: 0,
+      network_reads: 0,
+      network_writes: 0,
+      database_writes: 0,
+      product_writes: 0,
+      m0_m4_mutations: 0,
+      m8_actions: 0,
+    },
+  }, 'candidate_transition_authority_id');
+  writeCanonical(fixture.root, WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH, authority);
+  const bytes = readFileSync(
+    absolute(fixture.root, WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH),
+  );
+  return {
+    authority,
+    bootstrapBinding,
+    binding: standardBinding(
+      WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
+      bytes,
+      authority.schema_version,
+      'candidate_transition_authority_id',
+      authority.candidate_transition_authority_id,
+    ),
+  };
+}
+
+async function prepareVerifiedWork4(fixture, seed = 'candidate-a') {
+  const candidate = await makeCandidate(fixture, seed);
+  const bootstrap = await prepareWork4Bootstrap(fixture, candidate);
+  writeManifest(fixture, bootstrap);
+  const transitionAuthority = writeWork4TransitionAuthority(
+    fixture,
+    bootstrap,
+    candidate,
+  );
+  const work4 = clone(bootstrap);
+  work4.candidate_registration_binding = clone(candidate.wrapper);
+  work4.candidate_transition = {
+    authority_binding: clone(transitionAuthority.binding),
+    superseded_bootstrap_manifest_binding: clone(transitionAuthority.bootstrapBinding),
+    candidate_registration_preview_binding: clone(candidate.binding),
+    candidate_registration_binding: clone(candidate.binding),
+    state: 'PASS',
+    transition_argv: [...WORK4_CANDIDATE_TRANSITION_ARGV],
+    transition_run_count: 1,
+  };
+  work4.permitted_read_paths = [...new Set([
+    ...work4.permitted_read_paths,
+    WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
+    ...candidateReadPaths(candidate),
+  ])].sort();
+  const finaliserPath = 'scripts/stage-2y-structure-m7-v2-repair-work4-finalise.mjs';
+  const validatorPath = 'scripts/stage-2y-structure-m7-v2-repair-work4-validate.mjs';
+  const testPath = 'tests/stage-2y-structure-m7-v2-repair-work4.test.js';
+  work4.permitted_write_paths = [
+    WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
+    candidate.repositoryPath,
+    WORK4_CANDIDATE_TRANSITION_PATH,
+    finaliserPath,
+    validatorPath,
+    testPath,
+    work4.work_receipt_path,
+  ].sort();
+  work4.exact_argv_with_run_limits = [
+    {
+      argv: ['node', EXECUTION_MANIFEST_VALIDATOR_PATH, manifestPath('WORK4')],
+      max_runs: 3,
+    },
+    { argv: [...WORK4_CANDIDATE_TRANSITION_ARGV], max_runs: 1 },
+    { argv: ['node', '--test', testPath], max_runs: 30 },
+    { argv: ['node', finaliserPath], max_runs: 1 },
+    { argv: ['node', validatorPath], max_runs: 3 },
+  ];
+  work4.exact_git_commit_and_push_argv[0] = [
+    'git', 'add', '--',
+    ...[manifestPath('WORK4'), ...work4.permitted_write_paths].sort(),
+  ];
+  return {
+    candidate,
+    work2: candidate.work2,
+    work3: candidate.work3,
+    bootstrap,
+    transitionAuthority,
+    work4: restamp(work4),
+  };
+}
+
+async function prepareVerifiedWork5(fixture, seed = 'candidate-a') {
+  const state = await prepareVerifiedWork4(fixture, seed);
+  writeManifest(fixture, state.work4);
+  const work4ReceiptBinding = await writePassingLaterReceipt(fixture, state.work4);
+  const work5 = laterNullCandidateManifest(
+    fixture,
+    'WORK5',
+    state.work4,
+    work4ReceiptBinding,
+  );
+  work5.candidate_registration_binding = clone(state.candidate.wrapper);
+  work5.candidate_transition = clone(state.work4.candidate_transition);
+  work5.permitted_read_paths = [...new Set([
+    ...work5.permitted_read_paths,
+    WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
+    ...candidateReadPaths(state.candidate),
+  ])].sort();
+  return { ...state, work4ReceiptBinding, work5: restamp(work5) };
+}
+
+const WORK2_RECOVERY_RECORD_ID_FIELDS = Object.freeze({
+  [WORK2_ENTRY_CORRECTION_AUTHORITY_SCHEMA]: 'correction_authority_id',
+  [CANDIDATE_ORDERING_AUTHORITY_SCHEMA]: 'correction_authority_id',
+  [WORK2_RECOVERY_AUTHORITY_SCHEMA]: 'correction_authority_id',
+  [SCHEMA]: 'execution_manifest_id',
+  'STAGE_2Y_M7_V2_REPAIR_WORK1_CONTRACT_RECEIPT/V1': 'work1_contract_receipt_id',
+  'STAGE_2Y_M7_V2_REPAIR_WORK2_COMPILER_RECEIPT/V1': 'work2_receipt_id',
+  'AGREEMENT_ANALYSIS_SET/V1': 'agreement_analysis_set_id',
+  'CONTEXT_COMPILATION_SET/V1': 'context_compilation_set_id',
+  'STAGE_2Y_M7_V2_REPAIR_WORK2_COMPILER_CASES/V1': null,
+});
+const RECOVERY_RECORD_ID_FIELDS = Object.freeze({
+  [CORRECTION_AUTHORITY_SCHEMA]: 'correction_authority_id',
+  'STAGE_2Y_M7_V2_REPAIR_WORK1_7_AUTHORITY/V1': 'authority_id',
+  'STAGE_2Y_M7_V2_REPAIR_WORK1_7_AUTHORITY_ACTIVATION_RECEIPT/V1':
+    'activation_receipt_id',
+  'STAGE_2Y_M7_V2_REPAIR_EVIDENCE_ROOT_RECEIPT/V1': 'evidence_root_id',
+  'STAGE_2Y_M7_V2_REPAIR_CONTRACT_POLICY/V1': 'contract_policy_id',
+  'STAGE_2Y_M7_V2_REPAIR_FAMILY_PACKET_SET/V1': 'family_packet_set_id',
+  ...WORK2_RECOVERY_RECORD_ID_FIELDS,
+});
+
 function recoveryRecordIdField(record) {
-  return ({
-    [CORRECTION_AUTHORITY_SCHEMA]: 'correction_authority_id',
-    'STAGE_2Y_M7_V2_REPAIR_WORK1_7_AUTHORITY/V1': 'authority_id',
-    'STAGE_2Y_M7_V2_REPAIR_WORK1_7_AUTHORITY_ACTIVATION_RECEIPT/V1':
-      'activation_receipt_id',
-    'STAGE_2Y_M7_V2_REPAIR_EVIDENCE_ROOT_RECEIPT/V1': 'evidence_root_id',
-    'STAGE_2Y_M7_V2_REPAIR_CONTRACT_POLICY/V1': 'contract_policy_id',
-    'STAGE_2Y_M7_V2_REPAIR_FAMILY_PACKET_SET/V1': 'family_packet_set_id',
-    'STAGE_2Y_M7_V2_REPAIR_WORK1_CONTRACT_RECEIPT/V1': 'work1_contract_receipt_id',
-  })[record.schema_version] ?? Object.keys(record).find(
-    (key) => key.endsWith('_id') && typeof record[key] === 'string',
-  ) ?? null;
+  return RECOVERY_RECORD_ID_FIELDS[record.schema_version] ?? null;
 }
 
 function recoveryBinding(root, repositoryPath) {
@@ -789,9 +1685,11 @@ function recoveryBinding(root, repositoryPath) {
   let recordId = null;
   if (repositoryPath.endsWith('.json')) {
     const record = JSON.parse(bytes);
-    schemaVersion = record.schema_version;
     recordIdField = recoveryRecordIdField(record);
-    recordId = recordIdField === null ? null : record[recordIdField];
+    if (recordIdField !== null) {
+      schemaVersion = record.schema_version;
+      recordId = record[recordIdField];
+    }
   }
   return standardBinding(
     repositoryPath,
@@ -800,6 +1698,18 @@ function recoveryBinding(root, repositoryPath) {
     recordIdField,
     recordId,
   );
+}
+
+function historicalBindingBytes(binding) {
+  const bytes = execFileSync(
+    '/usr/bin/git',
+    ['cat-file', 'blob', binding.git_blob_oid],
+    { cwd: REPO_ROOT, encoding: null },
+  );
+  assert.equal(bytes.length, binding.byte_length);
+  assert.equal(sha256Hex(bytes), binding.sha256);
+  assert.equal(gitBlobOid(bytes), binding.git_blob_oid);
+  return bytes;
 }
 
 function recoveryFinaliserSource(staleReceipt, outcome) {
@@ -1199,6 +2109,9 @@ function makeRecoveryFixture(t, {
   const parentAuthority = JSON.parse(parentBytes);
   const activationBytes = readFileSync(absolute(root, ACTIVATION_PATH));
   const activation = JSON.parse(activationBytes);
+  const productionCorrectionAuthority = JSON.parse(readFileSync(
+    path.join(REPO_ROOT, WORK1_CORRECTION_AUTHORITY_PATH),
+  ));
   const originalPaths = parentAuthority.command_policy.work1_exact_changed_paths;
   for (const repositoryPath of originalPaths) {
     if (RECOVERY_TARGET_PATHS.includes(repositoryPath)
@@ -1207,7 +2120,9 @@ function makeRecoveryFixture(t, {
       || repositoryPath === EXECUTION_MANIFEST_TEST_PATH) continue;
     copyRepositoryFile(root, repositoryPath);
   }
-  for (const repositoryPath of RECOVERY_TARGET_PATHS) copyRepositoryFile(root, repositoryPath);
+  for (const binding of productionCorrectionAuthority.stale_output_bindings) {
+    writeBytes(root, binding.path, historicalBindingBytes(binding));
+  }
   const staleReceipt = JSON.parse(readFileSync(absolute(root, WORK1_RECEIPT_PATH)));
   writeBytes(
     root,
@@ -1219,7 +2134,14 @@ function makeRecoveryFixture(t, {
     WORK1_VALIDATOR_PATH,
     Buffer.from(recoveryValidatorSource(validatorOutcome), 'utf8'),
   );
-  copyRepositoryFile(root, EXECUTION_MANIFEST_TEST_PATH);
+  const historicalTestBinding = productionCorrectionAuthority.executable_bindings.find(
+    (binding) => binding.path === EXECUTION_MANIFEST_TEST_PATH,
+  );
+  writeBytes(
+    root,
+    EXECUTION_MANIFEST_TEST_PATH,
+    historicalBindingBytes(historicalTestBinding),
+  );
   copyRepositoryFile(root, WORK1_RECOVERY_PATH);
   const authority = buildCorrectionAuthority(
     root,
@@ -1331,6 +2253,158 @@ function assertRecoveryResult(result, status, authority, effects) {
   assert.deepEqual(result.effects, effects);
 }
 
+const ZERO_WORK2_RECOVERY_EFFECTS = Object.freeze({
+  system_temp_backup_directories: 0,
+  work2_generated_output_replacements: 0,
+  local_subprocess_runs: 0,
+  repository_commits: 0,
+  repository_pushes: 0,
+  non_target_repository_writes: 0,
+  model_calls: 0,
+  network_reads: 0,
+  network_writes: 0,
+  database_writes: 0,
+  product_writes: 0,
+  m0_m4_mutations: 0,
+  m8_actions: 0,
+  serving_changes: 0,
+  publication_changes: 0,
+});
+
+function readWork2RecoveryAuthority(root = REPO_ROOT) {
+  const bytes = readFileSync(absolute(root, WORK2_RECOVERY_AUTHORITY_PATH));
+  return { bytes, record: JSON.parse(bytes) };
+}
+
+function makeWork2RecoveryFixture(t) {
+  const fixture = makeRecoveredWork1Fixture(t);
+  if (!existsSync(absolute(fixture.root, CANONICAL_BYTES_PATH))) {
+    copyRepositoryFile(fixture.root, CANONICAL_BYTES_PATH);
+  }
+  linkNativeWork2SourceRecords(fixture);
+  const productionAuthority = readWork2RecoveryAuthority();
+  const productionManifest = JSON.parse(readFileSync(
+    path.join(REPO_ROOT, WORK2_EXECUTION_MANIFEST_PATH),
+  ));
+  for (const repositoryPath of productionManifest.permitted_read_paths) {
+    if (!existsSync(absolute(fixture.root, repositoryPath))) {
+      copyRepositoryFile(fixture.root, repositoryPath);
+    }
+  }
+  const effectivePaths = [...productionAuthority.record.effective_work2_paths];
+  const effectivePathSet = new Set(effectivePaths);
+
+  runFixtureGit(fixture.root, ['init']);
+  const baselinePaths = Object.entries(snapshotRepository(fixture.root))
+    .filter(([repositoryPath, entry]) => (
+      entry.kind === 'FILE' && !effectivePathSet.has(repositoryPath)
+    ))
+    .map(([repositoryPath]) => repositoryPath)
+    .sort();
+  runFixtureGit(fixture.root, ['add', '--', ...baselinePaths]);
+  runFixtureGit(fixture.root, ['commit', '-m', 'fixture Work2 recovery baseline']);
+
+  for (const repositoryPath of effectivePaths) copyRepositoryFile(fixture.root, repositoryPath);
+  const executionFixturePath =
+    'tests/fixtures/canonical-v2/m7-v2-repair/work2-compiler-cases.json';
+  const executionFixture = JSON.parse(readFileSync(absolute(fixture.root, executionFixturePath)));
+  executionFixture.command_run_counts = [...WORK2_RECOVERY_LEDGER_RUN_COUNTS];
+  writeCanonical(fixture.root, executionFixturePath, executionFixture);
+  assert.deepEqual(recoveryWorktreePaths(fixture.root), [...effectivePaths].sort());
+
+  const manifestBytes = readFileSync(absolute(fixture.root, WORK2_EXECUTION_MANIFEST_PATH));
+  const staleReceiptBytes = readFileSync(absolute(fixture.root, WORK2_RECEIPT_PATH));
+  fixture.work2RecoveryAuthority = productionAuthority.record;
+  fixture.work2RecoveryAuthorityBytes = productionAuthority.bytes;
+  fixture.work2Manifest = JSON.parse(manifestBytes);
+  fixture.work2ManifestBytes = manifestBytes;
+  fixture.staleWork2Receipt = JSON.parse(staleReceiptBytes);
+  fixture.staleWork2ReceiptBytes = staleReceiptBytes;
+  fixture.staleWork2OutputBytes = new Map(WORK2_RECOVERY_TARGET_PATHS.map(
+    (repositoryPath) => [repositoryPath, readFileSync(absolute(fixture.root, repositoryPath))],
+  ));
+  return fixture;
+}
+
+function restampWork2RecoveryAuthority(fixture, mutate) {
+  const unsigned = clone(fixture.work2RecoveryAuthority);
+  delete unsigned.correction_authority_id;
+  mutate(unsigned);
+  const authority = sealRecord(unsigned, 'correction_authority_id');
+  writeCanonical(fixture.root, WORK2_RECOVERY_AUTHORITY_PATH, authority);
+  fixture.work2RecoveryAuthority = authority;
+  fixture.work2RecoveryAuthorityBytes = canonicalBytes(authority);
+  return authority;
+}
+
+function restampWork2Receipt(fixture, mutate) {
+  const receipt = JSON.parse(readFileSync(absolute(fixture.root, WORK2_RECEIPT_PATH)));
+  delete receipt.work2_receipt_id;
+  mutate(receipt);
+  const sealed = sealRecord(receipt, 'work2_receipt_id');
+  writeCanonical(fixture.root, WORK2_RECEIPT_PATH, sealed);
+  const bytes = readFileSync(absolute(fixture.root, WORK2_RECEIPT_PATH));
+  return standardBinding(
+    WORK2_RECEIPT_PATH,
+    bytes,
+    sealed.schema_version,
+    'work2_receipt_id',
+    sealed.work2_receipt_id,
+  );
+}
+
+function recoveredWork3Manifest(fixture, work2ReceiptBinding) {
+  const work3 = laterNullCandidateManifest(
+    fixture,
+    'WORK3',
+    fixture.work2Manifest,
+    work2ReceiptBinding,
+  );
+  work3.permitted_read_paths = [...new Set([
+    ...work3.permitted_read_paths,
+    WORK2_RECOVERY_AUTHORITY_PATH,
+    WORK2_RECOVERY_PATH,
+  ])].sort();
+  const effectiveCommitPaths = [...fixture.work2RecoveryAuthority.effective_work2_paths].sort();
+  const attestation = work3.base_tip_binding.milestone_attestation;
+  attestation.exact_commit_delta_paths = effectiveCommitPaths;
+  attestation.observed_command_result_ledger.find(
+    (entry) => entry.check_id === 'EXACT_TREE_DELTA',
+  ).observed_result = effectiveCommitPaths;
+  return restamp(work3);
+}
+
+function assertWork2RecoveryResult(result, status, authority, effects) {
+  assert.deepEqual(Object.keys(result).sort(), [
+    'status',
+    'correction_authority_id',
+    'target_paths',
+    'finaliser_argv',
+    'validator_argv',
+    'effects',
+  ].sort());
+  assert.equal(result.status, status);
+  assert.equal(result.correction_authority_id, authority.correction_authority_id);
+  assert.deepEqual(result.target_paths, WORK2_RECOVERY_TARGET_PATHS);
+  assert.deepEqual(result.finaliser_argv, ['node', WORK2_FINALISER_PATH]);
+  assert.deepEqual(result.validator_argv, ['node', WORK2_VALIDATOR_PATH]);
+  assert.deepEqual(result.effects, effects);
+}
+
+function assertWork2RecoveryCode(recovery, fn, code) {
+  assert.throws(fn, (error) => {
+    assert.ok(error instanceof recovery.Work2RecoveryError);
+    assert.equal(error.code, code);
+    return true;
+  });
+}
+
+function assertWork2StaleOutputsRestored(fixture) {
+  for (const [repositoryPath, bytes] of fixture.staleWork2OutputBytes) {
+    assert.deepEqual(readFileSync(absolute(fixture.root, repositoryPath)), bytes);
+  }
+}
+
 test('Work2-7 manifests bind an external milestone attestation without claiming independent Git proof', async (t) => {
   const validator = await loadValidator();
   const fixture = makeFixture(t);
@@ -1344,6 +2418,7 @@ test('Work2-7 manifests bind an external milestone attestation without claiming 
 
   assert.deepEqual(Object.keys(result).sort(), [
     'candidate_registration_id',
+    'candidate_stage_state',
     'deferred_proofs',
     'execution_manifest_digest',
     'execution_manifest_id',
@@ -1358,10 +2433,112 @@ test('Work2-7 manifests bind an external milestone attestation without claiming 
   assert.equal(result.execution_manifest_id, manifest.execution_manifest_id);
   assert.equal(result.execution_manifest_digest, manifest.execution_manifest_digest);
   assert.equal(result.candidate_registration_id, null);
+  assert.equal(result.candidate_stage_state, 'BUILD_ONLY_NULL');
   assert.deepEqual(result.deferred_proofs, [DEFERRED_GIT_PROOF]);
 });
 
-test('structural attestation fixture derives commit, tree and local origin values from disposable Git', async (t) => {
+test('Work2 milestone binds the recovered Work1 exact fifteen-path commit lineage', async (t) => {
+  const validator = await loadValidator();
+  const fixture = makeRecoveredWork1Fixture(t);
+  const manifest = recoveredWork2Manifest(fixture);
+  const exactCommitDeltaPaths = [
+    ...fixture.work1Receipt.repository_precondition.required_commit_and_push.commit_delta_paths,
+  ].sort();
+  assert.equal(exactCommitDeltaPaths.length, 15);
+  assert.equal(new Set(exactCommitDeltaPaths).size, 15);
+  const repositoryPath = writeManifest(fixture, manifest);
+
+  const result = await validator.validateExecutionManifest({
+    repoRoot: fixture.root,
+    manifestPath: repositoryPath,
+  });
+
+  assert.equal(result.status, 'PASS_NARROWING_EXECUTION_MANIFEST');
+  assert.equal(result.work, 'WORK2');
+});
+
+test('Work2 recovered lineage rejects false deltas and unauthorised write scope', async (t) => {
+  const validator = await loadValidator();
+  const cases = [
+    ['BASE_TIP_DRIFT', (fixture, manifest) => {
+      const paths = fixture.authority.command_policy.exact_work1_commit_argv[0].slice(3).sort();
+      manifest.base_tip_binding.milestone_attestation.exact_commit_delta_paths = paths;
+      manifest.base_tip_binding.milestone_attestation.observed_command_result_ledger
+        .find((entry) => entry.check_id === 'EXACT_TREE_DELTA').observed_result = paths;
+    }],
+    ['BASE_TIP_DRIFT', (_fixture, manifest) => {
+      const paths = [
+        ...manifest.base_tip_binding.milestone_attestation.exact_commit_delta_paths,
+        'invented-sixteenth-path.js',
+      ].sort();
+      manifest.base_tip_binding.milestone_attestation.exact_commit_delta_paths = paths;
+      manifest.base_tip_binding.milestone_attestation.observed_command_result_ledger
+        .find((entry) => entry.check_id === 'EXACT_TREE_DELTA').observed_result = paths;
+    }],
+    ['PATH_SCOPE_DRIFT', (_fixture, manifest) => {
+      manifest.permitted_write_paths = manifest.permitted_write_paths.filter(
+        (repositoryPath) => repositoryPath !== EXECUTION_MANIFEST_TEST_PATH,
+      );
+      manifest.exact_git_commit_and_push_argv[0] = [
+        'git', 'add', '--',
+        ...[manifestPath('WORK2'), ...manifest.permitted_write_paths].sort(),
+      ];
+    }],
+    ['PATH_SCOPE_DRIFT', (_fixture, manifest) => {
+      manifest.permitted_write_paths.push(WORK1_FINALISER_PATH);
+      manifest.permitted_write_paths.sort();
+      manifest.exact_git_commit_and_push_argv[0] = [
+        'git', 'add', '--',
+        ...[manifestPath('WORK2'), ...manifest.permitted_write_paths].sort(),
+      ];
+    }],
+    ['PATH_SCOPE_DRIFT', (_fixture, manifest) => {
+      manifest.permitted_write_paths.push('tests/stage-2y-structure-m5-correction.test.js');
+      manifest.permitted_write_paths.sort();
+      manifest.exact_git_commit_and_push_argv[0] = [
+        'git', 'add', '--',
+        ...[manifestPath('WORK2'), ...manifest.permitted_write_paths].sort(),
+      ];
+    }],
+    ['PATH_SCOPE_DRIFT', (_fixture, manifest) => {
+      manifest.permitted_write_paths = manifest.permitted_write_paths.filter(
+        (repositoryPath) => repositoryPath
+          !== 'tests/stage-2y-structure-m7-v2-repair-work2.test.js',
+      );
+      manifest.exact_git_commit_and_push_argv[0] = [
+        'git', 'add', '--',
+        ...[manifestPath('WORK2'), ...manifest.permitted_write_paths].sort(),
+      ];
+    }],
+  ];
+  for (const [code, mutate] of cases) {
+    const fixture = makeRecoveredWork1Fixture(t);
+    const manifest = recoveredWork2Manifest(fixture);
+    mutate(fixture, manifest);
+    const repositoryPath = writeManifest(fixture, restamp(manifest));
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), code);
+  }
+
+  const fixture = makeRecoveredWork1Fixture(t);
+  const correctionAuthority = clone(fixture.work2EntryCorrectionAuthority);
+  delete correctionAuthority.correction_authority_id;
+  correctionAuthority.work1_correction_authority_binding.record_id = '0'.repeat(64);
+  writeCanonical(
+    fixture.root,
+    WORK2_ENTRY_CORRECTION_AUTHORITY_PATH,
+    sealRecord(correctionAuthority, 'correction_authority_id'),
+  );
+  const repositoryPath = writeManifest(fixture, recoveredWork2Manifest(fixture));
+  await assertCode(validator, () => validator.validateExecutionManifest({
+    repoRoot: fixture.root,
+    manifestPath: repositoryPath,
+  }), 'AUTHORITY_BINDING_DRIFT');
+});
+
+test('structural attestation derives disposable Git values but cannot replace the fixed Work1 tip', async (t) => {
   const validator = await loadValidator();
   const fixture = makeFixture(t);
   const observed = deriveRealMilestone(fixture);
@@ -1394,12 +2571,10 @@ test('structural attestation fixture derives commit, tree and local origin value
     }),
   };
   const repositoryPath = writeManifest(fixture, restamp(manifest));
-  const result = await validator.validateExecutionManifest({
+  await assertCode(validator, () => validator.validateExecutionManifest({
     repoRoot: fixture.root,
     manifestPath: repositoryPath,
-  });
-  assert.equal(result.status, 'PASS_NARROWING_EXECUTION_MANIFEST');
-  assert.deepEqual(result.deferred_proofs, [DEFERRED_GIT_PROOF]);
+  }), 'AUTHORITY_BINDING_DRIFT');
 });
 
 test('schema, exact members, canonical bytes, state, digest and ID are closed', async (t) => {
@@ -1442,7 +2617,9 @@ test('authority, activation, predecessor and declared tip bindings are exact', a
     ['PREDECESSOR_BINDING_DRIFT', (record) => {
       record.predecessor_receipt_binding.schema_version = 'TEST_WORK1_RECEIPT/V1';
     }],
-    ['BASE_TIP_DRIFT', (record) => { record.base_tip_binding.parent_commit = '0'.repeat(40); }],
+    ['AUTHORITY_BINDING_DRIFT', (record) => {
+      record.base_tip_binding.parent_commit = '0'.repeat(40);
+    }],
     ['BASE_TIP_DRIFT', (record) => { delete record.base_tip_binding.milestone_attestation; }],
     ['BASE_TIP_DRIFT', (record) => {
       record.base_tip_binding.milestone_attestation.predecessor_receipt_binding.sha256 = '0'.repeat(64);
@@ -1584,7 +2761,7 @@ test('read, write and create-once paths stay inside the parent authority and rej
   await assertCode(validator, () => validator.validateExecutionManifest({
     repoRoot: existingFixture.root,
     manifestPath: existingPath,
-  }), 'WRITE_ONCE_DRIFT');
+  }), 'PATH_SCOPE_DRIFT');
 });
 
 test('commands are literal, work-scoped and finitely bounded', async (t) => {
@@ -1596,6 +2773,16 @@ test('commands are literal, work-scoped and finitely bounded', async (t) => {
     ['COMMAND_SCOPE_DRIFT', (record) => { record.exact_argv_with_run_limits[0].argv.push('$(touch bad)'); }],
     ['COMMAND_SCOPE_DRIFT', (record) => { record.exact_argv_with_run_limits[0].argv = ['git', 'cat-file', '-p', 'f'.repeat(40)]; }],
     ['COMMAND_SCOPE_DRIFT', (record) => { record.exact_argv_with_run_limits.shift(); }],
+    ['COMMAND_SCOPE_DRIFT', (record) => {
+      record.exact_argv_with_run_limits = record.exact_argv_with_run_limits.filter(
+        (entry) => !entry.argv.includes(CONTRACT_TEST_PATH),
+      );
+    }],
+    ['COMMAND_SCOPE_DRIFT', (record) => {
+      record.exact_argv_with_run_limits.find(
+        (entry) => entry.argv.includes(LEGACY_M5_AGGREGATE_TEST_PATH),
+      ).max_runs = 29;
+    }],
     ['COMMAND_SCOPE_DRIFT', (record) => { record.exact_git_commit_and_push_argv[0].push('docs/core/PLAN.md'); }],
     ['COMMAND_SCOPE_DRIFT', (record) => { record.exact_git_commit_and_push_argv[2] = ['git', 'push', 'elsewhere', BRANCH]; }],
   ];
@@ -1688,86 +2875,12 @@ test('candidate records are content-addressed and Work5-7 keep one exact registr
   }
   {
     const fixture = makeFixture(t);
-    const candidate = await makeCandidate(fixture);
-    const prior = priorManifestFor(fixture, 'WORK5', null);
-    writeManifest(fixture, prior);
-    const priorReceipt = sealRecord({
-      schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK4_RECEIPT/V1',
-      state: 'PASS_WORK4',
-      status: 'PASS',
-      work: 'WORK4',
-      execution_manifest_id: prior.execution_manifest_id,
-      execution_manifest_digest: prior.execution_manifest_digest,
-      counts: { fixture: 1 },
-      effects: { files_written: 1 },
-    }, 'work4_receipt_id');
-    writeCanonical(fixture.root, prior.work_receipt_path, priorReceipt);
-    const priorReceiptBytes = readFileSync(absolute(fixture.root, prior.work_receipt_path));
-    const record = priorManifestFor(fixture, 'WORK6', candidate.wrapper);
-    record.work = 'WORK5';
-    record.predecessor_receipt_binding = standardBinding(
-      prior.work_receipt_path,
-      priorReceiptBytes,
-      priorReceipt.schema_version,
-      'work4_receipt_id',
-      priorReceipt.work4_receipt_id,
-    );
-    record.candidate_registration_binding = candidate.wrapper;
-    record.permitted_read_paths = [...new Set([
-      manifestPath('WORK5'), manifestPath('WORK4'), AUTHORITY_PATH, ACTIVATION_PATH,
-      prior.work_receipt_path, ...candidateReadPaths(candidate),
-    ])].sort();
-    record.work_receipt_path = workReceiptPath('WORK5');
-    record.permitted_write_paths = record.permitted_write_paths.map((entry) => entry.replace(/work2/g, 'work5'));
-    record.permitted_write_paths = [...new Set([...record.permitted_write_paths, record.work_receipt_path])].sort();
-    record.exact_argv_with_run_limits = [
-      { argv: ['node', EXECUTION_MANIFEST_VALIDATOR_PATH, manifestPath('WORK5')], max_runs: 3 },
-      { argv: ['node', '--test', 'tests/stage-2y-structure-m7-v2-repair-work5.test.js'], max_runs: 30 },
-      { argv: ['node', 'scripts/stage-2y-structure-m7-v2-repair-work5-finalise.mjs'], max_runs: 1 },
-      { argv: ['node', 'scripts/stage-2y-structure-m7-v2-repair-work5-validate.mjs'], max_runs: 3 },
-    ];
-    for (const command of record.exact_argv_with_run_limits) {
-      const commandPath = command.argv.at(-1);
-      if (commandPath === manifestPath('WORK5')) continue;
-      if (!record.permitted_write_paths.includes(commandPath)) record.permitted_write_paths.push(commandPath);
-    }
-    record.permitted_write_paths.sort();
-    assert.equal(record.permitted_write_paths.includes(manifestPath('WORK5')), false);
-    assert.equal(existsSync(absolute(fixture.root, record.work_receipt_path)), false);
-    record.base_tip_binding = {
-      commit: '5'.repeat(40),
-      branch: BRANCH,
-      parent_commit: prior.base_tip_binding.commit,
-      commit_message: prior.exact_git_commit_and_push_argv[1][3],
-      milestone_attestation: milestoneAttestation({
-        repoRoot: fixture.root,
-        predecessorWork: 'WORK4',
-        commit: '5'.repeat(40),
-        parentCommit: prior.base_tip_binding.commit,
-        commitMessage: prior.exact_git_commit_and_push_argv[1][3],
-        predecessorReceiptBinding: record.predecessor_receipt_binding,
-        predecessorExecutionManifestBinding: standardBinding(
-          manifestPath('WORK4'),
-          canonicalBytes(prior),
-          SCHEMA,
-          'execution_manifest_id',
-          prior.execution_manifest_id,
-        ),
-        predecessorValidationResult: predecessorValidationResult(
-          'WORK4',
-          record.predecessor_receipt_binding,
-          fixture,
-        ),
-        exactCommitDeltaPaths: [manifestPath('WORK4'), ...prior.permitted_write_paths].sort(),
-      }),
-    };
-    record.exact_git_commit_and_push_argv = [
-      ['git', 'add', '--', ...[manifestPath('WORK5'), ...record.permitted_write_paths].sort()],
-      ['git', 'commit', '-m', 'Implement M7 V2 repair Work 5'],
-      ['git', 'push', 'origin', BRANCH],
-    ];
-    record.success_conditions = [DEFERRED_GIT_PROOF, 'WORK5_RECEIPT_PASS'];
-    const sealedWork5 = restamp(record);
+    const {
+      candidate,
+      work4: prior,
+      work5: sealedWork5,
+    } = await prepareVerifiedWork5(fixture);
+    const record = sealedWork5;
     const repositoryPath = writeManifest(fixture, sealedWork5);
     const result = await validator.validateExecutionManifest({
       repoRoot: fixture.root,
@@ -1813,6 +2926,7 @@ test('candidate records are content-addressed and Work5-7 keep one exact registr
       repoRoot: fixture.root,
       manifestPath: relabelledTreePath,
     }), 'CANDIDATE_BINDING_DRIFT');
+    rmSync(absolute(fixture.root, relabelledTreeCandidate.repositoryPath));
     writeManifest(fixture, sealedWork5);
 
     const failedWork1Receipt = sealDigestRecord({
@@ -1845,6 +2959,7 @@ test('candidate records are content-addressed and Work5-7 keep one exact registr
       repoRoot: fixture.root,
       manifestPath: failedPredecessorPath,
     }), 'CANDIDATE_BINDING_DRIFT');
+    rmSync(absolute(fixture.root, failedPredecessorCandidate.repositoryPath));
     writeCanonical(fixture.root, WORK1_RECEIPT_PATH, fixture.work1Receipt);
     writeManifest(fixture, sealedWork5);
 
@@ -1867,7 +2982,8 @@ test('candidate records are content-addressed and Work5-7 keep one exact registr
     work6.predecessor_receipt_binding.path = record.work_receipt_path;
     work6.permitted_read_paths = [...new Set([
       manifestPath('WORK6'), manifestPath('WORK5'), AUTHORITY_PATH, ACTIVATION_PATH,
-      record.work_receipt_path, ...candidateReadPaths(different),
+      record.work_receipt_path, WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
+      ...candidateReadPaths(different),
     ])].sort();
     writeCanonical(fixture.root, record.work_receipt_path, sealRecord({
       schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK5_RECEIPT/V1',
@@ -1876,6 +2992,10 @@ test('candidate records are content-addressed and Work5-7 keep one exact registr
       work: 'WORK5',
       execution_manifest_id: sealedWork5.execution_manifest_id,
       execution_manifest_digest: sealedWork5.execution_manifest_digest,
+      candidate_ordering_correction_authority_binding:
+        clone(sealedWork5.candidate_ordering_correction_authority_binding),
+      candidate_registration_id: candidate.record.candidate_registration_id,
+      candidate_transition: clone(sealedWork5.candidate_transition),
       counts: { fixture: 1 },
       effects: { files_written: 1 },
     }, 'work5_receipt_id'));
@@ -1935,7 +3055,463 @@ test('candidate records are content-addressed and Work5-7 keep one exact registr
   }
 });
 
-test('validator dependencies are local, read-only and free of semantic or subprocess imports', () => {
+test('a clean null candidate cannot survive an existing registration', async (t) => {
+  const validator = await loadValidator();
+  {
+    const fixture = makeFixture(t);
+    mkdirSync(absolute(fixture.root, CANDIDATE_ROOT_FOR_TESTS), { recursive: true });
+    const repositoryPath = writeManifest(fixture, baseWork2Manifest(fixture));
+    const result = await validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    });
+    assert.equal(result.candidate_registration_id, null);
+  }
+  {
+    const fixture = makeFixture(t);
+    writeCanonical(
+      fixture.root,
+      `${CANDIDATE_ROOT_FOR_TESTS}/${'a'.repeat(64)}.json`,
+      { occupied: true },
+    );
+    const repositoryPath = writeManifest(fixture, baseWork2Manifest(fixture));
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), 'CANDIDATE_BINDING_DRIFT');
+  }
+  {
+    const fixture = makeFixture(t);
+    writeCanonical(
+      fixture.root,
+      `${CANDIDATE_ROOT_FOR_TESTS}/not-a-content-id.json`,
+      { occupied: true },
+    );
+    const repositoryPath = writeManifest(fixture, baseWork2Manifest(fixture));
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), 'CANDIDATE_BINDING_DRIFT');
+  }
+  {
+    const fixture = makeFixture(t);
+    const targetPath = `${CANDIDATE_ROOT_FOR_TESTS}/target.json`;
+    writeCanonical(fixture.root, targetPath, { occupied: true });
+    symlinkSync(
+      absolute(fixture.root, targetPath),
+      absolute(fixture.root, `${CANDIDATE_ROOT_FOR_TESTS}/${'b'.repeat(64)}.json`),
+    );
+    const repositoryPath = writeManifest(fixture, baseWork2Manifest(fixture));
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), 'PATH_SAFETY');
+  }
+});
+
+test('Work2 and Work3 stay build-only and Work4 owns the first candidate transition', async (t) => {
+  const validator = await loadValidator();
+  const authorityBytes = readFileSync(absolute(REPO_ROOT, CANDIDATE_ORDERING_AUTHORITY_PATH));
+  const authority = JSON.parse(authorityBytes);
+  const unsigned = clone(authority);
+  delete unsigned.correction_authority_id;
+  assert.deepEqual(authorityBytes, canonicalBytes(authority));
+  assert.equal(
+    authority.correction_authority_id,
+    contentId(CANDIDATE_ORDERING_AUTHORITY_SCHEMA, unsigned),
+  );
+  assert.equal(authority.correction_authority_id, CANDIDATE_ORDERING_AUTHORITY_ID);
+  assert.equal(authorityBytes.length, CANDIDATE_ORDERING_AUTHORITY_BYTE_LENGTH);
+  assert.equal(sha256Hex(authorityBytes), CANDIDATE_ORDERING_AUTHORITY_SHA256);
+  assert.equal(gitBlobOid(authorityBytes), CANDIDATE_ORDERING_AUTHORITY_GIT_BLOB_OID);
+  assert.deepEqual(authority.exact_argv_with_run_limits, [
+    {
+      argv: ['node', EXECUTION_MANIFEST_VALIDATOR_PATH, manifestPath('WORK2')],
+      max_runs: 4,
+    },
+    { argv: [...CANDIDATE_ORDERING_FOCUSED_ARGV], max_runs: 8 },
+    { argv: [...CANDIDATE_REGISTRATION_FOCUSED_ARGV], max_runs: 2 },
+  ]);
+  assert.deepEqual(authority.authorised_work2_work1_write_exceptions, [
+    REGISTER_CANDIDATE_PATH,
+    VERIFY_CANDIDATE_PATH,
+    REGISTRATION_TEST_PATH,
+  ]);
+
+  {
+    const fixture = makeFixture(t);
+    const manifest = baseWork2Manifest(fixture);
+    const repositoryPath = writeManifest(fixture, manifest);
+    const result = await validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    });
+    assert.equal(result.candidate_registration_id, null);
+    assert.equal(result.candidate_stage_state, 'BUILD_ONLY_NULL');
+  }
+  {
+    const fixture = makeFixture(t);
+    const manifest = baseWork2Manifest(fixture);
+    manifest.candidate_registration_binding = {};
+    const repositoryPath = writeManifest(fixture, restamp(manifest));
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), 'CANDIDATE_BINDING_DRIFT');
+  }
+  {
+    const fixture = makeFixture(t);
+    writeCanonical(
+      fixture.root,
+      `${CANDIDATE_ROOT_FOR_TESTS}/${'c'.repeat(64)}.json`,
+      { occupied: true },
+    );
+    const repositoryPath = writeManifest(fixture, baseWork2Manifest(fixture));
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), 'CANDIDATE_BINDING_DRIFT');
+  }
+  {
+    const fixture = makeFixture(t);
+    const manifest = baseWork2Manifest(fixture);
+    manifest.allowed_effects.v2_shadow_analysis_runs = true;
+    const repositoryPath = writeManifest(fixture, restamp(manifest));
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), 'CANDIDATE_BINDING_DRIFT');
+  }
+  {
+    const fixture = makeFixture(t);
+    const { work3 } = await prepareWork3(fixture);
+    const repositoryPath = writeManifest(fixture, work3);
+    const result = await validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    });
+    assert.equal(result.candidate_registration_id, null);
+    assert.equal(result.candidate_stage_state, 'BUILD_ONLY_NULL');
+  }
+  {
+    const fixture = makeFixture(t);
+    const work2 = baseWork2Manifest(fixture);
+    writeManifest(fixture, work2);
+    const malformedReceiptBinding = await writePassingLaterReceipt(
+      fixture,
+      work2,
+      (receipt) => { delete receipt.source_set_evidence; },
+    );
+    const work3 = laterNullCandidateManifest(
+      fixture,
+      'WORK3',
+      work2,
+      malformedReceiptBinding,
+    );
+    const repositoryPath = writeManifest(fixture, work3);
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), 'PREDECESSOR_BINDING_DRIFT');
+  }
+  for (const mutateReceipt of [
+    (receipt) => { receipt.compiler_evidence.public_exports.pop(); },
+    (receipt) => { receipt.command_execution_ledger[0].run_count += 1; },
+    (receipt) => { receipt.combined_test_result.status = 'FAIL'; },
+    (receipt) => { receipt.repository_precondition.required_validator_argv.reverse(); },
+  ]) {
+    const fixture = makeFixture(t);
+    const work2 = baseWork2Manifest(fixture);
+    writeManifest(fixture, work2);
+    const driftedReceiptBinding = await writePassingLaterReceipt(
+      fixture,
+      work2,
+      mutateReceipt,
+    );
+    const work3 = laterNullCandidateManifest(
+      fixture,
+      'WORK3',
+      work2,
+      driftedReceiptBinding,
+    );
+    const repositoryPath = writeManifest(fixture, work3);
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), 'PREDECESSOR_BINDING_DRIFT');
+  }
+  {
+    const fixture = makeFixture(t);
+    const work2 = baseWork2Manifest(fixture);
+    writeManifest(fixture, work2);
+    const initialReceiptBinding = await writePassingLaterReceipt(fixture, work2);
+    const sourceSet = JSON.parse(readFileSync(
+      absolute(fixture.root, WORK2_AGREEMENT_ANALYSIS_SET_PATH),
+    ));
+    delete sourceSet.agreement_analysis_set_id;
+    sourceSet.members.reverse();
+    const driftedSet = sealRecord(sourceSet, 'agreement_analysis_set_id');
+    const driftedReceiptBinding = replaceWork2SourceSet(
+      fixture,
+      initialReceiptBinding,
+      WORK2_AGREEMENT_ANALYSIS_SET_PATH,
+      driftedSet,
+      'agreement_analysis_set_id',
+      'agreement_analysis_set_binding',
+    );
+    const work3 = laterNullCandidateManifest(
+      fixture,
+      'WORK3',
+      work2,
+      driftedReceiptBinding,
+    );
+    const repositoryPath = writeManifest(fixture, work3);
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), 'PREDECESSOR_BINDING_DRIFT');
+  }
+  {
+    const fixture = makeFixture(t);
+    const work2 = baseWork2Manifest(fixture);
+    writeManifest(fixture, work2);
+    const initialReceiptBinding = await writePassingLaterReceipt(fixture, work2);
+    const sourceSet = JSON.parse(readFileSync(
+      absolute(fixture.root, WORK2_AGREEMENT_ANALYSIS_SET_PATH),
+    ));
+    delete sourceSet.agreement_analysis_set_id;
+    sourceSet.members[0].agreement_analysis_binding.record_id = 'a'.repeat(64);
+    const driftedSet = sealRecord(sourceSet, 'agreement_analysis_set_id');
+    const driftedReceiptBinding = replaceWork2SourceSet(
+      fixture,
+      initialReceiptBinding,
+      WORK2_AGREEMENT_ANALYSIS_SET_PATH,
+      driftedSet,
+      'agreement_analysis_set_id',
+      'agreement_analysis_set_binding',
+    );
+    const work3 = laterNullCandidateManifest(
+      fixture,
+      'WORK3',
+      work2,
+      driftedReceiptBinding,
+    );
+    const repositoryPath = writeManifest(fixture, work3);
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), 'PREDECESSOR_BINDING_DRIFT');
+  }
+  {
+    const fixture = makeFixture(t);
+    const { work3 } = await prepareWork3(fixture);
+    work3.candidate_registration_binding = {};
+    const repositoryPath = writeManifest(fixture, restamp(work3));
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), 'CANDIDATE_BINDING_DRIFT');
+  }
+  {
+    const fixture = makeFixture(t);
+    const { work3 } = await prepareWork3(fixture);
+    writeCanonical(
+      fixture.root,
+      `${CANDIDATE_ROOT_FOR_TESTS}/${'3'.repeat(64)}.json`,
+      { occupied: true },
+    );
+    const repositoryPath = writeManifest(fixture, work3);
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), 'CANDIDATE_BINDING_DRIFT');
+  }
+  {
+    const fixture = makeFixture(t);
+    const { work3 } = await prepareWork3(fixture);
+    work3.allowed_effects.v2_shadow_projection_runs = true;
+    const repositoryPath = writeManifest(fixture, restamp(work3));
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), 'CANDIDATE_BINDING_DRIFT');
+  }
+  {
+    const fixture = makeFixture(t);
+    const work4 = await prepareWork4Bootstrap(fixture);
+    const repositoryPath = writeManifest(fixture, work4);
+    const result = await validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    });
+    assert.equal(result.candidate_registration_id, null);
+    assert.equal(result.candidate_stage_state, 'WORK4_TRANSITION_PENDING');
+  }
+  {
+    const fixture = makeFixture(t);
+    const work4 = await prepareWork4Bootstrap(fixture);
+    work4.allowed_effects.v2_shadow_analysis_runs = true;
+    const repositoryPath = writeManifest(fixture, restamp(work4));
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), 'CANDIDATE_BINDING_DRIFT');
+  }
+  {
+    const fixture = makeFixture(t);
+    const work4 = await prepareWork4Bootstrap(fixture);
+    work4.exact_argv_with_run_limits.push({
+      argv: ['node', 'scripts/stage-2y-structure-m7-v2-repair-work4-finalise.mjs'],
+      max_runs: 1,
+    });
+    const repositoryPath = writeManifest(fixture, restamp(work4));
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), 'COMMAND_SCOPE_DRIFT');
+  }
+  {
+    const fixture = makeFixture(t);
+    const state = await prepareVerifiedWork4(fixture);
+    const repositoryPath = writeManifest(fixture, state.work4);
+    const result = await validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    });
+    assert.equal(result.candidate_registration_id, state.candidate.record.candidate_registration_id);
+    assert.equal(result.candidate_stage_state, 'VERIFIED_CANDIDATE_BOUND');
+  }
+  {
+    const fixture = makeFixture(t);
+    const state = await prepareVerifiedWork4(fixture);
+    writeCanonical(
+      fixture.root,
+      `${CANDIDATE_ROOT_FOR_TESTS}/${'d'.repeat(64)}.json`,
+      { occupied: true },
+    );
+    const repositoryPath = writeManifest(fixture, state.work4);
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), 'CANDIDATE_BINDING_DRIFT');
+  }
+  {
+    const fixture = makeFixture(t);
+    const state = await prepareVerifiedWork4(fixture);
+    const authority = clone(state.transitionAuthority.authority);
+    delete authority.candidate_transition_authority_id;
+    authority.superseded_bootstrap_manifest_binding.sha256 = 'a'.repeat(64);
+    const driftedAuthority = sealRecord(authority, 'candidate_transition_authority_id');
+    writeCanonical(
+      fixture.root,
+      WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
+      driftedAuthority,
+    );
+    const bytes = readFileSync(
+      absolute(fixture.root, WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH),
+    );
+    const record = clone(state.work4);
+    record.candidate_transition.authority_binding = standardBinding(
+      WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
+      bytes,
+      driftedAuthority.schema_version,
+      'candidate_transition_authority_id',
+      driftedAuthority.candidate_transition_authority_id,
+    );
+    record.candidate_transition.superseded_bootstrap_manifest_binding =
+      clone(driftedAuthority.superseded_bootstrap_manifest_binding);
+    const repositoryPath = writeManifest(fixture, restamp(record));
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), 'CANDIDATE_BINDING_DRIFT');
+  }
+  {
+    const fixture = makeFixture(t);
+    const state = await prepareVerifiedWork4(fixture);
+    const invalidCandidate = restampCandidateVariant(
+      fixture,
+      state.candidate,
+      (record) => { record.predecessor_receipt_bindings.pop(); },
+    );
+    rmSync(absolute(fixture.root, state.candidate.repositoryPath));
+    const bootstrap = clone(state.bootstrap);
+    bootstrap.permitted_write_paths = bootstrap.permitted_write_paths.map(
+      (repositoryPath) => repositoryPath === state.candidate.repositoryPath
+        ? invalidCandidate.repositoryPath : repositoryPath,
+    ).sort();
+    bootstrap.exact_git_commit_and_push_argv[0] = [
+      'git', 'add', '--',
+      ...[manifestPath('WORK4'), ...bootstrap.permitted_write_paths].sort(),
+    ];
+    const sealedBootstrap = restamp(bootstrap);
+    const transitionAuthority = writeWork4TransitionAuthority(
+      fixture,
+      sealedBootstrap,
+      invalidCandidate,
+    );
+    const record = clone(state.work4);
+    record.candidate_registration_binding = clone(invalidCandidate.wrapper);
+    record.candidate_transition = {
+      authority_binding: clone(transitionAuthority.binding),
+      superseded_bootstrap_manifest_binding: clone(transitionAuthority.bootstrapBinding),
+      candidate_registration_preview_binding: clone(invalidCandidate.binding),
+      candidate_registration_binding: clone(invalidCandidate.binding),
+      state: 'PASS',
+      transition_argv: [...WORK4_CANDIDATE_TRANSITION_ARGV],
+      transition_run_count: 1,
+    };
+    record.permitted_read_paths = [...new Set([
+      ...record.permitted_read_paths.filter(
+        (repositoryPath) => repositoryPath !== state.candidate.repositoryPath,
+      ),
+      ...candidateReadPaths(invalidCandidate),
+    ])].sort();
+    record.permitted_write_paths = record.permitted_write_paths.map(
+      (repositoryPath) => repositoryPath === state.candidate.repositoryPath
+        ? invalidCandidate.repositoryPath : repositoryPath,
+    ).sort();
+    record.exact_git_commit_and_push_argv[0] = [
+      'git', 'add', '--',
+      ...[manifestPath('WORK4'), ...record.permitted_write_paths].sort(),
+    ];
+    const repositoryPath = writeManifest(fixture, restamp(record));
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), 'CANDIDATE_BINDING_DRIFT');
+  }
+  {
+    const fixture = makeFixture(t);
+    const candidate = await makeCandidate(fixture, 'candidate-first-in-work5');
+    const nullWork4 = laterNullCandidateManifest(
+      fixture,
+      'WORK4',
+      candidate.work3,
+      candidate.work3ReceiptBinding,
+    );
+    writeManifest(fixture, nullWork4);
+    const nullWork4ReceiptBinding = await writePassingLaterReceipt(fixture, nullWork4);
+    const work5 = laterNullCandidateManifest(
+      fixture,
+      'WORK5',
+      nullWork4,
+      nullWork4ReceiptBinding,
+    );
+    work5.candidate_registration_binding = clone(candidate.wrapper);
+    work5.permitted_read_paths = [...new Set([
+      ...work5.permitted_read_paths,
+      ...candidateReadPaths(candidate),
+    ])].sort();
+    const repositoryPath = writeManifest(fixture, restamp(work5));
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), 'PREDECESSOR_BINDING_DRIFT');
+  }
+});
+
+test('validator dependencies are local, read-only and free of subprocess imports', () => {
   const source = readFileSync(
     path.join(REPO_ROOT, 'scripts/stage-2y-structure-m7-v2-repair-execution-manifest-validate.mjs'),
     'utf8',
@@ -1948,11 +3524,76 @@ test('validator dependencies are local, read-only and free of semantic or subpro
     'node:path',
     'node:url',
     '../lib/canonical-v2/canonical-bytes.js',
+    './stage-2y-structure-m7-v2-repair-work2-validate.mjs',
   ].sort());
   assert.doesNotMatch(source, /node:child_process|node:http|node:https|\bfetch\s*\(|\beval\s*\(|new Function|writeFile|appendFile|openSync|execFile|spawn/i);
   assert.match(source, /tree\.family_key !== entry\.family_key/);
   assert.match(source, /receipt\.status !== 'PASS'/);
   assert.match(source, /priorManifest\.work_receipt_path !== entry\.binding\.path/);
+});
+
+test('Work2 entry correction authority is canonical, hard-pinned and cycle-free', (t) => {
+  const productionBytes = readFileSync(absolute(REPO_ROOT, WORK2_ENTRY_CORRECTION_AUTHORITY_PATH));
+  const production = JSON.parse(productionBytes);
+  assert.deepEqual(productionBytes, canonicalBytes(production));
+  const unsigned = clone(production);
+  delete unsigned.correction_authority_id;
+  assert.equal(
+    production.correction_authority_id,
+    contentId(production.schema_version, unsigned),
+  );
+  assert.equal(
+    production.correction_authority_id,
+    'e691468b5adbcba41878b0f40155fc46a7acf07b0f24a1e5240c450e94b4b2b8',
+  );
+  assert.equal(productionBytes.length, 9198);
+  assert.equal(
+    sha256Hex(productionBytes),
+    '39d8d55e6c3aaec554f190b956b44a24d2dc4ffcbcd7e77515b16d54182667f6',
+  );
+  assert.equal(gitBlobOid(productionBytes), '1b9794002d5db55e989c23556e115be005a52705');
+  assert.equal(Object.hasOwn(production, 'replacement_bindings'), false);
+  assert.deepEqual(
+    production.source_precondition_bindings.map((binding) => binding.path),
+    [
+      EXECUTION_MANIFEST_VALIDATOR_PATH,
+      EXECUTION_MANIFEST_TEST_PATH,
+      CONTRACT_PATH,
+      CONTRACT_TEST_PATH,
+      LEGACY_M5_AGGREGATE_TEST_PATH,
+    ],
+  );
+  const fixture = makeRecoveredWork1Fixture(t);
+  assert.deepEqual(
+    readFileSync(absolute(fixture.root, WORK2_ENTRY_CORRECTION_AUTHORITY_PATH)),
+    productionBytes,
+  );
+});
+
+test('Work2 entry correction authority rejects open shape and scope drift', async (t) => {
+  const validator = await loadValidator();
+  const cases = [
+    (record) => { record.replacement_bindings = []; },
+    (record) => { record.source_precondition_bindings.pop(); },
+    (record) => { record.authorised_work2_work1_write_exceptions.pop(); },
+    (record) => { record.authorised_work2_parent_write_extensions = []; },
+  ];
+  for (const mutate of cases) {
+    const fixture = makeRecoveredWork1Fixture(t);
+    const record = clone(fixture.work2EntryCorrectionAuthority);
+    delete record.correction_authority_id;
+    mutate(record);
+    writeCanonical(
+      fixture.root,
+      WORK2_ENTRY_CORRECTION_AUTHORITY_PATH,
+      sealRecord(record, 'correction_authority_id'),
+    );
+    const repositoryPath = writeManifest(fixture, recoveredWork2Manifest(fixture));
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: repositoryPath,
+    }), 'AUTHORITY_BINDING_DRIFT');
+  }
 });
 
 test('Work1 correction authority is canonical, content-addressed and extends the exact Work1 path set to fifteen', () => {
@@ -2080,7 +3721,14 @@ test('Work1 correction authority is canonical, content-addressed and extends the
     ...authority.stale_output_bindings,
     ...authority.executable_bindings,
   ]) {
-    assert.deepEqual(binding, recoveryBinding(REPO_ROOT, binding.path));
+    const bytes = historicalBindingBytes(binding);
+    assert.deepEqual(binding, standardBinding(
+      binding.path,
+      bytes,
+      binding.schema_version,
+      binding.record_id_field,
+      binding.record_id,
+    ));
   }
 });
 
@@ -2571,4 +4219,415 @@ test('Work1 recovery restores a mutated existing protected file', async (t) => {
   }), 'RECOVERY_EFFECT_DRIFT');
   assertStaleOutputsRestored(fixture);
   assert.deepEqual(snapshotRepository(fixture.root), before);
+});
+
+test('Work2 recovery authority freezes P23, artefacts22 and the 15-command overlay', async (t) => {
+  const recovery = await loadWork2Recovery();
+  assert.deepEqual(Object.keys(recovery).sort(), ['Work2RecoveryError', 'recoverWork2']);
+  assert.deepEqual(WORK2_RECOVERY_RECORD_ID_FIELDS, {
+    [WORK2_ENTRY_CORRECTION_AUTHORITY_SCHEMA]: 'correction_authority_id',
+    [CANDIDATE_ORDERING_AUTHORITY_SCHEMA]: 'correction_authority_id',
+    [WORK2_RECOVERY_AUTHORITY_SCHEMA]: 'correction_authority_id',
+    [SCHEMA]: 'execution_manifest_id',
+    'STAGE_2Y_M7_V2_REPAIR_WORK1_CONTRACT_RECEIPT/V1': 'work1_contract_receipt_id',
+    'STAGE_2Y_M7_V2_REPAIR_WORK2_COMPILER_RECEIPT/V1': 'work2_receipt_id',
+    'AGREEMENT_ANALYSIS_SET/V1': 'agreement_analysis_set_id',
+    'CONTEXT_COMPILATION_SET/V1': 'context_compilation_set_id',
+    'STAGE_2Y_M7_V2_REPAIR_WORK2_COMPILER_CASES/V1': null,
+  });
+  assert.equal(recoveryRecordIdField({
+    schema_version: 'UNKNOWN_RECOVERY_RECORD/V1',
+    candidate_id: 'not-a-record-identity',
+  }), null);
+  const fixture = makeWork2RecoveryFixture(t);
+  const rawCompilerCasesBinding = recoveryBinding(
+    fixture.root,
+    'tests/fixtures/canonical-v2/m7-v2-repair/work2-compiler-cases.json',
+  );
+  assert.deepEqual(
+    {
+      schema_version: rawCompilerCasesBinding.schema_version,
+      record_id_field: rawCompilerCasesBinding.record_id_field,
+      record_id: rawCompilerCasesBinding.record_id,
+    },
+    { schema_version: null, record_id_field: null, record_id: null },
+  );
+  const authority = fixture.work2RecoveryAuthority;
+  const authorityWithoutId = clone(authority);
+  delete authorityWithoutId.correction_authority_id;
+  assert.deepEqual(
+    Object.keys(authority).sort(),
+    [
+      'schema_version',
+      'correction_authority_id',
+      'stage',
+      'authority_state',
+      'approved_on',
+      'approver',
+      'ben_approval_id',
+      'approval_text',
+      'discovered_defect',
+      'parent_authority_binding',
+      'activation_receipt_binding',
+      'work1_receipt_binding',
+      'work2_entry_correction_authority_binding',
+      'candidate_ordering_correction_authority_binding',
+      'execution_manifest_binding',
+      'stale_output_bindings',
+      'excluded_generalisation_binding',
+      'source_precondition_bindings',
+      'executable_bindings',
+      'authorised_scope',
+      'base_effective_work2_paths',
+      'exact_path_removal',
+      'exact_path_extension',
+      'effective_work2_paths',
+      'prior_execution_state',
+      'command_extension',
+      'exact_git_commit_and_push_argv',
+      'allowed_effects',
+      'prohibited_effects',
+      'rollback',
+      'success_conditions',
+    ].sort(),
+  );
+  assert.equal(authority.schema_version, WORK2_RECOVERY_AUTHORITY_SCHEMA);
+  assert.deepEqual(fixture.work2RecoveryAuthorityBytes, canonicalBytes(authority));
+  assert.equal(
+    authority.correction_authority_id,
+    contentId(authority.schema_version, authorityWithoutId),
+  );
+
+  const basePaths = fixture.work2Manifest.exact_git_commit_and_push_argv[0].slice(3);
+  const effectivePaths = basePaths.flatMap((repositoryPath) => {
+    if (repositoryPath === WORK2_GENERALISATION_SHADOW_PATH) return [];
+    if (repositoryPath === WORK2_ENTRY_CORRECTION_AUTHORITY_PATH) {
+      return [repositoryPath, WORK2_RECOVERY_AUTHORITY_PATH];
+    }
+    if (repositoryPath === WORK2_VALIDATOR_PATH) {
+      return [repositoryPath, WORK2_RECOVERY_PATH];
+    }
+    return [repositoryPath];
+  });
+  assert.equal(basePaths.length, 22);
+  assert.equal(effectivePaths.length, 23);
+  assert.equal(new Set(effectivePaths).size, 23);
+  assert.deepEqual(authority.base_effective_work2_paths, basePaths);
+  assert.deepEqual(authority.exact_path_removal, [WORK2_GENERALISATION_SHADOW_PATH]);
+  assert.deepEqual(authority.exact_path_extension, [
+    WORK2_RECOVERY_AUTHORITY_PATH,
+    WORK2_RECOVERY_PATH,
+  ]);
+  assert.deepEqual(authority.effective_work2_paths, effectivePaths);
+  assert.deepEqual(
+    authority.execution_manifest_binding,
+    recoveryBinding(fixture.root, WORK2_EXECUTION_MANIFEST_PATH),
+  );
+  assert.deepEqual(
+    authority.stale_output_bindings,
+    WORK2_RECOVERY_TARGET_PATHS.map(
+      (repositoryPath) => recoveryBinding(fixture.root, repositoryPath),
+    ),
+  );
+  assert.deepEqual(
+    fixture.staleWork2Receipt.command_execution_ledger.map((entry) => entry.run_count),
+    WORK2_STALE_RECEIPT_RUN_COUNTS,
+  );
+  assert.deepEqual(
+    authority.excluded_generalisation_binding,
+    fixture.staleWork2Receipt.artifact_bindings.find(
+      (binding) => binding.path === WORK2_GENERALISATION_SHADOW_PATH,
+    ),
+  );
+  const executablePaths = authority.executable_bindings.map((binding) => binding.path);
+  for (const repositoryPath of [
+    WORK2_FINALISER_PATH,
+    WORK2_VALIDATOR_PATH,
+    WORK2_RECOVERY_PATH,
+  ]) {
+    assert.equal(executablePaths.includes(repositoryPath), true);
+  }
+  assert.equal(executablePaths.includes(WORK2_RECOVERY_AUTHORITY_PATH), false);
+  for (const binding of authority.executable_bindings) {
+    assert.deepEqual(binding, recoveryBinding(fixture.root, binding.path));
+  }
+
+  const recoveryArgv = [
+    'node',
+    WORK2_RECOVERY_PATH,
+    '--authority',
+    WORK2_RECOVERY_AUTHORITY_PATH,
+  ];
+  assert.deepEqual(authority.command_extension, {
+    base_command_count: 14,
+    run_limit_overrides: [
+      { command_index: 0, max_runs: 5 },
+      { command_index: 10, max_runs: 10 },
+      { command_index: 11, max_runs: 3 },
+      { command_index: 12, max_runs: 2 },
+    ],
+    appended_argv_with_run_limits: [{ argv: recoveryArgv, max_runs: 1 }],
+    prior_receipt_run_counts: WORK2_RECOVERY_PRIOR_RUN_COUNTS,
+    prior_post_receipt_validator_run_count: 1,
+    recovered_receipt_run_counts: WORK2_RECOVERY_LEDGER_RUN_COUNTS,
+    required_validator_cumulative_run_count: 2,
+    additional_git_add_commit_push_runs: 0,
+  });
+  const expectedGitArgv = clone(fixture.work2Manifest.exact_git_commit_and_push_argv);
+  expectedGitArgv[0] = ['git', 'add', '--', ...effectivePaths];
+  assert.deepEqual(authority.exact_git_commit_and_push_argv, expectedGitArgv);
+
+  const before = snapshotRepository(fixture.root);
+  const preview = await recovery.recoverWork2({
+    repoRoot: fixture.root,
+    authorityPath: WORK2_RECOVERY_AUTHORITY_PATH,
+    write: false,
+  });
+  assertWork2RecoveryResult(
+    preview,
+    'PASS_WORK2_RECOVERY_PREVIEW',
+    authority,
+    { ...ZERO_WORK2_RECOVERY_EFFECTS, local_subprocess_runs: 1 },
+  );
+  assert.deepEqual(snapshotRepository(fixture.root), before);
+
+  await t.test('one path-removal delta is rejected before mutation', async (subtest) => {
+    const driftedFixture = makeWork2RecoveryFixture(subtest);
+    restampWork2RecoveryAuthority(driftedFixture, (record) => {
+      record.exact_path_removal = [];
+    });
+    const beforeRejection = snapshotRepository(driftedFixture.root);
+    assertWork2RecoveryCode(recovery, () => recovery.recoverWork2({
+      repoRoot: driftedFixture.root,
+      authorityPath: WORK2_RECOVERY_AUTHORITY_PATH,
+      write: true,
+    }), 'RECOVERY_PATH_SCOPE');
+    assert.deepEqual(snapshotRepository(driftedFixture.root), beforeRejection);
+  });
+});
+
+test('Work2 recovery replaces three outputs and seals the exact recovered receipt', async (t) => {
+  const recovery = await loadWork2Recovery();
+  const fixture = makeWork2RecoveryFixture(t);
+  const authority = fixture.work2RecoveryAuthority;
+  const before = snapshotRepository(fixture.root);
+  const result = await recovery.recoverWork2({
+    repoRoot: fixture.root,
+    authorityPath: WORK2_RECOVERY_AUTHORITY_PATH,
+    write: true,
+  });
+  assertWork2RecoveryResult(result, 'PASS_WORK2_RECOVERY', authority, {
+    ...ZERO_WORK2_RECOVERY_EFFECTS,
+    system_temp_backup_directories: 1,
+    work2_generated_output_replacements: 3,
+    local_subprocess_runs: 4,
+  });
+  const changedPaths = changedSnapshotPaths(before, snapshotRepository(fixture.root));
+  assert.equal(changedPaths.includes(WORK2_RECEIPT_PATH), true);
+  assert.equal(
+    changedPaths.every((repositoryPath) => WORK2_RECOVERY_TARGET_PATHS.includes(repositoryPath)),
+    true,
+  );
+  assert.deepEqual(
+    readFileSync(absolute(fixture.root, WORK2_EXECUTION_MANIFEST_PATH)),
+    fixture.work2ManifestBytes,
+  );
+  assert.deepEqual(
+    recoveryWorktreePaths(fixture.root),
+    [...authority.effective_work2_paths].sort(),
+  );
+  const receiptBytes = readFileSync(absolute(fixture.root, WORK2_RECEIPT_PATH));
+  const receipt = JSON.parse(receiptBytes);
+  const receiptWithoutId = clone(receipt);
+  delete receiptWithoutId.work2_receipt_id;
+  assert.deepEqual(Object.keys(receipt).sort(), [...WORK2_RECEIPT_KEYS].sort());
+  assert.deepEqual(receiptBytes, canonicalBytes(receipt));
+  assert.equal(
+    receipt.work2_receipt_id,
+    contentId(receipt.schema_version, receiptWithoutId),
+  );
+  assert.equal(receipt.execution_manifest_id, fixture.work2Manifest.execution_manifest_id);
+  assert.equal(
+    receipt.execution_manifest_digest,
+    fixture.work2Manifest.execution_manifest_digest,
+  );
+
+  const recoveryRecord = receipt.repository_precondition.recovery;
+  assert.deepEqual(
+    Object.keys(recoveryRecord).sort(),
+    [...WORK2_RECEIPT_RECOVERY_KEYS].sort(),
+  );
+  assert.equal(recoveryRecord.schema_version, WORK2_RECEIPT_RECOVERY_SCHEMA);
+  assert.deepEqual(
+    recoveryRecord.correction_authority_binding,
+    recoveryBinding(fixture.root, WORK2_RECOVERY_AUTHORITY_PATH),
+  );
+  assert.deepEqual(
+    recoveryRecord.recovery_runner_binding,
+    recoveryBinding(fixture.root, WORK2_RECOVERY_PATH),
+  );
+  assert.deepEqual(recoveryRecord.superseded_receipt_binding, authority.stale_output_bindings[2]);
+  assert.deepEqual(
+    recoveryRecord.superseded_source_set_bindings,
+    authority.stale_output_bindings.slice(0, 2),
+  );
+  assert.deepEqual(
+    recoveryRecord.excluded_generalisation_binding,
+    authority.excluded_generalisation_binding,
+  );
+  assert.deepEqual(
+    recoveryRecord.prior_command_run_counts,
+    authority.command_extension.prior_receipt_run_counts,
+  );
+  assert.equal(recoveryRecord.prior_post_receipt_validator_run_count, 1);
+  assert.deepEqual(
+    recoveryRecord.recovery_argv,
+    authority.command_extension.appended_argv_with_run_limits[0].argv,
+  );
+  assert.equal(recoveryRecord.recovery_run_count, 1);
+  assert.equal(recoveryRecord.finaliser_cumulative_run_count, 2);
+  assert.equal(recoveryRecord.validator_cumulative_run_count, 2);
+  assert.deepEqual(recoveryRecord.replaced_output_paths, WORK2_RECOVERY_TARGET_PATHS);
+  assert.deepEqual(recoveryRecord.effective_work2_paths, authority.effective_work2_paths);
+  assert.equal(recoveryRecord.backup_state, 'REMOVED_AFTER_VALIDATOR_PASS');
+  assert.equal(recoveryRecord.rollback_state, 'AVAILABLE_DURING_TRANSACTION_ONLY');
+
+  const artifactPaths = receipt.artifact_bindings.map((binding) => binding.path);
+  const expectedArtifactPaths = authority.effective_work2_paths.filter(
+    (repositoryPath) => repositoryPath !== WORK2_RECEIPT_PATH,
+  );
+  assert.equal(receipt.artifact_bindings.length, 22);
+  assert.equal(new Set(artifactPaths).size, 22);
+  assert.deepEqual(artifactPaths, expectedArtifactPaths);
+  assert.equal(artifactPaths.includes(WORK2_GENERALISATION_SHADOW_PATH), false);
+  for (const binding of receipt.artifact_bindings) {
+    assert.deepEqual(binding, recoveryBinding(fixture.root, binding.path));
+  }
+  assert.equal(receipt.artifact_set_digest, sha256Hex(canonicalJson(receipt.artifact_bindings)));
+  assert.deepEqual(
+    receipt.source_set_evidence.agreement_analysis_set_binding,
+    recoveryBinding(fixture.root, WORK2_AGREEMENT_ANALYSIS_SET_PATH),
+  );
+  assert.deepEqual(
+    receipt.source_set_evidence.context_compilation_set_binding,
+    recoveryBinding(fixture.root, WORK2_CONTEXT_COMPILATION_SET_PATH),
+  );
+  assert.deepEqual(receipt.repository_precondition.effective_work2_paths, authority.effective_work2_paths);
+  assert.deepEqual(
+    receipt.repository_precondition.exact_git_commit_and_push_argv,
+    authority.exact_git_commit_and_push_argv,
+  );
+  assert.deepEqual(
+    receipt.command_execution_ledger.slice(0, 14).map((entry) => entry.argv),
+    fixture.staleWork2Receipt.command_execution_ledger.map((entry) => entry.argv),
+  );
+  assert.deepEqual(
+    receipt.command_execution_ledger.map((entry) => entry.run_count),
+    WORK2_RECOVERY_LEDGER_RUN_COUNTS,
+  );
+  assert.deepEqual(
+    receipt.command_execution_ledger.slice(12).map((entry) => entry.state),
+    [
+      'CUMULATIVE_ONE_INITIAL_ONE_RECOVERY_WRITES_THIS_RECEIPT',
+      'CUMULATIVE_ONE_INITIAL_ONE_REQUIRED_AFTER_THIS_RECEIPT',
+      'RUNNER_WRITES_THIS_RECEIPT_AND_COMPLETES_AFTER_VALIDATOR_PASS',
+    ],
+  );
+  assert.deepEqual(
+    receipt.command_execution_ledger.at(-1).argv,
+    authority.command_extension.appended_argv_with_run_limits[0].argv,
+  );
+  assert.equal(receipt.command_execution_ledger.at(-1).run_count, 1);
+  assert.equal(
+    fixture.work2RecoveryAuthorityBytes.includes(Buffer.from(receipt.work2_receipt_id)),
+    false,
+  );
+
+  const beforeSecondAttempt = snapshotRepository(fixture.root);
+  assertWork2RecoveryCode(recovery, () => recovery.recoverWork2({
+    repoRoot: fixture.root,
+    authorityPath: WORK2_RECOVERY_AUTHORITY_PATH,
+    write: true,
+  }), 'RECOVERY_ALREADY_APPLIED');
+  assert.deepEqual(snapshotRepository(fixture.root), beforeSecondAttempt);
+});
+
+test('Work2 recovery restores all three stale outputs after validator failure', async (t) => {
+  const recovery = await loadWork2Recovery();
+  const fixture = makeWork2RecoveryFixture(t);
+  writeFileSync(
+    absolute(fixture.root, WORK2_VALIDATOR_PATH),
+    Buffer.from("process.stderr.write('forced Work2 validator failure\\n'); process.exitCode = 1;\n"),
+  );
+  restampWork2RecoveryAuthority(fixture, (authority) => {
+    const validatorIndex = authority.executable_bindings.findIndex(
+      (binding) => binding.path === WORK2_VALIDATOR_PATH,
+    );
+    assert.notEqual(validatorIndex, -1);
+    authority.executable_bindings[validatorIndex] = recoveryBinding(
+      fixture.root,
+      WORK2_VALIDATOR_PATH,
+    );
+  });
+  const preview = await recovery.recoverWork2({
+    repoRoot: fixture.root,
+    authorityPath: WORK2_RECOVERY_AUTHORITY_PATH,
+    write: false,
+  });
+  assert.equal(preview.status, 'PASS_WORK2_RECOVERY_PREVIEW');
+  const before = snapshotRepository(fixture.root);
+  assertWork2RecoveryCode(recovery, () => recovery.recoverWork2({
+    repoRoot: fixture.root,
+    authorityPath: WORK2_RECOVERY_AUTHORITY_PATH,
+    write: true,
+  }), 'VALIDATOR_FAILED');
+  assertWork2StaleOutputsRestored(fixture);
+  assert.deepEqual(snapshotRepository(fixture.root), before);
+});
+
+test('Work2 and Work3 stay build-only and Work4 owns the first candidate transition: Work3 accepts a recovered Work2 predecessor and rejects lineage and base-tip drift', async (t) => {
+  const recovery = await loadWork2Recovery();
+  const validator = await loadValidator();
+  const fixture = makeWork2RecoveryFixture(t);
+  const recoveryResult = await recovery.recoverWork2({
+    repoRoot: fixture.root,
+    authorityPath: WORK2_RECOVERY_AUTHORITY_PATH,
+    write: true,
+  });
+  assert.equal(recoveryResult.status, 'PASS_WORK2_RECOVERY');
+
+  const recoveredReceiptBinding = recoveryBinding(fixture.root, WORK2_RECEIPT_PATH);
+  const work3 = recoveredWork3Manifest(fixture, recoveredReceiptBinding);
+  const repositoryPath = writeManifest(fixture, work3);
+  const result = await validator.validateExecutionManifest({
+    repoRoot: fixture.root,
+    manifestPath: repositoryPath,
+  });
+  assert.equal(result.candidate_registration_id, null);
+  assert.equal(result.candidate_stage_state, 'BUILD_ONLY_NULL');
+
+  const staleP22Work3 = recoveredWork3Manifest(fixture, recoveredReceiptBinding);
+  const staleP22Paths = [
+    ...fixture.work2RecoveryAuthority.base_effective_work2_paths,
+  ].sort();
+  const staleP22Attestation = staleP22Work3.base_tip_binding.milestone_attestation;
+  staleP22Attestation.exact_commit_delta_paths = staleP22Paths;
+  staleP22Attestation.observed_command_result_ledger.find(
+    (entry) => entry.check_id === 'EXACT_TREE_DELTA',
+  ).observed_result = staleP22Paths;
+  const staleP22Path = writeManifest(fixture, restamp(staleP22Work3));
+  await assertCode(validator, () => validator.validateExecutionManifest({
+    repoRoot: fixture.root,
+    manifestPath: staleP22Path,
+  }), 'BASE_TIP_DRIFT');
+
+  const driftedReceiptBinding = restampWork2Receipt(fixture, (receipt) => {
+    receipt.repository_precondition.recovery.superseded_receipt_binding.sha256 = '0'.repeat(64);
+  });
+  const driftedWork3 = recoveredWork3Manifest(fixture, driftedReceiptBinding);
+  const driftedPath = writeManifest(fixture, driftedWork3);
+  await assertCode(validator, () => validator.validateExecutionManifest({
+    repoRoot: fixture.root,
+    manifestPath: driftedPath,
+  }), 'PREDECESSOR_BINDING_DRIFT');
 });

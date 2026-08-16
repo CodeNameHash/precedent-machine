@@ -8,7 +8,9 @@ import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
 const { canonicalJson, sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
-const { consolidateAnalysis } = require('../lib/canonical-v2/agreement-analysis-consolidation');
+const {
+  consolidateLegacyAnalysisV1,
+} = require('../lib/canonical-v2/agreement-analysis-consolidation');
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ROOT = resolve(REPO_ROOT, 'evidence/canonical-v2/stage-2y-structure-migration');
@@ -137,7 +139,7 @@ function main() {
         adapter_result: matches[0] || null,
       };
     });
-    const consolidated = consolidateAnalysis(base, packets);
+    const consolidated = consolidateLegacyAnalysisV1(base, packets);
     const outputPath = resolve(args['output-root'], `${base.agreement_id}.agreement-analysis.json`);
     writeCanonical(outputPath, consolidated);
     analysisBindings.push(binding(outputPath, {
