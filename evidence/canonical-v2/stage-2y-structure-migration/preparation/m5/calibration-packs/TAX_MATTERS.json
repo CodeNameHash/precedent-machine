@@ -1,0 +1,429 @@
+{
+  "schema_version": "STAGE_2Y_FAMILY_CALIBRATION_PACK/V1",
+  "calibration_pack_id": "86e471a4950d8f00727aceab1b8f5da252ca8836d514084201748e1593d23ae3",
+  "calibration_pack_digest": "4b9d7995bfb2bed92d7ba5a12c3db73f94b9d16754be7c81e5f69342fa2b9b80",
+  "family_key": "TAX_MATTERS",
+  "wave": 4,
+  "pack_version": 1,
+  "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+  "purpose": "LEGAL_CALIBRATION_PREPARATION_ONLY",
+  "authority_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-preparation-authority.json",
+    "byte_length": 22922,
+    "sha256": "d10f095429cdbb1006bfbe1e789c267ffa3a98b12b4bd33c2afb550e7beeea79"
+  },
+  "calibration_policy_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-calibration-policy.json",
+    "byte_length": 45512,
+    "sha256": "102534446774dfa0661ad186d27c25507befedca80807e42cf584fa412e6bf78"
+  },
+  "m4_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json",
+    "byte_length": 13670,
+    "sha256": "54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41"
+  },
+  "m2_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+    "byte_length": 20126,
+    "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585"
+  },
+  "m3_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+    "byte_length": 17449,
+    "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855"
+  },
+  "family_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json",
+    "byte_length": 827,
+    "sha256": "7aa5ff41eb778884cdbb6f18ba72138c20420a2475949aca5dcbc0d2098a938d"
+  },
+  "control_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json",
+    "byte_length": 379235,
+    "sha256": "62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41"
+  },
+  "diff_contract_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/diff-contract.json",
+    "byte_length": 1171,
+    "sha256": "2585c7af9e47c4f7a6915ef1667f5eb8dbce26a8a30829bae15e42a7d41ab0c8"
+  },
+  "comparator_run_bindings": [
+    {
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "run_identifier": "concho-tax-matters-20260809-2xk-final",
+      "family": "TAX_MATTERS",
+      "resolution_binding": {
+        "byte_length": 46687,
+        "path": "evidence/canonical-v2/concho-tax-matters-20260809-2xk-final/resolution.json",
+        "sha256": "05a0e9d9fd270925b378c67581402c8d97178de1b67498730c762d1d4aa91976"
+      },
+      "adapter_result_binding": {
+        "byte_length": 390334,
+        "path": "evidence/canonical-v2/concho-tax-matters-20260809-2xk-final/adapter-result.json",
+        "sha256": "f02e2e71585113561ced694cfa9654297beac6b65dad187d2ef44ef01b68335b"
+      },
+      "validation_binding": {
+        "byte_length": 37115,
+        "path": "evidence/canonical-v2/concho-tax-matters-20260809-2xk-final/validation.json",
+        "sha256": "f6ba90aaa54d77c1e05dde98832dda4adf077f3a3f9f55a40ad75e9e61b82fb2"
+      },
+      "expected_counts": {
+        "resolution_claims": 3,
+        "write_set_claims": 3,
+        "validation_claims": 3,
+        "resolution_evidence": 3,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "run_identifier": "skechers-tax-matters-20260809-2xk-final",
+      "family": "TAX_MATTERS",
+      "resolution_binding": {
+        "byte_length": 114757,
+        "path": "evidence/canonical-v2/skechers-tax-matters-20260809-2xk-final/resolution.json",
+        "sha256": "dd29cfefb9725cae45441cf09a7720a35505b9d778a6f9d26cdd4c1d7d8e5c28"
+      },
+      "adapter_result_binding": {
+        "byte_length": 463704,
+        "path": "evidence/canonical-v2/skechers-tax-matters-20260809-2xk-final/adapter-result.json",
+        "sha256": "3a0f302ea86a4d95de407d5b257e2580a1c362a67660aa3ab2ffc04425fee73a"
+      },
+      "validation_binding": {
+        "byte_length": 82954,
+        "path": "evidence/canonical-v2/skechers-tax-matters-20260809-2xk-final/validation.json",
+        "sha256": "1830ac28f2bef0be9142d2449dcb6352c4b9bcd9df4c2811cd77a24e189a20aa"
+      },
+      "expected_counts": {
+        "resolution_claims": 7,
+        "write_set_claims": 7,
+        "validation_claims": 7,
+        "resolution_evidence": 7,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "run_identifier": "skywater-tax-matters-20260809-2xk-final",
+      "family": "TAX_MATTERS",
+      "resolution_binding": {
+        "byte_length": 50848,
+        "path": "evidence/canonical-v2/skywater-tax-matters-20260809-2xk-final/resolution.json",
+        "sha256": "b8ef9a9f17e34fd085f1b3edd6b8bb295126f168b3a96d78075d1e0f4dddb7ac"
+      },
+      "adapter_result_binding": {
+        "byte_length": 414273,
+        "path": "evidence/canonical-v2/skywater-tax-matters-20260809-2xk-final/adapter-result.json",
+        "sha256": "61a85611ea2a8cde361db28718c225a74bc1a22c01429373a49c9245ba054da0"
+      },
+      "validation_binding": {
+        "byte_length": 51323,
+        "path": "evidence/canonical-v2/skywater-tax-matters-20260809-2xk-final/validation.json",
+        "sha256": "ee18144aee5f2ee555f9689a9a2ccb8fc0c3e59819912a0910045fd7a101b04a"
+      },
+      "expected_counts": {
+        "resolution_claims": 2,
+        "write_set_claims": 2,
+        "validation_claims": 2,
+        "resolution_evidence": 2,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "run_identifier": "topbuild-tax-matters-20260809-2xk-r3-final",
+      "family": "TAX_MATTERS",
+      "resolution_binding": {
+        "byte_length": 79175,
+        "path": "evidence/canonical-v2/topbuild-tax-matters-20260809-2xk-r3-final/resolution.json",
+        "sha256": "d2fa66fc81c786ac9321842fa7dddd2f1cc4234f93c3f6657d2ded55f0efd5b6"
+      },
+      "adapter_result_binding": {
+        "byte_length": 463156,
+        "path": "evidence/canonical-v2/topbuild-tax-matters-20260809-2xk-r3-final/adapter-result.json",
+        "sha256": "ff0ef98b64b140dd6ba11ad00a45b5840b9432265b82f60640b5d403081db939"
+      },
+      "validation_binding": {
+        "byte_length": 48997,
+        "path": "evidence/canonical-v2/topbuild-tax-matters-20260809-2xk-r3-final/validation.json",
+        "sha256": "eed40fd2fb91c7b0ce8b47853e9b34fc9e07f72bbd5754d0d831766f03dbf9ce"
+      },
+      "expected_counts": {
+        "resolution_claims": 5,
+        "write_set_claims": 5,
+        "validation_claims": 5,
+        "resolution_evidence": 5,
+        "supplemental_claims": 0
+      }
+    }
+  ],
+  "supplemental_input_bindings": [],
+  "provision_examples": [
+    {
+      "example_id": "TAX_MATTERS-EX-01",
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "printed_reference": "4.12",
+      "complete_source_node_occurrence_ids": [
+        "fe37d886784aa456c0f5c71646e52313f07409235751f14c8259fda0c8675d13"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 75802,
+          "start_byte": 70212,
+          "text_sha256": "7078f6227b3e93b611e25c74407ffba2539b1a088d178b67269dcb1c3f7aebdf"
+        }
+      ],
+      "source_text_sha256s": [
+        "7078f6227b3e93b611e25c74407ffba2539b1a088d178b67269dcb1c3f7aebdf"
+      ],
+      "structure_revision_ids": [
+        "27599d088fd3b621f330c4c5fe890eb8cde847f4cfe6f5cb96fef4edf9af55c9"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "c60320054b84a6f024e99a9615522282e6ba90633b1892f848a6ad99c9a7af0c"
+      ],
+      "comparator_run_identifiers": [
+        "concho-tax-matters-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "INTENDED_TAX_TREATMENT",
+      "legal_question_ids": [
+        "TAX_MATTERS-Q01",
+        "TAX_MATTERS-Q02",
+        "TAX_MATTERS-Q03"
+      ]
+    },
+    {
+      "example_id": "TAX_MATTERS-EX-02",
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "printed_reference": "2.14",
+      "complete_source_node_occurrence_ids": [
+        "1cd4e8bde98c5b7ded4d04340629e9e545a9c7a95c0b52ebe4c5c53544b4d36e"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 111223,
+          "start_byte": 109648,
+          "text_sha256": "1817d39221476d0aa006500793e4c7e05b73a358a5cf04529a2691450820b8cc"
+        }
+      ],
+      "source_text_sha256s": [
+        "1817d39221476d0aa006500793e4c7e05b73a358a5cf04529a2691450820b8cc"
+      ],
+      "structure_revision_ids": [
+        "821756cf51be524d299c11a1c9404df72f669072d3ea6b2dab30a9d7defef8ab"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "346a0f8436c83aee7da27e0db06534793235af3b495b51b020e1c546f3036b4c"
+      ],
+      "comparator_run_identifiers": [
+        "skechers-tax-matters-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "INTENDED_TAX_TREATMENT",
+      "legal_question_ids": [
+        "TAX_MATTERS-Q01",
+        "TAX_MATTERS-Q02",
+        "TAX_MATTERS-Q03"
+      ]
+    },
+    {
+      "example_id": "TAX_MATTERS-EX-03",
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "printed_reference": "7.4",
+      "complete_source_node_occurrence_ids": [
+        "283698e3056bd9f058d8033cb1786c6b26a7fc68942ba24838f655e98f14f281"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 273998,
+          "start_byte": 268207,
+          "text_sha256": "f85774e8fc3edbec97e31a97cd1dd6fbb38de18500817498061670d261fed9af"
+        }
+      ],
+      "source_text_sha256s": [
+        "f85774e8fc3edbec97e31a97cd1dd6fbb38de18500817498061670d261fed9af"
+      ],
+      "structure_revision_ids": [
+        "e32680245c28cd70ecc999f7756fc01a4142d85f0fd441768ada5894861e4e28"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "0016ce96e2cc33de16cfcd000b8d6157b7ab14ee203a7c2c1958919a8c52c8f9",
+        "cc0f7715bc2c306cd96bd70c547488cf4b1d948469d07c00d24c01b8d7eefe03"
+      ],
+      "comparator_run_identifiers": [
+        "skywater-tax-matters-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "INTENDED_TAX_TREATMENT",
+      "legal_question_ids": [
+        "TAX_MATTERS-Q01",
+        "TAX_MATTERS-Q02",
+        "TAX_MATTERS-Q03"
+      ]
+    },
+    {
+      "example_id": "TAX_MATTERS-EX-04",
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "printed_reference": "4.23",
+      "complete_source_node_occurrence_ids": [
+        "e904fcdc80a00626a68ff30f2e2a9540d1e53e1093c40ced767f7772e1d9041d"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 354833,
+          "start_byte": 351900,
+          "text_sha256": "a44556be41a8222c493c53b7390db7eabd709eb51a00ffa3563dd02f1c7e167c"
+        }
+      ],
+      "source_text_sha256s": [
+        "a44556be41a8222c493c53b7390db7eabd709eb51a00ffa3563dd02f1c7e167c"
+      ],
+      "structure_revision_ids": [
+        "31924eb4eae705fc2d7212c7ba576a299afc2818db1575c06552bdf08c1263c8"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "003868bf4dcc3f2bc36c9f2bd46a1de3d86de00ed94c5ead106a230b24b062fa",
+        "1a371bf7e9ef790cd94b958e9cbfb4f0f3098ad5af4cfd1d0c13cc3f91bdcf6e",
+        "3e5f2dbcf3cc6e35543b9bf46576d74a590bf4d4325954fed90e27ed3394a1ff",
+        "b357619129d823df59da9746cbbda50f7ed2ba66e8221b0d603fd3d5ea276799"
+      ],
+      "comparator_run_identifiers": [
+        "topbuild-tax-matters-20260809-2xk-r3-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "INTENDED_TAX_TREATMENT",
+      "legal_question_ids": [
+        "TAX_MATTERS-Q01",
+        "TAX_MATTERS-Q02",
+        "TAX_MATTERS-Q03"
+      ]
+    }
+  ],
+  "cross_family_dependencies": [],
+  "proposed_output_policy": {
+    "candidate_claim_definition_keys": [
+      "INTENDED_TAX_TREATMENT_KIND",
+      "TAX_OPINION_COOPERATION_COVENANT",
+      "TAX_TREATMENT_PROTECTION_COVENANT",
+      "TRANSFER_TAX_ALLOCATION"
+    ],
+    "candidate_subtype_profile_ids": [
+      "TAX_MATTERS::INTENDED_TAX_TREATMENT",
+      "TAX_MATTERS::TAX_TREATMENT_PROTECTION",
+      "TAX_MATTERS::TAX_REPORTING_CONSISTENCY",
+      "TAX_MATTERS::TAX_OPINION_COOPERATION",
+      "TAX_MATTERS::TRANSFER_TAX_ALLOCATION",
+      "TAX_MATTERS::WITHHOLDING_MECHANIC",
+      "TAX_MATTERS::FIRPTA_CERTIFICATE",
+      "TAX_MATTERS::TAX_INTEGRATION_OR_SPECIAL_MECHANIC"
+    ],
+    "non_output_dispositions": [
+      "LEGACY_FRAGMENTS_REMAIN_SCHEMA_APPROVAL_PENDING",
+      "UNRESOLVED_REQUIRED_ROLE_IS_NON_RENDERABLE"
+    ],
+    "family_ownership_boundary": "TAX_MATTERS owns only approved complete propositions. Overlapping content is link-only.",
+    "renderability": "NEVER_RENDER_FROM_PROPOSAL",
+    "complete_transition": "NOT_AUTHORISED"
+  },
+  "narrow_legal_questions": [
+    {
+      "question_id": "TAX_MATTERS-Q01",
+      "question": "Should one independently operative authored unit be one proposition, with coordinated elements stored as roles or linked children?",
+      "affected_example_ids": [
+        "TAX_MATTERS-EX-01",
+        "TAX_MATTERS-EX-02",
+        "TAX_MATTERS-EX-03",
+        "TAX_MATTERS-EX-04"
+      ],
+      "two_plausible_readings": [
+        "ONE_COMPOUND_PROPOSITION",
+        "LINKED_INDEPENDENT_PROPOSITIONS"
+      ],
+      "recommended_reading": "Use one proposition per independently operative authored unit.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "TAX_MATTERS-Q02",
+      "question": "Which family owns overlapping content, and which families may only link to its stable identity?",
+      "affected_example_ids": [
+        "TAX_MATTERS-EX-01",
+        "TAX_MATTERS-EX-02",
+        "TAX_MATTERS-EX-03",
+        "TAX_MATTERS-EX-04"
+      ],
+      "two_plausible_readings": [
+        "DUPLICATE_IN_EACH_FAMILY",
+        "ONE_OWNER_WITH_LINKED_CONSUMERS"
+      ],
+      "recommended_reading": "Use one semantic owner and stable links.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "TAX_MATTERS-Q03",
+      "question": "Can an ambiguous or unresolved M3 edge fill a required role?",
+      "affected_example_ids": [
+        "TAX_MATTERS-EX-01",
+        "TAX_MATTERS-EX-02",
+        "TAX_MATTERS-EX-03",
+        "TAX_MATTERS-EX-04"
+      ],
+      "two_plausible_readings": [
+        "ALLOW_CONTEXTUAL_INFERENCE",
+        "FAIL_ONLY_THE_DEPENDENT_PROPOSITION"
+      ],
+      "recommended_reading": "Fail only the dependent proposition and do not infer the role.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    }
+  ],
+  "preparation_diagnostics": [
+    {
+      "code": "BEN_FAMILY_ROLE_APPROVAL_REQUIRED",
+      "severity": "STOP",
+      "related_id": "TAX_MATTERS",
+      "detail": "No family adapter may run until Ben approves the open rulings and a separate approved schema is sealed."
+    }
+  ],
+  "preparation_effects": {
+    "model_calls": 0,
+    "family_runner_calls": 0,
+    "database_writes": 0,
+    "product_writes": 0,
+    "selector_changes": 0,
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "serving_changes": 0,
+    "publication_actions": 0
+  }
+}

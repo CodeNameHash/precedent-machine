@@ -1,0 +1,409 @@
+{
+  "schema_version": "STAGE_2Y_FAMILY_CALIBRATION_PACK/V1",
+  "calibration_pack_id": "b79dd44d6fd82240fcecdfb2fc3acdf87e6ce81c7b2ef6ab811fe512be9a2187",
+  "calibration_pack_digest": "f9ee97cb1d0eb87477dbca0290aea3da9ee32ef26c375d642862ffde34056c6a",
+  "family_key": "GUARANTY_FINANCING_PARTY",
+  "wave": 4,
+  "pack_version": 1,
+  "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+  "purpose": "LEGAL_CALIBRATION_PREPARATION_ONLY",
+  "authority_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-preparation-authority.json",
+    "byte_length": 22922,
+    "sha256": "d10f095429cdbb1006bfbe1e789c267ffa3a98b12b4bd33c2afb550e7beeea79"
+  },
+  "calibration_policy_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-calibration-policy.json",
+    "byte_length": 45512,
+    "sha256": "102534446774dfa0661ad186d27c25507befedca80807e42cf584fa412e6bf78"
+  },
+  "m4_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json",
+    "byte_length": 13670,
+    "sha256": "54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41"
+  },
+  "m2_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+    "byte_length": 20126,
+    "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585"
+  },
+  "m3_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+    "byte_length": 17449,
+    "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855"
+  },
+  "family_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json",
+    "byte_length": 827,
+    "sha256": "7aa5ff41eb778884cdbb6f18ba72138c20420a2475949aca5dcbc0d2098a938d"
+  },
+  "control_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json",
+    "byte_length": 379235,
+    "sha256": "62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41"
+  },
+  "diff_contract_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/diff-contract.json",
+    "byte_length": 1171,
+    "sha256": "2585c7af9e47c4f7a6915ef1667f5eb8dbce26a8a30829bae15e42a7d41ab0c8"
+  },
+  "comparator_run_bindings": [
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "run_identifier": "skechers-guaranty-financing-party-20260809-2xk-final",
+      "family": "GUARANTY_FINANCING_PARTY",
+      "resolution_binding": {
+        "byte_length": 41949,
+        "path": "evidence/canonical-v2/skechers-guaranty-financing-party-20260809-2xk-final/resolution.json",
+        "sha256": "953e2511787e127c7dbbb3e139f2c705bf64ddb30aacbf34498a482c0d5dac8a"
+      },
+      "adapter_result_binding": {
+        "byte_length": 447861,
+        "path": "evidence/canonical-v2/skechers-guaranty-financing-party-20260809-2xk-final/adapter-result.json",
+        "sha256": "476ccc2d1b0d6c3118d5e80e2907e291dbb6739a534fab3cc92491678c8f066f"
+      },
+      "validation_binding": {
+        "byte_length": 63960,
+        "path": "evidence/canonical-v2/skechers-guaranty-financing-party-20260809-2xk-final/validation.json",
+        "sha256": "9d7c532f4303bb20ae43c559dca5225145e97b711c9f76b4e40c415ed4b0ebc6"
+      },
+      "expected_counts": {
+        "resolution_claims": 1,
+        "write_set_claims": 1,
+        "validation_claims": 1,
+        "resolution_evidence": 1,
+        "supplemental_claims": 0
+      }
+    }
+  ],
+  "supplemental_input_bindings": [
+    {
+      "supplemental_id": "GUARANTY_FINANCING_PARTY-SUP-REDHAT",
+      "classification": "SUPPLEMENTAL_NON_COMPARATOR",
+      "reason": "COMPLETE_SOURCE_CALIBRATION_OUTSIDE_SEALED_FAMILY_COMPARATOR_REGISTRY",
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "source_binding": {
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a.agreement-index.json",
+        "byte_length": 4631977,
+        "sha256": "06c649dec40e3391f1d1da16b7b6eed6392f736a1d80a775fc9a141aa803e6a9"
+      },
+      "m2_node_bindings": [
+        {
+          "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+          "agreement_index_id": "e50464fb97dbd7ead5afc66292a42e5c37f47d3ccdc87d5842df7abef666b3b2",
+          "node_occurrence_id": "a74f6cf0b23993b94732f3d2145a45f65988286deb4dea44246ec2ab18ecac00",
+          "node_kind": "SECTION",
+          "reference": "8.06",
+          "extent_span": {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 256049,
+            "start_byte": 254751,
+            "text_sha256": "0454735d0ed1eee57b8021a55f4a296a4c196c540e6ea37c62d9f473cd46f76d"
+          },
+          "structure_revision_id": "fb86f23768f23b2119b1b241a494158cdd20978dce6a6a72b201d7f2b5737ebf"
+        },
+        {
+          "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+          "agreement_index_id": "e50464fb97dbd7ead5afc66292a42e5c37f47d3ccdc87d5842df7abef666b3b2",
+          "node_occurrence_id": "92aadd4edab0e674e3f0301af587431d532eab2ff11e47c243cda581cd30838f",
+          "node_kind": "SECTION",
+          "reference": "8.07",
+          "extent_span": {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 256776,
+            "start_byte": 256049,
+            "text_sha256": "58c3fbbd3a6fb7332fe73c8e24ba039cf97785095a31af77476af5098f7152b5"
+          },
+          "structure_revision_id": "fc6d291f403999633748b80dac27495cf66af979478987a61a0f56a32af392b4"
+        }
+      ],
+      "m3_dependency_bindings": [],
+      "may_affect_comparator_metrics": false
+    }
+  ],
+  "provision_examples": [
+    {
+      "example_id": "GUARANTY_FINANCING_PARTY-EX-04",
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "printed_reference": "8.06",
+      "complete_source_node_occurrence_ids": [
+        "a74f6cf0b23993b94732f3d2145a45f65988286deb4dea44246ec2ab18ecac00"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 256049,
+          "start_byte": 254751,
+          "text_sha256": "0454735d0ed1eee57b8021a55f4a296a4c196c540e6ea37c62d9f473cd46f76d"
+        }
+      ],
+      "source_text_sha256s": [
+        "0454735d0ed1eee57b8021a55f4a296a4c196c540e6ea37c62d9f473cd46f76d"
+      ],
+      "structure_revision_ids": [
+        "fb86f23768f23b2119b1b241a494158cdd20978dce6a6a72b201d7f2b5737ebf"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [],
+      "comparator_run_identifiers": [],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "PERFORMANCE_GUARANTY",
+      "legal_question_ids": [
+        "GUARANTY_FINANCING_PARTY-Q01",
+        "GUARANTY_FINANCING_PARTY-Q02",
+        "GUARANTY_FINANCING_PARTY-Q03"
+      ]
+    },
+    {
+      "example_id": "GUARANTY_FINANCING_PARTY-EX-05",
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "printed_reference": "8.07",
+      "complete_source_node_occurrence_ids": [
+        "92aadd4edab0e674e3f0301af587431d532eab2ff11e47c243cda581cd30838f"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 256776,
+          "start_byte": 256049,
+          "text_sha256": "58c3fbbd3a6fb7332fe73c8e24ba039cf97785095a31af77476af5098f7152b5"
+        }
+      ],
+      "source_text_sha256s": [
+        "58c3fbbd3a6fb7332fe73c8e24ba039cf97785095a31af77476af5098f7152b5"
+      ],
+      "structure_revision_ids": [
+        "fc6d291f403999633748b80dac27495cf66af979478987a61a0f56a32af392b4"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [],
+      "comparator_run_identifiers": [],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "PERFORMANCE_GUARANTY",
+      "legal_question_ids": [
+        "GUARANTY_FINANCING_PARTY-Q01",
+        "GUARANTY_FINANCING_PARTY-Q02",
+        "GUARANTY_FINANCING_PARTY-Q03"
+      ]
+    },
+    {
+      "example_id": "GUARANTY_FINANCING_PARTY-EX-01",
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "printed_reference": "4.13",
+      "complete_source_node_occurrence_ids": [
+        "fb674b7fcad9fbf7f6cd9200544459980c20c666d1bd6669304055f8c3ccce11"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 198823,
+          "start_byte": 198037,
+          "text_sha256": "0aa3d61720fd2fdff14c0e2f2ac900bdfba7108d4798d87eac21911a9fec3e5d"
+        }
+      ],
+      "source_text_sha256s": [
+        "0aa3d61720fd2fdff14c0e2f2ac900bdfba7108d4798d87eac21911a9fec3e5d"
+      ],
+      "structure_revision_ids": [
+        "c3a09f62189785415ab733a7d840d4aebf8d0744fc33174f40170c951fe75874"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "ab3d1eedf5d9e8c5b44bb367398bc280f003b5a4a076e01cac1a638168bafad7"
+      ],
+      "comparator_run_identifiers": [
+        "skechers-guaranty-financing-party-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "PERFORMANCE_GUARANTY",
+      "legal_question_ids": [
+        "GUARANTY_FINANCING_PARTY-Q01",
+        "GUARANTY_FINANCING_PARTY-Q02",
+        "GUARANTY_FINANCING_PARTY-Q03"
+      ]
+    },
+    {
+      "example_id": "GUARANTY_FINANCING_PARTY-EX-02",
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "printed_reference": "9.15",
+      "complete_source_node_occurrence_ids": [
+        "f78f94d6023306f8f28fb0b50f7c15e69d30cc1d3c920e04650a7b255f4b5450"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 378277,
+          "start_byte": 374327,
+          "text_sha256": "b6354bd20ee95c4ae0a5c923c3bc6bea8e571d9e544267787f13b9c28013eae9"
+        }
+      ],
+      "source_text_sha256s": [
+        "b6354bd20ee95c4ae0a5c923c3bc6bea8e571d9e544267787f13b9c28013eae9"
+      ],
+      "structure_revision_ids": [
+        "0a76c2fbc461116d9cf9c315c48847c1a19d68c3a525352a9c38161e4b4d7de2"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [],
+      "comparator_run_identifiers": [
+        "skechers-guaranty-financing-party-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "PERFORMANCE_GUARANTY",
+      "legal_question_ids": [
+        "GUARANTY_FINANCING_PARTY-Q01",
+        "GUARANTY_FINANCING_PARTY-Q02",
+        "GUARANTY_FINANCING_PARTY-Q03"
+      ]
+    },
+    {
+      "example_id": "GUARANTY_FINANCING_PARTY-EX-03",
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "printed_reference": "9.16",
+      "complete_source_node_occurrence_ids": [
+        "8516b9b686f7f6e3553dc21ff8f5414dded532b6a63cd421207a2b8cd073f753"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 380704,
+          "start_byte": 378277,
+          "text_sha256": "cee7d180708a38ebe6d91fae21d3e37229e8940312216168bf04a3a5e992c7e5"
+        }
+      ],
+      "source_text_sha256s": [
+        "cee7d180708a38ebe6d91fae21d3e37229e8940312216168bf04a3a5e992c7e5"
+      ],
+      "structure_revision_ids": [
+        "4735d53df025cc9e343d9a324eee50efeb73bcc5498b713b2cafa5f6221f784d"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [],
+      "comparator_run_identifiers": [
+        "skechers-guaranty-financing-party-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "PERFORMANCE_GUARANTY",
+      "legal_question_ids": [
+        "GUARANTY_FINANCING_PARTY-Q01",
+        "GUARANTY_FINANCING_PARTY-Q02",
+        "GUARANTY_FINANCING_PARTY-Q03"
+      ]
+    }
+  ],
+  "cross_family_dependencies": [],
+  "proposed_output_policy": {
+    "candidate_claim_definition_keys": [
+      "LIMITED_GUARANTY_DELIVERED"
+    ],
+    "candidate_subtype_profile_ids": [
+      "GUARANTY_FINANCING_PARTY::PERFORMANCE_GUARANTY",
+      "GUARANTY_FINANCING_PARTY::LIMITED_GUARANTY_DELIVERY_OR_STATUS_REP",
+      "GUARANTY_FINANCING_PARTY::GUARANTY_NO_DEFAULT_REP",
+      "GUARANTY_FINANCING_PARTY::FINANCING_SOURCE_PROTECTION"
+    ],
+    "non_output_dispositions": [
+      "LEGACY_FRAGMENTS_REMAIN_SCHEMA_APPROVAL_PENDING",
+      "UNRESOLVED_REQUIRED_ROLE_IS_NON_RENDERABLE"
+    ],
+    "family_ownership_boundary": "GUARANTY_FINANCING_PARTY owns only approved complete propositions. Overlapping content is link-only.",
+    "renderability": "NEVER_RENDER_FROM_PROPOSAL",
+    "complete_transition": "NOT_AUTHORISED"
+  },
+  "narrow_legal_questions": [
+    {
+      "question_id": "GUARANTY_FINANCING_PARTY-Q01",
+      "question": "Should one independently operative authored unit be one proposition, with coordinated elements stored as roles or linked children?",
+      "affected_example_ids": [
+        "GUARANTY_FINANCING_PARTY-EX-01",
+        "GUARANTY_FINANCING_PARTY-EX-02",
+        "GUARANTY_FINANCING_PARTY-EX-03",
+        "GUARANTY_FINANCING_PARTY-EX-04",
+        "GUARANTY_FINANCING_PARTY-EX-05"
+      ],
+      "two_plausible_readings": [
+        "ONE_COMPOUND_PROPOSITION",
+        "LINKED_INDEPENDENT_PROPOSITIONS"
+      ],
+      "recommended_reading": "Use one proposition per independently operative authored unit.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "GUARANTY_FINANCING_PARTY-Q02",
+      "question": "Which family owns overlapping content, and which families may only link to its stable identity?",
+      "affected_example_ids": [
+        "GUARANTY_FINANCING_PARTY-EX-01",
+        "GUARANTY_FINANCING_PARTY-EX-02",
+        "GUARANTY_FINANCING_PARTY-EX-03",
+        "GUARANTY_FINANCING_PARTY-EX-04",
+        "GUARANTY_FINANCING_PARTY-EX-05"
+      ],
+      "two_plausible_readings": [
+        "DUPLICATE_IN_EACH_FAMILY",
+        "ONE_OWNER_WITH_LINKED_CONSUMERS"
+      ],
+      "recommended_reading": "Use one semantic owner and stable links.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "GUARANTY_FINANCING_PARTY-Q03",
+      "question": "Can an ambiguous or unresolved M3 edge fill a required role?",
+      "affected_example_ids": [
+        "GUARANTY_FINANCING_PARTY-EX-01",
+        "GUARANTY_FINANCING_PARTY-EX-02",
+        "GUARANTY_FINANCING_PARTY-EX-03",
+        "GUARANTY_FINANCING_PARTY-EX-04",
+        "GUARANTY_FINANCING_PARTY-EX-05"
+      ],
+      "two_plausible_readings": [
+        "ALLOW_CONTEXTUAL_INFERENCE",
+        "FAIL_ONLY_THE_DEPENDENT_PROPOSITION"
+      ],
+      "recommended_reading": "Fail only the dependent proposition and do not infer the role.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    }
+  ],
+  "preparation_diagnostics": [
+    {
+      "code": "BEN_FAMILY_ROLE_APPROVAL_REQUIRED",
+      "severity": "STOP",
+      "related_id": "GUARANTY_FINANCING_PARTY",
+      "detail": "No family adapter may run until Ben approves the open rulings and a separate approved schema is sealed."
+    }
+  ],
+  "preparation_effects": {
+    "model_calls": 0,
+    "family_runner_calls": 0,
+    "database_writes": 0,
+    "product_writes": 0,
+    "selector_changes": 0,
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "serving_changes": 0,
+    "publication_actions": 0
+  }
+}

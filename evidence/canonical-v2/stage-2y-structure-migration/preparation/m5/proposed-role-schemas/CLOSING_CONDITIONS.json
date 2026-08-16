@@ -1,0 +1,1438 @@
+{
+  "schema_version": "STAGE_2Y_PROPOSED_FAMILY_REQUIRED_ROLE_SCHEMA/V1",
+  "proposed_role_schema_id": "98b6c45c40c31575b48031b789cfcf24f132ad977c3f99fa4768de67156549a3",
+  "proposal_digest": "46d34c6870d3790510240650a916746b43af7581ccf10f8125155667172f3e80",
+  "family_key": "CLOSING_CONDITIONS",
+  "role_schema_version": 1,
+  "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+  "runner_eligible": false,
+  "complete_transition_authorised": false,
+  "approval_id": null,
+  "schema_authority": null,
+  "authority_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-preparation-authority.json",
+    "byte_length": 22922,
+    "sha256": "d10f095429cdbb1006bfbe1e789c267ffa3a98b12b4bd33c2afb550e7beeea79"
+  },
+  "calibration_policy_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-calibration-policy.json",
+    "byte_length": 45512,
+    "sha256": "102534446774dfa0661ad186d27c25507befedca80807e42cf584fa412e6bf78"
+  },
+  "calibration_pack_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/CLOSING_CONDITIONS.json",
+    "byte_length": 27005,
+    "sha256": "c01a84e7d23e5bfbefab70938b59198e3b8dd5b1636d78c2750977bc7b73377b",
+    "calibration_pack_id": "17312cba9e81c545416bac35d0ac3c1f389ed47de976e3e5fd0ed5018989ccb7",
+    "calibration_pack_digest": "23f1930967677a6e7efb9c33ffb0e7a3df8d8d43d5f6a83bbebbc423e3943348"
+  },
+  "claim_definition_scope": {
+    "included_claim_definition_keys": [
+      "COVENANT_COMPLIANCE_STANDARD",
+      "FRUSTRATION_BREACH_STANDARD",
+      "GOVERNMENT_PROCEEDING_CONDITION",
+      "LEGAL_RESTRAINT_CONDITION",
+      "LISTING_CONDITION",
+      "METSERA_7_04_FRUSTRATION_BRANCH",
+      "NO_MAE_CONDITION",
+      "NO_MAE_CONDITION_CONTINUING",
+      "OFFICER_CERTIFICATE_REQUIRED",
+      "REGULATORY_APPROVAL_CONDITION",
+      "S4_CONDITION_COMPONENT",
+      "STOCKHOLDER_APPROVAL_CONDITION"
+    ],
+    "excluded_claim_definition_keys": [],
+    "source_first_rule": "M2_SOURCE_BYTES_AND_RESOLVED_M3_EDGES_ONLY",
+    "proposition_unit_rule": "ONE_INDEPENDENTLY_OPERATIVE_AUTHORED_UNIT_WITH_ORDERED_ROLES_OR_LINKED_CHILDREN"
+  },
+  "subtype_profiles": [
+    {
+      "profile_id": "CLOSING_CONDITIONS::STOCKHOLDER_APPROVAL",
+      "profile_version": 1,
+      "claim_definition_keys": [
+        "COVENANT_COMPLIANCE_STANDARD",
+        "FRUSTRATION_BREACH_STANDARD",
+        "GOVERNMENT_PROCEEDING_CONDITION",
+        "LEGAL_RESTRAINT_CONDITION",
+        "LISTING_CONDITION",
+        "METSERA_7_04_FRUSTRATION_BRANCH",
+        "NO_MAE_CONDITION",
+        "NO_MAE_CONDITION_CONTINUING",
+        "OFFICER_CERTIFICATE_REQUIRED",
+        "REGULATORY_APPROVAL_CONDITION",
+        "S4_CONDITION_COMPONENT",
+        "STOCKHOLDER_APPROVAL_CONDITION"
+      ],
+      "proposition_unit": "ONE_INDEPENDENTLY_OPERATIVE_AUTHORED_UNIT",
+      "applicability_rule": "Complete source must satisfy this subtype and every required role.",
+      "required_roles": [
+        {
+          "role_key": "LEGAL_ACTOR_OR_SUBJECT",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "LEGAL_OPERATION",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "OPERATIVE_OBJECT",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "TEMPORAL_OR_TRIGGER_SCOPE",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "QUALIFICATIONS",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        }
+      ],
+      "optional_roles": [],
+      "role_order": [
+        "LEGAL_ACTOR_OR_SUBJECT",
+        "LEGAL_OPERATION",
+        "OPERATIVE_OBJECT",
+        "TEMPORAL_OR_TRIGGER_SCOPE",
+        "QUALIFICATIONS"
+      ],
+      "cross_family_rules": [
+        "ONE_SEMANTIC_OWNER",
+        "LINK_ONLY_DO_NOT_DUPLICATE",
+        "UNRESOLVED_DEPENDENCY_BLOCKS_ONLY_DEPENDENT_PROPOSITION"
+      ],
+      "unresolved_legal_question_ids": [
+        "CLOSING_CONDITIONS-Q01",
+        "CLOSING_CONDITIONS-Q02",
+        "CLOSING_CONDITIONS-Q03"
+      ]
+    },
+    {
+      "profile_id": "CLOSING_CONDITIONS::REGULATORY_APPROVAL",
+      "profile_version": 1,
+      "claim_definition_keys": [
+        "COVENANT_COMPLIANCE_STANDARD",
+        "FRUSTRATION_BREACH_STANDARD",
+        "GOVERNMENT_PROCEEDING_CONDITION",
+        "LEGAL_RESTRAINT_CONDITION",
+        "LISTING_CONDITION",
+        "METSERA_7_04_FRUSTRATION_BRANCH",
+        "NO_MAE_CONDITION",
+        "NO_MAE_CONDITION_CONTINUING",
+        "OFFICER_CERTIFICATE_REQUIRED",
+        "REGULATORY_APPROVAL_CONDITION",
+        "S4_CONDITION_COMPONENT",
+        "STOCKHOLDER_APPROVAL_CONDITION"
+      ],
+      "proposition_unit": "ONE_INDEPENDENTLY_OPERATIVE_AUTHORED_UNIT",
+      "applicability_rule": "Complete source must satisfy this subtype and every required role.",
+      "required_roles": [
+        {
+          "role_key": "LEGAL_ACTOR_OR_SUBJECT",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "LEGAL_OPERATION",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "OPERATIVE_OBJECT",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "TEMPORAL_OR_TRIGGER_SCOPE",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "QUALIFICATIONS",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        }
+      ],
+      "optional_roles": [],
+      "role_order": [
+        "LEGAL_ACTOR_OR_SUBJECT",
+        "LEGAL_OPERATION",
+        "OPERATIVE_OBJECT",
+        "TEMPORAL_OR_TRIGGER_SCOPE",
+        "QUALIFICATIONS"
+      ],
+      "cross_family_rules": [
+        "ONE_SEMANTIC_OWNER",
+        "LINK_ONLY_DO_NOT_DUPLICATE",
+        "UNRESOLVED_DEPENDENCY_BLOCKS_ONLY_DEPENDENT_PROPOSITION"
+      ],
+      "unresolved_legal_question_ids": [
+        "CLOSING_CONDITIONS-Q01",
+        "CLOSING_CONDITIONS-Q02",
+        "CLOSING_CONDITIONS-Q03"
+      ]
+    },
+    {
+      "profile_id": "CLOSING_CONDITIONS::LEGAL_RESTRAINT",
+      "profile_version": 1,
+      "claim_definition_keys": [
+        "COVENANT_COMPLIANCE_STANDARD",
+        "FRUSTRATION_BREACH_STANDARD",
+        "GOVERNMENT_PROCEEDING_CONDITION",
+        "LEGAL_RESTRAINT_CONDITION",
+        "LISTING_CONDITION",
+        "METSERA_7_04_FRUSTRATION_BRANCH",
+        "NO_MAE_CONDITION",
+        "NO_MAE_CONDITION_CONTINUING",
+        "OFFICER_CERTIFICATE_REQUIRED",
+        "REGULATORY_APPROVAL_CONDITION",
+        "S4_CONDITION_COMPONENT",
+        "STOCKHOLDER_APPROVAL_CONDITION"
+      ],
+      "proposition_unit": "ONE_INDEPENDENTLY_OPERATIVE_AUTHORED_UNIT",
+      "applicability_rule": "Complete source must satisfy this subtype and every required role.",
+      "required_roles": [
+        {
+          "role_key": "LEGAL_ACTOR_OR_SUBJECT",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "LEGAL_OPERATION",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "OPERATIVE_OBJECT",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "TEMPORAL_OR_TRIGGER_SCOPE",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "QUALIFICATIONS",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        }
+      ],
+      "optional_roles": [],
+      "role_order": [
+        "LEGAL_ACTOR_OR_SUBJECT",
+        "LEGAL_OPERATION",
+        "OPERATIVE_OBJECT",
+        "TEMPORAL_OR_TRIGGER_SCOPE",
+        "QUALIFICATIONS"
+      ],
+      "cross_family_rules": [
+        "ONE_SEMANTIC_OWNER",
+        "LINK_ONLY_DO_NOT_DUPLICATE",
+        "UNRESOLVED_DEPENDENCY_BLOCKS_ONLY_DEPENDENT_PROPOSITION"
+      ],
+      "unresolved_legal_question_ids": [
+        "CLOSING_CONDITIONS-Q01",
+        "CLOSING_CONDITIONS-Q02",
+        "CLOSING_CONDITIONS-Q03"
+      ]
+    },
+    {
+      "profile_id": "CLOSING_CONDITIONS::S4_EFFECTIVENESS",
+      "profile_version": 1,
+      "claim_definition_keys": [
+        "COVENANT_COMPLIANCE_STANDARD",
+        "FRUSTRATION_BREACH_STANDARD",
+        "GOVERNMENT_PROCEEDING_CONDITION",
+        "LEGAL_RESTRAINT_CONDITION",
+        "LISTING_CONDITION",
+        "METSERA_7_04_FRUSTRATION_BRANCH",
+        "NO_MAE_CONDITION",
+        "NO_MAE_CONDITION_CONTINUING",
+        "OFFICER_CERTIFICATE_REQUIRED",
+        "REGULATORY_APPROVAL_CONDITION",
+        "S4_CONDITION_COMPONENT",
+        "STOCKHOLDER_APPROVAL_CONDITION"
+      ],
+      "proposition_unit": "ONE_INDEPENDENTLY_OPERATIVE_AUTHORED_UNIT",
+      "applicability_rule": "Complete source must satisfy this subtype and every required role.",
+      "required_roles": [
+        {
+          "role_key": "LEGAL_ACTOR_OR_SUBJECT",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "LEGAL_OPERATION",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "OPERATIVE_OBJECT",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "TEMPORAL_OR_TRIGGER_SCOPE",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "QUALIFICATIONS",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        }
+      ],
+      "optional_roles": [],
+      "role_order": [
+        "LEGAL_ACTOR_OR_SUBJECT",
+        "LEGAL_OPERATION",
+        "OPERATIVE_OBJECT",
+        "TEMPORAL_OR_TRIGGER_SCOPE",
+        "QUALIFICATIONS"
+      ],
+      "cross_family_rules": [
+        "ONE_SEMANTIC_OWNER",
+        "LINK_ONLY_DO_NOT_DUPLICATE",
+        "UNRESOLVED_DEPENDENCY_BLOCKS_ONLY_DEPENDENT_PROPOSITION"
+      ],
+      "unresolved_legal_question_ids": [
+        "CLOSING_CONDITIONS-Q01",
+        "CLOSING_CONDITIONS-Q02",
+        "CLOSING_CONDITIONS-Q03"
+      ]
+    },
+    {
+      "profile_id": "CLOSING_CONDITIONS::BRINGDOWN",
+      "profile_version": 1,
+      "claim_definition_keys": [
+        "COVENANT_COMPLIANCE_STANDARD",
+        "FRUSTRATION_BREACH_STANDARD",
+        "GOVERNMENT_PROCEEDING_CONDITION",
+        "LEGAL_RESTRAINT_CONDITION",
+        "LISTING_CONDITION",
+        "METSERA_7_04_FRUSTRATION_BRANCH",
+        "NO_MAE_CONDITION",
+        "NO_MAE_CONDITION_CONTINUING",
+        "OFFICER_CERTIFICATE_REQUIRED",
+        "REGULATORY_APPROVAL_CONDITION",
+        "S4_CONDITION_COMPONENT",
+        "STOCKHOLDER_APPROVAL_CONDITION"
+      ],
+      "proposition_unit": "ONE_INDEPENDENTLY_OPERATIVE_AUTHORED_UNIT",
+      "applicability_rule": "Complete source must satisfy this subtype and every required role.",
+      "required_roles": [
+        {
+          "role_key": "LEGAL_ACTOR_OR_SUBJECT",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "LEGAL_OPERATION",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "OPERATIVE_OBJECT",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "TEMPORAL_OR_TRIGGER_SCOPE",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "QUALIFICATIONS",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        }
+      ],
+      "optional_roles": [],
+      "role_order": [
+        "LEGAL_ACTOR_OR_SUBJECT",
+        "LEGAL_OPERATION",
+        "OPERATIVE_OBJECT",
+        "TEMPORAL_OR_TRIGGER_SCOPE",
+        "QUALIFICATIONS"
+      ],
+      "cross_family_rules": [
+        "ONE_SEMANTIC_OWNER",
+        "LINK_ONLY_DO_NOT_DUPLICATE",
+        "UNRESOLVED_DEPENDENCY_BLOCKS_ONLY_DEPENDENT_PROPOSITION"
+      ],
+      "unresolved_legal_question_ids": [
+        "CLOSING_CONDITIONS-Q01",
+        "CLOSING_CONDITIONS-Q02",
+        "CLOSING_CONDITIONS-Q03"
+      ]
+    },
+    {
+      "profile_id": "CLOSING_CONDITIONS::OFFICER_CERTIFICATE",
+      "profile_version": 1,
+      "claim_definition_keys": [
+        "COVENANT_COMPLIANCE_STANDARD",
+        "FRUSTRATION_BREACH_STANDARD",
+        "GOVERNMENT_PROCEEDING_CONDITION",
+        "LEGAL_RESTRAINT_CONDITION",
+        "LISTING_CONDITION",
+        "METSERA_7_04_FRUSTRATION_BRANCH",
+        "NO_MAE_CONDITION",
+        "NO_MAE_CONDITION_CONTINUING",
+        "OFFICER_CERTIFICATE_REQUIRED",
+        "REGULATORY_APPROVAL_CONDITION",
+        "S4_CONDITION_COMPONENT",
+        "STOCKHOLDER_APPROVAL_CONDITION"
+      ],
+      "proposition_unit": "ONE_INDEPENDENTLY_OPERATIVE_AUTHORED_UNIT",
+      "applicability_rule": "Complete source must satisfy this subtype and every required role.",
+      "required_roles": [
+        {
+          "role_key": "LEGAL_ACTOR_OR_SUBJECT",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "LEGAL_OPERATION",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "OPERATIVE_OBJECT",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "TEMPORAL_OR_TRIGGER_SCOPE",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "QUALIFICATIONS",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        }
+      ],
+      "optional_roles": [],
+      "role_order": [
+        "LEGAL_ACTOR_OR_SUBJECT",
+        "LEGAL_OPERATION",
+        "OPERATIVE_OBJECT",
+        "TEMPORAL_OR_TRIGGER_SCOPE",
+        "QUALIFICATIONS"
+      ],
+      "cross_family_rules": [
+        "ONE_SEMANTIC_OWNER",
+        "LINK_ONLY_DO_NOT_DUPLICATE",
+        "UNRESOLVED_DEPENDENCY_BLOCKS_ONLY_DEPENDENT_PROPOSITION"
+      ],
+      "unresolved_legal_question_ids": [
+        "CLOSING_CONDITIONS-Q01",
+        "CLOSING_CONDITIONS-Q02",
+        "CLOSING_CONDITIONS-Q03"
+      ]
+    },
+    {
+      "profile_id": "CLOSING_CONDITIONS::FRUSTRATION",
+      "profile_version": 1,
+      "claim_definition_keys": [
+        "COVENANT_COMPLIANCE_STANDARD",
+        "FRUSTRATION_BREACH_STANDARD",
+        "GOVERNMENT_PROCEEDING_CONDITION",
+        "LEGAL_RESTRAINT_CONDITION",
+        "LISTING_CONDITION",
+        "METSERA_7_04_FRUSTRATION_BRANCH",
+        "NO_MAE_CONDITION",
+        "NO_MAE_CONDITION_CONTINUING",
+        "OFFICER_CERTIFICATE_REQUIRED",
+        "REGULATORY_APPROVAL_CONDITION",
+        "S4_CONDITION_COMPONENT",
+        "STOCKHOLDER_APPROVAL_CONDITION"
+      ],
+      "proposition_unit": "ONE_INDEPENDENTLY_OPERATIVE_AUTHORED_UNIT",
+      "applicability_rule": "Complete source must satisfy this subtype and every required role.",
+      "required_roles": [
+        {
+          "role_key": "LEGAL_ACTOR_OR_SUBJECT",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "LEGAL_OPERATION",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "OPERATIVE_OBJECT",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "TEMPORAL_OR_TRIGGER_SCOPE",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "QUALIFICATIONS",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        }
+      ],
+      "optional_roles": [],
+      "role_order": [
+        "LEGAL_ACTOR_OR_SUBJECT",
+        "LEGAL_OPERATION",
+        "OPERATIVE_OBJECT",
+        "TEMPORAL_OR_TRIGGER_SCOPE",
+        "QUALIFICATIONS"
+      ],
+      "cross_family_rules": [
+        "ONE_SEMANTIC_OWNER",
+        "LINK_ONLY_DO_NOT_DUPLICATE",
+        "UNRESOLVED_DEPENDENCY_BLOCKS_ONLY_DEPENDENT_PROPOSITION"
+      ],
+      "unresolved_legal_question_ids": [
+        "CLOSING_CONDITIONS-Q01",
+        "CLOSING_CONDITIONS-Q02",
+        "CLOSING_CONDITIONS-Q03"
+      ]
+    },
+    {
+      "profile_id": "CLOSING_CONDITIONS::TAX_OPINION",
+      "profile_version": 1,
+      "claim_definition_keys": [
+        "COVENANT_COMPLIANCE_STANDARD",
+        "FRUSTRATION_BREACH_STANDARD",
+        "GOVERNMENT_PROCEEDING_CONDITION",
+        "LEGAL_RESTRAINT_CONDITION",
+        "LISTING_CONDITION",
+        "METSERA_7_04_FRUSTRATION_BRANCH",
+        "NO_MAE_CONDITION",
+        "NO_MAE_CONDITION_CONTINUING",
+        "OFFICER_CERTIFICATE_REQUIRED",
+        "REGULATORY_APPROVAL_CONDITION",
+        "S4_CONDITION_COMPONENT",
+        "STOCKHOLDER_APPROVAL_CONDITION"
+      ],
+      "proposition_unit": "ONE_INDEPENDENTLY_OPERATIVE_AUTHORED_UNIT",
+      "applicability_rule": "Complete source must satisfy this subtype and every required role.",
+      "required_roles": [
+        {
+          "role_key": "LEGAL_ACTOR_OR_SUBJECT",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "LEGAL_OPERATION",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "OPERATIVE_OBJECT",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "TEMPORAL_OR_TRIGGER_SCOPE",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        },
+        {
+          "role_key": "QUALIFICATIONS",
+          "value_type": "SOURCE_PROVEN_TYPED_VALUE",
+          "cardinality": "ONE_OR_MORE_AS_AUTHORED",
+          "required_for_complete": true,
+          "allowed_sources": [
+            "M2_SOURCE_NODE",
+            "M3_CONTEXT_FACT",
+            "M3_SCOPE_EDGE",
+            "M3_REFERENCE_EDGE",
+            "M3_DEFINITION_EDGE",
+            "M3_SEMANTIC_RELATIONSHIP",
+            "M4_ROLE_PROVENANCE"
+          ],
+          "provenance_requirements": [
+            "agreement_id",
+            "source_node_occurrence_id",
+            "source_span",
+            "source_text_sha256",
+            "source_role"
+          ],
+          "definition_or_reference_edge_requirement": "RESOLVED_IF_ROLE_DEPENDS_ON_DEFINITION_OR_REFERENCE",
+          "scope_requirement": "EXACT_AUTHORED_SCOPE",
+          "missing_disposition": "MISSING_REQUIRED_ROLE",
+          "renderability_on_missing": "NON_RENDERABLE_MISSING_REQUIRED_ROLE"
+        }
+      ],
+      "optional_roles": [],
+      "role_order": [
+        "LEGAL_ACTOR_OR_SUBJECT",
+        "LEGAL_OPERATION",
+        "OPERATIVE_OBJECT",
+        "TEMPORAL_OR_TRIGGER_SCOPE",
+        "QUALIFICATIONS"
+      ],
+      "cross_family_rules": [
+        "ONE_SEMANTIC_OWNER",
+        "LINK_ONLY_DO_NOT_DUPLICATE",
+        "UNRESOLVED_DEPENDENCY_BLOCKS_ONLY_DEPENDENT_PROPOSITION"
+      ],
+      "unresolved_legal_question_ids": [
+        "CLOSING_CONDITIONS-Q01",
+        "CLOSING_CONDITIONS-Q02",
+        "CLOSING_CONDITIONS-Q03"
+      ]
+    }
+  ],
+  "cross_family_dependencies": [],
+  "renderability_rule": "NEVER_RENDER_FROM_PROPOSAL",
+  "approval_requirements": {
+    "required_approver": "BEN_GOODCHILD",
+    "required_approval_id": "NON_NULL",
+    "required_ruling_ids": [
+      "CLOSING_CONDITIONS-Q01",
+      "CLOSING_CONDITIONS-Q02",
+      "CLOSING_CONDITIONS-Q03"
+    ],
+    "required_payload_digest": "RECOMPUTED",
+    "required_sealed_path": "control/family-role-schemas/<family_key>.json",
+    "new_family_execution_authority_required": true
+  },
+  "prohibitions": [
+    "NO_RUNNER_INPUT",
+    "NO_COMPLETE_TRANSITION",
+    "NO_RENDERING",
+    "NO_APPROVAL_INFERENCE",
+    "NO_RAW_SOURCE_REPARSE",
+    "NO_PROJECTION_ROLE_FILL",
+    "NO_CROSS_FAMILY_CONTENT_DUPLICATION"
+  ],
+  "open_legal_question_ids": [
+    "CLOSING_CONDITIONS-Q01",
+    "CLOSING_CONDITIONS-Q02",
+    "CLOSING_CONDITIONS-Q03"
+  ]
+}

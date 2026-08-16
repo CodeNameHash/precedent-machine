@@ -1,0 +1,629 @@
+{
+  "schema_version": "STAGE_2Y_FAMILY_CALIBRATION_PACK/V1",
+  "calibration_pack_id": "1079cdbb7afbf3b02f6201431a99538b7fc9d30d936b072587804750822690a0",
+  "calibration_pack_digest": "f0bbc404713358b3caffb2499fce7e127b7ea84eecd47fd97e59cdfb04d15edd",
+  "family_key": "TERMINATION",
+  "wave": 1,
+  "pack_version": 1,
+  "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+  "purpose": "LEGAL_CALIBRATION_PREPARATION_ONLY",
+  "authority_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-preparation-authority.json",
+    "byte_length": 22922,
+    "sha256": "d10f095429cdbb1006bfbe1e789c267ffa3a98b12b4bd33c2afb550e7beeea79"
+  },
+  "calibration_policy_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-calibration-policy.json",
+    "byte_length": 45512,
+    "sha256": "102534446774dfa0661ad186d27c25507befedca80807e42cf584fa412e6bf78"
+  },
+  "m4_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json",
+    "byte_length": 13670,
+    "sha256": "54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41"
+  },
+  "m2_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+    "byte_length": 20126,
+    "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585"
+  },
+  "m3_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+    "byte_length": 17449,
+    "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855"
+  },
+  "family_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json",
+    "byte_length": 827,
+    "sha256": "7aa5ff41eb778884cdbb6f18ba72138c20420a2475949aca5dcbc0d2098a938d"
+  },
+  "control_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json",
+    "byte_length": 379235,
+    "sha256": "62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41"
+  },
+  "diff_contract_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/diff-contract.json",
+    "byte_length": 1171,
+    "sha256": "2585c7af9e47c4f7a6915ef1667f5eb8dbce26a8a30829bae15e42a7d41ab0c8"
+  },
+  "comparator_run_bindings": [
+    {
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "run_identifier": "concho-termination-20260809-2xk-final",
+      "family": "TERMINATION",
+      "resolution_binding": {
+        "byte_length": 265955,
+        "path": "evidence/canonical-v2/concho-termination-20260809-2xk-final/resolution.json",
+        "sha256": "d507a1a6540d67fb99b81c7e51c360562bb93ca3237f83b34df9d5f2d18ca061"
+      },
+      "adapter_result_binding": {
+        "byte_length": 456690,
+        "path": "evidence/canonical-v2/concho-termination-20260809-2xk-final/adapter-result.json",
+        "sha256": "1e11a7f601eef03e0c15180c2570d763eee2e267910b10109acf08b7e6f7d9f8"
+      },
+      "validation_binding": {
+        "byte_length": 111763,
+        "path": "evidence/canonical-v2/concho-termination-20260809-2xk-final/validation.json",
+        "sha256": "6d7b9bf457fffa24a265db48958d9778271dfa0f779cd233efbc3c9e7bd67047"
+      },
+      "expected_counts": {
+        "resolution_claims": 18,
+        "write_set_claims": 18,
+        "validation_claims": 18,
+        "resolution_evidence": 18,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "run_identifier": "metsera-termination-20260809-2xk-final",
+      "family": "TERMINATION",
+      "resolution_binding": {
+        "byte_length": 219775,
+        "path": "evidence/canonical-v2/metsera-termination-20260809-2xk-final/resolution.json",
+        "sha256": "65cd0401eec7823862aa425730b04226c013d3bcede3b2aea3bc4e14cb4a848a"
+      },
+      "adapter_result_binding": {
+        "byte_length": 454312,
+        "path": "evidence/canonical-v2/metsera-termination-20260809-2xk-final/adapter-result.json",
+        "sha256": "8c7024d4b5f96c6d47470e3447f2ae0e49f2c4a338bc5494c02d07472706b4bc"
+      },
+      "validation_binding": {
+        "byte_length": 109797,
+        "path": "evidence/canonical-v2/metsera-termination-20260809-2xk-final/validation.json",
+        "sha256": "55a508b9a47c9e21f65554df4bd000ef2783fad9d8f2039e721d5758bc064cbb"
+      },
+      "expected_counts": {
+        "resolution_claims": 12,
+        "write_set_claims": 12,
+        "validation_claims": 12,
+        "resolution_evidence": 12,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "run_identifier": "redhat-termination-20260809-2xk-final",
+      "family": "TERMINATION",
+      "resolution_binding": {
+        "byte_length": 228276,
+        "path": "evidence/canonical-v2/redhat-termination-20260809-2xk-final/resolution.json",
+        "sha256": "87ec2e2444d6b07372c5a0be819db3183599e37e14fdd76bc5085a203d179747"
+      },
+      "adapter_result_binding": {
+        "byte_length": 358885,
+        "path": "evidence/canonical-v2/redhat-termination-20260809-2xk-final/adapter-result.json",
+        "sha256": "f37f9a77550239622d40b7d9fe59e0023aac9690a943ea9a81fe6d25ac49462e"
+      },
+      "validation_binding": {
+        "byte_length": 100877,
+        "path": "evidence/canonical-v2/redhat-termination-20260809-2xk-final/validation.json",
+        "sha256": "39c1abe59ab826c4aca35f5800959c56486c6c26e662b6b64359dfde68a81d3d"
+      },
+      "expected_counts": {
+        "resolution_claims": 11,
+        "write_set_claims": 11,
+        "validation_claims": 11,
+        "resolution_evidence": 11,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "run_identifier": "skechers-termination-20260809-2xk-final",
+      "family": "TERMINATION",
+      "resolution_binding": {
+        "byte_length": 280773,
+        "path": "evidence/canonical-v2/skechers-termination-20260809-2xk-final/resolution.json",
+        "sha256": "da9ca43c4630b88b06700e15bc1b6462232db67b963242e126d71c289b4cb899"
+      },
+      "adapter_result_binding": {
+        "byte_length": 502910,
+        "path": "evidence/canonical-v2/skechers-termination-20260809-2xk-final/adapter-result.json",
+        "sha256": "8bb53e089bb1b40471d1370906a71f1c4de0a595c80bb5bc94d76942cc3e6eba"
+      },
+      "validation_binding": {
+        "byte_length": 127334,
+        "path": "evidence/canonical-v2/skechers-termination-20260809-2xk-final/validation.json",
+        "sha256": "32e95c8214f06448c8ea7dfcfb5f8e4215487d43ecb7deefd5c1b5d476542b7a"
+      },
+      "expected_counts": {
+        "resolution_claims": 14,
+        "write_set_claims": 14,
+        "validation_claims": 14,
+        "resolution_evidence": 14,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "run_identifier": "skywater-termination-20260809-2xk-final",
+      "family": "TERMINATION",
+      "resolution_binding": {
+        "byte_length": 270376,
+        "path": "evidence/canonical-v2/skywater-termination-20260809-2xk-final/resolution.json",
+        "sha256": "ef103a3befc7acfe5daab0aec2ced7c7e195e2e63064452d9f9177ef946673ab"
+      },
+      "adapter_result_binding": {
+        "byte_length": 491569,
+        "path": "evidence/canonical-v2/skywater-termination-20260809-2xk-final/adapter-result.json",
+        "sha256": "fb5f58ccc2615aae23727ff05686594bf64d388a0b33f50b60bfcdcd64b8466b"
+      },
+      "validation_binding": {
+        "byte_length": 137964,
+        "path": "evidence/canonical-v2/skywater-termination-20260809-2xk-final/validation.json",
+        "sha256": "2d7c9b0c19ed381e63bb3762ecad9e8904ed7ddf63924be6eeecef8e3d570853"
+      },
+      "expected_counts": {
+        "resolution_claims": 16,
+        "write_set_claims": 16,
+        "validation_claims": 16,
+        "resolution_evidence": 16,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "run_identifier": "topbuild-termination-20260809-2xk-r3-final",
+      "family": "TERMINATION",
+      "resolution_binding": {
+        "byte_length": 286992,
+        "path": "evidence/canonical-v2/topbuild-termination-20260809-2xk-r3-final/resolution.json",
+        "sha256": "f4cfe057087fb817a12c6a664339ea275b07222963719269d52b4c87a83f9370"
+      },
+      "adapter_result_binding": {
+        "byte_length": 539171,
+        "path": "evidence/canonical-v2/topbuild-termination-20260809-2xk-r3-final/adapter-result.json",
+        "sha256": "44c0ea46da2c6c5256be518cb8c36cbfad684af2b1f3b483e35c9a3f626d2704"
+      },
+      "validation_binding": {
+        "byte_length": 134496,
+        "path": "evidence/canonical-v2/topbuild-termination-20260809-2xk-r3-final/validation.json",
+        "sha256": "62e3a204c0a458886ddc4ac63caa030114d21397a2ce4ca4af0d4fc3c4f63f2c"
+      },
+      "expected_counts": {
+        "resolution_claims": 20,
+        "write_set_claims": 20,
+        "validation_claims": 20,
+        "resolution_evidence": 20,
+        "supplemental_claims": 0
+      }
+    }
+  ],
+  "supplemental_input_bindings": [],
+  "provision_examples": [
+    {
+      "example_id": "TERMINATION-EX-01",
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "printed_reference": "8.1",
+      "complete_source_node_occurrence_ids": [
+        "d054342159f4d4100ea8b6412c5687a9a812d521002fbfdc0e2ed8f7af3b2741"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 276949,
+          "start_byte": 273223,
+          "text_sha256": "bfd0cde04adb2a4b166bff1820b4607165a0c49c8df5020577385ab99c95f642"
+        }
+      ],
+      "source_text_sha256s": [
+        "bfd0cde04adb2a4b166bff1820b4607165a0c49c8df5020577385ab99c95f642"
+      ],
+      "structure_revision_ids": [
+        "90b3c4b59f4a562c936971b4d880ac5c32e6db20351c72c2730f2aee0b523840"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "1e4938a03e00c265170ef0ef7ade96f01bbf6cdcb18e7832041751237ce6559f",
+        "2803d81e65a77250f1caf34b90993f219b86b18890774eadbe3893907918093a",
+        "2f4725d3d7f1ce5e094595cb0ad5a1c91dc84c18649b28a44dd6208e1171238d",
+        "46062a6d7930dbd3ef5353b1ef28c0ace1ca1593db882fb0697377b3e30d9bbd",
+        "4aefc137db134df8d8ccbdc5402cf0b0062029803e1554cc2c7b106cb0071a54",
+        "4daff2ac0d2ef735d60ede5d727857a628184b75280b3a4540596892bada4b5a",
+        "4e3406aca6af0081b4f6e5057a6879e54f2028c32afa4cfedabb296ccea4bd47",
+        "5683a619b5ad351a14a10e7d86b3b52e3a69a21361ba371a94628c8b36559133",
+        "56a06241f90799d3a525ef31524f74a451455f8bc6f76e8a5bde42bfd30adf14",
+        "67caddd5d3c7186d647c1aa5548529ff7cd66509e602d32bd764ebd80b7e953d",
+        "8f99f120a5290a8c53ca5e4c6b18df0677b52c23a0d62652bcef797b2cdcd233",
+        "923915fcb9bd77208f3baeeeda6593d047ade66d8dcbd3bd5c48220c056ff7ea",
+        "a2f7b90b403f53b74ef7571884e52865538b05aad04832affb4365ed4bf9fbed",
+        "e723585de5d6c2a74a0e535b0f2cbda67a38f3d171196acfd1b17522a28217e7",
+        "f6aaac1ce6d9b025ac3600b67dac422b3aacdcabce08a5b99222b672876d536c",
+        "fceb9693a4d68a02749947a339dafe8db38676ac4c53893bc3fba7d8554f3a70",
+        "fd0ec0fbefaa6b8b8ca28cd48beb3e29f15809e1b98258aad47e3b67e75a4126",
+        "ff9b87366f8d1a2244387540d1209f0d381759819570b4eaf61e4617aa89dfb4"
+      ],
+      "comparator_run_identifiers": [
+        "concho-termination-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "TERMINATION_RIGHT",
+      "legal_question_ids": [
+        "TERMINATION-Q01",
+        "TERMINATION-Q02",
+        "TERMINATION-Q03"
+      ]
+    },
+    {
+      "example_id": "TERMINATION-EX-02",
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "printed_reference": "8.01",
+      "complete_source_node_occurrence_ids": [
+        "759101a04d964938c5fecb3654484b3e5362f16a04520a2f6bb948bd19f46982"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 230820,
+          "start_byte": 226341,
+          "text_sha256": "0ac4ba4280092c978730f3c7aeece103802c9b45f3cb972cc2192dc3be5cc412"
+        }
+      ],
+      "source_text_sha256s": [
+        "0ac4ba4280092c978730f3c7aeece103802c9b45f3cb972cc2192dc3be5cc412"
+      ],
+      "structure_revision_ids": [
+        "d5d4cba9231fa15a9d4a06fa68d4633f8efb942c1a7ab0d89773ec1799443a95"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "1d225b6dc7c5831f213af74c8ebdfc3db7549aa001f84620e600a2844fb258c5",
+        "32811f1b34e049ef1d4ddd46a7f7f05227415ff40a9985b6a7d52651a472edae",
+        "3b4f5d73a03b4804b4dcdc243f0d21ca275db9a501e25448fc09fc4b79c94d33",
+        "3bf09ac36a5453860490a174b65736b78e61fc1fdf1a570535848838da7012d5",
+        "69276908f255df16ca78d83c11ed1fd71b62f75a9ed693c6c586687b3a713d0f",
+        "7028c33812b5aeaf78e74842ef1add8f58a18234917e6c7a0e2f901a3abe70c2",
+        "81442ce10695b73156e1f6e5cb748d1303db2033331a6809ffcd68a3fc9ec005",
+        "8c86b3a9622a5721c9c2ae9cfc3da53fb19b1cac07f59d3f4d2704af2ea6c31a",
+        "c3e2d2ae592d54c83184d2a2106d5a254173ad919779272eff8a49400da015fd",
+        "d9a29c12632274aa1fbdfcd5e59f63f9dd22a166b5487a64b2623ba2ff3029a5",
+        "f49e3f794a76fee27084f5bbe9eba75a9dce09cc53eb32b42c769079b64f2870",
+        "f76200cf14a94e6971ed8badc7ec84e16fa0490fd2415c756fd4a3821670f671"
+      ],
+      "comparator_run_identifiers": [
+        "metsera-termination-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "TERMINATION_RIGHT",
+      "legal_question_ids": [
+        "TERMINATION-Q01",
+        "TERMINATION-Q02",
+        "TERMINATION-Q03"
+      ]
+    },
+    {
+      "example_id": "TERMINATION-EX-03",
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "printed_reference": "7.01",
+      "complete_source_node_occurrence_ids": [
+        "e7dc2e35a40e06105204ffcdcfed6fa2190bf8c2a559911925ac6d3c89180c55"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 231708,
+          "start_byte": 224826,
+          "text_sha256": "3cb3ee4731c57527fcebecdf8d5643ebe214f8018a6ad3af71c0ec8bb5d2c8d6"
+        }
+      ],
+      "source_text_sha256s": [
+        "3cb3ee4731c57527fcebecdf8d5643ebe214f8018a6ad3af71c0ec8bb5d2c8d6"
+      ],
+      "structure_revision_ids": [
+        "09bf9966320496116815d834b12ae5d1375d0a2af8d247fec592c5faef3e07d5"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "24067c5cd3e3b417c84bdf3536e833dad54876b1fe880bf5eed681765d6a4e3e",
+        "2ddd41ed0dee4a5e15e9160cbf9f796e86dfcf168c2166f29cb44debccad1e58",
+        "4fc8e747617af2fb15f953a91c6c2d092fa7a9ba53e455d1f8ab9c129aac5afa",
+        "5c85bdaac95e52fcc8cc21ad9f738dc6349a704f47a32868c654d98c08a82edd",
+        "9c2e9fa64a5f6a8c92677a16074d347dcf544e52c3b619b296dbd47f5011ad9a",
+        "aa06ed6d29e2dfa7559c63dbdaad067f37c63be12fb4f3e3ef82a2d89de9e279",
+        "aa0f19000522d5ed4c6fa7d1d2e8302d7f1b50c8fd25a3b4d1d82838ce08a687",
+        "d6062240836e2a6fde76525fc8c325ad9c363c920610da9b87cb7c3c0c74b418",
+        "dfce2e00c9dce9a65ff6336f1ef9715186b5fc2c9c733fe7af436b19d69f5995",
+        "e0c1df488461f60c824a047a9bc6f95bec38ad8cacb3640309e087f370a1e2a0",
+        "e24904d1e7bf61296bfb62ce5d4157d03037f4084444142ef70ae82e5d09bcf2"
+      ],
+      "comparator_run_identifiers": [
+        "redhat-termination-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "TERMINATION_RIGHT",
+      "legal_question_ids": [
+        "TERMINATION-Q01",
+        "TERMINATION-Q02",
+        "TERMINATION-Q03"
+      ]
+    },
+    {
+      "example_id": "TERMINATION-EX-04",
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "printed_reference": "8.1",
+      "complete_source_node_occurrence_ids": [
+        "553feeb63371e47342303d9c902bbcf3ccc63697fb8c119873944c7a6a4abb7f"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 339278,
+          "start_byte": 330251,
+          "text_sha256": "3851f7524877eba09d88025d7be530a1cbccc253a3d4571846a45b40fb5585b4"
+        }
+      ],
+      "source_text_sha256s": [
+        "3851f7524877eba09d88025d7be530a1cbccc253a3d4571846a45b40fb5585b4"
+      ],
+      "structure_revision_ids": [
+        "48b9cebd0b497cbc3656b1ac3df5c80f458d9cb917ea7e138890d8568b1444d4"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "055922179d15248795dc9a3326d39c117c01a25b268459c04a029c878bf9304d",
+        "1edcb2be4ca10ba1929b0e809ef814706a45cfa37f9958bacecc5b7b10a3cd59",
+        "2bdff68a0fa5309a6e69db89e430daaaae19f988343435febc3c910d80fe0e1c",
+        "37083bcc99d90e860a34ecb7c47fca94ff10ec71be7cb5511d07cb88eb6ba626",
+        "3cc0c3745c682f2e9e60f639f7b3446f4939495d39bf781dfe5ce43c0c473530",
+        "4db1b351433b2c3b4c62b17c9db692c34b32b430507dbde46c932e7bfefe522b",
+        "71bc86b18e9b2ab19a2c3fd6df0f48f8aa7074ba0d6cf0907d3cd97454186821",
+        "851546292a53197c907f32c8884b8c61b0df89e79e49c0babfaeedd06295ce7c",
+        "8f652a8a2d736cf0afc1ccd567440f709739a286a171797ca47187e1150c9ef9",
+        "afe9c9c04bf309a33cda38a3ff8bc07104e70d089181a30d68668fd9792b6d48",
+        "dcd15fceb854136f9fecf9c46c165ade34459a290b1a02ffe091cf17b5f91e06",
+        "e8b4b6c4ed21a985f71f5566474403084773f769ba4727b5b92ddca34a99f4f5",
+        "f5739927f161e8fcb665a25e605fba105e9bdbdb4b2c3b09783606e269ae83c5",
+        "fe23c805889788fb9940b8062f59aadd74877480149167b8b95f9e7615086f7a"
+      ],
+      "comparator_run_identifiers": [
+        "skechers-termination-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "TERMINATION_RIGHT",
+      "legal_question_ids": [
+        "TERMINATION-Q01",
+        "TERMINATION-Q02",
+        "TERMINATION-Q03"
+      ]
+    },
+    {
+      "example_id": "TERMINATION-EX-05",
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "printed_reference": "9.1",
+      "complete_source_node_occurrence_ids": [
+        "2bdac3e287b5ef241d3a802b4fdc0eb807c691eced90aa574a0706ab330e024a"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 290065,
+          "start_byte": 284667,
+          "text_sha256": "6768d9579c994873dc01d0a3775423d83758d44bcc0af0df172a06b81a4115f0"
+        }
+      ],
+      "source_text_sha256s": [
+        "6768d9579c994873dc01d0a3775423d83758d44bcc0af0df172a06b81a4115f0"
+      ],
+      "structure_revision_ids": [
+        "f0bbaef3875b0e8223dbbd1324069a92bc9623fc29c86c37590322016b940c6d"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "13950a82e7ba4b6f94840b134d09d11df087b72870cca23c2212f8a7f4ce3f8a",
+        "16c23a7e208d958914b2c4d88f989a847e7eaa4b6dcea45f19fe60f0dc63dffc",
+        "257d571f692556b0082349d146976779dc39f497b609e3fb9c8f650c66ea71e0",
+        "27a6390560a29f7582474f5c2f652ff97764d92cad308c8880e5ad9f5157754c",
+        "3a4d520172f99dc4812116b47c60ce447c87861d0dc51b57c0d5f5972f7ce463",
+        "4c99122e44b57cf38bb5916343426e380b7f6b1c018e66f37a135e9436e59752",
+        "54ea7bb1e6526c7ada4aeb01fe5ef9dcfbeb3b410d159332cd8b12ded8da57ab",
+        "7e0888ae478da2d702781ffd1fb1830c3cb91aea92fc7854ad45321ae572f14e",
+        "8706d54a01e3af4e267239391b107235727a91728048cef530fe03e27c64b1c8",
+        "8e74ddd7aa60beefa6a3c8aef20f1817a27fe23f121eaa9c648bf3d23c6c6ad8",
+        "9f2f1ff713304dd63ee8ee0a707ea543bd735e5f41ad44d03f7240600b67555a",
+        "a116d89089c1cb77c02927d34a123ffc28e23a6fed3d146ce4afae027417adda",
+        "a81316fcf277a6359ac662febd493d931f27e26b32b244359e57f3ec8895abe9",
+        "ab5dd9df82a8f94c4d2a467590fc8244b03e4e1acfdb051cc602a3ae39be9f06",
+        "af6129fde195bc1185296e9650819cf6451e1f3d6247ca44a1d3704c63f225c2",
+        "c622958bf457ef390e63b9f8886264b071b36e3081361371728502cb95846b13"
+      ],
+      "comparator_run_identifiers": [
+        "skywater-termination-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "TERMINATION_RIGHT",
+      "legal_question_ids": [
+        "TERMINATION-Q01",
+        "TERMINATION-Q02",
+        "TERMINATION-Q03"
+      ]
+    },
+    {
+      "example_id": "TERMINATION-EX-06",
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "printed_reference": "6.1",
+      "complete_source_node_occurrence_ids": [
+        "6d0ead85b633eacbcc27883d3b4abae65e33b8f5a8bf40d82ed3f501111486ea"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 364374,
+          "start_byte": 364147,
+          "text_sha256": "c492dfb7267b0a2802f18fa52439355d86c2f4ed278b572436291a37bba460e9"
+        }
+      ],
+      "source_text_sha256s": [
+        "c492dfb7267b0a2802f18fa52439355d86c2f4ed278b572436291a37bba460e9"
+      ],
+      "structure_revision_ids": [
+        "45ddc27bae69b2342ca4191352b7b438605dd89e30dbd885e2e0b3534c80f2a4"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "bc46137e3b21b888214c92ae19fa0e79d92ca54f135d2ec26b4411e3e44dd9dd",
+        "c8b297f355bb78fc01172b74e1f4f80379dd22c4dc5b7a8f574dbe89fe504f33"
+      ],
+      "comparator_run_identifiers": [
+        "topbuild-termination-20260809-2xk-r3-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "TERMINATION_RIGHT",
+      "legal_question_ids": [
+        "TERMINATION-Q01",
+        "TERMINATION-Q02",
+        "TERMINATION-Q03"
+      ]
+    }
+  ],
+  "cross_family_dependencies": [],
+  "proposed_output_policy": {
+    "candidate_claim_definition_keys": [
+      "TERMINATION_CURE_PERIOD_DAYS",
+      "TERMINATION_OUTSIDE_DATE",
+      "TERMINATION_RIGHT_GRANT"
+    ],
+    "candidate_subtype_profile_ids": [
+      "TERMINATION::TERMINATION_RIGHT",
+      "TERMINATION::MUTUAL_CONSENT",
+      "TERMINATION::OUTSIDE_DATE_RIGHT",
+      "TERMINATION::BREACH_CURE_RIGHT"
+    ],
+    "non_output_dispositions": [
+      "LEGACY_FRAGMENTS_REMAIN_SCHEMA_APPROVAL_PENDING",
+      "UNRESOLVED_REQUIRED_ROLE_IS_NON_RENDERABLE"
+    ],
+    "family_ownership_boundary": "TERMINATION owns only approved complete propositions. Overlapping content is link-only.",
+    "renderability": "NEVER_RENDER_FROM_PROPOSAL",
+    "complete_transition": "NOT_AUTHORISED"
+  },
+  "narrow_legal_questions": [
+    {
+      "question_id": "TERMINATION-Q01",
+      "question": "Should one independently operative authored unit be one proposition, with coordinated elements stored as roles or linked children?",
+      "affected_example_ids": [
+        "TERMINATION-EX-01",
+        "TERMINATION-EX-02",
+        "TERMINATION-EX-03",
+        "TERMINATION-EX-04",
+        "TERMINATION-EX-05",
+        "TERMINATION-EX-06"
+      ],
+      "two_plausible_readings": [
+        "ONE_COMPOUND_PROPOSITION",
+        "LINKED_INDEPENDENT_PROPOSITIONS"
+      ],
+      "recommended_reading": "Use one proposition per independently operative authored unit.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "TERMINATION-Q02",
+      "question": "Which family owns overlapping content, and which families may only link to its stable identity?",
+      "affected_example_ids": [
+        "TERMINATION-EX-01",
+        "TERMINATION-EX-02",
+        "TERMINATION-EX-03",
+        "TERMINATION-EX-04",
+        "TERMINATION-EX-05",
+        "TERMINATION-EX-06"
+      ],
+      "two_plausible_readings": [
+        "DUPLICATE_IN_EACH_FAMILY",
+        "ONE_OWNER_WITH_LINKED_CONSUMERS"
+      ],
+      "recommended_reading": "Use one semantic owner and stable links.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "TERMINATION-Q03",
+      "question": "Can an ambiguous or unresolved M3 edge fill a required role?",
+      "affected_example_ids": [
+        "TERMINATION-EX-01",
+        "TERMINATION-EX-02",
+        "TERMINATION-EX-03",
+        "TERMINATION-EX-04",
+        "TERMINATION-EX-05",
+        "TERMINATION-EX-06"
+      ],
+      "two_plausible_readings": [
+        "ALLOW_CONTEXTUAL_INFERENCE",
+        "FAIL_ONLY_THE_DEPENDENT_PROPOSITION"
+      ],
+      "recommended_reading": "Fail only the dependent proposition and do not infer the role.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    }
+  ],
+  "preparation_diagnostics": [
+    {
+      "code": "BEN_FAMILY_ROLE_APPROVAL_REQUIRED",
+      "severity": "STOP",
+      "related_id": "TERMINATION",
+      "detail": "No family adapter may run until Ben approves the open rulings and a separate approved schema is sealed."
+    }
+  ],
+  "preparation_effects": {
+    "model_calls": 0,
+    "family_runner_calls": 0,
+    "database_writes": 0,
+    "product_writes": 0,
+    "selector_changes": 0,
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "serving_changes": 0,
+    "publication_actions": 0
+  }
+}

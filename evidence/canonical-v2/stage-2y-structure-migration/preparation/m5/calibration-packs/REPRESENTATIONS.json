@@ -1,0 +1,580 @@
+{
+  "schema_version": "STAGE_2Y_FAMILY_CALIBRATION_PACK/V1",
+  "calibration_pack_id": "95ed6c0789c3c412ae0ed839c4feb7d64dc48eded6bb0661a3e81e0d26a0fb46",
+  "calibration_pack_digest": "3a9e5794e08f66cae62d34164b826fcb2b06a5d7e4fe3bac62c50e523713ea77",
+  "family_key": "REPRESENTATIONS",
+  "wave": 2,
+  "pack_version": 1,
+  "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+  "purpose": "LEGAL_CALIBRATION_PREPARATION_ONLY",
+  "authority_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-preparation-authority.json",
+    "byte_length": 22922,
+    "sha256": "d10f095429cdbb1006bfbe1e789c267ffa3a98b12b4bd33c2afb550e7beeea79"
+  },
+  "calibration_policy_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-calibration-policy.json",
+    "byte_length": 45512,
+    "sha256": "102534446774dfa0661ad186d27c25507befedca80807e42cf584fa412e6bf78"
+  },
+  "m4_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json",
+    "byte_length": 13670,
+    "sha256": "54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41"
+  },
+  "m2_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+    "byte_length": 20126,
+    "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585"
+  },
+  "m3_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+    "byte_length": 17449,
+    "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855"
+  },
+  "family_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json",
+    "byte_length": 827,
+    "sha256": "7aa5ff41eb778884cdbb6f18ba72138c20420a2475949aca5dcbc0d2098a938d"
+  },
+  "control_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json",
+    "byte_length": 379235,
+    "sha256": "62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41"
+  },
+  "diff_contract_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/diff-contract.json",
+    "byte_length": 1171,
+    "sha256": "2585c7af9e47c4f7a6915ef1667f5eb8dbce26a8a30829bae15e42a7d41ab0c8"
+  },
+  "comparator_run_bindings": [
+    {
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "run_identifier": "concho-representations-r1b-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "resolution_binding": {
+        "byte_length": 622212,
+        "path": "evidence/canonical-v2/concho-representations-r1b-20260809-2xk-final/resolution.json",
+        "sha256": "6d60084ddcd12b78262a6528d832b19cd7cc08cffc792d05c19394ded9e3c4f0"
+      },
+      "adapter_result_binding": {
+        "byte_length": 998469,
+        "path": "evidence/canonical-v2/concho-representations-r1b-20260809-2xk-final/adapter-result.json",
+        "sha256": "48e55f66adc5f693ee388efbc7beb2433953eb95082edc7055005fc2d2cc210a"
+      },
+      "validation_binding": {
+        "byte_length": 646243,
+        "path": "evidence/canonical-v2/concho-representations-r1b-20260809-2xk-final/validation.json",
+        "sha256": "36669bd5cf33a5aad965889563aa6b5098f7c730dcd0b4d1f3305a08b627d33f"
+      },
+      "expected_counts": {
+        "resolution_claims": 12,
+        "write_set_claims": 12,
+        "validation_claims": 12,
+        "resolution_evidence": 12,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "run_identifier": "metsera-representations-r1a-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "resolution_binding": {
+        "byte_length": 616738,
+        "path": "evidence/canonical-v2/metsera-representations-r1a-20260809-2xk-final/resolution.json",
+        "sha256": "61aabb33cecd774fc37cd0fbe222ceec80705f4d0f1be5ce5108c2be6371265b"
+      },
+      "adapter_result_binding": {
+        "byte_length": 1034267,
+        "path": "evidence/canonical-v2/metsera-representations-r1a-20260809-2xk-final/adapter-result.json",
+        "sha256": "b1f5143b7ff61f4053e9cde0d860304feff8b98f0666dc318a7979243c2bb872"
+      },
+      "validation_binding": {
+        "byte_length": 687078,
+        "path": "evidence/canonical-v2/metsera-representations-r1a-20260809-2xk-final/validation.json",
+        "sha256": "1fe1cde951c338514c9264070baca52d0c4975bec1cd3f20864463c4e80e6b8d"
+      },
+      "expected_counts": {
+        "resolution_claims": 10,
+        "write_set_claims": 10,
+        "validation_claims": 10,
+        "resolution_evidence": 10,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "run_identifier": "redhat-representations-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "resolution_binding": {
+        "byte_length": 309973,
+        "path": "evidence/canonical-v2/redhat-representations-20260809-2xk-final/resolution.json",
+        "sha256": "00270a340c87bf75bcea06f672f8b32d087b4f8ffbf801345bad56438e12723d"
+      },
+      "adapter_result_binding": {
+        "byte_length": 496528,
+        "path": "evidence/canonical-v2/redhat-representations-20260809-2xk-final/adapter-result.json",
+        "sha256": "7921e9cb20e9e282e202466d4f3897949ed8cb7d9586003462a6519f3a7d0e23"
+      },
+      "validation_binding": {
+        "byte_length": 229121,
+        "path": "evidence/canonical-v2/redhat-representations-20260809-2xk-final/validation.json",
+        "sha256": "bc0ad01b01cbc641fadfd3ebc3502f5804b7aaf9384c23476c451e90115377ed"
+      },
+      "expected_counts": {
+        "resolution_claims": 9,
+        "write_set_claims": 9,
+        "validation_claims": 9,
+        "resolution_evidence": 9,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "run_identifier": "skechers-representations-r1b-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "resolution_binding": {
+        "byte_length": 899503,
+        "path": "evidence/canonical-v2/skechers-representations-r1b-20260809-2xk-final/resolution.json",
+        "sha256": "85757464409d064b0a4c903684a1eeed8b38c13737043ada4a69e9ce2cc3275a"
+      },
+      "adapter_result_binding": {
+        "byte_length": 1297224,
+        "path": "evidence/canonical-v2/skechers-representations-r1b-20260809-2xk-final/adapter-result.json",
+        "sha256": "6d9b31ad75dce5f27bd5c40747ce42b2bf740d968f7e8594d8c4fdba6b33ba17"
+      },
+      "validation_binding": {
+        "byte_length": 918018,
+        "path": "evidence/canonical-v2/skechers-representations-r1b-20260809-2xk-final/validation.json",
+        "sha256": "88d0c769894538b0edc9263f760e87ef9cc56663677f92ab9d23f81e74974c0e"
+      },
+      "expected_counts": {
+        "resolution_claims": 23,
+        "write_set_claims": 23,
+        "validation_claims": 23,
+        "resolution_evidence": 23,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "run_identifier": "skywater-representations-r1b-20260809-2xk-final",
+      "family": "REPRESENTATIONS",
+      "resolution_binding": {
+        "byte_length": 836004,
+        "path": "evidence/canonical-v2/skywater-representations-r1b-20260809-2xk-final/resolution.json",
+        "sha256": "aa29a11b44688fa8c53a772c914486ea26e1372052922b6383079e801fcca6ea"
+      },
+      "adapter_result_binding": {
+        "byte_length": 1315239,
+        "path": "evidence/canonical-v2/skywater-representations-r1b-20260809-2xk-final/adapter-result.json",
+        "sha256": "96147b845d6c17cf48509089e9257d8277d67d9756d51f5ccb2f9e19ddb6b755"
+      },
+      "validation_binding": {
+        "byte_length": 953448,
+        "path": "evidence/canonical-v2/skywater-representations-r1b-20260809-2xk-final/validation.json",
+        "sha256": "6dc509304337c44c63fc239c7261e90fe130b75c75b5eb2fc125ffd513e759a1"
+      },
+      "expected_counts": {
+        "resolution_claims": 6,
+        "write_set_claims": 6,
+        "validation_claims": 6,
+        "resolution_evidence": 6,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "run_identifier": "topbuild-representations-20260809-2xk-r3-final",
+      "family": "REPRESENTATIONS",
+      "resolution_binding": {
+        "byte_length": 560887,
+        "path": "evidence/canonical-v2/topbuild-representations-20260809-2xk-r3-final/resolution.json",
+        "sha256": "2cfc29e872504a06a472820c83a4694bb667143f851c75e42ec2cf920ceee7bb"
+      },
+      "adapter_result_binding": {
+        "byte_length": 813213,
+        "path": "evidence/canonical-v2/topbuild-representations-20260809-2xk-r3-final/adapter-result.json",
+        "sha256": "ee92590ac750ac7025f88205f9f11b7702d8f79535a6304530933b5a470975e8"
+      },
+      "validation_binding": {
+        "byte_length": 398556,
+        "path": "evidence/canonical-v2/topbuild-representations-20260809-2xk-r3-final/validation.json",
+        "sha256": "47142e1b4dcc96f378a2bcfeec5de4e17c32773353dc47d15f30c5e9dad30ce2"
+      },
+      "expected_counts": {
+        "resolution_claims": 10,
+        "write_set_claims": 10,
+        "validation_claims": 10,
+        "resolution_evidence": 10,
+        "supplemental_claims": 0
+      }
+    }
+  ],
+  "supplemental_input_bindings": [],
+  "provision_examples": [
+    {
+      "example_id": "REPRESENTATIONS-EX-01",
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "printed_reference": "4.13",
+      "complete_source_node_occurrence_ids": [
+        "33b2364eaee75e6362abfe282a96c76ca439b881fad6227231864830c0ef7a2c"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 76327,
+          "start_byte": 75802,
+          "text_sha256": "bb95f383330f71e00440ad136b11bb34c3dbc67d5b788477b0d6b67e1dfb30a9"
+        }
+      ],
+      "source_text_sha256s": [
+        "bb95f383330f71e00440ad136b11bb34c3dbc67d5b788477b0d6b67e1dfb30a9"
+      ],
+      "structure_revision_ids": [
+        "f191b83c6a912b891198cf2b1a23d29120742a62ea4117c20158b60198d24a5a"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "231b04dace7ef1b8c0e3ddb3c88dcaa069454949f110257d3251d103d22a402e"
+      ],
+      "comparator_run_identifiers": [
+        "concho-representations-r1b-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "STATUS_REPRESENTATION",
+      "legal_question_ids": [
+        "REPRESENTATIONS-Q01",
+        "REPRESENTATIONS-Q02",
+        "REPRESENTATIONS-Q03"
+      ]
+    },
+    {
+      "example_id": "REPRESENTATIONS-EX-02",
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "printed_reference": "3.06",
+      "complete_source_node_occurrence_ids": [
+        "40af5e2867bfa9c4d7b092008de4571a400a7b88d3b6e363174fd01e2db13d08"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 62448,
+          "start_byte": 54893,
+          "text_sha256": "cba5d8711cad7fa2bca53166e2592f098d7439c0468280d596ef8575de2cd7d5"
+        }
+      ],
+      "source_text_sha256s": [
+        "cba5d8711cad7fa2bca53166e2592f098d7439c0468280d596ef8575de2cd7d5"
+      ],
+      "structure_revision_ids": [
+        "e5dbc63a41f455216eaf4c61d3b77fe1ef2f7225bd56fba73349b9a65f713ca9"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "5b2c4f0646967b38cad8a38143a2b99dec4f13ecfd3dcee35327e24d64130754",
+        "685077c503e7e468031751c0660a9e2bc536546e814f73a8c6f7553c2f57b7fb",
+        "9fd0fc5f336927d6f0dd32ee79421ff4e4e5735ca822c40e9b86661394361595",
+        "af6f4016b7c5fdfcc346b780dfb5c2105896377e111e2108bca5e95251769efe",
+        "f5bb81f0de2ced6d73b073435d88b0ca7e6877fdf707afb9115a08544b2bacb0"
+      ],
+      "comparator_run_identifiers": [
+        "metsera-representations-r1a-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "STATUS_REPRESENTATION",
+      "legal_question_ids": [
+        "REPRESENTATIONS-Q01",
+        "REPRESENTATIONS-Q02",
+        "REPRESENTATIONS-Q03"
+      ]
+    },
+    {
+      "example_id": "REPRESENTATIONS-EX-03",
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "printed_reference": "3.01",
+      "complete_source_node_occurrence_ids": [
+        "3bd5017a187fef6badf5c39945c20b9340897a06422317a00eb6c07bea9504ca"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 104301,
+          "start_byte": 28259,
+          "text_sha256": "b800cb57763e92bb3278cb5d424eeb221930b44c6bb079aa7096b68c7ec3de18"
+        }
+      ],
+      "source_text_sha256s": [
+        "b800cb57763e92bb3278cb5d424eeb221930b44c6bb079aa7096b68c7ec3de18"
+      ],
+      "structure_revision_ids": [
+        "1c3b9352c7879ad0006134aaa3bd47fca56730315020727b5902a1bd83c37ad5"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "04a3cba8f5942e2674da33b9143a8abba4d9661cb27de9ffe6afd63908862571",
+        "08893b0d0c0fdd6a30f2206c6eba66aeb6bba5695b7207da17d32474630a4dc5",
+        "1ad256e3029372361ba59ba96414c4281e0ad44af9c8100899c2107756d25656",
+        "281f0b7e9af12ab8d3a86e3448ee20304284b618b1dc0fb5d731374a5322a6af",
+        "29c85b82cedb36ca908b9d2034a241f9a3334fe62fa2a67601efaf8d15023a59",
+        "6fefbcf7960c7348d5da83bd96b5c0e68395279951368bc94c1bde242a048361",
+        "721a9e0fe7c0444318cb9cef82a71b72447a0b9eb77270dbd1522d1504d2acd1",
+        "80197dfe4dd97710b24647567e1f6ed98174f84e98b910d1bef7aabd594fb7c8",
+        "b0e495ba560ad17f0a3d26b8f0c3a7052d046cbb3a05d74d849a801102349a4a"
+      ],
+      "comparator_run_identifiers": [
+        "redhat-representations-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "STATUS_REPRESENTATION",
+      "legal_question_ids": [
+        "REPRESENTATIONS-Q01",
+        "REPRESENTATIONS-Q02",
+        "REPRESENTATIONS-Q03"
+      ]
+    },
+    {
+      "example_id": "REPRESENTATIONS-EX-04",
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "printed_reference": "3.16",
+      "complete_source_node_occurrence_ids": [
+        "25c146663391f2ff70f7cbf932a0d2007efa17936e57e22ab4e9c2452b847d23"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 154638,
+          "start_byte": 145700,
+          "text_sha256": "fba0e1311c9835914de93bb848162fa2caa696360fe3b8f39bb616e477329a87"
+        }
+      ],
+      "source_text_sha256s": [
+        "fba0e1311c9835914de93bb848162fa2caa696360fe3b8f39bb616e477329a87"
+      ],
+      "structure_revision_ids": [
+        "47fcdce17eaf9d432087932ef3432c7128830a66cc458585b2037806e53b47f0"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "a8daa282ee0195a6bfb2d2c0dc1b2c96f1fc5b722a3eacd44d21c15e3361dead"
+      ],
+      "comparator_run_identifiers": [
+        "skechers-representations-r1b-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "STATUS_REPRESENTATION",
+      "legal_question_ids": [
+        "REPRESENTATIONS-Q01",
+        "REPRESENTATIONS-Q02",
+        "REPRESENTATIONS-Q03"
+      ]
+    },
+    {
+      "example_id": "REPRESENTATIONS-EX-05",
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "printed_reference": "3.15",
+      "complete_source_node_occurrence_ids": [
+        "ee7b04291ff08668b1f76fc9750353bc898975dc9f483a849b26b0bca0447c36"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 90494,
+          "start_byte": 78040,
+          "text_sha256": "d109b5756f37af0944dc6b40aec6eefacc85de801772a652579def796a1e15ea"
+        }
+      ],
+      "source_text_sha256s": [
+        "d109b5756f37af0944dc6b40aec6eefacc85de801772a652579def796a1e15ea"
+      ],
+      "structure_revision_ids": [
+        "02fd8e1f454011e4199a83aaf8db0a6dbf1f69e89ba485daeadb9977fc69b2e4"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "1fb0fc9f48218d49f0ea5e7408996bdd80e02540ad483c47be6c394d02301001",
+        "b3ac3e0468bb1a9ab3dfcd9dcaeaa709e54db974fff227e41ed73ceef457d4b8",
+        "df874a89188ea61f2ec95758dcb914a395823e4f92d3bc4f8526898afc264134"
+      ],
+      "comparator_run_identifiers": [
+        "skywater-representations-r1b-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "STATUS_REPRESENTATION",
+      "legal_question_ids": [
+        "REPRESENTATIONS-Q01",
+        "REPRESENTATIONS-Q02",
+        "REPRESENTATIONS-Q03"
+      ]
+    },
+    {
+      "example_id": "REPRESENTATIONS-EX-06",
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "printed_reference": "3.1",
+      "complete_source_node_occurrence_ids": [
+        "a257b4d1202cb775af7513904e59d29d3fca2fa4b34026b44b5c89814eeecbbf"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 131511,
+          "start_byte": 47755,
+          "text_sha256": "4ebe8295a6df8109ae876c13bcb97d8b44b1cfacc26e29769cd2777ecfd85a72"
+        }
+      ],
+      "source_text_sha256s": [
+        "4ebe8295a6df8109ae876c13bcb97d8b44b1cfacc26e29769cd2777ecfd85a72"
+      ],
+      "structure_revision_ids": [
+        "59456dcbe15cce144583d48677dfaecac77dfb8ca02f18e249edb17cf2cf3034"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "43688f6ca3def73165149dcf67058e24bfceca2b15d0e6da66cf39d4ff1edab4",
+        "6b6c4adb39bb1c7c22d19bce6ef5f643c59138db619d6187cc6c9fa8ef0fe7e1",
+        "9017f77813ba128b07519f81f1866e2a9e070e24b2d982ee5f5f74602a40044f",
+        "d62443b85426310ade7b3b8da3f7d8e1ed3e6d0481f3b2fa18c9c3569467b8e8"
+      ],
+      "comparator_run_identifiers": [
+        "topbuild-representations-20260809-2xk-r3-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "STATUS_REPRESENTATION",
+      "legal_question_ids": [
+        "REPRESENTATIONS-Q01",
+        "REPRESENTATIONS-Q02",
+        "REPRESENTATIONS-Q03"
+      ]
+    }
+  ],
+  "cross_family_dependencies": [],
+  "proposed_output_policy": {
+    "candidate_claim_definition_keys": [
+      "KNOWLEDGE_QUALIFIER",
+      "REPRESENTATION_ACCURACY_STANDARD"
+    ],
+    "candidate_subtype_profile_ids": [
+      "REPRESENTATIONS::STATUS_REPRESENTATION",
+      "REPRESENTATIONS::COMPLIANCE_REPRESENTATION",
+      "REPRESENTATIONS::DOCUMENT_REPRESENTATION",
+      "REPRESENTATIONS::CONTRACT_REPRESENTATION",
+      "REPRESENTATIONS::FINANCIAL_REPRESENTATION",
+      "REPRESENTATIONS::NEGATIVE_REPRESENTATION"
+    ],
+    "non_output_dispositions": [
+      "LEGACY_FRAGMENTS_REMAIN_SCHEMA_APPROVAL_PENDING",
+      "UNRESOLVED_REQUIRED_ROLE_IS_NON_RENDERABLE"
+    ],
+    "family_ownership_boundary": "REPRESENTATIONS owns only approved complete propositions. Overlapping content is link-only.",
+    "renderability": "NEVER_RENDER_FROM_PROPOSAL",
+    "complete_transition": "NOT_AUTHORISED"
+  },
+  "narrow_legal_questions": [
+    {
+      "question_id": "REPRESENTATIONS-Q01",
+      "question": "Should one independently operative authored unit be one proposition, with coordinated elements stored as roles or linked children?",
+      "affected_example_ids": [
+        "REPRESENTATIONS-EX-01",
+        "REPRESENTATIONS-EX-02",
+        "REPRESENTATIONS-EX-03",
+        "REPRESENTATIONS-EX-04",
+        "REPRESENTATIONS-EX-05",
+        "REPRESENTATIONS-EX-06"
+      ],
+      "two_plausible_readings": [
+        "ONE_COMPOUND_PROPOSITION",
+        "LINKED_INDEPENDENT_PROPOSITIONS"
+      ],
+      "recommended_reading": "Use one proposition per independently operative authored unit.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "REPRESENTATIONS-Q02",
+      "question": "Which family owns overlapping content, and which families may only link to its stable identity?",
+      "affected_example_ids": [
+        "REPRESENTATIONS-EX-01",
+        "REPRESENTATIONS-EX-02",
+        "REPRESENTATIONS-EX-03",
+        "REPRESENTATIONS-EX-04",
+        "REPRESENTATIONS-EX-05",
+        "REPRESENTATIONS-EX-06"
+      ],
+      "two_plausible_readings": [
+        "DUPLICATE_IN_EACH_FAMILY",
+        "ONE_OWNER_WITH_LINKED_CONSUMERS"
+      ],
+      "recommended_reading": "Use one semantic owner and stable links.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "REPRESENTATIONS-Q03",
+      "question": "Can an ambiguous or unresolved M3 edge fill a required role?",
+      "affected_example_ids": [
+        "REPRESENTATIONS-EX-01",
+        "REPRESENTATIONS-EX-02",
+        "REPRESENTATIONS-EX-03",
+        "REPRESENTATIONS-EX-04",
+        "REPRESENTATIONS-EX-05",
+        "REPRESENTATIONS-EX-06"
+      ],
+      "two_plausible_readings": [
+        "ALLOW_CONTEXTUAL_INFERENCE",
+        "FAIL_ONLY_THE_DEPENDENT_PROPOSITION"
+      ],
+      "recommended_reading": "Fail only the dependent proposition and do not infer the role.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    }
+  ],
+  "preparation_diagnostics": [
+    {
+      "code": "BEN_FAMILY_ROLE_APPROVAL_REQUIRED",
+      "severity": "STOP",
+      "related_id": "REPRESENTATIONS",
+      "detail": "No family adapter may run until Ben approves the open rulings and a separate approved schema is sealed."
+    }
+  ],
+  "preparation_effects": {
+    "model_calls": 0,
+    "family_runner_calls": 0,
+    "database_writes": 0,
+    "product_writes": 0,
+    "selector_changes": 0,
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "serving_changes": 0,
+    "publication_actions": 0
+  }
+}

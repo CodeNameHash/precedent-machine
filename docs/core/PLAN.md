@@ -96,11 +96,56 @@ M9 stage changes the current selector.
 
 ## 3. Current state and authority
 
-The architecture review and M0 to M2 are complete. Their evidence and commits
+The architecture review and M0 to M4 are complete. Their evidence and commits
 are in `COMPLETED.md`.
 
-No implementation stage is currently authorised. M3 is the next planned
-stage. It needs a new work order. A passing M2 receipt does not authorise M3.
+Ben authorised M5, M6 and M7. Those stages ran locally. The recovered M5
+correction labelled 1,111 shadow propositions complete, and M6 projected 1,111
+normal rows. M7 admitted three additional agreements and created a fixed
+50-item lawyer-review packet.
+
+Ben completed that review on 14 August 2026. He marked 19 items correct and 31
+incorrect. Six items marked correct also contain a substantive missing-law
+note, and one contains a page-number artefact. The M7 gate is
+`FAILED_RETURN_AFFECTED_ITEM_TYPES_FOR_REPAIR`. Only 12 items are clean
+regression controls. The correction's definition of complete is not accepted.
+
+The repair must return to the M5-M6 semantic seam. The proposed repair plan is
+`docs/codex-program/notes/M7-CORE-SEMANTIC-REPAIR-PLAN-2026-08-14.md`. The exact
+questions, source text, failed cards and Ben answers are in
+`docs/codex-program/notes/M7-LAWYER-REVIEW-QUESTIONS-AND-ANSWERS-2026-08-14.md`.
+Fable's independent review is in
+`docs/codex-program/notes/M7-CORE-SEMANTIC-REPAIR-PLAN-ADVERSARIAL-REVIEW-2026-08-14.md`.
+It found 22 material gaps in the first plan. The plan now incorporates or
+qualifies all 22. An amendment-integrity recheck completed. Fable then verified
+all 22 plan dispositions and identified two final document-level conditions:
+candidate registration must remain byte-identical from Work 5 through Work 7,
+and generic output needs an output-complete subtype tree or exact Ben approval.
+Both conditions are now operative plan gates. Ben adopted the amended M7 V2
+repair plan and confirmed the bootstrap authority for Work 0. Work 0 passed
+under
+`evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-evidence-root.json`.
+The receipt binds the failed review, the fixed 50-item sample, the 38 repair
+items, the 12 controls, the sealed programme rulings and the sealed M3 and M4
+trust roots. Work 0 preserves that evidence. It does not repair or accept M7.
+Ben then authorised deterministic Work 1 to Work 7 under
+`evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work1-7-authority.json`.
+Work 1 starts only after the authority activation receipt passes, the exact
+activation set is committed and the authorised branch push succeeds. The
+adopted V2 repair plan and that evidence-root-bound authority supersede the
+historical V1 M5 and M6 implementation directions below for this repair only.
+They do not alter the sealed M0 to M4 contracts or supply a reserved legal
+decision.
+
+The amended M7 V2 plan remains deterministic. Model calls remain zero. A
+model-proposed shadow experiment is recorded only as a later decision path and
+requires an explicit PLAN/Decision exception plus separate Ben experiment
+authority before any call. Experiment output remains isolated and
+non-consumable. A later adoption decision would require a blind sample and a
+further programme amendment.
+
+M8 is not authorised and remains locked. Do not start M8 while M7 has a failed
+legal-review gate or while the M7 V2 repair is incomplete.
 
 The following controls apply through M9:
 
@@ -247,11 +292,11 @@ Analysis does not start from a detached evidence line.
 | M0 | Complete | Frozen authority, cohort, baseline and diff contract. |
 | M1 | Complete | `INCREMENTAL_RESTRUCTURE` decision with identity and provenance proof. |
 | M2 | Complete | Seven sealed shadow `AgreementIndex` files, with exact source and authored-block trees. |
-| M3 | Next, not authorised | Provenanced context, references, definitions and party topology. |
-| M4 | Not authorised | Base AgreementAnalysis, required-role validator and resolution-set diff. |
-| M5 | Not authorised | All 25 family adapters plus consolidated role-complete analyses. |
-| M6 | Not authorised | Complete output ownership, grouping and row lineage. |
-| M7 | Not authorised | Corpus comparison and governed legal review. |
+| M3 | Complete | Provenanced context, references, definitions and party topology. |
+| M4 | Complete | Base AgreementAnalysis, required-role validator and resolution-set diff. |
+| M5 | Ran; M7 V2 repair required | The correction bypassed the sealed subtype schemas and accepted coarse role buckets as complete. Its 1,111 complete labels are not legally accepted. |
+| M6 | Ran; M7 V2 repair required | The 1,111 shadow rows are evidence only. Projection performed legal inference and did not prove zero material omissions. |
+| M7 | Failed lawyer review; Work 0 passed; Work 1-7 authorised under activation gate | Ben completed the fixed 50-item review: 19 correct and 31 incorrect. The repair baseline contains 38 repair items and 12 controls. Work 0 froze the evidence under its passing evidence-root receipt. The V2 repair may run only after the Work 1-7 activation receipt passes and its exact commit is pushed. M7 is not accepted. |
 | M8 | Not authorised; locked readiness only | Phase B packet, no call. Optional for M9. |
 | M9 | Not authorised | Certified shadow candidate and rollback proof. |
 | M10 | Separate authority required | `PRIVATE_INTERNAL_EXTRACTOR_ACTIVE`. |
@@ -1602,9 +1647,9 @@ Return the work to the owning stage.
 
 ### Authority and operational decisions
 
-5. Does Ben authorise the exact M3 work order and, later, each subsequent
-   implementation stage after its predecessor passes, including governed deal
-   memberships and SEC source-read scope for M7 generalisation?
+5. After recovery and M7 legal acceptance, does Ben authorise the exact M9
+   work order? M8 remains a separate optional readiness stage and has no
+   authority.
 6. Does Ben authorise any later Phase B or other model run?
 7. If M9 passes, does Ben approve the exact M10 selector and named private
    internal consumers?

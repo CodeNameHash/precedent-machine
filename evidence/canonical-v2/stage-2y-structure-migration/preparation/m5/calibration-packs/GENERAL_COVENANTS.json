@@ -1,0 +1,638 @@
+{
+  "schema_version": "STAGE_2Y_FAMILY_CALIBRATION_PACK/V1",
+  "calibration_pack_id": "1f6d38fa35b4f1a9b6a6e1e6917e296b5795d1e5c599f14516bc5ef2128d769c",
+  "calibration_pack_digest": "13736e009cc32e3b19f2161e2c84151b6456e5f073e8d0f75e93e04e01943413",
+  "family_key": "GENERAL_COVENANTS",
+  "wave": 1,
+  "pack_version": 1,
+  "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+  "purpose": "LEGAL_CALIBRATION_PREPARATION_ONLY",
+  "authority_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-preparation-authority.json",
+    "byte_length": 22922,
+    "sha256": "d10f095429cdbb1006bfbe1e789c267ffa3a98b12b4bd33c2afb550e7beeea79"
+  },
+  "calibration_policy_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-calibration-policy.json",
+    "byte_length": 45512,
+    "sha256": "102534446774dfa0661ad186d27c25507befedca80807e42cf584fa412e6bf78"
+  },
+  "m4_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json",
+    "byte_length": 13670,
+    "sha256": "54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41"
+  },
+  "m2_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+    "byte_length": 20126,
+    "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585"
+  },
+  "m3_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+    "byte_length": 17449,
+    "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855"
+  },
+  "family_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json",
+    "byte_length": 827,
+    "sha256": "7aa5ff41eb778884cdbb6f18ba72138c20420a2475949aca5dcbc0d2098a938d"
+  },
+  "control_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json",
+    "byte_length": 379235,
+    "sha256": "62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41"
+  },
+  "diff_contract_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/diff-contract.json",
+    "byte_length": 1171,
+    "sha256": "2585c7af9e47c4f7a6915ef1667f5eb8dbce26a8a30829bae15e42a7d41ab0c8"
+  },
+  "comparator_run_bindings": [
+    {
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "run_identifier": "concho-general-covenants-20260809-2xk-final",
+      "family": "GENERAL_COVENANTS",
+      "resolution_binding": {
+        "byte_length": 149757,
+        "path": "evidence/canonical-v2/concho-general-covenants-20260809-2xk-final/resolution.json",
+        "sha256": "ff95af099e737d9ab2dc79347404bc4f7255419a90b391e6fad9d9591e9af6d6"
+      },
+      "adapter_result_binding": {
+        "byte_length": 436756,
+        "path": "evidence/canonical-v2/concho-general-covenants-20260809-2xk-final/adapter-result.json",
+        "sha256": "ad9756604a43341af6084b384f54c972dd9bad56582c8ee430bec2689d0a5c37"
+      },
+      "validation_binding": {
+        "byte_length": 89402,
+        "path": "evidence/canonical-v2/concho-general-covenants-20260809-2xk-final/validation.json",
+        "sha256": "66763757acdede9f93c722ac1d6f133e8eab125e994e33313b0f1a1af285e4b7"
+      },
+      "expected_counts": {
+        "resolution_claims": 9,
+        "write_set_claims": 9,
+        "validation_claims": 9,
+        "resolution_evidence": 9,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "run_identifier": "metsera-general-covenants-20260809-2xk-final",
+      "family": "GENERAL_COVENANTS",
+      "resolution_binding": {
+        "byte_length": 145587,
+        "path": "evidence/canonical-v2/metsera-general-covenants-20260809-2xk-final/resolution.json",
+        "sha256": "709524a58b931b2d903c8b62ef26743272155d79dd70c05bce45c9544bd9467c"
+      },
+      "adapter_result_binding": {
+        "byte_length": 442068,
+        "path": "evidence/canonical-v2/metsera-general-covenants-20260809-2xk-final/adapter-result.json",
+        "sha256": "b10a946da33a9e1aa3ef3f1a7cb3fc41eea125e731017b14e70ee49779c5835b"
+      },
+      "validation_binding": {
+        "byte_length": 96430,
+        "path": "evidence/canonical-v2/metsera-general-covenants-20260809-2xk-final/validation.json",
+        "sha256": "73be817b68df8d1d9cae88837d2b4c387a1e6ec6b69817ace2aa8305a78405ff"
+      },
+      "expected_counts": {
+        "resolution_claims": 8,
+        "write_set_claims": 8,
+        "validation_claims": 8,
+        "resolution_evidence": 8,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "deal": "modiv",
+      "run_identifier": "modiv-general-covenants-20260809-2xk-final",
+      "family": "GENERAL_COVENANTS",
+      "resolution_binding": {
+        "byte_length": 126461,
+        "path": "evidence/canonical-v2/modiv-general-covenants-20260809-2xk-final/resolution.json",
+        "sha256": "bae4d639701e8702ed98c885b242c976ef2cc2d1e2247c20172861e7634d4ff6"
+      },
+      "adapter_result_binding": {
+        "byte_length": 545738,
+        "path": "evidence/canonical-v2/modiv-general-covenants-20260809-2xk-final/adapter-result.json",
+        "sha256": "b891c5a4cf33248952de1a51957845861156adb6f830841c7a0d6be6130808e0"
+      },
+      "validation_binding": {
+        "byte_length": 115534,
+        "path": "evidence/canonical-v2/modiv-general-covenants-20260809-2xk-final/validation.json",
+        "sha256": "f395b4966af3adc8eb9ef4c686e792ca2c28bbf911180fe55b0520cdb7c717d0"
+      },
+      "expected_counts": {
+        "resolution_claims": 6,
+        "write_set_claims": 6,
+        "validation_claims": 6,
+        "resolution_evidence": 6,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "run_identifier": "redhat-general-covenants-20260809-2xk-final",
+      "family": "GENERAL_COVENANTS",
+      "resolution_binding": {
+        "byte_length": 56649,
+        "path": "evidence/canonical-v2/redhat-general-covenants-20260809-2xk-final/resolution.json",
+        "sha256": "f7d2ad2e972eb422f1f98da90129d6c6b10d7f5aec5bdd8db38841c805ff41cc"
+      },
+      "adapter_result_binding": {
+        "byte_length": 306391,
+        "path": "evidence/canonical-v2/redhat-general-covenants-20260809-2xk-final/adapter-result.json",
+        "sha256": "6509ab2912038311868bdfbc56b7e252e501eb793349cbaa5d56b4a2475d079e"
+      },
+      "validation_binding": {
+        "byte_length": 41145,
+        "path": "evidence/canonical-v2/redhat-general-covenants-20260809-2xk-final/validation.json",
+        "sha256": "3fc44d76422f88f0aa880029c6636a21e27da5220871fabf3f6ca59a7cd86a78"
+      },
+      "expected_counts": {
+        "resolution_claims": 3,
+        "write_set_claims": 3,
+        "validation_claims": 3,
+        "resolution_evidence": 3,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "run_identifier": "skechers-general-covenants-20260809-2xk-final",
+      "family": "GENERAL_COVENANTS",
+      "resolution_binding": {
+        "byte_length": 119122,
+        "path": "evidence/canonical-v2/skechers-general-covenants-20260809-2xk-final/resolution.json",
+        "sha256": "7f5c6860d1335556575101492bd7ce83d640d92cbfc1dc9725dd6b632c4ca990"
+      },
+      "adapter_result_binding": {
+        "byte_length": 461529,
+        "path": "evidence/canonical-v2/skechers-general-covenants-20260809-2xk-final/adapter-result.json",
+        "sha256": "1476c43c8d83cb2b073d84a2e1dfdc8bf83a0b074661750f3e32c1d8fe8e2019"
+      },
+      "validation_binding": {
+        "byte_length": 83159,
+        "path": "evidence/canonical-v2/skechers-general-covenants-20260809-2xk-final/validation.json",
+        "sha256": "e60aaaa1443fd67b182d3709f1d687d4d0184cb140e4ea18abad0c77f443dd1b"
+      },
+      "expected_counts": {
+        "resolution_claims": 7,
+        "write_set_claims": 7,
+        "validation_claims": 7,
+        "resolution_evidence": 7,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "run_identifier": "skywater-general-covenants-20260809-2xk-final",
+      "family": "GENERAL_COVENANTS",
+      "resolution_binding": {
+        "byte_length": 170602,
+        "path": "evidence/canonical-v2/skywater-general-covenants-20260809-2xk-final/resolution.json",
+        "sha256": "bcbbd8847a85e5bfb7f020d12a8c7a5e78645295480bbd765dc08158ba05a71e"
+      },
+      "adapter_result_binding": {
+        "byte_length": 450149,
+        "path": "evidence/canonical-v2/skywater-general-covenants-20260809-2xk-final/adapter-result.json",
+        "sha256": "5c1bdee88b0f5cd13011171345a02fb82442740dced55d0b8ab174f0ed343a20"
+      },
+      "validation_binding": {
+        "byte_length": 94827,
+        "path": "evidence/canonical-v2/skywater-general-covenants-20260809-2xk-final/validation.json",
+        "sha256": "df4d1fc1b9b4eba17af5f7d89a74aed175dfe371abef34d84cf63601e443de1e"
+      },
+      "expected_counts": {
+        "resolution_claims": 12,
+        "write_set_claims": 12,
+        "validation_claims": 12,
+        "resolution_evidence": 12,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "run_identifier": "topbuild-general-covenants-20260809-2xk-r3-final",
+      "family": "GENERAL_COVENANTS",
+      "resolution_binding": {
+        "byte_length": 140167,
+        "path": "evidence/canonical-v2/topbuild-general-covenants-20260809-2xk-r3-final/resolution.json",
+        "sha256": "bde4d024f3f2f7cdde44e551660101a26a5638468d4ab732c62863ebf4120172"
+      },
+      "adapter_result_binding": {
+        "byte_length": 472244,
+        "path": "evidence/canonical-v2/topbuild-general-covenants-20260809-2xk-r3-final/adapter-result.json",
+        "sha256": "ade0706e9b1f5092ca5254d3984d480019b51ce20b0631b7bf63e5fa3135a29d"
+      },
+      "validation_binding": {
+        "byte_length": 62060,
+        "path": "evidence/canonical-v2/topbuild-general-covenants-20260809-2xk-r3-final/validation.json",
+        "sha256": "b7e08e578447125a89c775c070327b5380f7d02b1e65d6db2f513718407e4f3f"
+      },
+      "expected_counts": {
+        "resolution_claims": 9,
+        "write_set_claims": 9,
+        "validation_claims": 9,
+        "resolution_evidence": 9,
+        "supplemental_claims": 0
+      }
+    }
+  ],
+  "supplemental_input_bindings": [],
+  "provision_examples": [
+    {
+      "example_id": "GENERAL_COVENANTS-EX-01",
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "printed_reference": "6.7",
+      "complete_source_node_occurrence_ids": [
+        "27eaf07d34f1718bf0449d0c808903d9dafc2c87b7e7c303ccd3aef134d7488a"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 218261,
+          "start_byte": 212640,
+          "text_sha256": "411cc7d545a4e3c1be8ea1852868a4b176b231b5b996378eefc9d6bf018b4b8c"
+        }
+      ],
+      "source_text_sha256s": [
+        "411cc7d545a4e3c1be8ea1852868a4b176b231b5b996378eefc9d6bf018b4b8c"
+      ],
+      "structure_revision_ids": [
+        "c63115b2d09ebf8d994aee11969d67d0532d8203b73667f001d8748b4f9632e6"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "9b05f35eb93ba77fefd3bd4034bfcfc78fbb8e82d2208204f8200232ca029f5b"
+      ],
+      "comparator_run_identifiers": [
+        "concho-general-covenants-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "ACCESS",
+      "legal_question_ids": [
+        "GENERAL_COVENANTS-Q01",
+        "GENERAL_COVENANTS-Q02",
+        "GENERAL_COVENANTS-Q03"
+      ]
+    },
+    {
+      "example_id": "GENERAL_COVENANTS-EX-02",
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "printed_reference": "6.02",
+      "complete_source_node_occurrence_ids": [
+        "127ad754b68d441767c6a91f827dae04f1e6eaf2afec1e213192900e1aa3af44"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 182710,
+          "start_byte": 180030,
+          "text_sha256": "cbdb92d8014e55ebb0a081fe0aa108818eca63833911477d6061b8ec292c83f7"
+        }
+      ],
+      "source_text_sha256s": [
+        "cbdb92d8014e55ebb0a081fe0aa108818eca63833911477d6061b8ec292c83f7"
+      ],
+      "structure_revision_ids": [
+        "318edb7b81d42a177be666cc96166d6d66bfeef5a0866f9fa526d07ee8bcd94e"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "48772005805a2fde07651a292ec00aeff57ff13865c55ce55423e39a4ef76ba8"
+      ],
+      "comparator_run_identifiers": [
+        "metsera-general-covenants-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "ACCESS",
+      "legal_question_ids": [
+        "GENERAL_COVENANTS-Q01",
+        "GENERAL_COVENANTS-Q02",
+        "GENERAL_COVENANTS-Q03"
+      ]
+    },
+    {
+      "example_id": "GENERAL_COVENANTS-EX-03",
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "deal": "modiv",
+      "printed_reference": "5.7",
+      "complete_source_node_occurrence_ids": [
+        "918b2cff358a5d30c5cb9b06c3ae090c3ab89f08bcad2796fbf2458e3c02ddfc"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 275823,
+          "start_byte": 273330,
+          "text_sha256": "d17bd987d80561cab59c858ae7a930c4a9529aece8af8cc0a894cfcce972f084"
+        }
+      ],
+      "source_text_sha256s": [
+        "d17bd987d80561cab59c858ae7a930c4a9529aece8af8cc0a894cfcce972f084"
+      ],
+      "structure_revision_ids": [
+        "71bda45163d26524c63fb02fa55e2423866a79f67abaea989e614c4c7e25593f"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "b7da04926d737c2ae5102fddcaf7074de3d6bd7220047e4c2980d6ec6baac762"
+      ],
+      "comparator_run_identifiers": [
+        "modiv-general-covenants-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "ACCESS",
+      "legal_question_ids": [
+        "GENERAL_COVENANTS-Q01",
+        "GENERAL_COVENANTS-Q02",
+        "GENERAL_COVENANTS-Q03"
+      ]
+    },
+    {
+      "example_id": "GENERAL_COVENANTS-EX-04",
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "printed_reference": "5.02",
+      "complete_source_node_occurrence_ids": [
+        "e26121902f3084521ad77b6550e4cdc081904cd5a0f9721945d86f60aefb928b"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 158972,
+          "start_byte": 156859,
+          "text_sha256": "c9db907e9f0b28a4cfc3e803e9f715fe1c2a461bc0499c13692084a7e4df5d9c"
+        }
+      ],
+      "source_text_sha256s": [
+        "c9db907e9f0b28a4cfc3e803e9f715fe1c2a461bc0499c13692084a7e4df5d9c"
+      ],
+      "structure_revision_ids": [
+        "ec36c8534a4c74a456256e0d711a49e1b3472157f5b691f409d53049f02c969d"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "d578d37190803d7e9b7bc3333c2da43bb47412d2bbd4455c8df9cc0636f4fe73"
+      ],
+      "comparator_run_identifiers": [
+        "redhat-general-covenants-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "ACCESS",
+      "legal_question_ids": [
+        "GENERAL_COVENANTS-Q01",
+        "GENERAL_COVENANTS-Q02",
+        "GENERAL_COVENANTS-Q03"
+      ]
+    },
+    {
+      "example_id": "GENERAL_COVENANTS-EX-05",
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "printed_reference": "6.8",
+      "complete_source_node_occurrence_ids": [
+        "1ab596a1916c39d4c5ada1b73de4b164fb6c85a8ec93bdfb6cde96a1c97ef804"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 287400,
+          "start_byte": 283891,
+          "text_sha256": "87dfd582a8d26bb63d98a1c1cdc8346cae9b242eb6e13937dc4e0f8134f14779"
+        }
+      ],
+      "source_text_sha256s": [
+        "87dfd582a8d26bb63d98a1c1cdc8346cae9b242eb6e13937dc4e0f8134f14779"
+      ],
+      "structure_revision_ids": [
+        "fc79eed0d1244d10c16b7102ff91f4068e9a769cdc9c19162881ccfb572b186d"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "791b6745b61477ffb5a17ca2a7878781c5fd96efa8d8c96850765dcbfa7c6749"
+      ],
+      "comparator_run_identifiers": [
+        "skechers-general-covenants-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "ACCESS",
+      "legal_question_ids": [
+        "GENERAL_COVENANTS-Q01",
+        "GENERAL_COVENANTS-Q02",
+        "GENERAL_COVENANTS-Q03"
+      ]
+    },
+    {
+      "example_id": "GENERAL_COVENANTS-EX-06",
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "printed_reference": "5.4",
+      "complete_source_node_occurrence_ids": [
+        "836736bdaab51594f21e7e38f7ed601b4d618da25930806cf3faf326d5826a46"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 234939,
+          "start_byte": 234518,
+          "text_sha256": "1ca61cd9865edfab3424b0bf76b64c60ac5ef4f31c83a41b3b58b6084d791927"
+        }
+      ],
+      "source_text_sha256s": [
+        "1ca61cd9865edfab3424b0bf76b64c60ac5ef4f31c83a41b3b58b6084d791927"
+      ],
+      "structure_revision_ids": [
+        "a73f54b5e9427a2403e451b6ae02cd6dbb6919950c6004d220b7e787c4d8cbf8"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "1369ed23fbef4ceacf5de66be317b068ad994585698a250fe921cdebb5c74b68"
+      ],
+      "comparator_run_identifiers": [
+        "skywater-general-covenants-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "ACCESS",
+      "legal_question_ids": [
+        "GENERAL_COVENANTS-Q01",
+        "GENERAL_COVENANTS-Q02",
+        "GENERAL_COVENANTS-Q03"
+      ]
+    },
+    {
+      "example_id": "GENERAL_COVENANTS-EX-07",
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "printed_reference": "4.8",
+      "complete_source_node_occurrence_ids": [
+        "b50cfc7132415dab01d74bec08aae624eeb734f450f32eaa9796ba9e27d7a028"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 281261,
+          "start_byte": 280726,
+          "text_sha256": "9dc9ff9b6d682d4f98bfdcd590ab0b3602687e7c6ca2ed26bb9245069ec7643b"
+        }
+      ],
+      "source_text_sha256s": [
+        "9dc9ff9b6d682d4f98bfdcd590ab0b3602687e7c6ca2ed26bb9245069ec7643b"
+      ],
+      "structure_revision_ids": [
+        "ad948b1d953c09a085ce5c55553247b56306ff1c5664456c017b5497a1125d78"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "f1e902ca2757a443307de8f1d49b87f2683a2c19a4d6aa38729aafb97e055e7e"
+      ],
+      "comparator_run_identifiers": [
+        "topbuild-general-covenants-20260809-2xk-r3-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "ACCESS",
+      "legal_question_ids": [
+        "GENERAL_COVENANTS-Q01",
+        "GENERAL_COVENANTS-Q02",
+        "GENERAL_COVENANTS-Q03"
+      ]
+    }
+  ],
+  "cross_family_dependencies": [],
+  "proposed_output_policy": {
+    "candidate_claim_definition_keys": [
+      "GENERAL_COVENANT_PRESENT"
+    ],
+    "candidate_subtype_profile_ids": [
+      "GENERAL_COVENANTS::ACCESS",
+      "GENERAL_COVENANTS::LITIGATION_NOTIFICATION",
+      "GENERAL_COVENANTS::GENERAL_NOTIFICATION",
+      "GENERAL_COVENANTS::SECTION_16",
+      "GENERAL_COVENANTS::DELISTING",
+      "GENERAL_COVENANTS::TAKEOVER_LAW",
+      "GENERAL_COVENANTS::MERGER_SUB_OBLIGATION",
+      "GENERAL_COVENANTS::PUBLICITY",
+      "GENERAL_COVENANTS::RESIGNATION",
+      "GENERAL_COVENANTS::CVR",
+      "GENERAL_COVENANTS::LISTING"
+    ],
+    "non_output_dispositions": [
+      "LEGACY_FRAGMENTS_REMAIN_SCHEMA_APPROVAL_PENDING",
+      "UNRESOLVED_REQUIRED_ROLE_IS_NON_RENDERABLE"
+    ],
+    "family_ownership_boundary": "GENERAL_COVENANTS owns only approved complete propositions. Overlapping content is link-only.",
+    "renderability": "NEVER_RENDER_FROM_PROPOSAL",
+    "complete_transition": "NOT_AUTHORISED"
+  },
+  "narrow_legal_questions": [
+    {
+      "question_id": "GENERAL_COVENANTS-Q01",
+      "question": "Should one independently operative authored unit be one proposition, with coordinated elements stored as roles or linked children?",
+      "affected_example_ids": [
+        "GENERAL_COVENANTS-EX-01",
+        "GENERAL_COVENANTS-EX-02",
+        "GENERAL_COVENANTS-EX-03",
+        "GENERAL_COVENANTS-EX-04",
+        "GENERAL_COVENANTS-EX-05",
+        "GENERAL_COVENANTS-EX-06",
+        "GENERAL_COVENANTS-EX-07"
+      ],
+      "two_plausible_readings": [
+        "ONE_COMPOUND_PROPOSITION",
+        "LINKED_INDEPENDENT_PROPOSITIONS"
+      ],
+      "recommended_reading": "Use one proposition per independently operative authored unit.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "GENERAL_COVENANTS-Q02",
+      "question": "Which family owns overlapping content, and which families may only link to its stable identity?",
+      "affected_example_ids": [
+        "GENERAL_COVENANTS-EX-01",
+        "GENERAL_COVENANTS-EX-02",
+        "GENERAL_COVENANTS-EX-03",
+        "GENERAL_COVENANTS-EX-04",
+        "GENERAL_COVENANTS-EX-05",
+        "GENERAL_COVENANTS-EX-06",
+        "GENERAL_COVENANTS-EX-07"
+      ],
+      "two_plausible_readings": [
+        "DUPLICATE_IN_EACH_FAMILY",
+        "ONE_OWNER_WITH_LINKED_CONSUMERS"
+      ],
+      "recommended_reading": "Use one semantic owner and stable links.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "GENERAL_COVENANTS-Q03",
+      "question": "Can an ambiguous or unresolved M3 edge fill a required role?",
+      "affected_example_ids": [
+        "GENERAL_COVENANTS-EX-01",
+        "GENERAL_COVENANTS-EX-02",
+        "GENERAL_COVENANTS-EX-03",
+        "GENERAL_COVENANTS-EX-04",
+        "GENERAL_COVENANTS-EX-05",
+        "GENERAL_COVENANTS-EX-06",
+        "GENERAL_COVENANTS-EX-07"
+      ],
+      "two_plausible_readings": [
+        "ALLOW_CONTEXTUAL_INFERENCE",
+        "FAIL_ONLY_THE_DEPENDENT_PROPOSITION"
+      ],
+      "recommended_reading": "Fail only the dependent proposition and do not infer the role.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    }
+  ],
+  "preparation_diagnostics": [
+    {
+      "code": "BEN_FAMILY_ROLE_APPROVAL_REQUIRED",
+      "severity": "STOP",
+      "related_id": "GENERAL_COVENANTS",
+      "detail": "No family adapter may run until Ben approves the open rulings and a separate approved schema is sealed."
+    }
+  ],
+  "preparation_effects": {
+    "model_calls": 0,
+    "family_runner_calls": 0,
+    "database_writes": 0,
+    "product_writes": 0,
+    "selector_changes": 0,
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "serving_changes": 0,
+    "publication_actions": 0
+  }
+}
