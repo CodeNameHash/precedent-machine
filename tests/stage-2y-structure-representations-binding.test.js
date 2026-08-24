@@ -23,7 +23,10 @@ const {
   selectFamilySections,
   statesNoConflicts,
 } = require('../lib/canonical-v2/m7-deterministic-generalisation');
-const { projectAgreement, viewPolicyFor } = require('../lib/canonical-v2/agreement-projection');
+const {
+  projectLegacyAgreementV1,
+  viewPolicyForLegacyV1,
+} = require('../lib/canonical-v2/agreement-projection');
 
 const ROOT = path.resolve(__dirname, '..', 'evidence/canonical-v2/stage-2y-structure-migration');
 
@@ -109,11 +112,14 @@ test('the matcher excludes the phrase that also heads survival and non-reliance'
 // The recovered readability edits, pinned against real projected rows so a
 // future change cannot quietly undo them. 1,111 rows is the sealed M6 count.
 test('every projected row leads with a comparison point and caps its actor list', () => {
-  const viewPolicy = viewPolicyFor(familyOrder());
+  const viewPolicy = viewPolicyForLegacyV1(familyOrder());
   const dir = path.join(ROOT, 'shadow/m5-correction/analysis');
   let rows = 0;
   for (const name of fs.readdirSync(dir).filter((entry) => entry.endsWith('.agreement-analysis.json'))) {
-    const projection = projectAgreement(JSON.parse(fs.readFileSync(path.join(dir, name), 'utf8')), viewPolicy);
+    const projection = projectLegacyAgreementV1(
+      JSON.parse(fs.readFileSync(path.join(dir, name), 'utf8')),
+      viewPolicy,
+    );
     for (const row of projection.rows) {
       rows += 1;
       const expanded = row.fields.find((field) => field.field_key === 'expanded_text').value;
@@ -177,8 +183,11 @@ test('a document-order fallback is reviewable, never a normal comparison row', (
 });
 
 test('the gate routes to review through the same door partials already use', () => {
-  const { projectAgreement, viewPolicyFor } = require('../lib/canonical-v2/agreement-projection');
-  const viewPolicy = viewPolicyFor(familyOrder());
+  const {
+    projectLegacyAgreementV1,
+    viewPolicyForLegacyV1,
+  } = require('../lib/canonical-v2/agreement-projection');
+  const viewPolicy = viewPolicyForLegacyV1(familyOrder());
   const dir = path.join(ROOT, 'shadow/m5-correction/analysis');
   const name = fs.readdirSync(dir).filter((entry) => entry.endsWith('.agreement-analysis.json')).sort()[0];
   const analysis = JSON.parse(fs.readFileSync(path.join(dir, name), 'utf8'));
@@ -187,7 +196,10 @@ test('the gate routes to review through the same door partials already use', () 
     [{ family_key: target.family_key, selection_mode: SELECTION_MODES.DOCUMENT_ORDER_FALLBACK, source_node_occurrence_id: target.source_node_occurrence_ids[0], review_required_reason: null }],
     analysis.compound_propositions,
   );
-  const projection = projectAgreement({ ...analysis, compound_propositions: gated }, viewPolicy);
+  const projection = projectLegacyAgreementV1(
+    { ...analysis, compound_propositions: gated },
+    viewPolicy,
+  );
   assert.equal(projection.rows.some((row) => row.source_compound_proposition_id === target.compound_proposition_id), false,
     'the fallback proposition must not appear as a normal row');
   assert.ok(projection.review_rows.some((row) => row.missing_required_roles.includes('FAMILY_MATCHED_AUTHORED_UNIT')),

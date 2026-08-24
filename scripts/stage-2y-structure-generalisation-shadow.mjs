@@ -9,7 +9,7 @@ const { canonicalJson, contentId, sha256Hex } = require('../lib/canonical-v2/can
 const { indexAgreement } = require('../lib/canonical-v2/agreement-index');
 const { compileContext } = require('../lib/canonical-v2/context-compilation');
 const { adaptCompoundFamily, policyForFamily } = require('../lib/canonical-v2/family-compound-adapter');
-const { projectAgreement } = require('../lib/canonical-v2/agreement-projection');
+const { projectLegacyAgreementV1 } = require('../lib/canonical-v2/agreement-projection');
 const {
   applyAmbiguityGate,
   applySelectionModeGate,
@@ -226,7 +226,7 @@ for (const agreement of manifest.agreements) {
   }
   const analysis = correctedAnalysis(baseAnalysis, familyResults);
   const analysisBinding = writeJson(`${agreementRoot}/m5/agreement-analysis.json`, analysis);
-  const projection = projectAgreement(analysis, viewPolicy);
+  const projection = projectLegacyAgreementV1(analysis, viewPolicy);
   const projectionBinding = writeJson(`${agreementRoot}/m6/agreement-projection.json`, projection);
   if (projection.counts.normal_row_count < 1) {
     throw new Error(`M7_NO_COMPLETE_END_TO_END_PROPOSITION: ${agreement.candidate_key}`);

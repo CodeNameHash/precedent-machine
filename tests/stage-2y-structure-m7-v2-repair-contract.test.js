@@ -12,13 +12,27 @@ const {
   sha256Hex,
 } = require('../lib/canonical-v2/canonical-bytes');
 const {
+  validateFamilyProfilePackageSetForWork3,
+  validateSingleFamilyPackageInventory,
+  validatedAnalysisResultForProjection,
   validateAnalysisV2,
   validateProjectionV2,
+  validateViewPolicyBindingForProjection,
+  validateViewPolicyForProjection,
 } = require('../lib/canonical-v2/m7-v2-contract');
 const {
   buildSourceSets,
   consolidateAnalysis,
 } = require('../lib/canonical-v2/agreement-analysis-consolidation');
+const {
+  generateAnalysisV2,
+} = require('../lib/canonical-v2/m7-v2-deterministic-generator');
+const {
+  projectAgreement,
+} = require('../lib/canonical-v2/agreement-projection');
+const {
+  buildLawfulWork3FamilyPackageSetFixture,
+} = require('./helpers/m7-v2-work3-family-package-fixture');
 const cases = require('./fixtures/canonical-v2/m7-v2-repair/work1-acceptance-cases.json');
 
 const FAMILY_KEYS = [
@@ -48,6 +62,58 @@ const FAMILY_KEYS = [
   'TAX_MATTERS',
   'TERMINATION_FEE',
 ];
+
+const C3_FAMILY_ORDER = [
+  'ANTITRUST_REGULATORY',
+  'APPRAISAL_DISSENTERS_RIGHTS',
+  'CAPITALISATION',
+  'CLOSING_CONDITIONS',
+  'CONSIDERATION',
+  'DIVIDENDS',
+  'DNO_INDEMNIFICATION',
+  'EMPLOYEE_MATTERS',
+  'FINANCING_COVENANTS',
+  'GENERAL_COVENANTS',
+  'GUARANTY_FINANCING_PARTY',
+  'INTERIM_OPERATING',
+  'KEY_DEFINED_TERMS',
+  'MAE_DEFINITION',
+  'MATERIAL_CONTRACTS',
+  'MERGER_STRUCTURE_CLOSING',
+  'MISC_BOILERPLATE',
+  'NO_OTHER_REPS_FRAUD',
+  'NO_SHOP',
+  'PROXY_MEETING',
+  'REPRESENTATIONS',
+  'SPECIFIC_PERFORMANCE_REMEDIES',
+  'TAX_MATTERS',
+  'TERMINATION',
+  'TERMINATION_FEE',
+];
+
+const FAMILY_PROFILE_PACKAGE_SCHEMA =
+  'STAGE_2Y_M7_V2_FAMILY_PROFILE_PACKAGE/V2';
+const FAMILY_PROFILE_PACKAGE_APPROVAL_SCHEMA =
+  'STAGE_2Y_M7_V2_FAMILY_PROFILE_PACKAGE_APPROVAL/V1';
+const PACKAGE_MEMBER_BINDING_SCHEMA =
+  'STAGE_2Y_M7_V2_FAMILY_PROFILE_PACKAGE_MEMBER_BINDING/V1';
+const PACKAGE_MEMBER_BINDING_KEYS = [
+  'schema_version',
+  'container_path',
+  'member_field',
+  'member_index',
+  'member_schema_version',
+  'member_record_id_field',
+  'member_record_id',
+  'member_byte_length',
+  'member_sha256',
+];
+const PACKAGE_PATH_BY_FAMILY = new Map(C3_FAMILY_ORDER.map((familyKey) => [
+  familyKey,
+  `evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-${familyKey
+    .toLowerCase().replaceAll('_', '-')}.json`,
+]));
+const FAMILY_PROFILE_PACKAGE_PATH_ORDER = [...PACKAGE_PATH_BY_FAMILY.values()].sort();
 
 const INPUT_ROLES = [
   'BASE_ANALYSIS_SET',
@@ -144,6 +210,24 @@ const ITEM39_DISPOSITION_ID = '7bc98f42d8580f9aada5ee4274e9ada3d22ddd12e9150898a
 const ITEM39_DECISION_ID = 'ac56600e311361f72e9423de2fd9a4a468e536ce25974dbc9f450369b8e097f6';
 const ITEM39_PARENT_NODE_ID = '9a9d339a33d7c530a9668482cb65f537e96bf9c78836de56cae76d92f6ceff35';
 const MIGRATION_ROOT = 'evidence/canonical-v2/stage-2y-structure-migration';
+const AMBIGUOUS_REPEAT_FIXTURE_ID =
+  'de4176a0d940b1c71fe7523eaec101a070ef49577af9413405c1733cd2b5a999';
+const AMBIGUOUS_REPEAT_FIXTURE_BYTE_LENGTH = 8762;
+const AMBIGUOUS_REPEAT_FIXTURE_SHA256 =
+  '1523af1d69fe4c88fdbc2ef078e1c06db10ef4ce1871acc6061e497026680dde';
+const AMBIGUOUS_REPEAT_INDEX_PATH =
+  `${MIGRATION_ROOT}/control/m7-v2-repair-work3-ambiguous-repeat-agreement-index.json`;
+const AMBIGUOUS_REPEAT_INDEX_BINDING = {
+  path: AMBIGUOUS_REPEAT_INDEX_PATH,
+  schema_version: 'AGREEMENT_INDEX/V1',
+  record_id_field: 'agreement_index_id',
+  record_id: '45affe3a9824595810d53e2fbcc97b5320c3137984318fef7b64622e3022898d',
+  byte_length: 2813,
+  sha256: '1826e44e4b3f35a92a684ad0d9fd5c4a1657f1628339a3f83726a223eaa96b4e',
+  git_blob_oid: '8f1097da322739d969411f29bfa6d9ff02a6a86d',
+};
+const AMBIGUOUS_REPEAT_AMBIGUITY_ID =
+  '43d669b21d69377790b8044f5f2b67387a7255effdfc8a92e36cd3e38ef2f195';
 const WORK0_PATH = `${MIGRATION_ROOT}/receipts/stage-2y-structure-m7-v2-repair-evidence-root.json`;
 const FIXED_SAMPLE_PATH = `${MIGRATION_ROOT}/control/m7-v2-repair-fixed-sample-identity-manifest.json`;
 const BASELINE_PATH = `${MIGRATION_ROOT}/control/m7-v2-repair-baseline-ledger.json`;
@@ -154,6 +238,17 @@ const ITEM39_INDEX_PATH = `${MIGRATION_ROOT}/shadow/m2/06ec301641939fe0ac6e6ba59
 const STRUCTURE_OVERLAY_SCHEMA = 'STAGE_2Y_M7_V2_STRUCTURE_OVERLAY/V1';
 const STRUCTURE_CANDIDATE_TREE_SCHEMA = 'STAGE_2Y_M7_V2_STRUCTURE_CANDIDATE_TREE/V1';
 const STRUCTURE_OVERLAY_FIXTURE_SCHEMA = 'STAGE_2Y_M7_V2_STRUCTURE_OVERLAY_FIXTURE/V1';
+const AMBIGUOUS_REPEAT_MEMBER_BINDING = {
+  schema_version: PACKAGE_MEMBER_BINDING_SCHEMA,
+  container_path: PACKAGE_PATH_BY_FAMILY.get('TERMINATION'),
+  member_field: 'structure_fixture_members',
+  member_index: 0,
+  member_schema_version: STRUCTURE_OVERLAY_FIXTURE_SCHEMA,
+  member_record_id_field: 'fixture_id',
+  member_record_id: AMBIGUOUS_REPEAT_FIXTURE_ID,
+  member_byte_length: AMBIGUOUS_REPEAT_FIXTURE_BYTE_LENGTH,
+  member_sha256: AMBIGUOUS_REPEAT_FIXTURE_SHA256,
+};
 const RUNNER_PATHS = [
   'scripts/stage-2y-structure-family-aggregate.mjs',
   'scripts/stage-2y-structure-generalisation-shadow.mjs',
@@ -176,6 +271,10 @@ const REPAIR_INVARIANTS = {
 };
 
 const REPO_ROOT = join(__dirname, '..');
+const WORK3_ENTRY_CORRECTION_AUTHORITY = JSON.parse(readFileSync(join(
+  REPO_ROOT,
+  `${MIGRATION_ROOT}/control/m7-v2-repair-contract-work3-entry-correction-authority.json`,
+), 'utf8'));
 const PROGRAMME_RULING_RECORD = JSON.parse(readFileSync(
   join(REPO_ROOT, RULING_MAP_PATH), 'utf8',
 ));
@@ -188,6 +287,12 @@ const PROGRAMME_RULING_BY_FAMILY = new Map(
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
+}
+
+function codeUnitCompare(left, right) {
+  const leftValue = String(left);
+  const rightValue = String(right);
+  return leftValue < rightValue ? -1 : leftValue > rightValue ? 1 : 0;
 }
 
 function gitBlobOid(value) {
@@ -231,6 +336,31 @@ function addRecord(store, path, record, idField) {
   const bytes = canonicalBytes(record);
   store.set(path, bytes);
   return bindingForBytes(path, bytes, record.schema_version, idField, record[idField]);
+}
+
+function packageMemberBinding(containerPath, memberField, memberIndex, record, idField) {
+  const bytes = Buffer.from(canonicalJson(record), 'utf8');
+  return {
+    schema_version: PACKAGE_MEMBER_BINDING_SCHEMA,
+    container_path: containerPath,
+    member_field: memberField,
+    member_index: memberIndex,
+    member_schema_version: record.schema_version,
+    member_record_id_field: idField,
+    member_record_id: record[idField],
+    member_byte_length: bytes.length,
+    member_sha256: sha256Hex(bytes),
+  };
+}
+
+function recordForFixtureBinding(store, binding) {
+  const selected = store.get(binding.path);
+  assert.ok(selected, `fixture store has no bytes for ${binding.path}`);
+  return JSON.parse(selected.toString('utf8'));
+}
+
+function packageMemberKey(binding) {
+  return `${binding.container_path}\0${binding.member_field}\0${binding.member_index}`;
 }
 
 function addText(store, path, text = path) {
@@ -749,7 +879,7 @@ const semanticTemporalFactNegativeCaseIds = new Set([
   'item-44-normal-business-hours-support-is-truncated',
 ]);
 
-function standardFactSpecs(effect, effectIndex, includeAllTypes) {
+function standardFactSpecs(effect, effectIndex, includeAllTypes, allTypesBooleanValue = true) {
   const specs = [
     factSpec('LEGAL_EFFECT', 'ENUM', 'shall', 'SHALL', 'ENUM_LITERAL_MAP/V1'),
     factSpec('APPLIES_TO', 'PARTY_SET', 'Company and Parent',
@@ -776,7 +906,8 @@ function standardFactSpecs(effect, effectIndex, includeAllTypes) {
         'BOUND_PARTY_ALIAS/V1', [`edge-party-value-company-${effectIndex}`]),
       factSpec('DEFINED_TERM_VALUE', 'DEFINED_TERM', 'Material Adverse Effect',
         'Material Adverse Effect', 'DEFINED_TERM_REFERENCE/V1'),
-      factSpec('BOOLEAN_VALUE', 'BOOLEAN', 'yes', true, 'BOOLEAN_LITERAL_MAP/V1'),
+      factSpec('BOOLEAN_VALUE', 'BOOLEAN', allTypesBooleanValue ? 'yes' : 'no',
+        allTypesBooleanValue, 'BOOLEAN_LITERAL_MAP/V1'),
       factSpec('NUMBER_VALUE', 'NUMBER', '42', 42, 'NUMBER_PARSER/V1'),
       factSpec('PERCENTAGE_VALUE', 'PERCENTAGE', '15%', 15, 'PERCENTAGE_PARSER/V1'),
       factSpec('MONEY_VALUE', 'MONEY', 'USD 100', { amount: 100, currency: 'USD' },
@@ -841,6 +972,7 @@ function makeEffectDrafts(definition, options) {
     };
     draft.fact_specs = standardFactSpecs(
       draft, effectIndex, definition.include_all_fact_value_types === true,
+      definition.all_types_boolean_value !== false,
     );
     if (effectIndex === 0 && options.twoActorFacts === true) {
       const actorIndex = draft.fact_specs.findIndex(
@@ -1262,8 +1394,15 @@ function profileFieldSpecs(effectDrafts, definition) {
 }
 
 function buildProfileInfrastructure({
-  store, definition, effectDrafts, occurrenceId, options = {},
+  store, definition, effectDrafts, occurrenceId, structure, options = {},
 }) {
+  const packageMemberAuthorityIdByFamily =
+    options.packageMemberAuthorityIdByFamily ?? {};
+  const profileAuthority = (familyKey) => (
+    Object.hasOwn(packageMemberAuthorityIdByFamily, familyKey)
+      ? packageMemberAuthorityIdByFamily[familyKey]
+      : profileRuling(familyKey)
+  );
   const globalDnoProfileDraft = (subprofileKey, fieldKey) => ({
     case_id: 'global-dno-profile-catalogue',
     family_key: 'DNO_INDEMNIFICATION',
@@ -1324,6 +1463,15 @@ function buildProfileInfrastructure({
     descriptor.profile_key = descriptor.subprofile_key === null
       ? profileKey(descriptor.family_key)
       : `${profileKey(descriptor.family_key)}:${descriptor.subprofile_key}`;
+    if (options.negativeCaseId === 'package-profile-order-uses-locale-collation'
+        && descriptor.family_key === 'DNO_INDEMNIFICATION') {
+      if (descriptor.subprofile_key === 'RIGHTS_SURVIVAL') {
+        descriptor.profile_key = `${profileKey(descriptor.family_key)}:Z_COLLATION`;
+      }
+      if (descriptor.subprofile_key === 'NO_ADVERSE_AMENDMENT') {
+        descriptor.profile_key = `${profileKey(descriptor.family_key)}:a_COLLATION`;
+      }
+    }
     descriptor.match_tokens = descriptor.draft?.profile_match_tokens
       ?? options.profileMatchTokensByFamily?.[descriptor.family_key]
       ?? (descriptor.subprofile_key === null
@@ -1335,7 +1483,7 @@ function buildProfileInfrastructure({
       ? [{
         dimension_key: options.excludedDimension.dimension_key,
         disposition: options.excludedDimension.disposition,
-        lawyer_ruling_id: profileRuling(descriptor.family_key),
+        lawyer_ruling_id: profileAuthority(descriptor.family_key),
         owner_profile_id: options.excludedDimension.owner_profile_id,
         owner_field_key: options.excludedDimension.owner_field_key,
       }] : [];
@@ -1399,7 +1547,7 @@ function buildProfileInfrastructure({
         typed_value: familyToken(descriptor.family_key).toUpperCase(),
       },
       required_field_keys: ['FAMILY_MARKER'],
-      lawyer_ruling_id: profileRuling(descriptor.family_key),
+      lawyer_ruling_id: profileAuthority(descriptor.family_key),
     };
     descriptor.conditionalRequirements = dimensionContractTarget || conditionalDimensionTarget
       ? [{
@@ -1470,6 +1618,92 @@ function buildProfileInfrastructure({
       },
     };
   }
+  const structureMatchRecords = structure.record.members.flatMap((member) => [
+    ...member.inclusion_fixture_bindings,
+    ...member.exclusion_fixture_bindings,
+  ]).map((binding) => recordForFixtureBinding(store, binding));
+  const packageMatchRecordsByFamily = new Map();
+  const bindFamilyFixtures = (familyKey) => {
+    const records = [
+      ...descriptorGroups.get(familyKey).flatMap((descriptor) => [
+        descriptor.fixtures.positive.record,
+        descriptor.fixtures.nearNegative.record,
+        descriptor.fixtures.wrongSubtype.record,
+      ]),
+      ...(familyKey === 'TERMINATION' ? structureMatchRecords : []),
+      ...(options.negativeCaseId === 'package-unreferenced-match-fixture-has-empty-node-kind'
+          && familyKey === C3_FAMILY_ORDER[0] ? [makeFixtureRecord(
+          `fixture-unreferenced-${familyKey}`,
+          `fixture-unreferenced-occurrence-${familyKey}`,
+          'unreferenced',
+          { nodeKind: '' },
+        )] : []),
+    ].filter((record, index, values) => values.findIndex(
+      (candidate) => candidate.match_fixture_id === record.match_fixture_id,
+    ) === index).sort((left, right) => codeUnitCompare(
+      left.match_fixture_id, right.match_fixture_id,
+    ));
+    packageMatchRecordsByFamily.set(familyKey, records);
+    const bindingsById = new Map(records.map((record, index) => [
+      record.match_fixture_id,
+      packageMemberBinding(
+        PACKAGE_PATH_BY_FAMILY.get(familyKey), 'match_fixtures', index,
+        record, 'match_fixture_id',
+      ),
+    ]));
+    for (const descriptor of descriptorGroups.get(familyKey)) {
+      for (const fixture of Object.values(descriptor.fixtures)) {
+        fixture.binding = bindingsById.get(fixture.record.match_fixture_id);
+      }
+    }
+    if (familyKey !== 'TERMINATION') return;
+    for (const member of structure.record.members) {
+      for (const field of ['inclusion_fixture_bindings', 'exclusion_fixture_bindings']) {
+        member[field] = member[field].map((binding) => {
+          const recordId = binding.record_id ?? binding.member_record_id;
+          return bindingsById.get(recordId);
+        });
+      }
+      if (member.inline_list_overlay !== null) {
+        member.inline_list_overlay.ambiguous_repeat_fixture_bindings = [
+          packageMemberBinding(
+            PACKAGE_PATH_BY_FAMILY.get('TERMINATION'), 'structure_fixture_members', 0,
+            structure.item39.ambiguousRepeat.fixture, 'fixture_id',
+          ),
+        ];
+      }
+      restampInline(
+        member, 'STAGE_2Y_M7_V2_STRUCTURE_DISPOSITION_SET/V1',
+        'structure_disposition_id',
+      );
+    }
+    structure.record.members.sort((left, right) => codeUnitCompare(
+      left.structure_disposition_id, right.structure_disposition_id,
+    ));
+    restampBound(
+      structure.record, 'STAGE_2Y_M7_V2_STRUCTURE_DISPOSITION_SET/V1',
+      'structure_disposition_set_id',
+    );
+    structure.binding = addRecord(
+      store, 'fixture/inputs/structure-disposition-set.json', structure.record,
+      'structure_disposition_set_id',
+    );
+  };
+  for (const familyKey of FAMILY_KEYS) bindFamilyFixtures(familyKey);
+
+  const benApprovalIdByFamily = new Map(C3_FAMILY_ORDER.map((familyKey) => [
+    familyKey,
+    `BEN_APPROVAL:${familyKey}:PROFILE_SET_V1`,
+  ]));
+  if (options.negativeCaseId === 'family-approval-id-is-empty') {
+    benApprovalIdByFamily.set(C3_FAMILY_ORDER[0], '');
+  }
+  if (options.negativeCaseId === 'family-approval-id-is-duplicated') {
+    benApprovalIdByFamily.set(
+      C3_FAMILY_ORDER[1], benApprovalIdByFamily.get(C3_FAMILY_ORDER[0]),
+    );
+  }
+
   const profiles = [];
   const profileByDescriptor = new Map();
   for (const familyKey of FAMILY_KEYS) {
@@ -1480,7 +1714,7 @@ function buildProfileInfrastructure({
       const item42ClaimContinuation = descriptor.draft?.case_id
         === 'item-42-linked-d-and-o-rights-survival'
         && descriptor.subprofile_key === 'CLAIM_CONTINUATION';
-      const rulingId = profileRuling(familyKey);
+      const rulingId = profileAuthority(familyKey);
       const requiredKeys = new Set(['APPLIES_TO', 'LEGAL_EFFECT']);
       if (descriptor.draft?.missing_required_field) {
         requiredKeys.add(descriptor.draft.missing_required_field);
@@ -1541,8 +1775,13 @@ function buildProfileInfrastructure({
           nearNegative: rebuildFixture(descriptor.fixtures.nearNegative, 'near-negative'),
           wrongSubtype: rebuildFixture(descriptor.fixtures.wrongSubtype, 'wrong-subtype'),
         };
+        bindFamilyFixtures(familyKey);
       }
-      const nextFamily = FAMILY_KEYS[(FAMILY_KEYS.indexOf(familyKey) + 1) % FAMILY_KEYS.length];
+      const nextFamily = C3_FAMILY_ORDER.find((candidateFamily) => (
+        candidateFamily !== familyKey
+          && !(options.dimensionContract === true
+            && candidateFamily === 'GENERAL_COVENANTS')
+      ));
       const nextDescriptor = descriptorGroups.get(nextFamily)[0];
       const leafId = `leaf-${descriptor.profile_key}`;
       const expectedRootSelectionForFixture = (fixture) => {
@@ -1881,8 +2120,11 @@ function buildProfileInfrastructure({
         ],
         approved_structure_disposition_ids: [],
         no_comparison_policy: noComparisonPolicy,
-        legal_authority_ids: item42ClaimContinuation
-          ? [rulingId, 'M5-RULING-ONE-SEMANTIC-OWNER'].sort() : [rulingId],
+        legal_authority_ids: [...new Set([
+          rulingId,
+          ...(item42ClaimContinuation ? ['M5-RULING-ONE-SEMANTIC-OWNER'] : []),
+          benApprovalIdByFamily.get(familyKey),
+        ])].sort(),
         shared_source_lawyer_decision_ids: sharedSourceLawyerDecisionIds,
         fixture_proofs: fixtureProofs,
         match_test: {
@@ -1904,7 +2146,7 @@ function buildProfileInfrastructure({
   const descriptorByProfileKey = new Map(
     descriptors.map((descriptor) => [descriptor.profile_key, descriptor]),
   );
-  const dimensionBindings = profiles.flatMap((profile) => {
+  const dimensionEntries = profiles.flatMap((profile) => {
     const descriptor = descriptorByProfileKey.get(profile.profile_key);
     const knownDimensionKeys = profile.known_relevant_dimensions.map(
       (entry) => entry.dimension_key,
@@ -1917,7 +2159,7 @@ function buildProfileInfrastructure({
         path_suffix: 'dno',
         source_class: 'CALIBRATION',
         dimension_keys: knownDimensionKeys.filter((key) => key !== claimPeriodKey),
-        lawyer_ruling_id: profileRuling(profile.family_key),
+        lawyer_ruling_id: profileAuthority(profile.family_key),
       },
       {
         path_suffix: 'period-reference',
@@ -1929,7 +2171,7 @@ function buildProfileInfrastructure({
       path_suffix: null,
       source_class: 'CALIBRATION',
       dimension_keys: knownDimensionKeys,
-      lawyer_ruling_id: profileRuling(profile.family_key),
+      lawyer_ruling_id: profileAuthority(profile.family_key),
     }];
     if (item42ClaimContinuation) {
       assert.equal(evidenceSubsets.length, 2,
@@ -1959,14 +2201,14 @@ function buildProfileInfrastructure({
           path_suffix: 'overlap',
           source_class: 'CALIBRATION',
           dimension_keys: [evidenceSubsets[0].dimension_keys[0]],
-          lawyer_ruling_id: profileRuling(profile.family_key),
+          lawyer_ruling_id: profileAuthority(profile.family_key),
         });
       } else if (options.negativeCaseId
           === 'profile-dimension-evidence-union-omits-known-key') {
         evidenceSubsets[0].dimension_keys = evidenceSubsets[0].dimension_keys.slice(1);
       } else if (options.negativeCaseId
           === 'profile-dimension-evidence-subset-ruling-drift') {
-        evidenceSubsets[1].lawyer_ruling_id = profileRuling(profile.family_key);
+        evidenceSubsets[1].lawyer_ruling_id = profileAuthority(profile.family_key);
       } else if (options.negativeCaseId
           === 'profile-dimension-evidence-subset-invents-underived-key') {
         evidenceSubsets[0].dimension_keys = [
@@ -1977,7 +2219,6 @@ function buildProfileInfrastructure({
         evidenceSubsets[1].source_class = 'ADVERSARIAL';
       }
     }
-    const profilePath = profile.profile_key.replaceAll(':', '-');
     return evidenceSubsets.map((subset) => {
       const evidence = sealBoundRecord(
         'STAGE_2Y_M7_V2_DIMENSION_EVIDENCE/V1', 'dimension_evidence_id', {
@@ -1989,13 +2230,9 @@ function buildProfileInfrastructure({
           lawyer_ruling_id: subset.lawyer_ruling_id,
         },
       );
-      const pathSuffix = subset.path_suffix === null ? '' : `-${subset.path_suffix}`;
-      return addRecord(
-        store, `fixture/dimension/${profilePath}${pathSuffix}.json`, evidence,
-        'dimension_evidence_id',
-      );
+      return { family_key: profile.family_key, record: evidence };
     });
-  }).sort((left, right) => left.path < right.path ? -1 : left.path > right.path ? 1 : 0);
+  });
   const profileByFamily = new Map(FAMILY_KEYS.map((familyKey) => [
     familyKey,
     profiles.find((profile) => profile.family_key === familyKey),
@@ -2004,9 +2241,18 @@ function buildProfileInfrastructure({
     const descriptor = descriptors.find((entry) => entry.draft === draft);
     return [draft, profileByDescriptor.get(descriptor)];
   }));
-  const treeBindings = [...FAMILY_KEYS].sort().map((familyKey) => {
+  const treeEntries = C3_FAMILY_ORDER.map((familyKey) => {
     const familyProfiles = profiles.filter((profile) => profile.family_key === familyKey);
     const profileById = new Map(familyProfiles.map((profile) => [profile.profile_id, profile]));
+    const parentProfileIds = new Set(familyProfiles.flatMap(
+      (profile) => profile.parent_profile_id === null ? [] : [profile.parent_profile_id],
+    ));
+    const leafProfile = familyProfiles.find(
+      (profile) => !parentProfileIds.has(profile.profile_id),
+    );
+    const unusedFamily = C3_FAMILY_ORDER.find((candidateFamilyKey) => (
+      !definition.effects.some((effect) => effect.family_key === candidateFamilyKey)
+    ));
     const tree = sealBoundRecord(
       'STAGE_2Y_M7_V2_REPAIR_SUBTYPE_TREE/V1', 'subtype_tree_id', {
         family_key: options.negativeCaseId === 'profile-tree-family-key-is-relabeled'
@@ -2022,39 +2268,163 @@ function buildProfileInfrastructure({
             ? null : profileById.get(profile.parent_profile_id).profile_key,
           node_state: options.negativeCaseId === 'generic-abstract-ancestor-emits-normal'
             && familyKey === (definition.effects[0]?.family_key ?? 'TERMINATION')
-            ? 'ABSTRACT' : 'TERMINAL_OUTPUT_PERMITTED',
+            ? 'ABSTRACT'
+            : options.negativeCaseId === 'unused-family-subtype-tree-abstract-leaf'
+              && familyKey === unusedFamily && profile.profile_id === leafProfile.profile_id
+              ? 'ABSTRACT' : 'TERMINAL_OUTPUT_PERMITTED',
         })),
       },
     );
-    return {
-      family_key: familyKey,
-      binding: addRecord(
-        store, `fixture/trees/${familyKey}.json`, tree, 'subtype_tree_id',
-      ),
-    };
+    return { family_key: familyKey, record: tree };
   });
+  const orderedProfiles = [...profiles].sort((left, right) => (
+    C3_FAMILY_ORDER.indexOf(left.family_key) - C3_FAMILY_ORDER.indexOf(right.family_key)
+      || codeUnitCompare(left.profile_key, right.profile_key)
+      || codeUnitCompare(left.profile_id, right.profile_id)
+  ));
+  if (options.negativeCaseId === 'package-profile-order-uses-locale-collation') {
+    const upperIndex = orderedProfiles.findIndex(
+      (profile) => profile.profile_key.endsWith(':Z_COLLATION'),
+    );
+    const lowerIndex = orderedProfiles.findIndex(
+      (profile) => profile.profile_key.endsWith(':a_COLLATION'),
+    );
+    [orderedProfiles[upperIndex], orderedProfiles[lowerIndex]] = [
+      orderedProfiles[lowerIndex], orderedProfiles[upperIndex],
+    ];
+  }
+  const packageRecordsByFamily = new Map();
+  const packageBindings = [];
+  for (const familyKey of C3_FAMILY_ORDER) {
+    const packageProfiles = orderedProfiles.filter((profile) => profile.family_key === familyKey);
+    const matchFixtures = packageMatchRecordsByFamily.get(familyKey);
+    const dimensionEvidence = dimensionEntries.filter(
+      (entry) => entry.family_key === familyKey,
+    ).map((entry) => entry.record).sort((left, right) => codeUnitCompare(
+      left.dimension_evidence_id, right.dimension_evidence_id,
+    ));
+    const subtypeTree = treeEntries.find((entry) => entry.family_key === familyKey).record;
+    const structureFixtureMembers = familyKey === 'TERMINATION'
+      ? [structure.item39.ambiguousRepeat.fixture] : [];
+    if (options.negativeCaseId === 'package-member-is-omitted'
+        && familyKey === 'TERMINATION') {
+      packageProfiles.pop();
+    }
+    const benApprovalId = benApprovalIdByFamily.get(familyKey);
+    const legalDecisions = [...new Set([
+      benApprovalId,
+      ...packageProfiles.flatMap((profile) => [
+        ...profile.legal_authority_ids,
+        ...profile.shared_source_lawyer_decision_ids,
+        ...profile.fixture_proofs.map((proof) => proof.lawyer_ruling_id),
+      ]),
+      ...dimensionEvidence.map((evidence) => evidence.lawyer_ruling_id),
+      ...structureFixtureMembers.map((fixture) => fixture.lawyer_ruling_id),
+    ])].sort();
+    const inventory = {
+      family_key: familyKey,
+      profile_set_version: 1,
+      legal_decisions: legalDecisions,
+      profile_ids: packageProfiles.map((profile) => profile.profile_id),
+      subtype_tree_id: subtypeTree.subtype_tree_id,
+      match_fixture_record_ids: matchFixtures.map((fixture) => fixture.match_fixture_id),
+      dimension_evidence_ids: dimensionEvidence.map(
+        (evidence) => evidence.dimension_evidence_id,
+      ),
+      structure_fixture_ids: structureFixtureMembers.map((fixture) => fixture.fixture_id),
+    };
+    const familyApproval = sealBoundRecord(
+      FAMILY_PROFILE_PACKAGE_APPROVAL_SCHEMA, 'family_approval_id', {
+        ben_approval_id: benApprovalId,
+        family_key: familyKey,
+        profile_set_version: 1,
+        approver: 'BEN_GOODCHILD',
+        approved_on: options.negativeCaseId === 'family-approval-date-is-not-calendar-valid'
+          && familyKey === C3_FAMILY_ORDER[0] ? '2026-02-29' : '2026-08-16',
+        approval_text: `Ben approves the exact ${familyKey} profile package inventory.`,
+        approved_inventory_digest: sha256Hex(Buffer.from(canonicalJson(inventory), 'utf8')),
+        approved_decision_classes: [
+          'V2_PROFILE_APPROVALS',
+          ...(familyKey === 'TERMINATION' ? ['LEGAL_STRUCTURE_OVERLAYS'] : []),
+        ].sort(),
+      },
+    );
+    let packageProfileMembers = options.negativeCaseId === 'package-profile-member-is-null'
+        && familyKey === C3_FAMILY_ORDER[0]
+      ? [null, ...packageProfiles.slice(1)] : packageProfiles;
+    if (options.negativeCaseId === 'package-profile-fixture-proof-is-null'
+        && familyKey === C3_FAMILY_ORDER[0]) {
+      packageProfileMembers = clone(packageProfiles);
+      packageProfileMembers[0].fixture_proofs = [
+        null, ...packageProfileMembers[0].fixture_proofs.slice(1),
+      ];
+      restampInline(
+        packageProfileMembers[0], 'STAGE_2Y_M7_V2_APPROVED_FAMILY_PROFILE/V1',
+        'profile_id',
+      );
+    }
+    const packageMatchFixtureMembers = options.negativeCaseId
+        === 'package-match-fixture-member-is-null' && familyKey === C3_FAMILY_ORDER[0]
+      ? [null, ...matchFixtures.slice(1)] : matchFixtures;
+    const packageRecord = sealBoundRecord(
+      FAMILY_PROFILE_PACKAGE_SCHEMA, 'family_profile_package_id', {
+        state: 'BEN_APPROVED_FAMILY_PROFILE_PACKAGE',
+        family_key: options.negativeCaseId === 'package-family-is-relabeled'
+          && familyKey === C3_FAMILY_ORDER[0] ? C3_FAMILY_ORDER[1] : familyKey,
+        profile_set_version: 1,
+        family_approval: familyApproval,
+        legal_decisions: legalDecisions,
+        profiles: packageProfileMembers,
+        subtype_tree: subtypeTree,
+        match_fixtures: packageMatchFixtureMembers,
+        dimension_evidence: dimensionEvidence,
+        structure_fixture_members: structureFixtureMembers,
+      },
+    );
+    packageRecordsByFamily.set(familyKey, packageRecord);
+    packageBindings.push(addRecord(
+      store, PACKAGE_PATH_BY_FAMILY.get(familyKey), packageRecord,
+      'family_profile_package_id',
+    ));
+  }
+  let dimensionBindings = C3_FAMILY_ORDER.flatMap((familyKey) => {
+    const records = packageRecordsByFamily.get(familyKey).dimension_evidence;
+    return records.map((record, index) => packageMemberBinding(
+      PACKAGE_PATH_BY_FAMILY.get(familyKey), 'dimension_evidence', index,
+      record, 'dimension_evidence_id',
+    ));
+  });
+  const treeBindings = C3_FAMILY_ORDER.map((familyKey) => ({
+    family_key: familyKey,
+    binding: packageMemberBinding(
+      PACKAGE_PATH_BY_FAMILY.get(familyKey), 'subtype_tree', null,
+      packageRecordsByFamily.get(familyKey).subtype_tree, 'subtype_tree_id',
+    ),
+  }));
+  let profilePackageBindings = packageBindings;
+  if (options.negativeCaseId === 'profile-set-misses-family-package') {
+    profilePackageBindings = packageBindings.slice(1);
+  }
+  if (options.negativeCaseId === 'dimension-member-binding-misses-key') {
+    dimensionBindings = clone(dimensionBindings);
+    delete dimensionBindings[0].member_sha256;
+  }
+  if (options.negativeCaseId === 'dimension-member-binding-uses-legacy-standard-binding') {
+    dimensionBindings = clone(dimensionBindings);
+    dimensionBindings[0] = clone(packageBindings[0]);
+  }
   const profileOwnedTreeBindings = options.negativeCaseId
     === 'profile-set-misses-family-subtype-tree' ? treeBindings.slice(1) : treeBindings;
   let candidateTreeBindings = treeBindings;
   if (options.negativeCaseId === 'profile-set-tree-binding-differs-from-candidate') {
-    const target = treeBindings.find(
-      (entry) => entry.family_key === (definition.effects[0]?.family_key ?? 'TERMINATION'),
-    );
-    const alternateTree = JSON.parse(store.get(target.binding.path).toString('utf8'));
-    alternateTree.tree_id += '-candidate-drift';
-    restampInline(
-      alternateTree, 'STAGE_2Y_M7_V2_REPAIR_SUBTYPE_TREE/V1', 'subtype_tree_id',
-    );
-    const alternateBinding = addRecord(
-      store, `${target.binding.path}.candidate-drift.json`, alternateTree, 'subtype_tree_id',
-    );
-    candidateTreeBindings = treeBindings.map((entry) => entry === target
-      ? { family_key: entry.family_key, binding: alternateBinding } : entry);
+    candidateTreeBindings = clone(treeBindings);
+    candidateTreeBindings[0].binding.member_sha256 = 'f'.repeat(64);
   }
   const profileSet = sealBoundRecord(
     'STAGE_2Y_M7_V2_APPROVED_FAMILY_PROFILE_SET/V1', 'family_profile_set_id', {
       state: 'BEN_APPROVED_PROFILE_SET',
-      profiles,
+      family_profile_package_bindings: profilePackageBindings,
+      profiles: orderedProfiles,
       dimension_evidence_bindings: dimensionBindings,
       subtype_tree_bindings: profileOwnedTreeBindings,
     },
@@ -2063,7 +2433,7 @@ function buildProfileInfrastructure({
     store, 'fixture/inputs/family-profile-set.json', profileSet, 'family_profile_set_id',
   );
   const treeByFamily = new Map(treeBindings.map((entry) => [entry.family_key, entry.binding]));
-  const snapshots = profiles.map((profile) => ({
+  const snapshots = orderedProfiles.map((profile) => ({
     ...profile,
     profile_set_binding: profileSetBinding,
     tree_binding: treeByFamily.get(profile.family_key),
@@ -2072,11 +2442,13 @@ function buildProfileInfrastructure({
     fixtureByFamily: new Map(FAMILY_KEYS.map((familyKey) => [
       familyKey, descriptorGroups.get(familyKey)[0].fixtures,
     ])),
-    profiles,
+    profiles: orderedProfiles,
     profileByFamily,
     profileByEffect,
     profileSet,
     profileSetBinding,
+    packageRecordsByFamily,
+    packageBindings,
     treeBindings: candidateTreeBindings,
     snapshots,
   };
@@ -3205,7 +3577,9 @@ function buildAmbiguousRepeatFixture(store, mutationCaseId = null) {
         text_sha256: sha256Hex(sourceBytes),
       },
       detail: {
-        competing_readings: ['AUTHORED_LIST', 'CROSS_REFERENCE'],
+        competing_readings: mutationCaseId
+          === 'ambiguous-repeat-synthetic-index-semantic-alternative'
+          ? ['AUTHORED_LIST', 'DEFINED_TERM'] : ['AUTHORED_LIST', 'CROSS_REFERENCE'],
         inline_marker_disposition_id: disposition.disposition_id,
         parser_version: 'AGREEMENT_INLINE_STRUCTURE_PARSER/V1',
         reason: mutationCaseId === 'ambiguous-repeat-lacks-native-same-style-restart-proof'
@@ -3234,7 +3608,7 @@ function buildAmbiguousRepeatFixture(store, mutationCaseId = null) {
     inlineMarkerDispositions: [disposition],
   });
   const agreementIndexBinding = addRecord(
-    store, 'fixture/structure/ambiguous-repeat-index.json', agreementIndex,
+    store, AMBIGUOUS_REPEAT_INDEX_PATH, agreementIndex,
     'agreement_index_id',
   );
   const markerEvidence = markerSpans.map((marker_span) => ({
@@ -3279,6 +3653,14 @@ function buildAmbiguousRepeatFixture(store, mutationCaseId = null) {
       lawyer_ruling_id: ITEM39_DECISION_ID,
     },
   );
+  if (mutationCaseId === null) {
+    assert.equal(ambiguity.ambiguity_id, AMBIGUOUS_REPEAT_AMBIGUITY_ID);
+    assert.deepEqual(agreementIndexBinding, AMBIGUOUS_REPEAT_INDEX_BINDING);
+    const fixtureBytes = Buffer.from(canonicalJson(fixture), 'utf8');
+    assert.equal(fixture.fixture_id, AMBIGUOUS_REPEAT_FIXTURE_ID);
+    assert.equal(fixtureBytes.length, AMBIGUOUS_REPEAT_FIXTURE_BYTE_LENGTH);
+    assert.equal(sha256Hex(fixtureBytes), AMBIGUOUS_REPEAT_FIXTURE_SHA256);
+  }
   return {
     fixture,
     binding: addRecord(
@@ -3744,7 +4126,11 @@ function buildStructureSet({ store, source, occurrenceId, scenarioKey, options =
     'STAGE_2Y_M7_V2_STRUCTURE_DISPOSITION_SET/V1', 'structure_disposition_set_id', {
       state: 'BEN_APPROVED_STRUCTURE_DISPOSITION_SET',
       members: [member, ...(sourceArtefactMember === null ? [] : [sourceArtefactMember]),
-        ...technicalWhitespaceMembers, item39.member],
+        ...technicalWhitespaceMembers, item39.member].sort(
+        (left, right) => left.structure_disposition_id.localeCompare(
+          right.structure_disposition_id,
+        ),
+      ),
     },
   );
   return {
@@ -4010,7 +4396,7 @@ function buildSemanticCore({
     'STAGE_2Y_M7_V2_INSPECTED_CANDIDATE_SET/V1', 'candidate_set_id', {
       authored_unit_id: source.nodeId,
       source_closure_id: source.sourceClosure.source_closure_id,
-      considered_family_keys: FAMILY_KEYS,
+      considered_family_keys: C3_FAMILY_ORDER,
       effects: candidateEffects,
     },
   );
@@ -4213,7 +4599,7 @@ function buildSemanticCore({
       lawyer_ruling_id: requirement.lawyer_ruling_id,
     };
   });
-  const allFamilyProfileResults = FAMILY_KEYS.map((familyKey) => ({
+  const allFamilyProfileResults = C3_FAMILY_ORDER.map((familyKey) => ({
     family_key: familyKey,
     matched_profile_ids: [...new Set(candidateEffects.flatMap((effect) => effect.profile_results
       .filter((result) => result.matched
@@ -4351,7 +4737,11 @@ function buildViewPolicy(
   const fieldKeys = [...new Set(profileSnapshots.flatMap((profile) => [
     ...profile.required_fields,
     ...profile.optional_fields,
-  ].map((requirement) => requirement.field_key)))].sort();
+  ].map((requirement) => requirement.field_key).concat(
+    profile.excluded_or_delegated_dimensions.filter(
+      (dimension) => dimension.disposition === 'DELEGATED',
+    ).map((dimension) => dimension.dimension_key),
+  )))].sort();
   const viewPolicy = sealBoundRecord(
     'STAGE_2Y_M7_V2_VIEW_POLICY/V1', 'view_policy_id', {
       labels: fieldKeys.map((fieldKey) => ({
@@ -4362,12 +4752,14 @@ function buildViewPolicy(
       layouts: ['compact-v2', 'expanded-v2'].map((layoutId) => ({
         layout_id: layoutId,
         required_classification_levels: [...requiredClassificationLevels],
-        required_field_keys: ['APPLIES_TO', 'LEGAL_EFFECT'],
-        permitted_omission_rule_ids: ['DISPLAY_OPTIONAL_NON_MATERIAL/V1'],
+        required_field_keys: options.requiredFieldKeysByLayout?.[layoutId]
+          ?? ['APPLIES_TO', 'LEGAL_EFFECT'],
+        permitted_omission_rule_ids: options.permittedOmissionRulesByLayout?.[layoutId]
+          ?? ['DISPLAY_OPTIONAL_NON_MATERIAL/V1'],
       })),
       formatters: FACT_TYPES.map((valueType) => ({
         value_type: valueType,
-        formatter_id: FORMATTERS[valueType],
+        formatter_id: options.formatterOverrides?.[valueType] ?? FORMATTERS[valueType],
       })),
       grouping_policy: {
         allowed: options.groupingEnabled === true,
@@ -4381,8 +4773,27 @@ function buildViewPolicy(
   };
 }
 
+const GOVERNED_COMPILER_AGREEMENT_IDS = Object.freeze([
+  '06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a',
+  '08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154',
+  '1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116',
+  '3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb',
+  'aa72f3af29316df52ab5cb75eb2b0bb0a5b31036bd24c7f812241c5a688f4319',
+  'b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363',
+  'f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71',
+  'f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c',
+  'fa0fff26622d0e90b47c3df527ccff91f4daa3db12f08d3832de76d8ae7541b5',
+  'fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c',
+]);
+const ADDITIVE_COMPILER_AGREEMENT_IDS = new Set([
+  'aa72f3af29316df52ab5cb75eb2b0bb0a5b31036bd24c7f812241c5a688f4319',
+  'f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71',
+  'fa0fff26622d0e90b47c3df527ccff91f4daa3db12f08d3832de76d8ae7541b5',
+]);
+
 function buildSemanticInputBindings({
   store, agreementId, occurrenceId, source, profiles, structure, effectDrafts,
+  governedCompilerCorpus = false,
 }) {
   const spanById = new Map(source.segments.map((segment) => [segment.span.span_id, segment.span]));
   const nativeSpan = (spanId) => {
@@ -4538,15 +4949,20 @@ function buildSemanticInputBindings({
     'AGREEMENT_ANALYSIS/V1', 'agreement_analysis_id', {
       coordinate_system: 'UTF8_CANONICAL_TEXT_HALF_OPEN',
       agreement_id: agreementId,
-      context_compilation_binding: {
-        agreement_id: agreementId,
-        agreement_index_id: contextCompilation.agreement_index_binding.agreement_index_id,
-        byte_length: contextCompilationBinding.byte_length,
-        context_compilation_id: contextCompilation.context_compilation_id,
-        path: contextCompilationBinding.path,
-        schema_version: contextCompilation.schema_version,
-        sha256: contextCompilationBinding.sha256,
-      },
+      context_compilation_binding: ADDITIVE_COMPILER_AGREEMENT_IDS.has(agreementId)
+        ? { context_compilation_id: contextCompilation.context_compilation_id }
+        : {
+          agreement_id: agreementId,
+          agreement_index_id: contextCompilation.agreement_index_binding.agreement_index_id,
+          byte_length: contextCompilationBinding.byte_length,
+          context_compilation_id: contextCompilation.context_compilation_id,
+          path: contextCompilationBinding.path,
+          schema_version: contextCompilation.schema_version,
+          sha256: contextCompilationBinding.sha256,
+        },
+      agreement_index_binding: ADDITIVE_COMPILER_AGREEMENT_IDS.has(agreementId)
+        ? { agreement_index_id: contextCompilation.agreement_index_binding.agreement_index_id }
+        : structuredClone(contextCompilation.agreement_index_binding),
       claims: [{
         claim_occurrence_id: occurrenceId,
         source_node_occurrence_ids: [source.nodeId],
@@ -4557,21 +4973,138 @@ function buildSemanticInputBindings({
     store, `fixture/inputs/${agreementId}.agreement-analysis.json`, agreementAnalysis,
     'agreement_analysis_id',
   );
-  const {
-    agreementAnalysisSet: baseSet,
-    contextCompilationSet: contextSet,
-  } = buildSourceSets({
-    baseAnalyses: [{ record: agreementAnalysis, binding: agreementAnalysisBinding }],
-    contextCompilations: [{ record: contextCompilation, binding: contextCompilationBinding }],
-  });
-  const agreementIndexMembers = [
-    source.agreementIndexBinding,
-    structure.item39.item39Index.binding,
-  ].filter((binding, index, values) => values.findIndex(
-    (candidate) => candidate.path === binding.path && candidate.record_id === binding.record_id,
-  ) === index).sort(
-    (left, right) => left.path < right.path ? -1 : left.path > right.path ? 1 : 0,
+  const selectedAgreementId = agreementAnalysis.agreement_id;
+  let baseSet;
+  let contextSet;
+  let agreementIndexMembers;
+  if (governedCompilerCorpus) {
+    const governedTriples = GOVERNED_COMPILER_AGREEMENT_IDS.map(
+      (governedAgreementId) => {
+    if (governedAgreementId === selectedAgreementId) {
+      return {
+        agreementId: governedAgreementId,
+        agreementAnalysisBinding,
+        agreementIndexBinding: source.agreementIndexBinding,
+        contextCompilationBinding,
+      };
+    }
+    const indexRecord = structuredClone(source.agreementIndex);
+    indexRecord.source_binding.agreement_id = governedAgreementId;
+    restampCompilerAgreementIndex(indexRecord);
+    const agreementIndexBinding = addRecord(
+      store, `fixture/inputs/${governedAgreementId}.agreement-index.json`,
+      indexRecord, 'agreement_index_id',
+    );
+    const contextBody = structuredClone(contextCompilation);
+    delete contextBody.schema_version;
+    delete contextBody.context_compilation_id;
+    contextBody.agreement_index_binding = {
+      agreement_index_id: indexRecord.agreement_index_id,
+      agreement_index_sha256: agreementIndexBinding.sha256,
+      canonical_text_sha256: indexRecord.source_binding.canonical_text_sha256,
+      structural_policy_digest: indexRecord.structural_policy.policy_digest,
+    };
+    contextBody.semantic_policy_binding.policy_digest = contentId(
+      'FIXTURE_SEMANTIC_POLICY/V1', { agreement_id: governedAgreementId },
+    );
+    const contextRecord = sealBoundRecord(
+      'CONTEXT_COMPILATION/V1', 'context_compilation_id', contextBody,
+    );
+    const governedContextBinding = addRecord(
+      store, `fixture/inputs/${governedAgreementId}.context-compilation.json`,
+      contextRecord, 'context_compilation_id',
+    );
+    const analysisBody = structuredClone(agreementAnalysis);
+    delete analysisBody.schema_version;
+    delete analysisBody.agreement_analysis_id;
+    analysisBody.agreement_id = governedAgreementId;
+    analysisBody.context_compilation_binding =
+      ADDITIVE_COMPILER_AGREEMENT_IDS.has(governedAgreementId)
+        ? { context_compilation_id: contextRecord.context_compilation_id }
+        : {
+          agreement_id: governedAgreementId,
+          agreement_index_id: contextRecord.agreement_index_binding.agreement_index_id,
+          byte_length: governedContextBinding.byte_length,
+          context_compilation_id: contextRecord.context_compilation_id,
+          path: governedContextBinding.path,
+          schema_version: contextRecord.schema_version,
+          sha256: governedContextBinding.sha256,
+        };
+    analysisBody.agreement_index_binding =
+      ADDITIVE_COMPILER_AGREEMENT_IDS.has(governedAgreementId)
+        ? { agreement_index_id: indexRecord.agreement_index_id }
+        : structuredClone(contextRecord.agreement_index_binding);
+    analysisBody.claims = analysisBody.claims.map((claim, claimIndex) => ({
+      ...claim,
+      claim_occurrence_id: contentId('FIXTURE_CLAIM_OCCURRENCE/V1', {
+        agreement_id: governedAgreementId,
+        ordinal: claimIndex + 1,
+        source_node_occurrence_ids: claim.source_node_occurrence_ids,
+      }),
+    }));
+    const analysisRecord = sealBoundRecord(
+      'AGREEMENT_ANALYSIS/V1', 'agreement_analysis_id', analysisBody,
+    );
+    const governedAnalysisBinding = addRecord(
+      store, `fixture/inputs/${governedAgreementId}.agreement-analysis.json`,
+      analysisRecord, 'agreement_analysis_id',
+    );
+    return {
+      agreementId: governedAgreementId,
+      agreementAnalysisBinding: governedAnalysisBinding,
+      agreementIndexBinding,
+      contextCompilationBinding: governedContextBinding,
+    };
+      },
+    );
+    baseSet = sealBoundRecord(
+    'AGREEMENT_ANALYSIS_SET/V1', 'agreement_analysis_set_id', {
+      members: governedTriples.map((triple) => ({
+        agreement_id: triple.agreementId,
+        agreement_analysis_binding: triple.agreementAnalysisBinding,
+      })),
+    },
   );
+    contextSet = sealBoundRecord(
+    'CONTEXT_COMPILATION_SET/V1', 'context_compilation_set_id', {
+      members: governedTriples.map((triple) => ({
+        agreement_id: triple.agreementId,
+        context_compilation_binding: triple.contextCompilationBinding,
+      })),
+    },
+  );
+    agreementIndexMembers = governedTriples.map(
+      (triple) => triple.agreementIndexBinding,
+    ).sort(
+      (left, right) => left.path < right.path ? -1 : left.path > right.path ? 1 : 0,
+    );
+  } else {
+    baseSet = sealBoundRecord(
+      'AGREEMENT_ANALYSIS_SET/V1', 'agreement_analysis_set_id', {
+        members: [{
+          agreement_id: selectedAgreementId,
+          agreement_analysis_binding: agreementAnalysisBinding,
+        }],
+      },
+    );
+    contextSet = sealBoundRecord(
+      'CONTEXT_COMPILATION_SET/V1', 'context_compilation_set_id', {
+        members: [{
+          agreement_id: selectedAgreementId,
+          context_compilation_binding: contextCompilationBinding,
+        }],
+      },
+    );
+    agreementIndexMembers = [
+      source.agreementIndexBinding,
+      structure.item39.item39Index.binding,
+    ].filter((binding, index, values) => values.findIndex(
+      (candidate) => candidate.path === binding.path
+        && candidate.record_id === binding.record_id,
+    ) === index).sort(
+      (left, right) => left.path < right.path ? -1 : left.path > right.path ? 1 : 0,
+    );
+  }
   const agreementIndexSet = sealBoundRecord(
     'AGREEMENT_INDEX_SET/V1', 'agreement_index_set_id', {
       members: agreementIndexMembers,
@@ -4683,7 +5216,7 @@ function buildCandidateGovernance({
     structure.binding,
     viewPolicy.binding,
     predecessorBinding,
-  ].map((binding) => binding.path);
+  ].map((binding) => binding.path ?? binding.container_path);
   const counts = {
     code_file_count: 5 + runnerBindings.length + testBindings.length,
     runner_count: runnerBindings.length,
@@ -4693,12 +5226,19 @@ function buildCandidateGovernance({
     predecessor_receipt_count: 1,
     unique_bound_path_count: new Set(boundPaths).size,
   };
-  const candidateTreeBindings = options.negativeCaseId
-    === 'candidate-subtype-tree-binding-drift'
-    ? profiles.treeBindings.map((entry, index) => index === 0 ? {
+  let candidateTreeBindings = profiles.treeBindings;
+  if (options.negativeCaseId === 'candidate-subtype-tree-binding-drift') {
+    candidateTreeBindings = profiles.treeBindings.map((entry, index) => index === 0 ? {
       ...entry,
-      binding: { ...entry.binding, sha256: 'f'.repeat(64) },
-    } : entry) : profiles.treeBindings;
+      binding: { ...entry.binding, member_sha256: 'f'.repeat(64) },
+    } : entry);
+  }
+  if (options.negativeCaseId === 'candidate-subtype-tree-binding-is-null') {
+    candidateTreeBindings = profiles.treeBindings.map((entry, index) => index === 0 ? {
+      ...entry,
+      binding: null,
+    } : entry);
+  }
   const candidate = sealBoundRecord(
     'STAGE_2Y_M7_V2_CANDIDATE_REGISTRATION/V1', 'candidate_registration_id', {
       stage: 'M7_V2_REPAIR',
@@ -4792,6 +5332,18 @@ function normaliseScenarioDefinition(definition) {
 
 function makeResolver(store) {
   return (binding) => {
+    if (binding.schema_version === PACKAGE_MEMBER_BINDING_SCHEMA) {
+      const packageBytes = store.get(binding.container_path);
+      if (!packageBytes) {
+        throw new Error(`fixture resolver has no package bytes for ${binding.container_path}`);
+      }
+      const packageRecord = JSON.parse(packageBytes.toString('utf8'));
+      const member = binding.member_field === 'subtype_tree'
+        ? packageRecord.subtype_tree
+        : packageRecord[binding.member_field]?.[binding.member_index];
+      if (!member) throw new Error(`fixture resolver has no member for ${packageMemberKey(binding)}`);
+      return Buffer.from(canonicalJson(member), 'utf8');
+    }
     const bytes = store.get(binding.path);
     if (!bytes) throw new Error(`fixture resolver has no bytes for ${binding.path}`);
     return Buffer.from(bytes);
@@ -4851,8 +5403,12 @@ function buildScenario(rawDefinition, options = {}) {
       draft.fact_specs = positiveDrafts[index].fact_specs;
     });
   }
+  const structure = buildStructureSet({
+    store, source, occurrenceId, scenarioKey: definition.case_id, options: scenarioOptions,
+  });
   const profiles = buildProfileInfrastructure({
-    store, definition, effectDrafts: drafts, occurrenceId, options: scenarioOptions,
+    store, definition, effectDrafts: drafts, occurrenceId, structure,
+    options: scenarioOptions,
   });
   if (heldInvalidFactSpecs !== null) {
     drafts.forEach((draft, index) => {
@@ -4875,9 +5431,6 @@ function buildScenario(rawDefinition, options = {}) {
     claimDraft.expression_nodes = incompleteTree.expressions;
     claimDraft.expression_fields = incompleteTree.fields;
   }
-  const structure = buildStructureSet({
-    store, source, occurrenceId, scenarioKey: definition.case_id, options: scenarioOptions,
-  });
   const requiredClassificationLevels = requiredClassificationLevelsForDrafts(
     definition, drafts, profiles,
   );
@@ -4886,6 +5439,7 @@ function buildScenario(rawDefinition, options = {}) {
   );
   const semanticInputs = buildSemanticInputBindings({
     store, agreementId, occurrenceId, source, profiles, structure, effectDrafts: drafts,
+    governedCompilerCorpus: options.governedCompilerCorpus === true,
   });
   const candidate = buildCandidateGovernance({
     store, semanticInputs, profiles, structure, viewPolicy, options: scenarioOptions,
@@ -5099,6 +5653,47 @@ function buildScenario(rawDefinition, options = {}) {
     semanticInputs,
     candidate,
     semantic,
+  };
+}
+
+function familyProfilePackageSetValidationInput(scenario) {
+  const familyPacketSet = scenario.semanticInputs.records.get(
+    'APPROVED_FAMILY_PACKET_SET',
+  ).record;
+  const nativeBindings = [
+    familyPacketSet.work0_evidence_root_binding,
+    familyPacketSet.fixed_sample_identity_binding,
+    familyPacketSet.repair_baseline_binding,
+    familyPacketSet.calibration_ruling_map_binding,
+    familyPacketSet.lawyer_review_packet_binding,
+    ...familyPacketSet.families.map((family) => family.calibration_pack_binding),
+    scenario.source.agreementIndexBinding,
+    scenario.structure.item39.item39Index.binding,
+    scenario.structure.item39.ambiguousRepeat.fixture.agreement_index_binding,
+  ].filter((binding, index, values) => values.findIndex(
+    (candidate) => candidate.path === binding.path,
+  ) === index);
+  for (const binding of nativeBindings) {
+    if (!scenario.store.has(binding.path)) addEvidenceFile(scenario.store, binding.path);
+  }
+  return {
+    work3Authority: WORK3_ENTRY_CORRECTION_AUTHORITY,
+    familyProfileSet: scenario.profiles.profileSet,
+    familyPackageSources: C3_FAMILY_ORDER.map((familyKey, index) => ({
+      binding: scenario.profiles.packageBindings[index],
+      bytes: scenario.store.get(scenario.profiles.packageBindings[index].path),
+      record: scenario.profiles.packageRecordsByFamily.get(familyKey),
+    })),
+    familyPacketSet,
+    structureDispositionSet: scenario.structure.record,
+    nativeSourceRecords: nativeBindings.map((binding) => ({
+      binding: Object.hasOwn(binding, 'git_blob_oid') ? binding : {
+        ...binding,
+        git_blob_oid: gitBlobOid(scenario.store.get(binding.path)),
+      },
+      bytes: scenario.store.get(binding.path),
+      record: recordForFixtureBinding(scenario.store, binding),
+    })),
   };
 }
 
@@ -5363,7 +5958,7 @@ function buildItem39SemanticCore({
     'STAGE_2Y_M7_V2_INSPECTED_CANDIDATE_SET/V1', 'candidate_set_id', {
       authored_unit_id: source.nodeId,
       source_closure_id: source.sourceClosure.source_closure_id,
-      considered_family_keys: FAMILY_KEYS,
+      considered_family_keys: C3_FAMILY_ORDER,
       effects: [effect],
     },
   );
@@ -5441,7 +6036,7 @@ function buildItem39SemanticCore({
       materiality: segment.span.materiality,
     };
   });
-  const allFamilyProfileResults = FAMILY_KEYS.map((familyKey) => ({
+  const allFamilyProfileResults = C3_FAMILY_ORDER.map((familyKey) => ({
     family_key: familyKey,
     matched_profile_ids: familyKey === draft.family_key
       ? [profile.profile_id] : [],
@@ -5522,11 +6117,12 @@ function buildItem39ConsumptionScenario() {
     profileMatchTokensByFamily: { TERMINATION: ['would', 'give', 'rise'] },
     allowedSourceTypeByFamily: { TERMINATION: 'PARAGRAPH' },
   };
-  const profiles = buildProfileInfrastructure({
-    store, definition, effectDrafts: drafts, occurrenceId, options: profileOptions,
-  });
   const structure = buildStructureSet({
     store, source, occurrenceId, scenarioKey: definition.case_id, options: {},
+  });
+  const profiles = buildProfileInfrastructure({
+    store, definition, effectDrafts: drafts, occurrenceId, structure,
+    options: profileOptions,
   });
   const requiredClassificationLevels = requiredClassificationLevelsForDrafts(
     definition, drafts, profiles,
@@ -5879,15 +6475,19 @@ function mutateContextCompilationInput(scenario, mutate) {
   assert.ok(baseMember);
   const basePath = baseMember.agreement_analysis_binding.path;
   const baseRecord = JSON.parse(store.get(basePath).toString('utf8'));
-  baseRecord.context_compilation_binding = {
-    agreement_id: analysis.agreement_id,
-    agreement_index_id: contextRecord.agreement_index_binding.agreement_index_id,
-    byte_length: contextMember.context_compilation_binding.byte_length,
-    context_compilation_id: contextMember.context_compilation_binding.record_id,
-    path: contextMember.context_compilation_binding.path,
-    schema_version: contextMember.context_compilation_binding.schema_version,
-    sha256: contextMember.context_compilation_binding.sha256,
-  };
+  baseRecord.context_compilation_binding = ADDITIVE_COMPILER_AGREEMENT_IDS.has(
+    analysis.agreement_id,
+  ) ? {
+      context_compilation_id: contextMember.context_compilation_binding.record_id,
+    } : {
+      agreement_id: analysis.agreement_id,
+      agreement_index_id: contextRecord.agreement_index_binding.agreement_index_id,
+      byte_length: contextMember.context_compilation_binding.byte_length,
+      context_compilation_id: contextMember.context_compilation_binding.record_id,
+      path: contextMember.context_compilation_binding.path,
+      schema_version: contextMember.context_compilation_binding.schema_version,
+      sha256: contextMember.context_compilation_binding.sha256,
+    };
   restampBound(baseRecord, 'AGREEMENT_ANALYSIS/V1', 'agreement_analysis_id');
   baseMember.agreement_analysis_binding = addRecord(
     store, basePath, baseRecord, 'agreement_analysis_id',
@@ -6455,7 +7055,12 @@ function analysisMutationForCase(scenario, caseId) {
     );
     assert.ok(expression && foreignSpanId,
       'expression leak requires a foreign sibling-effect source span');
-    expression.scope_span_ids = [...expression.scope_span_ids, foreignSpanId];
+    const sourceOrder = new Map(analysis.source_closures[0].spans.map(
+      (span) => [span.span_id, span.start_byte],
+    ));
+    expression.scope_span_ids = [...expression.scope_span_ids, foreignSpanId].sort(
+      (left, right) => sourceOrder.get(left) - sourceOrder.get(right),
+    );
     expression.expression_id = contentId('STAGE_2Y_M7_V2_EXPRESSION/V1', {
       operator: expression.operator,
       result_kind: expression.result_kind,
@@ -6660,7 +7265,7 @@ function twoEffectProvenanceScenario(options = {}) {
   }, options);
 }
 
-function groupingScenario() {
+function groupingScenario(options = {}) {
   const effect = {
     family_key: 'TERMINATION',
     expression_signature: 'ALL_OF(APPLIES_TO,FAMILY_MARKER,THRESHOLD)',
@@ -6670,7 +7275,7 @@ function groupingScenario() {
   return buildScenario({
     case_id: 'grouping-enabled-two-row-fixture',
     effects: [clone(effect), clone(effect)],
-  }, { groupingEnabled: true });
+  }, { ...options, groupingEnabled: true });
 }
 
 function projectionScenarioForNegative(caseId) {
@@ -7005,30 +7610,167 @@ test(cases.baseline_case.case_id, () => {
     cases.baseline_case.expected_normal_row_count);
 });
 
-test('consolidateAnalysis compiles one exact V2 analysis from six resolved inputs and verified governance', () => {
-  const scenario = buildScenario(
-    stateById.get('generic-ancestor-tree-output-complete'),
-  );
+function governedCompilerScenario(agreementId = GOVERNED_COMPILER_AGREEMENT_IDS[0]) {
+  const definition = clone(stateById.get('generic-ancestor-tree-output-complete'));
+  definition.work0_authority = {
+    ...(definition.work0_authority ?? {}),
+    agreement_id: agreementId,
+  };
+  return buildScenario(definition, { governedCompilerCorpus: true });
+}
+
+function governedCompilerInput(scenario) {
   const governedInput = (role) => scenario.semanticInputs.records.get(role).record;
   const resolveRecord = (binding) => JSON.parse(
     scenario.resolveBinding(binding).toString('utf8'),
   );
   const baseAnalysisSet = governedInput('BASE_ANALYSIS_SET');
   const contextCompilationSet = governedInput('CONTEXT_COMPILATION_SET');
-  assert.equal(baseAnalysisSet.members.length, 1);
-  assert.equal(contextCompilationSet.members.length, 1);
-  const baseAnalysisBinding = baseAnalysisSet.members[0].agreement_analysis_binding;
+  const baseAnalysisMember = baseAnalysisSet.members.find(
+    (member) => member.agreement_id === scenario.analysis.agreement_id,
+  );
+  const contextCompilationMember = contextCompilationSet.members.find(
+    (member) => member.agreement_id === scenario.analysis.agreement_id,
+  );
+  const agreementIndexSet = governedInput('AGREEMENT_INDEX_SET');
+  const contextCompilation = {
+    record: resolveRecord(contextCompilationMember.context_compilation_binding),
+    binding: contextCompilationMember.context_compilation_binding,
+    sourceSet: scenario.semanticInputs.records.get('CONTEXT_COMPILATION_SET'),
+  };
+  const agreementIndexBinding = agreementIndexSet.members.find(
+    (binding) => binding.record_id
+      === contextCompilation.record.agreement_index_binding.agreement_index_id,
+  );
+  return {
+    baseAnalysis: {
+      record: resolveRecord(baseAnalysisMember.agreement_analysis_binding),
+      binding: baseAnalysisMember.agreement_analysis_binding,
+      sourceSet: scenario.semanticInputs.records.get('BASE_ANALYSIS_SET'),
+    },
+    agreementIndex: {
+      record: resolveRecord(agreementIndexBinding),
+      binding: agreementIndexBinding,
+      sourceSet: scenario.semanticInputs.records.get('AGREEMENT_INDEX_SET'),
+    },
+    contextCompilation,
+    approvedFamilyPackets: scenario.semanticInputs.records.get(
+      'APPROVED_FAMILY_PACKET_SET',
+    ),
+    approvedFamilyProfileSet: scenario.semanticInputs.records.get(
+      'APPROVED_FAMILY_PROFILE_SET',
+    ),
+    approvedStructureDispositions: scenario.semanticInputs.records.get(
+      'APPROVED_STRUCTURE_DISPOSITION_SET',
+    ),
+    governance: scenario.candidate.governance,
+  };
+}
+
+function rebindCompilerRecord(binding, record) {
+  return addRecord(new Map(), binding.path, record, binding.record_id_field);
+}
+
+function restampCompilerSourceSet(input, memberName, role, mutate) {
+  const sourceSet = input[memberName].sourceSet;
+  mutate(sourceSet.record);
+  restampBound(
+    sourceSet.record, sourceSet.record.schema_version, sourceSet.binding.record_id_field,
+  );
+  sourceSet.binding = rebindCompilerRecord(sourceSet.binding, sourceSet.record);
+  input.governance.semantic_input_bindings.find(
+    (entry) => entry.role === role,
+  ).binding = clone(sourceSet.binding);
+}
+
+function restampCompilerSelectedNative(
+  input, memberName, role, bindingField, mutate, restamp = restampBound,
+) {
+  const selected = input[memberName];
+  const priorBinding = clone(selected.binding);
+  mutate(selected.record);
+  restamp(
+    selected.record, selected.record.schema_version, selected.binding.record_id_field,
+  );
+  selected.binding = rebindCompilerRecord(selected.binding, selected.record);
+  restampCompilerSourceSet(input, memberName, role, (set) => {
+    const member = bindingField === null
+      ? set.members.find((binding) => binding.record_id === priorBinding.record_id)
+      : set.members.find((candidate) => candidate[bindingField].path === priorBinding.path
+        && candidate[bindingField].record_id === priorBinding.record_id);
+    if (bindingField === null) {
+      set.members[set.members.indexOf(member)] = clone(selected.binding);
+      set.members.sort((left, right) => left.path.localeCompare(right.path));
+    } else {
+      member[bindingField] = clone(selected.binding);
+      set.members.sort((left, right) => left.agreement_id.localeCompare(right.agreement_id));
+    }
+  });
+}
+
+function restampCompilerAgreementIndex(record) {
+  record.agreement_index_id = contentId('AGREEMENT_INDEX/V1', {
+    agreement_id: record.source_binding?.agreement_id,
+    canonical_text_id: record.source_binding?.canonical_text_id,
+    structural_policy_digest: record.structural_policy?.policy_digest,
+    root_node_occurrence_id: record.root_node_occurrence_id,
+    counts: record.counts,
+    node_set_digest: contentId('AGREEMENT_INDEX_NODE_SET/V1', record.nodes),
+    annotation_set_digest: contentId(
+      'AGREEMENT_INDEX_ANNOTATION_SET/V1', record.annotations,
+    ),
+    source_artefact_set_digest: contentId(
+      'AGREEMENT_INDEX_SOURCE_ARTEFACT_SET/V1', record.source_artefacts,
+    ),
+    alias_set_digest: contentId('AGREEMENT_INDEX_ALIAS_SET/V1', record.aliases),
+    ambiguity_set_digest: contentId(
+      'AGREEMENT_INDEX_AMBIGUITY_SET/V1', record.ambiguities,
+    ),
+    diagnostic_set_digest: contentId(
+      'AGREEMENT_INDEX_DIAGNOSTIC_SET/V1', record.diagnostics,
+    ),
+    inline_marker_disposition_set_digest: contentId(
+      'AGREEMENT_INDEX_INLINE_MARKER_DISPOSITION_SET/V1',
+      record.inline_marker_dispositions,
+    ),
+    inline_marker_partition_proof_digest: record.inline_marker_partition?.proof_digest,
+    byte_coverage_proof_digest: record.byte_coverage?.proof_digest,
+  });
+}
+
+test('consolidateAnalysis compiles one exact V2 analysis from six resolved inputs and verified governance', () => {
+  const scenario = governedCompilerScenario();
+  const governedInput = (role) => scenario.semanticInputs.records.get(role).record;
+  const resolveRecord = (binding) => JSON.parse(
+    scenario.resolveBinding(binding).toString('utf8'),
+  );
+  const baseAnalysisSet = governedInput('BASE_ANALYSIS_SET');
+  const contextCompilationSet = governedInput('CONTEXT_COMPILATION_SET');
+  assert.equal(baseAnalysisSet.members.length, 10);
+  assert.equal(contextCompilationSet.members.length, 10);
+  const baseAnalysisMember = baseAnalysisSet.members.find(
+    (member) => member.agreement_id === scenario.analysis.agreement_id,
+  );
+  const contextCompilationMember = contextCompilationSet.members.find(
+    (member) => member.agreement_id === scenario.analysis.agreement_id,
+  );
+  assert.ok(baseAnalysisMember);
+  assert.ok(contextCompilationMember);
+  const baseAnalysisBinding = baseAnalysisMember.agreement_analysis_binding;
   const contextCompilationBinding =
-    contextCompilationSet.members[0].context_compilation_binding;
+    contextCompilationMember.context_compilation_binding;
   const baseAnalysis = {
     record: resolveRecord(baseAnalysisBinding),
     binding: baseAnalysisBinding,
+    sourceSet: scenario.semanticInputs.records.get('BASE_ANALYSIS_SET'),
   };
   const contextCompilation = {
     record: resolveRecord(contextCompilationBinding),
     binding: contextCompilationBinding,
+    sourceSet: scenario.semanticInputs.records.get('CONTEXT_COMPILATION_SET'),
   };
   const agreementIndexSet = governedInput('AGREEMENT_INDEX_SET');
+  assert.equal(agreementIndexSet.members.length, 10);
   const agreementIndexBinding = agreementIndexSet.members.find(
     (binding) => binding.record_id
       === contextCompilation.record.agreement_index_binding.agreement_index_id,
@@ -7039,6 +7781,7 @@ test('consolidateAnalysis compiles one exact V2 analysis from six resolved input
     agreementIndex: {
       record: resolveRecord(agreementIndexBinding),
       binding: agreementIndexBinding,
+      sourceSet: scenario.semanticInputs.records.get('AGREEMENT_INDEX_SET'),
     },
     contextCompilation,
     approvedFamilyPackets: scenario.semanticInputs.records.get(
@@ -7063,9 +7806,11 @@ test('consolidateAnalysis compiles one exact V2 analysis from six resolved input
   ]);
   const before = clone(input);
 
+  const directlyGenerated = generateAnalysisV2(generatorInputFromCompilerInput(input));
   const compiled = consolidateAnalysis(input);
   const repeated = consolidateAnalysis(input);
 
+  assert.deepEqual(directlyGenerated, scenario.analysis);
   assert.deepEqual(compiled, scenario.analysis);
   assert.deepEqual(repeated, compiled);
   assert.deepEqual(input, before);
@@ -7073,6 +7818,1130 @@ test('consolidateAnalysis compiles one exact V2 analysis from six resolved input
     analysis: compiled,
     resolveBinding: scenario.resolveBinding,
   }).status, 'PASS');
+});
+
+test('consolidateAnalysis accepts exact compact additive lineage deterministically', () => {
+  const additiveAgreementId =
+    'f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71';
+  const scenario = governedCompilerScenario(additiveAgreementId);
+  const input = governedCompilerInput(scenario);
+  const before = clone(input);
+  const compiled = consolidateAnalysis(input);
+  const repeated = consolidateAnalysis(input);
+  assert.equal(compiled.agreement_id, additiveAgreementId);
+  assert.deepEqual(repeated, compiled);
+  assert.deepEqual(input, before);
+  assert.equal(validateAnalysisV2({
+    analysis: compiled,
+    resolveBinding: scenario.resolveBinding,
+  }).status, 'PASS');
+});
+
+test('consolidateAnalysis rejects each governed source-set and lineage delta', () => {
+  const scenario = governedCompilerScenario();
+  const validInput = governedCompilerInput(scenario);
+  const cases = [
+    {
+      name: 'native wrapper',
+      code: 'SOURCE_ENTRY',
+      mutate(input) { delete input.baseAnalysis.sourceSet; },
+    },
+    {
+      name: 'set binding',
+      code: 'SOURCE_BINDING',
+      mutate(input) { input.contextCompilation.sourceSet.binding.sha256 = 'f'.repeat(64); },
+    },
+    {
+      name: 'ten-member count',
+      code: 'SOURCE_INPUT',
+      mutate(input) {
+        restampCompilerSourceSet(input, 'baseAnalysis', 'BASE_ANALYSIS_SET', (set) => {
+          set.members.pop();
+        });
+      },
+    },
+    {
+      name: 'agreement order',
+      code: 'SOURCE_INPUT',
+      mutate(input) {
+        restampCompilerSourceSet(
+          input, 'contextCompilation', 'CONTEXT_COMPILATION_SET',
+          (set) => set.members.reverse(),
+        );
+      },
+    },
+    {
+      name: 'equal but wrong governed inventory',
+      code: 'SOURCE_INPUT',
+      mutate(input) {
+        for (const [memberName, role] of [
+          ['baseAnalysis', 'BASE_ANALYSIS_SET'],
+          ['contextCompilation', 'CONTEXT_COMPILATION_SET'],
+        ]) {
+          restampCompilerSourceSet(input, memberName, role, (set) => {
+            set.members[1].agreement_id = 'e'.repeat(64);
+            set.members.sort(
+              (left, right) => left.agreement_id.localeCompare(right.agreement_id),
+            );
+          });
+        }
+      },
+    },
+    {
+      name: 'direct M2 binding',
+      code: 'SOURCE_BINDING',
+      mutate(input) {
+        restampCompilerSourceSet(input, 'agreementIndex', 'AGREEMENT_INDEX_SET', (set) => {
+          set.members[0] = { agreement_index_binding: set.members[0] };
+        });
+      },
+    },
+    {
+      name: 'selected membership',
+      code: 'SOURCE_INPUT',
+      mutate(input) {
+        restampCompilerSourceSet(input, 'baseAnalysis', 'BASE_ANALYSIS_SET', (set) => {
+          const selected = set.members.find(
+            (member) => member.agreement_analysis_binding.record_id
+              === input.baseAnalysis.binding.record_id,
+          );
+          const filler = set.members.find((member) => member !== selected);
+          selected.agreement_analysis_binding = clone(filler.agreement_analysis_binding);
+        });
+      },
+    },
+    {
+      name: 'seventh duplicate governance row',
+      code: 'GOVERNANCE',
+      mutate(input) {
+        input.governance.semantic_input_bindings.push(clone(
+          input.governance.semantic_input_bindings[0],
+        ));
+      },
+    },
+    {
+      name: 'governance row extra key',
+      code: 'GOVERNANCE',
+      mutate(input) {
+        input.governance.semantic_input_bindings[0].unexpected = true;
+      },
+    },
+    {
+      name: 'registered governance',
+      code: 'GOVERNANCE_BINDING',
+      mutate(input) {
+        input.governance.semantic_input_bindings.find(
+          (entry) => entry.role === 'BASE_ANALYSIS_SET',
+        ).binding.sha256 = 'f'.repeat(64);
+      },
+    },
+    {
+      name: 'M4 to M3 lineage',
+      code: 'SOURCE_INPUT',
+      mutate(input) {
+        restampCompilerSelectedNative(
+          input, 'baseAnalysis', 'BASE_ANALYSIS_SET', 'agreement_analysis_binding',
+          (record) => { record.agreement_index_binding.agreement_index_sha256 = 'f'.repeat(64); },
+        );
+      },
+    },
+    {
+      name: 'M3 to M2 lineage',
+      code: 'SOURCE_INPUT',
+      mutate(input) {
+        restampCompilerSelectedNative(
+          input, 'contextCompilation', 'CONTEXT_COMPILATION_SET',
+          'context_compilation_binding',
+          (record) => { record.agreement_index_binding.agreement_index_sha256 = 'f'.repeat(64); },
+        );
+        restampCompilerSelectedNative(
+          input, 'baseAnalysis', 'BASE_ANALYSIS_SET', 'agreement_analysis_binding',
+          (record) => {
+            record.context_compilation_binding = {
+              agreement_id: record.agreement_id,
+              agreement_index_id:
+                input.contextCompilation.record.agreement_index_binding.agreement_index_id,
+              byte_length: input.contextCompilation.binding.byte_length,
+              context_compilation_id:
+                input.contextCompilation.record.context_compilation_id,
+              path: input.contextCompilation.binding.path,
+              schema_version: input.contextCompilation.binding.schema_version,
+              sha256: input.contextCompilation.binding.sha256,
+            };
+            record.agreement_index_binding = clone(
+              input.contextCompilation.record.agreement_index_binding,
+            );
+          },
+        );
+      },
+    },
+  ];
+  for (const fixtureCase of cases) {
+    const input = clone(validInput);
+    fixtureCase.mutate(input);
+    assert.throws(
+      () => consolidateAnalysis(input),
+      new RegExp(`AGREEMENT_ANALYSIS_CONSOLIDATION_${fixtureCase.code}`, 'u'),
+      fixtureCase.name,
+    );
+  }
+});
+
+function generatorInputFromCompilerInput(input) {
+  const withBinding = (entry) => ({
+    ...clone(entry.record),
+    __binding: clone(entry.binding),
+  });
+  return {
+    baseAnalysis: clone(input.baseAnalysis.record),
+    agreementIndex: withBinding(input.agreementIndex),
+    contextCompilation: clone(input.contextCompilation.record),
+    approvedFamilyPackets: clone(input.approvedFamilyPackets.record),
+    approvedFamilyProfileSet: withBinding(input.approvedFamilyProfileSet),
+    approvedStructureDispositions: clone(input.approvedStructureDispositions.record),
+    governance: clone(input.governance),
+  };
+}
+
+function assertDeepFrozen(value, seen = new Set()) {
+  if (value === null || typeof value !== 'object' || seen.has(value)) return;
+  seen.add(value);
+  assert.equal(Object.isFrozen(value), true);
+  for (const child of Object.values(value)) assertDeepFrozen(child, seen);
+}
+
+function twoOccurrenceGeneratorFixture() {
+  const definition = clone(stateById.get('generic-ancestor-tree-output-complete'));
+  definition.work0_authority = {
+    ...(definition.work0_authority ?? {}),
+    agreement_id: GOVERNED_COMPILER_AGREEMENT_IDS[0],
+  };
+  const effectTemplate = definition.effects[0];
+  definition.effects = ['A', 'B'].map((suffix) => ({
+    ...clone(effectTemplate),
+    family_key: 'DNO_INDEMNIFICATION',
+    subprofile_key: `GENERATOR_CHILD_${suffix}`,
+    subprofile_source_token: `generatorchild${suffix.toLowerCase()}`,
+  }));
+  const scenario = buildScenario(definition, { governedCompilerCorpus: true });
+  const input = clone(governedCompilerInput(scenario));
+  const store = new Map(scenario.store);
+  const profiles = input.approvedFamilyProfileSet.record.profiles;
+  const childProfiles = profiles.filter((profile) => profile.family_key === 'DNO_INDEMNIFICATION'
+    && ['PROFILE:DNO_INDEMNIFICATION:GENERATOR_CHILD_A',
+      'PROFILE:DNO_INDEMNIFICATION:GENERATOR_CHILD_B'].includes(profile.profile_key)
+    && profile.parent_profile_id !== null
+    && !profiles.some((candidate) => candidate.parent_profile_id === profile.profile_id)
+    && profile.required_expression_signature === 'ALL_OF(APPLIES_TO,FAMILY_MARKER)'
+    && profile.match_test.tokens.some(
+      (token) => token.toLowerCase().split(/[^a-z0-9]+/u).some(
+        (word) => word.startsWith('family'),
+      ),
+    ));
+  assert.equal(childProfiles.length, 2);
+  const firstProfile = childProfiles.find(
+    (profile) => profile.profile_key.endsWith('GENERATOR_CHILD_A'),
+  );
+  const secondProfile = childProfiles.find(
+    (profile) => profile.profile_key.endsWith('GENERATOR_CHILD_B'),
+  );
+  assert.ok(firstProfile && secondProfile);
+  assert.equal(firstProfile.parent_profile_id, secondProfile.parent_profile_id);
+  const selectedProfiles = [firstProfile, secondProfile];
+  const sourceParts = selectedProfiles.map((profile, index) =>
+    `shall Party${index}A and Party${index}B ${profile.match_test.tokens.join(' ')} all_of`);
+  const separator = '\n';
+  const sourceText = sourceParts.join(separator);
+  const sourceBytes = Buffer.from(sourceText, 'utf8');
+  let byteOffset = 0;
+  const nodes = sourceParts.map((text, index) => {
+    const bytes = Buffer.from(text, 'utf8');
+    const node = {
+      node_occurrence_id: contentId('FIXTURE_GENERATOR_NODE/V1', {
+        agreement_id: input.baseAnalysis.record.agreement_id,
+        ordinal: index + 1,
+        text_sha256: sha256Hex(bytes),
+      }),
+      parent_node_occurrence_id: null,
+      node_kind: 'SECTION',
+      extent_span: {
+        coordinate_system: 'UTF8_CANONICAL_TEXT_HALF_OPEN',
+        start_byte: byteOffset,
+        end_byte: byteOffset + bytes.length,
+        text_sha256: sha256Hex(bytes),
+      },
+    };
+    byteOffset += bytes.length + (index === sourceParts.length - 1 ? 0 : 1);
+    return node;
+  });
+  assert.equal(byteOffset, sourceBytes.length);
+  const indexRecord = buildNativeAgreementIndex({
+    agreementId: input.baseAnalysis.record.agreement_id,
+    sourceText,
+    nodes,
+    ambiguities: [],
+    inlineMarkerDispositions: [],
+  });
+  const priorIndexBinding = input.agreementIndex.binding;
+  input.agreementIndex.record = indexRecord;
+  input.agreementIndex.binding = addRecord(
+    store, priorIndexBinding.path, indexRecord, 'agreement_index_id',
+  );
+  const relationshipTemplates = input.contextCompilation.record.semantic_relationships.slice(0, 2);
+  assert.equal(relationshipTemplates.length, 2);
+  const semanticRelationships = nodes.flatMap((node, nodeIndex) => [0, 1].map(
+    (partyIndex) => {
+      const label = `Party${nodeIndex}${partyIndex === 0 ? 'A' : 'B'}`;
+      const nodeText = sourceParts[nodeIndex];
+      const characterOffset = nodeText.indexOf(label);
+      assert.notEqual(characterOffset, -1);
+      const startByte = node.extent_span.start_byte
+        + Buffer.byteLength(nodeText.slice(0, characterOffset), 'utf8');
+      const endByte = startByte + Buffer.byteLength(label, 'utf8');
+      const relationship = clone(relationshipTemplates[partyIndex]);
+      relationship.semantic_relationship_id = contentId(
+        'FIXTURE_CONTEXT_SEMANTIC_RELATIONSHIP/V1', {
+          node_occurrence_id: node.node_occurrence_id,
+          ordinal: partyIndex + 1,
+        },
+      );
+      relationship.target_endpoint.entity_id = contentId('FIXTURE_PARTY/V1', {
+        node_occurrence_id: node.node_occurrence_id,
+        ordinal: partyIndex + 1,
+      });
+      relationship.target_endpoint.canonical_label = label;
+      relationship.target_endpoint.source_node_occurrence_id = node.node_occurrence_id;
+      const exactSourceSpan = {
+        ...relationship.target_endpoint.source_span,
+        start_byte: startByte,
+        end_byte: endByte,
+        text_sha256: sha256Hex(sourceBytes.subarray(startByte, endByte)),
+      };
+      relationship.source_endpoint.source_node_occurrence_id = null;
+      relationship.source_endpoint.source_span = null;
+      relationship.target_endpoint.source_span = clone(exactSourceSpan);
+      relationship.source_node_occurrence_ids = [node.node_occurrence_id];
+      relationship.source_spans = [clone(exactSourceSpan)];
+      return relationship;
+    },
+  ));
+  const priorContextBinding = input.contextCompilation.binding;
+  input.contextCompilation.record.focus_node_occurrence_ids = nodes.map(
+    (node) => node.node_occurrence_id,
+  );
+  input.contextCompilation.record.agreement_index_binding = {
+    agreement_index_id: indexRecord.agreement_index_id,
+    agreement_index_sha256: input.agreementIndex.binding.sha256,
+    canonical_text_sha256: indexRecord.source_binding.canonical_text_sha256,
+    structural_policy_digest: indexRecord.structural_policy.policy_digest,
+  };
+  input.contextCompilation.record.semantic_relationships = semanticRelationships;
+  restampBound(
+    input.contextCompilation.record, 'CONTEXT_COMPILATION/V1', 'context_compilation_id',
+  );
+  input.contextCompilation.binding = addRecord(
+    store, priorContextBinding.path, input.contextCompilation.record,
+    'context_compilation_id',
+  );
+  const priorAnalysisBinding = input.baseAnalysis.binding;
+  const occurrenceIds = nodes.map((node, index) => contentId(
+    'FIXTURE_GENERATOR_CLAIM_OCCURRENCE/V1', {
+      node_occurrence_id: node.node_occurrence_id,
+      ordinal: index + 1,
+    },
+  ));
+  input.baseAnalysis.record.context_compilation_binding = {
+    agreement_id: input.baseAnalysis.record.agreement_id,
+    agreement_index_id: indexRecord.agreement_index_id,
+    byte_length: input.contextCompilation.binding.byte_length,
+    context_compilation_id: input.contextCompilation.record.context_compilation_id,
+    path: input.contextCompilation.binding.path,
+    schema_version: input.contextCompilation.binding.schema_version,
+    sha256: input.contextCompilation.binding.sha256,
+  };
+  input.baseAnalysis.record.agreement_index_binding = clone(
+    input.contextCompilation.record.agreement_index_binding,
+  );
+  input.baseAnalysis.record.claims = nodes.map((node, index) => ({
+    claim_occurrence_id: occurrenceIds[index],
+    source_node_occurrence_ids: [node.node_occurrence_id],
+  })).sort((left, right) => left.claim_occurrence_id < right.claim_occurrence_id
+    ? -1 : left.claim_occurrence_id > right.claim_occurrence_id ? 1 : 0);
+  restampBound(input.baseAnalysis.record, 'AGREEMENT_ANALYSIS/V1', 'agreement_analysis_id');
+  input.baseAnalysis.binding = addRecord(
+    store, priorAnalysisBinding.path, input.baseAnalysis.record, 'agreement_analysis_id',
+  );
+  const replaceSelectedSetBinding = (memberName, role, bindingField, priorBinding) => {
+    const entry = input[memberName];
+    const setRecord = entry.sourceSet.record;
+    if (bindingField === null) {
+      const memberIndex = setRecord.members.findIndex(
+        (binding) => binding.record_id === priorBinding.record_id,
+      );
+      setRecord.members[memberIndex] = clone(entry.binding);
+      setRecord.members.sort((left, right) => left.path.localeCompare(right.path));
+    } else {
+      const member = setRecord.members.find(
+        (candidate) => candidate[bindingField].record_id === priorBinding.record_id,
+      );
+      member[bindingField] = clone(entry.binding);
+    }
+    restampBound(
+      setRecord, setRecord.schema_version, entry.sourceSet.binding.record_id_field,
+    );
+    entry.sourceSet.binding = addRecord(
+      store, entry.sourceSet.binding.path, setRecord,
+      entry.sourceSet.binding.record_id_field,
+    );
+    return { role, entry: entry.sourceSet };
+  };
+  replaceSelectedSetBinding(
+    'agreementIndex', 'AGREEMENT_INDEX_SET', null, priorIndexBinding,
+  );
+  replaceSelectedSetBinding(
+    'contextCompilation', 'CONTEXT_COMPILATION_SET',
+    'context_compilation_binding', priorContextBinding,
+  );
+  replaceSelectedSetBinding(
+    'baseAnalysis', 'BASE_ANALYSIS_SET', 'agreement_analysis_binding', priorAnalysisBinding,
+  );
+  const semanticRecords = new Map([
+    ['BASE_ANALYSIS_SET', input.baseAnalysis.sourceSet],
+    ['AGREEMENT_INDEX_SET', input.agreementIndex.sourceSet],
+    ['CONTEXT_COMPILATION_SET', input.contextCompilation.sourceSet],
+    ['APPROVED_FAMILY_PACKET_SET', input.approvedFamilyPackets],
+    ['APPROVED_FAMILY_PROFILE_SET', input.approvedFamilyProfileSet],
+    ['APPROVED_STRUCTURE_DISPOSITION_SET', input.approvedStructureDispositions],
+  ]);
+  const semanticInputs = {
+    records: semanticRecords,
+    bindings: INPUT_ROLES.map((role) => ({
+      role, binding: semanticRecords.get(role).binding,
+    })),
+    candidateBindings: INPUT_ROLES.map((inputRole) => ({
+      input_role: inputRole,
+      binding: semanticRecords.get(inputRole).binding,
+    })),
+  };
+  const candidate = buildCandidateGovernance({
+    store,
+    semanticInputs,
+    profiles: scenario.profiles,
+    structure: scenario.structure,
+    viewPolicy: scenario.viewPolicy,
+  });
+  input.governance = candidate.governance;
+  const generatorInput = generatorInputFromCompilerInput(input);
+  generatorInput.baseAnalysis.claims.reverse();
+  return {
+    generatorInput,
+    occurrenceIds: [...occurrenceIds].sort(
+      (left, right) => left < right ? -1 : left > right ? 1 : 0,
+    ),
+    nodeExtents: nodes.map((node, index) => ({
+      occurrenceId: occurrenceIds[index],
+      nodeId: node.node_occurrence_id,
+      startByte: node.extent_span.start_byte,
+      endByte: node.extent_span.end_byte,
+    })).sort((left, right) => left.occurrenceId.localeCompare(right.occurrenceId)),
+    resolveBinding: makeResolver(store),
+    selectedProfileIds: selectedProfiles.map((profile) => profile.profile_id),
+  };
+}
+
+test('deterministic generator compiles two node-local occurrences and selects unique children', () => {
+  const fixture = twoOccurrenceGeneratorFixture();
+  const before = clone(fixture.generatorInput);
+  const generated = generateAnalysisV2(fixture.generatorInput);
+  const repeated = generateAnalysisV2(fixture.generatorInput);
+  const withUnrelatedContext = clone(fixture.generatorInput);
+  const unrelated = clone(withUnrelatedContext.contextCompilation.semantic_relationships[0]);
+  unrelated.semantic_relationship_id = 'fixture-unrelated-context-relationship';
+  unrelated.target_endpoint.source_node_occurrence_id = 'fixture-unrelated-context-node';
+  withUnrelatedContext.contextCompilation.semantic_relationships.push(unrelated);
+  assert.deepEqual(repeated, generated);
+  assert.deepEqual(generateAnalysisV2(withUnrelatedContext), generated);
+  assert.deepEqual(fixture.generatorInput, before);
+  assertDeepFrozen(generated);
+  assert.deepEqual(generated.governed_input_occurrence_ids, fixture.occurrenceIds);
+  assert.equal(generated.source_closures.length, 2);
+  assert.equal(generated.candidate_sets.length, 2);
+  assert.equal(generated.authored_unit_effect_ledgers.length, 2);
+  assert.equal(generated.coverage_partitions.length, 2);
+  assert.equal(generated.dispositions.length, 2);
+  assert.equal(generated.rules.length, 2);
+  assert.equal(generated.expressions.length, 2);
+  assert.equal(generated.facts.length, 6);
+  fixture.nodeExtents.forEach((expected, index) => {
+    const closure = generated.source_closures[index];
+    assert.equal(closure.authored_unit_id, expected.nodeId);
+    assert.equal(closure.source_node_occurrence_id, expected.nodeId);
+    assert.equal(closure.governing_start_byte, expected.startByte);
+    assert.equal(closure.governing_end_byte, expected.endByte);
+    assert.equal(closure.spans[0].start_byte, expected.startByte);
+    assert.equal(closure.spans.at(-1).end_byte, expected.endByte);
+    assert.equal(closure.spans.every(
+      (span) => span.source_node_occurrence_id === expected.nodeId
+        && span.start_byte >= expected.startByte && span.end_byte <= expected.endByte,
+    ), true);
+    assert.equal(
+      generated.candidate_sets[index].effects[0].input_occurrence_id,
+      expected.occurrenceId,
+    );
+    assert.equal(
+      generated.authored_unit_effect_ledgers[index].entries[0].input_occurrence_id,
+      expected.occurrenceId,
+    );
+    const rule = generated.rules.find(
+      (candidate) => candidate.input_occurrence_id === expected.occurrenceId,
+    );
+    const expression = generated.expressions.find(
+      (candidate) => candidate.expression_id === rule.root_expression_id,
+    );
+    assert.equal(expression.connective_span_ids.length, 1);
+    const connectiveSpan = closure.spans.find(
+      (span) => span.span_id === expression.connective_span_ids[0],
+    );
+    const sourceBytes = Buffer.from(
+      fixture.generatorInput.agreementIndex.source_binding.canonical_text, 'utf8',
+    );
+    assert.equal(sourceBytes.subarray(
+      connectiveSpan.start_byte, connectiveSpan.end_byte,
+    ).toString('utf8').trim(), 'all_of');
+    const ruleFacts = generated.facts.filter((fact) => fact.owner_rule_id === rule.rule_id);
+    const ruleSupportIds = new Set(ruleFacts.flatMap((fact) => fact.source_support_ids));
+    assert.equal(ruleSupportIds.has(connectiveSpan.span_id), false);
+    assert.equal(closure.spans.every(
+      (span) => span.span_id === connectiveSpan.span_id || ruleSupportIds.has(span.span_id),
+    ), true);
+    const markerFact = ruleFacts.find((fact) => fact.field_key === 'FAMILY_MARKER');
+    const selectedProfile = fixture.generatorInput.approvedFamilyProfileSet.profiles.find(
+      (profile) => profile.profile_id === generated.candidate_sets[index]
+        .effects[0].selected_profile_id,
+    );
+    const markerSpans = closure.spans.filter(
+      (span) => markerFact.source_support_ids.includes(span.span_id),
+    );
+    const nodeBytes = sourceBytes.subarray(expected.startByte, expected.endByte);
+    for (const token of selectedProfile.match_test.tokens) {
+      const tokenBytes = Buffer.from(token, 'utf8');
+      const relativeStart = nodeBytes.indexOf(tokenBytes);
+      assert.notEqual(relativeStart, -1);
+      const tokenStart = expected.startByte + relativeStart;
+      const tokenEnd = tokenStart + tokenBytes.length;
+      assert.equal(markerSpans.some(
+        (span) => span.start_byte <= tokenStart && span.end_byte >= tokenEnd,
+      ), true);
+    }
+    assert.equal(
+      markerFact.typed_value,
+      selectedProfile.match_test.tokens.map((token) => token.toUpperCase()).join('_'),
+    );
+  });
+  const partyIds = generated.facts.filter(
+    (fact) => fact.field_key === 'APPLIES_TO',
+  ).flatMap((fact) => fact.typed_value.parties);
+  assert.equal(partyIds.length, 4);
+  assert.equal(new Set(partyIds).size, 4);
+  assert.deepEqual(
+    generated.candidate_sets.map((set) => set.effects[0].selected_profile_id),
+    fixture.occurrenceIds.map((occurrenceId) => generated.candidate_sets.find(
+      (set) => set.effects[0].input_occurrence_id === occurrenceId,
+    ).effects[0].selected_profile_id),
+  );
+  assert.deepEqual(
+    [...new Set(generated.candidate_sets.map(
+      (set) => set.effects[0].selected_profile_id,
+    ))].sort(),
+    [...fixture.selectedProfileIds].sort(),
+  );
+  for (const candidateSet of generated.candidate_sets) {
+    assert.deepEqual(candidateSet.considered_family_keys, C3_FAMILY_ORDER);
+    const effect = candidateSet.effects[0];
+    const selected = fixture.generatorInput.approvedFamilyProfileSet.profiles.find(
+      (profile) => profile.profile_id === effect.selected_profile_id,
+    );
+    assert.notEqual(selected.parent_profile_id, null);
+    assert.equal(fixture.generatorInput.approvedFamilyProfileSet.profiles.some(
+      (profile) => profile.parent_profile_id === selected.profile_id,
+    ), false);
+    assert.equal(effect.profile_results.find(
+      (result) => result.profile_id === selected.profile_id,
+    ).matched, true);
+    assert.equal(effect.profile_results.find(
+      (result) => result.profile_id === selected.parent_profile_id,
+    ).matched, true);
+    assert.deepEqual(
+      effect.profile_results.map((result) => result.profile_id),
+      fixture.generatorInput.approvedFamilyProfileSet.profiles.map(
+        (profile) => profile.profile_id,
+      ),
+    );
+  }
+  for (const disposition of generated.dispositions) {
+    assert.deepEqual(
+      disposition.all_family_profile_results.map((entry) => entry.family_key),
+      C3_FAMILY_ORDER,
+    );
+  }
+  assert.deepEqual(generated.counts, {
+    governed_input_occurrences: 2,
+    rules: 2,
+    facts: 6,
+    expressions: 2,
+    shared_fact_coverages: 0,
+    source_closures: 2,
+    dispositions: 2,
+  });
+  assert.equal(validateAnalysisV2({
+    analysis: generated,
+    resolveBinding: fixture.resolveBinding,
+  }).status, 'PASS');
+  const reordered = clone(generated);
+  reordered.governed_input_occurrence_ids.reverse();
+  restampAnalysis(reordered);
+  assertCode(() => validateAnalysisV2({
+    analysis: reordered,
+    resolveBinding: fixture.resolveBinding,
+  }), 'M7_V2_INPUT_CONSUMPTION');
+});
+
+test('deterministic generator fails closed on multi-occurrence ambiguity and drift', () => {
+  const fixture = twoOccurrenceGeneratorFixture();
+  const appendToLastNode = (input, suffix) => {
+    const node = [...input.agreementIndex.nodes].sort(
+      (left, right) => right.extent_span.end_byte - left.extent_span.end_byte,
+    )[0];
+    const sourceBytes = Buffer.from(
+      input.agreementIndex.source_binding.canonical_text, 'utf8',
+    );
+    const suffixBytes = Buffer.from(suffix, 'utf8');
+    const updatedSourceBytes = Buffer.concat([
+      sourceBytes.subarray(0, node.extent_span.end_byte),
+      suffixBytes,
+      sourceBytes.subarray(node.extent_span.end_byte),
+    ]);
+    input.agreementIndex.source_binding.canonical_text = updatedSourceBytes.toString('utf8');
+    input.agreementIndex.source_binding.canonical_text_byte_length =
+      updatedSourceBytes.length;
+    input.agreementIndex.source_binding.canonical_text_sha256 =
+      sha256Hex(updatedSourceBytes);
+    node.extent_span.end_byte += suffixBytes.length;
+    node.extent_span.text_sha256 = sha256Hex(updatedSourceBytes.subarray(
+      node.extent_span.start_byte, node.extent_span.end_byte,
+    ));
+    return node;
+  };
+  const cases = [
+    {
+      name: 'empty governed claim inventory',
+      mutate(input) {
+        input.baseAnalysis.claims = [];
+      },
+    },
+    {
+      name: 'duplicate claim id',
+      mutate(input) {
+        input.baseAnalysis.claims[1].claim_occurrence_id =
+          input.baseAnalysis.claims[0].claim_occurrence_id;
+      },
+    },
+    {
+      name: 'two claims share one governed node',
+      mutate(input) {
+        input.baseAnalysis.claims[1].source_node_occurrence_ids = [
+          input.baseAnalysis.claims[0].source_node_occurrence_ids[0],
+        ];
+      },
+    },
+    {
+      name: 'two nodes on one claim',
+      mutate(input) {
+        input.baseAnalysis.claims[0].source_node_occurrence_ids.push(
+          input.baseAnalysis.claims[1].source_node_occurrence_ids[0],
+        );
+      },
+    },
+    {
+      name: 'missing governed node',
+      mutate(input) {
+        input.baseAnalysis.claims[0].source_node_occurrence_ids[0] = 'f'.repeat(64);
+      },
+    },
+    {
+      name: 'governed node has an out-of-range extent',
+      mutate(input) {
+        const nodeId = input.baseAnalysis.claims[0].source_node_occurrence_ids[0];
+        const node = input.agreementIndex.nodes.find(
+          (candidate) => candidate.node_occurrence_id === nodeId,
+        );
+        node.extent_span.end_byte =
+          input.agreementIndex.source_binding.canonical_text_byte_length + 1;
+      },
+    },
+    {
+      name: 'governed node has a stale extent hash',
+      mutate(input) {
+        const nodeId = input.baseAnalysis.claims[0].source_node_occurrence_ids[0];
+        const node = input.agreementIndex.nodes.find(
+          (candidate) => candidate.node_occurrence_id === nodeId,
+        );
+        node.extent_span.text_sha256 = 'f'.repeat(64);
+      },
+    },
+    {
+      name: 'governed node repeats the modal token',
+      mutate(input) {
+        appendToLastNode(input, ' shall');
+      },
+    },
+    {
+      name: 'governed node repeats a selected profile token',
+      mutate(input) {
+        const node = [...input.agreementIndex.nodes].sort(
+          (left, right) => right.extent_span.end_byte - left.extent_span.end_byte,
+        )[0];
+        const sourceBytes = Buffer.from(
+          input.agreementIndex.source_binding.canonical_text, 'utf8',
+        );
+        const nodeText = sourceBytes.subarray(
+          node.extent_span.start_byte, node.extent_span.end_byte,
+        ).toString('utf8');
+        const selected = input.approvedFamilyProfileSet.profiles.find(
+          (profile) => fixture.selectedProfileIds.includes(profile.profile_id)
+            && profile.match_test.tokens.every((token) => nodeText.includes(token)),
+        );
+        assert.ok(selected);
+        appendToLastNode(input, ` ${selected.match_test.tokens[0]}`);
+      },
+    },
+    {
+      name: 'selected profile has missing parent ancestry',
+      mutate(input) {
+        const selected = input.approvedFamilyProfileSet.profiles.find(
+          (profile) => profile.profile_id === fixture.selectedProfileIds[0],
+        );
+        selected.parent_profile_id = 'f'.repeat(64);
+      },
+    },
+    {
+      name: 'selected profile has cyclic parent ancestry',
+      mutate(input) {
+        const selected = input.approvedFamilyProfileSet.profiles.find(
+          (profile) => profile.profile_id === fixture.selectedProfileIds[0],
+        );
+        selected.parent_profile_id = selected.profile_id;
+      },
+    },
+    {
+      name: 'unsupported expression',
+      mutate(input) {
+        const selected = input.approvedFamilyProfileSet.profiles.find(
+          (profile) => fixture.selectedProfileIds.includes(profile.profile_id),
+        );
+        selected.required_expression_signature = 'ANY_OF(APPLIES_TO,FAMILY_MARKER)';
+      },
+    },
+    {
+      name: 'unsupported profile matcher',
+      mutate(input) {
+        const selected = input.approvedFamilyProfileSet.profiles.find(
+          (profile) => fixture.selectedProfileIds.includes(profile.profile_id),
+        );
+        selected.match_test.kind = 'SOURCE_REGEX';
+      },
+    },
+    {
+      name: 'empty profile tokenisation',
+      mutate(input) {
+        const selected = input.approvedFamilyProfileSet.profiles.find(
+          (profile) => fixture.selectedProfileIds.includes(profile.profile_id),
+        );
+        selected.match_test.tokens = ['---'];
+      },
+    },
+    {
+      name: 'selected node kind is outside the profile source types',
+      mutate(input) {
+        const selected = input.approvedFamilyProfileSet.profiles.find(
+          (profile) => fixture.selectedProfileIds.includes(profile.profile_id),
+        );
+        selected.allowed_source_types = selected.allowed_source_types.map((entry) => ({
+          ...entry,
+          source_type: 'ARTICLE',
+        }));
+      },
+    },
+    {
+      name: 'selected expression operator is not allowed',
+      mutate(input) {
+        const selected = input.approvedFamilyProfileSet.profiles.find(
+          (profile) => fixture.selectedProfileIds.includes(profile.profile_id),
+        );
+        selected.allowed_operators = selected.allowed_operators.filter(
+          (operator) => operator !== 'ALL_OF',
+        );
+      },
+    },
+    {
+      name: 'declared field type is incompatible',
+      mutate(input) {
+        const selected = input.approvedFamilyProfileSet.profiles.find(
+          (profile) => fixture.selectedProfileIds.includes(profile.profile_id),
+        );
+        selected.required_fields.find(
+          (requirement) => requirement.field_key === 'APPLIES_TO',
+        ).value_type = 'ENUM';
+      },
+    },
+    {
+      name: 'declared field materiality is incompatible',
+      mutate(input) {
+        const selected = input.approvedFamilyProfileSet.profiles.find(
+          (profile) => fixture.selectedProfileIds.includes(profile.profile_id),
+        );
+        selected.optional_fields.find(
+          (requirement) => requirement.field_key === 'FAMILY_MARKER',
+        ).materiality = 'NON_MATERIAL';
+      },
+    },
+    {
+      name: 'required field cannot be emitted',
+      mutate(input) {
+        const selected = input.approvedFamilyProfileSet.profiles.find(
+          (profile) => fixture.selectedProfileIds.includes(profile.profile_id),
+        );
+        selected.required_fields.push({
+          ...clone(selected.required_fields[0]),
+          field_key: 'UNSUPPORTED_REQUIRED_FIELD',
+        });
+      },
+    },
+    {
+      name: 'minimum floor cannot be emitted',
+      mutate(input) {
+        const selected = input.approvedFamilyProfileSet.profiles.find(
+          (profile) => fixture.selectedProfileIds.includes(profile.profile_id),
+        );
+        selected.minimum_floor_fields.push('UNSUPPORTED_MINIMUM_FIELD');
+      },
+    },
+    {
+      name: 'triggered conditional field cannot be emitted',
+      mutate(input) {
+        const baseline = generateAnalysisV2(clone(input));
+        const optionalInput = clone(input);
+        const optionalProfile = optionalInput.approvedFamilyProfileSet.profiles.find(
+          (profile) => fixture.selectedProfileIds.includes(profile.profile_id),
+        );
+        optionalProfile.optional_fields.push({
+          ...clone(optionalProfile.optional_fields[0]),
+          field_key: 'UNEMITTED_CONDITIONAL_PREDICATE',
+        }, {
+          ...clone(optionalProfile.optional_fields[0]),
+          field_key: 'UNEMITTED_CONDITIONAL_RESULT',
+        });
+        optionalProfile.conditional_requirements.push({
+          conditional_requirement_id: 'fixture-untriggered-conditional',
+          predicate: {
+            field_key: 'UNEMITTED_CONDITIONAL_PREDICATE',
+            value_type: optionalProfile.optional_fields.at(-2).value_type,
+            operator: 'EQUALS',
+            typed_value: 'UNSEEN_OPTIONAL_VALUE',
+          },
+          required_field_keys: ['UNEMITTED_CONDITIONAL_RESULT'],
+          lawyer_ruling_id: optionalProfile.legal_authority_ids[0],
+        });
+        const permitted = generateAnalysisV2(optionalInput);
+        assert.deepEqual(permitted.rules, baseline.rules);
+        assert.deepEqual(permitted.facts, baseline.facts);
+        assert.deepEqual(permitted.expressions, baseline.expressions);
+        assert.deepEqual(permitted.dispositions, baseline.dispositions);
+        assert.deepEqual(permitted.profile_snapshots.find(
+          (profile) => profile.profile_id === optionalProfile.profile_id,
+        ).conditional_requirements.at(-1), optionalProfile.conditional_requirements.at(-1));
+        const selected = input.approvedFamilyProfileSet.profiles.find(
+          (profile) => fixture.selectedProfileIds.includes(profile.profile_id),
+        );
+        selected.optional_fields.push({
+          ...clone(selected.optional_fields[0]),
+          field_key: 'UNSUPPORTED_CONDITIONAL_FIELD',
+        });
+        selected.conditional_requirements.push({
+          conditional_requirement_id: 'fixture-triggered-conditional',
+          predicate: {
+            field_key: 'FAMILY_MARKER',
+            value_type: 'ENUM',
+            operator: 'EQUALS',
+            typed_value: selected.match_test.tokens.map(
+              (token) => token.toUpperCase(),
+            ).join('_'),
+          },
+          required_field_keys: ['UNSUPPORTED_CONDITIONAL_FIELD'],
+          lawyer_ruling_id: selected.legal_authority_ids[0],
+        });
+      },
+    },
+    {
+      name: 'conditional predicate field must be declared',
+      mutate(input) {
+        const selected = input.approvedFamilyProfileSet.profiles.find(
+          (profile) => fixture.selectedProfileIds.includes(profile.profile_id),
+        );
+        selected.conditional_requirements.push({
+          conditional_requirement_id: 'fixture-undeclared-conditional-predicate',
+          predicate: {
+            field_key: 'UNDECLARED_CONDITIONAL_PREDICATE',
+            value_type: 'ENUM',
+            operator: 'EQUALS',
+            typed_value: 'UNSEEN_VALUE',
+          },
+          required_field_keys: [],
+          lawyer_ruling_id: selected.legal_authority_ids[0],
+        });
+      },
+    },
+    {
+      name: 'conditional predicate operator must be EQUALS',
+      mutate(input) {
+        const selected = input.approvedFamilyProfileSet.profiles.find(
+          (profile) => fixture.selectedProfileIds.includes(profile.profile_id),
+        );
+        selected.conditional_requirements.push({
+          conditional_requirement_id: 'fixture-unsupported-conditional-operator',
+          predicate: {
+            field_key: 'FAMILY_MARKER',
+            value_type: 'ENUM',
+            operator: 'NOT_EQUALS',
+            typed_value: 'UNSEEN_VALUE',
+          },
+          required_field_keys: [],
+          lawyer_ruling_id: selected.legal_authority_ids[0],
+        });
+      },
+    },
+    {
+      name: 'conditional predicate type must equal its declaration',
+      mutate(input) {
+        const selected = input.approvedFamilyProfileSet.profiles.find(
+          (profile) => fixture.selectedProfileIds.includes(profile.profile_id),
+        );
+        selected.conditional_requirements.push({
+          conditional_requirement_id: 'fixture-incompatible-conditional-type',
+          predicate: {
+            field_key: 'FAMILY_MARKER',
+            value_type: 'STRING',
+            operator: 'EQUALS',
+            typed_value: 'UNSEEN_VALUE',
+          },
+          required_field_keys: [],
+          lawyer_ruling_id: selected.legal_authority_ids[0],
+        });
+      },
+    },
+    {
+      name: 'mandatory child rule requirement cannot be emitted',
+      mutate(input) {
+        const baseline = generateAnalysisV2(clone(input));
+        for (const cardinality of ['ZERO_OR_ONE', 'ZERO_OR_MORE']) {
+          const optionalInput = clone(input);
+          const optionalProfile = optionalInput.approvedFamilyProfileSet.profiles.find(
+            (profile) => fixture.selectedProfileIds.includes(profile.profile_id),
+          );
+          optionalProfile.child_rule_profiles.push({
+            child_rule_requirement_id: `fixture-child-rule-${cardinality}`,
+            cardinality,
+          });
+          const permitted = generateAnalysisV2(optionalInput);
+          assert.deepEqual(permitted.rules, baseline.rules);
+          assert.deepEqual(permitted.facts, baseline.facts);
+          assert.deepEqual(permitted.expressions, baseline.expressions);
+          assert.deepEqual(permitted.dispositions, baseline.dispositions);
+          assert.equal(permitted.rules.every((rule) => rule.child_rule_ids.length === 0), true);
+          assert.deepEqual(permitted.profile_snapshots.find(
+            (profile) => profile.profile_id === optionalProfile.profile_id,
+          ).child_rule_profiles.at(-1), optionalProfile.child_rule_profiles.at(-1));
+        }
+        const selected = input.approvedFamilyProfileSet.profiles.find(
+          (profile) => fixture.selectedProfileIds.includes(profile.profile_id),
+        );
+        selected.child_rule_profiles.push({
+          child_rule_requirement_id: 'fixture-child-rule-required',
+          cardinality: 'ONE_OR_MORE',
+        });
+      },
+    },
+    {
+      name: 'selected-node reachable dependency cannot be emitted',
+      mutate(input) {
+        const baseline = generateAnalysisV2(clone(input));
+        const selected = input.approvedFamilyProfileSet.profiles.find(
+          (profile) => fixture.selectedProfileIds.includes(profile.profile_id),
+        );
+        selected.allowed_dependency_types.push({
+          dependency_type: 'REFERENCE_TARGET',
+          lawyer_ruling_id: selected.legal_authority_ids[0],
+        });
+        const permitted = generateAnalysisV2(clone(input));
+        assert.deepEqual(permitted.rules, baseline.rules);
+        assert.deepEqual(permitted.facts, baseline.facts);
+        assert.deepEqual(permitted.expressions, baseline.expressions);
+        assert.deepEqual(permitted.dispositions, baseline.dispositions);
+        assert.deepEqual(permitted.dependencies, []);
+        assert.equal(permitted.source_closures.every(
+          (closure) => closure.required_dependency_ids.length === 0,
+        ), true);
+        assert.equal(permitted.facts.every((fact) => fact.dependency_ids.length === 0), true);
+        assert.deepEqual(permitted.profile_snapshots.find(
+          (profile) => profile.profile_id === selected.profile_id,
+        ).allowed_dependency_types.at(-1), selected.allowed_dependency_types.at(-1));
+        input.contextCompilation.reference_edges.push({
+          owner_node_occurrence_id:
+            input.baseAnalysis.claims[0].source_node_occurrence_ids[0],
+          reference_edge_id: 'fixture-selected-node-reference-edge',
+        });
+      },
+    },
+    {
+      name: 'native M4 coordinate system is unsupported',
+      mutate(input) {
+        input.baseAnalysis.coordinate_system = 'UTF16_CODE_UNIT_HALF_OPEN';
+      },
+    },
+    {
+      name: 'selected native relationship has stale support bytes',
+      mutate(input) {
+        const nodeId = input.baseAnalysis.claims[0].source_node_occurrence_ids[0];
+        input.contextCompilation.semantic_relationships.find(
+          (relationship) => relationship.target_endpoint.source_node_occurrence_id === nodeId,
+        ).target_endpoint.source_span.text_sha256 = 'f'.repeat(64);
+      },
+    },
+    {
+      name: 'exact matching structure disposition blocks normal output',
+      mutate(input) {
+        const configure = (candidate, agreementIndexId, sourceNodeId) => {
+          const claim = candidate.baseAnalysis.claims[0];
+          const selectedNodeId = claim.source_node_occurrence_ids[0];
+          const node = candidate.agreementIndex.nodes.find(
+            (entry) => entry.node_occurrence_id === selectedNodeId,
+          );
+          const member = candidate.approvedStructureDispositions.members[0];
+          member.scope = {
+            agreement_index_id: agreementIndexId,
+            source_node_occurrence_id: sourceNodeId,
+            start_byte: node.extent_span.start_byte,
+            end_byte: node.extent_span.end_byte,
+            governed_input_occurrence_ids: [claim.claim_occurrence_id],
+          };
+          member.match_test = {
+            kind: 'SOURCE_TOKEN_SEQUENCE',
+            leaf_id: 'fixture-generator-structure-match',
+            tokens: ['shall'],
+            scope: 'AUTHORED_UNIT_SOURCE_CLOSURE',
+          };
+        };
+        const baseline = generateAnalysisV2(clone(input));
+        const selectedNodeId = input.baseAnalysis.claims[0].source_node_occurrence_ids[0];
+        const wrongIndex = clone(input);
+        configure(wrongIndex, 'f'.repeat(64), selectedNodeId);
+        assert.deepEqual(generateAnalysisV2(wrongIndex), baseline);
+        const wrongNode = clone(input);
+        configure(
+          wrongNode, input.agreementIndex.agreement_index_id, 'f'.repeat(64),
+        );
+        assert.deepEqual(generateAnalysisV2(wrongNode), baseline);
+        configure(
+          input, input.agreementIndex.agreement_index_id, selectedNodeId,
+        );
+      },
+    },
+    {
+      name: 'structure disposition claims a disjoint source range',
+      mutate(input) {
+        const claim = input.baseAnalysis.claims[0];
+        const nodeId = claim.source_node_occurrence_ids[0];
+        const node = input.agreementIndex.nodes.find(
+          (candidate) => candidate.node_occurrence_id === nodeId,
+        );
+        const member = input.approvedStructureDispositions.members[0];
+        member.scope = {
+          agreement_index_id: input.agreementIndex.agreement_index_id,
+          source_node_occurrence_id: nodeId,
+          start_byte: node.extent_span.end_byte,
+          end_byte: node.extent_span.end_byte + 1,
+          governed_input_occurrence_ids: [claim.claim_occurrence_id],
+        };
+      },
+    },
+    {
+      name: 'structure disposition claims an out-of-range source extent',
+      mutate(input) {
+        const claim = input.baseAnalysis.claims[0];
+        const nodeId = claim.source_node_occurrence_ids[0];
+        const node = input.agreementIndex.nodes.find(
+          (candidate) => candidate.node_occurrence_id === nodeId,
+        );
+        const member = input.approvedStructureDispositions.members[0];
+        member.scope = {
+          agreement_index_id: input.agreementIndex.agreement_index_id,
+          source_node_occurrence_id: nodeId,
+          start_byte: node.extent_span.start_byte - 1,
+          end_byte: node.extent_span.end_byte,
+          governed_input_occurrence_ids: [claim.claim_occurrence_id],
+        };
+      },
+    },
+    {
+      name: 'no profile match',
+      expectedMessage: 'M7_V2_DETERMINISTIC_GENERATOR: expected one unique most-specific approved profile match, received 0',
+      mutate(input) {
+        for (const profile of input.approvedFamilyProfileSet.profiles) {
+          profile.match_test.tokens = ['zzzzunmatchedprofiletoken'];
+        }
+      },
+    },
+    {
+      name: 'incomparable matching profiles',
+      mutate(input) {
+        const selected = input.approvedFamilyProfileSet.profiles.find(
+          (profile) => profile.profile_id === fixture.selectedProfileIds[0],
+        );
+        const competing = clone(selected);
+        competing.profile_id = 'e'.repeat(64);
+        competing.profile_key += ':INCOMPARABLE';
+        competing.parent_profile_id = selected.parent_profile_id;
+        input.approvedFamilyProfileSet.profiles.push(competing);
+      },
+    },
+    {
+      name: 'wrong node relationship count',
+      mutate(input) {
+        const nodeId = input.baseAnalysis.claims[0].source_node_occurrence_ids[0];
+        const index = input.contextCompilation.semantic_relationships.findIndex(
+          (relationship) => relationship.target_endpoint.source_node_occurrence_id === nodeId,
+        );
+        input.contextCompilation.semantic_relationships.splice(index, 1);
+      },
+    },
+  ];
+  for (const fixtureCase of cases) {
+    const input = clone(fixture.generatorInput);
+    fixtureCase.mutate(input);
+    if (fixtureCase.expectedMessage !== undefined) {
+      assert.throws(
+        () => generateAnalysisV2(input),
+        (error) => error?.message === fixtureCase.expectedMessage,
+        fixtureCase.name,
+      );
+      continue;
+    }
+    assert.throws(
+      () => generateAnalysisV2(input),
+      /M7_V2_DETERMINISTIC_GENERATOR:/u,
+      fixtureCase.name,
+    );
+  }
 });
 
 test(cases.structure_overlay_case.case_id, () => {
@@ -7370,6 +9239,23 @@ test(publicById.get('profile-set-owns-all-subtype-trees-and-dimension-evidence')
     excludedDimensionFamily: 'TERMINATION',
   });
   assert.equal(validateScenario(scenario).status, definition.expected_result);
+  assert.equal(scenario.profiles.profileSet.family_profile_package_bindings.length, 25);
+  assert.deepEqual(
+    scenario.profiles.profileSet.family_profile_package_bindings,
+    scenario.profiles.packageBindings,
+  );
+  assert.deepEqual(
+    scenario.profiles.packageBindings.map((binding) => binding.path),
+    C3_FAMILY_ORDER.map((familyKey) => PACKAGE_PATH_BY_FAMILY.get(familyKey)),
+  );
+  assert.deepEqual(
+    [...scenario.profiles.packageBindings.map((binding) => binding.path)].sort(),
+    FAMILY_PROFILE_PACKAGE_PATH_ORDER,
+  );
+  assert.equal(FAMILY_PROFILE_PACKAGE_PATH_ORDER.at(-2),
+    PACKAGE_PATH_BY_FAMILY.get('TERMINATION_FEE'));
+  assert.equal(FAMILY_PROFILE_PACKAGE_PATH_ORDER.at(-1),
+    PACKAGE_PATH_BY_FAMILY.get('TERMINATION'));
   assert.equal(scenario.profiles.profileSet.subtype_tree_bindings.length, 25);
   assert.deepEqual(scenario.candidate.candidate.subtype_tree_bindings,
     scenario.profiles.profileSet.subtype_tree_bindings);
@@ -7380,6 +9266,11 @@ test(publicById.get('profile-set-owns-all-subtype-trees-and-dimension-evidence')
   );
   assert.equal(profile.conditional_requirements.length, 1);
   assert.equal(profile.child_rule_profiles.length, 1);
+  for (const entry of scenario.profiles.profileSet.subtype_tree_bindings) {
+    assert.deepEqual(Object.keys(entry.binding), PACKAGE_MEMBER_BINDING_KEYS);
+    assert.equal(entry.binding.member_field, 'subtype_tree');
+    assert.equal(entry.binding.member_index, null);
+  }
   const positiveProof = profile.fixture_proofs.find((proof) => proof.kind === 'POSITIVE');
   const fixture = JSON.parse(
     scenario.resolveBinding(positiveProof.fixture_binding).toString('utf8'),
@@ -7414,6 +9305,397 @@ test(publicById.get('profile-set-owns-all-subtype-trees-and-dimension-evidence')
   assert.equal(profile.known_relevant_dimensions.some(
     (entry) => entry.dimension_key === childDimension,
   ), true);
+});
+
+test('shared Work3 family-package validator closes the exact approved set', () => {
+  const fixture = buildLawfulWork3FamilyPackageSetFixture();
+  const input = fixture.validationInput;
+  assert.deepEqual(fixture.authoritySource.record, WORK3_ENTRY_CORRECTION_AUTHORITY);
+  assert.deepEqual(
+    fixture.filesByPath.get(fixture.authoritySource.binding.path),
+    fixture.authoritySource.bytes,
+  );
+  const result = validateFamilyProfilePackageSetForWork3(input);
+  assert.deepEqual(result, {
+    status: 'PASS',
+    family_profile_set_id: input.familyProfileSet.family_profile_set_id,
+    family_package_count: 25,
+    profile_count: input.familyProfileSet.profiles.length,
+    dimension_evidence_count: input.familyProfileSet.dimension_evidence_bindings.length,
+    subtype_tree_count: 25,
+    structure_disposition_count: input.structureDispositionSet.members.length,
+  });
+  assert.equal(Object.isFrozen(result), true);
+
+  assertCode(() => validateFamilyProfilePackageSetForWork3({
+    ...input,
+    familyPackageSources: input.familyPackageSources.slice(1),
+  }), 'M7_V2_PROFILE_GATE');
+});
+
+test('single-family inventory validation proves exact members without creating approval', () => {
+  const fixture = buildLawfulWork3FamilyPackageSetFixture();
+  const packageRecord = fixture.familyPackageSources.find(
+    (source) => source.record.family_key === 'TERMINATION',
+  ).record;
+  const memberInventory = {
+    family_key: packageRecord.family_key,
+    profile_set_version: packageRecord.profile_set_version,
+    legal_decisions: packageRecord.legal_decisions,
+    profile_ids: packageRecord.profiles.map((profile) => profile.profile_id),
+    subtype_tree_id: packageRecord.subtype_tree.subtype_tree_id,
+    match_fixture_record_ids: packageRecord.match_fixtures.map(
+      (matchFixture) => matchFixture.match_fixture_id,
+    ),
+    dimension_evidence_ids: packageRecord.dimension_evidence.map(
+      (dimensionEvidence) => dimensionEvidence.dimension_evidence_id,
+    ),
+    structure_fixture_ids: packageRecord.structure_fixture_members.map(
+      (structureFixture) => structureFixture.fixture_id,
+    ),
+  };
+  const input = {
+    work3Authority: fixture.authoritySource.record,
+    familyKey: packageRecord.family_key,
+    profileSetVersion: packageRecord.profile_set_version,
+    benApprovalId: packageRecord.family_approval.ben_approval_id,
+    legalDecisions: packageRecord.legal_decisions,
+    members: {
+      profiles: packageRecord.profiles,
+      subtype_tree: packageRecord.subtype_tree,
+      match_fixtures: packageRecord.match_fixtures,
+      dimension_evidence: packageRecord.dimension_evidence,
+      structure_fixture_members: packageRecord.structure_fixture_members,
+    },
+    memberInventory,
+    inventoryFingerprint: packageRecord.family_approval.approved_inventory_digest,
+  };
+  const before = canonicalJson(input);
+  const result = validateSingleFamilyPackageInventory(input);
+
+  assert.equal(canonicalJson(input), before);
+  assert.equal(Object.isFrozen(input), false);
+  assert.equal(Object.isFrozen(input.legalDecisions), false);
+  assert.equal(Object.isFrozen(input.members), false);
+  assert.equal(Object.isFrozen(input.memberInventory), false);
+  assert.deepEqual(result, {
+    status: 'FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING',
+    family_key: packageRecord.family_key,
+    profile_set_version: packageRecord.profile_set_version,
+    ben_approval_id: packageRecord.family_approval.ben_approval_id,
+    member_inventory: memberInventory,
+    inventory_fingerprint: packageRecord.family_approval.approved_inventory_digest,
+  });
+  assert.equal(Object.isFrozen(result), true);
+  assert.equal(Object.isFrozen(result.member_inventory), true);
+
+  const falseMemberInventory = {
+    ...memberInventory,
+    subtype_tree_id: `${memberInventory.subtype_tree_id.startsWith('0') ? '1' : '0'}${
+      memberInventory.subtype_tree_id.slice(1)
+    }`,
+  };
+  assertCode(() => validateSingleFamilyPackageInventory({
+    ...input,
+    memberInventory: falseMemberInventory,
+    inventoryFingerprint: sha256Hex(Buffer.from(
+      canonicalJson(falseMemberInventory), 'utf8',
+    )),
+  }), 'M7_V2_PROFILE_GATE');
+  assertCode(() => validateSingleFamilyPackageInventory({
+    ...input,
+    inventoryFingerprint: 'f'.repeat(64),
+  }), 'M7_V2_PROFILE_GATE');
+  assertCode(() => validateSingleFamilyPackageInventory({
+    ...input,
+    familyApproval: packageRecord.family_approval,
+  }), 'M7_V2_PROFILE_GATE');
+  const driftedAuthority = clone(input.work3Authority);
+  driftedAuthority.work3_scope_contract.family_profile_package_contract
+    .review_proposal_storage = 'FORGED_SELF_HASHED_AUTHORITY';
+  restampBound(
+    driftedAuthority,
+    'STAGE_2Y_M7_V2_REPAIR_WORK3_ENTRY_CORRECTION_AUTHORITY/V1',
+    'correction_authority_id',
+  );
+  assert.notEqual(
+    driftedAuthority.correction_authority_id,
+    input.work3Authority.correction_authority_id,
+  );
+  assertCode(() => validateSingleFamilyPackageInventory({
+    ...input,
+    work3Authority: driftedAuthority,
+  }), 'M7_V2_PROFILE_GATE');
+});
+
+test('shared Work3 family-package validator rejects each package-semantic delta', () => {
+  const scenarios = [
+    buildScenario(cases.baseline_case, {
+      negativeCaseId: 'family-approval-id-is-duplicated',
+    }),
+    buildScenario(cases.baseline_case, {
+      negativeCaseId: 'unused-family-subtype-tree-abstract-leaf',
+    }),
+    buildScenario(cases.baseline_case, {
+      negativeCaseId: 'package-unreferenced-match-fixture-has-empty-node-kind',
+    }),
+    buildScenario(cases.baseline_case, {
+      negativeCaseId: 'profile-dimension-evidence-omits-material-field',
+    }),
+    buildScenario(cases.baseline_case, {
+      negativeCaseId: 'ambiguous-repeat-synthetic-index-semantic-alternative',
+    }),
+    buildScenario(cases.baseline_case, {
+      packageMemberAuthorityIdByFamily: {
+        TERMINATION: 'BEN_APPROVAL:UNBOUND:PROFILE_SET_V1',
+      },
+    }),
+  ];
+  for (const scenario of scenarios) {
+    assertCode(() => validateFamilyProfilePackageSetForWork3(
+      familyProfilePackageSetValidationInput(scenario),
+    ), 'M7_V2_PROFILE_GATE');
+  }
+});
+
+test('family packages own every transported profile member with no legacy binding fallback', () => {
+  const approvedScenario = buildScenario(cases.baseline_case);
+  const benApprovalIds = C3_FAMILY_ORDER.map((familyKey) => (
+    approvedScenario.profiles.packageRecordsByFamily.get(familyKey)
+      .family_approval.ben_approval_id
+  ));
+  assert.equal(validateScenario(approvedScenario).status, 'PASS');
+  assert.equal(new Set(benApprovalIds).size, C3_FAMILY_ORDER.length);
+  assert.equal(benApprovalIds.every(
+    (approvalId) => approvalId.length > 0 && !/^[0-9a-f]{64}$/u.test(approvalId),
+  ), true);
+  assert.equal(C3_FAMILY_ORDER.every((familyKey) => (
+    approvedScenario.profiles.packageRecordsByFamily.get(familyKey)
+      .family_approval.approved_on === '2026-08-16'
+  )), true);
+  const localeOrderedScenario = buildScenario(cases.baseline_case, {
+    negativeCaseId: 'package-profile-order-uses-locale-collation',
+  });
+  const localeOrderedKeys = localeOrderedScenario.profiles.packageRecordsByFamily.get(
+    'DNO_INDEMNIFICATION',
+  ).profiles.map((profile) => profile.profile_key).filter(
+    (profileKeyValue) => profileKeyValue.endsWith('_COLLATION'),
+  );
+  assert.deepEqual(localeOrderedKeys, [
+    'PROFILE:DNO_INDEMNIFICATION:a_COLLATION',
+    'PROFILE:DNO_INDEMNIFICATION:Z_COLLATION',
+  ]);
+  assert.equal(codeUnitCompare(localeOrderedKeys[0], localeOrderedKeys[1]), 1);
+  assertCode(() => validateScenario(localeOrderedScenario), 'M7_V2_PROFILE_GATE');
+  const item39Package = approvedScenario.profiles.packageRecordsByFamily.get('TERMINATION');
+  assert.equal(item39Package.structure_fixture_members.length, 1);
+  assert.equal(item39Package.structure_fixture_members[0].fixture_id,
+    AMBIGUOUS_REPEAT_FIXTURE_ID);
+  assert.deepEqual(item39Package.structure_fixture_members[0].agreement_index_binding,
+    AMBIGUOUS_REPEAT_INDEX_BINDING);
+  assert.equal(item39Package.structure_fixture_members[0].ambiguity_id,
+    AMBIGUOUS_REPEAT_AMBIGUITY_ID);
+  assert.deepEqual(
+    approvedScenario.structure.item39.member.inline_list_overlay
+      .ambiguous_repeat_fixture_bindings,
+    [AMBIGUOUS_REPEAT_MEMBER_BINDING],
+  );
+  const abstractLeafScenario = buildScenario(cases.baseline_case, {
+    negativeCaseId: 'unused-family-subtype-tree-abstract-leaf',
+  });
+  const abstractLeaves = C3_FAMILY_ORDER.flatMap((familyKey) => {
+    const tree = abstractLeafScenario.profiles.packageRecordsByFamily.get(
+      familyKey,
+    ).subtype_tree;
+    const parentKeys = new Set(tree.nodes.flatMap(
+      (node) => node.parent_profile_key === null ? [] : [node.parent_profile_key],
+    ));
+    return tree.nodes.filter((node) => (
+      !parentKeys.has(node.profile_key) && node.node_state === 'ABSTRACT'
+    )).map((node) => ({ familyKey, node }));
+  });
+  assert.equal(abstractLeaves.length, 1);
+  const abstractLeafFamily = abstractLeaves[0].familyKey;
+  assert.equal(abstractLeafScenario.analysis.rules.some(
+    (rule) => rule.family_key === abstractLeafFamily,
+  ), false);
+  assert.notDeepEqual(
+    abstractLeafScenario.profiles.packageBindings.find(
+      (binding) => binding.path === PACKAGE_PATH_BY_FAMILY.get(abstractLeafFamily),
+    ),
+    approvedScenario.profiles.packageBindings.find(
+      (binding) => binding.path === PACKAGE_PATH_BY_FAMILY.get(abstractLeafFamily),
+    ),
+  );
+  assert.notDeepEqual(
+    abstractLeafScenario.profiles.profileSetBinding,
+    approvedScenario.profiles.profileSetBinding,
+  );
+  assert.notDeepEqual(
+    abstractLeafScenario.candidate.candidateBinding,
+    approvedScenario.candidate.candidateBinding,
+  );
+  assertCode(() => validateScenario(abstractLeafScenario), 'M7_V2_PROFILE_GATE');
+  const malformedFixtureScenario = buildScenario(cases.baseline_case, {
+    negativeCaseId: 'package-unreferenced-match-fixture-has-empty-node-kind',
+  });
+  const malformedFixturePackage = malformedFixtureScenario.profiles
+    .packageRecordsByFamily.get(C3_FAMILY_ORDER[0]);
+  const malformedFixture = malformedFixturePackage.match_fixtures.find(
+    (fixture) => fixture.node_kind === '',
+  );
+  assert.ok(malformedFixture);
+  const unsignedMalformedFixture = clone(malformedFixture);
+  delete unsignedMalformedFixture.match_fixture_id;
+  assert.equal(malformedFixture.match_fixture_id, contentId(
+    'STAGE_2Y_M7_V2_MATCH_FIXTURE/V1', unsignedMalformedFixture,
+  ));
+  assert.equal(malformedFixtureScenario.profiles.profiles.some(
+    (profile) => profile.fixture_proofs.some(
+      (proof) => proof.fixture_binding.member_record_id === malformedFixture.match_fixture_id,
+    ),
+  ), false);
+  const approvedFixturePackage = approvedScenario.profiles.packageRecordsByFamily.get(
+    C3_FAMILY_ORDER[0],
+  );
+  assert.notEqual(
+    malformedFixturePackage.family_approval.approved_inventory_digest,
+    approvedFixturePackage.family_approval.approved_inventory_digest,
+  );
+  assert.notEqual(
+    malformedFixturePackage.family_approval.family_approval_id,
+    approvedFixturePackage.family_approval.family_approval_id,
+  );
+  assert.notDeepEqual(
+    malformedFixtureScenario.profiles.packageBindings[0],
+    approvedScenario.profiles.packageBindings[0],
+  );
+  assert.notDeepEqual(
+    malformedFixtureScenario.profiles.profileSetBinding,
+    approvedScenario.profiles.profileSetBinding,
+  );
+  assert.notDeepEqual(
+    malformedFixtureScenario.candidate.candidateBinding,
+    approvedScenario.candidate.candidateBinding,
+  );
+  assertCode(() => validateScenario(malformedFixtureScenario), 'M7_V2_PROFILE_GATE');
+  const casesByDelta = [
+    ['profile-set-misses-family-package', 'M7_V2_PROFILE_GATE'],
+    ['package-family-is-relabeled', 'M7_V2_PROFILE_GATE'],
+    ['package-member-is-omitted', 'M7_V2_PROFILE_GATE'],
+    ['package-profile-member-is-null', 'M7_V2_PROFILE_GATE'],
+    ['package-match-fixture-member-is-null', 'M7_V2_PROFILE_GATE'],
+    ['package-profile-fixture-proof-is-null', 'M7_V2_PROFILE_GATE'],
+    ['family-approval-id-is-empty', 'M7_V2_PROFILE_GATE'],
+    ['family-approval-id-is-duplicated', 'M7_V2_PROFILE_GATE'],
+    ['family-approval-date-is-not-calendar-valid', 'M7_V2_PROFILE_GATE'],
+    ['candidate-subtype-tree-binding-is-null', 'M7_V2_GOVERNANCE'],
+    ['ambiguous-repeat-synthetic-index-semantic-alternative',
+      'M7_V2_INPUT_CONSUMPTION'],
+    ['dimension-member-binding-misses-key', 'M7_V2_PROFILE_GATE'],
+    ['dimension-member-binding-uses-legacy-standard-binding', 'M7_V2_PROFILE_GATE'],
+    ['profile-set-tree-binding-differs-from-candidate', 'M7_V2_PROFILE_GATE'],
+  ];
+  for (const [negativeCaseId, code] of casesByDelta) {
+    const scenario = buildScenario(cases.baseline_case, { negativeCaseId });
+    assertCode(() => validateScenario(scenario), code);
+  }
+});
+
+test('same-package Ben approval authorises exact family-package members', () => {
+  const terminationApprovalId = 'BEN_APPROVAL:TERMINATION:PROFILE_SET_V1';
+  const baseScenario = buildScenario(cases.baseline_case, {
+    packageMemberAuthorityIdByFamily: {
+      TERMINATION: terminationApprovalId,
+    },
+  });
+  const terminationProfile = baseScenario.profiles.profiles.find(
+    (profile) => profile.family_key === 'TERMINATION',
+  );
+  const terminationPackage = baseScenario.profiles.packageRecordsByFamily.get('TERMINATION');
+  assert.deepEqual([...new Set([
+    ...terminationProfile.required_fields,
+    ...terminationProfile.optional_fields,
+    ...terminationProfile.allowed_source_types,
+    ...Object.values(terminationProfile.equivalence_signature_mapping),
+    ...terminationProfile.known_relevant_dimensions,
+    ...terminationProfile.fixture_proofs,
+    ...terminationPackage.dimension_evidence.filter(
+      (evidence) => evidence.profile_id === terminationProfile.profile_id,
+    ),
+  ].map((entry) => entry.lawyer_ruling_id))], [terminationApprovalId]);
+  assert.equal(validateScenario(baseScenario).status, 'PASS');
+
+  const generalCovenantsApprovalId =
+    'BEN_APPROVAL:GENERAL_COVENANTS:PROFILE_SET_V1';
+  const dimensionScenario = ownershipScenario({
+    ownershipConsumerFamily: 'GENERAL_COVENANTS',
+    dimensionContract: true,
+    excludedDimension: cases.profile_dimension_disposition_case.profile_dimension_disposition,
+    excludedDimensionFamily: 'TERMINATION',
+    packageMemberAuthorityIdByFamily: {
+      GENERAL_COVENANTS: generalCovenantsApprovalId,
+      TERMINATION: terminationApprovalId,
+    },
+  });
+  const dimensionConsumer = dimensionScenario.profiles.profiles.find(
+    (profile) => profile.family_key === 'GENERAL_COVENANTS',
+  );
+  assert.deepEqual([...new Set([
+    ...dimensionConsumer.conditional_requirements,
+    ...dimensionConsumer.allowed_dependency_types,
+    ...dimensionConsumer.child_rule_profiles,
+    ...dimensionConsumer.excluded_or_delegated_dimensions,
+  ].map((entry) => entry.lawyer_ruling_id))], [generalCovenantsApprovalId]);
+  const dimensionOwner = dimensionScenario.profiles.profiles.find(
+    (profile) => profile.family_key === 'TERMINATION',
+  );
+  assert.deepEqual(
+    dimensionOwner.excluded_or_delegated_dimensions.map(
+      (entry) => entry.lawyer_ruling_id,
+    ),
+    [terminationApprovalId],
+  );
+  assert.equal(validateScenario(dimensionScenario).status, 'PASS');
+
+  const grouping = groupingScenario({
+    packageMemberAuthorityIdByFamily: {
+      TERMINATION: terminationApprovalId,
+    },
+  });
+  const groupingProfile = grouping.profiles.profiles.find(
+    (profile) => profile.family_key === 'TERMINATION',
+  );
+  assert.equal(groupingProfile.grouping_policy.lawyer_ruling_id, terminationApprovalId);
+  assert.equal(validateScenario(grouping).status, 'PASS');
+
+  const noComparison = buildScenario(stateById.get('no-comparison-profile-route'), {
+    packageMemberAuthorityIdByFamily: {
+      TERMINATION: terminationApprovalId,
+    },
+  });
+  const noComparisonProfile = noComparison.profiles.profiles.find(
+    (profile) => profile.family_key === 'TERMINATION',
+  );
+  assert.equal(
+    noComparisonProfile.no_comparison_policy.lawyer_ruling_id,
+    terminationApprovalId,
+  );
+  assert.equal(validateScenario(noComparison).status, 'PASS');
+});
+
+test('foreign and unbound package approval IDs cannot authorise family-package members', () => {
+  for (const authorityId of [
+    'BEN_APPROVAL:CAPITALISATION:PROFILE_SET_V1',
+    'BEN_APPROVAL:UNBOUND:PROFILE_SET_V1',
+  ]) {
+    const scenario = buildScenario(cases.baseline_case, {
+      packageMemberAuthorityIdByFamily: {
+        TERMINATION: authorityId,
+      },
+    });
+    assertCode(() => validateScenario(scenario), 'M7_V2_PROFILE_GATE');
+  }
 });
 
 test(cases.profile_dimension_disposition_case.case_id, () => {
@@ -7550,6 +9832,16 @@ test(publicById.get('no-output-is-classified-after-all-family-evaluation').case_
     noOutput.analysis.governed_input_occurrence_ids.length);
   assert.equal(noOutput.analysis.dispositions[0].all_family_profile_results.length, 25);
   assert.equal(noOutput.analysis.candidate_sets[0].considered_family_keys.length, 25);
+  assert.deepEqual(
+    noOutput.analysis.dispositions[0].all_family_profile_results.map(
+      (entry) => entry.family_key,
+    ),
+    C3_FAMILY_ORDER,
+  );
+  assert.deepEqual(
+    noOutput.analysis.candidate_sets[0].considered_family_keys,
+    C3_FAMILY_ORDER,
+  );
   assert.equal(noOutput.analysis.dispositions[0].output_disposition, 'NO_OUTPUT');
   assert.equal(noOutput.analysis.dispositions[0].no_comparison_authorities.length, 0);
   assert.equal(crossFamily.analysis.rules[0].validation.output_disposition, 'NORMAL');
@@ -9316,4 +11608,697 @@ for (const negative of cases.negative_cases.filter(
       resolveBinding: scenario.resolveBinding,
     }), negative.expected_code);
   });
+}
+
+test('projectAgreement is the exact deterministic V2 normal-row seam', () => {
+  const scenario = buildScenario(cases.baseline_case);
+  const analysisValidation = validateScenario(scenario);
+  validateViewPolicyForProjection(scenario.viewPolicy.record);
+  const first = projectAgreement(scenario.analysis, scenario.viewPolicy.record);
+  const second = projectAgreement(scenario.analysis, scenario.viewPolicy.record);
+
+  assert.deepEqual(first, second);
+  assert.equal(first.schema_version, 'AGREEMENT_PROJECTION/V2');
+  assert.equal(first.agreement_analysis_id, scenario.analysis.agreement_analysis_id);
+  assert.equal(first.view_policy_id, scenario.viewPolicy.record.view_policy_id);
+  assert.equal(validatedAnalysisResultForProjection(scenario.analysis), analysisValidation);
+  assert.equal(first.analysis_validation, analysisValidation);
+  assert.equal(first.rows.length, cases.baseline_case.expected_normal_row_count);
+  assert.equal(Object.hasOwn(first, 'raw_source'), false);
+  assert.equal(Object.isFrozen(first), true);
+  assert.equal(validateProjectionV2({
+    projection: first,
+    analysis: scenario.analysis,
+    viewPolicy: scenario.viewPolicy.record,
+  }).status, 'PASS');
+});
+
+test('projectAgreement records each optional non-material omission in every layout', () => {
+  const scenario = buildScenario(cases.baseline_case, {
+    displayFactMode: 'DISPLAY_OPTIONAL_NON_MATERIAL',
+    profileDimensionEvidence: 'CONDITIONAL',
+  });
+  validateScenario(scenario);
+  const projection = projectAgreement(scenario.analysis, scenario.viewPolicy.record);
+  const rule = scenario.analysis.rules[0];
+  const optionalFact = scenario.analysis.facts.find(
+    (fact) => rule.fact_ids.includes(fact.fact_id)
+      && fact.display_rule === 'DISPLAY_OPTIONAL',
+  );
+
+  assert.ok(optionalFact);
+  for (const layout of projection.rows[0].layouts) {
+    assert.equal(layout.render_bindings.some(
+      (binding) => binding.fact_id === optionalFact.fact_id,
+    ), false);
+    assert.deepEqual(layout.omission_ledger, [{
+      fact_id: optionalFact.fact_id,
+      omission_rule_id: 'DISPLAY_OPTIONAL_NON_MATERIAL/V1',
+    }]);
+  }
+  assert.equal(validateProjectionV2({
+    projection,
+    analysis: scenario.analysis,
+    viewPolicy: scenario.viewPolicy.record,
+  }).status, 'PASS');
+});
+
+test('projectAgreement uses another policy-permitted rule for required omissions', () => {
+  const scenario = buildScenario(cases.baseline_case, {
+    displayFactMode: 'NEVER_DISPLAY_NON_MATERIAL',
+    profileDimensionEvidence: 'CONDITIONAL',
+    permittedOmissionRulesByLayout: {
+      'compact-v2': ['OTHER_OMISSION/V1'],
+      'expanded-v2': ['OTHER_OMISSION/V1'],
+    },
+  });
+  validateScenario(scenario);
+  const hiddenFact = scenario.analysis.facts.find(
+    (fact) => fact.display_rule === 'NEVER_DISPLAY',
+  );
+  const projection = projectAgreement(scenario.analysis, scenario.viewPolicy.record);
+
+  assert.ok(hiddenFact);
+  for (const layout of projection.rows[0].layouts) {
+    assert.deepEqual(layout.omission_ledger, [{
+      fact_id: hiddenFact.fact_id,
+      omission_rule_id: 'OTHER_OMISSION/V1',
+    }]);
+  }
+  assert.equal(validateProjectionV2({
+    projection,
+    analysis: scenario.analysis,
+    viewPolicy: scenario.viewPolicy.record,
+  }).status, 'PASS');
+});
+
+test('projectAgreement uses each layout policy first permitted omission rule', () => {
+  const scenario = buildScenario(cases.baseline_case, {
+    displayFactMode: 'NEVER_DISPLAY_NON_MATERIAL',
+    profileDimensionEvidence: 'CONDITIONAL',
+    permittedOmissionRulesByLayout: {
+      'compact-v2': ['OTHER_OMISSION/V1', 'DISPLAY_OPTIONAL_NON_MATERIAL/V1'],
+      'expanded-v2': ['DISPLAY_OPTIONAL_NON_MATERIAL/V1', 'OTHER_OMISSION/V1'],
+    },
+  });
+  validateScenario(scenario);
+  const projection = projectAgreement(scenario.analysis, scenario.viewPolicy.record);
+  const expectedByLayout = new Map([
+    ['compact-v2', 'OTHER_OMISSION/V1'],
+    ['expanded-v2', 'DISPLAY_OPTIONAL_NON_MATERIAL/V1'],
+  ]);
+
+  for (const layout of projection.rows[0].layouts) {
+    assert.equal(
+      layout.omission_ledger[0].omission_rule_id,
+      expectedByLayout.get(layout.layout_id),
+    );
+  }
+  assert.equal(validateProjectionV2({
+    projection,
+    analysis: scenario.analysis,
+    viewPolicy: scenario.viewPolicy.record,
+  }).status, 'PASS');
+});
+
+test('projectAgreement applies optional omission authority separately to each layout', () => {
+  const scenario = buildScenario(cases.baseline_case, {
+    displayFactMode: 'DISPLAY_OPTIONAL_NON_MATERIAL',
+    profileDimensionEvidence: 'CONDITIONAL',
+    permittedOmissionRulesByLayout: {
+      'compact-v2': ['DISPLAY_OPTIONAL_NON_MATERIAL/V1'],
+      'expanded-v2': [],
+    },
+  });
+  validateScenario(scenario);
+  const optionalFact = scenario.analysis.facts.find(
+    (fact) => fact.display_rule === 'DISPLAY_OPTIONAL',
+  );
+  const projection = projectAgreement(scenario.analysis, scenario.viewPolicy.record);
+  const compact = projection.rows[0].layouts.find(
+    (layout) => layout.layout_id === 'compact-v2',
+  );
+  const expanded = projection.rows[0].layouts.find(
+    (layout) => layout.layout_id === 'expanded-v2',
+  );
+
+  assert.ok(optionalFact);
+  assert.deepEqual(compact.omission_ledger, [{
+    fact_id: optionalFact.fact_id,
+    omission_rule_id: 'DISPLAY_OPTIONAL_NON_MATERIAL/V1',
+  }]);
+  assert.equal(compact.render_bindings.some(
+    (binding) => binding.fact_id === optionalFact.fact_id,
+  ), false);
+  assert.deepEqual(expanded.omission_ledger, []);
+  assert.equal(expanded.render_bindings.some(
+    (binding) => binding.fact_id === optionalFact.fact_id,
+  ), true);
+  assert.equal(validateProjectionV2({
+    projection,
+    analysis: scenario.analysis,
+    viewPolicy: scenario.viewPolicy.record,
+  }).status, 'PASS');
+
+  const required = buildScenario(cases.baseline_case, {
+    displayFactMode: 'DISPLAY_OPTIONAL_NON_MATERIAL',
+    profileDimensionEvidence: 'CONDITIONAL',
+    requiredFieldKeysByLayout: {
+      'compact-v2': ['APPLIES_TO', 'LEGAL_EFFECT', 'FAMILY_MARKER'],
+      'expanded-v2': ['APPLIES_TO', 'LEGAL_EFFECT'],
+    },
+  });
+  validateScenario(required);
+  const requiredProjection = projectAgreement(
+    required.analysis, required.viewPolicy.record,
+  );
+  assert.equal(requiredProjection.rows[0].layouts.find(
+    (layout) => layout.layout_id === 'compact-v2',
+  ).render_bindings.some((binding) => binding.field_key === 'FAMILY_MARKER'), true);
+
+  const impossible = buildScenario(cases.baseline_case, {
+    displayFactMode: 'NEVER_DISPLAY_NON_MATERIAL',
+    profileDimensionEvidence: 'CONDITIONAL',
+    permittedOmissionRulesByLayout: {
+      'compact-v2': [],
+      'expanded-v2': [],
+    },
+  });
+  validateScenario(impossible);
+  assertCode(() => projectAgreement(
+    impossible.analysis, impossible.viewPolicy.record,
+  ), 'M7_V2_LAYOUT_RECONCILIATION');
+});
+
+test('projectAgreement preserves source-limited proof and exact disposition routing', () => {
+  const limited = buildScenario(stateById.get('source-limited-approved-row'));
+  validateScenario(limited);
+  const limitedProjection = projectAgreement(limited.analysis, limited.viewPolicy.record);
+  assert.equal(limitedProjection.rows[0].output_disposition, 'APPROVED_LIMITED');
+  assert.deepEqual(limitedProjection.rows[0].source_limitation, {
+    text: 'Not expressly stated in the complete reviewed clause',
+    source_closure_id: limited.analysis.dispositions[0].source_closure_id,
+    authored_unit_id: limited.analysis.dispositions[0].authored_unit_id,
+    field_keys: limited.analysis.dispositions[0].absence_proofs.map(
+      (proof) => proof.field_key,
+    ).sort(),
+    lawyer_ruling_ids: limited.analysis.dispositions[0].absence_proofs.map(
+      (proof) => proof.lawyer_ruling_id,
+    ).sort(),
+  });
+
+  const routedCases = [
+    ['linked-normal-and-review-only', 1, 1, 0],
+    ['no-comparison-profile-route', 0, 0, 1],
+    ['ben-approved-no-output', 0, 0, 1],
+  ];
+  for (const [caseId, rows, reviewRows, nonOutput] of routedCases) {
+    const scenario = buildScenario(stateById.get(caseId));
+    validateScenario(scenario);
+    const projection = projectAgreement(scenario.analysis, scenario.viewPolicy.record);
+    assert.equal(projection.rows.length, rows, caseId);
+    assert.equal(projection.review_rows.length, reviewRows, caseId);
+    assert.equal(projection.non_output_dispositions.length, nonOutput, caseId);
+    assert.deepEqual(projection.disposition_ledger, scenario.analysis.dispositions, caseId);
+    assert.equal(validateProjectionV2({
+      projection,
+      analysis: scenario.analysis,
+      viewPolicy: scenario.viewPolicy.record,
+    }).status, 'PASS', caseId);
+  }
+});
+
+test('projectAgreement renders delegated facts through the exact ownership link', () => {
+  const scenario = ownershipScenario();
+  validateScenario(scenario);
+  const link = scenario.analysis.ownership_links[0];
+  const consumerRule = scenario.analysis.rules.find(
+    (rule) => rule.rule_id === link.consumer_rule_id,
+  );
+  const consumerProfile = scenario.analysis.profile_snapshots.find(
+    (profile) => profile.profile_id === consumerRule.profile_id,
+  );
+  const delegated = consumerProfile.excluded_or_delegated_dimensions.find(
+    (dimension) => dimension.disposition === 'DELEGATED',
+  );
+  assert.ok(delegated);
+  assert.equal(scenario.viewPolicy.record.labels.some(
+    (label) => label.field_key === delegated.dimension_key,
+  ), true);
+  const projection = projectAgreement(scenario.analysis, scenario.viewPolicy.record);
+  const consumerRow = projection.rows.find((row) => row.rule_id === consumerRule.rule_id);
+
+  assert.equal(consumerRule.fact_ids.includes(link.owner_fact_id), false);
+  for (const layout of consumerRow.layouts) {
+    const binding = layout.render_bindings.find(
+      (entry) => entry.ownership_link_id === link.link_id,
+    );
+    assert.ok(binding);
+    assert.equal(binding.fact_id, link.owner_fact_id);
+    assert.equal(binding.field_key, delegated.dimension_key);
+  }
+  assert.equal(validateProjectionV2({
+    projection,
+    analysis: scenario.analysis,
+    viewPolicy: scenario.viewPolicy.record,
+  }).status, 'PASS');
+});
+
+test('projectAgreement uses every approved V2 typed-value formatter', () => {
+  const definition = clone(cases.baseline_case);
+  definition.case_id = 'project-agreement-all-v2-formatters';
+  definition.include_all_fact_value_types = true;
+  const scenario = buildScenario(definition);
+  validateScenario(scenario);
+  const projection = projectAgreement(scenario.analysis, scenario.viewPolicy.record);
+  const rule = scenario.analysis.rules[0];
+  const expectedByField = new Map([
+    ['APPLIES_TO', 'COMPANY; PARENT'],
+    ['LEGAL_EFFECT', 'Shall'],
+    ['PARTY_VALUE', 'COMPANY'],
+    ['DEFINED_TERM_VALUE', 'Material Adverse Effect'],
+    ['BOOLEAN_VALUE', 'Yes'],
+    ['NUMBER_VALUE', '42'],
+    ['PERCENTAGE_VALUE', '15%'],
+    ['MONEY_VALUE', 'USD 100'],
+    ['DATE_VALUE', '2026-12-31'],
+    ['DURATION_VALUE', 'Within 3 days'],
+    ['PERIOD_VALUE', 'Exact 2 months'],
+    ['REFERENCE_VALUE', 'SECTION_5_1'],
+  ]);
+  const facts = new Map(scenario.analysis.facts.filter(
+    (fact) => rule.fact_ids.includes(fact.fact_id),
+  ).map((fact) => [fact.field_key, fact]));
+
+  assert.deepEqual([...new Set([...expectedByField.keys()].map(
+    (fieldKey) => facts.get(fieldKey).value_type,
+  ))].sort(), [...FACT_TYPES].sort());
+  for (const layout of projection.rows[0].layouts) {
+    for (const [fieldKey, expected] of expectedByField) {
+      const fact = facts.get(fieldKey);
+      const binding = layout.render_bindings.find((entry) => entry.fact_id === fact.fact_id);
+      assert.equal(binding.rendered_value, expected, `${layout.layout_id}:${fieldKey}`);
+      assert.equal(binding.rendered_value_digest, sha256Hex(expected));
+    }
+  }
+  assert.equal(validateProjectionV2({
+    projection,
+    analysis: scenario.analysis,
+    viewPolicy: scenario.viewPolicy.record,
+  }).status, 'PASS');
+
+  const falseDefinition = clone(cases.baseline_case);
+  falseDefinition.case_id = 'project-agreement-boolean-false';
+  falseDefinition.include_all_fact_value_types = true;
+  falseDefinition.all_types_boolean_value = false;
+  const falseScenario = buildScenario(falseDefinition);
+  validateScenario(falseScenario);
+  const falseProjection = projectAgreement(
+    falseScenario.analysis, falseScenario.viewPolicy.record,
+  );
+  const falseFact = falseScenario.analysis.facts.find(
+    (fact) => fact.value_type === 'BOOLEAN' && fact.typed_value === false,
+  );
+  assert.ok(falseFact);
+  assert.equal(falseProjection.rows.flatMap((row) => row.layouts[0].render_bindings).find(
+    (binding) => binding.fact_id === falseFact.fact_id,
+  ).rendered_value, 'No');
+});
+
+test('projectAgreement rejects V1, an unvalidated clone, another policy, and a third input', () => {
+  const scenario = buildScenario(cases.baseline_case);
+  validateScenario(scenario);
+
+  assertCode(() => projectAgreement({
+    schema_version: 'AGREEMENT_ANALYSIS/V1',
+  }, scenario.viewPolicy.record), 'M7_V2_SCHEMA');
+  assertCode(() => projectAgreement(
+    clone(scenario.analysis), scenario.viewPolicy.record,
+  ), 'M7_V2_LAYOUT_RECONCILIATION');
+
+  const wrongPolicy = clone(scenario.viewPolicy.record);
+  wrongPolicy.labels[0].text += ' changed';
+  restampBound(
+    wrongPolicy, 'STAGE_2Y_M7_V2_VIEW_POLICY/V1', 'view_policy_id',
+  );
+  assertCode(() => projectAgreement(
+    scenario.analysis, wrongPolicy,
+  ), 'M7_V2_VIEW_POLICY');
+  assertCode(() => projectAgreement(
+    scenario.analysis, scenario.viewPolicy.record, { rawSource: 'forbidden' },
+  ), 'M7_V2_INPUT_CONSUMPTION');
+
+  const unsupportedDefinition = clone(cases.baseline_case);
+  unsupportedDefinition.case_id = 'project-agreement-unsupported-formatter';
+  unsupportedDefinition.include_all_fact_value_types = true;
+  const unsupportedFormatter = buildScenario(unsupportedDefinition, {
+    formatterOverrides: { BOOLEAN: 'string-v1' },
+  });
+  validateScenario(unsupportedFormatter);
+  assertCode(() => projectAgreement(
+    unsupportedFormatter.analysis, unsupportedFormatter.viewPolicy.record,
+  ), 'M7_V2_RENDER_RECONCILIATION');
+});
+
+test('projectAgreement rejects malformed outer view-policy containers with the C3 code', () => {
+  const scenario = buildScenario(cases.baseline_case);
+  validateScenario(scenario);
+
+  for (const field of ['formatters', 'labels', 'layouts']) {
+    const malformedPolicy = clone(scenario.viewPolicy.record);
+    delete malformedPolicy[field];
+    assertCode(() => projectAgreement(
+      scenario.analysis, malformedPolicy,
+    ), 'M7_V2_VIEW_POLICY');
+  }
+});
+
+test('projectAgreement rejects null view-policy entries with the C3 code', () => {
+  const scenario = buildScenario(cases.baseline_case);
+  validateScenario(scenario);
+
+  for (const field of ['formatters', 'labels', 'layouts']) {
+    const malformedPolicy = clone(scenario.viewPolicy.record);
+    malformedPolicy[field][0] = null;
+    restampBound(
+      malformedPolicy, 'STAGE_2Y_M7_V2_VIEW_POLICY/V1', 'view_policy_id',
+    );
+    assertCode(() => projectAgreement(
+      scenario.analysis, malformedPolicy,
+    ), 'M7_V2_VIEW_POLICY');
+  }
+});
+
+test('projectAgreement rejects incomplete or open view-policy entry shapes with the C3 code', () => {
+  const scenario = buildScenario(cases.baseline_case);
+  validateScenario(scenario);
+  const entryShapes = [
+    {
+      field: 'formatters',
+      stringFields: ['value_type', 'formatter_id'],
+      arrayFields: [],
+    },
+    {
+      field: 'labels',
+      stringFields: ['label_id', 'field_key', 'text'],
+      arrayFields: [],
+    },
+    {
+      field: 'layouts',
+      stringFields: ['layout_id'],
+      arrayFields: [
+        'required_classification_levels',
+        'required_field_keys',
+        'permitted_omission_rule_ids',
+      ],
+    },
+  ];
+
+  for (const { field, stringFields, arrayFields } of entryShapes) {
+    for (const key of [...stringFields, ...arrayFields]) {
+      const missing = clone(scenario.viewPolicy.record);
+      delete missing[field][0][key];
+      restampBound(
+        missing, 'STAGE_2Y_M7_V2_VIEW_POLICY/V1', 'view_policy_id',
+      );
+      assertCode(() => projectAgreement(
+        scenario.analysis, missing,
+      ), 'M7_V2_VIEW_POLICY');
+    }
+
+    const open = clone(scenario.viewPolicy.record);
+    open[field][0].unexpected = true;
+    restampBound(
+      open, 'STAGE_2Y_M7_V2_VIEW_POLICY/V1', 'view_policy_id',
+    );
+    assertCode(() => projectAgreement(
+      scenario.analysis, open,
+    ), 'M7_V2_VIEW_POLICY');
+
+    for (const key of stringFields) {
+      for (const invalid of [null, '']) {
+        const wrongType = clone(scenario.viewPolicy.record);
+        wrongType[field][0][key] = invalid;
+        restampBound(
+          wrongType, 'STAGE_2Y_M7_V2_VIEW_POLICY/V1', 'view_policy_id',
+        );
+        assertCode(() => projectAgreement(
+          scenario.analysis, wrongType,
+        ), 'M7_V2_VIEW_POLICY');
+      }
+    }
+    for (const key of arrayFields) {
+      const wrongType = clone(scenario.viewPolicy.record);
+      wrongType[field][0][key] = null;
+      restampBound(
+        wrongType, 'STAGE_2Y_M7_V2_VIEW_POLICY/V1', 'view_policy_id',
+      );
+      assertCode(() => projectAgreement(
+        scenario.analysis, wrongType,
+      ), 'M7_V2_VIEW_POLICY');
+    }
+  }
+});
+
+test('projectAgreement rejects an unapproved formatter value type before rendering', () => {
+  const scenario = buildScenario(cases.baseline_case);
+  validateScenario(scenario);
+  const malformedPolicy = clone(scenario.viewPolicy.record);
+  malformedPolicy.formatters[0].value_type = 'UNKNOWN';
+  restampBound(
+    malformedPolicy, 'STAGE_2Y_M7_V2_VIEW_POLICY/V1', 'view_policy_id',
+  );
+
+  assertCode(() => projectAgreement(
+    scenario.analysis, malformedPolicy,
+  ), 'M7_V2_VIEW_POLICY');
+});
+
+test('projectAgreement rejects a duplicate formatter value type before rendering', () => {
+  const scenario = buildScenario(cases.baseline_case);
+  validateScenario(scenario);
+  const malformedPolicy = clone(scenario.viewPolicy.record);
+  malformedPolicy.formatters[1].value_type = malformedPolicy.formatters[0].value_type;
+  restampBound(
+    malformedPolicy, 'STAGE_2Y_M7_V2_VIEW_POLICY/V1', 'view_policy_id',
+  );
+
+  assertCode(() => projectAgreement(
+    scenario.analysis, malformedPolicy,
+  ), 'M7_V2_VIEW_POLICY');
+});
+
+test('projectAgreement rejects two labels for one field before label lookup', () => {
+  const scenario = buildScenario(cases.baseline_case);
+  validateScenario(scenario);
+  const malformedPolicy = clone(scenario.viewPolicy.record);
+  malformedPolicy.labels[1].field_key = malformedPolicy.labels[0].field_key;
+  restampBound(
+    malformedPolicy, 'STAGE_2Y_M7_V2_VIEW_POLICY/V1', 'view_policy_id',
+  );
+
+  assertCode(() => projectAgreement(
+    scenario.analysis, malformedPolicy,
+  ), 'M7_V2_VIEW_POLICY');
+});
+
+test('projectAgreement rejects a duplicate required layout field before layout derivation', () => {
+  const scenario = buildScenario(cases.baseline_case);
+  validateScenario(scenario);
+  const malformedPolicy = clone(scenario.viewPolicy.record);
+  malformedPolicy.layouts[0].required_field_keys.push(
+    malformedPolicy.layouts[0].required_field_keys[0],
+  );
+  restampBound(
+    malformedPolicy, 'STAGE_2Y_M7_V2_VIEW_POLICY/V1', 'view_policy_id',
+  );
+
+  assertCode(() => projectAgreement(
+    scenario.analysis, malformedPolicy,
+  ), 'M7_V2_VIEW_POLICY');
+});
+
+test('projectAgreement rejects a stale view-policy content ID before derivation', () => {
+  const scenario = buildScenario(cases.baseline_case);
+  validateScenario(scenario);
+  const malformedPolicy = clone(scenario.viewPolicy.record);
+  malformedPolicy.labels[0].text += ' changed';
+
+  assert.throws(() => projectAgreement(
+    scenario.analysis, malformedPolicy,
+  ), (error) => {
+    assert.equal(error.code, 'M7_V2_VIEW_POLICY');
+    assert.match(error.message, /view policy content ID is invalid/u);
+    return true;
+  });
+});
+
+test('projectAgreement codes a BigInt formatter ID as an invalid view policy', () => {
+  const scenario = buildScenario(cases.baseline_case);
+  validateScenario(scenario);
+  const malformedPolicy = clone(scenario.viewPolicy.record);
+  malformedPolicy.formatters[0].formatter_id = 1n;
+
+  assertCode(() => projectAgreement(
+    scenario.analysis, malformedPolicy,
+  ), 'M7_V2_VIEW_POLICY');
+});
+
+test('projectAgreement codes a function label as an invalid view policy', () => {
+  const scenario = buildScenario(cases.baseline_case);
+  validateScenario(scenario);
+  const malformedPolicy = clone(scenario.viewPolicy.record);
+  malformedPolicy.labels[0].text = () => 'invalid';
+
+  assertCode(() => projectAgreement(
+    scenario.analysis, malformedPolicy,
+  ), 'M7_V2_VIEW_POLICY');
+});
+
+test('projectAgreement codes a cyclic layout field as an invalid view policy', () => {
+  const scenario = buildScenario(cases.baseline_case);
+  validateScenario(scenario);
+  const malformedPolicy = clone(scenario.viewPolicy.record);
+  const requiredFields = malformedPolicy.layouts[0].required_field_keys;
+  requiredFields[0] = requiredFields;
+
+  assertCode(() => projectAgreement(
+    scenario.analysis, malformedPolicy,
+  ), 'M7_V2_VIEW_POLICY');
+});
+
+test('projectAgreement rejects a valid unbound view policy before rendering', () => {
+  const scenario = buildScenario(cases.baseline_case);
+  validateScenario(scenario);
+  const unboundPolicy = clone(scenario.viewPolicy.record);
+  unboundPolicy.formatters.find(
+    (entry) => entry.value_type === 'PARTY_SET',
+  ).formatter_id = 'unsupported-v1';
+  restampBound(
+    unboundPolicy, 'STAGE_2Y_M7_V2_VIEW_POLICY/V1', 'view_policy_id',
+  );
+  validateViewPolicyForProjection(unboundPolicy);
+
+  assertCode(() => projectAgreement(
+    scenario.analysis, unboundPolicy,
+  ), 'M7_V2_VIEW_POLICY');
+});
+
+test('the projection binding seam rejects stale Analysis policy-binding bytes', () => {
+  const scenario = buildScenario(cases.baseline_case);
+  validateScenario(scenario);
+  const staleAnalysis = clone(scenario.analysis);
+  staleAnalysis.governance.view_policy_binding.sha256 = '0'.repeat(64);
+
+  assertCode(() => validateViewPolicyBindingForProjection(
+    staleAnalysis, scenario.viewPolicy.record,
+  ), 'M7_V2_VIEW_POLICY');
+});
+
+test('projectAgreement rejects unvalidated malformed outer analysis containers', () => {
+  const scenario = buildScenario(cases.baseline_case);
+  validateScenario(scenario);
+
+  for (const field of [
+    'facts',
+    'profile_snapshots',
+    'rules',
+    'ownership_links',
+    'dispositions',
+  ]) {
+    const malformedAnalysis = clone(scenario.analysis);
+    delete malformedAnalysis[field];
+    assertCode(() => projectAgreement(
+      malformedAnalysis, scenario.viewPolicy.record,
+    ), 'M7_V2_LAYOUT_RECONCILIATION');
+  }
+});
+
+test('projectAgreement rejects unvalidated malformed analysis objects before derivation', () => {
+  const scenario = buildScenario(cases.baseline_case);
+  validateScenario(scenario);
+
+  for (const invalid of [undefined, null, [], 'invalid']) {
+    const malformedGovernance = clone(scenario.analysis);
+    if (invalid === undefined) delete malformedGovernance.governance;
+    else malformedGovernance.governance = invalid;
+    assertCode(() => projectAgreement(
+      malformedGovernance, scenario.viewPolicy.record,
+    ), 'M7_V2_LAYOUT_RECONCILIATION');
+
+    const malformedRule = clone(scenario.analysis);
+    if (invalid === undefined) delete malformedRule.rules[0].validation;
+    else malformedRule.rules[0].validation = invalid;
+    assertCode(() => projectAgreement(
+      malformedRule, scenario.viewPolicy.record,
+    ), 'M7_V2_LAYOUT_RECONCILIATION');
+  }
+});
+
+test('projectAgreement rejects same-object analysis mutation before reading nested facts', () => {
+  const scenario = buildScenario(cases.baseline_case);
+  validateScenario(scenario);
+  scenario.analysis.facts[0].typed_value = null;
+
+  assertCode(() => projectAgreement(
+    scenario.analysis, scenario.viewPolicy.record,
+  ), 'M7_V2_LAYOUT_RECONCILIATION');
+});
+
+test('projectAgreement rejects same-object analysis mutation before reading profile arrays', () => {
+  for (const field of [
+    'classification_path',
+    'display_order',
+    'excluded_or_delegated_dimensions',
+  ]) {
+    const scenario = buildScenario(cases.baseline_case);
+    validateScenario(scenario);
+    const emittingRule = scenario.analysis.rules.find(
+      (rule) => ['NORMAL', 'APPROVED_LIMITED'].includes(
+        rule.validation.output_disposition,
+      ),
+    );
+    const profile = scenario.analysis.profile_snapshots.find(
+      (entry) => entry.profile_id === emittingRule.profile_id,
+    );
+    delete profile[field];
+
+    assertCode(() => projectAgreement(
+      scenario.analysis, scenario.viewPolicy.record,
+    ), 'M7_V2_LAYOUT_RECONCILIATION');
+  }
+});
+
+test('projectAgreement rejects same-object analysis mutation before reading dispositions', () => {
+  const scenario = buildScenario(cases.baseline_case);
+  validateScenario(scenario);
+  delete scenario.analysis.dispositions[0].absence_proofs;
+
+  assertCode(() => projectAgreement(
+    scenario.analysis, scenario.viewPolicy.record,
+  ), 'M7_V2_LAYOUT_RECONCILIATION');
+});
+
+function buildGovernedCompilerPreviewBundle(agreementId = GOVERNED_COMPILER_AGREEMENT_IDS[0]) {
+  const scenario = governedCompilerScenario(agreementId);
+  const input = governedCompilerInput(scenario);
+  const generatorInput = generatorInputFromCompilerInput(input);
+  const filesByPath = Object.fromEntries([...scenario.store.entries()].map(
+    ([filePath, bytes]) => [filePath, Buffer.from(bytes).toString('base64')],
+  ));
+  return {
+    agreementId,
+    generatorInput,
+    viewPolicy: scenario.viewPolicy.record,
+    agreementIndex: input.agreementIndex.record,
+    agreementIndexBinding: input.agreementIndex.binding,
+    filesByPath,
+  };
+}
+
+if (process.env.M7_V2_EXPORT_GOVERNED_COMPILER === '1') {
+  module.exports = {
+    buildGovernedCompilerPreviewBundle,
+    GOVERNED_COMPILER_AGREEMENT_IDS,
+  };
 }

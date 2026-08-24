@@ -30,6 +30,8 @@ const M4_RECEIPT_PATH = `${MIGRATION_ROOT}/receipts/stage-2y-structure-m4-agreem
 const AGREEMENT_SET_PATH = `${MIGRATION_ROOT}/control/m7-v2-repair-work2-agreement-analysis-set.json`;
 const CONTEXT_SET_PATH = `${MIGRATION_ROOT}/control/m7-v2-repair-work2-context-compilation-set.json`;
 const RECEIPT_PATH = `${MIGRATION_ROOT}/receipts/stage-2y-structure-m7-v2-repair-work2-compiler.json`;
+const WORK3_ENTRY_CORRECTION_AUTHORITY_PATH =
+  `${MIGRATION_ROOT}/control/m7-v2-repair-contract-work3-entry-correction-authority.json`;
 const CANDIDATE_ROOT = `${MIGRATION_ROOT}/control/m7-v2-repair-candidate-registrations`;
 const EXECUTION_FIXTURE_PATH = 'tests/fixtures/canonical-v2/m7-v2-repair/work2-compiler-cases.json';
 const GENERALISATION_PATH = 'scripts/stage-2y-structure-generalisation-shadow.mjs';
@@ -41,6 +43,10 @@ const EXECUTION_MANIFEST_TEST_PATH = 'tests/stage-2y-structure-m7-v2-repair-exec
 const WORK2_TEST_PATH = 'tests/stage-2y-structure-m7-v2-repair-work2.test.js';
 
 const RECEIPT_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK2_COMPILER_RECEIPT/V1';
+const WORK3_ENTRY_CORRECTION_AUTHORITY_SCHEMA =
+  'STAGE_2Y_M7_V2_REPAIR_WORK3_ENTRY_CORRECTION_AUTHORITY/V1';
+const WORK2_SUCCESSOR_SNAPSHOT_SCHEMA =
+  'STAGE_2Y_M7_V2_REPAIR_WORK2_SUCCESSOR_SNAPSHOT/V1';
 const RECOVERY_AUTHORITY_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK2_COMMIT_DELTA_RECOVERY_AUTHORITY/V1';
 const RECEIPT_RECOVERY_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK2_RECEIPT_RECOVERY/V1';
 const RECOVERY_APPROVAL_ID = 'BEN-M7-V2-WORK2-COMMIT-DELTA-RECOVERY-20260815';
@@ -249,6 +255,59 @@ const RECEIPT_KEYS = Object.freeze([
   'artifact_bindings', 'artifact_set_digest', 'command_execution_ledger',
   'combined_test_result', 'repository_precondition', 'counts', 'checks', 'effects',
   'next_work',
+]);
+const SUCCESSOR_OPTION_KEYS = Object.freeze([
+  'binding', 'repoRoot', 'work3EntryCorrectionAuthorityBinding',
+]);
+const SUCCESSOR_RESULT_KEYS = Object.freeze([
+  'schema_version', 'status', 'work2_receipt_id', 'execution_manifest_id',
+  'agreement_analysis_set_id', 'context_compilation_set_id', 'counts', 'effects',
+]);
+const SUCCESSOR_MODULE_EXPORT_KEYS = Object.freeze([
+  'Work2ValidationError', 'validateWork2', 'validateWork2ReceiptBinding',
+  'validateWork2SuccessorReceiptBinding',
+]);
+const SUCCESSOR_SNAPSHOT_KEYS = Object.freeze([
+  'call_signature', 'candidate_registration_id', 'candidate_transition', 'error_class',
+  'first_failing_gate_only', 'immutable_source_set_bindings', 'module_export_exact_keys',
+  'option_contracts', 'option_exact_keys', 'ordered_validation_gates', 'public_export',
+  'raw_error_mapping', 'receipt_artifact_binding_count', 'receipt_artifact_set_digest',
+  'receipt_state', 'result_exact_keys', 'result_schema_version', 'schema_version',
+  'source_precondition_paths', 'validation_contract',
+]);
+const SUCCESSOR_ORDERED_GATES = Object.freeze([
+  { error_code: 'WORK2_RECEIPT_INVALID', gate: 'OPTIONS', ordinal: 1 },
+  { error_code: 'WORK2_RECEIPT_SAFETY', gate: 'REPO_ROOT', ordinal: 2 },
+  { error_code: 'WORK2_AUTHORITY_BINDING_DRIFT', gate: 'C3_BINDING', ordinal: 3 },
+  {
+    error_code: 'WORK2_RECEIPT_INVALID',
+    gate: 'WORK2_RECEIPT_BINDING_26_KEYS_AND_CONTENT_ID',
+    ordinal: 4,
+  },
+  {
+    error_code: 'WORK2_MANIFEST_BINDING_DRIFT', gate: 'MANIFEST_CONTINUITY', ordinal: 5,
+  },
+  { error_code: 'WORK2_AUTHORITY_BINDING_DRIFT', gate: 'AUTHORITY_LINEAGE', ordinal: 6 },
+  {
+    error_code: 'WORK2_BUILD_ONLY_ORDERING_DRIFT',
+    gate: 'BUILD_ONLY_NULL_CANDIDATE',
+    ordinal: 7,
+  },
+  {
+    error_code: 'WORK2_ARTIFACT_BINDING_DRIFT',
+    gate: 'ARTIFACT_DIGEST_AND_ELEVEN_PRECONDITIONS',
+    ordinal: 8,
+  },
+  {
+    error_code: 'WORK2_SOURCE_SET_DRIFT', gate: 'TWO_IMMUTABLE_SOURCE_SETS', ordinal: 9,
+  },
+]);
+const PARENT_AUTHORITY_BINDING_KEYS = Object.freeze([
+  'path', 'schema_version', 'authority_id', 'authority_digest', 'byte_length', 'sha256',
+]);
+const SOURCE_SET_EVIDENCE_KEYS = Object.freeze([
+  'agreement_analysis_set_binding', 'agreement_ids', 'context_compilation_set_binding',
+  'm3_context_compilation_receipt_binding', 'm4_agreement_analysis_receipt_binding',
 ]);
 const CHECK_IDS = Object.freeze([
   'WORK1_LINEAGE_AND_WORK2_AUTHORITIES',
@@ -1211,6 +1270,99 @@ function validationResult(validated) {
   });
 }
 
+function plainRecord(value) {
+  try {
+    return value !== null && typeof value === 'object' && !Array.isArray(value)
+      && Object.getPrototypeOf(value) === Object.prototype;
+  } catch {
+    return false;
+  }
+}
+
+function successorGate(code, detail, validate) {
+  try {
+    return validate();
+  } catch (error) {
+    if (error instanceof Work2ValidationError) throw error;
+    fail(code, detail);
+  }
+}
+
+function lowerHex(value, length) {
+  return typeof value === 'string'
+    && new RegExp(`^[0-9a-f]{${length}}$`, 'u').test(value);
+}
+
+function validateSuccessorStandardBinding(value, expected, code) {
+  if (!plainRecord(value) || !exactKeys(value, STANDARD_BINDING_KEYS)
+      || typeof value.path !== 'string'
+      || !Number.isSafeInteger(value.byte_length) || value.byte_length < 0
+      || !lowerHex(value.sha256, 64) || !lowerHex(value.git_blob_oid, 40)) {
+    fail(code, expected.path ?? 'standard binding');
+  }
+  repositoryPath(value.path, code);
+  const nullIdentity = value.schema_version === null
+    && value.record_id_field === null && value.record_id === null;
+  const recordIdentity = typeof value.schema_version === 'string'
+    && value.schema_version.length > 0
+    && typeof value.record_id_field === 'string' && value.record_id_field.length > 0
+    && typeof value.record_id === 'string' && value.record_id.length > 0;
+  if (!nullIdentity && !recordIdentity) fail(code, value.path);
+  if (Object.hasOwn(expected, 'path') && value.path !== expected.path) {
+    fail(code, expected.path);
+  }
+  if (Object.hasOwn(expected, 'schemaVersion')
+      && value.schema_version !== expected.schemaVersion) {
+    fail(code, value.path);
+  }
+  if (Object.hasOwn(expected, 'idField') && value.record_id_field !== expected.idField) {
+    fail(code, value.path);
+  }
+}
+
+function validateSuccessorParentBinding(value, code) {
+  if (!plainRecord(value) || !exactKeys(value, PARENT_AUTHORITY_BINDING_KEYS)
+      || value.path !== PARENT_AUTHORITY_PATH
+      || typeof value.schema_version !== 'string' || value.schema_version.length === 0
+      || !lowerHex(value.authority_id, 64) || !lowerHex(value.authority_digest, 64)
+      || !Number.isSafeInteger(value.byte_length) || value.byte_length < 0
+      || !lowerHex(value.sha256, 64)) {
+    fail(code, 'parent authority binding');
+  }
+}
+
+function validateSuccessorSourceSet(input, authorityBinding, receiptBinding, spec) {
+  const code = 'WORK2_SOURCE_SET_DRIFT';
+  if (!plainRecord(input.record)
+      || !exactKeys(input.record, ['schema_version', spec.idField, 'members'])
+      || input.record.schema_version !== spec.schemaVersion
+      || !Array.isArray(input.record.members)
+      || input.record.members.length !== AGREEMENT_IDS.length) {
+    fail(code, spec.path);
+  }
+  const actualBinding = recordBinding(
+    spec.path, input.bytes, input.record, spec.idField, code,
+  );
+  if (!same(actualBinding, authorityBinding) || !same(actualBinding, receiptBinding)) {
+    fail(code, `${spec.path} binding`);
+  }
+  const agreementIds = [];
+  for (let index = 0; index < input.record.members.length; index += 1) {
+    const member = input.record.members[index];
+    if (!plainRecord(member) || !exactKeys(member, ['agreement_id', spec.bindingField])
+        || member.agreement_id !== AGREEMENT_IDS[index]) {
+      fail(code, `${spec.path} members`);
+    }
+    validateSuccessorStandardBinding(member[spec.bindingField], {
+      schemaVersion: spec.memberSchemaVersion,
+      idField: spec.memberIdField,
+    }, code);
+    agreementIds.push(member.agreement_id);
+  }
+  if (!same(agreementIds, AGREEMENT_IDS)) fail(code, `${spec.path} agreement IDs`);
+  return input.record;
+}
+
 export function validateWork2ReceiptBinding(options = {}) {
   if (options === null || typeof options !== 'object' || Array.isArray(options)
       || !same(Object.keys(options).sort(), ['binding', 'repoRoot'])
@@ -1229,6 +1381,339 @@ export function validateWork2ReceiptBinding(options = {}) {
     inspectCurrentCandidateRoot: false,
   });
   return validationResult(validated);
+}
+
+export function validateWork2SuccessorReceiptBinding(options = {}) {
+  successorGate('WORK2_RECEIPT_INVALID', 'options', () => {
+    if (!plainRecord(options) || !exactKeys(options, SUCCESSOR_OPTION_KEYS)
+        || typeof options.repoRoot !== 'string' || options.repoRoot.length === 0
+        || !plainRecord(options.binding)
+        || !exactKeys(options.binding, STANDARD_BINDING_KEYS)
+        || !plainRecord(options.work3EntryCorrectionAuthorityBinding)
+        || !exactKeys(
+          options.work3EntryCorrectionAuthorityBinding, STANDARD_BINDING_KEYS,
+        )) {
+      fail('WORK2_RECEIPT_INVALID', 'options');
+    }
+  });
+
+  const root = successorGate(
+    'WORK2_RECEIPT_SAFETY', 'repoRoot', () => rootPath(options.repoRoot),
+  );
+
+  let authorityInput;
+  successorGate('WORK2_AUTHORITY_BINDING_DRIFT', 'C3 binding', () => {
+    validateSuccessorStandardBinding(options.work3EntryCorrectionAuthorityBinding, {
+      path: WORK3_ENTRY_CORRECTION_AUTHORITY_PATH,
+      schemaVersion: WORK3_ENTRY_CORRECTION_AUTHORITY_SCHEMA,
+      idField: 'correction_authority_id',
+    }, 'WORK2_AUTHORITY_BINDING_DRIFT');
+    authorityInput = readCanonical(
+      root, WORK3_ENTRY_CORRECTION_AUTHORITY_PATH, 'WORK2_AUTHORITY_BINDING_DRIFT',
+    );
+    if (!plainRecord(authorityInput.record)) {
+      fail('WORK2_AUTHORITY_BINDING_DRIFT', WORK3_ENTRY_CORRECTION_AUTHORITY_PATH);
+    }
+    const actualAuthorityBinding = recordBinding(
+      WORK3_ENTRY_CORRECTION_AUTHORITY_PATH,
+      authorityInput.bytes,
+      authorityInput.record,
+      'correction_authority_id',
+      'WORK2_AUTHORITY_BINDING_DRIFT',
+    );
+    if (!same(actualAuthorityBinding, options.work3EntryCorrectionAuthorityBinding)) {
+      fail('WORK2_AUTHORITY_BINDING_DRIFT', WORK3_ENTRY_CORRECTION_AUTHORITY_PATH);
+    }
+    const authority = authorityInput.record;
+    const manifestContract = authority.work3_scope_contract?.work3_manifest_contract;
+    const snapshot = authority.work2_successor_snapshot;
+    if (authority.schema_version !== WORK3_ENTRY_CORRECTION_AUTHORITY_SCHEMA
+        || authority.stage !== 'M7_V2_REPAIR_WORK3_ENTRY_CORRECTION'
+        || authority.authority_state
+          !== 'BEN_AUTHORISED_WORK3_ENTRY_AND_SUCCESSOR_SNAPSHOT_CORRECTION'
+        || authority.approver !== 'BEN_GOODCHILD'
+        || authority.ben_approval_id !== 'BEN-M7-V2-WORK3-ENTRY-CORRECTION-20260815'
+        || !plainRecord(manifestContract) || !plainRecord(snapshot)
+        || snapshot.schema_version !== WORK2_SUCCESSOR_SNAPSHOT_SCHEMA) {
+      fail('WORK2_AUTHORITY_BINDING_DRIFT', 'C3 authority state');
+    }
+    validateSuccessorStandardBinding(authority.work2_receipt_binding, {
+      path: RECEIPT_PATH, schemaVersion: RECEIPT_SCHEMA, idField: 'work2_receipt_id',
+    }, 'WORK2_AUTHORITY_BINDING_DRIFT');
+    validateSuccessorStandardBinding(manifestContract.predecessor_receipt_binding, {
+      path: RECEIPT_PATH, schemaVersion: RECEIPT_SCHEMA, idField: 'work2_receipt_id',
+    }, 'WORK2_AUTHORITY_BINDING_DRIFT');
+    validateSuccessorStandardBinding(authority.activation_receipt_binding, {
+      path: ACTIVATION_RECEIPT_PATH, idField: 'activation_receipt_id',
+    }, 'WORK2_AUTHORITY_BINDING_DRIFT');
+    validateSuccessorStandardBinding(manifestContract.activation_receipt_binding, {
+      path: ACTIVATION_RECEIPT_PATH, idField: 'activation_receipt_id',
+    }, 'WORK2_AUTHORITY_BINDING_DRIFT');
+    validateSuccessorStandardBinding(authority.candidate_ordering_correction_authority_binding, {
+      path: ORDERING_AUTHORITY_PATH, idField: 'correction_authority_id',
+    }, 'WORK2_AUTHORITY_BINDING_DRIFT');
+    validateSuccessorStandardBinding(
+      manifestContract.candidate_ordering_correction_authority_binding,
+      { path: ORDERING_AUTHORITY_PATH, idField: 'correction_authority_id' },
+      'WORK2_AUTHORITY_BINDING_DRIFT',
+    );
+    validateSuccessorStandardBinding(authority.parent_authority_binding, {
+      path: PARENT_AUTHORITY_PATH, idField: 'authority_id',
+    }, 'WORK2_AUTHORITY_BINDING_DRIFT');
+    validateSuccessorParentBinding(
+      manifestContract.parent_authority_binding, 'WORK2_AUTHORITY_BINDING_DRIFT',
+    );
+    const parent = authority.parent_authority_binding;
+    const manifestParent = manifestContract.parent_authority_binding;
+    if (!same(authority.work2_receipt_binding, manifestContract.predecessor_receipt_binding)
+        || !same(authority.activation_receipt_binding, manifestContract.activation_receipt_binding)
+        || !same(
+          authority.candidate_ordering_correction_authority_binding,
+          manifestContract.candidate_ordering_correction_authority_binding,
+        )
+        || parent.path !== manifestParent.path
+        || parent.schema_version !== manifestParent.schema_version
+        || parent.record_id !== manifestParent.authority_id
+        || parent.byte_length !== manifestParent.byte_length
+        || parent.sha256 !== manifestParent.sha256
+        || !Array.isArray(authority.source_precondition_bindings)
+        || !Array.isArray(snapshot.source_precondition_paths)
+        || !same(
+          authority.source_precondition_bindings.map((entry) => entry?.path),
+          snapshot.source_precondition_paths,
+        )
+        || !Array.isArray(snapshot.immutable_source_set_bindings)
+        || !Array.isArray(authority.agreement_index_set_authority?.work2_sealed_set_bindings)
+        || !same(
+          snapshot.immutable_source_set_bindings,
+          authority.agreement_index_set_authority.work2_sealed_set_bindings,
+        )) {
+      fail('WORK2_AUTHORITY_BINDING_DRIFT', 'C3 internal lineage');
+    }
+  });
+  const authority = authorityInput.record;
+
+  let receiptInput;
+  successorGate('WORK2_RECEIPT_INVALID', 'Work2 receipt binding', () => {
+    validateSuccessorStandardBinding(options.binding, {
+      path: RECEIPT_PATH, schemaVersion: RECEIPT_SCHEMA, idField: 'work2_receipt_id',
+    }, 'WORK2_RECEIPT_INVALID');
+    validateSuccessorStandardBinding(authority.work2_receipt_binding, {
+      path: RECEIPT_PATH, schemaVersion: RECEIPT_SCHEMA, idField: 'work2_receipt_id',
+    }, 'WORK2_RECEIPT_INVALID');
+    receiptInput = readCanonical(root, RECEIPT_PATH, 'WORK2_RECEIPT_INVALID');
+    if (!plainRecord(receiptInput.record)) fail('WORK2_RECEIPT_INVALID', RECEIPT_PATH);
+    validateReceiptIdentity(receiptInput.record);
+    const actualReceiptBinding = recordBinding(
+      RECEIPT_PATH, receiptInput.bytes, receiptInput.record, 'work2_receipt_id',
+      'WORK2_RECEIPT_INVALID',
+    );
+    if (!same(actualReceiptBinding, options.binding)
+        || !same(actualReceiptBinding, authority.work2_receipt_binding)) {
+      fail('WORK2_RECEIPT_INVALID', RECEIPT_PATH);
+    }
+  });
+  const receipt = receiptInput.record;
+
+  successorGate('WORK2_MANIFEST_BINDING_DRIFT', 'manifest continuity', () => {
+    validateSuccessorStandardBinding(authority.work2_execution_manifest_binding, {
+      path: MANIFEST_PATH, idField: 'execution_manifest_id',
+    }, 'WORK2_MANIFEST_BINDING_DRIFT');
+    if (!Array.isArray(receipt.artifact_bindings)) {
+      fail('WORK2_MANIFEST_BINDING_DRIFT', 'manifest artifact binding');
+    }
+    const manifestBindings = receipt.artifact_bindings.filter(
+      (entry) => plainRecord(entry)
+        && entry.path === authority.work2_execution_manifest_binding.path,
+    );
+    if (manifestBindings.length !== 1) {
+      fail('WORK2_MANIFEST_BINDING_DRIFT', 'manifest artifact binding');
+    }
+    validateSuccessorStandardBinding(manifestBindings[0], {
+      path: MANIFEST_PATH, idField: 'execution_manifest_id',
+    }, 'WORK2_MANIFEST_BINDING_DRIFT');
+    if (receipt.execution_manifest_id
+          !== authority.work2_execution_manifest_binding.record_id
+        || !lowerHex(receipt.execution_manifest_digest, 64)
+        || !same(manifestBindings[0], authority.work2_execution_manifest_binding)) {
+      fail('WORK2_MANIFEST_BINDING_DRIFT', 'manifest continuity');
+    }
+  });
+
+  successorGate('WORK2_AUTHORITY_BINDING_DRIFT', 'authority lineage', () => {
+    const manifestParent = authority.work3_scope_contract?.work3_manifest_contract
+      ?.parent_authority_binding;
+    validateSuccessorParentBinding(receipt.parent_authority_binding,
+      'WORK2_AUTHORITY_BINDING_DRIFT');
+    validateSuccessorParentBinding(manifestParent, 'WORK2_AUTHORITY_BINDING_DRIFT');
+    if (!plainRecord(receipt.repository_precondition)
+        || !plainRecord(receipt.repository_precondition.recovery)) {
+      fail('WORK2_AUTHORITY_BINDING_DRIFT', 'recovery authority lineage');
+    }
+    const lineage = [
+      [receipt.activation_receipt_binding, authority.activation_receipt_binding,
+        ACTIVATION_RECEIPT_PATH, 'activation_receipt_id'],
+      [receipt.predecessor_receipt_binding, authority.work1_receipt_binding,
+        WORK1_RECEIPT_PATH, 'work1_contract_receipt_id'],
+      [receipt.work2_entry_correction_authority_binding,
+        authority.work2_entry_correction_authority_binding,
+        ENTRY_AUTHORITY_PATH, 'correction_authority_id'],
+      [receipt.candidate_ordering_correction_authority_binding,
+        authority.candidate_ordering_correction_authority_binding,
+        ORDERING_AUTHORITY_PATH, 'correction_authority_id'],
+      [receipt.repository_precondition.recovery.correction_authority_binding,
+        authority.work2_recovery_authority_binding,
+        RECOVERY_AUTHORITY_PATH, 'correction_authority_id'],
+    ];
+    for (const [actual, expected, selectedPath, idField] of lineage) {
+      validateSuccessorStandardBinding(actual, { path: selectedPath, idField },
+        'WORK2_AUTHORITY_BINDING_DRIFT');
+      validateSuccessorStandardBinding(expected, { path: selectedPath, idField },
+        'WORK2_AUTHORITY_BINDING_DRIFT');
+      if (!same(actual, expected)) {
+        fail('WORK2_AUTHORITY_BINDING_DRIFT', selectedPath);
+      }
+    }
+    if (!same(receipt.parent_authority_binding, manifestParent)) {
+      fail('WORK2_AUTHORITY_BINDING_DRIFT', 'parent authority lineage');
+    }
+  });
+
+  const snapshot = authority.work2_successor_snapshot;
+  successorGate('WORK2_BUILD_ONLY_ORDERING_DRIFT', 'build-only state', () => {
+    const expectedNextWork = {
+      work3_authorised_under_parent_authority: true,
+      work3_execution_manifest_required_before_first_command: true,
+      work3_candidate_registration_id: null,
+      work3_candidate_transition: null,
+      first_candidate_stage: 'WORK4',
+      work4_must_bind_exact_work2_source_sets: true,
+    };
+    if (!plainRecord(snapshot) || !exactKeys(snapshot, SUCCESSOR_SNAPSHOT_KEYS)
+        || snapshot.schema_version !== WORK2_SUCCESSOR_SNAPSHOT_SCHEMA
+        || snapshot.public_export !== 'validateWork2SuccessorReceiptBinding'
+        || snapshot.call_signature
+          !== 'validateWork2SuccessorReceiptBinding({repoRoot,binding,work3EntryCorrectionAuthorityBinding})'
+        || snapshot.error_class !== 'Work2ValidationError'
+        || snapshot.first_failing_gate_only !== true
+        || !Array.isArray(snapshot.option_exact_keys)
+        || !same([...snapshot.option_exact_keys].sort(), SUCCESSOR_OPTION_KEYS)
+        || !same(snapshot.module_export_exact_keys, SUCCESSOR_MODULE_EXPORT_KEYS)
+        || !same(snapshot.ordered_validation_gates, SUCCESSOR_ORDERED_GATES)
+        || snapshot.raw_error_mapping
+          !== 'RAW_TYPE_PARSE_AND_FILESYSTEM_ERRORS_MAP_TO_THE_ACTIVE_GATE_NATIVE_CODE_AND_NEVER_ESCAPE'
+        || !same(snapshot.result_exact_keys, SUCCESSOR_RESULT_KEYS)
+        || snapshot.result_schema_version
+          !== 'STAGE_2Y_M7_V2_REPAIR_WORK2_VALIDATION/V1'
+        || receipt.work !== 'WORK2' || receipt.stage !== 'M7_V2_REPAIR_WORK2'
+        || receipt.state !== snapshot.receipt_state
+        || receipt.state !== 'PASS_WORK2_BUILD_ONLY_NULL_CANDIDATE'
+        || receipt.status !== 'PASS'
+        || snapshot.candidate_registration_id !== null
+        || snapshot.candidate_transition !== null
+        || receipt.candidate_registration_id !== null
+        || receipt.candidate_transition !== null
+        || receipt.repository_precondition?.candidate_registration_root_state !== 'EMPTY'
+        || !same(receipt.next_work, expectedNextWork)) {
+      fail('WORK2_BUILD_ONLY_ORDERING_DRIFT', 'build-only state');
+    }
+  });
+
+  successorGate('WORK2_ARTIFACT_BINDING_DRIFT', 'artifact closure', () => {
+    if (!Array.isArray(receipt.artifact_bindings)
+        || !Number.isSafeInteger(snapshot.receipt_artifact_binding_count)
+        || snapshot.receipt_artifact_binding_count !== 22
+        || receipt.artifact_bindings.length !== snapshot.receipt_artifact_binding_count) {
+      fail('WORK2_ARTIFACT_BINDING_DRIFT', 'artifact count');
+    }
+    const artifactPaths = [];
+    for (const artifactBinding of receipt.artifact_bindings) {
+      validateSuccessorStandardBinding(
+        artifactBinding, {}, 'WORK2_ARTIFACT_BINDING_DRIFT',
+      );
+      artifactPaths.push(artifactBinding.path);
+    }
+    if (new Set(artifactPaths).size !== artifactPaths.length
+        || !lowerHex(receipt.artifact_set_digest, 64)
+        || receipt.artifact_set_digest
+          !== sha256Hex(canonicalJson(receipt.artifact_bindings))
+        || receipt.artifact_set_digest !== snapshot.receipt_artifact_set_digest
+        || !Array.isArray(authority.source_precondition_bindings)
+        || authority.source_precondition_bindings.length !== 11
+        || !Array.isArray(snapshot.source_precondition_paths)
+        || snapshot.source_precondition_paths.length !== 11) {
+      fail('WORK2_ARTIFACT_BINDING_DRIFT', 'artifact digest');
+    }
+    const sourcePaths = [];
+    for (const sourceBinding of authority.source_precondition_bindings) {
+      validateSuccessorStandardBinding(
+        sourceBinding, {}, 'WORK2_ARTIFACT_BINDING_DRIFT',
+      );
+      sourcePaths.push(sourceBinding.path);
+      const matches = receipt.artifact_bindings.filter(
+        (artifactBinding) => artifactBinding.path === sourceBinding.path,
+      );
+      if (matches.length !== 1 || !same(matches[0], sourceBinding)) {
+        fail('WORK2_ARTIFACT_BINDING_DRIFT', sourceBinding.path);
+      }
+    }
+    if (new Set(sourcePaths).size !== sourcePaths.length
+        || !same(sourcePaths, snapshot.source_precondition_paths)) {
+      fail('WORK2_ARTIFACT_BINDING_DRIFT', 'source preconditions');
+    }
+  });
+
+  let agreementSet;
+  let contextSet;
+  successorGate('WORK2_SOURCE_SET_DRIFT', 'immutable source sets', () => {
+    if (!Array.isArray(snapshot.immutable_source_set_bindings)
+        || snapshot.immutable_source_set_bindings.length !== 2
+        || !plainRecord(receipt.source_set_evidence)
+        || !exactKeys(receipt.source_set_evidence, SOURCE_SET_EVIDENCE_KEYS)
+        || !same(receipt.source_set_evidence.agreement_ids, AGREEMENT_IDS)) {
+      fail('WORK2_SOURCE_SET_DRIFT', 'source set evidence');
+    }
+    const specs = [
+      {
+        path: AGREEMENT_SET_PATH,
+        schemaVersion: 'AGREEMENT_ANALYSIS_SET/V1',
+        idField: 'agreement_analysis_set_id',
+        evidenceField: 'agreement_analysis_set_binding',
+        bindingField: 'agreement_analysis_binding',
+        memberSchemaVersion: 'AGREEMENT_ANALYSIS/V1',
+        memberIdField: 'agreement_analysis_id',
+      },
+      {
+        path: CONTEXT_SET_PATH,
+        schemaVersion: 'CONTEXT_COMPILATION_SET/V1',
+        idField: 'context_compilation_set_id',
+        evidenceField: 'context_compilation_set_binding',
+        bindingField: 'context_compilation_binding',
+        memberSchemaVersion: 'CONTEXT_COMPILATION/V1',
+        memberIdField: 'context_compilation_id',
+      },
+    ];
+    const records = [];
+    for (let index = 0; index < specs.length; index += 1) {
+      const spec = specs[index];
+      const authorityBinding = snapshot.immutable_source_set_bindings[index];
+      const receiptBinding = receipt.source_set_evidence[spec.evidenceField];
+      validateSuccessorStandardBinding(authorityBinding, {
+        path: spec.path, schemaVersion: spec.schemaVersion, idField: spec.idField,
+      }, 'WORK2_SOURCE_SET_DRIFT');
+      validateSuccessorStandardBinding(receiptBinding, {
+        path: spec.path, schemaVersion: spec.schemaVersion, idField: spec.idField,
+      }, 'WORK2_SOURCE_SET_DRIFT');
+      if (!same(authorityBinding, receiptBinding)) {
+        fail('WORK2_SOURCE_SET_DRIFT', spec.path);
+      }
+      const input = readCanonical(root, spec.path, 'WORK2_SOURCE_SET_DRIFT');
+      records.push(validateSuccessorSourceSet(input, authorityBinding, receiptBinding, spec));
+    }
+    [agreementSet, contextSet] = records;
+  });
+
+  return validationResult({ receipt, agreementSet, contextSet });
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

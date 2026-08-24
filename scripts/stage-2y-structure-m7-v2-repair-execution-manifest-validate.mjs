@@ -9,9 +9,14 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import canonicalModule from '../lib/canonical-v2/canonical-bytes.js';
-import { validateWork2ReceiptBinding } from './stage-2y-structure-m7-v2-repair-work2-validate.mjs';
+import m7V2ContractModule from '../lib/canonical-v2/m7-v2-contract.js';
+import {
+  validateWork2ReceiptBinding,
+  validateWork2SuccessorReceiptBinding,
+} from './stage-2y-structure-m7-v2-repair-work2-validate.mjs';
 
 const { canonicalJson, contentId, sha256Hex } = canonicalModule;
+const { validateFamilyProfilePackageSetForWork3 } = m7V2ContractModule;
 
 const SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK_EXECUTION_MANIFEST/V1';
 const RESULT_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK_EXECUTION_MANIFEST_VALIDATION/V1';
@@ -94,6 +99,8 @@ const WORK2_VALIDATOR_PATH =
   'scripts/stage-2y-structure-m7-v2-repair-work2-validate.mjs';
 const WORK2_FIXTURE_PATH =
   'tests/fixtures/canonical-v2/m7-v2-repair/work2-compiler-cases.json';
+const WORK3_PROFILE_FIXTURE_PATH =
+  'tests/fixtures/canonical-v2/m7-v2-repair/work3-profile-cases.json';
 const WORK2_TEST_PATH = 'tests/stage-2y-structure-m7-v2-repair-work2.test.js';
 const WORK2_GENERALISATION_PATH = 'scripts/stage-2y-structure-generalisation-shadow.mjs';
 const WORK2_AGREEMENT_SET_PATH =
@@ -102,6 +109,20 @@ const WORK2_CONTEXT_SET_PATH =
   'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work2-context-compilation-set.json';
 const WORK2_RECEIPT_PATH =
   'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-work2-compiler.json';
+const WORK3_ENTRY_CORRECTION_AUTHORITY_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-entry-correction-authority.json';
+const WORK3_ENTRY_CORRECTION_AUTHORITY_SCHEMA =
+  'STAGE_2Y_M7_V2_REPAIR_WORK3_ENTRY_CORRECTION_AUTHORITY/V1';
+const WORK3_ENTRY_CORRECTION_AUTHORITY_BINDING = Object.freeze({
+  path: WORK3_ENTRY_CORRECTION_AUTHORITY_PATH,
+  schema_version: WORK3_ENTRY_CORRECTION_AUTHORITY_SCHEMA,
+  record_id_field: 'correction_authority_id',
+  record_id: '561e48f1865259ba58d69f33cefcdf1c1ac606cf9468925dee47227603fad873',
+  byte_length: 237749,
+  sha256: '42dce2b3bc1f8730bb9a9532e8e9b34872f14117a38cdd97ba1be659e7647deb',
+  git_blob_oid: '5ff4bcd0ca719c4da97dd9bb64d610349e3d7afd',
+});
+const WORK3_ENTRY_MANIFEST_MEMBER = 'work3_entry_correction_authority_binding';
 const WORK2_RECOVERY_AUTHORITY_SCHEMA =
   'STAGE_2Y_M7_V2_REPAIR_WORK2_COMMIT_DELTA_RECOVERY_AUTHORITY/V1';
 const WORK2_RECOVERY_APPROVAL_ID =
@@ -572,6 +593,64 @@ const LATER_RECEIPT_KEYS = Object.freeze([
   'execution_manifest_digest', 'candidate_ordering_correction_authority_binding',
   'candidate_registration_id', 'candidate_transition', 'counts', 'effects',
 ]);
+const RICH_WORK3_RECEIPT_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK3_RECEIPT/V1';
+const RICH_WORK3_RECEIPT_KEYS = Object.freeze([
+  'schema_version', 'work3_receipt_id', 'work', 'stage', 'state', 'status',
+  'execution_manifest_id', 'execution_manifest_digest', 'parent_authority_binding',
+  'activation_receipt_binding', 'predecessor_receipt_binding',
+  'candidate_ordering_correction_authority_binding',
+  'work3_entry_correction_authority_binding', 'candidate_registration_id',
+  'candidate_transition', 'candidate_native_set_evidence', 'family_profile_evidence',
+  'structure_disposition_set_binding', 'artifact_bindings', 'artifact_set_digest',
+  'command_execution_ledger', 'combined_test_result', 'repository_precondition',
+  'counts', 'checks', 'effects', 'next_work',
+]);
+const RICH_PACKAGE_MEMBER_BINDING_SCHEMA =
+  'STAGE_2Y_M7_V2_FAMILY_PROFILE_PACKAGE_MEMBER_BINDING/V1';
+const RICH_PACKAGE_MEMBER_BINDING_KEYS = Object.freeze([
+  'schema_version', 'container_path', 'member_field', 'member_index',
+  'member_schema_version', 'member_record_id_field', 'member_record_id',
+  'member_byte_length', 'member_sha256',
+]);
+const RICH_FAMILY_PROFILE_EVIDENCE_KEYS = Object.freeze([
+  'family_profile_package_bindings', 'approved_family_profile_set_binding', 'family_keys',
+]);
+const RICH_APPROVED_PROFILE_SET_KEYS = Object.freeze([
+  'schema_version', 'family_profile_set_id', 'state', 'family_profile_package_bindings',
+  'profiles', 'dimension_evidence_bindings', 'subtype_tree_bindings',
+]);
+const RICH_FAMILY_PACKAGE_KEYS = Object.freeze([
+  'schema_version', 'family_profile_package_id', 'state', 'family_key',
+  'profile_set_version', 'family_approval', 'legal_decisions', 'profiles', 'subtype_tree',
+  'match_fixtures', 'dimension_evidence', 'structure_fixture_members',
+]);
+const RICH_STRUCTURE_SET_KEYS = Object.freeze([
+  'schema_version', 'structure_disposition_set_id', 'state', 'members',
+]);
+const RICH_STRUCTURE_MEMBER_KEYS = Object.freeze([
+  'schema_version', 'structure_disposition_id', 'kind', 'reason_code', 'policy_id',
+  'policy_version', 'authority_class', 'approver', 'lawyer_ruling_id', 'scope',
+  'inclusion_fixture_bindings', 'exclusion_fixture_bindings', 'match_test',
+  'inline_list_overlay',
+]);
+const RICH_STRUCTURE_SCOPE_KEYS = Object.freeze([
+  'agreement_index_id', 'source_node_occurrence_id', 'start_byte', 'end_byte',
+  'governed_input_occurrence_ids',
+]);
+const RICH_INLINE_OVERLAY_KEYS = Object.freeze([
+  'schema_version', 'lawyer_ruling_id', 'agreement_index_binding',
+  'sealed_ambiguity_id', 'sealed_ambiguity_type', 'sealed_ambiguity_span',
+  'inline_marker_disposition_id', 'parent_node_occurrence_id', 'parent_reference',
+  'parent_scoping_rule', 'marker_eligibility', 'candidate_trees',
+  'selected_candidate_tree_id', 'technical_review',
+  'ambiguous_repeat_fixture_bindings',
+]);
+const RICH_NATIVE_SET_EVIDENCE_KEYS = Object.freeze([
+  'work2_agreement_analysis_set_binding', 'work2_context_compilation_set_binding',
+  'work3_agreement_index_set_binding', 'work3_context_compilation_set_binding',
+  'work3_agreement_analysis_set_binding', 'sealed_agreement_ids', 'additive_agreement_ids',
+  'combined_agreement_ids', 'extension_proof',
+]);
 const WORK2_COMPILER_RECEIPT_SCHEMA =
   'STAGE_2Y_M7_V2_REPAIR_WORK2_COMPILER_RECEIPT/V1';
 const WORK2_COMPILER_RECEIPT_KEYS = Object.freeze([
@@ -994,11 +1073,16 @@ function validateActivation(root, authority, binding, commitBinding) {
   return record;
 }
 
-function validateManifestIdentity(record, policy, expectedWork) {
-  const effectiveMembers = [
+function manifestMembers(policy, work) {
+  return [
     ...policy.exact_members,
     ...CANDIDATE_ORDERING_MANIFEST_MEMBERS,
+    ...(work === 'WORK3' ? [WORK3_ENTRY_MANIFEST_MEMBER] : []),
   ];
+}
+
+function validateManifestIdentity(record, policy, expectedWork) {
+  const effectiveMembers = manifestMembers(policy, expectedWork);
   if (!exactKeys(record, effectiveMembers)
     || record.schema_version !== SCHEMA
     || record.work !== expectedWork
@@ -1009,6 +1093,70 @@ function validateManifestIdentity(record, policy, expectedWork) {
   if (record.execution_manifest_digest !== identity.digest || record.execution_manifest_id !== identity.id) {
     fail('MANIFEST_IDENTITY_DRIFT', expectedWork);
   }
+}
+
+function validateWork3EntryCorrection(root, manifest) {
+  if (!Array.isArray(manifest.permitted_read_paths)
+      || !manifest.permitted_read_paths.includes(WORK3_ENTRY_CORRECTION_AUTHORITY_PATH)) {
+    fail('PATH_SCOPE_DRIFT', 'Work3 entry correction authority read');
+  }
+  const binding = manifest.work3_entry_correction_authority_binding;
+  if (!same(binding, WORK3_ENTRY_CORRECTION_AUTHORITY_BINDING)) {
+    fail('AUTHORITY_BINDING_DRIFT', WORK3_ENTRY_CORRECTION_AUTHORITY_PATH);
+  }
+  const { record, bytes } = validateRecordBinding(
+    root,
+    binding,
+    'AUTHORITY_BINDING_DRIFT',
+  );
+  const unsigned = clone(record);
+  delete unsigned.correction_authority_id;
+  if (record.schema_version !== WORK3_ENTRY_CORRECTION_AUTHORITY_SCHEMA
+      || record.correction_authority_id
+        !== WORK3_ENTRY_CORRECTION_AUTHORITY_BINDING.record_id
+      || record.correction_authority_id
+        !== contentId(WORK3_ENTRY_CORRECTION_AUTHORITY_SCHEMA, unsigned)
+      || record.stage !== 'M7_V2_REPAIR_WORK3_ENTRY_CORRECTION'
+      || record.authority_state
+        !== 'BEN_AUTHORISED_WORK3_ENTRY_AND_SUCCESSOR_SNAPSHOT_CORRECTION'
+      || record.approved_on !== '2026-08-15'
+      || record.approver !== 'BEN_GOODCHILD'
+      || record.ben_approval_id !== 'BEN-M7-V2-WORK3-ENTRY-CORRECTION-20260815'
+      || record.approval_text !== WORK2_ENTRY_CORRECTION_APPROVAL
+      || bytes.length !== WORK3_ENTRY_CORRECTION_AUTHORITY_BINDING.byte_length
+      || sha256Hex(bytes) !== WORK3_ENTRY_CORRECTION_AUTHORITY_BINDING.sha256
+      || gitBlobOid(bytes) !== WORK3_ENTRY_CORRECTION_AUTHORITY_BINDING.git_blob_oid) {
+    fail('AUTHORITY_BINDING_DRIFT', WORK3_ENTRY_CORRECTION_AUTHORITY_PATH);
+  }
+  return record;
+}
+
+function expectedWork3Manifest(correctionAuthority, correctionAuthorityBinding) {
+  const contract = correctionAuthority.work3_scope_contract?.work3_manifest_contract;
+  if (!contract || !Array.isArray(contract.exact_keys)) {
+    fail('AUTHORITY_BINDING_DRIFT', 'Work3 manifest contract');
+  }
+  const body = {};
+  for (const key of contract.exact_keys) {
+    if (key === 'execution_manifest_id' || key === 'execution_manifest_digest') continue;
+    if (key === WORK3_ENTRY_MANIFEST_MEMBER) {
+      body[key] = clone(correctionAuthorityBinding);
+    } else if (Object.hasOwn(contract, key)) {
+      body[key] = clone(contract[key]);
+    } else {
+      fail('AUTHORITY_BINDING_DRIFT', `Work3 manifest contract member: ${key}`);
+    }
+  }
+  const identity = restampedIdentity(
+    body,
+    'execution_manifest_digest',
+    'execution_manifest_id',
+  );
+  return {
+    ...body,
+    execution_manifest_digest: identity.digest,
+    execution_manifest_id: identity.id,
+  };
 }
 
 function readPriorManifest(root, authority, work) {
@@ -1343,6 +1491,126 @@ function validateSuccessConditions(conditions) {
     || conditions.some((item) => typeof item !== 'string' || !/^[A-Z][A-Z0-9_]*$/.test(item))
     || !conditions.includes(DEFERRED_GIT_PROOF)) {
     fail('BASE_TIP_DRIFT', 'deferred Git proof');
+  }
+}
+
+function validateWork3PathScope(root, manifest, correctionAuthority) {
+  const scope = correctionAuthority.work3_scope_contract;
+  const contract = scope.work3_manifest_contract;
+  const sourcePaths = correctionAuthority.source_precondition_bindings
+    .map((binding) => binding.path);
+  if (!isSortedUnique(scope.exact_work3_paths)
+      || scope.exact_work3_paths.length !== 50
+      || !same(scope.git_add_path_order, scope.exact_work3_paths)
+      || !same(manifest.permitted_read_paths, scope.manifest_permitted_read_paths)
+      || manifest.permitted_read_paths.length !== 94
+      || !same(manifest.permitted_write_paths, scope.manifest_permitted_write_paths)
+      || manifest.permitted_write_paths.length !== 49
+      || !same(
+        manifest.permitted_write_paths,
+        scope.exact_work3_paths.filter(
+          (repositoryPath) => repositoryPath !== scope.manifest_path,
+        ),
+      )
+      || !same(
+        manifest.exact_git_commit_and_push_argv?.[0],
+        ['git', 'add', '--', ...scope.exact_work3_paths],
+      )
+      || !same(sourcePaths, correctionAuthority.work2_successor_snapshot
+        ?.source_precondition_paths)
+      || sourcePaths.length !== 11
+      || !manifest.permitted_read_paths.includes(WORK3_ENTRY_CORRECTION_AUTHORITY_PATH)
+      || !manifest.permitted_write_paths.includes(WORK3_ENTRY_CORRECTION_AUTHORITY_PATH)) {
+    fail('PATH_SCOPE_DRIFT', 'Work3 C3 P50/R94/W49 scope');
+  }
+  const outputs = scope.create_once_output_paths;
+  if (!Array.isArray(outputs)
+      || outputs.length !== 32
+      || outputs.some((repositoryPath) => typeof repositoryPath !== 'string')
+      || new Set(outputs).size !== outputs.length
+      || scope.create_once_output_count !== 32
+      || outputs.at(-1) !== manifest.work_receipt_path
+      || !same(outputs, scope.rich_work3_receipt_contract?.create_once_output_paths)
+      || !outputs.every((repositoryPath) =>
+        manifest.permitted_write_paths.includes(repositoryPath))) {
+    fail('PATH_SCOPE_DRIFT', 'Work3 create-once output scope');
+  }
+  for (const repositoryPath of manifest.permitted_write_paths) {
+    inspectSafePath(root, repositoryPath, false);
+  }
+  for (const repositoryPath of outputs) {
+    const absolute = inspectSafePath(root, repositoryPath, false);
+    try {
+      lstatSync(absolute);
+      fail('WRITE_ONCE_DRIFT', repositoryPath);
+    } catch (error) {
+      if (error instanceof WorkExecutionManifestValidationError) throw error;
+      if (error.code !== 'ENOENT') fail('PATH_SAFETY', repositoryPath);
+    }
+  }
+}
+
+function validateWork3BaseTip(manifest, priorManifest, predecessorReceipt, correctionAuthority) {
+  const expected = correctionAuthority.work3_scope_contract
+    .work3_manifest_contract.base_tip_binding;
+  const effectiveWork2Paths = predecessorReceipt.repository_precondition
+    ?.effective_work2_paths;
+  const priorCommitArgv = priorManifest.exact_git_commit_and_push_argv?.[1];
+  if (!same(manifest.base_tip_binding, expected)
+      || !Array.isArray(effectiveWork2Paths)
+      || new Set(effectiveWork2Paths).size !== effectiveWork2Paths.length
+      || !same(expected.exact_commit_delta_paths, [...effectiveWork2Paths].sort())
+      || expected.parent_commit !== priorManifest.base_tip_binding.commit
+      || priorCommitArgv?.length !== 4
+      || expected.commit_message !== priorCommitArgv[3]
+      || expected.branch !== BRANCH
+      || expected.origin_ref !== `refs/remotes/origin/${BRANCH}`) {
+    fail('BASE_TIP_DRIFT', 'Work3 C3 base tip');
+  }
+}
+
+function validateWork3Commands(manifest, correctionAuthority) {
+  const contract = correctionAuthority.work3_scope_contract.work3_manifest_contract;
+  const expectedCommands = correctionAuthority.execution_policy.work3_commands
+    .map((entry) => ({
+      argv: entry.argv,
+      max_runs: entry.maximum_runs,
+    }));
+  if (expectedCommands.length !== 17
+      || !same(manifest.exact_argv_with_run_limits, expectedCommands)
+      || !same(manifest.exact_argv_with_run_limits, contract.exact_argv_with_run_limits)
+      || !same(
+        manifest.exact_git_commit_and_push_argv,
+        correctionAuthority.execution_policy.exact_git_commit_and_push_argv,
+      )
+      || !same(
+        manifest.exact_git_commit_and_push_argv,
+        contract.exact_git_commit_and_push_argv,
+      )) {
+    fail('COMMAND_SCOPE_DRIFT', 'Work3 C3 commands');
+  }
+}
+
+function validateWork3EffectsAndStops(manifest, correctionAuthority) {
+  const scope = correctionAuthority.work3_scope_contract;
+  const contract = scope.work3_manifest_contract;
+  if (!same(manifest.allowed_effects, contract.allowed_effects)
+      || !same(manifest.allowed_effects, correctionAuthority.execution_policy.allowed_effects)
+      || manifest.allowed_effects.create_once_output_writes !== 32
+      || manifest.allowed_effects.candidate_registration_writes !== 0
+      || manifest.allowed_effects.semantic_runs !== 0
+      || !same(manifest.prohibited_effects, contract.prohibited_effects)
+      || !same(
+        manifest.prohibited_effects,
+        correctionAuthority.execution_policy.prohibited_effects,
+      )
+      || !same(manifest.stop_conditions, contract.stop_conditions)
+      || !same(manifest.success_conditions, contract.success_conditions)
+      || !same(
+        manifest.success_conditions,
+        correctionAuthority.execution_policy.success_conditions,
+      )) {
+    fail('EFFECT_SCOPE_DRIFT', 'Work3 C3 effects and stop conditions');
   }
 }
 
@@ -2065,7 +2333,7 @@ function validateCandidateInnerBinding(binding, label) {
   normaliseRepositoryPath(binding.path, 'CANDIDATE_BINDING_DRIFT');
 }
 
-function resolveCandidateComponent(root, binding, permittedReadPaths) {
+function readCandidateComponent(root, binding, permittedReadPaths) {
   validateCandidateInnerBinding(binding, binding.path);
   if (!permittedReadPaths.includes(binding.path)) {
     fail('PATH_SCOPE_DRIFT', `candidate component read is not permitted: ${binding.path}`);
@@ -2086,15 +2354,22 @@ function resolveCandidateComponent(root, binding, permittedReadPaths) {
         || selectedRecord[binding.record_id_field] !== binding.record_id) {
       fail('CANDIDATE_BINDING_DRIFT', `${binding.path} envelope`);
     }
+    return selectedRecord;
+  }
+  return null;
+}
+
+function resolveCandidateComponent(root, binding, permittedReadPaths) {
+  const selectedRecord = readCandidateComponent(root, binding, permittedReadPaths);
+  if (selectedRecord !== null) {
     validateContentIdOnly(
       selectedRecord,
       binding.record_id_field,
       'CANDIDATE_BINDING_DRIFT',
       binding.path,
     );
-    return selectedRecord;
   }
-  return null;
+  return selectedRecord;
 }
 
 function resolveLineageBinding(root, binding, permittedReadPaths, code, label) {
@@ -2119,16 +2394,1464 @@ function resolveLineageBinding(root, binding, permittedReadPaths, code, label) {
   return { bytes, record };
 }
 
+function isPlainObject(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+
+function agreementIndexRecordId(record, code) {
+  const requiredArrays = [
+    'nodes', 'annotations', 'source_artefacts', 'aliases', 'ambiguities',
+    'diagnostics', 'inline_marker_dispositions',
+  ];
+  if (!requiredArrays.every((field) => Array.isArray(record?.[field]))
+      || !isPlainObject(record?.source_binding)
+      || !isPlainObject(record?.structural_policy)
+      || !isPlainObject(record?.inline_marker_partition)
+      || !isPlainObject(record?.byte_coverage)) {
+    fail(code, 'WORK3:AgreementIndex native identity inputs');
+  }
+  return contentId('AGREEMENT_INDEX/V1', {
+    agreement_id: record.source_binding.agreement_id,
+    canonical_text_id: record.source_binding.canonical_text_id,
+    structural_policy_digest: record.structural_policy.policy_digest,
+    root_node_occurrence_id: record.root_node_occurrence_id,
+    counts: record.counts,
+    node_set_digest: contentId('AGREEMENT_INDEX_NODE_SET/V1', record.nodes),
+    annotation_set_digest: contentId(
+      'AGREEMENT_INDEX_ANNOTATION_SET/V1', record.annotations,
+    ),
+    source_artefact_set_digest: contentId(
+      'AGREEMENT_INDEX_SOURCE_ARTEFACT_SET/V1', record.source_artefacts,
+    ),
+    alias_set_digest: contentId('AGREEMENT_INDEX_ALIAS_SET/V1', record.aliases),
+    ambiguity_set_digest: contentId(
+      'AGREEMENT_INDEX_AMBIGUITY_SET/V1', record.ambiguities,
+    ),
+    diagnostic_set_digest: contentId(
+      'AGREEMENT_INDEX_DIAGNOSTIC_SET/V1', record.diagnostics,
+    ),
+    inline_marker_disposition_set_digest: contentId(
+      'AGREEMENT_INDEX_INLINE_MARKER_DISPOSITION_SET/V1',
+      record.inline_marker_dispositions,
+    ),
+    inline_marker_partition_proof_digest: record.inline_marker_partition.proof_digest,
+    byte_coverage_proof_digest: record.byte_coverage.proof_digest,
+  });
+}
+
+function validateRichPhysicalBinding(
+  root,
+  binding,
+  code,
+  expected = {},
+  allowMissingGitBlobOid = false,
+) {
+  const hasGitBlobOid = Object.hasOwn(binding ?? {}, 'git_blob_oid');
+  const bindingKeys = hasGitBlobOid
+    ? RECORD_BINDING_KEYS
+    : RECORD_BINDING_KEYS.filter((key) => key !== 'git_blob_oid');
+  if ((!hasGitBlobOid && !allowMissingGitBlobOid)
+      || !exactKeys(binding, bindingKeys)
+      || typeof binding.path !== 'string'
+      || !Number.isSafeInteger(binding.byte_length) || binding.byte_length <= 0
+      || !HASH_64.test(binding.sha256 || '')
+      || (Object.hasOwn(binding, 'git_blob_oid') && !HASH_40.test(binding.git_blob_oid || ''))
+      || ((binding.schema_version === null) !== (binding.record_id_field === null))
+      || ((binding.record_id_field === null) !== (binding.record_id === null))) {
+    fail(code, 'WORK3:standard binding');
+  }
+  normaliseRepositoryPath(binding.path, code);
+  for (const field of ['path', 'schema_version', 'record_id_field']) {
+    if (Object.hasOwn(expected, field) && binding[field] !== expected[field]) {
+      fail(code, `${binding.path}:${field}`);
+    }
+  }
+  const bytes = readSafe(root, binding.path);
+  if (bytes.length !== binding.byte_length
+      || sha256Hex(bytes) !== binding.sha256
+      || (Object.hasOwn(binding, 'git_blob_oid')
+        && gitBlobOid(bytes) !== binding.git_blob_oid)) {
+    fail(code, `${binding.path}:bytes`);
+  }
+  return {
+    binding: Object.hasOwn(binding, 'git_blob_oid')
+      ? binding
+      : { ...binding, git_blob_oid: gitBlobOid(bytes) },
+    bytes,
+  };
+}
+
+function validateRichJsonSourceBinding(root, binding, code, expected = {}) {
+  const source = validateRichPhysicalBinding(root, binding, code, expected, true);
+  let record;
+  try {
+    record = JSON.parse(source.bytes.toString('utf8'));
+  } catch {
+    fail(code, binding.path);
+  }
+  if (binding.schema_version === null
+      || record.schema_version !== binding.schema_version
+      || record[binding.record_id_field] !== binding.record_id) {
+    fail(code, `${binding.path}:envelope`);
+  }
+  return { ...source, record };
+}
+
+function validateRichBinding(root, binding, code, expected = {}) {
+  const { bytes } = validateRichPhysicalBinding(root, binding, code, expected);
+  if (binding.schema_version === null) return { bytes, record: null };
+  const record = parseCanonical(bytes, code, binding.path);
+  if (record.schema_version !== binding.schema_version
+      || record[binding.record_id_field] !== binding.record_id) {
+    fail(code, `${binding.path}:envelope`);
+  }
+  const expectedRecordId = binding.schema_version === 'AGREEMENT_INDEX/V1'
+    ? agreementIndexRecordId(record, code)
+    : contentId(binding.schema_version, (() => {
+      const unsigned = clone(record);
+      delete unsigned[binding.record_id_field];
+      return unsigned;
+    })());
+  if (expectedRecordId !== binding.record_id) fail(code, `${binding.path}:self identity`);
+  return { bytes, record };
+}
+
+function validateRichNativeSetEvidence(
+  root,
+  authority,
+  nativeContract,
+  nativeEvidence,
+  work3SetRecords,
+  code,
+) {
+  const setAuthority = authority?.agreement_index_set_authority;
+  const corpus = setAuthority?.corpus_contract;
+  const indexDerivation = setAuthority?.agreement_index_member_derivation_contract;
+  const setContracts = setAuthority?.sets;
+  if (nativeContract.native_lineage !== 'EXACT_M4_TO_M3_TO_M2_FOR_ALL_TEN_MEMBERS'
+      || corpus?.set_member_count !== 10
+      || corpus.subset_extension_proof !== nativeEvidence.extension_proof
+      || !same(corpus.sealed_agreement_ids, nativeEvidence.sealed_agreement_ids)
+      || !same(corpus.additive_agreement_ids, nativeEvidence.additive_agreement_ids)
+      || !same(corpus.combined_agreement_ids, nativeEvidence.combined_agreement_ids)
+      || indexDerivation?.agreement_id_derivation
+        !== 'REREAD_EACH_BOUND_AGREEMENT_INDEX_RECORD_AND_REQUIRE_TEN_UNIQUE_AGREEMENT_IDS'
+      || indexDerivation.derived_agreement_ids_must_byte_equal
+        !== 'corpus_contract.combined_agreement_ids'
+      || indexDerivation.member_order !== 'CANONICAL_ASCENDING_STANDARD_BINDING_PATH'
+      || indexDerivation.member_shape !== 'DIRECT_STANDARD_SEVEN_FIELD_BINDING'
+      || indexDerivation.resolved_record_id_field !== 'agreement_index_id'
+      || indexDerivation.resolved_record_schema_version !== 'AGREEMENT_INDEX/V1'
+      || !Array.isArray(setContracts) || setContracts.length !== 3) {
+    fail(code, 'WORK3:native set authority');
+  }
+
+  const combinedAgreementIds = nativeEvidence.combined_agreement_ids;
+  const unionAgreementIds = [
+    ...nativeEvidence.sealed_agreement_ids,
+    ...nativeEvidence.additive_agreement_ids,
+  ].sort();
+  if (combinedAgreementIds.length !== 10
+      || new Set(combinedAgreementIds).size !== 10
+      || !same(combinedAgreementIds, [...combinedAgreementIds].sort())
+      || !same(unionAgreementIds, combinedAgreementIds)
+      || new Set(unionAgreementIds).size !== 10) {
+    fail(code, 'WORK3:native agreement union');
+  }
+
+  const setShapes = [
+    {
+      schema_version: 'AGREEMENT_INDEX_SET/V1',
+      record_id_field: 'agreement_index_set_id',
+      exact_keys: ['schema_version', 'agreement_index_set_id', 'members'],
+      member_exact_keys: [...RECORD_BINDING_KEYS],
+      member_order: 'CANONICAL_ASCENDING_STANDARD_BINDING_PATH',
+    },
+    {
+      schema_version: 'CONTEXT_COMPILATION_SET/V1',
+      record_id_field: 'context_compilation_set_id',
+      exact_keys: ['schema_version', 'context_compilation_set_id', 'members'],
+      member_exact_keys: ['agreement_id', 'context_compilation_binding'],
+      member_order: 'CANONICAL_ASCENDING_AGREEMENT_ID',
+    },
+    {
+      schema_version: 'AGREEMENT_ANALYSIS_SET/V1',
+      record_id_field: 'agreement_analysis_set_id',
+      exact_keys: ['schema_version', 'agreement_analysis_set_id', 'members'],
+      member_exact_keys: ['agreement_id', 'agreement_analysis_binding'],
+      member_order: 'CANONICAL_ASCENDING_AGREEMENT_ID',
+    },
+  ];
+  for (let index = 0; index < setShapes.length; index += 1) {
+    const shape = setShapes[index];
+    const setContract = setContracts[index];
+    const record = work3SetRecords[index];
+    if (setContract.schema_version !== shape.schema_version
+        || setContract.record_id_field !== shape.record_id_field
+        || !same(setContract.exact_keys, shape.exact_keys)
+        || !same(setContract.member_exact_keys, shape.member_exact_keys)
+        || setContract.member_order !== shape.member_order
+        || !Array.isArray(setContract.members) || setContract.members.length !== 10
+        || !exactKeys(record, shape.exact_keys)
+        || record.schema_version !== shape.schema_version
+        || !same(record.members, setContract.members)) {
+      fail(code, `WORK3:native set members ${shape.schema_version}`);
+    }
+  }
+
+  const agreementIndexes = work3SetRecords[0].members.map((binding) => {
+    const { record } = validateRichBinding(root, binding, code, {
+      schema_version: 'AGREEMENT_INDEX/V1', record_id_field: 'agreement_index_id',
+    });
+    return {
+      agreement_id: record.source_binding?.agreement_id,
+      binding,
+      agreement_index_binding: {
+        agreement_index_id: binding.record_id,
+        agreement_index_sha256: binding.sha256,
+        canonical_text_sha256: record.source_binding?.canonical_text_sha256,
+        structural_policy_digest: record.structural_policy?.policy_digest,
+      },
+    };
+  });
+  const contextCompilations = work3SetRecords[1].members.map((member) => {
+    if (!exactKeys(member, ['agreement_id', 'context_compilation_binding'])) {
+      fail(code, 'WORK3:ContextCompilation member binding');
+    }
+    const { record } = validateRichBinding(root, member.context_compilation_binding, code, {
+      schema_version: 'CONTEXT_COMPILATION/V1', record_id_field: 'context_compilation_id',
+    });
+    return {
+      agreement_id: member.agreement_id,
+      binding: member.context_compilation_binding,
+      agreement_index_binding: record.agreement_index_binding,
+    };
+  });
+  const agreementAnalyses = work3SetRecords[2].members.map((member) => {
+    if (!exactKeys(member, ['agreement_id', 'agreement_analysis_binding'])) {
+      fail(code, 'WORK3:AgreementAnalysis member binding');
+    }
+    const { record } = validateRichBinding(root, member.agreement_analysis_binding, code, {
+      schema_version: 'AGREEMENT_ANALYSIS/V1', record_id_field: 'agreement_analysis_id',
+    });
+    return {
+      agreement_id: member.agreement_id,
+      record_agreement_id: record.agreement_id,
+      agreement_index_binding: record.agreement_index_binding,
+      context_compilation_binding: record.context_compilation_binding,
+    };
+  });
+  if (!same(work3SetRecords[0].members.map((binding) => binding.path),
+    work3SetRecords[0].members.map((binding) => binding.path).sort())
+      || !same(contextCompilations.map((row) => row.agreement_id), combinedAgreementIds)
+      || !same(agreementAnalyses.map((row) => row.agreement_id), combinedAgreementIds)) {
+    fail(code, 'WORK3:native member order');
+  }
+  const agreementIndexesById = new Map(agreementIndexes.map((row) => [row.agreement_id, row]));
+  const contextCompilationsById = new Map(
+    contextCompilations.map((row) => [row.agreement_id, row]),
+  );
+  const exactReferenceOrId = (actual, expected, idField) => (
+    same(actual, expected)
+      || (exactKeys(actual, [idField]) && actual[idField] === expected[idField])
+  );
+  if (agreementIndexesById.size !== 10
+      || contextCompilationsById.size !== 10
+      || !same([...agreementIndexesById.keys()].sort(), combinedAgreementIds)) {
+    fail(code, 'WORK3:AgreementIndex agreement IDs');
+  }
+  for (const analysis of agreementAnalyses) {
+    const agreementIndex = agreementIndexesById.get(analysis.agreement_id);
+    const contextCompilation = contextCompilationsById.get(analysis.agreement_id);
+    if (!agreementIndex || !contextCompilation
+        || analysis.record_agreement_id !== analysis.agreement_id
+        || !same(contextCompilation.agreement_index_binding,
+          agreementIndex.agreement_index_binding)
+        || !exactReferenceOrId(
+          analysis.agreement_index_binding,
+          contextCompilation.agreement_index_binding,
+          'agreement_index_id',
+        )
+        || !exactReferenceOrId(analysis.context_compilation_binding, {
+          agreement_id: analysis.agreement_id,
+          agreement_index_id: agreementIndex.binding.record_id,
+          byte_length: contextCompilation.binding.byte_length,
+          context_compilation_id: contextCompilation.binding.record_id,
+          path: contextCompilation.binding.path,
+          schema_version: contextCompilation.binding.schema_version,
+          sha256: contextCompilation.binding.sha256,
+        }, 'context_compilation_id')) {
+      fail(code, `WORK3:native M4-M3-M2 lineage ${analysis.agreement_id}`);
+    }
+  }
+}
+
+function validateRichPackageMember(binding, packagesByPath, familyKey, code) {
+  if (!exactKeys(binding, RICH_PACKAGE_MEMBER_BINDING_KEYS)
+      || binding.schema_version !== RICH_PACKAGE_MEMBER_BINDING_SCHEMA
+      || binding.member_field !== 'subtype_tree'
+      || binding.member_index !== null
+      || binding.member_schema_version !== 'STAGE_2Y_M7_V2_REPAIR_SUBTYPE_TREE/V1'
+      || binding.member_record_id_field !== 'subtype_tree_id'
+      || !HASH_64.test(binding.member_record_id || '')
+      || !Number.isSafeInteger(binding.member_byte_length) || binding.member_byte_length <= 0
+      || !HASH_64.test(binding.member_sha256 || '')) {
+    fail(code, `${familyKey}:package member`);
+  }
+  normaliseRepositoryPath(binding.container_path, code);
+  const packageRecord = packagesByPath.get(binding.container_path);
+  const member = packageRecord?.subtype_tree;
+  const memberBytes = Buffer.from(canonicalJson(member), 'utf8');
+  if (!packageRecord || packageRecord.family_key !== familyKey
+      || member?.schema_version !== binding.member_schema_version
+      || member?.[binding.member_record_id_field] !== binding.member_record_id
+      || member?.family_key !== familyKey
+      || memberBytes.length !== binding.member_byte_length
+      || sha256Hex(memberBytes) !== binding.member_sha256) {
+    fail(code, `${familyKey}:package member bytes`);
+  }
+  const unsigned = clone(member);
+  delete unsigned[binding.member_record_id_field];
+  if (contentId(binding.member_schema_version, unsigned) !== binding.member_record_id) {
+    fail(code, `${familyKey}:package member identity`);
+  }
+}
+
+function validateRichRoutedPackageMember(
+  binding,
+  packagesByPath,
+  expectedField,
+  expectedSchema,
+  expectedIdField,
+  code,
+  detail,
+) {
+  if (!exactKeys(binding, RICH_PACKAGE_MEMBER_BINDING_KEYS)
+      || binding.schema_version !== RICH_PACKAGE_MEMBER_BINDING_SCHEMA
+      || binding.member_field !== expectedField
+      || !Number.isSafeInteger(binding.member_index) || binding.member_index < 0
+      || binding.member_schema_version !== expectedSchema
+      || binding.member_record_id_field !== expectedIdField
+      || !HASH_64.test(binding.member_record_id || '')
+      || !Number.isSafeInteger(binding.member_byte_length) || binding.member_byte_length <= 0
+      || !HASH_64.test(binding.member_sha256 || '')) {
+    fail(code, detail);
+  }
+  normaliseRepositoryPath(binding.container_path, code);
+  const packageRecord = packagesByPath.get(binding.container_path);
+  const member = packageRecord?.[expectedField]?.[binding.member_index];
+  const memberBytes = Buffer.from(canonicalJson(member), 'utf8');
+  if (!isPlainObject(member)
+      || member.schema_version !== expectedSchema
+      || member[expectedIdField] !== binding.member_record_id
+      || memberBytes.length !== binding.member_byte_length
+      || sha256Hex(memberBytes) !== binding.member_sha256) {
+    fail(code, `${detail}:member bytes`);
+  }
+  const unsigned = clone(member);
+  delete unsigned[expectedIdField];
+  if (contentId(expectedSchema, unsigned) !== binding.member_record_id) {
+    fail(code, `${detail}:member identity`);
+  }
+  return member;
+}
+
+function validateRichStructureDispositionSet(
+  record,
+  packagesByPath,
+  authority,
+  richContract,
+  agreementIndexSet,
+  code,
+) {
+  const scope = authority?.work3_scope_contract;
+  const contract = scope?.structure_disposition_set_contract;
+  const richBindingContract = richContract?.structure_disposition_set_binding_contract;
+  const expectedOverlayBinding = contract?.item39_overlay_fixture_binding_contract?.exact_binding;
+  const packageOverlayContract = scope?.family_profile_package_contract
+    ?.single_global_item39_overlay_fixture_contract;
+  const expectedGovernedSource = packageOverlayContract?.governed_item39_source;
+  const expectedSyntheticIndexBinding = packageOverlayContract
+    ?.synthetic_ambiguous_repeat_source?.agreement_index_binding;
+  const governedIndexBindings = Array.isArray(agreementIndexSet?.members)
+    ? agreementIndexSet.members.filter(
+      (binding) => binding?.record_id === expectedGovernedSource?.agreement_index_id,
+    )
+    : [];
+  const expectedGovernedIndexBinding = governedIndexBindings[0];
+  if (!same(contract?.exact_keys, RICH_STRUCTURE_SET_KEYS)
+      || !same(contract?.member_exact_keys, RICH_STRUCTURE_MEMBER_KEYS)
+      || contract.schema_version !== 'STAGE_2Y_M7_V2_STRUCTURE_DISPOSITION_SET/V1'
+      || contract.state !== 'BEN_APPROVED_STRUCTURE_DISPOSITION_SET'
+      || contract.fixture_member_field !== 'match_fixtures'
+      || contract.inclusion_and_exclusion_fixture_binding_schema_version
+        !== RICH_PACKAGE_MEMBER_BINDING_SCHEMA
+      || !isPlainObject(expectedOverlayBinding)
+      || richBindingContract?.package_member_bindings_must_resolve !== true
+      || richBindingContract.global_reference_closure
+        !== 'EXACT_UNION_NO_ORPHAN_NO_CROSS_ROUTE_ONE_PACKAGE_OWNER'
+      || contract.package_structure_fixture_reference_closure
+        !== 'EXACT_SINGLE_SYNTHETIC_AMBIGUOUS_REPEAT_BINDING_FOR_DISTINCT_GOVERNED_ITEM39_SOURCE_NO_ORPHAN_NO_CROSS_ROUTE_EXACTLY_ONE_PACKAGE_OWNER'
+      || contract.item39_overlay_fixture_binding_contract
+        .governed_item39_source_must_equal
+        !== 'family_profile_package_contract.single_global_item39_overlay_fixture_contract.governed_item39_source'
+      || !same(richBindingContract.ambiguous_repeat_fixture_member_binding,
+        expectedOverlayBinding)
+      || !same(richBindingContract.governed_item39_source, expectedGovernedSource)
+      || !same(richBindingContract.synthetic_agreement_index_binding,
+        expectedSyntheticIndexBinding)
+      || governedIndexBindings.length !== 1
+      || expectedGovernedIndexBinding.schema_version !== 'AGREEMENT_INDEX/V1'
+      || expectedGovernedIndexBinding.record_id_field !== 'agreement_index_id'
+      || expectedGovernedSource?.agreement_index_id
+        === expectedSyntheticIndexBinding?.record_id) {
+    fail(code, 'WORK3:structure disposition authority');
+  }
+  if (!exactKeys(record, RICH_STRUCTURE_SET_KEYS)
+      || record.schema_version !== contract.schema_version
+      || record.state !== contract.state
+      || !Array.isArray(record.members) || record.members.length === 0) {
+    fail(code, 'WORK3:structure disposition set');
+  }
+  const memberIds = record.members.map((member) => member?.structure_disposition_id);
+  if (!memberIds.every((memberId) => HASH_64.test(memberId || ''))
+      || new Set(memberIds).size !== memberIds.length
+      || !same(memberIds, [...memberIds].sort())) {
+    fail(code, 'WORK3:structure disposition member order');
+  }
+  let overlayCount = 0;
+  let resolvedOverlayBinding = null;
+  const routedMatchBindings = [];
+  const routedStructureBindings = [];
+  for (const member of record.members) {
+    if (!exactKeys(member, RICH_STRUCTURE_MEMBER_KEYS)
+        || member.schema_version !== contract.schema_version) {
+      fail(code, 'WORK3:structure disposition member');
+    }
+    const unsigned = clone(member);
+    delete unsigned.schema_version;
+    delete unsigned.structure_disposition_id;
+    if (contentId(contract.schema_version, unsigned) !== member.structure_disposition_id) {
+      fail(code, 'WORK3:structure disposition member identity');
+    }
+    const requiresBen = ['LEGAL_TEXT_EXCLUSION', 'NO_OUTPUT',
+      'BEN_AUTHORED_INLINE_LIST_OVERLAY'].includes(member.kind);
+    if (!['TECHNICAL_STRUCTURE', 'SOURCE_ARTEFACT', 'LEGAL_TEXT_EXCLUSION', 'NO_OUTPUT',
+      'BEN_AUTHORED_INLINE_LIST_OVERLAY'].includes(member.kind)
+        || typeof member.reason_code !== 'string' || member.reason_code.length === 0
+        || typeof member.policy_id !== 'string' || member.policy_id.length === 0
+        || !Number.isSafeInteger(member.policy_version) || member.policy_version <= 0
+        || !['DETERMINISTIC_TECHNICAL', 'BEN_LEGAL_RULING'].includes(member.authority_class)
+        || (requiresBen
+          ? member.authority_class !== 'BEN_LEGAL_RULING'
+            || member.approver !== 'BEN_GOODCHILD'
+            || typeof member.lawyer_ruling_id !== 'string'
+            || member.lawyer_ruling_id.length === 0
+          : member.approver !== null || member.lawyer_ruling_id !== null)
+        || !exactKeys(member.scope, RICH_STRUCTURE_SCOPE_KEYS)
+        || !HASH_64.test(member.scope.agreement_index_id || '')
+        || typeof member.scope.source_node_occurrence_id !== 'string'
+        || member.scope.source_node_occurrence_id.length === 0
+        || !Number.isSafeInteger(member.scope.start_byte) || member.scope.start_byte < 0
+        || !Number.isSafeInteger(member.scope.end_byte)
+        || member.scope.end_byte <= member.scope.start_byte
+        || !Array.isArray(member.scope.governed_input_occurrence_ids)
+        || new Set(member.scope.governed_input_occurrence_ids).size
+          !== member.scope.governed_input_occurrence_ids.length
+        || !member.scope.governed_input_occurrence_ids.every(
+          (value) => typeof value === 'string' && value.length > 0,
+        )
+        || !isPlainObject(member.match_test)) {
+      fail(code, 'WORK3:structure disposition member contract');
+    }
+    const resolvedIds = {};
+    for (const field of ['inclusion_fixture_bindings', 'exclusion_fixture_bindings']) {
+      const bindings = member[field];
+      const serialised = Array.isArray(bindings)
+        ? bindings.map((binding) => canonicalJson(binding)) : [];
+      if (serialised.length === 0
+          || new Set(serialised).size !== serialised.length
+          || !same(serialised, [...serialised].sort())) {
+        fail(code, `WORK3:structure ${field}`);
+      }
+      resolvedIds[field] = new Set(bindings.map((binding) => {
+        const resolved = validateRichRoutedPackageMember(
+          binding,
+          packagesByPath,
+          'match_fixtures',
+          'STAGE_2Y_M7_V2_MATCH_FIXTURE/V1',
+          'match_fixture_id',
+          code,
+          `WORK3:structure ${field}`,
+        );
+        routedMatchBindings.push(binding);
+        return resolved.match_fixture_id;
+      }));
+    }
+    if ([...resolvedIds.inclusion_fixture_bindings].some(
+      (fixtureId) => resolvedIds.exclusion_fixture_bindings.has(fixtureId),
+    )) {
+      fail(code, 'WORK3:structure fixture partition');
+    }
+    if (member.kind === 'BEN_AUTHORED_INLINE_LIST_OVERLAY') {
+      overlayCount += 1;
+      const overlay = member.inline_list_overlay;
+      if (!exactKeys(overlay, RICH_INLINE_OVERLAY_KEYS)
+          || !Array.isArray(overlay.ambiguous_repeat_fixture_bindings)
+          || overlay.ambiguous_repeat_fixture_bindings.length !== 1
+          || !same(overlay.ambiguous_repeat_fixture_bindings[0], expectedOverlayBinding)) {
+        fail(code, 'WORK3:item39 overlay route');
+      }
+      validateRichRoutedPackageMember(
+        overlay.ambiguous_repeat_fixture_bindings[0],
+        packagesByPath,
+        'structure_fixture_members',
+        'STAGE_2Y_M7_V2_STRUCTURE_OVERLAY_FIXTURE/V1',
+        'fixture_id',
+        code,
+        'WORK3:item39 overlay fixture',
+      );
+      routedStructureBindings.push(overlay.ambiguous_repeat_fixture_bindings[0]);
+      if (member.lawyer_ruling_id !== expectedGovernedSource.lawyer_ruling_id
+          || member.scope.agreement_index_id !== expectedGovernedSource.agreement_index_id
+          || member.scope.source_node_occurrence_id
+            !== expectedGovernedSource.source_node_occurrence_id
+          || member.scope.start_byte !== expectedGovernedSource.span?.start_byte
+          || member.scope.end_byte !== expectedGovernedSource.span?.end_byte
+          || overlay.lawyer_ruling_id !== expectedGovernedSource.lawyer_ruling_id
+          || !same(overlay.agreement_index_binding, expectedGovernedIndexBinding)
+          || overlay.sealed_ambiguity_id !== expectedGovernedSource.ambiguity_id
+          || !same(overlay.sealed_ambiguity_span, expectedGovernedSource.span)
+          || overlay.inline_marker_disposition_id
+            !== expectedGovernedSource.inline_marker_disposition_id
+          || overlay.parent_node_occurrence_id
+            !== expectedGovernedSource.source_node_occurrence_id
+          || overlay.parent_reference !== expectedGovernedSource.section_reference) {
+        fail(code, 'WORK3:item39 governed source');
+      }
+      resolvedOverlayBinding = overlay.ambiguous_repeat_fixture_bindings[0];
+    } else if (member.inline_list_overlay !== null) {
+      fail(code, 'WORK3:non-overlay structure disposition');
+    }
+  }
+  const expectedStructureBindings = [];
+  const routedMemberIds = new Set();
+  for (const [containerPath, packageRecord] of packagesByPath) {
+    for (const [memberField, schemaVersion, recordIdField, destination] of [
+      ['match_fixtures', 'STAGE_2Y_M7_V2_MATCH_FIXTURE/V1',
+        'match_fixture_id', null],
+      ['structure_fixture_members', 'STAGE_2Y_M7_V2_STRUCTURE_OVERLAY_FIXTURE/V1',
+        'fixture_id', expectedStructureBindings],
+    ]) {
+      const members = packageRecord[memberField];
+      if (!Array.isArray(members)) fail(code, `WORK3:${memberField} inventory`);
+      let previousId = null;
+      for (let memberIndex = 0; memberIndex < members.length; memberIndex += 1) {
+        const member = members[memberIndex];
+        const memberId = member?.[recordIdField];
+        if (!isPlainObject(member)
+            || member.schema_version !== schemaVersion
+            || !HASH_64.test(memberId || '')
+            || (previousId !== null && memberId <= previousId)
+            || routedMemberIds.has(memberId)) {
+          fail(code, `WORK3:${memberField} member order and ownership`);
+        }
+        const unsigned = clone(member);
+        delete unsigned[recordIdField];
+        if (contentId(schemaVersion, unsigned) !== memberId) {
+          fail(code, `WORK3:${memberField} member identity`);
+        }
+        const memberBytes = Buffer.from(canonicalJson(member), 'utf8');
+        if (destination !== null) {
+          destination.push({
+            schema_version: RICH_PACKAGE_MEMBER_BINDING_SCHEMA,
+            container_path: containerPath,
+            member_field: memberField,
+            member_index: memberIndex,
+            member_schema_version: schemaVersion,
+            member_record_id_field: recordIdField,
+            member_record_id: memberId,
+            member_byte_length: memberBytes.length,
+            member_sha256: sha256Hex(memberBytes),
+          });
+        }
+        routedMemberIds.add(memberId);
+        previousId = memberId;
+      }
+    }
+  }
+  const exactReferenceUnion = (routed, expected) => {
+    const routedKeys = routed.map((binding) => canonicalJson(binding));
+    const expectedKeys = expected.map((binding) => canonicalJson(binding));
+    return new Set(routedKeys).size === routedKeys.length
+      && routedKeys.length === expectedKeys.length
+      && same([...routedKeys].sort(), [...expectedKeys].sort());
+  };
+  const routedMatchKeys = routedMatchBindings.map((binding) => canonicalJson(binding));
+  if (overlayCount !== 1 || expectedStructureBindings.length !== 1
+      || new Set(routedMatchKeys).size !== routedMatchKeys.length
+      || !exactReferenceUnion(routedStructureBindings, expectedStructureBindings)
+      || !same(resolvedOverlayBinding, expectedOverlayBinding)) {
+    fail(code, 'WORK3:structure global reference closure');
+  }
+}
+
+function validateRichFamilyProfilePackageSemantics(
+  root,
+  authority,
+  familyPackageSources,
+  profileSet,
+  structureRecord,
+  agreementIndexSet,
+  code,
+) {
+  const packetBinding = authority.work3_scope_contract
+    ?.family_packet_set_source_contract?.binding;
+  const { record: familyPacketSet } = validateRichJsonSourceBinding(
+    root,
+    packetBinding,
+    code,
+  );
+  const sourceBindingsByPath = new Map();
+  const addSourceBinding = (binding) => {
+    if (!isPlainObject(binding) || typeof binding.path !== 'string') {
+      fail(code, 'WORK3:family package semantic source binding');
+    }
+    const existing = sourceBindingsByPath.get(binding.path);
+    if (existing && !same(existing, binding)) {
+      fail(code, `WORK3:conflicting semantic source binding:${binding.path}`);
+    }
+    sourceBindingsByPath.set(binding.path, binding);
+  };
+  for (const binding of [
+    familyPacketSet.work0_evidence_root_binding,
+    familyPacketSet.fixed_sample_identity_binding,
+    familyPacketSet.repair_baseline_binding,
+    familyPacketSet.calibration_ruling_map_binding,
+    familyPacketSet.lawyer_review_packet_binding,
+    ...familyPacketSet.families.map((family) => family.calibration_pack_binding),
+  ]) addSourceBinding(binding);
+
+  const agreementIndexBindingsById = new Map();
+  const addAgreementIndexBinding = (binding, includeSource) => {
+    const existing = agreementIndexBindingsById.get(binding.record_id);
+    if (existing && !same(existing, binding)) {
+      fail(code, 'WORK3:duplicate AgreementIndex semantic source');
+    }
+    agreementIndexBindingsById.set(binding.record_id, binding);
+    if (includeSource) addSourceBinding(binding);
+  };
+  for (const binding of agreementIndexSet.members) addAgreementIndexBinding(binding, false);
+  for (const source of familyPackageSources) {
+    for (const fixture of source.record.structure_fixture_members) {
+      addAgreementIndexBinding(fixture.agreement_index_binding, true);
+    }
+  }
+  for (const member of structureRecord.members) {
+    if (member.inline_list_overlay !== null) {
+      addAgreementIndexBinding(member.inline_list_overlay.agreement_index_binding, true);
+    }
+  }
+  for (const member of structureRecord.members) {
+    const binding = agreementIndexBindingsById.get(member.scope.agreement_index_id);
+    if (!binding) fail(code, 'WORK3:missing structure semantic source');
+    addSourceBinding(binding);
+  }
+  const nativeSourceRecords = [...sourceBindingsByPath.values()].map(
+    (binding) => validateRichJsonSourceBinding(root, binding, code),
+  );
+  try {
+    validateFamilyProfilePackageSetForWork3({
+      work3Authority: authority,
+      familyProfileSet: profileSet,
+      familyPackageSources,
+      familyPacketSet,
+      structureDispositionSet: structureRecord,
+      nativeSourceRecords,
+    });
+  } catch (error) {
+    fail(code, `WORK3:family profile package semantics:${error.code ?? error.message}`);
+  }
+}
+
+function validateRichApprovedProfileInventory(
+  profileSet,
+  familyEvidence,
+  packagesByPath,
+  scope,
+  familyContract,
+  code,
+) {
+  const orderContract =
+    'C3_FAMILY_KEY_ORDER_THEN_PROFILE_KEY_THEN_PROFILE_ID_WITH_PROFILE_KEYS_UNIQUE_WITHIN_FAMILY';
+  const approvedSetContract = scope.approved_family_profile_set_contract;
+  const profileContract = scope.family_profile_package_contract
+    ?.member_contracts?.profiles;
+  const treeContract = scope.family_profile_package_contract
+    ?.member_contracts?.subtype_tree;
+  if (familyContract.approved_profile_order !== orderContract
+      || approvedSetContract?.profiles_order !== orderContract
+      || approvedSetContract.profiles_contract
+        !== 'EXACT_FINAL_V1_PROFILE_RECORDS_CANONICAL_BYTE_EQUAL_TO_EXACTLY_ONE_PACKAGE_PROFILES_MEMBER_WITH_NO_ADDED_PROVENANCE_KEYS'
+      || approvedSetContract.profile_and_package_inventory_closure
+        !== 'PROFILE_IDS_PACKAGE_BINDINGS_DIMENSION_EVIDENCE_AND_SUBTYPE_TREES_ARE_COMPLETE_UNIQUE_AND_BYTE_EQUAL_TO_EMBEDDED_PACKAGE_MEMBERS'
+      || profileContract?.container !== 'ARRAY'
+      || profileContract.family_and_version_equal_package !== true
+      || profileContract.order !== 'CANONICAL_ASCENDING_PROFILE_KEY_THEN_PROFILE_ID'
+      || profileContract.profile_keys_unique_within_family !== true
+      || profileContract.record_id_field !== 'profile_id'
+      || profileContract.schema_version
+        !== 'STAGE_2Y_M7_V2_APPROVED_FAMILY_PROFILE/V1'
+      || treeContract?.container !== 'SINGLETON'
+      || treeContract.family_and_version_equal_package !== true
+      || treeContract.record_id_field !== 'subtype_tree_id'
+      || treeContract.schema_version !== 'STAGE_2Y_M7_V2_REPAIR_SUBTYPE_TREE/V1') {
+    fail(code, 'WORK3:approved profile inventory authority');
+  }
+  const expectedProfiles = [];
+  const profileIds = new Set();
+  const familyProfileKeys = new Set();
+  for (let index = 0; index < CANDIDATE_FAMILIES.length; index += 1) {
+    const familyKey = CANDIDATE_FAMILIES[index];
+    const packageBinding = familyEvidence.family_profile_package_bindings[index];
+    const packageRecord = packagesByPath.get(packageBinding.path);
+    const packageVersion = packageRecord?.profile_set_version;
+    if (!Number.isInteger(packageVersion)
+        || packageVersion < 1
+        || packageRecord.family_approval?.profile_set_version !== packageVersion
+        || packageRecord.subtype_tree?.profile_set_version !== packageVersion
+        || packageRecord.subtype_tree?.family_key !== familyKey
+        || !Array.isArray(packageRecord.profiles)) {
+      fail(code, `${familyKey}:package profile inventory`);
+    }
+    let previousProfileKey = null;
+    let previousProfileId = null;
+    for (const profile of packageRecord.profiles) {
+      if (!isPlainObject(profile)
+          || profile.schema_version !== 'STAGE_2Y_M7_V2_APPROVED_FAMILY_PROFILE/V1'
+          || profile.family_key !== familyKey
+          || profile.profile_set_version !== packageRecord.profile_set_version
+          || typeof profile.profile_key !== 'string'
+          || profile.profile_key.length === 0
+          || !HASH_64.test(profile.profile_id || '')) {
+        fail(code, `${familyKey}:approved profile record`);
+      }
+      const unsigned = clone(profile);
+      delete unsigned.profile_id;
+      delete unsigned.schema_version;
+      if (contentId(profile.schema_version, unsigned) !== profile.profile_id) {
+        fail(code, `${familyKey}:approved profile identity`);
+      }
+      if (previousProfileKey !== null
+          && (profile.profile_key < previousProfileKey
+            || (profile.profile_key === previousProfileKey
+              && profile.profile_id <= previousProfileId))) {
+        fail(code, `${familyKey}:approved profile order`);
+      }
+      const familyProfileKey = `${familyKey}\0${profile.profile_key}`;
+      if (familyProfileKeys.has(familyProfileKey) || profileIds.has(profile.profile_id)) {
+        fail(code, `${familyKey}:approved profile uniqueness`);
+      }
+      familyProfileKeys.add(familyProfileKey);
+      profileIds.add(profile.profile_id);
+      expectedProfiles.push(profile);
+      previousProfileKey = profile.profile_key;
+      previousProfileId = profile.profile_id;
+    }
+  }
+  if (!same(profileSet.profiles, expectedProfiles)) {
+    fail(code, 'WORK3:approved profile package inventory closure');
+  }
+}
+
+function validateRichDimensionEvidenceInventory(
+  profileSet,
+  familyEvidence,
+  packagesByPath,
+  scope,
+  code,
+) {
+  const approvedSetContract = scope.approved_family_profile_set_contract;
+  const memberContract = scope.family_profile_package_contract
+    ?.member_contracts?.dimension_evidence;
+  if (approvedSetContract?.dimension_evidence_bindings_contract
+        !== 'EXACT_ALL_PACKAGE_DIMENSION_EVIDENCE_MEMBERS_AS_PACKAGE_MEMBER_BINDINGS_IN_CANONICAL_FAMILY_KEY_THEN_MEMBER_ID_ORDER'
+      || memberContract?.container !== 'ARRAY'
+      || memberContract.order !== 'CANONICAL_ASCENDING_DIMENSION_EVIDENCE_ID'
+      || memberContract.record_id_field !== 'dimension_evidence_id'
+      || memberContract.schema_version !== 'STAGE_2Y_M7_V2_DIMENSION_EVIDENCE/V1') {
+    fail(code, 'WORK3:dimension evidence inventory authority');
+  }
+  const expectedBindings = [];
+  const evidenceIds = new Set();
+  for (let index = 0; index < CANDIDATE_FAMILIES.length; index += 1) {
+    const familyKey = CANDIDATE_FAMILIES[index];
+    const packageBinding = familyEvidence.family_profile_package_bindings[index];
+    const packageRecord = packagesByPath.get(packageBinding.path);
+    if (!Array.isArray(packageRecord?.dimension_evidence)) {
+      fail(code, `${familyKey}:dimension evidence inventory`);
+    }
+    let previousId = null;
+    for (let memberIndex = 0;
+      memberIndex < packageRecord.dimension_evidence.length;
+      memberIndex += 1) {
+      const member = packageRecord.dimension_evidence[memberIndex];
+      if (!isPlainObject(member)
+          || member.schema_version !== memberContract.schema_version
+          || !HASH_64.test(member.dimension_evidence_id || '')
+          || (previousId !== null && member.dimension_evidence_id <= previousId)
+          || evidenceIds.has(member.dimension_evidence_id)) {
+        fail(code, `${familyKey}:dimension evidence member order and uniqueness`);
+      }
+      const unsigned = clone(member);
+      delete unsigned.dimension_evidence_id;
+      if (contentId(member.schema_version, unsigned) !== member.dimension_evidence_id) {
+        fail(code, `${familyKey}:dimension evidence identity`);
+      }
+      const bytes = Buffer.from(canonicalJson(member), 'utf8');
+      expectedBindings.push({
+        schema_version: RICH_PACKAGE_MEMBER_BINDING_SCHEMA,
+        container_path: packageBinding.path,
+        member_field: 'dimension_evidence',
+        member_index: memberIndex,
+        member_schema_version: memberContract.schema_version,
+        member_record_id_field: memberContract.record_id_field,
+        member_record_id: member.dimension_evidence_id,
+        member_byte_length: bytes.length,
+        member_sha256: sha256Hex(bytes),
+      });
+      evidenceIds.add(member.dimension_evidence_id);
+      previousId = member.dimension_evidence_id;
+    }
+  }
+  if (!same(profileSet.dimension_evidence_bindings, expectedBindings)) {
+    fail(code, 'WORK3:dimension evidence package inventory closure');
+  }
+}
+
+function validateRichArtifactCategories(bindings, contract, code) {
+  const standardContract = contract.standard_binding_contract;
+  const artifactContract = contract.artifact_bindings_contract;
+  if (!same(standardContract?.exact_keys, RECORD_BINDING_KEYS)
+      || standardContract.record_fields
+        !== 'NULL_FOR_CODE_TEST_AND_RAW_FIXTURE_OTHERWISE_EXACT_NATIVE_SCHEMA_ID_FIELD_AND_ID'
+      || !Array.isArray(artifactContract?.record_id_categories)) {
+    fail(code, 'WORK3:artifact category authority');
+  }
+  const expectedByPath = new Map();
+  let rawRemainderSeen = false;
+  for (const category of artifactContract.record_id_categories) {
+    if (exactKeys(category, ['remaining_code_test_and_raw_fixture_paths'])) {
+      if (rawRemainderSeen
+          || category.remaining_code_test_and_raw_fixture_paths
+            !== 'NULL_SCHEMA_AND_ID_FIELDS') {
+        fail(code, 'WORK3:raw artifact category authority');
+      }
+      rawRemainderSeen = true;
+      continue;
+    }
+    if (!Array.isArray(category?.paths) || category.paths.length === 0
+        || new Set(category.paths).size !== category.paths.length) {
+      fail(code, 'WORK3:artifact category paths');
+    }
+    let categoryFields;
+    if (exactKeys(category, ['paths', 'record_id_field', 'schema_version'])) {
+      if (typeof category.schema_version !== 'string'
+          || typeof category.record_id_field !== 'string') {
+        fail(code, 'WORK3:artifact category record fields');
+      }
+      categoryFields = category.paths.map((repositoryPath) => ({
+        path: repositoryPath,
+        schema_version: category.schema_version,
+        record_id_field: category.record_id_field,
+      }));
+    } else if (exactKeys(category, ['paths', 'schema_and_id_fields'])
+        && Array.isArray(category.schema_and_id_fields)
+        && category.schema_and_id_fields.length === category.paths.length
+        && same(category.schema_and_id_fields.map((entry) => entry?.path), category.paths)) {
+      categoryFields = category.schema_and_id_fields;
+    } else {
+      fail(code, 'WORK3:artifact category shape');
+    }
+    for (const fields of categoryFields) {
+      if (!exactKeys(fields, ['path', 'record_id_field', 'schema_version'])
+          || typeof fields.path !== 'string'
+          || typeof fields.schema_version !== 'string'
+          || typeof fields.record_id_field !== 'string'
+          || expectedByPath.has(fields.path)) {
+        fail(code, 'WORK3:artifact category overlap');
+      }
+      expectedByPath.set(fields.path, fields);
+    }
+  }
+  if (!rawRemainderSeen
+      || [...expectedByPath.keys()].some(
+        (repositoryPath) => !artifactContract.paths.includes(repositoryPath),
+      )) {
+    fail(code, 'WORK3:artifact category coverage');
+  }
+  for (const binding of bindings) {
+    const expected = expectedByPath.get(binding.path);
+    if (expected === undefined) {
+      if (binding.schema_version !== null
+          || binding.record_id_field !== null
+          || binding.record_id !== null) {
+        fail(code, `${binding.path}:raw artifact record fields`);
+      }
+    } else if (binding.schema_version !== expected.schema_version
+        || binding.record_id_field !== expected.record_id_field
+        || !HASH_64.test(binding.record_id || '')) {
+      fail(code, `${binding.path}:governed artifact record fields`);
+    }
+  }
+}
+
+function validateRichFamilyApprovals(packagesByPath, scope, code) {
+  const packageContract = scope?.family_profile_package_contract;
+  const approvalContract = packageContract?.family_approval_contract;
+  const allowedDecisionClasses = approvalContract?.approved_decision_classes
+    ?.allowed_parent_work3_classes;
+  if (packageContract?.ben_approval_id_preassignment_global_contract
+        !== 'EXACTLY_25_NON_EMPTY_VALUES_GLOBALLY_UNIQUE_ACROSS_THE_25_FAMILY_PACKAGES'
+      || approvalContract?.schema_version
+        !== 'STAGE_2Y_M7_V2_FAMILY_PROFILE_PACKAGE_APPROVAL/V1'
+      || approvalContract.record_id_field !== 'family_approval_id'
+      || approvalContract.approver !== 'BEN_GOODCHILD'
+      || approvalContract.content_identity !== 'CONTENT_ID_OF_SCHEMA_AND_UNSIGNED_APPROVAL'
+      || approvalContract.approved_inventory_digest
+        !== 'SHA256_OF_UTF8_CANONICAL_JSON_OF_EXACT_SORTED_INVENTORY_PAYLOAD_WITH_NO_TRAILING_LF_AND_NO_CONTENT_ID_PREFIX'
+      || approvalContract.approved_inventory_digest_encoding
+        !== 'LOWERCASE_HEX_SHA256_64'
+      || !Array.isArray(approvalContract.exact_keys)
+      || !Array.isArray(approvalContract.approved_inventory_digest_payload_exact_keys)
+      || !Array.isArray(allowedDecisionClasses)
+      || new Set(allowedDecisionClasses).size !== allowedDecisionClasses.length) {
+    fail(code, 'WORK3:family approval authority');
+  }
+  const benApprovalIds = new Set();
+  for (const [containerPath, packageRecord] of packagesByPath) {
+    const approval = packageRecord.family_approval;
+    const decisionClasses = approval?.approved_decision_classes;
+    if (!exactKeys(approval, approvalContract.exact_keys)
+        || approval.schema_version !== approvalContract.schema_version
+        || !HASH_64.test(approval.family_approval_id || '')
+        || typeof approval.ben_approval_id !== 'string'
+        || approval.ben_approval_id.trim().length === 0
+        || benApprovalIds.has(approval.ben_approval_id)
+        || approval.family_key !== packageRecord.family_key
+        || approval.profile_set_version !== packageRecord.profile_set_version
+        || approval.approver !== approvalContract.approver
+        || !/^\d{4}-\d{2}-\d{2}$/.test(approval.approved_on || '')
+        || typeof approval.approval_text !== 'string'
+        || approval.approval_text.trim().length === 0
+        || !HASH_64.test(approval.approved_inventory_digest || '')
+        || !Array.isArray(decisionClasses)
+        || !decisionClasses.every(
+          (decisionClass) => typeof decisionClass === 'string'
+            && allowedDecisionClasses.includes(decisionClass),
+        )
+        || !same(decisionClasses, [...new Set(decisionClasses)].sort())) {
+      fail(code, `${containerPath}:family approval`);
+    }
+    const unsignedApproval = clone(approval);
+    delete unsignedApproval.family_approval_id;
+    if (contentId(approval.schema_version, unsignedApproval)
+        !== approval.family_approval_id) {
+      fail(code, `${containerPath}:family approval identity`);
+    }
+    const memberArrays = [
+      'legal_decisions', 'profiles', 'match_fixtures', 'dimension_evidence',
+      'structure_fixture_members',
+    ];
+    if (!memberArrays.every((field) => Array.isArray(packageRecord[field]))
+        || !isPlainObject(packageRecord.subtype_tree)
+        || !same(packageRecord.legal_decisions,
+          [...new Set(packageRecord.legal_decisions)].sort())
+        || !packageRecord.legal_decisions.every(
+          (decision) => typeof decision === 'string' && decision.length > 0,
+        )) {
+      fail(code, `${containerPath}:approved inventory inputs`);
+    }
+    const approvedInventory = {
+      family_key: packageRecord.family_key,
+      profile_set_version: packageRecord.profile_set_version,
+      legal_decisions: packageRecord.legal_decisions,
+      profile_ids: packageRecord.profiles.map((profile) => profile?.profile_id),
+      subtype_tree_id: packageRecord.subtype_tree.subtype_tree_id,
+      match_fixture_record_ids: packageRecord.match_fixtures.map(
+        (fixtureRecord) => fixtureRecord?.match_fixture_id,
+      ),
+      dimension_evidence_ids: packageRecord.dimension_evidence.map(
+        (evidence) => evidence?.dimension_evidence_id,
+      ),
+      structure_fixture_ids: packageRecord.structure_fixture_members.map(
+        (fixtureRecord) => fixtureRecord?.fixture_id,
+      ),
+    };
+    if (!exactKeys(
+      approvedInventory,
+      approvalContract.approved_inventory_digest_payload_exact_keys,
+    )
+        || approval.approved_inventory_digest
+          !== sha256Hex(canonicalJson(approvedInventory))) {
+      fail(code, `${containerPath}:approved inventory digest`);
+    }
+    benApprovalIds.add(approval.ben_approval_id);
+  }
+  if (packagesByPath.size !== CANDIDATE_FAMILIES.length
+      || benApprovalIds.size !== CANDIDATE_FAMILIES.length) {
+    fail(code, 'WORK3:global Ben approval IDs');
+  }
+}
+
+function validateRichWork3ReceiptEnvelopeAndIdentity(receipt, code) {
+  if (!exactKeys(receipt, RICH_WORK3_RECEIPT_KEYS)
+      || receipt.schema_version !== RICH_WORK3_RECEIPT_SCHEMA
+      || receipt.work !== 'WORK3'
+      || receipt.stage !== 'M7_V2_REPAIR_WORK3'
+      || receipt.state !== 'PASS_WORK3_BUILD_ONLY_NULL_CANDIDATE'
+      || receipt.status !== 'PASS') {
+    fail(code, 'WORK3:rich receipt envelope');
+  }
+  validateContentIdOnly(receipt, 'work3_receipt_id', code, 'WORK3:receipt identity');
+}
+
+function validateRichWork3Receipt(root, receipt, manifest, code) {
+  validateRichWork3ReceiptEnvelopeAndIdentity(receipt, code);
+  const authorityBinding = manifest.work3_entry_correction_authority_binding;
+  if (!same(authorityBinding, WORK3_ENTRY_CORRECTION_AUTHORITY_BINDING)) {
+    fail(code, 'WORK3:fixed C3 authority binding');
+  }
+  const { record: authority } = validateRichBinding(root, authorityBinding, code, {
+    path: WORK3_ENTRY_CORRECTION_AUTHORITY_PATH,
+    schema_version: WORK3_ENTRY_CORRECTION_AUTHORITY_SCHEMA,
+    record_id_field: 'correction_authority_id',
+  });
+  const contract = authority?.work3_scope_contract?.rich_work3_receipt_contract;
+  if (!isPlainObject(contract)
+      || !same(contract.exact_keys, RICH_WORK3_RECEIPT_KEYS)
+      || contract.top_level_key_count !== RICH_WORK3_RECEIPT_KEYS.length
+      || contract.identity_contract
+        !== 'CANONICAL_JSON_PLUS_LF_AND_WORK3_RECEIPT_ID_EQUALS_CONTENT_ID_OF_SCHEMA_AND_UNSIGNED_RECORD'
+      || receipt.schema_version !== contract.schema_version
+      || receipt.work !== contract.work
+      || receipt.stage !== contract.stage
+      || receipt.state !== contract.state
+      || receipt.status !== contract.status) {
+    fail(code, 'WORK3:rich receipt authority');
+  }
+  const scope = authority.work3_scope_contract;
+  const manifestContract = scope.work3_manifest_contract;
+  const orderingAuthorityBinding = scope.candidate_ordering_authority_overlay
+    ?.base_authority_binding;
+  if (!isPlainObject(manifestContract)
+      || !same(manifest.parent_authority_binding, manifestContract.parent_authority_binding)
+      || !same(manifest.activation_receipt_binding,
+        manifestContract.activation_receipt_binding)
+      || !same(manifest.predecessor_receipt_binding,
+        manifestContract.predecessor_receipt_binding)
+      || !same(manifest.candidate_ordering_correction_authority_binding,
+        manifestContract.candidate_ordering_correction_authority_binding)
+      || !same(manifest.candidate_ordering_correction_authority_binding,
+        orderingAuthorityBinding)
+      || !same(manifest.exact_argv_with_run_limits,
+        manifestContract.exact_argv_with_run_limits)) {
+    fail(code, 'WORK3:manifest lineage authority');
+  }
+  const expectedResolvedManifest = expectedWork3Manifest(authority, authorityBinding);
+  if (!same(manifest, expectedResolvedManifest)) {
+    const driftedFields = [...new Set([
+      ...Object.keys(manifest),
+      ...Object.keys(expectedResolvedManifest),
+    ])].filter((key) => !Object.hasOwn(manifest, key)
+      || !Object.hasOwn(expectedResolvedManifest, key)
+      || !same(manifest[key], expectedResolvedManifest[key]));
+    fail(code, `WORK3:resolved manifest C3 equality:${driftedFields.join(',')}`);
+  }
+  validateRichBinding(root, manifest.activation_receipt_binding, code, {
+    path: manifestContract.activation_receipt_binding.path,
+    schema_version: manifestContract.activation_receipt_binding.schema_version,
+    record_id_field: manifestContract.activation_receipt_binding.record_id_field,
+  });
+  validateRichBinding(root, manifest.predecessor_receipt_binding, code, {
+    path: manifestContract.predecessor_receipt_binding.path,
+    schema_version: manifestContract.predecessor_receipt_binding.schema_version,
+    record_id_field: manifestContract.predecessor_receipt_binding.record_id_field,
+  });
+  validateRichBinding(root, manifest.candidate_ordering_correction_authority_binding, code, {
+    path: orderingAuthorityBinding.path,
+    schema_version: orderingAuthorityBinding.schema_version,
+    record_id_field: orderingAuthorityBinding.record_id_field,
+  });
+  if (receipt.execution_manifest_id !== manifest.execution_manifest_id
+      || receipt.execution_manifest_digest !== manifest.execution_manifest_digest
+      || !same(receipt.parent_authority_binding, manifest.parent_authority_binding)
+      || !same(receipt.activation_receipt_binding, manifest.activation_receipt_binding)
+      || !same(receipt.predecessor_receipt_binding, manifest.predecessor_receipt_binding)
+      || !same(receipt.candidate_ordering_correction_authority_binding,
+        manifest.candidate_ordering_correction_authority_binding)
+      || !same(receipt.work3_entry_correction_authority_binding,
+        manifest.work3_entry_correction_authority_binding)
+      || manifest.candidate_registration_binding !== null
+      || manifest.candidate_transition !== null) {
+    fail(code, 'WORK3:rich receipt lineage');
+  }
+
+  const nativeEvidence = receipt.candidate_native_set_evidence;
+  const nativeContract = contract.candidate_native_set_evidence_contract;
+  if (!same(nativeContract?.exact_keys, RICH_NATIVE_SET_EVIDENCE_KEYS)
+      || !exactKeys(nativeEvidence, nativeContract.exact_keys)
+      || !['sealed_agreement_ids', 'additive_agreement_ids', 'combined_agreement_ids']
+        .every((key) => Array.isArray(nativeEvidence[key]))
+      || !same(nativeEvidence.sealed_agreement_ids, nativeContract.sealed_agreement_ids)
+      || !same(nativeEvidence.additive_agreement_ids, nativeContract.additive_agreement_ids)
+      || !same(nativeEvidence.combined_agreement_ids, nativeContract.combined_agreement_ids)
+      || nativeEvidence.extension_proof !== nativeContract.extension_proof
+      || !same([
+        nativeEvidence.work2_agreement_analysis_set_binding,
+        nativeEvidence.work2_context_compilation_set_binding,
+      ], nativeContract.work2_bindings)) {
+    fail(code, 'WORK3:native set evidence');
+  }
+  const nativeSetRecords = RICH_NATIVE_SET_EVIDENCE_KEYS.slice(0, 5).map(
+    (key) => validateRichBinding(root, nativeEvidence[key], code).record,
+  );
+  const work3NativeBindings = [
+    nativeEvidence.work3_agreement_index_set_binding,
+    nativeEvidence.work3_context_compilation_set_binding,
+    nativeEvidence.work3_agreement_analysis_set_binding,
+  ];
+  if (!work3NativeBindings.every((binding, index) => {
+    const expected = nativeContract.work3_binding_contracts[index];
+    return binding.path === expected.path
+      && binding.schema_version === expected.schema_version
+      && binding.record_id_field === expected.record_id_field;
+  })) {
+    fail(code, 'WORK3:native set binding contracts');
+  }
+  validateRichNativeSetEvidence(
+    root,
+    authority,
+    nativeContract,
+    nativeEvidence,
+    nativeSetRecords.slice(2),
+    code,
+  );
+
+  const familyEvidence = receipt.family_profile_evidence;
+  const familyContract = contract.family_profile_evidence_contract;
+  if (!same(familyContract?.exact_keys, RICH_FAMILY_PROFILE_EVIDENCE_KEYS)
+      || !exactKeys(familyEvidence, familyContract.exact_keys)
+      || !same(familyContract.family_keys, CANDIDATE_FAMILIES)
+      || !same(familyEvidence.family_keys, familyContract.family_keys)
+      || !Array.isArray(familyEvidence.family_profile_package_bindings)
+      || familyEvidence.family_profile_package_bindings.length !== CANDIDATE_FAMILIES.length) {
+    fail(code, 'WORK3:family profile evidence');
+  }
+  const packagesByPath = new Map();
+  const familyPackageSources = [];
+  for (let index = 0; index < CANDIDATE_FAMILIES.length; index += 1) {
+    const familyKey = CANDIDATE_FAMILIES[index];
+    const binding = familyEvidence.family_profile_package_bindings[index];
+    const { bytes, record: packageRecord } = validateRichBinding(root, binding, code, {
+      schema_version: 'STAGE_2Y_M7_V2_FAMILY_PROFILE_PACKAGE/V2',
+      record_id_field: 'family_profile_package_id',
+    });
+    if (!exactKeys(packageRecord, RICH_FAMILY_PACKAGE_KEYS)
+        || packageRecord.state !== 'BEN_APPROVED_FAMILY_PROFILE_PACKAGE'
+        || packageRecord.family_key !== familyKey
+        || packagesByPath.has(binding.path)) {
+      fail(code, `${familyKey}:outer package`);
+    }
+    packagesByPath.set(binding.path, packageRecord);
+    familyPackageSources.push({ binding, bytes, record: packageRecord });
+  }
+  validateRichFamilyApprovals(packagesByPath, scope, code);
+  const profileSetBinding = familyEvidence.approved_family_profile_set_binding;
+  const { record: profileSet } = validateRichBinding(root, profileSetBinding, code, {
+    schema_version: 'STAGE_2Y_M7_V2_APPROVED_FAMILY_PROFILE_SET/V1',
+    record_id_field: 'family_profile_set_id',
+  });
+  if (!exactKeys(profileSet, RICH_APPROVED_PROFILE_SET_KEYS)
+      || profileSet.state !== 'BEN_APPROVED_PROFILE_SET'
+      || !same(profileSet.family_profile_package_bindings,
+        familyEvidence.family_profile_package_bindings)
+      || !Array.isArray(profileSet.profiles)
+      || !Array.isArray(profileSet.dimension_evidence_bindings)
+      || !Array.isArray(profileSet.subtype_tree_bindings)
+      || profileSet.subtype_tree_bindings.length !== CANDIDATE_FAMILIES.length
+      || !same(profileSet.subtype_tree_bindings.map((entry) => entry?.family_key),
+        CANDIDATE_FAMILIES)) {
+    fail(code, 'WORK3:approved family profile set');
+  }
+  validateRichApprovedProfileInventory(
+    profileSet,
+    familyEvidence,
+    packagesByPath,
+    scope,
+    familyContract,
+    code,
+  );
+  validateRichDimensionEvidenceInventory(
+    profileSet,
+    familyEvidence,
+    packagesByPath,
+    scope,
+    code,
+  );
+  for (let index = 0; index < CANDIDATE_FAMILIES.length; index += 1) {
+    const entry = profileSet.subtype_tree_bindings[index];
+    if (!exactKeys(entry, ['family_key', 'binding'])) {
+      fail(code, `${CANDIDATE_FAMILIES[index]}:subtype tree entry`);
+    }
+    validateRichPackageMember(
+      entry.binding,
+      packagesByPath,
+      CANDIDATE_FAMILIES[index],
+      code,
+    );
+  }
+  const structureContract = contract.structure_disposition_set_binding_contract;
+  const { record: structureRecord } = validateRichBinding(
+    root,
+    receipt.structure_disposition_set_binding,
+    code,
+    {
+      path: structureContract.path,
+      schema_version: structureContract.schema_version,
+      record_id_field: structureContract.record_id_field,
+    },
+  );
+  validateRichStructureDispositionSet(
+    structureRecord,
+    packagesByPath,
+    authority,
+    contract,
+    nativeSetRecords[2],
+    code,
+  );
+  validateRichFamilyProfilePackageSemantics(
+    root,
+    authority,
+    familyPackageSources,
+    profileSet,
+    structureRecord,
+    nativeSetRecords[2],
+    code,
+  );
+
+  const artifactContract = contract.artifact_bindings_contract;
+  if (!Array.isArray(receipt.artifact_bindings)
+      || receipt.artifact_bindings.length !== artifactContract.count
+      || !same(receipt.artifact_bindings.map((binding) => binding?.path),
+        artifactContract.paths)
+      || new Set(receipt.artifact_bindings.map((binding) => binding?.path)).size
+        !== receipt.artifact_bindings.length) {
+    fail(code, 'WORK3:artifact bindings');
+  }
+  validateRichArtifactCategories(receipt.artifact_bindings, contract, code);
+  for (const binding of receipt.artifact_bindings) validateRichBinding(root, binding, code);
+  if (receipt.artifact_set_digest !== sha256Hex(canonicalJson(receipt.artifact_bindings))) {
+    fail(code, 'WORK3:artifact set digest');
+  }
+  const artifactBindingsByPath = new Map(
+    receipt.artifact_bindings.map((binding) => [binding.path, binding]),
+  );
+  const syntheticAgreementIndexBinding = contract.structure_disposition_set_binding_contract
+    .synthetic_agreement_index_binding;
+  if (!isPlainObject(syntheticAgreementIndexBinding)
+      || !same(
+        artifactBindingsByPath.get(syntheticAgreementIndexBinding.path),
+        syntheticAgreementIndexBinding,
+      )) {
+    fail(code, 'WORK3:synthetic agreement index binding');
+  }
+  const approvedSetContract = scope.approved_family_profile_set_contract;
+  if (!same(approvedSetContract?.family_key_order, CANDIDATE_FAMILIES)
+      || !Array.isArray(approvedSetContract.package_path_mapping)
+      || approvedSetContract.package_path_mapping.length !== CANDIDATE_FAMILIES.length) {
+    fail(code, 'WORK3:family package path authority');
+  }
+  for (let index = 0; index < CANDIDATE_FAMILIES.length; index += 1) {
+    const familyKey = CANDIDATE_FAMILIES[index];
+    const binding = familyEvidence.family_profile_package_bindings[index];
+    const mapping = approvedSetContract.package_path_mapping[index];
+    if (!exactKeys(mapping, ['family_key', 'path'])
+        || mapping.family_key !== familyKey
+        || binding.path !== mapping.path
+        || !same(binding, artifactBindingsByPath.get(mapping.path))) {
+      fail(code, `${familyKey}:package path and artifact binding`);
+    }
+  }
+  if (profileSetBinding.path !== approvedSetContract.path
+      || profileSetBinding.schema_version !== approvedSetContract.schema_version
+      || profileSetBinding.record_id_field !== approvedSetContract.record_id_field
+      || profileSet.state !== approvedSetContract.state
+      || !same(profileSetBinding, artifactBindingsByPath.get(approvedSetContract.path))) {
+    fail(code, 'WORK3:approved family profile set physical binding');
+  }
+
+  const ledgerContract = contract.command_execution_ledger_contract;
+  if (!Array.isArray(receipt.command_execution_ledger)
+      || receipt.command_execution_ledger.length !== ledgerContract.entry_count
+      || !same(receipt.command_execution_ledger.map((entry) => entry?.argv),
+        ledgerContract.argv_order)
+      || !receipt.command_execution_ledger.every(
+        (entry) => exactKeys(entry, ledgerContract.entry_exact_keys),
+      )
+      || !receipt.command_execution_ledger.every(
+        (entry) => Number.isSafeInteger(entry.run_count) && entry.run_count >= 0,
+      )) {
+    fail(code, 'WORK3:command ledger');
+  }
+  const runCountFixtureBinding = artifactBindingsByPath.get(WORK3_PROFILE_FIXTURE_PATH);
+  const runCountFixture = parseCanonical(
+    readSafe(root, WORK3_PROFILE_FIXTURE_PATH),
+    code,
+    WORK3_PROFILE_FIXTURE_PATH,
+  );
+  if (ledgerContract.run_counts_byte_equal_fixture !== true
+      || !runCountFixtureBinding
+      || !artifactContract.paths.includes(WORK3_PROFILE_FIXTURE_PATH)
+      || !Array.isArray(runCountFixture.command_run_counts)
+      || !runCountFixture.command_run_counts.every(
+        (runCount) => Number.isSafeInteger(runCount) && runCount >= 0,
+      )
+      || !canonicalBytes(runCountFixture.command_run_counts).equals(canonicalBytes(
+        receipt.command_execution_ledger.map((entry) => entry.run_count),
+      ))) {
+    fail(code, 'WORK3:command run counts fixture');
+  }
+  for (const range of ledgerContract.state_ranges) {
+    for (let index = range.indices[0]; index <= range.indices[1]; index += 1) {
+      if (receipt.command_execution_ledger[index]?.state !== range.state) {
+        fail(code, `WORK3:command ledger state ${index}`);
+      }
+    }
+  }
+  const bootstrapCommandLimits = authority.execution_policy?.bootstrap_commands;
+  const authorisedCommandLimits = [
+    ...(Array.isArray(bootstrapCommandLimits) ? bootstrapCommandLimits.map((entry) => ({
+      argv: entry?.argv,
+      max_runs: entry?.maximum_runs,
+    })) : []),
+    ...manifestContract.exact_argv_with_run_limits,
+  ];
+  if (ledgerContract.run_counts_safe_nonnegative_and_within_corresponding_maximum
+        !== true
+      || !Array.isArray(bootstrapCommandLimits)
+      || !bootstrapCommandLimits.every(
+        (entry) => exactKeys(entry, ['argv', 'maximum_runs'])
+          && Array.isArray(entry.argv)
+          && Number.isSafeInteger(entry.maximum_runs)
+          && entry.maximum_runs >= 0,
+      )
+      || !manifestContract.exact_argv_with_run_limits.every(
+        (entry) => exactKeys(entry, ['argv', 'max_runs'])
+          && Array.isArray(entry.argv)
+          && Number.isSafeInteger(entry.max_runs)
+          && entry.max_runs >= 0,
+      )
+      || !same(authorisedCommandLimits.map((entry) => entry.argv),
+        ledgerContract.argv_order)
+      || authorisedCommandLimits.some(
+        (limit, index) => receipt.command_execution_ledger[index].run_count > limit.max_runs,
+      )) {
+    fail(code, 'WORK3:command ledger maxima');
+  }
+  if (Number.isSafeInteger(ledgerContract.bootstrap_counts_minimum)) {
+    for (let index = 0; index <= 3; index += 1) {
+      if (receipt.command_execution_ledger[index].run_count
+          < ledgerContract.bootstrap_counts_minimum) {
+        fail(code, `WORK3:bootstrap command count ${index}`);
+      }
+    }
+  }
+  if (Number.isSafeInteger(ledgerContract.pre_receipt_work3_command_counts_minimum)) {
+    for (let index = 4; index <= 18; index += 1) {
+      if (receipt.command_execution_ledger[index].run_count
+          < ledgerContract.pre_receipt_work3_command_counts_minimum) {
+        fail(code, `WORK3:pre-receipt command count ${index}`);
+      }
+    }
+  }
+  if (Array.isArray(ledgerContract.finaliser_run_count_range)
+      && (receipt.command_execution_ledger[19].run_count
+        < ledgerContract.finaliser_run_count_range[0]
+        || receipt.command_execution_ledger[19].run_count
+          > ledgerContract.finaliser_run_count_range[1])) {
+    fail(code, 'WORK3:finaliser command count');
+  }
+  if (Number.isSafeInteger(ledgerContract.required_post_receipt_validator_run_count)
+      && receipt.command_execution_ledger[20].run_count
+        !== ledgerContract.required_post_receipt_validator_run_count) {
+    fail(code, 'WORK3:post-receipt validator count');
+  }
+  const combinedContract = contract.combined_test_result_contract;
+  if (!exactKeys(receipt.combined_test_result, combinedContract.exact_keys)
+      || !same(receipt.combined_test_result.argv, combinedContract.argv)
+      || receipt.combined_test_result.semantic_run_count !== combinedContract.semantic_run_count
+      || receipt.combined_test_result.status !== combinedContract.status
+      || receipt.combined_test_result.test_file_count !== combinedContract.test_file_count) {
+    fail(code, 'WORK3:combined test result');
+  }
+  const repositoryContract = contract.repository_precondition_contract;
+  if (!exactKeys(receipt.repository_precondition, repositoryContract.exact_keys)
+      || !repositoryContract.exact_keys.every(
+        (key) => same(receipt.repository_precondition[key], repositoryContract[key]),
+      )) {
+    fail(code, 'WORK3:repository precondition');
+  }
+  const countsContract = contract.counts_contract;
+  if (!exactKeys(receipt.counts, countsContract.exact_keys)
+      || !Object.entries(countsContract.exact_values).every(
+        ([key, value]) => receipt.counts[key] === value,
+      )
+      || receipt.counts.structure_disposition_member_count !== structureRecord.members.length) {
+    fail(code, 'WORK3:counts');
+  }
+  if (!same(receipt.checks, contract.checks_contract.exact_ordered_checks)) {
+    fail(code, 'WORK3:checks');
+  }
+  if (!exactKeys(receipt.effects, contract.effects_contract.exact_keys)
+      || !same(receipt.effects, contract.effects_contract.exact_values)) {
+    fail(code, 'WORK3:effects');
+  }
+  if (!exactKeys(receipt.next_work, contract.next_work_contract.exact_keys)
+      || !same(receipt.next_work, contract.next_work_contract.exact_values)) {
+    fail(code, 'WORK3:next work');
+  }
+  if (receipt.candidate_registration_id !== contract.candidate_registration_id
+      || receipt.candidate_transition !== contract.candidate_transition) {
+    fail(code, 'WORK3:null candidate and transition');
+  }
+}
+
 function validateWork2ReceiptLineage(
   root, receipt, binding, priorManifest, code,
+  work3EntryCorrectionAuthorityBinding = null,
+  work3EntryCorrectionAuthority = null,
 ) {
   let result;
   try {
-    result = validateWork2ReceiptBinding({ repoRoot: root, binding });
+    result = work3EntryCorrectionAuthorityBinding === null
+      ? validateWork2ReceiptBinding({ repoRoot: root, binding })
+      : validateWork2SuccessorReceiptBinding({
+        repoRoot: root,
+        binding,
+        work3EntryCorrectionAuthorityBinding,
+      });
   } catch (error) {
     fail(code, `Work2 receipt validation: ${error.code ?? error.message}`);
   }
-  if (result.status !== 'PASS_WORK2_BUILD_ONLY_NULL_CANDIDATE'
+  if ((work3EntryCorrectionAuthority !== null
+      && !same(
+        Object.keys(result),
+        work3EntryCorrectionAuthority.work2_successor_snapshot?.result_exact_keys,
+      ))
+      || result.status !== 'PASS_WORK2_BUILD_ONLY_NULL_CANDIDATE'
       || result.work2_receipt_id !== binding.record_id
       || result.work2_receipt_id !== receipt.work2_receipt_id
       || result.execution_manifest_id !== priorManifest.execution_manifest_id
@@ -2142,15 +3865,24 @@ function validateWork2ReceiptLineage(
 
 function validateSemanticReceiptLineage({
   root, receipt, binding, priorManifest, permittedReadPaths, code,
+  work3EntryCorrectionAuthorityBinding = null,
+  work3EntryCorrectionAuthority = null,
 }) {
   const number = workNumber(priorManifest.work);
+  if (number === 3) {
+    validateRichWork3ReceiptEnvelopeAndIdentity(receipt, code);
+  }
   const idField = `work${number}_receipt_id`;
   const expectedSchema = number === 2
     ? WORK2_COMPILER_RECEIPT_SCHEMA
-    : `STAGE_2Y_M7_V2_REPAIR_WORK${number}_RECEIPT/V1`;
+    : number === 3
+      ? RICH_WORK3_RECEIPT_SCHEMA
+      : `STAGE_2Y_M7_V2_REPAIR_WORK${number}_RECEIPT/V1`;
   const expectedKeys = number === 2
     ? WORK2_COMPILER_RECEIPT_KEYS
-    : [...LATER_RECEIPT_KEYS, idField];
+    : number === 3
+      ? RICH_WORK3_RECEIPT_KEYS
+      : [...LATER_RECEIPT_KEYS, idField];
   const expectedState = number === 2
     ? 'PASS_WORK2_BUILD_ONLY_NULL_CANDIDATE'
     : number === 3 ? 'PASS_WORK3_BUILD_ONLY_NULL_CANDIDATE' : `PASS_WORK${number}`;
@@ -2168,7 +3900,19 @@ function validateSemanticReceiptLineage({
     fail(code, `${priorManifest.work} predecessor receipt state`);
   }
   if (number === 2) {
-    validateWork2ReceiptLineage(root, receipt, binding, priorManifest, code);
+    validateWork2ReceiptLineage(
+      root,
+      receipt,
+      binding,
+      priorManifest,
+      code,
+      work3EntryCorrectionAuthorityBinding,
+      work3EntryCorrectionAuthority,
+    );
+    return;
+  }
+  if (number === 3) {
+    validateRichWork3Receipt(root, receipt, priorManifest, code);
     return;
   }
   if (!same(receipt.candidate_ordering_correction_authority_binding,
@@ -2292,7 +4036,12 @@ function validateWork4CandidateTransitionAuthority(
 function validateCandidatePredecessorReceipt(
   root, authority, entry, index, permittedReadPaths,
 ) {
-  const receipt = resolveCandidateComponent(root, entry.binding, permittedReadPaths);
+  const receipt = entry.work === 'WORK3'
+    ? readCandidateComponent(root, entry.binding, permittedReadPaths)
+    : resolveCandidateComponent(root, entry.binding, permittedReadPaths);
+  if (entry.work === 'WORK3') {
+    validateRichWork3ReceiptEnvelopeAndIdentity(receipt, 'CANDIDATE_BINDING_DRIFT');
+  }
   if (index === 0) {
     const identity = restampedIdentity(
       receipt,
@@ -2328,10 +4077,10 @@ function validateCandidatePredecessorReceipt(
     'execution_manifest_digest',
     'execution_manifest_id',
   );
-  if (!exactKeys(priorManifest, [
-    ...authority.per_work_execution_manifest_policy.exact_members,
-    ...CANDIDATE_ORDERING_MANIFEST_MEMBERS,
-  ])
+  if (!exactKeys(priorManifest, manifestMembers(
+    authority.per_work_execution_manifest_policy,
+    entry.work,
+  ))
       || priorManifest.schema_version !== SCHEMA
       || priorManifest.work !== entry.work
       || priorManifest.state !== 'PRE_WORK_BOOTSTRAP_ONLY'
@@ -2351,7 +4100,50 @@ function validateCandidatePredecessorReceipt(
     priorManifest,
     permittedReadPaths,
     code: 'CANDIDATE_BINDING_DRIFT',
+    work3EntryCorrectionAuthorityBinding: entry.work === 'WORK2'
+      ? WORK3_ENTRY_CORRECTION_AUTHORITY_BINDING
+      : null,
   });
+}
+
+function validateCandidateSubtypeTreeMember(root, entry, permittedReadPaths) {
+  const binding = entry.binding;
+  if (!exactKeys(binding, RICH_PACKAGE_MEMBER_BINDING_KEYS)
+      || binding.schema_version !== RICH_PACKAGE_MEMBER_BINDING_SCHEMA
+      || binding.member_field !== 'subtype_tree'
+      || binding.member_index !== null
+      || binding.member_schema_version !== 'STAGE_2Y_M7_V2_REPAIR_SUBTYPE_TREE/V1'
+      || binding.member_record_id_field !== 'subtype_tree_id'
+      || !HASH_64.test(binding.member_record_id || '')
+      || !Number.isSafeInteger(binding.member_byte_length)
+      || binding.member_byte_length <= 0
+      || !HASH_64.test(binding.member_sha256 || '')) {
+    fail('CANDIDATE_BINDING_DRIFT', 'subtype tree');
+  }
+  normaliseRepositoryPath(binding.container_path, 'CANDIDATE_BINDING_DRIFT');
+  if (!permittedReadPaths.includes(binding.container_path)) {
+    fail('PATH_SCOPE_DRIFT', `candidate package read is not permitted: ${binding.container_path}`);
+  }
+  const packageRecord = parseCanonical(
+    readSafe(root, binding.container_path),
+    'CANDIDATE_BINDING_DRIFT',
+    binding.container_path,
+  );
+  const member = packageRecord?.subtype_tree;
+  const bytes = Buffer.from(canonicalJson(member), 'utf8');
+  if (packageRecord?.family_key !== entry.family_key
+      || member?.schema_version !== binding.member_schema_version
+      || member?.[binding.member_record_id_field] !== binding.member_record_id
+      || member?.family_key !== entry.family_key
+      || bytes.length !== binding.member_byte_length
+      || sha256Hex(bytes) !== binding.member_sha256) {
+    fail('CANDIDATE_BINDING_DRIFT', `${entry.family_key} subtype tree family`);
+  }
+  const unsigned = clone(member);
+  delete unsigned[binding.member_record_id_field];
+  if (contentId(binding.member_schema_version, unsigned) !== binding.member_record_id) {
+    fail('CANDIDATE_BINDING_DRIFT', `${entry.family_key} subtype tree identity`);
+  }
 }
 
 function validateFullCandidateRecord(root, authority, record, permittedReadPaths) {
@@ -2453,16 +4245,10 @@ function validateFullCandidateRecord(root, authority, record, permittedReadPaths
     fail('CANDIDATE_BINDING_DRIFT', '25 subtype trees');
   }
   for (const entry of record.subtype_tree_bindings) {
-    if (!exactKeys(entry, ['family_key', 'binding'])
-        || entry.binding.schema_version !== 'STAGE_2Y_M7_V2_REPAIR_SUBTYPE_TREE/V1'
-        || entry.binding.record_id_field !== 'subtype_tree_id') {
+    if (!exactKeys(entry, ['family_key', 'binding'])) {
       fail('CANDIDATE_BINDING_DRIFT', 'subtype tree');
     }
-    validateCandidateInnerBinding(entry.binding, entry.family_key);
-    const tree = resolveCandidateComponent(root, entry.binding, permittedReadPaths);
-    if (tree.family_key !== entry.family_key) {
-      fail('CANDIDATE_BINDING_DRIFT', `${entry.family_key} subtype tree family`);
-    }
+    validateCandidateSubtypeTreeMember(root, entry, permittedReadPaths);
     flattened.push(entry.binding);
   }
   const profileInput = record.semantic_input_bindings.find(
@@ -2528,17 +4314,21 @@ function validateFullCandidateRecord(root, authority, record, permittedReadPaths
     semantic_input_count: CANDIDATE_INPUT_ROLES.length,
     subtype_tree_count: CANDIDATE_FAMILIES.length,
     predecessor_receipt_count: predecessorCount,
-    unique_bound_path_count: new Set(flattened.map((binding) => binding.path)).size,
+    unique_bound_path_count: new Set(
+      flattened.map((binding) => binding.path ?? binding.container_path),
+    ).size,
   };
   if (!same(record.counts, expectedCounts)) {
     fail('CANDIDATE_BINDING_DRIFT', 'candidate counts');
   }
-  if (flattened.some((binding) => !permittedReadPaths.includes(binding.path))) {
+  if (flattened.some((binding) => !permittedReadPaths.includes(
+    binding.path ?? binding.container_path,
+  ))) {
     fail('PATH_SCOPE_DRIFT', 'candidate component read is absent from permitted_read_paths');
   }
-  flattened.forEach((binding) => resolveCandidateComponent(
-    root, binding, permittedReadPaths,
-  ));
+  flattened.filter((binding) => binding.path !== undefined).forEach(
+    (binding) => resolveCandidateComponent(root, binding, permittedReadPaths),
+  );
 }
 
 function validateCandidateVerification(verification, record, binding) {
@@ -2591,7 +4381,7 @@ function validateCandidate(root, authority, manifest, prior, existingCandidatePa
   return binding.record_id;
 }
 
-function validatePredecessor(root, authority, manifest) {
+function validatePredecessor(root, authority, manifest, work3EntryCorrectionAuthority = null) {
   if (manifest.predecessor_receipt_binding === null) {
     fail('PREDECESSOR_BINDING_DRIFT', manifest.work);
   }
@@ -2614,6 +4404,9 @@ function validatePredecessor(root, authority, manifest) {
     manifest.predecessor_receipt_binding,
     'PREDECESSOR_BINDING_DRIFT',
   );
+  if (manifest.work === 'WORK4') {
+    validateRichWork3ReceiptEnvelopeAndIdentity(record, 'PREDECESSOR_BINDING_DRIFT');
+  }
   if (manifest.work === 'WORK2') {
     const identity = restampedIdentity(
       record,
@@ -2651,6 +4444,11 @@ function validatePredecessor(root, authority, manifest) {
     priorManifest: prior,
     permittedReadPaths: manifest.permitted_read_paths,
     code: 'PREDECESSOR_BINDING_DRIFT',
+    work3EntryCorrectionAuthorityBinding:
+      work3EntryCorrectionAuthority === null
+        ? null
+        : manifest.work3_entry_correction_authority_binding,
+    work3EntryCorrectionAuthority,
   });
   return { prior, priorPath, priorState, predecessorReceipt: record };
 }
@@ -2670,6 +4468,9 @@ export async function validateExecutionManifest(options) {
     fail('MANIFEST_CONTRACT_DRIFT', manifestPath);
   }
   validateManifestIdentity(manifest, authority.per_work_execution_manifest_policy, manifest.work);
+  const work3EntryCorrectionAuthority = manifest.work === 'WORK3'
+    ? validateWork3EntryCorrection(root, manifest)
+    : null;
   if (!same(manifest.parent_authority_binding,
     expectedAuthorityBinding(authority, authorityState.bytes))) {
     fail('AUTHORITY_BINDING_DRIFT', AUTHORITY_PATH);
@@ -2681,12 +4482,15 @@ export async function validateExecutionManifest(options) {
   const declaredPriorPath = manifest.work === 'WORK2'
     ? null
     : executionManifestPath(`WORK${workNumber(manifest.work) - 1}`);
+  if (work3EntryCorrectionAuthority !== null) {
+    validateWork3PathScope(root, manifest, work3EntryCorrectionAuthority);
+  }
   validateReadPaths(root, authority, manifestPath, manifest, declaredPriorPath);
   validateActivation(root, authority, manifest.activation_receipt_binding,
     manifest.activation_commit_binding);
   const {
     prior, priorPath, priorState, predecessorReceipt,
-  } = validatePredecessor(root, authority, manifest);
+  } = validatePredecessor(root, authority, manifest, work3EntryCorrectionAuthority);
   if (priorPath !== declaredPriorPath) fail('PREDECESSOR_BINDING_DRIFT', manifest.work);
   const work2EntryCorrection = manifest.work === 'WORK2'
     ? validateWork2EntryCorrection(root, authority, manifest, predecessorReceipt)
@@ -2696,15 +4500,24 @@ export async function validateExecutionManifest(options) {
       authorisedParentWriteExtensions: new Set(),
       authorisedCommandExtensions: [],
     };
-  validateBaseTip(
-    root,
-    authority,
-    manifest,
-    priorState,
-    predecessorReceipt,
-    work2EntryCorrection.expectedWork1DeltaPaths,
-  );
-  validateSuccessConditions(manifest.success_conditions);
+  if (work3EntryCorrectionAuthority === null) {
+    validateBaseTip(
+      root,
+      authority,
+      manifest,
+      priorState,
+      predecessorReceipt,
+      work2EntryCorrection.expectedWork1DeltaPaths,
+    );
+    validateSuccessConditions(manifest.success_conditions);
+  } else {
+    validateWork3BaseTip(
+      manifest,
+      prior,
+      predecessorReceipt,
+      work3EntryCorrectionAuthority,
+    );
+  }
   const candidateOrderingAuthority = validateCandidateOrderingAuthority(
     root,
     authority,
@@ -2722,38 +4535,56 @@ export async function validateExecutionManifest(options) {
       existingCandidatePaths,
       candidateOrderingAuthority.binding,
     );
-  validateWritePaths(
-    root,
-    authority,
-    manifestPath,
-    manifest,
-    new Set([
-      ...work2EntryCorrection.authorisedWork1WriteExceptions,
-      ...candidateOrderingAuthority.authorisedWork1WriteExceptions,
-    ]),
-    new Set([
-      ...work2EntryCorrection.authorisedParentWriteExtensions,
-      ...candidateOrderingAuthority.authorisedParentWriteExtensions,
-    ]),
-    candidateStageState,
-  );
-  validateCommands(
-    authority,
-    manifestPath,
-    manifest,
-    [
-      ...work2EntryCorrection.authorisedCommandExtensions,
-      ...candidateOrderingAuthority.authorisedCommandExtensions,
-    ],
-  );
-  validateAllowedEffects(authority.allowed_effects, manifest.allowed_effects, manifest.work);
-  if (!same(manifest.prohibited_effects, authority.prohibited_effects)) {
-    fail('EFFECT_SCOPE_DRIFT', 'prohibited_effects');
+  if (work3EntryCorrectionAuthority === null) {
+    validateWritePaths(
+      root,
+      authority,
+      manifestPath,
+      manifest,
+      new Set([
+        ...work2EntryCorrection.authorisedWork1WriteExceptions,
+        ...candidateOrderingAuthority.authorisedWork1WriteExceptions,
+      ]),
+      new Set([
+        ...work2EntryCorrection.authorisedParentWriteExtensions,
+        ...candidateOrderingAuthority.authorisedParentWriteExtensions,
+      ]),
+      candidateStageState,
+    );
+    validateCommands(
+      authority,
+      manifestPath,
+      manifest,
+      [
+        ...work2EntryCorrection.authorisedCommandExtensions,
+        ...candidateOrderingAuthority.authorisedCommandExtensions,
+      ],
+    );
+    validateAllowedEffects(authority.allowed_effects, manifest.allowed_effects, manifest.work);
+    if (!same(manifest.prohibited_effects, authority.prohibited_effects)) {
+      fail('EFFECT_SCOPE_DRIFT', 'prohibited_effects');
+    }
+    validateStopConditions(authority.stop_conditions, manifest.stop_conditions);
+  } else {
+    validateWork3Commands(
+      manifest,
+      work3EntryCorrectionAuthority,
+    );
+    validateWork3EffectsAndStops(manifest, work3EntryCorrectionAuthority);
   }
-  validateStopConditions(authority.stop_conditions, manifest.stop_conditions);
   const candidateId = validateCandidate(
     root, authority, manifest, prior, existingCandidatePaths,
   );
+  if (work3EntryCorrectionAuthority !== null
+      && !same(
+        manifest,
+        expectedWork3Manifest(
+          work3EntryCorrectionAuthority,
+          manifest.work3_entry_correction_authority_binding,
+        ),
+      )) {
+    fail('MANIFEST_CONTRACT_DRIFT', 'Work3 C3 exact manifest');
+  }
   const result = {
     schema_version: RESULT_SCHEMA,
     status: 'PASS_NARROWING_EXECUTION_MANIFEST',

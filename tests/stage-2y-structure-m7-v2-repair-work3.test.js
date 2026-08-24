@@ -2872,6 +2872,7 @@ test('Work3 profile source adapter closes exact thirty sources and renders no-de
     'prepareTerminationFamilyProfilePackageResolution',
     'prepareTerminationFamilyProfilePackageReview',
     'prepareTerminationFamilyProposal',
+    'prepareTerminationGovernedDisclosureNoteWork3CoreIntegrationReview',
     'prepareTerminationGovernedDisclosureNoteWork3SchemaCompatibilityReview',
     'prepareTerminationLinkedRuleReferenceValueCandidate',
     'prepareTerminationRawM2ReferenceOwnerValueCandidate',
@@ -19064,6 +19065,350 @@ test("Work3 Termination Stage B builds the 45-profile unapproved blueprint propo
     collectObjectIdentities(result),
     collectObjectIdentities(input),
     'Stage B result/caller input alias',
+  );
+  assert.equal(fixtureFingerprint(input), before);
+  assertRecursivelyUnfrozen(input);
+});
+
+test("Work3 Termination governed disclosure note core integration proves validator acceptance without Work3 identity or inventory", () => {
+  assert.equal(
+    typeof profileAuthoring.prepareTerminationGovernedDisclosureNoteWork3CoreIntegrationReview,
+    'function',
+    'Work3 governed disclosure note core integration review facade export is missing.',
+  );
+
+  const coreAuthorityBinding = Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-governed-disclosure-note-core-integration-authority.json',
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_CONTRACT_WORK3_GOVERNED_DISCLOSURE_NOTE_CORE_INTEGRATION_AUTHORITY/V1',
+    record_id_field: 'work3_governed_disclosure_note_core_integration_authority_id',
+    record_id: '61b45adaefc622d608293046f15190f9dafdfd12a1d6403305a7469935279d7d',
+    byte_length: 23266,
+    sha256: '448dc37e73aa8b045512000d6beebd3353fa555e54ad363c90628337025e4a7b',
+  });
+  const stageAAuthorityBinding = Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-governed-disclosure-note-schema-package-analysis-projection-successor-authority.json',
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_CONTRACT_WORK3_GOVERNED_DISCLOSURE_NOTE_SCHEMA_PACKAGE_ANALYSIS_PROJECTION_SUCCESSOR_AUTHORITY/V1',
+    record_id_field: 'work3_governed_disclosure_note_schema_package_analysis_projection_successor_authority_id',
+    record_id: '054de9dc959cbb12062099efea3620e9582578fc64c90c6d21b878e009adf28a',
+    byte_length: 44726,
+    sha256: '850c9170b0367e83a9030c54f8e896be30cfac14a7b9ba8b15a49cab3270b45b',
+  });
+  const completionBinding = Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-authoring-phase5-governed-disclosure-note-execution-completion-incident-lineage-superseding-evidence-receipt.json',
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_CONTRACT_TERMINATION_AUTHORING_PHASE5_GOVERNED_DISCLOSURE_NOTE_EXECUTION_COMPLETION_INCIDENT_LINEAGE_SUPERSEDING_EVIDENCE_RECEIPT/V1',
+    record_id_field: 'termination_authoring_phase5_governed_disclosure_note_execution_completion_incident_lineage_superseding_evidence_receipt_id',
+    record_id: '1e9c53620dbeac0e3f582ebfca91000111611ede9054193ed174173a78f12e49',
+    byte_length: 8867,
+    sha256: '905b824dd9a76aab8ca2164d08e647ee798143473ef49dbf40d9e6a768dbfe52',
+  });
+  const work3Binding = Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-entry-correction-authority.json',
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK3_ENTRY_CORRECTION_AUTHORITY/V1',
+    record_id_field: 'correction_authority_id',
+    record_id: '561e48f1865259ba58d69f33cefcdf1c1ac606cf9468925dee47227603fad873',
+    byte_length: 237749,
+    sha256: '42dce2b3bc1f8730bb9a9532e8e9b34872f14117a38cdd97ba1be659e7647deb',
+  });
+  const captureBinding = Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-authoring-phase5-governed-disclosure-note-ruling-authority.json',
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_CONTRACT_TERMINATION_AUTHORING_PHASE5_GOVERNED_DISCLOSURE_NOTE_RULING_AUTHORITY/V1',
+    record_id_field: 'termination_authoring_phase5_governed_disclosure_note_ruling_authority_id',
+    record_id: '98ee4f4779c5ac12e4c0b87a856c3383c1a40e10d014441b2f7f01094e9888fa',
+    byte_length: 7933,
+    sha256: '66dacd7e6151e261e2eeb422443e340787be6699ec8a7a5e15673376c1034b98',
+  });
+  const rulingBinding = Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-ruling-termination-b9e-jurisdiction-list-disclosure-note.json',
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_TERMINATION_B9E_JURISDICTION_LIST_DISCLOSURE_NOTE_RULING/V1',
+    record_id_field: 'lawyer_ruling_id',
+    record_id: '5612a68b5416a51e26e604c525b8d93ec7285a51f6eba2edca6d251043aa7567',
+    byte_length: 1639,
+    sha256: 'f0e1155fe4f07f2f710666815afacea109f6978a6c9d04d581016301fe6efa5a',
+  });
+  const phase5Binding = Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-authoring-phase5-governed-disclosure-note-authority.json',
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_CONTRACT_TERMINATION_AUTHORING_PHASE5_GOVERNED_DISCLOSURE_NOTE_AUTHORITY/V1',
+    record_id_field: 'termination_authoring_phase5_governed_disclosure_note_authority_id',
+    record_id: '10bcf58ff7c7a95794fcc1cb2788ce7b768c49865a5f8b2271f1a2d6e2b1f126',
+    byte_length: 22512,
+    sha256: '11022734a686d0f6efeee52b957e2d6e125f2b2167e7136a14e3d3d69dd786e8',
+  });
+  const phase4Binding = Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-authoring-phase4-family-profile-package-review-authority.json',
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_CONTRACT_TERMINATION_AUTHORING_PHASE4_FAMILY_PROFILE_PACKAGE_REVIEW_AUTHORITY/V1',
+    record_id_field: 'termination_authoring_phase4_family_profile_package_review_authority_id',
+    record_id: '3f92e9ec3192933a22eb5a6d193296a164fd25b5612c2ece52fa97636943d41e',
+    byte_length: 115221,
+    sha256: '2425b103b19a228e26676d347656706be9d1a7b5e693512bcf1c450eba43db18',
+  });
+
+  const input = {
+    terminationWork3CoreIntegrationEvidence: {
+      work3EntryCorrectionAuthority: sourceEnvelope(work3Binding),
+      phase5ExecutionCompletionReceipt: sourceEnvelope(completionBinding),
+      work3GovernedDisclosureNoteSchemaSuccessorAuthority:
+        sourceEnvelope(stageAAuthorityBinding),
+      work3GovernedDisclosureNoteCoreIntegrationAuthority:
+        sourceEnvelope(coreAuthorityBinding),
+    },
+    terminationPhase5ResolutionInput: {
+      terminationPhase5ResolutionEvidence: {
+        governedDisclosureNoteRulingAuthority: sourceEnvelope(captureBinding),
+        governedDisclosureNoteRuling: sourceEnvelope(rulingBinding),
+        familyProfilePackageResolutionAuthority: sourceEnvelope(phase5Binding),
+      },
+      terminationFamilyProfilePackageReviewInput: {
+        terminationPhase4FamilyProfilePackageReviewAuthority:
+          sourceEnvelope(phase4Binding),
+        terminationReferenceValueMaterialisationInput:
+          terminationPhase3ReferenceValueMaterialisationFixture(),
+      },
+    },
+  };
+  const before = fixtureFingerprint(input);
+  assertRecursivelyUnfrozen(input);
+
+  const result = profileAuthoring
+    .prepareTerminationGovernedDisclosureNoteWork3CoreIntegrationReview(input);
+
+  assertExactKeys(result, [
+    'schema_version',
+    'core_integration_review_id',
+    'candidate_state',
+    'authority_binding',
+    'stage_a_reference',
+    'stage_b_reference',
+    'phase5_resolution_reference',
+    'phase5_completion_reference',
+    'work3_predecessor_reference',
+    'restamped_requirement',
+    'restamped_governed_disclosure_note',
+    'validator_acceptance_reference',
+    'semantic_exclusion_contract',
+    'review_accounting',
+    'withheld_work3_fields',
+    'next_governance_stop',
+    'zero_effect_boundary',
+  ], 'Core integration result');
+  assert.equal(
+    result.schema_version,
+    'M7_V2_TERMINATION_WORK3_GOVERNED_DISCLOSURE_NOTE_CORE_INTEGRATION_REVIEW_CANDIDATE/V1',
+  );
+  assert.equal(
+    result.candidate_state,
+    'CORE_INTEGRATION_FIXTURE_ONLY_INVENTORY_REVIEW_NOT_PERFORMED',
+  );
+  assert.equal(result.review_accounting.runtime_validator_acceptance_count, 1);
+  assert.equal(result.review_accounting.core_integration_count, 1);
+  assert.equal(result.next_governance_stop.core_integration_state, 'PERFORMED');
+  assert.deepEqual(result.next_governance_stop.required_successor_sequence, [
+    'WORK3_TERMINATION_UNAPPROVED_INVENTORY_REVIEW_AUTHORITY',
+  ]);
+  assert.equal(
+    result.validator_acceptance_reference.core_integration_evidence_status,
+    'PASS',
+  );
+  assert.equal(
+    result.restamped_governed_disclosure_note.display_text,
+    'contained in non-public disclosure letter',
+  );
+  assert.equal(
+    result.restamped_governed_disclosure_note.schema_version,
+    'STAGE_2Y_M7_V2_GOVERNED_DISCLOSURE_NOTE/V1',
+  );
+  assert.equal(
+    result.restamped_requirement.field_key,
+    'JURISDICTION_LIST_REFERENCE',
+  );
+  assert.equal(
+    result.restamped_governed_disclosure_note.requirement_id,
+    result.restamped_requirement.requirement_id,
+  );
+
+  for (const key of [
+    'profile_id',
+    'inventory_fingerprint',
+    'activation_id',
+    'registration_id',
+    'family_profile_package_id',
+    'expression_id',
+    'rule_id',
+  ]) assert.equal(collectKeys(result).has(key), false, key);
+
+  assert.equal(isDeepFrozen(result), true);
+  assertDisjoint(
+    collectObjectIdentities(result),
+    collectObjectIdentities(input),
+    'Core integration result/caller input alias',
+  );
+  assert.equal(fixtureFingerprint(input), before);
+  assertRecursivelyUnfrozen(input);
+});
+
+test("Work3 Termination unapproved inventory review proves validator acceptance without Work3 identity or package approval", () => {
+  assert.equal(
+    typeof profileAuthoring.prepareTerminationWork3UnapprovedInventoryReview,
+    'function',
+    'Work3 termination unapproved inventory review facade export is missing.',
+  );
+
+  const inventoryAuthorityBinding = Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-termination-unapproved-inventory-review-authority.json',
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_CONTRACT_WORK3_TERMINATION_UNAPPROVED_INVENTORY_REVIEW_AUTHORITY/V1',
+    record_id_field: 'work3_termination_unapproved_inventory_review_authority_id',
+    record_id: 'a6bb07bf18ab3ebfb7188cd6b9f5786f16c56045963793a33ad439aa55d709fa',
+    byte_length: 10837,
+    sha256: '1fc2826ff9e7b5dd9617cf6d735b6a025c3f4294f0811199cf7c7e1e4a60e07c',
+  });
+  const coreAuthorityBinding = Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-governed-disclosure-note-core-integration-authority.json',
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_CONTRACT_WORK3_GOVERNED_DISCLOSURE_NOTE_CORE_INTEGRATION_AUTHORITY/V1',
+    record_id_field: 'work3_governed_disclosure_note_core_integration_authority_id',
+    record_id: '61b45adaefc622d608293046f15190f9dafdfd12a1d6403305a7469935279d7d',
+    byte_length: 23266,
+    sha256: '448dc37e73aa8b045512000d6beebd3353fa555e54ad363c90628337025e4a7b',
+  });
+  const stageAAuthorityBinding = Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-governed-disclosure-note-schema-package-analysis-projection-successor-authority.json',
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_CONTRACT_WORK3_GOVERNED_DISCLOSURE_NOTE_SCHEMA_PACKAGE_ANALYSIS_PROJECTION_SUCCESSOR_AUTHORITY/V1',
+    record_id_field: 'work3_governed_disclosure_note_schema_package_analysis_projection_successor_authority_id',
+    record_id: '054de9dc959cbb12062099efea3620e9582578fc64c90c6d21b878e009adf28a',
+    byte_length: 44726,
+    sha256: '850c9170b0367e83a9030c54f8e896be30cfac14a7b9ba8b15a49cab3270b45b',
+  });
+  const completionBinding = Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-authoring-phase5-governed-disclosure-note-execution-completion-incident-lineage-superseding-evidence-receipt.json',
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_CONTRACT_TERMINATION_AUTHORING_PHASE5_GOVERNED_DISCLOSURE_NOTE_EXECUTION_COMPLETION_INCIDENT_LINEAGE_SUPERSEDING_EVIDENCE_RECEIPT/V1',
+    record_id_field: 'termination_authoring_phase5_governed_disclosure_note_execution_completion_incident_lineage_superseding_evidence_receipt_id',
+    record_id: '1e9c53620dbeac0e3f582ebfca91000111611ede9054193ed174173a78f12e49',
+    byte_length: 8867,
+    sha256: '905b824dd9a76aab8ca2164d08e647ee798143473ef49dbf40d9e6a768dbfe52',
+  });
+  const work3Binding = Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-entry-correction-authority.json',
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK3_ENTRY_CORRECTION_AUTHORITY/V1',
+    record_id_field: 'correction_authority_id',
+    record_id: '561e48f1865259ba58d69f33cefcdf1c1ac606cf9468925dee47227603fad873',
+    byte_length: 237749,
+    sha256: '42dce2b3bc1f8730bb9a9532e8e9b34872f14117a38cdd97ba1be659e7647deb',
+  });
+  const captureBinding = Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-authoring-phase5-governed-disclosure-note-ruling-authority.json',
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_CONTRACT_TERMINATION_AUTHORING_PHASE5_GOVERNED_DISCLOSURE_NOTE_RULING_AUTHORITY/V1',
+    record_id_field: 'termination_authoring_phase5_governed_disclosure_note_ruling_authority_id',
+    record_id: '98ee4f4779c5ac12e4c0b87a856c3383c1a40e10d014441b2f7f01094e9888fa',
+    byte_length: 7933,
+    sha256: '66dacd7e6151e261e2eeb422443e340787be6699ec8a7a5e15673376c1034b98',
+  });
+  const rulingBinding = Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-ruling-termination-b9e-jurisdiction-list-disclosure-note.json',
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_TERMINATION_B9E_JURISDICTION_LIST_DISCLOSURE_NOTE_RULING/V1',
+    record_id_field: 'lawyer_ruling_id',
+    record_id: '5612a68b5416a51e26e604c525b8d93ec7285a51f6eba2edca6d251043aa7567',
+    byte_length: 1639,
+    sha256: 'f0e1155fe4f07f2f710666815afacea109f6978a6c9d04d581016301fe6efa5a',
+  });
+  const phase5Binding = Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-authoring-phase5-governed-disclosure-note-authority.json',
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_CONTRACT_TERMINATION_AUTHORING_PHASE5_GOVERNED_DISCLOSURE_NOTE_AUTHORITY/V1',
+    record_id_field: 'termination_authoring_phase5_governed_disclosure_note_authority_id',
+    record_id: '10bcf58ff7c7a95794fcc1cb2788ce7b768c49865a5f8b2271f1a2d6e2b1f126',
+    byte_length: 22512,
+    sha256: '11022734a686d0f6efeee52b957e2d6e125f2b2167e7136a14e3d3d69dd786e8',
+  });
+  const phase4Binding = Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-authoring-phase4-family-profile-package-review-authority.json',
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_CONTRACT_TERMINATION_AUTHORING_PHASE4_FAMILY_PROFILE_PACKAGE_REVIEW_AUTHORITY/V1',
+    record_id_field: 'termination_authoring_phase4_family_profile_package_review_authority_id',
+    record_id: '3f92e9ec3192933a22eb5a6d193296a164fd25b5612c2ece52fa97636943d41e',
+    byte_length: 115221,
+    sha256: '2425b103b19a228e26676d347656706be9d1a7b5e693512bcf1c450eba43db18',
+  });
+
+  const input = {
+    terminationWork3UnapprovedInventoryReviewEvidence: {
+      work3EntryCorrectionAuthority: sourceEnvelope(work3Binding),
+      phase5ExecutionCompletionReceipt: sourceEnvelope(completionBinding),
+      work3GovernedDisclosureNoteSchemaSuccessorAuthority:
+        sourceEnvelope(stageAAuthorityBinding),
+      work3GovernedDisclosureNoteCoreIntegrationAuthority:
+        sourceEnvelope(coreAuthorityBinding),
+      work3TerminationUnapprovedInventoryReviewAuthority:
+        sourceEnvelope(inventoryAuthorityBinding),
+    },
+    terminationPhase5ResolutionInput: {
+      terminationPhase5ResolutionEvidence: {
+        governedDisclosureNoteRulingAuthority: sourceEnvelope(captureBinding),
+        governedDisclosureNoteRuling: sourceEnvelope(rulingBinding),
+        familyProfilePackageResolutionAuthority: sourceEnvelope(phase5Binding),
+      },
+      terminationFamilyProfilePackageReviewInput: {
+        terminationPhase4FamilyProfilePackageReviewAuthority:
+          sourceEnvelope(phase4Binding),
+        terminationReferenceValueMaterialisationInput:
+          terminationPhase3ReferenceValueMaterialisationFixture(),
+      },
+    },
+  };
+  const before = fixtureFingerprint(input);
+  assertRecursivelyUnfrozen(input);
+
+  const result = profileAuthoring.prepareTerminationWork3UnapprovedInventoryReview(input);
+
+  assertExactKeys(result, [
+    'schema_version',
+    'inventory_review_id',
+    'candidate_state',
+    'authority_binding',
+    'core_integration_reference',
+    'stage_b_reference',
+    'inventory_packet_reference',
+    'validator_acceptance_reference',
+    'semantic_exclusion_contract',
+    'review_accounting',
+    'withheld_work3_fields',
+    'next_governance_stop',
+    'zero_effect_boundary',
+  ], 'Inventory review result');
+  assert.equal(
+    result.schema_version,
+    'M7_V2_TERMINATION_WORK3_UNAPPROVED_INVENTORY_REVIEW_CANDIDATE/V1',
+  );
+  assert.equal(
+    result.candidate_state,
+    'UNAPPROVED_45_PROFILE_INVENTORY_REVIEW_PACKET_ONLY_BEN_APPROVAL_NOT_RECORDED',
+  );
+  assert.equal(result.review_accounting.runtime_validator_acceptance_count, 1);
+  assert.equal(result.review_accounting.core_integration_count, 1);
+  assert.equal(result.review_accounting.profile_proposal_count, 45);
+  assert.equal(result.next_governance_stop.core_integration_state, 'PERFORMED');
+  assert.equal(result.next_governance_stop.ben_approval_state, 'NOT_RECORDED');
+  assert.equal(result.next_governance_stop.package_approval_permitted, false);
+  assert.equal(
+    result.validator_acceptance_reference.inventory_review_evidence_status,
+    'PASS',
+  );
+  assert.equal(result.inventory_packet_reference.profile_count, 45);
+  assert.equal(result.inventory_packet_reference.complete_profile_count, 44);
+  assert.equal(result.inventory_packet_reference.incomplete_profile_count, 1);
+  assert.equal(result.inventory_packet_reference.profile_approval_state, 'UNAPPROVED');
+
+  for (const key of [
+    'profile_id',
+    'inventory_fingerprint',
+    'activation_id',
+    'registration_id',
+    'family_profile_package_id',
+    'ben_approval_id',
+    'expression_id',
+    'rule_id',
+  ]) assert.equal(collectKeys(result).has(key), false, key);
+
+  assert.equal(isDeepFrozen(result), true);
+  assertDisjoint(
+    collectObjectIdentities(result),
+    collectObjectIdentities(input),
+    'Inventory review result/caller input alias',
   );
   assert.equal(fixtureFingerprint(input), before);
   assertRecursivelyUnfrozen(input);

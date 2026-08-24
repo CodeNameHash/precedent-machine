@@ -6,7 +6,10 @@ const { resolve } = require('node:path');
 const test = require('node:test');
 
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
-const { projectAgreement, viewPolicyFor } = require('../lib/canonical-v2/agreement-projection');
+const {
+  projectLegacyAgreementV1,
+  viewPolicyForLegacyV1,
+} = require('../lib/canonical-v2/agreement-projection');
 
 const ROOT = resolve(__dirname, '..', 'evidence/canonical-v2/stage-2y-structure-migration');
 
@@ -15,7 +18,9 @@ function json(path) {
 }
 
 function policy() {
-  return viewPolicyFor(json(resolve(ROOT, 'receipts/stage-2y-structure-m5-preparation.json')).family_order);
+  return viewPolicyForLegacyV1(
+    json(resolve(ROOT, 'receipts/stage-2y-structure-m5-preparation.json')).family_order,
+  );
 }
 
 function normaliseText(value) {
@@ -32,7 +37,7 @@ test('M6 projects every complete authored proposition with exact lineage', () =>
   const memberIds = [];
   for (const name of files) {
     const analysis = json(resolve(ROOT, 'shadow/m5-correction/analysis', name));
-    const projection = projectAgreement(analysis, viewPolicy);
+    const projection = projectLegacyAgreementV1(analysis, viewPolicy);
     assert.equal(Object.isFrozen(projection), true);
     assert.equal(projection.agreement_projection_id, contentId('AGREEMENT_PROJECTION/V1',
       Object.fromEntries(Object.entries(projection).filter(([key]) => !['schema_version', 'agreement_projection_id'].includes(key)))));
@@ -71,7 +76,7 @@ test('M6 projects every complete authored proposition with exact lineage', () =>
 
 test('TopBuild section 6.3 receives separate Termination rows', () => {
   const analysis = json(resolve(ROOT, 'shadow/m5-correction/analysis/3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb.agreement-analysis.json'));
-  const projection = projectAgreement(analysis, policy());
+  const projection = projectLegacyAgreementV1(analysis, policy());
   const rows = projection.rows.filter((row) => row.family_key === 'TERMINATION' && row.section_reference === '6.3');
   assert.ok(rows.length >= 4);
   assert.ok(rows.every((row) => row.row_state === 'COMPLETE_COMPARISON_ROW'));
@@ -84,7 +89,7 @@ test('partial propositions use the review lane and never a normal row', () => {
   const target = altered.compound_propositions[0];
   target.proposition_validation_state = 'MISSING_REQUIRED_ROLE';
   target.missing_required_roles = ['UNAMBIGUOUS_REQUIRED_SUPPORT'];
-  const projection = projectAgreement(altered, policy());
+  const projection = projectLegacyAgreementV1(altered, policy());
   assert.equal(projection.rows.some((row) => row.source_compound_proposition_id === target.compound_proposition_id), false);
   const review = projection.review_rows.find((row) => row.source_compound_proposition_id === target.compound_proposition_id);
   assert.ok(review);
@@ -100,7 +105,7 @@ test('a generic M7 source provision stays in review until a comparison point is 
     assertion_kind: 'M7_DETERMINISTIC_SOURCE_PROVISION',
     claim_definition_key: 'M7_DETERMINISTIC_EMPLOYEE_MATTERS_SOURCE_PROVISION',
   }];
-  const projection = projectAgreement(altered, policy());
+  const projection = projectLegacyAgreementV1(altered, policy());
   assert.equal(projection.rows.some((row) => row.source_compound_proposition_id === target.compound_proposition_id), false);
   const review = projection.review_rows.find((row) => row.source_compound_proposition_id === target.compound_proposition_id);
   assert.ok(review);
@@ -119,7 +124,7 @@ test('a classified M7 representation topic is a specific comparison point', () =
     claim_definition_key: 'M7_DETERMINISTIC_REPRESENTATIONS_SOURCE_PROVISION',
   }];
   target.roles.MEMBER_FACTS[0].attributes.representation_topics = ['CAPITALISATION'];
-  const projection = projectAgreement(altered, policy());
+  const projection = projectLegacyAgreementV1(altered, policy());
   const row = projection.rows.find((entry) => entry.source_compound_proposition_id === target.compound_proposition_id);
   assert.ok(row);
   const expanded = row.fields.find((field) => field.field_key === 'expanded_text').value;

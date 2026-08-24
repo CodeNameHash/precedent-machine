@@ -8,7 +8,10 @@ import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
 const { canonicalJson, contentId, sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
-const { projectAgreement, viewPolicyFor } = require('../lib/canonical-v2/agreement-projection');
+const {
+  projectLegacyAgreementV1,
+  viewPolicyForLegacyV1,
+} = require('../lib/canonical-v2/agreement-projection');
 const preview = require('../lib/review-parity/rendered-row-preview');
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -193,7 +196,7 @@ function main() {
   if (m5.packet_id !== 'stage-2y-structure-m5-family-adapters-correction' || m5.status !== 'PASS' || m5.lifecycle_state !== 'SEALED') fail('M5_RECEIPT', m5.status);
   for (const output of m5.output_bindings) assertBinding(output);
   const familyOrder = json(resolve(ROOT, 'receipts/stage-2y-structure-m5-preparation.json')).family_order;
-  const viewPolicy = viewPolicyFor(familyOrder);
+  const viewPolicy = viewPolicyForLegacyV1(familyOrder);
   writeCanonical(POLICY_PATH, viewPolicy);
   let correctionAuthority = null;
   if (CORRECTION_MODE) {
@@ -247,7 +250,7 @@ function main() {
   if (correctionAuthority) outputBindings.push(binding(CORRECTION_AUTHORITY_PATH, { correction_authority_id: correctionAuthority.correction_authority_id }));
   const projections = [];
   for (const analysis of analyses) {
-    const projection = projectAgreement(analysis, viewPolicy);
+    const projection = projectLegacyAgreementV1(analysis, viewPolicy);
     const path = resolve(OUTPUT_ROOT, 'projection', `${analysis.agreement_id}.agreement-projection.json`);
     writeCanonical(path, projection);
     projections.push(projection);

@@ -5,15 +5,28 @@ const assert = require('node:assert/strict');
 
 const {
   CANONICAL_V2_TERMINATION_RIGHTS_REVIEW_PROMPTS_FIELD,
+  CANONICAL_V2_TERMINATION_RIGHTS_REVIEW_SERVING_ENV_KEY,
+  CANONICAL_V2_TERMINATION_RIGHTS_REVIEW_SERVING_ENABLED_VALUE,
   CANONICAL_V2_TERMINATION_RIGHTS_REVIEW_SOURCE_STATUS_FIELD,
+  RED_HAT_DEAL_ID,
   TERMINATION_RIGHTS_REVIEW_SOURCE_STATE,
   attachCanonicalTerminationRightsReview,
   createCanonicalTerminationRightsReviewAttacher,
+  isCanonicalV2TerminationRightsReviewServingEnabled,
 } = require('../lib/canonical-v2/termination-rights-review-serving-source');
 const { trimReviewDealForWire } = require('../lib/queries/review-deal-wire');
 const { canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
 
 const DEAL_ID = '00000000-0000-4000-8000-000000000001';
+
+function previewServingEnv(overrides = {}) {
+  return {
+    [CANONICAL_V2_TERMINATION_RIGHTS_REVIEW_SERVING_ENV_KEY]:
+      CANONICAL_V2_TERMINATION_RIGHTS_REVIEW_SERVING_ENABLED_VALUE,
+    NODE_ENV: 'development',
+    ...overrides,
+  };
+}
 
 test('an unregistered deal is an exact no-op', async () => {
   const reviewDeal = Object.freeze({
@@ -22,9 +35,20 @@ test('an unregistered deal is an exact no-op', async () => {
     cards: [],
   });
 
-  const result = await attachCanonicalTerminationRightsReview(reviewDeal);
+  const result = await attachCanonicalTerminationRightsReview(reviewDeal, {
+    env: previewServingEnv(),
+  });
 
   assert.equal(result, reviewDeal);
+});
+
+test('the serving gate off is an exact no-op even for the registered Red Hat deal', async () => {
+  const reviewDeal = Object.freeze({ dealId: RED_HAT_DEAL_ID, cards: [] });
+
+  const result = await attachCanonicalTerminationRightsReview(reviewDeal, { env: {} });
+
+  assert.equal(result, reviewDeal);
+  assert.equal(isCanonicalV2TerminationRightsReviewServingEnabled({}), false);
 });
 
 test('a registered source failure is visible and does not attach partial review data', async () => {
@@ -32,6 +56,7 @@ test('a registered source failure is visible and does not attach partial review 
   const loggerCalls = [];
 
   const result = await attachCanonicalTerminationRightsReview(reviewDeal, {
+    env: previewServingEnv(),
     sources: {
       [DEAL_ID]: async () => {
         const error = new Error('registered source is unavailable');
@@ -88,7 +113,7 @@ test('failure while resolving a registered source is also visible as FAILED', as
 
   const result = await attachCanonicalTerminationRightsReview(
     { dealId: DEAL_ID, cards: [] },
-    { sources, logger: { error() {} } },
+    { env: previewServingEnv(), sources, logger: { error() {} } },
   );
 
   assert.equal(
@@ -105,6 +130,7 @@ test('an invalid registered source is FAILED rather than mistaken for an unregis
   const reviewDeal = Object.freeze({ dealId: DEAL_ID, cardCount: 0, cards: [] });
 
   const result = await attachCanonicalTerminationRightsReview(reviewDeal, {
+    env: previewServingEnv(),
     sources: { [DEAL_ID]: null },
     logger: { error() {} },
   });
@@ -121,6 +147,7 @@ test('an invalid registered source is FAILED rather than mistaken for an unregis
 
 test('a source cannot substitute or derive a different application deal ID', async () => {
   const result = await attachCanonicalTerminationRightsReview({ dealId: DEAL_ID, cards: [] }, {
+    env: previewServingEnv(),
     sources: {
       [DEAL_ID]: () => ({
         application_deal_id: '00000000-0000-4000-8000-000000000002',
@@ -154,6 +181,7 @@ test('FAILED removes stale transient review fields so the UI cannot render parti
   });
 
   const result = await attachCanonicalTerminationRightsReview(reviewDeal, {
+    env: previewServingEnv(),
     sources: { [DEAL_ID]: async () => { throw new Error('failed'); } },
     logger: { error() {} },
   });

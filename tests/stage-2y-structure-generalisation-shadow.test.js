@@ -8,7 +8,7 @@ const test = require('node:test');
 const { indexAgreement } = require('../lib/canonical-v2/agreement-index');
 const { compileContext } = require('../lib/canonical-v2/context-compilation');
 const { adaptCompoundFamily, policyForFamily } = require('../lib/canonical-v2/family-compound-adapter');
-const { projectAgreement } = require('../lib/canonical-v2/agreement-projection');
+const { projectLegacyAgreementV1 } = require('../lib/canonical-v2/agreement-projection');
 const { canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
 const {
   buildBaseAnalysis,
@@ -90,7 +90,7 @@ test('M7 deterministic additive path identifies source without pretending it pro
     compound_propositions: adapted.propositions,
     m5_correction: { semantic_projection_collection: 'compound_propositions' },
   };
-  const projection = projectAgreement(corrected, viewPolicy);
+  const projection = projectLegacyAgreementV1(corrected, viewPolicy);
   assert.equal(projection.counts.normal_row_count, 0);
   assert.ok(projection.counts.review_row_count >= 1);
   assert.ok(projection.review_rows.every((row) =>

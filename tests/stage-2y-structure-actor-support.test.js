@@ -27,7 +27,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 
-const { projectAgreement, viewPolicyFor } = require('../lib/canonical-v2/agreement-projection');
+const {
+  projectLegacyAgreementV1,
+  viewPolicyForLegacyV1,
+} = require('../lib/canonical-v2/agreement-projection');
 
 const ROOT = path.resolve(__dirname, '..', 'evidence/canonical-v2/stage-2y-structure-migration');
 
@@ -125,7 +128,7 @@ function displayedActors(row) {
 const KNOWN_UNSUPPORTED = new Set([]);
 
 test('every displayed actor is supported by a member claim or a DIRECT in-unit source span', () => {
-  const viewPolicy = viewPolicyFor(familyOrder());
+  const viewPolicy = viewPolicyForLegacyV1(familyOrder());
   const failures = [];
   const stillUnsupported = new Set();
   let rowsChecked = 0;
@@ -133,7 +136,7 @@ test('every displayed actor is supported by a member claim or a DIRECT in-unit s
   let actorsChecked = 0;
 
   for (const analysis of analyses()) {
-    const projection = projectAgreement(analysis, viewPolicy);
+    const projection = projectLegacyAgreementV1(analysis, viewPolicy);
     for (const row of projection.rows) {
       rowsChecked += 1;
       const actors = displayedActors(row);
