@@ -62,7 +62,9 @@ export default async function handler(req, res) {
     // non-thenable object resolves to that same object on the next
     // microtask, so this one `await` is correct for both cases.
     const servedReviewDeal = await attachCanonicalTerminationFeeServing(previewedReviewDeal, { env: process.env });
-    const rightsReviewDeal = await attachCanonicalTerminationRightsReview(servedReviewDeal);
+    const rightsReviewDeal = await attachCanonicalTerminationRightsReview(servedReviewDeal, {
+      env: process.env,
+    });
     // Transient legal-review state must not survive through the shared
     // five-minute CDN cache. Unregistered deals keep the existing shared cache.
     res.setHeader('Cache-Control', terminationRightsReviewCacheControl(rightsReviewDeal));

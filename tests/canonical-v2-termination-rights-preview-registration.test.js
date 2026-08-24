@@ -237,9 +237,29 @@ test('Red Hat preview rows render through the V2 review group builder', async ()
   assert.equal(propositionGroup.rows[0].label, 'Legal restraint right');
 });
 
+test('Red Hat preview rows appear in the Termination Rights section selectRows', async () => {
+  const { terminationRightsConfig } = await import(
+    '../components/review/table-configs/termination-rights.config.js'
+  );
+  const env = {
+    [PLANNED_SERVING_ENV_KEY]: PLANNED_SERVING_ENABLED_VALUE,
+    VERCEL_ENV: 'preview',
+  };
+  const attached = await attachCanonicalTerminationRightsReview(
+    { dealId: RED_HAT_DEAL_ID, cards: [] },
+    { env },
+  );
+  const rows = terminationRightsConfig.selectRows(attached);
+  assert.equal(rows.length, 1);
+  assert.ok(rows[0].groups.some(
+    (group) => group.id === 'canonical-v2-termination-right-propositions',
+  ));
+});
+
 test('cards route still calls attachCanonicalTerminationRightsReview after termination fee', () => {
   const route = fs.readFileSync('pages/api/review/[id]/cards.js', 'utf8');
   const feeAt = route.indexOf('attachCanonicalTerminationFeeServing(previewedReviewDeal');
   const rightsAt = route.indexOf('attachCanonicalTerminationRightsReview(servedReviewDeal');
   assert.ok(feeAt > 0 && rightsAt > feeAt);
+  assert.match(route, /attachCanonicalTerminationRightsReview\([\s\S]*env:\s*process\.env/);
 });

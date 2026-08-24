@@ -830,7 +830,20 @@ const terminationRightsConfig = {
   layoutSlot: 'termination',
   selectRows(reviewDeal) {
     const cards = selectCards(reviewDeal, isTerminationRight);
-    const groups = buildGroups(reviewDeal, cards);
+    let groups = [];
+    try {
+      groups = buildGroups(reviewDeal, cards);
+    } catch {
+      groups = [];
+    }
+    if (!groups.length
+        && reviewDeal?.canonical_v2_termination_rights_review_source_status) {
+      try {
+        groups = buildTerminationRightsReviewGroups(reviewDeal);
+      } catch {
+        groups = [];
+      }
+    }
     if (!groups.length) return [];
     return [{ id: 'termination-rights-body', groups, cards, reviewDeal }];
   },
