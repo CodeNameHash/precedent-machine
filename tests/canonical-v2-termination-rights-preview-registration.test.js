@@ -216,6 +216,27 @@ test('the real export is an exact no-op when the preview serving gate is off', a
   );
 });
 
+test('Red Hat preview rows render through the V2 review group builder', async () => {
+  const { buildTerminationRightsReviewGroups } = await import(
+    '../components/review/table-configs/termination-rights-review-groups.js'
+  );
+  const env = {
+    [PLANNED_SERVING_ENV_KEY]: PLANNED_SERVING_ENABLED_VALUE,
+    VERCEL_ENV: 'preview',
+  };
+  const attached = await attachCanonicalTerminationRightsReview(
+    { dealId: RED_HAT_DEAL_ID, cards: [] },
+    { env },
+  );
+  const groups = buildTerminationRightsReviewGroups(attached);
+  const propositionGroup = groups.find(
+    (group) => group?.id === 'canonical-v2-termination-right-propositions',
+  );
+  assert.ok(propositionGroup);
+  assert.equal(propositionGroup.rows.length, 1);
+  assert.equal(propositionGroup.rows[0].label, 'Legal restraint right');
+});
+
 test('cards route still calls attachCanonicalTerminationRightsReview after termination fee', () => {
   const route = fs.readFileSync('pages/api/review/[id]/cards.js', 'utf8');
   const feeAt = route.indexOf('attachCanonicalTerminationFeeServing(previewedReviewDeal');
