@@ -112,6 +112,8 @@ On-disk Milestone A packages load when `buildLawfulWork3FamilyPackageSetFixture(
 - **Blocker A — closed (2026-08-24).** Every approved profile in every sealed family now carries all four fixture kinds and a dimension-evidence row bound to its own POSITIVE proof. A shared generator helper, `scripts/lib/stage-2y-structure-m7-v2-family-package-fixture-closure.mjs`, authors a POSITIVE and a NEAR_NEGATIVE fixture per profile from that profile's own match tokens plus two family-level negatives, and is wired into every sealed family generator. Three latent defects were fixed on the way: colliding match tokens (48-character signature truncation, now suffixed with a signature digest), the template's cross-package WRONG_FAMILY witness (replaced by a family-local sample; the `ANTITRUST_REGULATORY` on-disk override is withheld until the families citing its synthetic profile seal), and a non-atomic antitrust match token. `node scripts/stage-2y-structure-m7-v2-work3-fixture-proof-crosscheck.mjs` recomputes every proof the way the validator will and reports 0 failures over 1,488 proofs.
 - **Blocker B (D&O, needs Ben).** `m7-v2-repair-contract-policy.json` pins the item-42 shared source to exactly `PROFILE:DNO_INDEMNIFICATION:NO_ADVERSE_AMENDMENT` and `:RIGHTS_SURVIVAL`. The sealed package contains neither because those rows are on HOLD, so the sealed policy requires two profiles the approved inventory withholds. Full-set validation is blocked until that legal review is decided.
 
+(landing note 2026-09-01: full-set gate red in CI pending the item-42 successor session)
+
 **Regenerate packages** (any re-seal invalidates the lawful fixture's `on_disk_family_package_overrides` — refresh them after):
 
 ```bash
