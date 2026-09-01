@@ -1,0 +1,26 @@
+---
+description: Land evidence before stopping and reject synced repository paths
+alwaysApply: true
+---
+
+# Evidence landing and repository location
+
+## Session start
+
+- Resolve the repository's absolute physical path before changing files.
+- Stop if that path begins with an iCloud Drive or Dropbox sync root.
+- Common macOS sync roots include `/Users/<user>/Library/Mobile Documents/com~apple~CloudDocs/`, `/Users/<user>/Library/CloudStorage/Dropbox/`, and `/Users/<user>/Dropbox/`.
+- Do not create, copy, or move a repository worktree into a synced path.
+
+## Evidence changes
+
+- If a session creates or re-seals an artefact under `evidence/` or in a `control/` directory, commit and push all authorised evidence changes before the session ends.
+- If a safe evidence commit or push cannot complete, create and commit a dated WIP note under `docs/codex-program/notes/`.
+- The WIP note must name every uncommitted path and explain why each path remains uncommitted.
+- Do not report the evidence as landed when the WIP-note route was used.
+
+## Session end
+
+- Run `git status --short`.
+- End only when the result is empty or every remaining path is deliberately excluded and explained.
+- Name every deliberate exclusion in the final report.

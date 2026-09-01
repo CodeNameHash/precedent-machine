@@ -694,3 +694,26 @@ Large WIP on branch — Termination + MAE + D&O + Guaranty (Phase 2 slice) + Clo
 - Edit draft inventory packets as approval
 - Production serving / activation without explicit authority
 - Pipe `npm test` to `tail`/`head`
+
+---
+
+## Process compressions (Ben, 2026-09-01)
+
+- **Small-family batch:** Dividends, Material Adverse Effect definition,
+  Guaranty, Appraisal, Financing Covenants and Consideration use one combined
+  brief and one sitting. Each family keeps its own ruling record and receipt.
+  Specific Performance Remedies is excluded. It follows the sole-remedy limb
+  map, which is the pending list that separates each independent part of a
+  sole-remedy clause.
+- **Review limit:** A legal-semantic change alters clause meaning, ownership,
+  grouping or comparison output. Each such change gets one adversarial review,
+  meaning a separate review that tries to find a legal or evidence error. A
+  fix gets at most one further adversarial review. A mechanical change does
+  not alter legal meaning. Examples include hash-pin updates and file-path
+  wiring. Mechanical changes use only the normal automated tests and required
+  merge checks.
+- **Brief queue:** The legal-review order is small-family batch, Interim
+  Operating, No-Shop, Antitrust / Regulatory, General Covenants / Access,
+  mid-size families (Tax Matters, Employee Matters and Proxy / Meeting), large
+  families, Closing Conditions after its new comparison labels are available,
+  then Specific Performance Remedies after the sole-remedy limb map is ready.
