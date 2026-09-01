@@ -123,6 +123,53 @@ const WORK3_ENTRY_CORRECTION_AUTHORITY_BINDING = Object.freeze({
   git_blob_oid: '5ff4bcd0ca719c4da97dd9bb64d610349e3d7afd',
 });
 const WORK3_ENTRY_MANIFEST_MEMBER = 'work3_entry_correction_authority_binding';
+const WORK3_CLOSURE_SUCCESSOR_SCHEMA =
+  'STAGE_2Y_M7_V2_REPAIR_WORK_EXECUTION_MANIFEST/V2';
+const WORK3_CLOSURE_APPLICATION_SCHEMA =
+  'STAGE_2Y_M7_V2_REPAIR_WORK3_CLOSURE_AMENDMENT_APPLICATION_RECEIPT/V1';
+const WORK3_CLOSURE_APPLICATION_ID_FIELD =
+  'work3_closure_amendment_application_receipt_id';
+const WORK3_CLOSURE_PREDECESSOR_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-execution-manifest.json';
+const WORK3_CLOSURE_AMENDMENT_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-execution-manifest-closure-amendment.json';
+const WORK3_CLOSURE_REVIEW_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-execution-manifest-closure-amendment-external-review-receipt.json';
+const WORK3_CLOSURE_APPLICATION_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-execution-manifest-closure-amendment-application-receipt.json';
+const WORK3_CLOSURE_SUCCESSOR_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-execution-manifest-closure-successor.json';
+const WORK3_CLOSURE_INPUT_BINDINGS = Object.freeze({
+  predecessor: Object.freeze({
+    path: WORK3_CLOSURE_PREDECESSOR_PATH,
+    schema_version: SCHEMA,
+    record_id_field: 'execution_manifest_id',
+    record_id: 'e73e3071c8a3e93d57df68de31e9f46d0157f08627aaa2b7d40b9634b3485690',
+    byte_length: 36178,
+    sha256: 'b9767780df291de43a212b248dfbefbce1e05e8b6056d10b6776cb551b01fb2e',
+    git_blob_oid: 'aa9e6de0b236246673cbcf737659f31261dd896b',
+  }),
+  amendment: Object.freeze({
+    path: WORK3_CLOSURE_AMENDMENT_PATH,
+    schema_version:
+      'STAGE_2Y_M7_V2_REPAIR_WORK3_EXECUTION_MANIFEST_CLOSURE_AMENDMENT/V1',
+    record_id_field: 'closure_amendment_id',
+    record_id: '06b879b44497653b8a3a0e698448efb833efc83cbd8591d0e8ff879cc2071ab4',
+    byte_length: 207090,
+    sha256: 'e5a8610b596edb567f13624551715ba102f7daaa9ef19f438093a2564123fe47',
+    git_blob_oid: '4013eb82d7234534e15e39cd85d9582fa3d2d9c0',
+  }),
+  review: Object.freeze({
+    path: WORK3_CLOSURE_REVIEW_PATH,
+    schema_version:
+      'STAGE_2Y_M7_V2_REPAIR_WORK3_CLOSURE_AMENDMENT_EXTERNAL_REVIEW_RECEIPT/V1',
+    record_id_field: 'work3_closure_amendment_external_review_receipt_id',
+    record_id: 'a2344bb49e37bcae328479835ffe7d2e5477430ff89b4abf8c1af972594a3a14',
+    byte_length: 4547,
+    sha256: 'd5511ea3224a4cc685518e22a4ae4032ee678e2829ff1d4e2476a03d4de6932b',
+    git_blob_oid: 'fd5ef798299211aaf015c72979cb3c5fe9048c98',
+  }),
+});
 const WORK2_RECOVERY_AUTHORITY_SCHEMA =
   'STAGE_2Y_M7_V2_REPAIR_WORK2_COMMIT_DELTA_RECOVERY_AUTHORITY/V1';
 const WORK2_RECOVERY_APPROVAL_ID =
@@ -865,6 +912,146 @@ function recordBinding(repositoryPath, bytes, record, idField) {
     sha256: sha256Hex(bytes),
     git_blob_oid: gitBlobOid(bytes),
   };
+}
+
+function readPinnedWork3ClosureRecord(root, binding) {
+  const bytes = readSafe(root, binding.path);
+  const record = parseCanonical(bytes, 'MANIFEST_CONTRACT_DRIFT', binding.path);
+  if (record.schema_version !== binding.schema_version
+      || record[binding.record_id_field] !== binding.record_id
+      || bytes.length !== binding.byte_length
+      || sha256Hex(bytes) !== binding.sha256
+      || gitBlobOid(bytes) !== binding.git_blob_oid) {
+    fail('MANIFEST_CONTRACT_DRIFT', binding.path);
+  }
+  validateContentIdOnly(
+    record,
+    binding.record_id_field,
+    'MANIFEST_CONTRACT_DRIFT',
+    binding.path,
+  );
+  return { bytes, record };
+}
+
+function expectedWork3ClosureSuccessor(predecessor, amendment, applicationBinding) {
+  const overlay = amendment.successor_manifest_contract_overlay;
+  const expected = clone(predecessor);
+  delete expected.execution_manifest_digest;
+  delete expected.execution_manifest_id;
+  expected.schema_version = WORK3_CLOSURE_SUCCESSOR_SCHEMA;
+  for (const field of [
+    'allowed_effects',
+    'exact_argv_with_run_limits',
+    'exact_git_commit_and_push_argv',
+    'permitted_read_paths',
+    'permitted_write_paths',
+    'stop_conditions',
+    'success_conditions',
+  ]) expected[field] = clone(overlay[field]);
+  Object.assign(expected, {
+    predecessor_execution_manifest_binding:
+      clone(WORK3_CLOSURE_INPUT_BINDINGS.predecessor),
+    closure_amendment_binding: clone(WORK3_CLOSURE_INPUT_BINDINGS.amendment),
+    external_review_receipt_binding: clone(WORK3_CLOSURE_INPUT_BINDINGS.review),
+    closure_application_receipt_binding: clone(applicationBinding),
+  });
+  const identity = restampedIdentity(
+    expected,
+    'execution_manifest_digest',
+    'execution_manifest_id',
+  );
+  const sealed = {
+    ...expected,
+    execution_manifest_digest: identity.digest,
+    execution_manifest_id: identity.id,
+  };
+  if (overlay.schema_version !== WORK3_CLOSURE_SUCCESSOR_SCHEMA
+      || !same(Object.keys(sealed).sort(), overlay.record_exact_keys)) {
+    fail('MANIFEST_CONTRACT_DRIFT', 'Work3 closure successor overlay');
+  }
+  return sealed;
+}
+
+function validateWork3ClosureSuccessor(root, manifestPath) {
+  const predecessorState = readPinnedWork3ClosureRecord(
+    root,
+    WORK3_CLOSURE_INPUT_BINDINGS.predecessor,
+  );
+  const amendmentState = readPinnedWork3ClosureRecord(
+    root,
+    WORK3_CLOSURE_INPUT_BINDINGS.amendment,
+  );
+  readPinnedWork3ClosureRecord(root, WORK3_CLOSURE_INPUT_BINDINGS.review);
+
+  const applicationBytes = readSafe(root, WORK3_CLOSURE_APPLICATION_PATH);
+  const application = parseCanonical(
+    applicationBytes,
+    'MANIFEST_CONTRACT_DRIFT',
+    WORK3_CLOSURE_APPLICATION_PATH,
+  );
+  if (!exactKeys(application, [
+    'schema_version',
+    WORK3_CLOSURE_APPLICATION_ID_FIELD,
+    'state',
+    'closure_amendment_binding',
+    'external_review_receipt_binding',
+    'zero_effect_boundary',
+  ])
+      || application.schema_version !== WORK3_CLOSURE_APPLICATION_SCHEMA
+      || application.state !== 'IMMUTABLE_ZERO_EFFECT_APPLICATION'
+      || !same(
+        application.closure_amendment_binding,
+        WORK3_CLOSURE_INPUT_BINDINGS.amendment,
+      )
+      || !same(
+        application.external_review_receipt_binding,
+        WORK3_CLOSURE_INPUT_BINDINGS.review,
+      )
+      || !same(
+        application.zero_effect_boundary,
+        amendmentState.record.zero_effect_boundary,
+      )) {
+    fail('MANIFEST_CONTRACT_DRIFT', WORK3_CLOSURE_APPLICATION_PATH);
+  }
+  validateContentIdOnly(
+    application,
+    WORK3_CLOSURE_APPLICATION_ID_FIELD,
+    'MANIFEST_CONTRACT_DRIFT',
+    WORK3_CLOSURE_APPLICATION_PATH,
+  );
+  const applicationBinding = recordBinding(
+    WORK3_CLOSURE_APPLICATION_PATH,
+    applicationBytes,
+    application,
+    WORK3_CLOSURE_APPLICATION_ID_FIELD,
+  );
+  const manifestBytes = readSafe(root, manifestPath);
+  const manifest = parseCanonical(
+    manifestBytes,
+    'MANIFEST_BYTES_DRIFT',
+    manifestPath,
+  );
+  const expected = expectedWork3ClosureSuccessor(
+    predecessorState.record,
+    amendmentState.record,
+    applicationBinding,
+  );
+  if (!same(manifest, expected)) {
+    fail('MANIFEST_CONTRACT_DRIFT', 'Work3 closure successor exact chain');
+  }
+  const result = {
+    schema_version: RESULT_SCHEMA,
+    status: 'PASS_NARROWING_EXECUTION_MANIFEST',
+    work: 'WORK3',
+    manifest_path: manifestPath,
+    execution_manifest_id: manifest.execution_manifest_id,
+    execution_manifest_digest: manifest.execution_manifest_digest,
+    candidate_registration_id: null,
+    candidate_stage_state: 'BUILD_ONLY_NULL',
+    deferred_proofs: [DEFERRED_GIT_PROOF],
+  };
+  if (!exactKeys(result, RESULT_KEYS)) fail('MANIFEST_CONTRACT_DRIFT', 'result');
+  return result;
 }
 
 function optionalCanonicalRecord(root, repositoryPath, code) {
@@ -4459,6 +4646,9 @@ export async function validateExecutionManifest(options) {
   if (!exactKeys(options, ['repoRoot', 'manifestPath'])) fail('INVALID_OPTIONS', 'options');
   const root = normaliseRoot(options.repoRoot);
   const manifestPath = normaliseRepositoryPath(options.manifestPath);
+  if (manifestPath === WORK3_CLOSURE_SUCCESSOR_PATH) {
+    return validateWork3ClosureSuccessor(root, manifestPath);
+  }
   const authorityState = validateAuthority(root);
   const { authority } = authorityState;
   if (!authority.per_work_execution_manifest_policy.exact_paths.includes(manifestPath)) {

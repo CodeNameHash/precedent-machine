@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const { execFileSync } = require('node:child_process');
+const { execFileSync, spawnSync } = require('node:child_process');
 const { createHash } = require('node:crypto');
 const {
   copyFileSync,
@@ -40,6 +40,20 @@ const BRANCH = 'codex/recover-m7-20260812';
 const ACTIVATION_COMMIT = '6162798202bda37169917400b8fbebad8e1bdb9a';
 const DEFERRED_GIT_PROOF = 'EXTERNAL_MILESTONE_ATTESTATION_NOT_INDEPENDENTLY_RECOMPUTED';
 const EXECUTION_MANIFEST_VALIDATOR_PATH = 'scripts/stage-2y-structure-m7-v2-repair-execution-manifest-validate.mjs';
+const WORK3_CLOSURE_APPLY_PATH =
+  'scripts/stage-2y-structure-m7-v2-repair-work3-closure-apply.mjs';
+const WORK3_MANIFEST_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-execution-manifest.json';
+const WORK3_CLOSURE_AMENDMENT_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-execution-manifest-closure-amendment.json';
+const WORK3_CLOSURE_REVIEW_RECEIPT_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-execution-manifest-closure-amendment-external-review-receipt.json';
+const WORK3_CLOSURE_APPLICATION_RECEIPT_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-execution-manifest-closure-amendment-application-receipt.json';
+const WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-execution-manifest-closure-successor.json';
+const WORK3_CLOSURE_REVIEW_TARGET_COMMIT =
+  'f87b4e5cdcfc2a9fe68f4803ae273865322ee966';
 const WORK1_FINALISER_PATH = 'scripts/stage-2y-structure-m7-v2-repair-work1-finalise.mjs';
 const WORK1_VALIDATOR_PATH = 'scripts/stage-2y-structure-m7-v2-repair-work1-validate.mjs';
 const WORK1_RECOVERY_PATH = 'scripts/stage-2y-structure-m7-v2-repair-work1-recover.mjs';
@@ -579,6 +593,54 @@ function runFixtureGit(root, args) {
     encoding: 'utf8',
     env: environment,
   }).trimEnd();
+}
+
+function makeWork3ClosureApplicationFixture(t) {
+  const parent = realpathSync(mkdtempSync(path.join(tmpdir(), 'm7-v2-work3-closure-')));
+  const root = path.join(parent, 'repository');
+  t.after(() => rmSync(parent, { recursive: true, force: true }));
+  execFileSync('git', ['clone', '--quiet', '--shared', '--no-checkout', REPO_ROOT, root]);
+  for (const repositoryPath of [
+    WORK3_MANIFEST_PATH,
+    WORK3_CLOSURE_AMENDMENT_PATH,
+    WORK3_CLOSURE_REVIEW_RECEIPT_PATH,
+  ]) copyRepositoryFile(root, repositoryPath);
+  return { root };
+}
+
+function runWork3ClosureApplication(root, environment = process.env) {
+  return spawnSync(
+    process.execPath,
+    [path.join(REPO_ROOT, WORK3_CLOSURE_APPLY_PATH)],
+    { cwd: root, encoding: 'utf8', env: environment },
+  );
+}
+
+function closureRecordBinding(root, repositoryPath, idField) {
+  const bytes = readFileSync(absolute(root, repositoryPath));
+  const record = JSON.parse(bytes);
+  return standardBinding(
+    repositoryPath,
+    bytes,
+    record.schema_version,
+    idField,
+    record[idField],
+  );
+}
+
+function restampWork3ClosureSuccessor(record) {
+  const unsigned = clone(record);
+  delete unsigned.execution_manifest_digest;
+  delete unsigned.execution_manifest_id;
+  const executionManifestDigest = sha256Hex(canonicalJson(unsigned));
+  const withDigest = {
+    ...unsigned,
+    execution_manifest_digest: executionManifestDigest,
+  };
+  return {
+    ...withDigest,
+    execution_manifest_id: contentId(record.schema_version, withDigest),
+  };
 }
 
 function deriveRealMilestone(fixture) {
@@ -7082,4 +7144,352 @@ test('Work3 entry manifest binds exact P50 and rich recovered Work2 lineage', as
     repoRoot: sourceFixture.root,
     manifestPath: sourceManifestPath,
   }), 'PREDECESSOR_BINDING_DRIFT');
+});
+
+test('Work3 closure application rejects a remote branch that is not a descendant of the reviewed commit', (t) => {
+  const fixture = makeWork3ClosureApplicationFixture(t);
+  runFixtureGit(fixture.root, [
+    'update-ref', `refs/remotes/origin/${BRANCH}`,
+    '05b5c49bd549a1d985bb3d888ee92fc313ac88df',
+  ]);
+
+  const result = runWork3ClosureApplication(fixture.root);
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /WORK3_CLOSURE_REMOTE_HISTORY_INVALID/u);
+  assert.equal(
+    existsSync(absolute(fixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH)),
+    false,
+  );
+  assert.equal(
+    existsSync(absolute(fixture.root, WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH)),
+    false,
+  );
+  assert.equal(
+    runFixtureGit(fixture.root, ['cat-file', '-t', WORK3_CLOSURE_REVIEW_TARGET_COMMIT]),
+    'commit',
+  );
+});
+
+test('Work3 closure application creates the exact six-key receipt and predecessor-plus-overlay V2 successor', (t) => {
+  const fixture = makeWork3ClosureApplicationFixture(t);
+  const predecessor = JSON.parse(readFileSync(absolute(fixture.root, WORK3_MANIFEST_PATH)));
+  const amendment = JSON.parse(readFileSync(
+    absolute(fixture.root, WORK3_CLOSURE_AMENDMENT_PATH),
+  ));
+  const overlay = amendment.successor_manifest_contract_overlay;
+
+  const result = runWork3ClosureApplication(fixture.root);
+
+  assert.equal(result.status, 0, result.stderr);
+  const commandResult = JSON.parse(result.stdout);
+  assert.equal(commandResult.status, 'PASS_WORK3_CLOSURE_APPLICATION');
+  assert.deepEqual(commandResult.target_paths, [
+    WORK3_CLOSURE_APPLICATION_RECEIPT_PATH,
+    WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH,
+  ]);
+
+  const applicationBytes = readFileSync(
+    absolute(fixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH),
+  );
+  const application = JSON.parse(applicationBytes);
+  assert.deepEqual(Object.keys(application).sort(), [
+    'closure_amendment_binding',
+    'external_review_receipt_binding',
+    'schema_version',
+    'state',
+    'work3_closure_amendment_application_receipt_id',
+    'zero_effect_boundary',
+  ]);
+  assert.equal(
+    application.schema_version,
+    'STAGE_2Y_M7_V2_REPAIR_WORK3_CLOSURE_AMENDMENT_APPLICATION_RECEIPT/V1',
+  );
+  assert.equal(application.state, 'IMMUTABLE_ZERO_EFFECT_APPLICATION');
+  assert.deepEqual(
+    application.closure_amendment_binding,
+    closureRecordBinding(
+      fixture.root,
+      WORK3_CLOSURE_AMENDMENT_PATH,
+      'closure_amendment_id',
+    ),
+  );
+  assert.deepEqual(
+    application.external_review_receipt_binding,
+    closureRecordBinding(
+      fixture.root,
+      WORK3_CLOSURE_REVIEW_RECEIPT_PATH,
+      'work3_closure_amendment_external_review_receipt_id',
+    ),
+  );
+  assert.deepEqual(application.zero_effect_boundary, amendment.zero_effect_boundary);
+  assert.equal(
+    Object.hasOwn(application, 'successor_execution_manifest_binding'),
+    false,
+  );
+  const unsignedApplication = clone(application);
+  delete unsignedApplication.work3_closure_amendment_application_receipt_id;
+  assert.equal(
+    application.work3_closure_amendment_application_receipt_id,
+    contentId(application.schema_version, unsignedApplication),
+  );
+  assert.deepEqual(applicationBytes, canonicalBytes(application));
+
+  const successorBytes = readFileSync(
+    absolute(fixture.root, WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH),
+  );
+  const successor = JSON.parse(successorBytes);
+  assert.deepEqual(Object.keys(successor).sort(), overlay.record_exact_keys);
+  assert.equal(successor.schema_version, overlay.schema_version);
+  for (const field of [
+    'allowed_effects',
+    'exact_argv_with_run_limits',
+    'exact_git_commit_and_push_argv',
+    'permitted_read_paths',
+    'permitted_write_paths',
+    'stop_conditions',
+    'success_conditions',
+  ]) assert.deepEqual(successor[field], overlay[field], field);
+  for (const field of Object.keys(predecessor)) {
+    if ([
+      'schema_version',
+      'execution_manifest_digest',
+      'execution_manifest_id',
+      'allowed_effects',
+      'exact_argv_with_run_limits',
+      'exact_git_commit_and_push_argv',
+      'permitted_read_paths',
+      'permitted_write_paths',
+      'stop_conditions',
+      'success_conditions',
+    ].includes(field)) continue;
+    assert.deepEqual(successor[field], predecessor[field], field);
+  }
+  assert.deepEqual(
+    successor.predecessor_execution_manifest_binding,
+    closureRecordBinding(fixture.root, WORK3_MANIFEST_PATH, 'execution_manifest_id'),
+  );
+  assert.deepEqual(
+    successor.closure_amendment_binding,
+    application.closure_amendment_binding,
+  );
+  assert.deepEqual(
+    successor.external_review_receipt_binding,
+    application.external_review_receipt_binding,
+  );
+  assert.deepEqual(
+    successor.closure_application_receipt_binding,
+    closureRecordBinding(
+      fixture.root,
+      WORK3_CLOSURE_APPLICATION_RECEIPT_PATH,
+      'work3_closure_amendment_application_receipt_id',
+    ),
+  );
+  const unsignedSuccessor = clone(successor);
+  delete unsignedSuccessor.execution_manifest_digest;
+  delete unsignedSuccessor.execution_manifest_id;
+  const expectedDigest = sha256Hex(canonicalJson(unsignedSuccessor));
+  assert.equal(successor.execution_manifest_digest, expectedDigest);
+  assert.equal(
+    successor.execution_manifest_id,
+    contentId(successor.schema_version, { ...unsignedSuccessor, execution_manifest_digest: expectedDigest }),
+  );
+  assert.deepEqual(successorBytes, canonicalBytes(successor));
+});
+
+test('Work3 closure application is create-once and rejects symlinked output targets before writing', (t) => {
+  const appliedFixture = makeWork3ClosureApplicationFixture(t);
+  const firstResult = runWork3ClosureApplication(appliedFixture.root);
+  assert.equal(firstResult.status, 0, firstResult.stderr);
+  const applicationBytes = readFileSync(
+    absolute(appliedFixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH),
+  );
+  const successorBytes = readFileSync(
+    absolute(appliedFixture.root, WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH),
+  );
+
+  const repeatedResult = runWork3ClosureApplication(appliedFixture.root);
+
+  assert.notEqual(repeatedResult.status, 0);
+  assert.match(repeatedResult.stderr, /WORK3_CLOSURE_ALREADY_APPLIED/u);
+  assert.deepEqual(
+    readFileSync(absolute(appliedFixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH)),
+    applicationBytes,
+  );
+  assert.deepEqual(
+    readFileSync(absolute(appliedFixture.root, WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH)),
+    successorBytes,
+  );
+
+  const symlinkFixture = makeWork3ClosureApplicationFixture(t);
+  const successorPath = absolute(
+    symlinkFixture.root,
+    WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH,
+  );
+  symlinkSync(
+    path.basename(WORK3_CLOSURE_AMENDMENT_PATH),
+    successorPath,
+  );
+
+  const symlinkResult = runWork3ClosureApplication(symlinkFixture.root);
+
+  assert.notEqual(symlinkResult.status, 0);
+  assert.match(symlinkResult.stderr, /WORK3_CLOSURE_OUTPUT_SAFETY/u);
+  assert.equal(
+    existsSync(absolute(symlinkFixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH)),
+    false,
+  );
+  assert.equal(lstatSync(successorPath).isSymbolicLink(), true);
+  assert.equal(
+    readlinkSync(successorPath),
+    path.basename(WORK3_CLOSURE_AMENDMENT_PATH),
+  );
+
+  const partialFixture = makeWork3ClosureApplicationFixture(t);
+  const partialApplicationPath = absolute(
+    partialFixture.root,
+    WORK3_CLOSURE_APPLICATION_RECEIPT_PATH,
+  );
+  writeFileSync(partialApplicationPath, 'partial\n');
+
+  const partialResult = runWork3ClosureApplication(partialFixture.root);
+
+  assert.notEqual(partialResult.status, 0);
+  assert.match(partialResult.stderr, /WORK3_CLOSURE_OUTPUT_STATE_DRIFT/u);
+  assert.equal(readFileSync(partialApplicationPath, 'utf8'), 'partial\n');
+  assert.equal(
+    existsSync(absolute(partialFixture.root, WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH)),
+    false,
+  );
+});
+
+test('Work3 closure application rolls back a partial write and permits a clean retry', (t) => {
+  const fixture = makeWork3ClosureApplicationFixture(t);
+  const successorPath = absolute(
+    fixture.root,
+    WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH,
+  );
+  const preloadPath = path.join(path.dirname(fixture.root), 'fail-successor-open.cjs');
+  writeFileSync(preloadPath, [
+    "const fs = require('node:fs');",
+    "const { syncBuiltinESMExports } = require('node:module');",
+    'const originalOpenSync = fs.openSync;',
+    'fs.openSync = function openSync(selectedPath, ...args) {',
+    '  if (selectedPath === process.env.WORK3_TEST_FAIL_OPEN_PATH) {',
+    "    const error = new Error('injected second-output write failure');",
+    "    error.code = 'EIO';",
+    '    throw error;',
+    '  }',
+    '  return originalOpenSync.call(this, selectedPath, ...args);',
+    '};',
+    'syncBuiltinESMExports();',
+    '',
+  ].join('\n'));
+  const injectedEnvironment = {
+    ...process.env,
+    NODE_OPTIONS: [process.env.NODE_OPTIONS, `--require=${preloadPath}`]
+      .filter(Boolean)
+      .join(' '),
+    WORK3_TEST_FAIL_OPEN_PATH: successorPath,
+  };
+
+  const failedResult = runWork3ClosureApplication(fixture.root, injectedEnvironment);
+
+  assert.notEqual(failedResult.status, 0);
+  assert.match(failedResult.stderr, /WORK3_CLOSURE_WRITE_FAILED/u);
+  assert.equal(
+    existsSync(absolute(fixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH)),
+    false,
+  );
+  assert.equal(existsSync(successorPath), false);
+
+  const retryResult = runWork3ClosureApplication(fixture.root);
+
+  assert.equal(retryResult.status, 0, retryResult.stderr);
+  assert.equal(
+    existsSync(absolute(fixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH)),
+    true,
+  );
+  assert.equal(existsSync(successorPath), true);
+});
+
+test('Work3 closure successor validation accepts only the exact predecessor-plus-overlay chain', async (t) => {
+  const validator = await loadValidator();
+  const fixture = makeWork3ClosureApplicationFixture(t);
+  const applyResult = runWork3ClosureApplication(fixture.root);
+  assert.equal(applyResult.status, 0, applyResult.stderr);
+  const successorPath = absolute(
+    fixture.root,
+    WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH,
+  );
+  const exactSuccessor = JSON.parse(readFileSync(successorPath));
+
+  const result = await validator.validateExecutionManifest({
+    repoRoot: fixture.root,
+    manifestPath: WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH,
+  });
+
+  assert.deepEqual(result, {
+    schema_version: RESULT_SCHEMA,
+    status: 'PASS_NARROWING_EXECUTION_MANIFEST',
+    work: 'WORK3',
+    manifest_path: WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH,
+    execution_manifest_id: exactSuccessor.execution_manifest_id,
+    execution_manifest_digest: exactSuccessor.execution_manifest_digest,
+    candidate_registration_id: null,
+    candidate_stage_state: 'BUILD_ONLY_NULL',
+    deferred_proofs: [DEFERRED_GIT_PROOF],
+  });
+
+  for (const mutate of [
+    (successor) => {
+      successor.predecessor_execution_manifest_binding.record_id = '0'.repeat(64);
+    },
+    (successor) => {
+      delete successor.closure_application_receipt_binding;
+    },
+    (successor) => {
+      successor.closure_application_receipt_binding.path = WORK3_CLOSURE_AMENDMENT_PATH;
+    },
+    (successor) => {
+      successor.unreviewed_extension = true;
+    },
+  ]) {
+    const hostileSuccessor = clone(exactSuccessor);
+    mutate(hostileSuccessor);
+    writeCanonical(
+      fixture.root,
+      WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH,
+      restampWork3ClosureSuccessor(hostileSuccessor),
+    );
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH,
+    }), 'MANIFEST_CONTRACT_DRIFT');
+  }
+
+  writeCanonical(
+    fixture.root,
+    WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH,
+    exactSuccessor,
+  );
+  const applicationPath = absolute(
+    fixture.root,
+    WORK3_CLOSURE_APPLICATION_RECEIPT_PATH,
+  );
+  const substitutedApplication = JSON.parse(readFileSync(applicationPath));
+  delete substitutedApplication.work3_closure_amendment_application_receipt_id;
+  substitutedApplication.closure_amendment_binding.path = WORK3_MANIFEST_PATH;
+  writeCanonical(
+    fixture.root,
+    WORK3_CLOSURE_APPLICATION_RECEIPT_PATH,
+    sealRecord(
+      substitutedApplication,
+      'work3_closure_amendment_application_receipt_id',
+    ),
+  );
+  await assertCode(validator, () => validator.validateExecutionManifest({
+    repoRoot: fixture.root,
+    manifestPath: WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH,
+  }), 'MANIFEST_CONTRACT_DRIFT');
 });
