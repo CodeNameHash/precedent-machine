@@ -17,6 +17,7 @@ const {
 } = require('../lib/canonical-v2/m7-v2-deterministic-generator');
 const {
   validateSyntheticExpressionEvidence,
+  validateSingleFamilyPackageInventory,
 } = require('../lib/canonical-v2/m7-v2-contract');
 const profileAuthoring = require('../lib/canonical-v2/m7-v2-profile-authoring');
 
@@ -2865,8 +2866,103 @@ test('Work3 profile source adapter rejects additive source drift in fixed order'
 
 test('Work3 profile source adapter closes exact thirty sources and renders no-default gap review', async (t) => {
   assert.deepEqual(Object.keys(profileAuthoring).sort(), [
+    'DNO_INDEMNIFICATION_PHASE2_AUTHORITY_BYTES',
+    'DNO_INDEMNIFICATION_PHASE2_AUTHORITY_ID',
+    'DNO_INDEMNIFICATION_PHASE2_AUTHORITY_PATH',
+    'DNO_INDEMNIFICATION_PHASE2_AUTHORITY_SCHEMA',
+    'DNO_INDEMNIFICATION_PHASE2_AUTHORITY_SHA256',
+    'DNO_INDEMNIFICATION_PHASE2_PROPOSAL_CODES',
+    'DNO_INDEMNIFICATION_PHASE2_PROPOSAL_KEYS',
+    'DNO_INDEMNIFICATION_PHASE4_AUTHORITY_BYTES',
+    'DNO_INDEMNIFICATION_PHASE4_AUTHORITY_ID',
+    'DNO_INDEMNIFICATION_PHASE4_AUTHORITY_PATH',
+    'DNO_INDEMNIFICATION_PHASE4_AUTHORITY_SCHEMA',
+    'DNO_INDEMNIFICATION_PHASE4_AUTHORITY_SHA256',
+    'DNO_INDEMNIFICATION_PHASE4_CANDIDATE_SCHEMA',
+    'DNO_INDEMNIFICATION_PHASE4_REVIEW_CODES',
+    'DNO_INDEMNIFICATION_PHASE4_REVIEW_INPUT_KEYS',
+    'DNO_INDEMNIFICATION_PHASE4_REVIEW_OUTPUT_KEYS',
+    'DNO_INDEMNIFICATION_PHASE4_SCHEDULE_SHA256',
+    'GENERAL_COVENANTS_PHASE2_AUTHORITY_BYTES',
+    'GENERAL_COVENANTS_PHASE2_AUTHORITY_ID',
+    'GENERAL_COVENANTS_PHASE2_AUTHORITY_PATH',
+    'GENERAL_COVENANTS_PHASE2_AUTHORITY_SCHEMA',
+    'GENERAL_COVENANTS_PHASE2_AUTHORITY_SHA256',
+    'GENERAL_COVENANTS_PHASE2_PROPOSAL_CODES',
+    'GENERAL_COVENANTS_PHASE2_PROPOSAL_KEYS',
+    'GENERAL_COVENANTS_PHASE4_AUTHORITY_BYTES',
+    'GENERAL_COVENANTS_PHASE4_AUTHORITY_ID',
+    'GENERAL_COVENANTS_PHASE4_AUTHORITY_PATH',
+    'GENERAL_COVENANTS_PHASE4_AUTHORITY_SCHEMA',
+    'GENERAL_COVENANTS_PHASE4_AUTHORITY_SHA256',
+    'GENERAL_COVENANTS_PHASE4_CANDIDATE_SCHEMA',
+    'GENERAL_COVENANTS_PHASE4_REVIEW_CODES',
+    'GENERAL_COVENANTS_PHASE4_REVIEW_INPUT_KEYS',
+    'GENERAL_COVENANTS_PHASE4_REVIEW_OUTPUT_KEYS',
+    'GENERAL_COVENANTS_PHASE4_SCHEDULE_SHA256',
+    'GUARANTY_FINANCING_PARTY_PHASE2_AUTHORITY_BYTES',
+    'GUARANTY_FINANCING_PARTY_PHASE2_AUTHORITY_ID',
+    'GUARANTY_FINANCING_PARTY_PHASE2_AUTHORITY_PATH',
+    'GUARANTY_FINANCING_PARTY_PHASE2_AUTHORITY_SCHEMA',
+    'GUARANTY_FINANCING_PARTY_PHASE2_AUTHORITY_SHA256',
+    'GUARANTY_FINANCING_PARTY_PHASE2_PROPOSAL_CODES',
+    'GUARANTY_FINANCING_PARTY_PHASE2_PROPOSAL_KEYS',
+    'GUARANTY_FINANCING_PARTY_PHASE4_AUTHORITY_BYTES',
+    'GUARANTY_FINANCING_PARTY_PHASE4_AUTHORITY_ID',
+    'GUARANTY_FINANCING_PARTY_PHASE4_AUTHORITY_PATH',
+    'GUARANTY_FINANCING_PARTY_PHASE4_AUTHORITY_SCHEMA',
+    'GUARANTY_FINANCING_PARTY_PHASE4_AUTHORITY_SHA256',
+    'GUARANTY_FINANCING_PARTY_PHASE4_CANDIDATE_SCHEMA',
+    'GUARANTY_FINANCING_PARTY_PHASE4_REVIEW_CODES',
+    'GUARANTY_FINANCING_PARTY_PHASE4_REVIEW_INPUT_KEYS',
+    'GUARANTY_FINANCING_PARTY_PHASE4_REVIEW_OUTPUT_KEYS',
+    'GUARANTY_FINANCING_PARTY_PHASE4_SCHEDULE_SHA256',
     'M7V2ProfileAuthoringError',
+    'MAE_DEFINITION_PHASE2_PROPOSAL_AUTHORITY_BINDING',
+    'MAE_DEFINITION_PHASE2_PROPOSAL_CODES',
+    'MAE_DEFINITION_PHASE2_PROPOSAL_KEYS',
+    'MAE_DEFINITION_PHASE4_AUTHORITY_BYTES',
+    'MAE_DEFINITION_PHASE4_AUTHORITY_ID',
+    'MAE_DEFINITION_PHASE4_AUTHORITY_PATH',
+    'MAE_DEFINITION_PHASE4_AUTHORITY_SCHEMA',
+    'MAE_DEFINITION_PHASE4_AUTHORITY_SHA256',
+    'MAE_DEFINITION_PHASE4_CANDIDATE_SCHEMA',
+    'MAE_DEFINITION_PHASE4_REVIEW_CODES',
+    'MAE_DEFINITION_PHASE4_REVIEW_INPUT_KEYS',
+    'MAE_DEFINITION_PHASE4_REVIEW_OUTPUT_KEYS',
+    'MAE_DEFINITION_PHASE4_SCHEDULE_SHA256',
+    'dnoIndemnificationProposalPartition',
+    'generalCovenantsProposalPartition',
+    'guarantyFinancingPartyProposalPartition',
+    'maeDefinitionProposalPartition',
+    'maeDefinitionProposalPartitionCanonicalTuple',
+    'maeDefinitionTerminalCarveoutCode',
+    'prepareDnoIndemnificationFamilyProfilePackageReview',
+    'prepareDnoIndemnificationPhase2FamilyProposal',
+    'prepareDnoIndemnificationWork3BenInventorySessionDisposition',
+    'prepareDnoIndemnificationWork3FamilyPackageRegistration',
+    'prepareDnoIndemnificationWork3FamilyPackageSeal',
+    'prepareDnoIndemnificationWork3UnapprovedInventoryReview',
     'prepareFamilyProfileGapReview',
+    'prepareGeneralCovenantsFamilyProfilePackageReview',
+    'prepareGeneralCovenantsPhase2FamilyProposal',
+    'prepareGeneralCovenantsWork3BenInventorySessionDisposition',
+    'prepareGeneralCovenantsWork3FamilyPackageRegistration',
+    'prepareGeneralCovenantsWork3FamilyPackageSeal',
+    'prepareGeneralCovenantsWork3UnapprovedInventoryReview',
+    'prepareGuarantyFinancingPartyFamilyProfilePackageReview',
+    'prepareGuarantyFinancingPartyPhase2FamilyProposal',
+    'prepareGuarantyFinancingPartyWork3BenInventorySessionDisposition',
+    'prepareGuarantyFinancingPartyWork3FamilyPackageRegistration',
+    'prepareGuarantyFinancingPartyWork3FamilyPackageSeal',
+    'prepareGuarantyFinancingPartyWork3UnapprovedInventoryReview',
+    'prepareMaeDefinitionFamilyProfilePackageReview',
+    'prepareMaeDefinitionFamilyProposal',
+    'prepareMaeDefinitionWork3BenInventorySessionDisposition',
+    'prepareMaeDefinitionWork3FamilyPackageRegistration',
+    'prepareMaeDefinitionWork3FamilyPackageSeal',
+    'prepareMaeDefinitionWork3StageBBlueprintProposal',
+    'prepareMaeDefinitionWork3UnapprovedInventoryReview',
     'prepareTerminationAgreementDateSourcePairReferenceValueCandidate',
     'prepareTerminationCompanyStockholdersMeetingEventReferenceValueCandidate',
     'prepareTerminationFamilyProfilePackageResolution',
@@ -2882,7 +2978,14 @@ test('Work3 profile source adapter closes exact thirty sources and renders no-de
     'prepareTerminationReferenceTargetEvidenceCandidate',
     'prepareTerminationReferenceValueMaterialisationCandidate',
     'prepareTerminationSourceOccurrenceSelfReferenceValueCandidate',
+    'prepareTerminationWork3BenInventorySessionDisposition',
+    'prepareTerminationWork3FamilyPackageRegistration',
+    'prepareTerminationWork3FamilyPackageSeal',
     'prepareTerminationWork3StageBBlueprintProposal',
+    'prepareTerminationWork3UnapprovedInventoryReview',
+    'validateDnoIndemnificationUnapprovedInventoryReviewEvidence',
+    'validateGeneralCovenantsUnapprovedInventoryReviewEvidence',
+    'validateGuarantyFinancingPartyUnapprovedInventoryReviewEvidence',
   ]);
 
   const input = buildProfileSourceFixture();
@@ -19018,7 +19121,36 @@ test("Work3 Termination Stage B builds the 45-profile unapproved blueprint propo
   assert.equal(result.complete_profile_count, 44);
   assert.equal(result.incomplete_profile_count, 1);
   assert.equal(result.proposed_profiles.length, 45);
-  assert.deepEqual(result.proposed_profiles, phase5.proposed_profiles);
+  assert.notDeepEqual(result.proposed_profiles, phase5.proposed_profiles);
+  const stageBOutsideDateLinkProfileKeys = new Set([
+    '261c8790a3247cc495222c2c63e3c82bf09bbcabeae4caa4cb4ff99031a5a6a6',
+    '4ea33624832698aaae46dae9e7328de732f0b6a6f7c0206888edacd4c064b20d',
+    'e30648500c6a76071927c51739c941a31f0d141c1fbf35f105a015e9dc9e148c',
+    'f41fd796b656dceb8b37f020ea30a3816f73248f5072d9b1d51d901134c89f14',
+  ]);
+  let linkedProfileCount = 0;
+  let linkedPropositionCount = 0;
+  for (let index = 0; index < phase5.proposed_profiles.length; index += 1) {
+    const predecessor = phase5.proposed_profiles[index];
+    const profile = result.proposed_profiles[index];
+    assert.equal(profile.proposed_profile_key, predecessor.proposed_profile_key);
+    const { outside_date_extension_links: links, ...withoutLinks } = profile;
+    assert.deepEqual(withoutLinks, predecessor);
+    if (stageBOutsideDateLinkProfileKeys.has(profile.proposed_profile_key)) {
+      linkedProfileCount += 1;
+      assert.ok(Array.isArray(links) && links.length > 0);
+      linkedPropositionCount += links.length;
+      for (const link of links) {
+        assert.equal(link.surface, 'OUTSIDE_DATE_EXTENSION');
+        assert.equal(typeof link.open_world_candidate_id, 'string');
+        assert.equal(link.open_world_candidate_id.length, 64);
+      }
+    } else {
+      assert.equal(links, undefined);
+    }
+  }
+  assert.equal(linkedProfileCount, 4);
+  assert.equal(linkedPropositionCount, 7);
   assert.deepEqual(result.retained_source_gaps, phase5.retained_source_gaps);
   assert.equal(
     result.stage_a_reference.schema_compatibility_review_id,
@@ -19412,4 +19544,1254 @@ test("Work3 Termination unapproved inventory review proves validator acceptance 
   );
   assert.equal(fixtureFingerprint(input), before);
   assertRecursivelyUnfrozen(input);
+});
+
+const TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING = Object.freeze({
+  path:
+    'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-termination-45-profile-inventory-review-packet-draft.json',
+  schema_version: 'STAGE_2Y_M7_V2_TERMINATION_45_PROFILE_INVENTORY_REVIEW_PACKET/V1',
+  record_id_field: 'inventory_review_packet_id',
+  record_id:
+    '217720c231c37963bd51107a0297c103a85af5b3c60ee77947364f7951e660ff',
+  byte_length: 162688,
+  sha256: '4420906a7c6b6de4ad9a0c54a22d3c029e8e6e6d6c8cfeddfacfa16ec681f53d',
+});
+const TERMINATION_BEN_RULINGS_NOTE_BINDING = Object.freeze({
+  path: 'docs/codex-program/notes/TERMINATION-BEN-RULINGS-Q01-Q03-2026-08-24.md',
+  byte_length: 3393,
+  sha256: '7bdc740d6fc9ac18dac4dee5f84310a081218089d0812936564ac46376ac7d27',
+});
+const TERMINATION_BEN_INVENTORY_SUCCESSOR_AUTHORITY_BINDING = Object.freeze({
+  path:
+    'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-termination-ben-inventory-session-successor-authority.json',
+  schema_version:
+    'STAGE_2Y_M7_V2_REPAIR_CONTRACT_WORK3_TERMINATION_BEN_INVENTORY_SESSION_SUCCESSOR_AUTHORITY/V1',
+  record_id_field: 'work3_termination_ben_inventory_session_successor_authority_id',
+  record_id: '85ea6bb707af405d674e69dc8a36af8652aa7a543a8a8b4e32da11f056e3e211',
+  byte_length: 7884,
+  sha256: '6c746525b86458d3bdda9032d4b6a07ed2ce850cc5929d638d5ddc7a31ef38a5',
+});
+const TERMINATION_BEN_INVENTORY_DISPOSITION_SCHEMA =
+  'STAGE_2Y_M7_V2_TERMINATION_45_PROFILE_INVENTORY_DISPOSITION/V1';
+const TERMINATION_BEN_INVENTORY_SESSION_RECEIPT_SCHEMA =
+  'STAGE_2Y_M7_V2_TERMINATION_BEN_INVENTORY_SESSION_RECEIPT/V1';
+const TERMINATION_BEN_INVENTORY_DISPOSITION_CANDIDATE_SCHEMA =
+  'M7_V2_TERMINATION_WORK3_BEN_INVENTORY_SESSION_DISPOSITION_CANDIDATE/V1';
+const TERMINATION_BEN_INVENTORY_DISPOSITION_FUTURE_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-termination-45-profile-inventory-disposition.json';
+
+const TERMINATION_BEN_INVENTORY_CONCHO_OUTSIDE_DATE_PROFILE_KEY =
+  'abfa845bbb08d51182b6ed8aa925e53c91be68b4248f35283e4beeee7b929bef';
+
+const TERMINATION_OUTSIDE_DATE_OPTION_B_PARTIAL_APPROVE_PROFILE_KEYS = new Set([
+  '261c8790a3247cc495222c2c63e3c82bf09bbcabeae4caa4cb4ff99031a5a6a6',
+  '4ea33624832698aaae46dae9e7328de732f0b6a6f7c0206888edacd4c064b20d',
+  'e30648500c6a76071927c51739c941a31f0d141c1fbf35f105a015e9dc9e148c',
+  'f41fd796b656dceb8b37f020ea30a3816f73248f5072d9b1d51d901134c89f14',
+]);
+
+function terminationBenInventoryDispositionOutsideDateDeferred(item) {
+  return (
+    item.classification_path.includes('OUTSIDE_DATE_RIGHT') ||
+    item.review_flags.includes('HOLD_RECOMMENDED_UNTIL_EXTENSION_DISPOSITION') ||
+    item.ben_review_completion_state === 'HOLD_EXTENSION_DISPOSITION_PENDING'
+  );
+}
+
+function terminationBenInventoryDispositionProfileRows(packet) {
+  return packet.profile_review_items.map((item) => {
+    const outsideDateDeferred = terminationBenInventoryDispositionOutsideDateDeferred(item);
+    const isConchoNoExtensionComplete =
+      item.proposed_profile_key === TERMINATION_BEN_INVENTORY_CONCHO_OUTSIDE_DATE_PROFILE_KEY;
+    const isOptionBPartial =
+      outsideDateDeferred &&
+      TERMINATION_OUTSIDE_DATE_OPTION_B_PARTIAL_APPROVE_PROFILE_KEYS.has(
+        item.proposed_profile_key,
+      );
+    let disposition = 'APPROVE';
+    if (outsideDateDeferred && !isConchoNoExtensionComplete && !isOptionBPartial) {
+      disposition = 'HOLD';
+    }
+    if (isOptionBPartial) disposition = 'PARTIAL_APPROVE';
+    const row = {
+      proposed_profile_key: item.proposed_profile_key,
+      ordinal: item.ordinal,
+      disposition,
+      review_flags_acknowledged: item.review_flags.slice(),
+      extension_deferred_acknowledged: Boolean(
+        outsideDateDeferred && !isConchoNoExtensionComplete,
+      ),
+    };
+    if (outsideDateDeferred && !isConchoNoExtensionComplete && !isOptionBPartial) {
+      row.disposition_reason = 'OUTSIDE_DATE_EXTENSION_DEFERRED_DEFAULT_HOLD';
+    }
+    if (isOptionBPartial) {
+      row.disposition_reason = 'OUTSIDE_DATE_OPTION_B_PARTIAL_APPROVE_LINKS_ACKNOWLEDGED';
+    }
+    if (isConchoNoExtensionComplete) {
+      row.no_extension_complete = true;
+      row.disposition_reason = 'OUTSIDE_DATE_NO_EXTENSION_COMPLETE';
+    }
+    return row;
+  });
+}
+
+function terminationBenInventoryDispositionSessionSummary(profileDispositions) {
+  const approvedCount = profileDispositions.filter(
+    (row) => row.disposition === 'APPROVE',
+  ).length;
+  const holdCount = profileDispositions.filter(
+    (row) => row.disposition === 'HOLD',
+  ).length;
+  const partialCount = profileDispositions.filter(
+    (row) => row.disposition === 'PARTIAL_APPROVE',
+  ).length;
+  return {
+    approved_count: approvedCount,
+    hold_count: holdCount,
+    reject_count: 0,
+    partial_count: partialCount,
+    outside_date_hold_count: profileDispositions.filter(
+      (row) => row.disposition === 'HOLD' && row.extension_deferred_acknowledged,
+    ).length,
+    b9e_note_only_acknowledged: true,
+    taxonomy_expansion_acknowledged: true,
+  };
+}
+
+function terminationBenInventorySessionReceiptDraft(
+  packetBinding,
+  dispositionRecord,
+) {
+  const unsigned = {
+    schema_version: TERMINATION_BEN_INVENTORY_SESSION_RECEIPT_SCHEMA,
+    session_classification: 'TERMINATION_45_PROFILE_INVENTORY_BEN_REVIEW',
+    completion_state: 'COMPLETE',
+    disposition_binding: {
+      path: TERMINATION_BEN_INVENTORY_DISPOSITION_FUTURE_PATH,
+      inventory_disposition_id: dispositionRecord.inventory_disposition_id,
+    },
+    packet_binding: {
+      path: packetBinding.path,
+      inventory_review_packet_id: packetBinding.record_id,
+      packet_digest: packetBinding.sha256,
+    },
+    zero_effect_boundary: {
+      work3_identity_count: 0,
+      package_registration_count: 0,
+      product_write_count: 0,
+    },
+    next_governance_stop: {
+      state: 'STOP_AFTER_BEN_INVENTORY_DISPOSITION_BEFORE_EXTENSION_OR_SEAL',
+      required_successor_sequence: [
+        'WORK3_TERMINATION_OUTSIDE_DATE_EXTENSION_DISPOSITION',
+        'WORK3_TERMINATION_FAMILY_PACKAGE_SEAL_SUCCESSOR_AUTHORITY',
+      ],
+    },
+  };
+  return {
+    ...unsigned,
+    ben_inventory_session_receipt_id: contentId(
+      TERMINATION_BEN_INVENTORY_SESSION_RECEIPT_SCHEMA,
+      unsigned,
+    ),
+  };
+}
+
+function terminationBenInventoryDispositionDraftRecord(packet, packetBinding) {
+  const profileDispositions = terminationBenInventoryDispositionProfileRows(packet);
+  const sessionSummary =
+    terminationBenInventoryDispositionSessionSummary(profileDispositions);
+  const dispositionUnsigned = {
+    schema_version: TERMINATION_BEN_INVENTORY_DISPOSITION_SCHEMA,
+    packet_digest: packetBinding.sha256,
+    ben_rulings_digest: TERMINATION_BEN_RULINGS_NOTE_BINDING.sha256,
+    reviewer: 'BEN_GOODCHILD',
+    default_disposition_applied: true,
+    profile_dispositions: profileDispositions,
+    session_summary: sessionSummary,
+  };
+  const dispositionRecord = {
+    ...dispositionUnsigned,
+    inventory_disposition_id: contentId(
+      TERMINATION_BEN_INVENTORY_DISPOSITION_SCHEMA,
+      dispositionUnsigned,
+    ),
+    session_receipt_id: 'PENDING_SESSION_RECEIPT_DERIVATION',
+  };
+  const sessionReceipt = terminationBenInventorySessionReceiptDraft(
+    packetBinding,
+    dispositionRecord,
+  );
+  dispositionRecord.session_receipt_id = sessionReceipt.ben_inventory_session_receipt_id;
+  return { dispositionRecord, sessionReceipt };
+}
+
+function terminationBenInventoryDispositionEnvelope(packet, packetBinding) {
+  const { dispositionRecord } = terminationBenInventoryDispositionDraftRecord(
+    packet,
+    packetBinding,
+  );
+  return {
+    binding: {
+      path: TERMINATION_BEN_INVENTORY_DISPOSITION_FUTURE_PATH,
+      schema_version: TERMINATION_BEN_INVENTORY_DISPOSITION_SCHEMA,
+      record_id_field: 'inventory_disposition_id',
+      record_id: dispositionRecord.inventory_disposition_id,
+      byte_length: canonicalJson(dispositionRecord).length,
+      sha256: sha256Hex(Buffer.from(canonicalJson(dispositionRecord), 'utf8')),
+    },
+    record: dispositionRecord,
+  };
+}
+
+function terminationBenInventorySessionDispositionInput(dispositionEnvelope) {
+  const inventoryAuthorityBinding = Object.freeze({
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-termination-unapproved-inventory-review-authority.json',
+    schema_version:
+      'STAGE_2Y_M7_V2_REPAIR_CONTRACT_WORK3_TERMINATION_UNAPPROVED_INVENTORY_REVIEW_AUTHORITY/V1',
+    record_id_field: 'work3_termination_unapproved_inventory_review_authority_id',
+    record_id:
+      'a6bb07bf18ab3ebfb7188cd6b9f5786f16c56045963793a33ad439aa55d709fa',
+    byte_length: 10837,
+    sha256: '1fc2826ff9e7b5dd9617cf6d735b6a025c3f4294f0811199cf7c7e1e4a60e07c',
+  });
+  const coreAuthorityBinding = Object.freeze({
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-governed-disclosure-note-core-integration-authority.json',
+    schema_version:
+      'STAGE_2Y_M7_V2_REPAIR_CONTRACT_WORK3_GOVERNED_DISCLOSURE_NOTE_CORE_INTEGRATION_AUTHORITY/V1',
+    record_id_field: 'work3_governed_disclosure_note_core_integration_authority_id',
+    record_id: '61b45adaefc622d608293046f15190f9dafdfd12a1d6403305a7469935279d7d',
+    byte_length: 23266,
+    sha256: '448dc37e73aa8b045512000d6beebd3353fa555e54ad363c90628337025e4a7b',
+  });
+  const stageAAuthorityBinding = Object.freeze({
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-governed-disclosure-note-schema-package-analysis-projection-successor-authority.json',
+    schema_version:
+      'STAGE_2Y_M7_V2_REPAIR_CONTRACT_WORK3_GOVERNED_DISCLOSURE_NOTE_SCHEMA_PACKAGE_ANALYSIS_PROJECTION_SUCCESSOR_AUTHORITY/V1',
+    record_id_field:
+      'work3_governed_disclosure_note_schema_package_analysis_projection_successor_authority_id',
+    record_id: '054de9dc959cbb12062099efea3620e9582578fc64c90c6d21b878e009adf28a',
+    byte_length: 44726,
+    sha256: '850c9170b0367e83a9030c54f8e896be30cfac14a7b9ba8b15a49cab3270b45b',
+  });
+  const completionBinding = Object.freeze({
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-authoring-phase5-governed-disclosure-note-execution-completion-incident-lineage-superseding-evidence-receipt.json',
+    schema_version:
+      'STAGE_2Y_M7_V2_REPAIR_CONTRACT_TERMINATION_AUTHORING_PHASE5_GOVERNED_DISCLOSURE_NOTE_EXECUTION_COMPLETION_INCIDENT_LINEAGE_SUPERSEDING_EVIDENCE_RECEIPT/V1',
+    record_id_field:
+      'termination_authoring_phase5_governed_disclosure_note_execution_completion_incident_lineage_superseding_evidence_receipt_id',
+    record_id: '1e9c53620dbeac0e3f582ebfca91000111611ede9054193ed174173a78f12e49',
+    byte_length: 8867,
+    sha256: '905b824dd9a76aab8ca2164d08e647ee798143473ef49dbf40d9e6a768dbfe52',
+  });
+  const work3Binding = Object.freeze({
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-entry-correction-authority.json',
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK3_ENTRY_CORRECTION_AUTHORITY/V1',
+    record_id_field: 'correction_authority_id',
+    record_id: '561e48f1865259ba58d69f33cefcdf1c1ac606cf9468925dee47227603fad873',
+    byte_length: 237749,
+    sha256: '42dce2b3bc1f8730bb9a9532e8e9b34872f14117a38cdd97ba1be659e7647deb',
+  });
+  const captureBinding = Object.freeze({
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-authoring-phase5-governed-disclosure-note-ruling-authority.json',
+    schema_version:
+      'STAGE_2Y_M7_V2_REPAIR_CONTRACT_TERMINATION_AUTHORING_PHASE5_GOVERNED_DISCLOSURE_NOTE_RULING_AUTHORITY/V1',
+    record_id_field:
+      'termination_authoring_phase5_governed_disclosure_note_ruling_authority_id',
+    record_id: '98ee4f4779c5ac12e4c0b87a856c3383c1a40e10d014441b2f7f01094e9888fa',
+    byte_length: 7933,
+    sha256: '66dacd7e6151e261e2eeb422443e340787be6699ec8a7a5e15673376c1034b98',
+  });
+  const rulingBinding = Object.freeze({
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-ruling-termination-b9e-jurisdiction-list-disclosure-note.json',
+    schema_version:
+      'STAGE_2Y_M7_V2_REPAIR_TERMINATION_B9E_JURISDICTION_LIST_DISCLOSURE_NOTE_RULING/V1',
+    record_id_field: 'lawyer_ruling_id',
+    record_id: '5612a68b5416a51e26e604c525b8d93ec7285a51f6eba2edca6d251043aa7567',
+    byte_length: 1639,
+    sha256: 'f0e1155fe4f07f2f710666815afacea109f6978a6c9d04d581016301fe6efa5a',
+  });
+  const phase5Binding = Object.freeze({
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-authoring-phase5-governed-disclosure-note-authority.json',
+    schema_version:
+      'STAGE_2Y_M7_V2_REPAIR_CONTRACT_TERMINATION_AUTHORING_PHASE5_GOVERNED_DISCLOSURE_NOTE_AUTHORITY/V1',
+    record_id_field:
+      'termination_authoring_phase5_governed_disclosure_note_authority_id',
+    record_id: '10bcf58ff7c7a95794fcc1cb2788ce7b768c49865a5f8b2271f1a2d6e2b1f126',
+    byte_length: 22512,
+    sha256: '11022734a686d0f6efeee52b957e2d6e125f2b2167e7136a14e3d3d69dd786e8',
+  });
+  const phase4Binding = Object.freeze({
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-authoring-phase4-family-profile-package-review-authority.json',
+    schema_version:
+      'STAGE_2Y_M7_V2_REPAIR_CONTRACT_TERMINATION_AUTHORING_PHASE4_FAMILY_PROFILE_PACKAGE_REVIEW_AUTHORITY/V1',
+    record_id_field:
+      'termination_authoring_phase4_family_profile_package_review_authority_id',
+    record_id: '3f92e9ec3192933a22eb5a6d193296a164fd25b5612c2ece52fa97636943d41e',
+    byte_length: 115221,
+    sha256: '2425b103b19a228e26676d347656706be9d1a7b5e693512bcf1c450eba43db18',
+  });
+
+  return {
+    terminationWork3BenInventorySessionDispositionEvidence: {
+      work3EntryCorrectionAuthority: sourceEnvelope(work3Binding),
+      phase5ExecutionCompletionReceipt: sourceEnvelope(completionBinding),
+      work3GovernedDisclosureNoteSchemaSuccessorAuthority:
+        sourceEnvelope(stageAAuthorityBinding),
+      work3GovernedDisclosureNoteCoreIntegrationAuthority:
+        sourceEnvelope(coreAuthorityBinding),
+      work3TerminationUnapprovedInventoryReviewAuthority:
+        sourceEnvelope(inventoryAuthorityBinding),
+      work3BenInventorySessionSuccessorAuthority: sourceEnvelope(
+        TERMINATION_BEN_INVENTORY_SUCCESSOR_AUTHORITY_BINDING,
+      ),
+      inventoryReviewPacketDraft: sourceEnvelope(
+        TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING,
+      ),
+      benAuthoredInventoryDisposition: dispositionEnvelope,
+    },
+    terminationPhase5ResolutionInput: {
+      terminationPhase5ResolutionEvidence: {
+        governedDisclosureNoteRulingAuthority: sourceEnvelope(captureBinding),
+        governedDisclosureNoteRuling: sourceEnvelope(rulingBinding),
+        familyProfilePackageResolutionAuthority: sourceEnvelope(phase5Binding),
+      },
+      terminationFamilyProfilePackageReviewInput: {
+        terminationPhase4FamilyProfilePackageReviewAuthority:
+          sourceEnvelope(phase4Binding),
+        terminationReferenceValueMaterialisationInput:
+          terminationPhase3ReferenceValueMaterialisationFixture(),
+      },
+    },
+  };
+}
+
+test(
+  'Work3 Termination Ben inventory session disposition captures Ben-authored file without Work3 identity or package seal',
+  async (t) => {
+    assert.equal(
+      typeof profileAuthoring.prepareTerminationWork3BenInventorySessionDisposition,
+      'function',
+      'Work3 termination Ben inventory session disposition facade export is missing.',
+    );
+
+    physicalBytes(TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING);
+    physicalBytes(TERMINATION_BEN_RULINGS_NOTE_BINDING);
+    const packet = physicalRecord(TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING);
+    const dispositionEnvelope = terminationBenInventoryDispositionEnvelope(
+      packet,
+      TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING,
+    );
+    const input = terminationBenInventorySessionDispositionInput(dispositionEnvelope);
+    const before = fixtureFingerprint(input);
+    assertRecursivelyUnfrozen(input);
+
+    const result = profileAuthoring.prepareTerminationWork3BenInventorySessionDisposition(
+      input,
+    );
+
+    assertExactKeys(result, [
+      'schema_version',
+      'inventory_session_disposition_id',
+      'candidate_state',
+      'authority_binding',
+      'inventory_review_reference',
+      'disposition_binding',
+      'packet_binding',
+      'ben_rulings_binding',
+      'session_receipt_reference',
+      'review_accounting',
+      'withheld_work3_fields',
+      'next_governance_stop',
+      'zero_effect_boundary',
+    ], 'Ben inventory session disposition result');
+    assert.equal(
+      result.schema_version,
+      TERMINATION_BEN_INVENTORY_DISPOSITION_CANDIDATE_SCHEMA,
+    );
+    assert.equal(
+      result.candidate_state,
+      'BEN_45_PROFILE_INVENTORY_DISPOSITION_CAPTURED_PACKAGE_SEAL_NOT_RECORDED',
+    );
+    assert.equal(
+      result.disposition_binding.packet_digest,
+      TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING.sha256,
+    );
+    assert.equal(
+      result.disposition_binding.inventory_disposition_id,
+      dispositionEnvelope.record.inventory_disposition_id,
+    );
+    assert.equal(
+      result.packet_binding.inventory_review_packet_id,
+      TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING.record_id,
+    );
+    assert.equal(
+      result.packet_binding.packet_digest,
+      TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING.sha256,
+    );
+    assert.equal(result.review_accounting.work3_identity_count, 0);
+    assert.equal(result.review_accounting.profile_identity_count, 0);
+    assert.equal(result.review_accounting.profile_disposition_count, 45);
+    assert.equal(result.review_accounting.inventory_review_count, 1);
+    assert.equal(result.review_accounting.runtime_validator_acceptance_count, 1);
+    assert.equal(result.next_governance_stop.package_approval_permitted, false);
+    assert.equal(result.next_governance_stop.ben_disposition_state, 'RECORDED');
+    assert.equal(
+      result.next_governance_stop.state,
+      'STOP_AFTER_BEN_INVENTORY_DISPOSITION_BEFORE_EXTENSION_OR_SEAL',
+    );
+    assert.deepEqual(result.next_governance_stop.required_successor_sequence, [
+      'WORK3_TERMINATION_OUTSIDE_DATE_EXTENSION_DISPOSITION',
+      'WORK3_TERMINATION_FAMILY_PACKAGE_SEAL_SUCCESSOR_AUTHORITY',
+    ]);
+    assert.equal(result.zero_effect_boundary.work3_identity_count, 0);
+    assert.equal(result.zero_effect_boundary.profile_identity_count, 0);
+    assert.equal(result.zero_effect_boundary.package_registration_count, 0);
+    assert.equal(result.zero_effect_boundary.product_write_count, 0);
+
+    for (const key of [
+      'profile_id',
+      'inventory_fingerprint',
+      'activation_id',
+      'registration_id',
+      'family_profile_package_id',
+      'expression_id',
+      'rule_id',
+      'package_member_id',
+    ]) assert.equal(collectKeys(result).has(key), false, key);
+
+    assert.equal(isDeepFrozen(result), true);
+    assertDisjoint(
+      collectObjectIdentities(result),
+      collectObjectIdentities(input),
+      'Ben inventory session disposition result/caller input alias',
+    );
+    assert.equal(fixtureFingerprint(input), before);
+    assertRecursivelyUnfrozen(input);
+
+    await t.test(
+      'Ben inventory session disposition rejects caller-produced disposition injection',
+      () => {
+        const callerDrift = terminationBenInventorySessionDispositionInput(
+          dispositionEnvelope,
+        );
+        callerDrift.callerProducedInventoryDisposition =
+          dispositionEnvelope.record;
+        expectCode(
+          'M7_V2_TERMINATION_WORK3_BEN_INVENTORY_DISPOSITION_CONTRACT',
+          () => profileAuthoring.prepareTerminationWork3BenInventorySessionDisposition(
+            callerDrift,
+          ),
+        );
+      },
+    );
+
+    await t.test(
+      'Ben inventory session disposition rejects disposition with packet digest drift',
+      () => {
+        const driftEnvelope = terminationBenInventoryDispositionEnvelope(
+          packet,
+          TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING,
+        );
+        driftEnvelope.record.packet_digest = '0'.repeat(64);
+        driftEnvelope.binding.record_id = contentId(
+          TERMINATION_BEN_INVENTORY_DISPOSITION_SCHEMA,
+          driftEnvelope.record,
+        );
+        const driftInput = terminationBenInventorySessionDispositionInput(
+          driftEnvelope,
+        );
+        expectCode(
+          'M7_V2_TERMINATION_WORK3_BEN_INVENTORY_DISPOSITION_DISPOSITION',
+          () => profileAuthoring.prepareTerminationWork3BenInventorySessionDisposition(
+            driftInput,
+          ),
+        );
+      },
+    );
+  },
+);
+
+const TERMINATION_FAMILY_PACKAGE_SEAL_SUCCESSOR_AUTHORITY_BINDING = Object.freeze({
+  path:
+    'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-termination-family-package-seal-successor-authority.json',
+  schema_version:
+    'STAGE_2Y_M7_V2_REPAIR_CONTRACT_WORK3_TERMINATION_FAMILY_PACKAGE_SEAL_SUCCESSOR_AUTHORITY/V1',
+  record_id_field: 'work3_termination_family_package_seal_successor_authority_id',
+  record_id: '715d2c41a3198e14e0b8334b26c06dee6d556bf93e084dfa43c956f41c90748b',
+  byte_length: 7829,
+  sha256: '5be9b02bd8cf7983aae0119e7460ee5ab31cfb7407b51ed45c6111c5d9c5ff8e',
+});
+const TERMINATION_FAMILY_PACKAGE_SEAL_DISPOSITION_BINDING = Object.freeze({
+  path:
+    'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-termination-45-profile-inventory-disposition.json',
+  schema_version: 'STAGE_2Y_M7_V2_TERMINATION_45_PROFILE_INVENTORY_DISPOSITION/V1',
+  record_id_field: 'inventory_disposition_id',
+  record_id:
+    '3c6a866867e0580f4a1b18eb00f6c8df3460d224ec6247fbd89b2e080717aa2d',
+  byte_length: 12717,
+  sha256: '83ee6000ed51f69b8478a831dadb278ac5972158e20d490b70445f28a0f4ee55',
+});
+const TERMINATION_FAMILY_PACKAGE_SEAL_SESSION_RECEIPT_BINDING = Object.freeze({
+  path:
+    'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-termination-ben-inventory-session-receipt.json',
+  schema_version: 'STAGE_2Y_M7_V2_TERMINATION_BEN_INVENTORY_SESSION_RECEIPT/V1',
+  record_id_field: 'ben_inventory_session_receipt_id',
+  record_id:
+    'fcf73c32547f54a77442234cfa663da2301afd6b93e8b65d5c99ce62ea424d47',
+  byte_length: 1219,
+  sha256: '7ac5b1b7356260c9f782a04098af64da3aad6b4424562d7f3a3d15f8335ee331',
+});
+const TERMINATION_FAMILY_PACKAGE_SEAL_CANDIDATE_SCHEMA =
+  'M7_V2_TERMINATION_WORK3_FAMILY_PACKAGE_SEAL_CANDIDATE/V1';
+const TERMINATION_FAMILY_PACKAGE_SEAL_EXTENSION_NOTE_BINDING = Object.freeze({
+  path:
+    'docs/codex-program/notes/TERMINATION-OUTSIDE-DATE-EXTENSION-DISPOSITION-TABLE-2026-08-24.md',
+  byte_length: 10189,
+  sha256: '2fc3e79cf25f82bb650314564f09c07198935638799ff81c3c94887d5e655559',
+});
+
+function terminationFamilyPackageSealInput(
+  dispositionEnvelope,
+  sessionReceiptEnvelope,
+) {
+  const inventoryAuthorityBinding = Object.freeze({
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-termination-unapproved-inventory-review-authority.json',
+    schema_version:
+      'STAGE_2Y_M7_V2_REPAIR_CONTRACT_WORK3_TERMINATION_UNAPPROVED_INVENTORY_REVIEW_AUTHORITY/V1',
+    record_id_field: 'work3_termination_unapproved_inventory_review_authority_id',
+    record_id:
+      'a6bb07bf18ab3ebfb7188cd6b9f5786f16c56045963793a33ad439aa55d709fa',
+    byte_length: 10837,
+    sha256: '1fc2826ff9e7b5dd9617cf6d735b6a025c3f4294f0811199cf7c7e1e4a60e07c',
+  });
+  const coreAuthorityBinding = Object.freeze({
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-governed-disclosure-note-core-integration-authority.json',
+    schema_version:
+      'STAGE_2Y_M7_V2_REPAIR_CONTRACT_WORK3_GOVERNED_DISCLOSURE_NOTE_CORE_INTEGRATION_AUTHORITY/V1',
+    record_id_field: 'work3_governed_disclosure_note_core_integration_authority_id',
+    record_id: '61b45adaefc622d608293046f15190f9dafdfd12a1d6403305a7469935279d7d',
+    byte_length: 23266,
+    sha256: '448dc37e73aa8b045512000d6beebd3353fa555e54ad363c90628337025e4a7b',
+  });
+  const stageAAuthorityBinding = Object.freeze({
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-governed-disclosure-note-schema-package-analysis-projection-successor-authority.json',
+    schema_version:
+      'STAGE_2Y_M7_V2_REPAIR_CONTRACT_WORK3_GOVERNED_DISCLOSURE_NOTE_SCHEMA_PACKAGE_ANALYSIS_PROJECTION_SUCCESSOR_AUTHORITY/V1',
+    record_id_field:
+      'work3_governed_disclosure_note_schema_package_analysis_projection_successor_authority_id',
+    record_id: '054de9dc959cbb12062099efea3620e9582578fc64c90c6d21b878e009adf28a',
+    byte_length: 44726,
+    sha256: '850c9170b0367e83a9030c54f8e896be30cfac14a7b9ba8b15a49cab3270b45b',
+  });
+  const completionBinding = Object.freeze({
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-authoring-phase5-governed-disclosure-note-execution-completion-incident-lineage-superseding-evidence-receipt.json',
+    schema_version:
+      'STAGE_2Y_M7_V2_REPAIR_CONTRACT_TERMINATION_AUTHORING_PHASE5_GOVERNED_DISCLOSURE_NOTE_EXECUTION_COMPLETION_INCIDENT_LINEAGE_SUPERSEDING_EVIDENCE_RECEIPT/V1',
+    record_id_field:
+      'termination_authoring_phase5_governed_disclosure_note_execution_completion_incident_lineage_superseding_evidence_receipt_id',
+    record_id: '1e9c53620dbeac0e3f582ebfca91000111611ede9054193ed174173a78f12e49',
+    byte_length: 8867,
+    sha256: '905b824dd9a76aab8ca2164d08e647ee798143473ef49dbf40d9e6a768dbfe52',
+  });
+  const work3Binding = Object.freeze({
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-entry-correction-authority.json',
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK3_ENTRY_CORRECTION_AUTHORITY/V1',
+    record_id_field: 'correction_authority_id',
+    record_id: '561e48f1865259ba58d69f33cefcdf1c1ac606cf9468925dee47227603fad873',
+    byte_length: 237749,
+    sha256: '42dce2b3bc1f8730bb9a9532e8e9b34872f14117a38cdd97ba1be659e7647deb',
+  });
+  const captureBinding = Object.freeze({
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-authoring-phase5-governed-disclosure-note-ruling-authority.json',
+    schema_version:
+      'STAGE_2Y_M7_V2_REPAIR_CONTRACT_TERMINATION_AUTHORING_PHASE5_GOVERNED_DISCLOSURE_NOTE_RULING_AUTHORITY/V1',
+    record_id_field:
+      'termination_authoring_phase5_governed_disclosure_note_ruling_authority_id',
+    record_id: '98ee4f4779c5ac12e4c0b87a856c3383c1a40e10d014441b2f7f01094e9888fa',
+    byte_length: 7933,
+    sha256: '66dacd7e6151e261e2eeb422443e340787be6699ec8a7a5e15673376c1034b98',
+  });
+  const rulingBinding = Object.freeze({
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-ruling-termination-b9e-jurisdiction-list-disclosure-note.json',
+    schema_version:
+      'STAGE_2Y_M7_V2_REPAIR_TERMINATION_B9E_JURISDICTION_LIST_DISCLOSURE_NOTE_RULING/V1',
+    record_id_field: 'lawyer_ruling_id',
+    record_id: '5612a68b5416a51e26e604c525b8d93ec7285a51f6eba2edca6d251043aa7567',
+    byte_length: 1639,
+    sha256: 'f0e1155fe4f07f2f710666815afacea109f6978a6c9d04d581016301fe6efa5a',
+  });
+  const phase5Binding = Object.freeze({
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-authoring-phase5-governed-disclosure-note-authority.json',
+    schema_version:
+      'STAGE_2Y_M7_V2_REPAIR_CONTRACT_TERMINATION_AUTHORING_PHASE5_GOVERNED_DISCLOSURE_NOTE_AUTHORITY/V1',
+    record_id_field:
+      'termination_authoring_phase5_governed_disclosure_note_authority_id',
+    record_id: '10bcf58ff7c7a95794fcc1cb2788ce7b768c49865a5f8b2271f1a2d6e2b1f126',
+    byte_length: 22512,
+    sha256: '11022734a686d0f6efeee52b957e2d6e125f2b2167e7136a14e3d3d69dd786e8',
+  });
+  const phase4Binding = Object.freeze({
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-authoring-phase4-family-profile-package-review-authority.json',
+    schema_version:
+      'STAGE_2Y_M7_V2_REPAIR_CONTRACT_TERMINATION_AUTHORING_PHASE4_FAMILY_PROFILE_PACKAGE_REVIEW_AUTHORITY/V1',
+    record_id_field:
+      'termination_authoring_phase4_family_profile_package_review_authority_id',
+    record_id: '3f92e9ec3192933a22eb5a6d193296a164fd25b5612c2ece52fa97636943d41e',
+    byte_length: 115221,
+    sha256: '2425b103b19a228e26676d347656706be9d1a7b5e693512bcf1c450eba43db18',
+  });
+
+  return {
+    terminationWork3FamilyPackageSealEvidence: {
+      work3EntryCorrectionAuthority: sourceEnvelope(work3Binding),
+      phase5ExecutionCompletionReceipt: sourceEnvelope(completionBinding),
+      work3GovernedDisclosureNoteSchemaSuccessorAuthority:
+        sourceEnvelope(stageAAuthorityBinding),
+      work3GovernedDisclosureNoteCoreIntegrationAuthority:
+        sourceEnvelope(coreAuthorityBinding),
+      work3TerminationUnapprovedInventoryReviewAuthority:
+        sourceEnvelope(inventoryAuthorityBinding),
+      work3BenInventorySessionSuccessorAuthority: sourceEnvelope(
+        TERMINATION_BEN_INVENTORY_SUCCESSOR_AUTHORITY_BINDING,
+      ),
+      work3FamilyPackageSealSuccessorAuthority: sourceEnvelope(
+        TERMINATION_FAMILY_PACKAGE_SEAL_SUCCESSOR_AUTHORITY_BINDING,
+      ),
+      inventoryReviewPacketDraft: sourceEnvelope(
+        TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING,
+      ),
+      benAuthoredInventoryDisposition: dispositionEnvelope,
+      benInventorySessionReceipt: sessionReceiptEnvelope,
+    },
+    terminationPhase5ResolutionInput: {
+      terminationPhase5ResolutionEvidence: {
+        governedDisclosureNoteRulingAuthority: sourceEnvelope(captureBinding),
+        governedDisclosureNoteRuling: sourceEnvelope(rulingBinding),
+        familyProfilePackageResolutionAuthority: sourceEnvelope(phase5Binding),
+      },
+      terminationFamilyProfilePackageReviewInput: {
+        terminationPhase4FamilyProfilePackageReviewAuthority:
+          sourceEnvelope(phase4Binding),
+        terminationReferenceValueMaterialisationInput:
+          terminationPhase3ReferenceValueMaterialisationFixture(),
+      },
+    },
+  };
+}
+
+function terminationFamilyPackageSealSessionReceiptEnvelope(
+  dispositionRecord,
+  packetBinding,
+) {
+  const draft = terminationBenInventorySessionReceiptDraft(
+    packetBinding,
+    dispositionRecord,
+  );
+  const record = {
+    schema_version: draft.schema_version,
+    ben_inventory_session_receipt_id: draft.ben_inventory_session_receipt_id,
+    session_classification: draft.session_classification,
+    completion_state: draft.completion_state,
+    disposition_binding: draft.disposition_binding,
+    packet_binding: draft.packet_binding,
+    zero_effect_boundary: draft.zero_effect_boundary,
+    next_governance_stop: draft.next_governance_stop,
+  };
+  const canonicalText = canonicalJson(record);
+  const canonicalBytes = Buffer.from(canonicalText, 'utf8');
+  return {
+    binding: {
+      path: TERMINATION_FAMILY_PACKAGE_SEAL_SESSION_RECEIPT_BINDING.path,
+      schema_version: TERMINATION_BEN_INVENTORY_SESSION_RECEIPT_SCHEMA,
+      record_id_field: 'ben_inventory_session_receipt_id',
+      record_id: record.ben_inventory_session_receipt_id,
+      byte_length: canonicalBytes.length,
+      sha256: sha256Hex(canonicalBytes),
+    },
+    record,
+  };
+}
+
+function terminationFamilyPackageSealPhysicalDispositionEnvelope(packet, packetBinding) {
+  const dispositionEnvelope = terminationBenInventoryDispositionEnvelope(
+    packet,
+    packetBinding,
+  );
+  assert.equal(
+    dispositionEnvelope.record.inventory_disposition_id,
+    TERMINATION_FAMILY_PACKAGE_SEAL_DISPOSITION_BINDING.record_id,
+    'family package seal disposition id',
+  );
+  return dispositionEnvelope;
+}
+
+test(
+  'Work3 Termination family package seal captures Ben seal without Work3 identity or premature registration',
+  async (t) => {
+    assert.equal(
+      typeof profileAuthoring.prepareTerminationWork3FamilyPackageSeal,
+      'function',
+      'Work3 termination family package seal facade export is missing.',
+    );
+
+    physicalBytes(TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING);
+    physicalBytes(TERMINATION_BEN_RULINGS_NOTE_BINDING);
+    physicalBytes(TERMINATION_FAMILY_PACKAGE_SEAL_EXTENSION_NOTE_BINDING);
+    physicalBytes(TERMINATION_FAMILY_PACKAGE_SEAL_DISPOSITION_BINDING);
+    physicalBytes(TERMINATION_FAMILY_PACKAGE_SEAL_SESSION_RECEIPT_BINDING);
+
+    const packet = physicalRecord(TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING);
+    const dispositionEnvelope = terminationFamilyPackageSealPhysicalDispositionEnvelope(
+      packet,
+      TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING,
+    );
+    const sessionReceiptEnvelope = terminationFamilyPackageSealSessionReceiptEnvelope(
+      dispositionEnvelope.record,
+      TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING,
+    );
+    assert.equal(
+      sessionReceiptEnvelope.record.ben_inventory_session_receipt_id,
+      TERMINATION_FAMILY_PACKAGE_SEAL_SESSION_RECEIPT_BINDING.record_id,
+      'family package seal session receipt id',
+    );
+    const input = terminationFamilyPackageSealInput(
+      dispositionEnvelope,
+      sessionReceiptEnvelope,
+    );
+    const before = fixtureFingerprint(input);
+    assertRecursivelyUnfrozen(input);
+
+    const result = profileAuthoring.prepareTerminationWork3FamilyPackageSeal(input);
+
+    if (process.env.TERMINATION_WRITE_FAMILY_PACKAGE_SEAL_PROBE === '1') {
+      const { writeFileSync } = require('node:fs');
+      writeFileSync(
+        join(
+          REPO_ROOT,
+          'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-termination-family-package-seal-probe.json',
+        ),
+        `${canonicalJson({
+          family_package_seal_id: result.family_package_seal_id,
+          disposition_binding: result.disposition_binding,
+          session_receipt_binding: result.session_receipt_binding,
+          extension_disposition_binding: result.extension_disposition_binding,
+        })}\n`,
+      );
+    }
+
+    assertExactKeys(result, [
+      'schema_version',
+      'family_package_seal_id',
+      'candidate_state',
+      'authority_binding',
+      'inventory_session_disposition_reference',
+      'ben_rulings_binding',
+      'disposition_binding',
+      'session_receipt_binding',
+      'extension_disposition_binding',
+      'review_accounting',
+      'withheld_work3_fields',
+      'next_governance_stop',
+      'zero_effect_boundary',
+    ], 'family package seal result');
+    assert.equal(
+      result.schema_version,
+      TERMINATION_FAMILY_PACKAGE_SEAL_CANDIDATE_SCHEMA,
+    );
+    assert.equal(
+      result.candidate_state,
+      'BEN_TERMINATION_FAMILY_PACKAGE_SEAL_CAPTURED_REGISTRATION_NOT_RECORDED',
+    );
+    assert.equal(
+      result.disposition_binding.inventory_disposition_id,
+      TERMINATION_FAMILY_PACKAGE_SEAL_DISPOSITION_BINDING.record_id,
+    );
+    assert.equal(
+      result.disposition_binding.packet_digest,
+      TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING.sha256,
+    );
+    assert.equal(
+      result.ben_rulings_binding.sha256,
+      TERMINATION_BEN_RULINGS_NOTE_BINDING.sha256,
+    );
+    assert.equal(
+      result.session_receipt_binding.ben_inventory_session_receipt_id,
+      TERMINATION_FAMILY_PACKAGE_SEAL_SESSION_RECEIPT_BINDING.record_id,
+    );
+    assert.equal(result.extension_disposition_binding.disposition_status, 'DEFERRED');
+    assert.equal(
+      result.extension_disposition_binding.sha256,
+      TERMINATION_FAMILY_PACKAGE_SEAL_EXTENSION_NOTE_BINDING.sha256,
+    );
+    assert.equal(result.review_accounting.work3_identity_count, 0);
+    assert.equal(result.review_accounting.profile_identity_count, 0);
+    assert.equal(result.review_accounting.registration_count, 0);
+    assert.equal(result.review_accounting.profile_disposition_count, 45);
+    assert.equal(result.review_accounting.inventory_review_count, 1);
+    assert.equal(result.review_accounting.inventory_session_disposition_count, 1);
+    assert.equal(result.review_accounting.runtime_validator_acceptance_count, 1);
+    assert.equal(result.next_governance_stop.package_seal_state, 'CAPTURED');
+    assert.equal(result.next_governance_stop.registration_permitted, false);
+    assert.equal(result.next_governance_stop.extension_disposition_state, 'DEFERRED');
+    assert.equal(result.next_governance_stop.package_approval_permitted, false);
+    assert.equal(
+      result.next_governance_stop.state,
+      'STOP_AFTER_FAMILY_PACKAGE_SEAL_CAPTURE_BEFORE_REGISTRATION',
+    );
+    assert.deepEqual(result.next_governance_stop.required_successor_sequence, [
+      'WORK3_TERMINATION_REGISTRATION_SUCCESSOR_AUTHORITY',
+    ]);
+    assert.equal(result.zero_effect_boundary.work3_identity_count, 0);
+    assert.equal(result.zero_effect_boundary.profile_identity_count, 0);
+    assert.equal(result.zero_effect_boundary.package_registration_count, 0);
+    assert.equal(result.zero_effect_boundary.product_write_count, 0);
+    assert.equal(result.zero_effect_boundary.registration_count, 0);
+
+    for (const key of [
+      'profile_id',
+      'inventory_fingerprint',
+      'activation_id',
+      'registration_id',
+      'family_profile_package_id',
+      'expression_id',
+      'rule_id',
+      'package_member_id',
+    ]) assert.equal(collectKeys(result).has(key), false, key);
+
+    assert.equal(isDeepFrozen(result), true);
+    assertDisjoint(
+      collectObjectIdentities(result),
+      collectObjectIdentities(input),
+      'family package seal result/caller input alias',
+    );
+    assert.equal(fixtureFingerprint(input), before);
+    assertRecursivelyUnfrozen(input);
+
+    await t.test(
+      'family package seal rejects caller-produced seal injection',
+      () => {
+        const callerDrift = terminationFamilyPackageSealInput(
+          dispositionEnvelope,
+          sessionReceiptEnvelope,
+        );
+        callerDrift.callerProducedFamilyPackageSeal = { forged: true };
+        expectCode(
+          'M7_V2_TERMINATION_WORK3_FAMILY_PACKAGE_SEAL_CONTRACT',
+          () => profileAuthoring.prepareTerminationWork3FamilyPackageSeal(
+            callerDrift,
+          ),
+        );
+      },
+    );
+
+    await t.test(
+      'family package seal rejects disposition with rulings digest drift',
+      () => {
+        const driftDisposition = terminationFamilyPackageSealPhysicalDispositionEnvelope(
+          packet,
+          TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING,
+        );
+        driftDisposition.record.ben_rulings_digest = '0'.repeat(64);
+        driftDisposition.binding.record_id = contentId(
+          TERMINATION_BEN_INVENTORY_DISPOSITION_SCHEMA,
+          driftDisposition.record,
+        );
+        const driftInput = terminationFamilyPackageSealInput(
+          driftDisposition,
+          sessionReceiptEnvelope,
+        );
+        expectCode(
+          'M7_V2_TERMINATION_WORK3_BEN_INVENTORY_DISPOSITION_DISPOSITION',
+          () => profileAuthoring.prepareTerminationWork3FamilyPackageSeal(
+            driftInput,
+          ),
+        );
+      },
+    );
+  },
+);
+
+const TERMINATION_REGISTRATION_SUCCESSOR_AUTHORITY_BINDING = Object.freeze({
+  path:
+    'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-termination-registration-successor-authority.json',
+  schema_version:
+    'STAGE_2Y_M7_V2_REPAIR_CONTRACT_WORK3_TERMINATION_REGISTRATION_SUCCESSOR_AUTHORITY/V1',
+  record_id_field: 'work3_termination_registration_successor_authority_id',
+  record_id: '027f22fab59435ef60cbc62ebb980eb110c0eae40a532ea446322b9f22b0958f',
+  byte_length: 7607,
+  sha256: '27b235d181afdaba576bf78181dd198166740466ae5b5a340056e0f7c5de5fd9',
+});
+const TERMINATION_FAMILY_PACKAGE_SEAL_RECEIPT_BINDING = Object.freeze({
+  path:
+    'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-termination-family-package-seal-receipt.json',
+  schema_version: 'STAGE_2Y_M7_V2_TERMINATION_FAMILY_PACKAGE_SEAL_RECEIPT/V1',
+  record_id_field: 'termination_family_package_seal_receipt_id',
+  record_id:
+    '40d2258e588ec28a9acf86526a9aed13d56642cb215b43b9cd887d2619bcd129',
+  byte_length: 2844,
+  sha256: 'd1c320bc40ab9c97e66aabae906d7c4d2b9d3c314a55f5be976d24a52ff347cb',
+});
+
+function terminationFamilyPackageRegistrationSealReceiptEnvelope(
+  sealCandidate,
+) {
+  const record = physicalRecord(TERMINATION_FAMILY_PACKAGE_SEAL_RECEIPT_BINDING);
+  assert.equal(
+    record.termination_family_package_seal_receipt_id,
+    TERMINATION_FAMILY_PACKAGE_SEAL_RECEIPT_BINDING.record_id,
+    'registration seal receipt id',
+  );
+  assert.equal(
+    record.family_package_seal_id,
+    sealCandidate.family_package_seal_id,
+    'registration seal receipt seal id',
+  );
+  return {
+    binding: {
+      path: TERMINATION_FAMILY_PACKAGE_SEAL_RECEIPT_BINDING.path,
+      schema_version: TERMINATION_FAMILY_PACKAGE_SEAL_RECEIPT_BINDING.schema_version,
+      record_id_field: TERMINATION_FAMILY_PACKAGE_SEAL_RECEIPT_BINDING.record_id_field,
+      record_id: TERMINATION_FAMILY_PACKAGE_SEAL_RECEIPT_BINDING.record_id,
+      byte_length: TERMINATION_FAMILY_PACKAGE_SEAL_RECEIPT_BINDING.byte_length,
+      sha256: TERMINATION_FAMILY_PACKAGE_SEAL_RECEIPT_BINDING.sha256,
+    },
+    record,
+  };
+}
+
+function terminationFamilyPackageRegistrationInput(
+  dispositionEnvelope,
+  sessionReceiptEnvelope,
+  sealReceiptEnvelope,
+) {
+  const sealInput = terminationFamilyPackageSealInput(
+    dispositionEnvelope,
+    sessionReceiptEnvelope,
+  );
+  const sealEvidence = sealInput.terminationWork3FamilyPackageSealEvidence;
+  return {
+    terminationWork3FamilyPackageRegistrationEvidence: {
+      work3EntryCorrectionAuthority: sealEvidence.work3EntryCorrectionAuthority,
+      phase5ExecutionCompletionReceipt: sealEvidence.phase5ExecutionCompletionReceipt,
+      work3GovernedDisclosureNoteSchemaSuccessorAuthority:
+        sealEvidence.work3GovernedDisclosureNoteSchemaSuccessorAuthority,
+      work3GovernedDisclosureNoteCoreIntegrationAuthority:
+        sealEvidence.work3GovernedDisclosureNoteCoreIntegrationAuthority,
+      work3TerminationUnapprovedInventoryReviewAuthority:
+        sealEvidence.work3TerminationUnapprovedInventoryReviewAuthority,
+      work3BenInventorySessionSuccessorAuthority:
+        sealEvidence.work3BenInventorySessionSuccessorAuthority,
+      work3FamilyPackageSealSuccessorAuthority:
+        sealEvidence.work3FamilyPackageSealSuccessorAuthority,
+      work3RegistrationSuccessorAuthority: sourceEnvelope(
+        TERMINATION_REGISTRATION_SUCCESSOR_AUTHORITY_BINDING,
+      ),
+      inventoryReviewPacketDraft: sealEvidence.inventoryReviewPacketDraft,
+      benAuthoredInventoryDisposition: sealEvidence.benAuthoredInventoryDisposition,
+      benInventorySessionReceipt: sealEvidence.benInventorySessionReceipt,
+      familyPackageSealReceipt: sealReceiptEnvelope,
+    },
+    terminationPhase5ResolutionInput: sealInput.terminationPhase5ResolutionInput,
+  };
+}
+
+test(
+  'Work3 Termination family package registration emits Work3 identity without product write or activation',
+  async (t) => {
+    assert.equal(
+      typeof profileAuthoring.prepareTerminationWork3FamilyPackageRegistration,
+      'function',
+      'Work3 termination family package registration facade export is missing.',
+    );
+
+    physicalBytes(TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING);
+    physicalBytes(TERMINATION_BEN_RULINGS_NOTE_BINDING);
+    physicalBytes(TERMINATION_FAMILY_PACKAGE_SEAL_EXTENSION_NOTE_BINDING);
+    physicalBytes(TERMINATION_FAMILY_PACKAGE_SEAL_DISPOSITION_BINDING);
+    physicalBytes(TERMINATION_FAMILY_PACKAGE_SEAL_SESSION_RECEIPT_BINDING);
+    physicalBytes(TERMINATION_FAMILY_PACKAGE_SEAL_RECEIPT_BINDING);
+    physicalBytes(TERMINATION_REGISTRATION_SUCCESSOR_AUTHORITY_BINDING);
+
+    const packet = physicalRecord(TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING);
+    const dispositionEnvelope = terminationFamilyPackageSealPhysicalDispositionEnvelope(
+      packet,
+      TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING,
+    );
+    const sessionReceiptEnvelope = terminationFamilyPackageSealSessionReceiptEnvelope(
+      dispositionEnvelope.record,
+      TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING,
+    );
+    const sealInput = terminationFamilyPackageSealInput(
+      dispositionEnvelope,
+      sessionReceiptEnvelope,
+    );
+    const sealCandidate = profileAuthoring.prepareTerminationWork3FamilyPackageSeal(sealInput);
+    const sealReceiptEnvelope = terminationFamilyPackageRegistrationSealReceiptEnvelope(
+      sealCandidate,
+    );
+    const input = terminationFamilyPackageRegistrationInput(
+      dispositionEnvelope,
+      sessionReceiptEnvelope,
+      sealReceiptEnvelope,
+    );
+    const before = fixtureFingerprint(input);
+    assertRecursivelyUnfrozen(input);
+
+    const result = profileAuthoring.prepareTerminationWork3FamilyPackageRegistration(input);
+
+    assertExactKeys(result, [
+      'schema_version',
+      'family_package_registration_id',
+      'candidate_state',
+      'authority_binding',
+      'family_package_seal_receipt_binding',
+      'family_package_seal_reference',
+      'family_profile_package_identity',
+      'registered_profile_identities',
+      'inventory_fingerprint',
+      'review_accounting',
+      'withheld_work3_fields',
+      'next_governance_stop',
+      'zero_effect_boundary',
+    ], 'family package registration result');
+    assert.equal(
+      result.schema_version,
+      'M7_V2_TERMINATION_WORK3_FAMILY_PACKAGE_REGISTRATION_CANDIDATE/V1',
+    );
+    assert.equal(
+      result.candidate_state,
+      'BEN_TERMINATION_FAMILY_PACKAGE_REGISTERED_ZERO_PRODUCT_WRITE_EFFECT',
+    );
+    assert.equal(result.registered_profile_identities.length, 45);
+    assert.equal(result.family_profile_package_identity.profile_id_count, 45);
+    assert.equal(result.review_accounting.family_package_count, 1);
+    assert.equal(result.review_accounting.profile_identity_count, 45);
+    assert.equal(result.review_accounting.registration_count, 1);
+    assert.equal(result.review_accounting.work3_identity_count, 47);
+    assert.equal(result.next_governance_stop.registration_state, 'RECORDED');
+    assert.equal(result.next_governance_stop.registration_permitted, true);
+    assert.equal(result.next_governance_stop.activation_permitted, false);
+    assert.equal(result.next_governance_stop.extension_disposition_state, 'DEFERRED');
+    assert.equal(
+      result.family_package_seal_receipt_binding.termination_family_package_seal_receipt_id,
+      TERMINATION_FAMILY_PACKAGE_SEAL_RECEIPT_BINDING.record_id,
+    );
+    assert.equal(
+      result.family_package_seal_reference.family_package_seal_id,
+      sealCandidate.family_package_seal_id,
+    );
+    assert.equal(typeof result.family_profile_package_identity.family_profile_package_id, 'string');
+    assert.equal(result.family_profile_package_identity.family_profile_package_id.length, 64);
+    assert.equal(typeof result.inventory_fingerprint, 'string');
+    assert.equal(result.inventory_fingerprint.length, 64);
+    assert.equal(result.zero_effect_boundary.product_write_count, 0);
+    assert.equal(result.zero_effect_boundary.database_write_count, 0);
+    assert.equal(result.zero_effect_boundary.activation_count, 0);
+    assert.equal(result.zero_effect_boundary.package_registration_count, 1);
+    assert.equal(result.zero_effect_boundary.profile_identity_count, 45);
+    assert.equal(result.zero_effect_boundary.work3_identity_count, 47);
+
+    for (const row of result.registered_profile_identities) {
+      assert.equal(typeof row.profile_id, 'string');
+      assert.equal(row.profile_id.length, 64);
+      assert.match(row.inventory_disposition, /^(APPROVE|HOLD|PARTIAL_APPROVE)$/);
+    }
+
+    for (const key of [
+      'activation_id',
+      'expression_id',
+      'rule_id',
+      'package_member_id',
+    ]) assert.equal(collectKeys(result).has(key), false, key);
+
+    assert.equal(isDeepFrozen(result), true);
+    assertDisjoint(
+      collectObjectIdentities(result),
+      collectObjectIdentities(input),
+      'family package registration result/caller input alias',
+    );
+    assert.equal(fixtureFingerprint(input), before);
+    assertRecursivelyUnfrozen(input);
+
+    await t.test(
+      'family package registration rejects caller-produced registration injection',
+      () => {
+        const callerDrift = terminationFamilyPackageRegistrationInput(
+          dispositionEnvelope,
+          sessionReceiptEnvelope,
+          sealReceiptEnvelope,
+        );
+        callerDrift.callerProducedFamilyPackageRegistration = { forged: true };
+        expectCode(
+          'M7_V2_TERMINATION_WORK3_FAMILY_PACKAGE_REGISTRATION_CONTRACT',
+          () => profileAuthoring.prepareTerminationWork3FamilyPackageRegistration(
+            callerDrift,
+          ),
+        );
+      },
+    );
+
+    await t.test(
+      'family package registration rejects seal receipt with drifted seal id',
+      () => {
+        const driftReceipt = terminationFamilyPackageRegistrationSealReceiptEnvelope(
+          sealCandidate,
+        );
+        driftReceipt.record = {
+          ...driftReceipt.record,
+          family_package_seal_id: '0'.repeat(64),
+        };
+        const driftInput = terminationFamilyPackageRegistrationInput(
+          dispositionEnvelope,
+          sessionReceiptEnvelope,
+          driftReceipt,
+        );
+        expectCode(
+          'M7_V2_TERMINATION_WORK3_FAMILY_PACKAGE_REGISTRATION_SEAL_RECEIPT',
+          () => profileAuthoring.prepareTerminationWork3FamilyPackageRegistration(
+            driftInput,
+          ),
+        );
+      },
+    );
+  },
+);
+
+const TERMINATION_WORK3_FAMILY_PROFILE_PACKAGE_BINDING = Object.freeze({
+  path:
+    'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-termination.json',
+  schema_version: 'STAGE_2Y_M7_V2_FAMILY_PROFILE_PACKAGE/V2',
+  record_id_field: 'family_profile_package_id',
+  record_id: 'f0718b673a6a22bf41f3492c72bbf3fed15eeb1745c06d2eb6d19a007103adeb',
+  byte_length: 1121991,
+  sha256: '22afbea939eb086d63f415008d1cc1c52db89214bf720363b9a4ed1d509ad550',
+});
+
+test('Termination Milestone A family profile package on disk validates 45 registered profiles', () => {
+  physicalBytes(TERMINATION_WORK3_FAMILY_PROFILE_PACKAGE_BINDING);
+  const packageRecord = readRecord(TERMINATION_WORK3_FAMILY_PROFILE_PACKAGE_BINDING.path);
+  assert.equal(packageRecord.profiles.length, 45);
+  assert.equal(packageRecord.subtype_tree.completeness_state, 'TREE_OUTPUT_INCOMPLETE');
+  assert.equal(
+    packageRecord.family_approval.ben_approval_id,
+    'BEN_APPROVAL:TERMINATION:PROFILE_SET_V1',
+  );
+  assert.equal(packageRecord.structure_fixture_members.length, 1);
+
+  const disposition = readRecord(TERMINATION_FAMILY_PACKAGE_SEAL_DISPOSITION_BINDING.path);
+  assert.equal(disposition.session_summary.approved_count, 41);
+  assert.equal(disposition.session_summary.partial_count, 4);
+  assert.equal(disposition.session_summary.hold_count, 0);
+
+  const work3Authority = readRecord(C3_PATH);
+  const memberInventory = {
+    family_key: packageRecord.family_key,
+    profile_set_version: packageRecord.profile_set_version,
+    legal_decisions: packageRecord.legal_decisions,
+    profile_ids: packageRecord.profiles.map((profile) => profile.profile_id),
+    subtype_tree_id: packageRecord.subtype_tree.subtype_tree_id,
+    match_fixture_record_ids: packageRecord.match_fixtures.map(
+      (fixture) => fixture.match_fixture_id,
+    ),
+    dimension_evidence_ids: packageRecord.dimension_evidence.map(
+      (evidence) => evidence.dimension_evidence_id,
+    ),
+    structure_fixture_ids: packageRecord.structure_fixture_members.map(
+      (fixture) => fixture.fixture_id,
+    ),
+  };
+  const validation = validateSingleFamilyPackageInventory({
+    work3Authority,
+    familyKey: packageRecord.family_key,
+    profileSetVersion: packageRecord.profile_set_version,
+    benApprovalId: packageRecord.family_approval.ben_approval_id,
+    legalDecisions: packageRecord.legal_decisions,
+    members: {
+      profiles: packageRecord.profiles,
+      subtype_tree: packageRecord.subtype_tree,
+      match_fixtures: packageRecord.match_fixtures,
+      dimension_evidence: packageRecord.dimension_evidence,
+      structure_fixture_members: packageRecord.structure_fixture_members,
+    },
+    memberInventory,
+    inventoryFingerprint: packageRecord.family_approval.approved_inventory_digest,
+  });
+  assert.deepEqual(validation, {
+    status: 'FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING',
+    family_key: 'TERMINATION',
+    profile_set_version: 1,
+    ben_approval_id: 'BEN_APPROVAL:TERMINATION:PROFILE_SET_V1',
+    member_inventory: memberInventory,
+    inventory_fingerprint: packageRecord.family_approval.approved_inventory_digest,
+  });
+
+  const packet = readRecord(TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING.path);
+  const dispositionEnvelope = terminationFamilyPackageSealPhysicalDispositionEnvelope(
+    packet,
+    TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING,
+  );
+  const sessionReceiptEnvelope = terminationFamilyPackageSealSessionReceiptEnvelope(
+    dispositionEnvelope.record,
+    TERMINATION_BEN_INVENTORY_PACKET_DRAFT_BINDING,
+  );
+  const sealInput = terminationFamilyPackageSealInput(
+    dispositionEnvelope,
+    sessionReceiptEnvelope,
+  );
+  const sealCandidate = profileAuthoring.prepareTerminationWork3FamilyPackageSeal(sealInput);
+  const sealReceiptEnvelope = terminationFamilyPackageRegistrationSealReceiptEnvelope(
+    sealCandidate,
+  );
+  const registration = profileAuthoring.prepareTerminationWork3FamilyPackageRegistration(
+    terminationFamilyPackageRegistrationInput(
+      dispositionEnvelope,
+      sessionReceiptEnvelope,
+      sealReceiptEnvelope,
+    ),
+  );
+
+  const packageKeys = packageRecord.profiles.map((profile) => profile.profile_key).sort();
+  const registeredKeys = registration.registered_profile_identities
+    .map((row) => {
+      const packetRow = packet.profile_review_items.find(
+        (item) => item.proposed_profile_key === row.proposed_profile_key,
+      );
+      assert.ok(packetRow, `missing packet row for ${row.proposed_profile_key}`);
+      return packetRow.phase3_profile_key;
+    })
+    .sort();
+  assert.deepEqual(packageKeys, registeredKeys);
+  assert.equal(registration.registered_profile_identities.length, 45);
+  assert.equal(
+    registration.registered_profile_identities.filter(
+      (row) => row.inventory_disposition === 'APPROVE',
+    ).length,
+    41,
+  );
+  assert.equal(
+    registration.registered_profile_identities.filter(
+      (row) => row.inventory_disposition === 'PARTIAL_APPROVE',
+    ).length,
+    4,
+  );
 });

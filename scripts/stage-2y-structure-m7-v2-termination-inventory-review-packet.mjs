@@ -27,6 +27,51 @@ const B9E_DISPLAY_TEXT = 'contained in non-public disclosure letter';
 const B9E_DISPOSITION_KIND = 'NON_PUBLIC_DISCLOSURE_LOCATION';
 const B9E_MISSING_FIELD = 'JURISDICTION_LIST_REFERENCE';
 
+const TERMINATION_CALIBRATION_PACK_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/preparation/m5/calibration-packs/TERMINATION.json';
+
+const M5_SEALED_CANDIDATE_SUBTYPE_IDS = new Set([
+  'TERMINATION::TERMINATION_RIGHT',
+  'TERMINATION::MUTUAL_CONSENT',
+  'TERMINATION::OUTSIDE_DATE_RIGHT',
+  'TERMINATION::BREACH_CURE_RIGHT',
+]);
+
+const BEN_RULINGS_NOTE_PATH =
+  'docs/codex-program/notes/TERMINATION-BEN-RULINGS-Q01-Q03-2026-08-24.md';
+const INVENTORY_SESSION_SUCCESSOR_DRAFT_PATH =
+  'docs/codex-program/notes/TERMINATION-BEN-INVENTORY-SESSION-SUCCESSOR-AUTHORITY-DRAFT-2026-08-24.md';
+
+/** Repository truth for human-review packet header (not Stage B facade boundary). */
+const REPOSITORY_VERIFICATION = Object.freeze({
+  verified_at: '2026-08-24',
+  work3_test_pattern:
+    'Work3 Termination Stage B|core integration|inventory review',
+  stage_b_blueprint_fixture_review: 'GREEN',
+  core_integration_fixture_review: 'GREEN',
+  inventory_review_scaffold: 'GREEN',
+  ben_inventory_session: 'NOT_STARTED',
+  approval_capture_authority: 'NOT_BUILT',
+  proof_command:
+    "CI=true NODE_OPTIONS='--max-old-space-size=8192' node --test "
+    + "--test-name-pattern 'Work3 Termination Stage B|core integration|inventory review' "
+    + 'tests/stage-2y-structure-m7-v2-repair-work3.test.js',
+});
+
+/** Current stop for Ben review — matches inventory-review scaffold, not Stage B facade. */
+const CURRENT_GOVERNANCE_STOP = Object.freeze({
+  ben_approval_state: 'NOT_RECORDED',
+  core_integration_state: 'PERFORMED',
+  inventory_review_state: 'SCAFFOLD_GREEN_PACKET_DRAFT_NOT_AUTHORITY',
+  legal_blueprint_state: 'CONSTRUCTED_UNAPPROVED',
+  package_approval_permitted: false,
+  required_successor_sequence: [
+    'WORK3_TERMINATION_BEN_INVENTORY_SESSION_SUCCESSOR_AUTHORITY',
+  ],
+  state:
+    'STOP_AFTER_INVENTORY_REVIEW_GREEN_BEFORE_BEN_MANUAL_APPROVAL_AND_PACKAGE_SEAL',
+});
+
 const STAGE_A_AUTHORITY_BINDING = Object.freeze({
   path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-governed-disclosure-note-schema-package-analysis-projection-successor-authority.json',
   schema_version:
@@ -400,6 +445,117 @@ function summariseGovernedDisclosureNotes(notes) {
   }));
 }
 
+let dealByM4ClaimIdCache = null;
+
+function dealByM4ClaimIdMap() {
+  if (dealByM4ClaimIdCache) return dealByM4ClaimIdCache;
+  const cal = readRecord(TERMINATION_CALIBRATION_PACK_PATH);
+  const map = new Map();
+  for (const binding of cal.comparator_run_bindings ?? []) {
+    const m4Path =
+      `evidence/canonical-v2/stage-2y-structure-migration/shadow/m4/${binding.agreement_id}.agreement-analysis.json`;
+    const m4 = readRecord(m4Path);
+    for (const claim of m4.claims ?? []) {
+      if (typeof claim.analysis_claim_id === 'string') {
+        map.set(claim.analysis_claim_id, binding.deal);
+      }
+    }
+  }
+  dealByM4ClaimIdCache = map;
+  return map;
+}
+
+function resolveSourceDeal(profile) {
+  const map = dealByM4ClaimIdMap();
+  for (const claimId of profile.m4_claim_ids ?? []) {
+    const deal = map.get(claimId);
+    if (deal) return deal;
+  }
+  return null;
+}
+
+function parseSignatureTokens(signature) {
+  if (typeof signature !== 'string') return [];
+  const matches = signature.match(
+    /[A-Z][A-Z0-9_]+(?:_REFERENCE|_EVENT|_PARTY|_SCOPE|_STANDARD|_MODAL|_STATUS|_RIGHT|_DATE|_EFFECT|_ACTOR)?/g,
+  );
+  return matches ? [...new Set(matches)] : [];
+}
+
+function buildShapeSummary(signature, classificationPath) {
+  const subtype = classificationPath?.[2] ?? '';
+  const tokens = parseSignatureTokens(signature);
+  const pick = (re) => tokens.filter((token) => re.test(token));
+  const party = pick(/PARTY|ACTOR|CONSENTING|MUTUAL_WRITTEN|DESIRING_TERMINATION/);
+  const restraint = pick(
+    /RESTRAINT|INJUNCTION|STATUTE|REGULATION|ORDER|GOVERNMENT|COURT|JURISDICTION|PROHIBITION|PREVENTION|NONAPPEAL|FINAL/,
+  );
+  const exercise = pick(
+    /NOTICE|BOARD|AUTHORIZED|EXERCISE|WRITTEN|MANDATORY|DESIGNATED|CURE|DELIVERY|PROMPT|REASONABLE|GLOBAL_CUTOFF/,
+  );
+  const carveout = pick(
+    /EXCEPTION|DISQUAL|CAUSE|BREACH|PROXIMATE|PRINCIPAL|PRIMARILY|EFFORTS|CURE|CAPABLE|INCAPABLE/,
+  );
+  const extension = pick(/EXTEND|EXTENSION/);
+  const effectiveness = pick(/EFFECTIVENESS|EFFECTIVE_STATUS/);
+  let trigger = [];
+  if (subtype.includes('LEGAL_RESTRAINT')) {
+    trigger = restraint.length ? restraint : ['LEGAL_RESTRAINT_EVENT'];
+  } else if (subtype.includes('OUTSIDE_DATE')) {
+    trigger = pick(/OUTSIDE|TERMINATION_DATE|END_DATE|CLOSING|EFFECTIVE_TIME|BASE_/);
+  } else if (subtype.includes('BREACH')) {
+    trigger = pick(/BREACH|COVENANT|REPRESENT|WARRANT|CURE|CONDITION_FAILURE|MATERIAL/);
+  } else if (subtype.includes('STOCKHOLDER')) {
+    trigger = pick(/VOTE|STOCKHOLDER|APPROVAL/);
+  } else if (subtype.includes('RECOMMENDATION')) {
+    trigger = pick(/RECOMMENDATION/);
+  } else if (subtype.includes('SUPERIOR')) {
+    trigger = pick(/SUPERIOR|STOCKHOLDER|SECTION_8_05/);
+  } else if (subtype.includes('NO_SOLICITATION')) {
+    trigger = pick(/NO.?SHOP|SOLICITATION/);
+  } else if (subtype.includes('FIDUCIARY')) {
+    trigger = pick(/FIDUCIARY|NOTICE/);
+  } else if (subtype.includes('FAILURE_TO_CLOSE')) {
+    trigger = pick(/FAILURE|CLOSE/);
+  } else if (subtype.includes('MUTUAL')) {
+    trigger = pick(/MUTUAL|CONSENT/);
+  }
+  return {
+    party: party.slice(0, 8),
+    trigger: trigger.slice(0, 10),
+    restraint: restraint.slice(0, 10),
+    exercise: exercise.slice(0, 10),
+    carveout: carveout.slice(0, 10),
+    extension,
+    effectiveness: effectiveness.slice(0, 6),
+  };
+}
+
+function buildReviewFlags(profile, shapeSummary) {
+  const flags = [];
+  const subtype = profile.canonical_tuple?.classification_path?.[2] ?? '';
+  const subtypeId = `TERMINATION::${subtype}`;
+  if (!M5_SEALED_CANDIDATE_SUBTYPE_IDS.has(subtypeId)) {
+    flags.push('NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET');
+  }
+  if (profile.proposed_profile_key === B9E_PROFILE_KEY) {
+    flags.push('B9E_JURISDICTION_LIST_SOURCE_GAP_RETAINED');
+    flags.push('B9E_DISCLOSURE_NOTE_ONLY_DO_NOT_REOPEN');
+  }
+  if (subtype === 'OUTSIDE_DATE_RIGHT') {
+    if (shapeSummary.extension.length === 0) {
+      flags.push('EXTENSION_MECHANICS_DEFERRED_NOT_IN_SIGNATURE');
+    } else {
+      flags.push('EXTENSION_PARTIAL_TOKEN_ONLY_REVIEW_REQUIRED');
+    }
+    flags.push('HOLD_RECOMMENDED_UNTIL_EXTENSION_DISPOSITION');
+  }
+  if ((profile.m4_claim_ids ?? []).length === 0) {
+    flags.push('NO_M4_CLAIM_BINDING_IN_PACKET');
+  }
+  return flags;
+}
+
 function completionStateFromValidation(proposedValidation) {
   if (
     proposedValidation?.extraction_state === 'COMPLETE' &&
@@ -422,12 +578,23 @@ function buildProfileReviewItem(profile, ordinal, options = {}) {
     includeValidationDetail = true,
   } = options;
   const tuple = profile.canonical_tuple ?? {};
+  const signature = tuple.required_expression_signature ?? null;
+  const shapeSummary = buildShapeSummary(signature, tuple.classification_path ?? []);
+  const reviewFlags = buildReviewFlags(profile, shapeSummary);
   const item = {
     ordinal,
     proposed_profile_key: profile.proposed_profile_key,
+    source_deal: resolveSourceDeal(profile),
     classification_path: tuple.classification_path ?? [],
-    required_expression_signature: tuple.required_expression_signature ?? null,
+    required_expression_signature: signature,
+    shape_summary: shapeSummary,
+    review_flags: reviewFlags,
     completion_state: completionStateFromValidation(profile.proposed_validation),
+    ben_review_completion_state: reviewFlags.includes(
+      'HOLD_RECOMMENDED_UNTIL_EXTENSION_DISPOSITION',
+    )
+      ? 'HOLD_EXTENSION_DISPOSITION_PENDING'
+      : completionStateFromValidation(profile.proposed_validation),
     missing_required_field_keys: [...(profile.missing_required_field_keys ?? [])],
     governed_disclosure_notes:
       summariseGovernedDisclosureNotes(profile.governed_disclosure_notes),
@@ -491,13 +658,22 @@ function buildPacketFromStageB(stageB) {
       missing_field_key: B9E_MISSING_FIELD,
       lawyer_ruling_binding: B9E_RULING_BINDING,
     },
+    ben_rulings_note: BEN_RULINGS_NOTE_PATH,
+    inventory_session_successor_draft: INVENTORY_SESSION_SUCCESSOR_DRAFT_PATH,
+    repository_verification: REPOSITORY_VERIFICATION,
     review_workflow: {
       intended_reviewer: 'BEN_GOODCHILD',
-      session_goal: 'Approve all 45 subtype proposals in one review after core integration lands.',
-      default_disposition: 'APPROVE_ALL_EXCEPT_EXPLICIT_GAPS',
+      session_goal:
+        'Approve subtype shapes after reading shape_summary and review_flags; hold outside-date rows until extension disposition unless explicitly accepted partial.',
+      default_disposition: 'APPROVE_ALL_EXCEPT_EXPLICIT_GAPS_AND_HOLDS',
       b9e_already_ruled: true,
+      outside_date_extension_deferred: true,
+      q03_inference_rule: 'INFERENCE_ALLOWED_MUST_MARK_PENDING_APPROVAL',
       retained_source_gap_count: stageB.retained_source_gaps?.length ?? 0,
-      next_governance_stop: stageB.next_governance_stop,
+      current_governance_stop: CURRENT_GOVERNANCE_STOP,
+      stage_b_facade_governance_stop: stageB.next_governance_stop,
+      stage_b_facade_stop_interpretation:
+        'Stage B next_governance_stop is the blueprint facade zero-effect boundary at construction time; repository_verification and current_governance_stop reflect HEAD test truth.',
     },
     retained_source_gaps: stageB.retained_source_gaps ?? [],
     profile_review_items: profiles.map((profile, index) => (
