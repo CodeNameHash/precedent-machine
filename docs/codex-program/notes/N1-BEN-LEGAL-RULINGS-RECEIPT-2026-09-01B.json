@@ -1,0 +1,52 @@
+{
+  "schema_version": "N1_BEN_LEGAL_RULINGS_RECEIPT/V1",
+  "scope": "work3_grouping_rulings",
+  "inventory_sources": [
+    "docs/codex-program/notes/BRIEF-SMALL-FAMILIES-2026-09-01.md",
+    "docs/codex-program/notes/BRIEF-INTERIM-OPERATING-2026-09-01.md"
+  ],
+  "ruled_on": "2026-09-01",
+  "ruled_count": 7,
+  "rulings": [
+    {
+      "ordinal": 1,
+      "family_key": "DIVIDENDS",
+      "ruling_text": "approved: single \"Dividend coordination\" comparison line. Ben's note: revise as more deals are added (handled by the open-world revision loop; no extra machinery)."
+    },
+    {
+      "ordinal": 2,
+      "family_key": "MAE_DEFINITION",
+      "ruling_text": "approved: keep V1's five lines (Definition prongs, MAE Test, Carve-outs, Disproportionality relationships, Exceptions to carve-outs); the single Definition instance supplies both Definition prongs and MAE Test."
+    },
+    {
+      "ordinal": 3,
+      "family_key": "GUARANTY_FINANCING_PARTY",
+      "ruling_text": "approved: one \"Performance guaranty\" line with a per-deal presence field, named guarantor where evidence supplies it."
+    },
+    {
+      "ordinal": 4,
+      "family_key": "APPRAISAL_DISSENTERS_RIGHTS",
+      "ruling_text": "approved: one line; settlement consent and withdrawal/reconversion treatment as fields inside it."
+    },
+    {
+      "ordinal": 5,
+      "family_key": "FINANCING_COVENANTS",
+      "ruling_text": "approved: three lines (Payoff; Obtain financing; No financing condition); draft and final payoff timing as fields inside Payoff."
+    },
+    {
+      "ordinal": 6,
+      "family_key": "CONSIDERATION",
+      "ruling_text": "approved for the sealed slice: \"Cash component\" as the comparison line with Appraisal status as a link to the Appraisal line. Recorded gaps (unmeasured concepts, NOT no-output dispositions): election/proration mechanics; stock consideration and exchange ratios; fractional-share and adjustment mechanics."
+    },
+    {
+      "ordinal": 7,
+      "family_key": "INTERIM_OPERATING",
+      "ruling_text": "approved for the sealed slice: Target and Parent bands plus the 16 negative-covenant lines exactly as tabled in BRIEF-INTERIM-OPERATING-2026-09-01.md. Guarantees-of-indebtedness fold into the Indebtedness and loans line. Recorded gaps: affirmative-covenant band carrying V1's refined specifics; asset sales / divestitures / licenses; real estate / leases as its own category."
+    }
+  ],
+  "apply": {
+    "state": "PENDING_SUCCESSOR_SESSIONS",
+    "family_disposition_files_mutated": [],
+    "independent_review_state": "PENDING"
+  }
+}
