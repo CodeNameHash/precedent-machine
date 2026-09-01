@@ -2095,3 +2095,26 @@ pending. The applications have no production or serving effect.
 
 The V1 coverage ledger is
 `docs/codex-program/notes/V1-COVERAGE-LEDGER-2026-09-01.md`.
+
+Independent review of the seven applications PASSED on 2026-09-01:
+`docs/codex-program/notes/N1-SEVEN-FAMILY-GROUPING-APPLICATION-INDEPENDENT-REVIEW-2026-09-01.md`.
+
+## 22. Standing authorization and severity-one repair rule: DECIDED 2026-09-01
+
+Ben issued a standing authorization narrowing his decision surface to legal
+questions and reserved items. Authoritative record:
+`docs/codex-program/notes/BEN-STANDING-AUTHORIZATION-2026-09-01.md`. In
+brief: the blind-sample size derives mechanically from Decision 17's
+standard; mechanical amendments implementing existing rulings are
+pre-approved; M9 and M10 are pre-authorized on their exact entry conditions
+with zero deviation; legal questions, production data and credentials,
+external serving, and the one-use production cutover authority remain
+reserved to Ben.
+
+Rider, same date: any severity-one error found in review or the blind
+sample — party attribution, monetary amount, or polarity — triggers
+root-cause repair of the producing rule before publication continues, at
+any observed rate. Decision 17's 1% gate is unchanged; a severity-one error
+is a defect to fix, never a statistic absorbed into the headroom. The
+blind-sample stratification over-weights rows capable of severity-one
+errors.
