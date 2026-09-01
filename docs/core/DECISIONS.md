@@ -2053,3 +2053,45 @@ The 33-profile successor is 431,970 bytes, SHA-256
 The complete on-disk set now passes with 25 family packages and 1,310
 profiles. The ruling application receipt still awaits independent review.
 No review stamp was cleared.
+
+---
+
+## 21. Seven family grouping rulings and V1 coverage ledger: RULINGS APPLIED 2026-09-01
+
+Ben gave these seven grouping rulings:
+
+The exact ruling receipt is
+`docs/codex-program/notes/N1-BEN-LEGAL-RULINGS-RECEIPT-2026-09-01B.json`.
+
+1. **DIVIDENDS:** approved: single "Dividend coordination" comparison line.
+   Ben's note: revise as more deals are added (handled by the open-world
+   revision loop; no extra machinery).
+2. **MAE_DEFINITION:** approved: keep V1's five lines (Definition prongs, MAE
+   Test, Carve-outs, Disproportionality relationships, Exceptions to
+   carve-outs); the single Definition instance supplies both Definition
+   prongs and MAE Test.
+3. **GUARANTY_FINANCING_PARTY:** approved: one "Performance guaranty" line
+   with a per-deal presence field, named guarantor where evidence supplies it.
+4. **APPRAISAL_DISSENTERS_RIGHTS:** approved: one line; settlement consent and
+   withdrawal/reconversion treatment as fields inside it.
+5. **FINANCING_COVENANTS:** approved: three lines (Payoff; Obtain financing;
+   No financing condition); draft and final payoff timing as fields inside
+   Payoff.
+6. **CONSIDERATION:** approved for the sealed slice: "Cash component" as the
+   comparison line with Appraisal status as a link to the Appraisal line.
+   Recorded gaps (unmeasured concepts, NOT no-output dispositions):
+   election/proration mechanics; stock consideration and exchange ratios;
+   fractional-share and adjustment mechanics.
+7. **INTERIM_OPERATING:** approved for the sealed slice: Target and Parent
+   bands plus the 16 negative-covenant lines exactly as tabled in
+   BRIEF-INTERIM-OPERATING-2026-09-01.md. Guarantees-of-indebtedness fold into
+   the Indebtedness and loans line. Recorded gaps: affirmative-covenant band
+   carrying V1's refined specifics; asset sales / divestitures / licenses;
+   real estate / leases as its own category.
+
+The rulings were applied through immutable per-family successor sessions.
+The sealed predecessor records remain unchanged. Independent review is
+pending. The applications have no production or serving effect.
+
+The V1 coverage ledger is
+`docs/codex-program/notes/V1-COVERAGE-LEDGER-2026-09-01.md`.

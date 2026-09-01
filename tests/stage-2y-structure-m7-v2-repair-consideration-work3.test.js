@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { createHash } = require('node:crypto');
 const { readFileSync } = require('node:fs');
 const { join } = require('node:path');
 const { gunzipSync } = require('node:zlib');
@@ -8,6 +9,7 @@ const test = require('node:test');
 
 const {
   canonicalJson,
+  contentId,
   sha256Hex,
 } = require('../lib/canonical-v2/canonical-bytes');
 const {
@@ -158,6 +160,120 @@ const FAMILY_PROFILE_PACKAGE_BINDING = Object.freeze({
   sha256: '92127e5e1187ad9a626429aa914c9d6319254499a2eb1b36c6cfcf7ca1505320',
 });
 
+const GROUPING_SUCCESSOR_BINDINGS = Object.freeze({
+  package: Object.freeze({
+    byte_length: 92618,
+    git_blob_oid: 'ac0e3424fdac2a94362562cdaafd4538b4d34a00',
+    path:
+      `${CONTROL}/m7-v2-repair-family-work3-profile-package-consideration-grouping-successor-2026-09-01B.json`,
+    record_id: '80487b8863030b1df4b7bdd203674f2de22a5b8f9dd857c056025a83b87aaf21',
+    record_id_field: 'family_profile_package_id',
+    schema_version: 'STAGE_2Y_M7_V2_FAMILY_PROFILE_PACKAGE/V2',
+    sha256: 'f6b7db59ef88052c2018d0452f6bb3d26ba837e7653dc43926ce74e95caeb233',
+  }),
+  disposition: Object.freeze({
+    byte_length: 8804,
+    git_blob_oid: 'df111e58798ffc2e591aae35a0eb05a0e9253b6f',
+    path:
+      `${CONTROL}/m7-v2-repair-consideration-7-profile-inventory-disposition-grouping-successor-2026-09-01B.json`,
+    record_id: '8e8bab99b98c9928816f7c11d52f5434db27b5829236d0afa675cae0282c5d39',
+    record_id_field: 'inventory_disposition_id',
+    schema_version: 'N1_GROUPING_INVENTORY_DISPOSITION_SUCCESSOR/V1',
+    sha256: '110d9ce2e1034f747924848e478e219386adcef57b0fb6114f34fcff70f959bf',
+  }),
+  registrationAuthority: Object.freeze({
+    byte_length: 4206,
+    git_blob_oid: 'e35633b20f243a5a64210cfc3945d79242c9f0e3',
+    path:
+      `${CONTROL}/m7-v2-repair-contract-work3-consideration-grouping-registration-successor-authority-2026-09-01B.json`,
+    record_id: 'f5f4fd5704d65d08a0dde56f643d9858af29ef75f0328a368a287cc16b019b43',
+    record_id_field: 'grouping_registration_successor_authority_id',
+    schema_version: 'N1_GROUPING_REGISTRATION_SUCCESSOR_AUTHORITY/V1',
+    sha256: '2322f7e1ad5b788ea7155d5f507e13ba287675401b795fe0ae7ed8e23ce98b0e',
+  }),
+  applicationReceipt: Object.freeze({
+    byte_length: 10778,
+    git_blob_oid: 'd3200e42b063f37053f4aae32cbf5e28d4c52f3b',
+    path:
+      'docs/codex-program/notes/N1-CONSIDERATION-GROUPING-RULING-APPLICATION-RECEIPT-2026-09-01B.json',
+    record_id: 'fba39952246a068916293f44becf26ad38f5099f7697e6967720f11e72e7f341',
+    record_id_field: 'ruling_application_receipt_id',
+    schema_version: 'N1_RULING_APPLICATION_RECEIPT/V1',
+    sha256: '4347e264950e9ca3a9c13382eface71dbd026d9baa11b1b68581baeca55c22fc',
+  }),
+});
+
+const NO_GROUPING_METADATA = Object.freeze({
+  grouping_note: null,
+  party_band: null,
+});
+
+const APPROVED_GROUPING_MAPPINGS = Object.freeze([
+  Object.freeze({
+    ...NO_GROUPING_METADATA,
+    approved_comparison_fields: ['fixed cash per share'],
+    approved_comparison_lines: ['Cash component'],
+    approved_link_target: null,
+    ordinal: 1,
+    proposed_profile_key:
+      '03aeb3a927bce0d32124623d8c53bfdf37db0b4c71271a111b3bcdbbe8ee5351',
+  }),
+  Object.freeze({
+    ...NO_GROUPING_METADATA,
+    approved_comparison_fields: ['Appraisal status'],
+    approved_comparison_lines: [],
+    approved_link_target: "Appraisal / dissenters' rights",
+    ordinal: 2,
+    proposed_profile_key:
+      '5c6729dd9307e7977c3ca76adcc86435142799f1478d4341d0757c36aa0e03f4',
+  }),
+  Object.freeze({
+    ...NO_GROUPING_METADATA,
+    approved_comparison_fields: ['Appraisal status'],
+    approved_comparison_lines: [],
+    approved_link_target: "Appraisal / dissenters' rights",
+    ordinal: 3,
+    proposed_profile_key:
+      '704609c9715af0e45d65f9c54a240ddb6d5ad25174b638025aa1cc7048370b4e',
+  }),
+  Object.freeze({
+    ...NO_GROUPING_METADATA,
+    approved_comparison_fields: ['cash-election amount'],
+    approved_comparison_lines: ['Cash component'],
+    approved_link_target: null,
+    ordinal: 4,
+    proposed_profile_key:
+      '7e2396c54c06fb8b13d03ab5cf1dabc44a5875d6620b12fccccc5d3cac1f83c0',
+  }),
+  Object.freeze({
+    ...NO_GROUPING_METADATA,
+    approved_comparison_fields: ['mixed-election cash amount'],
+    approved_comparison_lines: ['Cash component'],
+    approved_link_target: null,
+    ordinal: 5,
+    proposed_profile_key:
+      'bcd51d9230e569f853de7af26ed6e4a777b6640638c96cc09850889961b9f68c',
+  }),
+  Object.freeze({
+    ...NO_GROUPING_METADATA,
+    approved_comparison_fields: ['Appraisal status'],
+    approved_comparison_lines: [],
+    approved_link_target: "Appraisal / dissenters' rights",
+    ordinal: 6,
+    proposed_profile_key:
+      'c132dc662f7eb7ac0353113d85e7e930eef6fb2896832e021ddd64eb5cf9205b',
+  }),
+  Object.freeze({
+    ...NO_GROUPING_METADATA,
+    approved_comparison_fields: ['Appraisal status'],
+    approved_comparison_lines: [],
+    approved_link_target: "Appraisal / dissenters' rights",
+    ordinal: 7,
+    proposed_profile_key:
+      'f368090a7fcb4352a97066b83a84c2163cff866d8631399d7d9b1126a5ac3018',
+  }),
+]);
+
 const WORK3_ENTRY_CORRECTION_AUTHORITY_PATH =
   `${CONTROL}/m7-v2-repair-contract-work3-entry-correction-authority.json`;
 
@@ -200,6 +316,27 @@ function physicalBytes(binding) {
   assert.equal(bytes.byteLength, binding.byte_length, binding.path);
   assert.equal(sha256Hex(bytes), binding.sha256, binding.path);
   return bytes;
+}
+
+function exactPhysicalRecord(binding) {
+  const file = readFileSync(join(REPO_ROOT, binding.path));
+  assert.equal(file.length, binding.byte_length, binding.path);
+  assert.equal(sha256Hex(file), binding.sha256, binding.path);
+  assert.equal(
+    createHash('sha1').update(Buffer.concat([
+      Buffer.from(`blob ${file.length}\0`, 'utf8'),
+      file,
+    ])).digest('hex'),
+    binding.git_blob_oid,
+    binding.path,
+  );
+  const record = JSON.parse(file.toString('utf8'));
+  assert.equal(record.schema_version, binding.schema_version, binding.path);
+  assert.equal(record[binding.record_id_field], binding.record_id, binding.path);
+  const unsigned = { ...record };
+  delete unsigned[binding.record_id_field];
+  assert.equal(contentId(record.schema_version, unsigned), binding.record_id, binding.path);
+  return record;
 }
 
 function sourceEnvelope(binding) {
@@ -673,7 +810,105 @@ test('Consideration Milestone A family profile package on disk validates 7 regis
   );
 });
 
-test('lawful Work3 fixture CONSIDERATION on-disk override tracks the sealed package bytes', () => {
+test('CONSIDERATION 2026-09-01B grouping successor applies the exact approved mappings', () => {
+  const packageRecord = exactPhysicalRecord(GROUPING_SUCCESSOR_BINDINGS.package);
+  const disposition = exactPhysicalRecord(GROUPING_SUCCESSOR_BINDINGS.disposition);
+  const registrationAuthority = exactPhysicalRecord(
+    GROUPING_SUCCESSOR_BINDINGS.registrationAuthority,
+  );
+  const applicationReceipt = exactPhysicalRecord(
+    GROUPING_SUCCESSOR_BINDINGS.applicationReceipt,
+  );
+  const predecessorDisposition = readRecord(WORK3_BINDINGS.disposition.path);
+  const clearanceOrdinals = APPROVED_GROUPING_MAPPINGS.map((mapping) => mapping.ordinal);
+
+  assert.equal(packageRecord.family_key, 'CONSIDERATION');
+  assert.equal(packageRecord.profiles.length, PROFILE_COUNT);
+  assert.deepEqual(registrationAuthority.successor_package_binding,
+    GROUPING_SUCCESSOR_BINDINGS.package);
+  assert.deepEqual(registrationAuthority.successor_disposition_binding,
+    GROUPING_SUCCESSOR_BINDINGS.disposition);
+  assert.deepEqual(applicationReceipt.package_transition.successor,
+    GROUPING_SUCCESSOR_BINDINGS.package);
+  assert.deepEqual(applicationReceipt.successor_disposition_binding,
+    GROUPING_SUCCESSOR_BINDINGS.disposition);
+  assert.deepEqual(
+    applicationReceipt.successor_authorities.find(
+      (binding) => binding.path === GROUPING_SUCCESSOR_BINDINGS.registrationAuthority.path,
+    ),
+    GROUPING_SUCCESSOR_BINDINGS.registrationAuthority,
+  );
+
+  assert.deepEqual(disposition.profile_dispositions.map((row) => ({
+    approved_comparison_fields:
+      row.grouping_ruling_application.approved_comparison_fields,
+    approved_comparison_lines:
+      row.grouping_ruling_application.approved_comparison_lines,
+    approved_link_target:
+      row.grouping_ruling_application.approved_link_target,
+    grouping_note: row.grouping_ruling_application.grouping_note,
+    ordinal: row.ordinal,
+    party_band: row.grouping_ruling_application.party_band,
+    proposed_profile_key: row.proposed_profile_key,
+  })), APPROVED_GROUPING_MAPPINGS);
+  assert.equal(disposition.session_summary.grouping_ruling_mapped_count, PROFILE_COUNT);
+  assert.equal(disposition.session_summary.legal_grouping_review_cleared_count, PROFILE_COUNT);
+  assert.equal(disposition.session_summary.legal_grouping_review_held_ambiguous_count, 0);
+  assert.equal(disposition.session_summary.legal_grouping_review_pending_count, 0);
+  assert.deepEqual(registrationAuthority.exact_grouping_stamp_clearance_ordinals,
+    clearanceOrdinals);
+  assert.deepEqual(registrationAuthority.exact_held_ambiguous_ordinals, []);
+  assert.deepEqual(
+    registrationAuthority.exact_mapped_without_predecessor_grouping_stamp_ordinals,
+    [],
+  );
+  assert.equal(registrationAuthority.production_activation_permitted, false);
+  assert.deepEqual(registrationAuthority.zero_effect_boundary, {
+    database_write_count: 0,
+    product_write_count: 0,
+    serving_change_count: 0,
+  });
+  assert.equal(applicationReceipt.grouping_stamp_clearance_count, PROFILE_COUNT);
+  assert.equal(applicationReceipt.held_ambiguous_count, 0);
+  assert.equal(applicationReceipt.independent_review_state, 'PENDING');
+  assert.equal(applicationReceipt.row_applications.length, PROFILE_COUNT);
+  assert.equal(applicationReceipt.stamp_cleared, true);
+
+  for (const row of disposition.profile_dispositions) {
+    const predecessorRow = predecessorDisposition.profile_dispositions.find(
+      (candidate) => candidate.ordinal === row.ordinal
+        && candidate.proposed_profile_key === row.proposed_profile_key,
+    );
+    assert.ok(predecessorRow, `missing predecessor row ${row.ordinal}`);
+    assert.deepEqual(row.prior_review_flags_acknowledged,
+      predecessorRow.review_flags_acknowledged);
+    assert.deepEqual(
+      row.review_flags_acknowledged,
+      predecessorRow.review_flags_acknowledged.filter(
+        (flag) => flag !== FLAGS.LEGAL_GROUPING,
+      ),
+    );
+    assert.deepEqual(
+      predecessorRow.review_flags_acknowledged.filter(
+        (flag) => !row.review_flags_acknowledged.includes(flag),
+      ),
+      [FLAGS.LEGAL_GROUPING],
+    );
+    assert.equal(row.grouping_ruling_application.state,
+      'APPLIED_PENDING_INDEPENDENT_REVIEW');
+    assert.equal(row.grouping_ruling_application.family_key, 'CONSIDERATION');
+    assert.equal(row.grouping_ruling_application.ruling_ordinal, 6);
+    const receiptRow = applicationReceipt.row_applications.find(
+      (candidate) => candidate.ordinal === row.ordinal,
+    );
+    assert.deepEqual(receiptRow.prior_review_flags_acknowledged,
+      row.prior_review_flags_acknowledged);
+    assert.deepEqual(receiptRow.after_review_flags_acknowledged,
+      row.review_flags_acknowledged);
+    assert.deepEqual(receiptRow.grouping_ruling_application,
+      row.grouping_ruling_application);
+  }
+
   const encoded = readFileSync(join(REPO_ROOT, LAWFUL_WORK3_FIXTURE_PATH), 'utf8').trim();
   const fixture = JSON.parse(
     gunzipSync(Buffer.from(encoded, 'base64')).toString('utf8'),
@@ -689,12 +924,5 @@ test('lawful Work3 fixture CONSIDERATION on-disk override tracks the sealed pack
     (entry) => entry.family_key === 'CONSIDERATION',
   );
   assert.ok(override, 'lawful Work3 fixture has no CONSIDERATION on-disk override');
-  assert.equal(override.binding.path, FAMILY_PROFILE_PACKAGE_BINDING.path);
-  for (const field of ['byte_length', 'record_id', 'schema_version', 'sha256']) {
-    assert.equal(
-      override.binding[field],
-      FAMILY_PROFILE_PACKAGE_BINDING[field],
-      `lawful Work3 fixture override ${field} is stale`,
-    );
-  }
+  assert.deepEqual(override.binding, GROUPING_SUCCESSOR_BINDINGS.package);
 });

@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { createHash } = require('node:crypto');
 const { readFileSync } = require('node:fs');
 const { join } = require('node:path');
 const { gunzipSync } = require('node:zlib');
@@ -8,6 +9,7 @@ const test = require('node:test');
 
 const {
   canonicalJson,
+  contentId,
   sha256Hex,
 } = require('../lib/canonical-v2/canonical-bytes');
 const {
@@ -147,6 +149,65 @@ const FAMILY_PROFILE_PACKAGE_BINDING = Object.freeze({
   sha256: '560ecb4655a5e9afc8388b89285f863e0179d6f3f56784bd020a93e49848dce0',
 });
 
+const GROUPING_SUCCESSOR_BINDINGS = Object.freeze({
+  package: Object.freeze({
+    byte_length: 18198,
+    git_blob_oid: '0ef2e9b4b2ee2910b542610a786e10df72755185',
+    path:
+      `${CONTROL}/m7-v2-repair-family-work3-profile-package-dividends-grouping-successor-2026-09-01B.json`,
+    record_id: '181a09058a5d247226269a9fb73786595afcd7a3dddbc8a7c01929db7b1cc7a4',
+    record_id_field: 'family_profile_package_id',
+    schema_version: 'STAGE_2Y_M7_V2_FAMILY_PROFILE_PACKAGE/V2',
+    sha256: '2b915ab01f26d7a908f084640fa98c51ebec801ea30b2f6b675cc2bb41cbc8d2',
+  }),
+  disposition: Object.freeze({
+    byte_length: 2406,
+    git_blob_oid: 'd650a9dc509b32fc9e8083cb3450719ff22e194a',
+    path:
+      `${CONTROL}/m7-v2-repair-dividends-1-profile-inventory-disposition-grouping-successor-2026-09-01B.json`,
+    record_id: '6125d1e7815d73385fa0e372ec56c1b05302072137ece00efff1f39b299e5867',
+    record_id_field: 'inventory_disposition_id',
+    schema_version: 'N1_GROUPING_INVENTORY_DISPOSITION_SUCCESSOR/V1',
+    sha256: 'beff0b21e9b0c05e71f1e9140011e05b84eb9994b2600de692b289eae159024f',
+  }),
+  registrationAuthority: Object.freeze({
+    byte_length: 4166,
+    git_blob_oid: 'cb0436c698bc6b81687a86f32aed7f00a74ad7c6',
+    path:
+      `${CONTROL}/m7-v2-repair-contract-work3-dividends-grouping-registration-successor-authority-2026-09-01B.json`,
+    record_id: '07dc997eb5789f7c7e19e3c050d35ce649deca5f54f5f465bda3291f304d7ee7',
+    record_id_field: 'grouping_registration_successor_authority_id',
+    schema_version: 'N1_GROUPING_REGISTRATION_SUCCESSOR_AUTHORITY/V1',
+    sha256: 'daef1eef63284ef6c8de7b3f3aba523f242396a0b3a2b8d63c25f1183f8b3a77',
+  }),
+  applicationReceipt: Object.freeze({
+    byte_length: 5610,
+    git_blob_oid: '0304d97317790f8ddf2970c2c21d05dd31f81e88',
+    path:
+      'docs/codex-program/notes/N1-DIVIDENDS-GROUPING-RULING-APPLICATION-RECEIPT-2026-09-01B.json',
+    record_id: 'b4934c95bfefdb1e353c919ea1e71855f01787865964ac0aa64b639b194a2cc7',
+    record_id_field: 'ruling_application_receipt_id',
+    schema_version: 'N1_RULING_APPLICATION_RECEIPT/V1',
+    sha256: '83d6b4bde6403cf1d1d2276a2d1bea0633ae42a5226944232531cbef83061e6b',
+  }),
+});
+
+const APPROVED_GROUPING_MAPPINGS = Object.freeze([
+  Object.freeze({
+    approved_comparison_fields: [],
+    approved_comparison_lines: ['Dividend coordination'],
+    approved_link_target: null,
+    family_key: 'DIVIDENDS',
+    grouping_note: null,
+    ordinal: 1,
+    party_band: null,
+    proposed_profile_key:
+      'dcdf395d32065cc458d662e3f3f056cc80ed77b1dff350868b11a3027262fce8',
+    ruling_ordinal: 1,
+    state: 'APPLIED_PENDING_INDEPENDENT_REVIEW',
+  }),
+]);
+
 const WORK3_ENTRY_CORRECTION_AUTHORITY_PATH =
   `${CONTROL}/m7-v2-repair-contract-work3-entry-correction-authority.json`;
 
@@ -189,6 +250,31 @@ function physicalBytes(binding) {
   assert.equal(bytes.byteLength, binding.byte_length, binding.path);
   assert.equal(sha256Hex(bytes), binding.sha256, binding.path);
   return bytes;
+}
+
+function exactPhysicalRecord(binding) {
+  const file = readFileSync(join(REPO_ROOT, binding.path));
+  assert.equal(file.length, binding.byte_length, binding.path);
+  assert.equal(sha256Hex(file), binding.sha256, binding.path);
+  assert.equal(
+    createHash('sha1').update(Buffer.concat([
+      Buffer.from(`blob ${file.length}\0`, 'utf8'),
+      file,
+    ])).digest('hex'),
+    binding.git_blob_oid,
+    binding.path,
+  );
+  const record = JSON.parse(file.toString('utf8'));
+  assert.equal(record.schema_version, binding.schema_version, binding.path);
+  assert.equal(record[binding.record_id_field], binding.record_id, binding.path);
+  const unsigned = { ...record };
+  delete unsigned[binding.record_id_field];
+  assert.equal(
+    contentId(record.schema_version, unsigned),
+    binding.record_id,
+    binding.path,
+  );
+  return record;
 }
 
 function sourceEnvelope(binding) {
@@ -645,7 +731,92 @@ test('Dividends Milestone A family profile package on disk validates 1 registere
   );
 });
 
-test('lawful Work3 fixture DIVIDENDS on-disk override tracks the sealed package bytes', () => {
+test('DIVIDENDS 2026-09-01B grouping successor applies the exact approved mapping', () => {
+  const packageRecord = exactPhysicalRecord(GROUPING_SUCCESSOR_BINDINGS.package);
+  const disposition = exactPhysicalRecord(GROUPING_SUCCESSOR_BINDINGS.disposition);
+  const registrationAuthority = exactPhysicalRecord(
+    GROUPING_SUCCESSOR_BINDINGS.registrationAuthority,
+  );
+  const applicationReceipt = exactPhysicalRecord(
+    GROUPING_SUCCESSOR_BINDINGS.applicationReceipt,
+  );
+  const predecessorDisposition = readRecord(WORK3_BINDINGS.disposition.path);
+
+  assert.equal(packageRecord.family_key, 'DIVIDENDS');
+  assert.equal(packageRecord.profiles.length, PROFILE_COUNT);
+  assert.deepEqual(registrationAuthority.successor_package_binding,
+    GROUPING_SUCCESSOR_BINDINGS.package);
+  assert.deepEqual(registrationAuthority.successor_disposition_binding,
+    GROUPING_SUCCESSOR_BINDINGS.disposition);
+  assert.deepEqual(applicationReceipt.package_transition.successor,
+    GROUPING_SUCCESSOR_BINDINGS.package);
+  assert.deepEqual(applicationReceipt.successor_disposition_binding,
+    GROUPING_SUCCESSOR_BINDINGS.disposition);
+  assert.deepEqual(
+    applicationReceipt.successor_authorities.find(
+      (binding) => binding.path === GROUPING_SUCCESSOR_BINDINGS.registrationAuthority.path,
+    ),
+    GROUPING_SUCCESSOR_BINDINGS.registrationAuthority,
+  );
+
+  assert.deepEqual(disposition.profile_dispositions.map((row) => ({
+    ...row.grouping_ruling_application,
+    ordinal: row.ordinal,
+    proposed_profile_key: row.proposed_profile_key,
+  })), APPROVED_GROUPING_MAPPINGS);
+  assert.equal(disposition.session_summary.grouping_ruling_mapped_count, PROFILE_COUNT);
+  assert.equal(disposition.session_summary.legal_grouping_review_cleared_count, PROFILE_COUNT);
+  assert.equal(disposition.session_summary.legal_grouping_review_held_ambiguous_count, 0);
+  assert.equal(disposition.session_summary.legal_grouping_review_pending_count, 0);
+  assert.deepEqual(registrationAuthority.exact_grouping_stamp_clearance_ordinals, [1]);
+  assert.deepEqual(registrationAuthority.exact_held_ambiguous_ordinals, []);
+  assert.deepEqual(
+    registrationAuthority.exact_mapped_without_predecessor_grouping_stamp_ordinals,
+    [],
+  );
+  assert.equal(applicationReceipt.grouping_stamp_clearance_count, PROFILE_COUNT);
+  assert.equal(applicationReceipt.held_ambiguous_count, 0);
+  assert.equal(applicationReceipt.independent_review_state, 'PENDING');
+  assert.equal(applicationReceipt.row_applications.length, PROFILE_COUNT);
+  assert.equal(applicationReceipt.stamp_cleared, true);
+
+  for (const row of disposition.profile_dispositions) {
+    const predecessorRow = predecessorDisposition.profile_dispositions.find(
+      (candidate) => candidate.ordinal === row.ordinal
+        && candidate.proposed_profile_key === row.proposed_profile_key,
+    );
+    assert.ok(predecessorRow, `missing predecessor row ${row.ordinal}`);
+    assert.deepEqual(
+      row.prior_review_flags_acknowledged,
+      predecessorRow.review_flags_acknowledged,
+    );
+    assert.deepEqual(
+      row.review_flags_acknowledged,
+      predecessorRow.review_flags_acknowledged.filter(
+        (flag) => flag !== FLAGS.LEGAL_GROUPING,
+      ),
+    );
+    assert.deepEqual(
+      predecessorRow.review_flags_acknowledged.filter(
+        (flag) => !row.review_flags_acknowledged.includes(flag),
+      ),
+      [FLAGS.LEGAL_GROUPING],
+    );
+    assert.equal(
+      row.grouping_ruling_application.state,
+      'APPLIED_PENDING_INDEPENDENT_REVIEW',
+    );
+    const receiptRow = applicationReceipt.row_applications.find(
+      (candidate) => candidate.ordinal === row.ordinal,
+    );
+    assert.deepEqual(receiptRow.prior_review_flags_acknowledged,
+      row.prior_review_flags_acknowledged);
+    assert.deepEqual(receiptRow.after_review_flags_acknowledged,
+      row.review_flags_acknowledged);
+    assert.deepEqual(receiptRow.grouping_ruling_application,
+      row.grouping_ruling_application);
+  }
+
   const encoded = readFileSync(join(REPO_ROOT, LAWFUL_WORK3_FIXTURE_PATH), 'utf8').trim();
   const fixture = JSON.parse(
     gunzipSync(Buffer.from(encoded, 'base64')).toString('utf8'),
@@ -661,12 +832,5 @@ test('lawful Work3 fixture DIVIDENDS on-disk override tracks the sealed package 
     (entry) => entry.family_key === 'DIVIDENDS',
   );
   assert.ok(override, 'lawful Work3 fixture has no DIVIDENDS on-disk override');
-  assert.equal(override.binding.path, FAMILY_PROFILE_PACKAGE_BINDING.path);
-  for (const field of ['byte_length', 'record_id', 'schema_version', 'sha256']) {
-    assert.equal(
-      override.binding[field],
-      FAMILY_PROFILE_PACKAGE_BINDING[field],
-      `lawful Work3 fixture override ${field} is stale`,
-    );
-  }
+  assert.deepEqual(override.binding, GROUPING_SUCCESSOR_BINDINGS.package);
 });

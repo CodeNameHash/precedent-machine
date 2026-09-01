@@ -1,12 +1,15 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { createHash } = require('node:crypto');
 const { readFileSync } = require('node:fs');
 const { join } = require('node:path');
+const { gunzipSync } = require('node:zlib');
 const test = require('node:test');
 
 const {
   canonicalJson,
+  contentId,
   sha256Hex,
 } = require('../lib/canonical-v2/canonical-bytes');
 const {
@@ -59,6 +62,8 @@ const SKECHERS_GOVERNED_CLAIM_ID =
   'ab3d1eedf5d9e8c5b44bb367398bc280f003b5a4a076e01cac1a638168bafad7';
 
 const LOWERCASE_HEX_64 = /^[0-9a-f]{64}$/;
+const LAWFUL_WORK3_FIXTURE_PATH =
+  'tests/fixtures/canonical-v2/m7-v2-repair/lawful-work3-family-package-set.json.gz.b64';
 
 let guarantyAuthoring;
 try {
@@ -191,6 +196,71 @@ const GUARANTY_WORK3_FAMILY_PROFILE_PACKAGE_BINDING = Object.freeze({
   sha256: '155c65d3bfd366ce28b5d889e5f05a71685081e8d12c2bc6b2c1ad7aa52552cb',
 });
 
+const GUARANTY_GROUPING_SUCCESSOR_BINDINGS = Object.freeze({
+  package: Object.freeze({
+    byte_length: 70377,
+    git_blob_oid: 'f8c7bc8ab13c94c4537a628ccc8e0d6c219f5250',
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-guaranty-financing-party-grouping-successor-2026-09-01B.json',
+    record_id: '02acdf8a496350988f03581e638198fa62a45fd456a356c2439a1bab7a555d4f',
+    record_id_field: 'family_profile_package_id',
+    schema_version: 'STAGE_2Y_M7_V2_FAMILY_PROFILE_PACKAGE/V2',
+    sha256: 'f2c700bef8eca84a346d1416ae7da20b3a75fc7c257c9e9cba27a480ec23b4b6',
+  }),
+  disposition: Object.freeze({
+    byte_length: 4986,
+    git_blob_oid: 'eaa2696f3ce7401926bf4535be044643de00c86f',
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-guaranty-5-profile-inventory-disposition-grouping-successor-2026-09-01B.json',
+    record_id: 'bb3771095e24a3d38f760cff1a94b4ebd372a7892109eb7f0dd10a312ef098a4',
+    record_id_field: 'inventory_disposition_id',
+    schema_version: 'N1_GROUPING_INVENTORY_DISPOSITION_SUCCESSOR/V1',
+    sha256: '652b571d5570b79ea93e9745fcab0cda43cbfc1e02abc5c48bb6e085b7fba511',
+  }),
+  registrationAuthority: Object.freeze({
+    byte_length: 4247,
+    git_blob_oid: 'fc286c5d39a2213e946124f926d2f3dd608b1356',
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-guaranty-financing-party-grouping-registration-successor-authority-2026-09-01B.json',
+    record_id: 'ad1efb8ad4b499e5f08f05fae77cc86b70b9f27325dd8d15beab87a799c94d71',
+    record_id_field: 'grouping_registration_successor_authority_id',
+    schema_version: 'N1_GROUPING_REGISTRATION_SUCCESSOR_AUTHORITY/V1',
+    sha256: '7316d5fb453b4c0d4e4b23e8fff0f6e879f549b39fad35cde87c314af215e7d4',
+  }),
+  applicationReceipt: Object.freeze({
+    byte_length: 8054,
+    git_blob_oid: 'ac1695d05cc72ffcc8ff1d183aa93a30d5d96e7e',
+    path:
+      'docs/codex-program/notes/N1-GUARANTY-FINANCING-PARTY-GROUPING-RULING-APPLICATION-RECEIPT-2026-09-01B.json',
+    record_id: '013fd7fd17bfd16ffe85d92cdb6921f23321d711ae8e8148268b8b4b1a271ae9',
+    record_id_field: 'ruling_application_receipt_id',
+    schema_version: 'N1_RULING_APPLICATION_RECEIPT/V1',
+    sha256: '33abd45942a933875da07b4d30c41af0cbf9ba3ae99a857878bca81d670f6df2',
+  }),
+});
+
+const GUARANTY_APPROVED_GROUPING_MAPPINGS = Object.freeze([
+  '54c2f682259425029ab2fe9f4b3b403033d0ecc7030560af5b35612cdcd25f4f',
+  '5f8d891db2433a344dd4d2e286b15ccfc2bb93082601c73a76f34b4a8b09cc73',
+  '9b4c3a664306ceab1fb9e74fd58bcf569e2e111703068b31f5eb4814a67e9b67',
+  'a54ba3d2c5547f28a83e1f59f8380e15cb78be83d425a93d930662bf9d87d857',
+  'd5c5094f1ad8de4b994aee71b2bd657429936a144bc5dc22f6997565cb88267c',
+].map((proposedProfileKey, index) => Object.freeze({
+  approved_comparison_fields: [
+    'per-deal presence',
+    'named guarantor where evidence supplies it',
+  ],
+  approved_comparison_lines: ['Performance guaranty'],
+  approved_link_target: null,
+  family_key: 'GUARANTY_FINANCING_PARTY',
+  grouping_note: null,
+  ordinal: index + 1,
+  party_band: null,
+  proposed_profile_key: proposedProfileKey,
+  ruling_ordinal: 3,
+  state: 'APPLIED_PENDING_INDEPENDENT_REVIEW',
+})));
+
 const GUARANTY_WORK3_ENTRY_CORRECTION_AUTHORITY_PATH =
   'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-entry-correction-authority.json';
 
@@ -204,6 +274,31 @@ function physicalBytes(binding) {
   assert.equal(bytes.byteLength, binding.byte_length, binding.path);
   assert.equal(sha256Hex(bytes), binding.sha256, binding.path);
   return bytes;
+}
+
+function exactPhysicalRecord(binding) {
+  const file = readFileSync(join(REPO_ROOT, binding.path));
+  assert.equal(file.length, binding.byte_length, binding.path);
+  assert.equal(sha256Hex(file), binding.sha256, binding.path);
+  assert.equal(
+    createHash('sha1').update(Buffer.concat([
+      Buffer.from(`blob ${file.length}\0`, 'utf8'),
+      file,
+    ])).digest('hex'),
+    binding.git_blob_oid,
+    binding.path,
+  );
+  const record = JSON.parse(file.toString('utf8'));
+  assert.equal(record.schema_version, binding.schema_version, binding.path);
+  assert.equal(record[binding.record_id_field], binding.record_id, binding.path);
+  const unsigned = { ...record };
+  delete unsigned[binding.record_id_field];
+  assert.equal(
+    contentId(record.schema_version, unsigned),
+    binding.record_id,
+    binding.path,
+  );
+  return record;
 }
 
 function sourceEnvelope(binding) {
@@ -609,4 +704,115 @@ test('Guaranty Milestone A family profile package on disk validates 5 registered
     .map((profile) => profile.package_profile_key)
     .sort();
   assert.deepEqual(packageKeys, phase4Keys);
+});
+
+test('GUARANTY_FINANCING_PARTY 2026-09-01B grouping successor applies the exact mapping set', () => {
+  const packageRecord = exactPhysicalRecord(GUARANTY_GROUPING_SUCCESSOR_BINDINGS.package);
+  const disposition = exactPhysicalRecord(GUARANTY_GROUPING_SUCCESSOR_BINDINGS.disposition);
+  const registrationAuthority = exactPhysicalRecord(
+    GUARANTY_GROUPING_SUCCESSOR_BINDINGS.registrationAuthority,
+  );
+  const applicationReceipt = exactPhysicalRecord(
+    GUARANTY_GROUPING_SUCCESSOR_BINDINGS.applicationReceipt,
+  );
+  const predecessorDisposition = readRecord(GUARANTY_WORK3_BINDINGS.disposition.path);
+
+  assert.equal(packageRecord.family_key, 'GUARANTY_FINANCING_PARTY');
+  assert.equal(packageRecord.profiles.length, 5);
+  assert.deepEqual(registrationAuthority.successor_package_binding,
+    GUARANTY_GROUPING_SUCCESSOR_BINDINGS.package);
+  assert.deepEqual(registrationAuthority.successor_disposition_binding,
+    GUARANTY_GROUPING_SUCCESSOR_BINDINGS.disposition);
+  assert.deepEqual(applicationReceipt.package_transition.successor,
+    GUARANTY_GROUPING_SUCCESSOR_BINDINGS.package);
+  assert.deepEqual(applicationReceipt.successor_disposition_binding,
+    GUARANTY_GROUPING_SUCCESSOR_BINDINGS.disposition);
+  assert.deepEqual(
+    applicationReceipt.successor_authorities.find(
+      (binding) => binding.path
+        === GUARANTY_GROUPING_SUCCESSOR_BINDINGS.registrationAuthority.path,
+    ),
+    GUARANTY_GROUPING_SUCCESSOR_BINDINGS.registrationAuthority,
+  );
+
+  assert.deepEqual(disposition.profile_dispositions.map((row) => ({
+    ...row.grouping_ruling_application,
+    ordinal: row.ordinal,
+    proposed_profile_key: row.proposed_profile_key,
+  })), GUARANTY_APPROVED_GROUPING_MAPPINGS);
+  assert.equal(disposition.session_summary.grouping_ruling_mapped_count, 5);
+  assert.equal(disposition.session_summary.legal_grouping_review_cleared_count, 5);
+  assert.equal(disposition.session_summary.legal_grouping_review_held_ambiguous_count, 0);
+  assert.equal(disposition.session_summary.legal_grouping_review_pending_count, 0);
+  assert.deepEqual(
+    registrationAuthority.exact_grouping_stamp_clearance_ordinals,
+    [1, 2, 3, 4, 5],
+  );
+  assert.deepEqual(registrationAuthority.exact_held_ambiguous_ordinals, []);
+  assert.deepEqual(
+    registrationAuthority.exact_mapped_without_predecessor_grouping_stamp_ordinals,
+    [],
+  );
+  assert.equal(applicationReceipt.grouping_stamp_clearance_count, 5);
+  assert.equal(applicationReceipt.held_ambiguous_count, 0);
+  assert.equal(applicationReceipt.independent_review_state, 'PENDING');
+  assert.equal(applicationReceipt.row_applications.length, 5);
+  assert.equal(applicationReceipt.stamp_cleared, true);
+
+  for (const row of disposition.profile_dispositions) {
+    const predecessorRow = predecessorDisposition.profile_dispositions.find(
+      (candidate) => candidate.ordinal === row.ordinal
+        && candidate.proposed_profile_key === row.proposed_profile_key,
+    );
+    assert.ok(predecessorRow, `missing predecessor row ${row.ordinal}`);
+    assert.deepEqual(
+      row.prior_review_flags_acknowledged,
+      predecessorRow.review_flags_acknowledged,
+    );
+    assert.deepEqual(
+      row.review_flags_acknowledged,
+      predecessorRow.review_flags_acknowledged.filter(
+        (flag) => flag !== 'LEGAL_GROUPING_REVIEW_REQUIRED',
+      ),
+    );
+    assert.deepEqual(
+      predecessorRow.review_flags_acknowledged.filter(
+        (flag) => !row.review_flags_acknowledged.includes(flag),
+      ),
+      ['LEGAL_GROUPING_REVIEW_REQUIRED'],
+    );
+    assert.equal(
+      row.grouping_ruling_application.state,
+      'APPLIED_PENDING_INDEPENDENT_REVIEW',
+    );
+    const receiptRow = applicationReceipt.row_applications.find(
+      (candidate) => candidate.ordinal === row.ordinal,
+    );
+    assert.deepEqual(receiptRow.prior_review_flags_acknowledged,
+      row.prior_review_flags_acknowledged);
+    assert.deepEqual(receiptRow.after_review_flags_acknowledged,
+      row.review_flags_acknowledged);
+    assert.deepEqual(receiptRow.grouping_ruling_application,
+      row.grouping_ruling_application);
+  }
+
+  const encoded = readFileSync(join(REPO_ROOT, LAWFUL_WORK3_FIXTURE_PATH), 'utf8').trim();
+  const fixture = JSON.parse(
+    gunzipSync(Buffer.from(encoded, 'base64')).toString('utf8'),
+  );
+  const body = { ...fixture };
+  delete body.fixture_digest;
+  assert.equal(
+    fixture.fixture_digest,
+    sha256Hex(Buffer.from(canonicalJson(body), 'utf8')),
+    'lawful Work3 fixture digest is stale',
+  );
+  const override = fixture.on_disk_family_package_overrides.find(
+    (entry) => entry.family_key === 'GUARANTY_FINANCING_PARTY',
+  );
+  assert.ok(
+    override,
+    'lawful Work3 fixture has no GUARANTY_FINANCING_PARTY on-disk override',
+  );
+  assert.deepEqual(override.binding, GUARANTY_GROUPING_SUCCESSOR_BINDINGS.package);
 });

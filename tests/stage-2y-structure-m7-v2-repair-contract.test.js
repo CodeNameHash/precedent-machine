@@ -5686,6 +5686,7 @@ function familyProfilePackageSetValidationInput(scenario) {
   return {
     work3Authority: WORK3_ENTRY_CORRECTION_AUTHORITY,
     dnoItem42SuccessorAuthority: null,
+    familyGroupingSuccessorAuthorities: null,
     familyProfileSet: scenario.profiles.profileSet,
     familyPackageSources: C3_FAMILY_ORDER.map((familyKey, index) => ({
       binding: scenario.profiles.packageBindings[index],
@@ -9323,7 +9324,7 @@ test('Work3 manifest contract lawful fixture binds on-disk Milestone A family pa
       profileCount: 45,
     },
     MAE_DEFINITION: {
-      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-mae-definition.json',
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-mae-definition-grouping-successor-2026-09-01B.json',
       profileCount: 4,
     },
     DNO_INDEMNIFICATION: {
@@ -9335,7 +9336,7 @@ test('Work3 manifest contract lawful fixture binds on-disk Milestone A family pa
       profileCount: 54,
     },
     GUARANTY_FINANCING_PARTY: {
-      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-guaranty-financing-party.json',
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-guaranty-financing-party-grouping-successor-2026-09-01B.json',
       profileCount: 5,
     },
     CLOSING_CONDITIONS: {
@@ -9347,8 +9348,24 @@ test('Work3 manifest contract lawful fixture binds on-disk Milestone A family pa
       profileCount: 70,
     },
     FINANCING_COVENANTS: {
-      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-financing-covenants.json',
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-financing-covenants-grouping-successor-2026-09-01B.json',
       profileCount: 5,
+    },
+    DIVIDENDS: {
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-dividends-grouping-successor-2026-09-01B.json',
+      profileCount: 1,
+    },
+    APPRAISAL_DISSENTERS_RIGHTS: {
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-appraisal-dissenters-rights-grouping-successor-2026-09-01B.json',
+      profileCount: 5,
+    },
+    CONSIDERATION: {
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-consideration-grouping-successor-2026-09-01B.json',
+      profileCount: 7,
+    },
+    INTERIM_OPERATING: {
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-interim-operating-grouping-successor-2026-09-01B.json',
+      profileCount: 113,
     },
     TERMINATION_FEE: {
       path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-termination-fee.json',
@@ -9369,14 +9386,17 @@ test('Work3 manifest contract lawful fixture binds on-disk Milestone A family pa
     assert.equal(source.binding.sha256, sha256Hex(diskBytes));
     assert.equal(source.record.profiles.length, expectation.profileCount);
   }
-  // ANTITRUST_REGULATORY stays synthetic because remaining synthetic witnesses
-  // still depend on its synthetic profile. The helper withholds the override
-  // until replacing it is dependency-safe.
+  // CAPITALISATION is the only family without an on-disk package. The helper
+  // reseals its in-memory WRONG_FAMILY proof against sealed Antitrust bytes.
   const antitrust = fixture.familyPackageSources.find(
     (entry) => entry.record.family_key === 'ANTITRUST_REGULATORY',
   );
-  assert.equal(antitrust.record.profiles.length, 1);
-  assert.equal(fixture.profileSetSource.record.profiles.length, 1310);
+  const capitalisation = fixture.familyPackageSources.find(
+    (entry) => entry.record.family_key === 'CAPITALISATION',
+  );
+  assert.equal(antitrust.record.profiles.length, 70);
+  assert.equal(capitalisation.record.profiles.length, 1);
+  assert.equal(fixture.profileSetSource.record.profiles.length, 1383);
   assert.equal(fixture.familyPackageSources.length, 25);
   const closingConditions = fixture.familyPackageSources.find(
     (entry) => entry.record.family_key === 'CLOSING_CONDITIONS',
@@ -9411,6 +9431,10 @@ test('shared Work3 family-package validator closes the exact approved set', () =
     ...input,
     dnoItem42SuccessorAuthority: null,
   }), 'M7_V2_PROFILE_GATE');
+  assertCode(() => validateFamilyProfilePackageSetForWork3({
+    ...input,
+    familyGroupingSuccessorAuthorities: null,
+  }), 'M7_V2_PROFILE_GATE');
 
   for (const mutate of [
     (authority) => { authority.exact_changed_existing_ordinals = [14, 19, 22, 25]; },
@@ -9434,9 +9458,88 @@ test('shared Work3 family-package validator closes the exact approved set', () =
     }), 'M7_V2_PROFILE_GATE');
   }
 
+  const groupingAuthorities = clone(input.familyGroupingSuccessorAuthorities);
+  groupingAuthorities[0].successor_package_binding.sha256 = '0'.repeat(64);
+  restampBound(
+    groupingAuthorities[0],
+    'N1_GROUPING_REGISTRATION_SUCCESSOR_AUTHORITY/V1',
+    'grouping_registration_successor_authority_id',
+  );
+  assertCode(() => validateFamilyProfilePackageSetForWork3({
+    ...input,
+    familyGroupingSuccessorAuthorities: groupingAuthorities,
+  }), 'M7_V2_PROFILE_GATE');
+  assertCode(() => validateFamilyProfilePackageSetForWork3({
+    ...input,
+    familyGroupingSuccessorAuthorities: input.familyGroupingSuccessorAuthorities.slice(1),
+  }), 'M7_V2_PROFILE_GATE');
+
   assertCode(() => validateFamilyProfilePackageSetForWork3({
     ...input,
     familyPackageSources: input.familyPackageSources.slice(1),
+  }), 'M7_V2_PROFILE_GATE');
+});
+
+test('DNO item-42 successor rejects re-signed authority substituting forged package bytes', () => {
+  const fixture = buildLawfulWork3FamilyPackageSetFixture({ useOnDiskFamilyPackages: true });
+  const input = fixture.validationInput;
+  const dnoIndex = input.familyPackageSources.findIndex(
+    (source) => source.record.family_key === 'DNO_INDEMNIFICATION',
+  );
+  assert.notEqual(dnoIndex, -1);
+  const approvedSource = input.familyPackageSources[dnoIndex];
+  const forgedPackage = clone(approvedSource.record);
+  forgedPackage.family_approval.approval_text += ' Forged replacement.';
+  restampBound(
+    forgedPackage.family_approval,
+    FAMILY_PROFILE_PACKAGE_APPROVAL_SCHEMA,
+    'family_approval_id',
+  );
+  restampBound(
+    forgedPackage,
+    FAMILY_PROFILE_PACKAGE_SCHEMA,
+    'family_profile_package_id',
+  );
+  const forgedBytes = canonicalBytes(forgedPackage);
+  const forgedBinding = bindingForBytes(
+    approvedSource.binding.path,
+    forgedBytes,
+    forgedPackage.schema_version,
+    'family_profile_package_id',
+    forgedPackage.family_profile_package_id,
+  );
+  assert.notEqual(forgedBinding.sha256, approvedSource.binding.sha256);
+
+  const familyPackageSources = input.familyPackageSources.slice();
+  familyPackageSources[dnoIndex] = {
+    binding: forgedBinding,
+    bytes: forgedBytes,
+    record: forgedPackage,
+  };
+  const familyProfileSet = clone(input.familyProfileSet);
+  const packageBindingIndex = familyProfileSet.family_profile_package_bindings.findIndex(
+    (binding) => binding.path === approvedSource.binding.path,
+  );
+  assert.notEqual(packageBindingIndex, -1);
+  familyProfileSet.family_profile_package_bindings[packageBindingIndex] = forgedBinding;
+  restampBound(
+    familyProfileSet,
+    familyProfileSet.schema_version,
+    'family_profile_set_id',
+  );
+  const successorAuthority = clone(input.dnoItem42SuccessorAuthority);
+  successorAuthority.successor_package_binding = forgedBinding;
+  restampBound(
+    successorAuthority,
+    'N1_DNO_ITEM42_REGISTRATION_SUCCESSOR_AUTHORITY/V1',
+    'item42_registration_successor_authority_id',
+  );
+
+  assertCode(() => validateFamilyProfilePackageSetForWork3({
+    ...input,
+    dnoItem42SuccessorAuthority: successorAuthority,
+    familyProfileSet,
+    familyPackageSources,
   }), 'M7_V2_PROFILE_GATE');
 });
 

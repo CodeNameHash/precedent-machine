@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { createHash } = require('node:crypto');
 const { readFileSync } = require('node:fs');
 const { join } = require('node:path');
 const { gunzipSync } = require('node:zlib');
@@ -8,6 +9,7 @@ const test = require('node:test');
 
 const {
   canonicalJson,
+  contentId,
   sha256Hex,
 } = require('../lib/canonical-v2/canonical-bytes');
 const {
@@ -152,6 +154,98 @@ const FAMILY_PROFILE_PACKAGE_BINDING = Object.freeze({
   sha256: 'dd5327e4037801753cb06d9725568580aca998967ae0ba9d63081ec324eb4f74',
 });
 
+const GROUPING_SUCCESSOR_BINDINGS = Object.freeze({
+  package: Object.freeze({
+    byte_length: 71128,
+    git_blob_oid: 'a6b98629e46560ec0dd9823cdcd5bda02662f448',
+    path:
+      `${CONTROL}/m7-v2-repair-family-work3-profile-package-appraisal-dissenters-rights-grouping-successor-2026-09-01B.json`,
+    record_id: '45ef27b316f4c6f7a37342560be1277b6e6b8d4cf2fe0c03a934810492dcf9eb',
+    record_id_field: 'family_profile_package_id',
+    schema_version: 'STAGE_2Y_M7_V2_FAMILY_PROFILE_PACKAGE/V2',
+    sha256: 'b56cd8ad9b4471b28d3d8150e7019f0e35399a9124ff86891bd257f3adcd2166',
+  }),
+  disposition: Object.freeze({
+    byte_length: 6154,
+    git_blob_oid: 'b5943402b995a8139a47e4c905d164425432304f',
+    path:
+      `${CONTROL}/m7-v2-repair-appraisal-dissenters-rights-5-profile-inventory-disposition-grouping-successor-2026-09-01B.json`,
+    record_id: '43f2a705fb7e74fdd90fc32b89e56b10da64c87bc48627c476980f13f11633cf',
+    record_id_field: 'inventory_disposition_id',
+    schema_version: 'N1_GROUPING_INVENTORY_DISPOSITION_SUCCESSOR/V1',
+    sha256: '77ae811ff3c537a8f47996c67e44d91105882e47ebcdbda6012ae32176e3e395',
+  }),
+  registrationAuthority: Object.freeze({
+    byte_length: 4300,
+    git_blob_oid: '501c0d1537f126e64852faa98abb6d0a1cded115',
+    path:
+      `${CONTROL}/m7-v2-repair-contract-work3-appraisal-dissenters-rights-grouping-registration-successor-authority-2026-09-01B.json`,
+    record_id: '344ba0d71455ac95b24cb20e66fbc7859a1f26810a0432a914451d2066189ac0',
+    record_id_field: 'grouping_registration_successor_authority_id',
+    schema_version: 'N1_GROUPING_REGISTRATION_SUCCESSOR_AUTHORITY/V1',
+    sha256: '47fa0c0a9c99af77a783bfe2e1e0302140e10b3be64c54ecdd5ff3f088303ab7',
+  }),
+  applicationReceipt: Object.freeze({
+    byte_length: 8631,
+    git_blob_oid: '4aeff07462d59355897ca16349f99525b6de59d8',
+    path:
+      'docs/codex-program/notes/N1-APPRAISAL-DISSENTERS-RIGHTS-GROUPING-RULING-APPLICATION-RECEIPT-2026-09-01B.json',
+    record_id: '2c4a126eec6b50a8bce3111f7c6cd824ef1b2004243998d7bae68f198bc2d316',
+    record_id_field: 'ruling_application_receipt_id',
+    schema_version: 'N1_RULING_APPLICATION_RECEIPT/V1',
+    sha256: '330765bc7e6df14d3d6df9763fec778f93541a5a3fdbfd4d40e434fbe6c68924',
+  }),
+});
+
+const NO_LINK_GROUPING_FIELDS = Object.freeze({
+  approved_link_target: null,
+  grouping_note: null,
+  party_band: null,
+});
+
+const APPROVED_GROUPING_MAPPINGS = Object.freeze([
+  Object.freeze({
+    ...NO_LINK_GROUPING_FIELDS,
+    approved_comparison_fields: ['withdrawal/reconversion treatment'],
+    approved_comparison_lines: ["Appraisal / dissenters' rights"],
+    ordinal: 1,
+    proposed_profile_key:
+      '222a9f8a30e1644f156f5d5c2ed586d5d1756b86c85c0c4060982112d9b53e39',
+  }),
+  Object.freeze({
+    ...NO_LINK_GROUPING_FIELDS,
+    approved_comparison_fields: ['withdrawal/reconversion treatment'],
+    approved_comparison_lines: ["Appraisal / dissenters' rights"],
+    ordinal: 2,
+    proposed_profile_key:
+      'a121dfd4e51b027d644172ec8abeecc37c36b100bd9ed664097673769d7a3330',
+  }),
+  Object.freeze({
+    ...NO_LINK_GROUPING_FIELDS,
+    approved_comparison_fields: ['settlement consent'],
+    approved_comparison_lines: ["Appraisal / dissenters' rights"],
+    ordinal: 3,
+    proposed_profile_key:
+      'b100a597d0893f73d18d20d15f23e93b609a8041742ca60f322c9243b9597915',
+  }),
+  Object.freeze({
+    ...NO_LINK_GROUPING_FIELDS,
+    approved_comparison_fields: ['withdrawal/reconversion treatment'],
+    approved_comparison_lines: ["Appraisal / dissenters' rights"],
+    ordinal: 4,
+    proposed_profile_key:
+      'f3edd68b1e0f1f3eee6f4913115c6773c101caa1db63b37fb0e7929e25698a26',
+  }),
+  Object.freeze({
+    ...NO_LINK_GROUPING_FIELDS,
+    approved_comparison_fields: ['settlement consent'],
+    approved_comparison_lines: ["Appraisal / dissenters' rights"],
+    ordinal: 5,
+    proposed_profile_key:
+      'fb1d42e96f06204d059eb17bbf9e96de9a9e7a185fbe3a18783a8015f6fe3da0',
+  }),
+]);
+
 const WORK3_ENTRY_CORRECTION_AUTHORITY_PATH =
   `${CONTROL}/m7-v2-repair-contract-work3-entry-correction-authority.json`;
 
@@ -194,6 +288,27 @@ function physicalBytes(binding) {
   assert.equal(bytes.byteLength, binding.byte_length, binding.path);
   assert.equal(sha256Hex(bytes), binding.sha256, binding.path);
   return bytes;
+}
+
+function exactPhysicalRecord(binding) {
+  const file = readFileSync(join(REPO_ROOT, binding.path));
+  assert.equal(file.length, binding.byte_length, binding.path);
+  assert.equal(sha256Hex(file), binding.sha256, binding.path);
+  assert.equal(
+    createHash('sha1').update(Buffer.concat([
+      Buffer.from(`blob ${file.length}\0`, 'utf8'),
+      file,
+    ])).digest('hex'),
+    binding.git_blob_oid,
+    binding.path,
+  );
+  const record = JSON.parse(file.toString('utf8'));
+  assert.equal(record.schema_version, binding.schema_version, binding.path);
+  assert.equal(record[binding.record_id_field], binding.record_id, binding.path);
+  const unsigned = { ...record };
+  delete unsigned[binding.record_id_field];
+  assert.equal(contentId(record.schema_version, unsigned), binding.record_id, binding.path);
+  return record;
 }
 
 function sourceEnvelope(binding) {
@@ -663,7 +778,106 @@ test('Appraisal / dissenters-rights Milestone A family profile package on disk v
   );
 });
 
-test('lawful Work3 fixture APPRAISAL_DISSENTERS_RIGHTS on-disk override tracks the sealed package bytes', () => {
+test('APPRAISAL_DISSENTERS_RIGHTS 2026-09-01B grouping successor applies the exact approved mappings', () => {
+  const packageRecord = exactPhysicalRecord(GROUPING_SUCCESSOR_BINDINGS.package);
+  const disposition = exactPhysicalRecord(GROUPING_SUCCESSOR_BINDINGS.disposition);
+  const registrationAuthority = exactPhysicalRecord(
+    GROUPING_SUCCESSOR_BINDINGS.registrationAuthority,
+  );
+  const applicationReceipt = exactPhysicalRecord(
+    GROUPING_SUCCESSOR_BINDINGS.applicationReceipt,
+  );
+  const predecessorDisposition = readRecord(WORK3_BINDINGS.disposition.path);
+  const clearanceOrdinals = APPROVED_GROUPING_MAPPINGS.map((mapping) => mapping.ordinal);
+
+  assert.equal(packageRecord.family_key, 'APPRAISAL_DISSENTERS_RIGHTS');
+  assert.equal(packageRecord.profiles.length, PROFILE_COUNT);
+  assert.deepEqual(registrationAuthority.successor_package_binding,
+    GROUPING_SUCCESSOR_BINDINGS.package);
+  assert.deepEqual(registrationAuthority.successor_disposition_binding,
+    GROUPING_SUCCESSOR_BINDINGS.disposition);
+  assert.deepEqual(applicationReceipt.package_transition.successor,
+    GROUPING_SUCCESSOR_BINDINGS.package);
+  assert.deepEqual(applicationReceipt.successor_disposition_binding,
+    GROUPING_SUCCESSOR_BINDINGS.disposition);
+  assert.deepEqual(
+    applicationReceipt.successor_authorities.find(
+      (binding) => binding.path === GROUPING_SUCCESSOR_BINDINGS.registrationAuthority.path,
+    ),
+    GROUPING_SUCCESSOR_BINDINGS.registrationAuthority,
+  );
+
+  assert.deepEqual(disposition.profile_dispositions.map((row) => ({
+    approved_comparison_fields:
+      row.grouping_ruling_application.approved_comparison_fields,
+    approved_comparison_lines:
+      row.grouping_ruling_application.approved_comparison_lines,
+    approved_link_target:
+      row.grouping_ruling_application.approved_link_target,
+    grouping_note: row.grouping_ruling_application.grouping_note,
+    ordinal: row.ordinal,
+    party_band: row.grouping_ruling_application.party_band,
+    proposed_profile_key: row.proposed_profile_key,
+  })), APPROVED_GROUPING_MAPPINGS);
+  assert.equal(disposition.session_summary.grouping_ruling_mapped_count, PROFILE_COUNT);
+  assert.equal(disposition.session_summary.legal_grouping_review_cleared_count, PROFILE_COUNT);
+  assert.equal(disposition.session_summary.legal_grouping_review_held_ambiguous_count, 0);
+  assert.equal(disposition.session_summary.legal_grouping_review_pending_count, 0);
+  assert.deepEqual(registrationAuthority.exact_grouping_stamp_clearance_ordinals,
+    clearanceOrdinals);
+  assert.deepEqual(registrationAuthority.exact_held_ambiguous_ordinals, []);
+  assert.deepEqual(
+    registrationAuthority.exact_mapped_without_predecessor_grouping_stamp_ordinals,
+    [],
+  );
+  assert.equal(registrationAuthority.production_activation_permitted, false);
+  assert.deepEqual(registrationAuthority.zero_effect_boundary, {
+    database_write_count: 0,
+    product_write_count: 0,
+    serving_change_count: 0,
+  });
+  assert.equal(applicationReceipt.grouping_stamp_clearance_count, PROFILE_COUNT);
+  assert.equal(applicationReceipt.held_ambiguous_count, 0);
+  assert.equal(applicationReceipt.independent_review_state, 'PENDING');
+  assert.equal(applicationReceipt.row_applications.length, PROFILE_COUNT);
+  assert.equal(applicationReceipt.stamp_cleared, true);
+
+  for (const row of disposition.profile_dispositions) {
+    const predecessorRow = predecessorDisposition.profile_dispositions.find(
+      (candidate) => candidate.ordinal === row.ordinal
+        && candidate.proposed_profile_key === row.proposed_profile_key,
+    );
+    assert.ok(predecessorRow, `missing predecessor row ${row.ordinal}`);
+    assert.deepEqual(row.prior_review_flags_acknowledged,
+      predecessorRow.review_flags_acknowledged);
+    assert.deepEqual(
+      row.review_flags_acknowledged,
+      predecessorRow.review_flags_acknowledged.filter(
+        (flag) => flag !== FLAGS.LEGAL_GROUPING,
+      ),
+    );
+    assert.deepEqual(
+      predecessorRow.review_flags_acknowledged.filter(
+        (flag) => !row.review_flags_acknowledged.includes(flag),
+      ),
+      [FLAGS.LEGAL_GROUPING],
+    );
+    assert.equal(row.grouping_ruling_application.state,
+      'APPLIED_PENDING_INDEPENDENT_REVIEW');
+    assert.equal(row.grouping_ruling_application.family_key,
+      'APPRAISAL_DISSENTERS_RIGHTS');
+    assert.equal(row.grouping_ruling_application.ruling_ordinal, 4);
+    const receiptRow = applicationReceipt.row_applications.find(
+      (candidate) => candidate.ordinal === row.ordinal,
+    );
+    assert.deepEqual(receiptRow.prior_review_flags_acknowledged,
+      row.prior_review_flags_acknowledged);
+    assert.deepEqual(receiptRow.after_review_flags_acknowledged,
+      row.review_flags_acknowledged);
+    assert.deepEqual(receiptRow.grouping_ruling_application,
+      row.grouping_ruling_application);
+  }
+
   const encoded = readFileSync(join(REPO_ROOT, LAWFUL_WORK3_FIXTURE_PATH), 'utf8').trim();
   const fixture = JSON.parse(
     gunzipSync(Buffer.from(encoded, 'base64')).toString('utf8'),
@@ -679,12 +893,5 @@ test('lawful Work3 fixture APPRAISAL_DISSENTERS_RIGHTS on-disk override tracks t
     (entry) => entry.family_key === 'APPRAISAL_DISSENTERS_RIGHTS',
   );
   assert.ok(override, 'lawful Work3 fixture has no APPRAISAL_DISSENTERS_RIGHTS on-disk override');
-  assert.equal(override.binding.path, FAMILY_PROFILE_PACKAGE_BINDING.path);
-  for (const field of ['byte_length', 'record_id', 'schema_version', 'sha256']) {
-    assert.equal(
-      override.binding[field],
-      FAMILY_PROFILE_PACKAGE_BINDING[field],
-      `lawful Work3 fixture override ${field} is stale`,
-    );
-  }
+  assert.deepEqual(override.binding, GROUPING_SUCCESSOR_BINDINGS.package);
 });

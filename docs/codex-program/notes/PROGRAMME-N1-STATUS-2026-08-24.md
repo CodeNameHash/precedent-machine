@@ -4,7 +4,7 @@
 **Branch:** `codex/recover-m7-20260812` (confirm with `git status --short --branch`)  
 **Authority:** `docs/core/PLAN.md`, `docs/core/OPERATING-RULES.md`
 
-**Technical next (no Ben gate):** Capitalisation comparator write-up (`CAPITALISATION-COMPARATOR-BLOCKAGE-2026-08-25.md`); fixture-proof crosscheck (**0 failures**, 5,240 proofs, 2026-09-01); spine merge PR6+ queue (`WORK3-FAMILY-LOCAL-TO-SPINE-MERGE-PLAN-2026-08-24.md` §11). See also `N1-NEXT-FAMILY-2026-08-24.md`.
+**Technical next (no Ben gate):** Capitalisation comparator write-up (`CAPITALISATION-COMPARATOR-BLOCKAGE-2026-08-25.md`); fixture-proof crosscheck (**0 failures**, 5,532 proofs, 2026-09-01); spine merge PR6+ queue (`WORK3-FAMILY-LOCAL-TO-SPINE-MERGE-PLAN-2026-08-24.md` §11). See also `N1-NEXT-FAMILY-2026-08-24.md`.
 
 ---
 
@@ -13,29 +13,42 @@
 | Family | Profiles | Disposition | On-disk package | Tests (family file) | Run plan |
 |---|---:|---|---|---|---|
 | **Termination** | 45 | 41 APPROVE + 4 PARTIAL outside-date | `m7-v2-repair-family-work3-profile-package-termination.json` (re-sealed Blocker A 2026-08-24: 1,121,991 bytes) | `work3.test.js` Milestone A slice 19 pass | `TERMINATION-FAMILY-RUN-PLAN-2026-08-24.md` |
-| **MAE_DEFINITION** | 4 | 4 APPROVE (review stamps acknowledged) | `m7-v2-repair-family-work3-profile-package-mae-definition.json` | `work3-mae.test.js` 17 pass | `MAE-FAMILY-RUN-PLAN-2026-08-24.md` |
+| **MAE_DEFINITION** | 4 | 4 APPROVE (grouping ruling applied: 4 mappings, 0 prior grouping stamps, 0 HELD_AMBIGUOUS; self-containment and 1 subject-term-mismatch flags retained; independent review pending) | `m7-v2-repair-family-work3-profile-package-mae-definition-grouping-successor-2026-09-01B.json` (55,362 bytes) | `work3-mae.test.js` 18 pass | `MAE-FAMILY-RUN-PLAN-2026-08-24.md` |
 | **DNO_INDEMNIFICATION** | 33 | 33 APPROVE | `m7-v2-repair-family-work3-profile-package-dno-indemnification-item-42-successor-2026-09-01.json` (431,970 bytes) | `dno-work3.test.js` 12 pass | `DNO-FAMILY-RUN-PLAN-2026-08-24.md` |
 | **GENERAL_COVENANTS** | 54 | 54 APPROVE (6 ACCESS item-44 stamps) | `m7-v2-repair-family-work3-profile-package-general-covenants.json` | `general-covenants-work3.test.js` 9 pass | `GENERAL-COVENANTS-FAMILY-RUN-PLAN-2026-08-24.md` |
-| **GUARANTY_FINANCING_PARTY** | 5 | 5 APPROVE (legal grouping pending) | `m7-v2-repair-family-work3-profile-package-guaranty-financing-party.json` | `guaranty-work3.test.js` 9 pass | `GUARANTY-FAMILY-RUN-PLAN-2026-08-24.md` |
+| **GUARANTY_FINANCING_PARTY** | 5 | 5 APPROVE (Performance guaranty ruling applied: 5 grouping stamps cleared, 0 HELD_AMBIGUOUS; independent review pending) | `m7-v2-repair-family-work3-profile-package-guaranty-financing-party-grouping-successor-2026-09-01B.json` (70,377 bytes) | `guaranty-work3.test.js` 10 pass | `GUARANTY-FAMILY-RUN-PLAN-2026-08-24.md` |
 | **CLOSING_CONDITIONS** | 57 | 41 APPROVE + 16 HOLD (subtype partition unresolved) | `m7-v2-repair-family-work3-profile-package-closing-conditions.json` | `closing-conditions-work3.test.js` 11 pass | `CLOSING-CONDITIONS-FAMILY-RUN-PLAN-2026-08-24.md` |
 | **REPRESENTATIONS** | 70 | 70 APPROVE (subtype partition pending legal; 15 knowledge rows link-only) | `m7-v2-repair-family-work3-profile-package-representations.json` | `representations-work3.test.js` 11 pass | `REPRESENTATIONS-FAMILY-RUN-PLAN-2026-08-24.md` |
-| **FINANCING_COVENANTS** | 5 | 5 APPROVE (subtype grouping pending legal; 2 divergence + 1 outside-calibration stamps) | `m7-v2-repair-family-work3-profile-package-financing-covenants.json` | `financing-covenants-work3.test.js` 9 pass | `FINANCING-COVENANTS-FAMILY-RUN-PLAN-2026-08-24.md` |
+| **FINANCING_COVENANTS** | 5 | 5 APPROVE (three-line ruling applied: 5 grouping stamps cleared, 0 HELD_AMBIGUOUS; 2 divergence + 1 outside-calibration stamps retained; independent review pending) | `m7-v2-repair-family-work3-profile-package-financing-covenants-grouping-successor-2026-09-01B.json` (68,960 bytes) | `financing-covenants-work3.test.js` 10 pass | `FINANCING-COVENANTS-FAMILY-RUN-PLAN-2026-08-24.md` |
 | **TERMINATION_FEE** | 20 | 8 APPROVE + 12 HOLD (10 comparator owner-family, 2 reverse-side fee) | `m7-v2-repair-family-work3-profile-package-termination-fee.json` | `termination-fee-work3.test.js` 13 pass | `TERMINATION-FEE-FAMILY-RUN-PLAN-2026-08-24.md` |
 | **NO_OTHER_REPS_FRAUD** | 36 | 36 APPROVE (subtype partition pending legal; 24 shared-citation + 3 Representations link-only) | `m7-v2-repair-family-work3-profile-package-no-other-reps-fraud.json` | `no-other-reps-fraud-work3.test.js` 11 pass | `NO-OTHER-REPS-FRAUD-FAMILY-RUN-PLAN-2026-08-24.md` |
 | **ANTITRUST_REGULATORY** | 70 | 70 APPROVE (subtype partition pending legal; 6 M5 bucket unresolved, 5 non-HSR, 12 one-sided) | `m7-v2-repair-family-work3-profile-package-antitrust-regulatory.json` | `antitrust-regulatory-work3.test.js` 11 pass | `ANTITRUST-REGULATORY-WORK3-PARALLEL-PREP-2026-08-24.md` |
 | **PROXY_MEETING** | 31 | 31 APPROVE (subtype partition pending legal; 27 calibration divergence, 2 outside-calibration) | `m7-v2-repair-family-work3-profile-package-proxy-meeting.json` | `proxy-meeting-work3.test.js` 10 pass | `PROXY-MEETING-WORK3-PARALLEL-PREP-2026-08-24.md` |
 | **TAX_MATTERS** | 17 | 17 APPROVE (subtype grouping pending legal; 7 divergence, 9 outside-calibration) | `m7-v2-repair-family-work3-profile-package-tax-matters.json` | `tax-matters-work3.test.js` 10 pass | `TAX-MATTERS-FAMILY-RUN-PLAN-2026-08-24.md` |
 | **EMPLOYEE_MATTERS** | 27 | 27 APPROVE (subtype grouping pending legal; 16 divergence, 0 outside-calibration) | `m7-v2-repair-family-work3-profile-package-employee-matters.json` | `employee-matters-work3.test.js` 10 pass | `EMPLOYEE-MATTERS-FAMILY-RUN-PLAN-2026-08-24.md` |
-| **CONSIDERATION** | 7 | 7 APPROVE (subtype grouping pending legal; 7 divergence, 0 outside-calibration) | `m7-v2-repair-family-work3-profile-package-consideration.json` | `consideration-work3.test.js` 10 pass | `CONSIDERATION-WORK3-PARALLEL-PREP-2026-08-24.md` |
+| **CONSIDERATION** | 7 | 7 APPROVE (Cash component + Appraisal-link ruling applied: 7 grouping stamps cleared, 0 HELD_AMBIGUOUS; 7 divergence stamps retained; 3 unmeasured concepts open; independent review pending) | `m7-v2-repair-family-work3-profile-package-consideration-grouping-successor-2026-09-01B.json` (92,618 bytes) | `consideration-work3.test.js` 10 pass | `CONSIDERATION-WORK3-PARALLEL-PREP-2026-08-24.md` |
 | **KEY_DEFINED_TERMS** | 76 | 76 APPROVE (subtype grouping pending legal; 41 divergence, 20 outside-calibration; Representations knowledge rows link-only) | `m7-v2-repair-family-work3-profile-package-key-defined-terms.json` (948,264 bytes) | `key-defined-terms-work3.test.js` 10 pass | `KEY-DEFINED-TERMS-WORK3-PARALLEL-PREP-2026-08-24.md` |
-| **APPRAISAL_DISSENTERS_RIGHTS** | 5 | 5 APPROVE (subtype grouping pending legal; 5 divergence, 0 outside-calibration; Consideration Q02 link-only on shared sections) | `m7-v2-repair-family-work3-profile-package-appraisal-dissenters-rights.json` (70,317 bytes) | `appraisal-dissenters-rights-work3.test.js` 10 pass | `APPRAISAL-DISSENTERS-RIGHTS-FAMILY-RUN-PLAN-2026-08-24.md` |
+| **APPRAISAL_DISSENTERS_RIGHTS** | 5 | 5 APPROVE (one-line ruling applied: 5 grouping stamps cleared, 0 HELD_AMBIGUOUS; 5 divergence stamps retained; Consideration Q02 link-only on shared sections; independent review pending) | `m7-v2-repair-family-work3-profile-package-appraisal-dissenters-rights-grouping-successor-2026-09-01B.json` (71,128 bytes) | `appraisal-dissenters-rights-work3.test.js` 10 pass | `APPRAISAL-DISSENTERS-RIGHTS-FAMILY-RUN-PLAN-2026-08-24.md` |
 | **NO_SHOP** | 365 | 365 APPROVE (subtype grouping pending legal; 88 divergence, 94 outside-calibration; KEY_DEFINED_TERMS / TERMINATION_FEE / PROXY_MEETING / TERMINATION Q02 link-only) | `m7-v2-repair-family-work3-profile-package-no-shop.json` (4,394,952 bytes) | `no-shop-work3.test.js` 10 pass | `NO-SHOP-WORK3-PARALLEL-PREP-2026-08-24.md` |
-| **DIVIDENDS** | 1 | 1 APPROVE (subtype grouping pending legal; 0 divergence, 0 outside-calibration) | `m7-v2-repair-family-work3-profile-package-dividends.json` (18,004 bytes) | `dividends-work3.test.js` 10 pass | `DIVIDENDS-WORK3-PARALLEL-PREP-2026-08-24.md` |
+| **DIVIDENDS** | 1 | 1 APPROVE (Dividend coordination ruling applied: 1 grouping stamp cleared, 0 HELD_AMBIGUOUS; independent review pending) | `m7-v2-repair-family-work3-profile-package-dividends-grouping-successor-2026-09-01B.json` (18,198 bytes) | `dividends-work3.test.js` 10 pass | `DIVIDENDS-WORK3-PARALLEL-PREP-2026-08-24.md` |
 | **SPECIFIC_PERFORMANCE_REMEDIES** | 8 | 1 APPROVE + 7 HOLD (Termination Fee sole-remedy owner-family open; no invented ruling) | `m7-v2-repair-family-work3-profile-package-specific-performance-remedies.json` (110,000 bytes) | `specific-performance-remedies-work3.test.js` 10 pass | `SPECIFIC-PERFORMANCE-REMEDIES-FAMILY-RUN-PLAN-2026-08-24.md` |
-| **INTERIM_OPERATING** | 113 | 113 APPROVE (subtype grouping pending legal) | `m7-v2-repair-family-work3-profile-package-interim-operating.json` (1,418,275 bytes) | `interim-operating-work3.test.js` 11 pass | `INTERIM_OPERATING-WORK3-PARALLEL-PREP-2026-08-24.md` |
+| **INTERIM_OPERATING** | 113 | 113 APPROVE (16-line ruling applied: 113 grouping stamps cleared, 0 HELD_AMBIGUOUS; 8 outside-calibration stamps retained; 4 unmeasured concepts open; independent review pending) | `m7-v2-repair-family-work3-profile-package-interim-operating-grouping-successor-2026-09-01B.json` (1,435,829 bytes) | `interim-operating-work3.test.js` 11 pass | `INTERIM_OPERATING-WORK3-PARALLEL-PREP-2026-08-24.md` |
 | **MATERIAL_CONTRACTS** | 116 | 116 APPROVE (subtype grouping pending legal) | `m7-v2-repair-family-work3-profile-package-material-contracts.json` (1,497,422 bytes) | `material-contracts-work3.test.js` 11 pass | `MATERIAL-CONTRACTS-WORK3-PARALLEL-PREP-2026-08-24.md` |
 | **MERGER_STRUCTURE_CLOSING** | 103 | 103 APPROVE (subtype grouping pending legal; 23 divergence, 71 outside-calibration; Closing Conditions / Proxy Q02 link-only) | `m7-v2-repair-family-work3-profile-package-merger-structure-closing.json` (1,308,628 bytes) | `merger-structure-closing-work3.test.js` 11 pass | combined note §23 |
 | **MISC_BOILERPLATE** | 114 | 114 APPROVE (subtype grouping pending legal; 12 divergence, 102 outside-calibration; Termination survival Q02 link-only) | `m7-v2-repair-family-work3-profile-package-misc-boilerplate.json` (1,418,307 bytes) | `misc-boilerplate-work3.test.js` 11 pass | combined note §24 |
+
+**Grouping landing note (2026-09-01):** The 2026-09-01B successor sessions
+applied seven family rulings. Open family-level legal-grouping reviews fell
+from **22** to **15**. MAE had no prior `LEGAL_GROUPING_REVIEW_REQUIRED`
+stamps; its four approved mappings required no stamp clearance. Independent
+review of all seven application receipts remains pending.
+
+The remaining 15 family-level grouping reviews are
+`ANTITRUST_REGULATORY`, `CAPITALISATION`, `CLOSING_CONDITIONS`,
+`EMPLOYEE_MATTERS`, `KEY_DEFINED_TERMS`, `MATERIAL_CONTRACTS`,
+`MERGER_STRUCTURE_CLOSING`, `MISC_BOILERPLATE`, `NO_OTHER_REPS_FRAUD`,
+`NO_SHOP`, `PROXY_MEETING`, `REPRESENTATIONS`,
+`SPECIFIC_PERFORMANCE_REMEDIES`, `TAX_MATTERS` and `TERMINATION_FEE`.
 
 **Family-local modules (spine merge in progress):**
 
@@ -102,17 +115,19 @@ CI=true node --test tests/stage-2y-structure-m7-v2-repair-execution-manifest.tes
   --test-name-pattern='Work3 entry manifest binds exact P50'
 ```
 
-On-disk validation loads 25 family packages and 1,310 profiles. Twenty-four packages are sealed on disk. Capitalisation remains the one synthetic family. The richer preparation paths continue to use synthetic packages by design.
+On-disk validation loads 25 family packages and 1,383 profiles. Twenty-four packages are sealed on disk. Capitalisation remains the one synthetic family. Its in-memory wrong-family proof is rebound to a sealed Antitrust positive fixture, which permits all 24 sealed overrides to participate without changing evidence bytes. The richer preparation paths continue to use synthetic packages by design.
 
 **Lawful-fixture closure (updated 2026-09-01): Blockers A and B are closed.** Full background is in `LAWFUL-FIXTURE-DIMENSION-EVIDENCE-GAP-2026-08-24.md`.
 
 - **D&O predecessor preserved.** The 31-profile predecessor records 26 APPROVE and 5 HOLD rows. It remains unchanged at 407,522 bytes, SHA-256 `5fccaa143aed5deb4eecd81e9efaf3782930eaf282b069e6e5bc35f939acb0ed`, id `e5b568d8eaa764a63a17e4fc6337b3049c8cfa5163947cb230c120027c38395e`.
 - **Termination Blocker A closed (corrected 2026-09-01 at landing).** Per-profile fixture proofs were added across all 45 profiles. The authoritative local package, test pin and lawful-fixture pin are 1,121,991 bytes, SHA-256 `22afbea939eb086d63f415008d1cc1c52db89214bf720363b9a4ed1d509ad550`, id `f0718b673a6a22bf41f3492c72bbf3fed15eeb1745c06d2eb6d19a007103adeb`, and **45** dimension-evidence rows. These supersede both the earlier 519,840-byte seal and the later 1,121,931-byte figure in this note.
 - **D&O Blocker B closed.** Ben's 2026-08-25 ruling applies because the Metsera rights-survival and no-adverse-amendment duties are separate operative units. The successor session added those two profiles and approved the five previously held Metsera rows. The current lawful-fixture package has 33 profiles and 33 dimension-evidence rows. It is `m7-v2-repair-family-work3-profile-package-dno-indemnification-item-42-successor-2026-09-01.json`, 431,970 bytes, SHA-256 `f66610f532c347e1546ca8df3131d100cc131b33b9d2be200385292959df0e74`, id `bed7b4e2b0294cc4d0505e1439f79f6a719e523caa59aa4ff73029c4b4605925`.
-- **Validation green.** The on-disk set passes with 25 packages and 1,310 profiles. The fixture-proof crosscheck passes 5,240 proofs with 0 failures.
+- **Validation green.** The on-disk set passes with 25 packages and 1,383 profiles. The fixture-proof crosscheck passes 5,532 proofs with 0 failures.
 - **Independent review pending.** The application receipt is `docs/codex-program/notes/N1-DNO-ITEM-42-RULING-APPLICATION-RECEIPT-2026-09-01.json`. Its independent-review state is `PENDING` and its stamp remains uncleared.
 
-**Regenerate packages** (any re-seal invalidates the lawful fixture's `on_disk_family_package_overrides` — refresh them after):
+**Historical predecessor package commands (2026-08-24; record only):** Do not
+rerun these commands against sealed predecessor paths. In particular, the MAE
+and Guaranty commands do not produce the current 2026-09-01B successors.
 
 ```bash
 node scripts/stage-2y-structure-m7-v2-termination-family-profile-package.mjs
@@ -124,6 +139,12 @@ node scripts/stage-2y-structure-m7-v2-closing-conditions-family-profile-package.
 
 node scripts/stage-2y-structure-m7-v2-lawful-work3-fixture-refresh-overrides.mjs          # rewrite + re-seal
 node scripts/stage-2y-structure-m7-v2-lawful-work3-fixture-refresh-overrides.mjs --check  # exit 1 if stale
+```
+
+Verify the current seven grouping successors with:
+
+```bash
+CI=true node scripts/stage-2y-structure-m7-v2-grouping-successor-session.mjs --check
 ```
 
 **Guaranty Milestone A proof:**
@@ -150,7 +171,7 @@ node scripts/stage-2y-structure-m7-v2-closing-conditions-ben-inventory-dispositi
 node scripts/stage-2y-structure-m7-v2-closing-conditions-family-profile-package.mjs
 ```
 
-Closing Conditions is wired into `on_disk_family_package_overrides` in the lawful Work3 fixture (`fixture_digest` `135a570d…`). The package itself passes single-family inventory validation (`FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING`). The on-disk full set passes 25 packages and 1,310 profiles.
+At its 2026-08-24 landing, Closing Conditions was wired into `on_disk_family_package_overrides` at fixture digest `135a570d…`. The package itself passes single-family inventory validation (`FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING`). The current on-disk full set passes 25 packages and 1,383 profiles.
 
 **Representations Milestone A proof (2026-08-24, exit 0, 11 pass / 0 fail):**
 
@@ -169,7 +190,7 @@ node scripts/stage-2y-structure-m7-v2-representations-ben-inventory-disposition.
 node scripts/stage-2y-structure-m7-v2-representations-family-profile-package.mjs
 ```
 
-Representations is wired into `on_disk_family_package_overrides` in the lawful Work3 fixture (`fixture_digest` `db2785b0…`). The package passes single-family inventory validation (`FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING`). The on-disk full set passes 25 packages and 1,310 profiles.
+At its 2026-08-24 landing, Representations was wired into `on_disk_family_package_overrides` at fixture digest `db2785b0…`. The package passes single-family inventory validation (`FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING`). The current on-disk full set passes 25 packages and 1,383 profiles.
 
 **Financing covenants Milestone A proof (2026-08-24, exit 0, 10 pass / 0 fail):**
 
@@ -178,7 +199,8 @@ CI=true NODE_OPTIONS='--max-old-space-size=8192' node --test \
   tests/stage-2y-structure-m7-v2-repair-financing-covenants-work3.test.js
 ```
 
-Regenerate financing covenants evidence in order (digests are pinned into the family-local module and the test):
+Historical predecessor-generation sequence (2026-08-24; record only, not the
+current grouping-successor workflow):
 
 ```bash
 node scripts/stage-2y-structure-m7-v2-financing-covenants-authoring-phase2-authority.mjs
@@ -188,7 +210,7 @@ node scripts/stage-2y-structure-m7-v2-financing-covenants-ben-inventory-disposit
 node scripts/stage-2y-structure-m7-v2-financing-covenants-family-profile-package.mjs
 ```
 
-Financing Covenants is wired into `on_disk_family_package_overrides` in the lawful Work3 fixture (`fixture_digest` `db2785b0…`). The package itself passes single-family inventory validation (`FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING`). The on-disk full set passes 25 packages and 1,310 profiles.
+The 2026-09-01B Financing Covenants successor is wired into the current lawful Work3 fixture at digest `6ea53f94ad1099a1c44e65a172ebebcd7d97f1c50e0fe6046b7091777851cbbf`. The successor package passes single-family inventory validation (`FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING`). The current on-disk full set passes 25 packages and 1,383 profiles.
 
 **Combined proof (run separately — full `work3.test.js` takes ~15+ min):**
 
@@ -268,7 +290,7 @@ node scripts/stage-2y-structure-m7-v2-no-other-reps-fraud-ben-inventory-disposit
 node scripts/stage-2y-structure-m7-v2-no-other-reps-fraud-family-profile-package.mjs
 ```
 
-Package `83c227097450…` (469,420 bytes) passes single-family inventory validation (`FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING`) and is wired into `on_disk_family_package_overrides` (`fixture_digest` `d93fdf23…`). Re-sealed with per-profile fixture proofs (Blocker A sweep); profiles and inventory disposition unchanged at 36 APPROVE / 0 HOLD.
+Package `83c227097450…` (469,420 bytes) passes single-family inventory validation (`FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING`) and was wired into `on_disk_family_package_overrides` at its 2026-08-24 landing (`fixture_digest` `d93fdf23…`). Re-sealed with per-profile fixture proofs (Blocker A sweep); profiles and inventory disposition unchanged at 36 APPROVE / 0 HOLD.
 
 N1 ladder: … → Representations (#6 ✅) → Closing Conditions (#7 ✅) → **No Other Reps / Fraud (#8 ✅)**.
 
@@ -309,7 +331,7 @@ node scripts/stage-2y-structure-m7-v2-termination-fee-ben-inventory-disposition.
 node scripts/stage-2y-structure-m7-v2-termination-fee-family-profile-package.mjs
 ```
 
-Package `b87ffa21dba7…` (251,294 bytes) passes single-family inventory validation (`FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING`) and is wired into `on_disk_family_package_overrides` (`fixture_digest` `db2785b0…`). It was sealed twice: once with anchor-only fixture proofs, then again by the Blocker-A sweep that gave every profile all four fixture kinds. The current bytes are what the test pins and what the generator reproduces.
+Package `b87ffa21dba7…` (251,294 bytes) passes single-family inventory validation (`FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING`) and was wired into `on_disk_family_package_overrides` at its 2026-08-24 landing (`fixture_digest` `db2785b0…`). It was sealed twice: once with anchor-only fixture proofs, then again by the Blocker-A sweep that gave every profile all four fixture kinds. The current bytes are what the test pins and what the generator reproduces.
 
 **Adding a family to the lawful fixture:** the existing refresh script only rewrites bindings for families already listed. A first-time insert now has a generator that carries every other family's entry through byte-identical, so it is safe to run during parallel family work:
 
@@ -348,7 +370,7 @@ node scripts/stage-2y-structure-m7-v2-antitrust-regulatory-ben-inventory-disposi
 node scripts/stage-2y-structure-m7-v2-antitrust-regulatory-family-profile-package.mjs
 ```
 
-Package `56ba1c5ed345…` (287,309 bytes) passes single-family inventory validation (`FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING`) and is wired into `on_disk_family_package_overrides` (`fixture_digest` `a283b0e4…`).
+Package `56ba1c5ed345…` (287,309 bytes) passes single-family inventory validation (`FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING`) and was wired into `on_disk_family_package_overrides` at its 2026-08-24 landing (`fixture_digest` `a283b0e4…`).
 
 N1 ladder: … → Termination Fee (#10 ✅) → **Antitrust / Regulatory (#11 ✅)**.
 
@@ -373,7 +395,7 @@ CI=true NODE_OPTIONS='--max-old-space-size=8192' node --test \
   tests/stage-2y-structure-m7-v2-repair-no-shop-work3.test.js
 ```
 
-Package `be14f1e6dd43…` (4,394,952 bytes) passes single-family inventory validation (`FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING`) and is wired into `on_disk_family_package_overrides` (`fixture_digest` `9f8c769d…`).
+Package `be14f1e6dd43…` (4,394,952 bytes) passes single-family inventory validation (`FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING`) and was wired into `on_disk_family_package_overrides` at its 2026-08-24 landing (`fixture_digest` `9f8c769d…`).
 
 Regenerate:
 
@@ -415,7 +437,7 @@ node scripts/stage-2y-structure-m7-v2-merger-structure-closing-ben-inventory-dis
 node scripts/stage-2y-structure-m7-v2-merger-structure-closing-family-profile-package.mjs
 ```
 
-Merger Structure / Closing is wired into `on_disk_family_package_overrides` in the lawful Work3 fixture (`fixture_digest` `206338c3…`).
+Merger Structure / Closing was wired into `on_disk_family_package_overrides` at its 2026-08-24 landing (`fixture_digest` `206338c3…`).
 
 **Misc Boilerplate Milestone A proof (2026-08-25, exit 0, 11 pass / 0 fail):**
 
@@ -437,7 +459,7 @@ node scripts/stage-2y-structure-m7-v2-lawful-work3-fixture-add-override.mjs \
   --package evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-misc-boilerplate.json
 ```
 
-Misc Boilerplate is wired into `on_disk_family_package_overrides` in the lawful Work3 fixture (`fixture_digest` `8fdc272d…`).
+Misc Boilerplate was wired into `on_disk_family_package_overrides` at its 2026-08-24 landing (`fixture_digest` `8fdc272d…`).
 
 ---
 
@@ -466,7 +488,7 @@ CI=true NODE_OPTIONS='--max-old-space-size=8192' node --test \
   tests/stage-2y-structure-m7-v2-repair-key-defined-terms-work3.test.js
 ```
 
-Key Defined Terms is wired into `on_disk_family_package_overrides` in the lawful Work3 fixture (`fixture_digest` `ec289147…`).
+Key Defined Terms was wired into `on_disk_family_package_overrides` at its 2026-08-24 landing (`fixture_digest` `ec289147…`).
 
 ---
 
@@ -476,7 +498,7 @@ Key Defined Terms is wired into `on_disk_family_package_overrides` in the lawful
 |---|---|---:|---|
 | **APPRAISAL_DISSENTERS_RIGHTS** | `APPRAISAL-DISSENTERS-RIGHTS-FAMILY-RUN-PLAN-2026-08-24.md` | **5** | 3 deals, 5 governed claims; wave-4 sparse cluster; D&O minimal Phase 2→4 path; Phase 3 skipped |
 
-One profile per governed M4 claim across Skechers, Skywater, and TopBuild (withdrawal-reconversion + settlement-consent limbs). Two claim-definition keys populated; six sealed M5 subtype buckets with two populated. Consideration (#15) owns appraisal-rights **status** on shared printed sections (Q02 link-only). All 5 rows APPROVE with subtype grouping pending legal (5 calibration divergence, 0 outside-calibration stamps).
+One profile per governed M4 claim across Skechers, Skywater, and TopBuild (withdrawal-reconversion + settlement-consent limbs). Two claim-definition keys populated; six sealed M5 subtype buckets with two populated. Consideration (#15) owns appraisal-rights **status** on shared printed sections (Q02 link-only). The 2026-09-01B successor applies the one-line grouping ruling to all 5 approved rows, clears 5 grouping stamps, retains 5 calibration-divergence stamps, records 0 `HELD_AMBIGUOUS`, and leaves independent review pending.
 
 **Appraisal / dissenters' rights Milestone A proof (2026-08-24, exit 0, 10 pass / 0 fail):**
 
@@ -485,7 +507,7 @@ CI=true NODE_OPTIONS='--max-old-space-size=8192' node --test \
   tests/stage-2y-structure-m7-v2-repair-appraisal-dissenters-rights-work3.test.js
 ```
 
-Appraisal / dissenters' rights is wired into `on_disk_family_package_overrides` in the lawful Work3 fixture (`fixture_digest` `b70c9594…`).
+The 2026-09-01B Appraisal / dissenters' rights successor is wired into the current lawful Work3 fixture at digest `6ea53f94ad1099a1c44e65a172ebebcd7d97f1c50e0fe6046b7091777851cbbf`.
 
 ---
 
@@ -495,7 +517,7 @@ Appraisal / dissenters' rights is wired into `on_disk_family_package_overrides` 
 |---|---|---:|---|
 | **DIVIDENDS** | `DIVIDENDS-WORK3-PARALLEL-PREP-2026-08-24.md` | **1** | 1 deal (Concho), 1 governed claim; wave-4 dividend-coordination cluster; D&O minimal Phase 2→4 path; Phase 3 skipped |
 
-One profile per governed M4 claim on the Concho comparator deal (§6.21 dividend-coordination covenant). One claim-definition key populated (`DIVIDEND_COORDINATION_COVENANT`); five sealed M5 subtype buckets with one populated (`DIVIDEND_COORDINATION`). Calibration tags all five provision examples `DIVIDEND_COORDINATION`, matching the comparator claim — 0 subtype-divergence stamps. Consideration (#15) and Interim Operating (#21) Q02 link-only boundaries apply only when those rows surface elsewhere. All 1 row APPROVE with subtype grouping pending legal.
+One profile per governed M4 claim on the Concho comparator deal (§6.21 dividend-coordination covenant). One claim-definition key populated (`DIVIDEND_COORDINATION_COVENANT`); five sealed M5 subtype buckets with one populated (`DIVIDEND_COORDINATION`). Calibration tags all five provision examples `DIVIDEND_COORDINATION`, matching the comparator claim, with 0 subtype-divergence stamps. Consideration (#15) and Interim Operating (#21) Q02 link-only boundaries apply only when those rows surface elsewhere. The 2026-09-01B successor applies the Dividend Coordination ruling to the approved row, clears its grouping stamp, records 0 `HELD_AMBIGUOUS`, and leaves independent review pending.
 
 **Dividends Milestone A proof (2026-08-24, exit 0, 10 pass / 0 fail):**
 
@@ -504,7 +526,8 @@ CI=true NODE_OPTIONS='--max-old-space-size=8192' node --test \
   tests/stage-2y-structure-m7-v2-repair-dividends-work3.test.js
 ```
 
-Regenerate dividends evidence in order (digests pinned into the family-local module and test):
+Historical predecessor-generation sequence (2026-08-24; record only, not the
+current grouping-successor workflow):
 
 ```bash
 node scripts/stage-2y-structure-m7-v2-dividends-authoring-phase2-authority.mjs
@@ -517,7 +540,7 @@ node scripts/stage-2y-structure-m7-v2-lawful-work3-fixture-add-override.mjs \
   --package evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-dividends.json
 ```
 
-Dividends is wired into `on_disk_family_package_overrides` in the lawful Work3 fixture (`fixture_digest` `5a490d65…`).
+The 2026-09-01B Dividends successor is wired into the current lawful Work3 fixture at digest `6ea53f94ad1099a1c44e65a172ebebcd7d97f1c50e0fe6046b7091777851cbbf`.
 
 ---
 
@@ -527,7 +550,7 @@ Dividends is wired into `on_disk_family_package_overrides` in the lawful Work3 f
 |---|---|---:|---|
 | **DIVIDENDS** | `DIVIDENDS-WORK3-PARALLEL-PREP-2026-08-24.md` | **1** | 1 deal (Concho), 1 governed claim; wave-4 sparse dividend-coordination cluster; D&O minimal Phase 2→4 path; Phase 3 skipped |
 
-One profile per governed M4 claim on Concho §6.21 (`DIVIDEND_COORDINATION_COVENANT`). Five sealed M5 subtype buckets with one populated (`DIVIDEND_COORDINATION`). Calibration tags all five provision examples `DIVIDEND_COORDINATION`; the sole comparator claim matches (0 subtype divergence, 0 outside-calibration). All 1 row APPROVE with subtype grouping pending legal.
+One profile per governed M4 claim on Concho §6.21 (`DIVIDEND_COORDINATION_COVENANT`). Five sealed M5 subtype buckets with one populated (`DIVIDEND_COORDINATION`). Calibration tags all five provision examples `DIVIDEND_COORDINATION`; the sole comparator claim matches (0 subtype divergence, 0 outside-calibration). The 2026-09-01B successor applies the Dividend Coordination ruling to the approved row, clears its grouping stamp, records 0 `HELD_AMBIGUOUS`, and leaves independent review pending.
 
 **Dividends Milestone A proof (2026-08-24, exit 0, 10 pass / 0 fail):**
 
@@ -536,7 +559,7 @@ CI=true NODE_OPTIONS='--max-old-space-size=8192' node --test \
   tests/stage-2y-structure-m7-v2-repair-dividends-work3.test.js
 ```
 
-Dividends is wired into `on_disk_family_package_overrides` in the lawful Work3 fixture (`fixture_digest` `5a490d65…`).
+The 2026-09-01B Dividends successor is wired into the current lawful Work3 fixture at digest `6ea53f94ad1099a1c44e65a172ebebcd7d97f1c50e0fe6046b7091777851cbbf`.
 
 ---
 
@@ -546,7 +569,7 @@ Dividends is wired into `on_disk_family_package_overrides` in the lawful Work3 f
 |---|---|---:|---|
 | **CONSIDERATION** | `CONSIDERATION-WORK3-PARALLEL-PREP-2026-08-24.md` | **7** | 4 deals, 7 governed claims; wave-4 deal-economics cluster; D&O minimal Phase 2→4 path; Phase 3 skipped |
 
-One profile per governed M4 claim across four comparator deals. Two claim-definition keys populated (`PER_SHARE_CASH_CONSIDERATION` 3, `APPRAISAL_RIGHTS_STATUS` 4); ten sealed M5 subtype buckets with two populated (`CASH_COMPONENT`, `APPRAISAL_LINK`). Selected over `KEY_DEFINED_TERMS` (76 claims — Representations knowledge link-only overlap) and `NO_SHOP` (365 — too large for immediate Milestone A). All 7 rows APPROVE with subtype grouping pending legal (7 calibration divergence, 0 outside-calibration stamps).
+One profile per governed M4 claim across four comparator deals. Two claim-definition keys populated (`PER_SHARE_CASH_CONSIDERATION` 3, `APPRAISAL_RIGHTS_STATUS` 4); ten sealed M5 subtype buckets with two populated (`CASH_COMPONENT`, `APPRAISAL_LINK`). Selected over `KEY_DEFINED_TERMS` (76 claims; Representations knowledge link-only overlap) and `NO_SHOP` (365; too large for immediate Milestone A). The 2026-09-01B successor applies the Cash Component and Appraisal-link ruling to all 7 approved rows, clears 7 grouping stamps, retains 7 calibration-divergence stamps, records 0 `HELD_AMBIGUOUS`, and leaves independent review pending.
 
 **Consideration Milestone A proof (2026-08-24, exit 0, 10 pass / 0 fail):**
 
@@ -555,7 +578,7 @@ CI=true NODE_OPTIONS='--max-old-space-size=8192' node --test \
   tests/stage-2y-structure-m7-v2-repair-consideration-work3.test.js
 ```
 
-Consideration is wired into `on_disk_family_package_overrides` in the lawful Work3 fixture (`fixture_digest` `352ea2bb…`).
+The 2026-09-01B Consideration successor is wired into the current lawful Work3 fixture at digest `6ea53f94ad1099a1c44e65a172ebebcd7d97f1c50e0fe6046b7091777851cbbf`.
 
 ---
 
@@ -574,7 +597,7 @@ CI=true NODE_OPTIONS='--max-old-space-size=8192' node --test \
   tests/stage-2y-structure-m7-v2-repair-employee-matters-work3.test.js
 ```
 
-Employee Matters is wired into `on_disk_family_package_overrides` in the lawful Work3 fixture (`fixture_digest` `a7271c58…`).
+Employee Matters was wired into `on_disk_family_package_overrides` at its 2026-08-24 landing (`fixture_digest` `a7271c58…`).
 
 ---
 
@@ -606,7 +629,7 @@ node scripts/stage-2y-structure-m7-v2-lawful-work3-fixture-add-override.mjs \
   --package evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-tax-matters.json
 ```
 
-Tax Matters is wired into `on_disk_family_package_overrides` in the lawful Work3 fixture (`fixture_digest` `05e23a26…`).
+Tax Matters was wired into `on_disk_family_package_overrides` at its 2026-08-24 landing (`fixture_digest` `05e23a26…`).
 
 ---
 
@@ -628,7 +651,7 @@ One profile per governed M4 claim across six comparator deals. Six sealed M5 sub
 |---|---|---|
 | **1** | **REPRESENTATIONS** Milestone A (#6) — ✅ **complete** (70 profiles, 70 APPROVE / 0 HOLD, 11/11 tests incl. lawful-fixture override); spine merge pending | `REPRESENTATIONS-FAMILY-RUN-PLAN-2026-08-24.md` |
 | 2 | Spine merge — **PR1–PR4 done** (MAE, D&O, GC, Guaranty); optional `module_path` audit **closed — no change needed** | `WORK3-FAMILY-LOCAL-TO-SPINE-MERGE-PLAN-2026-08-24.md` |
-| 3 | Lawful fixture on-disk full-set validation is green at **25 packages / 1,310 profiles**; Blockers A and B are closed | `LAWFUL-FIXTURE-DIMENSION-EVIDENCE-GAP-2026-08-24.md` |
+| 3 | Lawful fixture on-disk full-set validation is green at **25 packages / 1,383 profiles**; Blockers A and B are closed | `LAWFUL-FIXTURE-DIMENSION-EVIDENCE-GAP-2026-08-24.md` |
 | 4 | **CLOSING_CONDITIONS** Milestone A (#7) — ✅ **complete** (57 profiles, 41 APPROVE / 16 HOLD, 11/11 tests incl. lawful-fixture override); spine merge pending | `CLOSING-CONDITIONS-FAMILY-RUN-PLAN-2026-08-24.md` |
 | 5 | **NO_OTHER_REPS_FRAUD** Milestone A (#8) — ✅ **complete** (36 profiles, 36 APPROVE / 0 HOLD, 12/12 tests incl. lawful-fixture override); spine merge pending | `NO-OTHER-REPS-FRAUD-FAMILY-RUN-PLAN-2026-08-24.md` |
 | 6 | **FINANCING_COVENANTS** Milestone A (#9) — ✅ **complete** (5 profiles, 5 APPROVE / 0 HOLD, 10/10 tests incl. lawful-fixture override); spine merge pending | `FINANCING-COVENANTS-FAMILY-RUN-PLAN-2026-08-24.md` |
@@ -657,10 +680,9 @@ One profile per governed M4 claim across six comparator deals. Six sealed M5 sub
 - **Termination:** 4 outside-date rows PARTIAL (extension linked, not in signature)
 - **D&O:** no remaining item-42 holds. All 33 rows are approved. Independent review of the application receipt remains pending
 - **MAE:** self-containment unproven + Metsera subject-term mismatch flagged in review stamps
-- **Guaranty:** 5 profiles APPROVE with `LEGAL_GROUPING_REVIEW_REQUIRED` on all rows (`PERFORMANCE_GUARANTY` subtype grouping pending legal)
 - **GC:** item-44 access-scope disposition deferred (6 ACCESS rows APPROVED with review stamp)
+- **Capitalisation:** no comparator claims and no on-disk successor disposition. All 5 calibration examples retain `LEGAL_GROUPING_REVIEW_REQUIRED`, so the family-level grouping review remains open.
 - **Representations:** all 70 rows APPROVE with `LEGAL_GROUPING_REVIEW_REQUIRED`. The calibration pack registers six subtype buckets but tags all six provision examples `STATUS_REPRESENTATION`, and the resolution data carries no field separating the other five, so every row is authored under `STATUS_REPRESENTATION` and the seal records `PENDING_LEGAL_REVIEW` (1 populated of 6 registered buckets). 15 knowledge-qualifier rows additionally carry `CROSS_FAMILY_KNOWLEDGE_DEFINITION_LINK_ONLY` — the knowledge-person definition is owned by `KEY_DEFINED_TERMS` under Q02. Ben was unavailable, so the sealed M5 programme rulings were applied verbatim
-- **Financing covenants:** all 5 rows APPROVE with `LEGAL_GROUPING_REVIEW_REQUIRED`. The sealed M5 role schema admits all three Financing Covenants claim keys under all seven subtype buckets, so the claim-key → subtype mapping is a proposal, not a sealed rule (3 populated of 7 registered buckets; seal records `PENDING_LEGAL_REVIEW`). 2 Concho payoff rows additionally carry `SUBTYPE_PARTITION_DIVERGES_FROM_CALIBRATION_PROPOSED_SUBTYPE` (calibration tags every example `OBTAIN_FINANCING`; the claim keys say `PAYOFF`) and 1 row carries `COMPARATOR_CLAIM_OUTSIDE_CALIBRATION_PROVISION_EXAMPLES`. Ben was unavailable, so the sealed M5 programme rulings were applied verbatim — 0 new family rulings
 - **Termination fee:** 12 of 20 rows HOLD. Ten `REM-SOLE` rows (5 sole-remedy-link + 5 carve-out) carry `owner_family: SPECIFIC_PERFORMANCE_REMEDIES` in the comparator resolution, produced by the supplemental resolver `native-sole-remedy-resolution/v1` rather than by the termination fee producer — Q02 permits one owner and the source does not say whether that owner is the fee those rows cap or the remedy they restrict (`COMPARATOR_OWNER_FAMILY_DISPOSITION_REQUIRED`). **This is the one termination fee item that needs Ben.** Two reverse-side fee rows (Skechers §8.3, TopBuild §6.5, both `party.capacity = BUYER`) are held because the single sealed `FEE_AMOUNT` label does not distinguish fee side (`FEE_SIDE_PARTITION_DISPOSITION_REQUIRED`). All 20 rows carry `LEGAL_GROUPING_REVIEW_REQUIRED`. Four sealed M5 labels drew no comparator instances. Ben was unavailable, so the sealed M5 programme rulings were applied verbatim — 0 new family rulings
 - **No other reps / fraud:** all 36 rows APPROVE with `LEGAL_GROUPING_REVIEW_REQUIRED`. The calibration pack registers four subtype buckets but tags all seven provision examples `NO_OTHER_REPRESENTATIONS_DISCLAIMER`, and the sealed role schema admits all three claim keys under all four buckets, so every row is authored under the tagged bucket and the seal records `PENDING_LEGAL_REVIEW` (1 populated of 4 registered). Two evidence-derived link censuses ride alongside, neither assigning ownership: 24 rows carry `SHARED_SOURCE_CITATION_LINK_ONLY` (another governed claim sits on the same authored citation — the open half of Q01), and 3 TopBuild rows carry `CROSS_FAMILY_REPRESENTATIONS_LINK_ONLY` (shared printed section, Q02). Red Hat §8.03(p) willful-breach definitions stay open-world rather than being inferred into `FRAUD_CARVEOUT`. Ben was unavailable, so the sealed M5 programme rulings were applied verbatim — 0 new family rulings
 - **Closing conditions:** 16 of 57 rows HOLD — 15 sit in comparator buckets with no sealed M5 subtype label (`COVENANT_COMPLIANCE`, `LISTING`, `NO_MAE`) and 1 is the Metsera frustration branch. Two sealed labels (`BRINGDOWN`, `TAX_OPINION`) drew no comparator instances. Ben was unavailable, so the sealed M5 programme rulings were applied verbatim rather than new family rulings invented
@@ -668,9 +690,10 @@ One profile per governed M4 claim across six comparator deals. Six sealed M5 sub
 - **Proxy / meeting:** all 31 rows APPROVE with `LEGAL_GROUPING_REVIEW_REQUIRED`. Five populated comparator buckets against six sealed M5 labels (`SUBSIDIARY_APPROVAL` empty); 27 rows diverge from calibration's all-`DOCUMENT_FILING` tagging and 2 Metsera §6.11 rows sit outside calibration provision examples. Ben was unavailable, so the sealed M5 programme rulings were applied verbatim — 0 new family rulings
 - **Tax matters:** all 17 rows APPROVE with `LEGAL_GROUPING_REVIEW_REQUIRED`. Four populated comparator buckets against eight sealed M5 labels (four empty); calibration tags all four provision examples `INTENDED_TAX_TREATMENT` while comparator claims span four subtype buckets — 7 rows carry `SUBTYPE_PARTITION_DIVERGES_FROM_CALIBRATION_PROPOSED_SUBTYPE` and 9 carry `COMPARATOR_CLAIM_OUTSIDE_CALIBRATION_PROVISION_EXAMPLES`. CC tax-opinion receipt-only closing conditions stay Q02 link-only against sealed Closing Conditions (#7). Ben was unavailable, so the sealed M5 programme rulings were applied verbatim — 0 new family rulings
 - **Employee matters:** all 27 rows APPROVE with `LEGAL_GROUPING_REVIEW_REQUIRED`. Three populated comparator buckets against four sealed M5 labels (`RETIREMENT_PLAN_ACTION` empty); calibration tags all six provision examples `EMPLOYEE_COMPENSATION` while comparator claims span three subtype buckets — 16 rows carry `SUBTYPE_PARTITION_DIVERGES_FROM_CALIBRATION_PROPOSED_SUBTYPE`. TopBuild §3.1(h) benefit-plan rep stays Q02 link-only against sealed Representations (#6). Ben was unavailable, so the sealed M5 programme rulings were applied verbatim — 0 new family rulings
-- **Consideration:** all 7 rows APPROVE with `LEGAL_GROUPING_REVIEW_REQUIRED`. Two populated comparator buckets against ten sealed M5 labels (eight empty); calibration tags all four provision examples `CONSIDERATION_PACKAGE` while comparator claims span `CASH_COMPONENT` and `APPRAISAL_LINK` — 7 rows carry `SUBTYPE_PARTITION_DIVERGES_FROM_CALIBRATION_PROPOSED_SUBTYPE`. Shared-section appraisal mechanics stay Q02 link-only against `APPRAISAL_DISSENTERS_RIGHTS`. Ben was unavailable, so the sealed M5 programme rulings were applied verbatim — 0 new family rulings
+- **Key Defined Terms:** all 76 rows APPROVE with `LEGAL_GROUPING_REVIEW_REQUIRED`; 41 rows carry calibration-divergence stamps and 20 carry outside-calibration stamps. Representations knowledge rows remain link-only.
 - **No-shop:** all 365 rows APPROVE with `LEGAL_GROUPING_REVIEW_REQUIRED`. Six populated comparator buckets against eight sealed M5 labels; calibration tags all seven provision examples `RESTRICTION` while comparator claims span RESTRICTION, STANDSTILL, RECOMMENDATION_CHANGE, REPRESENTATIVE_CONTROL, SAFE_DISCLOSURE, and ENGAGEMENT_PERMISSION — 88 rows carry `SUBTYPE_PARTITION_DIVERGES_FROM_CALIBRATION_PROPOSED_SUBTYPE` and 94 carry `COMPARATOR_CLAIM_OUTSIDE_CALIBRATION_PROVISION_EXAMPLES`. KEY_DEFINED_TERMS owns Acquisition Proposal / Superior Proposal definitions; TERMINATION_FEE, PROXY_MEETING, and TERMINATION cross-refs stay Q02 link-only — recorded in Phase 2 `cross_family_link_only_boundaries`, none absorbed. Ben was unavailable, so the sealed M5 programme rulings were applied verbatim — 0 new family rulings
-- **Dividends:** the single profile APPROVE with `LEGAL_GROUPING_REVIEW_REQUIRED`. One populated comparator bucket against five sealed M5 labels (four empty); calibration tags all five provision examples `DIVIDEND_COORDINATION`, matching the comparator claim — 0 subtype-divergence stamps. Ben was unavailable, so the sealed M5 programme rulings were applied verbatim — 0 new family rulings
+- **Specific Performance Remedies:** all 8 rows carry `LEGAL_GROUPING_REVIEW_REQUIRED`; 1 is APPROVE and 7 remain HOLD pending the Termination Fee sole-remedy owner-family ruling.
+- **Material Contracts:** all 116 rows APPROVE with `LEGAL_GROUPING_REVIEW_REQUIRED`; subtype grouping remains pending legal review.
 - **Merger structure / closing:** all 103 rows APPROVE with `LEGAL_GROUPING_REVIEW_REQUIRED`. Six populated comparator buckets against eight sealed M5 labels (`TRANSACTION_PLAN`, `ORGANISATIONAL_DOCUMENT` empty); calibration tags all seven provision examples `TRANSACTION_STEP` while comparator claims span six subtype buckets — 23 rows carry `SUBTYPE_PARTITION_DIVERGES_FROM_CALIBRATION_PROPOSED_SUBTYPE` and 71 carry `COMPARATOR_CLAIM_OUTSIDE_CALIBRATION_PROVISION_EXAMPLES`. Closing Conditions stockholder-approval and Proxy / Meeting mechanics stay Q02 link-only. Ben was unavailable, so the sealed M5 programme rulings were applied verbatim — 0 new family rulings
 - **Misc boilerplate:** all 114 rows APPROVE with `LEGAL_GROUPING_REVIEW_REQUIRED`. Twelve populated comparator buckets against twelve sealed M5 labels (all populated); calibration tags all six provision examples `GOVERNING_LAW` while comparator claims span twelve subtype buckets — 12 rows carry `SUBTYPE_PARTITION_DIVERGES_FROM_CALIBRATION_PROPOSED_SUBTYPE` and 102 carry `COMPARATOR_CLAIM_OUTSIDE_CALIBRATION_PROVISION_EXAMPLES`. Termination rights-survival rows on shared sections stay Q02 link-only. Ben was unavailable, so the sealed M5 programme rulings were applied verbatim — 0 new family rulings
 
@@ -717,3 +740,8 @@ Large WIP on branch — Termination + MAE + D&O + Guaranty (Phase 2 slice) + Clo
   mid-size families (Tax Matters, Employee Matters and Proxy / Meeting), large
   families, Closing Conditions after its new comparison labels are available,
   then Specific Performance Remedies after the sole-remedy limb map is ready.
+- **V1 coverage rule:** Every future family brief must include a **“V1 fields
+  not yet measured”** section sourced from
+  `docs/codex-program/notes/V1-COVERAGE-LEDGER-2026-09-01.md`. Each family
+  successor disposition carries its ledger entries as named unmeasured
+  concepts.

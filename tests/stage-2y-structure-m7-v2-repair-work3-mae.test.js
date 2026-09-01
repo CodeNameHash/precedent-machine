@@ -1,8 +1,10 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { createHash } = require('node:crypto');
 const { readFileSync } = require('node:fs');
 const { join } = require('node:path');
+const { gunzipSync } = require('node:zlib');
 const test = require('node:test');
 
 const {
@@ -47,6 +49,8 @@ const ITEM33_DISPROPORTIONALITY_SIGNATURE =
 const ITEM47_PARTIAL_EXCEPTION_SIGNATURE =
   'CONSEQUENCE_MODIFIER(TO_EXTENT(EXCEPTION_TO(BASE_RULE,PARTIAL_EXCEPTION),EXACT_EXCEPTION_SCOPE),LIMITED_CONSEQUENCE)';
 const LOWERCASE_HEX_64 = /^[0-9a-f]{64}$/;
+const LAWFUL_WORK3_FIXTURE_PATH =
+  'tests/fixtures/canonical-v2/m7-v2-repair/lawful-work3-family-package-set.json.gz.b64';
 
 const {
   MAE_DEFINITION_PHASE2_PROPOSAL_AUTHORITY_BINDING,
@@ -121,6 +125,31 @@ function physicalBytes(binding) {
   const bytes = readFileSync(join(REPO_ROOT, binding.path));
   assert.equal(bytes.length, binding.byte_length);
   assert.equal(sha256Hex(bytes), binding.sha256);
+}
+
+function exactPhysicalRecord(binding) {
+  const file = readFileSync(join(REPO_ROOT, binding.path));
+  assert.equal(file.length, binding.byte_length, binding.path);
+  assert.equal(sha256Hex(file), binding.sha256, binding.path);
+  assert.equal(
+    createHash('sha1').update(Buffer.concat([
+      Buffer.from(`blob ${file.length}\0`, 'utf8'),
+      file,
+    ])).digest('hex'),
+    binding.git_blob_oid,
+    binding.path,
+  );
+  const record = JSON.parse(file.toString('utf8'));
+  assert.equal(record.schema_version, binding.schema_version, binding.path);
+  assert.equal(record[binding.record_id_field], binding.record_id, binding.path);
+  const unsigned = { ...record };
+  delete unsigned[binding.record_id_field];
+  assert.equal(
+    contentId(record.schema_version, unsigned),
+    binding.record_id,
+    binding.path,
+  );
+  return record;
 }
 
 function exactKeys(value, expected) {
@@ -889,6 +918,104 @@ const MAE_WORK3_FAMILY_PROFILE_PACKAGE_BINDING = Object.freeze({
   sha256: 'ad1490989320e4175f3f11130abab6b4c64d6a2f25ed830d31b648effa7545f7',
 });
 
+const MAE_GROUPING_SUCCESSOR_BINDINGS = Object.freeze({
+  package: Object.freeze({
+    byte_length: 55362,
+    git_blob_oid: '03aa4e895b1fc089e7cf53e6db2362231c5af80c',
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-mae-definition-grouping-successor-2026-09-01B.json',
+    record_id: 'f8e889b6399b17d34dada6b600dec66b75776059a2910a0a5a5dc4cf238ccbd5',
+    record_id_field: 'family_profile_package_id',
+    schema_version: 'STAGE_2Y_M7_V2_FAMILY_PROFILE_PACKAGE/V2',
+    sha256: '25d0bf33d29afd0c04a6e420e07a4a26c7e8b3697306314f30fe1415ae32a89f',
+  }),
+  disposition: Object.freeze({
+    byte_length: 4261,
+    git_blob_oid: 'b94a501db6cd8c52c5441dd0ede5086e1ce9ff13',
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-mae-4-profile-inventory-disposition-grouping-successor-2026-09-01B.json',
+    record_id: 'd0291a255caf62e72cd44a1efcbcf9be261de9aaeeb0ffcb06c72009566cc145',
+    record_id_field: 'inventory_disposition_id',
+    schema_version: 'N1_GROUPING_INVENTORY_DISPOSITION_SUCCESSOR/V1',
+    sha256: '96653f49086e231b377cc58ac516cc5eafd454f2e07e3a851e4bbf24adf543dc',
+  }),
+  registrationAuthority: Object.freeze({
+    byte_length: 4185,
+    git_blob_oid: 'bb1d9e1d4faf1e6267e74c4670e776f627eb4498',
+    path:
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-mae-definition-grouping-registration-successor-authority-2026-09-01B.json',
+    record_id: 'c4b20e87dd0643d8690d56ad6d4e78da9aae4e42c7784716f609558861038e0c',
+    record_id_field: 'grouping_registration_successor_authority_id',
+    schema_version: 'N1_GROUPING_REGISTRATION_SUCCESSOR_AUTHORITY/V1',
+    sha256: '0a5a52c37b3c196ee29bb7198289baeb82944bf22856ed3ec2c1be4782c8c417',
+  }),
+  applicationReceipt: Object.freeze({
+    byte_length: 7407,
+    git_blob_oid: 'a2fe7ecf2baff77a47b2530d77843e557340312b',
+    path:
+      'docs/codex-program/notes/N1-MAE-DEFINITION-GROUPING-RULING-APPLICATION-RECEIPT-2026-09-01B.json',
+    record_id: '5adeadc4660fc4001f60697e087ce9c30d9f139d1700d0d51de4a814b5c80ac0',
+    record_id_field: 'ruling_application_receipt_id',
+    schema_version: 'N1_RULING_APPLICATION_RECEIPT/V1',
+    sha256: 'e8c4cbc51f9446601e5ae4997854a9e60d937e6337993b757b5c36b03d7c56ec',
+  }),
+});
+
+const MAE_APPROVED_GROUPING_MAPPINGS = Object.freeze([
+  Object.freeze({
+    approved_comparison_fields: [],
+    approved_comparison_lines: ['Exceptions to carve-outs'],
+    approved_link_target: null,
+    family_key: 'MAE_DEFINITION',
+    grouping_note: null,
+    ordinal: 1,
+    party_band: null,
+    proposed_profile_key:
+      '730ff533d440462aabb21db6f643dd8a47c02e7f525b10e5ca59ba73af53f354',
+    ruling_ordinal: 2,
+    state: 'APPLIED_PENDING_INDEPENDENT_REVIEW',
+  }),
+  Object.freeze({
+    approved_comparison_fields: [],
+    approved_comparison_lines: ['Carve-outs'],
+    approved_link_target: null,
+    family_key: 'MAE_DEFINITION',
+    grouping_note: null,
+    ordinal: 2,
+    party_band: null,
+    proposed_profile_key:
+      '901ee99515f668ed563dad979417b9f3d01e62a59e4405443f7d8d661d4acd90',
+    ruling_ordinal: 2,
+    state: 'APPLIED_PENDING_INDEPENDENT_REVIEW',
+  }),
+  Object.freeze({
+    approved_comparison_fields: [],
+    approved_comparison_lines: ['Definition prongs', 'MAE Test'],
+    approved_link_target: null,
+    family_key: 'MAE_DEFINITION',
+    grouping_note: null,
+    ordinal: 3,
+    party_band: null,
+    proposed_profile_key:
+      'a4b2f3a43f43efbf1af77b310617d73d9ed11067326526571ac0bd8ac2fa3265',
+    ruling_ordinal: 2,
+    state: 'APPLIED_PENDING_INDEPENDENT_REVIEW',
+  }),
+  Object.freeze({
+    approved_comparison_fields: [],
+    approved_comparison_lines: ['Disproportionality relationships'],
+    approved_link_target: null,
+    family_key: 'MAE_DEFINITION',
+    grouping_note: null,
+    ordinal: 4,
+    party_band: null,
+    proposed_profile_key:
+      'ac11887411fad052ece9163e2d9567d849cc2649cbecad82cd2fc124eb456ee5',
+    ruling_ordinal: 2,
+    state: 'APPLIED_PENDING_INDEPENDENT_REVIEW',
+  }),
+]);
+
 const MAE_WORK3_ENTRY_CORRECTION_AUTHORITY_PATH =
   'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-entry-correction-authority.json';
 
@@ -962,4 +1089,114 @@ test('MAE Milestone A family profile package on disk validates four registered p
     .map((row) => row.package_profile_key)
     .sort();
   assert.deepEqual(packageKeys, registeredKeys);
+});
+
+test('MAE_DEFINITION 2026-09-01B grouping successor preserves unrelated review flags', () => {
+  const packageRecord = exactPhysicalRecord(MAE_GROUPING_SUCCESSOR_BINDINGS.package);
+  const disposition = exactPhysicalRecord(MAE_GROUPING_SUCCESSOR_BINDINGS.disposition);
+  const registrationAuthority = exactPhysicalRecord(
+    MAE_GROUPING_SUCCESSOR_BINDINGS.registrationAuthority,
+  );
+  const applicationReceipt = exactPhysicalRecord(
+    MAE_GROUPING_SUCCESSOR_BINDINGS.applicationReceipt,
+  );
+  const predecessorDisposition = readRecord(MAE_WORK3_DISPOSITION_BINDING.path);
+
+  assert.equal(packageRecord.family_key, 'MAE_DEFINITION');
+  assert.equal(packageRecord.profiles.length, 4);
+  assert.deepEqual(registrationAuthority.successor_package_binding,
+    MAE_GROUPING_SUCCESSOR_BINDINGS.package);
+  assert.deepEqual(registrationAuthority.successor_disposition_binding,
+    MAE_GROUPING_SUCCESSOR_BINDINGS.disposition);
+  assert.deepEqual(applicationReceipt.package_transition.successor,
+    MAE_GROUPING_SUCCESSOR_BINDINGS.package);
+  assert.deepEqual(applicationReceipt.successor_disposition_binding,
+    MAE_GROUPING_SUCCESSOR_BINDINGS.disposition);
+  assert.deepEqual(
+    applicationReceipt.successor_authorities.find(
+      (binding) => binding.path
+        === MAE_GROUPING_SUCCESSOR_BINDINGS.registrationAuthority.path,
+    ),
+    MAE_GROUPING_SUCCESSOR_BINDINGS.registrationAuthority,
+  );
+
+  assert.deepEqual(disposition.profile_dispositions.map((row) => ({
+    ...row.grouping_ruling_application,
+    ordinal: row.ordinal,
+    proposed_profile_key: row.proposed_profile_key,
+  })), MAE_APPROVED_GROUPING_MAPPINGS);
+  assert.equal(disposition.session_summary.grouping_ruling_mapped_count, 4);
+  assert.equal(disposition.session_summary.legal_grouping_review_cleared_count, 0);
+  assert.equal(disposition.session_summary.legal_grouping_review_held_ambiguous_count, 0);
+  assert.deepEqual(registrationAuthority.exact_grouping_stamp_clearance_ordinals, []);
+  assert.deepEqual(registrationAuthority.exact_held_ambiguous_ordinals, []);
+  assert.deepEqual(
+    registrationAuthority.exact_mapped_without_predecessor_grouping_stamp_ordinals,
+    [1, 2, 3, 4],
+  );
+  assert.equal(applicationReceipt.grouping_stamp_clearance_count, 0);
+  assert.equal(applicationReceipt.held_ambiguous_count, 0);
+  assert.equal(applicationReceipt.independent_review_state, 'PENDING');
+  assert.equal(applicationReceipt.row_applications.length, 4);
+  assert.equal(applicationReceipt.stamp_cleared, false);
+
+  for (const row of disposition.profile_dispositions) {
+    const predecessorRow = predecessorDisposition.profile_dispositions.find(
+      (candidate) => candidate.ordinal === row.ordinal
+        && candidate.proposed_profile_key === row.proposed_profile_key,
+    );
+    assert.ok(predecessorRow, `missing predecessor row ${row.ordinal}`);
+    assert.equal(
+      predecessorRow.review_flags_acknowledged.includes(
+        'LEGAL_GROUPING_REVIEW_REQUIRED',
+      ),
+      false,
+    );
+    assert.deepEqual(
+      row.prior_review_flags_acknowledged,
+      predecessorRow.review_flags_acknowledged,
+    );
+    assert.deepEqual(
+      row.review_flags_acknowledged,
+      predecessorRow.review_flags_acknowledged.filter(
+        (flag) => flag !== 'LEGAL_GROUPING_REVIEW_REQUIRED',
+      ),
+    );
+    assert.deepEqual(
+      predecessorRow.review_flags_acknowledged.filter(
+        (flag) => !row.review_flags_acknowledged.includes(flag),
+      ),
+      [],
+    );
+    assert.equal(
+      row.grouping_ruling_application.state,
+      'APPLIED_PENDING_INDEPENDENT_REVIEW',
+    );
+    const receiptRow = applicationReceipt.row_applications.find(
+      (candidate) => candidate.ordinal === row.ordinal,
+    );
+    assert.deepEqual(receiptRow.prior_review_flags_acknowledged,
+      row.prior_review_flags_acknowledged);
+    assert.deepEqual(receiptRow.after_review_flags_acknowledged,
+      row.review_flags_acknowledged);
+    assert.deepEqual(receiptRow.grouping_ruling_application,
+      row.grouping_ruling_application);
+  }
+
+  const encoded = readFileSync(join(REPO_ROOT, LAWFUL_WORK3_FIXTURE_PATH), 'utf8').trim();
+  const fixture = JSON.parse(
+    gunzipSync(Buffer.from(encoded, 'base64')).toString('utf8'),
+  );
+  const body = { ...fixture };
+  delete body.fixture_digest;
+  assert.equal(
+    fixture.fixture_digest,
+    sha256Hex(Buffer.from(canonicalJson(body), 'utf8')),
+    'lawful Work3 fixture digest is stale',
+  );
+  const override = fixture.on_disk_family_package_overrides.find(
+    (entry) => entry.family_key === 'MAE_DEFINITION',
+  );
+  assert.ok(override, 'lawful Work3 fixture has no MAE_DEFINITION on-disk override');
+  assert.deepEqual(override.binding, MAE_GROUPING_SUCCESSOR_BINDINGS.package);
 });

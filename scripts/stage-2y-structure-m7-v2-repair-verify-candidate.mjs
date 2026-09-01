@@ -1192,6 +1192,7 @@ function verifyFamilyProfilePackageSemantics(
     validateFamilyProfilePackageSetForWork3({
       work3Authority: authority,
       dnoItem42SuccessorAuthority: null,
+      familyGroupingSuccessorAuthorities: null,
       familyProfileSet: profileSet,
       familyPackageSources,
       familyPacketSet,

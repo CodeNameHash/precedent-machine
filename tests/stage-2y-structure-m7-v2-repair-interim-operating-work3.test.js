@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { createHash } = require('node:crypto');
 const { readFileSync } = require('node:fs');
 const { join } = require('node:path');
 const { gunzipSync } = require('node:zlib');
@@ -8,6 +9,7 @@ const test = require('node:test');
 
 const {
   canonicalJson,
+  contentId,
   sha256Hex,
 } = require('../lib/canonical-v2/canonical-bytes');
 const {
@@ -103,6 +105,79 @@ const FAMILY_PROFILE_PACKAGE_BINDING = Object.freeze({
   sha256: 'ea245e721869f8f20d88cec57363c5ec62402dce696e63a642442558fbd4d730',
 });
 
+const GROUPING_SUCCESSOR_BINDINGS = Object.freeze({
+  package: Object.freeze({
+    byte_length: 1435829,
+    git_blob_oid: '99d8dc0bbe6523bd7bd6cabaf4ef147350c1ea9b',
+    path:
+      `${CONTROL}/m7-v2-repair-family-work3-profile-package-interim-operating-grouping-successor-2026-09-01B.json`,
+    record_id: '569a3172ffa05e078c5fe865fe1b26525008eef911c7da5670c1cc6ffbc18a0e',
+    record_id_field: 'family_profile_package_id',
+    schema_version: 'STAGE_2Y_M7_V2_FAMILY_PROFILE_PACKAGE/V2',
+    sha256: '0e54f728bef0badfb45ff2a24fc6a4d16727490200f982f1f9a38f46854edba5',
+  }),
+  disposition: Object.freeze({
+    byte_length: 84502,
+    git_blob_oid: 'de34a5f2b5a5738f30395dc4c9583f85bc9578a8',
+    path:
+      `${CONTROL}/m7-v2-repair-interim-operating-113-profile-inventory-disposition-grouping-successor-2026-09-01B.json`,
+    record_id: '3ea55d16a62a5b2843bed4c6706293533286b0375807061c51d988459add1038',
+    record_id_field: 'inventory_disposition_id',
+    schema_version: 'N1_GROUPING_INVENTORY_DISPOSITION_SUCCESSOR/V1',
+    sha256: '6b51e1140a5bd123aee64a16a6f4127c849fabd254c09192b9d48fba67a531ca',
+  }),
+  registrationAuthority: Object.freeze({
+    byte_length: 4573,
+    git_blob_oid: '3c29b4e25ff746950d35138dd2fa77a802af5c0d',
+    path:
+      `${CONTROL}/m7-v2-repair-contract-work3-interim-operating-grouping-registration-successor-authority-2026-09-01B.json`,
+    record_id: 'ef248f31b6edfaf290718a47b275eda7251da751fefa7f339cdf540764086941',
+    record_id_field: 'grouping_registration_successor_authority_id',
+    schema_version: 'N1_GROUPING_REGISTRATION_SUCCESSOR_AUTHORITY/V1',
+    sha256: '0666eed09924daf00f9b213b7828efcb8543f6c4d1915fb7d602ad5021edd12c',
+  }),
+  applicationReceipt: Object.freeze({
+    byte_length: 64240,
+    git_blob_oid: 'ae25872809a2ebbd53d1b407321d4966c5649484',
+    path:
+      'docs/codex-program/notes/N1-INTERIM-OPERATING-GROUPING-RULING-APPLICATION-RECEIPT-2026-09-01B.json',
+    record_id: '5ff2b0d125ee6b3f8487cb58edcfd7afe839a937909fd0c97148f8973f25fcb5',
+    record_id_field: 'ruling_application_receipt_id',
+    schema_version: 'N1_RULING_APPLICATION_RECEIPT/V1',
+    sha256: '974e5f0af2ab28a069a01ed201f89162b555e493b03de6494e634e43942f4bb7',
+  }),
+});
+
+const APPROVED_GROUPING_LINE_ORDINALS = Object.freeze({
+  'Accounting changes': { Target: [48], Parent: [] },
+  'Capital expenditures': { Target: [16, 28, 38, 50, 63, 77], Parent: [] },
+  'Charter and bylaws': { Target: [11, 15, 25, 75, 97, 99, 111], Parent: [96] },
+  'Compensation and benefits': {
+    Target: [17, 20, 34, 42, 53, 56, 58, 62, 68, 69, 70, 84, 85, 88, 100, 102, 108, 112],
+    Parent: [],
+  },
+  'Material contracts': { Target: [19, 30, 33, 59, 67, 79, 91, 101], Parent: [] },
+  'Indebtedness and loans': {
+    Target: [1, 3, 14, 18, 29, 40, 52, 60, 61, 81, 87, 89, 92, 93, 98, 104, 109, 113],
+    Parent: [27],
+  },
+  'Dividends and distributions': { Target: [8, 23, 43, 51, 64, 82], Parent: [6, 73] },
+  'Hiring and termination': { Target: [10, 80, 83], Parent: [] },
+  Insurance: { Target: [9, 35], Parent: [] },
+  'Intellectual property': { Target: [31, 44, 45, 76], Parent: [] },
+  'Securities issuances': { Target: [2, 5, 13, 24, 49, 95, 107], Parent: [39, 110] },
+  'Liens and encumbrances': { Target: [103], Parent: [] },
+  'Mergers and acquisitions': { Target: [47, 57, 72, 105], Parent: [7, 46] },
+  'Equity repurchases': { Target: [74], Parent: [] },
+  'Litigation settlements': { Target: [32, 55], Parent: [] },
+  'Tax matters': {
+    Target: [4, 12, 21, 22, 26, 36, 37, 41, 54, 65, 66, 71, 78, 86, 90, 94, 106],
+    Parent: [],
+  },
+});
+
+const GUARANTEES_OF_INDEBTEDNESS_ORDINALS = Object.freeze([1, 14, 27, 40, 93, 104]);
+
 const WORK3_ENTRY_CORRECTION_AUTHORITY_PATH =
   `${CONTROL}/m7-v2-repair-contract-work3-entry-correction-authority.json`;
 
@@ -145,6 +220,27 @@ function physicalBytes(binding) {
   assert.equal(bytes.byteLength, binding.byte_length, binding.path);
   assert.equal(sha256Hex(bytes), binding.sha256, binding.path);
   return bytes;
+}
+
+function exactPhysicalRecord(binding) {
+  const file = readFileSync(join(REPO_ROOT, binding.path));
+  assert.equal(file.length, binding.byte_length, binding.path);
+  assert.equal(sha256Hex(file), binding.sha256, binding.path);
+  assert.equal(
+    createHash('sha1').update(Buffer.concat([
+      Buffer.from(`blob ${file.length}\0`, 'utf8'),
+      file,
+    ])).digest('hex'),
+    binding.git_blob_oid,
+    binding.path,
+  );
+  const record = JSON.parse(file.toString('utf8'));
+  assert.equal(record.schema_version, binding.schema_version, binding.path);
+  assert.equal(record[binding.record_id_field], binding.record_id, binding.path);
+  const unsigned = { ...record };
+  delete unsigned[binding.record_id_field];
+  assert.equal(contentId(record.schema_version, unsigned), binding.record_id, binding.path);
+  return record;
 }
 
 function sourceEnvelope(binding) {
@@ -642,7 +738,119 @@ test('Interim Operating Milestone A family profile package on disk validates 113
   );
 });
 
-test('lawful Work3 fixture INTERIM_OPERATING on-disk override tracks the sealed package bytes', () => {
+test('INTERIM_OPERATING 2026-09-01B grouping successor applies the exact approved mappings', () => {
+  const packageRecord = exactPhysicalRecord(GROUPING_SUCCESSOR_BINDINGS.package);
+  const disposition = exactPhysicalRecord(GROUPING_SUCCESSOR_BINDINGS.disposition);
+  const registrationAuthority = exactPhysicalRecord(
+    GROUPING_SUCCESSOR_BINDINGS.registrationAuthority,
+  );
+  const applicationReceipt = exactPhysicalRecord(
+    GROUPING_SUCCESSOR_BINDINGS.applicationReceipt,
+  );
+  const predecessorDisposition = readRecord(WORK3_BINDINGS.disposition.path);
+  const expectedMappings = new Map();
+  for (const [line, bands] of Object.entries(APPROVED_GROUPING_LINE_ORDINALS)) {
+    for (const [partyBand, ordinals] of Object.entries(bands)) {
+      for (const ordinal of ordinals) {
+        assert.equal(expectedMappings.has(ordinal), false,
+          `approved grouping table repeats ordinal ${ordinal}`);
+        expectedMappings.set(ordinal, { line, partyBand });
+      }
+    }
+  }
+  const clearanceOrdinals = Array.from({ length: PROFILE_COUNT }, (_, index) => index + 1);
+  assert.equal(expectedMappings.size, PROFILE_COUNT);
+  assert.deepEqual([...expectedMappings.keys()].sort((left, right) => left - right),
+    clearanceOrdinals);
+
+  assert.equal(packageRecord.family_key, 'INTERIM_OPERATING');
+  assert.equal(packageRecord.profiles.length, PROFILE_COUNT);
+  assert.deepEqual(registrationAuthority.successor_package_binding,
+    GROUPING_SUCCESSOR_BINDINGS.package);
+  assert.deepEqual(registrationAuthority.successor_disposition_binding,
+    GROUPING_SUCCESSOR_BINDINGS.disposition);
+  assert.deepEqual(applicationReceipt.package_transition.successor,
+    GROUPING_SUCCESSOR_BINDINGS.package);
+  assert.deepEqual(applicationReceipt.successor_disposition_binding,
+    GROUPING_SUCCESSOR_BINDINGS.disposition);
+  assert.deepEqual(
+    applicationReceipt.successor_authorities.find(
+      (binding) => binding.path === GROUPING_SUCCESSOR_BINDINGS.registrationAuthority.path,
+    ),
+    GROUPING_SUCCESSOR_BINDINGS.registrationAuthority,
+  );
+
+  assert.deepEqual(disposition.profile_dispositions.map((row) => row.ordinal),
+    clearanceOrdinals);
+  for (const row of disposition.profile_dispositions) {
+    const expected = expectedMappings.get(row.ordinal);
+    assert.deepEqual(row.grouping_ruling_application, {
+      approved_comparison_fields: [],
+      approved_comparison_lines: [expected.line],
+      approved_link_target: null,
+      family_key: 'INTERIM_OPERATING',
+      grouping_note: GUARANTEES_OF_INDEBTEDNESS_ORDINALS.includes(row.ordinal)
+        ? 'Guarantees-of-indebtedness fold into the Indebtedness and loans line.'
+        : null,
+      party_band: expected.partyBand,
+      ruling_ordinal: 7,
+      state: 'APPLIED_PENDING_INDEPENDENT_REVIEW',
+    });
+  }
+  assert.equal(disposition.session_summary.grouping_ruling_mapped_count, PROFILE_COUNT);
+  assert.equal(disposition.session_summary.legal_grouping_review_cleared_count, PROFILE_COUNT);
+  assert.equal(disposition.session_summary.legal_grouping_review_held_ambiguous_count, 0);
+  assert.equal(disposition.session_summary.legal_grouping_review_pending_count, 0);
+  assert.deepEqual(registrationAuthority.exact_grouping_stamp_clearance_ordinals,
+    clearanceOrdinals);
+  assert.deepEqual(registrationAuthority.exact_held_ambiguous_ordinals, []);
+  assert.deepEqual(
+    registrationAuthority.exact_mapped_without_predecessor_grouping_stamp_ordinals,
+    [],
+  );
+  assert.equal(registrationAuthority.production_activation_permitted, false);
+  assert.deepEqual(registrationAuthority.zero_effect_boundary, {
+    database_write_count: 0,
+    product_write_count: 0,
+    serving_change_count: 0,
+  });
+  assert.equal(applicationReceipt.grouping_stamp_clearance_count, PROFILE_COUNT);
+  assert.equal(applicationReceipt.held_ambiguous_count, 0);
+  assert.equal(applicationReceipt.independent_review_state, 'PENDING');
+  assert.equal(applicationReceipt.row_applications.length, PROFILE_COUNT);
+  assert.equal(applicationReceipt.stamp_cleared, true);
+
+  for (const row of disposition.profile_dispositions) {
+    const predecessorRow = predecessorDisposition.profile_dispositions.find(
+      (candidate) => candidate.ordinal === row.ordinal
+        && candidate.proposed_profile_key === row.proposed_profile_key,
+    );
+    assert.ok(predecessorRow, `missing predecessor row ${row.ordinal}`);
+    assert.deepEqual(row.prior_review_flags_acknowledged,
+      predecessorRow.review_flags_acknowledged);
+    assert.deepEqual(
+      row.review_flags_acknowledged,
+      predecessorRow.review_flags_acknowledged.filter(
+        (flag) => flag !== FLAGS.LEGAL_GROUPING,
+      ),
+    );
+    assert.deepEqual(
+      predecessorRow.review_flags_acknowledged.filter(
+        (flag) => !row.review_flags_acknowledged.includes(flag),
+      ),
+      [FLAGS.LEGAL_GROUPING],
+    );
+    const receiptRow = applicationReceipt.row_applications.find(
+      (candidate) => candidate.ordinal === row.ordinal,
+    );
+    assert.deepEqual(receiptRow.prior_review_flags_acknowledged,
+      row.prior_review_flags_acknowledged);
+    assert.deepEqual(receiptRow.after_review_flags_acknowledged,
+      row.review_flags_acknowledged);
+    assert.deepEqual(receiptRow.grouping_ruling_application,
+      row.grouping_ruling_application);
+  }
+
   const encoded = readFileSync(join(REPO_ROOT, LAWFUL_WORK3_FIXTURE_PATH), 'utf8').trim();
   const fixture = JSON.parse(
     gunzipSync(Buffer.from(encoded, 'base64')).toString('utf8'),
@@ -658,12 +866,5 @@ test('lawful Work3 fixture INTERIM_OPERATING on-disk override tracks the sealed 
     (entry) => entry.family_key === 'INTERIM_OPERATING',
   );
   assert.ok(override, 'lawful Work3 fixture has no INTERIM_OPERATING on-disk override');
-  assert.equal(override.binding.path, FAMILY_PROFILE_PACKAGE_BINDING.path);
-  for (const field of ['byte_length', 'record_id', 'schema_version', 'sha256']) {
-    assert.equal(
-      override.binding[field],
-      FAMILY_PROFILE_PACKAGE_BINDING[field],
-      `lawful Work3 fixture override ${field} is stale`,
-    );
-  }
+  assert.deepEqual(override.binding, GROUPING_SUCCESSOR_BINDINGS.package);
 });
