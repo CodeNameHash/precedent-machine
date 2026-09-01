@@ -9361,15 +9361,14 @@ test('Work3 manifest contract lawful fixture binds on-disk Milestone A family pa
     assert.equal(source.binding.sha256, sha256Hex(diskBytes));
     assert.equal(source.record.profiles.length, expectation.profileCount);
   }
-  // ANTITRUST_REGULATORY is sealed on disk but stays synthetic in the set: the
-  // template makes its single synthetic profile every other family's
-  // WRONG_FAMILY witness, so swapping it in would strand the families that are
-  // not sealed yet. The helper withholds that override until they are.
+  // ANTITRUST_REGULATORY stays synthetic because remaining synthetic witnesses
+  // still depend on its synthetic profile. The helper withholds the override
+  // until replacing it is dependency-safe.
   const antitrust = fixture.familyPackageSources.find(
     (entry) => entry.record.family_key === 'ANTITRUST_REGULATORY',
   );
   assert.equal(antitrust.record.profiles.length, 1);
-  assert.equal(fixture.profileSetSource.record.profiles.length, 372);
+  assert.equal(fixture.profileSetSource.record.profiles.length, 1308);
   assert.equal(fixture.familyPackageSources.length, 25);
 });
 
