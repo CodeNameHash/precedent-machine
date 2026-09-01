@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { execFileSync } = require('node:child_process');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -23,6 +24,13 @@ const RECEIPT_PATH = `${RECEIPT_ROOT}/stage-2y-structure-m7-v2-repair-evidence-r
 const FINALISER_PATH = 'scripts/stage-2y-structure-m7-v2-repair-work0-finalise.mjs';
 const VALIDATOR_PATH = 'scripts/stage-2y-structure-m7-v2-repair-work0-validate.mjs';
 const TEST_PATH = 'tests/stage-2y-structure-m7-v2-repair-work0.test.js';
+const WORK1_7_AUTHORITY_PATH = `${CONTROL_ROOT}/m7-v2-repair-work1-7-authority.json`;
+const WORK1_CORRECTION_AUTHORITY_PATH =
+  `${CONTROL_ROOT}/m7-v2-repair-contract-work1-correction-authority.json`;
+const LATER_AUTHORITY_PATHS = [
+  WORK1_CORRECTION_AUTHORITY_PATH,
+  WORK1_7_AUTHORITY_PATH,
+];
 
 const RECORD_SPECS = [
   {
@@ -134,10 +142,21 @@ function assertBindingMatchesFile(binding) {
   assert.equal(binding.git_blob_oid, gitBlobOid(bytes), `${binding.path} Git blob OID`);
 }
 
-function assertErrorCode(action, ErrorClass, code, label) {
+function assertBindingMatchesPinnedBlob(binding) {
+  const bytes = execFileSync('git', ['cat-file', 'blob', binding.git_blob_oid], {
+    cwd: ROOT,
+    encoding: null,
+  });
+  assert.equal(binding.byte_length, bytes.length, `${binding.path} pinned byte length`);
+  assert.equal(binding.sha256, sha256Hex(bytes), `${binding.path} pinned SHA-256`);
+  assert.equal(binding.git_blob_oid, gitBlobOid(bytes), `${binding.path} pinned Git blob OID`);
+}
+
+function assertErrorCode(action, ErrorClass, code, label, messagePattern = null) {
   assert.throws(action, (error) => {
     assert.ok(error instanceof ErrorClass, `${label}: public error class`);
     assert.equal(error.code, code, `${label}: stable error code`);
+    if (messagePattern) assert.match(error.message, messagePattern, `${label}: failure detail`);
     return true;
   }, label);
 }
@@ -225,9 +244,13 @@ test('M7 V2 repair Work 0 freezes evidence without running semantic code', async
       assert.equal(authority.next_authority_requirement.state, 'REQUIRED_BEFORE_WORK1');
       assert.ok(authority.permitted_commit_paths.every((entry) => !/work(?:1|1-7)|m8/i.test(entry)));
       assert.ok(authority.permitted_commit_paths.every((entry) => !/stage-2y-structure-m[0-4]/i.test(entry)));
-      assert.ok(fs.readdirSync(absolute(CONTROL_ROOT)).every((entry) => (
-        !/m7-v2-repair.*work(?:1|1-7).*authority/i.test(entry)
-      )));
+      assert.deepEqual(
+        fs.readdirSync(absolute(CONTROL_ROOT))
+          .filter((entry) => /m7-v2-repair.*work(?:1|1-7).*authority/i.test(entry))
+          .map((entry) => `${CONTROL_ROOT}/${entry}`)
+          .sort(),
+        [...LATER_AUTHORITY_PATHS].sort(),
+      );
       assert.ok(authority.prohibitions.includes('NO_M0_M4_BYTE_CHANGES'));
       assert.ok(authority.prohibitions.includes('NO_V1_SEMANTIC_ADMISSION'));
       assert.ok(authority.prohibitions.includes('NO_WORK1_7'));
@@ -618,7 +641,7 @@ test('M7 V2 repair Work 0 freezes evidence without running semantic code', async
       assert.equal(Object.hasOwn(receipt, 'receipt_self_binding'), false);
       assert.equal(Object.hasOwn(receipt, 'sha256'), false);
       assert.equal(Object.hasOwn(receipt, 'git_blob_oid'), false);
-      for (const binding of receipt.snapshot_bindings) assertBindingMatchesFile(binding);
+      for (const binding of receipt.snapshot_bindings) assertBindingMatchesPinnedBlob(binding);
       for (const binding of receipt.work0_record_bindings) assertBindingMatchesFile(binding);
 
       const expectedIndexBindings = receipt.snapshot_bindings.map((binding) => ({
@@ -675,45 +698,172 @@ test('M7 V2 repair Work 0 freezes evidence without running semantic code', async
       );
 
       const receiptBytes = Buffer.from(`${canonicalJson(receipt)}\n`, 'utf8');
+      const exactLaterAuthorityRecords = LATER_AUTHORITY_PATHS.map((authorityPath) => ({
+        path: authorityPath,
+        bytes: fs.readFileSync(absolute(authorityPath)),
+      }));
       assert.equal(validator.validateLaterAuthority({
-        authorityRecords: [],
+        authorityRecords: exactLaterAuthorityRecords,
         receipt,
         receiptBytes,
       }), true);
-      const exactLaterAuthority = {
-        schema_version: 'TEST_WORK1_7_AUTHORITY/V1',
-        authority_id: 'fixture',
-        work0_evidence_root_binding: {
-          path: RECEIPT_PATH,
-          schema_version: receipt.schema_version,
-          evidence_root_id: receipt.evidence_root_id,
-          byte_length: receiptBytes.length,
-          sha256: sha256Hex(receiptBytes),
-        },
-      };
-      const laterAuthorityPath = `${CONTROL_ROOT}/m7-v2-repair-work1-7-authority.json`;
       assert.equal(validator.validateLaterAuthority({
-        authorityRecords: [{
-          path: laterAuthorityPath,
-          bytes: Buffer.from(`${canonicalJson(exactLaterAuthority)}\n`, 'utf8'),
-        }],
+        authorityRecords: [...exactLaterAuthorityRecords].reverse(),
         receipt,
         receiptBytes,
       }), true);
-      const wrongLaterAuthority = clone(exactLaterAuthority);
+
+      for (const omittedPath of [null, ...LATER_AUTHORITY_PATHS]) {
+        assertErrorCode(
+          () => validator.validateLaterAuthority({
+            authorityRecords: omittedPath === null
+              ? []
+              : exactLaterAuthorityRecords.filter(({ path: authorityPath }) => (
+                authorityPath !== omittedPath
+              )),
+            receipt,
+            receiptBytes,
+          }),
+          validator.Work0ValidationError,
+          'LATER_AUTHORITY_DRIFT',
+          `later authority omission ${omittedPath ?? 'all'}`,
+        );
+      }
+
+      const wrongLaterAuthority = readJson(WORK1_7_AUTHORITY_PATH);
       wrongLaterAuthority.work0_evidence_root_binding.evidence_root_id = '0'.repeat(64);
+      const wrongLaterUnsigned = clone(wrongLaterAuthority);
+      delete wrongLaterUnsigned.authority_digest;
+      delete wrongLaterUnsigned.authority_id;
+      wrongLaterAuthority.authority_digest = sha256Hex(canonicalJson(wrongLaterUnsigned));
+      wrongLaterAuthority.authority_id = contentId(wrongLaterAuthority.schema_version, {
+        ...wrongLaterUnsigned,
+        authority_digest: wrongLaterAuthority.authority_digest,
+      });
       assertErrorCode(
         () => validator.validateLaterAuthority({
-          authorityRecords: [{
-            path: laterAuthorityPath,
-            bytes: Buffer.from(`${canonicalJson(wrongLaterAuthority)}\n`, 'utf8'),
-          }],
+          authorityRecords: exactLaterAuthorityRecords.map((authorityRecord) => (
+            authorityRecord.path === WORK1_7_AUTHORITY_PATH
+              ? {
+                path: WORK1_7_AUTHORITY_PATH,
+                bytes: Buffer.from(`${canonicalJson(wrongLaterAuthority)}\n`, 'utf8'),
+              }
+              : authorityRecord
+          )),
           receipt,
           receiptBytes,
         }),
         validator.Work0ValidationError,
         'LATER_AUTHORITY_DRIFT',
         'later authority evidence-root drift',
+        /work0 evidence-root binding/,
+      );
+
+      const wrongCorrectionAuthority = readJson(WORK1_CORRECTION_AUTHORITY_PATH);
+      wrongCorrectionAuthority.parent_authority_binding.record_id = '0'.repeat(64);
+      wrongCorrectionAuthority.correction_authority_id = contentId(
+        wrongCorrectionAuthority.schema_version,
+        without(wrongCorrectionAuthority, 'correction_authority_id'),
+      );
+      assertErrorCode(
+        () => validator.validateLaterAuthority({
+          authorityRecords: [
+            exactLaterAuthorityRecords.find(({ path: authorityPath }) => (
+              authorityPath === WORK1_7_AUTHORITY_PATH
+            )),
+            {
+              path: WORK1_CORRECTION_AUTHORITY_PATH,
+              bytes: Buffer.from(`${canonicalJson(wrongCorrectionAuthority)}\n`, 'utf8'),
+            },
+          ],
+          receipt,
+          receiptBytes,
+        }),
+        validator.Work0ValidationError,
+        'LATER_AUTHORITY_DRIFT',
+        'later correction authority parent drift',
+        /later correction parent authority binding/,
+      );
+
+      const substitutePrimaryAuthority = readJson(WORK1_7_AUTHORITY_PATH);
+      substitutePrimaryAuthority.rollback.before_commit =
+        'REMOVE_ONLY_UNCOMMITTED_OUTPUTS_IN_CURRENT_WORK_EXACT_DELTA_TEST_SUBSTITUTION';
+      const substitutePrimaryUnsigned = clone(substitutePrimaryAuthority);
+      delete substitutePrimaryUnsigned.authority_digest;
+      delete substitutePrimaryUnsigned.authority_id;
+      substitutePrimaryAuthority.authority_digest = sha256Hex(canonicalJson(substitutePrimaryUnsigned));
+      substitutePrimaryAuthority.authority_id = contentId(substitutePrimaryAuthority.schema_version, {
+        ...substitutePrimaryUnsigned,
+        authority_digest: substitutePrimaryAuthority.authority_digest,
+      });
+      const substitutePrimaryBytes = Buffer.from(
+        `${canonicalJson(substitutePrimaryAuthority)}\n`,
+        'utf8',
+      );
+      const substituteCorrectionAuthority = readJson(WORK1_CORRECTION_AUTHORITY_PATH);
+      substituteCorrectionAuthority.parent_authority_binding.record_id =
+        substitutePrimaryAuthority.authority_id;
+      substituteCorrectionAuthority.parent_authority_binding.byte_length =
+        substitutePrimaryBytes.length;
+      substituteCorrectionAuthority.parent_authority_binding.sha256 =
+        sha256Hex(substitutePrimaryBytes);
+      substituteCorrectionAuthority.parent_authority_binding.git_blob_oid =
+        gitBlobOid(substitutePrimaryBytes);
+      substituteCorrectionAuthority.correction_authority_id = contentId(
+        substituteCorrectionAuthority.schema_version,
+        without(substituteCorrectionAuthority, 'correction_authority_id'),
+      );
+      const substituteCorrectionBytes = Buffer.from(
+        `${canonicalJson(substituteCorrectionAuthority)}\n`,
+        'utf8',
+      );
+      assertErrorCode(
+        () => validator.validateLaterAuthority({
+          authorityRecords: [
+            { path: WORK1_7_AUTHORITY_PATH, bytes: substitutePrimaryBytes },
+            { path: WORK1_CORRECTION_AUTHORITY_PATH, bytes: substituteCorrectionBytes },
+          ],
+          receipt,
+          receiptBytes,
+        }),
+        validator.Work0ValidationError,
+        'LATER_AUTHORITY_DRIFT',
+        'self-consistent later authority byte substitution',
+        /exact authority pin drift/,
+      );
+      assertErrorCode(
+        () => validator.validateLaterAuthority({
+          authorityRecords: [
+            exactLaterAuthorityRecords[0],
+            exactLaterAuthorityRecords[0],
+          ],
+          receipt,
+          receiptBytes,
+        }),
+        validator.Work0ValidationError,
+        'LATER_AUTHORITY_DRIFT',
+        'duplicate later authority',
+      );
+      assertErrorCode(
+        () => validator.validateLaterAuthority({
+          authorityRecords: [
+            exactLaterAuthorityRecords.find(({ path: authorityPath }) => (
+              authorityPath === WORK1_7_AUTHORITY_PATH
+            )),
+            {
+              path: `${CONTROL_ROOT}/m7-v2-repair-work1-unexpected-authority.json`,
+              bytes: exactLaterAuthorityRecords.find(({ path: authorityPath }) => (
+                authorityPath === WORK1_CORRECTION_AUTHORITY_PATH
+              )).bytes,
+            },
+          ],
+          receipt,
+          receiptBytes,
+        }),
+        validator.Work0ValidationError,
+        'LATER_AUTHORITY_DRIFT',
+        'unexpected later authority',
+        /invalid, duplicate or unexpected later authority/,
       );
     });
 

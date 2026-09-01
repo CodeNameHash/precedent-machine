@@ -52,6 +52,36 @@ const RULING_MAP_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_CALIBRATION_QUESTION_RULING_MAP
 const SUPERSESSION_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_LEGACY_OUTPUT_SUPERSESSION_LEDGER/V1';
 const RECEIPT_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_EVIDENCE_ROOT_RECEIPT/V1';
 const LATER_AUTHORITY_PATH_PATTERN = /m7-v2-repair.*work(?:1-7|1)(?:[^0-9]|$).*authority/i;
+const WORK1_7_AUTHORITY_PATH =
+  `${MIGRATION_ROOT}/control/m7-v2-repair-work1-7-authority.json`;
+const WORK1_CORRECTION_AUTHORITY_PATH =
+  `${MIGRATION_ROOT}/control/m7-v2-repair-contract-work1-correction-authority.json`;
+const WORK1_7_AUTHORITY_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK1_7_AUTHORITY/V1';
+const WORK1_CORRECTION_AUTHORITY_SCHEMA =
+  'STAGE_2Y_M7_V2_REPAIR_WORK1_CORRECTION_AUTHORITY/V1';
+const LATER_AUTHORITY_SPECS = Object.freeze({
+  [WORK1_7_AUTHORITY_PATH]: Object.freeze({
+    schema_version: WORK1_7_AUTHORITY_SCHEMA,
+    id_field: 'authority_id',
+    record_id: 'ba63c1e57e5eb486e666e31e193a1dc21cf24f7a3918eace0ae6a6949f9359f7',
+    digest_field: 'authority_digest',
+    record_digest: '25ac58d418638432586a5cb24c1cfb766ba1440b77d992afc434ed71d1055afc',
+    byte_length: 29144,
+    sha256: '7e858b96fc46a69d7533e8b5ac3cad4a6142c2f30fd71ecfbd8771709e0cdd3c',
+    git_blob_oid: 'ad704dfffda9d39530b5caac6a8a3a422feb47fe',
+  }),
+  [WORK1_CORRECTION_AUTHORITY_PATH]: Object.freeze({
+    schema_version: WORK1_CORRECTION_AUTHORITY_SCHEMA,
+    id_field: 'correction_authority_id',
+    record_id: '5cbceccf61729011642d4a6dba508809ebfdd721dad1d26d0a4e7d7262f29d0d',
+    digest_field: null,
+    record_digest: null,
+    byte_length: 7378,
+    sha256: 'af9e900dad1973b61d1144a632667ed88fc00d8d233fedd3552880f3d9fd6c2d',
+    git_blob_oid: 'f8468d0caed23881ba599a70d5fa8e6a2923303e',
+  }),
+});
+const LATER_AUTHORITY_PATHS = Object.freeze(Object.keys(LATER_AUTHORITY_SPECS).sort());
 
 const EXPECTED_MANIFEST = Object.freeze({
   byte_length: 40307,
@@ -530,25 +560,50 @@ export function validateLaterAuthority({ authorityRecords, receipt, receiptBytes
     || !Buffer.isBuffer(receiptBytes)) {
     fail('INVALID_OPTIONS', 'validateLaterAuthority options');
   }
-  if (authorityRecords.length === 0) return true;
-  if (authorityRecords.length !== 1) {
-    fail('LATER_AUTHORITY_DRIFT', 'expected at most one later Work 1-7 authority');
+  if (authorityRecords.length !== LATER_AUTHORITY_PATHS.length) {
+    fail('LATER_AUTHORITY_DRIFT', 'expected exact later Work 1-7 authority set');
   }
-  const authorityRecord = authorityRecords[0];
-  exactKeys(authorityRecord, ['path', 'bytes'], 'LATER_AUTHORITY_DRIFT', 'later authority input');
-  if (typeof authorityRecord.path !== 'string' || !Buffer.isBuffer(authorityRecord.bytes)
-    || !LATER_AUTHORITY_PATH_PATTERN.test(authorityRecord.path)) {
-    fail('LATER_AUTHORITY_DRIFT', 'invalid later authority path or bytes');
+  const authoritiesByPath = new Map();
+  for (const authorityRecord of authorityRecords) {
+    exactKeys(
+      authorityRecord,
+      ['path', 'bytes'],
+      'LATER_AUTHORITY_DRIFT',
+      'later authority input',
+    );
+    if (typeof authorityRecord.path !== 'string'
+      || !Buffer.isBuffer(authorityRecord.bytes)
+      || !LATER_AUTHORITY_PATHS.includes(authorityRecord.path)
+      || authoritiesByPath.has(authorityRecord.path)) {
+      fail('LATER_AUTHORITY_DRIFT', 'invalid, duplicate or unexpected later authority');
+    }
+    const authority = parseJsonBytes(
+      authorityRecord.bytes,
+      'LATER_AUTHORITY_DRIFT',
+      authorityRecord.path,
+    );
+    if (!authorityRecord.bytes.equals(canonicalRecordBytes(authority))) {
+      fail('LATER_AUTHORITY_DRIFT', `${authorityRecord.path}: noncanonical JSON`);
+    }
+    authoritiesByPath.set(authorityRecord.path, { authority, bytes: authorityRecord.bytes });
   }
-  const authority = parseJsonBytes(
-    authorityRecord.bytes,
-    'LATER_AUTHORITY_DRIFT',
-    authorityRecord.path,
+
+  const actualPaths = [...authoritiesByPath.keys()].sort();
+  same(actualPaths, LATER_AUTHORITY_PATHS, 'LATER_AUTHORITY_DRIFT', 'later authority path set');
+  const primaryRecord = authoritiesByPath.get(WORK1_7_AUTHORITY_PATH);
+  const correctionRecord = authoritiesByPath.get(WORK1_CORRECTION_AUTHORITY_PATH);
+  const { authority: primaryAuthority, bytes: primaryBytes } = primaryRecord;
+  const primaryIdentity = digestAndId(
+    primaryAuthority,
+    'authority_digest',
+    'authority_id',
   );
-  if (!authorityRecord.bytes.equals(canonicalRecordBytes(authority))) {
-    fail('LATER_AUTHORITY_DRIFT', `${authorityRecord.path}: noncanonical JSON`);
+  if (primaryAuthority.schema_version !== WORK1_7_AUTHORITY_SCHEMA
+    || primaryAuthority.authority_digest !== primaryIdentity.digest
+    || primaryAuthority.authority_id !== primaryIdentity.id) {
+    fail('LATER_AUTHORITY_DRIFT', 'primary later authority identity drift');
   }
-  const binding = authority.work0_evidence_root_binding;
+  const binding = primaryAuthority.work0_evidence_root_binding;
   exactKeys(binding, [
     'path',
     'schema_version',
@@ -563,6 +618,45 @@ export function validateLaterAuthority({ authorityRecords, receipt, receiptBytes
     byte_length: receiptBytes.length,
     sha256: sha256Hex(receiptBytes),
   }, 'LATER_AUTHORITY_DRIFT', 'work0 evidence-root binding');
+
+  const { authority: correctionAuthority } = correctionRecord;
+  if (correctionAuthority.schema_version !== WORK1_CORRECTION_AUTHORITY_SCHEMA
+    || correctionAuthority.correction_authority_id
+      !== simpleRecordId(correctionAuthority, 'correction_authority_id')) {
+    fail('LATER_AUTHORITY_DRIFT', 'later correction authority identity drift');
+  }
+  const parentBinding = correctionAuthority.parent_authority_binding;
+  exactKeys(parentBinding, [
+    'path',
+    'schema_version',
+    'record_id_field',
+    'record_id',
+    'byte_length',
+    'sha256',
+    'git_blob_oid',
+  ], 'LATER_AUTHORITY_DRIFT', 'later correction parent authority binding');
+  same(parentBinding, {
+    path: WORK1_7_AUTHORITY_PATH,
+    schema_version: WORK1_7_AUTHORITY_SCHEMA,
+    record_id_field: 'authority_id',
+    record_id: primaryAuthority.authority_id,
+    byte_length: primaryBytes.length,
+    sha256: sha256Hex(primaryBytes),
+    git_blob_oid: gitBlobOid(primaryBytes, 'sha1'),
+  }, 'LATER_AUTHORITY_DRIFT', 'later correction parent authority binding');
+
+  for (const [repositoryPath, { authority, bytes }] of authoritiesByPath) {
+    const spec = LATER_AUTHORITY_SPECS[repositoryPath];
+    if (authority.schema_version !== spec.schema_version
+      || authority[spec.id_field] !== spec.record_id
+      || (spec.digest_field !== null
+        && authority[spec.digest_field] !== spec.record_digest)
+      || bytes.length !== spec.byte_length
+      || sha256Hex(bytes) !== spec.sha256
+      || gitBlobOid(bytes, 'sha1') !== spec.git_blob_oid) {
+      fail('LATER_AUTHORITY_DRIFT', `${repositoryPath}: exact authority pin drift`);
+    }
+  }
   return true;
 }
 
