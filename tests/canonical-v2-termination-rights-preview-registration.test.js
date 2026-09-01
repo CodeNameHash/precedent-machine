@@ -16,7 +16,16 @@ const {
   CANONICAL_TERMINATION_RIGHTS_REVIEW_STATE,
   CANONICAL_V2_TERMINATION_RIGHTS_REVIEW_SERVING_ENV_KEY,
   CANONICAL_V2_TERMINATION_RIGHTS_REVIEW_SERVING_ENABLED_VALUE,
+  CONCHO_DEAL_ID,
+  METSERA_DEAL_ID,
+  METSERA_OUTSIDE_DATE_PROFILE_KEY,
+  PREVIEW_TERMINATION_DEAL_IDS,
+  RED_HAT_BREACH_PROFILE_KEY,
   RED_HAT_DEAL_ID,
+  RED_HAT_OUTSIDE_DATE_PROFILE_KEY,
+  SKECHERS_DEAL_ID,
+  SKECHERS_OUTSIDE_DATE_PROFILE_KEY,
+  SKYWATER_DEAL_ID,
   createCanonicalTerminationRightsReviewAttacher,
   isCanonicalV2TerminationRightsReviewServingEnabled,
 } = require('../lib/canonical-v2/termination-rights-review-serving-source');
@@ -188,20 +197,30 @@ test('registration contract: V2 attachment suppresses legacy TERMR family groups
   );
 });
 
-test('serving-source registry registers IBM / Red Hat with empty transient state', () => {
-  assert.equal(
-    Object.prototype.hasOwnProperty.call(CANONICAL_TERMINATION_RIGHTS_REVIEW_SOURCES, RED_HAT_DEAL_ID),
-    true,
-  );
-  assert.equal(
-    typeof CANONICAL_TERMINATION_RIGHTS_REVIEW_SOURCES[RED_HAT_DEAL_ID],
-    'function',
-  );
-  assert.deepEqual(CANONICAL_TERMINATION_RIGHTS_REVIEW_STATE[RED_HAT_DEAL_ID], {
-    open_review_keys: [],
-    prompts: [],
-    fact_groups: [],
-  });
+test('serving-source registry registers five env-gated preview deals', () => {
+  const expectedDealIds = [
+    RED_HAT_DEAL_ID,
+    METSERA_DEAL_ID,
+    SKECHERS_DEAL_ID,
+    SKYWATER_DEAL_ID,
+    CONCHO_DEAL_ID,
+  ];
+  assert.deepEqual(PREVIEW_TERMINATION_DEAL_IDS, expectedDealIds);
+  for (const dealId of expectedDealIds) {
+    assert.equal(
+      Object.prototype.hasOwnProperty.call(CANONICAL_TERMINATION_RIGHTS_REVIEW_SOURCES, dealId),
+      true,
+    );
+    assert.equal(
+      typeof CANONICAL_TERMINATION_RIGHTS_REVIEW_SOURCES[dealId],
+      'function',
+    );
+    assert.deepEqual(CANONICAL_TERMINATION_RIGHTS_REVIEW_STATE[dealId], {
+      open_review_keys: [],
+      prompts: [],
+      fact_groups: [],
+    });
+  }
 });
 
 test('the real export is an exact no-op when the preview serving gate is off', async () => {
@@ -235,6 +254,94 @@ test('Red Hat preview rows render through the V2 review group builder', async ()
   assert.ok(propositionGroup);
   assert.equal(propositionGroup.rows.length, 1);
   assert.equal(propositionGroup.rows[0].label, 'Legal restraint right');
+});
+
+test('Metsera preview rows render through the V2 review group builder', async () => {
+  const { buildTerminationRightsReviewGroups } = await import(
+    '../components/review/table-configs/termination-rights-review-groups.js'
+  );
+  const env = {
+    [PLANNED_SERVING_ENV_KEY]: PLANNED_SERVING_ENABLED_VALUE,
+    VERCEL_ENV: 'preview',
+  };
+  const attached = await attachCanonicalTerminationRightsReview(
+    { dealId: METSERA_DEAL_ID, cards: [] },
+    { env },
+  );
+  const groups = buildTerminationRightsReviewGroups(attached);
+  const propositionGroup = groups.find(
+    (group) => group?.id === 'canonical-v2-termination-right-propositions',
+  );
+  assert.ok(propositionGroup);
+  assert.equal(propositionGroup.rows.length, 1);
+  assert.equal(propositionGroup.rows[0].label, 'Outside date right');
+  assert.equal(
+    attached.canonical_v2_termination_rights_review_rows.rows[0].profile_key,
+    METSERA_OUTSIDE_DATE_PROFILE_KEY,
+  );
+});
+
+test('Skechers preview bridge renders the approved outside-date partial profile', async () => {
+  const { buildTerminationRightsReviewGroups } = await import(
+    '../components/review/table-configs/termination-rights-review-groups.js'
+  );
+  const env = previewEnv();
+  const attached = await attachCanonicalTerminationRightsReview(
+    { dealId: SKECHERS_DEAL_ID, cards: [] },
+    { env },
+  );
+  const groups = buildTerminationRightsReviewGroups(attached);
+  const propositionGroup = groups.find(
+    (group) => group?.id === 'canonical-v2-termination-right-propositions',
+  );
+  assert.ok(propositionGroup);
+  assert.equal(propositionGroup.rows[0].label, 'Outside date right');
+  assert.equal(
+    attached.canonical_v2_termination_rights_review_rows.rows[0].profile_key,
+    SKECHERS_OUTSIDE_DATE_PROFILE_KEY,
+  );
+});
+
+test('SkyWater preview bridge renders the Red Hat outside-date partial profile', async () => {
+  const { buildTerminationRightsReviewGroups } = await import(
+    '../components/review/table-configs/termination-rights-review-groups.js'
+  );
+  const env = previewEnv();
+  const attached = await attachCanonicalTerminationRightsReview(
+    { dealId: SKYWATER_DEAL_ID, cards: [] },
+    { env },
+  );
+  const groups = buildTerminationRightsReviewGroups(attached);
+  const propositionGroup = groups.find(
+    (group) => group?.id === 'canonical-v2-termination-right-propositions',
+  );
+  assert.ok(propositionGroup);
+  assert.equal(propositionGroup.rows[0].label, 'Outside date right');
+  assert.equal(
+    attached.canonical_v2_termination_rights_review_rows.rows[0].profile_key,
+    RED_HAT_OUTSIDE_DATE_PROFILE_KEY,
+  );
+});
+
+test('Concho preview bridge renders the Red Hat breach profile', async () => {
+  const { buildTerminationRightsReviewGroups } = await import(
+    '../components/review/table-configs/termination-rights-review-groups.js'
+  );
+  const env = previewEnv();
+  const attached = await attachCanonicalTerminationRightsReview(
+    { dealId: CONCHO_DEAL_ID, cards: [] },
+    { env },
+  );
+  const groups = buildTerminationRightsReviewGroups(attached);
+  const propositionGroup = groups.find(
+    (group) => group?.id === 'canonical-v2-termination-right-propositions',
+  );
+  assert.ok(propositionGroup);
+  assert.equal(propositionGroup.rows[0].label, 'Breach right');
+  assert.equal(
+    attached.canonical_v2_termination_rights_review_rows.rows[0].profile_key,
+    RED_HAT_BREACH_PROFILE_KEY,
+  );
 });
 
 test('Red Hat preview rows appear in the Termination Rights section selectRows', async () => {

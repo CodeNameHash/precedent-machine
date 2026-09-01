@@ -2287,7 +2287,7 @@ function writeLawfulRichWork3Predecessor({
   familyApprovalMode = 'VALID',
   authorityBindingMode = 'VALID',
 }) {
-  const lawful = buildLawfulWork3FamilyPackageSetFixture();
+  const lawful = buildLawfulWork3FamilyPackageSetFixture({ useOnDiskFamilyPackages: false });
   for (const [repositoryPath, bytes] of lawful.filesByPath) {
     writeBytes(fixture.root, repositoryPath, bytes);
   }

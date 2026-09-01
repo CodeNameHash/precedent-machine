@@ -629,7 +629,7 @@ function makeBaseFixture(t, work2Template) {
 function makeRichWork3Fixture(t, work2Template) {
   const fixture = makeBaseFixture(t, work2Template);
   const { root, specification } = fixture;
-  const lawful = buildLawfulWork3FamilyPackageSetFixture();
+  const lawful = buildLawfulWork3FamilyPackageSetFixture({ useOnDiskFamilyPackages: false });
   for (const [repositoryPath, bytes] of lawful.filesByPath) {
     write(root, repositoryPath, bytes);
   }

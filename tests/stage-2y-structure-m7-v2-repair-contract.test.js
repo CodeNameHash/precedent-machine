@@ -9307,8 +9307,74 @@ test(publicById.get('profile-set-owns-all-subtype-trees-and-dimension-evidence')
   ), true);
 });
 
+test('Work3 manifest contract lawful fixture binds on-disk Milestone A family packages', () => {
+  const fixture = buildLawfulWork3FamilyPackageSetFixture({ useOnDiskFamilyPackages: true });
+  const onDiskExpectations = {
+    TERMINATION: {
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-termination.json',
+      profileCount: 45,
+    },
+    MAE_DEFINITION: {
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-mae-definition.json',
+      profileCount: 4,
+    },
+    DNO_INDEMNIFICATION: {
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-dno-indemnification.json',
+      profileCount: 31,
+    },
+    GENERAL_COVENANTS: {
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-general-covenants.json',
+      profileCount: 54,
+    },
+    GUARANTY_FINANCING_PARTY: {
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-guaranty-financing-party.json',
+      profileCount: 5,
+    },
+    CLOSING_CONDITIONS: {
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-closing-conditions.json',
+      profileCount: 57,
+    },
+    REPRESENTATIONS: {
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-representations.json',
+      profileCount: 70,
+    },
+    FINANCING_COVENANTS: {
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-financing-covenants.json',
+      profileCount: 5,
+    },
+    TERMINATION_FEE: {
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-termination-fee.json',
+      profileCount: 20,
+    },
+    NO_OTHER_REPS_FRAUD: {
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-no-other-reps-fraud.json',
+      profileCount: 36,
+    },
+  };
+  for (const [familyKey, expectation] of Object.entries(onDiskExpectations)) {
+    const source = fixture.familyPackageSources.find(
+      (entry) => entry.record.family_key === familyKey,
+    );
+    const diskBytes = readFileSync(join(__dirname, '..', expectation.path));
+    assert.deepEqual(source.bytes, diskBytes);
+    assert.equal(source.binding.path, expectation.path);
+    assert.equal(source.binding.sha256, sha256Hex(diskBytes));
+    assert.equal(source.record.profiles.length, expectation.profileCount);
+  }
+  // ANTITRUST_REGULATORY is sealed on disk but stays synthetic in the set: the
+  // template makes its single synthetic profile every other family's
+  // WRONG_FAMILY witness, so swapping it in would strand the families that are
+  // not sealed yet. The helper withholds that override until they are.
+  const antitrust = fixture.familyPackageSources.find(
+    (entry) => entry.record.family_key === 'ANTITRUST_REGULATORY',
+  );
+  assert.equal(antitrust.record.profiles.length, 1);
+  assert.equal(fixture.profileSetSource.record.profiles.length, 372);
+  assert.equal(fixture.familyPackageSources.length, 25);
+});
+
 test('shared Work3 family-package validator closes the exact approved set', () => {
-  const fixture = buildLawfulWork3FamilyPackageSetFixture();
+  const fixture = buildLawfulWork3FamilyPackageSetFixture({ useOnDiskFamilyPackages: false });
   const input = fixture.validationInput;
   assert.deepEqual(fixture.authoritySource.record, WORK3_ENTRY_CORRECTION_AUTHORITY);
   assert.deepEqual(
@@ -9334,7 +9400,7 @@ test('shared Work3 family-package validator closes the exact approved set', () =
 });
 
 test('single-family inventory validation proves exact members without creating approval', () => {
-  const fixture = buildLawfulWork3FamilyPackageSetFixture();
+  const fixture = buildLawfulWork3FamilyPackageSetFixture({ useOnDiskFamilyPackages: true });
   const packageRecord = fixture.familyPackageSources.find(
     (source) => source.record.family_key === 'TERMINATION',
   ).record;

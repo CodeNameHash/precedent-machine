@@ -83,6 +83,13 @@ function byId(rows) {
   return map;
 }
 
+function canonicalV2OwnsSuperiorProposalRight(reviewDeal) {
+  const reviewRows = reviewDeal?.canonical_v2_termination_rights_review_rows;
+  return reviewRows?.schema_version === 'TERMINATION_RIGHTS_REVIEW_ROWS/V2'
+    && Array.isArray(reviewRows.rows)
+    && reviewRows.rows.some((row) => row?.subtype_key === 'SUPERIOR_PROPOSAL_RIGHT');
+}
+
 // ── WS-G reading order: no-shop core mechanics -> fiduciary-out/engagement ->
 // Acquisition Proposal definition (spliced in by buildGroups(), see below) ->
 // notice -> matching -> superior -> intervening -> change-of-rec.
@@ -573,9 +580,13 @@ function buildGroups(reviewDeal, ctx) {
   for (const key of Object.keys(SOURCES)) {
     rowsBySource[key] = byId(SOURCES[key].config.selectRows(reviewDeal));
   }
+  const suppressSuperiorTermination = canonicalV2OwnsSuperiorProposalRight(reviewDeal);
   const groups = GROUP_DEFS.map((group) => {
     const rows = group.items
       .map((item) => {
+        if (suppressSuperiorTermination
+            && item.source === 'superior'
+            && item.id === 'nosol-superior-termination') return null;
         const row = rowsBySource[item.source]?.get(item.id);
         if (!row) return null;
         const node = ctx ? rowNode(row, ctx, SOURCES[item.source]) : null;
