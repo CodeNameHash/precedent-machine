@@ -735,6 +735,13 @@ Large WIP on branch — Termination + MAE + D&O + Guaranty (Phase 2 slice) + Clo
   not alter legal meaning. Examples include hash-pin updates and file-path
   wiring. Mechanical changes use only the normal automated tests and required
   merge checks.
+- **Proportionality rule (Ben, 2026-09-01):** Heavy machinery, including
+  successor authorities, seals, bespoke receipt schemas and external-review
+  protocols, applies only to sealed legal evidence and named checkpoints.
+  Mechanical and process artefacts take a normal commit, CI and at most one
+  reviewer pass. No new receipt schema or validation protocol may be invented
+  without a named downstream consumer that reads it. When Decision 22
+  pre-approves an action as mechanical, build it mechanically.
 - **Brief queue:** The legal-review order is small-family batch, Interim
   Operating, No-Shop, Antitrust / Regulatory, General Covenants / Access,
   mid-size families (Tax Matters, Employee Matters and Proxy / Meeting), large
