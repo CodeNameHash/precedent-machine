@@ -5,6 +5,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const { createHash } = require('node:crypto');
 const { spawnSync } = require('node:child_process');
 
 const ROOT = path.resolve(__dirname, '..', '..');
@@ -25,17 +26,45 @@ const HASHED_RUN_ID = '0'.repeat(64);
 const STAGE_2Y_L_ADAPTER = `evidence/canonical-v2/stage-2y-l-live-runs/${HASHED_RUN_ID}/adapter-result.json`;
 const STAGE_2Y_L_RECORDING = `evidence/canonical-v2/stage-2y-l-live-runs/${HASHED_RUN_ID}/recording.json`;
 const STAGE_2Y_L_RESPONSE = `evidence/canonical-v2/stage-2y-l-live-runs/${HASHED_RUN_ID}/native-producer-recorded-response-6.4.json`;
-const FAMILY_ROLE_SCHEMA = 'evidence/canonical-v2/stage-2y-structure-migration/control/family-role-schemas/ANTITRUST_REGULATORY.json';
-const FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT = 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m5-schema-approval.json';
-const FAMILY_ROLE_SCHEMA_VERSION = 'STAGE_2Y_FAMILY_REQUIRED_ROLE_SCHEMA/V1';
-const FAMILY_ROLE_SCHEMA_APPROVAL_STATE = 'BEN_APPROVED_AND_SEALED';
-const FAMILY_ROLE_SCHEMA_BYTES = fs.readFileSync(path.join(ROOT, FAMILY_ROLE_SCHEMA));
-const FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_BYTES = fs.readFileSync(path.join(
+const M1_SEMANTIC_MAPPING = 'evidence/canonical-v2/stage-2y-structure-migration/prototype/m1/current-semantic-mapping.json';
+const M1_SEMANTIC_MAPPING_RECEIPT = 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m1-falsification-prototype.json';
+const M1_SEMANTIC_MAPPING_BYTES = fs.readFileSync(path.join(ROOT, M1_SEMANTIC_MAPPING));
+const M1_SEMANTIC_MAPPING_RECEIPT_BYTES = fs.readFileSync(path.join(ROOT, M1_SEMANTIC_MAPPING_RECEIPT));
+const M2_AGREEMENT_INDEX = 'evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a.agreement-index.json';
+const M2_AGREEMENT_INDEX_RECEIPT = 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json';
+const M2_AGREEMENT_INDEX_BYTES = fs.readFileSync(path.join(ROOT, M2_AGREEMENT_INDEX));
+const M2_AGREEMENT_INDEX_RECEIPT_BYTES = fs.readFileSync(path.join(ROOT, M2_AGREEMENT_INDEX_RECEIPT));
+const M7_GENERALISATION_AGREEMENT_INDEX = 'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-comparison-entry-correction/abbvie-landos/m2/agreement-index.json';
+const M7_GENERALISATION_RECEIPT = 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-generalisation-comparison-entry-correction.json';
+const M7_GENERALISATION_AGREEMENT_INDEX_BYTES = fs.readFileSync(path.join(ROOT, M7_GENERALISATION_AGREEMENT_INDEX));
+const M7_GENERALISATION_RECEIPT_BYTES = fs.readFileSync(path.join(ROOT, M7_GENERALISATION_RECEIPT));
+const M7_ROW_CORRECTION_RECEIPT = 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-generalisation-row-correction.json';
+const M7_ROW_CORRECTION_RECEIPT_BYTES = fs.readFileSync(path.join(ROOT, M7_ROW_CORRECTION_RECEIPT));
+const M7_ROW_CORRECTION_PROSE_OUTPUTS = Object.freeze([
+  'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-row-correction/abbvie-landos/m4/agreement-analysis.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-row-correction/abbvie-landos/m5/agreement-analysis.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-row-correction/abbvie-landos/m5/families/05-MAE_DEFINITION.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-row-correction/abbvie-landos/m6/agreement-projection.json',
+]);
+const M7_ROW_CORRECTION_LAWYER_REVIEW_PACKET = 'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-row-correction/lawyer-review-packet.json';
+const M7_ROW_CORRECTION_LAWYER_REVIEW_PACKET_BYTES = fs.readFileSync(path.join(
   ROOT,
-  FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT,
+  M7_ROW_CORRECTION_LAWYER_REVIEW_PACKET,
+));
+const M7_SOURCE_ADMISSION = 'evidence/canonical-v2/stage-2y-structure-migration/source/m7-generalisation/abbvie-landos/admission.json';
+const M7_SOURCE_ADMISSION_RECEIPT = 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-source-admission.json';
+const M7_SOURCE_ADMISSION_BYTES = fs.readFileSync(path.join(ROOT, M7_SOURCE_ADMISSION));
+const M7_SOURCE_ADMISSION_RECEIPT_BYTES = fs.readFileSync(path.join(ROOT, M7_SOURCE_ADMISSION_RECEIPT));
+const CONSIDERATION_WORK3_INVENTORY_REVIEW_PACKET = 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-consideration-7-profile-inventory-review-packet-draft.json';
+const CONSIDERATION_WORK3_INVENTORY_REVIEW_PACKET_BYTES = fs.readFileSync(path.join(
+  ROOT,
+  CONSIDERATION_WORK3_INVENTORY_REVIEW_PACKET,
 ));
 const PROSE_FINGERPRINT_TEXT = ['QUALI', 'FICATION from recorded agreement text lit', 'igation'].join('');
+const PROSE_FINGERPRINT_FIRST = ['QUALI', 'FICATION'].join('');
+const PROSE_FINGERPRINT_LAST = ['lit', 'igation'].join('');
 const PROSE_FINGERPRINT_PATTERN = ['QUALI', 'FICATION.*lit', 'igation'].join('');
+const CONSIDERATION_FINGERPRINT_PATTERN = 'Consideration:\\s*Cash\\b';
 const CODE_FINGERPRINT_TEXT = ['any', ' <', 'any>'].join('');
 const CODE_FINGERPRINT_PATTERN = ['any', '\\s*<', 'any>'].join('');
 
@@ -238,84 +267,296 @@ test('Stage 2Y-L adapter exception does not cover adjacent evidence, code, or do
   }
 });
 
-test('only receipt-bound family role schema bytes ignore prose fingerprints', () => {
+test('only receipt-bound M1 semantic-mapping bytes ignore recorded legal prose', () => {
   const supportingFiles = {
-    [FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT]: FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_BYTES,
+    [M1_SEMANTIC_MAPPING_RECEIPT]: M1_SEMANTIC_MAPPING_RECEIPT_BYTES,
   };
   const result = lintFixture({
-    relativePath: FAMILY_ROLE_SCHEMA,
-    source: FAMILY_ROLE_SCHEMA_BYTES,
+    relativePath: M1_SEMANTIC_MAPPING,
+    source: M1_SEMANTIC_MAPPING_BYTES,
     supportingFiles,
   });
   assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
-  assert.match(result.stdout, /INVARIANT-4: PASS/);
 
-  const selfDeclared = JSON.stringify({
-    schema_version: FAMILY_ROLE_SCHEMA_VERSION,
-    family_key: 'ANTITRUST_REGULATORY',
-    approval_state: FAMILY_ROLE_SCHEMA_APPROVAL_STATE,
-    role_schema_version: 1,
-    subtype_profiles: [{
-      required_roles: [{ role_key: 'QUALIFICATION' }],
-      claim_definition_keys: ['ANTITRUST_LITIGATION_PROCEEDING'],
-    }],
-  });
-  const rejectedSelfDeclaration = lintFixture({
-    relativePath: FAMILY_ROLE_SCHEMA,
-    source: selfDeclared,
-    supportingFiles,
-  });
-  assert.notEqual(rejectedSelfDeclaration.status, 0);
-  assert.ok(rejectedSelfDeclaration.stdout.includes(
-    `${FAMILY_ROLE_SCHEMA} :: ${PROSE_FINGERPRINT_PATTERN}`,
+  const fabricated = Buffer.from(JSON.stringify({
+    schema_version: 'STAGE_2Y_STRUCTURE_SEMANTIC_MAPPING/V1',
+    source_text: PROSE_FINGERPRINT_TEXT,
+  }));
+  const forgedReceipt = JSON.parse(M1_SEMANTIC_MAPPING_RECEIPT_BYTES.toString('utf8'));
+  const forgedBinding = forgedReceipt.output_bindings.find(({ path: bindingPath }) => (
+    bindingPath === M1_SEMANTIC_MAPPING
   ));
-
-  const sameLengthSchemaDrift = Buffer.from(FAMILY_ROLE_SCHEMA_BYTES);
-  const approvalId = Buffer.from('"approval_id":"BEN_M5_PROGRAMME_RULES_2026_08_12"');
-  const approvalIdAt = sameLengthSchemaDrift.indexOf(approvalId);
-  assert.notEqual(approvalIdAt, -1);
-  sameLengthSchemaDrift[approvalIdAt + approvalId.length - 2] = '3'.charCodeAt(0);
+  forgedBinding.byte_length = fabricated.length;
+  forgedBinding.sha256 = createHash('sha256').update(fabricated).digest('hex');
 
   for (const [relativePath, source, receiptBytes] of [
-    [FAMILY_ROLE_SCHEMA, Buffer.concat([FAMILY_ROLE_SCHEMA_BYTES, Buffer.from(' ')]), FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_BYTES],
-    [FAMILY_ROLE_SCHEMA, sameLengthSchemaDrift, FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_BYTES],
-    [
-      'evidence/canonical-v2/stage-2y-structure-migration/control/family-role-schemas/ANTITRUST_REGULATORY_COPY.json',
-      FAMILY_ROLE_SCHEMA_BYTES,
-      FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_BYTES,
-    ],
-    [
-      FAMILY_ROLE_SCHEMA,
-      FAMILY_ROLE_SCHEMA_BYTES,
-      Buffer.from(FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_BYTES.toString('utf8').replace('"status":"PASS"', '"status":"FAIL"')),
-    ],
+    [M1_SEMANTIC_MAPPING, fabricated, M1_SEMANTIC_MAPPING_RECEIPT_BYTES],
+    [M1_SEMANTIC_MAPPING, fabricated, Buffer.from(JSON.stringify(forgedReceipt))],
+    [M1_SEMANTIC_MAPPING.replace('.json', '-copy.json'), M1_SEMANTIC_MAPPING_BYTES, M1_SEMANTIC_MAPPING_RECEIPT_BYTES],
   ]) {
     const rejected = lintFixture({
       relativePath,
       source,
-      supportingFiles: { [FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT]: receiptBytes },
+      supportingFiles: { [M1_SEMANTIC_MAPPING_RECEIPT]: receiptBytes },
     });
     assert.notEqual(rejected.status, 0, relativePath);
     assert.ok(rejected.stdout.includes(`${relativePath} :: ${PROSE_FINGERPRINT_PATTERN}`));
   }
 });
 
-test('approved family role schema evidence still rejects code fingerprints', () => {
-  const source = JSON.stringify({
-    schema_version: FAMILY_ROLE_SCHEMA_VERSION,
-    family_key: 'ANTITRUST_REGULATORY',
-    approval_state: FAMILY_ROLE_SCHEMA_APPROVAL_STATE,
-    role_schema_version: 1,
-    subtype_profiles: [],
-    unsafe: CODE_FINGERPRINT_TEXT,
-  });
+test('only sealed-receipt-bound M2 agreement indexes ignore recorded legal prose', () => {
+  const supportingFiles = {
+    [M2_AGREEMENT_INDEX_RECEIPT]: M2_AGREEMENT_INDEX_RECEIPT_BYTES,
+  };
   const result = lintFixture({
-    relativePath: FAMILY_ROLE_SCHEMA,
-    source,
-    supportingFiles: {
-      [FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT]: FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_BYTES,
-    },
+    relativePath: M2_AGREEMENT_INDEX,
+    source: M2_AGREEMENT_INDEX_BYTES,
+    supportingFiles,
+  });
+  assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+
+  const fabricated = Buffer.from(JSON.stringify({
+    schema_version: 'AGREEMENT_INDEX/V1',
+    source_text: PROSE_FINGERPRINT_TEXT,
+  }));
+  const forgedReceipt = JSON.parse(M2_AGREEMENT_INDEX_RECEIPT_BYTES.toString('utf8'));
+  const forgedBinding = forgedReceipt.output_bindings.find(({ path: bindingPath }) => (
+    bindingPath === M2_AGREEMENT_INDEX
+  ));
+  forgedBinding.byte_length = fabricated.length;
+  forgedBinding.sha256 = createHash('sha256').update(fabricated).digest('hex');
+
+  for (const [relativePath, source, receiptBytes] of [
+    [M2_AGREEMENT_INDEX, fabricated, M2_AGREEMENT_INDEX_RECEIPT_BYTES],
+    [M2_AGREEMENT_INDEX, fabricated, Buffer.from(JSON.stringify(forgedReceipt))],
+    [M2_AGREEMENT_INDEX.replace('.json', '-copy.json'), M2_AGREEMENT_INDEX_BYTES, M2_AGREEMENT_INDEX_RECEIPT_BYTES],
+  ]) {
+    const rejected = lintFixture({
+      relativePath,
+      source,
+      supportingFiles: { [M2_AGREEMENT_INDEX_RECEIPT]: receiptBytes },
+    });
+    assert.notEqual(rejected.status, 0, relativePath);
+    assert.ok(rejected.stdout.includes(`${relativePath} :: ${PROSE_FINGERPRINT_PATTERN}`));
+  }
+});
+
+test('only stage-receipt-bound M7 generalisation outputs ignore recorded legal prose', () => {
+  const supportingFiles = {
+    [M7_GENERALISATION_RECEIPT]: M7_GENERALISATION_RECEIPT_BYTES,
+  };
+  const result = lintFixture({
+    relativePath: M7_GENERALISATION_AGREEMENT_INDEX,
+    source: M7_GENERALISATION_AGREEMENT_INDEX_BYTES,
+    supportingFiles,
+  });
+  assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+
+  const fabricated = Buffer.from(JSON.stringify({
+    schema_version: 'AGREEMENT_INDEX/V1',
+    source_text: PROSE_FINGERPRINT_TEXT,
+  }));
+  const forgedReceipt = JSON.parse(M7_GENERALISATION_RECEIPT_BYTES.toString('utf8'));
+  const forgedBinding = forgedReceipt.output_bindings.find(({ path: bindingPath }) => (
+    bindingPath === M7_GENERALISATION_AGREEMENT_INDEX
+  ));
+  forgedBinding.byte_length = fabricated.length;
+  forgedBinding.sha256 = createHash('sha256').update(fabricated).digest('hex');
+
+  for (const [relativePath, source, receiptBytes] of [
+    [M7_GENERALISATION_AGREEMENT_INDEX, fabricated, M7_GENERALISATION_RECEIPT_BYTES],
+    [M7_GENERALISATION_AGREEMENT_INDEX, fabricated, Buffer.from(JSON.stringify(forgedReceipt))],
+    [
+      M7_GENERALISATION_AGREEMENT_INDEX.replace('agreement-index.json', 'agreement-index-copy.json'),
+      M7_GENERALISATION_AGREEMENT_INDEX_BYTES,
+      M7_GENERALISATION_RECEIPT_BYTES,
+    ],
+  ]) {
+    const rejected = lintFixture({
+      relativePath,
+      source,
+      supportingFiles: { [M7_GENERALISATION_RECEIPT]: receiptBytes },
+    });
+    assert.notEqual(rejected.status, 0, relativePath);
+    assert.ok(rejected.stdout.includes(`${relativePath} :: ${PROSE_FINGERPRINT_PATTERN}`));
+  }
+});
+
+test('all receipt-bound M7 source-bearing schemas ignore their recorded prose', () => {
+  for (const relativePath of M7_ROW_CORRECTION_PROSE_OUTPUTS) {
+    const result = lintFixture({
+      relativePath,
+      source: fs.readFileSync(path.join(ROOT, relativePath)),
+      supportingFiles: {
+        [M7_ROW_CORRECTION_RECEIPT]: M7_ROW_CORRECTION_RECEIPT_BYTES,
+      },
+    });
+    assert.equal(result.status, 0, `${relativePath}\n${result.stdout}\n${result.stderr}`);
+  }
+});
+
+test('only the physically pinned M7 row-correction lawyer packet ignores its recorded prose', () => {
+  const result = lintFixture({
+    relativePath: M7_ROW_CORRECTION_LAWYER_REVIEW_PACKET,
+    source: M7_ROW_CORRECTION_LAWYER_REVIEW_PACKET_BYTES,
+  });
+  assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+
+  const forged = JSON.parse(M7_ROW_CORRECTION_LAWYER_REVIEW_PACKET_BYTES.toString('utf8'));
+  forged.lawyer_review_packet_id = '0'.repeat(64);
+  for (const [relativePath, source] of [
+    [M7_ROW_CORRECTION_LAWYER_REVIEW_PACKET, Buffer.from(JSON.stringify(forged))],
+    [
+      M7_ROW_CORRECTION_LAWYER_REVIEW_PACKET.replace('.json', '-copy.json'),
+      M7_ROW_CORRECTION_LAWYER_REVIEW_PACKET_BYTES,
+    ],
+  ]) {
+    const rejected = lintFixture({ relativePath, source });
+    assert.notEqual(rejected.status, 0, relativePath);
+    assert.ok(rejected.stdout.includes(`${relativePath} :: ${PROSE_FINGERPRINT_PATTERN}`));
+  }
+});
+
+test('only sealed-receipt-bound M7 source-admission outputs ignore recorded legal prose', () => {
+  const supportingFiles = {
+    [M7_SOURCE_ADMISSION_RECEIPT]: M7_SOURCE_ADMISSION_RECEIPT_BYTES,
+  };
+  const result = lintFixture({
+    relativePath: M7_SOURCE_ADMISSION,
+    source: M7_SOURCE_ADMISSION_BYTES,
+    supportingFiles,
+  });
+  assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+
+  const fabricated = Buffer.from(JSON.stringify({
+    bundle: { source_text: PROSE_FINGERPRINT_TEXT },
+    candidate: {},
+    capture: {},
+    conversion: {},
+    verification: {},
+  }));
+  const forgedReceipt = JSON.parse(M7_SOURCE_ADMISSION_RECEIPT_BYTES.toString('utf8'));
+  const forgedBinding = forgedReceipt.output_bindings.find(({ path: bindingPath }) => (
+    bindingPath === M7_SOURCE_ADMISSION
+  ));
+  forgedBinding.byte_length = fabricated.length;
+  forgedBinding.sha256 = createHash('sha256').update(fabricated).digest('hex');
+
+  for (const [relativePath, source, receiptBytes] of [
+    [M7_SOURCE_ADMISSION, fabricated, M7_SOURCE_ADMISSION_RECEIPT_BYTES],
+    [M7_SOURCE_ADMISSION, fabricated, Buffer.from(JSON.stringify(forgedReceipt))],
+    [M7_SOURCE_ADMISSION.replace('.json', '-copy.json'), M7_SOURCE_ADMISSION_BYTES, M7_SOURCE_ADMISSION_RECEIPT_BYTES],
+  ]) {
+    const rejected = lintFixture({
+      relativePath,
+      source,
+      supportingFiles: { [M7_SOURCE_ADMISSION_RECEIPT]: receiptBytes },
+    });
+    assert.notEqual(rejected.status, 0, relativePath);
+    assert.ok(rejected.stdout.includes(`${relativePath} :: ${PROSE_FINGERPRINT_PATTERN}`));
+  }
+});
+
+test('trusted prose-evidence paths reject substituted code fingerprints', () => {
+  const cases = [
+    [M1_SEMANTIC_MAPPING, { [M1_SEMANTIC_MAPPING_RECEIPT]: M1_SEMANTIC_MAPPING_RECEIPT_BYTES }],
+    [M2_AGREEMENT_INDEX, { [M2_AGREEMENT_INDEX_RECEIPT]: M2_AGREEMENT_INDEX_RECEIPT_BYTES }],
+    [M7_GENERALISATION_AGREEMENT_INDEX, { [M7_GENERALISATION_RECEIPT]: M7_GENERALISATION_RECEIPT_BYTES }],
+    [M7_ROW_CORRECTION_LAWYER_REVIEW_PACKET, {}],
+    [M7_SOURCE_ADMISSION, { [M7_SOURCE_ADMISSION_RECEIPT]: M7_SOURCE_ADMISSION_RECEIPT_BYTES }],
+  ];
+  for (const [relativePath, supportingFiles] of cases) {
+    const substituted = Buffer.from(JSON.stringify({ unsafe: CODE_FINGERPRINT_TEXT }));
+    const rejected = lintFixture({ relativePath, source: substituted, supportingFiles });
+    assert.notEqual(rejected.status, 0, relativePath);
+    assert.ok(
+      rejected.stdout.includes(`${relativePath} :: ${CODE_FINGERPRINT_PATTERN}`),
+      `${relativePath}\n${rejected.stdout}\n${rejected.stderr}`,
+    );
+  }
+});
+
+test('Consideration structured identifiers are not human-facing label failures', () => {
+  const result = lintFixture({
+    relativePath: CONSIDERATION_WORK3_INVENTORY_REVIEW_PACKET,
+    source: CONSIDERATION_WORK3_INVENTORY_REVIEW_PACKET_BYTES,
+  });
+  assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+  assert.match(result.stdout, /INVARIANT-4: PASS/);
+});
+
+test('a literal Consideration label remains forbidden', () => {
+  const result = lintFixture({
+    relativePath: CONSIDERATION_WORK3_INVENTORY_REVIEW_PACKET,
+    source: JSON.stringify({ unsafe: ['Consideration:', 'Cash'].join(' ') }),
   });
   assert.notEqual(result.status, 0);
-  assert.ok(result.stdout.includes(`${FAMILY_ROLE_SCHEMA} :: ${CODE_FINGERPRINT_PATTERN}`));
+  assert.ok(result.stdout.includes(
+    `${CONSIDERATION_WORK3_INVENTORY_REVIEW_PACKET} :: ${CONSIDERATION_FINGERPRINT_PATTERN}`,
+  ));
+});
+
+test('prose fingerprints in JSON do not bridge distinct string values', () => {
+  const relativePath = 'evidence/canonical-v2/structured-cross-field.json';
+  const result = lintFixture({
+    relativePath,
+    source: JSON.stringify({ first: PROSE_FINGERPRINT_FIRST, second: PROSE_FINGERPRINT_LAST }),
+  });
+  assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+  assert.match(result.stdout, /INVARIANT-4: PASS/);
+});
+
+test('an actual prose fingerprint inside one JSON string still fails', () => {
+  const relativePath = 'evidence/canonical-v2/structured-same-field.json';
+  const result = lintFixture({
+    relativePath,
+    source: JSON.stringify({ value: [PROSE_FINGERPRINT_FIRST, PROSE_FINGERPRINT_LAST].join('\n') }),
+  });
+  assert.notEqual(result.status, 0);
+  assert.ok(result.stdout.includes(`${relativePath} :: ${PROSE_FINGERPRINT_PATTERN}`));
+});
+
+test('an actual prose fingerprint inside one JSON key still fails', () => {
+  const relativePath = 'evidence/canonical-v2/structured-same-key.json';
+  const result = lintFixture({
+    relativePath,
+    source: JSON.stringify({ [PROSE_FINGERPRINT_TEXT]: true }),
+  });
+  assert.notEqual(result.status, 0);
+  assert.ok(result.stdout.includes(`${relativePath} :: ${PROSE_FINGERPRINT_PATTERN}`));
+});
+
+test('a forbidden overwritten duplicate-key value still fails', () => {
+  const relativePath = 'evidence/canonical-v2/structured-duplicate-key.json';
+  const result = lintFixture({
+    relativePath,
+    source: `{"duplicate":${JSON.stringify(PROSE_FINGERPRINT_TEXT)},"duplicate":"safe"}`,
+  });
+  assert.notEqual(result.status, 0);
+  assert.ok(result.stdout.includes(`${relativePath} :: ${PROSE_FINGERPRINT_PATTERN}`));
+});
+
+test('code-class fingerprints continue to scan the whole JSON source', () => {
+  const relativePath = 'evidence/canonical-v2/structured-code-cross-field.json';
+  const pattern = 'Question\\s*:.*\\|.*Answer\\s*:';
+  const result = lintFixture({
+    relativePath,
+    source: JSON.stringify({
+      first: ['Question', ':'].join(''),
+      separator: String.fromCharCode(124),
+      last: ['Answer', ':'].join(''),
+    }),
+  });
+  assert.notEqual(result.status, 0);
+  assert.ok(result.stdout.includes(`${relativePath} :: ${pattern}`));
+});
+
+test('malformed JSON falls back to whole-source prose scanning', () => {
+  const relativePath = 'evidence/canonical-v2/structured-malformed.json';
+  const result = lintFixture({
+    relativePath,
+    source: `{"first":${JSON.stringify(PROSE_FINGERPRINT_FIRST)},"second":${JSON.stringify(PROSE_FINGERPRINT_LAST)}`,
+  });
+  assert.notEqual(result.status, 0);
+  assert.ok(result.stdout.includes(`${relativePath} :: ${PROSE_FINGERPRINT_PATTERN}`));
 });

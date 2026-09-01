@@ -13,7 +13,7 @@ const root = process.argv[2] || '.';
 
 const globalPatterns = [
   'ITM only',
-  'Consideration:\\s*Cash',
+  'Consideration:\\s*Cash\\b',
   'MAE\\s*\\(partial\\)',
   'Question\\s*:.*\\|.*Answer\\s*:',
   'applies to Parent and Company',
@@ -87,6 +87,48 @@ const RECORDED_LIVE_RUN_DIR = /^tests\/fixtures\/canonical-v2\/(f28-live-run|f28
 // says "Qualification" and "litigation" in the same breath.
 const LIVE_RUN_SOURCE_TEXT_FILE = /^evidence\/canonical-v2\/[^/]+\/(adapter-result|recording|native-producer-recorded-response-[^/]+)\.json$/;
 const DETERMINISTIC_DERIVED_PROSE_EVIDENCE_FILE = /^evidence\/canonical-v2\/(stage-2y-f-lexical-classification|stage-2y-f-terra-adjudication|stage-2y-h-representation-topic-replay)\.json$/;
+const M1_SEMANTIC_MAPPING_FILE = 'evidence/canonical-v2/stage-2y-structure-migration/prototype/m1/current-semantic-mapping.json';
+const M1_SEMANTIC_MAPPING_RECEIPT_FILE = 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m1-falsification-prototype.json';
+const M1_SEMANTIC_MAPPING_RECEIPT_BYTE_LENGTH = 9085;
+const M1_SEMANTIC_MAPPING_RECEIPT_SHA256 = '75e07e2f0cfcacf6f58a88213c36a5424a4fdd8d662772c4074b57ef0183375e';
+const M2_AGREEMENT_INDEX_FILE = /^evidence\/canonical-v2\/stage-2y-structure-migration\/shadow\/m2\/[a-f0-9]{64}\.agreement-index\.json$/;
+const M2_AGREEMENT_INDEX_RECEIPT_FILE = 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json';
+const M2_AGREEMENT_INDEX_RECEIPT_BYTE_LENGTH = 20126;
+const M2_AGREEMENT_INDEX_RECEIPT_SHA256 = 'dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585';
+const M7_GENERALISATION_OUTPUT_FILE = /^evidence\/canonical-v2\/stage-2y-structure-migration\/shadow\/(m7-generalisation(?:-row-correction|-comparison-entry-correction)?)\/.+\.json$/;
+const M7_GENERALISATION_PROSE_OUTPUT_SCHEMAS = Object.freeze(new Set([
+  'AGREEMENT_INDEX/V1',
+  'AGREEMENT_ANALYSIS/V1',
+  'STAGE_2Y_M5_COMPOUND_ADAPTER_RESULT/V1',
+  'AGREEMENT_PROJECTION/V1',
+]));
+const M7_GENERALISATION_RECEIPTS = Object.freeze({
+  'm7-generalisation': Object.freeze({
+    byte_length: 53429,
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-generalisation.json',
+    sha256: 'f8f25068a561942d9e9536cf349d7b3a99945366cc5caad2419d2c0035f9349a',
+    stage: 'M7_GENERALISATION',
+  }),
+  'm7-generalisation-row-correction': Object.freeze({
+    byte_length: 50949,
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-generalisation-row-correction.json',
+    sha256: '1264101d102ed47d7e4b1816a00b597f82154d44813984d3d2352a13cb0716d9',
+    stage: 'M7_GENERALISATION_ROW_CORRECTION',
+  }),
+  'm7-generalisation-comparison-entry-correction': Object.freeze({
+    byte_length: 591411,
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-generalisation-comparison-entry-correction.json',
+    sha256: '98a48860913c1e5a5fdb45f7d8c3188950090480d5a784aa30e72c64c0d88adb',
+    stage: 'M7_GENERALISATION_COMPARISON_ENTRY_CORRECTION',
+  }),
+});
+const M7_ROW_CORRECTION_LAWYER_REVIEW_PACKET_FILE = 'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-row-correction/lawyer-review-packet.json';
+const M7_ROW_CORRECTION_LAWYER_REVIEW_PACKET_BYTE_LENGTH = 255086;
+const M7_ROW_CORRECTION_LAWYER_REVIEW_PACKET_SHA256 = '7aff484a94dd83200dbb4351e8a8ebecc246a93224edcaa90e798b7e9d92681e';
+const M7_SOURCE_ADMISSION_RECEIPT_FILE = 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-source-admission.json';
+const M7_SOURCE_ADMISSION_RECEIPT_BYTE_LENGTH = 9039;
+const M7_SOURCE_ADMISSION_RECEIPT_SHA256 = '93e0038ca37b408bc668d8e2825430a0eee8f54e06354a57f21e4c92698ba2af';
+const M7_SOURCE_ADMISSION_OUTPUT_FILE = /^evidence\/canonical-v2\/stage-2y-structure-migration\/source\/m7-generalisation\/(abbvie-landos|lilly-verve|rocket-redfin)\/(admission\.json|canonical\.txt|historical-equivalence\.json|response\.html|source-map\.json)$/;
 const CONCEPT_COVERAGE_SIMULATION_FILE = 'evidence/canonical-v2/stage-2y-f-concept-coverage-simulation.json';
 const CONCEPT_COVERAGE_SIMULATION_SCHEMA = 'STAGE_2Y_F_CONCEPT_COVERAGE_SIMULATION/V1';
 const STAGE_2Y_CD_REPORT_FILE = 'evidence/canonical-v2/stage-2y-cd-report.json';
@@ -102,11 +144,6 @@ const STAGE_2Y_PHASE_B_MANIFESTS = Object.freeze({
 const STAGE_2Y_PHASE_B_MODEL_EVIDENCE = Object.freeze({
   'evidence/canonical-v2/stage-2y-phase-b-v2/terra-calls.json': 'STAGE_2Y_PHASE_B_TERRA_CALLS/V2',
 });
-const FAMILY_ROLE_SCHEMA_EVIDENCE_FILE = /^evidence\/canonical-v2\/stage-2y-structure-migration\/control\/family-role-schemas\/([A-Z][A-Z0-9_]*)\.json$/;
-const FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_FILE = 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m5-schema-approval.json';
-const FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_SCHEMA = 'STAGE_2Y_M5_SCHEMA_APPROVAL_RECEIPT/V1';
-const FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_BYTE_LENGTH = 20333;
-const FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_SHA256 = 'ee42380ef1ba26acbbb2bb99b8f2a0982fa9b51bf43e80df8af7351cbb2f351c';
 const HASH_ADDRESSED_STAGE_2Y_L_SOURCE_FILE = /^evidence\/canonical-v2\/stage-2y-l-live-runs\/[a-f0-9]{64}\/(adapter-result|recording|native-producer-recorded-response-[^/]+)\.json$/;
 const HASH_ADDRESSED_PHASE_B_SOURCE_FILE = /^evidence\/canonical-v2\/stage-2y-phase-b\/sol-probe-runs\/[a-f0-9]{64}\/(adapter-result|recording|native-producer-recorded-response-[^/]+)\.json$/;
 const STAGE_2Y_L_SOURCE_SCHEMAS = Object.freeze({
@@ -122,8 +159,6 @@ const PROSE_CLASS_FINGERPRINTS = [
   'applies to Parent and Company',
   'Mergers,\\s*Acquisitions,\\s*Dispositions',
 ];
-const HEX_256 = /^[a-f0-9]{64}$/;
-let familyRoleSchemaEvidenceBindings;
 
 const scopedPatterns = [
   '\\bTSA\\b|transition services agreement',
@@ -219,49 +254,123 @@ function isStage2yPhaseBModelEvidence(rel, src) {
   }
 }
 
-function approvedFamilyRoleSchemaEvidenceBindings() {
-  if (familyRoleSchemaEvidenceBindings !== undefined) return familyRoleSchemaEvidenceBindings;
-  familyRoleSchemaEvidenceBindings = null;
+function isReceiptBoundM1SemanticMapping(rel, src) {
+  if (rel !== M1_SEMANTIC_MAPPING_FILE) return false;
   try {
-    const receiptBytes = fs.readFileSync(path.join(root, FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_FILE));
-    if (receiptBytes.length !== FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_BYTE_LENGTH
+    const receiptBytes = fs.readFileSync(path.join(root, M1_SEMANTIC_MAPPING_RECEIPT_FILE));
+    if (receiptBytes.length !== M1_SEMANTIC_MAPPING_RECEIPT_BYTE_LENGTH
         || createHash('sha256').update(receiptBytes).digest('hex')
-          !== FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_SHA256) return null;
+          !== M1_SEMANTIC_MAPPING_RECEIPT_SHA256) return false;
     const receipt = JSON.parse(receiptBytes.toString('utf8'));
-    if (receipt.schema_version !== FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_SCHEMA
+    if (receipt.schema_version !== 'STAGE_2Y_STRUCTURE_MIGRATION_PACKET_RECEIPT/V1'
         || receipt.status !== 'PASS'
         || receipt.lifecycle_state !== 'SEALED'
-        || !Array.isArray(receipt.approved_role_schema_bindings)
-        || receipt.approved_role_schema_bindings.length !== 25) return null;
-    const bindings = new Map();
-    for (const binding of receipt.approved_role_schema_bindings) {
-      const match = typeof binding?.path === 'string'
-        ? binding.path.match(FAMILY_ROLE_SCHEMA_EVIDENCE_FILE)
-        : null;
-      if (!match
-          || binding.family_key !== match[1]
-          || !Number.isSafeInteger(binding.byte_length)
-          || binding.byte_length <= 0
-          || !HEX_256.test(binding.sha256 || '')
-          || bindings.has(binding.path)) return null;
-      bindings.set(binding.path, binding);
-    }
-    if (bindings.size !== 25) return null;
-    familyRoleSchemaEvidenceBindings = bindings;
-    return bindings;
+        || receipt.stage !== 'M1'
+        || !Array.isArray(receipt.output_bindings)) return false;
+    const bindings = receipt.output_bindings.filter((binding) => binding?.path === rel);
+    if (bindings.length !== 1) return false;
+    const binding = bindings[0];
+    const bytes = Buffer.from(src, 'utf8');
+    if (bytes.length !== binding.byte_length
+        || createHash('sha256').update(bytes).digest('hex') !== binding.sha256) return false;
+    return JSON.parse(src).schema_version === binding.schema_version;
   } catch (_) {
-    return null;
+    return false;
   }
 }
 
-function isApprovedFamilyRoleSchemaEvidence(rel, src) {
-  const match = rel.match(FAMILY_ROLE_SCHEMA_EVIDENCE_FILE);
-  if (!match) return false;
-  const binding = approvedFamilyRoleSchemaEvidenceBindings()?.get(rel);
-  if (!binding || binding.family_key !== match[1]) return false;
-  const bytes = Buffer.from(src, 'utf8');
-  return bytes.length === binding.byte_length
-    && createHash('sha256').update(bytes).digest('hex') === binding.sha256;
+function isReceiptBoundM2AgreementIndex(rel, src) {
+  if (!M2_AGREEMENT_INDEX_FILE.test(rel)) return false;
+  try {
+    const receiptBytes = fs.readFileSync(path.join(root, M2_AGREEMENT_INDEX_RECEIPT_FILE));
+    if (receiptBytes.length !== M2_AGREEMENT_INDEX_RECEIPT_BYTE_LENGTH
+        || createHash('sha256').update(receiptBytes).digest('hex')
+          !== M2_AGREEMENT_INDEX_RECEIPT_SHA256) return false;
+    const receipt = JSON.parse(receiptBytes.toString('utf8'));
+    if (receipt.schema_version !== 'STAGE_2Y_STRUCTURE_MIGRATION_PACKET_RECEIPT/V1'
+        || receipt.status !== 'PASS'
+        || receipt.lifecycle_state !== 'SEALED'
+        || receipt.stage !== 'M2'
+        || !Array.isArray(receipt.output_bindings)) return false;
+    const bindings = receipt.output_bindings.filter((binding) => binding?.path === rel);
+    if (bindings.length !== 1) return false;
+    const binding = bindings[0];
+    const bytes = Buffer.from(src, 'utf8');
+    if (bytes.length !== binding.byte_length
+        || createHash('sha256').update(bytes).digest('hex') !== binding.sha256) return false;
+    return JSON.parse(src).schema_version === 'AGREEMENT_INDEX/V1';
+  } catch (_) {
+    return false;
+  }
+}
+
+function isReceiptBoundM7GeneralisationProseOutput(rel, src) {
+  const match = rel.match(M7_GENERALISATION_OUTPUT_FILE);
+  const trust = match ? M7_GENERALISATION_RECEIPTS[match[1]] : null;
+  if (!trust) return false;
+  try {
+    const receiptBytes = fs.readFileSync(path.join(root, trust.path));
+    if (receiptBytes.length !== trust.byte_length
+        || createHash('sha256').update(receiptBytes).digest('hex') !== trust.sha256) return false;
+    const receipt = JSON.parse(receiptBytes.toString('utf8'));
+    if (receipt.schema_version !== 'STAGE_2Y_STRUCTURE_MIGRATION_PACKET_RECEIPT/V1'
+        || receipt.status !== 'PASS'
+        || receipt.lifecycle_state !== 'SEALED_REPORT_ONLY'
+        || receipt.stage !== trust.stage
+        || !Array.isArray(receipt.output_bindings)) return false;
+    const bindings = receipt.output_bindings.filter((binding) => binding?.path === rel);
+    if (bindings.length !== 1) return false;
+    const binding = bindings[0];
+    const bytes = Buffer.from(src, 'utf8');
+    if (bytes.length !== binding.byte_length
+        || createHash('sha256').update(bytes).digest('hex') !== binding.sha256) return false;
+    return M7_GENERALISATION_PROSE_OUTPUT_SCHEMAS.has(JSON.parse(src).schema_version);
+  } catch (_) {
+    return false;
+  }
+}
+
+function isPinnedM7RowCorrectionLawyerReviewPacket(rel, src) {
+  if (rel !== M7_ROW_CORRECTION_LAWYER_REVIEW_PACKET_FILE) return false;
+  try {
+    const bytes = Buffer.from(src, 'utf8');
+    if (bytes.length !== M7_ROW_CORRECTION_LAWYER_REVIEW_PACKET_BYTE_LENGTH
+        || createHash('sha256').update(bytes).digest('hex')
+          !== M7_ROW_CORRECTION_LAWYER_REVIEW_PACKET_SHA256) return false;
+    const packet = JSON.parse(src);
+    return packet.schema_version === 'STAGE_2Y_LAWYER_REVIEW_PACKET/V1'
+      && packet.stage === 'M7'
+      && packet.packet_state === 'SEALED_REPLACEMENT_BEFORE_REVIEW'
+      && packet.expected_answers_included === false
+      && packet.sample_size === 50
+      && Array.isArray(packet.items)
+      && packet.items.length === 50;
+  } catch (_) {
+    return false;
+  }
+}
+
+function isReceiptBoundM7SourceAdmissionOutput(rel, src) {
+  if (!M7_SOURCE_ADMISSION_OUTPUT_FILE.test(rel)) return false;
+  try {
+    const receiptBytes = fs.readFileSync(path.join(root, M7_SOURCE_ADMISSION_RECEIPT_FILE));
+    if (receiptBytes.length !== M7_SOURCE_ADMISSION_RECEIPT_BYTE_LENGTH
+        || createHash('sha256').update(receiptBytes).digest('hex')
+          !== M7_SOURCE_ADMISSION_RECEIPT_SHA256) return false;
+    const receipt = JSON.parse(receiptBytes.toString('utf8'));
+    if (receipt.schema_version !== 'STAGE_2Y_M7_SOURCE_ADMISSION_RECEIPT/V1'
+        || receipt.status !== 'PASS'
+        || receipt.stage !== 'M7_ENTRY_SOURCE_ADMISSION'
+        || !Array.isArray(receipt.output_bindings)) return false;
+    const bindings = receipt.output_bindings.filter((binding) => binding?.path === rel);
+    if (bindings.length !== 1) return false;
+    const binding = bindings[0];
+    const bytes = Buffer.from(src, 'utf8');
+    return bytes.length === binding.byte_length
+      && createHash('sha256').update(bytes).digest('hex') === binding.sha256;
+  } catch (_) {
+    return false;
+  }
 }
 
 function isHashAddressedStage2yLSourceFile(rel, src) {
@@ -288,6 +397,35 @@ function isHashAddressedPhaseBSourceFile(rel, src) {
   } catch (_) {
     return false;
   }
+}
+
+function jsonStringTokens(rel, src) {
+  if (!rel.endsWith('.json')) return null;
+  try {
+    JSON.parse(src);
+    const strings = [];
+    for (let cursor = 0; cursor < src.length; cursor += 1) {
+      if (src[cursor] !== '"') continue;
+      const start = cursor;
+      cursor += 1;
+      while (cursor < src.length && src[cursor] !== '"') {
+        if (src[cursor] === '\\') cursor += 1;
+        cursor += 1;
+      }
+      strings.push(JSON.parse(src.slice(start, cursor + 1)));
+    }
+    return strings;
+  } catch (_) {
+    return null;
+  }
+}
+
+function patternMatchesSource(pattern, src, structuredStrings) {
+  if (PROSE_CLASS_FINGERPRINTS.includes(pattern) && structuredStrings !== null) {
+    const valuePattern = new RegExp(pattern, 'ims');
+    return structuredStrings.some((value) => valuePattern.test(value));
+  }
+  return new RegExp(pattern, 'im').test(src);
 }
 
 function changedFiles() {
@@ -548,6 +686,7 @@ for (const rel of changedFiles()) {
   const full = path.join(root, rel);
   if (!fs.existsSync(full) || !fs.statSync(full).isFile()) continue;
   const src = fs.readFileSync(full, 'utf8');
+  const structuredStrings = jsonStringTokens(rel, src);
   for (const pattern of globalPatterns) {
     if ((FILE_PATTERN_EXEMPTIONS[rel] || []).includes(pattern)) continue;
     // Recorded live-run artifacts (tests/fixtures/canonical-v2/*-live-run/)
@@ -587,19 +726,20 @@ for (const rel of changedFiles()) {
     // fingerprint can bridge unrelated source quotes across the artifact.
     // Keep every code fingerprint, and every other evidence file, in scope.
     if (DETERMINISTIC_DERIVED_PROSE_EVIDENCE_FILE.test(rel) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
+    if (PROSE_CLASS_FINGERPRINTS.includes(pattern) && isReceiptBoundM1SemanticMapping(rel, src)) continue;
+    if (PROSE_CLASS_FINGERPRINTS.includes(pattern) && isReceiptBoundM2AgreementIndex(rel, src)) continue;
+    if (PROSE_CLASS_FINGERPRINTS.includes(pattern) && isReceiptBoundM7GeneralisationProseOutput(rel, src)) continue;
+    if (PROSE_CLASS_FINGERPRINTS.includes(pattern) && isPinnedM7RowCorrectionLawyerReviewPacket(rel, src)) continue;
+    if (PROSE_CLASS_FINGERPRINTS.includes(pattern) && isReceiptBoundM7SourceAdmissionOutput(rel, src)) continue;
     if (isConceptCoverageSimulation(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (isStage2yCdReport(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (isStage2yHTopicComparison(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (isHumanAnchorMachinePacket(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (isStage2yPhaseBManifest(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (isStage2yPhaseBModelEvidence(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
-    // Canonical one-line role schemas can place unrelated legal vocabulary on
-    // one regex span. Exempt only sealed, family-bound schemas, and only from
-    // prose fingerprints. Code fingerprints remain active.
-    if (isApprovedFamilyRoleSchemaEvidence(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (isHashAddressedStage2yLSourceFile(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (isHashAddressedPhaseBSourceFile(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
-    if (new RegExp(pattern, 'im').test(src)) {
+    if (patternMatchesSource(pattern, src, structuredStrings)) {
       failures.push(`${rel} :: ${pattern}`);
     }
   }
