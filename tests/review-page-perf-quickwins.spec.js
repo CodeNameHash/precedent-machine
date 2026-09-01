@@ -71,12 +71,15 @@ test('Q7: every font referenced by mtx-fonts.css exists in public/fonts', () => 
   }
 });
 
-test('Q6: cards/deals/agreement-source GET routes set the shared Cache-Control header', () => {
+test('Q6: stable GET routes use the shared cache and cards selects cache policy from review state', () => {
   const cardsSrc = fs.readFileSync('pages/api/review/[id]/cards.js', 'utf8');
   const dealsSrc = fs.readFileSync('pages/api/deals.js', 'utf8');
   const sourceSrc = fs.readFileSync('pages/api/agreement-source.js', 'utf8');
   const header = "s-maxage=300, stale-while-revalidate=3600";
-  assert.match(cardsSrc, new RegExp(header.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   assert.match(dealsSrc, new RegExp(header.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   assert.match(sourceSrc, new RegExp(header.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.match(
+    cardsSrc,
+    /res\.setHeader\('Cache-Control',\s*terminationRightsReviewCacheControl\(rightsReviewDeal\)\)/,
+  );
 });

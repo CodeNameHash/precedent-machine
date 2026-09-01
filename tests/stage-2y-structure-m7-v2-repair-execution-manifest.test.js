@@ -3993,7 +3993,8 @@ function makeWork2RecoveryFixture(t) {
 
   for (const repositoryPath of effectivePaths) copyRepositoryFile(fixture.root, repositoryPath);
   for (const repositoryPath of productionAuthority.record.base_effective_work2_paths) {
-    if (!WORK2_RECOVERY_TARGET_PATHS.includes(repositoryPath)) {
+    if (!WORK2_RECOVERY_TARGET_PATHS.includes(repositoryPath)
+        && repositoryPath !== WORK2_GENERALISATION_SHADOW_PATH) {
       writeBytes(fixture.root, repositoryPath, execFileSync(
         '/usr/bin/git',
         ['show', `HEAD:${repositoryPath}`],

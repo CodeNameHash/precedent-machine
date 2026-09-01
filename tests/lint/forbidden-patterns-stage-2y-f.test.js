@@ -25,12 +25,21 @@ const HASHED_RUN_ID = '0'.repeat(64);
 const STAGE_2Y_L_ADAPTER = `evidence/canonical-v2/stage-2y-l-live-runs/${HASHED_RUN_ID}/adapter-result.json`;
 const STAGE_2Y_L_RECORDING = `evidence/canonical-v2/stage-2y-l-live-runs/${HASHED_RUN_ID}/recording.json`;
 const STAGE_2Y_L_RESPONSE = `evidence/canonical-v2/stage-2y-l-live-runs/${HASHED_RUN_ID}/native-producer-recorded-response-6.4.json`;
+const FAMILY_ROLE_SCHEMA = 'evidence/canonical-v2/stage-2y-structure-migration/control/family-role-schemas/ANTITRUST_REGULATORY.json';
+const FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT = 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m5-schema-approval.json';
+const FAMILY_ROLE_SCHEMA_VERSION = 'STAGE_2Y_FAMILY_REQUIRED_ROLE_SCHEMA/V1';
+const FAMILY_ROLE_SCHEMA_APPROVAL_STATE = 'BEN_APPROVED_AND_SEALED';
+const FAMILY_ROLE_SCHEMA_BYTES = fs.readFileSync(path.join(ROOT, FAMILY_ROLE_SCHEMA));
+const FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_BYTES = fs.readFileSync(path.join(
+  ROOT,
+  FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT,
+));
 const PROSE_FINGERPRINT_TEXT = ['QUALI', 'FICATION from recorded agreement text lit', 'igation'].join('');
 const PROSE_FINGERPRINT_PATTERN = ['QUALI', 'FICATION.*lit', 'igation'].join('');
 const CODE_FINGERPRINT_TEXT = ['any', ' <', 'any>'].join('');
 const CODE_FINGERPRINT_PATTERN = ['any', '\\s*<', 'any>'].join('');
 
-function lintFixture({ relativePath, source }) {
+function lintFixture({ relativePath, source, supportingFiles = {} }) {
   const fixture = fs.mkdtempSync(path.join(os.tmpdir(), 'forbidden-patterns-stage-2y-f-'));
   const target = path.join(fixture, relativePath);
   fs.mkdirSync(path.dirname(target), { recursive: true });
@@ -38,6 +47,11 @@ function lintFixture({ relativePath, source }) {
   fs.mkdirSync(path.join(fixture, 'scripts', 'lint'), { recursive: true });
   fs.copyFileSync(DUPLICATE_CHECK, path.join(fixture, 'scripts', 'lint', 'resolution-registry-duplicates.js'));
   fs.writeFileSync(target, source);
+  for (const [supportingPath, supportingSource] of Object.entries(supportingFiles)) {
+    const supportingTarget = path.join(fixture, supportingPath);
+    fs.mkdirSync(path.dirname(supportingTarget), { recursive: true });
+    fs.writeFileSync(supportingTarget, supportingSource);
+  }
   try {
     return spawnSync('bash', [LINTER, fixture], {
       cwd: ROOT,
@@ -222,4 +236,86 @@ test('Stage 2Y-L adapter exception does not cover adjacent evidence, code, or do
     assert.notEqual(result.status, 0, relativePath);
     assert.ok(result.stdout.includes(`${relativePath} :: ${PROSE_FINGERPRINT_PATTERN}`));
   }
+});
+
+test('only receipt-bound family role schema bytes ignore prose fingerprints', () => {
+  const supportingFiles = {
+    [FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT]: FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_BYTES,
+  };
+  const result = lintFixture({
+    relativePath: FAMILY_ROLE_SCHEMA,
+    source: FAMILY_ROLE_SCHEMA_BYTES,
+    supportingFiles,
+  });
+  assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+  assert.match(result.stdout, /INVARIANT-4: PASS/);
+
+  const selfDeclared = JSON.stringify({
+    schema_version: FAMILY_ROLE_SCHEMA_VERSION,
+    family_key: 'ANTITRUST_REGULATORY',
+    approval_state: FAMILY_ROLE_SCHEMA_APPROVAL_STATE,
+    role_schema_version: 1,
+    subtype_profiles: [{
+      required_roles: [{ role_key: 'QUALIFICATION' }],
+      claim_definition_keys: ['ANTITRUST_LITIGATION_PROCEEDING'],
+    }],
+  });
+  const rejectedSelfDeclaration = lintFixture({
+    relativePath: FAMILY_ROLE_SCHEMA,
+    source: selfDeclared,
+    supportingFiles,
+  });
+  assert.notEqual(rejectedSelfDeclaration.status, 0);
+  assert.ok(rejectedSelfDeclaration.stdout.includes(
+    `${FAMILY_ROLE_SCHEMA} :: ${PROSE_FINGERPRINT_PATTERN}`,
+  ));
+
+  const sameLengthSchemaDrift = Buffer.from(FAMILY_ROLE_SCHEMA_BYTES);
+  const approvalId = Buffer.from('"approval_id":"BEN_M5_PROGRAMME_RULES_2026_08_12"');
+  const approvalIdAt = sameLengthSchemaDrift.indexOf(approvalId);
+  assert.notEqual(approvalIdAt, -1);
+  sameLengthSchemaDrift[approvalIdAt + approvalId.length - 2] = '3'.charCodeAt(0);
+
+  for (const [relativePath, source, receiptBytes] of [
+    [FAMILY_ROLE_SCHEMA, Buffer.concat([FAMILY_ROLE_SCHEMA_BYTES, Buffer.from(' ')]), FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_BYTES],
+    [FAMILY_ROLE_SCHEMA, sameLengthSchemaDrift, FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_BYTES],
+    [
+      'evidence/canonical-v2/stage-2y-structure-migration/control/family-role-schemas/ANTITRUST_REGULATORY_COPY.json',
+      FAMILY_ROLE_SCHEMA_BYTES,
+      FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_BYTES,
+    ],
+    [
+      FAMILY_ROLE_SCHEMA,
+      FAMILY_ROLE_SCHEMA_BYTES,
+      Buffer.from(FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_BYTES.toString('utf8').replace('"status":"PASS"', '"status":"FAIL"')),
+    ],
+  ]) {
+    const rejected = lintFixture({
+      relativePath,
+      source,
+      supportingFiles: { [FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT]: receiptBytes },
+    });
+    assert.notEqual(rejected.status, 0, relativePath);
+    assert.ok(rejected.stdout.includes(`${relativePath} :: ${PROSE_FINGERPRINT_PATTERN}`));
+  }
+});
+
+test('approved family role schema evidence still rejects code fingerprints', () => {
+  const source = JSON.stringify({
+    schema_version: FAMILY_ROLE_SCHEMA_VERSION,
+    family_key: 'ANTITRUST_REGULATORY',
+    approval_state: FAMILY_ROLE_SCHEMA_APPROVAL_STATE,
+    role_schema_version: 1,
+    subtype_profiles: [],
+    unsafe: CODE_FINGERPRINT_TEXT,
+  });
+  const result = lintFixture({
+    relativePath: FAMILY_ROLE_SCHEMA,
+    source,
+    supportingFiles: {
+      [FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT]: FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_BYTES,
+    },
+  });
+  assert.notEqual(result.status, 0);
+  assert.ok(result.stdout.includes(`${FAMILY_ROLE_SCHEMA} :: ${CODE_FINGERPRINT_PATTERN}`));
 });

@@ -5,6 +5,7 @@ const React = require('react');
 const { renderToStaticMarkup } = require('react-dom/server');
 
 let terminationRightsConfig;
+let buildTerminationRightsReviewGroups;
 let rowIdentityKey;
 
 test.before(async () => {
@@ -14,6 +15,13 @@ test.before(async () => {
     'review',
     'table-configs',
     'termination-rights.config.js',
+  )));
+  ({ buildTerminationRightsReviewGroups } = await import(path.join(
+    '..',
+    'components',
+    'review',
+    'table-configs',
+    'termination-rights-review-groups.js',
   )));
   ({ rowIdentityKey } = await import(path.join(
     '..',
@@ -603,7 +611,7 @@ test('V2 rejects a fact-group layout that does not partition its local facts', (
   });
 
   assert.throws(
-    () => terminationRightsConfig.selectRows({
+    () => buildTerminationRightsReviewGroups({
       cards: [],
       canonical_v2_termination_rights_review_rows: v2ReviewRows(row),
     }),
@@ -1098,11 +1106,11 @@ test('canonical review source status rejects partial FAILED and incomplete ATTAC
   };
 
   assert.throws(
-    () => terminationRightsConfig.selectRows(failedWithRows),
+    () => buildTerminationRightsReviewGroups(failedWithRows),
     /review source status is invalid/,
   );
   assert.throws(
-    () => terminationRightsConfig.selectRows(attachedWithoutPrompts),
+    () => buildTerminationRightsReviewGroups(attachedWithoutPrompts),
     /review source status is invalid/,
   );
 });
@@ -1153,7 +1161,7 @@ test('a prompt attachment must exactly and completely cover the open review keys
       review_key: 'BREACH_RIGHT::NOTICE_PERIOD',
     }],
   ]) {
-    assert.throws(() => terminationRightsConfig.selectRows({
+    assert.throws(() => buildTerminationRightsReviewGroups({
       ...reviewDeal,
       canonical_v2_termination_rights_review_prompts: {
         schema_version: 'TERMINATION_RIGHTS_REVIEW_PROMPTS/V1',

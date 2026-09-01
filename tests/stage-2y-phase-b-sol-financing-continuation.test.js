@@ -1,4 +1,5 @@
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 
@@ -35,4 +36,8 @@ test('continuation is bound to the frozen V1 stop and exactly eight Financing se
   assert.equal(artifact.source_probe.sha256, 'e8629803e242347e955a6c65fcac16316ad3fb161000bdf126c6975418bdd4a7');
   assert.ok(artifact.call_manifest.every((row) => row.family === FAMILY));
   assert.deepEqual(check(artifact), { ok: true, errors: [], status: 'READY_OR_PARTIAL' });
+  const sealed = JSON.parse(fs.readFileSync(path.join(
+    ROOT, 'evidence/canonical-v2/stage-2y-phase-b/sol-financing-continuation.json',
+  ), 'utf8'));
+  assert.deepEqual(check(sealed), { ok: true, errors: [], status: 'STOPPED' });
 });

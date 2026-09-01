@@ -31,6 +31,38 @@ test('probe runner uses the explicit report-only Sol flag', async () => {
   assert.ok(args.includes('--phase-b-lead-probe'));
 });
 
+test('generation command identity permits only a consistent checkout-root rebase', async () => {
+  const {
+    generationCommandMatches, initial, outputDirectory, runnerArgs,
+  } = await load();
+  const spec = initial().call_manifest[0];
+  const current = [process.execPath, ...runnerArgs(spec, outputDirectory(spec))];
+  const oldRoot = '/tmp/old-phase-b-checkout';
+  const historical = current.map((argument) => (
+    typeof argument === 'string' && argument.startsWith(`${ROOT}${path.sep}`)
+      ? path.join(oldRoot, path.relative(ROOT, argument))
+      : argument
+  ));
+
+  assert.equal(generationCommandMatches(current, current), true);
+  assert.equal(generationCommandMatches(historical, current), true);
+
+  const changedExecutable = [...historical]; changedExecutable[0] = '/tmp/node';
+  assert.equal(generationCommandMatches(changedExecutable, current), false);
+  const changedRunner = [...historical]; changedRunner[1] = path.join(oldRoot, 'scripts/other.mjs');
+  assert.equal(generationCommandMatches(changedRunner, current), false);
+  const relativeRoot = historical.map((argument) => (
+    typeof argument === 'string' && argument.startsWith(`${oldRoot}/`)
+      ? argument.slice(oldRoot.length + 1)
+      : argument
+  ));
+  assert.equal(generationCommandMatches(relativeRoot, current), false);
+  const changedFlag = [...historical]; changedFlag[14] = '--phase-b-other-probe';
+  assert.equal(generationCommandMatches(changedFlag, current), false);
+  const mixedRoots = [...historical]; mixedRoots[19] = current[19];
+  assert.equal(generationCommandMatches(mixedRoots, current), false);
+});
+
 test('existing deferred evidence cannot be reset or bypassed by a fresh live start', async () => {
   const { PHASE_B_LIVE_DEFERRED, assertLiveProbeAllowed, assertProbeWriteAllowed } = await load();
   assert.equal(PHASE_B_LIVE_DEFERRED, true);

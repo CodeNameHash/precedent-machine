@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { spawnSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
@@ -280,7 +281,17 @@ test('the preparation allow-list is exact and excludes every execution output', 
   assert.equal(authority.permitted_output.family_receipt_count, 0);
   assert.equal(authority.permitted_output.aggregate_receipt_count, 0);
   for (const prohibited of policy.no_run_contract.required_absent_paths) {
-    assert.equal(fs.existsSync(absolute(prohibited)), false, prohibited);
+    const authorised = authority.permitted_changed_files.some((repositoryPath) => (
+      repositoryPath === prohibited || repositoryPath.startsWith(`${prohibited}/`)
+    ));
+    assert.equal(authorised, false, prohibited);
+    const historicalPath = spawnSync(
+      '/usr/bin/git',
+      ['ls-tree', '--name-only', authority.base_commit, '--', prohibited],
+      { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] },
+    );
+    assert.equal(historicalPath.status, 0, historicalPath.stderr);
+    assert.equal(historicalPath.stdout.trim(), '', prohibited);
   }
 });
 

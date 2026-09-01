@@ -15,6 +15,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUTPUT = 'evidence/canonical-v2/stage-2y-phase-b/sol-probe.json';
 const RUNS_ROOT = 'evidence/canonical-v2/stage-2y-phase-b/sol-probe-runs';
 const TERRA_BATCH = 'evidence/canonical-v2/stage-2y-l-live-batch.json';
+const LIVE_RUNNER_PATH = 'scripts/canonical-v2-live-extraction-run.mjs';
 const PROFILE = Object.freeze({
   provider_id: 'OPENAI_CODEX_CLI_SUBSCRIPTION', profile_id: 'SOL_MEDIUM',
   model: 'gpt-5.6-sol', reasoning_effort: 'medium',
@@ -65,7 +66,32 @@ function terraCallMap() {
 }
 function outputDirectory(call) { return resolve(ROOT, RUNS_ROOT, hash({ ...call, provider: PROFILE })); }
 function runnerArgs(call, directory) {
-  return [resolve(ROOT, 'scripts/canonical-v2-live-extraction-run.mjs'), '--deal', call.deal, '--family', call.family, '--raw-html', call.raw_html_path, '--section-refs', call.section_reference, '--agreement-date', call.agreement_date, '--profile', 'SOL_MEDIUM', '--phase-b-lead-probe', '--no-follow-citations', '--record', resolve(directory, 'recording.json'), '--out-dir', directory];
+  return [resolve(ROOT, LIVE_RUNNER_PATH), '--deal', call.deal, '--family', call.family, '--raw-html', call.raw_html_path, '--section-refs', call.section_reference, '--agreement-date', call.agreement_date, '--profile', 'SOL_MEDIUM', '--phase-b-lead-probe', '--no-follow-citations', '--record', resolve(directory, 'recording.json'), '--out-dir', directory];
+}
+function generationCommandCheckoutRoot(command) {
+  if (!Array.isArray(command) || typeof command[1] !== 'string') return null;
+  const runner = command[1].replace(/\\/g, '/');
+  const suffix = `/${LIVE_RUNNER_PATH}`;
+  if (!runner.endsWith(suffix)) return null;
+  const root = runner.slice(0, -suffix.length);
+  return root && root !== '/' && resolve(root) === root ? root : null;
+}
+function generationCommandIdentity(command, root) {
+  const prefix = `${root}/`;
+  return command.map((argument) => {
+    if (typeof argument !== 'string') return argument;
+    const normalised = argument.replace(/\\/g, '/');
+    return normalised.startsWith(prefix) ? `$CHECKOUT/${normalised.slice(prefix.length)}` : argument;
+  });
+}
+function generationCommandMatches(recorded, expected) {
+  if (!Array.isArray(recorded) || !Array.isArray(expected) || recorded.length !== expected.length
+    || recorded[0] !== expected[0]) return false;
+  const recordedRoot = generationCommandCheckoutRoot(recorded);
+  const expectedRoot = generationCommandCheckoutRoot(expected);
+  if (!recordedRoot || !expectedRoot) return false;
+  return canonical(generationCommandIdentity(recorded, recordedRoot))
+    === canonical(generationCommandIdentity(expected, expectedRoot));
 }
 function collect(call, directory, terraCall) {
   for (const name of REQUIRED_FILES) if (!existsSync(resolve(directory, name))) throw new Error(`RUN_ARTIFACT_MISSING:${name}`);
@@ -175,7 +201,7 @@ function check(artifact) {
     if (call.call_id !== spec.call_id || canonical(call.spec) !== canonical(spec) || call.receipt_id !== hash(body)) errors.push('CALL_BINDING_INVALID');
     if (spec && canonical(spec) !== canonical(currentSpec)
       && HISTORICAL_CALL_RECEIPTS[call.call_id] !== call.receipt_id) errors.push('HISTORICAL_CALL_SCOPE_INVALID');
-    if (canonical(call.generation_command) !== canonical([process.execPath, ...runnerArgs(spec, directory)])) errors.push('GENERATION_COMMAND_INVALID');
+    if (!generationCommandMatches(call.generation_command, [process.execPath, ...runnerArgs(spec, directory)])) errors.push('GENERATION_COMMAND_INVALID');
     if (!['COMPLETE', 'CALL_FAILED'].includes(call.state) || !Array.isArray(call.errors)) errors.push('CALL_STATE_INVALID');
     if (call.state === 'COMPLETE') {
       const output = call.output; const requestId = output?.provider?.provider_request_ids?.[0];
@@ -205,5 +231,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
 
 export {
   PROFILE, PHASE_B_LIVE_DEFERRED, canonical, collect, compareSection, hash, initial, outputDirectory,
-  runnerArgs, assertLiveProbeAllowed, assertProbeWriteAllowed, check, parseArgs, refreshUnattemptedSpecs, terraCallMap,
+  runnerArgs, generationCommandMatches, assertLiveProbeAllowed, assertProbeWriteAllowed, check, parseArgs,
+  refreshUnattemptedSpecs, terraCallMap,
 };

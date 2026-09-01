@@ -7,6 +7,7 @@ node - "$ROOT" <<'NODE'
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
+const { createHash } = require('crypto');
 
 const root = process.argv[2] || '.';
 
@@ -101,6 +102,11 @@ const STAGE_2Y_PHASE_B_MANIFESTS = Object.freeze({
 const STAGE_2Y_PHASE_B_MODEL_EVIDENCE = Object.freeze({
   'evidence/canonical-v2/stage-2y-phase-b-v2/terra-calls.json': 'STAGE_2Y_PHASE_B_TERRA_CALLS/V2',
 });
+const FAMILY_ROLE_SCHEMA_EVIDENCE_FILE = /^evidence\/canonical-v2\/stage-2y-structure-migration\/control\/family-role-schemas\/([A-Z][A-Z0-9_]*)\.json$/;
+const FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_FILE = 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m5-schema-approval.json';
+const FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_SCHEMA = 'STAGE_2Y_M5_SCHEMA_APPROVAL_RECEIPT/V1';
+const FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_BYTE_LENGTH = 20333;
+const FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_SHA256 = 'ee42380ef1ba26acbbb2bb99b8f2a0982fa9b51bf43e80df8af7351cbb2f351c';
 const HASH_ADDRESSED_STAGE_2Y_L_SOURCE_FILE = /^evidence\/canonical-v2\/stage-2y-l-live-runs\/[a-f0-9]{64}\/(adapter-result|recording|native-producer-recorded-response-[^/]+)\.json$/;
 const HASH_ADDRESSED_PHASE_B_SOURCE_FILE = /^evidence\/canonical-v2\/stage-2y-phase-b\/sol-probe-runs\/[a-f0-9]{64}\/(adapter-result|recording|native-producer-recorded-response-[^/]+)\.json$/;
 const STAGE_2Y_L_SOURCE_SCHEMAS = Object.freeze({
@@ -116,6 +122,8 @@ const PROSE_CLASS_FINGERPRINTS = [
   'applies to Parent and Company',
   'Mergers,\\s*Acquisitions,\\s*Dispositions',
 ];
+const HEX_256 = /^[a-f0-9]{64}$/;
+let familyRoleSchemaEvidenceBindings;
 
 const scopedPatterns = [
   '\\bTSA\\b|transition services agreement',
@@ -209,6 +217,51 @@ function isStage2yPhaseBModelEvidence(rel, src) {
   } catch (_) {
     return false;
   }
+}
+
+function approvedFamilyRoleSchemaEvidenceBindings() {
+  if (familyRoleSchemaEvidenceBindings !== undefined) return familyRoleSchemaEvidenceBindings;
+  familyRoleSchemaEvidenceBindings = null;
+  try {
+    const receiptBytes = fs.readFileSync(path.join(root, FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_FILE));
+    if (receiptBytes.length !== FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_BYTE_LENGTH
+        || createHash('sha256').update(receiptBytes).digest('hex')
+          !== FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_SHA256) return null;
+    const receipt = JSON.parse(receiptBytes.toString('utf8'));
+    if (receipt.schema_version !== FAMILY_ROLE_SCHEMA_APPROVAL_RECEIPT_SCHEMA
+        || receipt.status !== 'PASS'
+        || receipt.lifecycle_state !== 'SEALED'
+        || !Array.isArray(receipt.approved_role_schema_bindings)
+        || receipt.approved_role_schema_bindings.length !== 25) return null;
+    const bindings = new Map();
+    for (const binding of receipt.approved_role_schema_bindings) {
+      const match = typeof binding?.path === 'string'
+        ? binding.path.match(FAMILY_ROLE_SCHEMA_EVIDENCE_FILE)
+        : null;
+      if (!match
+          || binding.family_key !== match[1]
+          || !Number.isSafeInteger(binding.byte_length)
+          || binding.byte_length <= 0
+          || !HEX_256.test(binding.sha256 || '')
+          || bindings.has(binding.path)) return null;
+      bindings.set(binding.path, binding);
+    }
+    if (bindings.size !== 25) return null;
+    familyRoleSchemaEvidenceBindings = bindings;
+    return bindings;
+  } catch (_) {
+    return null;
+  }
+}
+
+function isApprovedFamilyRoleSchemaEvidence(rel, src) {
+  const match = rel.match(FAMILY_ROLE_SCHEMA_EVIDENCE_FILE);
+  if (!match) return false;
+  const binding = approvedFamilyRoleSchemaEvidenceBindings()?.get(rel);
+  if (!binding || binding.family_key !== match[1]) return false;
+  const bytes = Buffer.from(src, 'utf8');
+  return bytes.length === binding.byte_length
+    && createHash('sha256').update(bytes).digest('hex') === binding.sha256;
 }
 
 function isHashAddressedStage2yLSourceFile(rel, src) {
@@ -540,6 +593,10 @@ for (const rel of changedFiles()) {
     if (isHumanAnchorMachinePacket(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (isStage2yPhaseBManifest(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (isStage2yPhaseBModelEvidence(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
+    // Canonical one-line role schemas can place unrelated legal vocabulary on
+    // one regex span. Exempt only sealed, family-bound schemas, and only from
+    // prose fingerprints. Code fingerprints remain active.
+    if (isApprovedFamilyRoleSchemaEvidence(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (isHashAddressedStage2yLSourceFile(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (isHashAddressedPhaseBSourceFile(rel, src) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (new RegExp(pattern, 'im').test(src)) {

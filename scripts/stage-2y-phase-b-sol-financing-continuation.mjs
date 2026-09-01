@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 
 import {
   PROFILE, canonical, collect, hash, outputDirectory, runnerArgs, terraCallMap,
-  check as checkLegacy,
+  generationCommandMatches, check as checkLegacy,
 } from './stage-2y-phase-b-sol-probe.mjs';
 import { assertPhaseBLiveAllowed } from './stage-2y-phase-b-live-authority.mjs';
 
@@ -158,7 +158,7 @@ function check(artifact) {
     const spec = expected.call_manifest[index]; const directory = spec && outputDirectory(spec); const { receipt_id: ignored, ...body } = call;
     if (!spec || call.call_id !== spec.call_id || canonical(call.spec) !== canonical(spec) || call.receipt_id !== hash(body)) errors.push('CALL_BINDING_INVALID');
     if (index === 0 && canonical(call) !== canonical(legacy.calls[0])) errors.push('INHERITED_CALL_INVALID');
-    if (spec && canonical(call.generation_command) !== canonical([process.execPath, ...continuationRunnerArgs(spec, directory)])) errors.push('GENERATION_COMMAND_INVALID');
+    if (spec && !generationCommandMatches(call.generation_command, [process.execPath, ...continuationRunnerArgs(spec, directory)])) errors.push('GENERATION_COMMAND_INVALID');
     if (!['COMPLETE', 'CALL_FAILED'].includes(call.state) || !Array.isArray(call.errors)) errors.push('CALL_STATE_INVALID');
     if (call.state === 'COMPLETE' && spec) {
       const requestId = call.output?.provider?.provider_request_ids?.[0];
