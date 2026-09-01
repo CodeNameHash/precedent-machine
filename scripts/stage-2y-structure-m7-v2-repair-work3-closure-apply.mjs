@@ -17,6 +17,9 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import canonicalModule from '../lib/canonical-v2/canonical-bytes.js';
+import {
+  validateExternalReviewReceipt,
+} from './stage-2y-structure-m7-v2-work3-closure-amendment-candidate.mjs';
 
 const { canonicalJson, contentId, sha256Hex } = canonicalModule;
 
@@ -30,7 +33,34 @@ const APPLICATION_RECEIPT_PATH =
   `${CONTROL}/m7-v2-repair-work3-execution-manifest-closure-amendment-application-receipt.json`;
 const SUCCESSOR_MANIFEST_PATH =
   `${CONTROL}/m7-v2-repair-work3-execution-manifest-closure-successor.json`;
+const REVIEW_TARGET_BRANCH = 'codex/recover-m7-20260812';
 const REVIEW_TARGET_REMOTE_REF = 'origin/codex/recover-m7-20260812';
+const REVIEW_TARGET_LIVE_BRANCH_REF = 'refs/heads/codex/recover-m7-20260812';
+const REVIEW_TARGET_ORIGIN_URL =
+  'https://github.com/CodeNameHash/precedent-machine.git';
+const REVIEW_TARGET_COMMIT_SHA =
+  'f87b4e5cdcfc2a9fe68f4803ae273865322ee966';
+const REVIEW_TARGET_PARENT_COMMIT_SHA =
+  '05b5c49bd549a1d985bb3d888ee92fc313ac88df';
+const REVIEW_TARGET_TREE_SHA =
+  '23fc9fbbb557c70dedf0a97476f556042f931c9a';
+const REVIEW_TARGET_PATH_BLOB_BINDINGS = Object.freeze([
+  Object.freeze({
+    git_blob_oid: '4013eb82d7234534e15e39cd85d9582fa3d2d9c0',
+    path: AMENDMENT_PATH,
+  }),
+  Object.freeze({
+    git_blob_oid: 'c422a26da39b910415251b636302ae27f62ee8a8',
+    path: 'scripts/stage-2y-structure-m7-v2-work3-closure-amendment-candidate.mjs',
+  }),
+  Object.freeze({
+    git_blob_oid: '9eda5b3ab3227fa824952db9a6be0b656e232174',
+    path: 'tests/stage-2y-structure-m7-v2-work3-closure-amendment-candidate.test.js',
+  }),
+]);
+const REVIEW_TARGET_PATHS = Object.freeze(
+  REVIEW_TARGET_PATH_BLOB_BINDINGS.map((binding) => binding.path),
+);
 const APPLICATION_RECEIPT_SCHEMA =
   'STAGE_2Y_M7_V2_REPAIR_WORK3_CLOSURE_AMENDMENT_APPLICATION_RECEIPT/V1';
 const APPLICATION_RECEIPT_ID_FIELD =
@@ -176,57 +206,97 @@ function git(root, argv, options = {}) {
   }).trim();
 }
 
-function validateHistoricalReview(root, review, amendment) {
-  if (!same(review.reviewed_artifact_bindings?.amendment_binding, INPUT_BINDINGS.amendment)
-      || review.status !== 'PASS'
-      || review.review_state !== 'EXTERNAL_CROSS_VENDOR_REVIEW_COMPLETE') {
-    fail('WORK3_CLOSURE_REVIEW_INVALID', REVIEW_RECEIPT_PATH);
-  }
-  const binding = review.review_target_commit_binding;
-  const commit = binding?.commit_sha;
+function validateHistoricalReview(root, review, reviewBytes) {
   try {
-    git(root, ['cat-file', '-e', `${commit}^{commit}`]);
-    const parents = git(root, ['show', '-s', '--format=%P', commit]).split(/\s+/).filter(Boolean);
-    const tree = git(root, ['show', '-s', '--format=%T', commit]);
-    const changedPaths = git(
-      root,
-      ['diff-tree', '--no-commit-id', '--name-only', '-r', commit],
-    ).split('\n').filter(Boolean).sort();
-    if (parents.length !== 1
-        || parents[0] !== binding.parent_commit_sha
-        || tree !== binding.tree_sha
-        || !same(changedPaths, binding.changed_paths)) {
-      fail('WORK3_CLOSURE_HISTORICAL_REVIEW_INVALID', commit);
+    const originUrl = git(root, ['remote', 'get-url', 'origin']);
+    const branchRef = git(root, ['symbolic-ref', '--quiet', 'HEAD']);
+    if (originUrl !== REVIEW_TARGET_ORIGIN_URL
+        || branchRef !== REVIEW_TARGET_LIVE_BRANCH_REF) {
+      fail('WORK3_CLOSURE_REMOTE_IDENTITY_INVALID', 'origin or branch ref');
     }
-    for (const pathBinding of binding.path_blob_bindings) {
+  } catch (error) {
+    if (error instanceof Work3ClosureApplicationError) throw error;
+    fail('WORK3_CLOSURE_REMOTE_IDENTITY_INVALID', 'origin or branch ref');
+  }
+
+  let liveRemoteTip;
+  try {
+    const liveRemoteLine = git(root, [
+      'ls-remote', '--exit-code', REVIEW_TARGET_ORIGIN_URL,
+      REVIEW_TARGET_LIVE_BRANCH_REF,
+    ]);
+    const match = /^([0-9a-f]{40})\t(.+)$/.exec(liveRemoteLine);
+    if (!match || match[2] !== REVIEW_TARGET_LIVE_BRANCH_REF) {
+      fail('WORK3_CLOSURE_REMOTE_HISTORY_INVALID', 'live remote branch');
+    }
+    liveRemoteTip = match[1];
+    git(root, ['cat-file', '-e', `${liveRemoteTip}^{commit}`]);
+    git(root, [
+      'merge-base', '--is-ancestor', REVIEW_TARGET_COMMIT_SHA, liveRemoteTip,
+    ]);
+  } catch (error) {
+    if (error instanceof Work3ClosureApplicationError) throw error;
+    fail(
+      'WORK3_CLOSURE_REMOTE_HISTORY_INVALID',
+      liveRemoteTip ?? REVIEW_TARGET_LIVE_BRANCH_REF,
+    );
+  }
+
+  try {
+    git(root, ['cat-file', '-e', `${REVIEW_TARGET_COMMIT_SHA}^{commit}`]);
+    const parents = git(
+      root,
+      ['show', '-s', '--format=%P', REVIEW_TARGET_COMMIT_SHA],
+    ).split(/\s+/).filter(Boolean);
+    const tree = git(root, [
+      'show', '-s', '--format=%T', REVIEW_TARGET_COMMIT_SHA,
+    ]);
+    const changedPaths = git(root, [
+      'diff-tree', '--no-commit-id', '--name-only', '-r', REVIEW_TARGET_COMMIT_SHA,
+    ]).split('\n').filter(Boolean).sort();
+    if (parents.length !== 1
+        || parents[0] !== REVIEW_TARGET_PARENT_COMMIT_SHA
+        || tree !== REVIEW_TARGET_TREE_SHA
+        || !same(changedPaths, REVIEW_TARGET_PATHS)) {
+      fail('WORK3_CLOSURE_HISTORICAL_REVIEW_INVALID', REVIEW_TARGET_COMMIT_SHA);
+    }
+    for (const pathBinding of REVIEW_TARGET_PATH_BLOB_BINDINGS) {
       const line = git(root, [
-        'ls-tree', '-r', '--full-tree', commit, '--', pathBinding.path,
+        'ls-tree', '-r', '--full-tree', REVIEW_TARGET_COMMIT_SHA, '--',
+        pathBinding.path,
       ]);
       if (line !== `100644 blob ${pathBinding.git_blob_oid}\t${pathBinding.path}`) {
         fail('WORK3_CLOSURE_HISTORICAL_REVIEW_INVALID', pathBinding.path);
       }
     }
-    if (amendment.closure_amendment_id
-        !== review.reviewed_artifact_bindings.amendment_binding.record_id) {
-      fail('WORK3_CLOSURE_REVIEW_INVALID', 'amendment identity');
-    }
   } catch (error) {
     if (error instanceof Work3ClosureApplicationError) throw error;
-    fail('WORK3_CLOSURE_HISTORICAL_REVIEW_INVALID', commit);
+    fail('WORK3_CLOSURE_HISTORICAL_REVIEW_INVALID', REVIEW_TARGET_COMMIT_SHA);
   }
 
-  let remoteTip;
+  const observedReviewTargetCommitBinding = {
+    branch: REVIEW_TARGET_BRANCH,
+    changed_paths: [...REVIEW_TARGET_PATHS],
+    commit_sha: REVIEW_TARGET_COMMIT_SHA,
+    live_remote_commit_sha: REVIEW_TARGET_COMMIT_SHA,
+    live_remote_ref: REVIEW_TARGET_LIVE_BRANCH_REF,
+    origin_url: REVIEW_TARGET_ORIGIN_URL,
+    parent_commit_sha: REVIEW_TARGET_PARENT_COMMIT_SHA,
+    path_blob_bindings: REVIEW_TARGET_PATH_BLOB_BINDINGS.map(
+      (binding) => ({ ...binding }),
+    ),
+    remote_ref: REVIEW_TARGET_REMOTE_REF,
+    remote_ref_commit_sha: REVIEW_TARGET_COMMIT_SHA,
+    tree_sha: REVIEW_TARGET_TREE_SHA,
+  };
   try {
-    if (binding.remote_ref !== REVIEW_TARGET_REMOTE_REF) {
-      fail('WORK3_CLOSURE_REMOTE_HISTORY_INVALID', 'remote ref');
-    }
-    remoteTip = git(root, ['rev-parse', '--verify', `${REVIEW_TARGET_REMOTE_REF}^{commit}`]);
-    git(root, ['merge-base', '--is-ancestor', commit, remoteTip]);
+    validateExternalReviewReceipt(review, reviewBytes, {
+      observedReviewTargetCommitBinding,
+    });
   } catch (error) {
-    if (error instanceof Work3ClosureApplicationError) throw error;
-    fail('WORK3_CLOSURE_REMOTE_HISTORY_INVALID', remoteTip ?? REVIEW_TARGET_REMOTE_REF);
+    fail('WORK3_CLOSURE_REVIEW_INVALID', error.message);
   }
-  return remoteTip;
+  return liveRemoteTip;
 }
 
 function buildApplicationReceipt(amendment) {
@@ -395,9 +465,9 @@ export function applyWork3Closure(options = {}) {
   const root = repositoryRoot(options.repoRoot ?? process.cwd());
   const targets = preflightOutputs(root);
   const amendment = readInput(root, INPUT_BINDINGS.amendment).record;
-  const review = readInput(root, INPUT_BINDINGS.review).record;
+  const reviewInput = readInput(root, INPUT_BINDINGS.review);
   const predecessor = readInput(root, INPUT_BINDINGS.predecessor).record;
-  validateHistoricalReview(root, review, amendment);
+  validateHistoricalReview(root, reviewInput.record, reviewInput.bytes);
   const applicationReceipt = buildApplicationReceipt(amendment);
   const applicationBytes = canonicalBytes(applicationReceipt);
   const successorManifest = buildSuccessorManifest(

@@ -54,6 +54,13 @@ const WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH =
   'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-execution-manifest-closure-successor.json';
 const WORK3_CLOSURE_REVIEW_TARGET_COMMIT =
   'f87b4e5cdcfc2a9fe68f4803ae273865322ee966';
+const WORK3_CLOSURE_ORIGIN_URL =
+  'https://github.com/CodeNameHash/precedent-machine.git';
+const WORK3_CLOSURE_LIVE_BRANCH_REF =
+  'refs/heads/codex/recover-m7-20260812';
+const WORK3_CLOSURE_LIVE_REMOTE_TIP =
+  'f73aa0c4db7862df332301cc0ee066d3444b79fa';
+const REAL_GIT_PATH = execFileSync('which', ['git'], { encoding: 'utf8' }).trim();
 const WORK1_FINALISER_PATH = 'scripts/stage-2y-structure-m7-v2-repair-work1-finalise.mjs';
 const WORK1_VALIDATOR_PATH = 'scripts/stage-2y-structure-m7-v2-repair-work1-validate.mjs';
 const WORK1_RECOVERY_PATH = 'scripts/stage-2y-structure-m7-v2-repair-work1-recover.mjs';
@@ -600,12 +607,53 @@ function makeWork3ClosureApplicationFixture(t) {
   const root = path.join(parent, 'repository');
   t.after(() => rmSync(parent, { recursive: true, force: true }));
   execFileSync('git', ['clone', '--quiet', '--shared', '--no-checkout', REPO_ROOT, root]);
+  const currentCommit = runFixtureGit(root, ['rev-parse', 'HEAD']);
+  runFixtureGit(root, ['update-ref', `refs/heads/${BRANCH}`, currentCommit]);
+  runFixtureGit(root, ['symbolic-ref', 'HEAD', `refs/heads/${BRANCH}`]);
+  runFixtureGit(root, ['remote', 'set-url', 'origin', WORK3_CLOSURE_ORIGIN_URL]);
   for (const repositoryPath of [
     WORK3_MANIFEST_PATH,
     WORK3_CLOSURE_AMENDMENT_PATH,
     WORK3_CLOSURE_REVIEW_RECEIPT_PATH,
   ]) copyRepositoryFile(root, repositoryPath);
-  return { root };
+  const binPath = path.join(parent, 'bin');
+  mkdirSync(binPath);
+  const gitWrapperPath = path.join(binPath, 'git');
+  writeFileSync(gitWrapperPath, [
+    '#!/usr/bin/env node',
+    "const { spawnSync } = require('node:child_process');",
+    'const argv = process.argv.slice(2);',
+    'if (JSON.stringify(argv) === JSON.stringify([',
+    "  'ls-remote', '--exit-code', process.env.WORK3_TEST_ORIGIN_URL,",
+    '  process.env.WORK3_TEST_LIVE_BRANCH_REF,',
+    '])) {',
+    '  process.stdout.write(`${process.env.WORK3_TEST_LIVE_REMOTE_TIP}\\t`',
+    '    + `${process.env.WORK3_TEST_LIVE_BRANCH_REF}\\n`);',
+    '  process.exit(0);',
+    '}',
+    "if (process.env.WORK3_TEST_HISTORICAL_TREE_DRIFT === '1'",
+    "    && argv[0] === 'show' && argv[2] === '--format=%T') {",
+    "  process.stdout.write(`${'0'.repeat(40)}\\n`);",
+    '  process.exit(0);',
+    '}',
+    'const result = spawnSync(process.env.WORK3_TEST_REAL_GIT, argv, {',
+    "  env: process.env, stdio: 'inherit',",
+    '});',
+    'if (result.error) throw result.error;',
+    'process.exit(result.status ?? 1);',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  return {
+    root,
+    environment: {
+      ...process.env,
+      PATH: `${binPath}${path.delimiter}${process.env.PATH}`,
+      WORK3_TEST_LIVE_BRANCH_REF: WORK3_CLOSURE_LIVE_BRANCH_REF,
+      WORK3_TEST_LIVE_REMOTE_TIP: WORK3_CLOSURE_LIVE_REMOTE_TIP,
+      WORK3_TEST_ORIGIN_URL: WORK3_CLOSURE_ORIGIN_URL,
+      WORK3_TEST_REAL_GIT: REAL_GIT_PATH,
+    },
+  };
 }
 
 function runWork3ClosureApplication(root, environment = process.env) {
@@ -7146,14 +7194,14 @@ test('Work3 entry manifest binds exact P50 and rich recovered Work2 lineage', as
   }), 'PREDECESSOR_BINDING_DRIFT');
 });
 
-test('Work3 closure application rejects a remote branch that is not a descendant of the reviewed commit', (t) => {
+test('Work3 closure application rejects a live remote tip that is not a descendant of the reviewed commit', (t) => {
   const fixture = makeWork3ClosureApplicationFixture(t);
-  runFixtureGit(fixture.root, [
-    'update-ref', `refs/remotes/origin/${BRANCH}`,
-    '05b5c49bd549a1d985bb3d888ee92fc313ac88df',
-  ]);
+  const environment = {
+    ...fixture.environment,
+    WORK3_TEST_LIVE_REMOTE_TIP: '05b5c49bd549a1d985bb3d888ee92fc313ac88df',
+  };
 
-  const result = runWork3ClosureApplication(fixture.root);
+  const result = runWork3ClosureApplication(fixture.root, environment);
 
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /WORK3_CLOSURE_REMOTE_HISTORY_INVALID/u);
@@ -7171,6 +7219,65 @@ test('Work3 closure application rejects a remote branch that is not a descendant
   );
 });
 
+test('Work3 closure application rejects the wrong origin before any output write', (t) => {
+  const fixture = makeWork3ClosureApplicationFixture(t);
+  runFixtureGit(fixture.root, [
+    'remote', 'set-url', 'origin', 'https://example.invalid/forged-repository.git',
+  ]);
+
+  const result = runWork3ClosureApplication(fixture.root, fixture.environment);
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /WORK3_CLOSURE_REMOTE_IDENTITY_INVALID/u);
+  assert.equal(
+    existsSync(absolute(fixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH)),
+    false,
+  );
+  assert.equal(
+    existsSync(absolute(fixture.root, WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH)),
+    false,
+  );
+});
+
+test('Work3 closure application rejects the wrong branch before any output write', (t) => {
+  const fixture = makeWork3ClosureApplicationFixture(t);
+  runFixtureGit(fixture.root, ['symbolic-ref', 'HEAD', 'refs/heads/forged-branch']);
+
+  const result = runWork3ClosureApplication(fixture.root, fixture.environment);
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /WORK3_CLOSURE_REMOTE_IDENTITY_INVALID/u);
+  assert.equal(
+    existsSync(absolute(fixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH)),
+    false,
+  );
+  assert.equal(
+    existsSync(absolute(fixture.root, WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH)),
+    false,
+  );
+});
+
+test('Work3 closure application rejects historical review-target observation drift', (t) => {
+  const fixture = makeWork3ClosureApplicationFixture(t);
+  const environment = {
+    ...fixture.environment,
+    WORK3_TEST_HISTORICAL_TREE_DRIFT: '1',
+  };
+
+  const result = runWork3ClosureApplication(fixture.root, environment);
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /WORK3_CLOSURE_HISTORICAL_REVIEW_INVALID/u);
+  assert.equal(
+    existsSync(absolute(fixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH)),
+    false,
+  );
+  assert.equal(
+    existsSync(absolute(fixture.root, WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH)),
+    false,
+  );
+});
+
 test('Work3 closure application creates the exact six-key receipt and predecessor-plus-overlay V2 successor', (t) => {
   const fixture = makeWork3ClosureApplicationFixture(t);
   const predecessor = JSON.parse(readFileSync(absolute(fixture.root, WORK3_MANIFEST_PATH)));
@@ -7179,7 +7286,7 @@ test('Work3 closure application creates the exact six-key receipt and predecesso
   ));
   const overlay = amendment.successor_manifest_contract_overlay;
 
-  const result = runWork3ClosureApplication(fixture.root);
+  const result = runWork3ClosureApplication(fixture.root, fixture.environment);
 
   assert.equal(result.status, 0, result.stderr);
   const commandResult = JSON.parse(result.stdout);
@@ -7299,7 +7406,10 @@ test('Work3 closure application creates the exact six-key receipt and predecesso
 
 test('Work3 closure application is create-once and rejects symlinked output targets before writing', (t) => {
   const appliedFixture = makeWork3ClosureApplicationFixture(t);
-  const firstResult = runWork3ClosureApplication(appliedFixture.root);
+  const firstResult = runWork3ClosureApplication(
+    appliedFixture.root,
+    appliedFixture.environment,
+  );
   assert.equal(firstResult.status, 0, firstResult.stderr);
   const applicationBytes = readFileSync(
     absolute(appliedFixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH),
@@ -7308,7 +7418,10 @@ test('Work3 closure application is create-once and rejects symlinked output targ
     absolute(appliedFixture.root, WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH),
   );
 
-  const repeatedResult = runWork3ClosureApplication(appliedFixture.root);
+  const repeatedResult = runWork3ClosureApplication(
+    appliedFixture.root,
+    appliedFixture.environment,
+  );
 
   assert.notEqual(repeatedResult.status, 0);
   assert.match(repeatedResult.stderr, /WORK3_CLOSURE_ALREADY_APPLIED/u);
@@ -7331,7 +7444,10 @@ test('Work3 closure application is create-once and rejects symlinked output targ
     successorPath,
   );
 
-  const symlinkResult = runWork3ClosureApplication(symlinkFixture.root);
+  const symlinkResult = runWork3ClosureApplication(
+    symlinkFixture.root,
+    symlinkFixture.environment,
+  );
 
   assert.notEqual(symlinkResult.status, 0);
   assert.match(symlinkResult.stderr, /WORK3_CLOSURE_OUTPUT_SAFETY/u);
@@ -7352,7 +7468,10 @@ test('Work3 closure application is create-once and rejects symlinked output targ
   );
   writeFileSync(partialApplicationPath, 'partial\n');
 
-  const partialResult = runWork3ClosureApplication(partialFixture.root);
+  const partialResult = runWork3ClosureApplication(
+    partialFixture.root,
+    partialFixture.environment,
+  );
 
   assert.notEqual(partialResult.status, 0);
   assert.match(partialResult.stderr, /WORK3_CLOSURE_OUTPUT_STATE_DRIFT/u);
@@ -7386,8 +7505,8 @@ test('Work3 closure application rolls back a partial write and permits a clean r
     '',
   ].join('\n'));
   const injectedEnvironment = {
-    ...process.env,
-    NODE_OPTIONS: [process.env.NODE_OPTIONS, `--require=${preloadPath}`]
+    ...fixture.environment,
+    NODE_OPTIONS: [fixture.environment.NODE_OPTIONS, `--require=${preloadPath}`]
       .filter(Boolean)
       .join(' '),
     WORK3_TEST_FAIL_OPEN_PATH: successorPath,
@@ -7403,7 +7522,7 @@ test('Work3 closure application rolls back a partial write and permits a clean r
   );
   assert.equal(existsSync(successorPath), false);
 
-  const retryResult = runWork3ClosureApplication(fixture.root);
+  const retryResult = runWork3ClosureApplication(fixture.root, fixture.environment);
 
   assert.equal(retryResult.status, 0, retryResult.stderr);
   assert.equal(
@@ -7416,7 +7535,7 @@ test('Work3 closure application rolls back a partial write and permits a clean r
 test('Work3 closure successor validation accepts only the exact predecessor-plus-overlay chain', async (t) => {
   const validator = await loadValidator();
   const fixture = makeWork3ClosureApplicationFixture(t);
-  const applyResult = runWork3ClosureApplication(fixture.root);
+  const applyResult = runWork3ClosureApplication(fixture.root, fixture.environment);
   assert.equal(applyResult.status, 0, applyResult.stderr);
   const successorPath = absolute(
     fixture.root,
