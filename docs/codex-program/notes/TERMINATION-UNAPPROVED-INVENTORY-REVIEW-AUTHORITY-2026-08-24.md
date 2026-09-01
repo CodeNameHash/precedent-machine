@@ -28,7 +28,7 @@ The draft packet under `m7-v2-repair-termination-45-profile-inventory-review-pac
 
 The authority stops at `STOP_AFTER_INVENTORY_REVIEW_GREEN_BEFORE_BEN_MANUAL_APPROVAL_AND_PACKAGE_SEAL` with empty `required_successor_sequence`. The following are **not** specified in this scaffold and require a separate authority/decision before implementation:
 
-1. **How Ben records approval** — per-profile disposition capture, session receipt shape, and whether approval is all-at-once or gap-marked.
+1. **How Ben records approval** — draft schema at `TERMINATION-BEN-INVENTORY-SESSION-SUCCESSOR-AUTHORITY-DRAFT-2026-08-24.md` (Phase 1.3); Ben scope approval pending (Phase 1.4).
 2. **Successor after approval** — family package seal / Work3 registration authority name and admission contract.
 3. **Whether approved inventory digest** is derived from Ben session receipt or from a restamped blueprint.
 
@@ -36,12 +36,15 @@ Do not infer approval semantics from the draft packet JSON or by editing the dra
 
 ## Ben review session (manual)
 
-Use the existing packet workflow in `TERMINATION-45-PROFILE-INVENTORY-REVIEW-PACKET-2026-08-24.md`:
+Use the packet workflow in `TERMINATION-45-PROFILE-INVENTORY-REVIEW-PACKET-2026-08-24.md`:
 
 1. Regenerate draft packet (`--mode stage-b`) after confirming core integration GREEN.
-2. Review 45 rows in `profile_review_items` (default: approve-all-except-gaps).
-3. Confirm B9e disclosure note attachment matches prior ruling; do not reopen legal text.
-4. Record approval through the **future** post-scaffold authority path — not by editing the draft.
+2. Phase 0.4 skim: B9e row + one outside-date hold row (see skim checklist in packet note).
+3. Phase 2 review: 45 rows in `profile_review_items` using **`shape_summary`**, **`source_deal`**, **`review_flags`** (default: approve-all-except-gaps-and-holds).
+4. Confirm B9e disclosure note attachment matches prior ruling; do not reopen legal text.
+5. Record approval through successor authority draft (`inventory_session_successor_draft` in packet) — not by editing the draft JSON.
+
+Governance: use `review_workflow.current_governance_stop` and `repository_verification` in the packet header; `stage_b_facade_governance_stop` is the historical facade boundary only.
 
 ## Proof command
 

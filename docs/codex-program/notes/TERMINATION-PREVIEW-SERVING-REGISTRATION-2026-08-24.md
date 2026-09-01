@@ -1,7 +1,7 @@
 # Termination Rights preview serving registration
 
 **Date:** 2026-08-24  
-**Status:** Design only — `CANONICAL_TERMINATION_RIGHTS_REVIEW_SOURCES = {}` today; product path wired, no deal registered.
+**Status:** **Five env-gated preview deals** registered in `termination-rights-review-serving-source.js` (local preproduction only). Red Hat B9e; Metsera outside-date; Skechers outside-date; SkyWater + Concho bridge slots on Red Hat fixture.
 
 ## 1. Deal(s) with Termination V2 analysis/projection available
 
