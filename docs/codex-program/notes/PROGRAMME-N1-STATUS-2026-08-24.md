@@ -1,10 +1,10 @@
 # Programme N1 status — pickup sheet (live)
 
-**Updated:** 2026-08-25 (UTC-4) — **twenty-four** families with Milestone A packages on disk (#1–#24 except Capitalisation); **CAPITALISATION (#25) blocked** (0 comparator claims). Lawful fixture has **24** `on_disk_family_package_overrides`.  
+**Updated:** 2026-09-01 (UTC-4). **Twenty-four** families have Milestone A packages on disk (#1–#24 except Capitalisation). **CAPITALISATION (#25) is blocked** (0 comparator claims). The lawful fixture has **24** `on_disk_family_package_overrides`.
 **Branch:** `codex/recover-m7-20260812` (confirm with `git status --short --branch`)  
 **Authority:** `docs/core/PLAN.md`, `docs/core/OPERATING-RULES.md`
 
-**Technical next (no Ben gate):** Capitalisation comparator write-up (`CAPITALISATION-COMPARATOR-BLOCKAGE-2026-08-25.md`); fixture-proof crosscheck (**0 failures**, 5232 proofs, 2026-08-25); spine merge PR6+ queue (`WORK3-FAMILY-LOCAL-TO-SPINE-MERGE-PLAN-2026-08-24.md` §11). See also `N1-NEXT-FAMILY-2026-08-24.md`.
+**Technical next (no Ben gate):** Capitalisation comparator write-up (`CAPITALISATION-COMPARATOR-BLOCKAGE-2026-08-25.md`); fixture-proof crosscheck (**0 failures**, 5,240 proofs, 2026-09-01); spine merge PR6+ queue (`WORK3-FAMILY-LOCAL-TO-SPINE-MERGE-PLAN-2026-08-24.md` §11). See also `N1-NEXT-FAMILY-2026-08-24.md`.
 
 ---
 
@@ -12,9 +12,9 @@
 
 | Family | Profiles | Disposition | On-disk package | Tests (family file) | Run plan |
 |---|---:|---|---|---|---|
-| **Termination** | 45 | 41 APPROVE + 4 PARTIAL outside-date | `m7-v2-repair-family-work3-profile-package-termination.json` (re-sealed Blocker A 2026-08-24: 1,121,931 bytes) | `work3.test.js` Milestone A slice 19 pass | `TERMINATION-FAMILY-RUN-PLAN-2026-08-24.md` |
+| **Termination** | 45 | 41 APPROVE + 4 PARTIAL outside-date | `m7-v2-repair-family-work3-profile-package-termination.json` (re-sealed Blocker A 2026-08-24: 1,121,991 bytes) | `work3.test.js` Milestone A slice 19 pass | `TERMINATION-FAMILY-RUN-PLAN-2026-08-24.md` |
 | **MAE_DEFINITION** | 4 | 4 APPROVE (review stamps acknowledged) | `m7-v2-repair-family-work3-profile-package-mae-definition.json` | `work3-mae.test.js` 17 pass | `MAE-FAMILY-RUN-PLAN-2026-08-24.md` |
-| **DNO_INDEMNIFICATION** | 31 | 26 APPROVE + 5 HOLD (Metsera linked-duty) | `m7-v2-repair-family-work3-profile-package-dno-indemnification.json` (re-sealed 2026-08-24) | `dno-work3.test.js` 11 pass | `DNO-FAMILY-RUN-PLAN-2026-08-24.md` |
+| **DNO_INDEMNIFICATION** | 33 | 33 APPROVE | `m7-v2-repair-family-work3-profile-package-dno-indemnification-item-42-successor-2026-09-01.json` (431,970 bytes) | `dno-work3.test.js` 12 pass | `DNO-FAMILY-RUN-PLAN-2026-08-24.md` |
 | **GENERAL_COVENANTS** | 54 | 54 APPROVE (6 ACCESS item-44 stamps) | `m7-v2-repair-family-work3-profile-package-general-covenants.json` | `general-covenants-work3.test.js` 9 pass | `GENERAL-COVENANTS-FAMILY-RUN-PLAN-2026-08-24.md` |
 | **GUARANTY_FINANCING_PARTY** | 5 | 5 APPROVE (legal grouping pending) | `m7-v2-repair-family-work3-profile-package-guaranty-financing-party.json` | `guaranty-work3.test.js` 9 pass | `GUARANTY-FAMILY-RUN-PLAN-2026-08-24.md` |
 | **CLOSING_CONDITIONS** | 57 | 41 APPROVE + 16 HOLD (subtype partition unresolved) | `m7-v2-repair-family-work3-profile-package-closing-conditions.json` | `closing-conditions-work3.test.js` 11 pass | `CLOSING-CONDITIONS-FAMILY-RUN-PLAN-2026-08-24.md` |
@@ -91,7 +91,7 @@
 
 **Spine merge optional `module_path` audit (2026-08-24):** **no change needed.** All script and authority JSON `module_path` pins for MAE, D&O, GC, and Guaranty already target the family-local shim files (`m7-v2-*-authoring.js`), which re-export spine — not `m7-v2-profile-authoring.js` directly. Work3 successor authorities carry no `module_path` authoring pins. Smoke: four shims `require()` OK (23–25 exports each); four `*-family-profile-package.mjs` regenerate scripts exit 0 with stable package ids/sha256.
 
-**Lawful Work3 fixture:** **twenty-four** Milestone A on-disk packages are wired via `on_disk_family_package_overrides` in `lawful-work3-family-package-set.json.gz.b64` (Termination 45, MAE 4, D&O 31, General Covenants 54, Guaranty 5, Closing Conditions 57, Representations 70, Financing Covenants 5, Termination Fee 20, No Other Reps / Fraud 36, Antitrust / Regulatory 70, Proxy / Meeting 31, Tax Matters 17, Employee Matters 27, Consideration 7, Key Defined Terms 76, Appraisal / dissenters' rights 5, **No-Shop 365**, Dividends 1, **Specific Performance Remedies 8**, **Interim Operating 113**, **Material Contracts 116**, **Merger Structure / Closing 103**, **Misc Boilerplate 114**). Synthetic `family_package_sources` records remain for `useOnDiskFamilyPackages: false` validator/registration paths. Remaining **1** family stays synthetic: **CAPITALISATION** (comparator blocked).
+**Lawful Work3 fixture:** **twenty-four** Milestone A on-disk packages are wired via `on_disk_family_package_overrides` in `lawful-work3-family-package-set.json.gz.b64` (Termination 45, MAE 4, D&O 33, General Covenants 54, Guaranty 5, Closing Conditions 57, Representations 70, Financing Covenants 5, Termination Fee 20, No Other Reps / Fraud 36, Antitrust / Regulatory 70, Proxy / Meeting 31, Tax Matters 17, Employee Matters 27, Consideration 7, Key Defined Terms 76, Appraisal / dissenters' rights 5, **No-Shop 365**, Dividends 1, **Specific Performance Remedies 8**, **Interim Operating 113**, **Material Contracts 116**, **Merger Structure / Closing 103**, **Misc Boilerplate 114**). Synthetic `family_package_sources` records remain for `useOnDiskFamilyPackages: false` validator/registration paths. Remaining **1** family stays synthetic: **CAPITALISATION** (comparator blocked).
 
 **Lawful fixture (manifest contract):**
 
@@ -102,17 +102,15 @@ CI=true node --test tests/stage-2y-structure-m7-v2-repair-execution-manifest.tes
   --test-name-pattern='Work3 entry manifest binds exact P50'
 ```
 
-On-disk Milestone A packages load when `buildLawfulWork3FamilyPackageSetFixture({ useOnDiskFamilyPackages: true })` (378 profiles in derived profile set: thirteen applicable sealed packages plus 13 synthetic one-profile families; `ANTITRUST_REGULATORY` override is recorded but withheld until dependent families seal). Rich Work4/prepareWork3 paths keep `useOnDiskFamilyPackages: false` — see the two blockers below.
+On-disk validation loads 25 family packages and 1,310 profiles. Twenty-four packages are sealed on disk. Capitalisation remains the one synthetic family. The richer preparation paths continue to use synthetic packages by design.
 
-**Lawful-fixture dimension-evidence gap (2026-08-24):** **D&O defect fixed, Blocker A closed; item-42 (Blocker B) is the sole remaining gate and needs Ben.** Full write-up in `LAWFUL-FIXTURE-DIMENSION-EVIDENCE-GAP-2026-08-24.md`.
+**Lawful-fixture closure (updated 2026-09-01): Blockers A and B are closed.** Full background is in `LAWFUL-FIXTURE-DIMENSION-EVIDENCE-GAP-2026-08-24.md`.
 
-- **Fixed (corrected 2026-09-01 at landing).** All five package generators hard-coded `evidence_binding: matchFixtureBindings[1]`. For D&O that index is a wrong-subtype fixture its anchor profile does not prove; the other four hit a proof index by coincidence. The D&O generator now derives the binding from the anchor's POSITIVE `fixture_proofs` entry, so closure is structural. The authoritative local package, test pin and lawful-fixture pin are `byte_length` 407,522, `sha256` `5fccaa143aed5deb4eecd81e9efaf3782930eaf282b069e6e5bc35f939acb0ed`, id `e5b568d8eaa764a63a17e4fc6337b3049c8cfa5163947cb230c120027c38395e`, and **31** dimension-evidence rows. These supersede the earlier figures in this note. The 31-profile inventory and 26 APPROVE / 5 HOLD disposition are untouched.
-- **Termination Blocker A (corrected 2026-09-01 at landing).** Per-profile fixture proofs were added across all 45 profiles. The authoritative local package, test pin and lawful-fixture pin are `byte_length` 1,121,991, `sha256` `22afbea939eb086d63f415008d1cc1c52db89214bf720363b9a4ed1d509ad550`, id `f0718b673a6a22bf41f3492c72bbf3fed15eeb1745c06d2eb6d19a007103adeb`, and **45** dimension-evidence rows. These supersede both the earlier 519,840-byte seal and the later 1,121,931-byte figure in this note. The local generator, `work3.test.js`, and lawful fixture pin the same package.
-- The two dropped rows were owned by `RIGHTS_SURVIVAL` and `NO_ADVERSE_AMENDMENT`, the item-42 profiles Ben deliberately held. They asserted dimensions no on-disk D&O profile declares; they return when the HOLD lifts.
-- **Blocker A — closed (2026-08-24).** Every approved profile in every sealed family now carries all four fixture kinds and a dimension-evidence row bound to its own POSITIVE proof. A shared generator helper, `scripts/lib/stage-2y-structure-m7-v2-family-package-fixture-closure.mjs`, authors a POSITIVE and a NEAR_NEGATIVE fixture per profile from that profile's own match tokens plus two family-level negatives, and is wired into every sealed family generator. Three latent defects were fixed on the way: colliding match tokens (48-character signature truncation, now suffixed with a signature digest), the template's cross-package WRONG_FAMILY witness (replaced by a family-local sample; the `ANTITRUST_REGULATORY` on-disk override is withheld until the families citing its synthetic profile seal), and a non-atomic antitrust match token. `node scripts/stage-2y-structure-m7-v2-work3-fixture-proof-crosscheck.mjs` recomputes every proof the way the validator will and reports 0 failures over 1,488 proofs.
-- **Blocker B (D&O, needs Ben).** `m7-v2-repair-contract-policy.json` pins the item-42 shared source to exactly `PROFILE:DNO_INDEMNIFICATION:NO_ADVERSE_AMENDMENT` and `:RIGHTS_SURVIVAL`. The sealed package contains neither because those rows are on HOLD, so the sealed policy requires two profiles the approved inventory withholds. Full-set validation is blocked until that legal review is decided.
-
-(landing note 2026-09-01: full-set gate red in CI pending the item-42 successor session)
+- **D&O predecessor preserved.** The 31-profile predecessor records 26 APPROVE and 5 HOLD rows. It remains unchanged at 407,522 bytes, SHA-256 `5fccaa143aed5deb4eecd81e9efaf3782930eaf282b069e6e5bc35f939acb0ed`, id `e5b568d8eaa764a63a17e4fc6337b3049c8cfa5163947cb230c120027c38395e`.
+- **Termination Blocker A closed (corrected 2026-09-01 at landing).** Per-profile fixture proofs were added across all 45 profiles. The authoritative local package, test pin and lawful-fixture pin are 1,121,991 bytes, SHA-256 `22afbea939eb086d63f415008d1cc1c52db89214bf720363b9a4ed1d509ad550`, id `f0718b673a6a22bf41f3492c72bbf3fed15eeb1745c06d2eb6d19a007103adeb`, and **45** dimension-evidence rows. These supersede both the earlier 519,840-byte seal and the later 1,121,931-byte figure in this note.
+- **D&O Blocker B closed.** Ben's 2026-08-25 ruling applies because the Metsera rights-survival and no-adverse-amendment duties are separate operative units. The successor session added those two profiles and approved the five previously held Metsera rows. The current lawful-fixture package has 33 profiles and 33 dimension-evidence rows. It is `m7-v2-repair-family-work3-profile-package-dno-indemnification-item-42-successor-2026-09-01.json`, 431,970 bytes, SHA-256 `f66610f532c347e1546ca8df3131d100cc131b33b9d2be200385292959df0e74`, id `bed7b4e2b0294cc4d0505e1439f79f6a719e523caa59aa4ff73029c4b4605925`.
+- **Validation green.** The on-disk set passes with 25 packages and 1,310 profiles. The fixture-proof crosscheck passes 5,240 proofs with 0 failures.
+- **Independent review pending.** The application receipt is `docs/codex-program/notes/N1-DNO-ITEM-42-RULING-APPLICATION-RECEIPT-2026-09-01.json`. Its independent-review state is `PENDING` and its stamp remains uncleared.
 
 **Regenerate packages** (any re-seal invalidates the lawful fixture's `on_disk_family_package_overrides` — refresh them after):
 
@@ -152,7 +150,7 @@ node scripts/stage-2y-structure-m7-v2-closing-conditions-ben-inventory-dispositi
 node scripts/stage-2y-structure-m7-v2-closing-conditions-family-profile-package.mjs
 ```
 
-Closing Conditions is wired into `on_disk_family_package_overrides` in the lawful Work3 fixture (`fixture_digest` `135a570d…`). The package itself passes single-family inventory validation (`FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING`); full-set `validateFamilyProfilePackageSetForWork3` on on-disk mode remains blocked on the known dimension-evidence / item-42 gaps documented below.
+Closing Conditions is wired into `on_disk_family_package_overrides` in the lawful Work3 fixture (`fixture_digest` `135a570d…`). The package itself passes single-family inventory validation (`FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING`). The on-disk full set passes 25 packages and 1,310 profiles.
 
 **Representations Milestone A proof (2026-08-24, exit 0, 11 pass / 0 fail):**
 
@@ -171,7 +169,7 @@ node scripts/stage-2y-structure-m7-v2-representations-ben-inventory-disposition.
 node scripts/stage-2y-structure-m7-v2-representations-family-profile-package.mjs
 ```
 
-Representations is wired into `on_disk_family_package_overrides` in the lawful Work3 fixture (`fixture_digest` `db2785b0…`). The package passes single-family inventory validation (`FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING`); full-set `validateFamilyProfilePackageSetForWork3` on on-disk mode remains blocked on the known dimension-evidence / item-42 gaps documented below.
+Representations is wired into `on_disk_family_package_overrides` in the lawful Work3 fixture (`fixture_digest` `db2785b0…`). The package passes single-family inventory validation (`FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING`). The on-disk full set passes 25 packages and 1,310 profiles.
 
 **Financing covenants Milestone A proof (2026-08-24, exit 0, 10 pass / 0 fail):**
 
@@ -190,7 +188,7 @@ node scripts/stage-2y-structure-m7-v2-financing-covenants-ben-inventory-disposit
 node scripts/stage-2y-structure-m7-v2-financing-covenants-family-profile-package.mjs
 ```
 
-Financing Covenants is wired into `on_disk_family_package_overrides` in the lawful Work3 fixture (`fixture_digest` `db2785b0…`). The package itself passes single-family inventory validation (`FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING`); full-set `validateFamilyProfilePackageSetForWork3` on on-disk mode remains blocked on the known dimension-evidence / item-42 gaps documented below.
+Financing Covenants is wired into `on_disk_family_package_overrides` in the lawful Work3 fixture (`fixture_digest` `db2785b0…`). The package itself passes single-family inventory validation (`FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING`). The on-disk full set passes 25 packages and 1,310 profiles.
 
 **Combined proof (run separately — full `work3.test.js` takes ~15+ min):**
 
@@ -630,7 +628,7 @@ One profile per governed M4 claim across six comparator deals. Six sealed M5 sub
 |---|---|---|
 | **1** | **REPRESENTATIONS** Milestone A (#6) — ✅ **complete** (70 profiles, 70 APPROVE / 0 HOLD, 11/11 tests incl. lawful-fixture override); spine merge pending | `REPRESENTATIONS-FAMILY-RUN-PLAN-2026-08-24.md` |
 | 2 | Spine merge — **PR1–PR4 done** (MAE, D&O, GC, Guaranty); optional `module_path` audit **closed — no change needed** | `WORK3-FAMILY-LOCAL-TO-SPINE-MERGE-PLAN-2026-08-24.md` |
-| 3 | Lawful fixture on-disk full-set validate — D&O DE fixed; **Blocker A (per-profile fixture proofs) closed**; Blocker B (item-42 shared-source) is the sole remaining gate and needs Ben | `LAWFUL-FIXTURE-DIMENSION-EVIDENCE-GAP-2026-08-24.md` |
+| 3 | Lawful fixture on-disk full-set validation is green at **25 packages / 1,310 profiles**; Blockers A and B are closed | `LAWFUL-FIXTURE-DIMENSION-EVIDENCE-GAP-2026-08-24.md` |
 | 4 | **CLOSING_CONDITIONS** Milestone A (#7) — ✅ **complete** (57 profiles, 41 APPROVE / 16 HOLD, 11/11 tests incl. lawful-fixture override); spine merge pending | `CLOSING-CONDITIONS-FAMILY-RUN-PLAN-2026-08-24.md` |
 | 5 | **NO_OTHER_REPS_FRAUD** Milestone A (#8) — ✅ **complete** (36 profiles, 36 APPROVE / 0 HOLD, 12/12 tests incl. lawful-fixture override); spine merge pending | `NO-OTHER-REPS-FRAUD-FAMILY-RUN-PLAN-2026-08-24.md` |
 | 6 | **FINANCING_COVENANTS** Milestone A (#9) — ✅ **complete** (5 profiles, 5 APPROVE / 0 HOLD, 10/10 tests incl. lawful-fixture override); spine merge pending | `FINANCING-COVENANTS-FAMILY-RUN-PLAN-2026-08-24.md` |
@@ -657,7 +655,7 @@ One profile per governed M4 claim across six comparator deals. Six sealed M5 sub
 ## Open holds (honest — not bugs)
 
 - **Termination:** 4 outside-date rows PARTIAL (extension linked, not in signature)
-- **D&O:** 5 Metsera rows HOLD (item-42 linked-duty deferred) — this also blocks on-disk full-set Work3 validation, because the sealed contract policy pins the item-42 shared source to the two withheld profiles
+- **D&O:** no remaining item-42 holds. All 33 rows are approved. Independent review of the application receipt remains pending
 - **MAE:** self-containment unproven + Metsera subject-term mismatch flagged in review stamps
 - **Guaranty:** 5 profiles APPROVE with `LEGAL_GROUPING_REVIEW_REQUIRED` on all rows (`PERFORMANCE_GUARANTY` subtype grouping pending legal)
 - **GC:** item-44 access-scope disposition deferred (6 ACCESS rows APPROVED with review stamp)

@@ -20,6 +20,8 @@ const { canonicalJson, contentId, sha256Hex } = canonicalModule;
 const REPO_ROOT = join(import.meta.dirname, '..');
 const CONTROL = 'evidence/canonical-v2/stage-2y-structure-migration/control';
 const PACKAGE_PATH = `${CONTROL}/m7-v2-repair-family-work3-profile-package-dno-indemnification.json`;
+export const ITEM42_SUCCESSOR_PACKAGE_PATH =
+  `${CONTROL}/m7-v2-repair-family-work3-profile-package-dno-indemnification-item-42-successor-2026-09-01.json`;
 const WORK3_AUTHORITY_PATH =
   `${CONTROL}/m7-v2-repair-contract-work3-entry-correction-authority.json`;
 
@@ -30,11 +32,19 @@ const FAMILY_PACKAGE_APPROVAL_SCHEMA =
 const SUBTYPE_TREE_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_SUBTYPE_TREE/V1';
 
 const BEN_APPROVAL_ID = 'BEN_APPROVAL:DNO_INDEMNIFICATION:PROFILE_SET_V1';
-const LEGAL_DECISIONS = [
+const ITEM42_PROFILE_KEYS = [
+  'PROFILE:DNO_INDEMNIFICATION:NO_ADVERSE_AMENDMENT',
+  'PROFILE:DNO_INDEMNIFICATION:RIGHTS_SURVIVAL',
+];
+const PROFILE_LEGAL_AUTHORITIES = [
   BEN_APPROVAL_ID,
   'M5-RULING-ONE-OPERATIVE-LIMB',
   'M5-RULING-ONE-SEMANTIC-OWNER',
   'M5-RULING-FAIL-DEPENDENT-PROPOSITION',
+];
+const ITEM42_SUCCESSOR_LEGAL_DECISIONS = [
+  ...PROFILE_LEGAL_AUTHORITIES,
+  'd44da4450537479614de70175996b16a86495de989d1795ed4c01b7cba24412e',
 ];
 
 const DNO_PHASE2_AUTHORITY_BINDING = {
@@ -145,7 +155,7 @@ function buildProfileFromTemplate(templateProfile, {
   profile.subtype_path = [...classificationPath];
   profile.classification_path = [...classificationPath];
   profile.required_expression_signature = requiredExpressionSignature;
-  profile.legal_authority_ids = [...LEGAL_DECISIONS].sort();
+  profile.legal_authority_ids = [...PROFILE_LEGAL_AUTHORITIES].sort();
   profile.fixture_proofs = [];
   profile.shared_source_lawyer_decision_ids = [];
   profile.match_test = {
@@ -154,6 +164,13 @@ function buildProfileFromTemplate(templateProfile, {
     scope: 'EFFECT_SOURCE_SPANS',
     tokens: ['familydnoindemnification', profileMatchToken(requiredExpressionSignature)],
   };
+  return profile;
+}
+
+function buildItem42Profile(templateProfile) {
+  const profile = cloneProfileTemplate(templateProfile);
+  profile.parent_profile_id = null;
+  profile.fixture_proofs = [];
   return profile;
 }
 
@@ -262,11 +279,9 @@ function buildRegistrationFixture() {
   return { phase4Review, registration, phase4Fixture };
 }
 
-// The lawful template's other two dimension-evidence rows are owned by the
-// item-42 RIGHTS_SURVIVAL and NO_ADVERSE_AMENDMENT profiles, which this package
-// deliberately does not contain: Ben held those five linked-duty rows for
-// deferred shared-source review. Only the root row is carried forward, as the
-// shape every approved profile's own evidence row is built from.
+// The root evidence record supplies the source class and ruling used by the
+// generated per-profile records. The two item-42 profiles carry their own
+// lawful-fixture field shapes and therefore generate their own exact fixtures.
 function rootDimensionEvidenceTemplate(template, templateProfile) {
   const rootEvidence = template.dimension_evidence.find(
     (evidence) => evidence.profile_id === templateProfile.profile_id,
@@ -277,7 +292,8 @@ function rootDimensionEvidenceTemplate(template, templateProfile) {
   return rootEvidence;
 }
 
-function buildPackageRecord() {
+export function buildPackageRecord({ item42Successor = false } = {}) {
+  const packagePath = item42Successor ? ITEM42_SUCCESSOR_PACKAGE_PATH : PACKAGE_PATH;
   const snapshot = loadLawfulFixtureSnapshot();
   const template = lawfulFamilyTemplate(snapshot, 'DNO_INDEMNIFICATION');
   const templateProfile = template.profiles.find(
@@ -295,20 +311,34 @@ function buildPackageRecord() {
     }))
     .sort((left, right) => left.packageProfileKey.localeCompare(right.packageProfileKey));
 
-  const profiles = profileSpecs.map((spec) => buildProfileFromTemplate(templateProfile, {
-    packageProfileKey: spec.packageProfileKey,
-    classificationPath: spec.classificationPath,
-    requiredExpressionSignature: spec.requiredExpressionSignature,
-  }));
+  const item42TemplateProfiles = item42Successor
+    ? ITEM42_PROFILE_KEYS.map((profileKey) => {
+      const profile = template.profiles.find((entry) => entry.profile_key === profileKey);
+      if (profile === undefined) {
+        throw new Error(`lawful fixture has no ${profileKey} profile`);
+      }
+      return profile;
+    })
+    : [];
+
+  const profiles = [
+    ...profileSpecs.map((spec) => buildProfileFromTemplate(templateProfile, {
+      packageProfileKey: spec.packageProfileKey,
+      classificationPath: spec.classificationPath,
+      requiredExpressionSignature: spec.requiredExpressionSignature,
+    })),
+    ...item42TemplateProfiles.map(buildItem42Profile),
+  ];
 
   const templateFixtures = template.match_fixtures.map((fixture) => {
     const { match_fixture_id: ignored, ...unsigned } = fixture;
     return sealBoundRecord(fixture.schema_version, 'match_fixture_id', unsigned);
   });
   const closure = buildFamilyProfileFixtureClosure({
-    packagePath: PACKAGE_PATH,
+    packagePath,
     profiles,
     templateProfile,
+    specialisedTemplateProfiles: item42TemplateProfiles,
     templateFixtures,
   });
   const matchFixtures = closure.matchFixtures;
@@ -340,7 +370,9 @@ function buildPackageRecord() {
   const inventory = {
     family_key: 'DNO_INDEMNIFICATION',
     profile_set_version: 1,
-    legal_decisions: [...LEGAL_DECISIONS].sort(),
+    legal_decisions: [...(item42Successor
+      ? ITEM42_SUCCESSOR_LEGAL_DECISIONS
+      : PROFILE_LEGAL_AUTHORITIES)].sort(),
     profile_ids: profiles.map((profile) => profile.profile_id),
     subtype_tree_id: subtypeTree.subtype_tree_id,
     match_fixture_record_ids: matchFixtures.map((fixture) => fixture.match_fixture_id),
@@ -356,9 +388,10 @@ function buildPackageRecord() {
       family_key: 'DNO_INDEMNIFICATION',
       profile_set_version: 1,
       approver: 'BEN_GOODCHILD',
-      approved_on: '2026-08-24',
-      approval_text:
-        'Ben approves the DNO_INDEMNIFICATION 31-profile Work3 package inventory (26 APPROVE, 5 HOLD).',
+      approved_on: item42Successor ? '2026-09-01' : '2026-08-24',
+      approval_text: item42Successor
+        ? 'Ben approves the DNO_INDEMNIFICATION 33-profile Work3 successor package inventory (33 APPROVE, 0 HOLD) after applying dno-item-42-linked-duty-blocker-b.'
+        : 'Ben approves the DNO_INDEMNIFICATION 31-profile Work3 package inventory (26 APPROVE, 5 HOLD).',
       approved_inventory_digest: sha256Hex(Buffer.from(canonicalJson(inventory), 'utf8')),
       approved_decision_classes: ['V2_PROFILE_APPROVALS'],
     },
@@ -381,11 +414,11 @@ function buildPackageRecord() {
     },
   );
 
-  return { packageRecord, inventory };
+  return { packagePath, packageRecord, inventory };
 }
 
-function main() {
-  const { packageRecord, inventory } = buildPackageRecord();
+export function generateDnoIndemnificationFamilyProfilePackage(options = {}) {
+  const { packagePath, packageRecord, inventory } = buildPackageRecord(options);
   const work3Authority = read(WORK3_AUTHORITY_PATH);
 
   const validation = validateSingleFamilyPackageInventory({
@@ -410,21 +443,25 @@ function main() {
   }
 
   const bytes = Buffer.from(`${canonicalJson(packageRecord)}\n`, 'utf8');
-  const outputPath = join(REPO_ROOT, PACKAGE_PATH);
-  writeFileSync(outputPath, bytes);
+  const outputPath = join(REPO_ROOT, packagePath);
+  if (options.write ?? true) writeFileSync(outputPath, bytes);
 
-  const outputBinding = binding(PACKAGE_PATH, packageRecord, 'family_profile_package_id');
+  const outputBinding = binding(packagePath, packageRecord, 'family_profile_package_id');
+  const item42Successor = options.item42Successor ?? false;
   console.log(JSON.stringify({
-    path: PACKAGE_PATH,
+    path: packagePath,
     family_profile_package_id: packageRecord.family_profile_package_id,
     profile_count: packageRecord.profiles.length,
-    approve_count: 26,
-    hold_count: 5,
+    approve_count: item42Successor ? 33 : 26,
+    hold_count: item42Successor ? 0 : 5,
     byte_length: outputBinding.byte_length,
     sha256: outputBinding.sha256,
     git_blob_oid: outputBinding.git_blob_oid,
     validation_status: validation.status,
   }, null, 2));
+  return { packagePath, packageRecord, inventory, outputBinding, bytes };
 }
 
-main();
+if (process.argv[1] && import.meta.url === `file://${process.argv[1]}`) {
+  generateDnoIndemnificationFamilyProfilePackage();
+}

@@ -19,6 +19,30 @@ const AUTHORITY_BINDING = Object.freeze({
   sha256: '42dce2b3bc1f8730bb9a9532e8e9b34872f14117a38cdd97ba1be659e7647deb',
   git_blob_oid: '5ff4bcd0ca719c4da97dd9bb64d610349e3d7afd',
 });
+const DNO_ITEM42_SUCCESSOR_AUTHORITY_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/'
+  + 'm7-v2-repair-contract-work3-dno-indemnification-item-42-registration-successor-authority-2026-09-01.json';
+const DNO_ITEM42_SUCCESSOR_AUTHORITY_BINDING = Object.freeze({
+  byte_length: 4151,
+  git_blob_oid: 'c643a9bb8f659cc1f6b228ad62057af2be22df04',
+  path: DNO_ITEM42_SUCCESSOR_AUTHORITY_PATH,
+  record_id: '38ba8297bcb7cf46dc9eee5b3feccc2008f9bc0f3b7242f5009c14a508dac472',
+  record_id_field: 'item42_registration_successor_authority_id',
+  schema_version: 'N1_DNO_ITEM42_REGISTRATION_SUCCESSOR_AUTHORITY/V1',
+  sha256: '934a0b84fcde4124b9c781e42d08c06f2016de058e96fd484ae0ab36411f77b3',
+});
+const DNO_PREDECESSOR_PACKAGE_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/'
+  + 'm7-v2-repair-family-work3-profile-package-dno-indemnification.json';
+const DNO_PREDECESSOR_PACKAGE_BINDING = Object.freeze({
+  byte_length: 407522,
+  git_blob_oid: 'c410d22bf518be891479995f878cdc2aa45b2b30',
+  path: DNO_PREDECESSOR_PACKAGE_PATH,
+  record_id: 'e5b568d8eaa764a63a17e4fc6337b3049c8cfa5163947cb230c120027c38395e',
+  record_id_field: 'family_profile_package_id',
+  schema_version: 'STAGE_2Y_M7_V2_FAMILY_PROFILE_PACKAGE/V2',
+  sha256: '5fccaa143aed5deb4eecd81e9efaf3782930eaf282b069e6e5bc35f939acb0ed',
+});
 const FIXTURE_PATH =
   'tests/fixtures/canonical-v2/m7-v2-repair/lawful-work3-family-package-set.json.gz.b64';
 const PACKAGE_MEMBER_BINDING_SCHEMA =
@@ -259,6 +283,28 @@ function buildLawfulWork3FamilyPackageSetFixture(options = {}) {
     AUTHORITY_BINDING,
     'Work3 entry-correction authority',
   );
+  const dnoItem42SuccessorAuthoritySource = useOnDiskFamilyPackages
+    ? assertExpectedBinding(
+      exactRecordSource(
+        DNO_ITEM42_SUCCESSOR_AUTHORITY_PATH,
+        readFileSync(join(REPO_ROOT, DNO_ITEM42_SUCCESSOR_AUTHORITY_PATH)),
+        'item42_registration_successor_authority_id',
+      ),
+      DNO_ITEM42_SUCCESSOR_AUTHORITY_BINDING,
+      'D&O item-42 package successor authority',
+    )
+    : null;
+  const dnoPredecessorPackageSource = useOnDiskFamilyPackages
+    ? assertExpectedBinding(
+      exactRecordSource(
+        DNO_PREDECESSOR_PACKAGE_PATH,
+        readFileSync(join(REPO_ROOT, DNO_PREDECESSOR_PACKAGE_PATH)),
+        'family_profile_package_id',
+      ),
+      DNO_PREDECESSOR_PACKAGE_BINDING,
+      'D&O sealed predecessor package',
+    )
+    : null;
   const scope = authoritySource.record.work3_scope_contract;
   const familyPackageSources = snapshot.family_package_sources.map(({ binding, record }) => {
     const override = useOnDiskFamilyPackages ? onDiskOverrides.get(record.family_key) : undefined;
@@ -317,6 +363,7 @@ function buildLawfulWork3FamilyPackageSetFixture(options = {}) {
   });
   const validationInput = {
     work3Authority: authoritySource.record,
+    dnoItem42SuccessorAuthority: dnoItem42SuccessorAuthoritySource?.record ?? null,
     familyProfileSet: profileSetSource.record,
     familyPackageSources,
     familyPacketSet: familyPacketSource.record,
@@ -325,6 +372,14 @@ function buildLawfulWork3FamilyPackageSetFixture(options = {}) {
   };
   const fileEntries = [
     [authoritySource.binding.path, authoritySource.bytes],
+    ...(dnoItem42SuccessorAuthoritySource === null ? [] : [[
+      dnoItem42SuccessorAuthoritySource.binding.path,
+      dnoItem42SuccessorAuthoritySource.bytes,
+    ]]),
+    ...(dnoPredecessorPackageSource === null ? [] : [[
+      dnoPredecessorPackageSource.binding.path,
+      dnoPredecessorPackageSource.bytes,
+    ]]),
     [profileSetSource.binding.path, profileSetSource.bytes],
     [structureSetSource.binding.path, structureSetSource.bytes],
     [familyPacketSource.binding.path, familyPacketSource.bytes],
@@ -338,6 +393,8 @@ function buildLawfulWork3FamilyPackageSetFixture(options = {}) {
   return {
     validationInput,
     authoritySource,
+    dnoItem42SuccessorAuthoritySource,
+    dnoPredecessorPackageSource,
     profileSetSource,
     structureSetSource,
     familyPacketSource,

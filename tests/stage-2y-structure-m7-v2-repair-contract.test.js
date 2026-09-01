@@ -2045,7 +2045,10 @@ function buildProfileInfrastructure({
         profile_key: descriptor.profile_key,
         profile_set_version: 1,
         family_key: familyKey,
-        parent_profile_id: index === 0 ? null : rootProfile.profile_id,
+        parent_profile_id: index === 0
+          || (options.negativeCaseId === 'complete-tree-has-multiple-roots'
+            && familyKey === 'DNO_INDEMNIFICATION' && index === 1)
+          ? null : rootProfile.profile_id,
         subtype_path: subtypePath,
         classification_path: subtypePath,
         required_fields: requiredFields,
@@ -2123,6 +2126,10 @@ function buildProfileInfrastructure({
         legal_authority_ids: [...new Set([
           rulingId,
           ...(item42ClaimContinuation ? ['M5-RULING-ONE-SEMANTIC-OWNER'] : []),
+          ...(options.negativeCaseId === 'profile-invents-untraced-packet-ruling'
+            && descriptor.profile_key === 'PROFILE:TERMINATION'
+            ? ['d44da4450537479614de70175996b16a86495de989d1795ed4c01b7cba24412e']
+            : []),
           benApprovalIdByFamily.get(familyKey),
         ])].sort(),
         shared_source_lawyer_decision_ids: sharedSourceLawyerDecisionIds,
@@ -5678,6 +5685,7 @@ function familyProfilePackageSetValidationInput(scenario) {
   }
   return {
     work3Authority: WORK3_ENTRY_CORRECTION_AUTHORITY,
+    dnoItem42SuccessorAuthority: null,
     familyProfileSet: scenario.profiles.profileSet,
     familyPackageSources: C3_FAMILY_ORDER.map((familyKey, index) => ({
       binding: scenario.profiles.packageBindings[index],
@@ -9319,8 +9327,8 @@ test('Work3 manifest contract lawful fixture binds on-disk Milestone A family pa
       profileCount: 4,
     },
     DNO_INDEMNIFICATION: {
-      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-dno-indemnification.json',
-      profileCount: 31,
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-dno-indemnification-item-42-successor-2026-09-01.json',
+      profileCount: 33,
     },
     GENERAL_COVENANTS: {
       path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-general-covenants.json',
@@ -9368,12 +9376,19 @@ test('Work3 manifest contract lawful fixture binds on-disk Milestone A family pa
     (entry) => entry.record.family_key === 'ANTITRUST_REGULATORY',
   );
   assert.equal(antitrust.record.profiles.length, 1);
-  assert.equal(fixture.profileSetSource.record.profiles.length, 1308);
+  assert.equal(fixture.profileSetSource.record.profiles.length, 1310);
   assert.equal(fixture.familyPackageSources.length, 25);
+  const closingConditions = fixture.familyPackageSources.find(
+    (entry) => entry.record.family_key === 'CLOSING_CONDITIONS',
+  ).record.subtype_tree;
+  assert.equal(closingConditions.completeness_state, 'TREE_OUTPUT_INCOMPLETE');
+  assert.equal(closingConditions.nodes.filter(
+    (node) => node.parent_profile_key === null,
+  ).length, 57);
 });
 
 test('shared Work3 family-package validator closes the exact approved set', () => {
-  const fixture = buildLawfulWork3FamilyPackageSetFixture({ useOnDiskFamilyPackages: false });
+  const fixture = buildLawfulWork3FamilyPackageSetFixture({ useOnDiskFamilyPackages: true });
   const input = fixture.validationInput;
   assert.deepEqual(fixture.authoritySource.record, WORK3_ENTRY_CORRECTION_AUTHORITY);
   assert.deepEqual(
@@ -9391,6 +9406,33 @@ test('shared Work3 family-package validator closes the exact approved set', () =
     structure_disposition_count: input.structureDispositionSet.members.length,
   });
   assert.equal(Object.isFrozen(result), true);
+
+  assertCode(() => validateFamilyProfilePackageSetForWork3({
+    ...input,
+    dnoItem42SuccessorAuthority: null,
+  }), 'M7_V2_PROFILE_GATE');
+
+  for (const mutate of [
+    (authority) => { authority.exact_changed_existing_ordinals = [14, 19, 22, 25]; },
+    (authority) => { authority.ruling_id = 'wrong-ruling'; },
+    (authority) => { authority.predecessor_package_binding.sha256 = '0'.repeat(64); },
+    (authority) => { authority.successor_package_binding.path += '.wrong'; },
+    (authority) => { authority.family_package_seal_receipt_binding.sha256 = '0'.repeat(64); },
+    (authority) => { authority.successor_disposition_binding.sha256 = '0'.repeat(64); },
+    (authority) => { authority.successor_policy_pin_binding.sha256 = '0'.repeat(64); },
+  ]) {
+    const successorAuthority = clone(input.dnoItem42SuccessorAuthority);
+    mutate(successorAuthority);
+    restampBound(
+      successorAuthority,
+      'N1_DNO_ITEM42_REGISTRATION_SUCCESSOR_AUTHORITY/V1',
+      'item42_registration_successor_authority_id',
+    );
+    assertCode(() => validateFamilyProfilePackageSetForWork3({
+      ...input,
+      dnoItem42SuccessorAuthority: successorAuthority,
+    }), 'M7_V2_PROFILE_GATE');
+  }
 
   assertCode(() => validateFamilyProfilePackageSetForWork3({
     ...input,
@@ -9509,6 +9551,12 @@ test('shared Work3 family-package validator rejects each package-semantic delta'
     }),
     buildScenario(cases.baseline_case, {
       negativeCaseId: 'ambiguous-repeat-synthetic-index-semantic-alternative',
+    }),
+    buildScenario(cases.baseline_case, {
+      negativeCaseId: 'complete-tree-has-multiple-roots',
+    }),
+    buildScenario(cases.baseline_case, {
+      negativeCaseId: 'profile-invents-untraced-packet-ruling',
     }),
     buildScenario(cases.baseline_case, {
       packageMemberAuthorityIdByFamily: {

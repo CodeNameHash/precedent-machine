@@ -11,6 +11,8 @@
 //
 // Usage:
 //   node scripts/stage-2y-structure-m7-v2-lawful-work3-fixture-refresh-overrides.mjs [--check]
+//   node scripts/stage-2y-structure-m7-v2-lawful-work3-fixture-refresh-overrides.mjs \
+//     --family DNO_INDEMNIFICATION --path evidence/.../successor.json
 
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -24,6 +26,15 @@ const REPO_ROOT = join(import.meta.dirname, '..');
 const FIXTURE_PATH =
   'tests/fixtures/canonical-v2/m7-v2-repair/lawful-work3-family-package-set.json.gz.b64';
 const CHECK_ONLY = process.argv.includes('--check');
+const FAMILY_INDEX = process.argv.indexOf('--family');
+const PATH_INDEX = process.argv.indexOf('--path');
+const REDIRECT_FAMILY = FAMILY_INDEX === -1 ? null : process.argv[FAMILY_INDEX + 1];
+const REDIRECT_PATH = PATH_INDEX === -1 ? null : process.argv[PATH_INDEX + 1];
+
+if ((REDIRECT_FAMILY === null) !== (REDIRECT_PATH === null)
+    || REDIRECT_FAMILY === undefined || REDIRECT_PATH === undefined) {
+  throw new Error('--family and --path must be supplied together with values');
+}
 
 function gitBlobOid(bytes) {
   return createHash('sha1').update(Buffer.concat([
@@ -61,12 +72,23 @@ function main() {
   const fixture = loadFixture();
   const changes = [];
   const overrides = fixture.on_disk_family_package_overrides.map((override) => {
-    const binding = bindingForPackage(override.binding.path);
+    const targetPath = override.family_key === REDIRECT_FAMILY
+      ? REDIRECT_PATH
+      : override.binding.path;
+    const binding = bindingForPackage(targetPath);
+    const record = JSON.parse(readFileSync(join(REPO_ROOT, targetPath), 'utf8'));
+    if (record.family_key !== override.family_key) {
+      throw new Error(`${targetPath} is not a ${override.family_key} package`);
+    }
     if (canonicalJson(binding) !== canonicalJson(override.binding)) {
       changes.push({
         family_key: override.family_key,
-        from: { byte_length: override.binding.byte_length, sha256: override.binding.sha256 },
-        to: { byte_length: binding.byte_length, sha256: binding.sha256 },
+        from: {
+          byte_length: override.binding.byte_length,
+          path: override.binding.path,
+          sha256: override.binding.sha256,
+        },
+        to: { byte_length: binding.byte_length, path: binding.path, sha256: binding.sha256 },
       });
     }
     return { ...override, binding };

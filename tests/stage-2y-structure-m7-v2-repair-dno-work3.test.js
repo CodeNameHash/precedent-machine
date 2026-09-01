@@ -217,6 +217,16 @@ function sourceEnvelope(binding) {
   };
 }
 
+function assertContentAddressed(binding) {
+  physicalBytes(binding);
+  const record = readRecord(binding.path);
+  const unsigned = structuredClone(record);
+  delete unsigned[binding.record_id_field];
+  assert.equal(contentId(binding.schema_version, unsigned), binding.record_id, binding.path);
+  assert.equal(record[binding.record_id_field], binding.record_id, binding.path);
+  return record;
+}
+
 function sortedUnique(values) {
   return [...new Set(values)].sort();
 }
@@ -609,6 +619,82 @@ const DNO_WORK3_FAMILY_PROFILE_PACKAGE_BINDING = Object.freeze({
   sha256: '5fccaa143aed5deb4eecd81e9efaf3782930eaf282b069e6e5bc35f939acb0ed',
 });
 
+const DNO_ITEM42_SUCCESSOR_BINDINGS = Object.freeze({
+  policy: Object.freeze({
+    byte_length: 4644,
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-policy-item-42-successor-authority-2026-09-01.json',
+    record_id: '5618d94dea06aa0a1e7fac948031d38ab028b541e0316792540fe03fb93b88e8',
+    record_id_field: 'item42_policy_pin_successor_authority_id',
+    schema_version: 'N1_DNO_ITEM42_POLICY_PIN_SUCCESSOR_AUTHORITY/V1',
+    sha256: '7fd28a6bc36264cde6b1d316dfa35adc556af5a0d5793d54aa123575a7fb5c9f',
+  }),
+  inventoryAuthority: Object.freeze({
+    byte_length: 6675,
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-dno-indemnification-item-42-ben-inventory-session-successor-authority-2026-09-01.json',
+    record_id: '0232904492879fdcc03f45aca86c514f94cba9a7b58394c8b4f9c67cf42b25f2',
+    record_id_field: 'item42_inventory_session_successor_authority_id',
+    schema_version: 'N1_DNO_ITEM42_INVENTORY_SESSION_SUCCESSOR_AUTHORITY/V1',
+    sha256: 'f9e6c0cf629eca06d2d4ea3bf1b5c501d9f2f1ed8d77f073a691d9c936ed85f3',
+  }),
+  disposition: Object.freeze({
+    byte_length: 9800,
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-dno-33-profile-inventory-disposition-item-42-successor-2026-09-01.json',
+    record_id: '71eff36c209588af11e36a878e760661aeb14e2d244b4c685a1ea719f5725a52',
+    record_id_field: 'inventory_disposition_id',
+    schema_version: 'N1_DNO_ITEM42_33_PROFILE_INVENTORY_DISPOSITION/V1',
+    sha256: 'eaee3ae7906fc32aff1bb360f5d03ae589a88a0bff15d1eb9708ff78c6da644c',
+  }),
+  sessionReceipt: Object.freeze({
+    byte_length: 2252,
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-dno-ben-inventory-session-item-42-successor-receipt-2026-09-01.json',
+    record_id: 'e26b1570846ecacbe16d8d01681cd3648072636fb765110f09830e568adb8ad1',
+    record_id_field: 'ben_inventory_session_receipt_id',
+    schema_version: 'N1_DNO_ITEM42_BEN_INVENTORY_SESSION_RECEIPT/V1',
+    sha256: 'a39f4c271946746cee53e06edb9026aa73b9974adfc84049dbb0475f6222f90a',
+  }),
+  sealAuthority: Object.freeze({
+    byte_length: 3527,
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-dno-indemnification-item-42-family-package-seal-successor-authority-2026-09-01.json',
+    record_id: '1942eea1f8464f04c7ca340483cb99165d37f19f88e36fa07bdb2ea3cba296a3',
+    record_id_field: 'item42_family_package_seal_successor_authority_id',
+    schema_version: 'N1_DNO_ITEM42_FAMILY_PACKAGE_SEAL_SUCCESSOR_AUTHORITY/V1',
+    sha256: '5d51ec96b31cbacd0357704270c4e64867ae0f2059186247f74bcc31a5648477',
+  }),
+  package: Object.freeze({
+    byte_length: 431970,
+    git_blob_oid: 'e8bb49c1ec87953903a21c46ea971d96e7ac1a1c',
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-profile-package-dno-indemnification-item-42-successor-2026-09-01.json',
+    record_id: 'bed7b4e2b0294cc4d0505e1439f79f6a719e523caa59aa4ff73029c4b4605925',
+    record_id_field: 'family_profile_package_id',
+    schema_version: 'STAGE_2Y_M7_V2_FAMILY_PROFILE_PACKAGE/V2',
+    sha256: 'f66610f532c347e1546ca8df3131d100cc131b33b9d2be200385292959df0e74',
+  }),
+  sealReceipt: Object.freeze({
+    byte_length: 2820,
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-dno-indemnification-item-42-family-package-seal-receipt-2026-09-01.json',
+    record_id: '4d1d936db237141e25aa932d17193678f4da43f209029116a8ce5cc0e5d7e46a',
+    record_id_field: 'item42_family_package_seal_receipt_id',
+    schema_version: 'N1_DNO_ITEM42_FAMILY_PACKAGE_SEAL_RECEIPT/V1',
+    sha256: '340d2685d5b906150224265bf2a9d0374fb585727222570245ac5331e9eeed31',
+  }),
+  registrationAuthority: Object.freeze({
+    byte_length: 4151,
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-dno-indemnification-item-42-registration-successor-authority-2026-09-01.json',
+    record_id: '38ba8297bcb7cf46dc9eee5b3feccc2008f9bc0f3b7242f5009c14a508dac472',
+    record_id_field: 'item42_registration_successor_authority_id',
+    schema_version: 'N1_DNO_ITEM42_REGISTRATION_SUCCESSOR_AUTHORITY/V1',
+    sha256: '934a0b84fcde4124b9c781e42d08c06f2016de058e96fd484ae0ab36411f77b3',
+  }),
+  applicationReceipt: Object.freeze({
+    byte_length: 19363,
+    path: 'docs/codex-program/notes/N1-DNO-ITEM-42-RULING-APPLICATION-RECEIPT-2026-09-01.json',
+    record_id: '2fbddfc0170f6e8954701a6ef37e26be7effc8417331faf270ec88457f602af8',
+    record_id_field: 'ruling_application_receipt_id',
+    schema_version: 'N1_RULING_APPLICATION_RECEIPT/V1',
+    sha256: '35ae2e16ad48054d3ea33418569bc57bc9de7c89ffc95792ba88f66933a73039',
+  }),
+});
+
 const LAWFUL_WORK3_FIXTURE_PATH =
   'tests/fixtures/canonical-v2/m7-v2-repair/lawful-work3-family-package-set.json.gz.b64';
 
@@ -724,6 +810,154 @@ test('DNO Milestone A family profile package on disk validates 31 registered pro
   assert.equal(holdCount, 5);
 });
 
+test('DNO item-42 successor session preserves the old seal and closes exactly seven ruled rows', () => {
+  physicalBytes(DNO_WORK3_FAMILY_PROFILE_PACKAGE_BINDING);
+  const records = Object.fromEntries(Object.entries(DNO_ITEM42_SUCCESSOR_BINDINGS).map(
+    ([key, binding]) => [key, assertContentAddressed(binding)],
+  ));
+  const item42ProfileKeys = [
+    'PROFILE:DNO_INDEMNIFICATION:NO_ADVERSE_AMENDMENT',
+    'PROFILE:DNO_INDEMNIFICATION:RIGHTS_SURVIVAL',
+  ];
+  const liftedOrdinals = [14, 19, 22, 25, 27];
+  const sharedDecisionId =
+    'd44da4450537479614de70175996b16a86495de989d1795ed4c01b7cba24412e';
+
+  assert.equal(records.disposition.profile_dispositions.length, 33);
+  assert.deepEqual(records.disposition.session_summary, {
+    added_profile_count: 2,
+    approved_count: 33,
+    hold_count: 0,
+    item_42_existing_hold_lift_count: 5,
+    reject_count: 0,
+  });
+  const changedExisting = records.disposition.profile_dispositions.filter(
+    (row) => liftedOrdinals.includes(row.ordinal),
+  );
+  assert.deepEqual(changedExisting.map((row) => row.ordinal), liftedOrdinals);
+  for (const row of changedExisting) {
+    assert.equal(row.disposition, 'APPROVE');
+    assert.equal(row.prior_disposition, 'HOLD');
+    assert.equal(
+      row.prior_disposition_reason,
+      'ITEM_42_LINKED_DUTY_SHARED_SOURCE_REVIEW_DEFERRED',
+    );
+    assert.equal(row.linked_duty_deferred_acknowledged, true);
+    assert.deepEqual(row.review_flags_acknowledged, [
+      'LINKED_DUTY_SHARED_SOURCE_REVIEW_UNAPPROVED',
+    ]);
+    assert.deepEqual(row.ruling_application, {
+      option_id: 'approve-child-profiles',
+      ruling_id: 'dno-item-42-linked-duty-blocker-b',
+    });
+  }
+  assert.deepEqual(
+    records.disposition.profile_dispositions.slice(31).map((row) => ({
+      ordinal: row.ordinal,
+      package_profile_key: row.package_profile_key,
+      proposed_profile_key: row.proposed_profile_key,
+    })),
+    [{
+      ordinal: 32,
+      package_profile_key: item42ProfileKeys[0],
+      proposed_profile_key:
+        '56248703b1f52c3a189d2170a4b57e1ac21d9ad2f17926387cd33c4a513f1e5c',
+    }, {
+      ordinal: 33,
+      package_profile_key: item42ProfileKeys[1],
+      proposed_profile_key:
+        'f3fdf674d8f2971de4da042eba343c7314ad7122228981ebdd9d45b68e782a76',
+    }],
+  );
+
+  assert.equal(records.package.profiles.length, 33);
+  assert.equal(records.package.dimension_evidence.length, 33);
+  assert.equal(records.package.legal_decisions.includes(sharedDecisionId), true);
+  const successorProfiles = item42ProfileKeys.map(
+    (profileKey) => records.package.profiles.find((profile) => profile.profile_key === profileKey),
+  );
+  assert.equal(successorProfiles.every(Boolean), true);
+  for (const profile of successorProfiles) {
+    assert.deepEqual(profile.shared_source_lawyer_decision_ids, [sharedDecisionId]);
+    assert.equal(profile.legal_authority_ids.includes(sharedDecisionId), false);
+    assert.equal(records.package.dimension_evidence.some(
+      (evidence) => evidence.profile_id === profile.profile_id,
+    ), true);
+  }
+  assert.equal(records.package.profiles.filter(
+    (profile) => profile.shared_source_lawyer_decision_ids.includes(sharedDecisionId),
+  ).length, 2);
+
+  const work3Authority = readRecord(DNO_WORK3_ENTRY_CORRECTION_AUTHORITY_PATH);
+  const memberInventory = {
+    family_key: records.package.family_key,
+    profile_set_version: records.package.profile_set_version,
+    legal_decisions: records.package.legal_decisions,
+    profile_ids: records.package.profiles.map((profile) => profile.profile_id),
+    subtype_tree_id: records.package.subtype_tree.subtype_tree_id,
+    match_fixture_record_ids: records.package.match_fixtures.map(
+      (fixture) => fixture.match_fixture_id,
+    ),
+    dimension_evidence_ids: records.package.dimension_evidence.map(
+      (evidence) => evidence.dimension_evidence_id,
+    ),
+    structure_fixture_ids: [],
+  };
+  assert.equal(validateSingleFamilyPackageInventory({
+    work3Authority,
+    familyKey: records.package.family_key,
+    profileSetVersion: records.package.profile_set_version,
+    benApprovalId: records.package.family_approval.ben_approval_id,
+    legalDecisions: records.package.legal_decisions,
+    members: {
+      profiles: records.package.profiles,
+      subtype_tree: records.package.subtype_tree,
+      match_fixtures: records.package.match_fixtures,
+      dimension_evidence: records.package.dimension_evidence,
+      structure_fixture_members: records.package.structure_fixture_members,
+    },
+    memberInventory,
+    inventoryFingerprint: records.package.family_approval.approved_inventory_digest,
+  }).status, 'FAMILY_MEMBER_IDENTITY_PASS_SEMANTIC_AND_GLOBAL_SET_PENDING');
+
+  assert.equal(records.registrationAuthority.predecessor_package_binding.sha256,
+    DNO_WORK3_FAMILY_PROFILE_PACKAGE_BINDING.sha256);
+  assert.deepEqual(records.registrationAuthority.successor_package_binding,
+    DNO_ITEM42_SUCCESSOR_BINDINGS.package);
+  assert.deepEqual(records.registrationAuthority.exact_changed_existing_ordinals,
+    liftedOrdinals);
+  assert.deepEqual(records.registrationAuthority.exact_new_profile_keys,
+    item42ProfileKeys);
+  assert.equal(records.registrationAuthority.stamp_clearance_permitted, false);
+  assert.equal(records.sealReceipt.independent_review_state, 'PENDING');
+  assert.equal(records.sealReceipt.stamp_cleared, false);
+  assert.equal(records.applicationReceipt.schema_version, 'N1_RULING_APPLICATION_RECEIPT/V1');
+  assert.equal(records.applicationReceipt.independent_review_state, 'PENDING');
+  assert.equal(records.applicationReceipt.stamp_cleared, false);
+  assert.equal(records.applicationReceipt.changed_rows.length, 7);
+  assert.deepEqual(
+    records.applicationReceipt.changed_rows.slice(0, 5).map((row) => ({
+      analysis_claim_id: row.m4_claim.analysis_claim_id,
+      claim_definition_key: row.m4_claim.claim_definition_key,
+    })),
+    [
+      ['e741e1ef03bcaae353eaa17446c05ed2b1c6ef286f6c553522e9ce089fb79a84',
+        'INDEMNIFICATION_SURVIVAL_YEARS'],
+      ['7c134ea8ba53a22f1ce174be59199b8f8eff4e2bf3c99f389e003e0408914e5c',
+        'TAIL_PREMIUM_CAP_PERCENT'],
+      ['ed84404e1f7cb3184973e32dd93b6f8a92d0d0c6ead112fb7c39db4a596b0099',
+        'CHARTER_PROTECTION_CONTINUATION'],
+      ['17d970d94b595559e6a911480f732469bf958403ae49ef3c3676a18cbffb0ab6',
+        'TAIL_POLICY_OBLIGATION'],
+      ['0815f3f1c92e5db866a1dc9106fa60ca65c9557285bf25239aac2fdc7006abc9',
+        'INDEMNIFICATION_CONTINUATION'],
+    ].map(([analysis_claim_id, claim_definition_key]) => ({
+      analysis_claim_id,
+      claim_definition_key,
+    })),
+  );
+});
+
 // Regression guard for the sealed-package defect diagnosed in
 // docs/codex-program/notes/LAWFUL-FIXTURE-DIMENSION-EVIDENCE-GAP-2026-08-24.md:
 // every dimension_evidence row bound match_fixtures[1], a wrong-subtype fixture
@@ -794,7 +1028,7 @@ test('DNO Milestone A package dimension evidence closes on its owner profile fix
   }
 });
 
-test('lawful Work3 fixture DNO on-disk override tracks the sealed package bytes', () => {
+test('lawful Work3 fixture DNO on-disk override tracks the item-42 successor seal', () => {
   const encoded = readFileSync(join(REPO_ROOT, LAWFUL_WORK3_FIXTURE_PATH), 'utf8').trim();
   const fixture = JSON.parse(
     gunzipSync(Buffer.from(encoded, 'base64')).toString('utf8'),
@@ -810,11 +1044,11 @@ test('lawful Work3 fixture DNO on-disk override tracks the sealed package bytes'
     (entry) => entry.family_key === 'DNO_INDEMNIFICATION',
   );
   assert.ok(override, 'lawful Work3 fixture has no DNO_INDEMNIFICATION on-disk override');
-  assert.equal(override.binding.path, DNO_WORK3_FAMILY_PROFILE_PACKAGE_BINDING.path);
+  assert.equal(override.binding.path, DNO_ITEM42_SUCCESSOR_BINDINGS.package.path);
   for (const field of ['byte_length', 'record_id', 'schema_version', 'sha256']) {
     assert.equal(
       override.binding[field],
-      DNO_WORK3_FAMILY_PROFILE_PACKAGE_BINDING[field],
+      DNO_ITEM42_SUCCESSOR_BINDINGS.package[field],
       `lawful Work3 fixture override ${field} is stale`,
     );
   }

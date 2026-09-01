@@ -165,6 +165,8 @@ function fixtureById(fixtures, fixtureId, label) {
  * @param {string} input.packagePath repository path of the package being sealed
  * @param {object[]} input.profiles unsealed profile bodies carrying `match_test`
  * @param {object} input.templateProfile lawful-fixture template profile
+ * @param {object[]} [input.specialisedTemplateProfiles] lawful-fixture profiles
+ *   whose field shape differs from the family root template
  * @param {object[]} input.templateFixtures sealed fixtures carried over from the
  *   lawful template package
  * @returns {{matchFixtures: object[], proofsByProfileKey: Map<string, object[]>,
@@ -174,6 +176,7 @@ export function buildFamilyProfileFixtureClosure({
   packagePath,
   profiles,
   templateProfile,
+  specialisedTemplateProfiles = [],
   templateFixtures,
 }) {
   const templateProofs = templateProofsByKind(templateProfile);
@@ -184,7 +187,10 @@ export function buildFamilyProfileFixtureClosure({
     templateFixtures, templateProofs.get('WRONG_SUBTYPE').fixture_id, 'template WRONG_SUBTYPE',
   );
   const wrongFamilyProof = templateProofs.get('WRONG_FAMILY');
-  const payload = fixturePayload(positiveTemplate);
+  const rootPayload = fixturePayload(positiveTemplate);
+  const specialisedTemplatesByKey = new Map(
+    specialisedTemplateProfiles.map((profile) => [profile.profile_key, profile]),
+  );
   const familyKey = templateProfile.family_key;
   const wrongFamilySlug = profileSlug(familyKey);
   // A token no approved match test in any family carries, so the sample lands
@@ -195,19 +201,29 @@ export function buildFamilyProfileFixtureClosure({
     input_occurrence_id: `fixture-wrong-family-${wrongFamilySlug}`,
     authored_unit_source_text: wrongFamilyText,
     effect_source_text: wrongFamilyText,
-    ...payload,
+    ...rootPayload,
   });
 
   const generated = profiles.map((profile) => {
+    const profileTemplate = specialisedTemplatesByKey.get(profile.profile_key)
+      ?? templateProfile;
+    const profileTemplateProofs = templateProofsByKind(profileTemplate);
+    const profilePositiveTemplate = fixtureById(
+      templateFixtures,
+      profileTemplateProofs.get('POSITIVE').fixture_id,
+      `${profile.profile_key} template POSITIVE`,
+    );
+    const payload = fixturePayload(profilePositiveTemplate);
     const tokens = matchTestTokens(profile);
     const slug = profileSlug(profile.profile_key);
     const positiveText = tokens.join(' ');
     const nearText = [...tokens.slice(0, -1), `${tokens.at(-1)}x`].join(' ');
     return {
       profile,
+      templateProofs: profileTemplateProofs,
       positive: sealBoundRecord(MATCH_FIXTURE_SCHEMA, 'match_fixture_id', {
         fixture_id: `fixture-positive-${slug}`,
-        input_occurrence_id: positiveTemplate.input_occurrence_id,
+        input_occurrence_id: profilePositiveTemplate.input_occurrence_id,
         authored_unit_source_text: positiveText,
         effect_source_text: positiveText,
         ...payload,
@@ -222,11 +238,20 @@ export function buildFamilyProfileFixtureClosure({
     };
   });
 
-  const matchFixtures = [
+  const rawMatchFixtures = [
     ...templateFixtures,
     wrongFamilyFixture,
     ...generated.flatMap((entry) => [entry.positive, entry.nearNegative]),
-  ].sort((left, right) => (
+  ];
+  const fixturesByFixtureId = new Map();
+  for (const fixture of rawMatchFixtures) {
+    const existing = fixturesByFixtureId.get(fixture.fixture_id);
+    if (existing !== undefined && canonicalJson(existing) !== canonicalJson(fixture)) {
+      throw new Error(`generated match fixture ${fixture.fixture_id} changes template bytes`);
+    }
+    fixturesByFixtureId.set(fixture.fixture_id, fixture);
+  }
+  const matchFixtures = [...fixturesByFixtureId.values()].sort((left, right) => (
     left.match_fixture_id < right.match_fixture_id ? -1
       : left.match_fixture_id > right.match_fixture_id ? 1 : 0
   ));
@@ -282,7 +307,7 @@ export function buildFamilyProfileFixtureClosure({
         expected_selected_profile_key: profile.profile_key,
         expected_predicate_result_digest: singleLeafPredicateDigest(leafId, true),
         decisive_leaf_ids: [leafId],
-        lawyer_ruling_id: templateProofs.get('POSITIVE').lawyer_ruling_id,
+        lawyer_ruling_id: entry.templateProofs.get('POSITIVE').lawyer_ruling_id,
       },
       {
         fixture_id: entry.nearNegative.fixture_id,
@@ -293,7 +318,7 @@ export function buildFamilyProfileFixtureClosure({
         expected_selected_profile_key: null,
         expected_predicate_result_digest: singleLeafPredicateDigest(leafId, false),
         decisive_leaf_ids: [leafId],
-        lawyer_ruling_id: templateProofs.get('NEAR_NEGATIVE').lawyer_ruling_id,
+        lawyer_ruling_id: entry.templateProofs.get('NEAR_NEGATIVE').lawyer_ruling_id,
       },
       {
         fixture_id: wrongFamilyFixture.fixture_id,

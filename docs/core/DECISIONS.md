@@ -2028,3 +2028,28 @@ the row-correction recovery in
 `docs/codex-program/notes/HANDOFF-2026-08-12.md` is complete.
 
 M8 is not authorised.
+
+---
+
+## 20. D&O item-42 linked duties: RULING APPLIED 2026-09-01
+
+Ben's 2026-08-25 ruling approved each Metsera limb as a separate comparison
+line if the rights-survival and no-adverse-amendment duties were distinct
+operative units. They are distinct. Metsera states “(ii) shall survive the
+Merger,” at
+`evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c.agreement-index.json`
+bytes `[202825,202856)`. It separately states that the rights “shall not ...
+be amended, repealed or otherwise modified” in a way that adversely affects
+an indemnified party at bytes `[203136,203421)`. The first duty preserves the
+rights through the merger. The second duty prevents later adverse change.
+
+The successor session added separate Rights Survival and No Adverse Amendment
+profiles. It also approved the five previously held Metsera rows. The
+31-profile predecessor remains preserved at 407,522 bytes, SHA-256
+`5fccaa143aed5deb4eecd81e9efaf3782930eaf282b069e6e5bc35f939acb0ed`.
+The 33-profile successor is 431,970 bytes, SHA-256
+`f66610f532c347e1546ca8df3131d100cc131b33b9d2be200385292959df0e74`.
+
+The complete on-disk set now passes with 25 family packages and 1,310
+profiles. The ruling application receipt still awaits independent review.
+No review stamp was cleared.
