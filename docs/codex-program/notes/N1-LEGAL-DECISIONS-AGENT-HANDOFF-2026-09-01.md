@@ -1,6 +1,12 @@
 # Handoff — N1 legal decisions / bucket taxonomy (2026-09-01)
 
-**Status:** Prior agent failed Ben’s usability bar for “legal grouping review.” Ben is restarting with a new agent. Do **not** treat the 2026-09-01 receipt as approvals to clear stamps.
+**Superseded for paste:** Use the full-app restart prompt instead:
+
+→ `docs/codex-program/notes/N1-LEGAL-DECISIONS-AGENT-RESTART-PROMPT-2026-09-01.md`
+
+That version includes the full `docs/core/` build map, the failure to learn from the old (V1) app, and requires the new agent to return a plan for (i) clearing this block and (ii) getting to a made app ASAP — before rebuilding UI or clearing stamps.
+
+**Status:** Prior agent failed Ben’s usability bar for “legal grouping review.” Do **not** treat the 2026-09-01 receipt as approvals to clear stamps.
 
 **Branch:** `codex/recover-m7-20260812`  
 **Authority:** `docs/core/OPERATING-RULES.md`, `docs/core/PLAN.md`, `docs/core/DECISIONS.md`  
@@ -8,7 +14,7 @@
 
 ---
 
-## Paste this prompt to a new agent
+## Earlier narrow paste prompt (kept for history; do not prefer)
 
 ```text
 You are taking over Precedent Machine N1 Work3 legal-decision work from a failed prior attempt.
