@@ -17,6 +17,10 @@ const {
   LIVE_EXTRACTION_ORCHESTRATORS,
   READ_ONLY_GIT_INSPECTORS,
   READ_ONLY_GIT_ARTIFACT_WRITERS,
+  LOCAL_SUBPROCESS_ARTIFACT_WRITERS,
+  REMOTE_GIT_REVIEW_ARTIFACT_WRITERS,
+  REMOTE_SOURCE_ADMISSION_WRITERS,
+  LOCAL_REVIEW_SERVER_WRITERS,
   PRODUCTION_PATH_PURE_ANALYSIS_SOURCES,
   LIVE_EXTRACTION_RUN_SOURCES,
   LOCAL_DATABASE_PROOF_SOURCES,
@@ -68,8 +72,9 @@ const SOURCE_EXTENSION = /\.(?:[cm]?js|jsx|mjs|ts|tsx)$/;
 // detection, never less); resolution is a single forward pass in source order, so an
 // alias or wrapper must be DECLARED before it is used, and backward references, cycles,
 // and reassignment via plain `=` after declaration are not traced; a dynamically computed
-// require specifier or a computed member access (`obj['request']`) is invisible to static
-// analysis, exactly as it was to the old regex; SQL and "vercel deploy" phrase detection
+// require specifier remains invisible to static analysis. Literal computed members such as
+// `obj['request']` are resolved, while an unknown HTTP/global member is conservatively
+// treated as network-capable. SQL and "vercel deploy" phrase detection
 // still pattern-matches literal string/template content, so (as before) a prose string
 // merely mentioning either phrase can still register -- comments are no longer reachable
 // at all, but literal string content was, and remains, matched on text.
@@ -118,7 +123,6 @@ function capabilityParsers() {
 
 const CAPABILITY_ACORN_OPTIONS = Object.freeze({
   ecmaVersion: 'latest',
-  sourceType: 'module',
   allowReturnOutsideFunction: true,
   allowAwaitOutsideFunction: true,
   allowHashBang: true,
@@ -130,10 +134,12 @@ const CAPABILITY_ACORN_OPTIONS = Object.freeze({
 function parseCapabilitySource(source, filePath) {
   const { acorn, sucrase } = capabilityParsers();
   if (!acorn) return null;
-  try {
-    return acorn.parse(source, CAPABILITY_ACORN_OPTIONS);
-  } catch {
-    // Almost always JSX. Lower it and retry; if that still fails the module is opaque.
+  for (const sourceType of ['module', 'script']) {
+    try {
+      return acorn.parse(source, { ...CAPABILITY_ACORN_OPTIONS, sourceType });
+    } catch {
+      // CommonJS permits some declarations that module grammar rejects.
+    }
   }
   if (!sucrase) return null;
   try {
@@ -142,10 +148,17 @@ function parseCapabilitySource(source, filePath) {
       filePath: filePath || 'module.jsx',
       production: true,
     }).code;
-    return acorn.parse(lowered, CAPABILITY_ACORN_OPTIONS);
+    for (const sourceType of ['module', 'script']) {
+      try {
+        return acorn.parse(lowered, { ...CAPABILITY_ACORN_OPTIONS, sourceType });
+      } catch {
+        // Try both grammars before treating lowered JSX as opaque.
+      }
+    }
   } catch {
-    return null;
+    // Fall through to the fail-closed null result.
   }
+  return null;
 }
 
 const CAPABILITY_AST_SKIP_KEYS = Object.freeze(new Set(['type', 'start', 'end', 'loc', 'range', 'comments']));
@@ -164,6 +177,14 @@ function walkCapabilityAst(node, visit) {
     const child = node[key];
     if (child && typeof child === 'object') walkCapabilityAst(child, visit);
   }
+}
+
+function staticMemberName(node) {
+  if (!node || node.type !== 'MemberExpression') return null;
+  if (!node.computed && node.property.type === 'Identifier') return node.property.name;
+  if (node.computed && node.property.type === 'Literal'
+      && typeof node.property.value === 'string') return node.property.value;
+  return null;
 }
 
 const CAPABILITY_NAMES = Object.freeze([
@@ -226,6 +247,9 @@ const LIVE_MODEL_EXPERIMENT_RUN_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORB
 const LIVE_EXTRACTION_ORCHESTRATOR_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => !['external_process', 'filesystem_write'].includes(name)));
 const GIT_INSPECTOR_FORBIDDEN_CAPABILITIES = Object.freeze(LOCAL_WRITER_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'external_process').concat('filesystem_write'));
 const GIT_ARTIFACT_WRITER_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => !['external_process', 'filesystem_write'].includes(name)));
+const LOCAL_SUBPROCESS_WRITER_FORBIDDEN_CAPABILITIES = GIT_ARTIFACT_WRITER_FORBIDDEN_CAPABILITIES;
+const REMOTE_GIT_REVIEW_WRITER_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => !['network', 'external_process', 'filesystem_write'].includes(name)));
+const NETWORK_WRITER_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => !['network', 'filesystem_write'].includes(name)));
 // A live extraction run is allowed exactly the three capabilities that make
 // it what it is -- provider (the real model call), external_process (the
 // `claude` CLI it spawns) and filesystem_write (its receipts/evidence) --
@@ -281,7 +305,10 @@ const CONTAINED_ROUTE_REPAIR_GUARDED_FETCH_FORBIDDEN_CAPABILITIES = Object.freez
 // assertPureProposalSignatureVerificationBoundary below enforces the
 // narrower verify-only shape, not just the bare capability name.
 const PURE_PROPOSAL_SIGNATURE_VERIFICATION_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'signing'));
-const ALLOWED_GIT_COMMANDS = Object.freeze(new Set(['rev-parse', 'show', 'status']));
+const ALLOWED_GIT_COMMANDS = Object.freeze(new Set([
+  'cat-file', 'diff', 'diff-tree', 'log', 'ls-files', 'ls-tree',
+  'rev-list', 'rev-parse', 'show', 'status',
+]));
 // The capability scan reads one file's own text, so it cannot see a capability
 // reached through an import. A production-path pure analysis source therefore
 // has to be a leaf: no dependencies at all, nothing to reach through.
@@ -343,9 +370,8 @@ function capabilityCounts(source, filePath) {
 
   function resolveCanonicalCallee(node) {
     if (node.type === 'Identifier') return canonicalNameOf.get(node.name) || node.name;
-    if (node.type === 'MemberExpression' && !node.computed && node.property.type === 'Identifier') {
-      return node.property.name;
-    }
+    const memberName = staticMemberName(node);
+    if (memberName !== null) return memberName;
     return null;
   }
 
@@ -354,16 +380,24 @@ function capabilityCounts(source, filePath) {
     if (node.type === 'Identifier') {
       if (valueTagOf.has(node.name)) return valueTagOf.get(node.name);
       if (node.name === 'crypto') return 'CRYPTO'; // Web Crypto / Node global, no import required
+      if (node.name === 'globalThis') return 'GLOBAL_THIS';
       if (HTTP_NAME_FALLBACK.has(node.name)) return 'HTTP_MODULE';
       if (FS_NAME_FALLBACK.has(node.name)) return 'FS_MODULE';
       return undefined;
     }
-    if (node.type === 'MemberExpression' && !node.computed && node.property.type === 'Identifier') {
+    if (node.type === 'MemberExpression') {
       const base = resolveValueTag(node.object);
-      const prop = node.property.name;
+      const prop = staticMemberName(node);
+      if (prop === null) {
+        if (base === 'HTTP_MODULE') return 'HTTP_CALLABLE';
+        if (base === 'GLOBAL_THIS') return 'FETCH_CALLABLE';
+        return undefined;
+      }
       if (base === 'CRYPTO' && prop === 'subtle') return 'CRYPTO_SUBTLE';
       if (base === 'CRYPTO' && prop === 'webcrypto') return 'CRYPTO';
       if (base === 'FS_MODULE' && prop === 'promises') return 'FS_MODULE';
+      if (base === 'HTTP_MODULE' && HTTP_METHODS.has(prop)) return 'HTTP_CALLABLE';
+      if (base === 'GLOBAL_THIS' && prop === 'fetch') return 'FETCH_CALLABLE';
       return undefined;
     }
     if (node.type === 'CallExpression') {
@@ -547,6 +581,8 @@ function capabilityCounts(source, filePath) {
 
       if (callee.type === 'Identifier') {
         const resolvedBareName = canonicalNameOf.get(callee.name) || callee.name;
+        const callableTag = resolveValueTag(callee);
+        if (callableTag === 'HTTP_CALLABLE' || callableTag === 'FETCH_CALLABLE') hits.add('network');
         if (FS_WRITE_METHODS.has(resolvedBareName)) hits.add('filesystem_write');
         if (CHILD_PROCESS_METHODS.has(resolvedBareName)) hits.add('external_process');
         const boundModule = canonicalModuleOf.get(callee.name);
@@ -556,11 +592,13 @@ function capabilityCounts(source, filePath) {
         }
       }
 
-      if (callee.type === 'MemberExpression' && !callee.computed && callee.property.type === 'Identifier') {
-        const propName = callee.property.name;
+      if (callee.type === 'MemberExpression') {
+        const propName = staticMemberName(callee);
         const baseTag = resolveValueTag(callee.object);
         const objectName = callee.object.type === 'Identifier' ? callee.object.name : null;
-        if ((baseTag === 'HTTP_MODULE' || (objectName && HTTP_NAME_FALLBACK.has(objectName))) && HTTP_METHODS.has(propName)) {
+        if (baseTag === 'GLOBAL_THIS' && (propName === 'fetch' || propName === null)) hits.add('network');
+        if ((baseTag === 'HTTP_MODULE' || (objectName && HTTP_NAME_FALLBACK.has(objectName)))
+            && (propName === null || HTTP_METHODS.has(propName))) {
           hits.add('network');
         }
         if ((baseTag === 'CRYPTO' || baseTag === 'CRYPTO_SUBTLE' || objectName === 'crypto') && CRYPTO_MEMBER_METHODS.has(propName)) {
@@ -576,6 +614,17 @@ function capabilityCounts(source, filePath) {
           hits.add('database');
         }
       }
+      const gitArgv = callee.type === 'Identifier' && callee.name === 'gitText'
+        ? node.arguments[0]
+        : callee.type === 'Identifier' && callee.name === 'git'
+          ? node.arguments[1]
+          : callee.type === 'Identifier' && callee.name === 'execFileSync'
+            && node.arguments[0]?.type === 'Literal' && node.arguments[0].value === 'git'
+            ? node.arguments[1]
+            : null;
+      if (gitArgv?.type === 'ArrayExpression'
+          && gitArgv.elements[0]?.type === 'Literal'
+          && gitArgv.elements[0].value === 'ls-remote') hits.add('network');
       hits.forEach(bump);
       return undefined;
     }
@@ -603,16 +652,137 @@ function assertNoCapabilityGrowth(baseSource, currentSource, label) {
   assert.deepEqual(growth, [], `${label} adds capabilities: ${growth.join(', ')}`);
 }
 
+function staticArgumentDescriptor(node, label) {
+  assert.ok(node, `${label} argument must exist`);
+  assert.notEqual(node.type, 'SpreadElement', `${label} argv must not contain a spread`);
+  if (node.type === 'Literal') return node.value;
+  if (node.type === 'Identifier') return `$${node.name}`;
+  if (node.type === 'TemplateLiteral') {
+    const parts = [node.quasis[0].value.cooked];
+    for (let index = 0; index < node.expressions.length; index += 1) {
+      const expression = node.expressions[index];
+      assert.equal(expression.type, 'Identifier', `${label} template interpolation must be a named binding`);
+      parts.push('${$' + expression.name + '}', node.quasis[index + 1].value.cooked);
+    }
+    return `\`${parts.join('')}\``;
+  }
+  if (node.type === 'MemberExpression' && node.object.type === 'Identifier') {
+    const property = staticMemberName(node);
+    if (property !== null) return `$${node.object.name}.${property}`;
+  }
+  assert.fail(`${label} argv must contain only static literals or named bindings`);
+}
+
+function staticArgvDescriptor(node, label) {
+  assert.equal(node?.type, 'ArrayExpression', `${label} argv must be a literal array`);
+  return node.elements.map((element, index) => staticArgumentDescriptor(element, `${label}[${index}]`));
+}
+
+function collectCapabilityNodes(program, predicate) {
+  const selected = [];
+  walkCapabilityAst(program, (node) => {
+    if (predicate(node)) selected.push(node);
+    return undefined;
+  });
+  return selected;
+}
+
+function bindingInitializer(program, name, label) {
+  const declarations = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'VariableDeclarator'
+      && node.id.type === 'Identifier' && node.id.name === name,
+  );
+  assert.equal(declarations.length, 1, `${label} must declare ${name} exactly once`);
+  return declarations[0].init;
+}
+
+function assertLiteralBinding(program, name, expected, label) {
+  const initializer = bindingInitializer(program, name, label);
+  assert.equal(initializer?.type, 'Literal', `${label} ${name} must be a literal`);
+  assert.equal(initializer.value, expected, `${label} ${name} must remain pinned`);
+  const declarations = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'VariableDeclaration'
+      && node.declarations.some((declaration) => declaration.id.type === 'Identifier'
+        && declaration.id.name === name),
+  );
+  assert.equal(declarations.length, 1, `${label} ${name} declaration must be unique`);
+  assert.equal(declarations[0].kind, 'const', `${label} ${name} must be immutable`);
+  const mutations = collectCapabilityNodes(
+    program,
+    (node) => {
+      const target = node.type === 'AssignmentExpression' ? node.left
+        : node.type === 'UpdateExpression' ? node.argument : null;
+      return target?.type === 'Identifier' && target.name === name;
+    },
+  );
+  assert.equal(mutations.length, 0, `${label} ${name} must never be reassigned`);
+}
+
+function assertIdentifierNeverReassigned(program, name, label) {
+  const mutations = collectCapabilityNodes(
+    program,
+    (node) => {
+      const target = node.type === 'AssignmentExpression' ? node.left
+        : node.type === 'UpdateExpression' ? node.argument : null;
+      return target?.type === 'Identifier' && target.name === name;
+    },
+  );
+  assert.equal(mutations.length, 0, `${label} ${name} must never be reassigned`);
+}
+
+function assertExactNamedImport(program, moduleName, importedName, localName, label) {
+  const imports = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'ImportDeclaration' && node.source?.value === moduleName,
+  );
+  assert.equal(imports.length, 1, `${label} must import ${moduleName} exactly once`);
+  assert.equal(imports[0].specifiers.length, 1, `${label} ${moduleName} import must be exact`);
+  const specifier = imports[0].specifiers[0];
+  assert.equal(specifier.type, 'ImportSpecifier', `${label} ${moduleName} import must be named`);
+  assert.equal(specifier.imported.name, importedName, `${label} imported name drift`);
+  assert.equal(specifier.local.name, localName, `${label} imported name must not be aliased`);
+}
+
+function assertExactDefaultImport(program, moduleName, localName, label) {
+  const imports = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'ImportDeclaration' && node.source?.value === moduleName,
+  );
+  assert.equal(imports.length, 1, `${label} must import ${moduleName} exactly once`);
+  assert.equal(imports[0].specifiers.length, 1, `${label} ${moduleName} import must be exact`);
+  assert.equal(imports[0].specifiers[0].type, 'ImportDefaultSpecifier', `${label} ${moduleName} import must be default`);
+  assert.equal(imports[0].specifiers[0].local.name, localName, `${label} ${moduleName} import must not be aliased`);
+}
+
 function extractedGitCommands(source) {
   const commands = [];
   const patterns = [
-    /\bgit\([^,\n]+,\s*\[\s*['"]([^'"]+)['"]/g,
+    /\b(?:git|gitText)\(\s*[^,]+,\s*\[\s*['"]([^'"]+)['"]/g,
     /\bexecFileSync\(\s*['"]git['"]\s*,\s*\[\s*['"]([^'"]+)['"]/g,
   ];
   for (const pattern of patterns) {
-    for (const match of source.matchAll(pattern)) commands.push(match[1]);
+    for (const match of source.matchAll(pattern)) {
+      if (match[1] !== '-C') commands.push(match[1]);
+    }
   }
   return commands;
+}
+
+function assertLiteralGitHelperCommands(source, label, allowedCommands = ALLOWED_GIT_COMMANDS) {
+  const program = parseCapabilitySource(source, label);
+  if (!program) throw new Error(`UNPARSEABLE_SOURCE: ${label}`);
+  walkCapabilityAst(program, (node) => {
+    if (node.type !== 'CallExpression' || node.callee.type !== 'Identifier'
+        || !['git', 'gitText'].includes(node.callee.name)) return undefined;
+    const argv = node.callee.name === 'gitText' && node.arguments[0]?.type === 'ArrayExpression'
+      ? node.arguments[0]
+      : node.arguments[1];
+    const staticArgv = staticArgvDescriptor(argv, `${label} Git helper`);
+    assert.ok(allowedCommands.has(staticArgv[0]), `${label} contains a non-read-only Git command`);
+    return undefined;
+  });
 }
 
 function assertReadOnlyGitCommands(source, label) {
@@ -623,16 +793,23 @@ function assertReadOnlyGitCommands(source, label) {
   const commands = extractedGitCommands(source);
   assert.ok(commands.length > 0, `${label} must declare Git commands as literal array heads`);
   assert.deepEqual(commands.filter((command) => !ALLOWED_GIT_COMMANDS.has(command)), [], `${label} contains a non-read-only Git command`);
+  assertLiteralGitHelperCommands(source, label);
 }
 
 function assertLiteralExecFileGitCommands(source, label) {
-  const childProcessSpecifiers = source.match(/['"](?:node:)?child_process['"]/g) || [];
-  assert.equal(childProcessSpecifiers.length, 1, `${label} must import child-process authority exactly once`);
-  assert.match(
-    source,
-    /import\s*\{\s*execFileSync\s*\}\s*from\s*['"]node:child_process['"]\s*;/,
-    `${label} may import only execFileSync from node:child_process`,
-  );
+  const program = parseCapabilitySource(source, label);
+  const imports = [];
+  walkCapabilityAst(program, (node) => {
+    if (node.type === 'ImportDeclaration'
+        && ['child_process', 'node:child_process'].includes(node.source?.value)) imports.push(node);
+    return undefined;
+  });
+  assert.equal(imports.length, 1, `${label} must import child-process authority exactly once`);
+  assert.equal(imports[0].source.value, 'node:child_process', `${label} must use the node:child_process specifier`);
+  assert.equal(imports[0].specifiers.length, 1, `${label} may import only execFileSync from node:child_process`);
+  assert.equal(imports[0].specifiers[0].type, 'ImportSpecifier', `${label} may import only execFileSync from node:child_process`);
+  assert.equal(imports[0].specifiers[0].imported.name, 'execFileSync', `${label} may import only execFileSync from node:child_process`);
+  assert.equal(imports[0].specifiers[0].local.name, 'execFileSync', `${label} may not alias execFileSync`);
   const processLaunches = source.match(/\b(?:execFileSync|execSync|spawnSync|spawn)\s*\(/g) || [];
   const gitLaunches = source.match(/\bexecFileSync\(\s*['"]git['"]/g) || [];
   assert.equal(processLaunches.length, gitLaunches.length, `${label} may launch only the Git executable`);
@@ -658,6 +835,267 @@ function assertReadOnlyGitArtifactWriter(source, label) {
   assert.ok(counts.external_process > 0, `${label} must inspect Git through an external process`);
   assert.ok(counts.filesystem_write > 0, `${label} must write only local evidence`);
   assertLiteralExecFileGitCommands(source, label);
+}
+
+const LOCAL_SUBPROCESS_BOUNDARIES = Object.freeze({
+  'scripts/stage-2y-structure-m7-v2-repair-work1-recover.mjs': Object.freeze({
+    finaliser: 'scripts/stage-2y-structure-m7-v2-repair-work1-finalise.mjs',
+    validator: 'scripts/stage-2y-structure-m7-v2-repair-work1-validate.mjs',
+  }),
+  'scripts/stage-2y-structure-m7-v2-repair-work2-recover.mjs': Object.freeze({
+    finaliser: 'scripts/stage-2y-structure-m7-v2-repair-work2-finalise.mjs',
+    validator: 'scripts/stage-2y-structure-m7-v2-repair-work2-validate.mjs',
+  }),
+  'scripts/stage-2y-structure-m7-v2-termination-family-package-seal-receipt.mjs': Object.freeze({
+    directNodeArgv: Object.freeze([
+      '--test',
+      '--test-name-pattern',
+      'family package seal',
+      'tests/stage-2y-structure-m7-v2-repair-work3.test.js',
+    ]),
+  }),
+});
+
+function assertShellDisabled(call, label) {
+  const options = call.arguments[2];
+  assert.equal(options?.type, 'ObjectExpression', `${label} subprocess options must be literal`);
+  const shellProperties = options.properties.filter(
+    (property) => property.type === 'Property'
+      && !property.computed
+      && (property.key.name || property.key.value) === 'shell',
+  );
+  assert.ok(shellProperties.length <= 1, `${label} shell option must be unique`);
+  if (shellProperties.length === 1) {
+    assert.equal(shellProperties[0].value.type, 'Literal', `${label} shell option must be literal`);
+    assert.equal(shellProperties[0].value.value, false, `${label} must not use a shell`);
+  }
+}
+
+function assertLocalSubprocessArtifactWriterBoundary(source, label) {
+  const contract = LOCAL_SUBPROCESS_BOUNDARIES[label];
+  assert.ok(contract, `${label} must have an exact subprocess contract`);
+  assertNoCapabilities(source, LOCAL_SUBPROCESS_WRITER_FORBIDDEN_CAPABILITIES, label);
+  const counts = capabilityCounts(source, label);
+  assert.ok(counts.filesystem_write > 0, `${label} must write local artefacts`);
+  const program = parseCapabilitySource(source, label);
+  assertExactNamedImport(program, 'node:child_process', 'spawnSync', 'spawnSync', label);
+  const launches = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'Identifier' && node.callee.name === 'spawnSync',
+  );
+  assert.equal(counts.external_process, launches.length + 1, `${label} subprocess authority must be explicit`);
+  launches.forEach((launch) => assertShellDisabled(launch, label));
+
+  const gitLaunches = launches.filter(
+    (launch) => launch.arguments[0]?.type === 'Literal'
+      && launch.arguments[0].value === '/usr/bin/git',
+  );
+  const nodeLaunches = launches.filter(
+    (launch) => staticArgumentDescriptor(launch.arguments[0], `${label} executable`) === '$process.execPath',
+  );
+  assert.equal(launches.length, gitLaunches.length + nodeLaunches.length, `${label} executable set must be exact`);
+
+  if (contract.directNodeArgv) {
+    assert.equal(gitLaunches.length, 0, `${label} must not launch Git`);
+    assert.equal(nodeLaunches.length, 1, `${label} must launch one exact Node child`);
+    assert.deepEqual(
+      staticArgvDescriptor(nodeLaunches[0].arguments[1], `${label} Node`),
+      [...contract.directNodeArgv],
+    );
+    return;
+  }
+
+  assert.equal(gitLaunches.length, 1, `${label} must inspect Git status exactly once`);
+  assert.deepEqual(
+    staticArgvDescriptor(gitLaunches[0].arguments[1], `${label} Git`),
+    ['status', '--porcelain=v1', '--untracked-files=all'],
+  );
+  assert.equal(nodeLaunches.length, 1, `${label} must declare one governed Node launch`);
+  assert.deepEqual(
+    staticArgvDescriptor(nodeLaunches[0].arguments[1], `${label} Node`),
+    ['$repositoryPath'],
+  );
+  assertLiteralBinding(program, 'FINALISER_PATH', contract.finaliser, label);
+  assertLiteralBinding(program, 'VALIDATOR_PATH', contract.validator, label);
+  const wrappers = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'FunctionDeclaration' && node.id?.name === 'runGovernedChild',
+  );
+  assert.equal(wrappers.length, 1, `${label} governed child wrapper must be unique`);
+  assert.deepEqual(
+    wrappers[0].params.map((param) => param.type === 'Identifier' ? param.name : null),
+    ['root', 'repositoryPath', 'failureCode'],
+    `${label} governed child wrapper parameters must be exact`,
+  );
+  assertIdentifierNeverReassigned(program, 'repositoryPath', label);
+  const wrapperCalls = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'Identifier' && node.callee.name === 'runGovernedChild',
+  );
+  assert.deepEqual(
+    wrapperCalls.map((call) => staticArgumentDescriptor(call.arguments[1], `${label} governed child path`)),
+    ['$FINALISER_PATH', '$VALIDATOR_PATH'],
+    `${label} governed Node children must remain exact`,
+  );
+}
+
+const REMOTE_REVIEW_GIT_CALLS = Object.freeze([
+  Object.freeze(['ls-tree', '-r', '--full-tree', '$commitSha', '--', '$repositoryPath']),
+  Object.freeze(['branch', '--show-current']),
+  Object.freeze(['rev-parse', 'HEAD']),
+  Object.freeze(['remote', 'get-url', 'origin']),
+  Object.freeze(['rev-parse', '$REVIEW_TARGET_REMOTE_REF']),
+  Object.freeze(['ls-remote', '--exit-code', '$REVIEW_TARGET_ORIGIN_URL', '$REVIEW_TARGET_REMOTE_BRANCH_REF']),
+  Object.freeze(['rev-list', '--parents', '-n', '1', '$commitSha']),
+  Object.freeze(['diff-tree', '--no-commit-id', '--name-only', '-r', '$commitSha']),
+  Object.freeze(['show', '-s', '--format=%T', '$commitSha']),
+]);
+
+function assertRemoteGitReviewArtifactWriterBoundary(source, label) {
+  assertNoCapabilities(source, REMOTE_GIT_REVIEW_WRITER_FORBIDDEN_CAPABILITIES, label);
+  const counts = capabilityCounts(source, label);
+  assert.equal(counts.network, 1, `${label} must have exactly one pinned remote Git observation`);
+  assert.ok(counts.filesystem_write > 0, `${label} must write the review candidate`);
+  const program = parseCapabilitySource(source, label);
+  assertExactNamedImport(program, 'node:child_process', 'execFileSync', 'execFileSync', label);
+  const processCalls = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'Identifier' && node.callee.name === 'execFileSync',
+  );
+  assert.equal(processCalls.length, 1, `${label} Git wrapper must be the only process launch`);
+  assert.equal(counts.external_process, 2, `${label} process authority must be import plus one Git wrapper`);
+  assert.deepEqual(
+    processCalls[0].arguments.slice(0, 2).map((argument) => staticArgumentDescriptor(argument, `${label} Git wrapper`)),
+    ['git', '$argv'],
+  );
+  const gitWrappers = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'FunctionDeclaration' && node.id?.name === 'gitText',
+  );
+  assert.equal(gitWrappers.length, 1, `${label} Git wrapper must be unique`);
+  assert.deepEqual(
+    gitWrappers[0].params.map((param) => param.type === 'Identifier' ? param.name : null),
+    ['argv'],
+    `${label} Git wrapper parameter must be exact`,
+  );
+  assert.equal(gitWrappers[0].body.body.length, 1, `${label} Git wrapper body must be exact`);
+  const wrapperReturn = gitWrappers[0].body.body[0];
+  assert.equal(wrapperReturn.type, 'ReturnStatement', `${label} Git wrapper must directly return`);
+  assert.equal(wrapperReturn.argument?.type, 'CallExpression', `${label} Git wrapper must return trim()`);
+  assert.equal(staticMemberName(wrapperReturn.argument.callee), 'trim', `${label} Git wrapper must return trim()`);
+  assert.equal(wrapperReturn.argument.callee.object, processCalls[0], `${label} Git wrapper must directly trim Git stdout`);
+  assertIdentifierNeverReassigned(program, 'argv', label);
+  const gitCalls = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'Identifier' && node.callee.name === 'gitText',
+  );
+  assert.deepEqual(
+    gitCalls.map((call, index) => staticArgvDescriptor(call.arguments[0], `${label} Git call ${index + 1}`)),
+    REMOTE_REVIEW_GIT_CALLS.map((argv) => [...argv]),
+    `${label} Git call set and argv must be exact`,
+  );
+  assertLiteralBinding(
+    program,
+    'REVIEW_TARGET_ORIGIN_URL',
+    'https://github.com/CodeNameHash/precedent-machine.git',
+    label,
+  );
+}
+
+function assertRemoteSourceAdmissionWriterBoundary(source, label) {
+  assertNoCapabilities(source, NETWORK_WRITER_FORBIDDEN_CAPABILITIES, label);
+  const counts = capabilityCounts(source, label);
+  assert.equal(counts.network, 1, `${label} must have only its governed HTTPS boundary`);
+  assert.ok(counts.filesystem_write > 0, `${label} must write admitted source artefacts`);
+  const program = parseCapabilitySource(source, label);
+  assertExactDefaultImport(program, 'node:https', 'https', label);
+  const defaults = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'AssignmentPattern'
+      && node.left.type === 'Identifier' && node.left.name === 'httpsGet',
+  );
+  assert.equal(defaults.length, 1, `${label} HTTPS injection point must be unique`);
+  assert.equal(
+    staticArgumentDescriptor(defaults[0].right, `${label} HTTPS injection point`),
+    '$https.get',
+  );
+  assertIdentifierNeverReassigned(program, 'httpsGet', label);
+  const directHttpsCalls = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'Identifier' && node.callee.name === 'httpsGet',
+  );
+  assert.equal(directHttpsCalls.length, 0, `${label} may not call the HTTPS boundary outside fetchExactCandidate`);
+  const fetchCalls = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'Identifier' && node.callee.name === 'fetchExactCandidate',
+  );
+  assert.equal(fetchCalls.length, 1, `${label} must have one governed candidate fetch call site`);
+  const options = fetchCalls[0].arguments[1];
+  assert.equal(options?.type, 'ObjectExpression', `${label} governed fetch options must be literal`);
+  const httpsProperties = options.properties.filter(
+    (property) => property.type === 'Property'
+      && !property.computed && (property.key.name || property.key.value) === 'httpsGet',
+  );
+  assert.equal(httpsProperties.length, 1, `${label} governed fetch must receive httpsGet exactly once`);
+  assert.equal(httpsProperties[0].value.type, 'Identifier', `${label} governed HTTPS binding must be named`);
+  assert.equal(httpsProperties[0].value.name, 'httpsGet', `${label} governed HTTPS binding must be exact`);
+}
+
+function assertLocalReviewServerWriterBoundary(source, label) {
+  assertNoCapabilities(source, NETWORK_WRITER_FORBIDDEN_CAPABILITIES, label);
+  const counts = capabilityCounts(source, label);
+  assert.equal(counts.network, 1, `${label} must have only its local HTTP server boundary`);
+  assert.ok(counts.filesystem_write > 0, `${label} must write the local decision ledger`);
+  const program = parseCapabilitySource(source, label);
+  assertExactDefaultImport(program, 'node:http', 'http', label);
+  const createServerCalls = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'MemberExpression'
+      && node.callee.object.type === 'Identifier' && node.callee.object.name === 'http'
+      && staticMemberName(node.callee) === 'createServer',
+  );
+  assert.equal(createServerCalls.length, 1, `${label} must create exactly one HTTP server`);
+  assert.equal(bindingInitializer(program, 'server', label), createServerCalls[0], `${label} server binding must be exact`);
+  const listenCalls = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'MemberExpression' && staticMemberName(node.callee) === 'listen',
+  );
+  assert.equal(listenCalls.length, 1, `${label} must have exactly one listener`);
+  assert.equal(listenCalls[0].callee.object.type, 'Identifier', `${label} listener receiver must be named`);
+  assert.equal(listenCalls[0].callee.object.name, 'server', `${label} only the governed server may listen`);
+  assert.deepEqual(
+    listenCalls[0].arguments.slice(0, 2).map((argument) => staticArgumentDescriptor(argument, `${label} listen`)),
+    ['$PORT', '127.0.0.1'],
+    `${label} listener must remain loopback-only`,
+  );
+  assert.ok(
+    ['FunctionExpression', 'ArrowFunctionExpression'].includes(listenCalls[0].arguments[2]?.type),
+    `${label} listener callback must remain inline`,
+  );
+  const dynamicHttpOrServerCalls = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'MemberExpression'
+      && node.callee.object.type === 'Identifier'
+      && ['http', 'server'].includes(node.callee.object.name)
+      && staticMemberName(node.callee) === null,
+  );
+  assert.equal(dynamicHttpOrServerCalls.length, 0, `${label} HTTP and server call sites must be static`);
+  const serverMemberReferences = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'MemberExpression'
+      && node.object.type === 'Identifier' && node.object.name === 'server'
+      && (staticMemberName(node) === 'listen' || staticMemberName(node) === null),
+  );
+  assert.deepEqual(serverMemberReferences, [listenCalls[0].callee], `${label} listener capability must not be extracted or computed`);
 }
 
 // The session-signing carve-out (LIVE_REQUEST_AUTHORIZATION_SESSION_SOURCES)
@@ -713,6 +1151,10 @@ test('every production source changed from the fixed Phase 1 base is classified 
     'LIVE_EXTRACTION_ORCHESTRATOR',
     'READ_ONLY_GIT_INSPECTOR',
     'READ_ONLY_GIT_ARTIFACT_WRITER',
+    'LOCAL_SUBPROCESS_ARTIFACT_WRITER',
+    'REMOTE_GIT_REVIEW_ARTIFACT_WRITER',
+    'REMOTE_SOURCE_ADMISSION_WRITER',
+    'LOCAL_REVIEW_SERVER_WRITER',
     'PRODUCTION_PATH_PURE_ANALYSIS',
     'LIVE_EXTRACTION_RUN',
     'LOCAL_DATABASE_PROOF',
@@ -971,6 +1413,13 @@ test('the contained route repair guarded-fetch source has its exact capability b
 });
 
 test('read-only Git inspectors launch only whitelisted inspection commands', () => {
+  assert.deepEqual(READ_ONLY_GIT_INSPECTORS, [
+    'lib/canonical-v2/successor-m1-readiness-packet.js',
+    'lib/canonical-v2/v1-render-capture-preflight.js',
+    'lib/canonical-v2/marker-start-git-baseline.js',
+    'scripts/stage-2y-structure-m5-preparation-validate.mjs',
+    'scripts/stage-2y-structure-migration-validate.mjs',
+  ]);
   for (const relativePath of READ_ONLY_GIT_INSPECTORS) {
     assertReadOnlyGitInspector(fs.readFileSync(path.join(ROOT, relativePath), 'utf8'), relativePath);
   }
@@ -981,10 +1430,189 @@ test('read-only Git artefact writers have their exact capability boundary', () =
     'scripts/audit/canonical-v2-termination-render-diagnosis.mjs',
     'scripts/stage-2y-h-representation-topic-compare.mjs',
     'scripts/stage-2y-registry-substrate-replay.mjs',
+    'scripts/stage-2y-context-compilation-m3-finalise.mjs',
+    'scripts/stage-2y-context-compilation-shadow.mjs',
+    'scripts/stage-2y-structure-analysis-m4-finalise.mjs',
+    'scripts/stage-2y-structure-analysis-shadow.mjs',
+    'scripts/stage-2y-structure-family-aggregate.mjs',
+    'scripts/stage-2y-structure-m5-correct.mjs',
+    'scripts/stage-2y-structure-m5-preparation-finalise.mjs',
+    'scripts/stage-2y-structure-m6-project.mjs',
+    'scripts/stage-2y-structure-m7-v2-repair-work0-finalise.mjs',
+    'scripts/stage-2y-structure-m7-v2-repair-work0-validate.mjs',
+    'scripts/stage-2y-structure-m7-v2-repair-work1-7-authority-validate.mjs',
   ]);
   for (const relativePath of READ_ONLY_GIT_ARTIFACT_WRITERS) {
     assertReadOnlyGitArtifactWriter(fs.readFileSync(path.join(ROOT, relativePath), 'utf8'), relativePath);
   }
+});
+
+test('local subprocess artefact writers launch only governed Node children or Git status', () => {
+  assert.deepEqual(LOCAL_SUBPROCESS_ARTIFACT_WRITERS, [
+    'scripts/stage-2y-structure-m7-v2-repair-work1-recover.mjs',
+    'scripts/stage-2y-structure-m7-v2-repair-work2-recover.mjs',
+    'scripts/stage-2y-structure-m7-v2-termination-family-package-seal-receipt.mjs',
+  ]);
+  for (const relativePath of LOCAL_SUBPROCESS_ARTIFACT_WRITERS) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assertLocalSubprocessArtifactWriterBoundary(source, relativePath);
+  }
+});
+
+test('the Work3 remote-review writer has an exact read-only Git boundary', () => {
+  assert.deepEqual(REMOTE_GIT_REVIEW_ARTIFACT_WRITERS, [
+    'scripts/stage-2y-structure-m7-v2-work3-closure-amendment-candidate.mjs',
+  ]);
+  for (const relativePath of REMOTE_GIT_REVIEW_ARTIFACT_WRITERS) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assertRemoteGitReviewArtifactWriterBoundary(source, relativePath);
+  }
+});
+
+test('the source-admission writer has an exact outbound HTTPS boundary', () => {
+  assert.deepEqual(REMOTE_SOURCE_ADMISSION_WRITERS, [
+    'scripts/stage-2y-generalisation-source-admit.mjs',
+  ]);
+  for (const relativePath of REMOTE_SOURCE_ADMISSION_WRITERS) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assertRemoteSourceAdmissionWriterBoundary(source, relativePath);
+  }
+});
+
+test('the lawyer-review writer serves only on loopback', () => {
+  assert.deepEqual(LOCAL_REVIEW_SERVER_WRITERS, [
+    'scripts/stage-2y-m7-lawyer-review-server.mjs',
+  ]);
+  for (const relativePath of LOCAL_REVIEW_SERVER_WRITERS) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assertLocalReviewServerWriterBoundary(source, relativePath);
+  }
+});
+
+test('new authority class boundaries reject dynamic argv and outbound-network bypasses', () => {
+  const replaceExact = (source, before, after, label) => {
+    assert.ok(source.includes(before), `${label} mutation anchor must exist`);
+    return source.replace(before, after);
+  };
+
+  const terminationPath = LOCAL_SUBPROCESS_ARTIFACT_WRITERS[2];
+  const terminationSource = fs.readFileSync(path.join(ROOT, terminationPath), 'utf8');
+  const dynamicNodeArgv = replaceExact(
+    terminationSource,
+    `  [
+    '--test',
+    '--test-name-pattern',
+    'family package seal',
+    'tests/stage-2y-structure-m7-v2-repair-work3.test.js',
+  ],`,
+    '  process.argv.slice(2),',
+    'dynamic Node argv',
+  );
+  assert.throws(
+    () => assertLocalSubprocessArtifactWriterBoundary(dynamicNodeArgv, terminationPath),
+    /argv must be a literal array/,
+  );
+  const recoveryPath = LOCAL_SUBPROCESS_ARTIFACT_WRITERS[0];
+  const recoverySource = fs.readFileSync(path.join(ROOT, recoveryPath), 'utf8');
+  const reassignedNodePath = replaceExact(
+    recoverySource,
+    'function runGovernedChild(root, repositoryPath, failureCode) {',
+    'function runGovernedChild(root, repositoryPath, failureCode) {\n  repositoryPath = process.argv[2];',
+    'reassigned governed child path',
+  );
+  assert.throws(
+    () => assertLocalSubprocessArtifactWriterBoundary(reassignedNodePath, recoveryPath),
+    /repositoryPath must never be reassigned/,
+  );
+
+  const remoteGitPath = REMOTE_GIT_REVIEW_ARTIFACT_WRITERS[0];
+  const remoteGitSource = fs.readFileSync(path.join(ROOT, remoteGitPath), 'utf8');
+  const dynamicGitArgv = replaceExact(
+    remoteGitSource,
+    "gitText(['show', '-s', '--format=%T', commitSha])",
+    "gitText(['show', '-s', '--format=%T', commitSha, ...process.argv.slice(2)])",
+    'dynamic Git argv',
+  );
+  assert.throws(
+    () => assertRemoteGitReviewArtifactWriterBoundary(dynamicGitArgv, remoteGitPath),
+    /argv must not contain a spread/,
+  );
+  const unboundRemote = replaceExact(
+    remoteGitSource,
+    "const REVIEW_TARGET_ORIGIN_URL =\n  'https://github.com/CodeNameHash/precedent-machine.git';",
+    "const REVIEW_TARGET_ORIGIN_URL = process.env.REVIEW_TARGET_ORIGIN_URL;\nconst DEAD_REVIEW_TARGET_ORIGIN_URL = 'https://github.com/CodeNameHash/precedent-machine.git';",
+    'remote URL binding',
+  );
+  assert.throws(
+    () => assertRemoteGitReviewArtifactWriterBoundary(unboundRemote, remoteGitPath),
+    /REVIEW_TARGET_ORIGIN_URL must be a literal/,
+  );
+  const rewrittenGitArgv = replaceExact(
+    remoteGitSource,
+    'function gitText(argv) {',
+    "function gitText(argv) {\n  argv = ['ls-remote', process.env.REVIEW_TARGET_ORIGIN_URL];",
+    'rewritten Git argv',
+  );
+  assert.throws(
+    () => assertRemoteGitReviewArtifactWriterBoundary(rewrittenGitArgv, remoteGitPath),
+    /Git wrapper body must be exact|argv must never be reassigned/,
+  );
+  const extraRemoteFetch = `${remoteGitSource}\nglobalThis.fetch('https://evil.example');\n`;
+  assert.throws(
+    () => assertRemoteGitReviewArtifactWriterBoundary(extraRemoteFetch, remoteGitPath),
+    /exactly one pinned remote Git observation/,
+  );
+
+  const admissionPath = REMOTE_SOURCE_ADMISSION_WRITERS[0];
+  const admissionSource = fs.readFileSync(path.join(ROOT, admissionPath), 'utf8');
+  const aliasedHttpsCall = replaceExact(
+    admissionSource,
+    '  const authority = readJson(AUTHORITY_PATH);',
+    "  const outbound = httpsGet; outbound('https://evil.example');\n  const authority = readJson(AUTHORITY_PATH);",
+    'aliased HTTPS call',
+  );
+  assert.throws(
+    () => assertRemoteSourceAdmissionWriterBoundary(aliasedHttpsCall, admissionPath),
+    /only its governed HTTPS boundary/,
+  );
+  const reassignedHttpsBoundary = replaceExact(
+    admissionSource,
+    '  const authority = readJson(AUTHORITY_PATH);',
+    "  httpsGet = globalThis.fetch;\n  const authority = readJson(AUTHORITY_PATH);",
+    'reassigned HTTPS boundary',
+  );
+  assert.throws(
+    () => assertRemoteSourceAdmissionWriterBoundary(reassignedHttpsBoundary, admissionPath),
+    /httpsGet must never be reassigned/,
+  );
+
+  const serverPath = LOCAL_REVIEW_SERVER_WRITERS[0];
+  const serverSource = fs.readFileSync(path.join(ROOT, serverPath), 'utf8');
+  const aliasedHttpCall = replaceExact(
+    serverSource,
+    'const server = http.createServer',
+    "const outbound = http.get; outbound('http://evil.example');\nconst server = http.createServer",
+    'aliased HTTP call',
+  );
+  assert.throws(
+    () => assertLocalReviewServerWriterBoundary(aliasedHttpCall, serverPath),
+    /only its local HTTP server boundary/,
+  );
+  const secondListener = `${serverSource}\nhttp.createServer(() => {}).listen(PORT, '0.0.0.0');\n`;
+  assert.throws(
+    () => assertLocalReviewServerWriterBoundary(secondListener, serverPath),
+    /must create exactly one HTTP server|must have exactly one listener/,
+  );
+  const extractedListener = replaceExact(
+    serverSource,
+    "server.listen(PORT, '127.0.0.1', () => {",
+    "const listen = server.listen;\nlisten(PORT, '0.0.0.0', () => {",
+    'extracted listener',
+  );
+  assert.throws(
+    () => assertLocalReviewServerWriterBoundary(extractedListener, serverPath),
+    /must have exactly one listener|listener capability must not be extracted/,
+  );
 });
 
 test('modified pre-existing production sources do not add authority capabilities', () => {
@@ -1040,6 +1668,20 @@ test('hostile inventory and capability changes fail closed', () => {
   assert.throws(() => assertNoCapabilities('createClient(url, key)', LOCAL_WRITER_FORBIDDEN_CAPABILITIES, 'hostile writer'), /database/);
   assert.throws(() => assertReadOnlyGitInspector("import { execFileSync } from 'node:child_process'; execFileSync('git', ['push'])", 'hostile inspector'), /non-read-only Git command/);
   assert.throws(() => assertReadOnlyGitArtifactWriter("import { execFileSync } from 'node:child_process'; execFileSync('git', ['push']); writeFileSync('evidence.json', '{}')", 'hostile Git writer'), /non-read-only Git command/);
+  assert.throws(
+    () => assertReadOnlyGitArtifactWriter(
+      "import { execFileSync } from 'node:child_process'; import { writeFileSync } from 'node:fs'; function git(root, args) { return execFileSync('git', ['-C', root, ...args]); } git('/tmp/repo', ['add', '.']); writeFileSync('evidence.json', '{}');",
+      'hostile Git -C writer',
+    ),
+    /non-read-only Git command/,
+  );
+  assert.throws(
+    () => assertReadOnlyGitArtifactWriter(
+      "import { execFileSync } from 'node:child_process'; import { writeFileSync } from 'node:fs'; function git(root, args) { return execFileSync('git', ['-C', root, ...args]); } const argv = ['status']; git('/tmp/repo', argv); writeFileSync('evidence.json', '{}');",
+      'hostile dynamic Git writer',
+    ),
+    /literal array|declare Git commands/,
+  );
   assert.throws(() => assertReadOnlyGitArtifactWriter("import { execFileSync, execSync } from 'node:child_process'; execSync('git status'); writeFileSync('evidence.json', '{}')", 'hostile alternate launcher'), /may import only execFileSync|may launch only the Git executable/);
   assert.throws(() => assertReadOnlyGitArtifactWriter("import { execFileSync } from 'node:child_process'; const launch = execFileSync; execFileSync('git', ['status']); launch('sh', ['-c', 'true']); writeFileSync('evidence.json', '{}')", 'hostile aliased launcher'), /child-process authority only for its literal Git launches/);
   assert.throws(() => assertNoCapabilityGrowth('', 'fetch(url)', 'hostile legacy'), /network/);
@@ -1090,9 +1732,9 @@ test('hostile inventory and capability changes fail closed', () => {
     () => assertPureProposalSignatureVerificationBoundary("fetch('https://evil.example');", 'hostile proposal network'),
     /network/,
   );
-  // Moved 12 -> 18 with the Stage 2Y authority classes. This assertion
+  // Moved 18 -> 22 with the later M7 mechanical tooling classes. This assertion
   // exists precisely so that adding an authority class cannot happen quietly.
-  assert.equal(Object.keys(EXPLICIT_NEW_SOURCE_CLASSES).length, 18);
+  assert.equal(Object.keys(EXPLICIT_NEW_SOURCE_CLASSES).length, 22);
 });
 
 // ---------------------------------------------------------------------------------------
@@ -1163,6 +1805,45 @@ test('require("https") without the node: prefix, and a renamed require binding, 
   );
 });
 
+test('global fetch, aliased HTTP calls, and remote Git inspection are detected as network', () => {
+  assert.equal(
+    capabilityCounts("globalThis.fetch('https://evil.example')", 'global-fetch.js').network,
+    1,
+  );
+  assert.equal(
+    capabilityCounts(
+      "import http from 'node:http'; const outbound = http.get; outbound('http://evil.example');",
+      'aliased-http-get.js',
+    ).network,
+    2,
+  );
+  assert.equal(
+    capabilityCounts(
+      "import https from 'node:https'; const outbound = https.get; outbound('https://evil.example');",
+      'aliased-https-get.js',
+    ).network,
+    2,
+  );
+  assert.equal(
+    capabilityCounts(
+      "import http from 'node:http'; const method = process.argv[2]; const outbound = http[method]; outbound('http://evil.example');",
+      'dynamic-aliased-http-call.js',
+    ).network,
+    2,
+  );
+  assert.equal(
+    capabilityCounts("const method = process.argv[2]; globalThis[method]('https://evil.example');", 'dynamic-global-call.js').network,
+    1,
+  );
+  assert.equal(
+    capabilityCounts(
+      "import { execFileSync } from 'node:child_process'; function gitText(argv) { return execFileSync('git', argv); } gitText(['ls-remote', '--exit-code', 'https://example.invalid/repo.git', 'refs/heads/main']);",
+      'remote-git-inspection.js',
+    ).network,
+    1,
+  );
+});
+
 test('a capability name inside a comment or a string literal is not a match', () => {
   const commentOnly = capabilityCounts(
     "// calls getServiceSupabase() itself with no injection point\nfunction noop() { return 1; }",
@@ -1196,6 +1877,14 @@ test('an unparseable file fails closed rather than scanning as clean', () => {
     () => assertNoCapabilities('function( { [ * & ^ broken', PURE_FORBIDDEN_CAPABILITIES, 'hostile broken'),
     /UNPARSEABLE_SOURCE/,
   );
+});
+
+test('valid CommonJS falls back to script grammar without weakening the capability scan', () => {
+  const counts = capabilityCounts(
+    "'use strict'; function requireNode() { return 1; } function requireNode() { return 2; }",
+    'duplicate-commonjs-function.js',
+  );
+  assert.deepEqual(counts, Object.fromEntries(CAPABILITY_NAMES.map((name) => [name, 0])));
 });
 
 test('every capability the old text-matching scanner caught is still caught', () => {
