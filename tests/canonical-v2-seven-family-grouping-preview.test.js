@@ -3,6 +3,8 @@
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
 const test = require('node:test');
 const React = require('react');
 const { renderToStaticMarkup } = require('react-dom/server');
@@ -41,6 +43,52 @@ function normaliseRecordedText(value) {
     .trim();
 }
 
+async function compileServerSidePropsBundle(directory) {
+  const webpackModule = require('next/dist/compiled/webpack/webpack');
+  await webpackModule.init();
+  const entryPath = path.join(directory, 'entry.js');
+  const outputPath = path.join(directory, 'output');
+  fs.writeFileSync(entryPath, [
+    `'use strict';`,
+    `const { loadSevenFamilyGroupingPreview } = require(${JSON.stringify(resolveRepoPath(
+      'lib/canonical-v2/seven-family-grouping-preview-source.js',
+    ))});`,
+    'module.exports.getServerSideProps = async function getServerSideProps() {',
+    '  return { props: { preview: loadSevenFamilyGroupingPreview({',
+    `    env: ${JSON.stringify(PREVIEW_ENV)},`,
+    '  }) } };',
+    '};',
+    '',
+  ].join('\n'));
+  const compiler = webpackModule.webpack({
+    mode: 'production',
+    target: 'node',
+    entry: entryPath,
+    output: {
+      path: outputPath,
+      filename: 'server.js',
+      library: { type: 'commonjs2' },
+    },
+    optimization: { minimize: false },
+  });
+  try {
+    await new Promise((resolve, reject) => {
+      compiler.run((error, stats) => {
+        if (error) return reject(error);
+        if (stats.hasErrors()) {
+          return reject(new Error(stats.toString({ all: false, errors: true })));
+        }
+        return resolve();
+      });
+    });
+  } finally {
+    await new Promise((resolve, reject) => {
+      compiler.close((error) => (error ? reject(error) : resolve()));
+    });
+  }
+  return require(path.join(outputPath, 'server.js'));
+}
+
 test('seven-family grouping preview is available only in a permitted preview runtime', () => {
   assert.equal(loadSevenFamilyGroupingPreview({
     env: { VERCEL: '1', VERCEL_ENV: 'production', NODE_ENV: 'production' },
@@ -50,6 +98,18 @@ test('seven-family grouping preview is available only in a permitted preview run
   }), null);
   assert.equal(loadSevenFamilyGroupingPreview({ env: { NODE_ENV: 'development' } }).family_count, 7);
   assert.equal(loadSevenFamilyGroupingPreview({ env: PREVIEW_ENV }).family_count, 7);
+});
+
+test('bundled getServerSideProps can read and validate the sealed preview estate', async () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'seven-family-preview-bundle-'));
+  try {
+    const page = await compileServerSidePropsBundle(directory);
+    const result = await page.getServerSideProps();
+    assert.equal(result.props.preview.family_count, 7);
+    assert.equal(result.props.preview.profile_count, 140);
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
 });
 
 test('seven-family grouping preview reads the exact sealed successor estate', () => {
