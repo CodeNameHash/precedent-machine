@@ -2,8 +2,25 @@
 
 const assert = require('node:assert/strict');
 const { createHash } = require('node:crypto');
-const { readFileSync } = require('node:fs');
-const { join } = require('node:path');
+const {
+  chmodSync,
+  existsSync,
+  linkSync,
+  lstatSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  realpathSync,
+  rmSync,
+  symlinkSync,
+  unlinkSync,
+  writeFileSync,
+} = require('node:fs');
+const { tmpdir } = require('node:os');
+const { dirname, join } = require('node:path');
+const { spawnSync } = require('node:child_process');
+const { gzipSync } = require('node:zlib');
 const test = require('node:test');
 
 const {
@@ -16,9 +33,1904 @@ const {
   compileSyntheticProfileExpression,
 } = require('../lib/canonical-v2/m7-v2-deterministic-generator');
 const {
+  validateWork3PhysicalClosureV2,
+  validateWork3ReceiptV2,
   validateSyntheticExpressionEvidence,
   validateSingleFamilyPackageInventory,
 } = require('../lib/canonical-v2/m7-v2-contract');
+
+const WORK3_FINALISER_PATH = join(
+  __dirname,
+  '..',
+  'scripts',
+  'stage-2y-structure-m7-v2-repair-work3-finalise.mjs',
+);
+const WORK3_VALIDATOR_PATH = join(
+  __dirname,
+  '..',
+  'scripts',
+  'stage-2y-structure-m7-v2-repair-work3-validate.mjs',
+);
+
+const WORK3_CREATE_ONCE_PATHS = Object.freeze([
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-ambiguous-repeat-agreement-index.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-agreement-index-set.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-context-compilation-set.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-agreement-analysis-set.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-approved-profile-set.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-structure-disposition-set.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-work3-profile.json',
+]);
+
+test('Work3 physical closure finaliser rejects CLI arguments before repository access', () => {
+  const result = spawnSync(process.execPath, [WORK3_FINALISER_PATH, '--unexpected'], {
+    encoding: 'utf8',
+  });
+
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /WORK3_RECEIPT_INVALID: CLI arguments/);
+  assert.equal(result.stdout, '');
+});
+
+test('Work3 physical closure finaliser rejects caller-supplied output descriptors', async (t) => {
+  const root = mkdtempSync(join(tmpdir(), 'work3-finaliser-'));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  for (const selectedPath of WORK3_CREATE_ONCE_PATHS) {
+    mkdirSync(dirname(join(root, selectedPath)), { recursive: true });
+  }
+  const { finaliseWork3, Work3FinalisationError } = await import(WORK3_FINALISER_PATH);
+  assert.throws(
+    () => finaliseWork3({ repoRoot: root, write: false, descriptors: [] }),
+    (error) => error instanceof Work3FinalisationError
+      && error.code === 'WORK3_RECEIPT_INVALID',
+  );
+  assert(WORK3_CREATE_ONCE_PATHS.every(
+    (selectedPath) => !existsSync(join(root, selectedPath)),
+  ));
+});
+
+const PHYSICAL_FAMILY_KEYS = Object.freeze([
+  'ANTITRUST_REGULATORY',
+  'APPRAISAL_DISSENTERS_RIGHTS',
+  'CLOSING_CONDITIONS',
+  'CONSIDERATION',
+  'DIVIDENDS',
+  'DNO_INDEMNIFICATION',
+  'EMPLOYEE_MATTERS',
+  'FINANCING_COVENANTS',
+  'GENERAL_COVENANTS',
+  'GUARANTY_FINANCING_PARTY',
+  'INTERIM_OPERATING',
+  'KEY_DEFINED_TERMS',
+  'MAE_DEFINITION',
+  'MATERIAL_CONTRACTS',
+  'MERGER_STRUCTURE_CLOSING',
+  'MISC_BOILERPLATE',
+  'NO_OTHER_REPS_FRAUD',
+  'NO_SHOP',
+  'PROXY_MEETING',
+  'REPRESENTATIONS',
+  'SPECIFIC_PERFORMANCE_REMEDIES',
+  'TAX_MATTERS',
+  'TERMINATION',
+  'TERMINATION_FEE',
+]);
+
+const WORK3_RECEIPT_KEYS = Object.freeze([
+  'schema_version',
+  'work3_receipt_id',
+  'work',
+  'stage',
+  'state',
+  'status',
+  'execution_manifest_id',
+  'execution_manifest_digest',
+  'parent_authority_binding',
+  'activation_receipt_binding',
+  'predecessor_receipt_binding',
+  'candidate_ordering_correction_authority_binding',
+  'work3_entry_correction_authority_binding',
+  'candidate_registration_id',
+  'candidate_transition',
+  'candidate_native_set_evidence',
+  'family_profile_evidence',
+  'structure_disposition_set_binding',
+  'artifact_bindings',
+  'artifact_set_digest',
+  'command_execution_ledger',
+  'combined_test_result',
+  'repository_precondition',
+  'counts',
+  'checks',
+  'effects',
+  'next_work',
+  'closure_amendment_binding',
+  'external_review_receipt_binding',
+  'closure_application_receipt_binding',
+  'successor_execution_manifest_binding',
+]);
+
+const WORK3_CHECK_IDS = Object.freeze([
+  'WORK2_SUCCESSOR_LINEAGE_AND_WORK3_AUTHORITY',
+  'EXECUTION_MANIFEST_P53_SUCCESSOR',
+  'SEALED_SEVEN_PLUS_ADDITIVE_THREE',
+  'THREE_TEN_MEMBER_NATIVE_SETS',
+  'TWENTY_FOUR_SEALED_FAMILY_PACKAGES_AND_CAPITALISATION_PARKED',
+  'APPROVED_FAMILY_PROFILE_SET_AND_PACKAGE_MEMBERS',
+  'STRUCTURE_DISPOSITION_SET_AND_PACKAGE_MEMBERS',
+  'SINGLE_GLOBAL_ITEM39_OVERLAY_WITH_DISTINCT_SYNTHETIC_AMBIGUOUS_REPEAT_FIXTURE',
+  'SEVEN_INPUT_COMPILER_GOVERNED_SETS',
+  'DETERMINISTIC_GENERATOR_ALL_APPROVED_PROFILE_FIXTURES',
+  'BUILD_ONLY_CANDIDATE_ORDERING',
+  'ARTIFACT_INVENTORY',
+  'COMMAND_LEDGER',
+  'ZERO_EXTERNAL_PRODUCT_AND_SEMANTIC_EFFECTS',
+]);
+
+function syntheticId(label) {
+  return sha256Hex(Buffer.from(label, 'utf8'));
+}
+
+function syntheticGitBlobOid(bytes) {
+  return createHash('sha1')
+    .update(Buffer.from(`blob ${bytes.length}\0`, 'utf8'))
+    .update(bytes)
+    .digest('hex');
+}
+
+function syntheticStandardBinding(selectedPath, bytes, record = null, idField = null) {
+  return {
+    path: selectedPath,
+    schema_version: record?.schema_version ?? null,
+    record_id_field: idField,
+    record_id: idField === null ? null : record[idField],
+    byte_length: bytes.length,
+    sha256: sha256Hex(bytes),
+    git_blob_oid: syntheticGitBlobOid(bytes),
+  };
+}
+
+function syntheticIdentifiedRecord(schemaVersion, idField, body) {
+  const unsigned = { schema_version: schemaVersion, ...body };
+  return {
+    ...unsigned,
+    [idField]: contentId(schemaVersion, unsigned),
+  };
+}
+
+function syntheticMemberBinding(containerPath, field, index, record, idField) {
+  const bytes = Buffer.from(canonicalJson(record), 'utf8');
+  return {
+    schema_version: 'STAGE_2Y_M7_V2_FAMILY_PROFILE_PACKAGE_MEMBER_BINDING/V1',
+    container_path: containerPath,
+    member_field: field,
+    member_index: index,
+    member_schema_version: record.schema_version,
+    member_record_id_field: idField,
+    member_record_id: record[idField],
+    member_byte_length: bytes.length,
+    member_sha256: sha256Hex(bytes),
+  };
+}
+
+function buildSyntheticPhysicalClosureFixture(root) {
+  const sources = new Map();
+  const packages = [];
+  const packageBindings = [];
+  const profiles = [];
+  const dimensionEvidenceBindings = [];
+  const subtypeTreeBindings = [];
+  let profileOrdinal = 0;
+  let fixtureOrdinal = 0;
+
+  for (let familyIndex = 0; familyIndex < PHYSICAL_FAMILY_KEYS.length; familyIndex += 1) {
+    const familyKey = PHYSICAL_FAMILY_KEYS[familyIndex];
+    const profileCount = familyIndex === 0 ? 1359 : 1;
+    const matchFixtureCount = familyIndex === 0 ? 2843 : 1;
+    const packagePath = `synthetic/family-${String(familyIndex).padStart(2, '0')}.json`;
+    const familyProfiles = Array.from({ length: profileCount }, () => {
+      const ordinal = profileOrdinal;
+      profileOrdinal += 1;
+      return {
+        schema_version: 'STAGE_2Y_M7_V2_APPROVED_FAMILY_PROFILE/V1',
+        profile_id: syntheticId(`profile-${ordinal}`),
+        profile_key: `PROFILE_${String(ordinal).padStart(4, '0')}`,
+        family_key: familyKey,
+        profile_set_version: 1,
+      };
+    });
+    const dimensionEvidence = familyProfiles.map((profile, index) => ({
+      schema_version: 'STAGE_2Y_M7_V2_DIMENSION_EVIDENCE/V1',
+      dimension_evidence_id: syntheticId(`dimension-${profileOrdinal - profileCount + index}`),
+      family_key: familyKey,
+      profile_id: profile.profile_id,
+    }));
+    const matchFixtures = Array.from({ length: matchFixtureCount }, () => {
+      const ordinal = fixtureOrdinal;
+      fixtureOrdinal += 1;
+      return syntheticIdentifiedRecord(
+        'STAGE_2Y_M7_V2_MATCH_FIXTURE/V1',
+        'match_fixture_id',
+        { fixture_key: `FIXTURE_${ordinal}` },
+      );
+    });
+    const subtypeTree = {
+      schema_version: 'STAGE_2Y_M7_V2_REPAIR_SUBTYPE_TREE/V1',
+      subtype_tree_id: syntheticId(`tree-${familyKey}`),
+      family_key: familyKey,
+      profile_set_version: 1,
+    };
+    const structureFixtureMembers = familyIndex === 0 ? [syntheticIdentifiedRecord(
+      'STAGE_2Y_M7_V2_STRUCTURE_OVERLAY_FIXTURE/V1',
+      'fixture_id',
+      { fixture_key: 'STRUCTURE_FIXTURE' },
+    )] : [];
+    const unsignedPackage = {
+      dimension_evidence: dimensionEvidence,
+      family_approval: {
+        ben_approval_id: `BEN_APPROVAL:${familyKey}:PROFILE_SET_V1`,
+      },
+      family_key: familyKey,
+      legal_decisions: [],
+      match_fixtures: matchFixtures,
+      profile_set_version: 1,
+      profiles: familyProfiles,
+      schema_version: 'STAGE_2Y_M7_V2_FAMILY_PROFILE_PACKAGE/V2',
+      state: 'BEN_APPROVED_FAMILY_PROFILE_PACKAGE',
+      structure_fixture_members: structureFixtureMembers,
+      subtype_tree: subtypeTree,
+    };
+    const record = {
+      ...unsignedPackage,
+      family_profile_package_id: contentId(
+        'STAGE_2Y_M7_V2_FAMILY_PROFILE_PACKAGE/V2',
+        unsignedPackage,
+      ),
+    };
+    const bytes = Buffer.from(`${canonicalJson(record)}\n`, 'utf8');
+    const binding = {
+      path: packagePath,
+      schema_version: record.schema_version,
+      record_id_field: 'family_profile_package_id',
+      record_id: record.family_profile_package_id,
+      byte_length: bytes.length,
+      sha256: sha256Hex(bytes),
+      git_blob_oid: syntheticGitBlobOid(bytes),
+    };
+    sources.set(packagePath, bytes);
+    packages.push(record);
+    packageBindings.push(binding);
+    profiles.push(...familyProfiles);
+    dimensionEvidenceBindings.push(...dimensionEvidence.map((member, index) => (
+      syntheticMemberBinding(
+        packagePath,
+        'dimension_evidence',
+        index,
+        member,
+        'dimension_evidence_id',
+      )
+    )));
+    subtypeTreeBindings.push({
+      family_key: familyKey,
+      binding: syntheticMemberBinding(
+        packagePath,
+        'subtype_tree',
+        null,
+        subtypeTree,
+        'subtype_tree_id',
+      ),
+    });
+  }
+
+  const unsignedProfileSet = {
+    schema_version: 'STAGE_2Y_M7_V2_APPROVED_FAMILY_PROFILE_SET/V1',
+    state: 'BEN_APPROVED_PROFILE_SET',
+    family_profile_package_bindings: packageBindings,
+    profiles,
+    dimension_evidence_bindings: dimensionEvidenceBindings,
+    subtype_tree_bindings: subtypeTreeBindings,
+  };
+  const familyProfileSet = {
+    ...unsignedProfileSet,
+    family_profile_set_id: contentId(
+      'STAGE_2Y_M7_V2_APPROVED_FAMILY_PROFILE_SET/V1',
+      unsignedProfileSet,
+    ),
+  };
+  const plannedCapitalisationPath = 'synthetic/family-capitalisation.json';
+  const governedFamilyKeys = [...PHYSICAL_FAMILY_KEYS];
+  governedFamilyKeys.splice(2, 0, 'CAPITALISATION');
+  const sealedMemberInventory = {
+    by_family: packages.map((record) => {
+      const selected = {
+        dimension_evidence_count: record.dimension_evidence.length,
+        family_key: record.family_key,
+        match_fixture_count: record.match_fixtures.length,
+        profile_count: record.profiles.length,
+        structure_fixture_member_count: record.structure_fixture_members.length,
+        subtype_tree_count: 1,
+      };
+      return {
+        ...selected,
+        total_package_member_count: selected.dimension_evidence_count
+          + selected.match_fixture_count
+          + selected.profile_count
+          + selected.structure_fixture_member_count
+          + selected.subtype_tree_count,
+      };
+    }),
+    totals: {
+      dimension_evidence_count: 1382,
+      match_fixture_count: 2866,
+      profile_count: 1382,
+      structure_fixture_member_count: 1,
+      subtype_tree_count: 24,
+      total_package_member_count: 5655,
+    },
+  };
+  const closure = {
+    capitalisation: {
+      family_key: 'CAPITALISATION',
+      on_disk_package_binding: null,
+      on_disk_package_present: false,
+      parked_state: 'PARKED',
+      planned_package_path: plannedCapitalisationPath,
+      product_activation_permitted: false,
+      serving_permitted: false,
+      stage_9f_authority_required: true,
+      synthetic_validation_package: {
+        package_id: syntheticId('capitalisation-synthetic-package'),
+        profile_count: 1,
+        state: 'IN_MEMORY_VALIDATION_ONLY_NOT_A_SEALED_PACKAGE',
+      },
+    },
+    family_count: 25,
+    full_set_validation: {
+      dimension_evidence_count: 1383,
+      family_package_count: 25,
+      profile_count: 1383,
+      state: 'PASS_WITH_SYNTHETIC_CAPITALISATION_VALIDATION_INPUT_ONLY',
+    },
+    governed_family_keys: governedFamilyKeys,
+    parked_family_count: 1,
+    sealed_family_keys: [...PHYSICAL_FAMILY_KEYS],
+    sealed_family_package_count: 24,
+    sealed_family_packages: PHYSICAL_FAMILY_KEYS.map((familyKey, index) => ({
+      family_key: familyKey,
+      package_binding: packageBindings[index],
+      profile_count: packages[index].profiles.length,
+    })),
+    sealed_member_inventory: sealedMemberInventory,
+    sealed_profile_count: 1382,
+  };
+  return {
+    closure,
+    familyProfileSet,
+    packages,
+    sources,
+    plannedCapitalisationPath,
+  };
+}
+
+function writeSyntheticPhysicalClosureInputs(root, fixture) {
+  for (const [selectedPath, bytes] of fixture.sources) {
+    mkdirSync(dirname(join(root, selectedPath)), { recursive: true });
+    writeFileSync(join(root, selectedPath), bytes);
+  }
+  const profileSetPath =
+    'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-approved-profile-set.json';
+  mkdirSync(dirname(join(root, profileSetPath)), { recursive: true });
+  writeFileSync(
+    join(root, profileSetPath),
+    `${canonicalJson(fixture.familyProfileSet)}\n`,
+  );
+  const amendmentSchema =
+    'STAGE_2Y_M7_V2_REPAIR_WORK3_EXECUTION_MANIFEST_CLOSURE_AMENDMENT/V1';
+  const unsignedAmendment = {
+    effective_family_package_closure: fixture.closure,
+    schema_version: amendmentSchema,
+  };
+  const amendment = {
+    ...unsignedAmendment,
+    closure_amendment_id: contentId(amendmentSchema, unsignedAmendment),
+  };
+  const amendmentPath =
+    'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-execution-manifest-closure-amendment.json';
+  const amendmentBytes = Buffer.from(`${canonicalJson(amendment)}\n`, 'utf8');
+  writeFileSync(join(root, amendmentPath), amendmentBytes);
+  return {
+    amendment,
+    amendmentBinding: syntheticStandardBinding(
+      amendmentPath,
+      amendmentBytes,
+      amendment,
+      'closure_amendment_id',
+    ),
+  };
+}
+
+function buildSyntheticWork3ReceiptFixture(root) {
+  const fixture = buildSyntheticPhysicalClosureFixture(root);
+  const sources = new Map(fixture.sources);
+  const records = new Map();
+  const idFields = new Map();
+  const putRecord = (selectedPath, record, idField = null) => {
+    const bytes = Buffer.from(`${canonicalJson(record)}\n`, 'utf8');
+    sources.set(selectedPath, bytes);
+    records.set(selectedPath, record);
+    idFields.set(selectedPath, idField);
+  };
+  const profileSetPath = WORK3_CREATE_ONCE_PATHS[4];
+  putRecord(profileSetPath, fixture.familyProfileSet, 'family_profile_set_id');
+  const structurePath = WORK3_CREATE_ONCE_PATHS[5];
+  const structureSchema = 'STAGE_2Y_M7_V2_STRUCTURE_DISPOSITION_SET/V1';
+  const firstPackagePath = fixture.closure.sealed_family_packages[0].package_binding.path;
+  const firstPackage = fixture.packages[0];
+  const structureBody = {
+    state: 'BEN_APPROVED_STRUCTURE_DISPOSITION_SET',
+    members: [{
+      structure_disposition_id: syntheticId('structure-0'),
+      inclusion_fixture_bindings: [syntheticMemberBinding(
+        firstPackagePath,
+        'match_fixtures',
+        0,
+        firstPackage.match_fixtures[0],
+        'match_fixture_id',
+      )],
+      exclusion_fixture_bindings: [syntheticMemberBinding(
+        firstPackagePath,
+        'match_fixtures',
+        1,
+        firstPackage.match_fixtures[1],
+        'match_fixture_id',
+      )],
+      inline_list_overlay: {
+        ambiguous_repeat_fixture_bindings: [syntheticMemberBinding(
+          firstPackagePath,
+          'structure_fixture_members',
+          0,
+          firstPackage.structure_fixture_members[0],
+          'fixture_id',
+        )],
+      },
+    }, {
+      structure_disposition_id: syntheticId('structure-1'),
+      inclusion_fixture_bindings: [syntheticMemberBinding(
+        firstPackagePath,
+        'match_fixtures',
+        2,
+        firstPackage.match_fixtures[2],
+        'match_fixture_id',
+      )],
+      exclusion_fixture_bindings: [syntheticMemberBinding(
+        firstPackagePath,
+        'match_fixtures',
+        3,
+        firstPackage.match_fixtures[3],
+        'match_fixture_id',
+      )],
+      inline_list_overlay: null,
+    }],
+  };
+  structureBody.members = structureBody.members.map((member) => {
+    const unsignedMember = { ...member };
+    delete unsignedMember.structure_disposition_id;
+    return syntheticIdentifiedRecord(
+      structureSchema,
+      'structure_disposition_id',
+      unsignedMember,
+    );
+  });
+  putRecord(
+    structurePath,
+    syntheticIdentifiedRecord(
+      structureSchema,
+      'structure_disposition_set_id',
+      structureBody,
+    ),
+    'structure_disposition_set_id',
+  );
+  const nativeSpecs = [
+    [WORK3_CREATE_ONCE_PATHS[0], 'AGREEMENT_INDEX/V1', 'agreement_index_id'],
+    [WORK3_CREATE_ONCE_PATHS[1], 'AGREEMENT_INDEX_SET/V1', 'agreement_index_set_id'],
+    [WORK3_CREATE_ONCE_PATHS[2], 'CONTEXT_COMPILATION_SET/V1', 'context_compilation_set_id'],
+    [WORK3_CREATE_ONCE_PATHS[3], 'AGREEMENT_ANALYSIS_SET/V1', 'agreement_analysis_set_id'],
+  ];
+  const nativeAgreementIds = Array.from(
+    { length: 10 }, (_, index) => syntheticId(`native-agreement-${index}`),
+  ).sort();
+  for (const [selectedPath, schemaVersion, idField] of nativeSpecs) {
+    if (schemaVersion === 'AGREEMENT_INDEX/V1') {
+      const nativeIndex = {
+        schema_version: schemaVersion,
+        source_binding: {
+          agreement_id: nativeAgreementIds[0],
+          canonical_text_id: syntheticId('native-canonical-text'),
+        },
+        structural_policy: { policy_digest: syntheticId('native-policy') },
+        root_node_occurrence_id: syntheticId('native-root-node'),
+        counts: {},
+        nodes: [],
+        annotations: [],
+        source_artefacts: [],
+        aliases: [],
+        ambiguities: [],
+        diagnostics: [],
+        inline_marker_dispositions: [],
+        inline_marker_partition: { proof_digest: syntheticId('native-inline-proof') },
+        byte_coverage: { proof_digest: syntheticId('native-byte-proof') },
+      };
+      nativeIndex.agreement_index_id = contentId(schemaVersion, {
+        agreement_id: nativeIndex.source_binding.agreement_id,
+        canonical_text_id: nativeIndex.source_binding.canonical_text_id,
+        structural_policy_digest: nativeIndex.structural_policy.policy_digest,
+        root_node_occurrence_id: nativeIndex.root_node_occurrence_id,
+        counts: nativeIndex.counts,
+        node_set_digest: contentId('AGREEMENT_INDEX_NODE_SET/V1', nativeIndex.nodes),
+        annotation_set_digest: contentId(
+          'AGREEMENT_INDEX_ANNOTATION_SET/V1', nativeIndex.annotations,
+        ),
+        source_artefact_set_digest: contentId(
+          'AGREEMENT_INDEX_SOURCE_ARTEFACT_SET/V1', nativeIndex.source_artefacts,
+        ),
+        alias_set_digest: contentId('AGREEMENT_INDEX_ALIAS_SET/V1', nativeIndex.aliases),
+        ambiguity_set_digest: contentId(
+          'AGREEMENT_INDEX_AMBIGUITY_SET/V1', nativeIndex.ambiguities,
+        ),
+        diagnostic_set_digest: contentId(
+          'AGREEMENT_INDEX_DIAGNOSTIC_SET/V1', nativeIndex.diagnostics,
+        ),
+        inline_marker_disposition_set_digest: contentId(
+          'AGREEMENT_INDEX_INLINE_MARKER_DISPOSITION_SET/V1',
+          nativeIndex.inline_marker_dispositions,
+        ),
+        inline_marker_partition_proof_digest:
+          nativeIndex.inline_marker_partition.proof_digest,
+        byte_coverage_proof_digest: nativeIndex.byte_coverage.proof_digest,
+      });
+      putRecord(selectedPath, nativeIndex, idField);
+      continue;
+    }
+    putRecord(
+      selectedPath,
+      syntheticIdentifiedRecord(schemaVersion, idField, {
+        members: nativeAgreementIds.map((agreement_id) => ({ agreement_id })),
+      }),
+      idField,
+    );
+  }
+  const amendmentPath =
+    'synthetic/governance/work3-closure-amendment.json';
+  const externalPath = 'synthetic/governance/work3-external-review.json';
+  const applicationPath = 'synthetic/governance/work3-application.json';
+  const successorPath = 'synthetic/governance/work3-successor-manifest.json';
+  const externalSchema = 'SYNTHETIC_WORK3_EXTERNAL_REVIEW/V1';
+  const applicationSchema = 'SYNTHETIC_WORK3_APPLICATION/V1';
+  const successorSchema = 'SYNTHETIC_WORK3_SUCCESSOR_MANIFEST/V1';
+  putRecord(
+    externalPath,
+    syntheticIdentifiedRecord(externalSchema, 'external_review_id', { status: 'PASS' }),
+    'external_review_id',
+  );
+  putRecord(
+    applicationPath,
+    syntheticIdentifiedRecord(applicationSchema, 'application_id', { status: 'PASS' }),
+    'application_id',
+  );
+  let successor = syntheticIdentifiedRecord(
+    successorSchema,
+    'execution_manifest_id',
+    { execution_manifest_digest: syntheticId('successor-digest') },
+  );
+  putRecord(successorPath, successor, 'execution_manifest_id');
+  const supportPaths = Array.from(
+    { length: 18 },
+    (_, index) => `synthetic/support/artifact-${String(index).padStart(2, '0')}.json`,
+  );
+  for (const selectedPath of supportPaths) {
+    putRecord(selectedPath, { selected_path: selectedPath });
+  }
+  const parentAuthority = {
+    schema_version: 'SYNTHETIC_WORK3_PARENT_AUTHORITY/V1',
+    authority_id: syntheticId('synthetic-parent-authority'),
+    authority_digest: syntheticId('synthetic-parent-authority-digest'),
+  };
+  putRecord(supportPaths[0], parentAuthority);
+  const parentAuthorityBytes = sources.get(supportPaths[0]);
+  const parentAuthorityBinding = {
+    path: supportPaths[0],
+    schema_version: parentAuthority.schema_version,
+    authority_id: parentAuthority.authority_id,
+    authority_digest: parentAuthority.authority_digest,
+    byte_length: parentAuthorityBytes.length,
+    sha256: sha256Hex(parentAuthorityBytes),
+  };
+  const work2Bindings = supportPaths.slice(5, 7).map((selectedPath) => (
+    syntheticStandardBinding(selectedPath, sources.get(selectedPath))
+  ));
+  const work3BindingContracts = nativeSpecs.slice(1).map(
+    ([selectedPath, schema_version, record_id_field]) => ({
+      path: selectedPath,
+      schema_version,
+      record_id_field,
+    }),
+  );
+  const nativeEvidenceContract = {
+    exact_keys: [
+      'work2_agreement_analysis_set_binding',
+      'work2_context_compilation_set_binding',
+      'work3_agreement_index_set_binding',
+      'work3_context_compilation_set_binding',
+      'work3_agreement_analysis_set_binding',
+      'sealed_agreement_ids',
+      'additive_agreement_ids',
+      'combined_agreement_ids',
+      'extension_proof',
+    ],
+    work2_bindings: work2Bindings,
+    work3_binding_contracts: work3BindingContracts,
+    sealed_agreement_ids: nativeAgreementIds.slice(0, 7),
+    additive_agreement_ids: nativeAgreementIds.slice(7),
+    combined_agreement_ids: nativeAgreementIds,
+    extension_proof: 'EXACT_DISJOINT_UNION_OF_SEALED_SEVEN_AND_ADDITIVE_THREE',
+  };
+  const work3EntryAuthority = syntheticIdentifiedRecord(
+    'STAGE_2Y_M7_V2_REPAIR_WORK3_ENTRY_CORRECTION_AUTHORITY/V1',
+    'correction_authority_id',
+    {
+      agreement_index_set_authority: {
+        sets: nativeSpecs.slice(1).map(
+          ([selectedPath, schema_version, record_id_field]) => ({
+            path: selectedPath,
+            schema_version,
+            record_id_field,
+            members: structuredClone(records.get(selectedPath).members),
+          }),
+        ),
+      },
+      work3_scope_contract: {
+        rich_work3_receipt_contract: {
+          candidate_native_set_evidence_contract: nativeEvidenceContract,
+        },
+      },
+    },
+  );
+  putRecord(supportPaths[4], work3EntryAuthority, 'correction_authority_id');
+  const work3EntryAuthorityBinding = syntheticStandardBinding(
+    supportPaths[4],
+    sources.get(supportPaths[4]),
+    work3EntryAuthority,
+    'correction_authority_id',
+  );
+  const predecessorSchema = 'STAGE_2Y_M7_V2_REPAIR_WORK_EXECUTION_MANIFEST/V1';
+  const predecessor = syntheticIdentifiedRecord(
+    predecessorSchema,
+    'execution_manifest_id',
+    {
+      work: 'WORK3',
+      stage: 'M7_V2_REPAIR_WORK3',
+      parent_authority_binding: parentAuthorityBinding,
+      activation_receipt_binding: syntheticStandardBinding(
+        supportPaths[1], sources.get(supportPaths[1]),
+      ),
+      predecessor_receipt_binding: syntheticStandardBinding(
+        supportPaths[2], sources.get(supportPaths[2]),
+      ),
+      candidate_ordering_correction_authority_binding: syntheticStandardBinding(
+        supportPaths[3], sources.get(supportPaths[3]),
+      ),
+      work3_entry_correction_authority_binding: work3EntryAuthorityBinding,
+      allowed_effects: { synthetic_predecessor: true },
+      exact_argv_with_run_limits: [],
+      exact_git_commit_and_push_argv: [],
+      permitted_read_paths: [],
+      permitted_write_paths: [],
+      stop_conditions: [],
+      success_conditions: [],
+    },
+  );
+  putRecord(supportPaths[7], predecessor, 'execution_manifest_id');
+  const predecessorBinding = syntheticStandardBinding(
+    supportPaths[7],
+    sources.get(supportPaths[7]),
+    predecessor,
+    'execution_manifest_id',
+  );
+  const packagePaths = fixture.closure.sealed_family_packages.map(
+    (entry) => entry.package_binding.path,
+  );
+  const artifactPaths = [
+    ...packagePaths,
+    profileSetPath,
+    structurePath,
+    ...nativeSpecs.map(([selectedPath]) => selectedPath),
+    amendmentPath,
+    externalPath,
+    applicationPath,
+    successorPath,
+    ...supportPaths,
+  ].sort();
+  assert.equal(artifactPaths.length, 52);
+  assert.equal(new Set(artifactPaths).size, 52);
+  const receiptPath = WORK3_CREATE_ONCE_PATHS[6];
+  const countValues = {
+    effective_path_count: 53,
+    artifact_binding_count: 52,
+    create_once_output_count: 7,
+    ambiguous_repeat_agreement_index_output_count: 1,
+    family_profile_package_count: 24,
+    approved_family_profile_set_count: 1,
+    structure_disposition_set_count: 1,
+    structure_disposition_member_count: 2,
+    structure_overlay_fixture_count: 1,
+    candidate_native_set_count: 3,
+    candidate_native_set_member_count: 10,
+    sealed_agreement_count: 7,
+    additive_agreement_count: 3,
+    combined_agreement_count: 10,
+    family_key_count: 25,
+    candidate_registration_count: 0,
+    candidate_transition_count: 0,
+    semantic_run_count: 0,
+    dimension_evidence_count: 1382,
+    match_fixture_count: 2866,
+    package_member_count: 5655,
+    parked_family_count: 1,
+    profile_count: 1382,
+    structure_fixture_member_count: 1,
+    subtype_tree_binding_count: 24,
+    validation_fixture_dimension_evidence_count: 1383,
+    validation_fixture_family_package_count: 25,
+    validation_fixture_profile_count: 1383,
+  };
+  const commandArgv = Array.from(
+    { length: 21 }, (_, index) => ['node', `synthetic-command-${index}`],
+  );
+  const commandStateRanges = [
+    { indices: [0, 3], state: 'COMPLETED_BEFORE_MANIFEST' },
+    { indices: [4, 18], state: 'COMPLETED_BEFORE_RECEIPT' },
+    { indices: [19, 19], state: 'WRITES_SEVEN_CREATE_ONCE_OUTPUTS_AND_THIS_RECEIPT' },
+    { indices: [20, 20], state: 'REQUIRED_AFTER_THIS_RECEIPT' },
+  ];
+  const combinedTestResult = {
+    argv: ['node', '--test', 'synthetic.test.js'],
+    semantic_run_count: 0,
+    status: 'PASS',
+    test_file_count: 3,
+  };
+  const executionFixture = {
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK3_PROFILE_CASES/V1',
+    state: 'BUILD_ONLY_PROFILE_PACKAGE_SET_AND_RECEIPT_ACCEPTANCE',
+    case_ids: Array.from({ length: 20 }, (_, index) => `SYNTHETIC_CASE_${index}`),
+    combined_test_result: combinedTestResult,
+    command_run_counts: Array.from({ length: 21 }, () => 1),
+  };
+  putRecord(supportPaths[8], executionFixture);
+  const rawReviewedBinding = (selectedPath) => {
+    const bytes = sources.get(selectedPath);
+    return {
+      path: selectedPath,
+      schema_version: null,
+      byte_length: bytes.length,
+      sha256: sha256Hex(bytes),
+      git_blob_oid: syntheticGitBlobOid(bytes),
+    };
+  };
+  const reviewedGeneratorBinding = rawReviewedBinding(supportPaths[9]);
+  const reviewedTestBinding = rawReviewedBinding(supportPaths[10]);
+  const zeroEffectBoundary = {
+    authority_change_count: 0,
+    database_write_count: 0,
+    legal_semantic_change_count: 0,
+    product_write_count: 0,
+    repository_mutation_count: 0,
+    serving_change_count: 0,
+  };
+  const externalChecks = [{ check_id: 'SYNTHETIC_EXTERNAL_REVIEW', status: 'PASS' }];
+  const externalAuthorityBoundary = {
+    authority_granted: 'NONE',
+    legal_ruling_authority: false,
+    mechanical_review_only: true,
+    mutation_authority: false,
+  };
+  const externalIndependence = {
+    cross_vendor_review: true,
+    reviewer_model_identity_or_host_withholding_state_recorded: true,
+    reviewer_not_authoring_session: true,
+    reviewer_vendor_differs_from_authoring_vendor: true,
+  };
+  const externalBaseCommit = {
+    commit_sha: '1'.repeat(40),
+    parent_commit_sha: '2'.repeat(40),
+    tree_sha: '3'.repeat(40),
+  };
+  const lawfulFixturePath = 'synthetic/fixtures/lawful-work3-set.json.gz.b64';
+  const lawfulFixtureUnsigned = {
+    schema_version: 'STAGE_2Y_M7_V2_LAWFUL_FAMILY_PACKAGE_SET_TEST_FIXTURE/V1',
+    generated_native_source_records: [{
+      binding: { path: WORK3_CREATE_ONCE_PATHS[0] },
+      record: records.get(WORK3_CREATE_ONCE_PATHS[0]),
+    }],
+    structure_disposition_set: records.get(structurePath),
+  };
+  const lawfulFixture = {
+    ...lawfulFixtureUnsigned,
+    fixture_digest: sha256Hex(Buffer.from(canonicalJson(lawfulFixtureUnsigned))),
+  };
+  const lawfulFixtureBytes = Buffer.from(
+    `${gzipSync(Buffer.from(JSON.stringify(lawfulFixture))).toString('base64')}\n`,
+    'utf8',
+  );
+  sources.set(lawfulFixturePath, lawfulFixtureBytes);
+  const lawfulFixtureBinding = {
+    path: lawfulFixturePath,
+    schema_version: null,
+    byte_length: lawfulFixtureBytes.length,
+    sha256: sha256Hex(lawfulFixtureBytes),
+    git_blob_oid: syntheticGitBlobOid(lawfulFixtureBytes),
+  };
+  const effects = {
+    files_written: 7,
+    ambiguous_repeat_agreement_index_writes: 1,
+    family_profile_package_writes: 0,
+    candidate_native_set_writes: 3,
+    approved_family_profile_set_writes: 1,
+    structure_disposition_set_writes: 1,
+    receipt_writes: 1,
+    candidate_registration_writes: 0,
+    candidate_transition_writes: 0,
+    contract_policy_writes: 0,
+    model_calls: 0,
+    network_reads: 0,
+    network_writes: 0,
+    database_writes: 0,
+    product_writes: 0,
+    m0_m4_mutations: 0,
+    m8_actions: 0,
+    semantic_runs: 0,
+    v2_shadow_analysis_runs: 0,
+    v2_shadow_projection_runs: 0,
+  };
+  const nextWork = {
+    authorised_work: 'WORK4',
+    manifest_required_before_first_command: true,
+    first_candidate_owner: 'WORK4',
+    work3_candidate_registration_id: null,
+    work3_candidate_transition: null,
+    work4_required_bindings: [
+      'THREE_WORK3_TEN_MEMBER_NATIVE_SETS',
+      'APPROVED_FAMILY_PROFILE_SET',
+      'EXACT_24_SEALED_PACKAGE_SUBTYPE_TREE_MEMBER_BINDINGS',
+      'CAPITALISATION_PARKED_CLOSURE_BINDING',
+      'STRUCTURE_DISPOSITION_SET',
+      'RICH_WORK3_RECEIPT',
+    ],
+    work4_view_policy_obligation:
+      'CREATE_AND_BIND_V2_VIEW_POLICY_BEFORE_FIRST_CANDIDATE_REGISTRATION',
+  };
+  const amendmentSchema =
+    'STAGE_2Y_M7_V2_REPAIR_WORK3_EXECUTION_MANIFEST_CLOSURE_AMENDMENT/V1';
+  const amendmentBody = {
+    effective_family_package_closure: fixture.closure,
+    predecessor_work3_entry_correction_authority_binding:
+      work3EntryAuthorityBinding,
+    predecessor_work3_execution_manifest_binding: predecessorBinding,
+    zero_effect_boundary: zeroEffectBoundary,
+    lawful_fixture: {
+      fixture_binding: lawfulFixtureBinding,
+      fixture_digest: lawfulFixture.fixture_digest,
+      fixture_schema_version: lawfulFixture.schema_version,
+    },
+    successor_manifest_contract_overlay: {
+      schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK_EXECUTION_MANIFEST/V2',
+      allowed_effects: { synthetic_successor: true },
+      exact_argv_with_run_limits: commandArgv.slice(4).map((argv) => ({
+        argv,
+        max_runs: 3,
+      })),
+      exact_git_commit_and_push_argv: [['git', 'add', '--', ...WORK3_CREATE_ONCE_PATHS]],
+      permitted_read_paths: ['synthetic/input'],
+      permitted_write_paths: [...WORK3_CREATE_ONCE_PATHS],
+      stop_conditions: ['SYNTHETIC_STOP'],
+      success_conditions: ['SYNTHETIC_SUCCESS'],
+    },
+    receipt_contract_overlay: {
+      schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK3_RECEIPT/V2',
+      exact_keys: [...WORK3_RECEIPT_KEYS],
+      top_level_key_count: 31,
+      work3_receipt_path: receiptPath,
+      create_once_output_paths: [...WORK3_CREATE_ONCE_PATHS],
+      artifact_bindings_contract: {
+        count: 52,
+        paths: artifactPaths,
+        record_id_categories: [
+          {
+            paths: packagePaths,
+            schema_version: 'STAGE_2Y_M7_V2_FAMILY_PROFILE_PACKAGE/V2',
+            record_id_field: 'family_profile_package_id',
+          },
+          {
+            paths: [profileSetPath],
+            schema_version: 'STAGE_2Y_M7_V2_APPROVED_FAMILY_PROFILE_SET/V1',
+            record_id_field: 'family_profile_set_id',
+          },
+          {
+            paths: [structurePath],
+            schema_version: 'STAGE_2Y_M7_V2_STRUCTURE_DISPOSITION_SET/V1',
+            record_id_field: 'structure_disposition_set_id',
+          },
+          {
+            schema_and_id_fields: nativeSpecs.map(
+              ([selectedPath, schema_version, record_id_field]) => ({
+                path: selectedPath, schema_version, record_id_field,
+              }),
+            ),
+          },
+          {
+            paths: [supportPaths[4]],
+            schema_version: work3EntryAuthority.schema_version,
+            record_id_field: 'correction_authority_id',
+          },
+          {
+            paths: [supportPaths[7]],
+            schema_version: predecessor.schema_version,
+            record_id_field: 'execution_manifest_id',
+          },
+          {
+            paths: [amendmentPath],
+            schema_version: amendmentSchema,
+            record_id_field: 'closure_amendment_id',
+          },
+          {
+            paths: [externalPath],
+            schema_version:
+              'STAGE_2Y_M7_V2_REPAIR_WORK3_CLOSURE_AMENDMENT_EXTERNAL_REVIEW_RECEIPT/V1',
+            record_id_field: 'work3_closure_amendment_external_review_receipt_id',
+          },
+          {
+            paths: [applicationPath],
+            schema_version:
+              'STAGE_2Y_M7_V2_REPAIR_WORK3_CLOSURE_AMENDMENT_APPLICATION_RECEIPT/V1',
+            record_id_field: 'work3_closure_amendment_application_receipt_id',
+          },
+          {
+            paths: [successorPath],
+            schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK_EXECUTION_MANIFEST/V2',
+            record_id_field: 'execution_manifest_id',
+          },
+          { remaining_code_test_and_raw_fixture_paths: 'NULL_SCHEMA_AND_ID_FIELDS' },
+        ],
+      },
+      command_execution_ledger_contract: {
+        entry_count: 21,
+        entry_exact_keys: ['argv', 'run_count', 'state'],
+        argv_order: commandArgv,
+        state_ranges: commandStateRanges,
+        bootstrap_counts_minimum: 1,
+        pre_receipt_work3_command_counts_minimum: 1,
+        finaliser_run_count_range: [1, 3],
+        required_post_receipt_validator_run_count: 1,
+      },
+      combined_test_result_contract: {
+        exact_keys: Object.keys(combinedTestResult),
+        ...combinedTestResult,
+      },
+      counts_contract: {
+        exact_keys: Object.keys(countValues),
+        exact_values: Object.fromEntries(
+          Object.entries(countValues).filter(([key]) => key !== 'structure_disposition_member_count'),
+        ),
+      },
+      effects_contract: { exact_keys: Object.keys(effects), exact_values: effects },
+      checks_contract: {
+        exact_ordered_checks: WORK3_CHECK_IDS.map(
+          (check_id) => ({ check_id, status: 'PASS' }),
+        ),
+      },
+      next_work_contract: { exact_keys: Object.keys(nextWork), exact_values: nextWork },
+      repository_precondition_contract: {
+        exact_keys: [
+          'proof_state',
+          'effective_work3_paths',
+          'generated_paths_absent',
+          'candidate_registration_root_state',
+          'exact_git_commit_and_push_argv',
+          'required_validator_argv',
+          'immutable_pre_existing_package_bindings',
+        ],
+        effective_work3_paths: [...artifactPaths, receiptPath].sort(),
+        generated_paths_absent: [...WORK3_CREATE_ONCE_PATHS],
+        candidate_registration_root_state: 'EMPTY',
+        exact_git_commit_and_push_argv: [['git', 'add', '--', ...WORK3_CREATE_ONCE_PATHS]],
+        required_validator_argv: ['node', 'scripts/stage-2y-structure-m7-v2-repair-work3-validate.mjs'],
+        immutable_pre_existing_package_bindings:
+          fixture.closure.sealed_family_packages.map((entry) => entry.package_binding),
+        proof_state: 'ORCHESTRATOR_VERIFIED_EXTERNAL_TO_FINALISER',
+      },
+    },
+    work3_execution_fixture_contract_overlay: {
+      effective_contract: {
+        exact_keys: Object.keys(executionFixture),
+        path: supportPaths[8],
+        schema_version: executionFixture.schema_version,
+        state: executionFixture.state,
+        case_ids: executionFixture.case_ids,
+        combined_test_result: combinedTestResult,
+      },
+    },
+    external_review_receipt_contract: {
+      exact_keys: [
+        'schema_version',
+        'work3_closure_amendment_external_review_receipt_id',
+        'reviewed_on',
+        'review_state',
+        'status',
+        'base_commit_binding',
+        'review_target_commit_binding',
+        'reviewed_artifact_bindings',
+        'reviewer_identity',
+        'independence_attestation',
+        'checks',
+        'findings',
+        'authority_boundary',
+        'zero_effect_boundary',
+      ],
+      schema_version:
+        'STAGE_2Y_M7_V2_REPAIR_WORK3_CLOSURE_AMENDMENT_EXTERNAL_REVIEW_RECEIPT/V1',
+      status_exact_value: 'PASS',
+      review_state_exact_value: 'EXTERNAL_CROSS_VENDOR_REVIEW_COMPLETE',
+      base_commit_binding: externalBaseCommit,
+      checks_exact_value: externalChecks,
+      findings_exact_value: [],
+      authority_boundary_exact_value: externalAuthorityBoundary,
+      independence_attestation_exact_value: externalIndependence,
+      zero_effect_boundary_exact_value: zeroEffectBoundary,
+      reviewed_artifact_bindings_exact_keys: [
+        'amendment_binding', 'generator_binding', 'test_binding',
+      ],
+      reviewed_artifact_binding_contracts: {
+        amendment_binding: { path: amendmentPath },
+        generator_binding: reviewedGeneratorBinding,
+        test_binding: reviewedTestBinding,
+      },
+      reviewer_identity_contract: {
+        exact_keys: [
+          'authoring_vendor_id', 'reviewer_instance_id', 'reviewer_model_id',
+          'reviewer_vendor_id',
+        ],
+        authoring_vendor_id_exact_value: 'OPENAI',
+        reviewer_model_id_contract: { exact_value: 'WITHHELD_BY_HOST_POLICY' },
+        reviewer_vendor_aliases_forbidden_case_insensitively: [
+          'OPENAI', 'CHATGPT', 'CODEX',
+        ],
+      },
+      review_target_commit_binding_contract: {
+        exact_keys: [
+          'branch', 'changed_paths', 'commit_sha', 'live_remote_commit_sha',
+          'live_remote_ref', 'origin_url', 'parent_commit_sha', 'path_blob_bindings',
+          'remote_ref', 'remote_ref_commit_sha', 'tree_sha',
+        ],
+        authority_base_parent_commit_sha_exact_value: externalBaseCommit.commit_sha,
+        branch_exact_value: 'synthetic/review',
+        changed_paths_exact_value: [amendmentPath, supportPaths[9], supportPaths[10]],
+        origin_url_exact_value: 'https://example.test/synthetic.git',
+        live_remote_ref_exact_value: 'refs/heads/synthetic/review',
+        remote_ref_exact_value: 'origin/synthetic/review',
+      },
+    },
+  };
+  const amendment = syntheticIdentifiedRecord(
+    amendmentSchema,
+    'closure_amendment_id',
+    amendmentBody,
+  );
+  putRecord(amendmentPath, amendment, 'closure_amendment_id');
+  const amendmentBinding = syntheticStandardBinding(
+    amendmentPath,
+    sources.get(amendmentPath),
+    amendment,
+    'closure_amendment_id',
+  );
+  const externalReview = syntheticIdentifiedRecord(
+    'STAGE_2Y_M7_V2_REPAIR_WORK3_CLOSURE_AMENDMENT_EXTERNAL_REVIEW_RECEIPT/V1',
+    'work3_closure_amendment_external_review_receipt_id',
+    {
+      reviewed_on: '2026-09-01',
+      review_state: 'EXTERNAL_CROSS_VENDOR_REVIEW_COMPLETE',
+      status: 'PASS',
+      base_commit_binding: externalBaseCommit,
+      review_target_commit_binding: {
+        branch: 'synthetic/review',
+        changed_paths: [amendmentPath, supportPaths[9], supportPaths[10]],
+        commit_sha: '4'.repeat(40),
+        live_remote_commit_sha: '4'.repeat(40),
+        live_remote_ref: 'refs/heads/synthetic/review',
+        origin_url: 'https://example.test/synthetic.git',
+        parent_commit_sha: externalBaseCommit.commit_sha,
+        path_blob_bindings: [
+          { path: amendmentPath, git_blob_oid: amendmentBinding.git_blob_oid },
+          { path: supportPaths[9], git_blob_oid: reviewedGeneratorBinding.git_blob_oid },
+          { path: supportPaths[10], git_blob_oid: reviewedTestBinding.git_blob_oid },
+        ],
+        remote_ref: 'origin/synthetic/review',
+        remote_ref_commit_sha: '4'.repeat(40),
+        tree_sha: '5'.repeat(40),
+      },
+      reviewed_artifact_bindings: {
+        amendment_binding: amendmentBinding,
+        generator_binding: reviewedGeneratorBinding,
+        test_binding: reviewedTestBinding,
+      },
+      reviewer_identity: {
+        authoring_vendor_id: 'OPENAI',
+        reviewer_instance_id: 'synthetic-reviewer-instance',
+        reviewer_model_id: 'WITHHELD_BY_HOST_POLICY',
+        reviewer_vendor_id: 'ANTHROPIC',
+      },
+      independence_attestation: externalIndependence,
+      checks: externalChecks,
+      findings: [],
+      authority_boundary: externalAuthorityBoundary,
+      zero_effect_boundary: amendment.zero_effect_boundary,
+    },
+  );
+  putRecord(
+    externalPath,
+    externalReview,
+    'work3_closure_amendment_external_review_receipt_id',
+  );
+  const externalBinding = syntheticStandardBinding(
+    externalPath,
+    sources.get(externalPath),
+    externalReview,
+    'work3_closure_amendment_external_review_receipt_id',
+  );
+  const application = syntheticIdentifiedRecord(
+    'STAGE_2Y_M7_V2_REPAIR_WORK3_CLOSURE_AMENDMENT_APPLICATION_RECEIPT/V1',
+    'work3_closure_amendment_application_receipt_id',
+    {
+      state: 'IMMUTABLE_ZERO_EFFECT_APPLICATION',
+      closure_amendment_binding: amendmentBinding,
+      external_review_receipt_binding: externalBinding,
+      zero_effect_boundary: amendment.zero_effect_boundary,
+    },
+  );
+  putRecord(
+    applicationPath,
+    application,
+    'work3_closure_amendment_application_receipt_id',
+  );
+  const applicationBinding = syntheticStandardBinding(
+    applicationPath,
+    sources.get(applicationPath),
+    application,
+    'work3_closure_amendment_application_receipt_id',
+  );
+  const successorUnsigned = structuredClone(predecessor);
+  delete successorUnsigned.execution_manifest_id;
+  delete successorUnsigned.execution_manifest_digest;
+  Object.assign(successorUnsigned, {
+    schema_version: amendment.successor_manifest_contract_overlay.schema_version,
+    allowed_effects: amendment.successor_manifest_contract_overlay.allowed_effects,
+    exact_argv_with_run_limits:
+      amendment.successor_manifest_contract_overlay.exact_argv_with_run_limits,
+    exact_git_commit_and_push_argv:
+      amendment.successor_manifest_contract_overlay.exact_git_commit_and_push_argv,
+    permitted_read_paths: amendment.successor_manifest_contract_overlay.permitted_read_paths,
+    permitted_write_paths: amendment.successor_manifest_contract_overlay.permitted_write_paths,
+    stop_conditions: amendment.successor_manifest_contract_overlay.stop_conditions,
+    success_conditions: amendment.successor_manifest_contract_overlay.success_conditions,
+    predecessor_execution_manifest_binding: predecessorBinding,
+    closure_amendment_binding: amendmentBinding,
+    external_review_receipt_binding: externalBinding,
+    closure_application_receipt_binding: applicationBinding,
+  });
+  const executionManifestDigest = sha256Hex(Buffer.from(canonicalJson(successorUnsigned)));
+  successor = {
+    ...successorUnsigned,
+    execution_manifest_digest: executionManifestDigest,
+    execution_manifest_id: contentId(
+      amendment.successor_manifest_contract_overlay.schema_version,
+      { ...successorUnsigned, execution_manifest_digest: executionManifestDigest },
+    ),
+  };
+  putRecord(successorPath, successor, 'execution_manifest_id');
+  const artifactBindings = artifactPaths.map((selectedPath) => {
+    const existingPackage = fixture.closure.sealed_family_packages.find(
+      (entry) => entry.package_binding.path === selectedPath,
+    );
+    if (existingPackage) return existingPackage.package_binding;
+    const idField = idFields.get(selectedPath) ?? null;
+    return syntheticStandardBinding(
+      selectedPath,
+      sources.get(selectedPath),
+      idField === null ? null : records.get(selectedPath),
+      idField,
+    );
+  });
+  const bindingByPath = new Map(artifactBindings.map((binding) => [binding.path, binding]));
+  const repositoryPrecondition = {
+    proof_state: 'ORCHESTRATOR_VERIFIED_EXTERNAL_TO_FINALISER',
+    effective_work3_paths: [...artifactPaths, receiptPath].sort(),
+    generated_paths_absent: [...WORK3_CREATE_ONCE_PATHS],
+    candidate_registration_root_state: 'EMPTY',
+    exact_git_commit_and_push_argv: [['git', 'add', '--', ...WORK3_CREATE_ONCE_PATHS]],
+    required_validator_argv: [
+      'node', 'scripts/stage-2y-structure-m7-v2-repair-work3-validate.mjs',
+    ],
+    immutable_pre_existing_package_bindings:
+      fixture.closure.sealed_family_packages.map((entry) => entry.package_binding),
+  };
+  const receiptSchema = 'STAGE_2Y_M7_V2_REPAIR_WORK3_RECEIPT/V2';
+  const nativeEvidence = {
+    work2_agreement_analysis_set_binding: work2Bindings[0],
+    work2_context_compilation_set_binding: work2Bindings[1],
+    work3_agreement_index_set_binding: bindingByPath.get(WORK3_CREATE_ONCE_PATHS[1]),
+    work3_context_compilation_set_binding: bindingByPath.get(WORK3_CREATE_ONCE_PATHS[2]),
+    work3_agreement_analysis_set_binding: bindingByPath.get(WORK3_CREATE_ONCE_PATHS[3]),
+    sealed_agreement_ids: nativeEvidenceContract.sealed_agreement_ids,
+    additive_agreement_ids: nativeEvidenceContract.additive_agreement_ids,
+    combined_agreement_ids: nativeEvidenceContract.combined_agreement_ids,
+    extension_proof: nativeEvidenceContract.extension_proof,
+  };
+  const receiptBody = {
+    work: 'WORK3',
+    stage: 'M7_V2_REPAIR_WORK3',
+    state: 'PASS_WORK3_BUILD_ONLY_NULL_CANDIDATE',
+    status: 'PASS',
+    execution_manifest_id: successor.execution_manifest_id,
+    execution_manifest_digest: successor.execution_manifest_digest,
+    parent_authority_binding: parentAuthorityBinding,
+    activation_receipt_binding: bindingByPath.get(supportPaths[1]),
+    predecessor_receipt_binding: bindingByPath.get(supportPaths[2]),
+    candidate_ordering_correction_authority_binding: bindingByPath.get(supportPaths[3]),
+    work3_entry_correction_authority_binding: work3EntryAuthorityBinding,
+    candidate_registration_id: null,
+    candidate_transition: null,
+    candidate_native_set_evidence: nativeEvidence,
+    family_profile_evidence: {
+      family_profile_package_bindings:
+        fixture.closure.sealed_family_packages.map((entry) => entry.package_binding),
+      approved_family_profile_set_binding: bindingByPath.get(profileSetPath),
+      governed_family_keys: fixture.closure.governed_family_keys,
+      sealed_package_family_keys: fixture.closure.sealed_family_keys,
+      parked_family_evidence: fixture.closure.capitalisation,
+    },
+    structure_disposition_set_binding: bindingByPath.get(structurePath),
+    artifact_bindings: artifactBindings,
+    artifact_set_digest: sha256Hex(Buffer.from(canonicalJson(artifactBindings), 'utf8')),
+    command_execution_ledger: Array.from({ length: 21 }, (_, index) => ({
+      argv: commandArgv[index],
+      run_count: 1,
+      state: commandStateRanges.find(
+        (range) => index >= range.indices[0] && index <= range.indices[1],
+      ).state,
+    })),
+    combined_test_result: combinedTestResult,
+    repository_precondition: repositoryPrecondition,
+    counts: countValues,
+    checks: WORK3_CHECK_IDS.map((check_id) => ({ check_id, status: 'PASS' })),
+    effects,
+    next_work: nextWork,
+    closure_amendment_binding: bindingByPath.get(amendmentPath),
+    external_review_receipt_binding: bindingByPath.get(externalPath),
+    closure_application_receipt_binding: bindingByPath.get(applicationPath),
+    successor_execution_manifest_binding: bindingByPath.get(successorPath),
+  };
+  const receipt = syntheticIdentifiedRecord(
+    receiptSchema,
+    'work3_receipt_id',
+    receiptBody,
+  );
+  const physicalValidation = {
+    status: 'PASS_WORK3_PHYSICAL_CLOSURE_V2',
+    family_package_count: 24,
+    parked_family_count: 1,
+    profile_count: 1382,
+    dimension_evidence_count: 1382,
+    subtype_tree_count: 24,
+    match_fixture_count: 2866,
+    structure_fixture_member_count: 1,
+    package_member_count: 5655,
+  };
+  return {
+    amendment,
+    work3EntryAuthority,
+    physicalValidation,
+    receipt,
+    receiptPath,
+    paths: {
+      applicationPath,
+      externalPath,
+      nativeSetPaths: nativeSpecs.slice(1).map(([selectedPath]) => selectedPath),
+      packagePaths,
+      structurePath,
+      successorPath,
+      executionFixturePath: supportPaths[8],
+    },
+    sources,
+  };
+}
+
+function resealSyntheticReceipt(receipt) {
+  const unsigned = { ...receipt };
+  delete unsigned.work3_receipt_id;
+  receipt.work3_receipt_id = contentId(receipt.schema_version, unsigned);
+}
+
+function replaceSyntheticArtifact(fixture, receipt, selectedPath, record, idField) {
+  const bytes = Buffer.from(`${canonicalJson(record)}\n`, 'utf8');
+  fixture.sources.set(selectedPath, bytes);
+  const binding = syntheticStandardBinding(
+    selectedPath,
+    bytes,
+    idField === null ? null : record,
+    idField,
+  );
+  const index = receipt.artifact_bindings.findIndex(
+    (candidate) => candidate.path === selectedPath,
+  );
+  assert.notEqual(index, -1);
+  receipt.artifact_bindings[index] = binding;
+  receipt.artifact_set_digest = sha256Hex(
+    Buffer.from(canonicalJson(receipt.artifact_bindings), 'utf8'),
+  );
+  return binding;
+}
+
+function resealSyntheticRecord(record, idField) {
+  const unsigned = { ...record };
+  delete unsigned[idField];
+  record[idField] = contentId(record.schema_version, unsigned);
+  return record;
+}
+
+const FROZEN_MIGRATION_ROOT = 'evidence/canonical-v2/stage-2y-structure-migration';
+const FROZEN_AMENDMENT_PATH =
+  `${FROZEN_MIGRATION_ROOT}/control/m7-v2-repair-work3-execution-manifest-closure-amendment.json`;
+const FROZEN_EXTERNAL_PATH =
+  `${FROZEN_MIGRATION_ROOT}/control/m7-v2-repair-work3-execution-manifest-closure-amendment-external-review-receipt.json`;
+const FROZEN_APPLICATION_PATH =
+  `${FROZEN_MIGRATION_ROOT}/control/m7-v2-repair-work3-execution-manifest-closure-amendment-application-receipt.json`;
+const FROZEN_SUCCESSOR_PATH =
+  `${FROZEN_MIGRATION_ROOT}/control/m7-v2-repair-work3-execution-manifest-closure-successor.json`;
+const FROZEN_C3_PATH =
+  `${FROZEN_MIGRATION_ROOT}/control/m7-v2-repair-contract-work3-entry-correction-authority.json`;
+
+function collectRepositoryPaths(value, selected = new Set()) {
+  if (Array.isArray(value)) {
+    for (const member of value) collectRepositoryPaths(member, selected);
+    return selected;
+  }
+  if (value === null || typeof value !== 'object') return selected;
+  for (const [key, member] of Object.entries(value)) {
+    if (key === 'path' && typeof member === 'string' && !member.startsWith('/')) {
+      selected.add(member);
+    }
+    collectRepositoryPaths(member, selected);
+  }
+  return selected;
+}
+
+function prepareFrozenFinaliserRoot(t) {
+  const sourceRoot = realpathSync(join(__dirname, '..'));
+  const root = realpathSync(mkdtempSync(join(tmpdir(), 'work3-frozen-finaliser-')));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const linked = new Set();
+  const linkSelected = (selectedPath) => {
+    if (linked.has(selectedPath) || WORK3_CREATE_ONCE_PATHS.includes(selectedPath)
+        || selectedPath === FROZEN_APPLICATION_PATH
+        || selectedPath === FROZEN_SUCCESSOR_PATH) return;
+    const source = join(sourceRoot, selectedPath);
+    if (!existsSync(source) || !lstatSync(source).isFile()) return;
+    const target = join(root, selectedPath);
+    mkdirSync(dirname(target), { recursive: true });
+    linkSync(source, target);
+    linked.add(selectedPath);
+  };
+  const linkTree = (selectedDirectory) => {
+    const sourceDirectory = join(sourceRoot, selectedDirectory);
+    for (const entry of readdirSync(sourceDirectory, { withFileTypes: true })) {
+      const selectedPath = `${selectedDirectory}/${entry.name}`;
+      if (entry.isDirectory()) linkTree(selectedPath);
+      else if (entry.isFile()) linkSelected(selectedPath);
+    }
+  };
+  linkTree('lib/canonical-v2');
+  linkSelected('scripts/stage-2y-structure-m7-v2-repair-work3-finalise.mjs');
+  linkSelected('scripts/stage-2y-structure-m7-v2-repair-work3-validate.mjs');
+
+  const amendment = JSON.parse(readFileSync(join(sourceRoot, FROZEN_AMENDMENT_PATH)));
+  const c3 = JSON.parse(readFileSync(join(sourceRoot, FROZEN_C3_PATH)));
+  const selectedPaths = collectRepositoryPaths(amendment);
+  collectRepositoryPaths(c3, selectedPaths);
+  for (const selectedPath of amendment.receipt_contract_overlay
+    .artifact_bindings_contract.paths) selectedPaths.add(selectedPath);
+  selectedPaths.add(FROZEN_AMENDMENT_PATH);
+  selectedPaths.add(FROZEN_EXTERNAL_PATH);
+  for (const selectedPath of selectedPaths) linkSelected(selectedPath);
+
+  const amendmentBytes = readFileSync(join(root, FROZEN_AMENDMENT_PATH));
+  const externalBytes = readFileSync(join(root, FROZEN_EXTERNAL_PATH));
+  const amendmentBinding = syntheticStandardBinding(
+    FROZEN_AMENDMENT_PATH,
+    amendmentBytes,
+    amendment,
+    'closure_amendment_id',
+  );
+  const external = JSON.parse(externalBytes);
+  const externalBinding = syntheticStandardBinding(
+    FROZEN_EXTERNAL_PATH,
+    externalBytes,
+    external,
+    'work3_closure_amendment_external_review_receipt_id',
+  );
+  const application = syntheticIdentifiedRecord(
+    'STAGE_2Y_M7_V2_REPAIR_WORK3_CLOSURE_AMENDMENT_APPLICATION_RECEIPT/V1',
+    'work3_closure_amendment_application_receipt_id',
+    {
+      state: 'IMMUTABLE_ZERO_EFFECT_APPLICATION',
+      closure_amendment_binding: amendmentBinding,
+      external_review_receipt_binding: externalBinding,
+      zero_effect_boundary: amendment.zero_effect_boundary,
+    },
+  );
+  assert.equal(
+    application.work3_closure_amendment_application_receipt_id,
+    '833763c9fd2ca065d86b8a5c35d8a5a418467e0cc66ead1116eb0f779bef0a3f',
+  );
+  const applicationBytes = Buffer.from(`${canonicalJson(application)}\n`, 'utf8');
+  mkdirSync(dirname(join(root, FROZEN_APPLICATION_PATH)), { recursive: true });
+  writeFileSync(join(root, FROZEN_APPLICATION_PATH), applicationBytes);
+  const applicationBinding = syntheticStandardBinding(
+    FROZEN_APPLICATION_PATH,
+    applicationBytes,
+    application,
+    'work3_closure_amendment_application_receipt_id',
+  );
+
+  const predecessorBinding = amendment.predecessor_work3_execution_manifest_binding;
+  const predecessor = JSON.parse(readFileSync(join(root, predecessorBinding.path)));
+  const overlay = amendment.successor_manifest_contract_overlay;
+  const successorUnsigned = structuredClone(predecessor);
+  delete successorUnsigned.execution_manifest_id;
+  delete successorUnsigned.execution_manifest_digest;
+  Object.assign(successorUnsigned, {
+    schema_version: overlay.schema_version,
+    allowed_effects: overlay.allowed_effects,
+    exact_argv_with_run_limits: overlay.exact_argv_with_run_limits,
+    exact_git_commit_and_push_argv: overlay.exact_git_commit_and_push_argv,
+    permitted_read_paths: overlay.permitted_read_paths,
+    permitted_write_paths: overlay.permitted_write_paths,
+    stop_conditions: overlay.stop_conditions,
+    success_conditions: overlay.success_conditions,
+    predecessor_execution_manifest_binding: predecessorBinding,
+    closure_amendment_binding: amendmentBinding,
+    external_review_receipt_binding: externalBinding,
+    closure_application_receipt_binding: applicationBinding,
+  });
+  const executionManifestDigest = sha256Hex(Buffer.from(canonicalJson(successorUnsigned)));
+  const successor = {
+    ...successorUnsigned,
+    execution_manifest_digest: executionManifestDigest,
+    execution_manifest_id: contentId(overlay.schema_version, {
+      ...successorUnsigned,
+      execution_manifest_digest: executionManifestDigest,
+    }),
+  };
+  mkdirSync(dirname(join(root, FROZEN_SUCCESSOR_PATH)), { recursive: true });
+  writeFileSync(join(root, FROZEN_SUCCESSOR_PATH), `${canonicalJson(successor)}\n`);
+
+  const executionContract = amendment.work3_execution_fixture_contract_overlay
+    .effective_contract;
+  const executionFixture = {
+    schema_version: executionContract.schema_version,
+    state: executionContract.state,
+    case_ids: executionContract.case_ids,
+    combined_test_result: executionContract.combined_test_result,
+    command_run_counts: Array.from({ length: 21 }, () => 1),
+  };
+  mkdirSync(dirname(join(root, executionContract.path)), { recursive: true });
+  writeFileSync(join(root, executionContract.path), `${canonicalJson(executionFixture)}\n`);
+  for (const selectedPath of WORK3_CREATE_ONCE_PATHS) {
+    mkdirSync(dirname(join(root, selectedPath)), { recursive: true });
+  }
+  return {
+    amendment,
+    application,
+    root,
+    finaliserPath: join(
+      root, 'scripts/stage-2y-structure-m7-v2-repair-work3-finalise.mjs',
+    ),
+    validatorPath: join(
+      root, 'scripts/stage-2y-structure-m7-v2-repair-work3-validate.mjs',
+    ),
+  };
+}
+
+test('Work3 no-argument finaliser rolls back receipt-last failure and retries cleanly', (t) => {
+  const fixture = prepareFrozenFinaliserRoot(t);
+  const receiptParent = dirname(join(fixture.root, WORK3_CREATE_ONCE_PATHS.at(-1)));
+  chmodSync(receiptParent, 0o500);
+  const failed = spawnSync(process.execPath, [fixture.finaliserPath], {
+    cwd: fixture.root,
+    encoding: 'utf8',
+  });
+  chmodSync(receiptParent, 0o700);
+  assert.equal(failed.status, 1, failed.stderr);
+  assert.match(failed.stderr, /WORK3_WRITE_FAILED/);
+  assert(WORK3_CREATE_ONCE_PATHS.every(
+    (selectedPath) => !existsSync(join(fixture.root, selectedPath)),
+  ));
+
+  const previousUmask = process.umask(0o077);
+  let succeeded;
+  try {
+    succeeded = spawnSync(process.execPath, [fixture.finaliserPath], {
+      cwd: fixture.root,
+      encoding: 'utf8',
+    });
+  } finally {
+    process.umask(previousUmask);
+  }
+  assert.equal(succeeded.status, 0, succeeded.stderr);
+  assert.equal(JSON.parse(succeeded.stdout).status, 'PASS_WORK3_FINALISATION');
+  assert(WORK3_CREATE_ONCE_PATHS.every(
+    (selectedPath) => lstatSync(join(fixture.root, selectedPath)).isFile(),
+  ));
+  assert(WORK3_CREATE_ONCE_PATHS.every(
+    (selectedPath) => (lstatSync(join(fixture.root, selectedPath)).mode & 0o777) === 0o644,
+  ));
+
+  const validated = spawnSync(process.execPath, [fixture.validatorPath], {
+    cwd: fixture.root,
+    encoding: 'utf8',
+  });
+  assert.equal(validated.status, 0, validated.stderr);
+  assert.equal(JSON.parse(validated.stdout).status, 'PASS');
+
+  const repeated = spawnSync(process.execPath, [fixture.finaliserPath], {
+    cwd: fixture.root,
+    encoding: 'utf8',
+  });
+  assert.equal(repeated.status, 1);
+  assert.match(repeated.stderr, /WORK3_ALREADY_FINALISED/);
+});
+
+test('Work3 finaliser refuses symbolic-link and partial repository states', async (t) => {
+  const fixture = prepareFrozenFinaliserRoot(t);
+  const { finaliseWork3, Work3FinalisationError } = await import(WORK3_FINALISER_PATH);
+  const rejects = (repoRoot, code) => assert.throws(
+    () => finaliseWork3({ repoRoot, write: false }),
+    (error) => error instanceof Work3FinalisationError && error.code === code,
+  );
+
+  const rootAlias = `${fixture.root}-alias`;
+  symlinkSync(fixture.root, rootAlias);
+  t.after(() => rmSync(rootAlias, { force: true }));
+  rejects(rootAlias, 'WORK3_OUTPUT_SAFETY');
+
+  const firstOutput = join(fixture.root, WORK3_CREATE_ONCE_PATHS[0]);
+  symlinkSync('missing-output-target', firstOutput);
+  rejects(fixture.root, 'WORK3_OUTPUT_SAFETY');
+  unlinkSync(firstOutput);
+
+  writeFileSync(firstOutput, '{}\n');
+  rejects(fixture.root, 'WORK3_OUTPUT_STATE_DRIFT');
+  unlinkSync(firstOutput);
+
+  const registrationRoot = join(
+    fixture.root,
+    'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-candidate-registrations',
+  );
+  mkdirSync(registrationRoot, { recursive: true });
+  writeFileSync(join(registrationRoot, 'unexpected.json'), '{}\n');
+  rejects(fixture.root, 'WORK3_REPOSITORY_PRECONDITION_DRIFT');
+  rmSync(registrationRoot, { recursive: true, force: true });
+  const registrationTarget = `${registrationRoot}-target`;
+  mkdirSync(registrationTarget, { recursive: true });
+  symlinkSync(registrationTarget, registrationRoot);
+  rejects(fixture.root, 'WORK3_REPOSITORY_PRECONDITION_DRIFT');
+  unlinkSync(registrationRoot);
+  rmSync(registrationTarget, { recursive: true, force: true });
+
+  const parkedPath = fixture.amendment.effective_family_package_closure
+    .capitalisation.planned_package_path;
+  const parkedAbsolute = join(fixture.root, parkedPath);
+  mkdirSync(dirname(parkedAbsolute), { recursive: true });
+  symlinkSync('missing-capitalisation-package', parkedAbsolute);
+  assert.throws(
+    () => finaliseWork3({ repoRoot: fixture.root, write: false }),
+    (error) => error instanceof Work3FinalisationError
+      && error.code === 'M7_V2_WORK3_PHYSICAL_CLOSURE'
+      && /CAPITALISATION presence could not be resolved/u.test(error.message),
+  );
+  unlinkSync(parkedAbsolute);
+
+  const symlinkParentRoot = realpathSync(
+    mkdtempSync(join(tmpdir(), 'work3-symlink-parent-')),
+  );
+  t.after(() => rmSync(symlinkParentRoot, { recursive: true, force: true }));
+  const outside = join(symlinkParentRoot, 'outside');
+  mkdirSync(outside);
+  const controlParent = join(
+    symlinkParentRoot,
+    'evidence/canonical-v2/stage-2y-structure-migration',
+  );
+  mkdirSync(controlParent, { recursive: true });
+  symlinkSync(outside, join(controlParent, 'control'));
+  rejects(symlinkParentRoot, 'WORK3_OUTPUT_SAFETY');
+});
+
+test('Work3 physical closure validates the exact 24-package and 5,655-member estate', (t) => {
+  const root = mkdtempSync(join(tmpdir(), 'work3-physical-'));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const fixture = buildSyntheticPhysicalClosureFixture(root);
+
+  const result = validateWork3PhysicalClosureV2({
+    closure: fixture.closure,
+    familyProfileSet: fixture.familyProfileSet,
+    resolveBinding(binding) {
+      const bytes = fixture.sources.get(binding.path);
+      if (!bytes) throw new Error('missing synthetic binding');
+      return bytes;
+    },
+    pathExists(selectedPath) {
+      return fixture.sources.has(selectedPath);
+    },
+  });
+
+  assert.deepEqual(result, {
+    status: 'PASS_WORK3_PHYSICAL_CLOSURE_V2',
+    family_package_count: 24,
+    parked_family_count: 1,
+    profile_count: 1382,
+    dimension_evidence_count: 1382,
+    subtype_tree_count: 24,
+    match_fixture_count: 2866,
+    structure_fixture_member_count: 1,
+    package_member_count: 5655,
+  });
+
+  const reorderedClosure = structuredClone(fixture.closure);
+  [reorderedClosure.sealed_family_packages[0], reorderedClosure.sealed_family_packages[1]] =
+    [reorderedClosure.sealed_family_packages[1], reorderedClosure.sealed_family_packages[0]];
+  assert.throws(
+    () => validateWork3PhysicalClosureV2({
+      closure: reorderedClosure,
+      familyProfileSet: fixture.familyProfileSet,
+      resolveBinding(binding) {
+        return fixture.sources.get(binding.path);
+      },
+      pathExists(selectedPath) {
+        return fixture.sources.has(selectedPath);
+      },
+    }),
+    (error) => error.code === 'M7_V2_WORK3_PHYSICAL_CLOSURE',
+  );
+});
+
+test('Work3 V2 receipt validator closes exactly 31 keys, 52 artefacts and 53 paths', (t) => {
+  const root = mkdtempSync(join(tmpdir(), 'work3-receipt-'));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const fixture = buildSyntheticWork3ReceiptFixture(root);
+  const validate = (receipt) => validateWork3ReceiptV2({
+    amendment: fixture.amendment,
+    pathExists(selectedPath) {
+      return fixture.sources.has(selectedPath);
+    },
+    physicalValidation: fixture.physicalValidation,
+    receipt,
+    work3EntryAuthority: fixture.work3EntryAuthority,
+    resolveBinding(binding) {
+      const bytes = fixture.sources.get(binding.path);
+      if (!bytes) throw new Error('missing synthetic artefact');
+      return bytes;
+    },
+  });
+
+  assert.deepEqual(validate(fixture.receipt), {
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK3_VALIDATION/V2',
+    status: 'PASS',
+    work3_receipt_id: fixture.receipt.work3_receipt_id,
+    family_package_count: 24,
+    profile_count: 1382,
+    artifact_binding_count: 52,
+    effective_path_count: 53,
+    create_once_output_count: 7,
+  });
+
+  const forged = structuredClone(fixture.receipt);
+  forged.artifact_bindings[0].sha256 = '0'.repeat(64);
+  const unsigned = { ...forged };
+  delete unsigned.work3_receipt_id;
+  forged.work3_receipt_id = contentId(forged.schema_version, unsigned);
+  assert.throws(
+    () => validate(forged),
+    (error) => error.code === 'WORK3_ARTIFACT_BINDING_DRIFT',
+  );
+});
+
+test('Work3 V2 receipt rejects self-consistent inner substitutions', async (t) => {
+  const makeFixture = () => {
+    const root = mkdtempSync(join(tmpdir(), 'work3-receipt-hostile-'));
+    t.after(() => rmSync(root, { recursive: true, force: true }));
+    return buildSyntheticWork3ReceiptFixture(root);
+  };
+  const validate = (fixture, receipt = fixture.receipt) => validateWork3ReceiptV2({
+    amendment: fixture.amendment,
+    pathExists(selectedPath) {
+      return fixture.sources.has(selectedPath);
+    },
+    physicalValidation: fixture.physicalValidation,
+    receipt,
+    work3EntryAuthority: fixture.work3EntryAuthority,
+    resolveBinding(binding) {
+      const bytes = fixture.sources.get(binding.path);
+      if (!bytes) throw new Error('missing synthetic artefact');
+      return bytes;
+    },
+  });
+
+  await t.test('application lineage substitution', () => {
+    const fixture = makeFixture();
+    const receipt = structuredClone(fixture.receipt);
+    const application = JSON.parse(
+      fixture.sources.get(fixture.paths.applicationPath).toString('utf8'),
+    );
+    application.state = 'FORGED_ZERO_EFFECT_APPLICATION';
+    resealSyntheticRecord(
+      application,
+      'work3_closure_amendment_application_receipt_id',
+    );
+    const binding = replaceSyntheticArtifact(
+      fixture,
+      receipt,
+      fixture.paths.applicationPath,
+      application,
+      'work3_closure_amendment_application_receipt_id',
+    );
+    receipt.closure_application_receipt_binding = binding;
+    resealSyntheticReceipt(receipt);
+    assert.throws(
+      () => validate(fixture, receipt),
+      (error) => error.code === 'WORK3_RECEIPT_INVALID'
+        && /application receipt lineage/u.test(error.message),
+    );
+  });
+
+  await t.test('successor digest and identity substitution', () => {
+    const fixture = makeFixture();
+    const receipt = structuredClone(fixture.receipt);
+    const successor = JSON.parse(
+      fixture.sources.get(fixture.paths.successorPath).toString('utf8'),
+    );
+    successor.execution_manifest_digest = syntheticId('forged-successor-digest');
+    resealSyntheticRecord(successor, 'execution_manifest_id');
+    const binding = replaceSyntheticArtifact(
+      fixture,
+      receipt,
+      fixture.paths.successorPath,
+      successor,
+      'execution_manifest_id',
+    );
+    receipt.successor_execution_manifest_binding = binding;
+    receipt.execution_manifest_id = successor.execution_manifest_id;
+    receipt.execution_manifest_digest = successor.execution_manifest_digest;
+    resealSyntheticReceipt(receipt);
+    assert.throws(
+      () => validate(fixture, receipt),
+      (error) => error.code === 'WORK3_RECEIPT_INVALID'
+        && /successor manifest lineage/u.test(error.message),
+    );
+  });
+
+  await t.test('command above its successor maximum', () => {
+    const fixture = makeFixture();
+    const receipt = structuredClone(fixture.receipt);
+    const executionFixture = JSON.parse(
+      fixture.sources.get(fixture.paths.executionFixturePath).toString('utf8'),
+    );
+    const runIndex = 4;
+    const maximum = fixture.amendment.successor_manifest_contract_overlay
+      .exact_argv_with_run_limits[0].max_runs;
+    executionFixture.command_run_counts[runIndex] = maximum + 1;
+    replaceSyntheticArtifact(
+      fixture,
+      receipt,
+      fixture.paths.executionFixturePath,
+      executionFixture,
+      null,
+    );
+    receipt.command_execution_ledger[runIndex].run_count = maximum + 1;
+    resealSyntheticReceipt(receipt);
+    assert.throws(
+      () => validate(fixture, receipt),
+      (error) => error.code === 'WORK3_RECEIPT_INVALID'
+        && /successor command limit 0/u.test(error.message),
+    );
+  });
+
+  await t.test('native-set same-agreement substitution', () => {
+    const fixture = makeFixture();
+    const receipt = structuredClone(fixture.receipt);
+    const selectedPath = fixture.paths.nativeSetPaths[0];
+    const nativeSet = JSON.parse(fixture.sources.get(selectedPath).toString('utf8'));
+    [nativeSet.members[0], nativeSet.members[1]] = [
+      nativeSet.members[1], nativeSet.members[0],
+    ];
+    resealSyntheticRecord(nativeSet, 'agreement_index_set_id');
+    const binding = replaceSyntheticArtifact(
+      fixture,
+      receipt,
+      selectedPath,
+      nativeSet,
+      'agreement_index_set_id',
+    );
+    receipt.candidate_native_set_evidence.work3_agreement_index_set_binding = binding;
+    resealSyntheticReceipt(receipt);
+    assert.throws(
+      () => validate(fixture, receipt),
+      (error) => error.code === 'WORK3_RECEIPT_INVALID'
+        && /candidate native-set members 0/u.test(error.message),
+    );
+  });
+
+  await t.test('52-artifact path omission', () => {
+    const fixture = makeFixture();
+    const receipt = structuredClone(fixture.receipt);
+    receipt.artifact_bindings.pop();
+    receipt.artifact_set_digest = sha256Hex(
+      Buffer.from(canonicalJson(receipt.artifact_bindings), 'utf8'),
+    );
+    resealSyntheticReceipt(receipt);
+    assert.throws(
+      () => validate(fixture, receipt),
+      (error) => error.code === 'WORK3_ARTIFACT_BINDING_DRIFT'
+        && /exact artifact paths/u.test(error.message),
+    );
+  });
+
+  await t.test('parked Capitalisation package is present', () => {
+    const fixture = makeFixture();
+    const parkedPath = fixture.amendment.effective_family_package_closure
+      .capitalisation.planned_package_path;
+    fixture.sources.set(parkedPath, Buffer.from('{}\n', 'utf8'));
+    assert.throws(
+      () => validate(fixture),
+      (error) => error.code === 'M7_V2_WORK3_PHYSICAL_CLOSURE',
+    );
+  });
+
+  await t.test('punctuation-obscured and embedded author-vendor aliases', () => {
+    for (const reviewerVendorId of ['OPEN_AI', 'ANTHROPIC_OPENAI']) {
+      const fixture = makeFixture();
+      const receipt = structuredClone(fixture.receipt);
+      const external = JSON.parse(
+        fixture.sources.get(fixture.paths.externalPath).toString('utf8'),
+      );
+      external.reviewer_identity.reviewer_vendor_id = reviewerVendorId;
+      resealSyntheticRecord(
+        external,
+        'work3_closure_amendment_external_review_receipt_id',
+      );
+      const binding = replaceSyntheticArtifact(
+        fixture,
+        receipt,
+        fixture.paths.externalPath,
+        external,
+        'work3_closure_amendment_external_review_receipt_id',
+      );
+      receipt.external_review_receipt_binding = binding;
+      resealSyntheticReceipt(receipt);
+      assert.throws(
+        () => validate(fixture, receipt),
+        (error) => error.code === 'WORK3_RECEIPT_INVALID'
+          && /external reviewer identity/u.test(error.message),
+      );
+    }
+  });
+});
 const profileAuthoring = require('../lib/canonical-v2/m7-v2-profile-authoring');
 
 const REPO_ROOT = join(__dirname, '..');
