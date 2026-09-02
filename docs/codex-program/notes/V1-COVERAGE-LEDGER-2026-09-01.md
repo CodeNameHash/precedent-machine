@@ -34,7 +34,23 @@ This ledger records concepts that V1 displays or expects but the current sealed 
 
 | V1 field or concept | Evidence | Owner family | Status |
 |---|---|---|---|
-| Vote standard | V1 has a vote-standard surface in `components/review/table-configs/vote-standard.js`. The sealed claim scope in `evidence/canonical-v2/stage-2y-structure-migration/control/family-role-schemas/PROXY_MEETING.json` has no vote-standard topic. Candidate owners are Proxy / Meeting, Closing Conditions and Key Defined Terms. The owner must be fixed by a one-line Ben ruling in the No-shop / Proxy brief. | `PROXY_MEETING` proposed; ownership OPEN | OPEN |
+| Vote standard | V1 has a vote-standard surface in `components/review/table-configs/vote-standard.js`. The sealed claim scope in `evidence/canonical-v2/stage-2y-structure-migration/control/family-role-schemas/PROXY_MEETING.json` has no vote-standard topic. Ben ruled on 2026-09-01 that Proxy / Meeting owns the stored fact. | `PROXY_MEETING` | OWNER SET; EXTRACTION OPEN |
+
+### No-shop
+
+| V1 field or concept | Evidence | Owner family | Status |
+|---|---|---|---|
+| Go-shop availability and mechanics | V1 renders `goShopPresent`, `goShopPeriodDays`, `goShopWindow`, `goShopExcludedParties` and `extendedNegotiatingPeriodDays`. The sealed 365-row Work3 package has no Go-shop profile. | `NO_SHOP` | OPEN |
+| Notice initiation, content and copy-delivery detail | V1 renders `discussionInitiationNoticeHours`, `noticePeriod` and `noticeContent` as distinct facts. Notice content decomposes bidder identity, material terms, copies, unwritten descriptions and updates. The sealed 365-row Work3 package has one initial-proposal-notice prerequisite but no profile for the V1 notice clock or content fields. | `NO_SHOP` | OPEN |
+| Final determination standard as a fact separate from the engagement standard | V1 renders `fiduciaryFinalStandard` separately from `fiduciaryEngageStandard`. `docs/codex-program/notes/BRIEF-NO-SHOP-2026-09-01.md` confirms that the sealed package has no dedicated final-determination profile key and that recommendation-change rows are partial proxies only. | `NO_SHOP` | OPEN |
+| Force-the-vote | V1 renders `forceTheVote`, `forceTheVoteDetails` and `forceTheVoteType`. This is the survival of the meeting duty after a recommendation change, not the vote standard. Ben ruled on 2026-09-01 that Proxy / Meeting owns the stored fact. Neither sealed package measures it. | `PROXY_MEETING` | OWNER SET; EXTRACTION OPEN |
+| Acquisition Proposal transaction types and exclusions | V1 displays these definition components with the percentage threshold. The sealed Key Defined Terms package measures Acquisition Proposal thresholds but not all displayed definition components. | `KEY_DEFINED_TERMS` | OPEN |
+| Qualifying Company Takeover Proposal definition | V1 separately displays whether a proposal could lead to a Superior Proposal and the Board's good-faith qualifying determination. The sealed Key Defined Terms package has no dedicated profile for the definition. No-shop retains the operative engagement gateway. | `KEY_DEFINED_TERMS` | OPEN |
+| Acceptable Confidentiality Agreement definition | V1 displays `acceptableConfidentialityAgreementDefinition`. No-shop measures the agreement requirement, but the sealed Key Defined Terms package has no definition profile. | `KEY_DEFINED_TERMS` | OPEN |
+| Intervening Event termination | V1 separately asks whether termination is available for an Intervening Event rather than only a recommendation change. Termination is the semantic owner, but its sealed package has no dedicated Intervening Event termination subtype. | `TERMINATION` | OPEN, VERIFY |
+| Metsera engagement standard | The No-shop brief binds the exact M2 source span and records no overlapping M4 evidence edge or dedicated Metsera engagement-standard row. | `NO_SHOP` | OPEN |
+| Metsera final determination standard and Superior Proposal board-change trigger | The No-shop brief binds the exact M2 source span. No overlapping M4 evidence edge measures that determination, and Metsera's only stored recommendation-change trigger is `INTERVENING_EVENT`. | `NO_SHOP` | OPEN |
+| Modiv board-change fiduciary standard | The No-shop brief binds the exact M2 source span and records no overlapping M4 evidence edge or dedicated Modiv recommendation-change fiduciary-standard row. | `NO_SHOP` | OPEN |
 
 ### Interim Operating
 
@@ -44,16 +60,6 @@ This ledger records concepts that V1 displays or expects but the current sealed 
 | Asset sales / divestitures / licenses | Clause language occurs in all six source deals bound by `evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-interim-operating-authoring-phase2-authority-v2.json`. The brief records that the sealed rows do not contain a separate asset-sale or disposition topic. | `INTERIM_OPERATING` | OPEN |
 | Real estate / leases as its own category | The V1 specific-restriction vocabulary in `docs/codex-program/notes/BRIEF-INTERIM-OPERATING-2026-09-01.md` includes Real estate / leases. The sealed 16-line mapping has no separate line for it. | `INTERIM_OPERATING` | OPEN |
 | Broader third-party-obligation guarantees beyond debt (watch item) | The V1 vocabulary in the Interim Operating brief includes Guarantees / third-party obligations. The current mapped guarantee rows concern indebtedness and are folded into Indebtedness and loans. Broader guarantees remain a watch item. | `INTERIM_OPERATING` | OPEN, WATCH ITEM |
-
-## Open verification items
-
-These items require source-backed coverage verification. They are not confirmed extraction gaps.
-
-### No-shop fiduciary and board-change standards
-
-| V1 field or concept | Evidence | Owner family | Status |
-|---|---|---|---|
-| Fiduciary and board-change standards | The sealed No-shop estate is recorded in `docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md`. Verify V1 coverage against the source-backed No-shop brief when that brief is prepared. | `NO_SHOP` | OPEN, VERIFY AT BRIEF |
 
 ## Verified covered
 
@@ -67,7 +73,7 @@ These V1 areas have governed V2 coverage. General Covenants remains link-only by
 | Material Contracts | `MATERIAL_CONTRACTS` | VERIFIED COVERED |
 | Miscellaneous Boilerplate | `MISC_BOILERPLATE` | VERIFIED COVERED |
 | Merger Structure / Closing | `MERGER_STRUCTURE_CLOSING` | VERIFIED COVERED |
-| Termination rights | `TERMINATION` | VERIFIED COVERED |
+| Termination rights | `TERMINATION` | VERIFIED FAMILY COVERAGE; INTERVENING EVENT SUBFIELD OPEN |
 | Guaranty | `GUARANTY_FINANCING_PARTY` | VERIFIED COVERED |
 | General Covenants | `GENERAL_COVENANTS` | VERIFIED COVERED, LINK-ONLY BY DESIGN |
 
