@@ -3,7 +3,7 @@
 import { createHash } from 'node:crypto';
 import { execFile as execFileCallback } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
-import { dirname, relative, resolve } from 'node:path';
+import { basename, dirname, isAbsolute, relative, resolve } from 'node:path';
 import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 
@@ -84,14 +84,21 @@ function generationCommandIdentity(command, root) {
     return normalised.startsWith(prefix) ? `$CHECKOUT/${normalised.slice(prefix.length)}` : argument;
   });
 }
+function semanticNodeExecutable(executable) {
+  if (typeof executable !== 'string' || !isAbsolute(executable)) return false;
+  return ['node', 'node.exe'].includes(basename(executable).toLowerCase());
+}
 function generationCommandMatches(recorded, expected) {
   if (!Array.isArray(recorded) || !Array.isArray(expected) || recorded.length !== expected.length
-    || recorded[0] !== expected[0]) return false;
+    || !semanticNodeExecutable(recorded[0]) || !semanticNodeExecutable(expected[0])) return false;
   const recordedRoot = generationCommandCheckoutRoot(recorded);
   const expectedRoot = generationCommandCheckoutRoot(expected);
   if (!recordedRoot || !expectedRoot) return false;
-  return canonical(generationCommandIdentity(recorded, recordedRoot))
-    === canonical(generationCommandIdentity(expected, expectedRoot));
+  const recordedIdentity = generationCommandIdentity(recorded, recordedRoot);
+  const expectedIdentity = generationCommandIdentity(expected, expectedRoot);
+  recordedIdentity[0] = '$NODE';
+  expectedIdentity[0] = '$NODE';
+  return canonical(recordedIdentity) === canonical(expectedIdentity);
 }
 function collect(call, directory, terraCall) {
   for (const name of REQUIRED_FILES) if (!existsSync(resolve(directory, name))) throw new Error(`RUN_ARTIFACT_MISSING:${name}`);

@@ -47,8 +47,14 @@ test('generation command identity permits only a consistent checkout-root rebase
   assert.equal(generationCommandMatches(current, current), true);
   assert.equal(generationCommandMatches(historical, current), true);
 
-  const changedExecutable = [...historical]; changedExecutable[0] = '/tmp/node';
+  const relocatedNode = [...historical];
+  relocatedNode[0] = '/opt/hostedtoolcache/node/22.22.0/x64/bin/node';
+  assert.equal(generationCommandMatches(relocatedNode, current), true);
+
+  const changedExecutable = [...historical]; changedExecutable[0] = '/tmp/not-node';
   assert.equal(generationCommandMatches(changedExecutable, current), false);
+  const relativeExecutable = [...historical]; relativeExecutable[0] = 'node';
+  assert.equal(generationCommandMatches(relativeExecutable, current), false);
   const changedRunner = [...historical]; changedRunner[1] = path.join(oldRoot, 'scripts/other.mjs');
   assert.equal(generationCommandMatches(changedRunner, current), false);
   const relativeRoot = historical.map((argument) => (
