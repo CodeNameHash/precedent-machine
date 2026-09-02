@@ -17,10 +17,6 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import canonicalModule from '../lib/canonical-v2/canonical-bytes.js';
-import {
-  validateExternalReviewReceipt,
-} from './stage-2y-structure-m7-v2-work3-closure-amendment-candidate.mjs';
-
 const { canonicalJson, contentId, sha256Hex } = canonicalModule;
 
 const CONTROL = 'evidence/canonical-v2/stage-2y-structure-migration/control';
@@ -144,6 +140,107 @@ function recordBinding(repositoryPath, bytes, record, idField) {
   };
 }
 
+function exactKeys(value, expectedKeys) {
+  return value !== null
+    && typeof value === 'object'
+    && !Array.isArray(value)
+    && same(Object.keys(value).sort(), [...expectedKeys].sort());
+}
+
+function nonEmptyString(value) {
+  return typeof value === 'string' && value.trim() === value && value.length > 0;
+}
+
+function normalisedVendorId(value) {
+  return typeof value === 'string'
+    ? value.normalize('NFKC').toUpperCase().replace(/[^A-Z0-9]/g, '')
+    : '';
+}
+
+function validatePinnedExternalReviewReceipt(
+  amendment,
+  review,
+  reviewBytes,
+  observedReviewTargetCommitBinding,
+) {
+  const contract = amendment.external_review_receipt_contract;
+  if (!exactKeys(review, contract?.exact_keys)
+      || !reviewBytes.equals(canonicalBytes(review))) {
+    fail('WORK3_CLOSURE_REVIEW_INVALID', 'external review receipt envelope');
+  }
+  const reviewIdField = INPUT_BINDINGS.review.record_id_field;
+  const unsigned = { ...review };
+  delete unsigned[reviewIdField];
+  if (review.schema_version !== contract.schema_version
+      || review[reviewIdField] !== contentId(contract.schema_version, unsigned)
+      || !/^\d{4}-\d{2}-\d{2}$/.test(review.reviewed_on)
+      || new Date(`${review.reviewed_on}T00:00:00.000Z`).toISOString().slice(0, 10)
+        !== review.reviewed_on
+      || review.review_state !== contract.review_state_exact_value
+      || review.status !== contract.status_exact_value
+      || !same(review.base_commit_binding, contract.base_commit_binding)
+      || !same(review.checks, contract.checks_exact_value)
+      || !same(review.findings, contract.findings_exact_value)
+      || !same(review.authority_boundary, contract.authority_boundary_exact_value)
+      || !same(review.independence_attestation,
+        contract.independence_attestation_exact_value)
+      || !same(review.zero_effect_boundary, contract.zero_effect_boundary_exact_value)) {
+    fail('WORK3_CLOSURE_REVIEW_INVALID', 'external review receipt PASS contract');
+  }
+  const expectedReviewedBindings = {
+    amendment_binding: INPUT_BINDINGS.amendment,
+    generator_binding:
+      contract.reviewed_artifact_binding_contracts.generator_binding,
+    test_binding: contract.reviewed_artifact_binding_contracts.test_binding,
+  };
+  if (!exactKeys(
+    review.reviewed_artifact_bindings,
+    contract.reviewed_artifact_bindings_exact_keys,
+  ) || !same(review.reviewed_artifact_bindings, expectedReviewedBindings)) {
+    fail('WORK3_CLOSURE_REVIEW_INVALID', 'external review three-file bindings');
+  }
+  const target = review.review_target_commit_binding;
+  const targetContract = contract.review_target_commit_binding_contract;
+  if (!exactKeys(target, targetContract.exact_keys)
+      || !exactKeys(observedReviewTargetCommitBinding, targetContract.exact_keys)
+      || !same(target, observedReviewTargetCommitBinding)
+      || target.branch !== targetContract.branch_exact_value
+      || target.origin_url !== targetContract.origin_url_exact_value
+      || target.live_remote_ref !== targetContract.live_remote_ref_exact_value
+      || target.remote_ref !== targetContract.remote_ref_exact_value
+      || target.parent_commit_sha
+        !== targetContract.authority_base_parent_commit_sha_exact_value
+      || target.commit_sha === target.parent_commit_sha
+      || target.live_remote_commit_sha !== target.commit_sha
+      || target.remote_ref_commit_sha !== target.commit_sha
+      || !same(target.changed_paths, targetContract.changed_paths_exact_value)
+      || !same(target.path_blob_bindings, REVIEW_TARGET_PATH_BLOB_BINDINGS)
+      || !target.path_blob_bindings.every((binding) => (
+        exactKeys(binding, targetContract.path_blob_binding_exact_keys)
+      ))
+      || !['commit_sha', 'live_remote_commit_sha', 'parent_commit_sha',
+        'remote_ref_commit_sha', 'tree_sha'].every(
+        (field) => /^[0-9a-f]{40}$/.test(target[field]),
+      )) {
+    fail('WORK3_CLOSURE_REVIEW_INVALID', 'external review target binding');
+  }
+  const reviewerContract = contract.reviewer_identity_contract;
+  const reviewer = review.reviewer_identity;
+  const normalisedReviewer = normalisedVendorId(reviewer?.reviewer_vendor_id);
+  if (!exactKeys(reviewer, reviewerContract.exact_keys)
+      || !Object.values(reviewer).every(nonEmptyString)
+      || reviewer.authoring_vendor_id
+        !== reviewerContract.authoring_vendor_id_exact_value
+      || reviewer.reviewer_model_id
+        !== reviewerContract.reviewer_model_id_contract.exact_value
+      || !/^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/.test(reviewer.reviewer_vendor_id)
+      || reviewerContract.reviewer_vendor_aliases_forbidden_case_insensitively.some(
+        (alias) => normalisedReviewer.includes(normalisedVendorId(alias)),
+      )) {
+    fail('WORK3_CLOSURE_REVIEW_INVALID', 'external review identity');
+  }
+}
+
 function repositoryRoot(selectedRoot) {
   const absolute = path.resolve(selectedRoot);
   let stat;
@@ -206,7 +303,78 @@ function git(root, argv, options = {}) {
   }).trim();
 }
 
-function validateHistoricalReview(root, review, reviewBytes) {
+function gitBytes(root, argv) {
+  const environment = { ...process.env, GIT_NO_REPLACE_OBJECTS: '1' };
+  delete environment.GIT_DIR;
+  delete environment.GIT_WORK_TREE;
+  return execFileSync('git', argv, {
+    cwd: root,
+    env: environment,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+}
+
+function isSafeRepositoryPath(value) {
+  return nonEmptyString(value)
+    && !value.includes('\\')
+    && !value.includes('\0')
+    && !path.posix.isAbsolute(value)
+    && path.posix.normalize(value) === value
+    && value.split('/').every(
+      (part) => part.length > 0 && part !== '.' && part !== '..',
+    );
+}
+
+function validateHistoricalValidationImplementationBindings(root, amendment) {
+  const bindings = amendment?.lawful_fixture?.validation_implementation_bindings;
+  if (!Array.isArray(bindings) || bindings.length === 0) {
+    fail(
+      'WORK3_CLOSURE_HISTORICAL_REVIEW_INVALID',
+      'validation implementation bindings',
+    );
+  }
+  const paths = new Set();
+  for (const binding of bindings) {
+    if (!exactKeys(binding, [
+      'byte_length',
+      'git_blob_oid',
+      'path',
+      'schema_version',
+      'sha256',
+    ])
+        || binding.schema_version !== null
+        || !isSafeRepositoryPath(binding.path)
+        || paths.has(binding.path)
+        || !Number.isSafeInteger(binding.byte_length)
+        || binding.byte_length < 0
+        || !/^[0-9a-f]{64}$/.test(binding.sha256)
+        || !/^[0-9a-f]{40}$/.test(binding.git_blob_oid)) {
+      fail(
+        'WORK3_CLOSURE_HISTORICAL_REVIEW_INVALID',
+        'validation implementation binding',
+      );
+    }
+    paths.add(binding.path);
+    const line = git(root, [
+      'ls-tree', '-r', '--full-tree', REVIEW_TARGET_COMMIT_SHA, '--', binding.path,
+    ]);
+    if (line !== `100644 blob ${binding.git_blob_oid}\t${binding.path}`) {
+      fail('WORK3_CLOSURE_HISTORICAL_REVIEW_INVALID', binding.path);
+    }
+    const byteLength = git(root, ['cat-file', '-s', binding.git_blob_oid]);
+    if (byteLength !== String(binding.byte_length)) {
+      fail('WORK3_CLOSURE_HISTORICAL_REVIEW_INVALID', binding.path);
+    }
+    const bytes = gitBytes(root, ['cat-file', 'blob', binding.git_blob_oid]);
+    if (bytes.length !== binding.byte_length
+        || sha256Hex(bytes) !== binding.sha256
+        || gitBlobOid(bytes) !== binding.git_blob_oid) {
+      fail('WORK3_CLOSURE_HISTORICAL_REVIEW_INVALID', binding.path);
+    }
+  }
+}
+
+function validateHistoricalReview(root, amendment, review, reviewBytes) {
   try {
     const originUrl = git(root, ['remote', 'get-url', 'origin']);
     const branchRef = git(root, ['symbolic-ref', '--quiet', 'HEAD']);
@@ -269,6 +437,7 @@ function validateHistoricalReview(root, review, reviewBytes) {
         fail('WORK3_CLOSURE_HISTORICAL_REVIEW_INVALID', pathBinding.path);
       }
     }
+    validateHistoricalValidationImplementationBindings(root, amendment);
   } catch (error) {
     if (error instanceof Work3ClosureApplicationError) throw error;
     fail('WORK3_CLOSURE_HISTORICAL_REVIEW_INVALID', REVIEW_TARGET_COMMIT_SHA);
@@ -289,13 +458,12 @@ function validateHistoricalReview(root, review, reviewBytes) {
     remote_ref_commit_sha: REVIEW_TARGET_COMMIT_SHA,
     tree_sha: REVIEW_TARGET_TREE_SHA,
   };
-  try {
-    validateExternalReviewReceipt(review, reviewBytes, {
-      observedReviewTargetCommitBinding,
-    });
-  } catch (error) {
-    fail('WORK3_CLOSURE_REVIEW_INVALID', error.message);
-  }
+  validatePinnedExternalReviewReceipt(
+    amendment,
+    review,
+    reviewBytes,
+    observedReviewTargetCommitBinding,
+  );
   return liveRemoteTip;
 }
 
@@ -467,7 +635,7 @@ export function applyWork3Closure(options = {}) {
   const amendment = readInput(root, INPUT_BINDINGS.amendment).record;
   const reviewInput = readInput(root, INPUT_BINDINGS.review);
   const predecessor = readInput(root, INPUT_BINDINGS.predecessor).record;
-  validateHistoricalReview(root, reviewInput.record, reviewInput.bytes);
+  validateHistoricalReview(root, amendment, reviewInput.record, reviewInput.bytes);
   const applicationReceipt = buildApplicationReceipt(amendment);
   const applicationBytes = canonicalBytes(applicationReceipt);
   const successorManifest = buildSuccessorManifest(

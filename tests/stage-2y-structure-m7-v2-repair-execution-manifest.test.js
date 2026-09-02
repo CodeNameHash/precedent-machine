@@ -636,6 +636,25 @@ function makeWork3ClosureApplicationFixture(t) {
     "  process.stdout.write(`${'0'.repeat(40)}\\n`);",
     '  process.exit(0);',
     '}',
+    "if (process.env.WORK3_TEST_HISTORICAL_VALIDATION_PATH",
+    "    && argv[0] === 'ls-tree'",
+    '    && argv.at(-1) === process.env.WORK3_TEST_HISTORICAL_VALIDATION_PATH) {',
+    "  process.stdout.write(`100644 blob ${'0'.repeat(40)}\\t`",
+    '    + `${process.env.WORK3_TEST_HISTORICAL_VALIDATION_PATH}\\n`);',
+    '  process.exit(0);',
+    '}',
+    "if (process.env.WORK3_TEST_HISTORICAL_VALIDATION_SIZE_OID",
+    "    && argv[0] === 'cat-file' && argv[1] === '-s'",
+    '    && argv[2] === process.env.WORK3_TEST_HISTORICAL_VALIDATION_SIZE_OID) {',
+    "  process.stdout.write('0\\n');",
+    '  process.exit(0);',
+    '}',
+    "if (process.env.WORK3_TEST_HISTORICAL_VALIDATION_BYTES_OID",
+    "    && argv[0] === 'cat-file' && argv[1] === 'blob'",
+    '    && argv[2] === process.env.WORK3_TEST_HISTORICAL_VALIDATION_BYTES_OID) {',
+    "  process.stdout.write('forged historical bytes\\n');",
+    '  process.exit(0);',
+    '}',
     'const result = spawnSync(process.env.WORK3_TEST_REAL_GIT, argv, {',
     "  env: process.env, stdio: 'inherit',",
     '});',
@@ -7268,6 +7287,103 @@ test('Work3 closure application rejects historical review-target observation dri
 
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /WORK3_CLOSURE_HISTORICAL_REVIEW_INVALID/u);
+  assert.equal(
+    existsSync(absolute(fixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH)),
+    false,
+  );
+  assert.equal(
+    existsSync(absolute(fixture.root, WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH)),
+    false,
+  );
+});
+
+test('Work3 closure application binds every reviewed validation implementation to the historical tree', (t) => {
+  for (const repositoryPath of [
+    'lib/canonical-v2/m7-v2-contract.js',
+    'tests/helpers/m7-v2-work3-family-package-fixture.js',
+  ]) {
+    const fixture = makeWork3ClosureApplicationFixture(t);
+    const result = runWork3ClosureApplication(fixture.root, {
+      ...fixture.environment,
+      WORK3_TEST_HISTORICAL_VALIDATION_PATH: repositoryPath,
+    });
+
+    assert.notEqual(result.status, 0, repositoryPath);
+    assert.match(result.stderr, /WORK3_CLOSURE_HISTORICAL_REVIEW_INVALID/u);
+    assert.equal(
+      existsSync(absolute(fixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH)),
+      false,
+    );
+    assert.equal(
+      existsSync(absolute(fixture.root, WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH)),
+      false,
+    );
+  }
+});
+
+test('Work3 closure application binds reviewed validation implementation byte lengths to historical blobs', (t) => {
+  const amendment = JSON.parse(readFileSync(
+    absolute(REPO_ROOT, WORK3_CLOSURE_AMENDMENT_PATH),
+  ));
+  for (const binding of amendment.lawful_fixture.validation_implementation_bindings) {
+    const fixture = makeWork3ClosureApplicationFixture(t);
+    const result = runWork3ClosureApplication(fixture.root, {
+      ...fixture.environment,
+      WORK3_TEST_HISTORICAL_VALIDATION_SIZE_OID: binding.git_blob_oid,
+    });
+
+    assert.notEqual(result.status, 0, binding.path);
+    assert.match(result.stderr, /WORK3_CLOSURE_HISTORICAL_REVIEW_INVALID/u);
+    assert.equal(
+      existsSync(absolute(fixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH)),
+      false,
+    );
+    assert.equal(
+      existsSync(absolute(fixture.root, WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH)),
+      false,
+    );
+  }
+});
+
+test('Work3 closure application binds reviewed validation implementation bytes and digests to historical blobs', (t) => {
+  const amendment = JSON.parse(readFileSync(
+    absolute(REPO_ROOT, WORK3_CLOSURE_AMENDMENT_PATH),
+  ));
+  for (const binding of amendment.lawful_fixture.validation_implementation_bindings) {
+    const fixture = makeWork3ClosureApplicationFixture(t);
+    const result = runWork3ClosureApplication(fixture.root, {
+      ...fixture.environment,
+      WORK3_TEST_HISTORICAL_VALIDATION_BYTES_OID: binding.git_blob_oid,
+    });
+
+    assert.notEqual(result.status, 0, binding.path);
+    assert.match(result.stderr, /WORK3_CLOSURE_HISTORICAL_REVIEW_INVALID/u);
+    assert.equal(
+      existsSync(absolute(fixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH)),
+      false,
+    );
+    assert.equal(
+      existsSync(absolute(fixture.root, WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH)),
+      false,
+    );
+  }
+});
+
+test('Work3 closure application cannot substitute a restamped amendment for the pinned reviewed amendment', (t) => {
+  const fixture = makeWork3ClosureApplicationFixture(t);
+  const amendment = JSON.parse(readFileSync(
+    absolute(fixture.root, WORK3_CLOSURE_AMENDMENT_PATH),
+  ));
+  amendment.lawful_fixture.validation_implementation_bindings[0].sha256 =
+    '0'.repeat(64);
+  delete amendment.closure_amendment_id;
+  amendment.closure_amendment_id = contentId(amendment.schema_version, amendment);
+  writeCanonical(fixture.root, WORK3_CLOSURE_AMENDMENT_PATH, amendment);
+
+  const result = runWork3ClosureApplication(fixture.root, fixture.environment);
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /WORK3_CLOSURE_INPUT_INVALID/u);
   assert.equal(
     existsSync(absolute(fixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH)),
     false,
