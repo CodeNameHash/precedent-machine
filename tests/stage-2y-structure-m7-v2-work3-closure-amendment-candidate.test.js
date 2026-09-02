@@ -1,9 +1,17 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { execFileSync, spawnSync } = require('node:child_process');
 const { createHash } = require('node:crypto');
-const { existsSync, readFileSync } = require('node:fs');
-const { join } = require('node:path');
+const {
+  existsSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} = require('node:fs');
+const { tmpdir } = require('node:os');
+const { delimiter, join } = require('node:path');
 const { pathToFileURL } = require('node:url');
 const { test } = require('node:test');
 
@@ -18,10 +26,12 @@ const SCRIPT_PATH = join(
   REPO_ROOT,
   'scripts/stage-2y-structure-m7-v2-work3-closure-amendment-candidate.mjs',
 );
-const WORK3_RECEIPT_PATH = join(
+const REVIEW_TARGET_COMMIT = 'f87b4e5cdcfc2a9fe68f4803ae273865322ee966';
+const REAL_GIT_PATH = execFileSync('which', ['git'], { encoding: 'utf8' }).trim();
+const EXTERNAL_REVIEW_RECEIPT_PATH = join(
   REPO_ROOT,
-  'evidence/canonical-v2/stage-2y-structure-migration/receipts/'
-    + 'stage-2y-structure-m7-v2-repair-work3-profile.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/control/'
+    + 'm7-v2-repair-work3-execution-manifest-closure-amendment-external-review-receipt.json',
 );
 const EXTERNAL_REVIEW_RECEIPT_ID_FIELD =
   'work3_closure_amendment_external_review_receipt_id';
@@ -71,12 +81,12 @@ function gitBlobOid(value) {
   ])).digest('hex');
 }
 
-test('Work3 closure amendment candidate is the exact 24-sealed plus parked closure', async () => {
+test('archived Work3 closure amendment is the exact 24-sealed plus parked closure', async () => {
   const module = await subject();
-  const expected = module.buildWork3ClosureAmendmentCandidate();
+  const expected = module.loadArchivedWork3ClosureAmendment();
   const candidatePath = join(REPO_ROOT, module.CANDIDATE_PATH);
   const actual = JSON.parse(readFileSync(candidatePath, 'utf8'));
-  const result = module.validateWork3ClosureAmendmentCandidate(actual, expected);
+  const result = module.validateWork3ClosureAmendmentCandidate(actual);
 
   assert.deepEqual(actual, expected);
   assert.deepEqual(result, {
@@ -134,7 +144,134 @@ test('Work3 closure amendment candidate is the exact 24-sealed plus parked closu
   assert.equal(actual.zero_effect_boundary.legal_grouping_review_closure_count, 0);
   assert.equal(actual.zero_effect_boundary.legal_semantic_change_count, 0);
   assert.equal(actual.zero_effect_boundary.remaining_review_states, 'PRESERVED');
-  assert.equal(existsSync(WORK3_RECEIPT_PATH), false);
+  assert.equal(actual.zero_effect_boundary.work3_receipt_write_count, 0);
+});
+
+test('archived Work3 closure loader rejects review-target history drift', (t) => {
+  const wrapperRoot = mkdtempSync(join(tmpdir(), 'work3-archive-git-'));
+  t.after(() => rmSync(wrapperRoot, { recursive: true, force: true }));
+  const gitWrapperPath = join(wrapperRoot, 'git');
+  writeFileSync(gitWrapperPath, [
+    '#!/usr/bin/env node',
+    "const { spawnSync } = require('node:child_process');",
+    'const argv = process.argv.slice(2);',
+    "if (argv[0] === 'show' && argv[2] === '--format=%T'",
+    '    && argv[3] === process.env.WORK3_TEST_REVIEW_TARGET_COMMIT) {',
+    "  process.stdout.write(`${'0'.repeat(40)}\\n`);",
+    '  process.exit(0);',
+    '}',
+    'const result = spawnSync(process.env.WORK3_TEST_REAL_GIT, argv, {',
+    "  env: process.env, stdio: 'inherit',",
+    '});',
+    'if (result.error) throw result.error;',
+    'process.exit(result.status ?? 1);',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  const source = [
+    `const module = await import(${JSON.stringify(pathToFileURL(SCRIPT_PATH).href)});`,
+    'module.loadArchivedWork3ClosureAmendment();',
+  ].join('\n');
+
+  const result = spawnSync(process.execPath, [
+    '--input-type=module', '--eval', source,
+  ], {
+    cwd: REPO_ROOT,
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      PATH: `${wrapperRoot}${delimiter}${process.env.PATH}`,
+      WORK3_TEST_REAL_GIT: REAL_GIT_PATH,
+      WORK3_TEST_REVIEW_TARGET_COMMIT: REVIEW_TARGET_COMMIT,
+    },
+  });
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /archived Work3 review-target history is invalid/u);
+});
+
+test('archived Work3 closure validates the actual f87 external PASS receipt', async () => {
+  const module = await subject();
+  const receiptBytes = readFileSync(EXTERNAL_REVIEW_RECEIPT_PATH);
+  const receipt = JSON.parse(receiptBytes.toString('utf8'));
+  const observedReviewTargetCommitBinding = {
+    branch: 'codex/recover-m7-20260812',
+    changed_paths: [
+      'evidence/canonical-v2/stage-2y-structure-migration/control/'
+        + 'm7-v2-repair-work3-execution-manifest-closure-amendment.json',
+      'scripts/stage-2y-structure-m7-v2-work3-closure-amendment-candidate.mjs',
+      'tests/stage-2y-structure-m7-v2-work3-closure-amendment-candidate.test.js',
+    ],
+    commit_sha: REVIEW_TARGET_COMMIT,
+    live_remote_commit_sha: REVIEW_TARGET_COMMIT,
+    live_remote_ref: 'refs/heads/codex/recover-m7-20260812',
+    origin_url: 'https://github.com/CodeNameHash/precedent-machine.git',
+    parent_commit_sha: '05b5c49bd549a1d985bb3d888ee92fc313ac88df',
+    path_blob_bindings: [
+      {
+        git_blob_oid: '4013eb82d7234534e15e39cd85d9582fa3d2d9c0',
+        path: 'evidence/canonical-v2/stage-2y-structure-migration/control/'
+          + 'm7-v2-repair-work3-execution-manifest-closure-amendment.json',
+      },
+      {
+        git_blob_oid: 'c422a26da39b910415251b636302ae27f62ee8a8',
+        path: 'scripts/stage-2y-structure-m7-v2-work3-closure-amendment-candidate.mjs',
+      },
+      {
+        git_blob_oid: '9eda5b3ab3227fa824952db9a6be0b656e232174',
+        path: 'tests/stage-2y-structure-m7-v2-work3-closure-amendment-candidate.test.js',
+      },
+    ],
+    remote_ref: 'origin/codex/recover-m7-20260812',
+    remote_ref_commit_sha: REVIEW_TARGET_COMMIT,
+    tree_sha: '23fc9fbbb557c70dedf0a97476f556042f931c9a',
+  };
+
+  assert.equal(receiptBytes.length, 4547);
+  assert.equal(
+    sha256Hex(receiptBytes),
+    'd5511ea3224a4cc685518e22a4ae4032ee678e2829ff1d4e2476a03d4de6932b',
+  );
+  assert.equal(gitBlobOid(receiptBytes), 'fd5ef798299211aaf015c72979cb3c5fe9048c98');
+  assert.deepEqual(receipt.review_target_commit_binding, observedReviewTargetCommitBinding);
+  assert.deepEqual(
+    module.validateArchivedExternalReviewReceipt(),
+    {
+      amendment_id: '06b879b44497653b8a3a0e698448efb833efc83cbd8591d0e8ff879cc2071ab4',
+      external_review_receipt_id:
+        'a2344bb49e37bcae328479835ffe7d2e5477430ff89b4abf8c1af972594a3a14',
+      status: 'PASS',
+    },
+  );
+});
+
+test('archived Work3 closure CLI checks immutable history and disables write mode', async () => {
+  const module = await subject();
+  const candidatePath = join(REPO_ROOT, module.CANDIDATE_PATH);
+  const before = readFileSync(candidatePath);
+
+  const check = spawnSync(process.execPath, [SCRIPT_PATH, '--check'], {
+    cwd: REPO_ROOT,
+    encoding: 'utf8',
+  });
+  assert.equal(check.status, 0, check.stderr);
+  const result = JSON.parse(check.stdout);
+  assert.equal(result.mode, 'CHECK_ARCHIVED_POST_APPLICATION');
+  assert.equal(result.persistence_state, 'ARCHIVED_EXACT');
+  assert.equal(
+    result.result.closure_amendment_id,
+    '06b879b44497653b8a3a0e698448efb833efc83cbd8591d0e8ff879cc2071ab4',
+  );
+
+  const write = spawnSync(process.execPath, [SCRIPT_PATH, '--write'], {
+    cwd: REPO_ROOT,
+    encoding: 'utf8',
+  });
+  assert.notEqual(write.status, 0);
+  assert.match(
+    write.stderr,
+    /archived Work3 closure amendment is immutable after application; --write is disabled/u,
+  );
+  assert.deepEqual(readFileSync(candidatePath), before);
 });
 
 test('Work3 closure amendment freezes the complete seven-output preservation-close overlay', async () => {
@@ -389,7 +526,7 @@ test('Work3 closure amendment binds every sealed package and no Capitalisation p
 
 test('Work3 closure amendment freezes an exact cross-vendor PASS review receipt', async () => {
   const module = await subject();
-  const candidate = module.buildWork3ClosureAmendmentCandidate();
+  const candidate = module.loadArchivedWork3ClosureAmendment();
   const contract = candidate.external_review_receipt_contract;
   const receipt = module.buildExternalReviewReceiptTestFixture();
   const result = validateExternalReviewReceipt(module, receipt);
@@ -481,7 +618,17 @@ test('Work3 closure amendment freezes an exact cross-vendor PASS review receipt'
     contract.reviewed_artifact_binding_contracts.generator_binding,
     contract.reviewed_artifact_binding_contracts.test_binding,
   ]) {
-    const value = readFileSync(join(REPO_ROOT, binding.path));
+    const line = execFileSync(REAL_GIT_PATH, [
+      'ls-tree', '-r', '--full-tree', REVIEW_TARGET_COMMIT, '--', binding.path,
+    ], { cwd: REPO_ROOT, encoding: 'utf8' }).trim();
+    const value = execFileSync(REAL_GIT_PATH, [
+      'cat-file', 'blob', binding.git_blob_oid,
+    ], { cwd: REPO_ROOT });
+    assert.equal(
+      line,
+      `100644 blob ${binding.git_blob_oid}\t${binding.path}`,
+      binding.path,
+    );
     assert.equal(value.length, binding.byte_length, binding.path);
     assert.equal(sha256Hex(value), binding.sha256, binding.path);
     assert.equal(gitBlobOid(value), binding.git_blob_oid, binding.path);

@@ -1,17 +1,10 @@
 #!/usr/bin/env node
 
 import { execFileSync } from 'node:child_process';
-import { createHash, randomBytes } from 'node:crypto';
+import { createHash } from 'node:crypto';
 import {
-  closeSync,
   existsSync,
-  fsyncSync,
-  linkSync,
-  lstatSync,
-  openSync,
   readFileSync,
-  unlinkSync,
-  writeFileSync,
 } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -89,6 +82,49 @@ const BASE_COMMIT_BINDING = Object.freeze({
   parent_commit_sha: 'b167a3ed3353bb0b8f42855636b78ad9c8a137b7',
   tree_sha: 'c7e738bfaca3dfb47e8f49b63517c33179d71312',
 });
+const ARCHIVED_CANDIDATE_BINDING = Object.freeze({
+  byte_length: 207090,
+  git_blob_oid: '4013eb82d7234534e15e39cd85d9582fa3d2d9c0',
+  path: CANDIDATE_PATH,
+  record_id: '06b879b44497653b8a3a0e698448efb833efc83cbd8591d0e8ff879cc2071ab4',
+  record_id_field: ID_FIELD,
+  schema_version: SCHEMA,
+  sha256: 'e5a8610b596edb567f13624551715ba102f7daaa9ef19f438093a2564123fe47',
+});
+const ARCHIVED_GENERATOR_BINDING = Object.freeze({
+  byte_length: 82376,
+  git_blob_oid: 'c422a26da39b910415251b636302ae27f62ee8a8',
+  path: CANDIDATE_GENERATOR_PATH,
+  schema_version: null,
+  sha256: '8052ee8dc128a662625df3b6ba7c7876233bf6598d6a3e49b541c4b26b1c2adc',
+});
+const ARCHIVED_TEST_BINDING = Object.freeze({
+  byte_length: 30997,
+  git_blob_oid: '9eda5b3ab3227fa824952db9a6be0b656e232174',
+  path: CANDIDATE_TEST_PATH,
+  schema_version: null,
+  sha256: '7e4cb9b455f9026a152a32cf9fd7c6bdfa627d41569877b889fe49b18e6e8c8b',
+});
+const ARCHIVED_EXTERNAL_REVIEW_RECEIPT_BINDING = Object.freeze({
+  byte_length: 4547,
+  git_blob_oid: 'fd5ef798299211aaf015c72979cb3c5fe9048c98',
+  path: EXTERNAL_REVIEW_RECEIPT_PATH,
+  record_id: 'a2344bb49e37bcae328479835ffe7d2e5477430ff89b4abf8c1af972594a3a14',
+  record_id_field: EXTERNAL_REVIEW_RECEIPT_ID_FIELD,
+  schema_version: EXTERNAL_REVIEW_RECEIPT_SCHEMA,
+  sha256: 'd5511ea3224a4cc685518e22a4ae4032ee678e2829ff1d4e2476a03d4de6932b',
+});
+const ARCHIVED_REVIEW_TARGET_COMMIT_SHA =
+  'f87b4e5cdcfc2a9fe68f4803ae273865322ee966';
+const ARCHIVED_REVIEW_TARGET_PARENT_COMMIT_SHA =
+  '05b5c49bd549a1d985bb3d888ee92fc313ac88df';
+const ARCHIVED_REVIEW_TARGET_TREE_SHA =
+  '23fc9fbbb557c70dedf0a97476f556042f931c9a';
+const ARCHIVED_REVIEW_TARGET_BINDINGS = Object.freeze([
+  ARCHIVED_CANDIDATE_BINDING,
+  ARCHIVED_GENERATOR_BINDING,
+  ARCHIVED_TEST_BINDING,
+]);
 const EXTERNAL_REVIEW_CHECKS = Object.freeze([
   'CANONICAL_IDENTITY_AND_THREE_FILE_BINDINGS',
   'DECISION_22_AND_CAPITALISATION_PARKING_AUTHORITY',
@@ -147,6 +183,28 @@ function same(left, right) {
   return canonicalJson(left) === canonicalJson(right);
 }
 
+export function loadArchivedWork3ClosureAmendment() {
+  const value = bytes(CANDIDATE_PATH);
+  const candidate = JSON.parse(value.toString('utf8'));
+  if (!same(
+    physicalRecordBinding(CANDIDATE_PATH, ID_FIELD),
+    ARCHIVED_CANDIDATE_BINDING,
+  )) {
+    throw new Error('archived Work3 closure amendment physical binding is invalid');
+  }
+  const unsigned = { ...candidate };
+  delete unsigned[ID_FIELD];
+  if (candidate.schema_version !== SCHEMA
+      || candidate[ID_FIELD] !== contentId(SCHEMA, unsigned)) {
+    throw new Error('archived Work3 closure amendment identity is invalid');
+  }
+  const history = validateArchivedReviewTargetHistory();
+  if (!value.equals(history.amendmentBytes)) {
+    throw new Error('archived Work3 closure amendment differs from f87 history');
+  }
+  return structuredClone(candidate);
+}
+
 function assertExactKeys(record, expectedKeys, label) {
   if (record === null || typeof record !== 'object' || Array.isArray(record)
       || !same(Object.keys(record).sort(), [...expectedKeys].sort())) {
@@ -165,11 +223,85 @@ function normalisedVendorId(value) {
 }
 
 function gitText(argv) {
+  const environment = { ...process.env, GIT_NO_REPLACE_OBJECTS: '1' };
+  delete environment.GIT_DIR;
+  delete environment.GIT_WORK_TREE;
   return execFileSync('git', argv, {
     cwd: REPO_ROOT,
     encoding: 'utf8',
+    env: environment,
     stdio: ['ignore', 'pipe', 'pipe'],
   }).trim();
+}
+
+function gitBytes(argv) {
+  const environment = { ...process.env, GIT_NO_REPLACE_OBJECTS: '1' };
+  delete environment.GIT_DIR;
+  delete environment.GIT_WORK_TREE;
+  return execFileSync('git', argv, {
+    cwd: REPO_ROOT,
+    env: environment,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+}
+
+function validateArchivedReviewTargetHistory() {
+  try {
+    gitText(['cat-file', '-e', `${ARCHIVED_REVIEW_TARGET_COMMIT_SHA}^{commit}`]);
+    const parents = gitText([
+      'show', '-s', '--format=%P', ARCHIVED_REVIEW_TARGET_COMMIT_SHA,
+    ]).split(/\s+/).filter(Boolean);
+    const tree = gitText([
+      'show', '-s', '--format=%T', ARCHIVED_REVIEW_TARGET_COMMIT_SHA,
+    ]);
+    const changedPaths = gitText([
+      'diff-tree', '--no-commit-id', '--name-only', '-r',
+      ARCHIVED_REVIEW_TARGET_COMMIT_SHA,
+    ]).split('\n').filter(Boolean).sort();
+    if (parents.length !== 1
+        || parents[0] !== ARCHIVED_REVIEW_TARGET_PARENT_COMMIT_SHA
+        || tree !== ARCHIVED_REVIEW_TARGET_TREE_SHA
+        || !same(changedPaths, REVIEW_TARGET_PATHS)) {
+      throw new Error('commit envelope');
+    }
+    let amendmentBytes;
+    for (const binding of ARCHIVED_REVIEW_TARGET_BINDINGS) {
+      const line = gitText([
+        'ls-tree', '-r', '--full-tree', ARCHIVED_REVIEW_TARGET_COMMIT_SHA,
+        '--', binding.path,
+      ]);
+      const historicalBytes = gitBytes([
+        'cat-file', 'blob', binding.git_blob_oid,
+      ]);
+      if (line !== `100644 blob ${binding.git_blob_oid}\t${binding.path}`
+          || historicalBytes.length !== binding.byte_length
+          || sha256Hex(historicalBytes) !== binding.sha256
+          || gitBlobOid(historicalBytes) !== binding.git_blob_oid) {
+        throw new Error(binding.path);
+      }
+      if (binding.path === CANDIDATE_PATH) amendmentBytes = historicalBytes;
+    }
+    return {
+      amendmentBytes,
+      observedReviewTargetCommitBinding: {
+        branch: REVIEW_TARGET_BRANCH,
+        changed_paths: [...REVIEW_TARGET_PATHS],
+        commit_sha: ARCHIVED_REVIEW_TARGET_COMMIT_SHA,
+        live_remote_commit_sha: ARCHIVED_REVIEW_TARGET_COMMIT_SHA,
+        live_remote_ref: REVIEW_TARGET_REMOTE_BRANCH_REF,
+        origin_url: REVIEW_TARGET_ORIGIN_URL,
+        parent_commit_sha: ARCHIVED_REVIEW_TARGET_PARENT_COMMIT_SHA,
+        path_blob_bindings: ARCHIVED_REVIEW_TARGET_BINDINGS.map(
+          ({ git_blob_oid, path }) => ({ git_blob_oid, path }),
+        ),
+        remote_ref: REVIEW_TARGET_REMOTE_REF,
+        remote_ref_commit_sha: ARCHIVED_REVIEW_TARGET_COMMIT_SHA,
+        tree_sha: ARCHIVED_REVIEW_TARGET_TREE_SHA,
+      },
+    };
+  } catch {
+    throw new Error('archived Work3 review-target history is invalid');
+  }
 }
 
 function commitPathBlobBinding(commitSha, repositoryPath) {
@@ -1761,7 +1893,7 @@ export function buildWork3ClosureAmendmentCandidate() {
 
 export function validateWork3ClosureAmendmentCandidate(
   candidate,
-  expected = buildWork3ClosureAmendmentCandidate(),
+  expected = loadArchivedWork3ClosureAmendment(),
 ) {
   if (candidate === null || typeof candidate !== 'object' || Array.isArray(candidate)) {
     throw new Error('Work3 closure amendment candidate must be an object');
@@ -1804,7 +1936,7 @@ export function buildExternalReviewReceiptTestFixture({
   reviewerModelId = REVIEWER_MODEL_WITHHELD_VALUE,
   reviewerVendorId = 'INDEPENDENT_VENDOR_FIXTURE',
 } = {}) {
-  const candidate = buildWork3ClosureAmendmentCandidate();
+  const candidate = loadArchivedWork3ClosureAmendment();
   const contract = candidate.external_review_receipt_contract;
   const reviewedArtifactBindings = {
     amendment_binding: physicalRecordBinding(CANDIDATE_PATH, ID_FIELD),
@@ -1854,7 +1986,7 @@ export function buildExternalReviewReceiptTestFixture({
 export function validateExternalReviewReceipt(receipt, receiptBytes, {
   observedReviewTargetCommitBinding,
 } = {}) {
-  const candidate = buildWork3ClosureAmendmentCandidate();
+  const candidate = loadArchivedWork3ClosureAmendment();
   const contract = candidate.external_review_receipt_contract;
   assertExactKeys(receipt, contract.exact_keys, 'external review receipt');
   const expectedBytes = Buffer.from(`${canonicalJson(receipt)}\n`, 'utf8');
@@ -1891,8 +2023,6 @@ export function validateExternalReviewReceipt(receipt, receiptBytes, {
     contract.reviewed_artifact_bindings_exact_keys,
     'external review artifact bindings',
   );
-  const candidateRecord = JSON.parse(bytes(CANDIDATE_PATH).toString('utf8'));
-  validateWork3ClosureAmendmentCandidate(candidateRecord, candidate);
   if (!same(
     receipt.reviewed_artifact_bindings,
     {
@@ -1933,88 +2063,48 @@ export function validateExternalReviewReceipt(receipt, receiptBytes, {
   });
 }
 
-function candidateBytes(candidate) {
-  return Buffer.from(`${canonicalJson(candidate)}\n`, 'utf8');
-}
-
-function removeIfPresent(path) {
-  try {
-    unlinkSync(path);
-  } catch (error) {
-    if (error.code !== 'ENOENT') throw error;
+export function validateArchivedExternalReviewReceipt() {
+  const receiptBytes = bytes(EXTERNAL_REVIEW_RECEIPT_PATH);
+  if (!same(
+    physicalRecordBinding(
+      EXTERNAL_REVIEW_RECEIPT_PATH,
+      EXTERNAL_REVIEW_RECEIPT_ID_FIELD,
+    ),
+    ARCHIVED_EXTERNAL_REVIEW_RECEIPT_BINDING,
+  )) {
+    throw new Error('archived Work3 external review receipt physical binding is invalid');
   }
-}
-
-function createOnce(value) {
-  const fullPath = join(REPO_ROOT, CANDIDATE_PATH);
-  if (existsSync(fullPath)) {
-    const existing = readFileSync(fullPath);
-    if (!existing.equals(value)) {
-      throw new Error('create-once Work3 closure amendment exists with different bytes');
-    }
-    return 'EXISTING_EXACT';
-  }
-  const tempPath = fullPath + '.tmp-work3-closure-' + process.pid + '-'
-    + randomBytes(12).toString('hex');
-  let descriptor = null;
-  let installed = false;
-  try {
-    descriptor = openSync(tempPath, 'wx', 0o666);
-    writeFileSync(descriptor, value);
-    fsyncSync(descriptor);
-    closeSync(descriptor);
-    descriptor = null;
-    linkSync(tempPath, fullPath);
-    installed = true;
-    unlinkSync(tempPath);
-    return 'CREATED_ONCE';
-  } catch (error) {
-    if (descriptor !== null) {
-      try {
-        closeSync(descriptor);
-      } catch {
-        // Preserve the original write failure.
-      }
-    }
-    if (installed) {
-      const finalStat = lstatSync(fullPath, { bigint: true });
-      const tempStat = lstatSync(tempPath, { bigint: true });
-      if (finalStat.dev === tempStat.dev
-          && finalStat.ino === tempStat.ino
-          && readFileSync(fullPath).equals(value)) {
-        removeIfPresent(fullPath);
-      }
-    }
-    removeIfPresent(tempPath);
-    throw error;
-  }
+  const history = validateArchivedReviewTargetHistory();
+  return validateExternalReviewReceipt(
+    JSON.parse(receiptBytes.toString('utf8')),
+    receiptBytes,
+    {
+      observedReviewTargetCommitBinding:
+        history.observedReviewTargetCommitBinding,
+    },
+  );
 }
 
 function main() {
-  const check = process.argv.includes('--check');
-  const write = process.argv.includes('--write');
-  if (check === write || process.argv.length !== 3) {
-    throw new Error('use exactly one of --check or --write');
+  if (process.argv.length === 3 && process.argv[2] === '--write') {
+    throw new Error(
+      'archived Work3 closure amendment is immutable after application; --write is disabled',
+    );
   }
-  const candidate = buildWork3ClosureAmendmentCandidate();
-  const expectedBytes = candidateBytes(candidate);
-  const fullPath = join(REPO_ROOT, CANDIDATE_PATH);
-  let persistenceState = 'CHECK_EXACT';
-  if (check) {
-    if (!existsSync(fullPath) || !readFileSync(fullPath).equals(expectedBytes)) {
-      throw new Error('Work3 closure amendment candidate is missing or stale');
-    }
-  } else {
-    persistenceState = createOnce(expectedBytes);
+  if (process.argv.length !== 3 || process.argv[2] !== '--check') {
+    throw new Error('use exactly --check');
   }
+  const candidate = loadArchivedWork3ClosureAmendment();
+  const externalReview = validateArchivedExternalReviewReceipt();
   const result = validateWork3ClosureAmendmentCandidate(
-    JSON.parse(readFileSync(fullPath, 'utf8')),
+    candidate,
     candidate,
   );
   console.log(JSON.stringify({
-    mode: check ? 'CHECK' : 'WRITE_CREATE_ONCE',
+    mode: 'CHECK_ARCHIVED_POST_APPLICATION',
     path: CANDIDATE_PATH,
-    persistence_state: persistenceState,
+    persistence_state: 'ARCHIVED_EXACT',
+    external_review: externalReview,
     result,
   }, null, 2));
 }
