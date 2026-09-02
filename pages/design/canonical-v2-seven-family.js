@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import MergertraceStyles from '../../components/review-v2/MergertraceStyles';
+import SevenFamilyV1Surface from '../../components/review-v2/SevenFamilyV1Surface';
 import { designPreviewServerSideProps } from '../../lib/design/route-guard';
 
 export async function getServerSideProps() {
@@ -8,9 +9,12 @@ export async function getServerSideProps() {
   const {
     loadSevenFamilyGroupingPreview,
   } = require('../../lib/canonical-v2/seven-family-grouping-preview-source');
+  const {
+    buildSevenFamilyV1PreviewDeal,
+  } = require('../../lib/canonical-v2/seven-family-v1-preview-deal');
   const preview = loadSevenFamilyGroupingPreview({ env: process.env });
   if (!preview) return { notFound: true };
-  return { props: { preview } };
+  return { props: { preview, v1ReviewDeal: buildSevenFamilyV1PreviewDeal() } };
 }
 
 function SourceIdentity({ source }) {
@@ -24,23 +28,6 @@ function SourceIdentity({ source }) {
         <div>Package {source.family_profile_package_id}</div>
       </div>
     </details>
-  );
-}
-
-function V1Surface({ v1 }) {
-  return (
-    <div className="border border-[#D9D7D2] bg-white">
-      <header className="border-b border-[#E6E4DF] bg-[#F7F5F0] px-4 py-3">
-        <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#77736C]">Existing V1 surface</div>
-        <h3 className="mt-1 text-xs font-bold text-[#1F1F1F]">{v1.surface}</h3>
-      </header>
-      <ul className="divide-y divide-[#EEECE7]">
-        {v1.rows.map((row) => (
-          <li key={row} className="px-4 py-2.5 text-[11px] leading-4 text-[#1F1F1F]">{row}</li>
-        ))}
-      </ul>
-      {v1.note ? <p className="border-t border-[#EEECE7] px-4 py-3 text-[10px] leading-4 text-[#77736C]">{v1.note}</p> : null}
-    </div>
   );
 }
 
@@ -119,7 +106,7 @@ function UnmeasuredConcepts({ concepts }) {
   );
 }
 
-function FamilySection({ family, ordinal }) {
+function FamilySection({ family, ordinal, v1ReviewDeal }) {
   return (
     <section id={family.family_key.toLowerCase()} className="scroll-mt-6 border border-[#D9D7D2] bg-[#FCFBF8] p-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -135,7 +122,7 @@ function FamilySection({ family, ordinal }) {
         V1 remains unchanged. V2 shows the approved row structure from the sealed successor package and grouping disposition. This page does not claim that a V2 deal value has been extracted.
       </p>
       <div className="mt-5 grid gap-4 xl:grid-cols-[minmax(220px,0.7fr)_minmax(620px,1.7fr)]">
-        <V1Surface v1={family.v1} />
+        <SevenFamilyV1Surface familyKey={family.family_key} reviewDeal={v1ReviewDeal} />
         <V2Rows rows={family.v2_rows} />
       </div>
       <UnmeasuredConcepts concepts={family.unmeasured_concepts} />
@@ -144,7 +131,7 @@ function FamilySection({ family, ordinal }) {
   );
 }
 
-export default function SevenFamilyPreview({ preview }) {
+export default function SevenFamilyPreview({ preview, v1ReviewDeal }) {
   return (
     <>
       <Head>
@@ -198,7 +185,12 @@ export default function SevenFamilyPreview({ preview }) {
 
           <div className="mt-5 space-y-5">
             {preview.families.map((family, index) => (
-              <FamilySection key={family.family_key} family={family} ordinal={index + 1} />
+              <FamilySection
+                key={family.family_key}
+                family={family}
+                ordinal={index + 1}
+                v1ReviewDeal={v1ReviewDeal}
+              />
             ))}
           </div>
         </div>

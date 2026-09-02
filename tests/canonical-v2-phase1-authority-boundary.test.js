@@ -1876,6 +1876,8 @@ test('pure proposals and local artefact writers have their exact capability boun
     'scripts/reprocess/v1-apply-guard.js',
     'scripts/stage-2y-structure-m7-v2-repair-work3-validate.mjs',
     'lib/canonical-v2/legacy-card-bridge.js',
+    'lib/canonical-v2/seven-family-v1-preview-deal.js',
+    'components/review-v2/SevenFamilyV1Surface.jsx',
   ]) assert.ok(PURE_PROPOSAL_SOURCES.includes(source), source);
   for (const source of [
     'scripts/reprocess/v1-apply-backup.js',
