@@ -31,7 +31,7 @@ test('probe runner uses the explicit report-only Sol flag', async () => {
   assert.ok(args.includes('--phase-b-lead-probe'));
 });
 
-test('generation command identity permits only a consistent checkout-root rebase', async () => {
+test('generation command identity permits only the current or sealed Node launcher and a consistent checkout-root rebase', async () => {
   const {
     generationCommandMatches, initial, outputDirectory, runnerArgs,
   } = await load();
@@ -43,18 +43,22 @@ test('generation command identity permits only a consistent checkout-root rebase
       ? path.join(oldRoot, path.relative(ROOT, argument))
       : argument
   ));
+  historical[0] = '/opt/homebrew/Cellar/node/25.9.0_2/bin/node';
 
   assert.equal(generationCommandMatches(current, current), true);
   assert.equal(generationCommandMatches(historical, current), true);
 
   const relocatedNode = [...historical];
   relocatedNode[0] = '/opt/hostedtoolcache/node/22.22.0/x64/bin/node';
-  assert.equal(generationCommandMatches(relocatedNode, current), true);
+  assert.equal(generationCommandMatches(relocatedNode, current), false);
 
-  const changedExecutable = [...historical]; changedExecutable[0] = '/tmp/not-node';
+  const changedExecutable = [...historical]; changedExecutable[0] = '/tmp/node';
   assert.equal(generationCommandMatches(changedExecutable, current), false);
   const relativeExecutable = [...historical]; relativeExecutable[0] = 'node';
   assert.equal(generationCommandMatches(relativeExecutable, current), false);
+  const changedExpectedExecutable = [...current];
+  changedExpectedExecutable[0] = '/opt/hostedtoolcache/node/22.22.0/x64/bin/node';
+  assert.equal(generationCommandMatches(historical, changedExpectedExecutable), false);
   const changedRunner = [...historical]; changedRunner[1] = path.join(oldRoot, 'scripts/other.mjs');
   assert.equal(generationCommandMatches(changedRunner, current), false);
   const relativeRoot = historical.map((argument) => (

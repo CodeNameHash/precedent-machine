@@ -3,7 +3,7 @@
 import { createHash } from 'node:crypto';
 import { execFile as execFileCallback } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
-import { basename, dirname, isAbsolute, relative, resolve } from 'node:path';
+import { dirname, relative, resolve } from 'node:path';
 import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 
@@ -16,6 +16,7 @@ const OUTPUT = 'evidence/canonical-v2/stage-2y-phase-b/sol-probe.json';
 const RUNS_ROOT = 'evidence/canonical-v2/stage-2y-phase-b/sol-probe-runs';
 const TERRA_BATCH = 'evidence/canonical-v2/stage-2y-l-live-batch.json';
 const LIVE_RUNNER_PATH = 'scripts/canonical-v2-live-extraction-run.mjs';
+const HISTORICAL_NODE_EXECUTABLE = '/opt/homebrew/Cellar/node/25.9.0_2/bin/node';
 const PROFILE = Object.freeze({
   provider_id: 'OPENAI_CODEX_CLI_SUBSCRIPTION', profile_id: 'SOL_MEDIUM',
   model: 'gpt-5.6-sol', reasoning_effort: 'medium',
@@ -84,13 +85,10 @@ function generationCommandIdentity(command, root) {
     return normalised.startsWith(prefix) ? `$CHECKOUT/${normalised.slice(prefix.length)}` : argument;
   });
 }
-function semanticNodeExecutable(executable) {
-  if (typeof executable !== 'string' || !isAbsolute(executable)) return false;
-  return ['node', 'node.exe'].includes(basename(executable).toLowerCase());
-}
 function generationCommandMatches(recorded, expected) {
   if (!Array.isArray(recorded) || !Array.isArray(expected) || recorded.length !== expected.length
-    || !semanticNodeExecutable(recorded[0]) || !semanticNodeExecutable(expected[0])) return false;
+    || expected[0] !== process.execPath
+    || ![expected[0], HISTORICAL_NODE_EXECUTABLE].includes(recorded[0])) return false;
   const recordedRoot = generationCommandCheckoutRoot(recorded);
   const expectedRoot = generationCommandCheckoutRoot(expected);
   if (!recordedRoot || !expectedRoot) return false;
