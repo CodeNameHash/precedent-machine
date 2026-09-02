@@ -203,7 +203,8 @@ jobs:
           SHARD: ${{ matrix.shard }}
         run: |
           set -o pipefail
-          npm test -- --test-shard="${SHARD}/8" \
+          node --max-old-space-size=8192 --test --test-shard="${SHARD}/8" \
+            "tests/**/*.test.js" "tests/**/*.spec.js" \
             2>&1 | tee /tmp/test-output.log || status=$?
           echo "──── failing tests (if any) ────"
           grep -A 25 "^not ok" /tmp/test-output.log || true

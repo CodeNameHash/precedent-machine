@@ -683,7 +683,14 @@ test('PH-1-K CI shards every test exactly once and aggregates fail closed', () =
   assert.equal(unitStep.env.SHARD, '${{ matrix.shard }}');
   assert.equal((unitStep.run.match(/--test-shard=/g) || []).length, 1);
   assert.match(unitStep.run, /--test-shard="\$\{SHARD\}\/8"/);
-  assert.match(unitStep.run, /npm test --/);
+  assert.match(unitStep.run, /node --max-old-space-size=8192 --test/);
+  assert.equal((unitStep.run.match(/"tests\/\*\*\/\*\.test\.js"/g) || []).length, 1);
+  assert.equal((unitStep.run.match(/"tests\/\*\*\/\*\.spec\.js"/g) || []).length, 1);
+  assert.ok(
+    unitStep.run.indexOf('--test-shard=')
+      < unitStep.run.indexOf('"tests/**/*.test.js"'),
+    'the shard option must precede the test globs',
+  );
   assert.doesNotMatch(unitStep.run, /--test-name-pattern|--test-skip-pattern/);
   const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
   assert.equal(
