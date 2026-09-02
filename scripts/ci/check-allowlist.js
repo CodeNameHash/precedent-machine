@@ -5,6 +5,8 @@ const path = require('path');
 const { execFileSync } = require('child_process');
 const { branchFromEnv, detectPhase } = require('./detect-phase');
 
+const MAX_CHANGED_FILES_BYTES = 8 * 1024 * 1024;
+
 const WP_CI_INFRA_02_ALLOWED = [
   'scripts/ci/detect-phase.js',
   'scripts/ci/check-allowlist.js',
@@ -71,6 +73,29 @@ function readPhaseFromState(env = process.env) {
 }
 
 function changedFiles(env = process.env) {
+  if (env.CHANGED_FILES_FILE) {
+    const file = String(env.CHANGED_FILES_FILE).trim();
+    if (!file) throw new Error('CHANGED_FILES_FILE is empty');
+    let stat;
+    try {
+      stat = fs.statSync(file);
+    } catch (error) {
+      throw new Error(`Unable to read CHANGED_FILES_FILE: ${error.message}`);
+    }
+    if (!stat.isFile()) throw new Error('CHANGED_FILES_FILE is not a regular file');
+    if (stat.size === 0) throw new Error('CHANGED_FILES_FILE is empty');
+    if (stat.size > MAX_CHANGED_FILES_BYTES) {
+      throw new Error(`CHANGED_FILES_FILE exceeds ${MAX_CHANGED_FILES_BYTES} bytes`);
+    }
+    const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/);
+    if (lines.at(-1) === '') lines.pop();
+    if (lines.some((line) => !line || line !== line.trim())) {
+      throw new Error('CHANGED_FILES_FILE contains an empty path or a path with leading or trailing whitespace');
+    }
+    const files = lines.map(normalizeFile);
+    if (files.length === 0) throw new Error('CHANGED_FILES_FILE contains no paths');
+    return files;
+  }
   if (env.CHANGED_FILES) {
     return env.CHANGED_FILES.split(/\r?\n/).map(normalizeFile).filter(Boolean);
   }
@@ -180,6 +205,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  MAX_CHANGED_FILES_BYTES,
   checkAllowlist,
   changedFiles,
   globToRegExp,
