@@ -86,6 +86,26 @@ test('ChatGPT auth preflight rejects a negated status line even with exit zero',
   }
 });
 
+test('Codex subscription client reports an early child exit without an uncaught stdin EPIPE', async () => {
+  const bin = fs.mkdtempSync(path.join(os.tmpdir(), 'fake-codex-closed-stdin-'));
+  const executable = path.join(bin, 'codex');
+  fs.writeFileSync(executable, '#!/bin/sh\nexec 0<&-\nsleep 0.05\nexit 47\n', { mode: 0o755 });
+  const originalPath = process.env.PATH;
+  process.env.PATH = `${bin}:${originalPath}`;
+  try {
+    const client = createCodexCliClient({
+      model: 'gpt-5.6-terra', reasoningEffort: 'medium', maxAttempts: 1, skipAuthPreflight: true,
+    });
+    await assert.rejects(
+      () => client.messages.create({ messages: [{ role: 'user', content: 'x'.repeat(1024 * 1024) }] }),
+      /codex exited 47/,
+    );
+  } finally {
+    process.env.PATH = originalPath;
+    fs.rmSync(bin, { recursive: true, force: true });
+  }
+});
+
 for (const [name, raw, pattern] of [
   ['empty stream', '', /CODEX_JSONL_EMPTY/],
   ['missing usage', stream(THREAD, START, ANSWER, { type: 'turn.completed' }), /USAGE_REQUIRED/],
