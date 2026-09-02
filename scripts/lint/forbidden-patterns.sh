@@ -494,6 +494,10 @@ function scopedFile(rel) {
 // trips the pattern against its own, correct, single definition. Exempt
 // only that pattern for that file; every other check still applies.
 const FILE_PATTERN_EXEMPTIONS = {
+  // This historical deduplication report records the IOC-MERGE taxonomy label
+  // in result tables. It is evidence of the audit output, not a copied label
+  // in product code. Keep every other fingerprint active for this exact file.
+  'reports/TOPBUILD-DEDUP-EVIDENCE-2026-07-15.md': ['Mergers,\\s*Acquisitions,\\s*Dispositions'],
   // Same class, one step further out. The Stage 2Y-N artefact is a RENDERING of
   // real review rows -- its entire purpose is to show the text a lawyer would
   // see -- so it necessarily reproduces product label strings, including

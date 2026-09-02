@@ -60,11 +60,14 @@ const CONSIDERATION_WORK3_INVENTORY_REVIEW_PACKET_BYTES = fs.readFileSync(path.j
   ROOT,
   CONSIDERATION_WORK3_INVENTORY_REVIEW_PACKET,
 ));
+const TOPBUILD_DEDUP_REPORT = 'reports/TOPBUILD-DEDUP-EVIDENCE-2026-07-15.md';
 const PROSE_FINGERPRINT_TEXT = ['QUALI', 'FICATION from recorded agreement text lit', 'igation'].join('');
 const PROSE_FINGERPRINT_FIRST = ['QUALI', 'FICATION'].join('');
 const PROSE_FINGERPRINT_LAST = ['lit', 'igation'].join('');
 const PROSE_FINGERPRINT_PATTERN = ['QUALI', 'FICATION.*lit', 'igation'].join('');
 const CONSIDERATION_FINGERPRINT_PATTERN = 'Consideration:\\s*Cash\\b';
+const MERGERS_FINGERPRINT_TEXT = ['Mergers', 'Acquisitions', 'Dispositions'].join(', ');
+const MERGERS_FINGERPRINT_PATTERN = 'Mergers,\\s*Acquisitions,\\s*Dispositions';
 const CODE_FINGERPRINT_TEXT = ['any', ' <', 'any>'].join('');
 const CODE_FINGERPRINT_PATTERN = ['any', '\\s*<', 'any>'].join('');
 
@@ -494,6 +497,29 @@ test('a literal Consideration label remains forbidden', () => {
   assert.ok(result.stdout.includes(
     `${CONSIDERATION_WORK3_INVENTORY_REVIEW_PACKET} :: ${CONSIDERATION_FINGERPRINT_PATTERN}`,
   ));
+});
+
+test('the exact TopBuild dedup report may record the IOC-MERGE taxonomy label', () => {
+  const result = lintFixture({
+    relativePath: TOPBUILD_DEDUP_REPORT,
+    source: `| Deal | Family |\n| --- | --- |\n| Heinz/Kraft | IOC-T / ${MERGERS_FINGERPRINT_TEXT} |`,
+  });
+  assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+  assert.match(result.stdout, /INVARIANT-4: PASS/);
+});
+
+test('the TopBuild report exemption keeps code fingerprints and adjacent reports in scope', () => {
+  const unsafeReport = lintFixture({
+    relativePath: TOPBUILD_DEDUP_REPORT,
+    source: `const unsafe: ${CODE_FINGERPRINT_TEXT} = value;`,
+  });
+  assert.notEqual(unsafeReport.status, 0);
+  assert.ok(unsafeReport.stdout.includes(`${TOPBUILD_DEDUP_REPORT} :: ${CODE_FINGERPRINT_PATTERN}`));
+
+  const adjacentReport = TOPBUILD_DEDUP_REPORT.replace('.md', '-COPY.md');
+  const adjacentResult = lintFixture({ relativePath: adjacentReport, source: MERGERS_FINGERPRINT_TEXT });
+  assert.notEqual(adjacentResult.status, 0);
+  assert.ok(adjacentResult.stdout.includes(`${adjacentReport} :: ${MERGERS_FINGERPRINT_PATTERN}`));
 });
 
 test('prose fingerprints in JSON do not bridge distinct string values', () => {
