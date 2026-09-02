@@ -14,6 +14,7 @@ import {
   validateWork2ReceiptBinding,
   validateWork2SuccessorReceiptBinding,
 } from './stage-2y-structure-m7-v2-repair-work2-validate.mjs';
+import { validateWork3 } from './stage-2y-structure-m7-v2-repair-work3-validate.mjs';
 
 const { canonicalJson, contentId, sha256Hex } = canonicalModule;
 const { validateFamilyProfilePackageSetForWork3 } = m7V2ContractModule;
@@ -619,6 +620,9 @@ const CANDIDATE_FAMILIES = Object.freeze([
   'REPRESENTATIONS', 'SPECIFIC_PERFORMANCE_REMEDIES', 'TAX_MATTERS',
   'TERMINATION', 'TERMINATION_FEE',
 ]);
+const CANDIDATE_SEALED_FAMILIES = Object.freeze(
+  CANDIDATE_FAMILIES.filter((familyKey) => familyKey !== 'CAPITALISATION'),
+);
 const CANDIDATE_EFFECTS = Object.freeze({
   registration_file_writes: 1, model_calls: 0, network_reads: 0, network_writes: 0,
   database_writes: 0, product_writes: 0, m0_m4_mutations: 0, m8_actions: 0,
@@ -641,6 +645,12 @@ const LATER_RECEIPT_KEYS = Object.freeze([
   'candidate_registration_id', 'candidate_transition', 'counts', 'effects',
 ]);
 const RICH_WORK3_RECEIPT_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK3_RECEIPT/V1';
+const RICH_WORK3_RECEIPT_V2_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK3_RECEIPT/V2';
+const WORK3_V2_VALIDATION_KEYS = Object.freeze([
+  'schema_version', 'status', 'work3_receipt_id', 'family_package_count',
+  'profile_count', 'artifact_binding_count', 'effective_path_count',
+  'create_once_output_count',
+]);
 const RICH_WORK3_RECEIPT_KEYS = Object.freeze([
   'schema_version', 'work3_receipt_id', 'work', 'stage', 'state', 'status',
   'execution_manifest_id', 'execution_manifest_digest', 'parent_authority_binding',
@@ -1346,12 +1356,32 @@ function expectedWork3Manifest(correctionAuthority, correctionAuthorityBinding) 
   };
 }
 
-function readPriorManifest(root, authority, work) {
+function priorManifestPath(work, predecessorReceiptBinding, code) {
   const previousWork = `WORK${workNumber(work) - 1}`;
-  const repositoryPath = executionManifestPath(previousWork);
+  if (previousWork !== 'WORK3') return executionManifestPath(previousWork);
+  if (predecessorReceiptBinding?.schema_version === RICH_WORK3_RECEIPT_SCHEMA) {
+    return executionManifestPath(previousWork);
+  }
+  if (predecessorReceiptBinding?.schema_version === RICH_WORK3_RECEIPT_V2_SCHEMA) {
+    return WORK3_CLOSURE_SUCCESSOR_PATH;
+  }
+  fail(code, 'Work3 predecessor receipt schema');
+}
+
+function readPriorManifest(root, authority, work, predecessorReceiptBinding) {
+  const previousWork = `WORK${workNumber(work) - 1}`;
+  const repositoryPath = priorManifestPath(
+    work,
+    predecessorReceiptBinding,
+    'PREDECESSOR_BINDING_DRIFT',
+  );
   const bytes = readSafe(root, repositoryPath);
   const record = parseCanonical(bytes, 'PREDECESSOR_BINDING_DRIFT', repositoryPath);
-  validateManifestIdentity(record, authority.per_work_execution_manifest_policy, previousWork);
+  if (repositoryPath === WORK3_CLOSURE_SUCCESSOR_PATH) {
+    validateWork3ClosureSuccessor(root, repositoryPath);
+  } else {
+    validateManifestIdentity(record, authority.per_work_execution_manifest_policy, previousWork);
+  }
   return { record, bytes, repositoryPath };
 }
 
@@ -2256,6 +2286,7 @@ function validateCandidateOrderingAuthority(root, authority, authorityBytes, man
 
 function validateBaseTip(
   root, authority, manifest, priorState, predecessorReceipt, expectedWork1DeltaPaths,
+  predecessorValidationResult,
 ) {
   const binding = manifest.base_tip_binding;
   if (!exactKeys(binding, BASE_TIP_KEYS) || !HASH_40.test(binding.commit)
@@ -2346,14 +2377,16 @@ function validateBaseTip(
       counts: predecessorReceipt.counts,
       effects: predecessorReceipt.effects,
     }
-    : {
+    : manifest.predecessor_receipt_binding.schema_version === RICH_WORK3_RECEIPT_V2_SCHEMA
+      ? predecessorValidationResult
+      : {
       schema_version:
         `STAGE_2Y_M7_V2_REPAIR_WORK${workNumber(manifest.work) - 1}_VALIDATION/V1`,
       status: `PASS_WORK${workNumber(manifest.work) - 1}`,
       work: predecessorWork,
       receipt_id_field: manifest.predecessor_receipt_binding.record_id_field,
       receipt_id: manifest.predecessor_receipt_binding.record_id,
-    };
+      };
   if (!same(attestation.predecessor_validation_result, expectedValidationResult)) {
     fail('PREDECESSOR_BINDING_DRIFT', 'predecessor validator PASS result');
   }
@@ -4052,12 +4085,45 @@ function validateWork2ReceiptLineage(
   }
 }
 
+function validateWork3V2ReceiptLineage(root, receipt, binding, priorManifest, code) {
+  if (binding.schema_version !== RICH_WORK3_RECEIPT_V2_SCHEMA
+      || binding.record_id_field !== 'work3_receipt_id'
+      || priorManifest.schema_version !== WORK3_CLOSURE_SUCCESSOR_SCHEMA
+      || priorManifest.work !== 'WORK3'
+      || priorManifest.work_receipt_path !== binding.path
+      || receipt.schema_version !== RICH_WORK3_RECEIPT_V2_SCHEMA
+      || receipt.work3_receipt_id !== binding.record_id) {
+    fail(code, 'Work3 V2 predecessor version dispatch');
+  }
+  let result;
+  try {
+    result = validateWork3({ repoRoot: root });
+  } catch (error) {
+    fail(code, `Work3 V2 receipt validation: ${error.code ?? error.message}`);
+  }
+  if (!exactKeys(result, WORK3_V2_VALIDATION_KEYS)
+      || result.schema_version !== 'STAGE_2Y_M7_V2_REPAIR_WORK3_VALIDATION/V2'
+      || result.status !== 'PASS'
+      || result.work3_receipt_id !== binding.record_id
+      || result.family_package_count !== 24
+      || result.profile_count !== 1382
+      || result.artifact_binding_count !== 52
+      || result.effective_path_count !== 53
+      || result.create_once_output_count !== 7) {
+    fail(code, 'Work3 V2 validated receipt lineage');
+  }
+  return result;
+}
+
 function validateSemanticReceiptLineage({
   root, receipt, binding, priorManifest, permittedReadPaths, code,
   work3EntryCorrectionAuthorityBinding = null,
   work3EntryCorrectionAuthority = null,
 }) {
   const number = workNumber(priorManifest.work);
+  if (number === 3 && binding.schema_version === RICH_WORK3_RECEIPT_V2_SCHEMA) {
+    return validateWork3V2ReceiptLineage(root, receipt, binding, priorManifest, code);
+  }
   if (number === 3) {
     validateRichWork3ReceiptEnvelopeAndIdentity(receipt, code);
   }
@@ -4098,11 +4164,11 @@ function validateSemanticReceiptLineage({
       work3EntryCorrectionAuthorityBinding,
       work3EntryCorrectionAuthority,
     );
-    return;
+    return null;
   }
   if (number === 3) {
     validateRichWork3Receipt(root, receipt, priorManifest, code);
-    return;
+    return null;
   }
   if (!same(receipt.candidate_ordering_correction_authority_binding,
     priorManifest.candidate_ordering_correction_authority_binding)
@@ -4114,6 +4180,7 @@ function validateSemanticReceiptLineage({
         || receipt.candidate_transition?.state !== 'PASS'))) {
     fail(code, `${priorManifest.work} candidate receipt lineage`);
   }
+  return null;
 }
 
 function validateWork4CandidateTransitionAuthority(
@@ -4152,7 +4219,11 @@ function validateWork4CandidateTransitionAuthority(
     };
     bootstrap.permitted_read_paths = [
       executionManifestPath('WORK4'),
-      executionManifestPath('WORK3'),
+      priorManifestPath(
+        'WORK4',
+        work4Manifest.predecessor_receipt_binding,
+        'CANDIDATE_BINDING_DRIFT',
+      ),
       AUTHORITY_PATH,
       ACTIVATION_PATH,
       CANDIDATE_ORDERING_AUTHORITY_PATH,
@@ -4228,7 +4299,8 @@ function validateCandidatePredecessorReceipt(
   const receipt = entry.work === 'WORK3'
     ? readCandidateComponent(root, entry.binding, permittedReadPaths)
     : resolveCandidateComponent(root, entry.binding, permittedReadPaths);
-  if (entry.work === 'WORK3') {
+  if (entry.work === 'WORK3'
+      && entry.binding.schema_version === RICH_WORK3_RECEIPT_SCHEMA) {
     validateRichWork3ReceiptEnvelopeAndIdentity(receipt, 'CANDIDATE_BINDING_DRIFT');
   }
   if (index === 0) {
@@ -4252,30 +4324,36 @@ function validateCandidatePredecessorReceipt(
     return;
   }
 
-  const priorManifestPath = executionManifestPath(entry.work);
-  if (!permittedReadPaths.includes(priorManifestPath)) {
-    fail('PATH_SCOPE_DRIFT', `candidate predecessor manifest read is not permitted: ${priorManifestPath}`);
+  const selectedPriorManifestPath = entry.work === 'WORK3'
+    ? priorManifestPath('WORK4', entry.binding, 'CANDIDATE_BINDING_DRIFT')
+    : executionManifestPath(entry.work);
+  if (!permittedReadPaths.includes(selectedPriorManifestPath)) {
+    fail('PATH_SCOPE_DRIFT', `candidate predecessor manifest read is not permitted: ${selectedPriorManifestPath}`);
   }
   const priorManifest = parseCanonical(
-    readSafe(root, priorManifestPath),
+    readSafe(root, selectedPriorManifestPath),
     'CANDIDATE_BINDING_DRIFT',
-    priorManifestPath,
+    selectedPriorManifestPath,
   );
-  const priorIdentity = restampedIdentity(
-    priorManifest,
-    'execution_manifest_digest',
-    'execution_manifest_id',
-  );
-  if (!exactKeys(priorManifest, manifestMembers(
-    authority.per_work_execution_manifest_policy,
-    entry.work,
-  ))
-      || priorManifest.schema_version !== SCHEMA
-      || priorManifest.work !== entry.work
-      || priorManifest.state !== 'PRE_WORK_BOOTSTRAP_ONLY'
-      || priorManifest.execution_manifest_digest !== priorIdentity.digest
-      || priorManifest.execution_manifest_id !== priorIdentity.id) {
-    fail('CANDIDATE_BINDING_DRIFT', `${entry.work} execution manifest`);
+  if (selectedPriorManifestPath === WORK3_CLOSURE_SUCCESSOR_PATH) {
+    validateWork3ClosureSuccessor(root, selectedPriorManifestPath);
+  } else {
+    const priorIdentity = restampedIdentity(
+      priorManifest,
+      'execution_manifest_digest',
+      'execution_manifest_id',
+    );
+    if (!exactKeys(priorManifest, manifestMembers(
+      authority.per_work_execution_manifest_policy,
+      entry.work,
+    ))
+        || priorManifest.schema_version !== SCHEMA
+        || priorManifest.work !== entry.work
+        || priorManifest.state !== 'PRE_WORK_BOOTSTRAP_ONLY'
+        || priorManifest.execution_manifest_digest !== priorIdentity.digest
+        || priorManifest.execution_manifest_id !== priorIdentity.id) {
+      fail('CANDIDATE_BINDING_DRIFT', `${entry.work} execution manifest`);
+    }
   }
   const authorityBytes = readSafe(root, AUTHORITY_PATH);
   if (!same(priorManifest.parent_authority_binding,
@@ -4353,6 +4431,16 @@ function validateFullCandidateRecord(root, authority, record, permittedReadPaths
       || !same(record.effects, CANDIDATE_EFFECTS)) {
     fail('CANDIDATE_BINDING_DRIFT', 'full candidate registration contract');
   }
+  const work3ReceiptSchema = record.predecessor_receipt_bindings.find(
+    (entry) => entry?.work === 'WORK3',
+  )?.binding?.schema_version;
+  if (![RICH_WORK3_RECEIPT_SCHEMA, RICH_WORK3_RECEIPT_V2_SCHEMA]
+    .includes(work3ReceiptSchema)) {
+    fail('CANDIDATE_BINDING_DRIFT', 'Work3 predecessor receipt schema');
+  }
+  const candidateFamilies = work3ReceiptSchema === RICH_WORK3_RECEIPT_V2_SCHEMA
+    ? CANDIDATE_SEALED_FAMILIES
+    : CANDIDATE_FAMILIES;
   const fixed = [
     [record.parent_authority_binding, AUTHORITY_PATH,
       'STAGE_2Y_M7_V2_REPAIR_WORK1_7_AUTHORITY/V1', 'authority_id', AUTHORITY_ID,
@@ -4430,8 +4518,8 @@ function validateFullCandidateRecord(root, authority, record, permittedReadPaths
     flattened.push(entry.binding);
   }
   if (!same(record.subtype_tree_bindings.map((entry) => entry.family_key),
-    CANDIDATE_FAMILIES)) {
-    fail('CANDIDATE_BINDING_DRIFT', '25 subtype trees');
+    candidateFamilies)) {
+    fail('CANDIDATE_BINDING_DRIFT', 'subtype tree closed set');
   }
   for (const entry of record.subtype_tree_bindings) {
     if (!exactKeys(entry, ['family_key', 'binding'])) {
@@ -4476,7 +4564,7 @@ function validateFullCandidateRecord(root, authority, record, permittedReadPaths
     ).test(entry.binding.path)
       || entry.binding.schema_version !== (index === 1
         ? WORK2_COMPILER_RECEIPT_SCHEMA
-        : `STAGE_2Y_M7_V2_REPAIR_WORK${index + 1}_RECEIPT/V1`)
+        : work3ReceiptSchema)
       || entry.binding.record_id_field !== `work${index + 1}_receipt_id`) {
       fail('CANDIDATE_BINDING_DRIFT', `${entry.work} predecessor receipt`);
     }
@@ -4501,7 +4589,7 @@ function validateFullCandidateRecord(root, authority, record, permittedReadPaths
     runner_count: expectedRunners.length,
     test_count: expectedTests.length,
     semantic_input_count: CANDIDATE_INPUT_ROLES.length,
-    subtype_tree_count: CANDIDATE_FAMILIES.length,
+    subtype_tree_count: candidateFamilies.length,
     predecessor_receipt_count: predecessorCount,
     unique_bound_path_count: new Set(
       flattened.map((binding) => binding.path ?? binding.container_path),
@@ -4521,6 +4609,16 @@ function validateFullCandidateRecord(root, authority, record, permittedReadPaths
 }
 
 function validateCandidateVerification(verification, record, binding) {
+  const work3ReceiptSchema = record.predecessor_receipt_bindings.find(
+    (entry) => entry?.work === 'WORK3',
+  )?.binding?.schema_version;
+  const expectedCheckIds = work3ReceiptSchema === RICH_WORK3_RECEIPT_V2_SCHEMA
+    ? CANDIDATE_VERIFICATION_CHECK_IDS.map((checkId) => (
+      checkId === 'TWENTY_FIVE_SUBTYPE_TREE_BINDINGS'
+        ? 'EXACT_24_SEALED_PACKAGE_SUBTYPE_TREE_MEMBER_BINDINGS'
+        : checkId
+    ))
+    : CANDIDATE_VERIFICATION_CHECK_IDS;
   if (!exactKeys(verification, [
     'schema_version', 'verification_id', 'state', 'candidate_registration_id',
     'registration_binding', 'checks', 'counts', 'effects',
@@ -4529,7 +4627,7 @@ function validateCandidateVerification(verification, record, binding) {
       || verification.state !== 'PASS_CANDIDATE_REGISTRATION'
       || verification.candidate_registration_id !== record.candidate_registration_id
       || !same(verification.registration_binding, binding)
-      || !same(verification.checks, CANDIDATE_VERIFICATION_CHECK_IDS.map(
+      || !same(verification.checks, expectedCheckIds.map(
         (check_id) => ({ check_id, status: 'PASS' }),
       ))
       || !same(verification.counts, record.counts)
@@ -4581,10 +4679,12 @@ function validatePredecessor(root, authority, manifest, work3EntryCorrectionAuth
     fail('PATH_SCOPE_DRIFT', 'predecessor receipt read is absent from permitted_read_paths');
   }
   if (manifest.work !== 'WORK2') {
-    const priorManifestPath = executionManifestPath(
-      `WORK${workNumber(manifest.work) - 1}`,
+    const expectedPriorManifestPath = priorManifestPath(
+      manifest.work,
+      manifest.predecessor_receipt_binding,
+      'PREDECESSOR_BINDING_DRIFT',
     );
-    if (!manifest.permitted_read_paths.includes(priorManifestPath)) {
+    if (!manifest.permitted_read_paths.includes(expectedPriorManifestPath)) {
       fail('PATH_SCOPE_DRIFT', 'prior manifest read is absent from permitted_read_paths');
     }
   }
@@ -4593,7 +4693,8 @@ function validatePredecessor(root, authority, manifest, work3EntryCorrectionAuth
     manifest.predecessor_receipt_binding,
     'PREDECESSOR_BINDING_DRIFT',
   );
-  if (manifest.work === 'WORK4') {
+  if (manifest.work === 'WORK4'
+      && manifest.predecessor_receipt_binding.schema_version === RICH_WORK3_RECEIPT_SCHEMA) {
     validateRichWork3ReceiptEnvelopeAndIdentity(record, 'PREDECESSOR_BINDING_DRIFT');
   }
   if (manifest.work === 'WORK2') {
@@ -4624,9 +4725,14 @@ function validatePredecessor(root, authority, manifest, work3EntryCorrectionAuth
       prior: null, priorPath: null, priorState: null, predecessorReceipt: record,
     };
   }
-  const priorState = readPriorManifest(root, authority, manifest.work);
+  const priorState = readPriorManifest(
+    root,
+    authority,
+    manifest.work,
+    manifest.predecessor_receipt_binding,
+  );
   const { record: prior, repositoryPath: priorPath } = priorState;
-  validateSemanticReceiptLineage({
+  const predecessorValidationResult = validateSemanticReceiptLineage({
     root,
     receipt: record,
     binding: manifest.predecessor_receipt_binding,
@@ -4639,7 +4745,13 @@ function validatePredecessor(root, authority, manifest, work3EntryCorrectionAuth
         : manifest.work3_entry_correction_authority_binding,
     work3EntryCorrectionAuthority,
   });
-  return { prior, priorPath, priorState, predecessorReceipt: record };
+  return {
+    prior,
+    priorPath,
+    priorState,
+    predecessorReceipt: record,
+    predecessorValidationResult,
+  };
 }
 
 export async function validateExecutionManifest(options) {
@@ -4673,7 +4785,11 @@ export async function validateExecutionManifest(options) {
     : null;
   const declaredPriorPath = manifest.work === 'WORK2'
     ? null
-    : executionManifestPath(`WORK${workNumber(manifest.work) - 1}`);
+    : priorManifestPath(
+      manifest.work,
+      manifest.predecessor_receipt_binding,
+      'PREDECESSOR_BINDING_DRIFT',
+    );
   if (work3EntryCorrectionAuthority !== null) {
     validateWork3PathScope(root, manifest, work3EntryCorrectionAuthority);
   }
@@ -4681,7 +4797,7 @@ export async function validateExecutionManifest(options) {
   validateActivation(root, authority, manifest.activation_receipt_binding,
     manifest.activation_commit_binding);
   const {
-    prior, priorPath, priorState, predecessorReceipt,
+    prior, priorPath, priorState, predecessorReceipt, predecessorValidationResult,
   } = validatePredecessor(root, authority, manifest, work3EntryCorrectionAuthority);
   if (priorPath !== declaredPriorPath) fail('PREDECESSOR_BINDING_DRIFT', manifest.work);
   const work2EntryCorrection = manifest.work === 'WORK2'
@@ -4700,6 +4816,7 @@ export async function validateExecutionManifest(options) {
       priorState,
       predecessorReceipt,
       work2EntryCorrection.expectedWork1DeltaPaths,
+      predecessorValidationResult,
     );
     validateSuccessConditions(manifest.success_conditions);
   } else {

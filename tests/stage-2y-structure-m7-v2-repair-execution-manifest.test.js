@@ -14,6 +14,7 @@ const {
   realpathSync,
   rmSync,
   symlinkSync,
+  unlinkSync,
   writeFileSync,
 } = require('node:fs');
 const { tmpdir } = require('node:os');
@@ -242,6 +243,7 @@ const INLINE_OVERLAY_KEYS = Object.freeze([
   'ambiguous_repeat_fixture_bindings',
 ]);
 const RICH_WORK3_RECEIPT_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK3_RECEIPT/V1';
+const RICH_WORK3_RECEIPT_V2_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK3_RECEIPT/V2';
 const RICH_WORK3_RECEIPT_KEYS = Object.freeze([
   'schema_version', 'work3_receipt_id', 'work', 'stage', 'state', 'status',
   'execution_manifest_id', 'execution_manifest_digest', 'parent_authority_binding',
@@ -335,6 +337,7 @@ let recoveryPromise;
 let work2FinaliserPromise;
 let work2RecoveryPromise;
 let work2ValidatorPromise;
+let work3FinaliserPromise;
 
 function loadValidator() {
   validatorPromise ??= import('../scripts/stage-2y-structure-m7-v2-repair-execution-manifest-validate.mjs');
@@ -358,6 +361,13 @@ function loadWork2Recovery() {
     '../scripts/stage-2y-structure-m7-v2-repair-work2-recover.mjs'
   );
   return work2RecoveryPromise;
+}
+
+function loadWork3Finaliser() {
+  work3FinaliserPromise ??= import(
+    '../scripts/stage-2y-structure-m7-v2-repair-work3-finalise.mjs'
+  );
+  return work3FinaliserPromise;
 }
 
 function loadWork2Validator() {
@@ -406,6 +416,47 @@ function linkRepositoryFile(root, repositoryPath) {
   const destination = absolute(root, repositoryPath);
   mkdirSync(path.dirname(destination), { recursive: true });
   linkSync(path.join(REPO_ROOT, repositoryPath), destination);
+}
+
+function collectRepositoryBindingPaths(value, selected = new Set()) {
+  if (Array.isArray(value)) {
+    for (const member of value) collectRepositoryBindingPaths(member, selected);
+    return selected;
+  }
+  if (value === null || typeof value !== 'object') return selected;
+  for (const [key, member] of Object.entries(value)) {
+    if (key === 'path' && typeof member === 'string' && !path.posix.isAbsolute(member)) {
+      selected.add(member);
+    }
+    collectRepositoryBindingPaths(member, selected);
+  }
+  return selected;
+}
+
+function copyFrozenClosureGraph(root, amendment, excludedPaths) {
+  const selected = collectRepositoryBindingPaths(amendment);
+  for (const repositoryPath of amendment.receipt_contract_overlay
+    .artifact_bindings_contract.paths) selected.add(repositoryPath);
+  const queue = [...selected];
+  const copied = new Set();
+  while (queue.length > 0) {
+    const repositoryPath = queue.shift();
+    if (copied.has(repositoryPath) || excludedPaths.has(repositoryPath)) continue;
+    const source = absolute(REPO_ROOT, repositoryPath);
+    if (!existsSync(source) || !lstatSync(source).isFile()) continue;
+    copyRepositoryFile(root, repositoryPath);
+    copied.add(repositoryPath);
+    if (!repositoryPath.endsWith('.json')) continue;
+    let record;
+    try {
+      record = JSON.parse(readFileSync(source));
+    } catch {
+      continue;
+    }
+    for (const nestedPath of collectRepositoryBindingPaths(record)) {
+      if (!copied.has(nestedPath)) queue.push(nestedPath);
+    }
+  }
 }
 
 function linkNativeWork2SourceRecords(fixture) {
@@ -582,6 +633,332 @@ function predecessorValidationResult(work, binding, fixture) {
     receipt_id_field: binding.record_id_field,
     receipt_id: binding.record_id,
   };
+}
+
+async function prepareFrozenWork3V2(fixture) {
+  const amendment = JSON.parse(readFileSync(
+    absolute(REPO_ROOT, WORK3_CLOSURE_AMENDMENT_PATH),
+  ));
+  const createOncePaths = amendment.receipt_contract_overlay.create_once_output_paths;
+  const excludedPaths = new Set([
+    ...createOncePaths,
+    WORK3_CLOSURE_APPLICATION_RECEIPT_PATH,
+    WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH,
+  ]);
+  copyFrozenClosureGraph(fixture.root, amendment, excludedPaths);
+  for (const repositoryPath of [
+    WORK3_CLOSURE_AMENDMENT_PATH,
+    WORK3_CLOSURE_REVIEW_RECEIPT_PATH,
+    WORK3_MANIFEST_PATH,
+    AUTHORITY_PATH,
+    ACTIVATION_PATH,
+    WORK0_PATH,
+    WORK1_RECEIPT_PATH,
+    WORK3_ENTRY_AUTHORITY_PATH,
+    CANDIDATE_ORDERING_AUTHORITY_PATH,
+    'lib/canonical-v2/canonical-bytes.js',
+    'lib/canonical-v2/agreement-analysis-consolidation.js',
+    'lib/canonical-v2/agreement-projection.js',
+    'lib/canonical-v2/m7-v2-contract.js',
+    'lib/canonical-v2/m7-v2-deterministic-generator.js',
+    'scripts/stage-2y-structure-family-aggregate.mjs',
+    'scripts/stage-2y-structure-generalisation-shadow.mjs',
+    'scripts/stage-2y-structure-m6-project.mjs',
+    REGISTER_CANDIDATE_PATH,
+    VERIFY_CANDIDATE_PATH,
+    EXECUTION_MANIFEST_VALIDATOR_PATH,
+    'scripts/stage-2y-structure-m7-v2-repair-work2-validate.mjs',
+    'scripts/stage-2y-structure-m7-v2-repair-work3-finalise.mjs',
+    'scripts/stage-2y-structure-m7-v2-repair-work3-validate.mjs',
+    'tests/stage-2y-structure-m7-v2-repair-contract.test.js',
+    EXECUTION_MANIFEST_TEST_PATH,
+    REGISTRATION_TEST_PATH,
+    'tests/stage-2y-structure-m7-v2-repair-work2.test.js',
+    'tests/stage-2y-structure-m7-v2-repair-work3.test.js',
+  ]) copyRepositoryFile(fixture.root, repositoryPath);
+
+  const amendmentBytes = readFileSync(absolute(fixture.root, WORK3_CLOSURE_AMENDMENT_PATH));
+  const amendmentBinding = standardBinding(
+    WORK3_CLOSURE_AMENDMENT_PATH,
+    amendmentBytes,
+    amendment.schema_version,
+    'closure_amendment_id',
+    amendment.closure_amendment_id,
+  );
+  const externalBytes = readFileSync(
+    absolute(fixture.root, WORK3_CLOSURE_REVIEW_RECEIPT_PATH),
+  );
+  const external = JSON.parse(externalBytes);
+  const externalBinding = standardBinding(
+    WORK3_CLOSURE_REVIEW_RECEIPT_PATH,
+    externalBytes,
+    external.schema_version,
+    'work3_closure_amendment_external_review_receipt_id',
+    external.work3_closure_amendment_external_review_receipt_id,
+  );
+  const application = sealRecord({
+    schema_version:
+      'STAGE_2Y_M7_V2_REPAIR_WORK3_CLOSURE_AMENDMENT_APPLICATION_RECEIPT/V1',
+    state: 'IMMUTABLE_ZERO_EFFECT_APPLICATION',
+    closure_amendment_binding: amendmentBinding,
+    external_review_receipt_binding: externalBinding,
+    zero_effect_boundary: clone(amendment.zero_effect_boundary),
+  }, 'work3_closure_amendment_application_receipt_id');
+  writeCanonical(fixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH, application);
+  const applicationBytes = readFileSync(
+    absolute(fixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH),
+  );
+  const applicationBinding = standardBinding(
+    WORK3_CLOSURE_APPLICATION_RECEIPT_PATH,
+    applicationBytes,
+    application.schema_version,
+    'work3_closure_amendment_application_receipt_id',
+    application.work3_closure_amendment_application_receipt_id,
+  );
+
+  const predecessor = JSON.parse(readFileSync(absolute(fixture.root, WORK3_MANIFEST_PATH)));
+  const overlay = amendment.successor_manifest_contract_overlay;
+  const successorUnsigned = clone(predecessor);
+  delete successorUnsigned.execution_manifest_id;
+  delete successorUnsigned.execution_manifest_digest;
+  Object.assign(successorUnsigned, {
+    schema_version: overlay.schema_version,
+    allowed_effects: clone(overlay.allowed_effects),
+    exact_argv_with_run_limits: clone(overlay.exact_argv_with_run_limits),
+    exact_git_commit_and_push_argv: clone(overlay.exact_git_commit_and_push_argv),
+    permitted_read_paths: clone(overlay.permitted_read_paths),
+    permitted_write_paths: clone(overlay.permitted_write_paths),
+    stop_conditions: clone(overlay.stop_conditions),
+    success_conditions: clone(overlay.success_conditions),
+    predecessor_execution_manifest_binding:
+      clone(amendment.predecessor_work3_execution_manifest_binding),
+    closure_amendment_binding: amendmentBinding,
+    external_review_receipt_binding: externalBinding,
+    closure_application_receipt_binding: applicationBinding,
+  });
+  const execution_manifest_digest = sha256Hex(canonicalJson(successorUnsigned));
+  const successor = {
+    ...successorUnsigned,
+    execution_manifest_digest,
+    execution_manifest_id: contentId(overlay.schema_version, {
+      ...successorUnsigned,
+      execution_manifest_digest,
+    }),
+  };
+  writeCanonical(fixture.root, WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH, successor);
+
+  const executionContract = amendment.work3_execution_fixture_contract_overlay
+    .effective_contract;
+  writeCanonical(fixture.root, executionContract.path, {
+    schema_version: executionContract.schema_version,
+    state: executionContract.state,
+    case_ids: clone(executionContract.case_ids),
+    combined_test_result: clone(executionContract.combined_test_result),
+    command_run_counts: Array.from({ length: 21 }, () => 1),
+  });
+  for (const repositoryPath of createOncePaths) {
+    mkdirSync(path.dirname(absolute(fixture.root, repositoryPath)), { recursive: true });
+  }
+  const finaliser = await loadWork3Finaliser();
+  const finalised = finaliser.finaliseWork3({ repoRoot: fixture.root, write: true });
+  assert.equal(finalised.status, 'PASS_WORK3_FINALISATION');
+
+  const receiptPath = amendment.receipt_contract_overlay.work3_receipt_path;
+  const receiptBytes = readFileSync(absolute(fixture.root, receiptPath));
+  const receipt = JSON.parse(receiptBytes);
+  const receiptBinding = standardBinding(
+    receiptPath,
+    receiptBytes,
+    receipt.schema_version,
+    'work3_receipt_id',
+    receipt.work3_receipt_id,
+  );
+  const successorBytes = readFileSync(
+    absolute(fixture.root, WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH),
+  );
+  return {
+    amendment,
+    application,
+    receipt,
+    receiptBinding,
+    successor,
+    successorBinding: standardBinding(
+      WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH,
+      successorBytes,
+      successor.schema_version,
+      'execution_manifest_id',
+      successor.execution_manifest_id,
+    ),
+  };
+}
+
+function descriptorFromBinding(inputRole, binding) {
+  return {
+    ...(inputRole === null ? {} : { input_role: inputRole }),
+    path: binding.path,
+    schema_version: binding.schema_version,
+    record_id_field: binding.record_id_field,
+  };
+}
+
+async function makeFrozenV2Candidate(fixture, closureState) {
+  const builder = await import('../scripts/stage-2y-structure-m7-v2-repair-register-candidate.mjs');
+  const verifier = await import('../scripts/stage-2y-structure-m7-v2-repair-verify-candidate.mjs');
+  const receipt = closureState.receipt;
+  const c3 = JSON.parse(readFileSync(absolute(fixture.root, WORK3_ENTRY_AUTHORITY_PATH)));
+  const native = receipt.candidate_native_set_evidence;
+  const semanticBindings = [
+    ['BASE_ANALYSIS_SET', native.work3_agreement_analysis_set_binding],
+    ['AGREEMENT_INDEX_SET', native.work3_agreement_index_set_binding],
+    ['CONTEXT_COMPILATION_SET', native.work3_context_compilation_set_binding],
+    ['APPROVED_FAMILY_PACKET_SET',
+      c3.work3_scope_contract.family_packet_set_source_contract.binding],
+    ['APPROVED_FAMILY_PROFILE_SET',
+      receipt.family_profile_evidence.approved_family_profile_set_binding],
+    ['APPROVED_STRUCTURE_DISPOSITION_SET', receipt.structure_disposition_set_binding],
+  ];
+  const semantic_inputs = semanticBindings.map(
+    ([role, binding]) => descriptorFromBinding(role, binding),
+  );
+  const profileSet = JSON.parse(readFileSync(absolute(
+    fixture.root,
+    receipt.family_profile_evidence.approved_family_profile_set_binding.path,
+  )));
+  const view_policy = writeFixtureRecord(
+    fixture.root,
+    'evidence/canonical-v2/stage-2y-structure-migration/m7-v2-repair/v2-view-policy.json',
+    'STAGE_2Y_M7_V2_VIEW_POLICY/V1',
+    'view_policy_id',
+    { state: 'APPROVED' },
+  );
+  const code = {
+    compiler: 'lib/canonical-v2/agreement-analysis-consolidation.js',
+    deterministic_generator: 'lib/canonical-v2/m7-v2-deterministic-generator.js',
+    contract_validator: 'lib/canonical-v2/m7-v2-contract.js',
+    projector: 'lib/canonical-v2/agreement-projection.js',
+    independent_verifier: VERIFY_CANDIDATE_PATH,
+    runners: [
+      'scripts/stage-2y-structure-family-aggregate.mjs',
+      'scripts/stage-2y-structure-generalisation-shadow.mjs',
+      'scripts/stage-2y-structure-m6-project.mjs',
+    ],
+    tests: [
+      'tests/stage-2y-structure-m7-v2-repair-contract.test.js',
+      EXECUTION_MANIFEST_TEST_PATH,
+      REGISTRATION_TEST_PATH,
+      'tests/stage-2y-structure-m7-v2-repair-work2.test.js',
+      'tests/stage-2y-structure-m7-v2-repair-work3.test.js',
+      'tests/stage-2y-structure-m7-v2-repair-work4.test.js',
+    ],
+  };
+  for (const repositoryPath of [
+    code.compiler,
+    code.deterministic_generator,
+    code.contract_validator,
+    code.projector,
+    code.independent_verifier,
+    ...code.runners,
+    ...code.tests,
+  ]) {
+    if (!existsSync(absolute(fixture.root, repositoryPath))) {
+      writeBytes(fixture.root, repositoryPath, Buffer.from(`v2-fixture:${repositoryPath}\n`));
+    }
+  }
+  const allowed_output_root =
+    'evidence/canonical-v2/stage-2y-structure-migration/m7-v2-repair/v2-candidate';
+  mkdirSync(absolute(fixture.root, allowed_output_root), { recursive: true });
+  const specification = {
+    code,
+    semantic_inputs,
+    subtype_trees: clone(profileSet.subtype_tree_bindings),
+    view_policy,
+    predecessor_receipts: [
+      {
+        work: 'WORK1',
+        path: WORK1_RECEIPT_PATH,
+        schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK1_CONTRACT_RECEIPT/V1',
+        record_id_field: 'work1_contract_receipt_id',
+      },
+      descriptorFromBinding(null, {
+        ...receipt.predecessor_receipt_binding,
+        work: 'WORK2',
+      }),
+      {
+        work: 'WORK3',
+        ...descriptorFromBinding(null, closureState.receiptBinding),
+      },
+    ],
+    allowed_output_root,
+  };
+  specification.predecessor_receipts[1].work = 'WORK2';
+  const written = builder.registerCandidate({
+    repoRoot: fixture.root,
+    specification,
+    write: true,
+  });
+  const verification = verifier.verifyRegisteredCandidate({
+    repoRoot: fixture.root,
+    registrationPath: written.registration_path,
+  });
+  return {
+    specification,
+    written,
+    verification,
+    record: written.registration,
+    repositoryPath: written.registration_path,
+    binding: written.binding,
+    wrapper: {
+      registration_binding: written.binding,
+      independent_verification: verification,
+    },
+  };
+}
+
+function makeWork4FromFrozenV2(fixture, closureState, validationResult) {
+  const work4 = laterNullCandidateManifest(
+    fixture,
+    'WORK4',
+    closureState.successor,
+    closureState.receiptBinding,
+  );
+  work4.candidate_transition = {
+    authority_binding: clone(work4.candidate_ordering_correction_authority_binding),
+    state: 'AUTHORISED_PENDING',
+    transition_argv: [...WORK4_CANDIDATE_TRANSITION_ARGV],
+    transition_run_limit: 1,
+  };
+  work4.exact_argv_with_run_limits = [
+    {
+      argv: ['node', EXECUTION_MANIFEST_VALIDATOR_PATH, manifestPath('WORK4')],
+      max_runs: 3,
+    },
+    { argv: [...WORK4_CANDIDATE_TRANSITION_ARGV], max_runs: 1 },
+  ];
+  work4.permitted_write_paths = [
+    WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
+    `${CANDIDATE_ROOT_FOR_TESTS}/${'4'.repeat(64)}.json`,
+    WORK4_CANDIDATE_TRANSITION_PATH,
+  ].sort();
+  work4.exact_git_commit_and_push_argv[0] = [
+    'git', 'add', '--', ...[manifestPath('WORK4'), ...work4.permitted_write_paths].sort(),
+  ];
+  work4.permitted_read_paths = work4.permitted_read_paths.map(
+    (repositoryPath) => repositoryPath === WORK3_MANIFEST_PATH
+      ? WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH
+      : repositoryPath,
+  ).sort();
+  const attestation = work4.base_tip_binding.milestone_attestation;
+  attestation.predecessor_execution_manifest_binding = clone(closureState.successorBinding);
+  attestation.predecessor_validation_result = clone(validationResult);
+  attestation.exact_commit_delta_paths = [
+    WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH,
+    ...closureState.successor.permitted_write_paths,
+  ].sort();
+  const deltaObservation = attestation.observed_command_result_ledger.find(
+    (entry) => entry.check_id === 'EXACT_TREE_DELTA',
+  );
+  deltaObservation.observed_result = clone(attestation.exact_commit_delta_paths);
+  return restamp(work4);
 }
 
 function runFixtureGit(root, args) {
@@ -2957,7 +3334,10 @@ function candidateReadPaths(candidate) {
     ...record.predecessor_receipt_bindings.map((entry) => entry.binding.path),
     ...record.predecessor_receipt_bindings
       .filter((entry) => entry.work !== 'WORK1')
-      .map((entry) => manifestPath(entry.work)),
+      .map((entry) => entry.work === 'WORK3'
+        && entry.binding.schema_version === RICH_WORK3_RECEIPT_V2_SCHEMA
+        ? WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH
+        : manifestPath(entry.work)),
   ])].sort();
 }
 
@@ -7727,4 +8107,199 @@ test('Work3 closure successor validation accepts only the exact predecessor-plus
     repoRoot: fixture.root,
     manifestPath: WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH,
   }), 'MANIFEST_CONTRACT_DRIFT');
+});
+
+test('Work3 V2 closure dispatches exactly through Work4, registration and verification', async (t) => {
+  const fixture = makeFixture(t);
+  const closureState = await prepareFrozenWork3V2(fixture);
+  const work3Validator = await import(
+    '../scripts/stage-2y-structure-m7-v2-repair-work3-validate.mjs'
+  );
+  const validationResult = work3Validator.validateWork3({ repoRoot: fixture.root });
+  assert.deepEqual(validationResult, {
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK3_VALIDATION/V2',
+    status: 'PASS',
+    work3_receipt_id: closureState.receipt.work3_receipt_id,
+    family_package_count: 24,
+    profile_count: 1382,
+    artifact_binding_count: 52,
+    effective_path_count: 53,
+    create_once_output_count: 7,
+  });
+
+  const validator = await loadValidator();
+  const work4 = makeWork4FromFrozenV2(fixture, closureState, validationResult);
+  writeManifest(fixture, work4);
+  const validated = await validator.validateExecutionManifest({
+    repoRoot: fixture.root,
+    manifestPath: manifestPath('WORK4'),
+  });
+  assert.equal(validated.status, 'PASS_NARROWING_EXECUTION_MANIFEST');
+  assert.equal(validated.work, 'WORK4');
+
+  const staleAttestation = clone(work4);
+  staleAttestation.base_tip_binding.milestone_attestation.predecessor_validation_result = {
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK3_VALIDATION/V1',
+    status: 'PASS_WORK3',
+    work: 'WORK3',
+    receipt_id_field: 'work3_receipt_id',
+    receipt_id: closureState.receipt.work3_receipt_id,
+  };
+  writeManifest(fixture, restamp(staleAttestation));
+  await assertCode(validator, () => validator.validateExecutionManifest({
+    repoRoot: fixture.root,
+    manifestPath: manifestPath('WORK4'),
+  }), 'PREDECESSOR_BINDING_DRIFT');
+  writeManifest(fixture, work4);
+
+  const v2ReceiptBytes = readFileSync(absolute(fixture.root, closureState.receiptBinding.path));
+  const mixedReceipt = clone(closureState.receipt);
+  delete mixedReceipt.work3_receipt_id;
+  mixedReceipt.schema_version = RICH_WORK3_RECEIPT_SCHEMA;
+  writeCanonical(
+    fixture.root,
+    closureState.receiptBinding.path,
+    sealRecord(mixedReceipt, 'work3_receipt_id'),
+  );
+  await assertCode(validator, () => validator.validateExecutionManifest({
+    repoRoot: fixture.root,
+    manifestPath: manifestPath('WORK4'),
+  }), 'PREDECESSOR_BINDING_DRIFT');
+  writeBytes(fixture.root, closureState.receiptBinding.path, v2ReceiptBytes);
+
+  const candidate = await makeFrozenV2Candidate(fixture, closureState);
+  assert.deepEqual(
+    candidate.written.registration.subtype_tree_bindings.map((entry) => entry.family_key),
+    closureState.amendment.effective_family_package_closure.sealed_family_keys,
+  );
+  assert.equal(candidate.written.registration.counts.subtype_tree_count, 24);
+  assert.deepEqual(
+    candidate.verification.checks.map((entry) => entry.check_id),
+    [
+      'REGISTRATION_SELF_IDENTITY',
+      'AUTHORITY_AND_WORK0_BINDINGS',
+      'REQUIRED_COMPONENT_BINDINGS',
+      'SIX_SEMANTIC_INPUT_BINDINGS',
+      'EXACT_24_SEALED_PACKAGE_SUBTYPE_TREE_MEMBER_BINDINGS',
+      'PREDECESSOR_AND_OUTPUT_SCOPE',
+      'ZERO_PROHIBITED_EFFECTS',
+    ],
+  );
+
+  const candidateBootstrap = clone(work4);
+  candidateBootstrap.permitted_write_paths = [
+    WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
+    candidate.repositoryPath,
+    WORK4_CANDIDATE_TRANSITION_PATH,
+  ].sort();
+  candidateBootstrap.exact_git_commit_and_push_argv[0] = [
+    'git', 'add', '--',
+    ...[manifestPath('WORK4'), ...candidateBootstrap.permitted_write_paths].sort(),
+  ];
+  const sealedCandidateBootstrap = restamp(candidateBootstrap);
+  const transitionAuthority = writeWork4TransitionAuthority(
+    fixture,
+    sealedCandidateBootstrap,
+    candidate,
+  );
+  const candidateWork4 = clone(sealedCandidateBootstrap);
+  candidateWork4.candidate_registration_binding = clone(candidate.wrapper);
+  candidateWork4.candidate_transition = {
+    authority_binding: clone(transitionAuthority.binding),
+    superseded_bootstrap_manifest_binding: clone(transitionAuthority.bootstrapBinding),
+    candidate_registration_preview_binding: clone(candidate.binding),
+    candidate_registration_binding: clone(candidate.binding),
+    state: 'PASS',
+    transition_argv: [...WORK4_CANDIDATE_TRANSITION_ARGV],
+    transition_run_count: 1,
+  };
+  candidateWork4.permitted_read_paths = [...new Set([
+    ...candidateWork4.permitted_read_paths,
+    WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
+    ...candidateReadPaths(candidate),
+  ])].sort();
+  const work4FinaliserPath = 'scripts/stage-2y-structure-m7-v2-repair-work4-finalise.mjs';
+  const work4ValidatorPath = 'scripts/stage-2y-structure-m7-v2-repair-work4-validate.mjs';
+  const work4TestPath = 'tests/stage-2y-structure-m7-v2-repair-work4.test.js';
+  candidateWork4.permitted_write_paths = [
+    WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
+    candidate.repositoryPath,
+    WORK4_CANDIDATE_TRANSITION_PATH,
+    work4FinaliserPath,
+    work4ValidatorPath,
+    work4TestPath,
+    candidateWork4.work_receipt_path,
+  ].sort();
+  candidateWork4.exact_argv_with_run_limits = [
+    {
+      argv: ['node', EXECUTION_MANIFEST_VALIDATOR_PATH, manifestPath('WORK4')],
+      max_runs: 3,
+    },
+    { argv: [...WORK4_CANDIDATE_TRANSITION_ARGV], max_runs: 1 },
+    { argv: ['node', '--test', work4TestPath], max_runs: 30 },
+    { argv: ['node', work4FinaliserPath], max_runs: 1 },
+    { argv: ['node', work4ValidatorPath], max_runs: 3 },
+  ];
+  candidateWork4.exact_git_commit_and_push_argv[0] = [
+    'git', 'add', '--',
+    ...[manifestPath('WORK4'), ...candidateWork4.permitted_write_paths].sort(),
+  ];
+  writeManifest(fixture, restamp(candidateWork4));
+  const candidateValidated = await validator.validateExecutionManifest({
+    repoRoot: fixture.root,
+    manifestPath: manifestPath('WORK4'),
+  });
+  assert.equal(
+    candidateValidated.candidate_registration_id,
+    candidate.record.candidate_registration_id,
+  );
+
+  const builder = await import('../scripts/stage-2y-structure-m7-v2-repair-register-candidate.mjs');
+  const mixedSpecification = clone(candidate.specification);
+  mixedSpecification.predecessor_receipts[2].schema_version = RICH_WORK3_RECEIPT_SCHEMA;
+  assert.throws(
+    () => builder.registerCandidate({
+      repoRoot: fixture.root,
+      specification: mixedSpecification,
+      write: false,
+    }),
+    (error) => ['BINDING_DRIFT', 'INVALID_SPECIFICATION'].includes(error.code),
+  );
+  const injectedCapitalisation = clone(candidate.specification);
+  injectedCapitalisation.subtype_trees.splice(2, 0, {
+    family_key: 'CAPITALISATION',
+    binding: clone(injectedCapitalisation.subtype_trees[0].binding),
+  });
+  assert.throws(
+    () => builder.registerCandidate({
+      repoRoot: fixture.root,
+      specification: injectedCapitalisation,
+      write: false,
+    }),
+    (error) => error.code === 'INVALID_SPECIFICATION',
+  );
+
+  const parkedPath = closureState.amendment.effective_family_package_closure
+    .capitalisation.planned_package_path;
+  mkdirSync(path.dirname(absolute(fixture.root, parkedPath)), { recursive: true });
+  symlinkSync('missing-capitalisation-package', absolute(fixture.root, parkedPath));
+  const verifier = await import('../scripts/stage-2y-structure-m7-v2-repair-verify-candidate.mjs');
+  assert.throws(
+    () => verifier.verifyRegisteredCandidate({
+      repoRoot: fixture.root,
+      registrationPath: candidate.written.registration_path,
+    }),
+    (error) => error.code === 'BINDING_DRIFT',
+  );
+  unlinkSync(absolute(fixture.root, parkedPath));
+
+  const v1Fixture = makeFixture(t);
+  const v1Work4 = await prepareWork4Bootstrap(v1Fixture);
+  v1Work4.base_tip_binding.milestone_attestation.predecessor_validation_result =
+    clone(validationResult);
+  writeManifest(v1Fixture, restamp(v1Work4));
+  await assertCode(validator, () => validator.validateExecutionManifest({
+    repoRoot: v1Fixture.root,
+    manifestPath: manifestPath('WORK4'),
+  }), 'PREDECESSOR_BINDING_DRIFT');
 });

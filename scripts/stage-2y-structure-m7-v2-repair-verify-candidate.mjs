@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import canonicalModule from '../lib/canonical-v2/canonical-bytes.js';
 import m7V2ContractModule from '../lib/canonical-v2/m7-v2-contract.js';
 import { validateWork2SuccessorReceiptBinding } from './stage-2y-structure-m7-v2-repair-work2-validate.mjs';
+import { validateWork3 } from './stage-2y-structure-m7-v2-repair-work3-validate.mjs';
 
 const { canonicalJson, contentId, sha256Hex } = canonicalModule;
 const { validateFamilyProfilePackageSetForWork3 } = m7V2ContractModule;
@@ -50,6 +51,16 @@ const WORK1_RECEIPT_KEYS = Object.freeze([
 ]);
 const WORK2_RECEIPT_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK2_COMPILER_RECEIPT/V1';
 const WORK3_RECEIPT_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK3_RECEIPT/V1';
+const WORK3_RECEIPT_V2_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK3_RECEIPT/V2';
+const WORK3_SUCCESSOR_MANIFEST_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-execution-manifest-closure-successor.json';
+const WORK3_SUCCESSOR_MANIFEST_SCHEMA =
+  'STAGE_2Y_M7_V2_REPAIR_WORK_EXECUTION_MANIFEST/V2';
+const WORK3_V2_VALIDATION_KEYS = Object.freeze([
+  'schema_version', 'status', 'work3_receipt_id', 'family_package_count',
+  'profile_count', 'artifact_binding_count', 'effective_path_count',
+  'create_once_output_count',
+]);
 const WORK3_RECEIPT_KEYS = Object.freeze([
   'schema_version', 'work3_receipt_id', 'work', 'stage', 'state', 'status',
   'execution_manifest_id', 'execution_manifest_digest', 'parent_authority_binding',
@@ -1589,6 +1600,7 @@ function verifyRichWork3Receipt(root, receipt, manifest) {
     && receipt.candidate_transition === contract.candidate_transition,
   'BINDING_DRIFT', 'WORK3:null candidate and transition');
   return {
+    family_keys: [...FAMILIES],
     lineage_bindings: {
       activation_receipt_binding: structuredClone(manifest.activation_receipt_binding),
       predecessor_receipt_binding: structuredClone(manifest.predecessor_receipt_binding),
@@ -1603,6 +1615,60 @@ function verifyRichWork3Receipt(root, receipt, manifest) {
     profile_set_binding: structuredClone(profileSetBinding),
     subtype_tree_bindings: structuredClone(profileSet.subtype_tree_bindings),
     structure_disposition_set_binding: structuredClone(receipt.structure_disposition_set_binding),
+  };
+}
+
+function verifyRichWork3ReceiptV2(root, receipt) {
+  let validationResult;
+  try {
+    validationResult = validateWork3({ repoRoot: root });
+  } catch (error) {
+    fail('BINDING_DRIFT', `WORK3:V2 receipt validation:${error.code ?? error.message}`);
+  }
+  assert(exactKeys(validationResult, WORK3_V2_VALIDATION_KEYS)
+    && validationResult.schema_version === 'STAGE_2Y_M7_V2_REPAIR_WORK3_VALIDATION/V2'
+    && validationResult.status === 'PASS'
+    && validationResult.work3_receipt_id === receipt.work3_receipt_id
+    && validationResult.family_package_count === 24
+    && validationResult.profile_count === 1382
+    && validationResult.artifact_binding_count === 52
+    && validationResult.effective_path_count === 53
+    && validationResult.create_once_output_count === 7,
+  'BINDING_DRIFT', 'WORK3:V2 validation result');
+  const familyEvidence = receipt.family_profile_evidence;
+  const familyKeys = familyEvidence?.sealed_package_family_keys;
+  assert(Array.isArray(familyKeys)
+    && familyKeys.length === 24
+    && !familyKeys.includes('CAPITALISATION'),
+  'BINDING_DRIFT', 'WORK3:V2 sealed family order');
+  const profileSetBinding = familyEvidence.approved_family_profile_set_binding;
+  const profileSetBytes = verifyReceiptBinding(root, profileSetBinding, {
+    schema_version: 'STAGE_2Y_M7_V2_APPROVED_FAMILY_PROFILE_SET/V1',
+    record_id_field: 'family_profile_set_id',
+  });
+  const profileSet = parseJson(profileSetBytes, 'BINDING_DRIFT', profileSetBinding.path);
+  assert(same(profileSet.subtype_tree_bindings.map((entry) => entry?.family_key), familyKeys),
+    'BINDING_DRIFT', 'WORK3:V2 subtype tree family order');
+  const nativeEvidence = receipt.candidate_native_set_evidence;
+  return {
+    family_keys: structuredClone(familyKeys),
+    lineage_bindings: {
+      activation_receipt_binding: structuredClone(receipt.activation_receipt_binding),
+      predecessor_receipt_binding: structuredClone(receipt.predecessor_receipt_binding),
+    },
+    native_set_bindings: {
+      BASE_ANALYSIS_SET: structuredClone(nativeEvidence.work3_agreement_analysis_set_binding),
+      AGREEMENT_INDEX_SET: structuredClone(nativeEvidence.work3_agreement_index_set_binding),
+      CONTEXT_COMPILATION_SET: structuredClone(
+        nativeEvidence.work3_context_compilation_set_binding,
+      ),
+    },
+    profile_set_binding: structuredClone(profileSetBinding),
+    subtype_tree_bindings: structuredClone(profileSet.subtype_tree_bindings),
+    structure_disposition_set_binding: structuredClone(
+      receipt.structure_disposition_set_binding,
+    ),
+    validation_result: structuredClone(validationResult),
   };
 }
 
@@ -1656,9 +1722,10 @@ function verifySemanticInputs(root, entries) {
 }
 
 function verifySubtypeTrees(root, entries, work3Context) {
-  assert(Array.isArray(entries) && entries.length === FAMILIES.length,
+  const familyKeys = work3Context?.family_keys ?? FAMILIES;
+  assert(Array.isArray(entries) && entries.length === familyKeys.length,
     'REGISTRATION_CONTRACT_DRIFT', 'subtype_tree_bindings');
-  assert(same(entries.map((entry) => entry.family_key), FAMILIES),
+  assert(same(entries.map((entry) => entry.family_key), familyKeys),
     'REGISTRATION_CONTRACT_DRIFT', 'subtype tree family order');
   assert(work3Context && same(entries, work3Context.subtype_tree_bindings),
     'REGISTRATION_CONTRACT_DRIFT', 'candidate subtype trees must equal approved Work3 package members');
@@ -1697,7 +1764,26 @@ function validateExecutionManifestBasis(root, work) {
   return { path: record.work_receipt_path, record };
 }
 
-function expectedReceiptContract(root, work) {
+function validateWork3SuccessorManifestBasis(root) {
+  const bytes = readBytes(root, WORK3_SUCCESSOR_MANIFEST_PATH, 'BINDING_DRIFT');
+  const record = parseJson(bytes, 'BINDING_DRIFT', WORK3_SUCCESSOR_MANIFEST_PATH);
+  assert(bytes.equals(canonicalBytes(record)), 'BINDING_DRIFT', 'WORK3:V2 manifest canonical');
+  const unsigned = structuredClone(record);
+  delete unsigned.execution_manifest_digest;
+  delete unsigned.execution_manifest_id;
+  const digest = sha256Hex(canonicalJson(unsigned));
+  const withDigest = { ...unsigned, execution_manifest_digest: digest };
+  assert(record.schema_version === WORK3_SUCCESSOR_MANIFEST_SCHEMA
+    && record.work === 'WORK3'
+    && record.state === 'PRE_WORK_BOOTSTRAP_ONLY'
+    && record.execution_manifest_digest === digest
+    && record.execution_manifest_id === contentId(record.schema_version, withDigest)
+    && typeof record.work_receipt_path === 'string',
+  'BINDING_DRIFT', 'WORK3:V2 successor manifest');
+  return { path: record.work_receipt_path, record };
+}
+
+function expectedReceiptContract(root, work, selectedSchemaVersion = null) {
   if (work === 'WORK1') {
     return {
       path: WORK1_RECEIPT_PATH,
@@ -1706,7 +1792,9 @@ function expectedReceiptContract(root, work) {
       manifest: null,
     };
   }
-  const manifest = validateExecutionManifestBasis(root, work);
+  const manifest = work === 'WORK3' && selectedSchemaVersion === WORK3_RECEIPT_V2_SCHEMA
+    ? validateWork3SuccessorManifestBasis(root)
+    : validateExecutionManifestBasis(root, work);
   if (work === 'WORK2') {
     return {
       path: manifest.path,
@@ -1716,9 +1804,11 @@ function expectedReceiptContract(root, work) {
     };
   }
   assert(work === 'WORK3', 'REGISTRATION_CONTRACT_DRIFT', 'predecessor work');
+  assert([WORK3_RECEIPT_SCHEMA, WORK3_RECEIPT_V2_SCHEMA].includes(selectedSchemaVersion),
+    'REGISTRATION_CONTRACT_DRIFT', 'WORK3:receipt schema');
   return {
     path: manifest.path,
-    schema_version: WORK3_RECEIPT_SCHEMA,
+    schema_version: selectedSchemaVersion,
     record_id_field: 'work3_receipt_id',
     manifest: manifest.record,
   };
@@ -1742,6 +1832,9 @@ function validateClosedPredecessorReceipt(root, receipt, work, expected) {
     return null;
   }
   if (work === 'WORK2') return null;
+  if (expected.schema_version === WORK3_RECEIPT_V2_SCHEMA) {
+    return verifyRichWork3ReceiptV2(root, receipt);
+  }
   const manifest = expected.manifest;
   return verifyRichWork3Receipt(root, receipt, manifest);
 }
@@ -1762,17 +1855,23 @@ function verifyPredecessors(root, entries) {
     assert(exactKeys(entry, ['binding', 'work']) && /^WORK[1-7]$/.test(entry.work) && !works.has(entry.work),
       'REGISTRATION_CONTRACT_DRIFT', 'predecessor work');
     works.add(entry.work);
+    const expected = expectedReceiptContract(
+      root,
+      entry.work,
+      entry.binding.schema_version,
+    );
     let bytes = null;
     let receipt = null;
     if (entry.work === 'WORK3') {
       bytes = verifyBinding(root, entry.binding, {
-        schema_version: WORK3_RECEIPT_SCHEMA,
+        schema_version: entry.binding.schema_version,
         record_id_field: 'work3_receipt_id',
       });
       receipt = parseJson(bytes, 'BINDING_DRIFT', entry.binding.path);
-      verifyRichWork3ReceiptEnvelope(receipt);
+      if (entry.binding.schema_version === WORK3_RECEIPT_SCHEMA) {
+        verifyRichWork3ReceiptEnvelope(receipt);
+      }
     }
-    const expected = expectedReceiptContract(root, entry.work);
     assert(entry.binding.path === expected.path
       && entry.binding.schema_version === expected.schema_version
       && entry.binding.record_id_field === expected.record_id_field,
@@ -1944,6 +2043,7 @@ function verifyRegistration(root, registration) {
   for (const binding of flattenedBindings(registration)) {
     if (binding.schema_version !== PACKAGE_MEMBER_BINDING_SCHEMA) verifyBinding(root, binding);
   }
+  return work3Context;
 }
 
 function registrationBinding(repositoryPath, bytes, registration) {
@@ -1973,14 +2073,19 @@ export function verifyRegisteredCandidate({ repoRoot, registrationPath } = {}) {
     && registration.candidate_registration_id === expectedId,
   'REGISTRATION_IDENTITY_DRIFT', registrationPath);
   assert(match[1] === expectedId, 'REGISTRATION_PATH_DRIFT', registrationPath);
-  verifyRegistration(root, registration);
+  const work3Context = verifyRegistration(root, registration);
+  const checkIds = work3Context.family_keys.length === 24
+    ? CHECK_IDS.map((checkId) => checkId === 'TWENTY_FIVE_SUBTYPE_TREE_BINDINGS'
+      ? 'EXACT_24_SEALED_PACKAGE_SUBTYPE_TREE_MEMBER_BINDINGS'
+      : checkId)
+    : CHECK_IDS;
   const counts = structuredClone(registration.counts);
   const unsignedResult = {
     schema_version: VERIFICATION_SCHEMA,
     state: 'PASS_CANDIDATE_REGISTRATION',
     candidate_registration_id: registration.candidate_registration_id,
     registration_binding: registrationBinding(registrationPath, bytes, registration),
-    checks: CHECK_IDS.map((check_id) => ({ check_id, status: 'PASS' })),
+    checks: checkIds.map((check_id) => ({ check_id, status: 'PASS' })),
     counts,
     effects: VERIFICATION_EFFECTS,
   };
