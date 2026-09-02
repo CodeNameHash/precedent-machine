@@ -2,6 +2,7 @@
 
 const assert = require('node:assert/strict');
 const childProcess = require('node:child_process');
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
@@ -950,7 +951,9 @@ function assertReadOnlyGitArtifactWriter(source, label) {
 
 const LOCAL_SUBPROCESS_BOUNDARIES = Object.freeze({
   'scripts/ci/run-unit-test-shard.js': Object.freeze({
+    byteLength: 16776,
     runnerSpawn: true,
+    sha256: 'f4709aeac98697b9e6a4af65ad8fa654883e3a10118bcb4bdd5290c9ba53733e',
   }),
   'scripts/stage-2y-structure-m7-v2-repair-work1-recover.mjs': Object.freeze({
     finaliser: 'scripts/stage-2y-structure-m7-v2-repair-work1-finalise.mjs',
@@ -969,6 +972,16 @@ const LOCAL_SUBPROCESS_BOUNDARIES = Object.freeze({
     ]),
   }),
 });
+
+function assertRunnerSourcePin(source, contract, label) {
+  const bytes = Buffer.from(source, 'utf8');
+  assert.equal(bytes.length, contract.byteLength, `${label} source byte length must remain pinned`);
+  assert.equal(
+    crypto.createHash('sha256').update(bytes).digest('hex'),
+    contract.sha256,
+    `${label} source SHA-256 must remain pinned`,
+  );
+}
 
 function assertShellDisabled(call, label) {
   const options = call.arguments[2];
@@ -1016,8 +1029,229 @@ function assertExactNamedRequire(program, moduleName, importedName, localName, l
   assert.equal(property.value.name, localName, `${label} imported name must not be aliased`);
 }
 
+function runnerArgvDescriptor(node, label) {
+  assert.equal(node?.type, 'ArrayExpression', `${label} lane argv must be a literal array`);
+  return node.elements.map((element, index) => {
+    assert.ok(element, `${label} lane argv must not contain holes`);
+    if (element.type === 'SpreadElement') {
+      return `...${staticArgumentDescriptor(element.argument, `${label}[${index}]`)}`;
+    }
+    if (element.type === 'TemplateLiteral') {
+      const parts = [element.quasis[0].value.cooked];
+      for (let expressionIndex = 0; expressionIndex < element.expressions.length; expressionIndex += 1) {
+        parts.push(
+          '${' + staticArgumentDescriptor(
+            element.expressions[expressionIndex],
+            `${label}[${index}] interpolation`,
+          ) + '}',
+          element.quasis[expressionIndex + 1].value.cooked,
+        );
+      }
+      return `\`${parts.join('')}\``;
+    }
+    return staticArgumentDescriptor(element, `${label}[${index}]`);
+  });
+}
+
+function assertRunnerRunShardBoundary(program, laneArgumentBuild, argsBinding, label) {
+  const runShardFunctions = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'FunctionDeclaration' && node.id?.name === 'runShard',
+  );
+  assert.equal(runShardFunctions.length, 1, `${label} must declare runShard exactly once`);
+  const [runShard] = runShardFunctions;
+  assert.equal(runShard.async, true, `${label} runShard must remain async`);
+  assert.equal(runShard.generator, false, `${label} runShard must not be a generator`);
+  assert.equal(runShard.params.length, 2, `${label} runShard signature must be exact`);
+  assert.equal(runShard.params[0]?.type, 'Identifier', `${label} runShard shard parameter must be named`);
+  assert.equal(runShard.params[0].name, 'shard', `${label} runShard shard parameter must be exact`);
+
+  const optionsDefault = runShard.params[1];
+  assert.equal(optionsDefault?.type, 'AssignmentPattern', `${label} runShard signature must be exact`);
+  assert.equal(optionsDefault.right?.type, 'ObjectExpression', `${label} runShard options default must be literal`);
+  assert.equal(optionsDefault.right.properties.length, 0, `${label} runShard options default must be empty`);
+  assert.equal(optionsDefault.left?.type, 'ObjectPattern', `${label} runShard options must be destructured`);
+  assert.deepEqual(
+    optionsDefault.left.properties.map((property) => {
+      assert.equal(property.type, 'Property', `${label} runShard options must not spread`);
+      assert.equal(property.computed, false, `${label} runShard option names must be literal`);
+      assert.equal(property.kind, 'init', `${label} runShard options must be data properties`);
+      const name = property.key.name || property.key.value;
+      assert.ok(['cwd', 'output'].includes(name), `${label} runShard option ${name} is not allowed`);
+      assert.equal(property.value.type, 'AssignmentPattern', `${label} runShard option ${name} must have a default`);
+      assert.equal(property.value.left.type, 'Identifier', `${label} runShard option ${name} must bind a name`);
+      assert.equal(property.value.left.name, name, `${label} runShard option ${name} binding must be exact`);
+      if (name === 'cwd') {
+        const defaultCall = property.value.right;
+        assert.equal(defaultCall.type, 'CallExpression', `${label} runShard cwd default must be a call`);
+        assert.equal(defaultCall.arguments.length, 0, `${label} runShard cwd default call must have no arguments`);
+        assert.equal(
+          staticArgumentDescriptor(defaultCall.callee, `${label} runShard cwd default`),
+          '$process.cwd',
+          `${label} runShard cwd default must be process.cwd()`,
+        );
+      } else {
+        assert.equal(
+          staticArgumentDescriptor(property.value.right, `${label} runShard output default`),
+          '$process.stdout',
+          `${label} runShard output default must be process.stdout`,
+        );
+      }
+      return name;
+    }),
+    ['cwd', 'output'],
+    `${label} runShard signature must be exact`,
+  );
+  assert.equal(
+    collectCapabilityNodes(runShard.body, (node) => node === laneArgumentBuild).length,
+    1,
+    `${label} runShard must call the global lane argument builder`,
+  );
+  assert.equal(
+    collectCapabilityNodes(runShard.body, (node) => node === argsBinding).length,
+    1,
+    `${label} runShard must own the args binding`,
+  );
+}
+
+function assertRunnerLaneBoundary(program, label) {
+  const startLaneFunctions = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'FunctionDeclaration' && node.id?.name === 'startLane',
+  );
+  assert.equal(startLaneFunctions.length, 1, `${label} must declare startLane exactly once`);
+  assert.deepEqual(
+    startLaneFunctions[0].params.map((parameter) => (
+      parameter.type === 'Identifier' ? parameter.name : null
+    )),
+    ['label', 'args', 'outputPath', 'cwd'],
+    `${label} startLane signature must be exact`,
+  );
+  assertIdentifierReferenceCount(program, 'arguments', 0, label);
+
+  const buildLaneArgumentsFunctions = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'FunctionDeclaration' && node.id?.name === 'buildLaneArguments',
+  );
+  assert.equal(
+    buildLaneArgumentsFunctions.length,
+    1,
+    `${label} must declare buildLaneArguments exactly once`,
+  );
+  assert.deepEqual(
+    buildLaneArgumentsFunctions[0].params.map((parameter) => (
+      parameter.type === 'Identifier' ? parameter.name : null
+    )),
+    ['plan'],
+    `${label} buildLaneArguments signature must be exact`,
+  );
+  assertIdentifierReferenceCount(program, 'buildLaneArguments', 4, label);
+  assert.equal(
+    buildLaneArgumentsFunctions[0].body.body.length,
+    1,
+    `${label} lane argument builder body must contain only its return`,
+  );
+  const laneArgumentReturn = buildLaneArgumentsFunctions[0].body.body[0];
+  assert.equal(laneArgumentReturn.type, 'ReturnStatement', `${label} lane argument builder must return exactly once`);
+  const laneArgumentShape = laneArgumentReturn.argument;
+  assert.equal(laneArgumentShape?.type, 'ObjectExpression', `${label} lane arguments must be an object literal`);
+  const laneArgumentProperties = new Map();
+  assert.deepEqual(
+    laneArgumentShape.properties.map((property) => {
+      assert.equal(property.type, 'Property', `${label} lane argument shape must not spread`);
+      assert.equal(property.computed, false, `${label} lane argument names must be literal`);
+      assert.equal(property.kind, 'init', `${label} lane argument properties must be data properties`);
+      assert.equal(property.value.type, 'ArrayExpression', `${label} lane argv must be literal arrays`);
+      const name = property.key.name || property.key.value;
+      assert.equal(laneArgumentProperties.has(name), false, `${label} lane argument ${name} must be unique`);
+      laneArgumentProperties.set(name, property.value);
+      return name;
+    }),
+    ['ordinary', 'work3'],
+    `${label} lane argument output shape must be exact`,
+  );
+  assert.deepEqual(
+    runnerArgvDescriptor(laneArgumentProperties.get('ordinary'), `${label} ordinary`),
+    [
+      '--max-old-space-size=8192',
+      '--test',
+      '--test-reporter=tap',
+      '...$plan.ordinaryFiles',
+    ],
+    `${label} ordinary lane argv must be exact`,
+  );
+  assert.deepEqual(
+    runnerArgvDescriptor(laneArgumentProperties.get('work3'), `${label} Work3`),
+    [
+      '--max-old-space-size=8192',
+      '--test',
+      '--test-reporter=tap',
+      '`--test-name-pattern=${$plan.work3Pattern}`',
+      '$SEALED_WORK3_TEST',
+    ],
+    `${label} Work3 lane argv must be exact`,
+  );
+  assertLiteralBinding(
+    program,
+    'SEALED_WORK3_TEST',
+    'tests/stage-2y-structure-m7-v2-repair-work3.test.js',
+    label,
+  );
+
+  const laneArgumentBuilds = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'Identifier' && node.callee.name === 'buildLaneArguments',
+  );
+  assert.equal(laneArgumentBuilds.length, 1, `${label} must build lane arguments exactly once`);
+  assert.deepEqual(
+    laneArgumentBuilds[0].arguments.map((argument) => (
+      staticArgumentDescriptor(argument, `${label} buildLaneArguments`)
+    )),
+    ['$plan'],
+    `${label} lane argument build call must be exact`,
+  );
+  const argsBindings = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'VariableDeclarator'
+      && node.id.type === 'Identifier' && node.id.name === 'args'
+      && node.init === laneArgumentBuilds[0],
+  );
+  assert.equal(argsBindings.length, 1, `${label} lane arguments must bind to args exactly once`);
+  const argsDeclarations = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'VariableDeclaration' && node.declarations.includes(argsBindings[0]),
+  );
+  assert.equal(argsDeclarations.length, 1, `${label} args binding must have one declaration`);
+  assert.equal(argsDeclarations[0].kind, 'const', `${label} args binding must be const`);
+  assert.equal(argsDeclarations[0].declarations.length, 1, `${label} args binding must be isolated`);
+  assertRunnerRunShardBoundary(program, laneArgumentBuilds[0], argsBindings[0], label);
+
+  const laneCalls = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'Identifier' && node.callee.name === 'startLane',
+  );
+  assert.equal(laneCalls.length, 2, `${label} must call startLane exactly twice`);
+  assert.deepEqual(
+    laneCalls.map((call) => call.arguments.map((argument, index) => (
+      staticArgumentDescriptor(argument, `${label} startLane argument ${index + 1}`)
+    ))),
+    [
+      ['ordinary', '$args.ordinary', '$ordinaryOutput', '$cwd'],
+      ['Work3', '$args.work3', '$work3Output', '$cwd'],
+    ],
+    `${label} lane calls must be exact`,
+  );
+  assertIdentifierReferenceCount(program, 'startLane', 3, label);
+  assertIdentifierReferenceCount(program, 'args', 5, label);
+  assertIdentifierNeverReassigned(program, 'args', label);
+}
+
 function assertRunnerSpawnBoundary(program, counts, label) {
   assertExactNamedRequire(program, 'node:child_process', 'spawn', 'spawn', label);
+  assertIdentifierReferenceCount(program, 'spawn', 3, label);
+  assertRunnerLaneBoundary(program, label);
   const launches = collectCapabilityNodes(
     program,
     (node) => node.type === 'CallExpression'
@@ -1068,6 +1302,7 @@ function assertLocalSubprocessArtifactWriterBoundary(source, label) {
   const program = parseCapabilitySource(source, label);
   if (contract.runnerSpawn) {
     assertRunnerSpawnBoundary(program, counts, label);
+    assertRunnerSourcePin(source, contract, label);
     return;
   }
   assertExactNamedImport(program, 'node:child_process', 'spawnSync', 'spawnSync', label);
@@ -2322,6 +2557,119 @@ test('new authority class boundaries reject dynamic argv and outbound-network by
     assert.ok(source.includes(before), `${label} mutation anchor must exist`);
     return source.replace(before, after);
   };
+
+  const runnerPath = 'scripts/ci/run-unit-test-shard.js';
+  const runnerSource = fs.readFileSync(path.join(ROOT, runnerPath), 'utf8');
+  const environmentSelectedLeadingRunnerArgv = replaceExact(
+    runnerSource,
+    "    ordinary: [\n      '--max-old-space-size=8192',",
+    "    ordinary: [\n      process.env.UNIT_TEST_ARGV,",
+    'environment-selected leading runner argv',
+  );
+  assert.throws(
+    () => assertLocalSubprocessArtifactWriterBoundary(environmentSelectedLeadingRunnerArgv, runnerPath),
+    /lane argv|argv must contain only static/,
+  );
+  const environmentSelectedRunnerArgv = replaceExact(
+    runnerSource,
+    "        startLane('ordinary', args.ordinary, ordinaryOutput, cwd),",
+    "        startLane('ordinary', process.env.UNIT_TEST_ARGV ? args.work3 : args.ordinary, ordinaryOutput, cwd),",
+    'environment-selected runner argv',
+  );
+  assert.throws(
+    () => assertLocalSubprocessArtifactWriterBoundary(environmentSelectedRunnerArgv, runnerPath),
+    /lane calls must be exact|startLane argument 2/,
+  );
+  const thirdRunnerCall = replaceExact(
+    runnerSource,
+    "        startLane('Work3', args.work3, work3Output, cwd),",
+    "        startLane('Work3', args.work3, work3Output, cwd),\n        startLane('extra', args.ordinary, ordinaryOutput, cwd),",
+    'third runner call',
+  );
+  assert.throws(
+    () => assertLocalSubprocessArtifactWriterBoundary(thirdRunnerCall, runnerPath),
+    /must call startLane exactly twice/,
+  );
+  const indirectRunnerSpawn = replaceExact(
+    runnerSource,
+    '  const args = buildLaneArguments(plan);',
+    "  const args = buildLaneArguments(plan);\n  spawn.call(null, process.execPath, [process.env.CI_CHILD], { cwd, env: process.env, stdio: 'ignore' });",
+    'indirect runner spawn',
+  );
+  assert.throws(
+    () => assertLocalSubprocessArtifactWriterBoundary(indirectRunnerSpawn, runnerPath),
+    /spawn reference count must be exact/,
+  );
+  const implicitArgumentsRunnerArgv = replaceExact(
+    runnerSource,
+    'function startLane(label, args, outputPath, cwd) {',
+    "function startLane(label, args, outputPath, cwd) {\n  if (process.env.CI_CHILD) arguments[1].push(process.env.CI_CHILD);",
+    'implicit arguments runner argv',
+  );
+  assert.throws(
+    () => assertLocalSubprocessArtifactWriterBoundary(implicitArgumentsRunnerArgv, runnerPath),
+    /arguments reference count must be exact/,
+  );
+  const shadowedRunnerArgumentBuilder = replaceExact(
+    runnerSource,
+    'async function runShard(shard, { cwd = process.cwd(), output = process.stdout } = {}) {',
+    "async function runShard(shard, { cwd = process.cwd(), output = process.stdout, buildLaneArguments = () => ({ ordinary: [process.env.CI_CHILD], work3: [process.env.CI_CHILD] }) } = {}) {",
+    'shadowed runner argument builder',
+  );
+  assert.throws(
+    () => assertLocalSubprocessArtifactWriterBoundary(shadowedRunnerArgumentBuilder, runnerPath),
+    /runShard signature must be exact|buildLaneArguments reference count must be exact/,
+  );
+  const mutatingRunnerArgumentBuilder = replaceExact(
+    runnerSource,
+    'function buildLaneArguments(plan) {\n  return {',
+    "function buildLaneArguments(plan) {\n  plan.ordinaryFiles = [process.env.CI_CHILD];\n  return {",
+    'mutating runner argument builder',
+  );
+  assert.throws(
+    () => assertLocalSubprocessArtifactWriterBoundary(mutatingRunnerArgumentBuilder, runnerPath),
+    /builder body must contain only its return/,
+  );
+  const liveEvalWithDeadRunnerSpawn = replaceExact(
+    runnerSource,
+    `    const child = spawn(process.execPath, args, {
+      cwd,
+      env: process.env,
+      stdio: ['ignore', descriptor, descriptor],
+    });`,
+    `    const child = false
+      ? spawn(process.execPath, args, {
+        cwd,
+        env: process.env,
+        stdio: ['ignore', descriptor, descriptor],
+      })
+      : eval(process.env.CI_CHILD_SOURCE);`,
+    'live eval with dead runner spawn',
+  );
+  assert.throws(
+    () => assertLocalSubprocessArtifactWriterBoundary(liveEvalWithDeadRunnerSpawn, runnerPath),
+    /source (?:byte length|SHA-256) must remain pinned/,
+  );
+  const shadowedRunnerProcess = replaceExact(
+    runnerSource,
+    'function startLane(label, args, outputPath, cwd) {',
+    "function startLane(label, args, outputPath, cwd) {\n  const process = { execPath: globalThis.process.env.CI_CHILD, env: globalThis.process.env };",
+    'shadowed runner process',
+  );
+  assert.throws(
+    () => assertLocalSubprocessArtifactWriterBoundary(shadowedRunnerProcess, runnerPath),
+    /source (?:byte length|SHA-256) must remain pinned/,
+  );
+  const mutatingRunnerPlan = replaceExact(
+    runnerSource,
+    '  const ordinaryFiles = assignOrdinaryFiles(files, shard);',
+    "  const ordinaryFiles = assignOrdinaryFiles(files, shard);\n  ordinaryFiles.push(process.env.CI_CHILD);",
+    'mutating runner plan',
+  );
+  assert.throws(
+    () => assertLocalSubprocessArtifactWriterBoundary(mutatingRunnerPlan, runnerPath),
+    /source (?:byte length|SHA-256) must remain pinned/,
+  );
 
   const terminationPath = 'scripts/stage-2y-structure-m7-v2-termination-family-package-seal-receipt.mjs';
   const terminationSource = fs.readFileSync(path.join(ROOT, terminationPath), 'utf8');
