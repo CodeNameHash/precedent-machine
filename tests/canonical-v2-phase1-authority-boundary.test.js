@@ -1909,6 +1909,7 @@ test('pure proposals and local artefact writers have their exact capability boun
     'scripts/stage-2y-structure-m7-v2-repair-work3-validate.mjs',
     'lib/canonical-v2/legacy-card-bridge.js',
     'lib/canonical-v2/seven-family-v1-preview-deal.js',
+    'lib/canonical-v2/seven-family-v2-review-evidence.js',
     'components/review-v2/SevenFamilyV1Surface.jsx',
   ]) assert.ok(PURE_PROPOSAL_SOURCES.includes(source), source);
   for (const source of [
@@ -2161,6 +2162,7 @@ test('read-only Git inspectors launch only whitelisted inspection commands', () 
 test('read-only Git artefact writers have their exact capability boundary', () => {
   assert.deepEqual(READ_ONLY_GIT_ARTIFACT_WRITERS, [
     'scripts/ci/baseline-manifest-impact.js',
+    'scripts/ci/baseline-checkpoint.js',
     'scripts/audit/canonical-v2-termination-render-diagnosis.mjs',
     'scripts/stage-2y-h-representation-topic-compare.mjs',
     'scripts/stage-2y-registry-substrate-replay.mjs',

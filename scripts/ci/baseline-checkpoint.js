@@ -3,7 +3,7 @@
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
-const { spawnSync } = require('node:child_process');
+const { execFileSync } = require('node:child_process');
 
 const {
   SAFE_EXACT_PATHS,
@@ -113,28 +113,31 @@ function decodedGitPath(pathBuffer) {
 
 function readTree(ref, cwd) {
   if (!GIT_REF_PATTERN.test(ref)) throw new Error('ref must be HEAD or a lowercase GitHub SHA-1');
-  const result = spawnSync('git', ['ls-tree', '-rz', '--full-tree', ref, '--'], {
-    cwd,
-    encoding: null,
-    maxBuffer: MAX_TREE_BYTES,
-  });
-  if (result.error) throw result.error;
-  if (result.status !== 0) {
-    const detail = Buffer.isBuffer(result.stderr) ? result.stderr.toString('utf8').trim() : '';
-    throw new Error(detail || `git ls-tree exited ${result.status}`);
+  try {
+    const output = execFileSync('git', ['ls-tree', '-rz', '--full-tree', ref, '--'], {
+      cwd,
+      encoding: null,
+      maxBuffer: MAX_TREE_BYTES,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    return splitNullDelimited(output).map(parseTreeRecord);
+  } catch (error) {
+    const detail = Buffer.isBuffer(error.stderr) ? error.stderr.toString('utf8').trim() : '';
+    throw new Error(detail || `git ls-tree exited ${error.status}`);
   }
-  return splitNullDelimited(result.stdout).map(parseTreeRecord);
 }
 
 function readBlob(object, cwd) {
-  const result = spawnSync('git', ['cat-file', 'blob', object], {
-    cwd,
-    encoding: null,
-    maxBuffer: 1024 * 1024,
-  });
-  if (result.error) throw result.error;
-  if (result.status !== 0) throw new Error('unable to read source-reference blob');
-  return result.stdout;
+  try {
+    return execFileSync('git', ['cat-file', 'blob', object], {
+      cwd,
+      encoding: null,
+      maxBuffer: 1024 * 1024,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+  } catch (_) {
+    throw new Error('unable to read source-reference blob');
+  }
 }
 
 function rawSourcePath(sourceReferenceBuffer) {

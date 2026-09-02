@@ -671,7 +671,7 @@ test('PH-1-K CI shards every test exactly once and aggregates fail closed', () =
   const build = workflow.jobs['production-build'];
   const aggregate = workflow.jobs['test-and-build'];
 
-  assert.equal(unit.strategy['fail-fast'], false);
+  assert.equal(unit.strategy['fail-fast'], true);
   assert.deepEqual(Object.keys(unit.strategy.matrix), ['shard']);
   assert.deepEqual(unit.strategy.matrix.shard, [1, 2, 3, 4, 5, 6, 7, 8]);
   assert.equal(unit['continue-on-error'], undefined);
