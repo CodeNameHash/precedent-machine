@@ -6314,6 +6314,7 @@ test('validator dependencies are local, read-only and free of subprocess imports
     '../lib/canonical-v2/canonical-bytes.js',
     '../lib/canonical-v2/m7-v2-contract.js',
     './stage-2y-structure-m7-v2-repair-work2-validate.mjs',
+    './stage-2y-structure-m7-v2-repair-work3-validate.mjs',
   ].sort());
   assert.doesNotMatch(source, /node:child_process|node:http|node:https|\bfetch\s*\(|\beval\s*\(|new Function|writeFile|appendFile|openSync|execFile|spawn/i);
   assert.match(source, /packageRecord\?\.family_key !== entry\.family_key/);
@@ -7759,6 +7760,33 @@ test('Work3 closure application cannot substitute a restamped amendment for the 
   delete amendment.closure_amendment_id;
   amendment.closure_amendment_id = contentId(amendment.schema_version, amendment);
   writeCanonical(fixture.root, WORK3_CLOSURE_AMENDMENT_PATH, amendment);
+
+  const result = runWork3ClosureApplication(fixture.root, fixture.environment);
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /WORK3_CLOSURE_INPUT_INVALID/u);
+  assert.equal(
+    existsSync(absolute(fixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH)),
+    false,
+  );
+  assert.equal(
+    existsSync(absolute(fixture.root, WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH)),
+    false,
+  );
+});
+
+test('Work3 closure application rejects a re-signed non-PASS external review receipt before any output write', (t) => {
+  const fixture = makeWork3ClosureApplicationFixture(t);
+  const review = JSON.parse(readFileSync(
+    absolute(fixture.root, WORK3_CLOSURE_REVIEW_RECEIPT_PATH),
+  ));
+  review.status = 'FAIL';
+  delete review.work3_closure_amendment_external_review_receipt_id;
+  review.work3_closure_amendment_external_review_receipt_id = contentId(
+    review.schema_version,
+    review,
+  );
+  writeCanonical(fixture.root, WORK3_CLOSURE_REVIEW_RECEIPT_PATH, review);
 
   const result = runWork3ClosureApplication(fixture.root, fixture.environment);
 

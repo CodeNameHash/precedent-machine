@@ -1855,11 +1855,6 @@ function verifyPredecessors(root, entries) {
     assert(exactKeys(entry, ['binding', 'work']) && /^WORK[1-7]$/.test(entry.work) && !works.has(entry.work),
       'REGISTRATION_CONTRACT_DRIFT', 'predecessor work');
     works.add(entry.work);
-    const expected = expectedReceiptContract(
-      root,
-      entry.work,
-      entry.binding.schema_version,
-    );
     let bytes = null;
     let receipt = null;
     if (entry.work === 'WORK3') {
@@ -1872,6 +1867,11 @@ function verifyPredecessors(root, entries) {
         verifyRichWork3ReceiptEnvelope(receipt);
       }
     }
+    const expected = expectedReceiptContract(
+      root,
+      entry.work,
+      entry.binding.schema_version,
+    );
     assert(entry.binding.path === expected.path
       && entry.binding.schema_version === expected.schema_version
       && entry.binding.record_id_field === expected.record_id_field,

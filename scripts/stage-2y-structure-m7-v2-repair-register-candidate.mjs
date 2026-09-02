@@ -1879,11 +1879,6 @@ function validatePredecessors(root, descriptors) {
     validateDescriptor(descriptor, 'work');
     assert(/^WORK[1-7]$/.test(descriptor.work) && !seen.has(descriptor.work),
       'INVALID_SPECIFICATION', 'predecessor work');
-    const expected = expectedReceiptContract(
-      root,
-      descriptor.work,
-      descriptor.schema_version,
-    );
     let receiptBinding = null;
     let receipt = null;
     if (descriptor.work === 'WORK3') {
@@ -1901,6 +1896,11 @@ function validatePredecessors(root, descriptors) {
         validateRichWork3ReceiptEnvelope(receipt);
       }
     }
+    const expected = expectedReceiptContract(
+      root,
+      descriptor.work,
+      descriptor.schema_version,
+    );
     assert(descriptor.path === expected.path
       && descriptor.schema_version === expected.schema_version
       && descriptor.record_id_field === expected.record_id_field,
