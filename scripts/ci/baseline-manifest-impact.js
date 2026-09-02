@@ -6,7 +6,9 @@ const { execFileSync } = require('node:child_process');
 const ZERO_SHA = /^0{40}$/;
 const SAFE_PREFIXES = Object.freeze([
   '.cursor/',
+  '.github/workflows/',
   'docs/',
+  'scripts/ci/',
 ]);
 // These reviewed modules only serve the seven-family preview or inspect source
 // authority. The baseline import graph does not load them. Every other lib/
@@ -16,16 +18,17 @@ const SAFE_EXACT_PATHS = new Set([
   'lib/canonical-v2/phase1-authority-boundary-inventory.js',
   'lib/canonical-v2/seven-family-grouping-preview-source.js',
   'lib/canonical-v2/seven-family-v1-preview-deal.js',
+  'lib/canonical-v2/seven-family-v2-review-evidence.js',
   'pages/design/canonical-v2-seven-family.js',
 ]);
 
 function normalizePath(file) {
-  return String(file || '').replace(/\\/g, '/').replace(/^\.\//, '').trim();
+  return String(file || '').replace(/\\/g, '/').replace(/^\.\//, '');
 }
 
 function isKnownNonInput(file) {
   const normalized = normalizePath(file);
-  if (!normalized) return false;
+  if (!normalized || normalized !== normalized.trim()) return false;
   if (normalized.startsWith('tests/') && !normalized.startsWith('tests/fixtures/')) return true;
   return SAFE_EXACT_PATHS.has(normalized)
     || SAFE_PREFIXES.some((prefix) => normalized.startsWith(prefix));

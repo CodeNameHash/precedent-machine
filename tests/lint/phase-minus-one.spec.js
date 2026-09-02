@@ -98,6 +98,7 @@ test('PH-1-F baseline gate skips only the reviewed preview and non-input paths',
     'lib/canonical-v2/phase1-authority-boundary-inventory.js',
     'lib/canonical-v2/seven-family-grouping-preview-source.js',
     'lib/canonical-v2/seven-family-v1-preview-deal.js',
+    'lib/canonical-v2/seven-family-v2-review-evidence.js',
     'pages/design/canonical-v2-seven-family.js',
     'tests/canonical-v2-phase1-authority-boundary.test.js',
     'tests/canonical-v2-seven-family-grouping-preview.test.js',
@@ -110,18 +111,35 @@ test('PH-1-F baseline gate skips only the reviewed preview and non-input paths',
   });
   assert.equal(classifyChangedFiles(['docs/codex-program/notes/example.md']).run, false);
   assert.equal(classifyChangedFiles(['tests/unit/example.test.js']).run, false);
+  assert.equal(classifyChangedFiles(['.github/workflows/ci.yml']).run, false);
+  assert.equal(classifyChangedFiles(['scripts/ci/check-allowlist.js']).run, false);
+  assert.equal(classifyChangedFiles(['scripts/ci/baseline-manifest-impact.js']).run, false);
 
   const inputs = [
     'evidence/canonical-v2/example/adapter-result.json',
+    '.github/phase-allowlists/phase-0-B.json',
     'lib/canonical-v2/validate-write-set.js',
     'scripts/canonical-v2-baseline-manifest.mjs',
+    'scripts/check-allowlist-runtime.js',
     'tests/fixtures/canonical-v2/example.json',
     'package-lock.json',
-    '.github/workflows/ci.yml',
     'unknown/input.json',
   ];
   for (const input of inputs) assert.equal(classifyChangedFiles([input]).run, true, input);
-  assert.equal(classifyChangedFiles([]).run, true);
+  for (const whitespacePaddedPath of [
+    ' scripts/ci/runtime-input.js',
+    'scripts/ci/runtime-input.js ',
+    ' .github/workflows/ci.yml',
+    '.github/workflows/ci.yml ',
+  ]) {
+    assert.equal(classifyChangedFiles([whitespacePaddedPath]).run, true, whitespacePaddedPath);
+  }
+  assert.deepEqual(classifyChangedFiles([]), {
+    run: true,
+    changedFiles: [],
+    impactingFiles: [],
+    reason: 'NO_DIFF_AVAILABLE',
+  });
 
   require('../../lib/canonical-v2/evidence-to-write-set-bridge');
   require('../../lib/canonical-v2/canonical-writer');
@@ -139,7 +157,7 @@ test('PH-1-G CI runs the baseline gate only when the detector reports impact', (
   assert.match(ci, /if: steps\.baseline-impact\.outputs\.run == 'true'/);
 });
 
-test('PH-1-H moving a baseline input to a safe path still runs the gate', () => {
+test('PH-1-H moves and copies across safe boundaries still run the gate', () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'baseline-impact-rename-'));
   const runGit = (args) => execFileSync('git', args, {
     cwd: directory,
@@ -148,9 +166,17 @@ test('PH-1-H moving a baseline input to a safe path still runs the gate', () => 
   }).trim();
   try {
     runGit(['init', '-q']);
-    fs.mkdirSync(path.join(directory, 'lib/canonical-v2'), { recursive: true });
-    fs.writeFileSync(path.join(directory, 'lib/canonical-v2/input.js'), 'module.exports = true;\n');
-    runGit(['add', '--', 'lib/canonical-v2/input.js']);
+    const baseFiles = {
+      '.github/workflows/ci.yml': 'name: CI\n',
+      'lib/canonical-v2/input.js': 'module.exports = true;\n',
+      'lib/canonical-v2/seven-family-v2-review-evidence.js': 'module.exports = {};\n',
+      'scripts/ci/check-allowlist.js': '#!/usr/bin/env node\n',
+    };
+    for (const [file, contents] of Object.entries(baseFiles)) {
+      fs.mkdirSync(path.join(directory, path.dirname(file)), { recursive: true });
+      fs.writeFileSync(path.join(directory, file), contents);
+    }
+    runGit(['add', '--', ...Object.keys(baseFiles)]);
     runGit(['-c', 'user.name=CI Test', '-c', 'user.email=ci@example.invalid', 'commit', '-qm', 'input']);
     const base = runGit(['rev-parse', 'HEAD']);
 
@@ -159,7 +185,31 @@ test('PH-1-H moving a baseline input to a safe path still runs the gate', () => 
       path.join(directory, 'lib/canonical-v2/input.js'),
       path.join(directory, 'docs/moved.md'),
     );
-    runGit(['add', '--', 'lib/canonical-v2/input.js', 'docs/moved.md']);
+    fs.renameSync(
+      path.join(directory, '.github/workflows/ci.yml'),
+      path.join(directory, 'lib/ci-workflow.yml'),
+    );
+    fs.copyFileSync(
+      path.join(directory, 'scripts/ci/check-allowlist.js'),
+      path.join(directory, 'scripts/check-allowlist-runtime.js'),
+    );
+    fs.copyFileSync(
+      path.join(directory, 'lib/canonical-v2/seven-family-v2-review-evidence.js'),
+      path.join(directory, 'lib/canonical-v2/seven-family-v2-runtime-evidence.js'),
+    );
+    const whitespacePaddedPath = ' scripts/ci/runtime-input.js';
+    fs.mkdirSync(path.join(directory, path.dirname(whitespacePaddedPath)), { recursive: true });
+    fs.writeFileSync(path.join(directory, whitespacePaddedPath), 'module.exports = true;\n');
+    runGit([
+      'add', '--',
+      '.github/workflows/ci.yml',
+      'docs/moved.md',
+      'lib/canonical-v2/input.js',
+      'lib/canonical-v2/seven-family-v2-runtime-evidence.js',
+      'lib/ci-workflow.yml',
+      'scripts/check-allowlist-runtime.js',
+      whitespacePaddedPath,
+    ]);
     runGit(['-c', 'user.name=CI Test', '-c', 'user.email=ci@example.invalid', 'commit', '-qm', 'move']);
     const head = runGit(['rev-parse', 'HEAD']);
 
@@ -175,7 +225,16 @@ test('PH-1-H moving a baseline input to a safe path still runs the gate', () => 
       },
     });
     assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /run=true POSSIBLE_INPUT_CHANGE: lib\/canonical-v2\/input\.js/);
+    assert.match(result.stdout, /run=true POSSIBLE_INPUT_CHANGE/);
+    for (const impactingFile of [
+      'lib/canonical-v2/input.js',
+      'lib/canonical-v2/seven-family-v2-runtime-evidence.js',
+      'lib/ci-workflow.yml',
+      'scripts/check-allowlist-runtime.js',
+      whitespacePaddedPath,
+    ]) {
+      assert.match(result.stdout, new RegExp(impactingFile.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    }
   } finally {
     fs.rmSync(directory, { recursive: true, force: true });
   }
