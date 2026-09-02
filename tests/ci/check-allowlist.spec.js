@@ -12,6 +12,44 @@ const {
   matchesPattern,
 } = require('../../scripts/ci/check-allowlist');
 
+const RECOVERY_PHASE = 'WP-RECOVER-M7-20260812';
+const CHECK_ALLOWLIST_SCRIPT = path.resolve(__dirname, '../../scripts/ci/check-allowlist.js');
+const RECOVERY_ALLOWLIST_RELATIVE_PATH = path.join(
+  '.github',
+  'phase-allowlists',
+  'wp-recover-m7-20260812.json',
+);
+
+function recoveryAllowlist(overrides = {}) {
+  return {
+    phase: RECOVERY_PHASE,
+    name: 'recover-m7-20260812',
+    allowed: [
+      'scripts/ci/check-allowlist.js',
+      'tests/ci/check-allowlist.spec.js',
+    ],
+    denied: ['secrets/**'],
+    note: 'temporary test fixture',
+    ...overrides,
+  };
+}
+
+function checkRecovery(allowlist, files = allowlist.allowed) {
+  return checkAllowlist({ phase: RECOVERY_PHASE, files, allowlist });
+}
+
+function withRecoveryCliDirectory(allowlist, run) {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'work3-recovery-allowlist-'));
+  const allowlistFile = path.join(directory, RECOVERY_ALLOWLIST_RELATIVE_PATH);
+  try {
+    fs.mkdirSync(path.dirname(allowlistFile), { recursive: true });
+    fs.writeFileSync(allowlistFile, `${JSON.stringify(allowlist, null, 2)}\n`);
+    return run(directory);
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+}
+
 test('matches exact files, directory prefixes, and simple globs', () => {
   assert.equal(matchesPattern('components/review/Sidebar.js', 'components/review/Sidebar.js'), true);
   assert.equal(matchesPattern('db/migrations/001.sql', 'db/migrations/'), true);
@@ -25,6 +63,7 @@ test('check-allowlist accepts in-scope files', () => {
   });
   assert.deepEqual(result.denied, []);
   assert.deepEqual(result.outside, []);
+  assert.equal('missing' in result, false);
 });
 
 test('check-allowlist bootstrap-passes Phase -1', () => {
@@ -145,6 +184,149 @@ test('check-allowlist loads wp/<slug> allowlist files', () => {
     if (previous == null) fs.rmSync(file, { force: true });
     else fs.writeFileSync(file, previous);
   }
+});
+
+test('Work3 recovery accepts an injected allowlist for isolated unit checks', () => {
+  const allowlist = {
+    phase: RECOVERY_PHASE,
+    allowed: ['unit-fixture/only.js'],
+    denied: [],
+  };
+  const result = checkAllowlist({
+    phase: RECOVERY_PHASE,
+    files: allowlist.allowed,
+    allowlist,
+  });
+  assert.deepEqual(result.denied, []);
+  assert.deepEqual(result.outside, []);
+  assert.deepEqual(result.missing, []);
+});
+
+test('Work3 recovery requires every allowed path in the changed-file set', () => {
+  const allowlist = recoveryAllowlist();
+  const result = checkRecovery(allowlist, [allowlist.allowed[0]]);
+  assert.deepEqual(result.missing, [allowlist.allowed[1]]);
+});
+
+test('Work3 recovery rejects an allowlist for a different phase', () => {
+  const allowlist = recoveryAllowlist({ phase: 'WP-OTHER' });
+  assert.throws(
+    () => checkRecovery(allowlist),
+    /must declare phase WP-RECOVER-M7-20260812/,
+  );
+});
+
+test('Work3 recovery rejects duplicate allowed paths', () => {
+  const allowlist = recoveryAllowlist({
+    allowed: [
+      'scripts/ci/check-allowlist.js',
+      'scripts/ci/check-allowlist.js',
+    ],
+  });
+  assert.throws(() => checkRecovery(allowlist), /duplicate allowed path/);
+});
+
+test('Work3 recovery accepts only normalised concrete allowed file paths', () => {
+  for (const invalidPath of [
+    './scripts/ci/check-allowlist.js',
+    'scripts\\ci\\check-allowlist.js',
+    'scripts/ci/',
+    'scripts/ci/*.js',
+    'scripts/ci/../check-allowlist.js',
+    '../outside.js',
+    '.',
+    '/scripts/ci/check-allowlist.js',
+    ' scripts/ci/check-allowlist.js',
+  ]) {
+    const allowlist = recoveryAllowlist({ allowed: [invalidPath] });
+    assert.throws(
+      () => checkRecovery(allowlist),
+      /normalised concrete file path/,
+      invalidPath,
+    );
+  }
+});
+
+test('Work3 recovery accepts literal brackets in concrete Next.js route paths', () => {
+  const allowed = ['pages/api/review/[id]/cards.js'];
+  const result = checkAllowlist({
+    phase: RECOVERY_PHASE,
+    files: allowed,
+    allowlist: recoveryAllowlist({ allowed }),
+  });
+  assert.deepEqual(result.denied, []);
+  assert.deepEqual(result.outside, []);
+  assert.deepEqual(result.missing, []);
+});
+
+test('Work3 recovery rejects duplicate changed-file paths', () => {
+  const allowlist = recoveryAllowlist({ allowed: ['scripts/ci/check-allowlist.js'] });
+  assert.throws(
+    () => checkRecovery(allowlist, [allowlist.allowed[0], allowlist.allowed[0]]),
+    /duplicate changed-file path/,
+  );
+});
+
+test('Work3 recovery accepts an identical set and rejects extra changed paths', () => {
+  const allowlist = recoveryAllowlist();
+  const pass = checkRecovery(allowlist);
+  assert.deepEqual(pass.denied, []);
+  assert.deepEqual(pass.outside, []);
+  assert.deepEqual(pass.missing, []);
+
+  const extra = checkRecovery(allowlist, [...allowlist.allowed, 'unexpected/file.js']);
+  assert.deepEqual(extra.denied, []);
+  assert.deepEqual(extra.outside, ['unexpected/file.js']);
+  assert.deepEqual(extra.missing, []);
+});
+
+test('Work3 recovery keeps denied patterns effective', () => {
+  const allowlist = recoveryAllowlist({
+    allowed: [
+      'scripts/ci/check-allowlist.js',
+      'secrets/credential.txt',
+    ],
+  });
+  const result = checkRecovery(allowlist);
+  assert.deepEqual(result.denied, ['secrets/credential.txt']);
+  assert.deepEqual(result.outside, []);
+  assert.deepEqual(result.missing, []);
+});
+
+test('Work3 recovery CLI fails on omitted and extra changed paths', () => {
+  const allowlist = recoveryAllowlist();
+  withRecoveryCliDirectory(allowlist, (directory) => {
+    const pass = spawnSync(process.execPath, [CHECK_ALLOWLIST_SCRIPT], {
+      cwd: directory,
+      env: {
+        ...process.env,
+        CHANGED_FILES: allowlist.allowed.join('\n'),
+        CHANGED_FILES_FILE: '',
+        PHASE_ID: RECOVERY_PHASE,
+      },
+      encoding: 'utf8',
+    });
+    assert.equal(pass.status, 0, `${pass.stdout}\n${pass.stderr}`);
+    assert.match(pass.stdout, /PHASE-ALLOWLIST: PASS phase WP-RECOVER-M7-20260812/);
+
+    for (const [files, expectedError] of [
+      [[allowlist.allowed[0]], /Allowed files missing from changed-file set/],
+      [[...allowlist.allowed, 'unexpected/file.js'], /Files outside allowlist/],
+    ]) {
+      const result = spawnSync(process.execPath, [CHECK_ALLOWLIST_SCRIPT], {
+        cwd: directory,
+        env: {
+          ...process.env,
+          CHANGED_FILES: files.join('\n'),
+          CHANGED_FILES_FILE: '',
+          PHASE_ID: RECOVERY_PHASE,
+        },
+        encoding: 'utf8',
+      });
+      assert.equal(result.status, 1, `${result.stdout}\n${result.stderr}`);
+      assert.match(result.stderr, expectedError);
+    }
+  });
 });
 
 test('check-allowlist CLI names the failing file', () => {

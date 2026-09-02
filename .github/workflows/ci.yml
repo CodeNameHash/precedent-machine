@@ -181,6 +181,7 @@ jobs:
     needs: plan-heavy-ci
     if: ${{ always() && needs.plan-heavy-ci.outputs.run_heavy != 'false' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 35
     strategy:
       fail-fast: true
       matrix:
@@ -195,16 +196,11 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Unit tests (shard ${{ matrix.shard }}/8)
-        # TAP output for ~5k tests scrolls the failing lines out of the
-        # retained log window; re-print every failure at the END of the
-        # step so a red run always names its failing tests where the log
-        # survives. Exit status is the test run's own, not grep's.
         env:
           SHARD: ${{ matrix.shard }}
         run: |
           set -o pipefail
-          node --max-old-space-size=8192 --test --test-shard="${SHARD}/8" \
-            "tests/**/*.test.js" "tests/**/*.spec.js" \
+          node scripts/ci/run-unit-test-shard.js --shard="${SHARD}/8" \
             2>&1 | tee /tmp/test-output.log || status=$?
           echo "──── failing tests (if any) ────"
           grep -A 25 "^not ok" /tmp/test-output.log || true

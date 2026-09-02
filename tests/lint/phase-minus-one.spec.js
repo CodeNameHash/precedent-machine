@@ -12,6 +12,30 @@ const {
   SAFE_EXACT_PATHS,
   classifyChangedFiles,
 } = require('../../scripts/ci/baseline-manifest-impact');
+const {
+  REGISTRATION_TARGET_SHARD,
+  REGISTRATION_TEST,
+  SEALED_WORK3_BYTE_LENGTH,
+  SEALED_WORK3_RECEIPT,
+  SEALED_WORK3_SHA256,
+  SEALED_WORK3_TEST,
+  TOTAL_SHARDS,
+  WORK3_PARTS,
+  WORK3_PART_TITLE_NUMBERS,
+  WORK3_TITLES,
+  assertSuccessfulLane,
+  assignOrdinaryFiles,
+  assignedOrdinaryShard,
+  buildLaneArguments,
+  buildShardPlan,
+  buildWork3Pattern,
+  discoverTestFiles,
+  nativeShardForIndex,
+  parseArguments,
+  parseShard,
+  validateWork3Tap,
+  verifySealedWork3,
+} = require('../../scripts/ci/run-unit-test-shard');
 
 const INVARIANT_COMMANDS = [
   ['node', ['scripts/audit/ioc-scope-mismatch.js'], /^INVARIANT-2: PASS/m],
@@ -42,6 +66,7 @@ const SCRIPT_FILES = [
   'scripts/ci/check-allowlist.js',
   'scripts/ci/baseline-checkpoint.js',
   'scripts/ci/baseline-manifest-impact.js',
+  'scripts/ci/run-unit-test-shard.js',
   'scripts/ci/run-all-invariants.sh',
 ];
 
@@ -674,6 +699,8 @@ test('PH-1-K CI shards every test exactly once and aggregates fail closed', () =
   assert.equal(unit.strategy['fail-fast'], true);
   assert.deepEqual(Object.keys(unit.strategy.matrix), ['shard']);
   assert.deepEqual(unit.strategy.matrix.shard, [1, 2, 3, 4, 5, 6, 7, 8]);
+  assert.equal(unit['timeout-minutes'], 35);
+  assert.equal(build['timeout-minutes'], undefined);
   assert.equal(unit['continue-on-error'], undefined);
   assert.equal(build['continue-on-error'], undefined);
   assert.equal(unit.needs, 'plan-heavy-ci');
@@ -681,17 +708,15 @@ test('PH-1-K CI shards every test exactly once and aggregates fail closed', () =
 
   const unitStep = unit.steps.find((step) => /^Unit tests/.test(step.name));
   assert.equal(unitStep.env.SHARD, '${{ matrix.shard }}');
-  assert.equal((unitStep.run.match(/--test-shard=/g) || []).length, 1);
-  assert.match(unitStep.run, /--test-shard="\$\{SHARD\}\/8"/);
-  assert.match(unitStep.run, /node --max-old-space-size=8192 --test/);
-  assert.equal((unitStep.run.match(/"tests\/\*\*\/\*\.test\.js"/g) || []).length, 1);
-  assert.equal((unitStep.run.match(/"tests\/\*\*\/\*\.spec\.js"/g) || []).length, 1);
-  assert.ok(
-    unitStep.run.indexOf('--test-shard=')
-      < unitStep.run.indexOf('"tests/**/*.test.js"'),
-    'the shard option must precede the test globs',
+  assert.equal(
+    (unitStep.run.match(/scripts\/ci\/run-unit-test-shard\.js/g) || []).length,
+    1,
   );
-  assert.doesNotMatch(unitStep.run, /--test-name-pattern|--test-skip-pattern/);
+  assert.match(
+    unitStep.run,
+    /node scripts\/ci\/run-unit-test-shard\.js --shard="\$\{SHARD\}\/8"/,
+  );
+  assert.doesNotMatch(unitStep.run, /--test-shard|tests\/\*\*|--test-name-pattern|--test-skip-pattern/);
   const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
   assert.equal(
     packageJson.scripts.test,
@@ -756,6 +781,140 @@ test('PH-1-K CI shards every test exactly once and aggregates fail closed', () =
   assert.equal(
     workflow.concurrency['cancel-in-progress'],
     "${{ github.event_name == 'pull_request' }}",
+  );
+});
+
+test('PH-1-K1 Work3 CI parts bind the sealed test and all 36 exact titles', () => {
+  assert.equal(SEALED_WORK3_BYTE_LENGTH, 886974);
+  assert.equal(
+    SEALED_WORK3_SHA256,
+    'eef969ddc83e776c4f4a728ef019080859abb96e12a00b27942fd6effa3d3548',
+  );
+  assert.equal(
+    SEALED_WORK3_RECEIPT,
+    'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-work3-profile.json',
+  );
+  const seal = verifySealedWork3();
+  assert.equal(seal.byteLength, SEALED_WORK3_BYTE_LENGTH);
+  assert.equal(seal.sha256, SEALED_WORK3_SHA256);
+  assert.equal(seal.receiptBinding.path, SEALED_WORK3_TEST);
+  assert.equal(seal.receiptBinding.byte_length, SEALED_WORK3_BYTE_LENGTH);
+  assert.equal(seal.receiptBinding.sha256, SEALED_WORK3_SHA256);
+
+  const source = fs.readFileSync(SEALED_WORK3_TEST, 'utf8');
+  const sourceTitles = [...source.matchAll(/^test\(\s*(['"])(.*?)\1/gm)]
+    .map((match) => match[2]);
+  assert.equal(sourceTitles.length, 36);
+  assert.deepEqual(WORK3_TITLES, sourceTitles);
+  assert.deepEqual(WORK3_PART_TITLE_NUMBERS, [
+    [8, 35],
+    [12, 16, 23],
+    [1, 2, 5, 6, 17, 21, 36],
+    [4, 14, 20, 27],
+    [3, 11, 15, 24],
+    [22, 25, 26, 31, 33],
+    [7, 9, 18, 29, 30, 34],
+    [10, 13, 19, 28, 32],
+  ]);
+  const partitionTitles = WORK3_PARTS.flat();
+  assert.equal(partitionTitles.length, 36);
+  assert.equal(new Set(partitionTitles).size, 36);
+  assert.deepEqual([...partitionTitles].sort(), [...sourceTitles].sort());
+
+  for (let shard = 1; shard <= TOTAL_SHARDS; shard += 1) {
+    assert.equal(parseShard(`${shard}/${TOTAL_SHARDS}`), shard);
+    assert.equal(parseArguments([`--shard=${shard}/${TOTAL_SHARDS}`]), shard);
+    const ownPattern = new RegExp(buildWork3Pattern(WORK3_PARTS[shard - 1]));
+    for (let part = 1; part <= TOTAL_SHARDS; part += 1) {
+      for (const title of WORK3_PARTS[part - 1]) {
+        assert.equal(ownPattern.test(title), part === shard, `${shard}/${TOTAL_SHARDS}: ${title}`);
+      }
+    }
+  }
+  for (const invalid of ['0/8', '9/8', '1/7', '01/8', '1/8 ', '']) {
+    assert.throws(() => parseShard(invalid), /1\/8 through 8\/8/);
+  }
+  assert.throws(() => parseArguments([]), /usage/);
+  assert.throws(() => parseArguments(['--shard=1/8', '--extra']), /usage/);
+});
+
+test('PH-1-K2 CI assigns every ordinary test once with one sealed exception', () => {
+  const files = discoverTestFiles();
+  const assigned = [];
+  for (let shard = 1; shard <= TOTAL_SHARDS; shard += 1) {
+    const plan = buildShardPlan(shard);
+    assert.deepEqual(plan.ordinaryFiles, assignOrdinaryFiles(files, shard));
+    assert.deepEqual(plan.work3Titles, WORK3_PARTS[shard - 1]);
+    const args = buildLaneArguments(plan);
+    assert.deepEqual(args.ordinary.slice(3), plan.ordinaryFiles);
+    assert.equal(args.ordinary.includes(SEALED_WORK3_TEST), false);
+    assert.equal(args.ordinary.some((argument) => argument.startsWith('--test-shard')), false);
+    assert.equal(args.work3.at(-1), SEALED_WORK3_TEST);
+    assert.equal(args.work3.filter((argument) => argument === SEALED_WORK3_TEST).length, 1);
+    assert.equal(
+      args.work3.filter((argument) => argument.startsWith('--test-name-pattern=')).length,
+      1,
+    );
+    assigned.push(...plan.ordinaryFiles);
+  }
+
+  const expectedOrdinary = files.filter((file) => file !== SEALED_WORK3_TEST);
+  assert.deepEqual([...assigned].sort(), [...expectedOrdinary].sort());
+  assert.equal(assigned.length, new Set(assigned).size);
+  assert.equal(files.filter((file) => !assigned.includes(file)).length, 1);
+  assert.equal(files.find((file) => !assigned.includes(file)), SEALED_WORK3_TEST);
+
+  const registrationIndex = files.indexOf(REGISTRATION_TEST);
+  assert.notEqual(registrationIndex, -1);
+  assert.equal(assignedOrdinaryShard(REGISTRATION_TEST, registrationIndex), REGISTRATION_TARGET_SHARD);
+  assert.equal(REGISTRATION_TARGET_SHARD, 3);
+  for (const [index, file] of files.entries()) {
+    if (file === SEALED_WORK3_TEST || file === REGISTRATION_TEST) continue;
+    assert.equal(assignedOrdinaryShard(file, index), nativeShardForIndex(index), file);
+  }
+});
+
+test('PH-1-K3 CI child failures and Work3 zero matches fail closed', () => {
+  const titles = WORK3_PARTS[0];
+  const validTap = titles.map((title, index) => (
+    `# Subtest: ${title}\nok ${index + 1} - ${title}\n`
+  )).join('');
+  assert.equal(validateWork3Tap(validTap, titles), true);
+  assert.throws(
+    () => validateWork3Tap('TAP version 13\n1..0\n', titles),
+    /matched zero tests/,
+  );
+  assert.throws(
+    () => validateWork3Tap('# Subtest: tests/work3.test.js\nok 1 - tests/work3.test.js\n', titles),
+    /matched zero tests/,
+  );
+  assert.throws(
+    () => validateWork3Tap(validTap.replace(`ok 1 - ${titles[0]}`, `not ok 1 - ${titles[0]}`), titles),
+    /exact selected titles/,
+  );
+  assert.throws(
+    () => validateWork3Tap(`${validTap}# Subtest: ${titles[0]}\nok 3 - ${titles[0]}\n`, titles),
+    /exact selected titles/,
+  );
+  assert.throws(
+    () => validateWork3Tap(validTap.replace(`ok 1 - ${titles[0]}`, `ok 1 - ${titles[0]} # SKIP`), titles),
+    /exact selected titles/,
+  );
+
+  assert.doesNotThrow(() => assertSuccessfulLane({
+    code: 0, error: null, label: 'ordinary', signal: null,
+  }));
+  assert.throws(
+    () => assertSuccessfulLane({ code: 1, error: null, label: 'ordinary', signal: null }),
+    /exited 1/,
+  );
+  assert.throws(
+    () => assertSuccessfulLane({ code: null, error: null, label: 'Work3', signal: 'SIGTERM' }),
+    /signal SIGTERM/,
+  );
+  assert.throws(
+    () => assertSuccessfulLane({ code: null, error: new Error('spawn'), label: 'Work3', signal: null }),
+    /could not start/,
   );
 });
 
