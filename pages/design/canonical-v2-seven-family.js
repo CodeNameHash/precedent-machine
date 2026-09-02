@@ -47,21 +47,288 @@ function PartyBands({ bands }) {
   );
 }
 
-function V2Rows({ rows }) {
+function readableProfilePath(classificationPath) {
+  return classificationPath.map((part) => (
+    part.toLowerCase().replace(/_/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase())
+  )).join(' / ');
+}
+
+const DEAL_LABELS = {
+  concho: 'Concho',
+  metsera: 'Metsera',
+  redhat: 'Red Hat',
+  skechers: 'Skechers',
+  skywater: 'SkyWater',
+  topbuild: 'TopBuild',
+};
+
+function readableCode(value) {
+  return String(value || '')
+    .replace(/_/g, ' ')
+    .toLowerCase()
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+const CODE_ATTRIBUTE_KEYS = new Set([
+  'appraisal_status',
+  'carveback_source_form',
+  'day_kind',
+  'delivery_stage',
+  'financing_kind',
+  'prong_code',
+  'restriction_category',
+  'standard_code',
+  'threshold_basis',
+]);
+
+function readableAttributeValue(key, value) {
+  if (Array.isArray(value)) return value.join(', ');
+  if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+  if (CODE_ATTRIBUTE_KEYS.has(key)) return readableCode(value);
+  return String(value);
+}
+
+export function formatEvidenceValue(evidence) {
+  if (evidence.evidence_kind === 'PHASE2_SOURCE_ONLY') {
+    return 'Recorded source example, no structured claim';
+  }
+  if (evidence.claim_definition_key === 'PER_SHARE_CASH_CONSIDERATION') {
+    const amount = Number(evidence.canonical_value).toFixed(2);
+    return evidence.attributes?.currency === 'USD' ? `$${amount}` : `${amount} ${evidence.attributes?.currency || ''}`.trim();
+  }
+  if (evidence.claim_definition_key === 'PAYOFF_DELIVERY_LEAD_TIME_DAYS') {
+    const amount = Number(evidence.canonical_value);
+    const dayKind = readableCode(evidence.attributes?.day_kind || 'day').toLowerCase();
+    const stage = readableCode(evidence.attributes?.delivery_stage).toLowerCase();
+    return `${amount} ${dayKind} ${amount === 1 ? 'day' : 'days'}${stage ? `, ${stage}` : ''}`;
+  }
+  if (typeof evidence.canonical_value === 'boolean') {
+    const trueLabels = {
+      APPRAISAL_SETTLEMENT_CONSENT: 'Settlement consent required',
+      APPRAISAL_WITHDRAWAL_RECONVERSION: 'Withdrawal reconversion applies',
+      DIVIDEND_COORDINATION_COVENANT: 'Dividend coordination required',
+      IOC_RESTRICTION_PRESENT: 'Restriction present',
+      LIMITED_GUARANTY_DELIVERED: 'Limited guaranty delivered',
+      MAE_DISPROPORTIONALITY_CARVEBACK: 'Disproportionality carve-back present',
+      NO_FINANCING_CONDITION_ACKNOWLEDGMENT: 'No financing condition',
+    };
+    return evidence.canonical_value
+      ? (trueLabels[evidence.claim_definition_key] || 'Yes')
+      : 'No';
+  }
+  return readableCode(evidence.canonical_value);
+}
+
+const PRESENTED_ATTRIBUTE_KEYS = new Set([
+  'appraisal_status',
+  'applies_to_clause_labels',
+  'carveback_source_form',
+  'comparison_baseline_phrase',
+  'currency',
+  'defined_term_ref',
+  'definition_subject',
+  'delivery_stage',
+  'day_kind',
+  'financing_kind',
+  'guarantor_ref',
+  'incremental_impact_phrase',
+  'obligor_ref',
+  'prong_code',
+  'restriction_category',
+  'standard_code',
+  'statute_ref',
+  'threshold_basis',
+]);
+
+function EvidenceAttributes({ attributes }) {
+  const entries = Object.entries(attributes || {}).filter(([key, value]) => (
+    PRESENTED_ATTRIBUTE_KEYS.has(key) && value !== null && value !== ''
+  ));
+  if (!entries.length) return null;
+  return (
+    <dl className="mt-2 grid gap-x-3 gap-y-1 text-[9px] sm:grid-cols-2">
+      {entries.map(([key, value]) => (
+        <div key={key} className="flex gap-1">
+          <dt className="text-[#77736C]">{readableCode(key)}:</dt>
+          <dd className="font-semibold text-[#4F4C47]">{readableAttributeValue(key, value)}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+function EvidenceCard({ evidence }) {
+  const deal = DEAL_LABELS[evidence.deal] || readableCode(evidence.deal);
+  const sourceOnly = evidence.evidence_kind === 'PHASE2_SOURCE_ONLY';
+  return (
+    <article className={`border p-2.5 ${sourceOnly ? 'border-[#D8B56A] bg-[#FFF9EC]' : 'border-[#E2E0DB] bg-white'}`}>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="text-[9px] font-bold uppercase tracking-[0.08em] text-[#77736C]">
+          {deal} · §{evidence.section_reference}
+        </div>
+        <span className={`rounded px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.08em] ${sourceOnly ? 'bg-[#F4E7C8] text-[#7A5918]' : 'bg-[#EEF7F0] text-[#27633A]'}`}>
+          {sourceOnly ? 'Source-only' : 'Validated extraction'}
+        </span>
+      </div>
+      <div className="mt-1 text-[9px] font-semibold text-[#5E5A54]">
+        {sourceOnly ? 'Performance guaranty provision' : readableCode(evidence.claim_definition_key)}
+      </div>
+      <div className="mt-1 text-[12px] font-bold leading-4 text-[#1F1F1F]">
+        {formatEvidenceValue(evidence)}
+      </div>
+      <EvidenceAttributes attributes={evidence.attributes} />
+      {sourceOnly ? (
+        <details className="mt-2 text-[9px] text-[#6C5524]">
+          <summary className="cursor-pointer font-semibold">View recorded source identity</summary>
+          <div className="mt-1 break-all font-mono leading-4">
+            Source row {evidence.source_row_key}<br />
+            Text SHA-256 {evidence.source_span?.text_sha256}
+          </div>
+        </details>
+      ) : (
+        <details className="mt-2 text-[9px] text-[#5E5A54]">
+          <summary className="cursor-pointer font-semibold text-[#2F6DB5]">View recorded clause text</summary>
+          <blockquote className="mt-1 border-l-2 border-[#C8D8EA] pl-2 leading-4">
+            {evidence.raw_value}
+          </blockquote>
+        </details>
+      )}
+    </article>
+  );
+}
+
+export function evidenceForComparisonRow(familyKey, comparisonLine, profile) {
+  const evidence = profile.evidence || [];
+  if (familyKey !== 'MAE_DEFINITION') return evidence;
+  if (comparisonLine === 'Definition prongs' || comparisonLine === 'MAE Test') {
+    return evidence.filter((entry) => entry.claim_definition_key === 'MAE_DEFINITION_PRONG');
+  }
+  if (comparisonLine === 'Carve-outs') {
+    return evidence.filter((entry) => entry.claim_definition_key === 'MAE_CARVEOUT');
+  }
+  if (comparisonLine === 'Disproportionality relationships') {
+    return evidence.filter((entry) => (
+      entry.claim_definition_key === 'MAE_DISPROPORTIONALITY_CARVEBACK'
+    ));
+  }
+  if (comparisonLine === 'Exceptions to carve-outs') {
+    return evidence.filter((entry) => (
+      entry.claim_definition_key === 'MAE_CARVEOUT'
+        && /\bunderlying\b/i.test(entry.raw_value || '')
+    ));
+  }
+  return [];
+}
+
+function ProfileCoverage({ familyKey, row }) {
+  const noun = row.profile_count === 1 ? 'profile' : 'profiles';
+  const evidence = row.profiles.flatMap((profile) => (
+    evidenceForComparisonRow(familyKey, row.comparison_line, profile)
+  ));
+  const claims = evidence.filter((entry) => entry.evidence_kind === 'M4_CLAIM');
+  const sourceOnly = evidence.filter((entry) => entry.evidence_kind === 'PHASE2_SOURCE_ONLY');
+  const previewValues = [];
+  const seenValues = new Set();
+  for (const entry of claims) {
+    const label = `${DEAL_LABELS[entry.deal] || readableCode(entry.deal)}: ${formatEvidenceValue(entry)}`;
+    if (!seenValues.has(label)) {
+      seenValues.add(label);
+      previewValues.push(label);
+    }
+  }
+  return (
+    <div className="min-w-[310px]">
+      <div className="flex flex-wrap gap-1.5">
+        <span className="inline-block rounded bg-[#EEF7F0] px-2 py-1 text-[9px] font-bold uppercase tracking-[0.08em] text-[#27633A]">
+          {claims.length} validated {claims.length === 1 ? 'claim' : 'claims'}
+        </span>
+        {sourceOnly.length ? (
+          <span className="inline-block rounded bg-[#FFF1CF] px-2 py-1 text-[9px] font-bold uppercase tracking-[0.08em] text-[#7A5918]">
+            {sourceOnly.length} source-only
+          </span>
+        ) : null}
+        <span className="inline-block rounded bg-[#F0F0EE] px-2 py-1 text-[9px] font-bold uppercase tracking-[0.08em] text-[#5E5A54]">
+          Not product-served
+        </span>
+      </div>
+      {previewValues.length ? (
+        <div className="mt-2 flex flex-wrap gap-1">
+          {previewValues.slice(0, 4).map((value) => (
+            <span key={value} className="rounded border border-[#D9D7D2] bg-white px-1.5 py-1 text-[9px] font-semibold text-[#4F4C47]">
+              {value}
+            </span>
+          ))}
+          {previewValues.length > 4 ? (
+            <span className="px-1 py-1 text-[9px] font-semibold text-[#77736C]">
+              +{previewValues.length - 4} more values
+            </span>
+          ) : null}
+        </div>
+      ) : null}
+      <details className="mt-2 text-[9px] text-[#4F4C47]">
+        <summary className="cursor-pointer font-semibold text-[#2F6DB5] hover:text-[#1F1F1F]">
+          View values and recorded source evidence for {row.profile_count} {noun}
+        </summary>
+        <div className="mt-2 max-h-[34rem] space-y-3 overflow-y-auto border-l-2 border-[#C8D8EA] pl-2">
+          {row.profiles.map((profile) => {
+            const profileEvidence = evidenceForComparisonRow(
+              familyKey,
+              row.comparison_line,
+              profile,
+            );
+            return (
+              <section key={`${profile.profile_key}:${profile.party_band || 'not-party-banded'}`} className="bg-[#FAFAF8] p-2.5">
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div>
+                    <div className="font-semibold text-[#1F1F1F]">
+                      {readableProfilePath(profile.classification_path)}
+                    </div>
+                    <div className="mt-0.5 text-[#77736C]">
+                      {profile.party_band || 'Not party-banded'}
+                    </div>
+                  </div>
+                  <span className="rounded bg-[#E7F1E9] px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.08em] text-[#27633A]">
+                    Extraction complete
+                  </span>
+                </div>
+                <div className="mt-2 space-y-2">
+                  {profileEvidence.map((entry) => (
+                    <EvidenceCard
+                      key={entry.analysis_claim_id || entry.source_row_key}
+                      evidence={entry}
+                    />
+                  ))}
+                </div>
+                <details className="mt-2 text-[8px] text-[#77736C]">
+                  <summary className="cursor-pointer font-semibold">View sealed profile signature</summary>
+                  <div className="mt-1 break-all font-mono leading-4 text-[#5E5A54]">
+                    {profile.required_expression_signature}
+                  </div>
+                </details>
+              </section>
+            );
+          })}
+        </div>
+      </details>
+    </div>
+  );
+}
+
+function V2Rows({ familyKey, rows }) {
   return (
     <div className="overflow-hidden border border-[#AFC6E0] bg-white">
       <header className="border-b border-[#C8D8EA] bg-[#EEF5FC] px-4 py-3">
         <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#2F6DB5]">Canonical V2 Preview</div>
-        <h3 className="mt-1 text-xs font-bold text-[#1F1F1F]">Approved comparison shape</h3>
+        <h3 className="mt-1 text-xs font-bold text-[#1F1F1F]">Approved comparison groups and validated review evidence</h3>
       </header>
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[580px] border-collapse text-left">
+        <table className="w-full min-w-[760px] border-collapse text-left">
           <thead>
             <tr className="border-b border-[#E6E4DF] bg-[#FAFAF8] text-[9px] font-bold uppercase tracking-[0.1em] text-[#77736C]">
               <th className="px-3 py-2">Comparison line</th>
               <th className="px-3 py-2">Party band and profiles</th>
               <th className="px-3 py-2">Approved fields</th>
-              <th className="px-3 py-2">Value state</th>
+              <th className="px-3 py-2">Validated V2 review evidence</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#EEECE7]">
@@ -80,11 +347,7 @@ function V2Rows({ rows }) {
                     <div key={note} className="mt-1 text-[#77736C]">{note}</div>
                   ))}
                 </td>
-                <td className="px-3 py-3">
-                  <span className="inline-block rounded bg-[#FFF4D6] px-2 py-1 text-[9px] font-bold uppercase tracking-[0.08em] text-[#7A5A10]">
-                    Not yet extracted in V2
-                  </span>
-                </td>
+                <td className="px-3 py-3"><ProfileCoverage familyKey={familyKey} row={row} /></td>
               </tr>
             ))}
           </tbody>
@@ -119,11 +382,15 @@ function FamilySection({ family, ordinal, v1ReviewDeal }) {
         </div>
       </div>
       <p className="mt-3 max-w-4xl text-[11px] leading-5 text-[#4F4C47]">
-        V1 remains unchanged. V2 shows the approved row structure from the sealed successor package and grouping disposition. This page does not claim that a V2 deal value has been extracted.
+        V1 remains unchanged. V2 shows the validated values and recorded clause text already bound to each sealed Work3 profile. These values are review evidence. They are not yet served to the production product.
       </p>
+      <div className="mt-4 border-l-2 border-[#D8B56A] bg-[#FFF9EC] px-4 py-3 text-[10px] leading-4 text-[#5F4A1E]">
+        <span className="font-bold">Different source sets.</span>
+        {' '}V1 uses selected recorded examples from {v1ReviewDeal.sourceDeals.join(' and ')} to demonstrate the existing renderer. V2 uses the sealed Work3 cohort. This is not a same-deal or value-by-value comparison.
+      </div>
       <div className="mt-5 grid gap-4 xl:grid-cols-[minmax(220px,0.7fr)_minmax(620px,1.7fr)]">
         <SevenFamilyV1Surface familyKey={family.family_key} reviewDeal={v1ReviewDeal} />
-        <V2Rows rows={family.v2_rows} />
+        <V2Rows familyKey={family.family_key} rows={family.v2_rows} />
       </div>
       <UnmeasuredConcepts concepts={family.unmeasured_concepts} />
       <SourceIdentity source={family.package} />
@@ -147,14 +414,15 @@ export default function SevenFamilyPreview({ preview, v1ReviewDeal }) {
                 <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#2F6DB5]">Canonical V2 Preview</div>
                 <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Seven-family grouping application</h1>
                 <p className="mt-3 max-w-3xl text-[11px] leading-5 text-[#4F4C47]">
-                  Read-only taxonomy preview. V1 surfaces appear beside the ruled V2 comparison shape. The V2 shape is derived at request time from the exact sealed successor packages and their bound grouping dispositions.
+                  Read-only evidence preview. V1 surfaces appear beside the ruled V2 comparison groups, validated values and recorded clause text. Every V2 row is derived at request time from the exact sealed successor packages, their bound grouping dispositions and their completed review evidence.
                 </p>
               </div>
-              <div className="grid grid-cols-3 gap-px overflow-hidden border border-[#D9D7D2] bg-[#D9D7D2] text-center">
+              <div className="grid grid-cols-2 gap-px overflow-hidden border border-[#D9D7D2] bg-[#D9D7D2] text-center sm:grid-cols-4">
                 {[
                   ['Families', preview.family_count],
                   ['Profiles', preview.profile_count],
-                  ['V2 rows', preview.comparison_row_count],
+                  ['Validated claims', preview.claim_count],
+                  ['Source-only', preview.source_only_count],
                 ].map(([label, value]) => (
                   <div key={label} className="min-w-[82px] bg-[#FAFAF8] px-3 py-3">
                     <div className="font-mono text-lg font-bold">{value}</div>

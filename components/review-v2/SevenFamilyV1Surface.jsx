@@ -93,7 +93,7 @@ function SurfaceFrame({ title, note = null, evidence = [], children }) {
   return (
     <div className="border border-[#D9D7D2] bg-white" data-v1-surface="live-renderer">
       <header className="border-b border-[#E6E4DF] bg-[#F7F5F0] px-4 py-3">
-        <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#77736C]">Existing V1 surface</div>
+        <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#77736C]">V1 renderer sample</div>
         <h3 className="mt-1 text-xs font-bold text-[#1F1F1F]">{title}</h3>
         <p className="mt-1 text-[9px] leading-4 text-[#77736C]">Recorded review examples, rendered by the live V1 component.</p>
       </header>
@@ -108,7 +108,7 @@ function NoSurface({ title, children }) {
   return (
     <div className="border border-[#D9D7D2] bg-white" data-v1-surface="none">
       <header className="border-b border-[#E6E4DF] bg-[#F7F5F0] px-4 py-3">
-        <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#77736C]">Existing V1 surface</div>
+        <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#77736C]">V1 renderer sample</div>
         <h3 className="mt-1 text-xs font-bold text-[#1F1F1F]">{title}</h3>
       </header>
       <p className="px-4 py-3 text-[10px] leading-4 text-[#77736C]">{children}</p>

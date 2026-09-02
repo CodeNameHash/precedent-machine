@@ -107,6 +107,8 @@ test('bundled getServerSideProps can read and validate the sealed preview estate
     const result = await page.getServerSideProps();
     assert.equal(result.props.preview.family_count, 7);
     assert.equal(result.props.preview.profile_count, 140);
+    assert.equal(result.props.preview.claim_count, 240);
+    assert.equal(result.props.preview.source_only_count, 4);
   } finally {
     fs.rmSync(directory, { recursive: true, force: true });
   }
@@ -118,6 +120,8 @@ test('seven-family grouping preview reads the exact sealed successor estate', ()
   assert.equal(preview.family_count, 7);
   assert.equal(preview.profile_count, 140);
   assert.equal(preview.comparison_row_count, 29);
+  assert.equal(preview.claim_count, 240);
+  assert.equal(preview.source_only_count, 4);
   assert.deepEqual(
     preview.families.map((family) => [family.family_key, family.profile_count, family.v2_rows.length]),
     [
@@ -158,7 +162,7 @@ test('independent-review PASS is bound to its exact recorded bytes', () => {
   assert.match(reviewBytes.toString('utf8'), /^\*\*Result:\*\* PASS\./m);
 });
 
-test('approved comparison lines, links and party bands render without deal-value claims', () => {
+test('approved comparison lines, links and party bands carry validated V2 review evidence', () => {
   const preview = loadSevenFamilyGroupingPreview({ env: PREVIEW_ENV });
   const byFamily = new Map(preview.families.map((family) => [family.family_key, family]));
   assert.deepEqual(
@@ -207,6 +211,72 @@ test('approved comparison lines, links and party bands render without deal-value
   ]);
 });
 
+test('every comparison row exposes its exact sealed V2 profile coverage', () => {
+  const preview = loadSevenFamilyGroupingPreview({ env: PREVIEW_ENV });
+  const uniqueProfiles = new Map();
+  for (const family of preview.families) {
+    for (const row of family.v2_rows) {
+      assert.equal(row.profiles.length, row.profile_count);
+      for (const profile of row.profiles) {
+        assert.match(profile.profile_key, /^[0-9a-f]{64}$/);
+        assert.ok(Array.isArray(profile.classification_path));
+        assert.ok(profile.classification_path.length >= 1);
+        assert.ok(profile.required_expression_signature.length > 0);
+        assert.ok(row.bands.some((band) => band.party_band === profile.party_band));
+        assert.equal(profile.extraction_state, 'COMPLETE');
+        assert.equal(profile.output_disposition, 'REVIEW_ONLY');
+        assert.equal(profile.source_quality, 'SUFFICIENT');
+        assert.ok(profile.evidence.length > 0);
+        uniqueProfiles.set(profile.profile_key, profile);
+      }
+    }
+  }
+  assert.equal(uniqueProfiles.size, 140);
+  const evidence = [...uniqueProfiles.values()].flatMap((profile) => profile.evidence);
+  assert.equal(evidence.filter((entry) => entry.evidence_kind === 'M4_CLAIM').length, 240);
+  assert.equal(
+    evidence.filter((entry) => entry.evidence_kind === 'PHASE2_SOURCE_ONLY').length,
+    4,
+  );
+  assert.ok(evidence.filter((entry) => entry.evidence_kind === 'M4_CLAIM').every((entry) => (
+    entry.claim_state === 'PRESENT'
+      && entry.publication_state === 'VALIDATED'
+      && entry.serving_state === 'NOT_SERVED'
+      && entry.serving_reason === 'SCHEMA_APPROVAL_PENDING'
+  )));
+  assert.deepEqual(
+    evidence
+      .filter((entry) => entry.claim_definition_key === 'PER_SHARE_CASH_CONSIDERATION')
+      .map((entry) => entry.canonical_value)
+      .sort(),
+    ['190.00', '57.00', '63.00'],
+  );
+  assert.deepEqual(
+    evidence
+      .filter((entry) => entry.claim_definition_key === 'PAYOFF_DELIVERY_LEAD_TIME_DAYS')
+      .map((entry) => [entry.canonical_value, entry.attributes.day_kind, entry.attributes.delivery_stage]),
+    [['1', 'BUSINESS', 'FINAL'], ['3', 'BUSINESS', 'DRAFT']],
+  );
+  assert.ok(evidence.some((entry) => (
+    entry.claim_definition_key === 'FINANCING_OBTAIN_EFFORTS_STANDARD'
+      && entry.canonical_value === 'REASONABLE_BEST_EFFORTS'
+  )));
+  assert.ok(evidence.some((entry) => (
+    entry.claim_definition_key === 'NO_FINANCING_CONDITION_ACKNOWLEDGMENT'
+      && entry.canonical_value === true
+  )));
+  assert.ok(evidence.some((entry) => (
+    entry.claim_definition_key === 'LIMITED_GUARANTY_DELIVERED'
+      && entry.attributes.guarantor_ref.includes('3G Fund VI, L.P.')
+  )));
+  const interim = preview.families.find((family) => family.family_key === 'INTERIM_OPERATING');
+  const indebtedness = interim.v2_rows.find((row) => row.comparison_line === 'Indebtedness and loans');
+  assert.ok(indebtedness.profiles.some((profile) => (
+    profile.required_expression_signature
+      === 'INTERIM_OPERATING::RESTRICTIVE_COVENANT::TOPBUILD_4_1_4_1_vii__IOC_RESTRICTION_PRESENT_INDEBTEDNESS_08875c21'
+  )));
+});
+
 test('a changed seal receipt cannot retain its pinned identity', () => {
   const spec = FAMILY_SOURCES.find((entry) => entry.family_key === 'MAE_DEFINITION');
   const seal = JSON.parse(fs.readFileSync(spec.seal.file, 'utf8'));
@@ -224,10 +294,90 @@ test('preview route stays server-derived and carries no serving or persistence p
   assert.match(page, /loadSevenFamilyGroupingPreview/);
   assert.match(page, /SevenFamilyV1Surface/);
   assert.match(page, /buildSevenFamilyV1PreviewDeal/);
-  assert.match(page, /Not yet extracted in V2/);
+  assert.match(page, /Validated V2 review evidence/);
+  assert.match(page, /Validated claims/);
+  assert.match(page, /Not product-served/);
+  assert.match(page, /View recorded clause text/);
+  assert.doesNotMatch(page, /Not yet extracted in V2/);
+  assert.match(page, /Different source sets/);
+  assert.match(page, /not a same-deal or value-by-value comparison/);
   assert.match(page, /SevenFamilyPreview\.noLayout = true/);
   assert.doesNotMatch(page, /fetch\(|useEffect|Supabase|database_url/i);
   assert.equal(FAMILY_SOURCES.length, 7);
+});
+
+test('preview formats validated V2 values for legal review', () => {
+  const { evidenceForComparisonRow, formatEvidenceValue } = loadEsmModule(resolveRepoPath(
+    'pages/design/canonical-v2-seven-family.js',
+  ));
+  assert.equal(formatEvidenceValue({
+    evidence_kind: 'M4_CLAIM',
+    claim_definition_key: 'PER_SHARE_CASH_CONSIDERATION',
+    canonical_value: '190.00',
+    attributes: { currency: 'USD' },
+  }), '$190.00');
+  assert.equal(formatEvidenceValue({
+    evidence_kind: 'M4_CLAIM',
+    claim_definition_key: 'PAYOFF_DELIVERY_LEAD_TIME_DAYS',
+    canonical_value: '1',
+    attributes: { day_kind: 'BUSINESS', delivery_stage: 'FINAL' },
+  }), '1 business day, final');
+  assert.equal(formatEvidenceValue({
+    evidence_kind: 'M4_CLAIM',
+    claim_definition_key: 'PAYOFF_DELIVERY_LEAD_TIME_DAYS',
+    canonical_value: '3',
+    attributes: { day_kind: 'BUSINESS', delivery_stage: 'DRAFT' },
+  }), '3 business days, draft');
+  assert.equal(formatEvidenceValue({
+    evidence_kind: 'M4_CLAIM',
+    claim_definition_key: 'FINANCING_OBTAIN_EFFORTS_STANDARD',
+    canonical_value: 'REASONABLE_BEST_EFFORTS',
+    attributes: {},
+  }), 'Reasonable Best Efforts');
+  assert.equal(formatEvidenceValue({
+    evidence_kind: 'M4_CLAIM',
+    claim_definition_key: 'NO_FINANCING_CONDITION_ACKNOWLEDGMENT',
+    canonical_value: true,
+    attributes: {},
+  }), 'No financing condition');
+  assert.equal(formatEvidenceValue({ evidence_kind: 'PHASE2_SOURCE_ONLY' }), (
+    'Recorded source example, no structured claim'
+  ));
+
+  const preview = loadSevenFamilyGroupingPreview({ env: PREVIEW_ENV });
+  const mae = preview.families.find((family) => family.family_key === 'MAE_DEFINITION');
+  const expected = new Map([
+    ['Definition prongs', { count: 2, keys: ['MAE_DEFINITION_PRONG'] }],
+    ['MAE Test', { count: 2, keys: ['MAE_DEFINITION_PRONG'] }],
+    ['Carve-outs', { count: 11, keys: ['MAE_CARVEOUT'] }],
+    ['Disproportionality relationships', {
+      count: 8,
+      keys: ['MAE_DISPROPORTIONALITY_CARVEBACK'],
+    }],
+    ['Exceptions to carve-outs', { count: 2, keys: ['MAE_CARVEOUT'] }],
+  ]);
+  for (const row of mae.v2_rows) {
+    const displayed = row.profiles.flatMap((profile) => evidenceForComparisonRow(
+      mae.family_key,
+      row.comparison_line,
+      profile,
+    ));
+    assert.equal(displayed.length, expected.get(row.comparison_line).count, row.comparison_line);
+    assert.deepEqual(
+      [...new Set(displayed.map((entry) => entry.claim_definition_key))],
+      expected.get(row.comparison_line).keys,
+      row.comparison_line,
+    );
+  }
+  const exceptions = mae.v2_rows.find((row) => row.comparison_line === 'Exceptions to carve-outs');
+  assert.deepEqual(
+    exceptions.profiles.flatMap((profile) => evidenceForComparisonRow(
+      mae.family_key,
+      exceptions.comparison_line,
+      profile,
+    )).map((entry) => entry.canonical_value).sort(),
+    ['FAILURE_TO_MEET_PROJECTIONS', 'STOCK_PRICE_CHANGES'],
+  );
 });
 
 test('existing V1 values are rendered through the live review components', () => {
@@ -236,6 +386,7 @@ test('existing V1 values are rendered through the live review components', () =>
   ));
   const { buildSevenFamilyV1PreviewDeal } = require('../lib/canonical-v2/seven-family-v1-preview-deal');
   const reviewDeal = buildSevenFamilyV1PreviewDeal();
+  assert.deepEqual(reviewDeal.sourceDeals, ['Pfizer / Metsera', 'Landos / AbbVie']);
   const disproportionateImpactQuote = 'except in the case of clause (A), (B), (C), (D), (E) or (I), to the extent that the Company and the Company Subsidiaries, taken as a whole, are disproportionately affected thereby as compared with other participants in the industries in which the Company and the Company Subsidiaries operate (in which case the incremental disproportionate impact or impacts may be taken into account in determining whether there has been a Company Material Adverse Effect).';
   assert.deepEqual(
     reviewDeal.cards.map((card) => ({
