@@ -949,6 +949,9 @@ function assertReadOnlyGitArtifactWriter(source, label) {
 }
 
 const LOCAL_SUBPROCESS_BOUNDARIES = Object.freeze({
+  'scripts/ci/run-unit-test-shard.js': Object.freeze({
+    runnerSpawn: true,
+  }),
   'scripts/stage-2y-structure-m7-v2-repair-work1-recover.mjs': Object.freeze({
     finaliser: 'scripts/stage-2y-structure-m7-v2-repair-work1-finalise.mjs',
     validator: 'scripts/stage-2y-structure-m7-v2-repair-work1-validate.mjs',
@@ -982,6 +985,80 @@ function assertShellDisabled(call, label) {
   }
 }
 
+function assertExactNamedRequire(program, moduleName, importedName, localName, label) {
+  const requireCalls = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'Identifier' && node.callee.name === 'require'
+      && node.arguments.length === 1 && node.arguments[0].type === 'Literal'
+      && node.arguments[0].value === moduleName,
+  );
+  assert.equal(requireCalls.length, 1, `${label} must require ${moduleName} exactly once`);
+  const declarators = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'VariableDeclarator' && node.init === requireCalls[0],
+  );
+  assert.equal(declarators.length, 1, `${label} ${moduleName} require must be bound exactly once`);
+  const declarations = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'VariableDeclaration' && node.declarations.includes(declarators[0]),
+  );
+  assert.equal(declarations.length, 1, `${label} ${moduleName} binding must have one declaration`);
+  assert.equal(declarations[0].kind, 'const', `${label} ${moduleName} binding must be const`);
+  assert.equal(declarations[0].declarations.length, 1, `${label} ${moduleName} binding must be isolated`);
+  const binding = declarators[0].id;
+  assert.equal(binding.type, 'ObjectPattern', `${label} ${moduleName} binding must be named`);
+  assert.equal(binding.properties.length, 1, `${label} ${moduleName} binding must be exact`);
+  const [property] = binding.properties;
+  assert.equal(property.type, 'Property', `${label} ${moduleName} binding must be a property`);
+  assert.equal(property.computed, false, `${label} ${moduleName} binding must not be computed`);
+  assert.equal(property.key.name, importedName, `${label} imported name drift`);
+  assert.equal(property.value.name, localName, `${label} imported name must not be aliased`);
+}
+
+function assertRunnerSpawnBoundary(program, counts, label) {
+  assertExactNamedRequire(program, 'node:child_process', 'spawn', 'spawn', label);
+  const launches = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'Identifier' && node.callee.name === 'spawn',
+  );
+  assert.equal(launches.length, 1, `${label} must launch exactly one child`);
+  assert.equal(counts.external_process, launches.length + 1, `${label} subprocess authority must be explicit`);
+  const [launch] = launches;
+  assert.equal(launch.arguments.length, 3, `${label} spawn call must have three arguments`);
+  assert.equal(
+    staticArgumentDescriptor(launch.arguments[0], `${label} executable`),
+    '$process.execPath',
+    `${label} must launch only process.execPath`,
+  );
+  assert.equal(launch.arguments[1].type, 'Identifier', `${label} argv must be a named binding`);
+  assert.equal(launch.arguments[1].name, 'args', `${label} argv binding must be args`);
+  assertShellDisabled(launch, label);
+
+  const options = launch.arguments[2];
+  const optionProperties = new Map();
+  for (const property of options.properties) {
+    assert.equal(property.type, 'Property', `${label} subprocess options must not spread`);
+    assert.equal(property.computed, false, `${label} subprocess option names must be literal`);
+    const name = property.key.name || property.key.value;
+    assert.ok(['cwd', 'env', 'stdio', 'shell'].includes(name), `${label} subprocess option ${name} is not allowed`);
+    assert.equal(optionProperties.has(name), false, `${label} subprocess option ${name} must be unique`);
+    optionProperties.set(name, property.value);
+  }
+  assert.deepEqual(
+    [...optionProperties.keys()].filter((name) => name !== 'shell').sort(),
+    ['cwd', 'env', 'stdio'],
+    `${label} subprocess options must contain exact cwd, env, and stdio properties`,
+  );
+  assert.equal(staticArgumentDescriptor(optionProperties.get('cwd'), `${label} cwd`), '$cwd');
+  assert.equal(staticArgumentDescriptor(optionProperties.get('env'), `${label} env`), '$process.env');
+  assert.deepEqual(
+    staticArgvDescriptor(optionProperties.get('stdio'), `${label} stdio`),
+    ['ignore', '$descriptor', '$descriptor'],
+  );
+}
+
 function assertLocalSubprocessArtifactWriterBoundary(source, label) {
   const contract = LOCAL_SUBPROCESS_BOUNDARIES[label];
   assert.ok(contract, `${label} must have an exact subprocess contract`);
@@ -989,6 +1066,10 @@ function assertLocalSubprocessArtifactWriterBoundary(source, label) {
   const counts = capabilityCounts(source, label);
   assert.ok(counts.filesystem_write > 0, `${label} must write local artefacts`);
   const program = parseCapabilitySource(source, label);
+  if (contract.runnerSpawn) {
+    assertRunnerSpawnBoundary(program, counts, label);
+    return;
+  }
   assertExactNamedImport(program, 'node:child_process', 'spawnSync', 'spawnSync', label);
   const launches = collectCapabilityNodes(
     program,
@@ -2185,6 +2266,7 @@ test('read-only Git artefact writers have their exact capability boundary', () =
 
 test('local subprocess artefact writers launch only governed Node children or Git status', () => {
   assert.deepEqual(LOCAL_SUBPROCESS_ARTIFACT_WRITERS, [
+    'scripts/ci/run-unit-test-shard.js',
     'scripts/stage-2y-structure-m7-v2-repair-work1-recover.mjs',
     'scripts/stage-2y-structure-m7-v2-repair-work2-recover.mjs',
     'scripts/stage-2y-structure-m7-v2-termination-family-package-seal-receipt.mjs',
@@ -2241,7 +2323,7 @@ test('new authority class boundaries reject dynamic argv and outbound-network by
     return source.replace(before, after);
   };
 
-  const terminationPath = LOCAL_SUBPROCESS_ARTIFACT_WRITERS[2];
+  const terminationPath = 'scripts/stage-2y-structure-m7-v2-termination-family-package-seal-receipt.mjs';
   const terminationSource = fs.readFileSync(path.join(ROOT, terminationPath), 'utf8');
   const dynamicNodeArgv = replaceExact(
     terminationSource,
@@ -2258,7 +2340,7 @@ test('new authority class boundaries reject dynamic argv and outbound-network by
     () => assertLocalSubprocessArtifactWriterBoundary(dynamicNodeArgv, terminationPath),
     /argv must be a literal array/,
   );
-  const recoveryPath = LOCAL_SUBPROCESS_ARTIFACT_WRITERS[0];
+  const recoveryPath = 'scripts/stage-2y-structure-m7-v2-repair-work1-recover.mjs';
   const recoverySource = fs.readFileSync(path.join(ROOT, recoveryPath), 'utf8');
   const reassignedNodePath = replaceExact(
     recoverySource,
