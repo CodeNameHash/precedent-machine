@@ -1,7 +1,7 @@
 # No-shop comparison brief
 
 Date: 2026-09-01
-Decision scope: comparison-line grouping and one family-ownership decision only. This brief does not change any sealed evidence or approval record.
+Decision scope: comparison-line grouping and two family-ownership decisions only. This brief does not change any sealed evidence or approval record.
 
 A sealed row is one approved Work3 claim record. A field is a fact shown inside a comparison line. Distinct deal count means that a deal is counted once for a proposed line, even if the source has more than one row for that line.
 
