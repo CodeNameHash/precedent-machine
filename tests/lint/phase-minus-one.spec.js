@@ -196,11 +196,15 @@ test('PH-1-I codex push planning suppresses only a byte-identical mergeable PR',
   assert.match(query.run, /commits\/\$\{GITHUB_SHA\}\/pulls\?per_page=100/);
   assert.equal(query.env.EXPECTED_HEAD_REF, '${{ github.ref_name }}');
   assert.equal(query.env.EXPECTED_HEAD_REPOSITORY, '${{ github.repository }}');
+  assert.equal(query.env.MERGEABLE_RETRY_ATTEMPTS, '10');
+  assert.equal(query.env.MERGEABLE_RETRY_INTERVAL_SECONDS, '3');
   assert.match(query.run, /\.state == "open" and \.head\.sha == \$sha and \.head\.repo\.full_name == \$repo and \.head\.ref == \$ref/);
   assert.match(query.run, /type == "array" and all/);
   assert.match(query.run, /\.head\.repo\.full_name \| type/);
   assert.match(query.run, /pulls\/\$\{pr_number\}/);
   assert.match(query.run, /has\("mergeable"\) and \.mergeable == true/);
+  assert.match(query.run, /\.mergeable == null/);
+  assert.match(query.run, /sleep "\$\{MERGEABLE_RETRY_INTERVAL_SECONDS\}"/);
   assert.match(query.run, /has\("merge_commit_sha"\)/);
   assert.match(query.run, /git\/commits\/\$\{GITHUB_SHA\}/);
   assert.match(query.run, /git\/commits\/\$\{merge_commit_sha\}/);
@@ -256,7 +260,17 @@ elif [[ "\${endpoint}" == *"/commits/"* ]]; then
   printf '%s\n' "\${MOCK_ASSOCIATED}"
 elif [[ "\${endpoint}" == *"/pulls/"* ]]; then
   [ "\${MOCK_DETAIL}" != "__FAIL__" ] || exit 1
-  printf '%s\n' "\${MOCK_DETAIL}"
+  detail_count=0
+  if [ -f "\${MOCK_DETAIL_COUNT_FILE}" ]; then
+    read -r detail_count < "\${MOCK_DETAIL_COUNT_FILE}"
+  fi
+  detail_count=$((detail_count + 1))
+  printf '%s\n' "\${detail_count}" > "\${MOCK_DETAIL_COUNT_FILE}"
+  if [ "\${detail_count}" -le "\${MOCK_PENDING_RESPONSES}" ]; then
+    printf '%s\n' "\${MOCK_PENDING_DETAIL}"
+  else
+    printf '%s\n' "\${MOCK_DETAIL}"
+  fi
 else
   exit 2
 fi
@@ -272,6 +286,7 @@ fi
     };
     const executeQuery = (name, detail, trees = {}, overrides = {}) => {
       const output = path.join(directory, `query-${name}.out`);
+      const detailCountFile = path.join(directory, `query-${name}.detail-count`);
       const requestedHeadSha = overrides.sha || sha;
       const headCommit = {
         sha: requestedHeadSha,
@@ -290,17 +305,22 @@ fi
           GITHUB_OUTPUT: output,
           GITHUB_REPOSITORY: repo,
           GITHUB_SHA: requestedHeadSha,
+          MERGEABLE_RETRY_ATTEMPTS: overrides.retryAttempts || query.env.MERGEABLE_RETRY_ATTEMPTS,
+          MERGEABLE_RETRY_INTERVAL_SECONDS: overrides.retryInterval ?? '0',
           MOCK_ASSOCIATED: JSON.stringify(overrides.associated || [exactPr]),
           MOCK_DETAIL: JSON.stringify(detail),
+          MOCK_DETAIL_COUNT_FILE: detailCountFile,
           MOCK_HEAD_COMMIT: JSON.stringify(headCommit),
           MOCK_MERGE_COMMIT: JSON.stringify(mergeCommit),
+          MOCK_PENDING_DETAIL: JSON.stringify({ ...detail, mergeable: null }),
+          MOCK_PENDING_RESPONSES: String(overrides.pendingResponses || 0),
           PATH: `${mockBin}:${process.env.PATH}`,
         },
       });
-      return { output, result };
+      return { detailCountFile, output, result };
     };
-    const runQuery = (name, detail, trees) => {
-      const { output, result } = executeQuery(name, detail, trees);
+    const runQuery = (name, detail, trees, overrides) => {
+      const { output, result } = executeQuery(name, detail, trees, overrides);
       assert.equal(result.status, 0, `${name}: ${result.stdout}\n${result.stderr}`);
       return Object.fromEntries(
         fs.readFileSync(output, 'utf8').trim().split('\n').map((line) => line.split('=')),
@@ -308,8 +328,37 @@ fi
     };
     const detail = { ...exactPr, merge_commit_sha: 'b'.repeat(40), mergeable: true };
     assert.equal(runQuery('ready', detail), 'true');
+    assert.equal(runQuery('pending-then-ready', detail, undefined, {
+      pendingResponses: 2,
+    }), 'true');
+    assert.equal(fs.readFileSync(
+      path.join(directory, 'query-pending-then-ready.detail-count'),
+      'utf8',
+    ).trim(), '3');
     assert.equal(runQuery('conflicted', { ...detail, mergeable: false }), 'false');
-    assert.equal(runQuery('pending', { ...detail, mergeable: null }), 'false');
+    assert.equal(runQuery('persistent-pending', { ...detail, mergeable: null }), 'false');
+    assert.equal(fs.readFileSync(
+      path.join(directory, 'query-persistent-pending.detail-count'),
+      'utf8',
+    ).trim(), '10');
+    assert.equal(runQuery('pending-wrong-head', {
+      ...detail,
+      head: { ...detail.head, sha: 'd'.repeat(40) },
+      mergeable: null,
+    }), 'false');
+    assert.equal(fs.readFileSync(
+      path.join(directory, 'query-pending-wrong-head.detail-count'),
+      'utf8',
+    ).trim(), '1');
+    assert.equal(runQuery('pending-malformed-head', {
+      ...detail,
+      head: { ...detail.head, repo: null },
+      mergeable: null,
+    }), 'false');
+    assert.equal(fs.readFileSync(
+      path.join(directory, 'query-pending-malformed-head.detail-count'),
+      'utf8',
+    ).trim(), '1');
     const missingMergeable = { ...detail };
     delete missingMergeable.mergeable;
     assert.equal(runQuery('missing-mergeable', missingMergeable), 'false');

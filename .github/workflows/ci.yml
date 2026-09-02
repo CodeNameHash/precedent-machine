@@ -22,10 +22,22 @@ jobs:
           EXPECTED_HEAD_REF: ${{ github.ref_name }}
           EXPECTED_HEAD_REPOSITORY: ${{ github.repository }}
           GH_TOKEN: ${{ github.token }}
+          MERGEABLE_RETRY_ATTEMPTS: '10'
+          MERGEABLE_RETRY_INTERVAL_SECONDS: '3'
         run: |
           set -euo pipefail
           if [[ ! "${GITHUB_SHA}" =~ ^[0-9a-f]{40}$ ]]; then
             echo "GITHUB_SHA is not a lowercase GitHub SHA-1."
+            exit 1
+          fi
+          if [[ ! "${MERGEABLE_RETRY_ATTEMPTS}" =~ ^[1-9][0-9]*$ ]] || \
+             [ "${MERGEABLE_RETRY_ATTEMPTS}" -gt 10 ]; then
+            echo "MERGEABLE_RETRY_ATTEMPTS must be an integer from 1 through 10."
+            exit 1
+          fi
+          if [[ ! "${MERGEABLE_RETRY_INTERVAL_SECONDS}" =~ ^[0-9]+$ ]] || \
+             [ "${MERGEABLE_RETRY_INTERVAL_SECONDS}" -gt 3 ]; then
+            echo "MERGEABLE_RETRY_INTERVAL_SECONDS must be an integer from 0 through 3."
             exit 1
           fi
           response="$(gh api \
@@ -43,17 +55,63 @@ jobs:
           head_tree_sha=""
           while IFS= read -r pr_number; do
             [ -n "${pr_number}" ] || continue
-            candidate="$(gh api \
-              -H 'Accept: application/vnd.github+json' \
-              "/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}")"
-            candidate_ready="$(printf '%s\n' "${candidate}" | jq -r \
-              --arg ref "${EXPECTED_HEAD_REF}" \
-              --arg repo "${EXPECTED_HEAD_REPOSITORY}" \
-              --arg sha "${GITHUB_SHA}" \
-              --argjson number "${pr_number}" \
-              'type == "object" and .number == $number and .state == "open" and .head.sha == $sha and .head.repo.full_name == $repo and .head.ref == $ref and has("mergeable") and .mergeable == true and has("merge_commit_sha") and (.merge_commit_sha | type) == "string" and (.merge_commit_sha | test("^[0-9a-f]{40}$"))')"
-            case "${candidate_ready}" in
-              true)
+            candidate_state=not_ready
+            mergeable_attempt=1
+            while [ "${mergeable_attempt}" -le "${MERGEABLE_RETRY_ATTEMPTS}" ]; do
+              candidate="$(gh api \
+                -H 'Accept: application/vnd.github+json' \
+                "/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}")"
+              candidate_state="$(printf '%s\n' "${candidate}" | jq -r \
+                --arg ref "${EXPECTED_HEAD_REF}" \
+                --arg repo "${EXPECTED_HEAD_REPOSITORY}" \
+                --arg sha "${GITHUB_SHA}" \
+                --argjson number "${pr_number}" \
+                '
+                  def exact_candidate:
+                    type == "object"
+                    and (.number | type) == "number"
+                    and .number > 0
+                    and (.number | floor) == .number
+                    and .number == $number
+                    and (.state | type) == "string"
+                    and .state == "open"
+                    and (.head | type) == "object"
+                    and (.head.sha | type) == "string"
+                    and .head.sha == $sha
+                    and (.head.ref | type) == "string"
+                    and .head.ref == $ref
+                    and (.head.repo | type) == "object"
+                    and (.head.repo.full_name | type) == "string"
+                    and .head.repo.full_name == $repo;
+                  if exact_candidate
+                    and has("mergeable") and .mergeable == null
+                    and has("merge_commit_sha")
+                    and (.merge_commit_sha == null or ((.merge_commit_sha | type) == "string" and (.merge_commit_sha | test("^[0-9a-f]{40}$"))))
+                  then "pending"
+                  elif exact_candidate
+                    and has("mergeable") and .mergeable == true
+                    and has("merge_commit_sha")
+                    and (.merge_commit_sha | type) == "string"
+                    and (.merge_commit_sha | test("^[0-9a-f]{40}$"))
+                  then "ready"
+                  else "not_ready"
+                  end
+                ')"
+              case "${candidate_state}" in
+                ready|not_ready) break ;;
+                pending)
+                  if [ "${mergeable_attempt}" -ge "${MERGEABLE_RETRY_ATTEMPTS}" ]; then
+                    candidate_state=not_ready
+                    break
+                  fi
+                  sleep "${MERGEABLE_RETRY_INTERVAL_SECONDS}"
+                  mergeable_attempt=$((mergeable_attempt + 1))
+                  ;;
+                *) exit 1 ;;
+              esac
+            done
+            case "${candidate_state}" in
+              ready)
                 if [ -z "${head_tree_sha}" ]; then
                   head_commit="$(gh api \
                     -H 'Accept: application/vnd.github+json' \
@@ -86,7 +144,7 @@ jobs:
                   break
                 fi
                 ;;
-              false) ;;
+              not_ready) ;;
               *) exit 1 ;;
             esac
           done <<< "${exact_pr_numbers}"
