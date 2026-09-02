@@ -878,17 +878,49 @@ function assertReadOnlyGitCommands(source, label) {
 function assertLiteralExecFileGitCommands(source, label) {
   const program = parseCapabilitySource(source, label);
   const imports = [];
+  const requireCalls = [];
+  const requireBindings = [];
+  const isChildProcessSpecifier = (value) => ['child_process', 'node:child_process'].includes(value);
   walkCapabilityAst(program, (node) => {
     if (node.type === 'ImportDeclaration'
-        && ['child_process', 'node:child_process'].includes(node.source?.value)) imports.push(node);
+        && isChildProcessSpecifier(node.source?.value)) imports.push(node);
+    if (node.type === 'CallExpression'
+        && node.callee.type === 'Identifier' && node.callee.name === 'require'
+        && node.arguments.length === 1 && node.arguments[0].type === 'Literal'
+        && isChildProcessSpecifier(node.arguments[0].value)) requireCalls.push(node);
+    if (node.type === 'VariableDeclaration') {
+      for (const declaration of node.declarations) {
+        if (declaration.init?.type === 'CallExpression'
+            && declaration.init.callee.type === 'Identifier' && declaration.init.callee.name === 'require'
+            && declaration.init.arguments.length === 1 && declaration.init.arguments[0].type === 'Literal'
+            && isChildProcessSpecifier(declaration.init.arguments[0].value)) {
+          requireBindings.push({ declaration, statement: node });
+        }
+      }
+    }
     return undefined;
   });
-  assert.equal(imports.length, 1, `${label} must import child-process authority exactly once`);
-  assert.equal(imports[0].source.value, 'node:child_process', `${label} must use the node:child_process specifier`);
-  assert.equal(imports[0].specifiers.length, 1, `${label} may import only execFileSync from node:child_process`);
-  assert.equal(imports[0].specifiers[0].type, 'ImportSpecifier', `${label} may import only execFileSync from node:child_process`);
-  assert.equal(imports[0].specifiers[0].imported.name, 'execFileSync', `${label} may import only execFileSync from node:child_process`);
-  assert.equal(imports[0].specifiers[0].local.name, 'execFileSync', `${label} may not alias execFileSync`);
+  assert.equal(imports.length + requireCalls.length, 1, `${label} must import child-process authority exactly once`);
+  if (imports.length === 1) {
+    assert.equal(imports[0].source.value, 'node:child_process', `${label} must use the node:child_process specifier`);
+    assert.equal(imports[0].specifiers.length, 1, `${label} may import only execFileSync from node:child_process`);
+    assert.equal(imports[0].specifiers[0].type, 'ImportSpecifier', `${label} may import only execFileSync from node:child_process`);
+    assert.equal(imports[0].specifiers[0].imported.name, 'execFileSync', `${label} may import only execFileSync from node:child_process`);
+    assert.equal(imports[0].specifiers[0].local.name, 'execFileSync', `${label} may not alias execFileSync`);
+  } else {
+    assert.equal(requireCalls[0].arguments[0].value, 'node:child_process', `${label} must use the node:child_process specifier`);
+    assert.equal(requireBindings.length, 1, `${label} must bind its child-process authority exactly once`);
+    const { declaration, statement } = requireBindings[0];
+    assert.equal(statement.kind, 'const', `${label} child-process authority binding must be const`);
+    assert.equal(statement.declarations.length, 1, `${label} child-process authority binding must be isolated`);
+    assert.equal(declaration.id.type, 'ObjectPattern', `${label} may import only execFileSync from node:child_process`);
+    assert.equal(declaration.id.properties.length, 1, `${label} may import only execFileSync from node:child_process`);
+    const [property] = declaration.id.properties;
+    assert.equal(property.type, 'Property', `${label} may import only execFileSync from node:child_process`);
+    assert.equal(property.computed, false, `${label} may import only execFileSync from node:child_process`);
+    assert.equal(property.key.name, 'execFileSync', `${label} may import only execFileSync from node:child_process`);
+    assert.equal(property.value.name, 'execFileSync', `${label} may not alias execFileSync`);
+  }
   const processLaunches = source.match(/\b(?:execFileSync|execSync|spawnSync|spawn)\s*\(/g) || [];
   const gitLaunches = source.match(/\bexecFileSync\(\s*['"]git['"]/g) || [];
   assert.equal(processLaunches.length, gitLaunches.length, `${label} may launch only the Git executable`);
@@ -2128,6 +2160,7 @@ test('read-only Git inspectors launch only whitelisted inspection commands', () 
 
 test('read-only Git artefact writers have their exact capability boundary', () => {
   assert.deepEqual(READ_ONLY_GIT_ARTIFACT_WRITERS, [
+    'scripts/ci/baseline-manifest-impact.js',
     'scripts/audit/canonical-v2-termination-render-diagnosis.mjs',
     'scripts/stage-2y-h-representation-topic-compare.mjs',
     'scripts/stage-2y-registry-substrate-replay.mjs',
@@ -2623,6 +2656,8 @@ test('hostile inventory and capability changes fail closed', () => {
   );
   assert.throws(() => assertReadOnlyGitArtifactWriter("import { execFileSync, execSync } from 'node:child_process'; execSync('git status'); writeFileSync('evidence.json', '{}')", 'hostile alternate launcher'), /may import only execFileSync|may launch only the Git executable/);
   assert.throws(() => assertReadOnlyGitArtifactWriter("import { execFileSync } from 'node:child_process'; const launch = execFileSync; execFileSync('git', ['status']); launch('sh', ['-c', 'true']); writeFileSync('evidence.json', '{}')", 'hostile aliased launcher'), /child-process authority only for its literal Git launches/);
+  assert.throws(() => assertReadOnlyGitArtifactWriter("const { execFileSync, execSync } = require('node:child_process'); execFileSync('git', ['status']); require('node:fs').writeFileSync('evidence.json', '{}')", 'hostile CommonJS alternate launcher'), /may import only execFileSync/);
+  assert.throws(() => assertReadOnlyGitArtifactWriter("const { execFileSync: launch } = require('node:child_process'); launch('git', ['status']); require('node:fs').writeFileSync('evidence.json', '{}')", 'hostile CommonJS aliased launcher'), /may not alias execFileSync/);
   assert.throws(() => assertNoCapabilityGrowth('', 'fetch(url)', 'hostile legacy'), /network/);
   assert.throws(() => assertNoModuleDependencies("const fs = require('node:fs');", 'hostile analysis'), /no module dependencies/);
   assert.throws(() => assertNoModuleDependencies("import fs from 'node:fs';", 'hostile analysis'), /no module dependencies/);
