@@ -202,6 +202,9 @@ jobs:
   invariants:
     runs-on: ubuntu-latest
     needs: test-and-build
+    concurrency:
+      group: ${{ github.workflow }}-invariants-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
         with:
@@ -219,27 +222,90 @@ jobs:
         run: node scripts/lint/closing-condition-scope.js
       - name: Invariant 4 — forbidden-patterns
         run: bash scripts/lint/forbidden-patterns.sh
-      - name: Detect baseline manifest input changes
-        id: baseline-impact
+      - name: Compute baseline input digest
+        id: baseline-digest
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          digest="$(node scripts/ci/baseline-checkpoint.js digest HEAD)"
+          if [[ ! "${digest}" =~ ^[0-9a-f]{64}$ ]]; then
+            echo "Baseline input digest is malformed."
+            exit 1
+          fi
+          echo "digest=${digest}" >> "${GITHUB_OUTPUT}"
+      - name: Restore exact baseline checkpoint
+        id: restore-baseline-checkpoint
+        if: steps.baseline-digest.outcome == 'success'
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/baseline-manifest-checkpoint
+          key: baseline-manifest-checkpoint-v1-${{ steps.baseline-digest.outputs.digest }}
+          fail-on-cache-miss: false
+      - name: Plan baseline gate
+        id: baseline-checkpoint
+        continue-on-error: true
         env:
-          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
-          HEAD_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
-        run: node scripts/ci/baseline-manifest-impact.js
+          CACHE_HIT: ${{ steps.restore-baseline-checkpoint.outputs.cache-hit }}
+          DIGEST_OUTCOME: ${{ steps.baseline-digest.outcome }}
+          EXPECTED_DIGEST: ${{ steps.baseline-digest.outputs.digest }}
+          MARKER_FILE: ${{ runner.temp }}/baseline-manifest-checkpoint/marker.txt
+          RESTORE_OUTCOME: ${{ steps.restore-baseline-checkpoint.outcome }}
+          # Passed in run 33644008260, job 100320715255, at head commit 94d30da4.
+          TRUSTED_BOOTSTRAP_DIGEST: fc92a405933b1c6afa711bf0fa699c602a1e10c230608ebd2e0a424451173766
+        run: |
+          set -u
+          run_gate=true
+          seed_marker=false
+          reason=digest-unavailable
+          if [ "${DIGEST_OUTCOME}" = "success" ]; then
+            reason=cache-miss
+            if [ "${RESTORE_OUTCOME}" != "success" ]; then
+              reason=cache-restore-error
+            elif [ "${CACHE_HIT}" = "true" ]; then
+              reason=marker-missing-or-malformed
+              if node scripts/ci/baseline-checkpoint.js verify \
+                "${EXPECTED_DIGEST}" "${MARKER_FILE}"; then
+                run_gate=false
+                reason=exact-checkpoint
+              fi
+            elif [ -z "${CACHE_HIT}" ] || [ "${CACHE_HIT}" = "false" ]; then
+              if [ "${EXPECTED_DIGEST}" = "${TRUSTED_BOOTSTRAP_DIGEST}" ]; then
+                run_gate=false
+                seed_marker=true
+                reason=trusted-bootstrap
+              fi
+            else
+              reason=non-exact-cache-result
+            fi
+          fi
+          echo "run_gate=${run_gate}" >> "${GITHUB_OUTPUT}"
+          echo "seed_marker=${seed_marker}" >> "${GITHUB_OUTPUT}"
+          echo "reason=${reason}" >> "${GITHUB_OUTPUT}"
+          echo "BASELINE-CHECKPOINT: run_gate=${run_gate} ${reason}"
       - name: Baseline manifest is current
-        if: steps.baseline-impact.outputs.run == 'true'
-        # Re-derives what every committed extraction run WOULD publish if
-        # imported, and diffs it against evidence/canonical-v2/baseline-
-        # manifest.json. Catches the failure no other gate can see: a change
-        # to the runner, resolver, validators, writer or bridge that silently
-        # drops rows. An import that publishes less still reports success, so
-        # only a recorded yardstick notices.
-        #
-        # Roughly 30-45 minutes on the current runner. It sits in this job
-        # rather than in npm test
-        # because it is the same kind of check as the invariants around it --
-        # and because a gate that only OPERATING-RULES enforces is a gate that
-        # gets skipped.
+        id: baseline-gate
+        if: steps.baseline-checkpoint.outputs.run_gate != 'false'
         run: npm run gate:baseline
+      - name: Write baseline checkpoint marker
+        id: write-baseline-checkpoint
+        if: >-
+          steps.baseline-digest.outcome == 'success' &&
+          (steps.baseline-gate.outcome == 'success' || steps.baseline-checkpoint.outputs.seed_marker == 'true')
+        env:
+          DIGEST: ${{ steps.baseline-digest.outputs.digest }}
+          MARKER_FILE: ${{ runner.temp }}/baseline-manifest-checkpoint/marker.txt
+        run: node scripts/ci/baseline-checkpoint.js write "${DIGEST}" "${MARKER_FILE}"
+      - name: Save baseline checkpoint
+        id: save-baseline-checkpoint
+        if: >-
+          steps.write-baseline-checkpoint.outcome == 'success' &&
+          (steps.baseline-gate.outcome == 'success' || steps.baseline-checkpoint.outputs.seed_marker == 'true')
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/baseline-manifest-checkpoint
+          key: baseline-manifest-checkpoint-v1-${{ steps.baseline-digest.outputs.digest }}
       - name: Invariant 5 — market-registry-completeness
         run: node scripts/lint/market-registry-completeness.js
       - name: Invariant 6 — component-reuse

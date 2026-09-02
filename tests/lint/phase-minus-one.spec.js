@@ -40,6 +40,7 @@ const SCRIPT_FILES = [
   'scripts/registry/provenance-log.js',
   'scripts/ci/detect-phase.js',
   'scripts/ci/check-allowlist.js',
+  'scripts/ci/baseline-checkpoint.js',
   'scripts/ci/baseline-manifest-impact.js',
   'scripts/ci/run-all-invariants.sh',
 ];
@@ -150,13 +151,146 @@ test('PH-1-F baseline gate skips only the reviewed preview and non-input paths',
   }
 });
 
-test('PH-1-G CI runs the baseline gate only when the detector reports impact', () => {
+test('PH-1-G CI reuses only an exact validated baseline checkpoint', () => {
   const ci = fs.readFileSync('.github/workflows/ci.yml', 'utf8');
-  assert.match(ci, /id: baseline-impact/);
-  assert.match(ci, /run: node scripts\/ci\/baseline-manifest-impact\.js/);
-  assert.match(ci, /if: steps\.baseline-impact\.outputs\.run == 'true'/);
-});
+  const workflow = YAML.parse(ci);
+  assert.equal(workflow.jobs['baseline-checkpoint-plan'], undefined);
+  assert.equal(workflow.jobs['baseline-manifest'], undefined);
 
+  const invariants = workflow.jobs.invariants;
+  assert.equal(invariants.needs, 'test-and-build');
+  assert.equal(
+    invariants.concurrency.group,
+    '${{ github.workflow }}-invariants-${{ github.event.pull_request.number || github.ref }}',
+  );
+  assert.equal(invariants.concurrency['cancel-in-progress'], false);
+
+  const digestIndex = invariants.steps.findIndex((step) => step.id === 'baseline-digest');
+  const restoreIndex = invariants.steps.findIndex((step) => step.id === 'restore-baseline-checkpoint');
+  const planIndex = invariants.steps.findIndex((step) => step.id === 'baseline-checkpoint');
+  const gateIndex = invariants.steps.findIndex((step) => step.id === 'baseline-gate');
+  const markerIndex = invariants.steps.findIndex((step) => step.id === 'write-baseline-checkpoint');
+  const saveIndex = invariants.steps.findIndex((step) => step.id === 'save-baseline-checkpoint');
+  const invariant4Index = invariants.steps.findIndex((step) => step.name?.startsWith('Invariant 4'));
+  const invariant5Index = invariants.steps.findIndex((step) => step.name?.startsWith('Invariant 5'));
+  assert.ok(
+    invariant4Index < digestIndex
+      && digestIndex < restoreIndex
+      && restoreIndex < planIndex
+      && planIndex < gateIndex
+      && gateIndex < markerIndex
+      && markerIndex < saveIndex
+      && saveIndex < invariant5Index,
+  );
+
+  const digest = invariants.steps[digestIndex];
+  assert.equal(digest['continue-on-error'], true);
+  assert.match(digest.run, /baseline-checkpoint\.js digest HEAD/);
+  assert.match(digest.run, /\^\[0-9a-f\]\{64\}\$/);
+
+  const restore = invariants.steps[restoreIndex];
+  assert.equal(restore.uses, 'actions/cache/restore@v4');
+  assert.equal(restore['continue-on-error'], true);
+  assert.equal(restore.if, "steps.baseline-digest.outcome == 'success'");
+  assert.equal(
+    restore.with.key,
+    'baseline-manifest-checkpoint-v1-${{ steps.baseline-digest.outputs.digest }}',
+  );
+  assert.equal(restore.with['restore-keys'], undefined);
+
+  const plan = invariants.steps[planIndex];
+  assert.equal(plan['continue-on-error'], true);
+  assert.equal(
+    plan.env.TRUSTED_BOOTSTRAP_DIGEST,
+    'fc92a405933b1c6afa711bf0fa699c602a1e10c230608ebd2e0a424451173766',
+  );
+  assert.match(ci, /run 33644008260, job 100320715255, at head commit 94d30da4/);
+  assert.doesNotMatch(plan.run, /gh api|git fetch/);
+  assert.match(plan.run, /baseline-checkpoint\.js verify/);
+  assert.match(plan.run, /CACHE_HIT.*false/);
+
+  const gate = invariants.steps[gateIndex];
+  assert.equal(gate.if, "steps.baseline-checkpoint.outputs.run_gate != 'false'");
+  assert.equal(gate.run, 'npm run gate:baseline');
+  const marker = invariants.steps[markerIndex];
+  assert.equal(marker['continue-on-error'], undefined);
+  assert.match(marker.if, /steps\.baseline-gate\.outcome == 'success'/);
+  assert.match(marker.if, /steps\.baseline-checkpoint\.outputs\.seed_marker == 'true'/);
+  assert.match(marker.run, /baseline-checkpoint\.js write/);
+  const save = invariants.steps[saveIndex];
+  assert.equal(save.uses, 'actions/cache/save@v4');
+  assert.equal(save['continue-on-error'], true);
+  assert.equal(save.with.key, restore.with.key);
+  assert.equal(save.with.path, restore.with.path);
+
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'baseline-checkpoint-plan-'));
+  const markerFile = path.join(directory, 'marker.txt');
+  const trustedDigest = plan.env.TRUSTED_BOOTSTRAP_DIGEST;
+  const checkpoint = require('../../scripts/ci/baseline-checkpoint');
+  const runPlan = (name, env = {}) => {
+    const output = path.join(directory, `${name}.out`);
+    const result = spawnSync('bash', ['-c', plan.run], {
+      cwd: process.cwd(),
+      encoding: 'utf8',
+      env: {
+        ...process.env,
+        CACHE_HIT: '',
+        DIGEST_OUTCOME: 'success',
+        EXPECTED_DIGEST: trustedDigest,
+        GITHUB_OUTPUT: output,
+        MARKER_FILE: markerFile,
+        RESTORE_OUTCOME: 'success',
+        TRUSTED_BOOTSTRAP_DIGEST: trustedDigest,
+        ...env,
+      },
+    });
+    assert.equal(result.status, 0, `${name}: ${result.stdout}\n${result.stderr}`);
+    return Object.fromEntries(
+      fs.readFileSync(output, 'utf8').trim().split('\n').map((line) => line.split('=')),
+    );
+  };
+  try {
+    checkpoint.writeMarker(markerFile, trustedDigest);
+    assert.deepEqual(runPlan('exact', { CACHE_HIT: 'true' }), {
+      run_gate: 'false',
+      seed_marker: 'false',
+      reason: 'exact-checkpoint',
+    });
+    for (const cacheHit of ['', 'false']) {
+      assert.deepEqual(runPlan(`bootstrap-${cacheHit || 'empty'}`, { CACHE_HIT: cacheHit }), {
+        run_gate: 'false',
+        seed_marker: 'true',
+        reason: 'trusted-bootstrap',
+      });
+    }
+    for (const [name, env, reason] of [
+      ['changed-input', { EXPECTED_DIGEST: 'b'.repeat(64) }, 'cache-miss'],
+      ['restore-error', { RESTORE_OUTCOME: 'failure' }, 'cache-restore-error'],
+      ['digest-error', { DIGEST_OUTCOME: 'failure' }, 'digest-unavailable'],
+      ['malformed-cache-output', { CACHE_HIT: 'unknown' }, 'non-exact-cache-result'],
+    ]) {
+      assert.deepEqual(runPlan(name, env), {
+        run_gate: 'true',
+        seed_marker: 'false',
+        reason,
+      });
+    }
+    fs.writeFileSync(markerFile, `FAIL\n${trustedDigest}\n`);
+    assert.deepEqual(runPlan('malformed-marker', { CACHE_HIT: 'true' }), {
+      run_gate: 'true',
+      seed_marker: 'false',
+      reason: 'marker-missing-or-malformed',
+    });
+    fs.rmSync(markerFile);
+    assert.deepEqual(runPlan('missing-marker', { CACHE_HIT: 'true' }), {
+      run_gate: 'true',
+      seed_marker: 'false',
+      reason: 'marker-missing-or-malformed',
+    });
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+});
 test('PH-1-H moves and copies across safe boundaries still run the gate', () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'baseline-impact-rename-'));
   const runGit = (args) => execFileSync('git', args, {
@@ -508,6 +642,7 @@ fi
   assert.equal(heavy.needs, 'plan-heavy-ci');
   assert.equal(heavy.if, "${{ always() && needs.plan-heavy-ci.outputs.run_heavy != 'false' }}");
   assert.equal(workflow.jobs.invariants.needs, 'test-and-build');
+  assert.equal(workflow.jobs.invariants.concurrency['cancel-in-progress'], false);
   for (const job of ['schema-parity', 'demo-set', 'demo-dryrun', 'phase-allowlist']) {
     assert.equal(workflow.jobs[job].if, "github.event_name == 'pull_request'", job);
   }
