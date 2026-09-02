@@ -639,15 +639,117 @@ fi
   }
 
   const heavy = workflow.jobs['test-and-build'];
-  assert.equal(heavy.needs, 'plan-heavy-ci');
+  assert.deepEqual(heavy.needs, ['plan-heavy-ci', 'unit-tests', 'production-build']);
   assert.equal(heavy.if, "${{ always() && needs.plan-heavy-ci.outputs.run_heavy != 'false' }}");
+  for (const job of ['unit-tests', 'production-build']) {
+    assert.equal(workflow.jobs[job].needs, 'plan-heavy-ci', job);
+    assert.equal(
+      workflow.jobs[job].if,
+      "${{ always() && needs.plan-heavy-ci.outputs.run_heavy != 'false' }}",
+      job,
+    );
+  }
   assert.equal(workflow.jobs.invariants.needs, 'test-and-build');
   assert.equal(workflow.jobs.invariants.concurrency['cancel-in-progress'], false);
   for (const job of ['schema-parity', 'demo-set', 'demo-dryrun', 'phase-allowlist']) {
     assert.equal(workflow.jobs[job].if, "github.event_name == 'pull_request'", job);
   }
   assert.equal(workflow.jobs['demo-dryrun'].concurrency['cancel-in-progress'], false);
-  assert.equal(workflow.concurrency, undefined);
+  assert.equal(
+    workflow.concurrency.group,
+    '${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}',
+  );
+  assert.equal(
+    workflow.concurrency['cancel-in-progress'],
+    "${{ github.event_name == 'pull_request' }}",
+  );
+});
+
+test('PH-1-K CI shards every test exactly once and aggregates fail closed', () => {
+  const workflow = YAML.parse(fs.readFileSync('.github/workflows/ci.yml', 'utf8'));
+  const unit = workflow.jobs['unit-tests'];
+  const build = workflow.jobs['production-build'];
+  const aggregate = workflow.jobs['test-and-build'];
+
+  assert.equal(unit.strategy['fail-fast'], false);
+  assert.deepEqual(Object.keys(unit.strategy.matrix), ['shard']);
+  assert.deepEqual(unit.strategy.matrix.shard, [1, 2, 3, 4, 5, 6, 7, 8]);
+  assert.equal(unit['continue-on-error'], undefined);
+  assert.equal(build['continue-on-error'], undefined);
+  assert.equal(unit.needs, 'plan-heavy-ci');
+  assert.equal(build.needs, 'plan-heavy-ci');
+
+  const unitStep = unit.steps.find((step) => /^Unit tests/.test(step.name));
+  assert.equal(unitStep.env.SHARD, '${{ matrix.shard }}');
+  assert.equal((unitStep.run.match(/--test-shard=/g) || []).length, 1);
+  assert.match(unitStep.run, /--test-shard="\$\{SHARD\}\/8"/);
+  assert.match(unitStep.run, /npm test --/);
+  assert.doesNotMatch(unitStep.run, /--test-name-pattern|--test-skip-pattern/);
+  const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  assert.equal(
+    packageJson.scripts.test,
+    'node --max-old-space-size=8192 --test "tests/**/*.test.js" "tests/**/*.spec.js"',
+  );
+
+  assert.deepEqual(
+    aggregate.needs,
+    ['plan-heavy-ci', 'unit-tests', 'production-build'],
+  );
+  assert.equal(
+    aggregate.if,
+    "${{ always() && needs.plan-heavy-ci.outputs.run_heavy != 'false' }}",
+  );
+  assert.equal(aggregate.name, 'test-and-build');
+  const aggregateStep = aggregate.steps.find((step) => (
+    step.name === 'Require every unit-test shard and the production build'
+  ));
+  assert.equal(aggregateStep.env.PLAN_RESULT, '${{ needs.plan-heavy-ci.result }}');
+  assert.equal(aggregateStep.env.UNIT_TESTS_RESULT, '${{ needs.unit-tests.result }}');
+  assert.equal(
+    aggregateStep.env.PRODUCTION_BUILD_RESULT,
+    '${{ needs.production-build.result }}',
+  );
+
+  const runAggregate = (planResult, unitResult, buildResult) => spawnSync(
+    'bash',
+    ['-c', aggregateStep.run],
+    {
+      encoding: 'utf8',
+      env: {
+        ...process.env,
+        PLAN_RESULT: planResult,
+        UNIT_TESTS_RESULT: unitResult,
+        PRODUCTION_BUILD_RESULT: buildResult,
+      },
+    },
+  );
+  assert.equal(runAggregate('success', 'success', 'success').status, 0);
+  for (const result of ['failure', 'skipped', 'cancelled', '']) {
+    assert.notEqual(
+      runAggregate(result, 'success', 'success').status,
+      0,
+      `plan ${result || 'missing'}`,
+    );
+    assert.notEqual(
+      runAggregate('success', result, 'success').status,
+      0,
+      `unit ${result || 'missing'}`,
+    );
+    assert.notEqual(
+      runAggregate('success', 'success', result).status,
+      0,
+      `build ${result || 'missing'}`,
+    );
+  }
+
+  assert.equal(
+    workflow.concurrency.group,
+    '${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}',
+  );
+  assert.equal(
+    workflow.concurrency['cancel-in-progress'],
+    "${{ github.event_name == 'pull_request' }}",
+  );
 });
 
 test('PH-1-J phase allowlist passes changed files through a bounded file', () => {
