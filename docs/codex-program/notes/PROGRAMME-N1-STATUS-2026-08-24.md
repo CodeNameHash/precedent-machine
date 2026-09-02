@@ -641,6 +641,11 @@ Tax Matters was wired into `on_disk_family_package_overrides` at its 2026-08-24 
 
 One profile per governed M4 claim across six comparator deals. Six sealed M5 subtype buckets; all six calibration examples currently tagged `DOCUMENT_FILING` pending legal grouping review. Sealed CC (#7) and Termination (#1) Q02 boundaries for tender-offer minimum conditions and vote-failure cross-refs. Selected over `NO_SHOP` (365 claims — too large) and `SPECIFIC_PERFORMANCE_REMEDIES` (Termination Fee #10 Ben hold on sole-remedy owner family).
 
+Post-seal ownership note (Ben, 2026-09-01): Proxy / Meeting owns the V1 Vote
+standard and Force-the-vote stored facts. Neither fact is measured by the
+sealed 31-profile package, so both remain extraction-open. No-shop supplies
+only the Force-the-vote recommendation-change cross-reference.
+
 ---
 
 ## In progress / next

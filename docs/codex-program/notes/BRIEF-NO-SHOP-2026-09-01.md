@@ -219,7 +219,8 @@ Modiv, section 5.6, bytes `[270813,270990)` in the Modiv M4 evidence:
 
 ## Fiduciary and board-change coverage check
 
-The V1 coverage ledger records **Fiduciary and board-change standards** as `OPEN, VERIFY AT BRIEF`. The source check gives this result:
+The V1 coverage ledger now records the specific open gaps confirmed by this
+source check. The result is:
 
 | V1 concept | Verified current coverage | Result |
 |---|---|---|
@@ -234,14 +235,14 @@ is a confirmed V2 extraction gap rather than an intentional omission.
 
 ## V1 fields not yet measured
 
-These are confirmed extraction gaps from the ledger's No-shop verification
-item. `OPEN` means that the current sealed Work3 evidence does not measure the
-cited comparison fact. It does not mean that the agreement is silent.
+These are the confirmed extraction gaps linked from the No-shop surface.
+`OPEN` means that the current sealed Work3 evidence does not measure the cited
+comparison fact. It does not mean that the agreement is silent.
 
 | V1 field or concept | Direct source evidence | M4 check | Owner family | Status |
 |---|---|---|---|---|
 | Go-shop availability and mechanics | V1 renders `goShopPresent`, `goShopPeriodDays`, `goShopWindow`, `goShopExcludedParties` and `extendedNegotiatingPeriodDays` in `components/review/table-configs/nosol-section.config.js`. | No Go-shop profile in the sealed 365-row package. | `NO_SHOP` | OPEN |
-| Notice initiation, content and copy-delivery detail | V1 renders the initiation-notice clock and `noticeContent` as distinct rows. Content decomposes identity, material terms, copies, unwritten descriptions and updates in `components/review/table-configs/nosol-fiduciary.config.js`. | One exception profile requires initial-proposal notice. No profile measures `discussionInitiationNoticeHours`, `noticePeriod` or the notice-content fields. | `NO_SHOP` | OPEN |
+| Notice initiation, content and copy-delivery detail | V1 renders `discussionInitiationNoticeHours` in `components/review/table-configs/nosol-noshop.config.js`, and renders `noticePeriod` and `noticeContent` in `components/review/table-configs/nosol-fiduciary.config.js`. The V1 extraction contract also records `discussionInitiationNoticePresent` and `discussionInitiationNoticeText`. Notice content decomposes identity, material terms, copies, unwritten descriptions and updates. | One exception profile requires initial-proposal notice. No profile measures the five named V1 notice fields. | `NO_SHOP` | OPEN |
 | Final determination standard as its own comparison fact | V1 renders `fiduciaryFinalStandard` separately from `fiduciaryEngageStandard` in `components/review/table-configs/nosol-fiduciary.config.js`. | No dedicated Work3 final-determination profile key. Existing recommendation-change rows are partial proxies only. | `NO_SHOP` | OPEN |
 | Force-the-vote | V1 renders `forceTheVote`, `forceTheVoteDetails` and `forceTheVoteType` as a distinct row. | Neither the No-shop nor Proxy / Meeting sealed package measures survival of the meeting duty after a recommendation change. | `PROXY_MEETING` | OWNER SET; EXTRACTION OPEN |
 | Acquisition Proposal transaction types and exclusions | V1 displays definition components as well as the percentage threshold. | The sealed Key Defined Terms package measures Acquisition Proposal thresholds but not all V1 transaction-type and exclusion fields. | `KEY_DEFINED_TERMS` | OPEN |
@@ -279,7 +280,7 @@ The Modiv source file is `evidence/canonical-v2/stage-2y-structure-migration/sha
 | Board change right | Skechers | Trigger shown inside the line: material event, development or material change in circumstances concerning the Company. |
 | Representative control | Concho | Breach attribution shown inside the line: representative breach is deemed a Company breach. |
 
-## Questions for Ben
+## Decision record and remaining question
 
 ### 1. No-shop grouping
 
