@@ -44,6 +44,10 @@ const WORK1_FINALISER_PATH = 'scripts/stage-2y-structure-m7-v2-repair-work1-fina
 const WORK1_VALIDATOR_PATH = 'scripts/stage-2y-structure-m7-v2-repair-work1-validate.mjs';
 const WORK1_RECOVERY_PATH = 'scripts/stage-2y-structure-m7-v2-repair-work1-recover.mjs';
 const WORK1_CORRECTION_AUTHORITY_PATH = 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work1-correction-authority.json';
+const WORK1_HISTORICAL_CONTRACT_BLOB_FIXTURE_PATH =
+  'tests/fixtures/canonical-v2/m7-v2-repair/historical-blobs/e441f0d43361a956ae766da135bc85aac020d33a.json';
+const WORK1_HISTORICAL_RECEIPT_BLOB_FIXTURE_PATH =
+  'tests/fixtures/canonical-v2/m7-v2-repair/historical-blobs/5ede81234ed4c65778f005dd0a42e2fd571fe3c5.json';
 const WORK2_ENTRY_CORRECTION_AUTHORITY_PATH = 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work2-entry-correction-authority.json';
 const WORK2_ENTRY_CORRECTION_AUTHORITY_SCHEMA =
   'STAGE_2Y_M7_V2_REPAIR_WORK2_ENTRY_CORRECTION_AUTHORITY/V1';
@@ -5917,6 +5921,15 @@ test('Work1 correction authority is canonical, content-addressed and extends the
     authority.stale_output_bindings.map((binding) => binding.path),
     RECOVERY_TARGET_PATHS,
   );
+  for (const [bindingIndex, fixturePath] of [
+    [0, WORK1_HISTORICAL_CONTRACT_BLOB_FIXTURE_PATH],
+    [2, WORK1_HISTORICAL_RECEIPT_BLOB_FIXTURE_PATH],
+  ]) {
+    const historicalBinding = authority.stale_output_bindings[bindingIndex];
+    const durableHistoricalBytes = readFileSync(path.join(REPO_ROOT, fixturePath));
+    assert.equal(path.basename(fixturePath, '.json'), historicalBinding.git_blob_oid);
+    assert.deepEqual(durableHistoricalBytes, historicalBindingBytes(historicalBinding));
+  }
   assert.deepEqual(
     authority.executable_bindings.map((binding) => binding.path),
     [
