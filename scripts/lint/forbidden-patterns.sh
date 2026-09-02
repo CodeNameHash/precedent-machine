@@ -494,6 +494,9 @@ function scopedFile(rel) {
 // trips the pattern against its own, correct, single definition. Exempt
 // only that pattern for that file; every other check still applies.
 const FILE_PATTERN_EXEMPTIONS = {
+  // This generated sweep report records real IOC-MERGE labels inside the
+  // sample values under review. It is audit output, not product label code.
+  'reports/canonical-sweep/ioc-other-exclusions.md': ['Mergers,\\s*Acquisitions,\\s*Dispositions'],
   // This historical deduplication report records the IOC-MERGE taxonomy label
   // in result tables. It is evidence of the audit output, not a copied label
   // in product code. Keep every other fingerprint active for this exact file.
