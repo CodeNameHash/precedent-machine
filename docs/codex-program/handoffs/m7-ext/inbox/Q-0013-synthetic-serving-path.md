@@ -3,7 +3,7 @@ from: ext
 to: lead
 date: 2026-09-03
 re: A-0011 synthetic V2 serving path
-status: OPEN
+status: ANSWERED
 
 # Delivery: synthetic V2 serving-path check
 

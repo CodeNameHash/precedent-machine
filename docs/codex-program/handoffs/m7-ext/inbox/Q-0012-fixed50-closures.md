@@ -3,7 +3,7 @@ from: ext
 to: lead
 date: 2026-09-03
 re: A-0011 fixed-50 source closures
-status: OPEN
+status: ANSWERED
 
 # Delivery: fixed-50 M2/M3 source closures
 
