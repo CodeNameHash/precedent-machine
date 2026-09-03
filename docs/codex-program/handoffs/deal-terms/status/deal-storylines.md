@@ -4,15 +4,19 @@ Updated: 2026-09-03
 
 ## Waiting on PM
 
-- Draft 2 of the package contract, with the A-0004 rulings applied.
-- A response to the consumer blockers in Q-0002.
+- Draft 3 of the package contract, with the A-0006 rulings applied.
+- The exact producer transaction and agreement contribution to the shared
+  50-transaction selection, or the milestone that fixes it, per Q-0003.
 - A user-displayable five-deal package after the producer legal gate.
 - Producer evidence before dates are assigned beyond the first real run.
 
 ## Consumer state
 
-- Contract draft 1 and its synthetic one-deal package pass the supplied
-  verifier with 258 checks.
+- Contract draft 2 and its synthetic one-deal package pass the supplied
+  verifier with 293 checks.
+- A-0006 accepted the semantic fact state, complete source-unit, exact SEC
+  document locator, approved-limitation, release-lineage and transaction
+  cardinality requirements. Those changes are due in draft 3.
 - No importer or production data path has been built.
 - No PM internal file, field, database row or evidence path is a consumer
   dependency.
