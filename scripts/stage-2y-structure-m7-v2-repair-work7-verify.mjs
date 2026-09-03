@@ -9,9 +9,18 @@
 // NO_INDEPENDENT_SOURCE and are not treated as independently derived
 // membership oracles. Checks the Work 0 → Work 3 receipt chain, then the
 // selected registration, then the Work 4 receipt named by the manifest
-// (V1 or V2), by recomputing each receipt identity. Predecessor hops compare
-// exact named fields, not a deep "id appears anywhere" walk. Collects every
-// finding; never stops at the first.
+// (V1 or V2), by recomputing each receipt identity. A selected manifest's
+// execution_manifest_id and execution_manifest_digest are recomputed with
+// the published restamp rule (digest of canonical JSON without those two
+// fields; id is contentId of the record-with-digest). A V2 Work 4 receipt's
+// superseded_work4_receipt_binding is checked as a file binding; that V1
+// receipt's candidate_registration_id is the only derived
+// superseded_registrations entry. Other files in the registration root are
+// other_registrations, not a supersession claim. Predecessor hops compare
+// exact named fields, not a deep "id appears anywhere" walk. The Work 0
+// evidence root's evidence_input_bindings / input_set_digest stay unused
+// as an independent set-envelope oracle; that is a noted limitation, not
+// a silent recompute. Collects every finding; never stops at the first.
 //
 // This script does not write, does not call a model, does not use the
 // network, and does not import the compiler, the bound candidate verifier,
@@ -782,6 +791,19 @@ function resolveSelection(root, options, findings, cache) {
       return null;
     }
     manifest = parseJson(manifestBytes);
+    const identity = restampedManifestIdentity(manifest);
+    if (identity === null) {
+      findings.push(finding('RECEIPT_IDENTITY_MISMATCH', options.manifestPath, 'manifest is not JSON'));
+    } else if (
+      manifest.execution_manifest_digest !== identity.digest
+      || manifest.execution_manifest_id !== identity.id
+    ) {
+      findings.push(finding(
+        'RECEIPT_IDENTITY_MISMATCH',
+        options.manifestPath,
+        `execution_manifest_id/digest ${manifest.execution_manifest_id}/${manifest.execution_manifest_digest} != recomputed ${identity.id}/${identity.digest}`,
+      ));
+    }
     const derived = manifest?.candidate_registration_binding?.registration_binding;
     if (!isFileBinding(derived) && typeof derived?.path !== 'string') {
       findings.push(finding('SELECTION_REQUIRED', options.manifestPath, 'manifest has no candidate_registration_binding.registration_binding.path'));
@@ -803,6 +825,7 @@ function resolveSelection(root, options, findings, cache) {
     work4ReceiptPath,
     manifestPath: hasManifest ? options.manifestPath : null,
     manifest,
+    manifestBytes: hasManifest ? cache.get(options.manifestPath) : null,
   };
 }
 
@@ -819,7 +842,8 @@ export function verifyWork7(options = {}) {
     return finish(findings, recomputations, {
       candidate_registration_id: null,
       registration_path: options.registrationPath ?? null,
-      superseded_registrations: listRegistrationFiles(root),
+      other_registrations: listRegistrationFiles(root),
+      superseded_registrations: [],
       counts: null,
     });
   }
@@ -828,7 +852,7 @@ export function verifyWork7(options = {}) {
   if (registrationBytes === null) {
     findings.push(finding('BINDING_PATH_MISSING', registrationPath, 'registration file is absent'));
     return finish(findings, recomputations, {
-      candidate_registration_id: options.registrationId ?? null,
+      candidate_registration_id: null,
       registration_path: registrationPath,
       counts: null,
     });
@@ -852,7 +876,7 @@ export function verifyWork7(options = {}) {
       `${registration.candidate_registration_id} != recomputed ${recomputedRegistrationId}`,
     ));
   }
-  const superseded = listRegistrationFiles(root).filter((pathName) => pathName !== registrationPath);
+  const otherRegistrations = listRegistrationFiles(root).filter((pathName) => pathName !== registrationPath);
 
   const { files, members } = collectRegistrationBindings(registration);
   const declaredPaths = uniqueBoundPaths(registration);
@@ -942,6 +966,7 @@ export function verifyWork7(options = {}) {
       `registration predecessor_receipt_bindings WORK3.record_id does not bind ${work3Id}`,
     ));
   }
+  let supersededRegistrations = [];
   if (!work4ReceiptPath) {
     findings.push(finding(
       'NO_INDEPENDENT_SOURCE',
@@ -958,6 +983,13 @@ export function verifyWork7(options = {}) {
         `Work 4 candidate_registration_id ${work4.candidate_registration_id} != selected ${registration.candidate_registration_id}`,
       ));
     }
+    supersededRegistrations = deriveSupersededRegistrations(
+      root,
+      work4,
+      registration.candidate_registration_id,
+      findings,
+      cache,
+    );
     findings.push(finding(
       'NO_INDEPENDENT_SOURCE',
       work4ReceiptPath,
@@ -992,10 +1024,58 @@ export function verifyWork7(options = {}) {
     predecessor_chain: work4ReceiptPath
       ? ['WORK0', 'ACTIVATION', 'WORK1', 'WORK2', 'WORK3', 'REGISTRATION', 'WORK4']
       : ['WORK0', 'ACTIVATION', 'WORK1', 'WORK2', 'WORK3', 'REGISTRATION'],
-    superseded_registrations: superseded,
+    other_registrations: otherRegistrations,
+    superseded_registrations: supersededRegistrations,
     work4_receipt_path: work4ReceiptPath,
     manifest_path: selection.manifestPath,
+    manifest_id: selection.manifest?.execution_manifest_id ?? null,
+    manifest_sha256: selection.manifestBytes ? sha256Hex(selection.manifestBytes) : null,
   });
+}
+
+function restampedManifestIdentity(record) {
+  if (!isPlainObject(record) || typeof record.schema_version !== 'string') return null;
+  const unsigned = { ...record };
+  delete unsigned.execution_manifest_digest;
+  delete unsigned.execution_manifest_id;
+  const digest = sha256Hex(canonicalJson(unsigned));
+  return {
+    digest,
+    id: contentId(record.schema_version, { ...unsigned, execution_manifest_digest: digest }),
+  };
+}
+
+function deriveSupersededRegistrations(root, work4, selectedId, findings, cache) {
+  const binding = work4?.superseded_work4_receipt_binding;
+  if (!binding) return [];
+  if (!isFileBinding(binding) && typeof binding.path !== 'string') {
+    findings.push(finding(
+      'BINDING_PATH_MISSING',
+      work4.schema_version ?? 'WORK4',
+      'V2 superseded_work4_receipt_binding has no path',
+    ));
+    return [];
+  }
+  checkFileBinding(root, 'work4.superseded_work4_receipt_binding', binding, findings, cache);
+  const bytes = cache.get(binding.path);
+  const record = cachedJson(cache, binding.path, bytes);
+  const supersededId = record?.candidate_registration_id;
+  if (typeof supersededId !== 'string' || !HEX_256.test(supersededId)) {
+    findings.push(finding(
+      'RECEIPT_IDENTITY_MISMATCH',
+      binding.path,
+      'superseded Work 4 receipt has no candidate_registration_id',
+    ));
+    return [];
+  }
+  if (supersededId === selectedId) {
+    findings.push(finding(
+      'RECEIPT_IDENTITY_MISMATCH',
+      binding.path,
+      `superseded Work 4 receipt candidate_registration_id equals the selected registration ${selectedId}`,
+    ));
+  }
+  return [`${REGISTRATION_ROOT}/${supersededId}.json`];
 }
 
 function namedFieldEquals(record, fieldNames, identifier) {

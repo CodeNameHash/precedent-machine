@@ -386,7 +386,7 @@ function buildSyntheticCandidate(root) {
   writeCanonical(root, WORK4_RECEIPT_PATH, restampedWork4);
 
   const registrationBytes = fs.readFileSync(path.join(root, registrationPath));
-  const manifest = {
+  const manifestUnsigned = {
     schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK_EXECUTION_MANIFEST/V1',
     work: 'WORK4',
     work_receipt_path: WORK4_RECEIPT_PATH,
@@ -401,6 +401,15 @@ function buildSyntheticCandidate(root) {
         git_blob_oid: gitBlobOid(registrationBytes),
       },
     },
+  };
+  const manifestDigest = sha256Hex(canonicalJson(manifestUnsigned));
+  const manifest = {
+    ...manifestUnsigned,
+    execution_manifest_digest: manifestDigest,
+    execution_manifest_id: contentId(
+      manifestUnsigned.schema_version,
+      { ...manifestUnsigned, execution_manifest_digest: manifestDigest },
+    ),
   };
   writeCanonical(root, MANIFEST_PATH, manifest);
 
@@ -564,7 +573,8 @@ test('a sibling registration is listed as superseded and is not the candidate', 
   const result = verifyWork7({ repoRoot: root, registrationPath: built.registrationPath });
   assert.equal(result.status, 'PASS', JSON.stringify(result.findings.filter((entry) => entry.severity !== 'INFO'), null, 2));
   assert.equal(result.candidate_registration_id, built.registrationId);
-  assert.deepEqual(result.superseded_registrations, [supersededPath]);
+  assert.deepEqual(result.other_registrations, [supersededPath]);
+  assert.deepEqual(result.superseded_registrations, []);
 });
 
 test('a Work 4 receipt that only mentions the selected id in a stray field fails', async (t) => {
@@ -590,13 +600,33 @@ test('a V2 Work 4 receipt named by the manifest is accepted', async (t) => {
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
   const built = buildSyntheticCandidate(root);
   const receipt = JSON.parse(fs.readFileSync(path.join(root, built.work4Path), 'utf8'));
+  const supersededId = 'aa'.repeat(32);
+  const supersededReceiptPath = 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-work4-fixture-superseded.json';
+  const supersededReceipt = identify('STAGE_2Y_M7_V2_REPAIR_WORK4_RECEIPT/V1', {
+    ...receipt,
+    candidate_registration_id: supersededId,
+  }, 'work4_receipt_id');
+  const supersededBinding = fileBinding(
+    root,
+    supersededReceiptPath,
+    supersededReceipt,
+    supersededReceipt.schema_version,
+    'work4_receipt_id',
+  );
   const v2 = identify('STAGE_2Y_M7_V2_REPAIR_WORK4_RECEIPT/V2', {
     ...receipt,
     schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK4_RECEIPT/V2',
     work4_candidate_correction_authority_binding: { note: 'synthetic' },
-    superseded_work4_receipt_binding: { note: 'synthetic' },
+    superseded_work4_receipt_binding: supersededBinding,
   }, 'work4_receipt_id');
   writeCanonical(root, built.work4Path, v2);
+  execFileSync('git', ['-C', root, 'add', '-A'], { stdio: 'ignore' });
+  execFileSync('git', [
+    '-C', root,
+    '-c', 'user.name=work7',
+    '-c', 'user.email=work7@test.invalid',
+    'commit', '-m', 'v2 successor receipt',
+  ], { stdio: 'ignore' });
   const result = verifyWork7({ repoRoot: root, manifestPath: built.manifestPath });
   assert.equal(
     result.status,
@@ -604,4 +634,42 @@ test('a V2 Work 4 receipt named by the manifest is accepted', async (t) => {
     JSON.stringify(result.findings.filter((entry) => entry.severity !== 'INFO'), null, 2),
   );
   assert.equal(result.work4_receipt_path, built.work4Path);
+  assert.deepEqual(result.superseded_registrations, [
+    `evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-candidate-registrations/${supersededId}.json`,
+  ]);
+});
+
+test('a manifest with a garbage identity fails', async (t) => {
+  const { verifyWork7 } = await loadVerifier();
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'm7-v2-work7-manifest-id-')));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const built = buildSyntheticCandidate(root);
+  const manifest = JSON.parse(fs.readFileSync(path.join(root, built.manifestPath), 'utf8'));
+  manifest.execution_manifest_id = 'ff'.repeat(32);
+  writeCanonical(root, built.manifestPath, manifest);
+  const result = verifyWork7({ repoRoot: root, manifestPath: built.manifestPath });
+  assert.equal(result.status, 'FAIL');
+  assert.equal(failCodes(result).includes('RECEIPT_IDENTITY_MISMATCH'), true);
+});
+
+test('a bogus V2 superseded receipt binding fails', async (t) => {
+  const { verifyWork7 } = await loadVerifier();
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'm7-v2-work7-bogus-sup-')));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const built = buildSyntheticCandidate(root);
+  const receipt = JSON.parse(fs.readFileSync(path.join(root, built.work4Path), 'utf8'));
+  const v2 = identify('STAGE_2Y_M7_V2_REPAIR_WORK4_RECEIPT/V2', {
+    ...receipt,
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK4_RECEIPT/V2',
+    superseded_work4_receipt_binding: {
+      path: 'evidence/canonical-v2/stage-2y-structure-migration/receipts/missing-superseded.json',
+      byte_length: 1,
+      sha256: '00'.repeat(32),
+      git_blob_oid: '0'.repeat(40),
+    },
+  }, 'work4_receipt_id');
+  writeCanonical(root, built.work4Path, v2);
+  const result = verifyWork7({ repoRoot: root, manifestPath: built.manifestPath });
+  assert.equal(result.status, 'FAIL');
+  assert.equal(failCodes(result).includes('BINDING_PATH_MISSING'), true);
 });
