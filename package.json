@@ -12,6 +12,8 @@
     "test": "node --max-old-space-size=8192 --test \"tests/**/*.test.js\" \"tests/**/*.spec.js\"",
     "verify:codex-program": "node scripts/verify-codex-program-spec.mjs",
   "gate:baseline": "node scripts/canonical-v2-baseline-manifest.mjs --check",
+  "gate:near-miss": "node scripts/stage-2y-registry-near-miss.mjs --check",
+  "gate:replay-baseline": "node scripts/stage-2y-registry-substrate-replay.mjs --check --baseline evidence/canonical-v2/stage-2y-registry-substrate-head-baseline.json",
   "generate:baseline": "node scripts/canonical-v2-baseline-manifest.mjs",
     "ingest-qa": "node scripts/ingest-qa.js",
     "eval": "node scripts/eval.js"

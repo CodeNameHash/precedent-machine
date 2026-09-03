@@ -1,4 +1,3 @@
-import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import {
   lstatSync,
@@ -15,7 +14,10 @@ import {
   validateWork2ReceiptBinding,
   validateWork2SuccessorReceiptBinding,
 } from './stage-2y-structure-m7-v2-repair-work2-validate.mjs';
-import { validateWork3 } from './stage-2y-structure-m7-v2-repair-work3-validate.mjs';
+import {
+  gitReadText,
+  validateWork3,
+} from './stage-2y-structure-m7-v2-repair-work3-validate.mjs';
 
 const { canonicalJson, contentId, sha256Hex } = canonicalModule;
 const { validateFamilyProfilePackageSetForWork3 } = m7V2ContractModule;
@@ -788,24 +790,6 @@ function normaliseRoot(repoRoot) {
   return root;
 }
 
-function gitRead(root, argv) {
-  const environment = { ...process.env, GIT_NO_REPLACE_OBJECTS: '1' };
-  for (const name of [
-    'GIT_ALTERNATE_OBJECT_DIRECTORIES',
-    'GIT_COMMON_DIR',
-    'GIT_DIR',
-    'GIT_OBJECT_DIRECTORY',
-    'GIT_WORK_TREE',
-  ]) delete environment[name];
-  return execFileSync('git', argv, {
-    cwd: root,
-    encoding: 'utf8',
-    env: environment,
-    maxBuffer: 64 * 1024 * 1024,
-    stdio: ['ignore', 'pipe', 'pipe'],
-  }).trimEnd();
-}
-
 function canonicalBaseTipObservation(root, binding, predecessorReceiptBinding) {
   let parentLine;
   let commitMessage;
@@ -813,16 +797,16 @@ function canonicalBaseTipObservation(root, binding, predecessorReceiptBinding) {
   let receiptOutput;
   let originCommit;
   try {
-    gitRead(root, ['cat-file', '-e', `${binding.commit}^{commit}`]);
-    gitRead(root, ['merge-base', '--is-ancestor', WORK3_V2_FINAL_COMMIT, binding.commit]);
-    originCommit = gitRead(root, ['rev-parse', `refs/remotes/origin/${BRANCH}`]);
-    gitRead(root, ['merge-base', '--is-ancestor', binding.commit, originCommit]);
-    parentLine = gitRead(root, ['rev-list', '--parents', '-n', '1', binding.commit]);
-    commitMessage = gitRead(root, ['log', '--format=%s', '-n', '1', binding.commit]);
-    deltaOutput = gitRead(root, [
+    gitReadText(root, ['cat-file', '-e', `${binding.commit}^{commit}`]);
+    gitReadText(root, ['merge-base', '--is-ancestor', WORK3_V2_FINAL_COMMIT, binding.commit]);
+    originCommit = gitReadText(root, ['rev-parse', `refs/remotes/origin/${BRANCH}`]);
+    gitReadText(root, ['merge-base', '--is-ancestor', binding.commit, originCommit]);
+    parentLine = gitReadText(root, ['rev-list', '--parents', '-n', '1', binding.commit]);
+    commitMessage = gitReadText(root, ['log', '--format=%s', '-n', '1', binding.commit]);
+    deltaOutput = gitReadText(root, [
       'diff-tree', '--no-commit-id', '--name-only', '-r', binding.commit,
     ]);
-    receiptOutput = gitRead(root, [
+    receiptOutput = gitReadText(root, [
       'ls-tree', '-r', '--full-tree', binding.commit, '--', predecessorReceiptBinding.path,
     ]);
   } catch {
@@ -4913,6 +4897,12 @@ export async function validateExecutionManifest(options) {
   if (manifest.work === 'WORK2') {
     validateWork2RecoveryOverlay(root, manifest, bytes);
   }
+  // The bound candidate record, including its predecessor receipt identities,
+  // is closed before the transition authority is compared against it, so a
+  // predecessor identity defect surfaces as itself rather than as authority drift.
+  const candidateId = validateCandidate(
+    root, authority, manifest, prior, existingCandidatePaths,
+  );
   const candidateStageState = buildOnlyCandidateStageState
     ?? validateCandidateOrdering(
       root,
@@ -4958,9 +4948,6 @@ export async function validateExecutionManifest(options) {
     );
     validateWork3EffectsAndStops(manifest, work3EntryCorrectionAuthority);
   }
-  const candidateId = validateCandidate(
-    root, authority, manifest, prior, existingCandidatePaths,
-  );
   if (work3EntryCorrectionAuthority !== null
       && !same(
         manifest,

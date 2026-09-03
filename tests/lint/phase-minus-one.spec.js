@@ -13,7 +13,8 @@ const {
   classifyChangedFiles,
 } = require('../../scripts/ci/baseline-manifest-impact');
 const {
-  REGISTRATION_TARGET_SHARD,
+  HEAVY_FILES,
+  HEAVY_FILE_PARTITIONS,
   REGISTRATION_TEST,
   SEALED_WORK3_BYTE_LENGTH,
   SEALED_WORK3_RECEIPT,
@@ -33,6 +34,7 @@ const {
   nativeShardForIndex,
   parseArguments,
   parseShard,
+  parseTopLevelTitles,
   validateWork3Tap,
   verifySealedWork3,
 } = require('../../scripts/ci/run-unit-test-shard');
@@ -66,6 +68,7 @@ const SCRIPT_FILES = [
   'scripts/ci/check-allowlist.js',
   'scripts/ci/baseline-checkpoint.js',
   'scripts/ci/baseline-manifest-impact.js',
+  'scripts/ci/expensive-check-checkpoint.mjs',
   'scripts/ci/run-unit-test-shard.js',
   'scripts/ci/run-all-invariants.sh',
 ];
@@ -664,9 +667,9 @@ fi
   }
 
   const heavy = workflow.jobs['test-and-build'];
-  assert.deepEqual(heavy.needs, ['plan-heavy-ci', 'unit-tests', 'production-build']);
+  assert.deepEqual(heavy.needs, ['plan-heavy-ci', 'unit-tests', 'evidence-gates', 'production-build']);
   assert.equal(heavy.if, "${{ always() && needs.plan-heavy-ci.outputs.run_heavy != 'false' }}");
-  for (const job of ['unit-tests', 'production-build']) {
+  for (const job of ['unit-tests', 'evidence-gates', 'production-build']) {
     assert.equal(workflow.jobs[job].needs, 'plan-heavy-ci', job);
     assert.equal(
       workflow.jobs[job].if,
@@ -725,7 +728,7 @@ test('PH-1-K CI shards every test exactly once and aggregates fail closed', () =
 
   assert.deepEqual(
     aggregate.needs,
-    ['plan-heavy-ci', 'unit-tests', 'production-build'],
+    ['plan-heavy-ci', 'unit-tests', 'evidence-gates', 'production-build'],
   );
   assert.equal(
     aggregate.if,
@@ -737,12 +740,30 @@ test('PH-1-K CI shards every test exactly once and aggregates fail closed', () =
   ));
   assert.equal(aggregateStep.env.PLAN_RESULT, '${{ needs.plan-heavy-ci.result }}');
   assert.equal(aggregateStep.env.UNIT_TESTS_RESULT, '${{ needs.unit-tests.result }}');
+  assert.equal(aggregateStep.env.EVIDENCE_GATES_RESULT, '${{ needs.evidence-gates.result }}');
   assert.equal(
     aggregateStep.env.PRODUCTION_BUILD_RESULT,
     '${{ needs.production-build.result }}',
   );
 
-  const runAggregate = (planResult, unitResult, buildResult) => spawnSync(
+  const gates = workflow.jobs['evidence-gates'];
+  assert.equal(gates.needs, 'plan-heavy-ci');
+  assert.equal(gates['timeout-minutes'], 35);
+  assert.equal(gates.strategy['fail-fast'], true);
+  assert.deepEqual(
+    gates.strategy.matrix.include.map((entry) => entry.gate),
+    ['near-miss', 'replay-baseline'],
+  );
+  const packageScripts = JSON.parse(fs.readFileSync('package.json', 'utf8')).scripts;
+  for (const entry of gates.strategy.matrix.include) {
+    assert.match(packageScripts[`gate:${entry.gate}`], /--check/);
+    assert.match(packageScripts[`gate:${entry.gate}`], new RegExp(entry.entry.replace(/[.]/g, '\\.')));
+  }
+  const gateStep = gates.steps.find((step) => step.id === 'evidence-gate');
+  assert.equal(gateStep.run, 'npm run gate:${{ matrix.gate }}');
+  assert.equal(gateStep.if, "steps.gate-plan.outputs.run_gate != 'false'");
+
+  const runAggregate = (planResult, unitResult, buildResult, gatesResult = 'success') => spawnSync(
     'bash',
     ['-c', aggregateStep.run],
     {
@@ -751,6 +772,7 @@ test('PH-1-K CI shards every test exactly once and aggregates fail closed', () =
         ...process.env,
         PLAN_RESULT: planResult,
         UNIT_TESTS_RESULT: unitResult,
+        EVIDENCE_GATES_RESULT: gatesResult,
         PRODUCTION_BUILD_RESULT: buildResult,
       },
     },
@@ -771,6 +793,11 @@ test('PH-1-K CI shards every test exactly once and aggregates fail closed', () =
       runAggregate('success', 'success', result).status,
       0,
       `build ${result || 'missing'}`,
+    );
+    assert.notEqual(
+      runAggregate('success', 'success', 'success', result).status,
+      0,
+      `gates ${result || 'missing'}`,
     );
   }
 
@@ -858,18 +885,42 @@ test('PH-1-K2 CI assigns every ordinary test once with one sealed exception', ()
     assigned.push(...plan.ordinaryFiles);
   }
 
-  const expectedOrdinary = files.filter((file) => file !== SEALED_WORK3_TEST);
+  const expectedOrdinary = files.filter((file) => file !== SEALED_WORK3_TEST && !HEAVY_FILES.has(file));
   assert.deepEqual([...assigned].sort(), [...expectedOrdinary].sort());
   assert.equal(assigned.length, new Set(assigned).size);
-  assert.equal(files.filter((file) => !assigned.includes(file)).length, 1);
-  assert.equal(files.find((file) => !assigned.includes(file)), SEALED_WORK3_TEST);
+  assert.deepEqual(
+    files.filter((file) => !assigned.includes(file)).sort(),
+    [SEALED_WORK3_TEST, ...HEAVY_FILES].sort(),
+  );
 
+  // Every heavy file's top-level titles run exactly once across its shards,
+  // and no other shard carries that file.
+  assert.ok(HEAVY_FILES.has(REGISTRATION_TEST));
   const registrationIndex = files.indexOf(REGISTRATION_TEST);
   assert.notEqual(registrationIndex, -1);
-  assert.equal(assignedOrdinaryShard(REGISTRATION_TEST, registrationIndex), REGISTRATION_TARGET_SHARD);
-  assert.equal(REGISTRATION_TARGET_SHARD, 3);
+  assert.equal(assignedOrdinaryShard(REGISTRATION_TEST, registrationIndex), null);
+  for (const entry of HEAVY_FILE_PARTITIONS) {
+    const titles = parseTopLevelTitles(fs.readFileSync(entry.file, 'utf8'), entry.file);
+    const assignedTitles = [];
+    for (let shard = 1; shard <= TOTAL_SHARDS; shard += 1) {
+      const plan = buildShardPlan(shard);
+      if (entry.shards.includes(shard)) {
+        assert.equal(plan.heavyFile, entry.file);
+        assert.ok(plan.heavyTitles.length > 0, `${entry.file} shard ${shard}`);
+        const ownPattern = new RegExp(plan.heavyPattern);
+        for (const title of titles) {
+          assert.equal(ownPattern.test(title), plan.heavyTitles.includes(title), `${entry.file} ${shard}: ${title}`);
+        }
+        assignedTitles.push(...plan.heavyTitles);
+      } else {
+        assert.notEqual(plan.heavyFile, entry.file);
+      }
+    }
+    assert.deepEqual([...assignedTitles].sort(), [...titles].sort(), entry.file);
+    assert.equal(assignedTitles.length, new Set(assignedTitles).size, entry.file);
+  }
   for (const [index, file] of files.entries()) {
-    if (file === SEALED_WORK3_TEST || file === REGISTRATION_TEST) continue;
+    if (file === SEALED_WORK3_TEST || HEAVY_FILES.has(file)) continue;
     assert.equal(assignedOrdinaryShard(file, index), nativeShardForIndex(index), file);
   }
 });

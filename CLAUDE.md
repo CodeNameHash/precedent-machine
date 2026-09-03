@@ -5,7 +5,26 @@ classifies provisions, extracts structured facts, renders a review UI, and
 searches precedents across deals. Supabase Postgres backend, deployed on
 Vercel, production tracks `main`.
 
-Run `npm test` and `npm run build` before pushing. CI enforces both.
+Before pushing, run the test files for the seam you touched
+(`CI=true node --test <files>`), and `npm run build` only if `lib/`, `pages/`
+or `components/` changed. CI runs the full suite on every push; do not run it
+locally against unchanged code. (Ben, 2026-09-03, CI audit: this replaces
+the earlier rule to run the whole suite before every push.) A seam includes
+every test that pins the bytes of a file you changed: `grep -rl <basename>
+tests/` before deciding what to run.
+
+Three checks are named CI gates, not part of `npm test`: `gate:baseline`,
+`gate:near-miss` and `gate:replay-baseline`. The last two each re-derive a
+committed evidence report from every admitted corpus run and take about
+twenty minutes; they run in CI as the `evidence-gates` job once per exact
+input digest (`scripts/ci/expensive-check-checkpoint.mjs`) and are skipped on
+an exact checkpoint hit. Regenerate with the script's `--write` mode and
+commit the diff.
+
+A new test asserts behaviour or output bytes, never a script's source text,
+import list, error order or argv literal. The phase-1 authority-boundary
+scanner and the sealed-receipt bindings are the standing exceptions; do not
+add a third.
 
 ## Read these before doing anything
 

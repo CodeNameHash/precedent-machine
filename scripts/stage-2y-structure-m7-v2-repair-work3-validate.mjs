@@ -147,6 +147,43 @@ function git(root, argv) {
   });
 }
 
+// The execution-manifest validator may not import a subprocess module itself;
+// its fixed Git observations go through this one exported seam, which refuses
+// any command head that is not a read-only inspection.
+const READ_ONLY_GIT_HEADS = Object.freeze(new Set([
+  'cat-file', 'diff-tree', 'log', 'ls-tree', 'merge-base', 'rev-list', 'rev-parse',
+]));
+// Options that make an otherwise read-only Git command write a file, run an
+// external program or take configuration from the caller.
+const GIT_OPTION_REFUSAL = /^(?:-c$|-c=|-C$|-O|--config-env|--exec|--ext-diff|--git-dir|--no-pager$|--output|--textconv|--upload-pack|--work-tree)/u;
+
+export function gitReadText(root, argv) {
+  if (!Array.isArray(argv) || argv.length === 0 || !READ_ONLY_GIT_HEADS.has(argv[0])
+    || argv.some((value) => typeof value !== 'string' || GIT_OPTION_REFUSAL.test(value))) {
+    fail('GIT_READ_ONLY_SEAM', 'non-read-only Git inspection refused');
+  }
+  const environment = { ...process.env, GIT_NO_REPLACE_OBJECTS: '1' };
+  for (const name of [
+    'GIT_ALTERNATE_OBJECT_DIRECTORIES',
+    'GIT_COMMON_DIR',
+    'GIT_CONFIG_COUNT',
+    'GIT_CONFIG_GLOBAL',
+    'GIT_CONFIG_PARAMETERS',
+    'GIT_CONFIG_SYSTEM',
+    'GIT_DIR',
+    'GIT_EXTERNAL_DIFF',
+    'GIT_OBJECT_DIRECTORY',
+    'GIT_WORK_TREE',
+  ]) delete environment[name];
+  return execFileSync('git', argv, {
+    cwd: root,
+    encoding: 'utf8',
+    env: environment,
+    maxBuffer: 64 * 1024 * 1024,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  }).trimEnd();
+}
+
 function pinnedTreeSource(root, sourceCommit) {
   if (typeof sourceCommit !== 'string' || !/^[0-9a-f]{40}$/u.test(sourceCommit)) {
     fail('WORK3_INPUT_DRIFT', 'sourceCommit');

@@ -20,11 +20,10 @@ test('browser-safe registry digests remain pinned to their payloads', () => {
   assert.equal(materialContracts.DIGEST, registryFingerprint(materialContracts.FINGERPRINT_INPUT_V1));
   assert.equal(materialityQualifiers.DIGEST, registryFingerprint(materialityQualifiers.FINGERPRINT_INPUT_V1));
 });
-test('Stage 2Y-C replay baseline is current', () => {
-  const root = path.resolve(__dirname, '..');
-  const run = spawnSync(process.execPath, [path.resolve(root, 'scripts/stage-2y-registry-substrate-replay.mjs'), '--check', '--baseline', 'evidence/canonical-v2/stage-2y-registry-substrate-head-baseline.json'], { cwd: root, encoding: 'utf8' });
-  assert.equal(run.status, 0, run.stderr);
-});
+// Whether the committed replay baseline is current is proved by the named CI
+// gate `npm run gate:replay-baseline` (see .github/workflows/ci.yml, job
+// evidence-gates), which replays every admitted corpus run once per exact
+// input digest. It is not part of `npm test`.
 
 test('the browser-consumed taxonomy does not load Node crypto through the registry', () => {
   const root = path.resolve(__dirname, '..');

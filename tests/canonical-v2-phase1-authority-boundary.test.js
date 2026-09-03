@@ -1028,12 +1028,68 @@ function assertExactGitReadBoundary(program, label, rootName, expectedCalls) {
   );
 }
 
+// The execution-manifest validator holds no child-process authority of its own:
+// its fixed pushed-tree inspection is delegated, call by literal call, to the
+// Work3 validator's exported read-only seam. This asserts the delegation is
+// exact: the seam is the only Git reader it imports, nothing launches a process
+// here, and the inspection set is the same literal set the in-file reader used.
+function assertDelegatedGitReadBoundary(program, label, rootName, readerName, expectedCalls) {
+  assert.equal(
+    collectCapabilityNodes(
+      program,
+      (node) => node.type === 'ImportDeclaration'
+        && ['child_process', 'node:child_process'].includes(node.source?.value),
+    ).length,
+    0,
+    `${label} may not import child-process authority`,
+  );
+  assert.equal(
+    collectCapabilityNodes(
+      program,
+      (node) => node.type === 'CallExpression'
+        && node.callee.type === 'Identifier'
+        && ['execFileSync', 'execSync', 'spawnSync', 'spawn'].includes(node.callee.name),
+    ).length,
+    0,
+    `${label} may not launch a process`,
+  );
+  assert.equal(
+    collectCapabilityNodes(
+      program,
+      (node) => node.type === 'FunctionDeclaration' && node.id?.name === readerName,
+    ).length,
+    0,
+    `${label} may not define its own ${readerName}`,
+  );
+  const gitReadCalls = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'Identifier' && node.callee.name === readerName,
+  );
+  assert.deepEqual(
+    gitReadCalls.map((call, index) => {
+      assert.equal(call.arguments.length, 2, `${label} Git read ${index + 1} must be exact`);
+      assert.equal(
+        staticArgumentDescriptor(call.arguments[0], `${label} Git read ${index + 1}`),
+        `$${rootName}`,
+      );
+      return runnerArgvDescriptor(call.arguments[1], `${label} Git read ${index + 1}`);
+    }),
+    expectedCalls,
+    `${label} may run only the exact pushed-tree inspection set`,
+  );
+}
+
 function assertExecutionManifestValidatorGitBoundary(source, label) {
-  assertNoCapabilities(source, GIT_ARTIFACT_WRITER_FORBIDDEN_CAPABILITIES, label);
-  const counts = capabilityCounts(source, label);
-  assert.ok(counts.external_process > 0, `${label} must inspect the pushed Git tree`);
+  assertNoCapabilities(source, PURE_FORBIDDEN_CAPABILITIES, label);
   const program = parseCapabilitySource(source, label);
-  assertExactGitReadBoundary(program, label, 'root', [
+  assertExactNamedImportRoster(
+    program,
+    './stage-2y-structure-m7-v2-repair-work3-validate.mjs',
+    [['gitReadText', 'gitReadText'], ['validateWork3', 'validateWork3']],
+    label,
+  );
+  assertDelegatedGitReadBoundary(program, label, 'root', 'gitReadText', [
     ['cat-file', '-e', '`${$binding.commit}^{commit}`'],
     ['merge-base', '--is-ancestor', '$WORK3_V2_FINAL_COMMIT', '$binding.commit'],
     ['rev-parse', '`refs/remotes/origin/${$BRANCH}`'],
@@ -1264,9 +1320,9 @@ function assertWork4CandidateBinderBoundary(source, label) {
 
 const LOCAL_SUBPROCESS_BOUNDARIES = Object.freeze({
   'scripts/ci/run-unit-test-shard.js': Object.freeze({
-    byteLength: 16776,
+    byteLength: 21621,
     runnerSpawn: true,
-    sha256: 'f4709aeac98697b9e6a4af65ad8fa654883e3a10118bcb4bdd5290c9ba53733e',
+    sha256: '3b70ad73fa36138ce841e57fa562bd19e4228ceb8f30d7bf6fb794bba6bb0f21',
   }),
   'scripts/stage-2y-structure-m7-v2-repair-work1-recover.mjs': Object.freeze({
     finaliser: 'scripts/stage-2y-structure-m7-v2-repair-work1-finalise.mjs',
@@ -1480,8 +1536,19 @@ function assertRunnerLaneBoundary(program, label) {
       laneArgumentProperties.set(name, property.value);
       return name;
     }),
-    ['ordinary', 'work3'],
+    ['ordinary', 'work3', 'heavy'],
     `${label} lane argument output shape must be exact`,
+  );
+  assert.deepEqual(
+    runnerArgvDescriptor(laneArgumentProperties.get('heavy'), `${label} heavy`),
+    [
+      '--max-old-space-size=8192',
+      '--test',
+      '--test-reporter=tap',
+      '`--test-name-pattern=${$plan.heavyPattern}`',
+      '$plan.heavyFile',
+    ],
+    `${label} heavy lane argv must be exact`,
   );
   assert.deepEqual(
     runnerArgvDescriptor(laneArgumentProperties.get('ordinary'), `${label} ordinary`),
@@ -1545,7 +1612,7 @@ function assertRunnerLaneBoundary(program, label) {
     (node) => node.type === 'CallExpression'
       && node.callee.type === 'Identifier' && node.callee.name === 'startLane',
   );
-  assert.equal(laneCalls.length, 2, `${label} must call startLane exactly twice`);
+  assert.equal(laneCalls.length, 3, `${label} must call startLane exactly three times`);
   assert.deepEqual(
     laneCalls.map((call) => call.arguments.map((argument, index) => (
       staticArgumentDescriptor(argument, `${label} startLane argument ${index + 1}`)
@@ -1553,11 +1620,12 @@ function assertRunnerLaneBoundary(program, label) {
     [
       ['ordinary', '$args.ordinary', '$ordinaryOutput', '$cwd'],
       ['Work3', '$args.work3', '$work3Output', '$cwd'],
+      ['heavy', '$args.heavy', '$heavyOutput', '$cwd'],
     ],
     `${label} lane calls must be exact`,
   );
-  assertIdentifierReferenceCount(program, 'startLane', 3, label);
-  assertIdentifierReferenceCount(program, 'args', 5, label);
+  assertIdentifierReferenceCount(program, 'startLane', 4, label);
+  assertIdentifierReferenceCount(program, 'args', 6, label);
   assertIdentifierNeverReassigned(program, 'args', label);
 }
 
@@ -2792,6 +2860,7 @@ test('read-only Git artefact writers have their exact capability boundary', () =
   assert.deepEqual(READ_ONLY_GIT_ARTIFACT_WRITERS, [
     'scripts/ci/baseline-manifest-impact.js',
     'scripts/ci/baseline-checkpoint.js',
+    'scripts/ci/expensive-check-checkpoint.mjs',
     'scripts/audit/canonical-v2-termination-render-diagnosis.mjs',
     'scripts/stage-2y-h-representation-topic-compare.mjs',
     'scripts/stage-2y-registry-substrate-replay.mjs',
@@ -2806,14 +2875,11 @@ test('read-only Git artefact writers have their exact capability boundary', () =
     'scripts/stage-2y-structure-m7-v2-repair-work0-finalise.mjs',
     'scripts/stage-2y-structure-m7-v2-repair-work0-validate.mjs',
     'scripts/stage-2y-structure-m7-v2-repair-work1-7-authority-validate.mjs',
-    'scripts/stage-2y-structure-m7-v2-repair-execution-manifest-validate.mjs',
     'scripts/stage-2y-structure-m7-v2-repair-work4-bind-candidate.mjs',
   ]);
   for (const relativePath of READ_ONLY_GIT_ARTIFACT_WRITERS) {
     const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
-    if (relativePath === 'scripts/stage-2y-structure-m7-v2-repair-execution-manifest-validate.mjs') {
-      assertExecutionManifestValidatorGitBoundary(source, relativePath);
-    } else if (relativePath === 'scripts/stage-2y-structure-m7-v2-repair-work4-bind-candidate.mjs') {
+    if (relativePath === 'scripts/stage-2y-structure-m7-v2-repair-work4-bind-candidate.mjs') {
       assertWork4CandidateBinderBoundary(source, relativePath);
     } else {
       assertReadOnlyGitArtifactWriter(source, relativePath);
@@ -2821,22 +2887,30 @@ test('read-only Git artefact writers have their exact capability boundary', () =
   }
 });
 
-test('the execution-manifest validator rejects non-read-only or unbound Git inspection', () => {
+test('the execution-manifest validator delegates exactly its read-only Git inspection', () => {
   const relativePath =
     'scripts/stage-2y-structure-m7-v2-repair-execution-manifest-validate.mjs';
   const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+  assertExecutionManifestValidatorGitBoundary(source, relativePath);
+  const seamImport = "import {\n  gitReadText,\n  validateWork3,\n} from './stage-2y-structure-m7-v2-repair-work3-validate.mjs';";
+  assert.ok(source.includes(seamImport), 'validator must import the Work3 validator seam');
   for (const hostile of [
     source.replace(
-      "execFileSync('git', argv, {",
-      'execFileSync(process.env.WORK4_GIT, argv, {',
+      seamImport,
+      `import { execFileSync } from 'node:child_process';\n${seamImport}`,
     ),
     source.replace(
-      "gitRead(root, ['cat-file', '-e', `${binding.commit}^{commit}`]);",
-      "gitRead(root, ['push']);",
+      seamImport,
+      "import { validateWork3 } from './stage-2y-structure-m7-v2-repair-work3-validate.mjs';\n"
+        + 'function gitReadText(root, argv) { return String([root, argv]); }',
     ),
     source.replace(
-      "originCommit = gitRead(root, ['rev-parse', `refs/remotes/origin/${BRANCH}`]);",
-      "originCommit = gitRead(root, ['rev-parse', process.env.WORK4_REF]);",
+      "gitReadText(root, ['cat-file', '-e', `${binding.commit}^{commit}`]);",
+      "gitReadText(root, ['push']);",
+    ),
+    source.replace(
+      "originCommit = gitReadText(root, ['rev-parse', `refs/remotes/origin/${BRANCH}`]);",
+      "originCommit = gitReadText(root, ['rev-parse', process.env.WORK4_REF]);",
     ),
   ]) {
     assert.notEqual(hostile, source);
@@ -2846,6 +2920,16 @@ test('the execution-manifest validator rejects non-read-only or unbound Git insp
         'hostile execution-manifest validator',
       ),
     );
+  }
+});
+
+test('the Work3 validator Git seam refuses any non-read-only command head', async () => {
+  const { gitReadText } = await import(
+    path.join(ROOT, 'scripts/stage-2y-structure-m7-v2-repair-work3-validate.mjs')
+  );
+  assert.equal(gitReadText(ROOT, ['rev-parse', '--is-inside-work-tree']), 'true');
+  for (const argv of [['push', 'origin'], ['commit', '-m', 'x'], [], ['rev-parse', 7]]) {
+    assert.throws(() => gitReadText(ROOT, argv), /GIT_READ_ONLY_SEAM/u);
   }
 });
 
@@ -2976,7 +3060,7 @@ test('new authority class boundaries reject dynamic argv and outbound-network by
   );
   assert.throws(
     () => assertLocalSubprocessArtifactWriterBoundary(thirdRunnerCall, runnerPath),
-    /must call startLane exactly twice/,
+    /must call startLane exactly three times/,
   );
   const indirectRunnerSpawn = replaceExact(
     runnerSource,

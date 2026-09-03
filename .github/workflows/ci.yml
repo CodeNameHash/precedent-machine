@@ -206,6 +206,113 @@ jobs:
           grep -A 25 "^not ok" /tmp/test-output.log || true
           exit "${status:-0}"
 
+  # Each evidence gate re-derives a committed report from every admitted
+  # corpus run (about twenty minutes) and depends only on what its script can
+  # read, so it runs once per exact input digest and is skipped on an exact
+  # checkpoint hit, the same shape as the baseline gate below.
+  evidence-gates:
+    needs: plan-heavy-ci
+    if: ${{ always() && needs.plan-heavy-ci.outputs.run_heavy != 'false' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          # inputs must name every path the gate reads outside its static
+          # dependency closure and the final corpus run directories: each run's
+          # source-reference.json names a raw HTML fixture under
+          # tests/fixtures/canonical-v2 and a source-map payload under
+          # evidence/canonical-v2/_admitted-source-map-payloads, both verified
+          # by byte at run time; the replay ladder also reads the r3 Interim
+          # Operating run manifest.
+          - gate: near-miss
+            entry: scripts/stage-2y-registry-near-miss.mjs
+            inputs: evidence/canonical-v2/stage-2y-registry-near-miss.json,evidence/canonical-v2/stage-2y-registry-near-miss.md,tests/fixtures/canonical-v2,evidence/canonical-v2/_admitted-source-map-payloads
+          - gate: replay-baseline
+            entry: scripts/stage-2y-registry-substrate-replay.mjs
+            inputs: evidence/canonical-v2/stage-2y-registry-substrate-replay.json,evidence/canonical-v2/stage-2y-registry-substrate-head-baseline.json,tests/fixtures/canonical-v2,evidence/canonical-v2/_admitted-source-map-payloads,evidence/canonical-v2/modiv-interim-operating-20260809-2xk-r3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Compute evidence gate input digest
+        id: gate-digest
+        continue-on-error: true
+        env:
+          GATE: ${{ matrix.gate }}
+          ENTRY: ${{ matrix.entry }}
+          INPUTS: ${{ matrix.inputs }}
+        run: |
+          set -euo pipefail
+          digest="$(node scripts/ci/expensive-check-checkpoint.mjs digest \
+            --gate "${GATE}" --entry "${ENTRY}" --inputs "${INPUTS}" --corpus-runs)"
+          if [[ ! "${digest}" =~ ^[0-9a-f]{64}$ ]]; then
+            echo "Evidence gate input digest is malformed."
+            exit 1
+          fi
+          echo "digest=${digest}" >> "${GITHUB_OUTPUT}"
+      - name: Restore exact evidence gate checkpoint
+        id: restore-gate-checkpoint
+        if: steps.gate-digest.outcome == 'success'
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/evidence-gate-checkpoint
+          key: evidence-gate-checkpoint-v1-${{ matrix.gate }}-${{ steps.gate-digest.outputs.digest }}
+          fail-on-cache-miss: false
+      - name: Plan evidence gate
+        id: gate-plan
+        env:
+          CACHE_HIT: ${{ steps.restore-gate-checkpoint.outputs.cache-hit }}
+          DIGEST_OUTCOME: ${{ steps.gate-digest.outcome }}
+          EXPECTED_DIGEST: ${{ steps.gate-digest.outputs.digest }}
+          MARKER_FILE: ${{ runner.temp }}/evidence-gate-checkpoint/marker.txt
+          RESTORE_OUTCOME: ${{ steps.restore-gate-checkpoint.outcome }}
+        run: |
+          set -u
+          run_gate=true
+          reason=digest-unavailable
+          if [ "${DIGEST_OUTCOME}" = "success" ]; then
+            reason=cache-miss
+            if [ "${RESTORE_OUTCOME}" != "success" ]; then
+              reason=cache-restore-error
+            elif [ "${CACHE_HIT}" = "true" ]; then
+              reason=marker-missing-or-malformed
+              if node scripts/ci/expensive-check-checkpoint.mjs verify \
+                "${EXPECTED_DIGEST}" "${MARKER_FILE}"; then
+                run_gate=false
+                reason=exact-checkpoint
+              fi
+            fi
+          fi
+          echo "run_gate=${run_gate}" >> "${GITHUB_OUTPUT}"
+          echo "reason=${reason}" >> "${GITHUB_OUTPUT}"
+          echo "EVIDENCE-GATE-CHECKPOINT: gate=${{ matrix.gate }} run_gate=${run_gate} ${reason}"
+      - name: Evidence gate is current
+        id: evidence-gate
+        if: steps.gate-plan.outputs.run_gate != 'false'
+        run: npm run gate:${{ matrix.gate }}
+      - name: Write evidence gate checkpoint marker
+        id: write-gate-checkpoint
+        if: steps.gate-digest.outcome == 'success' && steps.gate-plan.outputs.run_gate != 'false' && steps.evidence-gate.outcome == 'success'
+        env:
+          DIGEST: ${{ steps.gate-digest.outputs.digest }}
+          MARKER_FILE: ${{ runner.temp }}/evidence-gate-checkpoint/marker.txt
+        run: node scripts/ci/expensive-check-checkpoint.mjs write "${DIGEST}" "${MARKER_FILE}"
+      - name: Save evidence gate checkpoint
+        if: steps.write-gate-checkpoint.outcome == 'success'
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/evidence-gate-checkpoint
+          key: evidence-gate-checkpoint-v1-${{ matrix.gate }}-${{ steps.gate-digest.outputs.digest }}
+
   production-build:
     needs: plan-heavy-ci
     if: ${{ always() && needs.plan-heavy-ci.outputs.run_heavy != 'false' }}
@@ -224,7 +331,7 @@ jobs:
 
   test-and-build:
     name: test-and-build
-    needs: [plan-heavy-ci, unit-tests, production-build]
+    needs: [plan-heavy-ci, unit-tests, evidence-gates, production-build]
     if: ${{ always() && needs.plan-heavy-ci.outputs.run_heavy != 'false' }}
     runs-on: ubuntu-latest
     steps:
@@ -232,6 +339,7 @@ jobs:
         env:
           PLAN_RESULT: ${{ needs.plan-heavy-ci.result }}
           UNIT_TESTS_RESULT: ${{ needs.unit-tests.result }}
+          EVIDENCE_GATES_RESULT: ${{ needs.evidence-gates.result }}
           PRODUCTION_BUILD_RESULT: ${{ needs.production-build.result }}
         run: |
           set -euo pipefail
@@ -243,11 +351,15 @@ jobs:
             echo "Unit-test matrix result was ${UNIT_TESTS_RESULT:-missing}; expected success."
             exit 1
           fi
+          if [ "${EVIDENCE_GATES_RESULT:-}" != "success" ]; then
+            echo "Evidence-gate matrix result was ${EVIDENCE_GATES_RESULT:-missing}; expected success."
+            exit 1
+          fi
           if [ "${PRODUCTION_BUILD_RESULT}" != "success" ]; then
             echo "Production-build result was ${PRODUCTION_BUILD_RESULT:-missing}; expected success."
             exit 1
           fi
-          echo "All eight unit-test shards and the production build passed."
+          echo "All eight unit-test shards, both evidence gates and the production build passed."
   invariants:
     runs-on: ubuntu-latest
     needs: test-and-build
