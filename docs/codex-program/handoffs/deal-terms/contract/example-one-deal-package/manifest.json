@@ -1,0 +1,46 @@
+{
+  "schema_version": "DEAL_TERMS_RELEASE_MANIFEST/V1",
+  "package_schema_version": "DEAL_TERMS_PACKAGE/V1",
+  "production_release_id": "e39e11f6af76fc12bd9fc814a2100a77c08246efc14ab583dc52a0ad7385fc71",
+  "producer_commit": "0000000000000000000000000000000000000000",
+  "release_state": "REVIEW_ONLY_INTERNAL",
+  "public": false,
+  "released_at": "2026-09-03T00:00:00Z",
+  "corpus": {
+    "corpus_id": "00156d52f04476a8c8a2e2954fa2c55a2d4f2a0d10078392c40fb13aa3915728",
+    "corpus_kind": "ONE_DEAL",
+    "corpus_manifest_id": "03b8c7dc03506e02d607f89748372b0217412573a4e88cbc8c66401a24b4ac38",
+    "corpus_manifest_path": "corpus/corpus-manifest.json"
+  },
+  "deals": [
+    {
+      "deal_key": "42d649f09bb9c35baa0940368e38aa9d0b9472c84a3e9509ee5342e65ac3e265",
+      "deal_document_id": "2ce0b3fd42d30fe6c2ead8305ecb94ae0e979aa548ba882af62b8bbeb946d6d2",
+      "path": "deals/42d649f09bb9c35baa0940368e38aa9d0b9472c84a3e9509ee5342e65ac3e265/deal.json"
+    }
+  ],
+  "files": [
+    {
+      "path": "corpus/corpus-manifest.json",
+      "sha256": "d261e6bb5c6e1f951423320664fc3504e6a908ae7d3c04d2bb9281bc827fbda0",
+      "byte_length": 971
+    },
+    {
+      "path": "deals/42d649f09bb9c35baa0940368e38aa9d0b9472c84a3e9509ee5342e65ac3e265/deal.json",
+      "sha256": "e39fac1bbd5499ac1d9e3ada43cb0e6dda94b2eda4f27d6b6768940c3e9146b7",
+      "byte_length": 8949
+    },
+    {
+      "path": "verify.mjs",
+      "sha256": "2c52f5b56bdce6d38f059573843bdeb89fdbc1dfaea9b68f1bf7009fd2804051",
+      "byte_length": 42604
+    }
+  ],
+  "counts": {
+    "deals": 1,
+    "files": 3,
+    "claims": 3,
+    "category_summaries": 1
+  },
+  "release_manifest_id": "51e3d045bab4288a31d0a0dd455d6dc6a527019d671f101750cbe2d42534afd7"
+}

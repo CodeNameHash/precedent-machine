@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://precedent-machine.invalid/schemas/deal-terms-package/v1/corpus-manifest.schema.json",
+  "title": "Corpus manifest input (CORPUS_MANIFEST_INPUT/V1)",
+  "description": "The input contract for a corpus Ben approves before any deal in it may be admitted. This is NOT the corpus manifest inside a released package (that is deal-terms-package.schema.json#/$defs/corpusManifest, where every member is already admitted and no field is nullable). This record is the proposal: it names the deals by SEC identity and records, per deal, whether admission has happened and what receipt proves it. Approval is a separate record, $defs/approval, which names this one by content ID; the two are not mutually referential. Every ID is contentId(domain, record) or sha256Hex(bytes) as defined in the producer's lib/canonical-v2/canonical-bytes.js.",
+  "type": "object",
+  "unevaluatedProperties": false,
+  "required": [
+    "schema_version",
+    "corpus_manifest_input_id",
+    "corpus_kind",
+    "supersedes_corpus_manifest_input_id",
+    "members",
+    "counts"
+  ],
+  "properties": {
+    "schema_version": { "const": "CORPUS_MANIFEST_INPUT/V1" },
+    "corpus_manifest_input_id": {
+      "$ref": "#/$defs/hex64",
+      "description": "contentId('CORPUS_MANIFEST_INPUT/V1', this record without corpus_manifest_input_id). The manifest is immutable: any edit is a new manifest with a new ID."
+    },
+    "corpus_kind": { "$ref": "#/$defs/corpusKind" },
+    "supersedes_corpus_manifest_input_id": {
+      "oneOf": [{ "$ref": "#/$defs/hex64" }, { "type": "null" }],
+      "description": "The manifest this one replaces, or null for the first. A superseded manifest stays resolvable; it is never edited."
+    },
+    "members": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Ordered by deal_key, no duplicate deal_key.",
+      "items": { "$ref": "#/$defs/member" }
+    },
+    "counts": {
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["member_count", "PROPOSED", "ADMITTED", "REJECTED", "WITHDRAWN"],
+      "properties": {
+        "member_count": { "type": "integer", "minimum": 1 },
+        "PROPOSED": { "type": "integer", "minimum": 0 },
+        "ADMITTED": { "type": "integer", "minimum": 0 },
+        "REJECTED": { "type": "integer", "minimum": 0 },
+        "WITHDRAWN": { "type": "integer", "minimum": 0 }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "corpus_kind": { "const": "SHARED_50_PROOF" } }, "required": ["corpus_kind"] },
+      "then": { "properties": { "members": { "minItems": 50, "maxItems": 50 } } }
+    },
+    {
+      "if": { "properties": { "corpus_kind": { "const": "ONE_DEAL" } }, "required": ["corpus_kind"] },
+      "then": { "properties": { "members": { "minItems": 1, "maxItems": 1 } } }
+    },
+    {
+      "if": { "properties": { "corpus_kind": { "const": "FIVE_DEAL" } }, "required": ["corpus_kind"] },
+      "then": { "properties": { "members": { "minItems": 5, "maxItems": 5 } } }
+    }
+  ],
+
+  "$defs": {
+    "hex64": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "A 64-character lowercase hexadecimal digest: sha256Hex(bytes) or contentId(domain, record)."
+    },
+    "cik": {
+      "type": "string",
+      "pattern": "^[0-9]{10}$",
+      "description": "SEC Central Index Key, zero-padded to ten digits."
+    },
+    "accession": {
+      "type": "string",
+      "pattern": "^[0-9]{10}-[0-9]{2}-[0-9]{6}$",
+      "description": "SEC accession number, NNNNNNNNNN-NN-NNNNNN."
+    },
+    "roleKey": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,63}$" },
+    "reasonCode": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{2,63}$" },
+    "corpusKind": { "type": "string", "enum": ["ONE_DEAL", "FIVE_DEAL", "SHARED_50_PROOF", "PUBLIC"] },
+    "admissionState": {
+      "type": "string",
+      "enum": ["PROPOSED", "ADMITTED", "REJECTED", "WITHDRAWN"],
+      "description": "PROPOSED: named by Ben, not yet admitted. ADMITTED: an admission receipt exists and the canonical text is bound. REJECTED: admission was attempted and failed. WITHDRAWN: Ben removed the deal before admission."
+    },
+
+    "admittedSourceReceipt": {
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["source_admission_manifest_id", "admission_receipt_id", "receipt_sha256"],
+      "properties": {
+        "source_admission_manifest_id": {
+          "$ref": "#/$defs/hex64",
+          "description": "The content ID of the SOURCE_ADMISSION_MANIFEST/V2 record produced by lib/canonical-v2/sec-source-admission.js."
+        },
+        "admission_receipt_id": {
+          "$ref": "#/$defs/hex64",
+          "description": "The content ID of the SOURCE_ADMISSION_PREPARATION_RECEIPT/V1 record."
+        },
+        "receipt_sha256": {
+          "$ref": "#/$defs/hex64",
+          "description": "SHA-256 of the receipt's committed bytes. Content ID proves what the record says; this proves which bytes said it."
+        }
+      }
+    },
+
+    "member": {
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": [
+        "deal_key", "source_system", "issuer_cik", "accession", "document_role_key",
+        "admission_state", "admitted_source_receipt", "canonical_text_sha256",
+        "agreement_id", "admission_reason_code"
+      ],
+      "properties": {
+        "deal_key": {
+          "$ref": "#/$defs/hex64",
+          "description": "contentId('DEAL_TERMS_DEAL_KEY/V1', {source_system, issuer_cik, accession, document_role_key}). Known at proposal time; it does not depend on admission."
+        },
+        "source_system": { "const": "SEC_EDGAR" },
+        "issuer_cik": { "$ref": "#/$defs/cik" },
+        "accession": { "$ref": "#/$defs/accession" },
+        "document_role_key": { "$ref": "#/$defs/roleKey" },
+        "admission_state": { "$ref": "#/$defs/admissionState" },
+        "admitted_source_receipt": {
+          "oneOf": [{ "$ref": "#/$defs/admittedSourceReceipt" }, { "type": "null" }],
+          "description": "Null until the deal is admitted."
+        },
+        "canonical_text_sha256": {
+          "oneOf": [{ "$ref": "#/$defs/hex64" }, { "type": "null" }],
+          "description": "Null until the deal is admitted; the SHA-256 of the admitted canonical text thereafter."
+        },
+        "agreement_id": {
+          "oneOf": [{ "$ref": "#/$defs/hex64" }, { "type": "null" }],
+          "description": "Null until the deal is admitted; the producer's canonical-text content ID thereafter."
+        },
+        "admission_reason_code": {
+          "oneOf": [{ "$ref": "#/$defs/reasonCode" }, { "type": "null" }],
+          "description": "Required for REJECTED and WITHDRAWN, null otherwise."
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "admission_state": { "const": "ADMITTED" } }, "required": ["admission_state"] },
+          "then": {
+            "properties": {
+              "admitted_source_receipt": { "$ref": "#/$defs/admittedSourceReceipt" },
+              "canonical_text_sha256": { "$ref": "#/$defs/hex64" },
+              "agreement_id": { "$ref": "#/$defs/hex64" },
+              "admission_reason_code": { "type": "null" }
+            }
+          },
+          "else": {
+            "properties": {
+              "admitted_source_receipt": { "type": "null" },
+              "canonical_text_sha256": { "type": "null" },
+              "agreement_id": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "admission_state": { "enum": ["REJECTED", "WITHDRAWN"] } },
+            "required": ["admission_state"]
+          },
+          "then": { "properties": { "admission_reason_code": { "$ref": "#/$defs/reasonCode" } } }
+        },
+        {
+          "if": { "properties": { "admission_state": { "const": "PROPOSED" } }, "required": ["admission_state"] },
+          "then": { "properties": { "admission_reason_code": { "type": "null" } } }
+        }
+      ]
+    },
+
+    "approval": {
+      "$comment": "CORPUS_MANIFEST_APPROVAL/V1: a separate record naming the manifest by content ID. It follows the shape of DOCUMENT_ROLE_REGISTRY_AUTHORITY/V1 in lib/canonical-v2/deal-source-binding.js, where the authority record references the registry and carries ben_approval_id, rather than the registry carrying its own approval.",
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": [
+        "schema_version",
+        "corpus_manifest_approval_id",
+        "corpus_manifest_input_id",
+        "corpus_manifest_input_sha256",
+        "approval_state",
+        "ben_approval_id",
+        "approved_at"
+      ],
+      "properties": {
+        "schema_version": { "const": "CORPUS_MANIFEST_APPROVAL/V1" },
+        "corpus_manifest_approval_id": {
+          "$ref": "#/$defs/hex64",
+          "description": "contentId('CORPUS_MANIFEST_APPROVAL/V1', this record without corpus_manifest_approval_id)."
+        },
+        "corpus_manifest_input_id": {
+          "$ref": "#/$defs/hex64",
+          "description": "The exact manifest approved. Approval never carries over to a superseding manifest."
+        },
+        "corpus_manifest_input_sha256": {
+          "$ref": "#/$defs/hex64",
+          "description": "SHA-256 of the approved manifest's committed bytes."
+        },
+        "approval_state": { "type": "string", "enum": ["APPROVED", "REJECTED"] },
+        "ben_approval_id": {
+          "$ref": "#/$defs/hex64",
+          "description": "The content ID of Ben's approval record. A legal or corpus-composition ruling is Ben's alone; no agent may synthesise one."
+        },
+        "approved_at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        }
+      }
+    }
+  }
+}

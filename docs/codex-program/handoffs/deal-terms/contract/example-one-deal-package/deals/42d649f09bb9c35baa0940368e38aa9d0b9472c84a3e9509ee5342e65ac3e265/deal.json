@@ -1,0 +1,225 @@
+{
+  "schema_version": "DEAL_TERMS_DEAL_DOCUMENT/V1",
+  "deal_key": "42d649f09bb9c35baa0940368e38aa9d0b9472c84a3e9509ee5342e65ac3e265",
+  "deal_identity": {
+    "source_system": "SEC_EDGAR",
+    "issuer_cik": "0000000000",
+    "accession": "0000000000-00-000000",
+    "document_role_key": "MERGER_AGREEMENT"
+  },
+  "provenance": {
+    "agreement_id": "c6e90478be787471a4cfcf097dbd00b3f2ff87e8fecd07dcf14285eb2023c972",
+    "canonical_text_id": "4e4afa25dbccd07dccd00421da7129a13e1f5558e9595e260a465016c9331860",
+    "canonical_text_sha256": "c40496e38e510a25dde4f5dea292b3aa3f64678ba4e9210c20651603d6d24b66",
+    "canonical_text_byte_length": 741,
+    "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+    "immutable_source_document_id": "9dc6577f2ae85e21234d2bc61d3a20efd8dea8e587483b8ad294128aa01655e6",
+    "source_response_content_id": "3c7f423f316895571924221c8df06c105c52004959528baa6eb9c1bb00695c08",
+    "source_admission_manifest_id": "8fbe50a7dd80ca1b517f98d3e93f992117c58e9253758aad10819e623d03b478",
+    "admission_receipt_id": "bac2c117f8dc060014cf475fc3a46ba2c67aae88356bc2a8150008422d72fbe9",
+    "raw_source_sha256": "2562f00a65ee482909bba65ac4ac61f4dd0780f564ac1090f69bb6f73b5c8da6",
+    "raw_source_byte_length": 1482,
+    "retrieval_url_sha256": "ad8e0eb6fb4801b1e7331c2c93db2e14bb444ee46620fb10b19cfc5aaaf35608"
+  },
+  "claims": [
+    {
+      "claim_occurrence_id": "c9ac7cc701c390d13eb0323b57772faa4f57fadbe86717d531cbbd8f2df8588e",
+      "family_key": "TERMINATION_FEE",
+      "claim_definition_key": "TERMINATION_FEE_AMOUNT_PRESENT",
+      "classification_levels": [
+        {
+          "level": "APPLIES_TO",
+          "value": "Company"
+        },
+        {
+          "level": "PROVISION_TYPE",
+          "value": "Termination fee"
+        },
+        {
+          "level": "SUB_PROVISION_TYPE",
+          "value": "Reverse and company termination fees"
+        }
+      ],
+      "section_reference": "Section 7.03",
+      "state": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "review_state": "NORMAL"
+      },
+      "reason_codes": [],
+      "fields": [
+        {
+          "field_key": "fee_amount",
+          "label": "Fee amount",
+          "rendered_value": "USD 12,000,000",
+          "rendered_value_digest": "8db1c45cca2085b37cfc7dfa269bc541626c4f7d449cf21909faecd79406fa7b",
+          "typed_value_digest": "f964b95132c19797f0f974c1b4447a1264ec7a1527c9c2cb021fe0f74e10a34c"
+        },
+        {
+          "field_key": "payment_deadline",
+          "label": "Payment deadline",
+          "rendered_value": "Two Business Days after termination",
+          "rendered_value_digest": "0bc346d7298e6d176aac773972ce47b7950ef3d8d1f72f51ccd8a16fa80683a6",
+          "typed_value_digest": "3994bafda0b3b8c4483486adb4a8cad18453d9e2c78c48e9050471ab9cc25016"
+        },
+        {
+          "field_key": "trigger",
+          "label": "Trigger",
+          "rendered_value": "Termination by Parent under Section 7.01(c)",
+          "rendered_value_digest": "7b33ced7c006c85590b7e8fa17ac795e2c8d82f3cfd9a6424209bd83a4a69432",
+          "typed_value_digest": "656c5d9decc73711387b94bde215dbd79f91eaeed02640f4f943abd8b7dcbe8d"
+        }
+      ],
+      "source": {
+        "node_occurrence_ids": [
+          "bffd6ef1ca486b357034edecbd378c601a2cc73d77147da539b27904b45538df"
+        ],
+        "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+        "spans": [
+          {
+            "node_occurrence_id": "bffd6ef1ca486b357034edecbd378c601a2cc73d77147da539b27904b45538df",
+            "start_byte": 13,
+            "end_byte": 278,
+            "text_sha256": "f18815594af543fb5c71719298d34031e6af6977ac0efa90521687a5d51316af",
+            "excerpt_text": "Section 7.03 Termination Fee. If this Agreement is terminated by Parent pursuant to Section 7.01(c), the Company shall pay to Parent a fee of twelve million dollars ($12,000,000) — the \"Company Termination Fee\" — within two Business Days after such termination."
+          }
+        ]
+      },
+      "claim_revision_id": "9e91f86ffff7952f182a6ec584b04df69c029e285ad53de2e9816eb53f1f7381"
+    },
+    {
+      "claim_occurrence_id": "d2a2ddb55cdab337258edd48d0bfd20b7bcaab8a41839f30c5266a64f17fe2da",
+      "family_key": "CLOSING_CONDITIONS",
+      "claim_definition_key": "CLOSING_CONDITION_PRESENT",
+      "classification_levels": [
+        {
+          "level": "APPLIES_TO",
+          "value": "Both parties"
+        },
+        {
+          "level": "PROVISION_TYPE",
+          "value": "Closing conditions"
+        },
+        {
+          "level": "SUB_PROVISION_TYPE",
+          "value": "Mutual conditions"
+        }
+      ],
+      "section_reference": "Section 6.01",
+      "state": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "review_state": "NO_OUTPUT"
+      },
+      "reason_codes": [
+        "NOT_MODELLED_AS_A_COMPARABLE_TERM"
+      ],
+      "fields": [],
+      "source": {
+        "node_occurrence_ids": [
+          "a2c5985b45c89047e50b764607e61280280f2324edc79aa1ba41e3fa7440a94b"
+        ],
+        "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+        "spans": [
+          {
+            "node_occurrence_id": "a2c5985b45c89047e50b764607e61280280f2324edc79aa1ba41e3fa7440a94b",
+            "start_byte": 599,
+            "end_byte": 740,
+            "text_sha256": "9dc0aa7cfa17f18370b1040aff1c31306019d8cece63eafcc6d0710ab1190967",
+            "excerpt_text": "Section 6.01 Conditions. The obligations of each party to effect the Merger are subject to the receipt of the Requisite Stockholder Approval."
+          }
+        ]
+      },
+      "claim_revision_id": "fee9e87d41a8b3ff6254dfcf378962c2b3975aa814943229c443c2ec1d14840d"
+    },
+    {
+      "claim_occurrence_id": "eb6fd36cc121a0a06b1a96f438a3883875c063274a90cb8a43f5d769e81e0771",
+      "family_key": "TERMINATION_FEE",
+      "claim_definition_key": "TERMINATION_FEE_AMOUNT_PRESENT",
+      "classification_levels": [
+        {
+          "level": "APPLIES_TO",
+          "value": "Parent"
+        },
+        {
+          "level": "PROVISION_TYPE",
+          "value": "Termination fee"
+        },
+        {
+          "level": "SUB_PROVISION_TYPE",
+          "value": "Reverse and company termination fees"
+        }
+      ],
+      "section_reference": "Section 7.04",
+      "state": {
+        "extraction_state": "AMBIGUOUS",
+        "source_quality": "DRAFTING_AMBIGUOUS",
+        "review_state": "REVIEW_ONLY"
+      },
+      "reason_codes": [
+        "DEPENDENCY_UNRESOLVED",
+        "MATERIAL_SPAN_UNMODELLED"
+      ],
+      "fields": [
+        {
+          "field_key": "fee_amount",
+          "label": "Fee amount",
+          "rendered_value": "Not resolved: amount is stated by reference",
+          "rendered_value_digest": "645e0403c95e067d6e7c81cbcd435e723c9924628d0f7e48881d185664c2ef69",
+          "typed_value_digest": "35820b14d92f8fcdadc51ac0de0d9c94cb4be2210cdc9cb2d15e63bde5e1f678"
+        }
+      ],
+      "source": {
+        "node_occurrence_ids": [
+          "6d08379d2311bb0b221fd25d27b25fa7e8367e6c216b2588aca5acf85dd62589"
+        ],
+        "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+        "spans": [
+          {
+            "node_occurrence_id": "6d08379d2311bb0b221fd25d27b25fa7e8367e6c216b2588aca5acf85dd62589",
+            "start_byte": 280,
+            "end_byte": 597,
+            "text_sha256": "d2d0f8f7489b604e56d369a2276c0c3a32413eed758ea8286d33fa5ad720c2e4",
+            "excerpt_text": "Section 7.04 Parent Fee. If this Agreement is terminated by the Company pursuant to Section 7.01(d), Parent shall pay to the Company an amount equal to the Company Termination Fee, unless the Regulatory Condition shall then be capable of satisfaction, in which case such amount shall be as the parties may then agree."
+          }
+        ]
+      },
+      "claim_revision_id": "5f493cca5f5a6335e7604465aa2f6b6e9f84285d23a91fabaf7334f0da1f9965"
+    }
+  ],
+  "category_summaries": [
+    {
+      "family_key": "TERMINATION_FEE",
+      "classification_path": [
+        "Termination fee",
+        "Reverse and company termination fees"
+      ],
+      "claim_occurrence_ids": [
+        "c9ac7cc701c390d13eb0323b57772faa4f57fadbe86717d531cbbd8f2df8588e",
+        "eb6fd36cc121a0a06b1a96f438a3883875c063274a90cb8a43f5d769e81e0771"
+      ],
+      "counts": {
+        "NORMAL": 1,
+        "APPROVED_LIMITED": 0,
+        "REVIEW_ONLY": 1,
+        "NO_COMPARISON": 0,
+        "NO_OUTPUT": 0
+      },
+      "summary_review_state": "REVIEW_ONLY",
+      "category_summary_id": "74b7f7756a6c46e650ae77b8dd6c70b34102bcbc4c73f19a133df0fc46380026"
+    }
+  ],
+  "counts": {
+    "claims": 3,
+    "category_summaries": 1,
+    "families": 2,
+    "by_review_state": {
+      "NORMAL": 1,
+      "APPROVED_LIMITED": 0,
+      "REVIEW_ONLY": 1,
+      "NO_COMPARISON": 0,
+      "NO_OUTPUT": 1
+    }
+  },
+  "deal_document_id": "2ce0b3fd42d30fe6c2ead8305ecb94ae0e979aa548ba882af62b8bbeb946d6d2"
+}

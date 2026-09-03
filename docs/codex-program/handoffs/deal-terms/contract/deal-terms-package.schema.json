@@ -1,0 +1,450 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://precedent-machine.invalid/schemas/deal-terms-package/v1/deal-terms-package.schema.json",
+  "title": "Deal Terms release package (DEAL_TERMS_PACKAGE/V1)",
+  "description": "The release manifest of a Deal Terms package. The per-deal document is $defs/dealDocument and the in-package corpus manifest is $defs/corpusManifest; a validator points at those directly for deals/<deal_key>/deal.json and corpus/corpus-manifest.json. This schema constrains shape and vocabulary only. It cannot check a content ID or a SHA-256: that is verify.mjs, and a package is not valid until verify.mjs exits 0 on it. Every ID in this schema is contentId(domain, record) or sha256Hex(bytes) as defined in the producer's lib/canonical-v2/canonical-bytes.js.",
+  "type": "object",
+  "unevaluatedProperties": false,
+  "required": [
+    "schema_version",
+    "package_schema_version",
+    "release_manifest_id",
+    "production_release_id",
+    "producer_commit",
+    "release_state",
+    "public",
+    "released_at",
+    "corpus",
+    "deals",
+    "files",
+    "counts"
+  ],
+  "properties": {
+    "schema_version": { "const": "DEAL_TERMS_RELEASE_MANIFEST/V1" },
+    "package_schema_version": { "const": "DEAL_TERMS_PACKAGE/V1" },
+    "release_manifest_id": {
+      "$ref": "#/$defs/hex64",
+      "description": "contentId('DEAL_TERMS_RELEASE_MANIFEST/V1', this record without release_manifest_id)."
+    },
+    "production_release_id": {
+      "$ref": "#/$defs/hex64",
+      "description": "The producer's identifier for this release. Immutable; a re-cut is a new release."
+    },
+    "producer_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$",
+      "description": "The producer's git commit the package was cut from. Not a path, not a branch name."
+    },
+    "release_state": { "$ref": "#/$defs/releaseState" },
+    "public": {
+      "type": "boolean",
+      "description": "True if and only if release_state is PUBLIC. verify.mjs enforces the biconditional."
+    },
+    "released_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+      "description": "RFC 3339 UTC instant, second precision. An input to release_manifest_id, so it is fixed at cut time."
+    },
+    "corpus": {
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["corpus_id", "corpus_kind", "corpus_manifest_id", "corpus_manifest_path"],
+      "properties": {
+        "corpus_id": { "$ref": "#/$defs/hex64" },
+        "corpus_kind": { "$ref": "#/$defs/corpusKind" },
+        "corpus_manifest_id": { "$ref": "#/$defs/hex64" },
+        "corpus_manifest_path": { "const": "corpus/corpus-manifest.json" }
+      }
+    },
+    "deals": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Ordered by deal_key. One entry per deal document in the package.",
+      "items": {
+        "type": "object",
+        "unevaluatedProperties": false,
+        "required": ["deal_key", "deal_document_id", "path"],
+        "properties": {
+          "deal_key": { "$ref": "#/$defs/hex64" },
+          "deal_document_id": { "$ref": "#/$defs/hex64" },
+          "path": { "type": "string", "pattern": "^deals/[0-9a-f]{64}/deal\\.json$" }
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Every file in the package except manifest.json itself, ordered by path. The set must equal the files on disk exactly: no extras, no omissions.",
+      "items": {
+        "type": "object",
+        "unevaluatedProperties": false,
+        "required": ["path", "sha256", "byte_length"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "^(?:verify\\.mjs|corpus/corpus-manifest\\.json|deals/[0-9a-f]{64}/deal\\.json)$"
+          },
+          "sha256": { "$ref": "#/$defs/hex64" },
+          "byte_length": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["deals", "files", "claims", "category_summaries"],
+      "properties": {
+        "deals": { "type": "integer", "minimum": 1 },
+        "files": { "type": "integer", "minimum": 1 },
+        "claims": { "type": "integer", "minimum": 0 },
+        "category_summaries": { "type": "integer", "minimum": 0 }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "release_state": { "const": "PUBLIC" } }, "required": ["release_state"] },
+      "then": { "properties": { "public": { "const": true } } },
+      "else": { "properties": { "public": { "const": false } } }
+    }
+  ],
+
+  "$defs": {
+    "hex64": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "A 64-character lowercase hexadecimal digest: either sha256Hex(bytes) or contentId(domain, record) from lib/canonical-v2/canonical-bytes.js."
+    },
+    "cik": {
+      "type": "string",
+      "pattern": "^[0-9]{10}$",
+      "description": "SEC Central Index Key, zero-padded to ten digits (the SEC_CIK convention in lib/canonical-v2/entity-subject.js)."
+    },
+    "accession": {
+      "type": "string",
+      "pattern": "^[0-9]{10}-[0-9]{2}-[0-9]{6}$",
+      "description": "SEC accession number, NNNNNNNNNN-NN-NNNNNN (the ACCESSION_RE of lib/canonical-v2/deal-source-binding.js)."
+    },
+    "roleKey": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]{1,63}$",
+      "description": "A document role key from the producer's document role registry (ROLE_KEY_RE of lib/canonical-v2/deal-source-binding.js)."
+    },
+    "reasonCode": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]{2,63}$",
+      "description": "An upper-snake reason code. The vocabulary is open at v1; the codes known when v1 was written are listed in the prose contract."
+    },
+    "familyKey": {
+      "type": "string",
+      "enum": [
+        "ANTITRUST_REGULATORY", "APPRAISAL_DISSENTERS_RIGHTS", "CAPITALISATION",
+        "CLOSING_CONDITIONS", "CONSIDERATION", "DIVIDENDS", "DNO_INDEMNIFICATION",
+        "EMPLOYEE_MATTERS", "FINANCING_COVENANTS", "GENERAL_COVENANTS",
+        "GUARANTY_FINANCING_PARTY", "INTERIM_OPERATING", "KEY_DEFINED_TERMS",
+        "MAE_DEFINITION", "MATERIAL_CONTRACTS", "MERGER_STRUCTURE_CLOSING",
+        "MISC_BOILERPLATE", "NO_OTHER_REPS_FRAUD", "NO_SHOP", "PROXY_MEETING",
+        "REPRESENTATIONS", "SPECIFIC_PERFORMANCE_REMEDIES", "TAX_MATTERS",
+        "TERMINATION", "TERMINATION_FEE"
+      ],
+      "description": "The 25 provision families, copied from evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json."
+    },
+    "extractionState": { "type": "string", "enum": ["COMPLETE", "INCOMPLETE", "AMBIGUOUS"] },
+    "sourceQuality": { "type": "string", "enum": ["SUFFICIENT", "SOURCE_LIMITED", "DRAFTING_AMBIGUOUS"] },
+    "reviewState": {
+      "type": "string",
+      "enum": ["NORMAL", "APPROVED_LIMITED", "REVIEW_ONLY", "NO_COMPARISON", "NO_OUTPUT"],
+      "description": "output_disposition in lib/canonical-v2/m7-v2-contract.js."
+    },
+    "corpusKind": { "type": "string", "enum": ["ONE_DEAL", "FIVE_DEAL", "SHARED_50_PROOF", "PUBLIC"] },
+    "releaseState": {
+      "type": "string",
+      "enum": ["REVIEW_ONLY_INTERNAL", "LEGAL_GATE_PASSED_INTERNAL", "PUBLIC"]
+    },
+    "coordinateSystem": { "const": "UTF8_CANONICAL_TEXT_HALF_OPEN" },
+
+    "dealIdentity": {
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["source_system", "issuer_cik", "accession", "document_role_key"],
+      "properties": {
+        "source_system": { "const": "SEC_EDGAR" },
+        "issuer_cik": { "$ref": "#/$defs/cik" },
+        "accession": { "$ref": "#/$defs/accession" },
+        "document_role_key": { "$ref": "#/$defs/roleKey" }
+      },
+      "description": "The four fields whose content ID is the deal_key: contentId('DEAL_TERMS_DEAL_KEY/V1', this object)."
+    },
+
+    "provenance": {
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": [
+        "agreement_id", "canonical_text_id", "canonical_text_sha256", "canonical_text_byte_length",
+        "coordinate_system", "immutable_source_document_id", "source_response_content_id",
+        "source_admission_manifest_id", "admission_receipt_id", "raw_source_sha256",
+        "raw_source_byte_length", "retrieval_url_sha256"
+      ],
+      "properties": {
+        "agreement_id": { "$ref": "#/$defs/hex64", "description": "The producer's canonical-text content ID for the agreement." },
+        "canonical_text_id": { "$ref": "#/$defs/hex64" },
+        "canonical_text_sha256": { "$ref": "#/$defs/hex64" },
+        "canonical_text_byte_length": { "type": "integer", "minimum": 1 },
+        "coordinate_system": { "$ref": "#/$defs/coordinateSystem" },
+        "immutable_source_document_id": { "$ref": "#/$defs/hex64" },
+        "source_response_content_id": { "$ref": "#/$defs/hex64" },
+        "source_admission_manifest_id": { "$ref": "#/$defs/hex64", "description": "SOURCE_ADMISSION_MANIFEST/V2 record ID." },
+        "admission_receipt_id": { "$ref": "#/$defs/hex64", "description": "SOURCE_ADMISSION_PREPARATION_RECEIPT/V1 record ID." },
+        "raw_source_sha256": { "$ref": "#/$defs/hex64" },
+        "raw_source_byte_length": { "type": "integer", "minimum": 1 },
+        "retrieval_url_sha256": { "$ref": "#/$defs/hex64", "description": "SHA-256 of the retrieval URL. The URL itself is not carried; a consumer reconstructs the EDGAR location from issuer_cik and accession." }
+      },
+      "description": "Document identity by content, never by location. No repository path appears here or anywhere else in a package."
+    },
+
+    "classificationLevel": {
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["level", "value"],
+      "properties": {
+        "level": {
+          "type": "string",
+          "pattern": "^(?:APPLIES_TO|PROVISION_TYPE|SUB_PROVISION_TYPE|NESTED_SUBTYPE(?:_[0-9]+)?)$"
+        },
+        "value": { "type": "string", "minLength": 1 }
+      }
+    },
+
+    "displayField": {
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["field_key", "label", "rendered_value", "rendered_value_digest", "typed_value_digest"],
+      "properties": {
+        "field_key": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "rendered_value": { "type": "string" },
+        "rendered_value_digest": { "$ref": "#/$defs/hex64", "description": "sha256Hex(rendered_value)." },
+        "typed_value_digest": { "$ref": "#/$defs/hex64", "description": "sha256Hex(canonicalJson(typed value)). Two claims agree on a value exactly when these are equal." }
+      }
+    },
+
+    "sourceSpan": {
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["node_occurrence_id", "start_byte", "end_byte", "text_sha256", "excerpt_text"],
+      "properties": {
+        "node_occurrence_id": { "$ref": "#/$defs/hex64", "description": "M2 node occurrence identity." },
+        "start_byte": { "type": "integer", "minimum": 0 },
+        "end_byte": { "type": "integer", "minimum": 1 },
+        "text_sha256": { "$ref": "#/$defs/hex64", "description": "sha256Hex(excerpt_text)." },
+        "excerpt_text": { "type": "string", "minLength": 1 }
+      },
+      "description": "A half-open [start_byte, end_byte) span in UTF-8 bytes over the canonical text. verify.mjs requires end_byte > start_byte, utf8ByteLength(excerpt_text) === end_byte - start_byte, and sha256Hex(excerpt_text) === text_sha256."
+    },
+
+    "claim": {
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": [
+        "claim_occurrence_id", "claim_revision_id", "family_key", "claim_definition_key",
+        "classification_levels", "section_reference", "state", "reason_codes", "fields", "source"
+      ],
+      "properties": {
+        "claim_occurrence_id": {
+          "$ref": "#/$defs/hex64",
+          "description": "M4 claim occurrence identity. Stable across revisions: a changed answer keeps this and gets a new claim_revision_id."
+        },
+        "claim_revision_id": {
+          "$ref": "#/$defs/hex64",
+          "description": "contentId('DEAL_TERMS_CLAIM_REVISION/V1', this record without claim_revision_id)."
+        },
+        "family_key": { "$ref": "#/$defs/familyKey" },
+        "claim_definition_key": { "$ref": "#/$defs/roleKey" },
+        "classification_levels": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "$ref": "#/$defs/classificationLevel" },
+          "description": "Index 0 is APPLIES_TO, index 1 is PROVISION_TYPE, then the profile's classification path."
+        },
+        "section_reference": { "type": "string", "minLength": 1 },
+        "state": {
+          "type": "object",
+          "unevaluatedProperties": false,
+          "required": ["extraction_state", "source_quality", "review_state"],
+          "properties": {
+            "extraction_state": { "$ref": "#/$defs/extractionState" },
+            "source_quality": { "$ref": "#/$defs/sourceQuality" },
+            "review_state": { "$ref": "#/$defs/reviewState" }
+          },
+          "description": "The producer's three-part state. Only the combinations validStateCombination() permits are legal; verify.mjs enforces them."
+        },
+        "reason_codes": { "type": "array", "items": { "$ref": "#/$defs/reasonCode" } },
+        "fields": { "type": "array", "items": { "$ref": "#/$defs/displayField" } },
+        "source": {
+          "type": "object",
+          "unevaluatedProperties": false,
+          "required": ["node_occurrence_ids", "coordinate_system", "spans"],
+          "properties": {
+            "node_occurrence_ids": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/hex64" } },
+            "coordinate_system": { "$ref": "#/$defs/coordinateSystem" },
+            "spans": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/sourceSpan" } }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "state": { "properties": { "review_state": { "const": "REVIEW_ONLY" } }, "required": ["review_state"] } }, "required": ["state"] },
+          "then": { "properties": { "reason_codes": { "minItems": 1 } } }
+        },
+        {
+          "if": { "properties": { "state": { "properties": { "review_state": { "const": "NORMAL" } }, "required": ["review_state"] } }, "required": ["state"] },
+          "then": { "properties": { "reason_codes": { "maxItems": 0 } } }
+        }
+      ]
+    },
+
+    "categorySummary": {
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": [
+        "category_summary_id", "family_key", "classification_path",
+        "claim_occurrence_ids", "counts", "summary_review_state"
+      ],
+      "properties": {
+        "category_summary_id": {
+          "$ref": "#/$defs/hex64",
+          "description": "contentId('DEAL_TERMS_CATEGORY_SUMMARY/V1', this record without category_summary_id)."
+        },
+        "family_key": { "$ref": "#/$defs/familyKey" },
+        "classification_path": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "The claim's classification_levels values from index 1 onward, i.e. everything below APPLIES_TO."
+        },
+        "claim_occurrence_ids": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/hex64" } },
+        "counts": {
+          "type": "object",
+          "unevaluatedProperties": false,
+          "required": ["NORMAL", "APPROVED_LIMITED", "REVIEW_ONLY", "NO_COMPARISON", "NO_OUTPUT"],
+          "properties": {
+            "NORMAL": { "type": "integer", "minimum": 0 },
+            "APPROVED_LIMITED": { "type": "integer", "minimum": 0 },
+            "REVIEW_ONLY": { "type": "integer", "minimum": 0 },
+            "NO_COMPARISON": { "type": "integer", "minimum": 0 },
+            "NO_OUTPUT": { "type": "integer", "const": 0 }
+          }
+        },
+        "summary_review_state": {
+          "$ref": "#/$defs/reviewState",
+          "description": "REVIEW_ONLY beats APPROVED_LIMITED beats NORMAL beats NO_COMPARISON, mirroring summariseOccurrenceStates(). NO_OUTPUT claims are never summarised."
+        }
+      }
+    },
+
+    "dealDocument": {
+      "$comment": "The schema for deals/<deal_key>/deal.json.",
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": [
+        "schema_version", "deal_document_id", "deal_key", "deal_identity",
+        "provenance", "claims", "category_summaries", "counts"
+      ],
+      "properties": {
+        "schema_version": { "const": "DEAL_TERMS_DEAL_DOCUMENT/V1" },
+        "deal_document_id": {
+          "$ref": "#/$defs/hex64",
+          "description": "contentId('DEAL_TERMS_DEAL_DOCUMENT/V1', this record without deal_document_id)."
+        },
+        "deal_key": {
+          "$ref": "#/$defs/hex64",
+          "description": "contentId('DEAL_TERMS_DEAL_KEY/V1', deal_identity)."
+        },
+        "deal_identity": { "$ref": "#/$defs/dealIdentity" },
+        "provenance": { "$ref": "#/$defs/provenance" },
+        "claims": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/claim" },
+          "description": "Ordered by claim_occurrence_id, each occurrence appearing at most once."
+        },
+        "category_summaries": { "type": "array", "items": { "$ref": "#/$defs/categorySummary" } },
+        "counts": {
+          "type": "object",
+          "unevaluatedProperties": false,
+          "required": ["claims", "category_summaries", "families", "by_review_state"],
+          "properties": {
+            "claims": { "type": "integer", "minimum": 1 },
+            "category_summaries": { "type": "integer", "minimum": 0 },
+            "families": { "type": "integer", "minimum": 1 },
+            "by_review_state": {
+              "type": "object",
+              "unevaluatedProperties": false,
+              "required": ["NORMAL", "APPROVED_LIMITED", "REVIEW_ONLY", "NO_COMPARISON", "NO_OUTPUT"],
+              "additionalProperties": { "type": "integer", "minimum": 0 }
+            }
+          }
+        }
+      }
+    },
+
+    "corpusManifest": {
+      "$comment": "The schema for corpus/corpus-manifest.json. Every member of a released corpus is already admitted, so no field here is nullable; the pre-admission shape is corpus-manifest.schema.json.",
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["schema_version", "corpus_manifest_id", "corpus_id", "corpus_kind", "members", "counts"],
+      "properties": {
+        "schema_version": { "const": "DEAL_TERMS_CORPUS_MANIFEST/V1" },
+        "corpus_manifest_id": {
+          "$ref": "#/$defs/hex64",
+          "description": "contentId('DEAL_TERMS_CORPUS_MANIFEST/V1', this record without corpus_manifest_id)."
+        },
+        "corpus_id": {
+          "$ref": "#/$defs/hex64",
+          "description": "contentId('DEAL_TERMS_CORPUS_ID/V1', {corpus_kind, member_deal_keys: sorted}). Two manifests with the same kind and members share a corpus_id."
+        },
+        "corpus_kind": { "$ref": "#/$defs/corpusKind" },
+        "members": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Ordered by deal_key, no duplicates. The member set equals the deal documents in the package exactly.",
+          "items": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "required": [
+              "deal_key", "source_system", "issuer_cik", "accession", "document_role_key",
+              "agreement_id", "canonical_text_sha256", "source_admission_manifest_id", "admission_receipt_id"
+            ],
+            "properties": {
+              "deal_key": { "$ref": "#/$defs/hex64" },
+              "source_system": { "const": "SEC_EDGAR" },
+              "issuer_cik": { "$ref": "#/$defs/cik" },
+              "accession": { "$ref": "#/$defs/accession" },
+              "document_role_key": { "$ref": "#/$defs/roleKey" },
+              "agreement_id": { "$ref": "#/$defs/hex64" },
+              "canonical_text_sha256": { "$ref": "#/$defs/hex64" },
+              "source_admission_manifest_id": { "$ref": "#/$defs/hex64" },
+              "admission_receipt_id": { "$ref": "#/$defs/hex64" }
+            }
+          }
+        },
+        "counts": {
+          "type": "object",
+          "unevaluatedProperties": false,
+          "required": ["member_count"],
+          "properties": { "member_count": { "type": "integer", "minimum": 1 } }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "corpus_kind": { "const": "ONE_DEAL" } }, "required": ["corpus_kind"] },
+          "then": { "properties": { "members": { "minItems": 1, "maxItems": 1 } } }
+        },
+        {
+          "if": { "properties": { "corpus_kind": { "const": "FIVE_DEAL" } }, "required": ["corpus_kind"] },
+          "then": { "properties": { "members": { "minItems": 5, "maxItems": 5 } } }
+        }
+      ]
+    }
+  }
+}
