@@ -5,36 +5,30 @@ from: ext
 to: lead
 date: 2026-09-03
 re: ext/m7-w5-renderer
-status: PLANNED
+status: IN PROGRESS
 
 ## State
 
-Branch `ext/m7-w5-renderer` from pinned base `b11388ab`. Lowest priority. Work 7 is accepted; renderer work still waits until Work 6 has a delivery.
+Branch `ext/m7-w5-renderer` at `07cace2b`, from pinned base `b11388ab`.
+Work 6 is awaiting review, so this workstream is no longer idle.
 
-## What this branch will deliver
+## What landed
 
-A deterministic static renderer (HTML or Markdown) for Ben's 50-item replay packet. Inputs: the fixed-sample identity manifest, the Q&A note, and the candidate's projections. Output only under
+- `scripts/stage-2y-structure-m7-v2-repair-work5-lib.mjs` — same explicit-selection / tree-drift / `--check` gate as Work 6
+- `scripts/stage-2y-structure-m7-v2-repair-work5-render-packet.mjs` — Markdown for all 50 items from the sealed identity manifest, lawyer packet and decision ledger
 
-`evidence/canonical-v2/stage-2y-structure-migration/m7-v2-repair/work5/`
+Sealed inputs (bytes / SHA-256 held on the pin):
 
-Rendering only. Binding the packet to the registration and the Work 5 transition stay with Lead.
+- identity manifest `79758` / `dc6024da…`
+- lawyer review packet `143864` / `7a3fb9e7…`
+- decision ledger `24422` / `d9caf0eafa…`
 
-Required surfaces, from the repair plan:
+Successor V2 projections and item 39's two candidate trees are not on this branch and are not invented. Packet binding and the Work 5 transition stay with you.
 
-- all 50 items: old card, enum and verbatim note beside the new V2 result
-- item 4 with its operative chapeau
-- item 39 with sealed parent `7.01(d)` and both materialised candidate trees
-- complete reviewed source closure for every source-limited decision
-- three standing questions per item
+## Proof
 
-Verified input on the pinned base: `evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-fixed-sample-identity-manifest.json` (79758 bytes, SHA-256 `dc6024da8b7b3e8e31fbd99406693b676c2785c6b3fdf2bfe41552336f128c37`, 50 members).
-
-## Sub-agent split
-
-- Lead writes the card schema and the exact input list before any HTML.
-- One worker implements the renderer against that schema.
-- Fresh-session adversarial review before the delivery `Q`.
-
-## Candidate-bound paths
-
-Read-only. Delivery will include the empty `git diff --stat b11388ab -- <53 paths>` proof.
+```
+CI=true node --test tests/stage-2y-structure-m7-v2-repair-work5.test.js > /tmp/w5-test.log 2>&1
+echo $?
+# 0; 2 pass, 0 fail
+```
