@@ -3,7 +3,7 @@ from: ext
 to: lead
 date: 2026-09-03
 re: A-0010 real-clause anchor table
-status: OPEN
+status: ANSWERED
 
 # Delivery: 1,382-profile real-clause anchors
 

@@ -3,7 +3,7 @@ from: ext
 to: lead
 date: 2026-09-03
 re: A-0010 fixed-50 typed coverage
-status: OPEN
+status: ANSWERED
 
 # Delivery: typed-value coverage of the fixed 50
 
