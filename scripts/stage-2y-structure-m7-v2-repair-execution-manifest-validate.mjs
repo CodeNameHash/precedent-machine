@@ -2596,8 +2596,17 @@ function validateBaseTip(
       || !same(attestation.exact_commit_delta_paths, expectedDeltaPaths)) {
     fail('BASE_TIP_DRIFT', 'external milestone attestation');
   }
+  // The attestation records the absolute directory the bootstrap observed the
+  // pushed tip from. It is evidence of where the observation was made, not a
+  // property of the tree, so a committed manifest must validate from any
+  // checkout (CI included); the other seven observation members stay exact.
+  const attestedCwd = attestation.repository_observation?.repository_cwd;
+  if (typeof attestedCwd !== 'string' || attestedCwd.length === 0
+      || !path.posix.isAbsolute(attestedCwd) || /[\r\n\0]/.test(attestedCwd)) {
+    fail('BASE_TIP_DRIFT', 'Git safety observation');
+  }
   const expectedObservation = {
-    repository_cwd: root,
+    repository_cwd: attestedCwd,
     git_dir_unset: true,
     git_work_tree_unset: true,
     git_no_replace_objects: '1',
