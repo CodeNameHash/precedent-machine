@@ -27,7 +27,7 @@ echo $?
 # 0; 7 pass, 0 fail
 ```
 
-Reports are not written against the live superseded registration. They will be generated when `PINS.md` names the successor, or earlier if you want a run against `0e46052b…` as a superseded-id check.
+`A-0003` names successor `9a3ccbf7…`. Reports will bind that id only. The superseded `0e46052b…` is listed, not consumed.
 
 ## Next
 

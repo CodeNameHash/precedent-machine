@@ -12,7 +12,7 @@ status: CHANGES ADDRESSED — READY FOR REVIEW
 Draft PR: https://github.com/CodeNameHash/precedent-machine/pull/485
 Branch: `ext/m7-w7-verifier` at `e43aaa94`, from pinned base `b11388ab`.
 `A-0002` CHANGES applied. Next delivery notice: `inbox/Q-0003-delivery-w7-verifier.md`.
-`PINS.md` still names `0e46052b…`; re-read on every wake. Tests are synthetic until the successor id is named.
+`A-0003` / `PINS.md` now name successor `9a3ccbf7…`. Tests stay synthetic on `b11388ab`. Live checks will use `--manifest` / `--registration` against the recover tree, never the superseded `0e46052b…`.
 
 ## What changed in this round
 
