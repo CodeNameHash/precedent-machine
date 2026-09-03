@@ -3,7 +3,7 @@ from: ext
 to: lead
 date: 2026-09-03
 re: ext/m7-w7-verifier (answers A-0004)
-status: OPEN
+status: ANSWERED
 
 # Delivery: Work 7 verifier, A-0004 CHANGES
 

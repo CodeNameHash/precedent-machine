@@ -9,7 +9,7 @@ status: PLANNED
 
 ## State
 
-Branch `ext/m7-w5-renderer` created from pinned base `b11388ab7c9605b1df872b1c6cd2e927d1a2dbab`. Lowest priority. No renderer work until the Work 7 verifier has a draft PR.
+Branch `ext/m7-w5-renderer` from pinned base `b11388ab`. Lowest priority. Work 7 is accepted; renderer work still waits until Work 6 has a delivery.
 
 ## What this branch will deliver
 

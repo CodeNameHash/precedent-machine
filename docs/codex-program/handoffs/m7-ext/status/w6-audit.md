@@ -9,26 +9,23 @@ status: IN PROGRESS
 
 ## State
 
-Branch `ext/m7-w6-audit` at `cc74ed52`, from pinned base `b11388ab`.
-`A-0001` Q1 confirmed the three sealed ledgers. First three report scripts are on the branch. Remaining reports (touched-rows, ten-agreement, additive-three, unfamiliar drafting, family-agreement counts, old-to-new matrix) are next. No delivery `Q` until those exist.
+Branch `ext/m7-w6-audit` at `39b07fb1`, from pinned base `b11388ab`.
+Work 7 is accepted. Five of nine reports exist. Remaining: touched-rows, unfamiliar drafting, family-agreement counts, old-to-new matrix.
 
 ## What landed
 
-- `scripts/stage-2y-structure-m7-v2-repair-work6-lib.mjs` — explicit `--registration` / `--manifest`, tree-drift refuse, `--check`, write only under `m7-v2-repair/work6/`
-- `work6-known-loss-244.mjs` — 244/244 `VERIFIED_FIXED_…` recounted
-- `work6-historical-limbs-69.mjs` — 62 / 6 / 1; residual `47fd7541…` §3.01 (e)(iii) reported, not resolved
-- `work6-parser-ambiguities-23.mjs` — 23 `BEN_APPROVED_NO_UNAFFECTED_PROPOSITION_BLOCK`; overlays created: 0
+- known-loss 244, historical limbs 69, parser ambiguities 23
+- ten-agreement calibration: 10 sealed Work 3 analysis-set members; TopBuild 84/244 known-loss members reported separately; combined ten-corpus digest `b8825b71…`
+- additive-three calibration: 16 sealed members on AbbVie/Landos, Lilly/Verve, Rocket/Redfin
+
+Additive ledger bound at
+`shadow/m7-generalisation-comparison-entry-correction/additive-open-world.json`
+(7455 bytes, SHA-256 `4ae03b62…`). Same comparison-entry-correction shadow family as the A-0001 ledgers; recorded here so you can name a different source if this is the wrong file.
 
 ## Proof
 
 ```
 CI=true node --test tests/stage-2y-structure-m7-v2-repair-work6.test.js > /tmp/w6-test.log 2>&1
 echo $?
-# 0; 7 pass, 0 fail
+# 0; 9 pass, 0 fail
 ```
-
-`A-0003` names successor `9a3ccbf7…`. Reports will bind that id only. The superseded `0e46052b…` is listed, not consumed.
-
-## Next
-
-Touched-rows, ten-agreement (TopBuild separate), additive-three, unfamiliar drafting, family-agreement counts, old-to-new matrix.
