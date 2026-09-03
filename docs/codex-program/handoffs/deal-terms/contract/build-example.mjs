@@ -454,6 +454,66 @@ function snapshot(root) {
  * 6. The schema must list exactly the fields the verifier enforces.  *
  * ---------------------------------------------------------------- */
 
+// JSON.parse silently keeps the last of two members with the same name, so a
+// duplicate-key defect survives every parse-based check. This walks the raw
+// token stream and reports any object that declares a name twice. Q-0002 s6
+// reported duplicates in draft 1; this guard shows there were none, and makes
+// sure a real one can never ship unnoticed.
+function duplicateJsonKeys(text) {
+  const duplicates = [];
+  const stack = [];
+  let i = 0;
+  let expectKey = false;
+  while (i < text.length) {
+    const ch = text[i];
+    if (ch === '"') {
+      let j = i + 1;
+      let raw = '';
+      while (j < text.length && text[j] !== '"') {
+        if (text[j] === '\\') { raw += text[j] + text[j + 1]; j += 2; continue; }
+        raw += text[j];
+        j += 1;
+      }
+      const value = JSON.parse(`"${raw}"`);
+      let k = j + 1;
+      while (k < text.length && /\s/.test(text[k])) k += 1;
+      if (expectKey && text[k] === ':') {
+        const frame = stack[stack.length - 1];
+        if (frame && frame.names.has(value)) duplicates.push(value);
+        if (frame) frame.names.add(value);
+        expectKey = false;
+      }
+      i = j + 1;
+      continue;
+    }
+    if (ch === '{') { stack.push({ names: new Set() }); expectKey = true; i += 1; continue; }
+    if (ch === '}') { stack.pop(); expectKey = false; i += 1; continue; }
+    if (ch === '[') { stack.push(null); expectKey = false; i += 1; continue; }
+    if (ch === ']') { stack.pop(); expectKey = false; i += 1; continue; }
+    if (ch === ',') {
+      expectKey = Boolean(stack[stack.length - 1]);
+      i += 1;
+      continue;
+    }
+    i += 1;
+  }
+  return duplicates;
+}
+
+function crossCheckNoDuplicateKeys() {
+  const files = [
+    'deal-terms-package.schema.json',
+    'corpus-manifest.schema.json',
+  ];
+  for (const file of files) {
+    const duplicates = duplicateJsonKeys(readFileSync(join(HERE, file), 'utf8'));
+    if (duplicates.length > 0) {
+      throw new Error(`${file} declares duplicate JSON member names: ${[...new Set(duplicates)].join(', ')}`);
+    }
+  }
+  return `PASS (${files.length} schema files, no duplicate member names)`;
+}
+
 function crossCheckSchema() {
   const schema = JSON.parse(readFileSync(join(HERE, 'deal-terms-package.schema.json'), 'utf8'));
   const defs = schema.$defs;
@@ -484,6 +544,7 @@ function crossCheckSchema() {
 function main(argv) {
   process.stdout.write(`ID rule cross-check:  ${crossCheckIdRule()}\n`);
   process.stdout.write(`Schema cross-check:   ${crossCheckSchema()}\n`);
+  process.stdout.write(`Duplicate-key check:  ${crossCheckNoDuplicateKeys()}\n`);
 
   if (argv.includes('--check')) {
     const temporary = mkdtempSync(join(tmpdir(), 'deal-terms-example-'));
