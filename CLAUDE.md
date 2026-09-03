@@ -98,6 +98,24 @@ change. A stale header is the most authoritative-looking lie in a codebase.
   not a pass. A run that proves nothing must not read like a run that proves
   everything.
 
+## Time and token rules (Ben, 2026-09-03)
+
+- **Never wait on CI.** Push, let CI run, act only on red. No local
+  re-run of heavy tests or evidence gates to "confirm" what CI will
+  report. No polling loops. The only local proof before a push is the
+  changed seam's fast tests.
+- **No duplicate checks.** One independent review per deliverable,
+  scoped to what changed, run in parallel with the next piece of work,
+  never as a gate that idles the lead.
+- **Delegate everything with a writable spec.** The lead session (the
+  strongest model) does specs, authorities, legal-boundary judgement and
+  review synthesis. Censuses, tables, fixture packs, mechanical code
+  changes, coordination replies and monitoring go to Sonnet or Opus
+  subagents or to the external agent via `coord/*` branches. A lead turn
+  spent polling or re-reading a delivery is a wasted turn.
+- **Report by artefact.** A commit hash, a file, a count. Not a
+  narrative of what was checked.
+
 ## Model routing
 
 Routing is the main agent's call. There is no fixed table.

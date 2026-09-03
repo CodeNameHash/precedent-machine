@@ -2197,3 +2197,69 @@ absent). Ben adopted the recommended correction the same day.
 
 Record: `docs/codex-program/notes/WORK4-CANDIDATE-CORRECTION-2026-09-03.md`.
 This decision does not alter any sealed predecessor.
+
+---
+
+## 26. M7 V2 re-plan adopted, all recommendations: DECIDED 2026-09-03
+
+Written on Ben's direct instruction ("All recommended"), outside the Work
+1–7 repair authority, as entry 25 was. Record:
+`docs/codex-program/notes/M7-V2-REPLAN-TO-PUBLICATION-2026-09-03.md`
+(revision 2, commit `7b0df9b7`). Diagnosis:
+`docs/codex-program/notes/WORK5-BLOCKED-CANDIDATE-NOT-EXECUTABLE-ON-REAL-TEXT-2026-09-03.md`.
+
+Answers, by the plan's section 8 numbering:
+
+- Q1: `FALSE_COMPLETE_FIXTURE` affected-class stop for 24 classes under one
+  replacement authority. Q1a: no early profile tranche; Phase 1 is an
+  issue-only run.
+- Q2: one interim `CANDIDATE_PENDING_REVIEW` registration before every
+  evidence run, retained and superseded; Work 5–7 bind the last. The
+  script-applied inventory dispositions (APPROVE 1,509, HOLD 40, PARTIAL
+  4, all `default_disposition_applied`) are void as V2 approvals; session
+  2 is the first per-occurrence approval and approves the full section
+  5.3 contract per subtype.
+- Q3: party proof through a `PARTY_PROOF_RULE/V1` route over a
+  context-disposition record outside sealed M3, one row per agreement and
+  party term, each span confirmed by Ben. No M2 re-run.
+- Q4: `REVIEW_RESIDUE` coverage treatment on review-only rules only, plus
+  the issue codes `MATERIAL_SPAN_UNMODELLED`, `DEPENDENCY_UNRESOLVED`,
+  `PARTY_PROOF_UNPROVED`, `SIGNATURE_MISMATCH`, `FAMILY_CORRECTION_PENDING`.
+- Q5: operators ruled on a per-operator table with real-clause examples
+  (table to follow), not on a list.
+- Q6: CAPITALISATION becomes a Ben-ruled family-wide no-output policy with
+  covered occurrence set and fixtures; the synthetic validation package is
+  removed; item 14 routes under Q8 or stays review-only with that reason.
+- Q7: additive three, parser-only facts, no model calls.
+- Q8: items 14 and 43 decided in session 3 with both readings; review-only
+  `FAMILY_CORRECTION_PENDING` until then.
+- Q9: the synthetic preview serving path is quarantined as a product-code
+  PR on Ben's instruction, outside the repair authority, before any merge.
+- Q10: Decision 22's M9/M10 pre-authorisation re-confirmed at M7 sealing.
+- Q11 (session 2): child profile per topology where anchors show more than
+  one; counts reported.
+- Q12: the sealed family role schemas' claim-key-to-subtype mapping is
+  adopted as a V2 semantic input for the family stage, digest-bound.
+- Q13: definition rules 1 (Definitions article) and 2 (preamble) are
+  deterministic; rule 3 only for identical candidates; otherwise
+  review-only until Ben rules the disagreement term classes.
+- Q14: any correction after session 3 or the Work 7 review is one new
+  registration, a full reopen of all 50 and a Work 6 rerun.
+- Q15: one structural rule covers every M2 `PAGE_NUMBER` artefact inside a
+  closure (items 15 and 47); technical, no per-occurrence ruling.
+- Q16: the authored unit for an inline limb or chapeau is the limb with
+  hash-bound context spans from named ancestors.
+- Q17 (session 2): Termination's phase-2 atoms and trees are re-presented
+  as real-clause fixtures; the synthetic-component approval does not carry.
+- Q18: answers recorded here; the stop record lives inside the replacement
+  authority; GRAVEYARD and CODEBASE-GUIDE regions named in it.
+- Q19 (session 2): effect kinds for definitional and representational
+  units ruled with examples; review-only until then.
+
+Standing rules from the same instruction, recorded in `CLAUDE.md`: no
+waiting on CI or duplicate local checks; the lead session delegates every
+writable-spec task to internal or external agents.
+
+This decision does not alter any sealed predecessor. It authorises the
+drafting of the replacement authority; no governed write happens until
+that authority is committed and validated.
