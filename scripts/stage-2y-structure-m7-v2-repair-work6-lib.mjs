@@ -5,6 +5,7 @@
 // evidence/canonical-v2/stage-2y-structure-migration/m7-v2-repair/work6/.
 // No default registration id. No model calls. No compiler import.
 
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -51,8 +52,43 @@ export const SEALED_LEDGERS = Object.freeze({
     path: 'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-comparison-entry-correction/additive-open-world.json',
     byte_length: 7455,
     sha256: '4ae03b6248cba6ffebb3068bfdedf9ae66984bacb539f16c1c5545e1d90b0b9e',
+    git_blob_oid: 'a282eb67c488dc4c12aca6ebe17a360d5d14c312',
     schema_version: 'STAGE_2Y_M7_ADDITIVE_OPEN_WORLD_LEDGER/V1',
     expected_member_count: 16,
+  }),
+  claim_closure: Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-comparison-entry-correction/claim-closure.json',
+    byte_length: 510054,
+    sha256: 'a34f7c50aa7b989b6b99755144eb37019e7eaa8c2392b74e36a2e0266b262b72',
+    schema_version: 'STAGE_2Y_CLAIM_CLOSURE/V1',
+    expected_member_count: 1684,
+  }),
+  source_coverage: Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-comparison-entry-correction/source-coverage.json',
+    byte_length: 4805,
+    sha256: '116c10733b111af434da985ece6fc651a38de0de3c745598e8addce2f788d959',
+    schema_version: 'STAGE_2Y_SOURCE_COVERAGE/V1',
+    expected_member_count: 10,
+  }),
+  output_ownership: Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-comparison-entry-correction/output-ownership.json',
+    byte_length: 383653,
+    sha256: '122c6a764c3a07c924309f8e94f36c9193d492456d9394c9ca79e106a84052ea',
+    schema_version: 'STAGE_2Y_OUTPUT_OWNERSHIP/V1',
+    expected_member_count: 1494,
+  }),
+  resolution_set_diff: Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-comparison-entry-correction/resolution-set-diff.json',
+    byte_length: 4202,
+    sha256: '9808d93e8258a08556c2134e5b5ce0008b2ee295e3f8c44cc1f3bfaca9d265cc',
+    schema_version: 'STAGE_2Y_CORPUS_RESOLUTION_SET_DIFF/V1',
+  }),
+  row_field_preservation: Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-comparison-entry-correction/row-field-preservation.json',
+    byte_length: 679517,
+    sha256: '51d61f49d85929a5040e9c094ecfc00b56cb0d105d1b1cdcc3b308bb11c5aa17',
+    schema_version: 'STAGE_2Y_ROW_FIELD_PRESERVATION/V1',
+    expected_member_count: 1494,
   }),
 });
 export const COMBINED_TEN_CORPUS_DIGEST =
@@ -289,14 +325,23 @@ export function readSealedLedger(root, spec) {
   if (record === null || record.schema_version !== spec.schema_version) {
     throw new Work6Error('LEDGER_DIGEST_MISMATCH', `ledger schema ${record?.schema_version ?? 'absent'}`, spec.path);
   }
-  if (!Array.isArray(record.members) || record.members.length !== spec.expected_member_count) {
-    throw new Work6Error(
-      'COUNT_MISMATCH',
-      `members ${record.members?.length ?? 'absent'} != ${spec.expected_member_count}`,
-      spec.path,
-    );
+  if (Number.isSafeInteger(spec.expected_member_count)) {
+    if (!Array.isArray(record.members) || record.members.length !== spec.expected_member_count) {
+      throw new Work6Error(
+        'COUNT_MISMATCH',
+        `members ${record.members?.length ?? 'absent'} != ${spec.expected_member_count}`,
+        spec.path,
+      );
+    }
   }
-  return { bytes, record, digest };
+  return { bytes, record, digest, git_blob_oid: gitBlobOid(bytes) };
+}
+
+export function gitBlobOid(bytes) {
+  return crypto.createHash('sha1')
+    .update(Buffer.from(`blob ${bytes.length}\0`, 'utf8'))
+    .update(bytes)
+    .digest('hex');
 }
 
 export function tally(values) {

@@ -19,9 +19,18 @@ const LEDGERS = [
 const EXTRA_SOURCES = [
   'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-agreement-analysis-set.json',
   'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-comparison-entry-correction/additive-open-world.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-comparison-entry-correction/claim-closure.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-comparison-entry-correction/source-coverage.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-comparison-entry-correction/output-ownership.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-comparison-entry-correction/resolution-set-diff.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-comparison-entry-correction/row-field-preservation.json',
 ];
 const TEN_SCRIPT = path.resolve(__dirname, '../scripts/stage-2y-structure-m7-v2-repair-work6-ten-agreement-calibration.mjs');
 const ADDITIVE_SCRIPT = path.resolve(__dirname, '../scripts/stage-2y-structure-m7-v2-repair-work6-additive-three-calibration.mjs');
+const TOUCHED_SCRIPT = path.resolve(__dirname, '../scripts/stage-2y-structure-m7-v2-repair-work6-touched-rows.mjs');
+const DRAFTING_SCRIPT = path.resolve(__dirname, '../scripts/stage-2y-structure-m7-v2-repair-work6-unfamiliar-drafting.mjs');
+const FAMILY_SCRIPT = path.resolve(__dirname, '../scripts/stage-2y-structure-m7-v2-repair-work6-family-agreement-counts.mjs');
+const MATRIX_SCRIPT = path.resolve(__dirname, '../scripts/stage-2y-structure-m7-v2-repair-work6-old-to-new-matrix.mjs');
 const REGISTRATION_ROOT =
   'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-candidate-registrations';
 const KNOWN_LOSS_SCRIPT = path.resolve(__dirname, '../scripts/stage-2y-structure-m7-v2-repair-work6-known-loss-244.mjs');
@@ -218,4 +227,56 @@ test('additive-three calibration recounts the three sealed deals', async (t) => 
   assert.equal(report.candidate_key_counts['abbvie-landos'] > 0, true);
   assert.equal(report.candidate_key_counts['lilly-verve'] > 0, true);
   assert.equal(report.candidate_key_counts['rocket-redfin'] > 0, true);
+});
+
+test('touched rows recount the sealed 244 and 1494 preserved projection rows', async (t) => {
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'm7-v2-work6-touch-')));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  copySealedLedgers(root);
+  const built = buildSyntheticRegistration(root);
+  const wrote = runScript(TOUCHED_SCRIPT, ['--repo-root', root, '--registration', built.registrationPath]);
+  assert.equal(wrote.status, 0, JSON.stringify(wrote.result));
+  const report = JSON.parse(fs.readFileSync(path.join(root, wrote.result.report_path), 'utf8'));
+  assert.equal(report.touched_by_corrected_rule_count, 244);
+  assert.equal(report.preserved_projection_row_count, 1494);
+});
+
+test('unfamiliar drafting reports sealed diagnostic codes without inventing overlays', async (t) => {
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'm7-v2-work6-draft-')));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  copySealedLedgers(root);
+  const built = buildSyntheticRegistration(root);
+  const wrote = runScript(DRAFTING_SCRIPT, ['--repo-root', root, '--registration', built.registrationPath]);
+  assert.equal(wrote.status, 0, JSON.stringify(wrote.result));
+  const report = JSON.parse(fs.readFileSync(path.join(root, wrote.result.report_path), 'utf8'));
+  assert.equal(report.observed_member_count, 1684);
+  assert.equal(report.drafting_label_counts.complete, 1539);
+  assert.equal(report.drafting_label_counts.incomplete, 145);
+});
+
+test('family-agreement counts do not invent missing disposition columns', async (t) => {
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'm7-v2-work6-fam-')));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  copySealedLedgers(root);
+  const built = buildSyntheticRegistration(root);
+  const wrote = runScript(FAMILY_SCRIPT, ['--repo-root', root, '--registration', built.registrationPath]);
+  assert.equal(wrote.status, 0, JSON.stringify(wrote.result));
+  const report = JSON.parse(fs.readFileSync(path.join(root, wrote.result.report_path), 'utf8'));
+  assert.equal(report.agreements.length, 10);
+  assert.equal(report.linked_consumer_policy_counts.ONE_OWNER_WITH_LINKED_CONSUMERS, 1494);
+  assert.equal(Object.hasOwn(report, 'no_comparison_counts'), false);
+});
+
+test('old-to-new matrix reports additive review residue without failing the gate', async (t) => {
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'm7-v2-work6-matrix-')));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  copySealedLedgers(root);
+  const built = buildSyntheticRegistration(root);
+  const wrote = runScript(MATRIX_SCRIPT, ['--repo-root', root, '--registration', built.registrationPath]);
+  assert.equal(wrote.status, 0, JSON.stringify(wrote.result));
+  const report = JSON.parse(fs.readFileSync(path.join(root, wrote.result.report_path), 'utf8'));
+  assert.equal(report.sealed_seven.length, 7);
+  assert.equal(report.additive_three.length, 3);
+  assert.equal(report.additive_review_row_residue, 190);
+  assert.equal(report.unexpected_semantic_difference_count, 0);
 });

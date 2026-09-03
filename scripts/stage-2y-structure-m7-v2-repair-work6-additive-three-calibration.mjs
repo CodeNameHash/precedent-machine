@@ -36,6 +36,7 @@ export function buildAdditiveThreeCalibrationReport(root, selected) {
         path: spec.path,
         byte_length: spec.byte_length,
         sha256: digest,
+        git_blob_oid: spec.git_blob_oid,
         schema_version: spec.schema_version,
         ledger_id: record.ledger_id,
       },
