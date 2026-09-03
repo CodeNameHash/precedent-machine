@@ -23,8 +23,15 @@ const PROFILE_SET_PATH =
   'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-family-work3-approved-profile-set.json';
 const VIEW_POLICY_PATH =
   'evidence/canonical-v2/stage-2y-structure-migration/m7-v2-repair/v2-view-policy.json';
-const MANIFEST_PATH =
-  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work4-execution-manifest.json';
+// Work4 candidate correction (Ben, 2026-09-03): with the correction authority
+// in the tree the governed Work4 manifest is the successor, and the committed
+// original is retained as a superseded record that this test no longer
+// validates against the live tree.
+const CORRECTION_AUTHORITY_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work4-candidate-correction-authority.json';
+const MANIFEST_PATH = fs.existsSync(path.join(REPO_ROOT, CORRECTION_AUTHORITY_PATH))
+  ? 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work4-execution-manifest-candidate-correction-successor.json'
+  : 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work4-execution-manifest.json';
 
 function readCanonical(repositoryPath) {
   const bytes = fs.readFileSync(path.join(REPO_ROOT, repositoryPath));

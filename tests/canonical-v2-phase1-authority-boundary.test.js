@@ -1146,6 +1146,33 @@ function assertWork4CandidateBinderBoundary(source, label) {
     '`${$CONTROL_ROOT}/m7-v2-repair-work4-candidate-transition-authority.json`',
     label,
   );
+  // Work4 candidate correction: the successor set is selected by the
+  // `--authority` argument through two frozen mode records whose paths are
+  // these pinned constants; no path reaches a writer from anywhere else.
+  assertStaticConstBinding(
+    program,
+    'CORRECTION_AUTHORITY_PATH',
+    '`${$CONTROL_ROOT}/m7-v2-repair-contract-work4-candidate-correction-authority.json`',
+    label,
+  );
+  assertStaticConstBinding(
+    program,
+    'SUCCESSOR_MANIFEST_PATH',
+    '`${$CONTROL_ROOT}/m7-v2-repair-work4-execution-manifest-candidate-correction-successor.json`',
+    label,
+  );
+  assertStaticConstBinding(
+    program,
+    'SUCCESSOR_TRANSITION_AUTHORITY_PATH',
+    '`${$CONTROL_ROOT}/m7-v2-repair-work4-candidate-transition-authority-candidate-correction-successor.json`',
+    label,
+  );
+  assertStaticConstBinding(
+    program,
+    'SUCCESSOR_RECEIPT_PATH',
+    '`${$RECEIPT_ROOT}/stage-2y-structure-m7-v2-repair-work4-fixture-candidate-correction-successor.json`',
+    label,
+  );
 
   assertExactGitReadBoundary(program, label, 'repoRoot', [
     ['rev-parse', 'HEAD'],
@@ -1246,7 +1273,7 @@ function assertWork4CandidateBinderBoundary(source, label) {
       argument,
       `${label} bootstrap write`,
     )),
-    ['$repoRoot', '$MANIFEST_PATH'],
+    ['$repoRoot', '$mode.manifestPath'],
     `${label} bootstrap may write only the manifest`,
   );
   const bootstrapBytes = bootstrapWrites[0].arguments[2];
@@ -1276,8 +1303,8 @@ function assertWork4CandidateBinderBoundary(source, label) {
       )),
     ]),
     [
-      ['writeExclusive', ['$repoRoot', '$TRANSITION_AUTHORITY_PATH', '$transitionBytes']],
-      ['replaceManifest', ['$repoRoot', '$manifest']],
+      ['writeExclusive', ['$repoRoot', '$mode.transitionAuthorityPath', '$transitionBytes']],
+      ['replaceManifest', ['$repoRoot', '$manifest', '$mode']],
     ],
     `${label} transition write set must remain exact`,
   );
@@ -2951,17 +2978,21 @@ test('the Work4 candidate binder rejects unpinned history and ungoverned writes'
       'sourceCommit: process.env.WORK3_COMMIT',
     ),
     source.replace(
-      'writeExclusive(repoRoot, MANIFEST_PATH, canonicalBytes(manifest));',
+      'writeExclusive(repoRoot, mode.manifestPath, canonicalBytes(manifest));',
       'writeExclusive(repoRoot, process.env.WORK4_PATH, canonicalBytes(manifest));',
     ),
     source.replace(
-      'writeExclusive(repoRoot, TRANSITION_AUTHORITY_PATH, transitionBytes);',
+      'writeExclusive(repoRoot, mode.transitionAuthorityPath, transitionBytes);',
       'writeExclusive(repoRoot, process.env.WORK4_PATH, transitionBytes);',
     ),
     source.replace(
-      'writeExclusive(repoRoot, TRANSITION_AUTHORITY_PATH, transitionBytes);',
-      'writeExclusive(repoRoot, TRANSITION_AUTHORITY_PATH, transitionBytes);\n'
+      'writeExclusive(repoRoot, mode.transitionAuthorityPath, transitionBytes);',
+      'writeExclusive(repoRoot, mode.transitionAuthorityPath, transitionBytes);\n'
         + '  fs.writeFileSync(process.env.WORK4_PATH, transitionBytes);',
+    ),
+    source.replace(
+      "const SUCCESSOR_MANIFEST_PATH =\n  `${CONTROL_ROOT}/m7-v2-repair-work4-execution-manifest-candidate-correction-successor.json`;",
+      'const SUCCESSOR_MANIFEST_PATH = process.env.WORK4_PATH;',
     ),
   ]) {
     assert.notEqual(hostile, source);

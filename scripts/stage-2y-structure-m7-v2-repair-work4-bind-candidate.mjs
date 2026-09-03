@@ -74,6 +74,55 @@ const BOOTSTRAP_ARGV = Object.freeze([
   '--authority',
   ORDERING_AUTHORITY_PATH,
 ]);
+// Work4 candidate correction (Ben, 2026-09-03). Selected by passing the
+// correction authority as `--authority`: the four committed Work4 outputs are
+// retained byte-identical and a successor manifest, transition authority,
+// registration and receipt are created under the pinned correction authority.
+const CORRECTION_AUTHORITY_PATH =
+  `${CONTROL_ROOT}/m7-v2-repair-contract-work4-candidate-correction-authority.json`;
+const CORRECTION_AUTHORITY_SCHEMA =
+  'STAGE_2Y_M7_V2_REPAIR_WORK4_CANDIDATE_CORRECTION_AUTHORITY/V1';
+const CORRECTION_MANIFEST_MEMBER = 'work4_candidate_correction_authority_binding';
+const SUCCESSOR_MANIFEST_PATH =
+  `${CONTROL_ROOT}/m7-v2-repair-work4-execution-manifest-candidate-correction-successor.json`;
+const SUCCESSOR_TRANSITION_AUTHORITY_PATH =
+  `${CONTROL_ROOT}/m7-v2-repair-work4-candidate-transition-authority-candidate-correction-successor.json`;
+const SUCCESSOR_RECEIPT_PATH =
+  `${RECEIPT_ROOT}/stage-2y-structure-m7-v2-repair-work4-fixture-candidate-correction-successor.json`;
+const SUPERSEDED_REGISTRATION_ID =
+  '0e46052b1a6a0b284291ee0e6881aac0ecf99a40429300295178bcaa3d832d5e';
+const SUPERSEDED_REGISTRATION_PATH =
+  `${CONTROL_ROOT}/m7-v2-repair-candidate-registrations/${SUPERSEDED_REGISTRATION_ID}.json`;
+const CORRECTION_TRANSITION_ARGV = Object.freeze([
+  'node', BIND_SCRIPT_PATH, '--authority', CORRECTION_AUTHORITY_PATH,
+]);
+const CORRECTION_BOOTSTRAP_ARGV = Object.freeze([
+  'node', BIND_SCRIPT_PATH, '--bootstrap', '--authority', CORRECTION_AUTHORITY_PATH,
+]);
+const ORIGINAL_MODE = Object.freeze({
+  correction: false,
+  manifestPath: MANIFEST_PATH,
+  transitionAuthorityPath: TRANSITION_AUTHORITY_PATH,
+  receiptPath: WORK4_RECEIPT_PATH,
+  transitionArgv: TRANSITION_ARGV,
+  bootstrapArgv: BOOTSTRAP_ARGV,
+  commitMessage: 'Implement M7 V2 repair Work 4',
+});
+const CORRECTION_MODE = Object.freeze({
+  correction: true,
+  manifestPath: SUCCESSOR_MANIFEST_PATH,
+  transitionAuthorityPath: SUCCESSOR_TRANSITION_AUTHORITY_PATH,
+  receiptPath: SUCCESSOR_RECEIPT_PATH,
+  transitionArgv: CORRECTION_TRANSITION_ARGV,
+  bootstrapArgv: CORRECTION_BOOTSTRAP_ARGV,
+  commitMessage: 'Implement M7 V2 repair Work 4 candidate correction',
+});
+
+export function resolveWork4Mode(authorityPath = ORDERING_AUTHORITY_PATH) {
+  if (authorityPath === ORDERING_AUTHORITY_PATH) return ORIGINAL_MODE;
+  if (authorityPath === CORRECTION_AUTHORITY_PATH) return CORRECTION_MODE;
+  fail('WORK4_OPTIONS', 'unknown Work4 authority');
+}
 
 class Work4CandidateTransitionError extends Error {
   constructor(code, detail = '') {
@@ -279,8 +328,8 @@ function writeExclusive(repoRoot, repositoryPath, bytes) {
   }
 }
 
-function replaceManifest(repoRoot, manifest) {
-  const target = absolute(repoRoot, MANIFEST_PATH);
+function replaceManifest(repoRoot, manifest, mode = ORIGINAL_MODE) {
+  const target = absolute(repoRoot, mode.manifestPath);
   const pending = `${target}.pending`;
   const bytes = canonicalBytes(manifest);
   let descriptor;
@@ -302,8 +351,48 @@ function replaceManifest(repoRoot, manifest) {
     if (descriptor !== undefined) fs.closeSync(descriptor);
     try { fs.unlinkSync(pending); } catch {}
     if (error instanceof Work4CandidateTransitionError) throw error;
-    fail('WORK4_WRITE_FAILED', MANIFEST_PATH);
+    fail('WORK4_WRITE_FAILED', mode.manifestPath);
   }
+}
+
+// The correction authority and the four superseded Work4 outputs it binds,
+// each read from the tree and checked against the authority's own bindings.
+function readCorrectionAuthority(repoRoot) {
+  const state = readCanonical(repoRoot, CORRECTION_AUTHORITY_PATH);
+  const record = state.record;
+  if (record.schema_version !== CORRECTION_AUTHORITY_SCHEMA
+      || record.superseded_candidate_registration_id !== SUPERSEDED_REGISTRATION_ID
+      || record.successor_paths?.execution_manifest !== SUCCESSOR_MANIFEST_PATH
+      || record.successor_paths?.candidate_transition_authority
+        !== SUCCESSOR_TRANSITION_AUTHORITY_PATH
+      || record.successor_paths?.work4_receipt !== SUCCESSOR_RECEIPT_PATH
+      || canonicalJson(record.successor_transition_argv) !== canonicalJson(CORRECTION_TRANSITION_ARGV)
+      || canonicalJson(record.successor_bootstrap_argv) !== canonicalJson(CORRECTION_BOOTSTRAP_ARGV)
+      || record.successor_commit_message !== CORRECTION_MODE.commitMessage) {
+    fail('WORK4_CORRECTION_AUTHORITY_DRIFT', CORRECTION_AUTHORITY_PATH);
+  }
+  const supersededPaths = [];
+  for (const [member, expectedPath] of [
+    ['execution_manifest_binding', MANIFEST_PATH],
+    ['candidate_transition_authority_binding', TRANSITION_AUTHORITY_PATH],
+    ['candidate_registration_binding', SUPERSEDED_REGISTRATION_PATH],
+    ['work4_receipt_binding', WORK4_RECEIPT_PATH],
+  ]) {
+    const binding = record.superseded_work4_outputs?.[member];
+    if (binding?.path !== expectedPath) fail('WORK4_CORRECTION_AUTHORITY_DRIFT', member);
+    const actual = readCanonical(repoRoot, expectedPath);
+    const observed = recordBinding(expectedPath, actual.bytes, actual.record, binding.record_id_field);
+    if (canonicalJson(observed) !== canonicalJson(binding)) {
+      fail('WORK4_SUPERSEDED_OUTPUT_DRIFT', expectedPath);
+    }
+    supersededPaths.push(expectedPath);
+  }
+  return {
+    record,
+    binding: recordBinding(CORRECTION_AUTHORITY_PATH, state.bytes, record, 'correction_authority_id'),
+    supersededPaths,
+    supersededRegistrationBinding: record.superseded_work4_outputs.candidate_registration_binding,
+  };
 }
 
 function candidateReadPaths(candidate) {
@@ -482,7 +571,8 @@ function milestoneAttestation(repoRoot, predecessorReceiptBinding, predecessorMa
   };
 }
 
-export function buildWork4BootstrapManifest({ repoRoot = REPO_ROOT } = {}) {
+export function buildWork4BootstrapManifest({ repoRoot = REPO_ROOT, mode = ORIGINAL_MODE } = {}) {
+  const correction = mode.correction ? readCorrectionAuthority(repoRoot) : null;
   const base = structuredClone(readCanonical(repoRoot, WORK2_MANIFEST_PATH).record);
   const work3State = readCanonical(repoRoot, WORK3_RECEIPT_PATH);
   const work3ManifestState = readCanonical(repoRoot, WORK3_MANIFEST_PATH);
@@ -528,7 +618,15 @@ export function buildWork4BootstrapManifest({ repoRoot = REPO_ROOT } = {}) {
     `${CONTROL_ROOT}/m7-v2-repair-work2-context-compilation-set.json`,
     BIND_SCRIPT_PATH,
     ...preRegistrationCandidatePaths,
+    // The correction commits the finaliser and validator before its
+    // bootstrap, so they are tree-bound inputs here rather than outputs.
+    ...(correction
+      ? [CORRECTION_AUTHORITY_PATH, ...correction.supersededPaths, FINALISER_PATH, VALIDATOR_PATH]
+      : []),
   ])].sort();
+  if (correction && candidate.registration_path === SUPERSEDED_REGISTRATION_PATH) {
+    fail('WORK4_CANDIDATE_DRIFT', 'correction candidate equals the superseded candidate');
+  }
   const observation = observePushedPrepHead(
     repoRoot,
     predecessorReceiptBinding,
@@ -544,16 +642,17 @@ export function buildWork4BootstrapManifest({ repoRoot = REPO_ROOT } = {}) {
     candidate_transition: {
       authority_binding: structuredClone(base.candidate_ordering_correction_authority_binding),
       state: 'AUTHORISED_PENDING',
-      transition_argv: [...TRANSITION_ARGV],
+      transition_argv: [...mode.transitionArgv],
       transition_run_limit: 1,
     },
-    work_receipt_path: WORK4_RECEIPT_PATH,
+    ...(correction ? { [CORRECTION_MANIFEST_MEMBER]: correction.binding } : {}),
+    work_receipt_path: mode.receiptPath,
     permitted_read_paths: [...new Set([
-      MANIFEST_PATH,
+      mode.manifestPath,
       ...prepInputPaths,
     ])].sort(),
     permitted_write_paths: [
-      TRANSITION_AUTHORITY_PATH,
+      mode.transitionAuthorityPath,
       candidate.registration_path,
     ].sort(),
     exact_argv_with_run_limits: [
@@ -561,11 +660,11 @@ export function buildWork4BootstrapManifest({ repoRoot = REPO_ROOT } = {}) {
         argv: [
           'node',
           'scripts/stage-2y-structure-m7-v2-repair-execution-manifest-validate.mjs',
-          MANIFEST_PATH,
+          mode.manifestPath,
         ],
         max_runs: 3,
       },
-      { argv: [...TRANSITION_ARGV], max_runs: 1 },
+      { argv: [...mode.transitionArgv], max_runs: 1 },
     ],
     base_tip_binding: {
       commit: observation.commit,
@@ -582,11 +681,11 @@ export function buildWork4BootstrapManifest({ repoRoot = REPO_ROOT } = {}) {
     },
     exact_git_commit_and_push_argv: [
       ['git', 'add', '--', ...[
-        MANIFEST_PATH,
-        TRANSITION_AUTHORITY_PATH,
+        mode.manifestPath,
+        mode.transitionAuthorityPath,
         candidate.registration_path,
       ].sort()],
-      ['git', 'commit', '-m', 'Implement M7 V2 repair Work 4'],
+      ['git', 'commit', '-m', mode.commitMessage],
       ['git', 'push', 'origin', BRANCH],
     ],
     success_conditions: [
@@ -597,17 +696,17 @@ export function buildWork4BootstrapManifest({ repoRoot = REPO_ROOT } = {}) {
   return sealManifest(base);
 }
 
-export function writeWork4BootstrapManifest({ repoRoot = REPO_ROOT } = {}) {
-  if (fs.existsSync(absolute(repoRoot, MANIFEST_PATH))) {
-    fail('WORK4_OUTPUT_EXISTS', MANIFEST_PATH);
+export function writeWork4BootstrapManifest({ repoRoot = REPO_ROOT, mode = ORIGINAL_MODE } = {}) {
+  if (fs.existsSync(absolute(repoRoot, mode.manifestPath))) {
+    fail('WORK4_OUTPUT_EXISTS', mode.manifestPath);
   }
-  const manifest = buildWork4BootstrapManifest({ repoRoot });
-  writeExclusive(repoRoot, MANIFEST_PATH, canonicalBytes(manifest));
+  const manifest = buildWork4BootstrapManifest({ repoRoot, mode });
+  writeExclusive(repoRoot, mode.manifestPath, canonicalBytes(manifest));
   return manifest;
 }
 
 function postTransitionManifest(bootstrap, candidate, verification, transitionBinding,
-  bootstrapBinding) {
+  bootstrapBinding, mode = ORIGINAL_MODE) {
   const manifest = structuredClone(bootstrap);
   manifest.candidate_registration_binding = {
     registration_binding: structuredClone(candidate.binding),
@@ -619,50 +718,52 @@ function postTransitionManifest(bootstrap, candidate, verification, transitionBi
     candidate_registration_preview_binding: structuredClone(candidate.binding),
     candidate_registration_binding: structuredClone(candidate.binding),
     state: 'PASS',
-    transition_argv: [...TRANSITION_ARGV],
+    transition_argv: [...mode.transitionArgv],
     transition_run_count: 1,
   };
   manifest.permitted_read_paths = [...new Set([
     ...manifest.permitted_read_paths,
-    TRANSITION_AUTHORITY_PATH,
+    mode.transitionAuthorityPath,
     ...candidateReadPaths(candidate),
   ])].sort();
+  // The original flow created the finaliser and validator in the atomic
+  // commit. The correction commits them beforehand, so its write set is the
+  // three successor outputs and the atomic delta is the manifest plus those.
   manifest.permitted_write_paths = [
-    TRANSITION_AUTHORITY_PATH,
+    mode.transitionAuthorityPath,
     candidate.registration_path,
-    FINALISER_PATH,
-    VALIDATOR_PATH,
-    WORK4_RECEIPT_PATH,
+    ...(mode.correction ? [] : [FINALISER_PATH, VALIDATOR_PATH]),
+    mode.receiptPath,
   ].sort();
   manifest.exact_argv_with_run_limits = [
     {
       argv: [
         'node',
         'scripts/stage-2y-structure-m7-v2-repair-execution-manifest-validate.mjs',
-        MANIFEST_PATH,
+        mode.manifestPath,
       ],
       max_runs: 3,
     },
-    { argv: [...TRANSITION_ARGV], max_runs: 1 },
+    { argv: [...mode.transitionArgv], max_runs: 1 },
     { argv: ['node', '--test', WORK4_TEST_PATH], max_runs: 30 },
     { argv: ['node', FINALISER_PATH], max_runs: 1 },
     { argv: ['node', VALIDATOR_PATH], max_runs: 3 },
   ];
   manifest.exact_git_commit_and_push_argv[0] = [
-    'git', 'add', '--', ...[MANIFEST_PATH, ...manifest.permitted_write_paths].sort(),
+    'git', 'add', '--', ...[mode.manifestPath, ...manifest.permitted_write_paths].sort(),
   ];
   return sealManifest(manifest);
 }
 
-export async function transitionWork4Candidate({ repoRoot = REPO_ROOT } = {}) {
-  const bootstrapState = readCanonical(repoRoot, MANIFEST_PATH);
-  const expectedBootstrap = buildWork4BootstrapManifest({ repoRoot });
+export async function transitionWork4Candidate({ repoRoot = REPO_ROOT, mode = ORIGINAL_MODE } = {}) {
+  const bootstrapState = readCanonical(repoRoot, mode.manifestPath);
+  const expectedBootstrap = buildWork4BootstrapManifest({ repoRoot, mode });
   if (canonicalJson(bootstrapState.record) !== canonicalJson(expectedBootstrap)) {
     fail('WORK4_BOOTSTRAP_DRIFT', 'manifest does not match the pushed preparation tree');
   }
   const validation = await validateExecutionManifest({
     repoRoot,
-    manifestPath: MANIFEST_PATH,
+    manifestPath: mode.manifestPath,
   });
   if (validation.candidate_stage_state !== 'WORK4_TRANSITION_PENDING') {
     fail('WORK4_BOOTSTRAP_DRIFT', validation.candidate_stage_state);
@@ -671,8 +772,12 @@ export async function transitionWork4Candidate({ repoRoot = REPO_ROOT } = {}) {
   if (!bootstrapState.record.permitted_write_paths.includes(preview.registration_path)) {
     fail('WORK4_BOOTSTRAP_DRIFT', 'candidate preview path');
   }
+  const correction = mode.correction ? readCorrectionAuthority(repoRoot) : null;
+  if (correction && preview.registration_path === SUPERSEDED_REGISTRATION_PATH) {
+    fail('WORK4_CANDIDATE_DRIFT', 'correction candidate equals the superseded candidate');
+  }
   const bootstrapBinding = recordBinding(
-    MANIFEST_PATH,
+    mode.manifestPath,
     bootstrapState.bytes,
     bootstrapState.record,
     'execution_manifest_id',
@@ -697,7 +802,12 @@ export async function transitionWork4Candidate({ repoRoot = REPO_ROOT } = {}) {
     superseded_bootstrap_manifest_binding: bootstrapBinding,
     candidate_registration_preview_binding: structuredClone(preview.binding),
     candidate_registration_binding: structuredClone(written.binding),
-    transition_argv: [...TRANSITION_ARGV],
+    ...(correction ? {
+      [CORRECTION_MANIFEST_MEMBER]: structuredClone(correction.binding),
+      superseded_candidate_registration_binding:
+        structuredClone(correction.supersededRegistrationBinding),
+    } : {}),
+    transition_argv: [...mode.transitionArgv],
     transition_run_limit: 1,
     effects: {
       transition_authority_writes: 1,
@@ -713,9 +823,9 @@ export async function transitionWork4Candidate({ repoRoot = REPO_ROOT } = {}) {
     },
   }, 'candidate_transition_authority_id');
   const transitionBytes = canonicalBytes(transitionAuthority);
-  writeExclusive(repoRoot, TRANSITION_AUTHORITY_PATH, transitionBytes);
+  writeExclusive(repoRoot, mode.transitionAuthorityPath, transitionBytes);
   const transitionBinding = recordBinding(
-    TRANSITION_AUTHORITY_PATH,
+    mode.transitionAuthorityPath,
     transitionBytes,
     transitionAuthority,
     'candidate_transition_authority_id',
@@ -726,11 +836,12 @@ export async function transitionWork4Candidate({ repoRoot = REPO_ROOT } = {}) {
     verification,
     transitionBinding,
     bootstrapBinding,
+    mode,
   );
-  replaceManifest(repoRoot, manifest);
+  replaceManifest(repoRoot, manifest, mode);
   const postValidation = await validateExecutionManifest({
     repoRoot,
-    manifestPath: MANIFEST_PATH,
+    manifestPath: mode.manifestPath,
   });
   return {
     schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK4_CANDIDATE_TRANSITION_RESULT/V1',
@@ -748,11 +859,14 @@ const invokedPath = process.argv[1] ? path.resolve(process.argv[1]) : null;
 if (invokedPath === fileURLToPath(import.meta.url)) {
   try {
     const argv = process.argv.slice(2);
-    if (canonicalJson(argv) === canonicalJson(BOOTSTRAP_ARGV.slice(2))) {
-      const manifest = writeWork4BootstrapManifest({ repoRoot: process.cwd() });
+    const mode = [ORIGINAL_MODE, CORRECTION_MODE].find((candidate) =>
+      canonicalJson(argv) === canonicalJson(candidate.bootstrapArgv.slice(2))
+      || canonicalJson(argv) === canonicalJson(candidate.transitionArgv.slice(2)));
+    if (mode && canonicalJson(argv) === canonicalJson(mode.bootstrapArgv.slice(2))) {
+      const manifest = writeWork4BootstrapManifest({ repoRoot: process.cwd(), mode });
       process.stdout.write(`${manifest.execution_manifest_id}\n`);
-    } else if (canonicalJson(argv) === canonicalJson(TRANSITION_ARGV.slice(2))) {
-      const result = await transitionWork4Candidate({ repoRoot: process.cwd() });
+    } else if (mode) {
+      const result = await transitionWork4Candidate({ repoRoot: process.cwd(), mode });
       process.stdout.write(`${canonicalJson(result)}\n`);
     } else {
       fail('WORK4_OPTIONS', 'exact bootstrap or transition arguments are required');
@@ -763,4 +877,15 @@ if (invokedPath === fileURLToPath(import.meta.url)) {
   }
 }
 
-export { Work4CandidateTransitionError };
+export {
+  CORRECTION_AUTHORITY_PATH,
+  CORRECTION_MANIFEST_MEMBER,
+  CORRECTION_MODE,
+  ORIGINAL_MODE,
+  SUCCESSOR_MANIFEST_PATH,
+  SUCCESSOR_RECEIPT_PATH,
+  SUCCESSOR_TRANSITION_AUTHORITY_PATH,
+  SUPERSEDED_REGISTRATION_ID,
+  SUPERSEDED_REGISTRATION_PATH,
+  Work4CandidateTransitionError,
+};

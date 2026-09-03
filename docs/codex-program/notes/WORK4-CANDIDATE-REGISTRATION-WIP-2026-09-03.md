@@ -27,3 +27,17 @@ Consequences, stated exactly:
 - The Work4 finaliser and validator are **not** pre-committed. The manifest validator's Work5 rule (`expectedDeltaPaths = [manifest, ...permitted_write_paths]`, applied to the Work4 commit's observed `diff-tree`) requires the atomic Work4 commit's delta to be exactly the manifest plus all five permitted write paths. The atomic Work4 commit therefore adds exactly six files: the execution manifest, the candidate registration, the transition authority, the finaliser, the validator and the receipt. The Work3 precedent (`a0df3f86`, outputs only) does not transfer, because Work4←Work3 used the observed delta and Work5←Work4 uses the write-set rule.
 - Two mechanical gates cannot be satisfied inside that commit: the recovery-phase allowlist cannot name paths before they exist (the checker rejects listed paths absent from the diff), and the phase-1 authority-boundary inventory cannot classify scripts before they exist (its test reads every classified file). The atomic commit's `git add` carries neither. One follow-up commit immediately after the atomic commit adds the six allowlist entries, classifies the two scripts, and adds the rehearsal test for the finaliser and validator. That follow-up is the first commit permitted after Work4 and is part of closing Work4, not a later work; the pull-request CI is red between the two commits and green after.
 - Open item for Ben, recorded by the independent review of this commit: the authority's `static_dependency_policy` reserves fixed read-only Git inspection to the activation validator and the independent verifier, yet the execution-manifest validator has observed the pushed tip through Git since `aa190662` and still does, now through the Work3 validator's exported read-only seam. The repository's mechanical checks (import roster, phase-1 boundary) are satisfied; the policy's letter is not. The clean fix is for a Git-permitted caller to pass a pre-computed base-tip observation into the validator; that is a Work5–7 contract change, not a pre-transition one.
+
+## Amendment, 2026-09-03, evening: the registered candidate is superseded
+
+The atomic Work4 commit `b11388ab` landed as planned and registered
+`0e46052b…`. Its pull-request CI then failed one candidate-bound test, whose
+fixture builder cannot be satisfied by any tree containing Work4's outputs.
+Ben adopted a candidate correction before Work 5. The four committed Work4
+outputs are retained byte-identical; a successor set is created under
+`control/m7-v2-repair-contract-work4-candidate-correction-authority.json`
+with a new registration ID. The run of record for Work 5 is the successor
+manifest, transition authority, registration and V2 receipt. Details and the
+commit sequence: `WORK4-CANDIDATE-CORRECTION-2026-09-03.md`; ruling:
+DECISIONS.md §25. The open `static_dependency_policy` item above is
+unchanged; Ben adopted option (b) for the Work 5 contract.

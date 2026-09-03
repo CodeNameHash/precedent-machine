@@ -2168,3 +2168,32 @@ A `present` disposition must carry its source-backed typed threshold value or
 exception data. Tests must fail if Interim Operating is marked complete while
 either category is unaccounted for. This decision does not reopen or alter any
 sealed predecessor or successor.
+
+---
+
+## 25. Work4 candidate correction before Work 5: DECIDED 2026-09-03
+
+The Work4 candidate registered at `b11388ab` bound a test that no tree
+containing Work4's outputs can satisfy (the bootstrap fixture copies every
+existing file the sealed authority names, then asserts the Work4 outputs are
+absent). Ben adopted the recommended correction the same day.
+
+- The four committed Work4 outputs are retained byte-identical, never
+  deleted, never consumed by Work 5–7. Creation-only paths are immutable
+  after commit; a correction supersedes, it does not replace.
+- A successor manifest, transition authority, registration and receipt are
+  created under one pinned correction authority,
+  `control/m7-v2-repair-contract-work4-candidate-correction-authority.json`,
+  following the Work3 closure-successor precedent. Work 5 resolves its Work4
+  predecessor by receipt schema (V1 committed, V2 successor).
+- The bound test bytes change, so the registration ID changes. Nothing is
+  reopened for legal review because Work 5 has not begun.
+- The correction authority supersedes exactly one field of the Work2–4
+  ordering authority (`candidate_change_after_work4: FORBIDDEN`) for exactly
+  one correction. Any further candidate change needs a new authority.
+- Standing rule from this incident: a fixture that copies files by
+  authority-named path must exclude every output the work under test will
+  create. The bound fixture builder now does.
+
+Record: `docs/codex-program/notes/WORK4-CANDIDATE-CORRECTION-2026-09-03.md`.
+This decision does not alter any sealed predecessor.

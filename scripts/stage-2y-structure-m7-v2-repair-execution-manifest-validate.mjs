@@ -58,6 +58,58 @@ const WORK4_CANDIDATE_TRANSITION_ARGV = Object.freeze([
   'node', WORK4_CANDIDATE_TRANSITION_PATH, '--authority',
   CANDIDATE_ORDERING_AUTHORITY_PATH,
 ]);
+// Work4 candidate correction (Ben, 2026-09-03). The four committed Work4
+// outputs stay byte-identical; a successor manifest, transition authority,
+// registration and receipt supersede them under this pinned authority.
+const WORK4_CORRECTION_AUTHORITY_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work4-candidate-correction-authority.json';
+const WORK4_CORRECTION_AUTHORITY_SCHEMA =
+  'STAGE_2Y_M7_V2_REPAIR_WORK4_CANDIDATE_CORRECTION_AUTHORITY/V1';
+const WORK4_CORRECTION_AUTHORITY_BINDING = Object.freeze({
+  path: WORK4_CORRECTION_AUTHORITY_PATH,
+  schema_version: WORK4_CORRECTION_AUTHORITY_SCHEMA,
+  record_id_field: 'correction_authority_id',
+  record_id: '0623ebaf6529aa9f5fccc16ced7ac40bbc3302091c07676b8eb32900e3fb25f3',
+  byte_length: 12624,
+  sha256: '750d762f0f390ed32be05ea805b524760ca51693a38e13da65373997f61457a5',
+  git_blob_oid: 'ef787dc75cefb598b7436c83b5299c8f6316d019',
+});
+const WORK4_CORRECTION_APPROVAL = 'do what you recommend';
+const WORK4_CORRECTION_MANIFEST_MEMBER = 'work4_candidate_correction_authority_binding';
+const WORK4_SUCCESSOR_MANIFEST_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work4-execution-manifest-candidate-correction-successor.json';
+const WORK4_SUCCESSOR_TRANSITION_AUTHORITY_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work4-candidate-transition-authority-candidate-correction-successor.json';
+const WORK4_SUCCESSOR_RECEIPT_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-work4-fixture-candidate-correction-successor.json';
+const WORK4_SUPERSEDED_REGISTRATION_ID =
+  '0e46052b1a6a0b284291ee0e6881aac0ecf99a40429300295178bcaa3d832d5e';
+const WORK4_RECEIPT_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-work4-fixture.json';
+const WORK4_RECEIPT_V1_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK4_RECEIPT/V1';
+const WORK4_RECEIPT_V2_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK4_RECEIPT/V2';
+const WORK4_RECEIPT_V2_ADDITIONAL_KEYS = Object.freeze([
+  WORK4_CORRECTION_MANIFEST_MEMBER, 'superseded_work4_receipt_binding',
+]);
+const WORK4_CORRECTION_TRANSITION_ARGV = Object.freeze([
+  'node', WORK4_CANDIDATE_TRANSITION_PATH, '--authority',
+  WORK4_CORRECTION_AUTHORITY_PATH,
+]);
+const WORK4_CORRECTION_AUTHORITY_KEYS = Object.freeze([
+  'schema_version', 'correction_authority_id', 'stage', 'authority_state',
+  'approved_on', 'approver', 'ben_approval_id', 'approval_text',
+  'recommendation_summary', 'parent_authority_binding', 'activation_receipt_binding',
+  'candidate_ordering_correction_authority_binding', 'discovered_at_tip_binding',
+  'discovered_defects', 'parent_policy_basis', 'superseded_ordering_policy_fields',
+  'superseded_work4_outputs', 'superseded_candidate_registration_id',
+  'superseded_outputs_disposition', 'successor_paths', 'successor_manifest_member',
+  'successor_manifest_schema', 'successor_receipt_schema',
+  'successor_receipt_additional_members', 'successor_bootstrap_argv',
+  'successor_transition_argv', 'successor_exact_argv_with_run_limits',
+  'successor_permitted_write_paths_after_transition', 'successor_commit_message',
+  'corrected_bound_paths', 'authorised_scope', 'allowed_effects', 'prohibited_effects',
+  'success_conditions',
+]);
 const WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH =
   'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work4-candidate-transition-authority.json';
 const WORK4_CANDIDATE_TRANSITION_AUTHORITY_SCHEMA =
@@ -1317,16 +1369,17 @@ function validateActivation(root, authority, binding, commitBinding) {
   return record;
 }
 
-function manifestMembers(policy, work) {
+function manifestMembers(policy, work, work4Correction = false) {
   return [
     ...policy.exact_members,
     ...CANDIDATE_ORDERING_MANIFEST_MEMBERS,
     ...(work === 'WORK3' ? [WORK3_ENTRY_MANIFEST_MEMBER] : []),
+    ...(work === 'WORK4' && work4Correction ? [WORK4_CORRECTION_MANIFEST_MEMBER] : []),
   ];
 }
 
-function validateManifestIdentity(record, policy, expectedWork) {
-  const effectiveMembers = manifestMembers(policy, expectedWork);
+function validateManifestIdentity(record, policy, expectedWork, work4Correction = false) {
+  const effectiveMembers = manifestMembers(policy, expectedWork, work4Correction);
   if (!exactKeys(record, effectiveMembers)
     || record.schema_version !== SCHEMA
     || record.work !== expectedWork
@@ -1405,6 +1458,17 @@ function expectedWork3Manifest(correctionAuthority, correctionAuthorityBinding) 
 
 function priorManifestPath(work, predecessorReceiptBinding, code) {
   const previousWork = `WORK${workNumber(work) - 1}`;
+  if (previousWork === 'WORK4') {
+    // Work5 resolves its Work4 predecessor by receipt schema, as Work4 does
+    // for Work3: V1 is the committed manifest, V2 the correction successor.
+    if (predecessorReceiptBinding?.schema_version === WORK4_RECEIPT_V1_SCHEMA) {
+      return executionManifestPath(previousWork);
+    }
+    if (predecessorReceiptBinding?.schema_version === WORK4_RECEIPT_V2_SCHEMA) {
+      return WORK4_SUCCESSOR_MANIFEST_PATH;
+    }
+    fail(code, 'Work4 predecessor receipt schema');
+  }
   if (previousWork !== 'WORK3') return executionManifestPath(previousWork);
   if (predecessorReceiptBinding?.schema_version === RICH_WORK3_RECEIPT_SCHEMA) {
     return executionManifestPath(previousWork);
@@ -1426,10 +1490,109 @@ function readPriorManifest(root, authority, work, predecessorReceiptBinding) {
   const record = parseCanonical(bytes, 'PREDECESSOR_BINDING_DRIFT', repositoryPath);
   if (repositoryPath === WORK3_CLOSURE_SUCCESSOR_PATH) {
     validateWork3ClosureSuccessor(root, repositoryPath);
+  } else if (repositoryPath === WORK4_SUCCESSOR_MANIFEST_PATH) {
+    validateManifestIdentity(
+      record, authority.per_work_execution_manifest_policy, previousWork, true,
+    );
+    validateWork4CandidateCorrection(root, record);
   } else {
     validateManifestIdentity(record, authority.per_work_execution_manifest_policy, previousWork);
   }
   return { record, bytes, repositoryPath };
+}
+
+function work4TransitionAuthorityPath(work4Correction) {
+  return work4Correction
+    ? WORK4_SUCCESSOR_TRANSITION_AUTHORITY_PATH
+    : WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH;
+}
+
+function work4TransitionArgv(work4Correction) {
+  return work4Correction ? WORK4_CORRECTION_TRANSITION_ARGV : WORK4_CANDIDATE_TRANSITION_ARGV;
+}
+
+function work4ManifestPath(work4Correction) {
+  return work4Correction ? WORK4_SUCCESSOR_MANIFEST_PATH : executionManifestPath('WORK4');
+}
+
+// The pinned Work4 candidate-correction authority: exact bytes, exact record,
+// Ben's approval, the four superseded output bindings and the successor paths.
+function validateWork4CandidateCorrection(root, manifest) {
+  const binding = manifest[WORK4_CORRECTION_MANIFEST_MEMBER];
+  if (!same(binding, WORK4_CORRECTION_AUTHORITY_BINDING)) {
+    fail('AUTHORITY_BINDING_DRIFT', WORK4_CORRECTION_AUTHORITY_PATH);
+  }
+  if (!manifest.permitted_read_paths.includes(WORK4_CORRECTION_AUTHORITY_PATH)) {
+    fail('PATH_SCOPE_DRIFT', 'Work4 correction authority read');
+  }
+  const { record, bytes } = validateRecordBinding(root, binding, 'AUTHORITY_BINDING_DRIFT');
+  if (bytes.length !== WORK4_CORRECTION_AUTHORITY_BINDING.byte_length
+      || sha256Hex(bytes) !== WORK4_CORRECTION_AUTHORITY_BINDING.sha256
+      || gitBlobOid(bytes) !== WORK4_CORRECTION_AUTHORITY_BINDING.git_blob_oid
+      || !exactKeys(record, WORK4_CORRECTION_AUTHORITY_KEYS)
+      || record.schema_version !== WORK4_CORRECTION_AUTHORITY_SCHEMA
+      || record.correction_authority_id !== WORK4_CORRECTION_AUTHORITY_BINDING.record_id
+      || record.stage !== 'M7_V2_REPAIR_WORK4_CANDIDATE_CORRECTION'
+      || record.authority_state !== 'BEN_AUTHORISED_SINGLE_PRE_WORK5_WORK4_CANDIDATE_CORRECTION'
+      || record.approved_on !== '2026-09-03'
+      || record.approver !== 'BEN_GOODCHILD'
+      || record.ben_approval_id !== 'BEN-M7-V2-WORK4-CANDIDATE-CORRECTION-20260903'
+      || record.approval_text !== WORK4_CORRECTION_APPROVAL
+      || record.superseded_candidate_registration_id !== WORK4_SUPERSEDED_REGISTRATION_ID
+      || !same(record.successor_paths, {
+        candidate_registration_root: CANDIDATE_ROOT,
+        candidate_transition_authority: WORK4_SUCCESSOR_TRANSITION_AUTHORITY_PATH,
+        execution_manifest: WORK4_SUCCESSOR_MANIFEST_PATH,
+        work4_receipt: WORK4_SUCCESSOR_RECEIPT_PATH,
+      })
+      || record.successor_manifest_member !== WORK4_CORRECTION_MANIFEST_MEMBER
+      || record.successor_manifest_schema !== SCHEMA
+      || record.successor_receipt_schema !== WORK4_RECEIPT_V2_SCHEMA
+      || !same(record.successor_receipt_additional_members, WORK4_RECEIPT_V2_ADDITIONAL_KEYS)
+      || !same(record.successor_transition_argv, WORK4_CORRECTION_TRANSITION_ARGV)
+      || !same(record.successor_bootstrap_argv, [
+        'node', WORK4_CANDIDATE_TRANSITION_PATH, '--bootstrap', '--authority',
+        WORK4_CORRECTION_AUTHORITY_PATH,
+      ])
+      || record.superseded_outputs_disposition
+        !== 'RETAINED_IMMUTABLE_NEVER_DELETED_NEVER_CONSUMED_BY_WORK5_7'
+      || !same(record.parent_authority_binding, manifest.parent_authority_binding)
+      || !same(record.activation_receipt_binding, manifest.activation_receipt_binding)
+      || !same(record.candidate_ordering_correction_authority_binding,
+        manifest.candidate_ordering_correction_authority_binding)
+      || record.allowed_effects?.model_calls !== 0
+      || record.allowed_effects?.network_writes !== 0
+      || record.allowed_effects?.product_writes !== 0) {
+    fail('AUTHORITY_BINDING_DRIFT', 'Work4 candidate correction authority contract');
+  }
+  validateContentIdOnly(
+    record, 'correction_authority_id', 'AUTHORITY_BINDING_DRIFT',
+    WORK4_CORRECTION_AUTHORITY_PATH,
+  );
+  const superseded = record.superseded_work4_outputs;
+  const expectedSupersededPaths = {
+    candidate_registration_binding: `${CANDIDATE_ROOT}/${WORK4_SUPERSEDED_REGISTRATION_ID}.json`,
+    candidate_transition_authority_binding: WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
+    execution_manifest_binding: executionManifestPath('WORK4'),
+    work4_receipt_binding: WORK4_RECEIPT_PATH,
+  };
+  if (!exactKeys(superseded, Object.keys(expectedSupersededPaths))) {
+    fail('AUTHORITY_BINDING_DRIFT', 'Work4 superseded outputs');
+  }
+  // Every superseded output must still exist byte-identical: retained,
+  // never deleted, never replaced.
+  for (const [member, repositoryPath] of Object.entries(expectedSupersededPaths)) {
+    const supersededBinding = superseded[member];
+    if (recordBindingIsInvalid(supersededBinding) || supersededBinding.path !== repositoryPath) {
+      fail('AUTHORITY_BINDING_DRIFT', `Work4 superseded ${member}`);
+    }
+    validateRecordBinding(root, supersededBinding, 'AUTHORITY_BINDING_DRIFT');
+  }
+  if (superseded.candidate_registration_binding.record_id !== WORK4_SUPERSEDED_REGISTRATION_ID
+      || superseded.work4_receipt_binding.schema_version !== WORK4_RECEIPT_V1_SCHEMA) {
+    fail('AUTHORITY_BINDING_DRIFT', 'Work4 superseded identities');
+  }
+  return { record, binding };
 }
 
 function isSortedUnique(values) {
@@ -1491,8 +1654,9 @@ function parentAllowsWrite(authority, repositoryPath) {
 
 function validateWritePaths(
   root, authority, manifestPath, manifest, authorisedWork1WriteExceptions,
-  authorisedParentWriteExtensions, candidateStageState,
+  authorisedParentWriteExtensions, candidateStageState, work4Correction = false,
 ) {
+  const WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH = work4TransitionAuthorityPath(work4Correction);
   const paths = manifest.permitted_write_paths;
   if (!isSortedUnique(paths)) fail('PATH_SCOPE_DRIFT', 'permitted_write_paths');
   const immutablePaths = new Set(authority.immutable_paths);
@@ -1650,7 +1814,8 @@ function validateGitReadArgv(argv, authority, manifest) {
 function validateRunArgv(argv, authority, manifest, authorisedCommandExtensions) {
   if (!Array.isArray(argv) || argv.length < 2 || !argv.every(safeToken)) return false;
   if (authorisedCommandExtensions.some((entry) => same(entry.argv, argv))) {
-    if (same(argv, WORK4_CANDIDATE_TRANSITION_ARGV)) {
+    if (same(argv, WORK4_CANDIDATE_TRANSITION_ARGV)
+        || same(argv, WORK4_CORRECTION_TRANSITION_ARGV)) {
       return pathIsInScope(argv[1], manifest) && pathIsInScope(argv[3], manifest);
     }
     const repositoryPaths = argv[1] === '--test'
@@ -1660,6 +1825,11 @@ function validateRunArgv(argv, authority, manifest, authorisedCommandExtensions)
       && repositoryPaths.every((repositoryPath) => pathIsInScope(repositoryPath, manifest));
   }
   if (same(argv, ['node', VALIDATOR_PATH, executionManifestPath(manifest.work)])) return true;
+  if (manifest.work === 'WORK4'
+      && manifest[WORK4_CORRECTION_MANIFEST_MEMBER] !== undefined
+      && same(argv, ['node', VALIDATOR_PATH, WORK4_SUCCESSOR_MANIFEST_PATH])) {
+    return true;
+  }
   if (argv[0] === 'node' && argv[1] === '--check' && argv.length === 3) {
     return /\.(?:js|mjs)$/.test(argv[2]) && pathIsInScope(argv[2], manifest);
   }
@@ -2091,7 +2261,9 @@ function validateWork2EntryCorrection(root, authority, manifest, predecessorRece
   };
 }
 
-function validateCandidateOrderingAuthority(root, authority, authorityBytes, manifest) {
+function validateCandidateOrderingAuthority(
+  root, authority, authorityBytes, manifest, work4Correction = false,
+) {
   const binding = manifest.candidate_ordering_correction_authority_binding;
   if (!manifest.permitted_read_paths.includes(CANDIDATE_ORDERING_AUTHORITY_PATH)) {
     fail('PATH_SCOPE_DRIFT', 'candidate ordering authority read');
@@ -2311,7 +2483,7 @@ function validateCandidateOrderingAuthority(root, authority, authorityBytes, man
     authorisedParentWriteExtensions: new Set([
       ...WORK2_SOURCE_SET_PATHS,
       ...(manifest.work === 'WORK4'
-        ? [WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH] : []),
+        ? [work4TransitionAuthorityPath(work4Correction)] : []),
     ]),
     authorisedCommandExtensions: [
       ...(manifest.work === 'WORK2' ? [
@@ -2323,7 +2495,7 @@ function validateCandidateOrderingAuthority(root, authority, authorityBytes, man
         { argv: CANDIDATE_REGISTRATION_FOCUSED_ARGV, max_runs: 2 },
       ] : []),
       ...(manifest.work === 'WORK4' ? [{
-      argv: WORK4_CANDIDATE_TRANSITION_ARGV,
+      argv: work4TransitionArgv(work4Correction),
       max_runs: 1,
       }] : []),
     ],
@@ -2539,11 +2711,18 @@ function schedulesCandidateEvidence(manifest) {
 }
 
 function validateCandidateOrdering(
-  root, manifest, prior, existingCandidatePaths, authorityBinding,
+  root, manifest, prior, existingCandidatePaths, authorityBinding, work4Correction = false,
 ) {
   const work = workNumber(manifest.work);
   const wrapper = manifest.candidate_registration_binding;
   const transition = manifest.candidate_transition;
+  const WORK4_CANDIDATE_TRANSITION_ARGV = work4TransitionArgv(work4Correction);
+  const WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH = work4TransitionAuthorityPath(work4Correction);
+  // Under the correction authority the candidate root holds exactly the
+  // superseded registration at bootstrap; otherwise it is empty.
+  const expectedBootstrapCandidatePaths = work4Correction
+    ? [`${CANDIDATE_ROOT}/${WORK4_SUPERSEDED_REGISTRATION_ID}.json`]
+    : [];
   if (work === 2 || work === 3) {
     if (wrapper !== null
         || transition !== null
@@ -2556,12 +2735,12 @@ function validateCandidateOrdering(
   if (work === 4 && wrapper === null) {
     const exactBootstrapCommands = [
       {
-        argv: ['node', VALIDATOR_PATH, executionManifestPath('WORK4')],
+        argv: ['node', VALIDATOR_PATH, work4ManifestPath(work4Correction)],
         max_runs: 3,
       },
       { argv: WORK4_CANDIDATE_TRANSITION_ARGV, max_runs: 1 },
     ];
-    if (existingCandidatePaths.length !== 0
+    if (!same(existingCandidatePaths, expectedBootstrapCandidatePaths)
         || schedulesCandidateEvidence(manifest)
         || !exactKeys(transition, [
           'authority_binding', 'state', 'transition_argv', 'transition_run_limit',
@@ -2590,6 +2769,7 @@ function validateCandidateOrdering(
     manifest.permitted_read_paths,
     authorityBinding,
     work === 4 ? manifest : null,
+    work4Correction,
   );
   if (work === 4 && !same(manifest.exact_argv_with_run_limits?.[1], {
     argv: WORK4_CANDIDATE_TRANSITION_ARGV,
@@ -4198,16 +4378,30 @@ function validateSemanticReceiptLineage({
     validateRichWork3ReceiptEnvelopeAndIdentity(receipt, code);
   }
   const idField = `work${number}_receipt_id`;
+  const work4Correction = number === 4
+    && priorManifest?.[WORK4_CORRECTION_MANIFEST_MEMBER] !== undefined;
   const expectedSchema = number === 2
     ? WORK2_COMPILER_RECEIPT_SCHEMA
     : number === 3
       ? RICH_WORK3_RECEIPT_SCHEMA
-      : `STAGE_2Y_M7_V2_REPAIR_WORK${number}_RECEIPT/V1`;
+      : work4Correction
+        ? WORK4_RECEIPT_V2_SCHEMA
+        : `STAGE_2Y_M7_V2_REPAIR_WORK${number}_RECEIPT/V1`;
   const expectedKeys = number === 2
     ? WORK2_COMPILER_RECEIPT_KEYS
     : number === 3
       ? RICH_WORK3_RECEIPT_KEYS
-      : [...LATER_RECEIPT_KEYS, idField];
+      : work4Correction
+        ? [...LATER_RECEIPT_KEYS, idField, ...WORK4_RECEIPT_V2_ADDITIONAL_KEYS]
+        : [...LATER_RECEIPT_KEYS, idField];
+  if (work4Correction
+      && (!same(receipt[WORK4_CORRECTION_MANIFEST_MEMBER], WORK4_CORRECTION_AUTHORITY_BINDING)
+        || recordBindingIsInvalid(receipt.superseded_work4_receipt_binding)
+        || receipt.superseded_work4_receipt_binding.path !== WORK4_RECEIPT_PATH
+        || receipt.superseded_work4_receipt_binding.schema_version !== WORK4_RECEIPT_V1_SCHEMA
+        || binding.path !== WORK4_SUCCESSOR_RECEIPT_PATH)) {
+    fail(code, 'Work4 correction receipt lineage');
+  }
   const expectedState = number === 2
     ? 'PASS_WORK2_BUILD_ONLY_NULL_CANDIDATE'
     : number === 3 ? 'PASS_WORK3_BUILD_ONLY_NULL_CANDIDATE' : `PASS_WORK${number}`;
@@ -4255,7 +4449,14 @@ function validateSemanticReceiptLineage({
 
 function validateWork4CandidateTransitionAuthority(
   root, transition, wrapper, permittedReadPaths, orderingAuthorityBinding, work4Manifest,
+  work4Correction = false,
 ) {
+  const WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH = work4TransitionAuthorityPath(work4Correction);
+  const WORK4_CANDIDATE_TRANSITION_ARGV = work4TransitionArgv(work4Correction);
+  const authorityKeys = work4Correction
+    ? [...WORK4_CANDIDATE_TRANSITION_AUTHORITY_KEYS, WORK4_CORRECTION_MANIFEST_MEMBER,
+      'superseded_candidate_registration_binding']
+    : WORK4_CANDIDATE_TRANSITION_AUTHORITY_KEYS;
   if (!exactKeys(transition, WORK4_PASS_TRANSITION_KEYS)) {
     fail('CANDIDATE_BINDING_DRIFT', 'Work4 candidate transition');
   }
@@ -4297,14 +4498,14 @@ function validateWork4CandidateTransitionAuthority(
     ].sort();
     bootstrap.exact_argv_with_run_limits = [
       {
-        argv: ['node', VALIDATOR_PATH, executionManifestPath('WORK4')],
+        argv: ['node', VALIDATOR_PATH, work4ManifestPath(work4Correction)],
         max_runs: 3,
       },
       { argv: WORK4_CANDIDATE_TRANSITION_ARGV, max_runs: 1 },
     ];
     bootstrap.exact_git_commit_and_push_argv[0] = [
       'git', 'add', '--',
-      ...[executionManifestPath('WORK4'), ...bootstrap.permitted_write_paths].sort(),
+      ...[work4ManifestPath(work4Correction), ...bootstrap.permitted_write_paths].sort(),
     ];
     delete bootstrap.execution_manifest_id;
     delete bootstrap.execution_manifest_digest;
@@ -4316,19 +4517,29 @@ function validateWork4CandidateTransitionAuthority(
     };
     const bootstrapBytes = Buffer.from(`${canonicalJson(sealedBootstrap)}\n`, 'utf8');
     expectedBootstrapBinding = recordBinding(
-      executionManifestPath('WORK4'),
+      work4ManifestPath(work4Correction),
       bootstrapBytes,
       sealedBootstrap,
       'execution_manifest_id',
     );
   }
-  if (!exactKeys(record, WORK4_CANDIDATE_TRANSITION_AUTHORITY_KEYS)
+  if (work4Correction
+      && (!same(record[WORK4_CORRECTION_MANIFEST_MEMBER], WORK4_CORRECTION_AUTHORITY_BINDING)
+        || recordBindingIsInvalid(record.superseded_candidate_registration_binding)
+        || record.superseded_candidate_registration_binding.path
+          !== `${CANDIDATE_ROOT}/${WORK4_SUPERSEDED_REGISTRATION_ID}.json`
+        || record.superseded_candidate_registration_binding.record_id
+          !== WORK4_SUPERSEDED_REGISTRATION_ID
+        || candidateBinding?.record_id === WORK4_SUPERSEDED_REGISTRATION_ID)) {
+    fail('CANDIDATE_BINDING_DRIFT', 'Work4 candidate correction transition authority');
+  }
+  if (!exactKeys(record, authorityKeys)
       || record.schema_version !== WORK4_CANDIDATE_TRANSITION_AUTHORITY_SCHEMA
       || record.state !== 'AUTHORISED_ONE_SHOT_WORK4_CANDIDATE_TRANSITION'
       || !same(record.candidate_ordering_correction_authority_binding,
         orderingAuthorityBinding)
       || recordBindingIsInvalid(bootstrapBinding)
-      || bootstrapBinding.path !== executionManifestPath('WORK4')
+      || bootstrapBinding.path !== work4ManifestPath(work4Correction)
       || bootstrapBinding.schema_version !== SCHEMA
       || bootstrapBinding.record_id_field !== 'execution_manifest_id'
       || (expectedBootstrapBinding !== null
@@ -4710,7 +4921,21 @@ function validateCandidate(root, authority, manifest, prior, existingCandidatePa
     fail('CANDIDATE_BINDING_DRIFT', 'candidate wrapper');
   }
   const binding = wrapper.registration_binding;
-  if (!same(existingCandidatePaths, [binding?.path])) {
+  // In the correction lineage the candidate root holds exactly the retained
+  // superseded registration and the bound successor; otherwise exactly the
+  // bound registration.
+  const supersededPath = `${CANDIDATE_ROOT}/${WORK4_SUPERSEDED_REGISTRATION_ID}.json`;
+  const corrected = existingCandidatePaths.includes(supersededPath)
+    && binding?.path !== supersededPath;
+  if (corrected) {
+    // The retained superseded registration is tolerated only under the
+    // pinned correction authority's exact bytes.
+    validateRecordBinding(root, WORK4_CORRECTION_AUTHORITY_BINDING, 'CANDIDATE_BINDING_DRIFT');
+  }
+  const expectedCandidatePaths = corrected
+    ? [supersededPath, binding?.path].sort()
+    : [binding?.path];
+  if (!same(existingCandidatePaths, expectedCandidatePaths)) {
     fail('CANDIDATE_BINDING_DRIFT', 'candidate registration root selection');
   }
   if (!manifest.permitted_read_paths.includes(binding.path)) {
@@ -4824,15 +5049,22 @@ export async function validateExecutionManifest(options) {
   }
   const authorityState = validateAuthority(root);
   const { authority } = authorityState;
-  if (!authority.per_work_execution_manifest_policy.exact_paths.includes(manifestPath)) {
+  const work4Correction = manifestPath === WORK4_SUCCESSOR_MANIFEST_PATH;
+  if (!work4Correction
+      && !authority.per_work_execution_manifest_policy.exact_paths.includes(manifestPath)) {
     fail('PATH_SCOPE_DRIFT', manifestPath);
   }
   const bytes = readSafe(root, manifestPath);
   const manifest = parseCanonical(bytes, 'MANIFEST_BYTES_DRIFT', manifestPath);
-  if (!WORKS.includes(manifest.work) || manifestPath !== executionManifestPath(manifest.work)) {
+  if (!WORKS.includes(manifest.work)
+      || manifestPath !== (work4Correction && manifest.work === 'WORK4'
+        ? WORK4_SUCCESSOR_MANIFEST_PATH
+        : executionManifestPath(manifest.work))) {
     fail('MANIFEST_CONTRACT_DRIFT', manifestPath);
   }
-  validateManifestIdentity(manifest, authority.per_work_execution_manifest_policy, manifest.work);
+  validateManifestIdentity(
+    manifest, authority.per_work_execution_manifest_policy, manifest.work, work4Correction,
+  );
   const work3EntryCorrectionAuthority = manifest.work === 'WORK3'
     ? validateWork3EntryCorrection(root, manifest)
     : null;
@@ -4840,6 +5072,7 @@ export async function validateExecutionManifest(options) {
     expectedAuthorityBinding(authority, authorityState.bytes))) {
     fail('AUTHORITY_BINDING_DRIFT', AUTHORITY_PATH);
   }
+  if (work4Correction) validateWork4CandidateCorrection(root, manifest);
   const existingCandidatePaths = existingCandidateRegistrationPaths(root);
   const buildOnlyCandidateStageState = ['WORK2', 'WORK3'].includes(manifest.work)
     ? validateCandidateOrdering(root, manifest, null, existingCandidatePaths, null)
@@ -4893,6 +5126,7 @@ export async function validateExecutionManifest(options) {
     authority,
     authorityState.bytes,
     manifest,
+    work4Correction,
   );
   if (manifest.work === 'WORK2') {
     validateWork2RecoveryOverlay(root, manifest, bytes);
@@ -4910,6 +5144,7 @@ export async function validateExecutionManifest(options) {
       prior,
       existingCandidatePaths,
       candidateOrderingAuthority.binding,
+      work4Correction,
     );
   if (work3EntryCorrectionAuthority === null) {
     validateWritePaths(
@@ -4926,6 +5161,7 @@ export async function validateExecutionManifest(options) {
         ...candidateOrderingAuthority.authorisedParentWriteExtensions,
       ]),
       candidateStageState,
+      work4Correction,
     );
     validateCommands(
       authority,

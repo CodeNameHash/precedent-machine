@@ -18,6 +18,12 @@
 // verifier) read on their own contracts, which the manifest validator itself
 // enforces. It performs no model call, network read, database write or
 // product write, and it never overwrites.
+//
+// Work4 candidate correction (Ben, 2026-09-03): when the pinned correction
+// authority exists in the tree, the finaliser targets the successor manifest,
+// transition authority and receipt path, writes a V2 receipt that also binds
+// the correction authority and the retained superseded V1 receipt, and never
+// touches the four committed Work4 outputs.
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -45,6 +51,42 @@ const PROJECTOR_PATH = 'lib/canonical-v2/agreement-projection.js';
 const RECEIPT_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK4_RECEIPT/V1';
 const RECEIPT_ID_FIELD = 'work4_receipt_id';
 const RECEIPT_STATE = 'PASS_WORK4';
+const CORRECTION_AUTHORITY_PATH =
+  `${MIGRATION_ROOT}/control/m7-v2-repair-contract-work4-candidate-correction-authority.json`;
+const CORRECTION_MEMBER = 'work4_candidate_correction_authority_binding';
+const SUCCESSOR_MANIFEST_PATH =
+  `${MIGRATION_ROOT}/control/m7-v2-repair-work4-execution-manifest-candidate-correction-successor.json`;
+const SUCCESSOR_TRANSITION_AUTHORITY_PATH =
+  `${MIGRATION_ROOT}/control/m7-v2-repair-work4-candidate-transition-authority-candidate-correction-successor.json`;
+const SUCCESSOR_RECEIPT_PATH =
+  `${MIGRATION_ROOT}/receipts/stage-2y-structure-m7-v2-repair-work4-fixture-candidate-correction-successor.json`;
+const RECEIPT_SCHEMA_V2 = 'STAGE_2Y_M7_V2_REPAIR_WORK4_RECEIPT/V2';
+
+// The correction authority's presence in the tree selects the successor set.
+// Its bytes are then bound by the successor manifest, so presence alone never
+// decides anything the manifest validator does not also prove.
+export function resolveWork4Paths(root) {
+  const correction = fs.existsSync(safeAbsolute(root, CORRECTION_AUTHORITY_PATH, false));
+  return correction
+    ? {
+      correction: true,
+      authorityPath: CORRECTION_AUTHORITY_PATH,
+      manifestPath: SUCCESSOR_MANIFEST_PATH,
+      transitionAuthorityPath: SUCCESSOR_TRANSITION_AUTHORITY_PATH,
+      receiptPath: SUCCESSOR_RECEIPT_PATH,
+      receiptSchema: RECEIPT_SCHEMA_V2,
+      supersededReceiptPath: RECEIPT_PATH,
+    }
+    : {
+      correction: false,
+      authorityPath: null,
+      manifestPath: MANIFEST_PATH,
+      transitionAuthorityPath: TRANSITION_AUTHORITY_PATH,
+      receiptPath: RECEIPT_PATH,
+      receiptSchema: RECEIPT_SCHEMA,
+      supersededReceiptPath: null,
+    };
+}
 const EXPECTED_STAGE_STATE = 'VERIFIED_CANDIDATE_BOUND';
 const CODE_SINGLETONS = Object.freeze([
   'compiler', 'deterministic_generator', 'contract_validator', 'projector', 'independent_verifier',
@@ -243,12 +285,15 @@ export function deriveWork4Counts({
   };
 }
 
-async function buildWork4Receipt(root) {
+async function buildWork4Receipt(root, paths) {
+  const { manifestPath: MANIFEST_PATH, receiptPath: RECEIPT_PATH } = paths;
+  const TRANSITION_AUTHORITY_PATH = paths.transitionAuthorityPath;
   const manifestBytes = readRegularFile(root, MANIFEST_PATH);
   const manifest = parseCanonical(manifestBytes, MANIFEST_PATH);
   if (manifest.work !== 'WORK4' || manifest.work_receipt_path !== RECEIPT_PATH
       || !manifest.permitted_write_paths?.includes(RECEIPT_PATH)
-      || !manifest.permitted_read_paths?.includes(MANIFEST_PATH)) {
+      || !manifest.permitted_read_paths?.includes(MANIFEST_PATH)
+      || (paths.correction !== (manifest[CORRECTION_MEMBER] !== undefined))) {
     fail('WORK4_STATE', 'manifest is not the Work4 post-transition manifest');
   }
   const validation = await validateExecutionManifest({ repoRoot: root, manifestPath: MANIFEST_PATH });
@@ -299,8 +344,29 @@ async function buildWork4Receipt(root) {
     profileSet: profileSetState.record,
     projectorV1RejectionCount: probeProjectorSeam(root, manifest, registration, viewPolicyState.record),
   });
+  let correctionMembers = {};
+  if (paths.correction) {
+    // The successor receipt binds the correction authority exactly as the
+    // manifest does, and the retained superseded V1 receipt exactly as the
+    // authority does; both are read through the manifest's read scope.
+    const authorityState = readScoped(root, manifest, paths.authorityPath);
+    requireBinding(manifest[CORRECTION_MEMBER], authorityState.bytes, authorityState.record,
+      paths.authorityPath);
+    const supersededBinding = authorityState.record.superseded_work4_outputs?.work4_receipt_binding;
+    if (supersededBinding?.path !== paths.supersededReceiptPath
+        || supersededBinding.schema_version !== RECEIPT_SCHEMA) {
+      fail('WORK4_INPUT_DRIFT', 'superseded Work4 receipt binding');
+    }
+    const supersededState = readScoped(root, manifest, paths.supersededReceiptPath);
+    requireBinding(supersededBinding, supersededState.bytes, supersededState.record,
+      paths.supersededReceiptPath);
+    correctionMembers = {
+      [CORRECTION_MEMBER]: structuredClone(manifest[CORRECTION_MEMBER]),
+      superseded_work4_receipt_binding: structuredClone(supersededBinding),
+    };
+  }
   const unsigned = {
-    schema_version: RECEIPT_SCHEMA,
+    schema_version: paths.receiptSchema,
     state: RECEIPT_STATE,
     status: 'PASS',
     work: 'WORK4',
@@ -312,8 +378,9 @@ async function buildWork4Receipt(root) {
     candidate_transition: structuredClone(transition),
     counts,
     effects: { ...EXPECTED_EFFECTS },
+    ...correctionMembers,
   };
-  return { ...unsigned, [RECEIPT_ID_FIELD]: contentId(RECEIPT_SCHEMA, unsigned) };
+  return { ...unsigned, [RECEIPT_ID_FIELD]: contentId(paths.receiptSchema, unsigned) };
 }
 
 // Create-once and crash-safe: the bytes land in a temporary file beside the
@@ -358,23 +425,24 @@ export async function finaliseWork4(options = {}) {
   const root = rootPath(options.repoRoot ?? REPO_ROOT);
   const write = options.write ?? true;
   if (typeof write !== 'boolean') fail('WORK4_RECEIPT_INVALID', 'write option');
-  const receipt = await buildWork4Receipt(root);
+  const paths = resolveWork4Paths(root);
+  const receipt = await buildWork4Receipt(root, paths);
   const bytes = canonicalBytes(receipt);
-  const target = safeAbsolute(root, RECEIPT_PATH, false);
+  const target = safeAbsolute(root, paths.receiptPath, false);
   let existing = null;
   try {
     existing = fs.readFileSync(target);
   } catch (error) {
-    if (error.code !== 'ENOENT') fail('WORK4_OUTPUT_PATH', RECEIPT_PATH);
+    if (error.code !== 'ENOENT') fail('WORK4_OUTPUT_PATH', paths.receiptPath);
   }
   if (existing !== null) {
-    if (write) fail('WORK4_OUTPUT_EXISTS', RECEIPT_PATH);
-    if (!existing.equals(bytes)) fail('WORK4_RECEIPT_DRIFT', RECEIPT_PATH);
+    if (write) fail('WORK4_OUTPUT_EXISTS', paths.receiptPath);
+    if (!existing.equals(bytes)) fail('WORK4_RECEIPT_DRIFT', paths.receiptPath);
   }
-  if (write) writeExclusive(root, RECEIPT_PATH, bytes);
+  if (write) writeExclusive(root, paths.receiptPath, bytes);
   return {
     status: write ? 'PASS_WORK4_FINALISATION' : 'PASS_WORK4_FINALISATION_PREVIEW',
-    receipt_path: RECEIPT_PATH,
+    receipt_path: paths.receiptPath,
     work4_receipt_id: receipt[RECEIPT_ID_FIELD],
     candidate_registration_id: receipt.candidate_registration_id,
     execution_manifest_id: receipt.execution_manifest_id,
@@ -388,13 +456,19 @@ export async function finaliseWork4(options = {}) {
 }
 
 export {
+  CORRECTION_AUTHORITY_PATH,
+  CORRECTION_MEMBER,
   EXPECTED_EFFECTS,
   MANIFEST_PATH,
   PROFILE_SET_PATH,
   RECEIPT_ID_FIELD,
   RECEIPT_PATH,
   RECEIPT_SCHEMA,
+  RECEIPT_SCHEMA_V2,
   RECEIPT_STATE,
+  SUCCESSOR_MANIFEST_PATH,
+  SUCCESSOR_RECEIPT_PATH,
+  SUCCESSOR_TRANSITION_AUTHORITY_PATH,
   TRANSITION_AUTHORITY_PATH,
   VIEW_POLICY_PATH,
 };

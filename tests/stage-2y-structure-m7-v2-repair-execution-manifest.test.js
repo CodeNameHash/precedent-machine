@@ -437,6 +437,25 @@ function collectRepositoryBindingPaths(value, selected = new Set()) {
   return selected;
 }
 
+// Every Work4 output the sealed authorities name. The frozen Work3 V2 fixture
+// represents the tree before the Work4 transition, so none of these may be
+// copied into it even once they exist in the repository: the bootstrap tests
+// create them inside the fixture themselves. This includes the committed
+// originals, the candidate-correction successors, every candidate
+// registration and the correction authority, which the correction rehearsal
+// copies in explicitly.
+const WORK4_FIXTURE_EXCLUDED_PATHS = new Set([
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work4-execution-manifest.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work4-candidate-transition-authority.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-work4-fixture.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work4-execution-manifest-candidate-correction-successor.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work4-candidate-transition-authority-candidate-correction-successor.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-work4-fixture-candidate-correction-successor.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work4-candidate-correction-authority.json',
+]);
+const WORK4_FIXTURE_EXCLUDED_PREFIX =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-candidate-registrations/';
+
 function copyFrozenClosureGraph(root, amendment, excludedPaths) {
   const selected = collectRepositoryBindingPaths(amendment);
   for (const repositoryPath of amendment.receipt_contract_overlay
@@ -445,7 +464,9 @@ function copyFrozenClosureGraph(root, amendment, excludedPaths) {
   const copied = new Set();
   while (queue.length > 0) {
     const repositoryPath = queue.shift();
-    if (copied.has(repositoryPath) || excludedPaths.has(repositoryPath)) continue;
+    if (copied.has(repositoryPath) || excludedPaths.has(repositoryPath)
+      || WORK4_FIXTURE_EXCLUDED_PATHS.has(repositoryPath)
+      || repositoryPath.startsWith(WORK4_FIXTURE_EXCLUDED_PREFIX)) continue;
     const source = absolute(REPO_ROOT, repositoryPath);
     if (!existsSync(source) || !lstatSync(source).isFile()) continue;
     copyRepositoryFile(root, repositoryPath);
@@ -8363,6 +8384,164 @@ test('Work4 bootstrap CLI creates its manifest once from the exact pushed prep t
     ),
     false,
   );
+});
+
+// Work4 candidate correction (Ben, 2026-09-03). The fixture is the frozen
+// Work3 V2 tree plus the four committed Work4 outputs, copied byte-for-byte,
+// plus the pinned correction authority. The original bootstrap must refuse,
+// the correction bootstrap and transition must create the successor set with
+// a different registration ID, and the four originals must survive untouched.
+test('Work4 candidate correction creates the successor set beside the retained originals', async (t) => {
+  const fixture = makeFixture(t);
+  await prepareFrozenWork3V2(fixture);
+  const correctionAuthorityPath =
+    'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work4-candidate-correction-authority.json';
+  const successorManifestPath =
+    'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work4-execution-manifest-candidate-correction-successor.json';
+  const successorTransitionAuthorityPath =
+    'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work4-candidate-transition-authority-candidate-correction-successor.json';
+  const successorReceiptPath =
+    'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-work4-fixture-candidate-correction-successor.json';
+  const supersededRegistrationPath =
+    `${CANDIDATE_ROOT_FOR_TESTS}/0e46052b1a6a0b284291ee0e6881aac0ecf99a40429300295178bcaa3d832d5e.json`;
+  const retainedPaths = [
+    manifestPath('WORK4'),
+    WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
+    supersededRegistrationPath,
+    'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-work4-fixture.json',
+  ];
+  // The correction commits the finaliser and validator before its bootstrap,
+  // so the fixture carries them as tree-bound inputs.
+  for (const repositoryPath of [
+    ...retainedPaths,
+    correctionAuthorityPath,
+    'scripts/stage-2y-structure-m7-v2-repair-work4-finalise.mjs',
+    'scripts/stage-2y-structure-m7-v2-repair-work4-validate.mjs',
+  ]) {
+    copyRepositoryFile(fixture.root, repositoryPath);
+  }
+  const retainedBytes = new Map(retainedPaths.map((repositoryPath) => [
+    repositoryPath, readFileSync(absolute(REPO_ROOT, repositoryPath)),
+  ]));
+  const prepCommit = createFixtureCommit(
+    fixture.root,
+    WORK3_V2_FINAL_COMMIT,
+    'Prepare Work4 candidate correction fixture',
+    '2026-09-03T18:00:00Z',
+  );
+  pointFixtureBranchAt(fixture.root, prepCommit);
+  const correctionBootstrapArgv = [
+    '--bootstrap', '--authority', correctionAuthorityPath,
+  ];
+  const correctionTransitionArgv = ['--authority', correctionAuthorityPath];
+
+  const originalBootstrap = runWork4Binder(fixture.root, WORK4_BOOTSTRAP_ARGV.slice(2));
+  assert.notEqual(originalBootstrap.status, 0);
+  assert.match(originalBootstrap.stderr, /WORK4_OUTPUT_EXISTS/u);
+  assert.equal(existsSync(absolute(fixture.root, successorManifestPath)), false);
+
+  const prematureTransition = runWork4Binder(fixture.root, correctionTransitionArgv);
+  assert.notEqual(prematureTransition.status, 0);
+  assert.equal(existsSync(absolute(fixture.root, successorTransitionAuthorityPath)), false);
+
+  const bootstrapped = runWork4Binder(fixture.root, correctionBootstrapArgv);
+  assert.equal(bootstrapped.status, 0, bootstrapped.stderr);
+  const bootstrapBytes = readFileSync(absolute(fixture.root, successorManifestPath));
+  const bootstrap = JSON.parse(bootstrapBytes);
+  assert.equal(bootstrap.work, 'WORK4');
+  assert.equal(bootstrap.candidate_registration_binding, null);
+  assert.equal(bootstrap.work_receipt_path, successorReceiptPath);
+  assert.equal(bootstrap.base_tip_binding.commit, prepCommit);
+  assert.equal(bootstrap.work4_candidate_correction_authority_binding.path, correctionAuthorityPath);
+  assert.equal(bootstrap.permitted_read_paths.includes(correctionAuthorityPath), true);
+  for (const repositoryPath of retainedPaths) {
+    assert.equal(bootstrap.permitted_read_paths.includes(repositoryPath), true, repositoryPath);
+    assert.equal(bootstrap.permitted_write_paths.includes(repositoryPath), false, repositoryPath);
+  }
+  assert.deepEqual(bootstrap.candidate_transition.transition_argv, [
+    'node', WORK4_CANDIDATE_TRANSITION_PATH, '--authority', correctionAuthorityPath,
+  ]);
+  const pendingValidation = spawnSync(
+    process.execPath,
+    [EXECUTION_MANIFEST_VALIDATOR_PATH, successorManifestPath],
+    { cwd: fixture.root, encoding: 'utf8' },
+  );
+  assert.equal(pendingValidation.status, 0, pendingValidation.stderr);
+  assert.equal(
+    JSON.parse(pendingValidation.stdout).candidate_stage_state,
+    'WORK4_TRANSITION_PENDING',
+  );
+  const repeatedBootstrap = runWork4Binder(fixture.root, correctionBootstrapArgv);
+  assert.notEqual(repeatedBootstrap.status, 0);
+  assert.match(repeatedBootstrap.stderr, /WORK4_OUTPUT_EXISTS/u);
+
+  const transitioned = runWork4Binder(fixture.root, correctionTransitionArgv);
+  assert.equal(transitioned.status, 0, transitioned.stderr);
+  const result = JSON.parse(transitioned.stdout);
+  assert.equal(result.status, 'PASS');
+  assert.notEqual(
+    result.candidate_registration_id,
+    '0e46052b1a6a0b284291ee0e6881aac0ecf99a40429300295178bcaa3d832d5e',
+  );
+  assert.equal(result.validation.candidate_stage_state, 'VERIFIED_CANDIDATE_BOUND');
+  assert.deepEqual(
+    readdirSync(absolute(fixture.root, CANDIDATE_ROOT_FOR_TESTS)).sort(),
+    [
+      '0e46052b1a6a0b284291ee0e6881aac0ecf99a40429300295178bcaa3d832d5e.json',
+      `${result.candidate_registration_id}.json`,
+    ].sort(),
+  );
+  const postTransition = JSON.parse(readFileSync(absolute(fixture.root, successorManifestPath)));
+  assert.deepEqual(postTransition.permitted_write_paths, [
+    successorTransitionAuthorityPath,
+    result.candidate_registration_path,
+    successorReceiptPath,
+  ].sort());
+  assert.deepEqual(postTransition.exact_git_commit_and_push_argv[1], [
+    'git', 'commit', '-m', 'Implement M7 V2 repair Work 4 candidate correction',
+  ]);
+  const transitionAuthority = JSON.parse(readFileSync(
+    absolute(fixture.root, successorTransitionAuthorityPath),
+  ));
+  assert.deepEqual(
+    transitionAuthority.work4_candidate_correction_authority_binding,
+    bootstrap.work4_candidate_correction_authority_binding,
+  );
+  assert.equal(
+    transitionAuthority.superseded_candidate_registration_binding.path,
+    supersededRegistrationPath,
+  );
+  const boundValidation = spawnSync(
+    process.execPath,
+    [EXECUTION_MANIFEST_VALIDATOR_PATH, successorManifestPath],
+    { cwd: fixture.root, encoding: 'utf8' },
+  );
+  assert.equal(boundValidation.status, 0, boundValidation.stderr);
+  assert.equal(
+    JSON.parse(boundValidation.stdout).candidate_registration_id,
+    result.candidate_registration_id,
+  );
+  // The superseded manifest no longer validates once the successor exists. In
+  // the fixture its pushed base tip is also foreign, so either refusal proves
+  // it is not the manifest of record.
+  const supersededValidation = spawnSync(
+    process.execPath,
+    [EXECUTION_MANIFEST_VALIDATOR_PATH, manifestPath('WORK4')],
+    { cwd: fixture.root, encoding: 'utf8' },
+  );
+  assert.notEqual(supersededValidation.status, 0);
+  assert.match(supersededValidation.stderr, /^(?:BASE_TIP_DRIFT|CANDIDATE_BINDING_DRIFT)$/mu);
+  for (const repositoryPath of retainedPaths) {
+    assert.deepEqual(
+      readFileSync(absolute(fixture.root, repositoryPath)),
+      retainedBytes.get(repositoryPath),
+      repositoryPath,
+    );
+  }
+  const postTransitionBytes = readFileSync(absolute(fixture.root, successorManifestPath));
+  const repeatedTransition = runWork4Binder(fixture.root, correctionTransitionArgv);
+  assert.notEqual(repeatedTransition.status, 0);
+  assert.deepEqual(readFileSync(absolute(fixture.root, successorManifestPath)), postTransitionBytes);
 });
 
 test('Work3 V2 closure dispatches exactly through Work4, registration and verification', async (t) => {
