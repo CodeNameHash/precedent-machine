@@ -2877,6 +2877,7 @@ test('read-only Git inspectors launch only whitelisted inspection commands', () 
     'scripts/stage-2y-structure-m5-preparation-validate.mjs',
     'scripts/stage-2y-structure-migration-validate.mjs',
     'scripts/stage-2y-structure-m7-v2-repair-work3-validate.mjs',
+    'scripts/stage-2y-structure-m7-v2-repair-work7-verify.mjs',
   ]);
   for (const relativePath of READ_ONLY_GIT_INSPECTORS) {
     assertReadOnlyGitInspector(fs.readFileSync(path.join(ROOT, relativePath), 'utf8'), relativePath);
