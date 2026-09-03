@@ -1,0 +1,1979 @@
+{
+  "agreement_analysis_set_id": "c45e08bd0d140d24c5afb4fa9986b13e9f175a59d94987c46830351f3aac18d5",
+  "agreement_index_set_id": "5d42f5bbabd3b8ccdda090da2dcdccd9b8fc398d4d4948052e6474f383be4838",
+  "agreements": [
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "ambiguous_any_candidate_outside_definitions_article": 33,
+      "ambiguous_candidate_target_count_histogram": {
+        "2": 33
+      },
+      "ambiguous_definition_edges": 33,
+      "ambiguous_every_candidate_inside_definitions_article": 0,
+      "analysis_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m4/06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a.agreement-analysis.json",
+      "definition_edges": 2334,
+      "definitions_articles": [
+        {
+          "extent_span": {
+            "end_byte": 250704,
+            "start_byte": 237143,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "2e708d90b805def11099e55bdf53f098e4dea6d6b64d7bf649c14f48c7ec5a25",
+            "verified": true
+          },
+          "heading_span": {
+            "end_byte": 237168,
+            "start_byte": 237156,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "6e27bc00c0fcdcde3929de68e36f9d9632dac7d905bb637c4fe9ccb360d409a2",
+            "verified": true
+          },
+          "heading_text": "Definitions.",
+          "node_kind": "SECTION",
+          "node_occurrence_id": "ed638ab1aa10ee6515e40634e3d100a8af7ef3b61634e4b056e82c1351c65a23",
+          "reference": "8.03"
+        }
+      ],
+      "m2_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a.agreement-index.json",
+      "m3_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m3/06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a.context-compilation.json",
+      "reason_code_histogram": {
+        "MULTIPLE_EXACT_DEFINITION_TARGETS": 33,
+        "UNIQUE_EXACT_DEFINITION_TARGET": 2301
+      },
+      "rule_rate_vs_all": {
+        "denominator": 2334,
+        "numerator": 0,
+        "rate": 0,
+        "ratio": "0/2334"
+      },
+      "rule_rate_vs_ambiguous": {
+        "denominator": 33,
+        "numerator": 0,
+        "rate": 0,
+        "ratio": "0/33"
+      },
+      "rule_resolved_ambiguous": 0,
+      "rule_why_not_histogram": {
+        "term_defined_inline_in_the_body": 33
+      },
+      "state_histogram": {
+        "AMBIGUOUS": 33,
+        "RESOLVED": 2301
+      }
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "ambiguous_any_candidate_outside_definitions_article": 0,
+      "ambiguous_candidate_target_count_histogram": {},
+      "ambiguous_definition_edges": 0,
+      "ambiguous_every_candidate_inside_definitions_article": 0,
+      "analysis_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m4/08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154.agreement-analysis.json",
+      "definition_edges": 4092,
+      "definitions_articles": [
+        {
+          "extent_span": {
+            "end_byte": 71527,
+            "start_byte": 8638,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "b71cf032605d4838caf35669668f04b54c59cf8b591db065523f8986fe06c43c",
+            "verified": true
+          },
+          "heading_span": {
+            "end_byte": 8677,
+            "start_byte": 8648,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "fd6b31e291588ec3cdf20872ad5bc192762a0550a9fb4369384fcf834927f952",
+            "verified": true
+          },
+          "heading_text": "DEFINITIONS & INTERPRETATIONS",
+          "node_kind": "ARTICLE",
+          "node_occurrence_id": "4491638490cc3a36fe010625b70f2858eee014d2c5a5b01a88d441b9598c679b",
+          "reference": "ARTICLE I"
+        },
+        {
+          "extent_span": {
+            "end_byte": 59414,
+            "start_byte": 8678,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "b53f8b797448c4f114b95d383c4a0234b652db02d459223a2ceb4fe8d4db0f87",
+            "verified": true
+          },
+          "heading_span": {
+            "end_byte": 8702,
+            "start_byte": 8682,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "a6d44efd38e6012c4b63544d3c9a417e4147266191e7475021a0161068c23be8",
+            "verified": true
+          },
+          "heading_text": "Certain Definitions.",
+          "node_kind": "SECTION",
+          "node_occurrence_id": "133cb7b50fa9d7ee58168408a92aca8092738bdd45d45fba3f4a58d85ab4ce75",
+          "reference": "1.1"
+        },
+        {
+          "extent_span": {
+            "end_byte": 62897,
+            "start_byte": 59414,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "0a7dfda4b8eb695dd0dc0ec2d12b565c9bd81777f697df395f0b1803dea5696a",
+            "verified": true
+          },
+          "heading_span": {
+            "end_byte": 59441,
+            "start_byte": 59418,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "089730ba4f0b2d2933ae3c1c45d75b8cc824f604924e3aed8fcc4ec33a1a0ebb",
+            "verified": true
+          },
+          "heading_text": "Additional Definitions.",
+          "node_kind": "SECTION",
+          "node_occurrence_id": "a7002b03f8ab57d1e6903d8444ce1e8856e7b60701a76f79d9fc0c3b745cfe21",
+          "reference": "1.2"
+        }
+      ],
+      "m2_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154.agreement-index.json",
+      "m3_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m3/08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154.context-compilation.json",
+      "reason_code_histogram": {
+        "UNIQUE_EXACT_DEFINITION_TARGET": 4092
+      },
+      "rule_rate_vs_all": {
+        "denominator": 4092,
+        "numerator": 0,
+        "rate": 0,
+        "ratio": "0/4092"
+      },
+      "rule_rate_vs_ambiguous": {
+        "denominator": 0,
+        "numerator": 0,
+        "rate": null,
+        "ratio": "0/0"
+      },
+      "rule_resolved_ambiguous": 0,
+      "rule_why_not_histogram": {},
+      "state_histogram": {
+        "RESOLVED": 4092
+      }
+    },
+    {
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "ambiguous_any_candidate_outside_definitions_article": 13,
+      "ambiguous_candidate_target_count_histogram": {
+        "2": 13
+      },
+      "ambiguous_definition_edges": 13,
+      "ambiguous_every_candidate_inside_definitions_article": 0,
+      "analysis_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m4/1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116.agreement-analysis.json",
+      "definition_edges": 3745,
+      "definitions_articles": [
+        {
+          "extent_span": {
+            "end_byte": 10305,
+            "start_byte": 7130,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "a4db7508d1e1be2cf9a80cac04aa86ca6dbaade3831e059534443d8279ec026c",
+            "verified": true
+          },
+          "heading_span": {
+            "end_byte": 7159,
+            "start_byte": 7140,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "6dbcdd795efaf837ae6c9023a4ee0738a6991fd22f2498a153f4d845b6096ef2",
+            "verified": true
+          },
+          "heading_text": "CERTAIN DEFINITIONS",
+          "node_kind": "ARTICLE",
+          "node_occurrence_id": "a1ee08848494515546cf6e7c1cdb69840e04d01bf5f23418509f25af8c0b9434",
+          "reference": "ARTICLE I"
+        },
+        {
+          "extent_span": {
+            "end_byte": 7339,
+            "start_byte": 7160,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "7439b23ffbe0adcce13930b9ebc3af5ef22ea08fd32a4a944fea56c35f21895b",
+            "verified": true
+          },
+          "heading_span": {
+            "end_byte": 7184,
+            "start_byte": 7164,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "a6d44efd38e6012c4b63544d3c9a417e4147266191e7475021a0161068c23be8",
+            "verified": true
+          },
+          "heading_text": "Certain Definitions.",
+          "node_kind": "SECTION",
+          "node_occurrence_id": "03a19a69ff91ae21dd4182a99165cac2d3edecac9395ee6495dc85d838120e72",
+          "reference": "1.1"
+        },
+        {
+          "extent_span": {
+            "end_byte": 288809,
+            "start_byte": 288587,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "83579ff7e7df21c0ad1348aed7eaf0912ea959220c4e26b17e4baae6be2c2c46",
+            "verified": true
+          },
+          "heading_span": {
+            "end_byte": 288612,
+            "start_byte": 288591,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "c251dadfde784f9413cb9f054c895f16cb7325724bc6a7b99c579b8b0158c8fd",
+            "verified": true
+          },
+          "heading_text": "Schedule Definitions.",
+          "node_kind": "SECTION",
+          "node_occurrence_id": "bc9c1bcbde8c2c4774741eeb59d63c059a53de3c2624ab27e435c461a6941a51",
+          "reference": "9.1"
+        }
+      ],
+      "m2_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116.agreement-index.json",
+      "m3_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m3/1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116.context-compilation.json",
+      "reason_code_histogram": {
+        "MULTIPLE_EXACT_DEFINITION_TARGETS": 13,
+        "UNIQUE_EXACT_DEFINITION_TARGET": 3732
+      },
+      "rule_rate_vs_all": {
+        "denominator": 3745,
+        "numerator": 0,
+        "rate": 0,
+        "ratio": "0/3745"
+      },
+      "rule_rate_vs_ambiguous": {
+        "denominator": 13,
+        "numerator": 0,
+        "rate": 0,
+        "ratio": "0/13"
+      },
+      "rule_resolved_ambiguous": 0,
+      "rule_why_not_histogram": {
+        "term_defined_inline_in_the_body": 13
+      },
+      "state_histogram": {
+        "AMBIGUOUS": 13,
+        "RESOLVED": 3732
+      }
+    },
+    {
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "ambiguous_any_candidate_outside_definitions_article": 0,
+      "ambiguous_candidate_target_count_histogram": {},
+      "ambiguous_definition_edges": 0,
+      "ambiguous_every_candidate_inside_definitions_article": 0,
+      "analysis_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m4/3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb.agreement-analysis.json",
+      "definition_edges": 3561,
+      "definitions_articles": [
+        {
+          "extent_span": {
+            "end_byte": 398693,
+            "start_byte": 398562,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "0f68bd38b1b45d43eeedba419b1c613fa32d48d1f15a15b3497f70b7915431a1",
+            "verified": true
+          },
+          "heading_span": {
+            "end_byte": 398579,
+            "start_byte": 398567,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "6e27bc00c0fcdcde3929de68e36f9d9632dac7d905bb637c4fe9ccb360d409a2",
+            "verified": true
+          },
+          "heading_text": "Definitions.",
+          "node_kind": "SECTION",
+          "node_occurrence_id": "0daf25399a0727119ceb37dca19f5df1ab3cfb77bd3cdf9af4db45c5489d1e05",
+          "reference": "7.12"
+        }
+      ],
+      "m2_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb.agreement-index.json",
+      "m3_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m3/3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb.context-compilation.json",
+      "reason_code_histogram": {
+        "UNIQUE_EXACT_DEFINITION_TARGET": 3561
+      },
+      "rule_rate_vs_all": {
+        "denominator": 3561,
+        "numerator": 0,
+        "rate": 0,
+        "ratio": "0/3561"
+      },
+      "rule_rate_vs_ambiguous": {
+        "denominator": 0,
+        "numerator": 0,
+        "rate": null,
+        "ratio": "0/0"
+      },
+      "rule_resolved_ambiguous": 0,
+      "rule_why_not_histogram": {},
+      "state_histogram": {
+        "RESOLVED": 3561
+      }
+    },
+    {
+      "agreement_id": "aa72f3af29316df52ab5cb75eb2b0bb0a5b31036bd24c7f812241c5a688f4319",
+      "ambiguous_any_candidate_outside_definitions_article": 368,
+      "ambiguous_candidate_target_count_histogram": {
+        "2": 368
+      },
+      "ambiguous_definition_edges": 368,
+      "ambiguous_every_candidate_inside_definitions_article": 0,
+      "analysis_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-comparison-entry-correction/rocket-redfin/m4/agreement-analysis.json",
+      "definition_edges": 2585,
+      "definitions_articles": [
+        {
+          "extent_span": {
+            "end_byte": 326397,
+            "start_byte": 279265,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "7284860361e5d4ef339abd5e5e3ddac2da4faf8f8877e01416fdca7b52ff680e",
+            "verified": true
+          },
+          "heading_span": {
+            "end_byte": 279294,
+            "start_byte": 279275,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "acafb11245413d5c6c721247d26313081369183d2384d99d09766486e3930159",
+            "verified": true
+          },
+          "heading_text": "Certain Definitions",
+          "node_kind": "SECTION",
+          "node_occurrence_id": "eeaeef096761ad7481c49a4ec2147e707cf05b16093ec227d7bd7b8b0c45348d",
+          "reference": "Exhibit-A"
+        }
+      ],
+      "m2_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-comparison-entry-correction/rocket-redfin/m2/agreement-index.json",
+      "m3_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-comparison-entry-correction/rocket-redfin/m3/context-compilation.json",
+      "reason_code_histogram": {
+        "MULTIPLE_EXACT_DEFINITION_TARGETS": 368,
+        "UNIQUE_EXACT_DEFINITION_TARGET": 2217
+      },
+      "rule_rate_vs_all": {
+        "denominator": 2585,
+        "numerator": 21,
+        "rate": 0.0081237911,
+        "ratio": "21/2585"
+      },
+      "rule_rate_vs_ambiguous": {
+        "denominator": 368,
+        "numerator": 21,
+        "rate": 0.0570652174,
+        "ratio": "21/368"
+      },
+      "rule_resolved_ambiguous": 21,
+      "rule_why_not_histogram": {
+        "term_defined_inline_in_the_body": 347
+      },
+      "state_histogram": {
+        "AMBIGUOUS": 368,
+        "RESOLVED": 2217
+      }
+    },
+    {
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "ambiguous_any_candidate_outside_definitions_article": 0,
+      "ambiguous_candidate_target_count_histogram": {},
+      "ambiguous_definition_edges": 0,
+      "ambiguous_every_candidate_inside_definitions_article": 0,
+      "analysis_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m4/b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363.agreement-analysis.json",
+      "definition_edges": 3754,
+      "definitions_articles": [],
+      "m2_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363.agreement-index.json",
+      "m3_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m3/b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363.context-compilation.json",
+      "reason_code_histogram": {
+        "UNIQUE_EXACT_DEFINITION_TARGET": 3754
+      },
+      "rule_rate_vs_all": {
+        "denominator": 3754,
+        "numerator": 0,
+        "rate": 0,
+        "ratio": "0/3754"
+      },
+      "rule_rate_vs_ambiguous": {
+        "denominator": 0,
+        "numerator": 0,
+        "rate": null,
+        "ratio": "0/0"
+      },
+      "rule_resolved_ambiguous": 0,
+      "rule_why_not_histogram": {},
+      "state_histogram": {
+        "RESOLVED": 3754
+      }
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "ambiguous_any_candidate_outside_definitions_article": 1947,
+      "ambiguous_candidate_target_count_histogram": {
+        "2": 415,
+        "3": 1386,
+        "4": 146
+      },
+      "ambiguous_definition_edges": 1947,
+      "ambiguous_every_candidate_inside_definitions_article": 0,
+      "analysis_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-comparison-entry-correction/abbvie-landos/m4/agreement-analysis.json",
+      "definition_edges": 5140,
+      "definitions_articles": [
+        {
+          "extent_span": {
+            "end_byte": 298911,
+            "start_byte": 253899,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "7511a85df0c8b22d210231432a1245284b3dcc85dd27e6d1cc3c0a981abf23ef",
+            "verified": true
+          },
+          "heading_span": {
+            "end_byte": 253928,
+            "start_byte": 253909,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "6dbcdd795efaf837ae6c9023a4ee0738a6991fd22f2498a153f4d845b6096ef2",
+            "verified": true
+          },
+          "heading_text": "CERTAIN DEFINITIONS",
+          "node_kind": "SECTION",
+          "node_occurrence_id": "c8bda1252ad88b54a02e67b1ed48b0f43a80484a482b5f199f0d52dc87215ebd",
+          "reference": "Exhibit-A"
+        }
+      ],
+      "m2_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-comparison-entry-correction/abbvie-landos/m2/agreement-index.json",
+      "m3_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-comparison-entry-correction/abbvie-landos/m3/context-compilation.json",
+      "reason_code_histogram": {
+        "MULTIPLE_EXACT_DEFINITION_TARGETS": 1947,
+        "UNIQUE_EXACT_DEFINITION_TARGET": 3193
+      },
+      "rule_rate_vs_all": {
+        "denominator": 5140,
+        "numerator": 348,
+        "rate": 0.0677042802,
+        "ratio": "348/5140"
+      },
+      "rule_rate_vs_ambiguous": {
+        "denominator": 1947,
+        "numerator": 348,
+        "rate": 0.1787365177,
+        "ratio": "348/1947"
+      },
+      "rule_resolved_ambiguous": 348,
+      "rule_why_not_histogram": {
+        "term_defined_inline_in_the_body": 1599
+      },
+      "state_histogram": {
+        "AMBIGUOUS": 1947,
+        "RESOLVED": 3193
+      }
+    },
+    {
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "ambiguous_any_candidate_outside_definitions_article": 1963,
+      "ambiguous_candidate_target_count_histogram": {
+        "2": 1806,
+        "4": 157
+      },
+      "ambiguous_definition_edges": 1963,
+      "ambiguous_every_candidate_inside_definitions_article": 0,
+      "analysis_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m4/f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c.agreement-analysis.json",
+      "definition_edges": 4422,
+      "definitions_articles": [
+        {
+          "extent_span": {
+            "end_byte": 257871,
+            "start_byte": 240292,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "55fa9c6e3a0d3077e11da3267e3e028af018b48c6d78a51fb8ae48731f7a384d",
+            "verified": true
+          },
+          "heading_span": {
+            "end_byte": 240318,
+            "start_byte": 240306,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "6e27bc00c0fcdcde3929de68e36f9d9632dac7d905bb637c4fe9ccb360d409a2",
+            "verified": true
+          },
+          "heading_text": "Definitions.",
+          "node_kind": "SECTION",
+          "node_occurrence_id": "925c1346368703386eec065a0a77f4d36b0fef48fa4adac0423fa6bb8ac84162",
+          "reference": "9.03"
+        }
+      ],
+      "m2_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c.agreement-index.json",
+      "m3_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m3/f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c.context-compilation.json",
+      "reason_code_histogram": {
+        "MULTIPLE_EXACT_DEFINITION_TARGETS": 1963,
+        "UNIQUE_EXACT_DEFINITION_TARGET": 2459
+      },
+      "rule_rate_vs_all": {
+        "denominator": 4422,
+        "numerator": 270,
+        "rate": 0.0610583446,
+        "ratio": "270/4422"
+      },
+      "rule_rate_vs_ambiguous": {
+        "denominator": 1963,
+        "numerator": 270,
+        "rate": 0.1375445746,
+        "ratio": "270/1963"
+      },
+      "rule_resolved_ambiguous": 270,
+      "rule_why_not_histogram": {
+        "term_defined_inline_in_the_body": 1693
+      },
+      "state_histogram": {
+        "AMBIGUOUS": 1963,
+        "RESOLVED": 2459
+      }
+    },
+    {
+      "agreement_id": "fa0fff26622d0e90b47c3df527ccff91f4daa3db12f08d3832de76d8ae7541b5",
+      "ambiguous_any_candidate_outside_definitions_article": 1613,
+      "ambiguous_candidate_target_count_histogram": {
+        "2": 486,
+        "3": 1142
+      },
+      "ambiguous_definition_edges": 1628,
+      "ambiguous_every_candidate_inside_definitions_article": 15,
+      "analysis_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-comparison-entry-correction/lilly-verve/m4/agreement-analysis.json",
+      "definition_edges": 5190,
+      "definitions_articles": [
+        {
+          "extent_span": {
+            "end_byte": 276824,
+            "start_byte": 231130,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "6dcd8ad88430440d07fe4e204d3d7051f29f7e1863dd64b47a19c0db5da13a7c",
+            "verified": true
+          },
+          "heading_span": {
+            "end_byte": 231163,
+            "start_byte": 231143,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "a6d44efd38e6012c4b63544d3c9a417e4147266191e7475021a0161068c23be8",
+            "verified": true
+          },
+          "heading_text": "Certain Definitions.",
+          "node_kind": "SECTION",
+          "node_occurrence_id": "703a2a280441dc071c6d04848ac6f4c10e6e1cdd375e40b737766dada4453e67",
+          "reference": "9.3"
+        }
+      ],
+      "m2_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-comparison-entry-correction/lilly-verve/m2/agreement-index.json",
+      "m3_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-comparison-entry-correction/lilly-verve/m3/context-compilation.json",
+      "reason_code_histogram": {
+        "MULTIPLE_EXACT_DEFINITION_TARGETS": 1628,
+        "UNIQUE_EXACT_DEFINITION_TARGET": 3562
+      },
+      "rule_rate_vs_all": {
+        "denominator": 5190,
+        "numerator": 44,
+        "rate": 0.008477842,
+        "ratio": "44/5190"
+      },
+      "rule_rate_vs_ambiguous": {
+        "denominator": 1628,
+        "numerator": 44,
+        "rate": 0.027027027,
+        "ratio": "44/1628"
+      },
+      "rule_resolved_ambiguous": 44,
+      "rule_why_not_histogram": {
+        "term_defined_inline_in_the_body": 1569,
+        "two_definitions_of_the_same_term_in_the_article": 15
+      },
+      "state_histogram": {
+        "AMBIGUOUS": 1628,
+        "RESOLVED": 3562
+      }
+    },
+    {
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "ambiguous_any_candidate_outside_definitions_article": 46,
+      "ambiguous_candidate_target_count_histogram": {
+        "2": 46
+      },
+      "ambiguous_definition_edges": 46,
+      "ambiguous_every_candidate_inside_definitions_article": 0,
+      "analysis_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m4/fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c.agreement-analysis.json",
+      "definition_edges": 5928,
+      "definitions_articles": [
+        {
+          "extent_span": {
+            "end_byte": 351336,
+            "start_byte": 347945,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "1e1685eafd82ae628049b461f6f0c75051af8b0739c4b36bc35fbc7dcf556ca1",
+            "verified": true
+          },
+          "heading_span": {
+            "end_byte": 347993,
+            "start_byte": 347957,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "5c716f4a6251f87589906dc1295a3135fc3db0e1aa8daa510a8ba344d28f85b7",
+            "verified": true
+          },
+          "heading_text": "Interpretation; Certain Definitions.",
+          "node_kind": "SECTION",
+          "node_occurrence_id": "191f0a1ce33870cbdd4af83ccfc7619d969aae74b30d953d6d5be55051464c6b",
+          "reference": "8.5"
+        },
+        {
+          "extent_span": {
+            "end_byte": 414712,
+            "start_byte": 360030,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "b00db6af855d490d58f0fc77fce890026ecb3a616839d9018f3f1fb3becfdf45",
+            "verified": true
+          },
+          "heading_span": {
+            "end_byte": 360055,
+            "start_byte": 360043,
+            "stored_sha256_mismatch": false,
+            "text_sha256": "6e27bc00c0fcdcde3929de68e36f9d9632dac7d905bb637c4fe9ccb360d409a2",
+            "verified": true
+          },
+          "heading_text": "Definitions.",
+          "node_kind": "SECTION",
+          "node_occurrence_id": "0c46c9539f33622eace5060983c66911770e71cb93c6bdf3a9cab9a02f77fd1a",
+          "reference": "8.12"
+        }
+      ],
+      "m2_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c.agreement-index.json",
+      "m3_path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m3/fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c.context-compilation.json",
+      "reason_code_histogram": {
+        "MULTIPLE_EXACT_DEFINITION_TARGETS": 46,
+        "UNIQUE_EXACT_DEFINITION_TARGET": 5882
+      },
+      "rule_rate_vs_all": {
+        "denominator": 5928,
+        "numerator": 0,
+        "rate": 0,
+        "ratio": "0/5928"
+      },
+      "rule_rate_vs_ambiguous": {
+        "denominator": 46,
+        "numerator": 0,
+        "rate": 0,
+        "ratio": "0/46"
+      },
+      "rule_resolved_ambiguous": 0,
+      "rule_why_not_histogram": {
+        "term_defined_inline_in_the_body": 46
+      },
+      "state_histogram": {
+        "AMBIGUOUS": 46,
+        "RESOLVED": 5882
+      }
+    }
+  ],
+  "ambiguous_all_candidates_inside_rate": {
+    "denominator": 5998,
+    "numerator": 15,
+    "rate": 0.0025008336,
+    "ratio": "15/5998"
+  },
+  "ambiguous_any_candidate_outside_rate": {
+    "denominator": 5998,
+    "numerator": 5983,
+    "rate": 0.9974991664,
+    "ratio": "5983/5998"
+  },
+  "ambiguous_candidate_target_count_histogram": {
+    "2": 3167,
+    "3": 2528,
+    "4": 303
+  },
+  "context_compilation_set_id": "a6d00d595a5341420fb5ac2f39a6a767e0c0d00f9b4de0647f3944575e1e430e",
+  "counts": {
+    "agreements": 10,
+    "ambiguous_any_candidate_outside_definitions_article": 5983,
+    "ambiguous_definition_edges": 5998,
+    "ambiguous_every_candidate_inside_definitions_article": 15,
+    "definition_edges": 40751,
+    "fixed50_ambiguous": 47,
+    "fixed50_rule_resolved": 4,
+    "rule_resolved_ambiguous": 683,
+    "sha_failed_spans": 0,
+    "sha_mismatch_spans": 0,
+    "sha_verified_spans": 41513
+  },
+  "definitions_article_rule": {
+    "containment": "annotation.span inside the union of matching ARTICLE/SECTION extent_span",
+    "heading_pattern": "/definitions|defined terms|certain definitions/i",
+    "node_kinds": [
+      "ARTICLE",
+      "SECTION"
+    ]
+  },
+  "fixed50_ambiguous": [
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "0929f4f83707f3df1ac862c77785b0479de39c0562be0c6ebb1d8c6c10b70601",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "REPRESENTATIONS",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "89972a9423fcfc902fad7ecf07233181b46a8728e38609dfe614cb221a642e8c",
+      "rule_resolves": false,
+      "sample_ordinal": 7,
+      "source_span": {
+        "end_byte": 39279,
+        "start_byte": 39272,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 1,
+      "body_definition_count_exact": 1,
+      "candidate_target_count": 2,
+      "edge_id": "09e7e4ee3438f0de2d9823d9ae8d97db06625b6d1ef716b7f353d9e323f86185",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "REPRESENTATIONS",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": {
+        "annotation_occurrence_id": "12b48b0c5ff98c13f4a57bf84b6d4c191d7e8732d0995bc460615ecdfb08b7be",
+        "owner_node_occurrence_id": "2c95b084344c08688f3bef1a0c66f90f34eba3baa95941250ea348b1d9a9656d",
+        "span": {
+          "end_byte": 263038,
+          "start_byte": 263017,
+          "stored_sha256_mismatch": false,
+          "text_sha256": "f39057416b7412377f8c6d9f6ec80b9ac58cb67457fdef6e51187dfcd245eef8",
+          "verified": true
+        },
+        "value": "Company Options"
+      },
+      "review_item_id": "89972a9423fcfc902fad7ecf07233181b46a8728e38609dfe614cb221a642e8c",
+      "rule_resolves": true,
+      "sample_ordinal": 7,
+      "source_span": {
+        "end_byte": 39234,
+        "start_byte": 39219,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "1fe8b2fb3ae49aab0d7d536e87ae88f52d359897398903d010a09afc3a96723c",
+        "verified": true
+      },
+      "term": "Company Options",
+      "why_not": null,
+      "why_not_detail": null
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "1fafce63c37fbd2322fd1bd8d66172c1150e9e3331b851ac0d32ec5269299a8d",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "REPRESENTATIONS",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "89972a9423fcfc902fad7ecf07233181b46a8728e38609dfe614cb221a642e8c",
+      "rule_resolves": false,
+      "sample_ordinal": 7,
+      "source_span": {
+        "end_byte": 39470,
+        "start_byte": 39463,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "656c8e1bcb9cfc002d08f4d43f6186bbd866651fd6fb1d9a80148272007571f7",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "REPRESENTATIONS",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "89972a9423fcfc902fad7ecf07233181b46a8728e38609dfe614cb221a642e8c",
+      "rule_resolves": false,
+      "sample_ordinal": 7,
+      "source_span": {
+        "end_byte": 39383,
+        "start_byte": 39376,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "74605e147e3a4c2a2c7b5ce7782315903447020f03c41ea2197fea51b4f9bdcf",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "REPRESENTATIONS",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "89972a9423fcfc902fad7ecf07233181b46a8728e38609dfe614cb221a642e8c",
+      "rule_resolves": false,
+      "sample_ordinal": 7,
+      "source_span": {
+        "end_byte": 39226,
+        "start_byte": 39219,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "2ce12e7bc20b6cd46d131f8df533abfaf01003445f458a3d30e01d93e7b6a668",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "CAPITALISATION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "84672cb087d864f42d4c7e9a86979c3f39fcf4a0c5fcfc9cbb0bcb607bdf32fd",
+      "rule_resolves": false,
+      "sample_ordinal": 14,
+      "source_span": {
+        "end_byte": 37018,
+        "start_byte": 37011,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "6b1dd4f413ff5dcae5ea35eac48feb5047486bef120ad6807d2d549f57238628",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "CAPITALISATION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "84672cb087d864f42d4c7e9a86979c3f39fcf4a0c5fcfc9cbb0bcb607bdf32fd",
+      "rule_resolves": false,
+      "sample_ordinal": 14,
+      "source_span": {
+        "end_byte": 37114,
+        "start_byte": 37107,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "cc7bf86b6900206ac1d5509a26e115ed0f136207049b609a8c694aa74d2dff70",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "CAPITALISATION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "84672cb087d864f42d4c7e9a86979c3f39fcf4a0c5fcfc9cbb0bcb607bdf32fd",
+      "rule_resolves": false,
+      "sample_ordinal": 14,
+      "source_span": {
+        "end_byte": 37271,
+        "start_byte": 37264,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "f4a12e787a159dfc29e5fa28e888c175517c76cef2a3f65d1b4601407c093dcc",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "CAPITALISATION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "84672cb087d864f42d4c7e9a86979c3f39fcf4a0c5fcfc9cbb0bcb607bdf32fd",
+      "rule_resolves": false,
+      "sample_ordinal": 14,
+      "source_span": {
+        "end_byte": 37063,
+        "start_byte": 37056,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 2,
+      "candidate_target_count": 2,
+      "edge_id": "aa720c178843598377cfcf1d318fa8f95d570c8a21aaeb90c7c3c4b2e7601be1",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "DNO_INDEMNIFICATION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "a252ced9e30de188b3cba76f5ac2992509ec2b16fea032526286521b0ead8c32",
+      "rule_resolves": false,
+      "sample_ordinal": 28,
+      "source_span": {
+        "end_byte": 284090,
+        "start_byte": 284073,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "e0b4424ca7a782a5496e64720c8fb884caa8c59d9543850b46df6504e76c8eb2",
+        "verified": true
+      },
+      "term": "Surviving Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "2 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 2,
+      "candidate_target_count": 2,
+      "edge_id": "dcb45706aca4cd243040a78a029209cf37a419a64700523a61a8e9bfdc5e5835",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "DNO_INDEMNIFICATION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "a252ced9e30de188b3cba76f5ac2992509ec2b16fea032526286521b0ead8c32",
+      "rule_resolves": false,
+      "sample_ordinal": 28,
+      "source_span": {
+        "end_byte": 283596,
+        "start_byte": 283579,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "e0b4424ca7a782a5496e64720c8fb884caa8c59d9543850b46df6504e76c8eb2",
+        "verified": true
+      },
+      "term": "Surviving Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "2 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 2,
+      "candidate_target_count": 2,
+      "edge_id": "ddf6168278006343cb0a8c853ee7f66aebe1c8af5e1fae517c71905eaf720344",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "MAE_DEFINITION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "414b08d74d441e522bd2faa3676fb55fe2e6f73d314aeb0e282dc561ce8c27f7",
+      "rule_resolves": false,
+      "sample_ordinal": 29,
+      "source_span": {
+        "end_byte": 241902,
+        "start_byte": 241895,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "2 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 1,
+      "body_definition_count_exact": 1,
+      "candidate_target_count": 2,
+      "edge_id": "4d4edbd2b1629b85b2432e618ede434a6f53b060b795faf6ab9079e0caa5049f",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "ANTITRUST_REGULATORY",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": {
+        "annotation_occurrence_id": "2644823d3719470fec8337062b02beb1a3f4ba0209f3e40edad73cc43075d693",
+        "owner_node_occurrence_id": "65d626d201ea6627d03d06dd14e6a7271a3d87e735dfb48eb22b3ff03c6fdfc5",
+        "span": {
+          "end_byte": 286341,
+          "start_byte": 286328,
+          "stored_sha256_mismatch": false,
+          "text_sha256": "d3d97b305d54e23f0bea9ef97de4fe7befdd417921b552efaa669de028a1f3ac",
+          "verified": true
+        },
+        "value": "Parties"
+      },
+      "review_item_id": "dddd7d951189463c51b4be52fbfb7897015537318a06c9f969e2e9b85c9feda4",
+      "rule_resolves": true,
+      "sample_ordinal": 38,
+      "source_span": {
+        "end_byte": 173123,
+        "start_byte": 173116,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "2729f5dd4807b8c6fd341280ce5c57937d33ffb5f3852738771854891349c5a7",
+        "verified": true
+      },
+      "term": "Parties",
+      "why_not": null,
+      "why_not_detail": null
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 1,
+      "body_definition_count_exact": 1,
+      "candidate_target_count": 2,
+      "edge_id": "93c2bec7cd25b95ff183fabc3cbd5d1e61979e6543c60c177b6a391fd006e1a9",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "ANTITRUST_REGULATORY",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": {
+        "annotation_occurrence_id": "2644823d3719470fec8337062b02beb1a3f4ba0209f3e40edad73cc43075d693",
+        "owner_node_occurrence_id": "65d626d201ea6627d03d06dd14e6a7271a3d87e735dfb48eb22b3ff03c6fdfc5",
+        "span": {
+          "end_byte": 286341,
+          "start_byte": 286328,
+          "stored_sha256_mismatch": false,
+          "text_sha256": "d3d97b305d54e23f0bea9ef97de4fe7befdd417921b552efaa669de028a1f3ac",
+          "verified": true
+        },
+        "value": "Parties"
+      },
+      "review_item_id": "dddd7d951189463c51b4be52fbfb7897015537318a06c9f969e2e9b85c9feda4",
+      "rule_resolves": true,
+      "sample_ordinal": 38,
+      "source_span": {
+        "end_byte": 173396,
+        "start_byte": 173389,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "2729f5dd4807b8c6fd341280ce5c57937d33ffb5f3852738771854891349c5a7",
+        "verified": true
+      },
+      "term": "Parties",
+      "why_not": null,
+      "why_not_detail": null
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "f47f7a3726044c8201e5f962baa5ce8a771a334ab3552e2ce063ab54150fd92b",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "CLOSING_CONDITIONS",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "a0968db9f4526d55f0d8dd547ef50387b8bbb046a3e1260e6524eaf4cd77332e",
+      "rule_resolves": false,
+      "sample_ordinal": 40,
+      "source_span": {
+        "end_byte": 213151,
+        "start_byte": 213144,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "7965eb608694afe9296505bd05aa4ff4a9f5645135d00336382ee6d90d75cff3",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "CONSIDERATION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "ed8c6986fb2293939a13942beae50f3e45107c760d6656bb7d7370037a2a979f",
+      "rule_resolves": false,
+      "sample_ordinal": 41,
+      "source_span": {
+        "end_byte": 19889,
+        "start_byte": 19882,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "89d4bfd5e555ad6662b2c9547d7630e2adcc4c5179046666a55c0ec5119ea1e7",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "DNO_INDEMNIFICATION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "f70963f0b88cb7c98e766fcb06089e307503525119808032591326fc1765078a",
+      "rule_resolves": false,
+      "sample_ordinal": 42,
+      "source_span": {
+        "end_byte": 189568,
+        "start_byte": 189561,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "a04d431b268fc25b8b8bcb928fd89646e5f5ae25abb5cdc24efc988702312497",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "DNO_INDEMNIFICATION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "f70963f0b88cb7c98e766fcb06089e307503525119808032591326fc1765078a",
+      "rule_resolves": false,
+      "sample_ordinal": 42,
+      "source_span": {
+        "end_byte": 189771,
+        "start_byte": 189764,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "a1a43864ea3c423a55070b675f878d853e12615290b2c644737ccb3d2cef46cd",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "DNO_INDEMNIFICATION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "f70963f0b88cb7c98e766fcb06089e307503525119808032591326fc1765078a",
+      "rule_resolves": false,
+      "sample_ordinal": 42,
+      "source_span": {
+        "end_byte": 189956,
+        "start_byte": 189949,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "c9e700fe6fe43d41c49bb3e9a4defe32dc60f6e57bb1186b996d7612b242d464",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "DNO_INDEMNIFICATION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "f70963f0b88cb7c98e766fcb06089e307503525119808032591326fc1765078a",
+      "rule_resolves": false,
+      "sample_ordinal": 42,
+      "source_span": {
+        "end_byte": 189688,
+        "start_byte": 189681,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 2,
+      "candidate_target_count": 2,
+      "edge_id": "d8327bd0c55612f3ecaa57e5ee1158c7f91f8a0327a1d92f3574bc5f51e6388a",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "DNO_INDEMNIFICATION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "f70963f0b88cb7c98e766fcb06089e307503525119808032591326fc1765078a",
+      "rule_resolves": false,
+      "sample_ordinal": 42,
+      "source_span": {
+        "end_byte": 190420,
+        "start_byte": 190399,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "7000709b28530d603c3baf5eed93e35b08c00f6621bd5382a1568e0bfedf50cd",
+        "verified": true
+      },
+      "term": "Surviving Corporation",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "2 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "dae268b2845cb59564364cb8f9cffca70b7a04d636d5d796afd4fcdba8d47507",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "DNO_INDEMNIFICATION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "f70963f0b88cb7c98e766fcb06089e307503525119808032591326fc1765078a",
+      "rule_resolves": false,
+      "sample_ordinal": 42,
+      "source_span": {
+        "end_byte": 190061,
+        "start_byte": 190054,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "3f1684d0b1078fa7582a56e9a1a95dbdd243a8b60a7dabe451b9b089d61c127f",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "EMPLOYEE_MATTERS",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "9bf69d6bdbe2e84855a1c8afabe90b8b1f019a8286e79354d031f27535c74fd2",
+      "rule_resolves": false,
+      "sample_ordinal": 43,
+      "source_span": {
+        "end_byte": 104052,
+        "start_byte": 104045,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "a74580a41aaad4bda8c19ab6c102c4cf5484256312bb18dd27cdcb5e2c38b909",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "EMPLOYEE_MATTERS",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "9bf69d6bdbe2e84855a1c8afabe90b8b1f019a8286e79354d031f27535c74fd2",
+      "rule_resolves": false,
+      "sample_ordinal": 43,
+      "source_span": {
+        "end_byte": 104175,
+        "start_byte": 104168,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "113de5cb67b00f63b3ae0e2e276fb921811aec511ecd33f18e4c632c56f90307",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "GENERAL_COVENANTS",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "93007a95ffd285947ae75b45f08c707ba24d93d0c60422f437eadf9c0e8a1b17",
+      "rule_resolves": false,
+      "sample_ordinal": 44,
+      "source_span": {
+        "end_byte": 129948,
+        "start_byte": 129941,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "52068d1d892ffd3d64fc5c7b5a73bcde84870c63835b42baf56b96ade094d3e3",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "GENERAL_COVENANTS",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "93007a95ffd285947ae75b45f08c707ba24d93d0c60422f437eadf9c0e8a1b17",
+      "rule_resolves": false,
+      "sample_ordinal": 44,
+      "source_span": {
+        "end_byte": 129409,
+        "start_byte": 129402,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "a91da29b06273375fb2b34996fc520e7c886a20721671248c7c842dbbb2339d8",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "GENERAL_COVENANTS",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "93007a95ffd285947ae75b45f08c707ba24d93d0c60422f437eadf9c0e8a1b17",
+      "rule_resolves": false,
+      "sample_ordinal": 44,
+      "source_span": {
+        "end_byte": 129547,
+        "start_byte": 129540,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "bbbda47208d6e58a575869904c038701feea444b6703016216717e93af53f747",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "GENERAL_COVENANTS",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "93007a95ffd285947ae75b45f08c707ba24d93d0c60422f437eadf9c0e8a1b17",
+      "rule_resolves": false,
+      "sample_ordinal": 44,
+      "source_span": {
+        "end_byte": 129422,
+        "start_byte": 129415,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "d2efd693010be94a524b662fa26ab3f64a124d476adfdfc2377bd594b277811a",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "GENERAL_COVENANTS",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "93007a95ffd285947ae75b45f08c707ba24d93d0c60422f437eadf9c0e8a1b17",
+      "rule_resolves": false,
+      "sample_ordinal": 44,
+      "source_span": {
+        "end_byte": 129588,
+        "start_byte": 129581,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "08a2d76cbac85f0d1aec1a120bbe511757c72746ca0b83d52618b18bd2324c57",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "INTERIM_OPERATING",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "79cfc2747c36bb8d2d709d938aa80aebe8ff880926939ad4c4bac8823e1966ac",
+      "rule_resolves": false,
+      "sample_ordinal": 45,
+      "source_span": {
+        "end_byte": 133517,
+        "start_byte": 133510,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "1e04f2e4cedde38854a710cfea798cf1fa14274b777ebbe9c3f5c3cc4b4ab775",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "INTERIM_OPERATING",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "79cfc2747c36bb8d2d709d938aa80aebe8ff880926939ad4c4bac8823e1966ac",
+      "rule_resolves": false,
+      "sample_ordinal": 45,
+      "source_span": {
+        "end_byte": 133502,
+        "start_byte": 133495,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "40780bfa1ba7e012fe55486dca5f6ce0f587849c40bb00f2e5562df69fd94e34",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "INTERIM_OPERATING",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "79cfc2747c36bb8d2d709d938aa80aebe8ff880926939ad4c4bac8823e1966ac",
+      "rule_resolves": false,
+      "sample_ordinal": 45,
+      "source_span": {
+        "end_byte": 133426,
+        "start_byte": 133419,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "9b2b69bffb12d013bee1b5634e101f2eeb07f329df358e6d5366b097c8245444",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "INTERIM_OPERATING",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "79cfc2747c36bb8d2d709d938aa80aebe8ff880926939ad4c4bac8823e1966ac",
+      "rule_resolves": false,
+      "sample_ordinal": 45,
+      "source_span": {
+        "end_byte": 133001,
+        "start_byte": 132994,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "a50ae516997288ce4854436b07de6a1d8fb6b98a249fa6265307c1cb579ad537",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "INTERIM_OPERATING",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "79cfc2747c36bb8d2d709d938aa80aebe8ff880926939ad4c4bac8823e1966ac",
+      "rule_resolves": false,
+      "sample_ordinal": 45,
+      "source_span": {
+        "end_byte": 133036,
+        "start_byte": 133029,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "3441c177ff3e0f144faa41db2f1d7895aad8b428a001b412a546e1aaea049f06",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "KEY_DEFINED_TERMS",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "7a43a4f49987b14e305ff75fbb84c42907c82e3f3291be8769e8d725d5522264",
+      "rule_resolves": false,
+      "sample_ordinal": 46,
+      "source_span": {
+        "end_byte": 254030,
+        "start_byte": 254023,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "3b944aa7c68aee4eb0f20c7380868368ed3e142554dd8333031ae824b965d7af",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "KEY_DEFINED_TERMS",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "7a43a4f49987b14e305ff75fbb84c42907c82e3f3291be8769e8d725d5522264",
+      "rule_resolves": false,
+      "sample_ordinal": 46,
+      "source_span": {
+        "end_byte": 254046,
+        "start_byte": 254039,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "7896d1899bf4b12c1e496eccf84140f3c2ec9cc229da16d90c91faf3c5d72bf7",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "MAE_DEFINITION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "27a9c4067171a3410f4c96ed2456ff4f9dda3c3efcc821da4b5155c90b9e3730",
+      "rule_resolves": false,
+      "sample_ordinal": 47,
+      "source_span": {
+        "end_byte": 282642,
+        "start_byte": 282635,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "83f3e63e33b76cf7d365c05330d459696638531816b88f923ea2a17d6d8e14d0",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "MAE_DEFINITION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "27a9c4067171a3410f4c96ed2456ff4f9dda3c3efcc821da4b5155c90b9e3730",
+      "rule_resolves": false,
+      "sample_ordinal": 47,
+      "source_span": {
+        "end_byte": 283990,
+        "start_byte": 283983,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "bee7676041c19e3b8c2a5327097dea3c114545a4b3135c99d82f097309f04389",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "MAE_DEFINITION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "27a9c4067171a3410f4c96ed2456ff4f9dda3c3efcc821da4b5155c90b9e3730",
+      "rule_resolves": false,
+      "sample_ordinal": 47,
+      "source_span": {
+        "end_byte": 283826,
+        "start_byte": 283819,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "e4942bb4be12e6d75914d0e05447d23d130e6008875d09aa01b481a8e8cb0b07",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "MAE_DEFINITION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "27a9c4067171a3410f4c96ed2456ff4f9dda3c3efcc821da4b5155c90b9e3730",
+      "rule_resolves": false,
+      "sample_ordinal": 47,
+      "source_span": {
+        "end_byte": 283925,
+        "start_byte": 283918,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "fd92646343ce338f439e4ebce9449566b5e4aad117cd9127c0b8f050fe67e414",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "MAE_DEFINITION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "27a9c4067171a3410f4c96ed2456ff4f9dda3c3efcc821da4b5155c90b9e3730",
+      "rule_resolves": false,
+      "sample_ordinal": 47,
+      "source_span": {
+        "end_byte": 282349,
+        "start_byte": 282342,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "ff23526602ab69011448816a58a46c64c4e3327b396fdf575dd1cabb3aabb393",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "MAE_DEFINITION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "27a9c4067171a3410f4c96ed2456ff4f9dda3c3efcc821da4b5155c90b9e3730",
+      "rule_resolves": false,
+      "sample_ordinal": 47,
+      "source_span": {
+        "end_byte": 282316,
+        "start_byte": 282309,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 2,
+      "candidate_target_count": 2,
+      "edge_id": "d95993a2363f022455a4e9402dd9337143ca79119f234801c4ea84931f3dc2d6",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "MAE_DEFINITION",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "bca99d26a601dd17adc28a189d60e32c0d068ecd6ad37024c03fc78c3d1db796",
+      "rule_resolves": false,
+      "sample_ordinal": 48,
+      "source_span": {
+        "end_byte": 286111,
+        "start_byte": 286108,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "bdbb67d356582701118d0cbc0bb4b3f728c07e210ef59acf5a2930fccedc1dcb",
+        "verified": true
+      },
+      "term": "CVR",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "2 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 2,
+      "candidate_target_count": 2,
+      "edge_id": "355a2a6f677c30540aebe2a2303402c2aff5cae43ae089bfa36263b431d22b91",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "MERGER_STRUCTURE_CLOSING",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "aa8aedf53b5aa210b5f50c5704e3ee183c0cc9eb794179bdf7959cd321726468",
+      "rule_resolves": false,
+      "sample_ordinal": 49,
+      "source_span": {
+        "end_byte": 8680,
+        "start_byte": 8659,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "7000709b28530d603c3baf5eed93e35b08c00f6621bd5382a1568e0bfedf50cd",
+        "verified": true
+      },
+      "term": "Surviving Corporation",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "2 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "c4651d35874dd6dfb5e994c4561abb5430d620ac71fe96f282f2598505f561a8",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "MERGER_STRUCTURE_CLOSING",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "aa8aedf53b5aa210b5f50c5704e3ee183c0cc9eb794179bdf7959cd321726468",
+      "rule_resolves": false,
+      "sample_ordinal": 49,
+      "source_span": {
+        "end_byte": 8474,
+        "start_byte": 8467,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 0,
+      "body_definition_count_exact": 3,
+      "candidate_target_count": 3,
+      "edge_id": "d2b61910e032dadc5acad2e358ad9b5674629b6a1b59ac328416d9fedea1b4a3",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "MERGER_STRUCTURE_CLOSING",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": null,
+      "review_item_id": "aa8aedf53b5aa210b5f50c5704e3ee183c0cc9eb794179bdf7959cd321726468",
+      "rule_resolves": false,
+      "sample_ordinal": 49,
+      "source_span": {
+        "end_byte": 8551,
+        "start_byte": 8544,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+        "verified": true
+      },
+      "term": "Company",
+      "why_not": "term_defined_inline_in_the_body",
+      "why_not_detail": "3 exact-term DEFINED_TERM_DEFINITION annotation(s) lie outside the Definitions article"
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "article_definition_count_case_insensitive": 0,
+      "article_definition_count_exact": 1,
+      "body_definition_count_exact": 1,
+      "candidate_target_count": 2,
+      "edge_id": "8fd11d4683d9db85e84fd4a336c4adabb16cc0c0637618cb093f5155a0339015",
+      "every_candidate_inside_definitions_article": false,
+      "family_key": "MISC_BOILERPLATE",
+      "reason_code": "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "resolved": {
+        "annotation_occurrence_id": "2644823d3719470fec8337062b02beb1a3f4ba0209f3e40edad73cc43075d693",
+        "owner_node_occurrence_id": "65d626d201ea6627d03d06dd14e6a7271a3d87e735dfb48eb22b3ff03c6fdfc5",
+        "span": {
+          "end_byte": 286341,
+          "start_byte": 286328,
+          "stored_sha256_mismatch": false,
+          "text_sha256": "d3d97b305d54e23f0bea9ef97de4fe7befdd417921b552efaa669de028a1f3ac",
+          "verified": true
+        },
+        "value": "Parties"
+      },
+      "review_item_id": "ac32a47a8d51fb37d73ef91dc7a438e0e1b4b2b544bc60183ddc68c41da0eaef",
+      "rule_resolves": true,
+      "sample_ordinal": 50,
+      "source_span": {
+        "end_byte": 234794,
+        "start_byte": 234787,
+        "stored_sha256_mismatch": false,
+        "text_sha256": "2729f5dd4807b8c6fd341280ce5c57937d33ffb5f3852738771854891349c5a7",
+        "verified": true
+      },
+      "term": "Parties",
+      "why_not": null,
+      "why_not_detail": null
+    }
+  ],
+  "m3_field_names": {
+    "candidate_annotation_ids_field": "target_definition_annotation_occurrence_ids",
+    "candidate_owner_node_ids_field": "target_owner_node_occurrence_ids",
+    "edge_id_field": "definition_edge_id",
+    "observed_definition_edge_keys": [
+      "definition_edge_id",
+      "owner_node_occurrence_id",
+      "raw_text",
+      "reason_code",
+      "rule_id",
+      "rule_version",
+      "schema_version",
+      "selected_definition_annotation_occurrence_id",
+      "source_annotation_occurrence_id",
+      "source_span",
+      "state",
+      "target_definition_annotation_occurrence_ids",
+      "target_owner_node_occurrence_ids",
+      "term"
+    ],
+    "reason_code_field": "reason_code",
+    "reason_code_values_observed": [
+      "MULTIPLE_EXACT_DEFINITION_TARGETS",
+      "UNIQUE_EXACT_DEFINITION_TARGET"
+    ],
+    "resolution_state_field": "state",
+    "resolution_state_values_observed": [
+      "AMBIGUOUS",
+      "RESOLVED"
+    ],
+    "selected_target_field": "selected_definition_annotation_occurrence_id",
+    "term_field": "term"
+  },
+  "missing_paths": [],
+  "reason_code_histogram": {
+    "MULTIPLE_EXACT_DEFINITION_TARGETS": 5998,
+    "UNIQUE_EXACT_DEFINITION_TARGET": 34753
+  },
+  "resolution_rule": "the candidate whose defined-term annotation (M2 DEFINED_TERM_DEFINITION) is the unique definition of that exact term string, case-sensitive, inside the Definitions article",
+  "rule_rate_vs_all": {
+    "denominator": 40751,
+    "numerator": 683,
+    "rate": 0.0167603249,
+    "ratio": "683/40751"
+  },
+  "rule_rate_vs_ambiguous": {
+    "denominator": 5998,
+    "numerator": 683,
+    "rate": 0.1138712904,
+    "ratio": "683/5998"
+  },
+  "schema": "Q-0014-DEFINITION-RESOLUTION-CENSUS/V1",
+  "state_histogram": {
+    "AMBIGUOUS": 5998,
+    "RESOLVED": 34753
+  },
+  "table_sha256": "aacec2155e3e4ac5ec955f16a974d33a7dac09aab73385a150ba44eab201b5a1"
+}
