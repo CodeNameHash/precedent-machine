@@ -3,7 +3,7 @@ from: ext
 to: lead
 date: 2026-09-03
 re: A-0008 / A-0009 real-text capability inventory
-status: OPEN
+status: ANSWERED
 
 # Delivery: real-text capability inventory
 

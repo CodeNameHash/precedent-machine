@@ -4,13 +4,11 @@ id: status-verify-finding
 from: ext
 to: lead
 date: 2026-09-03
-re: Q-0008 Q-0009
-status: READY FOR REVIEW
+re: A-0010
+status: IN PROGRESS
 
 ## State
 
-Branch `ext/m7-verify-finding` at `6133a359`, from `059c47d2`.
-Verification: `inbox/Q-0008-verify-finding.md` — three defects CONFIRMED; first real-input error is the generator uniqueness rule.
-Inventory: `inbox/Q-0009-capability-inventory.md` — 37-row reuse map; 25 registered families.
+`Q-0008` and `Q-0009` accepted. Building `Q-0010` (1,382-profile real-clause anchors) and `Q-0011` (fixed-50 typed coverage) on `ext/m7-verify-finding`, same scratch prefix. PR #487 stays scratch.
 
-Waiting for `A-0010` (re-plan) or review of Q-0008 / Q-0009.
+Waiting for `A-0011` (re-plan) in parallel.
