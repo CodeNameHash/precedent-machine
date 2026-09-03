@@ -31,7 +31,7 @@ import { tmpdir } from 'node:os';
 import {
   DOMAIN, REVIEW_STATES, RECORD_KEYS, canonicalJson, contentId, sha256Hex, utf8ByteLength,
   assertIdRuleSelfTest, dealKeyOf, corpusIdOf, rollUpReviewState, validStateCombination,
-  verifyPackage, PACKAGE_SCHEMA_VERSION,
+  verifyPackage, PACKAGE_SCHEMA_VERSION, typedValueProblem, unitFor, sortValueFor,
 } from './verify.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -145,6 +145,24 @@ const DEAL_IDENTITY = {
 };
 const DEAL_KEY = dealKeyOf(DEAL_IDENTITY);
 
+// The consumer mints this, not the producer. It is reproduced here only so the
+// example shows a package carrying one; PM computes it from nothing and copies
+// it out of the corpus manifest. Payload shape is Q-0001 section 2's
+// PUBLIC_MA_DEAL/V1; the package calls the resulting ID transaction_id, to keep
+// it distinct from the per-document deal_key.
+const TRANSACTION_ID = sha256Hex(canonicalJson({
+  schema: 'PUBLIC_MA_DEAL/V1',
+  payload: {
+    target_cik: '0000000000',
+    transaction_anchor: {
+      issuer_cik: DEAL_IDENTITY.issuer_cik,
+      accession_number: DEAL_IDENTITY.accession,
+      document_role: DEAL_IDENTITY.document_role_key,
+    },
+    announced_transaction_ordinal: 0,
+  },
+}));
+
 // Producer-side identities a package quotes but a consumer cannot recompute
 // without the producer's inputs. In a real package these come from the run;
 // here they are derived from the synthetic content so the example is
@@ -172,10 +190,16 @@ const PROVENANCE = {
  * 3. Claims.                                                         *
  * ---------------------------------------------------------------- */
 
-function displayField(fieldKey, label, renderedValue, typedValue) {
+function displayField(fieldKey, label, valueType, typedValue, renderedValue) {
+  const problem = typedValueProblem(valueType, typedValue);
+  if (problem !== null) throw new Error(`example builds an invalid ${valueType}: ${problem}`);
   return {
     field_key: fieldKey,
     label,
+    value_type: valueType,
+    typed_value: typedValue,
+    unit: unitFor(valueType, typedValue),
+    sort_value: sortValueFor(valueType, typedValue),
     rendered_value: renderedValue,
     rendered_value_digest: sha256Hex(renderedValue),
     typed_value_digest: sha256Hex(canonicalJson(typedValue)),
@@ -224,12 +248,13 @@ const CLAIMS = [
     state: ['COMPLETE', 'SUFFICIENT', 'NORMAL'],
     reasonCodes: [],
     fields: [
-      displayField('fee_amount', 'Fee amount', 'USD 12,000,000',
-        { currency: 'USD', amount: '12000000' }),
-      displayField('payment_deadline', 'Payment deadline', 'Two Business Days after termination',
-        { unit: 'BUSINESS_DAYS', count: 2, anchor: 'TERMINATION' }),
-      displayField('trigger', 'Trigger', 'Termination by Parent under Section 7.01(c)',
-        { terminating_party: 'PARENT', trigger_reference: '7.01(c)' }),
+      displayField('fee_amount', 'Fee amount', 'MONEY',
+        { amount: 12000000, currency: 'USD' }, 'USD 12,000,000'),
+      displayField('payment_deadline', 'Payment deadline', 'DURATION',
+        { bound_type: 'WITHIN', count: 2, unit: 'DAY' }, 'Within two days after termination'),
+      displayField('trigger_reference', 'Trigger', 'REFERENCE',
+        'Section 7.01(c)', 'Termination by Parent under Section 7.01(c)'),
+      displayField('payable_by', 'Payable by', 'PARTY', 'Company', 'Company'),
     ],
     spans: [spanOf(SECTION_7_03, 'section-7-03')],
   }),
@@ -246,8 +271,8 @@ const CLAIMS = [
     state: ['AMBIGUOUS', 'DRAFTING_AMBIGUOUS', 'REVIEW_ONLY'],
     reasonCodes: ['DEPENDENCY_UNRESOLVED', 'MATERIAL_SPAN_UNMODELLED'],
     fields: [
-      displayField('fee_amount', 'Fee amount', 'Not resolved: amount is stated by reference',
-        { resolution: 'UNRESOLVED', reference_term: 'Company Termination Fee' }),
+      displayField('fee_amount_reference', 'Fee amount', 'DEFINED_TERM',
+        'Company Termination Fee', 'Not resolved: stated by reference to the Company Termination Fee'),
     ],
     spans: [spanOf(SECTION_7_04, 'section-7-04')],
   }),
@@ -321,6 +346,7 @@ function buildInto(root) {
   const dealBody = {
     schema_version: 'DEAL_TERMS_DEAL_DOCUMENT/V1',
     deal_key: DEAL_KEY,
+    transaction_id: TRANSACTION_ID,
     deal_identity: DEAL_IDENTITY,
     provenance: PROVENANCE,
     claims: CLAIMS,
@@ -343,6 +369,7 @@ function buildInto(root) {
     corpus_kind: 'ONE_DEAL',
     members: [{
       deal_key: DEAL_KEY,
+      transaction_id: TRANSACTION_ID,
       source_system: DEAL_IDENTITY.source_system,
       issuer_cik: DEAL_IDENTITY.issuer_cik,
       accession: DEAL_IDENTITY.accession,

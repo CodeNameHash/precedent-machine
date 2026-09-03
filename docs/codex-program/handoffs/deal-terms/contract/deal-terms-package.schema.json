@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://precedent-machine.invalid/schemas/deal-terms-package/v1/deal-terms-package.schema.json",
-  "title": "Deal Terms release package (DEAL_TERMS_PACKAGE/V1)",
-  "description": "The release manifest of a Deal Terms package. The per-deal document is $defs/dealDocument and the in-package corpus manifest is $defs/corpusManifest; a validator points at those directly for deals/<deal_key>/deal.json and corpus/corpus-manifest.json. This schema constrains shape and vocabulary only. It cannot check a content ID or a SHA-256: that is verify.mjs, and a package is not valid until verify.mjs exits 0 on it. Every ID in this schema is contentId(domain, record) or sha256Hex(bytes) as defined in the producer's lib/canonical-v2/canonical-bytes.js.",
+  "title": "Deal Terms release package 1.1.0",
+  "description": "Package contract 1.1.0. The release manifest of a Deal Terms package. The per-deal document is $defs/dealDocument and the in-package corpus manifest is $defs/corpusManifest; a validator points at those directly for deals/<deal_key>/deal.json and corpus/corpus-manifest.json. This schema constrains shape and vocabulary only. It cannot check a content ID or a SHA-256: that is verify.mjs, and a package is not valid until verify.mjs exits 0 on it. Every ID in this schema is contentId(domain, record) or sha256Hex(bytes) as defined in the producer's lib/canonical-v2/canonical-bytes.js.",
   "type": "object",
   "unevaluatedProperties": false,
   "required": [
@@ -21,7 +21,12 @@
   ],
   "properties": {
     "schema_version": { "const": "DEAL_TERMS_RELEASE_MANIFEST/V1" },
-    "package_schema_version": { "const": "DEAL_TERMS_PACKAGE/V1" },
+    "package_schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "const": "1.1.0",
+      "description": "Semantic version of the package contract. 1.0.0 was draft 1; 1.1.0 adds transaction_id and the typed field quartet, both additively."
+    },
     "release_manifest_id": {
       "$ref": "#/$defs/hex64",
       "description": "contentId('DEAL_TERMS_RELEASE_MANIFEST/V1', this record without release_manifest_id)."
@@ -162,6 +167,10 @@
       "enum": ["REVIEW_ONLY_INTERNAL", "LEGAL_GATE_PASSED_INTERNAL", "PUBLIC"]
     },
     "coordinateSystem": { "const": "UTF8_CANONICAL_TEXT_HALF_OPEN" },
+    "transactionId": {
+      "oneOf": [{ "$ref": "#/$defs/hex64" }, { "type": "null" }],
+      "description": "The consumer-minted transaction-level deal ID (Q-0001 section 2's deal_id, over a PUBLIC_MA_DEAL/V1 payload of target CIK, transaction anchor and ordinal). A package NEVER mints one: it arrives through the corpus manifest and is copied into the deal document unchanged. Null where the consumer has not keyed the deal, and a package containing any null transaction_id can never carry release_state PUBLIC."
+    },
 
     "dealIdentity": {
       "type": "object",
@@ -215,16 +224,39 @@
       }
     },
 
+    "valueType": {
+      "type": "string",
+      "enum": [
+        "PARTY_SET", "PARTY", "ENUM", "DEFINED_TERM", "BOOLEAN", "NUMBER",
+        "PERCENTAGE", "MONEY", "DATE", "DURATION", "PERIOD", "REFERENCE"
+      ],
+      "description": "FACT_VALUE_TYPES of lib/canonical-v2/m7-v2-contract.js (line 434 at the time of writing)."
+    },
     "displayField": {
       "type": "object",
       "unevaluatedProperties": false,
-      "required": ["field_key", "label", "rendered_value", "rendered_value_digest", "typed_value_digest"],
+      "required": [
+        "field_key", "label", "value_type", "typed_value", "unit", "sort_value",
+        "rendered_value", "rendered_value_digest", "typed_value_digest"
+      ],
       "properties": {
         "field_key": { "type": "string", "minLength": 1 },
         "label": { "type": "string", "minLength": 1 },
-        "rendered_value": { "type": "string" },
+        "value_type": { "$ref": "#/$defs/valueType" },
+        "typed_value": {
+          "description": "The machine-readable value. Its shape is fixed by value_type, exactly as lib/canonical-v2/m7-v2-contract.js validates an atomic fact: PARTY_SET is {parties:[string,...]}, non-empty and unique; PARTY, ENUM, DEFINED_TERM, DATE and REFERENCE are non-empty strings; BOOLEAN is a boolean; NUMBER and PERCENTAGE are finite numbers; DURATION and PERIOD are {bound_type, count, unit} with unit in DAY/WEEK/MONTH/YEAR and bound_type in EXACT/WITHIN/AT_LEAST (DURATION) or EXACT/WITHIN (PERIOD); MONEY is {amount, currency}. JSON Schema cannot express the dependency, so verify.mjs enforces it."
+        },
+        "unit": {
+          "oneOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }],
+          "description": "The currency for MONEY, the DAY/WEEK/MONTH/YEAR unit for DURATION and PERIOD, the literal PERCENT for PERCENTAGE, null otherwise. Derived from typed_value and checked by verify.mjs."
+        },
+        "sort_value": {
+          "oneOf": [{ "type": "number" }, { "type": "string" }, { "type": "null" }],
+          "description": "A scalar derived deterministically from typed_value alone, so a consumer never parses a display string to sort. NUMBER and PERCENTAGE give the number; MONEY gives amount (sort within a unit, never across); BOOLEAN gives 0 or 1; DATE gives the ISO date string when it is YYYY-MM-DD, else null; DURATION and PERIOD give count multiplied by a sort-only day-equivalent (DAY 1, WEEK 7, MONTH 30, YEAR 365) which must never be used for date arithmetic; ENUM, PARTY, DEFINED_TERM and REFERENCE give the string; PARTY_SET gives null because a set has no scalar order. Null means this value type has no order, never that the value is unknown."
+        },
+        "rendered_value": { "type": "string", "description": "Presentation only. Never parse it." },
         "rendered_value_digest": { "$ref": "#/$defs/hex64", "description": "sha256Hex(rendered_value)." },
-        "typed_value_digest": { "$ref": "#/$defs/hex64", "description": "sha256Hex(canonicalJson(typed value)). Two claims agree on a value exactly when these are equal." }
+        "typed_value_digest": { "$ref": "#/$defs/hex64", "description": "sha256Hex(canonicalJson(typed_value)). Two claims agree on a value exactly when these are equal." }
       }
     },
 
@@ -347,8 +379,8 @@
       "type": "object",
       "unevaluatedProperties": false,
       "required": [
-        "schema_version", "deal_document_id", "deal_key", "deal_identity",
-        "provenance", "claims", "category_summaries", "counts"
+        "schema_version", "deal_document_id", "deal_key", "transaction_id",
+        "deal_identity", "provenance", "claims", "category_summaries", "counts"
       ],
       "properties": {
         "schema_version": { "const": "DEAL_TERMS_DEAL_DOCUMENT/V1" },
@@ -360,6 +392,7 @@
           "$ref": "#/$defs/hex64",
           "description": "contentId('DEAL_TERMS_DEAL_KEY/V1', deal_identity)."
         },
+        "transaction_id": { "$ref": "#/$defs/transactionId" },
         "deal_identity": { "$ref": "#/$defs/dealIdentity" },
         "provenance": { "$ref": "#/$defs/provenance" },
         "claims": {
@@ -412,11 +445,13 @@
             "type": "object",
             "unevaluatedProperties": false,
             "required": [
-              "deal_key", "source_system", "issuer_cik", "accession", "document_role_key",
-              "agreement_id", "canonical_text_sha256", "source_admission_manifest_id", "admission_receipt_id"
+              "deal_key", "transaction_id", "source_system", "issuer_cik", "accession",
+              "document_role_key", "agreement_id", "canonical_text_sha256",
+              "source_admission_manifest_id", "admission_receipt_id"
             ],
             "properties": {
               "deal_key": { "$ref": "#/$defs/hex64" },
+              "transaction_id": { "$ref": "#/$defs/transactionId" },
               "source_system": { "const": "SEC_EDGAR" },
               "issuer_cik": { "$ref": "#/$defs/cik" },
               "accession": { "$ref": "#/$defs/accession" },

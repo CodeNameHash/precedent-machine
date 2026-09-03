@@ -1,6 +1,7 @@
 {
   "schema_version": "DEAL_TERMS_DEAL_DOCUMENT/V1",
   "deal_key": "42d649f09bb9c35baa0940368e38aa9d0b9472c84a3e9509ee5342e65ac3e265",
+  "transaction_id": "67f0d097fa581fc90d0867e6031d9372a9e1b7221dad90bb99599db91c501aef",
   "deal_identity": {
     "source_system": "SEC_EDGAR",
     "issuer_cik": "0000000000",
@@ -51,23 +52,53 @@
         {
           "field_key": "fee_amount",
           "label": "Fee amount",
+          "value_type": "MONEY",
+          "typed_value": {
+            "amount": 12000000,
+            "currency": "USD"
+          },
+          "unit": "USD",
+          "sort_value": 12000000,
           "rendered_value": "USD 12,000,000",
           "rendered_value_digest": "8db1c45cca2085b37cfc7dfa269bc541626c4f7d449cf21909faecd79406fa7b",
-          "typed_value_digest": "f964b95132c19797f0f974c1b4447a1264ec7a1527c9c2cb021fe0f74e10a34c"
+          "typed_value_digest": "c7416d3d3bd7a9b5d6b8e251c78abd8dac50b8d687a82d038dc7de736fecf6b5"
         },
         {
           "field_key": "payment_deadline",
           "label": "Payment deadline",
-          "rendered_value": "Two Business Days after termination",
-          "rendered_value_digest": "0bc346d7298e6d176aac773972ce47b7950ef3d8d1f72f51ccd8a16fa80683a6",
-          "typed_value_digest": "3994bafda0b3b8c4483486adb4a8cad18453d9e2c78c48e9050471ab9cc25016"
+          "value_type": "DURATION",
+          "typed_value": {
+            "bound_type": "WITHIN",
+            "count": 2,
+            "unit": "DAY"
+          },
+          "unit": "DAY",
+          "sort_value": 2,
+          "rendered_value": "Within two days after termination",
+          "rendered_value_digest": "c2fd16263a9c7337a95784b1a1de534e64b9f55a7a5a6f98dc07dc5d73436bdf",
+          "typed_value_digest": "632ed39143033b531312d8b6f8c58fd315de3294247040aabc2dbf2d7d2f2f83"
         },
         {
-          "field_key": "trigger",
+          "field_key": "trigger_reference",
           "label": "Trigger",
+          "value_type": "REFERENCE",
+          "typed_value": "Section 7.01(c)",
+          "unit": null,
+          "sort_value": "Section 7.01(c)",
           "rendered_value": "Termination by Parent under Section 7.01(c)",
           "rendered_value_digest": "7b33ced7c006c85590b7e8fa17ac795e2c8d82f3cfd9a6424209bd83a4a69432",
-          "typed_value_digest": "656c5d9decc73711387b94bde215dbd79f91eaeed02640f4f943abd8b7dcbe8d"
+          "typed_value_digest": "c908e826322ec43670b12be2e8c4ddfc53c2097880d93114ed4868f7d1f8e13c"
+        },
+        {
+          "field_key": "payable_by",
+          "label": "Payable by",
+          "value_type": "PARTY",
+          "typed_value": "Company",
+          "unit": null,
+          "sort_value": "Company",
+          "rendered_value": "Company",
+          "rendered_value_digest": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
+          "typed_value_digest": "51c6c21a3102f2a319a05fd238e3d2c7dcd94ccc3423d7771946e57b97479d41"
         }
       ],
       "source": {
@@ -85,7 +116,7 @@
           }
         ]
       },
-      "claim_revision_id": "9e91f86ffff7952f182a6ec584b04df69c029e285ad53de2e9816eb53f1f7381"
+      "claim_revision_id": "f95312d5601bbfa8337d33e2ef73c6bd62f9b7fd2e70468b5b77412d0eb5db06"
     },
     {
       "claim_occurrence_id": "d2a2ddb55cdab337258edd48d0bfd20b7bcaab8a41839f30c5266a64f17fe2da",
@@ -162,11 +193,15 @@
       ],
       "fields": [
         {
-          "field_key": "fee_amount",
+          "field_key": "fee_amount_reference",
           "label": "Fee amount",
-          "rendered_value": "Not resolved: amount is stated by reference",
-          "rendered_value_digest": "645e0403c95e067d6e7c81cbcd435e723c9924628d0f7e48881d185664c2ef69",
-          "typed_value_digest": "35820b14d92f8fcdadc51ac0de0d9c94cb4be2210cdc9cb2d15e63bde5e1f678"
+          "value_type": "DEFINED_TERM",
+          "typed_value": "Company Termination Fee",
+          "unit": null,
+          "sort_value": "Company Termination Fee",
+          "rendered_value": "Not resolved: stated by reference to the Company Termination Fee",
+          "rendered_value_digest": "12bd17ed3a682a422caca37ab52b641d1e7775949ba4393a8e21af54b2dd54ec",
+          "typed_value_digest": "94bcaca4ca2fe77c67c3b1672ec67ad06d93163fd9f037050aa24030b04086d1"
         }
       ],
       "source": {
@@ -184,7 +219,7 @@
           }
         ]
       },
-      "claim_revision_id": "5f493cca5f5a6335e7604465aa2f6b6e9f84285d23a91fabaf7334f0da1f9965"
+      "claim_revision_id": "0bbf6567aa94b696e0f2cb1b53b865c41986ee6894d98873c87e6b9fec7d4913"
     }
   ],
   "category_summaries": [
@@ -221,5 +256,5 @@
       "NO_OUTPUT": 1
     }
   },
-  "deal_document_id": "2ce0b3fd42d30fe6c2ead8305ecb94ae0e979aa548ba882af62b8bbeb946d6d2"
+  "deal_document_id": "c4201fada85b583146d55648fca333c03650f5296fd762caec6a12ca75ab28e4"
 }

@@ -1,60 +1,55 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://precedent-machine.invalid/schemas/deal-terms-package/v1/corpus-manifest.schema.json",
-  "title": "Corpus manifest input (CORPUS_MANIFEST_INPUT/V1)",
-  "description": "The input contract for a corpus Ben approves before any deal in it may be admitted. This is NOT the corpus manifest inside a released package (that is deal-terms-package.schema.json#/$defs/corpusManifest, where every member is already admitted and no field is nullable). This record is the proposal: it names the deals by SEC identity and records, per deal, whether admission has happened and what receipt proves it. Approval is a separate record, $defs/approval, which names this one by content ID; the two are not mutually referential. Every ID is contentId(domain, record) or sha256Hex(bytes) as defined in the producer's lib/canonical-v2/canonical-bytes.js.",
+  "title": "Corpus selection record and admission receipt",
+  "description": "The input contract for a corpus, in two content-addressed records, adopting the split proposed in inbox/Q-0001 section 3 and ruled accepted in outbox/A-0004 (ruling 5). The root of this schema is the selection record (SHARED_50_DEAL_SELECTION/V1): the immutable, Ben-approved statement of which deals a corpus contains. The producer's admission results go in a separate record, $defs/admissionReceipt (CORPUS_ADMISSION_RECEIPT/V1), so that admitting a deal never rewrites the approved selection or changes its identity. Neither of these is the corpus manifest inside a released package; that is deal-terms-package.schema.json#/$defs/corpusManifest. Every ID is contentId(domain, record) or sha256Hex(bytes) as defined in the producer's lib/canonical-v2/canonical-bytes.js.",
   "type": "object",
   "unevaluatedProperties": false,
   "required": [
     "schema_version",
-    "corpus_manifest_input_id",
-    "corpus_kind",
-    "supersedes_corpus_manifest_input_id",
-    "members",
-    "counts"
+    "corpus_id",
+    "purpose",
+    "required_deal_count",
+    "selection_rule_version",
+    "approved_by",
+    "approved_on",
+    "ben_approval_id",
+    "deals"
   ],
   "properties": {
-    "schema_version": { "const": "CORPUS_MANIFEST_INPUT/V1" },
-    "corpus_manifest_input_id": {
+    "schema_version": { "const": "SHARED_50_DEAL_SELECTION/V1" },
+    "corpus_id": {
       "$ref": "#/$defs/hex64",
-      "description": "contentId('CORPUS_MANIFEST_INPUT/V1', this record without corpus_manifest_input_id). The manifest is immutable: any edit is a new manifest with a new ID."
+      "description": "contentId('SHARED_50_DEAL_SELECTION/V1', this record without corpus_id). Approval fields are inside the payload, so an unapproved draft and the approved selection are different records with different IDs. That is deliberate: only an approved selection has a corpus_id worth citing."
     },
-    "corpus_kind": { "$ref": "#/$defs/corpusKind" },
-    "supersedes_corpus_manifest_input_id": {
-      "oneOf": [{ "$ref": "#/$defs/hex64" }, { "type": "null" }],
-      "description": "The manifest this one replaces, or null for the first. A superseded manifest stays resolvable; it is never edited."
+    "purpose": { "type": "string", "enum": ["INTERNAL_PROOF", "PUBLIC_PRODUCT"] },
+    "required_deal_count": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Must equal deals.length. A selection that does not contain the number of deals it declares is not a selection."
     },
-    "members": {
+    "selection_rule_version": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The governed rule ID under which these deals were chosen."
+    },
+    "approved_by": { "const": "Ben" },
+    "approved_on": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "ben_approval_id": {
+      "$ref": "#/$defs/hex64",
+      "description": "Content ID of Ben's approval record. The one addition to Q-0001's shape: approved_by and approved_on say who and when, this says which ruling, so approval is verifiable rather than a name in a string. Corpus composition is Ben's call and no agent may synthesise this value."
+    },
+    "deals": {
       "type": "array",
       "minItems": 1,
-      "description": "Ordered by deal_key, no duplicate deal_key.",
-      "items": { "$ref": "#/$defs/member" }
-    },
-    "counts": {
-      "type": "object",
-      "unevaluatedProperties": false,
-      "required": ["member_count", "PROPOSED", "ADMITTED", "REJECTED", "WITHDRAWN"],
-      "properties": {
-        "member_count": { "type": "integer", "minimum": 1 },
-        "PROPOSED": { "type": "integer", "minimum": 0 },
-        "ADMITTED": { "type": "integer", "minimum": 0 },
-        "REJECTED": { "type": "integer", "minimum": 0 },
-        "WITHDRAWN": { "type": "integer", "minimum": 0 }
-      }
+      "description": "Ordered by ordinal, which runs 0..n-1 without gaps. deal_id is unique across the selection.",
+      "items": { "$ref": "#/$defs/selectedDeal" }
     }
   },
   "allOf": [
     {
-      "if": { "properties": { "corpus_kind": { "const": "SHARED_50_PROOF" } }, "required": ["corpus_kind"] },
-      "then": { "properties": { "members": { "minItems": 50, "maxItems": 50 } } }
-    },
-    {
-      "if": { "properties": { "corpus_kind": { "const": "ONE_DEAL" } }, "required": ["corpus_kind"] },
-      "then": { "properties": { "members": { "minItems": 1, "maxItems": 1 } } }
-    },
-    {
-      "if": { "properties": { "corpus_kind": { "const": "FIVE_DEAL" } }, "required": ["corpus_kind"] },
-      "then": { "properties": { "members": { "minItems": 5, "maxItems": 5 } } }
+      "if": { "properties": { "purpose": { "const": "INTERNAL_PROOF" } }, "required": ["purpose"] },
+      "then": { "properties": { "required_deal_count": { "minimum": 1 } } }
     }
   ],
 
@@ -76,11 +71,67 @@
     },
     "roleKey": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,63}$" },
     "reasonCode": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{2,63}$" },
-    "corpusKind": { "type": "string", "enum": ["ONE_DEAL", "FIVE_DEAL", "SHARED_50_PROOF", "PUBLIC"] },
     "admissionState": {
       "type": "string",
       "enum": ["PROPOSED", "ADMITTED", "REJECTED", "WITHDRAWN"],
-      "description": "PROPOSED: named by Ben, not yet admitted. ADMITTED: an admission receipt exists and the canonical text is bound. REJECTED: admission was attempted and failed. WITHDRAWN: Ben removed the deal before admission."
+      "description": "PROPOSED: in the approved selection, not yet admitted. ADMITTED: an admission receipt entry binds the canonical text. REJECTED: admission was attempted and failed. WITHDRAWN: removed before admission."
+    },
+
+    "transactionAnchor": {
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["issuer_cik", "accession_number", "document_role"],
+      "properties": {
+        "issuer_cik": { "$ref": "#/$defs/cik" },
+        "accession_number": { "$ref": "#/$defs/accession" },
+        "document_role": { "$ref": "#/$defs/roleKey" }
+      },
+      "description": "The first executed transaction document. An explicit, immutable selection: a later-discovered source cannot change it."
+    },
+
+    "requiredAgreement": {
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": [
+        "agreement_role", "issuer_cik", "accession_number",
+        "document_name", "document_role", "required"
+      ],
+      "properties": {
+        "agreement_role": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The consumer's role label for this document within the deal, for example merger_agreement."
+        },
+        "issuer_cik": { "$ref": "#/$defs/cik" },
+        "accession_number": { "$ref": "#/$defs/accession" },
+        "document_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The SEC document name. Permitted here because this record is an input, not a package. A released package never carries it: packages identify documents by role and content, and their verifier rejects anything file-name shaped."
+        },
+        "document_role": { "$ref": "#/$defs/roleKey" },
+        "required": { "type": "boolean" }
+      }
+    },
+
+    "selectedDeal": {
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["ordinal", "deal_id", "target_cik", "transaction_anchor", "required_agreements"],
+      "properties": {
+        "ordinal": { "type": "integer", "minimum": 0 },
+        "deal_id": {
+          "$ref": "#/$defs/hex64",
+          "description": "The consumer-minted transaction-level deal ID: sha256Hex(canonicalJson(PUBLIC_MA_DEAL/V1 payload)) over target_cik, transaction_anchor and announced_transaction_ordinal. The producer never mints or reissues it. This is the value a released package carries as transaction_id."
+        },
+        "target_cik": { "$ref": "#/$defs/cik" },
+        "transaction_anchor": { "$ref": "#/$defs/transactionAnchor" },
+        "required_agreements": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/requiredAgreement" }
+        }
+      }
     },
 
     "admittedSourceReceipt": {
@@ -90,70 +141,60 @@
       "properties": {
         "source_admission_manifest_id": {
           "$ref": "#/$defs/hex64",
-          "description": "The content ID of the SOURCE_ADMISSION_MANIFEST/V2 record produced by lib/canonical-v2/sec-source-admission.js."
+          "description": "Content ID of the SOURCE_ADMISSION_MANIFEST/V2 record produced by lib/canonical-v2/sec-source-admission.js."
         },
         "admission_receipt_id": {
           "$ref": "#/$defs/hex64",
-          "description": "The content ID of the SOURCE_ADMISSION_PREPARATION_RECEIPT/V1 record."
+          "description": "Content ID of the SOURCE_ADMISSION_PREPARATION_RECEIPT/V1 record, whose terminal_status must be PASS."
         },
         "receipt_sha256": {
           "$ref": "#/$defs/hex64",
-          "description": "SHA-256 of the receipt's committed bytes. Content ID proves what the record says; this proves which bytes said it."
+          "description": "SHA-256 of the receipt's committed bytes. The content ID proves what the record says; this proves which bytes said it."
         }
       }
     },
 
-    "member": {
+    "admissionEntry": {
       "type": "object",
       "unevaluatedProperties": false,
       "required": [
-        "deal_key", "source_system", "issuer_cik", "accession", "document_role_key",
-        "admission_state", "admitted_source_receipt", "canonical_text_sha256",
-        "agreement_id", "admission_reason_code"
+        "deal_id", "deal_key", "agreement_role", "admission_state",
+        "agreement_id", "admitted_source_receipt", "canonical_text_sha256", "failure_reason_code"
       ],
       "properties": {
+        "deal_id": {
+          "$ref": "#/$defs/hex64",
+          "description": "The selected deal this admission belongs to. Must appear in the selection record named by corpus_id."
+        },
         "deal_key": {
           "$ref": "#/$defs/hex64",
-          "description": "contentId('DEAL_TERMS_DEAL_KEY/V1', {source_system, issuer_cik, accession, document_role_key}). Known at proposal time; it does not depend on admission."
+          "description": "The producer's per-document key: contentId('DEAL_TERMS_DEAL_KEY/V1', {source_system, issuer_cik, accession, document_role_key}) for the required agreement being admitted. This is where the consumer's transaction-level identity and the producer's document-level identity meet."
         },
-        "source_system": { "const": "SEC_EDGAR" },
-        "issuer_cik": { "$ref": "#/$defs/cik" },
-        "accession": { "$ref": "#/$defs/accession" },
-        "document_role_key": { "$ref": "#/$defs/roleKey" },
+        "agreement_role": { "type": "string", "minLength": 1 },
         "admission_state": { "$ref": "#/$defs/admissionState" },
+        "agreement_id": { "oneOf": [{ "$ref": "#/$defs/hex64" }, { "type": "null" }] },
         "admitted_source_receipt": {
-          "oneOf": [{ "$ref": "#/$defs/admittedSourceReceipt" }, { "type": "null" }],
-          "description": "Null until the deal is admitted."
+          "oneOf": [{ "$ref": "#/$defs/admittedSourceReceipt" }, { "type": "null" }]
         },
-        "canonical_text_sha256": {
-          "oneOf": [{ "$ref": "#/$defs/hex64" }, { "type": "null" }],
-          "description": "Null until the deal is admitted; the SHA-256 of the admitted canonical text thereafter."
-        },
-        "agreement_id": {
-          "oneOf": [{ "$ref": "#/$defs/hex64" }, { "type": "null" }],
-          "description": "Null until the deal is admitted; the producer's canonical-text content ID thereafter."
-        },
-        "admission_reason_code": {
-          "oneOf": [{ "$ref": "#/$defs/reasonCode" }, { "type": "null" }],
-          "description": "Required for REJECTED and WITHDRAWN, null otherwise."
-        }
+        "canonical_text_sha256": { "oneOf": [{ "$ref": "#/$defs/hex64" }, { "type": "null" }] },
+        "failure_reason_code": { "oneOf": [{ "$ref": "#/$defs/reasonCode" }, { "type": "null" }] }
       },
       "allOf": [
         {
           "if": { "properties": { "admission_state": { "const": "ADMITTED" } }, "required": ["admission_state"] },
           "then": {
             "properties": {
+              "agreement_id": { "$ref": "#/$defs/hex64" },
               "admitted_source_receipt": { "$ref": "#/$defs/admittedSourceReceipt" },
               "canonical_text_sha256": { "$ref": "#/$defs/hex64" },
-              "agreement_id": { "$ref": "#/$defs/hex64" },
-              "admission_reason_code": { "type": "null" }
+              "failure_reason_code": { "type": "null" }
             }
           },
           "else": {
             "properties": {
+              "agreement_id": { "type": "null" },
               "admitted_source_receipt": { "type": "null" },
-              "canonical_text_sha256": { "type": "null" },
-              "agreement_id": { "type": "null" }
+              "canonical_text_sha256": { "type": "null" }
             }
           }
         },
@@ -162,50 +203,58 @@
             "properties": { "admission_state": { "enum": ["REJECTED", "WITHDRAWN"] } },
             "required": ["admission_state"]
           },
-          "then": { "properties": { "admission_reason_code": { "$ref": "#/$defs/reasonCode" } } }
+          "then": { "properties": { "failure_reason_code": { "$ref": "#/$defs/reasonCode" } } }
         },
         {
           "if": { "properties": { "admission_state": { "const": "PROPOSED" } }, "required": ["admission_state"] },
-          "then": { "properties": { "admission_reason_code": { "type": "null" } } }
+          "then": { "properties": { "failure_reason_code": { "type": "null" } } }
         }
       ]
     },
 
-    "approval": {
-      "$comment": "CORPUS_MANIFEST_APPROVAL/V1: a separate record naming the manifest by content ID. It follows the shape of DOCUMENT_ROLE_REGISTRY_AUTHORITY/V1 in lib/canonical-v2/deal-source-binding.js, where the authority record references the registry and carries ben_approval_id, rather than the registry carrying its own approval.",
+    "admissionReceipt": {
+      "$comment": "CORPUS_ADMISSION_RECEIPT/V1. Adds admission results without rewriting the selection record.",
       "type": "object",
       "unevaluatedProperties": false,
       "required": [
-        "schema_version",
-        "corpus_manifest_approval_id",
-        "corpus_manifest_input_id",
-        "corpus_manifest_input_sha256",
-        "approval_state",
-        "ben_approval_id",
-        "approved_at"
+        "schema_version", "corpus_admission_receipt_id", "corpus_id",
+        "selection_record_sha256", "producer_run_id", "admissions", "counts"
       ],
       "properties": {
-        "schema_version": { "const": "CORPUS_MANIFEST_APPROVAL/V1" },
-        "corpus_manifest_approval_id": {
+        "schema_version": { "const": "CORPUS_ADMISSION_RECEIPT/V1" },
+        "corpus_admission_receipt_id": {
           "$ref": "#/$defs/hex64",
-          "description": "contentId('CORPUS_MANIFEST_APPROVAL/V1', this record without corpus_manifest_approval_id)."
+          "description": "contentId('CORPUS_ADMISSION_RECEIPT/V1', this record without corpus_admission_receipt_id)."
         },
-        "corpus_manifest_input_id": {
+        "corpus_id": {
           "$ref": "#/$defs/hex64",
-          "description": "The exact manifest approved. Approval never carries over to a superseding manifest."
+          "description": "The selection record this receipt admits against. A receipt is bound to one selection and never carries over to another."
         },
-        "corpus_manifest_input_sha256": {
+        "selection_record_sha256": {
           "$ref": "#/$defs/hex64",
-          "description": "SHA-256 of the approved manifest's committed bytes."
+          "description": "SHA-256 of the selection record's committed bytes, alongside its content ID, for the same reason receipt_sha256 exists."
         },
-        "approval_state": { "type": "string", "enum": ["APPROVED", "REJECTED"] },
-        "ben_approval_id": {
+        "producer_run_id": {
           "$ref": "#/$defs/hex64",
-          "description": "The content ID of Ben's approval record. A legal or corpus-composition ruling is Ben's alone; no agent may synthesise one."
+          "description": "The producer run that performed the admissions. Which extraction route was used is recorded here, not in the selection."
         },
-        "approved_at": {
-          "type": "string",
-          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        "admissions": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Ordered by deal_key. One entry per required agreement of each selected deal.",
+          "items": { "$ref": "#/$defs/admissionEntry" }
+        },
+        "counts": {
+          "type": "object",
+          "unevaluatedProperties": false,
+          "required": ["admission_count", "PROPOSED", "ADMITTED", "REJECTED", "WITHDRAWN"],
+          "properties": {
+            "admission_count": { "type": "integer", "minimum": 1 },
+            "PROPOSED": { "type": "integer", "minimum": 0 },
+            "ADMITTED": { "type": "integer", "minimum": 0 },
+            "REJECTED": { "type": "integer", "minimum": 0 },
+            "WITHDRAWN": { "type": "integer", "minimum": 0 }
+          }
         }
       }
     }

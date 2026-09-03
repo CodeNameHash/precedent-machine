@@ -114,7 +114,12 @@ export function assertIdRuleSelfTest() {
  * 2. The closed vocabulary of v1      *
  * ---------------------------------- */
 
-export const PACKAGE_SCHEMA_VERSION = 'DEAL_TERMS_PACKAGE/V1';
+// Semantic version of the package contract. 1.0.0 was draft 1
+// (then spelled 'DEAL_TERMS_PACKAGE/V1'); 1.1.0 adds transaction_id and the
+// typed field quartet, both additively. A consumer refuses a major it does
+// not implement.
+export const PACKAGE_SCHEMA_VERSION = '1.1.0';
+export const PACKAGE_SCHEMA_VERSION_RE = /^[0-9]+\.[0-9]+\.[0-9]+$/;
 
 export const DOMAIN = Object.freeze({
   DEAL_KEY: 'DEAL_TERMS_DEAL_KEY/V1',
@@ -146,6 +151,100 @@ export const SOURCE_QUALITIES = Object.freeze(['SUFFICIENT', 'SOURCE_LIMITED', '
 export const REVIEW_STATES = Object.freeze([
   'NORMAL', 'APPROVED_LIMITED', 'REVIEW_ONLY', 'NO_COMPARISON', 'NO_OUTPUT',
 ]);
+
+// FACT_VALUE_TYPES of lib/canonical-v2/m7-v2-contract.js (line 434 at the time
+// of writing), and the typed_value shape each one requires, ported from that
+// module's atomic-fact validation.
+export const FACT_VALUE_TYPES = Object.freeze([
+  'PARTY_SET', 'PARTY', 'ENUM', 'DEFINED_TERM', 'BOOLEAN', 'NUMBER',
+  'PERCENTAGE', 'MONEY', 'DATE', 'DURATION', 'PERIOD', 'REFERENCE',
+]);
+
+const DURATION_UNITS = Object.freeze(['DAY', 'WEEK', 'MONTH', 'YEAR']);
+const DURATION_BOUNDS = Object.freeze({
+  DURATION: ['EXACT', 'WITHIN', 'AT_LEAST'],
+  PERIOD: ['EXACT', 'WITHIN'],
+});
+// Sort-only day-equivalents. NOT date arithmetic: a month is not 30 days, and
+// this constant must never be used to compute a deadline.
+const DAYS_PER_UNIT = Object.freeze({ DAY: 1, WEEK: 7, MONTH: 30, YEAR: 365 });
+const ISO_DATE_RE = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
+
+function isPlainValue(value) {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+// Returns null when the typed value is well formed, or a message when it is not.
+export function typedValueProblem(valueType, typedValue) {
+  const keysAre = (value, keys) => isPlainValue(value)
+    && canonicalJson(Object.keys(value).sort()) === canonicalJson([...keys].sort());
+  switch (valueType) {
+    case 'PARTY_SET': {
+      if (!keysAre(typedValue, ['parties'])) return 'PARTY_SET typed_value must be {parties}';
+      const { parties } = typedValue;
+      if (!Array.isArray(parties) || parties.length === 0) return 'party set is empty';
+      if (!parties.every((party) => typeof party === 'string' && party.length > 0)) {
+        return 'every party must be non-empty text';
+      }
+      if (new Set(parties).size !== parties.length) return 'party set repeats a party';
+      return null;
+    }
+    case 'ENUM': case 'PARTY': case 'DEFINED_TERM': case 'DATE': case 'REFERENCE':
+      return typeof typedValue === 'string' && typedValue.length > 0
+        ? null : `${valueType} typed_value must be non-empty text`;
+    case 'BOOLEAN':
+      return typeof typedValue === 'boolean' ? null : 'BOOLEAN typed_value must be a boolean';
+    case 'NUMBER': case 'PERCENTAGE':
+      return typeof typedValue === 'number' && Number.isFinite(typedValue)
+        ? null : `${valueType} typed_value must be a finite number`;
+    case 'DURATION': case 'PERIOD': {
+      if (!keysAre(typedValue, ['bound_type', 'count', 'unit'])) {
+        return `${valueType} typed_value must be {bound_type, count, unit}`;
+      }
+      if (!DURATION_BOUNDS[valueType].includes(typedValue.bound_type)) {
+        return `${valueType} bound_type is outside the closed vocabulary`;
+      }
+      if (!Number.isInteger(typedValue.count) || typedValue.count < 0) return 'count is invalid';
+      if (!DURATION_UNITS.includes(typedValue.unit)) return 'unit is outside the closed vocabulary';
+      return null;
+    }
+    case 'MONEY': {
+      if (!keysAre(typedValue, ['amount', 'currency'])) {
+        return 'MONEY typed_value must be {amount, currency}';
+      }
+      if (typeof typedValue.amount !== 'number' || !Number.isFinite(typedValue.amount)) {
+        return 'money amount is invalid';
+      }
+      return typeof typedValue.currency === 'string' && typedValue.currency.length > 0
+        ? null : 'money currency must be non-empty text';
+    }
+    default:
+      return `unapproved value type ${valueType}`;
+  }
+}
+
+// The unit a value type must carry, or null where it carries none.
+export function unitFor(valueType, typedValue) {
+  if (valueType === 'MONEY') return typedValue.currency;
+  if (valueType === 'DURATION' || valueType === 'PERIOD') return typedValue.unit;
+  if (valueType === 'PERCENTAGE') return 'PERCENT';
+  return null;
+}
+
+// sort_value is derived deterministically from typed_value alone. Null means
+// "this value type has no scalar order"; it never means "unknown".
+export function sortValueFor(valueType, typedValue) {
+  switch (valueType) {
+    case 'NUMBER': case 'PERCENTAGE': return typedValue;
+    case 'MONEY': return typedValue.amount;
+    case 'BOOLEAN': return typedValue ? 1 : 0;
+    case 'DATE': return ISO_DATE_RE.test(typedValue) ? typedValue : null;
+    case 'DURATION': case 'PERIOD': return typedValue.count * DAYS_PER_UNIT[typedValue.unit];
+    case 'ENUM': case 'PARTY': case 'DEFINED_TERM': case 'REFERENCE': return typedValue;
+    case 'PARTY_SET': return null;
+    default: return null;
+  }
+}
 
 export function validStateCombination(extraction, quality, output) {
   return (extraction === 'COMPLETE' && quality === 'SUFFICIENT'
@@ -185,6 +284,11 @@ export const COORDINATE_SYSTEM = 'UTF8_CANONICAL_TEXT_HALF_OPEN';
 // Fields whose values are package-relative paths and are therefore exempt from
 // the forbidden-path scan. Every other string in the package is scanned.
 const PATH_FIELDS = new Set(['path', 'corpus_manifest_path']);
+
+// The only identifiers that may be null. transaction_id is minted by the
+// consumer and supplied through the corpus manifest; a deal the consumer has
+// not keyed yet exports as null, and such a package can never be PUBLIC.
+const NULLABLE_ID_FIELDS = new Set(['transaction_id']);
 
 const FORBIDDEN_VALUE_PATTERNS = Object.freeze([
   [/(?:^|[\s"'(=])(?:\.{1,2}\/|~\/)/, 'relative filesystem path'],
@@ -303,12 +407,14 @@ function scanForbidden(report, value, where, keyName = null) {
         }
       }
       // Every key ending in _id must carry an immutable 64-hex content ID.
+      // NULLABLE_ID_FIELDS is the closed set that may also be null, and each
+      // one is null only for a documented reason the contract states.
       if (/_id$/.test(key)) {
-        report.check(
-          typeof value[key] === 'string' && HEX64_RE.test(value[key]),
-          `${where}.${key}`,
-          'every field ending in _id must be a 64-character lowercase hex content ID',
-        );
+        const permitted = typeof value[key] === 'string' && HEX64_RE.test(value[key])
+          || (NULLABLE_ID_FIELDS.has(key) && value[key] === null);
+        report.check(permitted, `${where}.${key}`,
+          'every field ending in _id must be a 64-character lowercase hex content ID'
+          + (NULLABLE_ID_FIELDS.has(key) ? ' or null' : ''));
       }
       scanForbidden(report, value[key], `${where}.${key}`, key);
     }
@@ -326,7 +432,8 @@ const CLAIM_KEYS = [
 ];
 const CLAIM_BODY_KEYS = CLAIM_KEYS.filter((key) => key !== 'claim_revision_id');
 const STATE_KEYS = ['extraction_state', 'source_quality', 'review_state'];
-const FIELD_KEYS = ['field_key', 'label', 'rendered_value', 'rendered_value_digest', 'typed_value_digest'];
+const FIELD_KEYS = ['field_key', 'label', 'value_type', 'typed_value', 'unit', 'sort_value',
+  'rendered_value', 'rendered_value_digest', 'typed_value_digest'];
 const SPAN_KEYS = ['node_occurrence_id', 'start_byte', 'end_byte', 'text_sha256', 'excerpt_text'];
 const SOURCE_KEYS = ['node_occurrence_ids', 'coordinate_system', 'spans'];
 const CATEGORY_KEYS = [
@@ -342,14 +449,14 @@ const PROVENANCE_KEYS = [
 ];
 const DEAL_IDENTITY_KEYS = ['source_system', 'issuer_cik', 'accession', 'document_role_key'];
 const DEAL_DOCUMENT_KEYS = [
-  'schema_version', 'deal_document_id', 'deal_key', 'deal_identity', 'provenance',
-  'claims', 'category_summaries', 'counts',
+  'schema_version', 'deal_document_id', 'deal_key', 'transaction_id', 'deal_identity',
+  'provenance', 'claims', 'category_summaries', 'counts',
 ];
 const DEAL_DOCUMENT_BODY_KEYS = DEAL_DOCUMENT_KEYS.filter((key) => key !== 'deal_document_id');
 const CORPUS_MEMBER_KEYS = [
-  'deal_key', 'source_system', 'issuer_cik', 'accession', 'document_role_key',
-  'agreement_id', 'canonical_text_sha256', 'source_admission_manifest_id',
-  'admission_receipt_id',
+  'deal_key', 'transaction_id', 'source_system', 'issuer_cik', 'accession',
+  'document_role_key', 'agreement_id', 'canonical_text_sha256',
+  'source_admission_manifest_id', 'admission_receipt_id',
 ];
 const CORPUS_MANIFEST_KEYS = [
   'schema_version', 'corpus_manifest_id', 'corpus_id', 'corpus_kind', 'members', 'counts',
@@ -456,6 +563,19 @@ function verifyClaim(report, claim, where) {
       report.equal(safely(() => sha256Hex(String(field.rendered_value))), field.rendered_value_digest, at,
         'rendered_value_digest does not match SHA-256 of rendered_value');
       report.check(HEX64_RE.test(field.typed_value_digest), `${at}.typed_value_digest`, 'must be 64-hex');
+      if (!report.check(FACT_VALUE_TYPES.includes(field.value_type), `${at}.value_type`,
+        'not in the producer value-type vocabulary')) return;
+      const problem = safely(() => typedValueProblem(field.value_type, field.typed_value));
+      if (!report.check(problem === null, `${at}.typed_value`, String(problem))) return;
+      // typed_value is carried, so its digest is now re-derivable rather than asserted.
+      report.equal(safely(() => sha256Hex(canonicalJson(field.typed_value))), field.typed_value_digest, at,
+        'typed_value_digest does not match SHA-256 of canonicalJson(typed_value)');
+      report.equal(safely(() => canonicalJson(unitFor(field.value_type, field.typed_value))),
+        safely(() => canonicalJson(field.unit)), `${at}.unit`,
+        'unit is not the unit this value type carries');
+      report.equal(safely(() => canonicalJson(sortValueFor(field.value_type, field.typed_value))),
+        safely(() => canonicalJson(field.sort_value)), `${at}.sort_value`,
+        'sort_value is not the deterministic derivation from typed_value');
     });
   }
 
@@ -540,6 +660,13 @@ function verifyCategorySummary(report, summary, claimsByOccurrence, where) {
 function verifyDealDocument(report, document, where) {
   if (!exactKeys(report, document, DEAL_DOCUMENT_KEYS, where)) return null;
   report.equal(document.schema_version, 'DEAL_TERMS_DEAL_DOCUMENT/V1', where, 'wrong schema version');
+
+  report.check(
+    document.transaction_id === null
+      || (typeof document.transaction_id === 'string' && HEX64_RE.test(document.transaction_id)),
+    `${where}.transaction_id`,
+    'must be a 64-hex consumer-minted transaction ID or null; a package never mints one',
+  );
 
   if (exactKeys(report, document.deal_identity, DEAL_IDENTITY_KEYS, `${where}.deal_identity`)) {
     report.equal(document.deal_identity.source_system, 'SEC_EDGAR', `${where}.deal_identity.source_system`,
@@ -643,6 +770,11 @@ function verifyCorpusManifest(report, corpus, dealDocuments, where) {
     report.equal(member.source_system, 'SEC_EDGAR', `${at}.source_system`,
       'only SEC EDGAR identity is defined at v1');
     report.check(HEX64_RE.test(member.canonical_text_sha256), `${at}.canonical_text_sha256`, 'must be 64-hex');
+    report.check(
+      member.transaction_id === null
+        || (typeof member.transaction_id === 'string' && HEX64_RE.test(member.transaction_id)),
+      `${at}.transaction_id`, 'must be a 64-hex consumer-minted transaction ID or null',
+    );
     const document = dealDocuments.get(member.deal_key);
     if (report.check(Boolean(document), at, 'corpus member has no deal document in this package')) {
       report.equal(document.provenance.agreement_id, member.agreement_id, at, 'agreement_id disagrees with the deal document');
@@ -652,6 +784,10 @@ function verifyCorpusManifest(report, corpus, dealDocuments, where) {
         'source_admission_manifest_id disagrees with the deal document');
       report.equal(document.provenance.admission_receipt_id, member.admission_receipt_id, at,
         'admission_receipt_id disagrees with the deal document');
+      // The corpus manifest is the only route by which a transaction ID enters
+      // a package. The deal document must carry exactly what the manifest says.
+      report.equal(document.transaction_id, member.transaction_id, at,
+        'transaction_id disagrees with the deal document: it must arrive through the corpus manifest');
     }
   });
   const dealKeys = members.map((member) => member.deal_key);
@@ -699,6 +835,11 @@ export function verifyPackage(packageDir) {
 
   if (!exactKeys(report, manifest, MANIFEST_KEYS, 'manifest.json')) return report;
   report.equal(manifest.schema_version, 'DEAL_TERMS_RELEASE_MANIFEST/V1', 'manifest.json', 'wrong schema version');
+  report.check(
+    typeof manifest.package_schema_version === 'string'
+      && PACKAGE_SCHEMA_VERSION_RE.test(manifest.package_schema_version),
+    'manifest.json.package_schema_version', 'must be a semantic version, MAJOR.MINOR.PATCH',
+  );
   report.equal(manifest.package_schema_version, PACKAGE_SCHEMA_VERSION, 'manifest.json',
     `this verifier implements ${PACKAGE_SCHEMA_VERSION} only`);
   report.check(HEX40_RE.test(manifest.producer_commit), 'manifest.json.producer_commit',
@@ -789,6 +930,15 @@ export function verifyPackage(packageDir) {
       report.equal(corpus.corpus_manifest_id, manifest.corpus.corpus_manifest_id, 'manifest.json.corpus',
         'corpus_manifest_id disagrees');
       scanForbidden(report, corpus, manifest.corpus.corpus_manifest_path);
+    }
+  }
+
+  // A package may only be PUBLIC when every deal in it carries the consumer's
+  // transaction ID. An unkeyed deal cannot be shown to users.
+  if (manifest.release_state === 'PUBLIC') {
+    for (const [dealKey, document] of dealDocuments) {
+      report.check(document.transaction_id !== null, 'manifest.json.release_state',
+        `deal ${dealKey} has transaction_id null and so this package cannot be PUBLIC`);
     }
   }
 
