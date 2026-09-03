@@ -16,6 +16,12 @@ const LEDGERS = [
   'red-hat-69-ledger.json',
   'm2-inline-23-ledger.json',
 ];
+const EXTRA_SOURCES = [
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-agreement-analysis-set.json',
+  'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-comparison-entry-correction/additive-open-world.json',
+];
+const TEN_SCRIPT = path.resolve(__dirname, '../scripts/stage-2y-structure-m7-v2-repair-work6-ten-agreement-calibration.mjs');
+const ADDITIVE_SCRIPT = path.resolve(__dirname, '../scripts/stage-2y-structure-m7-v2-repair-work6-additive-three-calibration.mjs');
 const REGISTRATION_ROOT =
   'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-candidate-registrations';
 const KNOWN_LOSS_SCRIPT = path.resolve(__dirname, '../scripts/stage-2y-structure-m7-v2-repair-work6-known-loss-244.mjs');
@@ -68,6 +74,9 @@ function buildSyntheticRegistration(root) {
 function copySealedLedgers(root) {
   for (const name of LEDGERS) {
     const repositoryPath = `${LEDGER_DIR}/${name}`;
+    writeBytes(root, repositoryPath, fs.readFileSync(path.join(SOURCE_ROOT, repositoryPath)));
+  }
+  for (const repositoryPath of EXTRA_SOURCES) {
     writeBytes(root, repositoryPath, fs.readFileSync(path.join(SOURCE_ROOT, repositoryPath)));
   }
 }
@@ -182,4 +191,31 @@ test('a sibling registration is listed as superseded', async (t) => {
   const wrote = runScript(KNOWN_LOSS_SCRIPT, ['--repo-root', root, '--registration', built.registrationPath]);
   assert.equal(wrote.status, 0, JSON.stringify(wrote.result));
   assert.deepEqual(wrote.result.superseded_registrations, [`${REGISTRATION_ROOT}/${'cd'.repeat(32)}.json`]);
+});
+
+test('ten-agreement calibration isolates TopBuild', async (t) => {
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'm7-v2-work6-ten-')));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  copySealedLedgers(root);
+  const built = buildSyntheticRegistration(root);
+  const wrote = runScript(TEN_SCRIPT, ['--repo-root', root, '--registration', built.registrationPath]);
+  assert.equal(wrote.status, 0, JSON.stringify(wrote.result));
+  const report = JSON.parse(fs.readFileSync(path.join(root, wrote.result.report_path), 'utf8'));
+  assert.equal(report.agreement_count, 10);
+  assert.equal(report.topbuild.known_loss_member_count, 84);
+  assert.equal(report.combined_ten_corpus_digest, 'b8825b712ab905a175cfc4a86c3504705f1d8bf509ddcee40f951764c3cf6e3d');
+});
+
+test('additive-three calibration recounts the three sealed deals', async (t) => {
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'm7-v2-work6-add-')));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  copySealedLedgers(root);
+  const built = buildSyntheticRegistration(root);
+  const wrote = runScript(ADDITIVE_SCRIPT, ['--repo-root', root, '--registration', built.registrationPath]);
+  assert.equal(wrote.status, 0, JSON.stringify(wrote.result));
+  const report = JSON.parse(fs.readFileSync(path.join(root, wrote.result.report_path), 'utf8'));
+  assert.equal(report.observed_member_count, 16);
+  assert.equal(report.candidate_key_counts['abbvie-landos'] > 0, true);
+  assert.equal(report.candidate_key_counts['lilly-verve'] > 0, true);
+  assert.equal(report.candidate_key_counts['rocket-redfin'] > 0, true);
 });

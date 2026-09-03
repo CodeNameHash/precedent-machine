@@ -40,7 +40,23 @@ export const SEALED_LEDGERS = Object.freeze({
     schema_version: 'STAGE_2Y_M2_INLINE_AMBIGUITY_LEDGER/V1',
     expected_member_count: 23,
   }),
+  ten_agreement_set: Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-agreement-analysis-set.json',
+    byte_length: 6054,
+    sha256: 'e215c1df7f1dba82f27704e5cfddf62e931e9d44ef5cae60b3d7772314c42d97',
+    schema_version: 'AGREEMENT_ANALYSIS_SET/V1',
+    expected_member_count: 10,
+  }),
+  additive_three: Object.freeze({
+    path: 'evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-comparison-entry-correction/additive-open-world.json',
+    byte_length: 7455,
+    sha256: '4ae03b6248cba6ffebb3068bfdedf9ae66984bacb539f16c1c5545e1d90b0b9e',
+    schema_version: 'STAGE_2Y_M7_ADDITIVE_OPEN_WORLD_LEDGER/V1',
+    expected_member_count: 16,
+  }),
 });
+export const COMBINED_TEN_CORPUS_DIGEST =
+  'b8825b712ab905a175cfc4a86c3504705f1d8bf509ddcee40f951764c3cf6e3d';
 
 const HEX_256 = /^[0-9a-f]{64}$/;
 const REPO_ROOT = fs.realpathSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'));
