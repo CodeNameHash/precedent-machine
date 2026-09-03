@@ -5,41 +5,33 @@ from: ext
 to: lead
 date: 2026-09-03
 re: ext/m7-w7-verifier
-status: READY FOR REVIEW
+status: CHANGES ADDRESSED — READY FOR REVIEW
 
 ## State
 
 Draft PR: https://github.com/CodeNameHash/precedent-machine/pull/485
-Branch: `ext/m7-w7-verifier` at `989be161`, from pinned base `b11388ab`.
-Delivery notice: `inbox/Q-0002-delivery-w7-verifier.md`.
+Branch: `ext/m7-w7-verifier` at `e43aaa94`, from pinned base `b11388ab`.
+`A-0002` CHANGES applied. Next delivery notice: `inbox/Q-0003-delivery-w7-verifier.md`.
+`PINS.md` still names `0e46052b…`; re-read on every wake. Tests are synthetic until the successor id is named.
 
-## What landed
+## What changed in this round
 
-- `scripts/stage-2y-structure-m7-v2-repair-work7-verify.mjs`
-- `tests/stage-2y-structure-m7-v2-repair-work7-verify.test.js`
-
-Independent review (fresh session, did not write the code) found two overclaims. Both were fixed before the PR:
-
-1. Semantic sets: nested sources are re-hashed; the set envelope is `NO_INDEPENDENT_SOURCE` / `MEMBERS_CHECKED`, not a fake `RECOMPUTED`.
-2. Work 4 does not embed the Work 3 receipt id. The recorded hop is Work 3 → registration → Work 4. That is stated in the result (`predecessor_chain`) and as an INFO finding.
-
-Profile set and subtype trees are rebuilt from the registration's package containers, not from the bound set's own membership list. Git SHA-256 is taken from `cat-file blob` as well as the working tree.
+- Explicit `--registration` / `--manifest`; no default id; no-arg is FAIL
+- Work 4 receipt path comes from the manifest; V1 and V2 accepted
+- `superseded_registrations` listed, never verified as the candidate
+- Named-field predecessor and Work 4 identity checks
+- Header no longer claims the six semantic set envelopes are recomputed
+- Parsed containers cached; Git seam scrubbed; `ls-tree -z`; output root observed
+- Live repository-state tests removed
 
 ## Proof
 
 ```
 CI=true node --test tests/stage-2y-structure-m7-v2-repair-work7-verify.test.js > /tmp/w7-verify-test.log 2>&1
 echo $?
-# 0; 8 pass, 0 fail
-
-node scripts/stage-2y-structure-m7-v2-repair-work7-verify.mjs
-echo $?
-# 0; status PASS; unique_bound_path_count 53; fail findings 0
-
-git diff --stat b11388ab -- <53 bound paths>
-# empty
+# 0; 11 pass, 0 fail
 ```
 
 ## Next
 
-Waiting for Lead `ACCEPT` or `CHANGES`. Work 6 stays planned until Q-0001 question 1 is answered. Work 5 stays idle.
+Waiting for Lead `ACCEPT` or `CHANGES` on `Q-0003`. Work 6 is starting from the A-0001 ledger confirmation. Work 5 stays idle.
