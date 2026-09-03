@@ -9,11 +9,9 @@ const test = require('node:test');
 
 const { canonicalJson, contentId, sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 
-const REPO_ROOT = path.resolve(__dirname, '..');
-const REGISTRATION_ID = '0e46052b1a6a0b284291ee0e6881aac0ecf99a40429300295178bcaa3d832d5e';
-const REGISTRATION_PATH = `evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-candidate-registrations/${REGISTRATION_ID}.json`;
 const WORK4_RECEIPT_PATH = 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-work4-fixture.json';
-const PINNED_BASE = 'b11388ab7c9605b1df872b1c6cd2e927d1a2dbab';
+const MANIFEST_PATH = 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work4-execution-manifest.json';
+const VERIFIER_SCRIPT = path.resolve(__dirname, '../scripts/stage-2y-structure-m7-v2-repair-work7-verify.mjs');
 
 function gitBlobOid(bytes) {
   const crypto = require('node:crypto');
@@ -387,12 +385,32 @@ function buildSyntheticCandidate(root) {
   }, 'work4_receipt_id');
   writeCanonical(root, WORK4_RECEIPT_PATH, restampedWork4);
 
+  const registrationBytes = fs.readFileSync(path.join(root, registrationPath));
+  const manifest = {
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK_EXECUTION_MANIFEST/V1',
+    work: 'WORK4',
+    work_receipt_path: WORK4_RECEIPT_PATH,
+    candidate_registration_binding: {
+      registration_binding: {
+        path: registrationPath,
+        schema_version: 'STAGE_2Y_M7_V2_CANDIDATE_REGISTRATION/V1',
+        record_id_field: 'candidate_registration_id',
+        record_id: restamped.candidate_registration_id,
+        byte_length: registrationBytes.length,
+        sha256: sha256Hex(registrationBytes),
+        git_blob_oid: gitBlobOid(registrationBytes),
+      },
+    },
+  };
+  writeCanonical(root, MANIFEST_PATH, manifest);
+
   commitTree(root);
   return {
     registrationPath,
     registrationId: restamped.candidate_registration_id,
     testPath,
     work4Path: WORK4_RECEIPT_PATH,
+    manifestPath: MANIFEST_PATH,
   };
 }
 
@@ -404,19 +422,23 @@ function failCodes(result) {
   return result.findings.filter((entry) => entry.severity !== 'INFO').map((entry) => entry.code).sort();
 }
 
-test('byte-identical registered candidate passes independent Work 7 verification', async () => {
+test('synthetic byte-identical tree selected by --manifest passes', async (t) => {
   const { verifyWork7 } = await loadVerifier();
-  const result = verifyWork7({ repoRoot: REPO_ROOT, registrationId: REGISTRATION_ID });
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'm7-v2-work7-manifest-')));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const built = buildSyntheticCandidate(root);
+  const result = verifyWork7({ repoRoot: root, manifestPath: built.manifestPath });
   assert.equal(result.schema_version, 'STAGE_2Y_M7_V2_REPAIR_WORK7_VERIFICATION/V1');
   assert.equal(
     result.status,
     'PASS',
     JSON.stringify(result.findings.filter((entry) => entry.severity !== 'INFO'), null, 2),
   );
-  assert.equal(result.candidate_registration_id, REGISTRATION_ID);
-  assert.equal(result.counts.unique_bound_path_count, 53);
-  assert.equal(result.counts.subtype_tree_count, 24);
-  assert.equal(result.counts.semantic_input_count, 6);
+  assert.equal(result.candidate_registration_id, built.registrationId);
+  assert.equal(result.work4_receipt_path, built.work4Path);
+  assert.deepEqual(result.predecessor_chain, [
+    'WORK0', 'ACTIVATION', 'WORK1', 'WORK2', 'WORK3', 'REGISTRATION', 'WORK4',
+  ]);
   assert.equal(result.recomputations.some((entry) => entry.name === 'subtype_trees' && entry.status === 'RECOMPUTED'), true);
   assert.equal(result.recomputations.some((entry) => entry.name === 'family_profile_set' && entry.status === 'RECOMPUTED'), true);
   assert.equal(result.recomputations.some((entry) => (
@@ -491,7 +513,7 @@ test('an altered receipt identity fails with RECEIPT_IDENTITY_MISMATCH', async (
   const receipt = JSON.parse(fs.readFileSync(path.join(root, built.work4Path), 'utf8'));
   receipt.work4_receipt_id = 'ff'.repeat(32);
   writeCanonical(root, built.work4Path, receipt);
-  const result = verifyWork7({ repoRoot: root, registrationPath: built.registrationPath });
+  const result = verifyWork7({ repoRoot: root, manifestPath: built.manifestPath });
   assert.equal(result.status, 'FAIL');
   assert.equal(failCodes(result).includes('RECEIPT_IDENTITY_MISMATCH'), true);
 });
@@ -509,15 +531,77 @@ test('an edited count fails with COUNT_MISMATCH', async (t) => {
   assert.equal(failCodes(result).includes('COUNT_MISMATCH'), true);
 });
 
-test('Work 7 verifier does not change candidate-bound bytes on the pinned base', async () => {
+test('no registration or manifest selector is a finding and a non-zero exit', async (t) => {
   const { verifyWork7 } = await loadVerifier();
-  const result = verifyWork7({ repoRoot: REPO_ROOT, registrationId: REGISTRATION_ID });
-  const boundPaths = result.unique_bound_paths;
-  assert.equal(boundPaths.length, 53);
-  const diff = execFileSync('git', [
-    '-C', REPO_ROOT,
-    'diff', '--stat', PINNED_BASE, '--',
-    ...boundPaths,
-  ], { encoding: 'utf8' });
-  assert.equal(diff, '');
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'm7-v2-work7-noselect-')));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  buildSyntheticCandidate(root);
+  const result = verifyWork7({ repoRoot: root });
+  assert.equal(result.status, 'FAIL');
+  assert.equal(failCodes(result).includes('SELECTION_REQUIRED'), true);
+  let cli;
+  try {
+    execFileSync('node', [VERIFIER_SCRIPT, '--repo-root', root], { encoding: 'utf8' });
+    cli = { status: 0, stdout: '' };
+  } catch (error) {
+    cli = { status: error.status, stdout: error.stdout };
+  }
+  assert.equal(cli.status, 1);
+  assert.equal(JSON.parse(cli.stdout).status, 'FAIL');
+});
+
+test('a sibling registration is listed as superseded and is not the candidate', async (t) => {
+  const { verifyWork7 } = await loadVerifier();
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'm7-v2-work7-superseded-')));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const built = buildSyntheticCandidate(root);
+  const supersededPath = `evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-candidate-registrations/${'cd'.repeat(32)}.json`;
+  writeCanonical(root, supersededPath, {
+    schema_version: 'STAGE_2Y_M7_V2_CANDIDATE_REGISTRATION/V1',
+    candidate_registration_id: 'cd'.repeat(32),
+    note: 'superseded sibling, must not be verified',
+  });
+  const result = verifyWork7({ repoRoot: root, registrationPath: built.registrationPath });
+  assert.equal(result.status, 'PASS', JSON.stringify(result.findings.filter((entry) => entry.severity !== 'INFO'), null, 2));
+  assert.equal(result.candidate_registration_id, built.registrationId);
+  assert.deepEqual(result.superseded_registrations, [supersededPath]);
+});
+
+test('a Work 4 receipt that only mentions the selected id in a stray field fails', async (t) => {
+  const { verifyWork7 } = await loadVerifier();
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'm7-v2-work7-stray-')));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const built = buildSyntheticCandidate(root);
+  const receipt = JSON.parse(fs.readFileSync(path.join(root, built.work4Path), 'utf8'));
+  const tampered = identify(receipt.schema_version, {
+    ...receipt,
+    candidate_registration_id: 'aa'.repeat(32),
+    stray_successor_registration_id: built.registrationId,
+  }, 'work4_receipt_id');
+  writeCanonical(root, built.work4Path, tampered);
+  const result = verifyWork7({ repoRoot: root, manifestPath: built.manifestPath });
+  assert.equal(result.status, 'FAIL');
+  assert.equal(failCodes(result).includes('RECEIPT_IDENTITY_MISMATCH'), true);
+});
+
+test('a V2 Work 4 receipt named by the manifest is accepted', async (t) => {
+  const { verifyWork7 } = await loadVerifier();
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'm7-v2-work7-v2-')));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const built = buildSyntheticCandidate(root);
+  const receipt = JSON.parse(fs.readFileSync(path.join(root, built.work4Path), 'utf8'));
+  const v2 = identify('STAGE_2Y_M7_V2_REPAIR_WORK4_RECEIPT/V2', {
+    ...receipt,
+    schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK4_RECEIPT/V2',
+    work4_candidate_correction_authority_binding: { note: 'synthetic' },
+    superseded_work4_receipt_binding: { note: 'synthetic' },
+  }, 'work4_receipt_id');
+  writeCanonical(root, built.work4Path, v2);
+  const result = verifyWork7({ repoRoot: root, manifestPath: built.manifestPath });
+  assert.equal(
+    result.status,
+    'PASS',
+    JSON.stringify(result.findings.filter((entry) => entry.severity !== 'INFO'), null, 2),
+  );
+  assert.equal(result.work4_receipt_path, built.work4Path);
 });

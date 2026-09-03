@@ -1,11 +1,17 @@
 #!/usr/bin/env node
-// Work 7 independent verifier. Re-reads the Work 4 candidate registration
-// and re-derives every binding from the working tree and Git objects:
-// path, byte length, SHA-256, Git blob OID, and counts. Recomputes the six
-// semantic input sets, 24 subtype trees, approved profile set and structure
-// disposition set from their sealed member or package sources where those
-// sources exist. Checks the Work 0 → Work 4 receipt chain by recomputing
-// each receipt identity. Collects every finding; never stops at the first.
+// Work 7 independent verifier. Re-reads a selected Work 4 candidate
+// registration (--registration <path> or --manifest <path>) and re-derives
+// every binding from the working tree and Git objects: path, byte length,
+// SHA-256, Git blob OID, and counts. Rebuilds the 24 subtype trees and the
+// approved profile set from the family-profile packages named by the
+// registration. Nested sources named by the six semantic input sets and the
+// structure disposition set are re-hashed; those set envelopes are labelled
+// NO_INDEPENDENT_SOURCE and are not treated as independently derived
+// membership oracles. Checks the Work 0 → Work 3 receipt chain, then the
+// selected registration, then the Work 4 receipt named by the manifest
+// (V1 or V2), by recomputing each receipt identity. Predecessor hops compare
+// exact named fields, not a deep "id appears anywhere" walk. Collects every
+// finding; never stops at the first.
 //
 // This script does not write, does not call a model, does not use the
 // network, and does not import the compiler, the bound candidate verifier,
@@ -16,7 +22,7 @@
 // under verification.
 //
 // Git is read-only and only through gitReadOnly(): cat-file, ls-tree,
-// rev-parse, diff-tree, merge-base, log.
+// rev-parse. GIT_DIR, GIT_WORK_TREE and GIT_CONFIG_* are scrubbed.
 //
 // Output: one JSON object, schema STAGE_2Y_M7_V2_REPAIR_WORK7_VERIFICATION/V1,
 // status PASS or FAIL, complete findings array. Exit 0 only on PASS.
@@ -35,11 +41,29 @@ const RESULT_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK7_VERIFICATION/V1';
 const REGISTRATION_SCHEMA = 'STAGE_2Y_M7_V2_CANDIDATE_REGISTRATION/V1';
 const REGISTRATION_ROOT =
   'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-candidate-registrations';
-const DEFAULT_REGISTRATION_ID =
-  '0e46052b1a6a0b284291ee0e6881aac0ecf99a40429300295178bcaa3d832d5e';
-const WORK4_RECEIPT_PATH =
-  'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-work4-fixture.json';
-const GIT_COMMANDS = new Set(['cat-file', 'ls-tree', 'rev-parse', 'diff-tree', 'merge-base', 'log']);
+const GIT_COMMANDS = new Set(['cat-file', 'ls-tree', 'rev-parse']);
+const WORK4_RECEIPT_SCHEMAS = new Set([
+  'STAGE_2Y_M7_V2_REPAIR_WORK4_RECEIPT/V1',
+  'STAGE_2Y_M7_V2_REPAIR_WORK4_RECEIPT/V2',
+]);
+const PREDECESSOR_BIND_FIELDS = Object.freeze({
+  ACTIVATION: Object.freeze(['evidence_root_id', 'work0_evidence_root_binding']),
+  WORK1: Object.freeze(['activation_receipt_id', 'activation_receipt_binding']),
+  WORK2: Object.freeze(['predecessor', 'work1_contract_receipt_id', 'predecessor_receipt_binding']),
+  WORK3: Object.freeze(['predecessor', 'work2_receipt_id', 'predecessor_receipt_binding']),
+});
+const GIT_ENV_SCRUB = Object.freeze([
+  'GIT_ALTERNATE_OBJECT_DIRECTORIES',
+  'GIT_COMMON_DIR',
+  'GIT_CONFIG_COUNT',
+  'GIT_CONFIG_GLOBAL',
+  'GIT_CONFIG_PARAMETERS',
+  'GIT_CONFIG_SYSTEM',
+  'GIT_DIR',
+  'GIT_EXTERNAL_DIFF',
+  'GIT_OBJECT_DIRECTORY',
+  'GIT_WORK_TREE',
+]);
 const CODE_SINGLETONS = Object.freeze([
   'compiler', 'contract_validator', 'deterministic_generator', 'independent_verifier', 'projector',
 ]);
@@ -76,13 +100,12 @@ const RECEIPT_CHAIN = Object.freeze([
     idField: 'work3_receipt_id',
     digestField: null,
   },
-  {
-    work: 'WORK4',
-    path: WORK4_RECEIPT_PATH,
-    idField: 'work4_receipt_id',
-    digestField: null,
-  },
 ]);
+const WORK4_RECEIPT_SPEC = Object.freeze({
+  work: 'WORK4',
+  idField: 'work4_receipt_id',
+  digestField: null,
+});
 
 const REPO_ROOT = fs.realpathSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'));
 
@@ -93,12 +116,22 @@ function gitBlobOid(bytes) {
     .digest('hex');
 }
 
+function gitEnvironment() {
+  const environment = { ...process.env, GIT_NO_REPLACE_OBJECTS: '1' };
+  for (const name of GIT_ENV_SCRUB) delete environment[name];
+  for (const name of Object.keys(environment)) {
+    if (name.startsWith('GIT_CONFIG_')) delete environment[name];
+  }
+  return environment;
+}
+
 function gitReadOnly(root, args) {
   if (!Array.isArray(args) || args.length === 0 || !GIT_COMMANDS.has(args[0])) {
     throw new Error(`WORK7_GIT_COMMAND: ${args?.[0] ?? 'missing'}`);
   }
   return execFileSync('git', ['-C', root, ...args], {
     encoding: 'buffer',
+    env: gitEnvironment(),
     maxBuffer: 80 * 1024 * 1024,
     stdio: ['ignore', 'pipe', 'pipe'],
   });
@@ -156,6 +189,14 @@ function parseJson(bytes) {
   }
 }
 
+function cachedJson(cache, repositoryPath, bytes) {
+  const key = `json\0${repositoryPath}`;
+  if (cache.has(key)) return cache.get(key);
+  const parsed = bytes ? parseJson(bytes) : null;
+  cache.set(key, parsed);
+  return parsed;
+}
+
 function isPlainObject(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
@@ -198,11 +239,18 @@ function finding(code, pathName, detail, severity = 'FAIL') {
 
 function gitHeadBlobOid(root, repositoryPath) {
   try {
-    const listed = gitReadOnly(root, ['ls-tree', '-r', 'HEAD', '--', repositoryPath]).toString('utf8');
-    const line = listed.split('\n').find((entry) => entry.endsWith(`\t${repositoryPath}`));
-    if (!line) return null;
-    const match = /^(?:[0-7]{6}) blob ([0-9a-f]{40})\t/u.exec(line);
-    return match ? match[1] : null;
+    const listed = gitReadOnly(root, ['ls-tree', '-r', '-z', 'HEAD', '--', repositoryPath]);
+    const entries = listed.toString('utf8').split('\0').filter((entry) => entry.length > 0);
+    for (const entry of entries) {
+      const tab = entry.indexOf('\t');
+      if (tab === -1) continue;
+      const meta = entry.slice(0, tab);
+      const entryPath = entry.slice(tab + 1);
+      if (entryPath !== repositoryPath) continue;
+      const match = /^(?:[0-7]{6}) blob ([0-9a-f]{40})$/u.exec(meta);
+      if (match) return match[1];
+    }
+    return null;
   } catch {
     return undefined;
   }
@@ -362,7 +410,7 @@ function checkFileBinding(root, role, binding, findings, cache) {
     }
   }
   if (typeof binding.record_id_field === 'string' && binding.record_id_field.length > 0) {
-    const record = parseJson(bytes);
+    const record = cachedJson(cache, repositoryPath, bytes);
     if (record?.[binding.record_id_field] !== binding.record_id) {
       findings.push(finding(
         'RECEIPT_IDENTITY_MISMATCH',
@@ -392,7 +440,7 @@ function checkMemberBinding(root, role, binding, findings, cache) {
     findings.push(finding('BINDING_PATH_MISSING', containerPath, `${role} container is absent`));
     return;
   }
-  const container = parseJson(bytes);
+  const container = cachedJson(cache, containerPath, bytes);
   if (container === null) {
     findings.push(finding('SEMANTIC_DIGEST_MISMATCH', containerPath, `${role} container is not JSON`));
     return;
@@ -442,9 +490,17 @@ function checkReceiptIdentity(root, spec, findings, cache) {
     findings.push(finding('BINDING_PATH_MISSING', spec.path, `${spec.work} receipt is absent`));
     return null;
   }
-  const record = parseJson(bytes);
+  const record = cachedJson(cache, spec.path, bytes);
   if (record === null) {
     findings.push(finding('RECEIPT_IDENTITY_MISMATCH', spec.path, `${spec.work} receipt is not JSON`));
+    return null;
+  }
+  if (spec.work === 'WORK4' && !WORK4_RECEIPT_SCHEMAS.has(record.schema_version)) {
+    findings.push(finding(
+      'RECEIPT_IDENTITY_MISMATCH',
+      spec.path,
+      `Work 4 receipt schema ${record.schema_version ?? 'absent'} is not V1 or V2`,
+    ));
     return null;
   }
   const unsigned = { ...record };
@@ -488,7 +544,7 @@ function recomputeProfileSet(root, registration, findings, recomputations, cache
   const setBytes = cache.get(binding.path) ?? readWorkingBytes(root, binding.path);
   cache.set(binding.path, setBytes);
   if (setBytes === null) return;
-  const profileSet = parseJson(setBytes);
+  const profileSet = cachedJson(cache, binding.path, setBytes);
   const packagePaths = (registration.subtype_tree_bindings ?? [])
     .map((entry) => entry.binding?.container_path)
     .filter((repositoryPath) => typeof repositoryPath === 'string');
@@ -509,7 +565,7 @@ function recomputeProfileSet(root, registration, findings, recomputations, cache
       packageBytes = readWorkingBytes(root, packagePath);
       cache.set(packagePath, packageBytes);
     }
-    const packageRecord = packageBytes ? parseJson(packageBytes) : null;
+    const packageRecord = cachedJson(cache, packagePath, packageBytes);
     if (!Array.isArray(packageRecord?.profiles)) {
       findings.push(finding('SEMANTIC_DIGEST_MISMATCH', packagePath, 'package profiles absent'));
       continue;
@@ -605,7 +661,7 @@ function recomputeSemanticInputs(root, registration, findings, recomputations, c
     const binding = entry.binding ?? entry;
     const role = entry.input_role ?? binding.path;
     const bytes = cache.get(binding.path);
-    const record = bytes ? parseJson(bytes) : null;
+    const record = cachedJson(cache, binding.path, bytes);
     let sourceCount = 0;
     walk(record, (value) => {
       if (isFileBinding(value) && value.path !== binding.path) {
@@ -656,7 +712,7 @@ function recomputeDispositionSet(root, registration, findings, recomputations, c
     return;
   }
   const bytes = cache.get(binding.path);
-  const record = bytes ? parseJson(bytes) : null;
+  const record = cachedJson(cache, binding.path, bytes);
   let sourceCount = 0;
   walk(record, (value) => {
     if (isMemberBinding(value)) {
@@ -693,20 +749,61 @@ function recomputeDispositionSet(root, registration, findings, recomputations, c
   });
 }
 
-function resolveRegistrationPath(root, registrationId) {
-  if (typeof registrationId === 'string' && HEX_256.test(registrationId)) {
-    return `${REGISTRATION_ROOT}/${registrationId}.json`;
-  }
-  let names;
+function listRegistrationFiles(root) {
   try {
-    names = fs.readdirSync(path.join(root, REGISTRATION_ROOT))
+    return fs.readdirSync(path.join(root, REGISTRATION_ROOT))
       .filter((name) => name.endsWith('.json') && HEX_256.test(name.slice(0, -5)))
-      .sort();
+      .sort()
+      .map((name) => `${REGISTRATION_ROOT}/${name}`);
   } catch {
-    return `${REGISTRATION_ROOT}/${DEFAULT_REGISTRATION_ID}.json`;
+    return [];
   }
-  if (names.length === 1) return `${REGISTRATION_ROOT}/${names[0]}`;
-  return `${REGISTRATION_ROOT}/${DEFAULT_REGISTRATION_ID}.json`;
+}
+
+function resolveSelection(root, options, findings, cache) {
+  const hasRegistration = typeof options.registrationPath === 'string' && options.registrationPath.length > 0;
+  const hasManifest = typeof options.manifestPath === 'string' && options.manifestPath.length > 0;
+  if (!hasRegistration && !hasManifest) {
+    findings.push(finding(
+      'SELECTION_REQUIRED',
+      REGISTRATION_ROOT,
+      'select --registration <path> or --manifest <path>; discovery and default IDs are forbidden',
+    ));
+    return null;
+  }
+  let registrationPath = hasRegistration ? options.registrationPath : null;
+  let work4ReceiptPath = null;
+  let manifest = null;
+  if (hasManifest) {
+    const manifestBytes = readWorkingBytes(root, options.manifestPath);
+    cache.set(options.manifestPath, manifestBytes);
+    if (manifestBytes === null) {
+      findings.push(finding('BINDING_PATH_MISSING', options.manifestPath, 'manifest of record is absent'));
+      return null;
+    }
+    manifest = parseJson(manifestBytes);
+    const derived = manifest?.candidate_registration_binding?.registration_binding;
+    if (!isFileBinding(derived) && typeof derived?.path !== 'string') {
+      findings.push(finding('SELECTION_REQUIRED', options.manifestPath, 'manifest has no candidate_registration_binding.registration_binding.path'));
+      return null;
+    }
+    checkFileBinding(root, 'manifest.candidate_registration_binding', derived, findings, cache);
+    if (registrationPath && registrationPath !== derived.path) {
+      findings.push(finding(
+        'REGISTRATION_IDENTITY_MISMATCH',
+        options.manifestPath,
+        `--registration ${registrationPath} != manifest registration ${derived.path}`,
+      ));
+    }
+    registrationPath = derived.path;
+    if (typeof manifest.work_receipt_path === 'string') work4ReceiptPath = manifest.work_receipt_path;
+  }
+  return {
+    registrationPath,
+    work4ReceiptPath,
+    manifestPath: hasManifest ? options.manifestPath : null,
+    manifest,
+  };
 }
 
 export function verifyWork7(options = {}) {
@@ -717,8 +814,16 @@ export function verifyWork7(options = {}) {
   const findings = [];
   const recomputations = [];
   const cache = new Map();
-  const registrationPath = options.registrationPath
-    ?? resolveRegistrationPath(root, options.registrationId ?? DEFAULT_REGISTRATION_ID);
+  const selection = resolveSelection(root, options, findings, cache);
+  if (selection === null) {
+    return finish(findings, recomputations, {
+      candidate_registration_id: null,
+      registration_path: options.registrationPath ?? null,
+      superseded_registrations: listRegistrationFiles(root),
+      counts: null,
+    });
+  }
+  const { registrationPath, work4ReceiptPath } = selection;
   const registrationBytes = readWorkingBytes(root, registrationPath);
   if (registrationBytes === null) {
     findings.push(finding('BINDING_PATH_MISSING', registrationPath, 'registration file is absent'));
@@ -747,14 +852,7 @@ export function verifyWork7(options = {}) {
       `${registration.candidate_registration_id} != recomputed ${recomputedRegistrationId}`,
     ));
   }
-  if (typeof options.registrationId === 'string'
-      && options.registrationId !== registration.candidate_registration_id) {
-    findings.push(finding(
-      'REGISTRATION_IDENTITY_MISMATCH',
-      registrationPath,
-      `requested ${options.registrationId} != file ${registration.candidate_registration_id}`,
-    ));
-  }
+  const superseded = listRegistrationFiles(root).filter((pathName) => pathName !== registrationPath);
 
   const { files, members } = collectRegistrationBindings(registration);
   const declaredPaths = uniqueBoundPaths(registration);
@@ -790,6 +888,7 @@ export function verifyWork7(options = {}) {
   for (const item of members) {
     checkMemberBinding(root, item.role, item.binding, findings, cache);
   }
+  observeAllowedOutputRoot(root, registration.allowed_output_root, findings);
 
   recomputeSemanticInputs(root, registration, findings, recomputations, cache);
   recomputeSubtypeTrees(root, registration, findings, recomputations, cache);
@@ -813,46 +912,59 @@ export function verifyWork7(options = {}) {
     });
   }
 
+  const receiptChain = work4ReceiptPath
+    ? [...RECEIPT_CHAIN, { ...WORK4_RECEIPT_SPEC, path: work4ReceiptPath }]
+    : [...RECEIPT_CHAIN];
   const receiptRecords = [];
-  for (const spec of RECEIPT_CHAIN) {
+  for (const spec of receiptChain) {
     receiptRecords.push(checkReceiptIdentity(root, spec, findings, cache));
   }
-  for (let index = 1; index < 5; index += 1) {
+  for (let index = 1; index < RECEIPT_CHAIN.length; index += 1) {
     const current = receiptRecords[index];
     const predecessor = receiptRecords[index - 1];
     if (!current || !predecessor) continue;
-    const predecessorId = predecessor[RECEIPT_CHAIN[index - 1].idField];
-    if (!recordContainsId(current, predecessorId)) {
+    const predecessorId = predecessor[receiptChain[index - 1].idField];
+    const fieldNames = PREDECESSOR_BIND_FIELDS[receiptChain[index].work] ?? [];
+    if (!namedFieldEquals(current, fieldNames, predecessorId)) {
       findings.push(finding(
         'RECEIPT_IDENTITY_MISMATCH',
-        RECEIPT_CHAIN[index].path,
-        `${RECEIPT_CHAIN[index].work} does not bind predecessor ${RECEIPT_CHAIN[index - 1].work} ${predecessorId}`,
+        receiptChain[index].path,
+        `${receiptChain[index].work} does not bind predecessor ${receiptChain[index - 1].work} ${predecessorId} on ${fieldNames.join('|')}`,
       ));
     }
   }
   const work3 = receiptRecords[4];
-  const work4 = receiptRecords[5];
   const work3Id = work3?.[RECEIPT_CHAIN[4].idField];
-  if (work3Id && !recordContainsId(registration, work3Id)) {
+  if (work3Id && !registrationBindsWork3(registration, work3Id)) {
     findings.push(finding(
       'RECEIPT_IDENTITY_MISMATCH',
       registrationPath,
-      `registration does not bind Work 3 receipt ${work3Id}`,
+      `registration predecessor_receipt_bindings WORK3.record_id does not bind ${work3Id}`,
     ));
   }
-  if (work4 && !recordContainsId(work4, registration.candidate_registration_id)) {
+  if (!work4ReceiptPath) {
     findings.push(finding(
-      'RECEIPT_IDENTITY_MISMATCH',
-      WORK4_RECEIPT_PATH,
-      `Work 4 does not bind registration ${registration.candidate_registration_id}`,
+      'NO_INDEPENDENT_SOURCE',
+      registrationPath,
+      'Work 4 receipt-of-record is a manifest parameter; pass --manifest to select it',
+      'INFO',
+    ));
+  } else {
+    const work4 = receiptRecords[5];
+    if (work4 && work4.candidate_registration_id !== registration.candidate_registration_id) {
+      findings.push(finding(
+        'RECEIPT_IDENTITY_MISMATCH',
+        work4ReceiptPath,
+        `Work 4 candidate_registration_id ${work4.candidate_registration_id} != selected ${registration.candidate_registration_id}`,
+      ));
+    }
+    findings.push(finding(
+      'NO_INDEPENDENT_SOURCE',
+      work4ReceiptPath,
+      'Work 4 receipt does not embed the Work 3 receipt id; the hop is Work 3 → registration → Work 4',
+      'INFO',
     ));
   }
-  findings.push(finding(
-    'NO_INDEPENDENT_SOURCE',
-    WORK4_RECEIPT_PATH,
-    'Work 4 receipt does not embed the Work 3 receipt id; the hop is Work 3 → registration → Work 4',
-    'INFO',
-  ));
 
   try {
     gitReadOnly(root, ['rev-parse', 'HEAD']);
@@ -877,20 +989,75 @@ export function verifyWork7(options = {}) {
     counts: recomputed,
     declared_counts: declared,
     unique_bound_paths: [...declaredPaths].sort(),
-    predecessor_chain: [
-      'WORK0', 'ACTIVATION', 'WORK1', 'WORK2', 'WORK3', 'REGISTRATION', 'WORK4',
-    ],
+    predecessor_chain: work4ReceiptPath
+      ? ['WORK0', 'ACTIVATION', 'WORK1', 'WORK2', 'WORK3', 'REGISTRATION', 'WORK4']
+      : ['WORK0', 'ACTIVATION', 'WORK1', 'WORK2', 'WORK3', 'REGISTRATION'],
+    superseded_registrations: superseded,
+    work4_receipt_path: work4ReceiptPath,
+    manifest_path: selection.manifestPath,
   });
 }
 
-function recordContainsId(record, identifier) {
-  if (identifier === null || identifier === undefined) return false;
-  let found = false;
-  walk(record, (value) => {
-    if (!isPlainObject(value) && !Array.isArray(value)) return;
-    if (Object.values(value).includes(identifier)) found = true;
-  });
-  return found;
+function namedFieldEquals(record, fieldNames, identifier) {
+  if (!isPlainObject(record) || typeof identifier !== 'string') return false;
+  for (const name of fieldNames) {
+    const value = record[name];
+    if (value === identifier) return true;
+    if (isPlainObject(value) && value.record_id === identifier) return true;
+  }
+  return false;
+}
+
+function registrationBindsWork3(registration, work3Id) {
+  for (const entry of registration.predecessor_receipt_bindings ?? []) {
+    if (entry.work !== 'WORK3') continue;
+    const binding = entry.binding ?? entry;
+    if (binding.record_id === work3Id) return true;
+  }
+  return false;
+}
+
+function observeAllowedOutputRoot(root, outputRoot, findings) {
+  if (typeof outputRoot !== 'string' || outputRoot.length === 0) {
+    findings.push(finding('NO_INDEPENDENT_SOURCE', '.', 'allowed_output_root is absent', 'INFO'));
+    return;
+  }
+  if (outputRoot.startsWith('/') || outputRoot.split('/').some((part) => part === '' || part === '.' || part === '..')) {
+    findings.push(finding('BINDING_PATH_MISSING', outputRoot, 'allowed_output_root is not a repository-relative directory'));
+    return;
+  }
+  const absolute = path.join(root, outputRoot);
+  if (!fs.existsSync(absolute)) {
+    findings.push(finding(
+      'NO_INDEPENDENT_SOURCE',
+      outputRoot,
+      'allowed_output_root does not exist yet; 0 files observed',
+      'INFO',
+    ));
+    return;
+  }
+  const files = [];
+  const visit = (directory) => {
+    for (const name of fs.readdirSync(directory).sort()) {
+      const full = path.join(directory, name);
+      let stat;
+      try {
+        stat = fs.lstatSync(full);
+      } catch {
+        continue;
+      }
+      if (stat.isSymbolicLink()) continue;
+      if (stat.isDirectory()) visit(full);
+      else if (stat.isFile()) files.push(path.relative(root, full).split(path.sep).join('/'));
+    }
+  };
+  visit(absolute);
+  findings.push(finding(
+    'NO_INDEPENDENT_SOURCE',
+    outputRoot,
+    `allowed_output_root observed ${files.length} file(s)`,
+    'INFO',
+  ));
 }
 
 function finish(findings, recomputations, extra) {
@@ -909,14 +1076,14 @@ function parseArgv(argv) {
   const options = {};
   for (let index = 2; index < argv.length; index += 1) {
     const token = argv[index];
-    if (token === '--registration-id') {
-      options.registrationId = argv[index + 1];
+    if (token === '--registration') {
+      options.registrationPath = argv[index + 1];
+      index += 1;
+    } else if (token === '--manifest') {
+      options.manifestPath = argv[index + 1];
       index += 1;
     } else if (token === '--repo-root') {
       options.repoRoot = argv[index + 1];
-      index += 1;
-    } else if (token === '--registration-path') {
-      options.registrationPath = argv[index + 1];
       index += 1;
     } else {
       throw new Error(`WORK7_INVALID: ${token}`);
