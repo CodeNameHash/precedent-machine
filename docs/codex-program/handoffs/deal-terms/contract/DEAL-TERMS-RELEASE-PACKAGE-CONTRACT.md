@@ -110,9 +110,11 @@ and `accession`; a URL in the package would be a second, softer identity that
 could drift from the hash-bound one.
 
 **Multi-document deals and amendments** are, at v1, separate deal keys that
-share an `issuer_cik`. How DS wants them grouped is one of the open questions
-in A-0001 and is deferred to Q-0001; PM will not guess a grouping and then
-have to break it.
+share an `issuer_cik`. Q-0001 §2 answers this differently — it keys a *deal*
+rather than a *document*, so an amendment keeps the deal ID — and it reserves
+minting of that ID to DS. **This contract has not been reconciled with that.**
+See §7.1 item 1; it is the most consequential open point in v1, and it is the
+lead's call, not this draft's.
 
 `agreement_id` is PM's own identity for the agreement: the content ID of its
 canonical text. It is carried in `provenance` and is stable across releases.
@@ -287,12 +289,15 @@ unfinanced deal has no guaranty provisions. DS must render an empty family as
 
 ## 7. Stable references the four consumer interfaces need
 
-**This section is a placeholder and is marked so deliberately.** PM has asked
-DS, in A-0001, for the exact field requirements of each interface. Until
-Q-0001 lands, PM will not invent them: a guessed field set that DS then builds
-against is worse than an admitted gap. Every row below is **PROVISIONAL**, and
-the columns say only which of the fields already in this contract each
-interface would draw on.
+**This section is a placeholder and is marked so deliberately.**
+
+`inbox/Q-0001-consumer-contract-requirements.md` has now landed, and it states
+DS's requirements per interface in full. This version of the contract was
+drafted against A-0001 and A-0002 and has **not** been reconciled with it. The
+table below therefore says only which of the fields already in this contract
+each interface would draw on. Every row is **PROVISIONAL**. Section 7.1 lists
+where v1 is known to fall short of Q-0001; those are rulings for the producer's
+lead, not gaps a schema draft should close by guessing.
 
 | interface | identity fields | display fields | filter keys | sort keys |
 |---|---|---|---|---|
@@ -310,8 +315,47 @@ Two notes that are **not** provisional, because they follow from section 5:
   `rendered_value` strings compares presentation, not meaning, and will report
   false differences on formatting alone.
 
-When Q-0001 arrives, PM replaces this table with a settled one. If that
-changes any field name, it is a new `package_schema_version` under section 11.
+### 7.1 Known divergences from Q-0001, for the lead to rule on
+
+These are not oversights. Each is a point where Q-0001 asks for something this
+draft does not do, and where choosing wrongly would corrupt the product rather
+than merely inconvenience it. None is settled here.
+
+1. **Who mints the deal ID.** Q-0001 §2 says DS assigns the canonical deal ID
+   and PM "does not derive or remint it", from a `PUBLIC_MA_DEAL/V1` payload
+   of `target_cik`, a `transaction_anchor` of issuer CIK + accession +
+   document role, and `announced_transaction_ordinal`. This contract instead
+   derives `deal_key` itself, from source system + issuer CIK + accession +
+   document role, with no `target_cik` and no ordinal (§3.1). The two keys are
+   not interchangeable, and the difference is not cosmetic: DS's key is per
+   *transaction* and survives amendments, this one is per *document*.
+   Reconciling probably means a package carries both — DS's `deal_id` as
+   supplied, and PM's per-document key — with the SEC identity that proves the
+   binding. That is a schema change and a new version.
+2. **Typed values.** Q-0001 §1 requires typed value, value type, unit and a
+   separate sortable value, and says "the consumer must not parse a formatted
+   display string"; it also requires missing, absent, not-applicable and
+   non-comparable to stay distinct from zero and false. This contract's
+   `fields[]` carries `rendered_value` plus digests only (§7 note 2), which
+   supports equality comparison but **not** sorting, units or arithmetic. This
+   is the largest single gap in v1.
+3. **Search ranking.** Q-0001 §1 asks for a producer relevance score with a
+   score version as the primary sort key for Search Precedents. PM has no such
+   score today, and A-0003 already flagged it as needing scoping. This
+   contract exposes no score.
+4. **Per-family identity guarantees.** Q-0001's common envelope assumes
+   governed family ID, concept ID, role and ordinal exist at claim-occurrence
+   level for every family. This contract carries `family_key`,
+   `claim_definition_key` and `classification_levels`; whether that satisfies
+   "concept, role and ordinal" for all 25 families is unverified and, per
+   A-0003, must be stated per family rather than promised in the blanket.
+
+Until these are ruled on, DS should treat v1 as the identity, provenance,
+state and verification layer — which is settled — and not as the final field
+surface for the four interfaces.
+
+When the reconciliation lands, PM replaces this table with a settled one. Any
+field change is a new `package_schema_version` under section 12.
 
 ## 8. Corpus identity
 

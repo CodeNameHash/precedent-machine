@@ -142,7 +142,34 @@ Storylines, or any sub-agent of either — may synthesise, infer or default a
 `ben_approval_id`. A manifest with no approval record is a proposal, and a
 proposal admits nothing.
 
-## 5. What this contract does not decide
+## 5. Where this diverges from Q-0001, for the lead to rule on
+
+`inbox/Q-0001-consumer-contract-requirements.md` landed after this draft was
+written, and A-0003 asked the next A to say whether DS's two-record split is
+accepted. This draft has **not** been reconciled with it. Two differences
+matter:
+
+1. **What the two records are.** DS proposes an immutable
+   `SHARED_50_DEAL_SELECTION/V1` selection record plus a separate *admission
+   receipt* that adds admission fields **without rewriting the selection**.
+   This draft's two records are the manifest input and its *approval*, and it
+   records admission by superseding the manifest (§2). Both keep the approved
+   selection resolvable, but DS's split does so without producing a manifest
+   chain, and is the better fit for its stated need. Adopting it is a small
+   change to this document and a larger one to nothing else; PM's lead should
+   simply accept it.
+2. **Which deal ID keys a member.** DS's selection carries a DS-minted
+   `deal_id` plus `target_cik` and a `transaction_anchor`, and lists
+   `required_agreements` per deal. This draft keys members by PM's
+   document-level `deal_key` and has no per-deal required-agreement list. This
+   is the same unresolved question as §7.1 item 1 of
+   `DEAL-TERMS-RELEASE-PACKAGE-CONTRACT.md`, and it must be settled once, in
+   both documents together.
+
+Neither is decided here. Guessing at a corpus-identity convention that Ben
+then approves would bake the guess into an approval record.
+
+## 6. What this contract does not decide
 
 Two things are open and are named here so nobody assumes they were settled:
 
