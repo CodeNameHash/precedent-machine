@@ -244,6 +244,14 @@ const INLINE_OVERLAY_KEYS = Object.freeze([
 ]);
 const RICH_WORK3_RECEIPT_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK3_RECEIPT/V1';
 const RICH_WORK3_RECEIPT_V2_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK3_RECEIPT/V2';
+const WORK3_V2_FINAL_COMMIT = 'a0df3f8621107481144e5be1429466d8b193f9be';
+const WORK3_V2_FINAL_PARENT_COMMIT = '69b499f2b5eebc194f48ccadd1ac827b85eb3ec5';
+const WORK4_PREP_COMMIT = 'b'.repeat(40);
+const WORK4_PREP_COMMIT_MESSAGE = 'Prepare frozen Work4 candidate inputs';
+const WORK4_PREP_DELTA_PATHS = Object.freeze([
+  'lib/canonical-v2/agreement-projection.js',
+  'tests/stage-2y-structure-m7-v2-repair-work4.test.js',
+]);
 const RICH_WORK3_RECEIPT_KEYS = Object.freeze([
   'schema_version', 'work3_receipt_id', 'work', 'stage', 'state', 'status',
   'execution_manifest_id', 'execution_manifest_digest', 'parent_authority_binding',
@@ -260,6 +268,10 @@ const WORK4_CANDIDATE_TRANSITION_PATH =
 const WORK4_CANDIDATE_TRANSITION_ARGV = Object.freeze([
   'node', WORK4_CANDIDATE_TRANSITION_PATH,
   '--authority', CANDIDATE_ORDERING_AUTHORITY_PATH,
+]);
+const WORK4_BOOTSTRAP_ARGV = Object.freeze([
+  'node', WORK4_CANDIDATE_TRANSITION_PATH,
+  '--bootstrap', '--authority', CANDIDATE_ORDERING_AUTHORITY_PATH,
 ]);
 const WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH =
   'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work4-candidate-transition-authority.json';
@@ -337,7 +349,6 @@ let recoveryPromise;
 let work2FinaliserPromise;
 let work2RecoveryPromise;
 let work2ValidatorPromise;
-let work3FinaliserPromise;
 
 function loadValidator() {
   validatorPromise ??= import('../scripts/stage-2y-structure-m7-v2-repair-execution-manifest-validate.mjs');
@@ -361,13 +372,6 @@ function loadWork2Recovery() {
     '../scripts/stage-2y-structure-m7-v2-repair-work2-recover.mjs'
   );
   return work2RecoveryPromise;
-}
-
-function loadWork3Finaliser() {
-  work3FinaliserPromise ??= import(
-    '../scripts/stage-2y-structure-m7-v2-repair-work3-finalise.mjs'
-  );
-  return work3FinaliserPromise;
 }
 
 function loadWork2Validator() {
@@ -636,16 +640,22 @@ function predecessorValidationResult(work, binding, fixture) {
 }
 
 async function prepareFrozenWork3V2(fixture) {
+  runFixtureGit(fixture.root, ['init', '--quiet']);
+  const sourceObjectDirectory = runFixtureGit(
+    REPO_ROOT,
+    ['rev-parse', '--path-format=absolute', '--git-path', 'objects'],
+  );
+  const alternatesPath = path.join(fixture.root, '.git', 'objects', 'info', 'alternates');
+  mkdirSync(path.dirname(alternatesPath), { recursive: true });
+  writeFileSync(alternatesPath, `${sourceObjectDirectory}\n`);
+  assert.equal(
+    runFixtureGit(fixture.root, ['cat-file', '-t', WORK3_V2_FINAL_COMMIT]),
+    'commit',
+  );
   const amendment = JSON.parse(readFileSync(
     absolute(REPO_ROOT, WORK3_CLOSURE_AMENDMENT_PATH),
   ));
-  const createOncePaths = amendment.receipt_contract_overlay.create_once_output_paths;
-  const excludedPaths = new Set([
-    ...createOncePaths,
-    WORK3_CLOSURE_APPLICATION_RECEIPT_PATH,
-    WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH,
-  ]);
-  copyFrozenClosureGraph(fixture.root, amendment, excludedPaths);
+  copyFrozenClosureGraph(fixture.root, amendment, new Set());
   for (const repositoryPath of [
     WORK3_CLOSURE_AMENDMENT_PATH,
     WORK3_CLOSURE_REVIEW_RECEIPT_PATH,
@@ -656,6 +666,7 @@ async function prepareFrozenWork3V2(fixture) {
     WORK1_RECEIPT_PATH,
     WORK3_ENTRY_AUTHORITY_PATH,
     CANDIDATE_ORDERING_AUTHORITY_PATH,
+    'evidence/canonical-v2/stage-2y-structure-migration/m7-v2-repair/v2-view-policy.json',
     'lib/canonical-v2/canonical-bytes.js',
     'lib/canonical-v2/agreement-analysis-consolidation.js',
     'lib/canonical-v2/agreement-projection.js',
@@ -667,101 +678,19 @@ async function prepareFrozenWork3V2(fixture) {
     REGISTER_CANDIDATE_PATH,
     VERIFY_CANDIDATE_PATH,
     EXECUTION_MANIFEST_VALIDATOR_PATH,
+    WORK4_CANDIDATE_TRANSITION_PATH,
     'scripts/stage-2y-structure-m7-v2-repair-work2-validate.mjs',
     'scripts/stage-2y-structure-m7-v2-repair-work3-finalise.mjs',
     'scripts/stage-2y-structure-m7-v2-repair-work3-validate.mjs',
     'tests/stage-2y-structure-m7-v2-repair-contract.test.js',
     EXECUTION_MANIFEST_TEST_PATH,
+    'tests/stage-2y-structure-m7-v2-repair-projection-dispatch.test.js',
     REGISTRATION_TEST_PATH,
     'tests/stage-2y-structure-m7-v2-repair-work2.test.js',
+    'tests/stage-2y-structure-m7-v2-repair-work3-mae.test.js',
     'tests/stage-2y-structure-m7-v2-repair-work3.test.js',
+    'tests/stage-2y-structure-m7-v2-repair-work4.test.js',
   ]) copyRepositoryFile(fixture.root, repositoryPath);
-
-  const amendmentBytes = readFileSync(absolute(fixture.root, WORK3_CLOSURE_AMENDMENT_PATH));
-  const amendmentBinding = standardBinding(
-    WORK3_CLOSURE_AMENDMENT_PATH,
-    amendmentBytes,
-    amendment.schema_version,
-    'closure_amendment_id',
-    amendment.closure_amendment_id,
-  );
-  const externalBytes = readFileSync(
-    absolute(fixture.root, WORK3_CLOSURE_REVIEW_RECEIPT_PATH),
-  );
-  const external = JSON.parse(externalBytes);
-  const externalBinding = standardBinding(
-    WORK3_CLOSURE_REVIEW_RECEIPT_PATH,
-    externalBytes,
-    external.schema_version,
-    'work3_closure_amendment_external_review_receipt_id',
-    external.work3_closure_amendment_external_review_receipt_id,
-  );
-  const application = sealRecord({
-    schema_version:
-      'STAGE_2Y_M7_V2_REPAIR_WORK3_CLOSURE_AMENDMENT_APPLICATION_RECEIPT/V1',
-    state: 'IMMUTABLE_ZERO_EFFECT_APPLICATION',
-    closure_amendment_binding: amendmentBinding,
-    external_review_receipt_binding: externalBinding,
-    zero_effect_boundary: clone(amendment.zero_effect_boundary),
-  }, 'work3_closure_amendment_application_receipt_id');
-  writeCanonical(fixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH, application);
-  const applicationBytes = readFileSync(
-    absolute(fixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH),
-  );
-  const applicationBinding = standardBinding(
-    WORK3_CLOSURE_APPLICATION_RECEIPT_PATH,
-    applicationBytes,
-    application.schema_version,
-    'work3_closure_amendment_application_receipt_id',
-    application.work3_closure_amendment_application_receipt_id,
-  );
-
-  const predecessor = JSON.parse(readFileSync(absolute(fixture.root, WORK3_MANIFEST_PATH)));
-  const overlay = amendment.successor_manifest_contract_overlay;
-  const successorUnsigned = clone(predecessor);
-  delete successorUnsigned.execution_manifest_id;
-  delete successorUnsigned.execution_manifest_digest;
-  Object.assign(successorUnsigned, {
-    schema_version: overlay.schema_version,
-    allowed_effects: clone(overlay.allowed_effects),
-    exact_argv_with_run_limits: clone(overlay.exact_argv_with_run_limits),
-    exact_git_commit_and_push_argv: clone(overlay.exact_git_commit_and_push_argv),
-    permitted_read_paths: clone(overlay.permitted_read_paths),
-    permitted_write_paths: clone(overlay.permitted_write_paths),
-    stop_conditions: clone(overlay.stop_conditions),
-    success_conditions: clone(overlay.success_conditions),
-    predecessor_execution_manifest_binding:
-      clone(amendment.predecessor_work3_execution_manifest_binding),
-    closure_amendment_binding: amendmentBinding,
-    external_review_receipt_binding: externalBinding,
-    closure_application_receipt_binding: applicationBinding,
-  });
-  const execution_manifest_digest = sha256Hex(canonicalJson(successorUnsigned));
-  const successor = {
-    ...successorUnsigned,
-    execution_manifest_digest,
-    execution_manifest_id: contentId(overlay.schema_version, {
-      ...successorUnsigned,
-      execution_manifest_digest,
-    }),
-  };
-  writeCanonical(fixture.root, WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH, successor);
-
-  const executionContract = amendment.work3_execution_fixture_contract_overlay
-    .effective_contract;
-  writeCanonical(fixture.root, executionContract.path, {
-    schema_version: executionContract.schema_version,
-    state: executionContract.state,
-    case_ids: clone(executionContract.case_ids),
-    combined_test_result: clone(executionContract.combined_test_result),
-    command_run_counts: Array.from({ length: 21 }, () => 1),
-  });
-  for (const repositoryPath of createOncePaths) {
-    mkdirSync(path.dirname(absolute(fixture.root, repositoryPath)), { recursive: true });
-  }
-  const finaliser = await loadWork3Finaliser();
-  const finalised = finaliser.finaliseWork3({ repoRoot: fixture.root, write: true });
-  assert.equal(finalised.status, 'PASS_WORK3_FINALISATION');
 
   const receiptPath = amendment.receipt_contract_overlay.work3_receipt_path;
   const receiptBytes = readFileSync(absolute(fixture.root, receiptPath));
@@ -773,9 +702,13 @@ async function prepareFrozenWork3V2(fixture) {
     'work3_receipt_id',
     receipt.work3_receipt_id,
   );
+  const application = JSON.parse(readFileSync(
+    absolute(fixture.root, WORK3_CLOSURE_APPLICATION_RECEIPT_PATH),
+  ));
   const successorBytes = readFileSync(
     absolute(fixture.root, WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH),
   );
+  const successor = JSON.parse(successorBytes);
   return {
     amendment,
     application,
@@ -845,8 +778,10 @@ async function makeFrozenV2Candidate(fixture, closureState) {
     tests: [
       'tests/stage-2y-structure-m7-v2-repair-contract.test.js',
       EXECUTION_MANIFEST_TEST_PATH,
+      'tests/stage-2y-structure-m7-v2-repair-projection-dispatch.test.js',
       REGISTRATION_TEST_PATH,
       'tests/stage-2y-structure-m7-v2-repair-work2.test.js',
+      'tests/stage-2y-structure-m7-v2-repair-work3-mae.test.js',
       'tests/stage-2y-structure-m7-v2-repair-work3.test.js',
       'tests/stage-2y-structure-m7-v2-repair-work4.test.js',
     ],
@@ -937,7 +872,6 @@ function makeWork4FromFrozenV2(fixture, closureState, validationResult) {
   work4.permitted_write_paths = [
     WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
     `${CANDIDATE_ROOT_FOR_TESTS}/${'4'.repeat(64)}.json`,
-    WORK4_CANDIDATE_TRANSITION_PATH,
   ].sort();
   work4.exact_git_commit_and_push_argv[0] = [
     'git', 'add', '--', ...[manifestPath('WORK4'), ...work4.permitted_write_paths].sort(),
@@ -946,22 +880,30 @@ function makeWork4FromFrozenV2(fixture, closureState, validationResult) {
     (repositoryPath) => repositoryPath === WORK3_MANIFEST_PATH
       ? WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH
       : repositoryPath,
-  ).sort();
-  const attestation = work4.base_tip_binding.milestone_attestation;
-  attestation.predecessor_execution_manifest_binding = clone(closureState.successorBinding);
-  attestation.predecessor_validation_result = clone(validationResult);
-  attestation.exact_commit_delta_paths = [
-    WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH,
-    ...closureState.successor.permitted_write_paths,
-  ].sort();
-  const deltaObservation = attestation.observed_command_result_ledger.find(
-    (entry) => entry.check_id === 'EXACT_TREE_DELTA',
   );
-  deltaObservation.observed_result = clone(attestation.exact_commit_delta_paths);
+  work4.permitted_read_paths.push(WORK4_CANDIDATE_TRANSITION_PATH);
+  work4.permitted_read_paths.sort();
+  work4.base_tip_binding = {
+    commit: WORK4_PREP_COMMIT,
+    branch: BRANCH,
+    parent_commit: WORK3_V2_FINAL_COMMIT,
+    commit_message: WORK4_PREP_COMMIT_MESSAGE,
+    milestone_attestation: milestoneAttestation({
+      repoRoot: fixture.root,
+      predecessorWork: 'WORK3',
+      commit: WORK4_PREP_COMMIT,
+      parentCommit: WORK3_V2_FINAL_COMMIT,
+      commitMessage: WORK4_PREP_COMMIT_MESSAGE,
+      predecessorReceiptBinding: closureState.receiptBinding,
+      predecessorExecutionManifestBinding: closureState.successorBinding,
+      predecessorValidationResult: validationResult,
+      exactCommitDeltaPaths: WORK4_PREP_DELTA_PATHS,
+    }),
+  };
   return restamp(work4);
 }
 
-function runFixtureGit(root, args) {
+function runFixtureGit(root, args, environmentOverrides = {}) {
   const environment = {
     ...process.env,
     GIT_NO_REPLACE_OBJECTS: '1',
@@ -969,6 +911,7 @@ function runFixtureGit(root, args) {
     GIT_AUTHOR_EMAIL: 'm7-v2-test@example.invalid',
     GIT_COMMITTER_NAME: 'M7 V2 Test',
     GIT_COMMITTER_EMAIL: 'm7-v2-test@example.invalid',
+    ...environmentOverrides,
   };
   delete environment.GIT_DIR;
   delete environment.GIT_WORK_TREE;
@@ -977,6 +920,49 @@ function runFixtureGit(root, args) {
     encoding: 'utf8',
     env: environment,
   }).trimEnd();
+}
+
+function fixtureRepositoryFiles(root) {
+  const files = [];
+  function visit(directory, prefix = '') {
+    for (const name of readdirSync(directory).sort()) {
+      if (prefix === '' && name === '.git') continue;
+      const repositoryPath = prefix === '' ? name : `${prefix}/${name}`;
+      const selectedPath = path.join(directory, name);
+      const stat = lstatSync(selectedPath);
+      if (stat.isDirectory()) visit(selectedPath, repositoryPath);
+      else files.push(repositoryPath);
+    }
+  }
+  visit(root);
+  return files;
+}
+
+function createFixtureCommit(root, parentCommit, commitMessage, timestamp) {
+  runFixtureGit(root, ['read-tree', parentCommit]);
+  const files = fixtureRepositoryFiles(root);
+  for (let offset = 0; offset < files.length; offset += 200) {
+    runFixtureGit(root, ['add', '-f', '--', ...files.slice(offset, offset + 200)]);
+  }
+  const tree = runFixtureGit(root, ['write-tree']);
+  return runFixtureGit(
+    root,
+    ['commit-tree', tree, '-p', parentCommit, '-m', commitMessage],
+    { GIT_AUTHOR_DATE: timestamp, GIT_COMMITTER_DATE: timestamp },
+  );
+}
+
+function pointFixtureBranchAt(root, commit) {
+  runFixtureGit(root, ['update-ref', `refs/heads/${BRANCH}`, commit]);
+  runFixtureGit(root, ['symbolic-ref', 'HEAD', `refs/heads/${BRANCH}`]);
+  runFixtureGit(root, ['update-ref', ORIGIN_REF, commit]);
+}
+
+function runWork4Binder(root, args) {
+  return spawnSync(process.execPath, [WORK4_CANDIDATE_TRANSITION_PATH, ...args], {
+    cwd: root,
+    encoding: 'utf8',
+  });
 }
 
 function makeWork3ClosureApplicationFixture(t) {
@@ -3187,8 +3173,10 @@ async function makeCandidate(fixture, seed = 'candidate-a') {
     tests: [
       'tests/stage-2y-structure-m7-v2-repair-contract.test.js',
       'tests/stage-2y-structure-m7-v2-repair-execution-manifest.test.js',
+      'tests/stage-2y-structure-m7-v2-repair-projection-dispatch.test.js',
       'tests/stage-2y-structure-m7-v2-repair-registration.test.js',
       'tests/stage-2y-structure-m7-v2-repair-work2.test.js',
+      'tests/stage-2y-structure-m7-v2-repair-work3-mae.test.js',
       'tests/stage-2y-structure-m7-v2-repair-work3.test.js',
       'tests/stage-2y-structure-m7-v2-repair-work4.test.js',
     ],
@@ -3595,6 +3583,9 @@ async function prepareWork3(
 }
 
 async function prepareWork4Bootstrap(fixture, prepared = null) {
+  if (!existsSync(absolute(fixture.root, WORK4_CANDIDATE_TRANSITION_PATH))) {
+    copyRepositoryFile(fixture.root, WORK4_CANDIDATE_TRANSITION_PATH);
+  }
   const work3State = prepared ?? await prepareWork3(fixture);
   const { work3 } = work3State;
   writeManifest(fixture, work3);
@@ -3619,11 +3610,18 @@ async function prepareWork4Bootstrap(fixture, prepared = null) {
     },
     { argv: [...WORK4_CANDIDATE_TRANSITION_ARGV], max_runs: 1 },
   ];
+  work4.permitted_read_paths.push(WORK4_CANDIDATE_TRANSITION_PATH);
+  if (prepared?.record) {
+    work4.permitted_read_paths.push(...candidateReadPaths(prepared).filter(
+      (repositoryPath) => repositoryPath !== prepared.repositoryPath,
+    ));
+  }
+  work4.permitted_read_paths = [...new Set(work4.permitted_read_paths)];
+  work4.permitted_read_paths.sort();
   work4.permitted_write_paths = [
     WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
     prepared?.repositoryPath
       ?? `${CANDIDATE_ROOT_FOR_TESTS}/${'4'.repeat(64)}.json`,
-    WORK4_CANDIDATE_TRANSITION_PATH,
   ].sort();
   work4.exact_git_commit_and_push_argv[0] = [
     'git', 'add', '--',
@@ -3711,10 +3709,8 @@ async function prepareVerifiedWork4(fixture, seed = 'candidate-a') {
   work4.permitted_write_paths = [
     WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
     candidate.repositoryPath,
-    WORK4_CANDIDATE_TRANSITION_PATH,
     finaliserPath,
     validatorPath,
-    testPath,
     work4.work_receipt_path,
   ].sort();
   work4.exact_argv_with_run_limits = [
@@ -8137,13 +8133,248 @@ test('Work3 closure successor validation accepts only the exact predecessor-plus
   }), 'MANIFEST_CONTRACT_DRIFT');
 });
 
+test('Work3 V2 validation reads the sealed predecessor from its exact pinned Git tree', async () => {
+  const work3Validator = await import(
+    '../scripts/stage-2y-structure-m7-v2-repair-work3-validate.mjs'
+  );
+  assert.throws(
+    () => work3Validator.validateWork3({ repoRoot: REPO_ROOT }),
+    (error) => error.code === 'WORK3_ARTIFACT_BINDING_DRIFT',
+  );
+  assert.deepEqual(
+    work3Validator.validateWork3({
+      repoRoot: REPO_ROOT,
+      sourceCommit: WORK3_V2_FINAL_COMMIT,
+    }),
+    {
+      schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK3_VALIDATION/V2',
+      status: 'PASS',
+      work3_receipt_id: '29381fbb51555e5ada776be29245348d6f5b3830ff0eaada28ba3b28ccab2c4b',
+      family_package_count: 24,
+      profile_count: 1382,
+      artifact_binding_count: 52,
+      effective_path_count: 53,
+      create_once_output_count: 7,
+    },
+  );
+  for (const sourceCommit of ['HEAD', WORK3_V2_FINAL_PARENT_COMMIT]) {
+    assert.throws(
+      () => work3Validator.validateWork3({ repoRoot: REPO_ROOT, sourceCommit }),
+      (error) => error.code === 'WORK3_INPUT_DRIFT',
+    );
+  }
+});
+
+test('Work4 binds rich Work3 V2 to a deterministic descendant prep tip', async (t) => {
+  const fixture = makeFixture(t);
+  const closureState = await prepareFrozenWork3V2(fixture);
+  const work3Validator = await import(
+    '../scripts/stage-2y-structure-m7-v2-repair-work3-validate.mjs'
+  );
+  const validationResult = work3Validator.validateWork3({
+    repoRoot: fixture.root,
+    sourceCommit: WORK3_V2_FINAL_COMMIT,
+  });
+  const work4 = makeWork4FromFrozenV2(fixture, closureState, validationResult);
+  assert.equal(work4.base_tip_binding.commit, WORK4_PREP_COMMIT);
+  assert.equal(work4.base_tip_binding.parent_commit, WORK3_V2_FINAL_COMMIT);
+  assert.equal(work4.base_tip_binding.commit_message, WORK4_PREP_COMMIT_MESSAGE);
+  assert.deepEqual(
+    work4.base_tip_binding.milestone_attestation.exact_commit_delta_paths,
+    WORK4_PREP_DELTA_PATHS,
+  );
+
+  writeManifest(fixture, work4);
+  const validator = await loadValidator();
+  const validated = await validator.validateExecutionManifest({
+    repoRoot: fixture.root,
+    manifestPath: manifestPath('WORK4'),
+  });
+  assert.equal(validated.status, 'PASS_NARROWING_EXECUTION_MANIFEST');
+  assert.equal(validated.work, 'WORK4');
+});
+
+test('Work4 bootstrap CLI creates its manifest once from the exact pushed prep tree', async (t) => {
+  const fixture = makeFixture(t);
+  await prepareFrozenWork3V2(fixture);
+  const binder = await import(
+    '../scripts/stage-2y-structure-m7-v2-repair-work4-bind-candidate.mjs'
+  );
+  const preview = binder.previewWork4Candidate({ repoRoot: fixture.root });
+  const candidate = {
+    record: preview.registration,
+    repositoryPath: preview.registration_path,
+  };
+  const preRegistrationCandidatePaths = candidateReadPaths(candidate).filter(
+    (repositoryPath) => repositoryPath !== preview.registration_path,
+  );
+  const nonDescendantPrepCommit = createFixtureCommit(
+    fixture.root,
+    WORK3_V2_FINAL_PARENT_COMMIT,
+    'Invalid Work4 preparation ancestry',
+    '2026-09-03T11:00:00Z',
+  );
+  pointFixtureBranchAt(fixture.root, nonDescendantPrepCommit);
+  const nonDescendant = runWork4Binder(fixture.root, WORK4_BOOTSTRAP_ARGV.slice(2));
+  assert.notEqual(nonDescendant.status, 0);
+  assert.match(nonDescendant.stderr, /WORK4_PREP_GIT_DRIFT/u);
+  assert.equal(existsSync(absolute(fixture.root, manifestPath('WORK4'))), false);
+
+  const prepMessage = 'Prepare M7 V2 repair Work 4 fixture';
+  const prepCommit = createFixtureCommit(
+    fixture.root,
+    WORK3_V2_FINAL_COMMIT,
+    prepMessage,
+    '2026-09-03T12:00:00Z',
+  );
+  pointFixtureBranchAt(fixture.root, prepCommit);
+  assert.equal(runFixtureGit(fixture.root, ['rev-parse', 'HEAD']), prepCommit);
+  assert.doesNotThrow(() => runFixtureGit(
+    fixture.root,
+    ['merge-base', '--is-ancestor', WORK3_V2_FINAL_COMMIT, prepCommit],
+  ));
+
+  runFixtureGit(fixture.root, ['update-ref', ORIGIN_REF, nonDescendantPrepCommit]);
+  const staleOrigin = runWork4Binder(fixture.root, WORK4_BOOTSTRAP_ARGV.slice(2));
+  assert.notEqual(staleOrigin.status, 0);
+  assert.match(staleOrigin.stderr, /WORK4_PREP_GIT_DRIFT/u);
+  assert.equal(existsSync(absolute(fixture.root, manifestPath('WORK4'))), false);
+  runFixtureGit(fixture.root, ['update-ref', ORIGIN_REF, prepCommit]);
+
+  const mutatedPath = 'tests/stage-2y-structure-m7-v2-repair-work3-mae.test.js';
+  const originalBytes = readFileSync(absolute(fixture.root, mutatedPath));
+  writeFileSync(absolute(fixture.root, mutatedPath), `${originalBytes.toString('utf8')}\n`);
+  const rejected = runWork4Binder(fixture.root, WORK4_BOOTSTRAP_ARGV.slice(2));
+  assert.notEqual(rejected.status, 0);
+  assert.match(rejected.stderr, /WORK4_PREP_INPUT_DRIFT/u);
+  for (const repositoryPath of [
+    manifestPath('WORK4'),
+    WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
+    preview.registration_path,
+  ]) assert.equal(existsSync(absolute(fixture.root, repositoryPath)), false, repositoryPath);
+  writeFileSync(absolute(fixture.root, mutatedPath), originalBytes);
+
+  const created = runWork4Binder(fixture.root, WORK4_BOOTSTRAP_ARGV.slice(2));
+  assert.equal(created.status, 0, created.stderr);
+  const bootstrapBytes = readFileSync(absolute(fixture.root, manifestPath('WORK4')));
+  const bootstrap = JSON.parse(bootstrapBytes);
+  assert.equal(bootstrap.base_tip_binding.commit, prepCommit);
+  assert.equal(bootstrap.base_tip_binding.parent_commit, WORK3_V2_FINAL_COMMIT);
+  assert.equal(bootstrap.base_tip_binding.commit_message, prepMessage);
+  assert.deepEqual(
+    bootstrap.base_tip_binding.milestone_attestation.exact_commit_delta_paths,
+    runFixtureGit(fixture.root, [
+      'diff-tree', '--no-commit-id', '--name-only', '-r', prepCommit,
+    ]).split('\n').filter(Boolean).sort(),
+  );
+  for (const repositoryPath of [
+    WORK2_EXECUTION_MANIFEST_PATH,
+    WORK3_MANIFEST_PATH,
+    WORK3_CLOSURE_AMENDMENT_PATH,
+    WORK3_CLOSURE_REVIEW_RECEIPT_PATH,
+    WORK3_CLOSURE_APPLICATION_RECEIPT_PATH,
+    WORK3_CLOSURE_SUCCESSOR_MANIFEST_PATH,
+    WORK3_ENTRY_AUTHORITY_PATH,
+    REGISTER_CANDIDATE_PATH,
+    VERIFY_CANDIDATE_PATH,
+    EXECUTION_MANIFEST_VALIDATOR_PATH,
+    'scripts/stage-2y-structure-m7-v2-repair-work2-validate.mjs',
+    'scripts/stage-2y-structure-m7-v2-repair-work3-validate.mjs',
+    WORK4_CANDIDATE_TRANSITION_PATH,
+    ...preRegistrationCandidatePaths,
+  ]) {
+    assert.equal(
+      bootstrap.permitted_read_paths.includes(repositoryPath),
+      true,
+      repositoryPath,
+    );
+  }
+  assert.equal(bootstrap.permitted_read_paths.includes(preview.registration_path), false);
+  assert.deepEqual(bootstrap.permitted_write_paths, [
+    WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
+    preview.registration_path,
+  ].sort());
+  assert.equal(bootstrap.permitted_write_paths.includes(WORK4_CANDIDATE_TRANSITION_PATH), false);
+  assert.equal(
+    bootstrap.permitted_write_paths.includes(
+      'tests/stage-2y-structure-m7-v2-repair-work4.test.js',
+    ),
+    false,
+  );
+  assert.deepEqual(bootstrap.exact_git_commit_and_push_argv[0], [
+    'git', 'add', '--', ...[
+      manifestPath('WORK4'),
+      WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
+      preview.registration_path,
+    ].sort(),
+  ]);
+
+  const validatorResult = spawnSync(
+    process.execPath,
+    [EXECUTION_MANIFEST_VALIDATOR_PATH, manifestPath('WORK4')],
+    { cwd: fixture.root, encoding: 'utf8' },
+  );
+  assert.equal(validatorResult.status, 0, validatorResult.stderr);
+  const repeated = runWork4Binder(fixture.root, WORK4_BOOTSTRAP_ARGV.slice(2));
+  assert.notEqual(repeated.status, 0);
+  assert.match(repeated.stderr, /WORK4_OUTPUT_EXISTS/u);
+  assert.deepEqual(readFileSync(absolute(fixture.root, manifestPath('WORK4'))), bootstrapBytes);
+
+  const candidateRoot = absolute(fixture.root, CANDIDATE_ROOT_FOR_TESTS);
+  const candidateFilesBefore = existsSync(candidateRoot) ? readdirSync(candidateRoot).sort() : [];
+  writeFileSync(absolute(fixture.root, mutatedPath), `${originalBytes.toString('utf8')}\n`);
+  const dirtyTransition = runWork4Binder(
+    fixture.root,
+    WORK4_CANDIDATE_TRANSITION_ARGV.slice(2),
+  );
+  assert.notEqual(dirtyTransition.status, 0);
+  assert.match(dirtyTransition.stderr, /WORK4_PREP_INPUT_DRIFT/u);
+  assert.equal(
+    existsSync(absolute(fixture.root, WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH)),
+    false,
+  );
+  assert.deepEqual(
+    existsSync(candidateRoot) ? readdirSync(candidateRoot).sort() : [],
+    candidateFilesBefore,
+  );
+  assert.deepEqual(readFileSync(absolute(fixture.root, manifestPath('WORK4'))), bootstrapBytes);
+  writeFileSync(absolute(fixture.root, mutatedPath), originalBytes);
+
+  const transitioned = runWork4Binder(
+    fixture.root,
+    WORK4_CANDIDATE_TRANSITION_ARGV.slice(2),
+  );
+  assert.equal(transitioned.status, 0, transitioned.stderr);
+  const postTransition = JSON.parse(readFileSync(
+    absolute(fixture.root, manifestPath('WORK4')),
+  ));
+  assert.deepEqual(postTransition.permitted_write_paths, [
+    WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
+    preview.registration_path,
+    'scripts/stage-2y-structure-m7-v2-repair-work4-finalise.mjs',
+    'scripts/stage-2y-structure-m7-v2-repair-work4-validate.mjs',
+    postTransition.work_receipt_path,
+  ].sort());
+  assert.equal(postTransition.permitted_read_paths.includes(preview.registration_path), true);
+  assert.equal(postTransition.permitted_write_paths.includes(WORK4_CANDIDATE_TRANSITION_PATH), false);
+  assert.equal(
+    postTransition.permitted_write_paths.includes(
+      'tests/stage-2y-structure-m7-v2-repair-work4.test.js',
+    ),
+    false,
+  );
+});
+
 test('Work3 V2 closure dispatches exactly through Work4, registration and verification', async (t) => {
   const fixture = makeFixture(t);
   const closureState = await prepareFrozenWork3V2(fixture);
   const work3Validator = await import(
     '../scripts/stage-2y-structure-m7-v2-repair-work3-validate.mjs'
   );
-  const validationResult = work3Validator.validateWork3({ repoRoot: fixture.root });
+  const validationResult = work3Validator.validateWork3({
+    repoRoot: fixture.root,
+    sourceCommit: WORK3_V2_FINAL_COMMIT,
+  });
   assert.deepEqual(validationResult, {
     schema_version: 'STAGE_2Y_M7_V2_REPAIR_WORK3_VALIDATION/V2',
     status: 'PASS',
@@ -8215,10 +8446,15 @@ test('Work3 V2 closure dispatches exactly through Work4, registration and verifi
   );
 
   const candidateBootstrap = clone(work4);
+  candidateBootstrap.permitted_read_paths = [...new Set([
+    ...candidateBootstrap.permitted_read_paths,
+    ...candidateReadPaths(candidate).filter(
+      (repositoryPath) => repositoryPath !== candidate.repositoryPath,
+    ),
+  ])].sort();
   candidateBootstrap.permitted_write_paths = [
     WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
     candidate.repositoryPath,
-    WORK4_CANDIDATE_TRANSITION_PATH,
   ].sort();
   candidateBootstrap.exact_git_commit_and_push_argv[0] = [
     'git', 'add', '--',
@@ -8252,10 +8488,8 @@ test('Work3 V2 closure dispatches exactly through Work4, registration and verifi
   candidateWork4.permitted_write_paths = [
     WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
     candidate.repositoryPath,
-    WORK4_CANDIDATE_TRANSITION_PATH,
     work4FinaliserPath,
     work4ValidatorPath,
-    work4TestPath,
     candidateWork4.work_receipt_path,
   ].sort();
   candidateWork4.exact_argv_with_run_limits = [
@@ -8313,11 +8547,15 @@ test('Work3 V2 closure dispatches exactly through Work4, registration and verifi
   symlinkSync('missing-capitalisation-package', absolute(fixture.root, parkedPath));
   const verifier = await import('../scripts/stage-2y-structure-m7-v2-repair-verify-candidate.mjs');
   assert.throws(
-    () => verifier.verifyRegisteredCandidate({
+    () => work3Validator.validateWork3({ repoRoot: fixture.root }),
+    (error) => error.code === 'M7_V2_WORK3_PHYSICAL_CLOSURE',
+  );
+  assert.deepEqual(
+    verifier.verifyRegisteredCandidate({
       repoRoot: fixture.root,
       registrationPath: candidate.written.registration_path,
     }),
-    (error) => error.code === 'BINDING_DRIFT',
+    candidate.verification,
   );
   unlinkSync(absolute(fixture.root, parkedPath));
 

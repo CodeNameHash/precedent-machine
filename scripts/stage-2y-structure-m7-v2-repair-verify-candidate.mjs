@@ -52,6 +52,9 @@ const WORK1_RECEIPT_KEYS = Object.freeze([
 const WORK2_RECEIPT_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK2_COMPILER_RECEIPT/V1';
 const WORK3_RECEIPT_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK3_RECEIPT/V1';
 const WORK3_RECEIPT_V2_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK3_RECEIPT/V2';
+const SEALED_WORK3_V2_RECEIPT_ID =
+  '29381fbb51555e5ada776be29245348d6f5b3830ff0eaada28ba3b28ccab2c4b';
+const SEALED_WORK3_V2_COMMIT = 'a0df3f8621107481144e5be1429466d8b193f9be';
 const WORK3_SUCCESSOR_MANIFEST_PATH =
   'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-execution-manifest-closure-successor.json';
 const WORK3_SUCCESSOR_MANIFEST_SCHEMA =
@@ -164,6 +167,9 @@ const WORK1_TESTS = Object.freeze([
   'tests/stage-2y-structure-m7-v2-repair-execution-manifest.test.js',
   'tests/stage-2y-structure-m7-v2-repair-registration.test.js',
 ]);
+const WORK3_MAE_TEST = 'tests/stage-2y-structure-m7-v2-repair-work3-mae.test.js';
+const WORK4_PROJECTION_DISPATCH_TEST =
+  'tests/stage-2y-structure-m7-v2-repair-projection-dispatch.test.js';
 const SEMANTIC_INPUTS = Object.freeze([
   Object.freeze(['BASE_ANALYSIS_SET', 'AGREEMENT_ANALYSIS_SET/V1']),
   Object.freeze(['AGREEMENT_INDEX_SET', 'AGREEMENT_INDEX_SET/V1']),
@@ -1621,7 +1627,12 @@ function verifyRichWork3Receipt(root, receipt, manifest) {
 function verifyRichWork3ReceiptV2(root, receipt) {
   let validationResult;
   try {
-    validationResult = validateWork3({ repoRoot: root });
+    validationResult = validateWork3({
+      repoRoot: root,
+      ...(receipt.work3_receipt_id === SEALED_WORK3_V2_RECEIPT_ID
+        ? { sourceCommit: SEALED_WORK3_V2_COMMIT }
+        : {}),
+    });
   } catch (error) {
     fail('BINDING_DRIFT', `WORK3:V2 receipt validation:${error.code ?? error.message}`);
   }
@@ -1676,7 +1687,12 @@ function requiredTests(predecessorCount) {
   const later = Array.from({ length: predecessorCount }, (_, index) => (
     `tests/stage-2y-structure-m7-v2-repair-work${index + 2}.test.js`
   ));
-  return [...WORK1_TESTS, ...later].sort();
+  return [
+    ...WORK1_TESTS,
+    ...(predecessorCount >= 2 ? [WORK3_MAE_TEST] : []),
+    ...(predecessorCount >= 3 ? [WORK4_PROJECTION_DISPATCH_TEST] : []),
+    ...later,
+  ].sort();
 }
 
 function verifyCode(root, code, predecessorCount) {

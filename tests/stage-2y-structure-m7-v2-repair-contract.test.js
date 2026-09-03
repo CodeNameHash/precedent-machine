@@ -28,6 +28,7 @@ const {
   generateAnalysisV2,
 } = require('../lib/canonical-v2/m7-v2-deterministic-generator');
 const {
+  buildV2ViewPolicy,
   projectAgreement,
 } = require('../lib/canonical-v2/agreement-projection');
 const {
@@ -67,6 +68,33 @@ const C3_FAMILY_ORDER = [
   'ANTITRUST_REGULATORY',
   'APPRAISAL_DISSENTERS_RIGHTS',
   'CAPITALISATION',
+  'CLOSING_CONDITIONS',
+  'CONSIDERATION',
+  'DIVIDENDS',
+  'DNO_INDEMNIFICATION',
+  'EMPLOYEE_MATTERS',
+  'FINANCING_COVENANTS',
+  'GENERAL_COVENANTS',
+  'GUARANTY_FINANCING_PARTY',
+  'INTERIM_OPERATING',
+  'KEY_DEFINED_TERMS',
+  'MAE_DEFINITION',
+  'MATERIAL_CONTRACTS',
+  'MERGER_STRUCTURE_CLOSING',
+  'MISC_BOILERPLATE',
+  'NO_OTHER_REPS_FRAUD',
+  'NO_SHOP',
+  'PROXY_MEETING',
+  'REPRESENTATIONS',
+  'SPECIFIC_PERFORMANCE_REMEDIES',
+  'TAX_MATTERS',
+  'TERMINATION',
+  'TERMINATION_FEE',
+];
+
+const WORK3_PHYSICAL_FAMILY_KEYS = [
+  'ANTITRUST_REGULATORY',
+  'APPRAISAL_DISSENTERS_RIGHTS',
   'CLOSING_CONDITIONS',
   'CONSIDERATION',
   'DIVIDENDS',
@@ -181,6 +209,12 @@ const CANDIDATE_CHECKS = [
   'ZERO_PROHIBITED_EFFECTS',
 ];
 
+const WORK3_PHYSICAL_CANDIDATE_CHECKS = CANDIDATE_CHECKS.map((checkId) => (
+  checkId === 'TWENTY_FIVE_SUBTYPE_TREE_BINDINGS'
+    ? 'EXACT_24_SEALED_PACKAGE_SUBTYPE_TREE_MEMBER_BINDINGS'
+    : checkId
+));
+
 const CANDIDATE_EFFECTS = {
   registration_file_writes: 1,
   model_calls: 0,
@@ -259,6 +293,13 @@ const TEST_PATHS = [
   'tests/stage-2y-structure-m7-v2-repair-execution-manifest.test.js',
   'tests/stage-2y-structure-m7-v2-repair-registration.test.js',
   'tests/stage-2y-structure-m7-v2-repair-work2.test.js',
+].sort();
+const WORK3_PHYSICAL_TEST_PATHS = [
+  ...TEST_PATHS,
+  'tests/stage-2y-structure-m7-v2-repair-projection-dispatch.test.js',
+  'tests/stage-2y-structure-m7-v2-repair-work3-mae.test.js',
+  'tests/stage-2y-structure-m7-v2-repair-work3.test.js',
+  'tests/stage-2y-structure-m7-v2-repair-work4.test.js',
 ].sort();
 const LINKED_POINT_ORDINALS = [6, 27, 28, 32, 33, 34, 35, 36];
 const REPAIR_INVARIANTS = {
@@ -1396,6 +1437,15 @@ function profileFieldSpecs(effectDrafts, definition) {
 function buildProfileInfrastructure({
   store, definition, effectDrafts, occurrenceId, structure, options = {},
 }) {
+  const physicalFamilyKeys = options.work3PhysicalClosure === true
+    ? WORK3_PHYSICAL_FAMILY_KEYS : C3_FAMILY_ORDER;
+  const packagePathByFamily = new Map(PACKAGE_PATH_BY_FAMILY);
+  if (options.work3PhysicalClosure === true) {
+    packagePathByFamily.set(
+      'APPRAISAL_DISSENTERS_RIGHTS',
+      'fixture/work3-v2/packages/appraisal-dissenters-rights-successor.json',
+    );
+  }
   const packageMemberAuthorityIdByFamily =
     options.packageMemberAuthorityIdByFamily ?? {};
   const profileAuthority = (familyKey) => (
@@ -1647,7 +1697,7 @@ function buildProfileInfrastructure({
     const bindingsById = new Map(records.map((record, index) => [
       record.match_fixture_id,
       packageMemberBinding(
-        PACKAGE_PATH_BY_FAMILY.get(familyKey), 'match_fixtures', index,
+        packagePathByFamily.get(familyKey), 'match_fixtures', index,
         record, 'match_fixture_id',
       ),
     ]));
@@ -1667,7 +1717,7 @@ function buildProfileInfrastructure({
       if (member.inline_list_overlay !== null) {
         member.inline_list_overlay.ambiguous_repeat_fixture_bindings = [
           packageMemberBinding(
-            PACKAGE_PATH_BY_FAMILY.get('TERMINATION'), 'structure_fixture_members', 0,
+            packagePathByFamily.get('TERMINATION'), 'structure_fixture_members', 0,
             structure.item39.ambiguousRepeat.fixture, 'fixture_id',
           ),
         ];
@@ -2284,7 +2334,9 @@ function buildProfileInfrastructure({
     );
     return { family_key: familyKey, record: tree };
   });
-  const orderedProfiles = [...profiles].sort((left, right) => (
+  const orderedProfiles = profiles.filter(
+    (profile) => physicalFamilyKeys.includes(profile.family_key),
+  ).sort((left, right) => (
     C3_FAMILY_ORDER.indexOf(left.family_key) - C3_FAMILY_ORDER.indexOf(right.family_key)
       || codeUnitCompare(left.profile_key, right.profile_key)
       || codeUnitCompare(left.profile_id, right.profile_id)
@@ -2302,7 +2354,7 @@ function buildProfileInfrastructure({
   }
   const packageRecordsByFamily = new Map();
   const packageBindings = [];
-  for (const familyKey of C3_FAMILY_ORDER) {
+  for (const familyKey of physicalFamilyKeys) {
     const packageProfiles = orderedProfiles.filter((profile) => profile.family_key === familyKey);
     const matchFixtures = packageMatchRecordsByFamily.get(familyKey);
     const dimensionEvidence = dimensionEntries.filter(
@@ -2390,21 +2442,21 @@ function buildProfileInfrastructure({
     );
     packageRecordsByFamily.set(familyKey, packageRecord);
     packageBindings.push(addRecord(
-      store, PACKAGE_PATH_BY_FAMILY.get(familyKey), packageRecord,
+      store, packagePathByFamily.get(familyKey), packageRecord,
       'family_profile_package_id',
     ));
   }
-  let dimensionBindings = C3_FAMILY_ORDER.flatMap((familyKey) => {
+  let dimensionBindings = physicalFamilyKeys.flatMap((familyKey) => {
     const records = packageRecordsByFamily.get(familyKey).dimension_evidence;
     return records.map((record, index) => packageMemberBinding(
-      PACKAGE_PATH_BY_FAMILY.get(familyKey), 'dimension_evidence', index,
+      packagePathByFamily.get(familyKey), 'dimension_evidence', index,
       record, 'dimension_evidence_id',
     ));
   });
-  const treeBindings = C3_FAMILY_ORDER.map((familyKey) => ({
+  const treeBindings = physicalFamilyKeys.map((familyKey) => ({
     family_key: familyKey,
     binding: packageMemberBinding(
-      PACKAGE_PATH_BY_FAMILY.get(familyKey), 'subtype_tree', null,
+      packagePathByFamily.get(familyKey), 'subtype_tree', null,
       packageRecordsByFamily.get(familyKey).subtype_tree, 'subtype_tree_id',
     ),
   }));
@@ -2456,6 +2508,7 @@ function buildProfileInfrastructure({
     profileSetBinding,
     packageRecordsByFamily,
     packageBindings,
+    physicalFamilyKeys,
     treeBindings: candidateTreeBindings,
     snapshots,
   };
@@ -5189,7 +5242,9 @@ function buildCandidateGovernance({
     ([role, path]) => [role, addText(store, path, `fixture component ${role}\n`)],
   ));
   const runnerBindings = RUNNER_PATHS.map((path) => addText(store, path, `${path}\n`));
-  const testBindings = TEST_PATHS.map((path) => addText(store, path, `${path}\n`));
+  const testPaths = options.work3PhysicalClosure === true
+    ? WORK3_PHYSICAL_TEST_PATHS : TEST_PATHS;
+  const testBindings = testPaths.map((path) => addText(store, path, `${path}\n`));
   const work1Receipt = sealBoundRecord(
     'STAGE_2Y_M7_V2_REPAIR_WORK1_CONTRACT_RECEIPT/V1', 'work1_contract_receipt_id', {
       status: options.negativeCaseId === 'candidate-predecessor-receipt-not-pass'
@@ -5199,12 +5254,72 @@ function buildCandidateGovernance({
       effects: { files_written: 0 },
     },
   );
-  const predecessorBinding = addRecord(
+  const work1PredecessorBinding = addRecord(
     store,
     `${MIGRATION_ROOT}/receipts/stage-2y-structure-m7-v2-repair-work1-contract.json`,
     work1Receipt,
     'work1_contract_receipt_id',
   );
+  const predecessorEntries = [{ work: 'WORK1', binding: work1PredecessorBinding }];
+  if (options.work3PhysicalClosure === true) {
+    const work2Receipt = sealBoundRecord(
+      'STAGE_2Y_M7_V2_REPAIR_WORK2_COMPILER_RECEIPT/V1', 'work2_receipt_id', {
+        status: 'PASS',
+        state: 'PASS_WORK2_COMPILER',
+      },
+    );
+    predecessorEntries.push({
+      work: 'WORK2',
+      binding: addRecord(
+        store,
+        'fixture/receipts/stage-2y-structure-m7-v2-repair-work2-compiler.json',
+        work2Receipt,
+        'work2_receipt_id',
+      ),
+    });
+    const work3Receipt = sealBoundRecord(
+      'STAGE_2Y_M7_V2_REPAIR_WORK3_RECEIPT/V2', 'work3_receipt_id', {
+        work: 'WORK3',
+        stage: 'M7_V2_REPAIR_WORK3',
+        state: 'PASS_WORK3_BUILD_ONLY_NULL_CANDIDATE',
+        status: 'PASS',
+        candidate_registration_id: null,
+        candidate_transition: null,
+        family_profile_evidence: {
+          approved_family_profile_set_binding: profiles.profileSetBinding,
+          family_profile_package_bindings: profiles.packageBindings,
+          governed_family_keys: C3_FAMILY_ORDER,
+          parked_family_evidence: {
+            family_key: 'CAPITALISATION',
+            on_disk_package_binding: null,
+            on_disk_package_present: false,
+            parked_state: 'PARKED',
+            planned_package_path: PACKAGE_PATH_BY_FAMILY.get('CAPITALISATION'),
+            product_activation_permitted: false,
+            serving_permitted: options.work3ParkedServingPermitted === true,
+            stage_9f_authority_required: true,
+            synthetic_validation_package: {
+              package_id: 'a'.repeat(64),
+              profile_count: 1,
+              state: 'IN_MEMORY_VALIDATION_ONLY_NOT_A_SEALED_PACKAGE',
+            },
+          },
+          sealed_package_family_keys: WORK3_PHYSICAL_FAMILY_KEYS,
+        },
+        structure_disposition_set_binding: structure.binding,
+      },
+    );
+    predecessorEntries.push({
+      work: 'WORK3',
+      binding: addRecord(
+        store,
+        `${MIGRATION_ROOT}/receipts/stage-2y-structure-m7-v2-repair-work3-profile.json`,
+        work3Receipt,
+        'work3_receipt_id',
+      ),
+    });
+  }
+  const predecessorReceiptBindings = predecessorEntries.map((entry) => entry.binding);
   const codeBindings = {
     ...singletonBindings,
     runners: runnerBindings,
@@ -5222,7 +5337,7 @@ function buildCandidateGovernance({
     ...profiles.treeBindings.map((entry) => entry.binding),
     structure.binding,
     viewPolicy.binding,
-    predecessorBinding,
+    ...predecessorReceiptBindings,
   ].map((binding) => binding.path ?? binding.container_path);
   const counts = {
     code_file_count: 5 + runnerBindings.length + testBindings.length,
@@ -5230,7 +5345,7 @@ function buildCandidateGovernance({
     test_count: testBindings.length,
     semantic_input_count: semanticInputs.candidateBindings.length,
     subtype_tree_count: profiles.treeBindings.length,
-    predecessor_receipt_count: 1,
+    predecessor_receipt_count: predecessorEntries.length,
     unique_bound_path_count: new Set(boundPaths).size,
   };
   let candidateTreeBindings = profiles.treeBindings;
@@ -5259,7 +5374,7 @@ function buildCandidateGovernance({
       subtype_tree_bindings: candidateTreeBindings,
       structure_disposition_set_binding: structure.binding,
       view_policy_binding: viewPolicy.binding,
-      predecessor_receipt_bindings: [{ work: 'WORK1', binding: predecessorBinding }],
+      predecessor_receipt_bindings: predecessorEntries,
       allowed_output_root: `${MIGRATION_ROOT}/m7-v2-repair/fixture-candidate/`,
       counts,
       effects: CANDIDATE_EFFECTS,
@@ -5274,7 +5389,10 @@ function buildCandidateGovernance({
       state: 'PASS_CANDIDATE_REGISTRATION',
       candidate_registration_id: candidate.candidate_registration_id,
       registration_binding: candidateBinding,
-      checks: CANDIDATE_CHECKS.map((checkId) => ({ check_id: checkId, status: 'PASS' })),
+      checks: (options.work3PhysicalClosure === true
+        ? WORK3_PHYSICAL_CANDIDATE_CHECKS : CANDIDATE_CHECKS).map(
+        (checkId) => ({ check_id: checkId, status: 'PASS' }),
+      ),
       counts,
       effects: VERIFICATION_EFFECTS,
     },
@@ -5292,9 +5410,16 @@ function buildCandidateGovernance({
     family_profile_set_binding: profiles.profileSetBinding,
     structure_disposition_set_binding: structure.binding,
     view_policy_binding: viewPolicy.binding,
-    predecessor_receipt_bindings: [predecessorBinding],
+    predecessor_receipt_bindings: predecessorReceiptBindings,
   };
-  return { candidate, candidateBinding, verification, governance, predecessorBinding };
+  return {
+    candidate,
+    candidateBinding,
+    verification,
+    governance,
+    predecessorBinding: work1PredecessorBinding,
+    predecessorEntries,
+  };
 }
 
 function normaliseScenarioDefinition(definition) {
@@ -5438,9 +5563,9 @@ function buildScenario(rawDefinition, options = {}) {
     claimDraft.expression_nodes = incompleteTree.expressions;
     claimDraft.expression_fields = incompleteTree.fields;
   }
-  const requiredClassificationLevels = requiredClassificationLevelsForDrafts(
-    definition, drafts, profiles,
-  );
+  const requiredClassificationLevels = scenarioOptions.classificationFloorOnly === true
+    ? [...DEFAULT_REQUIRED_CLASSIFICATION_LEVELS]
+    : requiredClassificationLevelsForDrafts(definition, drafts, profiles);
   const viewPolicy = buildViewPolicy(
     store, profiles.snapshots, scenarioOptions, requiredClassificationLevels,
   );
@@ -9316,6 +9441,40 @@ test(publicById.get('profile-set-owns-all-subtype-trees-and-dimension-evidence')
   ), true);
 });
 
+test('Work4 accepts the exact 24-package Work3 V2 registry and keeps CAPITALISATION parked', () => {
+  const scenario = buildScenario(cases.baseline_case, { work3PhysicalClosure: true });
+
+  assert.equal(validateScenario(scenario).status, 'PASS');
+  assert.deepEqual(scenario.profiles.physicalFamilyKeys, WORK3_PHYSICAL_FAMILY_KEYS);
+  assert.equal(scenario.profiles.packageBindings.length, 24);
+  assert.equal(scenario.profiles.packageRecordsByFamily.has('CAPITALISATION'), false);
+  assert.equal(scenario.profiles.profileSet.profiles.some(
+    (profile) => profile.family_key === 'CAPITALISATION',
+  ), false);
+  assert.equal(scenario.profiles.packageBindings[1].path,
+    'fixture/work3-v2/packages/appraisal-dissenters-rights-successor.json');
+  assert.deepEqual(
+    scenario.candidate.candidate.predecessor_receipt_bindings.map((entry) => entry.work),
+    ['WORK1', 'WORK2', 'WORK3'],
+  );
+  assert.deepEqual(
+    scenario.candidate.candidate.code_bindings.tests.map((binding) => binding.path),
+    WORK3_PHYSICAL_TEST_PATHS,
+  );
+  assert.equal(scenario.semantic.candidateSet.considered_family_keys.includes(
+    'CAPITALISATION',
+  ), true);
+});
+
+test('Work4 rejects a 24-package registry when Work3 permits parked CAPITALISATION serving', () => {
+  const scenario = buildScenario(cases.baseline_case, {
+    work3PhysicalClosure: true,
+    work3ParkedServingPermitted: true,
+  });
+
+  assertCode(() => validateScenario(scenario), 'M7_V2_PROFILE_GATE');
+});
+
 test('Work3 manifest contract lawful fixture binds on-disk Milestone A family packages', () => {
   const fixture = buildLawfulWork3FamilyPackageSetFixture({ useOnDiskFamilyPackages: true });
   const onDiskExpectations = {
@@ -11847,6 +12006,60 @@ test('projectAgreement is the exact deterministic V2 normal-row seam', () => {
     analysis: scenario.analysis,
     viewPolicy: scenario.viewPolicy.record,
   }).status, 'PASS');
+});
+
+test('projectAgreement preserves a nested approved hierarchy above the common layout floor', () => {
+  const scenario = buildScenario(
+    topologyById.get('item-28-linked-d-and-o-rights-survival'),
+    { classificationFloorOnly: true },
+  );
+  validateScenario(scenario);
+  const projection = projectAgreement(scenario.analysis, scenario.viewPolicy.record);
+
+  assert.deepEqual(
+    scenario.viewPolicy.record.layouts[0].required_classification_levels,
+    ['APPLIES_TO', 'PROVISION_TYPE'],
+  );
+  assert.deepEqual(
+    projection.rows[0].classification_levels.map((entry) => entry.level),
+    ['APPLIES_TO', 'PROVISION_TYPE', 'SUB_PROVISION_TYPE'],
+  );
+  assert.equal(validateProjectionV2({
+    projection,
+    analysis: scenario.analysis,
+    viewPolicy: scenario.viewPolicy.record,
+  }).status, 'PASS');
+});
+
+test('buildV2ViewPolicy creates one deterministic policy for mixed hierarchy depths', () => {
+  const baseline = buildScenario(cases.baseline_case);
+  const nested = buildScenario(
+    topologyById.get('item-28-linked-d-and-o-rights-survival'),
+  );
+  const profiles = [
+    ...baseline.analysis.profile_snapshots,
+    ...nested.analysis.profile_snapshots,
+  ];
+
+  const first = buildV2ViewPolicy(profiles);
+  const second = buildV2ViewPolicy(profiles);
+
+  assert.deepEqual(first, second);
+  assert.deepEqual(first.layouts.map((layout) => ({
+    layout_id: layout.layout_id,
+    required_classification_levels: layout.required_classification_levels,
+  })), [
+    {
+      layout_id: 'compact-v2',
+      required_classification_levels: ['APPLIES_TO', 'PROVISION_TYPE'],
+    },
+    {
+      layout_id: 'expanded-v2',
+      required_classification_levels: ['APPLIES_TO', 'PROVISION_TYPE'],
+    },
+  ]);
+  assert.equal(first.grouping_policy.allowed, false);
+  assert.equal(validateViewPolicyForProjection(first), undefined);
 });
 
 test('projectAgreement records each optional non-material omission in every layout', () => {

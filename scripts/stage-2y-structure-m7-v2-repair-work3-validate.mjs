@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import {
   lstatSync,
@@ -128,8 +129,122 @@ function readBytes(root, selectedPath) {
   return readFileSync(resolveExisting(root, selectedPath));
 }
 
-function readCanonicalRecord(root, selectedPath, schemaVersion = null, idField = null) {
-  const bytes = readBytes(root, selectedPath);
+function git(root, argv) {
+  const environment = { ...process.env, GIT_NO_REPLACE_OBJECTS: '1' };
+  for (const name of [
+    'GIT_ALTERNATE_OBJECT_DIRECTORIES',
+    'GIT_COMMON_DIR',
+    'GIT_DIR',
+    'GIT_OBJECT_DIRECTORY',
+    'GIT_WORK_TREE',
+  ]) delete environment[name];
+  return execFileSync('git', argv, {
+    cwd: root,
+    encoding: null,
+    env: environment,
+    maxBuffer: 64 * 1024 * 1024,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+}
+
+function pinnedTreeSource(root, sourceCommit) {
+  if (typeof sourceCommit !== 'string' || !/^[0-9a-f]{40}$/u.test(sourceCommit)) {
+    fail('WORK3_INPUT_DRIFT', 'sourceCommit');
+  }
+  let treeBytes;
+  try {
+    git(root, ['cat-file', '-e', `${sourceCommit}^{commit}`]);
+    treeBytes = git(root, ['ls-tree', '-rz', '--full-tree', sourceCommit, '--']);
+  } catch {
+    fail('WORK3_INPUT_DRIFT', 'sourceCommit Git tree');
+  }
+  if (treeBytes.length === 0 || treeBytes.at(-1) !== 0) {
+    fail('WORK3_INPUT_DRIFT', 'sourceCommit Git tree encoding');
+  }
+  const entries = new Map();
+  const directories = new Set();
+  let offset = 0;
+  while (offset < treeBytes.length) {
+    const terminator = treeBytes.indexOf(0, offset);
+    if (terminator < 0) fail('WORK3_INPUT_DRIFT', 'sourceCommit Git tree encoding');
+    const record = treeBytes.subarray(offset, terminator);
+    offset = terminator + 1;
+    const separator = record.indexOf(0x09);
+    if (separator <= 0 || separator === record.length - 1) {
+      fail('WORK3_INPUT_DRIFT', 'sourceCommit Git tree entry');
+    }
+    const metadata = record.subarray(0, separator).toString('ascii').split(' ');
+    const pathBytes = record.subarray(separator + 1);
+    const selectedPath = pathBytes.toString('utf8');
+    if (metadata.length !== 3
+        || !/^(?:100644|100755|120000|160000)$/u.test(metadata[0])
+        || !['blob', 'commit'].includes(metadata[1])
+        || !/^[0-9a-f]{40}$/u.test(metadata[2])
+        || !Buffer.from(selectedPath, 'utf8').equals(pathBytes)
+        || entries.has(selectedPath)) {
+      fail('WORK3_INPUT_DRIFT', 'sourceCommit Git tree entry');
+    }
+    entries.set(selectedPath, {
+      mode: metadata[0],
+      object: metadata[2],
+      type: metadata[1],
+    });
+    const members = selectedPath.split('/');
+    for (let index = 1; index < members.length; index += 1) {
+      directories.add(members.slice(0, index).join('/'));
+    }
+  }
+  const blobs = new Map();
+  return Object.freeze({
+    pathExists(selectedPath) {
+      repositoryPath(selectedPath);
+      const members = selectedPath.split('/');
+      for (let index = 1; index < members.length; index += 1) {
+        if (entries.has(members.slice(0, index).join('/'))) {
+          fail('WORK3_INPUT_DRIFT', selectedPath);
+        }
+      }
+      return entries.has(selectedPath) || directories.has(selectedPath);
+    },
+    readBytes(selectedPath) {
+      repositoryPath(selectedPath);
+      const entry = entries.get(selectedPath);
+      if (!entry || entry.type !== 'blob' || entry.mode !== '100644') {
+        fail('WORK3_INPUT_DRIFT', selectedPath);
+      }
+      if (!blobs.has(entry.object)) {
+        let selectedBytes;
+        try {
+          selectedBytes = git(root, ['cat-file', 'blob', entry.object]);
+        } catch {
+          fail('WORK3_INPUT_DRIFT', selectedPath);
+        }
+        blobs.set(entry.object, selectedBytes);
+      }
+      return blobs.get(entry.object);
+    },
+  });
+}
+
+function inputSource(options) {
+  if (options === null || typeof options !== 'object' || Array.isArray(options)
+      || Object.keys(options).some((key) => !['repoRoot', 'sourceCommit'].includes(key))) {
+    fail('WORK3_RECEIPT_INVALID', 'options');
+  }
+  const root = rootPath(options.repoRoot ?? REPO_ROOT);
+  if (options.sourceCommit !== undefined) return pinnedTreeSource(root, options.sourceCommit);
+  return Object.freeze({
+    pathExists(selectedPath) {
+      return selectedPathExists(root, selectedPath);
+    },
+    readBytes(selectedPath) {
+      return readBytes(root, selectedPath);
+    },
+  });
+}
+
+function readCanonicalRecord(source, selectedPath, schemaVersion = null, idField = null) {
+  const bytes = source.readBytes(selectedPath);
   let record;
   try {
     record = JSON.parse(bytes.toString('utf8'));
@@ -185,14 +300,9 @@ function mapContractError(error) {
 
 export const validateWork3ReceiptV2 = validateWork3ReceiptV2Shared;
 
-export function validateWork3PhysicalInputs(options = {}) {
-  if (options === null || typeof options !== 'object' || Array.isArray(options)
-      || Object.keys(options).some((key) => key !== 'repoRoot')) {
-    fail('WORK3_RECEIPT_INVALID', 'options');
-  }
-  const root = rootPath(options.repoRoot ?? REPO_ROOT);
+function validateWork3PhysicalSource(source) {
   const amendmentInput = readCanonicalRecord(
-    root,
+    source,
     AMENDMENT_PATH,
     AMENDMENT_SCHEMA,
     'closure_amendment_id',
@@ -209,17 +319,17 @@ export function validateWork3PhysicalInputs(options = {}) {
       || Array.isArray(amendment.effective_family_package_closure)) {
     fail('WORK3_INPUT_DRIFT', 'closure amendment physical contract');
   }
-  const familyProfileSet = readCanonicalRecord(root, PROFILE_SET_PATH).record;
+  const familyProfileSet = readCanonicalRecord(source, PROFILE_SET_PATH).record;
   let physical;
   try {
     physical = validateWork3PhysicalClosureV2({
       closure: amendment.effective_family_package_closure,
       familyProfileSet,
       resolveBinding(binding) {
-        return readBytes(root, binding.path);
+        return source.readBytes(binding.path);
       },
       pathExists(selectedPath) {
-        return selectedPathExists(root, selectedPath);
+        return source.pathExists(selectedPath);
       },
     });
   } catch (error) {
@@ -234,15 +344,15 @@ export function validateWork3PhysicalInputs(options = {}) {
   });
 }
 
+export function validateWork3PhysicalInputs(options = {}) {
+  return validateWork3PhysicalSource(inputSource(options));
+}
+
 export function validateWork3(options = {}) {
-  if (options === null || typeof options !== 'object' || Array.isArray(options)
-      || Object.keys(options).some((key) => key !== 'repoRoot')) {
-    fail('WORK3_RECEIPT_INVALID', 'options');
-  }
-  const root = rootPath(options.repoRoot ?? REPO_ROOT);
-  const physicalResult = validateWork3PhysicalInputs({ repoRoot: root });
+  const source = inputSource(options);
+  const physicalResult = validateWork3PhysicalSource(source);
   const amendment = readCanonicalRecord(
-    root,
+    source,
     AMENDMENT_PATH,
     AMENDMENT_SCHEMA,
     'closure_amendment_id',
@@ -252,7 +362,7 @@ export function validateWork3(options = {}) {
     fail('WORK3_RECEIPT_INVALID', 'receipt path contract');
   }
   const receipt = readCanonicalRecord(
-    root,
+    source,
     receiptPath,
     RECEIPT_SCHEMA,
     'work3_receipt_id',
@@ -267,7 +377,7 @@ export function validateWork3(options = {}) {
     fail('WORK3_RECEIPT_INVALID', 'Work3 entry authority binding');
   }
   const work3EntryAuthority = readCanonicalRecord(
-    root,
+    source,
     work3EntryBinding.path,
     work3EntryBinding.schema_version,
     work3EntryBinding.record_id_field,
@@ -286,12 +396,12 @@ export function validateWork3(options = {}) {
   return validateWork3ReceiptV2({
     amendment,
     pathExists(selectedPath) {
-      return selectedPathExists(root, selectedPath);
+      return source.pathExists(selectedPath);
     },
     physicalValidation,
     receipt,
     resolveBinding(binding) {
-      return readBytes(root, binding.path);
+      return source.readBytes(binding.path);
     },
     work3EntryAuthority,
   });

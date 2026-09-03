@@ -9,7 +9,8 @@ import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url);
 const { canonicalJson, contentId, sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const {
-  projectLegacyAgreementV1,
+  PROJECTION_EXECUTION_LANES,
+  dispatchAgreementProjection,
   viewPolicyForLegacyV1,
 } = require('../lib/canonical-v2/agreement-projection');
 const preview = require('../lib/review-parity/rendered-row-preview');
@@ -250,7 +251,12 @@ function main() {
   if (correctionAuthority) outputBindings.push(binding(CORRECTION_AUTHORITY_PATH, { correction_authority_id: correctionAuthority.correction_authority_id }));
   const projections = [];
   for (const analysis of analyses) {
-    const projection = projectLegacyAgreementV1(analysis, viewPolicy);
+    const projection = dispatchAgreementProjection({
+      analysis,
+      candidateRegistration: null,
+      executionLane: PROJECTION_EXECUTION_LANES.M6_V1_HISTORICAL_REPLAY,
+      viewPolicy,
+    });
     const path = resolve(OUTPUT_ROOT, 'projection', `${analysis.agreement_id}.agreement-projection.json`);
     writeCanonical(path, projection);
     projections.push(projection);

@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import {
   lstatSync,
@@ -140,6 +141,7 @@ const WORK3_CLOSURE_APPLICATION_PATH =
   'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-execution-manifest-closure-amendment-application-receipt.json';
 const WORK3_CLOSURE_SUCCESSOR_PATH =
   'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-execution-manifest-closure-successor.json';
+const WORK3_V2_FINAL_COMMIT = 'a0df3f8621107481144e5be1429466d8b193f9be';
 const WORK3_CLOSURE_INPUT_BINDINGS = Object.freeze({
   predecessor: Object.freeze({
     path: WORK3_CLOSURE_PREDECESSOR_PATH,
@@ -784,6 +786,67 @@ function normaliseRoot(repoRoot) {
   }
   if (root !== path.resolve(repoRoot)) fail('PATH_SAFETY', 'symlinked repoRoot');
   return root;
+}
+
+function gitRead(root, argv) {
+  const environment = { ...process.env, GIT_NO_REPLACE_OBJECTS: '1' };
+  for (const name of [
+    'GIT_ALTERNATE_OBJECT_DIRECTORIES',
+    'GIT_COMMON_DIR',
+    'GIT_DIR',
+    'GIT_OBJECT_DIRECTORY',
+    'GIT_WORK_TREE',
+  ]) delete environment[name];
+  return execFileSync('git', argv, {
+    cwd: root,
+    encoding: 'utf8',
+    env: environment,
+    maxBuffer: 64 * 1024 * 1024,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  }).trimEnd();
+}
+
+function canonicalBaseTipObservation(root, binding, predecessorReceiptBinding) {
+  let parentLine;
+  let commitMessage;
+  let deltaOutput;
+  let receiptOutput;
+  let originCommit;
+  try {
+    gitRead(root, ['cat-file', '-e', `${binding.commit}^{commit}`]);
+    gitRead(root, ['merge-base', '--is-ancestor', WORK3_V2_FINAL_COMMIT, binding.commit]);
+    originCommit = gitRead(root, ['rev-parse', `refs/remotes/origin/${BRANCH}`]);
+    gitRead(root, ['merge-base', '--is-ancestor', binding.commit, originCommit]);
+    parentLine = gitRead(root, ['rev-list', '--parents', '-n', '1', binding.commit]);
+    commitMessage = gitRead(root, ['log', '--format=%s', '-n', '1', binding.commit]);
+    deltaOutput = gitRead(root, [
+      'diff-tree', '--no-commit-id', '--name-only', '-r', binding.commit,
+    ]);
+    receiptOutput = gitRead(root, [
+      'ls-tree', '-r', '--full-tree', binding.commit, '--', predecessorReceiptBinding.path,
+    ]);
+  } catch {
+    fail('BASE_TIP_DRIFT', 'pushed Work4 preparation Git lineage');
+  }
+  const parents = parentLine.split(/\s+/u);
+  const receiptMatch = /^\d{6} blob ([0-9a-f]{40})\t(.+)$/u.exec(receiptOutput);
+  const exactCommitDeltaPaths = deltaOutput === ''
+    ? []
+    : deltaOutput.split('\n').filter(Boolean).sort();
+  if (parents.length !== 2
+      || parents[0] !== binding.commit
+      || receiptMatch === null
+      || receiptMatch[1] !== predecessorReceiptBinding.git_blob_oid
+      || receiptMatch[2] !== predecessorReceiptBinding.path
+      || originCommit.length !== 40) {
+    fail('BASE_TIP_DRIFT', 'pushed Work4 preparation Git observation');
+  }
+  return {
+    commit: binding.commit,
+    parent_commit: parents[1],
+    commit_message: commitMessage,
+    exact_commit_delta_paths: exactCommitDeltaPaths,
+  };
 }
 
 function normaliseRepositoryPath(repositoryPath, code = 'PATH_SAFETY') {
@@ -1476,7 +1539,6 @@ function validateWritePaths(
       && !same(paths, [
         WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
         candidateWritePaths[0],
-        WORK4_CANDIDATE_TRANSITION_PATH,
       ].sort())) {
     fail('PATH_SCOPE_DRIFT', 'Work4 bootstrap write scope');
   }
@@ -2265,7 +2327,7 @@ function validateCandidateOrderingAuthority(root, authority, authorityBytes, man
     authorisedParentWriteExtensions: new Set([
       ...WORK2_SOURCE_SET_PATHS,
       ...(manifest.work === 'WORK4'
-        ? [WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH, WORK4_CANDIDATE_TRANSITION_PATH] : []),
+        ? [WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH] : []),
     ]),
     authorisedCommandExtensions: [
       ...(manifest.work === 'WORK2' ? [
@@ -2298,6 +2360,7 @@ function validateBaseTip(
   const prior = priorState?.record ?? null;
   const predecessorWork = `WORK${workNumber(manifest.work) - 1}`;
   let expectedParent;
+  let expectedCommit = null;
   let expectedMessage;
   let expectedDeltaPaths;
   let expectedPriorManifestBinding;
@@ -2321,6 +2384,27 @@ function validateBaseTip(
         fail('PREDECESSOR_BINDING_DRIFT', 'Work2 effective path lineage');
       }
       expectedDeltaPaths = [...sealedWork2Paths].sort();
+    } else if (manifest.predecessor_receipt_binding.schema_version
+        === RICH_WORK3_RECEIPT_V2_SCHEMA) {
+      const declaredDeltaPaths = binding.milestone_attestation?.exact_commit_delta_paths;
+      if (!Array.isArray(declaredDeltaPaths)
+          || declaredDeltaPaths.length === 0
+          || new Set(declaredDeltaPaths).size !== declaredDeltaPaths.length
+          || !same(declaredDeltaPaths, [...declaredDeltaPaths].sort())) {
+        fail('BASE_TIP_DRIFT', 'Work4 preparation commit delta');
+      }
+      const observation = root === CANONICAL_ROOT
+        ? canonicalBaseTipObservation(root, binding, manifest.predecessor_receipt_binding)
+        : {
+          commit: binding.commit,
+          parent_commit: binding.parent_commit,
+          commit_message: binding.commit_message,
+          exact_commit_delta_paths: declaredDeltaPaths,
+        };
+      expectedCommit = observation.commit;
+      expectedParent = observation.parent_commit;
+      expectedMessage = observation.commit_message;
+      expectedDeltaPaths = observation.exact_commit_delta_paths;
     } else {
       expectedDeltaPaths = [priorState.repositoryPath, ...prior.permitted_write_paths].sort();
     }
@@ -2331,7 +2415,9 @@ function validateBaseTip(
       'execution_manifest_id',
     );
   }
-  if (binding.parent_commit !== expectedParent || binding.commit_message !== expectedMessage) {
+  if ((expectedCommit !== null && binding.commit !== expectedCommit)
+      || binding.parent_commit !== expectedParent
+      || binding.commit_message !== expectedMessage) {
     fail('BASE_TIP_DRIFT', manifest.work);
   }
   const attestation = binding.milestone_attestation;
@@ -4097,7 +4183,7 @@ function validateWork3V2ReceiptLineage(root, receipt, binding, priorManifest, co
   }
   let result;
   try {
-    result = validateWork3({ repoRoot: root });
+    result = validateWork3({ repoRoot: root, sourceCommit: WORK3_V2_FINAL_COMMIT });
   } catch (error) {
     fail(code, `Work3 V2 receipt validation: ${error.code ?? error.message}`);
   }
@@ -4217,26 +4303,13 @@ function validateWork4CandidateTransitionAuthority(
       transition_argv: [...WORK4_CANDIDATE_TRANSITION_ARGV],
       transition_run_limit: 1,
     };
-    bootstrap.permitted_read_paths = [
-      executionManifestPath('WORK4'),
-      priorManifestPath(
-        'WORK4',
-        work4Manifest.predecessor_receipt_binding,
-        'CANDIDATE_BINDING_DRIFT',
-      ),
-      AUTHORITY_PATH,
-      ACTIVATION_PATH,
-      CANDIDATE_ORDERING_AUTHORITY_PATH,
-      EXECUTION_MANIFEST_TEST_PATH,
-      M3_RECEIPT_PATH,
-      M4_RECEIPT_PATH,
-      ...WORK2_SOURCE_SET_PATHS,
-      bootstrap.predecessor_receipt_binding.path,
-    ].sort();
+    bootstrap.permitted_read_paths = work4Manifest.permitted_read_paths.filter(
+      (repositoryPath) => repositoryPath !== WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH
+        && repositoryPath !== candidateBinding?.path,
+    ).sort();
     bootstrap.permitted_write_paths = [
       WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH,
       candidateBinding?.path,
-      WORK4_CANDIDATE_TRANSITION_PATH,
     ].sort();
     bootstrap.exact_argv_with_run_limits = [
       {
@@ -4486,10 +4559,14 @@ function validateFullCandidateRecord(root, authority, record, permittedReadPaths
     'tests/stage-2y-structure-m7-v2-repair-contract.test.js',
     'tests/stage-2y-structure-m7-v2-repair-execution-manifest.test.js',
     'tests/stage-2y-structure-m7-v2-repair-registration.test.js',
+    ...(predecessorCount >= 2
+      ? ['tests/stage-2y-structure-m7-v2-repair-work3-mae.test.js'] : []),
+    ...(predecessorCount >= 3
+      ? ['tests/stage-2y-structure-m7-v2-repair-projection-dispatch.test.js'] : []),
     ...Array.from({ length: predecessorCount }, (_, index) => (
       `tests/stage-2y-structure-m7-v2-repair-work${index + 2}.test.js`
     )),
-  ];
+  ].sort();
   for (const [bindings, expected, label] of [
     [record.code_bindings.runners, expectedRunners, 'runners'],
     [record.code_bindings.tests, expectedTests, 'tests'],

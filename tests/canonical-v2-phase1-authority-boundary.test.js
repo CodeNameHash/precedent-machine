@@ -949,6 +949,319 @@ function assertReadOnlyGitArtifactWriter(source, label) {
   assertLiteralExecFileGitCommands(source, label);
 }
 
+function assertExactGitReadBoundary(program, label, rootName, expectedCalls) {
+  assertExactNamedImport(
+    program,
+    'node:child_process',
+    'execFileSync',
+    'execFileSync',
+    label,
+  );
+  const gitWrapper = uniqueFunctionDeclaration(program, 'gitRead', label);
+  assert.deepEqual(
+    gitWrapper.params.map((parameter) => parameter.type === 'Identifier' ? parameter.name : null),
+    [rootName, 'argv'],
+    `${label} Git reader parameters must be exact`,
+  );
+  const gitLaunches = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'Identifier' && node.callee.name === 'execFileSync',
+  );
+  assert.equal(gitLaunches.length, 1, `${label} Git reader must be the only process launch`);
+  assert.equal(
+    collectCapabilityNodes(
+      gitWrapper,
+      (node) => node.type === 'CallExpression'
+        && node.callee.type === 'Identifier' && node.callee.name === 'execFileSync',
+    )[0],
+    gitLaunches[0],
+    `${label} process launch must remain inside the Git reader`,
+  );
+  assert.equal(gitLaunches[0].arguments.length, 3, `${label} Git launch must be exact`);
+  assert.equal(gitLaunches[0].arguments[0].type, 'Literal');
+  assert.equal(gitLaunches[0].arguments[0].value, 'git', `${label} may launch only Git`);
+  assert.equal(gitLaunches[0].arguments[1].type, 'Identifier');
+  assert.equal(gitLaunches[0].arguments[1].name, 'argv', `${label} Git argv must use the checked parameter`);
+  const gitOptions = gitLaunches[0].arguments[2];
+  assert.equal(gitOptions.type, 'ObjectExpression', `${label} Git options must be literal`);
+  const gitOptionProperties = new Map(gitOptions.properties.map((property) => {
+    assert.equal(property.type, 'Property', `${label} Git option must be static`);
+    assert.equal(property.computed, false, `${label} Git option key must be static`);
+    return [property.key.name ?? property.key.value, property.value];
+  }));
+  assert.deepEqual(
+    [...gitOptionProperties.keys()],
+    ['cwd', 'encoding', 'env', 'maxBuffer', 'stdio'],
+    `${label} Git options must be exact`,
+  );
+  assert.equal(
+    staticArgumentDescriptor(gitOptionProperties.get('cwd'), label),
+    `$${rootName}`,
+  );
+  assert.equal(staticArgumentDescriptor(gitOptionProperties.get('encoding'), label), 'utf8');
+  assert.equal(staticArgumentDescriptor(gitOptionProperties.get('env'), label), '$environment');
+  assert.deepEqual(
+    staticExpressionDescriptor(gitOptionProperties.get('maxBuffer'), label),
+    ['*', ['*', 64, 1024], 1024],
+  );
+  assert.deepEqual(staticArgvDescriptor(gitOptionProperties.get('stdio'), label), [
+    'ignore', 'pipe', 'pipe',
+  ]);
+
+  const gitReadCalls = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'Identifier' && node.callee.name === 'gitRead',
+  );
+  assert.deepEqual(
+    gitReadCalls.map((call, index) => {
+      assert.equal(call.arguments.length, 2, `${label} Git read ${index + 1} must be exact`);
+      assert.equal(
+        staticArgumentDescriptor(call.arguments[0], `${label} Git read ${index + 1}`),
+        `$${rootName}`,
+      );
+      return runnerArgvDescriptor(call.arguments[1], `${label} Git read ${index + 1}`);
+    }),
+    expectedCalls,
+    `${label} may run only the exact pushed-tree inspection set`,
+  );
+}
+
+function assertExecutionManifestValidatorGitBoundary(source, label) {
+  assertNoCapabilities(source, GIT_ARTIFACT_WRITER_FORBIDDEN_CAPABILITIES, label);
+  const counts = capabilityCounts(source, label);
+  assert.ok(counts.external_process > 0, `${label} must inspect the pushed Git tree`);
+  const program = parseCapabilitySource(source, label);
+  assertExactGitReadBoundary(program, label, 'root', [
+    ['cat-file', '-e', '`${$binding.commit}^{commit}`'],
+    ['merge-base', '--is-ancestor', '$WORK3_V2_FINAL_COMMIT', '$binding.commit'],
+    ['rev-parse', '`refs/remotes/origin/${$BRANCH}`'],
+    ['merge-base', '--is-ancestor', '$binding.commit', '$originCommit'],
+    ['rev-list', '--parents', '-n', '1', '$binding.commit'],
+    ['log', '--format=%s', '-n', '1', '$binding.commit'],
+    ['diff-tree', '--no-commit-id', '--name-only', '-r', '$binding.commit'],
+    ['ls-tree', '-r', '--full-tree', '$binding.commit', '--', '$predecessorReceiptBinding.path'],
+  ]);
+}
+
+function assertWork4CandidateBinderBoundary(source, label) {
+  assertNoCapabilities(source, GIT_ARTIFACT_WRITER_FORBIDDEN_CAPABILITIES, label);
+  const counts = capabilityCounts(source, label);
+  assert.ok(counts.external_process > 0, `${label} must inspect the pushed Git tree`);
+  assert.ok(counts.filesystem_write > 0, `${label} must write its governed local outputs`);
+  const program = parseCapabilitySource(source, label);
+  assertExactNamedImport(
+    program,
+    './stage-2y-structure-m7-v2-repair-work3-validate.mjs',
+    'validateWork3',
+    'validateWork3',
+    label,
+  );
+  assertExactNamedImport(
+    program,
+    './stage-2y-structure-m7-v2-repair-register-candidate.mjs',
+    'registerCandidate',
+    'registerCandidate',
+    label,
+  );
+  assertLiteralBinding(
+    program,
+    'WORK3_COMMIT',
+    'a0df3f8621107481144e5be1429466d8b193f9be',
+    label,
+  );
+  assertLiteralBinding(
+    program,
+    'MIGRATION_ROOT',
+    'evidence/canonical-v2/stage-2y-structure-migration',
+    label,
+  );
+  assertStaticConstBinding(program, 'CONTROL_ROOT', '`${$MIGRATION_ROOT}/control`', label);
+  assertStaticConstBinding(
+    program,
+    'MANIFEST_PATH',
+    '`${$CONTROL_ROOT}/m7-v2-repair-work4-execution-manifest.json`',
+    label,
+  );
+  assertStaticConstBinding(
+    program,
+    'TRANSITION_AUTHORITY_PATH',
+    '`${$CONTROL_ROOT}/m7-v2-repair-work4-candidate-transition-authority.json`',
+    label,
+  );
+
+  assertExactGitReadBoundary(program, label, 'repoRoot', [
+    ['rev-parse', 'HEAD'],
+    ['rev-parse', '$ORIGIN_REF'],
+    ['symbolic-ref', '--short', 'HEAD'],
+    ['merge-base', '--is-ancestor', '$WORK3_COMMIT', '$head'],
+    ['rev-list', '--parents', '-n', '1', '$head'],
+    ['log', '--format=%s', '-n', '1', '$head'],
+    ['diff-tree', '--no-commit-id', '--name-only', '-r', '$head'],
+    ['ls-tree', '-r', '--full-tree', '$head', '--', '$predecessorReceiptBinding.path'],
+    ['ls-tree', '-rz', '--full-tree', '$head', '--', '...$requiredInputPaths'],
+  ]);
+
+  const work3Calls = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'Identifier' && node.callee.name === 'validateWork3',
+  );
+  assert.equal(work3Calls.length, 1, `${label} must validate the pinned Work3 tree once`);
+  assert.deepEqual(
+    staticObjectDescriptor(work3Calls[0].arguments[0], `${label} Work3 validation`),
+    [['repoRoot', '$repoRoot'], ['sourceCommit', '$WORK3_COMMIT']],
+    `${label} Work3 validation must use the exact pinned commit`,
+  );
+
+  const registrationCalls = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'Identifier' && node.callee.name === 'registerCandidate',
+  );
+  assert.equal(registrationCalls.length, 2, `${label} candidate writer call set must be exact`);
+  const registrationWriteModes = new Map(registrationCalls.map((call, index) => {
+    assert.equal(call.arguments.length, 1, `${label} candidate call ${index + 1} must be exact`);
+    const options = call.arguments[0];
+    assert.equal(options?.type, 'ObjectExpression', `${label} candidate options must be literal`);
+    const properties = new Map(options.properties.map((property) => {
+      assert.equal(property.type, 'Property', `${label} candidate option must be static`);
+      assert.equal(property.computed, false, `${label} candidate option key must be static`);
+      return [property.key.name ?? property.key.value, property.value];
+    }));
+    assert.deepEqual([...properties.keys()], ['repoRoot', 'specification', 'write']);
+    assert.equal(
+      staticArgumentDescriptor(properties.get('repoRoot'), `${label} candidate repoRoot`),
+      '$repoRoot',
+    );
+    const specification = properties.get('specification');
+    assert.equal(specification?.type, 'CallExpression', `${label} candidate specification must be built`);
+    assert.equal(specification.callee?.type, 'Identifier');
+    assert.equal(specification.callee.name, 'buildCandidateSpecification');
+    assert.equal(specification.arguments.length, 1);
+    assert.deepEqual(
+      staticObjectDescriptor(specification.arguments[0], `${label} candidate specification`),
+      [['repoRoot', '$repoRoot']],
+    );
+    assert.equal(properties.get('write')?.type, 'Literal');
+    return [call, properties.get('write').value];
+  }));
+  assert.deepEqual(
+    [...registrationWriteModes.values()],
+    [false, true],
+    `${label} must preview once and write once`,
+  );
+
+  const previewFunction = uniqueFunctionDeclaration(program, 'previewWork4Candidate', label);
+  const bootstrapFunction = uniqueFunctionDeclaration(
+    program,
+    'writeWork4BootstrapManifest',
+    label,
+  );
+  const transitionFunction = uniqueFunctionDeclaration(program, 'transitionWork4Candidate', label);
+  const previewRegistrations = collectCapabilityNodes(
+    previewFunction,
+    (node) => registrationWriteModes.has(node),
+  );
+  const transitionRegistrations = collectCapabilityNodes(
+    transitionFunction,
+    (node) => registrationWriteModes.has(node),
+  );
+  assert.deepEqual(
+    previewRegistrations.map((call) => registrationWriteModes.get(call)),
+    [false],
+    `${label} preview must remain non-writing`,
+  );
+  assert.deepEqual(
+    transitionRegistrations.map((call) => registrationWriteModes.get(call)),
+    [true],
+    `${label} transition must write exactly one registration`,
+  );
+
+  const bootstrapWrites = collectCapabilityNodes(
+    bootstrapFunction,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'Identifier' && node.callee.name === 'writeExclusive',
+  );
+  assert.equal(bootstrapWrites.length, 1, `${label} bootstrap write set must be exact`);
+  assert.deepEqual(
+    bootstrapWrites[0].arguments.slice(0, 2).map((argument) => staticArgumentDescriptor(
+      argument,
+      `${label} bootstrap write`,
+    )),
+    ['$repoRoot', '$MANIFEST_PATH'],
+    `${label} bootstrap may write only the manifest`,
+  );
+  const bootstrapBytes = bootstrapWrites[0].arguments[2];
+  assert.equal(bootstrapBytes?.type, 'CallExpression', `${label} bootstrap bytes must be canonical`);
+  assert.equal(bootstrapBytes.callee?.type, 'Identifier');
+  assert.equal(bootstrapBytes.callee.name, 'canonicalBytes');
+  assert.deepEqual(
+    bootstrapBytes.arguments.map((argument) => staticArgumentDescriptor(
+      argument,
+      `${label} bootstrap bytes`,
+    )),
+    ['$manifest'],
+  );
+
+  const transitionWrites = collectCapabilityNodes(
+    transitionFunction,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'Identifier'
+      && ['writeExclusive', 'replaceManifest'].includes(node.callee.name),
+  );
+  assert.deepEqual(
+    transitionWrites.map((call) => [
+      call.callee.name,
+      call.arguments.map((argument) => staticArgumentDescriptor(
+        argument,
+        `${label} transition ${call.callee.name}`,
+      )),
+    ]),
+    [
+      ['writeExclusive', ['$repoRoot', '$TRANSITION_AUTHORITY_PATH', '$transitionBytes']],
+      ['replaceManifest', ['$repoRoot', '$manifest']],
+    ],
+    `${label} transition write set must remain exact`,
+  );
+  const allGovernedWrites = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'Identifier'
+      && ['writeExclusive', 'replaceManifest'].includes(node.callee.name),
+  );
+  assert.equal(
+    allGovernedWrites.length,
+    bootstrapWrites.length + transitionWrites.length,
+    `${label} may invoke governed writers only from bootstrap and transition`,
+  );
+
+  const directWrites = collectCapabilityNodes(
+    program,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'MemberExpression'
+      && node.callee.object.type === 'Identifier'
+      && node.callee.object.name === 'fs'
+      && FS_WRITE_METHODS.has(staticMemberName(node.callee)),
+  );
+  const governedWriters = ['writeExclusive', 'replaceManifest']
+    .map((name) => uniqueFunctionDeclaration(program, name, label));
+  const governedDirectWrites = governedWriters.flatMap((writer) => collectCapabilityNodes(
+    writer,
+    (node) => node.type === 'CallExpression'
+      && node.callee.type === 'MemberExpression'
+      && node.callee.object.type === 'Identifier'
+      && node.callee.object.name === 'fs'
+      && FS_WRITE_METHODS.has(staticMemberName(node.callee)),
+  ));
+  assert.equal(
+    directWrites.length,
+    governedDirectWrites.length,
+    `${label} may write directly only inside its two governed writer functions`,
+  );
+}
+
 const LOCAL_SUBPROCESS_BOUNDARIES = Object.freeze({
   'scripts/ci/run-unit-test-shard.js': Object.freeze({
     byteLength: 16776,
@@ -2222,7 +2535,6 @@ test('pure proposals and local artefact writers have their exact capability boun
     'lib/canonical-v2/native-producer/sole-remedy-resolution.js',
     'lib/canonical-v2/policy-successor-m1-adoption-binding.js',
     'scripts/reprocess/v1-apply-guard.js',
-    'scripts/stage-2y-structure-m7-v2-repair-work3-validate.mjs',
     'lib/canonical-v2/legacy-card-bridge.js',
     'lib/canonical-v2/seven-family-v1-preview-deal.js',
     'lib/canonical-v2/seven-family-v2-review-evidence.js',
@@ -2469,6 +2781,7 @@ test('read-only Git inspectors launch only whitelisted inspection commands', () 
     'lib/canonical-v2/marker-start-git-baseline.js',
     'scripts/stage-2y-structure-m5-preparation-validate.mjs',
     'scripts/stage-2y-structure-migration-validate.mjs',
+    'scripts/stage-2y-structure-m7-v2-repair-work3-validate.mjs',
   ]);
   for (const relativePath of READ_ONLY_GIT_INSPECTORS) {
     assertReadOnlyGitInspector(fs.readFileSync(path.join(ROOT, relativePath), 'utf8'), relativePath);
@@ -2493,9 +2806,84 @@ test('read-only Git artefact writers have their exact capability boundary', () =
     'scripts/stage-2y-structure-m7-v2-repair-work0-finalise.mjs',
     'scripts/stage-2y-structure-m7-v2-repair-work0-validate.mjs',
     'scripts/stage-2y-structure-m7-v2-repair-work1-7-authority-validate.mjs',
+    'scripts/stage-2y-structure-m7-v2-repair-execution-manifest-validate.mjs',
+    'scripts/stage-2y-structure-m7-v2-repair-work4-bind-candidate.mjs',
   ]);
   for (const relativePath of READ_ONLY_GIT_ARTIFACT_WRITERS) {
-    assertReadOnlyGitArtifactWriter(fs.readFileSync(path.join(ROOT, relativePath), 'utf8'), relativePath);
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    if (relativePath === 'scripts/stage-2y-structure-m7-v2-repair-execution-manifest-validate.mjs') {
+      assertExecutionManifestValidatorGitBoundary(source, relativePath);
+    } else if (relativePath === 'scripts/stage-2y-structure-m7-v2-repair-work4-bind-candidate.mjs') {
+      assertWork4CandidateBinderBoundary(source, relativePath);
+    } else {
+      assertReadOnlyGitArtifactWriter(source, relativePath);
+    }
+  }
+});
+
+test('the execution-manifest validator rejects non-read-only or unbound Git inspection', () => {
+  const relativePath =
+    'scripts/stage-2y-structure-m7-v2-repair-execution-manifest-validate.mjs';
+  const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+  for (const hostile of [
+    source.replace(
+      "execFileSync('git', argv, {",
+      'execFileSync(process.env.WORK4_GIT, argv, {',
+    ),
+    source.replace(
+      "gitRead(root, ['cat-file', '-e', `${binding.commit}^{commit}`]);",
+      "gitRead(root, ['push']);",
+    ),
+    source.replace(
+      "originCommit = gitRead(root, ['rev-parse', `refs/remotes/origin/${BRANCH}`]);",
+      "originCommit = gitRead(root, ['rev-parse', process.env.WORK4_REF]);",
+    ),
+  ]) {
+    assert.notEqual(hostile, source);
+    assert.throws(
+      () => assertExecutionManifestValidatorGitBoundary(
+        hostile,
+        'hostile execution-manifest validator',
+      ),
+    );
+  }
+});
+
+test('the Work4 candidate binder rejects unpinned history and ungoverned writes', () => {
+  const relativePath =
+    'scripts/stage-2y-structure-m7-v2-repair-work4-bind-candidate.mjs';
+  const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+  for (const hostile of [
+    source.replace(
+      "execFileSync('git', argv, {",
+      'execFileSync(process.env.WORK4_GIT, argv, {',
+    ),
+    source.replace(
+      "head = gitRead(repoRoot, ['rev-parse', 'HEAD']);",
+      "head = gitRead(repoRoot, ['push']);",
+    ),
+    source.replace(
+      'sourceCommit: WORK3_COMMIT',
+      'sourceCommit: process.env.WORK3_COMMIT',
+    ),
+    source.replace(
+      'writeExclusive(repoRoot, MANIFEST_PATH, canonicalBytes(manifest));',
+      'writeExclusive(repoRoot, process.env.WORK4_PATH, canonicalBytes(manifest));',
+    ),
+    source.replace(
+      'writeExclusive(repoRoot, TRANSITION_AUTHORITY_PATH, transitionBytes);',
+      'writeExclusive(repoRoot, process.env.WORK4_PATH, transitionBytes);',
+    ),
+    source.replace(
+      'writeExclusive(repoRoot, TRANSITION_AUTHORITY_PATH, transitionBytes);',
+      'writeExclusive(repoRoot, TRANSITION_AUTHORITY_PATH, transitionBytes);\n'
+        + '  fs.writeFileSync(process.env.WORK4_PATH, transitionBytes);',
+    ),
+  ]) {
+    assert.notEqual(hostile, source);
+    assert.throws(
+      () => assertWork4CandidateBinderBoundary(hostile, 'hostile Work4 binder'),
+    );
   }
 });
 

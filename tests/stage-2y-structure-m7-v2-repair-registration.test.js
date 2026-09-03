@@ -487,8 +487,10 @@ function makeBaseFixture(t, work2Template) {
     tests: [
       'tests/stage-2y-structure-m7-v2-repair-contract.test.js',
       'tests/stage-2y-structure-m7-v2-repair-execution-manifest.test.js',
+      'tests/stage-2y-structure-m7-v2-repair-projection-dispatch.test.js',
       'tests/stage-2y-structure-m7-v2-repair-registration.test.js',
       'tests/stage-2y-structure-m7-v2-repair-work2.test.js',
+      'tests/stage-2y-structure-m7-v2-repair-work3-mae.test.js',
       'tests/stage-2y-structure-m7-v2-repair-work3.test.js',
       'tests/stage-2y-structure-m7-v2-repair-work4.test.js',
     ],
@@ -1236,6 +1238,19 @@ test('Work4 candidate consumes the rich Work3 receipt and package-member binding
   assert.deepEqual(
     preview.registration.subtype_tree_bindings,
     fixture.expectedSubtypeTreeBindings,
+  );
+  assert.deepEqual(
+    preview.registration.code_bindings.tests.map((binding) => binding.path),
+    [
+      'tests/stage-2y-structure-m7-v2-repair-contract.test.js',
+      'tests/stage-2y-structure-m7-v2-repair-execution-manifest.test.js',
+      'tests/stage-2y-structure-m7-v2-repair-projection-dispatch.test.js',
+      'tests/stage-2y-structure-m7-v2-repair-registration.test.js',
+      'tests/stage-2y-structure-m7-v2-repair-work2.test.js',
+      'tests/stage-2y-structure-m7-v2-repair-work3-mae.test.js',
+      'tests/stage-2y-structure-m7-v2-repair-work3.test.js',
+      'tests/stage-2y-structure-m7-v2-repair-work4.test.js',
+    ],
   );
   assert.equal(
     Object.keys(JSON.parse(fs.readFileSync(path.join(fixture.root, WORK3_RECEIPT_PATH), 'utf8'))).length,
