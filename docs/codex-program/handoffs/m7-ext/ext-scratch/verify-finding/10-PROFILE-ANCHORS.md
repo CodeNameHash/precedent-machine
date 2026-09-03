@@ -2,7 +2,9 @@
 
 Rows: **1382**. Verified: **1380**. Unresolved: **2**. SHA mismatch: **0**.
 
-Verified means the SHA-256 of the canonical UTF-8 bytes at the span equals `text_sha256`. Unresolved means no registry match or no usable span.
+Accepted pre-revision table SHA-256: `6496657a7a6283f957039b574626032e0cefd7cfe8d35042592df77288849c5f` (1,471,325 bytes).
+
+Verified means the SHA-256 of the canonical UTF-8 bytes at the span equals `text_sha256`. Unresolved means no registry match or no usable span. Parent and nearest-M4 fields do not change verification.
 
 ## Unresolved profiles
 
@@ -61,4 +63,14 @@ Verified means the SHA-256 of the canonical UTF-8 bytes at the span equals `text
 - 8: 8
 - 10: 10
 - 16: 16
+
+## Verified rows with claims_on_node = 0
+
+Verified zero-claim rows: **49**. Nearest M4 claim NONE: **13**. Overlapping M4 claim: **36**. Of those overlapping, identity mismatch (nearest claim `source_node_occurrence_id` ≠ registry node): **36**.
+
+| Family | Zero-claim verified | NONE | Overlapping | Identity mismatch |
+| --- | ---: | ---: | ---: | ---: |
+| GUARANTY_FINANCING_PARTY | 4 | 4 | 0 | 0 |
+| MAE_DEFINITION | 4 | 0 | 4 | 4 |
+| TERMINATION | 41 | 9 | 32 | 32 |
 

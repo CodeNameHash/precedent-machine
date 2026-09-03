@@ -16,6 +16,12 @@
  *
  * verified is true only after hashing canonical_text bytes at the span.
  * The registry's own text_sha256 is never trusted as proof.
+ * Parent and nearest-M4 fields do not change verification.
+ *
+ * Every row also records:
+ * - nearest M4 claim by evidence-edge span overlap on the Work 3
+ *   analysis-set member (never a guessed shadow/m4/<id>.json path)
+ * - parent_node_occurrence_id / parent_node_kind from the M2 index node
  */
 
 import { createRequire } from 'node:module';
@@ -61,7 +67,15 @@ const ROW_KEYS = [
   'verified',
   'node_kind',
   'claims_on_node',
+  'nearest_m4_claim_id',
+  'nearest_m4_claim_definition_key',
+  'nearest_m4_overlap_bytes',
+  'parent_node_occurrence_id',
+  'parent_node_kind',
 ];
+
+const PRE_REVISION_TABLE_SHA256 = '6496657a7a6283f957039b574626032e0cefd7cfe8d35042592df77288849c5f';
+const PRE_REVISION_TABLE_BYTES = 1471325;
 
 function loadJson(path) {
   return JSON.parse(readFileSync(path, 'utf8'));
@@ -166,6 +180,13 @@ function emptyAnchor(profile, extras) {
     verified: false,
     node_kind: extras.node_kind ?? null,
     claims_on_node: Number.isInteger(extras.claims_on_node) ? extras.claims_on_node : 0,
+    nearest_m4_claim_id: extras.nearest_m4_claim_id ?? null,
+    nearest_m4_claim_definition_key: extras.nearest_m4_claim_definition_key ?? 'NONE',
+    nearest_m4_overlap_bytes: Number.isInteger(extras.nearest_m4_overlap_bytes)
+      ? extras.nearest_m4_overlap_bytes
+      : 0,
+    parent_node_occurrence_id: extras.parent_node_occurrence_id ?? null,
+    parent_node_kind: extras.parent_node_kind ?? 'NONE',
   });
 }
 
@@ -249,11 +270,40 @@ function loadAnalysisCache(analysisSet, missingPaths) {
         edgeById.set(edge.analysis_evidence_edge_id, edge);
       }
     }
+    const claimEdgeSpans = [];
+    for (const claim of claims) {
+      if (typeof claim?.analysis_claim_id !== 'string') continue;
+      const spans = [];
+      for (const edgeId of claim.evidence_edge_ids ?? []) {
+        const edge = edgeById.get(edgeId);
+        const span = completeSpan(edge?.source_span);
+        if (!span) continue;
+        spans.push({
+          start_byte: span.start_byte,
+          end_byte: span.end_byte,
+          source_node_occurrence_id: typeof edge.source_node_occurrence_id === 'string'
+            ? edge.source_node_occurrence_id
+            : null,
+        });
+      }
+      claimEdgeSpans.push({
+        analysis_claim_id: claim.analysis_claim_id,
+        claim_definition_key: typeof claim.claim_definition_key === 'string'
+          && claim.claim_definition_key.length > 0
+          ? claim.claim_definition_key
+          : 'NONE',
+        source_node_occurrence_ids: Array.isArray(claim.source_node_occurrence_ids)
+          ? claim.source_node_occurrence_ids.filter((id) => typeof id === 'string' && id.length > 0)
+          : [],
+        spans,
+      });
+    }
     byAgreement.set(agreementId, {
       path: rel,
       claimById,
       edgeById,
       claimCountByNode,
+      claimEdgeSpans,
     });
   }
   return byAgreement;
@@ -307,13 +357,89 @@ function claimsOnNode(analysis, nodeId) {
   return analysis.claimCountByNode.get(nodeId) ?? 0;
 }
 
+function overlapBytes(leftStart, leftEnd, rightStart, rightEnd) {
+  const start = Math.max(leftStart, rightStart);
+  const end = Math.min(leftEnd, rightEnd);
+  return end > start ? end - start : 0;
+}
+
+function nearestM4Fields(analysis, span) {
+  const empty = {
+    nearest_m4_claim_id: null,
+    nearest_m4_claim_definition_key: 'NONE',
+    nearest_m4_overlap_bytes: 0,
+  };
+  if (!analysis || !span) return empty;
+  if (!Number.isInteger(span.start_byte) || !Number.isInteger(span.end_byte)) return empty;
+  let best = null;
+  for (const claim of analysis.claimEdgeSpans ?? []) {
+    for (const edge of claim.spans) {
+      const overlap = overlapBytes(span.start_byte, span.end_byte, edge.start_byte, edge.end_byte);
+      if (overlap <= 0) continue;
+      const candidate = {
+        nearest_m4_claim_id: claim.analysis_claim_id,
+        nearest_m4_claim_definition_key: claim.claim_definition_key,
+        nearest_m4_overlap_bytes: overlap,
+      };
+      if (
+        !best
+        || candidate.nearest_m4_overlap_bytes > best.nearest_m4_overlap_bytes
+        || (
+          candidate.nearest_m4_overlap_bytes === best.nearest_m4_overlap_bytes
+          && String(candidate.nearest_m4_claim_id).localeCompare(String(best.nearest_m4_claim_id)) < 0
+        )
+      ) {
+        best = candidate;
+      }
+    }
+  }
+  return best ?? empty;
+}
+
+function parentFields(index, nodeId) {
+  if (!index || typeof nodeId !== 'string' || nodeId.length === 0) {
+    return { parent_node_occurrence_id: null, parent_node_kind: 'NONE' };
+  }
+  const node = index.nodes.get(nodeId);
+  const parentId = typeof node?.parent_node_occurrence_id === 'string'
+    && node.parent_node_occurrence_id.length > 0
+    ? node.parent_node_occurrence_id
+    : null;
+  if (!parentId) {
+    return { parent_node_occurrence_id: null, parent_node_kind: 'NONE' };
+  }
+  const parent = index.nodes.get(parentId);
+  return {
+    parent_node_occurrence_id: parentId,
+    parent_node_kind: typeof parent?.node_kind === 'string' && parent.node_kind.length > 0
+      ? parent.node_kind
+      : 'NONE',
+  };
+}
+
+function graphFields(analysis, index, nodeId, span) {
+  return {
+    ...nearestM4Fields(analysis, span),
+    ...parentFields(index, nodeId),
+  };
+}
+
+function nearestClaimOnRegistryNode(analysis, claimId, registryNodeId) {
+  if (!analysis || typeof claimId !== 'string') return false;
+  const claim = analysis.claimById.get(claimId);
+  if (!claim || typeof registryNodeId !== 'string') return false;
+  return (claim.source_node_occurrence_ids ?? []).includes(registryNodeId);
+}
+
 function renderMarkdown(summary) {
   const lines = [
     '# Q-0010 profile anchors',
     '',
     `Rows: **${summary.row_count}**. Verified: **${summary.verified_count}**. Unresolved: **${summary.unresolved_count}**. SHA mismatch: **${summary.sha_mismatch_count}**.`,
     '',
-    'Verified means the SHA-256 of the canonical UTF-8 bytes at the span equals `text_sha256`. Unresolved means no registry match or no usable span.',
+    `Accepted pre-revision table SHA-256: \`${summary.pre_revision_table_sha256}\` (${summary.pre_revision_table_bytes.toLocaleString('en-US')} bytes).`,
+    '',
+    'Verified means the SHA-256 of the canonical UTF-8 bytes at the span equals `text_sha256`. Unresolved means no registry match or no usable span. Parent and nearest-M4 fields do not change verification.',
     '',
     '## Unresolved profiles',
     '',
@@ -340,6 +466,18 @@ function renderMarkdown(summary) {
   lines.push('', '## claims_on_node', '');
   for (const [count, rows] of Object.entries(summary.claims_on_node_histogram)) {
     lines.push(`- ${count}: ${rows}`);
+  }
+  const zero = summary.zero_claim_verified;
+  lines.push('', '## Verified rows with claims_on_node = 0', '');
+  lines.push(
+    `Verified zero-claim rows: **${zero.count}**. Nearest M4 claim NONE: **${zero.nearest_none}**. Overlapping M4 claim: **${zero.overlapping}**. Of those overlapping, identity mismatch (nearest claim \`source_node_occurrence_id\` ≠ registry node): **${zero.identity_mismatch}**.`,
+  );
+  lines.push('', '| Family | Zero-claim verified | NONE | Overlapping | Identity mismatch |');
+  lines.push('| --- | ---: | ---: | ---: | ---: |');
+  for (const family of zero.by_family) {
+    lines.push(
+      `| ${family.family_key} | ${family.total} | ${family.nearest_none} | ${family.overlapping} | ${family.identity_mismatch} |`,
+    );
   }
   lines.push('');
   return `${lines.join('\n')}\n`;
@@ -530,6 +668,7 @@ function main() {
         span_source: 'UNRESOLVED',
         node_kind: nodeKindOf(member, index, nodeId),
         claims_on_node: claimsOnNode(analysis, nodeId),
+        ...graphFields(analysis, index, nodeId, null),
       });
       rows.push(row);
       unresolvedCount += 1;
@@ -572,6 +711,7 @@ function main() {
       verified,
       node_kind: kind,
       claims_on_node: claimCount,
+      ...graphFields(analysis, index, nodeId, span),
     });
     rows.push(row);
     stats.span_source[spanSource] += 1;
@@ -582,11 +722,66 @@ function main() {
   }
 
   const uniqueMissing = [...new Set(missingPaths)].sort();
+  const zeroClaimByFamily = new Map();
+  function zeroClaimBucket(familyKey) {
+    const key = familyKey ?? '<missing>';
+    if (!zeroClaimByFamily.has(key)) {
+      zeroClaimByFamily.set(key, {
+        family_key: key,
+        total: 0,
+        nearest_none: 0,
+        overlapping: 0,
+        identity_mismatch: 0,
+      });
+    }
+    return zeroClaimByFamily.get(key);
+  }
+  let zeroClaimVerified = 0;
+  let zeroClaimNearestNone = 0;
+  let zeroClaimOverlapping = 0;
+  let zeroClaimIdentityMismatch = 0;
+  for (const row of rows) {
+    if (row.verified !== true || row.claims_on_node !== 0) continue;
+    zeroClaimVerified += 1;
+    const bucket = zeroClaimBucket(row.family_key);
+    bucket.total += 1;
+    const hasOverlap = typeof row.nearest_m4_claim_id === 'string'
+      && row.nearest_m4_claim_id.length > 0
+      && row.nearest_m4_overlap_bytes > 0;
+    if (!hasOverlap) {
+      zeroClaimNearestNone += 1;
+      bucket.nearest_none += 1;
+      continue;
+    }
+    zeroClaimOverlapping += 1;
+    bucket.overlapping += 1;
+    const analysis = row.agreement_id ? analyses.get(row.agreement_id) ?? null : null;
+    const onRegistryNode = nearestClaimOnRegistryNode(
+      analysis,
+      row.nearest_m4_claim_id,
+      row.source_node_occurrence_id,
+    );
+    if (!onRegistryNode) {
+      zeroClaimIdentityMismatch += 1;
+      bucket.identity_mismatch += 1;
+    }
+  }
+
   const summary = {
     row_count: rows.length,
     verified_count: verifiedCount,
     unresolved_count: unresolvedCount,
     sha_mismatch_count: shaMismatchCount,
+    pre_revision_table_sha256: PRE_REVISION_TABLE_SHA256,
+    pre_revision_table_bytes: PRE_REVISION_TABLE_BYTES,
+    zero_claim_verified: {
+      count: zeroClaimVerified,
+      nearest_none: zeroClaimNearestNone,
+      overlapping: zeroClaimOverlapping,
+      identity_mismatch: zeroClaimIdentityMismatch,
+      by_family: [...zeroClaimByFamily.values()]
+        .sort((left, right) => left.family_key.localeCompare(right.family_key)),
+    },
     per_family: [...familyStats.values()].sort((left, right) => left.family_key.localeCompare(right.family_key)),
     unresolved: unresolved.sort((left, right) => String(left.profile_id).localeCompare(String(right.profile_id))),
     node_kind_histogram: histogramObject(nodeKindHist, (left, right) => left.localeCompare(right)),

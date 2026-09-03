@@ -3,6 +3,37 @@
   "verified_count": 1380,
   "unresolved_count": 2,
   "sha_mismatch_count": 0,
+  "pre_revision_table_sha256": "6496657a7a6283f957039b574626032e0cefd7cfe8d35042592df77288849c5f",
+  "pre_revision_table_bytes": 1471325,
+  "zero_claim_verified": {
+    "count": 49,
+    "nearest_none": 13,
+    "overlapping": 36,
+    "identity_mismatch": 36,
+    "by_family": [
+      {
+        "family_key": "GUARANTY_FINANCING_PARTY",
+        "total": 4,
+        "nearest_none": 4,
+        "overlapping": 0,
+        "identity_mismatch": 0
+      },
+      {
+        "family_key": "MAE_DEFINITION",
+        "total": 4,
+        "nearest_none": 0,
+        "overlapping": 4,
+        "identity_mismatch": 4
+      },
+      {
+        "family_key": "TERMINATION",
+        "total": 41,
+        "nearest_none": 9,
+        "overlapping": 32,
+        "identity_mismatch": 32
+      }
+    ]
+  },
   "per_family": [
     {
       "family_key": "ANTITRUST_REGULATORY",
