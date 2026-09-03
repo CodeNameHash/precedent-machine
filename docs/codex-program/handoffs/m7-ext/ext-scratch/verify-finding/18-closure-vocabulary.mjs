@@ -1,10 +1,11 @@
 'use strict';
 
 /**
- * Q-0018: vocabulary of modals, enumerated limbs and proviso markers in
- * closure text. Closures here are the M2 node extent of each M4 claim
- * (the authored unit) plus the Q-0012 parent-chain spans for the fixed 50.
- * Zero model calls. Spans hashed with sha256Hex of the UTF-8 slice.
+ * Q-0018 (A-0020): modal, enumerated-limb and proviso census of the
+ * fixed 50. Surfaces are each item's Q-0012 node and, when resolved,
+ * that item's governing chapeau. Enumerated limbs are M2 children, not
+ * invented regex spans. Zero model calls. Spans hashed with sha256Hex
+ * of the UTF-8 half-open canonical slice.
  */
 
 import { createRequire } from 'node:module';
@@ -18,19 +19,38 @@ const require = createRequire(resolve(repoRoot, 'package.json'));
 const { sha256Hex } = require(resolve(repoRoot, 'lib/canonical-v2/canonical-bytes.js'));
 
 const OUT_DIR = dirname(fileURLToPath(import.meta.url));
+const Q12_PATH = resolve(OUT_DIR, '12-fixed50-source-closures.json');
 const INDEX_SET_PATH = resolve(
   repoRoot,
   'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-agreement-index-set.json',
 );
-const ANALYSIS_SET_PATH = resolve(
-  repoRoot,
-  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work3-agreement-analysis-set.json',
-);
-const Q12_PATH = resolve(OUT_DIR, '12-fixed50-source-closures.json');
 
-const MODAL_RE = /\b(shall|may|will|must|should)\b/gi;
-const LIMB_RE = /\(([ivxlcdm]+|[a-z]|[0-9]{1,2})\)/gi;
-const PROVISO_RE = /\bprovided(?:\s*,\s*however)?,?\s+that\b|\bexcept\s+(?:that|as|for)\b|\bprovided\s+further\b/gi;
+const MODAL_PHRASES = [
+  'is entitled to',
+  'is required to',
+  'shall not',
+  'will not',
+  'may not',
+  'shall',
+  'will',
+  'may',
+  'must',
+];
+
+const PROVISO_PHRASES = [
+  'provided, however',
+  'provided that',
+  'except that',
+  'other than',
+  'to the extent',
+  'so long as',
+  'subject to',
+  'notwithstanding',
+  'unless',
+  'except',
+];
+
+const LEADING_MARKER_RE = /^\s*(\((?:[ivxlcdm]+|[a-zA-Z]|[0-9]{1,2})\))/u;
 
 function loadJson(path) {
   return JSON.parse(readFileSync(path, 'utf8'));
@@ -55,14 +75,17 @@ function increment(map, key, by = 1) {
 }
 
 function histogramObject(map) {
-  const keys = [...map.keys()].sort(compareText);
   const out = {};
-  for (const key of keys) out[key] = map.get(key);
+  for (const key of [...map.keys()].sort(compareText)) out[key] = map.get(key);
   return out;
 }
 
 function charIndexToByte(text, charIndex) {
   return Buffer.byteLength(text.slice(0, charIndex), 'utf8');
+}
+
+function isWordChar(char) {
+  return typeof char === 'string' && /[A-Za-z0-9]/.test(char);
 }
 
 function verifySlice(bytes, start, end) {
@@ -80,47 +103,95 @@ function verifySlice(bytes, start, end) {
   };
 }
 
-function collectMatches(kind, regex, text, bytes, baseStart) {
+function spanContains(outer, inner) {
+  return Number.isInteger(outer?.start_byte)
+    && Number.isInteger(outer?.end_byte)
+    && Number.isInteger(inner?.start_byte)
+    && Number.isInteger(inner?.end_byte)
+    && inner.start_byte >= outer.start_byte
+    && inner.end_byte <= outer.end_byte;
+}
+
+function quotedSpans(text, baseStart, bytes) {
+  const spans = [];
+  const pairs = [
+    ['"', '"'],
+    ['\u201c', '\u201d'],
+    ['\u2018', '\u2019'],
+    ["'", "'"],
+  ];
+  for (const [open, close] of pairs) {
+    let from = 0;
+    while (from < text.length) {
+      const openAt = text.indexOf(open, from);
+      if (openAt < 0) break;
+      const closeAt = text.indexOf(close, openAt + open.length);
+      if (closeAt < 0) break;
+      const start = baseStart + charIndexToByte(text, openAt);
+      const end = baseStart + charIndexToByte(text, closeAt + close.length);
+      const span = verifySlice(bytes, start, end);
+      if (span.verified) spans.push(span);
+      from = closeAt + close.length;
+    }
+  }
+  return spans;
+}
+
+function findPhrases(kind, phrases, text, bytes, baseStart) {
   const hits = [];
-  regex.lastIndex = 0;
-  let match;
-  while ((match = regex.exec(text)) !== null) {
-    const localStart = charIndexToByte(text, match.index);
-    const localEnd = localStart + Buffer.byteLength(match[0], 'utf8');
-    const span = verifySlice(bytes, baseStart + localStart, baseStart + localEnd);
-    hits.push({
-      kind,
-      form: match[0].replace(/\s+/g, ' ').trim().toLowerCase(),
-      span,
-    });
+  const lower = text.toLowerCase();
+  const taken = new Array(text.length).fill(false);
+  const ordered = [...phrases].sort((left, right) => right.length - left.length);
+  for (let index = 0; index < text.length; index += 1) {
+    if (taken[index]) continue;
+    for (const phrase of ordered) {
+      const slice = lower.slice(index, index + phrase.length);
+      if (slice !== phrase) continue;
+      const before = index === 0 ? '' : text[index - 1];
+      const after = index + phrase.length >= text.length ? '' : text[index + phrase.length];
+      const startOk = !isWordChar(before);
+      const endOk = !isWordChar(after);
+      if (!startOk || !endOk) continue;
+      let blocked = false;
+      for (let cursor = index; cursor < index + phrase.length; cursor += 1) {
+        if (taken[cursor]) {
+          blocked = true;
+          break;
+        }
+      }
+      if (blocked) continue;
+      for (let cursor = index; cursor < index + phrase.length; cursor += 1) taken[cursor] = true;
+      const localStart = charIndexToByte(text, index);
+      const localEnd = localStart + Buffer.byteLength(text.slice(index, index + phrase.length), 'utf8');
+      hits.push({
+        kind,
+        text: text.slice(index, index + phrase.length),
+        form: phrase,
+        span: verifySlice(bytes, baseStart + localStart, baseStart + localEnd),
+      });
+      break;
+    }
   }
   return hits;
 }
 
-function scanText(text, bytes, baseStart) {
-  return [
-    ...collectMatches('modal', MODAL_RE, text, bytes, baseStart),
-    ...collectMatches('enumerated_limb', LIMB_RE, text, bytes, baseStart),
-    ...collectMatches('proviso', PROVISO_RE, text, bytes, baseStart),
-  ];
+function markerFromReference(reference) {
+  if (typeof reference !== 'string' || reference.length === 0) return null;
+  const match = reference.match(/\(([^()]+)\)\s*$/u);
+  return match ? `(${match[1]})` : null;
 }
 
-function main() {
-  const missing = [];
-  for (const required of [INDEX_SET_PATH, ANALYSIS_SET_PATH, Q12_PATH]) {
-    if (!existsSync(required)) missing.push(required);
-  }
-  if (missing.length > 0) {
-    process.stderr.write(`${JSON.stringify({ error: 'missing', missing }, null, 2)}\n`);
-    process.exitCode = 2;
-    return;
-  }
+function markerFromExtent(bytes, node) {
+  const start = node?.extent_span?.start_byte;
+  const end = node?.extent_span?.end_byte;
+  if (!bytes || !Number.isInteger(start) || !Number.isInteger(end) || end > bytes.length) return null;
+  const preview = bytes.subarray(start, Math.min(end, start + 24)).toString('utf8');
+  const match = preview.match(LEADING_MARKER_RE);
+  return match ? match[1] : null;
+}
 
-  const indexSet = loadJson(INDEX_SET_PATH);
-  const analysisSet = loadJson(ANALYSIS_SET_PATH);
-  const q12 = loadJson(Q12_PATH);
-
-  const indexByAgreement = new Map();
+function loadIndexes(indexSet, neededIds, missing) {
+  const byAgreement = new Map();
   for (const member of indexSet.members ?? []) {
     if (typeof member?.path !== 'string') continue;
     const abs = resolve(repoRoot, member.path);
@@ -132,130 +203,266 @@ function main() {
     const agreementId = record?.source_binding?.agreement_id;
     const text = record?.source_binding?.canonical_text;
     if (typeof agreementId !== 'string' || typeof text !== 'string') continue;
+    if (!neededIds.has(agreementId)) continue;
     const bytes = Buffer.from(text, 'utf8');
     const nodesById = new Map();
+    const byParent = new Map();
     for (const node of record.nodes ?? []) {
-      if (typeof node?.node_occurrence_id === 'string') nodesById.set(node.node_occurrence_id, node);
+      if (typeof node?.node_occurrence_id !== 'string') continue;
+      nodesById.set(node.node_occurrence_id, node);
+      const parentId = node.parent_node_occurrence_id;
+      if (typeof parentId === 'string' && parentId.length > 0) {
+        const siblings = byParent.get(parentId) ?? [];
+        siblings.push(node);
+        byParent.set(parentId, siblings);
+      }
     }
-    indexByAgreement.set(agreementId, { bytes, nodesById, path: member.path, text });
+    for (const siblings of byParent.values()) {
+      siblings.sort((left, right) => {
+        const start = (left.extent_span?.start_byte ?? 0) - (right.extent_span?.start_byte ?? 0);
+        if (start !== 0) return start;
+        return compareText(left.node_occurrence_id, right.node_occurrence_id);
+      });
+    }
+    byAgreement.set(agreementId, { bytes, nodesById, byParent, path: member.path });
+  }
+  return byAgreement;
+}
+
+function definedTermWindows(q12Node, quotes) {
+  const windows = [...quotes];
+  for (const edge of q12Node?.definition_edges ?? []) {
+    const span = edge?.source_span;
+    if (span?.verified && Number.isInteger(span.start_byte) && Number.isInteger(span.end_byte)) {
+      windows.push({ start_byte: span.start_byte, end_byte: span.end_byte });
+    }
+  }
+  return windows;
+}
+
+function finishEntry(entry, windows) {
+  return {
+    ...entry,
+    inside_defined_term: windows.some((window) => spanContains(window, {
+      start_byte: entry.start_byte,
+      end_byte: entry.end_byte,
+    })),
+  };
+}
+
+function scanSurface({
+  bytes,
+  index,
+  surface,
+  nodeOccurrenceId,
+  start,
+  end,
+  q12Node,
+}) {
+  const entries = [];
+  const span = verifySlice(bytes, start, end);
+  if (!span.verified) {
+    return { entries, sha_failed: 1, sha_verified: 0, child_kinds: [] };
+  }
+  const text = bytes.subarray(start, end).toString('utf8');
+  const quotes = quotedSpans(text, start, bytes);
+  const windows = definedTermWindows(q12Node, quotes);
+  let shaVerified = 1;
+  let shaFailed = 0;
+
+  for (const hit of [
+    ...findPhrases('modal', MODAL_PHRASES, text, bytes, start),
+    ...findPhrases('proviso', PROVISO_PHRASES, text, bytes, start),
+  ]) {
+    if (hit.span.verified) shaVerified += 1;
+    else shaFailed += 1;
+    entries.push(finishEntry({
+      child_node_kind: null,
+      child_node_occurrence_id: null,
+      end_byte: hit.span.end_byte,
+      kind: hit.kind,
+      marker: null,
+      start_byte: hit.span.start_byte,
+      surface,
+      text: hit.text,
+      text_sha256: hit.span.text_sha256,
+      verified: hit.span.verified,
+    }, windows));
   }
 
-  const formHist = new Map();
+  const children = typeof nodeOccurrenceId === 'string'
+    ? (index.byParent.get(nodeOccurrenceId) ?? [])
+    : [];
+  const childKinds = [];
+  for (const child of children) {
+    const childStart = child.extent_span?.start_byte;
+    const childEnd = child.extent_span?.end_byte;
+    const childSpan = verifySlice(bytes, childStart, childEnd);
+    if (childSpan.verified) shaVerified += 1;
+    else shaFailed += 1;
+    const marker = markerFromReference(child.reference) ?? markerFromExtent(bytes, child);
+    childKinds.push(child.node_kind ?? 'UNKNOWN');
+    entries.push(finishEntry({
+      child_node_kind: child.node_kind ?? null,
+      child_node_occurrence_id: child.node_occurrence_id ?? null,
+      end_byte: childSpan.end_byte,
+      kind: 'enumerated_limb',
+      marker,
+      start_byte: childSpan.start_byte,
+      surface,
+      text: marker,
+      text_sha256: childSpan.text_sha256,
+      verified: childSpan.verified,
+    }, windows));
+  }
+
+  entries.sort((left, right) => {
+    const startCmp = (left.start_byte ?? 0) - (right.start_byte ?? 0);
+    if (startCmp !== 0) return startCmp;
+    const endCmp = (left.end_byte ?? 0) - (right.end_byte ?? 0);
+    if (endCmp !== 0) return endCmp;
+    return compareText(left.kind, right.kind) || compareText(left.text ?? '', right.text ?? '');
+  });
+  return { entries, sha_failed: shaFailed, sha_verified: shaVerified, child_kinds: childKinds };
+}
+
+function main() {
+  const missing = [];
+  for (const required of [Q12_PATH, INDEX_SET_PATH]) {
+    if (!existsSync(required)) missing.push(required);
+  }
+  if (missing.length > 0) {
+    process.stderr.write(`${JSON.stringify({ error: 'missing', missing }, null, 2)}\n`);
+    process.exitCode = 2;
+    return;
+  }
+
+  const q12 = loadJson(Q12_PATH);
+  const indexSet = loadJson(INDEX_SET_PATH);
+  const neededIds = new Set(
+    (q12.items ?? []).map((item) => item.agreement_id).filter((id) => typeof id === 'string'),
+  );
+  const indexes = loadIndexes(indexSet, neededIds, missing);
+
+  const items = [];
   const kindHist = new Map();
-  let closures = 0;
+  const formHist = new Map();
+  const childKindHist = new Map();
   let shaVerified = 0;
   let shaFailed = 0;
-  const agreementRows = [];
+  let surfaces = 0;
+  let unresolvedChapeaus = 0;
+  let itemsWithoutNodes = 0;
 
-  for (const member of analysisSet.members ?? []) {
-    const agreementId = member?.agreement_id;
-    const analysisPath = member?.agreement_analysis_binding?.path;
-    if (typeof agreementId !== 'string' || typeof analysisPath !== 'string') continue;
-    const abs = resolve(repoRoot, analysisPath);
-    if (!existsSync(abs)) {
-      missing.push(analysisPath);
-      continue;
-    }
-    const index = indexByAgreement.get(agreementId);
-    if (!index) {
-      missing.push(`m2 for ${agreementId}`);
-      continue;
-    }
-    const analysis = loadJson(abs);
-    const localKind = new Map();
-    const localForm = new Map();
-    let localClosures = 0;
-    for (const claim of analysis.claims ?? []) {
-      const nodeId = claim.source_node_occurrence_ids?.[0];
-      const node = typeof nodeId === 'string' ? index.nodesById.get(nodeId) : null;
-      if (!node?.extent_span) continue;
-      const start = node.extent_span.start_byte;
-      const end = node.extent_span.end_byte;
-      const span = verifySlice(index.bytes, start, end);
-      if (!span.verified) {
-        shaFailed += 1;
-        continue;
-      }
-      shaVerified += 1;
-      const text = index.bytes.subarray(start, end).toString('utf8');
-      const hits = scanText(text, index.bytes, start);
-      closures += 1;
-      localClosures += 1;
-      for (const hit of hits) {
-        increment(kindHist, hit.kind);
-        increment(formHist, `${hit.kind}:${hit.form}`);
-        increment(localKind, hit.kind);
-        increment(localForm, `${hit.kind}:${hit.form}`);
-        if (hit.span.verified) shaVerified += 1;
-        else shaFailed += 1;
-      }
-    }
-    agreementRows.push({
-      agreement_id: agreementId,
-      closures: localClosures,
-      form_histogram: histogramObject(localForm),
-      kind_histogram: histogramObject(localKind),
-    });
-  }
-
-  const fixed50Forms = new Map();
-  const fixed50Kinds = new Map();
-  let fixed50Closures = 0;
   for (const item of q12.items ?? []) {
-    const index = item.agreement_id ? indexByAgreement.get(item.agreement_id) : null;
-    if (!index) continue;
-    for (const node of item.nodes ?? []) {
-      const start = node.span?.start_byte ?? node.start_byte ?? node.extent_span?.start_byte;
-      const end = node.span?.end_byte ?? node.end_byte ?? node.extent_span?.end_byte;
-      if (!Number.isInteger(start) || !Number.isInteger(end)) continue;
-      const span = verifySlice(index.bytes, start, end);
-      if (!span.verified) continue;
-      const text = index.bytes.subarray(start, end).toString('utf8');
-      const hits = scanText(text, index.bytes, start);
-      fixed50Closures += 1;
-      for (const hit of hits) {
-        increment(fixed50Kinds, hit.kind);
-        increment(fixed50Forms, `${hit.kind}:${hit.form}`);
-      }
+    const index = indexes.get(item.agreement_id);
+    if (!index) missing.push(`m2 for ${item.agreement_id}`);
+    const q12Node = item.nodes?.[0] ?? null;
+    const nodeId = q12Node?.node_occurrence_id
+      ?? item.source_node_occurrence_ids?.[0]
+      ?? null;
+    const m2Node = nodeId && index ? index.nodesById.get(nodeId) : null;
+    const entries = [];
+    const notes = [];
+
+    if (!q12Node || !m2Node || !index) {
+      itemsWithoutNodes += 1;
+      notes.push('NO_SOURCE_NODE');
+    } else {
+      const nodeScan = scanSurface({
+        bytes: index.bytes,
+        index,
+        surface: 'node',
+        nodeOccurrenceId: nodeId,
+        start: m2Node.extent_span?.start_byte ?? q12Node.span?.start_byte,
+        end: m2Node.extent_span?.end_byte ?? q12Node.span?.end_byte,
+        q12Node,
+      });
+      entries.push(...nodeScan.entries);
+      shaVerified += nodeScan.sha_verified;
+      shaFailed += nodeScan.sha_failed;
+      surfaces += 1;
+      for (const kind of nodeScan.child_kinds) increment(childKindHist, kind);
     }
+
+    const chapeau = q12Node?.governing_chapeau ?? null;
+    if (chapeau?.verified && Number.isInteger(chapeau.start_byte) && Number.isInteger(chapeau.end_byte) && index) {
+      const chapeauScan = scanSurface({
+        bytes: index.bytes,
+        index,
+        surface: 'governing_chapeau',
+        nodeOccurrenceId: chapeau.node_occurrence_id,
+        start: chapeau.start_byte,
+        end: chapeau.end_byte,
+        q12Node,
+      });
+      entries.push(...chapeauScan.entries);
+      shaVerified += chapeauScan.sha_verified;
+      shaFailed += chapeauScan.sha_failed;
+      surfaces += 1;
+      for (const kind of chapeauScan.child_kinds) increment(childKindHist, `chapeau:${kind}`);
+    } else if (q12Node) {
+      unresolvedChapeaus += 1;
+      notes.push(chapeau?.why ?? 'GOVERNING_CHAPEAU_UNRESOLVED');
+    }
+
+    const counts = { enumerated_limb: 0, modal: 0, proviso: 0 };
+    for (const entry of entries) {
+      increment(kindHist, entry.kind);
+      counts[entry.kind] = (counts[entry.kind] ?? 0) + 1;
+      const form = entry.kind === 'enumerated_limb'
+        ? `${entry.child_node_kind ?? 'UNKNOWN'}:${entry.marker ?? 'none'}`
+        : (entry.text ?? '').toLowerCase();
+      increment(formHist, `${entry.kind}:${form}`);
+    }
+
+    items.push(sortedObject({
+      agreement_id: item.agreement_id ?? null,
+      counts,
+      entries,
+      node_kind: q12Node?.node_kind ?? null,
+      node_occurrence_id: nodeId,
+      notes,
+      sample_ordinal: item.sample_ordinal,
+    }));
   }
 
-  agreementRows.sort((left, right) => compareText(left.agreement_id, right.agreement_id));
-  const tablePayload = sortedObject({ agreements: agreementRows });
+  items.sort((left, right) => (left.sample_ordinal ?? 0) - (right.sample_ordinal ?? 0));
+  const tablePayload = sortedObject({ items });
   const tableSha = sha256Hex(Buffer.from(`${JSON.stringify(tablePayload, null, 2)}\n`, 'utf8'));
   const report = sortedObject({
-    schema: 'Q-0018-CLOSURE-VOCABULARY/V1',
-    closure_definition: 'M2 node extent of each M4 claim (authored unit); fixed-50 also scans Q-0012 node spans',
-    patterns: {
-      enumerated_limb: String(LIMB_RE),
-      modal: String(MODAL_RE),
-      proviso: String(PROVISO_RE),
+    schema: 'Q-0018-FIXED50-VOCABULARY/V1',
+    authority: 'A-0020',
+    phrases: {
+      modal: MODAL_PHRASES,
+      proviso: PROVISO_PHRASES,
     },
     counts: {
-      agreements: agreementRows.length,
-      closures,
-      fixed50_closures: fixed50Closures,
+      items: items.length,
+      items_without_nodes: itemsWithoutNodes,
+      surfaces,
+      unresolved_chapeaus: unresolvedChapeaus,
       sha_failed_spans: shaFailed,
       sha_verified_spans: shaVerified,
     },
     kind_histogram: histogramObject(kindHist),
     form_histogram: histogramObject(formHist),
-    fixed50_kind_histogram: histogramObject(fixed50Kinds),
-    fixed50_form_histogram: histogramObject(fixed50Forms),
+    child_kind_histogram: histogramObject(childKindHist),
     missing_paths: [...new Set(missing)].sort(compareText),
     table_sha256: tableSha,
-    agreements: agreementRows,
+    items,
   });
 
   writeFileSync(resolve(OUT_DIR, '18-closure-vocabulary.json'), `${JSON.stringify(report, null, 2)}\n`);
   const out = [
-    `agreements ${report.counts.agreements}`,
-    `closures ${closures}`,
+    `items ${report.counts.items}`,
+    `surfaces ${surfaces}`,
     `modals ${kindHist.get('modal') ?? 0}`,
     `enumerated_limbs ${kindHist.get('enumerated_limb') ?? 0}`,
     `provisos ${kindHist.get('proviso') ?? 0}`,
-    `distinct_forms ${formHist.size}`,
-    `fixed50_closures ${fixed50Closures}`,
+    `child_kinds ${[...childKindHist.keys()].sort(compareText).join(',')}`,
+    `items_without_nodes ${itemsWithoutNodes}`,
+    `unresolved_chapeaus ${unresolvedChapeaus}`,
     `sha_verified_spans ${shaVerified}`,
     `sha_failed_spans ${shaFailed}`,
     `table_sha256 ${tableSha}`,
@@ -263,22 +470,30 @@ function main() {
   writeFileSync(resolve(OUT_DIR, '18-closure-vocabulary.out'), `${out.join('\n')}\n`);
 
   const lines = [
-    '# Closure-text vocabulary (Q-0018)',
+    '# Fixed-50 modal, limb and proviso census (Q-0018 / A-0020)',
     '',
-    'Closure text is the M2 node extent of each M4 claim (the authored unit). The scan is regex over that slice: modals `shall|may|will|must|should`; enumerated limbs `(i)` / `(a)` / `(1)`; provisos `provided that` / `provided, however, that` / `except that|as|for`.',
+    'Surfaces: each item node, plus the Q-0012 governing chapeau when that span is verified. Enumerated limbs are M2 children (kinds as found). Marker phrases are the A-0020 lists, longest-first, word-bounded.',
     '',
-    `- Closures: **${closures}**. Hits: modal **${kindHist.get('modal') ?? 0}**, limb **${kindHist.get('enumerated_limb') ?? 0}**, proviso **${kindHist.get('proviso') ?? 0}**. Distinct forms: **${formHist.size}**.`,
-    `- Fixed-50 node spans: **${fixed50Closures}**.`,
-    `- SHA-verified spans: **${shaVerified}**. Failed: **${shaFailed}**.`,
+    `- Items: **${items.length}**. Surfaces scanned: **${surfaces}**. Item 39 has no source node.`,
+    `- Hits: modal **${kindHist.get('modal') ?? 0}**, child limbs **${kindHist.get('enumerated_limb') ?? 0}**, proviso **${kindHist.get('proviso') ?? 0}**.`,
+    `- Unresolved chapeaus: **${unresolvedChapeaus}**. SHA-verified spans: **${shaVerified}**. Failed: **${shaFailed}**.`,
     '',
-    '## Forms',
+    '## Child kinds found',
     '',
-    '| Kind | Form | Count |',
-    '| --- | --- | ---: |',
+    '| Kind | Count |',
+    '| --- | ---: |',
   ];
+  for (const [kind, count] of [...childKindHist.entries()].sort((left, right) => right[1] - left[1] || compareText(left[0], right[0]))) {
+    lines.push(`| \`${kind}\` | ${count} |`);
+  }
+  lines.push('', '## Per item', '', '| Ordinal | Node | Modal | Limb | Proviso | Notes |', '| ---: | --- | ---: | ---: | ---: | --- |');
+  for (const row of items) {
+    lines.push(`| ${row.sample_ordinal} | \`${row.node_kind ?? 'none'}\` | ${row.counts.modal} | ${row.counts.enumerated_limb} | ${row.counts.proviso} | ${row.notes.join('; ') || '—'} |`);
+  }
+  lines.push('', '## Forms', '', '| Kind | Form | Count |', '| --- | --- | ---: |');
   for (const [key, count] of [...formHist.entries()].sort((left, right) => right[1] - left[1] || compareText(left[0], right[0]))) {
-    const [kind, form] = key.split(':');
-    lines.push(`| ${kind} | \`${form}\` | ${count} |`);
+    const sep = key.indexOf(':');
+    lines.push(`| ${key.slice(0, sep)} | \`${key.slice(sep + 1)}\` | ${count} |`);
   }
   writeFileSync(resolve(OUT_DIR, '18-CLOSURE-VOCABULARY.md'), `${lines.join('\n')}\n`);
   process.stdout.write(`${out.join('\n')}\n`);
