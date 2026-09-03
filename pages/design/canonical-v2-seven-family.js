@@ -119,6 +119,31 @@ export function formatEvidenceValue(evidence) {
   return readableCode(evidence.canonical_value);
 }
 
+export function formatMeasurementValue(measurement) {
+  if (measurement.measurement_state === 'NOT_YET_MEASURED') return 'Not yet measured';
+  if (measurement.disposition === 'ABSENT') return 'Absent';
+  if (measurement.disposition === 'UNRESOLVED') return 'Unresolved';
+  if (measurement.measurement_state !== 'MEASURED'
+    || measurement.disposition !== 'PRESENT') {
+    throw new Error('measurement status is not displayable');
+  }
+  const { typed_value: typedValue, value_type: valueType } = measurement;
+  if (valueType === 'PARTY_SET') return typedValue.parties.join('; ');
+  if (valueType === 'MONEY') return `${typedValue.currency} ${typedValue.amount}`;
+  if (valueType === 'PERCENTAGE') return `${typedValue}%`;
+  if (valueType === 'BOOLEAN') return typedValue ? 'Yes' : 'No';
+  if (valueType === 'DURATION' || valueType === 'PERIOD') {
+    const bound = readableCode(typedValue.bound_type);
+    const unit = typedValue.unit.toLowerCase();
+    return `${bound} ${typedValue.count} ${unit}${typedValue.count === 1 ? '' : 's'}`;
+  }
+  if (valueType === 'ENUM') return readableCode(typedValue);
+  if (['DATE', 'DEFINED_TERM', 'NUMBER', 'PARTY', 'REFERENCE'].includes(valueType)) {
+    return String(typedValue);
+  }
+  throw new Error(`measurement value type ${valueType || '(missing)'} is not displayable`);
+}
+
 const PRESENTED_ATTRIBUTE_KEYS = new Set([
   'appraisal_status',
   'applies_to_clause_labels',
@@ -197,6 +222,32 @@ function EvidenceCard({ evidence }) {
   );
 }
 
+export function MeasurementStatuses({ statuses = [] }) {
+  if (!statuses.length) return null;
+  return (
+    <div className="mt-2 grid gap-1.5 sm:grid-cols-2">
+      {statuses.map((measurement) => {
+        const pending = measurement.measurement_state === 'NOT_YET_MEASURED';
+        return (
+          <div
+            key={measurement.field_key}
+            data-measurement-state={measurement.measurement_state}
+            data-measurement-disposition={measurement.disposition || 'UNSET'}
+            className={`border px-2 py-1.5 ${pending ? 'border-[#D8B56A] bg-[#FFF9EC]' : 'border-[#D9D7D2] bg-white'}`}
+          >
+            <div className="text-[8px] font-bold uppercase tracking-[0.08em] text-[#77736C]">
+              {measurement.label}
+            </div>
+            <div className={`mt-0.5 text-[10px] font-semibold ${pending ? 'text-[#7A5918]' : 'text-[#1F1F1F]'}`}>
+              {formatMeasurementValue(measurement)}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export function evidenceForComparisonRow(familyKey, comparisonLine, profile) {
   const evidence = profile.evidence || [];
   if (familyKey !== 'MAE_DEFINITION') return evidence;
@@ -227,6 +278,9 @@ function ProfileCoverage({ familyKey, row }) {
   ));
   const claims = evidence.filter((entry) => entry.evidence_kind === 'M4_CLAIM');
   const sourceOnly = evidence.filter((entry) => entry.evidence_kind === 'PHASE2_SOURCE_ONLY');
+  const pendingMeasurements = row.profiles.flatMap(
+    (profile) => profile.measurement_statuses || [],
+  ).filter((measurement) => measurement.measurement_state === 'NOT_YET_MEASURED');
   const previewValues = [];
   const seenValues = new Set();
   for (const entry of claims) {
@@ -250,6 +304,11 @@ function ProfileCoverage({ familyKey, row }) {
         <span className="inline-block rounded bg-[#F0F0EE] px-2 py-1 text-[9px] font-bold uppercase tracking-[0.08em] text-[#5E5A54]">
           Not product-served
         </span>
+        {pendingMeasurements.length ? (
+          <span className="inline-block rounded bg-[#FFF1CF] px-2 py-1 text-[9px] font-bold uppercase tracking-[0.08em] text-[#7A5918]">
+            {pendingMeasurements.length} measurements not yet measured
+          </span>
+        ) : null}
       </div>
       {previewValues.length ? (
         <div className="mt-2 flex flex-wrap gap-1">
@@ -276,6 +335,10 @@ function ProfileCoverage({ familyKey, row }) {
               row.comparison_line,
               profile,
             );
+            const profileMeasurements = profile.measurement_statuses || [];
+            const pendingProfileMeasurements = profileMeasurements.filter(
+              (measurement) => measurement.measurement_state === 'NOT_YET_MEASURED',
+            ).length;
             return (
               <section key={`${profile.profile_key}:${profile.party_band || 'not-party-banded'}`} className="bg-[#FAFAF8] p-2.5">
                 <div className="flex flex-wrap items-start justify-between gap-2">
@@ -287,10 +350,15 @@ function ProfileCoverage({ familyKey, row }) {
                       {profile.party_band || 'Not party-banded'}
                     </div>
                   </div>
-                  <span className="rounded bg-[#E7F1E9] px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.08em] text-[#27633A]">
-                    Extraction complete
+                  <span className={`rounded px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.08em] ${pendingProfileMeasurements ? 'bg-[#FFF1CF] text-[#7A5918]' : 'bg-[#E7F1E9] text-[#27633A]'}`}>
+                    {pendingProfileMeasurements
+                      ? `${pendingProfileMeasurements} fields not yet measured`
+                      : profile.output_disposition === 'REVIEW_ONLY'
+                        ? 'Review-only evidence'
+                        : readableCode(profile.extraction_state)}
                   </span>
                 </div>
+                <MeasurementStatuses statuses={profileMeasurements} />
                 <div className="mt-2 space-y-2">
                   {profileEvidence.map((entry) => (
                     <EvidenceCard
@@ -369,6 +437,28 @@ function UnmeasuredConcepts({ concepts }) {
   );
 }
 
+function MeasurementSummary({ summary }) {
+  if (!summary) return null;
+  return (
+    <div
+      data-product-ready={String(summary.product_ready)}
+      className="mt-4 border-l-2 border-[#D8B56A] bg-[#FFF9EC] px-4 py-3 text-[#5F4A1E]"
+    >
+      <div className="text-[9px] font-bold uppercase tracking-[0.12em]">
+        Measurement status
+      </div>
+      <div className="mt-1 text-[11px] font-semibold">
+        {summary.not_yet_measured_count} required measurements not yet measured
+      </div>
+      <div className="mt-1 text-[10px] leading-4">
+        {summary.review_only ? 'Review-only' : 'Reviewed'} ·{' '}
+        {summary.comparison_complete ? 'Comparison-complete' : 'Not comparison-complete'} ·{' '}
+        {summary.product_ready ? 'Product-ready' : 'Not product-ready'}
+      </div>
+    </div>
+  );
+}
+
 function FamilySection({ family, ordinal, v1ReviewDeal }) {
   return (
     <section id={family.family_key.toLowerCase()} className="scroll-mt-6 border border-[#D9D7D2] bg-[#FCFBF8] p-5 shadow-sm">
@@ -392,6 +482,7 @@ function FamilySection({ family, ordinal, v1ReviewDeal }) {
         <SevenFamilyV1Surface familyKey={family.family_key} reviewDeal={v1ReviewDeal} />
         <V2Rows familyKey={family.family_key} rows={family.v2_rows} />
       </div>
+      <MeasurementSummary summary={family.measurement_summary} />
       <UnmeasuredConcepts concepts={family.unmeasured_concepts} />
       <SourceIdentity source={family.package} />
     </section>
@@ -414,7 +505,7 @@ export default function SevenFamilyPreview({ preview, v1ReviewDeal }) {
                 <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#2F6DB5]">Canonical V2 Preview</div>
                 <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Seven-family grouping application</h1>
                 <p className="mt-3 max-w-3xl text-[11px] leading-5 text-[#4F4C47]">
-                  Read-only evidence preview. V1 surfaces appear beside the ruled V2 comparison groups, validated values and recorded clause text. Every V2 row is derived at request time from the exact sealed successor packages, their bound grouping dispositions and their completed review evidence.
+                  Read-only evidence preview. V1 surfaces appear beside the ruled V2 comparison groups, validated values and recorded clause text. Every V2 row is derived at request time from the exact sealed successor packages, their bound grouping dispositions and their current review evidence.
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-px overflow-hidden border border-[#D9D7D2] bg-[#D9D7D2] text-center sm:grid-cols-4">

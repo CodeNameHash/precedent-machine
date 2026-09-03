@@ -18,6 +18,9 @@ const {
   loadSevenFamilyGroupingPreview,
   validateSealReceipt,
 } = require('../lib/canonical-v2/seven-family-grouping-preview-source');
+const {
+  loadSevenFamilyV2ReviewEvidence,
+} = require('../lib/canonical-v2/seven-family-v2-review-evidence');
 
 const PREVIEW_ENV = { VERCEL: '1', VERCEL_ENV: 'preview', NODE_ENV: 'production' };
 
@@ -277,6 +280,75 @@ test('every comparison row exposes its exact sealed V2 profile coverage', () => 
   )));
 });
 
+test('Interim Operating keeps threshold and exception measurement visibly open', () => {
+  const preview = loadSevenFamilyGroupingPreview({ env: PREVIEW_ENV });
+  const interim = preview.families.find((family) => family.family_key === 'INTERIM_OPERATING');
+  const reviewEvidence = loadSevenFamilyV2ReviewEvidence().families.find(
+    (family) => family.family_key === 'INTERIM_OPERATING',
+  );
+  const sourceTextByProfile = new Map(reviewEvidence.profiles.map((profile) => [
+    profile.proposed_profile_key,
+    profile.evidence[0].raw_value,
+  ]));
+  const profiles = interim.v2_rows.flatMap((row) => row.profiles);
+
+  assert.equal(profiles.length, 113);
+  assert.equal(new Set(profiles.map((profile) => profile.profile_key)).size, 113);
+  for (const profile of profiles) {
+    assert.deepEqual(
+      profile.measurement_statuses.map((measurement) => ({
+        field_key: measurement.field_key,
+        label: measurement.label,
+        measurement_state: measurement.measurement_state,
+        disposition: measurement.disposition,
+        value_type: measurement.value_type,
+        typed_value: measurement.typed_value,
+      })),
+      [
+        {
+          field_key: 'THRESHOLD',
+          label: 'Threshold',
+          measurement_state: 'NOT_YET_MEASURED',
+          disposition: null,
+          value_type: null,
+          typed_value: null,
+        },
+        {
+          field_key: 'EXCEPTION',
+          label: 'Exception',
+          measurement_state: 'NOT_YET_MEASURED',
+          disposition: null,
+          value_type: null,
+          typed_value: null,
+        },
+      ],
+    );
+    assert.equal(profile.output_disposition, 'REVIEW_ONLY');
+    assert.equal(profile.evidence.length, 1);
+    assert.equal(profile.evidence[0].claim_definition_key, 'IOC_RESTRICTION_PRESENT');
+    assert.equal(profile.evidence[0].canonical_value, true);
+    assert.equal(profile.evidence[0].raw_value, sourceTextByProfile.get(profile.profile_key));
+  }
+
+  const measurements = profiles.flatMap((profile) => profile.measurement_statuses);
+  assert.equal(measurements.length, 226);
+  assert.equal(measurements.filter(
+    (measurement) => measurement.measurement_state === 'NOT_YET_MEASURED',
+  ).length, 226);
+  assert.equal(measurements.filter(
+    (measurement) => measurement.disposition === 'ABSENT',
+  ).length, 0);
+  assert.deepEqual(interim.measurement_summary, {
+    required_disposition_count: 226,
+    explicit_disposition_count: 0,
+    not_yet_measured_count: 226,
+    absent_count: 0,
+    review_only: true,
+    comparison_complete: false,
+    product_ready: false,
+  });
+});
+
 test('a changed seal receipt cannot retain its pinned identity', () => {
   const spec = FAMILY_SOURCES.find((entry) => entry.family_key === 'MAE_DEFINITION');
   const seal = JSON.parse(fs.readFileSync(spec.seal.file, 'utf8'));
@@ -377,6 +449,65 @@ test('preview formats validated V2 values for legal review', () => {
       profile,
     )).map((entry) => entry.canonical_value).sort(),
     ['FAILURE_TO_MEET_PROJECTIONS', 'STOCK_PRICE_CHANGES'],
+  );
+});
+
+test('preview renders measurement status generically without claiming IOC completion', () => {
+  const {
+    MeasurementStatuses,
+    default: SevenFamilyPreview,
+    formatMeasurementValue,
+  } = loadEsmModule(resolveRepoPath('pages/design/canonical-v2-seven-family.js'));
+  const { buildSevenFamilyV1PreviewDeal } = require('../lib/canonical-v2/seven-family-v1-preview-deal');
+  const pending = {
+    field_key: 'THRESHOLD',
+    label: 'Threshold',
+    measurement_state: 'NOT_YET_MEASURED',
+    disposition: null,
+    value_type: null,
+    typed_value: null,
+  };
+  const futurePresent = {
+    field_key: 'CAP_AMOUNT',
+    label: 'Cap amount',
+    measurement_state: 'MEASURED',
+    disposition: 'PRESENT',
+    value_type: 'MONEY',
+    typed_value: { amount: 5000000, currency: 'USD' },
+  };
+
+  assert.equal(formatMeasurementValue(pending), 'Not yet measured');
+  assert.equal(formatMeasurementValue(futurePresent), 'USD 5000000');
+  const syntheticMarkup = renderToStaticMarkup(React.createElement(
+    MeasurementStatuses,
+    { statuses: [futurePresent] },
+  ));
+  assert.match(syntheticMarkup, /Cap amount/);
+  assert.match(syntheticMarkup, /USD 5000000/);
+
+  const markup = renderToStaticMarkup(React.createElement(SevenFamilyPreview, {
+    preview: loadSevenFamilyGroupingPreview({ env: PREVIEW_ENV }),
+    v1ReviewDeal: buildSevenFamilyV1PreviewDeal(),
+  }));
+  assert.equal((markup.match(/data-measurement-state="NOT_YET_MEASURED"/g) || []).length, 226);
+  assert.equal((markup.match(/data-measurement-disposition="UNSET"/g) || []).length, 226);
+  assert.doesNotMatch(markup, /data-measurement-disposition="ABSENT"/);
+  assert.match(markup, /226 required measurements not yet measured/);
+  assert.match(markup, /Review-only/);
+  assert.match(markup, /Not comparison-complete/);
+  assert.match(markup, /Not product-ready/);
+  assert.doesNotMatch(markup, /Extraction complete/);
+  assert.doesNotMatch(markup, /Work 4 complete/i);
+
+  const page = fs.readFileSync('pages/design/canonical-v2-seven-family.js', 'utf8');
+  const genericMeasurementRenderer = page.slice(
+    page.indexOf('export function formatMeasurementValue'),
+    page.indexOf('export function evidenceForComparisonRow'),
+  );
+  assert.ok(genericMeasurementRenderer.length > 0);
+  assert.doesNotMatch(
+    genericMeasurementRenderer,
+    /INTERIM_OPERATING|IOC_RESTRICTION_PRESENT|familyKey/,
   );
 });
 
