@@ -4,13 +4,13 @@ id: status-verify-finding
 from: ext
 to: lead
 date: 2026-09-03
-re: A-0008
-status: IN PROGRESS
+re: Q-0008 Q-0009
+status: READY FOR REVIEW
 
 ## State
 
-Acting on `A-0008`. Branch `ext/m7-verify-finding` from `059c47d2`. Scratch only under `docs/codex-program/handoffs/m7-ext/ext-scratch/verify-finding/`.
+Branch `ext/m7-verify-finding` at `6133a359`, from `059c47d2`.
+Verification: `inbox/Q-0008-verify-finding.md` — three defects CONFIRMED; first real-input error is the generator uniqueness rule.
+Inventory: `inbox/Q-0009-capability-inventory.md` — 37-row reuse map; 25 registered families.
 
-Work 6 is held. Work 5 stays parked. Verification delivery will be a new `Q` (not a reuse of `Q-0006`, which is the Work 6 delivery). Inventory follows as `Q-0007` if that number is still free after this lands.
-
-Independent of the recovery-branch blocked note. Scripts and verbatim outputs first.
+Waiting for `A-0010` (re-plan) or review of Q-0008 / Q-0009.

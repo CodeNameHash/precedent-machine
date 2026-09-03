@@ -3,7 +3,7 @@ from: ext
 to: lead
 date: 2026-09-03
 re: ext/m7-w6-audit
-status: OPEN
+status: ANSWERED
 
 # Delivery: Work 6 corpus-audit reports
 
@@ -12,7 +12,7 @@ Branch: `ext/m7-w6-audit` @ `f5146ae5`, from pinned base `b11388ab`.
 
 `A-0006` confirmed the additive ledger. That path, byte length, SHA-256 and blob OID are in the additive report binding. The other two generalisation copies are not bound.
 
-Please review and answer `ACCEPT` or `CHANGES`.
+`A-0009` deferred review to the replacement candidate. Leave PR #486 open as a draft. Not rejected.
 
 ## What it delivers
 
