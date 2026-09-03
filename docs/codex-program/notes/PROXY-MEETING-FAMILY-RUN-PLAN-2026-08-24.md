@@ -26,6 +26,24 @@ Package: `evidence/.../control/m7-v2-repair-family-work3-profile-package-proxy-m
 
 ---
 
+## Post-seal extraction backlog
+
+Ben settled ownership for two V1 facts on 2026-09-01. Decision 23 records the
+rulings. This is an extraction backlog only. It does not alter the sealed
+31-profile package or answer the grouping question below.
+
+| Fact | V1 fields | Settled owner | Current state |
+|---|---|---|---|
+| Vote standard | `approvalDefinition`; `voteThreshold` | `PROXY_MEETING` | Owner set; extraction open. The sealed package has no Vote-standard topic. |
+| Force-the-vote | `forceTheVote`; `forceTheVoteDetails`; `forceTheVoteType` | `PROXY_MEETING` | Owner set; extraction open. Store whether the meeting obligation survives a recommendation change. No-shop supplies only the recommendation-change reference. |
+
+This record is a mechanical application of Decision 22 and paragraph 2 of
+`BEN-STANDING-AUTHORIZATION-2026-09-01.md`. It authorises no new extraction
+claim, taxonomy change, review-flag clearance, serving change or production
+effect.
+
+---
+
 ## Proof
 
 ```bash

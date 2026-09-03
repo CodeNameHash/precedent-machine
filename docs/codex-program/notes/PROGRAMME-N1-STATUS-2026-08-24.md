@@ -757,3 +757,16 @@ Large WIP on branch — Termination + MAE + D&O + Guaranty (Phase 2 slice) + Clo
   `docs/codex-program/notes/V1-COVERAGE-LEDGER-2026-09-01.md`. Each family
   successor disposition carries its ledger entries as named unmeasured
   concepts.
+- **IOC Work 4–6 sequencing (Ben, 2026-09-02):** The 113 sealed Interim
+  Operating restriction-presence profiles remain unchanged as the grouping
+  input. Work 4 may render those facts, but it must identify every threshold
+  and exception as `NOT_YET_MEASURED`, not absent, and preserve the source
+  clause text. Work 5 and Work 6 may carry these only as visible review-only
+  omissions. Source-backed typed threshold and exception extraction is
+  deferred to the later family-depth wave. The formatter must stay generic so
+  those fields can be added without Interim-Operating-specific display logic.
+  IOC is not comparison-complete and cannot enter normal production serving
+  until all 113 governed restrictions have an explicit threshold disposition
+  and an explicit exception disposition, each `present`, `absent` or
+  `unresolved`. Tests must fail if IOC is marked complete while any of those
+  226 dispositions is unaccounted for.

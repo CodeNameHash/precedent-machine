@@ -2118,3 +2118,53 @@ any observed rate. Decision 17's 1% gate is unchanged; a severity-one error
 is a defect to fix, never a statistic absorbed into the headroom. The
 blind-sample stratification over-weights rows capable of severity-one
 errors.
+
+---
+
+## 23. Proxy / Meeting owns Vote standard and Force-the-vote: DECIDED 2026-09-01
+
+Ben decided that Proxy / Meeting owns two separate stored facts:
+
+1. **Vote standard:** one stored fact owned by `PROXY_MEETING`.
+2. **Force-the-vote:** whether the meeting obligation survives a change in
+   recommendation, owned by `PROXY_MEETING`. No-shop supplies only the
+   recommendation-change reference.
+
+Both facts remain extraction-open because neither is measured by the sealed
+31-profile Proxy / Meeting package. The corrected twelve-line No-shop grouping
+question remains open. No grouping approval or review-flag clearance follows
+from these ownership rulings.
+
+This entry and its backlog update mechanically propagate rulings Ben had
+already given. Decision 22 and
+`docs/codex-program/notes/BEN-STANDING-AUTHORIZATION-2026-09-01.md` paragraph 2
+pre-approve that work. No sealed predecessor or successor record was changed,
+and there is no serving, product-write or production effect.
+
+---
+
+## 24. Interim Operating Work 4 sequencing and non-omission gate: DECIDED 2026-09-02
+
+The 113 sealed `INTERIM_OPERATING` profiles measure restriction presence. They
+remain unchanged and are the grouping input. They do not constitute complete
+Interim Operating measurement.
+
+Work 4 may proceed without first extracting typed thresholds and exceptions.
+It must render the sealed restriction facts faithfully, preserve their source
+clause text, and identify unmeasured thresholds and exceptions as
+`NOT_YET_MEASURED`, never absent. Work 5 and Work 6 may carry these only as
+visible review-only omissions. The preview formatter remains generic so later
+typed fields do not require Interim-Operating-specific display logic.
+
+Source-backed threshold and exception extraction is scheduled for the later
+family-depth wave. Interim Operating cannot be described as
+comparison-complete or enter normal production serving until every governed
+restriction has both:
+
+1. an explicit threshold disposition of `present`, `absent` or `unresolved`;
+2. an explicit exception disposition of `present`, `absent` or `unresolved`.
+
+A `present` disposition must carry its source-backed typed threshold value or
+exception data. Tests must fail if Interim Operating is marked complete while
+either category is unaccounted for. This decision does not reopen or alter any
+sealed predecessor or successor.
