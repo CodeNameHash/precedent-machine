@@ -2263,3 +2263,70 @@ writable-spec task to internal or external agents.
 This decision does not alter any sealed predecessor. It authorises the
 drafting of the replacement authority; no governed write happens until
 that authority is committed and validated.
+
+## 27. Ben's four open decisions from the lead handoff: DECIDED 2026-09-04
+
+Put to Ben in one list by the Opus lead session on taking over the main
+loop, per `docs/codex-program/notes/LEAD-HANDOFF-2026-09-04.md` §"Ben's
+open decisions". His four answers, and what each changes:
+
+**1. Correction-1 (the three items: argv `--registration`, attempt-record
+member names, family-scoped `profile_results`). "Whatever you recommend."**
+
+The recommendation taken: present the real record, do not pre-approve a
+summary. #35 did not land — the recovery branch tip at handover was
+`75bbabc1`, the handoff commit itself, sitting directly on `fd6f662d`,
+with no interim-registration mechanism and no correction record; the
+scratch `spec35-report.md` died with its container. So #35 is redone from
+the appendix brief in the handoff note, `…-correction-1.json` is written
+with `approval.state: PENDING_BEN`, and the three items go to Ben as an
+actual record before anything applies. Nothing moves to `BEN_APPROVED`
+without his word on the text.
+
+**2. The thirty additional transactions for the shared 50 (A-0007 §1).
+Ben's selection criteria drive the thirty; the producer admits them.**
+
+This is the producer's own recommendation in
+`docs/codex-program/handoffs/deal-terms/outbox/A-0007-q0003-corpus-ruling-draft3.md`
+§1, now ruled. Ownership of *proposing* the thirty is Ben's, not this
+channel's and not the Deal Storylines agent's. The producer's contribution
+is admission only — fetch, canonical text, admitted-source receipt — under
+a source-admission authority, zero model calls. The counting rule in
+A-0007 §2 stands: 40 unique transactions, one primary agreement document
+each, amendments and restatements as additional members under the same
+`transaction_id`, never as extra transactions. The `docs/core/PLAN.md`
+Stage 6 wording ("40 unique fully admitted agreement identities") predates
+the transaction-counted contract and is the PLAN edit that reconciles it.
+
+**3. Beyond the shared 50 toward the 2010-present corpus (A-0010).
+Extend, but scope it only — no milestone sequence yet.**
+
+`docs/codex-program/handoffs/deal-terms/outbox/A-0010-q0005-no-public-corpus-branch.md`
+recorded the branch as unowned, undated public-launch work outside the
+programme. That stands as the *plan* position: nothing is committed, no
+milestone sequence is added, `DA-RP` remains "public release of the shared
+50" and is still not a public-corpus package. What changes is that the
+question stops being open and becomes a costed one: produce a scoping note
+sizing the branch — source-admission authority for thousands of filings,
+Ben's per-family review capacity, a certification stage per corpus
+increment — so the eventual commit/decline decision has numbers behind it.
+The engine is unchanged either way; the branch is admission, runs and
+review, not a new engine.
+
+**4. The programme roadmap page may serve on Vercel previews and
+production.**
+
+`pages/admin/programme.js` was local-only by Ben's original spec, enforced
+by `localOnlyGate(env)` in `lib/programme/derive.js` returning
+`{ notFound: true }` under `VERCEL`, `VERCEL_ENV` or
+`NODE_ENV === 'production'`. Ben ruled it serves everywhere. The gate, its
+test and its header comments are removed in the same change. Access
+control is `middleware.js`, which already gates every page and every
+`/api/**` route on a session cookie via `lib/auth/gate.js` — the page is
+no more reachable unauthenticated than any other admin route, so "serves
+in production" means "behind Ben's login", not "public".
+
+This does not touch the separate Canonical V2 dark-preview gate, whose
+rule in `docs/core/OPERATING-RULES.md` ("The gate may widen to Vercel
+preview, never production", 2026-08-05) is unchanged and still binding on
+that machinery.

@@ -7,10 +7,10 @@
 // pages/admin/programme.js itself is ESM/JSX and cannot be `require()`-d by
 // a bare `node --test` run (no babel-register in this repo's test script;
 // confirmed directly -- requiring any existing JSX page file the same way
-// throws "Unexpected token '<'"). Its local-only gate is therefore tested
-// through lib/programme/derive.js's localOnlyGate(env), which the page
-// calls from inside its getServerSideProps; that is the same shape the
-// page uses, not a stand-in for it.
+// throws "Unexpected token '<'"), so nothing here exercises the page module.
+// It no longer has a local-only gate to test: Ben ruled on 2026-09-04
+// (DECISIONS.md #27) that the page serves on Vercel previews and production,
+// behind the same session auth middleware.js applies to every other route.
 
 const assert = require('node:assert/strict');
 const test = require('node:test');
@@ -36,7 +36,6 @@ const {
   dateStatus,
   criticalPath,
   packageReleaseViolations,
-  localOnlyGate,
 } = require('../lib/programme/derive');
 
 const TASK_IDS = new Set(TASKS.map((t) => t.id));
@@ -257,14 +256,4 @@ test('every control names a source citation', () => {
 
 test('BASE_COMMIT is a full 40-character git SHA', () => {
   assert.match(BASE_COMMIT, /^[0-9a-f]{40}$/);
-});
-
-test('localOnlyGate blocks under VERCEL_ENV=preview and =production, renders under neither', () => {
-  assert.deepEqual(localOnlyGate({ VERCEL_ENV: 'preview' }), { notFound: true });
-  assert.deepEqual(localOnlyGate({ VERCEL_ENV: 'production' }), { notFound: true });
-  assert.deepEqual(localOnlyGate({ VERCEL: '1' }), { notFound: true });
-  assert.deepEqual(localOnlyGate({ NODE_ENV: 'production' }), { notFound: true });
-  assert.equal(localOnlyGate({}), null);
-  assert.equal(localOnlyGate({ NODE_ENV: 'development' }), null);
-  assert.equal(localOnlyGate({ NODE_ENV: 'test' }), null);
 });

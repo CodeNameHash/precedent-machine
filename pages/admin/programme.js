@@ -1,11 +1,10 @@
-// LOCAL-ONLY PAGE. getServerSideProps (below) returns { notFound: true }
-// whenever process.env.VERCEL or process.env.VERCEL_ENV is set (any value,
-// including 'preview') or NODE_ENV is exactly 'production'. No Vercel
-// preview or production deployment can serve this route; it renders only
-// under `npm run dev` / `next start` on a machine with none of those
-// variables set. The gate itself lives in lib/programme/derive.js as
-// localOnlyGate(env) so it is plain CommonJS and unit-testable without a
-// JSX/ESM transpiler (see tests/programme-roadmap.test.js).
+// Serves everywhere -- local, Vercel preview, Vercel production. It was
+// local-only until 2026-09-04, when Ben ruled it may serve on previews and
+// production (DECISIONS.md #27); the localOnlyGate(env) that enforced that
+// is gone from lib/programme/derive.js along with its test. Access control
+// is middleware.js, which gates every page and every /api/** route on a
+// session cookie -- this page is no more reachable unauthenticated than any
+// other admin route.
 //
 // This page explains Precedent Machine's own development programme --
 // tasks, dependencies, gates, milestones and authority requirements -- all
@@ -23,10 +22,6 @@ import { useEffect, useMemo, useState } from 'react';
 import styles from './programme.module.css';
 
 export async function getServerSideProps() {
-  const { localOnlyGate } = require('../../lib/programme/derive');
-  const gate = localOnlyGate(process.env);
-  if (gate) return gate;
-
   const {
     BASE_COMMIT, AS_OF, TASKS, MILESTONES, GATES, LATER_FEATURES, CONTROLS, OPEN_BEN_RULINGS,
   } = require('../../lib/programme/roadmap');
