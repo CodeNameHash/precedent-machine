@@ -68,8 +68,10 @@ processed a real agreement and cannot.
   authority: 146 real-text-anchored typed atoms; phase 3: 220 reference
   values. M3 definition edges: 5,998 of 40,751 ambiguous; a preamble rule
   resolves most; 856 cases where deterministic rules disagree. M2 missed
-  333 curly-quoted definitions corpus-wide, including `Parent` and
-  `Merger Sub` in nine of ten preambles.
+  333 definitions corpus-wide, including `Parent` and `Merger Sub` in nine
+  of ten preambles; the cause is the definition annotator's predicate at
+  `lib/canonical-v2/agreement-index.js:1809,1819`, not the quotation marks
+  (ext Q-0017; this sentence corrected 2026-09-04).
 - **The fixed 50.** 12 capability groups; 11 items on two-claim nodes;
   13 inline limbs or chapeaux whose party or modal lives in a parent; 8
   representations needing the Article chapeau; 9 needing a definition or
