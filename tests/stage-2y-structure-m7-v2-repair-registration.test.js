@@ -1407,9 +1407,9 @@ test('M7 V2 candidate registration is immutable, content-addressed and independe
     );
   });
 
-  // Ben, 2026-09-04: unlike a test role, one of the five single-file compiler
-  // roles is refused if a specifier assembled at runtime appears in ITS OWN
-  // entry text — naming the file and the line the pattern was found on.
+  // Scoped review, 2026-09-04 (Ben authorised the item 4 closure, not this):
+  // unlike a test role, one of the five single-file compiler roles is refused
+  // if a specifier assembled at runtime appears in ITS OWN entry text — naming the file and the line the pattern was found on.
   await t.test(
     'a specifier assembled at runtime in a compiler role is refused, naming file and line',
     () => {
