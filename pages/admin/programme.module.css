@@ -313,6 +313,22 @@
   margin: 0 0 6px;
 }
 
+.plainEnglish {
+  font-size: 13px;
+  line-height: 1.55;
+  color: #2A2823;
+  margin: 0 0 14px;
+}
+
+.detailScopeLabel {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #77736C;
+  margin: 0 0 3px;
+}
+
 .detailScope {
   font-size: 11px;
   color: #4F4C47;
@@ -548,4 +564,26 @@
 .clearButton:disabled {
   color: #C4C1BA;
   cursor: not-allowed;
+}
+
+/* The task register's first column carries a title plus its plain-English
+   line, so it opts out of the table's global `white-space: nowrap` and takes
+   a width; every other cell stays on one line. */
+.titleCell {
+  white-space: normal !important;
+  min-width: 260px;
+  max-width: 420px;
+}
+
+.rowTitle {
+  display: block;
+  color: #2A2823;
+}
+
+.rowPlain {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  line-height: 1.45;
+  color: #77736C;
 }

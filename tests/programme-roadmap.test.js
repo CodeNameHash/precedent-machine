@@ -247,6 +247,15 @@ test('every later-feature entry and open Ben ruling has a source citation, and l
   }
 });
 
+test('every task carries a plain-English explanation distinct from its technical scope', () => {
+  for (const task of TASKS) {
+    assert.equal(typeof task.plainEnglish, 'string', `${task.id} has no plainEnglish`);
+    assert.ok(task.plainEnglish.trim().length >= 40, `${task.id} plainEnglish is too short to explain anything`);
+    // It must be a genuine restatement, not the scope text copied across.
+    assert.notEqual(task.plainEnglish, task.scope, `${task.id} plainEnglish duplicates scope`);
+  }
+});
+
 test('every control names a source citation', () => {
   assert.ok(CONTROLS.length > 0);
   for (const control of CONTROLS) {

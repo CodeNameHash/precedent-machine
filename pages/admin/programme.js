@@ -1,3 +1,8 @@
+// The task register defaults to the work that is not finished (status filter
+// 'remaining' = anything but done), on Ben's instruction 2026-09-04; 'All
+// statuses' restores the full 33. Each task shows its plain-English line
+// above its technical scope, in both the detail panel and the register.
+//
 // Serves everywhere -- local, Vercel preview, Vercel production. It was
 // local-only until 2026-09-04, when Ben ruled it may serve on previews and
 // production (DECISIONS.md #27); the localOnlyGate(env) that enforced that
@@ -55,6 +60,7 @@ export async function getServerSideProps() {
 }
 
 const STATUS_LABEL = {
+  remaining: 'In progress & to come',
   done: 'Done',
   in_progress: 'In progress',
   blocked: 'Blocked',
@@ -244,6 +250,8 @@ function TaskDetail({ task, tasks, blockedInfo, onPropose }) {
         <span className={styles.badgeMuted}>{OWNER_LABEL[task.owner]}{task.externalChannel ? ` · ${task.externalChannel}` : ''}</span>
       </div>
       <h2 className={styles.detailTitle}>{task.title}</h2>
+      <p className={styles.plainEnglish}>{task.plainEnglish}</p>
+      <p className={styles.detailScopeLabel}>Technical scope</p>
       <p className={styles.detailScope}>{task.scope}</p>
 
       <dl className={styles.detailGrid}>
@@ -403,14 +411,15 @@ function AnswersPanel({ tasks, current, next, criticalPathResult, blocked }) {
 function TaskTable({ tasks, selectedId, onSelect, filters, setFilters }) {
   const filtered = tasks.filter((t) => (
     (filters.group === 'all' || t.group === filters.group)
-    && (filters.status === 'all' || t.status === filters.status)
+    && (filters.status === 'all'
+      || (filters.status === 'remaining' ? t.status !== 'done' : t.status === filters.status))
     && (filters.owner === 'all' || t.owner === filters.owner)
     && (filters.q === '' || t.title.toLowerCase().includes(filters.q.toLowerCase()) || t.id.includes(filters.q.toLowerCase()))
   ));
 
   const groups = ['all', ...new Set(tasks.map((t) => t.group))];
   const owners = ['all', ...new Set(tasks.map((t) => t.owner))];
-  const statuses = ['all', ...new Set(tasks.map((t) => t.status))];
+  const statuses = ['remaining', 'all', ...new Set(tasks.map((t) => t.status))];
 
   return (
     <div className={styles.registerWrap}>
@@ -452,7 +461,10 @@ function TaskTable({ tasks, selectedId, onSelect, filters, setFilters }) {
                 className={t.id === selectedId ? styles.rowSelected : undefined}
                 onClick={() => onSelect(t.id)}
               >
-                <td>{t.title}</td>
+                <td className={styles.titleCell}>
+                  <span className={styles.rowTitle}>{t.title}</span>
+                  <span className={styles.rowPlain}>{t.plainEnglish}</span>
+                </td>
                 <td>{GROUP_LABEL[t.group] || t.group}</td>
                 <td>{OWNER_LABEL[t.owner]}</td>
                 <td><span className={`${styles.badge} ${styles[`status_${t.status}`]}`}>{STATUS_LABEL[t.status]}</span></td>
@@ -579,7 +591,7 @@ export default function ProgrammePage(props) {
   } = props;
 
   const [selectedId, setSelectedId] = useState(current[0] || tasks[0].id);
-  const [filters, setFilters] = useState({ group: 'all', status: 'all', owner: 'all', q: '' });
+  const [filters, setFilters] = useState({ group: 'all', status: 'remaining', owner: 'all', q: '' });
   const [proposals, setProposals] = useState([]);
   const [loadedFromStorage, setLoadedFromStorage] = useState(false);
 
