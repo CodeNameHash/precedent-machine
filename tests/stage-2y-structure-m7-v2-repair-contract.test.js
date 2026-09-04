@@ -8581,14 +8581,6 @@ test('deterministic generator fails closed on multi-occurrence ambiguity and dri
       },
     },
     {
-      name: 'two nodes on one claim',
-      mutate(input) {
-        input.baseAnalysis.claims[0].source_node_occurrence_ids.push(
-          input.baseAnalysis.claims[1].source_node_occurrence_ids[0],
-        );
-      },
-    },
-    {
       name: 'missing governed node',
       mutate(input) {
         input.baseAnalysis.claims[0].source_node_occurrence_ids[0] = 'f'.repeat(64);
@@ -9108,6 +9100,21 @@ test('deterministic generator keeps two claims that share one governed node', ()
   assert.equal(generated.rules[0].rule_id !== generated.rules[1].rule_id, true);
   assert.deepEqual(generated.rules[0].linked_rule_ids, [generated.rules[1].rule_id]);
   assert.deepEqual(generated.rules[1].linked_rule_ids, [generated.rules[0].rule_id]);
+});
+
+test('deterministic generator reviews a claim that names two M2 nodes', () => {
+  const fixture = twoOccurrenceGeneratorFixture();
+  const input = clone(fixture.generatorInput);
+  input.baseAnalysis.claims[0].source_node_occurrence_ids.push(
+    input.baseAnalysis.claims[1].source_node_occurrence_ids[0],
+  );
+  const generated = generateAnalysisV2(input);
+  const first = generated.dispositions.find(
+    (disposition) => disposition.input_occurrence_id
+      === input.baseAnalysis.claims[0].claim_occurrence_id,
+  );
+  assert.equal(first.output_disposition, 'REVIEW_ONLY');
+  assert.equal(first.issues.some((issue) => issue.issue_code === 'MATERIAL_SPAN_UNMODELLED'), true);
 });
 
 test(cases.structure_overlay_case.case_id, () => {
