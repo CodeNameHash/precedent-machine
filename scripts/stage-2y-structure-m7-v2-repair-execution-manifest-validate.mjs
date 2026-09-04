@@ -25,6 +25,20 @@
 // objects it named (`gitObjectBytes`), so an edit the authority permits to a
 // bound file does not break the historical chain. Every other registration is
 // verified against the working tree exactly as before.
+//
+// Beside that authority it recognises a correction record
+// (`lib/canonical-v2/m7-v2-authority-correction.js`). The record is loaded and
+// bound whenever it is in the tree — before anything is decided by it, and
+// whether or not the replacement authority is there to be corrected — but its
+// corrections are applied only once Ben has approved it: a PENDING_BEN record
+// is reported as one `CORRECTION_PENDING_BEN <correction_id>` INFO line on the
+// warning stream and changes nothing, and a record whose binding does not
+// match the authority's bytes fails AUTHORITY_BINDING_DRIFT. The one
+// correction this validator applies when it is in force is
+// EXACT_ARGV_REGISTRATION_FLAG, which lets a replacement phase's run
+// entrypoint name a candidate registration in its exact argv. The Work 3
+// closure-successor manifest returns from its own validator above all of
+// this and sees neither the authority nor the correction.
 import { createHash } from 'node:crypto';
 import {
   lstatSync,
@@ -35,6 +49,7 @@ import {
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import authorityCorrectionModule from '../lib/canonical-v2/m7-v2-authority-correction.js';
 import canonicalModule from '../lib/canonical-v2/canonical-bytes.js';
 import m7V2ContractModule from '../lib/canonical-v2/m7-v2-contract.js';
 import {
@@ -49,6 +64,11 @@ import {
 
 const { canonicalJson, contentId, sha256Hex } = canonicalModule;
 const { validateFamilyProfilePackageSetForWork3 } = m7V2ContractModule;
+const {
+  acceptsCandidateRegistrationArgvToken,
+  correctionInfoLines,
+  loadAuthorityCorrection,
+} = authorityCorrectionModule;
 
 const SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK_EXECUTION_MANIFEST/V1';
 const RESULT_SCHEMA = 'STAGE_2Y_M7_V2_REPAIR_WORK_EXECUTION_MANIFEST_VALIDATION/V1';
@@ -1747,7 +1767,13 @@ function uniqueStrings(values) {
 // validator against that phase's own successor manifest. Run limits are
 // positive counts. No count here is a literal: the rosters come from the
 // record and are cross-checked against their own Set sizes.
-function validateCandidateReplacementArgv(phase) {
+// The one place a correction record can widen this roster: EXACT_ARGV_
+// REGISTRATION_FLAG lets a phase's run entrypoint name a candidate
+// registration. `acceptsCandidateRegistrationArgvToken` answers false for
+// every token while the correction is absent or PENDING_BEN, so a pending
+// record leaves the authority's committed argv rosters exactly as closed as
+// they were.
+function validateCandidateReplacementArgv(phase, correction = null) {
   const entries = phase.exact_argv_with_run_limits;
   const allowedScripts = new Set([...phase.entrypoints, VALIDATOR_PATH]);
   const allowedTests = new Set(phase.tests);
@@ -1769,7 +1795,12 @@ function validateCandidateReplacementArgv(phase) {
       let allowed = allowedRecords;
       if (token.endsWith('.mjs')) allowed = allowedScripts;
       else if (token.endsWith('.test.js')) allowed = allowedTests;
-      if (!allowed.has(token)) fail('AUTHORITY_BINDING_DRIFT', token);
+      if (!allowed.has(token)) {
+        if (!acceptsCandidateRegistrationArgvToken(token, correction)) {
+          fail('AUTHORITY_BINDING_DRIFT', token);
+        }
+        continue;
+      }
       named.add(token);
     }
   }
@@ -1778,7 +1809,7 @@ function validateCandidateReplacementArgv(phase) {
   }
 }
 
-function validateCandidateReplacementPhases(record) {
+function validateCandidateReplacementPhases(record, correction = null) {
   const phases = record.phases;
   if (!Array.isArray(phases)
       || !same(phases.map((phase) => phase?.phase_key), CANDIDATE_REPLACEMENT_PHASE_KEYS)
@@ -1805,7 +1836,7 @@ function validateCandidateReplacementPhases(record) {
     ]) {
       normaliseRepositoryPath(repositoryPath, 'AUTHORITY_BINDING_DRIFT');
     }
-    validateCandidateReplacementArgv(phase);
+    validateCandidateReplacementArgv(phase, correction);
   }
 }
 
@@ -1828,7 +1859,9 @@ function validateCandidateReplacementWriteRules(record) {
 // approval, the parent and Work 4 correction bindings unchanged, the stop
 // record's affected classes and superseded registrations, three real-text
 // phases, and every prohibition at zero.
-function validateCandidateReplacementRecord(record, bytes, authority, authorityBytes) {
+function validateCandidateReplacementRecord(
+  record, bytes, authority, authorityBytes, correction = null,
+) {
   const stop = record.stop_record;
   const affected = stop?.affected_classes;
   const familyKeys = Array.isArray(affected) ? affected.map((entry) => entry?.family_key) : [];
@@ -1871,7 +1904,7 @@ function validateCandidateReplacementRecord(record, bytes, authority, authorityB
       || Object.values(record.prohibited_effects).some((value) => value !== 0)) {
     fail('AUTHORITY_BINDING_DRIFT', 'candidate replacement authority contract');
   }
-  validateCandidateReplacementPhases(record);
+  validateCandidateReplacementPhases(record, correction);
   validateCandidateReplacementWriteRules(record);
   // No restamp check here, unlike every sibling authority: this record's
   // `replacement_authority_id` is not a content id over its own body
@@ -1883,11 +1916,25 @@ function validateCandidateReplacementRecord(record, bytes, authority, authorityB
   // CANDIDATE_REPLACEMENT_AUTHORITY_BINDING: no other bytes can satisfy it.
 }
 
+// The correction record beside the authority is optional in the same way, and
+// recognised whether or not it is in force: absent is null, PENDING_BEN is a
+// record that applies nothing and is reported once per run as an INFO line,
+// BEN_APPROVED with an approval id applies its corrections. A record whose
+// binding does not match the authority's bytes is AUTHORITY_BINDING_DRIFT, and
+// the module's own error code is carried through so the CLI reports it.
+function readAuthorityCorrection(root) {
+  try {
+    return loadAuthorityCorrection({ repoRoot: root });
+  } catch (error) {
+    return fail(error.code ?? 'AUTHORITY_BINDING_DRIFT', error.message);
+  }
+}
+
 // The authority is optional: a tree that predates it has no superseded
 // registration, no immutable prefix extension and no successor manifest, and
 // every manifest validates exactly as before. When the file is present it must
 // be the exact pinned record, whichever manifest is under validation.
-function readCandidateReplacementAuthority(root, authority, authorityBytes) {
+function readCandidateReplacementAuthority(root, authority, authorityBytes, correction) {
   const absolute = inspectSafePath(root, CANDIDATE_REPLACEMENT_AUTHORITY_PATH, false);
   let present;
   try {
@@ -1899,7 +1946,7 @@ function readCandidateReplacementAuthority(root, authority, authorityBytes) {
   const { record, bytes } = validateRecordBinding(
     root, CANDIDATE_REPLACEMENT_AUTHORITY_BINDING, 'AUTHORITY_BINDING_DRIFT',
   );
-  validateCandidateReplacementRecord(record, bytes, authority, authorityBytes);
+  validateCandidateReplacementRecord(record, bytes, authority, authorityBytes, correction);
   return { record, bytes, binding: CANDIDATE_REPLACEMENT_AUTHORITY_BINDING };
 }
 
@@ -1907,6 +1954,7 @@ function readCandidateReplacementAuthority(root, authority, authorityBytes) {
 // dedicated binding member; its parent binding stays mandatory and unchanged.
 export function validateCandidateReplacement(manifest, manifestPath, context) {
   const { root, authority, authorityBytes } = context;
+  const correction = context.correction ?? null;
   const binding = manifest[CANDIDATE_REPLACEMENT_MANIFEST_MEMBER];
   if (!same(binding, CANDIDATE_REPLACEMENT_AUTHORITY_BINDING)) {
     fail('AUTHORITY_BINDING_DRIFT', CANDIDATE_REPLACEMENT_AUTHORITY_PATH);
@@ -1916,7 +1964,7 @@ export function validateCandidateReplacement(manifest, manifestPath, context) {
     fail('PATH_SCOPE_DRIFT', 'candidate replacement authority read');
   }
   const { record, bytes } = validateRecordBinding(root, binding, 'AUTHORITY_BINDING_DRIFT');
-  validateCandidateReplacementRecord(record, bytes, authority, authorityBytes);
+  validateCandidateReplacementRecord(record, bytes, authority, authorityBytes, correction);
   const phase = record.phases.find(
     (entry) => entry.successor_manifest_path === manifestPath,
   );
@@ -5481,7 +5529,17 @@ export async function validateExecutionManifest(options) {
   }
   const authorityState = validateAuthority(root);
   const { authority } = authorityState;
-  const replacement = readCandidateReplacementAuthority(root, authority, authorityState.bytes);
+  // The correction record is read whenever it is there, before anything is
+  // decided by it. Recognition, not application: the line goes to the warning
+  // stream because stdout carries one machine-read JSON result, exactly as
+  // verify-candidate's HISTORICAL_SUPERSEDED_REGISTRATION does.
+  const correction = readAuthorityCorrection(root);
+  for (const line of correctionInfoLines(correction)) {
+    process.stderr.write(`${line}\n`);
+  }
+  const replacement = readCandidateReplacementAuthority(
+    root, authority, authorityState.bytes, correction,
+  );
   const replacementManifestPaths = replacement === null
     ? []
     : replacement.record.phases.map((phase) => phase.successor_manifest_path);
@@ -5514,7 +5572,10 @@ export async function validateExecutionManifest(options) {
   );
   if (candidateReplacement) {
     validateCandidateReplacement(manifest, manifestPath, {
-      root, authority, authorityBytes: authorityState.bytes,
+      root,
+      authority,
+      authorityBytes: authorityState.bytes,
+      correction,
     });
   }
   const work3EntryCorrectionAuthority = manifest.work === 'WORK3'

@@ -691,6 +691,7 @@ async function prepareFrozenWork3V2(fixture) {
     'lib/canonical-v2/canonical-bytes.js',
     'lib/canonical-v2/agreement-analysis-consolidation.js',
     'lib/canonical-v2/agreement-projection.js',
+    'lib/canonical-v2/m7-v2-authority-correction.js',
     'lib/canonical-v2/m7-v2-contract.js',
     'lib/canonical-v2/m7-v2-deterministic-generator.js',
     'lib/canonical-v2/m7-v2-import-closure.js',
@@ -1227,6 +1228,7 @@ function makeRecoveredWork1Fixture(t) {
     CONTRACT_TEST_PATH,
     LEGACY_M5_AGGREGATE_TEST_PATH,
     'lib/canonical-v2/agreement-analysis-consolidation.js',
+    'lib/canonical-v2/m7-v2-authority-correction.js',
     'lib/canonical-v2/m7-v2-deterministic-generator.js',
     'lib/canonical-v2/m7-v2-import-closure.js',
     'scripts/stage-2y-structure-family-aggregate.mjs',
@@ -6325,12 +6327,18 @@ test('validator dependencies are local, read-only and free of subprocess imports
   );
   const imports = [...source.matchAll(/^import[\s\S]*?from '([^']+)';$/gm)]
     .map((match) => match[1]).sort();
+  // `m7-v2-authority-correction.js` joined the roster with the correction
+  // record beside the candidate replacement authority: it reads two control
+  // records and returns a value, so it keeps this validator local and
+  // read-only, and the assertion below still refuses any subprocess, network
+  // or write import through it.
   assert.deepEqual(imports, [
     'node:crypto',
     'node:fs',
     'node:path',
     'node:url',
     '../lib/canonical-v2/canonical-bytes.js',
+    '../lib/canonical-v2/m7-v2-authority-correction.js',
     '../lib/canonical-v2/m7-v2-contract.js',
     './stage-2y-structure-m7-v2-repair-work2-validate.mjs',
     './stage-2y-structure-m7-v2-repair-work3-validate.mjs',

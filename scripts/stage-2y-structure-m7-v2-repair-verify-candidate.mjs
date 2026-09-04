@@ -27,11 +27,31 @@
 // registration the "the verifier that is running is the verifier that was
 // bound" check becomes "the verifier that is running is the working-tree file
 // at the bound path"; on every other registration it is unchanged.
+//
+// An interim registration, taken out under that authority's
+// `interim_registration_policy`, additionally carries
+// `candidate_replacement_authority_binding` and
+// `supersedes_candidate_registration_id`. Both are optional and arrive
+// together: `verifyInterimMembers` pins the binding and re-reads the authority
+// bytes, and requires the superseded registration to still be a retained file
+// in the candidate root. Neither member is counted in
+// `unique_bound_path_count` — the authority is the licence for the
+// registration, not one of the artefacts it binds, and the Work 7 verifier
+// recounts the same set.
+//
+// Two lines go to the warning stream on every run beside the historical one:
+// `CURRENT_REGISTRATION <id>` or `HISTORICAL_SUPERSEDED_REGISTRATION <id>`,
+// and `IMPORT_CLOSURE_PRESENT <id> <count>` or
+// `IMPORT_CLOSURE_ABSENT_HISTORICAL <id>`. The correction record beside the
+// authority is recognised the same way: a pending one is reported as
+// `CORRECTION_PENDING_BEN <correction_id>` and applies nothing, and one whose
+// binding does not match the authority's bytes fails AUTHORITY_BINDING_DRIFT.
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import authorityCorrectionModule from '../lib/canonical-v2/m7-v2-authority-correction.js';
 import canonicalModule from '../lib/canonical-v2/canonical-bytes.js';
 import importClosureModule from '../lib/canonical-v2/m7-v2-import-closure.js';
 import m7V2ContractModule from '../lib/canonical-v2/m7-v2-contract.js';
@@ -44,6 +64,7 @@ import {
 const { canonicalJson, contentId, sha256Hex } = canonicalModule;
 const { importClosure } = importClosureModule;
 const { validateFamilyProfilePackageSetForWork3 } = m7V2ContractModule;
+const { correctionInfoLines, loadAuthorityCorrection } = authorityCorrectionModule;
 
 const REGISTRATION_SCHEMA = 'STAGE_2Y_M7_V2_CANDIDATE_REGISTRATION/V1';
 const VERIFICATION_SCHEMA = 'STAGE_2Y_M7_V2_CANDIDATE_REGISTRATION_VERIFICATION/V1';
@@ -292,6 +313,27 @@ const CANDIDATE_REPLACEMENT_AUTHORITY_SHA256 =
 const CANDIDATE_REPLACEMENT_AUTHORITY_GIT_BLOB_OID =
   'a9970b6e3db301fcfdbcb904681fd3db7297fe77';
 const HISTORICAL_REGISTRATION_STATE = 'HISTORICAL_SUPERSEDED_REGISTRATION';
+const CURRENT_REGISTRATION_STATE = 'CURRENT_REGISTRATION';
+const IMPORT_CLOSURE_PRESENT_STATE = 'IMPORT_CLOSURE_PRESENT';
+// The pinned binding an interim registration carries. Identical, member for
+// member, to the one the contract and the manifest validator pin.
+const CANDIDATE_REPLACEMENT_AUTHORITY_BINDING = Object.freeze({
+  path: CANDIDATE_REPLACEMENT_AUTHORITY_PATH,
+  schema_version: CANDIDATE_REPLACEMENT_AUTHORITY_SCHEMA,
+  record_id_field: 'replacement_authority_id',
+  record_id: CANDIDATE_REPLACEMENT_AUTHORITY_ID,
+  byte_length: CANDIDATE_REPLACEMENT_AUTHORITY_BYTE_LENGTH,
+  sha256: CANDIDATE_REPLACEMENT_AUTHORITY_SHA256,
+  git_blob_oid: CANDIDATE_REPLACEMENT_AUTHORITY_GIT_BLOB_OID,
+});
+// The two members an interim registration adds, taken out under the
+// replacement authority's `interim_registration_policy`. They are a pair: a
+// supersession claim without the authority that permits it, or the authority
+// without the claim, is not an interim registration.
+const INTERIM_REGISTRATION_KEYS = Object.freeze([
+  'candidate_replacement_authority_binding',
+  'supersedes_candidate_registration_id',
+]);
 
 class CandidateVerificationError extends Error {
   constructor(code, detail = '') {
@@ -1915,6 +1957,12 @@ function verifyImportClosure(root, registration, declaresClosure) {
     assert(declaredPaths.includes(repositoryPath),
       'BINDING_DRIFT', `import_closure:${repositoryPath}`);
   }
+  // Reported only once the whole closure has been recomputed and matched, so
+  // the line means "present and verified", not "declared".
+  process.stderr.write(
+    `${IMPORT_CLOSURE_PRESENT_STATE} ${registration.candidate_registration_id} `
+    + `${declared.length}\n`,
+  );
 }
 
 function verifySemanticInputs(root, entries) {
@@ -2191,13 +2239,56 @@ function flattenedBindings(registration) {
   ];
 }
 
+// An interim registration, taken out under the replacement authority's
+// `interim_registration_policy`, carries the authority it was taken out under
+// and the registration it supersedes. Neither member is re-derived from the
+// other: the binding is checked against the pinned constants AND against the
+// authority bytes in the working tree, and the superseded registration must be
+// a real, retained file in the candidate root — the policy says every
+// superseded registration is retained and never deleted, so a claim to
+// supersede a registration that is not there is a claim about nothing.
+function verifyInterimMembers(root, registration, interimKeys, declaresClosure) {
+  if (interimKeys.length === 0) return;
+  assert(interimKeys.length === INTERIM_REGISTRATION_KEYS.length,
+    'REGISTRATION_CONTRACT_DRIFT', 'interim registration members');
+  assert(declaresClosure, 'REGISTRATION_CONTRACT_DRIFT',
+    'interim registration without an import closure');
+  const binding = registration.candidate_replacement_authority_binding;
+  assert(exactKeys(binding, BINDING_KEYS)
+    && same(binding, CANDIDATE_REPLACEMENT_AUTHORITY_BINDING),
+  'AUTHORITY_BINDING_DRIFT', CANDIDATE_REPLACEMENT_AUTHORITY_PATH);
+  const authorityBytes = readBytes(root, CANDIDATE_REPLACEMENT_AUTHORITY_PATH,
+    'AUTHORITY_BINDING_DRIFT');
+  assert(authorityBytes.length === binding.byte_length
+    && sha256Hex(authorityBytes) === binding.sha256
+    && gitBlobOid(authorityBytes) === binding.git_blob_oid,
+  'AUTHORITY_BINDING_DRIFT', CANDIDATE_REPLACEMENT_AUTHORITY_PATH);
+  const superseded = registration.supersedes_candidate_registration_id;
+  assert(typeof superseded === 'string' && HEX_256.test(superseded)
+    && superseded !== registration.candidate_registration_id,
+  'REGISTRATION_CONTRACT_DRIFT', 'supersedes_candidate_registration_id');
+  const supersededPath = `${REGISTRATION_ROOT}/${superseded}.json`;
+  const supersededBytes = readBytes(root, supersededPath, 'REGISTRATION_MISSING');
+  const supersededRecord = parseJson(supersededBytes, 'REGISTRATION_IDENTITY_DRIFT',
+    supersededPath);
+  assert(supersededRecord?.schema_version === REGISTRATION_SCHEMA
+    && supersededRecord.candidate_registration_id === superseded,
+  'REGISTRATION_IDENTITY_DRIFT', supersededPath);
+}
+
 function verifyRegistration(root, registration) {
   // `import_closure_bindings` is required on every registration except the
   // ones the replacement authority lists as superseded, which predate the
   // requirement; those report IMPORT_CLOSURE_ABSENT_HISTORICAL instead.
   const declaresClosure = Object.hasOwn(registration, 'import_closure_bindings');
-  assert(exactKeys(registration, declaresClosure
-    ? [...RECORD_KEYS, 'import_closure_bindings'] : RECORD_KEYS)
+  const interimKeys = INTERIM_REGISTRATION_KEYS.filter(
+    (key) => Object.hasOwn(registration, key),
+  );
+  assert(exactKeys(registration, [
+    ...RECORD_KEYS,
+    ...(declaresClosure ? ['import_closure_bindings'] : []),
+    ...interimKeys,
+  ])
     && registration.schema_version === REGISTRATION_SCHEMA
     && registration.stage === 'M7_V2_REPAIR'
     && registration.lifecycle_state === 'CANDIDATE_PENDING_REVIEW'
@@ -2209,6 +2300,7 @@ function verifyRegistration(root, registration) {
   // closure that could not be walked.
   verifyCode(root, registration.code_bindings, registration.predecessor_receipt_bindings.length);
   verifyImportClosure(root, registration, declaresClosure);
+  verifyInterimMembers(root, registration, interimKeys, declaresClosure);
   verifySemanticInputs(root, registration.semantic_input_bindings);
   const work3Context = verifyPredecessors(root, registration.predecessor_receipt_bindings);
   const profileBinding = registration.semantic_input_bindings.find(
@@ -2313,6 +2405,25 @@ export function verifyRegisteredCandidate({ repoRoot, registrationPath } = {}) {
     // IMPORT_CLOSURE_ABSENT_HISTORICAL. The CLI that has an exit code
     // (work7-verify) reports it as an INFO finding.
     process.stderr.write(`${HISTORICAL_REGISTRATION_STATE} ${expectedId}\n`);
+  } else {
+    // The complement of the historical line, so a reader of the warning stream
+    // can tell "verified against the working tree" from "verified against the
+    // Git objects it named" without inferring it from silence.
+    process.stderr.write(`${CURRENT_REGISTRATION_STATE} ${expectedId}\n`);
+  }
+  // Recognition of the correction record beside the authority. Nothing on a
+  // registration is corrected by it — its three corrections are about run
+  // argv, attempt-record member names and a contract change — so this reports
+  // a pending record and applies nothing either way. A record whose binding
+  // does not match the authority's bytes fails here, as it does everywhere.
+  let correction;
+  try {
+    correction = loadAuthorityCorrection({ repoRoot: root });
+  } catch (error) {
+    return fail(error.code ?? 'AUTHORITY_BINDING_DRIFT', error.message);
+  }
+  for (const line of correctionInfoLines(correction)) {
+    process.stderr.write(`${line}\n`);
   }
   let work3Context;
   try {

@@ -20,15 +20,30 @@
 // matches the parent authority's `tests/` file-prefix rule
 // (`tests/stage-2y-structure-m7-v2-repair-*.test.js`) — the roster is a
 // naming rule, not a fixed eight-path list.
+//
+// It has two public seams, not one. `registerCandidate` is the builder above.
+// `registerInterimCandidate` is the INTERIM command the candidate replacement
+// authority's `interim_registration_policy` requires before every evidence
+// run: it takes no specification, because it derives the path roster from the
+// registration it supersedes and re-reads every byte from the working tree; it
+// refuses DIRTY_BOUND_ROLE if any bound code role or import-closure member is
+// not the byte at HEAD, and SUPERSEDES_DRIFT if `--supersedes` does not name
+// the latest registration in the candidate root. Its own section, with the
+// reasoning for both refusals and for living here rather than in the Work 4
+// bind script, is at the foot of this file.
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import canonicalModule from '../lib/canonical-v2/canonical-bytes.js';
 import importClosureModule from '../lib/canonical-v2/m7-v2-import-closure.js';
 import m7V2ContractModule from '../lib/canonical-v2/m7-v2-contract.js';
 import { validateWork2SuccessorReceiptBinding } from './stage-2y-structure-m7-v2-repair-work2-validate.mjs';
-import { validateWork3 } from './stage-2y-structure-m7-v2-repair-work3-validate.mjs';
+import {
+  gitReadText,
+  validateWork3,
+} from './stage-2y-structure-m7-v2-repair-work3-validate.mjs';
 
 const { canonicalJson, contentId, sha256Hex } = canonicalModule;
 const { importClosure } = importClosureModule;
@@ -226,6 +241,28 @@ const FAMILIES = Object.freeze([
   'TERMINATION',
   'TERMINATION_FEE',
 ]);
+// Interim registration (Ben, 2026-09-03, the candidate replacement authority's
+// `interim_registration_policy`). One registration is minted before every
+// evidence run, each superseding the last, all retained. The mode is selected
+// exactly as the Work 4 correction selects its own: by passing the authority
+// that licenses it as `--authority`.
+const CANDIDATE_REPLACEMENT_AUTHORITY_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-candidate-replacement-authority.json';
+const CANDIDATE_REPLACEMENT_AUTHORITY_SCHEMA =
+  'STAGE_2Y_M7_V2_REPAIR_CANDIDATE_REPLACEMENT_AUTHORITY/V1';
+// The same binding, member for member, that the contract, the manifest
+// validator and the independent verifier pin.
+const CANDIDATE_REPLACEMENT_AUTHORITY_BINDING = Object.freeze({
+  path: CANDIDATE_REPLACEMENT_AUTHORITY_PATH,
+  schema_version: CANDIDATE_REPLACEMENT_AUTHORITY_SCHEMA,
+  record_id_field: 'replacement_authority_id',
+  record_id: '93d67c6ea53ed9b429f7467a3c5a52d982352957f3c9a1c3ac3e6350f54eab08',
+  byte_length: 23976,
+  sha256: '21f864a6473e069987f1c578bd5efaa447a5443225706e9a40bdbc0198468a17',
+  git_blob_oid: 'a9970b6e3db301fcfdbcb904681fd3db7297fe77',
+});
+const INTERIM_LIFECYCLE_STATE = 'CANDIDATE_PENDING_REVIEW';
+const REGISTRATION_FILE_PATTERN = /^([0-9a-f]{64})\.json$/;
 const ZERO_EFFECTS = Object.freeze({
   registration_file_writes: 1,
   model_calls: 0,
@@ -2071,7 +2108,7 @@ function buildImportClosureBindings(root, code) {
   });
 }
 
-function buildRegistration(root, specification) {
+function buildRegistration(root, specification, interim = null) {
   assert(exactKeys(specification, SPECIFICATION_KEYS), 'INVALID_SPECIFICATION', 'specification');
   const governance = validateAuthorityChain(root);
   const predecessors = validatePredecessors(root, specification.predecessor_receipts);
@@ -2125,7 +2162,15 @@ function buildRegistration(root, specification) {
   const unsigned = {
     schema_version: REGISTRATION_SCHEMA,
     stage: 'M7_V2_REPAIR',
-    lifecycle_state: 'CANDIDATE_PENDING_REVIEW',
+    lifecycle_state: INTERIM_LIFECYCLE_STATE,
+    // Both members are absent on a registration taken out without the
+    // replacement authority, so every registration that predates it, and every
+    // ordinary one taken out after it, is byte-identical to what this builder
+    // produced before.
+    ...(interim === null ? {} : {
+      candidate_replacement_authority_binding: structuredClone(interim.binding),
+      supersedes_candidate_registration_id: interim.supersedes,
+    }),
     parent_authority_binding: governance.authority,
     activation_receipt_binding: governance.activation,
     work0_evidence_root_binding: governance.work0,
@@ -2231,10 +2276,11 @@ function writeExclusive(root, repositoryPath, bytes) {
   }
 }
 
-export function registerCandidate({ repoRoot, specification, write = false } = {}) {
-  assert(typeof write === 'boolean', 'INVALID_OPTIONS', 'write');
-  const root = normaliseRoot(repoRoot);
-  const registration = buildRegistration(root, specification);
+// The write half of a registration, separate from the build half so a caller
+// that has to inspect the built record before it is written — the interim
+// command, which refuses an uncommitted bound role — does not have to build it
+// twice.
+function persistRegistration(root, registration, write) {
   const registrationPath = `${REGISTRATION_ROOT}/${registration.candidate_registration_id}.json`;
   const bytes = canonicalBytes(registration);
   const absolute = path.join(root, ...registrationPath.split('/'));
@@ -2262,4 +2308,255 @@ export function registerCandidate({ repoRoot, specification, write = false } = {
       m8_actions: 0,
     },
   };
+}
+
+export function registerCandidate({
+  repoRoot, specification, write = false, interim = null,
+} = {}) {
+  assert(typeof write === 'boolean', 'INVALID_OPTIONS', 'write');
+  const root = normaliseRoot(repoRoot);
+  return persistRegistration(root, buildRegistration(root, specification, interim), write);
+}
+
+// ---------------------------------------------------------------------------
+// Interim registration under the candidate replacement authority.
+//
+// `interim_registration_policy` requires one registration before every
+// evidence run, each superseding the previous one, none ever deleted. This is
+// the command that mints the next one. It is here rather than in the Work 4
+// bind script for two reasons: the replacement authority's
+// `work1_write_exceptions` re-grant this file, the independent verifier, the
+// manifest validator and the contract for writing and do not name the bind
+// script at all; and each of the bind script's `--authority` modes produces a
+// Work 4 execution manifest, transition authority and receipt under a one-shot
+// run limit, which is the opposite of a registration minted before every run.
+// The argv shape is the Work 4 correction's: `--authority <path>` selects the
+// mode, and `--supersedes <id>` is explicit with no default.
+//
+// Two refusals stand in front of the write:
+//
+// - DIRTY_BOUND_ROLE <path>: a bound code role, or a member of its import
+//   closure, whose working-tree bytes are not the bytes at HEAD. Every binding
+//   this registrar mints is read from the working tree, and the Work 7
+//   verifier re-derives each of them from HEAD as well, so a registration
+//   taken out over an uncommitted edit would bind bytes no independent reader
+//   can reach. Refusing is the only way the registration can mean what it says.
+// - SUPERSEDES_DRIFT <id>: `--supersedes` does not name the registration that
+//   is currently latest in the candidate root. There is no default and no
+//   discovery-as-selection: the caller states what it believes it is
+//   superseding, and is refused, told the id it should have named, if the root
+//   disagrees.
+
+const CANDIDATE_REPLACEMENT_AUTHORITY_ID = CANDIDATE_REPLACEMENT_AUTHORITY_BINDING.record_id;
+
+function readCandidateReplacementAuthority(root) {
+  const bytes = readBytes(root, CANDIDATE_REPLACEMENT_AUTHORITY_PATH,
+    'AUTHORITY_BINDING_DRIFT');
+  const record = parseJson(bytes, 'AUTHORITY_BINDING_DRIFT',
+    CANDIDATE_REPLACEMENT_AUTHORITY_PATH);
+  assert(bytes.length === CANDIDATE_REPLACEMENT_AUTHORITY_BINDING.byte_length
+    && sha256Hex(bytes) === CANDIDATE_REPLACEMENT_AUTHORITY_BINDING.sha256
+    && gitBlobOid(bytes) === CANDIDATE_REPLACEMENT_AUTHORITY_BINDING.git_blob_oid
+    && bytes.equals(canonicalBytes(record))
+    && record.schema_version === CANDIDATE_REPLACEMENT_AUTHORITY_SCHEMA
+    && record.replacement_authority_id === CANDIDATE_REPLACEMENT_AUTHORITY_ID,
+  'AUTHORITY_BINDING_DRIFT', CANDIDATE_REPLACEMENT_AUTHORITY_PATH);
+  const policy = record.interim_registration_policy;
+  assert(isPlainObject(policy)
+    && policy.candidate_root === REGISTRATION_ROOT
+    && policy.each_supersedes_previous === true
+    && policy.retained_never_deleted === true
+    && policy.lifecycle_state === INTERIM_LIFECYCLE_STATE,
+  'AUTHORITY_BINDING_DRIFT', 'interim_registration_policy');
+  const superseded = record.superseded_candidate_registration_ids;
+  assert(Array.isArray(superseded) && superseded.length > 0
+    && new Set(superseded).size === superseded.length
+    && superseded.every((id) => HEX_256.test(id)),
+  'AUTHORITY_BINDING_DRIFT', 'superseded_candidate_registration_ids');
+  const stopped = record.stop_record?.stopped_candidate_registration_id;
+  assert(typeof stopped === 'string' && superseded.includes(stopped),
+    'AUTHORITY_BINDING_DRIFT', 'stopped_candidate_registration_id');
+  return { record, bytes, superseded, stopped };
+}
+
+// Every registration file in the candidate root, keyed by the id its own name
+// declares. The name is not trusted for the content: each record's own
+// `candidate_registration_id` must agree with it.
+function readCandidateRoot(root) {
+  const absolute = resolvePath(root, REGISTRATION_ROOT);
+  assert(fs.lstatSync(absolute).isDirectory(), 'PATH_SAFETY', REGISTRATION_ROOT);
+  const registrations = new Map();
+  for (const name of fs.readdirSync(absolute).sort()) {
+    const match = REGISTRATION_FILE_PATTERN.exec(name);
+    assert(match, 'CANDIDATE_ROOT_DRIFT', `${REGISTRATION_ROOT}/${name}`);
+    const repositoryPath = `${REGISTRATION_ROOT}/${name}`;
+    const bytes = readBytes(root, repositoryPath, 'CANDIDATE_ROOT_DRIFT');
+    const record = parseJson(bytes, 'CANDIDATE_ROOT_DRIFT', repositoryPath);
+    assert(record?.schema_version === REGISTRATION_SCHEMA
+      && record.candidate_registration_id === match[1],
+    'CANDIDATE_ROOT_DRIFT', repositoryPath);
+    registrations.set(match[1], { path: repositoryPath, bytes, record });
+  }
+  return registrations;
+}
+
+// The latest registration is the one nothing supersedes. Two things can
+// supersede: a later registration's own `supersedes_candidate_registration_id`,
+// and the authority's ordered `superseded_candidate_registration_ids` — which
+// covers the registrations that predate that member. The last id the authority
+// lists is the one its stop record stopped, and that one is still the latest
+// until a file supersedes it, so it is excluded from the authority's set.
+// Exactly one head must remain; a root with none or several is refused rather
+// than resolved by a rule nobody wrote down.
+function latestCandidateRegistrationId(repoRoot) {
+  const root = normaliseRoot(repoRoot);
+  const authority = readCandidateReplacementAuthority(root);
+  const registrations = readCandidateRoot(root);
+  assert(registrations.size > 0, 'CANDIDATE_ROOT_DRIFT', REGISTRATION_ROOT);
+  const superseded = new Set(
+    authority.superseded.filter((id) => id !== authority.stopped),
+  );
+  for (const entry of registrations.values()) {
+    const target = entry.record.supersedes_candidate_registration_id;
+    if (typeof target === 'string') superseded.add(target);
+  }
+  const heads = [...registrations.keys()].filter((id) => !superseded.has(id));
+  assert(heads.length === 1, 'CANDIDATE_ROOT_DRIFT',
+    `latest registration is ${heads.length === 0 ? 'unreachable' : 'ambiguous'}`);
+  return heads[0];
+}
+
+// The code roles the specification names and their import closure, compared
+// against the tree at HEAD. `ls-tree` names one blob per tracked path; a path
+// it does not name is not committed at all, so a bound role absent from HEAD
+// is DIRTY_BOUND_ROLE exactly as an edited one is.
+//
+// This runs before the registration is built, on the specification's own path
+// roster rather than on a finished record: an uncommitted edit to a file that
+// some bound receipt also pins would otherwise surface as that receipt's
+// BINDING_DRIFT, which is true but says nothing about why the run is being
+// refused.
+function assertBoundRolesCommitted(root, code) {
+  assert(isPlainObject(code) && exactKeys(code, CODE_KEYS),
+    'INVALID_SPECIFICATION', 'code');
+  const entryPaths = [
+    ...CODE_SINGLETON_ROLES.map((role) => code[role]),
+    ...(Array.isArray(code.runners) ? code.runners : []),
+    ...(Array.isArray(code.tests) ? code.tests : []),
+  ];
+  assert(entryPaths.every((repositoryPath) => typeof repositoryPath === 'string'),
+    'INVALID_SPECIFICATION', 'code');
+  entryPaths.forEach((repositoryPath) => validateRepositoryPath(repositoryPath));
+  let members;
+  try {
+    members = importClosure({ repoRoot: root, entryPaths });
+  } catch (error) {
+    return fail(error.code ?? 'IMPORT_CLOSURE_UNRESOLVED', error.message);
+  }
+  const paths = [...new Set([...entryPaths, ...members])].sort();
+  let listing;
+  try {
+    listing = gitReadText(root, ['ls-tree', 'HEAD', '--', ...paths]);
+  } catch (error) {
+    return fail(error.code ?? 'GIT_UNAVAILABLE', 'HEAD tree could not be read');
+  }
+  const committed = new Map();
+  for (const line of listing.split('\n')) {
+    if (line.length === 0) continue;
+    const separator = line.indexOf('\t');
+    if (separator < 0) continue;
+    const parts = line.slice(0, separator).split(' ');
+    if (parts[1] !== 'blob') continue;
+    committed.set(line.slice(separator + 1), parts[2]);
+  }
+  for (const repositoryPath of paths) {
+    assert(committed.get(repositoryPath) === gitBlobOid(readBytes(root, repositoryPath)),
+      'DIRTY_BOUND_ROLE', repositoryPath);
+  }
+}
+
+// The specification the next interim registration is built from: the role
+// roster, semantic inputs, subtype trees, predecessors, view policy and output
+// root the registration being superseded already names. Only the paths carry
+// over — every byte, hash and count is re-read from the working tree by
+// `buildRegistration`, which is what makes this "the current tree's code
+// roles" rather than a copy of the previous registration.
+function specificationFromRegistration(registration) {
+  const descriptorFor = (binding, extra = {}) => ({
+    ...extra,
+    path: binding.path,
+    schema_version: binding.schema_version,
+    record_id_field: binding.record_id_field,
+  });
+  return {
+    allowed_output_root: registration.allowed_output_root,
+    code: {
+      compiler: registration.code_bindings.compiler.path,
+      contract_validator: registration.code_bindings.contract_validator.path,
+      deterministic_generator: registration.code_bindings.deterministic_generator.path,
+      independent_verifier: registration.code_bindings.independent_verifier.path,
+      projector: registration.code_bindings.projector.path,
+      runners: registration.code_bindings.runners.map((binding) => binding.path),
+      tests: registration.code_bindings.tests.map((binding) => binding.path),
+    },
+    predecessor_receipts: registration.predecessor_receipt_bindings.map(
+      (entry) => descriptorFor(entry.binding, { work: entry.work }),
+    ),
+    semantic_inputs: registration.semantic_input_bindings.map(
+      (entry) => descriptorFor(entry.binding, { input_role: entry.input_role }),
+    ),
+    subtype_trees: structuredClone(registration.subtype_tree_bindings),
+    view_policy: descriptorFor(registration.view_policy_binding),
+  };
+}
+
+/**
+ * Mints the next interim candidate registration under the replacement
+ * authority: same candidate root, same role roster, bytes re-read from the
+ * working tree, superseding the registration the caller names.
+ */
+export function registerInterimCandidate({
+  repoRoot, supersedes, write = false,
+} = {}) {
+  assert(typeof write === 'boolean', 'INVALID_OPTIONS', 'write');
+  assert(typeof supersedes === 'string' && HEX_256.test(supersedes),
+    'INVALID_OPTIONS', 'supersedes');
+  const root = normaliseRoot(repoRoot);
+  readCandidateReplacementAuthority(root);
+  const latest = latestCandidateRegistrationId(root);
+  assert(latest === supersedes, 'SUPERSEDES_DRIFT', latest);
+  const registrations = readCandidateRoot(root);
+  const specification = specificationFromRegistration(registrations.get(latest).record);
+  assertBoundRolesCommitted(root, specification.code);
+  const registration = buildRegistration(root, specification, {
+    binding: CANDIDATE_REPLACEMENT_AUTHORITY_BINDING,
+    supersedes,
+  });
+  return persistRegistration(root, registration, write);
+}
+
+const INTERIM_INVOKED_PATH = process.argv[1] ? path.resolve(process.argv[1]) : null;
+if (INTERIM_INVOKED_PATH === fileURLToPath(import.meta.url)) {
+  try {
+    const argv = process.argv.slice(2);
+    assert(argv.length === 4 && argv[0] === '--authority'
+      && argv[1] === CANDIDATE_REPLACEMENT_AUTHORITY_PATH
+      && argv[2] === '--supersedes',
+    'REGISTRATION_OPTIONS',
+    `--authority ${CANDIDATE_REPLACEMENT_AUTHORITY_PATH} --supersedes <id>`);
+    const result = registerInterimCandidate({
+      repoRoot: process.cwd(),
+      supersedes: argv[3],
+      write: true,
+    });
+    process.stdout.write(`${canonicalJson({
+      candidate_registration_id: result.registration.candidate_registration_id,
+      registration_path: result.registration_path,
+      supersedes_candidate_registration_id:
+        result.registration.supersedes_candidate_registration_id,
+    })}\n`);
+  } catch (error) {
+    process.stderr.write(`${error.code ?? 'INTERIM_REGISTRATION_FAILED'}\n`);
+    process.exitCode = 1;
+  }
 }

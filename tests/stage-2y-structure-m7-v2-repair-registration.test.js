@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const childProcess = require('node:child_process');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const os = require('node:os');
@@ -871,10 +872,16 @@ test('M7 V2 candidate registration is immutable, content-addressed and independe
   const finaliser = await import('../scripts/stage-2y-structure-m7-v2-repair-work2-finalise.mjs');
   const work2Template = prepareWork2Template(t, finaliser);
 
-  await t.test('the two modules expose one deep public seam each', () => {
-    assert.deepEqual(Object.keys(builder), ['registerCandidate']);
+  // The builder now has a second deep seam, `registerInterimCandidate`: the
+  // replacement authority's interim registration policy mints one registration
+  // before every evidence run, and that command derives its own specification
+  // from the registration it supersedes rather than taking one from a caller.
+  // It is still one seam per mechanism; nothing below it is exported.
+  await t.test('the two modules expose their deep public seams and nothing else', () => {
+    assert.deepEqual(Object.keys(builder), ['registerCandidate', 'registerInterimCandidate']);
     assert.deepEqual(Object.keys(verifier), ['verifyRegisteredCandidate']);
     assert.equal(typeof builder.registerCandidate, 'function');
+    assert.equal(typeof builder.registerInterimCandidate, 'function');
     assert.equal(typeof verifier.verifyRegisteredCandidate, 'function');
 
     const verifierSource = fs.readFileSync(path.join(
@@ -3067,4 +3074,337 @@ test('Work4 candidate consumes the rich Work3 receipt and package-member binding
     repoRoot: fixture.root,
     registrationPath,
   }), 'REGISTRATION_CONTRACT_DRIFT');
+});
+
+// ---------------------------------------------------------------------------
+// Interim registration under the candidate replacement authority.
+//
+// `interim_registration_policy` mints one registration before every evidence
+// run, each superseding the last, all of them retained. These cases prove the
+// command's behaviour on a prepared tree; `evidence/` is never touched.
+//
+// A registration fixture is about half a gigabyte, so each case that needs one
+// builds it under its own subtest context and it is removed when that subtest
+// ends.
+//
+// The whole tree is committed, not just the code: the Work 7 verifier compares
+// every binding a registration carries against HEAD, evidence records
+// included, so a fixture whose evidence is untracked cannot prove anything
+// about a registration taken out over it.
+function commitFixtureCode(root) {
+  childProcess.execFileSync('git', ['-C', root, 'init', '--quiet'], { stdio: 'ignore' });
+  childProcess.execFileSync('git', ['-C', root, 'add', '-A', '-f'], { stdio: 'ignore' });
+  childProcess.execFileSync('git', [
+    '-C', root,
+    '-c', 'user.name=interim',
+    '-c', 'user.email=interim@test.invalid',
+    'commit', '--quiet', '-m', 'interim registration fixture',
+  ], { stdio: 'ignore' });
+}
+
+function expectedReplacementAuthorityBinding() {
+  const bytes = fs.readFileSync(path.join(ROOT, CANDIDATE_REPLACEMENT_AUTHORITY_PATH));
+  const record = JSON.parse(bytes.toString('utf8'));
+  return {
+    path: CANDIDATE_REPLACEMENT_AUTHORITY_PATH,
+    schema_version: record.schema_version,
+    record_id_field: 'replacement_authority_id',
+    record_id: record.replacement_authority_id,
+    byte_length: bytes.length,
+    sha256: sha256Hex(bytes),
+    git_blob_oid: gitBlobOid(bytes),
+  };
+}
+
+function captureWarnings(action) {
+  const captured = [];
+  const realWrite = process.stderr.write.bind(process.stderr);
+  process.stderr.write = (chunk, ...rest) => {
+    captured.push(String(chunk));
+    return realWrite(chunk, ...rest);
+  };
+  try {
+    return { result: action(), warnings: captured.join('') };
+  } finally {
+    process.stderr.write = realWrite;
+  }
+}
+
+function registrationFileNames(root) {
+  return fs.readdirSync(path.join(root, REGISTRATION_ROOT)).sort();
+}
+
+test('interim candidate registration supersedes the last one and binds the current tree', async (t) => {
+  const builder = await import('../scripts/stage-2y-structure-m7-v2-repair-register-candidate.mjs');
+  const verifier = await import('../scripts/stage-2y-structure-m7-v2-repair-verify-candidate.mjs');
+  const finaliser = await import('../scripts/stage-2y-structure-m7-v2-repair-work2-finalise.mjs');
+  const work2Template = prepareWork2Template(t, finaliser);
+
+  // A tree with the replacement authority in it and exactly one registration
+  // in the candidate root, its code committed. That registration is the
+  // latest, so it is what the next interim one supersedes.
+  function prepareInterimTree(subtest) {
+    const fixture = makeFixture(subtest, work2Template);
+    copyRepositoryFile(fixture.root, CANDIDATE_REPLACEMENT_AUTHORITY_PATH);
+    const previous = builder.registerCandidate({
+      repoRoot: fixture.root,
+      specification: fixture.specification,
+      write: true,
+    });
+    commitFixtureCode(fixture.root);
+    return { fixture, previous };
+  }
+
+  await t.test('the minted registration is content-addressed, current and chains', async (subtest) => {
+    const { fixture, previous } = prepareInterimTree(subtest);
+    const previousBytes = fs.readFileSync(path.join(fixture.root, previous.registration_path));
+    const written = builder.registerInterimCandidate({
+      repoRoot: fixture.root,
+      supersedes: previous.registration.candidate_registration_id,
+      write: true,
+    });
+    const registration = written.registration;
+
+    assert.equal(registration.schema_version, SCHEMA);
+    assert.equal(registration.lifecycle_state, 'CANDIDATE_PENDING_REVIEW');
+    assert.deepEqual(
+      registration.candidate_replacement_authority_binding,
+      expectedReplacementAuthorityBinding(),
+    );
+    assert.equal(
+      registration.supersedes_candidate_registration_id,
+      previous.registration.candidate_registration_id,
+    );
+    assert.ok(Array.isArray(registration.import_closure_bindings));
+    assert.ok(registration.import_closure_bindings.length > 0);
+    assert.equal(
+      registration.counts.import_closure_count,
+      registration.import_closure_bindings.length,
+    );
+    // The five fixed roles plus the runners and tests, as the registrar
+    // enumerates them, are what it bound — re-read from the working tree, not
+    // copied from the registration it supersedes.
+    assert.deepEqual(
+      registration.code_bindings.runners.map((binding) => binding.path),
+      previous.registration.code_bindings.runners.map((binding) => binding.path),
+    );
+    assert.deepEqual(
+      registration.code_bindings.tests.map((binding) => binding.path),
+      previous.registration.code_bindings.tests.map((binding) => binding.path),
+    );
+    assert.equal(
+      registration.counts.code_file_count,
+      5 + registration.code_bindings.runners.length + registration.code_bindings.tests.length,
+    );
+    const closurePaths = registration.import_closure_bindings.map((binding) => binding.path);
+    assert.deepEqual(closurePaths, [...closurePaths].sort());
+    for (const codePath of [
+      ...['compiler', 'contract_validator', 'deterministic_generator',
+        'independent_verifier', 'projector'].map(
+        (role) => registration.code_bindings[role].path,
+      ),
+      ...registration.code_bindings.runners.map((binding) => binding.path),
+      ...registration.code_bindings.tests.map((binding) => binding.path),
+    ]) {
+      assert.ok(closurePaths.includes(codePath), codePath);
+    }
+
+    // Content-addressed over the whole record, the two new members included.
+    const unsigned = clone(registration);
+    delete unsigned.candidate_registration_id;
+    assert.equal(contentId(SCHEMA, unsigned), registration.candidate_registration_id);
+    assert.notEqual(
+      registration.candidate_registration_id,
+      previous.registration.candidate_registration_id,
+    );
+    assert.equal(
+      written.registration_path,
+      `${REGISTRATION_ROOT}/${registration.candidate_registration_id}.json`,
+    );
+    assert.deepEqual(
+      fs.readFileSync(path.join(fixture.root, written.registration_path)),
+      Buffer.from(`${canonicalJson(registration)}\n`, 'utf8'),
+    );
+    // Same candidate root, both files retained, the superseded one untouched.
+    assert.deepEqual(registrationFileNames(fixture.root), [
+      `${previous.registration.candidate_registration_id}.json`,
+      `${registration.candidate_registration_id}.json`,
+    ].sort());
+    assert.deepEqual(
+      fs.readFileSync(path.join(fixture.root, previous.registration_path)),
+      previousBytes,
+    );
+
+    // The independent verifier reads it against the working tree and says so.
+    const current = captureWarnings(() => verifier.verifyRegisteredCandidate({
+      repoRoot: fixture.root,
+      registrationPath: written.registration_path,
+    }));
+    assert.equal(current.result.state, 'PASS_CANDIDATE_REGISTRATION');
+    assert.equal(
+      current.result.candidate_registration_id,
+      registration.candidate_registration_id,
+    );
+    assert.ok(
+      current.warnings.includes(
+        `CURRENT_REGISTRATION ${registration.candidate_registration_id}`,
+      ),
+      current.warnings,
+    );
+    assert.ok(
+      current.warnings.includes(
+        `IMPORT_CLOSURE_PRESENT ${registration.candidate_registration_id} `
+        + `${registration.import_closure_bindings.length}`,
+      ),
+      current.warnings,
+    );
+    assert.ok(!current.warnings.includes('HISTORICAL_SUPERSEDED_REGISTRATION'), current.warnings);
+
+    // And the Work 7 verifier, which re-derives every binding from the working
+    // tree and from HEAD, passes on it.
+    const { verifyWork7 } = await import(
+      '../scripts/stage-2y-structure-m7-v2-repair-work7-verify.mjs'
+    );
+    const work7 = verifyWork7({
+      repoRoot: fixture.root,
+      registrationPath: written.registration_path,
+    });
+    assert.equal(
+      work7.status,
+      'PASS',
+      JSON.stringify(work7.findings.filter((entry) => entry.severity !== 'INFO'), null, 2),
+    );
+
+    // The next one must supersede this one, not the one this one superseded.
+    assert.throws(() => builder.registerInterimCandidate({
+      repoRoot: fixture.root,
+      supersedes: previous.registration.candidate_registration_id,
+      write: true,
+    }), (error) => {
+      assert.equal(error.code, 'SUPERSEDES_DRIFT');
+      assert.ok(error.message.includes(registration.candidate_registration_id), error.message);
+      return true;
+    });
+    assert.equal(registrationFileNames(fixture.root).length, 2);
+
+    // One command line mints the next link in the chain. The registrar is run
+    // from the repository that holds it, against the prepared tree as its
+    // working directory, which is how the interim command is issued.
+    const output = childProcess.execFileSync('node', [
+      path.join(ROOT, 'scripts/stage-2y-structure-m7-v2-repair-register-candidate.mjs'),
+      '--authority', CANDIDATE_REPLACEMENT_AUTHORITY_PATH,
+      '--supersedes', registration.candidate_registration_id,
+    ], { cwd: fixture.root, encoding: 'utf8' });
+    const result = JSON.parse(output);
+    assert.equal(
+      result.supersedes_candidate_registration_id,
+      registration.candidate_registration_id,
+    );
+    assert.equal(
+      result.registration_path,
+      `${REGISTRATION_ROOT}/${result.candidate_registration_id}.json`,
+    );
+    assert.equal(registrationFileNames(fixture.root).length, 3);
+    const third = JSON.parse(fs.readFileSync(
+      path.join(fixture.root, result.registration_path), 'utf8',
+    ));
+    assert.equal(third.lifecycle_state, 'CANDIDATE_PENDING_REVIEW');
+    assert.deepEqual(
+      third.candidate_replacement_authority_binding,
+      expectedReplacementAuthorityBinding(),
+    );
+    assert.equal(
+      verifier.verifyRegisteredCandidate({
+        repoRoot: fixture.root,
+        registrationPath: result.registration_path,
+      }).state,
+      'PASS_CANDIDATE_REGISTRATION',
+    );
+    // Every earlier registration file is still byte-identical.
+    assert.deepEqual(
+      fs.readFileSync(path.join(fixture.root, previous.registration_path)),
+      previousBytes,
+    );
+    assert.deepEqual(
+      fs.readFileSync(path.join(fixture.root, written.registration_path)),
+      Buffer.from(`${canonicalJson(registration)}\n`, 'utf8'),
+    );
+  });
+
+  await t.test('a bound code role that is not the byte at HEAD refuses DIRTY_BOUND_ROLE', (subtest) => {
+    const { fixture, previous } = prepareInterimTree(subtest);
+    const before = registrationFileNames(fixture.root);
+
+    // Edited in the working tree and not committed.
+    const edited = fixture.specification.code.contract_validator;
+    const editedAbsolute = path.join(fixture.root, edited);
+    const editedBytes = fs.readFileSync(editedAbsolute);
+    fs.appendFileSync(editedAbsolute, '\n// uncommitted\n');
+    assert.throws(() => builder.registerInterimCandidate({
+      repoRoot: fixture.root,
+      supersedes: previous.registration.candidate_registration_id,
+      write: true,
+    }), (error) => {
+      assert.equal(error.code, 'DIRTY_BOUND_ROLE');
+      assert.ok(error.message.includes(edited), error.message);
+      return true;
+    });
+    fs.writeFileSync(editedAbsolute, editedBytes);
+
+    // Present in the working tree but absent from HEAD altogether.
+    const untracked = fixture.specification.code.tests[0];
+    childProcess.execFileSync('git', [
+      '-C', fixture.root, 'rm', '--quiet', '--cached', '--', untracked,
+    ], { stdio: 'ignore' });
+    childProcess.execFileSync('git', [
+      '-C', fixture.root,
+      '-c', 'user.name=interim',
+      '-c', 'user.email=interim@test.invalid',
+      'commit', '--quiet', '-m', 'drop a bound test role from the tree',
+    ], { stdio: 'ignore' });
+    assert.throws(() => builder.registerInterimCandidate({
+      repoRoot: fixture.root,
+      supersedes: previous.registration.candidate_registration_id,
+      write: true,
+    }), (error) => {
+      assert.equal(error.code, 'DIRTY_BOUND_ROLE');
+      assert.ok(error.message.includes(untracked), error.message);
+      return true;
+    });
+
+    // Neither refusal wrote anything.
+    assert.deepEqual(registrationFileNames(fixture.root), before);
+  });
+
+  // The other half of the same distinction, on the repository itself: the
+  // registration the authority stopped is historical, and the correction
+  // record beside the authority is recognised on the same run.
+  await t.test('the stopped registration is read as historical, and the correction as pending', () => {
+    const authority = JSON.parse(fs.readFileSync(
+      path.join(ROOT, CANDIDATE_REPLACEMENT_AUTHORITY_PATH), 'utf8',
+    ));
+    const stopped = authority.stop_record.stopped_candidate_registration_id;
+    const historical = captureWarnings(() => verifier.verifyRegisteredCandidate({
+      repoRoot: ROOT,
+      registrationPath: `${REGISTRATION_ROOT}/${stopped}.json`,
+    }));
+    assert.equal(historical.result.state, 'PASS_CANDIDATE_REGISTRATION');
+    assert.ok(
+      historical.warnings.includes(`HISTORICAL_SUPERSEDED_REGISTRATION ${stopped}`),
+      historical.warnings,
+    );
+    assert.ok(
+      !historical.warnings.includes(`CURRENT_REGISTRATION ${stopped}`),
+      historical.warnings,
+    );
+    const correction = JSON.parse(fs.readFileSync(path.join(
+      ROOT,
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-candidate-replacement-authority-correction-1.json',
+    ), 'utf8'));
+    assert.equal(correction.approval.state, 'PENDING_BEN');
+    assert.ok(
+      historical.warnings.includes(`CORRECTION_PENDING_BEN ${correction.correction_id}`),
+      historical.warnings,
+    );
+  });
 });
