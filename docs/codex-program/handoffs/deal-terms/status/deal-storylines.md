@@ -1,6 +1,6 @@
 # Deal Storylines consumer status
 
-Updated: 2026-09-04 after Q-0004
+Updated: 2026-09-04 after A-0009
 
 ## Waiting on PM
 
@@ -8,8 +8,6 @@ Updated: 2026-09-04 after Q-0004
 - Producer evidence before dates are assigned beyond the first real run.
 - Deal Storylines completion of `target_cik`, `transaction_anchor` and
   `ordinal` for the ten A-0008 rows. No PM response is currently required.
-- Q-0004 confirmation of which `DA-*` rows are package deliveries, which are
-  producer gates, and the exact numbered-message evidence for each.
 
 ## Consumer state
 
@@ -44,5 +42,15 @@ Updated: 2026-09-04 after Q-0004
   are additional documents under the same transaction ID, not extra deals.
 - A-0008 is informational selection input. It is not a corpus-admission
   receipt, a sealed shared 50-deal selection or Ben approval.
-- Package delivery and producer-gate completion remain separate consumer
-  evidence types until PM answers Q-0004.
+- A-0009 confirms that package deliveries and producer gates use separate
+  consumer evidence types. A producer gate never carries product data.
+- Package delivery A-messages bind the coordination commit, package and
+  verifier paths and digests, schema and release identity, corpus identity,
+  unique transaction count, release-permitting gate, supersession and release
+  sequence.
+- Producer-gate A-messages bind the milestone outcome, producer commit,
+  governing receipt or decision record, exact bytes and digest, supersession,
+  and Ben approval ID for the legal and public-authority gates.
+- DA-R50 is the 50-deal `LEGAL_GATE_PASSED_INTERNAL` package after DA-C50,
+  DA-I50 and a legal-gate re-run on the 50. DA-RP re-releases the same corpus
+  as `PUBLIC` after DA-PA. It is not a new extraction.
