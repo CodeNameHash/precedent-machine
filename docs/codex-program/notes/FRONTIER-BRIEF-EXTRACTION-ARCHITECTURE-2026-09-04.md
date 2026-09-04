@@ -9,8 +9,12 @@ Precedent Machine parses merger agreements from SEC filings, classifies
 provisions, extracts structured facts, and serves a review UI and a
 cross-deal precedent search. The owner is a practising M&A lawyer. Read
 `CLAUDE.md` before anything else, then `docs/core/OPERATING-RULES.md`,
-`docs/core/PLAN.md`, `docs/core/DECISIONS.md`, `docs/core/CODEBASE-GUIDE.md`
-and `docs/core/GRAVEYARD.md`.
+`docs/core/PLAN.md`, `docs/core/COMPLETED.md`, `docs/core/DECISIONS.md`,
+`docs/core/CODEBASE-GUIDE.md` and `docs/core/GRAVEYARD.md`.
+`docs/core/README.md` is the entry point to those six. Read COMPLETED.md
+with particular care: it records the steps already finished and the
+evidence that closed each one, and this programme's most expensive and most
+repeated failure is rebuilding something it already has.
 
 ## The owner's binding constraint, in his words
 
@@ -141,11 +145,40 @@ retiring it.
    `extraction_provenance` survives to the served fact so the owner can get
    from an answer back to the words and to the proposal; how the required-role
    validators consume A's proposals.
-5. Then build it. Follow the repository's own gates: `CI=true npm test`
-   (redirect to a file and echo the exit code; never pipe to `tail` or
-   `head`, since a pipeline returns the last command's status and will
-   report success on a failing suite), `npm run build`, and
+5. Build only what is buildable under the locks that are currently in
+   force, and stop at the boundary.
+
+   Model calls in the governed M0 to M10 track are fixed at zero through
+   M9, and Phase B is deferred and locked; `docs/core/PLAN.md` section 13
+   states that lifting either needs an explicit PLAN/Decision amendment AND
+   a separate owner-signed experiment authority, and that a work-order file
+   alone cannot override the zero-model rule. The synthesis this brief
+   describes — a model proposing spans and kinds inside the governed track —
+   sits on the far side of that lock. You may not cross it, and neither may
+   this brief: an earlier draft said "then build it", which was wrong.
+
+   So: build the parts that need no new authority — the validators, the
+   input contract, the provenance carry-through, the required-role checks,
+   the test coverage, anything that makes the governed track ready to
+   receive proposals. For the part that needs a model call inside the track,
+   produce instead (a) the exact PLAN/Decision amendment text, (b) the
+   experiment authority the owner would sign, naming provider, model and
+   version, prompt digest, seed or sampling settings, input and validator
+   digests, call/cost/time ceilings, isolated output root, retention and
+   prohibited effects, and (c) the design, ready to implement the moment he
+   signs. Hand him a decision with the work already done, not a fait
+   accompli.
+
+   Follow the repository's own gates on everything you do build:
+   `CI=true npm test` (redirect to a file and echo the exit code; never pipe
+   to `tail` or `head`, since a pipeline returns the last command's status
+   and will report success on a failing suite), `npm run build`, and
    `bash scripts/lint/forbidden-patterns.sh`.
+
+   Note: `tests/stage-2y-structure-m7-v2-repair-work2.test.js` around line
+   1920 fails when the suite runs as root, because it forces a write failure
+   with `chmod 0o555` and root bypasses directory permissions. That failure
+   is environmental and pre-existing. Do not "fix" it.
 
 ## Constraints you must respect
 
