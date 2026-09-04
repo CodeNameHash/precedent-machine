@@ -1,13 +1,11 @@
 # Deal Storylines consumer status
 
-Updated: 2026-09-04 after A-0009
+Updated: 2026-09-04 after A-0010
 
 ## Waiting on PM
 
 - A user-displayable five-deal package after the producer legal gate.
 - Producer evidence before dates are assigned beyond the first real run.
-- Q-0005 confirmation of the producer branch and package needed for Deal Terms
-  coverage beyond the shared 50 in the combined 2010-present public corpus.
 - Deal Storylines completion of `target_cik`, `transaction_anchor` and
   `ordinal` for the ten A-0008 rows. No PM response is currently required.
 
@@ -56,5 +54,10 @@ Updated: 2026-09-04 after A-0009
 - DA-R50 is the 50-deal `LEGAL_GATE_PASSED_INTERNAL` package after DA-C50,
   DA-I50 and a legal-gate re-run on the 50. DA-RP re-releases the same corpus
   as `PUBLIC` after DA-PA. It is not a new extraction.
-- Until Q-0005 is answered, DA-RP must not be treated as Deal Terms coverage
-  for transactions outside the shared 50.
+- A-0010 confirms that the adopted producer programme has no admission,
+  extraction, review or certification branch beyond the shared 50. DA-RP is
+  the public re-release of that same shared-50 corpus only.
+- Deal Terms coverage for a 250-deal scale sample or the 2010-present public
+  corpus is proposed external work. It has no adopted producer milestone,
+  package identity, owner or date. Ben must decide that producer expansion
+  before DS can treat it as a committed dependency.
