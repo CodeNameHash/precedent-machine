@@ -1,0 +1,957 @@
+{
+  "schema_version": "STAGE_2Y_M7_V2_REPAIR_WORK1_ACCEPTANCE_CASES/V2",
+  "governance_constants": {
+    "agreement_id": "fixture-agreement-m7-v2",
+    "input_occurrence_id": "fixture-occurrence-m7-v2",
+    "prior_family_key": "TERMINATION",
+    "candidate_authority_id": "ba63c1e57e5eb486e666e31e193a1dc21cf24f7a3918eace0ae6a6949f9359f7",
+    "candidate_activation_id": "7821c19a5aaae6f974599cefc8460fb88b8f2302fcefbdde4c0efbadbdea0d7a",
+    "work0_evidence_root_id": "885d404502276d85af385fce20cd93b601f09a30a3300c371df870337f7d5fab"
+  },
+  "structure_overlay_case": {
+    "case_id": "item-39-parent-scoped-inline-list-overlay",
+    "sample_ordinals": [39],
+    "candidate_depth_readings": [
+      [1, 1, 2, 2, 1, 1],
+      [1, 1, 2, 2, 3, 3]
+    ],
+    "expected_passing_candidate_indexes": [1],
+    "ambiguous_repeat_candidate_depth_readings": [
+      [1, 1, 1],
+      [1, 2, 1],
+      [1, 2, 2]
+    ],
+    "ambiguous_repeat_passing_candidate_indexes": [1, 2],
+    "expected_eligible_marker_count": 6,
+    "expected_excluded_glued_reference_count": 2
+  },
+  "programme_coverage": {
+    "fixed_sample_identity_manifest_id": "c727f7bbf876d3b2440b91bed29ae0312fec3491813cf87d867852521263e04c",
+    "lawyer_review_packet_id": "1508b03c8c081cc208ab5115e7bd7c369e4165d69d4115e665c30f25af8a679d",
+    "combined_ten_corpus_digest": "b8825b712ab905a175cfc4a86c3504705f1d8bf509ddcee40f951764c3cf6e3d",
+    "lawyer_review_packet_schema_version": "STAGE_2Y_LAWYER_REVIEW_PACKET/V1",
+    "lawyer_review_packet_state": "SEALED_REPLACEMENT_BEFORE_REVIEW",
+    "lawyer_review_packet_expected_answers_included": false,
+    "fixed_sample_ordinals": [
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+      11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+      21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+      31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+      41, 42, 43, 44, 45, 46, 47, 48, 49, 50
+    ],
+    "expected_sample_size": 50,
+    "expected_source_to_row_items": 36,
+    "expected_review_only_no_normal_row_items": 13,
+    "expected_parser_ambiguity_items": 1,
+    "expected_source_span_count": 50,
+    "expected_unique_agreement_count": 9,
+    "expected_family_count": 25,
+    "expected_additive_agreement_count": 3,
+    "expected_ambiguity_count": 1,
+    "expected_known_loss_class_count": 4,
+    "expected_no_output_count": 13,
+    "expected_grouped_row_count": 9,
+    "grouped_row_sample_ordinals": [6, 22, 28, 32, 33, 34, 35, 36, 37],
+    "expected_grouped_member_fact_count": 18,
+    "compact_rows_naming_linked_points": [6, 28, 32, 33, 34, 35, 36],
+    "expected_compact_linked_point_label_count": 7,
+    "required_grouping_decision": "SEPARATE_AUTHORED_LEGAL_UNIT"
+  },
+  "profile_execution_authority": {
+    "executable_matching_owner": "SEPARATE_BEN_APPROVED_FAMILY_PROFILE_SET",
+    "packet_set_can_assert_completeness": false,
+    "packet_set_contains_executable_matchers": false
+  },
+  "public_seam_positive_cases": [
+    {
+      "case_id": "all-approved-normalisation-rules-are-source-recomputed",
+      "public_seam": "validateAnalysisV2",
+      "expected_result": "PASS",
+      "requirements": [
+        "EXACT_RULE_TO_VALUE_TYPE_MATRIX",
+        "EXACT_BOUND_SOURCE_COVERAGE",
+        "BOUNDARY_WHITESPACE_ONLY_IGNORED_FOR_PARSING",
+        "RESULT_DIGEST_RECOMPUTED"
+      ]
+    },
+    {
+      "case_id": "party-and-party-set-have-exact-alias-evidence",
+      "public_seam": "validateAnalysisV2",
+      "expected_result": "PASS",
+      "requirements": [
+        "PARTY_HAS_EXACTLY_ONE_ALIAS_TOKEN",
+        "PARTY_SET_HAS_AT_LEAST_TWO_UNIQUE_ALIAS_TOKENS",
+        "COMMA_AND_OR_SEPARATORS_ONLY",
+        "ONE_RESOLVED_PARTY_ALIAS_EDGE_PER_TOKEN",
+        "EDGE_SUPPORT_EXACTLY_COVERS_TOKEN"
+      ]
+    },
+    {
+      "case_id": "reference-is-one-exact-source-reference",
+      "public_seam": "validateAnalysisV2",
+      "expected_result": "PASS",
+      "requirements": [
+        "REFERENCE_EDGE_VALUE_TYPE_REFERENCE",
+        "ONE_REFERENCE_TOKEN",
+        "ONE_RESOLVED_REFERENCE_TARGET_EDGE",
+        "EDGE_SUPPORT_EQUALS_FACT_SUPPORT"
+      ]
+    },
+    {
+      "case_id": "item-15-native-page-marker-is-source-artefact",
+      "public_seam": "validateAnalysisV2",
+      "expected_result": "PASS",
+      "sample_ordinals": [15],
+      "requirements": [
+        "NATIVE_AGREEMENT_INDEX_ARTEFACT_EVIDENCE",
+        "EXACT_SOURCE_ARTEFACT_SCOPE",
+        "SOURCE_BYTES_AND_OFFSETS_UNCHANGED",
+        "ABSENT_FROM_LEGAL_FACTS_AND_DISPLAY"
+      ]
+    },
+    {
+      "case_id": "item-41-approved-no-comparison-with-item-15-negative",
+      "public_seam": "validateAnalysisV2",
+      "expected_result": "PASS",
+      "sample_ordinals": [41, 15],
+      "requirements": [
+        "ITEM_41_MATCHES_APPROVED_NO_COMPARISON_PROFILE",
+        "ITEM_15_FAILS_THE_SAME_PROFILE",
+        "BEN_RULING_BOUND"
+      ]
+    },
+    {
+      "case_id": "item-4-remains-review-only-without-governing-chapeau",
+      "public_seam": "validateAnalysisV2",
+      "expected_result": "PASS",
+      "sample_ordinals": [4],
+      "requirements": [
+        "GOVERNING_CHAPEAU_REQUIRED",
+        "HEADING_CONTEXT_FORBIDDEN_AS_SUBSTITUTE",
+        "CONTEXT_EDGE_UNPROVED",
+        "REVIEW_ONLY"
+      ]
+    },
+    {
+      "case_id": "item-9-inspects-required-defined-match-period",
+      "public_seam": "validateAnalysisV2",
+      "expected_result": "PASS",
+      "sample_ordinals": [9],
+      "requirements": [
+        "REQUIRED_DEFINED_TERM_DEPENDENCY_INSPECTED",
+        "DEPENDENCY_SUPPORT_BOUND",
+        "SOURCE_LIMITED_FORBIDDEN_WHEN_DEPENDENCY_UNINSPECTED"
+      ]
+    },
+    {
+      "case_id": "item-25-uses-consumer-link-to-termination-event-owner",
+      "public_seam": "validateAnalysisV2",
+      "expected_result": "PASS",
+      "sample_ordinals": [25],
+      "requirements": [
+        "ONE_AUTHORITATIVE_OWNER_FACT",
+        "RESOLVED_OWNER_TARGET_ID",
+        "CONSUMER_LINK_SOURCE_PROOF",
+        "NO_DUPLICATE_OWNER_FACT"
+      ]
+    },
+    {
+      "case_id": "profile-set-owns-all-subtype-trees-and-dimension-evidence",
+      "public_seam": "validateAnalysisV2",
+      "expected_result": "PASS",
+      "requirements": [
+        "EXACT_25_FAMILY_SUBTYPE_TREE_BINDINGS",
+        "CANDIDATE_TREE_BINDINGS_BYTE_EQUAL_SET_OWNED_BINDINGS",
+        "DERIVED_MATERIAL_AND_DEPENDENCY_DIMENSION_INVENTORY",
+        "EXCLUDED_AND_DELEGATED_DIMENSIONS_ACCOUNTED",
+        "CONDITIONAL_AND_CHILD_RULE_DIMENSIONS_ACCOUNTED"
+      ]
+    },
+    {
+      "case_id": "generic-ancestor-output-obeys-tree-rollout-gate",
+      "public_seam": "validateAnalysisV2",
+      "expected_result": "PASS",
+      "requirements": [
+        "TREE_OUTPUT_COMPLETE_TERMINAL_ANCESTOR_OR_EXACT_BEN_EXCEPTION",
+        "ABSTRACT_ANCESTOR_NEVER_EMITS",
+        "EXCEPTION_LIMITED_TO_NAMED_OCCURRENCE_CLASS"
+      ]
+    },
+    {
+      "case_id": "linked-rules-retain-independent-states",
+      "public_seam": "validateAnalysisV2",
+      "expected_result": "PASS",
+      "requirements": [
+        "ONE_OCCURRENCE_DISPOSITION",
+        "ONE_STATE_PER_LINKED_RULE",
+        "COMPLETE_SIBLING_REMAINS_NORMAL",
+        "FAILED_DEPENDENT_LIMB_REMAINS_REVIEW_ONLY"
+      ]
+    },
+    {
+      "case_id": "family-corrections-cover-every-changed-prior-family",
+      "public_seam": "validateAnalysisV2",
+      "expected_result": "PASS",
+      "requirements": [
+        "ONE_CORRECTION_PER_CHANGED_RULE",
+        "OLD_AND_NEW_FAMILY_DIFFER",
+        "SOURCE_SUPPORT_BOUND",
+        "BEN_RULING_BOUND"
+      ]
+    },
+    {
+      "case_id": "no-output-is-classified-after-all-family-evaluation",
+      "public_seam": "validateAnalysisV2",
+      "expected_result": "PASS",
+      "requirements": [
+        "ONE_EXACT_NO_OUTPUT_RECORD_PER_GOVERNED_OCCURRENCE",
+        "ALL_FAMILY_CANDIDATE_SET_INSPECTED",
+        "COMPATIBLE_CROSS_FAMILY_NORMAL_RULE_NOT_SUPPRESSED",
+        "NO_OUTPUT_DOES_NOT_BECOME_NO_COMPARISON"
+      ]
+    },
+    {
+      "case_id": "near-duplicate-clauses-have-comparable-signatures",
+      "public_seam": "validateAnalysisV2",
+      "expected_result": "PASS",
+      "sample_ordinals": [11, 30, 33, 34, 35, 36],
+      "requirements": [
+        "SOURCE_SPECIFIC_PROOF_RETAINED",
+        "SEVEN_SLOT_EQUIVALENCE_SIGNATURE_DERIVED",
+        "COMPARABLE_TOPOLOGY_FOR_EQUIVALENT_LEGAL_RULES"
+      ]
+    },
+    {
+      "case_id": "projection-renders-every-display-required-material-fact",
+      "public_seam": "validateProjectionV2",
+      "expected_result": "PASS",
+      "requirements": [
+        "FULL_ANALYSIS_VALIDATION_RESULT_BOUND",
+        "DISPLAY_REQUIRED_AND_MATERIAL_FACTS_RENDERED",
+        "DISPLAY_OPTIONAL_OMISSIONS_AUTHORISED",
+        "COMPACT_AND_EXPANDED_LAYOUTS_RECONCILE_INDEPENDENTLY",
+        "CLASSIFICATION_FLOOR_PRESENT"
+      ]
+    },
+    {
+      "case_id": "projection-is-deterministic-without-raw-source",
+      "public_seam": "validateProjectionV2",
+      "expected_result": "PASS",
+      "requirements": [
+        "SAME_ANALYSIS_AND_VIEW_POLICY_BYTE_IDENTICAL_OUTPUT",
+        "NO_RAW_SOURCE_INPUT",
+        "RENDER_BINDINGS_RECOMPUTED",
+        "SOURCE_LIMITATION_TEXT_AND_RULING_PRESERVED"
+      ]
+    },
+    {
+      "case_id": "candidate-registration-is-fully-verified-and-continuous",
+      "public_seam": "verifyRegisteredCandidate",
+      "expected_result": "PASS",
+      "requirements": [
+        "SIX_INPUT_BINDINGS_RECOMPUTED",
+        "EXACT_25_SUBTYPE_TREES",
+        "VIEW_POLICY_BOUND",
+        "PREDECESSOR_RECEIPTS_PASS",
+        "CANDIDATE_ID_CONTINUITY"
+      ]
+    }
+  ],
+  "profile_fixture_matrix": [
+    {
+      "kind": "POSITIVE",
+      "source_variant": "EXACT_FAMILY_TOKEN",
+      "expected_match": true,
+      "decisive_leaf_result": true
+    },
+    {
+      "kind": "NEAR_NEGATIVE",
+      "source_variant": "TOKEN_WITH_NON_WORD_BOUNDARY_SUFFIX",
+      "expected_match": false,
+      "decisive_leaf_result": false
+    },
+    {
+      "kind": "WRONG_FAMILY",
+      "source_variant": "NEXT_FAMILY_TOKEN",
+      "expected_match": false,
+      "decisive_leaf_result": false
+    },
+    {
+      "kind": "WRONG_SUBTYPE",
+      "source_variant": "UNAPPROVED_SUBTYPE_TOKEN",
+      "expected_match": false,
+      "decisive_leaf_result": false
+    }
+  ],
+  "profile_dimension_disposition_case": {
+    "case_id": "declared-excluded-dimension-is-authority-bound",
+    "profile_dimension_disposition": {
+      "dimension_key": "DECLARED_EXCLUDED_DIMENSION",
+      "disposition": "EXCLUDED",
+      "lawyer_ruling_required": true,
+      "owner_profile_id": null,
+      "owner_field_key": null
+    },
+    "fixture_expectations": {
+      "expected_excluded_dimension_keys": ["DECLARED_EXCLUDED_DIMENSION"],
+      "expected_delegated_dimension_keys": []
+    },
+    "expected_result": "PASS"
+  },
+  "baseline_case": {
+    "case_id": "item-2-complete-source-and-expression",
+    "effects": [
+      {
+        "family_key": "TERMINATION",
+        "expression_signature": "EXCEPTION_TO(IF_THEN(ALL_OF(BREACH_STANDARD,ANY_OF(NOT_CURABLE,ALL_OF(WRITTEN_NOTICE_REQUIRED,EARLIER_OF(CURE_DEADLINE_INITIAL,CURE_DEADLINE_OUTER)))),LEGAL_EFFECT),PARENT_BREACH_EXCEPTION)",
+        "temporal_fields": ["CURE_DEADLINE_INITIAL", "CURE_DEADLINE_OUTER"],
+        "output_disposition": "NORMAL"
+      }
+    ],
+    "include_all_fact_value_types": true,
+    "expected_rule_count": 1,
+    "expected_normal_row_count": 1
+  },
+  "focused_topology_cases": [
+    {
+      "case_id": "item-6-intent-knowledge-causation",
+      "sample_ordinals": [6],
+      "effects": [
+        {
+          "family_key": "KEY_DEFINED_TERMS",
+          "expression_signature": "ALL_OF(ANY_OF(INTENTIONALLY_TAKEN_ACT,INTENTIONALLY_OMITTED_ACT_WITH_STATED_FAILURE_TO_CURE_SCOPE),ALL_OF(ANY_OF(KNOWS,REASONABLY_SHOULD_HAVE_KNOWN),ANY_OF(WOULD_CAUSE,WOULD_REASONABLY_BE_EXPECTED_TO_CAUSE)))",
+          "temporal_fields": [],
+          "output_disposition": "NORMAL"
+        }
+      ],
+      "required_operators": ["ALL_OF", "ANY_OF"],
+      "scope_requirements": [
+        "FAILURE_TO_CURE_SCOPES_TO_INTENTIONAL_OMISSION",
+        "KNOWLEDGE_ANY_OF_SCOPES_OVER_CAUSATION_ANY_OF"
+      ],
+      "expected_rule_count": 1
+    },
+    {
+      "case_id": "item-23-three-linked-effects",
+      "sample_ordinals": [23],
+      "effects": [
+        {
+          "family_key": "SPECIFIC_PERFORMANCE_REMEDIES",
+          "subprofile_key": "PRIMARY_SPECIFIC_PERFORMANCE_EFFECT",
+          "expression_signature": "ALL_OF(PRIMARY_EFFECT,PRIMARY_STANDARD)",
+          "temporal_fields": [],
+          "output_disposition": "NORMAL"
+        },
+        {
+          "family_key": "SPECIFIC_PERFORMANCE_REMEDIES",
+          "subprofile_key": "PRIORITY_LIMITATION_EFFECT",
+          "expression_signature": "OVERRIDES(NOT(SECOND_EFFECT),NOT(PRIORITY_RULE))",
+          "temporal_fields": [],
+          "output_disposition": "NORMAL"
+        },
+        {
+          "family_key": "SPECIFIC_PERFORMANCE_REMEDIES",
+          "subprofile_key": "TERMINATION_DATE_EXTENSION_EFFECT",
+          "expression_signature": "TO_EXTENT(EXTENSION_EFFECT,EXTENSION_SCOPE)",
+          "temporal_fields": [],
+          "output_disposition": "NORMAL"
+        }
+      ],
+      "required_operators": ["ALL_OF", "NOT", "OVERRIDES", "TO_EXTENT"],
+      "scope_requirements": [
+        "PRIORITY_SCOPES_ONLY_TO_SECOND_EFFECT",
+        "EXTENSION_SCOPE_BINDS_ONLY_EXTENSION_EFFECT"
+      ],
+      "expected_rule_count": 3
+    },
+    {
+      "case_id": "item-31-conditional-deeming",
+      "sample_ordinals": [31],
+      "effects": [
+        {
+          "family_key": "NO_SHOP",
+          "expression_signature": "IF_THEN(CONDITION,CONSEQUENCE_MODIFIER(DEEMS_AS(SOURCE_STATE,DEEMED_STATE),LEGAL_CONSEQUENCE))",
+          "temporal_fields": [],
+          "output_disposition": "NORMAL"
+        }
+      ],
+      "required_operators": ["IF_THEN", "DEEMS_AS", "CONSEQUENCE_MODIFIER"],
+      "scope_requirements": [
+        "DEEMING_APPLIES_ONLY_IF_CONDITION_PASSES",
+        "CONSEQUENCE_MODIFIES_DEEMED_STATE"
+      ],
+      "expected_rule_count": 1
+    },
+    {
+      "case_id": "item-33-scoped-partial-exception",
+      "sample_ordinals": [33],
+      "effects": [
+        {
+          "family_key": "MAE_DEFINITION",
+          "expression_signature": "CONSEQUENCE_MODIFIER(TO_EXTENT(EXCEPTION_TO(BASE_EXCLUSION,DISPROPORTIONATE_EFFECT),INCREMENTAL_DISPROPORTIONATE_SCOPE),INCREMENTAL_EFFECT_MAY_BE_TAKEN_INTO_ACCOUNT)",
+          "temporal_fields": [],
+          "output_disposition": "NORMAL"
+        }
+      ],
+      "required_operators": ["EXCEPTION_TO", "TO_EXTENT", "CONSEQUENCE_MODIFIER"],
+      "scope_requirements": [
+        "ONLY_INCREMENTAL_EFFECT_RETURNS",
+        "GAAP_EXPRESSLY_INCLUDED",
+        "LAW_EXPRESSLY_INCLUDED",
+        "PEER_COMPARATOR_EXPRESSLY_INCLUDED",
+        "DISPROPORTIONATE_EFFECT_EXCEPTION_EXPRESSLY_INCLUDED",
+        "INCREMENTAL_EFFECT_CONSEQUENCE_EXPRESSLY_INCLUDED"
+      ],
+      "required_material_field_keys": [
+        "GAAP",
+        "LAW",
+        "PEER_COMPARATOR",
+        "DISPROPORTIONATE_EFFECT_EXCEPTION",
+        "INCREMENTAL_EFFECT_CONSEQUENCE"
+      ],
+      "required_absence_observations": [
+        {
+          "field_key": "INTERPRETATIONS",
+          "reason_code": "SOURCE_NOT_EXPRESSLY_STATED",
+          "scope": "COMPLETE_SOURCE_CLOSURE",
+          "lawyer_ruling_required": true
+        }
+      ],
+      "expected_rule_count": 1,
+      "convergence_group": "mae-partial-exception-topology-v1"
+    },
+    {
+      "case_id": "item-34-scoped-partial-exception",
+      "sample_ordinals": [34],
+      "effects": [
+        {
+          "family_key": "MAE_DEFINITION",
+          "expression_signature": "CONSEQUENCE_MODIFIER(TO_EXTENT(EXCEPTION_TO(BASE_EXCLUSION,DISPROPORTIONATE_EFFECT),INCREMENTAL_DISPROPORTIONATE_SCOPE),INCREMENTAL_EFFECT_MAY_BE_TAKEN_INTO_ACCOUNT)",
+          "temporal_fields": [],
+          "output_disposition": "NORMAL"
+        }
+      ],
+      "required_operators": ["EXCEPTION_TO", "TO_EXTENT", "CONSEQUENCE_MODIFIER"],
+      "scope_requirements": ["ONLY_INCREMENTAL_EFFECT_RETURNS"],
+      "expected_rule_count": 1,
+      "convergence_group": "mae-partial-exception-topology-v1"
+    },
+    {
+      "case_id": "item-35-scoped-partial-exception",
+      "sample_ordinals": [35],
+      "effects": [
+        {
+          "family_key": "MAE_DEFINITION",
+          "expression_signature": "CONSEQUENCE_MODIFIER(TO_EXTENT(EXCEPTION_TO(BASE_EXCLUSION,DISPROPORTIONATE_EFFECT),INCREMENTAL_DISPROPORTIONATE_SCOPE),INCREMENTAL_EFFECT_MAY_BE_TAKEN_INTO_ACCOUNT)",
+          "temporal_fields": [],
+          "output_disposition": "NORMAL"
+        }
+      ],
+      "required_operators": ["EXCEPTION_TO", "TO_EXTENT", "CONSEQUENCE_MODIFIER"],
+      "scope_requirements": ["ONLY_INCREMENTAL_EFFECT_RETURNS"],
+      "expected_rule_count": 1,
+      "convergence_group": "mae-partial-exception-topology-v1"
+    },
+    {
+      "case_id": "item-36-scoped-partial-exception",
+      "sample_ordinals": [36],
+      "effects": [
+        {
+          "family_key": "MAE_DEFINITION",
+          "expression_signature": "CONSEQUENCE_MODIFIER(TO_EXTENT(EXCEPTION_TO(BASE_EXCLUSION,DISPROPORTIONATE_EFFECT),INCREMENTAL_DISPROPORTIONATE_SCOPE),INCREMENTAL_EFFECT_MAY_BE_TAKEN_INTO_ACCOUNT)",
+          "temporal_fields": [],
+          "output_disposition": "NORMAL"
+        }
+      ],
+      "required_operators": ["EXCEPTION_TO", "TO_EXTENT", "CONSEQUENCE_MODIFIER"],
+      "scope_requirements": ["ONLY_INCREMENTAL_EFFECT_RETURNS"],
+      "expected_rule_count": 1,
+      "convergence_group": "mae-partial-exception-topology-v1"
+    },
+    {
+      "case_id": "item-47-scoped-partial-exception",
+      "sample_ordinals": [47],
+      "effects": [
+        {
+          "family_key": "MAE_DEFINITION",
+          "expression_signature": "CONSEQUENCE_MODIFIER(TO_EXTENT(EXCEPTION_TO(BASE_RULE,PARTIAL_EXCEPTION),EXACT_EXCEPTION_SCOPE),LIMITED_CONSEQUENCE)",
+          "temporal_fields": [],
+          "output_disposition": "NORMAL"
+        }
+      ],
+      "required_operators": ["EXCEPTION_TO", "TO_EXTENT", "CONSEQUENCE_MODIFIER"],
+      "scope_requirements": ["PARTIAL_EXCEPTION_DOES_NOT_ESCAPE_EXACT_SCOPE"],
+      "expected_rule_count": 1
+    },
+    {
+      "case_id": "item-11-convergence-a",
+      "sample_ordinals": [11],
+      "effects": [
+        {
+          "family_key": "NO_OTHER_REPS_FRAUD",
+          "expression_signature": "EXCEPTION_TO(BASE_RESTRICTION,BOARD_FIDUCIARY_EXCEPTION)",
+          "temporal_fields": [],
+          "output_disposition": "NORMAL"
+        }
+      ],
+      "required_operators": ["EXCEPTION_TO"],
+      "scope_requirements": ["PRESERVE_SOURCE_SCOPE_BEFORE_COMPARISON"],
+      "expected_rule_count": 1,
+      "convergence_group": "items-11-30-comparable-topology-v1"
+    },
+    {
+      "case_id": "item-30-convergence-b",
+      "sample_ordinals": [30],
+      "effects": [
+        {
+          "family_key": "NO_OTHER_REPS_FRAUD",
+          "expression_signature": "EXCEPTION_TO(BASE_RESTRICTION,BOARD_FIDUCIARY_EXCEPTION)",
+          "temporal_fields": [],
+          "output_disposition": "NORMAL"
+        }
+      ],
+      "required_operators": ["EXCEPTION_TO"],
+      "scope_requirements": ["PRESERVE_SOURCE_SCOPE_BEFORE_COMPARISON"],
+      "expected_rule_count": 1,
+      "convergence_group": "items-11-30-comparable-topology-v1"
+    },
+    {
+      "case_id": "item-28-linked-d-and-o-rights-survival",
+      "sample_ordinals": [28],
+      "work0_authority": {
+        "review_item_id": "a252ced9e30de188b3cba76f5ac2992509ec2b16fea032526286521b0ead8c32",
+        "lawyer_decision_id": "b7993d5b54e20fb4a66ef27ec9d4906f49a050fba416cba70362972c200d9fff",
+        "reviewer": "BEN_GOODCHILD",
+        "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+        "family_key": "DNO_INDEMNIFICATION",
+        "source_kind": "SEALED_SEVEN",
+        "item_kind": "SOURCE_TO_ROW"
+      },
+      "effects": [
+        {
+          "family_key": "DNO_INDEMNIFICATION",
+          "subprofile_key": "RIGHTS_SURVIVAL",
+          "expression_signature": "ALL_OF(RIGHTS_SURVIVAL,RIGHTS_SURVIVAL_DURATION)",
+          "temporal_fields": ["RIGHTS_SURVIVAL_DURATION"],
+          "output_disposition": "NORMAL"
+        },
+        {
+          "family_key": "DNO_INDEMNIFICATION",
+          "subprofile_key": "NO_ADVERSE_AMENDMENT",
+          "expression_signature": "ALL_OF(NO_ADVERSE_AMENDMENT,NO_ADVERSE_AMENDMENT_DURATION)",
+          "temporal_fields": ["NO_ADVERSE_AMENDMENT_DURATION"],
+          "output_disposition": "NORMAL"
+        }
+      ],
+      "required_operators": ["ALL_OF"],
+      "scope_requirements": [
+        "ITEM28_DISTINCT_DURATION_BOUNDS_AND_SOURCE_ANCHORS",
+        "LINKED_RULES_SHARE_OCCURRENCE_BUT_NOT_FACT_OWNERSHIP",
+        "NO_SHARED_FACT_COVERAGE"
+      ],
+      "expected_rule_count": 2,
+      "expected_normal_row_count": 2
+    },
+    {
+      "case_id": "item-42-linked-d-and-o-rights-survival",
+      "sample_ordinals": [42],
+      "work0_authority": {
+        "review_item_id": "f70963f0b88cb7c98e766fcb06089e307503525119808032591326fc1765078a",
+        "lawyer_decision_id": "d44da4450537479614de70175996b16a86495de989d1795ed4c01b7cba24412e",
+        "reviewer": "BEN_GOODCHILD",
+        "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+        "family_key": "DNO_INDEMNIFICATION",
+        "source_kind": "ADDITIVE_THREE",
+        "item_kind": "REVIEW_ONLY_NO_NORMAL_ROW",
+        "source_reference": "5.7"
+      },
+      "effects": [
+        {
+          "family_key": "DNO_INDEMNIFICATION",
+          "subprofile_key": "RIGHTS_SURVIVAL",
+          "expression_signature": "ALL_OF(RIGHTS_SURVIVAL,RIGHTS_SURVIVAL_DURATION)",
+          "temporal_fields": ["RIGHTS_SURVIVAL_DURATION"],
+          "extraction_state": "INCOMPLETE",
+          "source_quality": "SUFFICIENT",
+          "issue_code": "WORK3_BEN_PROFILE_APPROVAL_PENDING",
+          "output_disposition": "REVIEW_ONLY"
+        },
+        {
+          "family_key": "DNO_INDEMNIFICATION",
+          "subprofile_key": "NO_ADVERSE_AMENDMENT",
+          "expression_signature": "ALL_OF(NO_ADVERSE_AMENDMENT,NO_ADVERSE_AMENDMENT_DURATION)",
+          "temporal_fields": ["NO_ADVERSE_AMENDMENT_DURATION"],
+          "extraction_state": "INCOMPLETE",
+          "source_quality": "SUFFICIENT",
+          "issue_code": "WORK3_BEN_PROFILE_APPROVAL_PENDING",
+          "output_disposition": "REVIEW_ONLY"
+        },
+        {
+          "family_key": "DNO_INDEMNIFICATION",
+          "subprofile_key": "CLAIM_CONTINUATION",
+          "expression_signature": "IF_THEN(CLAIM_MADE_PURSUANT_TO_RIGHTS,ALL_OF(CLAIM_CONTINUES_SUBJECT_TO_SECTION,CLAIM_CONTINUES_WITH_RIGHTS,UNTIL_CLAIM_DISPOSITION))",
+          "temporal_fields": ["CLAIM_CONTINUATION_PERIOD_REFERENCE"],
+          "extraction_state": "INCOMPLETE",
+          "source_quality": "SUFFICIENT",
+          "issue_code": "WORK3_BEN_PROFILE_APPROVAL_PENDING",
+          "output_disposition": "REVIEW_ONLY"
+        }
+      ],
+      "required_operators": ["ALL_OF", "IF_THEN"],
+      "scope_requirements": [
+        "ITEM42_EXACT_SHARED_DURATION_AUTHORITY",
+        "CLAIM_CONTINUATION_DEICTIC_REFERENCE_OWNS_RIGHTS_DURATION",
+        "CURRENT_WORK1_REMAINS_REVIEW_ONLY_WITHOUT_NORMAL_ROW"
+      ],
+      "expected_rule_count": 3,
+      "expected_normal_row_count": 0,
+      "work1_absence_assertion_id": "item-42-work1-has-zero-normal-rows"
+    },
+    {
+      "case_id": "item-44-separate-access-dimensions",
+      "sample_ordinals": [44],
+      "work0_authority": {
+        "review_item_id": "93007a95ffd285947ae75b45f08c707ba24d93d0c60422f437eadf9c0e8a1b17",
+        "lawyer_decision_id": "0b0efa85bac341e0ee3e29075563620365c9022c2dd8cf08de4e9f73ae7454a4",
+        "reviewer": "BEN_GOODCHILD",
+        "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+        "family_key": "GENERAL_COVENANTS",
+        "source_kind": "ADDITIVE_THREE",
+        "item_kind": "REVIEW_ONLY_NO_NORMAL_ROW",
+        "source_reference": "5.1"
+      },
+      "effects": [
+        {
+          "family_key": "GENERAL_COVENANTS",
+          "expression_signature": "ALL_OF(ACCESS_OBJECTS,ACCESS_PURPOSE,NOTICE_REQUIREMENT,BUSINESS_HOURS_TIMING,REASONABLENESS,NON_INTERFERENCE)",
+          "temporal_fields": ["BUSINESS_HOURS_TIMING"],
+          "extraction_state": "INCOMPLETE",
+          "source_quality": "SUFFICIENT",
+          "issue_code": "WIDER_MATERIAL_SCOPE_UNMODELLED",
+          "output_disposition": "REVIEW_ONLY"
+        }
+      ],
+      "required_operators": ["ALL_OF"],
+      "required_material_field_keys": [
+        "ACCESS_OBJECTS",
+        "ACCESS_PURPOSE",
+        "NOTICE_REQUIREMENT",
+        "BUSINESS_HOURS_TIMING",
+        "REASONABLENESS",
+        "NON_INTERFERENCE"
+      ],
+      "scope_requirements": [
+        "SIX_SEPARATE_TYPED_FACTS",
+        "NO_WHOLE_CLAUSE_VALUE",
+        "CURRENT_WORK1_REMAINS_REVIEW_ONLY_WITHOUT_NORMAL_ROW"
+      ],
+      "expected_rule_count": 1,
+      "expected_normal_row_count": 0,
+      "work1_absence_assertion_id": "item-44-work1-has-zero-normal-rows"
+    }
+  ],
+  "state_cases": [
+    {
+      "case_id": "source-limited-approved-row",
+      "effects": [
+        {
+          "family_key": "TERMINATION",
+          "expression_signature": "ALL_OF(APPLIES_TO,FAMILY_MARKER)",
+          "temporal_fields": [],
+          "output_disposition": "APPROVED_LIMITED",
+          "missing_required_field": "NOTICE_FORM"
+        }
+      ],
+      "expected_summary": "APPROVED_LIMITED",
+      "expected_normal_row_count": 1
+    },
+    {
+      "case_id": "no-comparison-profile-route",
+      "effects": [
+        {
+          "family_key": "TERMINATION",
+          "expression_signature": "ALL_OF(APPLIES_TO,FAMILY_MARKER)",
+          "temporal_fields": [],
+          "output_disposition": "NO_COMPARISON"
+        }
+      ],
+      "expected_summary": "NO_COMPARISON",
+      "expected_non_output_count": 1
+    },
+    {
+      "case_id": "linked-normal-and-review-only",
+      "effects": [
+        {
+          "family_key": "TERMINATION",
+          "expression_signature": "ALL_OF(APPLIES_TO,FAMILY_MARKER)",
+          "temporal_fields": [],
+          "output_disposition": "NORMAL"
+        },
+        {
+          "family_key": "GENERAL_COVENANTS",
+          "expression_signature": "ALL_OF(APPLIES_TO,FAMILY_MARKER)",
+          "temporal_fields": [],
+          "output_disposition": "REVIEW_ONLY",
+          "extraction_state": "INCOMPLETE",
+          "source_quality": "SUFFICIENT",
+          "issue_code": "DEPENDENT_STANDARD_NOT_PROVED"
+        }
+      ],
+      "expected_summary": "REVIEW_ONLY",
+      "expected_normal_row_count": 1,
+      "expected_review_row_count": 1
+    },
+    {
+      "case_id": "ben-approved-no-output",
+      "effects": [],
+      "unmatched_inspected_effect": true,
+      "expected_summary": "NO_OUTPUT",
+      "expected_non_output_count": 1
+    },
+    {
+      "case_id": "item-41-ben-approved-no-comparison",
+      "sample_ordinals": [41],
+      "effects": [],
+      "expected_summary": "NO_COMPARISON",
+      "expected_non_output_count": 1,
+      "required_authority": "BEN_LEGAL_RULING"
+    },
+    {
+      "case_id": "item-15-native-source-artefact",
+      "sample_ordinals": [15],
+      "effects": [],
+      "expected_summary": "REVIEW_ONLY",
+      "expected_source_artefact_count": 1,
+      "required_native_evidence": "AGREEMENT_INDEX_PAGE_MARKER"
+    },
+    {
+      "case_id": "generic-ancestor-tree-output-complete",
+      "effects": [
+        {
+          "family_key": "TERMINATION",
+          "expression_signature": "ALL_OF(APPLIES_TO,FAMILY_MARKER)",
+          "temporal_fields": [],
+          "output_disposition": "NORMAL"
+        }
+      ],
+      "expected_summary": "NORMAL",
+      "required_tree_state": "TREE_OUTPUT_COMPLETE",
+      "required_node_state": "TERMINAL_OUTPUT_PERMITTED"
+    },
+    {
+      "case_id": "generic-ancestor-exact-ben-exception",
+      "effects": [
+        {
+          "family_key": "TERMINATION",
+          "expression_signature": "ALL_OF(APPLIES_TO,FAMILY_MARKER)",
+          "temporal_fields": [],
+          "output_disposition": "APPROVED_LIMITED"
+        }
+      ],
+      "expected_summary": "APPROVED_LIMITED",
+      "required_authority": "GENERIC_LEVEL_OUTPUT_APPROVED",
+      "required_node_state": "TERMINAL_OUTPUT_PERMITTED"
+    },
+    {
+      "case_id": "generic-ancestor-incomplete-rollout",
+      "effects": [
+        {
+          "family_key": "TERMINATION",
+          "expression_signature": "ALL_OF(APPLIES_TO,FAMILY_MARKER)",
+          "temporal_fields": [],
+          "output_disposition": "REVIEW_ONLY",
+          "extraction_state": "INCOMPLETE",
+          "source_quality": "SUFFICIENT",
+          "issue_code": "GENERIC_ANCESTOR_NOT_OUTPUT_COMPLETE"
+        }
+      ],
+      "expected_summary": "REVIEW_ONLY",
+      "required_tree_state": "TREE_INCOMPLETE"
+    },
+    {
+      "case_id": "resistant-clause-remains-review-only-with-zero-model-calls",
+      "effects": [
+        {
+          "family_key": "TERMINATION",
+          "expression_signature": "ALL_OF(APPLIES_TO,UNPROVED_REQUIRED_FIELD)",
+          "temporal_fields": [],
+          "output_disposition": "REVIEW_ONLY",
+          "extraction_state": "INCOMPLETE",
+          "source_quality": "SUFFICIENT",
+          "issue_code": "REQUIRED_FIELD_UNPROVED"
+        }
+      ],
+      "expected_summary": "REVIEW_ONLY",
+      "expected_model_calls": 0
+    },
+    {
+      "case_id": "no-output-does-not-suppress-cross-family-normal",
+      "effects": [
+        {
+          "family_key": "GENERAL_COVENANTS",
+          "expression_signature": "ALL_OF(APPLIES_TO,FAMILY_MARKER)",
+          "temporal_fields": [],
+          "output_disposition": "NORMAL"
+        }
+      ],
+      "unmatched_inspected_effect": true,
+      "expected_summary": "NORMAL",
+      "expected_normal_row_count": 1,
+      "expected_non_output_count": 0
+    }
+  ],
+  "negative_cases": [
+    {"case_id": "false-profile-match", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "near-negative-cannot-match", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "wrong-family-cannot-match", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "wrong-subtype-cannot-match", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "source-span-byte-drift", "expected_code": "M7_V2_SOURCE_CLOSURE"},
+    {"case_id": "whole-clause-hidden-in-enum", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "silent-governed-occurrence-omission", "expected_code": "M7_V2_STATE_COMBINATION"},
+    {"case_id": "no-output-without-ben-authority", "expected_code": "M7_V2_SOURCE_COVERAGE"},
+    {"case_id": "projection-silent-row-omission", "expected_code": "M7_V2_LAYOUT_RECONCILIATION"},
+    {"case_id": "projection-source-limitation-drift", "expected_code": "M7_V2_LAYOUT_RECONCILIATION"},
+    {"case_id": "projection-disposition-ledger-drift", "expected_code": "M7_V2_LAYOUT_RECONCILIATION"},
+    {"case_id": "normalisation-rule-value-type-mismatch", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "normalisation-leaves-non-whitespace-bound-byte-unconsumed", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "party-value-has-two-alias-tokens", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "party-set-has-one-alias-token", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "party-set-uses-unapproved-separator", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "party-alias-edge-support-does-not-equal-token", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "party-alias-target-is-duplicated", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "reference-source-contains-two-reference-tokens", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "reference-edge-has-wrong-edge-type", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "reference-edge-support-differs-from-fact-support", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "textual-source-artefact-lacks-native-or-ben-authority", "expected_code": "M7_V2_SOURCE_COVERAGE"},
+    {"case_id": "native-source-artefact-scope-mismatch", "expected_code": "M7_V2_SOURCE_CLOSURE"},
+    {"case_id": "operative-preamble-labelled-structural", "expected_code": "M7_V2_SOURCE_COVERAGE"},
+    {"case_id": "unknown-inline-marker-overlaps-item-39-overlay", "expected_code": "M7_V2_INPUT_CONSUMPTION"},
+    {"case_id": "item-39-overlay-omits-material-candidate", "expected_code": "M7_V2_INPUT_CONSUMPTION"},
+    {"case_id": "item-39-overlay-invents-candidate", "expected_code": "M7_V2_INPUT_CONSUMPTION"},
+    {"case_id": "item-39-overlay-selects-failed-candidate", "expected_code": "M7_V2_INPUT_CONSUMPTION"},
+    {"case_id": "item-39-overlay-promotes-glued-reference-marker", "expected_code": "M7_V2_INPUT_CONSUMPTION"},
+    {"case_id": "item-39-overlay-misses-authorised-non-structural-marker", "expected_code": "M7_V2_INPUT_CONSUMPTION"},
+    {"case_id": "item-39-overlay-node-source-disposition-mismatch", "expected_code": "M7_V2_INPUT_CONSUMPTION"},
+    {"case_id": "item-39-overlay-first-label-is-not-sequence-start", "expected_code": "M7_V2_INPUT_CONSUMPTION"},
+    {"case_id": "item-39-overlay-singleton-sequence", "expected_code": "M7_V2_INPUT_CONSUMPTION"},
+    {"case_id": "item-39-overlay-applied-outside-item-39", "expected_code": "M7_V2_SOURCE_CLOSURE"},
+    {"case_id": "ambiguous-repeat-selects-a-candidate", "expected_code": "M7_V2_INPUT_CONSUMPTION"},
+    {"case_id": "ambiguous-repeat-lacks-two-passing-material-readings", "expected_code": "M7_V2_INPUT_CONSUMPTION"},
+    {"case_id": "ambiguous-repeat-lacks-native-same-style-restart-proof", "expected_code": "M7_V2_INPUT_CONSUMPTION"},
+    {"case_id": "profile-set-misses-family-subtype-tree", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "profile-set-tree-binding-differs-from-candidate", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "profile-tree-family-key-is-relabeled", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "profile-dimension-evidence-omits-material-field", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "profile-dimension-evidence-omits-dependent-field", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "profile-dimension-evidence-omits-conditional-or-child-rule", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "generic-abstract-ancestor-emits-normal", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "generic-incomplete-tree-emits-approved-limited", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "generic-ben-exception-covers-another-occurrence-class", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "missing-required-context-edge-produces-normal", "expected_code": "M7_V2_DEPENDENCY_UNRESOLVED"},
+    {"case_id": "heading-derived-context-produces-normal", "expected_code": "M7_V2_DEPENDENCY"},
+    {"case_id": "item-9-source-limited-with-uninspected-defined-term", "expected_code": "M7_V2_SOURCE_LIMITED_PROOF"},
+    {"case_id": "expression-connective-span-outside-closure", "expected_code": "M7_V2_EXPRESSION_PROVENANCE"},
+    {"case_id": "wrong-item-6-topology-with-same-leaves", "expected_code": "M7_V2_EXPRESSION_TOPOLOGY"},
+    {"case_id": "effect-ledger-omits-linked-effect", "expected_code": "M7_V2_EFFECT_LEDGER"},
+    {"case_id": "linked-review-only-limb-suppresses-complete-sibling", "expected_code": "M7_V2_STATE_COMBINATION"},
+    {"case_id": "family-correction-missing-for-changed-rule", "expected_code": "M7_V2_FAMILY_CORRECTION"},
+    {"case_id": "family-correction-lacks-approved-ruling", "expected_code": "M7_V2_FAMILY_CORRECTION"},
+    {"case_id": "consumer-link-targets-non-owner", "expected_code": "M7_V2_FACT_OWNERSHIP"},
+    {"case_id": "consumer-duplicates-owner-fact", "expected_code": "M7_V2_FACT_OWNERSHIP"},
+    {"case_id": "no-output-skips-all-family-candidate-set", "expected_code": "M7_V2_EFFECT_LEDGER"},
+    {"case_id": "no-output-suppresses-compatible-cross-family-normal", "expected_code": "M7_V2_SOURCE_COVERAGE"},
+    {"case_id": "no-output-is-relabelled-no-comparison", "expected_code": "M7_V2_SOURCE_COVERAGE"},
+    {"case_id": "analysis-projection-lacks-full-validation-result", "expected_code": "M7_V2_LAYOUT_RECONCILIATION"},
+    {"case_id": "projection-display-required-fact-is-omitted", "expected_code": "M7_V2_LAYOUT_RECONCILIATION"},
+    {"case_id": "projection-material-fact-is-omitted", "expected_code": "M7_V2_LAYOUT_RECONCILIATION"},
+    {"case_id": "projection-never-display-fact-is-rendered", "expected_code": "M7_V2_LAYOUT_RECONCILIATION"},
+    {"case_id": "projection-render-value-is-truncated", "expected_code": "M7_V2_RENDER_RECONCILIATION"},
+    {"case_id": "projection-render-label-is-swapped", "expected_code": "M7_V2_LABEL_BINDING"},
+    {"case_id": "projection-compact-classification-floor-is-missing", "expected_code": "M7_V2_LAYOUT_RECONCILIATION"},
+    {"case_id": "projection-layout-ledgers-do-not-reconcile-independently", "expected_code": "M7_V2_LAYOUT_RECONCILIATION"},
+    {"case_id": "projection-reads-raw-source", "expected_code": "M7_V2_INPUT_CONSUMPTION"},
+    {"case_id": "v1-analysis-enters-v2-validation", "expected_code": "M7_V2_SCHEMA"},
+    {"case_id": "v1-row-enters-v2-projection", "expected_code": "M7_V2_LAYOUT_RECONCILIATION"},
+    {"case_id": "candidate-six-input-binding-drift", "expected_code": "M7_V2_BINDING_DRIFT"},
+    {"case_id": "candidate-subtype-tree-binding-drift", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "candidate-predecessor-receipt-not-pass", "expected_code": "M7_V2_GOVERNANCE"},
+    {"case_id": "candidate-registration-id-changes-without-review-reset", "expected_code": "M7_V2_GOVERNANCE"},
+    {"case_id": "inspected-candidate-set-drift", "expected_code": "M7_V2_CANDIDATE_SET"},
+    {"case_id": "fixed-50-identity-binding-drift", "expected_code": "M7_V2_BINDING_DRIFT"},
+    {"case_id": "cross-effect-fact-leaks-into-sibling-effect", "expected_code": "M7_V2_EFFECT_PROVENANCE"},
+    {"case_id": "cross-effect-expression-leaks-into-sibling-effect", "expected_code": "M7_V2_EFFECT_PROVENANCE"},
+    {"case_id": "equivalence-signature-is-forged", "expected_code": "M7_V2_GROUPING_SIGNATURE"},
+    {"case_id": "unequal-equivalence-signatures-share-group", "expected_code": "M7_V2_GROUPING_SIGNATURE"},
+    {"case_id": "atomic-fact-absorbs-two-source-values", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "atomic-fact-absorbs-operative-connective", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "atomic-fact-absorbs-material-proviso", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "material-proviso-left-unmodelled", "expected_code": "M7_V2_SOURCE_COVERAGE"},
+    {"case_id": "operative-modal-is-omitted", "expected_code": "M7_V2_EFFECT_LEDGER"},
+    {"case_id": "operative-modal-is-absorbed-into-another-effect", "expected_code": "M7_V2_EFFECT_PROVENANCE"},
+    {"case_id": "operative-limb-is-omitted", "expected_code": "M7_V2_EFFECT_LEDGER"},
+    {"case_id": "operative-limb-is-absorbed-into-another-effect", "expected_code": "M7_V2_EFFECT_PROVENANCE"},
+    {"case_id": "projection-borrows-valid-analysis-result-from-different-object", "expected_code": "M7_V2_LAYOUT_RECONCILIATION"},
+    {"case_id": "item-42-shared-fact-record-missing", "expected_code": "M7_V2_SOURCE_COVERAGE"},
+    {"case_id": "item-42-shared-fact-record-schema-drift", "expected_code": "M7_V2_SOURCE_COVERAGE"},
+    {"case_id": "item-42-shared-fact-record-self-id-drift", "expected_code": "M7_V2_SOURCE_COVERAGE"},
+    {"case_id": "item-42-shared-fact-record-occurrence-drift", "expected_code": "M7_V2_SOURCE_COVERAGE"},
+    {"case_id": "item-42-shared-fact-record-closure-drift", "expected_code": "M7_V2_SOURCE_COVERAGE"},
+    {"case_id": "item-42-shared-fact-record-span-drift", "expected_code": "M7_V2_SOURCE_COVERAGE"},
+    {"case_id": "item-42-shared-fact-record-fact-set-drift", "expected_code": "M7_V2_SOURCE_COVERAGE"},
+    {"case_id": "item-42-shared-fact-record-lawyer-decision-drift", "expected_code": "M7_V2_SOURCE_COVERAGE"},
+    {"case_id": "item-42-shared-fact-record-reason-drift", "expected_code": "M7_V2_SOURCE_COVERAGE"},
+    {"case_id": "duration-bound-type-is-open", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "duration-word-parenthetical-number-disagrees", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "item-28-at-least-duration-collapsed-to-exact", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "duration-count-disagrees-with-source", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "duration-unit-disagrees-with-source", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "duration-within-source-labelled-exact", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "item-42-deictic-period-parsed-as-direct-duration", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "item-42-shared-duration-has-one-rule-use", "expected_code": "M7_V2_EFFECT_LEDGER"},
+    {"case_id": "item-42-shared-duration-has-third-rule-use", "expected_code": "M7_V2_EFFECT_LEDGER"},
+    {"case_id": "item-42-shared-duration-has-non-rule-use", "expected_code": "M7_V2_EFFECT_LEDGER"},
+    {"case_id": "item-42-shared-duration-two-uses-share-one-rule", "expected_code": "M7_V2_EFFECT_LEDGER"},
+    {"case_id": "item-42-duration-reference-dependency-type-drift", "expected_code": "M7_V2_FACT_OWNERSHIP"},
+    {"case_id": "item-42-duration-reference-is-unresolved", "expected_code": "M7_V2_FACT_OWNERSHIP"},
+    {"case_id": "item-42-duration-reference-targets-wrong-role", "expected_code": "M7_V2_FACT_OWNERSHIP"},
+    {"case_id": "item-42-duration-reference-support-drift", "expected_code": "M7_V2_FACT_OWNERSHIP"},
+    {"case_id": "item-42-duration-reference-edge-type-drift", "expected_code": "M7_V2_FACT_OWNERSHIP"},
+    {"case_id": "item-42-duration-reference-edge-target-disagrees", "expected_code": "M7_V2_FACT_OWNERSHIP"},
+    {"case_id": "item-42-duration-ownership-link-missing", "expected_code": "M7_V2_FACT_OWNERSHIP"},
+    {"case_id": "item-42-duration-link-consumer-rule-drift", "expected_code": "M7_V2_FACT_OWNERSHIP"},
+    {"case_id": "item-42-duration-link-owner-rule-drift", "expected_code": "M7_V2_FACT_OWNERSHIP"},
+    {"case_id": "item-42-duration-link-owner-fact-drift", "expected_code": "M7_V2_FACT_OWNERSHIP"},
+    {"case_id": "item-42-duration-link-resolved-target-drift", "expected_code": "M7_V2_FACT_OWNERSHIP"},
+    {"case_id": "item-42-duration-link-reference-span-drift", "expected_code": "M7_V2_FACT_OWNERSHIP"},
+    {"case_id": "item-42-duration-link-dependency-list-missing", "expected_code": "M7_V2_FACT_OWNERSHIP"},
+    {"case_id": "item-42-duration-link-edge-list-missing", "expected_code": "M7_V2_FACT_OWNERSHIP"},
+    {"case_id": "item-42-claim-rule-duplicates-owner-duration", "expected_code": "M7_V2_FACT_OWNERSHIP"},
+    {"case_id": "item-42-claim-continuation-effect-is-omitted", "expected_code": "M7_V2_SOURCE_COVERAGE"},
+    {"case_id": "item-42-claim-continuation-modal-is-absorbed", "expected_code": "M7_V2_EFFECT_PROVENANCE"},
+    {"case_id": "item-42-claim-continuation-loses-until-disposition", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "item-42-claim-continuation-invents-no-output", "expected_code": "M7_V2_SOURCE_COVERAGE"},
+    {"case_id": "item-42-work0-ruling-cannot-activate-normal", "expected_code": "M7_V2_STATE_COMBINATION"},
+    {"case_id": "item-42-rights-profile-lacks-shared-source-ruling", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "item-42-no-adverse-profile-lacks-shared-source-ruling", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "item-42-claim-profile-invents-shared-source-ruling", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "item-42-unrelated-profile-invents-shared-source-ruling", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "item-42-claim-profile-disallows-duration-reference", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "item-42-claim-profile-omits-period-delegation", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "item-42-claim-profile-delegates-period-to-wrong-owner", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "item-42-claim-profile-delegation-ruling-drift", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "profile-dimension-evidence-subsets-overlap", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "profile-dimension-evidence-union-omits-known-key", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "profile-dimension-evidence-subset-ruling-drift", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "profile-dimension-evidence-subset-invents-underived-key", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "profile-dimension-evidence-subset-source-class-drift", "expected_code": "M7_V2_PROFILE_GATE"},
+    {"case_id": "item-44-normal-business-hours-is-a-reference", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "item-44-normal-business-hours-loses-normal", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "item-44-normal-business-hours-support-is-truncated", "expected_code": "M7_V2_FACT_ATOMICITY"},
+    {"case_id": "work0-family-packet-cannot-stand-in-for-ben-approved-profile-set", "expected_code": "M7_V2_INPUT_CONSUMPTION"},
+    {"case_id": "approved-family-profile-set-is-missing", "expected_code": "M7_V2_INPUT_CONSUMPTION"},
+    {"case_id": "focused-immutable-source-binding-drift", "expected_code": "M7_V2_INPUT_CONSUMPTION"},
+    {"case_id": "applies-to-fact-ids-duplicate", "expected_code": "M7_V2_FACT_OWNERSHIP"},
+    {"case_id": "applies-to-fact-ids-omitted", "expected_code": "M7_V2_FACT_OWNERSHIP"},
+    {"case_id": "applies-to-fact-ids-reordered", "expected_code": "M7_V2_FACT_OWNERSHIP"}
+  ]
+}

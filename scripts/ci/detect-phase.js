@@ -30,6 +30,12 @@ function detectPhaseDetails(branchName) {
       phase: 'PLAN-SYSTEM',
     };
   }
+  if (branch === 'codex/recover-m7-20260812') {
+    return {
+      rawPhase: 'WP-RECOVER-M7-20260812',
+      phase: 'WP-RECOVER-M7-20260812',
+    };
+  }
   const wpMatch = branch.match(/^wp\/([a-z0-9][a-z0-9-]*[a-z0-9])$/);
   if (wpMatch) {
     const slug = wpMatch[1];

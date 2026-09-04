@@ -1,0 +1,583 @@
+{
+  "schema_version": "STAGE_2Y_FAMILY_CALIBRATION_PACK/V1",
+  "calibration_pack_id": "3b8f0295d7a8d92f12fb1380770f9efd3f37ea7034be7a0fab28fd2c9ec21ea3",
+  "calibration_pack_digest": "7306ab78bef413a8ac59962a87253a32f4837181c771f0ba771d3eae8c0316e8",
+  "family_key": "EMPLOYEE_MATTERS",
+  "wave": 1,
+  "pack_version": 1,
+  "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+  "purpose": "LEGAL_CALIBRATION_PREPARATION_ONLY",
+  "authority_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-preparation-authority.json",
+    "byte_length": 22922,
+    "sha256": "d10f095429cdbb1006bfbe1e789c267ffa3a98b12b4bd33c2afb550e7beeea79"
+  },
+  "calibration_policy_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-calibration-policy.json",
+    "byte_length": 45512,
+    "sha256": "102534446774dfa0661ad186d27c25507befedca80807e42cf584fa412e6bf78"
+  },
+  "m4_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json",
+    "byte_length": 13670,
+    "sha256": "54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41"
+  },
+  "m2_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+    "byte_length": 20126,
+    "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585"
+  },
+  "m3_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+    "byte_length": 17449,
+    "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855"
+  },
+  "family_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json",
+    "byte_length": 827,
+    "sha256": "7aa5ff41eb778884cdbb6f18ba72138c20420a2475949aca5dcbc0d2098a938d"
+  },
+  "control_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json",
+    "byte_length": 379235,
+    "sha256": "62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41"
+  },
+  "diff_contract_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/diff-contract.json",
+    "byte_length": 1171,
+    "sha256": "2585c7af9e47c4f7a6915ef1667f5eb8dbce26a8a30829bae15e42a7d41ab0c8"
+  },
+  "comparator_run_bindings": [
+    {
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "run_identifier": "concho-employee-matters-20260809-2xk-final",
+      "family": "EMPLOYEE_MATTERS",
+      "resolution_binding": {
+        "byte_length": 97677,
+        "path": "evidence/canonical-v2/concho-employee-matters-20260809-2xk-final/resolution.json",
+        "sha256": "9c13bd248267c056fe139373ef7468c28637e9640fc0534e7824fa41b0b42725"
+      },
+      "adapter_result_binding": {
+        "byte_length": 424628,
+        "path": "evidence/canonical-v2/concho-employee-matters-20260809-2xk-final/adapter-result.json",
+        "sha256": "7443f5253df1b4a3677a376bb636130788e3d0c6622e096f66bacbda532909b9"
+      },
+      "validation_binding": {
+        "byte_length": 69835,
+        "path": "evidence/canonical-v2/concho-employee-matters-20260809-2xk-final/validation.json",
+        "sha256": "b325a068a0906e24f56415e1e820940a5da7f2050cbdb7f22cbbeb96c33e686e"
+      },
+      "expected_counts": {
+        "resolution_claims": 6,
+        "write_set_claims": 6,
+        "validation_claims": 6,
+        "resolution_evidence": 6,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "run_identifier": "metsera-employee-matters-20260809-2xk-final",
+      "family": "EMPLOYEE_MATTERS",
+      "resolution_binding": {
+        "byte_length": 77869,
+        "path": "evidence/canonical-v2/metsera-employee-matters-20260809-2xk-final/resolution.json",
+        "sha256": "052433ebdd359f88760fed39b5870862547237a3991c291ef156eb9aadf9c69b"
+      },
+      "adapter_result_binding": {
+        "byte_length": 396824,
+        "path": "evidence/canonical-v2/metsera-employee-matters-20260809-2xk-final/adapter-result.json",
+        "sha256": "ee3c0a78fa0c847b5a351149c4274c8eaef43451b4797161f55efafdd8c8b44e"
+      },
+      "validation_binding": {
+        "byte_length": 44910,
+        "path": "evidence/canonical-v2/metsera-employee-matters-20260809-2xk-final/validation.json",
+        "sha256": "2cb44604a53ac5c1051be78d4e509f52761a192af4fb93b2f467fc19237aa045"
+      },
+      "expected_counts": {
+        "resolution_claims": 5,
+        "write_set_claims": 5,
+        "validation_claims": 5,
+        "resolution_evidence": 5,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "run_identifier": "redhat-employee-matters-20260809-2xk-final",
+      "family": "EMPLOYEE_MATTERS",
+      "resolution_binding": {
+        "byte_length": 62689,
+        "path": "evidence/canonical-v2/redhat-employee-matters-20260809-2xk-final/resolution.json",
+        "sha256": "66b36676d0c234fd352d53e185f6b8eaa2da06a1e56ef93085e7f93918ed6908"
+      },
+      "adapter_result_binding": {
+        "byte_length": 299360,
+        "path": "evidence/canonical-v2/redhat-employee-matters-20260809-2xk-final/adapter-result.json",
+        "sha256": "c51b67e6b416fcf9b940449ecdbb1fee30c05c7492b3515e27b07b75981854c5"
+      },
+      "validation_binding": {
+        "byte_length": 31830,
+        "path": "evidence/canonical-v2/redhat-employee-matters-20260809-2xk-final/validation.json",
+        "sha256": "0ed78c890b406d8a00747baa602602640d0cf28fb271a010bb5ed5ed224df8d2"
+      },
+      "expected_counts": {
+        "resolution_claims": 3,
+        "write_set_claims": 3,
+        "validation_claims": 3,
+        "resolution_evidence": 3,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "run_identifier": "skechers-employee-matters-20260809-2xk-final",
+      "family": "EMPLOYEE_MATTERS",
+      "resolution_binding": {
+        "byte_length": 84603,
+        "path": "evidence/canonical-v2/skechers-employee-matters-20260809-2xk-final/resolution.json",
+        "sha256": "53ff1782e96b2868198d3d23892ea88f5b027504e7d976363d97cf3bccb45e7d"
+      },
+      "adapter_result_binding": {
+        "byte_length": 424506,
+        "path": "evidence/canonical-v2/skechers-employee-matters-20260809-2xk-final/adapter-result.json",
+        "sha256": "4ad0369a9994e9a791093bddd9fcfcd44dc6b80d8528c227d2a07f6bcde20aa7"
+      },
+      "validation_binding": {
+        "byte_length": 40616,
+        "path": "evidence/canonical-v2/skechers-employee-matters-20260809-2xk-final/validation.json",
+        "sha256": "e7a8e1a8944027a456717e0d266e4570a1db4db8772a0e1f39d6a8a95b741879"
+      },
+      "expected_counts": {
+        "resolution_claims": 5,
+        "write_set_claims": 5,
+        "validation_claims": 5,
+        "resolution_evidence": 5,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "run_identifier": "skywater-employee-matters-20260809-2xk-final",
+      "family": "EMPLOYEE_MATTERS",
+      "resolution_binding": {
+        "byte_length": 71489,
+        "path": "evidence/canonical-v2/skywater-employee-matters-20260809-2xk-final/resolution.json",
+        "sha256": "2f6bfda481627135685848fb999b9d3d7346ad6d8425e98c05f835d700537946"
+      },
+      "adapter_result_binding": {
+        "byte_length": 413797,
+        "path": "evidence/canonical-v2/skywater-employee-matters-20260809-2xk-final/adapter-result.json",
+        "sha256": "b2ffbf6070c2f67ae657d843d4fb42ec77e754223994441da867f11f2ea72764"
+      },
+      "validation_binding": {
+        "byte_length": 49765,
+        "path": "evidence/canonical-v2/skywater-employee-matters-20260809-2xk-final/validation.json",
+        "sha256": "2049b4daaf781e57a1c24ddeb0060e6e6b53f2179aaa632517e6d0de5db1d8cb"
+      },
+      "expected_counts": {
+        "resolution_claims": 4,
+        "write_set_claims": 4,
+        "validation_claims": 4,
+        "resolution_evidence": 4,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "run_identifier": "topbuild-employee-matters-20260809-2xk-r4-final",
+      "family": "EMPLOYEE_MATTERS",
+      "resolution_binding": {
+        "byte_length": 96937,
+        "path": "evidence/canonical-v2/topbuild-employee-matters-20260809-2xk-r4-final/resolution.json",
+        "sha256": "2b555b2d37ae4c8b3c0ad35b90ab94346bbe59fffe0890d575757f75794a0704"
+      },
+      "adapter_result_binding": {
+        "byte_length": 471119,
+        "path": "evidence/canonical-v2/topbuild-employee-matters-20260809-2xk-r4-final/adapter-result.json",
+        "sha256": "bb5f72e581730ff6a103d12974a5d4a2fcc8ba4e0d16bbc939c0cb83771f05b8"
+      },
+      "validation_binding": {
+        "byte_length": 55387,
+        "path": "evidence/canonical-v2/topbuild-employee-matters-20260809-2xk-r4-final/validation.json",
+        "sha256": "98cf76366f971ce5b065e590363a57e22e1e167f7fada20855d2a7b832289050"
+      },
+      "expected_counts": {
+        "resolution_claims": 4,
+        "write_set_claims": 4,
+        "validation_claims": 4,
+        "resolution_evidence": 4,
+        "supplemental_claims": 0
+      }
+    }
+  ],
+  "supplemental_input_bindings": [],
+  "provision_examples": [
+    {
+      "example_id": "EMPLOYEE_MATTERS-EX-01",
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "printed_reference": "6.9",
+      "complete_source_node_occurrence_ids": [
+        "6c4929a88600e8f98e8c9c15f834273122e971fbf60b7575408f1d2d4c7f57f6"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 234134,
+          "start_byte": 227443,
+          "text_sha256": "c1e1a49a8246eb49eef2c20e8e5409a6eff6f480e5884976cc02bfb763d2b1c2"
+        }
+      ],
+      "source_text_sha256s": [
+        "c1e1a49a8246eb49eef2c20e8e5409a6eff6f480e5884976cc02bfb763d2b1c2"
+      ],
+      "structure_revision_ids": [
+        "d055ba59fab270a9b3107e3b2f8cd7d5c9570183b8e3380bf5609cbb86ab4dd9"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "175b7fb6ee97c7e12b37d9368ea9f2864e9cc8066604345d8d4e97c81d106dcf",
+        "6cd8d55297a3533d8fd20c7cc68d24620af51c19e988131888ab4f6d8149a48d",
+        "87785434cd57365af61e2908eedb11b5da41e7f806a5c862e0e6dc60ba6cabcf",
+        "9f723e4b1fdd6ae34059abc00ebc551a55f5e93c0d4af59732cdb8ed2e6a014e",
+        "a7cea19bac2acbd637e0b22353b65f78fad74a1ef49f3e35e5fc1c31ccb28b4b",
+        "d365ab91620b56f1528e9971f5b5525ff0aef3f35a340ccfc5797bd47911ca16"
+      ],
+      "comparator_run_identifiers": [
+        "concho-employee-matters-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "EMPLOYEE_COMPENSATION",
+      "legal_question_ids": [
+        "EMPLOYEE_MATTERS-Q01",
+        "EMPLOYEE_MATTERS-Q02",
+        "EMPLOYEE_MATTERS-Q03"
+      ]
+    },
+    {
+      "example_id": "EMPLOYEE_MATTERS-EX-02",
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "printed_reference": "6.04",
+      "complete_source_node_occurrence_ids": [
+        "a149410b4d074cd877e62e209b85b98f9a5244656c1c4b9bf4a04dd15aaad215"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 201808,
+          "start_byte": 196842,
+          "text_sha256": "17712098c9aa2f7fe47d2307777a43d71c251b616229b0fdc52e39469851b808"
+        }
+      ],
+      "source_text_sha256s": [
+        "17712098c9aa2f7fe47d2307777a43d71c251b616229b0fdc52e39469851b808"
+      ],
+      "structure_revision_ids": [
+        "f02472462aca9605e759f98e359ffdcf49a24b710fb14ad868d1026cc1d12fef"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "61524f81dd9701e1dd26e5c4b76ef4f470da5a465230a645743c9d63e10ed120",
+        "6a2a9a6a19162a84e30351df608fab34b96781464a696e881338f5ed78c93cba",
+        "74e4282fe964811cc62931e4191da4f846fd8fde88cdbf8d4a385c900695d388",
+        "9ef2855ccb1c234fe1b5cd1ebfad0b110bfc7165fd2b3b96cc5eda74edccb701",
+        "fbef5c2d44483191168f8536c45695113f132ac66c269c61ed1967c2eda8e153"
+      ],
+      "comparator_run_identifiers": [
+        "metsera-employee-matters-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "EMPLOYEE_COMPENSATION",
+      "legal_question_ids": [
+        "EMPLOYEE_MATTERS-Q01",
+        "EMPLOYEE_MATTERS-Q02",
+        "EMPLOYEE_MATTERS-Q03"
+      ]
+    },
+    {
+      "example_id": "EMPLOYEE_MATTERS-EX-03",
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "printed_reference": "5.11",
+      "complete_source_node_occurrence_ids": [
+        "761d0305d5813c0f00b62f2e8ce28491c4068748449026e40380189bcc369a05"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 216375,
+          "start_byte": 210015,
+          "text_sha256": "c5baed9671e817b371ee26c0b7f8b29458406ad0bc1af62148798d6e0ec2fdd2"
+        }
+      ],
+      "source_text_sha256s": [
+        "c5baed9671e817b371ee26c0b7f8b29458406ad0bc1af62148798d6e0ec2fdd2"
+      ],
+      "structure_revision_ids": [
+        "27ecc8ac54602daa0d564639e4a66573689cc022769678571a8e9b5ed48069ac"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "9e1c13c3e9fde2fecb40e614ee0d9b69d0a1d5ee712c9ed1b22c599a6d83e8f8",
+        "bcd0c4c79651ec7097ca1deb278f96eb2962e4dfbc91323bac641776a5b5f6fd",
+        "e5c019d048f1b64d030f81b838bc6a614cac936c41d0735b9b0c7c5d95d0f4d4"
+      ],
+      "comparator_run_identifiers": [
+        "redhat-employee-matters-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "EMPLOYEE_COMPENSATION",
+      "legal_question_ids": [
+        "EMPLOYEE_MATTERS-Q01",
+        "EMPLOYEE_MATTERS-Q02",
+        "EMPLOYEE_MATTERS-Q03"
+      ]
+    },
+    {
+      "example_id": "EMPLOYEE_MATTERS-EX-04",
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "printed_reference": "6.11",
+      "complete_source_node_occurrence_ids": [
+        "06aec2322d6f1b7f7010ed6b126d97d953cd6f0ca72a41cd9ff400d4251bf07c"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 306904,
+          "start_byte": 298230,
+          "text_sha256": "d441f51303dbfbe3aa8627f5b04b5891dc5927ab66f84221061d56de0b954874"
+        }
+      ],
+      "source_text_sha256s": [
+        "d441f51303dbfbe3aa8627f5b04b5891dc5927ab66f84221061d56de0b954874"
+      ],
+      "structure_revision_ids": [
+        "4ba969f690c6cad205c5223907247bd65ac291a665f7e14a00205a926a693a94"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "5ffc8f64efa449f62e6f1c9adc970f8bb585038f652ac392254ee25c432b1c7e",
+        "65f4b4e1c1c802d0e95d8969b008fc8fbd382908b062fa8d7cebe8742e329107",
+        "cdd3b6a0853198abf54db85f406079dda87ea0e18e1fca6c84f5919eae9b72c8",
+        "d46e1382a254474618ba7e066664bad74b38ad638c325a634888b6ba12b7db06",
+        "d859bbe5ba547a6ec4b3f7c2cf876b68e9e06094d32debd42e01f01b478c5007"
+      ],
+      "comparator_run_identifiers": [
+        "skechers-employee-matters-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "EMPLOYEE_COMPENSATION",
+      "legal_question_ids": [
+        "EMPLOYEE_MATTERS-Q01",
+        "EMPLOYEE_MATTERS-Q02",
+        "EMPLOYEE_MATTERS-Q03"
+      ]
+    },
+    {
+      "example_id": "EMPLOYEE_MATTERS-EX-05",
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "printed_reference": "6.5",
+      "complete_source_node_occurrence_ids": [
+        "2af5606d623f3d42677b336246240f2616c49831500c6b7ed42ae887aca5513b"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 256281,
+          "start_byte": 248182,
+          "text_sha256": "a960e283321468c00ec46a8b03d439ec61c8ae0053c2f4975552de17a76b4fac"
+        }
+      ],
+      "source_text_sha256s": [
+        "a960e283321468c00ec46a8b03d439ec61c8ae0053c2f4975552de17a76b4fac"
+      ],
+      "structure_revision_ids": [
+        "4ffd60e2a5ce049b857bd8a6259c2de0cd3ac58a2d252fff50831e107110c359"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "18f4856078f0edda1614db7698f52bb302ea44edbef2062c4436a8117a3a22b0",
+        "81af91dc6338a013d371db3d46e54bfbc25c30837912eb38827c8198d775ccc6",
+        "bb3eba3c0f02769f049298090f899364887b868984915592c15909a37c3273b9",
+        "f1e69fffb54f5191be68e901488d8d4d97164a1f8e838b8b76be595b43b18826"
+      ],
+      "comparator_run_identifiers": [
+        "skywater-employee-matters-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "EMPLOYEE_COMPENSATION",
+      "legal_question_ids": [
+        "EMPLOYEE_MATTERS-Q01",
+        "EMPLOYEE_MATTERS-Q02",
+        "EMPLOYEE_MATTERS-Q03"
+      ]
+    },
+    {
+      "example_id": "EMPLOYEE_MATTERS-EX-06",
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "printed_reference": "4.11",
+      "complete_source_node_occurrence_ids": [
+        "0fb146578d99f08efb50a22afa25e1623ee931b094ae317b3a31704d36842e86"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 295486,
+          "start_byte": 285771,
+          "text_sha256": "33aee275dc15bf5715bea96cdbdfd963c965b14ad7eb431d42af97eccbf73d8e"
+        }
+      ],
+      "source_text_sha256s": [
+        "33aee275dc15bf5715bea96cdbdfd963c965b14ad7eb431d42af97eccbf73d8e"
+      ],
+      "structure_revision_ids": [
+        "4981e49c465925ca3c3b6904c2d28472e0d46d0ad98a0987a6437a5b12a06f56"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "312ac330ba1b27ba77cb57f009944f2e38aa6ef0196c4dfa881ce130c1cf7e49",
+        "7eef5ce2dc69131bdb2b56399d93c78f174a27c585c92b8c2465516d1dc4362f",
+        "86d300b586e387d827e2eb92ee7446b72aaab61511fafb3bc80687fe46def92b",
+        "a3bb4692a900dee27d1a9a68e07baf0f0cb676e3fecdefeffc3299ecb594f83f"
+      ],
+      "comparator_run_identifiers": [
+        "topbuild-employee-matters-20260809-2xk-r4-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "EMPLOYEE_COMPENSATION",
+      "legal_question_ids": [
+        "EMPLOYEE_MATTERS-Q01",
+        "EMPLOYEE_MATTERS-Q02",
+        "EMPLOYEE_MATTERS-Q03"
+      ]
+    }
+  ],
+  "cross_family_dependencies": [],
+  "proposed_output_policy": {
+    "candidate_claim_definition_keys": [
+      "EMPLOYEE_COMP_ITEM_STANDARD",
+      "EMPLOYEE_SERVICE_CREDIT",
+      "WELFARE_PLAN_TRANSITION_RELIEF"
+    ],
+    "candidate_subtype_profile_ids": [
+      "EMPLOYEE_MATTERS::EMPLOYEE_COMPENSATION",
+      "EMPLOYEE_MATTERS::SERVICE_CREDIT",
+      "EMPLOYEE_MATTERS::WELFARE_RELIEF",
+      "EMPLOYEE_MATTERS::RETIREMENT_PLAN_ACTION"
+    ],
+    "non_output_dispositions": [
+      "LEGACY_FRAGMENTS_REMAIN_SCHEMA_APPROVAL_PENDING",
+      "UNRESOLVED_REQUIRED_ROLE_IS_NON_RENDERABLE"
+    ],
+    "family_ownership_boundary": "EMPLOYEE_MATTERS owns only approved complete propositions. Overlapping content is link-only.",
+    "renderability": "NEVER_RENDER_FROM_PROPOSAL",
+    "complete_transition": "NOT_AUTHORISED"
+  },
+  "narrow_legal_questions": [
+    {
+      "question_id": "EMPLOYEE_MATTERS-Q01",
+      "question": "Should one independently operative authored unit be one proposition, with coordinated elements stored as roles or linked children?",
+      "affected_example_ids": [
+        "EMPLOYEE_MATTERS-EX-01",
+        "EMPLOYEE_MATTERS-EX-02",
+        "EMPLOYEE_MATTERS-EX-03",
+        "EMPLOYEE_MATTERS-EX-04",
+        "EMPLOYEE_MATTERS-EX-05",
+        "EMPLOYEE_MATTERS-EX-06"
+      ],
+      "two_plausible_readings": [
+        "ONE_COMPOUND_PROPOSITION",
+        "LINKED_INDEPENDENT_PROPOSITIONS"
+      ],
+      "recommended_reading": "Use one proposition per independently operative authored unit.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "EMPLOYEE_MATTERS-Q02",
+      "question": "Which family owns overlapping content, and which families may only link to its stable identity?",
+      "affected_example_ids": [
+        "EMPLOYEE_MATTERS-EX-01",
+        "EMPLOYEE_MATTERS-EX-02",
+        "EMPLOYEE_MATTERS-EX-03",
+        "EMPLOYEE_MATTERS-EX-04",
+        "EMPLOYEE_MATTERS-EX-05",
+        "EMPLOYEE_MATTERS-EX-06"
+      ],
+      "two_plausible_readings": [
+        "DUPLICATE_IN_EACH_FAMILY",
+        "ONE_OWNER_WITH_LINKED_CONSUMERS"
+      ],
+      "recommended_reading": "Use one semantic owner and stable links.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "EMPLOYEE_MATTERS-Q03",
+      "question": "Can an ambiguous or unresolved M3 edge fill a required role?",
+      "affected_example_ids": [
+        "EMPLOYEE_MATTERS-EX-01",
+        "EMPLOYEE_MATTERS-EX-02",
+        "EMPLOYEE_MATTERS-EX-03",
+        "EMPLOYEE_MATTERS-EX-04",
+        "EMPLOYEE_MATTERS-EX-05",
+        "EMPLOYEE_MATTERS-EX-06"
+      ],
+      "two_plausible_readings": [
+        "ALLOW_CONTEXTUAL_INFERENCE",
+        "FAIL_ONLY_THE_DEPENDENT_PROPOSITION"
+      ],
+      "recommended_reading": "Fail only the dependent proposition and do not infer the role.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    }
+  ],
+  "preparation_diagnostics": [
+    {
+      "code": "BEN_FAMILY_ROLE_APPROVAL_REQUIRED",
+      "severity": "STOP",
+      "related_id": "EMPLOYEE_MATTERS",
+      "detail": "No family adapter may run until Ben approves the open rulings and a separate approved schema is sealed."
+    }
+  ],
+  "preparation_effects": {
+    "model_calls": 0,
+    "family_runner_calls": 0,
+    "database_writes": 0,
+    "product_writes": 0,
+    "selector_changes": 0,
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "serving_changes": 0,
+    "publication_actions": 0
+  }
+}

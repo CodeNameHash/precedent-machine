@@ -11,7 +11,7 @@
     "review_table_configs": 26,
     "dark_bridge_leaves": 4,
     "dark_bridge_aggregators": 1,
-    "per_family_serving_sources": 1,
+    "per_family_serving_sources": 2,
     "live_run_scripts": 6
   },
   "section_families": {
@@ -1016,6 +1016,7 @@
             "lib/canonical-v2/local-staging-deal-reader.js",
             "lib/canonical-v2/native-producer/m3-family-parity-register.js",
             "lib/canonical-v2/phase1-authority-boundary-inventory.js",
+            "lib/canonical-v2/termination-rights-review-serving-source.js",
             "lib/queries/review-deal-wire.js"
           ],
           "scripts": [
@@ -1034,7 +1035,29 @@
           ],
           "other": []
         },
-        "reference_count": 16
+        "reference_count": 17
+      },
+      {
+        "path": "lib/canonical-v2/termination-rights-review-serving-source.js",
+        "referenced_by": {
+          "components": [],
+          "pages": [
+            "pages/api/review/[id]/cards.js"
+          ],
+          "lib": [
+            "lib/canonical-v2/phase1-authority-boundary-inventory.js"
+          ],
+          "scripts": [],
+          "tests": [
+            "tests/canonical-v2-termination-rights-preview-registration.test.js",
+            "tests/canonical-v2-termination-rights-review-route.test.js",
+            "tests/canonical-v2-termination-rights-review-serving-source.test.js",
+            "tests/canonical-v2-termination-rights-review-stage-b-notes.test.js",
+            "tests/canonical-v2-termination-rights-review-synthetic-quarantine.test.js"
+          ],
+          "other": []
+        },
+        "reference_count": 7
       }
     ],
     "generic_serving_infrastructure": [

@@ -1,0 +1,661 @@
+{
+  "schema_version": "STAGE_2Y_FAMILY_CALIBRATION_PACK/V1",
+  "calibration_pack_id": "2035e27d2b138b0179eaffea1a2162090b38a789debac38f13759d05eec90ea2",
+  "calibration_pack_digest": "72b04e5eac7a45e81262f88d47982763f91d1ff8e7b6224bffc9f1b03ba2a51c",
+  "family_key": "MERGER_STRUCTURE_CLOSING",
+  "wave": 4,
+  "pack_version": 1,
+  "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+  "purpose": "LEGAL_CALIBRATION_PREPARATION_ONLY",
+  "authority_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-preparation-authority.json",
+    "byte_length": 22922,
+    "sha256": "d10f095429cdbb1006bfbe1e789c267ffa3a98b12b4bd33c2afb550e7beeea79"
+  },
+  "calibration_policy_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-calibration-policy.json",
+    "byte_length": 45512,
+    "sha256": "102534446774dfa0661ad186d27c25507befedca80807e42cf584fa412e6bf78"
+  },
+  "m4_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json",
+    "byte_length": 13670,
+    "sha256": "54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41"
+  },
+  "m2_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+    "byte_length": 20126,
+    "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585"
+  },
+  "m3_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+    "byte_length": 17449,
+    "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855"
+  },
+  "family_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json",
+    "byte_length": 827,
+    "sha256": "7aa5ff41eb778884cdbb6f18ba72138c20420a2475949aca5dcbc0d2098a938d"
+  },
+  "control_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json",
+    "byte_length": 379235,
+    "sha256": "62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41"
+  },
+  "diff_contract_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/diff-contract.json",
+    "byte_length": 1171,
+    "sha256": "2585c7af9e47c4f7a6915ef1667f5eb8dbce26a8a30829bae15e42a7d41ab0c8"
+  },
+  "comparator_run_bindings": [
+    {
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "run_identifier": "concho-merger-structure-closing-20260809-2xk-final",
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "resolution_binding": {
+        "byte_length": 141401,
+        "path": "evidence/canonical-v2/concho-merger-structure-closing-20260809-2xk-final/resolution.json",
+        "sha256": "858bd3103d7419b93ea058d18f29d1c54d20f81cf741258a340e7ec26575a6fb"
+      },
+      "adapter_result_binding": {
+        "byte_length": 418211,
+        "path": "evidence/canonical-v2/concho-merger-structure-closing-20260809-2xk-final/adapter-result.json",
+        "sha256": "e340c1b23fbb4f707d8b824fdac1e3e362db3a748bed1c0e97161657db6144f2"
+      },
+      "validation_binding": {
+        "byte_length": 68114,
+        "path": "evidence/canonical-v2/concho-merger-structure-closing-20260809-2xk-final/validation.json",
+        "sha256": "116b8ad7ab976b3aefda6967c86cad1a81348de937c556d4accdc00e4fd51fa7"
+      },
+      "expected_counts": {
+        "resolution_claims": 13,
+        "write_set_claims": 13,
+        "validation_claims": 13,
+        "resolution_evidence": 13,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "run_identifier": "metsera-merger-structure-closing-20260809-2xk-final",
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "resolution_binding": {
+        "byte_length": 107173,
+        "path": "evidence/canonical-v2/metsera-merger-structure-closing-20260809-2xk-final/resolution.json",
+        "sha256": "36697f258b69444ff480e6e73df491b5f3150be1e81e2d0ea1895f56053a6e1c"
+      },
+      "adapter_result_binding": {
+        "byte_length": 396975,
+        "path": "evidence/canonical-v2/metsera-merger-structure-closing-20260809-2xk-final/adapter-result.json",
+        "sha256": "4cda2c0f3383c95ba8ee7f41163d31d2be072484e87d2aa3777a2c9fb27afe0b"
+      },
+      "validation_binding": {
+        "byte_length": 48972,
+        "path": "evidence/canonical-v2/metsera-merger-structure-closing-20260809-2xk-final/validation.json",
+        "sha256": "13ba502096d7a72fd37ac5460faf1ad5575c30aa1c3e96c633e4a33d038b17fc"
+      },
+      "expected_counts": {
+        "resolution_claims": 10,
+        "write_set_claims": 10,
+        "validation_claims": 10,
+        "resolution_evidence": 10,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "deal": "modiv",
+      "run_identifier": "modiv-merger-structure-closing-20260809-2xk-final",
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "resolution_binding": {
+        "byte_length": 163732,
+        "path": "evidence/canonical-v2/modiv-merger-structure-closing-20260809-2xk-final/resolution.json",
+        "sha256": "661df7cd7b2b73048ede8aa5f87e6da3870c1df7ce245a743be27d058ff85352"
+      },
+      "adapter_result_binding": {
+        "byte_length": 507692,
+        "path": "evidence/canonical-v2/modiv-merger-structure-closing-20260809-2xk-final/adapter-result.json",
+        "sha256": "faf26451a9554c96d7b2116dea69a3f2abdd7ed64deca34842d4a8bef230562b"
+      },
+      "validation_binding": {
+        "byte_length": 77851,
+        "path": "evidence/canonical-v2/modiv-merger-structure-closing-20260809-2xk-final/validation.json",
+        "sha256": "d733bb76e124695e65fe4f90553e8a9c7610a974aa2ab51dc65269c800416f31"
+      },
+      "expected_counts": {
+        "resolution_claims": 14,
+        "write_set_claims": 14,
+        "validation_claims": 14,
+        "resolution_evidence": 14,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "run_identifier": "redhat-merger-structure-closing-20260809-2xk-final",
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "resolution_binding": {
+        "byte_length": 165306,
+        "path": "evidence/canonical-v2/redhat-merger-structure-closing-20260809-2xk-final/resolution.json",
+        "sha256": "a2827d0ee7f246281a9cc6321144f007a8d01089bbf41d5fac43e5c4e101d9a8"
+      },
+      "adapter_result_binding": {
+        "byte_length": 333236,
+        "path": "evidence/canonical-v2/redhat-merger-structure-closing-20260809-2xk-final/adapter-result.json",
+        "sha256": "ae5b46d9905537c07f9977e9fb508af683c41b292a1a75b5b646b6a2b58d335a"
+      },
+      "validation_binding": {
+        "byte_length": 69910,
+        "path": "evidence/canonical-v2/redhat-merger-structure-closing-20260809-2xk-final/validation.json",
+        "sha256": "119d569a7b2501351b991b121c274dd925181090dc03bc573d6d50a2f638ee99"
+      },
+      "expected_counts": {
+        "resolution_claims": 15,
+        "write_set_claims": 15,
+        "validation_claims": 15,
+        "resolution_evidence": 15,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "run_identifier": "skechers-merger-structure-closing-20260809-2xk-final",
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "resolution_binding": {
+        "byte_length": 151770,
+        "path": "evidence/canonical-v2/skechers-merger-structure-closing-20260809-2xk-final/resolution.json",
+        "sha256": "b6b6baa6724906a4c89e11fae2c3b4b973a9fecf50a43a147e03a539e74b03a7"
+      },
+      "adapter_result_binding": {
+        "byte_length": 459518,
+        "path": "evidence/canonical-v2/skechers-merger-structure-closing-20260809-2xk-final/adapter-result.json",
+        "sha256": "40def4c50b383fd24f679c85b9db64af78ccae55ace77f8b60bc5a05015a2d60"
+      },
+      "validation_binding": {
+        "byte_length": 79539,
+        "path": "evidence/canonical-v2/skechers-merger-structure-closing-20260809-2xk-final/validation.json",
+        "sha256": "22187423cad57ca6236effbf06cc1e651c6f53aac0369c0a42692cc302c3a463"
+      },
+      "expected_counts": {
+        "resolution_claims": 14,
+        "write_set_claims": 14,
+        "validation_claims": 14,
+        "resolution_evidence": 14,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "run_identifier": "skywater-merger-structure-closing-20260809-2xk-final",
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "resolution_binding": {
+        "byte_length": 188151,
+        "path": "evidence/canonical-v2/skywater-merger-structure-closing-20260809-2xk-final/resolution.json",
+        "sha256": "7ca5eca69d498b468fe310c76da980aab8243c0056413dce03424af6f0e61cf8"
+      },
+      "adapter_result_binding": {
+        "byte_length": 440237,
+        "path": "evidence/canonical-v2/skywater-merger-structure-closing-20260809-2xk-final/adapter-result.json",
+        "sha256": "60641d4062b4c7a0738de9f1ce0adc81df445b864efdd719d56604af2f2de6db"
+      },
+      "validation_binding": {
+        "byte_length": 78056,
+        "path": "evidence/canonical-v2/skywater-merger-structure-closing-20260809-2xk-final/validation.json",
+        "sha256": "262090fb9cac083ff682897c23519929c26474d2d65697f13b062baff4652215"
+      },
+      "expected_counts": {
+        "resolution_claims": 17,
+        "write_set_claims": 17,
+        "validation_claims": 17,
+        "resolution_evidence": 17,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "run_identifier": "topbuild-merger-structure-closing-20260809-2xk-r4-final",
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "resolution_binding": {
+        "byte_length": 231249,
+        "path": "evidence/canonical-v2/topbuild-merger-structure-closing-20260809-2xk-r4-final/resolution.json",
+        "sha256": "fba515b209f673f2ea685cf45c749d7bba0c1aec029240ffdb21b0ebd68709ab"
+      },
+      "adapter_result_binding": {
+        "byte_length": 519074,
+        "path": "evidence/canonical-v2/topbuild-merger-structure-closing-20260809-2xk-r4-final/adapter-result.json",
+        "sha256": "7e678d36f56d35b80cc19f146f7b8fe821402e9e6919926cf3f9c635f4930dd6"
+      },
+      "validation_binding": {
+        "byte_length": 108819,
+        "path": "evidence/canonical-v2/topbuild-merger-structure-closing-20260809-2xk-r4-final/validation.json",
+        "sha256": "aace376f9d5fae705e101ee86ce727e1bd653fed62113ade8d8cff2d6f357655"
+      },
+      "expected_counts": {
+        "resolution_claims": 20,
+        "write_set_claims": 20,
+        "validation_claims": 20,
+        "resolution_evidence": 20,
+        "supplemental_claims": 0
+      }
+    }
+  ],
+  "supplemental_input_bindings": [],
+  "provision_examples": [
+    {
+      "example_id": "MERGER_STRUCTURE_CLOSING-EX-01",
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "printed_reference": "2.1",
+      "complete_source_node_occurrence_ids": [
+        "0997c9d3d849f53514b59128f05fb721e809e9d81a9657d2219a712e9223bbef"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 10880,
+          "start_byte": 10327,
+          "text_sha256": "d822c0cb39f2551ea0cb5ac42cbbdaecce5112938c8907b8b99329aadab8ec41"
+        }
+      ],
+      "source_text_sha256s": [
+        "d822c0cb39f2551ea0cb5ac42cbbdaecce5112938c8907b8b99329aadab8ec41"
+      ],
+      "structure_revision_ids": [
+        "895d19d444a0be09ae9e0b8c2a6abe5bdf4be90162ddd34ff9a3d40ce5764fb4"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "0d556f8d5172e836c575dff1a2406e14aa574487a941d397070fd2450ac1505d",
+        "1299ef2a99eb1d9f58a29f016c7fa81a9f3c91d13a1733f8d379df2a5011c723",
+        "c52b81b641155d3065550d0654b40af40ea45d0241b52ad6683fc660fdc85715"
+      ],
+      "comparator_run_identifiers": [
+        "concho-merger-structure-closing-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "TRANSACTION_STEP",
+      "legal_question_ids": [
+        "MERGER_STRUCTURE_CLOSING-Q01",
+        "MERGER_STRUCTURE_CLOSING-Q02",
+        "MERGER_STRUCTURE_CLOSING-Q03"
+      ]
+    },
+    {
+      "example_id": "MERGER_STRUCTURE_CLOSING-EX-02",
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "printed_reference": "1.01",
+      "complete_source_node_occurrence_ids": [
+        "7da711c7053f2681e6f915c24bb34c8fa9807e24ebadd9599dfc0f64cf77b4e0"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 11061,
+          "start_byte": 10603,
+          "text_sha256": "ae4f6b1bfce809756f6a7cd4489b9a0b94afd0b32e455d6c32f9f1aa2784d060"
+        }
+      ],
+      "source_text_sha256s": [
+        "ae4f6b1bfce809756f6a7cd4489b9a0b94afd0b32e455d6c32f9f1aa2784d060"
+      ],
+      "structure_revision_ids": [
+        "6b06374393f39f7ab8d69f557eb4afe361ff8a2ae386f667df929886a1199844"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "64c4e6246ab9042ec8da4c889e2eff0940390a9c34aa196471f2a73ccf2c95b7",
+        "66404f53fda36e205a0a2cc4f7f50a05cfc1f0f13f6a28b8173d442af63662c8",
+        "a637eac9ef40983bbb08a1cfe75de55ccdf85935eb0554bd3b6d4ae3d7faefd8"
+      ],
+      "comparator_run_identifiers": [
+        "metsera-merger-structure-closing-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "TRANSACTION_STEP",
+      "legal_question_ids": [
+        "MERGER_STRUCTURE_CLOSING-Q01",
+        "MERGER_STRUCTURE_CLOSING-Q02",
+        "MERGER_STRUCTURE_CLOSING-Q03"
+      ]
+    },
+    {
+      "example_id": "MERGER_STRUCTURE_CLOSING-EX-03",
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "deal": "modiv",
+      "printed_reference": "1.1",
+      "complete_source_node_occurrence_ids": [
+        "81c7a7ee94cb7b71df3cef744efe18adac05ad2ee466d82ab46cc853ea71213e"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 14273,
+          "start_byte": 13178,
+          "text_sha256": "d126b3db10b7480ce589b6a5ba9e8986cdebb6aa7171f8a5950fb643d651fae6"
+        }
+      ],
+      "source_text_sha256s": [
+        "d126b3db10b7480ce589b6a5ba9e8986cdebb6aa7171f8a5950fb643d651fae6"
+      ],
+      "structure_revision_ids": [
+        "769c67d6009400d7a40dfdb052aff38661aaee2741797bdd21ff24f87cc6c349"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "5c10c40b9383d179662860764cd427f86e56a3959e32cbf0bb716a963d50c4b4",
+        "c753409ee3da307a4ca0382864083eeadf2c9360870be46cbd4d36a81f8e8622"
+      ],
+      "comparator_run_identifiers": [
+        "modiv-merger-structure-closing-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "TRANSACTION_STEP",
+      "legal_question_ids": [
+        "MERGER_STRUCTURE_CLOSING-Q01",
+        "MERGER_STRUCTURE_CLOSING-Q02",
+        "MERGER_STRUCTURE_CLOSING-Q03"
+      ]
+    },
+    {
+      "example_id": "MERGER_STRUCTURE_CLOSING-EX-04",
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "printed_reference": "1.01",
+      "complete_source_node_occurrence_ids": [
+        "6ec6e54ea5f32ea11aa6da9f776182e1b547836a5a61f53a78815e58255ed267"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 9376,
+          "start_byte": 8936,
+          "text_sha256": "1b9949c6ed796c13b7c0c66e08ac3cfe62570ae574fa017db907b65f488faab0"
+        }
+      ],
+      "source_text_sha256s": [
+        "1b9949c6ed796c13b7c0c66e08ac3cfe62570ae574fa017db907b65f488faab0"
+      ],
+      "structure_revision_ids": [
+        "38a58f923e296cb0b5ff37e16187ef78595115231d73f11b910f4952c34c82c9"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "99a12c8c66f91475c00a8646a737064df52598508f4b06c2f272d04da03baa86",
+        "eeb3bb5b972041fcff03f3fd5b8514a6a1745e493d2e5448ca3493193eae21b1",
+        "f661cea0073db1757e183f735078e0b2b8155f0f3a5502a46adfcdd6be9a9c32"
+      ],
+      "comparator_run_identifiers": [
+        "redhat-merger-structure-closing-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "TRANSACTION_STEP",
+      "legal_question_ids": [
+        "MERGER_STRUCTURE_CLOSING-Q01",
+        "MERGER_STRUCTURE_CLOSING-Q02",
+        "MERGER_STRUCTURE_CLOSING-Q03"
+      ]
+    },
+    {
+      "example_id": "MERGER_STRUCTURE_CLOSING-EX-05",
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "printed_reference": "2.1",
+      "complete_source_node_occurrence_ids": [
+        "46bf5e01d91b66724e69b6e87ad6ff7022d4f94d8626a6ef17cf367bf3d4daf1"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 72042,
+          "start_byte": 71549,
+          "text_sha256": "5db65489b630d60ce59ecafa96036da4c1e6da20249e442327bb513232db1f03"
+        }
+      ],
+      "source_text_sha256s": [
+        "5db65489b630d60ce59ecafa96036da4c1e6da20249e442327bb513232db1f03"
+      ],
+      "structure_revision_ids": [
+        "7144c4a09610a4bb6c1b8bf330ebe5088623ce284a3a9a86a1d7bc2ce8dc2a15"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "3d0f66a703cc727e6b167f015106de37b884c116513e73e175296ae7c4aa111e",
+        "a97aad7a48ffb4cbde271d8b53a9ccb2bab2358a8941be65d8a774fd29c67bb8",
+        "cc81734e9a9eac77ac0e936ddffe21154299fa3714644f9b47ef7768bb874855",
+        "cc910858177ceb9e65e4e0838066edb7af013b7398cd1e2d8b42b3da4915a390"
+      ],
+      "comparator_run_identifiers": [
+        "skechers-merger-structure-closing-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "TRANSACTION_STEP",
+      "legal_question_ids": [
+        "MERGER_STRUCTURE_CLOSING-Q01",
+        "MERGER_STRUCTURE_CLOSING-Q02",
+        "MERGER_STRUCTURE_CLOSING-Q03"
+      ]
+    },
+    {
+      "example_id": "MERGER_STRUCTURE_CLOSING-EX-06",
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "printed_reference": "1.1",
+      "complete_source_node_occurrence_ids": [
+        "86fafa33b9db6f39430f85eaade32bf47d59d4ce48291034511e8e730db616d5"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 13745,
+          "start_byte": 9926,
+          "text_sha256": "a744fe34e7e20849bf3bb3aeaac01fd6cd1cbbc00a312c0e02a5ca7d868f54c2"
+        }
+      ],
+      "source_text_sha256s": [
+        "a744fe34e7e20849bf3bb3aeaac01fd6cd1cbbc00a312c0e02a5ca7d868f54c2"
+      ],
+      "structure_revision_ids": [
+        "0f5b8eded0170194ac65ec0ae1ea5e20048c462d0fc9e46ab3021b96ef1a5cec"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "07f82e04adca90b8a7e3b588b59153ad427cc0edf4ea54bbf060339747b3210c",
+        "098b99065e981e6ce62f01e58bdb6292badfdba0c99dad9a8d1ab0f0b254b19d",
+        "0b423fec32538bf35c9ee9bdf958a60fac6154a0ccd0c22c615118a221eab060",
+        "28d5423ba21b7c890ca1e9d81f96bab9b20eb280deb3f8a116437830e1414017",
+        "59d056dc75b4f280378ecbf5a192b13a225529df0a9f4305b3e38c7d07e16ac9",
+        "692c957e8245c94cf30b4bb81ad157fedce52f9b550d24cabec01bdb24bd11b1",
+        "700f56aaaaddafae11a7053f0809812f2947dfb3d9642623f495f3bbd60e27f1",
+        "8ab7b23dcedf7ee019b72a5cce46b7cafdc493c54b5d5a8346af14c7f0e0872f",
+        "8bfbf86c5a2c3c06b61ed12a61a83a883c006a21a092232cb815c41518ffb284",
+        "af2eaad87676b6c53da23913b48454132f8de93511d8f0b7a9001c7947313843",
+        "bef333a526358947aebc9b7362000028f608928ca86fbd920ab43c33e557167d",
+        "e4f0ddec3a17bfd78514ff4475b36ae4f90c14a24d1f8cc79b57ace9d00b3a88",
+        "f60c35db5eec02354255ebab70041be7963d64aa0e6ef17a942556fc6025c34c"
+      ],
+      "comparator_run_identifiers": [
+        "skywater-merger-structure-closing-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "TRANSACTION_STEP",
+      "legal_question_ids": [
+        "MERGER_STRUCTURE_CLOSING-Q01",
+        "MERGER_STRUCTURE_CLOSING-Q02",
+        "MERGER_STRUCTURE_CLOSING-Q03"
+      ]
+    },
+    {
+      "example_id": "MERGER_STRUCTURE_CLOSING-EX-07",
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "printed_reference": "1.1",
+      "complete_source_node_occurrence_ids": [
+        "0cdc1ebe4506086a85024f5e23bab194c97a69e655ac868b6797b3294fcda231"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 9317,
+          "start_byte": 8619,
+          "text_sha256": "3adf843e5b46f07e1b29efe07ed338131afdc7524b7a58a3f2391e308f3c2484"
+        }
+      ],
+      "source_text_sha256s": [
+        "3adf843e5b46f07e1b29efe07ed338131afdc7524b7a58a3f2391e308f3c2484"
+      ],
+      "structure_revision_ids": [
+        "ab309064b503f1d702160e909bfd9ad5704d15db1bbb7f0b16f6353836700ef9"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "615d011dd049fc87f86e43224cb9f91f9b3af00f804da54e53a0f5e2b15c51a4",
+        "8a97f98db770aec9e8c5ca6b5d1b254e9a4ea88763217dd820280b8992fe70ee",
+        "cf4a857018b223df876b98ae66676c529b06bcd5fc55950962145235bd909275",
+        "d5e28060083cd9c256a37d1b8091dd8ef50b725edcfdb61f4935c1162171ff93"
+      ],
+      "comparator_run_identifiers": [
+        "topbuild-merger-structure-closing-20260809-2xk-r4-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "TRANSACTION_STEP",
+      "legal_question_ids": [
+        "MERGER_STRUCTURE_CLOSING-Q01",
+        "MERGER_STRUCTURE_CLOSING-Q02",
+        "MERGER_STRUCTURE_CLOSING-Q03"
+      ]
+    }
+  ],
+  "cross_family_dependencies": [],
+  "proposed_output_policy": {
+    "candidate_claim_definition_keys": [
+      "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "MERGER_TRANSACTION_STEP"
+    ],
+    "candidate_subtype_profile_ids": [
+      "MERGER_STRUCTURE_CLOSING::TRANSACTION_STEP",
+      "MERGER_STRUCTURE_CLOSING::TRANSACTION_PLAN",
+      "MERGER_STRUCTURE_CLOSING::CLOSING",
+      "MERGER_STRUCTURE_CLOSING::EFFECTIVE_TIME",
+      "MERGER_STRUCTURE_CLOSING::LEGAL_EFFECT",
+      "MERGER_STRUCTURE_CLOSING::GOVERNANCE_SUCCESSION",
+      "MERGER_STRUCTURE_CLOSING::ORGANISATIONAL_DOCUMENT",
+      "MERGER_STRUCTURE_CLOSING::BOARD_DESIGNATION"
+    ],
+    "non_output_dispositions": [
+      "LEGACY_FRAGMENTS_REMAIN_SCHEMA_APPROVAL_PENDING",
+      "UNRESOLVED_REQUIRED_ROLE_IS_NON_RENDERABLE"
+    ],
+    "family_ownership_boundary": "MERGER_STRUCTURE_CLOSING owns only approved complete propositions. Overlapping content is link-only.",
+    "renderability": "NEVER_RENDER_FROM_PROPOSAL",
+    "complete_transition": "NOT_AUTHORISED"
+  },
+  "narrow_legal_questions": [
+    {
+      "question_id": "MERGER_STRUCTURE_CLOSING-Q01",
+      "question": "Should one independently operative authored unit be one proposition, with coordinated elements stored as roles or linked children?",
+      "affected_example_ids": [
+        "MERGER_STRUCTURE_CLOSING-EX-01",
+        "MERGER_STRUCTURE_CLOSING-EX-02",
+        "MERGER_STRUCTURE_CLOSING-EX-03",
+        "MERGER_STRUCTURE_CLOSING-EX-04",
+        "MERGER_STRUCTURE_CLOSING-EX-05",
+        "MERGER_STRUCTURE_CLOSING-EX-06",
+        "MERGER_STRUCTURE_CLOSING-EX-07"
+      ],
+      "two_plausible_readings": [
+        "ONE_COMPOUND_PROPOSITION",
+        "LINKED_INDEPENDENT_PROPOSITIONS"
+      ],
+      "recommended_reading": "Use one proposition per independently operative authored unit.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "MERGER_STRUCTURE_CLOSING-Q02",
+      "question": "Which family owns overlapping content, and which families may only link to its stable identity?",
+      "affected_example_ids": [
+        "MERGER_STRUCTURE_CLOSING-EX-01",
+        "MERGER_STRUCTURE_CLOSING-EX-02",
+        "MERGER_STRUCTURE_CLOSING-EX-03",
+        "MERGER_STRUCTURE_CLOSING-EX-04",
+        "MERGER_STRUCTURE_CLOSING-EX-05",
+        "MERGER_STRUCTURE_CLOSING-EX-06",
+        "MERGER_STRUCTURE_CLOSING-EX-07"
+      ],
+      "two_plausible_readings": [
+        "DUPLICATE_IN_EACH_FAMILY",
+        "ONE_OWNER_WITH_LINKED_CONSUMERS"
+      ],
+      "recommended_reading": "Use one semantic owner and stable links.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "MERGER_STRUCTURE_CLOSING-Q03",
+      "question": "Can an ambiguous or unresolved M3 edge fill a required role?",
+      "affected_example_ids": [
+        "MERGER_STRUCTURE_CLOSING-EX-01",
+        "MERGER_STRUCTURE_CLOSING-EX-02",
+        "MERGER_STRUCTURE_CLOSING-EX-03",
+        "MERGER_STRUCTURE_CLOSING-EX-04",
+        "MERGER_STRUCTURE_CLOSING-EX-05",
+        "MERGER_STRUCTURE_CLOSING-EX-06",
+        "MERGER_STRUCTURE_CLOSING-EX-07"
+      ],
+      "two_plausible_readings": [
+        "ALLOW_CONTEXTUAL_INFERENCE",
+        "FAIL_ONLY_THE_DEPENDENT_PROPOSITION"
+      ],
+      "recommended_reading": "Fail only the dependent proposition and do not infer the role.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    }
+  ],
+  "preparation_diagnostics": [
+    {
+      "code": "BEN_FAMILY_ROLE_APPROVAL_REQUIRED",
+      "severity": "STOP",
+      "related_id": "MERGER_STRUCTURE_CLOSING",
+      "detail": "No family adapter may run until Ben approves the open rulings and a separate approved schema is sealed."
+    }
+  ],
+  "preparation_effects": {
+    "model_calls": 0,
+    "family_runner_calls": 0,
+    "database_writes": 0,
+    "product_writes": 0,
+    "selector_changes": 0,
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "serving_changes": 0,
+    "publication_actions": 0
+  }
+}

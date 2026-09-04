@@ -2,11 +2,320 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, 'codex/**']
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
-  test-and-build:
+  plan-heavy-ci:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      run_heavy: ${{ steps.plan.outputs.run_heavy }}
+    steps:
+      - name: Find a byte-identical mergeable PR for this exact codex push
+        id: open-pr
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/codex/')
+        continue-on-error: true
+        env:
+          EXPECTED_HEAD_REF: ${{ github.ref_name }}
+          EXPECTED_HEAD_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+          MERGEABLE_RETRY_ATTEMPTS: '10'
+          MERGEABLE_RETRY_INTERVAL_SECONDS: '3'
+        run: |
+          set -euo pipefail
+          if [[ ! "${GITHUB_SHA}" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "GITHUB_SHA is not a lowercase GitHub SHA-1."
+            exit 1
+          fi
+          if [[ ! "${MERGEABLE_RETRY_ATTEMPTS}" =~ ^[1-9][0-9]*$ ]] || \
+             [ "${MERGEABLE_RETRY_ATTEMPTS}" -gt 10 ]; then
+            echo "MERGEABLE_RETRY_ATTEMPTS must be an integer from 1 through 10."
+            exit 1
+          fi
+          if [[ ! "${MERGEABLE_RETRY_INTERVAL_SECONDS}" =~ ^[0-9]+$ ]] || \
+             [ "${MERGEABLE_RETRY_INTERVAL_SECONDS}" -gt 3 ]; then
+            echo "MERGEABLE_RETRY_INTERVAL_SECONDS must be an integer from 0 through 3."
+            exit 1
+          fi
+          response="$(gh api \
+            -H 'Accept: application/vnd.github+json' \
+            "/repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/pulls?per_page=100")"
+          printf '%s\n' "${response}" | jq -e \
+            'type == "array" and all(.[]; (.number | type) == "number" and .number > 0 and (.number | floor) == .number and (.state | type) == "string" and (.head | type) == "object" and (.head.sha | type) == "string" and (.head.ref | type) == "string" and (.head.repo | type) == "object" and (.head.repo.full_name | type) == "string")' \
+            >/dev/null
+          exact_pr_numbers="$(printf '%s\n' "${response}" | jq -r \
+            --arg ref "${EXPECTED_HEAD_REF}" \
+            --arg repo "${EXPECTED_HEAD_REPOSITORY}" \
+            --arg sha "${GITHUB_SHA}" \
+            '.[] | select(.state == "open" and .head.sha == $sha and .head.repo.full_name == $repo and .head.ref == $ref) | .number')"
+          pr_owner_ready=false
+          head_tree_sha=""
+          while IFS= read -r pr_number; do
+            [ -n "${pr_number}" ] || continue
+            candidate_state=not_ready
+            mergeable_attempt=1
+            while [ "${mergeable_attempt}" -le "${MERGEABLE_RETRY_ATTEMPTS}" ]; do
+              candidate="$(gh api \
+                -H 'Accept: application/vnd.github+json' \
+                "/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}")"
+              candidate_state="$(printf '%s\n' "${candidate}" | jq -r \
+                --arg ref "${EXPECTED_HEAD_REF}" \
+                --arg repo "${EXPECTED_HEAD_REPOSITORY}" \
+                --arg sha "${GITHUB_SHA}" \
+                --argjson number "${pr_number}" \
+                '
+                  def exact_candidate:
+                    type == "object"
+                    and (.number | type) == "number"
+                    and .number > 0
+                    and (.number | floor) == .number
+                    and .number == $number
+                    and (.state | type) == "string"
+                    and .state == "open"
+                    and (.head | type) == "object"
+                    and (.head.sha | type) == "string"
+                    and .head.sha == $sha
+                    and (.head.ref | type) == "string"
+                    and .head.ref == $ref
+                    and (.head.repo | type) == "object"
+                    and (.head.repo.full_name | type) == "string"
+                    and .head.repo.full_name == $repo;
+                  if exact_candidate
+                    and has("mergeable") and .mergeable == null
+                    and has("merge_commit_sha")
+                    and (.merge_commit_sha == null or ((.merge_commit_sha | type) == "string" and (.merge_commit_sha | test("^[0-9a-f]{40}$"))))
+                  then "pending"
+                  elif exact_candidate
+                    and has("mergeable") and .mergeable == true
+                    and has("merge_commit_sha")
+                    and (.merge_commit_sha | type) == "string"
+                    and (.merge_commit_sha | test("^[0-9a-f]{40}$"))
+                  then "ready"
+                  else "not_ready"
+                  end
+                ')"
+              case "${candidate_state}" in
+                ready|not_ready) break ;;
+                pending)
+                  if [ "${mergeable_attempt}" -ge "${MERGEABLE_RETRY_ATTEMPTS}" ]; then
+                    candidate_state=not_ready
+                    break
+                  fi
+                  sleep "${MERGEABLE_RETRY_INTERVAL_SECONDS}"
+                  mergeable_attempt=$((mergeable_attempt + 1))
+                  ;;
+                *) exit 1 ;;
+              esac
+            done
+            case "${candidate_state}" in
+              ready)
+                if [ -z "${head_tree_sha}" ]; then
+                  head_commit="$(gh api \
+                    -H 'Accept: application/vnd.github+json' \
+                    "/repos/${GITHUB_REPOSITORY}/git/commits/${GITHUB_SHA}")"
+                  head_tree_sha="$(printf '%s\n' "${head_commit}" | jq -er \
+                    --arg expected "${GITHUB_SHA}" \
+                    'select(type == "object" and .sha == $expected and (.tree | type) == "object" and (.tree.sha | type) == "string" and (.tree.sha | test("^[0-9a-f]{40}$"))) | .tree.sha')"
+                  if [[ ! "${head_tree_sha}" =~ ^[0-9a-f]{40}$ ]]; then
+                    echo "Head tree SHA is not a lowercase GitHub SHA-1."
+                    exit 1
+                  fi
+                fi
+                merge_commit_sha="$(printf '%s\n' "${candidate}" | jq -er '.merge_commit_sha')"
+                if [[ ! "${merge_commit_sha}" =~ ^[0-9a-f]{40}$ ]]; then
+                  echo "Merge commit SHA is not a lowercase GitHub SHA-1."
+                  exit 1
+                fi
+                merge_commit="$(gh api \
+                  -H 'Accept: application/vnd.github+json' \
+                  "/repos/${GITHUB_REPOSITORY}/git/commits/${merge_commit_sha}")"
+                merge_tree_sha="$(printf '%s\n' "${merge_commit}" | jq -er \
+                  --arg expected "${merge_commit_sha}" \
+                  'select(type == "object" and .sha == $expected and (.tree | type) == "object" and (.tree.sha | type) == "string" and (.tree.sha | test("^[0-9a-f]{40}$"))) | .tree.sha')"
+                if [[ ! "${merge_tree_sha}" =~ ^[0-9a-f]{40}$ ]]; then
+                  echo "Merge tree SHA is not a lowercase GitHub SHA-1."
+                  exit 1
+                fi
+                if [ "${merge_tree_sha}" = "${head_tree_sha}" ]; then
+                  pr_owner_ready=true
+                  break
+                fi
+                ;;
+              not_ready) ;;
+              *) exit 1 ;;
+            esac
+          done <<< "${exact_pr_numbers}"
+          echo "pr_owner_ready=${pr_owner_ready}" >> "${GITHUB_OUTPUT}"
+      - name: Plan heavy CI
+        id: plan
+        if: always()
+        env:
+          IS_CODEX_PUSH: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/codex/') }}
+          QUERY_OUTCOME: ${{ steps.open-pr.outcome }}
+          PR_OWNER_READY: ${{ steps.open-pr.outputs.pr_owner_ready }}
+        run: |
+          run_heavy=true
+          reason=full-ci-event
+          if [ "${IS_CODEX_PUSH}" = "true" ]; then
+            reason=no-exact-open-pr-head
+            if [ "${QUERY_OUTCOME}" = "success" ] && [ "${PR_OWNER_READY}" = "true" ]; then
+              run_heavy=false
+              reason=byte-identical-mergeable-pr-head
+            elif [ "${QUERY_OUTCOME}" != "success" ]; then
+              reason=pr-query-error-fail-closed
+            elif [ "${PR_OWNER_READY}" != "false" ]; then
+              reason=pr-query-missing-data-fail-closed
+            fi
+          fi
+          echo "run_heavy=${run_heavy}" >> "${GITHUB_OUTPUT}"
+          echo "reason=${reason}" >> "${GITHUB_OUTPUT}"
+          echo "HEAVY-CI-PLAN: run_heavy=${run_heavy} ${reason}"
+  unit-tests:
+    needs: plan-heavy-ci
+    if: ${{ always() && needs.plan-heavy-ci.outputs.run_heavy != 'false' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: true
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Unit tests (shard ${{ matrix.shard }}/8)
+        env:
+          SHARD: ${{ matrix.shard }}
+        run: |
+          set -o pipefail
+          node scripts/ci/run-unit-test-shard.js --shard="${SHARD}/8" \
+            2>&1 | tee /tmp/test-output.log || status=$?
+          echo "──── failing tests (if any) ────"
+          grep -A 25 "^not ok" /tmp/test-output.log || true
+          exit "${status:-0}"
+
+  # Each evidence gate re-derives a committed report from every admitted
+  # corpus run (about twenty minutes) and depends only on what its script can
+  # read, so it runs once per exact input digest and is skipped on an exact
+  # checkpoint hit, the same shape as the baseline gate below.
+  evidence-gates:
+    needs: plan-heavy-ci
+    if: ${{ always() && needs.plan-heavy-ci.outputs.run_heavy != 'false' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          # inputs must name every path the gate reads outside its static
+          # dependency closure and the final corpus run directories: each run's
+          # source-reference.json names a raw HTML fixture under
+          # tests/fixtures/canonical-v2 and a source-map payload under
+          # evidence/canonical-v2/_admitted-source-map-payloads, both verified
+          # by byte at run time; the replay ladder also reads the r3 Interim
+          # Operating run manifest.
+          - gate: near-miss
+            entry: scripts/stage-2y-registry-near-miss.mjs
+            inputs: evidence/canonical-v2/stage-2y-registry-near-miss.json,evidence/canonical-v2/stage-2y-registry-near-miss.md,tests/fixtures/canonical-v2,evidence/canonical-v2/_admitted-source-map-payloads
+          - gate: replay-baseline
+            entry: scripts/stage-2y-registry-substrate-replay.mjs
+            inputs: evidence/canonical-v2/stage-2y-registry-substrate-replay.json,evidence/canonical-v2/stage-2y-registry-substrate-head-baseline.json,tests/fixtures/canonical-v2,evidence/canonical-v2/_admitted-source-map-payloads,evidence/canonical-v2/modiv-interim-operating-20260809-2xk-r3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Compute evidence gate input digest
+        id: gate-digest
+        continue-on-error: true
+        env:
+          GATE: ${{ matrix.gate }}
+          ENTRY: ${{ matrix.entry }}
+          INPUTS: ${{ matrix.inputs }}
+        run: |
+          set -euo pipefail
+          digest="$(node scripts/ci/expensive-check-checkpoint.mjs digest \
+            --gate "${GATE}" --entry "${ENTRY}" --inputs "${INPUTS}" --corpus-runs)"
+          if [[ ! "${digest}" =~ ^[0-9a-f]{64}$ ]]; then
+            echo "Evidence gate input digest is malformed."
+            exit 1
+          fi
+          echo "digest=${digest}" >> "${GITHUB_OUTPUT}"
+      - name: Restore exact evidence gate checkpoint
+        id: restore-gate-checkpoint
+        if: steps.gate-digest.outcome == 'success'
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/evidence-gate-checkpoint
+          key: evidence-gate-checkpoint-v1-${{ matrix.gate }}-${{ steps.gate-digest.outputs.digest }}
+          fail-on-cache-miss: false
+      - name: Plan evidence gate
+        id: gate-plan
+        env:
+          CACHE_HIT: ${{ steps.restore-gate-checkpoint.outputs.cache-hit }}
+          DIGEST_OUTCOME: ${{ steps.gate-digest.outcome }}
+          EXPECTED_DIGEST: ${{ steps.gate-digest.outputs.digest }}
+          MARKER_FILE: ${{ runner.temp }}/evidence-gate-checkpoint/marker.txt
+          RESTORE_OUTCOME: ${{ steps.restore-gate-checkpoint.outcome }}
+        run: |
+          set -u
+          run_gate=true
+          reason=digest-unavailable
+          if [ "${DIGEST_OUTCOME}" = "success" ]; then
+            reason=cache-miss
+            if [ "${RESTORE_OUTCOME}" != "success" ]; then
+              reason=cache-restore-error
+            elif [ "${CACHE_HIT}" = "true" ]; then
+              reason=marker-missing-or-malformed
+              if node scripts/ci/expensive-check-checkpoint.mjs verify \
+                "${EXPECTED_DIGEST}" "${MARKER_FILE}"; then
+                run_gate=false
+                reason=exact-checkpoint
+              fi
+            fi
+          fi
+          echo "run_gate=${run_gate}" >> "${GITHUB_OUTPUT}"
+          echo "reason=${reason}" >> "${GITHUB_OUTPUT}"
+          echo "EVIDENCE-GATE-CHECKPOINT: gate=${{ matrix.gate }} run_gate=${run_gate} ${reason}"
+      - name: Evidence gate is current
+        id: evidence-gate
+        if: steps.gate-plan.outputs.run_gate != 'false'
+        run: npm run gate:${{ matrix.gate }}
+      - name: Write evidence gate checkpoint marker
+        id: write-gate-checkpoint
+        if: steps.gate-digest.outcome == 'success' && steps.gate-plan.outputs.run_gate != 'false' && steps.evidence-gate.outcome == 'success'
+        env:
+          DIGEST: ${{ steps.gate-digest.outputs.digest }}
+          MARKER_FILE: ${{ runner.temp }}/evidence-gate-checkpoint/marker.txt
+        run: node scripts/ci/expensive-check-checkpoint.mjs write "${DIGEST}" "${MARKER_FILE}"
+      - name: Save evidence gate checkpoint
+        if: steps.write-gate-checkpoint.outcome == 'success'
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/evidence-gate-checkpoint
+          key: evidence-gate-checkpoint-v1-${{ matrix.gate }}-${{ steps.gate-digest.outputs.digest }}
+
+  production-build:
+    needs: plan-heavy-ci
+    if: ${{ always() && needs.plan-heavy-ci.outputs.run_heavy != 'false' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,24 +326,50 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Unit tests
-        # TAP output for ~5k tests scrolls the failing lines out of the
-        # retained log window; re-print every failure at the END of the
-        # step so a red run always names its failing tests where the log
-        # survives. Exit status is the test run's own, not grep's.
-        run: |
-          set -o pipefail
-          npm test 2>&1 | tee /tmp/test-output.log || status=$?
-          echo "──── failing tests (if any) ────"
-          grep -A 25 "^not ok" /tmp/test-output.log || true
-          exit "${status:-0}"
       - name: Production build
         run: npm run build
+
+  test-and-build:
+    name: test-and-build
+    needs: [plan-heavy-ci, unit-tests, evidence-gates, production-build]
+    if: ${{ always() && needs.plan-heavy-ci.outputs.run_heavy != 'false' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every unit-test shard and the production build
+        env:
+          PLAN_RESULT: ${{ needs.plan-heavy-ci.result }}
+          UNIT_TESTS_RESULT: ${{ needs.unit-tests.result }}
+          EVIDENCE_GATES_RESULT: ${{ needs.evidence-gates.result }}
+          PRODUCTION_BUILD_RESULT: ${{ needs.production-build.result }}
+        run: |
+          set -euo pipefail
+          if [ "${PLAN_RESULT}" != "success" ]; then
+            echo "Heavy-CI planner result was ${PLAN_RESULT:-missing}; expected success."
+            exit 1
+          fi
+          if [ "${UNIT_TESTS_RESULT}" != "success" ]; then
+            echo "Unit-test matrix result was ${UNIT_TESTS_RESULT:-missing}; expected success."
+            exit 1
+          fi
+          if [ "${EVIDENCE_GATES_RESULT:-}" != "success" ]; then
+            echo "Evidence-gate matrix result was ${EVIDENCE_GATES_RESULT:-missing}; expected success."
+            exit 1
+          fi
+          if [ "${PRODUCTION_BUILD_RESULT}" != "success" ]; then
+            echo "Production-build result was ${PRODUCTION_BUILD_RESULT:-missing}; expected success."
+            exit 1
+          fi
+          echo "All eight unit-test shards, both evidence gates and the production build passed."
   invariants:
     runs-on: ubuntu-latest
     needs: test-and-build
+    concurrency:
+      group: ${{ github.workflow }}-invariants-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -48,19 +383,90 @@ jobs:
         run: node scripts/lint/closing-condition-scope.js
       - name: Invariant 4 — forbidden-patterns
         run: bash scripts/lint/forbidden-patterns.sh
+      - name: Compute baseline input digest
+        id: baseline-digest
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          digest="$(node scripts/ci/baseline-checkpoint.js digest HEAD)"
+          if [[ ! "${digest}" =~ ^[0-9a-f]{64}$ ]]; then
+            echo "Baseline input digest is malformed."
+            exit 1
+          fi
+          echo "digest=${digest}" >> "${GITHUB_OUTPUT}"
+      - name: Restore exact baseline checkpoint
+        id: restore-baseline-checkpoint
+        if: steps.baseline-digest.outcome == 'success'
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/baseline-manifest-checkpoint
+          key: baseline-manifest-checkpoint-v1-${{ steps.baseline-digest.outputs.digest }}
+          fail-on-cache-miss: false
+      - name: Plan baseline gate
+        id: baseline-checkpoint
+        continue-on-error: true
+        env:
+          CACHE_HIT: ${{ steps.restore-baseline-checkpoint.outputs.cache-hit }}
+          DIGEST_OUTCOME: ${{ steps.baseline-digest.outcome }}
+          EXPECTED_DIGEST: ${{ steps.baseline-digest.outputs.digest }}
+          MARKER_FILE: ${{ runner.temp }}/baseline-manifest-checkpoint/marker.txt
+          RESTORE_OUTCOME: ${{ steps.restore-baseline-checkpoint.outcome }}
+          # Passed in run 33644008260, job 100320715255, at head commit 94d30da4.
+          TRUSTED_BOOTSTRAP_DIGEST: fc92a405933b1c6afa711bf0fa699c602a1e10c230608ebd2e0a424451173766
+        run: |
+          set -u
+          run_gate=true
+          seed_marker=false
+          reason=digest-unavailable
+          if [ "${DIGEST_OUTCOME}" = "success" ]; then
+            reason=cache-miss
+            if [ "${RESTORE_OUTCOME}" != "success" ]; then
+              reason=cache-restore-error
+            elif [ "${CACHE_HIT}" = "true" ]; then
+              reason=marker-missing-or-malformed
+              if node scripts/ci/baseline-checkpoint.js verify \
+                "${EXPECTED_DIGEST}" "${MARKER_FILE}"; then
+                run_gate=false
+                reason=exact-checkpoint
+              fi
+            elif [ -z "${CACHE_HIT}" ] || [ "${CACHE_HIT}" = "false" ]; then
+              if [ "${EXPECTED_DIGEST}" = "${TRUSTED_BOOTSTRAP_DIGEST}" ]; then
+                run_gate=false
+                seed_marker=true
+                reason=trusted-bootstrap
+              fi
+            else
+              reason=non-exact-cache-result
+            fi
+          fi
+          echo "run_gate=${run_gate}" >> "${GITHUB_OUTPUT}"
+          echo "seed_marker=${seed_marker}" >> "${GITHUB_OUTPUT}"
+          echo "reason=${reason}" >> "${GITHUB_OUTPUT}"
+          echo "BASELINE-CHECKPOINT: run_gate=${run_gate} ${reason}"
       - name: Baseline manifest is current
-        # Re-derives what every committed extraction run WOULD publish if
-        # imported, and diffs it against evidence/canonical-v2/baseline-
-        # manifest.json. Catches the failure no other gate can see: a change
-        # to the runner, resolver, validators, writer or bridge that silently
-        # drops rows. An import that publishes less still reports success, so
-        # only a recorded yardstick notices.
-        #
-        # Roughly two minutes. It sits in this job rather than in npm test
-        # because it is the same kind of check as the invariants around it --
-        # and because a gate that only OPERATING-RULES enforces is a gate that
-        # gets skipped.
+        id: baseline-gate
+        if: steps.baseline-checkpoint.outputs.run_gate != 'false'
         run: npm run gate:baseline
+      - name: Write baseline checkpoint marker
+        id: write-baseline-checkpoint
+        if: >-
+          steps.baseline-digest.outcome == 'success' &&
+          (steps.baseline-gate.outcome == 'success' || steps.baseline-checkpoint.outputs.seed_marker == 'true')
+        env:
+          DIGEST: ${{ steps.baseline-digest.outputs.digest }}
+          MARKER_FILE: ${{ runner.temp }}/baseline-manifest-checkpoint/marker.txt
+        run: node scripts/ci/baseline-checkpoint.js write "${DIGEST}" "${MARKER_FILE}"
+      - name: Save baseline checkpoint
+        id: save-baseline-checkpoint
+        if: >-
+          steps.write-baseline-checkpoint.outcome == 'success' &&
+          (steps.baseline-gate.outcome == 'success' || steps.baseline-checkpoint.outputs.seed_marker == 'true')
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/baseline-manifest-checkpoint
+          key: baseline-manifest-checkpoint-v1-${{ steps.baseline-digest.outputs.digest }}
       - name: Invariant 5 — market-registry-completeness
         run: node scripts/lint/market-registry-completeness.js
       - name: Invariant 6 — component-reuse
@@ -252,37 +658,38 @@ jobs:
           fetch-depth: 0
       - name: Collect changed files
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPOSITORY: ${{ github.repository }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
-          # Prefer local git; fall back to GitHub PR files API only if git fails.
-          # The PR files API cannot render very large text diffs (HTTP 422),
-          # but check-allowlist.js only needs file NAMES, not diffs.
-          FILES=""
-          if git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null && \
-             git cat-file -e "${HEAD_SHA}^{commit}" 2>/dev/null; then
-            MERGE_BASE="$(git merge-base "${BASE_SHA}" "${HEAD_SHA}" || true)"
-            if [ -n "${MERGE_BASE}" ]; then
-              FILES="$(git diff --name-only "${MERGE_BASE}" "${HEAD_SHA}")"
-            else
-              FILES="$(git diff --name-only "${BASE_SHA}" "${HEAD_SHA}")"
-            fi
+          changed_files_file="${RUNNER_TEMP}/phase-allowlist-changed-files.txt"
+          : > "${changed_files_file}"
+          if ! git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null || \
+             ! git cat-file -e "${HEAD_SHA}^{commit}" 2>/dev/null; then
+            echo "Full local base/head history is unavailable."
+            exit 1
           fi
-          if [ -z "${FILES}" ]; then
-            echo "git diff produced no files; falling back to gh api"
-            FILES="$(gh api "repos/${REPOSITORY}/pulls/${PR_NUMBER}/files" \
-                       --paginate --jq '.[].filename')"
+          MERGE_BASE="$(git merge-base "${BASE_SHA}" "${HEAD_SHA}" || true)"
+          if [ -z "${MERGE_BASE}" ]; then
+            echo "No local merge base is available."
+            exit 1
           fi
-          {
-            echo 'CHANGED_FILES<<EOF'
-            printf '%s\n' "${FILES}"
-            echo EOF
-          } >> "$GITHUB_ENV"
-          echo "Collected $(printf '%s\n' "${FILES}" | grep -c . || true) changed file(s)"
+          if ! git diff --no-renames --name-only "${MERGE_BASE}" "${HEAD_SHA}" -- \
+            > "${changed_files_file}"; then
+            echo "Unable to compute the complete local changed-file set."
+            exit 1
+          fi
+          if [ ! -s "${changed_files_file}" ]; then
+            echo "No changed-file names were available."
+            exit 1
+          fi
+          changed_files_bytes="$(wc -c < "${changed_files_file}" | tr -d '[:space:]')"
+          if [ "${changed_files_bytes}" -gt 8388608 ]; then
+            echo "Changed-file set exceeds 8388608 bytes."
+            exit 1
+          fi
+          echo "CHANGED_FILES_FILE=${changed_files_file}" >> "${GITHUB_ENV}"
+          echo "Collected $(grep -c . "${changed_files_file}" || true) changed file(s)"
       - name: Detect active phase from branch name
         run: |
           if [ "${GITHUB_HEAD_REF}" = "infra/ci-allowlist-shallow-checkout" ]; then
@@ -296,8 +703,8 @@ jobs:
         run: |
           if [ "${ACTIVE_PHASE}" = "WP-CI-INFRA-01" ]; then
             outside="$(
-              printf '%s\n' "$CHANGED_FILES" |
-                grep -vE '^(\.github/workflows/ci\.yml|scripts/ci/check-allowlist\.js|HANDOFF\.md|BLOCKED-WP-CI-INFRA-01\.md)$' || true
+              grep -vE '^(\.github/workflows/ci\.yml|scripts/ci/check-allowlist\.js|HANDOFF\.md|BLOCKED-WP-CI-INFRA-01\.md)$' \
+                "${CHANGED_FILES_FILE}" || true
             )"
             if [ -n "$outside" ]; then
               echo "Files outside allowlist for WP-CI-INFRA-01:"

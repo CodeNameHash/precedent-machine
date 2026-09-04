@@ -1,0 +1,622 @@
+{
+  "schema_version": "STAGE_2Y_FAMILY_CALIBRATION_PACK/V1",
+  "calibration_pack_id": "cd9b7e3c9fd751a9575ec39b391c0baa3469930af3e942c93d2eded378d375f7",
+  "calibration_pack_digest": "9022adf7c05bfdb8060e82676e19eda611acfc306bd526c0c09c731f1ec42716",
+  "family_key": "KEY_DEFINED_TERMS",
+  "wave": 2,
+  "pack_version": 1,
+  "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+  "purpose": "LEGAL_CALIBRATION_PREPARATION_ONLY",
+  "authority_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-preparation-authority.json",
+    "byte_length": 22922,
+    "sha256": "d10f095429cdbb1006bfbe1e789c267ffa3a98b12b4bd33c2afb550e7beeea79"
+  },
+  "calibration_policy_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-calibration-policy.json",
+    "byte_length": 45512,
+    "sha256": "102534446774dfa0661ad186d27c25507befedca80807e42cf584fa412e6bf78"
+  },
+  "m4_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json",
+    "byte_length": 13670,
+    "sha256": "54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41"
+  },
+  "m2_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+    "byte_length": 20126,
+    "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585"
+  },
+  "m3_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+    "byte_length": 17449,
+    "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855"
+  },
+  "family_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json",
+    "byte_length": 827,
+    "sha256": "7aa5ff41eb778884cdbb6f18ba72138c20420a2475949aca5dcbc0d2098a938d"
+  },
+  "control_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json",
+    "byte_length": 379235,
+    "sha256": "62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41"
+  },
+  "diff_contract_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/diff-contract.json",
+    "byte_length": 1171,
+    "sha256": "2585c7af9e47c4f7a6915ef1667f5eb8dbce26a8a30829bae15e42a7d41ab0c8"
+  },
+  "comparator_run_bindings": [
+    {
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "run_identifier": "concho-key-defined-terms-20260809-2xk-final",
+      "family": "KEY_DEFINED_TERMS",
+      "resolution_binding": {
+        "byte_length": 405859,
+        "path": "evidence/canonical-v2/concho-key-defined-terms-20260809-2xk-final/resolution.json",
+        "sha256": "5355ca204a81fb2dae6f99618aff62150991886520cdee583452bd604dee503a"
+      },
+      "adapter_result_binding": {
+        "byte_length": 522082,
+        "path": "evidence/canonical-v2/concho-key-defined-terms-20260809-2xk-final/adapter-result.json",
+        "sha256": "3f875cfbbad32160afae0b3bfd273822ed13cbe2f7a92a4ff53ce0f8e4d79cee"
+      },
+      "validation_binding": {
+        "byte_length": 171209,
+        "path": "evidence/canonical-v2/concho-key-defined-terms-20260809-2xk-final/validation.json",
+        "sha256": "19c85a0197230973f02fa4ca0a98ed53975a1b286af3b58db4d4d596f7c8d0fc"
+      },
+      "expected_counts": {
+        "resolution_claims": 23,
+        "write_set_claims": 23,
+        "validation_claims": 23,
+        "resolution_evidence": 46,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "run_identifier": "metsera-key-defined-terms-20260809-2xk-final",
+      "family": "KEY_DEFINED_TERMS",
+      "resolution_binding": {
+        "byte_length": 324297,
+        "path": "evidence/canonical-v2/metsera-key-defined-terms-20260809-2xk-final/resolution.json",
+        "sha256": "a8c9f72b6e0811077a7518e5d21d5f334ed611bd393834f2951c51e1c62260e3"
+      },
+      "adapter_result_binding": {
+        "byte_length": 601388,
+        "path": "evidence/canonical-v2/metsera-key-defined-terms-20260809-2xk-final/adapter-result.json",
+        "sha256": "fbe29492e0c42b440f596cdd72da7ebe10d81ab7fcb231a7586d63e4ad54d240"
+      },
+      "validation_binding": {
+        "byte_length": 252300,
+        "path": "evidence/canonical-v2/metsera-key-defined-terms-20260809-2xk-final/validation.json",
+        "sha256": "eeb348224fa2072a887fb578d667a2e2adc78f419db618d483508ee613a8e819"
+      },
+      "expected_counts": {
+        "resolution_claims": 12,
+        "write_set_claims": 12,
+        "validation_claims": 12,
+        "resolution_evidence": 24,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "run_identifier": "redhat-key-defined-terms-20260809-2xk-final",
+      "family": "KEY_DEFINED_TERMS",
+      "resolution_binding": {
+        "byte_length": 116179,
+        "path": "evidence/canonical-v2/redhat-key-defined-terms-20260809-2xk-final/resolution.json",
+        "sha256": "39b60aaed2e6c57408e98fbe72f436c67da7e2e76c8d9358df6e35809266fb7d"
+      },
+      "adapter_result_binding": {
+        "byte_length": 398866,
+        "path": "evidence/canonical-v2/redhat-key-defined-terms-20260809-2xk-final/adapter-result.json",
+        "sha256": "92f13e60f65ffbcd9a796dea656e41c2e6087edf1b40c6f504001e263c1ed4e8"
+      },
+      "validation_binding": {
+        "byte_length": 132410,
+        "path": "evidence/canonical-v2/redhat-key-defined-terms-20260809-2xk-final/validation.json",
+        "sha256": "6a2a03fdff234611c78d9dcb3447e053d250925885bb42fbc163dd5ccdee36bc"
+      },
+      "expected_counts": {
+        "resolution_claims": 4,
+        "write_set_claims": 4,
+        "validation_claims": 4,
+        "resolution_evidence": 8,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "run_identifier": "skechers-key-defined-terms-20260809-2xk-final",
+      "family": "KEY_DEFINED_TERMS",
+      "resolution_binding": {
+        "byte_length": 154680,
+        "path": "evidence/canonical-v2/skechers-key-defined-terms-20260809-2xk-final/resolution.json",
+        "sha256": "3f41c55a6e34043d44db006dc2705f175bbb19061c8f791aaba37becbe7536cc"
+      },
+      "adapter_result_binding": {
+        "byte_length": 437310,
+        "path": "evidence/canonical-v2/skechers-key-defined-terms-20260809-2xk-final/adapter-result.json",
+        "sha256": "92717b55600856774d5f255bfcdb17b48cfe3ac81efcfefe4e28e53c6f7a9182"
+      },
+      "validation_binding": {
+        "byte_length": 54769,
+        "path": "evidence/canonical-v2/skechers-key-defined-terms-20260809-2xk-final/validation.json",
+        "sha256": "d6967c740fe065e725b2d75d7c0614bb9d610b42b13da1d20586acc18e7b2a45"
+      },
+      "expected_counts": {
+        "resolution_claims": 6,
+        "write_set_claims": 6,
+        "validation_claims": 6,
+        "resolution_evidence": 12,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "run_identifier": "skywater-key-defined-terms-20260809-2xk-final",
+      "family": "KEY_DEFINED_TERMS",
+      "resolution_binding": {
+        "byte_length": 145281,
+        "path": "evidence/canonical-v2/skywater-key-defined-terms-20260809-2xk-final/resolution.json",
+        "sha256": "e510656a0bb884da1ecc53f6f9444dc87b8c598a6af6ad9d77ea25fb3772ea1c"
+      },
+      "adapter_result_binding": {
+        "byte_length": 460055,
+        "path": "evidence/canonical-v2/skywater-key-defined-terms-20260809-2xk-final/adapter-result.json",
+        "sha256": "8dfac084682d227f7694bc5dd61e56ceb87891354158baf5737e35b34f92d623"
+      },
+      "validation_binding": {
+        "byte_length": 97884,
+        "path": "evidence/canonical-v2/skywater-key-defined-terms-20260809-2xk-final/validation.json",
+        "sha256": "07b9565dbdaf4919f90d116f6c260f2f76f998b035ddb4b2650fae6837206a2a"
+      },
+      "expected_counts": {
+        "resolution_claims": 9,
+        "write_set_claims": 9,
+        "validation_claims": 9,
+        "resolution_evidence": 18,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "run_identifier": "topbuild-key-defined-terms-20260809-2xk-r2-final",
+      "family": "KEY_DEFINED_TERMS",
+      "resolution_binding": {
+        "byte_length": 599768,
+        "path": "evidence/canonical-v2/topbuild-key-defined-terms-20260809-2xk-r2-final/resolution.json",
+        "sha256": "5118030f5b811a9ce08fac02fd842b9a06e5d2aba39259f7b2d7cc3f3e990db9"
+      },
+      "adapter_result_binding": {
+        "byte_length": 826096,
+        "path": "evidence/canonical-v2/topbuild-key-defined-terms-20260809-2xk-r2-final/adapter-result.json",
+        "sha256": "ab2e668ab527d46bb14a2d1098e75e918a890fcd834e3de6735bd6b19519157a"
+      },
+      "validation_binding": {
+        "byte_length": 416587,
+        "path": "evidence/canonical-v2/topbuild-key-defined-terms-20260809-2xk-r2-final/validation.json",
+        "sha256": "4c9345f92d4242c55703132a07bae3192f5251f96e429f21a4485941443182ba"
+      },
+      "expected_counts": {
+        "resolution_claims": 22,
+        "write_set_claims": 22,
+        "validation_claims": 22,
+        "resolution_evidence": 44,
+        "supplemental_claims": 0
+      }
+    }
+  ],
+  "supplemental_input_bindings": [],
+  "provision_examples": [
+    {
+      "example_id": "KEY_DEFINED_TERMS-EX-01",
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "printed_reference": null,
+      "complete_source_node_occurrence_ids": [
+        "af7b152173fbac915c10a0edfaeb41c7103143c30499a4e17044f53724336f63"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 351804,
+          "start_byte": 0,
+          "text_sha256": "30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5"
+        }
+      ],
+      "source_text_sha256s": [
+        "30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5"
+      ],
+      "structure_revision_ids": [
+        "56dfc657709c18ff67161e17f650cadf342e71fee920f90c5487e0f8c858f436"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "1dbe5df6152234518c8195856661ef5aabdc6f801fc562991f43e77294d92e8a",
+        "1ebc11469aa41d8ab57d3fa80a229a48b1174b581c012582a9aef3371f6e83ec",
+        "2e093b953750c634af431cf3fa100c3c1ce90dd8525faca7651839c360d0a1fb",
+        "342f2863d8c7d40a95c36557769f1949ce41ecf7791104d44dea970eee6d6035",
+        "395fd57d748f53a627123023c20668fce94a0503d09a973db239c970aa4f98a6",
+        "3ee0f397782fab51d33daafed16f35afb140c972f59b604a3da9a77830fc89ae",
+        "47e8926c4c96f260094175406129b655d82a0fb38ca121326bfc7195338add0b",
+        "50187c193940249c7c3a68a0a3d9cea55b4b6f9e8b914f109a9f98c862dec479",
+        "55e1a0a564f0622bfcf27161fb4586bf003442ed98d9deb1042c685353d55569",
+        "5b4c119763caf7cc565841a1641ed06916d642912c5cb544e6057f87843d0da1",
+        "5dc0a8f38f850c9dd09654f1d61e60f6a005f4c56de82f9025218f0df1021a5b",
+        "64a383985a28fc293a2cc90ff50355dd5e02bbd38d8caa4a2652d35bb666a44a",
+        "756fbcf9ab4e3fab66e06c02cac7f0d9b8b53602a414a025ecef4259be26cbfe",
+        "815f534a982f85424b9f5348ecebb530075d0b8dc462ae22683498865761a881",
+        "825cd4f5dad4ebc3c3cd4b05ba4ad56bf15f2a49f230c4918918bf6e6fb418fc",
+        "8d21b62a26403d4c819e3982eaa671621d8d46ab3b7a62a351da7ab71d5f6c1c",
+        "8e26c3f68ba3a5eb5d66d97681f33d0701fe150949b21f1e8fb9f56276a68e26",
+        "a3a5b8456084aae16a22bc16d7ee44eba32854ddfe4413ec36bb95772ddd57f0",
+        "aca7556c95464103f53c1789f06620a62db2e5b58564eade6ad6813c1688722f",
+        "c4a4af54bb8e6b2dd8cd73faafb874211b956de3cb14020bfcdaff5bc601ea00",
+        "c4f98bb601b7daef44f5d6adcbb98c8015784a40fe2b0fb4ef3de217fd8e233d",
+        "dc8a0010568e9b0bca86e2927abf085c35118404b6faebe572beac2fca63f4ff",
+        "e8cb140517271b10caa937367a79b1ceca82a59c767a68379aa4a30ba4d2e3ae"
+      ],
+      "comparator_run_identifiers": [
+        "concho-key-defined-terms-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "ACQUISITION_PROPOSAL",
+      "legal_question_ids": [
+        "KEY_DEFINED_TERMS-Q01",
+        "KEY_DEFINED_TERMS-Q02",
+        "KEY_DEFINED_TERMS-Q03"
+      ]
+    },
+    {
+      "example_id": "KEY_DEFINED_TERMS-EX-02",
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "printed_reference": "5.02",
+      "complete_source_node_occurrence_ids": [
+        "7bb2cbdec5dd016560ceb819b2812f86f5248cff833a14e235231f1cab5f509e"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 179828,
+          "start_byte": 159408,
+          "text_sha256": "298940b23c71c55c05902d6cdd127ecca1cc5f3614367477e33bc3979490a703"
+        }
+      ],
+      "source_text_sha256s": [
+        "298940b23c71c55c05902d6cdd127ecca1cc5f3614367477e33bc3979490a703"
+      ],
+      "structure_revision_ids": [
+        "7c30aaf5c66588ad7f43be9866d84411666a698e1dfdfff88cec33ccf3a88cd8"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "42437085c2a07547cbf93d78baeb493ae99258b1a49b3d50de3258d0baf31018",
+        "4d19df373ef700a6873e18dfcf50fdc177a6a3ca4e12cebd4bf7d205f3429636",
+        "90d5496d32f56bdb46040827fd4294e672b0b303dac04fbf833fb3f2f1afa49a",
+        "adaf5677d97dda2ce120d726cc2909cd85da1dc4aa860e11e29b299e5eca1a78",
+        "ae36ecdaaccb9ed1546dde4505cfb5eda487d34fef308f115c01336bd30e66f3",
+        "b227c433563274dd173358a4c776af491d6f1658800cba8122308fdfff654078",
+        "daf32f62bc5dee1b8cdc6eb05677cf115b9d98b51045f18ec92da12673e03625",
+        "e852b9e86003fcd8e70216bd25c204d12ce756f9874b3ef5a04f93494064a4c9",
+        "f6ffd0cf324b7bd278c8531b3c83db543af75e9005c12f50717fe8f11cf7bff7"
+      ],
+      "comparator_run_identifiers": [
+        "metsera-key-defined-terms-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "ACQUISITION_PROPOSAL",
+      "legal_question_ids": [
+        "KEY_DEFINED_TERMS-Q01",
+        "KEY_DEFINED_TERMS-Q02",
+        "KEY_DEFINED_TERMS-Q03"
+      ]
+    },
+    {
+      "example_id": "KEY_DEFINED_TERMS-EX-03",
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "printed_reference": "8.03",
+      "complete_source_node_occurrence_ids": [
+        "ed638ab1aa10ee6515e40634e3d100a8af7ef3b61634e4b056e82c1351c65a23"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 250704,
+          "start_byte": 237143,
+          "text_sha256": "2e708d90b805def11099e55bdf53f098e4dea6d6b64d7bf649c14f48c7ec5a25"
+        }
+      ],
+      "source_text_sha256s": [
+        "2e708d90b805def11099e55bdf53f098e4dea6d6b64d7bf649c14f48c7ec5a25"
+      ],
+      "structure_revision_ids": [
+        "c17ed8e420daa5c6418ecbc1b9e0e013f989a6d3828d63fc86ac69c70e076d34"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "01db9c890a07f22d0c8a86e9801f420ef1e0f0454047065ae463e54815d7fbf2",
+        "7158a5b089634a9a1ea5b46e2d425e5e836a1b5a0bd82b3478819135f255b1ea",
+        "8009044a5a28385b29a46db58af7cc2752f97cf9e8352f570e712deca2776763",
+        "bc5360f25e9d0fe03e507b2a00ef53af823c12e41479c8c36cb568454e85416d"
+      ],
+      "comparator_run_identifiers": [
+        "redhat-key-defined-terms-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "ACQUISITION_PROPOSAL",
+      "legal_question_ids": [
+        "KEY_DEFINED_TERMS-Q01",
+        "KEY_DEFINED_TERMS-Q02",
+        "KEY_DEFINED_TERMS-Q03"
+      ]
+    },
+    {
+      "example_id": "KEY_DEFINED_TERMS-EX-04",
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "printed_reference": "1.1",
+      "complete_source_node_occurrence_ids": [
+        "133cb7b50fa9d7ee58168408a92aca8092738bdd45d45fba3f4a58d85ab4ce75"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 59414,
+          "start_byte": 8678,
+          "text_sha256": "b53f8b797448c4f114b95d383c4a0234b652db02d459223a2ceb4fe8d4db0f87"
+        }
+      ],
+      "source_text_sha256s": [
+        "b53f8b797448c4f114b95d383c4a0234b652db02d459223a2ceb4fe8d4db0f87"
+      ],
+      "structure_revision_ids": [
+        "a93803df6cb5d69d0af4b26a76bf8714d316ece6de2581f5932efbe5d8493936"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "33d1c8d752deff1f614f76a70aa5700b0061ecbf93212191d1933e577c112357",
+        "5978a9069102603dc3398d1222f809ec0a07f0a8625c83f2f53a0f35e420305b",
+        "629852b878b2a838101ff4564022d58cd7edc248a66bffbc1cbe950436f8875d",
+        "8062f381af08ead3d43a4c9b60082e64e8d4d337236d6bc51b851e96e6876c12",
+        "87ddf719bdcf2ef29789684ad9ae6533ec8ee74907c6963772b0b4744568719f",
+        "8b54962de3cee9cf3e6f6eec9b18a5fba95b0a9ab9fa0b8efd340b951e0a63b7"
+      ],
+      "comparator_run_identifiers": [
+        "skechers-key-defined-terms-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "ACQUISITION_PROPOSAL",
+      "legal_question_ids": [
+        "KEY_DEFINED_TERMS-Q01",
+        "KEY_DEFINED_TERMS-Q02",
+        "KEY_DEFINED_TERMS-Q03"
+      ]
+    },
+    {
+      "example_id": "KEY_DEFINED_TERMS-EX-05",
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "printed_reference": null,
+      "complete_source_node_occurrence_ids": [
+        "20bcbb1f2d662a2ca9fb09229579e32c0b26c971516e923dd3eda5366eefbb87"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 360595,
+          "start_byte": 0,
+          "text_sha256": "ffee664a374a1c18c35dabb9458bcffc8e5014a305eefc184b102bbbe5bcc8f1"
+        }
+      ],
+      "source_text_sha256s": [
+        "ffee664a374a1c18c35dabb9458bcffc8e5014a305eefc184b102bbbe5bcc8f1"
+      ],
+      "structure_revision_ids": [
+        "14cf2174e00a5c7624167b8dd33978ec752d805fdba4af8dda55591355ac4ec6"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "01fbbc704e6c166e1e9e67d43742c49962d317a84db2e839fbec4b95d1013561",
+        "2443046178f243e28e7afe25f4f3391fba0574bdc8d0d52fc6fd1817ba925b72",
+        "42e9121a2f9d95f09bed6f6aecaff242d5c9fd0738b9449aa0f57fa84fda50f6",
+        "49daa10c2c25d518078973e1b6606499446f9618ee5d5b68cccba3547fb040c5",
+        "826896f01322f9315214810ac01ff584e831b271338cb26edc382b6fd0e51ce0",
+        "b8082554ce7b06a50248f8c4a13ab7275d650df66d82809004e97259aa356e90",
+        "c6f5b38579134b7f242916ed35025c9e0de4a819c1e318248a0da919b87c5e79",
+        "cea4a76df8f056ac4570e6c2a2e1b088951cfc77bfcccd700650c37b8e22e982",
+        "ef214ddb9f00bb73eb060bf3dcc5906aa3e557ead80dd015734ba9023a7ace20"
+      ],
+      "comparator_run_identifiers": [
+        "skywater-key-defined-terms-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "ACQUISITION_PROPOSAL",
+      "legal_question_ids": [
+        "KEY_DEFINED_TERMS-Q01",
+        "KEY_DEFINED_TERMS-Q02",
+        "KEY_DEFINED_TERMS-Q03"
+      ]
+    },
+    {
+      "example_id": "KEY_DEFINED_TERMS-EX-06",
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "printed_reference": "3.1",
+      "complete_source_node_occurrence_ids": [
+        "a257b4d1202cb775af7513904e59d29d3fca2fa4b34026b44b5c89814eeecbbf"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 131511,
+          "start_byte": 47755,
+          "text_sha256": "4ebe8295a6df8109ae876c13bcb97d8b44b1cfacc26e29769cd2777ecfd85a72"
+        }
+      ],
+      "source_text_sha256s": [
+        "4ebe8295a6df8109ae876c13bcb97d8b44b1cfacc26e29769cd2777ecfd85a72"
+      ],
+      "structure_revision_ids": [
+        "59456dcbe15cce144583d48677dfaecac77dfb8ca02f18e249edb17cf2cf3034"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "239caa69c4270559ce1c02dfbd0d0ee7b62f65c8f274b055c7310fccf948f267",
+        "257853da5456b8783e58d37e1639a10e3496688d3ff55c0d089c5e075f8d5a42",
+        "569200f0818a3ed2170af495eec7fee697efcebc48da4d9816f1f39f1638761a",
+        "6163c1079f518c53bb038e56260e3665ed131cdc5aecfb2070e6a77c2ba6a328",
+        "d64795dd8c4607c3b8c231b3f327c07b469900383be424851895290aca8bd3b9"
+      ],
+      "comparator_run_identifiers": [
+        "topbuild-key-defined-terms-20260809-2xk-r2-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "ACQUISITION_PROPOSAL",
+      "legal_question_ids": [
+        "KEY_DEFINED_TERMS-Q01",
+        "KEY_DEFINED_TERMS-Q02",
+        "KEY_DEFINED_TERMS-Q03"
+      ]
+    }
+  ],
+  "cross_family_dependencies": [],
+  "proposed_output_policy": {
+    "candidate_claim_definition_keys": [
+      "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+      "INTERVENING_EVENT_DEFINITION",
+      "INTERVENING_EVENT_EXCLUSION",
+      "KNOWLEDGE_PERSON_SOURCE",
+      "KNOWLEDGE_STANDARD",
+      "ORDINARY_COURSE_DEFINITION_RECORDED",
+      "SUPERIOR_PROPOSAL_QUALIFIER",
+      "SUPERIOR_PROPOSAL_THRESHOLD_PERCENT",
+      "TAX_DEFINITION_RECORDED",
+      "TAX_RETURN_DEFINITION_RECORDED",
+      "WILLFUL_BREACH_DEFINITION",
+      "WILLFUL_BREACH_KNOWLEDGE_STANDARD"
+    ],
+    "candidate_subtype_profile_ids": [
+      "KEY_DEFINED_TERMS::ACQUISITION_PROPOSAL",
+      "KEY_DEFINED_TERMS::SUPERIOR_PROPOSAL",
+      "KEY_DEFINED_TERMS::INTERVENING_EVENT",
+      "KEY_DEFINED_TERMS::KNOWLEDGE",
+      "KEY_DEFINED_TERMS::WILLFUL_BREACH"
+    ],
+    "non_output_dispositions": [
+      "LEGACY_FRAGMENTS_REMAIN_SCHEMA_APPROVAL_PENDING",
+      "UNRESOLVED_REQUIRED_ROLE_IS_NON_RENDERABLE"
+    ],
+    "family_ownership_boundary": "KEY_DEFINED_TERMS owns only approved complete propositions. Overlapping content is link-only.",
+    "renderability": "NEVER_RENDER_FROM_PROPOSAL",
+    "complete_transition": "NOT_AUTHORISED"
+  },
+  "narrow_legal_questions": [
+    {
+      "question_id": "KEY_DEFINED_TERMS-Q01",
+      "question": "Should one independently operative authored unit be one proposition, with coordinated elements stored as roles or linked children?",
+      "affected_example_ids": [
+        "KEY_DEFINED_TERMS-EX-01",
+        "KEY_DEFINED_TERMS-EX-02",
+        "KEY_DEFINED_TERMS-EX-03",
+        "KEY_DEFINED_TERMS-EX-04",
+        "KEY_DEFINED_TERMS-EX-05",
+        "KEY_DEFINED_TERMS-EX-06"
+      ],
+      "two_plausible_readings": [
+        "ONE_COMPOUND_PROPOSITION",
+        "LINKED_INDEPENDENT_PROPOSITIONS"
+      ],
+      "recommended_reading": "Use one proposition per independently operative authored unit.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "KEY_DEFINED_TERMS-Q02",
+      "question": "Which family owns overlapping content, and which families may only link to its stable identity?",
+      "affected_example_ids": [
+        "KEY_DEFINED_TERMS-EX-01",
+        "KEY_DEFINED_TERMS-EX-02",
+        "KEY_DEFINED_TERMS-EX-03",
+        "KEY_DEFINED_TERMS-EX-04",
+        "KEY_DEFINED_TERMS-EX-05",
+        "KEY_DEFINED_TERMS-EX-06"
+      ],
+      "two_plausible_readings": [
+        "DUPLICATE_IN_EACH_FAMILY",
+        "ONE_OWNER_WITH_LINKED_CONSUMERS"
+      ],
+      "recommended_reading": "Use one semantic owner and stable links.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "KEY_DEFINED_TERMS-Q03",
+      "question": "Can an ambiguous or unresolved M3 edge fill a required role?",
+      "affected_example_ids": [
+        "KEY_DEFINED_TERMS-EX-01",
+        "KEY_DEFINED_TERMS-EX-02",
+        "KEY_DEFINED_TERMS-EX-03",
+        "KEY_DEFINED_TERMS-EX-04",
+        "KEY_DEFINED_TERMS-EX-05",
+        "KEY_DEFINED_TERMS-EX-06"
+      ],
+      "two_plausible_readings": [
+        "ALLOW_CONTEXTUAL_INFERENCE",
+        "FAIL_ONLY_THE_DEPENDENT_PROPOSITION"
+      ],
+      "recommended_reading": "Fail only the dependent proposition and do not infer the role.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    }
+  ],
+  "preparation_diagnostics": [
+    {
+      "code": "BEN_FAMILY_ROLE_APPROVAL_REQUIRED",
+      "severity": "STOP",
+      "related_id": "KEY_DEFINED_TERMS",
+      "detail": "No family adapter may run until Ben approves the open rulings and a separate approved schema is sealed."
+    }
+  ],
+  "preparation_effects": {
+    "model_calls": 0,
+    "family_runner_calls": 0,
+    "database_writes": 0,
+    "product_writes": 0,
+    "selector_changes": 0,
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "serving_changes": 0,
+    "publication_actions": 0
+  }
+}

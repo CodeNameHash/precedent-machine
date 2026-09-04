@@ -1,7 +1,6 @@
 'use strict';
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { spawnSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -14,10 +13,10 @@ test('near-miss explicitly excludes the inert representation-topic classifier', 
   });
 });
 
-test('Stage 2Y-C near-miss report remains read-only and current', () => {
-  const run = spawnSync(process.execPath, [path.resolve(__dirname, '..', 'scripts/stage-2y-registry-near-miss.mjs'), '--check'], { cwd: path.resolve(__dirname, '..'), encoding: 'utf8' });
-  assert.equal(run.status, 0, run.stderr);
-});
+// Whether the committed near-miss report is current is proved by the named CI
+// gate `npm run gate:near-miss` (see .github/workflows/ci.yml, job
+// evidence-gates), which re-derives it from every admitted corpus run once per
+// exact input digest. It is not part of `npm test`.
 
 test('metadata migration preserves run and record bytes, and pins the scanned substrate', async () => {
   const { migrateStoredMetadata, markdown } = await import(path.resolve(__dirname, '..', 'scripts/stage-2y-registry-near-miss.mjs'));

@@ -2,6 +2,7 @@ import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
 import { cardCode, cardFeatures, cardType, selectCards, textOf, valueText } from './card-utils.js';
 import { voteStandard } from './vote-standard.js';
+import { buildTerminationRightsReviewGroups } from './termination-rights-review-groups.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -760,10 +761,17 @@ function visibleFamilyGroups(cards, PillCell) {
     .filter((group) => group.rows.length > 0);
 }
 
+function hasCanonicalV2ReviewRows(reviewDeal) {
+  const reviewRows = reviewDeal?.canonical_v2_termination_rights_review_rows;
+  return reviewRows?.schema_version === 'TERMINATION_RIGHTS_REVIEW_ROWS/V2'
+    && Array.isArray(reviewRows.rows)
+    && reviewRows.rows.length > 0;
+}
+
 function renderTerminationRightsFooter(rows, ctx) {
   const CoverageFooter = ctx?.primitives?.CoverageFooter;
   const reviewDeal = rows && rows[0] && rows[0].reviewDeal;
-  if (!CoverageFooter || !reviewDeal) return null;
+  if (!CoverageFooter || !reviewDeal || hasCanonicalV2ReviewRows(reviewDeal)) return null;
   const cards = selectCards(reviewDeal, isTerminationRight);
   const canonicalRows = TERMR_CANONICAL.map((spec) => rowForSpec(spec, cards));
   const presentRows = canonicalRows.filter((row) => row.present);
@@ -803,7 +811,10 @@ function deferredEvidenceGroup(cards) {
 }
 
 function buildGroups(reviewDeal, cards, PillCell) {
-  const groups = visibleFamilyGroups(cards, PillCell);
+  const groups = buildTerminationRightsReviewGroups(reviewDeal);
+  if (!hasCanonicalV2ReviewRows(reviewDeal)) {
+    groups.push(...visibleFamilyGroups(cards, PillCell));
+  }
   const remedies = crossCuttingGroup(reviewDeal, PillCell);
   if (remedies) groups.push(remedies);
   const fiduciaryOut = fiduciaryOutGroup(reviewDeal, PillCell);
@@ -819,7 +830,20 @@ const terminationRightsConfig = {
   layoutSlot: 'termination',
   selectRows(reviewDeal) {
     const cards = selectCards(reviewDeal, isTerminationRight);
-    const groups = buildGroups(reviewDeal, cards);
+    let groups = [];
+    try {
+      groups = buildGroups(reviewDeal, cards);
+    } catch {
+      groups = [];
+    }
+    if (!groups.length
+        && reviewDeal?.canonical_v2_termination_rights_review_source_status) {
+      try {
+        groups = buildTerminationRightsReviewGroups(reviewDeal);
+      } catch {
+        groups = [];
+      }
+    }
     if (!groups.length) return [];
     return [{ id: 'termination-rights-body', groups, cards, reviewDeal }];
   },

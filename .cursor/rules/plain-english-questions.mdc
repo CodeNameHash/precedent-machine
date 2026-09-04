@@ -1,0 +1,46 @@
+---
+description: Phrase questions to Ben in plain technical English
+alwaysApply: true
+---
+
+# Questions to Ben
+
+When you need Ben's input, ask in plain technical English — not telegraphic shorthand or unexplained jargon.
+
+## Required
+
+- Write complete sentences with normal grammar and punctuation.
+- One clear question per item. If you need several answers, ask several questions — do not bundle unrelated decisions into one prompt.
+- Define acronyms on first use (e.g. "M&A (mergers and acquisitions)").
+- Explain domain or repo jargon the first time you use it, unless Ben used the term in this conversation.
+- Spell out actionable choices in plain language so Ben knows what each option means and what happens next.
+- When the AskQuestion tool is available, use it for structured choices. Do not use lettered option lists (A/B/C) in chat when AskQuestion can present the options.
+
+## Avoid
+
+- Telegraphic fragments: "Phase gate?", "Proceed?", "Which?"
+- Unexplained shorthand: "M7 v2 packet OK?", "Run Work3?"
+- Lettered lists in chat when AskQuestion is available: "A) approve B) defer C) reject"
+- Stacked multi-part prompts that mix approval, scope, and timing in one sentence.
+
+## Decision questions — good vs bad
+
+**Bad — phase approval gate**
+
+> M7 v2 packet ready. Approve Phase B gate? A) yes B) hold C) revise scope
+
+**Good — phase approval gate**
+
+> The M7 v2 termination inventory review packet is ready for your review. Should I treat this as approval to proceed to Phase B, hold until you have reviewed the packet, or revise the scope before continuing?
+
+**Bad — implementation choice**
+
+> Serializer: JSONL or NDJSON?
+
+**Good — implementation choice**
+
+> Should the export use standard JSON Lines (one JSON object per line, `.jsonl`) or newline-delimited JSON with a different schema wrapper? I can implement either; JSON Lines matches our existing evidence files.
+
+## When unsure
+
+If a term might be unclear, define it briefly in the question rather than assuming Ben knows it.

@@ -1,0 +1,646 @@
+{
+  "schema_version": "STAGE_2Y_FAMILY_CALIBRATION_PACK/V1",
+  "calibration_pack_id": "0753eb057e05a9aad8eba6cc833f10485519db73113672d6db171adbb09f65b0",
+  "calibration_pack_digest": "2116e65a92c8ffc28fb89fe3de47a69f5d2f924fdd54d257696f97bc743482cb",
+  "family_key": "NO_OTHER_REPS_FRAUD",
+  "wave": 3,
+  "pack_version": 1,
+  "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+  "purpose": "LEGAL_CALIBRATION_PREPARATION_ONLY",
+  "authority_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-preparation-authority.json",
+    "byte_length": 22922,
+    "sha256": "d10f095429cdbb1006bfbe1e789c267ffa3a98b12b4bd33c2afb550e7beeea79"
+  },
+  "calibration_policy_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-calibration-policy.json",
+    "byte_length": 45512,
+    "sha256": "102534446774dfa0661ad186d27c25507befedca80807e42cf584fa412e6bf78"
+  },
+  "m4_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json",
+    "byte_length": 13670,
+    "sha256": "54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41"
+  },
+  "m2_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+    "byte_length": 20126,
+    "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585"
+  },
+  "m3_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+    "byte_length": 17449,
+    "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855"
+  },
+  "family_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json",
+    "byte_length": 827,
+    "sha256": "7aa5ff41eb778884cdbb6f18ba72138c20420a2475949aca5dcbc0d2098a938d"
+  },
+  "control_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json",
+    "byte_length": 379235,
+    "sha256": "62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41"
+  },
+  "diff_contract_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/diff-contract.json",
+    "byte_length": 1171,
+    "sha256": "2585c7af9e47c4f7a6915ef1667f5eb8dbce26a8a30829bae15e42a7d41ab0c8"
+  },
+  "comparator_run_bindings": [
+    {
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "run_identifier": "concho-no-other-reps-fraud-20260809-2xk-final",
+      "family": "NO_OTHER_REPS_FRAUD",
+      "resolution_binding": {
+        "byte_length": 112611,
+        "path": "evidence/canonical-v2/concho-no-other-reps-fraud-20260809-2xk-final/resolution.json",
+        "sha256": "bfe6f7dac0d88f1492e208a6847a2b021c65ec617e5cbb422017a7b8b7804cde"
+      },
+      "adapter_result_binding": {
+        "byte_length": 399756,
+        "path": "evidence/canonical-v2/concho-no-other-reps-fraud-20260809-2xk-final/adapter-result.json",
+        "sha256": "1fd2b702eb86664ab5289130c7c34edcb53b719ddb76d3aec4a28634365c49de"
+      },
+      "validation_binding": {
+        "byte_length": 49326,
+        "path": "evidence/canonical-v2/concho-no-other-reps-fraud-20260809-2xk-final/validation.json",
+        "sha256": "ab5718adb1bd955cba1b62e5ef12ebb151723f1cf812bb628321021748733452"
+      },
+      "expected_counts": {
+        "resolution_claims": 7,
+        "write_set_claims": 7,
+        "validation_claims": 7,
+        "resolution_evidence": 7,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "run_identifier": "metsera-no-other-reps-fraud-20260809-2xk-final",
+      "family": "NO_OTHER_REPS_FRAUD",
+      "resolution_binding": {
+        "byte_length": 49867,
+        "path": "evidence/canonical-v2/metsera-no-other-reps-fraud-20260809-2xk-final/resolution.json",
+        "sha256": "b52764595272e328ecb2821e07b74eac933128dad86a9195ec093f77a71825f0"
+      },
+      "adapter_result_binding": {
+        "byte_length": 376877,
+        "path": "evidence/canonical-v2/metsera-no-other-reps-fraud-20260809-2xk-final/adapter-result.json",
+        "sha256": "7c48fe7d842f68f4dedc0935524ee5e724ee3c2e9e060186ccebcf48aeb3a008"
+      },
+      "validation_binding": {
+        "byte_length": 26602,
+        "path": "evidence/canonical-v2/metsera-no-other-reps-fraud-20260809-2xk-final/validation.json",
+        "sha256": "75d09dcb1f231116d9d82be753770345a60e6bc39af55d83a7e6f87b55080bbc"
+      },
+      "expected_counts": {
+        "resolution_claims": 3,
+        "write_set_claims": 3,
+        "validation_claims": 3,
+        "resolution_evidence": 3,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "deal": "modiv",
+      "run_identifier": "modiv-no-other-reps-fraud-20260809-2xk-final",
+      "family": "NO_OTHER_REPS_FRAUD",
+      "resolution_binding": {
+        "byte_length": 67663,
+        "path": "evidence/canonical-v2/modiv-no-other-reps-fraud-20260809-2xk-final/resolution.json",
+        "sha256": "4b7d2265540dfd2182ce02f8022c0eca874e73602974ba97eee0da0e8329e412"
+      },
+      "adapter_result_binding": {
+        "byte_length": 452310,
+        "path": "evidence/canonical-v2/modiv-no-other-reps-fraud-20260809-2xk-final/adapter-result.json",
+        "sha256": "5f75d1133d6c780b94faa41cc19874a85fd58c9a6fd73eaadba14612324bf01f"
+      },
+      "validation_binding": {
+        "byte_length": 21156,
+        "path": "evidence/canonical-v2/modiv-no-other-reps-fraud-20260809-2xk-final/validation.json",
+        "sha256": "9c4d1275242974d2c0df71b9f9b9a543f8abef45b0918bb1afc6407a10f471ea"
+      },
+      "expected_counts": {
+        "resolution_claims": 3,
+        "write_set_claims": 3,
+        "validation_claims": 3,
+        "resolution_evidence": 3,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "run_identifier": "redhat-no-other-reps-fraud-20260809-2xk-final",
+      "family": "NO_OTHER_REPS_FRAUD",
+      "resolution_binding": {
+        "byte_length": 89035,
+        "path": "evidence/canonical-v2/redhat-no-other-reps-fraud-20260809-2xk-final/resolution.json",
+        "sha256": "cb019071e3cd929acdbd6fe23959b33406bec77fec385769cf926138e227a58b"
+      },
+      "adapter_result_binding": {
+        "byte_length": 301864,
+        "path": "evidence/canonical-v2/redhat-no-other-reps-fraud-20260809-2xk-final/adapter-result.json",
+        "sha256": "dcc1c55256832c5f8c95dd5e09f0f7e77572bcfe8c49d7666e7afde5d1eb485d"
+      },
+      "validation_binding": {
+        "byte_length": 36585,
+        "path": "evidence/canonical-v2/redhat-no-other-reps-fraud-20260809-2xk-final/validation.json",
+        "sha256": "4fabf540b62d0cbd5f159fc3f2badf876b64d2ef89a7b51c2b8910a694ebac81"
+      },
+      "expected_counts": {
+        "resolution_claims": 5,
+        "write_set_claims": 5,
+        "validation_claims": 5,
+        "resolution_evidence": 5,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "run_identifier": "skechers-no-other-reps-fraud-20260809-2xk-final",
+      "family": "NO_OTHER_REPS_FRAUD",
+      "resolution_binding": {
+        "byte_length": 123079,
+        "path": "evidence/canonical-v2/skechers-no-other-reps-fraud-20260809-2xk-final/resolution.json",
+        "sha256": "7cbe8c5b6d35911f223c83bff4f11f516655e6035ec39758feea945c84a97837"
+      },
+      "adapter_result_binding": {
+        "byte_length": 430696,
+        "path": "evidence/canonical-v2/skechers-no-other-reps-fraud-20260809-2xk-final/adapter-result.json",
+        "sha256": "8f462785d00f12ef14f7f141d7fbc26488248403d8e8bba5c919c6838d7dbc8f"
+      },
+      "validation_binding": {
+        "byte_length": 49667,
+        "path": "evidence/canonical-v2/skechers-no-other-reps-fraud-20260809-2xk-final/validation.json",
+        "sha256": "ce093e07b8493b05e3712085d25b61d4ce4643b95c49de44bbf5dabe9af44eb9"
+      },
+      "expected_counts": {
+        "resolution_claims": 8,
+        "write_set_claims": 8,
+        "validation_claims": 8,
+        "resolution_evidence": 8,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "run_identifier": "skywater-no-other-reps-fraud-20260809-2xk-final",
+      "family": "NO_OTHER_REPS_FRAUD",
+      "resolution_binding": {
+        "byte_length": 116605,
+        "path": "evidence/canonical-v2/skywater-no-other-reps-fraud-20260809-2xk-final/resolution.json",
+        "sha256": "8e3c5344199608ab996f1d501b2117054d916054b87445a55af3b0f386fbe749"
+      },
+      "adapter_result_binding": {
+        "byte_length": 402682,
+        "path": "evidence/canonical-v2/skywater-no-other-reps-fraud-20260809-2xk-final/adapter-result.json",
+        "sha256": "bfc7cd1f7ff8ec81937b1f709db98699ccfd4736b53c14a3244a7b3458bb98f0"
+      },
+      "validation_binding": {
+        "byte_length": 41489,
+        "path": "evidence/canonical-v2/skywater-no-other-reps-fraud-20260809-2xk-final/validation.json",
+        "sha256": "a96d9514fcb436e55192bc5b7619eaf0440c4e6c2f9dffe76995350ca06b73a8"
+      },
+      "expected_counts": {
+        "resolution_claims": 7,
+        "write_set_claims": 7,
+        "validation_claims": 7,
+        "resolution_evidence": 7,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "run_identifier": "topbuild-no-other-reps-fraud-20260809-2xk-r4-final",
+      "family": "NO_OTHER_REPS_FRAUD",
+      "resolution_binding": {
+        "byte_length": 78352,
+        "path": "evidence/canonical-v2/topbuild-no-other-reps-fraud-20260809-2xk-r4-final/resolution.json",
+        "sha256": "eb48c70d77400b1c47dfa4cc344eaf4037ea45a32e8883a62ee98e429863f14c"
+      },
+      "adapter_result_binding": {
+        "byte_length": 433724,
+        "path": "evidence/canonical-v2/topbuild-no-other-reps-fraud-20260809-2xk-r4-final/adapter-result.json",
+        "sha256": "682a2ec1d69f3404f30d6e09868d3fd81159e519d3427050142a66fceb572ffa"
+      },
+      "validation_binding": {
+        "byte_length": 19931,
+        "path": "evidence/canonical-v2/topbuild-no-other-reps-fraud-20260809-2xk-r4-final/validation.json",
+        "sha256": "1a6b7cdbb696f99038f816700773a16c692a9c130a9aa6f7eeb6aa325b264c43"
+      },
+      "expected_counts": {
+        "resolution_claims": 3,
+        "write_set_claims": 3,
+        "validation_claims": 3,
+        "resolution_evidence": 3,
+        "supplemental_claims": 0
+      }
+    }
+  ],
+  "supplemental_input_bindings": [],
+  "provision_examples": [
+    {
+      "example_id": "NO_OTHER_REPS_FRAUD-EX-01",
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "printed_reference": "4.27",
+      "complete_source_node_occurrence_ids": [
+        "8a598c144f04a75777615b71bd2bb77ffbe3888a093be0d9dd053abedaa81e03"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 108778,
+          "start_byte": 106095,
+          "text_sha256": "529c98107ef9a7c1e32a2857d75194c6dc969507d2929acdac875bca974d6c5b"
+        }
+      ],
+      "source_text_sha256s": [
+        "529c98107ef9a7c1e32a2857d75194c6dc969507d2929acdac875bca974d6c5b"
+      ],
+      "structure_revision_ids": [
+        "cca9213bd44db9ac0d79760c1aee814510d6540c9b2b82684ce180811ef71c75"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "b29cc1dbb93df01ba1a1cb43b96188a2f8b9cb864cddbbb147f3100a35f3a8f5",
+        "e340662a08fa40eb8db28caab28e271781f01351751c6f700058def39d08068e",
+        "f24119112b1f296538389f7e93d57ad104c61b4abdd634a5bbac9bfddf2d0bd9"
+      ],
+      "comparator_run_identifiers": [
+        "concho-no-other-reps-fraud-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "NO_OTHER_REPRESENTATIONS_DISCLAIMER",
+      "legal_question_ids": [
+        "NO_OTHER_REPS_FRAUD-Q01",
+        "NO_OTHER_REPS_FRAUD-Q02",
+        "NO_OTHER_REPS_FRAUD-Q03"
+      ]
+    },
+    {
+      "example_id": "NO_OTHER_REPS_FRAUD-EX-02",
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "printed_reference": "9.07",
+      "complete_source_node_occurrence_ids": [
+        "5db1bb993df059fe1c9f9e3fac3db9e98a4745bcb4767db4cfbb94be1315eaf4"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 264854,
+          "start_byte": 261848,
+          "text_sha256": "993dde0439bc881d4681a41ebb411ca2556208659f01250bcb803e66dfeff90f"
+        }
+      ],
+      "source_text_sha256s": [
+        "993dde0439bc881d4681a41ebb411ca2556208659f01250bcb803e66dfeff90f"
+      ],
+      "structure_revision_ids": [
+        "f95ca177fceb3e446312fc9c011f6948f077d3db007e6bcbbfe7e89ea61f09c7"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "095595ef63c9b0f83035405af83538ddbfbf8a22079b5b1ceed07ff5381c26d1",
+        "12be144dc7d3d38b3a8b454b7a6fc9ef19fdf5c50dd2e79e056001daa9ab3a5e",
+        "5b2f40c1eadc8466de2d72355d4235364c98e9eddeb057b56eb91af2fd7f103c"
+      ],
+      "comparator_run_identifiers": [
+        "metsera-no-other-reps-fraud-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "NO_OTHER_REPRESENTATIONS_DISCLAIMER",
+      "legal_question_ids": [
+        "NO_OTHER_REPS_FRAUD-Q01",
+        "NO_OTHER_REPS_FRAUD-Q02",
+        "NO_OTHER_REPS_FRAUD-Q03"
+      ]
+    },
+    {
+      "example_id": "NO_OTHER_REPS_FRAUD-EX-03",
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "deal": "modiv",
+      "printed_reference": "3.25",
+      "complete_source_node_occurrence_ids": [
+        "3a1302a5cffe93711c20a5368604f0e7f6e4588fefda81c6c082d039705825e1"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 148688,
+          "start_byte": 144571,
+          "text_sha256": "f355c77630c7f7075e9d778e95ffede750cf73d6ae8b644d6da8758c97aaf8c8"
+        }
+      ],
+      "source_text_sha256s": [
+        "f355c77630c7f7075e9d778e95ffede750cf73d6ae8b644d6da8758c97aaf8c8"
+      ],
+      "structure_revision_ids": [
+        "d734bb46b34607f847ac10bfea71a096e16ba8485bdeaf9a989c270fb84abef7"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "1b54688e66821a9df57e90e39f4b0e264f0b58297cd030aa51a8a87c1e3aa9d4",
+        "4ee15ecee7b0d8dfe7bf5956d4637c109d33fe56adf48650c183ce93699bfe2b",
+        "bcfb2c8421dc2377ae1356d43f519e5f7716b7548333da0b9b9bdfc48038a2d3"
+      ],
+      "comparator_run_identifiers": [
+        "modiv-no-other-reps-fraud-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "NO_OTHER_REPRESENTATIONS_DISCLAIMER",
+      "legal_question_ids": [
+        "NO_OTHER_REPS_FRAUD-Q01",
+        "NO_OTHER_REPS_FRAUD-Q02",
+        "NO_OTHER_REPS_FRAUD-Q03"
+      ]
+    },
+    {
+      "example_id": "NO_OTHER_REPS_FRAUD-EX-04",
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "printed_reference": "3.01",
+      "complete_source_node_occurrence_ids": [
+        "3bd5017a187fef6badf5c39945c20b9340897a06422317a00eb6c07bea9504ca"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 104301,
+          "start_byte": 28259,
+          "text_sha256": "b800cb57763e92bb3278cb5d424eeb221930b44c6bb079aa7096b68c7ec3de18"
+        }
+      ],
+      "source_text_sha256s": [
+        "b800cb57763e92bb3278cb5d424eeb221930b44c6bb079aa7096b68c7ec3de18"
+      ],
+      "structure_revision_ids": [
+        "1c3b9352c7879ad0006134aaa3bd47fca56730315020727b5902a1bd83c37ad5"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "2c33dd62e181aa1fecb0b58e9c4873df05fb7b70418a4d43e6522bdb689fb595",
+        "55bebac2075abeb682eafb23e7f40e73d3f939b5380c9df2eef5f4300ee3acd4",
+        "7b4f6eabb543f1c121f579e86ac9ffb2fa6e12b1c639215cabc314fcdb50f2f7"
+      ],
+      "comparator_run_identifiers": [
+        "redhat-no-other-reps-fraud-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "NO_OTHER_REPRESENTATIONS_DISCLAIMER",
+      "legal_question_ids": [
+        "NO_OTHER_REPS_FRAUD-Q01",
+        "NO_OTHER_REPS_FRAUD-Q02",
+        "NO_OTHER_REPS_FRAUD-Q03"
+      ]
+    },
+    {
+      "example_id": "NO_OTHER_REPS_FRAUD-EX-05",
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "printed_reference": "3.28",
+      "complete_source_node_occurrence_ids": [
+        "c832ae9d0210f38ae734400df0b22bc8d2c0fb3ee4a66b589d975355871bc2fa"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 181651,
+          "start_byte": 178805,
+          "text_sha256": "93d4b8e23e45dd4cdafa991f99d19ceea8ccfc192139f82b1166a6f88751348c"
+        }
+      ],
+      "source_text_sha256s": [
+        "93d4b8e23e45dd4cdafa991f99d19ceea8ccfc192139f82b1166a6f88751348c"
+      ],
+      "structure_revision_ids": [
+        "ea61e8093f7ab9f6c8c060b389e274411a88cc9baf340564747ca9fd8581048b"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "03ff1d055159c7b36ad45b137714eb1a1e1c9aaf0ab698e27b16cd21986cf579",
+        "1a6fa3209a803724fcf208151bb1253b4ababcca20684ede798271ffe680b52d",
+        "6dffcdabd82ad6eb3de0beb41420bd8014509429f4cfc1331fbfd6cdfbb8b2fb",
+        "e38c3e13df3b0ba5ce2c9223fb7638e056cdd2d34bf993b4cdbca980a69f1543"
+      ],
+      "comparator_run_identifiers": [
+        "skechers-no-other-reps-fraud-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "NO_OTHER_REPRESENTATIONS_DISCLAIMER",
+      "legal_question_ids": [
+        "NO_OTHER_REPS_FRAUD-Q01",
+        "NO_OTHER_REPS_FRAUD-Q02",
+        "NO_OTHER_REPS_FRAUD-Q03"
+      ]
+    },
+    {
+      "example_id": "NO_OTHER_REPS_FRAUD-EX-06",
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "printed_reference": "3.30",
+      "complete_source_node_occurrence_ids": [
+        "ed1ec509f4d248014e2a32fef813635a5f56c8a44669fdd48378c965d4eb54c5"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 171184,
+          "start_byte": 168545,
+          "text_sha256": "6414d74334d3e13b47b3b4a1d3b4af6f215245fcfdb81a741d018e7f82ae720b"
+        }
+      ],
+      "source_text_sha256s": [
+        "6414d74334d3e13b47b3b4a1d3b4af6f215245fcfdb81a741d018e7f82ae720b"
+      ],
+      "structure_revision_ids": [
+        "7e8609df04becedb289f70ead650ae9a8de0e1bc0e94b6f67ebf061ebf02388e"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "190e3bca790cad14d0e18378c71507567f6a277947bb2561c07a3c63c68d31b8",
+        "41d6b7246d36e8ae61f640ce571e3f7799f83644447c1465f83f1a661354d2ea",
+        "41e560f1a7774dcdffc58ae682f1abc0df49993ec486debb4938771ae75b745a"
+      ],
+      "comparator_run_identifiers": [
+        "skywater-no-other-reps-fraud-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "NO_OTHER_REPRESENTATIONS_DISCLAIMER",
+      "legal_question_ids": [
+        "NO_OTHER_REPS_FRAUD-Q01",
+        "NO_OTHER_REPS_FRAUD-Q02",
+        "NO_OTHER_REPS_FRAUD-Q03"
+      ]
+    },
+    {
+      "example_id": "NO_OTHER_REPS_FRAUD-EX-07",
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "printed_reference": "3.1",
+      "complete_source_node_occurrence_ids": [
+        "a257b4d1202cb775af7513904e59d29d3fca2fa4b34026b44b5c89814eeecbbf"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 131511,
+          "start_byte": 47755,
+          "text_sha256": "4ebe8295a6df8109ae876c13bcb97d8b44b1cfacc26e29769cd2777ecfd85a72"
+        }
+      ],
+      "source_text_sha256s": [
+        "4ebe8295a6df8109ae876c13bcb97d8b44b1cfacc26e29769cd2777ecfd85a72"
+      ],
+      "structure_revision_ids": [
+        "59456dcbe15cce144583d48677dfaecac77dfb8ca02f18e249edb17cf2cf3034"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "878468069ff29f8f6253f91a03afe4dc3b968cc2c528be3bcca844b8a176d62d"
+      ],
+      "comparator_run_identifiers": [
+        "topbuild-no-other-reps-fraud-20260809-2xk-r4-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "NO_OTHER_REPRESENTATIONS_DISCLAIMER",
+      "legal_question_ids": [
+        "NO_OTHER_REPS_FRAUD-Q01",
+        "NO_OTHER_REPS_FRAUD-Q02",
+        "NO_OTHER_REPS_FRAUD-Q03"
+      ]
+    }
+  ],
+  "cross_family_dependencies": [],
+  "proposed_output_policy": {
+    "candidate_claim_definition_keys": [
+      "EXTRA_CONTRACTUAL_RELIANCE_DISCLAIMER_PRESENT",
+      "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+      "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT"
+    ],
+    "candidate_subtype_profile_ids": [
+      "NO_OTHER_REPS_FRAUD::NO_OTHER_REPRESENTATIONS_DISCLAIMER",
+      "NO_OTHER_REPS_FRAUD::NON_RELIANCE_ACKNOWLEDGMENT",
+      "NO_OTHER_REPS_FRAUD::FRAUD_CARVEOUT",
+      "NO_OTHER_REPS_FRAUD::INDEPENDENT_INVESTIGATION_ACKNOWLEDGMENT"
+    ],
+    "non_output_dispositions": [
+      "LEGACY_FRAGMENTS_REMAIN_SCHEMA_APPROVAL_PENDING",
+      "UNRESOLVED_REQUIRED_ROLE_IS_NON_RENDERABLE"
+    ],
+    "family_ownership_boundary": "NO_OTHER_REPS_FRAUD owns only approved complete propositions. Overlapping content is link-only.",
+    "renderability": "NEVER_RENDER_FROM_PROPOSAL",
+    "complete_transition": "NOT_AUTHORISED"
+  },
+  "narrow_legal_questions": [
+    {
+      "question_id": "NO_OTHER_REPS_FRAUD-Q01",
+      "question": "Should one independently operative authored unit be one proposition, with coordinated elements stored as roles or linked children?",
+      "affected_example_ids": [
+        "NO_OTHER_REPS_FRAUD-EX-01",
+        "NO_OTHER_REPS_FRAUD-EX-02",
+        "NO_OTHER_REPS_FRAUD-EX-03",
+        "NO_OTHER_REPS_FRAUD-EX-04",
+        "NO_OTHER_REPS_FRAUD-EX-05",
+        "NO_OTHER_REPS_FRAUD-EX-06",
+        "NO_OTHER_REPS_FRAUD-EX-07"
+      ],
+      "two_plausible_readings": [
+        "ONE_COMPOUND_PROPOSITION",
+        "LINKED_INDEPENDENT_PROPOSITIONS"
+      ],
+      "recommended_reading": "Use one proposition per independently operative authored unit.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "NO_OTHER_REPS_FRAUD-Q02",
+      "question": "Which family owns overlapping content, and which families may only link to its stable identity?",
+      "affected_example_ids": [
+        "NO_OTHER_REPS_FRAUD-EX-01",
+        "NO_OTHER_REPS_FRAUD-EX-02",
+        "NO_OTHER_REPS_FRAUD-EX-03",
+        "NO_OTHER_REPS_FRAUD-EX-04",
+        "NO_OTHER_REPS_FRAUD-EX-05",
+        "NO_OTHER_REPS_FRAUD-EX-06",
+        "NO_OTHER_REPS_FRAUD-EX-07"
+      ],
+      "two_plausible_readings": [
+        "DUPLICATE_IN_EACH_FAMILY",
+        "ONE_OWNER_WITH_LINKED_CONSUMERS"
+      ],
+      "recommended_reading": "Use one semantic owner and stable links.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "NO_OTHER_REPS_FRAUD-Q03",
+      "question": "Can an ambiguous or unresolved M3 edge fill a required role?",
+      "affected_example_ids": [
+        "NO_OTHER_REPS_FRAUD-EX-01",
+        "NO_OTHER_REPS_FRAUD-EX-02",
+        "NO_OTHER_REPS_FRAUD-EX-03",
+        "NO_OTHER_REPS_FRAUD-EX-04",
+        "NO_OTHER_REPS_FRAUD-EX-05",
+        "NO_OTHER_REPS_FRAUD-EX-06",
+        "NO_OTHER_REPS_FRAUD-EX-07"
+      ],
+      "two_plausible_readings": [
+        "ALLOW_CONTEXTUAL_INFERENCE",
+        "FAIL_ONLY_THE_DEPENDENT_PROPOSITION"
+      ],
+      "recommended_reading": "Fail only the dependent proposition and do not infer the role.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    }
+  ],
+  "preparation_diagnostics": [
+    {
+      "code": "BEN_FAMILY_ROLE_APPROVAL_REQUIRED",
+      "severity": "STOP",
+      "related_id": "NO_OTHER_REPS_FRAUD",
+      "detail": "No family adapter may run until Ben approves the open rulings and a separate approved schema is sealed."
+    }
+  ],
+  "preparation_effects": {
+    "model_calls": 0,
+    "family_runner_calls": 0,
+    "database_writes": 0,
+    "product_writes": 0,
+    "selector_changes": 0,
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "serving_changes": 0,
+    "publication_actions": 0
+  }
+}

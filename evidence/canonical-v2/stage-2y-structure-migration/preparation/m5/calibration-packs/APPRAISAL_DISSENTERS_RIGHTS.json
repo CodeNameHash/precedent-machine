@@ -1,0 +1,352 @@
+{
+  "schema_version": "STAGE_2Y_FAMILY_CALIBRATION_PACK/V1",
+  "calibration_pack_id": "f6d9df7250a39baba82561108f80f7d28730ce0cdbb37997fa6d2253b66064d0",
+  "calibration_pack_digest": "33c50912712f7ab60682970c2a73085ce164e523c83a61c0cec992aaaf6cbc2a",
+  "family_key": "APPRAISAL_DISSENTERS_RIGHTS",
+  "wave": 4,
+  "pack_version": 1,
+  "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+  "purpose": "LEGAL_CALIBRATION_PREPARATION_ONLY",
+  "authority_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-preparation-authority.json",
+    "byte_length": 22922,
+    "sha256": "d10f095429cdbb1006bfbe1e789c267ffa3a98b12b4bd33c2afb550e7beeea79"
+  },
+  "calibration_policy_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-calibration-policy.json",
+    "byte_length": 45512,
+    "sha256": "102534446774dfa0661ad186d27c25507befedca80807e42cf584fa412e6bf78"
+  },
+  "m4_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json",
+    "byte_length": 13670,
+    "sha256": "54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41"
+  },
+  "m2_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+    "byte_length": 20126,
+    "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585"
+  },
+  "m3_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+    "byte_length": 17449,
+    "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855"
+  },
+  "family_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json",
+    "byte_length": 827,
+    "sha256": "7aa5ff41eb778884cdbb6f18ba72138c20420a2475949aca5dcbc0d2098a938d"
+  },
+  "control_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json",
+    "byte_length": 379235,
+    "sha256": "62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41"
+  },
+  "diff_contract_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/diff-contract.json",
+    "byte_length": 1171,
+    "sha256": "2585c7af9e47c4f7a6915ef1667f5eb8dbce26a8a30829bae15e42a7d41ab0c8"
+  },
+  "comparator_run_bindings": [
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "run_identifier": "skechers-appraisal-dissenters-rights-20260809-2xk-final",
+      "family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "resolution_binding": {
+        "byte_length": 41481,
+        "path": "evidence/canonical-v2/skechers-appraisal-dissenters-rights-20260809-2xk-final/resolution.json",
+        "sha256": "93134910d875539316ff14e28ca3926e8fe57e37de65850ea10dbf90958ef14c"
+      },
+      "adapter_result_binding": {
+        "byte_length": 411326,
+        "path": "evidence/canonical-v2/skechers-appraisal-dissenters-rights-20260809-2xk-final/adapter-result.json",
+        "sha256": "7b2bf3885de16a19b102e17eec545dee83d914a2cb41593dc2818c5aa51f835a"
+      },
+      "validation_binding": {
+        "byte_length": 28203,
+        "path": "evidence/canonical-v2/skechers-appraisal-dissenters-rights-20260809-2xk-final/validation.json",
+        "sha256": "b565e5b6db408797dbaf07102855df6a8af2a44164a8d7bf94abbb9399eb3497"
+      },
+      "expected_counts": {
+        "resolution_claims": 2,
+        "write_set_claims": 2,
+        "validation_claims": 2,
+        "resolution_evidence": 2,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "run_identifier": "skywater-appraisal-dissenters-rights-20260809-2xk-final",
+      "family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "resolution_binding": {
+        "byte_length": 25885,
+        "path": "evidence/canonical-v2/skywater-appraisal-dissenters-rights-20260809-2xk-final/resolution.json",
+        "sha256": "76b9d078dbc2a83cdf05f32f4352fa615abcbdd36159fcfba9d2714d051278fc"
+      },
+      "adapter_result_binding": {
+        "byte_length": 392566,
+        "path": "evidence/canonical-v2/skywater-appraisal-dissenters-rights-20260809-2xk-final/adapter-result.json",
+        "sha256": "a19e56a17dc11c6a48894771e101acea54ce7efb44c766e8f68575e329213341"
+      },
+      "validation_binding": {
+        "byte_length": 28815,
+        "path": "evidence/canonical-v2/skywater-appraisal-dissenters-rights-20260809-2xk-final/validation.json",
+        "sha256": "a40b60f050501a573bc5026c0519e5795ba8299adb19fd47a691ba58994681a1"
+      },
+      "expected_counts": {
+        "resolution_claims": 1,
+        "write_set_claims": 1,
+        "validation_claims": 1,
+        "resolution_evidence": 1,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "run_identifier": "topbuild-appraisal-dissenters-rights-20260809-2xk-r2-final",
+      "family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "resolution_binding": {
+        "byte_length": 39121,
+        "path": "evidence/canonical-v2/topbuild-appraisal-dissenters-rights-20260809-2xk-r2-final/resolution.json",
+        "sha256": "face2c12d5d9d61d0813c7d3ff11ce3cec448ea21a91502e204e40dc57a271d7"
+      },
+      "adapter_result_binding": {
+        "byte_length": 445042,
+        "path": "evidence/canonical-v2/topbuild-appraisal-dissenters-rights-20260809-2xk-r2-final/adapter-result.json",
+        "sha256": "0369b91347d6358c56e1c5686ca7bbfa065fe4c42a308e4c7de569072de82dc4"
+      },
+      "validation_binding": {
+        "byte_length": 30078,
+        "path": "evidence/canonical-v2/topbuild-appraisal-dissenters-rights-20260809-2xk-r2-final/validation.json",
+        "sha256": "dd60091c420d58ae00521a4303db5d0c63f85c6373b8636e0d000438549e9603"
+      },
+      "expected_counts": {
+        "resolution_claims": 2,
+        "write_set_claims": 2,
+        "validation_claims": 2,
+        "resolution_evidence": 2,
+        "supplemental_claims": 0
+      }
+    }
+  ],
+  "supplemental_input_bindings": [],
+  "provision_examples": [
+    {
+      "example_id": "APPRAISAL_DISSENTERS_RIGHTS-EX-01",
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "printed_reference": "2.7",
+      "complete_source_node_occurrence_ids": [
+        "85f584e4b7f10cfa4327268fe90c0eb0758965d60d9902bb64e63b1b66a78291"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 84099,
+          "start_byte": 77351,
+          "text_sha256": "ed61a5d0c37d4f5e595977bfe693fb7f708dd86b6d0c2a0b605bac2aee8b0e5c"
+        }
+      ],
+      "source_text_sha256s": [
+        "ed61a5d0c37d4f5e595977bfe693fb7f708dd86b6d0c2a0b605bac2aee8b0e5c"
+      ],
+      "structure_revision_ids": [
+        "a56e8ef09995c515bf3a86717a5b750757b74fb084653d458119cf7f895bd58a"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "23064aa4823eab9bc764e820580f303555f6965d11790fc4389df67db099b613",
+        "8b9a48fdaf66e55fd10253f372b530fc116e137b6025cd1e4f40c977d71dfe7a"
+      ],
+      "comparator_run_identifiers": [
+        "skechers-appraisal-dissenters-rights-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "APPRAISAL_STATUS",
+      "legal_question_ids": [
+        "APPRAISAL_DISSENTERS_RIGHTS-Q01",
+        "APPRAISAL_DISSENTERS_RIGHTS-Q02",
+        "APPRAISAL_DISSENTERS_RIGHTS-Q03"
+      ]
+    },
+    {
+      "example_id": "APPRAISAL_DISSENTERS_RIGHTS-EX-02",
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "printed_reference": "1.6",
+      "complete_source_node_occurrence_ids": [
+        "4d41dc401e22ba6dbf04babf529cf15d49855aa3dd63b06052f49faba41f29f0"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 29903,
+          "start_byte": 27640,
+          "text_sha256": "59a03fb38a9a8c5f827dd436728ab0da6fad97322889fb597511121db370fa56"
+        }
+      ],
+      "source_text_sha256s": [
+        "59a03fb38a9a8c5f827dd436728ab0da6fad97322889fb597511121db370fa56"
+      ],
+      "structure_revision_ids": [
+        "b492083fb4250ec1208403a01b4f28a892f083ab7f83532faef3339a0bb5b952"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "a66d78ed8aa1b37d84fcfcd3e9f23b242be6678f991b6e914383f348eef41a41"
+      ],
+      "comparator_run_identifiers": [
+        "skywater-appraisal-dissenters-rights-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "APPRAISAL_STATUS",
+      "legal_question_ids": [
+        "APPRAISAL_DISSENTERS_RIGHTS-Q01",
+        "APPRAISAL_DISSENTERS_RIGHTS-Q02",
+        "APPRAISAL_DISSENTERS_RIGHTS-Q03"
+      ]
+    },
+    {
+      "example_id": "APPRAISAL_DISSENTERS_RIGHTS-EX-03",
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "printed_reference": "2.1",
+      "complete_source_node_occurrence_ids": [
+        "c586d9ae3863c522b6ea7c5a794134216ead77d8eb5ba9850b2841115497bbe3"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 36185,
+          "start_byte": 15784,
+          "text_sha256": "d3e4054a0e335b666bd52dec5c3dad0580b685e98b15caec0034a2e1231488f4"
+        }
+      ],
+      "source_text_sha256s": [
+        "d3e4054a0e335b666bd52dec5c3dad0580b685e98b15caec0034a2e1231488f4"
+      ],
+      "structure_revision_ids": [
+        "d4458e8a6b5047d18b076c57b2f1616365f1ab2e5ebd3ee66b91dc65b6852ce5"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "7a96b4ea9b7c410e70c9ffce93ec953577de8335d633577dc3bbba799bb3e6a6",
+        "b6b5157e8b805858af29aca06d1b002940c14c1b078857717ce00e2c6c394f68"
+      ],
+      "comparator_run_identifiers": [
+        "topbuild-appraisal-dissenters-rights-20260809-2xk-r2-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "APPRAISAL_STATUS",
+      "legal_question_ids": [
+        "APPRAISAL_DISSENTERS_RIGHTS-Q01",
+        "APPRAISAL_DISSENTERS_RIGHTS-Q02",
+        "APPRAISAL_DISSENTERS_RIGHTS-Q03"
+      ]
+    }
+  ],
+  "cross_family_dependencies": [],
+  "proposed_output_policy": {
+    "candidate_claim_definition_keys": [
+      "APPRAISAL_SETTLEMENT_CONSENT",
+      "APPRAISAL_WITHDRAWAL_RECONVERSION"
+    ],
+    "candidate_subtype_profile_ids": [
+      "APPRAISAL_DISSENTERS_RIGHTS::APPRAISAL_STATUS",
+      "APPRAISAL_DISSENTERS_RIGHTS::APPRAISAL_ENTITLEMENT",
+      "APPRAISAL_DISSENTERS_RIGHTS::WITHDRAWAL_RECONVERSION",
+      "APPRAISAL_DISSENTERS_RIGHTS::APPRAISAL_NOTICE",
+      "APPRAISAL_DISSENTERS_RIGHTS::NEGOTIATION_CONTROL",
+      "APPRAISAL_DISSENTERS_RIGHTS::SETTLEMENT_CONSENT"
+    ],
+    "non_output_dispositions": [
+      "LEGACY_FRAGMENTS_REMAIN_SCHEMA_APPROVAL_PENDING",
+      "UNRESOLVED_REQUIRED_ROLE_IS_NON_RENDERABLE"
+    ],
+    "family_ownership_boundary": "APPRAISAL_DISSENTERS_RIGHTS owns only approved complete propositions. Overlapping content is link-only.",
+    "renderability": "NEVER_RENDER_FROM_PROPOSAL",
+    "complete_transition": "NOT_AUTHORISED"
+  },
+  "narrow_legal_questions": [
+    {
+      "question_id": "APPRAISAL_DISSENTERS_RIGHTS-Q01",
+      "question": "Should one independently operative authored unit be one proposition, with coordinated elements stored as roles or linked children?",
+      "affected_example_ids": [
+        "APPRAISAL_DISSENTERS_RIGHTS-EX-01",
+        "APPRAISAL_DISSENTERS_RIGHTS-EX-02",
+        "APPRAISAL_DISSENTERS_RIGHTS-EX-03"
+      ],
+      "two_plausible_readings": [
+        "ONE_COMPOUND_PROPOSITION",
+        "LINKED_INDEPENDENT_PROPOSITIONS"
+      ],
+      "recommended_reading": "Use one proposition per independently operative authored unit.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "APPRAISAL_DISSENTERS_RIGHTS-Q02",
+      "question": "Which family owns overlapping content, and which families may only link to its stable identity?",
+      "affected_example_ids": [
+        "APPRAISAL_DISSENTERS_RIGHTS-EX-01",
+        "APPRAISAL_DISSENTERS_RIGHTS-EX-02",
+        "APPRAISAL_DISSENTERS_RIGHTS-EX-03"
+      ],
+      "two_plausible_readings": [
+        "DUPLICATE_IN_EACH_FAMILY",
+        "ONE_OWNER_WITH_LINKED_CONSUMERS"
+      ],
+      "recommended_reading": "Use one semantic owner and stable links.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "APPRAISAL_DISSENTERS_RIGHTS-Q03",
+      "question": "Can an ambiguous or unresolved M3 edge fill a required role?",
+      "affected_example_ids": [
+        "APPRAISAL_DISSENTERS_RIGHTS-EX-01",
+        "APPRAISAL_DISSENTERS_RIGHTS-EX-02",
+        "APPRAISAL_DISSENTERS_RIGHTS-EX-03"
+      ],
+      "two_plausible_readings": [
+        "ALLOW_CONTEXTUAL_INFERENCE",
+        "FAIL_ONLY_THE_DEPENDENT_PROPOSITION"
+      ],
+      "recommended_reading": "Fail only the dependent proposition and do not infer the role.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    }
+  ],
+  "preparation_diagnostics": [
+    {
+      "code": "BEN_FAMILY_ROLE_APPROVAL_REQUIRED",
+      "severity": "STOP",
+      "related_id": "APPRAISAL_DISSENTERS_RIGHTS",
+      "detail": "No family adapter may run until Ben approves the open rulings and a separate approved schema is sealed."
+    }
+  ],
+  "preparation_effects": {
+    "model_calls": 0,
+    "family_runner_calls": 0,
+    "database_writes": 0,
+    "product_writes": 0,
+    "selector_changes": 0,
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "serving_changes": 0,
+    "publication_actions": 0
+  }
+}

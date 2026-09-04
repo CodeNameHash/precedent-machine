@@ -1,0 +1,715 @@
+{
+  "schema_version": "STAGE_2Y_FAMILY_CALIBRATION_PACK/V1",
+  "calibration_pack_id": "ceb404c2b00933f47d7b405077f6efbb1d6ae6761809ac6f97e4b1037c02b06e",
+  "calibration_pack_digest": "45c15d19327a061c20eabc5676ab72c1c767498fbd3edd75b1177a7dfd31f7c7",
+  "family_key": "ANTITRUST_REGULATORY",
+  "wave": 3,
+  "pack_version": 1,
+  "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+  "purpose": "LEGAL_CALIBRATION_PREPARATION_ONLY",
+  "authority_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-preparation-authority.json",
+    "byte_length": 22922,
+    "sha256": "d10f095429cdbb1006bfbe1e789c267ffa3a98b12b4bd33c2afb550e7beeea79"
+  },
+  "calibration_policy_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-calibration-policy.json",
+    "byte_length": 45512,
+    "sha256": "102534446774dfa0661ad186d27c25507befedca80807e42cf584fa412e6bf78"
+  },
+  "m4_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json",
+    "byte_length": 13670,
+    "sha256": "54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41"
+  },
+  "m2_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+    "byte_length": 20126,
+    "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585"
+  },
+  "m3_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+    "byte_length": 17449,
+    "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855"
+  },
+  "family_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json",
+    "byte_length": 827,
+    "sha256": "7aa5ff41eb778884cdbb6f18ba72138c20420a2475949aca5dcbc0d2098a938d"
+  },
+  "control_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json",
+    "byte_length": 379235,
+    "sha256": "62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41"
+  },
+  "diff_contract_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/diff-contract.json",
+    "byte_length": 1171,
+    "sha256": "2585c7af9e47c4f7a6915ef1667f5eb8dbce26a8a30829bae15e42a7d41ab0c8"
+  },
+  "comparator_run_bindings": [
+    {
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "run_identifier": "concho-antitrust-regulatory-20260809-2xk-final",
+      "family": "ANTITRUST_REGULATORY",
+      "resolution_binding": {
+        "byte_length": 339857,
+        "path": "evidence/canonical-v2/concho-antitrust-regulatory-20260809-2xk-final/resolution.json",
+        "sha256": "463f60543e21b944ce2822149b8d2b943f09609e237be282e0f41bb270985938"
+      },
+      "adapter_result_binding": {
+        "byte_length": 409255,
+        "path": "evidence/canonical-v2/concho-antitrust-regulatory-20260809-2xk-final/adapter-result.json",
+        "sha256": "21f3ef547d5fac7df709087d0b5c50a73dd2903b036052c6cc7ab58a0739ba51"
+      },
+      "validation_binding": {
+        "byte_length": 61134,
+        "path": "evidence/canonical-v2/concho-antitrust-regulatory-20260809-2xk-final/validation.json",
+        "sha256": "9284136ece5210b050bd3e90ae86a84e7a6a97a4648e57e6304284cde9334b0c"
+      },
+      "expected_counts": {
+        "resolution_claims": 11,
+        "write_set_claims": 11,
+        "validation_claims": 11,
+        "resolution_evidence": 11,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "run_identifier": "metsera-antitrust-regulatory-20260809-2xk-final",
+      "family": "ANTITRUST_REGULATORY",
+      "resolution_binding": {
+        "byte_length": 318990,
+        "path": "evidence/canonical-v2/metsera-antitrust-regulatory-20260809-2xk-final/resolution.json",
+        "sha256": "7b5ebac8e09854d51f30588a03ef5b57a816e6465502355bab06f2976447d42e"
+      },
+      "adapter_result_binding": {
+        "byte_length": 406795,
+        "path": "evidence/canonical-v2/metsera-antitrust-regulatory-20260809-2xk-final/adapter-result.json",
+        "sha256": "50b18600ade917b1c2b2059f52016bd1ebea701ca4214b58309a752acb0c9c16"
+      },
+      "validation_binding": {
+        "byte_length": 60310,
+        "path": "evidence/canonical-v2/metsera-antitrust-regulatory-20260809-2xk-final/validation.json",
+        "sha256": "90e3a9b071686376e0a8fe846a7a5d6f79ec871532962c739ef9c8c7f8163b09"
+      },
+      "expected_counts": {
+        "resolution_claims": 10,
+        "write_set_claims": 10,
+        "validation_claims": 10,
+        "resolution_evidence": 10,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "deal": "modiv",
+      "run_identifier": "modiv-antitrust-regulatory-20260809-2xk-final",
+      "family": "ANTITRUST_REGULATORY",
+      "resolution_binding": {
+        "byte_length": 288057,
+        "path": "evidence/canonical-v2/modiv-antitrust-regulatory-20260809-2xk-final/resolution.json",
+        "sha256": "4a760288edc785cf10a683520d5217e9f384bad3459f36d05f323c56294606b2"
+      },
+      "adapter_result_binding": {
+        "byte_length": 505559,
+        "path": "evidence/canonical-v2/modiv-antitrust-regulatory-20260809-2xk-final/adapter-result.json",
+        "sha256": "51138ac1eb0a3f98eee2591d882e98874e1ac553c586cace5aaa90eeda6ff449"
+      },
+      "validation_binding": {
+        "byte_length": 82882,
+        "path": "evidence/canonical-v2/modiv-antitrust-regulatory-20260809-2xk-final/validation.json",
+        "sha256": "18e230f135680a0a66cda8197f825ff4b88ecd9aa21ac9f73559b57de7b1bd53"
+      },
+      "expected_counts": {
+        "resolution_claims": 12,
+        "write_set_claims": 12,
+        "validation_claims": 12,
+        "resolution_evidence": 12,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "run_identifier": "redhat-antitrust-regulatory-20260809-2xk-final",
+      "family": "ANTITRUST_REGULATORY",
+      "resolution_binding": {
+        "byte_length": 298869,
+        "path": "evidence/canonical-v2/redhat-antitrust-regulatory-20260809-2xk-final/resolution.json",
+        "sha256": "1e19a7678bb42aa7f54243b74561b540d024e3b663c95bde5f7855cdfbab0f0b"
+      },
+      "adapter_result_binding": {
+        "byte_length": 334663,
+        "path": "evidence/canonical-v2/redhat-antitrust-regulatory-20260809-2xk-final/adapter-result.json",
+        "sha256": "b8b14a3436cab726feed85d7395e6fb7682315d6ba73db23684dcc1d4ef64e8a"
+      },
+      "validation_binding": {
+        "byte_length": 74049,
+        "path": "evidence/canonical-v2/redhat-antitrust-regulatory-20260809-2xk-final/validation.json",
+        "sha256": "d51101879a74868065138589517c11d523457c71d08c5127f9ee92a472605c2b"
+      },
+      "expected_counts": {
+        "resolution_claims": 10,
+        "write_set_claims": 10,
+        "validation_claims": 10,
+        "resolution_evidence": 10,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "run_identifier": "skechers-antitrust-regulatory-20260809-2xk-final",
+      "family": "ANTITRUST_REGULATORY",
+      "resolution_binding": {
+        "byte_length": 172589,
+        "path": "evidence/canonical-v2/skechers-antitrust-regulatory-20260809-2xk-final/resolution.json",
+        "sha256": "2e6901ce9c1d2fab2d30faf49116f6c1c5e3510ad45775cfc5b2873d124445a4"
+      },
+      "adapter_result_binding": {
+        "byte_length": 436814,
+        "path": "evidence/canonical-v2/skechers-antitrust-regulatory-20260809-2xk-final/adapter-result.json",
+        "sha256": "22c42f4a6d4dc6f526a219f8fd073c6b7745b732b08b7e214d8a374da8c414a8"
+      },
+      "validation_binding": {
+        "byte_length": 58518,
+        "path": "evidence/canonical-v2/skechers-antitrust-regulatory-20260809-2xk-final/validation.json",
+        "sha256": "a22a11777592a7007717976a798d1189a45fd0ae5c4ee711178a6e673a2ea5a7"
+      },
+      "expected_counts": {
+        "resolution_claims": 8,
+        "write_set_claims": 8,
+        "validation_claims": 8,
+        "resolution_evidence": 8,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "run_identifier": "skywater-antitrust-regulatory-20260809-2xk-final",
+      "family": "ANTITRUST_REGULATORY",
+      "resolution_binding": {
+        "byte_length": 270966,
+        "path": "evidence/canonical-v2/skywater-antitrust-regulatory-20260809-2xk-final/resolution.json",
+        "sha256": "3c4a4e24348127170722ade0e1bf08ce33f51ebe3b59e9276a9f365fd542c494"
+      },
+      "adapter_result_binding": {
+        "byte_length": 413107,
+        "path": "evidence/canonical-v2/skywater-antitrust-regulatory-20260809-2xk-final/adapter-result.json",
+        "sha256": "e14155e1cdc27d4fc3ff74a995de44e27b174cda4a195b0c73d78d2cfb9aaa1d"
+      },
+      "validation_binding": {
+        "byte_length": 55503,
+        "path": "evidence/canonical-v2/skywater-antitrust-regulatory-20260809-2xk-final/validation.json",
+        "sha256": "89d90f89463b8c2e7abc5af96a3b4af54169730f40b0e58b630b22353f5ceb73"
+      },
+      "expected_counts": {
+        "resolution_claims": 9,
+        "write_set_claims": 9,
+        "validation_claims": 9,
+        "resolution_evidence": 9,
+        "supplemental_claims": 0
+      }
+    },
+    {
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "run_identifier": "topbuild-antitrust-regulatory-20260809-2xk-r4-final",
+      "family": "ANTITRUST_REGULATORY",
+      "resolution_binding": {
+        "byte_length": 272011,
+        "path": "evidence/canonical-v2/topbuild-antitrust-regulatory-20260809-2xk-r4-final/resolution.json",
+        "sha256": "b5ee451901110a0ec0b9c631800cd49580afea48ed437d16fd69973a01713c97"
+      },
+      "adapter_result_binding": {
+        "byte_length": 475541,
+        "path": "evidence/canonical-v2/topbuild-antitrust-regulatory-20260809-2xk-r4-final/adapter-result.json",
+        "sha256": "295b60b07c3d561c05afdb026b45ca22daa4aa0ca51cc9e740b706ddd5c2a42b"
+      },
+      "validation_binding": {
+        "byte_length": 66631,
+        "path": "evidence/canonical-v2/topbuild-antitrust-regulatory-20260809-2xk-r4-final/validation.json",
+        "sha256": "3fd6f64c5d3542cd95d524e02252cbfbd13a81b7f8ab3b32ed70b6b55b6bfce5"
+      },
+      "expected_counts": {
+        "resolution_claims": 10,
+        "write_set_claims": 10,
+        "validation_claims": 10,
+        "resolution_evidence": 10,
+        "supplemental_claims": 0
+      }
+    }
+  ],
+  "supplemental_input_bindings": [],
+  "provision_examples": [
+    {
+      "example_id": "ANTITRUST_REGULATORY-EX-01",
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "printed_reference": "6.8",
+      "complete_source_node_occurrence_ids": [
+        "0adff0a0dab6999b3187683abcba5e757485a9b27be1ee87166c579b5fa3c69d"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 227443,
+          "start_byte": 218261,
+          "text_sha256": "fd9f67d93b879c555dac57fe344b57a8f72c89cd2e888b44cfc1d03c2dcb2653"
+        }
+      ],
+      "source_text_sha256s": [
+        "fd9f67d93b879c555dac57fe344b57a8f72c89cd2e888b44cfc1d03c2dcb2653"
+      ],
+      "structure_revision_ids": [
+        "5c782821bef749de45659b61be133c6e12372dd98b639b9cb607cf3d7ce27566"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "06ac5d472fb22d80c8b99645c4df588db27f5f98a4dfafb3690c656b47ddddd1",
+        "170329ac18d22eeaec11ca50935cd353c380896c515e221ef481c25532ce18da",
+        "1a6422bbf269d02708e4bbdcae436ceb181c1cdd0e143f3dac80722272269f3a",
+        "21e68945d9bcb411c129b5f14a3544229a7cf6cb5a0c9ae3c51bbcca1f6f87db",
+        "2677746b04ab471ded907c8a9fcfa72892f7c50b07d4d18621790d11d25441a4",
+        "53f1049135fd3d94353e9b65888d1d970afb114608fd2c9f4cb9c5ef55cc1f2d",
+        "67d84920be060d87b1a908df1dd2d51a5a0fdba66920010a2348a6f6c78f36e9",
+        "8cba0e3c5d2eec842831795d3ec0acf8497e6163d58cbd08946f5ab40e154c6c",
+        "c907502643f0f9627bdbd9cada3d8c05e11edeb90eef9cae4f63847377829608",
+        "e35f9dfeb673d7793190ddaf310237d150d5af4921da116a3c52dc4bf56995dc",
+        "f5c115ea5ea42dcf3a7fa66aaf4255fd4e119562ac4bd768a1e5e6d42c7b3ec9"
+      ],
+      "comparator_run_identifiers": [
+        "concho-antitrust-regulatory-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "EFFORTS",
+      "legal_question_ids": [
+        "ANTITRUST_REGULATORY-Q01",
+        "ANTITRUST_REGULATORY-Q02",
+        "ANTITRUST_REGULATORY-Q03"
+      ]
+    },
+    {
+      "example_id": "ANTITRUST_REGULATORY-EX-02",
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "printed_reference": "6.03",
+      "complete_source_node_occurrence_ids": [
+        "226fa03df65847402815e8385609aa48671284aa8788c9e3345455fb5445e552"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 196842,
+          "start_byte": 182710,
+          "text_sha256": "76edda7f6ad1aded66ecfebf0ff4cf6376875ff0dbacc7711b3c0461c394ef15"
+        }
+      ],
+      "source_text_sha256s": [
+        "76edda7f6ad1aded66ecfebf0ff4cf6376875ff0dbacc7711b3c0461c394ef15"
+      ],
+      "structure_revision_ids": [
+        "edeb74923abf2e534ebcf59e9076a863065d77f2da720fa7f109af0c9ce804f9"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "2bc389a90914401801d0352ae019c11a9a702de12192e07d7dfaa2297c4e2b1c",
+        "365e6eed92dca5c414ab458d5b59f497c23d560165f46848b8b1f0de160195b6",
+        "3f15bb19ca0b30b01803f61e630dc9a06fdb9d7899bef49dfd878091f7a0351f",
+        "837e2e7fcd968784b3d09b30787c8d161291f192b29faf2a5b4f7e1be16618f6",
+        "95258943a182c081f9b9d45b5f30d715b61e521d5987e1eb2bd6a6b9803c10a6",
+        "98774445b3f3af54f612b99af01c5edecf8032248b9cccf3821303ea103d8b6d",
+        "aa0ea3fe23f2af0b5183209b26acb9786d6fbca3779b4222124fd7f72572c7cd",
+        "d249359e9d97b910708eddee2750da2973ea0bed1a9bf7bbf1723f707f192bd4",
+        "ef3ccb5c048678308f1b783d7d87853597c1c5d3626fd4f9b3b914d2b40e4d7e",
+        "fae6046e0590f8c1052016341cc2186e66d39749da6b8c5a639cc9fbe3e50382"
+      ],
+      "comparator_run_identifiers": [
+        "metsera-antitrust-regulatory-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "EFFORTS",
+      "legal_question_ids": [
+        "ANTITRUST_REGULATORY-Q01",
+        "ANTITRUST_REGULATORY-Q02",
+        "ANTITRUST_REGULATORY-Q03"
+      ]
+    },
+    {
+      "example_id": "ANTITRUST_REGULATORY-EX-03",
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "deal": "modiv",
+      "printed_reference": "5.5",
+      "complete_source_node_occurrence_ids": [
+        "0244c47dc8d737ecd014cced5e95b56fa168827152cf8f979f23180c8a651e12"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 258498,
+          "start_byte": 246111,
+          "text_sha256": "f4bfedf0cc1ff04f2f458b6b049bef4dfa300d06f68d9444e176eb9f22cf6ffa"
+        }
+      ],
+      "source_text_sha256s": [
+        "f4bfedf0cc1ff04f2f458b6b049bef4dfa300d06f68d9444e176eb9f22cf6ffa"
+      ],
+      "structure_revision_ids": [
+        "995d409b0b5a899f97831b72a498b664a7ad7a200988119c6a5eea9584f60da1"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "2a25cec88dc8944e17a5e2039c89807c26c45635408686b3aede61537287e878",
+        "6174a42371e130e6e4acede8bcf0f2a4a4008d31e6b83789a4fbfa99a896c9ce",
+        "655dcc8a044cb43a5e9e1266bd869053a72340e973c1d8d5674c3d8813bbeb55",
+        "73c5f8de6523f18b22c98931e6731bcfa012341ffb7868afe43a578008f3c7bb",
+        "788a5bc6d4f9248edb7266bf87882efb76442ee4725a667643bf8424613a02f7",
+        "88bc5566a698d4addfd4c41a492af87e9c5a00337a805412d288dd760abdb201",
+        "930a2cadfc8febfbfe1ba6eb06f6ec2468037f443c2c0b0ef2e2b3aed77d9efc",
+        "a898f5204f0883af1a3f90d2448d88ec3ecd6da06f5ab7ded34843161b71072f",
+        "af2947d070bb38dc4b9d590c8b89a9fb7fe6e12b19f401bc2e780facc830716a",
+        "d587b3d02cb793bb03073436837c4d89f3cc0bdd887f708130b2f78b8a38991c",
+        "f45e6250f71fda00fe11087866f3d4a02b858f8b1f796aea74107419270c44d9",
+        "f6f8a6b39c3308a50d441456fd9a360c339a7811c8cf596a8875abf5c1bf5b8e"
+      ],
+      "comparator_run_identifiers": [
+        "modiv-antitrust-regulatory-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "EFFORTS",
+      "legal_question_ids": [
+        "ANTITRUST_REGULATORY-Q01",
+        "ANTITRUST_REGULATORY-Q02",
+        "ANTITRUST_REGULATORY-Q03"
+      ]
+    },
+    {
+      "example_id": "ANTITRUST_REGULATORY-EX-04",
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "printed_reference": "5.03",
+      "complete_source_node_occurrence_ids": [
+        "ba181d6cb594e3efd5d82f70bdaf85e8bd6a79bdaebcc4e3ad22f4c6116c47a7"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 176417,
+          "start_byte": 158972,
+          "text_sha256": "46723ba06e24aad7e0fbd330f7333fa83dc6a8bef0fc9378630058304fb5a6b8"
+        }
+      ],
+      "source_text_sha256s": [
+        "46723ba06e24aad7e0fbd330f7333fa83dc6a8bef0fc9378630058304fb5a6b8"
+      ],
+      "structure_revision_ids": [
+        "bb82d3b6a9100e349eb15355d36d0858ee9f1a636e014fe1ce8142e1e3c4d56c"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "021e5c270c7945e3421dde593045f7ffab63ce47bcfdefccb6c3ec4bb2a65116",
+        "02202713ff58ba18a2c9fc4e1928df1233235fa18e3827fa2279468fa54a1abc",
+        "0c5eadb9b5a0fc8a0737bb2d23e8fd4d37b6928c814b43cfe22c69a21f294e56",
+        "1cdeb0c39feb7d6c10f0f3410518f9c96baac2fb7c5b7f4d39110d61048c034c",
+        "64b4b51144bd273582cc0f66f8a586e22558a75f15e426b21c685be6a4a81280",
+        "7ccca2fd1c27ceacbd43c859dad0418f8c19e7008e2f551654c35fda824d21ab",
+        "8ccc2d896b40de0be0f673d5e9e7b9f47816dd35bd995f937771bf0143b29512",
+        "957dbb5002dbb4b77c53ec845d45b23a86bb7f5876909dfce979b45b0de08423",
+        "996f89eb496b0c0841d53dceeac717577c385319011ff91dd7fd8aaf06d1a267",
+        "cb00edbed12cc97f4495e515cc786ac04ae81d9ef006341c8b2770bebb871a20"
+      ],
+      "comparator_run_identifiers": [
+        "redhat-antitrust-regulatory-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "EFFORTS",
+      "legal_question_ids": [
+        "ANTITRUST_REGULATORY-Q01",
+        "ANTITRUST_REGULATORY-Q02",
+        "ANTITRUST_REGULATORY-Q03"
+      ]
+    },
+    {
+      "example_id": "ANTITRUST_REGULATORY-EX-05",
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "printed_reference": "6.2",
+      "complete_source_node_occurrence_ids": [
+        "75ebd3b50e354b3cf3680cb5ff124d492e80655b3ae0fa102d171eab74498ce8"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 250670,
+          "start_byte": 241250,
+          "text_sha256": "a03cf08dd99b60a5c89b8c9122e126db9d7335f307c0be45e9c22f4d23fea23a"
+        }
+      ],
+      "source_text_sha256s": [
+        "a03cf08dd99b60a5c89b8c9122e126db9d7335f307c0be45e9c22f4d23fea23a"
+      ],
+      "structure_revision_ids": [
+        "86457959e613df240a6750be0b990f9ba6e61274812524b552b3a960d1dca27c"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "15f2b9d9717957c11272622b256891bf812703bec53256c7537c7385ba45b98c",
+        "3d0439c47a3aeef43312c00c6eec8d531bb10e1dc43fc4e9dff57943c2a2b876",
+        "5a1576e605c80b7248d9a4077681871ace9a94b9c85e0c583d4735ffcd530270",
+        "7fc2e22c36d375e5971d0f2739049b87d45ae8bddd61e1aa0c4dcb8271450761",
+        "cdd61add9ad2f967b5123b3ad0dcbe1e7f0f076f8b8292a3d0b24b02fb761d54",
+        "e55f964a025fc39488dea60b62a3e29d7213bba2f7f332b33c25b8f5a1204c04",
+        "ecf07a69267c99d4489845a71763d2480b067a34f39f43721630607c3ed98c18",
+        "ed4f4f93fb4bd16cd0e5a78aea1a78f3eed5bf0ce8758deaec1185b72b6838d6"
+      ],
+      "comparator_run_identifiers": [
+        "skechers-antitrust-regulatory-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "EFFORTS",
+      "legal_question_ids": [
+        "ANTITRUST_REGULATORY-Q01",
+        "ANTITRUST_REGULATORY-Q02",
+        "ANTITRUST_REGULATORY-Q03"
+      ]
+    },
+    {
+      "example_id": "ANTITRUST_REGULATORY-EX-06",
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "printed_reference": "7.1",
+      "complete_source_node_occurrence_ids": [
+        "19de519e29f5081336473bb2b07df88dc5d97d7844cee1f98f88b94cbaa1ad00"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 265188,
+          "start_byte": 256329,
+          "text_sha256": "0fd7c24e2599e12161e0518dbdd8c819e835832b061e2299c489393bed582437"
+        }
+      ],
+      "source_text_sha256s": [
+        "0fd7c24e2599e12161e0518dbdd8c819e835832b061e2299c489393bed582437"
+      ],
+      "structure_revision_ids": [
+        "458b479fb4f5b2506db04fd4e636d994780dbc41a562d818a37e6bf4d4048603"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "03bc0035abf01a0407b3b39f87b843ca9a35c9d905945919da8fa99eb41cbdf0",
+        "32a4724ae8b5fe4e18f19e2c4e031c9daed730b4ccf05345527dad4bf8b7f80c",
+        "3b246d82508ceb3a7761d2b094aeec40f4c695e69a8e60712f95644407add4f9",
+        "62db51c65a8e5a88db20c535c720b96c98c9e93a287b69f9d82acd36801b3028",
+        "aea8a505f88786c2c89410920326abd633d33c624a2ecb34260d230f5e32fc86",
+        "b4cbd6f83713e06b25d0f97eb584724245deccd8868893027c26eed5dcd1e766",
+        "e7050ce55ab80e5720586a54f1336193eaeaa99f776ccaf7bc9f9b1d48716637",
+        "f1390b3b6cb1d669c1cc28882d9c9fbe2fa87542a423c74cac53f8d13943bbb8",
+        "fbeccd04b785568afef4f65e589a3a35f3136fb335d84eda34623997c0ade17b"
+      ],
+      "comparator_run_identifiers": [
+        "skywater-antitrust-regulatory-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "EFFORTS",
+      "legal_question_ids": [
+        "ANTITRUST_REGULATORY-Q01",
+        "ANTITRUST_REGULATORY-Q02",
+        "ANTITRUST_REGULATORY-Q03"
+      ]
+    },
+    {
+      "example_id": "ANTITRUST_REGULATORY-EX-07",
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "printed_reference": "4.6",
+      "complete_source_node_occurrence_ids": [
+        "248ce2254e4905a7c7189a08ff8646e41dea732020fb12c1c6b65df7b3693c4e"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 278143,
+          "start_byte": 266720,
+          "text_sha256": "a9b6ea9dc1085d6233dfc1000b1dd6bf707f5df64ba53d6205aafe4811eea155"
+        }
+      ],
+      "source_text_sha256s": [
+        "a9b6ea9dc1085d6233dfc1000b1dd6bf707f5df64ba53d6205aafe4811eea155"
+      ],
+      "structure_revision_ids": [
+        "bd30579da34372b84d6e8ec55c26b46131b6be8fc4d3994a85357f9a492f0d1f"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "15293b278eaba527264f59e684218fd955ffaf06da7b019daf5bd5853257db32",
+        "1bbf471751f3a1ca341d2d19c153dc2c01e93b246f7f85eed35f7701bd508000",
+        "508610ebac0a6218a8020c42c7f1dc47cc2708aed9befa265c016e75740346fa",
+        "614b5ca2db72134c2a94311ebc30eecf3d0a9c09e985d67fff8c429b5e82220f",
+        "6a07c2e7ef3d23a622ffa9a0607c77e3317d8f3ff888ad57175c59126e152399",
+        "75b5d38332e6418e31bd4917d0a20ccf9415137bec7aecbe95ee1789cb6883db",
+        "84ee57f1a61ef649a92fd1bdaa3d658a2c670ac1604b253ba3a5be57a75e54b1",
+        "a39bb6a1b2cc10781b7618cdf240030927570d32a98c52a865f72c98221f0f23",
+        "aa6709da15623927c3b4e28bc440eec126250050439f9b06e23ca91abd366013",
+        "d6596bf38a1669da5ed10182183845bce0ce8128b3d37df38c583b255df256fc"
+      ],
+      "comparator_run_identifiers": [
+        "topbuild-antitrust-regulatory-20260809-2xk-r4-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "EFFORTS",
+      "legal_question_ids": [
+        "ANTITRUST_REGULATORY-Q01",
+        "ANTITRUST_REGULATORY-Q02",
+        "ANTITRUST_REGULATORY-Q03"
+      ]
+    }
+  ],
+  "cross_family_dependencies": [],
+  "proposed_output_policy": {
+    "candidate_claim_definition_keys": [
+      "HSR_FILING_DEADLINE_DAYS",
+      "REGULATORY_BURDEN_COMMITMENT",
+      "REGULATORY_CONSULTATION_RIGHT",
+      "REGULATORY_COOPERATION_OBLIGATION",
+      "REGULATORY_EFFORTS_STANDARD",
+      "REGULATORY_FILING_OBLIGATION",
+      "REGULATORY_FILING_TIMING_STANDARD",
+      "REGULATORY_INFORMATION_SHARING_OBLIGATION",
+      "REGULATORY_LITIGATION_OBLIGATION",
+      "REGULATORY_NON_IMPEDIMENT_COVENANT",
+      "REGULATORY_NOTIFICATION_OBLIGATION",
+      "REGULATORY_STRATEGY_CONTROL",
+      "REGULATORY_TIMING_AGREEMENT_RESTRICTION",
+      "REGULATORY_WITHDRAWAL_REFILING_RESTRICTION"
+    ],
+    "candidate_subtype_profile_ids": [
+      "ANTITRUST_REGULATORY::EFFORTS",
+      "ANTITRUST_REGULATORY::FILING_OBLIGATION",
+      "ANTITRUST_REGULATORY::FILING_DEADLINE",
+      "ANTITRUST_REGULATORY::BURDEN",
+      "ANTITRUST_REGULATORY::LITIGATION",
+      "ANTITRUST_REGULATORY::TIMING_AGREEMENT",
+      "ANTITRUST_REGULATORY::STRATEGY_CONTROL",
+      "ANTITRUST_REGULATORY::CONSULTATION",
+      "ANTITRUST_REGULATORY::COOPERATION",
+      "ANTITRUST_REGULATORY::INFORMATION_SHARING",
+      "ANTITRUST_REGULATORY::NON_IMPEDIMENT",
+      "ANTITRUST_REGULATORY::REGULATORY_REQUEST_RESPONSE"
+    ],
+    "non_output_dispositions": [
+      "LEGACY_FRAGMENTS_REMAIN_SCHEMA_APPROVAL_PENDING",
+      "UNRESOLVED_REQUIRED_ROLE_IS_NON_RENDERABLE"
+    ],
+    "family_ownership_boundary": "ANTITRUST_REGULATORY owns only approved complete propositions. Overlapping content is link-only.",
+    "renderability": "NEVER_RENDER_FROM_PROPOSAL",
+    "complete_transition": "NOT_AUTHORISED"
+  },
+  "narrow_legal_questions": [
+    {
+      "question_id": "ANTITRUST_REGULATORY-Q01",
+      "question": "Should one independently operative authored unit be one proposition, with coordinated elements stored as roles or linked children?",
+      "affected_example_ids": [
+        "ANTITRUST_REGULATORY-EX-01",
+        "ANTITRUST_REGULATORY-EX-02",
+        "ANTITRUST_REGULATORY-EX-03",
+        "ANTITRUST_REGULATORY-EX-04",
+        "ANTITRUST_REGULATORY-EX-05",
+        "ANTITRUST_REGULATORY-EX-06",
+        "ANTITRUST_REGULATORY-EX-07"
+      ],
+      "two_plausible_readings": [
+        "ONE_COMPOUND_PROPOSITION",
+        "LINKED_INDEPENDENT_PROPOSITIONS"
+      ],
+      "recommended_reading": "Use one proposition per independently operative authored unit.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "ANTITRUST_REGULATORY-Q02",
+      "question": "Which family owns overlapping content, and which families may only link to its stable identity?",
+      "affected_example_ids": [
+        "ANTITRUST_REGULATORY-EX-01",
+        "ANTITRUST_REGULATORY-EX-02",
+        "ANTITRUST_REGULATORY-EX-03",
+        "ANTITRUST_REGULATORY-EX-04",
+        "ANTITRUST_REGULATORY-EX-05",
+        "ANTITRUST_REGULATORY-EX-06",
+        "ANTITRUST_REGULATORY-EX-07"
+      ],
+      "two_plausible_readings": [
+        "DUPLICATE_IN_EACH_FAMILY",
+        "ONE_OWNER_WITH_LINKED_CONSUMERS"
+      ],
+      "recommended_reading": "Use one semantic owner and stable links.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "ANTITRUST_REGULATORY-Q03",
+      "question": "Can an ambiguous or unresolved M3 edge fill a required role?",
+      "affected_example_ids": [
+        "ANTITRUST_REGULATORY-EX-01",
+        "ANTITRUST_REGULATORY-EX-02",
+        "ANTITRUST_REGULATORY-EX-03",
+        "ANTITRUST_REGULATORY-EX-04",
+        "ANTITRUST_REGULATORY-EX-05",
+        "ANTITRUST_REGULATORY-EX-06",
+        "ANTITRUST_REGULATORY-EX-07"
+      ],
+      "two_plausible_readings": [
+        "ALLOW_CONTEXTUAL_INFERENCE",
+        "FAIL_ONLY_THE_DEPENDENT_PROPOSITION"
+      ],
+      "recommended_reading": "Fail only the dependent proposition and do not infer the role.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    }
+  ],
+  "preparation_diagnostics": [
+    {
+      "code": "BEN_FAMILY_ROLE_APPROVAL_REQUIRED",
+      "severity": "STOP",
+      "related_id": "ANTITRUST_REGULATORY",
+      "detail": "No family adapter may run until Ben approves the open rulings and a separate approved schema is sealed."
+    }
+  ],
+  "preparation_effects": {
+    "model_calls": 0,
+    "family_runner_calls": 0,
+    "database_writes": 0,
+    "product_writes": 0,
+    "selector_changes": 0,
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "serving_changes": 0,
+    "publication_actions": 0
+  }
+}

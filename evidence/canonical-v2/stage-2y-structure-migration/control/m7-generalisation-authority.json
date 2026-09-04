@@ -1,0 +1,146 @@
+{
+  "schema_version": "STAGE_2Y_M7_GENERALISATION_AUTHORITY/V1",
+  "stage": "M7",
+  "authority_state": "BEN_AUTHORISED_REPORT_ONLY",
+  "ben_approval_id": "BEN-M7-SOURCE-REVISION-2026-08-12",
+  "supersedes_authority_digest": "705ad7e3318ab344d8aabc5a2717bb2f3428ad8d40b7085b03d3ef37a6ad5b1c",
+  "source_contract_revision": "LANDOS_CURRENT_CONVERTER_WHITESPACE_EQUIVALENT",
+  "prior_failed_attempt_network_reads": 3,
+  "base_commit": "81de892f86af8eaead83b7b320b6a36e6729d747",
+  "approved_at": "2026-08-12T15:30:00.000Z",
+  "candidates": [
+    {
+      "schema_version": "STAGE_2Y_M7_SOURCE_CANDIDATE/V1",
+      "candidate_key": "lilly-verve",
+      "deal_name": "Lilly / Verve",
+      "governed_deal_key": "deal:verve-lilly",
+      "url": "https://www.sec.gov/Archives/edgar/data/1840574/000119312525141748/d30505dex21.htm",
+      "url_sha256": "3b03a37147053b2c2d9bd78f4f3804e53520160292b17b53700a9a1a316fe437",
+      "required_document_anchors": [
+        "AGREEMENT AND PLAN OF MERGER",
+        "ELI LILLY AND COMPANY",
+        "VERVE THERAPEUTICS, INC."
+      ],
+      "expected_raw_sha256": "0c5317d92be7616364e801ecff9b90c950e466d3e4787f6821294b6bf095317c",
+      "expected_raw_byte_length": 600876,
+      "expected_canonical_sha256": "90242bd60f9a28464c42344f4f92a7e024b0c5825ca9b8374f72e7dc754203a4",
+      "expected_canonical_byte_length": 369081
+    },
+    {
+      "schema_version": "STAGE_2Y_M7_SOURCE_CANDIDATE/V1",
+      "candidate_key": "abbvie-landos",
+      "deal_name": "AbbVie / Landos",
+      "governed_deal_key": "deal:landos-abbvie",
+      "url": "https://www.sec.gov/Archives/edgar/data/1785345/000119312524075991/d779916dex21.htm",
+      "url_sha256": "f79667059295efb8034472df838f5ba2cda255860c1f1cccbf7b24a55ca2d412",
+      "required_document_anchors": [
+        "AGREEMENT AND PLAN OF MERGER",
+        "ABBVIE INC.",
+        "LANDOS BIOPHARMA, INC."
+      ],
+      "expected_raw_sha256": "062e9f9354ecffb61b8bccc63ac2a4fd759d6ef000ff001a6f61538b85bc51c6",
+      "expected_raw_byte_length": 671473,
+      "expected_canonical_sha256": "9a17fb7209f9f2f57a8d7d9bd64b4178ddfb3d2d3b3f1ecfed993178bfe365c0",
+      "expected_canonical_byte_length": 387254,
+      "historical_fixture_equivalence": {
+        "path": "__fixtures__/demo-deal/landos-abbvie-agreement.txt",
+        "byte_length": 394336,
+        "sha256": "fa2c0a883c64001e792cbed7b03077cfc4fc31909ac7a1d9e63c0e67b2c233be",
+        "comparison": "EXACT_AFTER_UNICODE_WHITESPACE_NORMALISATION"
+      }
+    },
+    {
+      "schema_version": "STAGE_2Y_M7_SOURCE_CANDIDATE/V1",
+      "candidate_key": "rocket-redfin",
+      "deal_name": "Rocket / Redfin",
+      "governed_deal_key": "deal:rocket-redfin-2025",
+      "url": "https://www.sec.gov/Archives/edgar/data/1382821/000162828025011457/exhibit21-8xk31025.htm",
+      "url_sha256": "9d10a25e4bf28e8b95fab883d8b268ce675e1b16ebfa8d5d726ea2fe47daa49d",
+      "required_document_anchors": [
+        "AGREEMENT AND PLAN OF MERGER",
+        "ROCKET COMPANIES, INC.",
+        "REDFIN CORPORATION"
+      ],
+      "expected_raw_sha256": null,
+      "expected_raw_byte_length": null,
+      "expected_canonical_sha256": null,
+      "expected_canonical_byte_length": null
+    }
+  ],
+  "blind_sample_policy": {
+    "sample_size": 50,
+    "selection": "RISK_WEIGHTED_BEFORE_ANSWERS_OPENED",
+    "required_coverage": [
+      "EACH_NEW_AGREEMENT",
+      "EACH_FAMILY_WITH_OUTPUT",
+      "KNOWN_LOSS_CLASSES",
+      "GROUPED_ROWS",
+      "AMBIGUITIES"
+    ],
+    "random_seed": "M7-BEN-APPROVED-2026-08-12",
+    "answers_opened": false
+  },
+  "input_bindings": [
+    {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+      "byte_length": 20126,
+      "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585"
+    },
+    {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+      "byte_length": 17449,
+      "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855"
+    },
+    {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m5-family-adapters-correction.json",
+      "byte_length": 97041,
+      "sha256": "8b9d2dc87b889cd64984d5b7aa8fa735c50b9f68ade7cfe7a0720a67270114ff"
+    },
+    {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m6-agreement-projection.json",
+      "byte_length": 67023,
+      "sha256": "6b8852b7ecee23ebca1fe940564d29102e1eeac99f036b9ce8b6e677640abb39"
+    },
+    {
+      "path": "lib/canonical-v2/m7-source-admission.js",
+      "byte_length": 6543,
+      "sha256": "1471eebf4fab39d20eb2fb0c6f5449740e08a780e824ceb13154453df7b655aa"
+    }
+  ],
+  "allowed_network_reads": [
+    "https://www.sec.gov/Archives/edgar/data/1840574/000119312525141748/d30505dex21.htm",
+    "https://www.sec.gov/Archives/edgar/data/1785345/000119312524075991/d779916dex21.htm",
+    "https://www.sec.gov/Archives/edgar/data/1382821/000162828025011457/exhibit21-8xk31025.htm"
+  ],
+  "allowed_output_roots": [
+    "evidence/canonical-v2/stage-2y-structure-migration/source/m7-generalisation",
+    "evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation",
+    "evidence/canonical-v2/stage-2y-structure-migration/shadow/m7",
+    "evidence/canonical-v2/stage-2y-structure-migration/receipts",
+    "evidence/canonical-v2/stage-2y-structure-migration/reviews"
+  ],
+  "limits": {
+    "network_read_count": 6,
+    "model_call_count": 0,
+    "database_write_count": 0,
+    "product_write_count": 0,
+    "serving_change_count": 0,
+    "publication_count": 0,
+    "selector_change_count": 0,
+    "minimum_combined_agreement_count": 10
+  },
+  "prohibited_effects": [
+    "MODEL_CALL",
+    "DATABASE_WRITE",
+    "PRODUCT_WRITE",
+    "SERVING_CHANGE",
+    "PUBLICATION",
+    "SELECTOR_CHANGE",
+    "PIN_CHANGE",
+    "M8",
+    "M9",
+    "M10"
+  ],
+  "rollback": "DELETE_ONLY_M7_ADDITIVE_OUTPUTS_KEEP_SEALED_SEVEN_UNCHANGED",
+  "authority_digest": "d523f066770acb7df4fd5ba2c3c596ec9f2efa7561557b8a4ab5f595885b67a7"
+}

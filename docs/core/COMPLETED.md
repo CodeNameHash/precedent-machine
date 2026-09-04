@@ -708,6 +708,49 @@ Step 7D dispositions them; the test now binds all 32 with its matching rule
 unchanged, because loosening it to admit a bare "Deferred" would have reopened
 the hole from the other side.
 
+The disposition rows remain part of the completed record:
+
+| Gate | Disposition |
+|---|---|
+| `P1_CONTRACT_BUNDLE_COMPLETE` | Closed in Step 0K. |
+| `P1_VERTICAL_SLICE_PASS` | Closed in Step 0K. |
+| `P9_SCOPE_EXACT` | Retired. The identifier named no measurement. |
+| `P9_REGISTRY_DISPOSITIONS` | Rewritten as Step 5C. |
+| `P9_MKT_WORK` | Rewritten as Step 8A. |
+| `P9_BEN_RUNBOOK` | Rewritten as Step 9B. |
+| `P9_NUMERIC` | Rewritten as Step 3B. |
+| `P9_RENDER_PARITY` | Replaced by Step 5C. |
+| `P9_STRUCTURED_CLAIMS` | Rewritten as Step 2D. |
+| `P9_PARTY_LINT` | Rewritten as Step 3F. |
+| `P9_SHADOW_REEXTRACTION` | Rewritten as Step 2D. |
+| `P9_IDENTITY_AND_DRIFT` | Rewritten as Steps 4C and 6C. |
+| `P9_BROWSER_A11Y_PERFORMANCE` | Retired. No target had been set. |
+| `P9_STAGING_SMOKE_AND_ROLLBACK` | Rewritten as Step 9A. |
+| `P9_DATABASE_SOAK` | Retired. The programme forbids a production load test. |
+| `P9_BACKUP_RESTORE` | Rewritten as Steps 4F and 9B. |
+| `P9_PREIMPORT_TRACEABILITY` | Rewritten as Step 4E. |
+| `P9_SECURITY_AUTH` | Kept as the criterion for Steps 7A to 7C. |
+| `P9_DEPLOYMENT_PARITY` | Replaced by Step 9D. |
+| `P9_IMPORT_PARITY` | Rewritten as Step 9C. |
+| `P9_PROMOTION_ELIGIBILITY` | Retired. It governed an empty promotion fence. |
+| `P9_CUTOVER_AUTHORISATION` | Kept as the human authority required by Step 9D. |
+| `P9_POSTCUTOVER_SMOKE` | Rewritten as Step 9E. |
+| `P9_TRACEABILITY` | Merged into Step 4E. |
+| `P9_PROGRAMME_COMPLETION_ATTESTATION` | Retired as an attestation. |
+
+Step 7D recorded the seven security gates as open and deferred. It did not
+close, certify, probe or attest any of them:
+
+| Gate | Disposition |
+|---|---|
+| `P10_SECURITY_01` | Deferred post-cutover under Step 7D. |
+| `ROUTE_ACTION_THREE_WAY_INVENTORY` | Deferred post-cutover under Step 7D. |
+| `DEFAULT_DENY_FULL_PROBE_SUITE` | Deferred post-cutover under Step 7D. |
+| `EGRESS_DENY_BY_DEFAULT_CERTIFICATION` | Deferred post-cutover under Step 7D. |
+| `ACTION_AUTH_MATRIX_AND_WHOLE_TUPLE_REVOCATION` | Deferred post-cutover under Step 7D. |
+| `MALICIOUS_SOURCE_AND_SUBSTITUTION_SECURITY_SUITE` | Deferred post-cutover under Step 7D. |
+| `SNAPSHOT_SECURITY_ATTESTATIONS` | Deferred post-cutover under Step 7D. |
+
 ## Prerequisite. Both M3 auto-pass conditions are wired
 
 `lexical_disagreement` evaluates. `v1v2_comparison` is wired and cannot be
@@ -1733,3 +1776,49 @@ definition targets or party topology. It does not create complete semantic
 propositions, migrate family resolution or produce new rows. It changes no
 current extractor, selector, pin, baseline, database, product, model route,
 serving or publication state. It does not authorise M3.
+
+---
+
+## Stage 2Y M3 context compilation
+
+**Closed 2026-08-11.** M3 compiled provenance-backed context, scope,
+cross-references, defined terms and party relationships for all seven sealed
+agreements. The final receipt records 13,996 focus nodes, 25,781 uniquely
+resolved definition uses, 1,856 uniquely resolved references and 81,390
+resolved scope edges. It preserved 23 M2 ambiguities and recorded unresolved or
+ambiguous dependencies instead of guessing.
+
+**Evidence.**
+`evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json`.
+
+**Commit.** `b5f1d5b1f7641d94fe63dbfb0d0400b4b5b3751a`.
+
+**Final receipt SHA-256.**
+`5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855`.
+
+**Effect.** All nine focused checks passed. No model, network, Phase B,
+database, selector, pin, baseline, serving or publication effect occurred.
+
+---
+
+## Stage 2Y M4 base AgreementAnalysis
+
+**Closed 2026-08-11.** M4 preserved all 1,526 legacy claim identities and
+created two complete calibration propositions. The seven analyses contain
+1,528 analysis claims and 1,604 exact evidence edges. All 1,526 legacy claims
+remain pending family-schema approval. The official open-world count remains
+1,701, with no positive family increase.
+
+**Evidence.**
+`evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json`.
+
+**Commit.** `81de892f86af8eaead83b7b320b6a36e6729d747`.
+
+**Final receipt SHA-256.**
+`54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41`.
+
+**Effect.** All nine focused checks passed. No model, network, Phase B,
+database, selector, pin, baseline, serving or publication effect occurred.
+
+**Not claimed.** M4 did not approve the 25 family schemas or authorise normal
+comparison rows. Those remained M5 and M6 work.

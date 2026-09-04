@@ -1,0 +1,479 @@
+{
+  "schema_version": "STAGE_2Y_FAMILY_CALIBRATION_PACK/V1",
+  "calibration_pack_id": "e8cd3220ea6e5bb775dfce2962b30e1ce576a7ebaea479fec77c2223a58ab887",
+  "calibration_pack_digest": "4ad28931a37913e6729705aaa139e78e2894ad1f4f320184fb6bc1f4580781c3",
+  "family_key": "DIVIDENDS",
+  "wave": 4,
+  "pack_version": 1,
+  "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+  "purpose": "LEGAL_CALIBRATION_PREPARATION_ONLY",
+  "authority_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-preparation-authority.json",
+    "byte_length": 22922,
+    "sha256": "d10f095429cdbb1006bfbe1e789c267ffa3a98b12b4bd33c2afb550e7beeea79"
+  },
+  "calibration_policy_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-calibration-policy.json",
+    "byte_length": 45512,
+    "sha256": "102534446774dfa0661ad186d27c25507befedca80807e42cf584fa412e6bf78"
+  },
+  "m4_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json",
+    "byte_length": 13670,
+    "sha256": "54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41"
+  },
+  "m2_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+    "byte_length": 20126,
+    "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585"
+  },
+  "m3_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+    "byte_length": 17449,
+    "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855"
+  },
+  "family_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json",
+    "byte_length": 827,
+    "sha256": "7aa5ff41eb778884cdbb6f18ba72138c20420a2475949aca5dcbc0d2098a938d"
+  },
+  "control_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json",
+    "byte_length": 379235,
+    "sha256": "62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41"
+  },
+  "diff_contract_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/diff-contract.json",
+    "byte_length": 1171,
+    "sha256": "2585c7af9e47c4f7a6915ef1667f5eb8dbce26a8a30829bae15e42a7d41ab0c8"
+  },
+  "comparator_run_bindings": [
+    {
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "run_identifier": "concho-dividends-20260809-2xk-final",
+      "family": "DIVIDENDS",
+      "resolution_binding": {
+        "byte_length": 18377,
+        "path": "evidence/canonical-v2/concho-dividends-20260809-2xk-final/resolution.json",
+        "sha256": "21aab9ee42970dbc0a313bf674aa94ae9b809e73d4401ffb6421792b6f373e1c"
+      },
+      "adapter_result_binding": {
+        "byte_length": 373001,
+        "path": "evidence/canonical-v2/concho-dividends-20260809-2xk-final/adapter-result.json",
+        "sha256": "8bf6205edde2f41db67e263ce7f3630a7adf7873401fdb0241f766cdda598cbd"
+      },
+      "validation_binding": {
+        "byte_length": 18214,
+        "path": "evidence/canonical-v2/concho-dividends-20260809-2xk-final/validation.json",
+        "sha256": "645fb72743e1db46cb514ebf7e54568d052a3f9aa56d0a3cf2d255fd59554219"
+      },
+      "expected_counts": {
+        "resolution_claims": 1,
+        "write_set_claims": 1,
+        "validation_claims": 1,
+        "resolution_evidence": 1,
+        "supplemental_claims": 0
+      }
+    }
+  ],
+  "supplemental_input_bindings": [
+    {
+      "supplemental_id": "DIVIDENDS-SUP-METSERA",
+      "classification": "SUPPLEMENTAL_NON_COMPARATOR",
+      "reason": "COMPLETE_SOURCE_CALIBRATION_OUTSIDE_SEALED_FAMILY_COMPARATOR_REGISTRY",
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "source_binding": {
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c.agreement-index.json",
+        "byte_length": 6685888,
+        "sha256": "b41da5e0fa4e005909f385c6240a59198af38018b471d85ea9f1d2d8f5e82903"
+      },
+      "m2_node_bindings": [
+        {
+          "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+          "agreement_index_id": "158641104eed32537aa8e821eba55dcf5c23d7d4089dbacefc9feb1317abb129",
+          "node_occurrence_id": "bc3357428c41f87bbbb79ca4728ed3b6dfc4733693ab67878fb16163fdc55d25",
+          "node_kind": "SECTION",
+          "reference": "5.01",
+          "extent_span": {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 159408,
+            "start_byte": 146000,
+            "text_sha256": "d9ab2404dcda928b4524a1efcb530fe2462aa448ba8873532ab6ace9b267fa7d"
+          },
+          "structure_revision_id": "73c197f80d4edb2cc1b0d37b767cdd64f4c75658430703ce9424100b822cbf32"
+        }
+      ],
+      "m3_dependency_bindings": [],
+      "may_affect_comparator_metrics": false
+    },
+    {
+      "supplemental_id": "DIVIDENDS-SUP-MODIV",
+      "classification": "SUPPLEMENTAL_NON_COMPARATOR",
+      "reason": "COMPLETE_SOURCE_CALIBRATION_OUTSIDE_SEALED_FAMILY_COMPARATOR_REGISTRY",
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "source_binding": {
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c.agreement-index.json",
+        "byte_length": 8346748,
+        "sha256": "74b52e7024d41d3ea75039d01a89f7512dcf0ac32fbb7db9c1b0065c4696347f"
+      },
+      "m2_node_bindings": [
+        {
+          "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+          "agreement_index_id": "2c0d477e56759b58d46c3abefc60f6195d097ea1609213b1a8eabc31d431ce23",
+          "node_occurrence_id": "0ce3134e6a7cbbac096ab4a2c9597e664e2b373f3ddbd95fb0950e33338cc8de",
+          "node_kind": "SECTION",
+          "reference": "5.10",
+          "extent_span": {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 290051,
+            "start_byte": 288832,
+            "text_sha256": "b121d223dceccdacf5a14857adf0ada3a6e5a94ef183eeec37beb491fbe069da"
+          },
+          "structure_revision_id": "16f84ece1fda657352ac4387dd67117cf6c62008681b5c185e41acbd20a95f54"
+        }
+      ],
+      "m3_dependency_bindings": [],
+      "may_affect_comparator_metrics": false
+    },
+    {
+      "supplemental_id": "DIVIDENDS-SUP-SKYWATER",
+      "classification": "SUPPLEMENTAL_NON_COMPARATOR",
+      "reason": "COMPLETE_SOURCE_CALIBRATION_OUTSIDE_SEALED_FAMILY_COMPARATOR_REGISTRY",
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "source_binding": {
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363.agreement-index.json",
+        "byte_length": 6542434,
+        "sha256": "4c5607a4c75f35f32bb08098a578cff70d926b4d0c72252e4af33964b29938e2"
+      },
+      "m2_node_bindings": [
+        {
+          "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+          "agreement_index_id": "7e36ccac16a70c49e1c4815d4c20fd6815702c753d2c3cc23ab95a81c7756862",
+          "node_occurrence_id": "89ea73e2f0bf85b4f1ada9cf202a5f745fa3e19527839985ed217dc384fa6619",
+          "node_kind": "SECTION",
+          "reference": "1.4",
+          "extent_span": {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 20697,
+            "start_byte": 15969,
+            "text_sha256": "6af096e94f94080bf1dd4b3e004d189bbf0398af3a201e45664b2e7867511f32"
+          },
+          "structure_revision_id": "28dcfdfea0cd7707d2a36d3e6f993c1035ec00b9af85531b0fe295fe0e0c24a5"
+        }
+      ],
+      "m3_dependency_bindings": [],
+      "may_affect_comparator_metrics": false
+    },
+    {
+      "supplemental_id": "DIVIDENDS-SUP-TOPBUILD",
+      "classification": "SUPPLEMENTAL_NON_COMPARATOR",
+      "reason": "COMPLETE_SOURCE_CALIBRATION_OUTSIDE_SEALED_FAMILY_COMPARATOR_REGISTRY",
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "source_binding": {
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb.agreement-index.json",
+        "byte_length": 7576859,
+        "sha256": "e8f03463e792220b421bf8ccae1cb9a55e8e05a41396c60512cf63ae50b031af"
+      },
+      "m2_node_bindings": [
+        {
+          "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+          "agreement_index_id": "e5ca967c6d1af76f53fdd6bb0c402aef416272f7757fcdbaa11d3e8968d0c29a",
+          "node_occurrence_id": "75e5aed3258439debd22847f11882989a0a6705495feb32be7c99a290772a134",
+          "node_kind": "SECTION",
+          "reference": "4.2",
+          "extent_span": {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 200934,
+            "start_byte": 194937,
+            "text_sha256": "6ad94c8317185ccdbe8522f9efb0b1d14003417e67f186e72edd037d46301deb"
+          },
+          "structure_revision_id": "eb1d4e77fe21c587ef123a1d04b5aeeb83ba4ab1c114c3695022a84302e6563c"
+        }
+      ],
+      "m3_dependency_bindings": [],
+      "may_affect_comparator_metrics": false
+    }
+  ],
+  "provision_examples": [
+    {
+      "example_id": "DIVIDENDS-EX-01",
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "printed_reference": "6.21",
+      "complete_source_node_occurrence_ids": [
+        "4990056ecbce1b5907a68fb7ad76e002d7d00ffebdc6c4d40d55c29df059b363"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 265015,
+          "start_byte": 263769,
+          "text_sha256": "c0215a1c39bbb4441634af84fbce5282ef3d17a0afdc56f23bf2d542acaa6699"
+        }
+      ],
+      "source_text_sha256s": [
+        "c0215a1c39bbb4441634af84fbce5282ef3d17a0afdc56f23bf2d542acaa6699"
+      ],
+      "structure_revision_ids": [
+        "5813100a4d262252c7eb9bea06bb67f23ef7984903ebb18651bb30f71ba41014"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [
+        "68beb0372f76f9280616c96c4adfdee3339bb3c870111c4949415a680549451f"
+      ],
+      "comparator_run_identifiers": [
+        "concho-dividends-20260809-2xk-final"
+      ],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "DIVIDEND_COORDINATION",
+      "legal_question_ids": [
+        "DIVIDENDS-Q01",
+        "DIVIDENDS-Q02",
+        "DIVIDENDS-Q03"
+      ]
+    },
+    {
+      "example_id": "DIVIDENDS-EX-04",
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "deal": "metsera",
+      "printed_reference": "5.01",
+      "complete_source_node_occurrence_ids": [
+        "bc3357428c41f87bbbb79ca4728ed3b6dfc4733693ab67878fb16163fdc55d25"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 159408,
+          "start_byte": 146000,
+          "text_sha256": "d9ab2404dcda928b4524a1efcb530fe2462aa448ba8873532ab6ace9b267fa7d"
+        }
+      ],
+      "source_text_sha256s": [
+        "d9ab2404dcda928b4524a1efcb530fe2462aa448ba8873532ab6ace9b267fa7d"
+      ],
+      "structure_revision_ids": [
+        "73c197f80d4edb2cc1b0d37b767cdd64f4c75658430703ce9424100b822cbf32"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [],
+      "comparator_run_identifiers": [],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "DIVIDEND_COORDINATION",
+      "legal_question_ids": [
+        "DIVIDENDS-Q01",
+        "DIVIDENDS-Q02",
+        "DIVIDENDS-Q03"
+      ]
+    },
+    {
+      "example_id": "DIVIDENDS-EX-02",
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "deal": "modiv",
+      "printed_reference": "5.10",
+      "complete_source_node_occurrence_ids": [
+        "0ce3134e6a7cbbac096ab4a2c9597e664e2b373f3ddbd95fb0950e33338cc8de"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 290051,
+          "start_byte": 288832,
+          "text_sha256": "b121d223dceccdacf5a14857adf0ada3a6e5a94ef183eeec37beb491fbe069da"
+        }
+      ],
+      "source_text_sha256s": [
+        "b121d223dceccdacf5a14857adf0ada3a6e5a94ef183eeec37beb491fbe069da"
+      ],
+      "structure_revision_ids": [
+        "16f84ece1fda657352ac4387dd67117cf6c62008681b5c185e41acbd20a95f54"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [],
+      "comparator_run_identifiers": [],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "DIVIDEND_COORDINATION",
+      "legal_question_ids": [
+        "DIVIDENDS-Q01",
+        "DIVIDENDS-Q02",
+        "DIVIDENDS-Q03"
+      ]
+    },
+    {
+      "example_id": "DIVIDENDS-EX-05",
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "printed_reference": "1.4",
+      "complete_source_node_occurrence_ids": [
+        "89ea73e2f0bf85b4f1ada9cf202a5f745fa3e19527839985ed217dc384fa6619"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 20697,
+          "start_byte": 15969,
+          "text_sha256": "6af096e94f94080bf1dd4b3e004d189bbf0398af3a201e45664b2e7867511f32"
+        }
+      ],
+      "source_text_sha256s": [
+        "6af096e94f94080bf1dd4b3e004d189bbf0398af3a201e45664b2e7867511f32"
+      ],
+      "structure_revision_ids": [
+        "28dcfdfea0cd7707d2a36d3e6f993c1035ec00b9af85531b0fe295fe0e0c24a5"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [],
+      "comparator_run_identifiers": [],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "DIVIDEND_COORDINATION",
+      "legal_question_ids": [
+        "DIVIDENDS-Q01",
+        "DIVIDENDS-Q02",
+        "DIVIDENDS-Q03"
+      ]
+    },
+    {
+      "example_id": "DIVIDENDS-EX-03",
+      "agreement_id": "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+      "deal": "topbuild",
+      "printed_reference": "4.2",
+      "complete_source_node_occurrence_ids": [
+        "75e5aed3258439debd22847f11882989a0a6705495feb32be7c99a290772a134"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 200934,
+          "start_byte": 194937,
+          "text_sha256": "6ad94c8317185ccdbe8522f9efb0b1d14003417e67f186e72edd037d46301deb"
+        }
+      ],
+      "source_text_sha256s": [
+        "6ad94c8317185ccdbe8522f9efb0b1d14003417e67f186e72edd037d46301deb"
+      ],
+      "structure_revision_ids": [
+        "eb1d4e77fe21c587ef123a1d04b5aeeb83ba4ab1c114c3695022a84302e6563c"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [],
+      "comparator_run_identifiers": [],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "DIVIDEND_COORDINATION",
+      "legal_question_ids": [
+        "DIVIDENDS-Q01",
+        "DIVIDENDS-Q02",
+        "DIVIDENDS-Q03"
+      ]
+    }
+  ],
+  "cross_family_dependencies": [],
+  "proposed_output_policy": {
+    "candidate_claim_definition_keys": [
+      "DIVIDEND_COORDINATION_COVENANT"
+    ],
+    "candidate_subtype_profile_ids": [
+      "DIVIDENDS::DIVIDEND_COORDINATION",
+      "DIVIDENDS::PERMITTED_PRE_CLOSING_DISTRIBUTION",
+      "DIVIDENDS::UNPAID_DECLARED_DISTRIBUTION",
+      "DIVIDENDS::CONSIDERATION_ADJUSTMENT_LINK",
+      "DIVIDENDS::INTERIM_RESTRICTION_LINK"
+    ],
+    "non_output_dispositions": [
+      "LEGACY_FRAGMENTS_REMAIN_SCHEMA_APPROVAL_PENDING",
+      "UNRESOLVED_REQUIRED_ROLE_IS_NON_RENDERABLE"
+    ],
+    "family_ownership_boundary": "DIVIDENDS owns only approved complete propositions. Overlapping content is link-only.",
+    "renderability": "NEVER_RENDER_FROM_PROPOSAL",
+    "complete_transition": "NOT_AUTHORISED"
+  },
+  "narrow_legal_questions": [
+    {
+      "question_id": "DIVIDENDS-Q01",
+      "question": "Should one independently operative authored unit be one proposition, with coordinated elements stored as roles or linked children?",
+      "affected_example_ids": [
+        "DIVIDENDS-EX-01",
+        "DIVIDENDS-EX-02",
+        "DIVIDENDS-EX-03",
+        "DIVIDENDS-EX-04",
+        "DIVIDENDS-EX-05"
+      ],
+      "two_plausible_readings": [
+        "ONE_COMPOUND_PROPOSITION",
+        "LINKED_INDEPENDENT_PROPOSITIONS"
+      ],
+      "recommended_reading": "Use one proposition per independently operative authored unit.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "DIVIDENDS-Q02",
+      "question": "Which family owns overlapping content, and which families may only link to its stable identity?",
+      "affected_example_ids": [
+        "DIVIDENDS-EX-01",
+        "DIVIDENDS-EX-02",
+        "DIVIDENDS-EX-03",
+        "DIVIDENDS-EX-04",
+        "DIVIDENDS-EX-05"
+      ],
+      "two_plausible_readings": [
+        "DUPLICATE_IN_EACH_FAMILY",
+        "ONE_OWNER_WITH_LINKED_CONSUMERS"
+      ],
+      "recommended_reading": "Use one semantic owner and stable links.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "DIVIDENDS-Q03",
+      "question": "Can an ambiguous or unresolved M3 edge fill a required role?",
+      "affected_example_ids": [
+        "DIVIDENDS-EX-01",
+        "DIVIDENDS-EX-02",
+        "DIVIDENDS-EX-03",
+        "DIVIDENDS-EX-04",
+        "DIVIDENDS-EX-05"
+      ],
+      "two_plausible_readings": [
+        "ALLOW_CONTEXTUAL_INFERENCE",
+        "FAIL_ONLY_THE_DEPENDENT_PROPOSITION"
+      ],
+      "recommended_reading": "Fail only the dependent proposition and do not infer the role.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    }
+  ],
+  "preparation_diagnostics": [
+    {
+      "code": "BEN_FAMILY_ROLE_APPROVAL_REQUIRED",
+      "severity": "STOP",
+      "related_id": "DIVIDENDS",
+      "detail": "No family adapter may run until Ben approves the open rulings and a separate approved schema is sealed."
+    }
+  ],
+  "preparation_effects": {
+    "model_calls": 0,
+    "family_runner_calls": 0,
+    "database_writes": 0,
+    "product_writes": 0,
+    "selector_changes": 0,
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "serving_changes": 0,
+    "publication_actions": 0
+  }
+}

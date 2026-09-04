@@ -278,6 +278,9 @@ function parseArgs(argv) {
     M2_FINAL_RECEIPT_PATH,
     'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json',
     'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json',
+    'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m5-family-adapters.json',
+    'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m5-family-adapters-correction.json',
+    'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m6-agreement-projection.json',
   ]);
   if (!allowed.has(argv[3])) fail('receipt path is not an exact governed receipt path');
   const absolutePath = resolve(REPO_ROOT, argv[3]);

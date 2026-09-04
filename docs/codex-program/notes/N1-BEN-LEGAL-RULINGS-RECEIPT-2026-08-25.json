@@ -1,0 +1,124 @@
+{
+  "schema_version": "N1_BEN_LEGAL_RULINGS_RECEIPT/V1",
+  "inventory_source": "docs/codex-program/notes/N1-OPEN-LEGAL-DECISIONS-BOARD-DATA-2026-08-25.json",
+  "ruled_at": "2026-08-26T13:17:02.719Z",
+  "ruled_count": 4,
+  "open_count": 23,
+  "rulings": [
+    {
+      "decision_id": "dno-item-42-linked-duty-blocker-b",
+      "family_key": "DNO_INDEMNIFICATION",
+      "priority": "blocking_full_set",
+      "option_id": "approve-child-profiles",
+      "option_label": "Approve each Metsera limb as its own line (including separate rows for rights survival and no-adverse-amendment if those are distinct operative units).",
+      "consequence": "Clears the five holds and lets the full validation run complete.",
+      "notes": "",
+      "status": "ruled"
+    },
+    {
+      "decision_id": "closing-conditions-m5-subtype-bucket-partition",
+      "family_key": "CLOSING_CONDITIONS",
+      "priority": "blocking_family",
+      "option_id": "add-new-sealed-labels",
+      "option_label": "Add new taxonomy labels for COVENANT_COMPLIANCE, LISTING, NO_MAE (and use them).",
+      "consequence": "Requires sealing new M5 labels, then approve the 15 rows under them.",
+      "notes": "",
+      "status": "ruled"
+    },
+    {
+      "decision_id": "termination-fee-fee-side-partition",
+      "family_key": "TERMINATION_FEE",
+      "priority": "blocking_family",
+      "option_id": "new-fee-side-subtype",
+      "option_label": "Create a separate reverse/buyer-side fee type in the taxonomy.",
+      "consequence": "Requires taxonomy update, then flip rows from hold to approved.",
+      "notes": "",
+      "status": "ruled"
+    },
+    {
+      "decision_id": "termination-fee-spr-sole-remedy-owner-family",
+      "family_key": "TERMINATION_FEE",
+      "priority": "blocking_family",
+      "option_id": "split-by-limb",
+      "option_label": "Split by limb — fee-cap economics vs equitable-remedy restriction — with explicit cross-links.",
+      "consequence": "Requires a written map of which limb lives where before either family activates contested rows.",
+      "notes": "It's even a bit more copmlicated as there might be an exlcusive remedies or termination section that also needs to be parsed as part of this analysis",
+      "status": "ruled"
+    }
+  ],
+  "apply": {
+    "applied_at": "2026-08-26T13:20:31.374Z",
+    "constraint": "Mechanical N1 inventory/board tracking only. No invented legal judgments, taxonomy labels, limb maps, new profiles, policy amendments, or sealed Work3 re-seal.",
+    "inventory_files_updated": [
+      "docs/codex-program/notes/N1-OPEN-LEGAL-DECISIONS-INVENTORY-2026-08-25.json",
+      "docs/codex-program/notes/N1-OPEN-LEGAL-DECISIONS-BOARD-DATA-2026-08-25.json",
+      "docs/codex-program/notes/N1-OPEN-LEGAL-DECISIONS-RICH-PACKETS-2026-08-25.json"
+    ],
+    "family_disposition_files_mutated": [],
+    "per_ruling": [
+      {
+        "decision_id": "dno-item-42-linked-duty-blocker-b",
+        "authorized_mechanical_effect": "APPROVE the five existing Metsera inventory rows (ordinals 14, 19, 22, 25, 27) as separate lines.",
+        "sealed_disposition_mutated": false,
+        "sealed_disposition_path": "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-dno-31-profile-inventory-disposition.json",
+        "reason_not_mutated": "That file is hash-pinned through the D&O Work3 session, seal, and registration chain with linked_duty_disposition_state DEFERRED and item_42_linked_duty_hold_count 5. In-place mutation would be a successor Work3 inventory session, not a tracking-file edit.",
+        "not_done": [
+          "Did not author new RIGHTS_SURVIVAL or NO_ADVERSE_AMENDMENT profiles — those keys are not in the 31-row inventory. The chosen option includes them only if they are distinct operative units; that authoring step was not invented here.",
+          "Did not amend the item-42 shared-source policy pin.",
+          "Did not re-seal the D&O family package or restore withheld dimension-evidence rows."
+        ]
+      },
+      {
+        "decision_id": "closing-conditions-m5-subtype-bucket-partition",
+        "authorized_mechanical_effect": "Record the ruling that new sealed M5 labels COVENANT_COMPLIANCE, LISTING, and NO_MAE must be added and used. The 15 HOLD rows flip only after those labels exist.",
+        "sealed_disposition_mutated": false,
+        "sealed_disposition_path": "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-closing-conditions-57-profile-inventory-disposition.json",
+        "reason_not_mutated": "Chosen consequence is 'Requires sealing new M5 labels, then approve the 15 rows under them.' Sealing labels is taxonomy work. Approving the 15 rows now would invent that they can sit under existing labels.",
+        "not_done": [
+          "Did not invent or seal M5 subtype labels.",
+          "Did not flip the 15 M5_SUBTYPE_BUCKET_PARTITION_UNRESOLVED HOLD rows.",
+          "Did not decide the fate of empty BRINGDOWN / TAX_OPINION labels."
+        ]
+      },
+      {
+        "decision_id": "termination-fee-fee-side-partition",
+        "authorized_mechanical_effect": "Record the ruling that a separate reverse/buyer-side fee type must be created. The two HOLD rows flip only after that taxonomy update.",
+        "sealed_disposition_mutated": false,
+        "sealed_disposition_path": "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-termination-fee-20-profile-inventory-disposition.json",
+        "reason_not_mutated": "Chosen consequence is 'Requires taxonomy update, then flip rows from hold to approved.' Creating the subtype is taxonomy work, not a disposition flip.",
+        "not_done": [
+          "Did not invent a reverse/buyer-side fee subtype label.",
+          "Did not flip Skechers §8.3 or TopBuild §6.5 from HOLD to APPROVE."
+        ]
+      },
+      {
+        "decision_id": "termination-fee-spr-sole-remedy-owner-family",
+        "authorized_mechanical_effect": "Record the ruling that ownership splits by limb (fee-cap economics vs equitable-remedy restriction) with explicit cross-links. Contested rows stay HOLD until a written per-limb map exists.",
+        "sealed_disposition_mutated": false,
+        "sealed_disposition_paths": [
+          "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-termination-fee-20-profile-inventory-disposition.json",
+          "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-specific-performance-remedies-8-profile-inventory-disposition.json"
+        ],
+        "reason_not_mutated": "Chosen consequence is 'Requires a written map of which limb lives where before either family activates contested rows.' Ben also noted exclusive-remedies or termination sections may need to be parsed as part of that map. Writing the map would invent limb assignments.",
+        "not_done": [
+          "Did not write a per-limb ownership map.",
+          "Did not flip the ten Termination Fee or seven Specific Performance Remedies contested rows.",
+          "Did not invent exclusive-remedies or termination-section parse assignments."
+        ],
+        "reviewer_note_preserved": "It's even a bit more copmlicated as there might be an exlcusive remedies or termination section that also needs to be parsed as part of this analysis"
+      }
+    ],
+    "not_in_receipt": [
+      {
+        "decision_id": "closing-conditions-metsera-frustration-branch",
+        "reason": "Canvas had a note but no option_id. Not in the sent receipt. Left open."
+      }
+    ],
+    "still_open": {
+      "count": 23,
+      "blocking_remaining": [
+        "closing-conditions-metsera-frustration-branch"
+      ]
+    }
+  }
+}

@@ -1980,9 +1980,8 @@ separate stages in `PLAN.md`.
 
 #### Authority and operational decisions
 
-5. the exact M3 work order and, later, each subsequent implementation-stage
-   work order, including governed deal memberships and SEC source-read scope
-   for M7 generalisation;
+5. the exact M9 work order after recovery and M7 legal acceptance; M8 remains
+   a separate optional readiness stage with no authority;
 6. any later Phase B or other model run;
 7. the exact M10 selector and named private internal consumers, if M9 passes;
 8. later authority for hosted staging and production database operations;
@@ -1996,3 +1995,364 @@ separate stages in `PLAN.md`.
 Any new legal ambiguity that remains after source structure, provenance and
 complete roles are shown in plain English also requires a narrow ruling on the
 full source provision.
+
+---
+
+## 19. M5-M7 authority and comparison-text standard: DECIDED 2026-08-12
+
+Ben authorised M5 after the final M4 receipt passed. He approved three common
+rules for all 25 families:
+
+1. Keep each independently operative legal unit together. Preserve separate
+   standards inside that unit instead of flattening them.
+2. Store one authoritative fact and let other family views link to it. Do not
+   create conflicting copies under different topics.
+3. If a required definition, cross-reference or condition is absent or
+   ambiguous, leave only the dependent proposition incomplete and flag the
+   exact absence or ambiguity.
+
+Ben then authorised M6 and M7 as shadow-only stages. He authorised the next two
+M7 source admissions without another pause unless a real issue arose. This did
+not authorise a model call, database write, selector change, serving change,
+publication or M8.
+
+During M7 lawyer review, Ben rejected comparison text that merely repeated the
+source clause. A comparison row must instead state the extracted legal rule in
+ordinary legal English. It must identify only the direct actor, retain material
+timing and qualifications, and cite the correct authored source unit. The
+source quote remains separate evidence. It is not the comparison answer.
+
+The first replacement packet was also not accepted. Ben identified the same
+context problem across the cards. M7 legal review therefore remains open until
+the row-correction recovery in
+`docs/codex-program/notes/HANDOFF-2026-08-12.md` is complete.
+
+M8 is not authorised.
+
+---
+
+## 20. D&O item-42 linked duties: RULING APPLIED 2026-09-01
+
+Ben's 2026-08-25 ruling approved each Metsera limb as a separate comparison
+line if the rights-survival and no-adverse-amendment duties were distinct
+operative units. They are distinct. Metsera states “(ii) shall survive the
+Merger,” at
+`evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c.agreement-index.json`
+bytes `[202825,202856)`. It separately states that the rights “shall not ...
+be amended, repealed or otherwise modified” in a way that adversely affects
+an indemnified party at bytes `[203136,203421)`. The first duty preserves the
+rights through the merger. The second duty prevents later adverse change.
+
+The successor session added separate Rights Survival and No Adverse Amendment
+profiles. It also approved the five previously held Metsera rows. The
+31-profile predecessor remains preserved at 407,522 bytes, SHA-256
+`5fccaa143aed5deb4eecd81e9efaf3782930eaf282b069e6e5bc35f939acb0ed`.
+The 33-profile successor is 431,970 bytes, SHA-256
+`f66610f532c347e1546ca8df3131d100cc131b33b9d2be200385292959df0e74`.
+
+The complete on-disk set now passes with 25 family packages and 1,310
+profiles. The ruling application receipt still awaits independent review.
+No review stamp was cleared.
+
+---
+
+## 21. Seven family grouping rulings and V1 coverage ledger: RULINGS APPLIED 2026-09-01
+
+Ben gave these seven grouping rulings:
+
+The exact ruling receipt is
+`docs/codex-program/notes/N1-BEN-LEGAL-RULINGS-RECEIPT-2026-09-01B.json`.
+
+1. **DIVIDENDS:** approved: single "Dividend coordination" comparison line.
+   Ben's note: revise as more deals are added (handled by the open-world
+   revision loop; no extra machinery).
+2. **MAE_DEFINITION:** approved: keep V1's five lines (Definition prongs, MAE
+   Test, Carve-outs, Disproportionality relationships, Exceptions to
+   carve-outs); the single Definition instance supplies both Definition
+   prongs and MAE Test.
+3. **GUARANTY_FINANCING_PARTY:** approved: one "Performance guaranty" line
+   with a per-deal presence field, named guarantor where evidence supplies it.
+4. **APPRAISAL_DISSENTERS_RIGHTS:** approved: one line; settlement consent and
+   withdrawal/reconversion treatment as fields inside it.
+5. **FINANCING_COVENANTS:** approved: three lines (Payoff; Obtain financing;
+   No financing condition); draft and final payoff timing as fields inside
+   Payoff.
+6. **CONSIDERATION:** approved for the sealed slice: "Cash component" as the
+   comparison line with Appraisal status as a link to the Appraisal line.
+   Recorded gaps (unmeasured concepts, NOT no-output dispositions):
+   election/proration mechanics; stock consideration and exchange ratios;
+   fractional-share and adjustment mechanics.
+7. **INTERIM_OPERATING:** approved for the sealed slice: Target and Parent
+   bands plus the 16 negative-covenant lines exactly as tabled in
+   BRIEF-INTERIM-OPERATING-2026-09-01.md. Guarantees-of-indebtedness fold into
+   the Indebtedness and loans line. Recorded gaps: affirmative-covenant band
+   carrying V1's refined specifics; asset sales / divestitures / licenses;
+   real estate / leases as its own category.
+
+The rulings were applied through immutable per-family successor sessions.
+The sealed predecessor records remain unchanged. Independent review is
+pending. The applications have no production or serving effect.
+
+The V1 coverage ledger is
+`docs/codex-program/notes/V1-COVERAGE-LEDGER-2026-09-01.md`.
+
+Independent review of the seven applications PASSED on 2026-09-01:
+`docs/codex-program/notes/N1-SEVEN-FAMILY-GROUPING-APPLICATION-INDEPENDENT-REVIEW-2026-09-01.md`.
+
+## 22. Standing authorization and severity-one repair rule: DECIDED 2026-09-01
+
+Ben issued a standing authorization narrowing his decision surface to legal
+questions and reserved items. Authoritative record:
+`docs/codex-program/notes/BEN-STANDING-AUTHORIZATION-2026-09-01.md`. In
+brief: the blind-sample size derives mechanically from Decision 17's
+standard; mechanical amendments implementing existing rulings are
+pre-approved; M9 and M10 are pre-authorized on their exact entry conditions
+with zero deviation; legal questions, production data and credentials,
+external serving, and the one-use production cutover authority remain
+reserved to Ben.
+
+Rider, same date: any severity-one error found in review or the blind
+sample — party attribution, monetary amount, or polarity — triggers
+root-cause repair of the producing rule before publication continues, at
+any observed rate. Decision 17's 1% gate is unchanged; a severity-one error
+is a defect to fix, never a statistic absorbed into the headroom. The
+blind-sample stratification over-weights rows capable of severity-one
+errors.
+
+---
+
+## 23. Proxy / Meeting owns Vote standard and Force-the-vote: DECIDED 2026-09-01
+
+Ben decided that Proxy / Meeting owns two separate stored facts:
+
+1. **Vote standard:** one stored fact owned by `PROXY_MEETING`.
+2. **Force-the-vote:** whether the meeting obligation survives a change in
+   recommendation, owned by `PROXY_MEETING`. No-shop supplies only the
+   recommendation-change reference.
+
+Both facts remain extraction-open because neither is measured by the sealed
+31-profile Proxy / Meeting package. The corrected twelve-line No-shop grouping
+question remains open. No grouping approval or review-flag clearance follows
+from these ownership rulings.
+
+This entry and its backlog update mechanically propagate rulings Ben had
+already given. Decision 22 and
+`docs/codex-program/notes/BEN-STANDING-AUTHORIZATION-2026-09-01.md` paragraph 2
+pre-approve that work. No sealed predecessor or successor record was changed,
+and there is no serving, product-write or production effect.
+
+---
+
+## 24. Interim Operating Work 4 sequencing and non-omission gate: DECIDED 2026-09-02
+
+The 113 sealed `INTERIM_OPERATING` profiles measure restriction presence. They
+remain unchanged and are the grouping input. They do not constitute complete
+Interim Operating measurement.
+
+Work 4 may proceed without first extracting typed thresholds and exceptions.
+It must render the sealed restriction facts faithfully, preserve their source
+clause text, and identify unmeasured thresholds and exceptions as
+`NOT_YET_MEASURED`, never absent. Work 5 and Work 6 may carry these only as
+visible review-only omissions. The preview formatter remains generic so later
+typed fields do not require Interim-Operating-specific display logic.
+
+Source-backed threshold and exception extraction is scheduled for the later
+family-depth wave. Interim Operating cannot be described as
+comparison-complete or enter normal production serving until every governed
+restriction has both:
+
+1. an explicit threshold disposition of `present`, `absent` or `unresolved`;
+2. an explicit exception disposition of `present`, `absent` or `unresolved`.
+
+A `present` disposition must carry its source-backed typed threshold value or
+exception data. Tests must fail if Interim Operating is marked complete while
+either category is unaccounted for. This decision does not reopen or alter any
+sealed predecessor or successor.
+
+---
+
+## 25. Work4 candidate correction before Work 5: DECIDED 2026-09-03
+
+The Work4 candidate registered at `b11388ab` bound a test that no tree
+containing Work4's outputs can satisfy (the bootstrap fixture copies every
+existing file the sealed authority names, then asserts the Work4 outputs are
+absent). Ben adopted the recommended correction the same day.
+
+- The four committed Work4 outputs are retained byte-identical, never
+  deleted, never consumed by Work 5–7. Creation-only paths are immutable
+  after commit; a correction supersedes, it does not replace.
+- A successor manifest, transition authority, registration and receipt are
+  created under one pinned correction authority,
+  `control/m7-v2-repair-contract-work4-candidate-correction-authority.json`,
+  following the Work3 closure-successor precedent. Work 5 resolves its Work4
+  predecessor by receipt schema (V1 committed, V2 successor).
+- The bound test bytes change, so the registration ID changes. Nothing is
+  reopened for legal review because Work 5 has not begun.
+- The correction authority supersedes exactly one field of the Work2–4
+  ordering authority (`candidate_change_after_work4: FORBIDDEN`) for exactly
+  one correction. Any further candidate change needs a new authority.
+- Standing rule from this incident: a fixture that copies files by
+  authority-named path must exclude every output the work under test will
+  create. The bound fixture builder now does.
+
+Record: `docs/codex-program/notes/WORK4-CANDIDATE-CORRECTION-2026-09-03.md`.
+This decision does not alter any sealed predecessor.
+
+---
+
+## 26. M7 V2 re-plan adopted, all recommendations: DECIDED 2026-09-03
+
+Written on Ben's direct instruction ("All recommended"), outside the Work
+1–7 repair authority, as entry 25 was. Record:
+`docs/codex-program/notes/M7-V2-REPLAN-TO-PUBLICATION-2026-09-03.md`
+(revision 2, commit `7b0df9b7`). Diagnosis:
+`docs/codex-program/notes/WORK5-BLOCKED-CANDIDATE-NOT-EXECUTABLE-ON-REAL-TEXT-2026-09-03.md`.
+
+Answers, by the plan's section 8 numbering:
+
+- Q1: `FALSE_COMPLETE_FIXTURE` affected-class stop for 24 classes under one
+  replacement authority. Q1a: no early profile tranche; Phase 1 is an
+  issue-only run.
+- Q2: one interim `CANDIDATE_PENDING_REVIEW` registration before every
+  evidence run, retained and superseded; Work 5–7 bind the last. The
+  script-applied inventory dispositions (APPROVE 1,509, HOLD 40, PARTIAL
+  4, all `default_disposition_applied`) are void as V2 approvals; session
+  2 is the first per-occurrence approval and approves the full section
+  5.3 contract per subtype.
+- Q3: party proof through a `PARTY_PROOF_RULE/V1` route over a
+  context-disposition record outside sealed M3, one row per agreement and
+  party term, each span confirmed by Ben. No M2 re-run.
+- Q4: `REVIEW_RESIDUE` coverage treatment on review-only rules only, plus
+  the issue codes `MATERIAL_SPAN_UNMODELLED`, `DEPENDENCY_UNRESOLVED`,
+  `PARTY_PROOF_UNPROVED`, `SIGNATURE_MISMATCH`, `FAMILY_CORRECTION_PENDING`.
+- Q5: operators ruled on a per-operator table with real-clause examples
+  (table to follow), not on a list.
+- Q6: CAPITALISATION becomes a Ben-ruled family-wide no-output policy with
+  covered occurrence set and fixtures; the synthetic validation package is
+  removed; item 14 routes under Q8 or stays review-only with that reason.
+- Q7: additive three, parser-only facts, no model calls.
+- Q8: items 14 and 43 decided in session 3 with both readings; review-only
+  `FAMILY_CORRECTION_PENDING` until then.
+- Q9: the synthetic preview serving path is quarantined as a product-code
+  PR on Ben's instruction, outside the repair authority, before any merge.
+- Q10: Decision 22's M9/M10 pre-authorisation re-confirmed at M7 sealing.
+- Q11 (session 2): child profile per topology where anchors show more than
+  one; counts reported.
+- Q12: the sealed family role schemas' claim-key-to-subtype mapping is
+  adopted as a V2 semantic input for the family stage, digest-bound.
+- Q13: definition rules 1 (Definitions article) and 2 (preamble) are
+  deterministic; rule 3 only for identical candidates; otherwise
+  review-only until Ben rules the disagreement term classes.
+- Q14: any correction after session 3 or the Work 7 review is one new
+  registration, a full reopen of all 50 and a Work 6 rerun.
+- Q15: one structural rule covers every M2 `PAGE_NUMBER` artefact inside a
+  closure (items 15 and 47); technical, no per-occurrence ruling.
+- Q16: the authored unit for an inline limb or chapeau is the limb with
+  hash-bound context spans from named ancestors.
+- Q17 (session 2): Termination's phase-2 atoms and trees are re-presented
+  as real-clause fixtures; the synthetic-component approval does not carry.
+- Q18: answers recorded here; the stop record lives inside the replacement
+  authority; GRAVEYARD and CODEBASE-GUIDE regions named in it.
+- Q19 (session 2): effect kinds for definitional and representational
+  units ruled with examples; review-only until then.
+
+Standing rules from the same instruction, recorded in `CLAUDE.md`: no
+waiting on CI or duplicate local checks; the lead session delegates every
+writable-spec task to internal or external agents.
+
+This decision does not alter any sealed predecessor. It authorises the
+drafting of the replacement authority; no governed write happens until
+that authority is committed and validated.
+
+## 27. Ben's four open decisions from the lead handoff: DECIDED 2026-09-04
+
+Put to Ben in one list by the Opus lead session on taking over the main
+loop, per `docs/codex-program/notes/LEAD-HANDOFF-2026-09-04.md` §"Ben's
+open decisions". His four answers, and what each changes:
+
+**1. Correction-1 (the three items: argv `--registration`, attempt-record
+member names, family-scoped `profile_results`). "Whatever you recommend."**
+
+The recommendation taken: present the real record, do not pre-approve a
+summary. #35 did not land — the recovery branch tip at handover was
+`75bbabc1`, the handoff commit itself, sitting directly on `fd6f662d`,
+with no interim-registration mechanism and no correction record; the
+scratch `spec35-report.md` died with its container. So #35 is redone from
+the appendix brief in the handoff note, `…-correction-1.json` is written
+with `approval.state: PENDING_BEN`, and the items go to Ben as an actual
+record before anything applies. Nothing moves to `BEN_APPROVED` without his
+word on the text.
+
+**Superseded the same day, and this entry's own wording above was part of
+what was wrong.** The record as first drafted (`6021a747`) was audited and
+returned CHANGES. Its third item, described above as "family-scoped
+`profile_results`", named an outcome in one string,
+`PROFILE_RESULTS_SCOPED_TO_OCCURRENCE_FAMILY`, that reads two ways: evaluate
+all 25 provision families and store one family's entries, or evaluate one
+family only. The second makes `compatible_cross_family_match_count` a
+structural zero, so the gate requiring it to be zero can never refuse,
+`FAMILY_CORRECTION_PENDING` can never be raised from profile evidence, and
+an occurrence's family becomes V1's M4 family by assumption rather than by
+matching — the check that catches a clause filed in the wrong family.
+
+Put that question to Ben in plain terms on 2026-09-04, he ruled: keep the
+misfiling check. The redraft (`b84e3091`) carries
+`PROFILE_RESULTS_MATCHED_RETAINED_PLUS_FULL_SET_DIGEST` instead — all 25
+families still evaluated, every family's matches retained, plus a digest of
+the complete result set so a re-run proves nothing was lost; only the
+non-match detail rows are discarded. The record now carries ONE item, not
+three: the argv correction is held until its applier is reachable from the
+site that decides a successor manifest's argv, and the rename correction
+until Q-0025 settles the field names it would rename this authority to
+match. It also moved to an authorised path — the first one breached the
+parent authority's `permitted_writes` prefix rules — and its identity no
+longer covers the approval block, so the id Ben approves is the id that ends
+up effective.
+
+**2. The thirty additional transactions for the shared 50 (A-0007 §1).
+Ben's selection criteria drive the thirty; the producer admits them.**
+
+This is the producer's own recommendation in
+`docs/codex-program/handoffs/deal-terms/outbox/A-0007-q0003-corpus-ruling-draft3.md`
+§1, now ruled. Ownership of *proposing* the thirty is Ben's, not this
+channel's and not the Deal Storylines agent's. The producer's contribution
+is admission only — fetch, canonical text, admitted-source receipt — under
+a source-admission authority, zero model calls. The counting rule in
+A-0007 §2 stands: 40 unique transactions, one primary agreement document
+each, amendments and restatements as additional members under the same
+`transaction_id`, never as extra transactions. The `docs/core/PLAN.md`
+Stage 6 wording ("40 unique fully admitted agreement identities") predates
+the transaction-counted contract and is the PLAN edit that reconciles it.
+
+**3. Beyond the shared 50 toward the 2010-present corpus (A-0010).
+Extend, but scope it only — no milestone sequence yet.**
+
+`docs/codex-program/handoffs/deal-terms/outbox/A-0010-q0005-no-public-corpus-branch.md`
+recorded the branch as unowned, undated public-launch work outside the
+programme. That stands as the *plan* position: nothing is committed, no
+milestone sequence is added, `DA-RP` remains "public release of the shared
+50" and is still not a public-corpus package. What changes is that the
+question stops being open and becomes a costed one: produce a scoping note
+sizing the branch — source-admission authority for thousands of filings,
+Ben's per-family review capacity, a certification stage per corpus
+increment — so the eventual commit/decline decision has numbers behind it.
+The engine is unchanged either way; the branch is admission, runs and
+review, not a new engine.
+
+**4. The programme roadmap page may serve on Vercel previews and
+production.**
+
+`pages/admin/programme.js` was local-only by Ben's original spec, enforced
+by `localOnlyGate(env)` in `lib/programme/derive.js` returning
+`{ notFound: true }` under `VERCEL`, `VERCEL_ENV` or
+`NODE_ENV === 'production'`. Ben ruled it serves everywhere. The gate, its
+test and its header comments are removed in the same change. Access
+control is `middleware.js`, which already gates every page and every
+`/api/**` route on a session cookie via `lib/auth/gate.js` — the page is
+no more reachable unauthenticated than any other admin route, so "serves
+in production" means "behind Ben's login", not "public".
+
+This does not touch the separate Canonical V2 dark-preview gate, whose
+rule in `docs/core/OPERATING-RULES.md` ("The gate may widen to Vercel
+preview, never production", 2026-08-05) is unchanged and still binding on
+that machinery.

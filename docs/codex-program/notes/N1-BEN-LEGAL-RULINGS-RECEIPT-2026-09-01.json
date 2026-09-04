@@ -1,0 +1,106 @@
+{
+  "schema_version": "N1_BEN_LEGAL_RULINGS_RECEIPT/V1",
+  "scope": "review_stamps_non_blocking",
+  "inventory_source": "docs/codex-program/notes/N1-OPEN-LEGAL-DECISIONS-BOARD-DATA-2026-08-25.json",
+  "ruled_at": "2026-09-01T12:24:33.681Z",
+  "received_at": "2026-09-01T12:30:00.000Z",
+  "ruled_count": 8,
+  "open_count": 14,
+  "application_policy": "Do not clear LEGAL_GROUPING stamps where Ben's notes show confusion, contradict the selected option, or where the proposed split is not a real topic split. Only apply clean, unambiguous rulings.",
+  "rulings": [
+    {
+      "decision_id": "antitrust-regulatory-legal-grouping",
+      "family_key": "ANTITRUST_REGULATORY",
+      "priority": "review_stamp_only",
+      "option_id": "approve-proposed-split",
+      "option_label": "Approve the proposed subtype split as modeled.",
+      "consequence": "Stamps cleared; inventory treated as final for grouping.",
+      "notes": "Generally agee but RedHat is just an efforts provision. You should have a cap on efforts bucket too",
+      "status": "received_not_applied",
+      "agent_read": "Directional approve of multi-bucket antitrust split, but incomplete: Red Hat should sit in Efforts (not other buckets), and Ben wants an Efforts Cap bucket added. Needs follow-up before stamp clear."
+    },
+    {
+      "decision_id": "appraisal-dissenters-rights-legal-grouping",
+      "family_key": "APPRAISAL_DISSENTERS_RIGHTS",
+      "priority": "review_stamp_only",
+      "option_id": "approve-proposed-split",
+      "option_label": "Approve the proposed subtype split as modeled.",
+      "consequence": "Stamps cleared; inventory treated as final for grouping.",
+      "notes": "One bucket",
+      "status": "received_not_applied",
+      "agent_read": "Note contradicts option. Proposed split was Settlement Consent + Withdrawal Reconversion. Ben wants one bucket — treat as revise-to-single-bucket once confirmed."
+    },
+    {
+      "decision_id": "dividends-legal-grouping",
+      "family_key": "DIVIDENDS",
+      "priority": "review_stamp_only",
+      "option_id": "approve-proposed-split",
+      "option_label": "Approve the proposed subtype split as modeled.",
+      "consequence": "Stamps cleared; inventory treated as final for grouping.",
+      "notes": "",
+      "status": "received_pending_apply",
+      "agent_read": "Clean approve. Only one populated bucket (Dividend Coordination). Safe to clear stamp when mechanical apply runs."
+    },
+    {
+      "decision_id": "financing-covenants-legal-grouping",
+      "family_key": "FINANCING_COVENANTS",
+      "priority": "review_stamp_only",
+      "option_id": "approve-proposed-split",
+      "option_label": "Approve the proposed subtype split as modeled.",
+      "consequence": "Stamps cleared; inventory treated as final for grouping.",
+      "notes": "I can't se all of the ones you reference?",
+      "status": "received_not_applied",
+      "agent_read": "Stale visibility note from earlier broken UI. Not applying until Ben re-confirms with Payoff / Obtain Financing / No Financing Condition visible."
+    },
+    {
+      "decision_id": "general-covenants-item-44-access-scope",
+      "family_key": "GENERAL_COVENANTS",
+      "priority": "review_stamp_only",
+      "option_id": "revise-split",
+      "option_label": "Revise the bucket split (describe in notes).",
+      "consequence": "Agents re-bucket per your note before clearing stamps.",
+      "notes": "these are all access",
+      "status": "received_not_applied",
+      "agent_read": "Board wrongly presented a meaningless Topic Classification bucket. Ben: treat as Access. Needs re-bucketing work, not stamp clear."
+    },
+    {
+      "decision_id": "guaranty-legal-grouping",
+      "family_key": "GUARANTY_FINANCING_PARTY",
+      "priority": "review_stamp_only",
+      "option_id": "approve-proposed-split",
+      "option_label": "Approve the proposed subtype split as modeled.",
+      "consequence": "Stamps cleared; inventory treated as final for grouping.",
+      "notes": "these all seem to be the same?",
+      "status": "received_not_applied",
+      "agent_read": "Correct observation: all five rows are already one bucket (Performance Guaranty). Asking 'approve split' was a bad question. Hold until reframed."
+    },
+    {
+      "decision_id": "interim-operating-legal-grouping",
+      "family_key": "INTERIM_OPERATING",
+      "priority": "review_stamp_only",
+      "option_id": "revise-split",
+      "option_label": "Revise the bucket split (describe in notes).",
+      "consequence": "Agents re-bucket per your note before clearing stamps.",
+      "notes": "these all seem to be the same? I'm confused about approach do you not want indebtednes as one sub-type, then M&A< issuing shares etc? Aslo where is the positive covenant and its subparts? Again - the nomenclature / how you're approaching this is very unclear to me",
+      "status": "received_not_applied",
+      "agent_read": "Valid critique. All 113 rows are currently one bucket (Restrictive Covenant) with one claim type. We never proposed Indebtedness / M&A / Share Issuance / Positive Covenant. Needs a real topic taxonomy before any stamp clear."
+    },
+    {
+      "decision_id": "no-shop-legal-grouping",
+      "family_key": "NO_SHOP",
+      "priority": "review_stamp_only",
+      "option_id": "approve-proposed-split",
+      "option_label": "Approve the proposed subtype split as modeled.",
+      "consequence": "Stamps cleared; inventory treated as final for grouping.",
+      "notes": "i on't understand the question",
+      "status": "received_not_applied",
+      "agent_read": "Not applying. Need to reframe: Restriction vs Standstill waiver vs Recommendation Change vs Engagement Permission vs Safe Disclosure vs Representative Control."
+    }
+  ],
+  "apply": {
+    "applied_at": null,
+    "constraint": "No stamp clears from this receipt until Ben confirms the reframed questions. Dividends is the only clean approve pending a later mechanical apply.",
+    "family_disposition_files_mutated": [],
+    "per_ruling": []
+  }
+}

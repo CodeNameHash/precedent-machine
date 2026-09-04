@@ -3,6 +3,11 @@ import { fetchReviewDealCards } from '../../../../lib/queries/review-deal';
 import { trimReviewDealForWire } from '../../../../lib/queries/review-deal-wire';
 import { attachCanonicalV2Preview } from '../../../../lib/canonical-v2/review-preview-assembly';
 import { attachCanonicalTerminationFeeServing } from '../../../../lib/canonical-v2/termination-fee-serving-source';
+import {
+  attachCanonicalTerminationRightsReview,
+  terminationRightsReviewCacheControl,
+  SyntheticV2AnalysisRefusedError,
+} from '../../../../lib/canonical-v2/termination-rights-review-serving-source';
 
 // Cap runaway executions: when Supabase stalls, uncapped functions run the
 // full 300s each holding a DB connection (2026-07-19 pile-up).
@@ -58,15 +63,27 @@ export default async function handler(req, res) {
     // non-thenable object resolves to that same object on the next
     // microtask, so this one `await` is correct for both cases.
     const servedReviewDeal = await attachCanonicalTerminationFeeServing(previewedReviewDeal, { env: process.env });
-    // Q6 (perf quick-wins): response is deal_id-scoped provision-card data,
-    // identical for every viewer of this deal — no user-specific content —
-    // safe to cache at the CDN edge with SWR.
-    res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=3600');
+    const rightsReviewDeal = await attachCanonicalTerminationRightsReview(servedReviewDeal, {
+      env: process.env,
+    });
+    // Transient legal-review state must not survive through the shared
+    // five-minute CDN cache. Unregistered deals keep the existing shared cache.
+    res.setHeader('Cache-Control', terminationRightsReviewCacheControl(rightsReviewDeal));
     // Q1/Q2: trim sections[]/definitions[]/resolvedReferences/
     // region_full_text/full provenance off the wire — see
     // lib/queries/review-deal-wire.js for what and why.
-    return res.status(200).json({ reviewDeal: trimReviewDealForWire(servedReviewDeal) });
+    return res.status(200).json({ reviewDeal: trimReviewDealForWire(rightsReviewDeal) });
   } catch (error) {
+    // Quarantine gate (2026-09-04): attachCanonicalTerminationRightsReview
+    // throws SyntheticV2AnalysisRefusedError, instead of degrading to a
+    // FAILED status inside a 200, when the Termination Rights V2 source is
+    // not backed by an admitted real-agreement analysis (see
+    // lib/canonical-v2/termination-rights-review-serving-source.js's header
+    // comment). That must reach the client as a hard refusal, distinct from
+    // every other failure below, which still degrades to a generic 500.
+    if (error instanceof SyntheticV2AnalysisRefusedError) {
+      return fail(res, 410, error.message);
+    }
     return fail(res, 500, error.message || String(error));
   }
 }

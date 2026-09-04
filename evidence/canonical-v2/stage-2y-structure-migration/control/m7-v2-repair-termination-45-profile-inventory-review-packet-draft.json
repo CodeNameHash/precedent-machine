@@ -1,0 +1,3286 @@
+{
+  "schema_version": "STAGE_2Y_M7_V2_TERMINATION_45_PROFILE_INVENTORY_REVIEW_PACKET/V1",
+  "packet_kind": "DRAFT_NOT_AUTHORITY",
+  "source_mode": "STAGE_B_BLUEPRINT_PROPOSAL",
+  "stage_b_schema_version": "M7_V2_TERMINATION_WORK3_STAGE_B_45_PROFILE_BLUEPRINT_PROPOSAL/V1",
+  "blueprint_proposal_id": "cbcffeb835924f5ec0236297d7d4b1bf984057156ce7141b1af614564fe37628",
+  "candidate_state": "UNAPPROVED_45_PROFILE_BLUEPRINT_PROPOSAL_NO_WORK3_IDENTITY_OR_CORE_INTEGRATION",
+  "profile_approval_state": "UNAPPROVED",
+  "profile_count": 45,
+  "complete_profile_count": 44,
+  "incomplete_profile_count": 1,
+  "b9e_profile_key": "b9e3024406e1a399f7bcf363f4f6267545b265dafb0ed12cd43c71b154c16712",
+  "b9e_ruling": {
+    "display_text": "contained in non-public disclosure letter",
+    "disposition_kind": "NON_PUBLIC_DISCLOSURE_LOCATION",
+    "missing_field_key": "JURISDICTION_LIST_REFERENCE",
+    "lawyer_ruling_binding": {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-ruling-termination-b9e-jurisdiction-list-disclosure-note.json",
+      "schema_version": "STAGE_2Y_M7_V2_REPAIR_TERMINATION_B9E_JURISDICTION_LIST_DISCLOSURE_NOTE_RULING/V1",
+      "record_id_field": "lawyer_ruling_id",
+      "record_id": "5612a68b5416a51e26e604c525b8d93ec7285a51f6eba2edca6d251043aa7567",
+      "byte_length": 1639,
+      "sha256": "f0e1155fe4f07f2f710666815afacea109f6978a6c9d04d581016301fe6efa5a"
+    }
+  },
+  "ben_rulings_note": "docs/codex-program/notes/TERMINATION-BEN-RULINGS-Q01-Q03-2026-08-24.md",
+  "inventory_session_successor_draft": "docs/codex-program/notes/TERMINATION-BEN-INVENTORY-SESSION-SUCCESSOR-AUTHORITY-DRAFT-2026-08-24.md",
+  "repository_verification": {
+    "verified_at": "2026-08-24",
+    "work3_test_pattern": "Work3 Termination Stage B|core integration|inventory review",
+    "stage_b_blueprint_fixture_review": "GREEN",
+    "core_integration_fixture_review": "GREEN",
+    "inventory_review_scaffold": "GREEN",
+    "ben_inventory_session": "NOT_STARTED",
+    "approval_capture_authority": "NOT_BUILT",
+    "proof_command": "CI=true NODE_OPTIONS='--max-old-space-size=8192' node --test --test-name-pattern 'Work3 Termination Stage B|core integration|inventory review' tests/stage-2y-structure-m7-v2-repair-work3.test.js"
+  },
+  "review_workflow": {
+    "intended_reviewer": "BEN_GOODCHILD",
+    "session_goal": "Approve subtype shapes after reading shape_summary and review_flags; hold outside-date rows until extension disposition unless explicitly accepted partial.",
+    "default_disposition": "APPROVE_ALL_EXCEPT_EXPLICIT_GAPS_AND_HOLDS",
+    "b9e_already_ruled": true,
+    "outside_date_extension_deferred": true,
+    "q03_inference_rule": "INFERENCE_ALLOWED_MUST_MARK_PENDING_APPROVAL",
+    "retained_source_gap_count": 1,
+    "current_governance_stop": {
+      "ben_approval_state": "NOT_RECORDED",
+      "core_integration_state": "PERFORMED",
+      "inventory_review_state": "SCAFFOLD_GREEN_PACKET_DRAFT_NOT_AUTHORITY",
+      "legal_blueprint_state": "CONSTRUCTED_UNAPPROVED",
+      "package_approval_permitted": false,
+      "required_successor_sequence": [
+        "WORK3_TERMINATION_BEN_INVENTORY_SESSION_SUCCESSOR_AUTHORITY"
+      ],
+      "state": "STOP_AFTER_INVENTORY_REVIEW_GREEN_BEFORE_BEN_MANUAL_APPROVAL_AND_PACKAGE_SEAL"
+    },
+    "stage_b_facade_governance_stop": {
+      "core_integration_state": "NOT_PERFORMED",
+      "inventory_derivation_permitted": false,
+      "legal_blueprint_state": "CONSTRUCTED_UNAPPROVED",
+      "package_approval_permitted": false,
+      "required_successor_sequence": [
+        "WORK3_GOVERNED_DISCLOSURE_NOTE_CORE_INTEGRATION_AUTHORITY_AND_TDD",
+        "WORK3_TERMINATION_UNAPPROVED_INVENTORY_REVIEW_AUTHORITY"
+      ],
+      "state": "STOP_AFTER_STAGE_B_GREEN_BEFORE_CORE_INTEGRATION_AND_INVENTORY_REVIEW"
+    },
+    "stage_b_facade_stop_interpretation": "Stage B next_governance_stop is the blueprint facade zero-effect boundary at construction time; repository_verification and current_governance_stop reflect HEAD test truth."
+  },
+  "retained_source_gaps": [
+    {
+      "phase3_profile_key": "PROFILE:TERMINATION:LEGAL_RESTRAINT:b9e3024406e1a399f7bcf363f4f6267545b265dafb0ed12cd43c71b154c16712",
+      "source_unit_key": "77fd31b1daacccb607cfdf1e7469c583b6a63a790469c1ff49f2e5f95e7594bb",
+      "field_key": "JURISDICTION_LIST_REFERENCE",
+      "reference_slot_key": "b386c34a17e216f31b164dc1638a6a2310f357932aea083b923626e6ac0818ad",
+      "source_admission_gap_id": "9f7a5e21e19e105e6ed6e4a45ce50dea9be3d8ffc2a4b4e1ccba87d3efbfed3b",
+      "typed_value": null,
+      "target_id": null,
+      "required_field_blocking": false
+    }
+  ],
+  "profile_review_items": [
+    {
+      "ordinal": 1,
+      "proposed_profile_key": "013f57a756d9bcaabc2dc6c7a8516aa2c38126228ee76dc092b6a568e5ce0346",
+      "source_deal": "skechers",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "LEGAL_RESTRAINT_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(EXCEPTION_TO(ALL_OF(LEGAL_EFFECT,TERMINATING_PARTY,BEFORE(TERMINATION_EXERCISE_EVENT,EFFECTIVE_TIME_REFERENCE),ANY_OF(STATUTE_EVENT,RULE_EVENT,REGULATION_EVENT,ORDER_EVENT),ANY_OF(ENACTED_STATUS,ENTERED_STATUS,ENFORCED_STATUS,DEEMED_APPLICABLE_STATUS),MERGER_APPLICABILITY_SCOPE,ANY_OF(MERGER_PROHIBITION_EFFECT,MERGER_ILLEGALITY_EFFECT,MERGER_ENJOINMENT_EFFECT),EFFECT_MERGER_CONSUMMATION_SCOPE),ALL_OF(TERMINATING_PARTY_EFFORTS_FAILURE,REASONABLE_BEST_EFFORTS_STANDARD,ANY_OF(RESIST_ACTION,APPEAL_ACTION,OBTAIN_CONSENT_ACTION,RESOLVE_ACTION,LIFT_ACTION))),ALL_OF(NOTICE_SENDER_TERMINATING_PARTY,NOTICE_DELIVERY_EVENT,PROMPT_NOTICE_STANDARD,TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE,NOTICE_RECIPIENT_OTHER_PARTIES,TERMINATION_SUBSECTION_SPECIFICATION_EVENT,REASONABLE_DETAIL_STANDARD,SECTION_8_1_TERMINATION_PROVISION_REFERENCE,TERMINATION_BASIS_FACTS_AND_CIRCUMSTANCES_SCOPE,TERMINATION_BASIS_FORMATION_EVENT),ALL_OF(PROPER_TERMINATION_STANDARD,VALID_TERMINATION_STANDARD,TERMINATION_OF_AGREEMENT_EVENT,SECTION_8_1_TERMINATION_SCOPE_REFERENCE,IMMEDIATE_TERMINATION_EFFECT,EFFECT_UPON_WRITTEN_NOTICE_DELIVERY_RELATION,EFFECT_NOTICE_SENDER_TERMINATING_PARTY,EFFECT_NOTICE_RECIPIENT_OTHER_PARTIES))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_PARTY",
+          "TERMINATING_PARTY_EFFORTS_FAILURE",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "EFFECT_NOTICE_SENDER_TERMINATING_PARTY"
+        ],
+        "trigger": [
+          "STATUTE_EVENT",
+          "REGULATION_EVENT",
+          "ORDER_EVENT",
+          "MERGER_PROHIBITION_EFFECT"
+        ],
+        "restraint": [
+          "STATUTE_EVENT",
+          "REGULATION_EVENT",
+          "ORDER_EVENT",
+          "MERGER_PROHIBITION_EFFECT"
+        ],
+        "exercise": [
+          "TERMINATION_EXERCISE_EVENT",
+          "REASONABLE_BEST_EFFORTS_STANDARD",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_DELIVERY_EVENT",
+          "PROMPT_NOTICE_STANDARD",
+          "TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE",
+          "NOTICE_RECIPIENT_OTHER_PARTIES",
+          "REASONABLE_DETAIL_STANDARD",
+          "EFFECT_UPON_WRITTEN_NOTICE_DELIVERY_RELATION",
+          "EFFECT_NOTICE_SENDER_TERMINATING_PARTY"
+        ],
+        "carveout": [
+          "EXCEPTION_TO",
+          "TERMINATING_PARTY_EFFORTS_FAILURE",
+          "REASONABLE_BEST_EFFORTS_STANDARD"
+        ],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:LEGAL_RESTRAINT:013f57a756d9bcaabc2dc6c7a8516aa2c38126228ee76dc092b6a568e5ce0346",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 2
+    },
+    {
+      "ordinal": 2,
+      "proposed_profile_key": "02178e02e530e5e6e38511a9afaea3217fb5fc9f28e3758686f5014be55cde14",
+      "source_deal": "skechers",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "RECOMMENDATION_CHANGE_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TERMINATING_PARTY,BEFORE(TERMINATION_EXERCISE_EVENT,THRESHOLD_DATE_REFERENCE),COMPANY_BOARD_RECOMMENDATION_CHANGE),ALL_OF(NOTICE_SENDER_TERMINATING_PARTY,NOTICE_DELIVERY_EVENT,PROMPT_NOTICE_STANDARD,TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE,NOTICE_RECIPIENT_OTHER_PARTIES,TERMINATION_SUBSECTION_SPECIFICATION_EVENT,REASONABLE_DETAIL_STANDARD,SECTION_8_1_TERMINATION_PROVISION_REFERENCE,TERMINATION_BASIS_FACTS_AND_CIRCUMSTANCES_SCOPE,TERMINATION_BASIS_FORMATION_EVENT),ALL_OF(PROPER_TERMINATION_STANDARD,VALID_TERMINATION_STANDARD,TERMINATION_OF_AGREEMENT_EVENT,SECTION_8_1_TERMINATION_SCOPE_REFERENCE,IMMEDIATE_TERMINATION_EFFECT,EFFECT_UPON_WRITTEN_NOTICE_DELIVERY_RELATION,EFFECT_NOTICE_SENDER_TERMINATING_PARTY,EFFECT_NOTICE_RECIPIENT_OTHER_PARTIES))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_PARTY",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "EFFECT_NOTICE_SENDER_TERMINATING_PARTY"
+        ],
+        "trigger": [
+          "COMPANY_BOARD_RECOMMENDATION_CHANGE"
+        ],
+        "restraint": [],
+        "exercise": [
+          "TERMINATION_EXERCISE_EVENT",
+          "COMPANY_BOARD_RECOMMENDATION_CHANGE",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_DELIVERY_EVENT",
+          "PROMPT_NOTICE_STANDARD",
+          "TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE",
+          "NOTICE_RECIPIENT_OTHER_PARTIES",
+          "REASONABLE_DETAIL_STANDARD",
+          "EFFECT_UPON_WRITTEN_NOTICE_DELIVERY_RELATION",
+          "EFFECT_NOTICE_SENDER_TERMINATING_PARTY"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:RECOMMENDATION_CHANGE:02178e02e530e5e6e38511a9afaea3217fb5fc9f28e3758686f5014be55cde14",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 1
+    },
+    {
+      "ordinal": 3,
+      "proposed_profile_key": "0f240b2a5fad54776d6d7ca04ce3d235b754c6e3d289424b8457c9fce65b02f4",
+      "source_deal": "redhat",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "BREACH_RIGHT"
+      ],
+      "required_expression_signature": "EXCEPTION_TO(ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,BEFORE(GLOBAL_CUTOFF_TERMINATION_EXERCISE_EVENT_REFERENCE,EFFECTIVE_TIME_REFERENCE),TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE,NOTICE_SENDER_TERMINATING_PARTY,NOTICE_RECIPIENT_NON_TERMINATING_PARTY,TERMINATION_SUBSECTION_SPECIFICATION_EVENT,SECTION_7_01_TERMINATION_SCOPE_REFERENCE,TERMINATING_PARTY_COMPANY,BREACHING_PARTY_PARENT,ANY_OF(ALL_OF(BREACH_EVENT,ANY_OF(REPRESENTATIONS_SCOPE,WARRANTIES_SCOPE)),ALL_OF(FAILURE_TO_PERFORM_EVENT,ANY_OF(COVENANTS_SCOPE,OTHER_AGREEMENTS_SCOPE))),AGREEMENT_CONTAINMENT_SCOPE,CONDITION_FAILURE_CAUSATION,ANY_OF(CONDITION_6_03_A_REFERENCE,CONDITION_6_03_B_REFERENCE),ANY_OF(NOT(CAPABLE(ON_OR_BEFORE(CAPABILITY_CURE_EVENT,CAPABILITY_TERMINATION_DATE))),NOT(ON_OR_BEFORE(DEADLINE_CURE_EVENT,EARLIER_OF(DEADLINE_TERMINATION_DATE,OFFSET_AFTER(BREACH_NOTICE_EVENT,CURE_PERIOD)))))),ALL_OF(ANY_OF(ALL_OF(MATERIAL_BREACH_COMPANY_PARTY_SCOPE,DISQUALIFYING_MATERIAL_BREACH_EVENT,DISQUALIFYING_AGREEMENT_SCOPE),ALL_OF(ANY_OF(DISQUALIFYING_REPRESENTATIONS_SCOPE,DISQUALIFYING_WARRANTIES_SCOPE),UNTRUE_COMPANY_PARTY_SCOPE,DISQUALIFYING_UNTRUE_STATUS)),DISQUALIFYING_CONDITION_FAILURE_CAUSATION,ANY_OF(DISQUALIFYING_CONDITION_6_02_A_REFERENCE,DISQUALIFYING_CONDITION_6_02_B_REFERENCE)))",
+      "shape_summary": {
+        "party": [
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_RECIPIENT_NON_TERMINATING_PARTY",
+          "TERMINATING_PARTY_COMPANY",
+          "BREACHING_PARTY_PARENT",
+          "MATERIAL_BREACH_COMPANY_PARTY_SCOPE",
+          "UNTRUE_COMPANY_PARTY_SCOPE"
+        ],
+        "trigger": [
+          "BREACHING_PARTY_PARENT",
+          "BREACH_EVENT",
+          "REPRESENTATIONS_SCOPE",
+          "WARRANTIES_SCOPE",
+          "COVENANTS_SCOPE",
+          "CONDITION_FAILURE_CAUSATION",
+          "CAPABILITY_CURE_EVENT",
+          "DEADLINE_CURE_EVENT",
+          "BREACH_NOTICE_EVENT",
+          "CURE_PERIOD"
+        ],
+        "restraint": [],
+        "exercise": [
+          "GLOBAL_CUTOFF_TERMINATION_EXERCISE_EVENT_REFERENCE",
+          "TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_RECIPIENT_NON_TERMINATING_PARTY",
+          "CAPABILITY_CURE_EVENT",
+          "DEADLINE_CURE_EVENT",
+          "BREACH_NOTICE_EVENT",
+          "CURE_PERIOD"
+        ],
+        "carveout": [
+          "EXCEPTION_TO",
+          "BREACHING_PARTY_PARENT",
+          "BREACH_EVENT",
+          "CAPABLE",
+          "CAPABILITY_CURE_EVENT",
+          "DEADLINE_CURE_EVENT",
+          "BREACH_NOTICE_EVENT",
+          "CURE_PERIOD",
+          "MATERIAL_BREACH_COMPANY_PARTY_SCOPE",
+          "DISQUALIFYING_MATERIAL_BREACH_EVENT"
+        ],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:BREACH:0f240b2a5fad54776d6d7ca04ce3d235b754c6e3d289424b8457c9fce65b02f4",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 1
+    },
+    {
+      "ordinal": 4,
+      "proposed_profile_key": "107d4d1acb835461d25c85d96161db4814d5f70db3c7786477ba22f51e89edf7",
+      "source_deal": "redhat",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "MUTUAL_CONSENT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),MUTUAL_WRITTEN_CONSENT_EVENT,PARENT_CONSENTING_PARTY,SUB_CONSENTING_PARTY,COMPANY_CONSENTING_PARTY)",
+      "shape_summary": {
+        "party": [
+          "MUTUAL_WRITTEN_CONSENT_EVENT",
+          "PARENT_CONSENTING_PARTY",
+          "SUB_CONSENTING_PARTY",
+          "COMPANY_CONSENTING_PARTY"
+        ],
+        "trigger": [
+          "MUTUAL_WRITTEN_CONSENT_EVENT",
+          "PARENT_CONSENTING_PARTY",
+          "SUB_CONSENTING_PARTY",
+          "COMPANY_CONSENTING_PARTY"
+        ],
+        "restraint": [],
+        "exercise": [
+          "MUTUAL_WRITTEN_CONSENT_EVENT"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:MUTUAL_CONSENT:107d4d1acb835461d25c85d96161db4814d5f70db3c7786477ba22f51e89edf7",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 2
+    },
+    {
+      "ordinal": 5,
+      "proposed_profile_key": "14535d3b53c199eeae5fd9f16d299f2ebf7697e636db1153ee740fbbf4618703",
+      "source_deal": null,
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "SUPERIOR_PROPOSAL_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),TERMINATING_COMPANY_PARTY,BEFORE(TERMINATION_EXERCISE_EVENT,COMPANY_STOCKHOLDER_APPROVAL_RECEIPT_EVENT),SECTION_8_05_B_ACCORDANCE_RELATION,SECTION_8_05_B_REFERENCE,ALL_OF(EFFECTIVENESS_TERMINATION_EVENT,EFFECTIVENESS_SECTION_APPLICABILITY,EFFECTIVENESS_SECTION_8_01_REFERENCE,EFFECTIVENESS_MANDATORY_MODAL,EFFECTIVENESS_RELATION,EFFECTIVE_STATUS,EFFECTIVENESS_REQUIREMENT_EVENT,EFFECTIVENESS_PARTY_CASE_SCOPE,ANY_OF(EFFECTIVENESS_PARENT_PARTY_SCOPE,EFFECTIVENESS_MERGER_SUB_PARTY_SCOPE,EFFECTIVENESS_COMPANY_PARTY_SCOPE),ANY_OF(BOARD_OF_DIRECTORS_ACTION_EVENT,DULY_AUTHORIZED_BOARD_DESIGNEE_ACTION_EVENT)),ALL_OF(SECTION_8_05_B_TERMINATING_COMPANY_PARTY,SECTION_8_05_B_LEGAL_EFFECT,SECTION_8_05_B_AGREEMENT_SCOPE,SECTION_8_01_F_TERMINATION_APPLICABILITY,ALL_OF(AUTHORIZING_COMPANY_BOARD,COMPANY_ENTRY_AUTHORIZATION_EVENT,AUTHORIZED_DEFINITIVE_WRITTEN_AGREEMENT_SCOPE,AUTHORIZED_SUPERIOR_COMPANY_PROPOSAL_CONSTITUTION_EVENT,IMMEDIATE_POST_TERMINATION_TIMING,POST_TERMINATION_COMPANY_PARTY,POST_TERMINATION_ENTRY_EVENT,POST_TERMINATION_BINDING_DEFINITIVE_AGREEMENT_SCOPE,POST_TERMINATION_SUPERIOR_COMPANY_PROPOSAL_SCOPE),ALL_OF(COMPLYING_COMPANY_PARTY,COMPLIANCE_EVENT,MATERIAL_RESPECTS_STANDARD,SECTION_5_02_REFERENCE,INCLUDED_OBLIGATIONS_SCOPE,SECTION_5_02_E_REFERENCE,COMPLIANCE_SUPERIOR_COMPANY_PROPOSAL_SCOPE),ALL_OF(FEE_PAYING_COMPANY_PARTY,ANY_OF(FEE_PAID_EVENT,ALL_OF(SIMULTANEOUS_WITH_TERMINATION_TIMING,FEE_PAYMENT_EVENT)),FEE_DUE_SCOPE,SECTION_8_02_REFERENCE,FEE_PAYABILITY_CONDITION,FEE_PAYABILITY_AGREEMENT_TERMINATION_EVENT,SECTION_8_01_F_PAYABILITY_REFERENCE)))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_COMPANY_PARTY",
+          "EFFECTIVENESS_PARTY_CASE_SCOPE",
+          "EFFECTIVENESS_PARENT_PARTY_SCOPE",
+          "EFFECTIVENESS_MERGER_SUB_PARTY_SCOPE",
+          "EFFECTIVENESS_COMPANY_PARTY_SCOPE",
+          "SECTION_8_05_B_TERMINATING_COMPANY_PARTY",
+          "POST_TERMINATION_COMPANY_PARTY",
+          "COMPLYING_COMPANY_PARTY"
+        ],
+        "trigger": [
+          "COMPANY_STOCKHOLDER_APPROVAL_RECEIPT_EVENT",
+          "SECTION_8_05_B_ACCORDANCE_RELATION",
+          "SECTION_8_05_B_REFERENCE",
+          "SECTION_8_05_B_TERMINATING_COMPANY_PARTY",
+          "SECTION_8_05_B_LEGAL_EFFECT",
+          "SECTION_8_05_B_AGREEMENT_SCOPE",
+          "AUTHORIZED_SUPERIOR_COMPANY_PROPOSAL_CONSTITUTION_EVENT",
+          "POST_TERMINATION_SUPERIOR_COMPANY_PROPOSAL_SCOPE",
+          "COMPLIANCE_SUPERIOR_COMPANY_PROPOSAL_SCOPE"
+        ],
+        "restraint": [],
+        "exercise": [
+          "TERMINATION_EXERCISE_EVENT",
+          "EFFECTIVENESS_MANDATORY_MODAL",
+          "BOARD_OF_DIRECTORS_ACTION_EVENT",
+          "DULY_AUTHORIZED_BOARD_DESIGNEE_ACTION_EVENT",
+          "AUTHORIZING_COMPANY_BOARD",
+          "AUTHORIZED_DEFINITIVE_WRITTEN_AGREEMENT_SCOPE",
+          "AUTHORIZED_SUPERIOR_COMPANY_PROPOSAL_CONSTITUTION_EVENT"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": [
+          "EFFECTIVENESS_TERMINATION_EVENT",
+          "EFFECTIVENESS_SECTION_APPLICABILITY",
+          "EFFECTIVENESS_SECTION_8_01_REFERENCE",
+          "EFFECTIVENESS_MANDATORY_MODAL",
+          "EFFECTIVENESS_RELATION",
+          "EFFECTIVE_STATUS"
+        ]
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET",
+        "NO_M4_CLAIM_BINDING_IN_PACKET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:SUPERIOR_PROPOSAL:14535d3b53c199eeae5fd9f16d299f2ebf7697e636db1153ee740fbbf4618703",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 0
+    },
+    {
+      "ordinal": 6,
+      "proposed_profile_key": "1fe13246b63b173f399eb99f3f60d80082efb5faf81fbbe5b9322cc10542e602",
+      "source_deal": "concho",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "STOCKHOLDER_APPROVAL_FAILURE_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),ANY_OF(TERMINATING_COMPANY_PARTY,TERMINATING_PARENT_PARTY),NOT(PARENT_STOCKHOLDER_APPROVAL_OBTAINED_EVENT),ANY_OF(ALL_OF(VOTE_HELD_EVENT,DULY_HELD_STATUS,PARENT_STOCKHOLDERS_MEETING_EVENT),ADJOURNMENT_EVENT,POSTPONEMENT_EVENT),ALL_OF(TERMINATION_NOTICE_ACTOR,TERMINATION_NOTICE_PROVISION_EVENT,WRITTEN_TERMINATION_NOTICE,TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY,TERMINATION_REASON_PARTICULARITY_SPECIFICATION_EVENT,TERMINATION_REASON_SCOPE,IMMEDIATE_TERMINATION_EFFECT,WRITTEN_TERMINATION_NOTICE_DELIVERY_EVENT,DELIVERED_WRITTEN_TERMINATION_NOTICE_REFERENCE,DELIVERY_RECIPIENT_OTHER_PARTY))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_COMPANY_PARTY",
+          "TERMINATING_PARENT_PARTY",
+          "TERMINATION_NOTICE_ACTOR",
+          "TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY",
+          "DELIVERY_RECIPIENT_OTHER_PARTY"
+        ],
+        "trigger": [
+          "PARENT_STOCKHOLDER_APPROVAL_OBTAINED_EVENT",
+          "VOTE_HELD_EVENT",
+          "PARENT_STOCKHOLDERS_MEETING_EVENT"
+        ],
+        "restraint": [],
+        "exercise": [
+          "TERMINATION_NOTICE_ACTOR",
+          "TERMINATION_NOTICE_PROVISION_EVENT",
+          "WRITTEN_TERMINATION_NOTICE",
+          "TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY",
+          "WRITTEN_TERMINATION_NOTICE_DELIVERY_EVENT",
+          "DELIVERED_WRITTEN_TERMINATION_NOTICE_REFERENCE",
+          "DELIVERY_RECIPIENT_OTHER_PARTY"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:STOCKHOLDER_APPROVAL_FAILURE:1fe13246b63b173f399eb99f3f60d80082efb5faf81fbbe5b9322cc10542e602",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 2
+    },
+    {
+      "ordinal": 7,
+      "proposed_profile_key": "261c8790a3247cc495222c2c63e3c82bf09bbcabeae4caa4cb4ff99031a5a6a6",
+      "source_deal": "metsera",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "OUTSIDE_DATE_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(EXCEPTION_TO(ALL_OF(ALL_OF(LEGAL_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),ANY_OF(TERMINATING_PARENT_PARTY,TERMINATING_COMPANY_PARTY),NOT(ON_OR_BEFORE(EFFECTIVE_TIME_EVENT,BASE_OUTSIDE_DATE_REFERENCE))),ALL_OF(TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY,MATERIAL_AGREEMENT_BREACH,PROXIMATE_CAUSATION,NOT(ON_OR_BEFORE(DISQUALIFYING_MERGER_CONSUMMATION_EVENT,DISQUALIFYING_OUTSIDE_DATE_REFERENCE)))),ALL_OF(EFFECTIVENESS_TERMINATION_EVENT,EFFECTIVENESS_SECTION_APPLICABILITY,EFFECTIVENESS_SECTION_8_01_REFERENCE,EFFECTIVENESS_MANDATORY_MODAL,EFFECTIVENESS_RELATION,EFFECTIVE_STATUS,EFFECTIVENESS_REQUIREMENT_EVENT,EFFECTIVENESS_PARTY_CASE_SCOPE,ANY_OF(EFFECTIVENESS_PARENT_PARTY_SCOPE,EFFECTIVENESS_MERGER_SUB_PARTY_SCOPE,EFFECTIVENESS_COMPANY_PARTY_SCOPE),ANY_OF(BOARD_OF_DIRECTORS_ACTION_EVENT,DULY_AUTHORIZED_BOARD_DESIGNEE_ACTION_EVENT)))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_PARENT_PARTY",
+          "TERMINATING_COMPANY_PARTY",
+          "TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY",
+          "EFFECTIVENESS_PARTY_CASE_SCOPE",
+          "EFFECTIVENESS_PARENT_PARTY_SCOPE",
+          "EFFECTIVENESS_MERGER_SUB_PARTY_SCOPE",
+          "EFFECTIVENESS_COMPANY_PARTY_SCOPE"
+        ],
+        "trigger": [
+          "TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE",
+          "EFFECTIVE_TIME_EVENT",
+          "BASE_OUTSIDE_DATE_REFERENCE",
+          "DISQUALIFYING_OUTSIDE_DATE_REFERENCE"
+        ],
+        "restraint": [],
+        "exercise": [
+          "EFFECTIVENESS_MANDATORY_MODAL",
+          "BOARD_OF_DIRECTORS_ACTION_EVENT",
+          "DULY_AUTHORIZED_BOARD_DESIGNEE_ACTION_EVENT"
+        ],
+        "carveout": [
+          "EXCEPTION_TO",
+          "TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY",
+          "MATERIAL_AGREEMENT_BREACH",
+          "PROXIMATE_CAUSATION",
+          "DISQUALIFYING_MERGER_CONSUMMATION_EVENT",
+          "DISQUALIFYING_OUTSIDE_DATE_REFERENCE"
+        ],
+        "extension": [],
+        "effectiveness": [
+          "EFFECTIVENESS_TERMINATION_EVENT",
+          "EFFECTIVENESS_SECTION_APPLICABILITY",
+          "EFFECTIVENESS_SECTION_8_01_REFERENCE",
+          "EFFECTIVENESS_MANDATORY_MODAL",
+          "EFFECTIVENESS_RELATION",
+          "EFFECTIVE_STATUS"
+        ]
+      },
+      "review_flags": [
+        "EXTENSION_MECHANICS_DEFERRED_NOT_IN_SIGNATURE",
+        "HOLD_RECOMMENDED_UNTIL_EXTENSION_DISPOSITION"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "HOLD_EXTENSION_DISPOSITION_PENDING",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:OUTSIDE_DATE:261c8790a3247cc495222c2c63e3c82bf09bbcabeae4caa4cb4ff99031a5a6a6",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 4
+    },
+    {
+      "ordinal": 8,
+      "proposed_profile_key": "2662e00a5570badcb20d8fc285738f54e85729c2375dd54f12019c2aa3a0605a",
+      "source_deal": null,
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "NO_SOLICITATION_BREACH_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),TERMINATING_PARTY,ANY_OF(BREACHING_PARTY,BREACHING_SUBSIDIARY_SCOPE,BREACHING_DIRECTOR_SCOPE,BREACHING_EXECUTIVE_OFFICER_SCOPE),WILLFULNESS,MATERIALITY,NO_SOLICITATION_BREACH,NO_SOLICITATION_OBLIGATION_REFERENCE,ALL_OF(TERMINATION_NOTICE_ACTOR,TERMINATION_NOTICE_PROVISION_EVENT,WRITTEN_TERMINATION_NOTICE,TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY,TERMINATION_REASON_PARTICULARITY_SPECIFICATION_EVENT,TERMINATION_REASON_SCOPE,IMMEDIATE_TERMINATION_EFFECT,WRITTEN_TERMINATION_NOTICE_DELIVERY_EVENT,DELIVERED_WRITTEN_TERMINATION_NOTICE_REFERENCE,DELIVERY_RECIPIENT_OTHER_PARTY))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_PARTY",
+          "BREACHING_PARTY",
+          "TERMINATION_NOTICE_ACTOR",
+          "TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY",
+          "DELIVERY_RECIPIENT_OTHER_PARTY"
+        ],
+        "trigger": [
+          "BREACHING_PARTY",
+          "BREACHING_SUBSIDIARY_SCOPE",
+          "BREACHING_DIRECTOR_SCOPE",
+          "BREACHING_EXECUTIVE_OFFICER_SCOPE",
+          "MATERIALITY",
+          "NO_SOLICITATION_BREACH"
+        ],
+        "restraint": [],
+        "exercise": [
+          "TERMINATION_NOTICE_ACTOR",
+          "TERMINATION_NOTICE_PROVISION_EVENT",
+          "WRITTEN_TERMINATION_NOTICE",
+          "TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY",
+          "WRITTEN_TERMINATION_NOTICE_DELIVERY_EVENT",
+          "DELIVERED_WRITTEN_TERMINATION_NOTICE_REFERENCE",
+          "DELIVERY_RECIPIENT_OTHER_PARTY"
+        ],
+        "carveout": [
+          "BREACHING_PARTY",
+          "BREACHING_SUBSIDIARY_SCOPE",
+          "BREACHING_DIRECTOR_SCOPE",
+          "BREACHING_EXECUTIVE_OFFICER_SCOPE",
+          "NO_SOLICITATION_BREACH"
+        ],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET",
+        "NO_M4_CLAIM_BINDING_IN_PACKET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:NO_SOLICITATION_BREACH:2662e00a5570badcb20d8fc285738f54e85729c2375dd54f12019c2aa3a0605a",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 2,
+      "m4_claim_count": 0
+    },
+    {
+      "ordinal": 9,
+      "proposed_profile_key": "27a55c1e6a1784696889172ef25ba603f1c8a1c39896ec2741b0b57d1df6b799",
+      "source_deal": "concho",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "RECOMMENDATION_CHANGE_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),TERMINATING_PARENT_PARTY,BEFORE(TERMINATION_EXERCISE_EVENT,COMPANY_STOCKHOLDER_APPROVAL_OBTAINED_EVENT),ANY_OF(COMPANY_BOARD_ACTOR,COMPANY_BOARD_COMMITTEE_ACTOR),COMPANY_CHANGE_OF_RECOMMENDATION_EFFECTED_EVENT,RECOMMENDATION_CHANGE_PERMISSION_STATUS_IRRELEVANT,ALL_OF(TERMINATION_NOTICE_ACTOR,TERMINATION_NOTICE_PROVISION_EVENT,WRITTEN_TERMINATION_NOTICE,TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY,TERMINATION_REASON_PARTICULARITY_SPECIFICATION_EVENT,TERMINATION_REASON_SCOPE,IMMEDIATE_TERMINATION_EFFECT,WRITTEN_TERMINATION_NOTICE_DELIVERY_EVENT,DELIVERED_WRITTEN_TERMINATION_NOTICE_REFERENCE,DELIVERY_RECIPIENT_OTHER_PARTY))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_PARENT_PARTY",
+          "COMPANY_BOARD_ACTOR",
+          "COMPANY_BOARD_COMMITTEE_ACTOR",
+          "TERMINATION_NOTICE_ACTOR",
+          "TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY",
+          "DELIVERY_RECIPIENT_OTHER_PARTY"
+        ],
+        "trigger": [
+          "COMPANY_CHANGE_OF_RECOMMENDATION_EFFECTED_EVENT",
+          "RECOMMENDATION_CHANGE_PERMISSION_STATUS_IRRELEVANT"
+        ],
+        "restraint": [],
+        "exercise": [
+          "TERMINATION_EXERCISE_EVENT",
+          "COMPANY_BOARD_ACTOR",
+          "COMPANY_BOARD_COMMITTEE_ACTOR",
+          "TERMINATION_NOTICE_ACTOR",
+          "TERMINATION_NOTICE_PROVISION_EVENT",
+          "WRITTEN_TERMINATION_NOTICE",
+          "TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY",
+          "WRITTEN_TERMINATION_NOTICE_DELIVERY_EVENT",
+          "DELIVERED_WRITTEN_TERMINATION_NOTICE_REFERENCE",
+          "DELIVERY_RECIPIENT_OTHER_PARTY"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:RECOMMENDATION_CHANGE:27a55c1e6a1784696889172ef25ba603f1c8a1c39896ec2741b0b57d1df6b799",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 1
+    },
+    {
+      "ordinal": 10,
+      "proposed_profile_key": "2bf312867d592f7d327c79b52a7851f49ddb9fd33b528de46156d469dd67b005",
+      "source_deal": "metsera",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "BREACH_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(EXCEPTION_TO(ALL_OF(ALL_OF(LEGAL_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),TERMINATING_PARENT_PARTY,BREACHING_COMPANY_PARTY,ANY_OF(ALL_OF(BASE_BREACH_EVENT,ANY_OF(BASE_REPRESENTATIONS_SCOPE,BASE_WARRANTIES_SCOPE)),ALL_OF(BASE_FAILURE_TO_PERFORM_EVENT,BASE_COVENANTS_SCOPE)),BASE_AGREEMENT_CONTAINMENT_SCOPE,ALL_OF(CONDITION_FAILURE_CAUSATION,ANY_OF(SECTION_7_02_A_CONDITION_REFERENCE,SECTION_7_02_B_CONDITION_REFERENCE),NOT(CONDITION_SATISFIED_EVENT),TERMINATION_ASSERTION_MEASUREMENT_TIME),ANY_OF(NOT(CAPABLE(BEFORE(INCURABLE_CURE_EVENT,INCURABLE_OUTSIDE_DATE))),ALL_OF(CAPABLE(BEFORE(CURABLE_CURE_EVENT,CURABLE_OUTSIDE_DATE)),NOT(BEFORE(DEADLINE_CURE_EVENT,EARLIER_OF(OFFSET_AFTER(BREACH_NOTICE_GIVING_EVENT,CURE_PERIOD),DEADLINE_OUTSIDE_DATE))),WRITTEN_CURE_NOTICE_FORM,CURE_NOTICE_RECIPIENT_COMPANY,CURE_NOTICE_BREACH_SCOPE))),ALL_OF(ANY_OF(DISQUALIFYING_PARENT_PARTY,DISQUALIFYING_MERGER_SUB_PARTY),DISQUALIFYING_BREACH_EVENT,ANY_OF(DISQUALIFYING_REPRESENTATION_SCOPE,DISQUALIFYING_WARRANTY_SCOPE,DISQUALIFYING_COVENANT_SCOPE),DISQUALIFYING_AGREEMENT_CONTAINMENT_SCOPE,DISQUALIFYING_CONDITION_FAILURE_CAUSATION,ANY_OF(SECTION_7_01_CONDITION_REFERENCE,SECTION_7_03_CONDITION_REFERENCE))),ALL_OF(EFFECTIVENESS_TERMINATION_EVENT,EFFECTIVENESS_SECTION_APPLICABILITY,EFFECTIVENESS_SECTION_8_01_REFERENCE,EFFECTIVENESS_MANDATORY_MODAL,EFFECTIVENESS_RELATION,EFFECTIVE_STATUS,EFFECTIVENESS_REQUIREMENT_EVENT,EFFECTIVENESS_PARTY_CASE_SCOPE,ANY_OF(EFFECTIVENESS_PARENT_PARTY_SCOPE,EFFECTIVENESS_MERGER_SUB_PARTY_SCOPE,EFFECTIVENESS_COMPANY_PARTY_SCOPE),ANY_OF(BOARD_OF_DIRECTORS_ACTION_EVENT,DULY_AUTHORIZED_BOARD_DESIGNEE_ACTION_EVENT)))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_PARENT_PARTY",
+          "BREACHING_COMPANY_PARTY",
+          "DISQUALIFYING_PARENT_PARTY",
+          "DISQUALIFYING_MERGER_SUB_PARTY",
+          "EFFECTIVENESS_PARTY_CASE_SCOPE",
+          "EFFECTIVENESS_PARENT_PARTY_SCOPE",
+          "EFFECTIVENESS_MERGER_SUB_PARTY_SCOPE",
+          "EFFECTIVENESS_COMPANY_PARTY_SCOPE"
+        ],
+        "trigger": [
+          "BREACHING_COMPANY_PARTY",
+          "BASE_BREACH_EVENT",
+          "BASE_REPRESENTATIONS_SCOPE",
+          "BASE_WARRANTIES_SCOPE",
+          "BASE_COVENANTS_SCOPE",
+          "CONDITION_FAILURE_CAUSATION",
+          "INCURABLE_CURE_EVENT",
+          "CURABLE_CURE_EVENT",
+          "DEADLINE_CURE_EVENT",
+          "BREACH_NOTICE_GIVING_EVENT"
+        ],
+        "restraint": [],
+        "exercise": [
+          "INCURABLE_CURE_EVENT",
+          "CURABLE_CURE_EVENT",
+          "DEADLINE_CURE_EVENT",
+          "BREACH_NOTICE_GIVING_EVENT",
+          "CURE_PERIOD",
+          "WRITTEN_CURE_NOTICE_FORM",
+          "CURE_NOTICE_RECIPIENT_COMPANY",
+          "CURE_NOTICE_BREACH_SCOPE",
+          "EFFECTIVENESS_MANDATORY_MODAL",
+          "BOARD_OF_DIRECTORS_ACTION_EVENT"
+        ],
+        "carveout": [
+          "EXCEPTION_TO",
+          "BREACHING_COMPANY_PARTY",
+          "BASE_BREACH_EVENT",
+          "CAPABLE",
+          "INCURABLE_CURE_EVENT",
+          "CURABLE_CURE_EVENT",
+          "DEADLINE_CURE_EVENT",
+          "BREACH_NOTICE_GIVING_EVENT",
+          "CURE_PERIOD",
+          "WRITTEN_CURE_NOTICE_FORM"
+        ],
+        "extension": [],
+        "effectiveness": [
+          "EFFECTIVENESS_TERMINATION_EVENT",
+          "EFFECTIVENESS_SECTION_APPLICABILITY",
+          "EFFECTIVENESS_SECTION_8_01_REFERENCE",
+          "EFFECTIVENESS_MANDATORY_MODAL",
+          "EFFECTIVENESS_RELATION",
+          "EFFECTIVE_STATUS"
+        ]
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:BREACH:2bf312867d592f7d327c79b52a7851f49ddb9fd33b528de46156d469dd67b005",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 2
+    },
+    {
+      "ordinal": 11,
+      "proposed_profile_key": "2f1d87ebe4ede0e455fa16c7cb8486d15d7020be8571802292d0b10867201fd6",
+      "source_deal": null,
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "FIDUCIARY_NOTICE_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,BEFORE(GLOBAL_CUTOFF_TERMINATION_EXERCISE_EVENT_REFERENCE,EFFECTIVE_TIME_REFERENCE),TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE,NOTICE_SENDER_TERMINATING_PARTY,NOTICE_RECIPIENT_NON_TERMINATING_PARTY,TERMINATION_SUBSECTION_SPECIFICATION_EVENT,SECTION_7_01_TERMINATION_SCOPE_REFERENCE,TERMINATING_PARTY_PARENT,BEFORE(SHAREHOLDER_CUTOFF_TERMINATION_EXERCISE_EVENT_REFERENCE,SHAREHOLDER_MEETING_REFERENCE),ANY_OF(ALL_OF(COMPANY_INTERVENING_EVENT_NOTICE_DELIVERY_EVENT,PARENT_INTERVENING_RESPONSE_INTENT_NOTICE_DELIVERY_EVENT,BEFORE(PARENT_INTERVENING_RESPONSE_INTENT_NOTICE_TIMING_EVENT,INTERVENING_EVENT_NOTICE_PERIOD_EXPIRATION_REFERENCE),PUBLIC_WAIVER_EVENT_INTERVENING_PATH,IRREVOCABLE_WAIVER_STATUS_INTERVENING_PATH,SECTION_4_02_D_RIGHTS_REFERENCE),ALL_OF(COMPANY_SUPERIOR_PROPOSAL_NOTICE_DELIVERY_EVENT,PARENT_SUPERIOR_RESPONSE_INTENT_NOTICE_DELIVERY_EVENT,BEFORE(PARENT_SUPERIOR_RESPONSE_INTENT_NOTICE_TIMING_EVENT,SUPERIOR_PROPOSAL_NOTICE_PERIOD_EXPIRATION_REFERENCE),PUBLIC_WAIVER_EVENT_SUPERIOR_PATH,IRREVOCABLE_WAIVER_STATUS_SUPERIOR_PATH,SECTION_4_02_C_RIGHTS_REFERENCE)),ON_OR_BEFORE(INTENT_ADVANCE_NOTICE_EVENT,OFFSET_BEFORE(TERMINATION_EXERCISE_EVENT_REFERENCE,INTENT_NOTICE_LEAD_PERIOD)))",
+      "shape_summary": {
+        "party": [
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_RECIPIENT_NON_TERMINATING_PARTY",
+          "TERMINATING_PARTY_PARENT"
+        ],
+        "trigger": [
+          "TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_RECIPIENT_NON_TERMINATING_PARTY",
+          "COMPANY_INTERVENING_EVENT_NOTICE_DELIVERY_EVENT",
+          "PARENT_INTERVENING_RESPONSE_INTENT_NOTICE_DELIVERY_EVENT",
+          "PARENT_INTERVENING_RESPONSE_INTENT_NOTICE_TIMING_EVENT",
+          "INTERVENING_EVENT_NOTICE_PERIOD_EXPIRATION_REFERENCE",
+          "COMPANY_SUPERIOR_PROPOSAL_NOTICE_DELIVERY_EVENT",
+          "PARENT_SUPERIOR_RESPONSE_INTENT_NOTICE_DELIVERY_EVENT",
+          "PARENT_SUPERIOR_RESPONSE_INTENT_NOTICE_TIMING_EVENT"
+        ],
+        "restraint": [],
+        "exercise": [
+          "GLOBAL_CUTOFF_TERMINATION_EXERCISE_EVENT_REFERENCE",
+          "TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_RECIPIENT_NON_TERMINATING_PARTY",
+          "SHAREHOLDER_CUTOFF_TERMINATION_EXERCISE_EVENT_REFERENCE",
+          "COMPANY_INTERVENING_EVENT_NOTICE_DELIVERY_EVENT",
+          "PARENT_INTERVENING_RESPONSE_INTENT_NOTICE_DELIVERY_EVENT",
+          "PARENT_INTERVENING_RESPONSE_INTENT_NOTICE_TIMING_EVENT",
+          "INTERVENING_EVENT_NOTICE_PERIOD_EXPIRATION_REFERENCE",
+          "COMPANY_SUPERIOR_PROPOSAL_NOTICE_DELIVERY_EVENT"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET",
+        "NO_M4_CLAIM_BINDING_IN_PACKET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:FIDUCIARY_NOTICE:2f1d87ebe4ede0e455fa16c7cb8486d15d7020be8571802292d0b10867201fd6",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 0
+    },
+    {
+      "ordinal": 12,
+      "proposed_profile_key": "4ea33624832698aaae46dae9e7328de732f0b6a6f7c0206888edacd4c064b20d",
+      "source_deal": "skechers",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "OUTSIDE_DATE_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(EXCEPTION_TO(ALL_OF(LEGAL_EFFECT,TERMINATING_PARTY,BEFORE(TERMINATION_EXERCISE_EVENT,EFFECTIVE_TIME_REFERENCE),NOT(ON_OR_BEFORE(BASE_CLOSING_EVENT,BASE_TERMINATION_DATE_REFERENCE))),ANY_OF(ALL_OF(PARENT_TERMINATING_PARTY,COMPANY_VALID_TERMINATION_RIGHT_H_REFERENCE),ALL_OF(COMPANY_TERMINATING_PARTY,PARENT_VALID_TERMINATION_RIGHT_F_REFERENCE),ALL_OF(TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY,ANY_OF(ACTION_EVENT,FAILURE_TO_ACT_EVENT),AGREEMENT_BREACH_STATUS,ANY_OF(PRIMARY_CAUSE_STANDARD,PRIMARILY_RESULTED_STANDARD),ANY_OF(ALL_OF(TERMINATING_PARTY_OBLIGATIONS_CONDITION_SCOPE,NOT(BEFORE(CONDITION_SATISFACTION_EVENT,CONDITION_DEADLINE_TERMINATION_DATE_REFERENCE))),NOT(BEFORE(DISQUALIFYING_CLOSING_EVENT,CLOSING_DEADLINE_TERMINATION_DATE_REFERENCE)))))),ALL_OF(NOTICE_SENDER_TERMINATING_PARTY,NOTICE_DELIVERY_EVENT,PROMPT_NOTICE_STANDARD,TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE,NOTICE_RECIPIENT_OTHER_PARTIES,TERMINATION_SUBSECTION_SPECIFICATION_EVENT,REASONABLE_DETAIL_STANDARD,SECTION_8_1_TERMINATION_PROVISION_REFERENCE,TERMINATION_BASIS_FACTS_AND_CIRCUMSTANCES_SCOPE,TERMINATION_BASIS_FORMATION_EVENT),ALL_OF(PROPER_TERMINATION_STANDARD,VALID_TERMINATION_STANDARD,TERMINATION_OF_AGREEMENT_EVENT,SECTION_8_1_TERMINATION_SCOPE_REFERENCE,IMMEDIATE_TERMINATION_EFFECT,EFFECT_UPON_WRITTEN_NOTICE_DELIVERY_RELATION,EFFECT_NOTICE_SENDER_TERMINATING_PARTY,EFFECT_NOTICE_RECIPIENT_OTHER_PARTIES))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_PARTY",
+          "PARENT_TERMINATING_PARTY",
+          "COMPANY_TERMINATING_PARTY",
+          "TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY",
+          "TERMINATING_PARTY_OBLIGATIONS_CONDITION_SCOPE",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "EFFECT_NOTICE_SENDER_TERMINATING_PARTY"
+        ],
+        "trigger": [
+          "EFFECTIVE_TIME_REFERENCE",
+          "BASE_CLOSING_EVENT",
+          "BASE_TERMINATION_DATE_REFERENCE",
+          "CONDITION_DEADLINE_TERMINATION_DATE_REFERENCE",
+          "DISQUALIFYING_CLOSING_EVENT",
+          "CLOSING_DEADLINE_TERMINATION_DATE_REFERENCE"
+        ],
+        "restraint": [],
+        "exercise": [
+          "TERMINATION_EXERCISE_EVENT",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_DELIVERY_EVENT",
+          "PROMPT_NOTICE_STANDARD",
+          "TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE",
+          "NOTICE_RECIPIENT_OTHER_PARTIES",
+          "REASONABLE_DETAIL_STANDARD",
+          "EFFECT_UPON_WRITTEN_NOTICE_DELIVERY_RELATION",
+          "EFFECT_NOTICE_SENDER_TERMINATING_PARTY",
+          "EFFECT_NOTICE_RECIPIENT_OTHER_PARTIES"
+        ],
+        "carveout": [
+          "EXCEPTION_TO",
+          "TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY",
+          "AGREEMENT_BREACH_STATUS",
+          "PRIMARY_CAUSE_STANDARD",
+          "PRIMARILY_RESULTED_STANDARD",
+          "DISQUALIFYING_CLOSING_EVENT"
+        ],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "EXTENSION_MECHANICS_DEFERRED_NOT_IN_SIGNATURE",
+        "HOLD_RECOMMENDED_UNTIL_EXTENSION_DISPOSITION"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "HOLD_EXTENSION_DISPOSITION_PENDING",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:OUTSIDE_DATE:4ea33624832698aaae46dae9e7328de732f0b6a6f7c0206888edacd4c064b20d",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 4
+    },
+    {
+      "ordinal": 13,
+      "proposed_profile_key": "4fddb4dd2dcf15d7b6d319737df12030ed6097f37ccd2449338059e9a1821e02",
+      "source_deal": "metsera",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "LEGAL_RESTRAINT_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(EXCEPTION_TO(ALL_OF(ALL_OF(LEGAL_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),ANY_OF(TERMINATING_PARENT_PARTY,TERMINATING_COMPANY_PARTY),LEGAL_RESTRAINT_EVENT,ANY_OF(PERMANENT_PREVENTION_EFFECT,PERMANENT_PROHIBITION_EFFECT),MERGER_CONSUMMATION_SCOPE,LEGAL_RESTRAINT_IN_EFFECT,FINAL_STATUS,NONAPPEALABLE_STATUS),ALL_OF(TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY,ANY_OF(ACTION_EVENT,FAILURE_TO_FULFILL_OBLIGATION_EVENT),AGREEMENT_SCOPE,ANY_OF(PRINCIPAL_CAUSE_OF_LEGAL_RESTRAINT,PRINCIPAL_CAUSE_OF_FAILURE_TO_REMOVE_LEGAL_RESTRAINT))),ALL_OF(EFFECTIVENESS_TERMINATION_EVENT,EFFECTIVENESS_SECTION_APPLICABILITY,EFFECTIVENESS_SECTION_8_01_REFERENCE,EFFECTIVENESS_MANDATORY_MODAL,EFFECTIVENESS_RELATION,EFFECTIVE_STATUS,EFFECTIVENESS_REQUIREMENT_EVENT,EFFECTIVENESS_PARTY_CASE_SCOPE,ANY_OF(EFFECTIVENESS_PARENT_PARTY_SCOPE,EFFECTIVENESS_MERGER_SUB_PARTY_SCOPE,EFFECTIVENESS_COMPANY_PARTY_SCOPE),ANY_OF(BOARD_OF_DIRECTORS_ACTION_EVENT,DULY_AUTHORIZED_BOARD_DESIGNEE_ACTION_EVENT)))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_PARENT_PARTY",
+          "TERMINATING_COMPANY_PARTY",
+          "TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY",
+          "EFFECTIVENESS_PARTY_CASE_SCOPE",
+          "EFFECTIVENESS_PARENT_PARTY_SCOPE",
+          "EFFECTIVENESS_MERGER_SUB_PARTY_SCOPE",
+          "EFFECTIVENESS_COMPANY_PARTY_SCOPE"
+        ],
+        "trigger": [
+          "LEGAL_RESTRAINT_EVENT",
+          "PERMANENT_PREVENTION_EFFECT",
+          "PERMANENT_PROHIBITION_EFFECT",
+          "LEGAL_RESTRAINT_IN_EFFECT",
+          "FINAL_STATUS",
+          "NONAPPEALABLE_STATUS",
+          "PRINCIPAL_CAUSE_OF_LEGAL_RESTRAINT",
+          "PRINCIPAL_CAUSE_OF_FAILURE_TO_REMOVE_LEGAL_RESTRAINT"
+        ],
+        "restraint": [
+          "LEGAL_RESTRAINT_EVENT",
+          "PERMANENT_PREVENTION_EFFECT",
+          "PERMANENT_PROHIBITION_EFFECT",
+          "LEGAL_RESTRAINT_IN_EFFECT",
+          "FINAL_STATUS",
+          "NONAPPEALABLE_STATUS",
+          "PRINCIPAL_CAUSE_OF_LEGAL_RESTRAINT",
+          "PRINCIPAL_CAUSE_OF_FAILURE_TO_REMOVE_LEGAL_RESTRAINT"
+        ],
+        "exercise": [
+          "EFFECTIVENESS_MANDATORY_MODAL",
+          "BOARD_OF_DIRECTORS_ACTION_EVENT",
+          "DULY_AUTHORIZED_BOARD_DESIGNEE_ACTION_EVENT"
+        ],
+        "carveout": [
+          "EXCEPTION_TO",
+          "TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY",
+          "PRINCIPAL_CAUSE_OF_LEGAL_RESTRAINT",
+          "PRINCIPAL_CAUSE_OF_FAILURE_TO_REMOVE_LEGAL_RESTRAINT"
+        ],
+        "extension": [],
+        "effectiveness": [
+          "EFFECTIVENESS_TERMINATION_EVENT",
+          "EFFECTIVENESS_SECTION_APPLICABILITY",
+          "EFFECTIVENESS_SECTION_8_01_REFERENCE",
+          "EFFECTIVENESS_MANDATORY_MODAL",
+          "EFFECTIVENESS_RELATION",
+          "EFFECTIVE_STATUS"
+        ]
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:LEGAL_RESTRAINT:4fddb4dd2dcf15d7b6d319737df12030ed6097f37ccd2449338059e9a1821e02",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 2
+    },
+    {
+      "ordinal": 14,
+      "proposed_profile_key": "56d227e5e1e177b1c5bbfec27d1873c6ca4e92e56f596510381e34a63e6b2b74",
+      "source_deal": "skechers",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "BREACH_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(EXCEPTION_TO(ALL_OF(LEGAL_EFFECT,TERMINATING_PARTY,BREACHING_PARTY,ANY_OF(BREACH_EVENT,FAILURE_TO_PERFORM_EVENT),MATERIALITY,ANY_OF(REPRESENTATIONS_OBLIGATION_SCOPE,WARRANTIES_OBLIGATION_SCOPE,COVENANTS_OBLIGATION_SCOPE,OTHER_AGREEMENTS_OBLIGATION_SCOPE),AGREEMENT_CONTAINMENT_SCOPE,CONDITION_FAILURE_CAUSATION,ANY_OF(PRIMARY_CONDITION_REFERENCE,SECONDARY_CONDITION_REFERENCE),IF_THEN(CAPABLE(ON_OR_BEFORE(CAPABILITY_CURE_EVENT,CAPABILITY_TERMINATION_DATE_REFERENCE)),ALL_OF(BEFORE(INTENT_NOTICE_DELIVERY_EVENT,NOTICE_DELIVERY_TERMINATION_EXERCISE_EVENT_REFERENCE),ON_OR_BEFORE(EARLIER_OF(OFFSET_AFTER(INTENT_NOTICE_TIMING_EVENT,ADVANCE_NOTICE_PERIOD),DEADLINE_TERMINATION_DATE_REFERENCE),NOTICE_PERIOD_TERMINATION_EXERCISE_EVENT_REFERENCE),INTENT_NOTICE_STATES_TERMINATION_INTENT,TERMINATION_SUBSECTION_REFERENCE,INTENT_NOTICE_STATES_TERMINATION_BASIS,NOT(BEFORE(DEADLINE_CURE_EVENT,CURE_TERMINATION_EXERCISE_EVENT_REFERENCE))))),ALL_OF(ANY_OF(ALL_OF(DISQUALIFYING_BREACH_EVENT,DISQUALIFYING_ANY_PROVISION_SCOPE),ALL_OF(ANY_OF(ALL_OF(DISQUALIFYING_FAILURE_MARKER,ANY_OF(DISQUALIFYING_PERFORM_ACTION,DISQUALIFYING_COMPLY_WITH_ACTION)),DISQUALIFYING_INACCURACY_EVENT),ANY_OF(DISQUALIFYING_REPRESENTATIONS_SCOPE,DISQUALIFYING_WARRANTIES_SCOPE,DISQUALIFYING_COVENANTS_SCOPE,DISQUALIFYING_AGREEMENTS_SCOPE))),DISQUALIFYING_CONDITION_FAILURE_CAUSATION,ANY_OF(DISQUALIFYING_PRIMARY_CONDITION_REFERENCE,DISQUALIFYING_SECONDARY_CONDITION_REFERENCE))),ALL_OF(NOTICE_SENDER_TERMINATING_PARTY,NOTICE_DELIVERY_EVENT,PROMPT_NOTICE_STANDARD,TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE,NOTICE_RECIPIENT_OTHER_PARTIES,TERMINATION_SUBSECTION_SPECIFICATION_EVENT,REASONABLE_DETAIL_STANDARD,SECTION_8_1_TERMINATION_PROVISION_REFERENCE,TERMINATION_BASIS_FACTS_AND_CIRCUMSTANCES_SCOPE,TERMINATION_BASIS_FORMATION_EVENT),ALL_OF(PROPER_TERMINATION_STANDARD,VALID_TERMINATION_STANDARD,TERMINATION_OF_AGREEMENT_EVENT,SECTION_8_1_TERMINATION_SCOPE_REFERENCE,IMMEDIATE_TERMINATION_EFFECT,EFFECT_UPON_WRITTEN_NOTICE_DELIVERY_RELATION,EFFECT_NOTICE_SENDER_TERMINATING_PARTY,EFFECT_NOTICE_RECIPIENT_OTHER_PARTIES))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_PARTY",
+          "BREACHING_PARTY",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "EFFECT_NOTICE_SENDER_TERMINATING_PARTY"
+        ],
+        "trigger": [
+          "BREACHING_PARTY",
+          "BREACH_EVENT",
+          "MATERIALITY",
+          "REPRESENTATIONS_OBLIGATION_SCOPE",
+          "WARRANTIES_OBLIGATION_SCOPE",
+          "COVENANTS_OBLIGATION_SCOPE",
+          "CONDITION_FAILURE_CAUSATION",
+          "CAPABILITY_CURE_EVENT",
+          "DEADLINE_CURE_EVENT",
+          "CURE_TERMINATION_EXERCISE_EVENT_REFERENCE"
+        ],
+        "restraint": [],
+        "exercise": [
+          "CAPABILITY_CURE_EVENT",
+          "INTENT_NOTICE_DELIVERY_EVENT",
+          "NOTICE_DELIVERY_TERMINATION_EXERCISE_EVENT_REFERENCE",
+          "INTENT_NOTICE_TIMING_EVENT",
+          "ADVANCE_NOTICE_PERIOD",
+          "NOTICE_PERIOD_TERMINATION_EXERCISE_EVENT_REFERENCE",
+          "INTENT_NOTICE_STATES_TERMINATION_INTENT",
+          "INTENT_NOTICE_STATES_TERMINATION_BASIS",
+          "DEADLINE_CURE_EVENT",
+          "CURE_TERMINATION_EXERCISE_EVENT_REFERENCE"
+        ],
+        "carveout": [
+          "EXCEPTION_TO",
+          "BREACHING_PARTY",
+          "BREACH_EVENT",
+          "CAPABLE",
+          "CAPABILITY_CURE_EVENT",
+          "DEADLINE_CURE_EVENT",
+          "CURE_TERMINATION_EXERCISE_EVENT_REFERENCE",
+          "DISQUALIFYING_BREACH_EVENT",
+          "DISQUALIFYING_ANY_PROVISION_SCOPE",
+          "DISQUALIFYING_FAILURE_MARKER"
+        ],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:BREACH:56d227e5e1e177b1c5bbfec27d1873c6ca4e92e56f596510381e34a63e6b2b74",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 2,
+      "m4_claim_count": 2
+    },
+    {
+      "ordinal": 15,
+      "proposed_profile_key": "593b246228e6899c109f282dc541d38211798aab677b3092bd7ef8e4218230e3",
+      "source_deal": "metsera",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "BREACH_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(EXCEPTION_TO(ALL_OF(ALL_OF(LEGAL_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),TERMINATING_COMPANY_PARTY,ANY_OF(PARENT_PARTY,MERGER_SUB_PARTY),ANY_OF(ALL_OF(BASE_BREACH_EVENT,ANY_OF(BASE_REPRESENTATIONS_SCOPE,BASE_WARRANTIES_SCOPE)),ALL_OF(BASE_FAILURE_TO_PERFORM_EVENT,BASE_COVENANTS_SCOPE)),BASE_AGREEMENT_CONTAINMENT_SCOPE,ALL_OF(CONDITION_FAILURE_CAUSATION,ANY_OF(SECTION_7_03_A_CONDITION_REFERENCE,SECTION_7_03_B_CONDITION_REFERENCE),NOT(CONDITION_SATISFIED_EVENT),TERMINATION_ASSERTION_MEASUREMENT_TIME),ANY_OF(NOT(CAPABLE(BEFORE(INCURABLE_CURE_EVENT,INCURABLE_OUTSIDE_DATE))),ALL_OF(CAPABLE(BEFORE(CURABLE_CURE_EVENT,CURABLE_OUTSIDE_DATE)),NOT(BEFORE(DEADLINE_CURE_EVENT,EARLIER_OF(OFFSET_AFTER(BREACH_NOTICE_GIVING_EVENT,CURE_PERIOD),DEADLINE_OUTSIDE_DATE))),WRITTEN_CURE_NOTICE_FORM,ANY_OF(CURE_NOTICE_RECIPIENT_PARENT,CURE_NOTICE_RECIPIENT_MERGER_SUB),CURE_NOTICE_BREACH_SCOPE))),ALL_OF(DISQUALIFYING_COMPANY_PARTY,DISQUALIFYING_BREACH_EVENT,ANY_OF(DISQUALIFYING_REPRESENTATION_SCOPE,DISQUALIFYING_WARRANTY_SCOPE,DISQUALIFYING_COVENANT_SCOPE),DISQUALIFYING_AGREEMENT_CONTAINMENT_SCOPE,DISQUALIFYING_CONDITION_FAILURE_CAUSATION,ANY_OF(SECTION_7_01_CONDITION_REFERENCE,SECTION_7_02_CONDITION_REFERENCE))),ALL_OF(EFFECTIVENESS_TERMINATION_EVENT,EFFECTIVENESS_SECTION_APPLICABILITY,EFFECTIVENESS_SECTION_8_01_REFERENCE,EFFECTIVENESS_MANDATORY_MODAL,EFFECTIVENESS_RELATION,EFFECTIVE_STATUS,EFFECTIVENESS_REQUIREMENT_EVENT,EFFECTIVENESS_PARTY_CASE_SCOPE,ANY_OF(EFFECTIVENESS_PARENT_PARTY_SCOPE,EFFECTIVENESS_MERGER_SUB_PARTY_SCOPE,EFFECTIVENESS_COMPANY_PARTY_SCOPE),ANY_OF(BOARD_OF_DIRECTORS_ACTION_EVENT,DULY_AUTHORIZED_BOARD_DESIGNEE_ACTION_EVENT)))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_COMPANY_PARTY",
+          "PARENT_PARTY",
+          "MERGER_SUB_PARTY",
+          "DISQUALIFYING_COMPANY_PARTY",
+          "EFFECTIVENESS_PARTY_CASE_SCOPE",
+          "EFFECTIVENESS_PARENT_PARTY_SCOPE",
+          "EFFECTIVENESS_MERGER_SUB_PARTY_SCOPE",
+          "EFFECTIVENESS_COMPANY_PARTY_SCOPE"
+        ],
+        "trigger": [
+          "BASE_BREACH_EVENT",
+          "BASE_REPRESENTATIONS_SCOPE",
+          "BASE_WARRANTIES_SCOPE",
+          "BASE_COVENANTS_SCOPE",
+          "CONDITION_FAILURE_CAUSATION",
+          "INCURABLE_CURE_EVENT",
+          "CURABLE_CURE_EVENT",
+          "DEADLINE_CURE_EVENT",
+          "BREACH_NOTICE_GIVING_EVENT",
+          "CURE_PERIOD"
+        ],
+        "restraint": [],
+        "exercise": [
+          "INCURABLE_CURE_EVENT",
+          "CURABLE_CURE_EVENT",
+          "DEADLINE_CURE_EVENT",
+          "BREACH_NOTICE_GIVING_EVENT",
+          "CURE_PERIOD",
+          "WRITTEN_CURE_NOTICE_FORM",
+          "CURE_NOTICE_RECIPIENT_PARENT",
+          "CURE_NOTICE_RECIPIENT_MERGER_SUB",
+          "CURE_NOTICE_BREACH_SCOPE",
+          "EFFECTIVENESS_MANDATORY_MODAL"
+        ],
+        "carveout": [
+          "EXCEPTION_TO",
+          "BASE_BREACH_EVENT",
+          "CAPABLE",
+          "INCURABLE_CURE_EVENT",
+          "CURABLE_CURE_EVENT",
+          "DEADLINE_CURE_EVENT",
+          "BREACH_NOTICE_GIVING_EVENT",
+          "CURE_PERIOD",
+          "WRITTEN_CURE_NOTICE_FORM",
+          "CURE_NOTICE_RECIPIENT_PARENT"
+        ],
+        "extension": [],
+        "effectiveness": [
+          "EFFECTIVENESS_TERMINATION_EVENT",
+          "EFFECTIVENESS_SECTION_APPLICABILITY",
+          "EFFECTIVENESS_SECTION_8_01_REFERENCE",
+          "EFFECTIVENESS_MANDATORY_MODAL",
+          "EFFECTIVENESS_RELATION",
+          "EFFECTIVE_STATUS"
+        ]
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:BREACH:593b246228e6899c109f282dc541d38211798aab677b3092bd7ef8e4218230e3",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 1
+    },
+    {
+      "ordinal": 16,
+      "proposed_profile_key": "5965d121b11523935d38eba6f69a4a23fdb608d7a80d0ba2848ddfdaffc4894d",
+      "source_deal": "topbuild",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "MUTUAL_CONSENT"
+      ],
+      "required_expression_signature": "ALL_OF(LEGAL_EFFECT,BEFORE(MUTUAL_WRITTEN_CONSENT_EVENT,TITANIUM_MERGER_EFFECTIVE_TIME_REFERENCE),CONSENTING_PARTY_COMPANY,CONSENTING_PARTY_PARENT,RESPECTIVE_BOARD_ACTIONS)",
+      "shape_summary": {
+        "party": [
+          "MUTUAL_WRITTEN_CONSENT_EVENT",
+          "CONSENTING_PARTY_COMPANY",
+          "CONSENTING_PARTY_PARENT"
+        ],
+        "trigger": [
+          "MUTUAL_WRITTEN_CONSENT_EVENT",
+          "CONSENTING_PARTY_COMPANY",
+          "CONSENTING_PARTY_PARENT"
+        ],
+        "restraint": [],
+        "exercise": [
+          "MUTUAL_WRITTEN_CONSENT_EVENT",
+          "RESPECTIVE_BOARD_ACTIONS"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:MUTUAL_CONSENT:5965d121b11523935d38eba6f69a4a23fdb608d7a80d0ba2848ddfdaffc4894d",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 2
+    },
+    {
+      "ordinal": 17,
+      "proposed_profile_key": "5bd3e1df5b60666104fb20c9e51fcda8232e17f7a224bfd1d27233c79adedca0",
+      "source_deal": "concho",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "LEGAL_RESTRAINT_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(EXCEPTION_TO(ALL_OF(ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),ANY_OF(TERMINATING_COMPANY_PARTY,TERMINATING_PARENT_PARTY),ANY_OF(ALL_OF(GOVERNMENTAL_ENTITY,JURISDICTION_OVER_PARTY_SCOPE,ANY_OF(ALL_OF(ISSUANCE_EVENT,ANY_OF(ORDER_EVENT,DECREE_EVENT,RULING_EVENT,INJUNCTION_EVENT)),ALL_OF(TAKEN_EVENT,OTHER_ACTION_EVENT)),ANY_OF(PERMANENT_RESTRAINT_EFFECT,PERMANENT_ENJOINMENT_EFFECT,PERMANENT_OTHER_PROHIBITION_EFFECT),MERGER_CONSUMMATION_SCOPE,FINAL_STATUS,NONAPPEALABLE_STATUS),ALL_OF(LAW_ADOPTION_EVENT,ANY_OF(PERMANENT_MERGER_ILLEGALITY_EFFECT,PERMANENT_MERGER_PROHIBITION_EFFECT)))),ALL_OF(TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY,FAILURE_TO_FULFILL_EVENT,ANY_OF(MATERIAL_COVENANT_SCOPE,MATERIAL_AGREEMENT_SCOPE),AGREEMENT_SCOPE,ANY_OF(CAUSE_OF_STANDARD,RESULTED_IN_STANDARD),ANY_OF(DESCRIBED_ACTION_OCCURRENCE_EVENT,DESCRIBED_EVENT_OCCURRENCE_EVENT))),ALL_OF(TERMINATION_NOTICE_ACTOR,TERMINATION_NOTICE_PROVISION_EVENT,WRITTEN_TERMINATION_NOTICE,TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY,TERMINATION_REASON_PARTICULARITY_SPECIFICATION_EVENT,TERMINATION_REASON_SCOPE,IMMEDIATE_TERMINATION_EFFECT,WRITTEN_TERMINATION_NOTICE_DELIVERY_EVENT,DELIVERED_WRITTEN_TERMINATION_NOTICE_REFERENCE,DELIVERY_RECIPIENT_OTHER_PARTY))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_COMPANY_PARTY",
+          "TERMINATING_PARENT_PARTY",
+          "JURISDICTION_OVER_PARTY_SCOPE",
+          "TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY",
+          "TERMINATION_NOTICE_ACTOR",
+          "TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY",
+          "DELIVERY_RECIPIENT_OTHER_PARTY"
+        ],
+        "trigger": [
+          "GOVERNMENTAL_ENTITY",
+          "JURISDICTION_OVER_PARTY_SCOPE",
+          "ORDER_EVENT",
+          "INJUNCTION_EVENT",
+          "PERMANENT_RESTRAINT_EFFECT",
+          "PERMANENT_OTHER_PROHIBITION_EFFECT",
+          "FINAL_STATUS",
+          "NONAPPEALABLE_STATUS",
+          "PERMANENT_MERGER_PROHIBITION_EFFECT"
+        ],
+        "restraint": [
+          "GOVERNMENTAL_ENTITY",
+          "JURISDICTION_OVER_PARTY_SCOPE",
+          "ORDER_EVENT",
+          "INJUNCTION_EVENT",
+          "PERMANENT_RESTRAINT_EFFECT",
+          "PERMANENT_OTHER_PROHIBITION_EFFECT",
+          "FINAL_STATUS",
+          "NONAPPEALABLE_STATUS",
+          "PERMANENT_MERGER_PROHIBITION_EFFECT"
+        ],
+        "exercise": [
+          "TERMINATION_NOTICE_ACTOR",
+          "TERMINATION_NOTICE_PROVISION_EVENT",
+          "WRITTEN_TERMINATION_NOTICE",
+          "TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY",
+          "WRITTEN_TERMINATION_NOTICE_DELIVERY_EVENT",
+          "DELIVERED_WRITTEN_TERMINATION_NOTICE_REFERENCE",
+          "DELIVERY_RECIPIENT_OTHER_PARTY"
+        ],
+        "carveout": [
+          "EXCEPTION_TO",
+          "TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY",
+          "CAUSE_OF_STANDARD"
+        ],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:LEGAL_RESTRAINT:5bd3e1df5b60666104fb20c9e51fcda8232e17f7a224bfd1d27233c79adedca0",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 4
+    },
+    {
+      "ordinal": 18,
+      "proposed_profile_key": "616d4fee547a8a4cc1686628402a769cd49c01543f75e2d5f96ea54bebbb2153",
+      "source_deal": "metsera",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "MUTUAL_CONSENT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),MUTUAL_WRITTEN_CONSENT_EVENT,PARENT_CONSENTING_PARTY,MERGER_SUB_CONSENTING_PARTY,COMPANY_CONSENTING_PARTY,ALL_OF(EFFECTIVENESS_TERMINATION_EVENT,EFFECTIVENESS_SECTION_APPLICABILITY,EFFECTIVENESS_SECTION_8_01_REFERENCE,EFFECTIVENESS_MANDATORY_MODAL,EFFECTIVENESS_RELATION,EFFECTIVE_STATUS,EFFECTIVENESS_REQUIREMENT_EVENT,EFFECTIVENESS_PARTY_CASE_SCOPE,ANY_OF(EFFECTIVENESS_PARENT_PARTY_SCOPE,EFFECTIVENESS_MERGER_SUB_PARTY_SCOPE,EFFECTIVENESS_COMPANY_PARTY_SCOPE),ANY_OF(BOARD_OF_DIRECTORS_ACTION_EVENT,DULY_AUTHORIZED_BOARD_DESIGNEE_ACTION_EVENT)))",
+      "shape_summary": {
+        "party": [
+          "MUTUAL_WRITTEN_CONSENT_EVENT",
+          "PARENT_CONSENTING_PARTY",
+          "MERGER_SUB_CONSENTING_PARTY",
+          "COMPANY_CONSENTING_PARTY",
+          "EFFECTIVENESS_PARTY_CASE_SCOPE",
+          "EFFECTIVENESS_PARENT_PARTY_SCOPE",
+          "EFFECTIVENESS_MERGER_SUB_PARTY_SCOPE",
+          "EFFECTIVENESS_COMPANY_PARTY_SCOPE"
+        ],
+        "trigger": [
+          "MUTUAL_WRITTEN_CONSENT_EVENT",
+          "PARENT_CONSENTING_PARTY",
+          "MERGER_SUB_CONSENTING_PARTY",
+          "COMPANY_CONSENTING_PARTY"
+        ],
+        "restraint": [],
+        "exercise": [
+          "MUTUAL_WRITTEN_CONSENT_EVENT",
+          "EFFECTIVENESS_MANDATORY_MODAL",
+          "BOARD_OF_DIRECTORS_ACTION_EVENT",
+          "DULY_AUTHORIZED_BOARD_DESIGNEE_ACTION_EVENT"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": [
+          "EFFECTIVENESS_TERMINATION_EVENT",
+          "EFFECTIVENESS_SECTION_APPLICABILITY",
+          "EFFECTIVENESS_SECTION_8_01_REFERENCE",
+          "EFFECTIVENESS_MANDATORY_MODAL",
+          "EFFECTIVENESS_RELATION",
+          "EFFECTIVE_STATUS"
+        ]
+      },
+      "review_flags": [],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:MUTUAL_CONSENT:616d4fee547a8a4cc1686628402a769cd49c01543f75e2d5f96ea54bebbb2153",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 2
+    },
+    {
+      "ordinal": 19,
+      "proposed_profile_key": "6200a1070e08ba7dea8a53418d70756727260cd5fe6be37e6fc27e74f8f05650",
+      "source_deal": "skywater",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "MUTUAL_CONSENT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),MUTUAL_WRITTEN_CONSENT_EVENT,COMPANY_CONSENTING_PARTY,PARENT_CONSENTING_PARTY)",
+      "shape_summary": {
+        "party": [
+          "MUTUAL_WRITTEN_CONSENT_EVENT",
+          "COMPANY_CONSENTING_PARTY",
+          "PARENT_CONSENTING_PARTY"
+        ],
+        "trigger": [
+          "MUTUAL_WRITTEN_CONSENT_EVENT",
+          "COMPANY_CONSENTING_PARTY",
+          "PARENT_CONSENTING_PARTY"
+        ],
+        "restraint": [],
+        "exercise": [
+          "MUTUAL_WRITTEN_CONSENT_EVENT"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:MUTUAL_CONSENT:6200a1070e08ba7dea8a53418d70756727260cd5fe6be37e6fc27e74f8f05650",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 2
+    },
+    {
+      "ordinal": 20,
+      "proposed_profile_key": "66a6262207dae2badfe0dcda441f1cc1e33d370b531a59daadcf3ffe45752520",
+      "source_deal": null,
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "FAILURE_TO_CLOSE_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TERMINATING_COMPANY_PARTY,ALL_OF(MARKETING_PERIOD_ENDED_EVENT,ANY_OF(SECTION_7_1_CONDITIONS_REFERENCE,SECTION_7_2_CONDITIONS_REFERENCE),CONDITIONS_SATISFIED_EVENT,CONDITION_I_CLOSING_ONLY_CAPABILITY_CARVEOUT),ALL_OF(PARENT_AND_MERGER_SUB_PARTY_SCOPE,FAILURE_TO_CONSUMMATE_MERGER_EVENT,CLOSING_EVENT,REQUIRED_CLOSING_TIME_REFERENCE),ALL_OF(COMPANY_NOTICE_ACTOR,IRREVOCABLE_NOTICE_EVENT,PARENT_NOTICE_RECIPIENT,WRITTEN_NOTICE_FORM,COMPANY_READY_WILLING_AND_ABLE_TO_CONSUMMATE_EVENT,COMPANY_WILL_CONSUMMATE_EVENT,MERGER_SCOPE,ANY_OF(ALL_OF(ALL_OF(SECTION_7_1_CONDITIONS_REFERENCE_III,SECTION_7_3_CONDITIONS_REFERENCE),CONDITIONS_SATISFIED_EVENT_III,CONDITION_III_CLOSING_ONLY_CAPABILITY_CARVEOUT),ALL_OF(IRREVOCABLE_WAIVER_EVENT,UNSATISFIED_CONDITIONS_SCOPE,ALL_OF(SECTION_7_1_UNSATISFIED_CONDITIONS_REFERENCE,SECTION_7_3_UNSATISFIED_CONDITIONS_REFERENCE)))),ALL_OF(ANY_OF(CONDITION_IV_PARENT_PARTY,CONDITION_IV_MERGER_SUB_PARTY),NOT(ON_OR_BEFORE(MERGER_CONSUMMATION_EVENT,OFFSET_AFTER(CLOSING_NOTICE_RECEIPT_EVENT,POST_RECEIPT_CLOSING_PERIOD))))),ALL_OF(NOTICE_SENDER_TERMINATING_PARTY,NOTICE_DELIVERY_EVENT,PROMPT_NOTICE_STANDARD,TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE,NOTICE_RECIPIENT_OTHER_PARTIES,TERMINATION_SUBSECTION_SPECIFICATION_EVENT,REASONABLE_DETAIL_STANDARD,SECTION_8_1_TERMINATION_PROVISION_REFERENCE,TERMINATION_BASIS_FACTS_AND_CIRCUMSTANCES_SCOPE,TERMINATION_BASIS_FORMATION_EVENT),ALL_OF(PROPER_TERMINATION_STANDARD,VALID_TERMINATION_STANDARD,TERMINATION_OF_AGREEMENT_EVENT,SECTION_8_1_TERMINATION_SCOPE_REFERENCE,IMMEDIATE_TERMINATION_EFFECT,EFFECT_UPON_WRITTEN_NOTICE_DELIVERY_RELATION,EFFECT_NOTICE_SENDER_TERMINATING_PARTY,EFFECT_NOTICE_RECIPIENT_OTHER_PARTIES))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_COMPANY_PARTY",
+          "PARENT_AND_MERGER_SUB_PARTY_SCOPE",
+          "COMPANY_NOTICE_ACTOR",
+          "CONDITION_IV_PARENT_PARTY",
+          "CONDITION_IV_MERGER_SUB_PARTY",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "EFFECT_NOTICE_SENDER_TERMINATING_PARTY"
+        ],
+        "trigger": [
+          "FAILURE_TO_CONSUMMATE_MERGER_EVENT"
+        ],
+        "restraint": [],
+        "exercise": [
+          "COMPANY_NOTICE_ACTOR",
+          "IRREVOCABLE_NOTICE_EVENT",
+          "PARENT_NOTICE_RECIPIENT",
+          "WRITTEN_NOTICE_FORM",
+          "CLOSING_NOTICE_RECEIPT_EVENT",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_DELIVERY_EVENT",
+          "PROMPT_NOTICE_STANDARD",
+          "TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE",
+          "NOTICE_RECIPIENT_OTHER_PARTIES"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET",
+        "NO_M4_CLAIM_BINDING_IN_PACKET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:FAILURE_TO_CLOSE:66a6262207dae2badfe0dcda441f1cc1e33d370b531a59daadcf3ffe45752520",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 0
+    },
+    {
+      "ordinal": 21,
+      "proposed_profile_key": "6cf01b47ad38320d80e33a6a91acf43f161fefe68bd66091c3bee2ebb195d6d8",
+      "source_deal": "skywater",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "RECOMMENDATION_CHANGE_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),TERMINATING_PARENT_PARTY,BEFORE(TERMINATION_EXERCISE_EVENT,COMPANY_STOCKHOLDER_APPROVAL_RECEIPT_EVENT),ANY_OF(ALL_OF(CHANGE_IN_COMPANY_RECOMMENDATION_EVENT,RECOMMENDATION_CHANGE_PERMISSION_STATUS_IRRELEVANT),ALL_OF(ANY_OF(COMPANY_BOARD_ACTOR,COMPANY_BOARD_COMMITTEE_ACTOR),CHANGE_IN_COMPANY_RECOMMENDATION_RESOLUTION_EVENT)),ALL_OF(DESIRING_TERMINATION_PARTY_SCOPE,NOTICE_GIVING_EVENT,WRITTEN_NOTICE,OTHER_PARTY_RECIPIENT,SECTION_10_1_REFERENCE,SPECIFYING_EVENT,TERMINATION_PROVISION_SCOPE))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_PARENT_PARTY",
+          "COMPANY_BOARD_ACTOR",
+          "COMPANY_BOARD_COMMITTEE_ACTOR",
+          "DESIRING_TERMINATION_PARTY_SCOPE",
+          "OTHER_PARTY_RECIPIENT"
+        ],
+        "trigger": [
+          "CHANGE_IN_COMPANY_RECOMMENDATION_EVENT",
+          "RECOMMENDATION_CHANGE_PERMISSION_STATUS_IRRELEVANT",
+          "CHANGE_IN_COMPANY_RECOMMENDATION_RESOLUTION_EVENT"
+        ],
+        "restraint": [],
+        "exercise": [
+          "TERMINATION_EXERCISE_EVENT",
+          "COMPANY_BOARD_ACTOR",
+          "COMPANY_BOARD_COMMITTEE_ACTOR",
+          "NOTICE_GIVING_EVENT",
+          "WRITTEN_NOTICE"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:RECOMMENDATION_CHANGE:6cf01b47ad38320d80e33a6a91acf43f161fefe68bd66091c3bee2ebb195d6d8",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 1
+    },
+    {
+      "ordinal": 22,
+      "proposed_profile_key": "6d7b6cb9ddd6b06555076f8df68d2dcd4981df7f3c897e56e1f6d26a214f9e79",
+      "source_deal": null,
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "STOCKHOLDER_APPROVAL_FAILURE_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(EXCEPTION_TO(ALL_OF(ALL_OF(LEGAL_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),ANY_OF(TERMINATING_PARENT_PARTY,TERMINATING_COMPANY_PARTY),NOT(COMPANY_STOCKHOLDER_APPROVAL_OBTAINED_EVENT),ANY_OF(ALL_OF(COMPANY_STOCKHOLDERS_MEETING_EVENT,DULY_CONVENED_STATUS),ADJOURNMENT_EVENT,POSTPONEMENT_EVENT)),ALL_OF(DISQUALIFYING_TERMINATING_PARTY,MATERIAL_BREACH_EVENT,AGREEMENT_SCOPE,ANY_OF(PRIMARILY_CAUSED_STANDARD,PRIMARILY_RESULTED_IN_STANDARD),DISQUALIFYING_COMPANY_STOCKHOLDER_APPROVAL_FAILURE_EVENT)),ALL_OF(EFFECTIVENESS_TERMINATION_EVENT,EFFECTIVENESS_SECTION_APPLICABILITY,EFFECTIVENESS_SECTION_8_01_REFERENCE,EFFECTIVENESS_MANDATORY_MODAL,EFFECTIVENESS_RELATION,EFFECTIVE_STATUS,EFFECTIVENESS_REQUIREMENT_EVENT,EFFECTIVENESS_PARTY_CASE_SCOPE,ANY_OF(EFFECTIVENESS_PARENT_PARTY_SCOPE,EFFECTIVENESS_MERGER_SUB_PARTY_SCOPE,EFFECTIVENESS_COMPANY_PARTY_SCOPE),ANY_OF(BOARD_OF_DIRECTORS_ACTION_EVENT,DULY_AUTHORIZED_BOARD_DESIGNEE_ACTION_EVENT)))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_PARENT_PARTY",
+          "TERMINATING_COMPANY_PARTY",
+          "DISQUALIFYING_TERMINATING_PARTY",
+          "EFFECTIVENESS_PARTY_CASE_SCOPE",
+          "EFFECTIVENESS_PARENT_PARTY_SCOPE",
+          "EFFECTIVENESS_MERGER_SUB_PARTY_SCOPE",
+          "EFFECTIVENESS_COMPANY_PARTY_SCOPE"
+        ],
+        "trigger": [
+          "COMPANY_STOCKHOLDER_APPROVAL_OBTAINED_EVENT",
+          "COMPANY_STOCKHOLDERS_MEETING_EVENT",
+          "DISQUALIFYING_COMPANY_STOCKHOLDER_APPROVAL_FAILURE_EVENT"
+        ],
+        "restraint": [],
+        "exercise": [
+          "EFFECTIVENESS_MANDATORY_MODAL",
+          "BOARD_OF_DIRECTORS_ACTION_EVENT",
+          "DULY_AUTHORIZED_BOARD_DESIGNEE_ACTION_EVENT"
+        ],
+        "carveout": [
+          "EXCEPTION_TO",
+          "DISQUALIFYING_TERMINATING_PARTY",
+          "MATERIAL_BREACH_EVENT",
+          "PRIMARILY_CAUSED_STANDARD",
+          "PRIMARILY_RESULTED_IN_STANDARD",
+          "DISQUALIFYING_COMPANY_STOCKHOLDER_APPROVAL_FAILURE_EVENT"
+        ],
+        "extension": [],
+        "effectiveness": [
+          "EFFECTIVENESS_TERMINATION_EVENT",
+          "EFFECTIVENESS_SECTION_APPLICABILITY",
+          "EFFECTIVENESS_SECTION_8_01_REFERENCE",
+          "EFFECTIVENESS_MANDATORY_MODAL",
+          "EFFECTIVENESS_RELATION",
+          "EFFECTIVE_STATUS"
+        ]
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET",
+        "NO_M4_CLAIM_BINDING_IN_PACKET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:STOCKHOLDER_APPROVAL_FAILURE:6d7b6cb9ddd6b06555076f8df68d2dcd4981df7f3c897e56e1f6d26a214f9e79",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 0
+    },
+    {
+      "ordinal": 23,
+      "proposed_profile_key": "6dd3746cb90349101c9da2891a1e029fc87c418fe309770cac83a99141a698ab",
+      "source_deal": "skywater",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "LEGAL_RESTRAINT_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(EXCEPTION_TO(ALL_OF(ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),ANY_OF(TERMINATING_COMPANY_PARTY,TERMINATING_PARENT_PARTY),ANY_OF(ALL_OF(ANY_OF(LAW_EVENT,REGULATION_EVENT),ANY_OF(MERGERS_ILLEGALITY_EFFECT,MERGERS_PROHIBITION_EFFECT),ANY_OF(ENACTED_STATUS,ENFORCED_STATUS),LAW_OR_REGULATION_GOVERNMENTAL_AUTHORITY_ACTOR),ALL_OF(ANY_OF(JUDGMENT_EVENT,INJUNCTION_EVENT,ORDER_EVENT,DECREE_EVENT),ANY_OF(ENJOINING_EFFECT,OTHERWISE_PROHIBITING_EFFECT),ANY_OF(PARENT_PARTY,COMPANY_PARTY),MERGERS_CONSUMMATION_SCOPE,ENTERED_STATUS,JUDICIAL_RESTRAINT_GOVERNMENTAL_AUTHORITY_ACTOR,FINAL_STATUS,NONAPPEALABLE_STATUS))),ALL_OF(TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY,FAILURE_TO_FULFILL_OBLIGATION_EVENT,SECTION_7_1_REFERENCE,ANY_OF(PRINCIPALLY_CAUSED_STANDARD,RESULTED_IN_STANDARD),ANY_OF(IMPOSITION_OF_LEGAL_RESTRAINT_EVENT,FAILURE_TO_RESIST_EVENT,FAILURE_TO_RESOLVE_EVENT,FAILURE_TO_LIFT_EVENT))),ALL_OF(DESIRING_TERMINATION_PARTY_SCOPE,NOTICE_GIVING_EVENT,WRITTEN_NOTICE,OTHER_PARTY_RECIPIENT,SECTION_10_1_REFERENCE,SPECIFYING_EVENT,TERMINATION_PROVISION_SCOPE))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_COMPANY_PARTY",
+          "TERMINATING_PARENT_PARTY",
+          "LAW_OR_REGULATION_GOVERNMENTAL_AUTHORITY_ACTOR",
+          "PARENT_PARTY",
+          "COMPANY_PARTY",
+          "JUDICIAL_RESTRAINT_GOVERNMENTAL_AUTHORITY_ACTOR",
+          "TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY",
+          "DESIRING_TERMINATION_PARTY_SCOPE"
+        ],
+        "trigger": [
+          "REGULATION_EVENT",
+          "MERGERS_PROHIBITION_EFFECT",
+          "LAW_OR_REGULATION_GOVERNMENTAL_AUTHORITY_ACTOR",
+          "INJUNCTION_EVENT",
+          "ORDER_EVENT",
+          "JUDICIAL_RESTRAINT_GOVERNMENTAL_AUTHORITY_ACTOR",
+          "FINAL_STATUS",
+          "NONAPPEALABLE_STATUS",
+          "IMPOSITION_OF_LEGAL_RESTRAINT_EVENT"
+        ],
+        "restraint": [
+          "REGULATION_EVENT",
+          "MERGERS_PROHIBITION_EFFECT",
+          "LAW_OR_REGULATION_GOVERNMENTAL_AUTHORITY_ACTOR",
+          "INJUNCTION_EVENT",
+          "ORDER_EVENT",
+          "JUDICIAL_RESTRAINT_GOVERNMENTAL_AUTHORITY_ACTOR",
+          "FINAL_STATUS",
+          "NONAPPEALABLE_STATUS",
+          "IMPOSITION_OF_LEGAL_RESTRAINT_EVENT"
+        ],
+        "exercise": [
+          "NOTICE_GIVING_EVENT",
+          "WRITTEN_NOTICE"
+        ],
+        "carveout": [
+          "EXCEPTION_TO",
+          "TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY",
+          "PRINCIPALLY_CAUSED_STANDARD"
+        ],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:LEGAL_RESTRAINT:6dd3746cb90349101c9da2891a1e029fc87c418fe309770cac83a99141a698ab",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 4
+    },
+    {
+      "ordinal": 24,
+      "proposed_profile_key": "753da23677c2d8296f6eb94b9648c26ac6668e6195f0dd0d4ec8024b366f0051",
+      "source_deal": "skywater",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "SUPERIOR_PROPOSAL_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),TERMINATING_COMPANY_PARTY,BEFORE(TERMINATION_EXERCISE_EVENT,COMPANY_STOCKHOLDER_APPROVAL_RECEIPT_EVENT),ENTRY_INTO_DEFINITIVE_WRITTEN_AGREEMENT_PURPOSE,DEFINITIVE_WRITTEN_AGREEMENT_SCOPE,BASE_SUPERIOR_PROPOSAL_SCOPE,ALL_OF(COMPANY_RECEIVED_SUPERIOR_PROPOSAL_EVENT,AGREEMENT_DATE_POSTDATE_RELATION,NOT(SUPERIOR_PROPOSAL_RESULTED_FROM_NO_SOLICITATION_BREACH),ANY_OF(SECTION_5_2_REFERENCE,SECTION_5_3_REFERENCE)),ALL_OF(COMPANY_COMPLIANCE_EVENT,SECTION_5_3_B_I_REFERENCE,COMPLIANCE_SUPERIOR_PROPOSAL_SCOPE),ALL_OF(CONCURRENT_WITH_TERMINATION_TIMING,TERMINATION_FEE_PAYMENT_CONDITION,COMPANY_TERMINATION_FEE_PAYMENT_EVENT,ANY_OF(PARENT_FEE_RECIPIENT,PARENT_DESIGNEE_FEE_RECIPIENT),TERMINATION_FEE_SCOPE,SECTION_10_5_REFERENCE),ALL_OF(COMPANY_BOARD_ACTOR,COMPANY_ENTRY_AUTHORIZATION_EVENT,CONCURRENT_COMPANY_ENTRY_EVENT,AUTHORIZED_DEFINITIVE_WRITTEN_AGREEMENT_SCOPE,AUTHORIZED_SUPERIOR_PROPOSAL_SCOPE,PERMITTED_CONCURRENT_ENTRY_RELATION),ALL_OF(DESIRING_TERMINATION_PARTY_SCOPE,NOTICE_GIVING_EVENT,WRITTEN_NOTICE,OTHER_PARTY_RECIPIENT,SECTION_10_1_REFERENCE,SPECIFYING_EVENT,TERMINATION_PROVISION_SCOPE))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_COMPANY_PARTY",
+          "COMPANY_BOARD_ACTOR",
+          "DESIRING_TERMINATION_PARTY_SCOPE",
+          "OTHER_PARTY_RECIPIENT"
+        ],
+        "trigger": [
+          "COMPANY_STOCKHOLDER_APPROVAL_RECEIPT_EVENT",
+          "BASE_SUPERIOR_PROPOSAL_SCOPE",
+          "COMPANY_RECEIVED_SUPERIOR_PROPOSAL_EVENT",
+          "SUPERIOR_PROPOSAL_RESULTED_FROM_NO_SOLICITATION_BREACH",
+          "COMPLIANCE_SUPERIOR_PROPOSAL_SCOPE",
+          "AUTHORIZED_SUPERIOR_PROPOSAL_SCOPE"
+        ],
+        "restraint": [],
+        "exercise": [
+          "TERMINATION_EXERCISE_EVENT",
+          "ENTRY_INTO_DEFINITIVE_WRITTEN_AGREEMENT_PURPOSE",
+          "DEFINITIVE_WRITTEN_AGREEMENT_SCOPE",
+          "COMPANY_BOARD_ACTOR",
+          "AUTHORIZED_DEFINITIVE_WRITTEN_AGREEMENT_SCOPE",
+          "AUTHORIZED_SUPERIOR_PROPOSAL_SCOPE",
+          "NOTICE_GIVING_EVENT",
+          "WRITTEN_NOTICE"
+        ],
+        "carveout": [
+          "SUPERIOR_PROPOSAL_RESULTED_FROM_NO_SOLICITATION_BREACH"
+        ],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:SUPERIOR_PROPOSAL:753da23677c2d8296f6eb94b9648c26ac6668e6195f0dd0d4ec8024b366f0051",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 1
+    },
+    {
+      "ordinal": 25,
+      "proposed_profile_key": "779a6d88ed17d4cfad6e080dcce65e6dc8f7ac87b9ac14711537290fba7acf87",
+      "source_deal": "metsera",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "RECOMMENDATION_CHANGE_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),TERMINATING_PARENT_PARTY,BEFORE(TERMINATION_EXERCISE_EVENT,COMPANY_STOCKHOLDERS_MEETING_EVENT),ADVERSE_RECOMMENDATION_CHANGE_OCCURRED_EVENT,ALL_OF(EFFECTIVENESS_TERMINATION_EVENT,EFFECTIVENESS_SECTION_APPLICABILITY,EFFECTIVENESS_SECTION_8_01_REFERENCE,EFFECTIVENESS_MANDATORY_MODAL,EFFECTIVENESS_RELATION,EFFECTIVE_STATUS,EFFECTIVENESS_REQUIREMENT_EVENT,EFFECTIVENESS_PARTY_CASE_SCOPE,ANY_OF(EFFECTIVENESS_PARENT_PARTY_SCOPE,EFFECTIVENESS_MERGER_SUB_PARTY_SCOPE,EFFECTIVENESS_COMPANY_PARTY_SCOPE),ANY_OF(BOARD_OF_DIRECTORS_ACTION_EVENT,DULY_AUTHORIZED_BOARD_DESIGNEE_ACTION_EVENT)))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_PARENT_PARTY",
+          "EFFECTIVENESS_PARTY_CASE_SCOPE",
+          "EFFECTIVENESS_PARENT_PARTY_SCOPE",
+          "EFFECTIVENESS_MERGER_SUB_PARTY_SCOPE",
+          "EFFECTIVENESS_COMPANY_PARTY_SCOPE"
+        ],
+        "trigger": [
+          "ADVERSE_RECOMMENDATION_CHANGE_OCCURRED_EVENT"
+        ],
+        "restraint": [],
+        "exercise": [
+          "TERMINATION_EXERCISE_EVENT",
+          "EFFECTIVENESS_MANDATORY_MODAL",
+          "BOARD_OF_DIRECTORS_ACTION_EVENT",
+          "DULY_AUTHORIZED_BOARD_DESIGNEE_ACTION_EVENT"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": [
+          "EFFECTIVENESS_TERMINATION_EVENT",
+          "EFFECTIVENESS_SECTION_APPLICABILITY",
+          "EFFECTIVENESS_SECTION_8_01_REFERENCE",
+          "EFFECTIVENESS_MANDATORY_MODAL",
+          "EFFECTIVENESS_RELATION",
+          "EFFECTIVE_STATUS"
+        ]
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:RECOMMENDATION_CHANGE:779a6d88ed17d4cfad6e080dcce65e6dc8f7ac87b9ac14711537290fba7acf87",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 1
+    },
+    {
+      "ordinal": 26,
+      "proposed_profile_key": "9305770d0db7f2fa0ae58c86e92099cee8c39721424df7ccf41960a9c8667ac3",
+      "source_deal": "concho",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "MUTUAL_CONSENT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),MUTUAL_WRITTEN_CONSENT_EVENT,COMPANY_CONSENTING_PARTY,PARENT_CONSENTING_PARTY,ALL_OF(TERMINATION_NOTICE_ACTOR,TERMINATION_NOTICE_PROVISION_EVENT,WRITTEN_TERMINATION_NOTICE,TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY,TERMINATION_REASON_PARTICULARITY_SPECIFICATION_EVENT,TERMINATION_REASON_SCOPE,IMMEDIATE_TERMINATION_EFFECT,WRITTEN_TERMINATION_NOTICE_DELIVERY_EVENT,DELIVERED_WRITTEN_TERMINATION_NOTICE_REFERENCE,DELIVERY_RECIPIENT_OTHER_PARTY))",
+      "shape_summary": {
+        "party": [
+          "MUTUAL_WRITTEN_CONSENT_EVENT",
+          "COMPANY_CONSENTING_PARTY",
+          "PARENT_CONSENTING_PARTY",
+          "TERMINATION_NOTICE_ACTOR",
+          "TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY",
+          "DELIVERY_RECIPIENT_OTHER_PARTY"
+        ],
+        "trigger": [
+          "MUTUAL_WRITTEN_CONSENT_EVENT",
+          "COMPANY_CONSENTING_PARTY",
+          "PARENT_CONSENTING_PARTY"
+        ],
+        "restraint": [],
+        "exercise": [
+          "MUTUAL_WRITTEN_CONSENT_EVENT",
+          "TERMINATION_NOTICE_ACTOR",
+          "TERMINATION_NOTICE_PROVISION_EVENT",
+          "WRITTEN_TERMINATION_NOTICE",
+          "TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY",
+          "WRITTEN_TERMINATION_NOTICE_DELIVERY_EVENT",
+          "DELIVERED_WRITTEN_TERMINATION_NOTICE_REFERENCE",
+          "DELIVERY_RECIPIENT_OTHER_PARTY"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:MUTUAL_CONSENT:9305770d0db7f2fa0ae58c86e92099cee8c39721424df7ccf41960a9c8667ac3",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 2
+    },
+    {
+      "ordinal": 27,
+      "proposed_profile_key": "992e2f6284ab21d2c4dfc222526f1103b2d0912474f70de1784b3eb303f0947e",
+      "source_deal": "redhat",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "STOCKHOLDER_APPROVAL_FAILURE_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,BEFORE(GLOBAL_CUTOFF_TERMINATION_EXERCISE_EVENT_REFERENCE,EFFECTIVE_TIME_REFERENCE),TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE,NOTICE_SENDER_TERMINATING_PARTY,NOTICE_RECIPIENT_NON_TERMINATING_PARTY,TERMINATION_SUBSECTION_SPECIFICATION_EVENT,SECTION_7_01_TERMINATION_SCOPE_REFERENCE,ANY_OF(TERMINATING_PARTY_PARENT,TERMINATING_PARTY_COMPANY),SHAREHOLDERS_MEETING_REFERENCE,MEETING_HELD_EVENT,SHAREHOLDER_APPROVAL_REFERENCE,NOT(SHAREHOLDER_APPROVAL_OBTAINED_EVENT),ANY_OF(MEETING_OCCURRENCE_SCOPE,ADJOURNMENT_OCCURRENCE_SCOPE,POSTPONEMENT_OCCURRENCE_SCOPE))",
+      "shape_summary": {
+        "party": [
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_RECIPIENT_NON_TERMINATING_PARTY",
+          "TERMINATING_PARTY_PARENT",
+          "TERMINATING_PARTY_COMPANY"
+        ],
+        "trigger": [
+          "SHAREHOLDER_APPROVAL_REFERENCE",
+          "SHAREHOLDER_APPROVAL_OBTAINED_EVENT"
+        ],
+        "restraint": [],
+        "exercise": [
+          "GLOBAL_CUTOFF_TERMINATION_EXERCISE_EVENT_REFERENCE",
+          "TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_RECIPIENT_NON_TERMINATING_PARTY"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:STOCKHOLDER_APPROVAL_FAILURE:992e2f6284ab21d2c4dfc222526f1103b2d0912474f70de1784b3eb303f0947e",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 2
+    },
+    {
+      "ordinal": 28,
+      "proposed_profile_key": "abfa845bbb08d51182b6ed8aa925e53c91be68b4248f35283e4beeee7b929bef",
+      "source_deal": "concho",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "OUTSIDE_DATE_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(EXCEPTION_TO(ALL_OF(ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),ANY_OF(TERMINATING_COMPANY_PARTY,TERMINATING_PARENT_PARTY),NOT(ON_OR_BEFORE(BASE_MERGER_CONSUMMATION_EVENT,BASE_END_DATE_REFERENCE))),ALL_OF(TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY,FAILURE_TO_FULFILL_EVENT,ANY_OF(MATERIAL_COVENANT_SCOPE,MATERIAL_AGREEMENT_SCOPE),AGREEMENT_SCOPE,ANY_OF(CAUSE_OF_STANDARD,RESULTED_IN_STANDARD),NOT(ON_OR_BEFORE(DISQUALIFYING_MERGER_CONSUMMATION_EVENT,DISQUALIFYING_END_DATE_REFERENCE)))),ALL_OF(TERMINATION_NOTICE_ACTOR,TERMINATION_NOTICE_PROVISION_EVENT,WRITTEN_TERMINATION_NOTICE,TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY,TERMINATION_REASON_PARTICULARITY_SPECIFICATION_EVENT,TERMINATION_REASON_SCOPE,IMMEDIATE_TERMINATION_EFFECT,WRITTEN_TERMINATION_NOTICE_DELIVERY_EVENT,DELIVERED_WRITTEN_TERMINATION_NOTICE_REFERENCE,DELIVERY_RECIPIENT_OTHER_PARTY))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_COMPANY_PARTY",
+          "TERMINATING_PARENT_PARTY",
+          "TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY",
+          "TERMINATION_NOTICE_ACTOR",
+          "TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY",
+          "DELIVERY_RECIPIENT_OTHER_PARTY"
+        ],
+        "trigger": [
+          "TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE",
+          "BASE_MERGER_CONSUMMATION_EVENT",
+          "BASE_END_DATE_REFERENCE",
+          "DISQUALIFYING_END_DATE_REFERENCE"
+        ],
+        "restraint": [],
+        "exercise": [
+          "TERMINATION_NOTICE_ACTOR",
+          "TERMINATION_NOTICE_PROVISION_EVENT",
+          "WRITTEN_TERMINATION_NOTICE",
+          "TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY",
+          "WRITTEN_TERMINATION_NOTICE_DELIVERY_EVENT",
+          "DELIVERED_WRITTEN_TERMINATION_NOTICE_REFERENCE",
+          "DELIVERY_RECIPIENT_OTHER_PARTY"
+        ],
+        "carveout": [
+          "EXCEPTION_TO",
+          "TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY",
+          "CAUSE_OF_STANDARD",
+          "DISQUALIFYING_MERGER_CONSUMMATION_EVENT",
+          "DISQUALIFYING_END_DATE_REFERENCE"
+        ],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "EXTENSION_MECHANICS_DEFERRED_NOT_IN_SIGNATURE",
+        "HOLD_RECOMMENDED_UNTIL_EXTENSION_DISPOSITION"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "HOLD_EXTENSION_DISPOSITION_PENDING",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:OUTSIDE_DATE:abfa845bbb08d51182b6ed8aa925e53c91be68b4248f35283e4beeee7b929bef",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 4
+    },
+    {
+      "ordinal": 29,
+      "proposed_profile_key": "b31f22a3ba8f290b2ea7be1f43759c201f0a07bf4318adb7234d83ea53628850",
+      "source_deal": "concho",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "RECOMMENDATION_CHANGE_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),TERMINATING_COMPANY_PARTY,BEFORE(TERMINATION_EXERCISE_EVENT,PARENT_STOCKHOLDER_APPROVAL_OBTAINED_EVENT),ANY_OF(PARENT_BOARD_ACTOR,PARENT_BOARD_COMMITTEE_ACTOR),PARENT_CHANGE_OF_RECOMMENDATION_EFFECTED_EVENT,RECOMMENDATION_CHANGE_PERMISSION_STATUS_IRRELEVANT,ALL_OF(TERMINATION_NOTICE_ACTOR,TERMINATION_NOTICE_PROVISION_EVENT,WRITTEN_TERMINATION_NOTICE,TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY,TERMINATION_REASON_PARTICULARITY_SPECIFICATION_EVENT,TERMINATION_REASON_SCOPE,IMMEDIATE_TERMINATION_EFFECT,WRITTEN_TERMINATION_NOTICE_DELIVERY_EVENT,DELIVERED_WRITTEN_TERMINATION_NOTICE_REFERENCE,DELIVERY_RECIPIENT_OTHER_PARTY))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_COMPANY_PARTY",
+          "PARENT_BOARD_ACTOR",
+          "PARENT_BOARD_COMMITTEE_ACTOR",
+          "TERMINATION_NOTICE_ACTOR",
+          "TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY",
+          "DELIVERY_RECIPIENT_OTHER_PARTY"
+        ],
+        "trigger": [
+          "PARENT_CHANGE_OF_RECOMMENDATION_EFFECTED_EVENT",
+          "RECOMMENDATION_CHANGE_PERMISSION_STATUS_IRRELEVANT"
+        ],
+        "restraint": [],
+        "exercise": [
+          "TERMINATION_EXERCISE_EVENT",
+          "PARENT_BOARD_ACTOR",
+          "PARENT_BOARD_COMMITTEE_ACTOR",
+          "TERMINATION_NOTICE_ACTOR",
+          "TERMINATION_NOTICE_PROVISION_EVENT",
+          "WRITTEN_TERMINATION_NOTICE",
+          "TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY",
+          "WRITTEN_TERMINATION_NOTICE_DELIVERY_EVENT",
+          "DELIVERED_WRITTEN_TERMINATION_NOTICE_REFERENCE",
+          "DELIVERY_RECIPIENT_OTHER_PARTY"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:RECOMMENDATION_CHANGE:b31f22a3ba8f290b2ea7be1f43759c201f0a07bf4318adb7234d83ea53628850",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 1
+    },
+    {
+      "ordinal": 30,
+      "proposed_profile_key": "b36e699caf5bf861c434b0968cf400ca8b819380f7ec80b50ded6a32782cba28",
+      "source_deal": "skechers",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "SUPERIOR_PROPOSAL_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TERMINATING_COMPANY_PARTY,BEFORE(TERMINATION_EXERCISE_EVENT,THRESHOLD_DATE_REFERENCE),COMPANY_SUPERIOR_PROPOSAL_RECEIPT_EVENT,COMPANY_BOARD_AUTHORIZATION_TO_ENTER_DEFINITIVE_ALTERNATIVE_ACQUISITION_AGREEMENT,ALTERNATIVE_ACQUISITION_TRANSACTION_CONSUMMATION_SCOPE,MATERIAL_NO_SOLICITATION_COMPLIANCE,SECTION_5_3_REFERENCE,SUPERIOR_PROPOSAL_RELATION,CONCURRENT_COMPANY_TERMINATION_FEE_PAYMENT_EVENT,COMPANY_TERMINATION_FEE_SCOPE,SECTION_8_3_B_REFERENCE),ALL_OF(NOTICE_SENDER_TERMINATING_PARTY,NOTICE_DELIVERY_EVENT,PROMPT_NOTICE_STANDARD,TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE,NOTICE_RECIPIENT_OTHER_PARTIES,TERMINATION_SUBSECTION_SPECIFICATION_EVENT,REASONABLE_DETAIL_STANDARD,SECTION_8_1_TERMINATION_PROVISION_REFERENCE,TERMINATION_BASIS_FACTS_AND_CIRCUMSTANCES_SCOPE,TERMINATION_BASIS_FORMATION_EVENT),ALL_OF(PROPER_TERMINATION_STANDARD,VALID_TERMINATION_STANDARD,TERMINATION_OF_AGREEMENT_EVENT,SECTION_8_1_TERMINATION_SCOPE_REFERENCE,IMMEDIATE_TERMINATION_EFFECT,EFFECT_UPON_WRITTEN_NOTICE_DELIVERY_RELATION,EFFECT_NOTICE_SENDER_TERMINATING_PARTY,EFFECT_NOTICE_RECIPIENT_OTHER_PARTIES))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_COMPANY_PARTY",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "EFFECT_NOTICE_SENDER_TERMINATING_PARTY"
+        ],
+        "trigger": [
+          "COMPANY_SUPERIOR_PROPOSAL_RECEIPT_EVENT",
+          "SUPERIOR_PROPOSAL_RELATION"
+        ],
+        "restraint": [],
+        "exercise": [
+          "TERMINATION_EXERCISE_EVENT",
+          "COMPANY_BOARD_AUTHORIZATION_TO_ENTER_DEFINITIVE_ALTERNATIVE_ACQUISITION_AGREEMENT",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_DELIVERY_EVENT",
+          "PROMPT_NOTICE_STANDARD",
+          "TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE",
+          "NOTICE_RECIPIENT_OTHER_PARTIES",
+          "REASONABLE_DETAIL_STANDARD",
+          "EFFECT_UPON_WRITTEN_NOTICE_DELIVERY_RELATION",
+          "EFFECT_NOTICE_SENDER_TERMINATING_PARTY"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:SUPERIOR_PROPOSAL:b36e699caf5bf861c434b0968cf400ca8b819380f7ec80b50ded6a32782cba28",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 1
+    },
+    {
+      "ordinal": 31,
+      "proposed_profile_key": "b441dd818c687300b608a9ec078076ed2ed75e44a9fe91c04326b9781eb7ad97",
+      "source_deal": "skechers",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "MUTUAL_CONSENT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,BEFORE(TERMINATION_EXERCISE_EVENT,EFFECTIVE_TIME_REFERENCE),MUTUAL_WRITTEN_AGREEMENT,TERMINATING_PARTY_PARENT,TERMINATING_PARTY_COMPANY),ALL_OF(PROPER_TERMINATION_STANDARD,VALID_TERMINATION_STANDARD,TERMINATION_OF_AGREEMENT_EVENT,SECTION_8_1_TERMINATION_SCOPE_REFERENCE,IMMEDIATE_TERMINATION_EFFECT,EFFECT_UPON_WRITTEN_NOTICE_DELIVERY_RELATION,EFFECT_NOTICE_SENDER_TERMINATING_PARTY,EFFECT_NOTICE_RECIPIENT_OTHER_PARTIES))",
+      "shape_summary": {
+        "party": [
+          "MUTUAL_WRITTEN_AGREEMENT",
+          "TERMINATING_PARTY_PARENT",
+          "TERMINATING_PARTY_COMPANY",
+          "EFFECT_NOTICE_SENDER_TERMINATING_PARTY"
+        ],
+        "trigger": [
+          "MUTUAL_WRITTEN_AGREEMENT"
+        ],
+        "restraint": [],
+        "exercise": [
+          "TERMINATION_EXERCISE_EVENT",
+          "MUTUAL_WRITTEN_AGREEMENT",
+          "EFFECT_UPON_WRITTEN_NOTICE_DELIVERY_RELATION",
+          "EFFECT_NOTICE_SENDER_TERMINATING_PARTY",
+          "EFFECT_NOTICE_RECIPIENT_OTHER_PARTIES"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:MUTUAL_CONSENT:b441dd818c687300b608a9ec078076ed2ed75e44a9fe91c04326b9781eb7ad97",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 2
+    },
+    {
+      "ordinal": 32,
+      "proposed_profile_key": "b9e3024406e1a399f7bcf363f4f6267545b265dafb0ed12cd43c71b154c16712",
+      "source_deal": "redhat",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "LEGAL_RESTRAINT_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,BEFORE(GLOBAL_CUTOFF_TERMINATION_EXERCISE_EVENT_REFERENCE,EFFECTIVE_TIME_REFERENCE),TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE,NOTICE_SENDER_TERMINATING_PARTY,NOTICE_RECIPIENT_NON_TERMINATING_PARTY,TERMINATION_SUBSECTION_SPECIFICATION_EVENT,SECTION_7_01_TERMINATION_SCOPE_REFERENCE,ANY_OF(TERMINATING_PARTY_PARENT,TERMINATING_PARTY_COMPANY),EXCEPTION_TO(ALL_OF(LEGAL_RESTRAINT_EVENT,LEGAL_RESTRAINT_EFFECT_REFERENCE,LEGAL_RESTRAINT_IN_EFFECT,LEGAL_RESTRAINT_FINAL,LEGAL_RESTRAINT_NONAPPEALABLE,ANY_OF(COURT_OF_COMPETENT_JURISDICTION,OTHER_GOVERNMENTAL_ENTITY),JURISDICTION_LIST_REFERENCE,COMPANY_LETTER_REFERENCE),ALL_OF(ANY_OF(DISQUALIFYING_TERMINATING_PARTY_PERFORMANCE_FAILURE,ALL_OF(DISQUALIFYING_PARENT_TERMINATOR,DISQUALIFYING_SUB_PERFORMANCE_FAILURE)),DISQUALIFYING_AGREEMENT_OBLIGATION_SCOPE,ANY_OF(DISQUALIFYING_PRINCIPAL_CAUSE_STANDARD,DISQUALIFYING_DIRECT_RESULT_STANDARD),DISQUALIFYING_LEGAL_RESTRAINT_ISSUANCE_EVENT)))",
+      "shape_summary": {
+        "party": [
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_RECIPIENT_NON_TERMINATING_PARTY",
+          "TERMINATING_PARTY_PARENT",
+          "TERMINATING_PARTY_COMPANY",
+          "DISQUALIFYING_TERMINATING_PARTY_PERFORMANCE_FAILURE"
+        ],
+        "trigger": [
+          "LEGAL_RESTRAINT_EVENT",
+          "LEGAL_RESTRAINT_EFFECT_REFERENCE",
+          "LEGAL_RESTRAINT_IN_EFFECT",
+          "LEGAL_RESTRAINT_FINAL",
+          "LEGAL_RESTRAINT_NONAPPEALABLE",
+          "COURT_OF_COMPETENT_JURISDICTION",
+          "OTHER_GOVERNMENTAL_ENTITY",
+          "JURISDICTION_LIST_REFERENCE",
+          "DISQUALIFYING_LEGAL_RESTRAINT_ISSUANCE_EVENT"
+        ],
+        "restraint": [
+          "LEGAL_RESTRAINT_EVENT",
+          "LEGAL_RESTRAINT_EFFECT_REFERENCE",
+          "LEGAL_RESTRAINT_IN_EFFECT",
+          "LEGAL_RESTRAINT_FINAL",
+          "LEGAL_RESTRAINT_NONAPPEALABLE",
+          "COURT_OF_COMPETENT_JURISDICTION",
+          "OTHER_GOVERNMENTAL_ENTITY",
+          "JURISDICTION_LIST_REFERENCE",
+          "DISQUALIFYING_LEGAL_RESTRAINT_ISSUANCE_EVENT"
+        ],
+        "exercise": [
+          "GLOBAL_CUTOFF_TERMINATION_EXERCISE_EVENT_REFERENCE",
+          "TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_RECIPIENT_NON_TERMINATING_PARTY"
+        ],
+        "carveout": [
+          "EXCEPTION_TO",
+          "DISQUALIFYING_TERMINATING_PARTY_PERFORMANCE_FAILURE",
+          "DISQUALIFYING_PARENT_TERMINATOR",
+          "DISQUALIFYING_SUB_PERFORMANCE_FAILURE",
+          "DISQUALIFYING_AGREEMENT_OBLIGATION_SCOPE",
+          "DISQUALIFYING_PRINCIPAL_CAUSE_STANDARD",
+          "DISQUALIFYING_DIRECT_RESULT_STANDARD",
+          "DISQUALIFYING_LEGAL_RESTRAINT_ISSUANCE_EVENT"
+        ],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET",
+        "B9E_JURISDICTION_LIST_SOURCE_GAP_RETAINED",
+        "B9E_DISCLOSURE_NOTE_ONLY_DO_NOT_REOPEN"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [
+        {
+          "governed_disclosure_note_id": "87cfc2a092eafc89c9a8e12ed674bc68f08bb8813d9a4b17c525eb1957b9d173",
+          "profile_key": "PROFILE:TERMINATION:LEGAL_RESTRAINT:b9e3024406e1a399f7bcf363f4f6267545b265dafb0ed12cd43c71b154c16712",
+          "field_key": "JURISDICTION_LIST_REFERENCE",
+          "reference_slot_key": "b386c34a17e216f31b164dc1638a6a2310f357932aea083b923626e6ac0818ad",
+          "disposition_kind": "NON_PUBLIC_DISCLOSURE_LOCATION",
+          "display_text": "contained in non-public disclosure letter",
+          "lawyer_ruling_id": "5612a68b5416a51e26e604c525b8d93ec7285a51f6eba2edca6d251043aa7567"
+        }
+      ],
+      "is_b9e_profile": true,
+      "phase3_profile_key": "PROFILE:TERMINATION:LEGAL_RESTRAINT:b9e3024406e1a399f7bcf363f4f6267545b265dafb0ed12cd43c71b154c16712",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 1,
+      "source_unit_count": 1,
+      "m4_claim_count": 2
+    },
+    {
+      "ordinal": 33,
+      "proposed_profile_key": "c17ae76f86bf008db55aebf7036e7bfed42ec7c8160e408ce36fd5df8d9e5f89",
+      "source_deal": null,
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "RECOMMENDATION_CHANGE_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,BEFORE(TERMINATION_EXERCISE_EVENT,EFFECTIVE_TIME_REFERENCE),TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE,NOTICE_SENDER_TERMINATING_PARTY,NOTICE_RECIPIENT_NON_TERMINATING_PARTY,TERMINATION_SUBSECTION_SPECIFICATION_EVENT,SECTION_7_01_TERMINATION_SCOPE_REFERENCE,TERMINATING_PARTY_PARENT,BEFORE(SHAREHOLDER_CUTOFF_TERMINATION_EXERCISE_EVENT_REFERENCE,SHAREHOLDER_MEETING_REFERENCE),ADVERSE_RECOMMENDATION_CHANGE_EVENT)",
+      "shape_summary": {
+        "party": [
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_RECIPIENT_NON_TERMINATING_PARTY",
+          "TERMINATING_PARTY_PARENT"
+        ],
+        "trigger": [
+          "ADVERSE_RECOMMENDATION_CHANGE_EVENT"
+        ],
+        "restraint": [],
+        "exercise": [
+          "TERMINATION_EXERCISE_EVENT",
+          "TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_RECIPIENT_NON_TERMINATING_PARTY",
+          "SHAREHOLDER_CUTOFF_TERMINATION_EXERCISE_EVENT_REFERENCE"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET",
+        "NO_M4_CLAIM_BINDING_IN_PACKET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:RECOMMENDATION_CHANGE:c17ae76f86bf008db55aebf7036e7bfed42ec7c8160e408ce36fd5df8d9e5f89",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 0
+    },
+    {
+      "ordinal": 34,
+      "proposed_profile_key": "c41d9ed64850e4c3e9a158e62e65a606d9e388c54d624fd68b1811a97402f10c",
+      "source_deal": "redhat",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "BREACH_RIGHT"
+      ],
+      "required_expression_signature": "EXCEPTION_TO(ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,BEFORE(GLOBAL_CUTOFF_TERMINATION_EXERCISE_EVENT_REFERENCE,EFFECTIVE_TIME_REFERENCE),TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE,NOTICE_SENDER_TERMINATING_PARTY,NOTICE_RECIPIENT_NON_TERMINATING_PARTY,TERMINATION_SUBSECTION_SPECIFICATION_EVENT,SECTION_7_01_TERMINATION_SCOPE_REFERENCE,TERMINATING_PARTY_PARENT,BREACHING_PARTY_COMPANY,ANY_OF(ALL_OF(BREACH_EVENT,ANY_OF(REPRESENTATIONS_SCOPE,WARRANTIES_SCOPE)),ALL_OF(FAILURE_TO_PERFORM_EVENT,ANY_OF(COVENANTS_SCOPE,OTHER_AGREEMENTS_SCOPE))),AGREEMENT_CONTAINMENT_SCOPE,CONDITION_FAILURE_CAUSATION,ANY_OF(CONDITION_6_02_A_REFERENCE,CONDITION_6_02_B_REFERENCE),ANY_OF(NOT(CAPABLE(BEFORE(CAPABILITY_CURE_EVENT,CAPABILITY_TERMINATION_DATE))),NOT(ON_OR_BEFORE(DEADLINE_CURE_EVENT,EARLIER_OF(DEADLINE_TERMINATION_DATE,OFFSET_AFTER(BREACH_NOTICE_EVENT,CURE_PERIOD)))))),ALL_OF(ANY_OF(ALL_OF(MATERIAL_BREACH_PARENT_OR_SUB_PARTY_SCOPE,DISQUALIFYING_MATERIAL_BREACH_EVENT,DISQUALIFYING_AGREEMENT_SCOPE),ALL_OF(ANY_OF(DISQUALIFYING_REPRESENTATIONS_SCOPE,DISQUALIFYING_WARRANTIES_SCOPE),UNTRUE_PARENT_OR_SUB_PARTY_SCOPE,DISQUALIFYING_UNTRUE_STATUS)),DISQUALIFYING_CONDITION_FAILURE_CAUSATION,ANY_OF(DISQUALIFYING_CONDITION_6_03_A_REFERENCE,DISQUALIFYING_CONDITION_6_03_B_REFERENCE)))",
+      "shape_summary": {
+        "party": [
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_RECIPIENT_NON_TERMINATING_PARTY",
+          "TERMINATING_PARTY_PARENT",
+          "BREACHING_PARTY_COMPANY",
+          "MATERIAL_BREACH_PARENT_OR_SUB_PARTY_SCOPE",
+          "UNTRUE_PARENT_OR_SUB_PARTY_SCOPE"
+        ],
+        "trigger": [
+          "BREACHING_PARTY_COMPANY",
+          "BREACH_EVENT",
+          "REPRESENTATIONS_SCOPE",
+          "WARRANTIES_SCOPE",
+          "COVENANTS_SCOPE",
+          "CONDITION_FAILURE_CAUSATION",
+          "CAPABILITY_CURE_EVENT",
+          "DEADLINE_CURE_EVENT",
+          "BREACH_NOTICE_EVENT",
+          "CURE_PERIOD"
+        ],
+        "restraint": [],
+        "exercise": [
+          "GLOBAL_CUTOFF_TERMINATION_EXERCISE_EVENT_REFERENCE",
+          "TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_RECIPIENT_NON_TERMINATING_PARTY",
+          "CAPABILITY_CURE_EVENT",
+          "DEADLINE_CURE_EVENT",
+          "BREACH_NOTICE_EVENT",
+          "CURE_PERIOD"
+        ],
+        "carveout": [
+          "EXCEPTION_TO",
+          "BREACHING_PARTY_COMPANY",
+          "BREACH_EVENT",
+          "CAPABLE",
+          "CAPABILITY_CURE_EVENT",
+          "DEADLINE_CURE_EVENT",
+          "BREACH_NOTICE_EVENT",
+          "CURE_PERIOD",
+          "MATERIAL_BREACH_PARENT_OR_SUB_PARTY_SCOPE",
+          "DISQUALIFYING_MATERIAL_BREACH_EVENT"
+        ],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:BREACH:c41d9ed64850e4c3e9a158e62e65a606d9e388c54d624fd68b1811a97402f10c",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 1
+    },
+    {
+      "ordinal": 35,
+      "proposed_profile_key": "cc91a8ef484b80ada7a321936357a9ae4473dea79c4bd99593bdce5f35f69e13",
+      "source_deal": null,
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "STOCKHOLDER_APPROVAL_FAILURE_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TERMINATING_PARENT_PARTY,WRITTEN_CONSENT_NONDELIVERY_BY_ZONED_DEADLINE_CONDITION),ALL_OF(NOTICE_SENDER_TERMINATING_PARTY,NOTICE_DELIVERY_EVENT,PROMPT_NOTICE_STANDARD,TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE,NOTICE_RECIPIENT_OTHER_PARTIES,TERMINATION_SUBSECTION_SPECIFICATION_EVENT,REASONABLE_DETAIL_STANDARD,SECTION_8_1_TERMINATION_PROVISION_REFERENCE,TERMINATION_BASIS_FACTS_AND_CIRCUMSTANCES_SCOPE,TERMINATION_BASIS_FORMATION_EVENT),ALL_OF(PROPER_TERMINATION_STANDARD,VALID_TERMINATION_STANDARD,TERMINATION_OF_AGREEMENT_EVENT,SECTION_8_1_TERMINATION_SCOPE_REFERENCE,IMMEDIATE_TERMINATION_EFFECT,EFFECT_UPON_WRITTEN_NOTICE_DELIVERY_RELATION,EFFECT_NOTICE_SENDER_TERMINATING_PARTY,EFFECT_NOTICE_RECIPIENT_OTHER_PARTIES))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_PARENT_PARTY",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "EFFECT_NOTICE_SENDER_TERMINATING_PARTY"
+        ],
+        "trigger": [],
+        "restraint": [],
+        "exercise": [
+          "WRITTEN_CONSENT_NONDELIVERY_BY_ZONED_DEADLINE_CONDITION",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_DELIVERY_EVENT",
+          "PROMPT_NOTICE_STANDARD",
+          "TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE",
+          "NOTICE_RECIPIENT_OTHER_PARTIES",
+          "REASONABLE_DETAIL_STANDARD",
+          "EFFECT_UPON_WRITTEN_NOTICE_DELIVERY_RELATION",
+          "EFFECT_NOTICE_SENDER_TERMINATING_PARTY",
+          "EFFECT_NOTICE_RECIPIENT_OTHER_PARTIES"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET",
+        "NO_M4_CLAIM_BINDING_IN_PACKET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:STOCKHOLDER_APPROVAL_FAILURE:cc91a8ef484b80ada7a321936357a9ae4473dea79c4bd99593bdce5f35f69e13",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 0
+    },
+    {
+      "ordinal": 36,
+      "proposed_profile_key": "d7c51becf43fca6a605da78aa4e8f3121866d5920bc315dddd50dad97a32b0c8",
+      "source_deal": null,
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "STOCKHOLDER_APPROVAL_FAILURE_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TERMINATING_COMPANY_PARTY,PARENT_WRITTEN_CONSENT_NONDELIVERY_BY_ZONED_DEADLINE_CONDITION),ALL_OF(NOTICE_SENDER_TERMINATING_PARTY,NOTICE_DELIVERY_EVENT,PROMPT_NOTICE_STANDARD,TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE,NOTICE_RECIPIENT_OTHER_PARTIES,TERMINATION_SUBSECTION_SPECIFICATION_EVENT,REASONABLE_DETAIL_STANDARD,SECTION_8_1_TERMINATION_PROVISION_REFERENCE,TERMINATION_BASIS_FACTS_AND_CIRCUMSTANCES_SCOPE,TERMINATION_BASIS_FORMATION_EVENT),ALL_OF(PROPER_TERMINATION_STANDARD,VALID_TERMINATION_STANDARD,TERMINATION_OF_AGREEMENT_EVENT,SECTION_8_1_TERMINATION_SCOPE_REFERENCE,IMMEDIATE_TERMINATION_EFFECT,EFFECT_UPON_WRITTEN_NOTICE_DELIVERY_RELATION,EFFECT_NOTICE_SENDER_TERMINATING_PARTY,EFFECT_NOTICE_RECIPIENT_OTHER_PARTIES))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_COMPANY_PARTY",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "EFFECT_NOTICE_SENDER_TERMINATING_PARTY"
+        ],
+        "trigger": [],
+        "restraint": [],
+        "exercise": [
+          "PARENT_WRITTEN_CONSENT_NONDELIVERY_BY_ZONED_DEADLINE_CONDITION",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_DELIVERY_EVENT",
+          "PROMPT_NOTICE_STANDARD",
+          "TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE",
+          "NOTICE_RECIPIENT_OTHER_PARTIES",
+          "REASONABLE_DETAIL_STANDARD",
+          "EFFECT_UPON_WRITTEN_NOTICE_DELIVERY_RELATION",
+          "EFFECT_NOTICE_SENDER_TERMINATING_PARTY",
+          "EFFECT_NOTICE_RECIPIENT_OTHER_PARTIES"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET",
+        "NO_M4_CLAIM_BINDING_IN_PACKET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:STOCKHOLDER_APPROVAL_FAILURE:d7c51becf43fca6a605da78aa4e8f3121866d5920bc315dddd50dad97a32b0c8",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 0
+    },
+    {
+      "ordinal": 37,
+      "proposed_profile_key": "d94eb8c5fa9bbba453b34a0ad143fb6e029e3572fe7275e8bf492c63a2fa1df9",
+      "source_deal": "skywater",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "BREACH_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),ANY_OF(TERMINATING_PARENT_PARTY,TERMINATING_COMPANY_PARTY),BASE_BREACH_EVENT,BREACHING_OTHER_PARTY_RELATION,ANY_OF(BASE_REPRESENTATIONS_SCOPE,BASE_WARRANTIES_SCOPE,BASE_COVENANTS_SCOPE,BASE_AGREEMENTS_SCOPE),BASE_AGREEMENT_CONTAINMENT_SCOPE,CONDITION_FAILURE_CAUSATION,ANY_OF(ALL_OF(SECTION_8_2_A_CONDITION_REFERENCE,BREACHING_COMPANY_PARTY_SCOPE),ALL_OF(SECTION_8_3_A_CONDITION_REFERENCE,BREACHING_PARENT_PARTY_SCOPE)),ANY_OF(BREACH_INCAPABLE_OF_CURE,ALL_OF(BREACH_CAPABLE_OF_CURE,NOT(ON_OR_BEFORE(DEADLINE_CURE_EVENT,OFFSET_AFTER(BREACH_NOTICE_RECEIPT_EVENT,CURE_PERIOD))),WRITTEN_CURE_NOTICE_FORM,CURE_NOTICE_BREACH_SCOPE,CURE_NOTICE_RECIPIENT_ALLEGED_BREACHING_PARTY)),ALL_OF(DESIRING_TERMINATION_PARTY_SCOPE,NOTICE_GIVING_EVENT,WRITTEN_NOTICE,OTHER_PARTY_RECIPIENT,SECTION_10_1_REFERENCE,SPECIFYING_EVENT,TERMINATION_PROVISION_SCOPE))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_PARENT_PARTY",
+          "TERMINATING_COMPANY_PARTY",
+          "BREACHING_OTHER_PARTY_RELATION",
+          "BREACHING_COMPANY_PARTY_SCOPE",
+          "BREACHING_PARENT_PARTY_SCOPE",
+          "CURE_NOTICE_RECIPIENT_ALLEGED_BREACHING_PARTY",
+          "DESIRING_TERMINATION_PARTY_SCOPE",
+          "OTHER_PARTY_RECIPIENT"
+        ],
+        "trigger": [
+          "BASE_BREACH_EVENT",
+          "BREACHING_OTHER_PARTY_RELATION",
+          "BASE_REPRESENTATIONS_SCOPE",
+          "BASE_WARRANTIES_SCOPE",
+          "BASE_COVENANTS_SCOPE",
+          "CONDITION_FAILURE_CAUSATION",
+          "BREACHING_COMPANY_PARTY_SCOPE",
+          "BREACHING_PARENT_PARTY_SCOPE",
+          "BREACH_INCAPABLE_OF_CURE",
+          "BREACH_CAPABLE_OF_CURE"
+        ],
+        "restraint": [],
+        "exercise": [
+          "BREACH_INCAPABLE_OF_CURE",
+          "BREACH_CAPABLE_OF_CURE",
+          "DEADLINE_CURE_EVENT",
+          "BREACH_NOTICE_RECEIPT_EVENT",
+          "CURE_PERIOD",
+          "WRITTEN_CURE_NOTICE_FORM",
+          "CURE_NOTICE_BREACH_SCOPE",
+          "CURE_NOTICE_RECIPIENT_ALLEGED_BREACHING_PARTY",
+          "NOTICE_GIVING_EVENT",
+          "WRITTEN_NOTICE"
+        ],
+        "carveout": [
+          "BASE_BREACH_EVENT",
+          "BREACHING_OTHER_PARTY_RELATION",
+          "BREACHING_COMPANY_PARTY_SCOPE",
+          "BREACHING_PARENT_PARTY_SCOPE",
+          "BREACH_INCAPABLE_OF_CURE",
+          "BREACH_CAPABLE_OF_CURE",
+          "DEADLINE_CURE_EVENT",
+          "BREACH_NOTICE_RECEIPT_EVENT",
+          "CURE_PERIOD",
+          "WRITTEN_CURE_NOTICE_FORM"
+        ],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:BREACH:d94eb8c5fa9bbba453b34a0ad143fb6e029e3572fe7275e8bf492c63a2fa1df9",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 4
+    },
+    {
+      "ordinal": 38,
+      "proposed_profile_key": "daf9d11412464af6e3cba62f03669c4245e3a1f51fcc3cef8a27406e5674ddb9",
+      "source_deal": "concho",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "BREACH_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(EXCEPTION_TO(ALL_OF(ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),ANY_OF(TERMINATING_COMPANY_PARTY,TERMINATING_PARENT_PARTY),BASE_BREACH_EVENT,BREACHING_OTHER_PARTY,ANY_OF(BASE_REPRESENTATION_SCOPE,BASE_WARRANTY_SCOPE,BASE_COVENANT_SCOPE,BASE_OTHER_AGREEMENT_SCOPE),BASE_AGREEMENT_CONTAINMENT_SCOPE,CONDITION_FAILURE_CAUSATION,ANY_OF(ALL_OF(ANY_OF(SECTION_7_2_A_CONDITION_REFERENCE,SECTION_7_2_B_CONDITION_REFERENCE),PARENT_TERMINATION_CONDITION_APPLICABILITY),ALL_OF(ANY_OF(SECTION_7_3_A_CONDITION_REFERENCE,SECTION_7_3_B_CONDITION_REFERENCE),COMPANY_TERMINATION_CONDITION_APPLICABILITY)),ANY_OF(NOT(CAPABLE(BEFORE(INCURABLE_CURE_EVENT,INCURABLE_END_DATE))),ALL_OF(CAPABLE(BEFORE(CURABLE_CURE_EVENT,CURABLE_END_DATE)),NOT(ON_OR_BEFORE(DEADLINE_CURE_EVENT,EARLIER_OF(OFFSET_AFTER(BREACH_NOTICE_GIVING_EVENT,CURE_PERIOD),OFFSET_BEFORE(DEADLINE_END_DATE,END_DATE_LEAD_PERIOD)))),WRITTEN_CURE_NOTICE_FORM,CURE_NOTICE_RECIPIENT_BREACHING_PARTY,CURE_NOTICE_BREACH_SCOPE))),ALL_OF(DISQUALIFYING_TERMINATING_PARTY,DISQUALIFYING_TERMINABLE_BREACH,ANY_OF(DISQUALIFYING_REPRESENTATION_SCOPE,DISQUALIFYING_WARRANTY_SCOPE,DISQUALIFYING_COVENANT_SCOPE,DISQUALIFYING_OTHER_AGREEMENT_SCOPE),DISQUALIFYING_AGREEMENT_CONTAINMENT_SCOPE)),ALL_OF(TERMINATION_NOTICE_ACTOR,TERMINATION_NOTICE_PROVISION_EVENT,WRITTEN_TERMINATION_NOTICE,TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY,TERMINATION_REASON_PARTICULARITY_SPECIFICATION_EVENT,TERMINATION_REASON_SCOPE,IMMEDIATE_TERMINATION_EFFECT,WRITTEN_TERMINATION_NOTICE_DELIVERY_EVENT,DELIVERED_WRITTEN_TERMINATION_NOTICE_REFERENCE,DELIVERY_RECIPIENT_OTHER_PARTY))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_COMPANY_PARTY",
+          "TERMINATING_PARENT_PARTY",
+          "BREACHING_OTHER_PARTY",
+          "CURE_NOTICE_RECIPIENT_BREACHING_PARTY",
+          "DISQUALIFYING_TERMINATING_PARTY",
+          "TERMINATION_NOTICE_ACTOR",
+          "TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY",
+          "DELIVERY_RECIPIENT_OTHER_PARTY"
+        ],
+        "trigger": [
+          "BASE_BREACH_EVENT",
+          "BREACHING_OTHER_PARTY",
+          "BASE_REPRESENTATION_SCOPE",
+          "BASE_WARRANTY_SCOPE",
+          "BASE_COVENANT_SCOPE",
+          "CONDITION_FAILURE_CAUSATION",
+          "INCURABLE_CURE_EVENT",
+          "CURABLE_CURE_EVENT",
+          "DEADLINE_CURE_EVENT",
+          "BREACH_NOTICE_GIVING_EVENT"
+        ],
+        "restraint": [],
+        "exercise": [
+          "INCURABLE_CURE_EVENT",
+          "CURABLE_CURE_EVENT",
+          "DEADLINE_CURE_EVENT",
+          "BREACH_NOTICE_GIVING_EVENT",
+          "CURE_PERIOD",
+          "WRITTEN_CURE_NOTICE_FORM",
+          "CURE_NOTICE_RECIPIENT_BREACHING_PARTY",
+          "CURE_NOTICE_BREACH_SCOPE",
+          "TERMINATION_NOTICE_ACTOR",
+          "TERMINATION_NOTICE_PROVISION_EVENT"
+        ],
+        "carveout": [
+          "EXCEPTION_TO",
+          "BASE_BREACH_EVENT",
+          "BREACHING_OTHER_PARTY",
+          "CAPABLE",
+          "INCURABLE_CURE_EVENT",
+          "CURABLE_CURE_EVENT",
+          "DEADLINE_CURE_EVENT",
+          "BREACH_NOTICE_GIVING_EVENT",
+          "CURE_PERIOD",
+          "WRITTEN_CURE_NOTICE_FORM"
+        ],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:BREACH:daf9d11412464af6e3cba62f03669c4245e3a1f51fcc3cef8a27406e5674ddb9",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 2
+    },
+    {
+      "ordinal": 39,
+      "proposed_profile_key": "dead29e96b5ca8d8fd9758588fc682c5fe8da9cdc32dd178e437ed20ab54b6f2",
+      "source_deal": "concho",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "STOCKHOLDER_APPROVAL_FAILURE_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),ANY_OF(TERMINATING_COMPANY_PARTY,TERMINATING_PARENT_PARTY),NOT(COMPANY_STOCKHOLDER_APPROVAL_OBTAINED_EVENT),ANY_OF(ALL_OF(VOTE_HELD_EVENT,DULY_HELD_STATUS,COMPANY_STOCKHOLDERS_MEETING_EVENT),ADJOURNMENT_EVENT,POSTPONEMENT_EVENT),ALL_OF(TERMINATION_NOTICE_ACTOR,TERMINATION_NOTICE_PROVISION_EVENT,WRITTEN_TERMINATION_NOTICE,TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY,TERMINATION_REASON_PARTICULARITY_SPECIFICATION_EVENT,TERMINATION_REASON_SCOPE,IMMEDIATE_TERMINATION_EFFECT,WRITTEN_TERMINATION_NOTICE_DELIVERY_EVENT,DELIVERED_WRITTEN_TERMINATION_NOTICE_REFERENCE,DELIVERY_RECIPIENT_OTHER_PARTY))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_COMPANY_PARTY",
+          "TERMINATING_PARENT_PARTY",
+          "TERMINATION_NOTICE_ACTOR",
+          "TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY",
+          "DELIVERY_RECIPIENT_OTHER_PARTY"
+        ],
+        "trigger": [
+          "COMPANY_STOCKHOLDER_APPROVAL_OBTAINED_EVENT",
+          "VOTE_HELD_EVENT",
+          "COMPANY_STOCKHOLDERS_MEETING_EVENT"
+        ],
+        "restraint": [],
+        "exercise": [
+          "TERMINATION_NOTICE_ACTOR",
+          "TERMINATION_NOTICE_PROVISION_EVENT",
+          "WRITTEN_TERMINATION_NOTICE",
+          "TERMINATION_NOTICE_RECIPIENT_OTHER_PARTY",
+          "WRITTEN_TERMINATION_NOTICE_DELIVERY_EVENT",
+          "DELIVERED_WRITTEN_TERMINATION_NOTICE_REFERENCE",
+          "DELIVERY_RECIPIENT_OTHER_PARTY"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:STOCKHOLDER_APPROVAL_FAILURE:dead29e96b5ca8d8fd9758588fc682c5fe8da9cdc32dd178e437ed20ab54b6f2",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 2
+    },
+    {
+      "ordinal": 40,
+      "proposed_profile_key": "df888b580da777fb61e7f2bf52698466fb471a305156158866ecbc92e641d687",
+      "source_deal": "skechers",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "LEGAL_RESTRAINT_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TERMINATING_PARTY,BEFORE(TERMINATION_EXERCISE_EVENT,EFFECTIVE_TIME_REFERENCE),ANY_OF(ALL_OF(ANY_OF(ALL_OF(ANY_OF(PERMANENT_INJUNCTION_EVENT,OTHER_JUDGMENT_OR_ORDER_EVENT),COURT_OF_COMPETENT_JURISDICTION),OTHER_LEGAL_OR_REGULATORY_RESTRAINT_OR_PROHIBITION_EVENT),RESTRAINT_PREVENTION_EFFECT,RESTRAINT_MERGER_CONSUMMATION_SCOPE,LEGAL_RESTRAINT_IN_EFFECT),ALL_OF(GOVERNMENTAL_ACTION_TAKEN,GOVERNMENTAL_AUTHORITY_OF_COMPETENT_JURISDICTION)),ANY_OF(MERGER_PROHIBITION_EFFECT,MERGER_ILLEGALITY_EFFECT,MERGER_ENJOINMENT_EFFECT),EFFECT_MERGER_CONSUMMATION_SCOPE,LEGAL_RESTRAINT_FINAL,LEGAL_RESTRAINT_NON_APPEALABLE),ALL_OF(NOTICE_SENDER_TERMINATING_PARTY,NOTICE_DELIVERY_EVENT,PROMPT_NOTICE_STANDARD,TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE,NOTICE_RECIPIENT_OTHER_PARTIES,TERMINATION_SUBSECTION_SPECIFICATION_EVENT,REASONABLE_DETAIL_STANDARD,SECTION_8_1_TERMINATION_PROVISION_REFERENCE,TERMINATION_BASIS_FACTS_AND_CIRCUMSTANCES_SCOPE,TERMINATION_BASIS_FORMATION_EVENT),ALL_OF(PROPER_TERMINATION_STANDARD,VALID_TERMINATION_STANDARD,TERMINATION_OF_AGREEMENT_EVENT,SECTION_8_1_TERMINATION_SCOPE_REFERENCE,IMMEDIATE_TERMINATION_EFFECT,EFFECT_UPON_WRITTEN_NOTICE_DELIVERY_RELATION,EFFECT_NOTICE_SENDER_TERMINATING_PARTY,EFFECT_NOTICE_RECIPIENT_OTHER_PARTIES))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_PARTY",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "EFFECT_NOTICE_SENDER_TERMINATING_PARTY"
+        ],
+        "trigger": [
+          "PERMANENT_INJUNCTION_EVENT",
+          "OTHER_JUDGMENT_OR_ORDER_EVENT",
+          "COURT_OF_COMPETENT_JURISDICTION",
+          "OTHER_LEGAL_OR_REGULATORY_RESTRAINT_OR_PROHIBITION_EVENT",
+          "RESTRAINT_PREVENTION_EFFECT",
+          "RESTRAINT_MERGER_CONSUMMATION_SCOPE",
+          "LEGAL_RESTRAINT_IN_EFFECT",
+          "GOVERNMENTAL_ACTION_TAKEN",
+          "GOVERNMENTAL_AUTHORITY_OF_COMPETENT_JURISDICTION",
+          "MERGER_PROHIBITION_EFFECT"
+        ],
+        "restraint": [
+          "PERMANENT_INJUNCTION_EVENT",
+          "OTHER_JUDGMENT_OR_ORDER_EVENT",
+          "COURT_OF_COMPETENT_JURISDICTION",
+          "OTHER_LEGAL_OR_REGULATORY_RESTRAINT_OR_PROHIBITION_EVENT",
+          "RESTRAINT_PREVENTION_EFFECT",
+          "RESTRAINT_MERGER_CONSUMMATION_SCOPE",
+          "LEGAL_RESTRAINT_IN_EFFECT",
+          "GOVERNMENTAL_ACTION_TAKEN",
+          "GOVERNMENTAL_AUTHORITY_OF_COMPETENT_JURISDICTION",
+          "MERGER_PROHIBITION_EFFECT"
+        ],
+        "exercise": [
+          "TERMINATION_EXERCISE_EVENT",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_DELIVERY_EVENT",
+          "PROMPT_NOTICE_STANDARD",
+          "TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE",
+          "NOTICE_RECIPIENT_OTHER_PARTIES",
+          "REASONABLE_DETAIL_STANDARD",
+          "EFFECT_UPON_WRITTEN_NOTICE_DELIVERY_RELATION",
+          "EFFECT_NOTICE_SENDER_TERMINATING_PARTY",
+          "EFFECT_NOTICE_RECIPIENT_OTHER_PARTIES"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:LEGAL_RESTRAINT:df888b580da777fb61e7f2bf52698466fb471a305156158866ecbc92e641d687",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 2
+    },
+    {
+      "ordinal": 41,
+      "proposed_profile_key": "e30648500c6a76071927c51739c941a31f0d141c1fbf35f105a015e9dc9e148c",
+      "source_deal": "redhat",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "OUTSIDE_DATE_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,BEFORE(GLOBAL_CUTOFF_TERMINATION_EXERCISE_EVENT_REFERENCE,EFFECTIVE_TIME_REFERENCE),TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE,NOTICE_SENDER_TERMINATING_PARTY,NOTICE_RECIPIENT_NON_TERMINATING_PARTY,TERMINATION_SUBSECTION_SPECIFICATION_EVENT,SECTION_7_01_TERMINATION_SCOPE_REFERENCE,ANY_OF(TERMINATING_PARTY_PARENT,TERMINATING_PARTY_COMPANY),EXCEPTION_TO(NOT(ON_OR_BEFORE(MERGER_CONSUMMATION_EVENT,TERMINATION_DATE_REFERENCE)),ALL_OF(ANY_OF(DISQUALIFYING_ACTION_EVENT,DISQUALIFYING_FAILURE_TO_ACT_EVENT),ANY_OF(DISQUALIFYING_PRINCIPAL_CAUSE_STANDARD,DISQUALIFYING_DIRECT_RESULT_STANDARD),DISQUALIFYING_AGREEMENT_BREACH_EVENT)))",
+      "shape_summary": {
+        "party": [
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_RECIPIENT_NON_TERMINATING_PARTY",
+          "TERMINATING_PARTY_PARENT",
+          "TERMINATING_PARTY_COMPANY"
+        ],
+        "trigger": [
+          "EFFECTIVE_TIME_REFERENCE",
+          "TERMINATION_DATE_REFERENCE"
+        ],
+        "restraint": [],
+        "exercise": [
+          "GLOBAL_CUTOFF_TERMINATION_EXERCISE_EVENT_REFERENCE",
+          "TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_RECIPIENT_NON_TERMINATING_PARTY"
+        ],
+        "carveout": [
+          "EXCEPTION_TO",
+          "DISQUALIFYING_ACTION_EVENT",
+          "DISQUALIFYING_FAILURE_TO_ACT_EVENT",
+          "DISQUALIFYING_PRINCIPAL_CAUSE_STANDARD",
+          "DISQUALIFYING_DIRECT_RESULT_STANDARD",
+          "DISQUALIFYING_AGREEMENT_BREACH_EVENT"
+        ],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "EXTENSION_MECHANICS_DEFERRED_NOT_IN_SIGNATURE",
+        "HOLD_RECOMMENDED_UNTIL_EXTENSION_DISPOSITION"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "HOLD_EXTENSION_DISPOSITION_PENDING",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:OUTSIDE_DATE:e30648500c6a76071927c51739c941a31f0d141c1fbf35f105a015e9dc9e148c",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 2
+    },
+    {
+      "ordinal": 42,
+      "proposed_profile_key": "e83ce979e6f591cf66dc93f5bad268a3e31c057f2435d8ceb6af71c656b483ac",
+      "source_deal": null,
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "NO_SOLICITATION_BREACH_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TERMINATING_PARTY,BEFORE(TERMINATION_EXERCISE_EVENT,THRESHOLD_DATE_REFERENCE),ANY_OF(BREACHING_PARTY_COMPANY_BOARD,BREACHING_PARTY_COMPANY),MATERIAL_NO_SOLICITATION_BREACH,NO_SOLICITATION_OBLIGATION_REFERENCE,ANY_OF(NO_SOLICITATION_BREACH_NOT_CURABLE,ALL_OF(NO_SOLICITATION_BREACH_CURABLE,NOT(BEFORE(NO_SOLICITATION_BREACH_CURE_EVENT,EARLIER_OF(OFFSET_AFTER(NO_SOLICITATION_BREACH_NOTICE_EVENT,FIFTH_BUSINESS_DAY_PERIOD),OFFSET_BEFORE(TERMINATION_DATE_REFERENCE,THREE_BUSINESS_DAY_PERIOD))))))),ALL_OF(NOTICE_SENDER_TERMINATING_PARTY,NOTICE_DELIVERY_EVENT,PROMPT_NOTICE_STANDARD,TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE,NOTICE_RECIPIENT_OTHER_PARTIES,TERMINATION_SUBSECTION_SPECIFICATION_EVENT,REASONABLE_DETAIL_STANDARD,SECTION_8_1_TERMINATION_PROVISION_REFERENCE,TERMINATION_BASIS_FACTS_AND_CIRCUMSTANCES_SCOPE,TERMINATION_BASIS_FORMATION_EVENT),ALL_OF(PROPER_TERMINATION_STANDARD,VALID_TERMINATION_STANDARD,TERMINATION_OF_AGREEMENT_EVENT,SECTION_8_1_TERMINATION_SCOPE_REFERENCE,IMMEDIATE_TERMINATION_EFFECT,EFFECT_UPON_WRITTEN_NOTICE_DELIVERY_RELATION,EFFECT_NOTICE_SENDER_TERMINATING_PARTY,EFFECT_NOTICE_RECIPIENT_OTHER_PARTIES))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_PARTY",
+          "BREACHING_PARTY_COMPANY_BOARD",
+          "BREACHING_PARTY_COMPANY",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "EFFECT_NOTICE_SENDER_TERMINATING_PARTY"
+        ],
+        "trigger": [
+          "BREACHING_PARTY_COMPANY_BOARD",
+          "BREACHING_PARTY_COMPANY",
+          "MATERIAL_NO_SOLICITATION_BREACH",
+          "NO_SOLICITATION_BREACH_NOT_CURABLE",
+          "NO_SOLICITATION_BREACH_CURABLE",
+          "NO_SOLICITATION_BREACH_CURE_EVENT",
+          "NO_SOLICITATION_BREACH_NOTICE_EVENT"
+        ],
+        "restraint": [],
+        "exercise": [
+          "TERMINATION_EXERCISE_EVENT",
+          "BREACHING_PARTY_COMPANY_BOARD",
+          "NO_SOLICITATION_BREACH_CURE_EVENT",
+          "NO_SOLICITATION_BREACH_NOTICE_EVENT",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_DELIVERY_EVENT",
+          "PROMPT_NOTICE_STANDARD",
+          "TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE",
+          "NOTICE_RECIPIENT_OTHER_PARTIES",
+          "REASONABLE_DETAIL_STANDARD"
+        ],
+        "carveout": [
+          "BREACHING_PARTY_COMPANY_BOARD",
+          "BREACHING_PARTY_COMPANY",
+          "MATERIAL_NO_SOLICITATION_BREACH",
+          "NO_SOLICITATION_BREACH_NOT_CURABLE",
+          "NO_SOLICITATION_BREACH_CURABLE",
+          "NO_SOLICITATION_BREACH_CURE_EVENT",
+          "NO_SOLICITATION_BREACH_NOTICE_EVENT"
+        ],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET",
+        "NO_M4_CLAIM_BINDING_IN_PACKET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:NO_SOLICITATION_BREACH:e83ce979e6f591cf66dc93f5bad268a3e31c057f2435d8ceb6af71c656b483ac",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 0
+    },
+    {
+      "ordinal": 43,
+      "proposed_profile_key": "f41fd796b656dceb8b37f020ea30a3816f73248f5072d9b1d51d901134c89f14",
+      "source_deal": "skywater",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "OUTSIDE_DATE_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(EXCEPTION_TO(ALL_OF(ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),ANY_OF(TERMINATING_COMPANY_PARTY,TERMINATING_PARENT_PARTY),NOT(ON_OR_BEFORE(BASE_MERGERS_CONSUMMATION_EVENT,BASE_END_DATE_REFERENCE))),ALL_OF(TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY,FAILURE_TO_FULFILL_OBLIGATION_EVENT,AGREEMENT_SCOPE,ANY_OF(PRINCIPALLY_CAUSED_STANDARD,RESULTED_IN_STANDARD),NOT(ON_OR_BEFORE(EFFECTIVE_TIME_EVENT,DISQUALIFYING_END_DATE_OR_EXTENDED_END_DATE_REFERENCE)))),ALL_OF(DESIRING_TERMINATION_PARTY_SCOPE,NOTICE_GIVING_EVENT,WRITTEN_NOTICE,OTHER_PARTY_RECIPIENT,SECTION_10_1_REFERENCE,SPECIFYING_EVENT,TERMINATION_PROVISION_SCOPE))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_COMPANY_PARTY",
+          "TERMINATING_PARENT_PARTY",
+          "TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY",
+          "DESIRING_TERMINATION_PARTY_SCOPE",
+          "OTHER_PARTY_RECIPIENT"
+        ],
+        "trigger": [
+          "TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE",
+          "BASE_MERGERS_CONSUMMATION_EVENT",
+          "BASE_END_DATE_REFERENCE",
+          "EFFECTIVE_TIME_EVENT",
+          "DISQUALIFYING_END_DATE_OR_EXTENDED_END_DATE_REFERENCE"
+        ],
+        "restraint": [],
+        "exercise": [
+          "NOTICE_GIVING_EVENT",
+          "WRITTEN_NOTICE"
+        ],
+        "carveout": [
+          "EXCEPTION_TO",
+          "TERMINATING_PARTY_DISQUALIFYING_PARTY_IDENTITY",
+          "PRINCIPALLY_CAUSED_STANDARD",
+          "DISQUALIFYING_END_DATE_OR_EXTENDED_END_DATE_REFERENCE"
+        ],
+        "extension": [
+          "DISQUALIFYING_END_DATE_OR_EXTENDED_END_DATE_REFERENCE"
+        ],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "EXTENSION_PARTIAL_TOKEN_ONLY_REVIEW_REQUIRED",
+        "HOLD_RECOMMENDED_UNTIL_EXTENSION_DISPOSITION"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "HOLD_EXTENSION_DISPOSITION_PENDING",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:OUTSIDE_DATE:f41fd796b656dceb8b37f020ea30a3816f73248f5072d9b1d51d901134c89f14",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 2
+    },
+    {
+      "ordinal": 44,
+      "proposed_profile_key": "fb1729d4905ac892876df518704c2578d06bfd8105e6b7cf3cc61da76ac74b76",
+      "source_deal": "skywater",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "STOCKHOLDER_APPROVAL_FAILURE_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,TERMINATION_PRIOR_TO_EFFECTIVE_TIME_SCOPE),ANY_OF(TERMINATING_COMPANY_PARTY,TERMINATING_PARENT_PARTY),NOT(COMPANY_STOCKHOLDER_APPROVAL_OBTAINED_EVENT),APPROVAL_FAILURE_BY_REQUIRED_VOTE_FAILURE_RELATION,ANY_OF(ALL_OF(REQUIRED_VOTE_SCOPE,DULY_HELD_STATUS,STOCKHOLDERS_MEETING_EVENT),ADJOURNMENT_EVENT),ALL_OF(DESIRING_TERMINATION_PARTY_SCOPE,NOTICE_GIVING_EVENT,WRITTEN_NOTICE,OTHER_PARTY_RECIPIENT,SECTION_10_1_REFERENCE,SPECIFYING_EVENT,TERMINATION_PROVISION_SCOPE))",
+      "shape_summary": {
+        "party": [
+          "TERMINATING_COMPANY_PARTY",
+          "TERMINATING_PARENT_PARTY",
+          "DESIRING_TERMINATION_PARTY_SCOPE",
+          "OTHER_PARTY_RECIPIENT"
+        ],
+        "trigger": [
+          "COMPANY_STOCKHOLDER_APPROVAL_OBTAINED_EVENT",
+          "APPROVAL_FAILURE_BY_REQUIRED_VOTE_FAILURE_RELATION",
+          "REQUIRED_VOTE_SCOPE",
+          "STOCKHOLDERS_MEETING_EVENT"
+        ],
+        "restraint": [],
+        "exercise": [
+          "NOTICE_GIVING_EVENT",
+          "WRITTEN_NOTICE"
+        ],
+        "carveout": [],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:STOCKHOLDER_APPROVAL_FAILURE:fb1729d4905ac892876df518704c2578d06bfd8105e6b7cf3cc61da76ac74b76",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 2
+    },
+    {
+      "ordinal": 45,
+      "proposed_profile_key": "ff33cd1d7748f633a4f4ca76a0310a1d8f42ff93f3bf032eeb983db6ff3db95c",
+      "source_deal": "redhat",
+      "classification_path": [
+        "TERMINATION",
+        "TERMINATION_RIGHT",
+        "SUPERIOR_PROPOSAL_RIGHT"
+      ],
+      "required_expression_signature": "ALL_OF(LEGAL_EFFECT,TRANSACTION_ABANDONMENT_EFFECT,BEFORE(GLOBAL_CUTOFF_TERMINATION_EXERCISE_EVENT_REFERENCE,EFFECTIVE_TIME_REFERENCE),TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE,NOTICE_SENDER_TERMINATING_PARTY,NOTICE_RECIPIENT_NON_TERMINATING_PARTY,TERMINATION_SUBSECTION_SPECIFICATION_EVENT,SECTION_7_01_TERMINATION_SCOPE_REFERENCE,TERMINATING_PARTY_COMPANY,BEFORE(SHAREHOLDER_CUTOFF_TERMINATION_EXERCISE_EVENT_REFERENCE,SHAREHOLDER_APPROVAL_EVENT_REFERENCE),BEFORE(AGREEMENT_DATE_REFERENCE,SUPERIOR_PROPOSAL_RECEIPT_EVENT),NOT(ANY_OF(CAUSATIVE_NO_SOLICITATION_BREACH_EVENT,CAUSATIVE_OTHER_AGREEMENT_BREACH_EVENT)),BOARD_AUTHORISATION_EVENT,CONCURRENT_ACQUISITION_AGREEMENT_ENTRY_EVENT,ACQUISITION_AGREEMENT_REFERENCE,SUPERIOR_PROPOSAL_TRANSACTION_SCOPE,CONCURRENT_TERMINATION_FEE_PAYMENT_EVENT,TERMINATION_FEE_PAYMENT_CONDITION,TERMINATION_FEE_REFERENCE,TERMINATION_FEE_PAYMENT_REFERENCE,NO_SOLICITATION_COMPLIANCE_EVENT,NO_SOLICITATION_COMPLIANCE_REFERENCE)",
+      "shape_summary": {
+        "party": [
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_RECIPIENT_NON_TERMINATING_PARTY",
+          "TERMINATING_PARTY_COMPANY"
+        ],
+        "trigger": [
+          "SUPERIOR_PROPOSAL_RECEIPT_EVENT",
+          "SUPERIOR_PROPOSAL_TRANSACTION_SCOPE"
+        ],
+        "restraint": [],
+        "exercise": [
+          "GLOBAL_CUTOFF_TERMINATION_EXERCISE_EVENT_REFERENCE",
+          "TERMINATION_EXERCISE_NOTICE_EVENT_REFERENCE",
+          "NOTICE_SENDER_TERMINATING_PARTY",
+          "NOTICE_RECIPIENT_NON_TERMINATING_PARTY",
+          "SHAREHOLDER_CUTOFF_TERMINATION_EXERCISE_EVENT_REFERENCE",
+          "BOARD_AUTHORISATION_EVENT"
+        ],
+        "carveout": [
+          "CAUSATIVE_NO_SOLICITATION_BREACH_EVENT",
+          "CAUSATIVE_OTHER_AGREEMENT_BREACH_EVENT"
+        ],
+        "extension": [],
+        "effectiveness": []
+      },
+      "review_flags": [
+        "NEW_SUBTYPE_RELATIVE_TO_SEALED_M5_FOUR_BUCKET_SET"
+      ],
+      "completion_state": "COMPLETE",
+      "ben_review_completion_state": "COMPLETE",
+      "missing_required_field_keys": [],
+      "governed_disclosure_notes": [],
+      "is_b9e_profile": false,
+      "phase3_profile_key": "PROFILE:TERMINATION:SUPERIOR_PROPOSAL:ff33cd1d7748f633a4f4ca76a0310a1d8f42ff93f3bf032eeb983db6ff3db95c",
+      "proposed_validation": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SUFFICIENT",
+        "output_disposition": "NORMAL",
+        "issue_codes": []
+      },
+      "reference_accounting": {
+        "reference_occurrence_count": null,
+        "materialised_reference_value_count": null,
+        "unresolved_reference_value_count": null,
+        "work3_fixture_consumable_reference_value_count": null
+      },
+      "reference_value_null_count": 0,
+      "source_unit_count": 1,
+      "m4_claim_count": 1
+    }
+  ],
+  "source_bindings": {
+    "phase4_authority": {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-authoring-phase4-family-profile-package-review-authority.json",
+      "schema_version": "STAGE_2Y_M7_V2_REPAIR_CONTRACT_TERMINATION_AUTHORING_PHASE4_FAMILY_PROFILE_PACKAGE_REVIEW_AUTHORITY/V1",
+      "record_id_field": "termination_authoring_phase4_family_profile_package_review_authority_id",
+      "record_id": "3f92e9ec3192933a22eb5a6d193296a164fd25b5612c2ece52fa97636943d41e",
+      "byte_length": 115221,
+      "sha256": "2425b103b19a228e26676d347656706be9d1a7b5e693512bcf1c450eba43db18"
+    },
+    "stage_a_authority": {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-work3-governed-disclosure-note-schema-package-analysis-projection-successor-authority.json",
+      "schema_version": "STAGE_2Y_M7_V2_REPAIR_CONTRACT_WORK3_GOVERNED_DISCLOSURE_NOTE_SCHEMA_PACKAGE_ANALYSIS_PROJECTION_SUCCESSOR_AUTHORITY/V1",
+      "record_id_field": "work3_governed_disclosure_note_schema_package_analysis_projection_successor_authority_id",
+      "record_id": "054de9dc959cbb12062099efea3620e9582578fc64c90c6d21b878e009adf28a",
+      "byte_length": 44726,
+      "sha256": "850c9170b0367e83a9030c54f8e896be30cfac14a7b9ba8b15a49cab3270b45b"
+    },
+    "phase5_authority": {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-authoring-phase5-governed-disclosure-note-authority.json",
+      "schema_version": "STAGE_2Y_M7_V2_REPAIR_CONTRACT_TERMINATION_AUTHORING_PHASE5_GOVERNED_DISCLOSURE_NOTE_AUTHORITY/V1",
+      "record_id_field": "termination_authoring_phase5_governed_disclosure_note_authority_id",
+      "record_id": "10bcf58ff7c7a95794fcc1cb2788ce7b768c49865a5f8b2271f1a2d6e2b1f126",
+      "byte_length": 22512,
+      "sha256": "11022734a686d0f6efeee52b957e2d6e125f2b2167e7136a14e3d3d69dd786e8"
+    },
+    "b9e_ruling": {
+      "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-ruling-termination-b9e-jurisdiction-list-disclosure-note.json",
+      "schema_version": "STAGE_2Y_M7_V2_REPAIR_TERMINATION_B9E_JURISDICTION_LIST_DISCLOSURE_NOTE_RULING/V1",
+      "record_id_field": "lawyer_ruling_id",
+      "record_id": "5612a68b5416a51e26e604c525b8d93ec7285a51f6eba2edca6d251043aa7567",
+      "byte_length": 1639,
+      "sha256": "f0e1155fe4f07f2f710666815afacea109f6978a6c9d04d581016301fe6efa5a"
+    }
+  },
+  "inventory_review_packet_id": "217720c231c37963bd51107a0297c103a85af5b3c60ee77947364f7951e660ff"
+}

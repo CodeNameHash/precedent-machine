@@ -1,0 +1,1131 @@
+{
+  "schema_version": "N1_OPEN_LEGAL_DECISIONS_INVENTORY/V1",
+  "inventory_date": "2026-08-25",
+  "repo": "/Users/bengoodchild/precedent-machine-restored-20260812",
+  "authority_sources": [
+    "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+    "docs/codex-program/notes/LAWFUL-FIXTURE-DIMENSION-EVIDENCE-GAP-2026-08-24.md",
+    "docs/codex-program/notes/*BEN-RULINGS*",
+    "docs/codex-program/notes/*FAMILY-RUN-PLAN*",
+    "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-*-inventory-disposition.json"
+  ],
+  "notes": [
+    "LEGAL_GROUPING_REVIEW_REQUIRED is one decision per family (not per row), unless a separate HOLD stamp requires a distinct Ben pick.",
+    "Milestone A packages for families #1–#24 (except Capitalisation) are already on disk; most open items are honest legal holds/stamps, not package blockers.",
+    "Stamp strings below match disposition JSON / Open holds text as of 2026-08-25.",
+    "N1 Ben legal rulings receipt docs/codex-program/notes/N1-BEN-LEGAL-RULINGS-RECEIPT-2026-08-25.json recorded 2026-08-26: 4 ruled, 23 open. Sealed family disposition files were not mutated."
+  ],
+  "counts_by_priority": {
+    "blocking_full_set": 0,
+    "blocking_family": 1,
+    "review_stamp_only": 22,
+    "open_legal_decisions_total": 23,
+    "ruled_count": 4
+  },
+  "open_legal_decisions": [
+    {
+      "id": "closing-conditions-metsera-frustration-branch",
+      "family_key": "CLOSING_CONDITIONS",
+      "title": "Dispose the Metsera frustration-branch closing-condition limb as in-family, out-of-family, or permanently deferred.",
+      "why_it_matters": "One HOLD row carries METSERA_FRUSTRATION_BRANCH_DISPOSITION_REQUIRED and was not decided when sealed M5 programme rulings were applied verbatim.",
+      "options": [
+        {
+          "id": "approve-as-closing-condition",
+          "label": "Approve as a Closing Conditions profile under an existing or new subtype.",
+          "consequence": "Flips the single Metsera HOLD to APPROVE and binds it into the sealed inventory."
+        },
+        {
+          "id": "link-only-other-family",
+          "label": "Assign ownership to another family and keep Closing Conditions link-only.",
+          "consequence": "Row stays non-terminal here; requires an explicit owner-family ruling."
+        },
+        {
+          "id": "keep-hold",
+          "label": "Keep HOLD until a later inventory session.",
+          "consequence": "Family remains 41 APPROVE / 16 HOLD on this point."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/CLOSING-CONDITIONS-FAMILY-RUN-PLAN-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-closing-conditions-57-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 1,
+      "affected_row_count": 1,
+      "priority": "blocking_family",
+      "status": "open",
+      "stamps": [
+        "METSERA_FRUSTRATION_BRANCH_DISPOSITION_REQUIRED"
+      ]
+    },
+    {
+      "id": "termination-outside-date-extension-partial",
+      "family_key": "TERMINATION",
+      "title": "Decide whether outside-date extension mechanics stay deferred/linked or must enter the profile signature for full APPROVE.",
+      "why_it_matters": "Four outside-date rows are PARTIAL_APPROVE with extension linked but not in signature; serving must not imply extension is complete.",
+      "options": [
+        {
+          "id": "keep-partial-linked",
+          "label": "Keep Option B linked extensions and PARTIAL_APPROVE (extension deferred from signature).",
+          "consequence": "No inventory change; honest PARTIAL remains until a later extension-completeness pass."
+        },
+        {
+          "id": "fold-extension-into-signature",
+          "label": "Require extension modes in the outside-date signature and re-disposition to full APPROVE when modeled.",
+          "consequence": "Authoring/signature work, then flip four PARTIAL rows to APPROVE."
+        },
+        {
+          "id": "hold-until-complete",
+          "label": "Downgrade the four rows to HOLD until extension disposition is complete.",
+          "consequence": "Stricter gate; package would show fewer approved termination rights."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/TERMINATION-FAMILY-RUN-PLAN-2026-08-24.md",
+        "docs/codex-program/notes/TERMINATION-OUTSIDE-DATE-EXTENSION-DISPOSITION-TABLE-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-termination-45-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 4,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "EXTENSION_MECHANICS_DEFERRED_NOT_IN_SIGNATURE",
+        "HOLD_RECOMMENDED_UNTIL_EXTENSION_DISPOSITION"
+      ],
+      "disposition_note": "4 PARTIAL_APPROVE (not HOLD)"
+    },
+    {
+      "id": "mae-self-containment-and-subject-term-stamps",
+      "family_key": "MAE_DEFINITION",
+      "title": "Confirm whether MAE self-containment-unproven and Metsera subject-term mismatch stamps are acceptable as APPROVE-with-stamp or need HOLD/rework.",
+      "why_it_matters": "All four MAE profiles are APPROVE, but review stamps flag unproven self-containment (all four) and a Metsera subject-term mismatch (one).",
+      "options": [
+        {
+          "id": "accept-stamps",
+          "label": "Accept APPROVE-with-stamp for Milestone A; clear stamps only when self-containment is later proven.",
+          "consequence": "No inventory change; stamps remain visible in review."
+        },
+        {
+          "id": "hold-until-proven",
+          "label": "Hold affected profiles until self-containment / subject-term alignment is proven.",
+          "consequence": "Would reduce approved MAE set until authoring fixes land."
+        },
+        {
+          "id": "fix-subject-term",
+          "label": "Require a Metsera subject-term correction, then re-approve.",
+          "consequence": "Targeted re-author of the mismatched profile before stamp clearance."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/MAE-FAMILY-RUN-PLAN-2026-08-24.md",
+        "docs/codex-program/notes/MAE-BEN-RULINGS-Q01-Q03-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-mae-4-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 4,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN",
+        "MAE_DEFINITION_SUBJECT_TERM_MISMATCH"
+      ]
+    },
+    {
+      "id": "general-covenants-item-44-access-scope",
+      "family_key": "GENERAL_COVENANTS",
+      "title": "Decide the item-44 access-covenant scope disposition for the six ACCESS rows approved with review stamps.",
+      "why_it_matters": "Six ACCESS terminals carry ACCESS_SCOPE_WORK1_ITEM_44_REVIEW_UNAPPROVED; wider material scope remains unmodeled pending legal disposition.",
+      "options": [
+        {
+          "id": "accept-six-dimensions-as-roles",
+          "label": "Treat the six Work1 access dimensions as linked roles/children on one ACCESS proposition (Q01 preferred).",
+          "consequence": "Can clear the item-44 stamp without splitting six new profiles."
+        },
+        {
+          "id": "split-operative-dimensions",
+          "label": "Split independently operative access dimensions into separate profiles.",
+          "consequence": "Inventory expansion and re-seal of ACCESS rows."
+        },
+        {
+          "id": "keep-stamp",
+          "label": "Keep APPROVE-with-stamp and defer item-44 scope modeling.",
+          "consequence": "Status quo; six stamps remain on the sealed 54-profile package."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/GENERAL-COVENANTS-FAMILY-RUN-PLAN-2026-08-24.md",
+        "docs/codex-program/notes/GENERAL-COVENANTS-BEN-RULINGS-Q01-Q03-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-general-covenants-54-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 6,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "ACCESS_SCOPE_WORK1_ITEM_44_REVIEW_UNAPPROVED"
+      ]
+    },
+    {
+      "id": "guaranty-legal-grouping",
+      "family_key": "GUARANTY_FINANCING_PARTY",
+      "title": "Confirm subtype grouping for Guaranty profiles currently stamped LEGAL_GROUPING_REVIEW_REQUIRED (PERFORMANCE_GUARANTY pending legal).",
+      "why_it_matters": "All five approved rows are sealed under a pending legal grouping; financing-source protection vs performance guaranty still needs Ben confirmation.",
+      "options": [
+        {
+          "id": "accept-proposed-grouping",
+          "label": "Accept the authored PERFORMANCE_GUARANTY grouping as the sealed subtype partition.",
+          "consequence": "Clears LEGAL_GROUPING_REVIEW_REQUIRED; seal records legal grouping as decided."
+        },
+        {
+          "id": "split-subtypes",
+          "label": "Split into distinct subtypes (e.g. performance guaranty vs financing-source protection).",
+          "consequence": "Re-bucket and possibly re-seal the five-profile package."
+        },
+        {
+          "id": "keep-pending",
+          "label": "Leave PENDING_LEGAL_REVIEW stamps in place.",
+          "consequence": "Milestone A package unchanged; subtype taxonomy stays provisional."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/GUARANTY-FAMILY-RUN-PLAN-2026-08-24.md",
+        "docs/codex-program/notes/GUARANTY-BEN-RULINGS-Q01-Q03-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-guaranty-5-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 5,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ]
+    },
+    {
+      "id": "representations-legal-grouping",
+      "family_key": "REPRESENTATIONS",
+      "title": "Assign Representations rows across the six sealed subtype buckets (today every row is authored under STATUS_REPRESENTATION).",
+      "why_it_matters": "Calibration registered six buckets but tagged every example STATUS_REPRESENTATION; seal is PENDING_LEGAL_REVIEW (1 of 6 populated). Fifteen knowledge rows stay link-only to KEY_DEFINED_TERMS.",
+      "options": [
+        {
+          "id": "accept-status-collapse",
+          "label": "Accept collapse into STATUS_REPRESENTATION for this inventory.",
+          "consequence": "Clears LEGAL_GROUPING_REVIEW_REQUIRED without re-bucketing."
+        },
+        {
+          "id": "repartition-six-buckets",
+          "label": "Repartition claim shapes into the six registered buckets with an explicit mapping.",
+          "consequence": "Re-author subtype assignments; may change profile identities before stamp clearance."
+        },
+        {
+          "id": "keep-pending",
+          "label": "Leave PENDING_LEGAL_REVIEW.",
+          "consequence": "70 APPROVE rows remain stamped; no schema change."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/REPRESENTATIONS-FAMILY-RUN-PLAN-2026-08-24.md",
+        "docs/codex-program/notes/REPRESENTATIONS-BEN-RULINGS-Q01-Q03-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-representations-70-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 70,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "LEGAL_GROUPING_REVIEW_REQUIRED",
+        "CROSS_FAMILY_KNOWLEDGE_DEFINITION_LINK_ONLY"
+      ]
+    },
+    {
+      "id": "financing-covenants-legal-grouping",
+      "family_key": "FINANCING_COVENANTS",
+      "title": "Confirm claim-key → subtype mapping for Financing Covenants (proposal only; schema admits all keys under all buckets).",
+      "why_it_matters": "All five rows APPROVE with LEGAL_GROUPING_REVIEW_REQUIRED; two Concho payoff rows diverge from OBTAIN_FINANCING calibration tagging and one sits outside calibration examples.",
+      "options": [
+        {
+          "id": "accept-proposed-map",
+          "label": "Accept the authored claim-key → subtype proposal (3 of 7 buckets populated).",
+          "consequence": "Clears LEGAL_GROUPING_REVIEW_REQUIRED including divergence stamps if acknowledged."
+        },
+        {
+          "id": "force-calibration-subtypes",
+          "label": "Force payoff limbs into OBTAIN_FINANCING (or another Ben-chosen bucket) to match calibration.",
+          "consequence": "Re-bucket divergent rows; may erase the payoff/stage distinction Q01 retained."
+        },
+        {
+          "id": "keep-pending",
+          "label": "Leave PENDING_LEGAL_REVIEW.",
+          "consequence": "Status quo five-profile package."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/FINANCING-COVENANTS-FAMILY-RUN-PLAN-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-financing-covenants-5-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 5,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "LEGAL_GROUPING_REVIEW_REQUIRED",
+        "SUBTYPE_PARTITION_DIVERGES_FROM_CALIBRATION_PROPOSED_SUBTYPE",
+        "COMPARATOR_CLAIM_OUTSIDE_CALIBRATION_PROVISION_EXAMPLES"
+      ]
+    },
+    {
+      "id": "termination-fee-legal-grouping",
+      "family_key": "TERMINATION_FEE",
+      "title": "Confirm Termination Fee subtype grouping across amount / tail / sole-remedy / carve-out (all calibration examples tagged FEE_AMOUNT).",
+      "why_it_matters": "All twenty rows carry LEGAL_GROUPING_REVIEW_REQUIRED; four sealed M5 labels drew no comparator instances and were not materialised.",
+      "options": [
+        {
+          "id": "accept-comparator-buckets",
+          "label": "Accept the four populated comparator buckets (FEE_AMOUNT, TAIL_FEE, SOLE_REMEDY_LINK, CARVEOUT) as the legal partition.",
+          "consequence": "Clears LEGAL_GROUPING_REVIEW_REQUIRED once sole-remedy owner and fee-side HOLDs are also decided."
+        },
+        {
+          "id": "collapse-to-fee-amount",
+          "label": "Collapse non-amount limbs into FEE_AMOUNT roles/children.",
+          "consequence": "Would conflict with Q01 one-limb reading unless roles are carefully linked."
+        },
+        {
+          "id": "keep-pending",
+          "label": "Leave PENDING_LEGAL_REVIEW.",
+          "consequence": "Grouping stamp remains even after HOLD rows are resolved."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/TERMINATION-FEE-FAMILY-RUN-PLAN-2026-08-24.md",
+        "docs/codex-program/notes/TERMINATION-FEE-BEN-RULINGS-Q01-Q03-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-termination-fee-20-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 20,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ]
+    },
+    {
+      "id": "no-other-reps-fraud-legal-grouping",
+      "family_key": "NO_OTHER_REPS_FRAUD",
+      "title": "Confirm No Other Reps / Fraud subtype partition (four registered buckets; all examples tagged NO_OTHER_REPRESENTATIONS_DISCLAIMER).",
+      "why_it_matters": "All thirty-six rows APPROVE with LEGAL_GROUPING_REVIEW_REQUIRED (1 of 4 buckets populated); shared-citation and Representations link-only censuses do not assign ownership; Red Hat willful-breach stays open-world (not inferred into FRAUD_CARVEOUT).",
+      "options": [
+        {
+          "id": "accept-tagged-bucket",
+          "label": "Accept authorship under NO_OTHER_REPRESENTATIONS_DISCLAIMER for this inventory.",
+          "consequence": "Clears LEGAL_GROUPING_REVIEW_REQUIRED; empty buckets stay empty."
+        },
+        {
+          "id": "repartition-four-buckets",
+          "label": "Repartition disclaimer / non-reliance / extra-contractual limbs into the four registered buckets.",
+          "consequence": "Re-author subtype assignments before stamp clearance."
+        },
+        {
+          "id": "keep-pending",
+          "label": "Leave PENDING_LEGAL_REVIEW.",
+          "consequence": "Status quo thirty-six-profile package."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/NO-OTHER-REPS-FRAUD-FAMILY-RUN-PLAN-2026-08-24.md",
+        "docs/codex-program/notes/NO-OTHER-REPS-FRAUD-BEN-RULINGS-Q01-Q03-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-no-other-reps-fraud-36-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 36,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "LEGAL_GROUPING_REVIEW_REQUIRED",
+        "SHARED_SOURCE_CITATION_LINK_ONLY",
+        "CROSS_FAMILY_REPRESENTATIONS_LINK_ONLY"
+      ]
+    },
+    {
+      "id": "antitrust-regulatory-legal-grouping",
+      "family_key": "ANTITRUST_REGULATORY",
+      "title": "Confirm Antitrust / Regulatory subtype grouping, including six rows whose comparator buckets lack sealed M5 labels.",
+      "why_it_matters": "All seventy rows APPROVE with LEGAL_GROUPING_REVIEW_REQUIRED; six carry M5_SUBTYPE_BUCKET_PARTITION_UNRESOLVED; five NON_HSR and twelve one-sided obligor stamps also ride along.",
+      "options": [
+        {
+          "id": "map-or-seal-missing-buckets",
+          "label": "Map FILING_TIMING_STANDARD / NOTIFICATION / WITHDRAWAL_REFILING into sealed labels or seal new labels.",
+          "consequence": "Clears the six unresolved-bucket stamps and can clear family LEGAL_GROUPING_REVIEW_REQUIRED."
+        },
+        {
+          "id": "accept-twelve-label-set",
+          "label": "Accept the twelve sealed labels as-is and leave the six unresolved rows stamped or deferred.",
+          "consequence": "Partial taxonomy; family stays provisionally grouped."
+        },
+        {
+          "id": "keep-pending",
+          "label": "Leave PENDING_LEGAL_REVIEW on all seventy rows.",
+          "consequence": "Status quo."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/ANTITRUST-REGULATORY-WORK3-PARALLEL-PREP-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-antitrust-regulatory-70-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 70,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "LEGAL_GROUPING_REVIEW_REQUIRED",
+        "M5_SUBTYPE_BUCKET_PARTITION_UNRESOLVED",
+        "NON_HSR_FILING_REGIME",
+        "ONE_SIDED_OBLIGOR_CAPACITY"
+      ]
+    },
+    {
+      "id": "proxy-meeting-legal-grouping",
+      "family_key": "PROXY_MEETING",
+      "title": "Confirm Proxy / Meeting subtype grouping (calibration tagged every example DOCUMENT_FILING).",
+      "why_it_matters": "All thirty-one rows APPROVE with LEGAL_GROUPING_REVIEW_REQUIRED; twenty-seven diverge from calibration tagging and two Metsera §6.11 rows sit outside calibration examples.",
+      "options": [
+        {
+          "id": "accept-comparator-buckets",
+          "label": "Accept the five populated comparator buckets against the six sealed labels.",
+          "consequence": "Clears LEGAL_GROUPING_REVIEW_REQUIRED despite calibration divergence."
+        },
+        {
+          "id": "force-document-filing",
+          "label": "Force rows back into DOCUMENT_FILING to match calibration.",
+          "consequence": "Would erase meeting/call/adjournment distinctions the comparator populated."
+        },
+        {
+          "id": "keep-pending",
+          "label": "Leave PENDING_LEGAL_REVIEW.",
+          "consequence": "Status quo."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/PROXY-MEETING-FAMILY-RUN-PLAN-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-proxy-meeting-31-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 31,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "LEGAL_GROUPING_REVIEW_REQUIRED",
+        "SUBTYPE_PARTITION_DIVERGES_FROM_CALIBRATION_PROPOSED_SUBTYPE",
+        "COMPARATOR_CLAIM_OUTSIDE_CALIBRATION_PROVISION_EXAMPLES"
+      ]
+    },
+    {
+      "id": "tax-matters-legal-grouping",
+      "family_key": "TAX_MATTERS",
+      "title": "Confirm Tax Matters subtype grouping (calibration all INTENDED_TAX_TREATMENT; comparator spans four buckets).",
+      "why_it_matters": "All seventeen rows APPROVE with LEGAL_GROUPING_REVIEW_REQUIRED; seven diverge and nine sit outside calibration examples.",
+      "options": [
+        {
+          "id": "accept-comparator-buckets",
+          "label": "Accept the four populated comparator buckets against eight sealed labels.",
+          "consequence": "Clears LEGAL_GROUPING_REVIEW_REQUIRED."
+        },
+        {
+          "id": "force-intended-tax-treatment",
+          "label": "Force rows into INTENDED_TAX_TREATMENT to match calibration.",
+          "consequence": "Collapses multi-bucket comparator signal."
+        },
+        {
+          "id": "keep-pending",
+          "label": "Leave PENDING_LEGAL_REVIEW.",
+          "consequence": "Status quo."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/TAX-MATTERS-FAMILY-RUN-PLAN-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-tax-matters-17-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 17,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "LEGAL_GROUPING_REVIEW_REQUIRED",
+        "SUBTYPE_PARTITION_DIVERGES_FROM_CALIBRATION_PROPOSED_SUBTYPE",
+        "COMPARATOR_CLAIM_OUTSIDE_CALIBRATION_PROVISION_EXAMPLES"
+      ]
+    },
+    {
+      "id": "employee-matters-legal-grouping",
+      "family_key": "EMPLOYEE_MATTERS",
+      "title": "Confirm Employee Matters subtype grouping (calibration all EMPLOYEE_COMPENSATION; comparator spans three buckets).",
+      "why_it_matters": "All twenty-seven rows APPROVE with LEGAL_GROUPING_REVIEW_REQUIRED; sixteen diverge from calibration tagging.",
+      "options": [
+        {
+          "id": "accept-comparator-buckets",
+          "label": "Accept the three populated comparator buckets (RETIREMENT_PLAN_ACTION empty).",
+          "consequence": "Clears LEGAL_GROUPING_REVIEW_REQUIRED."
+        },
+        {
+          "id": "force-employee-compensation",
+          "label": "Force rows into EMPLOYEE_COMPENSATION to match calibration.",
+          "consequence": "Collapses comparator multi-bucket signal."
+        },
+        {
+          "id": "keep-pending",
+          "label": "Leave PENDING_LEGAL_REVIEW.",
+          "consequence": "Status quo."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/EMPLOYEE-MATTERS-FAMILY-RUN-PLAN-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-employee-matters-27-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 27,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "LEGAL_GROUPING_REVIEW_REQUIRED",
+        "SUBTYPE_PARTITION_DIVERGES_FROM_CALIBRATION_PROPOSED_SUBTYPE"
+      ]
+    },
+    {
+      "id": "consideration-legal-grouping",
+      "family_key": "CONSIDERATION",
+      "title": "Confirm Consideration subtype grouping (calibration CONSIDERATION_PACKAGE; comparator uses CASH_COMPONENT and APPRAISAL_LINK).",
+      "why_it_matters": "All seven rows APPROVE with LEGAL_GROUPING_REVIEW_REQUIRED and subtype-partition divergence; appraisal mechanics on shared sections stay Q02 link-only to APPRAISAL_DISSENTERS_RIGHTS.",
+      "options": [
+        {
+          "id": "accept-comparator-buckets",
+          "label": "Accept CASH_COMPONENT + APPRAISAL_LINK as the legal partition.",
+          "consequence": "Clears LEGAL_GROUPING_REVIEW_REQUIRED."
+        },
+        {
+          "id": "force-consideration-package",
+          "label": "Force rows into CONSIDERATION_PACKAGE to match calibration.",
+          "consequence": "Collapses cash vs appraisal-link distinction."
+        },
+        {
+          "id": "keep-pending",
+          "label": "Leave PENDING_LEGAL_REVIEW.",
+          "consequence": "Status quo."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/CONSIDERATION-WORK3-PARALLEL-PREP-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-consideration-7-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 7,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "LEGAL_GROUPING_REVIEW_REQUIRED",
+        "SUBTYPE_PARTITION_DIVERGES_FROM_CALIBRATION_PROPOSED_SUBTYPE"
+      ]
+    },
+    {
+      "id": "key-defined-terms-legal-grouping",
+      "family_key": "KEY_DEFINED_TERMS",
+      "title": "Confirm Key Defined Terms subtype grouping (41 divergence + 20 outside-calibration stamps).",
+      "why_it_matters": "All seventy-six rows APPROVE with LEGAL_GROUPING_REVIEW_REQUIRED; Done table lists subtype grouping pending legal even though Open holds omits a dedicated bullet.",
+      "options": [
+        {
+          "id": "accept-comparator-buckets",
+          "label": "Accept the five populated sealed subtype buckets as the legal partition.",
+          "consequence": "Clears LEGAL_GROUPING_REVIEW_REQUIRED."
+        },
+        {
+          "id": "repartition",
+          "label": "Repartition against calibration provision-example tags with an explicit Ben map.",
+          "consequence": "Likely large re-bucket given 41 divergence stamps."
+        },
+        {
+          "id": "keep-pending",
+          "label": "Leave PENDING_LEGAL_REVIEW.",
+          "consequence": "Status quo."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/KEY-DEFINED-TERMS-WORK3-PARALLEL-PREP-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-key-defined-terms-76-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 76,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "LEGAL_GROUPING_REVIEW_REQUIRED",
+        "SUBTYPE_PARTITION_DIVERGES_FROM_CALIBRATION_PROPOSED_SUBTYPE",
+        "COMPARATOR_CLAIM_OUTSIDE_CALIBRATION_PROVISION_EXAMPLES"
+      ]
+    },
+    {
+      "id": "appraisal-dissenters-rights-legal-grouping",
+      "family_key": "APPRAISAL_DISSENTERS_RIGHTS",
+      "title": "Confirm Appraisal / Dissenters' Rights subtype grouping (all five rows diverge from calibration APPRAISAL_STATUS tagging).",
+      "why_it_matters": "All five rows APPROVE with LEGAL_GROUPING_REVIEW_REQUIRED; Consideration owns appraisal-status on shared sections (Q02 link-only).",
+      "options": [
+        {
+          "id": "accept-comparator-buckets",
+          "label": "Accept withdrawal-reconversion / settlement-consent comparator buckets as the legal partition.",
+          "consequence": "Clears LEGAL_GROUPING_REVIEW_REQUIRED."
+        },
+        {
+          "id": "force-appraisal-status",
+          "label": "Force rows into APPRAISAL_STATUS to match calibration.",
+          "consequence": "Collapses mechanic limbs Consideration already treats as link-only elsewhere."
+        },
+        {
+          "id": "keep-pending",
+          "label": "Leave PENDING_LEGAL_REVIEW.",
+          "consequence": "Status quo."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/APPRAISAL-DISSENTERS-RIGHTS-FAMILY-RUN-PLAN-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-appraisal-dissenters-rights-5-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 5,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "LEGAL_GROUPING_REVIEW_REQUIRED",
+        "SUBTYPE_PARTITION_DIVERGES_FROM_CALIBRATION_PROPOSED_SUBTYPE"
+      ]
+    },
+    {
+      "id": "no-shop-legal-grouping",
+      "family_key": "NO_SHOP",
+      "title": "Confirm No-Shop subtype grouping across six populated buckets (calibration tagged every example RESTRICTION).",
+      "why_it_matters": "All 365 rows APPROVE with LEGAL_GROUPING_REVIEW_REQUIRED; 88 diverge and 94 sit outside calibration examples.",
+      "options": [
+        {
+          "id": "accept-comparator-buckets",
+          "label": "Accept the six populated comparator buckets against eight sealed labels.",
+          "consequence": "Clears LEGAL_GROUPING_REVIEW_REQUIRED at family scale."
+        },
+        {
+          "id": "force-restriction",
+          "label": "Force non-restriction limbs into RESTRICTION to match calibration.",
+          "consequence": "Would erase standstill / recommendation-change / match-period distinctions."
+        },
+        {
+          "id": "keep-pending",
+          "label": "Leave PENDING_LEGAL_REVIEW.",
+          "consequence": "Status quo largest N1 package."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/NO-SHOP-WORK3-PARALLEL-PREP-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-no-shop-365-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 365,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "LEGAL_GROUPING_REVIEW_REQUIRED",
+        "SUBTYPE_PARTITION_DIVERGES_FROM_CALIBRATION_PROPOSED_SUBTYPE",
+        "COMPARATOR_CLAIM_OUTSIDE_CALIBRATION_PROVISION_EXAMPLES"
+      ]
+    },
+    {
+      "id": "dividends-legal-grouping",
+      "family_key": "DIVIDENDS",
+      "title": "Confirm Dividends subtype grouping for the single DIVIDEND_COORDINATION profile.",
+      "why_it_matters": "The sole profile APPROVE carries LEGAL_GROUPING_REVIEW_REQUIRED against five sealed labels (four empty); calibration already matches the comparator claim.",
+      "options": [
+        {
+          "id": "accept-dividend-coordination",
+          "label": "Accept DIVIDEND_COORDINATION as the sealed subtype for this inventory.",
+          "consequence": "Clears LEGAL_GROUPING_REVIEW_REQUIRED with no re-bucket."
+        },
+        {
+          "id": "keep-pending",
+          "label": "Leave PENDING_LEGAL_REVIEW.",
+          "consequence": "Status quo one-profile package."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/DIVIDENDS-WORK3-PARALLEL-PREP-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-dividends-1-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 1,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ]
+    },
+    {
+      "id": "specific-performance-remedies-legal-grouping",
+      "family_key": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "title": "Confirm Specific Performance Remedies subtype grouping (pending legal; only SkyWater currently APPROVE).",
+      "why_it_matters": "All eight rows carry LEGAL_GROUPING_REVIEW_REQUIRED; seven are also HOLD on the sole-remedy owner-family question.",
+      "options": [
+        {
+          "id": "accept-proposed-grouping",
+          "label": "Accept the authored subtype grouping once sole-remedy ownership is decided.",
+          "consequence": "Clears LEGAL_GROUPING_REVIEW_REQUIRED after coordinated TF/SPR owner ruling."
+        },
+        {
+          "id": "repartition",
+          "label": "Repartition SPR subtypes with an explicit Ben map.",
+          "consequence": "Re-author before stamp clearance."
+        },
+        {
+          "id": "keep-pending",
+          "label": "Leave PENDING_LEGAL_REVIEW.",
+          "consequence": "Grouping stamp remains alongside owner-family HOLDs."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/SPECIFIC-PERFORMANCE-REMEDIES-FAMILY-RUN-PLAN-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-specific-performance-remedies-8-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 8,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "depends_on": [
+        "termination-fee-spr-sole-remedy-owner-family"
+      ]
+    },
+    {
+      "id": "interim-operating-legal-grouping",
+      "family_key": "INTERIM_OPERATING",
+      "title": "Confirm Interim Operating subtype grouping (113 APPROVE; subtype grouping pending legal).",
+      "why_it_matters": "Done table and disposition stamp LEGAL_GROUPING_REVIEW_REQUIRED on every row; Open holds prose omits a dedicated bullet but disposition confirms pending legal grouping.",
+      "options": [
+        {
+          "id": "accept-proposed-grouping",
+          "label": "Accept the authored subtype partition for Milestone A.",
+          "consequence": "Clears LEGAL_GROUPING_REVIEW_REQUIRED."
+        },
+        {
+          "id": "repartition",
+          "label": "Repartition with an explicit Ben subtype map.",
+          "consequence": "Large re-bucket across 113 profiles."
+        },
+        {
+          "id": "keep-pending",
+          "label": "Leave PENDING_LEGAL_REVIEW.",
+          "consequence": "Status quo."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/INTERIM_OPERATING-WORK3-PARALLEL-PREP-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-interim-operating-113-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 113,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ]
+    },
+    {
+      "id": "material-contracts-legal-grouping",
+      "family_key": "MATERIAL_CONTRACTS",
+      "title": "Confirm Material Contracts subtype grouping (116 APPROVE; subtype grouping pending legal).",
+      "why_it_matters": "Disposition stamps LEGAL_GROUPING_REVIEW_REQUIRED on every row; sealed package is Milestone A complete with grouping still provisional.",
+      "options": [
+        {
+          "id": "accept-proposed-grouping",
+          "label": "Accept the authored subtype partition for Milestone A.",
+          "consequence": "Clears LEGAL_GROUPING_REVIEW_REQUIRED."
+        },
+        {
+          "id": "repartition",
+          "label": "Repartition with an explicit Ben subtype map.",
+          "consequence": "Large re-bucket across 116 profiles."
+        },
+        {
+          "id": "keep-pending",
+          "label": "Leave PENDING_LEGAL_REVIEW.",
+          "consequence": "Status quo."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/MATERIAL-CONTRACTS-WORK3-PARALLEL-PREP-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-material-contracts-116-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 116,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ]
+    },
+    {
+      "id": "merger-structure-closing-legal-grouping",
+      "family_key": "MERGER_STRUCTURE_CLOSING",
+      "title": "Confirm Merger Structure / Closing subtype grouping (calibration TRANSACTION_STEP; comparator spans six buckets).",
+      "why_it_matters": "All 103 rows APPROVE with LEGAL_GROUPING_REVIEW_REQUIRED; 23 diverge and 71 sit outside calibration examples.",
+      "options": [
+        {
+          "id": "accept-comparator-buckets",
+          "label": "Accept the six populated comparator buckets against eight sealed labels.",
+          "consequence": "Clears LEGAL_GROUPING_REVIEW_REQUIRED."
+        },
+        {
+          "id": "force-transaction-step",
+          "label": "Force rows into TRANSACTION_STEP to match calibration.",
+          "consequence": "Collapses multi-bucket structure/closing distinctions."
+        },
+        {
+          "id": "keep-pending",
+          "label": "Leave PENDING_LEGAL_REVIEW.",
+          "consequence": "Status quo."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/REMAINING-N1-FAMILIES-WORK3-PARALLEL-PREP-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-merger-structure-closing-103-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 103,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "LEGAL_GROUPING_REVIEW_REQUIRED",
+        "SUBTYPE_PARTITION_DIVERGES_FROM_CALIBRATION_PROPOSED_SUBTYPE",
+        "COMPARATOR_CLAIM_OUTSIDE_CALIBRATION_PROVISION_EXAMPLES"
+      ]
+    },
+    {
+      "id": "misc-boilerplate-legal-grouping",
+      "family_key": "MISC_BOILERPLATE",
+      "title": "Confirm Misc Boilerplate subtype grouping (calibration GOVERNING_LAW; comparator spans twelve buckets).",
+      "why_it_matters": "All 114 rows APPROVE with LEGAL_GROUPING_REVIEW_REQUIRED; 12 diverge and 102 sit outside calibration examples.",
+      "options": [
+        {
+          "id": "accept-comparator-buckets",
+          "label": "Accept all twelve populated sealed subtype labels as the legal partition.",
+          "consequence": "Clears LEGAL_GROUPING_REVIEW_REQUIRED."
+        },
+        {
+          "id": "force-governing-law",
+          "label": "Force rows into GOVERNING_LAW to match calibration.",
+          "consequence": "Would erase the twelve-bucket comparator taxonomy."
+        },
+        {
+          "id": "keep-pending",
+          "label": "Leave PENDING_LEGAL_REVIEW.",
+          "consequence": "Status quo."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/REMAINING-N1-FAMILIES-WORK3-PARALLEL-PREP-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-misc-boilerplate-114-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 0,
+      "affected_row_count": 114,
+      "priority": "review_stamp_only",
+      "status": "open",
+      "stamps": [
+        "LEGAL_GROUPING_REVIEW_REQUIRED",
+        "SUBTYPE_PARTITION_DIVERGES_FROM_CALIBRATION_PROPOSED_SUBTYPE",
+        "COMPARATOR_CLAIM_OUTSIDE_CALIBRATION_PROVISION_EXAMPLES"
+      ]
+    }
+  ],
+  "technical_work_without_ben": [
+    {
+      "id": "spine-merge-pr5-plus",
+      "title": "Continue family-local → spine merges (PR5+): Closing Conditions through Misc Boilerplate still self-contained.",
+      "evidence_paths": [
+        "docs/codex-program/notes/WORK3-FAMILY-LOCAL-TO-SPINE-MERGE-PLAN-2026-08-24.md",
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md"
+      ]
+    },
+    {
+      "id": "combined-work3-test-sweep",
+      "title": "Re-run combined Work3 family test sweep + CI=true npm run build; refresh verification log.",
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/n1-combined-work3-verification-2026-08-24.log"
+      ]
+    },
+    {
+      "id": "capitalisation-comparator-investigation",
+      "title": "Investigate Capitalisation (#25) comparator blockage (0 governed claims; supplemental-only bindings) and what sealed comparator runs would unblock Milestone A — no Ben legal pick until evidence exists.",
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/REMAINING-N1-FAMILIES-WORK3-PARALLEL-PREP-2026-08-24.md",
+        "docs/codex-program/notes/N1-NEXT-FAMILY-2026-08-24.md"
+      ]
+    },
+    {
+      "id": "lawful-fixture-refresh-after-reseals",
+      "title": "Refresh lawful Work3 on_disk_family_package_overrides after any package re-seal; keep --check green.",
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/LAWFUL-FIXTURE-DIMENSION-EVIDENCE-GAP-2026-08-24.md"
+      ]
+    },
+    {
+      "id": "fixture-proof-crosscheck",
+      "title": "Keep Blocker A closed: re-run work3 fixture-proof crosscheck over sealed packages after generator changes.",
+      "evidence_paths": [
+        "docs/codex-program/notes/LAWFUL-FIXTURE-DIMENSION-EVIDENCE-GAP-2026-08-24.md"
+      ]
+    },
+    {
+      "id": "module-path-shim-audit",
+      "title": "Optional module_path audit already closed for PR1–PR4 shims; repeat only when new families merge to spine.",
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/WORK3-FAMILY-LOCAL-TO-SPINE-MERGE-PLAN-2026-08-24.md"
+      ]
+    },
+    {
+      "id": "programme-n2-n9-prep",
+      "title": "Programme N2–N9 ladder prep from Termination family run plan — technical sequencing only.",
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/TERMINATION-FAMILY-RUN-PLAN-2026-08-24.md"
+      ]
+    }
+  ],
+  "hold_row_totals_from_dispositions": {
+    "DNO_INDEMNIFICATION": {
+      "HOLD": 5,
+      "APPROVE": 26
+    },
+    "CLOSING_CONDITIONS": {
+      "HOLD": 16,
+      "APPROVE": 41
+    },
+    "TERMINATION_FEE": {
+      "HOLD": 12,
+      "APPROVE": 8
+    },
+    "SPECIFIC_PERFORMANCE_REMEDIES": {
+      "HOLD": 7,
+      "APPROVE": 1
+    },
+    "TERMINATION": {
+      "PARTIAL_APPROVE": 4,
+      "APPROVE": 41
+    }
+  },
+  "ruled_legal_decisions": [
+    {
+      "id": "dno-item-42-linked-duty-blocker-b",
+      "family_key": "DNO_INDEMNIFICATION",
+      "title": "Decide how Metsera §5.7 linked-duty / item-42 shared-source rows (rights survival and no-adverse-amendment) should appear in the sealed D&O inventory.",
+      "why_it_matters": "Five Metsera rows are HOLD, and Blocker B blocks on-disk full-set Work3 validation because the sealed contract policy pins the item-42 shared source to two profiles the approved inventory withholds.",
+      "options": [
+        {
+          "id": "approve-child-profiles",
+          "label": "Approve and author the held linked-duty child profiles (including RIGHTS_SURVIVAL and NO_ADVERSE_AMENDMENT) so policy and inventory match.",
+          "consequence": "Lifts the five HOLDs, restores withheld dimension-evidence rows, and clears Blocker B for full-set on-disk validation."
+        },
+        {
+          "id": "keep-deferred-amend-policy",
+          "label": "Keep the five rows deferred and amend the sealed item-42 shared-source policy pin so it no longer requires the withheld profiles.",
+          "consequence": "Inventory stays 26 APPROVE / 5 HOLD; full-set validation can pass only after a deliberate policy change (not a silent re-seal)."
+        },
+        {
+          "id": "fold-into-parent",
+          "label": "Treat linked duties as roles/children on the parent charter-continuation proposition (no separate sealed profiles) and update policy accordingly.",
+          "consequence": "Matches D&O Q01 preferred reading; requires explicit inventory and policy rewrite so validators stop expecting the two missing profile keys."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/LAWFUL-FIXTURE-DIMENSION-EVIDENCE-GAP-2026-08-24.md",
+        "docs/codex-program/notes/DNO-FAMILY-RUN-PLAN-2026-08-24.md",
+        "docs/codex-program/notes/DNO-BEN-RULINGS-Q01-Q03-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-dno-31-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 5,
+      "affected_row_count": 5,
+      "priority": "blocking_full_set",
+      "status": "ruled",
+      "stamps": [
+        "ITEM_42_LINKED_DUTY_SHARED_SOURCE_REVIEW_DEFERRED",
+        "LINKED_DUTY_SHARED_SOURCE_REVIEW_UNAPPROVED"
+      ],
+      "ruling": {
+        "option_id": "approve-child-profiles",
+        "option_label": "Approve each Metsera limb as its own line (including separate rows for rights survival and no-adverse-amendment if those are distinct operative units).",
+        "consequence": "Clears the five holds and lets the full validation run complete.",
+        "notes": "",
+        "ruled_at": "2026-08-26T13:17:02.719Z",
+        "receipt_path": "docs/codex-program/notes/N1-BEN-LEGAL-RULINGS-RECEIPT-2026-08-25.json"
+      }
+    },
+    {
+      "id": "termination-fee-spr-sole-remedy-owner-family",
+      "family_key": "TERMINATION_FEE",
+      "title": "Choose which family owns sole-remedy / carve-out limbs that sit on fee sections: Termination Fee or Specific Performance Remedies.",
+      "why_it_matters": "Q02 allows one semantic owner; the supplemental sole-remedy resolver names Specific Performance Remedies while Termination Fee holds the mirror rows, so ten Termination Fee and seven SPR profiles stay HOLD until Ben picks.",
+      "options": [
+        {
+          "id": "owner-termination-fee",
+          "label": "Termination Fee owns sole-remedy and carve-out facts; SPR link-only.",
+          "consequence": "Approve the ten TERMINATION_FEE REM-SOLE rows; keep or convert the seven SPR conflict rows to link-only / non-owner."
+        },
+        {
+          "id": "owner-specific-performance",
+          "label": "Specific Performance Remedies owns sole-remedy and carve-out facts; Termination Fee link-only.",
+          "consequence": "Approve the seven SPR conflict rows; keep Termination Fee REM-SOLE rows as link-only (or drop as owned elsewhere)."
+        },
+        {
+          "id": "split-by-limb",
+          "label": "Split ownership limb-by-limb (fee-cap economics vs equitable-remedy restriction) with explicit link edges.",
+          "consequence": "Requires a written per-limb map before either family activates contested rows."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/TERMINATION-FEE-BEN-RULINGS-Q01-Q03-2026-08-24.md",
+        "docs/codex-program/notes/TERMINATION-FEE-FAMILY-RUN-PLAN-2026-08-24.md",
+        "docs/codex-program/notes/SPECIFIC-PERFORMANCE-REMEDIES-FAMILY-RUN-PLAN-2026-08-24.md",
+        "docs/codex-program/notes/REMAINING-N1-FAMILIES-WORK3-PARALLEL-PREP-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-termination-fee-20-profile-inventory-disposition.json",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-specific-performance-remedies-8-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 17,
+      "affected_row_count": 17,
+      "priority": "blocking_family",
+      "status": "ruled",
+      "also_affects_family_keys": [
+        "SPECIFIC_PERFORMANCE_REMEDIES"
+      ],
+      "stamps": [
+        "COMPARATOR_OWNER_FAMILY_DISPOSITION_REQUIRED"
+      ],
+      "hold_breakdown": {
+        "TERMINATION_FEE": 10,
+        "SPECIFIC_PERFORMANCE_REMEDIES": 7
+      },
+      "ruling": {
+        "option_id": "split-by-limb",
+        "option_label": "Split by limb — fee-cap economics vs equitable-remedy restriction — with explicit cross-links.",
+        "consequence": "Requires a written map of which limb lives where before either family activates contested rows.",
+        "notes": "It's even a bit more copmlicated as there might be an exlcusive remedies or termination section that also needs to be parsed as part of this analysis",
+        "ruled_at": "2026-08-26T13:17:02.719Z",
+        "receipt_path": "docs/codex-program/notes/N1-BEN-LEGAL-RULINGS-RECEIPT-2026-08-25.json"
+      }
+    },
+    {
+      "id": "termination-fee-fee-side-partition",
+      "family_key": "TERMINATION_FEE",
+      "title": "Decide whether buyer-side / reverse termination fees need a separate subtype (or fee-side role) from target-side FEE_AMOUNT.",
+      "why_it_matters": "Two reverse-side fee rows (Skechers §8.3, TopBuild §6.5, party.capacity = BUYER) are HOLD because the single sealed FEE_AMOUNT label does not distinguish fee side.",
+      "options": [
+        {
+          "id": "same-subtype-with-payer-role",
+          "label": "Keep one FEE_AMOUNT subtype; encode side as a payer/capacity role on the same profile shape.",
+          "consequence": "Can APPROVE the two reverse-side rows without a new M5 subtype label."
+        },
+        {
+          "id": "new-fee-side-subtype",
+          "label": "Add a sealed reverse/buyer-side fee subtype (or fee-side partition labels) and re-bucket those rows.",
+          "consequence": "Requires M5 subtype schema update, then disposition flip from HOLD to APPROVE."
+        },
+        {
+          "id": "out-of-family",
+          "label": "Treat reverse-side fees as out of Termination Fee scope for this inventory.",
+          "consequence": "Rows stay rejected or permanently deferred; eight approved target/tail rows remain the sealed set."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/TERMINATION-FEE-BEN-RULINGS-Q01-Q03-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-termination-fee-20-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 2,
+      "affected_row_count": 2,
+      "priority": "blocking_family",
+      "status": "ruled",
+      "stamps": [
+        "FEE_SIDE_PARTITION_DISPOSITION_REQUIRED"
+      ],
+      "ruling": {
+        "option_id": "new-fee-side-subtype",
+        "option_label": "Create a separate reverse/buyer-side fee type in the taxonomy.",
+        "consequence": "Requires taxonomy update, then flip rows from hold to approved.",
+        "notes": "",
+        "ruled_at": "2026-08-26T13:17:02.719Z",
+        "receipt_path": "docs/codex-program/notes/N1-BEN-LEGAL-RULINGS-RECEIPT-2026-08-25.json"
+      }
+    },
+    {
+      "id": "closing-conditions-m5-subtype-bucket-partition",
+      "family_key": "CLOSING_CONDITIONS",
+      "title": "Map comparator closing-condition buckets that lack sealed M5 subtype labels (especially COVENANT_COMPLIANCE, LISTING, NO_MAE) onto sealed labels or new labels.",
+      "why_it_matters": "Fifteen of fifty-seven rows are HOLD with M5_SUBTYPE_BUCKET_PARTITION_UNRESOLVED, and all fifty-seven still carry LEGAL_GROUPING_REVIEW_REQUIRED because calibration tagged every example STOCKHOLDER_APPROVAL.",
+      "options": [
+        {
+          "id": "map-into-existing-labels",
+          "label": "Map the three unsealed comparator buckets into existing sealed M5 labels (without inventing new ones).",
+          "consequence": "Can flip the fifteen partition HOLDs to APPROVE after an explicit bucket→label table is recorded."
+        },
+        {
+          "id": "seal-new-labels",
+          "label": "Seal new M5 subtype labels for the missing comparator buckets (and decide fate of empty BRINGDOWN / TAX_OPINION labels).",
+          "consequence": "Schema expansion, then re-author/re-seal Closing Conditions subtypes and lift HOLDs."
+        },
+        {
+          "id": "keep-hold",
+          "label": "Leave the fifteen rows HOLD and accept a partial Closing Conditions inventory for now.",
+          "consequence": "Milestone A package stays 41 APPROVE / 16 HOLD (plus Metsera branch); subtype taxonomy remains PENDING_LEGAL_REVIEW."
+        }
+      ],
+      "evidence_paths": [
+        "docs/codex-program/notes/PROGRAMME-N1-STATUS-2026-08-24.md",
+        "docs/codex-program/notes/CLOSING-CONDITIONS-FAMILY-RUN-PLAN-2026-08-24.md",
+        "docs/codex-program/notes/CLOSING-CONDITIONS-BEN-RULINGS-Q01-Q03-2026-08-24.md",
+        "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-closing-conditions-57-profile-inventory-disposition.json"
+      ],
+      "hold_profile_count": 15,
+      "affected_row_count": 57,
+      "priority": "blocking_family",
+      "status": "ruled",
+      "stamps": [
+        "M5_SUBTYPE_BUCKET_PARTITION_UNRESOLVED",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "ruling": {
+        "option_id": "add-new-sealed-labels",
+        "option_label": "Add new taxonomy labels for COVENANT_COMPLIANCE, LISTING, NO_MAE (and use them).",
+        "consequence": "Requires sealing new M5 labels, then approve the 15 rows under them.",
+        "notes": "",
+        "ruled_at": "2026-08-26T13:17:02.719Z",
+        "receipt_path": "docs/codex-program/notes/N1-BEN-LEGAL-RULINGS-RECEIPT-2026-08-25.json"
+      }
+    }
+  ]
+}

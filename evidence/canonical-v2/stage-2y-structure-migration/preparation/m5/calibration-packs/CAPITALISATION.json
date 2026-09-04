@@ -1,0 +1,475 @@
+{
+  "schema_version": "STAGE_2Y_FAMILY_CALIBRATION_PACK/V1",
+  "calibration_pack_id": "128b488c36502ea730157045c99abcb4d308d77312ad55e93c89a148c507365e",
+  "calibration_pack_digest": "0ece9ad48ba577e7b52c4fff1d461e705d7ac9309bfc5db3c890226e55e70146",
+  "family_key": "CAPITALISATION",
+  "wave": 4,
+  "pack_version": 1,
+  "status": "PROPOSED_AWAITING_BEN_APPROVAL",
+  "purpose": "LEGAL_CALIBRATION_PREPARATION_ONLY",
+  "authority_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-preparation-authority.json",
+    "byte_length": 22922,
+    "sha256": "d10f095429cdbb1006bfbe1e789c267ffa3a98b12b4bd33c2afb550e7beeea79"
+  },
+  "calibration_policy_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/m5-calibration-policy.json",
+    "byte_length": 45512,
+    "sha256": "102534446774dfa0661ad186d27c25507befedca80807e42cf584fa412e6bf78"
+  },
+  "m4_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m4-agreement-analysis.json",
+    "byte_length": 13670,
+    "sha256": "54349d05776696ac3578079db0131491964bd069417717ee1adac3ecd9a40d41"
+  },
+  "m2_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m2-agreement-index.json",
+    "byte_length": 20126,
+    "sha256": "dde0fdcf5f92c08c2522ea3847cd53450949691f93141a15b677d90b55819585"
+  },
+  "m3_receipt_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json",
+    "byte_length": 17449,
+    "sha256": "5c74647f0c35eadcde48f50ac3f14d2df287eca92122fb79240d4b9d8af67855"
+  },
+  "family_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/family-keys.json",
+    "byte_length": 827,
+    "sha256": "7aa5ff41eb778884cdbb6f18ba72138c20420a2475949aca5dcbc0d2098a938d"
+  },
+  "control_manifest_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/manifest.json",
+    "byte_length": 379235,
+    "sha256": "62fa3cb1f25a0e180da93bd94516637a119d4e99b6890f0d8321c9ea30b25a41"
+  },
+  "diff_contract_binding": {
+    "path": "evidence/canonical-v2/stage-2y-structure-migration/control/diff-contract.json",
+    "byte_length": 1171,
+    "sha256": "2585c7af9e47c4f7a6915ef1667f5eb8dbce26a8a30829bae15e42a7d41ab0c8"
+  },
+  "comparator_run_bindings": [],
+  "supplemental_input_bindings": [
+    {
+      "supplemental_id": "CAPITALISATION-SUP-CONCHO",
+      "classification": "SUPPLEMENTAL_NON_COMPARATOR",
+      "reason": "COMPLETE_SOURCE_CALIBRATION_OUTSIDE_SEALED_FAMILY_COMPARATOR_REGISTRY",
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "source_binding": {
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116.agreement-index.json",
+        "byte_length": 6293909,
+        "sha256": "e669bffcb6e697e75b2860cf96cbd22d159cc2ce45f63403459e534d43f36432"
+      },
+      "m2_node_bindings": [
+        {
+          "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+          "agreement_index_id": "1400cec3b1e8f5a9eda6f1a02e7c059743c9ced6fe4f5fae7eea12f8364b4ec8",
+          "node_occurrence_id": "cc4d1643c29eb27a75312e5c9df278310f26b5aefd3f7871ad7ae06c69c0b89e",
+          "node_kind": "SECTION",
+          "reference": "4.2",
+          "extent_span": {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 48068,
+            "start_byte": 43665,
+            "text_sha256": "8e56b5bbc4a96977b0ff9370bb86d213bce761958c1004f43f1164df4339bc38"
+          },
+          "structure_revision_id": "aae1968e6fc9ac8a3eb36e5bce209e4510c7dedfa81a83e1a43b8ad7cd79c83b"
+        }
+      ],
+      "m3_dependency_bindings": [],
+      "may_affect_comparator_metrics": false
+    },
+    {
+      "supplemental_id": "CAPITALISATION-SUP-MODIV",
+      "classification": "SUPPLEMENTAL_NON_COMPARATOR",
+      "reason": "COMPLETE_SOURCE_CALIBRATION_OUTSIDE_SEALED_FAMILY_COMPARATOR_REGISTRY",
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "source_binding": {
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c.agreement-index.json",
+        "byte_length": 8346748,
+        "sha256": "74b52e7024d41d3ea75039d01a89f7512dcf0ac32fbb7db9c1b0065c4696347f"
+      },
+      "m2_node_bindings": [
+        {
+          "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+          "agreement_index_id": "2c0d477e56759b58d46c3abefc60f6195d097ea1609213b1a8eabc31d431ce23",
+          "node_occurrence_id": "01dfeb9ef83762972bfb404bdc59389296e87da6e97930fc0f28694fcf2ec5bc",
+          "node_kind": "SECTION",
+          "reference": "3.2",
+          "extent_span": {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 64180,
+            "start_byte": 55994,
+            "text_sha256": "fb0f7dc4e20341bd4a463e3b3d4dffe058b99dcb227d129a37a2b8ceb1a29a54"
+          },
+          "structure_revision_id": "eca4532aca2bdd705353f0513836814dae7a07b05eab9de1c4240bbeff71db0b"
+        }
+      ],
+      "m3_dependency_bindings": [],
+      "may_affect_comparator_metrics": false
+    },
+    {
+      "supplemental_id": "CAPITALISATION-SUP-REDHAT",
+      "classification": "SUPPLEMENTAL_NON_COMPARATOR",
+      "reason": "COMPLETE_SOURCE_CALIBRATION_OUTSIDE_SEALED_FAMILY_COMPARATOR_REGISTRY",
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "source_binding": {
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a.agreement-index.json",
+        "byte_length": 4631977,
+        "sha256": "06c649dec40e3391f1d1da16b7b6eed6392f736a1d80a775fc9a141aa803e6a9"
+      },
+      "m2_node_bindings": [
+        {
+          "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+          "agreement_index_id": "e50464fb97dbd7ead5afc66292a42e5c37f47d3ccdc87d5842df7abef666b3b2",
+          "node_occurrence_id": "50d5eb9b57875fc604a63962b860f8e360f784bf6bbbc57b3eb9ff2e451111c2",
+          "node_kind": "LIMB",
+          "reference": "3.01(c)",
+          "extent_span": {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 41174,
+            "start_byte": 32416,
+            "text_sha256": "47b504aae64e1c09de78650c5b2c80ceeae7d013732e98e598464ff030cc2236"
+          },
+          "structure_revision_id": "b266b9a5a1f3dda0404d190effecc83a84b1666e87c9e681338933a01961bbc1"
+        }
+      ],
+      "m3_dependency_bindings": [],
+      "may_affect_comparator_metrics": false
+    },
+    {
+      "supplemental_id": "CAPITALISATION-SUP-SKECHERS",
+      "classification": "SUPPLEMENTAL_NON_COMPARATOR",
+      "reason": "COMPLETE_SOURCE_CALIBRATION_OUTSIDE_SEALED_FAMILY_COMPARATOR_REGISTRY",
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "source_binding": {
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154.agreement-index.json",
+        "byte_length": 7421038,
+        "sha256": "db49bd11cfe25bfb10824d282df1152583980ad1a0f5bcca472c39425744d8d0"
+      },
+      "m2_node_bindings": [
+        {
+          "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+          "agreement_index_id": "0a16f4f9c57c2c138b6154593a91e4dcd146f067d29877bf77f75508332fb469",
+          "node_occurrence_id": "548f03170b2a4690dfc2ee5922ca0864e1db2982a61d08d87ed0a433e616d93d",
+          "node_kind": "SECTION",
+          "reference": "3.7",
+          "extent_span": {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 127852,
+            "start_byte": 122698,
+            "text_sha256": "57fb980f2d1e27f8b3459f1d8abd41ade0fb0d07861e1035e360ed00aafa1cfe"
+          },
+          "structure_revision_id": "365fa5274b308aa229668803a7bd9fd5bf2bfeddc00e727c03bc335a520f04b7"
+        }
+      ],
+      "m3_dependency_bindings": [],
+      "may_affect_comparator_metrics": false
+    },
+    {
+      "supplemental_id": "CAPITALISATION-SUP-SKYWATER",
+      "classification": "SUPPLEMENTAL_NON_COMPARATOR",
+      "reason": "COMPLETE_SOURCE_CALIBRATION_OUTSIDE_SEALED_FAMILY_COMPARATOR_REGISTRY",
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "source_binding": {
+        "path": "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363.agreement-index.json",
+        "byte_length": 6542434,
+        "sha256": "4c5607a4c75f35f32bb08098a578cff70d926b4d0c72252e4af33964b29938e2"
+      },
+      "m2_node_bindings": [
+        {
+          "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+          "agreement_index_id": "7e36ccac16a70c49e1c4815d4c20fd6815702c753d2c3cc23ab95a81c7756862",
+          "node_occurrence_id": "453791937f3ae5a1dc20678f05dddea99136e7170b3d389ef303108c7dc1008b",
+          "node_kind": "SECTION",
+          "reference": "3.5",
+          "extent_span": {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 56794,
+            "start_byte": 50277,
+            "text_sha256": "97689761f5ea10d8c3822674be41c2015660f8c5d88a179e5a396aaa96c538b3"
+          },
+          "structure_revision_id": "1166c2d82c209143f00bb31ebdd406312b5974fc349d050edde29ebc7988cc55"
+        }
+      ],
+      "m3_dependency_bindings": [],
+      "may_affect_comparator_metrics": false
+    }
+  ],
+  "provision_examples": [
+    {
+      "example_id": "CAPITALISATION-EX-04",
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "deal": "concho",
+      "printed_reference": "4.2",
+      "complete_source_node_occurrence_ids": [
+        "cc4d1643c29eb27a75312e5c9df278310f26b5aefd3f7871ad7ae06c69c0b89e"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 48068,
+          "start_byte": 43665,
+          "text_sha256": "8e56b5bbc4a96977b0ff9370bb86d213bce761958c1004f43f1164df4339bc38"
+        }
+      ],
+      "source_text_sha256s": [
+        "8e56b5bbc4a96977b0ff9370bb86d213bce761958c1004f43f1164df4339bc38"
+      ],
+      "structure_revision_ids": [
+        "aae1968e6fc9ac8a3eb36e5bce209e4510c7dedfa81a83e1a43b8ad7cd79c83b"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [],
+      "comparator_run_identifiers": [],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "AUTHORISED_CAPITAL",
+      "legal_question_ids": [
+        "CAPITALISATION-Q01",
+        "CAPITALISATION-Q02",
+        "CAPITALISATION-Q03"
+      ]
+    },
+    {
+      "example_id": "CAPITALISATION-EX-01",
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "deal": "modiv",
+      "printed_reference": "3.2",
+      "complete_source_node_occurrence_ids": [
+        "01dfeb9ef83762972bfb404bdc59389296e87da6e97930fc0f28694fcf2ec5bc"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 64180,
+          "start_byte": 55994,
+          "text_sha256": "fb0f7dc4e20341bd4a463e3b3d4dffe058b99dcb227d129a37a2b8ceb1a29a54"
+        }
+      ],
+      "source_text_sha256s": [
+        "fb0f7dc4e20341bd4a463e3b3d4dffe058b99dcb227d129a37a2b8ceb1a29a54"
+      ],
+      "structure_revision_ids": [
+        "eca4532aca2bdd705353f0513836814dae7a07b05eab9de1c4240bbeff71db0b"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [],
+      "comparator_run_identifiers": [],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "AUTHORISED_CAPITAL",
+      "legal_question_ids": [
+        "CAPITALISATION-Q01",
+        "CAPITALISATION-Q02",
+        "CAPITALISATION-Q03"
+      ]
+    },
+    {
+      "example_id": "CAPITALISATION-EX-02",
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "deal": "redhat",
+      "printed_reference": "3.01(c)",
+      "complete_source_node_occurrence_ids": [
+        "50d5eb9b57875fc604a63962b860f8e360f784bf6bbbc57b3eb9ff2e451111c2"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 41174,
+          "start_byte": 32416,
+          "text_sha256": "47b504aae64e1c09de78650c5b2c80ceeae7d013732e98e598464ff030cc2236"
+        }
+      ],
+      "source_text_sha256s": [
+        "47b504aae64e1c09de78650c5b2c80ceeae7d013732e98e598464ff030cc2236"
+      ],
+      "structure_revision_ids": [
+        "b266b9a5a1f3dda0404d190effecc83a84b1666e87c9e681338933a01961bbc1"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [],
+      "comparator_run_identifiers": [],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "AUTHORISED_CAPITAL",
+      "legal_question_ids": [
+        "CAPITALISATION-Q01",
+        "CAPITALISATION-Q02",
+        "CAPITALISATION-Q03"
+      ]
+    },
+    {
+      "example_id": "CAPITALISATION-EX-03",
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "deal": "skechers",
+      "printed_reference": "3.7",
+      "complete_source_node_occurrence_ids": [
+        "548f03170b2a4690dfc2ee5922ca0864e1db2982a61d08d87ed0a433e616d93d"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 127852,
+          "start_byte": 122698,
+          "text_sha256": "57fb980f2d1e27f8b3459f1d8abd41ade0fb0d07861e1035e360ed00aafa1cfe"
+        }
+      ],
+      "source_text_sha256s": [
+        "57fb980f2d1e27f8b3459f1d8abd41ade0fb0d07861e1035e360ed00aafa1cfe"
+      ],
+      "structure_revision_ids": [
+        "365fa5274b308aa229668803a7bd9fd5bf2bfeddc00e727c03bc335a520f04b7"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [],
+      "comparator_run_identifiers": [],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "AUTHORISED_CAPITAL",
+      "legal_question_ids": [
+        "CAPITALISATION-Q01",
+        "CAPITALISATION-Q02",
+        "CAPITALISATION-Q03"
+      ]
+    },
+    {
+      "example_id": "CAPITALISATION-EX-05",
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "deal": "skywater",
+      "printed_reference": "3.5",
+      "complete_source_node_occurrence_ids": [
+        "453791937f3ae5a1dc20678f05dddea99136e7170b3d389ef303108c7dc1008b"
+      ],
+      "source_spans": [
+        {
+          "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+          "end_byte": 56794,
+          "start_byte": 50277,
+          "text_sha256": "97689761f5ea10d8c3822674be41c2015660f8c5d88a179e5a396aaa96c538b3"
+        }
+      ],
+      "source_text_sha256s": [
+        "97689761f5ea10d8c3822674be41c2015660f8c5d88a179e5a396aaa96c538b3"
+      ],
+      "structure_revision_ids": [
+        "1166c2d82c209143f00bb31ebdd406312b5974fc349d050edde29ebc7988cc55"
+      ],
+      "m3_dependency_ids": [],
+      "m4_claim_ids": [],
+      "comparator_run_identifiers": [],
+      "material_difference_tags": [
+        "SOURCE_FIRST_COMPLETE_PROVISION",
+        "LEGAL_GROUPING_REVIEW_REQUIRED"
+      ],
+      "proposed_subtype": "AUTHORISED_CAPITAL",
+      "legal_question_ids": [
+        "CAPITALISATION-Q01",
+        "CAPITALISATION-Q02",
+        "CAPITALISATION-Q03"
+      ]
+    }
+  ],
+  "cross_family_dependencies": [],
+  "proposed_output_policy": {
+    "candidate_claim_definition_keys": [],
+    "candidate_subtype_profile_ids": [
+      "CAPITALISATION::AUTHORISED_CAPITAL",
+      "CAPITALISATION::ISSUED_AND_OUTSTANDING",
+      "CAPITALISATION::RESERVED_OR_ISSUABLE_SECURITIES",
+      "CAPITALISATION::EQUITY_AWARD_INVENTORY",
+      "CAPITALISATION::PARTNERSHIP_OR_SUBSIDIARY_EQUITY",
+      "CAPITALISATION::CAPITALISATION_ABSENCE",
+      "CAPITALISATION::VALID_ISSUANCE_STATUS"
+    ],
+    "non_output_dispositions": [
+      "LEGACY_FRAGMENTS_REMAIN_SCHEMA_APPROVAL_PENDING",
+      "UNRESOLVED_REQUIRED_ROLE_IS_NON_RENDERABLE"
+    ],
+    "family_ownership_boundary": "CAPITALISATION owns only approved complete propositions. Overlapping content is link-only.",
+    "renderability": "NEVER_RENDER_FROM_PROPOSAL",
+    "complete_transition": "NOT_AUTHORISED"
+  },
+  "narrow_legal_questions": [
+    {
+      "question_id": "CAPITALISATION-Q01",
+      "question": "Should one independently operative authored unit be one proposition, with coordinated elements stored as roles or linked children?",
+      "affected_example_ids": [
+        "CAPITALISATION-EX-01",
+        "CAPITALISATION-EX-02",
+        "CAPITALISATION-EX-03",
+        "CAPITALISATION-EX-04",
+        "CAPITALISATION-EX-05"
+      ],
+      "two_plausible_readings": [
+        "ONE_COMPOUND_PROPOSITION",
+        "LINKED_INDEPENDENT_PROPOSITIONS"
+      ],
+      "recommended_reading": "Use one proposition per independently operative authored unit.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "CAPITALISATION-Q02",
+      "question": "Which family owns overlapping content, and which families may only link to its stable identity?",
+      "affected_example_ids": [
+        "CAPITALISATION-EX-01",
+        "CAPITALISATION-EX-02",
+        "CAPITALISATION-EX-03",
+        "CAPITALISATION-EX-04",
+        "CAPITALISATION-EX-05"
+      ],
+      "two_plausible_readings": [
+        "DUPLICATE_IN_EACH_FAMILY",
+        "ONE_OWNER_WITH_LINKED_CONSUMERS"
+      ],
+      "recommended_reading": "Use one semantic owner and stable links.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    },
+    {
+      "question_id": "CAPITALISATION-Q03",
+      "question": "Can an ambiguous or unresolved M3 edge fill a required role?",
+      "affected_example_ids": [
+        "CAPITALISATION-EX-01",
+        "CAPITALISATION-EX-02",
+        "CAPITALISATION-EX-03",
+        "CAPITALISATION-EX-04",
+        "CAPITALISATION-EX-05"
+      ],
+      "two_plausible_readings": [
+        "ALLOW_CONTEXTUAL_INFERENCE",
+        "FAIL_ONLY_THE_DEPENDENT_PROPOSITION"
+      ],
+      "recommended_reading": "Fail only the dependent proposition and do not infer the role.",
+      "status": "OPEN_REQUIRES_BEN_RULING",
+      "ben_ruling_id": null
+    }
+  ],
+  "preparation_diagnostics": [
+    {
+      "code": "BEN_FAMILY_ROLE_APPROVAL_REQUIRED",
+      "severity": "STOP",
+      "related_id": "CAPITALISATION",
+      "detail": "No family adapter may run until Ben approves the open rulings and a separate approved schema is sealed."
+    }
+  ],
+  "preparation_effects": {
+    "model_calls": 0,
+    "family_runner_calls": 0,
+    "database_writes": 0,
+    "product_writes": 0,
+    "selector_changes": 0,
+    "pin_changes": 0,
+    "baseline_changes": 0,
+    "serving_changes": 0,
+    "publication_actions": 0
+  }
+}

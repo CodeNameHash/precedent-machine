@@ -5,7 +5,26 @@ classifies provisions, extracts structured facts, renders a review UI, and
 searches precedents across deals. Supabase Postgres backend, deployed on
 Vercel, production tracks `main`.
 
-Run `npm test` and `npm run build` before pushing. CI enforces both.
+Before pushing, run the test files for the seam you touched
+(`CI=true node --test <files>`), and `npm run build` only if `lib/`, `pages/`
+or `components/` changed. CI runs the full suite on every push; do not run it
+locally against unchanged code. (Ben, 2026-09-03, CI audit: this replaces
+the earlier rule to run the whole suite before every push.) A seam includes
+every test that pins the bytes of a file you changed: `grep -rl <basename>
+tests/` before deciding what to run.
+
+Three checks are named CI gates, not part of `npm test`: `gate:baseline`,
+`gate:near-miss` and `gate:replay-baseline`. The last two each re-derive a
+committed evidence report from every admitted corpus run and take about
+twenty minutes; they run in CI as the `evidence-gates` job once per exact
+input digest (`scripts/ci/expensive-check-checkpoint.mjs`) and are skipped on
+an exact checkpoint hit. Regenerate with the script's `--write` mode and
+commit the diff.
+
+A new test asserts behaviour or output bytes, never a script's source text,
+import list, error order or argv literal. The phase-1 authority-boundary
+scanner and the sealed-receipt bindings are the standing exceptions; do not
+add a third.
 
 ## Read these before doing anything
 
@@ -78,6 +97,24 @@ change. A stale header is the most authoritative-looking lie in a codebase.
 - **`review-parity-check.js` exit 2 means nothing could be compared.** It is
   not a pass. A run that proves nothing must not read like a run that proves
   everything.
+
+## Time and token rules (Ben, 2026-09-03)
+
+- **Never wait on CI.** Push, let CI run, act only on red. No local
+  re-run of heavy tests or evidence gates to "confirm" what CI will
+  report. No polling loops. The only local proof before a push is the
+  changed seam's fast tests.
+- **No duplicate checks.** One independent review per deliverable,
+  scoped to what changed, run in parallel with the next piece of work,
+  never as a gate that idles the lead.
+- **Delegate everything with a writable spec.** The lead session (the
+  strongest model) does specs, authorities, legal-boundary judgement and
+  review synthesis. Censuses, tables, fixture packs, mechanical code
+  changes, coordination replies and monitoring go to Sonnet or Opus
+  subagents or to the external agent via `coord/*` branches. A lead turn
+  spent polling or re-reading a delivery is a wasted turn.
+- **Report by artefact.** A commit hash, a file, a count. Not a
+  narrative of what was checked.
 
 ## Model routing
 

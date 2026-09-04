@@ -237,6 +237,26 @@ test('nosol-section: T6 folds "Company termination for Superior Proposal" INSIDE
   assert.equal(allRowIds.includes('nosol-fiduciary-termination'), false, 'the fiduciary-sourced duplicate must not also render');
 });
 
+test('nosol-section suppresses only the Superior Proposal termination duplicate when V2 owns that right', () => {
+  const groups = mod.buildGroups({
+    cards: CARDS,
+    canonical_v2_termination_rights_review_rows: {
+      schema_version: 'TERMINATION_RIGHTS_REVIEW_ROWS/V2',
+      agreement_analysis_id: 'analysis:1',
+      agreement_projection_id: 'projection:1',
+      rows: [{ subtype_key: 'SUPERIOR_PROPOSAL_RIGHT' }],
+      general_review_items: [],
+    },
+  }, { primitives });
+  const superior = groups.find((group) => group.id === 'nosol-superior');
+  const rowIds = superior.rows.map((row) => row.id);
+
+  assert.equal(rowIds.includes('nosol-superior-termination'), false);
+  assert.equal(rowIds.includes('nosol-superior-threshold'), true);
+  assert.equal(rowIds.includes('nosol-superior-test'), true);
+  assert.equal(rowIds.includes('nosol-superior-determiner'), true);
+});
+
 test('nosol-section dedupes cross-config facts: each duplicated concept appears exactly once', () => {
   const groups = mod.buildGroups({ cards: CARDS }, { primitives });
   const allRowIds = groups.flatMap((g) => g.rows.map((r) => r.id));

@@ -42,6 +42,11 @@ test('detect-phase accepts the transitional PLAN system branch', () => {
   assert.equal(detectPhase('plan/land-plan-system'), 'PLAN-SYSTEM');
 });
 
+test('detect-phase accepts the exact Work3 recovery branch', () => {
+  assert.equal(detectPhase('codex/recover-m7-20260812'), 'WP-RECOVER-M7-20260812');
+  assert.throws(() => detectPhase('codex/recover-m7-20260813'), /Branch name must match/);
+});
+
 test('detect-phase rejects malformed wp/ slugs', () => {
   assert.throws(() => detectPhase('wp/'), /Branch name must match/);
   assert.throws(() => detectPhase('wp/-leading'), /Branch name must match/);
