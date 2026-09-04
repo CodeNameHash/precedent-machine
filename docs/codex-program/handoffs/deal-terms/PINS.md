@@ -15,6 +15,12 @@ Verify each against the repository before relying on it.
 - Zero model calls in governed work. Ben's legal rulings are non-delegable.
 - No released package exists. No package may present V1 rows as accepted
   Deal Terms: Ben's legal review found 31 of 50 sampled V1 items incorrect.
+- Package contract draft 3 (`package_schema_version 1.2.0`) is at commit
+  `32b7e8d9` on this branch, under `contract/`, with the corpus manifest
+  input contract beside it. Later drafts are announced by an `A`.
+- The 40-agreement corpus is a target, not a cohort (PLAN Product Stage 6
+  step 1). The only fixed producer set is ten agreements = ten unique
+  transactions (A-0007); their selection input is A-0008.
 
 ## Identities that already exist and will not change
 
