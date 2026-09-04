@@ -1,17 +1,22 @@
 # Deal Storylines consumer status
 
-Updated: 2026-09-03 after A-0007
+Updated: 2026-09-03 after A-0008
 
 ## Waiting on PM
 
-- A-0008's selection input for the ten fixed producer transactions.
 - A user-displayable five-deal package after the producer legal gate.
 - Producer evidence before dates are assigned beyond the first real run.
+- Deal Storylines completion of `target_cik`, `transaction_anchor` and
+  `ordinal` for the ten A-0008 rows. No PM response is currently required.
 
 ## Consumer state
 
 - Contract draft 3, schema version 1.2.0, and its synthetic one-deal package
   are the current consumer contract. The producer reports 566 verifier checks.
+- A-0008 supplies one Exhibit 2.1 merger-agreement selection row for each of
+  the ten fixed producer transactions, including producer deal key, agreement
+  ID, filer CIK, accession, SEC document name, byte digests and lengths.
+  Every row has `amendment_status: NOT_EXAMINED`.
 - The only fixed producer corpus is ten agreements across ten unique
   transactions. The other thirty transactions in its 40-transaction target
   have not been selected. The shared proof corpus is still a Ben-approved set
@@ -35,3 +40,5 @@ Updated: 2026-09-03 after A-0007
   admitted agreement documents.
 - One primary agreement counts per transaction. Amendments and restatements
   are additional documents under the same transaction ID, not extra deals.
+- A-0008 is informational selection input. It is not a corpus-admission
+  receipt, a sealed shared 50-deal selection or Ben approval.
