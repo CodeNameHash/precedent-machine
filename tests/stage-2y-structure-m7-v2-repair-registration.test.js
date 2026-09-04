@@ -3451,7 +3451,7 @@ test('interim candidate registration supersedes the last one and binds the curre
     );
     const correction = JSON.parse(fs.readFileSync(path.join(
       ROOT,
-      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-candidate-replacement-authority-correction-1.json',
+      'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-candidate-replacement-authority-correction-1.json',
     ), 'utf8'));
     assert.equal(correction.approval.state, 'PENDING_BEN');
     assert.ok(

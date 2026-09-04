@@ -2279,9 +2279,35 @@ summary. #35 did not land — the recovery branch tip at handover was
 with no interim-registration mechanism and no correction record; the
 scratch `spec35-report.md` died with its container. So #35 is redone from
 the appendix brief in the handoff note, `…-correction-1.json` is written
-with `approval.state: PENDING_BEN`, and the three items go to Ben as an
-actual record before anything applies. Nothing moves to `BEN_APPROVED`
-without his word on the text.
+with `approval.state: PENDING_BEN`, and the items go to Ben as an actual
+record before anything applies. Nothing moves to `BEN_APPROVED` without his
+word on the text.
+
+**Superseded the same day, and this entry's own wording above was part of
+what was wrong.** The record as first drafted (`6021a747`) was audited and
+returned CHANGES. Its third item, described above as "family-scoped
+`profile_results`", named an outcome in one string,
+`PROFILE_RESULTS_SCOPED_TO_OCCURRENCE_FAMILY`, that reads two ways: evaluate
+all 25 provision families and store one family's entries, or evaluate one
+family only. The second makes `compatible_cross_family_match_count` a
+structural zero, so the gate requiring it to be zero can never refuse,
+`FAMILY_CORRECTION_PENDING` can never be raised from profile evidence, and
+an occurrence's family becomes V1's M4 family by assumption rather than by
+matching — the check that catches a clause filed in the wrong family.
+
+Put that question to Ben in plain terms on 2026-09-04, he ruled: keep the
+misfiling check. The redraft (`b84e3091`) carries
+`PROFILE_RESULTS_MATCHED_RETAINED_PLUS_FULL_SET_DIGEST` instead — all 25
+families still evaluated, every family's matches retained, plus a digest of
+the complete result set so a re-run proves nothing was lost; only the
+non-match detail rows are discarded. The record now carries ONE item, not
+three: the argv correction is held until its applier is reachable from the
+site that decides a successor manifest's argv, and the rename correction
+until Q-0025 settles the field names it would rename this authority to
+match. It also moved to an authorised path — the first one breached the
+parent authority's `permitted_writes` prefix rules — and its identity no
+longer covers the approval block, so the id Ben approves is the id that ends
+up effective.
 
 **2. The thirty additional transactions for the shared 50 (A-0007 §1).
 Ben's selection criteria drive the thirty; the producer admits them.**

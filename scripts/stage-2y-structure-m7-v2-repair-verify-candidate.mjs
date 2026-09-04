@@ -2416,9 +2416,9 @@ export function verifyRegisteredCandidate({ repoRoot, registrationPath } = {}) {
     process.stderr.write(`${CURRENT_REGISTRATION_STATE} ${expectedId}\n`);
   }
   // Recognition of the correction record beside the authority. Nothing on a
-  // registration is corrected by it — its three corrections are about run
-  // argv, attempt-record member names and a contract change — so this reports
-  // a pending record and applies nothing either way. A record whose binding
+  // registration is corrected by it — the corrections it can carry are about
+  // run argv, attempt-record member names and a contract change — so this
+  // reports a pending record and applies nothing either way. A record whose binding
   // does not match the authority's bytes fails here, as it does everywhere.
   let correction;
   try {
