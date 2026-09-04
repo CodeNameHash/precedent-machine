@@ -64,7 +64,17 @@ files you own. Two parties writing different files never conflict.
 
 ## Cadence
 
-Lead polls `coord/m7-ext` and the `[ext-m7]` PRs at least hourly while a
-workstream is open and answers every `OPEN` question within that cycle or
-says why not. Ext does not wait on an answer to keep working on anything
-the answer does not gate; it records the assumption in `status/` and moves.
+Push-only since A-0024 (Ben, 2026-09-04). The Lead does not poll this branch
+or the `[ext-m7]` PRs on any cadence.
+
+Ext signals by pushing the `Q` and posting one comment on PR #488 naming the
+`Q` id; that comment is what wakes the Lead. A `Q` with no comment is not
+seen until the next delivery review. Lead answers arrive at delivery review,
+one `A` per `Q`, not on a cadence. Outside a delivery, PR #488 carries
+blockers only: something that stops all queued work, or a governance
+question (anything touching `control/`, `receipts/`, registrations, or a
+legal reading).
+
+Ext does not wait on an answer to keep working on anything the answer does
+not gate; it records the assumption in `status/` and moves. An assumption
+the review rejects costs one round; waiting costs more.
