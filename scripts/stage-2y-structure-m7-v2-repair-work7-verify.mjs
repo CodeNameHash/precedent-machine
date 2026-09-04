@@ -30,6 +30,14 @@
 // are copies of the published algorithms, not imports from the artefacts
 // under verification.
 //
+// A registration the candidate replacement authority lists as superseded is
+// HISTORICAL: the authority permits the files it bound to be edited
+// afterwards, so each of its bindings that names a Git blob OID is re-derived
+// from that Git object instead of from the working tree or HEAD, and the run
+// reports HISTORICAL_SUPERSEDED_REGISTRATION as an INFO finding. A nested
+// source binding that carries no blob OID keeps its working-tree comparison.
+// Every other registration is verified against the working tree as before.
+//
 // Git is read-only and only through git(): cat-file, ls-tree,
 // rev-parse. GIT_DIR, GIT_WORK_TREE and GIT_CONFIG_* are scrubbed.
 //
@@ -51,6 +59,17 @@ const REGISTRATION_SCHEMA = 'STAGE_2Y_M7_V2_CANDIDATE_REGISTRATION/V1';
 const REGISTRATION_ROOT =
   'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-candidate-registrations';
 const GIT_COMMANDS = new Set(['cat-file', 'ls-tree', 'rev-parse']);
+const CANDIDATE_REPLACEMENT_AUTHORITY_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-candidate-replacement-authority.json';
+const CANDIDATE_REPLACEMENT_AUTHORITY_SCHEMA =
+  'STAGE_2Y_M7_V2_REPAIR_CANDIDATE_REPLACEMENT_AUTHORITY/V1';
+const CANDIDATE_REPLACEMENT_AUTHORITY_ID =
+  '93d67c6ea53ed9b429f7467a3c5a52d982352957f3c9a1c3ac3e6350f54eab08';
+const CANDIDATE_REPLACEMENT_AUTHORITY_BYTE_LENGTH = 23976;
+const CANDIDATE_REPLACEMENT_AUTHORITY_SHA256 =
+  '21f864a6473e069987f1c578bd5efaa447a5443225706e9a40bdbc0198468a17';
+const CANDIDATE_REPLACEMENT_AUTHORITY_GIT_BLOB_OID =
+  'a9970b6e3db301fcfdbcb904681fd3db7297fe77';
 const WORK4_RECEIPT_SCHEMAS = new Set([
   'STAGE_2Y_M7_V2_REPAIR_WORK4_RECEIPT/V1',
   'STAGE_2Y_M7_V2_REPAIR_WORK4_RECEIPT/V2',
@@ -282,6 +301,71 @@ function deriveFile(bytes) {
   };
 }
 
+// Candidate replacement (Ben, 2026-09-03). A registration the replacement
+// authority lists as superseded is HISTORICAL: the authority permits the files
+// it bound to be edited afterwards, so its bindings are re-derived from the
+// Git objects it named rather than from the working tree or HEAD. The mode is
+// set once per verification run.
+let historicalRegistration = false;
+
+function candidateReplacementSupersededIds(root) {
+  const bytes = readWorkingBytes(root, CANDIDATE_REPLACEMENT_AUTHORITY_PATH);
+  if (bytes === null) return null;
+  const derived = deriveFile(bytes);
+  if (derived.byte_length !== CANDIDATE_REPLACEMENT_AUTHORITY_BYTE_LENGTH
+    || derived.sha256 !== CANDIDATE_REPLACEMENT_AUTHORITY_SHA256
+    || derived.git_blob_oid !== CANDIDATE_REPLACEMENT_AUTHORITY_GIT_BLOB_OID) return null;
+  const record = parseJson(bytes);
+  const superseded = record?.superseded_candidate_registration_ids;
+  if (record?.schema_version !== CANDIDATE_REPLACEMENT_AUTHORITY_SCHEMA
+    || record.replacement_authority_id !== CANDIDATE_REPLACEMENT_AUTHORITY_ID
+    || !Array.isArray(superseded)
+    || !superseded.every((id) => typeof id === 'string' && /^[0-9a-f]{64}$/u.test(id))) {
+    return null;
+  }
+  return superseded;
+}
+
+// The historical form of checkFileBinding: the bound blob must be in the Git
+// object store and must hash to exactly what the binding declares. The working
+// tree is not consulted, so an authorised edit to a bound file is not drift.
+function checkHistoricalFileBinding(root, role, binding, findings, cache) {
+  const repositoryPath = binding.path;
+  const blob = gitBlobBytes(root, binding.git_blob_oid);
+  if (blob === null) {
+    findings.push(finding(
+      'BINDING_BYTE_MISMATCH',
+      repositoryPath,
+      `${role} bound blob ${binding.git_blob_oid ?? 'absent'} is not a readable Git object`,
+    ));
+    return null;
+  }
+  const derived = deriveFile(blob);
+  if (derived.byte_length !== binding.byte_length || derived.sha256 !== binding.sha256
+    || derived.git_blob_oid !== binding.git_blob_oid) {
+    findings.push(finding(
+      'BINDING_BYTE_MISMATCH',
+      repositoryPath,
+      `${role} bound blob ${derived.byte_length}/${derived.sha256} != bound ${binding.byte_length}/${binding.sha256}`,
+    ));
+    return null;
+  }
+  // Downstream recomputation reads this cache; on a historical registration
+  // the registered bytes are what every later comparison must be against.
+  cache.set(repositoryPath, blob);
+  if (typeof binding.record_id_field === 'string' && binding.record_id_field.length > 0) {
+    const record = cachedJson(cache, repositoryPath, blob);
+    if (record?.[binding.record_id_field] !== binding.record_id) {
+      findings.push(finding(
+        'RECEIPT_IDENTITY_MISMATCH',
+        repositoryPath,
+        `${role} record_id ${record?.[binding.record_id_field] ?? 'absent'} != bound ${binding.record_id}`,
+      ));
+    }
+  }
+  return { bytes: blob, derived };
+}
+
 function collectRegistrationBindings(registration) {
   const files = [];
   const members = [];
@@ -352,6 +436,12 @@ function checkFileBinding(root, role, binding, findings, cache) {
   if (typeof repositoryPath !== 'string') {
     findings.push(finding('BINDING_PATH_MISSING', role, 'binding has no path'));
     return null;
+  }
+  // Only a binding that names a Git object can be verified against one; a
+  // nested source binding that carries no blob OID keeps the working-tree
+  // comparison it has always had.
+  if (historicalRegistration && typeof binding.git_blob_oid === 'string') {
+    return checkHistoricalFileBinding(root, role, binding, findings, cache);
   }
   let bytes = cache.get(repositoryPath);
   if (bytes === undefined) {
@@ -834,6 +924,7 @@ export function verifyWork7(options = {}) {
     throw new Error('WORK7_INVALID: options');
   }
   const root = rootPath(options.repoRoot ?? REPO_ROOT);
+  historicalRegistration = false;
   const findings = [];
   const recomputations = [];
   const cache = new Map();
@@ -877,6 +968,18 @@ export function verifyWork7(options = {}) {
     ));
   }
   const otherRegistrations = listRegistrationFiles(root).filter((pathName) => pathName !== registrationPath);
+  const supersededIds = candidateReplacementSupersededIds(root);
+  historicalRegistration = supersededIds !== null
+    && supersededIds.includes(registration.candidate_registration_id);
+  if (historicalRegistration) {
+    findings.push(finding(
+      'HISTORICAL_SUPERSEDED_REGISTRATION',
+      registrationPath,
+      'the candidate replacement authority lists this registration as superseded; '
+        + 'its bindings are verified against the Git objects it named, not the working tree',
+      'INFO',
+    ));
+  }
 
   const { files, members } = collectRegistrationBindings(registration);
   const declaredPaths = uniqueBoundPaths(registration);

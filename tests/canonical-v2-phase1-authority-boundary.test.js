@@ -1086,9 +1086,18 @@ function assertExecutionManifestValidatorGitBoundary(source, label) {
   assertExactNamedImportRoster(
     program,
     './stage-2y-structure-m7-v2-repair-work3-validate.mjs',
-    [['gitReadText', 'gitReadText'], ['validateWork3', 'validateWork3']],
+    [
+      ['gitReadBytes', 'gitReadBytes'],
+      ['gitReadText', 'gitReadText'],
+      ['validateWork3', 'validateWork3'],
+    ],
     label,
   );
+  // The historical-binding seam: one call, one command, reading exactly the
+  // Git object a superseded registration's binding names.
+  assertDelegatedGitReadBoundary(program, label, 'root', 'gitReadBytes', [
+    ['cat-file', '-p', '$oid'],
+  ]);
   assertDelegatedGitReadBoundary(program, label, 'root', 'gitReadText', [
     ['cat-file', '-e', '`${$binding.commit}^{commit}`'],
     ['merge-base', '--is-ancestor', '$WORK3_V2_FINAL_COMMIT', '$binding.commit'],
@@ -2920,7 +2929,7 @@ test('the execution-manifest validator delegates exactly its read-only Git inspe
     'scripts/stage-2y-structure-m7-v2-repair-execution-manifest-validate.mjs';
   const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
   assertExecutionManifestValidatorGitBoundary(source, relativePath);
-  const seamImport = "import {\n  gitReadText,\n  validateWork3,\n} from './stage-2y-structure-m7-v2-repair-work3-validate.mjs';";
+  const seamImport = "import {\n  gitReadBytes,\n  gitReadText,\n  validateWork3,\n} from './stage-2y-structure-m7-v2-repair-work3-validate.mjs';";
   assert.ok(source.includes(seamImport), 'validator must import the Work3 validator seam');
   for (const hostile of [
     source.replace(

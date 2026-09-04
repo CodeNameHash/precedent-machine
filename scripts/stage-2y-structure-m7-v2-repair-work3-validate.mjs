@@ -147,9 +147,12 @@ function git(root, argv) {
   });
 }
 
-// The execution-manifest validator may not import a subprocess module itself;
-// its fixed Git observations go through this one exported seam, which refuses
-// any command head that is not a read-only inspection.
+// The execution-manifest validator and the candidate verifier may not import a
+// subprocess module themselves; their fixed Git observations go through the two
+// exported seams below — `gitReadText` for trimmed text, `gitReadBytes` for an
+// object's exact bytes — each of which refuses any command head that is not a
+// read-only inspection and any option that would make one write, read caller
+// configuration or run an external program.
 const READ_ONLY_GIT_HEADS = Object.freeze(new Set([
   'cat-file', 'diff-tree', 'log', 'ls-tree', 'merge-base', 'rev-list', 'rev-parse',
 ]));
@@ -182,6 +185,36 @@ export function gitReadText(root, argv) {
     maxBuffer: 64 * 1024 * 1024,
     stdio: ['ignore', 'pipe', 'pipe'],
   }).trimEnd();
+}
+
+// The same read-only seam for callers that need the object's exact bytes
+// rather than a trimmed text line — a historical binding is verified against
+// the Git object it names, so the bytes must survive byte for byte.
+export function gitReadBytes(root, argv) {
+  if (!Array.isArray(argv) || argv.length === 0 || !READ_ONLY_GIT_HEADS.has(argv[0])
+    || argv.some((value) => typeof value !== 'string' || GIT_OPTION_REFUSAL.test(value))) {
+    fail('GIT_READ_ONLY_SEAM', 'non-read-only Git inspection refused');
+  }
+  const environment = { ...process.env, GIT_NO_REPLACE_OBJECTS: '1' };
+  for (const name of [
+    'GIT_ALTERNATE_OBJECT_DIRECTORIES',
+    'GIT_COMMON_DIR',
+    'GIT_CONFIG_COUNT',
+    'GIT_CONFIG_GLOBAL',
+    'GIT_CONFIG_PARAMETERS',
+    'GIT_CONFIG_SYSTEM',
+    'GIT_DIR',
+    'GIT_EXTERNAL_DIFF',
+    'GIT_OBJECT_DIRECTORY',
+    'GIT_WORK_TREE',
+  ]) delete environment[name];
+  return execFileSync('git', argv, {
+    cwd: root,
+    encoding: null,
+    env: environment,
+    maxBuffer: 64 * 1024 * 1024,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
 }
 
 function pinnedTreeSource(root, sourceCommit) {

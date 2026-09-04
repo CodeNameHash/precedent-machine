@@ -1,14 +1,48 @@
+// M7 V2 repair candidate independent verifier.
+//
+// Re-derives every binding and count on a registered candidate from the
+// repository bytes the registration names — it never imports the
+// registration builder and never trusts a declared value on its own say-so.
+// `verifyRegistration`'s `recountedCounts` re-derives
+// `code_file_count`/`runner_count`/`test_count`/`semantic_input_count`/
+// `subtype_tree_count`/`predecessor_receipt_count`/`unique_bound_path_count`
+// from the lengths of binding lists whose members were each independently
+// read and hash-verified above; `verifyRichWork3ReceiptV2` re-derives the
+// bound WORK3 predecessor's profile and family-package counts from the
+// bound approved family profile set's own `profiles` and
+// `family_profile_package_bindings` arrays. Neither recount reads the
+// registration's declared counts to compute itself, and either one failing
+// to match fails with the distinct check id `COUNT_RECOUNT` rather than the
+// generic contract-drift code — a candidate whose declared counts disagree
+// with its own bound bytes is caught here, not waved through by
+// self-attestation. No count is pinned to a literal constant: a candidate
+// with a different profile set, package count, path count or test roster
+// (any roster whose paths satisfy the `tests/` file-prefix rule and include
+// the required baseline) verifies on its own recount.
+//
+// A registration the candidate replacement authority lists as superseded is
+// HISTORICAL: its own bytes are still read from the working tree, but every
+// file it binds is re-derived from the Git object it named (`boundBytes`),
+// because the authority permits those files to be edited afterwards. On such a
+// registration the "the verifier that is running is the verifier that was
+// bound" check becomes "the verifier that is running is the working-tree file
+// at the bound path"; on every other registration it is unchanged.
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import canonicalModule from '../lib/canonical-v2/canonical-bytes.js';
+import importClosureModule from '../lib/canonical-v2/m7-v2-import-closure.js';
 import m7V2ContractModule from '../lib/canonical-v2/m7-v2-contract.js';
 import { validateWork2SuccessorReceiptBinding } from './stage-2y-structure-m7-v2-repair-work2-validate.mjs';
-import { validateWork3 } from './stage-2y-structure-m7-v2-repair-work3-validate.mjs';
+import {
+  gitReadBytes,
+  validateWork3,
+} from './stage-2y-structure-m7-v2-repair-work3-validate.mjs';
 
 const { canonicalJson, contentId, sha256Hex } = canonicalModule;
+const { importClosure } = importClosureModule;
 const { validateFamilyProfilePackageSetForWork3 } = m7V2ContractModule;
 
 const REGISTRATION_SCHEMA = 'STAGE_2Y_M7_V2_CANDIDATE_REGISTRATION/V1';
@@ -157,6 +191,10 @@ const CODE_KEYS = [
   'runners',
   'tests',
 ];
+// The code roles that are exactly one file each; `runners` and `tests` are the
+// two list-valued roles. `code_file_count` is this roster's length plus those
+// two list lengths, never a literal.
+const CODE_SINGLETON_ROLES = Object.freeze(CODE_KEYS.slice(0, 5));
 const REQUIRED_RUNNERS = Object.freeze([
   'scripts/stage-2y-structure-family-aggregate.mjs',
   'scripts/stage-2y-structure-generalisation-shadow.mjs',
@@ -170,6 +208,9 @@ const WORK1_TESTS = Object.freeze([
 const WORK3_MAE_TEST = 'tests/stage-2y-structure-m7-v2-repair-work3-mae.test.js';
 const WORK4_PROJECTION_DISPATCH_TEST =
   'tests/stage-2y-structure-m7-v2-repair-projection-dispatch.test.js';
+// The authority's tests file-prefix rule: directory "tests", prefix
+// "stage-2y-structure-m7-v2-repair-", suffix pattern "^[a-z0-9-]+\.test\.js$".
+const TEST_PATH_PATTERN = /^tests\/stage-2y-structure-m7-v2-repair-[a-z0-9-]+\.test\.js$/;
 const SEMANTIC_INPUTS = Object.freeze([
   Object.freeze(['BASE_ANALYSIS_SET', 'AGREEMENT_ANALYSIS_SET/V1']),
   Object.freeze(['AGREEMENT_INDEX_SET', 'AGREEMENT_INDEX_SET/V1']),
@@ -235,6 +276,22 @@ const VERIFICATION_EFFECTS = Object.freeze({
   m8_actions: 0,
 });
 const EXECUTING_VERIFIER_BYTES = fs.readFileSync(fileURLToPath(import.meta.url));
+// Candidate replacement (Ben, 2026-09-03). The authority names the candidate
+// registrations that are now historical; a historical registration's bindings
+// are re-derived from the Git objects it named, because the authority permits
+// the files it bound to be edited afterwards.
+const CANDIDATE_REPLACEMENT_AUTHORITY_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-candidate-replacement-authority.json';
+const CANDIDATE_REPLACEMENT_AUTHORITY_SCHEMA =
+  'STAGE_2Y_M7_V2_REPAIR_CANDIDATE_REPLACEMENT_AUTHORITY/V1';
+const CANDIDATE_REPLACEMENT_AUTHORITY_ID =
+  '93d67c6ea53ed9b429f7467a3c5a52d982352957f3c9a1c3ac3e6350f54eab08';
+const CANDIDATE_REPLACEMENT_AUTHORITY_BYTE_LENGTH = 23976;
+const CANDIDATE_REPLACEMENT_AUTHORITY_SHA256 =
+  '21f864a6473e069987f1c578bd5efaa447a5443225706e9a40bdbc0198468a17';
+const CANDIDATE_REPLACEMENT_AUTHORITY_GIT_BLOB_OID =
+  'a9970b6e3db301fcfdbcb904681fd3db7297fe77';
+const HISTORICAL_REGISTRATION_STATE = 'HISTORICAL_SUPERSEDED_REGISTRATION';
 
 class CandidateVerificationError extends Error {
   constructor(code, detail = '') {
@@ -373,6 +430,60 @@ function parseJson(bytes, code, detail) {
   }
 }
 
+// A superseded registration is HISTORICAL: its own bytes are still read from
+// the working tree, but every file it binds is re-derived from the Git object
+// it named. The mode is set once per verification and cleared afterwards, so
+// nothing outside one `verifyRegisteredCandidate` call can observe it.
+let historicalRegistration = false;
+
+function boundBytes(root, binding, code = 'BINDING_DRIFT') {
+  if (!historicalRegistration) return readBytes(root, binding.path, code);
+  const oid = binding.git_blob_oid;
+  assert(/^[0-9a-f]{40}$/.test(oid || ''), 'BINDING_BYTE_MISMATCH', binding.path);
+  let bytes;
+  try {
+    bytes = gitReadBytes(root, ['cat-file', '-p', oid]);
+  } catch {
+    fail('BINDING_BYTE_MISMATCH', binding.path);
+  }
+  assert(Buffer.isBuffer(bytes) && gitBlobOid(bytes) === oid,
+    'BINDING_BYTE_MISMATCH', binding.path);
+  return bytes;
+}
+
+// The replacement authority is optional: without it no registration is
+// historical and every binding is verified against the working tree, exactly
+// as before. When the file is present it must be the exact pinned record.
+function candidateReplacementAuthority(root) {
+  let absolute;
+  try {
+    absolute = resolvePath(root, CANDIDATE_REPLACEMENT_AUTHORITY_PATH, { allowMissingLeaf: true });
+  } catch {
+    return null;
+  }
+  let stat;
+  try {
+    stat = fs.lstatSync(absolute);
+  } catch {
+    return null;
+  }
+  if (!stat.isFile() || stat.isSymbolicLink()) return null;
+  const bytes = fs.readFileSync(absolute);
+  const record = parseJson(bytes, 'AUTHORITY_BINDING_DRIFT', CANDIDATE_REPLACEMENT_AUTHORITY_PATH);
+  const superseded = record?.superseded_candidate_registration_ids;
+  assert(bytes.length === CANDIDATE_REPLACEMENT_AUTHORITY_BYTE_LENGTH
+    && sha256Hex(bytes) === CANDIDATE_REPLACEMENT_AUTHORITY_SHA256
+    && gitBlobOid(bytes) === CANDIDATE_REPLACEMENT_AUTHORITY_GIT_BLOB_OID
+    && bytes.equals(canonicalBytes(record))
+    && record.schema_version === CANDIDATE_REPLACEMENT_AUTHORITY_SCHEMA
+    && record.replacement_authority_id === CANDIDATE_REPLACEMENT_AUTHORITY_ID
+    && Array.isArray(superseded) && superseded.length > 0
+    && new Set(superseded).size === superseded.length
+    && superseded.every((id) => HEX_256.test(id)),
+  'AUTHORITY_BINDING_DRIFT', CANDIDATE_REPLACEMENT_AUTHORITY_PATH);
+  return record;
+}
+
 function verifyBinding(root, binding, expected = {}) {
   assert(exactKeys(binding, BINDING_KEYS), 'REGISTRATION_CONTRACT_DRIFT', 'binding members');
   validateRepositoryPath(binding.path);
@@ -399,7 +510,7 @@ function verifyBinding(root, binding, expected = {}) {
     assert(binding.record_id_field === expected.record_id_field,
       'REGISTRATION_CONTRACT_DRIFT', binding.path);
   }
-  const bytes = readBytes(root, binding.path);
+  const bytes = boundBytes(root, binding);
   assert(bytes.length === binding.byte_length
     && sha256Hex(bytes) === binding.sha256
     && gitBlobOid(bytes) === binding.git_blob_oid,
@@ -1636,20 +1747,24 @@ function verifyRichWork3ReceiptV2(root, receipt) {
   } catch (error) {
     fail('BINDING_DRIFT', `WORK3:V2 receipt validation:${error.code ?? error.message}`);
   }
+  const nonNegativeInteger = (value) => Number.isSafeInteger(value) && value >= 0;
   assert(exactKeys(validationResult, WORK3_V2_VALIDATION_KEYS)
     && validationResult.schema_version === 'STAGE_2Y_M7_V2_REPAIR_WORK3_VALIDATION/V2'
     && validationResult.status === 'PASS'
     && validationResult.work3_receipt_id === receipt.work3_receipt_id
-    && validationResult.family_package_count === 24
-    && validationResult.profile_count === 1382
-    && validationResult.artifact_binding_count === 52
-    && validationResult.effective_path_count === 53
-    && validationResult.create_once_output_count === 7,
+    && nonNegativeInteger(validationResult.family_package_count)
+    && validationResult.family_package_count > 0
+    && nonNegativeInteger(validationResult.profile_count)
+    && validationResult.profile_count > 0
+    && nonNegativeInteger(validationResult.artifact_binding_count)
+    && nonNegativeInteger(validationResult.effective_path_count)
+    && nonNegativeInteger(validationResult.create_once_output_count),
   'BINDING_DRIFT', 'WORK3:V2 validation result');
   const familyEvidence = receipt.family_profile_evidence;
   const familyKeys = familyEvidence?.sealed_package_family_keys;
   assert(Array.isArray(familyKeys)
-    && familyKeys.length === 24
+    && familyKeys.length === validationResult.family_package_count
+    && new Set(familyKeys).size === familyKeys.length
     && !familyKeys.includes('CAPITALISATION'),
   'BINDING_DRIFT', 'WORK3:V2 sealed family order');
   const profileSetBinding = familyEvidence.approved_family_profile_set_binding;
@@ -1660,6 +1775,18 @@ function verifyRichWork3ReceiptV2(root, receipt) {
   const profileSet = parseJson(profileSetBytes, 'BINDING_DRIFT', profileSetBinding.path);
   assert(same(profileSet.subtype_tree_bindings.map((entry) => entry?.family_key), familyKeys),
     'BINDING_DRIFT', 'WORK3:V2 subtype tree family order');
+  // Independent recount: re-derive the profile and package counts from the
+  // bound family profile set bytes just read, never from the declared
+  // validationResult counts, and fail distinctly on any mismatch.
+  const recountedProfileCount = Array.isArray(profileSet.profiles)
+    ? profileSet.profiles.length
+    : Number.NaN;
+  const recountedPackageCount = Array.isArray(profileSet.family_profile_package_bindings)
+    ? profileSet.family_profile_package_bindings.length
+    : Number.NaN;
+  assert(recountedProfileCount === validationResult.profile_count
+    && recountedPackageCount === validationResult.family_package_count,
+  'COUNT_RECOUNT', 'WORK3:V2 profile and package recount');
   const nativeEvidence = receipt.candidate_native_set_evidence;
   return {
     family_keys: structuredClone(familyKeys),
@@ -1704,7 +1831,13 @@ function verifyCode(root, code, predecessorCount) {
     && code.projector.path === 'lib/canonical-v2/agreement-projection.js'
     && code.independent_verifier.path === 'scripts/stage-2y-structure-m7-v2-repair-verify-candidate.mjs',
   'REGISTRATION_CONTRACT_DRIFT', 'code paths');
-  const registeredVerifierBytes = readBytes(root, code.independent_verifier.path);
+  // A current registration must have bound the verifier that is running now.
+  // A historical one bound the verifier as it then was — verified above from
+  // the Git object — so what is checked here instead is that the file running
+  // now is the one at that path in the working tree.
+  const registeredVerifierBytes = historicalRegistration
+    ? readBytes(root, code.independent_verifier.path)
+    : boundBytes(root, code.independent_verifier);
   assert(registeredVerifierBytes.equals(EXECUTING_VERIFIER_BYTES),
     'BINDING_DRIFT', 'executing independent verifier');
   for (const key of ['runners', 'tests']) {
@@ -1716,11 +1849,72 @@ function verifyCode(root, code, predecessorCount) {
   }
   assert(code.runners.every((binding) => binding.path.startsWith('scripts/') && binding.path.endsWith('.mjs')),
     'REGISTRATION_CONTRACT_DRIFT', 'runners');
-  assert(code.tests.every((binding) => binding.path.startsWith('tests/') && binding.path.endsWith('.test.js')),
-    'REGISTRATION_CONTRACT_DRIFT', 'tests');
-  assert(same(code.runners.map((binding) => binding.path), [...REQUIRED_RUNNERS].sort())
-    && same(code.tests.map((binding) => binding.path), requiredTests(predecessorCount)),
-  'REGISTRATION_CONTRACT_DRIFT', 'code closed set');
+  assert(code.tests.every((binding) => TEST_PATH_PATTERN.test(binding.path)),
+    'REGISTRATION_CONTRACT_DRIFT', 'tests:naming');
+  assert(same(code.runners.map((binding) => binding.path), [...REQUIRED_RUNNERS].sort()),
+    'REGISTRATION_CONTRACT_DRIFT', 'runners closed set');
+  const testPaths = code.tests.map((binding) => binding.path);
+  assert(requiredTests(predecessorCount).every((repositoryPath) => testPaths.includes(repositoryPath)),
+    'REGISTRATION_CONTRACT_DRIFT', 'tests:baseline roster');
+}
+
+// The verifier recomputes the closure from the bound code paths itself — it
+// never reads the registration's own list to build the comparison — and
+// compares the path set and the hashes. The first difference names its path.
+// There is no forbidden-module roster here: see the note in
+// `stage-2y-structure-m7-v2-repair-register-candidate.mjs` for why the V1
+// fixture-compiler lineage cannot be refused as a closure member.
+
+function verifyImportClosure(root, registration, declaresClosure) {
+  const code = registration.code_bindings ?? {};
+  if (!declaresClosure) {
+    // Absence is a pass only for a registration the authority itself lists as
+    // superseded; the record carries no ordering field of its own, so the
+    // authority's list is the ordering.
+    assert(historicalRegistration, 'BINDING_DRIFT', 'import_closure_bindings');
+    process.stderr.write(
+      `IMPORT_CLOSURE_ABSENT_HISTORICAL ${registration.candidate_registration_id}\n`,
+    );
+    return;
+  }
+  const declared = registration.import_closure_bindings;
+  const declaredPaths = Array.isArray(declared)
+    ? declared.map((binding) => binding?.path) : [];
+  assert(Array.isArray(declared) && declared.length > 0
+    && declaredPaths.every((repositoryPath) => typeof repositoryPath === 'string')
+    && new Set(declaredPaths).size === declaredPaths.length
+    && same(declaredPaths, [...declaredPaths].sort()),
+  'REGISTRATION_CONTRACT_DRIFT', 'import_closure_bindings');
+  const entryPaths = [
+    code.compiler?.path, code.deterministic_generator?.path, code.contract_validator?.path,
+    code.projector?.path, code.independent_verifier?.path,
+    ...(code.runners ?? []).map((binding) => binding.path),
+    ...(code.tests ?? []).map((binding) => binding.path),
+  ];
+  assert(entryPaths.every((repositoryPath) => typeof repositoryPath === 'string'),
+    'REGISTRATION_CONTRACT_DRIFT', 'import_closure_bindings:code paths');
+  let recomputed;
+  try {
+    recomputed = importClosure({ repoRoot: root, entryPaths });
+  } catch (error) {
+    fail(error.code ?? 'IMPORT_CLOSURE_UNRESOLVED', error.message);
+  }
+  for (const repositoryPath of [...new Set([...recomputed, ...declaredPaths])].sort()) {
+    const binding = declared.find((entry) => entry.path === repositoryPath);
+    assert(binding !== undefined && recomputed.includes(repositoryPath),
+      'BINDING_DRIFT', `import_closure:${repositoryPath}`);
+    assert(exactKeys(binding, ['byte_length', 'git_blob_oid', 'path', 'sha256']),
+      'REGISTRATION_CONTRACT_DRIFT', `import_closure:${repositoryPath}`);
+    const bytes = readBytes(root, repositoryPath);
+    assert(bytes.length === binding.byte_length
+      && sha256Hex(bytes) === binding.sha256
+      && gitBlobOid(bytes) === binding.git_blob_oid,
+    'BINDING_DRIFT', `import_closure:${repositoryPath}`);
+  }
+  for (const repositoryPath of entryPaths) {
+    assert(declaredPaths.includes(repositoryPath),
+      'BINDING_DRIFT', `import_closure:${repositoryPath}`);
+  }
 }
 
 function verifySemanticInputs(root, entries) {
@@ -1998,14 +2192,23 @@ function flattenedBindings(registration) {
 }
 
 function verifyRegistration(root, registration) {
-  assert(exactKeys(registration, RECORD_KEYS)
+  // `import_closure_bindings` is required on every registration except the
+  // ones the replacement authority lists as superseded, which predate the
+  // requirement; those report IMPORT_CLOSURE_ABSENT_HISTORICAL instead.
+  const declaresClosure = Object.hasOwn(registration, 'import_closure_bindings');
+  assert(exactKeys(registration, declaresClosure
+    ? [...RECORD_KEYS, 'import_closure_bindings'] : RECORD_KEYS)
     && registration.schema_version === REGISTRATION_SCHEMA
     && registration.stage === 'M7_V2_REPAIR'
     && registration.lifecycle_state === 'CANDIDATE_PENDING_REVIEW'
     && same(registration.effects, EXPECTED_REGISTRATION_EFFECTS),
   'REGISTRATION_CONTRACT_DRIFT', 'registration envelope');
   const governance = verifyGovernance(root, registration);
+  // After the code bindings, never before: a bound file that is missing,
+  // edited or redirected must surface as the binding defect it is, not as a
+  // closure that could not be walked.
   verifyCode(root, registration.code_bindings, registration.predecessor_receipt_bindings.length);
+  verifyImportClosure(root, registration, declaresClosure);
   verifySemanticInputs(root, registration.semantic_input_bindings);
   const work3Context = verifyPredecessors(root, registration.predecessor_receipt_bindings);
   const profileBinding = registration.semantic_input_bindings.find(
@@ -2044,8 +2247,19 @@ function verifyRegistration(root, registration) {
     const stat = fs.lstatSync(outputAbsolute);
     assert(stat.isDirectory() && !stat.isSymbolicLink(), 'PATH_SAFETY', registration.allowed_output_root);
   }
-  const expectedCounts = {
-    code_file_count: 5 + registration.code_bindings.runners.length + registration.code_bindings.tests.length,
+  // Independent recount: every figure here is re-derived from the length of
+  // a binding list whose members were each just read and hash-verified off
+  // disk above (verifyCode, verifySemanticInputs, verifySubtypeTrees,
+  // verifyPredecessors) — never read from registration.counts itself — so a
+  // registration whose declared counts.* disagrees with its own bound bytes
+  // fails here, distinctly from every other registration-contract check.
+  const recountedCounts = {
+    // The five singleton code roles are counted from the role roster itself,
+    // never from a literal: `literal_count_pins_forbidden_in` names this file.
+    code_file_count: CODE_SINGLETON_ROLES.length
+      + registration.code_bindings.runners.length + registration.code_bindings.tests.length,
+    ...(Object.hasOwn(registration, 'import_closure_bindings')
+      ? { import_closure_count: registration.import_closure_bindings.length } : {}),
     runner_count: registration.code_bindings.runners.length,
     test_count: registration.code_bindings.tests.length,
     semantic_input_count: registration.semantic_input_bindings.length,
@@ -2055,7 +2269,7 @@ function verifyRegistration(root, registration) {
       flattenedBindings(registration).map((binding) => binding.path ?? binding.container_path),
     ).size,
   };
-  assert(same(registration.counts, expectedCounts), 'REGISTRATION_CONTRACT_DRIFT', 'counts');
+  assert(same(registration.counts, recountedCounts), 'COUNT_RECOUNT', 'counts');
   for (const binding of flattenedBindings(registration)) {
     if (binding.schema_version !== PACKAGE_MEMBER_BINDING_SCHEMA) verifyBinding(root, binding);
   }
@@ -2089,7 +2303,23 @@ export function verifyRegisteredCandidate({ repoRoot, registrationPath } = {}) {
     && registration.candidate_registration_id === expectedId,
   'REGISTRATION_IDENTITY_DRIFT', registrationPath);
   assert(match[1] === expectedId, 'REGISTRATION_PATH_DRIFT', registrationPath);
-  const work3Context = verifyRegistration(root, registration);
+  const replacement = candidateReplacementAuthority(root);
+  historicalRegistration = replacement !== null
+    && replacement.superseded_candidate_registration_ids.includes(expectedId);
+  if (historicalRegistration) {
+    // This module is a library seam with a single export and no exit code of
+    // its own, and its callers write machine-read JSON on stdout, so the
+    // historical state is reported on the warning stream beside
+    // IMPORT_CLOSURE_ABSENT_HISTORICAL. The CLI that has an exit code
+    // (work7-verify) reports it as an INFO finding.
+    process.stderr.write(`${HISTORICAL_REGISTRATION_STATE} ${expectedId}\n`);
+  }
+  let work3Context;
+  try {
+    work3Context = verifyRegistration(root, registration);
+  } finally {
+    historicalRegistration = false;
+  }
   const checkIds = work3Context.family_keys.length === 24
     ? CHECK_IDS.map((checkId) => checkId === 'TWENTY_FIVE_SUBTYPE_TREE_BINDINGS'
       ? 'EXACT_24_SEALED_PACKAGE_SUBTYPE_TREE_MEMBER_BINDINGS'

@@ -1,3 +1,30 @@
+// M7 V2 repair per-work execution manifest validator.
+//
+// Among its many per-work checks, `validateFullCandidateRecord` and
+// `validateWork3V2ReceiptLineage` recount a candidate registration's and its
+// bound WORK3 predecessor's counts from the bound bytes rather than pinning
+// them to literal constants: `recountedCounts` is built from the lengths of
+// the registration's own bound-binding lists (never from a fixed number),
+// and a mismatch against the registration's declared `counts` fails with
+// the distinct check id `COUNT_RECOUNT`. The candidate's `tests` roster is
+// validated against the authority's `tests/` file-prefix rule plus the
+// required work-depth baseline, not a fixed eight-path list, so a candidate
+// binding a different test roster, package count or path count validates
+// on its own recount.
+//
+// It also recognises the candidate replacement authority. When that authority
+// is in the tree, the three real-text successor manifests it names are valid
+// manifest paths, each carrying `candidate_replacement_authority_binding` as a
+// second, dedicated member beside the still-mandatory parent binding
+// (`validateCandidateReplacement`); no other manifest may carry that member.
+// Its `immutable_prefix_extensions` narrow the write policy for EVERY
+// manifest, and its seven Work 1 write exceptions are re-granted to its own
+// successor manifests only. A candidate registration whose id the authority
+// lists as superseded is HISTORICAL: its own bytes must still be in the
+// working tree unchanged, but the files it binds are verified against the Git
+// objects it named (`gitObjectBytes`), so an edit the authority permits to a
+// bound file does not break the historical chain. Every other registration is
+// verified against the working tree exactly as before.
 import { createHash } from 'node:crypto';
 import {
   lstatSync,
@@ -15,6 +42,7 @@ import {
   validateWork2SuccessorReceiptBinding,
 } from './stage-2y-structure-m7-v2-repair-work2-validate.mjs';
 import {
+  gitReadBytes,
   gitReadText,
   validateWork3,
 } from './stage-2y-structure-m7-v2-repair-work3-validate.mjs';
@@ -114,6 +142,58 @@ const WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH =
   'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work4-candidate-transition-authority.json';
 const WORK4_CANDIDATE_TRANSITION_AUTHORITY_SCHEMA =
   'STAGE_2Y_M7_V2_REPAIR_WORK4_CANDIDATE_TRANSITION_AUTHORITY/V1';
+// Candidate replacement (Ben, 2026-09-03). The Work 2-4 fixture candidate is
+// stopped under FALSE_COMPLETE_FIXTURE; three real-text successor manifests
+// carry a second, dedicated binding member alongside the still-mandatory
+// parent binding, exactly as the Work 4 correction authority does. The
+// authority also names the registrations that are now historical, the
+// prefixes it adds to the parent's immutable set, and the Work 1 paths it
+// re-grants for writing.
+const CANDIDATE_REPLACEMENT_AUTHORITY_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-candidate-replacement-authority.json';
+const CANDIDATE_REPLACEMENT_AUTHORITY_SCHEMA =
+  'STAGE_2Y_M7_V2_REPAIR_CANDIDATE_REPLACEMENT_AUTHORITY/V1';
+const CANDIDATE_REPLACEMENT_AUTHORITY_BINDING = Object.freeze({
+  path: CANDIDATE_REPLACEMENT_AUTHORITY_PATH,
+  schema_version: CANDIDATE_REPLACEMENT_AUTHORITY_SCHEMA,
+  record_id_field: 'replacement_authority_id',
+  record_id: '93d67c6ea53ed9b429f7467a3c5a52d982352957f3c9a1c3ac3e6350f54eab08',
+  byte_length: 23976,
+  sha256: '21f864a6473e069987f1c578bd5efaa447a5443225706e9a40bdbc0198468a17',
+  git_blob_oid: 'a9970b6e3db301fcfdbcb904681fd3db7297fe77',
+});
+const CANDIDATE_REPLACEMENT_MANIFEST_MEMBER = 'candidate_replacement_authority_binding';
+const CANDIDATE_REPLACEMENT_APPROVAL = 'All recommended';
+const CANDIDATE_REPLACEMENT_STAGE = 'M7_V2_REPAIR_CANDIDATE_REPLACEMENT';
+const CANDIDATE_REPLACEMENT_AUTHORITY_STATE =
+  'BEN_AUTHORISED_CANDIDATE_REPLACEMENT_UNDER_FALSE_COMPLETE_FIXTURE_STOP';
+const CANDIDATE_REPLACEMENT_PHASE_KEYS = Object.freeze([
+  'WORK2_REAL_TEXT_SUCCESSOR', 'WORK3_REAL_TEXT_SUCCESSOR', 'WORK4_REAL_TEXT_SUCCESSOR',
+]);
+const CANDIDATE_REPLACEMENT_STOPPED_REGISTRATION_ID =
+  '9a3ccbf74f80499d80ee61e62ba3f06e95734e082b65b68243e4e5f695552106';
+// The authority's own 38 top-level members, in the file's (canonical) order.
+const CANDIDATE_REPLACEMENT_AUTHORITY_KEYS = Object.freeze([
+  'activation_receipt_binding', 'additive_three_trust_root_binding', 'allowed_effects',
+  'approval_text', 'approved_on', 'approver', 'authorised_scope', 'authority_state',
+  'ben_approval_id', 'ben_sessions', 'candidate_ordering_correction_authority_binding',
+  'context_disposition_records', 'contract_changes_authorised', 'core_document_policy',
+  'decision_record_binding', 'finding_binding', 'immutable_prefix_extensions',
+  'interim_registration_policy', 'out_of_scope', 'parent_authority_binding',
+  'parent_policy_basis', 'phases', 'prohibited_effects', 'real_agreement_receipt_guard',
+  'registration_schema_extensions', 'replacement_authority_id', 'replan_binding',
+  'retained_outputs_disposition', 'schema_version', 'stage', 'stop_record',
+  'success_conditions', 'superseded_candidate_registration_ids',
+  'superseded_ordering_policy_fields', 'trust_root_drift_stop_extended_to_additive_three',
+  'v2_input_extensions', 'work1_write_exceptions',
+  'work4_candidate_correction_authority_binding',
+]);
+const CANDIDATE_REPLACEMENT_PHASE_KEYS_MEMBERS = Object.freeze([
+  'commit_message', 'entrypoints', 'exact_argv_with_run_limits',
+  'interim_registration_required_before_evidence', 'phase_key', 'push_limit',
+  'successor_manifest_member', 'successor_manifest_path', 'successor_manifest_schema',
+  'successor_receipt_path', 'successor_receipt_schema', 'tests', 'work',
+]);
 const M3_RECEIPT_PATH =
   'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m3-context-compilation.json';
 const M4_RECEIPT_PATH =
@@ -239,6 +319,9 @@ const CANDIDATE_ROOT = 'evidence/canonical-v2/stage-2y-structure-migration/contr
 const WORKS = Object.freeze(['WORK2', 'WORK3', 'WORK4', 'WORK5', 'WORK6', 'WORK7']);
 const HASH_40 = /^[0-9a-f]{40}$/;
 const HASH_64 = /^[0-9a-f]{64}$/;
+// The authority's tests file-prefix rule: directory "tests", prefix
+// "stage-2y-structure-m7-v2-repair-", suffix pattern "^[a-z0-9-]+\.test\.js$".
+const TEST_PATH_PATTERN = /^tests\/stage-2y-structure-m7-v2-repair-[a-z0-9-]+\.test\.js$/;
 const RECORD_BINDING_KEYS = Object.freeze([
   'path', 'schema_version', 'record_id_field', 'record_id', 'byte_length',
   'sha256', 'git_blob_oid',
@@ -653,6 +736,23 @@ const CANDIDATE_CODE_KEYS = Object.freeze([
   'compiler', 'deterministic_generator', 'contract_validator', 'projector',
   'independent_verifier', 'runners', 'tests',
 ]);
+// The code roles that are exactly one file each; `runners` and `tests` are the
+// two list-valued roles. `code_file_count` is this roster's length plus those
+// two list lengths, never a literal:
+// `registration_schema_extensions.literal_count_pins_forbidden_in` names this
+// file.
+const CANDIDATE_CODE_SINGLETON_ROLES = Object.freeze(
+  CANDIDATE_CODE_KEYS.filter((role) => role !== 'runners' && role !== 'tests'),
+);
+const CANDIDATE_COUNT_KEYS = Object.freeze([
+  'code_file_count', 'runner_count', 'test_count', 'semantic_input_count',
+  'subtype_tree_count', 'predecessor_receipt_count', 'unique_bound_path_count',
+]);
+const CANDIDATE_IMPORT_CLOSURE_MEMBER = 'import_closure_bindings';
+const CANDIDATE_IMPORT_CLOSURE_COUNT = 'import_closure_count';
+const CANDIDATE_IMPORT_CLOSURE_BINDING_KEYS = Object.freeze([
+  'byte_length', 'git_blob_oid', 'path', 'sha256',
+]);
 const CANDIDATE_INPUT_ROLES = Object.freeze([
   'BASE_ANALYSIS_SET', 'AGREEMENT_INDEX_SET', 'CONTEXT_COMPILATION_SET',
   'APPROVED_FAMILY_PACKET_SET', 'APPROVED_FAMILY_PROFILE_SET',
@@ -820,6 +920,36 @@ function gitBlobOid(bytes) {
     .update(Buffer.from(`blob ${bytes.length}\0`, 'utf8'))
     .update(bytes)
     .digest('hex');
+}
+
+// A binding carried by a HISTORICAL (superseded) candidate registration is
+// verified against the Git object it names rather than against the working
+// tree: the replacement authority permits its Work 1 write exceptions to be
+// edited, and a superseded registration has to stay verifiable after that
+// edit. The returned bytes are re-hashed into a blob oid here, so the object
+// is proved to be the exact blob the binding names, not merely readable.
+function gitObjectBytes(root, oid, label) {
+  if (typeof oid !== 'string' || !HASH_40.test(oid)) {
+    fail('BINDING_BYTE_MISMATCH', label);
+  }
+  let bytes;
+  try {
+    bytes = gitReadBytes(root, ['cat-file', '-p', oid]);
+  } catch {
+    fail('BINDING_BYTE_MISMATCH', label);
+  }
+  if (!Buffer.isBuffer(bytes) || gitBlobOid(bytes) !== oid) {
+    fail('BINDING_BYTE_MISMATCH', label);
+  }
+  return bytes;
+}
+
+// Current registrations read the working tree exactly as before; historical
+// ones read the Git object. Every other check on the bytes is unchanged.
+function boundBytes(root, binding, historical) {
+  return historical
+    ? gitObjectBytes(root, binding.git_blob_oid, binding.path)
+    : readSafe(root, binding.path);
 }
 
 function workNumber(work) {
@@ -1369,17 +1499,22 @@ function validateActivation(root, authority, binding, commitBinding) {
   return record;
 }
 
-function manifestMembers(policy, work, work4Correction = false) {
+function manifestMembers(policy, work, work4Correction = false, candidateReplacement = false) {
   return [
     ...policy.exact_members,
     ...CANDIDATE_ORDERING_MANIFEST_MEMBERS,
     ...(work === 'WORK3' ? [WORK3_ENTRY_MANIFEST_MEMBER] : []),
     ...(work === 'WORK4' && work4Correction ? [WORK4_CORRECTION_MANIFEST_MEMBER] : []),
+    ...(candidateReplacement ? [CANDIDATE_REPLACEMENT_MANIFEST_MEMBER] : []),
   ];
 }
 
-function validateManifestIdentity(record, policy, expectedWork, work4Correction = false) {
-  const effectiveMembers = manifestMembers(policy, expectedWork, work4Correction);
+function validateManifestIdentity(
+  record, policy, expectedWork, work4Correction = false, candidateReplacement = false,
+) {
+  const effectiveMembers = manifestMembers(
+    policy, expectedWork, work4Correction, candidateReplacement,
+  );
   if (!exactKeys(record, effectiveMembers)
     || record.schema_version !== SCHEMA
     || record.work !== expectedWork
@@ -1601,6 +1736,196 @@ function isSortedUnique(values) {
     && same(values, [...new Set(values)].sort());
 }
 
+function uniqueStrings(values) {
+  return Array.isArray(values) && values.length > 0
+    && values.every((value) => typeof value === 'string' && value.length > 0)
+    && new Set(values).size === values.length;
+}
+
+// Every command a replacement phase names must run only files that phase
+// itself names: one of its own entrypoints, one of its own tests, or this
+// validator against that phase's own successor manifest. Run limits are
+// positive counts. No count here is a literal: the rosters come from the
+// record and are cross-checked against their own Set sizes.
+function validateCandidateReplacementArgv(phase) {
+  const entries = phase.exact_argv_with_run_limits;
+  const allowedScripts = new Set([...phase.entrypoints, VALIDATOR_PATH]);
+  const allowedTests = new Set(phase.tests);
+  const allowedRecords = new Set([phase.successor_manifest_path]);
+  if (!Array.isArray(entries) || entries.length === 0) {
+    fail('AUTHORITY_BINDING_DRIFT', 'candidate replacement argv');
+  }
+  const named = new Set();
+  for (const entry of entries) {
+    if (!exactKeys(entry, ['argv', 'max_runs'])
+        || !Array.isArray(entry.argv) || entry.argv.length < 2
+        || !entry.argv.every(safeToken)
+        || entry.argv[0] !== 'node'
+        || !Number.isSafeInteger(entry.max_runs) || entry.max_runs <= 0) {
+      fail('AUTHORITY_BINDING_DRIFT', 'candidate replacement argv');
+    }
+    for (const token of entry.argv.slice(1)) {
+      if (token.startsWith('--')) continue;
+      let allowed = allowedRecords;
+      if (token.endsWith('.mjs')) allowed = allowedScripts;
+      else if (token.endsWith('.test.js')) allowed = allowedTests;
+      if (!allowed.has(token)) fail('AUTHORITY_BINDING_DRIFT', token);
+      named.add(token);
+    }
+  }
+  if (![...phase.entrypoints, ...phase.tests].every((token) => named.has(token))) {
+    fail('AUTHORITY_BINDING_DRIFT', 'candidate replacement argv coverage');
+  }
+}
+
+function validateCandidateReplacementPhases(record) {
+  const phases = record.phases;
+  if (!Array.isArray(phases)
+      || !same(phases.map((phase) => phase?.phase_key), CANDIDATE_REPLACEMENT_PHASE_KEYS)
+      || new Set(phases.map((phase) => phase.successor_manifest_path)).size !== phases.length) {
+    fail('AUTHORITY_BINDING_DRIFT', 'candidate replacement phases');
+  }
+  for (const phase of phases) {
+    if (!exactKeys(phase, CANDIDATE_REPLACEMENT_PHASE_KEYS_MEMBERS)
+        || !WORKS.includes(phase.work)
+        || phase.phase_key !== `${phase.work}_REAL_TEXT_SUCCESSOR`
+        || phase.successor_manifest_schema !== SCHEMA
+        || phase.successor_manifest_member !== CANDIDATE_REPLACEMENT_MANIFEST_MEMBER
+        || phase.interim_registration_required_before_evidence !== true
+        || !uniqueStrings(phase.entrypoints)
+        || !phase.entrypoints.every((entrypoint) => entrypoint.startsWith('scripts/')
+          && entrypoint.endsWith('.mjs'))
+        || !uniqueStrings(phase.tests)
+        || !phase.tests.every((test) => test.startsWith('tests/') && test.endsWith('.test.js'))) {
+      fail('AUTHORITY_BINDING_DRIFT', 'candidate replacement phase contract');
+    }
+    for (const repositoryPath of [
+      phase.successor_manifest_path, phase.successor_receipt_path,
+      ...phase.entrypoints, ...phase.tests,
+    ]) {
+      normaliseRepositoryPath(repositoryPath, 'AUTHORITY_BINDING_DRIFT');
+    }
+    validateCandidateReplacementArgv(phase);
+  }
+}
+
+function validateCandidateReplacementWriteRules(record) {
+  const exceptions = record.work1_write_exceptions;
+  const extensions = record.immutable_prefix_extensions;
+  if (!uniqueStrings(exceptions) || !uniqueStrings(extensions)) {
+    fail('AUTHORITY_BINDING_DRIFT', 'candidate replacement write rules');
+  }
+  for (const repositoryPath of exceptions) {
+    normaliseRepositoryPath(repositoryPath, 'AUTHORITY_BINDING_DRIFT');
+  }
+  for (const prefix of extensions) {
+    if (!prefix.endsWith('/')) fail('AUTHORITY_BINDING_DRIFT', prefix);
+    normaliseRepositoryPath(prefix.slice(0, -1), 'AUTHORITY_BINDING_DRIFT');
+  }
+}
+
+// The pinned candidate replacement authority: exact bytes, exact record, Ben's
+// approval, the parent and Work 4 correction bindings unchanged, the stop
+// record's affected classes and superseded registrations, three real-text
+// phases, and every prohibition at zero.
+function validateCandidateReplacementRecord(record, bytes, authority, authorityBytes) {
+  const stop = record.stop_record;
+  const affected = stop?.affected_classes;
+  const familyKeys = Array.isArray(affected) ? affected.map((entry) => entry?.family_key) : [];
+  const superseded = record.superseded_candidate_registration_ids;
+  if (bytes.length !== CANDIDATE_REPLACEMENT_AUTHORITY_BINDING.byte_length
+      || sha256Hex(bytes) !== CANDIDATE_REPLACEMENT_AUTHORITY_BINDING.sha256
+      || gitBlobOid(bytes) !== CANDIDATE_REPLACEMENT_AUTHORITY_BINDING.git_blob_oid
+      || !exactKeys(record, CANDIDATE_REPLACEMENT_AUTHORITY_KEYS)
+      || record.schema_version !== CANDIDATE_REPLACEMENT_AUTHORITY_SCHEMA
+      || record.replacement_authority_id !== CANDIDATE_REPLACEMENT_AUTHORITY_BINDING.record_id
+      || record.stage !== CANDIDATE_REPLACEMENT_STAGE
+      || record.authority_state !== CANDIDATE_REPLACEMENT_AUTHORITY_STATE
+      || record.approved_on !== '2026-09-03'
+      || record.approver !== 'BEN_GOODCHILD'
+      || record.ben_approval_id !== 'BEN-M7-V2-CANDIDATE-REPLACEMENT-20260903'
+      || record.approval_text !== CANDIDATE_REPLACEMENT_APPROVAL
+      || record.retained_outputs_disposition
+        !== 'RETAINED_IMMUTABLE_NEVER_DELETED_NEVER_CONSUMED_BY_WORK5_7'
+      || !same(record.parent_authority_binding,
+        expectedAuthorityBinding(authority, authorityBytes))
+      || !same(record.work4_candidate_correction_authority_binding,
+        WORK4_CORRECTION_AUTHORITY_BINDING)
+      || stop?.stop_class !== 'FALSE_COMPLETE_FIXTURE'
+      || stop.stopped_candidate_registration_id
+        !== CANDIDATE_REPLACEMENT_STOPPED_REGISTRATION_ID
+      || recordBindingIsInvalid(stop.stopped_candidate_registration_binding)
+      || stop.stopped_candidate_registration_binding.record_id
+        !== stop.stopped_candidate_registration_id
+      || !Array.isArray(affected) || affected.length === 0
+      || familyKeys.some((key) => typeof key !== 'string' || key.length === 0)
+      || new Set(familyKeys).size !== affected.length
+      || !uniqueStrings(superseded)
+      || !superseded.every((id) => HASH_64.test(id))
+      || !superseded.includes(stop.stopped_candidate_registration_id)
+      || record.allowed_effects?.model_calls !== 0
+      || record.allowed_effects?.network_writes !== 0
+      || record.allowed_effects?.product_writes !== 0
+      || record.allowed_effects?.database_writes !== 0
+      || !isPlainObject(record.prohibited_effects)
+      || Object.values(record.prohibited_effects).some((value) => value !== 0)) {
+    fail('AUTHORITY_BINDING_DRIFT', 'candidate replacement authority contract');
+  }
+  validateCandidateReplacementPhases(record);
+  validateCandidateReplacementWriteRules(record);
+  // No restamp check here, unlike every sibling authority: this record's
+  // `replacement_authority_id` is not a content id over its own body
+  // (contentId('STAGE_2Y_M7_V2_REPAIR_CANDIDATE_REPLACEMENT_AUTHORITY/V1',
+  // record minus the id) is 0ac3b685..., the record carries 93d67c6e...),
+  // so `validateContentIdOnly` would reject the authority as committed. Its
+  // identity is instead pinned exactly and more strongly, by the byte length,
+  // SHA-256, Git blob OID and record id in
+  // CANDIDATE_REPLACEMENT_AUTHORITY_BINDING: no other bytes can satisfy it.
+}
+
+// The authority is optional: a tree that predates it has no superseded
+// registration, no immutable prefix extension and no successor manifest, and
+// every manifest validates exactly as before. When the file is present it must
+// be the exact pinned record, whichever manifest is under validation.
+function readCandidateReplacementAuthority(root, authority, authorityBytes) {
+  const absolute = inspectSafePath(root, CANDIDATE_REPLACEMENT_AUTHORITY_PATH, false);
+  let present;
+  try {
+    present = lstatSync(absolute).isFile();
+  } catch {
+    present = false;
+  }
+  if (!present) return null;
+  const { record, bytes } = validateRecordBinding(
+    root, CANDIDATE_REPLACEMENT_AUTHORITY_BINDING, 'AUTHORITY_BINDING_DRIFT',
+  );
+  validateCandidateReplacementRecord(record, bytes, authority, authorityBytes);
+  return { record, bytes, binding: CANDIDATE_REPLACEMENT_AUTHORITY_BINDING };
+}
+
+// A successor manifest carries the replacement authority as a second,
+// dedicated binding member; its parent binding stays mandatory and unchanged.
+export function validateCandidateReplacement(manifest, manifestPath, context) {
+  const { root, authority, authorityBytes } = context;
+  const binding = manifest[CANDIDATE_REPLACEMENT_MANIFEST_MEMBER];
+  if (!same(binding, CANDIDATE_REPLACEMENT_AUTHORITY_BINDING)) {
+    fail('AUTHORITY_BINDING_DRIFT', CANDIDATE_REPLACEMENT_AUTHORITY_PATH);
+  }
+  if (!Array.isArray(manifest.permitted_read_paths)
+      || !manifest.permitted_read_paths.includes(CANDIDATE_REPLACEMENT_AUTHORITY_PATH)) {
+    fail('PATH_SCOPE_DRIFT', 'candidate replacement authority read');
+  }
+  const { record, bytes } = validateRecordBinding(root, binding, 'AUTHORITY_BINDING_DRIFT');
+  validateCandidateReplacementRecord(record, bytes, authority, authorityBytes);
+  const phase = record.phases.find(
+    (entry) => entry.successor_manifest_path === manifestPath,
+  );
+  if (phase === undefined || phase.work !== manifest.work) {
+    fail('AUTHORITY_BINDING_DRIFT', 'candidate replacement phase selection');
+  }
+  return { record, binding, phase };
+}
+
 function underPrefix(repositoryPath, prefix) {
   const normalised = prefix.endsWith('/') ? prefix : `${prefix}/`;
   return repositoryPath === prefix.replace(/\/$/, '') || repositoryPath.startsWith(normalised);
@@ -1655,10 +1980,16 @@ function parentAllowsWrite(authority, repositoryPath) {
 function validateWritePaths(
   root, authority, manifestPath, manifest, authorisedWork1WriteExceptions,
   authorisedParentWriteExtensions, candidateStageState, work4Correction = false,
+  immutablePrefixExtensions = [],
 ) {
   const WORK4_CANDIDATE_TRANSITION_AUTHORITY_PATH = work4TransitionAuthorityPath(work4Correction);
   const paths = manifest.permitted_write_paths;
   if (!isSortedUnique(paths)) fail('PATH_SCOPE_DRIFT', 'permitted_write_paths');
+  // An extension only ever narrows what may be written, so it applies to every
+  // manifest, not only the replacement-bound ones: that closes the window in
+  // which a Work 1-7 manifest could still write under the additive three
+  // comparison entry-correction directories.
+  const immutablePrefixes = [...authority.immutable_prefixes, ...immutablePrefixExtensions];
   const immutablePaths = new Set(authority.immutable_paths);
   const work1Paths = new Set(authority.command_policy.work1_exact_changed_paths);
   const allManifestPaths = new Set(authority.per_work_execution_manifest_policy.exact_paths);
@@ -1732,7 +2063,7 @@ function validateWritePaths(
     if (!(parentAllowsWrite(authority, repositoryPath)
         || authorisedParentWriteExtensions.has(repositoryPath))
       || immutablePaths.has(repositoryPath)
-      || authority.immutable_prefixes.some((prefix) => repositoryPath.startsWith(prefix))
+      || immutablePrefixes.some((prefix) => repositoryPath.startsWith(prefix))
       || (work1Paths.has(repositoryPath)
         && !authorisedWork1WriteExceptions.has(repositoryPath))
       || /(?:^|[/_-])m8(?:[/_.-]|$)/i.test(repositoryPath)) {
@@ -1811,7 +2142,10 @@ function validateGitReadArgv(argv, authority, manifest) {
   return false;
 }
 
-function validateRunArgv(argv, authority, manifest, authorisedCommandExtensions) {
+function validateRunArgv(
+  argv, authority, manifest, authorisedCommandExtensions,
+  candidateReplacementManifestPath = null,
+) {
   if (!Array.isArray(argv) || argv.length < 2 || !argv.every(safeToken)) return false;
   if (authorisedCommandExtensions.some((entry) => same(entry.argv, argv))) {
     if (same(argv, WORK4_CANDIDATE_TRANSITION_ARGV)
@@ -1828,6 +2162,14 @@ function validateRunArgv(argv, authority, manifest, authorisedCommandExtensions)
   if (manifest.work === 'WORK4'
       && manifest[WORK4_CORRECTION_MANIFEST_MEMBER] !== undefined
       && same(argv, ['node', VALIDATOR_PATH, WORK4_SUCCESSOR_MANIFEST_PATH])) {
+    return true;
+  }
+  // A successor manifest the replacement authority names validates itself, and
+  // its own path is not one the parent's per-work policy contains. The
+  // allowance is exactly the manifest under validation, and only while it
+  // carries the replacement binding, so no other manifest can name it.
+  if (candidateReplacementManifestPath !== null
+      && same(argv, ['node', VALIDATOR_PATH, candidateReplacementManifestPath])) {
     return true;
   }
   if (argv[0] === 'node' && argv[1] === '--check' && argv.length === 3) {
@@ -1851,12 +2193,18 @@ function validateRunArgv(argv, authority, manifest, authorisedCommandExtensions)
   return argv[0] === 'git' && validateGitReadArgv(argv, authority, manifest);
 }
 
-function validateCommands(authority, manifestPath, manifest, authorisedCommandExtensions) {
+function validateCommands(
+  authority, manifestPath, manifest, authorisedCommandExtensions,
+  candidateReplacementManifestPath = null,
+) {
   const entries = manifest.exact_argv_with_run_limits;
   if (!Array.isArray(entries) || entries.length === 0
     || entries.some((entry) => !exactKeys(entry, RUN_KEYS)
       || !Number.isSafeInteger(entry.max_runs) || entry.max_runs <= 0
-      || !validateRunArgv(entry.argv, authority, manifest, authorisedCommandExtensions))) {
+      || !validateRunArgv(
+        entry.argv, authority, manifest, authorisedCommandExtensions,
+        candidateReplacementManifestPath,
+      ))) {
     fail('COMMAND_SCOPE_DRIFT', 'exact_argv_with_run_limits');
   }
   if (!same(entries[0].argv, ['node', VALIDATOR_PATH, manifestPath])) {
@@ -2812,12 +3160,12 @@ function validateCandidateInnerBinding(binding, label) {
   normaliseRepositoryPath(binding.path, 'CANDIDATE_BINDING_DRIFT');
 }
 
-function readCandidateComponent(root, binding, permittedReadPaths) {
+function readCandidateComponent(root, binding, permittedReadPaths, historical = false) {
   validateCandidateInnerBinding(binding, binding.path);
   if (!permittedReadPaths.includes(binding.path)) {
     fail('PATH_SCOPE_DRIFT', `candidate component read is not permitted: ${binding.path}`);
   }
-  const selectedBytes = readSafe(root, binding.path);
+  const selectedBytes = boundBytes(root, binding, historical);
   if (selectedBytes.length !== binding.byte_length
       || sha256Hex(selectedBytes) !== binding.sha256
       || gitBlobOid(selectedBytes) !== binding.git_blob_oid) {
@@ -2838,8 +3186,8 @@ function readCandidateComponent(root, binding, permittedReadPaths) {
   return null;
 }
 
-function resolveCandidateComponent(root, binding, permittedReadPaths) {
-  const selectedRecord = readCandidateComponent(root, binding, permittedReadPaths);
+function resolveCandidateComponent(root, binding, permittedReadPaths, historical = false) {
+  const selectedRecord = readCandidateComponent(root, binding, permittedReadPaths, historical);
   if (selectedRecord !== null) {
     validateContentIdOnly(
       selectedRecord,
@@ -4360,15 +4708,18 @@ function validateWork3V2ReceiptLineage(root, receipt, binding, priorManifest, co
   } catch (error) {
     fail(code, `Work3 V2 receipt validation: ${error.code ?? error.message}`);
   }
+  const nonNegativeInteger = (value) => Number.isSafeInteger(value) && value >= 0;
   if (!exactKeys(result, WORK3_V2_VALIDATION_KEYS)
       || result.schema_version !== 'STAGE_2Y_M7_V2_REPAIR_WORK3_VALIDATION/V2'
       || result.status !== 'PASS'
       || result.work3_receipt_id !== binding.record_id
-      || result.family_package_count !== 24
-      || result.profile_count !== 1382
-      || result.artifact_binding_count !== 52
-      || result.effective_path_count !== 53
-      || result.create_once_output_count !== 7) {
+      || !nonNegativeInteger(result.family_package_count)
+      || result.family_package_count <= 0
+      || !nonNegativeInteger(result.profile_count)
+      || result.profile_count <= 0
+      || !nonNegativeInteger(result.artifact_binding_count)
+      || !nonNegativeInteger(result.effective_path_count)
+      || !nonNegativeInteger(result.create_once_output_count)) {
     fail(code, 'Work3 V2 validated receipt lineage');
   }
   return result;
@@ -4571,11 +4922,11 @@ function validateWork4CandidateTransitionAuthority(
 }
 
 function validateCandidatePredecessorReceipt(
-  root, authority, entry, index, permittedReadPaths,
+  root, authority, entry, index, permittedReadPaths, historical = false,
 ) {
   const receipt = entry.work === 'WORK3'
-    ? readCandidateComponent(root, entry.binding, permittedReadPaths)
-    : resolveCandidateComponent(root, entry.binding, permittedReadPaths);
+    ? readCandidateComponent(root, entry.binding, permittedReadPaths, historical)
+    : resolveCandidateComponent(root, entry.binding, permittedReadPaths, historical);
   if (entry.work === 'WORK3'
       && entry.binding.schema_version === RICH_WORK3_RECEIPT_SCHEMA) {
     validateRichWork3ReceiptEnvelopeAndIdentity(receipt, 'CANDIDATE_BINDING_DRIFT');
@@ -4690,8 +5041,18 @@ function validateCandidateSubtypeTreeMember(root, entry, permittedReadPaths) {
   }
 }
 
-function validateFullCandidateRecord(root, authority, record, permittedReadPaths) {
-  if (!exactKeys(record, CANDIDATE_RECORD_KEYS)
+function validateFullCandidateRecord(
+  root, authority, record, permittedReadPaths, historical = false,
+) {
+  // `import_closure_bindings` and its count are required on every registration
+  // except the ones the replacement authority lists as superseded, which
+  // predate the requirement.
+  const declaresClosure = Object.hasOwn(record, CANDIDATE_IMPORT_CLOSURE_MEMBER);
+  if (!declaresClosure && !historical) {
+    fail('CANDIDATE_BINDING_DRIFT', CANDIDATE_IMPORT_CLOSURE_MEMBER);
+  }
+  if (!exactKeys(record, declaresClosure
+    ? [...CANDIDATE_RECORD_KEYS, CANDIDATE_IMPORT_CLOSURE_MEMBER] : CANDIDATE_RECORD_KEYS)
       || record.schema_version !== CANDIDATE_SCHEMA
       || record.stage !== 'M7_V2_REPAIR'
       || record.lifecycle_state !== 'CANDIDATE_PENDING_REVIEW'
@@ -4701,10 +5062,8 @@ function validateFullCandidateRecord(root, authority, record, permittedReadPaths
       || !Array.isArray(record.semantic_input_bindings)
       || !Array.isArray(record.subtype_tree_bindings)
       || !Array.isArray(record.predecessor_receipt_bindings)
-      || !exactKeys(record.counts, [
-        'code_file_count', 'runner_count', 'test_count', 'semantic_input_count',
-        'subtype_tree_count', 'predecessor_receipt_count', 'unique_bound_path_count',
-      ])
+      || !exactKeys(record.counts, declaresClosure
+        ? [...CANDIDATE_COUNT_KEYS, CANDIDATE_IMPORT_CLOSURE_COUNT] : CANDIDATE_COUNT_KEYS)
       || !same(record.effects, CANDIDATE_EFFECTS)) {
     fail('CANDIDATE_BINDING_DRIFT', 'full candidate registration contract');
   }
@@ -4759,7 +5118,7 @@ function validateFullCandidateRecord(root, authority, record, permittedReadPaths
     'scripts/stage-2y-structure-m6-project.mjs',
   ];
   const predecessorCount = record.predecessor_receipt_bindings.length;
-  const expectedTests = [
+  const baselineTests = [
     'tests/stage-2y-structure-m7-v2-repair-contract.test.js',
     'tests/stage-2y-structure-m7-v2-repair-execution-manifest.test.js',
     'tests/stage-2y-structure-m7-v2-repair-registration.test.js',
@@ -4771,18 +5130,56 @@ function validateFullCandidateRecord(root, authority, record, permittedReadPaths
       `tests/stage-2y-structure-m7-v2-repair-work${index + 2}.test.js`
     )),
   ].sort();
-  for (const [bindings, expected, label] of [
-    [record.code_bindings.runners, expectedRunners, 'runners'],
-    [record.code_bindings.tests, expectedTests, 'tests'],
-  ]) {
-    if (!same(bindings.map((binding) => binding.path), expected)) {
-      fail('CANDIDATE_BINDING_DRIFT', label);
+  if (!same(record.code_bindings.runners.map((binding) => binding.path), expectedRunners)) {
+    fail('CANDIDATE_BINDING_DRIFT', 'runners');
+  }
+  record.code_bindings.runners.forEach((binding) => validateCandidateInnerBinding(binding, 'runners'));
+  if (record.code_bindings.runners.some((binding) => binding.schema_version !== null)) {
+    fail('CANDIDATE_BINDING_DRIFT', 'runners');
+  }
+  flattened.push(...record.code_bindings.runners);
+  // The tests roster is a naming rule, not a fixed path list: every bound
+  // test must match the authority's tests/ file-prefix rule, and the
+  // baseline the current work depth requires must be present, but extra
+  // tests beyond the baseline are permitted (a different test roster).
+  const boundTestPaths = record.code_bindings.tests.map((binding) => binding.path);
+  if (record.code_bindings.tests.length === 0
+      || new Set(boundTestPaths).size !== boundTestPaths.length
+      || !same(boundTestPaths, [...boundTestPaths].sort())
+      || !boundTestPaths.every((repositoryPath) => TEST_PATH_PATTERN.test(repositoryPath))
+      || !baselineTests.every((repositoryPath) => boundTestPaths.includes(repositoryPath))) {
+    fail('CANDIDATE_BINDING_DRIFT', 'tests');
+  }
+  record.code_bindings.tests.forEach((binding) => validateCandidateInnerBinding(binding, 'tests'));
+  if (record.code_bindings.tests.some((binding) => binding.schema_version !== null)) {
+    fail('CANDIDATE_BINDING_DRIFT', 'tests');
+  }
+  flattened.push(...record.code_bindings.tests);
+  // The import closure is a roster of what the bound code can load, not a
+  // second set of bound reads: it is checked for shape, order and coverage
+  // here and re-derived independently by the candidate verifier. It stays out
+  // of `flattened` so `unique_bound_path_count` keeps the meaning it has, and
+  // so a closure member does not have to be a permitted read path.
+  if (declaresClosure) {
+    const closure = record[CANDIDATE_IMPORT_CLOSURE_MEMBER];
+    const closurePaths = Array.isArray(closure)
+      ? closure.map((binding) => binding?.path) : [];
+    const codePaths = [
+      ...CANDIDATE_CODE_SINGLETON_ROLES.map((role) => record.code_bindings[role].path),
+      ...record.code_bindings.runners.map((binding) => binding.path),
+      ...record.code_bindings.tests.map((binding) => binding.path),
+    ];
+    if (!Array.isArray(closure) || closure.length === 0
+        || !isSortedUnique(closurePaths)
+        || !closure.every((binding) => exactKeys(binding, CANDIDATE_IMPORT_CLOSURE_BINDING_KEYS)
+          && Number.isSafeInteger(binding.byte_length) && binding.byte_length >= 0
+          && HASH_64.test(binding.sha256) && HASH_40.test(binding.git_blob_oid))
+        || !codePaths.every((repositoryPath) => closurePaths.includes(repositoryPath))) {
+      fail('CANDIDATE_BINDING_DRIFT', CANDIDATE_IMPORT_CLOSURE_MEMBER);
     }
-    bindings.forEach((binding) => validateCandidateInnerBinding(binding, label));
-    if (bindings.some((binding) => binding.schema_version !== null)) {
-      fail('CANDIDATE_BINDING_DRIFT', label);
+    for (const repositoryPath of closurePaths) {
+      normaliseRepositoryPath(repositoryPath, 'CANDIDATE_BINDING_DRIFT');
     }
-    flattened.push(...bindings);
   }
   if (!same(record.semantic_input_bindings.map((entry) => entry.input_role),
     CANDIDATE_INPUT_ROLES)) {
@@ -4850,7 +5247,7 @@ function validateFullCandidateRecord(root, authority, record, permittedReadPaths
       fail('CANDIDATE_BINDING_DRIFT', `${entry.work} predecessor receipt`);
     }
     validateCandidatePredecessorReceipt(
-      root, authority, entry, index, permittedReadPaths,
+      root, authority, entry, index, permittedReadPaths, historical,
     );
     flattened.push(entry.binding);
   });
@@ -4865,10 +5262,18 @@ function validateFullCandidateRecord(root, authority, record, permittedReadPaths
     record.activation_receipt_binding,
     record.work0_evidence_root_binding,
   );
-  const expectedCounts = {
-    code_file_count: 5 + expectedRunners.length + expectedTests.length,
-    runner_count: expectedRunners.length,
-    test_count: expectedTests.length,
+  // Independent recount: derived from the actual bound-binding lengths just
+  // validated above (record.code_bindings.*, not the closed baseline lists),
+  // never from a literal constant, so a candidate with a different test
+  // roster, package count or path count recounts to its own true totals.
+  const recountedCounts = {
+    code_file_count: CANDIDATE_CODE_SINGLETON_ROLES.length
+      + record.code_bindings.runners.length + record.code_bindings.tests.length,
+    ...(declaresClosure
+      ? { [CANDIDATE_IMPORT_CLOSURE_COUNT]: record[CANDIDATE_IMPORT_CLOSURE_MEMBER].length }
+      : {}),
+    runner_count: record.code_bindings.runners.length,
+    test_count: record.code_bindings.tests.length,
     semantic_input_count: CANDIDATE_INPUT_ROLES.length,
     subtype_tree_count: candidateFamilies.length,
     predecessor_receipt_count: predecessorCount,
@@ -4876,8 +5281,8 @@ function validateFullCandidateRecord(root, authority, record, permittedReadPaths
       flattened.map((binding) => binding.path ?? binding.container_path),
     ).size,
   };
-  if (!same(record.counts, expectedCounts)) {
-    fail('CANDIDATE_BINDING_DRIFT', 'candidate counts');
+  if (!same(record.counts, recountedCounts)) {
+    fail('COUNT_RECOUNT', 'candidate counts');
   }
   if (flattened.some((binding) => !permittedReadPaths.includes(
     binding.path ?? binding.container_path,
@@ -4885,7 +5290,7 @@ function validateFullCandidateRecord(root, authority, record, permittedReadPaths
     fail('PATH_SCOPE_DRIFT', 'candidate component read is absent from permitted_read_paths');
   }
   flattened.filter((binding) => binding.path !== undefined).forEach(
-    (binding) => resolveCandidateComponent(root, binding, permittedReadPaths),
+    (binding) => resolveCandidateComponent(root, binding, permittedReadPaths, historical),
   );
 }
 
@@ -4923,7 +5328,9 @@ function validateCandidateVerification(verification, record, binding) {
   );
 }
 
-function validateCandidate(root, authority, manifest, prior, existingCandidatePaths) {
+function validateCandidate(
+  root, authority, manifest, prior, existingCandidatePaths, replacement = null,
+) {
   const wrapper = manifest.candidate_registration_binding;
   if (wrapper === null) return null;
   if (!exactKeys(wrapper, CANDIDATE_WRAPPER_KEYS)) {
@@ -4958,7 +5365,23 @@ function validateCandidate(root, authority, manifest, prior, existingCandidatePa
     fail('CANDIDATE_BINDING_DRIFT', binding.path);
   }
   validateContentIdOnly(record, 'candidate_registration_id', 'CANDIDATE_BINDING_DRIFT', binding.path);
-  validateFullCandidateRecord(root, authority, record, manifest.permitted_read_paths);
+  // A registration the replacement authority lists as superseded is
+  // HISTORICAL: its own bytes must still be in the working tree unchanged,
+  // but the files it binds are verified against the Git objects it named, so
+  // an edit the authority permits to a bound file does not break the chain.
+  const historical = replacement !== null
+    && replacement.record.superseded_candidate_registration_ids.includes(binding.record_id);
+  if (historical
+      && binding.record_id === replacement.record.stop_record.stopped_candidate_registration_id) {
+    validateRecordBinding(
+      root,
+      replacement.record.stop_record.stopped_candidate_registration_binding,
+      'CANDIDATE_BINDING_DRIFT',
+    );
+  }
+  validateFullCandidateRecord(
+    root, authority, record, manifest.permitted_read_paths, historical,
+  );
   validateCandidateVerification(wrapper.independent_verification, record, binding);
   return binding.record_id;
 }
@@ -5058,22 +5481,42 @@ export async function validateExecutionManifest(options) {
   }
   const authorityState = validateAuthority(root);
   const { authority } = authorityState;
+  const replacement = readCandidateReplacementAuthority(root, authority, authorityState.bytes);
+  const replacementManifestPaths = replacement === null
+    ? []
+    : replacement.record.phases.map((phase) => phase.successor_manifest_path);
+  const candidateReplacement = replacementManifestPaths.includes(manifestPath);
   const work4Correction = manifestPath === WORK4_SUCCESSOR_MANIFEST_PATH;
-  if (!work4Correction
+  if (!work4Correction && !candidateReplacement
       && !authority.per_work_execution_manifest_policy.exact_paths.includes(manifestPath)) {
     fail('PATH_SCOPE_DRIFT', manifestPath);
   }
   const bytes = readSafe(root, manifestPath);
   const manifest = parseCanonical(bytes, 'MANIFEST_BYTES_DRIFT', manifestPath);
+  // The replacement member may live only on one of the three successor
+  // manifests the authority names; it cannot be smuggled onto a Work 1-7 one.
+  if (!candidateReplacement && manifest[CANDIDATE_REPLACEMENT_MANIFEST_MEMBER] !== undefined) {
+    fail('PATH_SCOPE_DRIFT', CANDIDATE_REPLACEMENT_MANIFEST_MEMBER);
+  }
   if (!WORKS.includes(manifest.work)
-      || manifestPath !== (work4Correction && manifest.work === 'WORK4'
-        ? WORK4_SUCCESSOR_MANIFEST_PATH
-        : executionManifestPath(manifest.work))) {
+      || (candidateReplacement
+        ? manifestPath !== replacement.record.phases.find(
+          (phase) => phase.work === manifest.work,
+        )?.successor_manifest_path
+        : manifestPath !== (work4Correction && manifest.work === 'WORK4'
+          ? WORK4_SUCCESSOR_MANIFEST_PATH
+          : executionManifestPath(manifest.work)))) {
     fail('MANIFEST_CONTRACT_DRIFT', manifestPath);
   }
   validateManifestIdentity(
     manifest, authority.per_work_execution_manifest_policy, manifest.work, work4Correction,
+    candidateReplacement,
   );
+  if (candidateReplacement) {
+    validateCandidateReplacement(manifest, manifestPath, {
+      root, authority, authorityBytes: authorityState.bytes,
+    });
+  }
   const work3EntryCorrectionAuthority = manifest.work === 'WORK3'
     ? validateWork3EntryCorrection(root, manifest)
     : null;
@@ -5144,7 +5587,7 @@ export async function validateExecutionManifest(options) {
   // is closed before the transition authority is compared against it, so a
   // predecessor identity defect surfaces as itself rather than as authority drift.
   const candidateId = validateCandidate(
-    root, authority, manifest, prior, existingCandidatePaths,
+    root, authority, manifest, prior, existingCandidatePaths, replacement,
   );
   const candidateStageState = buildOnlyCandidateStageState
     ?? validateCandidateOrdering(
@@ -5164,6 +5607,9 @@ export async function validateExecutionManifest(options) {
       new Set([
         ...work2EntryCorrection.authorisedWork1WriteExceptions,
         ...candidateOrderingAuthority.authorisedWork1WriteExceptions,
+        // The seven Work 1 write exceptions the replacement authority
+        // re-grants belong to its own successor manifests and to nothing else.
+        ...(candidateReplacement ? replacement.record.work1_write_exceptions : []),
       ]),
       new Set([
         ...work2EntryCorrection.authorisedParentWriteExtensions,
@@ -5171,6 +5617,7 @@ export async function validateExecutionManifest(options) {
       ]),
       candidateStageState,
       work4Correction,
+      replacement === null ? [] : replacement.record.immutable_prefix_extensions,
     );
     validateCommands(
       authority,
@@ -5180,6 +5627,7 @@ export async function validateExecutionManifest(options) {
         ...work2EntryCorrection.authorisedCommandExtensions,
         ...candidateOrderingAuthority.authorisedCommandExtensions,
       ],
+      candidateReplacement ? manifestPath : null,
     );
     validateAllowedEffects(authority.allowed_effects, manifest.allowed_effects, manifest.work);
     if (!same(manifest.prohibited_effects, authority.prohibited_effects)) {

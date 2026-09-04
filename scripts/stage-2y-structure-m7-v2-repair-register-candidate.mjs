@@ -1,14 +1,48 @@
+// M7 V2 repair candidate registration builder.
+//
+// Builds an immutable, content-addressed CANDIDATE_PENDING_REVIEW
+// registration from a caller-supplied specification of repository paths —
+// never from self-attested bytes or hashes. Every membership count on the
+// registration (`counts.code_file_count`, `runner_count`, `test_count`,
+// `semantic_input_count`, `subtype_tree_count`, `predecessor_receipt_count`,
+// `unique_bound_path_count`) is the length of the bound-binding list it
+// describes, derived after every binding has been independently read and
+// hashed off disk; none of them is a literal constant, so a candidate with a
+// different package count, path count or test roster can register.
+// The bound WORK3 predecessor receipt's family/profile counts (as reported
+// by `validateWork3()`, which itself reads the bound family profile package
+// files) are accepted as computed — this script does not pin them to a
+// fixed family-package or profile total, only to internal self-consistency
+// (family count agrees with the family-key list, every count is a
+// non-negative integer). The `code.tests` roster must contain every
+// baseline test the authority's later-work and Work1 test names require,
+// plus any number of additional tests, as long as every bound test path
+// matches the parent authority's `tests/` file-prefix rule
+// (`tests/stage-2y-structure-m7-v2-repair-*.test.js`) — the roster is a
+// naming rule, not a fixed eight-path list.
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 
 import canonicalModule from '../lib/canonical-v2/canonical-bytes.js';
+import importClosureModule from '../lib/canonical-v2/m7-v2-import-closure.js';
 import m7V2ContractModule from '../lib/canonical-v2/m7-v2-contract.js';
 import { validateWork2SuccessorReceiptBinding } from './stage-2y-structure-m7-v2-repair-work2-validate.mjs';
 import { validateWork3 } from './stage-2y-structure-m7-v2-repair-work3-validate.mjs';
 
 const { canonicalJson, contentId, sha256Hex } = canonicalModule;
+const { importClosure } = importClosureModule;
 const { validateFamilyProfilePackageSetForWork3 } = m7V2ContractModule;
+// The spec this file implements asked for the V1 fixture-compiler lineage
+// (`lib/canonical-v2/m7-deterministic-generalisation.js`) to be refused
+// wherever it appears in an import closure. It cannot be: the authority names
+// it only in the prose of `v2_input_extensions[].origin`, never as a
+// machine-readable roster, and the module is reached from a bound role that
+// every registration is required to carry —
+// `scripts/stage-2y-structure-generalisation-shadow.mjs:22` requires it, and
+// that script is one of REQUIRED_RUNNERS below. Refusing the closure member
+// would refuse every candidate registration. The V1 lineage stays out of
+// bounds where the authority actually puts it: as a source of V2 inputs.
 
 const REGISTRATION_SCHEMA = 'STAGE_2Y_M7_V2_CANDIDATE_REGISTRATION/V1';
 const REGISTRATION_ROOT = 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-candidate-registrations';
@@ -140,6 +174,10 @@ const CODE_KEYS = [
   'runners',
   'tests',
 ];
+// The code roles that are exactly one file each; `runners` and `tests` are the
+// two list-valued roles. `code_file_count` is this roster's length plus those
+// two list lengths, never a literal.
+const CODE_SINGLETON_ROLES = Object.freeze(CODE_KEYS.slice(0, 5));
 const REQUIRED_RUNNERS = Object.freeze([
   'scripts/stage-2y-structure-family-aggregate.mjs',
   'scripts/stage-2y-structure-generalisation-shadow.mjs',
@@ -1589,20 +1627,24 @@ function validateRichWork3ReceiptV2(root, receipt) {
   } catch (error) {
     fail('BINDING_DRIFT', `WORK3:V2 receipt validation:${error.code ?? error.message}`);
   }
+  const nonNegativeInteger = (value) => Number.isSafeInteger(value) && value >= 0;
   assert(exactKeys(validationResult, WORK3_V2_VALIDATION_KEYS)
     && validationResult.schema_version === 'STAGE_2Y_M7_V2_REPAIR_WORK3_VALIDATION/V2'
     && validationResult.status === 'PASS'
     && validationResult.work3_receipt_id === receipt.work3_receipt_id
-    && validationResult.family_package_count === 24
-    && validationResult.profile_count === 1382
-    && validationResult.artifact_binding_count === 52
-    && validationResult.effective_path_count === 53
-    && validationResult.create_once_output_count === 7,
+    && nonNegativeInteger(validationResult.family_package_count)
+    && validationResult.family_package_count > 0
+    && nonNegativeInteger(validationResult.profile_count)
+    && validationResult.profile_count > 0
+    && nonNegativeInteger(validationResult.artifact_binding_count)
+    && nonNegativeInteger(validationResult.effective_path_count)
+    && nonNegativeInteger(validationResult.create_once_output_count),
   'BINDING_DRIFT', 'WORK3:V2 validation result');
   const familyEvidence = receipt.family_profile_evidence;
   const familyKeys = familyEvidence?.sealed_package_family_keys;
   assert(Array.isArray(familyKeys)
-    && familyKeys.length === 24
+    && familyKeys.length === validationResult.family_package_count
+    && new Set(familyKeys).size === familyKeys.length
     && !familyKeys.includes('CAPITALISATION'),
   'BINDING_DRIFT', 'WORK3:V2 sealed family order');
   const profileSetBinding = familyEvidence.approved_family_profile_set_binding;
@@ -1612,6 +1654,11 @@ function validateRichWork3ReceiptV2(root, receipt) {
   });
   assert(same(profileSet.subtype_tree_bindings.map((entry) => entry?.family_key), familyKeys),
     'BINDING_DRIFT', 'WORK3:V2 subtype tree family order');
+  assert(Array.isArray(profileSet.profiles)
+    && profileSet.profiles.length === validationResult.profile_count
+    && Array.isArray(profileSet.family_profile_package_bindings)
+    && profileSet.family_profile_package_bindings.length === validationResult.family_package_count,
+  'COUNT_RECOUNT', 'WORK3:V2 profile and package recount');
   const nativeEvidence = receipt.candidate_native_set_evidence;
   return {
     family_keys: structuredClone(familyKeys),
@@ -1698,6 +1745,10 @@ function requiredTests(predecessorCount) {
   ].sort();
 }
 
+// The authority's tests file-prefix rule: directory "tests", prefix
+// "stage-2y-structure-m7-v2-repair-", suffix pattern "^[a-z0-9-]+\.test\.js$".
+const TEST_PATH_PATTERN = /^tests\/stage-2y-structure-m7-v2-repair-[a-z0-9-]+\.test\.js$/;
+
 function validateCode(root, code, predecessorCount) {
   assert(exactKeys(code, CODE_KEYS), 'INVALID_SPECIFICATION', 'code');
   for (const key of CODE_KEYS.slice(0, 5)) {
@@ -1722,8 +1773,11 @@ function validateCode(root, code, predecessorCount) {
     'INVALID_SPECIFICATION', 'independent verifier');
   assert(canonicalJson([...code.runners].sort()) === canonicalJson([...REQUIRED_RUNNERS].sort()),
     'INVALID_SPECIFICATION', 'runners:closed set');
-  assert(canonicalJson([...code.tests].sort()) === canonicalJson(requiredTests(predecessorCount)),
-    'INVALID_SPECIFICATION', 'tests:closed set');
+  const baselineTests = requiredTests(predecessorCount);
+  assert(code.tests.every((repositoryPath) => TEST_PATH_PATTERN.test(repositoryPath)),
+    'INVALID_SPECIFICATION', 'tests:naming');
+  assert(baselineTests.every((repositoryPath) => code.tests.includes(repositoryPath)),
+    'INVALID_SPECIFICATION', 'tests:baseline roster');
   return {
     compiler: bindingForCode(root, code.compiler),
     deterministic_generator: bindingForCode(root, code.deterministic_generator),
@@ -1988,6 +2042,35 @@ function allBindings(registration) {
   ];
 }
 
+// `registration_schema_extensions.import_closure_binding_required`: the
+// registration binds not only the code roles it names but every repository
+// module the static import graph of those roles can reach. A specifier that
+// cannot be read as a string is refused by the closure walk itself
+// (IMPORT_CLOSURE_UNRESOLVED, naming the file and line), so a registration
+// cannot silently under-report what its bound code loads.
+function buildImportClosureBindings(root, code) {
+  const entryPaths = [
+    code.compiler, code.deterministic_generator, code.contract_validator,
+    code.projector, code.independent_verifier,
+    ...code.runners, ...code.tests,
+  ];
+  let members;
+  try {
+    members = importClosure({ repoRoot: root, entryPaths });
+  } catch (error) {
+    fail(error.code ?? 'IMPORT_CLOSURE_UNRESOLVED', error.message);
+  }
+  return members.map((repositoryPath) => {
+    const bytes = readBytes(root, repositoryPath);
+    return {
+      path: repositoryPath,
+      byte_length: bytes.length,
+      sha256: sha256Hex(bytes),
+      git_blob_oid: gitBlobOid(bytes),
+    };
+  });
+}
+
 function buildRegistration(root, specification) {
   assert(exactKeys(specification, SPECIFICATION_KEYS), 'INVALID_SPECIFICATION', 'specification');
   const governance = validateAuthorityChain(root);
@@ -2025,13 +2108,18 @@ function buildRegistration(root, specification) {
   'INVALID_SPECIFICATION', 'view_policy');
   const viewPolicyBinding = bindingForRecord(root, specification.view_policy);
   const allowedOutputRoot = validateOutputRoot(root, specification.allowed_output_root);
+  const importClosureBindings = buildImportClosureBindings(root, specification.code);
   const counts = {
-    code_file_count: 5 + codeBindings.runners.length + codeBindings.tests.length,
+    // The five singleton code roles are counted from the role list itself, not
+    // from a literal: `literal_count_pins_forbidden_in` names this file.
+    code_file_count: CODE_SINGLETON_ROLES.length
+      + codeBindings.runners.length + codeBindings.tests.length,
     runner_count: codeBindings.runners.length,
     test_count: codeBindings.tests.length,
     semantic_input_count: semanticInputBindings.length,
     subtype_tree_count: subtypeTreeBindings.length,
     predecessor_receipt_count: predecessorReceiptBindings.length,
+    import_closure_count: importClosureBindings.length,
     unique_bound_path_count: 0,
   };
   const unsigned = {
@@ -2042,6 +2130,7 @@ function buildRegistration(root, specification) {
     activation_receipt_binding: governance.activation,
     work0_evidence_root_binding: governance.work0,
     code_bindings: codeBindings,
+    import_closure_bindings: importClosureBindings,
     semantic_input_bindings: semanticInputBindings,
     family_profile_set_binding: familyProfileSetBinding,
     subtype_tree_bindings: subtypeTreeBindings,

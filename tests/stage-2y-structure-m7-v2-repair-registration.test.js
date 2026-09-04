@@ -23,6 +23,7 @@ const ROOT = path.resolve(__dirname, '..');
 const SCHEMA = 'STAGE_2Y_M7_V2_CANDIDATE_REGISTRATION/V1';
 const VERIFICATION_SCHEMA = 'STAGE_2Y_M7_V2_CANDIDATE_REGISTRATION_VERIFICATION/V1';
 const REGISTRATION_ROOT = 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-candidate-registrations';
+const CANDIDATE_REPLACEMENT_AUTHORITY_PATH = 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-candidate-replacement-authority.json';
 const AUTHORITY_PATH = 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-work1-7-authority.json';
 const ACTIVATION_PATH = 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-work1-7-authority-activation.json';
 const WORK0_PATH = 'evidence/canonical-v2/stage-2y-structure-migration/receipts/stage-2y-structure-m7-v2-repair-evidence-root.json';
@@ -901,6 +902,20 @@ test('M7 V2 candidate registration is immutable, content-addressed and independe
       'CANDIDATE_ID_CONTINUITY',
     ]);
     const fixture = makeFixture(t, work2Template);
+    // The bound family profile set here carries a real profile count that is
+    // neither the historical Work3 V2 literal (1382) nor its 24-package
+    // count — proof that registration derives every count from the bytes it
+    // binds rather than pinning a fixture-derived total.
+    const profileSetDescriptor = fixture.specification.semantic_inputs.find(
+      (entry) => entry.input_role === 'APPROVED_FAMILY_PROFILE_SET',
+    );
+    const boundProfileSet = JSON.parse(
+      fs.readFileSync(path.join(fixture.root, profileSetDescriptor.path), 'utf8'),
+    );
+    assert.ok(boundProfileSet.profiles.length > 0);
+    assert.notEqual(boundProfileSet.profiles.length, 1382);
+    assert.notEqual(boundProfileSet.family_profile_package_bindings.length, 24);
+
     const preview = builder.registerCandidate({
       repoRoot: fixture.root,
       specification: fixture.specification,
@@ -1051,6 +1066,55 @@ test('M7 V2 candidate registration is immutable, content-addressed and independe
       specification: extra,
       write: false,
     }), 'INVALID_SPECIFICATION');
+  });
+
+  await t.test('a candidate binding a test roster larger than the required baseline registers and verifies', () => {
+    const fixture = makeFixture(t, work2Template);
+    const extraTestPath = 'tests/stage-2y-structure-m7-v2-repair-extra-roster-check.test.js';
+    write(fixture.root, extraTestPath, Buffer.from('fixture: extra roster test\n', 'utf8'));
+    const changed = clone(fixture.specification);
+    changed.code = { ...changed.code, tests: [...changed.code.tests, extraTestPath].sort() };
+    assert.equal(changed.code.tests.length, 9);
+
+    const preview = builder.registerCandidate({
+      repoRoot: fixture.root,
+      specification: changed,
+      write: true,
+    });
+    assert.equal(preview.registration.code_bindings.tests.length, 9);
+    assert.equal(preview.registration.counts.test_count, 9);
+    assert.ok(preview.registration.code_bindings.tests.some(
+      (binding) => binding.path === extraTestPath,
+    ));
+
+    const result = verifier.verifyRegisteredCandidate({
+      repoRoot: fixture.root,
+      registrationPath: preview.registration_path,
+    });
+    assert.equal(result.state, 'PASS_CANDIDATE_REGISTRATION');
+    assert.equal(result.counts.test_count, 9);
+  });
+
+  await t.test('a registration whose declared count differs from its bound bytes fails verify with COUNT_RECOUNT', () => {
+    const fixture = makeFixture(t, work2Template);
+    const written = builder.registerCandidate({
+      repoRoot: fixture.root,
+      specification: fixture.specification,
+      write: true,
+    });
+    const tampered = restampRegistration({
+      ...written.registration,
+      counts: {
+        ...written.registration.counts,
+        test_count: written.registration.counts.test_count + 1,
+      },
+    });
+    const tamperedPath = `${REGISTRATION_ROOT}/${tampered.candidate_registration_id}.json`;
+    writeCanonicalRecord(fixture.root, tamperedPath, tampered);
+    assertCode(() => verifier.verifyRegisteredCandidate({
+      repoRoot: fixture.root,
+      registrationPath: tamperedPath,
+    }), 'COUNT_RECOUNT');
   });
 
   await t.test('the builder closes each predecessor receipt contract before registration', () => {
@@ -1221,6 +1285,218 @@ test('M7 V2 candidate registration is immutable, content-addressed and independe
       specification: fixture.specification,
       write: false,
     }), 'PATH_SAFETY');
+  });
+
+  // `registration_schema_extensions.import_closure_binding_required` on the
+  // candidate replacement authority: a registration binds not only the code
+  // roles it names but every repository module their static import graph can
+  // reach, and the verifier recomputes that graph rather than trusting it.
+  await t.test('the registration binds the static import closure of its bound code', () => {
+    const fixture = makeFixture(t, work2Template);
+    const written = builder.registerCandidate({
+      repoRoot: fixture.root,
+      specification: fixture.specification,
+      write: true,
+    });
+    const code = written.registration.code_bindings;
+    const codePaths = [
+      code.compiler.path,
+      code.deterministic_generator.path,
+      code.contract_validator.path,
+      code.projector.path,
+      code.independent_verifier.path,
+      ...code.runners.map((binding) => binding.path),
+      ...code.tests.map((binding) => binding.path),
+    ];
+    const closure = written.registration.import_closure_bindings;
+    const closurePaths = closure.map((binding) => binding.path);
+    assert.ok(closure.length > 0);
+    assert.deepEqual(closurePaths, [...closurePaths].sort());
+    assert.equal(new Set(closurePaths).size, closurePaths.length);
+    assert.equal(written.registration.counts.import_closure_count, closure.length);
+    for (const repositoryPath of codePaths) {
+      assert.ok(closurePaths.includes(repositoryPath), repositoryPath);
+    }
+    for (const binding of closure) {
+      assert.deepEqual(Object.keys(binding).sort(), [
+        'byte_length', 'git_blob_oid', 'path', 'sha256',
+      ]);
+      const bytes = fs.readFileSync(path.join(fixture.root, binding.path));
+      assert.equal(binding.byte_length, bytes.length);
+      assert.equal(binding.sha256, sha256Hex(bytes));
+      assert.equal(binding.git_blob_oid, gitBlobOid(bytes));
+    }
+    assert.equal(
+      verifier.verifyRegisteredCandidate({
+        repoRoot: fixture.root,
+        registrationPath: written.registration_path,
+      }).state,
+      'PASS_CANDIDATE_REGISTRATION',
+    );
+
+    // One member short of the closure the verifier recomputes, and the
+    // difference is named by its path.
+    const dropped = closurePaths.find(
+      (repositoryPath) => !codePaths.includes(repositoryPath),
+    ) ?? closurePaths[0];
+    const tampered = restampRegistration({
+      ...written.registration,
+      import_closure_bindings: closure.filter((binding) => binding.path !== dropped),
+      counts: {
+        ...written.registration.counts,
+        import_closure_count: closure.length - 1,
+      },
+    });
+    const tamperedPath =
+      `${REGISTRATION_ROOT}/${tampered.candidate_registration_id}.json`;
+    writeCanonicalRecord(fixture.root, tamperedPath, tampered);
+    assert.throws(() => verifier.verifyRegisteredCandidate({
+      repoRoot: fixture.root,
+      registrationPath: tamperedPath,
+    }), (error) => {
+      assert.equal(error.code, 'BINDING_DRIFT');
+      assert.ok(error.message.includes(dropped), error.message);
+      return true;
+    });
+  });
+
+  // A specifier assembled at runtime is not an edge this walk can follow, and
+  // is not a refusal either: the bound Work 2 and Work 3 test roles use the
+  // pattern themselves. What the closure must not do is claim the target.
+  await t.test('a specifier assembled at runtime is not a closure member', () => {
+    const fixture = makeFixture(t, work2Template);
+    const computedPath =
+      'tests/stage-2y-structure-m7-v2-repair-computed-specifier.test.js';
+    const namedPath =
+      'tests/stage-2y-structure-m7-v2-repair-computed-specifier-target.js';
+    write(fixture.root, namedPath, Buffer.from('module.exports = { fixture: true };\n', 'utf8'));
+    write(fixture.root, computedPath, Buffer.from(
+      "const suffix = '-target';\n"
+      + "const loaded = require(`./stage-2y-structure-m7-v2-repair-computed-specifier${suffix}.js`);\n"
+      + 'module.exports = loaded;\n',
+      'utf8',
+    ));
+    const changed = clone(fixture.specification);
+    changed.code = {
+      ...changed.code,
+      tests: [...changed.code.tests, computedPath].sort(),
+    };
+    const written = builder.registerCandidate({
+      repoRoot: fixture.root,
+      specification: changed,
+      write: true,
+    });
+    const closurePaths = written.registration.import_closure_bindings.map(
+      (binding) => binding.path,
+    );
+    assert.ok(closurePaths.includes(computedPath));
+    assert.ok(!closurePaths.includes(namedPath));
+    assert.equal(
+      verifier.verifyRegisteredCandidate({
+        repoRoot: fixture.root,
+        registrationPath: written.registration_path,
+      }).state,
+      'PASS_CANDIDATE_REGISTRATION',
+    );
+  });
+
+  // The two registrations the replacement authority supersedes predate both
+  // the import closure and the authority's permission to edit the files they
+  // bind. They still verify, from the Git objects they named, and they say so.
+  await t.test('a superseded registration verifies historically and says so', () => {
+    const authority = JSON.parse(fs.readFileSync(
+      path.join(ROOT, CANDIDATE_REPLACEMENT_AUTHORITY_PATH), 'utf8',
+    ));
+    const superseded = authority.superseded_candidate_registration_ids;
+    assert.ok(superseded.length > 0);
+    for (const candidateRegistrationId of superseded) {
+      const registrationPath = `${REGISTRATION_ROOT}/${candidateRegistrationId}.json`;
+      const written = [];
+      const realWrite = process.stderr.write.bind(process.stderr);
+      process.stderr.write = (chunk, ...rest) => {
+        written.push(String(chunk));
+        return realWrite(chunk, ...rest);
+      };
+      let result;
+      try {
+        result = verifier.verifyRegisteredCandidate({
+          repoRoot: ROOT,
+          registrationPath,
+        });
+      } finally {
+        process.stderr.write = realWrite;
+      }
+      assert.equal(result.state, 'PASS_CANDIDATE_REGISTRATION');
+      assert.equal(result.candidate_registration_id, candidateRegistrationId);
+      const lines = written.join('');
+      assert.ok(
+        lines.includes(`HISTORICAL_SUPERSEDED_REGISTRATION ${candidateRegistrationId}`),
+        lines,
+      );
+      assert.ok(
+        lines.includes(`IMPORT_CLOSURE_ABSENT_HISTORICAL ${candidateRegistrationId}`),
+        lines,
+      );
+    }
+  });
+
+  // The historical rule keys on the authority's own list, so a registration
+  // that is not on it stays bound to the working tree even with the authority
+  // present: an edited bound file is still drift.
+  await t.test('a registration the authority does not supersede still fails on an edited bound file', () => {
+    const fixture = makeFixture(t, work2Template);
+    copyRepositoryFile(fixture.root, CANDIDATE_REPLACEMENT_AUTHORITY_PATH);
+    const written = builder.registerCandidate({
+      repoRoot: fixture.root,
+      specification: fixture.specification,
+      write: true,
+    });
+    const authority = JSON.parse(fs.readFileSync(
+      path.join(fixture.root, CANDIDATE_REPLACEMENT_AUTHORITY_PATH), 'utf8',
+    ));
+    assert.ok(!authority.superseded_candidate_registration_ids.includes(
+      written.registration.candidate_registration_id,
+    ));
+    const edited = written.registration.code_bindings.compiler.path;
+    const bytes = fs.readFileSync(path.join(fixture.root, edited));
+    write(fixture.root, edited, Buffer.concat([bytes, Buffer.from('\n// edited\n', 'utf8')]));
+    assert.throws(() => verifier.verifyRegisteredCandidate({
+      repoRoot: fixture.root,
+      registrationPath: written.registration_path,
+    }), (error) => {
+      assert.equal(error.code, 'BINDING_DRIFT');
+      assert.ok(error.message.includes(edited), error.message);
+      return true;
+    });
+  });
+
+  // A superseded registration is verified against the Git objects it named, so
+  // a tree that has the evidence but not the objects cannot prove it.
+  await t.test('a superseded registration whose bound blobs are absent fails BINDING_BYTE_MISMATCH', () => {
+    const root = fs.realpathSync.native(
+      fs.mkdtempSync(path.join(os.tmpdir(), 'm7-v2-historical-no-objects-')),
+    );
+    t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+    const migration = 'evidence/canonical-v2/stage-2y-structure-migration';
+    for (const directory of ['control', 'receipts']) {
+      fs.cpSync(
+        path.join(ROOT, migration, directory),
+        path.join(root, migration, directory),
+        { recursive: true },
+      );
+    }
+    const authority = JSON.parse(fs.readFileSync(
+      path.join(root, CANDIDATE_REPLACEMENT_AUTHORITY_PATH), 'utf8',
+    ));
+    for (const candidateRegistrationId of authority.superseded_candidate_registration_ids) {
+      assert.throws(() => verifier.verifyRegisteredCandidate({
+        repoRoot: root,
+        registrationPath: `${REGISTRATION_ROOT}/${candidateRegistrationId}.json`,
+      }), (error) => {
+        assert.equal(error.code, 'BINDING_BYTE_MISMATCH');
+        return true;
+      });
+    }
   });
 });
 

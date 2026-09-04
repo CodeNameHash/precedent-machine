@@ -693,6 +693,7 @@ async function prepareFrozenWork3V2(fixture) {
     'lib/canonical-v2/agreement-projection.js',
     'lib/canonical-v2/m7-v2-contract.js',
     'lib/canonical-v2/m7-v2-deterministic-generator.js',
+    'lib/canonical-v2/m7-v2-import-closure.js',
     'scripts/stage-2y-structure-family-aggregate.mjs',
     'scripts/stage-2y-structure-generalisation-shadow.mjs',
     'scripts/stage-2y-structure-m6-project.mjs',
@@ -1227,6 +1228,7 @@ function makeRecoveredWork1Fixture(t) {
     LEGACY_M5_AGGREGATE_TEST_PATH,
     'lib/canonical-v2/agreement-analysis-consolidation.js',
     'lib/canonical-v2/m7-v2-deterministic-generator.js',
+    'lib/canonical-v2/m7-v2-import-closure.js',
     'scripts/stage-2y-structure-family-aggregate.mjs',
     'scripts/stage-2y-structure-generalisation-shadow.mjs',
     REGISTER_CANDIDATE_PATH,
@@ -8747,4 +8749,255 @@ test('Work3 V2 closure dispatches exactly through Work4, registration and verifi
     repoRoot: v1Fixture.root,
     manifestPath: manifestPath('WORK4'),
   }), 'PREDECESSOR_BINDING_DRIFT');
+});
+
+// ---------------------------------------------------------------------------
+// Candidate replacement authority (Ben, 2026-09-03)
+//
+// The authority names three successor manifests, extends the immutable write
+// prefixes for EVERY manifest, and re-grants seven Work 1 write exceptions to
+// its own successors alone. These tests exercise that behaviour through the
+// validator, never through its source text.
+// ---------------------------------------------------------------------------
+
+const CANDIDATE_REPLACEMENT_AUTHORITY_PATH =
+  'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-candidate-replacement-authority.json';
+const CANDIDATE_REPLACEMENT_MANIFEST_MEMBER = 'candidate_replacement_authority_binding';
+
+function candidateReplacementAuthorityBytes() {
+  return readFileSync(path.join(REPO_ROOT, CANDIDATE_REPLACEMENT_AUTHORITY_PATH));
+}
+
+function candidateReplacementAuthorityRecord() {
+  return JSON.parse(candidateReplacementAuthorityBytes().toString('utf8'));
+}
+
+function candidateReplacementAuthorityBinding() {
+  const bytes = candidateReplacementAuthorityBytes();
+  const record = JSON.parse(bytes.toString('utf8'));
+  return standardBinding(
+    CANDIDATE_REPLACEMENT_AUTHORITY_PATH,
+    bytes,
+    record.schema_version,
+    'replacement_authority_id',
+    record.replacement_authority_id,
+  );
+}
+
+function candidateReplacementPhase(work) {
+  const phase = candidateReplacementAuthorityRecord().phases.find(
+    (entry) => entry.work === work,
+  );
+  assert.ok(phase, `no candidate replacement phase for ${work}`);
+  return phase;
+}
+
+// A successor manifest is the Work manifest it succeeds, moved to the path the
+// authority names for its phase and carrying the authority as a second
+// binding. Everything that named the old path — the read scope, the validator
+// command, the commit — names the new one.
+function candidateReplacementSuccessor(manifest, successorPath) {
+  const currentPath = manifestPath(manifest.work);
+  const successor = clone(manifest);
+  successor[CANDIDATE_REPLACEMENT_MANIFEST_MEMBER] = candidateReplacementAuthorityBinding();
+  successor.permitted_read_paths = [...new Set([
+    ...successor.permitted_read_paths,
+    currentPath,
+    successorPath,
+    CANDIDATE_REPLACEMENT_AUTHORITY_PATH,
+  ])].sort();
+  // The manifest under validation is the one the first command names; the
+  // commands the parent's correction authorities require on the Work 1-7
+  // manifest stay exactly as they were.
+  successor.exact_argv_with_run_limits = [
+    {
+      argv: ['node', EXECUTION_MANIFEST_VALIDATOR_PATH, successorPath],
+      max_runs: successor.exact_argv_with_run_limits[0].max_runs,
+    },
+    ...successor.exact_argv_with_run_limits,
+  ];
+  successor.exact_git_commit_and_push_argv[0] = [
+    'git', 'add', '--',
+    ...[successorPath, ...successor.permitted_write_paths].sort(),
+  ];
+  return restamp(successor);
+}
+
+function addWritePath(manifest, successorPath, repositoryPath) {
+  const written = clone(manifest);
+  written.permitted_write_paths = [...new Set([
+    ...written.permitted_write_paths,
+    repositoryPath,
+  ])].sort();
+  written.exact_git_commit_and_push_argv[0] = [
+    'git', 'add', '--',
+    ...[successorPath, ...written.permitted_write_paths].sort(),
+  ];
+  return restamp(written);
+}
+
+test('each named successor manifest carries the replacement authority as a second binding', async (t) => {
+  const validator = await loadValidator();
+  const fixture = makeFixture(t);
+  copyRepositoryFile(fixture.root, CANDIDATE_REPLACEMENT_AUTHORITY_PATH);
+  const record = candidateReplacementAuthorityRecord();
+  const binding = candidateReplacementAuthorityBinding();
+  const context = {
+    root: fixture.root,
+    authority: fixture.authority,
+    authorityBytes: fixture.authorityBytes,
+  };
+  assert.equal(record.phases.length, new Set(
+    record.phases.map((phase) => phase.successor_manifest_path),
+  ).size);
+
+  for (const phase of record.phases) {
+    const manifest = {
+      work: phase.work,
+      permitted_read_paths: [CANDIDATE_REPLACEMENT_AUTHORITY_PATH],
+      [CANDIDATE_REPLACEMENT_MANIFEST_MEMBER]: clone(binding),
+    };
+    const accepted = validator.validateCandidateReplacement(
+      manifest,
+      phase.successor_manifest_path,
+      context,
+    );
+    assert.equal(accepted.phase.phase_key, phase.phase_key);
+    assert.equal(accepted.phase.successor_manifest_path, phase.successor_manifest_path);
+    assert.deepEqual(accepted.binding, binding);
+
+    // One byte of the bound record is one byte too many.
+    const driftedBinding = { ...manifest, [CANDIDATE_REPLACEMENT_MANIFEST_MEMBER]: {
+      ...binding,
+      byte_length: binding.byte_length + 1,
+    } };
+    assert.throws(
+      () => validator.validateCandidateReplacement(
+        driftedBinding, phase.successor_manifest_path, context,
+      ),
+      (error) => error.code === 'AUTHORITY_BINDING_DRIFT',
+    );
+
+    // A successor manifest that cannot read the authority cannot claim it.
+    assert.throws(
+      () => validator.validateCandidateReplacement(
+        { ...manifest, permitted_read_paths: [] },
+        phase.successor_manifest_path,
+        context,
+      ),
+      (error) => error.code === 'PATH_SCOPE_DRIFT',
+    );
+
+    // The phase is selected by path and work together.
+    const otherPhase = record.phases.find((entry) => entry.work !== phase.work);
+    assert.throws(
+      () => validator.validateCandidateReplacement(
+        manifest, otherPhase.successor_manifest_path, context,
+      ),
+      (error) => error.code === 'AUTHORITY_BINDING_DRIFT',
+    );
+  }
+
+  // One byte of the authority file itself, and the binding no longer resolves.
+  const driftedFixture = makeFixture(t);
+  copyRepositoryFile(driftedFixture.root, CANDIDATE_REPLACEMENT_AUTHORITY_PATH);
+  const driftedBytes = Buffer.concat([candidateReplacementAuthorityBytes(), Buffer.from(' ')]);
+  writeBytes(driftedFixture.root, CANDIDATE_REPLACEMENT_AUTHORITY_PATH, driftedBytes);
+  const phase = record.phases[0];
+  assert.throws(
+    () => validator.validateCandidateReplacement(
+      {
+        work: phase.work,
+        permitted_read_paths: [CANDIDATE_REPLACEMENT_AUTHORITY_PATH],
+        [CANDIDATE_REPLACEMENT_MANIFEST_MEMBER]: clone(binding),
+      },
+      phase.successor_manifest_path,
+      {
+        root: driftedFixture.root,
+        authority: driftedFixture.authority,
+        authorityBytes: driftedFixture.authorityBytes,
+      },
+    ),
+    (error) => error.code === 'AUTHORITY_BINDING_DRIFT',
+  );
+});
+
+test('the replacement member cannot be smuggled onto a Work 1-7 manifest', async (t) => {
+  const validator = await loadValidator();
+  const fixture = makeFixture(t);
+  copyRepositoryFile(fixture.root, CANDIDATE_REPLACEMENT_AUTHORITY_PATH);
+  const manifest = baseWork2Manifest(fixture);
+  manifest[CANDIDATE_REPLACEMENT_MANIFEST_MEMBER] = candidateReplacementAuthorityBinding();
+  manifest.permitted_read_paths = [...new Set([
+    ...manifest.permitted_read_paths,
+    CANDIDATE_REPLACEMENT_AUTHORITY_PATH,
+  ])].sort();
+  const repositoryPath = writeManifest(fixture, restamp(manifest));
+  await assertCode(validator, () => validator.validateExecutionManifest({
+    repoRoot: fixture.root,
+    manifestPath: repositoryPath,
+  }), 'PATH_SCOPE_DRIFT');
+});
+
+test('a successor manifest validates at the path its phase names, with the write scope the authority sets', async (t) => {
+  const validator = await loadValidator();
+  const record = candidateReplacementAuthorityRecord();
+  const phase = candidateReplacementPhase('WORK2');
+  const successorPath = phase.successor_manifest_path;
+  // One of the seven Work 1 paths the authority re-grants, and one the parent
+  // authority reserves for Work 1 and the replacement authority does not
+  // re-grant: the grant is exactly seven paths, not a class of them.
+  const grantedWork1Path = 'lib/canonical-v2/m7-v2-contract.js';
+  const ungrantedWork1Path =
+    'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-policy.json';
+  assert.ok(record.work1_write_exceptions.includes(grantedWork1Path));
+  assert.ok(!record.work1_write_exceptions.includes(ungrantedWork1Path));
+  const immutableExtension =
+    `${record.immutable_prefix_extensions[0]}m2/agreement-index.json`;
+
+  const fixture = makeFixture(t);
+  copyRepositoryFile(fixture.root, CANDIDATE_REPLACEMENT_AUTHORITY_PATH);
+  const work2 = baseWork2Manifest(fixture);
+  const work2Path = writeManifest(fixture, work2);
+  const successor = candidateReplacementSuccessor(work2, successorPath);
+  writeCanonical(fixture.root, successorPath, successor);
+
+  const result = await validator.validateExecutionManifest({
+    repoRoot: fixture.root,
+    manifestPath: successorPath,
+  });
+  assert.equal(result.status, 'PASS_NARROWING_EXECUTION_MANIFEST');
+  assert.equal(result.work, 'WORK2');
+  assert.equal(result.manifest_path, successorPath);
+
+  // A write under one of the three comparison entry-correction directories is
+  // refused on the successor manifest and on the Work 1-7 manifest alike.
+  for (const [repositoryPath, manifestUnderTest, targetPath] of [
+    [immutableExtension, successor, successorPath],
+    [immutableExtension, work2, work2Path],
+    [ungrantedWork1Path, successor, successorPath],
+  ]) {
+    writeCanonical(
+      fixture.root,
+      targetPath,
+      addWritePath(manifestUnderTest, targetPath, repositoryPath),
+    );
+    await assertCode(validator, () => validator.validateExecutionManifest({
+      repoRoot: fixture.root,
+      manifestPath: targetPath,
+    }), 'PATH_SCOPE_DRIFT');
+    writeCanonical(fixture.root, targetPath, manifestUnderTest);
+  }
+
+  // A successor manifest may write the Work 1 paths the authority re-grants.
+  writeCanonical(
+    fixture.root,
+    successorPath,
+    addWritePath(successor, successorPath, grantedWork1Path),
+  );
+  const grantedResult = await validator.validateExecutionManifest({
+    repoRoot: fixture.root,
+    manifestPath: successorPath,
+  });
+  assert.equal(grantedResult.status, 'PASS_NARROWING_EXECUTION_MANIFEST');
 });
