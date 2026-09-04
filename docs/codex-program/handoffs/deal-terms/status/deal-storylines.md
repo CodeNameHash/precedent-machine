@@ -1,6 +1,6 @@
 # Deal Storylines consumer status
 
-Updated: 2026-09-03 after A-0008
+Updated: 2026-09-04 after Q-0004
 
 ## Waiting on PM
 
@@ -8,6 +8,8 @@ Updated: 2026-09-03 after A-0008
 - Producer evidence before dates are assigned beyond the first real run.
 - Deal Storylines completion of `target_cik`, `transaction_anchor` and
   `ordinal` for the ten A-0008 rows. No PM response is currently required.
+- Q-0004 confirmation of which `DA-*` rows are package deliveries, which are
+  producer gates, and the exact numbered-message evidence for each.
 
 ## Consumer state
 
@@ -42,3 +44,5 @@ Updated: 2026-09-03 after A-0008
   are additional documents under the same transaction ID, not extra deals.
 - A-0008 is informational selection input. It is not a corpus-admission
   receipt, a sealed shared 50-deal selection or Ben approval.
+- Package delivery and producer-gate completion remain separate consumer
+  evidence types until PM answers Q-0004.
