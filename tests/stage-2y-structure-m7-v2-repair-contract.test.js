@@ -5325,6 +5325,24 @@ function buildCandidateGovernance({
     runners: runnerBindings,
     tests: testBindings,
   };
+  // Optional import-closure declaration (mirrors CANDIDATE_OPTIONAL_KEYS in
+  // lib/canonical-v2/m7-v2-contract.js). `options.importClosure` declares a
+  // closure covering every bound code path; `options.importClosureCountOverride`
+  // lets a test assert a `counts.import_closure_count` that disagrees with the
+  // declared closure (or is present with no closure at all, via
+  // `options.forceImportClosureCount`).
+  const declaresImportClosure = options.importClosure === true;
+  const importClosureBindings = declaresImportClosure
+    ? [...Object.values(singletonBindings), ...runnerBindings, ...testBindings]
+      .map(({ path, byte_length, sha256, git_blob_oid }) => (
+        { path, byte_length, sha256, git_blob_oid }
+      )).sort((left, right) => codeUnitCompare(left.path, right.path))
+    : null;
+  const includeImportClosureCount = declaresImportClosure
+    || options.forceImportClosureCount === true;
+  const importClosureCount = Object.hasOwn(options, 'importClosureCountOverride')
+    ? options.importClosureCountOverride
+    : importClosureBindings?.length;
   const boundPaths = [
     parentAuthorityBinding,
     activationReceiptBinding,
@@ -5341,6 +5359,7 @@ function buildCandidateGovernance({
   ].map((binding) => binding.path ?? binding.container_path);
   const counts = {
     code_file_count: 5 + runnerBindings.length + testBindings.length,
+    ...(includeImportClosureCount ? { import_closure_count: importClosureCount } : {}),
     runner_count: runnerBindings.length,
     test_count: testBindings.length,
     semantic_input_count: semanticInputs.candidateBindings.length,
@@ -5369,6 +5388,7 @@ function buildCandidateGovernance({
       activation_receipt_binding: activationReceiptBinding,
       work0_evidence_root_binding: work0Binding,
       code_bindings: codeBindings,
+      ...(declaresImportClosure ? { import_closure_bindings: importClosureBindings } : {}),
       semantic_input_bindings: semanticInputs.candidateBindings,
       family_profile_set_binding: profiles.profileSetBinding,
       subtype_tree_bindings: candidateTreeBindings,
@@ -9975,6 +9995,55 @@ test('family packages own every transported profile member with no legacy bindin
     const scenario = buildScenario(cases.baseline_case, { negativeCaseId });
     assertCode(() => validateScenario(scenario), code);
   }
+});
+
+test('candidate registration counts: declared import closure with a matching count passes', () => {
+  const scenario = buildScenario(cases.baseline_case, { importClosure: true });
+  assert.ok(scenario.candidate.candidate.import_closure_bindings.length > 0);
+  assert.equal(
+    scenario.candidate.candidate.counts.import_closure_count,
+    scenario.candidate.candidate.import_closure_bindings.length,
+  );
+  const result = validateScenario(scenario);
+  assert.equal(result.status, 'PASS');
+});
+
+test('candidate registration counts: no declared closure keeps validating unchanged', () => {
+  const scenario = buildScenario(cases.baseline_case);
+  assert.equal(Object.hasOwn(scenario.candidate.candidate, 'import_closure_bindings'), false);
+  assert.equal(Object.hasOwn(scenario.candidate.candidate.counts, 'import_closure_count'), false);
+  const result = validateScenario(scenario);
+  assert.equal(result.status, 'PASS');
+});
+
+test('candidate registration counts: a declared closure with a disagreeing count still fails', () => {
+  const scenario = buildScenario(cases.baseline_case, {
+    importClosure: true,
+    importClosureCountOverride: -1,
+  });
+  assert.notEqual(
+    scenario.candidate.candidate.counts.import_closure_count,
+    scenario.candidate.candidate.import_closure_bindings.length,
+  );
+  assert.throws(() => validateScenario(scenario), (error) => {
+    assert.equal(error.code, 'M7_V2_GOVERNANCE');
+    assert.match(error.message, /candidate registration counts are false/u);
+    return true;
+  });
+});
+
+test('candidate registration counts: an import-closure count with no declared closure fails', () => {
+  const scenario = buildScenario(cases.baseline_case, {
+    forceImportClosureCount: true,
+    importClosureCountOverride: 1,
+  });
+  assert.equal(Object.hasOwn(scenario.candidate.candidate, 'import_closure_bindings'), false);
+  assert.equal(scenario.candidate.candidate.counts.import_closure_count, 1);
+  assert.throws(() => validateScenario(scenario), (error) => {
+    assert.equal(error.code, 'M7_V2_GOVERNANCE');
+    assert.match(error.message, /candidate registration counts are false/u);
+    return true;
+  });
 });
 
 test('same-package Ben approval authorises exact family-package members', () => {
