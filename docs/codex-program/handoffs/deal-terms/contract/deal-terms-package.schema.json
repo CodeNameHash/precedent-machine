@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://precedent-machine.invalid/schemas/deal-terms-package/v1/deal-terms-package.schema.json",
-  "title": "Deal Terms release package 1.1.0",
-  "description": "Package contract 1.1.0. The release manifest of a Deal Terms package. The per-deal document is $defs/dealDocument and the in-package corpus manifest is $defs/corpusManifest; a validator points at those directly for deals/<deal_key>/deal.json and corpus/corpus-manifest.json. This schema constrains shape and vocabulary only. It cannot check a content ID or a SHA-256: that is verify.mjs, and a package is not valid until verify.mjs exits 0 on it. Every ID in this schema is contentId(domain, record) or sha256Hex(bytes) as defined in the producer's lib/canonical-v2/canonical-bytes.js.",
+  "title": "Deal Terms release package 1.2.0",
+  "description": "Package contract 1.2.0. The release manifest of a Deal Terms package. The per-deal document is $defs/dealDocument and the in-package corpus manifest is $defs/corpusManifest; a validator points at those directly for deals/<deal_key>/deal.json and corpus/corpus-manifest.json. This schema constrains shape and vocabulary only. It cannot check a content ID or a SHA-256: that is verify.mjs, and a package is not valid until verify.mjs exits 0 on it. Every ID in this schema is contentId(domain, record) or sha256Hex(bytes) as defined in the producer's lib/canonical-v2/canonical-bytes.js.",
   "type": "object",
   "unevaluatedProperties": false,
   "required": [
@@ -10,6 +10,8 @@
     "package_schema_version",
     "release_manifest_id",
     "production_release_id",
+    "supersedes_release_manifest_id",
+    "release_sequence",
     "producer_commit",
     "release_state",
     "public",
@@ -24,8 +26,8 @@
     "package_schema_version": {
       "type": "string",
       "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
-      "const": "1.1.0",
-      "description": "Semantic version of the package contract. 1.0.0 was draft 1; 1.1.0 adds transaction_id and the typed field quartet, both additively."
+      "const": "1.2.0",
+      "description": "Semantic version of the package contract. 1.0.0 was draft 1; 1.1.0 added transaction_id and the typed field quartet; 1.2.0 adds fact_state, source units, limitations, release lineage and the transaction-shaped corpus."
     },
     "release_manifest_id": {
       "$ref": "#/$defs/hex64",
@@ -34,6 +36,15 @@
     "production_release_id": {
       "$ref": "#/$defs/hex64",
       "description": "The producer's identifier for this release. Immutable; a re-cut is a new release."
+    },
+    "supersedes_release_manifest_id": {
+      "oneOf": [{ "$ref": "#/$defs/hex64" }, { "type": "null" }],
+      "description": "The release_manifest_id of this corpus's previous release, or null for the first. Null if and only if release_sequence is 1. A release never supersedes itself."
+    },
+    "release_sequence": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Strictly increasing per corpus_id. Each package is a COMPLETE snapshot of its corpus: an occurrence present in a predecessor and absent from a successor has been withdrawn, never merely omitted. A consumer activates exactly one verified release per corpus at a time and rolls back by activating the exact predecessor id. released_at is informational and must not be used to order releases."
     },
     "producer_commit": {
       "type": "string",
@@ -68,11 +79,12 @@
       "items": {
         "type": "object",
         "unevaluatedProperties": false,
-        "required": ["deal_key", "deal_document_id", "path"],
+        "required": ["deal_key", "deal_document_id", "path", "source_units_path"],
         "properties": {
           "deal_key": { "$ref": "#/$defs/hex64" },
           "deal_document_id": { "$ref": "#/$defs/hex64" },
-          "path": { "type": "string", "pattern": "^deals/[0-9a-f]{64}/deal\\.json$" }
+          "path": { "type": "string", "pattern": "^deals/[0-9a-f]{64}/deal\\.json$" },
+          "source_units_path": { "type": "string", "pattern": "^source_units/[0-9a-f]{64}\\.json$" }
         }
       }
     },
@@ -87,7 +99,7 @@
         "properties": {
           "path": {
             "type": "string",
-            "pattern": "^(?:verify\\.mjs|corpus/corpus-manifest\\.json|deals/[0-9a-f]{64}/deal\\.json)$"
+            "pattern": "^(?:verify\\.mjs|corpus/corpus-manifest\\.json|deals/[0-9a-f]{64}/deal\\.json|source_units/[0-9a-f]{64}\\.json)$"
           },
           "sha256": { "$ref": "#/$defs/hex64" },
           "byte_length": { "type": "integer", "minimum": 0 }
@@ -97,12 +109,13 @@
     "counts": {
       "type": "object",
       "unevaluatedProperties": false,
-      "required": ["deals", "files", "claims", "category_summaries"],
+      "required": ["deals", "files", "claims", "category_summaries", "source_units"],
       "properties": {
         "deals": { "type": "integer", "minimum": 1 },
         "files": { "type": "integer", "minimum": 1 },
         "claims": { "type": "integer", "minimum": 0 },
-        "category_summaries": { "type": "integer", "minimum": 0 }
+        "category_summaries": { "type": "integer", "minimum": 0 },
+        "source_units": { "type": "integer", "minimum": 0 }
       }
     }
   },
@@ -192,7 +205,8 @@
         "agreement_id", "canonical_text_id", "canonical_text_sha256", "canonical_text_byte_length",
         "coordinate_system", "immutable_source_document_id", "source_response_content_id",
         "source_admission_manifest_id", "admission_receipt_id", "raw_source_sha256",
-        "raw_source_byte_length", "retrieval_url_sha256"
+        "raw_source_byte_length", "retrieval_url_sha256",
+        "sec_document_name", "sec_document_sequence"
       ],
       "properties": {
         "agreement_id": { "$ref": "#/$defs/hex64", "description": "The producer's canonical-text content ID for the agreement." },
@@ -206,7 +220,15 @@
         "admission_receipt_id": { "$ref": "#/$defs/hex64", "description": "SOURCE_ADMISSION_PREPARATION_RECEIPT/V1 record ID." },
         "raw_source_sha256": { "$ref": "#/$defs/hex64" },
         "raw_source_byte_length": { "type": "integer", "minimum": 1 },
-        "retrieval_url_sha256": { "$ref": "#/$defs/hex64", "description": "SHA-256 of the retrieval URL. The URL itself is not carried; a consumer reconstructs the EDGAR location from issuer_cik and accession." }
+        "retrieval_url_sha256": { "$ref": "#/$defs/hex64", "description": "SHA-256 of the retrieval URL. The URL itself is not carried; a consumer reconstructs the EDGAR location from issuer_cik and accession." },
+        "sec_document_name": {
+          "oneOf": [{ "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" }, { "type": "null" }],
+          "description": "The SEC document name from the admitted-source receipt, so a consumer can open the exact admitted document (Q-0002 section 2). A filing-side name, never a producer path: no separator is permitted. Null where the receipt did not record it, and a package containing any null cannot be PUBLIC."
+        },
+        "sec_document_sequence": {
+          "oneOf": [{ "type": "integer", "minimum": 1 }, { "type": "null" }],
+          "description": "The document's sequence within the filing. Null under the same conditions as sec_document_name, with the same PUBLIC consequence."
+        }
       },
       "description": "Document identity by content, never by location. No repository path appears here or anywhere else in a package."
     },
@@ -224,6 +246,91 @@
       }
     },
 
+    "factState": {
+      "type": "string",
+      "enum": ["PRESENT", "ABSENT", "NOT_APPLICABLE", "NOT_EXAMINED", "FAILED"],
+      "description": "The semantic state of one field, independent of its claim's review state (Q-0002 section 1, A-0006 ruling 1). PRESENT: a value was found; zero and false are PRESENT. ABSENT: the source unit named in examined_source_unit_id was read and does not state it. NOT_APPLICABLE: the field does not apply, with a governed reason_code. NOT_EXAMINED: the occurrence's subtype profile does not carry the field. FAILED: extraction could not resolve it, which is legal only under a REVIEW_ONLY claim carrying issue codes. ABSENT, NOT_APPLICABLE and NOT_EXAMINED are three different things and a consumer must not collapse them, nor render any of them as zero, false or empty."
+    },
+    "evidenceSpan": {
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["source_unit_id", "start_byte", "end_byte", "text_sha256", "excerpt_text"],
+      "properties": {
+        "source_unit_id": { "$ref": "#/$defs/hex64", "description": "The source unit this evidence sits in. Must exist in the deal's source unit set." },
+        "start_byte": { "type": "integer", "minimum": 0 },
+        "end_byte": { "type": "integer", "minimum": 1 },
+        "text_sha256": { "$ref": "#/$defs/hex64" },
+        "excerpt_text": { "type": "string", "minLength": 1 }
+      },
+      "description": "Half-open [start_byte, end_byte) in UTF-8 bytes over the canonical text, with the quoted text bound to both its width and its SHA-256."
+    },
+    "limitation": {
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["code", "text", "ruling_id"],
+      "properties": {
+        "code": { "$ref": "#/$defs/reasonCode", "description": "From the producer's governed limitation vocabulary." },
+        "text": { "type": "string", "minLength": 1, "description": "The limitation text as it appears in the ruling record. A consumer displays this beside the answer; it must not paraphrase it." },
+        "ruling_id": { "$ref": "#/$defs/hex64", "description": "Content ID of the ruling record the limitation comes from." }
+      },
+      "description": "Required on every APPROVED_LIMITED claim and forbidden on every other (A-0006 ruling 3). An APPROVED_LIMITED answer displayed without its limitation is a misrepresentation, so the verifier refuses a package that omits it."
+    },
+    "contextSpan": {
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["kind", "node_occurrence_id", "start_byte", "end_byte", "text_sha256", "text"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["PARENT_CHAIN", "GOVERNING_CHAPEAU", "ARTICLE_CHAPEAU"],
+          "description": "The provenance kind of this context, from the re-plan's source-closure rule: the parent chain up to SECTION, the governing chapeau, and the Article chapeau for representations."
+        },
+        "node_occurrence_id": { "$ref": "#/$defs/hex64" },
+        "start_byte": { "type": "integer", "minimum": 0 },
+        "end_byte": { "type": "integer", "minimum": 1 },
+        "text_sha256": { "$ref": "#/$defs/hex64" },
+        "text": { "type": "string", "minLength": 1 }
+      }
+    },
+    "sourceUnit": {
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": [
+        "node_occurrence_id", "heading_or_reference", "document_order",
+        "start_byte", "end_byte", "text_sha256", "text", "context_spans"
+      ],
+      "properties": {
+        "node_occurrence_id": { "$ref": "#/$defs/hex64", "description": "M2 node occurrence identity. Claims and evidence spans reference a unit by this." },
+        "heading_or_reference": { "type": "string", "minLength": 1 },
+        "document_order": { "type": "integer", "minimum": 0, "description": "Position in the document. Unique within the set, and the set is ordered by it." },
+        "start_byte": { "type": "integer", "minimum": 0 },
+        "end_byte": { "type": "integer", "minimum": 1 },
+        "text_sha256": { "$ref": "#/$defs/hex64", "description": "sha256Hex(text)." },
+        "text": { "type": "string", "minLength": 1, "description": "The FULL canonical text of the authored unit, so a consumer never has to reconstruct a provision from excerpts (Q-0002 section 2). Whole-agreement text is not carried; its SHA-256 and byte length are, in provenance." },
+        "context_spans": { "type": "array", "items": { "$ref": "#/$defs/contextSpan" } }
+      }
+    },
+    "sourceUnitSet": {
+      "$comment": "The schema for source_units/<deal_key>.json.",
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["schema_version", "source_unit_set_id", "deal_key", "units", "counts"],
+      "properties": {
+        "schema_version": { "const": "DEAL_TERMS_SOURCE_UNIT_SET/V1" },
+        "source_unit_set_id": { "$ref": "#/$defs/hex64", "description": "contentId('DEAL_TERMS_SOURCE_UNIT_SET/V1', this record without source_unit_set_id)." },
+        "deal_key": { "$ref": "#/$defs/hex64" },
+        "units": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/sourceUnit" } },
+        "counts": {
+          "type": "object",
+          "unevaluatedProperties": false,
+          "required": ["units", "context_spans"],
+          "properties": {
+            "units": { "type": "integer", "minimum": 1 },
+            "context_spans": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
     "valueType": {
       "type": "string",
       "enum": [
@@ -236,15 +343,30 @@
       "type": "object",
       "unevaluatedProperties": false,
       "required": [
-        "field_key", "label", "value_type", "typed_value", "unit", "sort_value",
+        "field_key", "label", "fact_state", "value_type", "typed_value", "unit", "sort_value",
+        "evidence_spans", "examined_source_unit_id", "reason_code",
         "rendered_value", "rendered_value_digest", "typed_value_digest"
       ],
       "properties": {
         "field_key": { "type": "string", "minLength": 1 },
         "label": { "type": "string", "minLength": 1 },
+        "fact_state": { "$ref": "#/$defs/factState" },
+        "evidence_spans": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/evidenceSpan" },
+          "description": "Non-empty if and only if fact_state is PRESENT."
+        },
+        "examined_source_unit_id": {
+          "oneOf": [{ "$ref": "#/$defs/hex64" }, { "type": "null" }],
+          "description": "Non-null if and only if fact_state is ABSENT: the unit that was read and does not state the field. It is what makes an absence a finding rather than a silence."
+        },
+        "reason_code": {
+          "oneOf": [{ "$ref": "#/$defs/reasonCode" }, { "type": "null" }],
+          "description": "Non-null if and only if fact_state is NOT_APPLICABLE."
+        },
         "value_type": { "$ref": "#/$defs/valueType" },
         "typed_value": {
-          "description": "The machine-readable value. Its shape is fixed by value_type, exactly as lib/canonical-v2/m7-v2-contract.js validates an atomic fact: PARTY_SET is {parties:[string,...]}, non-empty and unique; PARTY, ENUM, DEFINED_TERM, DATE and REFERENCE are non-empty strings; BOOLEAN is a boolean; NUMBER and PERCENTAGE are finite numbers; DURATION and PERIOD are {bound_type, count, unit} with unit in DAY/WEEK/MONTH/YEAR and bound_type in EXACT/WITHIN/AT_LEAST (DURATION) or EXACT/WITHIN (PERIOD); MONEY is {amount, currency}. JSON Schema cannot express the dependency, so verify.mjs enforces it."
+          "description": "The machine-readable value, or null in every fact_state except PRESENT. Its shape is fixed by value_type, exactly as lib/canonical-v2/m7-v2-contract.js validates an atomic fact: PARTY_SET is {parties:[string,...]}, non-empty and unique; PARTY, ENUM, DEFINED_TERM, DATE and REFERENCE are non-empty strings; BOOLEAN is a boolean; NUMBER and PERCENTAGE are finite numbers; DURATION and PERIOD are {bound_type, count, unit} with unit in DAY/WEEK/MONTH/YEAR and bound_type in EXACT/WITHIN/AT_LEAST (DURATION) or EXACT/WITHIN (PERIOD); MONEY is {amount, currency}. JSON Schema cannot express the dependency, so verify.mjs enforces it."
         },
         "unit": {
           "oneOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }],
@@ -256,8 +378,38 @@
         },
         "rendered_value": { "type": "string", "description": "Presentation only. Never parse it." },
         "rendered_value_digest": { "$ref": "#/$defs/hex64", "description": "sha256Hex(rendered_value)." },
-        "typed_value_digest": { "$ref": "#/$defs/hex64", "description": "sha256Hex(canonicalJson(typed_value)). Two claims agree on a value exactly when these are equal." }
-      }
+        "typed_value_digest": { "$ref": "#/$defs/hex64", "description": "sha256Hex(canonicalJson(typed_value)), computed in every state including null, so it stays re-derivable. Two claims agree on a value exactly when these are equal." }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "fact_state": { "const": "PRESENT" } }, "required": ["fact_state"] },
+          "then": {
+            "properties": {
+              "evidence_spans": { "minItems": 1 },
+              "examined_source_unit_id": { "type": "null" },
+              "reason_code": { "type": "null" }
+            }
+          },
+          "else": {
+            "properties": {
+              "typed_value": { "type": "null" },
+              "unit": { "type": "null" },
+              "sort_value": { "type": "null" },
+              "evidence_spans": { "maxItems": 0 }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "fact_state": { "const": "ABSENT" } }, "required": ["fact_state"] },
+          "then": { "properties": { "examined_source_unit_id": { "$ref": "#/$defs/hex64" } } },
+          "else": { "properties": { "examined_source_unit_id": { "type": "null" } } }
+        },
+        {
+          "if": { "properties": { "fact_state": { "const": "NOT_APPLICABLE" } }, "required": ["fact_state"] },
+          "then": { "properties": { "reason_code": { "$ref": "#/$defs/reasonCode" } } },
+          "else": { "properties": { "reason_code": { "type": "null" } } }
+        }
+      ]
     },
 
     "sourceSpan": {
@@ -279,7 +431,8 @@
       "unevaluatedProperties": false,
       "required": [
         "claim_occurrence_id", "claim_revision_id", "family_key", "claim_definition_key",
-        "classification_levels", "section_reference", "state", "reason_codes", "fields", "source"
+        "classification_levels", "section_reference", "state", "reason_codes",
+        "limitation", "fields", "source"
       ],
       "properties": {
         "claim_occurrence_id": {
@@ -311,6 +464,7 @@
           "description": "The producer's three-part state. Only the combinations validStateCombination() permits are legal; verify.mjs enforces them."
         },
         "reason_codes": { "type": "array", "items": { "$ref": "#/$defs/reasonCode" } },
+        "limitation": { "oneOf": [{ "$ref": "#/$defs/limitation" }, { "type": "null" }] },
         "fields": { "type": "array", "items": { "$ref": "#/$defs/displayField" } },
         "source": {
           "type": "object",
@@ -331,6 +485,11 @@
         {
           "if": { "properties": { "state": { "properties": { "review_state": { "const": "NORMAL" } }, "required": ["review_state"] } }, "required": ["state"] },
           "then": { "properties": { "reason_codes": { "maxItems": 0 } } }
+        },
+        {
+          "if": { "properties": { "state": { "properties": { "review_state": { "const": "APPROVED_LIMITED" } }, "required": ["review_state"] } }, "required": ["state"] },
+          "then": { "properties": { "limitation": { "$ref": "#/$defs/limitation" } } },
+          "else": { "properties": { "limitation": { "type": "null" } } }
         }
       ]
     },
@@ -380,7 +539,8 @@
       "unevaluatedProperties": false,
       "required": [
         "schema_version", "deal_document_id", "deal_key", "transaction_id",
-        "deal_identity", "provenance", "claims", "category_summaries", "counts"
+        "deal_identity", "provenance", "source_unit_set_id", "claims",
+        "category_summaries", "counts"
       ],
       "properties": {
         "schema_version": { "const": "DEAL_TERMS_DEAL_DOCUMENT/V1" },
@@ -395,6 +555,7 @@
         "transaction_id": { "$ref": "#/$defs/transactionId" },
         "deal_identity": { "$ref": "#/$defs/dealIdentity" },
         "provenance": { "$ref": "#/$defs/provenance" },
+        "source_unit_set_id": { "$ref": "#/$defs/hex64", "description": "The source unit set at source_units/<deal_key>.json. Every source unit and evidence span a claim references must exist in it." },
         "claims": {
           "type": "array",
           "minItems": 1,
@@ -422,10 +583,13 @@
     },
 
     "corpusManifest": {
-      "$comment": "The schema for corpus/corpus-manifest.json. Every member of a released corpus is already admitted, so no field here is nullable; the pre-admission shape is corpus-manifest.schema.json.",
+      "$comment": "The schema for corpus/corpus-manifest.json. Every document in a released corpus is already admitted, so no field here is nullable except transaction_id. The pre-admission input records are corpus-manifest.schema.json.",
       "type": "object",
       "unevaluatedProperties": false,
-      "required": ["schema_version", "corpus_manifest_id", "corpus_id", "corpus_kind", "members", "counts"],
+      "required": [
+        "schema_version", "corpus_manifest_id", "corpus_id", "corpus_kind",
+        "selection_record_sha256", "ben_approval_id", "transactions", "counts"
+      ],
       "properties": {
         "schema_version": { "const": "DEAL_TERMS_CORPUS_MANIFEST/V1" },
         "corpus_manifest_id": {
@@ -434,50 +598,78 @@
         },
         "corpus_id": {
           "$ref": "#/$defs/hex64",
-          "description": "contentId('DEAL_TERMS_CORPUS_ID/V1', {corpus_kind, member_deal_keys: sorted}). Two manifests with the same kind and members share a corpus_id."
+          "description": "The content ID of Ben's approved transaction-selection record (A-0006 ruling 5). It is CARRIED, never recomputed from the document keys in this package: deriving it here would let a package mint a corpus identity for a selection nobody approved."
         },
         "corpus_kind": { "$ref": "#/$defs/corpusKind" },
-        "members": {
+        "selection_record_sha256": { "$ref": "#/$defs/hex64", "description": "SHA-256 of the approved selection record's bytes, so the citation is checkable against the selection itself." },
+        "ben_approval_id": { "$ref": "#/$defs/hex64", "description": "Content ID of Ben's approval of that selection." },
+        "transactions": {
           "type": "array",
           "minItems": 1,
-          "description": "Ordered by deal_key, no duplicates. The member set equals the deal documents in the package exactly.",
+          "description": "Ordered by transaction_id with the unkeyed group, if any, last. Document admission records sit UNDER their transaction: one transaction may carry several documents (Q-0002 section 5). No deal_key appears under more than one transaction, and the documents across all transactions are exactly the deal documents in the package.",
           "items": {
             "type": "object",
             "unevaluatedProperties": false,
-            "required": [
-              "deal_key", "transaction_id", "source_system", "issuer_cik", "accession",
-              "document_role_key", "agreement_id", "canonical_text_sha256",
-              "source_admission_manifest_id", "admission_receipt_id"
-            ],
+            "required": ["transaction_id", "documents"],
             "properties": {
-              "deal_key": { "$ref": "#/$defs/hex64" },
-              "transaction_id": { "$ref": "#/$defs/transactionId" },
-              "source_system": { "const": "SEC_EDGAR" },
-              "issuer_cik": { "$ref": "#/$defs/cik" },
-              "accession": { "$ref": "#/$defs/accession" },
-              "document_role_key": { "$ref": "#/$defs/roleKey" },
-              "agreement_id": { "$ref": "#/$defs/hex64" },
-              "canonical_text_sha256": { "$ref": "#/$defs/hex64" },
-              "source_admission_manifest_id": { "$ref": "#/$defs/hex64" },
-              "admission_receipt_id": { "$ref": "#/$defs/hex64" }
+              "transaction_id": {
+                "$ref": "#/$defs/transactionId",
+                "description": "At most one transaction group may be unkeyed (null), holding documents the consumer has not yet keyed. A package containing one cannot be PUBLIC."
+              },
+              "documents": {
+                "type": "array",
+                "minItems": 1,
+                "description": "Ordered by deal_key.",
+                "items": {
+                  "type": "object",
+                  "unevaluatedProperties": false,
+                  "required": [
+                    "deal_key", "source_system", "issuer_cik", "accession", "document_role_key",
+                    "sec_document_name", "sec_document_sequence", "agreement_id",
+                    "canonical_text_sha256", "source_admission_manifest_id", "admission_receipt_id"
+                  ],
+                  "properties": {
+                    "deal_key": { "$ref": "#/$defs/hex64" },
+                    "source_system": { "const": "SEC_EDGAR" },
+                    "issuer_cik": { "$ref": "#/$defs/cik" },
+                    "accession": { "$ref": "#/$defs/accession" },
+                    "document_role_key": { "$ref": "#/$defs/roleKey" },
+                    "sec_document_name": {
+                      "oneOf": [{ "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" }, { "type": "null" }]
+                    },
+                    "sec_document_sequence": { "oneOf": [{ "type": "integer", "minimum": 1 }, { "type": "null" }] },
+                    "agreement_id": { "$ref": "#/$defs/hex64" },
+                    "canonical_text_sha256": { "$ref": "#/$defs/hex64" },
+                    "source_admission_manifest_id": { "$ref": "#/$defs/hex64" },
+                    "admission_receipt_id": { "$ref": "#/$defs/hex64" }
+                  }
+                }
+              }
             }
           }
         },
         "counts": {
           "type": "object",
           "unevaluatedProperties": false,
-          "required": ["member_count"],
-          "properties": { "member_count": { "type": "integer", "minimum": 1 } }
+          "required": ["transaction_count", "document_count"],
+          "properties": {
+            "transaction_count": { "type": "integer", "minimum": 1 },
+            "document_count": { "type": "integer", "minimum": 1 }
+          }
         }
       },
       "allOf": [
         {
           "if": { "properties": { "corpus_kind": { "const": "ONE_DEAL" } }, "required": ["corpus_kind"] },
-          "then": { "properties": { "members": { "minItems": 1, "maxItems": 1 } } }
+          "then": { "properties": { "transactions": { "minItems": 1, "maxItems": 1 } } }
         },
         {
           "if": { "properties": { "corpus_kind": { "const": "FIVE_DEAL" } }, "required": ["corpus_kind"] },
-          "then": { "properties": { "members": { "minItems": 5, "maxItems": 5 } } }
+          "then": { "properties": { "transactions": { "minItems": 5, "maxItems": 5 } } }
+        },
+        {
+          "if": { "properties": { "corpus_kind": { "const": "SHARED_50_PROOF" } }, "required": ["corpus_kind"] },
+          "then": { "properties": { "transactions": { "minItems": 50, "maxItems": 50 } } }
         }
       ]
     }

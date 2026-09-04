@@ -1,46 +1,55 @@
 {
   "schema_version": "DEAL_TERMS_RELEASE_MANIFEST/V1",
-  "package_schema_version": "1.1.0",
-  "production_release_id": "e39e11f6af76fc12bd9fc814a2100a77c08246efc14ab583dc52a0ad7385fc71",
+  "package_schema_version": "1.2.0",
+  "production_release_id": "7f480b87ed66d852a9ab668183970d8056df01182839c77831f5be696b9b5a39",
+  "supersedes_release_manifest_id": null,
+  "release_sequence": 1,
   "producer_commit": "0000000000000000000000000000000000000000",
   "release_state": "REVIEW_ONLY_INTERNAL",
   "public": false,
   "released_at": "2026-09-03T00:00:00Z",
   "corpus": {
-    "corpus_id": "00156d52f04476a8c8a2e2954fa2c55a2d4f2a0d10078392c40fb13aa3915728",
+    "corpus_id": "78b9b6b3a79d64109308528117f956ea2028e1ad6387470557a8c1e7bbe8b110",
     "corpus_kind": "ONE_DEAL",
-    "corpus_manifest_id": "861023728526550821bae35af20521bf6c7126358944d5478ad4bb312dfa5bdb",
+    "corpus_manifest_id": "d5c9a5b45ccdde8cba95bdae9442ea282ac013323796972450b8e2962fac82a9",
     "corpus_manifest_path": "corpus/corpus-manifest.json"
   },
   "deals": [
     {
       "deal_key": "42d649f09bb9c35baa0940368e38aa9d0b9472c84a3e9509ee5342e65ac3e265",
-      "deal_document_id": "c4201fada85b583146d55648fca333c03650f5296fd762caec6a12ca75ab28e4",
-      "path": "deals/42d649f09bb9c35baa0940368e38aa9d0b9472c84a3e9509ee5342e65ac3e265/deal.json"
+      "deal_document_id": "989af01005eb0067cda83e26174d5ef6ebde04bd332e46b085933fb963d35797",
+      "path": "deals/42d649f09bb9c35baa0940368e38aa9d0b9472c84a3e9509ee5342e65ac3e265/deal.json",
+      "source_units_path": "source_units/42d649f09bb9c35baa0940368e38aa9d0b9472c84a3e9509ee5342e65ac3e265.json"
     }
   ],
   "files": [
     {
       "path": "corpus/corpus-manifest.json",
-      "sha256": "b78831445a462fc931d9cf86a4574d33ee1f333eea572f6731d8b4b837e8f5b9",
-      "byte_length": 1063
+      "sha256": "9a17635be9bef1f6e03760039fc48f338fc8ad9d7f69d08e88d8364e7e21ffff",
+      "byte_length": 1467
     },
     {
       "path": "deals/42d649f09bb9c35baa0940368e38aa9d0b9472c84a3e9509ee5342e65ac3e265/deal.json",
-      "sha256": "c4da014f4b0c6fe7f0c93a9267cc8faacf8784db9d715dec284b89c115afe893",
-      "byte_length": 10259
+      "sha256": "bfb0841bea582070d127d877a60e7c97f5278fbfa526d5a24c650629508a054f",
+      "byte_length": 16718
+    },
+    {
+      "path": "source_units/42d649f09bb9c35baa0940368e38aa9d0b9472c84a3e9509ee5342e65ac3e265.json",
+      "sha256": "4b7aeda6087e11837722a38f7470bf788c524c7a9834365d77b701910ba74647",
+      "byte_length": 4328
     },
     {
       "path": "verify.mjs",
-      "sha256": "965e95f56966aa6a3ceb9568dcf81d412a46cd8f22c2d8a1742f9f0cd0862768",
-      "byte_length": 50541
+      "sha256": "c47f9254b5b3ef9da25903493701cead9034c5c0410bfd13ba12f79e8a9504e6",
+      "byte_length": 68391
     }
   ],
   "counts": {
     "deals": 1,
-    "files": 3,
-    "claims": 3,
-    "category_summaries": 1
+    "files": 4,
+    "claims": 4,
+    "category_summaries": 1,
+    "source_units": 4
   },
-  "release_manifest_id": "c822c42fb7e0767e3a64a675a941f98facf0d9f7450822953c90805e76d765f1"
+  "release_manifest_id": "93e0a29e2d265ace05ef2553d404770f944fddbebf65bab145c577f45f89c405"
 }

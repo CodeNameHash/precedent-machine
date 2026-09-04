@@ -114,11 +114,12 @@ export function assertIdRuleSelfTest() {
  * 2. The closed vocabulary of v1      *
  * ---------------------------------- */
 
-// Semantic version of the package contract. 1.0.0 was draft 1
-// (then spelled 'DEAL_TERMS_PACKAGE/V1'); 1.1.0 adds transaction_id and the
-// typed field quartet, both additively. A consumer refuses a major it does
-// not implement.
-export const PACKAGE_SCHEMA_VERSION = '1.1.0';
+// Semantic version of the package contract. 1.0.0 was draft 1 (then spelled
+// 'DEAL_TERMS_PACKAGE/V1'); 1.1.0 added transaction_id and the typed field
+// quartet; 1.2.0 adds fact_state, source units, limitations, release lineage
+// and the transaction-shaped corpus. A consumer refuses a major it does not
+// implement.
+export const PACKAGE_SCHEMA_VERSION = '1.2.0';
 export const PACKAGE_SCHEMA_VERSION_RE = /^[0-9]+\.[0-9]+\.[0-9]+$/;
 
 export const DOMAIN = Object.freeze({
@@ -126,7 +127,7 @@ export const DOMAIN = Object.freeze({
   CLAIM_REVISION: 'DEAL_TERMS_CLAIM_REVISION/V1',
   CATEGORY_SUMMARY: 'DEAL_TERMS_CATEGORY_SUMMARY/V1',
   DEAL_DOCUMENT: 'DEAL_TERMS_DEAL_DOCUMENT/V1',
-  CORPUS_ID: 'DEAL_TERMS_CORPUS_ID/V1',
+  SOURCE_UNIT_SET: 'DEAL_TERMS_SOURCE_UNIT_SET/V1',
   CORPUS_MANIFEST: 'DEAL_TERMS_CORPUS_MANIFEST/V1',
   RELEASE_MANIFEST: 'DEAL_TERMS_RELEASE_MANIFEST/V1',
 });
@@ -266,6 +267,21 @@ export function rollUpReviewState(states) {
   return 'NO_COMPARISON';
 }
 
+// Q-0002 section 1, ruled in A-0006 section 1. A field's semantic state is
+// distinct from its owning claim's review state: a resolved claim can carry a
+// field that is genuinely absent from the clause, and "absent" must never be
+// read as "zero" or "not extracted".
+export const FACT_STATES = Object.freeze([
+  'PRESENT', 'ABSENT', 'NOT_APPLICABLE', 'NOT_EXAMINED', 'FAILED',
+]);
+
+// The provenance kinds a context span may carry, from the re-plan's source
+// closure: the parent chain up to SECTION, the governing chapeau, and the
+// Article chapeau for representations.
+export const CONTEXT_SPAN_KINDS = Object.freeze([
+  'PARENT_CHAIN', 'GOVERNING_CHAPEAU', 'ARTICLE_CHAPEAU',
+]);
+
 export const CORPUS_KINDS = Object.freeze(['ONE_DEAL', 'FIVE_DEAL', 'SHARED_50_PROOF', 'PUBLIC']);
 export const RELEASE_STATES = Object.freeze([
   'REVIEW_ONLY_INTERNAL', 'LEGAL_GATE_PASSED_INTERNAL', 'PUBLIC',
@@ -277,18 +293,29 @@ export const CIK_RE = /^[0-9]{10}$/;
 export const ACCESSION_RE = /^[0-9]{10}-[0-9]{2}-[0-9]{6}$/;
 export const ROLE_KEY_RE = /^[A-Z][A-Z0-9_]{1,63}$/;
 export const REASON_CODE_RE = /^[A-Z][A-Z0-9_]{2,63}$/;
-export const PACKAGE_PATH_RE = /^(?:verify\.mjs|corpus\/corpus-manifest\.json|deals\/[0-9a-f]{64}\/deal\.json)$/;
+export const PACKAGE_PATH_RE = /^(?:verify\.mjs|corpus\/corpus-manifest\.json|deals\/[0-9a-f]{64}\/deal\.json|source_units\/[0-9a-f]{64}\.json)$/;
 export const CLASSIFICATION_LEVEL_RE = /^(?:APPLIES_TO|PROVISION_TYPE|SUB_PROVISION_TYPE|NESTED_SUBTYPE(?:_[0-9]+)?)$/;
 export const COORDINATE_SYSTEM = 'UTF8_CANONICAL_TEXT_HALF_OPEN';
 
 // Fields whose values are package-relative paths and are therefore exempt from
 // the forbidden-path scan. Every other string in the package is scanned.
-const PATH_FIELDS = new Set(['path', 'corpus_manifest_path']);
+const PATH_FIELDS = new Set(['path', 'corpus_manifest_path', 'source_units_path']);
 
-// The only identifiers that may be null. transaction_id is minted by the
-// consumer and supplied through the corpus manifest; a deal the consumer has
-// not keyed yet exports as null, and such a package can never be PUBLIC.
-const NULLABLE_ID_FIELDS = new Set(['transaction_id']);
+// The SEC document name is a filing-side document name, not a producer path.
+// Q-0002 section 2 needs it to open the exact admitted document, so it is a
+// deliberate, bounded exemption from the file-name scan and is validated
+// positively by SEC_DOCUMENT_NAME_RE instead.
+const SEC_LOCATOR_FIELDS = new Set(['sec_document_name']);
+export const SEC_DOCUMENT_NAME_RE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/;
+
+// The only identifiers that may be null, each for a reason the contract states.
+// transaction_id: minted by the consumer and supplied through the corpus
+// manifest, so a deal it has not keyed exports as null and cannot be PUBLIC.
+// examined_source_unit_id: carried only by an ABSENT field.
+// supersedes_release_manifest_id: null for the first release of a corpus.
+const NULLABLE_ID_FIELDS = new Set([
+  'transaction_id', 'examined_source_unit_id', 'supersedes_release_manifest_id',
+]);
 
 const FORBIDDEN_VALUE_PATTERNS = Object.freeze([
   [/(?:^|[\s"'(=])(?:\.{1,2}\/|~\/)/, 'relative filesystem path'],
@@ -385,7 +412,7 @@ function walk(root, relativeDir = '') {
 
 function scanForbidden(report, value, where, keyName = null) {
   if (typeof value === 'string') {
-    if (keyName !== null && PATH_FIELDS.has(keyName)) return;
+    if (keyName !== null && (PATH_FIELDS.has(keyName) || SEC_LOCATOR_FIELDS.has(keyName))) return;
     for (const [pattern, label] of FORBIDDEN_VALUE_PATTERNS) {
       if (pattern.test(value)) {
         report.check(false, where, `forbidden content in a package (${label}): ${JSON.stringify(value.slice(0, 120))}`);
@@ -399,7 +426,7 @@ function scanForbidden(report, value, where, keyName = null) {
   }
   if (isPlain(value)) {
     for (const key of Object.keys(value)) {
-      if (!PATH_FIELDS.has(key)) {
+      if (!PATH_FIELDS.has(key) && !SEC_LOCATOR_FIELDS.has(key)) {
         for (const [pattern, label] of FORBIDDEN_KEY_PATTERNS) {
           if (pattern.test(key)) {
             report.check(false, `${where}.${key}`, `forbidden field name in a package (${label})`);
@@ -428,12 +455,23 @@ function scanForbidden(report, value, where, keyName = null) {
 const CLAIM_KEYS = [
   'claim_occurrence_id', 'claim_revision_id', 'family_key', 'claim_definition_key',
   'classification_levels', 'section_reference', 'state', 'reason_codes',
-  'fields', 'source',
+  'limitation', 'fields', 'source',
 ];
 const CLAIM_BODY_KEYS = CLAIM_KEYS.filter((key) => key !== 'claim_revision_id');
 const STATE_KEYS = ['extraction_state', 'source_quality', 'review_state'];
-const FIELD_KEYS = ['field_key', 'label', 'value_type', 'typed_value', 'unit', 'sort_value',
-  'rendered_value', 'rendered_value_digest', 'typed_value_digest'];
+const FIELD_KEYS = [
+  'field_key', 'label', 'fact_state', 'value_type', 'typed_value', 'unit', 'sort_value',
+  'evidence_spans', 'examined_source_unit_id', 'reason_code',
+  'rendered_value', 'rendered_value_digest', 'typed_value_digest',
+];
+const EVIDENCE_SPAN_KEYS = ['source_unit_id', 'start_byte', 'end_byte', 'text_sha256', 'excerpt_text'];
+const LIMITATION_KEYS = ['code', 'text', 'ruling_id'];
+const SOURCE_UNIT_KEYS = [
+  'node_occurrence_id', 'heading_or_reference', 'document_order',
+  'start_byte', 'end_byte', 'text_sha256', 'text', 'context_spans',
+];
+const CONTEXT_SPAN_KEYS = ['kind', 'node_occurrence_id', 'start_byte', 'end_byte', 'text_sha256', 'text'];
+const SOURCE_UNIT_SET_KEYS = ['schema_version', 'source_unit_set_id', 'deal_key', 'units', 'counts'];
 const SPAN_KEYS = ['node_occurrence_id', 'start_byte', 'end_byte', 'text_sha256', 'excerpt_text'];
 const SOURCE_KEYS = ['node_occurrence_ids', 'coordinate_system', 'spans'];
 const CATEGORY_KEYS = [
@@ -446,25 +484,31 @@ const PROVENANCE_KEYS = [
   'coordinate_system', 'immutable_source_document_id', 'source_response_content_id',
   'source_admission_manifest_id', 'admission_receipt_id', 'raw_source_sha256',
   'raw_source_byte_length', 'retrieval_url_sha256',
+  'sec_document_name', 'sec_document_sequence',
 ];
 const DEAL_IDENTITY_KEYS = ['source_system', 'issuer_cik', 'accession', 'document_role_key'];
 const DEAL_DOCUMENT_KEYS = [
   'schema_version', 'deal_document_id', 'deal_key', 'transaction_id', 'deal_identity',
-  'provenance', 'claims', 'category_summaries', 'counts',
+  'provenance', 'source_unit_set_id', 'claims', 'category_summaries', 'counts',
 ];
 const DEAL_DOCUMENT_BODY_KEYS = DEAL_DOCUMENT_KEYS.filter((key) => key !== 'deal_document_id');
-const CORPUS_MEMBER_KEYS = [
-  'deal_key', 'transaction_id', 'source_system', 'issuer_cik', 'accession',
-  'document_role_key', 'agreement_id', 'canonical_text_sha256',
+// A document admission record. It sits under its transaction, never beside it:
+// a transaction may carry several documents (Q-0002 section 5).
+const CORPUS_DOCUMENT_KEYS = [
+  'deal_key', 'source_system', 'issuer_cik', 'accession', 'document_role_key',
+  'sec_document_name', 'sec_document_sequence', 'agreement_id', 'canonical_text_sha256',
   'source_admission_manifest_id', 'admission_receipt_id',
 ];
+const CORPUS_TRANSACTION_KEYS = ['transaction_id', 'documents'];
 const CORPUS_MANIFEST_KEYS = [
-  'schema_version', 'corpus_manifest_id', 'corpus_id', 'corpus_kind', 'members', 'counts',
+  'schema_version', 'corpus_manifest_id', 'corpus_id', 'corpus_kind',
+  'selection_record_sha256', 'ben_approval_id', 'transactions', 'counts',
 ];
 const CORPUS_MANIFEST_BODY_KEYS = CORPUS_MANIFEST_KEYS.filter((key) => key !== 'corpus_manifest_id');
 const MANIFEST_KEYS = [
   'schema_version', 'package_schema_version', 'release_manifest_id', 'production_release_id',
-  'producer_commit', 'release_state', 'public', 'released_at', 'corpus', 'deals', 'files', 'counts',
+  'supersedes_release_manifest_id', 'release_sequence', 'producer_commit', 'release_state',
+  'public', 'released_at', 'corpus', 'deals', 'files', 'counts',
 ];
 const MANIFEST_BODY_KEYS = MANIFEST_KEYS.filter((key) => key !== 'release_manifest_id');
 
@@ -481,7 +525,13 @@ export const RECORD_KEYS = Object.freeze({
   provenance: Object.freeze([...PROVENANCE_KEYS].sort()),
   dealIdentity: Object.freeze([...DEAL_IDENTITY_KEYS].sort()),
   dealDocument: Object.freeze([...DEAL_DOCUMENT_KEYS].sort()),
-  corpusMember: Object.freeze([...CORPUS_MEMBER_KEYS].sort()),
+  corpusDocument: Object.freeze([...CORPUS_DOCUMENT_KEYS].sort()),
+  corpusTransaction: Object.freeze([...CORPUS_TRANSACTION_KEYS].sort()),
+  evidenceSpan: Object.freeze([...EVIDENCE_SPAN_KEYS].sort()),
+  limitation: Object.freeze([...LIMITATION_KEYS].sort()),
+  sourceUnit: Object.freeze([...SOURCE_UNIT_KEYS].sort()),
+  contextSpan: Object.freeze([...CONTEXT_SPAN_KEYS].sort()),
+  sourceUnitSet: Object.freeze([...SOURCE_UNIT_SET_KEYS].sort()),
   corpusManifest: Object.freeze([...CORPUS_MANIFEST_KEYS].sort()),
   releaseManifest: Object.freeze([...MANIFEST_KEYS].sort()),
 });
@@ -495,14 +545,82 @@ export function dealKeyOf(identity) {
   });
 }
 
-export function corpusIdOf(corpusKind, dealKeys) {
-  return contentId(DOMAIN.CORPUS_ID, {
-    corpus_kind: corpusKind,
-    member_deal_keys: [...dealKeys].sort(),
-  });
+// There is deliberately no corpusIdOf(). A-0006 ruling 5: corpus_id is the
+// content ID of Ben's approved transaction-selection record and is NEVER
+// recomputed from the document keys in a package. Deriving it here would let a
+// package mint a corpus identity for a selection nobody approved.
+
+// One half-open UTF-8 byte span whose quoted text is bound to both its width
+// and its SHA-256. Used for source-unit extents, context spans and per-field
+// evidence spans alike, so the byte rule is stated once.
+function verifySpanText(report, span, at) {
+  report.check(Number.isInteger(span.start_byte) && span.start_byte >= 0,
+    `${at}.start_byte`, 'must be a non-negative integer');
+  report.check(Number.isInteger(span.end_byte) && span.end_byte > span.start_byte,
+    `${at}.end_byte`, 'must exceed start_byte (half-open)');
+  const text = span.text !== undefined ? span.text : span.excerpt_text;
+  report.equal(safely(() => utf8ByteLength(text)), span.end_byte - span.start_byte, at,
+    'text UTF-8 byte length does not equal the span width');
+  report.equal(safely(() => sha256Hex(String(text))), span.text_sha256, at,
+    'text_sha256 does not match SHA-256 of the text');
 }
 
-function verifyClaim(report, claim, where) {
+// A deal's source-unit set: the full canonical text of every governed
+// authored unit, with its context spans. Q-0002 section 2, A-0006 ruling 2.
+function verifySourceUnitSet(report, set, dealKey, where) {
+  if (!exactKeys(report, set, SOURCE_UNIT_SET_KEYS, where)) return new Map();
+  report.equal(set.schema_version, 'DEAL_TERMS_SOURCE_UNIT_SET/V1', where, 'wrong schema version');
+  report.equal(set.deal_key, dealKey, `${where}.deal_key`, 'source unit set names another deal');
+  const units = Array.isArray(set.units) ? set.units : [];
+  report.check(units.length > 0, `${where}.units`, 'a source unit set must not be empty');
+  const byId = new Map();
+  const orders = [];
+  units.forEach((unit, index) => {
+    const at = `${where}.units[${index}]`;
+    if (!exactKeys(report, unit, SOURCE_UNIT_KEYS, at)) return;
+    report.check(HEX64_RE.test(unit.node_occurrence_id), `${at}.node_occurrence_id`, 'must be 64-hex');
+    report.check(typeof unit.heading_or_reference === 'string' && unit.heading_or_reference.length > 0,
+      `${at}.heading_or_reference`, 'must be non-empty text');
+    report.check(Number.isInteger(unit.document_order) && unit.document_order >= 0,
+      `${at}.document_order`, 'must be a non-negative integer');
+    verifySpanText(report, unit, at);
+    report.check(!byId.has(unit.node_occurrence_id), at, 'duplicate node_occurrence_id in the set');
+    byId.set(unit.node_occurrence_id, unit);
+    orders.push(unit.document_order);
+    const contexts = Array.isArray(unit.context_spans) ? unit.context_spans : [];
+    report.check(Array.isArray(unit.context_spans), `${at}.context_spans`, 'must be an array');
+    contexts.forEach((context, contextIndex) => {
+      const contextAt = `${at}.context_spans[${contextIndex}]`;
+      if (!exactKeys(report, context, CONTEXT_SPAN_KEYS, contextAt)) return;
+      report.check(CONTEXT_SPAN_KINDS.includes(context.kind), `${contextAt}.kind`,
+        'not a context provenance kind');
+      report.check(HEX64_RE.test(context.node_occurrence_id), `${contextAt}.node_occurrence_id`,
+        'must be 64-hex');
+      verifySpanText(report, context, contextAt);
+    });
+  });
+  report.check(canonicalJson(orders) === canonicalJson([...orders].sort((a, b) => a - b)),
+    `${where}.units`, 'units must be ordered by document_order');
+  report.check(new Set(orders).size === orders.length, `${where}.units`,
+    'two units share a document_order');
+  report.check(
+    canonicalJson(set.counts) === canonicalJson({
+      units: units.length,
+      context_spans: units.reduce(
+        (total, unit) => total + (Array.isArray(unit.context_spans) ? unit.context_spans.length : 0), 0,
+      ),
+    }),
+    `${where}.counts`, 'counts do not match the units',
+  );
+  report.equal(
+    safely(() => contentId(DOMAIN.SOURCE_UNIT_SET, withoutKey(set, 'source_unit_set_id'))),
+    set.source_unit_set_id, `${where}.source_unit_set_id`,
+    'does not match the content ID of the source unit set',
+  );
+  return byId;
+}
+
+function verifyClaim(report, claim, where, sourceUnits) {
   if (!exactKeys(report, claim, CLAIM_KEYS, where)) return;
   report.check(FAMILY_KEYS.includes(claim.family_key), `${where}.family_key`, 'not a registered family key');
   report.check(HEX64_RE.test(claim.claim_occurrence_id), `${where}.claim_occurrence_id`, 'must be 64-hex');
@@ -553,7 +671,24 @@ function verifyClaim(report, claim, where) {
     });
   }
 
-  // Display fields, with their rendered-value digest re-derived.
+  // Limitation: required on APPROVED_LIMITED, forbidden otherwise (A-0006 ruling 3).
+  const isLimited = isPlain(claim.state) && claim.state.review_state === 'APPROVED_LIMITED';
+  if (isLimited) {
+    if (exactKeys(report, claim.limitation, LIMITATION_KEYS, `${where}.limitation`)) {
+      report.check(typeof claim.limitation.code === 'string' && REASON_CODE_RE.test(claim.limitation.code),
+        `${where}.limitation.code`, 'must be a governed upper-snake limitation code');
+      report.check(typeof claim.limitation.text === 'string' && claim.limitation.text.length > 0,
+        `${where}.limitation.text`, 'must carry the text from the ruling record');
+      report.check(typeof claim.limitation.ruling_id === 'string' && HEX64_RE.test(claim.limitation.ruling_id),
+        `${where}.limitation.ruling_id`, 'must be the 64-hex ID of the ruling record');
+    }
+  } else {
+    report.check(claim.limitation === null, `${where}.limitation`,
+      'only an APPROVED_LIMITED claim carries a limitation');
+  }
+
+  // Display fields. Each carries a semantic fact_state that is independent of
+  // the owning claim's review state (A-0006 ruling 1).
   report.check(Array.isArray(claim.fields), `${where}.fields`, 'must be an array');
   if (Array.isArray(claim.fields)) {
     claim.fields.forEach((field, index) => {
@@ -562,20 +697,85 @@ function verifyClaim(report, claim, where) {
       report.check(typeof field.rendered_value === 'string', `${at}.rendered_value`, 'must be a string');
       report.equal(safely(() => sha256Hex(String(field.rendered_value))), field.rendered_value_digest, at,
         'rendered_value_digest does not match SHA-256 of rendered_value');
-      report.check(HEX64_RE.test(field.typed_value_digest), `${at}.typed_value_digest`, 'must be 64-hex');
+      if (!report.check(FACT_STATES.includes(field.fact_state), `${at}.fact_state`,
+        'not in the fact-state vocabulary')) return;
       if (!report.check(FACT_VALUE_TYPES.includes(field.value_type), `${at}.value_type`,
         'not in the producer value-type vocabulary')) return;
-      const problem = safely(() => typedValueProblem(field.value_type, field.typed_value));
-      if (!report.check(problem === null, `${at}.typed_value`, String(problem))) return;
-      // typed_value is carried, so its digest is now re-derivable rather than asserted.
+
+      const present = field.fact_state === 'PRESENT';
+      const spans = Array.isArray(field.evidence_spans) ? field.evidence_spans : [];
+      report.check(Array.isArray(field.evidence_spans), `${at}.evidence_spans`, 'must be an array');
+
+      if (present) {
+        // PRESENT needs a value and evidence. Zero and false are values.
+        report.check(field.typed_value !== null, `${at}.typed_value`,
+          'PRESENT requires a non-null typed_value (zero and false are PRESENT)');
+        report.check(spans.length > 0, `${at}.evidence_spans`,
+          'PRESENT requires at least one evidence span');
+        if (field.typed_value !== null) {
+          const problem = safely(() => typedValueProblem(field.value_type, field.typed_value));
+          if (!report.check(problem === null, `${at}.typed_value`, String(problem))) return;
+          report.equal(safely(() => canonicalJson(unitFor(field.value_type, field.typed_value))),
+            safely(() => canonicalJson(field.unit)), `${at}.unit`,
+            'unit is not the unit this value type carries');
+          report.equal(safely(() => canonicalJson(sortValueFor(field.value_type, field.typed_value))),
+            safely(() => canonicalJson(field.sort_value)), `${at}.sort_value`,
+            'sort_value is not the deterministic derivation from typed_value');
+        }
+      } else {
+        // Every other state carries no value, no unit, no order and no evidence.
+        report.check(field.typed_value === null, `${at}.typed_value`,
+          `${field.fact_state} requires typed_value null`);
+        report.check(field.unit === null, `${at}.unit`, `${field.fact_state} requires unit null`);
+        report.check(field.sort_value === null, `${at}.sort_value`,
+          `${field.fact_state} requires sort_value null`);
+        report.check(spans.length === 0, `${at}.evidence_spans`,
+          `${field.fact_state} carries no evidence span`);
+      }
+
+      // The digest stays re-derivable in every state, including null.
       report.equal(safely(() => sha256Hex(canonicalJson(field.typed_value))), field.typed_value_digest, at,
         'typed_value_digest does not match SHA-256 of canonicalJson(typed_value)');
-      report.equal(safely(() => canonicalJson(unitFor(field.value_type, field.typed_value))),
-        safely(() => canonicalJson(field.unit)), `${at}.unit`,
-        'unit is not the unit this value type carries');
-      report.equal(safely(() => canonicalJson(sortValueFor(field.value_type, field.typed_value))),
-        safely(() => canonicalJson(field.sort_value)), `${at}.sort_value`,
-        'sort_value is not the deterministic derivation from typed_value');
+
+      // ABSENT must say which unit was examined; that is what makes it a finding.
+      if (field.fact_state === 'ABSENT') {
+        report.check(typeof field.examined_source_unit_id === 'string'
+          && HEX64_RE.test(field.examined_source_unit_id), `${at}.examined_source_unit_id`,
+          'ABSENT requires the id of the source unit that was examined');
+      } else {
+        report.check(field.examined_source_unit_id === null, `${at}.examined_source_unit_id`,
+          'only ABSENT carries an examined source unit');
+      }
+      if (typeof field.examined_source_unit_id === 'string') {
+        report.check(sourceUnits.has(field.examined_source_unit_id), `${at}.examined_source_unit_id`,
+          'references a source unit that is not in this deal\'s source unit set');
+      }
+
+      // NOT_APPLICABLE must carry a governed reason code.
+      if (field.fact_state === 'NOT_APPLICABLE') {
+        report.check(typeof field.reason_code === 'string' && REASON_CODE_RE.test(field.reason_code),
+          `${at}.reason_code`, 'NOT_APPLICABLE requires a governed reason code');
+      } else {
+        report.check(field.reason_code === null, `${at}.reason_code`,
+          'only NOT_APPLICABLE carries a reason code');
+      }
+
+      // FAILED is only legal under a REVIEW_ONLY claim that says why.
+      if (field.fact_state === 'FAILED') {
+        report.check(isPlain(claim.state) && claim.state.review_state === 'REVIEW_ONLY', at,
+          'FAILED requires the owning claim to be REVIEW_ONLY');
+        report.check(Array.isArray(claim.reason_codes) && claim.reason_codes.length > 0, at,
+          'FAILED requires the owning claim to carry issue codes');
+      }
+
+      spans.forEach((span, spanIndex) => {
+        const spanAt = `${at}.evidence_spans[${spanIndex}]`;
+        if (!exactKeys(report, span, EVIDENCE_SPAN_KEYS, spanAt)) return;
+        report.check(HEX64_RE.test(span.source_unit_id), `${spanAt}.source_unit_id`, 'must be 64-hex');
+        report.check(sourceUnits.has(span.source_unit_id), `${spanAt}.source_unit_id`,
+          'references a source unit that is not in this deal\'s source unit set');
+        verifySpanText(report, span, spanAt);
+      });
     });
   }
 
@@ -601,6 +801,8 @@ function verifyClaim(report, claim, where) {
         'text_sha256 does not match SHA-256 of excerpt_text');
       report.check(declared.includes(span.node_occurrence_id), at,
         'span node_occurrence_id is not declared in source.node_occurrence_ids');
+      report.check(sourceUnits.has(span.node_occurrence_id), at,
+        'span references a source unit that is not in this deal\'s source unit set');
     });
     report.check(
       canonicalJson([...declared].sort()) === canonicalJson([...seen].sort()),
@@ -654,10 +856,12 @@ function verifyCategorySummary(report, summary, claimsByOccurrence, where) {
     'does not match the content ID of the summary record',
   );
   void CATEGORY_BODY_KEYS;
-  return `${summary.family_key} ${canonicalJson(summary.classification_path)}`;
+  // Separator: family keys are upper-snake and the JSON half starts with '[',
+  // so the first space is always the boundary.
+  return `${summary.family_key} ${canonicalJson(summary.classification_path)}`;
 }
 
-function verifyDealDocument(report, document, where) {
+function verifyDealDocument(report, document, where, sourceUnits) {
   if (!exactKeys(report, document, DEAL_DOCUMENT_KEYS, where)) return null;
   report.equal(document.schema_version, 'DEAL_TERMS_DEAL_DOCUMENT/V1', where, 'wrong schema version');
 
@@ -691,14 +895,29 @@ function verifyDealDocument(report, document, where) {
       report.check(Number.isInteger(document.provenance[key]) && document.provenance[key] > 0,
         `${where}.provenance.${key}`, 'must be a positive integer');
     }
+    // The document locator, from the admitted-source receipt. Null where the
+    // receipt did not record it; a package with any null cannot be PUBLIC.
+    report.check(document.provenance.sec_document_name === null
+      || (typeof document.provenance.sec_document_name === 'string'
+        && SEC_DOCUMENT_NAME_RE.test(document.provenance.sec_document_name)),
+      `${where}.provenance.sec_document_name`,
+      'must be a bounded SEC document name with no path separator, or null');
+    report.check(document.provenance.sec_document_sequence === null
+      || (Number.isInteger(document.provenance.sec_document_sequence)
+        && document.provenance.sec_document_sequence >= 1),
+      `${where}.provenance.sec_document_sequence`, 'must be a positive integer or null');
   }
+
+  report.check(typeof document.source_unit_set_id === 'string'
+    && HEX64_RE.test(document.source_unit_set_id), `${where}.source_unit_set_id`,
+    'must be the 64-hex ID of this deal\'s source unit set');
 
   report.check(Array.isArray(document.claims) && document.claims.length > 0, `${where}.claims`,
     'a deal document must carry at least one claim');
   const claims = Array.isArray(document.claims) ? document.claims : [];
   const byOccurrence = new Map();
   claims.forEach((claim, index) => {
-    verifyClaim(report, claim, `${where}.claims[${index}]`);
+    verifyClaim(report, claim, `${where}.claims[${index}]`, sourceUnits);
     if (isPlain(claim) && typeof claim.claim_occurrence_id === 'string') {
       report.check(!byOccurrence.has(claim.claim_occurrence_id), `${where}.claims[${index}]`,
         'duplicate claim_occurrence_id: one package carries one revision per occurrence');
@@ -725,11 +944,11 @@ function verifyDealDocument(report, document, where) {
   for (const claim of claims) {
     if (!isPlain(claim) || !isPlain(claim.state) || claim.state.review_state === 'NO_OUTPUT') continue;
     if (!Array.isArray(claim.classification_levels)) continue;
-    required.add(`${claim.family_key} ${canonicalJson(claim.classification_levels.slice(1).map((l) => l.value))}`);
+    required.add(`${claim.family_key} ${canonicalJson(claim.classification_levels.slice(1).map((l) => l.value))}`);
   }
   for (const key of required) {
     report.check(summarised.has(key), `${where}.category_summaries`,
-      `no summary for category ${key.replace(' ', ' ')}`);
+      `no summary for category ${key}`);
   }
 
   const counts = {
@@ -757,56 +976,104 @@ function verifyCorpusManifest(report, corpus, dealDocuments, where) {
   if (!exactKeys(report, corpus, CORPUS_MANIFEST_KEYS, where)) return;
   report.equal(corpus.schema_version, 'DEAL_TERMS_CORPUS_MANIFEST/V1', where, 'wrong schema version');
   report.check(CORPUS_KINDS.includes(corpus.corpus_kind), `${where}.corpus_kind`, 'not a corpus kind');
-  const members = Array.isArray(corpus.members) ? corpus.members : [];
-  report.check(members.length > 0, `${where}.members`, 'a corpus manifest must have members');
-  members.forEach((member, index) => {
-    const at = `${where}.members[${index}]`;
-    if (!exactKeys(report, member, CORPUS_MEMBER_KEYS, at)) return;
-    report.check(CIK_RE.test(member.issuer_cik), `${at}.issuer_cik`, 'must be a zero-padded 10-digit CIK');
-    report.check(ACCESSION_RE.test(member.accession), `${at}.accession`, 'must match NNNNNNNNNN-NN-NNNNNN');
-    report.check(ROLE_KEY_RE.test(member.document_role_key), `${at}.document_role_key`, 'must be an upper-snake role key');
-    report.equal(safely(() => dealKeyOf(member)), member.deal_key, at,
-      'deal_key does not match its four identity components');
-    report.equal(member.source_system, 'SEC_EDGAR', `${at}.source_system`,
-      'only SEC EDGAR identity is defined at v1');
-    report.check(HEX64_RE.test(member.canonical_text_sha256), `${at}.canonical_text_sha256`, 'must be 64-hex');
-    report.check(
-      member.transaction_id === null
-        || (typeof member.transaction_id === 'string' && HEX64_RE.test(member.transaction_id)),
-      `${at}.transaction_id`, 'must be a 64-hex consumer-minted transaction ID or null',
-    );
-    const document = dealDocuments.get(member.deal_key);
-    if (report.check(Boolean(document), at, 'corpus member has no deal document in this package')) {
-      report.equal(document.provenance.agreement_id, member.agreement_id, at, 'agreement_id disagrees with the deal document');
-      report.equal(document.provenance.canonical_text_sha256, member.canonical_text_sha256, at,
-        'canonical_text_sha256 disagrees with the deal document');
-      report.equal(document.provenance.source_admission_manifest_id, member.source_admission_manifest_id, at,
-        'source_admission_manifest_id disagrees with the deal document');
-      report.equal(document.provenance.admission_receipt_id, member.admission_receipt_id, at,
-        'admission_receipt_id disagrees with the deal document');
-      // The corpus manifest is the only route by which a transaction ID enters
-      // a package. The deal document must carry exactly what the manifest says.
-      report.equal(document.transaction_id, member.transaction_id, at,
-        'transaction_id disagrees with the deal document: it must arrive through the corpus manifest');
-    }
+  // corpus_id is Ben's approved selection record's content ID, carried, never
+  // recomputed here (A-0006 ruling 5). The package cites the selection bytes
+  // and the approval so the citation is checkable against the selection itself.
+  report.check(HEX64_RE.test(corpus.corpus_id), `${where}.corpus_id`, 'must be 64-hex');
+  report.check(HEX64_RE.test(corpus.selection_record_sha256), `${where}.selection_record_sha256`,
+    'must be 64-hex');
+  report.check(HEX64_RE.test(corpus.ben_approval_id), `${where}.ben_approval_id`, 'must be 64-hex');
+
+  const transactions = Array.isArray(corpus.transactions) ? corpus.transactions : [];
+  report.check(transactions.length > 0, `${where}.transactions`, 'a corpus manifest must have transactions');
+  const seenDealKeys = [];
+  const transactionIds = [];
+  transactions.forEach((transaction, index) => {
+    const at = `${where}.transactions[${index}]`;
+    if (!exactKeys(report, transaction, CORPUS_TRANSACTION_KEYS, at)) return;
+    report.check(transaction.transaction_id === null
+      || (typeof transaction.transaction_id === 'string' && HEX64_RE.test(transaction.transaction_id)),
+      `${at}.transaction_id`, 'must be a 64-hex consumer-minted transaction ID or null');
+    transactionIds.push(transaction.transaction_id);
+    const documents = Array.isArray(transaction.documents) ? transaction.documents : [];
+    report.check(documents.length > 0, `${at}.documents`, 'a transaction must carry at least one document');
+    documents.forEach((member, memberIndex) => {
+      const memberAt = `${at}.documents[${memberIndex}]`;
+      if (!exactKeys(report, member, CORPUS_DOCUMENT_KEYS, memberAt)) return;
+      report.equal(member.source_system, 'SEC_EDGAR', `${memberAt}.source_system`,
+        'only SEC EDGAR identity is defined at v1');
+      report.check(CIK_RE.test(member.issuer_cik), `${memberAt}.issuer_cik`,
+        'must be a zero-padded 10-digit CIK');
+      report.check(ACCESSION_RE.test(member.accession), `${memberAt}.accession`,
+        'must match NNNNNNNNNN-NN-NNNNNN');
+      report.check(ROLE_KEY_RE.test(member.document_role_key), `${memberAt}.document_role_key`,
+        'must be an upper-snake role key');
+      report.equal(safely(() => dealKeyOf(member)), member.deal_key, memberAt,
+        'deal_key does not match its four identity components');
+      report.check(HEX64_RE.test(member.canonical_text_sha256), `${memberAt}.canonical_text_sha256`,
+        'must be 64-hex');
+      seenDealKeys.push(member.deal_key);
+      const document = dealDocuments.get(member.deal_key);
+      if (report.check(Boolean(document), memberAt, 'corpus document has no deal document in this package')) {
+        report.equal(document.provenance.agreement_id, member.agreement_id, memberAt,
+          'agreement_id disagrees with the deal document');
+        report.equal(document.provenance.canonical_text_sha256, member.canonical_text_sha256, memberAt,
+          'canonical_text_sha256 disagrees with the deal document');
+        report.equal(document.provenance.source_admission_manifest_id,
+          member.source_admission_manifest_id, memberAt,
+          'source_admission_manifest_id disagrees with the deal document');
+        report.equal(document.provenance.admission_receipt_id, member.admission_receipt_id, memberAt,
+          'admission_receipt_id disagrees with the deal document');
+        report.equal(document.provenance.sec_document_name, member.sec_document_name, memberAt,
+          'sec_document_name disagrees with the deal document');
+        report.equal(document.provenance.sec_document_sequence, member.sec_document_sequence, memberAt,
+          'sec_document_sequence disagrees with the deal document');
+        // The corpus manifest is the only route a transaction ID enters a
+        // package, and a document inherits the transaction it sits under.
+        report.equal(document.transaction_id, transaction.transaction_id, memberAt,
+          'transaction_id disagrees with the transaction this document sits under');
+      }
+    });
+    const dealKeys = documents.map((member) => member && member.deal_key);
+    report.check(canonicalJson(dealKeys) === canonicalJson([...dealKeys].sort()), `${at}.documents`,
+      'documents must be ordered by deal_key');
   });
-  const dealKeys = members.map((member) => member.deal_key);
-  report.check(canonicalJson(dealKeys) === canonicalJson([...dealKeys].sort()), `${where}.members`,
-    'members must be ordered by deal_key');
-  report.check(new Set(dealKeys).size === dealKeys.length, `${where}.members`, 'duplicate deal_key');
+
+  report.check(canonicalJson(transactionIds) === canonicalJson([...transactionIds].sort(
+    (left, right) => (left === null ? 1 : right === null ? -1 : left < right ? -1 : left > right ? 1 : 0),
+  )), `${where}.transactions`, 'transactions must be ordered by transaction_id, null last');
+  const keyed = transactionIds.filter((value) => value !== null);
+  report.check(new Set(keyed).size === keyed.length, `${where}.transactions`,
+    'two transactions share a transaction_id');
+  report.check(transactionIds.filter((value) => value === null).length <= 1, `${where}.transactions`,
+    'at most one transaction group may be unkeyed');
+  report.check(new Set(seenDealKeys).size === seenDealKeys.length, `${where}.transactions`,
+    'a deal_key appears under more than one transaction');
   report.check(
-    canonicalJson([...dealDocuments.keys()].sort()) === canonicalJson([...dealKeys].sort()),
-    where, 'the corpus members and the deal documents in the package are not the same set',
+    canonicalJson([...dealDocuments.keys()].sort()) === canonicalJson([...seenDealKeys].sort()),
+    where, 'the corpus documents and the deal documents in the package are not the same set',
   );
-  report.equal(safely(() => corpusIdOf(corpus.corpus_kind, dealKeys)), corpus.corpus_id, `${where}.corpus_id`,
-    'does not match the content ID of (corpus kind, sorted member deal keys)');
-  report.check(safely(() => canonicalJson(corpus.counts)) === canonicalJson({ member_count: members.length }),
-    `${where}.counts`, 'counts do not match the members');
+
+  // The size bound counts unique transactions, not documents (A-0006 ruling 5).
+  const transactionCount = transactions.length;
+  const documentCount = seenDealKeys.length;
+  report.check(
+    canonicalJson(corpus.counts) === canonicalJson({
+      transaction_count: transactionCount, document_count: documentCount,
+    }),
+    `${where}.counts`, 'counts do not match the transactions and documents',
+  );
   if (corpus.corpus_kind === 'ONE_DEAL') {
-    report.equal(members.length, 1, `${where}.members`, 'a ONE_DEAL corpus has exactly one member');
+    report.equal(transactionCount, 1, `${where}.transactions`,
+      'a ONE_DEAL corpus has exactly one transaction');
   }
   if (corpus.corpus_kind === 'FIVE_DEAL') {
-    report.equal(members.length, 5, `${where}.members`, 'a FIVE_DEAL corpus has exactly five members');
+    report.equal(transactionCount, 5, `${where}.transactions`,
+      'a FIVE_DEAL corpus has exactly five transactions');
+  }
+  if (corpus.corpus_kind === 'SHARED_50_PROOF') {
+    report.equal(transactionCount, 50, `${where}.transactions`,
+      'a SHARED_50_PROOF corpus has exactly fifty transactions');
   }
   report.equal(
     safely(() => contentId(DOMAIN.CORPUS_MANIFEST, withoutKey(corpus, 'corpus_manifest_id'))),
@@ -814,7 +1081,6 @@ function verifyCorpusManifest(report, corpus, dealDocuments, where) {
     `${where}.corpus_manifest_id`,
     'does not match the content ID of the corpus manifest',
   );
-  void CORPUS_MANIFEST_BODY_KEYS;
 }
 
 /* ---------------------------------- *
@@ -845,6 +1111,20 @@ export function verifyPackage(packageDir) {
   report.check(HEX40_RE.test(manifest.producer_commit), 'manifest.json.producer_commit',
     'must be a 40-character lowercase git commit hash');
   report.check(RELEASE_STATES.includes(manifest.release_state), 'manifest.json.release_state', 'not a release state');
+  // Release lineage (A-0006 ruling 4). Each package is a complete snapshot of
+  // its corpus; the sequence orders releases and the predecessor names the
+  // exact release a consumer rolls back to.
+  report.check(Number.isInteger(manifest.release_sequence) && manifest.release_sequence >= 1,
+    'manifest.json.release_sequence', 'must be an integer of at least 1');
+  report.check(manifest.supersedes_release_manifest_id === null
+    || (typeof manifest.supersedes_release_manifest_id === 'string'
+      && HEX64_RE.test(manifest.supersedes_release_manifest_id)),
+    'manifest.json.supersedes_release_manifest_id',
+    'must be the 64-hex release_manifest_id of the predecessor, or null for the first release');
+  report.equal(manifest.supersedes_release_manifest_id === null, manifest.release_sequence === 1,
+    'manifest.json', 'release_sequence 1 and a null predecessor must agree: the first release of a corpus has both');
+  report.check(manifest.supersedes_release_manifest_id !== manifest.release_manifest_id,
+    'manifest.json.supersedes_release_manifest_id', 'a release cannot supersede itself');
   report.check(typeof manifest.public === 'boolean', 'manifest.json.public', 'must be a boolean');
   report.equal(manifest.public, manifest.release_state === 'PUBLIC', 'manifest.json',
     'public must be true if and only if release_state is PUBLIC');
@@ -883,14 +1163,32 @@ export function verifyPackage(packageDir) {
   report.check(listedPaths.includes('verify.mjs'), 'manifest.json.files',
     'a package must ship and list its own verify.mjs');
 
-  // Deal documents.
+  // Deal documents, each with its source unit set loaded first: claims and
+  // fields reference units by id, so the index has to exist before they verify.
   const dealDocuments = new Map();
+  let sourceUnitTotal = 0;
   const deals = Array.isArray(manifest.deals) ? manifest.deals : [];
   deals.forEach((entry, index) => {
     const at = `manifest.json.deals[${index}]`;
-    if (!exactKeys(report, entry, ['deal_key', 'deal_document_id', 'path'], at)) return;
+    if (!exactKeys(report, entry, ['deal_key', 'deal_document_id', 'path', 'source_units_path'], at)) return;
     report.equal(entry.path, `deals/${entry.deal_key}/deal.json`, at,
       'a deal document lives at deals/<deal_key>/deal.json');
+    report.equal(entry.source_units_path, `source_units/${entry.deal_key}.json`, at,
+      'a source unit set lives at source_units/<deal_key>.json');
+
+    let sourceUnits = new Map();
+    let sourceUnitSet = null;
+    try {
+      sourceUnitSet = JSON.parse(readFileSync(join(root, entry.source_units_path), 'utf8'));
+    } catch (error) {
+      report.check(false, at, `source unit set could not be read as JSON (${error.message})`);
+    }
+    if (sourceUnitSet) {
+      sourceUnits = verifySourceUnitSet(report, sourceUnitSet, entry.deal_key, entry.source_units_path);
+      sourceUnitTotal += sourceUnits.size;
+      scanForbidden(report, sourceUnitSet, entry.source_units_path);
+    }
+
     let document;
     try {
       document = JSON.parse(readFileSync(join(root, entry.path), 'utf8'));
@@ -898,7 +1196,11 @@ export function verifyPackage(packageDir) {
       report.check(false, at, `deal document could not be read as JSON (${error.message})`);
       return;
     }
-    const verified = verifyDealDocument(report, document, entry.path);
+    const verified = verifyDealDocument(report, document, entry.path, sourceUnits);
+    if (verified && sourceUnitSet) {
+      report.equal(verified.source_unit_set_id, sourceUnitSet.source_unit_set_id, at,
+        'source_unit_set_id disagrees with the source unit set');
+    }
     if (verified) {
       report.equal(verified.deal_key, entry.deal_key, at, 'deal_key disagrees with the deal document');
       report.equal(verified.deal_document_id, entry.deal_document_id, at,
@@ -939,6 +1241,9 @@ export function verifyPackage(packageDir) {
     for (const [dealKey, document] of dealDocuments) {
       report.check(document.transaction_id !== null, 'manifest.json.release_state',
         `deal ${dealKey} has transaction_id null and so this package cannot be PUBLIC`);
+      report.check(document.provenance.sec_document_name !== null
+        && document.provenance.sec_document_sequence !== null, 'manifest.json.release_state',
+        `deal ${dealKey} has no SEC document locator and so this package cannot be PUBLIC`);
     }
   }
 
@@ -949,6 +1254,7 @@ export function verifyPackage(packageDir) {
     category_summaries: [...dealDocuments.values()].reduce(
       (total, document) => total + document.category_summaries.length, 0,
     ),
+    source_units: sourceUnitTotal,
   };
   report.check(safely(() => canonicalJson(manifest.counts)) === canonicalJson(counts), 'manifest.json.counts',
     `counts do not match the package (expected ${canonicalJson(counts)})`);

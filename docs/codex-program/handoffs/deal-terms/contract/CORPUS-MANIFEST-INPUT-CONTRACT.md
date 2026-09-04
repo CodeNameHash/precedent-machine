@@ -1,4 +1,4 @@
-# The corpus input contract, draft 2
+# The corpus input contract, draft 3
 
 Two records: `SHARED_50_DEAL_SELECTION/V1` and `CORPUS_ADMISSION_RECEIPT/V1`.
 Machine-readable form: `corpus-manifest.schema.json`.
@@ -57,12 +57,19 @@ Adopted from Q-0001 §3, with one addition noted below.
 | `schema_version` | `SHARED_50_DEAL_SELECTION/V1` |
 | `corpus_id` | `contentId('SHARED_50_DEAL_SELECTION/V1', <this record without corpus_id>)` |
 | `purpose` | `INTERNAL_PROOF` or `PUBLIC_PRODUCT` |
-| `required_deal_count` | must equal `deals.length` |
+| `required_deal_count` | must equal `deals.length`, and counts **transactions**, not documents |
 | `selection_rule_version` | the governed rule ID the deals were chosen under |
 | `approved_by` | `Ben` |
 | `approved_on` | `YYYY-MM-DD` |
 | `ben_approval_id` | content ID of Ben's approval record |
 | `deals[]` | ordered by `ordinal`, `0..n-1` with no gaps, `deal_id` unique |
+
+**The count is a transaction count.** Per A-0006 ruling 5 a
+`SHARED_50_PROOF` corpus is fifty *transactions*; each may require several
+documents, listed in its `required_agreements`. Counting documents would give
+the wrong answer for any deal with an amendment. The released package carries
+the same bound the same way (§8 of the package contract), and its `corpus_id`
+is this record's content ID, carried and never recomputed.
 
 **The selection record is immutable and is never rewritten.** Admitting a deal
 does not touch it. That is the whole point of the split, and it is why

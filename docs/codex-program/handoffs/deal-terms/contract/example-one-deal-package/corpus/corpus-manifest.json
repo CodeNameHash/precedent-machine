@@ -1,23 +1,32 @@
 {
   "schema_version": "DEAL_TERMS_CORPUS_MANIFEST/V1",
-  "corpus_id": "00156d52f04476a8c8a2e2954fa2c55a2d4f2a0d10078392c40fb13aa3915728",
+  "corpus_id": "78b9b6b3a79d64109308528117f956ea2028e1ad6387470557a8c1e7bbe8b110",
   "corpus_kind": "ONE_DEAL",
-  "members": [
+  "selection_record_sha256": "423487f7185a54b9155bb69c5594f840940617a35bb7c00023bb0dff923d72e4",
+  "ben_approval_id": "bef7faa68fb1fcb6d8a023a1a73eb74cc46ad70b683a4a0ffd7073fa94af0aae",
+  "transactions": [
     {
-      "deal_key": "42d649f09bb9c35baa0940368e38aa9d0b9472c84a3e9509ee5342e65ac3e265",
       "transaction_id": "67f0d097fa581fc90d0867e6031d9372a9e1b7221dad90bb99599db91c501aef",
-      "source_system": "SEC_EDGAR",
-      "issuer_cik": "0000000000",
-      "accession": "0000000000-00-000000",
-      "document_role_key": "MERGER_AGREEMENT",
-      "agreement_id": "c6e90478be787471a4cfcf097dbd00b3f2ff87e8fecd07dcf14285eb2023c972",
-      "canonical_text_sha256": "c40496e38e510a25dde4f5dea292b3aa3f64678ba4e9210c20651603d6d24b66",
-      "source_admission_manifest_id": "8fbe50a7dd80ca1b517f98d3e93f992117c58e9253758aad10819e623d03b478",
-      "admission_receipt_id": "bac2c117f8dc060014cf475fc3a46ba2c67aae88356bc2a8150008422d72fbe9"
+      "documents": [
+        {
+          "deal_key": "42d649f09bb9c35baa0940368e38aa9d0b9472c84a3e9509ee5342e65ac3e265",
+          "source_system": "SEC_EDGAR",
+          "issuer_cik": "0000000000",
+          "accession": "0000000000-00-000000",
+          "document_role_key": "MERGER_AGREEMENT",
+          "sec_document_name": "synthetic-exhibit-2-1.htm",
+          "sec_document_sequence": 1,
+          "agreement_id": "3811d420b9e9d587318efac26b9d17e5071a5c99aea76826dd0851ea76eac6a2",
+          "canonical_text_sha256": "74da9d7ba30c0621fc9a5d560bbaea2337399bbc23b3fd71cf74efcb01519a9c",
+          "source_admission_manifest_id": "1e4feeea3856577e015ba47eab04d5d01fa17979a7b8a70d99cafc21db1b60b8",
+          "admission_receipt_id": "e111cb72d63e9e7377dd603abd9e157ecace687deeae2e7d1874f7a9f58a8d2c"
+        }
+      ]
     }
   ],
   "counts": {
-    "member_count": 1
+    "transaction_count": 1,
+    "document_count": 1
   },
-  "corpus_manifest_id": "861023728526550821bae35af20521bf6c7126358944d5478ad4bb312dfa5bdb"
+  "corpus_manifest_id": "d5c9a5b45ccdde8cba95bdae9442ea282ac013323796972450b8e2962fac82a9"
 }

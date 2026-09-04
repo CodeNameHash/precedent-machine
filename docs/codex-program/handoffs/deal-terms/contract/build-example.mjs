@@ -30,7 +30,7 @@ import { tmpdir } from 'node:os';
 
 import {
   DOMAIN, REVIEW_STATES, RECORD_KEYS, canonicalJson, contentId, sha256Hex, utf8ByteLength,
-  assertIdRuleSelfTest, dealKeyOf, corpusIdOf, rollUpReviewState, validStateCombination,
+  assertIdRuleSelfTest, dealKeyOf, rollUpReviewState, validStateCombination,
   verifyPackage, PACKAGE_SCHEMA_VERSION, typedValueProblem, unitFor, sortValueFor,
 } from './verify.mjs';
 
@@ -82,56 +82,96 @@ function crossCheckIdRule() {
 // One invented clause set. The en dash below is three UTF-8 bytes, so any
 // verifier that measured spans in UTF-16 code units instead of UTF-8 bytes
 // would fail on this example. That is deliberate.
-const SYNTHETIC_TEXT = [
-  'ARTICLE VII',
-  '',
-  'Section 7.03 Termination Fee. If this Agreement is terminated by Parent '
-    + 'pursuant to Section 7.01(c), the Company shall pay to Parent a fee of '
-    + 'twelve million dollars ($12,000,000) — the "Company Termination Fee" — '
-    + 'within two Business Days after such termination.',
-  '',
-  'Section 7.04 Parent Fee. If this Agreement is terminated by the Company '
-    + 'pursuant to Section 7.01(d), Parent shall pay to the Company an amount '
-    + 'equal to the Company Termination Fee, unless the Regulatory Condition '
-    + 'shall then be capable of satisfaction, in which case such amount shall '
-    + 'be as the parties may then agree.',
-  '',
-  'Section 6.01 Conditions. The obligations of each party to effect the '
-    + 'Merger are subject to the receipt of the Requisite Stockholder Approval.',
-  '',
-].join('\n');
-
-const SOURCE_BYTES = Buffer.from(SYNTHETIC_TEXT, 'utf8');
-
-// A synthetic M2 structure: three named nodes with half-open UTF-8 byte extents.
-function spanOf(needle, nodeSeed) {
-  const start = SOURCE_BYTES.indexOf(Buffer.from(needle, 'utf8'));
-  if (start < 0) throw new Error(`synthetic span not found: ${needle.slice(0, 40)}`);
-  const end = start + Buffer.byteLength(needle, 'utf8');
-  const excerpt = SOURCE_BYTES.subarray(start, end).toString('utf8');
-  if (!Buffer.from(excerpt, 'utf8').equals(SOURCE_BYTES.subarray(start, end))) {
-    throw new Error('span does not fall on a code-point boundary');
-  }
-  return {
-    node_occurrence_id: contentId('DEAL_TERMS_EXAMPLE_M2_NODE/V1', { seed: nodeSeed }),
-    start_byte: start,
-    end_byte: end,
-    text_sha256: sha256Hex(excerpt),
-    excerpt_text: excerpt,
-  };
-}
-
+const ARTICLE_VII = 'ARTICLE VII';
+const GOVERNING_CHAPEAU = 'The following Sections govern termination of this Agreement and the '
+  + 'fees and expenses payable on termination.';
+const SECTION_6_01 = 'Section 6.01 Conditions. The obligations of each party to effect the '
+  + 'Merger are subject to the receipt of the Requisite Stockholder Approval.';
 const SECTION_7_03 = 'Section 7.03 Termination Fee. If this Agreement is terminated by Parent '
   + 'pursuant to Section 7.01(c), the Company shall pay to Parent a fee of '
   + 'twelve million dollars ($12,000,000) — the "Company Termination Fee" — '
-  + 'within two Business Days after such termination.';
+  + 'within two Business Days after such termination, without interest and '
+  + 'without any escrow or holdback.';
 const SECTION_7_04 = 'Section 7.04 Parent Fee. If this Agreement is terminated by the Company '
   + 'pursuant to Section 7.01(d), Parent shall pay to the Company an amount '
   + 'equal to the Company Termination Fee, unless the Regulatory Condition '
   + 'shall then be capable of satisfaction, in which case such amount shall '
   + 'be as the parties may then agree.';
-const SECTION_6_01 = 'Section 6.01 Conditions. The obligations of each party to effect the '
-  + 'Merger are subject to the receipt of the Requisite Stockholder Approval.';
+const SECTION_7_05 = 'Section 7.05 Expense Reimbursement. The Company shall reimburse the '
+  + 'documented out-of-pocket expenses of Parent up to five hundred thousand '
+  + 'dollars ($500,000).';
+
+const SYNTHETIC_TEXT = [
+  'ARTICLE VI',
+  '',
+  SECTION_6_01,
+  '',
+  ARTICLE_VII,
+  '',
+  GOVERNING_CHAPEAU,
+  '',
+  SECTION_7_03,
+  '',
+  SECTION_7_04,
+  '',
+  SECTION_7_05,
+  '',
+].join('\n');
+
+const SOURCE_BYTES = Buffer.from(SYNTHETIC_TEXT, 'utf8');
+
+// A synthetic M2 structure: named nodes with half-open UTF-8 byte extents.
+function byteSpanOf(needle) {
+  const start = SOURCE_BYTES.indexOf(Buffer.from(needle, 'utf8'));
+  if (start < 0) throw new Error(`synthetic span not found: ${needle.slice(0, 40)}`);
+  const end = start + Buffer.byteLength(needle, 'utf8');
+  const text = SOURCE_BYTES.subarray(start, end).toString('utf8');
+  if (!Buffer.from(text, 'utf8').equals(SOURCE_BYTES.subarray(start, end))) {
+    throw new Error('span does not fall on a code-point boundary');
+  }
+  return { start_byte: start, end_byte: end, text_sha256: sha256Hex(text), text };
+}
+
+const nodeIdOf = (seed) => contentId('DEAL_TERMS_EXAMPLE_M2_NODE/V1', { seed });
+
+function spanOf(needle, nodeSeed) {
+  const { start_byte, end_byte, text_sha256, text } = byteSpanOf(needle);
+  return {
+    node_occurrence_id: nodeIdOf(nodeSeed),
+    start_byte,
+    end_byte,
+    text_sha256,
+    excerpt_text: text,
+  };
+}
+
+// An evidence span for one field: the same geometry, keyed to a source unit.
+function evidenceSpanOf(needle, nodeSeed) {
+  const { start_byte, end_byte, text_sha256, text } = byteSpanOf(needle);
+  return {
+    source_unit_id: nodeIdOf(nodeSeed),
+    start_byte,
+    end_byte,
+    text_sha256,
+    excerpt_text: text,
+  };
+}
+
+// A governed authored unit: its full canonical text plus its context spans.
+function sourceUnit(nodeSeed, heading, documentOrder, needle, contexts = []) {
+  const extent = byteSpanOf(needle);
+  return {
+    node_occurrence_id: nodeIdOf(nodeSeed),
+    heading_or_reference: heading,
+    document_order: documentOrder,
+    ...extent,
+    context_spans: contexts.map(({ kind, seed, text: contextNeedle }) => ({
+      kind,
+      node_occurrence_id: nodeIdOf(seed),
+      ...byteSpanOf(contextNeedle),
+    })),
+  };
+}
 
 /* ---------------------------------------------------------------- *
  * 2. Deal identity and provenance.                                   *
@@ -184,22 +224,39 @@ const PROVENANCE = {
   raw_source_sha256: synthetic('raw_source_sha256'),
   raw_source_byte_length: SOURCE_BYTES.length * 2,
   retrieval_url_sha256: synthetic('retrieval_url_sha256'),
+  // From the admitted-source receipt. A real package copies these out of the
+  // receipt; a receipt that did not record them yields null, and a package with
+  // any null here cannot be PUBLIC.
+  sec_document_name: 'synthetic-exhibit-2-1.htm',
+  sec_document_sequence: 1,
 };
 
 /* ---------------------------------------------------------------- *
  * 3. Claims.                                                         *
  * ---------------------------------------------------------------- */
 
-function displayField(fieldKey, label, valueType, typedValue, renderedValue) {
-  const problem = typedValueProblem(valueType, typedValue);
-  if (problem !== null) throw new Error(`example builds an invalid ${valueType}: ${problem}`);
+function displayField({
+  fieldKey, label, factState, valueType, typedValue = null, renderedValue,
+  evidenceSpans = [], examinedSourceUnitId = null, reasonCode = null,
+}) {
+  if (factState === 'PRESENT') {
+    const problem = typedValueProblem(valueType, typedValue);
+    if (problem !== null) throw new Error(`example builds an invalid ${valueType}: ${problem}`);
+  } else if (typedValue !== null) {
+    throw new Error(`example gives ${factState} a typed value`);
+  }
+  const present = factState === 'PRESENT';
   return {
     field_key: fieldKey,
     label,
+    fact_state: factState,
     value_type: valueType,
     typed_value: typedValue,
-    unit: unitFor(valueType, typedValue),
-    sort_value: sortValueFor(valueType, typedValue),
+    unit: present ? unitFor(valueType, typedValue) : null,
+    sort_value: present ? sortValueFor(valueType, typedValue) : null,
+    evidence_spans: evidenceSpans,
+    examined_source_unit_id: examinedSourceUnitId,
+    reason_code: reasonCode,
     rendered_value: renderedValue,
     rendered_value_digest: sha256Hex(renderedValue),
     typed_value_digest: sha256Hex(canonicalJson(typedValue)),
@@ -208,7 +265,7 @@ function displayField(fieldKey, label, valueType, typedValue, renderedValue) {
 
 function claim({
   occurrenceSeed, familyKey, definitionKey, classification, sectionReference,
-  state, reasonCodes, fields, spans,
+  state, reasonCodes, limitation = null, fields, spans,
 }) {
   const [extraction, quality, review] = state;
   if (!validStateCombination(extraction, quality, review)) {
@@ -222,6 +279,7 @@ function claim({
     section_reference: sectionReference,
     state: { extraction_state: extraction, source_quality: quality, review_state: review },
     reason_codes: reasonCodes,
+    limitation,
     fields,
     source: {
       node_occurrence_ids: [...new Set(spans.map((span) => span.node_occurrence_id))].sort(),
@@ -233,6 +291,23 @@ function claim({
 }
 
 const TERMINATION_FEE_PATH = ['Termination fee', 'Reverse and company termination fees'];
+
+// The governed authored units, in document order, with their context spans.
+// Section 7.03 carries both an Article chapeau and a governing chapeau, which
+// is what a real closure looks like under the re-plan's source-closure rule.
+const SOURCE_UNITS = [
+  sourceUnit('section-6-01', 'Section 6.01 Conditions', 0, SECTION_6_01),
+  sourceUnit('section-7-03', 'Section 7.03 Termination Fee', 1, SECTION_7_03, [
+    { kind: 'ARTICLE_CHAPEAU', seed: 'article-vii', text: ARTICLE_VII },
+    { kind: 'GOVERNING_CHAPEAU', seed: 'governing-chapeau', text: GOVERNING_CHAPEAU },
+  ]),
+  sourceUnit('section-7-04', 'Section 7.04 Parent Fee', 2, SECTION_7_04, [
+    { kind: 'ARTICLE_CHAPEAU', seed: 'article-vii', text: ARTICLE_VII },
+  ]),
+  sourceUnit('section-7-05', 'Section 7.05 Expense Reimbursement', 3, SECTION_7_05, [
+    { kind: 'GOVERNING_CHAPEAU', seed: 'governing-chapeau', text: GOVERNING_CHAPEAU },
+  ]),
+];
 
 const CLAIMS = [
   claim({
@@ -248,13 +323,52 @@ const CLAIMS = [
     state: ['COMPLETE', 'SUFFICIENT', 'NORMAL'],
     reasonCodes: [],
     fields: [
-      displayField('fee_amount', 'Fee amount', 'MONEY',
-        { amount: 12000000, currency: 'USD' }, 'USD 12,000,000'),
-      displayField('payment_deadline', 'Payment deadline', 'DURATION',
-        { bound_type: 'WITHIN', count: 2, unit: 'DAY' }, 'Within two days after termination'),
-      displayField('trigger_reference', 'Trigger', 'REFERENCE',
-        'Section 7.01(c)', 'Termination by Parent under Section 7.01(c)'),
-      displayField('payable_by', 'Payable by', 'PARTY', 'Company', 'Company'),
+      displayField({
+        fieldKey: 'fee_amount',
+        label: 'Fee amount',
+        factState: 'PRESENT',
+        valueType: 'MONEY',
+        typedValue: { amount: 12000000, currency: 'USD' },
+        renderedValue: 'USD 12,000,000',
+        evidenceSpans: [evidenceSpanOf('twelve million dollars ($12,000,000)', 'section-7-03')],
+      }),
+      displayField({
+        fieldKey: 'payment_deadline',
+        label: 'Payment deadline',
+        factState: 'PRESENT',
+        valueType: 'DURATION',
+        typedValue: { bound_type: 'WITHIN', count: 2, unit: 'DAY' },
+        renderedValue: 'Within two days after termination',
+        evidenceSpans: [evidenceSpanOf('within two Business Days after such termination', 'section-7-03')],
+      }),
+      // false is a value, not an absence: fact_state PRESENT.
+      displayField({
+        fieldKey: 'escrow_required',
+        label: 'Escrow required',
+        factState: 'PRESENT',
+        valueType: 'BOOLEAN',
+        typedValue: false,
+        renderedValue: 'No',
+        evidenceSpans: [evidenceSpanOf('without any escrow or holdback', 'section-7-03')],
+      }),
+      // ABSENT: the clause was read and says nothing about interest.
+      displayField({
+        fieldKey: 'interest_rate',
+        label: 'Interest on late payment',
+        factState: 'ABSENT',
+        valueType: 'PERCENTAGE',
+        renderedValue: 'Not stated in this Section',
+        examinedSourceUnitId: nodeIdOf('section-7-03'),
+      }),
+      // NOT_APPLICABLE: the profile field does not apply to this subtype.
+      displayField({
+        fieldKey: 'trigger_regulatory_condition',
+        label: 'Regulatory-condition trigger',
+        factState: 'NOT_APPLICABLE',
+        valueType: 'ENUM',
+        renderedValue: 'Not applicable to a company termination fee',
+        reasonCode: 'FIELD_NOT_IN_SUBTYPE_PROFILE',
+      }),
     ],
     spans: [spanOf(SECTION_7_03, 'section-7-03')],
   }),
@@ -271,10 +385,57 @@ const CLAIMS = [
     state: ['AMBIGUOUS', 'DRAFTING_AMBIGUOUS', 'REVIEW_ONLY'],
     reasonCodes: ['DEPENDENCY_UNRESOLVED', 'MATERIAL_SPAN_UNMODELLED'],
     fields: [
-      displayField('fee_amount_reference', 'Fee amount', 'DEFINED_TERM',
-        'Company Termination Fee', 'Not resolved: stated by reference to the Company Termination Fee'),
+      // FAILED: extraction could not resolve it, and the claim says why.
+      displayField({
+        fieldKey: 'fee_amount',
+        label: 'Fee amount',
+        factState: 'FAILED',
+        valueType: 'MONEY',
+        renderedValue: 'Not resolved: stated by reference and left open',
+      }),
+      // NOT_EXAMINED: this subtype profile does not carry the field at all.
+      displayField({
+        fieldKey: 'escrow_required',
+        label: 'Escrow required',
+        factState: 'NOT_EXAMINED',
+        valueType: 'BOOLEAN',
+        renderedValue: 'Not examined',
+      }),
     ],
     spans: [spanOf(SECTION_7_04, 'section-7-04')],
+  }),
+  claim({
+    occurrenceSeed: 'expense-reimbursement',
+    familyKey: 'TERMINATION_FEE',
+    definitionKey: 'TERMINATION_FEE_AMOUNT_PRESENT',
+    classification: [
+      { level: 'APPLIES_TO', value: 'Company' },
+      { level: 'PROVISION_TYPE', value: TERMINATION_FEE_PATH[0] },
+      { level: 'SUB_PROVISION_TYPE', value: TERMINATION_FEE_PATH[1] },
+    ],
+    sectionReference: 'Section 7.05',
+    state: ['COMPLETE', 'SOURCE_LIMITED', 'APPROVED_LIMITED'],
+    reasonCodes: [],
+    limitation: {
+      code: 'TRIGGER_NOT_EXPRESSLY_STATED',
+      text: 'Not expressly stated in the complete reviewed clause: the Section '
+        + 'caps reimbursable expenses but does not state the termination events '
+        + 'that trigger reimbursement.',
+      ruling_id: contentId('DEAL_TERMS_EXAMPLE_RULING/V1', { seed: 'expense-reimbursement-limitation' }),
+    },
+    fields: [
+      displayField({
+        fieldKey: 'expense_cap',
+        label: 'Expense cap',
+        factState: 'PRESENT',
+        valueType: 'MONEY',
+        typedValue: { amount: 500000, currency: 'USD' },
+        renderedValue: 'USD 500,000',
+        evidenceSpans: [evidenceSpanOf('five hundred thousand '
+          + 'dollars ($500,000)', 'section-7-05')],
+      }),
+    ],
+    spans: [spanOf(SECTION_7_05, 'section-7-05')],
   }),
   claim({
     occurrenceSeed: 'stockholder-approval-condition',
@@ -303,7 +464,7 @@ function categorySummaries(claims) {
   for (const item of claims) {
     if (item.state.review_state === 'NO_OUTPUT') continue;
     const path = item.classification_levels.slice(1).map((level) => level.value);
-    const key = `${item.family_key} ${canonicalJson(path)}`;
+    const key = `${item.family_key} ${canonicalJson(path)}`;
     if (!groups.has(key)) groups.set(key, { family_key: item.family_key, classification_path: path, items: [] });
     groups.get(key).items.push(item);
   }
@@ -328,6 +489,44 @@ function categorySummaries(claims) {
  * 5. Assemble and write.                                            *
  * ---------------------------------------------------------------- */
 
+// The approved transaction-selection record this corpus_id comes from. In a
+// real package Ben approves it and the producer copies its content ID out; here
+// it is built synthetically so the example is self-contained and reproducible.
+const SELECTION = (() => {
+  const body = {
+    schema_version: 'SHARED_50_DEAL_SELECTION/V1',
+    purpose: 'INTERNAL_PROOF',
+    required_deal_count: 1,
+    selection_rule_version: 'SYNTHETIC_EXAMPLE_RULE/V1',
+    approved_by: 'Ben',
+    approved_on: '2026-09-03',
+    ben_approval_id: contentId('DEAL_TERMS_EXAMPLE_APPROVAL/V1', { seed: 'one-deal-example' }),
+    deals: [{
+      ordinal: 0,
+      deal_id: TRANSACTION_ID,
+      target_cik: '0000000000',
+      transaction_anchor: {
+        issuer_cik: DEAL_IDENTITY.issuer_cik,
+        accession_number: DEAL_IDENTITY.accession,
+        document_role: DEAL_IDENTITY.document_role_key,
+      },
+      required_agreements: [{
+        agreement_role: 'merger_agreement',
+        issuer_cik: DEAL_IDENTITY.issuer_cik,
+        accession_number: DEAL_IDENTITY.accession,
+        document_name: 'synthetic-exhibit-2-1.htm',
+        document_role: DEAL_IDENTITY.document_role_key,
+        required: true,
+      }],
+    }],
+  };
+  return {
+    corpus_id: contentId('SHARED_50_DEAL_SELECTION/V1', body),
+    selection_record_sha256: sha256Hex(canonicalJson(body)),
+    ben_approval_id: body.ben_approval_id,
+  };
+})();
+
 const RELEASED_AT = '2026-09-03T00:00:00Z';
 // A synthetic producer commit: this example is not cut from a real run, and a
 // real 40-hex commit here would assert a provenance that does not exist.
@@ -341,14 +540,32 @@ function buildInto(root) {
   rmSync(root, { recursive: true, force: true });
   mkdirSync(join(root, 'deals', DEAL_KEY), { recursive: true });
   mkdirSync(join(root, 'corpus'), { recursive: true });
+  mkdirSync(join(root, 'source_units'), { recursive: true });
 
   const summaries = categorySummaries(CLAIMS);
+
+  const sourceUnitBody = {
+    schema_version: 'DEAL_TERMS_SOURCE_UNIT_SET/V1',
+    deal_key: DEAL_KEY,
+    units: SOURCE_UNITS,
+    counts: {
+      units: SOURCE_UNITS.length,
+      context_spans: SOURCE_UNITS.reduce((total, unit) => total + unit.context_spans.length, 0),
+    },
+  };
+  const sourceUnitSet = {
+    ...sourceUnitBody,
+    source_unit_set_id: contentId(DOMAIN.SOURCE_UNIT_SET, sourceUnitBody),
+  };
+  writeFileSync(join(root, 'source_units', `${DEAL_KEY}.json`), stableJson(sourceUnitSet));
+
   const dealBody = {
     schema_version: 'DEAL_TERMS_DEAL_DOCUMENT/V1',
     deal_key: DEAL_KEY,
     transaction_id: TRANSACTION_ID,
     deal_identity: DEAL_IDENTITY,
     provenance: PROVENANCE,
+    source_unit_set_id: sourceUnitSet.source_unit_set_id,
     claims: CLAIMS,
     category_summaries: summaries,
     counts: {
@@ -363,23 +580,31 @@ function buildInto(root) {
   const dealDocument = { ...dealBody, deal_document_id: contentId(DOMAIN.DEAL_DOCUMENT, dealBody) };
   writeFileSync(join(root, 'deals', DEAL_KEY, 'deal.json'), stableJson(dealDocument));
 
+  // corpus_id is the content ID of Ben's approved transaction-selection record.
+  // The package carries it; it is never recomputed from the document keys.
   const corpusBody = {
     schema_version: 'DEAL_TERMS_CORPUS_MANIFEST/V1',
-    corpus_id: corpusIdOf('ONE_DEAL', [DEAL_KEY]),
+    corpus_id: SELECTION.corpus_id,
     corpus_kind: 'ONE_DEAL',
-    members: [{
-      deal_key: DEAL_KEY,
+    selection_record_sha256: SELECTION.selection_record_sha256,
+    ben_approval_id: SELECTION.ben_approval_id,
+    transactions: [{
       transaction_id: TRANSACTION_ID,
-      source_system: DEAL_IDENTITY.source_system,
-      issuer_cik: DEAL_IDENTITY.issuer_cik,
-      accession: DEAL_IDENTITY.accession,
-      document_role_key: DEAL_IDENTITY.document_role_key,
-      agreement_id: PROVENANCE.agreement_id,
-      canonical_text_sha256: PROVENANCE.canonical_text_sha256,
-      source_admission_manifest_id: PROVENANCE.source_admission_manifest_id,
-      admission_receipt_id: PROVENANCE.admission_receipt_id,
+      documents: [{
+        deal_key: DEAL_KEY,
+        source_system: DEAL_IDENTITY.source_system,
+        issuer_cik: DEAL_IDENTITY.issuer_cik,
+        accession: DEAL_IDENTITY.accession,
+        document_role_key: DEAL_IDENTITY.document_role_key,
+        sec_document_name: PROVENANCE.sec_document_name,
+        sec_document_sequence: PROVENANCE.sec_document_sequence,
+        agreement_id: PROVENANCE.agreement_id,
+        canonical_text_sha256: PROVENANCE.canonical_text_sha256,
+        source_admission_manifest_id: PROVENANCE.source_admission_manifest_id,
+        admission_receipt_id: PROVENANCE.admission_receipt_id,
+      }],
     }],
-    counts: { member_count: 1 },
+    counts: { transaction_count: 1, document_count: 1 },
   };
   const corpus = { ...corpusBody, corpus_manifest_id: contentId(DOMAIN.CORPUS_MANIFEST, corpusBody) };
   writeFileSync(join(root, 'corpus', 'corpus-manifest.json'), stableJson(corpus));
@@ -403,7 +628,10 @@ function buildInto(root) {
       producer_commit: PRODUCER_COMMIT,
       released_at: RELEASED_AT,
       release_state: 'REVIEW_ONLY_INTERNAL',
+      release_sequence: 1,
     }),
+    supersedes_release_manifest_id: null,
+    release_sequence: 1,
     producer_commit: PRODUCER_COMMIT,
     release_state: 'REVIEW_ONLY_INTERNAL',
     public: false,
@@ -418,6 +646,7 @@ function buildInto(root) {
       deal_key: DEAL_KEY,
       deal_document_id: dealDocument.deal_document_id,
       path: `deals/${DEAL_KEY}/deal.json`,
+      source_units_path: `source_units/${DEAL_KEY}.json`,
     }],
     files,
     counts: {
@@ -425,6 +654,7 @@ function buildInto(root) {
       files: files.length,
       claims: CLAIMS.length,
       category_summaries: summaries.length,
+      source_units: SOURCE_UNITS.length,
     },
   };
   const manifest = {
@@ -529,7 +759,14 @@ function crossCheckSchema() {
     ['sourceSpan', defs.sourceSpan.required],
     ['categorySummary', defs.categorySummary.required],
     ['corpusManifest', defs.corpusManifest.required],
-    ['corpusMember', defs.corpusManifest.properties.members.items.required],
+    ['corpusTransaction', defs.corpusManifest.properties.transactions.items.required],
+    ['corpusDocument', defs.corpusManifest.properties.transactions.items
+      .properties.documents.items.required],
+    ['evidenceSpan', defs.evidenceSpan.required],
+    ['limitation', defs.limitation.required],
+    ['sourceUnit', defs.sourceUnit.required],
+    ['contextSpan', defs.contextSpan.required],
+    ['sourceUnitSet', defs.sourceUnitSet.required],
   ];
   for (const [name, required] of pairs) {
     const fromSchema = canonicalJson([...required].sort());

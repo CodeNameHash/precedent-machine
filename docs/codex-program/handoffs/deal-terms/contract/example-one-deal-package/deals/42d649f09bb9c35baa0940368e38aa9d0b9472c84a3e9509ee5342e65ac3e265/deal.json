@@ -9,19 +9,22 @@
     "document_role_key": "MERGER_AGREEMENT"
   },
   "provenance": {
-    "agreement_id": "c6e90478be787471a4cfcf097dbd00b3f2ff87e8fecd07dcf14285eb2023c972",
-    "canonical_text_id": "4e4afa25dbccd07dccd00421da7129a13e1f5558e9595e260a465016c9331860",
-    "canonical_text_sha256": "c40496e38e510a25dde4f5dea292b3aa3f64678ba4e9210c20651603d6d24b66",
-    "canonical_text_byte_length": 741,
+    "agreement_id": "3811d420b9e9d587318efac26b9d17e5071a5c99aea76826dd0851ea76eac6a2",
+    "canonical_text_id": "46947297add36871b12d3d32bde3bea386b730fd6d7b9e3fa9846c7d119c6d6e",
+    "canonical_text_sha256": "74da9d7ba30c0621fc9a5d560bbaea2337399bbc23b3fd71cf74efcb01519a9c",
+    "canonical_text_byte_length": 1078,
     "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
-    "immutable_source_document_id": "9dc6577f2ae85e21234d2bc61d3a20efd8dea8e587483b8ad294128aa01655e6",
-    "source_response_content_id": "3c7f423f316895571924221c8df06c105c52004959528baa6eb9c1bb00695c08",
-    "source_admission_manifest_id": "8fbe50a7dd80ca1b517f98d3e93f992117c58e9253758aad10819e623d03b478",
-    "admission_receipt_id": "bac2c117f8dc060014cf475fc3a46ba2c67aae88356bc2a8150008422d72fbe9",
-    "raw_source_sha256": "2562f00a65ee482909bba65ac4ac61f4dd0780f564ac1090f69bb6f73b5c8da6",
-    "raw_source_byte_length": 1482,
-    "retrieval_url_sha256": "ad8e0eb6fb4801b1e7331c2c93db2e14bb444ee46620fb10b19cfc5aaaf35608"
+    "immutable_source_document_id": "9e673878d5b269079c48f1164cb1dd90334b2fde94b270a2cba888064498020f",
+    "source_response_content_id": "90be5686abf60376b543c065bf6081ca0d86cc1b0527b3de23fe1e639f581142",
+    "source_admission_manifest_id": "1e4feeea3856577e015ba47eab04d5d01fa17979a7b8a70d99cafc21db1b60b8",
+    "admission_receipt_id": "e111cb72d63e9e7377dd603abd9e157ecace687deeae2e7d1874f7a9f58a8d2c",
+    "raw_source_sha256": "b71bda042545c4722b278d172f75487605c5cee5320c6a4f0878000ed9f7cc9e",
+    "raw_source_byte_length": 2156,
+    "retrieval_url_sha256": "cd2e452061e3ce5fa865ad06f2c2a54dc72eefd6af878ac9da42a38a50c8d868",
+    "sec_document_name": "synthetic-exhibit-2-1.htm",
+    "sec_document_sequence": 1
   },
+  "source_unit_set_id": "a498f19b5c777349329caa27ce22f0892f2dc910f58bb6ed2522e6dfafc5e4e1",
   "claims": [
     {
       "claim_occurrence_id": "c9ac7cc701c390d13eb0323b57772faa4f57fadbe86717d531cbbd8f2df8588e",
@@ -48,10 +51,12 @@
         "review_state": "NORMAL"
       },
       "reason_codes": [],
+      "limitation": null,
       "fields": [
         {
           "field_key": "fee_amount",
           "label": "Fee amount",
+          "fact_state": "PRESENT",
           "value_type": "MONEY",
           "typed_value": {
             "amount": 12000000,
@@ -59,6 +64,17 @@
           },
           "unit": "USD",
           "sort_value": 12000000,
+          "evidence_spans": [
+            {
+              "source_unit_id": "bffd6ef1ca486b357034edecbd378c601a2cc73d77147da539b27904b45538df",
+              "start_byte": 421,
+              "end_byte": 457,
+              "text_sha256": "91bb86c738c9c6d81d86009f43b2cfd07f95f487e4ffe4d08ceb6b27488f7e5b",
+              "excerpt_text": "twelve million dollars ($12,000,000)"
+            }
+          ],
+          "examined_source_unit_id": null,
+          "reason_code": null,
           "rendered_value": "USD 12,000,000",
           "rendered_value_digest": "8db1c45cca2085b37cfc7dfa269bc541626c4f7d449cf21909faecd79406fa7b",
           "typed_value_digest": "c7416d3d3bd7a9b5d6b8e251c78abd8dac50b8d687a82d038dc7de736fecf6b5"
@@ -66,6 +82,7 @@
         {
           "field_key": "payment_deadline",
           "label": "Payment deadline",
+          "fact_state": "PRESENT",
           "value_type": "DURATION",
           "typed_value": {
             "bound_type": "WITHIN",
@@ -74,31 +91,73 @@
           },
           "unit": "DAY",
           "sort_value": 2,
+          "evidence_spans": [
+            {
+              "source_unit_id": "bffd6ef1ca486b357034edecbd378c601a2cc73d77147da539b27904b45538df",
+              "start_byte": 496,
+              "end_byte": 543,
+              "text_sha256": "aa72b0e085fc6c39ef340634fafddf1ae5547bf90d2d51e2b3adec1004711b6e",
+              "excerpt_text": "within two Business Days after such termination"
+            }
+          ],
+          "examined_source_unit_id": null,
+          "reason_code": null,
           "rendered_value": "Within two days after termination",
           "rendered_value_digest": "c2fd16263a9c7337a95784b1a1de534e64b9f55a7a5a6f98dc07dc5d73436bdf",
           "typed_value_digest": "632ed39143033b531312d8b6f8c58fd315de3294247040aabc2dbf2d7d2f2f83"
         },
         {
-          "field_key": "trigger_reference",
-          "label": "Trigger",
-          "value_type": "REFERENCE",
-          "typed_value": "Section 7.01(c)",
+          "field_key": "escrow_required",
+          "label": "Escrow required",
+          "fact_state": "PRESENT",
+          "value_type": "BOOLEAN",
+          "typed_value": false,
           "unit": null,
-          "sort_value": "Section 7.01(c)",
-          "rendered_value": "Termination by Parent under Section 7.01(c)",
-          "rendered_value_digest": "7b33ced7c006c85590b7e8fa17ac795e2c8d82f3cfd9a6424209bd83a4a69432",
-          "typed_value_digest": "c908e826322ec43670b12be2e8c4ddfc53c2097880d93114ed4868f7d1f8e13c"
+          "sort_value": 0,
+          "evidence_spans": [
+            {
+              "source_unit_id": "bffd6ef1ca486b357034edecbd378c601a2cc73d77147da539b27904b45538df",
+              "start_byte": 566,
+              "end_byte": 596,
+              "text_sha256": "f4293cf5e1473d663f4f5ac83d76b9e4ceeae2828523869ab14f6cd5ed004034",
+              "excerpt_text": "without any escrow or holdback"
+            }
+          ],
+          "examined_source_unit_id": null,
+          "reason_code": null,
+          "rendered_value": "No",
+          "rendered_value_digest": "1ea442a134b2a184bd5d40104401f2a37fbc09ccf3f4bc9da161c6099be3691d",
+          "typed_value_digest": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
         },
         {
-          "field_key": "payable_by",
-          "label": "Payable by",
-          "value_type": "PARTY",
-          "typed_value": "Company",
+          "field_key": "interest_rate",
+          "label": "Interest on late payment",
+          "fact_state": "ABSENT",
+          "value_type": "PERCENTAGE",
+          "typed_value": null,
           "unit": null,
-          "sort_value": "Company",
-          "rendered_value": "Company",
-          "rendered_value_digest": "de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b",
-          "typed_value_digest": "51c6c21a3102f2a319a05fd238e3d2c7dcd94ccc3423d7771946e57b97479d41"
+          "sort_value": null,
+          "evidence_spans": [],
+          "examined_source_unit_id": "bffd6ef1ca486b357034edecbd378c601a2cc73d77147da539b27904b45538df",
+          "reason_code": null,
+          "rendered_value": "Not stated in this Section",
+          "rendered_value_digest": "d9f401b45a1a2c2d09fc04bedece5a42fa164c146ce053f1abdfc30215c58104",
+          "typed_value_digest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+        },
+        {
+          "field_key": "trigger_regulatory_condition",
+          "label": "Regulatory-condition trigger",
+          "fact_state": "NOT_APPLICABLE",
+          "value_type": "ENUM",
+          "typed_value": null,
+          "unit": null,
+          "sort_value": null,
+          "evidence_spans": [],
+          "examined_source_unit_id": null,
+          "reason_code": "FIELD_NOT_IN_SUBTYPE_PROFILE",
+          "rendered_value": "Not applicable to a company termination fee",
+          "rendered_value_digest": "d6382e9f86f4c1ae9660e4e4a1cb851f589152e0c6e02f0387dfbea53e7eeecd",
+          "typed_value_digest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
         }
       ],
       "source": {
@@ -109,14 +168,14 @@
         "spans": [
           {
             "node_occurrence_id": "bffd6ef1ca486b357034edecbd378c601a2cc73d77147da539b27904b45538df",
-            "start_byte": 13,
-            "end_byte": 278,
-            "text_sha256": "f18815594af543fb5c71719298d34031e6af6977ac0efa90521687a5d51316af",
-            "excerpt_text": "Section 7.03 Termination Fee. If this Agreement is terminated by Parent pursuant to Section 7.01(c), the Company shall pay to Parent a fee of twelve million dollars ($12,000,000) — the \"Company Termination Fee\" — within two Business Days after such termination."
+            "start_byte": 279,
+            "end_byte": 597,
+            "text_sha256": "fc04d1e5ccd1f35efa514e656f510567f9b1f5923004063cd1aed86fffa5df4c",
+            "excerpt_text": "Section 7.03 Termination Fee. If this Agreement is terminated by Parent pursuant to Section 7.01(c), the Company shall pay to Parent a fee of twelve million dollars ($12,000,000) — the \"Company Termination Fee\" — within two Business Days after such termination, without interest and without any escrow or holdback."
           }
         ]
       },
-      "claim_revision_id": "f95312d5601bbfa8337d33e2ef73c6bd62f9b7fd2e70468b5b77412d0eb5db06"
+      "claim_revision_id": "5d409fb252ec7c4900540413fdca203618bc182d013f50a8ccbf03d2d2a4b5b3"
     },
     {
       "claim_occurrence_id": "d2a2ddb55cdab337258edd48d0bfd20b7bcaab8a41839f30c5266a64f17fe2da",
@@ -145,6 +204,7 @@
       "reason_codes": [
         "NOT_MODELLED_AS_A_COMPARABLE_TERM"
       ],
+      "limitation": null,
       "fields": [],
       "source": {
         "node_occurrence_ids": [
@@ -154,14 +214,14 @@
         "spans": [
           {
             "node_occurrence_id": "a2c5985b45c89047e50b764607e61280280f2324edc79aa1ba41e3fa7440a94b",
-            "start_byte": 599,
-            "end_byte": 740,
+            "start_byte": 12,
+            "end_byte": 153,
             "text_sha256": "9dc0aa7cfa17f18370b1040aff1c31306019d8cece63eafcc6d0710ab1190967",
             "excerpt_text": "Section 6.01 Conditions. The obligations of each party to effect the Merger are subject to the receipt of the Requisite Stockholder Approval."
           }
         ]
       },
-      "claim_revision_id": "fee9e87d41a8b3ff6254dfcf378962c2b3975aa814943229c443c2ec1d14840d"
+      "claim_revision_id": "2050a84afdde1cb5e317b70495eb387c58224a893c7e2c6e270fc3c237b45189"
     },
     {
       "claim_occurrence_id": "eb6fd36cc121a0a06b1a96f438a3883875c063274a90cb8a43f5d769e81e0771",
@@ -191,17 +251,37 @@
         "DEPENDENCY_UNRESOLVED",
         "MATERIAL_SPAN_UNMODELLED"
       ],
+      "limitation": null,
       "fields": [
         {
-          "field_key": "fee_amount_reference",
+          "field_key": "fee_amount",
           "label": "Fee amount",
-          "value_type": "DEFINED_TERM",
-          "typed_value": "Company Termination Fee",
+          "fact_state": "FAILED",
+          "value_type": "MONEY",
+          "typed_value": null,
           "unit": null,
-          "sort_value": "Company Termination Fee",
-          "rendered_value": "Not resolved: stated by reference to the Company Termination Fee",
-          "rendered_value_digest": "12bd17ed3a682a422caca37ab52b641d1e7775949ba4393a8e21af54b2dd54ec",
-          "typed_value_digest": "94bcaca4ca2fe77c67c3b1672ec67ad06d93163fd9f037050aa24030b04086d1"
+          "sort_value": null,
+          "evidence_spans": [],
+          "examined_source_unit_id": null,
+          "reason_code": null,
+          "rendered_value": "Not resolved: stated by reference and left open",
+          "rendered_value_digest": "1d95fc3a2d4b5752e5b600ae18b7155f50d3a54141a12ecc087a46d3a5a89bda",
+          "typed_value_digest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+        },
+        {
+          "field_key": "escrow_required",
+          "label": "Escrow required",
+          "fact_state": "NOT_EXAMINED",
+          "value_type": "BOOLEAN",
+          "typed_value": null,
+          "unit": null,
+          "sort_value": null,
+          "evidence_spans": [],
+          "examined_source_unit_id": null,
+          "reason_code": null,
+          "rendered_value": "Not examined",
+          "rendered_value_digest": "15836095259ce7deb4bb26f71de1df487d76cb2f39adb3adba20eacb244e8395",
+          "typed_value_digest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
         }
       ],
       "source": {
@@ -212,14 +292,89 @@
         "spans": [
           {
             "node_occurrence_id": "6d08379d2311bb0b221fd25d27b25fa7e8367e6c216b2588aca5acf85dd62589",
-            "start_byte": 280,
-            "end_byte": 597,
+            "start_byte": 599,
+            "end_byte": 916,
             "text_sha256": "d2d0f8f7489b604e56d369a2276c0c3a32413eed758ea8286d33fa5ad720c2e4",
             "excerpt_text": "Section 7.04 Parent Fee. If this Agreement is terminated by the Company pursuant to Section 7.01(d), Parent shall pay to the Company an amount equal to the Company Termination Fee, unless the Regulatory Condition shall then be capable of satisfaction, in which case such amount shall be as the parties may then agree."
           }
         ]
       },
-      "claim_revision_id": "0bbf6567aa94b696e0f2cb1b53b865c41986ee6894d98873c87e6b9fec7d4913"
+      "claim_revision_id": "f6cd8eba467ccdb67bb32032fd3f8a17c40baf6677dc2bcfce5d20069ba13803"
+    },
+    {
+      "claim_occurrence_id": "ecd1363cb6f289d757ba2b4539e54b2fac160402d81ffc3cad7b8b908dbd0c15",
+      "family_key": "TERMINATION_FEE",
+      "claim_definition_key": "TERMINATION_FEE_AMOUNT_PRESENT",
+      "classification_levels": [
+        {
+          "level": "APPLIES_TO",
+          "value": "Company"
+        },
+        {
+          "level": "PROVISION_TYPE",
+          "value": "Termination fee"
+        },
+        {
+          "level": "SUB_PROVISION_TYPE",
+          "value": "Reverse and company termination fees"
+        }
+      ],
+      "section_reference": "Section 7.05",
+      "state": {
+        "extraction_state": "COMPLETE",
+        "source_quality": "SOURCE_LIMITED",
+        "review_state": "APPROVED_LIMITED"
+      },
+      "reason_codes": [],
+      "limitation": {
+        "code": "TRIGGER_NOT_EXPRESSLY_STATED",
+        "text": "Not expressly stated in the complete reviewed clause: the Section caps reimbursable expenses but does not state the termination events that trigger reimbursement.",
+        "ruling_id": "5d60b618f56defe3cbc5766d0e7e7ed56bf2d85c42cd28c3a7421ee129948e09"
+      },
+      "fields": [
+        {
+          "field_key": "expense_cap",
+          "label": "Expense cap",
+          "fact_state": "PRESENT",
+          "value_type": "MONEY",
+          "typed_value": {
+            "amount": 500000,
+            "currency": "USD"
+          },
+          "unit": "USD",
+          "sort_value": 500000,
+          "evidence_spans": [
+            {
+              "source_unit_id": "2b454ba35d6f8448f71b43344e4fca8c0eb5f8b963396f7e607d67e01f124201",
+              "start_byte": 1036,
+              "end_byte": 1076,
+              "text_sha256": "6b260b0953e0bc368623b635f38f7b6d40288d2c37b254fa891169cd8551f8e2",
+              "excerpt_text": "five hundred thousand dollars ($500,000)"
+            }
+          ],
+          "examined_source_unit_id": null,
+          "reason_code": null,
+          "rendered_value": "USD 500,000",
+          "rendered_value_digest": "9e7e1ad41358a59d2b4dfce913cb40077dab47df358a115de76ca7f3b1b62312",
+          "typed_value_digest": "3f5965171ae540a4c61645b6076f45081f9eff7388d088e8c1bcd8e18f1df5dc"
+        }
+      ],
+      "source": {
+        "node_occurrence_ids": [
+          "2b454ba35d6f8448f71b43344e4fca8c0eb5f8b963396f7e607d67e01f124201"
+        ],
+        "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+        "spans": [
+          {
+            "node_occurrence_id": "2b454ba35d6f8448f71b43344e4fca8c0eb5f8b963396f7e607d67e01f124201",
+            "start_byte": 918,
+            "end_byte": 1077,
+            "text_sha256": "c2728f950910f1f621a006c3bcf7ae1c4aaba40c6b4b4904332504cb6f77c29e",
+            "excerpt_text": "Section 7.05 Expense Reimbursement. The Company shall reimburse the documented out-of-pocket expenses of Parent up to five hundred thousand dollars ($500,000)."
+          }
+        ]
+      },
+      "claim_revision_id": "84a21b3c9f498636b935f2090310199fd64e1088d183af97e9bea2aeb7f5a4b0"
     }
   ],
   "category_summaries": [
@@ -231,30 +386,31 @@
       ],
       "claim_occurrence_ids": [
         "c9ac7cc701c390d13eb0323b57772faa4f57fadbe86717d531cbbd8f2df8588e",
-        "eb6fd36cc121a0a06b1a96f438a3883875c063274a90cb8a43f5d769e81e0771"
+        "eb6fd36cc121a0a06b1a96f438a3883875c063274a90cb8a43f5d769e81e0771",
+        "ecd1363cb6f289d757ba2b4539e54b2fac160402d81ffc3cad7b8b908dbd0c15"
       ],
       "counts": {
         "NORMAL": 1,
-        "APPROVED_LIMITED": 0,
+        "APPROVED_LIMITED": 1,
         "REVIEW_ONLY": 1,
         "NO_COMPARISON": 0,
         "NO_OUTPUT": 0
       },
       "summary_review_state": "REVIEW_ONLY",
-      "category_summary_id": "74b7f7756a6c46e650ae77b8dd6c70b34102bcbc4c73f19a133df0fc46380026"
+      "category_summary_id": "3c2b58c09f7821af1fd35186e75b1e05d0cd67a4bcaaa781c2737941772ea1ae"
     }
   ],
   "counts": {
-    "claims": 3,
+    "claims": 4,
     "category_summaries": 1,
     "families": 2,
     "by_review_state": {
       "NORMAL": 1,
-      "APPROVED_LIMITED": 0,
+      "APPROVED_LIMITED": 1,
       "REVIEW_ONLY": 1,
       "NO_COMPARISON": 0,
       "NO_OUTPUT": 1
     }
   },
-  "deal_document_id": "c4201fada85b583146d55648fca333c03650f5296fd762caec6a12ca75ab28e4"
+  "deal_document_id": "989af01005eb0067cda83e26174d5ef6ebde04bd332e46b085933fb963d35797"
 }
