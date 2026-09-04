@@ -50,13 +50,20 @@ function readCorrection() {
   return JSON.parse(fs.readFileSync(path.join(ROOT, CORRECTION_PATH), 'utf8'));
 }
 
+// Mirrors the module: the identity covers what Ben reads and NOT the approval
+// block, so the id is the same before and after approval.
 function restamp(record) {
-  const unsigned = { ...record };
-  delete unsigned.correction_id;
+  const body = { ...record };
+  delete body.correction_id;
+  // The identity is computed over a COPY with the approval block removed; the
+  // record itself keeps its approval. Deleting from the object that is also
+  // spread below would ship a record with no approval at all.
+  const unsigned = { ...body };
+  delete unsigned.approval;
   return {
     schema_version: CORRECTION_SCHEMA,
     correction_id: contentId(CORRECTION_SCHEMA, unsigned),
-    ...Object.fromEntries(Object.entries(unsigned).filter(([key]) => key !== 'schema_version')),
+    ...Object.fromEntries(Object.entries(body).filter(([key]) => key !== 'schema_version')),
   };
 }
 
@@ -85,9 +92,10 @@ function approved(record) {
   return restamp({
     ...record,
     approval: {
-      state: 'BEN_APPROVED',
-      ben_approval_id: 'BEN-M7-V2-CANDIDATE-REPLACEMENT-CORRECTION-1-20260904',
       approved_on: '2026-09-04',
+      approver: 'BEN_GOODCHILD',
+      ben_approval_id: 'BEN-M7-V2-CANDIDATE-REPLACEMENT-CORRECTION-1-20260904',
+      state: 'BEN_APPROVED',
     },
   });
 }
@@ -106,33 +114,34 @@ test('a pending correction is recognised and applies nothing', async (t) => {
     assert.equal(record.drafted_by, 'LEAD');
     assert.equal(record.drafted_on, '2026-09-04');
     assert.deepEqual(record.approval, {
-      state: 'PENDING_BEN',
-      ben_approval_id: null,
       approved_on: null,
+      approver: 'BEN_GOODCHILD',
+      ben_approval_id: null,
+      state: 'PENDING_BEN',
     });
     assert.deepEqual(record.parent_authority_binding, authority.parent_authority_binding);
     assert.deepEqual(
       record.replacement_authority_binding,
       correctionModule.REPLACEMENT_AUTHORITY_BINDING,
     );
+    // The record carries the ONE correction Ben ruled on. The argv correction
+    // is held until its applier is reachable from the site that decides a
+    // successor manifest's argv; the rename correction until Q-0025 settles
+    // the field names it would rename this authority to match.
     assert.deepEqual(
       record.corrections.map((entry) => entry.code),
-      ['EXACT_ARGV_REGISTRATION_FLAG', 'ATTEMPT_RECORD_MEMBER_NAMES', 'CONTRACT_CHANGE_ADDED'],
+      ['CONTRACT_CHANGE_ADDED'],
     );
-    assert.deepEqual(
-      record.corrections[0].phase_keys,
-      authority.phases.map((phase) => phase.phase_key),
-    );
-    assert.deepEqual(record.corrections[1].renames, {
-      parser_hit_or_abstain_per_claim: 'parser_hit_or_abstain',
-      definition_resolution_rule_ids: 'definition_resolution',
-    });
+    assert.equal(record.corrections.length, 1);
     assert.equal(
-      record.corrections[2].contract_change,
-      'PROFILE_RESULTS_SCOPED_TO_OCCURRENCE_FAMILY',
+      record.corrections[0].contract_change,
+      'PROFILE_RESULTS_MATCHED_RETAINED_PLUS_FULL_SET_DIGEST',
     );
+    assert.equal(record.corrections[0].evaluation, 'ALL_25_FAMILIES_UNCHANGED');
+    assert.equal(record.approval.approver, 'BEN_GOODCHILD');
     const unsigned = { ...record };
     delete unsigned.correction_id;
+    delete unsigned.approval;
     assert.equal(contentId(CORRECTION_SCHEMA, unsigned), record.correction_id);
     assert.deepEqual(
       fs.readFileSync(path.join(ROOT, CORRECTION_PATH)),
@@ -189,9 +198,35 @@ test('a pending correction is recognised and applies nothing', async (t) => {
   });
 });
 
+// The committed record carries only the contract change Ben ruled on, so the
+// argv and rename appliers are exercised against a record that carries all
+// three. That is the point of the subset roster: the machinery for a held
+// correction still has to work on the day the correction is added.
+function withHeldCorrections(record, authority) {
+  return {
+    ...record,
+    corrections: [
+      {
+        change: 'append --registration <path> to the run entrypoint argv',
+        code: 'EXACT_ARGV_REGISTRATION_FLAG',
+        effective_argv_suffix: ['--registration', '<candidate registration path>'],
+        phase_keys: authority.phases.map((phase) => phase.phase_key),
+      },
+      {
+        code: 'ATTEMPT_RECORD_MEMBER_NAMES',
+        renames: {
+          definition_resolution_rule_ids: 'definition_resolution',
+          parser_hit_or_abstain_per_claim: 'parser_hit_or_abstain',
+        },
+      },
+      ...record.corrections,
+    ],
+  };
+}
+
 test('an approved correction applies its corrections and stops reporting itself pending', async (t) => {
   const authority = readAuthority();
-  const root = prepareTree(t, approved(readCorrection()));
+  const root = prepareTree(t, approved(withHeldCorrections(readCorrection(), authority)));
   const correction = loadAuthorityCorrection({ repoRoot: root });
 
   await t.test('approval with an approval id makes it effective', () => {
@@ -248,7 +283,7 @@ test('an approved correction applies its corrections and stops reporting itself 
     }
     assert.deepEqual(
       effectiveContractChanges(correction),
-      ['PROFILE_RESULTS_SCOPED_TO_OCCURRENCE_FAMILY'],
+      ['PROFILE_RESULTS_MATCHED_RETAINED_PLUS_FULL_SET_DIGEST'],
     );
   });
 
@@ -331,16 +366,95 @@ test('a correction that is not bound to the authority is refused', async (t) => 
     });
   });
 
-  await t.test('a correction missing one of the three corrections is refused', (subtest) => {
+  await t.test('an empty corrections roster is refused', (subtest) => {
     const record = readCorrection();
-    const short = restamp({
-      ...record,
-      corrections: record.corrections.slice(0, 2),
-    });
-    const root = prepareTree(subtest, short);
+    const root = prepareTree(subtest, restamp({ ...record, corrections: [] }));
     assert.throws(() => loadAuthorityCorrection({ repoRoot: root }), (error) => {
       assert.equal(error.code, 'CORRECTION_CONTRACT_DRIFT');
       return true;
     });
+  });
+
+  await t.test('a duplicated correction code is refused', (subtest) => {
+    const record = readCorrection();
+    const doubled = restamp({
+      ...record,
+      corrections: [record.corrections[0], record.corrections[0]],
+    });
+    const root = prepareTree(subtest, doubled);
+    assert.throws(() => loadAuthorityCorrection({ repoRoot: root }), (error) => {
+      assert.equal(error.code, 'CORRECTION_CONTRACT_DRIFT');
+      return true;
+    });
+  });
+
+  // The member that stops the contract change being read as
+  // evaluate-one-family-only, which is what Ben ruled against on 2026-09-04.
+  await t.test('a contract change that stops evaluating all 25 families is refused', (subtest) => {
+    const record = readCorrection();
+    const scoped = restamp({
+      ...record,
+      corrections: [{
+        ...record.corrections[0],
+        evaluation: 'OCCURRENCE_FAMILY_ONLY',
+      }],
+    });
+    const root = prepareTree(subtest, scoped);
+    assert.throws(() => loadAuthorityCorrection({ repoRoot: root }), (error) => {
+      assert.equal(error.code, 'CORRECTION_CONTRACT_DRIFT');
+      return true;
+    });
+  });
+
+  await t.test('an approval naming someone other than Ben is refused', (subtest) => {
+    const record = readCorrection();
+    const impostor = restamp({
+      ...record,
+      approval: { ...record.approval, approver: 'LEAD' },
+    });
+    const root = prepareTree(subtest, impostor);
+    assert.throws(() => loadAuthorityCorrection({ repoRoot: root }), (error) => {
+      assert.equal(error.code, 'CORRECTION_CONTRACT_DRIFT');
+      return true;
+    });
+  });
+
+  await t.test('an approval id that is not a Ben approval id is refused', (subtest) => {
+    const record = readCorrection();
+    const loose = restamp({
+      ...record,
+      approval: {
+        approved_on: '2026-09-05',
+        approver: 'BEN_GOODCHILD',
+        ben_approval_id: 'yes',
+        state: 'BEN_APPROVED',
+      },
+    });
+    const root = prepareTree(subtest, loose);
+    assert.throws(() => loadAuthorityCorrection({ repoRoot: root }), (error) => {
+      assert.equal(error.code, 'CORRECTION_CONTRACT_DRIFT');
+      return true;
+    });
+  });
+
+  // The defect this record's first draft carried: the identity covered the
+  // approval block, so approving rewrote the id and "Ben approved <id>" could
+  // never be checked against the record that ends up effective.
+  await t.test('approving does not change the correction id Ben approved', (subtest) => {
+    const record = readCorrection();
+    const approved = restamp({
+      ...record,
+      approval: {
+        approved_on: '2026-09-05',
+        approver: 'BEN_GOODCHILD',
+        ben_approval_id: 'BEN-M7-V2-CORRECTION-1-20260905',
+        state: 'BEN_APPROVED',
+      },
+    });
+    assert.equal(approved.correction_id, record.correction_id);
+    const root = prepareTree(subtest, approved);
+    const loaded = loadAuthorityCorrection({ repoRoot: root });
+    assert.equal(loaded.correction_id, record.correction_id);
+    assert.equal(loaded.effective, true);
   });
 });
