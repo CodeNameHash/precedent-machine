@@ -2107,7 +2107,11 @@ function allBindings(registration) {
 // roles below.
 //
 // Scoped review, 2026-09-04 (Ben authorised the item 4 closure below, not
-// this): refuse a computed specifier — `import(VARIABLE)`, a
+// this): a computed specifier in one of those five roles' own entry text is
+// refused by `refuseComputedSpecifiersInCompilerRoles`, which
+// `buildRegistration` calls BEFORE any binding is read, so the reason given
+// is the specific one rather than a generic BINDING_DRIFT. What follows here
+// concerns the closure walk only. Refuse a computed specifier — `import(VARIABLE)`, a
 // template literal, a concatenation — found in the ENTRY TEXT of one of
 // those five roles themselves (IMPORT_CLOSURE_COMPUTED_SPECIFIER, naming the
 // file and line). None of the five used the pattern at the time of this
@@ -2133,10 +2137,22 @@ function computedSpecifierLine(source) {
   return null;
 }
 
+// Runs before `validateCode`, so it must not be the thing that reports a
+// malformed specification: a role that is missing or is not a string is left
+// for validateCode to refuse with INVALID_SPECIFICATION, and a path that
+// cannot be read is left for the binding checks, which say so precisely.
 function refuseComputedSpecifiersInCompilerRoles(root, code) {
+  if (!isPlainObject(code)) return;
   for (const role of CODE_SINGLETON_ROLES) {
     const repositoryPath = code[role];
-    const line = computedSpecifierLine(readBytes(root, repositoryPath).toString('utf8'));
+    if (typeof repositoryPath !== 'string' || repositoryPath.length === 0) continue;
+    let source;
+    try {
+      source = readBytes(root, repositoryPath).toString('utf8');
+    } catch {
+      continue;
+    }
+    const line = computedSpecifierLine(source);
     if (line !== null) {
       fail('IMPORT_CLOSURE_COMPUTED_SPECIFIER', `${repositoryPath}:${line}`);
     }
@@ -2144,7 +2160,6 @@ function refuseComputedSpecifiersInCompilerRoles(root, code) {
 }
 
 function buildImportClosureBindings(root, code) {
-  refuseComputedSpecifiersInCompilerRoles(root, code);
   const entryPaths = [
     code.compiler, code.deterministic_generator, code.contract_validator,
     code.projector, code.independent_verifier,
@@ -2169,6 +2184,14 @@ function buildImportClosureBindings(root, code) {
 
 function buildRegistration(root, specification, interim = null) {
   assert(exactKeys(specification, SPECIFICATION_KEYS), 'INVALID_SPECIFICATION', 'specification');
+  // Before any binding is read: a computed specifier in one of the five
+  // single-file compiler roles is refused on its own terms, naming the file
+  // and line. It sat inside buildImportClosureBindings at first, which runs
+  // after every predecessor and code binding has been verified -- so a
+  // compiler role carrying one was reported as BINDING_DRIFT, the generic
+  // "these bytes are not the bytes I expected", and the specific reason was
+  // never reached. Both are refusals; this one says why.
+  refuseComputedSpecifiersInCompilerRoles(root, specification.code);
   const governance = validateAuthorityChain(root);
   const predecessors = validatePredecessors(root, specification.predecessor_receipts);
   const predecessorReceiptBindings = predecessors.bindings;
