@@ -8581,14 +8581,6 @@ test('deterministic generator fails closed on multi-occurrence ambiguity and dri
       },
     },
     {
-      name: 'two claims share one governed node',
-      mutate(input) {
-        input.baseAnalysis.claims[1].source_node_occurrence_ids = [
-          input.baseAnalysis.claims[0].source_node_occurrence_ids[0],
-        ];
-      },
-    },
-    {
       name: 'two nodes on one claim',
       mutate(input) {
         input.baseAnalysis.claims[0].source_node_occurrence_ids.push(
@@ -9076,6 +9068,26 @@ test('deterministic generator fails closed on multi-occurrence ambiguity and dri
       fixtureCase.name,
     );
   }
+});
+
+test('deterministic generator keeps two claims that share one governed node', () => {
+  const fixture = twoOccurrenceGeneratorFixture();
+  const input = clone(fixture.generatorInput);
+  const sharedNodeId = input.baseAnalysis.claims[0].source_node_occurrence_ids[0];
+  input.baseAnalysis.claims[1].source_node_occurrence_ids = [sharedNodeId];
+  const generated = generateAnalysisV2(input);
+  assert.equal(generated.rules.length, 2);
+  assert.equal(generated.counts.rules, 2);
+  assert.equal(generated.counts.source_closures, 1);
+  assert.equal(generated.source_closures.length, 1);
+  assert.equal(generated.source_closures[0].source_node_occurrence_id, sharedNodeId);
+  assert.deepEqual(
+    generated.rules.map((rule) => rule.authored_unit_id),
+    [sharedNodeId, sharedNodeId],
+  );
+  assert.equal(generated.rules[0].rule_id !== generated.rules[1].rule_id, true);
+  assert.deepEqual(generated.rules[0].linked_rule_ids, [generated.rules[1].rule_id]);
+  assert.deepEqual(generated.rules[1].linked_rule_ids, [generated.rules[0].rule_id]);
 });
 
 test(cases.structure_overlay_case.case_id, () => {
