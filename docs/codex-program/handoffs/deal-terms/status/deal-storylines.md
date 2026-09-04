@@ -1,6 +1,6 @@
 # Deal Storylines consumer status
 
-Updated: 2026-09-04 after A-0010
+Updated: 2026-09-04 after A-0011
 
 ## Waiting on PM
 
@@ -61,3 +61,6 @@ Updated: 2026-09-04 after A-0010
   corpus is proposed external work. It has no adopted producer milestone,
   package identity, owner or date. Ben must decide that producer expansion
   before DS can treat it as a committed dependency.
+- A-0011 changes channel cadence only. DS polls at most once every six hours,
+  batches non-blocking questions and expects answers with the next producer
+  delivery. All contract, corpus and milestone facts above remain unchanged.
