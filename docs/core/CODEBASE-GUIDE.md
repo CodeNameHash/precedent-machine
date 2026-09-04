@@ -546,10 +546,16 @@ gates sit between a projection and a screen:
   (`lib/canonical-v2/*-serving-source.js`) that decides, for a specific
   family, whether Canonical V2's own data is trustworthy enough to be the
   thing a real user is actually served, gated by its own environment
-  variable, separate from the dark-bridge gate. As of this writing exactly
-  one such module exists, `lib/canonical-v2/termination-fee-serving-
-  source.js`; see the worked example below for what "serving" means
-  concretely. This is the "cheap pattern" DECISIONS.md item 13 chose over a
+  variable, separate from the dark-bridge gate. As of this writing two such
+  modules exist: `lib/canonical-v2/termination-fee-serving-source.js` (see
+  the worked example below for what "serving" means concretely), and
+  `lib/canonical-v2/termination-rights-review-serving-source.js`, called
+  from the same route (`pages/api/review/[id]/cards.js`) immediately after
+  it. The latter's default registry for five preview deal ids compiles a
+  synthetic fixture rather than a real agreement analysis, and is
+  quarantined by an `isAdmittedRealAgreementAnalysis` gate (refuses with an
+  HTTP 410 rather than serve it) — `docs/core/GRAVEYARD.md` entry 17 has the
+  full account. This is the "cheap pattern" DECISIONS.md item 13 chose over a
   more elaborate, partially-built certification chain for the same purpose
   (the metric-scoped serving-admission chain); that chain is described, and
   its status explained, in `docs/core/GRAVEYARD.md` entry 1.

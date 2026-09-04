@@ -959,6 +959,94 @@ blocker, and do not register the fingerprint ahead of one.
 
 ---
 
+## 17. The synthetic-fixture Termination Rights review preview (quarantined, 2026-09-04)
+
+**What it is.** `lib/canonical-v2/termination-rights-review-serving-source.js`'s
+default registry (`CANONICAL_TERMINATION_RIGHTS_REVIEW_SOURCES`,
+`buildRedHatTerminationRightsReviewSource`), registered for five real
+production deal ids -- `RED_HAT_DEAL_ID` (`2b9a6571-6fe7-4aac-931d-
+a96ab227ea43`), `METSERA_DEAL_ID`, `SKECHERS_DEAL_ID`, `SKYWATER_DEAL_ID`,
+`CONCHO_DEAL_ID` -- all pointing at the same builder. It runs
+`generateAnalysisV2` on `__fixtures__/canonical-v2/red-hat-termination-
+rights-serving.generated.js`'s `GENERATOR_INPUT`, whose `source_binding.
+canonical_text` is exactly 49 UTF-8 bytes: `"shall Company and Parent
+familytermination all_of"`. `pages/api/review/[id]/cards.js` calls
+`attachCanonicalTerminationRightsReview`, which reaches this registry, on
+every request for one of the five deals above.
+
+**When and why it was built.** A preview-only path for demonstrating the
+Termination Rights V2 review UI (rows, groups, Stage B disclosure notes)
+against the five deals slated to carry real Termination Rights data, ahead
+of the M7 V2 repair actually producing that data. Registered
+`docs/codex-program/notes/TERMINATION-PREVIEW-SERVING-REGISTRATION-2026-08-24.md`.
+
+**Why it is quarantined now, not deleted.** The external verify-finding
+delivery `13-SYNTHETIC-SERVING-PATH.md` (branch `ext/m7-verify-finding`)
+identified that nothing distinguished this synthetic, 49-byte-compiled
+output from a real agreement analysis once it passed `validateAnalysisV2`
+-- that validator only checks a bundle's own internal self-consistency,
+never that it traces to a real, admitted corpus record. Concretely: the
+fixture's `agreement_id` (`06ec3016…`) IS a member of the sealed M7 V2 Work
+3 corpus (`evidence/canonical-v2/stage-2y-structure-migration/control/
+m7-v2-repair-work3-agreement-analysis-set.json`), so agreement_id
+membership alone cannot catch it; and its `governance.
+candidate_registration_id` (`8b8b7f70…`) is a THIRD id that matches no
+candidate registration file anywhere in this repository -- not the one
+real, currently-registered candidate (`9a3ccbf7…`, stopped by
+`docs/codex-program/notes/WORK5-BLOCKED-CANDIDATE-NOT-EXECUTABLE-ON-REAL-
+TEXT-2026-09-03.md` for being unable to compile real agreement text at all)
+and not the superseded one before it (`0e46052b…`). Ben's instruction
+(product code, outside the M7 repair authority in `docs/core/OPERATING-
+RULES.md`'s authority boundary): no request path may serve V2 output
+compiled from synthetic fixture text. The registry, the fixture, and the
+UI it feeds are real, tested, working code with a legitimate future use
+(demonstrating the review surface once real Termination Rights data
+exists) -- not abandoned code, so deletion would destroy work with no
+reason to. `isAdmittedRealAgreementAnalysis()` (added to the same serving-
+source module) is the gate: an analysis is served only when its
+`agreement_id` is a sealed Work 3 corpus member AND its governance names a
+candidate registration this repository actually admits -- today, an empty
+allowlist, because no registration has yet compiled real agreement text. A
+refusal is a `SyntheticV2AnalysisRefusedError`, thrown rather than
+swallowed into the existing FAILED-status-inside-a-200 degrade path, so
+`pages/api/review/[id]/cards.js` turns it into an HTTP 410. This closes the
+path everywhere it is reachable (`isPermittedCanonicalV2Runtime` already
+keeps it off in production; the gate now also refuses it on preview and
+local, where the serving sentinel can be turned on) without touching the
+fixture, the registry shape, or the UI components that would render real
+data the moment the allowlist admits a registration.
+
+**Whether anything still references it.** `grep -rln
+"buildRedHatTerminationRightsReviewSource" lib/ pages/ scripts/ tests/
+__fixtures__/` returns the registry itself
+(`lib/canonical-v2/termination-rights-review-serving-source.js`) and
+`tests/canonical-v2-termination-rights-preview-registration.test.js`.
+Separately, `grep -rl "attachCanonicalTerminationRightsReview" pages/`
+confirms the one served route that reaches the registry:
+`pages/api/review/[id]/cards.js`, importing the function by name, not
+mentioning the builder or the fixture path directly. The fixture module's
+own header names its generator,
+`scripts/generate-red-hat-termination-rights-serving-module.mjs`, which
+regenerates it from `tests/stage-2y-structure-m7-v2-repair-contract.test.js`'s
+`buildGovernedCompilerPreviewBundle`. The new gate itself is exercised by
+`tests/canonical-v2-termination-rights-review-synthetic-quarantine.test.js`
+(added with this quarantine) and the six tests in
+`tests/canonical-v2-termination-rights-preview-registration.test.js` that
+used to assert successful synthetic-row rendering for the five deals and
+now assert the refusal instead.
+
+**Recommendation: keep, gated to empty, until Work 5 produces an admitted
+registration.** Nothing here is dead -- it is a real, tested preview
+mechanism, deliberately closed by an explicit, provable, and currently-
+empty allowlist rather than by deletion, exactly the "quarantine over
+delete" instruction it was built to satisfy. Once a future M7 V2 candidate
+registration actually compiles real agreement text for one of the five
+deals and is added to `ADMITTED_M7_V2_CANDIDATE_REGISTRATION_IDS`, this
+same registry starts serving real rows for that deal with no further code
+change.
+
+---
+
 ## What was checked and ruled out
 
 Recorded so nobody re-investigates the same dead ends. Each of these was a

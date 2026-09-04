@@ -176,12 +176,21 @@ test('Stage B display notes attach to the Termination Rights review path without
 });
 
 test('the cards serving path applies a registered Stage B blueprint after assembly', async () => {
+  // Stub sealed-corpus / admitted-registration sets so this mock analysis
+  // clears the quarantine gate (docs/core/GRAVEYARD.md entry 17, runs
+  // unconditionally) -- see that gate's comment in
+  // lib/canonical-v2/termination-rights-review-serving-source.js. Never
+  // widen the real production defaults.
+  const STUB_AGREEMENT_ID = 'stub-agreement-id';
+  const STUB_REGISTRATION_ID = 'stub-admitted-registration-id';
   const agreementIndexes = [{
     schema_version: 'AGREEMENT_INDEX/V1',
     agreement_index_id: 'agreement-index:1',
   }];
   const analysis = {
     schema_version: 'AGREEMENT_ANALYSIS/V2',
+    agreement_id: STUB_AGREEMENT_ID,
+    governance: { candidate_registration_id: STUB_REGISTRATION_ID },
     source_closures: [{
       agreement_index_binding: {
         record_id_field: 'agreement_index_id',
@@ -216,6 +225,8 @@ test('the cards serving path applies a registered Stage B blueprint after assemb
       [DEAL_ID]: { open_review_keys: [], prompts: [], fact_groups: [] },
     },
     stageBBlueprints: { [DEAL_ID]: stageBBlueprint() },
+    sealedAgreementIds: new Set([STUB_AGREEMENT_ID]),
+    admittedRegistrationIds: new Set([STUB_REGISTRATION_ID]),
   });
 
   const fact = result[REVIEW_ROWS_FIELD]

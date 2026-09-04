@@ -18,14 +18,11 @@ const {
   CANONICAL_V2_TERMINATION_RIGHTS_REVIEW_SERVING_ENABLED_VALUE,
   CONCHO_DEAL_ID,
   METSERA_DEAL_ID,
-  METSERA_OUTSIDE_DATE_PROFILE_KEY,
   PREVIEW_TERMINATION_DEAL_IDS,
-  RED_HAT_BREACH_PROFILE_KEY,
   RED_HAT_DEAL_ID,
-  RED_HAT_OUTSIDE_DATE_PROFILE_KEY,
   SKECHERS_DEAL_ID,
-  SKECHERS_OUTSIDE_DATE_PROFILE_KEY,
   SKYWATER_DEAL_ID,
+  SyntheticV2AnalysisRefusedError,
   createCanonicalTerminationRightsReviewAttacher,
   isCanonicalV2TerminationRightsReviewServingEnabled,
 } = require('../lib/canonical-v2/termination-rights-review-serving-source');
@@ -105,12 +102,25 @@ test('planned preview gate matches termination-fee fail-closed semantics', () =>
 });
 
 test('registration contract: only the registered Red Hat deal attaches V2 review rows', async () => {
+  // Stub sealed-corpus / admitted-registration sets: the quarantine gate
+  // (docs/core/GRAVEYARD.md entry 17) runs unconditionally on every
+  // analysis, so this mock must now opt in explicitly rather than rely on
+  // the (empty, real) production defaults -- see that gate's comment in
+  // lib/canonical-v2/termination-rights-review-serving-source.js.
+  const STUB_AGREEMENT_ID = 'stub-red-hat-agreement-id';
+  const STUB_REGISTRATION_ID = 'stub-red-hat-admitted-registration-id';
+  const admission = {
+    sealedAgreementIds: new Set([STUB_AGREEMENT_ID]),
+    admittedRegistrationIds: new Set([STUB_REGISTRATION_ID]),
+  };
   const agreementIndexes = [{
     schema_version: 'AGREEMENT_INDEX/V1',
     agreement_index_id: 'agreement-index:red-hat',
   }];
   const analysis = {
     schema_version: 'AGREEMENT_ANALYSIS/V2',
+    agreement_id: STUB_AGREEMENT_ID,
+    governance: { candidate_registration_id: STUB_REGISTRATION_ID },
     source_closures: [{
       agreement_index_binding: {
         record_id_field: 'agreement_index_id',
@@ -169,7 +179,12 @@ test('registration contract: only the registered Red Hat deal attaches V2 review
 
   const registered = await attach(
     { dealId: RED_HAT_DEAL_ID, cards: [{ type: 'TERMR', provision_subtype: 'TERMR-OUTSIDE' }] },
-    { sources, reviewState, stageBBlueprints: { [RED_HAT_DEAL_ID]: stageBBlueprintFromRuling() } },
+    {
+      sources,
+      reviewState,
+      stageBBlueprints: { [RED_HAT_DEAL_ID]: stageBBlueprintFromRuling() },
+      ...admission,
+    },
   );
   assert.equal(
     registered.canonical_v2_termination_rights_review_rows.schema_version,
@@ -235,132 +250,77 @@ test('the real export is an exact no-op when the preview serving gate is off', a
   );
 });
 
-test('Red Hat preview rows render through the V2 review group builder', async () => {
-  const { buildTerminationRightsReviewGroups } = await import(
-    '../components/review/table-configs/termination-rights-review-groups.js'
-  );
+// Quarantine (2026-09-04, docs/core/GRAVEYARD.md entry 17): all five deals
+// below share the same default source builder
+// (buildRedHatTerminationRightsReviewSource, lib/canonical-v2/termination-
+// rights-review-serving-source.js), which compiles the 49-byte synthetic
+// Red Hat fixture rather than a real agreement analysis. These five tests
+// used to assert that turning the preview gate on rendered that synthetic
+// output as review rows; they now assert the opposite -- that the gate
+// refuses to serve it -- which is the whole point of the quarantine.
+test('Red Hat preview is refused: not backed by an admitted real-agreement analysis', async () => {
   const env = {
     [PLANNED_SERVING_ENV_KEY]: PLANNED_SERVING_ENABLED_VALUE,
     VERCEL_ENV: 'preview',
   };
-  const attached = await attachCanonicalTerminationRightsReview(
-    { dealId: RED_HAT_DEAL_ID, cards: [] },
-    { env },
+  await assert.rejects(
+    () => attachCanonicalTerminationRightsReview({ dealId: RED_HAT_DEAL_ID, cards: [] }, { env }),
+    (error) => error instanceof SyntheticV2AnalysisRefusedError && error.dealId === RED_HAT_DEAL_ID,
   );
-  const groups = buildTerminationRightsReviewGroups(attached);
-  const propositionGroup = groups.find(
-    (group) => group?.id === 'canonical-v2-termination-right-propositions',
-  );
-  assert.ok(propositionGroup);
-  assert.equal(propositionGroup.rows.length, 1);
-  assert.equal(propositionGroup.rows[0].label, 'Legal restraint right');
 });
 
-test('Metsera preview rows render through the V2 review group builder', async () => {
-  const { buildTerminationRightsReviewGroups } = await import(
-    '../components/review/table-configs/termination-rights-review-groups.js'
-  );
+test('Metsera preview is refused: not backed by an admitted real-agreement analysis', async () => {
   const env = {
     [PLANNED_SERVING_ENV_KEY]: PLANNED_SERVING_ENABLED_VALUE,
     VERCEL_ENV: 'preview',
   };
-  const attached = await attachCanonicalTerminationRightsReview(
-    { dealId: METSERA_DEAL_ID, cards: [] },
-    { env },
-  );
-  const groups = buildTerminationRightsReviewGroups(attached);
-  const propositionGroup = groups.find(
-    (group) => group?.id === 'canonical-v2-termination-right-propositions',
-  );
-  assert.ok(propositionGroup);
-  assert.equal(propositionGroup.rows.length, 1);
-  assert.equal(propositionGroup.rows[0].label, 'Outside date right');
-  assert.equal(
-    attached.canonical_v2_termination_rights_review_rows.rows[0].profile_key,
-    METSERA_OUTSIDE_DATE_PROFILE_KEY,
+  await assert.rejects(
+    () => attachCanonicalTerminationRightsReview({ dealId: METSERA_DEAL_ID, cards: [] }, { env }),
+    (error) => error instanceof SyntheticV2AnalysisRefusedError && error.dealId === METSERA_DEAL_ID,
   );
 });
 
-test('Skechers preview bridge renders the approved outside-date partial profile', async () => {
-  const { buildTerminationRightsReviewGroups } = await import(
-    '../components/review/table-configs/termination-rights-review-groups.js'
-  );
+test('Skechers preview is refused: not backed by an admitted real-agreement analysis', async () => {
   const env = previewEnv();
-  const attached = await attachCanonicalTerminationRightsReview(
-    { dealId: SKECHERS_DEAL_ID, cards: [] },
-    { env },
-  );
-  const groups = buildTerminationRightsReviewGroups(attached);
-  const propositionGroup = groups.find(
-    (group) => group?.id === 'canonical-v2-termination-right-propositions',
-  );
-  assert.ok(propositionGroup);
-  assert.equal(propositionGroup.rows[0].label, 'Outside date right');
-  assert.equal(
-    attached.canonical_v2_termination_rights_review_rows.rows[0].profile_key,
-    SKECHERS_OUTSIDE_DATE_PROFILE_KEY,
+  await assert.rejects(
+    () => attachCanonicalTerminationRightsReview({ dealId: SKECHERS_DEAL_ID, cards: [] }, { env }),
+    (error) => error instanceof SyntheticV2AnalysisRefusedError && error.dealId === SKECHERS_DEAL_ID,
   );
 });
 
-test('SkyWater preview bridge renders the Red Hat outside-date partial profile', async () => {
-  const { buildTerminationRightsReviewGroups } = await import(
-    '../components/review/table-configs/termination-rights-review-groups.js'
-  );
+test('SkyWater preview is refused: not backed by an admitted real-agreement analysis', async () => {
   const env = previewEnv();
-  const attached = await attachCanonicalTerminationRightsReview(
-    { dealId: SKYWATER_DEAL_ID, cards: [] },
-    { env },
-  );
-  const groups = buildTerminationRightsReviewGroups(attached);
-  const propositionGroup = groups.find(
-    (group) => group?.id === 'canonical-v2-termination-right-propositions',
-  );
-  assert.ok(propositionGroup);
-  assert.equal(propositionGroup.rows[0].label, 'Outside date right');
-  assert.equal(
-    attached.canonical_v2_termination_rights_review_rows.rows[0].profile_key,
-    RED_HAT_OUTSIDE_DATE_PROFILE_KEY,
+  await assert.rejects(
+    () => attachCanonicalTerminationRightsReview({ dealId: SKYWATER_DEAL_ID, cards: [] }, { env }),
+    (error) => error instanceof SyntheticV2AnalysisRefusedError && error.dealId === SKYWATER_DEAL_ID,
   );
 });
 
-test('Concho preview bridge renders the Red Hat breach profile', async () => {
-  const { buildTerminationRightsReviewGroups } = await import(
-    '../components/review/table-configs/termination-rights-review-groups.js'
-  );
+test('Concho preview is refused: not backed by an admitted real-agreement analysis', async () => {
   const env = previewEnv();
-  const attached = await attachCanonicalTerminationRightsReview(
-    { dealId: CONCHO_DEAL_ID, cards: [] },
-    { env },
-  );
-  const groups = buildTerminationRightsReviewGroups(attached);
-  const propositionGroup = groups.find(
-    (group) => group?.id === 'canonical-v2-termination-right-propositions',
-  );
-  assert.ok(propositionGroup);
-  assert.equal(propositionGroup.rows[0].label, 'Breach right');
-  assert.equal(
-    attached.canonical_v2_termination_rights_review_rows.rows[0].profile_key,
-    RED_HAT_BREACH_PROFILE_KEY,
+  await assert.rejects(
+    () => attachCanonicalTerminationRightsReview({ dealId: CONCHO_DEAL_ID, cards: [] }, { env }),
+    (error) => error instanceof SyntheticV2AnalysisRefusedError && error.dealId === CONCHO_DEAL_ID,
   );
 });
 
-test('Red Hat preview rows appear in the Termination Rights section selectRows', async () => {
-  const { terminationRightsConfig } = await import(
-    '../components/review/table-configs/termination-rights.config.js'
-  );
+test('the cards route turns the Red Hat preview refusal into an HTTP 410, not a 200', async () => {
   const env = {
     [PLANNED_SERVING_ENV_KEY]: PLANNED_SERVING_ENABLED_VALUE,
     VERCEL_ENV: 'preview',
   };
-  const attached = await attachCanonicalTerminationRightsReview(
-    { dealId: RED_HAT_DEAL_ID, cards: [] },
-    { env },
-  );
-  const rows = terminationRightsConfig.selectRows(attached);
-  assert.equal(rows.length, 1);
-  assert.ok(rows[0].groups.some(
-    (group) => group.id === 'canonical-v2-termination-right-propositions',
-  ));
+  let caught = null;
+  try {
+    await attachCanonicalTerminationRightsReview({ dealId: RED_HAT_DEAL_ID, cards: [] }, { env });
+  } catch (error) {
+    caught = error;
+  }
+  // pages/api/review/[id]/cards.js catches exactly this error type and
+  // responds res.status(410) instead of falling through to its generic 500
+  // -- see that file's catch block. Asserted here on the error's shape
+  // (instanceof + code), never on the route file's source text.
+  assert.ok(caught instanceof SyntheticV2AnalysisRefusedError);
+  assert.equal(caught.code, 'CANONICAL_V2_SYNTHETIC_ANALYSIS_REFUSED');
 });
 
 test('cards route still calls attachCanonicalTerminationRightsReview after termination fee', () => {

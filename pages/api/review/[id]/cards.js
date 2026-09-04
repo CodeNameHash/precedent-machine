@@ -6,6 +6,7 @@ import { attachCanonicalTerminationFeeServing } from '../../../../lib/canonical-
 import {
   attachCanonicalTerminationRightsReview,
   terminationRightsReviewCacheControl,
+  SyntheticV2AnalysisRefusedError,
 } from '../../../../lib/canonical-v2/termination-rights-review-serving-source';
 
 // Cap runaway executions: when Supabase stalls, uncapped functions run the
@@ -73,6 +74,16 @@ export default async function handler(req, res) {
     // lib/queries/review-deal-wire.js for what and why.
     return res.status(200).json({ reviewDeal: trimReviewDealForWire(rightsReviewDeal) });
   } catch (error) {
+    // Quarantine gate (2026-09-04): attachCanonicalTerminationRightsReview
+    // throws SyntheticV2AnalysisRefusedError, instead of degrading to a
+    // FAILED status inside a 200, when the Termination Rights V2 source is
+    // not backed by an admitted real-agreement analysis (see
+    // lib/canonical-v2/termination-rights-review-serving-source.js's header
+    // comment). That must reach the client as a hard refusal, distinct from
+    // every other failure below, which still degrades to a generic 500.
+    if (error instanceof SyntheticV2AnalysisRefusedError) {
+      return fail(res, 410, error.message);
+    }
     return fail(res, 500, error.message || String(error));
   }
 }
