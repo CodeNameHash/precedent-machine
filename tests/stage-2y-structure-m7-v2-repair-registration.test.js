@@ -1407,6 +1407,58 @@ test('M7 V2 candidate registration is immutable, content-addressed and independe
     );
   });
 
+  // Ben, 2026-09-04: unlike a test role, one of the five single-file compiler
+  // roles is refused if a specifier assembled at runtime appears in ITS OWN
+  // entry text — naming the file and the line the pattern was found on.
+  await t.test(
+    'a specifier assembled at runtime in a compiler role is refused, naming file and line',
+    () => {
+      const fixture = makeFixture(t, work2Template);
+      const compilerPath = fixture.specification.code.compiler;
+      const originalText = fs.readFileSync(path.join(fixture.root, compilerPath), 'utf8');
+      const injectedLine = originalText.endsWith('\n')
+        ? originalText.split('\n').length
+        : originalText.split('\n').length + 1;
+      const injectedText = `${originalText}${originalText.endsWith('\n') ? '' : '\n'}`
+        + 'const computedSpecifierProbe = require(process.env.M7_V2_TEST_PROBE_PATH);\n';
+      write(fixture.root, compilerPath, Buffer.from(injectedText, 'utf8'));
+      assert.throws(() => builder.registerCandidate({
+        repoRoot: fixture.root,
+        specification: fixture.specification,
+        write: false,
+      }), (error) => {
+        assert.equal(error.code, 'IMPORT_CLOSURE_COMPUTED_SPECIFIER');
+        assert.ok(error.message.includes(`${compilerPath}:${injectedLine}`), error.message);
+        return true;
+      });
+      write(fixture.root, compilerPath, Buffer.from(originalText, 'utf8'));
+
+      // The same pattern, in the same fixture with the compiler role
+      // restored, in a bound TEST role rather than a compiler role, still
+      // registers — the refusal is scoped to exactly the five singleton
+      // roles, not the whole closure.
+      const testProbePath =
+        'tests/stage-2y-structure-m7-v2-repair-computed-specifier-role-probe.test.js';
+      write(fixture.root, testProbePath, Buffer.from(
+        'require(process.env.M7_V2_TEST_PROBE_PATH);\n',
+        'utf8',
+      ));
+      const withTestProbe = clone(fixture.specification);
+      withTestProbe.code = {
+        ...withTestProbe.code,
+        tests: [...withTestProbe.code.tests, testProbePath].sort(),
+      };
+      assert.equal(
+        builder.registerCandidate({
+          repoRoot: fixture.root,
+          specification: withTestProbe,
+          write: false,
+        }).registration.lifecycle_state,
+        'CANDIDATE_PENDING_REVIEW',
+      );
+    },
+  );
+
   // The two registrations the replacement authority supersedes predate both
   // the import closure and the authority's permission to edit the files they
   // bind. They still verify, from the Git objects they named, and they say so.

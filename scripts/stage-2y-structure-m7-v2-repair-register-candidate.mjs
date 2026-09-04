@@ -58,6 +58,22 @@ const { validateFamilyProfilePackageSetForWork3 } = m7V2ContractModule;
 // that script is one of REQUIRED_RUNNERS below. Refusing the closure member
 // would refuse every candidate registration. The V1 lineage stays out of
 // bounds where the authority actually puts it: as a source of V2 inputs.
+//
+// Ben, 2026-09-04, closed this as intent already satisfied, literal
+// instruction impossible: the authority's `v2_input_extensions[].origin`
+// prose is the only place this module is named — there is no
+// machine-readable roster anywhere in the authority chain that a closure
+// walk could check the module's path against — so "never appears in a
+// closure" cannot be built, ever, against this authority. What the authority
+// actually forbids — the V1 lineage being consumed AS a source of V2
+// inputs — is enforced today: `validateSemanticInputs` accepts only the six
+// V2 `semantic_inputs` schema versions named in `SEMANTIC_INPUTS` below and
+// refuses V1_SEMANTIC_FALLBACK for the legacy schema names, so nothing this
+// module reads from `lib/canonical-v2/m7-deterministic-generalisation.js` can
+// enter a registration as an input. The module's continued presence in the
+// closure is the required runner's own static dependency
+// (`scripts/stage-2y-structure-generalisation-shadow.mjs:22`), not an input,
+// and that distinction is what this closure permits.
 
 const REGISTRATION_SCHEMA = 'STAGE_2Y_M7_V2_CANDIDATE_REGISTRATION/V1';
 const REGISTRATION_ROOT = 'evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-candidate-registrations';
@@ -2081,11 +2097,54 @@ function allBindings(registration) {
 
 // `registration_schema_extensions.import_closure_binding_required`: the
 // registration binds not only the code roles it names but every repository
-// module the static import graph of those roles can reach. A specifier that
-// cannot be read as a string is refused by the closure walk itself
-// (IMPORT_CLOSURE_UNRESOLVED, naming the file and line), so a registration
-// cannot silently under-report what its bound code loads.
+// module the static import graph of those roles can reach. An entry module
+// that cannot be read as a string is refused by the closure walk itself
+// (IMPORT_CLOSURE_UNRESOLVED, naming it), and — beyond that — a specifier
+// assembled at runtime anywhere in the closure is an under-approximation, not
+// a refusal: `lib/canonical-v2/m7-v2-import-closure.js` explains why the walk
+// cannot follow one, and every example it names is a bound TEST role or
+// `lib/review-parity/views.js`, never one of the five single-file compiler
+// roles below.
+//
+// Scoped review, 2026-09-04 (Ben authorised the item 4 closure below, not
+// this): refuse a computed specifier — `import(VARIABLE)`, a
+// template literal, a concatenation — found in the ENTRY TEXT of one of
+// those five roles themselves (IMPORT_CLOSURE_COMPUTED_SPECIFIER, naming the
+// file and line). None of the five used the pattern at the time of this
+// ruling, so the refusal costs no registration. It reaches only the five
+// files' own source, not anything they load: a runner, a test, or a closure
+// member beyond the five may still use the pattern the walk cannot follow.
+const COMPUTED_SPECIFIER_CALL_PATTERN = /\b(?:require|import)\s*\(\s*([^)]*)\)/g;
+const LITERAL_SPECIFIER_ARGUMENT = /^(['"])[^'"\n\r]*\1$/;
+
+// The first computed `require(...)` / `import(...)` call in `source`, as a
+// 1-based line number, or null if every such call's argument is a single
+// string literal. Matches text, not parsed syntax, exactly like the closure
+// walk itself — see the header above and `m7-v2-import-closure.js`.
+function computedSpecifierLine(source) {
+  COMPUTED_SPECIFIER_CALL_PATTERN.lastIndex = 0;
+  let match = COMPUTED_SPECIFIER_CALL_PATTERN.exec(source);
+  while (match !== null) {
+    if (!LITERAL_SPECIFIER_ARGUMENT.test(match[1].trim())) {
+      return source.slice(0, match.index).split('\n').length;
+    }
+    match = COMPUTED_SPECIFIER_CALL_PATTERN.exec(source);
+  }
+  return null;
+}
+
+function refuseComputedSpecifiersInCompilerRoles(root, code) {
+  for (const role of CODE_SINGLETON_ROLES) {
+    const repositoryPath = code[role];
+    const line = computedSpecifierLine(readBytes(root, repositoryPath).toString('utf8'));
+    if (line !== null) {
+      fail('IMPORT_CLOSURE_COMPUTED_SPECIFIER', `${repositoryPath}:${line}`);
+    }
+  }
+}
+
 function buildImportClosureBindings(root, code) {
+  refuseComputedSpecifiersInCompilerRoles(root, code);
   const entryPaths = [
     code.compiler, code.deterministic_generator, code.contract_validator,
     code.projector, code.independent_verifier,

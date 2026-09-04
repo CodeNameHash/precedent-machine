@@ -1947,7 +1947,11 @@ function verifyImportClosure(root, registration, declaresClosure) {
       'BINDING_DRIFT', `import_closure:${repositoryPath}`);
     assert(exactKeys(binding, ['byte_length', 'git_blob_oid', 'path', 'sha256']),
       'REGISTRATION_CONTRACT_DRIFT', `import_closure:${repositoryPath}`);
-    const bytes = readBytes(root, repositoryPath);
+    // A historical registration's closure member is re-derived from the Git
+    // object it named, exactly like every other binding on a historical
+    // registration (`boundBytes`) — not from the working tree, which the
+    // replacement authority permits to move after supersession.
+    const bytes = boundBytes(root, binding);
     assert(bytes.length === binding.byte_length
       && sha256Hex(bytes) === binding.sha256
       && gitBlobOid(bytes) === binding.git_blob_oid,

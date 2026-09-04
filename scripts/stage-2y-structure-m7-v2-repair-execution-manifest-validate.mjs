@@ -5203,11 +5203,14 @@ function validateFullCandidateRecord(
     fail('CANDIDATE_BINDING_DRIFT', 'tests');
   }
   flattened.push(...record.code_bindings.tests);
-  // The import closure is a roster of what the bound code can load, not a
-  // second set of bound reads: it is checked for shape, order and coverage
-  // here and re-derived independently by the candidate verifier. It stays out
-  // of `flattened` so `unique_bound_path_count` keeps the meaning it has, and
-  // so a closure member does not have to be a permitted read path.
+  // The import closure is a roster of what the bound code can load: it is
+  // checked for shape, order and coverage here, and — hash-verified since
+  // Ben's 2026-09-04 ruling — each member's declared byte_length/sha256/
+  // git_blob_oid must agree with the file itself (the working-tree file on a
+  // current registration, the named Git object on a historical one; see
+  // `boundBytes`). It stays out of `flattened` so `unique_bound_path_count`
+  // keeps the meaning it has, and so a closure member does not have to be a
+  // permitted read path.
   if (declaresClosure) {
     const closure = record[CANDIDATE_IMPORT_CLOSURE_MEMBER];
     const closurePaths = Array.isArray(closure)
@@ -5225,8 +5228,14 @@ function validateFullCandidateRecord(
         || !codePaths.every((repositoryPath) => closurePaths.includes(repositoryPath))) {
       fail('CANDIDATE_BINDING_DRIFT', CANDIDATE_IMPORT_CLOSURE_MEMBER);
     }
-    for (const repositoryPath of closurePaths) {
-      normaliseRepositoryPath(repositoryPath, 'CANDIDATE_BINDING_DRIFT');
+    for (const binding of closure) {
+      normaliseRepositoryPath(binding.path, 'CANDIDATE_BINDING_DRIFT');
+      const memberBytes = boundBytes(root, binding, historical);
+      if (memberBytes.length !== binding.byte_length
+          || sha256Hex(memberBytes) !== binding.sha256
+          || gitBlobOid(memberBytes) !== binding.git_blob_oid) {
+        fail('CANDIDATE_BINDING_DRIFT', `${CANDIDATE_IMPORT_CLOSURE_MEMBER}:${binding.path}`);
+      }
     }
   }
   if (!same(record.semantic_input_bindings.map((entry) => entry.input_role),
