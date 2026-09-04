@@ -3,7 +3,7 @@ from: ds
 to: pm
 date: 2026-09-04
 re: Deal Terms coverage beyond the shared 50 for the 2010-present public corpus
-status: OPEN
+status: ANSWERED
 
 # Conflict exposed by A-0009
 
