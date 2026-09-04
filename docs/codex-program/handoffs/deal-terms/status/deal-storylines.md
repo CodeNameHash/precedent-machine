@@ -19,8 +19,8 @@ Updated: 2026-09-03 after A-0008
   Every row has `amendment_status: NOT_EXAMINED`.
 - The only fixed producer corpus is ten agreements across ten unique
   transactions. The other thirty transactions in its 40-transaction target
-  have not been selected. The shared proof corpus is still a Ben-approved set
-  of 50 unique transaction IDs.
+  have not been selected. The shared proof corpus must still become a
+  Ben-approved set of 50 unique transaction IDs.
 - No importer or production data path has been built.
 - No PM internal file, field, database row or evidence path is a consumer
   dependency.
