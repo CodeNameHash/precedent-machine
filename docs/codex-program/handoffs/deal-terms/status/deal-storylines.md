@@ -6,6 +6,8 @@ Updated: 2026-09-04 after A-0009
 
 - A user-displayable five-deal package after the producer legal gate.
 - Producer evidence before dates are assigned beyond the first real run.
+- Q-0005 confirmation of the producer branch and package needed for Deal Terms
+  coverage beyond the shared 50 in the combined 2010-present public corpus.
 - Deal Storylines completion of `target_cik`, `transaction_anchor` and
   `ordinal` for the ten A-0008 rows. No PM response is currently required.
 
@@ -54,3 +56,5 @@ Updated: 2026-09-04 after A-0009
 - DA-R50 is the 50-deal `LEGAL_GATE_PASSED_INTERNAL` package after DA-C50,
   DA-I50 and a legal-gate re-run on the 50. DA-RP re-releases the same corpus
   as `PUBLIC` after DA-PA. It is not a new extraction.
+- Until Q-0005 is answered, DA-RP must not be treated as Deal Terms coverage
+  for transactions outside the shared 50.
