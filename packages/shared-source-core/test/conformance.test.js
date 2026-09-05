@@ -12,6 +12,7 @@ const bytes = fs.readFileSync(path.join(root, 'fixtures/metsera/response.htm'));
 
 test('real Metsera bytes reproduce every pinned identity offline', async () => {
   const core = createSharedSourceCore({
+    clock: () => new Date(fixture.source.retrieved_at),
     lookup: async () => [{ address: '23.62.25.91', family: 4 }],
     transport: async () => new Response(bytes, {
       status: 200,

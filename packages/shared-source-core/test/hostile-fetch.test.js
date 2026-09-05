@@ -87,8 +87,10 @@ test('resolves and validates every allowed redirect hop', async () => {
   assert.equal(resolves, 2);
 });
 
-test('rejects non-success status and disallowed or absent content type', async () => {
+test('requires exact 200 and rejects disallowed or absent content type', async () => {
   await assert.rejects(run({ transport: async () => new Response('no', { status: 404, headers: { 'content-type': 'text/html' } }) }),
+    (error) => error.code === 'HTTP_STATUS_REJECTED');
+  await assert.rejects(run({ transport: async () => new Response(null, { status: 204, headers: { 'content-type': 'text/html' } }) }),
     (error) => error.code === 'HTTP_STATUS_REJECTED');
   for (const contentType of ['application/pdf', '']) {
     await assert.rejects(run({ transport: async () => new Response('x', { status: 200, headers: { 'content-type': contentType } }) }),
@@ -168,6 +170,56 @@ test('later filing in the same transaction and role creates version lineage', as
   const first = rows.find((row) => row.version_ordinal === 1);
   const second = rows.find((row) => row.version_ordinal === 2);
   assert.equal(second.predecessor_document_id, first.document_id);
+});
+
+test('same-role filings within one batch form sequential version lineage', async () => {
+  const core = createSharedSourceCore({
+    lookup: publicLookup,
+    transport: async (url) => new Response(url.includes('210030') ? '<p>v1</p>' : '<p>v2</p>', {
+      status: 200, headers: { 'content-type': 'text/html' },
+    }),
+  });
+  const id = await core.registerTransaction(transaction);
+  await core.admitDealSources({ transaction_id: id, sources: [source, {
+    ...source,
+    sec_url: 'https://www.sec.gov/Archives/edgar/data/2040807/000119312525210031/amendment.htm',
+  }] });
+  const rows = [...core.store.documents.values()];
+  assert.equal(rows.length, 2);
+  assert.equal(rows[0].version_ordinal, 1);
+  assert.equal(rows[0].predecessor_document_id, null);
+  assert.equal(rows[1].version_ordinal, 2);
+  assert.equal(rows[1].predecessor_document_id, rows[0].document_id);
+});
+
+test('uses an explicit valid retrieval clock and rejects invalid clocks with a typed error', async () => {
+  for (const clock of [() => new Date('invalid'), () => '2026-09-05T00:00:00.000Z', () => { throw new Error('clock'); }]) {
+    const core = createSharedSourceCore({
+      clock,
+      lookup: publicLookup,
+      transport: async () => new Response('<p>x</p>', {
+        status: 200, headers: { 'content-type': 'text/html', date: 'not-a-date' },
+      }),
+    });
+    const id = await core.registerTransaction(transaction);
+    const writesBefore = core.store.writeCount;
+    await assert.rejects(core.admitDealSources({ transaction_id: id, sources: [source] }),
+      (error) => error.code === 'INVALID_RETRIEVAL_TIME');
+    assert.equal(core.store.writeCount, writesBefore);
+  }
+  const expected = '2026-09-05T12:34:56.789Z';
+  const core = createSharedSourceCore({
+    clock: () => new Date(expected),
+    lookup: publicLookup,
+    transport: async () => new Response('<p>x</p>', {
+      status: 200, headers: { 'content-type': 'text/html', date: 'not-a-date' },
+    }),
+  });
+  const id = await core.registerTransaction(transaction);
+  await core.admitDealSources({ transaction_id: id, sources: [source] });
+  const row = [...core.store.documents.values()][0];
+  assert.equal(row.response_metadata.retrieved_at, expected);
+  assert.equal(row.response_metadata.headers.date, 'not-a-date');
 });
 
 test('one SEC locator cannot bind to two transactions and conflict writes nothing', async () => {

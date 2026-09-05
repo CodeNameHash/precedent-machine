@@ -10,7 +10,7 @@ const { buildLegacyCapture } = require('./intake');
 const { convertSecHtmlToCanonicalText } = require('./canonical-text');
 const componentDigest = require('./component-digest.json');
 
-const COMPONENT_VERSION = 'SHARED_SEC_INGEST/V1.0.1';
+const COMPONENT_VERSION = 'SHARED_SEC_INGEST/V1.0.2';
 const CANONICALISATION_PROFILE = Object.freeze({
   version: 'SEC_HTML_CANONICAL_TEXT_CONVERSION/V2',
   digest: 'c6b6a93315fad0bc3e65be699c71e2fea4d98111ba701f72f19dfb96dfb5c85a',
@@ -231,8 +231,8 @@ async function secureFetch(url, options) {
       current = next;
       continue;
     }
-    if (response.status < 200 || response.status > 299) {
-      fail('HTTP_STATUS_REJECTED', `SEC response status ${response.status} is not successful`);
+    if (response.status !== 200) {
+      fail('HTTP_STATUS_REJECTED', `SEC response status ${response.status} is not exactly 200`);
     }
     const declaredType = (response.headers.get('content-type') || '').split(';', 1)[0].trim().toLowerCase();
     if (!options.contentTypes.has(declaredType)) fail('CONTENT_TYPE_REJECTED', 'SEC response content type is not allowed');
@@ -249,6 +249,17 @@ async function secureFetch(url, options) {
     });
   }
   throw new Error('unreachable');
+}
+
+function retrievalTimestamp(clock) {
+  let value;
+  try { value = clock(); } catch {
+    fail('INVALID_RETRIEVAL_TIME', 'retrieval clock failed');
+  }
+  if (!(value instanceof Date) || Number.isNaN(value.getTime())) {
+    fail('INVALID_RETRIEVAL_TIME', 'retrieval clock must return a valid Date');
+  }
+  return value.toISOString();
 }
 
 function secIdentity(url, sourceRole) {
@@ -360,6 +371,7 @@ function createSharedSourceCore(configuration = {}) {
     maxBytes: configuration.maxBytes || DEFAULT_MAX_BYTES,
     maxRedirects: MAX_REDIRECTS,
     userAgent: configuration.userAgent || 'PrecedentMachine shared-source-core contact@precedentmachine.com',
+    clock: configuration.clock || (() => new Date()),
   };
   if (typeof options.transport !== 'function') fail('FETCH_UNAVAILABLE', 'an HTTPS transport is required');
 
@@ -390,6 +402,7 @@ function createSharedSourceCore(configuration = {}) {
     const transaction = await store.getTransaction(input.transaction_id);
     if (!transaction) fail('UNKNOWN_TRANSACTION', 'transaction must be registered before source admission');
     const fetched = [];
+    const latestByRole = new Map();
     for (const source of input.sources) {
       exactObject(source, ['sec_url', 'source_role'], 'source');
       if (!ROLE_RE.test(source.source_role)) fail('INVALID_INPUT', 'source_role must be upper snake case');
@@ -405,8 +418,7 @@ function createSharedSourceCore(configuration = {}) {
           expected: transaction.transaction_anchor.issuer_cik, actual: identity.issuer_cik,
         });
       }
-      const retrievedAt = response.headers.date
-        ? new Date(response.headers.date).toISOString() : new Date(0).toISOString();
+      const retrievedAt = retrievalTimestamp(options.clock);
       const capture = buildLegacyCapture({
         requestedUrl: response.requested_url,
         bytes: response.bytes,
@@ -434,10 +446,13 @@ function createSharedSourceCore(configuration = {}) {
           requested_source_role: identity.source_role,
         });
       }
-      const prior = await store.getLatestDocumentVersion({
-        transaction_id: input.transaction_id, source_role: identity.source_role,
-      });
-      fetched.push(freeze({
+      let prior = latestByRole.get(identity.source_role);
+      if (prior === undefined) {
+        prior = await store.getLatestDocumentVersion({
+          transaction_id: input.transaction_id, source_role: identity.source_role,
+        });
+      }
+      const document = freeze({
         schema_version: 'SHARED_SEC_DOCUMENT/V1',
         document_id: documentId,
         transaction_id: input.transaction_id,
@@ -446,7 +461,12 @@ function createSharedSourceCore(configuration = {}) {
         requested_url: response.requested_url,
         validated_final_url: response.final_url,
         redirect_chain: response.redirect_chain,
-        response_metadata: { status: response.status, content_type: response.content_type, headers: response.headers },
+        response_metadata: {
+          status: response.status,
+          content_type: response.content_type,
+          retrieved_at: retrievedAt,
+          headers: response.headers,
+        },
         exact_response_bytes_base64: response.bytes.toString('base64'),
         raw_sha256: capture.response_bytes_sha256,
         raw_byte_length: capture.response_byte_length,
@@ -462,7 +482,9 @@ function createSharedSourceCore(configuration = {}) {
         component_version: COMPONENT_VERSION,
         component_digest: componentDigest.digest,
         canonicalisation_profile: CANONICALISATION_PROFILE,
-      }));
+      });
+      fetched.push(document);
+      latestByRole.set(identity.source_role, document);
     }
     const duplicate = new Set();
     for (const row of fetched) {
