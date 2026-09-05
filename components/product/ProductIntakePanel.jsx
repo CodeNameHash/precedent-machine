@@ -12,7 +12,8 @@ export function productRunId(value, fallbackRunId = null) {
 
 export function shouldPollProductRun(value) {
   return Boolean(productRunId(value)
-    && ['QUEUED', 'RUNNING', 'PARTIAL'].includes(value.status)
+    && (['QUEUED', 'RUNNING', 'PARTIAL'].includes(value.status)
+      || (value.status === 'FAILED' && value.progress?.running > 0))
     && value.stage !== 'DOCUMENT_IDENTITY_REVIEW');
 }
 
@@ -112,7 +113,7 @@ export default function ProductIntakePanel() {
         method: 'POST', headers: csrfHeaders,
         body: JSON.stringify({
           url: url.trim(), idempotencyKey: crypto.randomUUID(), schemaVersion: 'LEGAL_SCHEMA/V1',
-          promptBundleVersion: 'PRODUCT_ROUTING_CITATION_REPAIR/V3',
+          promptBundleVersion: 'PRODUCT_ROUTING_CITATION_REPAIR/V4',
           explicitGeneration: 0, maxAttempts: 3,
         }),
       });
@@ -133,7 +134,7 @@ export default function ProductIntakePanel() {
     if (!shouldPollProductRun(run)) return undefined;
     const timer = setInterval(() => { readRun(activeRunId).catch(() => {}); }, 1500);
     return () => clearInterval(timer);
-  }, [activeRunId, run?.status, run?.stage]);
+  }, [activeRunId, run?.status, run?.stage, run?.progress?.running]);
 
   const progress = run?.progress;
   return (

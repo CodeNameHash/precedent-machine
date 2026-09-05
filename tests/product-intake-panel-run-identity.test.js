@@ -5,6 +5,7 @@ const path = require('node:path');
 const test = require('node:test');
 
 const { transform } = require('next/dist/build/swc');
+const { ProductPhase1Store } = require('../lib/product/phase-1-store');
 
 async function loadIntakePanelModule() {
   const filename = require.resolve('../components/product/ProductIntakePanel.jsx');
@@ -52,7 +53,7 @@ test('API analysis_run_id survives hosted polling and drives FAILED retry identi
       analysis_run_id: runId,
       status: 'FAILED',
       stage: 'SECTION_ANALYSIS',
-      progress: { total: 105, completed: 1, failed: 1, cost_microusd: 0 },
+      progress: { total: 105, completed: 1, failed: 1, running: 1, cost_microusd: 0 },
     },
     previousRun: hostedProgress,
     navigate: async (route) => routes.push(route),
@@ -60,8 +61,24 @@ test('API analysis_run_id survives hosted polling and drives FAILED retry identi
 
   assert.equal(failed.status, 'FAILED');
   assert.equal(productRunId(failed), runId);
-  assert.equal(shouldPollProductRun(failed), false);
+  assert.equal(shouldPollProductRun(failed), true);
+  assert.equal(canAdvanceProductRun(failed), false);
   assert.deepEqual(routes, []);
+
+  const drainedFailure = await acceptProductRunResponse({
+    value: {
+      schema_version: 'AGREEMENT_ANALYSIS_READ/V1',
+      analysis_run_id: runId,
+      status: 'FAILED',
+      stage: 'SECTION_ANALYSIS',
+      progress: { total: 105, completed: 1, failed: 2, running: 0, cost_microusd: 0 },
+    },
+    previousRun: failed,
+    navigate: async (route) => routes.push(route),
+  });
+
+  assert.equal(shouldPollProductRun(drainedFailure), false);
+  assert.equal(canAdvanceProductRun(drainedFailure), false);
 
   const partial = await acceptProductRunResponse({
     value: {
@@ -71,7 +88,7 @@ test('API analysis_run_id survives hosted polling and drives FAILED retry identi
       stage: 'SECTION_ANALYSIS',
       progress: { total: 105, completed: 2, failed: 1, cost_microusd: 0 },
     },
-    previousRun: failed,
+    previousRun: drainedFailure,
     navigate: async (route) => routes.push(route),
   });
 
@@ -122,6 +139,34 @@ test('a sparse hosted wake response preserves the submitted run identity and pro
 
   assert.equal(woken.run_id, runId);
   assert.deepEqual(woken.progress, submitted.progress);
+});
+
+test('run progress reports active section workers separately from failures', async () => {
+  const rows = [
+    { status: 'COMPLETE', cost_microusd: 2, input_tokens: 3, output_tokens: 4 },
+    { status: 'FAILED', cost_microusd: 5, input_tokens: 6, output_tokens: 7 },
+    { status: 'RUNNING', cost_microusd: 8, input_tokens: 9, output_tokens: 10 },
+    { status: 'PENDING', cost_microusd: 0, input_tokens: 0, output_tokens: 0 },
+  ];
+  const client = {
+    rpc: async () => ({ data: null, error: null }),
+    from: () => ({
+      select() { return this; },
+      async eq() { return { data: rows, error: null }; },
+    }),
+  };
+
+  const progress = await new ProductPhase1Store({ client }).getProgress('run-1');
+
+  assert.deepEqual(progress, {
+    total: 4,
+    completed: 1,
+    failed: 1,
+    running: 1,
+    cost_microusd: 15,
+    input_tokens: 18,
+    output_tokens: 21,
+  });
 });
 
 test('a sparse response for a new run does not inherit the prior agreement state', async () => {

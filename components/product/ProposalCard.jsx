@@ -22,6 +22,13 @@ function EvidenceGroup({ title, items, onOpen }) {
   return <section className="mt-3 rounded border border-red-200 bg-white/60 p-2"><h3 className="font-semibold">{title}</h3><div className="mt-1 space-y-2">{items.map((evidence, index) => <button key={`${evidence.source_span_id}-${index}`} type="button" onClick={() => onOpen(evidence)} className="block w-full rounded border border-border p-2 text-left font-normal"><span className="block font-semibold">{evidence.quote}</span><span className="mt-1 block text-inkMid">{evidence.reason} {evidence.section_reference} · {String(evidence.component_kind || 'source context').replaceAll('_', ' ').toLowerCase()}</span></button>)}</div></section>;
 }
 
+export function evidenceNavigationSource(evidence) {
+  return {
+    spanId: evidence.fallback_source_span_id || evidence.source_span_id,
+    reviewContext: evidence.source_context || null,
+  };
+}
+
 export default function ProposalCard({
   entry, onDecision, onSource, availableSourceSpans = [], structureNodes = [], requiredRoleKeys = [], busy,
 }) {
@@ -87,7 +94,8 @@ export default function ProposalCard({
     setEditing(false);
   }
   function openEvidence(evidence) {
-    onSource(proposal.source_closure_id, evidence.source_span_id, evidence.source_context);
+    const source = evidenceNavigationSource(evidence);
+    onSource(proposal.source_closure_id, source.spanId, source.reviewContext);
   }
   function openPrimarySource() {
     onSource(proposal.source_closure_id, primarySource.spanId, primarySource.reviewContext);

@@ -401,12 +401,34 @@ result. Every substantive section and required role has a disposition.
 
 Current position, 2026-09-05: the sixth Public Storage diagnostic saved 26 of
 105 sections before stopping at citations with unknown source identifiers.
-Every received reply remains saved. The next correction will retain those
-claims as invalid, repairable proposals without accepting invented citations.
-The review-time and explicit finding-resolution corrections pass database
-and browser checks and are being deployed to the private preview. The online
-checklist now uses the full card width on phones and desktops. Full processing,
-a usable reviewed summary and the untouched blind test remain unproved.
+The accepted correction retains invalid claims and unsupported classifications
+as visible review work, preserves usable sibling proposals, and grants no
+invented citation. Saved-response replay, the affected browser flow and the
+recorded all-family checks pass. The next fresh diagnostic remains to be run.
+The online checklist uses the full card width on phones and desktops. Full
+processing, a usable reviewed summary and the untouched blind test remain unproved.
+
+Speed investigation: the sixth diagnostic completed sections at an average
+interval of 32.3 seconds, with a longest gap of 76.6 seconds. The page polls
+every 1.5 seconds; model work, not the intentional polling interval, dominates.
+Two saved-source extraction comparisons reduced input tokens by approximately
+20% with lossless text packaging, but timing and citation quality were mixed.
+That experiment is not accepted into the product. A separate two-section
+sample combined routing and paragraph checks within each original section:
+14.6 seconds became 10.3 seconds in one case; 11.5 became 10.8 in the other.
+Both retained the observed family assignments and every paragraph disposition.
+This small sample does not prove legal accuracy or whole-agreement speed.
+Investigation is now deferred to the future-feature list below. No experimental
+prompt or processing change is adopted. Do not group sections by assumed legal
+relatedness or remove source context to improve speed.
+
+The saved sixth-run replies now compile without the original section-wide
+abort in sections 1.6, 3.12 and 3.13. Section 1.6 has two mechanically valid
+proposals after unambiguous role-key case correction. Section 3.12 retains six
+invalid proposals; section 3.13 retains seventeen proposals, six mechanically
+valid, and explicit unsupported-classification issues. Original replies remain
+unchanged. These are parser and citation checks, not confirmation of legal
+accuracy. Genuine missing roles, grouping defects and unresolved coverage remain.
 
 Diagnostic history: the private online Codex worker has passed a real
 model call and a stop-and-resume authentication check. The first Public Storage
@@ -570,6 +592,18 @@ are adapted to the stable accepted-fact contract.
 - A separate programme-status application.
 
 Add any of these later only when a concrete product need justifies it.
+
+### Features to improve later
+
+This is the future-feature list, not launch work. Update each feature here;
+the online status page displays the same entries. Status starts as Deferred,
+then can become Investigating, Building or Done. Do not count these entries in
+the Phase 0 to 6 checklist. Both features below are for after external launch.
+
+| Feature | Status | When | Intended outcome | Next step |
+|---|---|---|---|---|
+| Faster agreement processing and review | Deferred | After external launch | Shorter section and agreement processing, development feedback and future merger-agreement review, without reducing legal coverage, citation checks or required lawyer review. | Revisit measured model time, repeated input, retries and worker waiting. Compare combined checks within each existing section and safe parallel work. Do not infer section relatedness or omit context. Current small comparisons are recorded in Phase 5. |
+| Precedent tracing and clause-level markup reuse | Deferred | After external launch | For an uploaded agreement, rank likely source precedents across the stored corpus. Detect multiple source agreements at section and clause level, including representations from one precedent and interim covenants from another. Link a matching representation or other clause to relevant prior markups. | Compare several methods: stable miscellaneous provisions, distinctive wording, section and clause similarity, and changes between versions. Show supporting text, differences and uncertainty; similarity is evidence of a possible source, not proof of drafting history. Keep source attribution separate from advice to accept a prior markup. |
 
 ## 8. Core-document reset
 

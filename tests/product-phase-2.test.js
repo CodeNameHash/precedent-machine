@@ -821,7 +821,7 @@ test('invalid evidence is retained for review without becoming a supporting cita
   assert.ok(section.issues.some((issue) => issue.code === 'PROPOSAL_CONTEXT_ONLY'
     && issue.proposal_id === compiled.proposal_id));
   const extraction = section.model_calls.find((call) => call.call_kind === 'EXTRACTION');
-  assert.equal(extraction.prompt_version, 'PRODUCT_ALL_FAMILY_EXTRACTOR/V3');
+  assert.equal(extraction.prompt_version, 'PRODUCT_ALL_FAMILY_EXTRACTOR/V4');
   assert.match(extraction.request.instruction, /contiguous verbatim substring/);
   assert.match(extraction.request.instruction, /cannot independently create a proposal/);
 });
