@@ -21,6 +21,7 @@ delete process.env.PRODUCT_PHASE2_HELPER_ONLY;
 
 const ROOT = path.resolve(__dirname, '..');
 const phase3Migration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260905070000_product_phase_3_review.sql'), 'utf8');
+const citationRepairMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260905212000_product_review_citation_repair.sql'), 'utf8');
 const finalizationRetryMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260905203000_product_finalization_retry.sql'), 'utf8');
 const releaseTimingGuardMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260905205000_product_release_timing_guard.sql'), 'utf8');
 const actor = 'phase3-db-lawyer';
@@ -34,6 +35,8 @@ test.before(async () => {
   else await client.query(finalizationRetryMigration);
   if (process.env.TEST_PGLITE_MODULE) await client.exec(releaseTimingGuardMigration);
   else await client.query(releaseTimingGuardMigration);
+  if (process.env.TEST_PGLITE_MODULE) await client.exec(citationRepairMigration);
+  else await client.query(citationRepairMigration);
 });
 
 test.after(phase2Database.teardownDatabase);
@@ -257,6 +260,147 @@ test('Phase 3 review persistence is isolated, idempotent, versioned and atomical
   assert.equal(privileges.anon_save, false);
   assert.equal(privileges.authenticated_private_save, false);
   assert.equal(privileges.service_legacy_save, false);
+});
+
+test('saved invalid proposal citations can be repaired without changing the original proposal', async () => {
+  const client = phase2Database.getDatabaseClient();
+  const store = new ProductPhase3Store({ client: phase2Database.databaseFacade() });
+  const sourceDocument = await conchoSource();
+  const structure = buildAgreementStructure({
+    agreement_id: sourceDocument.source_document_id,
+    canonical_text: sourceDocument.canonical_text,
+    canonical_text_sha256: sourceDocument.canonical_text_sha256,
+  });
+  await store.persistSourceDocument(sourceDocument);
+  const run = await store.createOrGetRun({
+    sourceDocumentId: sourceDocument.source_document_id,
+    retrievalUrl: CONCHO_URL,
+    idempotencyKey: 'phase3-invalid-citation-repair-v1',
+    schemaVersion: schema.schema_version,
+    promptBundleVersion: 'PRODUCT_PHASE3_CITATION_REPAIR/V1',
+    modelConfig: { provider: 'synthetic-test', model: 'SYNTHETIC_INVALID_EVIDENCE/V1' },
+    explicitGeneration: 31,
+  });
+  await store.attachStructure({ runId: run.run_id, structure });
+  const baseModel = createSyntheticConchoModel();
+  const model = {
+    async complete(input) {
+      const result = await baseModel.complete(input);
+      if (input.call_kind === 'EXTRACTION' && input.request.source_closure.section_reference === '6.3') {
+        const evidence = result.response.proposals[0].evidence_quotes[0];
+        evidence.quote = `“${evidence.quote}...”`;
+      }
+      return result;
+    },
+  };
+  const analysis = await runAgreementDraftAnalysis({
+    runId: run.run_id, store, legalSchema: schema, model, workerId: 'phase3-invalid-citation-test',
+  });
+  await store.assignRunOwner({ runId: run.run_id, actor });
+  const invalidProposal = analysis.proposals.find((item) => item.validation_status === 'INVALID'
+    && item.unmatched_evidence?.length > 0);
+  assert.ok(invalidProposal);
+  assert.deepEqual(invalidProposal.source_span_ids, []);
+  assert.match(invalidProposal.unmatched_evidence[0].quote, /\.\.\.”$/);
+  const storedBefore = (await client.query(
+    'SELECT payload FROM public.product_proposals WHERE run_id=$1 AND proposal_id=$2',
+    [run.run_id, invalidProposal.proposal_id],
+  )).rows[0].payload;
+  assert.deepEqual(storedBefore, invalidProposal);
+
+  let review = await store.initialiseReview({ runId: run.run_id, state: initialiseReviewState(analysis), actor });
+  const invalidItem = review.state.items.find((item) => item.source_id === invalidProposal.proposal_id);
+  const closureSpans = analysis.spans.filter((span) => (span.source_closure_ids || [])
+    .includes(invalidItem.source_closure_id));
+  const repairedSpan = closureSpans.find((span) => span.structure_node_id === invalidProposal.structure_node_id);
+  const outsideSpan = analysis.spans.find((span) => !(span.source_closure_ids || [])
+    .includes(invalidItem.source_closure_id));
+  assert.ok(repairedSpan);
+  assert.ok(outsideSpan);
+
+  const rejectsSave = async (state, idempotencyKey, pattern) => {
+    await client.query(`SAVEPOINT ${idempotencyKey}`);
+    await assert.rejects(() => store.saveReview({
+      runId: run.run_id, expectedVersion: review.version, state, actor,
+      eventType: 'SAVE', idempotencyKey, command: { type: 'SAVE_PROGRESS' },
+    }), pattern);
+    await client.query(`ROLLBACK TO SAVEPOINT ${idempotencyKey}`);
+    await client.query(`RELEASE SAVEPOINT ${idempotencyKey}`);
+  };
+  const accepted = structuredClone(review.state);
+  accepted.items.find((item) => item.item_id === invalidItem.item_id).decision = 'ACCEPTED';
+  await rejectsSave(accepted, 'forged_invalid_accept', /review proposal source mismatch|DATABASE_ERROR/i);
+  const unknown = structuredClone(review.state);
+  Object.assign(unknown.items.find((item) => item.item_id === invalidItem.item_id), {
+    decision: 'EDITED', edited_statement: invalidItem.original.statement,
+    edited_roles: invalidItem.original.roles, source_span_ids: ['unknown'],
+  });
+  await rejectsSave(unknown, 'forged_unknown_citation', /review proposal source mismatch|DATABASE_ERROR/i);
+  const outside = structuredClone(unknown);
+  outside.items.find((item) => item.item_id === invalidItem.item_id).source_span_ids = [outsideSpan.span_id];
+  await rejectsSave(outside, 'forged_outside_citation', /review proposal source mismatch|DATABASE_ERROR/i);
+  for (const [name, value] of [['missing', undefined], ['null', null], ['duplicate', [repairedSpan.span_id, repairedSpan.span_id]]]) {
+    const malformed = structuredClone(unknown);
+    const malformedItem = malformed.items.find((item) => item.item_id === invalidItem.item_id);
+    if (value === undefined) delete malformedItem.source_span_ids;
+    else malformedItem.source_span_ids = value;
+    await rejectsSave(malformed, `forged_${name}_citation`, /review proposal source mismatch|DATABASE_ERROR/i);
+  }
+
+  let state = applyReviewCommand(review.state, {
+    type: 'DECIDE_ITEM', item_id: invalidItem.item_id, decision: 'EDITED',
+    statement: invalidItem.original.statement, roles: invalidItem.original.roles,
+    source_span_ids: [repairedSpan.span_id],
+  }, { analysis, legalSchema: schema });
+  review = await store.saveReview({
+    runId: run.run_id, expectedVersion: 0, state, actor, eventType: 'SAVE',
+    idempotencyKey: 'save_repaired_citation', command: { type: 'SAVE_PROGRESS' },
+  });
+  assert.deepEqual(review.state.items.find((item) => item.item_id === invalidItem.item_id).original, storedBefore);
+  assert.deepEqual((await client.query(
+    'SELECT payload FROM public.product_proposals WHERE run_id=$1 AND proposal_id=$2',
+    [run.run_id, invalidProposal.proposal_id],
+  )).rows[0].payload, storedBefore);
+
+  for (const item of state.items.filter((candidate) => candidate.decision === 'PENDING')) {
+    state = applyReviewCommand(state, {
+      type: 'DECIDE_ITEM', item_id: item.item_id,
+      decision: item.kind === 'EXCEPTION_LINK'
+        || (item.kind === 'PROPOSAL' && item.original.validation_status !== 'VALID') ? 'REJECTED' : 'ACCEPTED',
+    }, { analysis, legalSchema: schema });
+  }
+  state = applyReviewCommand(state, { type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: true }, { analysis, legalSchema: schema });
+  state = applyReviewCommand(state, { type: 'PUBLISH' }, { analysis, legalSchema: schema });
+  const unrepairedPublish = structuredClone(state);
+  const unrepairedItem = unrepairedPublish.items.find((item) => item.item_id === invalidItem.item_id);
+  unrepairedItem.source_span_ids = [];
+  unrepairedPublish.summary.families.flatMap((family) => family.facts)
+    .find((fact) => fact.review_item_id === invalidItem.item_id).source_span_ids = [];
+  await client.query('SAVEPOINT forged_unrepaired_publish');
+  await assert.rejects(() => store.saveReview({
+    runId: run.run_id, expectedVersion: 1, state: unrepairedPublish, actor,
+    eventType: 'PUBLISH', idempotencyKey: 'forged-unrepaired-publish', command: { type: 'PUBLISH' },
+  }), /review proposal source mismatch|DATABASE_ERROR/i);
+  await client.query('ROLLBACK TO SAVEPOINT forged_unrepaired_publish');
+  await client.query('RELEASE SAVEPOINT forged_unrepaired_publish');
+
+  review = await store.saveReview({
+    runId: run.run_id, expectedVersion: 1, state, actor, eventType: 'PUBLISH',
+    idempotencyKey: 'publish-repaired-citation', command: { type: 'PUBLISH' },
+  });
+  state = applyReviewCommand(review.state, { type: 'REOPEN' }, { analysis, legalSchema: schema });
+  review = await store.saveReview({
+    runId: run.run_id, expectedVersion: 2, state, actor, eventType: 'REOPEN',
+    idempotencyKey: 'reopen-repaired-citation', command: { type: 'REOPEN' },
+  });
+  review = await store.restoreReview({
+    runId: run.run_id, expectedVersion: 3, restoreVersion: 1, actor,
+    idempotencyKey: 'restore-repaired-citation',
+  });
+  const restored = review.state.items.find((item) => item.item_id === invalidItem.item_id);
+  assert.equal(restored.decision, 'EDITED');
+  assert.deepEqual(restored.source_span_ids, [repairedSpan.span_id]);
+  assert.deepEqual(restored.original, storedBefore);
 });
 
 test('a failed finalisation retries without reopening completed section work', async () => {

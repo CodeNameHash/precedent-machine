@@ -40,6 +40,9 @@ const proposal = (id, family, subtype, factType, roles, statement = 'Legal fact'
 function analysisFixture() {
   const prohibited = proposal('a', 'NO_SHOP', 'PROHIBITED_ACTION', 'PROHIBITED_ACTION', { covenant_obligor: 'Company', prohibited_action: 'solicit proposals' });
   const exception = proposal('b', 'NO_SHOP', 'EXCEPTION_PREREQUISITE', 'EXCEPTION_PREREQUISITE', { permitted_actor: 'Company', permitted_action: 'furnish information', prerequisite: 'superior proposal' });
+  const mismatchGroupId = 'm'.repeat(64);
+  prohibited.proposition_group_id = mismatchGroupId;
+  exception.proposition_group_id = mismatchGroupId;
   return {
     schema_version: 'AGREEMENT_ANALYSIS_READ/V1', kind: 'draftAnalysis', analysis_run_id: '00000000-0000-4000-8000-000000000001',
     draft_analysis_id: 'd'.repeat(64),
@@ -52,9 +55,12 @@ function analysisFixture() {
       { section_routing_id: 'r'.repeat(64), structure_node_id: nodeOne, section_reference: '6.3', disposition: 'FAMILY_ASSIGNED', families: ['NO_SHOP'] },
       { section_routing_id: 'i'.repeat(64), structure_node_id: nodeTwo, section_reference: '9.1', disposition: 'IMMATERIAL', families: [] },
     ],
-    proposals: [prohibited, exception], proposition_groups: [],
+    proposals: [prohibited, exception], proposition_groups: [{
+      proposition_group_id: mismatchGroupId, structure_node_id: nodeOne,
+      family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION',
+    }],
     fact_links: [{ fact_link_id: 'l'.repeat(64), from_proposal_id: exception.proposal_id, to_proposal_id: prohibited.proposal_id, relationship_type: 'EXCEPTS', source_span_ids: [] }],
-    issues: [{ issue_id: 'x'.repeat(64), structure_node_id: nodeOne, family_key: 'NO_SHOP', code: 'CHECK', message: 'Review this', state: 'OPEN' }],
+    issues: [{ issue_id: 'x'.repeat(64), structure_node_id: nodeOne, family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION', code: 'GROUP_MEMBER_MISMATCH', message: 'g1', state: 'OPEN', source_closure_id: null, source_span_ids: [] }],
     coverage_assertions: [
       { coverage_assertion_id: 'v'.repeat(64), structure_node_id: nodeOne, family_key: 'NO_SHOP', subject_kind: 'FACT_TYPE', state: 'NOT_FOUND' },
       { coverage_assertion_id: 'g'.repeat(64), structure_node_id: null, family_key: 'TERMINATION_FEE', subject_kind: 'FAMILY', state: 'NOT_FOUND' },
@@ -89,6 +95,15 @@ test('review worklist requires proposals, exceptions, issues, absence and immate
   const view = buildReviewView({ analysis, review: { state, version: 0 } });
   assert.equal(view.sections.length, 2);
   assert.equal(view.agreement_items.length, 1);
+  const mismatch = view.sections[0].review_items.find((item) => item.original.code === 'GROUP_MEMBER_MISMATCH');
+  assert.equal(mismatch.issue_context.explanation, 'A proposed fact has a different family or subtype from the relationship group that contains it.');
+  assert.deepEqual(mismatch.issue_context.group_mapping, { family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION' });
+  assert.deepEqual(mismatch.issue_context.member_mappings, [
+    { family_key: 'NO_SHOP', subtype_key: 'EXCEPTION_PREREQUISITE', statement: 'Legal fact' },
+    { family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION', statement: 'Legal fact' },
+  ]);
+  assert.equal(mismatch.source_closure_id, closureId);
+  assert.deepEqual(mismatch.source_span_ids, [spanId]);
   const exceptionItem = view.sections[0].review_items.find((item) => item.kind === 'EXCEPTION_LINK');
   assert.equal(exceptionItem.relationship_context.from, analysis.proposals[1].statement);
   assert.equal(exceptionItem.relationship_context.to, analysis.proposals[0].statement);
@@ -163,6 +178,69 @@ test('lawyer edits preserve citations, missing facts validate roles, and publish
   assert.equal(reopened.metrics, null);
   assert.equal(reopened.release_evaluation_input, null);
   assert.equal(reopened.release_evaluation, null);
+});
+
+test('invalid proposals require an explicit same-closure citation repair before publication', () => {
+  const base = analysisFixture();
+  const invalid = {
+    ...base.proposals[0],
+    source_span_ids: [],
+    validation_status: 'INVALID',
+    unmatched_evidence: [{
+      quote: '“not exact...”', occurrence: 0, source_span_id: spanId,
+      component_kind: 'FULL_SECTION', component_structure_node_id: nodeOne,
+      reason: 'NOT_EXACT_CONTIGUOUS_SOURCE_TEXT',
+    }],
+  };
+  const analysis = {
+    ...base,
+    sections: [base.sections[0]],
+    proposals: [invalid],
+    proposition_groups: [],
+    fact_links: [],
+    issues: [],
+    coverage_assertions: [],
+  };
+  let state = initialiseReviewState(analysis);
+  const item = state.items[0];
+  const original = structuredClone(item.original);
+  assert.throws(() => applyReviewCommand(state, {
+    type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'ACCEPTED',
+  }, { analysis, legalSchema }), /REVIEW_INVALID_PROPOSAL/);
+  assert.throws(() => applyReviewCommand(state, {
+    type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'EDITED',
+    statement: item.original.statement, roles: item.original.roles,
+  }, { analysis, legalSchema }), /REVIEW_INVALID_PROPOSAL_SOURCE/);
+  assert.throws(() => applyReviewCommand(state, {
+    type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'EDITED',
+    statement: item.original.statement, roles: item.original.roles,
+    source_span_ids: ['unknown'],
+  }, { analysis, legalSchema }), /REVIEW_PROPOSAL_SOURCE/);
+  assert.throws(() => applyReviewCommand(state, {
+    type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'EDITED',
+    statement: item.original.statement, roles: item.original.roles,
+    source_span_ids: [spanTwoId],
+  }, { analysis, legalSchema }), /REVIEW_PROPOSAL_SOURCE/);
+  state = applyReviewCommand(state, {
+    type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'EDITED',
+    statement: 'Company must not solicit proposals.', roles: item.original.roles,
+    source_span_ids: [spanId],
+  }, { analysis, legalSchema });
+  const repaired = state.items[0];
+  assert.deepEqual(repaired.original, original);
+  assert.deepEqual(repaired.source_span_ids, [spanId]);
+  const rejectedAfterRepair = applyReviewCommand(state, {
+    type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'REJECTED',
+  }, { analysis, legalSchema });
+  assert.deepEqual(rejectedAfterRepair.items[0].source_span_ids, []);
+  const unresolvedAfterRepair = applyReviewCommand(state, {
+    type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'UNRESOLVED',
+  }, { analysis, legalSchema });
+  assert.deepEqual(unresolvedAfterRepair.items[0].source_span_ids, []);
+  state = applyReviewCommand(state, { type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: true }, { analysis, legalSchema });
+  state = applyReviewCommand(state, { type: 'PUBLISH' }, { analysis, legalSchema });
+  assert.equal(state.status, 'PUBLISHED');
+  assert.deepEqual(state.summary.families.flatMap((family) => family.facts)[0].source_span_ids, [spanId]);
 });
 
 test('release evaluation requires an explicit lawyer attestation and atomic inventory text', () => {
@@ -386,15 +464,18 @@ test('Sandbox wake rejects a finished failure even when its initial status is nu
   }), /STARTUP_FAILED/);
 });
 
-test('hosted worker accepts only the fixed actor and one serial worker', () => {
+test('hosted worker accepts only the fixed actor and one or two workers', () => {
   assert.deepEqual(parseHostedArguments([
     '--run-id', '46c45080-6935-49e5-96ae-b6cb0609a924', '--actor', 'ben', '--workers', '1',
   ]), { runId: '46c45080-6935-49e5-96ae-b6cb0609a924', actor: 'ben', workers: 1 });
   assert.throws(() => parseHostedArguments([
     '--run-id', '46c45080-6935-49e5-96ae-b6cb0609a924', '--actor', 'other', '--workers', '1',
   ]), /actor/);
-  assert.throws(() => parseHostedArguments([
+  assert.deepEqual(parseHostedArguments([
     '--run-id', '46c45080-6935-49e5-96ae-b6cb0609a924', '--actor', 'ben', '--workers', '2',
+  ]), { runId: '46c45080-6935-49e5-96ae-b6cb0609a924', actor: 'ben', workers: 2 });
+  for (const workers of ['0', '3']) assert.throws(() => parseHostedArguments([
+    '--run-id', '46c45080-6935-49e5-96ae-b6cb0609a924', '--actor', 'ben', '--workers', workers,
   ]), /workers/);
 });
 
@@ -528,6 +609,15 @@ test('Review UI separates candidate finalisation, evaluation, activation and rec
   assert.match(source, /loadSource\(\).*catch/);
   assert.match(source, /Entered total:/);
   assert.match(source, /Measured review duration:/);
+  assert.match(source, /issue_context\.explanation/);
+  assert.match(source, /Recorded detail:/);
+  assert.match(source, /Status:/);
+  assert.match(source, /availableSourceSpans=/);
+  const proposalCard = fs.readFileSync(require.resolve('../components/product/ProposalCard.jsx'), 'utf8');
+  assert.match(proposalCard, /Invalid evidence requires citation repair/);
+  assert.match(proposalCard, /proposal\.unmatched_evidence/);
+  assert.match(proposalCard, /source_span_ids: selectedSourceSpanIds/);
+  assert.match(proposalCard, /proposal\.validation_status !== 'VALID'/);
 });
 
 test('intake UI polls hosted work without browser-driven model calls and preserves foreground advancement', () => {

@@ -23,4 +23,4 @@ cd /vercel/sandbox/pm-product
 
 # Concurrent wakes wait for the same account instead of sharing its refresh token.
 exec flock --wait 3600 --conflict-exit-code 75 /vercel/.codex/pm-worker.lock \
-  node scripts/product-hosted-worker.js --run-id "$1" --actor ben --workers 1
+  node scripts/product-hosted-worker.js --run-id "$1" --actor ben --workers 2

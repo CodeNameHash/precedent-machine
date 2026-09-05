@@ -193,7 +193,7 @@ test('paragraph residuals are UTF-8 exact, ordered, source-linked and visible in
   );
 });
 
-test('real Modiv SEC source replays through all-family and paragraph-residual interfaces into publishable Review', async () => {
+test('real Modiv SEC source replays through all-family and paragraph-residual interfaces into publishable Review', async (context) => {
   const sourceDocument = await modivSource();
   const manifest = readJson('tests/fixtures/product/modiv-provider-recordings.v1.json');
   assert.equal(manifest.recordings.length, 25);
@@ -258,13 +258,40 @@ test('real Modiv SEC source replays through all-family and paragraph-residual in
   const productIncompatibilities = draft.issues.filter((issue) => issue.code === 'ACTIVE_CONTRACT_IDENTIFIER_UNMAPPED');
   assert.ok(productIncompatibilities.length > 0);
   assert.equal(productIncompatibilities.every((issue) => recordedIncompatibilities.has(`${issue.family_key}\u001f${issue.message}\u001f${issue.source_span_ids[0]}`)), true);
+  const contextOnlyProposals = draft.proposals.filter((proposal) => proposal.source_span_ids.length === 0
+    && proposal.context_only_evidence?.length > 0);
+  for (const proposal of contextOnlyProposals) {
+    const closure = draft.source_closures.find((item) => item.source_closure_id === proposal.source_closure_id);
+    const owned = closure.spans.find((span) => span.span_id === closure.full_section_span_id);
+    assert.equal(proposal.context_only_evidence.some((evidenceItem) => owned.exact_text.includes(evidenceItem.quote)), false);
+  }
   const analysis = analysisFromDraft(draft, sourceDocument, agreementStructure);
   let state = initialiseReviewState(analysis);
   for (const item of state.items.filter((candidate) => candidate.decision === 'PENDING')) {
-    state = applyReviewCommand(state, { type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'ACCEPTED' }, { analysis, legalSchema });
+    state = applyReviewCommand(state, {
+      type: 'DECIDE_ITEM', item_id: item.item_id,
+      decision: item.kind === 'PROPOSAL' && item.original.validation_status !== 'VALID' ? 'REJECTED' : 'ACCEPTED',
+    }, { analysis, legalSchema });
   }
   state = applyReviewCommand(state, { type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: true }, { analysis, legalSchema });
   state = applyReviewCommand(state, { type: 'PUBLISH' }, { analysis, legalSchema });
   assert.equal(state.status, 'PUBLISHED');
   assert.equal(state.summary.families.length, 25);
+  const validProposals = draft.proposals.filter((proposal) => proposal.validation_status === 'VALID');
+  const rejectedProposals = state.items.filter((item) => item.kind === 'PROPOSAL' && item.decision === 'REJECTED');
+  const publishedFacts = state.summary.families.flatMap((family) => family.facts);
+  assert.ok(publishedFacts.length > 0);
+  assert.equal(publishedFacts.length, validProposals.length);
+  context.diagnostic(`MODIV_PROVIDER_REPLAY proposed=${draft.proposals.length} valid=${validProposals.length} rejected=${rejectedProposals.length} published=${publishedFacts.length}`);
+  for (const item of rejectedProposals) {
+    const proposal = item.original;
+    const family = legalSchema.families.find((candidate) => candidate.family_key === proposal.family_key);
+    const subtype = family.subtypes.find((candidate) => candidate.subtype_key === proposal.subtype_key);
+    const missingRoles = subtype.required_roles.filter((role) => proposal.roles[role] === undefined
+      || proposal.roles[role] === null || proposal.roles[role] === '');
+    const reasons = [proposal.source_span_ids.length === 0 ? 'NO_OWNED_EXACT_SOURCE' : null,
+      proposal.unmatched_evidence?.length ? 'UNMATCHED_EVIDENCE' : null,
+      missingRoles.length ? `MISSING_ROLES:${missingRoles.join(',')}` : null].filter(Boolean);
+    context.diagnostic(`MODIV_REJECTED family=${proposal.family_key} fact_type=${proposal.fact_type} reasons=${reasons.join('|') || 'VALUE_OR_CONTRACT_VALIDATION'}`);
+  }
 });

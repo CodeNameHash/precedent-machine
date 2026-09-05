@@ -10,7 +10,7 @@
     "generate:codebase-inventory": "node scripts/generate-codebase-inventory.js",
     "start": "next start",
     "test": "node --max-old-space-size=8192 --test \"tests/**/*.test.js\" \"tests/**/*.spec.js\"",
-    "test:active": "node --test tests/product-phase-0.test.js tests/product-phase-1.test.js tests/product-phase-2.test.js tests/product-phase-3.test.js tests/product-intake-panel-run-identity.test.js tests/product-phase-3-calibration.test.js tests/product-phase-4.test.js tests/product-release-timing.test.js tests/agreement-revision-classifier.test.js tests/canonical-v2-sec-edgar-intake-capture.test.js tests/canonical-v2-sec-html-canonical-text.test.js tests/resolve-source-span.test.js",
+    "test:active": "node --test tests/product-phase-0.test.js tests/product-phase-1.test.js tests/product-phase-2.test.js tests/product-phase-3.test.js tests/product-hosted-worker-pool.test.js tests/product-intake-panel-run-identity.test.js tests/product-phase-3-calibration.test.js tests/product-phase-4.test.js tests/product-release-timing.test.js tests/agreement-revision-classifier.test.js tests/canonical-v2-sec-edgar-intake-capture.test.js tests/canonical-v2-sec-html-canonical-text.test.js tests/resolve-source-span.test.js",
     "test:auth": "node --test tests/auth-cookies.test.js tests/auth-credentials.test.js tests/auth-gate.test.js tests/auth-route-enforcement.test.js tests/auth-session.test.js",
     "diagnose:baseline": "node scripts/canonical-v2-baseline-manifest.mjs --check",
     "diagnose:near-miss": "node scripts/stage-2y-registry-near-miss.mjs --check",

@@ -176,7 +176,10 @@ function extractionResponse(sectionReference, families, sourceClosure) {
   ];
   for (const item of proposals) {
     for (const evidence of item.evidence_quotes) {
-      const component = components.find((candidate) => candidate.exact_text.includes(evidence.quote));
+      const matching = components.filter((candidate) => candidate.exact_text.includes(evidence.quote));
+      const component = matching.find((candidate) => (
+        candidate.structure_node_id === sourceClosure.full_section.structure_node_id
+      )) || matching[0];
       assert.ok(component, `synthetic quote is outside source closure for ${item.client_ref}`);
       evidence.source_span_id = component.span_id;
     }
@@ -320,6 +323,69 @@ test('routing identity canonicalises set order and reports invalid enum type and
     },
     call, node, deterministicEvidence: [{ section_family: 'NO_SHOP' }],
   }), /ROUTING_EVIDENCE_UNRECONCILED/);
+});
+
+test('effective-time routing receives the exact family scope instead of treating every defined term as KEY_DEFINED_TERMS', async () => {
+  const sourceDocument = await conchoSource();
+  const agreementStructure = buildAgreementStructure({
+    agreement_id: sourceDocument.source_document_id,
+    canonical_text: sourceDocument.canonical_text,
+    canonical_text_sha256: sourceDocument.canonical_text_sha256,
+  });
+  const node = substantiveSections(agreementStructure).find((item) => item.reference === '2.2');
+  let routingCall;
+  const model = {
+    async complete(input) {
+      if (input.call_kind === 'ROUTING') {
+        routingCall = input;
+        return {
+          provider_id: 'TEST', model_id: 'TEST',
+          response: {
+            families: ['MERGER_STRUCTURE_CLOSING'], disposition: 'FAMILY_ASSIGNED',
+            rationale: 'This section fixes the merger effective time. It does not contain one of the listed key defined-term facts.',
+            deterministic_disagreements: (input.request.deterministic_family_evidence || [])
+              .filter((item) => item.section_family !== 'MERGER_STRUCTURE_CLOSING')
+              .map((item) => ({ family_key: item.section_family, reason: 'The evidence does not support a listed fact type.' })),
+          },
+        };
+      }
+      if (input.call_kind === 'RESIDUAL') {
+        return {
+          provider_id: 'TEST', model_id: 'TEST',
+          response: { paragraphs: input.request.paragraphs.map((paragraph) => ({
+            source_span_id: paragraph.source_span_id,
+            disposition: 'KNOWN_FAMILY',
+            family_keys: ['MERGER_STRUCTURE_CLOSING'],
+            rationale: 'The paragraph concerns merger timing.',
+          })) },
+        };
+      }
+      const merger = schema.families.find((item) => item.family_key === 'MERGER_STRUCTURE_CLOSING');
+      return {
+        provider_id: 'TEST', model_id: 'TEST',
+        response: {
+          proposals: [], groups: [], links: [], coverage: { MERGER_STRUCTURE_CLOSING: 'NOT_FOUND' },
+          fact_type_coverage: {
+            MERGER_STRUCTURE_CLOSING: Object.fromEntries(merger.required_fact_types.map((factType) => [factType, 'NOT_FOUND'])),
+          },
+        },
+      };
+    },
+  };
+
+  const section = await require('../lib/product/agreement-draft').buildAgreementSectionDraft({
+    sourceDocument, agreementStructure, legalSchema: schema, model, node,
+  });
+  const keyTerms = schema.families.find((item) => item.family_key === 'KEY_DEFINED_TERMS');
+  assert.equal(routingCall.prompt_version, 'PRODUCT_MULTI_LABEL_ROUTER/V2');
+  assert.deepEqual(routingCall.request.family_routing_contracts.KEY_DEFINED_TERMS, {
+    allowed_fact_types: keyTerms.required_fact_types,
+    allowed_subtype_keys: keyTerms.subtypes.map((subtype) => subtype.subtype_key),
+  });
+  assert.match(routingCall.request.instruction, /condition or exception/i);
+  assert.match(routingCall.request.instruction, /express absence/i);
+  assert.match(routingCall.request.instruction, /generic defined term/i);
+  assert.deepEqual(section.routing.families, ['MERGER_STRUCTURE_CLOSING']);
 });
 
 test('section sealing deduplicates identical content-addressed components before persistence', () => {
@@ -684,7 +750,7 @@ test('real Concho SEC source reaches a reproducible, coherent draft with all-fam
   assert.equal(sourceDocument.canonical_text_sha256, '30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5');
 });
 
-test('invalid evidence, missing roles and inconsistent coverage fail closed', async () => {
+test('invalid evidence is retained for review without becoming a supporting citation', async () => {
   const sourceDocument = await conchoSource();
   const agreementStructure = buildAgreementStructure({
     agreement_id: sourceDocument.source_document_id,
@@ -715,10 +781,104 @@ test('invalid evidence, missing roles and inconsistent coverage fail closed', as
       };
     },
   };
-  await assert.rejects(
-    () => require('../lib/product/agreement-draft').buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: schema, model, node }),
-    /PROPOSAL_EXACT_SPAN/,
-  );
+  const section = await require('../lib/product/agreement-draft').buildAgreementSectionDraft({
+    sourceDocument, agreementStructure, legalSchema: schema, model, node,
+  });
+  const compiled = section.proposals[0];
+  assert.equal(compiled.validation_status, 'INVALID');
+  assert.deepEqual(compiled.source_span_ids, []);
+  assert.deepEqual(compiled.unmatched_evidence, [{
+    quote: 'words not in the agreement',
+    occurrence: 0,
+    source_span_id: section.source_closure.full_section_span_id,
+    component_kind: 'FULL_SECTION',
+    component_structure_node_id: node.node_id,
+    reason: 'NOT_EXACT_CONTIGUOUS_SOURCE_TEXT',
+  }]);
+  assert.ok(section.issues.some((issue) => issue.code === 'PROPOSAL_EVIDENCE_NOT_EXACT'
+    && issue.proposal_id === compiled.proposal_id));
+  assert.ok(section.issues.some((issue) => issue.code === 'PROPOSAL_CONTEXT_ONLY'
+    && issue.proposal_id === compiled.proposal_id));
+  const extraction = section.model_calls.find((call) => call.call_kind === 'EXTRACTION');
+  assert.equal(extraction.prompt_version, 'PRODUCT_ALL_FAMILY_EXTRACTOR/V2');
+  assert.match(extraction.request.instruction, /contiguous verbatim substring/);
+  assert.match(extraction.request.instruction, /cannot independently create a proposal/);
+});
+
+test('proposal ownership follows the cited component structure node, including cross-reference cycles', async () => {
+  const sourceDocument = await conchoSource();
+  const agreementStructure = buildAgreementStructure({
+    agreement_id: sourceDocument.source_document_id,
+    canonical_text: sourceDocument.canonical_text,
+    canonical_text_sha256: sourceDocument.canonical_text_sha256,
+  });
+  const node = substantiveSections(agreementStructure).find((item) => item.reference === '6.3');
+  const family = schema.families.find((item) => item.family_key === 'NO_SHOP');
+  const roles = {
+    covenant_obligor: 'Company',
+    prohibited_action: 'solicit a Company Competing Proposal',
+  };
+  const model = {
+    async complete({ call_kind: kind, request }) {
+      let response;
+      if (kind === 'ROUTING') {
+        response = {
+          families: ['NO_SHOP'], disposition: 'FAMILY_ASSIGNED',
+          deterministic_disagreements: [],
+        };
+      } else if (kind === 'RESIDUAL') {
+        response = { paragraphs: request.paragraphs.map((paragraph) => ({
+          source_span_id: paragraph.source_span_id,
+          disposition: 'KNOWN_FAMILY', family_keys: ['NO_SHOP'], rationale: 'No-shop provision.',
+        })) };
+      } else {
+        const ownedCrossReference = request.source_closure.cross_references
+          .find((component) => component.structure_node_id === node.node_id);
+        const foreignDefinition = request.source_closure.definitions
+          .find((component) => component.structure_node_id !== node.node_id);
+        assert.ok(ownedCrossReference, 'fixture must expose the analysed node through a cross-reference cycle');
+        assert.ok(foreignDefinition, 'fixture must expose a foreign definition');
+        const evidence = (component) => ({
+          quote: component.exact_text, source_span_id: component.span_id, occurrence: 0,
+        });
+        response = {
+          groups: [
+            group('g-owned-cross', 'NO_SHOP', 'PROHIBITED_ACTION'),
+            group('g-foreign-only', 'NO_SHOP', 'PROHIBITED_ACTION'),
+            group('g-owned-qualified', 'NO_SHOP', 'PROHIBITED_ACTION'),
+          ],
+          proposals: [
+            { ...proposal('p-owned-cross', 'g-owned-cross', 'NO_SHOP', 'PROHIBITED_ACTION', 'PROHIBITED_ACTION', 'Owned through a cross-reference component.', roles, ownedCrossReference.exact_text), evidence_quotes: [evidence(ownedCrossReference)] },
+            { ...proposal('p-foreign-only', 'g-foreign-only', 'NO_SHOP', 'PROHIBITED_ACTION', 'PROHIBITED_ACTION', 'Foreign definition cannot create this proposal.', roles, foreignDefinition.exact_text), evidence_quotes: [evidence(foreignDefinition)] },
+            { ...proposal('p-owned-qualified', 'g-owned-qualified', 'NO_SHOP', 'PROHIBITED_ACTION', 'PROHIBITED_ACTION', 'Owned text is qualified by a foreign definition.', roles, ownedCrossReference.exact_text), evidence_quotes: [evidence(ownedCrossReference), evidence(foreignDefinition)] },
+          ],
+          links: [], coverage: { NO_SHOP: 'FOUND' },
+          fact_type_coverage: { NO_SHOP: Object.fromEntries(family.required_fact_types.map((factType) => [
+            factType, factType === 'PROHIBITED_ACTION' ? 'FOUND' : 'NOT_FOUND',
+          ])) },
+        };
+      }
+      return { provider_id: 'TEST', model_id: 'TEST', response };
+    },
+  };
+  const section = await require('../lib/product/agreement-draft').buildAgreementSectionDraft({
+    sourceDocument, agreementStructure, legalSchema: schema, model, node,
+  });
+  const byStatement = new Map(section.proposals.map((item) => [item.statement, item]));
+  const ownedCross = byStatement.get('Owned through a cross-reference component.');
+  const foreignOnly = byStatement.get('Foreign definition cannot create this proposal.');
+  const ownedQualified = byStatement.get('Owned text is qualified by a foreign definition.');
+  assert.equal(ownedCross.validation_status, 'VALID');
+  assert.equal(ownedCross.source_span_ids.length, 1);
+  assert.equal(foreignOnly.validation_status, 'INVALID');
+  assert.deepEqual(foreignOnly.source_span_ids, []);
+  assert.equal(foreignOnly.context_only_evidence[0].component_kind, 'DEFINITION');
+  assert.ok(section.issues.some((issue) => issue.code === 'PROPOSAL_CONTEXT_ONLY'
+    && issue.proposal_id === foreignOnly.proposal_id));
+  assert.equal(ownedQualified.validation_status, 'VALID');
+  assert.equal(ownedQualified.source_span_ids.length, 2);
+  assert.equal(section.issues.some((issue) => issue.code === 'PROPOSAL_CONTEXT_ONLY'
+    && issue.proposal_id === ownedQualified.proposal_id), false);
 });
 
 test('extraction canonicalises singleton relationship transport and preserves raw responses and subtype checks', async () => {
