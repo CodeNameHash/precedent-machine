@@ -6,6 +6,7 @@ import legalSchema from '../../contracts/product/legal-schema.v1.json';
 import ProposalCard from './ProposalCard';
 import SourceContextPanel from './SourceContextPanel';
 import FindingResolutionFields, { findingResolutionCommand } from './FindingResolutionFields';
+import { RELATIONSHIP_TYPES } from '../../lib/product/legal-schema';
 
 const headers = { 'Content-Type': 'application/json', 'X-PM-CSRF': 'same-origin' };
 
@@ -99,6 +100,97 @@ export function Requirement({ item, onDecision, onSource, busy }) {
   return <div className="flex flex-wrap items-center gap-2 rounded border border-border bg-white p-3 text-sm"><span className="font-semibold text-ink">{title}</span>{status ? <span className="text-inkLight">Status: {status}</span> : null}{hasHeldDetail ? <HeldContent parsed={held} issueCode={item.original.code} originalMessage={item.original.message} /> : null}{item.original.message && !hasHeldDetail ? <span className="text-inkLight">Recorded detail: {item.original.message}</span> : null}{item.relationship_context ? <p className="basis-full rounded bg-paper p-2 text-xs text-inkMid"><strong>Exception:</strong> {item.relationship_context.from}<br/><strong>Applies to:</strong> {item.relationship_context.to}</p> : null}{item.issue_context ? <div className="basis-full rounded bg-paper p-2 text-xs text-inkMid"><p>{item.issue_context.explanation}</p><p><strong>Recorded group:</strong> {item.issue_context.group_mapping.family_key} · {item.issue_context.group_mapping.subtype_key}</p><p><strong>Proposal mappings:</strong> {item.issue_context.member_mappings.map((mapping) => `${mapping.family_key} · ${mapping.subtype_key}`).join('; ') || 'Unavailable in the stored analysis'}</p></div> : null}{item.source_span_ids?.length ? <button type="button" onClick={() => onSource(item.source_closure_id, item.source_span_ids[0])} className="text-xs font-semibold text-accent">View complete source closure</button> : null}<span className="ml-auto text-xs font-bold">{item.decision}</span><><button disabled={busy} type="button" onClick={() => onDecision(item.item_id, 'ACCEPTED')} className="rounded border border-green-700 px-2 py-1 text-xs text-green-800">{item.kind === 'EXCEPTION_LINK' ? 'Accept' : item.kind === 'ISSUE' || item.original.state === 'UNRESOLVED' ? 'Acknowledge' : 'Reviewed'}</button>{item.kind === 'EXCEPTION_LINK' ? <button disabled={busy} type="button" onClick={() => onDecision(item.item_id, 'REJECTED')} className="rounded border border-slate-500 px-2 py-1 text-xs">Reject</button> : null}<button disabled={busy} type="button" onClick={() => onDecision(item.item_id, 'UNRESOLVED')} className="rounded border border-red-600 px-2 py-1 text-xs text-red-700">Unresolved</button></></div>;
 }
 
+function relationshipTypeLabel(value) {
+  return typeof value === 'string'
+    ? value.toLowerCase().replaceAll('_', ' ').replace(/^./, (character) => character.toUpperCase())
+    : '';
+}
+
+function factLabel(item, nodes) {
+  const node = nodes.find((candidate) => candidate.node_id === item.structure_node_id);
+  const statement = item.edited_statement || item.original.statement || 'Untitled fact';
+  return `${displaySectionReference(node?.reference || 'Unknown section')}: ${statement}`;
+}
+
+export function RelationshipEditor({ item = null, factItems, analysis, onSave, onCancel, busy }) {
+  const effective = item?.effective_relationship || null;
+  const itemIdForSource = (sourceId) => factItems.find((candidate) => (
+    candidate.source_id === sourceId
+  ))?.item_id || '';
+  const [fromItemId, setFromItemId] = useState(() => itemIdForSource(effective?.from_proposal_id));
+  const [toItemId, setToItemId] = useState(() => itemIdForSource(effective?.to_proposal_id));
+  const [relationshipType, setRelationshipType] = useState(effective?.relationship_type || '');
+  const [sourceClosureId, setSourceClosureId] = useState(effective?.source_closure_id || '');
+  const [sourceSpanIds, setSourceSpanIds] = useState(() => [...(effective?.source_span_ids || [])]);
+  const nodes = analysis.agreement_structure?.nodes || [];
+  const allowedRelationshipTypes = useMemo(() => {
+    const fromItem = factItems.find((candidate) => candidate.item_id === fromItemId);
+    const family = legalSchema.families.find((candidate) => (
+      candidate.family_key === fromItem?.original.family_key && candidate.state === 'DEFINED'
+    ));
+    const subtype = family?.subtypes.find((candidate) => (
+      candidate.subtype_key === fromItem?.original.subtype_key
+    ));
+    return fromItemId ? (subtype?.relationships || []) : [];
+  }, [factItems, fromItemId]);
+  const spans = sourceClosureId ? (analysis.spans || []).filter((span) => (
+    (span.source_closure_ids || []).includes(sourceClosureId)
+  )) : [];
+  useEffect(() => {
+    if (relationshipType && !allowedRelationshipTypes.includes(relationshipType)) setRelationshipType('');
+  }, [fromItemId, relationshipType, allowedRelationshipTypes]);
+  function chooseClosure(value) {
+    setSourceClosureId(value);
+    setSourceSpanIds([]);
+  }
+  function toggleSpan(spanId, checked) {
+    setSourceSpanIds((current) => checked
+      ? [...current, spanId] : current.filter((candidate) => candidate !== spanId));
+  }
+  function submit(event) {
+    event.preventDefault();
+    return Promise.resolve(onSave({
+      ...(item ? { item_id: item.item_id } : {}),
+      from_item_id: fromItemId,
+      to_item_id: toItemId,
+      relationship_type: relationshipType,
+      source_closure_id: sourceClosureId,
+      source_span_ids: sourceSpanIds,
+    })).then(() => onCancel());
+  }
+  return <form onSubmit={submit} className="rounded-lg border border-accent/30 bg-white p-4" data-testid="relationship-editor">
+    <p className="mb-3 text-sm font-semibold">{item ? 'Edit relationship' : 'Add relationship'}</p>
+    <div className="grid gap-2 sm:grid-cols-2">
+      <select required aria-label="Starting fact" value={fromItemId} onChange={(event) => setFromItemId(event.target.value)} className="rounded border border-border p-2 text-xs"><option value="">Select starting fact</option>{factItems.map((fact) => <option key={fact.item_id} value={fact.item_id}>{factLabel(fact, nodes)}</option>)}</select>
+      <select required aria-label="Related fact" value={toItemId} onChange={(event) => setToItemId(event.target.value)} className="rounded border border-border p-2 text-xs"><option value="">Select related fact</option>{factItems.map((fact) => <option key={fact.item_id} value={fact.item_id}>{factLabel(fact, nodes)}</option>)}</select>
+      <select required aria-label="Relationship type" value={relationshipType} onChange={(event) => setRelationshipType(event.target.value)} className="rounded border border-border p-2 text-xs"><option value="">Select relationship type</option>{RELATIONSHIP_TYPES.filter((type) => allowedRelationshipTypes.includes(type)).map((type) => <option key={type} value={type}>{relationshipTypeLabel(type)}</option>)}</select>
+      <select required aria-label="Relationship source section" value={sourceClosureId} onChange={(event) => chooseClosure(event.target.value)} className="rounded border border-border p-2 text-xs"><option value="">Select source section</option>{(analysis.source_closures || []).map((closure) => { const node = nodes.find((candidate) => candidate.node_id === closure.structure_node_id); return <option key={closure.source_closure_id} value={closure.source_closure_id}>{displaySectionReference(node?.reference || 'Unknown section')}: {node?.title || 'Agreement section'}</option>; })}</select>
+    </div>
+    {sourceClosureId ? <fieldset className="mt-3 space-y-2 rounded border border-border p-3"><legend className="px-1 text-xs font-semibold">Exact relationship source</legend>{spans.map((span) => <label key={span.span_id} className="flex items-start gap-2 text-xs"><input type="checkbox" value={span.span_id} checked={sourceSpanIds.includes(span.span_id)} onChange={(event) => toggleSpan(span.span_id, event.target.checked)} /><span><strong>{relationshipTypeLabel(span.kind)}</strong>: {span.exact_text.slice(0, 160)}</span></label>)}</fieldset> : null}
+    <div className="mt-3 flex gap-2"><button disabled={busy || !fromItemId || !toItemId || !relationshipType || !sourceClosureId || sourceSpanIds.length === 0} className="rounded bg-ink px-3 py-1 text-xs text-white">Save relationship</button><button type="button" onClick={onCancel} className="text-xs">Cancel</button></div>
+  </form>;
+}
+
+export function RelationshipReviewCard({ item, factItems, analysis, onDecision, onSave, onSource, busy }) {
+  const [editing, setEditing] = useState(false);
+  if (editing) return <RelationshipEditor item={item} factItems={factItems} analysis={analysis}
+    busy={busy} onSave={onSave} onCancel={() => setEditing(false)} />;
+  const relationship = item.effective_relationship;
+  const hasExactSource = typeof item.source_closure_id === 'string' && item.source_closure_id.length > 0
+    && Array.isArray(item.source_span_ids) && item.source_span_ids.length > 0;
+  return <article className="rounded border border-border bg-white p-3 text-sm">
+    <div className="flex flex-wrap items-center gap-2"><strong>{relationshipTypeLabel(relationship.relationship_type)}</strong><span className="ml-auto text-xs font-bold">{item.decision}</span></div>
+    <p className="mt-2 text-xs text-inkMid"><strong>From:</strong> {item.relationship_context.from}</p>
+    <p className="text-xs text-inkMid"><strong>To:</strong> {item.relationship_context.to}</p>
+    <div className="mt-3 flex flex-wrap gap-2">{hasExactSource ? <button type="button" onClick={() => onSource(item.source_closure_id, item.source_span_ids[0])} className="text-xs font-semibold text-accent">View relationship source</button> : <span className="text-xs font-semibold text-red-700">Exact relationship source required</span>}<button disabled={busy || !hasExactSource} type="button" onClick={() => onDecision(item.item_id, 'ACCEPTED')} className="rounded border border-green-700 px-2 py-1 text-xs text-green-800">Accept</button><button disabled={busy} type="button" onClick={() => setEditing(true)} className="rounded border border-border px-2 py-1 text-xs">Edit</button><button disabled={busy} type="button" onClick={() => onDecision(item.item_id, 'REJECTED')} className="rounded border border-slate-500 px-2 py-1 text-xs">Reject</button><button disabled={busy} type="button" onClick={() => onDecision(item.item_id, 'UNRESOLVED')} className="rounded border border-red-600 px-2 py-1 text-xs text-red-700">Unresolved</button></div>
+  </article>;
+}
+
+function RelationshipReview({ items, factItems, analysis, onDecision, onSave, onSource, busy }) {
+  const [adding, setAdding] = useState(false);
+  return <section className="space-y-3"><div className="flex items-end justify-between border-b border-border pb-2"><div><p className="text-xs font-bold uppercase tracking-wide text-accent">Relationship review</p><h2 className="font-display text-xl text-ink">Fact relationships</h2></div>{!adding ? <button type="button" onClick={() => setAdding(true)} className="text-xs font-semibold text-accent">+ Add relationship</button> : null}</div>{adding ? <RelationshipEditor factItems={factItems} analysis={analysis} busy={busy} onSave={onSave} onCancel={() => setAdding(false)} /> : null}{items.map((item) => <RelationshipReviewCard key={item.item_id} item={item} factItems={factItems} analysis={analysis} busy={busy} onDecision={onDecision} onSave={onSave} onSource={onSource} />)}{items.length === 0 && !adding ? <p className="text-sm text-inkLight">No model-proposed relationships. Add one only when the source supports it.</p> : null}</section>;
+}
+
 function AddFact({ section, analysis, onAdd, busy }) {
   const [open, setOpen] = useState(false);
   const [familyKey, setFamilyKey] = useState(legalSchema.families[0].family_key);
@@ -132,7 +224,7 @@ function AddFact({ section, analysis, onAdd, busy }) {
 function AcceptedSummary({ summary, metrics, onSource, active }) {
   const facts = summary.families.flatMap((family) => family.facts);
   const statement = (sourceId) => facts.find((fact) => fact.source_id === sourceId)?.statement || sourceId;
-  return <section className="space-y-4" data-testid="accepted-summary"><div className={`rounded-xl border p-4 ${active ? 'border-green-200 bg-green-50' : 'border-amber-200 bg-amber-50'}`}><h2 className="font-display text-xl text-ink">{active ? 'Active key-provisions release' : 'Inactive release candidate'}</h2><p className="mt-1 text-sm text-inkMid">{metrics.proposal_count} proposals reviewed, {metrics.proposal_errors} corrected or rejected, {metrics.proposal_omissions} omissions added, {metrics.review_time_seconds}s review time.</p></div>{summary.families.map((family) => <div key={family.family_key}><h3 className="mb-2 text-sm font-bold tracking-wide text-ink">{family.family_key.replaceAll('_', ' ')}</h3>{family.facts.length ? <div className="space-y-2">{family.facts.map((fact) => <article key={fact.review_item_id} className="rounded-lg border border-border bg-white p-4"><p className="font-medium text-ink">{fact.statement}</p><button type="button" onClick={() => onSource(fact.source_closure_id, fact.source_span_ids[0])} className="mt-1 text-xs font-semibold text-accent">{fact.subtype_key} · {fact.fact_type} · {fact.source_span_ids.length} source citation{fact.source_span_ids.length === 1 ? '' : 's'} · View source</button></article>)}</div> : <p className="text-sm text-inkLight">No accepted facts.</p>}</div>)}{summary.relationships.length ? <div><h3 className="mb-2 text-sm font-bold tracking-wide text-ink">ACCEPTED EXCEPTIONS</h3><div className="space-y-2">{summary.relationships.map((relationship) => <article key={relationship.review_item_id} className="rounded-lg border border-border bg-white p-4 text-sm"><p><strong>Exception:</strong> {statement(relationship.from_proposal_id)}</p><p><strong>Applies to:</strong> {statement(relationship.to_proposal_id)}</p><button type="button" onClick={() => onSource(relationship.source_closure_id, relationship.source_span_ids[0])} className="mt-2 text-xs font-semibold text-accent">View complete source closure</button></article>)}</div></div> : null}</section>;
+  return <section className="space-y-4" data-testid="accepted-summary"><div className={`rounded-xl border p-4 ${active ? 'border-green-200 bg-green-50' : 'border-amber-200 bg-amber-50'}`}><h2 className="font-display text-xl text-ink">{active ? 'Active key-provisions release' : 'Inactive release candidate'}</h2><p className="mt-1 text-sm text-inkMid">{metrics.proposal_count} proposals reviewed, {metrics.proposal_errors} corrected or rejected, {metrics.proposal_omissions} omissions added, {metrics.review_time_seconds}s review time.</p></div>{summary.families.map((family) => <div key={family.family_key}><h3 className="mb-2 text-sm font-bold tracking-wide text-ink">{family.family_key.replaceAll('_', ' ')}</h3>{family.facts.length ? <div className="space-y-2">{family.facts.map((fact) => <article key={fact.review_item_id} className="rounded-lg border border-border bg-white p-4"><p className="font-medium text-ink">{fact.statement}</p><button type="button" onClick={() => onSource(fact.source_closure_id, fact.source_span_ids[0])} className="mt-1 text-xs font-semibold text-accent">{fact.subtype_key} · {fact.fact_type} · {fact.source_span_ids.length} source citation{fact.source_span_ids.length === 1 ? '' : 's'} · View source</button></article>)}</div> : <p className="text-sm text-inkLight">No accepted facts.</p>}</div>)}{summary.relationships.length ? <div><h3 className="mb-2 text-sm font-bold tracking-wide text-ink">ACCEPTED RELATIONSHIPS</h3><div className="space-y-2">{summary.relationships.map((relationship) => <article key={relationship.review_item_id} className="rounded-lg border border-border bg-white p-4 text-sm"><p className="font-semibold">{relationshipTypeLabel(relationship.relationship_type)}</p><p><strong>From:</strong> {statement(relationship.from_proposal_id)}</p><p><strong>To:</strong> {statement(relationship.to_proposal_id)}</p><button type="button" onClick={() => onSource(relationship.source_closure_id, relationship.source_span_ids[0])} className="mt-2 text-xs font-semibold text-accent">View relationship source</button></article>)}</div></div> : null}</section>;
 }
 
 export function ReleaseEvaluation({ state, onEvaluate, busy, onSource }) {
@@ -255,6 +347,10 @@ export default function ReviewWorkspace({ runId }) {
     {state.status === 'PUBLISHED' ? <><AcceptedSummary summary={state.summary} metrics={state.metrics} onSource={openSource} active={candidateActive} /><ReleaseEvaluation state={state} busy={busy} onEvaluate={command} onSource={openSource} /></> : <>
       <section className="rounded-xl border border-border bg-paper p-4"><div className="flex items-center justify-between"><div><h2 className="font-display text-lg text-ink">Agreement coverage</h2><p className="text-sm text-inkLight">Review every flagged disposition, then confirm the agreement as a whole.</p></div><label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" checked={state.agreement_coverage.decision === 'ACCEPTED'} onChange={(event) => command({ type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: event.target.checked })} />Coverage confirmed</label></div><div className="mt-3 grid gap-2 sm:grid-cols-3">{workspace.analysis.sections.map((section) => <div key={section.section_routing_id} className="rounded bg-white p-2 text-xs"><strong>{displaySectionReference(section.section_reference)}</strong><br/><span className="text-inkLight">{section.disposition}{section.families.length ? ` · ${section.families.join(', ')}` : ''}</span></div>)}</div></section>
       {view.agreement_items.length ? <section className="space-y-2"><h2 className="font-display text-lg text-ink">Agreement-level findings</h2>{view.agreement_items.map((item) => <Requirement key={item.item_id} item={item} busy={busy} onSource={openSource} onDecision={(itemId, decision) => command({ type: 'DECIDE_ITEM', item_id: itemId, decision })} />)}</section> : null}
+      <RelationshipReview items={view.relationship_items} factItems={view.fact_items}
+        analysis={workspace.analysis} busy={busy} onSource={openSource}
+        onDecision={(itemId, decision) => command({ type: 'DECIDE_ITEM', item_id: itemId, decision })}
+        onSave={(relationship) => command({ type: 'UPSERT_RELATIONSHIP', ...relationship })} />
       {view.sections.map((section) => <section id={`section-${section.node.node_id}`} key={section.node.node_id} className="space-y-3"><div className="flex items-end justify-between border-b border-border pb-2"><div><p className="text-xs font-bold uppercase tracking-wide text-accent">{displaySectionReference(section.routing.section_reference)}</p><h2 className="font-display text-xl text-ink">{section.node.title || section.routing.rationale || 'Agreement section'}</h2></div><AddFact section={section} analysis={workspace.analysis} busy={busy} onAdd={(fact) => command({ type: 'ADD_MISSING_FACT', ...fact })} /></div>{section.proposals.map((entry) => <ProposalCard key={entry.proposal.proposal_id} entry={entry} busy={busy} onSource={openSource} requiredRoleKeys={proposalRequiredRoles(entry.proposal)} structureNodes={workspace.analysis.agreement_structure?.nodes || []} availablePropositionGroups={workspace.analysis.proposition_groups || []} availableProposals={workspace.analysis.proposals || []} availableSourceSpans={workspace.analysis.spans.filter((span) => span.source_closure_ids?.includes(entry.proposal.source_closure_id))} onDecision={(itemId, decision, edits = {}) => command({ type: 'DECIDE_ITEM', item_id: itemId, decision, ...edits })} />)}{section.review_items.map((item) => <Requirement key={item.item_id} item={item} busy={busy} onSource={openSource} onDecision={(itemId, decision) => command({ type: 'DECIDE_ITEM', item_id: itemId, decision })} />)}{section.proposals.length === 0 && section.review_items.length === 0 ? <p className="text-sm text-inkLight">No proposal or flagged disposition.</p> : null}</section>)}
       <section className="rounded-xl border border-border bg-white p-4"><h2 className="font-display text-lg">Revision history</h2><div className="mt-2 flex flex-wrap gap-2">{workspace.review.revisions.filter((revision) => revision.event_type !== 'PUBLISH').map((revision) => <button disabled={busy || revision.version === workspace.review.version} type="button" key={revision.version} onClick={() => command({ type: 'RESTORE', restore_version: revision.version })} className="rounded border border-border px-2 py-1 text-xs">Restore v{revision.version} · {revision.event_type}</button>)}</div></section>
     </>}

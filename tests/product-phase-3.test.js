@@ -59,7 +59,7 @@ function analysisFixture() {
       proposition_group_id: mismatchGroupId, structure_node_id: nodeOne,
       family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION',
     }],
-    fact_links: [{ fact_link_id: 'l'.repeat(64), from_proposal_id: exception.proposal_id, to_proposal_id: prohibited.proposal_id, relationship_type: 'EXCEPTS', source_span_ids: [] }],
+    fact_links: [{ fact_link_id: 'l'.repeat(64), from_proposal_id: exception.proposal_id, to_proposal_id: prohibited.proposal_id, relationship_type: 'EXCEPTS', source_span_ids: [spanId] }],
     issues: [{ issue_id: 'x'.repeat(64), structure_node_id: nodeOne, family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION', code: 'GROUP_MEMBER_MISMATCH', message: 'g1', state: 'OPEN', source_closure_id: null, source_span_ids: [] }],
     coverage_assertions: [
       { coverage_assertion_id: 'v'.repeat(64), structure_node_id: nodeOne, family_key: 'NO_SHOP', subject_kind: 'FACT_TYPE', state: 'NOT_FOUND' },
@@ -118,7 +118,7 @@ test('review worklist requires proposals, exceptions, issues, absence and immate
   ]);
   assert.equal(mismatch.source_closure_id, closureId);
   assert.deepEqual(mismatch.source_span_ids, [spanId]);
-  const exceptionItem = view.sections[0].review_items.find((item) => item.kind === 'EXCEPTION_LINK');
+  const exceptionItem = view.relationship_items.find((item) => item.kind === 'EXCEPTION_LINK');
   assert.equal(exceptionItem.relationship_context.from, analysis.proposals[1].statement);
   assert.equal(exceptionItem.relationship_context.to, analysis.proposals[0].statement);
   const residualItems = state.items.filter((item) => item.kind === 'COVERAGE' && item.original.subject_kind === 'RESIDUAL_PARAGRAPH');

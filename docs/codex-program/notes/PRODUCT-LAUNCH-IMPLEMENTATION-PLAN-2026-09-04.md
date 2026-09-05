@@ -455,6 +455,25 @@ groups; a finding acknowledgement cannot bypass this check. Save, cancel,
 keep-current and revision restoration are checked. The disposable database
 change preserves existing review data and denies anonymous access.
 
+A further review-control gap affected fact relationships. Only model-proposed
+exceptions were separate review items, and the lawyer could not correct their
+endpoints or type or add a missing relationship. The local candidate now makes
+every typed model relationship explicit review work. It permits one source-linked
+lawyer addition or edit with reviewer-selected fact endpoints, including added
+facts, and a relationship type permitted by the legal schema. Original model and
+lawyer-added relationship records remain unchanged beneath later edits. Missing,
+invalid or ambiguous endpoints, types, source closures and source spans fail
+closed. Older draft reviews gain each missing raw relationship as pending work;
+published snapshots and prior releases are not rewritten. The review screen uses
+plain relationship labels and starts additions with no preselected legal choice.
+The starting fact limits the type choices to its declared legal relationships.
+The server also computes relationship coherence before the screen can enable
+publication. Focused state and interface checks pass. The full disposable
+database migration chain and relationship access checks pass. A local browser
+check covers blank addition, permitted type choices, edit, exact source display
+and saved-state restoration. Private-preview deployment remains outstanding,
+so this correction is not yet part of the live diagnostic result.
+
 Diagnostic history: the private online Codex worker has passed a real
 model call and a stop-and-resume authentication check. The first Public Storage
 diagnostic saved all 105 sections, but 92 did not reach extraction because three
@@ -536,8 +555,16 @@ The existing release evaluation now requires an explicit final-fact link or
 reasoned omission to resolve an original model finding. Bare acknowledgement
 does not clear it; work that never ran and actual published contradictions
 remain blocking. Database and browser checks pass. Processing time and the
-fixed 90-minute limit remain unchanged. The seventh diagnostic is stopped;
-no blind test has yet established full processing under these corrections.
+fixed 90-minute limit remain unchanged. The seventh diagnostic reached 104 of
+105 sections. Its last section failed three times because residual paragraph
+identifiers were missing or unknown. The raw replies remain saved. The compiler
+now retains unknown returned rows as open warnings linked only to the containing
+section for context, not to a guessed paragraph. Missing supplied paragraphs
+remain unresolved. No identifier is inferred from text, order or similarity.
+Replay of all three saved residual replies, focused recovery checks and the
+all-family recorded fixtures pass. The ordinary retry is running with the other
+104 saved sections preserved. This is diagnostic repair only. No blind
+test has yet established full processing under these corrections.
 Full processing and a usable review draft remain unproved.
 The 90-minute check now includes measured processing time. This is
 diagnostic work, not blind release evidence. The untouched final agreement,
