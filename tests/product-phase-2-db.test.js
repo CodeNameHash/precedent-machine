@@ -32,6 +32,7 @@ const migrations = [
   'supabase/migrations/20260905202000_product_section_lease_heartbeat.sql',
   'supabase/migrations/20260905204000_product_saved_run_finalization.sql',
   'supabase/migrations/20260905210000_product_structure_versions.sql',
+  'supabase/migrations/20260905211000_product_failed_model_calls.sql',
 ].map((file) => fs.readFileSync(path.join(ROOT, file), 'utf8'));
 let client;
 
@@ -47,6 +48,8 @@ const rpcArguments = {
   product_phase1_complete_section: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_cost_microusd', 'p_input_tokens', 'p_output_tokens'],
   product_phase1_fail_section: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_error'],
   product_phase2_commit_section: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_result'],
+  product_phase2_record_model_call: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_call'],
+  product_phase2_fail_section: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_error', 'p_model_calls'],
   product_phase2_finalize_draft: ['p_run_id', 'p_draft'],
   product_phase2_finalize_saved_run: ['p_run_id', 'p_finalization'],
   product_phase2_get_analysis: ['p_run_id'],
@@ -276,6 +279,7 @@ async function runPhase2DatabaseTest() {
   } while (!substantiveIds.has(claim.node_id));
   const persistedResult = (await store.loadCompletedSectionResults(run.run_id)).find((item) => item.node_id === claim.node_id);
   assert.ok(persistedResult);
+  persistedResult.model_calls.forEach((call) => { delete call.invocation_id; });
   await client.query('SAVEPOINT stale_attempt');
   await assert.rejects(
     () => store.commitSection({ runId: retryRun.run_id, nodeId: claim.node_id, workerId: 'atomicity-test', attemptToken: crypto.randomUUID(), result: persistedResult }),

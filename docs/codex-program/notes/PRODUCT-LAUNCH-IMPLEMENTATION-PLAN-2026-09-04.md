@@ -400,12 +400,26 @@ result. Every substantive section and required role has a disposition.
 ### Phase 5. Freeze, test blind and correct honestly, 3 days
 
 Current position, 2026-09-05: the private online Codex worker has passed a real
-model call and a stop-and-resume authentication check. All 105 Public Storage
-diagnostic sections are processed and saved, and the website now loads Review.
-The database row limit and finalisation timeout are corrected. The result is
-not yet useful: 92 sections did not reach extraction because three references
-to a separate agreement were treated as missing merger-agreement sections.
-That document-reference distinction is being corrected before the final test.
+model call and a stop-and-resume authentication check. The first Public Storage
+diagnostic saved all 105 sections, but 92 did not reach extraction because three
+references to a separate agreement were treated as missing merger-agreement
+sections. The database row limit, finalisation timeout and document-reference
+distinction are corrected. A fresh diagnostic was submitted through the
+ordinary `/review` form and automatically resumed the online worker. Its first
+section has a complete source context and two saved proposed facts. The prior
+run and its document structure remain unchanged. Full draft usefulness is
+still unproved. The fresh run then stopped because the model supplied a
+one-element list instead of a scalar relationship type. A read-only model
+probe reproduced that exact response shape; no legal meaning is in dispute.
+The response-format correction, website counter's lost-run-identifier fix and
+party-name display correction pass their focused checks. The combined active
+product suite passes. Completed, parsed model replies now persist before fact
+compilation, with distinct failed-attempt history and token totals counted once;
+database replay, rollback and access checks pass on the disposable database.
+Provider failures and replies rejected before parsing remain outside that
+retention correction. The earlier lost replies cannot be recovered, so this
+diagnostic's total model usage remains incomplete. The corrected private
+preview and ordinary browser retry still need verification.
 The 90-minute check now includes measured processing time. This is
 diagnostic work, not blind release evidence. The untouched final agreement,
 independent lawyer inventory and fixed release bars remain outstanding.

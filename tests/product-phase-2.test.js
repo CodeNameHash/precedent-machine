@@ -721,6 +721,44 @@ test('invalid evidence, missing roles and inconsistent coverage fail closed', as
   );
 });
 
+test('extraction canonicalises singleton relationship transport and preserves raw responses and subtype checks', async () => {
+  const sourceDocument = await conchoSource();
+  const agreementStructure = buildAgreementStructure({ agreement_id: sourceDocument.source_document_id, canonical_text: sourceDocument.canonical_text, canonical_text_sha256: sourceDocument.canonical_text_sha256 });
+  const node = substantiveSections(agreementStructure).find((item) => item.reference === '6.3');
+  const build = async (relationshipType) => {
+    const base = createSyntheticConchoModel();
+    const model = {
+      async complete(input) {
+        const result = await base.complete(input);
+        if (input.call_kind === 'EXTRACTION') result.response.links[0].relationship_type = relationshipType;
+        return result;
+      },
+    };
+    return require('../lib/product/agreement-draft').buildAgreementSectionDraft({
+      sourceDocument, agreementStructure, legalSchema: schema, model, node,
+    });
+  };
+  for (const input of ['EXCEPTS', ['EXCEPTS'], 'EXTENDS', ['EXTENDS']]) {
+    const draft = await build(input);
+    const expected = Array.isArray(input) ? input[0] : input;
+    assert.equal(draft.links[0].relationship_type, expected);
+    const extraction = draft.model_calls.find((call) => call.call_kind === 'EXTRACTION');
+    assert.deepEqual(extraction.response.links[0].relationship_type, input);
+    assert.equal(draft.issues.some((issue) => issue.code === 'RELATIONSHIP_NOT_ALLOWED'), expected === 'EXTENDS');
+    assert.throws(() => { draft.links[0].relationship_type = ['EXCEPTS']; }, /Cannot assign/);
+  }
+  for (const input of [[], ['EXCEPTS', 'EXTENDS'], [['EXCEPTS']], ['UNKNOWN'], [7], [null], null, 7, true, {}, 'UNKNOWN']) {
+    await assert.rejects(build(input), (error) => {
+      assert.equal(error.code, 'FACT_LINK_TYPE');
+      assert.deepEqual(JSON.parse(error.message.slice('FACT_LINK_TYPE: '.length)), {
+        type: input === null ? 'null' : Array.isArray(input) ? 'array' : typeof input,
+        value: input,
+      });
+      return true;
+    });
+  }
+});
+
 test('Review read handler is GET-only, private and bounded', async () => {
   const response = () => ({
     statusCode: null, body: null, headers: {},
