@@ -409,7 +409,10 @@ The source panel loads the saved agreement text and highlights the selected
 source. Invalid claims and missing coverage remain explicit review work.
 Relationship correction has passed local browser and database checks, including
 rollback, and is deployed to the private preview. A reviewed summary and the
-untouched blind test remain unproved.
+untouched blind test remain unproved. The frozen candidate has now started the
+untouched Olaplex agreement through ordinary private intake: 79 sections,
+processing started at 23:30 UTC. Its AI findings are not being shown to the
+lawyer before the independent inventory is prepared.
 No legal acceptance, blind release bar or production setting has changed.
 Broader speed work and precedent tracing remain deferred in the future-feature list.
 
@@ -582,7 +585,9 @@ correction-count and source-text checks were removed as required by section 9.
 The next required input is the independent lawyer inventory for the untouched
 agreement: one critical or material legal point per entry, prepared before the
 lawyer sees model output. It must not be generated from this diagnostic draft.
-No blind run, legal attestation or production cutover has been performed.
+The frozen untouched Olaplex run started through the ordinary interface at
+23:30 UTC on 2026-09-05 and is still processing. No legal attestation or
+production cutover has been performed.
 
 - [ ] Run the release candidate on the untouched blind agreement.
 - [ ] Compare it with an independent, atomic lawyer inventory.
