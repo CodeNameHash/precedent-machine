@@ -1,13 +1,11 @@
 # Deal Storylines consumer status
 
-Updated: 2026-09-05 after Q-0007
+Updated: 2026-09-05 after A-0017; Q-0007 remains open
 
 ## Waiting on PM
 
 - A user-displayable five-deal package after the producer legal gate.
 - Producer evidence before dates are assigned beyond the first real run.
-- Deal Storylines completion of `target_cik`, `transaction_anchor` and
-  `ordinal` for the ten A-0008 rows.
 - Q-0007 requests a replacement Shared Source Core release because the 1.0.2
   built-in HTTPS transport fails on Node 22 and 25 before the SEC request.
 
@@ -22,6 +20,10 @@ Updated: 2026-09-05 after Q-0007
   the ten fixed producer transactions, including producer deal key, agreement
   ID, filer CIK, accession, SEC document name, byte digests and lengths.
   Every row has `amendment_status: NOT_EXAMINED`.
+- A-0017 completes `target_cik`, `transaction_anchor` and
+  `announced_transaction_ordinal` for all ten A-0008 rows. These are usable as
+  deterministic selection inputs after the Shared Source Core transport is
+  replaced. They do not admit the rows into the shared 50-deal proof corpus.
 - The only fixed producer corpus is ten agreements across ten unique
   transactions. The other thirty transactions in its 40-transaction target
   have not been selected. The shared proof corpus must still become a
