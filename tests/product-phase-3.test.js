@@ -298,6 +298,9 @@ test('server-side provider selection pins Preview Codex and leaves production on
 });
 
 test('Sandbox wake uses one fixed detached launcher and does not return credentials', async () => {
+  const source = fs.readFileSync(require.resolve('../lib/product/sandbox-wake'), 'utf8');
+  assert.match(source, /await import\('\@vercel\/sandbox'\)/);
+  assert.doesNotMatch(source, /require\('\@vercel\/sandbox'\)/);
   let getInput;
   let commandInput;
   let extension;
