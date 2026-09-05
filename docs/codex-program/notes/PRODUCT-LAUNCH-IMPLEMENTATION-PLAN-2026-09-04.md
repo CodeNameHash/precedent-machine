@@ -399,7 +399,16 @@ result. Every substantive section and required role has a disposition.
 
 ### Phase 5. Freeze, test blind and correct honestly, 3 days
 
-Current position, 2026-09-05: the private online Codex worker has passed a real
+Current position, 2026-09-05: the sixth Public Storage diagnostic saved 26 of
+105 sections before stopping at citations with unknown source identifiers.
+Every received reply remains saved. The next correction will retain those
+claims as invalid, repairable proposals without accepting invented citations.
+The review-time and explicit finding-resolution corrections pass database
+and browser checks and are being deployed to the private preview. The online
+checklist now uses the full card width on phones and desktops. Full processing,
+a usable reviewed summary and the untouched blind test remain unproved.
+
+Diagnostic history: the private online Codex worker has passed a real
 model call and a stop-and-resume authentication check. The first Public Storage
 diagnostic saved all 105 sections, but 92 did not reach extraction because three
 references to a separate agreement were treated as missing merger-agreement
@@ -467,9 +476,14 @@ completion and duplicate-call accounting; the manager independently repeated
 the four failure checks. The review screen passed browser checks with the real
 proposal and source panels: failed quotes, background context and selected
 citations remain distinct, and cancelled or failed edits preserve saved state.
-A separate correction to later review revisions is in progress: accumulated
-draft review time must persist, but time already published must not count.
-Processing time and the fixed 90-minute limit remain unchanged. No fresh generation
+A separate correction to later review revisions now preserves accumulated
+draft review time while excluding time already published. Restore retains the
+live clock, and reliable older sessions are reconstructed from saved history.
+The existing release evaluation now requires an explicit final-fact link or
+reasoned omission to resolve an original model finding. Bare acknowledgement
+does not clear it; work that never ran and actual published contradictions
+remain blocking. Database and browser checks pass. Processing time and the
+fixed 90-minute limit remain unchanged. No fresh generation
 or blind test has yet established full processing under these corrections.
 Full processing and a usable review draft remain unproved.
 The 90-minute check now includes measured processing time. This is
