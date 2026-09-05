@@ -16,6 +16,7 @@ const {
   canonicalRoutingSet,
   compileResidualPass,
   compileRouting,
+  ownedStructureNodeIds,
   sealSectionResult,
   validateAgreementDraft,
 } = require('../lib/product/agreement-draft');
@@ -178,7 +179,8 @@ function extractionResponse(sectionReference, families, sourceClosure) {
     for (const evidence of item.evidence_quotes) {
       const matching = components.filter((candidate) => candidate.exact_text.includes(evidence.quote));
       const component = matching.find((candidate) => (
-        candidate.structure_node_id === sourceClosure.full_section.structure_node_id
+        (sourceClosure.owned_structure_node_ids || [sourceClosure.full_section.structure_node_id])
+          .includes(candidate.structure_node_id)
       )) || matching[0];
       assert.ok(component, `synthetic quote is outside source closure for ${item.client_ref}`);
       evidence.source_span_id = component.span_id;
@@ -800,7 +802,7 @@ test('invalid evidence is retained for review without becoming a supporting cita
   assert.ok(section.issues.some((issue) => issue.code === 'PROPOSAL_CONTEXT_ONLY'
     && issue.proposal_id === compiled.proposal_id));
   const extraction = section.model_calls.find((call) => call.call_kind === 'EXTRACTION');
-  assert.equal(extraction.prompt_version, 'PRODUCT_ALL_FAMILY_EXTRACTOR/V2');
+  assert.equal(extraction.prompt_version, 'PRODUCT_ALL_FAMILY_EXTRACTOR/V3');
   assert.match(extraction.request.instruction, /contiguous verbatim substring/);
   assert.match(extraction.request.instruction, /cannot independently create a proposal/);
 });
@@ -832,25 +834,32 @@ test('proposal ownership follows the cited component structure node, including c
           disposition: 'KNOWN_FAMILY', family_keys: ['NO_SHOP'], rationale: 'No-shop provision.',
         })) };
       } else {
+        const ownedIds = new Set(request.source_closure.owned_structure_node_ids);
+        const ownedChild = request.source_closure.operative
+          .find((component) => component.structure_node_id !== node.node_id
+            && ownedIds.has(component.structure_node_id));
         const ownedCrossReference = request.source_closure.cross_references
           .find((component) => component.structure_node_id === node.node_id);
-        const foreignDefinition = request.source_closure.definitions
-          .find((component) => component.structure_node_id !== node.node_id);
+        const foreignComponent = [...request.source_closure.definitions, ...request.source_closure.cross_references]
+          .find((component) => !ownedIds.has(component.structure_node_id));
+        assert.ok(ownedChild, 'fixture must expose an authored child of the analysed section');
         assert.ok(ownedCrossReference, 'fixture must expose the analysed node through a cross-reference cycle');
-        assert.ok(foreignDefinition, 'fixture must expose a foreign definition');
+        assert.ok(foreignComponent, 'fixture must expose unrelated foreign context');
         const evidence = (component) => ({
           quote: component.exact_text, source_span_id: component.span_id, occurrence: 0,
         });
         response = {
           groups: [
+            group('g-owned-child', 'NO_SHOP', 'PROHIBITED_ACTION'),
             group('g-owned-cross', 'NO_SHOP', 'PROHIBITED_ACTION'),
             group('g-foreign-only', 'NO_SHOP', 'PROHIBITED_ACTION'),
             group('g-owned-qualified', 'NO_SHOP', 'PROHIBITED_ACTION'),
           ],
           proposals: [
+            { ...proposal('p-owned-child', 'g-owned-child', 'NO_SHOP', 'PROHIBITED_ACTION', 'PROHIBITED_ACTION', 'Owned through an authored child limb.', roles, ownedChild.exact_text), evidence_quotes: [evidence(ownedChild)] },
             { ...proposal('p-owned-cross', 'g-owned-cross', 'NO_SHOP', 'PROHIBITED_ACTION', 'PROHIBITED_ACTION', 'Owned through a cross-reference component.', roles, ownedCrossReference.exact_text), evidence_quotes: [evidence(ownedCrossReference)] },
-            { ...proposal('p-foreign-only', 'g-foreign-only', 'NO_SHOP', 'PROHIBITED_ACTION', 'PROHIBITED_ACTION', 'Foreign definition cannot create this proposal.', roles, foreignDefinition.exact_text), evidence_quotes: [evidence(foreignDefinition)] },
-            { ...proposal('p-owned-qualified', 'g-owned-qualified', 'NO_SHOP', 'PROHIBITED_ACTION', 'PROHIBITED_ACTION', 'Owned text is qualified by a foreign definition.', roles, ownedCrossReference.exact_text), evidence_quotes: [evidence(ownedCrossReference), evidence(foreignDefinition)] },
+            { ...proposal('p-foreign-only', 'g-foreign-only', 'NO_SHOP', 'PROHIBITED_ACTION', 'PROHIBITED_ACTION', 'Unrelated foreign context cannot create this proposal.', roles, foreignComponent.exact_text), evidence_quotes: [evidence(foreignComponent)] },
+            { ...proposal('p-owned-qualified', 'g-owned-qualified', 'NO_SHOP', 'PROHIBITED_ACTION', 'PROHIBITED_ACTION', 'An owned child is qualified by foreign context.', roles, ownedChild.exact_text), evidence_quotes: [evidence(ownedChild), evidence(foreignComponent)] },
           ],
           links: [], coverage: { NO_SHOP: 'FOUND' },
           fact_type_coverage: { NO_SHOP: Object.fromEntries(family.required_fact_types.map((factType) => [
@@ -865,20 +874,38 @@ test('proposal ownership follows the cited component structure node, including c
     sourceDocument, agreementStructure, legalSchema: schema, model, node,
   });
   const byStatement = new Map(section.proposals.map((item) => [item.statement, item]));
+  const ownedChild = byStatement.get('Owned through an authored child limb.');
   const ownedCross = byStatement.get('Owned through a cross-reference component.');
-  const foreignOnly = byStatement.get('Foreign definition cannot create this proposal.');
-  const ownedQualified = byStatement.get('Owned text is qualified by a foreign definition.');
+  const foreignOnly = byStatement.get('Unrelated foreign context cannot create this proposal.');
+  const ownedQualified = byStatement.get('An owned child is qualified by foreign context.');
+  assert.equal(ownedChild.validation_status, 'VALID');
+  assert.equal(ownedChild.source_span_ids.length, 1);
   assert.equal(ownedCross.validation_status, 'VALID');
   assert.equal(ownedCross.source_span_ids.length, 1);
   assert.equal(foreignOnly.validation_status, 'INVALID');
   assert.deepEqual(foreignOnly.source_span_ids, []);
-  assert.equal(foreignOnly.context_only_evidence[0].component_kind, 'DEFINITION');
+  assert.equal(foreignOnly.context_only_evidence[0].component_structure_node_id === node.node_id, false);
   assert.ok(section.issues.some((issue) => issue.code === 'PROPOSAL_CONTEXT_ONLY'
     && issue.proposal_id === foreignOnly.proposal_id));
   assert.equal(ownedQualified.validation_status, 'VALID');
   assert.equal(ownedQualified.source_span_ids.length, 2);
   assert.equal(section.issues.some((issue) => issue.code === 'PROPOSAL_CONTEXT_ONLY'
     && issue.proposal_id === ownedQualified.proposal_id), false);
+});
+
+test('authored descendant ownership includes grandchildren and terminates on parent cycles', () => {
+  assert.deepEqual(ownedStructureNodeIds({ nodes: [
+    { node_id: 'section', parent_id: null },
+    { node_id: 'child', parent_id: 'section' },
+    { node_id: 'grandchild', parent_id: 'child' },
+    { node_id: 'foreign-section', parent_id: null },
+    { node_id: 'foreign-child', parent_id: 'foreign-section' },
+  ] }, 'section'), ['section', 'child', 'grandchild']);
+  assert.deepEqual(ownedStructureNodeIds({ nodes: [
+    { node_id: 'cycle-a', parent_id: 'cycle-b' },
+    { node_id: 'cycle-b', parent_id: 'cycle-a' },
+    { node_id: 'outside', parent_id: null },
+  ] }, 'cycle-a'), ['cycle-a', 'cycle-b']);
 });
 
 test('extraction canonicalises singleton relationship transport and preserves raw responses and subtype checks', async () => {

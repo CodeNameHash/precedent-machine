@@ -112,7 +112,7 @@ export default function ProductIntakePanel() {
         method: 'POST', headers: csrfHeaders,
         body: JSON.stringify({
           url: url.trim(), idempotencyKey: crypto.randomUUID(), schemaVersion: 'LEGAL_SCHEMA/V1',
-          promptBundleVersion: 'PRODUCT_ROUTING_CITATION_REPAIR/V1',
+          promptBundleVersion: 'PRODUCT_ROUTING_CITATION_REPAIR/V2',
           explicitGeneration: 0, maxAttempts: 3,
         }),
       });

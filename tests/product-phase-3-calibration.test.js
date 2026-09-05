@@ -43,7 +43,8 @@ function calibrationModel() {
         const components = [...request.source_closure.operative, ...request.source_closure.chapeau, ...request.source_closure.definitions, ...request.source_closure.cross_references, request.source_closure.full_section];
         const matching = components.filter((item) => item.exact_text.includes('mutual written consent'));
         const component = matching.find((item) => (
-          item.structure_node_id === request.source_closure.full_section.structure_node_id
+          (request.source_closure.owned_structure_node_ids || [request.source_closure.full_section.structure_node_id])
+            .includes(item.structure_node_id)
         )) || matching[0];
         assert.ok(component);
         groups.push({ client_ref: 'modiv-termination-group', family_key: 'TERMINATION', subtype_key: 'MUTUAL_CONSENT' });

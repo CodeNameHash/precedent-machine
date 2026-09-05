@@ -424,8 +424,9 @@ completed section and advanced the counter without a page reload. New parsed
 replies are saved while their section is still processing. The run subsequently
 stopped at 5 of 105 sections: the model supplied non-verbatim citations and
 proposed unrelated definitions from imported context as facts of section 1.6.
-All three failed attempts and their usage are retained. Shared routing and
-analysed-section ownership are corrected. Bad quotes remain invalid proposals;
+All three failed attempts and their usage are retained. Shared routing is
+corrected. The initial section-ownership rule proved too narrow in the next
+live diagnostic, as described below. Bad quotes remain invalid proposals;
 source context is not substituted for missing citations. The ordinary editor
 now permits explicit citation repair and completion of missing required roles.
 Local browser checks cover save, cancel, restore and save failure. The isolated
@@ -436,8 +437,23 @@ hosted worker now supports two independent section workers inside its existing
 single-process lock, with tested failure drain and bounded idle polling. The
 combined product checks pass after correcting test adapters that selected a
 foreign duplicate instead of an identical quote owned by the analysed section.
-The corrected candidate is ready for private-preview verification. The next
-ordinary submission uses a new prompt-bundle identity; prior runs are retained.
+The next ordinary submission created generation 4 with a new prompt-bundle
+identity. Two workers processed separate sections concurrently. The run exposed
+an error in the ownership rule: it rejected exact quotes from the analysed
+section's own numbered subclauses. The run was deliberately stopped after 9 of
+105 sections completed. Its source, proposed facts and model replies remain
+saved. Two interrupted sections and the run are marked failed with the reason;
+the stopped worker retains its separate sign-in. The correction recognises
+authored subclauses through the document's parent-child structure while still
+excluding unrelated imported text. Read-only replay of the saved replies for
+sections 1.1 to 1.4 now retains valid citations for 14 of 15 proposed facts,
+previously 1 of 15. The non-verbatim quote remains invalid. This is a citation
+handling check, not a lawyer's assessment of the proposed facts. The three
+affected SEC integrations and the focused ownership checks pass. A fresh
+generation will test the correction; generation 4 will not be retried under
+changed rules. Received model replies rejected before parsing now persist with
+known, partial or unknown usage identified honestly. Focused checks and isolated
+database persistence pass. No provider reply is invented for transport failure.
 Full processing and a usable review draft remain unproved.
 The 90-minute check now includes measured processing time. This is
 diagnostic work, not blind release evidence. The untouched final agreement,
