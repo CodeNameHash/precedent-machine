@@ -402,12 +402,14 @@ result. Every substantive section and required role has a disposition.
 Current position, 2026-09-05: all 105 sections of the seventh Public Storage
 diagnostic are saved. The final section completed routing, paragraph review and
 extraction after the paragraph-ID repair. Every prior saved section is unchanged.
-The next step, assembling the saved sections into a review draft, failed with a
-database statement timeout. This is the current blocker; no completed section
-needs another model run. Invalid claims and missing coverage remain explicit
-source-linked review work. Relationship correction has passed local browser and
-database checks, including rollback, and is deployed to the private preview.
-A usable review draft, reviewed summary and untouched blind test remain unproved.
+The saved sections now assemble into a draft without another model call. The
+private review page opens all 105 sections, 338 proposed facts and 62 proposed
+relationships. It shows 1,291 pending review items and no legal decisions made.
+The source panel loads the saved agreement text and highlights the selected
+source. Invalid claims and missing coverage remain explicit review work.
+Relationship correction has passed local browser and database checks, including
+rollback, and is deployed to the private preview. A reviewed summary and the
+untouched blind test remain unproved.
 No legal acceptance, blind release bar or production setting has changed.
 Broader speed work and precedent tracing remain deferred in the future-feature list.
 
@@ -459,7 +461,7 @@ publication. Focused state and interface checks pass. The full disposable
 database migration chain and relationship access checks pass. A local browser
 check covers blank addition, permitted type choices, edit, exact source display
 and saved-state restoration. The private preview is deployed. The actual
-105-section review draft still awaits successful final assembly.
+105-section draft now assembles and opens in the private review page.
 
 Diagnostic history: the private online Codex worker has passed a real
 model call and a stop-and-resume authentication check. The first Public Storage
@@ -549,11 +551,18 @@ now retains unknown returned rows as open warnings linked only to the containing
 section for context, not to a guessed paragraph. Missing supplied paragraphs
 remain unresolved. No identifier is inferred from text, order or similarity.
 Replay of all three saved residual replies, focused recovery checks and the
-all-family recorded fixtures pass. The ordinary retry is running with the other
-104 saved sections preserved. That retry completed the final section, but draft
-assembly then timed out. This is diagnostic repair only. No blind
-test has yet established full processing under these corrections.
-Full processing and a usable review draft remain unproved.
+all-family recorded fixtures pass. The ordinary retry completed the final section
+with the other 104 saved sections preserved, but draft assembly then timed out.
+Reading saved model replies in smaller pages fixed that timeout without omitting
+any reply or changing its contents. Final assembly then succeeded from the 105
+saved sections, with the same 369 recorded model calls. A reverse source-span
+lookup index reduced the measured full review-data database read from 5.12 to
+1.34 seconds with identical response content; rollback and access checks pass.
+Status refresh now permits one request at a time, shows failures with a read-only
+retry and ignores late responses from an old or closed page. The live draft and
+selected source context open. An earlier browser exception is not currently
+reproducible; no unproved rendering fix is claimed. This is diagnostic repair
+only. No blind test has established full processing under these corrections.
 The 90-minute check now includes measured processing time. This is
 diagnostic work, not blind release evidence. The untouched final agreement,
 independent lawyer inventory and fixed release bars remain outstanding.
