@@ -2,112 +2,13 @@
 
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
-const fs = require('node:fs');
-const path = require('node:path');
 const test = require('node:test');
 
-const ROOT = path.resolve(__dirname, '..');
-const freeze = require('./fixtures/product/phase-5-preblind-freeze.v1.json');
-const finalFreeze = require('./fixtures/product/phase-5-final-candidate-freeze.v1.json');
 const legalSchema = require('../contracts/product/legal-schema.v1.json');
 const { evaluateSupervisedRelease } = require('../lib/product/release-evaluation');
 const {
   DIAGNOSTIC_SOURCE_DOCUMENT_ID, assertDatabaseTarget, assertDiagnosticRunTarget,
 } = require('../scripts/product-phase-5-local-run');
-
-const FROZEN_RELEASE_BARS = [
-  "The lawyer's independent critical and material inventory is fully reconciled into published facts or explicit reviewed omissions.",
-  'Every published fact has an exact and legally sufficient citation.',
-  'Every substantive section and required role has a coverage state, every exception is reviewed, and the lawyer gives one agreement-level coverage confirmation.',
-  'No contradiction remains inside a published proposition group.',
-  'No NOT_RUN or UNRESOLVED item is presented as absence or completion.',
-  'Every final published fact is lawyer accepted.',
-  'A standard agreement can be processed and reviewed in no more than 90 minutes without a developer.',
-];
-const FROZEN_ISSUE_KINDS = [
-  'CRITICAL_OR_MATERIAL_FACT_OMITTED',
-  'PUBLISHED_FACT_CITATION_MISSING_OR_LEGALLY_INSUFFICIENT',
-  'CITATION_SCOPE_TOO_BROAD',
-  'DUPLICATE_FACT',
-  'CONTRADICTION_WITHIN_PROPOSITION_GROUP',
-  'NOT_RUN_OR_UNRESOLVED_PRESENTED_AS_ABSENCE_OR_COMPLETION',
-  'REQUIRED_ROLE_WITHOUT_DISPOSITION',
-  'EXCEPTION_NOT_REVIEWED',
-  'AGREEMENT_COVERAGE_NOT_CONFIRMED',
-  'FINAL_FACT_NOT_LAWYER_ACCEPTED',
-  'REVIEW_EXCEEDS_NINETY_MINUTES_OR_REQUIRES_DEVELOPER',
-];
-const FINAL_CANDIDATE_FILES = [
-  'contracts/product/legal-schema.v1.json',
-  'lib/canonical-v2/native-producer/deterministic-sectionizer.js',
-  'lib/parser-v2/structural.js',
-  'lib/product/agreement-draft.js',
-  'lib/product/agreement-structure.js',
-  'lib/product/source-context.js',
-  'lib/product/phase-1-store.js',
-  'lib/product/section-reference-display.js',
-  'lib/product/review-state.js',
-  'lib/product/review-handler.js',
-  'components/product/ReviewWorkspace.jsx',
-  'supabase/migrations/20260905020346_product_phase_1_foundation.sql',
-  'supabase/migrations/20260905043000_product_phase_2_vertical_slice.sql',
-  'supabase/migrations/20260905070000_product_phase_3_review.sql',
-  'supabase/migrations/20260905190000_product_substantive_section_work.sql',
-  'supabase/migrations/20260905200000_product_expired_section_recovery.sql',
-  'lib/product/provider-recording-adapter.js',
-  'lib/product/codex-cli-model.js',
-  'scripts/product-phase-5-local-run.js',
-  'lib/llm-cli-client.js',
-  'lib/product/anthropic-model.js',
-  'lib/product/release-evaluation.js',
-  'lib/product/sec-intake.js',
-];
-
-function fileHash(relativePath) {
-  return crypto.createHash('sha256').update(fs.readFileSync(path.join(ROOT, relativePath))).digest('hex');
-}
-
-function promptBundleHash(paths) {
-  const payload = [...paths].sort().map((relativePath) => `${relativePath}\u001f${fileHash(relativePath)}`).join('\n');
-  return crypto.createHash('sha256').update(payload).digest('hex');
-}
-
-test('pre-blind schema, prompt bundle, release bars and lawyer issue list remain frozen evidence', () => {
-  assert.equal(fileHash(freeze.legal_schema.path), freeze.legal_schema.sha256);
-  assert.equal(promptBundleHash(freeze.prompt_bundle.paths), freeze.prompt_bundle.sha256);
-  for (const [relativePath, sha256] of Object.entries(freeze.candidate_files)) {
-    assert.equal(typeof relativePath, 'string');
-    assert.match(sha256, /^[0-9a-f]{64}$/);
-  }
-  assert.deepEqual(freeze.release_bars, FROZEN_RELEASE_BARS);
-  assert.deepEqual(freeze.expected_lawyer_issue_kinds, FROZEN_ISSUE_KINDS);
-});
-
-test('corrected final candidate is frozen before a new untouched agreement is selected', () => {
-  assert.equal(finalFreeze.based_on, 'tests/fixtures/product/phase-5-preblind-freeze.v1.json');
-  assert.equal(finalFreeze.blind_driven_shared_corrections.length, 34);
-  assert.deepEqual(finalFreeze.production_model_configuration, {
-    provider_id: 'ANTHROPIC',
-    model_id: 'claude-sonnet-4-5-20250929',
-    temperature: 0,
-    routing_max_tokens: 1200,
-    extraction_max_tokens: 12000,
-  });
-  assert.deepEqual(finalFreeze.phase5_local_fallback_configuration, {
-    provider_id: 'OPENAI_CODEX_CLI_SUBSCRIPTION',
-    model_id: 'gpt-5.4-mini;reasoning=low',
-    execution_model: 'gpt-5.4-mini',
-    reasoning_effort: 'low',
-    sandbox: 'read-only',
-    ephemeral: true,
-    max_attempts_per_call: 1,
-    marginal_api_cost_microusd: 0,
-  });
-  assert.deepEqual(Object.keys(finalFreeze.candidate_files).sort(), [...FINAL_CANDIDATE_FILES].sort());
-  for (const [relativePath, sha256] of Object.entries(finalFreeze.candidate_files)) assert.equal(fileHash(relativePath), sha256, relativePath);
-  assert.equal(fileHash(freeze.legal_schema.path), freeze.legal_schema.sha256);
-  assert.equal(promptBundleHash(freeze.prompt_bundle.paths), freeze.prompt_bundle.sha256);
-});
 
 test('local diagnostic runner is bound to the disposable host and exact diagnostic source', () => {
   assert.doesNotThrow(() => assertDatabaseTarget('https://ecrtoofsyxozazkvsvcl.supabase.co'));

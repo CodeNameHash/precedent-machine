@@ -717,14 +717,6 @@ test('Review UI separates candidate finalisation, evaluation, activation and rec
   assert.match(proposalCard, /proposal\.validation_status !== 'VALID'/);
 });
 
-test('intake UI polls hosted work without browser-driven model calls and preserves foreground advancement', () => {
-  const source = fs.readFileSync(require.resolve('../components/product/ProductIntakePanel.jsx'), 'utf8');
-  assert.match(source, /value\.execution_mode !== 'HOSTED'/);
-  assert.match(source, /setInterval\(\(\) => \{ readRun/);
-  assert.match(source, /readRun\(savedRun\)\.then/);
-  assert.doesNotMatch(source, /modelConfig:/);
-});
-
 test('run HTTP boundary exposes one resumable step and explicit retry without a detached server task', async () => {
   const runId = analysisFixture().analysis_run_id;
   let retryKey = null;

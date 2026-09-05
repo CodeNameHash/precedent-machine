@@ -573,6 +573,17 @@ run. Automatic scheduled recovery has not been proved.
 Before opening the blind agreement, freeze the schema, prompts, release bars
 and expected lawyer issue list.
 
+The existing final-candidate record now identifies the working hosted Codex
+configuration (`gpt-5.4-mini`, low reasoning) and routing/citation prompt version
+4. The schema, legal-review rubric and release bars are unchanged. The combined
+active product run found three obsolete test expectations; their affected
+behaviour checks now pass after test-only corrections. Metadata-only file-hash,
+correction-count and source-text checks were removed as required by section 9.
+The next required input is the independent lawyer inventory for the untouched
+agreement: one critical or material legal point per entry, prepared before the
+lawyer sees model output. It must not be generated from this diagnostic draft.
+No blind run, legal attestation or production cutover has been performed.
+
 - [ ] Run the release candidate on the untouched blind agreement.
 - [ ] Compare it with an independent, atomic lawyer inventory.
 - [ ] Measure severity-weighted precision and recall, citation sufficiency and

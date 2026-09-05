@@ -523,13 +523,33 @@ test('coverage recovery keeps invalid citation findings and blocks publication w
   const pendingCoverage = state.items.find((item) => item.kind === 'COVERAGE'
     && item.original.state === 'UNRESOLVED');
   assert.ok(pendingCoverage);
+  const relationshipKinds = new Set(['EXCEPTION_LINK', 'RELATIONSHIP', 'USER_RELATIONSHIP']);
+  const closureSpans = new Map(analysis.source_closures.map((closure) => [
+    closure.source_closure_id,
+    new Set([
+      ...(closure.spans || []).map((span) => span.span_id),
+      ...analysis.spans.filter((span) => (span.source_closure_ids || [])
+        .includes(closure.source_closure_id)).map((span) => span.span_id),
+    ]),
+  ]));
+  const invalidRelationshipIds = new Set(state.items.filter((item) => {
+    if (!relationshipKinds.has(item.kind)) return false;
+    const validSpanIds = closureSpans.get(item.source_closure_id);
+    return !validSpanIds || item.source_span_ids.length === 0
+      || new Set(item.source_span_ids).size !== item.source_span_ids.length
+      || item.source_span_ids.some((spanId) => !validSpanIds.has(spanId));
+  }).map((item) => item.item_id));
+  assert.ok(invalidRelationshipIds.size > 0);
   for (const item of state.items.filter((candidate) => candidate.item_id !== pendingCoverage.item_id)) {
     state = applyReviewCommand(state, {
       type: 'DECIDE_ITEM', item_id: item.item_id,
-      decision: item.kind === 'PROPOSAL' && item.original.validation_status !== 'VALID'
+      decision: (item.kind === 'PROPOSAL' && item.original.validation_status !== 'VALID')
+        || invalidRelationshipIds.has(item.item_id)
         ? 'REJECTED' : 'ACCEPTED',
     }, { analysis, legalSchema: schema });
   }
+  assert.ok(state.items.filter((item) => invalidRelationshipIds.has(item.item_id))
+    .every((item) => item.decision === 'REJECTED'));
   state = applyReviewCommand(state, {
     type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: true,
   }, { analysis, legalSchema: schema });

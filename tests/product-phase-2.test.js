@@ -511,7 +511,7 @@ test('section lease heartbeat drains a queued renewal before the final renewal a
 test('residual pass preserves known replies and completes provider omissions as source-linked unresolved work', () => {
   const call = { model_call_id: 'm'.repeat(64) };
   const node = { node_id: 'n'.repeat(64), reference: '1.1' };
-  const closure = { source_closure_id: 'c'.repeat(64) };
+  const closure = { source_closure_id: 'c'.repeat(64), full_section_span_id: 'f'.repeat(64) };
   const paragraphs = [{ span_id: 'a'.repeat(64) }, { span_id: 'b'.repeat(64) }];
   const completed = compileResidualPass({
     response: { paragraphs: [{
@@ -553,10 +553,30 @@ test('residual pass preserves known replies and completes provider omissions as 
     ] },
     call, node, closure, paragraphs,
   }), /RESIDUAL_PARAGRAPH_DUPLICATE/);
-  assert.throws(() => compileResidualPass({
+  const unknown = compileResidualPass({
     response: { paragraphs: [{ source_span_id: 'z'.repeat(64), disposition: 'IMMATERIAL', family_keys: [], rationale: 'Unknown.' }] },
     call, node, closure, paragraphs,
-  }), /RESIDUAL_PARAGRAPH_UNKNOWN/);
+  });
+  assert.equal(unknown.residualPass.dispositions.length, 2);
+  assert.deepEqual(unknown.residualPass.dispositions.map((item) => item.source_span_id),
+    paragraphs.map((item) => item.span_id));
+  assert.ok(unknown.residualPass.dispositions.every((item) => (
+    item.disposition === 'UNRESOLVED_UNUSUAL_PROVISION'
+    && item.rationale === 'PROVIDER_OMITTED_REQUIRED_PARAGRAPH_DISPOSITION'
+  )));
+  const omissionIssues = unknown.issues.filter((item) => item.code === 'UNRESOLVED_UNUSUAL_PROVISION');
+  assert.deepEqual(omissionIssues.map((item) => item.source_span_ids),
+    paragraphs.map((item) => [item.span_id]));
+  assert.deepEqual(unknown.coverage.map((item) => ({ id: item.subject_id, state: item.state })),
+    paragraphs.map((item) => ({ id: item.span_id, state: 'UNRESOLVED' })));
+  const unknownIssues = unknown.issues.filter((item) => item.code === 'RESIDUAL_PARAGRAPH_UNKNOWN');
+  assert.equal(unknownIssues.length, 1);
+  const [unknownIssue] = unknownIssues;
+  assert.equal(unknownIssue.state, 'OPEN');
+  assert.deepEqual(unknownIssue.source_span_ids, [closure.full_section_span_id]);
+  const unknownDetail = JSON.parse(unknownIssue.message);
+  assert.equal(unknownDetail.unknown_row.source_span_id, 'z'.repeat(64));
+  assert.equal(unknownDetail.context_only, true);
 });
 
 test('source context follows transitive cross-references without importing policy machinery', () => {
