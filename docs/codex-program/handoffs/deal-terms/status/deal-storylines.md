@@ -1,21 +1,20 @@
 # Deal Storylines consumer status
 
-Updated: 2026-09-05 after A-0017; Q-0007 remains open
+Updated: 2026-09-05 after consuming A-0018
 
 ## Waiting on PM
 
 - A user-displayable five-deal package after the producer legal gate.
 - Producer evidence before dates are assigned beyond the first real run.
-- Q-0007 requests a replacement Shared Source Core release because the 1.0.2
-  built-in HTTPS transport fails on Node 22 and 25 before the SEC request.
 
 ## Consumer state
 
 - Contract draft 3, schema version 1.2.0, and its synthetic one-deal package
   are the current consumer contract. The producer reports 566 verifier checks.
-- A-0016 released Shared Source Core 1.0.2. Its 17-test offline suite passes,
-  but its default HTTPS transport fails with `ERR_INVALID_IP_ADDRESS` on Node
-  22 and 25. Deal Storylines will not consume it until PM releases the fix.
+- A-0018 released Shared Source Core 1.0.3 at immutable package-root commit
+  `5f2ccafa277202b64231071783973135b9b0c894`. Deal Storylines pins that exact
+  commit. Its 18-test package suite and the Deal Storylines offline conformance
+  and hostile-fetch tests pass.
 - A-0008 supplies one Exhibit 2.1 merger-agreement selection row for each of
   the ten fixed producer transactions, including producer deal key, agreement
   ID, filer CIK, accession, SEC document name, byte digests and lengths.
@@ -34,8 +33,10 @@ Updated: 2026-09-05 after A-0017; Q-0007 remains open
   implementation.
 - No PM internal file, field, database row or evidence path is a consumer
   dependency.
-- The Phase 0 analysis shell is complete. Real Metsera admission waits only on
-  the corrected Q-0007 package release.
+- Deal Storylines Phase 0 is accepted. Shared Source Core 1.0.3 admitted the
+  real Metsera definitive proxy and one Background unit into an immutable
+  completed snapshot with exact bytes and hashes, `NOT_RUN` coverage,
+  `NOT_EXAMINED` fact state, zero facts and zero model calls.
 - The combined roadmap treats the one-deal and first five-deal packages as
   wiring inputs only. They cannot satisfy a user-facing release gate while
   their release state is `REVIEW_ONLY_INTERNAL`.
