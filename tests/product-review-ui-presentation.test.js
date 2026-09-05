@@ -106,6 +106,32 @@ test('saved edit acknowledgement stays neutral about citation sufficiency', () =
   assert.doesNotMatch(markup, /Correction saved/);
 });
 
+test('proposal edit offers explicit standalone or compatible recorded group repair', () => {
+  const markup = renderToStaticMarkup(React.createElement(ProposalCard, {
+    entry: {
+      proposal,
+      review_item: { item_id: 'item', kind: 'PROPOSAL', decision: 'PENDING', source_span_ids: ['owned'] },
+      related_proposals: [], group_members: [],
+    },
+    availablePropositionGroups: [{
+      proposition_group_id: 'compatible-group', family_key: proposal.family_key,
+      subtype_key: proposal.subtype_key, structure_node_id: 'section',
+    }],
+    availableProposals: [{ ...proposal, proposition_group_id: 'compatible-group' }],
+    requiredRoleKeys: [],
+    availableSourceSpans: spans,
+    structureNodes: nodes,
+    busy: false,
+    onDecision() {},
+    onSource() {},
+  }));
+
+  assert.match(markup, /Summary group/);
+  assert.match(markup, /Keep current grouping/);
+  assert.match(markup, /Standalone fact/);
+  assert.match(markup, /Section 6.3: The Company shall not solicit/);
+});
+
 test('source panel identifies context-only text as outside owned evidence', () => {
   const markup = renderToStaticMarkup(React.createElement(SourceContextPanel, {
     open: true,

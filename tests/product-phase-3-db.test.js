@@ -24,6 +24,7 @@ const phase3Migration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/202
 const citationRepairMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260905212000_product_review_citation_repair.sql'), 'utf8');
 const finalizationRetryMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260905203000_product_finalization_retry.sql'), 'utf8');
 const releaseTimingGuardMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260905205000_product_release_timing_guard.sql'), 'utf8');
+const groupRepairMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260905220000_product_review_proposition_group_repair.sql'), 'utf8');
 const actor = 'phase3-db-lawyer';
 
 test.before(async () => {
@@ -37,6 +38,8 @@ test.before(async () => {
   else await client.query(releaseTimingGuardMigration);
   if (process.env.TEST_PGLITE_MODULE) await client.exec(citationRepairMigration);
   else await client.query(citationRepairMigration);
+  if (process.env.TEST_PGLITE_MODULE) await client.exec(groupRepairMigration);
+  else await client.query(groupRepairMigration);
 });
 
 test.after(phase2Database.teardownDatabase);
@@ -107,13 +110,82 @@ test('Phase 3 review persistence is isolated, idempotent, versioned and atomical
   }
   let review = await store.initialiseReview({ runId: run.run_id, state: initialState, actor });
   assert.equal(review.version, 0);
-  const clock = () => new Date('2026-09-05T12:05:00.000Z');
+  const reviewInstant = new Date(Date.parse(initialState.started_at) + (5 * 60_000));
+  const clock = () => reviewInstant;
   let state = acceptAll(review.state, analysis, clock);
   const saveKey = 'phase3-save-accepted';
   review = await store.saveReview({ runId: run.run_id, expectedVersion: 0, state, actor, eventType: 'SAVE', idempotencyKey: saveKey, command: { type: 'SAVE_PROGRESS' } });
   assert.equal(review.version, 1);
   const duplicate = await store.saveReview({ runId: run.run_id, expectedVersion: 0, state, actor, eventType: 'SAVE', idempotencyKey: saveKey, command: { type: 'SAVE_PROGRESS' } });
   assert.equal(duplicate.version, 1);
+
+  const standaloneState = structuredClone(state);
+  const standaloneItem = standaloneState.items.find((item) => item.kind === 'PROPOSAL');
+  standaloneItem.decision = 'EDITED';
+  standaloneItem.edited_statement = standaloneItem.original.statement;
+  standaloneItem.edited_roles = standaloneItem.original.roles;
+  standaloneItem.edited_proposition_group_id = null;
+  await client.query('SAVEPOINT phase3_explicit_standalone');
+  const standaloneSave = await store.saveReview({
+    runId: run.run_id, expectedVersion: 1, state: standaloneState, actor,
+    eventType: 'SAVE', idempotencyKey: 'phase3-explicit-standalone', command: { type: 'SAVE_PROGRESS' },
+  });
+  assert.equal(standaloneSave.state.items.find((item) => item.item_id === standaloneItem.item_id)
+    .edited_proposition_group_id, null);
+  const restoredStandalone = await store.restoreReview({
+    runId: run.run_id, expectedVersion: 2, restoreVersion: 2, actor,
+    idempotencyKey: 'phase3-restore-explicit-standalone',
+  });
+  assert.equal(restoredStandalone.state.items.find((item) => item.item_id === standaloneItem.item_id)
+    .edited_proposition_group_id, null);
+  await client.query('ROLLBACK TO SAVEPOINT phase3_explicit_standalone');
+  await client.query('RELEASE SAVEPOINT phase3_explicit_standalone');
+
+  const compatibleGroupState = structuredClone(state);
+  const compatibleGroupItem = compatibleGroupState.items.find((item) => item.kind === 'PROPOSAL');
+  compatibleGroupItem.decision = 'EDITED';
+  compatibleGroupItem.edited_statement = compatibleGroupItem.original.statement;
+  compatibleGroupItem.edited_roles = compatibleGroupItem.original.roles;
+  compatibleGroupItem.edited_proposition_group_id = compatibleGroupItem.original.proposition_group_id;
+  await client.query('SAVEPOINT phase3_compatible_group');
+  const compatibleGroupSave = await store.saveReview({
+    runId: run.run_id, expectedVersion: 1, state: compatibleGroupState, actor,
+    eventType: 'SAVE', idempotencyKey: 'phase3-compatible-group', command: { type: 'SAVE_PROGRESS' },
+  });
+  assert.equal(compatibleGroupSave.state.items.find((item) => item.item_id === compatibleGroupItem.item_id)
+    .edited_proposition_group_id, compatibleGroupItem.original.proposition_group_id);
+  await client.query('ROLLBACK TO SAVEPOINT phase3_compatible_group');
+  await client.query('RELEASE SAVEPOINT phase3_compatible_group');
+
+  const groupValidatorPrivileges = (await client.query(`SELECT
+    has_function_privilege('anon', 'product_private.product_phase3_validate_review(uuid,jsonb,boolean)', 'EXECUTE') AS anon,
+    has_function_privilege('authenticated', 'product_private.product_phase3_validate_review(uuid,jsonb,boolean)', 'EXECUTE') AS authenticated,
+    has_function_privilege('service_role', 'product_private.product_phase3_validate_review(uuid,jsonb,boolean)', 'EXECUTE') AS service
+  `)).rows[0];
+  assert.deepEqual(groupValidatorPrivileges, { anon: false, authenticated: false, service: true });
+
+  const incompatibleGroup = (await client.query(`
+    SELECT p.proposal_id, g.proposition_group_id
+    FROM public.product_proposals p
+    CROSS JOIN public.product_proposition_groups g
+    WHERE p.run_id=$1 AND g.run_id=p.run_id
+      AND (g.family_key <> p.family_key OR g.subtype_key <> p.subtype_key)
+    LIMIT 1
+  `, [run.run_id])).rows[0];
+  assert.ok(incompatibleGroup);
+  const forgedGroupState = structuredClone(state);
+  const forgedGroupItem = forgedGroupState.items.find((item) => item.source_id === incompatibleGroup.proposal_id);
+  forgedGroupItem.decision = 'EDITED';
+  forgedGroupItem.edited_statement = forgedGroupItem.original.statement;
+  forgedGroupItem.edited_roles = forgedGroupItem.original.roles;
+  forgedGroupItem.edited_proposition_group_id = incompatibleGroup.proposition_group_id;
+  await client.query('SAVEPOINT phase3_forged_group');
+  await assert.rejects(() => store.saveReview({
+    runId: run.run_id, expectedVersion: 1, state: forgedGroupState, actor,
+    eventType: 'SAVE', idempotencyKey: 'phase3-forged-group', command: { type: 'SAVE_PROGRESS' },
+  }), /review proposition group mismatch|DATABASE_ERROR/i);
+  await client.query('ROLLBACK TO SAVEPOINT phase3_forged_group');
+  await client.query('RELEASE SAVEPOINT phase3_forged_group');
 
   await client.query('SAVEPOINT phase3_idempotency_collision');
   await assert.rejects(() => store.saveReview({ runId: run.run_id, expectedVersion: 1, state, actor, eventType: 'SAVE', idempotencyKey: saveKey, command: { type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: true } }), /IDEMPOTENCY_CONFLICT|idempotency collision/i);
@@ -131,6 +203,26 @@ test('Phase 3 review persistence is isolated, idempotent, versioned and atomical
   state = acceptAll(review.state, analysis, clock);
   review = await store.saveReview({ runId: run.run_id, expectedVersion: 2, state, actor, eventType: 'SAVE', idempotencyKey: 'phase3-resave', command: { type: 'SAVE_PROGRESS' } });
   state = applyReviewCommand(review.state, { type: 'PUBLISH' }, { analysis, legalSchema: schema, clock });
+  const groupedItem = state.items.find((item) => item.source_id === incompatibleGroup.proposal_id);
+  const groupedFact = state.summary.families.flatMap((family) => family.facts)
+    .find((fact) => fact.review_item_id === groupedItem.item_id);
+  assert.ok(groupedFact);
+  for (const [label, alter] of [
+    ['missing_summary_group', (fact) => { delete fact.proposition_group_id; }],
+    ['forged_summary_group', (fact) => { fact.proposition_group_id = incompatibleGroup.proposition_group_id; }],
+  ]) {
+    const forgedSummary = structuredClone(state);
+    const fact = forgedSummary.summary.families.flatMap((family) => family.facts)
+      .find((candidate) => candidate.review_item_id === groupedFact.review_item_id);
+    alter(fact);
+    await client.query(`SAVEPOINT ${label}`);
+    await assert.rejects(() => store.saveReview({
+      runId: run.run_id, expectedVersion: 3, state: forgedSummary, actor,
+      eventType: 'PUBLISH', idempotencyKey: `phase3-${label}`, command: { type: 'PUBLISH' },
+    }), /published review proposition group mismatch|DATABASE_ERROR/i);
+    await client.query(`ROLLBACK TO SAVEPOINT ${label}`);
+    await client.query(`RELEASE SAVEPOINT ${label}`);
+  }
   const tampered = structuredClone(state);
   tampered.metrics.proposal_count += 1;
   await client.query('SAVEPOINT phase3_tampered_publish');

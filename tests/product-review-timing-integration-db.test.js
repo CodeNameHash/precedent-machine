@@ -22,6 +22,7 @@ const migrations = [
   'supabase/migrations/20260905213000_product_monotonic_failed_section_status.sql',
   'supabase/migrations/20260905214000_product_cumulative_review_timing.sql',
   'supabase/migrations/20260905215000_product_finding_resolution_validation.sql',
+  'supabase/migrations/20260905220000_product_review_proposition_group_repair.sql',
 ].map((file) => fs.readFileSync(path.join(ROOT, file), 'utf8'));
 
 const actor = 'review-timing-integration-lawyer';

@@ -21,6 +21,9 @@ const migrationFiles = [
 const findingMigration = fs.readFileSync(path.join(
   ROOT, 'supabase/migrations/20260905215000_product_finding_resolution_validation.sql',
 ), 'utf8');
+const groupRepairMigration = fs.readFileSync(path.join(
+  ROOT, 'supabase/migrations/20260905220000_product_review_proposition_group_repair.sql',
+), 'utf8');
 
 let sequence = 0;
 
@@ -150,6 +153,7 @@ test.before(async () => {
   await database.setupDatabase();
   for (const file of migrationFiles) await execute(fs.readFileSync(path.join(ROOT, file), 'utf8'));
   if (process.env.PRODUCT_FINDING_RESOLUTION_SKIP_MIGRATION !== '1') await execute(findingMigration);
+  await execute(groupRepairMigration);
 });
 test.after(database.teardownDatabase);
 

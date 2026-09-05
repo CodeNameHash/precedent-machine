@@ -6,6 +6,7 @@ import {
   presentReviewEvidence,
   proposalRepairState,
 } from '../../lib/product/review-presentation';
+import { displaySectionReference } from '../../lib/product/section-reference-display';
 
 const badge = {
   PENDING: 'bg-amber-100 text-amber-900', ACCEPTED: 'bg-green-100 text-green-900',
@@ -30,7 +31,9 @@ export function evidenceNavigationSource(evidence) {
 }
 
 export default function ProposalCard({
-  entry, onDecision, onSource, availableSourceSpans = [], structureNodes = [], requiredRoleKeys = [], busy,
+  entry, onDecision, onSource, availableSourceSpans = [], availablePropositionGroups = [],
+  availableProposals = [],
+  structureNodes = [], requiredRoleKeys = [], busy,
 }) {
   const { proposal, review_item: item, related_proposals: related, group_members: groupMembers = [] } = entry;
   const savedRoles = item?.edited_roles || proposal.roles || {};
@@ -40,6 +43,10 @@ export default function ProposalCard({
   const [value, setValue] = useState(item?.edited_value ?? proposal.canonical_value ?? '');
   const [selectedSourceSpanIds, setSelectedSourceSpanIds] = useState(item?.source_span_ids || proposal.source_span_ids || []);
   const [citationFilter, setCitationFilter] = useState('');
+  const savedGroupSelection = Object.hasOwn(item || {}, 'edited_proposition_group_id')
+    ? item.edited_proposition_group_id ?? '' : '__UNCHANGED__';
+  const [groupSelection, setGroupSelection] = useState(savedGroupSelection);
+  const canEditGroup = item?.kind === 'PROPOSAL';
   const invalid = proposal.validation_status !== 'VALID';
   const reviewEvidence = useMemo(
     () => presentReviewEvidence(proposal, structureNodes), [proposal, structureNodes],
@@ -58,13 +65,25 @@ export default function ProposalCard({
     ownedStructureNodeId: proposal.structure_node_id,
     selectedIds: selectedSourceSpanIds, filter: citationFilter,
   }), [availableSourceSpans, structureNodes, proposal.structure_node_id, selectedSourceSpanIds, citationFilter]);
+  const compatibleGroups = availablePropositionGroups.filter((group) => (
+    group.family_key === proposal.family_key && group.subtype_key === proposal.subtype_key
+  )).map((group) => {
+    const node = structureNodes.find((candidate) => candidate.node_id === group.structure_node_id);
+    const members = availableProposals.filter((candidate) => (
+      candidate.proposition_group_id === group.proposition_group_id
+    ));
+    const section = node?.reference ? displaySectionReference(node.reference) : 'Section unavailable';
+    const description = members.map((member) => member.statement).filter(Boolean).join(' / ') || 'Recorded group';
+    return { ...group, label: `${section}: ${description} (${group.proposition_group_id.slice(0, 12)})` };
+  });
   useEffect(() => {
     if (editing) return;
     setStatement(item?.edited_statement || proposal.statement);
     setRoles(withRequiredRoles(savedRoles, requiredRoleKeys));
     setValue(item?.edited_value ?? proposal.canonical_value ?? '');
     setSelectedSourceSpanIds(savedSourceSpanIds);
-  }, [editing, item, proposal, requiredRoleKeys, savedRoles, savedSourceSpanIds]);
+    setGroupSelection(savedGroupSelection);
+  }, [editing, item, proposal, requiredRoleKeys, savedRoles, savedSourceSpanIds, savedGroupSelection]);
   function updateRole(key, nextValue, original) {
     let typed = nextValue;
     if (Array.isArray(original)) typed = nextValue.split(',').map((part) => part.trim()).filter(Boolean);
@@ -73,7 +92,12 @@ export default function ProposalCard({
     setRoles((current) => ({ ...current, [key]: typed }));
   }
   async function saveEdit() {
-    await onDecision(item.item_id, 'EDITED', { statement, roles, value: proposal.canonical_value == null ? null : value, source_span_ids: selectedSourceSpanIds });
+    const groupEdit = groupSelection === '__UNCHANGED__' ? {}
+      : { proposition_group_id: groupSelection === '' ? null : groupSelection };
+    await onDecision(item.item_id, 'EDITED', {
+      statement, roles, value: proposal.canonical_value == null ? null : value,
+      source_span_ids: selectedSourceSpanIds, ...groupEdit,
+    });
     setEditing(false);
   }
   function toggleSourceSpan(spanId) {
@@ -85,11 +109,13 @@ export default function ProposalCard({
     setRoles(withRequiredRoles(savedRoles, requiredRoleKeys));
     setValue(item?.edited_value ?? proposal.canonical_value ?? '');
     setSelectedSourceSpanIds(savedSourceSpanIds);
+    setGroupSelection(savedGroupSelection);
     setCitationFilter('');
     setEditing(true);
   }
   function cancelEditing() {
     setSelectedSourceSpanIds(savedSourceSpanIds);
+    setGroupSelection(savedGroupSelection);
     setCitationFilter('');
     setEditing(false);
   }
@@ -120,8 +146,9 @@ export default function ProposalCard({
         {Object.entries(item?.edited_roles || proposal.roles || {}).map(([key, roleValue]) => <div key={key}><dt className="text-[10px] uppercase tracking-wide text-inkLight">{commonRoleHelp(key).label}</dt><dd className="flex items-start gap-1 text-sm text-inkMid"><span>{Array.isArray(roleValue) ? roleValue.join(', ') : String(roleValue)}</span><button type="button" onClick={openPrimarySource} className="text-[10px] font-semibold text-accent">Source</button></dd></div>)}
       </dl>
       {proposal.canonical_value != null ? <button type="button" onClick={openPrimarySource} className="mt-2 text-left text-sm"><span className="text-inkLight">Canonical value:</span> {String(item?.edited_value ?? proposal.canonical_value)} <span className="text-xs font-semibold text-accent">Source</span></button> : null}
-      {groupMembers.length > 1 ? <div className="mt-3 rounded bg-paper p-2 text-xs text-inkMid"><p className="font-semibold text-ink">Complete relationship group</p>{groupMembers.map((member) => <p key={member.proposal_id}>{member.proposal_id === proposal.proposal_id ? 'This fact' : member.statement}</p>)}</div> : null}
+      {groupMembers.length > 1 ? <div className="mt-3 rounded bg-paper p-2 text-xs text-inkMid"><p className="font-semibold text-ink">Original AI group, for context</p>{groupMembers.map((member) => <p key={member.proposal_id}>{member.proposal_id === proposal.proposal_id ? 'This fact' : member.statement}</p>)}</div> : null}
       {related.length ? <div className="mt-3 rounded bg-paper p-2 text-xs text-inkMid">{related.map(({ link, other }) => <p key={link.fact_link_id}><strong>{link.relationship_type}</strong> {other?.statement || other?.fact_type}</p>)}</div> : null}
+      {canEditGroup ? <label className="mt-3 block text-xs font-semibold text-inkMid">Summary group<span className="mt-0.5 block font-normal text-inkLight">Choose the group saved in the accepted summary. Standalone fact is an explicit lawyer choice.</span><select aria-label="Summary group" disabled={!editing || busy} value={groupSelection} onChange={(event) => setGroupSelection(event.target.value)} className="mt-1 block w-full rounded border border-border p-2 font-normal disabled:bg-paper"><option value="__UNCHANGED__">Keep current grouping</option><option value="">Standalone fact</option>{compatibleGroups.map((group) => <option key={group.proposition_group_id} value={group.proposition_group_id}>{group.label}</option>)}</select></label> : null}
       {editing ? <div className="mt-3 space-y-2">
         <textarea aria-label="Edited legal statement" value={statement} onChange={(event) => setStatement(event.target.value)} className="w-full rounded border border-border p-2 text-sm" />
         {proposal.canonical_value != null ? <label className="block text-xs font-semibold text-inkMid">Canonical value<input aria-label="Edited canonical value" value={value} onChange={(event) => setValue(event.target.value)} className="mt-1 block w-full rounded border border-border p-2 font-normal" /></label> : null}

@@ -81,6 +81,20 @@ function analysisFixture() {
 
 const clock = (value) => () => new Date(value);
 
+function severMismatchedException(state, analysis) {
+  const item = state.items.find((candidate) => candidate.kind === 'PROPOSAL'
+    && candidate.original.subtype_key === 'EXCEPTION_PREREQUISITE');
+  if (!item) return state;
+  return applyReviewCommand(state, {
+    type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'EDITED',
+    statement: item.edited_statement || item.original.statement,
+    roles: item.edited_roles || item.original.roles,
+    value: item.edited_value ?? item.original.canonical_value,
+    source_span_ids: item.source_span_ids,
+    proposition_group_id: null,
+  }, { analysis, legalSchema });
+}
+
 function responseDouble() {
   return { headers: {}, statusCode: null, body: null,
     setHeader(key, value) { this.headers[key] = value; },
@@ -126,6 +140,84 @@ test('review worklist requires proposals, exceptions, issues, absence and immate
   assert.throws(() => applyReviewCommand(state, { type: 'PUBLISH' }, { analysis, legalSchema }), /REVIEW_PENDING_ITEMS/);
 });
 
+test('publication requires explicit repair of an accepted mismatched proposition group', () => {
+  const analysis = analysisFixture();
+  let state = initialiseReviewState(analysis);
+  for (const item of state.items) {
+    state = applyReviewCommand(state, {
+      type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'ACCEPTED',
+    }, { analysis, legalSchema });
+  }
+  state = applyReviewCommand(state, {
+    type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: true,
+  }, { analysis, legalSchema });
+  assert.equal(buildReviewView({ analysis, review: { state, version: 1 } }).can_publish, false);
+
+  assert.throws(() => applyReviewCommand(state, {
+    type: 'PUBLISH',
+  }, { analysis, legalSchema }), /REVIEW_PROPOSITION_GROUP/);
+
+  const mismatched = state.items.find((item) => item.kind === 'PROPOSAL'
+    && item.original.subtype_key === 'EXCEPTION_PREREQUISITE');
+  const original = structuredClone(mismatched.original);
+  state = applyReviewCommand(state, {
+    type: 'DECIDE_ITEM', item_id: mismatched.item_id, decision: 'EDITED',
+    statement: mismatched.original.statement, roles: mismatched.original.roles,
+    proposition_group_id: null,
+  }, { analysis, legalSchema });
+
+  const repaired = state.items.find((item) => item.item_id === mismatched.item_id);
+  assert.equal(Object.hasOwn(repaired, 'edited_proposition_group_id'), true);
+  assert.equal(repaired.edited_proposition_group_id, null);
+  assert.deepEqual(repaired.original, original);
+
+  state = applyReviewCommand(state, {
+    type: 'DECIDE_ITEM', item_id: mismatched.item_id, decision: 'EDITED',
+    statement: 'Edited again without changing the current grouping.', roles: mismatched.original.roles,
+  }, { analysis, legalSchema });
+  assert.equal(state.items.find((item) => item.item_id === mismatched.item_id)
+    .edited_proposition_group_id, null);
+  assert.equal(buildReviewView({ analysis, review: { state, version: 2 } }).can_publish, true);
+
+  state = applyReviewCommand(state, { type: 'PUBLISH' }, { analysis, legalSchema });
+  const published = state.summary.families.flatMap((family) => family.facts)
+    .find((fact) => fact.review_item_id === mismatched.item_id);
+  assert.equal(published.proposition_group_id, null);
+  const reopened = applyReviewCommand(state, { type: 'REOPEN' }, { analysis, legalSchema });
+  assert.equal(reopened.items.find((item) => item.item_id === mismatched.item_id)
+    .edited_proposition_group_id, null);
+});
+
+test('a proposition group edit accepts only a recorded group with the same family and subtype', () => {
+  const analysis = analysisFixture();
+  const item = initialiseReviewState(analysis).items.find((candidate) => candidate.kind === 'PROPOSAL'
+    && candidate.original.subtype_key === 'EXCEPTION_PREREQUISITE');
+  const command = {
+    type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'EDITED',
+    statement: item.original.statement, roles: item.original.roles,
+  };
+
+  assert.throws(() => applyReviewCommand(initialiseReviewState(analysis), {
+    ...command, proposition_group_id: 'unknown',
+  }, { analysis, legalSchema }), /REVIEW_PROPOSITION_GROUP/);
+  assert.throws(() => applyReviewCommand(initialiseReviewState(analysis), {
+    ...command, proposition_group_id: analysis.proposition_groups[0].proposition_group_id,
+  }, { analysis, legalSchema }), /REVIEW_PROPOSITION_GROUP/);
+
+  const compatibleGroup = {
+    proposition_group_id: 'z'.repeat(64), structure_node_id: nodeOne,
+    family_key: item.original.family_key, subtype_key: item.original.subtype_key,
+  };
+  const compatibleAnalysis = {
+    ...analysis, proposition_groups: [...analysis.proposition_groups, compatibleGroup],
+  };
+  const edited = applyReviewCommand(initialiseReviewState(compatibleAnalysis), {
+    ...command, proposition_group_id: compatibleGroup.proposition_group_id,
+  }, { analysis: compatibleAnalysis, legalSchema });
+  assert.equal(edited.items.find((candidate) => candidate.item_id === item.item_id)
+    .edited_proposition_group_id, compatibleGroup.proposition_group_id);
+});
+
 test('lawyer edits preserve citations, missing facts validate roles, and publish retains accepted exceptions', () => {
   const analysis = analysisFixture();
   let state = initialiseReviewState(analysis, { clock: clock('2026-09-04T12:00:00Z') });
@@ -146,6 +238,7 @@ test('lawyer edits preserve citations, missing facts validate roles, and publish
   for (const item of state.items.filter((candidate) => candidate.decision === 'PENDING')) {
     state = applyReviewCommand(state, { type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'ACCEPTED' }, { analysis, legalSchema });
   }
+  state = severMismatchedException(state, analysis);
   state = applyReviewCommand(state, { type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: true }, { analysis, legalSchema });
   state = applyReviewCommand(state, { type: 'PUBLISH' }, { analysis, legalSchema, clock: clock('2026-09-04T12:10:00Z') });
   assert.equal(state.status, 'PUBLISHED');
@@ -224,7 +317,7 @@ test('invalid proposals require an explicit same-closure citation repair before 
   state = applyReviewCommand(state, {
     type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'EDITED',
     statement: 'Company must not solicit proposals.', roles: item.original.roles,
-    source_span_ids: [spanId],
+    source_span_ids: [spanId], proposition_group_id: null,
   }, { analysis, legalSchema });
   const repaired = state.items[0];
   assert.deepEqual(repaired.original, original);
@@ -247,6 +340,7 @@ test('release evaluation requires an explicit lawyer attestation and atomic inve
   const analysis = analysisFixture();
   let state = initialiseReviewState(analysis);
   for (const item of state.items) state = applyReviewCommand(state, { type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'ACCEPTED' }, { analysis, legalSchema });
+  state = severMismatchedException(state, analysis);
   state = applyReviewCommand(state, { type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: true }, { analysis, legalSchema });
   state = applyReviewCommand(state, { type: 'PUBLISH' }, { analysis, legalSchema });
   assert.throws(() => applyReviewCommand(state, {
@@ -280,6 +374,7 @@ test('publication rejects an accepted exception whose endpoint was rejected', ()
   for (const item of state.items) {
     state = applyReviewCommand(state, { type: 'DECIDE_ITEM', item_id: item.item_id, decision: item.kind === 'PROPOSAL' && item.source_id.startsWith('a') ? 'REJECTED' : 'ACCEPTED' }, { analysis, legalSchema });
   }
+  state = severMismatchedException(state, analysis);
   state = applyReviewCommand(state, { type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: true }, { analysis, legalSchema });
   assert.throws(() => applyReviewCommand(state, { type: 'PUBLISH' }, { analysis, legalSchema }), /PUBLISHED_RELATIONSHIP_ENDPOINT/);
 });
@@ -544,6 +639,7 @@ test('review HTTP boundary uses server-derived reviewer identity and processing 
   const analysis = analysisFixture();
   let state = initialiseReviewState(analysis);
   for (const item of state.items) state = applyReviewCommand(state, { type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'ACCEPTED' }, { analysis, legalSchema });
+  state = severMismatchedException(state, analysis);
   state = applyReviewCommand(state, { type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: true }, { analysis, legalSchema });
   state = applyReviewCommand(state, { type: 'PUBLISH' }, { analysis, legalSchema });
   const facts = state.summary.families.flatMap((family) => family.facts);

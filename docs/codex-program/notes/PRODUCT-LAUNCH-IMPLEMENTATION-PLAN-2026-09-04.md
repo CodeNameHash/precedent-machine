@@ -399,14 +399,13 @@ result. Every substantive section and required role has a disposition.
 
 ### Phase 5. Freeze, test blind and correct honestly, 3 days
 
-Current position, 2026-09-05: the sixth Public Storage diagnostic saved 26 of
-105 sections before stopping at citations with unknown source identifiers.
-The accepted correction retains invalid claims and unsupported classifications
-as visible review work, preserves usable sibling proposals, and grants no
-invented citation. Saved-response replay, the affected browser flow and the
-recorded all-family checks pass. The next fresh diagnostic remains to be run.
-The online checklist uses the full card width on phones and desktops. Full
-processing, a usable reviewed summary and the untouched blind test remain unproved.
+Current position, 2026-09-05: the seventh Public Storage diagnostic is processing
+all 105 sections through the ordinary signed-in Review form. It has passed both
+sections that stopped the previous run. Invalid claims remain visible review
+work; no invented citation is accepted. An explicit summary-group repair control
+and publication validation now pass browser and database checks. Speed work and
+precedent tracing are deferred in the future-feature list. Full processing,
+a usable reviewed summary and the untouched blind test remain unproved.
 
 Speed investigation: the sixth diagnostic completed sections at an average
 interval of 32.3 seconds, with a longest gap of 76.6 seconds. The page polls
@@ -429,6 +428,15 @@ invalid proposals; section 3.13 retains seventeen proposals, six mechanically
 valid, and explicit unsupported-classification issues. Original replies remain
 unchanged. These are parser and citation checks, not confirmation of legal
 accuracy. Genuine missing roles, grouping defects and unresolved coverage remain.
+
+The seventh diagnostic exposed a review-control gap: acknowledging a group
+mismatch could leave an accepted fact in an incompatible summary group. The
+reviewer can now explicitly choose a compatible recorded group or make the fact
+standalone. No automatic regrouping occurs. Original proposals and exception
+links remain intact. The screen, server and database reject incoherent accepted
+groups; a finding acknowledgement cannot bypass this check. Save, cancel,
+keep-current and revision restoration are checked. The disposable database
+change preserves existing review data and denies anonymous access.
 
 Diagnostic history: the private online Codex worker has passed a real
 model call and a stop-and-resume authentication check. The first Public Storage
@@ -505,8 +513,8 @@ The existing release evaluation now requires an explicit final-fact link or
 reasoned omission to resolve an original model finding. Bare acknowledgement
 does not clear it; work that never ran and actual published contradictions
 remain blocking. Database and browser checks pass. Processing time and the
-fixed 90-minute limit remain unchanged. No fresh generation
-or blind test has yet established full processing under these corrections.
+fixed 90-minute limit remain unchanged. The seventh diagnostic is in progress;
+no blind test has yet established full processing under these corrections.
 Full processing and a usable review draft remain unproved.
 The 90-minute check now includes measured processing time. This is
 diagnostic work, not blind release evidence. The untouched final agreement,
