@@ -12,6 +12,7 @@ if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required for the Phase 1
 
 const migration = fs.readFileSync(path.join(__dirname, '..', 'supabase/migrations/20260905020346_product_phase_1_foundation.sql'), 'utf8');
 const workSetCorrection = fs.readFileSync(path.join(__dirname, '..', 'supabase/migrations/20260905190000_product_substantive_section_work.sql'), 'utf8');
+const leaseRecovery = fs.readFileSync(path.join(__dirname, '..', 'supabase/migrations/20260905200000_product_expired_section_recovery.sql'), 'utf8');
 const sha256 = (value) => crypto.createHash('sha256').update(value).digest('hex');
 let client;
 
@@ -36,6 +37,7 @@ test.before(async () => {
   END $$;`);
   await client.query(migration);
   await client.query(workSetCorrection);
+  await client.query(leaseRecovery);
 });
 
 test.after(async () => {
@@ -133,6 +135,18 @@ test('inactive Postgres proves durable state transitions, isolation and rollback
   assert.deepEqual((await client.query(
     'SELECT node_id FROM public.product_section_work WHERE run_id=$1 ORDER BY authored_order', [runTwo.run_id],
   )).rows.map((row) => row.node_id), ['3'.repeat(64), '4'.repeat(64)]);
+
+  const crashed = (await client.query('SELECT public.product_phase1_claim_section($1,$2,$3) AS work', [runTwo.run_id, 'crashed-worker', 300])).rows[0].work;
+  await client.query(`UPDATE public.product_section_work SET lease_expires_at=now()-interval '1 second', attempts=max_attempts
+    WHERE run_id=$1 AND node_id=$2`, [runTwo.run_id, crashed.node_id]);
+  const recovered = (await client.query('SELECT public.product_phase1_recover_expired_sections($1) AS result', [runTwo.run_id])).rows[0].result;
+  assert.equal(recovered.recovered_sections, 1);
+  assert.deepEqual((await client.query('SELECT status,worker_id,attempt_token,lease_expires_at,error FROM public.product_section_work WHERE run_id=$1 AND node_id=$2', [runTwo.run_id, crashed.node_id])).rows[0], {
+    status: 'FAILED', worker_id: null, attempt_token: null, lease_expires_at: null, error: { code: 'SECTION_LEASE_EXPIRED' },
+  });
+  assert.equal((await client.query('SELECT status FROM public.product_analysis_runs WHERE run_id=$1', [runTwo.run_id])).rows[0].status, 'FAILED');
+  assert.equal((await client.query('SELECT public.product_phase1_recover_expired_sections($1) AS result', [runTwo.run_id])).rows[0].result.recovered_sections, 0);
+  assert.equal(Number((await client.query("SELECT count(*) FROM public.product_section_work WHERE run_id=$1 AND status='COMPLETE'", [runOne.run_id])).rows[0].count), 2);
 
   const permissions = (await client.query(`SELECT
     has_table_privilege('service_role', 'public.product_analysis_runs', 'INSERT') AS direct_insert,

@@ -9,10 +9,19 @@ const test = require('node:test');
 const { buildAgreementStructure } = require('../lib/product/agreement-structure');
 const {
   buildAgreementDraft,
+  canonicalLinkSourceSpanIds,
+  canonicalProposalSourceSpanIds,
+  canonicalRoutingDisagreements,
+  canonicalRoutingDisposition,
+  canonicalRoutingSet,
+  compileResidualPass,
+  compileRouting,
+  sealSectionResult,
   validateAgreementDraft,
 } = require('../lib/product/agreement-draft');
 const { createProductAnalysisHandler } = require('../lib/product/analysis-handler');
 const { callKey, createRecordedModelAdapter } = require('../lib/product/model-adapter');
+const { withSectionLeaseHeartbeat } = require('../lib/product/analysis-runner');
 const { createSecIntakeAdapter } = require('../lib/product/sec-intake');
 const { buildSourceClosure, substantiveSections } = require('../lib/product/source-context');
 
@@ -231,6 +240,237 @@ function createSyntheticConchoModel({ failAtCall = null } = {}) {
 }
 
 if (process.env.PRODUCT_PHASE2_HELPER_ONLY !== '1') {
+test('routing identity canonicalises set order and reports invalid enum type and value', () => {
+  assert.deepEqual(canonicalRoutingSet(['TERMINATION', 'NO_SHOP', 'TERMINATION'], 'routing.families'), ['NO_SHOP', 'TERMINATION']);
+  assert.deepEqual(canonicalRoutingDisagreements([
+    { family_key: 'TERMINATION', reason: 'second' },
+    { family_key: 'NO_SHOP', reason: 'first' },
+    { family_key: 'TERMINATION', reason: 'second' },
+  ]), [
+    { family_key: 'NO_SHOP', reason: 'first' },
+    { family_key: 'TERMINATION', reason: 'second' },
+  ]);
+  assert.deepEqual(canonicalRoutingDisagreements([
+    { family_key: 'none', reason: 'placeholder' },
+    { family_key: 'NO_SHOP', reason: 'valid' },
+  ]), [{ family_key: 'NO_SHOP', reason: 'valid' }]);
+  assert.throws(() => canonicalRoutingDisagreements([null]), /ROUTING_DISAGREEMENT_SHAPE/);
+  assert.throws(() => canonicalRoutingDisagreements([{ family_key: 'NO_SHOP', reason: 'valid', extra: true }]), /ROUTING_DISAGREEMENT_SHAPE/);
+  assert.throws(() => canonicalRoutingDisagreements([{ family_key: 'NO_SHOP', reason: '' }]), /MODEL_RESPONSE_SHAPE/);
+
+  const call = { model_call_id: 'm'.repeat(64) };
+  const node = { node_id: 'n'.repeat(64), reference: '1.1' };
+  const first = compileRouting({
+    response: {
+      families: ['TERMINATION', 'NO_SHOP', 'TERMINATION'],
+      disposition: 'FAMILY_ASSIGNED', rationale: 'same',
+      deterministic_disagreements: [
+        { family_key: 'TERMINATION_FEE', reason: 'not present' },
+        { family_key: 'CLOSING_CONDITIONS', reason: 'not present' },
+        { family_key: 'TERMINATION_FEE', reason: 'not present' },
+      ],
+    },
+    call, node, deterministicEvidence: [],
+  });
+  const second = compileRouting({
+    response: {
+      families: ['NO_SHOP', 'TERMINATION'],
+      disposition: 'FAMILY_ASSIGNED', rationale: 'same',
+      deterministic_disagreements: [
+        { family_key: 'CLOSING_CONDITIONS', reason: 'not present' },
+        { family_key: 'TERMINATION_FEE', reason: 'not present' },
+      ],
+    },
+    call, node, deterministicEvidence: [],
+  });
+  assert.equal(first.section_routing_id, second.section_routing_id);
+  assert.deepEqual(first.families, ['NO_SHOP', 'TERMINATION']);
+  assert.equal(canonicalRoutingDisposition(['FAMILY_ASSIGNED']), 'FAMILY_ASSIGNED');
+  assert.equal(canonicalRoutingDisposition(['IMMATERIAL', 'FAMILY_ASSIGNED'], ['NO_SHOP']), 'FAMILY_ASSIGNED');
+  assert.deepEqual(canonicalRoutingDisposition(['IMMATERIAL', 'FAMILY_ASSIGNED'], []), ['IMMATERIAL', 'FAMILY_ASSIGNED']);
+  assert.deepEqual(canonicalRoutingDisposition(['FAMILY_ASSIGNED', 'IMMATERIAL']), ['FAMILY_ASSIGNED', 'IMMATERIAL']);
+  assert.deepEqual(canonicalRoutingDisposition(['NOT_ALLOWED']), ['NOT_ALLOWED']);
+  const singleEnumArray = compileRouting({
+    response: { families: ['NO_SHOP'], disposition: ['FAMILY_ASSIGNED'], rationale: 'same', deterministic_disagreements: [] },
+    call, node, deterministicEvidence: [],
+  });
+  const scalarEnum = compileRouting({
+    response: { families: ['NO_SHOP'], disposition: 'FAMILY_ASSIGNED', rationale: 'same', deterministic_disagreements: [] },
+    call, node, deterministicEvidence: [],
+  });
+  assert.equal(singleEnumArray.section_routing_id, scalarEnum.section_routing_id);
+  const coherentPair = compileRouting({
+    response: { families: ['NO_SHOP'], disposition: ['IMMATERIAL', 'FAMILY_ASSIGNED'], rationale: 'same', deterministic_disagreements: [] },
+    call, node, deterministicEvidence: [],
+  });
+  assert.equal(coherentPair.section_routing_id, scalarEnum.section_routing_id);
+  assert.throws(() => compileRouting({
+    response: { families: [], disposition: ['FAMILY_ASSIGNED', 'IMMATERIAL'], deterministic_disagreements: [] },
+    call, node, deterministicEvidence: [],
+  }), /ROUTING_DISPOSITION: \{"type":"array","value":\["FAMILY_ASSIGNED","IMMATERIAL"\]\}/);
+  assert.throws(() => compileRouting({
+    response: { families: ['NO_SHOP'], disposition: ['FAMILY_ASSIGNED', 'UNRESOLVED_UNUSUAL_PROVISION'], deterministic_disagreements: [] },
+    call, node, deterministicEvidence: [],
+  }), /ROUTING_DISPOSITION/);
+  assert.throws(() => compileRouting({
+    response: {
+      families: [], disposition: 'IMMATERIAL',
+      deterministic_disagreements: [{ family_key: 'none', reason: 'placeholder' }],
+    },
+    call, node, deterministicEvidence: [{ section_family: 'NO_SHOP' }],
+  }), /ROUTING_EVIDENCE_UNRECONCILED/);
+});
+
+test('section sealing deduplicates identical content-addressed components before persistence', () => {
+  const issue = { issue_id: 'i'.repeat(64), code: 'SAME' };
+  const sealed = sealSectionResult({
+    node_id: 'n'.repeat(64), section_reference: '1.1',
+    source_closure: { source_closure_id: 'c'.repeat(64), spans: [] },
+    model_calls: [], spans: [], proposals: [], groups: [], links: [],
+    issues: [issue, issue], coverage: [],
+  });
+  assert.deepEqual(sealed.issues, [issue]);
+});
+
+test('fact-link source span sets have stable identity across duplicates and permutations', () => {
+  const base = {
+    schema_version: 'PRODUCT_FACT_LINK/V1', from_proposal_id: 'a'.repeat(64),
+    to_proposal_id: 'b'.repeat(64), relationship_type: 'QUALIFIES',
+  };
+  const first = { ...base, source_span_ids: canonicalLinkSourceSpanIds(['z'.repeat(64), 'c'.repeat(64), 'z'.repeat(64)]) };
+  const second = { ...base, source_span_ids: canonicalLinkSourceSpanIds(['c'.repeat(64), 'z'.repeat(64)]) };
+  assert.deepEqual(first.source_span_ids, ['c'.repeat(64), 'z'.repeat(64)]);
+  assert.equal(require('../lib/canonical-v2/canonical-bytes').contentId('PRODUCT_FACT_LINK/V1', first),
+    require('../lib/canonical-v2/canonical-bytes').contentId('PRODUCT_FACT_LINK/V1', second));
+});
+
+test('proposal citation span sets have stable identity across duplicates and permutations', () => {
+  const base = {
+    schema_version: 'PRODUCT_PROPOSAL/V1', fact_occurrence_id: 'o'.repeat(64),
+    statement: 'Same fact', roles: {},
+  };
+  const first = { ...base, source_span_ids: canonicalProposalSourceSpanIds(['z'.repeat(64), 'c'.repeat(64), 'z'.repeat(64)]) };
+  const second = { ...base, source_span_ids: canonicalProposalSourceSpanIds(['c'.repeat(64), 'z'.repeat(64)]) };
+  assert.deepEqual(first.source_span_ids, ['c'.repeat(64), 'z'.repeat(64)]);
+  assert.equal(require('../lib/canonical-v2/canonical-bytes').contentId('PRODUCT_PROPOSAL/V1', first),
+    require('../lib/canonical-v2/canonical-bytes').contentId('PRODUCT_PROPOSAL/V1', second));
+});
+
+test('section lease heartbeat renews during work, stops cleanly and blocks late output after ownership loss', async () => {
+  let renewals = 0;
+  let commitFinished = false;
+  let commitStarted = false;
+  let renewalDuringCommit = false;
+  const options = {
+    runId: crypto.randomUUID(), claim: { node_id: 'n'.repeat(64), attempt_token: crypto.randomUUID() },
+    workerId: 'worker', leaseSeconds: 0.3,
+  };
+  const result = await withSectionLeaseHeartbeat({
+    ...options,
+    store: { renewSectionLease: async () => {
+      renewals += 1;
+      if (commitStarted && !commitFinished) renewalDuringCommit = true;
+    } },
+    action: async () => {
+      await new Promise((resolve) => setTimeout(resolve, 120));
+      return 'done';
+    },
+    commit: async (value) => {
+      commitStarted = true;
+      await new Promise((resolve) => setTimeout(resolve, 120));
+      commitFinished = true;
+      return value;
+    },
+  });
+  assert.equal(result, 'done');
+  assert.equal(commitFinished, true);
+  assert.equal(renewalDuringCommit, false);
+  assert.ok(renewals >= 2);
+  assert.ok(renewals >= 1);
+  const stoppedAt = renewals;
+  await new Promise((resolve) => setTimeout(resolve, 160));
+  assert.equal(renewals, stoppedAt);
+  await assert.rejects(() => withSectionLeaseHeartbeat({
+    ...options,
+    store: { renewSectionLease: async () => { throw new Error('stale section attempt'); } },
+    action: () => new Promise((resolve) => setTimeout(() => resolve('late output'), 180)),
+    commit: () => assert.fail('lost lease must fence commit'),
+  }), /SECTION_LEASE_LOST/);
+});
+
+test('section lease heartbeat drains a queued renewal before the final renewal and commit', async () => {
+  let releaseQueued;
+  let renewal = 0;
+  let committed = false;
+  const resultPromise = withSectionLeaseHeartbeat({
+    runId: crypto.randomUUID(), claim: { node_id: 'q'.repeat(64), attempt_token: crypto.randomUUID() },
+    workerId: 'worker', leaseSeconds: 0.3,
+    store: { renewSectionLease: async () => {
+      renewal += 1;
+      if (renewal === 1) await new Promise((resolve) => { releaseQueued = resolve; });
+    } },
+    action: () => new Promise((resolve) => setTimeout(() => resolve('built'), 120)),
+    commit: async (value) => { committed = true; return value; },
+  });
+  await new Promise((resolve) => setTimeout(resolve, 140));
+  assert.equal(committed, false);
+  releaseQueued();
+  assert.equal(await resultPromise, 'built');
+  assert.equal(renewal, 2);
+  assert.equal(committed, true);
+});
+
+test('residual pass preserves known replies and completes provider omissions as source-linked unresolved work', () => {
+  const call = { model_call_id: 'm'.repeat(64) };
+  const node = { node_id: 'n'.repeat(64), reference: '1.1' };
+  const closure = { source_closure_id: 'c'.repeat(64) };
+  const paragraphs = [{ span_id: 'a'.repeat(64) }, { span_id: 'b'.repeat(64) }];
+  const completed = compileResidualPass({
+    response: { paragraphs: [{
+      source_span_id: paragraphs[0].span_id, disposition: 'IMMATERIAL', family_keys: [], rationale: 'Returned decision.',
+    }] },
+    call, node, closure, paragraphs,
+  });
+  assert.equal(completed.residualPass.dispositions.length, 2);
+  assert.deepEqual(completed.residualPass.dispositions.map((item) => item.source_span_id), paragraphs.map((item) => item.span_id));
+  assert.equal(completed.residualPass.dispositions[0].rationale, 'Returned decision.');
+  assert.equal(completed.residualPass.dispositions[1].disposition, 'UNRESOLVED_UNUSUAL_PROVISION');
+  assert.equal(completed.residualPass.dispositions[1].rationale, 'PROVIDER_OMITTED_REQUIRED_PARAGRAPH_DISPOSITION');
+  assert.equal(completed.issues.length, 1);
+  assert.deepEqual(completed.issues[0].source_span_ids, [paragraphs[1].span_id]);
+  assert.equal(completed.coverage[1].state, 'UNRESOLVED');
+  assert.equal(completed.coverage[1].model_call_id, call.model_call_id);
+
+  const familySetFirst = compileResidualPass({
+    response: { paragraphs: [{
+      source_span_id: paragraphs[0].span_id, disposition: 'KNOWN_FAMILY',
+      family_keys: ['TERMINATION', 'NO_SHOP', 'TERMINATION'], rationale: 'Known families.',
+    }] },
+    call, node, closure, paragraphs: [paragraphs[0]],
+  });
+  const familySetSecond = compileResidualPass({
+    response: { paragraphs: [{
+      source_span_id: paragraphs[0].span_id, disposition: 'KNOWN_FAMILY',
+      family_keys: ['NO_SHOP', 'TERMINATION'], rationale: 'Known families.',
+    }] },
+    call, node, closure, paragraphs: [paragraphs[0]],
+  });
+  assert.equal(familySetFirst.residualPass.residual_pass_id, familySetSecond.residualPass.residual_pass_id);
+  assert.deepEqual(familySetFirst.residualPass.dispositions[0].family_keys, ['NO_SHOP', 'TERMINATION']);
+
+  assert.throws(() => compileResidualPass({
+    response: { paragraphs: [
+      { source_span_id: paragraphs[0].span_id, disposition: 'IMMATERIAL', family_keys: [], rationale: 'One.' },
+      { source_span_id: paragraphs[0].span_id, disposition: 'IMMATERIAL', family_keys: [], rationale: 'Duplicate.' },
+    ] },
+    call, node, closure, paragraphs,
+  }), /RESIDUAL_PARAGRAPH_DUPLICATE/);
+  assert.throws(() => compileResidualPass({
+    response: { paragraphs: [{ source_span_id: 'z'.repeat(64), disposition: 'IMMATERIAL', family_keys: [], rationale: 'Unknown.' }] },
+    call, node, closure, paragraphs,
+  }), /RESIDUAL_PARAGRAPH_UNKNOWN/);
+});
+
 test('source context follows transitive cross-references without importing policy machinery', () => {
   const text = [
     'AGREEMENT AND PLAN OF MERGER', '', 'ARTICLE I', 'TERMINATION', '',

@@ -184,6 +184,17 @@ CREATE TABLE public.product_section_results (
   FOREIGN KEY (run_id, source_closure_id) REFERENCES public.product_source_closures(run_id, source_closure_id)
 );
 
+CREATE TABLE public.product_residual_passes (
+  run_id uuid NOT NULL REFERENCES public.product_analysis_runs(run_id),
+  residual_pass_id text NOT NULL,
+  structure_node_id text NOT NULL,
+  model_call_id text NOT NULL,
+  payload jsonb NOT NULL,
+  PRIMARY KEY (run_id, residual_pass_id),
+  UNIQUE (run_id, structure_node_id),
+  FOREIGN KEY (run_id, model_call_id) REFERENCES public.product_model_calls(run_id, model_call_id)
+);
+
 CREATE TRIGGER product_draft_analyses_immutable BEFORE UPDATE OR DELETE ON public.product_draft_analyses
 FOR EACH ROW EXECUTE FUNCTION public.product_reject_immutable_change();
 CREATE TRIGGER product_model_calls_immutable BEFORE UPDATE OR DELETE ON public.product_model_calls
@@ -212,6 +223,8 @@ CREATE TRIGGER product_coverage_assertions_immutable BEFORE UPDATE OR DELETE ON 
 FOR EACH ROW EXECUTE FUNCTION public.product_reject_immutable_change();
 CREATE TRIGGER product_section_results_immutable BEFORE UPDATE OR DELETE ON public.product_section_results
 FOR EACH ROW EXECUTE FUNCTION public.product_reject_immutable_change();
+CREATE TRIGGER product_residual_passes_immutable BEFORE UPDATE OR DELETE ON public.product_residual_passes
+FOR EACH ROW EXECUTE FUNCTION public.product_reject_immutable_change();
 
 CREATE FUNCTION product_private.product_phase2_commit_section(
   p_run_id uuid, p_node_id text, p_worker_id text, p_attempt_token uuid, p_result jsonb
@@ -230,7 +243,11 @@ DECLARE
   result_output bigint := 0;
 BEGIN
   IF coalesce(p_worker_id, '') = '' OR p_result->>'schema_version' <> 'AGREEMENT_SECTION_DRAFT/V1'
-    OR p_result->>'section_result_id' !~ '^[0-9a-f]{64}$' OR p_result->>'node_id' <> p_node_id THEN
+    OR p_result->>'section_result_id' !~ '^[0-9a-f]{64}$' OR p_result->>'node_id' <> p_node_id
+    OR coalesce(p_result->'residual_pass'->>'schema_version', '') <> 'PRODUCT_PARAGRAPH_RESIDUAL_PASS/V1'
+    OR coalesce(p_result->'residual_pass'->>'structure_node_id', '') <> p_node_id
+    OR coalesce(p_result->'residual_pass'->>'residual_pass_id', '') !~ '^[0-9a-f]{64}$'
+    OR coalesce(p_result->'residual_pass'->>'model_call_id', '') !~ '^[0-9a-f]{64}$' THEN
     RAISE EXCEPTION 'invalid section draft input' USING ERRCODE = '22023';
   END IF;
   SELECT * INTO work_row FROM public.product_section_work WHERE run_id = p_run_id AND node_id = p_node_id FOR UPDATE;
@@ -358,6 +375,9 @@ BEGIN
     VALUES (p_run_id, item->>'coverage_assertion_id', item->>'subject_kind', item->>'subject_id', item->>'family_key',
       item->>'structure_node_id', item->>'model_call_id', item->>'state', false, item);
   END LOOP;
+  item := p_result->'residual_pass';
+  INSERT INTO public.product_residual_passes(run_id, residual_pass_id, structure_node_id, model_call_id, payload)
+  VALUES (p_run_id, item->>'residual_pass_id', p_node_id, item->>'model_call_id', item);
   INSERT INTO public.product_section_results(run_id, structure_node_id, section_result_id, section_routing_id,
     source_closure_id, payload_sha256)
   VALUES (p_run_id, p_node_id, p_result->>'section_result_id', p_result->'routing'->>'section_routing_id',
@@ -471,6 +491,10 @@ BEGIN
   IF expected_sections <> jsonb_array_length(p_draft->'sections')
     OR expected_sections <> jsonb_array_length(p_draft->'residual_passes')
     OR expected_sections <> (SELECT count(*) FROM public.product_section_results WHERE run_id = p_run_id)
+    OR expected_sections <> (SELECT count(*) FROM public.product_residual_passes WHERE run_id = p_run_id)
+    OR EXISTS (SELECT 1 FROM public.product_residual_passes r WHERE r.run_id = p_run_id AND NOT EXISTS (
+      SELECT 1 FROM jsonb_array_elements(p_draft->'residual_passes') j
+      WHERE j->>'residual_pass_id' = r.residual_pass_id AND j = r.payload))
     OR EXISTS (
       SELECT 1 FROM public.product_run_structures rs
       JOIN public.product_agreement_structures a ON a.structure_id = rs.structure_id,
@@ -623,16 +647,19 @@ ALTER TABLE public.product_fact_link_spans ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.product_issues ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.product_coverage_assertions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.product_section_results ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.product_residual_passes ENABLE ROW LEVEL SECURITY;
 
 REVOKE ALL ON public.product_draft_analyses, public.product_model_calls, public.product_source_closures,
   public.product_source_spans, public.product_source_closure_spans, public.product_section_routings, public.product_proposition_groups,
   public.product_proposals, public.product_proposal_spans, public.product_fact_links,
-  public.product_fact_link_spans, public.product_issues, public.product_coverage_assertions, public.product_section_results
+  public.product_fact_link_spans, public.product_issues, public.product_coverage_assertions, public.product_section_results,
+  public.product_residual_passes
   FROM PUBLIC, anon, authenticated, service_role;
 GRANT SELECT ON public.product_draft_analyses, public.product_model_calls, public.product_source_closures,
   public.product_source_spans, public.product_source_closure_spans, public.product_section_routings, public.product_proposition_groups,
   public.product_proposals, public.product_proposal_spans, public.product_fact_links,
-  public.product_fact_link_spans, public.product_issues, public.product_coverage_assertions, public.product_section_results TO service_role;
+  public.product_fact_link_spans, public.product_issues, public.product_coverage_assertions, public.product_section_results,
+  public.product_residual_passes TO service_role;
 
 REVOKE ALL ON FUNCTION public.product_phase2_get_analysis(uuid) FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON FUNCTION public.product_phase2_commit_section(uuid,text,text,uuid,jsonb) FROM PUBLIC, anon, authenticated;

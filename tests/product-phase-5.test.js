@@ -11,6 +11,9 @@ const freeze = require('./fixtures/product/phase-5-preblind-freeze.v1.json');
 const finalFreeze = require('./fixtures/product/phase-5-final-candidate-freeze.v1.json');
 const legalSchema = require('../contracts/product/legal-schema.v1.json');
 const { evaluateSupervisedRelease } = require('../lib/product/release-evaluation');
+const {
+  DIAGNOSTIC_SOURCE_DOCUMENT_ID, assertDatabaseTarget, assertDiagnosticRunTarget,
+} = require('../scripts/product-phase-5-local-run');
 
 const FROZEN_RELEASE_BARS = [
   "The lawyer's independent critical and material inventory is fully reconciled into published facts or explicit reviewed omissions.",
@@ -41,6 +44,7 @@ const FINAL_CANDIDATE_FILES = [
   'lib/product/agreement-draft.js',
   'lib/product/agreement-structure.js',
   'lib/product/source-context.js',
+  'lib/product/phase-1-store.js',
   'lib/product/section-reference-display.js',
   'lib/product/review-state.js',
   'lib/product/review-handler.js',
@@ -49,7 +53,11 @@ const FINAL_CANDIDATE_FILES = [
   'supabase/migrations/20260905043000_product_phase_2_vertical_slice.sql',
   'supabase/migrations/20260905070000_product_phase_3_review.sql',
   'supabase/migrations/20260905190000_product_substantive_section_work.sql',
+  'supabase/migrations/20260905200000_product_expired_section_recovery.sql',
   'lib/product/provider-recording-adapter.js',
+  'lib/product/codex-cli-model.js',
+  'scripts/product-phase-5-local-run.js',
+  'lib/llm-cli-client.js',
   'lib/product/anthropic-model.js',
   'lib/product/release-evaluation.js',
   'lib/product/sec-intake.js',
@@ -77,7 +85,7 @@ test('pre-blind schema, prompt bundle, release bars and lawyer issue list remain
 
 test('corrected final candidate is frozen before a new untouched agreement is selected', () => {
   assert.equal(finalFreeze.based_on, 'tests/fixtures/product/phase-5-preblind-freeze.v1.json');
-  assert.equal(finalFreeze.blind_driven_shared_corrections.length, 22);
+  assert.equal(finalFreeze.blind_driven_shared_corrections.length, 34);
   assert.deepEqual(finalFreeze.production_model_configuration, {
     provider_id: 'ANTHROPIC',
     model_id: 'claude-sonnet-4-5-20250929',
@@ -85,10 +93,33 @@ test('corrected final candidate is frozen before a new untouched agreement is se
     routing_max_tokens: 1200,
     extraction_max_tokens: 12000,
   });
+  assert.deepEqual(finalFreeze.phase5_local_fallback_configuration, {
+    provider_id: 'OPENAI_CODEX_CLI_SUBSCRIPTION',
+    model_id: 'gpt-5.4-mini;reasoning=low',
+    execution_model: 'gpt-5.4-mini',
+    reasoning_effort: 'low',
+    sandbox: 'read-only',
+    ephemeral: true,
+    max_attempts_per_call: 1,
+    marginal_api_cost_microusd: 0,
+  });
   assert.deepEqual(Object.keys(finalFreeze.candidate_files).sort(), [...FINAL_CANDIDATE_FILES].sort());
   for (const [relativePath, sha256] of Object.entries(finalFreeze.candidate_files)) assert.equal(fileHash(relativePath), sha256, relativePath);
   assert.equal(fileHash(freeze.legal_schema.path), freeze.legal_schema.sha256);
   assert.equal(promptBundleHash(freeze.prompt_bundle.paths), freeze.prompt_bundle.sha256);
+});
+
+test('local diagnostic runner is bound to the disposable host and exact diagnostic source', () => {
+  assert.doesNotThrow(() => assertDatabaseTarget('https://ecrtoofsyxozazkvsvcl.supabase.co'));
+  assert.throws(() => assertDatabaseTarget('https://production.supabase.co'), /PRODUCT_PHASE5_DATABASE_TARGET/);
+  const runId = crypto.randomUUID();
+  assert.doesNotThrow(() => assertDiagnosticRunTarget(runId, {
+    run_id: runId, source_document_id: DIAGNOSTIC_SOURCE_DOCUMENT_ID,
+  }));
+  assert.throws(() => assertDiagnosticRunTarget(runId, {
+    run_id: runId, source_document_id: 'f'.repeat(64),
+  }), /PRODUCT_PHASE5_RUN_TARGET/);
+  assert.throws(() => assertDiagnosticRunTarget(runId, null), /PRODUCT_PHASE5_RUN_TARGET/);
 });
 
 test('supervised release evaluation counts omissions and unresolved work against weighted recall and review burden', () => {
@@ -100,6 +131,7 @@ test('supervised release evaluation counts omissions and unresolved work against
       { item_id: 'coverage-1', kind: 'COVERAGE', decision: 'UNRESOLVED' },
     ],
     agreement_coverage: { decision: 'ACCEPTED', confirmed_by_role: 'LAWYER' },
+    metrics: { review_time_seconds: 600 },
     summary: { families: [{ family_key: 'TERMINATION', facts }] },
   };
   const result = evaluateSupervisedRelease({
@@ -151,6 +183,7 @@ test('release evaluation rejects vacuous or non-lawyer evidence and duplicate or
     reviewState: {
       items: [{ item_id: 'fact-1', kind: 'PROPOSAL', decision: 'ACCEPTED', decided_by_role: 'LAWYER' }],
       agreement_coverage: { decision: 'ACCEPTED', confirmed_by_role: 'LAWYER' },
+      metrics: { review_time_seconds: 1800 },
       summary: { families: [{ family_key: 'TERMINATION', facts: [{ review_item_id: 'fact-1', family_key: 'TERMINATION', subtype_key: 'OUTSIDE_DATE', fact_type: 'OUTSIDE_DATE', roles, source_span_ids: ['span-1'] }] }] },
     },
     legalSchema,
@@ -160,7 +193,20 @@ test('release evaluation rejects vacuous or non-lawyer evidence and duplicate or
   };
   const passingBaseline = evaluateSupervisedRelease(base);
   assert.equal(passingBaseline.passed, true, JSON.stringify(passingBaseline.bars));
+  assert.equal(evaluateSupervisedRelease({
+    ...base,
+    citationAssessments: [{ ...base.citationAssessments[0], narrow: false }],
+  }).bars.citations_sufficient_and_narrow, false);
+  assert.equal(evaluateSupervisedRelease({
+    ...base,
+    reviewState: {
+      ...base.reviewState,
+      items: [{ ...base.reviewState.items[0], decision: 'REJECTED' }],
+    },
+  }).bars.all_final_facts_lawyer_accepted, false);
   assert.equal(evaluateSupervisedRelease({ ...base, elapsedMinutes: -0.1 }).bars.review_within_ninety_minutes_without_developer, false);
+  assert.equal(evaluateSupervisedRelease({ ...base, reviewState: { ...base.reviewState, metrics: { review_time_seconds: 5401 } } }).bars.review_within_ninety_minutes_without_developer, false);
+  assert.equal(evaluateSupervisedRelease({ ...base, reviewState: { ...base.reviewState, metrics: null } }).bars.review_within_ninety_minutes_without_developer, false);
   assert.equal(evaluateSupervisedRelease({ ...base, inventory: [], reconciliation: [] }).passed, false);
   assert.equal(evaluateSupervisedRelease({ ...base, reviewState: { ...base.reviewState, summary: { families: [] } }, reconciliation: [{ ...base.reconciliation[0], disposition: 'REVIEWED_OMISSION', review_item_id: undefined, omission_reason: 'Not material after source review.' }], citationAssessments: [] }).passed, false);
   assert.throws(() => evaluateSupervisedRelease({ ...base, citationAssessments: [{ ...base.citationAssessments[0], reviewed_by_role: 'AUTOMATION' }] }), /CITATION_ASSESSMENT/);

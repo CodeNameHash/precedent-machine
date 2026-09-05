@@ -26,6 +26,9 @@ const migrations = [
   'supabase/migrations/20260905020346_product_phase_1_foundation.sql',
   'supabase/migrations/20260905043000_product_phase_2_vertical_slice.sql',
   'supabase/migrations/20260905190000_product_substantive_section_work.sql',
+  'supabase/migrations/20260905200000_product_expired_section_recovery.sql',
+  'supabase/migrations/20260905201000_product_residual_pass_persistence.sql',
+  'supabase/migrations/20260905202000_product_section_lease_heartbeat.sql',
 ].map((file) => fs.readFileSync(path.join(ROOT, file), 'utf8'));
 let client;
 
@@ -35,6 +38,8 @@ const rpcArguments = {
   product_phase1_attach_structure: ['p_run_id', 'p_structure_id', 'p_structure', 'p_identity_review'],
   product_phase1_resolve_identity: ['p_run_id', 'p_resolution'],
   product_phase1_claim_section: ['p_run_id', 'p_worker_id', 'p_lease_seconds'],
+  product_phase1_recover_expired_sections: ['p_run_id'],
+  product_phase1_renew_section_lease: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_lease_seconds'],
   product_phase1_complete_section: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_cost_microusd', 'p_input_tokens', 'p_output_tokens'],
   product_phase1_fail_section: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_error'],
   product_phase2_commit_section: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_result'],
@@ -116,6 +121,7 @@ async function setupDatabase() {
   for (const migration of migrations) {
     await executeScript(pgliteModule ? migration.replace('CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;', '') : migration);
   }
+  await executeScript(migrations[4]);
 }
 
 async function teardownDatabase() {
@@ -170,10 +176,12 @@ async function runPhase2DatabaseTest() {
 
   const persisted = await client.query(`SELECT
     (SELECT count(*) FROM public.product_section_results WHERE run_id=$1) AS sections,
+    (SELECT count(*) FROM public.product_residual_passes WHERE run_id=$1) AS residual_passes,
     (SELECT count(*) FROM public.product_model_calls WHERE run_id=$1) AS calls,
     (SELECT count(*) FROM public.product_proposals WHERE run_id=$1) AS proposals,
     (SELECT count(*) FROM public.product_source_spans WHERE run_id=$1) AS spans`, [run.run_id]);
   assert.equal(Number(persisted.rows[0].sections), read.sections.length);
+  assert.equal(Number(persisted.rows[0].residual_passes), read.residual_passes.length);
   assert.equal(Number(persisted.rows[0].calls), read.model_calls.length);
   assert.equal(Number(persisted.rows[0].proposals), read.proposals.length);
   assert.ok(Number(persisted.rows[0].spans) > 0);
@@ -217,6 +225,77 @@ async function runPhase2DatabaseTest() {
   await client.query('RELEASE SAVEPOINT atomic_commit');
   const partialRows = await client.query('SELECT count(*) FROM public.product_model_calls WHERE run_id=$1', [retryRun.run_id]);
   assert.equal(Number(partialRows.rows[0].count), 0);
+  const missingResidual = structuredClone(persistedResult);
+  delete missingResidual.residual_pass;
+  await client.query('SAVEPOINT missing_residual');
+  await assert.rejects(
+    () => store.commitSection({
+      runId: retryRun.run_id, nodeId: claim.node_id, workerId: 'atomicity-test',
+      attemptToken: claim.attempt_token, result: missingResidual,
+    }),
+    /invalid section draft input/i,
+  );
+  await client.query('ROLLBACK TO SAVEPOINT missing_residual');
+  await client.query('RELEASE SAVEPOINT missing_residual');
+  const storedResidual = (await client.query(
+    'SELECT * FROM public.product_residual_passes WHERE run_id=$1 LIMIT 1', [run.run_id],
+  )).rows[0];
+  await client.query('SAVEPOINT residual_collision');
+  await assert.rejects(() => client.query(`INSERT INTO public.product_residual_passes(
+    run_id,residual_pass_id,structure_node_id,model_call_id,payload
+  ) VALUES ($1,$2,$3,$4,$5)`, [
+    storedResidual.run_id, storedResidual.residual_pass_id, storedResidual.structure_node_id,
+    storedResidual.model_call_id, { ...storedResidual.payload, collision: true },
+  ]), /duplicate key|unique constraint/i);
+  await client.query('ROLLBACK TO SAVEPOINT residual_collision');
+  await client.query('RELEASE SAVEPOINT residual_collision');
+  const renewed = await store.renewSectionLease({
+    runId: retryRun.run_id, nodeId: claim.node_id, workerId: 'atomicity-test',
+    attemptToken: claim.attempt_token, leaseSeconds: 300,
+  });
+  assert.equal(renewed.node_id, claim.node_id);
+  await client.query('SAVEPOINT wrong_lease_owner');
+  await assert.rejects(() => store.renewSectionLease({
+    runId: retryRun.run_id, nodeId: claim.node_id, workerId: 'other-worker',
+    attemptToken: claim.attempt_token, leaseSeconds: 300,
+  }), /STALE_SECTION_ATTEMPT|stale section attempt/i);
+  await client.query('ROLLBACK TO SAVEPOINT wrong_lease_owner');
+  await client.query('RELEASE SAVEPOINT wrong_lease_owner');
+  await client.query(`UPDATE public.product_section_work SET lease_expires_at=now()-interval '1 second'
+    WHERE run_id=$1 AND node_id=$2`, [retryRun.run_id, claim.node_id]);
+  await client.query('SAVEPOINT expired_lease');
+  await assert.rejects(() => store.renewSectionLease({
+    runId: retryRun.run_id, nodeId: claim.node_id, workerId: 'atomicity-test',
+    attemptToken: claim.attempt_token, leaseSeconds: 300,
+  }), /STALE_SECTION_ATTEMPT|stale section attempt/i);
+  await client.query('ROLLBACK TO SAVEPOINT expired_lease');
+  await client.query('RELEASE SAVEPOINT expired_lease');
+  await client.query('SAVEPOINT late_completion');
+  await assert.rejects(() => store.commitSection({
+    runId: retryRun.run_id, nodeId: claim.node_id, workerId: 'atomicity-test',
+    attemptToken: claim.attempt_token, result: persistedResult,
+  }), /STALE_SECTION_ATTEMPT|stale section attempt/i);
+  await client.query('ROLLBACK TO SAVEPOINT late_completion');
+  await client.query('RELEASE SAVEPOINT late_completion');
+  const recovered = await store.recoverExpiredSections({ runId: retryRun.run_id });
+  assert.equal(recovered.recovered_sections, 1);
+  assert.deepEqual((await client.query('SELECT status,worker_id,attempt_token,lease_expires_at,error FROM public.product_section_work WHERE run_id=$1 AND node_id=$2', [retryRun.run_id, claim.node_id])).rows[0], {
+    status: 'FAILED', worker_id: null, attempt_token: null, lease_expires_at: null, error: { code: 'SECTION_LEASE_EXPIRED' },
+  });
+  const reassigned = await store.claimNextSection({ runId: retryRun.run_id, workerId: 'replacement-worker', leaseSeconds: 300 });
+  assert.equal(reassigned.node_id, claim.node_id);
+  await client.query('SAVEPOINT reassigned_lease');
+  await assert.rejects(() => store.renewSectionLease({
+    runId: retryRun.run_id, nodeId: claim.node_id, workerId: 'atomicity-test',
+    attemptToken: claim.attempt_token, leaseSeconds: 300,
+  }), /STALE_SECTION_ATTEMPT|stale section attempt/i);
+  await client.query('ROLLBACK TO SAVEPOINT reassigned_lease');
+  await client.query('RELEASE SAVEPOINT reassigned_lease');
+  await client.query(`UPDATE public.product_section_work SET lease_expires_at=now()-interval '1 second', attempts=max_attempts
+    WHERE run_id=$1 AND node_id=$2`, [retryRun.run_id, claim.node_id]);
+  assert.equal((await store.recoverExpiredSections({ runId: retryRun.run_id })).recovered_sections, 1);
+  assert.equal((await store.recoverExpiredSections({ runId: retryRun.run_id })).recovered_sections, 0);
+  assert.equal(Number((await client.query("SELECT count(*) FROM public.product_section_work WHERE run_id=$1 AND status='COMPLETE'", [run.run_id])).rows[0].count), read.sections.length);
 
   await client.query('SET LOCAL ROLE service_role');
   const serviceRead = await client.query('SELECT public.product_phase2_get_analysis($1) AS analysis', [run.run_id]);

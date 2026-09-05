@@ -13,7 +13,14 @@ export default function ProductIntakePanel() {
   useEffect(() => () => { active.current = false; }, []);
   useEffect(() => {
     const savedRun = Array.isArray(router.query.productRun) ? router.query.productRun[0] : router.query.productRun;
-    if (router.isReady && savedRun && !run) readRun(savedRun).catch((failure) => setError(failure.message));
+    if (router.isReady && savedRun && !run) {
+      readRun(savedRun).then((value) => {
+        if (!['READY', 'FAILED'].includes(value.status) && value.stage !== 'DOCUMENT_IDENTITY_REVIEW') {
+          return advance(savedRun);
+        }
+        return null;
+      }).catch((failure) => setError(failure.message));
+    }
   }, [router.isReady, router.query.productRun]);
 
   async function readRun(runId) {
@@ -34,8 +41,9 @@ export default function ProductIntakePanel() {
       if (!response.ok) throw new Error(value.error || 'Analysis could not continue');
       if (active.current) setRun(value);
       if (value.status === 'READY') await router.push(`/review/product/${runId}`);
-      else if (['QUEUED', 'RUNNING'].includes(value.status) && value.stage !== 'DOCUMENT_IDENTITY_REVIEW'
-        && value.progress?.failed === 0 && value.progress?.completed < value.progress?.total) {
+      else if (value.execution_mode !== 'HOSTED' && ['QUEUED', 'RUNNING'].includes(value.status)
+        && value.stage !== 'DOCUMENT_IDENTITY_REVIEW' && value.progress?.failed === 0
+        && value.progress?.completed < value.progress?.total) {
         setTimeout(() => { if (active.current) advance(runId); }, 250);
       }
     } catch (failure) {
@@ -63,7 +71,7 @@ export default function ProductIntakePanel() {
         method: 'POST', headers: csrfHeaders,
         body: JSON.stringify({
           url: url.trim(), idempotencyKey: crypto.randomUUID(), schemaVersion: 'LEGAL_SCHEMA/V1',
-          promptBundleVersion: 'PRODUCT_PHASE2/V1', modelConfig: { provider: 'ANTHROPIC', model: 'server-configured' },
+          promptBundleVersion: 'PRODUCT_PHASE2/V1',
           explicitGeneration: 0, maxAttempts: 3,
         }),
       });

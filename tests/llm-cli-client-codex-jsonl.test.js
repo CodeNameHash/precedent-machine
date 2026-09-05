@@ -7,7 +7,7 @@ const os = require('node:os');
 const path = require('node:path');
 
 const {
-  createCodexCliClient, codexJsonlResponse, assertCodexChatgptAuth,
+  createCodexCliClient, codexJsonlResponse, assertCodexChatgptAuth, buildCodexExecArgs,
 } = require('../lib/llm-cli-client');
 
 function stream(...events) {
@@ -33,6 +33,9 @@ fi
 if [ -n "$OPENAI_API_KEY$CODEX_API_KEY$CODEX_ACCESS_TOKEN" ]; then
   exit 45
 fi
+if [ -n "$SUPABASE_SERVICE_ROLE_KEY$PRODUCT_PRIVATE_SECRET" ]; then
+  exit 44
+fi
 case " $* " in
   *" --json "*" -m gpt-5.6-terra "*) ;;
   *) exit 46 ;;
@@ -47,12 +50,18 @@ printf '%s\\n' '{"type":"turn.completed","usage":{"input_tokens":12,"cached_inpu
   const originalOpenai = process.env.OPENAI_API_KEY;
   const originalCodex = process.env.CODEX_API_KEY;
   const originalAccess = process.env.CODEX_ACCESS_TOKEN;
+  const originalSupabase = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const originalProductSecret = process.env.PRODUCT_PRIVATE_SECRET;
   process.env.PATH = `${bin}:${originalPath}`;
   process.env.OPENAI_API_KEY = 'must-not-reach-child';
   process.env.CODEX_API_KEY = 'must-not-reach-child';
   process.env.CODEX_ACCESS_TOKEN = 'must-not-reach-child';
+  process.env.SUPABASE_SERVICE_ROLE_KEY = 'must-not-reach-child';
+  process.env.PRODUCT_PRIVATE_SECRET = 'must-not-reach-child';
   try {
-    const client = createCodexCliClient({ model: 'gpt-5.6-terra', reasoningEffort: 'medium', maxAttempts: 1 });
+    const client = createCodexCliClient({
+      model: 'gpt-5.6-terra', reasoningEffort: 'medium', maxAttempts: 1, isolated: true,
+    });
     const response = await client.messages.create({ messages: [{ role: 'user', content: 'extract' }] });
     assert.equal(response.content[0].text, '{"ok":true}');
     assert.equal(response.codex_thread_id, 'thread-123');
@@ -68,8 +77,29 @@ printf '%s\\n' '{"type":"turn.completed","usage":{"input_tokens":12,"cached_inpu
     if (originalOpenai === undefined) delete process.env.OPENAI_API_KEY; else process.env.OPENAI_API_KEY = originalOpenai;
     if (originalCodex === undefined) delete process.env.CODEX_API_KEY; else process.env.CODEX_API_KEY = originalCodex;
     if (originalAccess === undefined) delete process.env.CODEX_ACCESS_TOKEN; else process.env.CODEX_ACCESS_TOKEN = originalAccess;
+    if (originalSupabase === undefined) delete process.env.SUPABASE_SERVICE_ROLE_KEY; else process.env.SUPABASE_SERVICE_ROLE_KEY = originalSupabase;
+    if (originalProductSecret === undefined) delete process.env.PRODUCT_PRIVATE_SECRET; else process.env.PRODUCT_PRIVATE_SECRET = originalProductSecret;
     fs.rmSync(bin, { recursive: true, force: true });
   }
+});
+
+test('isolated Codex calls disable every local, browser and connected tool surface', () => {
+  const args = buildCodexExecArgs({ isolated: true, ignoreUserConfig: true, ignoreRules: true });
+  for (const feature of [
+    'shell_tool', 'unified_exec', 'code_mode_host', 'code_mode', 'code_mode_only', 'tool_suggest', 'goals',
+    'apps', 'plugins', 'browser_use', 'in_app_browser',
+    'computer_use', 'image_generation', 'multi_agent',
+  ]) {
+    assert.equal(args.some((value, index) => value === '--disable' && args[index + 1] === feature), true, feature);
+  }
+  assert.equal(args.includes('tools.web_search=false'), true);
+  assert.equal(args.includes('web_search="disabled"'), true);
+  assert.equal(args.includes('default_permissions="pm_extraction"'), true);
+  assert.equal(args.some((value) => value.startsWith('permissions={pm_extraction=')
+    && value.includes('":minimal"="read"') && value.includes('"/proc"="deny"')
+    && value.includes('="deny"')), true);
+  assert.equal(args.includes('-s'), false);
+  assert.equal(args.includes('--strict-config'), true);
 });
 
 test('ChatGPT auth preflight rejects a negated status line even with exit zero', async () => {
@@ -133,6 +163,7 @@ for (const [name, raw, pattern] of [
   ['missing usage', stream(THREAD, START, ANSWER, { type: 'turn.completed' }), /USAGE_REQUIRED/],
   ['empty usage', stream(THREAD, START, ANSWER, { type: 'turn.completed', usage: {} }), /USAGE_REQUIRED/],
   ['failed turn before apparent success', stream(THREAD, START, { type: 'turn.failed', error: 'x' }, ANSWER, COMPLETE), /TURN_FAILED/],
+  ['model-generated command', stream(THREAD, START, { type: 'item.completed', item: { type: 'command_execution', command: 'pwd' } }, ANSWER, COMPLETE), /TOOL_FORBIDDEN/],
   ['duplicate completed turns', stream(THREAD, START, ANSWER, COMPLETE, COMPLETE), /COMPLETION_COUNT/],
   ['duplicate agent answers', stream(THREAD, START, ANSWER, ANSWER, COMPLETE), /ANSWER_COUNT/],
   ['unknown terminal shape', stream(THREAD, START, ANSWER, { type: 'turn.cancelled' }), /TERMINAL_UNKNOWN/],

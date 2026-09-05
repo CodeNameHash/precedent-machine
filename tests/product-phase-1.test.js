@@ -12,13 +12,20 @@ const { createPhase1Foundation } = require('../lib/product/phase-1-foundation');
 const { createProductIntakeHandler } = require('../lib/product/intake-handler');
 const { ProductPhase1StoreError } = require('../lib/product/phase-1-store');
 const { createSecIntakeAdapter, parseSecExhibitUrl, ProductSecIntakeError } = require('../lib/product/sec-intake');
-const { buildSourceClosure, substantiveSections } = require('../lib/product/source-context');
+const { buildSourceClosure, canonicalCrossScopeReferences, substantiveSections } = require('../lib/product/source-context');
 const { displaySectionReference } = require('../lib/product/section-reference-display');
 
 const SEC_URL = 'https://www.sec.gov/Archives/edgar/data/98246/000119312519299997/d840067dex21.htm';
 const BLIND_SEC_URL = 'https://www.sec.gov/Archives/edgar/data/1366868/000114036126014528/ef20070409_ex2-1.htm';
 const FIXED_TIME = new Date('2026-09-04T12:00:00.000Z');
 const ROOT = path.resolve(__dirname, '..');
+
+test('cross-scope reference identity is stable across traversal order and duplicates', () => {
+  const first = { reference: '10.03', from_scope: 'Exhibit-A', to_scope: 'MAIN_AGREEMENT', target_node_id: 'b'.repeat(64) };
+  const second = { reference: '2.01', from_scope: 'Exhibit-B', to_scope: 'MAIN_AGREEMENT', target_node_id: 'a'.repeat(64) };
+  assert.deepEqual(canonicalCrossScopeReferences([first, second, first]), canonicalCrossScopeReferences([second, first]));
+  assert.deepEqual(canonicalCrossScopeReferences([first, second, first]), [first, second]);
+});
 
 function agreementHtml({ ambiguous = false } = {}) {
   const identity = ambiguous ? '' : [
@@ -628,13 +635,19 @@ function responseRecorder() {
 }
 
 test('product intake handler exposes one authenticated server submission boundary', async () => {
+  let submitted;
   const handler = createProductIntakeHandler({
     getClient: () => ({ server: true }), intakeFactory: () => ({ intake() {} }), storeFactory: () => ({}),
-    foundationFactory: () => ({ submit: async () => ({ run_id: 'run-1', source_document_id: 'source-1', source_generation: 2, status: 'QUEUED', stage: 'SECTION_ANALYSIS' }) }),
+    modelConfigResolver: () => ({ provider_id: 'SERVER_FIXED' }),
+    foundationFactory: () => ({ submit: async (input) => {
+      submitted = input;
+      return { run_id: 'run-1', source_document_id: 'source-1', source_generation: 2, status: 'QUEUED', stage: 'SECTION_ANALYSIS' };
+    } }),
   });
   const response = responseRecorder();
-  await handler({ method: 'POST', body: submission() }, response);
+  await handler({ method: 'POST', body: submission({ modelConfig: { provider_id: 'CLIENT_FORGED' } }) }, response);
   assert.equal(response.statusCode, 202);
+  assert.deepEqual(submitted.modelConfig, { provider_id: 'SERVER_FIXED' });
   assert.deepEqual(response.body, { run_id: 'run-1', source_document_id: 'source-1', generation: 2, status: 'QUEUED', stage: 'SECTION_ANALYSIS' });
   const wrongMethod = responseRecorder();
   await handler({ method: 'GET' }, wrongMethod);

@@ -6,6 +6,18 @@ const test = require('node:test');
 
 const legalSchema = require('../contracts/product/legal-schema.v1.json');
 const { createAnthropicProductModel } = require('../lib/product/anthropic-model');
+const { createCodexCliProductModel } = require('../lib/product/codex-cli-model');
+const {
+  ANTHROPIC_MODEL_CONFIG, CODEX_DIAGNOSTIC_MODEL_CONFIG, CODEX_MODEL_CONFIG, CODEX_PROVIDER_ID,
+  assertConfiguredRunModelConfig, assertRunModelConfig, configuredProductModelConfig,
+} = require('../lib/product/product-model-config');
+const {
+  MINIMUM_SESSION_MS, SANDBOX_LAUNCHER, SANDBOX_NAME, SANDBOX_WORKDIR, wakeSandboxProductRun,
+} = require('../lib/product/sandbox-wake');
+const { parseArguments: parseHostedArguments } = require('../scripts/product-hosted-worker');
+const {
+  DISPOSABLE_BRANCH_REF, assertDatabaseTarget, parseArguments, retryLimitError,
+} = require('../scripts/product-phase-5-local-run');
 const { applyReviewCommand, initialiseReviewState } = require('../lib/product/review-state');
 const { buildReviewView } = require('../lib/product/review-view');
 const { createProductReviewHandler } = require('../lib/product/review-handler');
@@ -223,6 +235,156 @@ test('Anthropic adapter canonicalises provider responses that omit optional Anth
   });
 });
 
+test('Codex CLI product adapter pins isolated subscription transport and records exact metrics', async () => {
+  let options;
+  let request;
+  const model = createCodexCliProductModel({
+    clientFactory(value) {
+      options = value;
+      return { messages: { async create(input) {
+        request = input;
+        return {
+          content: [{ type: 'text', text: '{"families":[]}' }],
+          usage: { input_tokens: 12, cached_input_tokens: 3, output_tokens: 4, reasoning_output_tokens: 2 },
+          codex_completion: { status: 'COMPLETE', terminal_event: 'turn.completed' },
+          codex_invocation_identity: { model: 'gpt-5.4-mini', reasoning_effort: 'low' },
+        };
+      } } };
+    },
+  });
+  const result = await model.complete({ call_kind: 'ROUTING', prompt_version: 'V1', request: { section_reference: '1.1' } });
+  assert.deepEqual(options, {
+    model: 'gpt-5.4-mini', reasoningEffort: 'low', maxAttempts: 1,
+    ephemeral: true, ignoreUserConfig: true, ignoreRules: true, isolated: true,
+  });
+  assert.equal(request.system.includes('Return one JSON object only'), true);
+  assert.equal(request.messages[0].content.includes('section_reference'), true);
+  assert.equal(result.provider_id, 'OPENAI_CODEX_CLI_SUBSCRIPTION');
+  assert.equal(result.model_id, 'gpt-5.4-mini;reasoning=low');
+  assert.equal(result.input_tokens, 12);
+  assert.equal(result.output_tokens, 4);
+  assert.equal(result.cost_microusd, 0);
+  assert.deepEqual(result.response, { families: [] });
+});
+
+test('Codex CLI product adapter rejects malformed JSON, missing usage and incomplete turns', async () => {
+  const response = (overrides = {}) => ({
+    content: [{ type: 'text', text: '{"families":[]}' }],
+    usage: { input_tokens: 1, cached_input_tokens: 0, output_tokens: 1, reasoning_output_tokens: 0 },
+    codex_completion: { status: 'COMPLETE', terminal_event: 'turn.completed' },
+    ...overrides,
+  });
+  const make = (value) => createCodexCliProductModel({ client: { messages: { create: async () => value } } });
+  await assert.rejects(() => make(response({ content: [{ type: 'text', text: '```json\n{"families":[]}\n```' }] })).complete({ call_kind: 'ROUTING', prompt_version: 'V1', request: {} }), /CODEX_PRODUCT_JSON/);
+  await assert.rejects(() => make(response({ usage: null })).complete({ call_kind: 'ROUTING', prompt_version: 'V1', request: {} }), /CODEX_PRODUCT_USAGE/);
+  await assert.rejects(() => make(response({ codex_completion: { status: 'FAILED' } })).complete({ call_kind: 'ROUTING', prompt_version: 'V1', request: {} }), /CODEX_PRODUCT_COMPLETION/);
+});
+
+test('server-side provider selection pins Preview Codex and leaves production on Anthropic', () => {
+  assert.deepEqual(configuredProductModelConfig({}), ANTHROPIC_MODEL_CONFIG);
+  assert.deepEqual(configuredProductModelConfig({ PRODUCT_MODEL_PROVIDER: CODEX_PROVIDER_ID }), CODEX_MODEL_CONFIG);
+  assert.throws(() => configuredProductModelConfig({ PRODUCT_MODEL_PROVIDER: 'CLIENT_CHOICE' }), /UNSUPPORTED/);
+  assert.doesNotThrow(() => assertRunModelConfig({ model_config: { ...CODEX_MODEL_CONFIG } }, CODEX_MODEL_CONFIG));
+  assert.throws(() => assertRunModelConfig({ model_config: ANTHROPIC_MODEL_CONFIG }, CODEX_MODEL_CONFIG), /MISMATCH/);
+  assert.doesNotThrow(() => assertConfiguredRunModelConfig({
+    run_id: '46c45080-6935-49e5-96ae-b6cb0609a924',
+    source_document_id: '238dc3fed996667b9124a853745708a003917bcb28c889bad703f6124d13e721',
+    model_config: CODEX_DIAGNOSTIC_MODEL_CONFIG,
+  }, CODEX_MODEL_CONFIG));
+  assert.throws(() => assertConfiguredRunModelConfig({
+    run_id: '46c45080-6935-49e5-96ae-b6cb0609a924',
+    source_document_id: 'f'.repeat(64), model_config: CODEX_DIAGNOSTIC_MODEL_CONFIG,
+  }, CODEX_MODEL_CONFIG), /MISMATCH/);
+});
+
+test('Sandbox wake uses one fixed detached launcher and does not return credentials', async () => {
+  let getInput;
+  let commandInput;
+  let extension;
+  const sessionStarted = new Date('2026-09-05T12:00:00.000Z');
+  const result = await wakeSandboxProductRun({
+    runId: '46c45080-6935-49e5-96ae-b6cb0609a924',
+    databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    serviceRoleKey: 'service-role-secret-value',
+    providerId: CODEX_PROVIDER_ID,
+    sandboxApi: { async get(input) {
+      getInput = input;
+      return {
+        currentSession: () => ({ createdAt: sessionStarted, timeout: 30 * 60 * 1000 }),
+        async extendTimeout(value) { extension = value; },
+        async runCommand(command) { commandInput = command; return { cmdId: 'command-1' }; },
+      };
+    } },
+    now: () => Date.parse('2026-09-05T12:20:00.000Z'),
+  });
+  assert.deepEqual(getInput, { name: SANDBOX_NAME, resume: true });
+  assert.equal(extension, MINIMUM_SESSION_MS - (10 * 60 * 1000));
+  assert.deepEqual(commandInput, {
+    cmd: SANDBOX_LAUNCHER,
+    args: ['46c45080-6935-49e5-96ae-b6cb0609a924'],
+    cwd: SANDBOX_WORKDIR,
+    env: {
+      SUPABASE_URL: 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+      SUPABASE_SERVICE_ROLE_KEY: 'service-role-secret-value',
+    },
+    detached: true,
+    timeoutMs: MINIMUM_SESSION_MS,
+  });
+  assert.deepEqual(result, {
+    schema_version: 'PRODUCT_SANDBOX_WAKE/V1',
+    run_id: '46c45080-6935-49e5-96ae-b6cb0609a924',
+    sandbox_name: SANDBOX_NAME,
+    command_id: 'command-1',
+  });
+  assert.doesNotMatch(JSON.stringify(result), /service-role-secret-value/);
+  await assert.rejects(() => wakeSandboxProductRun({
+    runId: '46c45080-6935-49e5-96ae-b6cb0609a924',
+    databaseUrl: 'https://tzulhdasmioeechxapdy.supabase.co',
+    serviceRoleKey: 'service-role-secret-value',
+    providerId: CODEX_PROVIDER_ID,
+    sandboxApi: { get: async () => assert.fail('production target must fail before wake') },
+  }), /DATABASE_TARGET/);
+});
+
+test('hosted worker accepts only the fixed actor and one serial worker', () => {
+  assert.deepEqual(parseHostedArguments([
+    '--run-id', '46c45080-6935-49e5-96ae-b6cb0609a924', '--actor', 'ben', '--workers', '1',
+  ]), { runId: '46c45080-6935-49e5-96ae-b6cb0609a924', actor: 'ben', workers: 1 });
+  assert.throws(() => parseHostedArguments([
+    '--run-id', '46c45080-6935-49e5-96ae-b6cb0609a924', '--actor', 'other', '--workers', '1',
+  ]), /actor/);
+  assert.throws(() => parseHostedArguments([
+    '--run-id', '46c45080-6935-49e5-96ae-b6cb0609a924', '--actor', 'ben', '--workers', '2',
+  ]), /workers/);
+});
+
+test('Phase 5 local runner requires an exact disposable Supabase target and bounded workers', () => {
+  assert.deepEqual(parseArguments([
+    '--run-id', 'fe26cdd7-524a-4aed-ab89-810e0054cfdc', '--actor', 'ben',
+    '--workers', '2', '--retry-key', 'retry-1',
+  ]), {
+    runId: 'fe26cdd7-524a-4aed-ab89-810e0054cfdc', actor: 'ben',
+    workers: 2, retryKey: 'retry-1',
+  });
+  assert.equal(DISPOSABLE_BRANCH_REF, 'ecrtoofsyxozazkvsvcl');
+  assert.doesNotThrow(() => assertDatabaseTarget('https://ecrtoofsyxozazkvsvcl.supabase.co'));
+  assert.throws(() => assertDatabaseTarget('https://production.supabase.co'), /PRODUCT_PHASE5_DATABASE_TARGET/);
+  assert.throws(() => assertDatabaseTarget('http://ecrtoofsyxozazkvsvcl.supabase.co'), /PRODUCT_PHASE5_DATABASE_TARGET/);
+  assert.throws(() => parseArguments([
+    '--run-id', 'fe26cdd7-524a-4aed-ab89-810e0054cfdc', '--actor', 'ben',
+    '--expected-project-ref', 'production',
+  ]), /unknown argument/);
+  assert.throws(() => parseArguments([
+    '--run-id', 'fe26cdd7-524a-4aed-ab89-810e0054cfdc', '--actor', 'ben',
+    '--workers', '3',
+  ]), /workers/);
+  const exhausted = retryLimitError('fe26cdd7-524a-4aed-ab89-810e0054cfdc', {
+    node_id: 'node-1', attempts: 3, max_attempts: 3, error: { message: 'SECRET LEGAL CONTENT' },
+  });
+  assert.equal(exhausted.message, 'PRODUCT_PHASE5_RETRY_LIMIT: run=fe26cdd7-524a-4aed-ab89-810e0054cfdc; node=node-1; attempts=3/3');
+  assert.doesNotMatch(exhausted.message, /SECRET|LEGAL CONTENT/);
+});
+
 test('review HTTP boundary initialises state and persists commands with server-derived actor identity', async () => {
   const analysis = analysisFixture();
   let persisted = null;
@@ -314,6 +476,16 @@ test('Review UI separates candidate finalisation, evaluation, activation and rec
   assert.match(source, /pendingAction\.current\?\.signature === signature/);
   assert.match(source, /await load\(\)/);
   assert.match(source, /loadSource\(\).*catch/);
+  assert.match(source, /Entered total:/);
+  assert.match(source, /Measured review duration:/);
+});
+
+test('intake UI polls hosted work without browser-driven model calls and preserves foreground advancement', () => {
+  const source = fs.readFileSync(require.resolve('../components/product/ProductIntakePanel.jsx'), 'utf8');
+  assert.match(source, /value\.execution_mode !== 'HOSTED'/);
+  assert.match(source, /setInterval\(\(\) => \{ readRun/);
+  assert.match(source, /readRun\(savedRun\)\.then/);
+  assert.doesNotMatch(source, /modelConfig:/);
 });
 
 test('run HTTP boundary exposes one resumable step and explicit retry without a detached server task', async () => {
@@ -337,4 +509,40 @@ test('run HTTP boundary exposes one resumable step and explicit retry without a 
   assert.equal(response.statusCode, 200);
   assert.equal(retryKey, 'retry-one');
   assert.equal(response.body.kind, 'analysisProgress');
+});
+
+test('Preview run boundary starts one detached Sandbox worker and returns durable progress', async () => {
+  const runId = analysisFixture().analysis_run_id;
+  let wakeInput;
+  let modelCreated = false;
+  const progress = {
+    kind: 'analysisProgress', run_id: runId, status: 'RUNNING', stage: 'SECTION_ANALYSIS',
+    progress: { total: 105, completed: 25, failed: 0 },
+  };
+  const store = {
+    assertAccess: async () => 'OWNER',
+    getRun: async () => ({ run_id: runId, model_config: CODEX_MODEL_CONFIG }),
+    getAgreementAnalysis: async () => progress,
+  };
+  const handler = createProductRunHandler({
+    getClient: () => ({}),
+    storeFactory: () => store,
+    actorResolver: async () => 'ben',
+    modelConfigResolver: () => CODEX_MODEL_CONFIG,
+    modelFactory: () => { modelCreated = true; return {}; },
+    databaseUrlResolver: () => 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    serviceRoleKeyResolver: () => 'service-role-secret-value',
+    wakeRun: async (input) => { wakeInput = input; },
+  });
+  const response = responseDouble();
+  await handler({ method: 'POST', query: { id: runId }, headers: { 'x-pm-csrf': 'same-origin' }, body: {} }, response);
+  assert.equal(response.statusCode, 202);
+  assert.equal(modelCreated, false);
+  assert.deepEqual(wakeInput, {
+    runId,
+    databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    serviceRoleKey: 'service-role-secret-value',
+    providerId: CODEX_PROVIDER_ID,
+  });
+  assert.deepEqual(response.body, { ...progress, execution_mode: 'HOSTED' });
 });

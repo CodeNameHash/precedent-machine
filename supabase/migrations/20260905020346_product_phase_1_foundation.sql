@@ -393,6 +393,52 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION public.product_phase1_recover_expired_sections(p_run_id uuid) RETURNS jsonb
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = '' AS $$
+DECLARE recovered integer; exhausted boolean; run_row public.product_analysis_runs;
+BEGIN
+  SELECT * INTO run_row FROM public.product_analysis_runs WHERE run_id = p_run_id FOR UPDATE;
+  IF NOT FOUND THEN RAISE EXCEPTION 'analysis run not found' USING ERRCODE = '23503'; END IF;
+  UPDATE public.product_section_work
+  SET status = 'FAILED', worker_id = NULL, attempt_token = NULL, lease_expires_at = NULL,
+    error = jsonb_build_object('code', 'SECTION_LEASE_EXPIRED')
+  WHERE run_id = p_run_id AND status = 'RUNNING' AND lease_expires_at <= now();
+  GET DIAGNOSTICS recovered = ROW_COUNT;
+  IF recovered > 0 THEN
+    SELECT EXISTS (
+      SELECT 1 FROM public.product_section_work
+      WHERE run_id = p_run_id AND status = 'FAILED' AND attempts >= max_attempts
+    ) INTO exhausted;
+    UPDATE public.product_analysis_runs
+    SET status = CASE WHEN exhausted THEN 'FAILED' ELSE 'PARTIAL' END,
+      stage = 'SECTION_ANALYSIS',
+      error = CASE WHEN exhausted THEN jsonb_build_object('code', 'SECTION_LEASE_EXPIRED') ELSE NULL END,
+      updated_at = now()
+    WHERE run_id = p_run_id RETURNING * INTO run_row;
+  END IF;
+  RETURN jsonb_build_object('run_id', p_run_id, 'recovered_sections', recovered, 'run', to_jsonb(run_row));
+END;
+$$;
+
+CREATE FUNCTION public.product_phase1_renew_section_lease(
+  p_run_id uuid, p_node_id text, p_worker_id text, p_attempt_token uuid, p_lease_seconds integer
+) RETURNS jsonb
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = '' AS $$
+DECLARE work public.product_section_work;
+BEGIN
+  IF coalesce(p_worker_id, '') = '' OR p_lease_seconds < 1 OR p_lease_seconds > 3600 THEN
+    RAISE EXCEPTION 'invalid section lease renewal input' USING ERRCODE = '22023';
+  END IF;
+  UPDATE public.product_section_work
+  SET lease_expires_at = now() + make_interval(secs => p_lease_seconds)
+  WHERE run_id = p_run_id AND node_id = p_node_id AND status = 'RUNNING'
+    AND worker_id = p_worker_id AND attempt_token = p_attempt_token AND lease_expires_at > now()
+  RETURNING * INTO work;
+  IF NOT FOUND THEN RAISE EXCEPTION 'stale section attempt' USING ERRCODE = '40001'; END IF;
+  RETURN to_jsonb(work);
+END;
+$$;
+
 CREATE FUNCTION public.product_phase1_complete_section(
   p_run_id uuid, p_node_id text, p_worker_id text, p_attempt_token uuid,
   p_cost_microusd bigint, p_input_tokens bigint, p_output_tokens bigint
@@ -506,6 +552,8 @@ REVOKE ALL ON FUNCTION public.product_phase1_attach_structure(uuid,text,jsonb,js
 REVOKE ALL ON FUNCTION public.product_phase1_fail_run(uuid,text,jsonb) FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON FUNCTION public.product_phase1_resolve_identity(uuid,jsonb) FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON FUNCTION public.product_phase1_claim_section(uuid,text,integer) FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON FUNCTION public.product_phase1_recover_expired_sections(uuid) FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON FUNCTION public.product_phase1_renew_section_lease(uuid,text,text,uuid,integer) FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON FUNCTION public.product_phase1_complete_section(uuid,text,text,uuid,bigint,bigint,bigint) FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON FUNCTION public.product_phase1_fail_section(uuid,text,text,uuid,jsonb) FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON FUNCTION public.product_phase1_save_draft(uuid,integer,jsonb,text) FROM PUBLIC, anon, authenticated;
@@ -516,6 +564,8 @@ GRANT EXECUTE ON FUNCTION public.product_phase1_attach_structure(uuid,text,jsonb
 GRANT EXECUTE ON FUNCTION public.product_phase1_fail_run(uuid,text,jsonb) TO service_role;
 GRANT EXECUTE ON FUNCTION public.product_phase1_resolve_identity(uuid,jsonb) TO service_role;
 GRANT EXECUTE ON FUNCTION public.product_phase1_claim_section(uuid,text,integer) TO service_role;
+GRANT EXECUTE ON FUNCTION public.product_phase1_recover_expired_sections(uuid) TO service_role;
+GRANT EXECUTE ON FUNCTION public.product_phase1_renew_section_lease(uuid,text,text,uuid,integer) TO service_role;
 GRANT EXECUTE ON FUNCTION public.product_phase1_complete_section(uuid,text,text,uuid,bigint,bigint,bigint) TO service_role;
 GRANT EXECUTE ON FUNCTION public.product_phase1_fail_section(uuid,text,text,uuid,jsonb) TO service_role;
 GRANT EXECUTE ON FUNCTION public.product_phase1_save_draft(uuid,integer,jsonb,text) TO service_role;

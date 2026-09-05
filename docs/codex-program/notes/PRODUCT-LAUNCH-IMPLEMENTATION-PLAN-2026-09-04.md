@@ -399,6 +399,15 @@ result. Every substantive section and required role has a disposition.
 
 ### Phase 5. Freeze, test blind and correct honestly, 3 days
 
+Current position, 2026-09-05: the private online Codex worker has passed a real
+model call and a stop-and-resume authentication check. The Public Storage
+diagnostic is continuing there with completed sections preserved. This is
+diagnostic work, not blind release evidence. The untouched final agreement,
+independent lawyer inventory and fixed release bars remain outstanding.
+Preview processing continues after the browser closes. If the entire worker
+stops unexpectedly, reopening Review or choosing Retry wakes the saved database
+run. Automatic scheduled recovery has not been proved.
+
 Before opening the blind agreement, freeze the schema, prompts, release bars
 and expected lawyer issue list.
 
