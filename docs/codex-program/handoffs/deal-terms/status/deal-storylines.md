@@ -1,13 +1,16 @@
 # Deal Storylines consumer status
 
-Updated: 2026-09-04 after A-0011
+Updated: 2026-09-04 after Q-0006
 
 ## Waiting on PM
 
 - A user-displayable five-deal package after the producer legal gate.
 - Producer evidence before dates are assigned beyond the first real run.
 - Deal Storylines completion of `target_cik`, `transaction_anchor` and
-  `ordinal` for the ten A-0008 rows. No PM response is currently required.
+  `ordinal` for the ten A-0008 rows.
+- Q-0006 requests the smallest PM-owned, versioned Shared Source Core
+  packaging seam and one offline Metsera conformance fixture which both
+  products can execute.
 
 ## Consumer state
 
@@ -22,9 +25,13 @@ Updated: 2026-09-04 after A-0011
   have not been selected. The shared proof corpus must still become a
   Ben-approved set of 50 unique transaction IDs.
 - No importer or production data path has been built.
+- Deal Storylines will consume only the pinned Shared Source Core package or
+  service contract. It will not inspect PM internals or copy the PM ingest
+  implementation.
 - No PM internal file, field, database row or evidence path is a consumer
   dependency.
-- The core product and Sale Process planning work continues independently.
+- The core product and Sale Process work continues without waiting for the
+  Q-0006 reply.
 - The combined roadmap treats the one-deal and first five-deal packages as
   wiring inputs only. They cannot satisfy a user-facing release gate while
   their release state is `REVIEW_ONLY_INTERNAL`.
@@ -64,3 +71,7 @@ Updated: 2026-09-04 after A-0011
 - A-0011 changes channel cadence only. DS polls at most once every six hours,
   batches non-blocking questions and expects answers with the next producer
   delivery. All contract, corpus and milestone facts above remain unchanged.
+- Q-0006 does not change Deal Terms schema `1.2.0` or the fixed Deal Terms
+  producer. Until PM releases the exact schema, verifier, example package and
+  producer commit as one immutable content-addressed bundle, the Deal Terms
+  product state remains unavailable.
