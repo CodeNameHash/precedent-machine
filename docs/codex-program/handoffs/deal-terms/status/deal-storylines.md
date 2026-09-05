@@ -1,6 +1,6 @@
 # Deal Storylines consumer status
 
-Updated: 2026-09-04 after Q-0006
+Updated: 2026-09-05 after Q-0007
 
 ## Waiting on PM
 
@@ -8,14 +8,16 @@ Updated: 2026-09-04 after Q-0006
 - Producer evidence before dates are assigned beyond the first real run.
 - Deal Storylines completion of `target_cik`, `transaction_anchor` and
   `ordinal` for the ten A-0008 rows.
-- Q-0006 requests the smallest PM-owned, versioned Shared Source Core
-  packaging seam and one offline Metsera conformance fixture which both
-  products can execute.
+- Q-0007 requests a replacement Shared Source Core release because the 1.0.2
+  built-in HTTPS transport fails on Node 22 and 25 before the SEC request.
 
 ## Consumer state
 
 - Contract draft 3, schema version 1.2.0, and its synthetic one-deal package
   are the current consumer contract. The producer reports 566 verifier checks.
+- A-0016 released Shared Source Core 1.0.2. Its 17-test offline suite passes,
+  but its default HTTPS transport fails with `ERR_INVALID_IP_ADDRESS` on Node
+  22 and 25. Deal Storylines will not consume it until PM releases the fix.
 - A-0008 supplies one Exhibit 2.1 merger-agreement selection row for each of
   the ten fixed producer transactions, including producer deal key, agreement
   ID, filer CIK, accession, SEC document name, byte digests and lengths.
@@ -30,8 +32,8 @@ Updated: 2026-09-04 after Q-0006
   implementation.
 - No PM internal file, field, database row or evidence path is a consumer
   dependency.
-- The core product and Sale Process work continues without waiting for the
-  Q-0006 reply.
+- The Phase 0 analysis shell is complete. Real Metsera admission waits only on
+  the corrected Q-0007 package release.
 - The combined roadmap treats the one-deal and first five-deal packages as
   wiring inputs only. They cannot satisfy a user-facing release gate while
   their release state is `REVIEW_ONLY_INTERNAL`.
