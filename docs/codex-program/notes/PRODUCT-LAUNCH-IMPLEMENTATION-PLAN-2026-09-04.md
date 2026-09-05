@@ -399,30 +399,17 @@ result. Every substantive section and required role has a disposition.
 
 ### Phase 5. Freeze, test blind and correct honestly, 3 days
 
-Current position, 2026-09-05: the seventh Public Storage diagnostic has resumed
-from 70 of 105 sections complete. Every one of those 70 saved results is unchanged.
-It had stopped with one failed section and 34 pending. The earlier Retry preserved the 65
-prior results and proved the corrected Codex final-message transport across five
-new sections. Invalid claims remain visible review work; no invented citation is
-accepted. The remaining section failed because its replies omitted required
-coverage fields, used unsupported subtype names or supplied an ambiguous duplicate
-group. A local bounded correction keeps valid independent facts, but holds each
-unsupported or ambiguous group, affected proposal and touching link as explicit
-source-linked unresolved review work. Missing required coverage keys become
-source-linked UNRESOLVED assertions. Nothing maps an unknown subtype, invents a
-group, asserts completed coverage or weakens publication. All five saved response
-triplets now replay through this rule with their raw provider replies unchanged;
-all routed family results remain UNRESOLVED. Held statements now have readable
-model-proposed labels, original detail and source context in the review screen.
-The focused browser check also proves malformed held data cannot blank the page,
-and existing review controls remain usable. This correction is now deployed to the
-private preview and stopped worker. Ordinary Retry is running the remaining
-sections; its final result is not yet proved. An explicit summary-group repair control and
-publication validation pass browser and database checks. The website progress
-count correction is applied only to the disposable preview database and reports
-this stopped run as zero running. Speed work and precedent tracing are deferred
-in the future-feature list. Full processing, a usable reviewed summary and the
-untouched blind test remain unproved.
+Current position, 2026-09-05: all 105 sections of the seventh Public Storage
+diagnostic are saved. The final section completed routing, paragraph review and
+extraction after the paragraph-ID repair. Every prior saved section is unchanged.
+The next step, assembling the saved sections into a review draft, failed with a
+database statement timeout. This is the current blocker; no completed section
+needs another model run. Invalid claims and missing coverage remain explicit
+source-linked review work. Relationship correction has passed local browser and
+database checks, including rollback, and is deployed to the private preview.
+A usable review draft, reviewed summary and untouched blind test remain unproved.
+No legal acceptance, blind release bar or production setting has changed.
+Broader speed work and precedent tracing remain deferred in the future-feature list.
 
 Speed investigation: the sixth diagnostic completed sections at an average
 interval of 32.3 seconds, with a longest gap of 76.6 seconds. The page polls
@@ -471,8 +458,8 @@ The server also computes relationship coherence before the screen can enable
 publication. Focused state and interface checks pass. The full disposable
 database migration chain and relationship access checks pass. A local browser
 check covers blank addition, permitted type choices, edit, exact source display
-and saved-state restoration. Private-preview deployment remains outstanding,
-so this correction is not yet part of the live diagnostic result.
+and saved-state restoration. The private preview is deployed. The actual
+105-section review draft still awaits successful final assembly.
 
 Diagnostic history: the private online Codex worker has passed a real
 model call and a stop-and-resume authentication check. The first Public Storage
@@ -563,7 +550,8 @@ section for context, not to a guessed paragraph. Missing supplied paragraphs
 remain unresolved. No identifier is inferred from text, order or similarity.
 Replay of all three saved residual replies, focused recovery checks and the
 all-family recorded fixtures pass. The ordinary retry is running with the other
-104 saved sections preserved. This is diagnostic repair only. No blind
+104 saved sections preserved. That retry completed the final section, but draft
+assembly then timed out. This is diagnostic repair only. No blind
 test has yet established full processing under these corrections.
 Full processing and a usable review draft remain unproved.
 The 90-minute check now includes measured processing time. This is
