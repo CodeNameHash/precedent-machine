@@ -1,0 +1,24 @@
+{
+  "schema_version": "SHARED_SOURCE_CORE_CONFORMANCE_FIXTURE/V1",
+  "target_identity": "0002040807",
+  "transaction_anchor": {
+    "issuer_cik": "0002040807",
+    "accession_number": "0001193125-25-210030",
+    "document_role": "MERGER_AGREEMENT"
+  },
+  "announced_transaction_ordinal": 0,
+  "source": {
+    "sec_url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525210030/d921605dex21.htm",
+    "source_role": "MERGER_AGREEMENT",
+    "content_type": "text/html; charset=UTF-8",
+    "retrieved_at": "2026-08-08T03:43:07.000Z"
+  },
+  "expected": {
+    "transaction_id": "1cf52f329e480f8186f696e36c3f569ac4716c725bb3d45d830f03a9089d6d7a",
+    "document_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+    "raw_sha256": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+    "canonical_sha256": "4ac7a2b193c291ca692fb1b5f082a245d02474c7db3136bfcebaf5bd7b686ca3",
+    "source_map_digest": "9c915e8c5e6bad5d80acf6b570302964658f375270b6b70c8dbecb6367f92ebf",
+    "source_map_compressed_sha256": "ab6a13e7f6a56f10935f68e2eb6b3b54b4091cbf3cdd7ae5a5076c90f06a85be"
+  }
+}
