@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useDeals } from '../../lib/useSupabaseData';
 import { useUser } from '../../lib/useUser';
 import { Breadcrumbs, SkeletonCard, EmptyState } from '../../components/UI';
+import ProductIntakePanel from '../../components/product/ProductIntakePanel';
 
 export default function ReviewIndex() {
   const { user } = useUser({ redirectTo: '/login' });
@@ -32,6 +33,8 @@ export default function ReviewIndex() {
           Select a deal to review and annotate its parsed agreement provisions.
         </p>
       </div>
+
+      <ProductIntakePanel />
 
       {dealsWithProvs.length === 0 ? (
         <EmptyState

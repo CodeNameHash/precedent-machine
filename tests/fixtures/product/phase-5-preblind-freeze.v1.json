@@ -1,0 +1,65 @@
+{
+  "schema_version": "PRODUCT_PHASE5_PREBLIND_FREEZE/V1",
+  "frozen_at": "2026-09-05T00:00:00.000Z",
+  "legal_schema": {
+    "path": "contracts/product/legal-schema.v1.json",
+    "sha256": "513545a658fe37a5e4cf5485321bf3891d9bc6af6ff6f703138690853d4ef631"
+  },
+  "prompt_bundle": {
+    "sha256": "3d01819303b53f64842d33ee825e545a6eca8da4425a12ac6ee2e4daa47f0059",
+    "paths": [
+      "lib/canonical-v2/native-producer/antitrust-regulatory-producer-prompt.js",
+      "lib/canonical-v2/native-producer/appraisal-producer-prompt.js",
+      "lib/canonical-v2/native-producer/capitalisation-producer-prompt.js",
+      "lib/canonical-v2/native-producer/closing-conditions-producer-prompt.js",
+      "lib/canonical-v2/native-producer/consideration-producer-prompt.js",
+      "lib/canonical-v2/native-producer/defined-terms-producer-prompt.js",
+      "lib/canonical-v2/native-producer/dividends-producer-prompt.js",
+      "lib/canonical-v2/native-producer/dno-producer-prompt.js",
+      "lib/canonical-v2/native-producer/employee-matters-producer-prompt.js",
+      "lib/canonical-v2/native-producer/financing-producer-prompt.js",
+      "lib/canonical-v2/native-producer/general-covenants-producer-prompt.js",
+      "lib/canonical-v2/native-producer/guaranty-producer-prompt.js",
+      "lib/canonical-v2/native-producer/ioc-producer-prompt.js",
+      "lib/canonical-v2/native-producer/mae-definition-producer-prompt.js",
+      "lib/canonical-v2/native-producer/material-contracts-producer-prompt.js",
+      "lib/canonical-v2/native-producer/merger-structure-producer-prompt.js",
+      "lib/canonical-v2/native-producer/no-other-reps-fraud-producer.js",
+      "lib/canonical-v2/native-producer/no-shop-producer-prompt.js",
+      "lib/canonical-v2/native-producer/proxy-meeting-producer-prompt.js",
+      "lib/canonical-v2/native-producer/remedies-misc-producer-prompt.js",
+      "lib/canonical-v2/native-producer/representations-producer-prompt.js",
+      "lib/canonical-v2/native-producer/specific-performance-remedies-producer-prompt.js",
+      "lib/canonical-v2/native-producer/tax-matters-producer-prompt.js",
+      "lib/canonical-v2/native-producer/termination-fee-producer-prompt.js",
+      "lib/canonical-v2/native-producer/termination-producer-prompt.js"
+    ]
+  },
+  "candidate_files": {
+    "lib/product/agreement-draft.js": "4924e80a30e233ea067c3c76f33297d15f48f1f59b3734d1db9b6920db6c4d24",
+    "lib/product/review-state.js": "298fd69b75ea9400506d8cfa70952f8c3f9aa1b9b8a4951cfa01c079e2903b7f",
+    "lib/product/provider-recording-adapter.js": "f0a2c785b5b08bd5041cc55dff0d2afb5067be8333b14239db20b01b2ebe4fe2"
+  },
+  "release_bars": [
+    "The lawyer's independent critical and material inventory is fully reconciled into published facts or explicit reviewed omissions.",
+    "Every published fact has an exact and legally sufficient citation.",
+    "Every substantive section and required role has a coverage state, every exception is reviewed, and the lawyer gives one agreement-level coverage confirmation.",
+    "No contradiction remains inside a published proposition group.",
+    "No NOT_RUN or UNRESOLVED item is presented as absence or completion.",
+    "Every final published fact is lawyer accepted.",
+    "A standard agreement can be processed and reviewed in no more than 90 minutes without a developer."
+  ],
+  "expected_lawyer_issue_kinds": [
+    "CRITICAL_OR_MATERIAL_FACT_OMITTED",
+    "PUBLISHED_FACT_CITATION_MISSING_OR_LEGALLY_INSUFFICIENT",
+    "CITATION_SCOPE_TOO_BROAD",
+    "DUPLICATE_FACT",
+    "CONTRADICTION_WITHIN_PROPOSITION_GROUP",
+    "NOT_RUN_OR_UNRESOLVED_PRESENTED_AS_ABSENCE_OR_COMPLETION",
+    "REQUIRED_ROLE_WITHOUT_DISPOSITION",
+    "EXCEPTION_NOT_REVIEWED",
+    "AGREEMENT_COVERAGE_NOT_CONFIRMED",
+    "FINAL_FACT_NOT_LAWYER_ACCEPTED",
+    "REVIEW_EXCEEDS_NINETY_MINUTES_OR_REQUIRES_DEVELOPER"
+  ]
+}

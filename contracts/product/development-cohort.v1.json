@@ -1,0 +1,24 @@
+{
+  "schema_version": "DEVELOPMENT_COHORT/V1",
+  "development": {
+    "agreement": "Concho",
+    "purpose": "Build and debug the three-family vertical slice.",
+    "source_fixture": "tests/fixtures/canonical-v2/concho-first-live-run/concho-raw-fetched.htm"
+  },
+  "calibration": {
+    "agreement": "Modiv",
+    "purpose": "Measure proposal errors, omissions, cost and review time after development changes.",
+    "source_fixture": "tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm"
+  },
+  "blind": {
+    "agreement": "Amazon / Globalstar",
+    "sec_url": "https://www.sec.gov/Archives/edgar/data/1366868/000114036126014528/ef20070409_ex2-1.htm",
+    "cik": "1366868",
+    "accession": "0001140361-26-014528",
+    "exhibit": "EX-2.1",
+    "agreement_date": "2026-04-13",
+    "parties": ["Amazon.com, Inc.", "Grapefruit Acquisition Sub I, Inc.", "Grapefruit Acquisition Sub II, LLC", "Globalstar, Inc."],
+    "raw_source_sha256": "1743208f8078575bf4615fe43327ec5d4d695c10212ff115fcf079d38c4aa6c8",
+    "raw_source_byte_length": 794594
+  }
+}

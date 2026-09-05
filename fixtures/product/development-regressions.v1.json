@@ -1,0 +1,2247 @@
+{
+  "schema_version": "DEVELOPMENT_REGRESSIONS/V1",
+  "supported_error_classes": [
+    "NO_RUN",
+    "WRONG_MEANING",
+    "MISSING_ROLE",
+    "PARSER",
+    "DUPLICATE",
+    "DISPLAY",
+    "CONTROL"
+  ],
+  "cases": [
+    {
+      "case_id": "502ed0b71e8378d67cd763ec0f1a0b46cf0db45731c0b6aeea03049810bc1476",
+      "ordinal": 1,
+      "error_class": "MISSING_ROLE",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "EMPLOYEE_MATTERS",
+        "section_reference": null,
+        "excerpt": "Parent or its applicable affiliates shall, unless prohibited by applicable Law give, or cause to be given, to Continuing Employees credit for purposes of eligibility to participate (other than any defined benefit pension, post-employment health benefits or post-employment welfare benefits plan), vesting and, with respect to severance and vacation benefits only, determining level of benefits, but not for benefit accrual, under employee benefit plans maintained by Parent or its affiliates and in which such employees participate after the Closing, for such employees’ service prior to the Closing with the Company or any of its Subsidiaries, to the same extent recognized by the Company and its Subsidiaries prior to the Closing.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 212372,
+            "source_node_occurrence_id": "810c0363866c23b2d4ed7a5679cef549e59d3ab0ed905309156bc51ad797afc6",
+            "start_byte": 211638,
+            "text_sha256": "ec5825ad143743ad1d03adb9be932b1985b4af1e648a6be0b4966167f3c6b5ad"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "REQUIRED_ROLES",
+        "required_roles": [
+          "PRIOR_SERVICE_CREDIT_STANDARD"
+        ],
+        "retained_facts": [
+          {
+            "analysis_claim_id": "9e1c13c3e9fde2fecb40e614ee0d9b69d0a1d5ee712c9ed1b22c599a6d83e8f8",
+            "attributes": {},
+            "canonical_value": true,
+            "capacity": null,
+            "claim_definition_key": "EMPLOYEE_SERVICE_CREDIT",
+            "claim_occurrence_id": "9128ac6c683b3e0afb123d83b2c4a01ac5ef602c434ca2a721d804db393fae91",
+            "party": null,
+            "raw_value": "Parent or its applicable affiliates shall, unless prohibited by applicable Law give, or cause to be given, to Continuing Employees credit for purposes of eligibility to participate (other than any defined benefit pension, post-employment health benefits or post-employment welfare benefits plan), vesting and, with respect to severance and vacation benefits only, determining level of benefits, but not for benefit accrual, under employee benefit plans maintained by Parent or its affiliates and in which such employees participate after the Closing, for such employees’ service prior to the Closing with the Company or any of its Subsidiaries, to the same extent recognized by the Company and its Subsidiaries prior to the Closing."
+          }
+        ]
+      },
+      "review_basis": "Missing \"to the same extent recognized by the Company and its Subsidiaries prior to the Closing.\""
+    },
+    {
+      "case_id": "f59080c78069bb26b90ac32b68a66af32fd53f36a45bdfae2d6e0986f9241112",
+      "ordinal": 2,
+      "error_class": "MISSING_ROLE",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "TERMINATION",
+        "section_reference": "7.01",
+        "excerpt": "by Parent, if the Company shall have breached any of its representations or warranties or failed to perform any of its covenants or other agreements contained in this Agreement, which breach or failure to perform (i) would give rise to the failure of a condition set forth in Section 6.02(a) or Section 6.02(b) and (ii) (A) is incapable of being cured prior to the Termination Date or (B) is not cured by the Company on or before the earlier of (i) the Termination Date and (ii) the date that is thirty (30) Business Days after written notice from Parent of such breach or failure; provided that Parent shall not have the right to terminate this Agreement pursuant to this Section 7.01(d) if Parent or Sub is then in material breach of this Agreement or if any representation or warranty of Parent or Sub shall have become untrue, in either case, so as to result in the failure of any of the conditions set forth in Section 6.03(a) or Section 6.03(b);",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 229998,
+            "source_node_occurrence_id": "9a9d339a33d7c530a9668482cb65f537e96bf9c78836de56cae76d92f6ceff35",
+            "start_byte": 229047,
+            "text_sha256": "1f27cc7d7112bbe58e218ea6c711931670c757ee2bed5027c00d126e77344b0b"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "REQUIRED_ROLES",
+        "required_roles": [
+          "CONDITION_FAILURE_STANDARD",
+          "INCURABILITY_OR_CURE",
+          "NOTICE_PERIOD",
+          "OUTSIDE_DATE_CAP",
+          "TERMINATOR_BREACH_BAR"
+        ],
+        "retained_facts": [
+          {
+            "analysis_claim_id": "aa0f19000522d5ed4c6fa7d1d2e8302d7f1b50c8fd25a3b4d1d82838ce08a687",
+            "attributes": {
+              "day_kind": null,
+              "deadline_term": null,
+              "period_kind": null,
+              "section_reference": "7.01",
+              "terminating_party": "Parent",
+              "terminating_party_ref": "Parent",
+              "terminating_party_scope": "ONE_PARTY",
+              "termination_grant_context": {
+                "grant_quote": "(d) by Parent, if the Company shall have breached any of its representations or warranties or failed to perform any of its covenants or other agreements contained in this Agreement, which breach or failure to perform (i) would give rise to the failure of a condition set forth in Section 6.02(a) or Section 6.02(b) and (ii) (A) is incapable of being cured prior to the Termination Date or (B) is not cured by the Company on or before the earlier of (i) the Termination Date and (ii) the date that is thirty (30) Business Days after written notice from Parent of such breach or failure;",
+                "trigger_limb_quote": "by Parent, if the Company shall have breached any of its representations or warranties"
+              },
+              "trigger_kind": "BREACH"
+            },
+            "canonical_value": true,
+            "capacity": "BUYER",
+            "claim_definition_key": "TERMINATION_RIGHT_GRANT",
+            "claim_occurrence_id": "6fa38233adef4d075a6dcf097c63180815fa1d48d4698ece42a4d60dcec85c87",
+            "party": {
+              "capacity": "BUYER",
+              "role": "TERMINATION_RIGHT_HOLDER",
+              "value": "Parent"
+            },
+            "raw_value": "by Parent, if the Company shall have breached any of its representations or warranties"
+          }
+        ]
+      },
+      "review_basis": "No - it gets it generally right but misses specifics. First it misses the pre-requisites \"(i) would give rise to the failure of a condition set forth in Section 6.02(a) or Section 6.02(b) and (ii) (A) is incapable of being cured prior to the Termination Date or (B) is not cured by the Company on or before the earlier of (i) the Termination Date and (ii) the date that is thirty (30) Business Days after written notice from Parent of such breach or failure\". And then it misses the proviso \"provided that Parent shall not have the right to terminate this Agreement pursuant to this Section 7.01(d) if Parent or Sub is then in material breach of this Agreement or if any representation or warranty of Parent or Sub shall have become untrue, in either case, so as to result in the failure of any of the conditions set forth in Section 6.03(a) or Section 6.03(b);\""
+    },
+    {
+      "case_id": "63615db9caffe05414a7c9541fdc89ac58774a36d790b1ff8d1513bd27dd4fd8",
+      "ordinal": 3,
+      "error_class": "CONTROL",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "GENERAL_COVENANTS",
+        "section_reference": "5.09",
+        "excerpt": "Prior to the Effective Time, the Company shall cooperate with Parent and use its reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things reasonably necessary, proper or advisable on its part pursuant to applicable Law and the rules and regulations of NYSE to cause (a) the delisting of the Company Common Stock from NYSE as promptly as practicable after the Effective Time and (b) the deregistration of the Company Common Stock pursuant to the Exchange Act as promptly as practicable after such delisting.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 199324,
+            "source_node_occurrence_id": "283b4a78b0600728dc04e6d8173e1886c20284dc3b66571808c8f1b9094d92e6",
+            "start_byte": 198768,
+            "text_sha256": "66e739a83f60e0d5569b5764f21702ca46b63a923cb9d8a2e6ca47d3d3d7910a"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "ATOMIC_FACT_SET",
+        "facts": [
+          {
+            "analysis_claim_id": "3b8fa1ae5472bdc9fe4e28c6039399048f1b65a7f19ce642fc41fd2c20965510",
+            "attributes": {
+              "covenant_code": "COV-DELIST",
+              "covenant_obligor": "the Company",
+              "definition_cross_references": [],
+              "owner_id": "LISTING_DELISTING_COVENANTS",
+              "section_reference": "5.09"
+            },
+            "canonical_value": "COV-DELIST",
+            "capacity": "TARGET",
+            "claim_definition_key": "GENERAL_COVENANT_PRESENT",
+            "claim_occurrence_id": "9154050bb5a50538541bc25d8aff2bebbb2f42534ddeb2e98cf504b31257f59c",
+            "party": {
+              "capacity": "TARGET",
+              "role": "COVENANT_OBLIGOR",
+              "value": "the Company"
+            },
+            "raw_value": "the Company shall cooperate with Parent and use its reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things reasonably necessary, proper or advisable on its part pursuant to applicable Law and the rules and regulations of NYSE to cause (a) the delisting of the Company Common Stock from NYSE as promptly as practicable after the Effective Time and (b) the deregistration of the Company Common Stock pursuant to the Exchange Act as promptly as practicable after such delisting."
+          }
+        ]
+      },
+      "review_basis": null
+    },
+    {
+      "case_id": "dfd72643d27a50176595bedfbfe525b65e8bca52a64aab3149a257a5467b6b21",
+      "ordinal": 4,
+      "error_class": "MISSING_ROLE",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "CLOSING_CONDITIONS",
+        "section_reference": "6.01",
+        "excerpt": "(i) No temporary restraining order, preliminary or permanent injunction or other Judgment or Law of, or issued by, any court of competent jurisdiction or other Governmental Entity shall be in effect, in each case having the effect of making the Merger illegal or otherwise prohibiting consummation of the Merger or imposing, individually or in the aggregate, a Burdensome Condition (collectively, “Legal Restraints”) and ",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 219610,
+            "source_node_occurrence_id": "11613ee1c60ceca1db9e950b8643d43256045df0c58f2f63bcbd67eb2580ba8e",
+            "start_byte": 219185,
+            "text_sha256": "2a57b9a4dae075c80d166b38b8978aac6f11d4b0c98c7e9b5d3b598d3769e4cb"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "REQUIRED_ROLES",
+        "required_roles": [
+          "GOVERNING_CHAPEAU"
+        ],
+        "retained_facts": [
+          {
+            "analysis_claim_id": "d1252354df1922242b436e029705bc41fde421cb563322cfa94377f11f42aeb9",
+            "attributes": {
+              "accuracy_standard": null,
+              "approval_definition_ref": null,
+              "approval_kind": null,
+              "breach_standard": null,
+              "burdensome_scope": null,
+              "causation_standard": null,
+              "certificate_relationship_status": null,
+              "certificate_side": null,
+              "certified_condition_refs": [],
+              "certifying_party_ref": null,
+              "condition_obligor": null,
+              "covered_scope_ref": null,
+              "explicit_clause_cross_reference": null,
+              "listing_venue_ref": null,
+              "mae_party": null,
+              "mae_term_ref": null,
+              "obligor_ref": null,
+              "rep_side": null,
+              "s4_component": null,
+              "scrape_quote": null,
+              "section_reference": "6.01",
+              "standard": null,
+              "threshold_role": null
+            },
+            "canonical_value": true,
+            "capacity": "EITHER_PRINCIPAL_PARTY",
+            "claim_definition_key": "LEGAL_RESTRAINT_CONDITION",
+            "claim_occurrence_id": "6fea7e0136e90f8d5a2fe5f9a744b157a6a23528c2b1979a2b635787b3bf435a",
+            "party": {
+              "capacity": "EITHER_PRINCIPAL_PARTY",
+              "role": "CONDITION_BENEFICIARY",
+              "value": "Either Principal Party"
+            },
+            "raw_value": "No temporary restraining order, preliminary or permanent injunction or other Judgment or Law of, or issued by, any court of competent jurisdiction or other Governmental Entity shall be in effect, in each case having the effect of making the Merger illegal or otherwise prohibiting consummation of the Merger or imposing, individually or in the aggregate, a Burdensome Condition (collectively, “Legal Restraints”)"
+          }
+        ]
+      },
+      "review_basis": "Can't see the chapeau but I think it is right"
+    },
+    {
+      "case_id": "2ad873af98a090151607077ca0bb92d104bab9dbf4b2495bb114c1c5e8343817",
+      "ordinal": 5,
+      "error_class": "CONTROL",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "MAE_DEFINITION",
+        "section_reference": "8.03(l)",
+        "excerpt": "(i) result in a material adverse effect on the business, assets, properties, financial condition or results of operations of the Company and its Subsidiaries, taken as a whole or ",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 243556,
+            "source_node_occurrence_id": "1f9dd010613dcba51f35094840716c43e1f513cd6620e777b31803b16251f264",
+            "start_byte": 243377,
+            "text_sha256": "cbb8fceaf53525c9dce74bc3bc840fd80fc95997788b0f29510ed4f094f4f92c"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "ATOMIC_FACT_SET",
+        "facts": [
+          {
+            "analysis_claim_id": "26be91c6da3b6b63196544857d51995fc7a325f20e9012e0c14c08b2cc0ac0bf",
+            "attributes": {
+              "defined_term_ref": "Material Adverse Effect",
+              "definition_subject": "the Company and its Subsidiaries",
+              "limb_path": [
+                "(i)"
+              ],
+              "prong_code": "BUSINESS_EFFECTS",
+              "prong_label": "(i)",
+              "section_reference": "8.03(l)"
+            },
+            "canonical_value": "BUSINESS_EFFECTS",
+            "capacity": "TARGET",
+            "claim_definition_key": "MAE_DEFINITION_PRONG",
+            "claim_occurrence_id": "54b176e010ca6de1764b3102b706a9bc8cd105f00e20817403cfefe61e8e3109",
+            "party": {
+              "capacity": "TARGET",
+              "role": "DEFINITION_SUBJECT",
+              "value": "the Company and its Subsidiaries"
+            },
+            "raw_value": "result in a material adverse effect on the business, assets, properties, financial condition or results of operations of the Company and its Subsidiaries, taken as a whole"
+          }
+        ]
+      },
+      "review_basis": null
+    },
+    {
+      "case_id": "78afa3317c02f6ccecd93fda2739e0dd78cdf22afe47df7cd4c367cf4286ab6b",
+      "ordinal": 6,
+      "error_class": "MISSING_ROLE",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "KEY_DEFINED_TERMS",
+        "section_reference": "8.03",
+        "excerpt": "“Willful Breach” means, with respect to any agreement or covenant in this Agreement, an act or omission (including a failure to cure circumstances) taken or omitted to be taken that the breaching party intentionally takes (or intentionally fails to take) and knows (or reasonably should have known) would, or would reasonably be expected to, cause a material breach of such representation, warranty, agreement or covenant.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 250703,
+            "source_node_occurrence_id": "86a5e68b7b198d5980a9b0d252aa96d58527c8c3c66df01d5e007564f956ce6b",
+            "start_byte": 250277,
+            "text_sha256": "cf96ace90a21d53aa0918a5f58b7495360796a2e6fa9da264489a6387439f768"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "REQUIRED_ROLES",
+        "required_roles": [
+          "BREACH_KNOWLEDGE",
+          "INTENTIONALITY"
+        ],
+        "retained_facts": [
+          {
+            "analysis_claim_id": "01db9c890a07f22d0c8a86e9801f420ef1e0f0454047065ae463e54815d7fbf2",
+            "attributes": {
+              "breach_term_ref": "Willful Breach",
+              "defined_term_identity": "willful breach",
+              "definition_head_quote": "“Willful Breach” means",
+              "event_term_ref": null,
+              "exclusion_code": null,
+              "host_term_ref": null,
+              "knowledge_party": null,
+              "knowledge_term_ref": null,
+              "limb_quote": "the breaching party intentionally takes (or intentionally fails to take) and knows (or reasonably should have known) would, or would reasonably be expected to, cause a material breach of such representation, warranty, agreement or covenant.",
+              "named_persons": [],
+              "proposal_term_ref": null,
+              "qualifier_code": null,
+              "section_reference": "8.03",
+              "source_code": null,
+              "standard_code": "ACTUAL_OR_CONSTRUCTIVE",
+              "substituted_term_ref": null,
+              "substitution_from_percent": null,
+              "superior_term_ref": null,
+              "threshold_basis": null
+            },
+            "canonical_value": "ACTUAL_OR_CONSTRUCTIVE",
+            "capacity": null,
+            "claim_definition_key": "WILLFUL_BREACH_KNOWLEDGE_STANDARD",
+            "claim_occurrence_id": "168b60c603dc4375626f3857a776b209e19fa45dd89dbb5a47c1ac200c9875bc",
+            "party": null,
+            "raw_value": "the breaching party intentionally takes (or intentionally fails to take) and knows (or reasonably should have known) would, or would reasonably be expected to, cause a material breach of such representation, warranty, agreement or covenant."
+          },
+          {
+            "analysis_claim_id": "7158a5b089634a9a1ea5b46e2d425e5e836a1b5a0bd82b3478819135f255b1ea",
+            "attributes": {
+              "breach_term_ref": "Willful Breach",
+              "defined_term_identity": "willful breach",
+              "definition_head_quote": "“Willful Breach” means",
+              "event_term_ref": null,
+              "exclusion_code": null,
+              "host_term_ref": null,
+              "knowledge_party": null,
+              "knowledge_term_ref": null,
+              "limb_quote": "an act or omission (including a failure to cure circumstances) taken or omitted to be taken",
+              "named_persons": [],
+              "proposal_term_ref": null,
+              "qualifier_code": null,
+              "section_reference": "8.03",
+              "source_code": null,
+              "standard_code": null,
+              "substituted_term_ref": null,
+              "substitution_from_percent": null,
+              "superior_term_ref": null,
+              "threshold_basis": null
+            },
+            "canonical_value": true,
+            "capacity": null,
+            "claim_definition_key": "WILLFUL_BREACH_DEFINITION",
+            "claim_occurrence_id": "77f409a974a8dbb232c8bb11cf5d9a650ff9e1a2958cf9ef4fe2adf4159681ba",
+            "party": null,
+            "raw_value": "an act or omission (including a failure to cure circumstances) taken or omitted to be taken"
+          }
+        ]
+      },
+      "review_basis": "Key facts - what is important here is that it is doubel knowledge -y ouh ave to know it was a material breach with intention.  Key point just for this one definition"
+    },
+    {
+      "case_id": "89972a9423fcfc902fad7ecf07233181b46a8728e38609dfe614cb221a642e8c",
+      "ordinal": 7,
+      "error_class": "MISSING_ROLE",
+      "source": {
+        "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+        "family_key": "REPRESENTATIONS",
+        "section_reference": "3.5(a)",
+        "excerpt": "As of the close of business on the Reference Date: (i) 480,131 Shares were issuable upon the exercise of outstanding Company Options; (ii) 254,238 Shares were subject to Company Restricted Stock Units; (iii) 150,545 Shares were reserved and available for issuance under the Company ESPP; and (iv) 3,090,908 Shares were issuable upon the exercise of outstanding Company Warrants.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 39480,
+            "source_node_occurrence_id": "fa01e3da753cde91cf49e3202e88664a614f8ad75bf03c3e57d5ba70b08a94df",
+            "start_byte": 39102,
+            "text_sha256": "6273685421da73b83c06ac80379d48fdaefd8d23c6df1a9a97524f0ae81e9de8"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "REQUIRED_ROLES",
+        "required_roles": [
+          "REPRESENTING_PARTY"
+        ],
+        "retained_facts": [
+          {
+            "analysis_claim_id": "9dd9905bd28258b340550fa3aa3063be0988094c934fca04464ea50a9ec1b329",
+            "attributes": {
+              "container_node_occurrence_id": "8ea349a88b265b1d90e9dbf986ead13c1b2ef785abca6c4cfd966c6181c1d4f5",
+              "context_chapeau_node_occurrence_id": "c399088453160dbf07f5a5eb2422ad4cec9fb47c43505f31a41d4d41e6cbdf26",
+              "representation_topic_state": "SINGLE_TOPIC",
+              "representation_topic_unclassified_reason": null,
+              "representation_topics": [
+                "CAPITALISATION_SECURITIES"
+              ],
+              "source_reference": "3.5(a)"
+            },
+            "canonical_value": true,
+            "capacity": null,
+            "claim_definition_key": "M7_DETERMINISTIC_REPRESENTATIONS_SOURCE_PROVISION",
+            "claim_occurrence_id": "d50ad22787b76749958ac0092d8a8c8ca07d4fd40cea156698cff39b5e49f89e",
+            "party": null,
+            "raw_value": "As of the close of business on the Reference Date: (i) 480,131 Shares were issuable upon the exercise of outstanding Company Options; (ii) 254,238 Shares were subject to Company Restricted Stock Units; (iii) 150,545 Shares were reserved and available for issuance under the Company ESPP; and (iv) 3,090,908 Shares were issuable upon the exercise of outstanding Company Warrants."
+          }
+        ]
+      },
+      "review_basis": "Missess which party"
+    },
+    {
+      "case_id": "c288609df84fa942b08318d5fcbfe342e4ec2b3838967a829fb83e2aca241975",
+      "ordinal": 8,
+      "error_class": "MISSING_ROLE",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "INTERIM_OPERATING",
+        "section_reference": "4.01",
+        "excerpt": "(A) adopt, establish, enter into, terminate, materially amend or modify any material Benefit Plan or Benefit Agreement, ",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 125025,
+            "source_node_occurrence_id": "ab8d289ea63597dc0379dce11f544f1c9ef73467a54c6e829d59d38ff4d8577e",
+            "start_byte": 124905,
+            "text_sha256": "0365a1ec372083d82fb0156558dc47ae7218f9d4693f422071f0de1ea01476f8"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "REQUIRED_ROLES",
+        "required_roles": [
+          "MATERIALITY",
+          "AMENDMENT_ACTION",
+          "BENEFIT_PLAN_SCOPE"
+        ],
+        "retained_facts": [
+          {
+            "analysis_claim_id": "1251a4b5dc35ebcb134919c15b79fba07166300f3e722deeee55e03f61a40f43",
+            "attributes": {
+              "covenant_side": null,
+              "inherited_party_from_provision_instance_id": "5b7950971024c7a7ac278956a218a0532e3a748e28198e4b9be83b93201a88ef",
+              "restriction_category": "BENEFIT_PLANS",
+              "section_reference": "4.01",
+              "threshold_basis": null
+            },
+            "canonical_value": true,
+            "capacity": "TARGET",
+            "claim_definition_key": "IOC_RESTRICTION_PRESENT",
+            "claim_occurrence_id": "407e85a47571a54c40edc5ef590d369cfed2e92cdfe0c92667c74dffde2f7f90",
+            "party": {
+              "capacity": "TARGET",
+              "role": "IOC_COVENANT_OBLIGOR",
+              "value": "the Company"
+            },
+            "raw_value": "adopt, establish, enter into, terminate, materially amend or modify any material Benefit Plan or Benefit Agreement"
+          }
+        ]
+      },
+      "review_basis": "Misses materiality amend and material benefit plan qualifiers"
+    },
+    {
+      "case_id": "4941a9e336ce2764395a9d4c78c4a00333684e22f08e32c0b0c07c972aa953fc",
+      "ordinal": 9,
+      "error_class": "MISSING_ROLE",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "NO_SHOP",
+        "section_reference": "4.02",
+        "excerpt": "(C) Parent does not make, within the applicable Superior Proposal Notice Period (or any extension or continuation thereof) after the receipt of such notice, a proposal that would, in the reasonable good faith judgment of the Company Board (after consultation with outside legal counsel and a financial advisor of national reputation), cause the offer previously constituting a Superior Proposal to no longer constitute a Superior Proposal (it being understood and agreed that any amendment or modification of such Superior Proposal shall require a new Superior Proposal Notice with a new Superior Proposal Notice Period of three (3) Business Days); and",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 141453,
+            "source_node_occurrence_id": "6c389ed1d9d403f66dfc338271b77c8e2a551500834f00e7739b2394177600ef",
+            "start_byte": 140801,
+            "text_sha256": "0a78e4aa4a5d13130d2db2cbf0e11219ef6763cc0704313b12d0845d3b494fdc"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "REQUIRED_ROLES",
+        "required_roles": [
+          "INITIAL_MATCH_PERIOD",
+          "SUBSEQUENT_MATCH_PERIOD"
+        ],
+        "retained_facts": [
+          {
+            "analysis_claim_id": "af885daea4dc04e9eca414ca34611cb5d2dd5854a9ba1680f2a7b4b26f3dd0c3",
+            "attributes": {
+              "covenant_obligor": null,
+              "day_kind": "BUSINESS_DAYS",
+              "period_role": "SUBSEQUENT_MATCH",
+              "section_reference": "4.02",
+              "unit_phrase": "Business Days"
+            },
+            "canonical_value": "3",
+            "capacity": "TARGET",
+            "claim_definition_key": "NO_SHOP_SUBSEQUENT_MATCH_PERIOD_DAYS",
+            "claim_occurrence_id": "0d39a52d918dc7b9d8f3931c2ad93b7c294536e53a3ca41528034099e9f847e1",
+            "party": {
+              "capacity": "TARGET",
+              "role": "COVENANT_OBLIGOR",
+              "value": "the Company"
+            },
+            "raw_value": "a new Superior Proposal Notice Period of three (3) Business Days"
+          }
+        ]
+      },
+      "review_basis": "Why doesn't this specifiy the number of days (Which it has to inherit from \"Superior Proposal Notice Period\" and then also the 3 BD 2nd period for amendments?"
+    },
+    {
+      "case_id": "69bd9a055c55e764b4c27d5a1eda119bc7100251776dca3518ba2b42056560a7",
+      "ordinal": 10,
+      "error_class": "MISSING_ROLE",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "DNO_INDEMNIFICATION",
+        "section_reference": null,
+        "excerpt": "Parent and Sub agree that all rights to indemnification, advancement of expenses and exculpation from liabilities for acts or omissions occurring at or prior to the Effective Time now existing in favor of the current or former directors or officers of the Company and its Subsidiaries as provided in their respective certificate of incorporation or bylaws (or comparable organizational documents) and any indemnification or other agreements of the Company as in effect on the date of this Agreement shall be assumed by the Surviving Corporation in the Merger, without further action, at the Effective Time, and shall survive the Merger and shall continue in full force and effect in accordance with their terms, and Parent shall cause the Surviving Corporation to comply with and honor the foregoing obligations.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 190377,
+            "source_node_occurrence_id": "4c42be693d7f2335f6447e1956b6dffd25a67c7bcbe99e2fbe0c64b967e4c841",
+            "start_byte": 189565,
+            "text_sha256": "ddda884ef45440ebc58c22b2cd481154c4167cff033cf927ac8d9be86f385701"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "REQUIRED_ROLES",
+        "required_roles": [
+          "INDEMNIFICATION_RIGHT_SCOPE",
+          "SOURCE_INSTRUMENTS"
+        ],
+        "retained_facts": [
+          {
+            "analysis_claim_id": "8ba2e29d755476ece460639cf83f5c380d741aaebb6b6808be151ec8ae0c60a7",
+            "attributes": {},
+            "canonical_value": true,
+            "capacity": null,
+            "claim_definition_key": "INDEMNIFICATION_CONTINUATION",
+            "claim_occurrence_id": "85fc6839aab33c8566056a75a859de1fee1e4603fdf4c73056738363435a3070",
+            "party": null,
+            "raw_value": "all rights to indemnification, advancement of expenses and exculpation from liabilities for acts or omissions occurring at or prior to the Effective Time now existing in favor of the current or former directors or officers of the Company and its Subsidiaries as provided in their respective certificate of incorporation or bylaws (or comparable organizational documents) and any indemnification or other agreements of the Company as in effect on the date of this Agreement shall be assumed by the Surviving Corporation in the Merger, without further action, at the Effective Time, and shall survive the Merger and shall continue in full force and effect in accordance with their terms, and Parent shall cause the Surviving Corporation to comply with and honor the foregoing obligations."
+          }
+        ]
+      },
+      "review_basis": "misses WHAT indemnification obligations - i.e. \" as provided in their respective certificate of incorporation or bylaws (or comparable organizational documents) and any indemnification or other agreements of the Company as in effect on the date of this Agreement\""
+    },
+    {
+      "case_id": "94f1b28ee148d3c06da8c903e87610169fca0867a2fef0f1c82ec70f2731962b",
+      "ordinal": 11,
+      "error_class": "CONTROL",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "NO_OTHER_REPS_FRAUD",
+        "section_reference": null,
+        "excerpt": "Except for the representations and warranties expressly set forth in this Section 3.01, the Company Letter or in a certificate delivered pursuant to this Agreement, neither the Company nor any other person on behalf of the Company or its Subsidiaries makes any express or implied representation or warranty with respect to the Company or its Subsidiaries or with respect to any other information provided to Parent, Sub or any of their affiliates or representatives, including, but not limited to, its business, operations, assets, liabilities, conditions (financial or otherwise) or prospects, in connection with the transactions contemplated hereby.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 102167,
+            "source_node_occurrence_id": "c4d6e369bf7fa593f12aaf8cb23620d2687cb395703f092d9ea4dbd6653d79aa",
+            "start_byte": 101516,
+            "text_sha256": "69af741dc81f7d8a9c684849de9fa25e93bb483898d8c60df2f0ea24fe671cda"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "ATOMIC_FACT_SET",
+        "facts": [
+          {
+            "analysis_claim_id": "55bebac2075abeb682eafb23e7f40e73d3f939b5380c9df2eef5f4300ee3acd4",
+            "attributes": {
+              "agreement_scope_quote": "Except for the representations and warranties expressly set forth in this Section 3.01, the Company Letter or in a certificate delivered pursuant to this Agreement",
+              "representation_maker_ref": "neither the Company nor any other person on behalf of the Company or its Subsidiaries",
+              "representation_side": "TARGET"
+            },
+            "canonical_value": true,
+            "capacity": "TARGET",
+            "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+            "claim_occurrence_id": "5dcb21067c461f1279a02820bd1cec43865e33e1a3281f5baca93ae4a2bbfd39",
+            "party": {
+              "capacity": "TARGET",
+              "role": "REPRESENTATION_MAKER",
+              "value": "Company"
+            },
+            "raw_value": "Except for the representations and warranties expressly set forth in this Section 3.01, the Company Letter or in a certificate delivered pursuant to this Agreement, neither the Company nor any other person on behalf of the Company or its Subsidiaries makes any express or implied representation or warranty with respect to the Company or its Subsidiaries or with respect to any other information provided to Parent, Sub or any of their affiliates or representatives, including, but not limited to, its business, operations, assets, liabilities, conditions (financial or otherwise) or prospects, in connection with the transactions contemplated hereby."
+          }
+        ]
+      },
+      "review_basis": null
+    },
+    {
+      "case_id": "ab57014997ba63110e5152739b4a0a87e42a52ab586be2ac960e83716a579d9d",
+      "ordinal": 12,
+      "error_class": "CONTROL",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "ANTITRUST_REGULATORY",
+        "section_reference": "5.03",
+        "excerpt": "(B) where legally permissible, have the right to review in advance, and to the extent practicable each shall consult and consider in good faith the views of the other regarding, any material filing made with, or written materials to be submitted to, any Governmental Entity in connection with the transactions contemplated by this Agreement and of any material communication received or given in connection with any proceeding by a private person, in each case regarding any of the transactions contemplated by this agreement, ",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 168050,
+            "source_node_occurrence_id": "bd0de92cfce5e7a4f353ea14432628fc1977f2d995195ba75f9e0fcde7f18a4f",
+            "start_byte": 167523,
+            "text_sha256": "22c6304c5fc9566763fe0046bcbb327a48b8c5248641a75b3636393521c1b3bf"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "ATOMIC_FACT_SET",
+        "facts": [
+          {
+            "analysis_claim_id": "8ccc2d896b40de0be0f673d5e9e7b9f47816dd35bd995f937771bf0143b29512",
+            "attributes": {
+              "antitrust_regulatory_parse_version": 1,
+              "burden_baseline": null,
+              "burden_baseline_ref": null,
+              "burden_term_ref": null,
+              "control_holder_party": null,
+              "cooperation_scope_ref": null,
+              "day_kind": null,
+              "filing_regime_ref": null,
+              "fixed_date_ref": null,
+              "impairment_effect_ref": null,
+              "information_protection_kind": null,
+              "information_protection_kinds": null,
+              "information_scope_ref": null,
+              "notification_event_ref": null,
+              "notification_timing_ref": null,
+              "obligor_party": "each",
+              "obligor_party_ref": "each",
+              "obligor_party_scope": "MUTUAL",
+              "prohibited_action_ref": null,
+              "proposed_canonical_value": "GOOD_FAITH_VIEWS",
+              "right_holder_party": "the other",
+              "section_reference": "5.03",
+              "strategy_scope_ref": null,
+              "timing_relation": null,
+              "timing_trigger": null,
+              "withdrawal_exception_ref": null,
+              "withdrawal_refile_day_kind": null,
+              "withdrawal_refile_period_days": null
+            },
+            "canonical_value": "GOOD_FAITH_VIEWS",
+            "capacity": "EITHER_PRINCIPAL_PARTY",
+            "claim_definition_key": "REGULATORY_CONSULTATION_RIGHT",
+            "claim_occurrence_id": "d8c439894c9a8f667091444d8c5ffe57941f87a1fee57fae8378c09949219078",
+            "party": {
+              "capacity": "EITHER_PRINCIPAL_PARTY",
+              "role": "REGULATORY_COVENANT_OBLIGOR",
+              "value": "each"
+            },
+            "raw_value": "where legally permissible, have the right to review in advance, and to the extent practicable each shall consult and consider in good faith the views of the other regarding, any material filing made with, or written materials to be submitted to, any Governmental Entity in connection with the transactions contemplated by this Agreement and of any material communication received or given in connection with any proceeding by a private person, in each case regarding any of the transactions contemplated by this agreement"
+          }
+        ]
+      },
+      "review_basis": null
+    },
+    {
+      "case_id": "fd930d7513c9e2f7d7215a736b33046671215cef02457a16ea7d69d535bb4829",
+      "ordinal": 13,
+      "error_class": "MISSING_ROLE",
+      "source": {
+        "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+        "family_key": "APPRAISAL_DISSENTERS_RIGHTS",
+        "section_reference": "2.7",
+        "excerpt": "The Company may not, except with the prior written consent of Parent, make any payment with respect to any demands for appraisal or settle or offer to settle, or approve the withdrawal of, any such demands or waive any failure to timely deliver a written demand for appraisal or otherwise to comply with Section 262 of the DGCL or agree to do any of the foregoing.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 84098,
+            "source_node_occurrence_id": "00b42c4e664ab41ca8a50ec8afcfc28ce69c30d517123789c9cb5faff8177eb6",
+            "start_byte": 83734,
+            "text_sha256": "456bf0724321e5f40531d82c93e9a2ed3ee40e4830dcdeecd446ded1d4f1099a"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "REQUIRED_ROLES",
+        "required_roles": [
+          "CONSENT_GIVER",
+          "CONSENT_RECIPIENT"
+        ],
+        "retained_facts": [
+          {
+            "analysis_claim_id": "23064aa4823eab9bc764e820580f303555f6965d11790fc4389df67db099b613",
+            "attributes": {
+              "bearer_ref": null,
+              "dividend_term_ref": null,
+              "representation_letter_ref": null,
+              "section_reference": "2.7",
+              "statute_ref": "Section 262 of the DGCL",
+              "tax_opinion_ref": null,
+              "treatment_scope_ref": null,
+              "treatment_term_ref": null
+            },
+            "canonical_value": true,
+            "capacity": null,
+            "claim_definition_key": "APPRAISAL_SETTLEMENT_CONSENT",
+            "claim_occurrence_id": "4f3b9d9014c18a41dd86160139740ee5b65aca216b098852ca42ff22638ea60c",
+            "party": null,
+            "raw_value": "The Company may not, except with the prior written consent of Parent, make any payment with respect to any demands for appraisal or settle or offer to settle, or approve the withdrawal of, any such demands or waive any failure to timely deliver a written demand for appraisal or otherwise to comply with Section 262 of the DGCL or agree to do any of the foregoing."
+          }
+        ]
+      },
+      "review_basis": "Doesn't say which party needs whose consent."
+    },
+    {
+      "case_id": "84672cb087d864f42d4c7e9a86979c3f39fcf4a0c5fcfc9cbb0bcb607bdf32fd",
+      "ordinal": 14,
+      "error_class": "WRONG_MEANING",
+      "source": {
+        "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+        "family_key": "CAPITALISATION",
+        "section_reference": "3.3",
+        "excerpt": "The authorized capital stock of the Company consists of (i) 20,000,000 shares of Company Common Stock, of which 3,116,729 shares of Company Common Stock have been issued or are outstanding as of the close of business on March 22, 2024 (the “Reference Date”), (ii) 10,000,000 shares of Company Preferred Stock, none of which are issued or outstanding as of the close of business on the Reference Date.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 37379,
+            "source_node_occurrence_id": "cc39d7879daea19cf9bb97c9cd6f98ef484e8a851877b44888a0ee1d3eb8db8a",
+            "start_byte": 36975,
+            "text_sha256": "f493bddb7c5ff3ec27cf34498e7307a792de356ec52d9fcea41f1d692e2c94f7"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "ATOMIC_OUTCOME",
+        "family_key": "CAPITALISATION",
+        "fact_type": "COMPANY_CAPITALISATION_REPRESENTATION"
+      },
+      "review_basis": "this is just a company cap rep"
+    },
+    {
+      "case_id": "3583bd03b58d1d3c0474cee79d76afc8793b4335ad488cccdd624ff44acbc653",
+      "ordinal": 15,
+      "error_class": "DISPLAY",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "CONSIDERATION",
+        "section_reference": "2.01",
+        "excerpt": "Such Company Shareholders shall be entitled to receive payment of the appraised value of such Dissenting Shares to the extent afforded by Section 262 of the DGCL (in such case, the Dissenting Shares shall no longer be outstanding and shall automatically be canceled and cease to exist, and each holder of Dissenting\n3\nShares shall cease to have any rights with regard thereto except with regard to such holders’ right to receive the fair value of such Dissenting Shares to the extent afforded by Section 262 of the DGCL); provided, however, that if, after the Effective Time, such holder fails to perfect, withdraws or otherwise loses such holder’s right to appraisal pursuant to Section 262 of the DGCL, or if a court of competent jurisdiction shall determine that such holder is not entitled to the relief provided by Section 262 of the DGCL, such shares of Company Common Stock shall be treated as if they had been converted as of the Effective Time into the right to receive the Merger Consideration in accordance with this Section 2.01, without interest thereon, upon surrender of such Certificate that formerly represented such shares of Company Common Stock in accordance with the terms of Section 2.02.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 18950,
+            "source_node_occurrence_id": "2e47df88c29a8c143e9c19a2995d5e2ece86a6c73669c43b589a9460172d1750",
+            "start_byte": 17736,
+            "text_sha256": "205eb28d083d2cf5405a708982373ac29e1cc0553fc3acf824f38834df2cfc64"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "DISPLAY_EXCLUSION",
+        "excluded_content": [
+          "PAGE_NUMBER"
+        ]
+      },
+      "review_basis": "Correct but note you have a page number \"3\" in there"
+    },
+    {
+      "case_id": "abdb33252a3616ceade7552e4fd55f9d9ecee7f54590d0b7136b5952ec5eab76",
+      "ordinal": 16,
+      "error_class": "CONTROL",
+      "source": {
+        "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+        "family_key": "DIVIDENDS",
+        "section_reference": "6.21",
+        "excerpt": "Parent and the Company shall each coordinate their record and payment dates for their regular quarterly dividends to ensure that the holders of Company Common Stock shall not receive two (2) dividends, or fail to receive one (1) dividend, in any quarter with respect to their Company Common Stock and the Parent Common Stock that such holders receive in exchange therefor in the Merger.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 264197,
+            "source_node_occurrence_id": "da88b5f3a5f84a7236d9e779908b7f6acec5a1b1111cf66cf297dbae1268b434",
+            "start_byte": 263811,
+            "text_sha256": "3e836069940ec78ac107bbbe6c83d65a36d5c53d663c412c4ef74ec1a05d36f7"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "ATOMIC_FACT_SET",
+        "facts": [
+          {
+            "analysis_claim_id": "68beb0372f76f9280616c96c4adfdee3339bb3c870111c4949415a680549451f",
+            "attributes": {
+              "bearer_ref": null,
+              "dividend_term_ref": null,
+              "representation_letter_ref": null,
+              "section_reference": "6.21",
+              "statute_ref": null,
+              "tax_opinion_ref": null,
+              "treatment_scope_ref": null,
+              "treatment_term_ref": null
+            },
+            "canonical_value": true,
+            "capacity": null,
+            "claim_definition_key": "DIVIDEND_COORDINATION_COVENANT",
+            "claim_occurrence_id": "87d725ea50a643e09435023ea7bf2b44a20d0a50be846d12d54f29d4610b221d",
+            "party": null,
+            "raw_value": "Parent and the Company shall each coordinate their record and payment dates for their regular quarterly dividends to ensure that the holders of Company Common Stock shall not receive two (2) dividends, or fail to receive one (1) dividend, in any quarter with respect to their Company Common Stock and the Parent Common Stock that such holders receive in exchange therefor in the Merger."
+          }
+        ]
+      },
+      "review_basis": null
+    },
+    {
+      "case_id": "c6152c1a17d5d08a112d795c1afe7a7f5ec2df48f06ec4e29f86ee7d6ad466d3",
+      "ordinal": 17,
+      "error_class": "CONTROL",
+      "source": {
+        "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+        "family_key": "FINANCING_COVENANTS",
+        "section_reference": null,
+        "excerpt": "Notwithstanding anything in this Agreement to the contrary, each of Parent and Merger Sub understands and acknowledges and agrees that obtaining the Financing is not a condition to the obligations of the parties to consummate the Merger in accordance with the terms and provisions of this Agreement.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 283304,
+            "source_node_occurrence_id": "94fb647ede59b755f27e9be0ca92a29ea15a2932a1463ffbb2509618c2458153",
+            "start_byte": 283005,
+            "text_sha256": "b2626f62d89c2b916b544005f551a973ab991b91f26696d258e51432d8ae43d8"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "ATOMIC_FACT_SET",
+        "facts": [
+          {
+            "analysis_claim_id": "606ab7cc50f9ecc37745bd59b56540c7db50654820e6ae96ecbca8e8e0c1d515",
+            "attributes": {
+              "financing_kind": "UNSPECIFIED"
+            },
+            "canonical_value": true,
+            "capacity": null,
+            "claim_definition_key": "NO_FINANCING_CONDITION_ACKNOWLEDGMENT",
+            "claim_occurrence_id": "049fe46ba392fc0c6af0f8c3be5e10f34847794c436c3a28bfbe2353667bf103",
+            "party": null,
+            "raw_value": "each of Parent and Merger Sub understands and acknowledges and agrees that obtaining the Financing is not a condition to the obligations of the parties to consummate the Merger in accordance with the terms and provisions of this Agreement."
+          }
+        ]
+      },
+      "review_basis": null
+    },
+    {
+      "case_id": "ea2762b08aa05c92bf000e185708e56cd51b3418ccf955e917199bbf766c6f49",
+      "ordinal": 18,
+      "error_class": "MISSING_ROLE",
+      "source": {
+        "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+        "family_key": "GUARANTY_FINANCING_PARTY",
+        "section_reference": null,
+        "excerpt": "Concurrently with the execution of this Agreement, Parent and Merger Sub have delivered a duly executed guaranty from 3G Fund VI, L.P., a Cayman Islands exempted limited partnership (“Guarantor”) to the Company.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 198267,
+            "source_node_occurrence_id": "981b491be51b500174917edf90004445106b3dcafdb918f10d34389b61bc53c9",
+            "start_byte": 198052,
+            "text_sha256": "7828f2e4e8e8dc3f93c750d076209644d2c14939b15ac14c589d8d6b7836b0b0"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "REQUIRED_ROLES",
+        "required_roles": [
+          "GUARANTOR",
+          "GUARANTY_BENEFICIARY"
+        ],
+        "retained_facts": [
+          {
+            "analysis_claim_id": "ab3d1eedf5d9e8c5b44bb367398bc280f003b5a4a076e01cac1a638168bafad7",
+            "attributes": {
+              "guarantor_ref": "3G Fund VI, L.P., a Cayman Islands exempted limited partnership (“Guarantor”)"
+            },
+            "canonical_value": true,
+            "capacity": null,
+            "claim_definition_key": "LIMITED_GUARANTY_DELIVERED",
+            "claim_occurrence_id": "865f4b6621b9df12d4b40a4955ee66303658449f82aa9095fedde29e0c749bd1",
+            "party": null,
+            "raw_value": "Parent and Merger Sub have delivered a duly executed guaranty from 3G Fund VI, L.P., a Cayman Islands exempted limited partnership (“Guarantor”) to the Company."
+          }
+        ]
+      },
+      "review_basis": "FRom who to who?"
+    },
+    {
+      "case_id": "6d7508599f3bc213d568d9afd80e434e6779f6c26c851930b5bafba5a64f4449",
+      "ordinal": 19,
+      "error_class": "MISSING_ROLE",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "MATERIAL_CONTRACTS",
+        "section_reference": "3.01(i)",
+        "excerpt": "any Contract that (1) materially limits the right or ability of the Company, any of its Subsidiaries or any affiliate of any of them to compete with any other person in any line of business or geographic region that is material to the Company and its Subsidiaries, taken as a whole or (2) obligates the Company or its Subsidiaries (or following the Effective Time, Parent or its Subsidiaries) to conduct business with any third party on a preferential or exclusive basis or which contains “most favored nation” rights or similar rights, in each case, other than any such Contracts that are not material to the Company and its Subsidiaries, taken as a whole;",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 56748,
+            "source_node_occurrence_id": "a14a7e59c9db6f016c026fe7e373d28feadd830673ed64bf357a04920cc537b5",
+            "start_byte": 56087,
+            "text_sha256": "01c95340e88660dd3e774474bf385c58f6599f439e8095d54bb8f304f0bf2253"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "REQUIRED_ROLES",
+        "required_roles": [
+          "BUSINESS_OR_GEOGRAPHIC_SCOPE",
+          "MOST_FAVOURED_NATION_EFFECT",
+          "COMPANY_MATERIALITY"
+        ],
+        "retained_facts": [
+          {
+            "analysis_claim_id": "f90fbceafc9b16fde7e87806dbcf5779e79bf22f30ba80fc0b0861a3a0bf2bbe",
+            "attributes": {
+              "bucket_code": "NONCOMPETE",
+              "cadence_kind": null,
+              "definition_cross_references": [],
+              "party_making": "the Company",
+              "section_reference": "3.01(i)",
+              "threshold_kind": null,
+              "threshold_value": null
+            },
+            "canonical_value": "NONCOMPETE",
+            "capacity": "TARGET",
+            "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+            "claim_occurrence_id": "ae150ce44758ac4ccdb900c3cc43ae95dbae87640b61e657036a2bc6c70c0b34",
+            "party": {
+              "capacity": "TARGET",
+              "role": "REPRESENTATION_MAKER",
+              "value": "the Company"
+            },
+            "raw_value": "any Contract that (1) materially limits the right or ability of the Company, any of its Subsidiaries or any affiliate of any of them to compete with any other person in any line of business or geographic region that is material to the Company and its Subsidiaries, taken as a whole"
+          }
+        ]
+      },
+      "review_basis": "two issues - doesn't pickup \"business or geographic region \" and also doens't pickup the MFN\n\nAlso doens't pick up the \"material to the Company and its Subsidiaries, taken as a whole;\""
+    },
+    {
+      "case_id": "3511a68df578c0c91aa76913c7a4ced396c1489ced251c6eabda04b9b39c8564",
+      "ordinal": 20,
+      "error_class": "WRONG_MEANING",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "MERGER_STRUCTURE_CLOSING",
+        "section_reference": null,
+        "excerpt": "At the Effective Time, the Company Bylaws shall be amended and restated in its entirety to be the bylaws of Sub as in effect immediately prior to the Effective Time, except that (i) all references therein to Sub shall be automatically amended and shall become references to the Surviving Corporation and (ii) changes necessary so that the bylaws shall be in compliance with Section 5.05 shall have been made, and such amended and restated bylaws shall become the bylaws of the Surviving Corporation until thereafter amended in accordance with the applicable provisions of the DGCL, the certificate of incorporation of the Surviving Corporation and such bylaws.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 13459,
+            "source_node_occurrence_id": "2b254d2c19346a3f5f26ae4e53932cfecd7a485f5976252e9724ca501fbf2a92",
+            "start_byte": 12799,
+            "text_sha256": "096b8365ea752f1c47b0f332181048584f7587dd0aafb437f1e006dbea7a6622"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "ATOMIC_OUTCOME",
+        "family_key": "MERGER_STRUCTURE_CLOSING",
+        "fact_type": "POST_CLOSING_COMPANY_BYLAWS"
+      },
+      "review_basis": "No, this is a provision re: the Company Bylaws post closing"
+    },
+    {
+      "case_id": "d7809be9e3a6442021a7ebeb2c4ba4e7d59eed7943c5cf5d0a0250cf605c826a",
+      "ordinal": 21,
+      "error_class": "CONTROL",
+      "source": {
+        "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+        "family_key": "MISC_BOILERPLATE",
+        "section_reference": null,
+        "excerpt": "Except as set forth in Section 6.10, this Section 9.6 and Section 9.15, the Parties agree that their respective representations, warranties and covenants set forth in this Agreement are solely for the benefit of the other Parties in accordance with and subject to the terms of this Agreement.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 359443,
+            "source_node_occurrence_id": "1ead4ac6fc62ec2b4358c2c42db02cd3abb07aabda84488354e49731624219f4",
+            "start_byte": 359151,
+            "text_sha256": "6af06d91c035e030ae85c2646ee1ecc9e74f419aa885ab790b4e55747b0b8dde"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "ATOMIC_FACT_SET",
+        "facts": [
+          {
+            "analysis_claim_id": "5852fcf4686c5f047ede0474903107d65e7257026b6704f741c01a1282ae749a",
+            "attributes": {},
+            "canonical_value": true,
+            "capacity": null,
+            "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+            "claim_occurrence_id": "067ef421329fc9192aee7dca6ff0fa29268f5e81c303efe24733dbfcdb5d30a1",
+            "party": null,
+            "raw_value": "Except as set forth in Section 6.10, this Section 9.6 and Section 9.15, the Parties agree that their respective representations, warranties and covenants set forth in this Agreement are solely for the benefit of the other Parties in accordance with and subject to the terms of this Agreement."
+          }
+        ]
+      },
+      "review_basis": null
+    },
+    {
+      "case_id": "2e0f7ea75b7d9dadb83d1f5f6be8030bbf79ea3aa559f0adb3c13756fe539c23",
+      "ordinal": 22,
+      "error_class": "MISSING_ROLE",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "PROXY_MEETING",
+        "section_reference": "5.01",
+        "excerpt": "(iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law (A) to comply with comments made by the SEC with respect to the Proxy Statement or (B) to allow reasonable additional time for the filing or mailing of any supplemental or amended disclosure that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting or ",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 153981,
+            "source_node_occurrence_id": "c19a2f26932aecc3d06e7805bcf770e1c0b27e9584acc8385daeb2a624eb6058",
+            "start_byte": 153359,
+            "text_sha256": "76ba0b18d29c185168521f8172939229050d6b3611cbc52ad2a70f860a9f0719"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "REQUIRED_ROLES",
+        "required_roles": [
+          "LEGAL_LIKELIHOOD_STANDARD",
+          "OUTSIDE_COUNSEL_CONSULTATION",
+          "STOCKHOLDER_REVIEW_TIMING"
+        ],
+        "retained_facts": [
+          {
+            "analysis_claim_id": "1abeeecc8d2877f6df4e9bb0896c5b8673e4a78809dffc072efa7fce8b1c607d",
+            "attributes": {
+              "adoption_mechanism": null,
+              "adoption_timing": null,
+              "anchor_kind": null,
+              "consenting_party": null,
+              "control_party": null,
+              "day_kind": null,
+              "document_ref": null,
+              "limit_basis": null,
+              "meeting_ref": "the Shareholders Meeting",
+              "obligated_party": "the Company",
+              "proxy_meeting_parse_version": 1,
+              "reason_kind": "SUPPLEMENTAL_DISCLOSURE",
+              "section_reference": "5.01"
+            },
+            "canonical_value": "SUPPLEMENTAL_DISCLOSURE",
+            "capacity": null,
+            "claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+            "claim_occurrence_id": "7912f2aea08ea56f9a48180da583f98365b5e457502a3663fdc8424974435b21",
+            "party": null,
+            "raw_value": "(iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law (A) to comply with comments made by the SEC with respect to the Proxy Statement or (B) to allow reasonable additional time for the filing or mailing of any supplemental or amended disclosure that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting"
+          },
+          {
+            "analysis_claim_id": "e2f5160074dad525c152fec392a5e5115aa5898a98c8da71c99068f73ce6c091",
+            "attributes": {
+              "adoption_mechanism": null,
+              "adoption_timing": null,
+              "anchor_kind": null,
+              "consenting_party": null,
+              "control_party": null,
+              "day_kind": null,
+              "document_ref": null,
+              "limit_basis": null,
+              "meeting_ref": "the Shareholders Meeting",
+              "obligated_party": "the Company",
+              "proxy_meeting_parse_version": 1,
+              "reason_kind": "LEGAL_REQUIREMENT",
+              "section_reference": "5.01"
+            },
+            "canonical_value": "LEGAL_REQUIREMENT",
+            "capacity": null,
+            "claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+            "claim_occurrence_id": "4d9fb595f1df433f6ebe60fba750a1eb7967661cb3a4846b52415205e265effa",
+            "party": null,
+            "raw_value": "(iii) the Company Board has determined in good faith (after consultation with outside legal counsel) that such delay is required by applicable Law (A) to comply with comments made by the SEC with respect to the Proxy Statement or (B) to allow reasonable additional time for the filing or mailing of any supplemental or amended disclosure that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting"
+          }
+        ]
+      },
+      "review_basis": "Misses the test \"that the Company has determined, after consultation with outside legal counsel, is reasonably likely to be required under applicable Law and for such supplemental or amended disclosure to be disseminated and reviewed by stockholders of the Company prior to the Shareholder Meeting\""
+    },
+    {
+      "case_id": "0ac2d965af7d83f67e127081cead71efac42100e92224b0eec0b18c752f3e3a5",
+      "ordinal": 23,
+      "error_class": "MISSING_ROLE",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "SPECIFIC_PERFORMANCE_REMEDIES",
+        "section_reference": null,
+        "excerpt": "Section 8.11 Enforcement. The parties agree that irreparable damage would occur in the event that any of the provisions of this Agreement were not performed in accordance with their specific terms or were otherwise breached. It is accordingly agreed that the parties hereto shall be entitled to an injunction or injunctions to prevent breaches of this Agreement and to enforce specifically the terms and provisions of this Agreement in the Chosen Courts, this being in addition to any other remedy to which they are entitled at Law or in equity. The parties further agree not to assert that a remedy of specific enforcement is unenforceable, invalid, contrary to Law or inequitable for any reason, nor to assert that a remedy of monetary damages would provide an adequate remedy for any such breach. In the event any party hereto brings any action, claim, complaint, suit, action or other proceeding to enforce specifically the performance of the terms and provisions of this Agreement prior to the Closing, the Termination Date shall automatically be extended by (i) the amount of time during which such action, claim, complaint, suit, action or other proceeding is pending, plus twenty (20) Business Days, or (ii) such other time period established by the court presiding over such action, claim, complaint, suit, action or other proceeding. Notwithstanding anything to the contrary in this Agreement, none of the Financing Sources shall have any liability to the Company or any person that is an affiliate of the Company relating to or arising out of this Agreement or the Commitment Letter, whether at law, or equity, in contract, in tort or otherwise, and neither the Company nor any person that is an affiliate of the Company shall have any rights or claims against any Financing Sources hereunder or thereunder. As used in this Agreement, the term “Financing Sources” means any agent, arranger, Lender or other entity that has committed to provide or arrange, or has entered into definitive agreements related to, any debt financing related to the Merger, or any of such person’s affiliates or its or their respective officers, directors, employees, partners, trustees, shareholders, controlling persons, agents, representatives, successors or assigns.\n",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 263174,
+            "source_node_occurrence_id": "f5632803bdc78d9a3a119bf4ac4651f568c8c984778f2569a260cf6346c16423",
+            "start_byte": 260908,
+            "text_sha256": "fb4543acb95ada02b3dc5b69d91bce0ed03492d99a21a1c0e04627088a5b976e"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "REQUIRED_ROLES",
+        "required_roles": [
+          "AUTOMATIC_OUTSIDE_DATE_EXTENSION",
+          "FINANCING_SOURCE_NO_LIABILITY_EFFECT"
+        ],
+        "retained_facts": [
+          {
+            "analysis_claim_id": "2079c3ced58beb08ebb65e6e7936a9a06c78b58fc0874fb9e05d1300bbf3bac6",
+            "attributes": {},
+            "canonical_value": true,
+            "capacity": null,
+            "claim_definition_key": "SPECIFIC_PERFORMANCE_REMEDY_PRESENT",
+            "claim_occurrence_id": "bda191756c00c092bee3459c24a2370632f81b1839ac8d3e0bfce89534de0448",
+            "party": null,
+            "raw_value": "The parties agree that irreparable damage would occur in the event that any of the provisions of this Agreement were not performed in accordance with their specific terms or were otherwise breached. It is accordingly agreed that the parties hereto shall be entitled to an injunction or injunctions to prevent breaches of this Agreement and to enforce specifically the terms and provisions of this Agreement in the Chosen Courts, this being in addition to any other remedy to which they are entitled at Law or in equity."
+          }
+        ]
+      },
+      "review_basis": "Misses:\n\nIn the event any party hereto brings any action, claim, complaint, suit, action or other proceeding to enforce specifically the performance of the terms and provisions of this Agreement prior to the Closing, the Termination Date shall automatically be extended by (i) the amount of time during which such action, claim, complaint, suit, action or other proceeding is pending, plus twenty (20) Business Days, or (ii) such other time period established by the court presiding over such action, claim, complaint, suit, action or other proceeding. \n\nAND\n\nNotwithstanding anything to the contrary in this Agreement, none of the Financing Sources shall have any liability to the Company or any person that is an affiliate of the Company relating to or arising out of this Agreement or the Commitment Letter, whether at law, or equity, in contract, in tort or otherwise, and neither the Company nor any person that is an affiliate of the Company shall have any rights or claims against any Financing Sources hereunder or thereunder."
+    },
+    {
+      "case_id": "20269feb5257fb4e0ece5dc115f716750af18b60dc4918dbc4938af3b950c970",
+      "ordinal": 24,
+      "error_class": "MISSING_ROLE",
+      "source": {
+        "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+        "family_key": "TAX_MATTERS",
+        "section_reference": "6.18",
+        "excerpt": "Neither Parent nor the Company shall, nor shall they permit their respective Subsidiaries to, take any action that would prevent or impede, or could reasonably be expected to prevent or impede, the Merger from qualifying for the Intended Tax Treatment; provided, however, the parties acknowledge and agree, that if the Merger fails to qualify for the Intended Tax Treatment solely as a result of a change in applicable law after the date of this Agreement, neither party shall be considered in breach of this Section 6.18(a) as a result of taking the actions after such change in applicable law contemplated by this Agreement; provided, further, that in the event of such change in applicable law, the parties shall reasonably cooperate to facilitate the transaction utilizing an alternative structure that leaves the Parent, Company and Company Stockholders in substantially the same economic and tax position had the Merger qualified for the Intended Tax Treatment.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 316274,
+            "source_node_occurrence_id": "87f43f93e5c7626a5e42e8ac907774a953cb84d4002fb1ba2796a2bdd5db321e",
+            "start_byte": 315307,
+            "text_sha256": "0f2b1585cab507cc7df08b232ff68c5212b3fe522c73a06fc5c2044abe777995"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "REQUIRED_ROLES",
+        "required_roles": [
+          "CHANGE_IN_LAW_CARVEOUT",
+          "ALTERNATIVE_STRUCTURE_COOPERATION"
+        ],
+        "retained_facts": [
+          {
+            "analysis_claim_id": "ae63b8d994a4aba687a6794e772196f790d8efb136befabf484b2d8a8cdfabff",
+            "attributes": {
+              "bearer_ref": null,
+              "dividend_term_ref": null,
+              "representation_letter_ref": null,
+              "section_reference": "6.18",
+              "statute_ref": null,
+              "tax_opinion_ref": null,
+              "treatment_scope_ref": null,
+              "treatment_term_ref": "Intended Tax Treatment"
+            },
+            "canonical_value": true,
+            "capacity": null,
+            "claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+            "claim_occurrence_id": "49018dd3f636664033e1b1c6c778a18278782dbe43e3f53f79f6a9f370e0d9a6",
+            "party": null,
+            "raw_value": "Neither Parent nor the Company shall, nor shall they permit their respective Subsidiaries to, take any action that would prevent or impede, or could reasonably be expected to prevent or impede, the Merger from qualifying for the Intended Tax Treatment;"
+          }
+        ]
+      },
+      "review_basis": "misses carve outs:\n\n provided, however, the parties acknowledge and agree, that if the Merger fails to qualify for the Intended Tax Treatment solely as a result of a change in applicable law after the date of this Agreement, neither party shall be considered in breach of this Section 6.18(a) as a result of taking the actions after such change in applicable law contemplated by this Agreement; \nAND\n\nprovided, further, that in the event of such change in applicable law, the parties shall reasonably cooperate to facilitate the transaction utilizing an alternative structure that leaves the Parent, Company and Company Stockholders in substantially the same economic and tax position had the Merger qualified for the Intended Tax Treatment."
+    },
+    {
+      "case_id": "c886e357665eb17974fce8861b9c9c5d4f7174363767ceb556c2cf6756dafddc",
+      "ordinal": 25,
+      "error_class": "MISSING_ROLE",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "TERMINATION_FEE",
+        "section_reference": "5.06",
+        "excerpt": "this Agreement is terminated by the Company pursuant to Section 7.01(f), then, in each such case, the Company shall pay (or cause to be paid) to Parent a fee equal to $975,000,000 (the “Termination Fee”) by wire transfer of same-day funds ",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 194098,
+            "source_node_occurrence_id": "288b099ce7224dcf1359a8da67acc0acd24616442ad429be64159c2685760152",
+            "start_byte": 193855,
+            "text_sha256": "eafd4a264c64eecf0d4538167b99e58e0a7561ee755aa1f388dbf12ffb6a8cdc"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "REQUIRED_ROLES",
+        "required_roles": [
+          "TERMINATION_RIGHT_TRIGGER_REFERENCE"
+        ],
+        "retained_facts": [
+          {
+            "analysis_claim_id": "84ff43409059134adb23400f45fafa74069ff724a5ef0113fa9089b6d8d834d7",
+            "attributes": {
+              "fee_side": "SELLER",
+              "fee_term_ref": "Termination Fee",
+              "payer_party": "the Company",
+              "section_reference": "5.06"
+            },
+            "canonical_value": "975000000",
+            "capacity": "TARGET",
+            "claim_definition_key": "TERMINATION_FEE_AMOUNT",
+            "claim_occurrence_id": "da751a5544c0249efd3d8747ebe4d82435274b64c6047a73af2d7db022578b55",
+            "party": {
+              "capacity": "TARGET",
+              "role": "FEE_PAYER",
+              "value": "the Company"
+            },
+            "raw_value": "the Company shall pay (or cause to be paid) to Parent a fee equal to $975,000,000 (the “Termination Fee”)"
+          }
+        ]
+      },
+      "review_basis": "doesn't pick up the termination limb trigger \"Section 7.01(f)\""
+    },
+    {
+      "case_id": "60b99d96752202a8ed7d49e8fa128eb578364735889cdcca5867b3937fbfdd18",
+      "ordinal": 26,
+      "error_class": "CONTROL",
+      "source": {
+        "agreement_id": "fa0fff26622d0e90b47c3df527ccff91f4daa3db12f08d3832de76d8ae7541b5",
+        "family_key": "REPRESENTATIONS",
+        "section_reference": "ARTICLE IV",
+        "excerpt": "The Contemplated Transactions, in and of themselves, will not cause the revocation or cancellation of any Regulatory Authorization pursuant to the terms of any such Regulatory Authorization.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 127374,
+            "source_node_occurrence_id": "f84fe61cca6593c2b59bbecc967411a1fb1930c67e1c4cc445dadaf5bfd9d406",
+            "start_byte": 127184,
+            "text_sha256": "538260dd195c96a66c59af1d085049871b4086f774cf6c1d3fbe929551254fba"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "ATOMIC_FACT_SET",
+        "facts": [
+          {
+            "analysis_claim_id": "8a651bd713dc0ea0eee3730de338e545d9b63b105d268ff1929f0197bda36c0d",
+            "attributes": {
+              "container_node_occurrence_id": "ee11c800c3c1625493f62e1297d39b6eb5fc852970dd8dcf383f270804486650",
+              "context_chapeau_node_occurrence_id": "70168cd6e1bc1b533ff53e48274c60f2d22385f8ffe85214761a665c3320b826",
+              "representation_topic_state": "SINGLE_TOPIC",
+              "representation_topic_unclassified_reason": null,
+              "representation_topics": [
+                "COMPLIANCE_PERMITS"
+              ],
+              "source_reference": "ARTICLE IV"
+            },
+            "canonical_value": true,
+            "capacity": null,
+            "claim_definition_key": "M7_DETERMINISTIC_REPRESENTATIONS_SOURCE_PROVISION",
+            "claim_occurrence_id": "626f07844202901ad4c2fa172179e0ccc4d4a17b5a9449d514af07d49f1cc959",
+            "party": null,
+            "raw_value": "The Contemplated Transactions, in and of themselves, will not cause the revocation or cancellation of any Regulatory Authorization pursuant to the terms of any such Regulatory Authorization."
+          }
+        ]
+      },
+      "review_basis": null
+    },
+    {
+      "case_id": "68e4937dd5fc508cab1ce17b2d3bff5ffdd3b1cb41bff87c9a26777bc3a24e4e",
+      "ordinal": 27,
+      "error_class": "WRONG_MEANING",
+      "source": {
+        "agreement_id": "aa72f3af29316df52ab5cb75eb2b0bb0a5b31036bd24c7f812241c5a688f4319",
+        "family_key": "REPRESENTATIONS",
+        "section_reference": "2.4(b)",
+        "excerpt": "Except as would not, individually or in the aggregate, be material to the Company and its Subsidiaries, taken as a whole, the Company and its Subsidiaries have implemented and enforce a policy requiring each employee, consultant and contractor who has contributed or is expected to contribute to the creation or development of material Intellectual Property for or on behalf of the Company or any of its Subsidiaries to execute a written assignment of rights to the Company or one of its Subsidiaries that conveys to the Company or one or more of its Subsidiaries any and all right, title and interest in and to all Intellectual Property developed by such Person in connection with such Person’s employment or engagement by the Company or one or more of its Subsidiaries.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 90238,
+            "source_node_occurrence_id": "705e40a47d6f83ab908501f51df430c4e2be1ad378b6f6e067b7053459bb99f2",
+            "start_byte": 89465,
+            "text_sha256": "08a1f15c774c01681809b6ab3fb3a2d2a3109287eabde152ddf8ed0fd536b170"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "ATOMIC_OUTCOME",
+        "family_key": "REPRESENTATIONS",
+        "fact_type": "INTELLECTUAL_PROPERTY_ASSIGNMENT_REPRESENTATION"
+      },
+      "review_basis": "not employee benefits - it's really IP \n\nAnd the comparison point is IP ASsignment agreemnets\n\nMisses \"f material Intellectual Property\" and \"Except as would not, individually or in the aggregate, be material to the \" qualifiers"
+    },
+    {
+      "case_id": "a252ced9e30de188b3cba76f5ac2992509ec2b16fea032526286521b0ead8c32",
+      "ordinal": 28,
+      "error_class": "MISSING_ROLE",
+      "source": {
+        "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+        "family_key": "DNO_INDEMNIFICATION",
+        "section_reference": null,
+        "excerpt": "For a period of not less than six (6) years from the OpCo Merger Effective Time, the Surviving Company and the Surviving OpCo shall provide to the Indemnified Parties the same rights to exculpation, indemnification and advancement of expenses as provided to the Indemnified Parties under the provisions of the Company’s and the Company Subsidiaries’ charter, bylaws or similar organizational documents or as provided in indemnification agreements or other agreements of the Company or any of the Company Subsidiaries, in all cases, as in effect as of the date hereof and the Surviving Company’s, the Surviving OpCo’s and any applicable Company Subsidiaries’ charter, bylaws or similar organizational documents shall contain provisions no less favorable than such rights, which provisions shall not be amended, repealed or modified for a period of six (6) years following the OpCo Merger Effective Time in any manner that would affect adversely the rights thereunder of the Indemnified Parties.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 284497,
+            "source_node_occurrence_id": "717b78ef0bd7b4f18a66f142e1213676c2ebc557e5d91811d348fe0ac9e47dc2",
+            "start_byte": 283494,
+            "text_sha256": "057a8c32960a96e82c1ba7feac86cc9120538e2b6a94833ef8cf361927d072fb"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "REQUIRED_ROLES",
+        "required_roles": [
+          "EXCULPATION",
+          "INDEMNIFICATION",
+          "ADVANCEMENT",
+          "SOURCE_INSTRUMENTS",
+          "SIX_YEAR_DURATION"
+        ],
+        "retained_facts": [
+          {
+            "analysis_claim_id": "2e697d983bb8cc7c56554530da7bc62c8e08133aaeb247c9da799088c6ca1590",
+            "attributes": {},
+            "canonical_value": true,
+            "capacity": null,
+            "claim_definition_key": "CHARTER_PROTECTION_CONTINUATION",
+            "claim_occurrence_id": "9a02e4cc73e79a39d36165ff1dc5b1b4f19cccf3876ff05e198658a2d510cceb",
+            "party": null,
+            "raw_value": "the Surviving Company’s, the Surviving OpCo’s and any applicable Company Subsidiaries’ charter, bylaws or similar organizational documents shall contain provisions no less favorable than such rights, which provisions shall not be amended, repealed or modified for a period of six (6) years following the OpCo Merger Effective Time in any manner that would affect adversely the rights thereunder of the Indemnified Parties."
+          },
+          {
+            "analysis_claim_id": "e5547d182d4a2a839df6e268b0b31fcf5ad14d81d71152870532badc47c5dab6",
+            "attributes": {},
+            "canonical_value": true,
+            "capacity": null,
+            "claim_definition_key": "ADVANCEMENT_OF_EXPENSES",
+            "claim_occurrence_id": "d6dc44782b169139bc5e03a63a9a02b972a4e59dbf9ada0ed8a38f36b38cc952",
+            "party": null,
+            "raw_value": "For a period of not less than six (6) years from the OpCo Merger Effective Time, the Surviving Company and the Surviving OpCo shall provide to the Indemnified Parties the same rights to exculpation, indemnification and advancement of expenses as provided to the Indemnified Parties under the provisions of the Company’s and the Company Subsidiaries’ charter, bylaws or similar organizational documents or as provided in indemnification agreements or other agreements of the Company or any of the Company Subsidiaries, in all cases, as in effect as of the date hereof"
+          }
+        ]
+      },
+      "review_basis": "No. isn't just advancement.  Is also \"exculpation, indemnification \" also limited to \"s provided to the Indemnified Parties under the provisions of the Company’s and the Company Subsidiaries’ charter, bylaws or similar organizational documents or as provided in indemnification agreements or other agreements of the Company or any of the Company Subsidiaries, in all cases, as in effect as of the date hereof\"\n\nAlso misses the obligaiotn to keep \"he Surviving Company’s, the Surviving OpCo’s and any applicable Company Subsidiaries’ charter, bylaws or similar organizational documents shall contain provisions no less favorable than such rights\"\n\nAnd how long those must be kepy in place for \"or a period of six (6) years following the OpCo Merger Effective Time \""
+    },
+    {
+      "case_id": "414b08d74d441e522bd2faa3676fb55fe2e6f73d314aeb0e282dc561ce8c27f7",
+      "ordinal": 29,
+      "error_class": "CONTROL",
+      "source": {
+        "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+        "family_key": "MAE_DEFINITION",
+        "section_reference": "9.03",
+        "excerpt": "(ii) would or would reasonably be expected to prevent the consummation of, or materially impair the ability of the Company to consummate, the Merger by the Outside Date; ",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 241950,
+            "source_node_occurrence_id": "aff6d4227c9a1383685dd11b05b61ec1f7c2f56365b9daa675a8babcb31faaf5",
+            "start_byte": 241780,
+            "text_sha256": "2361c31196c14104fee3937f8e16979b4c484deb0b4917517932ec39cd4fd450"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "ATOMIC_FACT_SET",
+        "facts": [
+          {
+            "analysis_claim_id": "d6e73eadc3d6abe6034b9a356c536e104a7eb6e9445a2a77468345c55a4f20a4",
+            "attributes": {
+              "defined_term_ref": "Company Material Adverse Effect",
+              "definition_subject": "the Company",
+              "limb_path": [
+                "(ii)"
+              ],
+              "prong_code": "CONSUMMATION_PREVENTION",
+              "prong_label": "(ii)",
+              "section_reference": "9.03"
+            },
+            "canonical_value": "CONSUMMATION_PREVENTION",
+            "capacity": "TARGET",
+            "claim_definition_key": "MAE_DEFINITION_PRONG",
+            "claim_occurrence_id": "767a614cc849c3d856bbb64d94fc608eb7f233fa9cfefbbd59db25963ded4b8d",
+            "party": {
+              "capacity": "TARGET",
+              "role": "DEFINITION_SUBJECT",
+              "value": "the Company"
+            },
+            "raw_value": "would or would reasonably be expected to prevent the consummation of, or materially impair the ability of the Company to consummate, the Merger by the Outside Date"
+          }
+        ]
+      },
+      "review_basis": null
+    },
+    {
+      "case_id": "f80724f3a2d44671b4dd47f60ced55977e77e910f9c9c47e85ebf5342c014c77",
+      "ordinal": 30,
+      "error_class": "CONTROL",
+      "source": {
+        "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+        "family_key": "NO_OTHER_REPS_FRAUD",
+        "section_reference": null,
+        "excerpt": "Except for the representations and warranties made in this Article III (as qualified by the Company Disclosure Schedules), the Voting Agreement or any certificate delivered pursuant to this Agreement, neither the Company nor any other Person makes any express or implied representation or warranty with respect to the Company or its Subsidiaries or their respective businesses, operations, assets, liabilities or conditions (financial or otherwise) in connection with this Agreement, the Mergers or the other Transactions, and the Company hereby disclaims any such other representations or warranties.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 169194,
+            "source_node_occurrence_id": "d3994deea2bf30f2cd94da1d037341f2c8a2d19f9c64cdf95818be09ad52e72e",
+            "start_byte": 168593,
+            "text_sha256": "aeada90c7ae50d43f3de19959a9538848fb453ca99ea5623cf89941ed0d03737"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "ATOMIC_FACT_SET",
+        "facts": [
+          {
+            "analysis_claim_id": "41d6b7246d36e8ae61f640ce571e3f7799f83644447c1465f83f1a661354d2ea",
+            "attributes": {
+              "agreement_scope_quote": "Except for the representations and warranties made in this Article III (as qualified by the Company Disclosure Schedules), the Voting Agreement or any certificate delivered pursuant to this Agreement",
+              "representation_maker_ref": "neither the Company nor any other Person",
+              "representation_side": "TARGET"
+            },
+            "canonical_value": true,
+            "capacity": "TARGET",
+            "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+            "claim_occurrence_id": "67c269b92aa127373ca4ba802884de692c844289810796f9791c22ced9e25793",
+            "party": {
+              "capacity": "TARGET",
+              "role": "REPRESENTATION_MAKER",
+              "value": "Company"
+            },
+            "raw_value": "Except for the representations and warranties made in this Article III (as qualified by the Company Disclosure Schedules), the Voting Agreement or any certificate delivered pursuant to this Agreement, neither the Company nor any other Person makes any express or implied representation or warranty with respect to the Company or its Subsidiaries or their respective businesses, operations, assets, liabilities or conditions (financial or otherwise) in connection with this Agreement, the Mergers or the other Transactions, and the Company hereby disclaims any such other representations or warranties."
+          }
+        ]
+      },
+      "review_basis": null
+    },
+    {
+      "case_id": "2c084fc29a21c1d0353252b368d1b63c80cb92a5b6cbfc9b1ce89b2b6f3abd68",
+      "ordinal": 31,
+      "error_class": "MISSING_ROLE",
+      "source": {
+        "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+        "family_key": "NO_SHOP",
+        "section_reference": "6.4",
+        "excerpt": "the Parent Board may, after consultation with its outside legal counsel, make such disclosures as the Parent Board determines in good faith are necessary to comply with Rule 14d-9 or Rule 14e-2(a) promulgated under the Exchange Act or other disclosure required to be made in the Joint Proxy Statement by applicable U.S. federal securities laws; provided, however, that if such disclosure has the effect of withdrawing or adversely modifying the Parent Board Recommendation, such disclosure shall be deemed to be a Parent Change of Recommendation and the Company shall have the right to terminate this Agreement as set forth in Section 8.1(c);",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 186440,
+            "source_node_occurrence_id": "d1e2d0a062df582ed0f12e9bda171c0470c83b01c6ed84c85b73792b18e639d0",
+            "start_byte": 185798,
+            "text_sha256": "42e8c9cf8a0802adbacbea0b4f7f60cf116d9f9a0f3b7a7b470242c71b6bec8a"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "REQUIRED_ROLES",
+        "required_roles": [
+          "SECURITIES_LAW_DISCLOSURE_REQUIREMENT",
+          "DEEMED_RECOMMENDATION_CHANGE",
+          "OUTSIDE_COUNSEL_CONSULTATION"
+        ],
+        "retained_facts": [
+          {
+            "analysis_claim_id": "9e0ffd7fe6628965c45522d38d6dbac5bdf7f9a865fc9c4aaa07b84fc4205450",
+            "attributes": {
+              "covenant_obligor": "the Parent Board",
+              "proposed_canonical_value": "RULE_14D9_OR_14E2_DISCLOSURE",
+              "section_reference": "6.4"
+            },
+            "canonical_value": "RULE_14D9_OR_14E2_DISCLOSURE",
+            "capacity": "BUYER",
+            "claim_definition_key": "NO_SHOP_RECOMMENDATION_SAFE_DISCLOSURE",
+            "claim_occurrence_id": "8b0a19212330ad4e9761d4bc7b7880be86149a2f0b98b8d77a69c5e344a3bfbb",
+            "party": {
+              "capacity": "BUYER",
+              "role": "COVENANT_OBLIGOR",
+              "value": "the Parent Board"
+            },
+            "raw_value": "make such disclosures as the Parent Board determines in good faith are necessary to comply with Rule 14d-9 or Rule 14e-2(a) promulgated under the Exchange Act"
+          }
+        ]
+      },
+      "review_basis": "misses the requirement \"re necessary to comply with Rule 14d-9 or Rule 14e-2(a) promulgated under the Exchange Act or other disclosure required to be made in the Joint Proxy Statement by applicable U.S. federal securities laws\"\n\nAnd also the proviso \" provided, however, that if such disclosure has the effect of withdrawing or adversely modifying the Parent Board Recommendation, such disclosure shall be deemed to be a Parent Change of Recommendation and the Company shall have the right to terminate this Agreement as set forth in Section 8.1(c);\"\n\nAnd also the \", after consultation with its outside legal counsel, \""
+    },
+    {
+      "case_id": "b0bcdcdf317cae10956b09f999502a6ff0bb2e75625896a60ce9489c322d2cf7",
+      "ordinal": 32,
+      "error_class": "CONTROL",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "KEY_DEFINED_TERMS",
+        "section_reference": "8.03",
+        "excerpt": "“knowledge” means, with respect to any matter in question, the actual knowledge of the persons identified in Section 8.03(k) of the Company Letter;",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 243142,
+            "source_node_occurrence_id": "b7a4d3335c5cf56ded1f3634b536100e75e2715b878f174ae97713038e4cb8d8",
+            "start_byte": 242991,
+            "text_sha256": "5bfd3455416e588148de9dca4124263c6d750233419f8473d2a66eef6bafc0e1"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "ATOMIC_FACT_SET",
+        "facts": [
+          {
+            "analysis_claim_id": "8009044a5a28385b29a46db58af7cc2752f97cf9e8352f570e712deca2776763",
+            "attributes": {
+              "breach_term_ref": null,
+              "defined_term_identity": "knowledge",
+              "definition_head_quote": "“knowledge” means",
+              "event_term_ref": null,
+              "exclusion_code": null,
+              "host_term_ref": null,
+              "knowledge_party": "TARGET",
+              "knowledge_term_ref": "knowledge",
+              "limb_quote": "the persons identified in Section 8.03(k) of the Company Letter",
+              "named_persons": [],
+              "proposal_term_ref": null,
+              "qualifier_code": null,
+              "section_reference": "8.03",
+              "source_code": "SCHEDULE_REFERENCE",
+              "standard_code": null,
+              "substituted_term_ref": null,
+              "substitution_from_percent": null,
+              "superior_term_ref": null,
+              "threshold_basis": null
+            },
+            "canonical_value": "SCHEDULE_REFERENCE",
+            "capacity": null,
+            "claim_definition_key": "KNOWLEDGE_PERSON_SOURCE",
+            "claim_occurrence_id": "a91f1b4a04b88269249414d015ec02da46e0275a83af8ab7303c9bd052983cc2",
+            "party": null,
+            "raw_value": "the persons identified in Section 8.03(k) of the Company Letter"
+          },
+          {
+            "analysis_claim_id": "bc5360f25e9d0fe03e507b2a00ef53af823c12e41479c8c36cb568454e85416d",
+            "attributes": {
+              "breach_term_ref": null,
+              "defined_term_identity": "knowledge",
+              "definition_head_quote": "“knowledge” means",
+              "event_term_ref": null,
+              "exclusion_code": null,
+              "host_term_ref": null,
+              "knowledge_party": "TARGET",
+              "knowledge_term_ref": "knowledge",
+              "limb_quote": "the actual knowledge",
+              "named_persons": [],
+              "proposal_term_ref": null,
+              "qualifier_code": null,
+              "section_reference": "8.03",
+              "source_code": null,
+              "standard_code": "ACTUAL",
+              "substituted_term_ref": null,
+              "substitution_from_percent": null,
+              "superior_term_ref": null,
+              "threshold_basis": null
+            },
+            "canonical_value": "ACTUAL",
+            "capacity": null,
+            "claim_definition_key": "KNOWLEDGE_STANDARD",
+            "claim_occurrence_id": "856556d1b685d1c3476348561b1f39f17931d853fceff6474ced528c46330ba8",
+            "party": null,
+            "raw_value": "the actual knowledge"
+          }
+        ]
+      },
+      "review_basis": null
+    },
+    {
+      "case_id": "d7998df46cd00ec8d3c620608bc1a7d2db975d41cd22ea98d82dec5bfd95e513",
+      "ordinal": 33,
+      "error_class": "WRONG_MEANING",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "MAE_DEFINITION",
+        "section_reference": "8.03(l)",
+        "excerpt": "(B) any change in GAAP or applicable Law that does not disproportionately affect the Company and its Subsidiaries, taken as a whole, relative to other participants of a similar size in its industry, in which case only the incremental disproportionate effect shall be taken into account; ",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 244650,
+            "source_node_occurrence_id": "a9cfb178bb425a00b358813dbeb5a82628935e5d8aacc7a6bd61cec1e31bedd2",
+            "start_byte": 244363,
+            "text_sha256": "afa96d038f37eadae016022973dd070a0e08ff5ead1c3e0753ea3542f6bc8ec1"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "ATOMIC_OUTCOME",
+        "family_key": "MAE_DEFINITION",
+        "fact_type": "MAE_CARVEOUT_CHANGE_IN_LAW"
+      },
+      "review_basis": "So maybe I'm just dumb but I don't like the \"comparison entry corpus would store layout\" for this one it should say\n\nParty Applies to: Company and its Subs\nProvision Type: MAE Definition\nSub-Provision Type: MAE Carveout\nSub-Sub-Provision Type: Change in Law \nNotes: In cludes GAAP and Law. Does not expressly include interpretations.\nNotes: relative to other participants of a similar size in its industry,\nDisproportionate Effect Exception: Yes\n\nObviously my nomenclature is off but that's way clearer thatn your word salad - applies to all ofthe other cards too"
+    },
+    {
+      "case_id": "6b1781efda5e8c235f51f7bd7ef4f7ddda24e7c5ea34913e866f7417bee8598f",
+      "ordinal": 34,
+      "error_class": "MISSING_ROLE",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "MAE_DEFINITION",
+        "section_reference": "8.03(l)",
+        "excerpt": "(C) any act of terrorism, war (whether or not declared), national disaster, cyber-attack or any national or international calamity affecting the United States or any other country or region of the world that does not disproportionately affect the Company and its Subsidiaries, taken as a whole, relative to other participants of a similar size in its industry, in which case only the incremental disproportionate effect shall be taken into account; ",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 245099,
+            "source_node_occurrence_id": "77243edb98f6d88509246d291611f4a45fb9d3dd4d833683516d7f4cbc38cbe4",
+            "start_byte": 244650,
+            "text_sha256": "a1f2b4bd75fb249ef5ea4b0f841002e964bc13aa805e931ba5504965c66d90d3"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "REQUIRED_ROLES",
+        "required_roles": [
+          "ENUMERATED_EVENT_SUBTYPE"
+        ],
+        "retained_facts": [
+          {
+            "analysis_claim_id": "2b5c283b14a753ca14980cc5ea2bcceb664ac0015adcf7e891f208f51bf28e96",
+            "attributes": {
+              "carveout_code": "ACTS_OF_WAR_TERRORISM",
+              "clause_label": "(C)",
+              "defined_term_ref": "Material Adverse Effect",
+              "definition_subject": "the Company and its Subsidiaries",
+              "limb_path": [
+                "(C)"
+              ],
+              "section_reference": "8.03(l)"
+            },
+            "canonical_value": "ACTS_OF_WAR_TERRORISM",
+            "capacity": "TARGET",
+            "claim_definition_key": "MAE_CARVEOUT",
+            "claim_occurrence_id": "696494d8c03553c5bb4c461ae3d8724c286b67af0807bf89e91eebad23ae99bc",
+            "party": {
+              "capacity": "TARGET",
+              "role": "DEFINITION_SUBJECT",
+              "value": "the Company and its Subsidiaries"
+            },
+            "raw_value": "any act of terrorism, war (whether or not declared), national disaster, cyber-attack or any national or international calamity affecting the United States or any other country or region of the world that does not disproportionately affect the Company and its Subsidiaries, taken as a whole, relative to other participants of a similar size in its industry, in which case only the incremental disproportionate effect shall be taken into account"
+          },
+          {
+            "analysis_claim_id": "3173e904b07bd3b4bfd76945696b2aad24de342adac76eac7838a6f38ecfe0d2",
+            "attributes": {
+              "applies_to_clause_labels": [
+                "(C)"
+              ],
+              "carveback_source_form": "PER_LIMB",
+              "comparison_baseline_phrase": "relative to other participants of a similar size in its industry",
+              "defined_term_ref": "Material Adverse Effect",
+              "definition_subject": "the Company and its Subsidiaries",
+              "incremental_impact_phrase": "only the incremental disproportionate effect shall be taken into account",
+              "limb_path": [
+                "(C)"
+              ],
+              "section_reference": "8.03(l)"
+            },
+            "canonical_value": true,
+            "capacity": "TARGET",
+            "claim_definition_key": "MAE_DISPROPORTIONALITY_CARVEBACK",
+            "claim_occurrence_id": "2f08c9e137fdb46012d9394d57012ad49ed519e68de3d2f753836135842a013a",
+            "party": {
+              "capacity": "TARGET",
+              "role": "DEFINITION_SUBJECT",
+              "value": "the Company and its Subsidiaries"
+            },
+            "raw_value": "any act of terrorism, war (whether or not declared), national disaster, cyber-attack or any national or international calamity affecting the United States or any other country or region of the world that does not disproportionately affect the Company and its Subsidiaries, taken as a whole, relative to other participants of a similar size in its industry, in which case only the incremental disproportionate effect shall be taken into account"
+          }
+        ]
+      },
+      "review_basis": "See prior note, generally ok but I'd get into the words more here as sub types \"any act of terrorism, war (whether or not declared), national disaster, cyber-attack or any national or international calamity \""
+    },
+    {
+      "case_id": "580bcd3868d1a160dd491872f10df6f4cf55bcbba6b311def46789ed73d9558d",
+      "ordinal": 35,
+      "error_class": "MISSING_ROLE",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "MAE_DEFINITION",
+        "section_reference": "8.03(l)",
+        "excerpt": "(A) any change in general economic, market or political conditions affecting the United States economy, or any other national or regional economy or the global economy generally that does not disproportionately affect the Company and its Subsidiaries, taken as a whole, relative to other participants of a similar size in its industry, in which case only the incremental disproportionate effect shall be taken into account; ",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 244363,
+            "source_node_occurrence_id": "83db67d06732b31e361c45f5df78b54f654262843e547c3a202885d33517147e",
+            "start_byte": 243939,
+            "text_sha256": "e122dc452f77a993ca23a33997472ac13f9a44104970a0477c0375998e5e3518"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "REQUIRED_ROLES",
+        "required_roles": [
+          "ENUMERATED_EVENT_SUBTYPE"
+        ],
+        "retained_facts": [
+          {
+            "analysis_claim_id": "3ac62b75cb070a727ae02937f94c21bf06dd63c345a446abd0082aea5f3d6995",
+            "attributes": {
+              "applies_to_clause_labels": [
+                "(A)"
+              ],
+              "carveback_source_form": "PER_LIMB",
+              "comparison_baseline_phrase": "relative to other participants of a similar size in its industry",
+              "defined_term_ref": "Material Adverse Effect",
+              "definition_subject": "the Company and its Subsidiaries",
+              "incremental_impact_phrase": "only the incremental disproportionate effect shall be taken into account",
+              "limb_path": [
+                "(A)"
+              ],
+              "section_reference": "8.03(l)"
+            },
+            "canonical_value": true,
+            "capacity": "TARGET",
+            "claim_definition_key": "MAE_DISPROPORTIONALITY_CARVEBACK",
+            "claim_occurrence_id": "b0c76e094cb804ae9f7e089317d7edb5c8a154d1da9262d665097305a9fd06ac",
+            "party": {
+              "capacity": "TARGET",
+              "role": "DEFINITION_SUBJECT",
+              "value": "the Company and its Subsidiaries"
+            },
+            "raw_value": "any change in general economic, market or political conditions affecting the United States economy, or any other national or regional economy or the global economy generally that does not disproportionately affect the Company and its Subsidiaries, taken as a whole, relative to other participants of a similar size in its industry, in which case only the incremental disproportionate effect shall be taken into account"
+          },
+          {
+            "analysis_claim_id": "bf8a26412e5d3972925545efa7edd61503ad958322d4f22afc052cf693a2aec8",
+            "attributes": {
+              "carveout_code": "ECONOMY_GENERAL",
+              "clause_label": "(A)",
+              "defined_term_ref": "Material Adverse Effect",
+              "definition_subject": "the Company and its Subsidiaries",
+              "limb_path": [
+                "(A)"
+              ],
+              "section_reference": "8.03(l)"
+            },
+            "canonical_value": "ECONOMY_GENERAL",
+            "capacity": "TARGET",
+            "claim_definition_key": "MAE_CARVEOUT",
+            "claim_occurrence_id": "2be55ea190fb0fce651ae9ca091a39d759cdeecb69eab2723dad727be8a236f7",
+            "party": {
+              "capacity": "TARGET",
+              "role": "DEFINITION_SUBJECT",
+              "value": "the Company and its Subsidiaries"
+            },
+            "raw_value": "any change in general economic, market or political conditions affecting the United States economy, or any other national or regional economy or the global economy generally that does not disproportionately affect the Company and its Subsidiaries, taken as a whole, relative to other participants of a similar size in its industry, in which case only the incremental disproportionate effect shall be taken into account"
+          }
+        ]
+      },
+      "review_basis": "Same as prior one"
+    },
+    {
+      "case_id": "4d551d4c0598026cb65546a59f619002d837df58bd679b2154a744306096a3e7",
+      "ordinal": 36,
+      "error_class": "MISSING_ROLE",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "MAE_DEFINITION",
+        "section_reference": "8.03(l)",
+        "excerpt": "(D) changes in the financial, credit, banking or securities markets in the United States or any other country or region in the world (including any disruption thereof and any decline in the price of any security or any market index) and including changes or developments in or relating to currency exchange or interest rates that does not disproportionately affect the Company and its Subsidiaries, taken as a whole, relative to other participants of a similar size in its industry, in which case only the incremental disproportionate effect shall be taken into account; ",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 245670,
+            "source_node_occurrence_id": "951479b70a42cf744ce64478595260d9c59ac16a219eebb02aaea5fbae82ec1b",
+            "start_byte": 245099,
+            "text_sha256": "684432bb4ce7a636342c6466146ef93c832a599b930fd215c1a7ded44eaf3be4"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "REQUIRED_ROLES",
+        "required_roles": [
+          "CURRENCY_AND_INTEREST_RATE_EFFECT"
+        ],
+        "retained_facts": [
+          {
+            "analysis_claim_id": "669681df792c41857ff3f370cec337a5f712c8f07195200236c8785d6174a219",
+            "attributes": {
+              "applies_to_clause_labels": [
+                "(D)"
+              ],
+              "carveback_source_form": "PER_LIMB",
+              "comparison_baseline_phrase": "relative to other participants of a similar size in its industry",
+              "defined_term_ref": "Material Adverse Effect",
+              "definition_subject": "the Company and its Subsidiaries",
+              "incremental_impact_phrase": "only the incremental disproportionate effect shall be taken into account",
+              "limb_path": [
+                "(D)"
+              ],
+              "section_reference": "8.03(l)"
+            },
+            "canonical_value": true,
+            "capacity": "TARGET",
+            "claim_definition_key": "MAE_DISPROPORTIONALITY_CARVEBACK",
+            "claim_occurrence_id": "0ddc9458b45290c46b0faa70d9596cb15d1ed2bf68e19f597c02483708cfd0df",
+            "party": {
+              "capacity": "TARGET",
+              "role": "DEFINITION_SUBJECT",
+              "value": "the Company and its Subsidiaries"
+            },
+            "raw_value": "changes in the financial, credit, banking or securities markets in the United States or any other country or region in the world (including any disruption thereof and any decline in the price of any security or any market index) and including changes or developments in or relating to currency exchange or interest rates that does not disproportionately affect the Company and its Subsidiaries, taken as a whole, relative to other participants of a similar size in its industry, in which case only the incremental disproportionate effect shall be taken into account"
+          },
+          {
+            "analysis_claim_id": "82f3c6208cef2e829ea8dacc1afbcdc07833f1dced87c591701d9366791a26a4",
+            "attributes": {
+              "carveout_code": "FINANCIAL_MARKETS",
+              "clause_label": "(D)",
+              "defined_term_ref": "Material Adverse Effect",
+              "definition_subject": "the Company and its Subsidiaries",
+              "limb_path": [
+                "(D)"
+              ],
+              "section_reference": "8.03(l)"
+            },
+            "canonical_value": "FINANCIAL_MARKETS",
+            "capacity": "TARGET",
+            "claim_definition_key": "MAE_CARVEOUT",
+            "claim_occurrence_id": "b5f0c476b757442a354dee432b0d53bfeabfd14a37254d35fb09dc8202081c1c",
+            "party": {
+              "capacity": "TARGET",
+              "role": "DEFINITION_SUBJECT",
+              "value": "the Company and its Subsidiaries"
+            },
+            "raw_value": "changes in the financial, credit, banking or securities markets in the United States or any other country or region in the world (including any disruption thereof and any decline in the price of any security or any market index) and including changes or developments in or relating to currency exchange or interest rates that does not disproportionately affect the Company and its Subsidiaries, taken as a whole, relative to other participants of a similar size in its industry, in which case only the incremental disproportionate effect shall be taken into account"
+          }
+        ]
+      },
+      "review_basis": "would also pick up. and including changes or developments in or relating to currency exchange or interest rates that"
+    },
+    {
+      "case_id": "ec82070a126144f90b83d780bb6d1130b3f6fef1994f5d6774e7c469b101f0a1",
+      "ordinal": 37,
+      "error_class": "CONTROL",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": "MATERIAL_CONTRACTS",
+        "section_reference": "3.01(i)",
+        "excerpt": "any Contract relating to Indebtedness of the Company or any of its Subsidiaries having an outstanding principal amount in excess of $50,000,000 other than ",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 56908,
+            "source_node_occurrence_id": "71b9f568087ff6db20040280af2d8484880f9c422accb8b21b374327583fea00",
+            "start_byte": 56753,
+            "text_sha256": "a8f6efc1253adbbfbf6aa8f0545ac9ab85a96fdb7b405b9c219b33e8c801aad8"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "ATOMIC_FACT_SET",
+        "facts": [
+          {
+            "analysis_claim_id": "d7b5e5644cf85c1d45bc41db059095f28624b3ca9e3fdff33d372fbc70b402e2",
+            "attributes": {
+              "bucket_code": "INDEBTEDNESS",
+              "cadence_kind": null,
+              "definition_cross_references": [],
+              "party_making": "the Company",
+              "section_reference": "3.01(i)",
+              "threshold_kind": "USD",
+              "threshold_value": "$50,000,000"
+            },
+            "canonical_value": "USD",
+            "capacity": "TARGET",
+            "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+            "claim_occurrence_id": "961b26d942eceb12df1d82094fb1059adb92ffd58bf13e02a64642bcde50b504",
+            "party": {
+              "capacity": "TARGET",
+              "role": "REPRESENTATION_MAKER",
+              "value": "the Company"
+            },
+            "raw_value": "any Contract relating to Indebtedness of the Company or any of its Subsidiaries having an outstanding principal amount in excess of $50,000,000"
+          },
+          {
+            "analysis_claim_id": "e37a00ff10771836e808d0191e40a94596f8d82516e5e2b925d7c7b5880d2f59",
+            "attributes": {
+              "bucket_code": "INDEBTEDNESS",
+              "cadence_kind": null,
+              "definition_cross_references": [],
+              "party_making": "the Company",
+              "section_reference": "3.01(i)",
+              "threshold_kind": "USD",
+              "threshold_value": "$50,000,000"
+            },
+            "canonical_value": "INDEBTEDNESS",
+            "capacity": "TARGET",
+            "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+            "claim_occurrence_id": "057fefc706980d97a70c659d5d9538c5204cd0da4565187669b60242df2fcf02",
+            "party": {
+              "capacity": "TARGET",
+              "role": "REPRESENTATION_MAKER",
+              "value": "the Company"
+            },
+            "raw_value": "any Contract relating to Indebtedness of the Company or any of its Subsidiaries having an outstanding principal amount in excess of $50,000,000"
+          }
+        ]
+      },
+      "review_basis": null
+    },
+    {
+      "case_id": "dddd7d951189463c51b4be52fbfb7897015537318a06c9f969e2e9b85c9feda4",
+      "ordinal": 38,
+      "error_class": "NO_RUN",
+      "source": {
+        "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+        "family_key": "ANTITRUST_REGULATORY",
+        "section_reference": "5.5",
+        "excerpt": "Subject to the terms and conditions set forth in this Agreement, each of the Parties shall, and shall cause their respective Affiliates to, use their respective reasonable best efforts to take, or cause to be taken, all actions, to file, or cause to be filed, all documents, and to do, or cause to be done, and to assist and cooperate with the other Parties in doing, all things necessary, proper, or advisable under applicable Antitrust Laws or Foreign Direct Investment Laws to consummate and make effective the Transactions as soon as reasonably practicable, including, (i) the obtaining of all necessary actions or nonactions, waivers, consents, clearances, decisions, declarations, approvals and, expirations, or terminations of waiting periods from Governmental Bodies and the making of all necessary registrations and filings and the taking of all steps as may be reasonably necessary to obtain any such consent, decision, declaration, approval, clearance, or waiver, or expiration or termination of a waiting period by or from, or to avoid a Legal Proceeding by, any Governmental Body in connection with any Antitrust Law or Foreign Direct Investment Law, (ii) the giving of all notices and the obtaining of all necessary consents, authorizations, approvals, or waivers from third parties, and (iii) the execution and delivery of any additional instrument reasonably necessary to consummate the Transactions.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 174455,
+            "source_node_occurrence_id": "bba19a056de51ec8e618dfe7b8f5b3f13844413be3e02943f6f7575b34b573be",
+            "start_byte": 173039,
+            "text_sha256": "2836b9d9ece3b8e776348bc80f4ed2c05c6af74127d126f9c2a1f9b618c0844b"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "PROPOSAL_REQUIRED",
+        "family_key": "ANTITRUST_REGULATORY",
+        "fact_type": "GENERAL_ANTITRUST_EFFORTS_COVENANT"
+      },
+      "review_basis": "This is the general antitrust covenant - applies to both parties at reasonable best effort"
+    },
+    {
+      "case_id": "de6a5cf2b17e1d717463f5f2a59622d8136d457a2d6c4e9f2f664152e2581535",
+      "ordinal": 39,
+      "error_class": "PARSER",
+      "source": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "family_key": null,
+        "section_reference": null,
+        "excerpt": "(i) would give rise to the failure of a condition set forth in Section 6.02(a) or Section 6.02(b) and (ii) (A) is incapable of being cured prior to the Termination Date or (B) is not cured by the Company on or before the earlier of (i) the Termination Date and (ii)",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 229525,
+            "source_node_occurrence_id": null,
+            "start_byte": 229260,
+            "text_sha256": "75beb6bb93b368073110d0a8f28dd4d038ba357281a509618b70567dd527cfb7"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "PARSER_OUTCOME",
+        "outcome": "AUTHORED_NESTED_LIMB",
+        "rule": "REPEATED_ROMAN_MARKERS_ARE_VALID_UNDER_DIFFERENT_PARENTS"
+      },
+      "review_basis": "this is a nesting number issues - there is a (i) inside of (B) which I assume you are rejecting because it is two (i) levels within a numbering system -it happens"
+    },
+    {
+      "case_id": "a0968db9f4526d55f0d8dd547ef50387b8bbb046a3e1260e6524eaf4cd77332e",
+      "ordinal": 40,
+      "error_class": "NO_RUN",
+      "source": {
+        "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+        "family_key": "CLOSING_CONDITIONS",
+        "section_reference": "6.1",
+        "excerpt": "The Required Company Stockholder Vote shall have been obtained.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 213194,
+            "source_node_occurrence_id": "dc8fdf56a922b22a7884e5ed84a3839e4c7a016996fb1ccb006484eb82a71e8f",
+            "start_byte": 213131,
+            "text_sha256": "4e67f6b802c86c336d448c00b165ae673400dc7e29bd326946e5c4de26c3927d"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "PROPOSAL_REQUIRED",
+        "family_key": "CLOSING_CONDITIONS",
+        "fact_type": "SHAREHOLDER_VOTE_CLOSING_CONDITION"
+      },
+      "review_basis": "This is a very simple one...shareholder vote condition?"
+    },
+    {
+      "case_id": "ed8c6986fb2293939a13942beae50f3e45107c760d6656bb7d7370037a2a979f",
+      "ordinal": 41,
+      "error_class": "CONTROL",
+      "source": {
+        "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+        "family_key": "CONSIDERATION",
+        "section_reference": "2.2",
+        "excerpt": "As soon as reasonably practicable after the Effective Time and in any event not later than the third (3rd) business day following the Closing Date, Parent shall cause the Paying Agent to mail to each holder of record of Shares whose Shares were Certificated and converted into the right to receive Merger Consideration pursuant to Section 2.1(a), (A) a letter of transmittal (which shall specify that delivery shall be effected, and risk of loss and title to Certificates shall pass, only upon delivery of Certificates (or effective affidavits of loss in lieu thereof) to the Paying Agent and shall be in such form and have such other provisions as Parent and the Company may mutually reasonably agree) and (B) instructions for use in effecting the surrender of Certificates (or effective affidavits of loss in lieu thereof) in exchange for Merger Consideration.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 20080,
+            "source_node_occurrence_id": "e98827c2a4a2ec76508d26c74e234a154f0174ce9a81db73a53e0b359ecaca55",
+            "start_byte": 19218,
+            "text_sha256": "c33102e59f0892d20f463ccd6b69221549b0e2a434d9b0d11fcd48cbeeccae25"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "NO_COMPARISON_OUTPUT",
+        "reason": "PAYING_AGENT_DELIVERY_MECHANICS"
+      },
+      "review_basis": "this is just a mechanics proviison - no need for comparions"
+    },
+    {
+      "case_id": "f70963f0b88cb7c98e766fcb06089e307503525119808032591326fc1765078a",
+      "ordinal": 42,
+      "error_class": "NO_RUN",
+      "source": {
+        "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+        "family_key": "DNO_INDEMNIFICATION",
+        "section_reference": "5.7",
+        "excerpt": "All rights to indemnification, advancement of expenses, and exculpation by the Company existing (the “Indemnification Obligations”) in favor of those Persons who are directors or officers of the Company as of the date of this Agreement or have been directors or officers of the Company in the past (collectively, the “Indemnified Persons”) for their acts and omissions occurring prior to the Effective Time, as provided in the Organizational Documents of the Company (as in effect as of the date of this Agreement) or in any indemnification agreements between the Company and said Indemnified Persons that was made available to Parent (as in effect as of the date of this Agreement) shall survive the Effective Time and shall not be amended, repealed, or otherwise modified in any manner that would adversely affect the rights thereunder of any Indemnified Person, and shall be observed and maintained by the Surviving Corporation and its Subsidiaries to the fullest extent available under applicable Law for a period of six (6) years from the Effective Time, and any claim made pursuant to such rights within such six-year period shall continue to be subject to this Section 5.7(a) and the rights provided under this Section 5.7(a) until disposition of such claim.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 190755,
+            "source_node_occurrence_id": "005e1651ed5ba5f031509229658f4e9682d95f1b59ce894bfb4f319388ad9ad4",
+            "start_byte": 189482,
+            "text_sha256": "70d9cbc0784306baad14ed07cf3d1110a18e5d6a72422dd91c60c721ba42da69"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "PROPOSAL_REQUIRED",
+        "family_key": "DNO_INDEMNIFICATION",
+        "fact_type": "DNO_INDEMNIFICATION_RIGHTS_SURVIVAL"
+      },
+      "review_basis": "indemnficiaiton -see arlier ansewr"
+    },
+    {
+      "case_id": "9bf69d6bdbe2e84855a1c8afabe90b8b1f019a8286e79354d031f27535c74fd2",
+      "ordinal": 43,
+      "error_class": "NO_RUN",
+      "source": {
+        "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+        "family_key": "EMPLOYEE_MATTERS",
+        "section_reference": "3.20",
+        "excerpt": "Neither the Company nor any other Person that would be or, at any relevant time, would have been considered a single employer with the Company under the Code or ERISA has during the six (6) years prior to the date of this Agreement maintained, contributed to or been required to contribute to (i) a plan subject to Title IV of ERISA or Code Section 412, including any “single employer” defined benefit plan or any “multiemployer plan,” each within the meaning of Section 4001 of ERISA, (ii) a “multiple employer plan” within the meaning of Section 413(c) of the Code, or (iii) a “multiple employer welfare arrangement” within the meaning of Section 3(40) of ERISA.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 104713,
+            "source_node_occurrence_id": "adcc44a850446a385f288d6830480199c610ef4eab5c216e271e154ae304dd5f",
+            "start_byte": 104033,
+            "text_sha256": "172c0daec0a9eaa08fea2b194a904cb7ebd080c7bee939d8e8ddd9296efde1d0"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "PROPOSAL_REQUIRED",
+        "family_key": "EMPLOYEE_MATTERS",
+        "fact_type": "ERISA_LOOKBACK_REPRESENTATION"
+      },
+      "review_basis": "ERISA rep\nFrom company\n6 year look back"
+    },
+    {
+      "case_id": "93007a95ffd285947ae75b45f08c707ba24d93d0c60422f437eadf9c0e8a1b17",
+      "ordinal": 44,
+      "error_class": "NO_RUN",
+      "source": {
+        "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+        "family_key": "GENERAL_COVENANTS",
+        "section_reference": "5.1",
+        "excerpt": "Subject to applicable Law, during the period from the date of this Agreement until the earlier of the Effective Time and the termination of this Agreement in accordance with Section 7.1 (the “Pre-Closing Period”), on reasonable advance notice to the Company, the Company shall, and shall cause its Subsidiaries to, provide Parent and its Representatives with reasonable access during the Company’s normal business hours to the Company and its Subsidiaries, personnel, and books and records reasonably requested by Parent for purposes of strategic and integration planning for the consummation of the Transactions; provided that any such access shall be conducted at a reasonable time and in such a manner as not to unreasonably interfere with the normal operation of the business of the Company.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 129949,
+            "source_node_occurrence_id": "d011f79aae3c051670469038a679a5c72c80eb96af29cfe4f5d607c1d614aa19",
+            "start_byte": 129148,
+            "text_sha256": "fd6ebd4ef183adf5020c8b2601128d2a8656a9d51fcdb9c49b3ddb8a9b63a511"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "PROPOSAL_REQUIRED",
+        "family_key": "GENERAL_COVENANTS",
+        "fact_type": "PRE_CLOSING_ACCESS_COVENANT"
+      },
+      "review_basis": "This is an access covenant, as I have taiught you before - we have to track the scope of what they can get access to \"o the Company and its Subsidiaries, personnel, and books and records reasonably requested by Parent \" and the purpose \"or purposes of strategic and integration planning for the consummation of the Transactions\" and the restrictions \"on reasonable advance notice to the Company,\" \"with reasonable access,\" \"uring the Company’s normal business hours \" and \"; provided that any such access shall be conducted at a reasonable time and in such a manner as not to unreasonably interfere with the normal operation of the business of the Company.\""
+    },
+    {
+      "case_id": "79cfc2747c36bb8d2d709d938aa80aebe8ff880926939ad4c4bac8823e1966ac",
+      "ordinal": 45,
+      "error_class": "NO_RUN",
+      "source": {
+        "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+        "family_key": "INTERIM_OPERATING",
+        "section_reference": "5.2(a)",
+        "excerpt": "During the Pre-Closing Period, except (x) as expressly required or contemplated under this Agreement or as required by applicable Laws or (y) with the written consent of Parent, which consent shall not be unreasonably withheld, conditioned, or delayed, the Company shall, and shall cause the Company Subsidiaries to, use commercially reasonable efforts to: (i) conduct its business in the ordinary course of business as was being conducted prior to the date of this Agreement and (ii) preserve intact its material assets, business organization and relations with employees, material customers, suppliers, licensors, licensees, Governmental Bodies and any other Person with whom the Company has material business relationships; provided that no action by the Company or any Company Subsidiary with respect to matters specifically addressed by any provision of Section 5.2(b) shall be deemed a breach of this sentence unless such action would constitute a breach of such other provision.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 133722,
+            "source_node_occurrence_id": "9dbb432bdbbce495787dea0323fbec05b1db679c7c5b0761f004755eacf12f3b",
+            "start_byte": 132737,
+            "text_sha256": "5e877d31dd38f33443ecfa524e9f21bc8645744034573a16a9e7ceb50e7b0405"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "PROPOSAL_REQUIRED",
+        "family_key": "INTERIM_OPERATING",
+        "fact_type": "INTERIM_OPERATING_ORDINARY_COURSE_COVENANT"
+      },
+      "review_basis": null
+    },
+    {
+      "case_id": "7a43a4f49987b14e305ff75fbb84c42907c82e3f3291be8769e8d725d5522264",
+      "ordinal": 46,
+      "error_class": "NO_RUN",
+      "source": {
+        "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+        "family_key": "KEY_DEFINED_TERMS",
+        "section_reference": "Exhibit-A",
+        "excerpt": "For purposes of this Agreement (including this EXHIBIT A):\n“Acquired Companies” means the Company and the Company’s Subsidiaries, collectively.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 254078,
+            "source_node_occurrence_id": "173f493a67e94910696473dfbb6230650db0a8b48a8343671a2e8ebb2ecc55dc",
+            "start_byte": 253929,
+            "text_sha256": "08143e964d35cf0a861527c402f63770028fb8ddd41ebeca330e969a28e943fa"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "PROPOSAL_REQUIRED",
+        "family_key": "KEY_DEFINED_TERMS",
+        "fact_type": "ACQUIRED_COMPANIES_DEFINITION"
+      },
+      "review_basis": "This is a definition of acquired companies. You don't need the text that says \"for the purposes of this agreement.\" That's just intro text."
+    },
+    {
+      "case_id": "27a9c4067171a3410f4c96ed2456ff4f9dda3c3efcc821da4b5155c90b9e3730",
+      "ordinal": 47,
+      "error_class": "NO_RUN",
+      "source": {
+        "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+        "family_key": "MAE_DEFINITION",
+        "section_reference": "Exhibit-A(ii)",
+        "excerpt": "“Material Adverse Effect” means an event, effect, change, occurrence, condition, or development (an “Effect”) that, individually or taken together, has had or would reasonably be expected to have a material adverse effect on the business, assets, properties, liabilities, operations, condition (financial or otherwise), or results of operations of the Acquired Companies, taken as a whole; provided that no Effect arising out of or resulting from any of the following shall be deemed either alone or in combination to constitute or will be taken into account when determining whether a Material Adverse Effect has occurred or would reasonably be expected to occur: (a) any change in the market price or trading volume of the Company’s stock (including the Company Common Stock); (b) the execution, announcement or consummation of the Transactions (including the identity of Guarantor, Parent or Merger Sub) (other than for purposes of any representation or warranty in Section 3.5 or Section 3.12(k) but subject to disclosures in Section 3.5 of the Company Disclosure Schedule); (c) general changes or developments in the clinical stage biopharmaceutical industry or changes in the economy generally or changes in other general business, financial, or market conditions (including interest rates, exchange rates, tariffs, trade wars, and credit markets); (d) general changes or developments in the fluctuations in the value of any currency; (e) (i) changes to any domestic, foreign or global political condition, (ii) any act of terrorism, war (whether or not declared), civil unrest, civil disobedience, protests, public demonstrations, insurrection, national or international calamity, sabotage or terrorism, (iii) any pandemic or epidemic or other outbreak of contagious diseases (or the escalation or worsening of any of the foregoing) or (iv) any volcano, tsunami, earthquake, hurricane, tornado, other natural or man-made disaster, or any similar force majeure event; (f) the failure of the Acquired Companies to meet internal or analyst’s expectation, forecast, estimate, or prediction in respect of revenues, earnings, or other financial or operating metrics for any period; (g) any action taken (or failure to act) by the Company at the written direction of Parent and any action specifically required to be taken by the Company under this Agreement (excluding the requirement that the Company to conduct its business in all material\nA-9\nrespects in the ordinary course); or (h) any change or proposed change in any Law or GAAP after the date hereof; it being understood that the exceptions in clauses (a) and (f) shall not prevent, or otherwise affect a determination that the underlying cause of any such change, decline or failure referred to therein (if not otherwise falling within any of the exceptions provided by clauses (b) through (e) or (g) and (h) hereof) has been or would be reasonably expected to be a Material Adverse Effect or has otherwise resulted in or contributed to a Material Adverse Effect; except, in the case of each of clauses (c), (d), (e) and (h), to the extent that such Effect adversely disproportionately affects the Acquired Companies, taken as a whole, compared to other similar biopharmaceutical companies, in which case only the incremental disproportionate adverse impact may be taken into account in determining whether there has been, or would reasonably expected to be, a Material Adverse Effect.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 285033,
+            "source_node_occurrence_id": "6068e6465cbdebbe6bdbf518744855cb09b45c4eea61a07d16dd45b6a72e46bc",
+            "start_byte": 281576,
+            "text_sha256": "ec8107e5c03298fd2d3da61059f310a67a5229e6c5f0b82dba78bd407fdfe07a"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "PROPOSAL_REQUIRED",
+        "family_key": "MAE_DEFINITION",
+        "fact_type": "COMPANY_MAE_DEFINITION"
+      },
+      "review_basis": "This is an MAE definition. You should understand this."
+    },
+    {
+      "case_id": "bca99d26a601dd17adc28a189d60e32c0d068ecd6ad37024c03fc78c3d1db796",
+      "ordinal": 48,
+      "error_class": "NO_RUN",
+      "source": {
+        "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+        "family_key": "MAE_DEFINITION",
+        "section_reference": "Exhibit-A(ii)",
+        "excerpt": "“Parent Material Adverse Effect” means an Effect that would prevent, materially delay, or materially impair the ability of Parent or Merger Sub to perform their respective obligations under this Agreement or the CVR Agreement or to consummate the Transactions.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 286156,
+            "source_node_occurrence_id": "d0cf1b04d87976581cfb75b5c8be5b911cea0d170a821b70965d41ec54cc51d1",
+            "start_byte": 285892,
+            "text_sha256": "aec2a74b4b61664f8d20dd8f2de64f6bd3c340a98d67c9e6c4169d2beeb9f4f7"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "PROPOSAL_REQUIRED",
+        "family_key": "MAE_DEFINITION",
+        "fact_type": "PARENT_MAE_DEFINITION"
+      },
+      "review_basis": "This is parent MAE. You need to pick up the factors that would prevent, materially delay, or materially impair, and also or consummate."
+    },
+    {
+      "case_id": "aa8aedf53b5aa210b5f50c5704e3ee183c0cc9eb794179bdf7959cd321726468",
+      "ordinal": 49,
+      "error_class": "NO_RUN",
+      "source": {
+        "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+        "family_key": "MERGER_STRUCTURE_CLOSING",
+        "section_reference": "1.1",
+        "excerpt": "On the terms and subject to the conditions set forth in this Agreement, and in accordance with the DGCL, at the Effective Time, Merger Sub shall merge with and into the Company, the separate corporate existence of Merger Sub shall cease, and the Company shall continue its corporate existence under the laws of the State of Delaware (“Delaware Law”) as the Surviving Corporation and a wholly owned Subsidiary of Parent.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 8721,
+            "source_node_occurrence_id": "b21dab25319dff3fdbf197e4b25745e4d0ee2bd0e697430fd257877ab3b0470d",
+            "start_byte": 8298,
+            "text_sha256": "1c7040c2cfcac70d3955ab3dd203752113efe1ece1bd8b4faa6d2f7f7dddd0ee"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "PROPOSAL_REQUIRED",
+        "family_key": "MERGER_STRUCTURE_CLOSING",
+        "fact_type": "MERGER_STRUCTURE"
+      },
+      "review_basis": "This is a topology question describing the form of the merger."
+    },
+    {
+      "case_id": "ac32a47a8d51fb37d73ef91dc7a438e0e1b4b2b544bc60183ddc68c41da0eaef",
+      "ordinal": 50,
+      "error_class": "NO_RUN",
+      "source": {
+        "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+        "family_key": "MISC_BOILERPLATE",
+        "section_reference": "8.3",
+        "excerpt": "This Agreement, the Ancillary Agreements, and the other agreements, exhibits, annexes, and schedules referred to herein constitute the entire agreement and supersede all prior agreements and understandings, both written and oral, among or between any of the Parties, with respect to the subject matter hereof and thereof; provided that the Confidentiality Agreement shall not be superseded and shall remain in full force and effect; provided, further, that, if the Effective Time occurs, the Confidentiality Agreement shall automatically terminate and be of no further force and effect.",
+        "spans": [
+          {
+            "coordinate_system": "UTF8_CANONICAL_TEXT_HALF_OPEN",
+            "end_byte": 235115,
+            "source_node_occurrence_id": "dd18c430f173b3b471433acc4fc69e5554cfc0a18bcd358e510d4053883341d6",
+            "start_byte": 234529,
+            "text_sha256": "2d54451ca3b5e27561646e01fe5e93eb455e7ed0965450673ca253b63e3e5059"
+          }
+        ]
+      },
+      "assertion": {
+        "kind": "PROPOSAL_REQUIRED",
+        "family_key": "MISC_BOILERPLATE",
+        "fact_type": "ENTIRE_AGREEMENT"
+      },
+      "review_basis": "This is an entire agreement provision."
+    }
+  ]
+}

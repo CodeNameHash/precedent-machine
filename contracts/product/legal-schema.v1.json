@@ -1,0 +1,5139 @@
+{
+  "schema_version": "LEGAL_SCHEMA/V1",
+  "status": "ACTIVE_DEVELOPMENT",
+  "fact_rule": "One fact states one independently operative legal effect. Conditions, exceptions, thresholds and timing are roles or linked facts.",
+  "families": [
+    {
+      "family_key": "TERMINATION",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "TERMINATION_RIGHT",
+        "OUTSIDE_DATE",
+        "CURE_OR_NOTICE_PERIOD"
+      ],
+      "materiality_rules": [
+        "Every independently operative termination right is material.",
+        "Every trigger, condition, exception, cure or notice period, outside-date extension and bar on exercise is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "MUTUAL_CONSENT",
+          "required_roles": [
+            "terminating_parties",
+            "action",
+            "trigger",
+            "writing_requirement"
+          ],
+          "optional_roles": [
+            "board_approval_requirement"
+          ],
+          "relationships": [
+            "QUALIFIES"
+          ]
+        },
+        {
+          "subtype_key": "OUTSIDE_DATE",
+          "required_roles": [
+            "terminating_party",
+            "action",
+            "outside_date",
+            "transaction_not_completed_condition"
+          ],
+          "optional_roles": [
+            "notice_requirement",
+            "breach_bar",
+            "extension_mechanics"
+          ],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "EXTENDS"
+          ]
+        },
+        {
+          "subtype_key": "VOTE_FAILURE",
+          "required_roles": [
+            "terminating_party",
+            "action",
+            "required_vote",
+            "meeting_completion_trigger"
+          ],
+          "optional_roles": [
+            "adjournment_scope",
+            "breach_bar"
+          ],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS"
+          ]
+        },
+        {
+          "subtype_key": "BREACH",
+          "required_roles": [
+            "terminating_party",
+            "breaching_party",
+            "action",
+            "breach_subject",
+            "closing_condition_failure_standard"
+          ],
+          "optional_roles": [
+            "incurability",
+            "cure_period",
+            "notice_period",
+            "outside_date_cap",
+            "terminator_breach_bar"
+          ],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "LEGAL_RESTRAINT",
+          "required_roles": [
+            "terminating_party",
+            "action",
+            "restraint_kind",
+            "finality_standard",
+            "transaction_effect"
+          ],
+          "optional_roles": [
+            "appeal_exhaustion",
+            "breach_bar"
+          ],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS"
+          ]
+        },
+        {
+          "subtype_key": "SUPERIOR_PROPOSAL",
+          "required_roles": [
+            "terminating_party",
+            "action",
+            "superior_proposal_trigger"
+          ],
+          "optional_roles": [
+            "board_determination",
+            "no_shop_compliance",
+            "fee_payment",
+            "notice_and_match_process"
+          ],
+          "relationships": [
+            "QUALIFIES",
+            "REQUIRES",
+            "TRIGGERS"
+          ]
+        },
+        {
+          "subtype_key": "RECOMMENDATION_CHANGE",
+          "required_roles": [
+            "terminating_party",
+            "action",
+            "recommendation_change_trigger"
+          ],
+          "optional_roles": [
+            "notice_and_match_process",
+            "fee_trigger"
+          ],
+          "relationships": [
+            "QUALIFIES",
+            "TRIGGERS"
+          ]
+        },
+        {
+          "subtype_key": "NO_SOLICITATION_BREACH",
+          "required_roles": [
+            "terminating_party",
+            "action",
+            "no_shop_breach_trigger"
+          ],
+          "optional_roles": [
+            "materiality_standard",
+            "cure_right",
+            "fee_trigger"
+          ],
+          "relationships": [
+            "QUALIFIES",
+            "TRIGGERS"
+          ]
+        }
+      ],
+      "summary_grammar": "[Party] may terminate if [trigger], subject to [conditions and exceptions], by [notice/action], at [time].",
+      "compact_omissions": [
+        "defined-term text when a linked definition is visible"
+      ],
+      "absence_semantics": "Publish absence only after all termination grants and cross-references are reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/termination-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "TERMINATION_FEE",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "FEE_AMOUNT",
+        "FEE_TRIGGER",
+        "TAIL_PERIOD",
+        "EXPENSE_REIMBURSEMENT",
+        "LATE_INTEREST"
+      ],
+      "materiality_rules": [
+        "Every fee amount, payer, payee and payment trigger is material.",
+        "Every tail condition, reimbursement obligation, payment deadline and late-interest rule is material. No minimum monetary threshold applies."
+      ],
+      "role_rules": {
+        "reverse_fee": "Use the same fee fact types. Set payer capacity to BUYER and payee capacity to SELLER."
+      },
+      "subtypes": [
+        {
+          "subtype_key": "FEE_AMOUNT",
+          "required_roles": [
+            "payer",
+            "payee",
+            "amount",
+            "currency"
+          ],
+          "optional_roles": [
+            "defined_term",
+            "payment_method"
+          ],
+          "relationships": [
+            "DEFINED_BY"
+          ]
+        },
+        {
+          "subtype_key": "FEE_TRIGGER",
+          "required_roles": [
+            "payer",
+            "payee",
+            "payment_action",
+            "trigger"
+          ],
+          "optional_roles": [
+            "termination_right_link",
+            "tail_condition",
+            "causation_standard",
+            "payment_deadline"
+          ],
+          "relationships": [
+            "TRIGGERS",
+            "REQUIRES",
+            "QUALIFIES"
+          ]
+        },
+        {
+          "subtype_key": "TAIL_PERIOD",
+          "required_roles": [
+            "period_value",
+            "period_unit",
+            "period_start",
+            "qualifying_event"
+          ],
+          "optional_roles": [
+            "transaction_signing_condition",
+            "transaction_completion_condition",
+            "value_threshold"
+          ],
+          "relationships": [
+            "QUALIFIES",
+            "TRIGGERS"
+          ]
+        },
+        {
+          "subtype_key": "EXPENSE_REIMBURSEMENT",
+          "required_roles": [
+            "payer",
+            "payee",
+            "reimbursable_cost_scope",
+            "cap_or_amount"
+          ],
+          "optional_roles": [
+            "credit_against_fee",
+            "payment_deadline"
+          ],
+          "relationships": [
+            "QUALIFIES",
+            "ALTERNATIVE_TO"
+          ]
+        },
+        {
+          "subtype_key": "LATE_INTEREST",
+          "required_roles": [
+            "payer",
+            "overdue_payment",
+            "interest_standard"
+          ],
+          "optional_roles": [
+            "enforcement_costs",
+            "accrual_start"
+          ],
+          "relationships": [
+            "QUALIFIES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Payer] must pay [payee] [amount] when [trigger], within [timing], subject to [conditions and exceptions].",
+      "compact_omissions": [
+        "calculation detail only when the exact fixed amount is also shown and the detail does not change payment scope"
+      ],
+      "absence_semantics": "Do not infer that a fee, tail or remedy limit is absent from a missing extraction.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/termination-fee-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "NO_SHOP",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "PROHIBITED_ACTION",
+        "EXCEPTION_PREREQUISITE",
+        "NOTICE_PERIOD",
+        "INITIAL_MATCH_PERIOD",
+        "SUBSEQUENT_MATCH_PERIOD",
+        "RECOMMENDATION_CHANGE"
+      ],
+      "materiality_rules": [
+        "Every prohibited action and permitted-action prerequisite is material.",
+        "Every notice, initial-match and subsequent-match period is material.",
+        "Every condition or consequence of a recommendation change is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "PROHIBITED_ACTION",
+          "required_roles": [
+            "covenant_obligor",
+            "prohibited_action"
+          ],
+          "optional_roles": [
+            "covered_representatives",
+            "proposal_scope",
+            "knowledge_or_intent_standard"
+          ],
+          "relationships": [
+            "QUALIFIES"
+          ]
+        },
+        {
+          "subtype_key": "EXCEPTION_PREREQUISITE",
+          "required_roles": [
+            "permitted_actor",
+            "permitted_action",
+            "prerequisite"
+          ],
+          "optional_roles": [
+            "proposal_standard",
+            "fiduciary_standard",
+            "legal_adviser_consultation",
+            "financial_adviser_consultation",
+            "no_breach_condition"
+          ],
+          "relationships": [
+            "EXCEPTS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "NOTICE_PERIOD",
+          "required_roles": [
+            "notice_giver",
+            "notice_recipient",
+            "notice_trigger",
+            "period_value",
+            "period_unit"
+          ],
+          "optional_roles": [
+            "notice_contents",
+            "promptness_standard"
+          ],
+          "relationships": [
+            "TRIGGERS",
+            "QUALIFIES"
+          ]
+        },
+        {
+          "subtype_key": "INITIAL_MATCH_PERIOD",
+          "required_roles": [
+            "covenant_obligor",
+            "beneficiary",
+            "period_value",
+            "period_unit",
+            "restricted_action"
+          ],
+          "optional_roles": [
+            "negotiation_obligation",
+            "information_delivery",
+            "proposal_terms"
+          ],
+          "relationships": [
+            "REQUIRES",
+            "QUALIFIES"
+          ]
+        },
+        {
+          "subtype_key": "SUBSEQUENT_MATCH_PERIOD",
+          "required_roles": [
+            "covenant_obligor",
+            "beneficiary",
+            "amendment_trigger",
+            "period_value",
+            "period_unit"
+          ],
+          "optional_roles": [
+            "materiality_threshold",
+            "renewed_negotiation_obligation"
+          ],
+          "relationships": [
+            "REQUIRES",
+            "QUALIFIES"
+          ]
+        },
+        {
+          "subtype_key": "RECOMMENDATION_CHANGE",
+          "required_roles": [
+            "decision_maker",
+            "action",
+            "permitted_trigger"
+          ],
+          "optional_roles": [
+            "fiduciary_standard",
+            "notice_and_match_process",
+            "public_disclosure_exception"
+          ],
+          "relationships": [
+            "EXCEPTS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Obligor] must not [action]. [Actor] may [exception action] only if [prerequisites]. Notice and match periods are separate facts.",
+      "compact_omissions": [
+        "repeated defined-term text when the linked definition is visible"
+      ],
+      "absence_semantics": "Never state that an action or exception is absent unless the full no-shop source closure was lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/no-shop-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "EMPLOYEE_MATTERS",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "EMPLOYEE_COMP_ITEM_STANDARD",
+        "EMPLOYEE_SERVICE_CREDIT",
+        "WELFARE_PLAN_TRANSITION_RELIEF"
+      ],
+      "materiality_rules": [
+        "Every independently operative employee matters provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "EMPLOYEE_COMPENSATION",
+          "claim_definition_keys": [
+            "EMPLOYEE_COMP_ITEM_STANDARD",
+            "EMPLOYEE_SERVICE_CREDIT",
+            "WELFARE_PLAN_TRANSITION_RELIEF"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "SERVICE_CREDIT",
+          "claim_definition_keys": [
+            "EMPLOYEE_COMP_ITEM_STANDARD",
+            "EMPLOYEE_SERVICE_CREDIT",
+            "WELFARE_PLAN_TRANSITION_RELIEF"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "WELFARE_RELIEF",
+          "claim_definition_keys": [
+            "EMPLOYEE_COMP_ITEM_STANDARD",
+            "EMPLOYEE_SERVICE_CREDIT",
+            "WELFARE_PLAN_TRANSITION_RELIEF"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "RETIREMENT_PLAN_ACTION",
+          "claim_definition_keys": [
+            "EMPLOYEE_COMP_ITEM_STANDARD",
+            "EMPLOYEE_SERVICE_CREDIT",
+            "WELFARE_PLAN_TRANSITION_RELIEF"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to EMPLOYEE_MATTERS and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/employee-matters-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "GENERAL_COVENANTS",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "GENERAL_COVENANT_PRESENT"
+      ],
+      "materiality_rules": [
+        "Every independently operative general covenants provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "ACCESS",
+          "claim_definition_keys": [
+            "GENERAL_COVENANT_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "LITIGATION_NOTIFICATION",
+          "claim_definition_keys": [
+            "GENERAL_COVENANT_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "GENERAL_NOTIFICATION",
+          "claim_definition_keys": [
+            "GENERAL_COVENANT_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "SECTION_16",
+          "claim_definition_keys": [
+            "GENERAL_COVENANT_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "DELISTING",
+          "claim_definition_keys": [
+            "GENERAL_COVENANT_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "TAKEOVER_LAW",
+          "claim_definition_keys": [
+            "GENERAL_COVENANT_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "MERGER_SUB_OBLIGATION",
+          "claim_definition_keys": [
+            "GENERAL_COVENANT_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "PUBLICITY",
+          "claim_definition_keys": [
+            "GENERAL_COVENANT_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "RESIGNATION",
+          "claim_definition_keys": [
+            "GENERAL_COVENANT_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "CVR",
+          "claim_definition_keys": [
+            "GENERAL_COVENANT_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "LISTING",
+          "claim_definition_keys": [
+            "GENERAL_COVENANT_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to GENERAL_COVENANTS and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/general-covenants-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "CLOSING_CONDITIONS",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "COVENANT_COMPLIANCE_STANDARD",
+        "FRUSTRATION_BREACH_STANDARD",
+        "GOVERNMENT_PROCEEDING_CONDITION",
+        "LEGAL_RESTRAINT_CONDITION",
+        "LISTING_CONDITION",
+        "METSERA_7_04_FRUSTRATION_BRANCH",
+        "NO_MAE_CONDITION",
+        "NO_MAE_CONDITION_CONTINUING",
+        "OFFICER_CERTIFICATE_REQUIRED",
+        "REGULATORY_APPROVAL_CONDITION",
+        "S4_CONDITION_COMPONENT",
+        "STOCKHOLDER_APPROVAL_CONDITION"
+      ],
+      "materiality_rules": [
+        "Every independently operative closing conditions provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "STOCKHOLDER_APPROVAL",
+          "claim_definition_keys": [
+            "COVENANT_COMPLIANCE_STANDARD",
+            "FRUSTRATION_BREACH_STANDARD",
+            "GOVERNMENT_PROCEEDING_CONDITION",
+            "LEGAL_RESTRAINT_CONDITION",
+            "LISTING_CONDITION",
+            "METSERA_7_04_FRUSTRATION_BRANCH",
+            "NO_MAE_CONDITION",
+            "NO_MAE_CONDITION_CONTINUING",
+            "OFFICER_CERTIFICATE_REQUIRED",
+            "REGULATORY_APPROVAL_CONDITION",
+            "S4_CONDITION_COMPONENT",
+            "STOCKHOLDER_APPROVAL_CONDITION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "REGULATORY_APPROVAL",
+          "claim_definition_keys": [
+            "COVENANT_COMPLIANCE_STANDARD",
+            "FRUSTRATION_BREACH_STANDARD",
+            "GOVERNMENT_PROCEEDING_CONDITION",
+            "LEGAL_RESTRAINT_CONDITION",
+            "LISTING_CONDITION",
+            "METSERA_7_04_FRUSTRATION_BRANCH",
+            "NO_MAE_CONDITION",
+            "NO_MAE_CONDITION_CONTINUING",
+            "OFFICER_CERTIFICATE_REQUIRED",
+            "REGULATORY_APPROVAL_CONDITION",
+            "S4_CONDITION_COMPONENT",
+            "STOCKHOLDER_APPROVAL_CONDITION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "LEGAL_RESTRAINT",
+          "claim_definition_keys": [
+            "COVENANT_COMPLIANCE_STANDARD",
+            "FRUSTRATION_BREACH_STANDARD",
+            "GOVERNMENT_PROCEEDING_CONDITION",
+            "LEGAL_RESTRAINT_CONDITION",
+            "LISTING_CONDITION",
+            "METSERA_7_04_FRUSTRATION_BRANCH",
+            "NO_MAE_CONDITION",
+            "NO_MAE_CONDITION_CONTINUING",
+            "OFFICER_CERTIFICATE_REQUIRED",
+            "REGULATORY_APPROVAL_CONDITION",
+            "S4_CONDITION_COMPONENT",
+            "STOCKHOLDER_APPROVAL_CONDITION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "S4_EFFECTIVENESS",
+          "claim_definition_keys": [
+            "COVENANT_COMPLIANCE_STANDARD",
+            "FRUSTRATION_BREACH_STANDARD",
+            "GOVERNMENT_PROCEEDING_CONDITION",
+            "LEGAL_RESTRAINT_CONDITION",
+            "LISTING_CONDITION",
+            "METSERA_7_04_FRUSTRATION_BRANCH",
+            "NO_MAE_CONDITION",
+            "NO_MAE_CONDITION_CONTINUING",
+            "OFFICER_CERTIFICATE_REQUIRED",
+            "REGULATORY_APPROVAL_CONDITION",
+            "S4_CONDITION_COMPONENT",
+            "STOCKHOLDER_APPROVAL_CONDITION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "BRINGDOWN",
+          "claim_definition_keys": [
+            "COVENANT_COMPLIANCE_STANDARD",
+            "FRUSTRATION_BREACH_STANDARD",
+            "GOVERNMENT_PROCEEDING_CONDITION",
+            "LEGAL_RESTRAINT_CONDITION",
+            "LISTING_CONDITION",
+            "METSERA_7_04_FRUSTRATION_BRANCH",
+            "NO_MAE_CONDITION",
+            "NO_MAE_CONDITION_CONTINUING",
+            "OFFICER_CERTIFICATE_REQUIRED",
+            "REGULATORY_APPROVAL_CONDITION",
+            "S4_CONDITION_COMPONENT",
+            "STOCKHOLDER_APPROVAL_CONDITION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "OFFICER_CERTIFICATE",
+          "claim_definition_keys": [
+            "COVENANT_COMPLIANCE_STANDARD",
+            "FRUSTRATION_BREACH_STANDARD",
+            "GOVERNMENT_PROCEEDING_CONDITION",
+            "LEGAL_RESTRAINT_CONDITION",
+            "LISTING_CONDITION",
+            "METSERA_7_04_FRUSTRATION_BRANCH",
+            "NO_MAE_CONDITION",
+            "NO_MAE_CONDITION_CONTINUING",
+            "OFFICER_CERTIFICATE_REQUIRED",
+            "REGULATORY_APPROVAL_CONDITION",
+            "S4_CONDITION_COMPONENT",
+            "STOCKHOLDER_APPROVAL_CONDITION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "FRUSTRATION",
+          "claim_definition_keys": [
+            "COVENANT_COMPLIANCE_STANDARD",
+            "FRUSTRATION_BREACH_STANDARD",
+            "GOVERNMENT_PROCEEDING_CONDITION",
+            "LEGAL_RESTRAINT_CONDITION",
+            "LISTING_CONDITION",
+            "METSERA_7_04_FRUSTRATION_BRANCH",
+            "NO_MAE_CONDITION",
+            "NO_MAE_CONDITION_CONTINUING",
+            "OFFICER_CERTIFICATE_REQUIRED",
+            "REGULATORY_APPROVAL_CONDITION",
+            "S4_CONDITION_COMPONENT",
+            "STOCKHOLDER_APPROVAL_CONDITION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "TAX_OPINION",
+          "claim_definition_keys": [
+            "COVENANT_COMPLIANCE_STANDARD",
+            "FRUSTRATION_BREACH_STANDARD",
+            "GOVERNMENT_PROCEEDING_CONDITION",
+            "LEGAL_RESTRAINT_CONDITION",
+            "LISTING_CONDITION",
+            "METSERA_7_04_FRUSTRATION_BRANCH",
+            "NO_MAE_CONDITION",
+            "NO_MAE_CONDITION_CONTINUING",
+            "OFFICER_CERTIFICATE_REQUIRED",
+            "REGULATORY_APPROVAL_CONDITION",
+            "S4_CONDITION_COMPONENT",
+            "STOCKHOLDER_APPROVAL_CONDITION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to CLOSING_CONDITIONS and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/closing-conditions-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "MAE_DEFINITION",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "MAE_CARVEOUT",
+        "MAE_DEFINITION_PRONG",
+        "MAE_DISPROPORTIONALITY_CARVEBACK"
+      ],
+      "materiality_rules": [
+        "Every independently operative mae definition provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "DEFINITION_INSTANCE",
+          "claim_definition_keys": [
+            "MAE_CARVEOUT",
+            "MAE_DEFINITION_PRONG",
+            "MAE_DISPROPORTIONALITY_CARVEBACK"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "DEFINITION_PRONG",
+          "claim_definition_keys": [
+            "MAE_CARVEOUT",
+            "MAE_DEFINITION_PRONG",
+            "MAE_DISPROPORTIONALITY_CARVEBACK"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "EXCLUSION",
+          "claim_definition_keys": [
+            "MAE_CARVEOUT",
+            "MAE_DEFINITION_PRONG",
+            "MAE_DISPROPORTIONALITY_CARVEBACK"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "DISPROPORTIONALITY_CARVEBACK",
+          "claim_definition_keys": [
+            "MAE_CARVEOUT",
+            "MAE_DEFINITION_PRONG",
+            "MAE_DISPROPORTIONALITY_CARVEBACK"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "UNDERLYING_CAUSE_RESTORATION",
+          "claim_definition_keys": [
+            "MAE_CARVEOUT",
+            "MAE_DEFINITION_PRONG",
+            "MAE_DISPROPORTIONALITY_CARVEBACK"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to MAE_DEFINITION and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/mae-definition-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "KEY_DEFINED_TERMS",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+        "INTERVENING_EVENT_DEFINITION",
+        "INTERVENING_EVENT_EXCLUSION",
+        "KNOWLEDGE_PERSON_SOURCE",
+        "KNOWLEDGE_STANDARD",
+        "ORDINARY_COURSE_DEFINITION_RECORDED",
+        "SUPERIOR_PROPOSAL_QUALIFIER",
+        "SUPERIOR_PROPOSAL_THRESHOLD_PERCENT",
+        "TAX_DEFINITION_RECORDED",
+        "TAX_RETURN_DEFINITION_RECORDED",
+        "WILLFUL_BREACH_DEFINITION",
+        "WILLFUL_BREACH_KNOWLEDGE_STANDARD"
+      ],
+      "materiality_rules": [
+        "Every independently operative key defined terms provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "ACQUISITION_PROPOSAL",
+          "claim_definition_keys": [
+            "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+            "INTERVENING_EVENT_DEFINITION",
+            "INTERVENING_EVENT_EXCLUSION",
+            "KNOWLEDGE_PERSON_SOURCE",
+            "KNOWLEDGE_STANDARD",
+            "ORDINARY_COURSE_DEFINITION_RECORDED",
+            "SUPERIOR_PROPOSAL_QUALIFIER",
+            "SUPERIOR_PROPOSAL_THRESHOLD_PERCENT",
+            "TAX_DEFINITION_RECORDED",
+            "TAX_RETURN_DEFINITION_RECORDED",
+            "WILLFUL_BREACH_DEFINITION",
+            "WILLFUL_BREACH_KNOWLEDGE_STANDARD"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "SUPERIOR_PROPOSAL",
+          "claim_definition_keys": [
+            "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+            "INTERVENING_EVENT_DEFINITION",
+            "INTERVENING_EVENT_EXCLUSION",
+            "KNOWLEDGE_PERSON_SOURCE",
+            "KNOWLEDGE_STANDARD",
+            "ORDINARY_COURSE_DEFINITION_RECORDED",
+            "SUPERIOR_PROPOSAL_QUALIFIER",
+            "SUPERIOR_PROPOSAL_THRESHOLD_PERCENT",
+            "TAX_DEFINITION_RECORDED",
+            "TAX_RETURN_DEFINITION_RECORDED",
+            "WILLFUL_BREACH_DEFINITION",
+            "WILLFUL_BREACH_KNOWLEDGE_STANDARD"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "INTERVENING_EVENT",
+          "claim_definition_keys": [
+            "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+            "INTERVENING_EVENT_DEFINITION",
+            "INTERVENING_EVENT_EXCLUSION",
+            "KNOWLEDGE_PERSON_SOURCE",
+            "KNOWLEDGE_STANDARD",
+            "ORDINARY_COURSE_DEFINITION_RECORDED",
+            "SUPERIOR_PROPOSAL_QUALIFIER",
+            "SUPERIOR_PROPOSAL_THRESHOLD_PERCENT",
+            "TAX_DEFINITION_RECORDED",
+            "TAX_RETURN_DEFINITION_RECORDED",
+            "WILLFUL_BREACH_DEFINITION",
+            "WILLFUL_BREACH_KNOWLEDGE_STANDARD"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "KNOWLEDGE",
+          "claim_definition_keys": [
+            "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+            "INTERVENING_EVENT_DEFINITION",
+            "INTERVENING_EVENT_EXCLUSION",
+            "KNOWLEDGE_PERSON_SOURCE",
+            "KNOWLEDGE_STANDARD",
+            "ORDINARY_COURSE_DEFINITION_RECORDED",
+            "SUPERIOR_PROPOSAL_QUALIFIER",
+            "SUPERIOR_PROPOSAL_THRESHOLD_PERCENT",
+            "TAX_DEFINITION_RECORDED",
+            "TAX_RETURN_DEFINITION_RECORDED",
+            "WILLFUL_BREACH_DEFINITION",
+            "WILLFUL_BREACH_KNOWLEDGE_STANDARD"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "WILLFUL_BREACH",
+          "claim_definition_keys": [
+            "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+            "INTERVENING_EVENT_DEFINITION",
+            "INTERVENING_EVENT_EXCLUSION",
+            "KNOWLEDGE_PERSON_SOURCE",
+            "KNOWLEDGE_STANDARD",
+            "ORDINARY_COURSE_DEFINITION_RECORDED",
+            "SUPERIOR_PROPOSAL_QUALIFIER",
+            "SUPERIOR_PROPOSAL_THRESHOLD_PERCENT",
+            "TAX_DEFINITION_RECORDED",
+            "TAX_RETURN_DEFINITION_RECORDED",
+            "WILLFUL_BREACH_DEFINITION",
+            "WILLFUL_BREACH_KNOWLEDGE_STANDARD"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to KEY_DEFINED_TERMS and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/defined-terms-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "REPRESENTATIONS",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "KNOWLEDGE_QUALIFIER",
+        "REPRESENTATION_ACCURACY_STANDARD"
+      ],
+      "materiality_rules": [
+        "Every independently operative representations provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "STATUS_REPRESENTATION",
+          "claim_definition_keys": [
+            "KNOWLEDGE_QUALIFIER",
+            "REPRESENTATION_ACCURACY_STANDARD"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "COMPLIANCE_REPRESENTATION",
+          "claim_definition_keys": [
+            "KNOWLEDGE_QUALIFIER",
+            "REPRESENTATION_ACCURACY_STANDARD"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "DOCUMENT_REPRESENTATION",
+          "claim_definition_keys": [
+            "KNOWLEDGE_QUALIFIER",
+            "REPRESENTATION_ACCURACY_STANDARD"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "CONTRACT_REPRESENTATION",
+          "claim_definition_keys": [
+            "KNOWLEDGE_QUALIFIER",
+            "REPRESENTATION_ACCURACY_STANDARD"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "FINANCIAL_REPRESENTATION",
+          "claim_definition_keys": [
+            "KNOWLEDGE_QUALIFIER",
+            "REPRESENTATION_ACCURACY_STANDARD"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "NEGATIVE_REPRESENTATION",
+          "claim_definition_keys": [
+            "KNOWLEDGE_QUALIFIER",
+            "REPRESENTATION_ACCURACY_STANDARD"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to REPRESENTATIONS and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/representations-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "INTERIM_OPERATING",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "IOC_RESTRICTION_PRESENT"
+      ],
+      "materiality_rules": [
+        "Every independently operative interim operating provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "RESTRICTIVE_COVENANT",
+          "claim_definition_keys": [
+            "IOC_RESTRICTION_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "AFFIRMATIVE_COVENANT",
+          "claim_definition_keys": [
+            "IOC_RESTRICTION_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "CONSENT_STANDARD",
+          "claim_definition_keys": [
+            "IOC_RESTRICTION_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "THRESHOLD",
+          "claim_definition_keys": [
+            "IOC_RESTRICTION_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "EXCEPTION",
+          "claim_definition_keys": [
+            "IOC_RESTRICTION_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to INTERIM_OPERATING and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/ioc-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "DNO_INDEMNIFICATION",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "ADVANCEMENT_OF_EXPENSES",
+        "CHARTER_PROTECTION_CONTINUATION",
+        "COVERED_PERSON_TPB_RIGHTS",
+        "INDEMNIFICATION_CONTINUATION",
+        "INDEMNIFICATION_SURVIVAL_YEARS",
+        "TAIL_POLICY_OBLIGATION",
+        "TAIL_POLICY_PERIOD_YEARS",
+        "TAIL_PREMIUM_CAP_OFF_AGREEMENT",
+        "TAIL_PREMIUM_CAP_PERCENT"
+      ],
+      "materiality_rules": [
+        "Every independently operative dno indemnification provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "INDEMNIFICATION_AND_EXCULPATION",
+          "claim_definition_keys": [
+            "ADVANCEMENT_OF_EXPENSES",
+            "CHARTER_PROTECTION_CONTINUATION",
+            "COVERED_PERSON_TPB_RIGHTS",
+            "INDEMNIFICATION_CONTINUATION",
+            "INDEMNIFICATION_SURVIVAL_YEARS",
+            "TAIL_POLICY_OBLIGATION",
+            "TAIL_POLICY_PERIOD_YEARS",
+            "TAIL_PREMIUM_CAP_OFF_AGREEMENT",
+            "TAIL_PREMIUM_CAP_PERCENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "EXPENSE_ADVANCEMENT",
+          "claim_definition_keys": [
+            "ADVANCEMENT_OF_EXPENSES",
+            "CHARTER_PROTECTION_CONTINUATION",
+            "COVERED_PERSON_TPB_RIGHTS",
+            "INDEMNIFICATION_CONTINUATION",
+            "INDEMNIFICATION_SURVIVAL_YEARS",
+            "TAIL_POLICY_OBLIGATION",
+            "TAIL_POLICY_PERIOD_YEARS",
+            "TAIL_PREMIUM_CAP_OFF_AGREEMENT",
+            "TAIL_PREMIUM_CAP_PERCENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "CHARTER_AND_CONTRACT_CONTINUATION",
+          "claim_definition_keys": [
+            "ADVANCEMENT_OF_EXPENSES",
+            "CHARTER_PROTECTION_CONTINUATION",
+            "COVERED_PERSON_TPB_RIGHTS",
+            "INDEMNIFICATION_CONTINUATION",
+            "INDEMNIFICATION_SURVIVAL_YEARS",
+            "TAIL_POLICY_OBLIGATION",
+            "TAIL_POLICY_PERIOD_YEARS",
+            "TAIL_PREMIUM_CAP_OFF_AGREEMENT",
+            "TAIL_PREMIUM_CAP_PERCENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "DNO_INSURANCE_TAIL",
+          "claim_definition_keys": [
+            "ADVANCEMENT_OF_EXPENSES",
+            "CHARTER_PROTECTION_CONTINUATION",
+            "COVERED_PERSON_TPB_RIGHTS",
+            "INDEMNIFICATION_CONTINUATION",
+            "INDEMNIFICATION_SURVIVAL_YEARS",
+            "TAIL_POLICY_OBLIGATION",
+            "TAIL_POLICY_PERIOD_YEARS",
+            "TAIL_PREMIUM_CAP_OFF_AGREEMENT",
+            "TAIL_PREMIUM_CAP_PERCENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "CLAIMS_PROCEDURE",
+          "claim_definition_keys": [
+            "ADVANCEMENT_OF_EXPENSES",
+            "CHARTER_PROTECTION_CONTINUATION",
+            "COVERED_PERSON_TPB_RIGHTS",
+            "INDEMNIFICATION_CONTINUATION",
+            "INDEMNIFICATION_SURVIVAL_YEARS",
+            "TAIL_POLICY_OBLIGATION",
+            "TAIL_POLICY_PERIOD_YEARS",
+            "TAIL_PREMIUM_CAP_OFF_AGREEMENT",
+            "TAIL_PREMIUM_CAP_PERCENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "SUCCESSOR_ASSUMPTION",
+          "claim_definition_keys": [
+            "ADVANCEMENT_OF_EXPENSES",
+            "CHARTER_PROTECTION_CONTINUATION",
+            "COVERED_PERSON_TPB_RIGHTS",
+            "INDEMNIFICATION_CONTINUATION",
+            "INDEMNIFICATION_SURVIVAL_YEARS",
+            "TAIL_POLICY_OBLIGATION",
+            "TAIL_POLICY_PERIOD_YEARS",
+            "TAIL_PREMIUM_CAP_OFF_AGREEMENT",
+            "TAIL_PREMIUM_CAP_PERCENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "THIRD_PARTY_ENFORCEMENT",
+          "claim_definition_keys": [
+            "ADVANCEMENT_OF_EXPENSES",
+            "CHARTER_PROTECTION_CONTINUATION",
+            "COVERED_PERSON_TPB_RIGHTS",
+            "INDEMNIFICATION_CONTINUATION",
+            "INDEMNIFICATION_SURVIVAL_YEARS",
+            "TAIL_POLICY_OBLIGATION",
+            "TAIL_POLICY_PERIOD_YEARS",
+            "TAIL_PREMIUM_CAP_OFF_AGREEMENT",
+            "TAIL_PREMIUM_CAP_PERCENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to DNO_INDEMNIFICATION and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/dno-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "NO_OTHER_REPS_FRAUD",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "EXTRA_CONTRACTUAL_RELIANCE_DISCLAIMER_PRESENT",
+        "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+        "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT"
+      ],
+      "materiality_rules": [
+        "Every independently operative no other reps fraud provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER",
+          "claim_definition_keys": [
+            "EXTRA_CONTRACTUAL_RELIANCE_DISCLAIMER_PRESENT",
+            "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+            "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "NON_RELIANCE_ACKNOWLEDGMENT",
+          "claim_definition_keys": [
+            "EXTRA_CONTRACTUAL_RELIANCE_DISCLAIMER_PRESENT",
+            "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+            "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "FRAUD_CARVEOUT",
+          "claim_definition_keys": [
+            "EXTRA_CONTRACTUAL_RELIANCE_DISCLAIMER_PRESENT",
+            "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+            "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "INDEPENDENT_INVESTIGATION_ACKNOWLEDGMENT",
+          "claim_definition_keys": [
+            "EXTRA_CONTRACTUAL_RELIANCE_DISCLAIMER_PRESENT",
+            "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+            "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to NO_OTHER_REPS_FRAUD and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/no-other-reps-fraud-producer.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "ANTITRUST_REGULATORY",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "HSR_FILING_DEADLINE_DAYS",
+        "REGULATORY_BURDEN_COMMITMENT",
+        "REGULATORY_CONSULTATION_RIGHT",
+        "REGULATORY_COOPERATION_OBLIGATION",
+        "REGULATORY_EFFORTS_STANDARD",
+        "REGULATORY_FILING_OBLIGATION",
+        "REGULATORY_FILING_TIMING_STANDARD",
+        "REGULATORY_INFORMATION_SHARING_OBLIGATION",
+        "REGULATORY_LITIGATION_OBLIGATION",
+        "REGULATORY_NON_IMPEDIMENT_COVENANT",
+        "REGULATORY_NOTIFICATION_OBLIGATION",
+        "REGULATORY_STRATEGY_CONTROL",
+        "REGULATORY_TIMING_AGREEMENT_RESTRICTION",
+        "REGULATORY_WITHDRAWAL_REFILING_RESTRICTION"
+      ],
+      "materiality_rules": [
+        "Every independently operative antitrust regulatory provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "EFFORTS",
+          "claim_definition_keys": [
+            "HSR_FILING_DEADLINE_DAYS",
+            "REGULATORY_BURDEN_COMMITMENT",
+            "REGULATORY_CONSULTATION_RIGHT",
+            "REGULATORY_COOPERATION_OBLIGATION",
+            "REGULATORY_EFFORTS_STANDARD",
+            "REGULATORY_FILING_OBLIGATION",
+            "REGULATORY_FILING_TIMING_STANDARD",
+            "REGULATORY_INFORMATION_SHARING_OBLIGATION",
+            "REGULATORY_LITIGATION_OBLIGATION",
+            "REGULATORY_NON_IMPEDIMENT_COVENANT",
+            "REGULATORY_NOTIFICATION_OBLIGATION",
+            "REGULATORY_STRATEGY_CONTROL",
+            "REGULATORY_TIMING_AGREEMENT_RESTRICTION",
+            "REGULATORY_WITHDRAWAL_REFILING_RESTRICTION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "FILING_OBLIGATION",
+          "claim_definition_keys": [
+            "HSR_FILING_DEADLINE_DAYS",
+            "REGULATORY_BURDEN_COMMITMENT",
+            "REGULATORY_CONSULTATION_RIGHT",
+            "REGULATORY_COOPERATION_OBLIGATION",
+            "REGULATORY_EFFORTS_STANDARD",
+            "REGULATORY_FILING_OBLIGATION",
+            "REGULATORY_FILING_TIMING_STANDARD",
+            "REGULATORY_INFORMATION_SHARING_OBLIGATION",
+            "REGULATORY_LITIGATION_OBLIGATION",
+            "REGULATORY_NON_IMPEDIMENT_COVENANT",
+            "REGULATORY_NOTIFICATION_OBLIGATION",
+            "REGULATORY_STRATEGY_CONTROL",
+            "REGULATORY_TIMING_AGREEMENT_RESTRICTION",
+            "REGULATORY_WITHDRAWAL_REFILING_RESTRICTION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "FILING_DEADLINE",
+          "claim_definition_keys": [
+            "HSR_FILING_DEADLINE_DAYS",
+            "REGULATORY_BURDEN_COMMITMENT",
+            "REGULATORY_CONSULTATION_RIGHT",
+            "REGULATORY_COOPERATION_OBLIGATION",
+            "REGULATORY_EFFORTS_STANDARD",
+            "REGULATORY_FILING_OBLIGATION",
+            "REGULATORY_FILING_TIMING_STANDARD",
+            "REGULATORY_INFORMATION_SHARING_OBLIGATION",
+            "REGULATORY_LITIGATION_OBLIGATION",
+            "REGULATORY_NON_IMPEDIMENT_COVENANT",
+            "REGULATORY_NOTIFICATION_OBLIGATION",
+            "REGULATORY_STRATEGY_CONTROL",
+            "REGULATORY_TIMING_AGREEMENT_RESTRICTION",
+            "REGULATORY_WITHDRAWAL_REFILING_RESTRICTION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "BURDEN",
+          "claim_definition_keys": [
+            "HSR_FILING_DEADLINE_DAYS",
+            "REGULATORY_BURDEN_COMMITMENT",
+            "REGULATORY_CONSULTATION_RIGHT",
+            "REGULATORY_COOPERATION_OBLIGATION",
+            "REGULATORY_EFFORTS_STANDARD",
+            "REGULATORY_FILING_OBLIGATION",
+            "REGULATORY_FILING_TIMING_STANDARD",
+            "REGULATORY_INFORMATION_SHARING_OBLIGATION",
+            "REGULATORY_LITIGATION_OBLIGATION",
+            "REGULATORY_NON_IMPEDIMENT_COVENANT",
+            "REGULATORY_NOTIFICATION_OBLIGATION",
+            "REGULATORY_STRATEGY_CONTROL",
+            "REGULATORY_TIMING_AGREEMENT_RESTRICTION",
+            "REGULATORY_WITHDRAWAL_REFILING_RESTRICTION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "LITIGATION",
+          "claim_definition_keys": [
+            "HSR_FILING_DEADLINE_DAYS",
+            "REGULATORY_BURDEN_COMMITMENT",
+            "REGULATORY_CONSULTATION_RIGHT",
+            "REGULATORY_COOPERATION_OBLIGATION",
+            "REGULATORY_EFFORTS_STANDARD",
+            "REGULATORY_FILING_OBLIGATION",
+            "REGULATORY_FILING_TIMING_STANDARD",
+            "REGULATORY_INFORMATION_SHARING_OBLIGATION",
+            "REGULATORY_LITIGATION_OBLIGATION",
+            "REGULATORY_NON_IMPEDIMENT_COVENANT",
+            "REGULATORY_NOTIFICATION_OBLIGATION",
+            "REGULATORY_STRATEGY_CONTROL",
+            "REGULATORY_TIMING_AGREEMENT_RESTRICTION",
+            "REGULATORY_WITHDRAWAL_REFILING_RESTRICTION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "TIMING_AGREEMENT",
+          "claim_definition_keys": [
+            "HSR_FILING_DEADLINE_DAYS",
+            "REGULATORY_BURDEN_COMMITMENT",
+            "REGULATORY_CONSULTATION_RIGHT",
+            "REGULATORY_COOPERATION_OBLIGATION",
+            "REGULATORY_EFFORTS_STANDARD",
+            "REGULATORY_FILING_OBLIGATION",
+            "REGULATORY_FILING_TIMING_STANDARD",
+            "REGULATORY_INFORMATION_SHARING_OBLIGATION",
+            "REGULATORY_LITIGATION_OBLIGATION",
+            "REGULATORY_NON_IMPEDIMENT_COVENANT",
+            "REGULATORY_NOTIFICATION_OBLIGATION",
+            "REGULATORY_STRATEGY_CONTROL",
+            "REGULATORY_TIMING_AGREEMENT_RESTRICTION",
+            "REGULATORY_WITHDRAWAL_REFILING_RESTRICTION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "STRATEGY_CONTROL",
+          "claim_definition_keys": [
+            "HSR_FILING_DEADLINE_DAYS",
+            "REGULATORY_BURDEN_COMMITMENT",
+            "REGULATORY_CONSULTATION_RIGHT",
+            "REGULATORY_COOPERATION_OBLIGATION",
+            "REGULATORY_EFFORTS_STANDARD",
+            "REGULATORY_FILING_OBLIGATION",
+            "REGULATORY_FILING_TIMING_STANDARD",
+            "REGULATORY_INFORMATION_SHARING_OBLIGATION",
+            "REGULATORY_LITIGATION_OBLIGATION",
+            "REGULATORY_NON_IMPEDIMENT_COVENANT",
+            "REGULATORY_NOTIFICATION_OBLIGATION",
+            "REGULATORY_STRATEGY_CONTROL",
+            "REGULATORY_TIMING_AGREEMENT_RESTRICTION",
+            "REGULATORY_WITHDRAWAL_REFILING_RESTRICTION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "CONSULTATION",
+          "claim_definition_keys": [
+            "HSR_FILING_DEADLINE_DAYS",
+            "REGULATORY_BURDEN_COMMITMENT",
+            "REGULATORY_CONSULTATION_RIGHT",
+            "REGULATORY_COOPERATION_OBLIGATION",
+            "REGULATORY_EFFORTS_STANDARD",
+            "REGULATORY_FILING_OBLIGATION",
+            "REGULATORY_FILING_TIMING_STANDARD",
+            "REGULATORY_INFORMATION_SHARING_OBLIGATION",
+            "REGULATORY_LITIGATION_OBLIGATION",
+            "REGULATORY_NON_IMPEDIMENT_COVENANT",
+            "REGULATORY_NOTIFICATION_OBLIGATION",
+            "REGULATORY_STRATEGY_CONTROL",
+            "REGULATORY_TIMING_AGREEMENT_RESTRICTION",
+            "REGULATORY_WITHDRAWAL_REFILING_RESTRICTION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "COOPERATION",
+          "claim_definition_keys": [
+            "HSR_FILING_DEADLINE_DAYS",
+            "REGULATORY_BURDEN_COMMITMENT",
+            "REGULATORY_CONSULTATION_RIGHT",
+            "REGULATORY_COOPERATION_OBLIGATION",
+            "REGULATORY_EFFORTS_STANDARD",
+            "REGULATORY_FILING_OBLIGATION",
+            "REGULATORY_FILING_TIMING_STANDARD",
+            "REGULATORY_INFORMATION_SHARING_OBLIGATION",
+            "REGULATORY_LITIGATION_OBLIGATION",
+            "REGULATORY_NON_IMPEDIMENT_COVENANT",
+            "REGULATORY_NOTIFICATION_OBLIGATION",
+            "REGULATORY_STRATEGY_CONTROL",
+            "REGULATORY_TIMING_AGREEMENT_RESTRICTION",
+            "REGULATORY_WITHDRAWAL_REFILING_RESTRICTION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "INFORMATION_SHARING",
+          "claim_definition_keys": [
+            "HSR_FILING_DEADLINE_DAYS",
+            "REGULATORY_BURDEN_COMMITMENT",
+            "REGULATORY_CONSULTATION_RIGHT",
+            "REGULATORY_COOPERATION_OBLIGATION",
+            "REGULATORY_EFFORTS_STANDARD",
+            "REGULATORY_FILING_OBLIGATION",
+            "REGULATORY_FILING_TIMING_STANDARD",
+            "REGULATORY_INFORMATION_SHARING_OBLIGATION",
+            "REGULATORY_LITIGATION_OBLIGATION",
+            "REGULATORY_NON_IMPEDIMENT_COVENANT",
+            "REGULATORY_NOTIFICATION_OBLIGATION",
+            "REGULATORY_STRATEGY_CONTROL",
+            "REGULATORY_TIMING_AGREEMENT_RESTRICTION",
+            "REGULATORY_WITHDRAWAL_REFILING_RESTRICTION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "NON_IMPEDIMENT",
+          "claim_definition_keys": [
+            "HSR_FILING_DEADLINE_DAYS",
+            "REGULATORY_BURDEN_COMMITMENT",
+            "REGULATORY_CONSULTATION_RIGHT",
+            "REGULATORY_COOPERATION_OBLIGATION",
+            "REGULATORY_EFFORTS_STANDARD",
+            "REGULATORY_FILING_OBLIGATION",
+            "REGULATORY_FILING_TIMING_STANDARD",
+            "REGULATORY_INFORMATION_SHARING_OBLIGATION",
+            "REGULATORY_LITIGATION_OBLIGATION",
+            "REGULATORY_NON_IMPEDIMENT_COVENANT",
+            "REGULATORY_NOTIFICATION_OBLIGATION",
+            "REGULATORY_STRATEGY_CONTROL",
+            "REGULATORY_TIMING_AGREEMENT_RESTRICTION",
+            "REGULATORY_WITHDRAWAL_REFILING_RESTRICTION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "REGULATORY_REQUEST_RESPONSE",
+          "claim_definition_keys": [
+            "HSR_FILING_DEADLINE_DAYS",
+            "REGULATORY_BURDEN_COMMITMENT",
+            "REGULATORY_CONSULTATION_RIGHT",
+            "REGULATORY_COOPERATION_OBLIGATION",
+            "REGULATORY_EFFORTS_STANDARD",
+            "REGULATORY_FILING_OBLIGATION",
+            "REGULATORY_FILING_TIMING_STANDARD",
+            "REGULATORY_INFORMATION_SHARING_OBLIGATION",
+            "REGULATORY_LITIGATION_OBLIGATION",
+            "REGULATORY_NON_IMPEDIMENT_COVENANT",
+            "REGULATORY_NOTIFICATION_OBLIGATION",
+            "REGULATORY_STRATEGY_CONTROL",
+            "REGULATORY_TIMING_AGREEMENT_RESTRICTION",
+            "REGULATORY_WITHDRAWAL_REFILING_RESTRICTION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to ANTITRUST_REGULATORY and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/antitrust-regulatory-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "APPRAISAL_DISSENTERS_RIGHTS",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "APPRAISAL_SETTLEMENT_CONSENT",
+        "APPRAISAL_WITHDRAWAL_RECONVERSION"
+      ],
+      "materiality_rules": [
+        "Every independently operative appraisal dissenters rights provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "APPRAISAL_STATUS",
+          "claim_definition_keys": [
+            "APPRAISAL_SETTLEMENT_CONSENT",
+            "APPRAISAL_WITHDRAWAL_RECONVERSION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "APPRAISAL_ENTITLEMENT",
+          "claim_definition_keys": [
+            "APPRAISAL_SETTLEMENT_CONSENT",
+            "APPRAISAL_WITHDRAWAL_RECONVERSION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "WITHDRAWAL_RECONVERSION",
+          "claim_definition_keys": [
+            "APPRAISAL_SETTLEMENT_CONSENT",
+            "APPRAISAL_WITHDRAWAL_RECONVERSION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "APPRAISAL_NOTICE",
+          "claim_definition_keys": [
+            "APPRAISAL_SETTLEMENT_CONSENT",
+            "APPRAISAL_WITHDRAWAL_RECONVERSION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "NEGOTIATION_CONTROL",
+          "claim_definition_keys": [
+            "APPRAISAL_SETTLEMENT_CONSENT",
+            "APPRAISAL_WITHDRAWAL_RECONVERSION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "SETTLEMENT_CONSENT",
+          "claim_definition_keys": [
+            "APPRAISAL_SETTLEMENT_CONSENT",
+            "APPRAISAL_WITHDRAWAL_RECONVERSION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to APPRAISAL_DISSENTERS_RIGHTS and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/appraisal-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "CAPITALISATION",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "CAPITALISATION_AUTHORISED_CAPITAL",
+        "CAPITALISATION_ISSUED_AND_OUTSTANDING",
+        "CAPITALISATION_RESERVED_OR_ISSUABLE_SECURITIES",
+        "CAPITALISATION_EQUITY_AWARD_INVENTORY",
+        "CAPITALISATION_PARTNERSHIP_OR_SUBSIDIARY_EQUITY",
+        "CAPITALISATION_CAPITALISATION_ABSENCE",
+        "CAPITALISATION_VALID_ISSUANCE_STATUS"
+      ],
+      "materiality_rules": [
+        "Every independently operative capitalisation provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "AUTHORISED_CAPITAL",
+          "claim_definition_keys": [
+            "CAPITALISATION_AUTHORISED_CAPITAL"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "ISSUED_AND_OUTSTANDING",
+          "claim_definition_keys": [
+            "CAPITALISATION_ISSUED_AND_OUTSTANDING"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "RESERVED_OR_ISSUABLE_SECURITIES",
+          "claim_definition_keys": [
+            "CAPITALISATION_RESERVED_OR_ISSUABLE_SECURITIES"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "EQUITY_AWARD_INVENTORY",
+          "claim_definition_keys": [
+            "CAPITALISATION_EQUITY_AWARD_INVENTORY"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "PARTNERSHIP_OR_SUBSIDIARY_EQUITY",
+          "claim_definition_keys": [
+            "CAPITALISATION_PARTNERSHIP_OR_SUBSIDIARY_EQUITY"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "CAPITALISATION_ABSENCE",
+          "claim_definition_keys": [
+            "CAPITALISATION_CAPITALISATION_ABSENCE"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "VALID_ISSUANCE_STATUS",
+          "claim_definition_keys": [
+            "CAPITALISATION_VALID_ISSUANCE_STATUS"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to CAPITALISATION and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/capitalisation-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "CONSIDERATION",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "APPRAISAL_RIGHTS_STATUS",
+        "PER_SHARE_CASH_CONSIDERATION"
+      ],
+      "materiality_rules": [
+        "Every independently operative consideration provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "CONSIDERATION_PACKAGE",
+          "claim_definition_keys": [
+            "APPRAISAL_RIGHTS_STATUS",
+            "PER_SHARE_CASH_CONSIDERATION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "CASH_COMPONENT",
+          "claim_definition_keys": [
+            "APPRAISAL_RIGHTS_STATUS",
+            "PER_SHARE_CASH_CONSIDERATION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "STOCK_COMPONENT",
+          "claim_definition_keys": [
+            "APPRAISAL_RIGHTS_STATUS",
+            "PER_SHARE_CASH_CONSIDERATION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "CVR_COMPONENT",
+          "claim_definition_keys": [
+            "APPRAISAL_RIGHTS_STATUS",
+            "PER_SHARE_CASH_CONSIDERATION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "ELECTION",
+          "claim_definition_keys": [
+            "APPRAISAL_RIGHTS_STATUS",
+            "PER_SHARE_CASH_CONSIDERATION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "APPRAISAL_LINK",
+          "claim_definition_keys": [
+            "APPRAISAL_RIGHTS_STATUS",
+            "PER_SHARE_CASH_CONSIDERATION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "EXCLUSION",
+          "claim_definition_keys": [
+            "APPRAISAL_RIGHTS_STATUS",
+            "PER_SHARE_CASH_CONSIDERATION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "EQUITY_AWARD",
+          "claim_definition_keys": [
+            "APPRAISAL_RIGHTS_STATUS",
+            "PER_SHARE_CASH_CONSIDERATION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "WITHHOLDING",
+          "claim_definition_keys": [
+            "APPRAISAL_RIGHTS_STATUS",
+            "PER_SHARE_CASH_CONSIDERATION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "EXCHANGE_MECHANICS",
+          "claim_definition_keys": [
+            "APPRAISAL_RIGHTS_STATUS",
+            "PER_SHARE_CASH_CONSIDERATION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to CONSIDERATION and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/consideration-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "DIVIDENDS",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "DIVIDEND_COORDINATION_COVENANT"
+      ],
+      "materiality_rules": [
+        "Every independently operative dividends provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "DIVIDEND_COORDINATION",
+          "claim_definition_keys": [
+            "DIVIDEND_COORDINATION_COVENANT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "PERMITTED_PRE_CLOSING_DISTRIBUTION",
+          "claim_definition_keys": [
+            "DIVIDEND_COORDINATION_COVENANT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "UNPAID_DECLARED_DISTRIBUTION",
+          "claim_definition_keys": [
+            "DIVIDEND_COORDINATION_COVENANT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "CONSIDERATION_ADJUSTMENT_LINK",
+          "claim_definition_keys": [
+            "DIVIDEND_COORDINATION_COVENANT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "INTERIM_RESTRICTION_LINK",
+          "claim_definition_keys": [
+            "DIVIDEND_COORDINATION_COVENANT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to DIVIDENDS and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/dividends-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "FINANCING_COVENANTS",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "FINANCING_OBTAIN_EFFORTS_STANDARD",
+        "NO_FINANCING_CONDITION_ACKNOWLEDGMENT",
+        "PAYOFF_DELIVERY_LEAD_TIME_DAYS"
+      ],
+      "materiality_rules": [
+        "Every independently operative financing covenants provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "OBTAIN_FINANCING",
+          "claim_definition_keys": [
+            "FINANCING_OBTAIN_EFFORTS_STANDARD",
+            "NO_FINANCING_CONDITION_ACKNOWLEDGMENT",
+            "PAYOFF_DELIVERY_LEAD_TIME_DAYS"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "ALTERNATIVE_FINANCING",
+          "claim_definition_keys": [
+            "FINANCING_OBTAIN_EFFORTS_STANDARD",
+            "NO_FINANCING_CONDITION_ACKNOWLEDGMENT",
+            "PAYOFF_DELIVERY_LEAD_TIME_DAYS"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "TARGET_COOPERATION",
+          "claim_definition_keys": [
+            "FINANCING_OBTAIN_EFFORTS_STANDARD",
+            "NO_FINANCING_CONDITION_ACKNOWLEDGMENT",
+            "PAYOFF_DELIVERY_LEAD_TIME_DAYS"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "PAYOFF",
+          "claim_definition_keys": [
+            "FINANCING_OBTAIN_EFFORTS_STANDARD",
+            "NO_FINANCING_CONDITION_ACKNOWLEDGMENT",
+            "PAYOFF_DELIVERY_LEAD_TIME_DAYS"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "NO_FINANCING_CONDITION",
+          "claim_definition_keys": [
+            "FINANCING_OBTAIN_EFFORTS_STANDARD",
+            "NO_FINANCING_CONDITION_ACKNOWLEDGMENT",
+            "PAYOFF_DELIVERY_LEAD_TIME_DAYS"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "NOTE_OFFER_OR_CONSENT",
+          "claim_definition_keys": [
+            "FINANCING_OBTAIN_EFFORTS_STANDARD",
+            "NO_FINANCING_CONDITION_ACKNOWLEDGMENT",
+            "PAYOFF_DELIVERY_LEAD_TIME_DAYS"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "COST_AND_RISK_ALLOCATION",
+          "claim_definition_keys": [
+            "FINANCING_OBTAIN_EFFORTS_STANDARD",
+            "NO_FINANCING_CONDITION_ACKNOWLEDGMENT",
+            "PAYOFF_DELIVERY_LEAD_TIME_DAYS"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to FINANCING_COVENANTS and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/financing-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "GUARANTY_FINANCING_PARTY",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "LIMITED_GUARANTY_DELIVERED"
+      ],
+      "materiality_rules": [
+        "Every independently operative guaranty financing party provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "PERFORMANCE_GUARANTY",
+          "claim_definition_keys": [
+            "LIMITED_GUARANTY_DELIVERED"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "LIMITED_GUARANTY_DELIVERY_OR_STATUS_REP",
+          "claim_definition_keys": [
+            "LIMITED_GUARANTY_DELIVERED"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "GUARANTY_NO_DEFAULT_REP",
+          "claim_definition_keys": [
+            "LIMITED_GUARANTY_DELIVERED"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "FINANCING_SOURCE_PROTECTION",
+          "claim_definition_keys": [
+            "LIMITED_GUARANTY_DELIVERED"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to GUARANTY_FINANCING_PARTY and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/guaranty-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "MATERIAL_CONTRACTS",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "MATERIAL_CONTRACT_BUCKET_PRESENT",
+        "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE"
+      ],
+      "materiality_rules": [
+        "Every independently operative material contracts provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "MATERIAL_CONTRACT_CATEGORY_CRITERION",
+          "claim_definition_keys": [
+            "MATERIAL_CONTRACT_BUCKET_PRESENT",
+            "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "MATERIAL_CONTRACT_DISCLOSURE_LIST",
+          "claim_definition_keys": [
+            "MATERIAL_CONTRACT_BUCKET_PRESENT",
+            "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "MATERIAL_CONTRACT_STATUS_REPRESENTATION",
+          "claim_definition_keys": [
+            "MATERIAL_CONTRACT_BUCKET_PRESENT",
+            "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "MATERIAL_CONTRACT_BREACH_TERMINATION_RIGHT",
+          "claim_definition_keys": [
+            "MATERIAL_CONTRACT_BUCKET_PRESENT",
+            "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to MATERIAL_CONTRACTS and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/material-contracts-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "MERGER_STRUCTURE_CLOSING",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "MERGER_TRANSACTION_STEP"
+      ],
+      "materiality_rules": [
+        "Every independently operative merger structure closing provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "TRANSACTION_STEP",
+          "claim_definition_keys": [
+            "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "MERGER_TRANSACTION_STEP"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "TRANSACTION_PLAN",
+          "claim_definition_keys": [
+            "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "MERGER_TRANSACTION_STEP"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "CLOSING",
+          "claim_definition_keys": [
+            "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "MERGER_TRANSACTION_STEP"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "EFFECTIVE_TIME",
+          "claim_definition_keys": [
+            "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "MERGER_TRANSACTION_STEP"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "LEGAL_EFFECT",
+          "claim_definition_keys": [
+            "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "MERGER_TRANSACTION_STEP"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "GOVERNANCE_SUCCESSION",
+          "claim_definition_keys": [
+            "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "MERGER_TRANSACTION_STEP"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "ORGANISATIONAL_DOCUMENT",
+          "claim_definition_keys": [
+            "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "MERGER_TRANSACTION_STEP"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "BOARD_DESIGNATION",
+          "claim_definition_keys": [
+            "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "MERGER_TRANSACTION_STEP"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to MERGER_STRUCTURE_CLOSING and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/merger-structure-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "MISC_BOILERPLATE",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "MISC_BOILERPLATE_MECHANIC_PRESENT"
+      ],
+      "materiality_rules": [
+        "Every independently operative misc boilerplate provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "GOVERNING_LAW",
+          "claim_definition_keys": [
+            "MISC_BOILERPLATE_MECHANIC_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "FORUM",
+          "claim_definition_keys": [
+            "MISC_BOILERPLATE_MECHANIC_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "ASSIGNMENT",
+          "claim_definition_keys": [
+            "MISC_BOILERPLATE_MECHANIC_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "AMENDMENT_WAIVER",
+          "claim_definition_keys": [
+            "MISC_BOILERPLATE_MECHANIC_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "NOTICE",
+          "claim_definition_keys": [
+            "MISC_BOILERPLATE_MECHANIC_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "ENTIRE_AGREEMENT",
+          "claim_definition_keys": [
+            "MISC_BOILERPLATE_MECHANIC_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "THIRD_PARTY_BENEFICIARY",
+          "claim_definition_keys": [
+            "MISC_BOILERPLATE_MECHANIC_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "SEVERABILITY",
+          "claim_definition_keys": [
+            "MISC_BOILERPLATE_MECHANIC_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "COUNTERPARTS",
+          "claim_definition_keys": [
+            "MISC_BOILERPLATE_MECHANIC_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "SURVIVAL",
+          "claim_definition_keys": [
+            "MISC_BOILERPLATE_MECHANIC_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "CONSTRUCTION",
+          "claim_definition_keys": [
+            "MISC_BOILERPLATE_MECHANIC_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "EXPENSES",
+          "claim_definition_keys": [
+            "MISC_BOILERPLATE_MECHANIC_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to MISC_BOILERPLATE and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/remedies-misc-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "PROXY_MEETING",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "BOARD_RECOMMENDATION_INCLUSION",
+        "BROKER_SEARCH_OBLIGATION_PRESENT",
+        "MEETING_ADJOURNMENT_REASON",
+        "MEETING_CONVENE_OBLIGATION",
+        "MEETING_DEADLINE_DAYS",
+        "PROXY_FILING_DEADLINE_DAYS",
+        "RECORD_DATE_ESTABLISHMENT_PRESENT"
+      ],
+      "materiality_rules": [
+        "Every independently operative proxy meeting provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "DOCUMENT_FILING",
+          "claim_definition_keys": [
+            "BOARD_RECOMMENDATION_INCLUSION",
+            "BROKER_SEARCH_OBLIGATION_PRESENT",
+            "MEETING_ADJOURNMENT_REASON",
+            "MEETING_CONVENE_OBLIGATION",
+            "MEETING_DEADLINE_DAYS",
+            "PROXY_FILING_DEADLINE_DAYS",
+            "RECORD_DATE_ESTABLISHMENT_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "MEETING_CALL_OR_HOLD",
+          "claim_definition_keys": [
+            "BOARD_RECOMMENDATION_INCLUSION",
+            "BROKER_SEARCH_OBLIGATION_PRESENT",
+            "MEETING_ADJOURNMENT_REASON",
+            "MEETING_CONVENE_OBLIGATION",
+            "MEETING_DEADLINE_DAYS",
+            "PROXY_FILING_DEADLINE_DAYS",
+            "RECORD_DATE_ESTABLISHMENT_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "RECORD_DATE_OR_BROKER_SEARCH",
+          "claim_definition_keys": [
+            "BOARD_RECOMMENDATION_INCLUSION",
+            "BROKER_SEARCH_OBLIGATION_PRESENT",
+            "MEETING_ADJOURNMENT_REASON",
+            "MEETING_CONVENE_OBLIGATION",
+            "MEETING_DEADLINE_DAYS",
+            "PROXY_FILING_DEADLINE_DAYS",
+            "RECORD_DATE_ESTABLISHMENT_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "RECOMMENDATION_INCLUSION",
+          "claim_definition_keys": [
+            "BOARD_RECOMMENDATION_INCLUSION",
+            "BROKER_SEARCH_OBLIGATION_PRESENT",
+            "MEETING_ADJOURNMENT_REASON",
+            "MEETING_CONVENE_OBLIGATION",
+            "MEETING_DEADLINE_DAYS",
+            "PROXY_FILING_DEADLINE_DAYS",
+            "RECORD_DATE_ESTABLISHMENT_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "ADJOURNMENT",
+          "claim_definition_keys": [
+            "BOARD_RECOMMENDATION_INCLUSION",
+            "BROKER_SEARCH_OBLIGATION_PRESENT",
+            "MEETING_ADJOURNMENT_REASON",
+            "MEETING_CONVENE_OBLIGATION",
+            "MEETING_DEADLINE_DAYS",
+            "PROXY_FILING_DEADLINE_DAYS",
+            "RECORD_DATE_ESTABLISHMENT_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "SUBSIDIARY_APPROVAL",
+          "claim_definition_keys": [
+            "BOARD_RECOMMENDATION_INCLUSION",
+            "BROKER_SEARCH_OBLIGATION_PRESENT",
+            "MEETING_ADJOURNMENT_REASON",
+            "MEETING_CONVENE_OBLIGATION",
+            "MEETING_DEADLINE_DAYS",
+            "PROXY_FILING_DEADLINE_DAYS",
+            "RECORD_DATE_ESTABLISHMENT_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to PROXY_MEETING and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/proxy-meeting-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "SPECIFIC_PERFORMANCE_REMEDY_PRESENT"
+      ],
+      "materiality_rules": [
+        "Every independently operative specific performance remedies provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "GENERAL_EQUITABLE_RELIEF",
+          "claim_definition_keys": [
+            "SPECIFIC_PERFORMANCE_REMEDY_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "CLOSING_ENFORCEMENT",
+          "claim_definition_keys": [
+            "SPECIFIC_PERFORMANCE_REMEDY_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "NON_OBJECTION",
+          "claim_definition_keys": [
+            "SPECIFIC_PERFORMANCE_REMEDY_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "BOND_SECURITY_WAIVER",
+          "claim_definition_keys": [
+            "SPECIFIC_PERFORMANCE_REMEDY_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "REMEDY_COORDINATION",
+          "claim_definition_keys": [
+            "SPECIFIC_PERFORMANCE_REMEDY_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "REMEDY_ACTION_EXTENSION",
+          "claim_definition_keys": [
+            "SPECIFIC_PERFORMANCE_REMEDY_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "COST_SHIFT",
+          "claim_definition_keys": [
+            "SPECIFIC_PERFORMANCE_REMEDY_PRESENT"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to SPECIFIC_PERFORMANCE_REMEDIES and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/specific-performance-remedies-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    },
+    {
+      "family_key": "TAX_MATTERS",
+      "state": "DEFINED",
+      "required_fact_types": [
+        "INTENDED_TAX_TREATMENT_KIND",
+        "TAX_OPINION_COOPERATION_COVENANT",
+        "TAX_TREATMENT_PROTECTION_COVENANT",
+        "TRANSFER_TAX_ALLOCATION"
+      ],
+      "materiality_rules": [
+        "Every independently operative tax matters provision is material.",
+        "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
+      ],
+      "subtypes": [
+        {
+          "subtype_key": "INTENDED_TAX_TREATMENT",
+          "claim_definition_keys": [
+            "INTENDED_TAX_TREATMENT_KIND",
+            "TAX_OPINION_COOPERATION_COVENANT",
+            "TAX_TREATMENT_PROTECTION_COVENANT",
+            "TRANSFER_TAX_ALLOCATION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "TAX_TREATMENT_PROTECTION",
+          "claim_definition_keys": [
+            "INTENDED_TAX_TREATMENT_KIND",
+            "TAX_OPINION_COOPERATION_COVENANT",
+            "TAX_TREATMENT_PROTECTION_COVENANT",
+            "TRANSFER_TAX_ALLOCATION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "TAX_REPORTING_CONSISTENCY",
+          "claim_definition_keys": [
+            "INTENDED_TAX_TREATMENT_KIND",
+            "TAX_OPINION_COOPERATION_COVENANT",
+            "TAX_TREATMENT_PROTECTION_COVENANT",
+            "TRANSFER_TAX_ALLOCATION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "TAX_OPINION_COOPERATION",
+          "claim_definition_keys": [
+            "INTENDED_TAX_TREATMENT_KIND",
+            "TAX_OPINION_COOPERATION_COVENANT",
+            "TAX_TREATMENT_PROTECTION_COVENANT",
+            "TRANSFER_TAX_ALLOCATION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "TRANSFER_TAX_ALLOCATION",
+          "claim_definition_keys": [
+            "INTENDED_TAX_TREATMENT_KIND",
+            "TAX_OPINION_COOPERATION_COVENANT",
+            "TAX_TREATMENT_PROTECTION_COVENANT",
+            "TRANSFER_TAX_ALLOCATION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "WITHHOLDING_MECHANIC",
+          "claim_definition_keys": [
+            "INTENDED_TAX_TREATMENT_KIND",
+            "TAX_OPINION_COOPERATION_COVENANT",
+            "TAX_TREATMENT_PROTECTION_COVENANT",
+            "TRANSFER_TAX_ALLOCATION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "FIRPTA_CERTIFICATE",
+          "claim_definition_keys": [
+            "INTENDED_TAX_TREATMENT_KIND",
+            "TAX_OPINION_COOPERATION_COVENANT",
+            "TAX_TREATMENT_PROTECTION_COVENANT",
+            "TRANSFER_TAX_ALLOCATION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "TAX_INTEGRATION_OR_SPECIAL_MECHANIC",
+          "claim_definition_keys": [
+            "INTENDED_TAX_TREATMENT_KIND",
+            "TAX_OPINION_COOPERATION_COVENANT",
+            "TAX_TREATMENT_PROTECTION_COVENANT",
+            "TRANSFER_TAX_ALLOCATION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        }
+      ],
+      "summary_grammar": "[Actor or subject] [legal operation] [operative object], when [trigger or timing], subject to [qualifications and exceptions].",
+      "compact_omissions": [
+        "Repeated defined-term text only when the linked definition remains visible."
+      ],
+      "absence_semantics": "Publish absence only after every substantive section routed to TAX_MATTERS and each required fact type is lawyer reviewed.",
+      "prompt_audit": {
+        "source_prompt": "lib/canonical-v2/native-producer/tax-matters-producer-prompt.js",
+        "status": "CONTRACT_SUPERSEDES_PROMPT_OUTPUT_GAPS",
+        "gaps_filled": [
+          "ATOMIC_FACT_STATEMENT",
+          "EXACT_SOURCE_SPANS",
+          "REQUIRED_ROLE_COVERAGE",
+          "TYPED_RELATIONSHIPS",
+          "FOUR_STATE_ABSENCE"
+        ]
+      }
+    }
+  ],
+  "coverage": {
+    "states": [
+      "FOUND",
+      "NOT_FOUND",
+      "UNRESOLVED",
+      "NOT_RUN"
+    ],
+    "not_run_is_absence": false,
+    "published_absence_requires_lawyer_confirmation": true,
+    "substantive_section_dispositions": [
+      "FAMILY_ASSIGNED",
+      "IMMATERIAL",
+      "UNRESOLVED_UNUSUAL_PROVISION"
+    ]
+  },
+  "issues": [
+    {
+      "issue_id": "LEGAL-GAP-TERMF-001",
+      "kind": "LEGAL_GAP",
+      "family_key": "TERMINATION_FEE",
+      "question": "Does a fee-linked sole-remedy limitation belong to Termination Fee or Specific Performance and Remedies?",
+      "effect": "Exclude sole-remedy facts from Termination Fee and hold final family ownership until a lawyer decides."
+    }
+  ]
+}
