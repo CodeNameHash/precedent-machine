@@ -35,14 +35,38 @@ export async function acceptProductRunResponse({
   return nextRun;
 }
 
+export async function refreshProductRunStatus({
+  runId, readRun, acceptRun, currentRunId, inFlight, setReadError,
+}) {
+  if (inFlight.current || currentRunId() !== runId) return false;
+  inFlight.current = true;
+  try {
+    const value = await readRun(runId);
+    if (currentRunId() !== runId) return false;
+    await acceptRun(value, runId);
+    if (currentRunId() !== runId) return false;
+    setReadError('');
+    return true;
+  } catch (failure) {
+    if (currentRunId() === runId) {
+      setReadError(failure instanceof Error ? failure.message : String(failure));
+    }
+    return false;
+  } finally {
+    inFlight.current = false;
+  }
+}
+
 export default function ProductIntakePanel() {
   const router = useRouter();
   const [url, setUrl] = useState('');
   const [run, setRun] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [statusReadError, setStatusReadError] = useState('');
   const active = useRef(true);
   const runRef = useRef(null);
+  const statusReadInFlight = useRef(false);
   useEffect(() => () => { active.current = false; }, []);
   useEffect(() => {
     const savedRun = Array.isArray(router.query.productRun) ? router.query.productRun[0] : router.query.productRun;
@@ -68,11 +92,26 @@ export default function ProductIntakePanel() {
     return nextRun;
   }
 
-  async function readRun(runId) {
+  async function fetchRun(runId) {
     const response = await fetch(`/api/product/analysis/${runId}`, { cache: 'no-store' });
     const value = await response.json();
     if (!response.ok) throw new Error(value.error || 'Could not read analysis');
-    return acceptRun(value, runId);
+    return value;
+  }
+
+  async function readRun(runId) {
+    return acceptRun(await fetchRun(runId), runId);
+  }
+
+  function refreshStatus(runId) {
+    return refreshProductRunStatus({
+      runId,
+      readRun: fetchRun,
+      acceptRun,
+      currentRunId: () => active.current ? productRunId(runRef.current) : null,
+      inFlight: statusReadInFlight,
+      setReadError: (message) => { if (active.current) setStatusReadError(message); },
+    });
   }
 
   async function advance(runId, retry = false) {
@@ -132,7 +171,7 @@ export default function ProductIntakePanel() {
   const activeRunId = productRunId(run);
   useEffect(() => {
     if (!shouldPollProductRun(run)) return undefined;
-    const timer = setInterval(() => { readRun(activeRunId).catch(() => {}); }, 1500);
+    const timer = setInterval(() => { refreshStatus(activeRunId); }, 1500);
     return () => clearInterval(timer);
   }, [activeRunId, run?.status, run?.stage, run?.progress?.running]);
 
@@ -150,6 +189,7 @@ export default function ProductIntakePanel() {
         </button>
       </form>
       {error ? <p role="alert" className="mt-3 text-sm text-red-700">{error}</p> : null}
+      {statusReadError ? <p role="alert" className="mt-3 text-sm text-red-700">Status refresh failed. Displaying the last known status. {statusReadError}<button type="button" onClick={() => refreshStatus(activeRunId)} className="ml-3 underline">Retry status</button></p> : null}
       {run ? (
         <div className="mt-4 rounded-lg bg-paper p-3 text-sm text-inkMid" data-testid="product-run-status">
           <div className="flex flex-wrap justify-between gap-2"><strong>{run.status}</strong><span>{run.stage}</span></div>

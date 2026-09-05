@@ -114,6 +114,90 @@ test('API analysis_run_id survives hosted polling and drives FAILED retry identi
   assert.deepEqual(routes, [`/review/product/${runId}`]);
 });
 
+test('status refresh permits one read, shows last-known failure and clears it only after success', async () => {
+  const { refreshProductRunStatus } = await loadIntakePanelModule();
+  const inFlight = { current: false };
+  const messages = [];
+  let releaseFirst;
+  let calls = 0;
+  const readRun = async () => {
+    calls += 1;
+    if (calls === 1) await new Promise((resolve, reject) => { releaseFirst = () => reject(new Error('Read timed out')); });
+    return { status: 'READY' };
+  };
+
+  const first = refreshProductRunStatus({
+    runId: 'run-1', readRun, acceptRun: async () => {}, currentRunId: () => 'run-1',
+    inFlight, setReadError: (message) => messages.push(message),
+  });
+  assert.equal(inFlight.current, true);
+  assert.equal(await refreshProductRunStatus({
+    runId: 'run-1', readRun, acceptRun: async () => {}, currentRunId: () => 'run-1',
+    inFlight, setReadError: (message) => messages.push(message),
+  }), false);
+  assert.equal(calls, 1);
+
+  releaseFirst();
+  assert.equal(await first, false);
+  assert.equal(inFlight.current, false);
+  assert.deepEqual(messages, ['Read timed out']);
+
+  assert.equal(await refreshProductRunStatus({
+    runId: 'run-1', readRun, acceptRun: async () => {}, currentRunId: () => 'run-1',
+    inFlight, setReadError: (message) => messages.push(message),
+  }), true);
+  assert.equal(calls, 2);
+  assert.deepEqual(messages, ['Read timed out', '']);
+});
+
+test('a late status refresh cannot update or show an error for a newly submitted run', async () => {
+  const { refreshProductRunStatus } = await loadIntakePanelModule();
+  const inFlight = { current: false };
+  const accepted = [];
+  const messages = [];
+  let currentRunId = 'old-run';
+  let release;
+  const pending = refreshProductRunStatus({
+    runId: 'old-run',
+    readRun: async () => new Promise((resolve) => { release = resolve; }),
+    acceptRun: async (value) => accepted.push(value),
+    currentRunId: () => currentRunId,
+    inFlight,
+    setReadError: (message) => messages.push(message),
+  });
+
+  currentRunId = 'new-run';
+  release({ status: 'READY' });
+  assert.equal(await pending, false);
+  assert.deepEqual(accepted, []);
+  assert.deepEqual(messages, []);
+
+  currentRunId = 'old-run';
+  let rejectOld;
+  const failing = refreshProductRunStatus({
+    runId: 'old-run',
+    readRun: async () => new Promise((resolve, reject) => { rejectOld = reject; }),
+    acceptRun: async (value) => accepted.push(value),
+    currentRunId: () => currentRunId,
+    inFlight,
+    setReadError: (message) => messages.push(message),
+  });
+  currentRunId = 'new-run';
+  rejectOld(new Error('Late old read failed'));
+  assert.equal(await failing, false);
+  assert.deepEqual(messages, []);
+
+  assert.equal(await refreshProductRunStatus({
+    runId: 'old-run',
+    readRun: async () => { throw new Error('Old read failed'); },
+    acceptRun: async (value) => accepted.push(value),
+    currentRunId: () => currentRunId,
+    inFlight,
+    setReadError: (message) => messages.push(message),
+  }), false);
+  assert.deepEqual(messages, []);
+});
+
 test('a sparse hosted wake response preserves the submitted run identity and progress', async () => {
   const { acceptProductRunResponse } = await loadIntakePanelModule();
   const runId = '2935661c-3cb5-45cf-98fd-570c73be8e2a';

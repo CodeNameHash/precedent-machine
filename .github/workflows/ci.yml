@@ -43,7 +43,7 @@ jobs:
       - name: Database migration and rollback
         env:
           TEST_DATABASE_URL: postgres://postgres:postgres@127.0.0.1:5432/postgres
-        run: node --test --test-concurrency=1 tests/product-phase-1-db.test.js tests/product-phase-2-db.test.js tests/product-phase-3-db.test.js tests/product-failed-model-call-durability.test.js tests/product-provider-response-durability-db.test.js tests/product-monotonic-failure-db.test.js tests/product-analysis-running-progress-db.test.js tests/product-review-timing-integration-db.test.js tests/product-finding-resolution-db.test.js tests/product-relationship-review-db.test.js
+        run: node --test --test-concurrency=1 tests/product-phase-1-db.test.js tests/product-phase-2-db.test.js tests/product-phase-3-db.test.js tests/product-failed-model-call-durability.test.js tests/product-provider-response-durability-db.test.js tests/product-monotonic-failure-db.test.js tests/product-analysis-running-progress-db.test.js tests/product-review-timing-integration-db.test.js tests/product-finding-resolution-db.test.js tests/product-relationship-review-db.test.js tests/product-span-closure-lookup-db.test.js
       - name: Tracked secret scan
         uses: gitleaks/gitleaks-action@v2
       - name: Production build
