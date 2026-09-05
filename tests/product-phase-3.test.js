@@ -301,8 +301,7 @@ test('server-side provider selection pins Preview Codex and leaves production on
 test('Sandbox wake uses one fixed detached launcher and does not return credentials', async () => {
   let getInput;
   let commandInput;
-  let commandLookup;
-  let startupDelay;
+  let startupSignal;
   let extension;
   const sessionStarted = new Date('2026-09-05T12:00:00.000Z');
   const result = await wakeSandboxProductRun({
@@ -315,17 +314,22 @@ test('Sandbox wake uses one fixed detached launcher and does not return credenti
       return {
         currentSession: () => ({ createdAt: sessionStarted, timeout: 30 * 60 * 1000 }),
         async extendTimeout(value) { extension = value; },
-        async runCommand(command) { commandInput = command; return { cmdId: 'command-1' }; },
-        async getCommand(commandId) { commandLookup = commandId; return { exitCode: null }; },
+        async runCommand(command) {
+          commandInput = command;
+          return { cmdId: 'command-1', async wait({ signal }) {
+            startupSignal = signal;
+            return new Promise((resolve, reject) => {
+              signal.addEventListener('abort', () => reject(signal.reason), { once: true });
+            });
+          } };
+        },
       };
     } },
     now: () => Date.parse('2026-09-05T12:20:00.000Z'),
-    startupDelay: async (milliseconds) => { startupDelay = milliseconds; },
   });
   assert.deepEqual(getInput, { name: SANDBOX_NAME, resume: true });
   assert.equal(extension, MINIMUM_SESSION_MS - (10 * 60 * 1000));
-  assert.equal(startupDelay, STARTUP_CHECK_DELAY_MS);
-  assert.equal(commandLookup, 'command-1');
+  assert.equal(startupSignal.aborted, true);
   assert.deepEqual(commandInput, {
     cmd: SANDBOX_LAUNCHER,
     args: ['46c45080-6935-49e5-96ae-b6cb0609a924'],
@@ -352,11 +356,9 @@ test('Sandbox wake uses one fixed detached launcher and does not return credenti
     sandboxApi: { async get() { return {
       currentSession: () => ({ createdAt: sessionStarted, timeout: MINIMUM_SESSION_MS }),
       async extendTimeout() {},
-      async runCommand() { return { cmdId: 'failed-command' }; },
-      async getCommand() { return { exitCode: 2 }; },
+      async runCommand() { return { cmdId: 'failed-command', async wait() { return { exitCode: 2 }; } }; },
     }; } },
     now: () => sessionStarted.getTime(),
-    startupDelay: async () => {},
   }), /STARTUP_FAILED/);
   await assert.rejects(() => wakeSandboxProductRun({
     runId: '46c45080-6935-49e5-96ae-b6cb0609a924',
@@ -365,6 +367,23 @@ test('Sandbox wake uses one fixed detached launcher and does not return credenti
     providerId: CODEX_PROVIDER_ID,
     sandboxApi: { get: async () => assert.fail('production target must fail before wake') },
   }), /DATABASE_TARGET/);
+});
+
+test('Sandbox wake rejects a finished failure even when its initial status is null', async () => {
+  await assert.rejects(() => wakeSandboxProductRun({
+    runId: '46c45080-6935-49e5-96ae-b6cb0609a924',
+    databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    serviceRoleKey: 'service-role-secret-value',
+    providerId: CODEX_PROVIDER_ID,
+    sandboxApi: { async get() { return {
+      currentSession: () => ({ createdAt: new Date(), timeout: MINIMUM_SESSION_MS }),
+      async extendTimeout() {},
+      async runCommand() {
+        return { cmdId: 'finished-failure', exitCode: null, async wait() { return { exitCode: 78 }; } };
+      },
+      async getCommand() { return { exitCode: null }; },
+    }; } },
+  }), /STARTUP_FAILED/);
 });
 
 test('hosted worker accepts only the fixed actor and one serial worker', () => {
@@ -440,19 +459,24 @@ test('review HTTP boundary initialises state and persists commands with server-d
   assert.equal(postResponse.body.review.state.items.find((item) => item.item_id === proposalItem.item_id).decision, 'ACCEPTED');
 });
 
-test('review HTTP boundary evaluates and persists lawyer evidence with server-derived reviewer identity', async () => {
+test('review HTTP boundary uses server-derived reviewer identity and processing time', async () => {
   const analysis = analysisFixture();
   let state = initialiseReviewState(analysis);
   for (const item of state.items) state = applyReviewCommand(state, { type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'ACCEPTED' }, { analysis, legalSchema });
   state = applyReviewCommand(state, { type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: true }, { analysis, legalSchema });
   state = applyReviewCommand(state, { type: 'PUBLISH' }, { analysis, legalSchema });
   const facts = state.summary.families.flatMap((family) => family.facts);
+  state = { ...state, metrics: { ...state.metrics, review_time_seconds: 1200 } };
   let persisted = { version: 0, status: state.status, state, revisions: [], publications: [], release_history: [] };
   let savedCommand = null;
   let savedEventType = null;
   const store = {
     assertAccess: async () => 'OWNER', getAgreementAnalysis: async () => analysis,
     getReview: async () => persisted,
+    getReleaseTiming: async ({ runId }) => {
+      assert.equal(runId, analysis.analysis_run_id);
+      return { processingStartedAt: '2026-09-04T10:00:00Z', processingCompletedAt: '2026-09-04T11:20:00Z' };
+    },
     saveReview: async ({ state: next, command, eventType }) => {
       savedCommand = command;
       savedEventType = eventType;
@@ -469,12 +493,17 @@ test('review HTTP boundary evaluates and persists lawyer evidence with server-de
       reconciliation: [{ inventory_item_id: 'inventory-1', disposition: 'PUBLISHED_FACT', review_item_id: facts[0].review_item_id }],
       citation_assessments: facts.map((fact) => ({ review_item_id: fact.review_item_id, exact: true, legally_sufficient: true, narrow: true })),
       elapsed_minutes: 30, developer_assisted: false,
+      processingStartedAt: '2026-09-04T11:20:00Z', processingCompletedAt: '2026-09-04T11:20:00Z',
+      timing: { processingStartedAt: '2026-09-04T11:20:00Z', processingCompletedAt: '2026-09-04T11:20:00Z' },
     },
   } }, response);
   assert.equal(response.statusCode, 200);
   assert.equal(savedCommand.reviewer_identity, 'lawyer@example.test');
   assert.equal(savedEventType, 'EVALUATE_RELEASE');
   assert.equal(response.body.review.state.release_evaluation_input.lawyer_attested_by, 'lawyer@example.test');
+  assert.equal(response.body.review.state.release_evaluation.diagnostics.processing_minutes, 80);
+  assert.equal(response.body.review.state.release_evaluation.diagnostics.effective_elapsed_minutes, 100);
+  assert.equal(response.body.review.state.release_evaluation.bars.review_within_ninety_minutes_without_developer, false);
   const rejected = responseDouble();
   await handler({ method: 'POST', query: { id: analysis.analysis_run_id }, headers: { 'x-pm-csrf': 'same-origin' }, body: {
     expected_version: 1, idempotency_key: 'release-evaluation-2', command: {

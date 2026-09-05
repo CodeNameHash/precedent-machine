@@ -190,6 +190,8 @@ test('release evaluation rejects vacuous or non-lawyer evidence and duplicate or
     citationAssessments: [{ review_item_id: 'fact-1', exact: true, legally_sufficient: true, narrow: true, reviewed_by_role: 'LAWYER' }],
     elapsedMinutes: 30,
     developerAssisted: false,
+    processingStartedAt: '2026-01-01T00:00:00.000Z',
+    processingCompletedAt: '2026-01-01T00:10:00.000Z',
   };
   const passingBaseline = evaluateSupervisedRelease(base);
   assert.equal(passingBaseline.passed, true, JSON.stringify(passingBaseline.bars));

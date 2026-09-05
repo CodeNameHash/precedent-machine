@@ -21,7 +21,8 @@ const {
 } = require('../lib/product/agreement-draft');
 const { createProductAnalysisHandler } = require('../lib/product/analysis-handler');
 const { callKey, createRecordedModelAdapter } = require('../lib/product/model-adapter');
-const { withSectionLeaseHeartbeat } = require('../lib/product/analysis-runner');
+const { advanceAgreementDraftAnalysis, runAgreementDraftAnalysis, withSectionLeaseHeartbeat } = require('../lib/product/analysis-runner');
+const { ProductPhase2Store } = require('../lib/product/phase-2-store');
 const { createSecIntakeAdapter } = require('../lib/product/sec-intake');
 const { buildSourceClosure, substantiveSections } = require('../lib/product/source-context');
 
@@ -515,6 +516,137 @@ test('recorded model adapter binds a raw response to the exact call request', as
       { call_key: callKey(input), provider_id: 'B', model_id: 'B', raw_response: {} },
     ],
   }), /RECORDING_DUPLICATE_KEY/);
+});
+
+test('completed section reconstruction reads every row beyond a capped database page', async () => {
+  const runId = '00000000-0000-4000-8000-000000000004';
+  const nodeId = 'n'.repeat(64);
+  const closureId = 'c'.repeat(64);
+  const spanRows = ['a', 'b', 'c'].map((prefix, index) => ({
+    run_id: runId,
+    span_id: prefix.repeat(64),
+    source_document_id: 'd'.repeat(64),
+    coordinate_system: 'UTF8_CANONICAL_TEXT_HALF_OPEN',
+    start_byte: index,
+    end_byte: index + 1,
+    text_sha256: prefix.repeat(64),
+    kind: 'FULL_SECTION',
+    structure_node_id: nodeId,
+    exact_text: prefix,
+  }));
+  const rows = {
+    product_section_results: [{ run_id: runId, structure_node_id: nodeId, source_closure_id: closureId }],
+    product_model_calls: [],
+    product_source_closures: [{ run_id: runId, source_closure_id: closureId, payload: { source_closure_id: closureId } }],
+    product_source_spans: spanRows,
+    product_source_closure_spans: spanRows.map((span) => ({ run_id: runId, source_closure_id: closureId, span_id: span.span_id })),
+    product_section_routings: [{ run_id: runId, structure_node_id: nodeId, authored_order: 0, payload: { section_routing_id: 'r'.repeat(64), section_reference: '1.1' } }],
+    product_proposition_groups: [],
+    product_proposals: [],
+    product_fact_links: [],
+    product_issues: [],
+    product_coverage_assertions: ['x', 'y', 'z'].map((prefix) => ({
+      run_id: runId, structure_node_id: nodeId, payload: { coverage_assertion_id: prefix.repeat(64) },
+    })),
+    product_residual_passes: [{ run_id: runId, structure_node_id: nodeId, payload: { residual_pass_id: 'q'.repeat(64) } }],
+  };
+  const client = { rpc: async () => ({ data: null, error: null }), from(table) {
+    let offset = 0;
+    let end = Number.MAX_SAFE_INTEGER;
+    const order = [];
+    const query = {
+      select() { return query; },
+      eq() { return query; },
+      order(column) { order.push(column); return query; },
+      range(from, to) { offset = from; end = to; return query; },
+      then(resolve) {
+        const sorted = [...(rows[table] || [])].sort((left, right) => {
+          for (const column of order) {
+            const comparison = String(left[column] || '').localeCompare(String(right[column] || ''));
+            if (comparison) return comparison;
+          }
+          return 0;
+        });
+        return Promise.resolve({ data: sorted.slice(offset, end + 1).slice(0, 2), error: null }).then(resolve);
+      },
+    };
+    return query;
+  } };
+  const result = await new ProductPhase2Store({ client }).loadCompletedSectionResults(runId);
+  assert.equal(result[0].spans.length, 3);
+  assert.equal(result[0].source_closure.spans.length, 3);
+  assert.equal(result[0].coverage.length, 3);
+});
+
+test('draft finalisation sends only identities and agreement-level derived components', async () => {
+  let invocation;
+  const client = { from: () => ({}), rpc: async (name, parameters) => {
+    invocation = { name, parameters };
+    return { data: { ok: true }, error: null };
+  } };
+  const draft = {
+    schema_version: 'AGREEMENT_DRAFT/V1', draft_analysis_id: 'a'.repeat(64),
+    source_document_id: 'b'.repeat(64), agreement_structure_id: 'c'.repeat(64), legal_schema_version: 'LEGAL_SCHEMA/V1',
+    totals: { substantive_sections: 1 },
+    sections: [{ node_id: 'node', section_result_id: 'result', section_routing_id: 'routing', source_closure_id: 'closure' }],
+    residual_passes: [{ residual_pass_id: 'residual' }],
+    model_calls: [{ model_call_id: 'call', request: { large: 'x'.repeat(1000) }, response: { large: 'y'.repeat(1000) } }],
+    source_closures: [{ source_closure_id: 'closure', spans: [{ span_id: 'span', exact_text: 'large source text' }] }],
+    spans: [{ span_id: 'span', exact_text: 'large source text' }],
+    section_routings: [{ section_routing_id: 'routing', structure_node_id: 'node' }],
+    proposition_groups: [{ proposition_group_id: 'group' }],
+    proposals: [{ proposal_id: 'proposal', source_span_ids: ['span'] }],
+    fact_links: [{ fact_link_id: 'link', source_span_ids: ['span'] }],
+    issues: [{ issue_id: 'section-issue', structure_node_id: 'node' }, { issue_id: 'global-issue', structure_node_id: null }],
+    coverage_assertions: [{ coverage_assertion_id: 'section-coverage', structure_node_id: 'node' }, { coverage_assertion_id: 'global-coverage', structure_node_id: null }],
+  };
+  await new ProductPhase2Store({ client }).finalizeDraft({ runId: 'run', draft });
+  assert.equal(invocation.name, 'product_phase2_finalize_saved_run');
+  assert.deepEqual(invocation.parameters.p_finalization.global_issues, [draft.issues[1]]);
+  assert.deepEqual(invocation.parameters.p_finalization.global_coverage_assertions, [draft.coverage_assertions[1]]);
+  assert.deepEqual(invocation.parameters.p_finalization.components.source_closure_spans, [{ source_closure_id: 'closure', span_id: 'span' }]);
+  assert.deepEqual(invocation.parameters.p_finalization.components.proposal_spans, [{ proposal_id: 'proposal', span_id: 'span', ordinal: 0 }]);
+  assert.doesNotMatch(JSON.stringify(invocation.parameters), /large source text|"large"/);
+});
+
+test('finalisation failure becomes an honest failed run without changing completed sections', async () => {
+  const failure = new Error('DRAFT_CLOSURE_MEMBERSHIP: broken-closure');
+  const failures = [];
+  const store = {
+    getRunContext: async () => ({ sourceDocument: {}, agreementStructure: { nodes: [] } }),
+    claimNextSection: async () => null,
+    commitSection: async () => assert.fail('no completed section may be recommitted'),
+    getProgress: async () => ({ total: 1, completed: 1, failed: 0 }),
+    loadCompletedSectionResults: async () => { throw failure; },
+    failRun: async (input) => failures.push(input),
+  };
+  await assert.rejects(() => runAgreementDraftAnalysis({
+    runId: '00000000-0000-4000-8000-000000000005', store, legalSchema: schema,
+    model: { complete: async () => assert.fail('no model call may run') },
+  }), failure);
+  assert.deepEqual(failures, [{
+    runId: '00000000-0000-4000-8000-000000000005',
+    stage: 'DRAFT_FINALIZATION',
+    error: failure,
+  }]);
+});
+
+test('incremental worker finalisation failure becomes an honest failed run', async () => {
+  const failure = new Error('DATABASE_ERROR: canceling statement due to statement timeout');
+  const failures = [];
+  const runId = '00000000-0000-4000-8000-000000000006';
+  const store = {
+    getRunContext: async () => ({ sourceDocument: {}, agreementStructure: { nodes: [] } }),
+    claimNextSection: async () => null,
+    getProgress: async () => ({ total: 0, completed: 0, failed: 0 }),
+    loadCompletedSectionResults: async () => { throw failure; },
+    failRun: async (input) => failures.push(input),
+  };
+  await assert.rejects(() => advanceAgreementDraftAnalysis({
+    runId, store, legalSchema: schema,
+    model: { complete: async () => assert.fail('no model call may run') },
+  }), failure);
+  assert.deepEqual(failures, [{ runId, stage: 'DRAFT_FINALIZATION', error: failure }]);
 });
 
 test('real Concho SEC source reaches a reproducible, coherent draft with all-family routing and residual coverage', async () => {

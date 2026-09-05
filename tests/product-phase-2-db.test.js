@@ -8,6 +8,7 @@ const test = require('node:test');
 const { Client } = require('pg');
 
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
+const { assembleAgreementDraft } = require('../lib/product/agreement-draft');
 const { runAgreementDraftAnalysis } = require('../lib/product/analysis-runner');
 const { createProductAnalysisHandler } = require('../lib/product/analysis-handler');
 const { buildAgreementStructure } = require('../lib/product/agreement-structure');
@@ -29,6 +30,8 @@ const migrations = [
   'supabase/migrations/20260905200000_product_expired_section_recovery.sql',
   'supabase/migrations/20260905201000_product_residual_pass_persistence.sql',
   'supabase/migrations/20260905202000_product_section_lease_heartbeat.sql',
+  'supabase/migrations/20260905204000_product_saved_run_finalization.sql',
+  'supabase/migrations/20260905210000_product_structure_versions.sql',
 ].map((file) => fs.readFileSync(path.join(ROOT, file), 'utf8'));
 let client;
 
@@ -36,6 +39,7 @@ const rpcArguments = {
   product_phase1_persist_source: ['p_source'],
   product_phase1_create_run: ['p_source_document_id', 'p_retrieval_url', 'p_idempotency_key', 'p_schema_version', 'p_prompt_bundle_version', 'p_model_config', 'p_explicit_generation', 'p_max_attempts'],
   product_phase1_attach_structure: ['p_run_id', 'p_structure_id', 'p_structure', 'p_identity_review'],
+  product_phase1_fail_run: ['p_run_id', 'p_stage', 'p_error'],
   product_phase1_resolve_identity: ['p_run_id', 'p_resolution'],
   product_phase1_claim_section: ['p_run_id', 'p_worker_id', 'p_lease_seconds'],
   product_phase1_recover_expired_sections: ['p_run_id'],
@@ -44,6 +48,7 @@ const rpcArguments = {
   product_phase1_fail_section: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_error'],
   product_phase2_commit_section: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_result'],
   product_phase2_finalize_draft: ['p_run_id', 'p_draft'],
+  product_phase2_finalize_saved_run: ['p_run_id', 'p_finalization'],
   product_phase2_get_analysis: ['p_run_id'],
   product_phase3_register_run_access: ['p_run_id', 'p_actor'],
   product_phase3_retry_run: ['p_run_id', 'p_actor', 'p_idempotency_key'],
@@ -71,10 +76,14 @@ function databaseFacade() {
       if (!/^product_[a-z_]+$/.test(table)) throw new Error('invalid table');
       let columns = '*';
       const filters = [];
+      const orders = [];
+      let range = null;
       const execute = async (single = false) => {
         try {
           const where = filters.length ? ` WHERE ${filters.map((item, index) => `${item.column} = $${index + 1}`).join(' AND ')}` : '';
-          const result = await client.query(`SELECT ${columns} FROM public.${table}${where}`, filters.map((item) => item.value));
+          const order = orders.length ? ` ORDER BY ${orders.map((item) => `${item.column} ${item.ascending ? 'ASC' : 'DESC'}`).join(', ')}` : '';
+          const bounded = range ? ` LIMIT ${range.to - range.from + 1} OFFSET ${range.from}` : '';
+          const result = await client.query(`SELECT ${columns} FROM public.${table}${where}${order}${bounded}`, filters.map((item) => item.value));
           return { data: single ? (result.rows[0] || null) : result.rows, error: null };
         } catch (error) {
           return { data: null, error };
@@ -86,6 +95,11 @@ function databaseFacade() {
           if (!/^[a-z_]+$/.test(column)) throw new Error('invalid column');
           filters.push({ column, value }); return builder;
         },
+        order(column, options = {}) {
+          if (!/^[a-z_]+$/.test(column)) throw new Error('invalid column');
+          orders.push({ column, ascending: options.ascending !== false }); return builder;
+        },
+        range(from, to) { range = { from, to }; return builder; },
         maybeSingle() { return execute(true); },
         then(resolve, reject) { return execute(false).then(resolve, reject); },
       };
@@ -185,6 +199,61 @@ async function runPhase2DatabaseTest() {
   assert.equal(Number(persisted.rows[0].calls), read.model_calls.length);
   assert.equal(Number(persisted.rows[0].proposals), read.proposals.length);
   assert.ok(Number(persisted.rows[0].spans) > 0);
+
+  const completedResults = await store.loadCompletedSectionResults(run.run_id);
+  const finalizedDraft = assembleAgreementDraft({ sourceDocument, agreementStructure, legalSchema: schema, results: completedResults });
+  const revisionBeforeRepeat = (await client.query(
+    'SELECT version FROM public.product_drafts WHERE run_id=$1', [run.run_id],
+  )).rows[0].version;
+  assert.equal((await store.finalizeDraft({ runId: run.run_id, draft: finalizedDraft })).draft_analysis_id, read.draft_analysis_id);
+  assert.equal((await client.query(
+    'SELECT version FROM public.product_drafts WHERE run_id=$1', [run.run_id],
+  )).rows[0].version, revisionBeforeRepeat);
+  const collidingDraft = structuredClone(finalizedDraft);
+  collidingDraft.issues.push({
+    schema_version: 'PRODUCT_ISSUE/V1', issue_id: 'f'.repeat(64), kind: 'COVERAGE', state: 'OPEN',
+    family_key: null, structure_node_id: null, proposal_id: null, code: 'COLLISION_TEST',
+  });
+  await client.query('SAVEPOINT finalization_collision');
+  await assert.rejects(
+    () => store.finalizeDraft({ runId: run.run_id, draft: collidingDraft }),
+    /PERSISTENCE_CONFLICT|AgreementDraft collision/i,
+  );
+  await client.query('ROLLBACK TO SAVEPOINT finalization_collision');
+  await client.query('RELEASE SAVEPOINT finalization_collision');
+  for (const missing of ['source_document_id', 'totals']) {
+    const incompleteDraft = structuredClone(finalizedDraft);
+    delete incompleteDraft[missing];
+    await client.query(`SAVEPOINT missing_finalization_${missing}`);
+    await assert.rejects(
+      () => store.finalizeDraft({ runId: run.run_id, draft: incompleteDraft }),
+      /invalid AgreementDraft finalization|DATABASE_ERROR/i,
+    );
+    await client.query(`ROLLBACK TO SAVEPOINT missing_finalization_${missing}`);
+    await client.query(`RELEASE SAVEPOINT missing_finalization_${missing}`);
+  }
+
+  const originalStructureId = (await client.query(
+    'SELECT structure_id FROM public.product_run_structures WHERE run_id=$1', [run.run_id],
+  )).rows[0].structure_id;
+  const versionedStructure = { ...structuredClone(agreementStructure), builder_revision: 'phase2-db-v2' };
+  const versionedRun = await store.createOrGetRun({
+    sourceDocumentId: sourceDocument.source_document_id,
+    retrievalUrl: CONCHO_URL,
+    idempotencyKey: 'phase2-versioned-structure-v2',
+    schemaVersion: schema.schema_version,
+    promptBundleVersion: 'PRODUCT_PHASE2/V2',
+    modelConfig: { provider: 'synthetic-test', model: 'SYNTHETIC_LEGAL_MODEL/V1' },
+    explicitGeneration: 8,
+  });
+  await store.attachStructure({ runId: versionedRun.run_id, structure: versionedStructure });
+  const structureBindings = (await client.query(`SELECT rs.run_id, rs.structure_id
+    FROM public.product_run_structures rs WHERE rs.run_id IN ($1,$2) ORDER BY rs.run_id`, [run.run_id, versionedRun.run_id])).rows;
+  assert.equal(new Set(structureBindings.map((row) => row.structure_id)).size, 2);
+  assert.equal(structureBindings.find((row) => row.run_id === run.run_id).structure_id, originalStructureId);
+  assert.equal(Number((await client.query(
+    'SELECT count(*) FROM public.product_agreement_structures WHERE source_document_id=$1', [sourceDocument.source_document_id],
+  )).rows[0].count), 2);
 
   const retryRun = await store.createOrGetRun({
     sourceDocumentId: sourceDocument.source_document_id,
@@ -311,11 +380,13 @@ async function runPhase2DatabaseTest() {
     has_table_privilege('service_role', 'public.product_proposals', 'INSERT') AS direct_insert,
     has_function_privilege('anon', 'public.product_phase2_get_analysis(uuid)', 'EXECUTE') AS anon_read,
     has_function_privilege('authenticated', 'public.product_phase2_finalize_draft(uuid,jsonb)', 'EXECUTE') AS authenticated_finalize,
+    has_function_privilege('authenticated', 'public.product_phase2_finalize_saved_run(uuid,jsonb)', 'EXECUTE') AS authenticated_saved_finalize,
     has_function_privilege('anon', 'product_private.product_phase2_get_analysis(uuid)', 'EXECUTE') AS anon_private_read,
     has_function_privilege('authenticated', 'product_private.product_phase2_commit_section(uuid,text,text,uuid,jsonb)', 'EXECUTE') AS authenticated_private_commit`)).rows[0];
   assert.equal(privileges.direct_insert, false);
   assert.equal(privileges.anon_read, false);
   assert.equal(privileges.authenticated_finalize, false);
+  assert.equal(privileges.authenticated_saved_finalize, false);
   assert.equal(privileges.anon_private_read, false);
   assert.equal(privileges.authenticated_private_commit, false);
   assert.equal(contentId('AGREEMENT_STRUCTURE/V1', agreementStructure), contentId('AGREEMENT_STRUCTURE/V1', read.agreement_structure));

@@ -400,8 +400,13 @@ result. Every substantive section and required role has a disposition.
 ### Phase 5. Freeze, test blind and correct honestly, 3 days
 
 Current position, 2026-09-05: the private online Codex worker has passed a real
-model call and a stop-and-resume authentication check. The Public Storage
-diagnostic is continuing there with completed sections preserved. This is
+model call and a stop-and-resume authentication check. All 105 Public Storage
+diagnostic sections are processed and saved, and the website now loads Review.
+The database row limit and finalisation timeout are corrected. The result is
+not yet useful: 92 sections did not reach extraction because three references
+to a separate agreement were treated as missing merger-agreement sections.
+That document-reference distinction is being corrected before the final test.
+The 90-minute check now includes measured processing time. This is
 diagnostic work, not blind release evidence. The untouched final agreement,
 independent lawyer inventory and fixed release bars remain outstanding.
 Preview processing continues after the browser closes. If the entire worker

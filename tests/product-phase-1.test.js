@@ -252,6 +252,56 @@ test('agreement structure excludes external regulatory section citations but ret
   assert.equal(references.includes('312.03'), false);
 });
 
+test('agreement structure excludes sections qualified by a separately defined agreement', () => {
+  const canonicalText = [
+    'ARTICLE I',
+    'DEFINITIONS',
+    'Section 1.1 Defined Terms.',
+    '“Partnership Agreement” means the Fourth Amended and Restated Agreement of Limited Partnership of the Partnership, dated as of May 30, 2024, together with all amendments, supplements and restatements thereto.',
+    '“Support Agreement” means that certain Support Agreement, dated as of March 1, 2026, between Parent and Sponsor.',
+    '“Merger Agreement” means this Amended and Restated Agreement and Plan of Merger, as amended from time to time.',
+    '“Acquisition Agreement” means the Agreement and Plan of Merger, dated as of March 16, 2026, among Parent, Merger Sub and the Company.',
+    '“Shared Agreement” means that certain Agreement, dated as of January 1, 2025, between Parent and Sponsor.',
+    '“Shared Agreement” means this Agreement when used in the operative covenants.',
+    'ARTICLE II',
+    'COVENANTS',
+    'Section 2.1 Required Actions.',
+    'Pursuant to Section 11.2(a) of the Partnership Agreement, the Partnership shall act.',
+    'The parties shall also comply with Section 7.4 of the Support Agreement.',
+    'The parties shall also comply with Section 4.2 of the Merger Agreement.',
+    'The parties shall also comply with Section 5.5 of the Acquisition Agreement.',
+    'The parties shall also comply with Section 6.6 of the Shared Agreement.',
+    'The parties shall also comply with Section 9.9 and Section 8.8 of this Agreement.',
+  ].join('\n');
+  const source = sourceFixture();
+  const structure = buildAgreementStructure({
+    agreement_id: source.source_document_id,
+    canonical_text: canonicalText,
+    canonical_text_sha256: require('node:crypto').createHash('sha256').update(canonicalText).digest('hex'),
+  });
+  const references = structure.annotations.filter((item) => item.kind === 'SECTION_REFERENCE').map((item) => item.value);
+  assert.equal(references.includes('11.2(a)'), false);
+  assert.equal(references.includes('7.4'), false);
+  assert.equal(references.includes('4.2'), true);
+  assert.equal(references.includes('5.5'), true);
+  assert.equal(references.includes('6.6'), true);
+  assert.equal(references.includes('9.9'), true);
+  assert.equal(references.includes('8.8'), true);
+  const section = structure.nodes.find((node) => node.reference === '2.1');
+  const sourceDocument = {
+    ...source,
+    canonical_text: canonicalText,
+    canonical_text_sha256: require('node:crypto').createHash('sha256').update(canonicalText).digest('hex'),
+    final_url: SEC_URL,
+    filing_accession: '000000000000000001',
+    exhibit_filename: 'other-agreement-reference.htm',
+    source_map_id: 'd'.repeat(64),
+  };
+  const closure = buildSourceClosure({ sourceDocument, agreementStructure: structure, nodeId: section.node_id });
+  assert.equal(closure.spans.find((span) => span.kind === 'FULL_SECTION').exact_text.includes('Section 11.2(a) of the Partnership Agreement'), true);
+  assert.deepEqual(closure.context_diagnostics.unresolved_section_references, ['4.2', '5.5', '6.6', '8.8', '9.9']);
+});
+
 test('sectioniser retains a bare heading that directly opens a lettered clause', () => {
   const text = [
     'ARTICLE V',
@@ -538,10 +588,6 @@ class MemoryStore {
     this.runs.set(run.run_id, run); this.requests.set(input.idempotencyKey, run); return run;
   }
   async getStructureForRun(runId) { return this.structures.get(runId) || null; }
-  async findStructureBySource(sourceDocumentId) {
-    const entry = [...this.structures.entries()].find(([runId]) => this.runs.get(runId)?.source_document_id === sourceDocumentId);
-    return entry?.[1] || null;
-  }
   async attachStructure({ runId, structure, identityReview }) {
     this.events.push('attach-structure'); this.structures.set(runId, structure);
     const run = this.runs.get(runId); run.stage = identityReview ? 'DOCUMENT_IDENTITY_REVIEW' : 'SECTION_ANALYSIS';
@@ -573,7 +619,11 @@ test('foundation persists source before run, builds structure once and deduplica
   const source = sourceFixture();
   const foundation = createPhase1Foundation({
     secIntake: { intake: async () => { fetches += 1; return source; } }, store,
-    structureBuilder: (value) => { builds += 1; assert.equal(store.sources.get(SEC_URL), value); return buildAgreementStructure(value); },
+    structureBuilder: (value) => {
+      builds += 1;
+      assert.equal(store.sources.get(SEC_URL), value);
+      return { ...buildAgreementStructure(value), builder_revision: builds };
+    },
   });
   const first = await foundation.submit(submission());
   const retry = await foundation.submit(submission());
@@ -586,7 +636,9 @@ test('foundation persists source before run, builds structure once and deduplica
   assert.notEqual(changed.run_id, first.run_id);
   assert.equal(changed.source_generation, 2);
   assert.equal(fetches, 1);
-  assert.equal(builds, 1);
+  assert.equal(builds, 2);
+  assert.equal(store.structures.get(first.run_id).builder_revision, 1);
+  assert.equal(store.structures.get(changed.run_id).builder_revision, 2);
   await assert.rejects(foundation.submit(submission({ modelConfig: { model: 'changed' } })), /IDEMPOTENCY_CONFLICT/);
 });
 
