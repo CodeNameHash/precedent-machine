@@ -30,6 +30,13 @@ Verify each against the repository before relying on it.
   `lib/canonical-v2/sec-html-canonical-text.js`
   (`SEC_HTML_CANONICAL_TEXT_CONVERSION/V2`, digest
   `c6b6a93315fad0bc3e65be699c71e2fea4d98111ba701f72f19dfb96dfb5c85a`).
+- Public consumer seam: `docs/codex-program/handoffs/deal-terms/contract/verify.mjs`
+  and the contract files beside it under `docs/codex-program/handoffs/deal-terms/contract/`.
+  In that contract, `registerTransaction(...)` is the consumer-minted
+  `deal_id` derivation in `CORPUS-MANIFEST-INPUT-CONTRACT.md` and
+  `deal-terms-package.schema.json`; `admitDealSources(...)` is the
+  `admissionEntry` / `admissionReceipt` route in `corpus-manifest.schema.json`.
+  DS should use the public contract and verifier, not PM internals.
 - Offline Metsera conformance fixture:
   `evidence/canonical-v2/metsera-antitrust-regulatory-20260809-2xk-final/source-reference.json`
   plus `tests/fixtures/canonical-v2/metsera-first-live-run/metsera-raw-fetched.htm`.
@@ -41,6 +48,10 @@ Verify each against the repository before relying on it.
   source-map digest `9c915e8c5e6bad5d80acf6b570302964658f375270b6b70c8dbecb6367f92ebf`,
   compressed source-map digest
   `ab6a13e7f6a56f10935f68e2eb6b3b54b4091cbf3cdd7ae5a5076c90f06a85be`.
+- Offline command for the shared core proof:
+  `node --test tests/canonical-v2-sec-edgar-intake-capture.test.js tests/canonical-v2-sec-source-admission.test.js`
+- Offline command for package verification:
+  `node docs/codex-program/handoffs/deal-terms/contract/verify.mjs docs/codex-program/handoffs/deal-terms/contract/example-one-deal-package`
 - The 40-agreement corpus is a target, not a cohort (PLAN Product Stage 6
   step 1). The only fixed producer set is ten agreements = ten unique
   transactions (A-0007); their selection input is A-0008.
