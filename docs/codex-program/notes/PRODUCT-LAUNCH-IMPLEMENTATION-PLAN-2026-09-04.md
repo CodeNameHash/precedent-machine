@@ -399,8 +399,9 @@ result. Every substantive section and required role has a disposition.
 
 ### Phase 5. Freeze, test blind and correct honestly, 3 days
 
-Current position, 2026-09-05: the seventh Public Storage diagnostic stopped with
-70 sections complete, one failed and 34 pending. Ordinary Retry preserved the 65
+Current position, 2026-09-05: the seventh Public Storage diagnostic has resumed
+from 70 of 105 sections complete. Every one of those 70 saved results is unchanged.
+It had stopped with one failed section and 34 pending. The earlier Retry preserved the 65
 prior results and proved the corrected Codex final-message transport across five
 new sections. Invalid claims remain visible review work; no invented citation is
 accepted. The remaining section failed because its replies omitted required
@@ -414,8 +415,9 @@ triplets now replay through this rule with their raw provider replies unchanged;
 all routed family results remain UNRESOLVED. Held statements now have readable
 model-proposed labels, original detail and source context in the review screen.
 The focused browser check also proves malformed held data cannot blank the page,
-and existing review controls remain usable. This correction is not yet deployed
-or tested by another ordinary Retry. An explicit summary-group repair control and
+and existing review controls remain usable. This correction is now deployed to the
+private preview and stopped worker. Ordinary Retry is running the remaining
+sections; its final result is not yet proved. An explicit summary-group repair control and
 publication validation pass browser and database checks. The website progress
 count correction is applied only to the disposable preview database and reports
 this stopped run as zero running. Speed work and precedent tracing are deferred
