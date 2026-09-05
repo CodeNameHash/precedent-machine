@@ -621,9 +621,19 @@ test('completed section reconstruction reads every row beyond a capped database 
     structure_node_id: nodeId,
     exact_text: prefix,
   }));
+  const modelCallRows = Array.from({ length: 55 }, (_, index) => {
+    const ordinal = 54 - index;
+    return {
+      run_id: runId, structure_node_id: nodeId,
+      model_call_id: `call-${String(ordinal).padStart(3, '0')}`,
+      call_kind: 'EXTRACTION', prompt_version: 'V1', provider_id: 'RECORDED', model_id: 'MODEL/V1',
+      request: { exact: `request-${ordinal}` }, response: { exact: `response-${ordinal}` },
+      input_tokens: ordinal, output_tokens: ordinal + 1, cost_microusd: 0, duration_ms: 1,
+    };
+  });
   const rows = {
     product_section_results: [{ run_id: runId, structure_node_id: nodeId, source_closure_id: closureId }],
-    product_model_calls: [],
+    product_model_calls: modelCallRows,
     product_source_closures: [{ run_id: runId, source_closure_id: closureId, payload: { source_closure_id: closureId } }],
     product_source_spans: spanRows,
     product_source_closure_spans: spanRows.map((span) => ({ run_id: runId, source_closure_id: closureId, span_id: span.span_id })),
@@ -637,6 +647,7 @@ test('completed section reconstruction reads every row beyond a capped database 
     })),
     product_residual_passes: [{ run_id: runId, structure_node_id: nodeId, payload: { residual_pass_id: 'q'.repeat(64) } }],
   };
+  const requestedRanges = {};
   const client = { rpc: async () => ({ data: null, error: null }), from(table) {
     let offset = 0;
     let end = Number.MAX_SAFE_INTEGER;
@@ -645,7 +656,12 @@ test('completed section reconstruction reads every row beyond a capped database 
       select() { return query; },
       eq() { return query; },
       order(column) { order.push(column); return query; },
-      range(from, to) { offset = from; end = to; return query; },
+      range(from, to) {
+        offset = from; end = to;
+        if (!requestedRanges[table]) requestedRanges[table] = [];
+        requestedRanges[table].push([from, to]);
+        return query;
+      },
       then(resolve) {
         const sorted = [...(rows[table] || [])].sort((left, right) => {
           for (const column of order) {
@@ -654,7 +670,8 @@ test('completed section reconstruction reads every row beyond a capped database 
           }
           return 0;
         });
-        return Promise.resolve({ data: sorted.slice(offset, end + 1).slice(0, 2), error: null }).then(resolve);
+        const serverCap = table === 'product_model_calls' ? 17 : 2;
+        return Promise.resolve({ data: sorted.slice(offset, end + 1).slice(0, serverCap), error: null }).then(resolve);
       },
     };
     return query;
@@ -663,6 +680,15 @@ test('completed section reconstruction reads every row beyond a capped database 
   assert.equal(result[0].spans.length, 3);
   assert.equal(result[0].source_closure.spans.length, 3);
   assert.equal(result[0].coverage.length, 3);
+  assert.equal(result[0].model_calls.length, 55);
+  assert.deepEqual(result[0].model_calls.map((call) => call.model_call_id),
+    [...modelCallRows].sort((left, right) => left.model_call_id.localeCompare(right.model_call_id))
+      .map((call) => call.model_call_id));
+  assert.deepEqual(result[0].model_calls[0].request, { exact: 'request-0' });
+  assert.deepEqual(result[0].model_calls[54].response, { exact: 'response-54' });
+  assert.deepEqual(requestedRanges.product_model_calls, [
+    [0, 49], [17, 66], [34, 83], [51, 100], [55, 104],
+  ]);
 });
 
 test('draft finalisation sends only identities and agreement-level derived components', async () => {
