@@ -2,6 +2,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const https = require('node:https');
 const { createSharedSourceCore, IdentityConflictError } = require('..');
 
 const transaction = {
@@ -61,6 +62,44 @@ test('allows ordinary global SEC CDN address families', async () => {
     });
     assert.match(result, /^[a-f0-9]{64}$/);
   }
+});
+
+test('default https.get transport honours Node all-lookup callback shape', async () => {
+  const originalGet = https.get;
+  const calls = [];
+  https.get = (url, options, callback) => {
+    options.lookup('www.sec.gov', { all: true, verbatim: true }, (error, addresses) => {
+      assert.ifError(error);
+      calls.push({ mode: 'all', addresses });
+    });
+    options.lookup('www.sec.gov', { all: false, verbatim: true }, (error, address, family) => {
+      assert.ifError(error);
+      calls.push({ mode: 'scalar', address, family });
+    });
+    const response = {
+      statusCode: 200,
+      headers: { 'content-type': 'text/html' },
+      on() {},
+      async *[Symbol.asyncIterator]() {
+        yield Buffer.from('<p>x</p>');
+      },
+    };
+    callback(response);
+    return { on() {} };
+  };
+  try {
+    const core = createSharedSourceCore({
+      lookup: async () => [{ address: '23.62.25.91', family: 4 }],
+    });
+    const id = await core.registerTransaction(transaction);
+    await core.admitDealSources({ transaction_id: id, sources: [source] });
+  } finally {
+    https.get = originalGet;
+  }
+  assert.deepEqual(calls, [
+    { mode: 'all', addresses: [{ address: '23.62.25.91', family: 4 }] },
+    { mode: 'scalar', address: '23.62.25.91', family: 4 },
+  ]);
 });
 
 test('validates every redirect destination', async () => {

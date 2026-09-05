@@ -10,7 +10,7 @@ const { buildLegacyCapture } = require('./intake');
 const { convertSecHtmlToCanonicalText } = require('./canonical-text');
 const componentDigest = require('./component-digest.json');
 
-const COMPONENT_VERSION = 'SHARED_SEC_INGEST/V1.0.2';
+const COMPONENT_VERSION = 'SHARED_SEC_INGEST/V1.0.3';
 const CANONICALISATION_PROFILE = Object.freeze({
   version: 'SEC_HTML_CANONICAL_TEXT_CONVERSION/V2',
   digest: 'c6b6a93315fad0bc3e65be699c71e2fea4d98111ba701f72f19dfb96dfb5c85a',
@@ -199,7 +199,8 @@ function pinnedHttpsTransport(url, { address, family, headers }) {
       headers,
       servername: new URL(url).hostname,
       lookup(hostname, options, callback) {
-        callback(null, address, family);
+        if (options && options.all) callback(null, [{ address, family }]);
+        else callback(null, address, family);
       },
     }, (response) => resolve({
       status: response.statusCode,
