@@ -14,12 +14,89 @@ function proposalRequiredRoles(proposal) {
   return family?.subtypes.find((item) => item.subtype_key === proposal.subtype_key)?.required_roles || [];
 }
 
+const heldIssueCodes = new Set([
+  'UNSUPPORTED_SUBTYPE',
+  'UNSUPPORTED_FACT_TYPE',
+  'UNSUPPORTED_PROPOSITION_GROUP_MEMBER',
+  'DUPLICATE_PROPOSITION_GROUP',
+  'UNSUPPORTED_FACT_LINK',
+]);
+
+function plainObject(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+    && Object.getPrototypeOf(value) === Object.prototype;
+}
+
+function scalarText(value) {
+  if (typeof value === 'string') return value.trim() || null;
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  return null;
+}
+
+function nestedText(value) {
+  const scalar = scalarText(value);
+  if (scalar !== null) return scalar;
+  if (!plainObject(value) && !Array.isArray(value)) return null;
+  try { return JSON.stringify(value); } catch { return null; }
+}
+
+function HeldDetail({ value, issueCode }) {
+  if (!plainObject(value)) return null;
+  const statement = scalarText(value.statement) || scalarText(value.description) || scalarText(value.message)
+    || (plainObject(value.statement) ? nestedText(value.statement) : null);
+  const category = [value.family_key, value.subtype_key, value.fact_type].map(scalarText).filter(Boolean);
+  const proposalLike = ['UNSUPPORTED_FACT_TYPE', 'UNSUPPORTED_PROPOSITION_GROUP_MEMBER'].includes(issueCode)
+    || scalarText(value.group_ref) !== null || scalarText(value.fact_type) !== null
+    || value.statement !== undefined || value.roles !== undefined || value.value !== undefined;
+  const clientRef = scalarText(value.client_ref);
+  const groupRef = scalarText(value.group_ref);
+  const roles = plainObject(value.roles) ? Object.entries(value.roles).map(([key, role]) => {
+    const text = nestedText(role);
+    return text === null ? null : `${key.replaceAll('_', ' ')}: ${text}`;
+  }).filter(Boolean) : [];
+  const proposedValue = nestedText(value.value ?? value.canonical_value);
+  const evidence = Array.isArray(value.evidence_quotes) ? value.evidence_quotes.map((entry) => {
+    if (!plainObject(entry)) return scalarText(entry);
+    return nestedText(entry.quote) || nestedText(entry.exact_text) || nestedText(entry);
+  }).filter(Boolean) : [];
+  const fromRef = scalarText(value.from_ref);
+  const toRef = scalarText(value.to_ref);
+  const linkType = nestedText(value.relationship_type ?? value.type);
+  return <div className="mt-2 border-t border-amber-200 pt-2">
+    <p className="font-medium">{statement ? `Model-proposed statement: ${statement}` : 'No readable model-proposed statement'}</p>
+    {category.length ? <p className="mt-1">Model-proposed category: {category.join(' · ')}</p> : null}
+    {clientRef ? <p>{proposalLike ? 'Model-proposed proposal reference' : 'Model-proposed group reference'}: {clientRef}</p> : null}
+    {groupRef ? <p>Model-proposed group reference: {groupRef}</p> : null}
+    {fromRef ? <p>Model-proposed link from: {fromRef}</p> : null}
+    {toRef ? <p>Model-proposed link to: {toRef}</p> : null}
+    {linkType ? <p>Model-proposed link type: {linkType}</p> : null}
+    {plainObject(value.roles) ? <p>Model-proposed roles: {roles.join('; ') || 'None recorded'}</p> : null}
+    {proposedValue !== null ? <p>Model-proposed value: {proposedValue}</p> : null}
+    {Array.isArray(value.evidence_quotes) ? <p>Model-proposed evidence: {evidence.join(' · ') || 'None recorded'}</p> : null}
+  </div>;
+}
+
+function HeldContent({ parsed, issueCode, originalMessage }) {
+  const values = (Array.isArray(parsed) ? parsed : [parsed]).filter(plainObject);
+  return <div className="basis-full rounded bg-amber-50 p-3 text-xs text-amber-950">
+    <p className="font-semibold">Held model-proposed content, not accepted</p>
+    {values.length ? values.map((value, index) => <HeldDetail key={index} value={value} issueCode={issueCode} />)
+      : <p className="mt-2 border-t border-amber-200 pt-2 font-medium">No readable model-proposed content</p>}
+    <details className="mt-2"><summary className="cursor-pointer font-semibold">Show recorded detail</summary><pre className="mt-1 max-h-48 overflow-auto whitespace-pre-wrap">{originalMessage}</pre></details>
+  </div>;
+}
+
 export function Requirement({ item, onDecision, onSource, busy }) {
   const title = item.kind === 'COVERAGE' ? `${item.original.family_key || 'Section'} ${item.original.subject_kind}`
     : item.kind === 'IMMATERIAL_ROUTING' ? `Confirm ${displaySectionReference(item.original.section_reference)} is immaterial`
       : item.kind === 'EXCEPTION_LINK' ? 'Review exception relationship' : item.original.code || item.kind;
   const status = item.original.state || item.original.relationship_type || null;
-  return <div className="flex flex-wrap items-center gap-2 rounded border border-border bg-white p-3 text-sm"><span className="font-semibold text-ink">{title}</span>{status ? <span className="text-inkLight">Status: {status}</span> : null}{item.original.message ? <span className="text-inkLight">Recorded detail: {item.original.message}</span> : null}{item.relationship_context ? <p className="basis-full rounded bg-paper p-2 text-xs text-inkMid"><strong>Exception:</strong> {item.relationship_context.from}<br/><strong>Applies to:</strong> {item.relationship_context.to}</p> : null}{item.issue_context ? <div className="basis-full rounded bg-paper p-2 text-xs text-inkMid"><p>{item.issue_context.explanation}</p><p><strong>Recorded group:</strong> {item.issue_context.group_mapping.family_key} · {item.issue_context.group_mapping.subtype_key}</p><p><strong>Proposal mappings:</strong> {item.issue_context.member_mappings.map((mapping) => `${mapping.family_key} · ${mapping.subtype_key}`).join('; ') || 'Unavailable in the stored analysis'}</p></div> : null}{item.source_span_ids?.length ? <button type="button" onClick={() => onSource(item.source_closure_id, item.source_span_ids[0])} className="text-xs font-semibold text-accent">View complete source closure</button> : null}<span className="ml-auto text-xs font-bold">{item.decision}</span><><button disabled={busy} type="button" onClick={() => onDecision(item.item_id, 'ACCEPTED')} className="rounded border border-green-700 px-2 py-1 text-xs text-green-800">{item.kind === 'EXCEPTION_LINK' ? 'Accept' : item.kind === 'ISSUE' || item.original.state === 'UNRESOLVED' ? 'Acknowledge' : 'Reviewed'}</button>{item.kind === 'EXCEPTION_LINK' ? <button disabled={busy} type="button" onClick={() => onDecision(item.item_id, 'REJECTED')} className="rounded border border-slate-500 px-2 py-1 text-xs">Reject</button> : null}<button disabled={busy} type="button" onClick={() => onDecision(item.item_id, 'UNRESOLVED')} className="rounded border border-red-600 px-2 py-1 text-xs text-red-700">Unresolved</button></></div>;
+  let held;
+  let hasHeldDetail = false;
+  if (item.kind === 'ISSUE' && heldIssueCodes.has(item.original.code)) {
+    try { held = JSON.parse(item.original.message); hasHeldDetail = true; } catch { held = undefined; }
+  }
+  return <div className="flex flex-wrap items-center gap-2 rounded border border-border bg-white p-3 text-sm"><span className="font-semibold text-ink">{title}</span>{status ? <span className="text-inkLight">Status: {status}</span> : null}{hasHeldDetail ? <HeldContent parsed={held} issueCode={item.original.code} originalMessage={item.original.message} /> : null}{item.original.message && !hasHeldDetail ? <span className="text-inkLight">Recorded detail: {item.original.message}</span> : null}{item.relationship_context ? <p className="basis-full rounded bg-paper p-2 text-xs text-inkMid"><strong>Exception:</strong> {item.relationship_context.from}<br/><strong>Applies to:</strong> {item.relationship_context.to}</p> : null}{item.issue_context ? <div className="basis-full rounded bg-paper p-2 text-xs text-inkMid"><p>{item.issue_context.explanation}</p><p><strong>Recorded group:</strong> {item.issue_context.group_mapping.family_key} · {item.issue_context.group_mapping.subtype_key}</p><p><strong>Proposal mappings:</strong> {item.issue_context.member_mappings.map((mapping) => `${mapping.family_key} · ${mapping.subtype_key}`).join('; ') || 'Unavailable in the stored analysis'}</p></div> : null}{item.source_span_ids?.length ? <button type="button" onClick={() => onSource(item.source_closure_id, item.source_span_ids[0])} className="text-xs font-semibold text-accent">View complete source closure</button> : null}<span className="ml-auto text-xs font-bold">{item.decision}</span><><button disabled={busy} type="button" onClick={() => onDecision(item.item_id, 'ACCEPTED')} className="rounded border border-green-700 px-2 py-1 text-xs text-green-800">{item.kind === 'EXCEPTION_LINK' ? 'Accept' : item.kind === 'ISSUE' || item.original.state === 'UNRESOLVED' ? 'Acknowledge' : 'Reviewed'}</button>{item.kind === 'EXCEPTION_LINK' ? <button disabled={busy} type="button" onClick={() => onDecision(item.item_id, 'REJECTED')} className="rounded border border-slate-500 px-2 py-1 text-xs">Reject</button> : null}<button disabled={busy} type="button" onClick={() => onDecision(item.item_id, 'UNRESOLVED')} className="rounded border border-red-600 px-2 py-1 text-xs text-red-700">Unresolved</button></></div>;
 }
 
 function AddFact({ section, analysis, onAdd, busy }) {

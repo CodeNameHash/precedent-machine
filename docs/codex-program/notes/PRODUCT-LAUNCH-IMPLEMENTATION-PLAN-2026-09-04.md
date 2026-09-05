@@ -400,20 +400,27 @@ result. Every substantive section and required role has a disposition.
 ### Phase 5. Freeze, test blind and correct honestly, 3 days
 
 Current position, 2026-09-05: the seventh Public Storage diagnostic stopped with
-65 sections complete, two failed and 38 pending. It passed both sections that
-stopped the previous run. Invalid claims remain visible review work; no invented
-citation is accepted. One failure exposed that Codex can emit a progress message
-before its final JSON message. The client now uses Codex's separate final-message
-output, checks the full event sequence and retains received output on rejection.
-The rejected attempts' raw CLI event streams were not saved by the old client
-and cannot be recovered. Earlier replies from one failed section also omitted
-required coverage fields and remain invalid. An explicit summary-group repair
-control and publication validation now pass browser and database checks. The
-website response had also omitted sections currently running from its progress
-count. The additive correction is applied only to the disposable preview database
-and reports this stopped run as zero running. Speed work and precedent tracing
-are deferred in the future-feature list. Full processing, a usable reviewed
-summary and the untouched blind test remain unproved.
+70 sections complete, one failed and 34 pending. Ordinary Retry preserved the 65
+prior results and proved the corrected Codex final-message transport across five
+new sections. Invalid claims remain visible review work; no invented citation is
+accepted. The remaining section failed because its replies omitted required
+coverage fields, used unsupported subtype names or supplied an ambiguous duplicate
+group. A local bounded correction keeps valid independent facts, but holds each
+unsupported or ambiguous group, affected proposal and touching link as explicit
+source-linked unresolved review work. Missing required coverage keys become
+source-linked UNRESOLVED assertions. Nothing maps an unknown subtype, invents a
+group, asserts completed coverage or weakens publication. All five saved response
+triplets now replay through this rule with their raw provider replies unchanged;
+all routed family results remain UNRESOLVED. Held statements now have readable
+model-proposed labels, original detail and source context in the review screen.
+The focused browser check also proves malformed held data cannot blank the page,
+and existing review controls remain usable. This correction is not yet deployed
+or tested by another ordinary Retry. An explicit summary-group repair control and
+publication validation pass browser and database checks. The website progress
+count correction is applied only to the disposable preview database and reports
+this stopped run as zero running. Speed work and precedent tracing are deferred
+in the future-feature list. Full processing, a usable reviewed summary and the
+untouched blind test remain unproved.
 
 Speed investigation: the sixth diagnostic completed sections at an average
 interval of 32.3 seconds, with a longest gap of 76.6 seconds. The page polls
@@ -505,8 +512,8 @@ answer. Missing, stale, mismatched and ambiguous final output fails closed.
 Received JSONL is saved even when Codex later exits with an error; empty transport
 failures still cannot invent a provider reply. Focused checks, an actual Codex
 0.145 event replay, the all-family recorded response check, the shared fake-runner
-check and isolated database persistence pass. A new ordinary Retry has not yet
-tested this correction.
+check and isolated database persistence pass. Ordinary Retry verified this
+transport correction while preserving every prior completed section.
 Generation 5 then completed three sections before section classification failed:
 the model returned category objects instead of selected category names. All
 replies were saved. The instructions now specify the exact JSON structure,
