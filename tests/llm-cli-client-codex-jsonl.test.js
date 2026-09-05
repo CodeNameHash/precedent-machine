@@ -8,6 +8,7 @@ const path = require('node:path');
 
 const {
   createCodexCliClient, codexJsonlResponse, assertCodexChatgptAuth, buildCodexExecArgs,
+  receivedCodexOutput,
 } = require('../lib/llm-cli-client');
 
 function stream(...events) {
@@ -21,6 +22,10 @@ const COMPLETE = {
   type: 'turn.completed',
   usage: { input_tokens: 1, cached_input_tokens: 0, output_tokens: 1, reasoning_output_tokens: 0 },
 };
+
+test('Codex client rejects an invalid retry delay', () => {
+  assert.throws(() => createCodexCliClient({ retryDelayMs: -1 }), /non-negative integer/);
+});
 
 test('Codex subscription client preflights ChatGPT auth, strips token variables, and parses the JSONL contract', async () => {
   const bin = fs.mkdtempSync(path.join(os.tmpdir(), 'fake-codex-'));
@@ -40,7 +45,13 @@ case " $* " in
   *" --json "*" -m gpt-5.6-terra "*) ;;
   *) exit 46 ;;
 esac
+previous=''
+for argument in "$@"; do
+  if [ "$previous" = "--output-last-message" ]; then final="$argument"; fi
+  previous="$argument"
+done
 cat >/dev/null
+printf '%s\n' '{"ok":true}' > "$final"
 printf '%s\\n' '{"type":"thread.started","thread_id":"thread-123"}'
 printf '%s\\n' '{"type":"turn.started"}'
 printf '%s\\n' '{"type":"item.completed","item":{"type":"agent_message","text":"{\\"ok\\":true}"}}'
@@ -84,7 +95,10 @@ printf '%s\\n' '{"type":"turn.completed","usage":{"input_tokens":12,"cached_inpu
 });
 
 test('isolated Codex calls disable every local, browser and connected tool surface', () => {
-  const args = buildCodexExecArgs({ isolated: true, ignoreUserConfig: true, ignoreRules: true });
+  const args = buildCodexExecArgs({
+    isolated: true, ignoreUserConfig: true, ignoreRules: true,
+    outputLastMessagePath: '/private/tmp/codex-final/message.json',
+  });
   for (const feature of [
     'shell_tool', 'unified_exec', 'code_mode_host', 'code_mode', 'code_mode_only', 'tool_suggest', 'goals',
     'apps', 'plugins', 'browser_use', 'in_app_browser',
@@ -95,11 +109,139 @@ test('isolated Codex calls disable every local, browser and connected tool surfa
   assert.equal(args.includes('tools.web_search=false'), true);
   assert.equal(args.includes('web_search="disabled"'), true);
   assert.equal(args.includes('default_permissions="pm_extraction"'), true);
+  assert.equal(args.some((value, index) => value === '--output-last-message'
+    && args[index + 1] === '/private/tmp/codex-final/message.json'), true);
   assert.equal(args.some((value) => value.startsWith('permissions={pm_extraction=')
     && value.includes('":minimal"="read"') && value.includes('"/proc"="deny"')
     && value.includes('="deny"')), true);
   assert.equal(args.includes('-s'), false);
   assert.equal(args.includes('--strict-config'), true);
+});
+
+test('trusted final-message output selects the last completed agent message from a multi-message turn', () => {
+  const commentary = { type: 'item.completed', item: { type: 'agent_message', text: 'Preparing the result.' } };
+  const final = { type: 'item.completed', item: { type: 'agent_message', text: '{"ok":true}' } };
+  const response = codexJsonlResponse(stream(THREAD, START, commentary, final, COMPLETE), {
+    finalMessage: '{"ok":true}\n',
+  });
+  assert.equal(response.content[0].text, '{"ok":true}');
+});
+
+for (const [name, raw, finalMessage, pattern] of [
+  ['empty trusted final output', stream(THREAD, START, ANSWER, COMPLETE), ' ', /FINAL_MESSAGE_REQUIRED/],
+  ['mismatched trusted final output', stream(THREAD, START, ANSWER, COMPLETE), '{"wrong":true}', /FINAL_MESSAGE_MISMATCH/],
+  ['ambiguous trusted final output', stream(THREAD, START, ANSWER, ANSWER, COMPLETE), '{}', /FINAL_MESSAGE_AMBIGUOUS/],
+  ['an early message even when the last message is valid', stream(THREAD, ANSWER, START, ANSWER, COMPLETE), '{}', /LIFECYCLE_ORDER/],
+  ['a failed turn before trusted output', stream(THREAD, START, { type: 'turn.failed', error: 'x' }, ANSWER, COMPLETE), '{}', /TURN_FAILED/],
+  ['a model-generated command before trusted output', stream(THREAD, START, { type: 'item.completed', item: { type: 'command_execution', command: 'pwd' } }, ANSWER, COMPLETE), '{}', /TOOL_FORBIDDEN/],
+  ['malformed usage after trusted output', stream(THREAD, START, ANSWER, { ...COMPLETE, usage: {} }), '{}', /USAGE_REQUIRED/],
+]) {
+  test(`Codex JSONL rejects ${name}`, () => {
+    assert.throws(() => codexJsonlResponse(raw, { finalMessage }), pattern);
+  });
+}
+
+test('Codex client uses one private final-message file and removes it after capture', async () => {
+  const bin = fs.mkdtempSync(path.join(os.tmpdir(), 'fake-codex-final-'));
+  const executable = path.join(bin, 'codex');
+  const capture = path.join(bin, 'capture.txt');
+  fs.writeFileSync(executable, `#!/bin/sh
+final=''
+while [ "$#" -gt 0 ]; do
+  if [ "$1" = "--output-last-message" ]; then shift; final="$1"; fi
+  shift
+done
+cat >/dev/null
+printf '%s\n' '{"ok":true}' > "$final"
+printf '%s\n' "$final" > ${JSON.stringify(capture)}
+stat -f '%Lp' "$(dirname "$final")" >> ${JSON.stringify(capture)}
+printf '%s\n' '{"type":"thread.started","thread_id":"thread-final"}'
+printf '%s\n' '{"type":"turn.started"}'
+printf '%s\n' '{"type":"item.completed","item":{"type":"agent_message","text":"Working."}}'
+printf '%s\n' '{"type":"item.completed","item":{"type":"agent_message","text":"{\\"ok\\":true}"}}'
+printf '%s\n' '{"type":"turn.completed","usage":{"input_tokens":2,"cached_input_tokens":0,"output_tokens":1,"reasoning_output_tokens":0}}'
+`, { mode: 0o755 });
+  const originalPath = process.env.PATH;
+  process.env.PATH = `${bin}:${originalPath}`;
+  try {
+    const client = createCodexCliClient({ isolated: true, skipAuthPreflight: true, maxAttempts: 1 });
+    const response = await client.messages.create({ messages: [{ role: 'user', content: 'extract' }] });
+    const [finalPath, mode] = fs.readFileSync(capture, 'utf8').trim().split('\n');
+    assert.equal(response.content[0].text, '{"ok":true}');
+    assert.equal(mode, '700');
+    assert.equal(fs.existsSync(path.dirname(finalPath)), false);
+  } finally {
+    process.env.PATH = originalPath;
+    fs.rmSync(bin, { recursive: true, force: true });
+  }
+});
+
+test('Codex client rejects a completed stream when the trusted final-message file is missing', async () => {
+  const bin = fs.mkdtempSync(path.join(os.tmpdir(), 'fake-codex-missing-final-'));
+  const executable = path.join(bin, 'codex');
+  fs.writeFileSync(executable, `#!/bin/sh
+cat >/dev/null
+printf '%s\n' '{"type":"thread.started","thread_id":"thread-missing-final"}'
+printf '%s\n' '{"type":"turn.started"}'
+printf '%s\n' '{"type":"item.completed","item":{"type":"agent_message","text":"{}"}}'
+printf '%s\n' '{"type":"turn.completed","usage":{"input_tokens":1,"cached_input_tokens":0,"output_tokens":1,"reasoning_output_tokens":0}}'
+`, { mode: 0o755 });
+  const originalPath = process.env.PATH;
+  process.env.PATH = `${bin}:${originalPath}`;
+  try {
+    const client = createCodexCliClient({ isolated: true, skipAuthPreflight: true, maxAttempts: 1 });
+    await assert.rejects(
+      () => client.messages.create({ messages: [{ role: 'user', content: 'extract' }] }),
+      /CODEX_FINAL_MESSAGE_REQUIRED/,
+    );
+  } finally {
+    process.env.PATH = originalPath;
+    fs.rmSync(bin, { recursive: true, force: true });
+  }
+});
+
+test('Codex client cannot reuse a stale final-message file on an internal retry', async () => {
+  const bin = fs.mkdtempSync(path.join(os.tmpdir(), 'fake-codex-stale-final-'));
+  const executable = path.join(bin, 'codex');
+  const counter = path.join(bin, 'counter.txt');
+  fs.writeFileSync(executable, `#!/bin/sh
+final=''
+previous=''
+for argument in "$@"; do
+  if [ "$previous" = "--output-last-message" ]; then final="$argument"; fi
+  previous="$argument"
+done
+cat >/dev/null
+count=0
+if [ -f ${JSON.stringify(counter)} ]; then count=$(cat ${JSON.stringify(counter)}); fi
+count=$((count + 1))
+printf '%s' "$count" > ${JSON.stringify(counter)}
+if [ "$count" -eq 1 ]; then printf '%s\n' '{}' > "$final"; fi
+printf '%s\n' '{"type":"thread.started","thread_id":"thread-stale-final"}'
+printf '%s\n' '{"type":"turn.started"}'
+printf '%s\n' '{"type":"item.completed","item":{"type":"agent_message","text":"{}"}}'
+printf '%s\n' '{"type":"turn.completed","usage":{"input_tokens":1,"cached_input_tokens":0,"output_tokens":1,"reasoning_output_tokens":0}}'
+if [ "$count" -eq 1 ]; then exit 7; fi
+`, { mode: 0o755 });
+  const originalPath = process.env.PATH;
+  process.env.PATH = `${bin}:${originalPath}`;
+  try {
+    const client = createCodexCliClient({
+      isolated: true, skipAuthPreflight: true, maxAttempts: 2, retryDelayMs: 1,
+    });
+    await assert.rejects(
+      () => client.messages.create({ messages: [{ role: 'user', content: 'extract' }] }),
+      (error) => {
+        assert.match(error.message, /CODEX_FINAL_MESSAGE_REQUIRED/);
+        assert.equal(receivedCodexOutput(error)?.finalMessage, undefined);
+        return true;
+      },
+    );
+    assert.equal(fs.readFileSync(counter, 'utf8'), '2');
+  } finally {
+    process.env.PATH = originalPath;
+    fs.rmSync(bin, { recursive: true, force: true });
+  }
 });
 
 test('ChatGPT auth preflight rejects a negated status line even with exit zero', async () => {

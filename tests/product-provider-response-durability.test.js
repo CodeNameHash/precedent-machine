@@ -2,6 +2,9 @@
 
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
 const test = require('node:test');
 
 const legalSchema = require('../contracts/product/legal-schema.v1.json');
@@ -9,6 +12,7 @@ const { buildAgreementSectionDraft, modelInvocationId } = require('../lib/produc
 const { buildAgreementStructure } = require('../lib/product/agreement-structure');
 const { createAnthropicProductModel } = require('../lib/product/anthropic-model');
 const { createCodexCliProductModel } = require('../lib/product/codex-cli-model');
+const { createCodexCliClient } = require('../lib/llm-cli-client');
 const { substantiveSections } = require('../lib/product/source-context');
 
 const sha256 = (value) => crypto.createHash('sha256').update(value).digest('hex');
@@ -80,6 +84,18 @@ test('completed malformed Codex replies create one durable failed call per attem
   assert.equal(first[0].input_tokens, 11);
   assert.equal(first[0].output_tokens, 2);
   assert.equal(first[0].response.validation_error.code, 'CODEX_PRODUCT_JSON');
+});
+
+test('completed non-object Codex output is rejected and retained', async () => {
+  const envelope = codexEnvelope({ content: [{ type: 'text', text: 'true' }] });
+  const calls = await captureFailure(createCodexCliProductModel({
+    client: { messages: { create: async () => envelope } },
+  }), '00000000-0000-4000-8000-000000000115');
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].response.status, 'LOCAL_VALIDATION_FAILED');
+  assert.equal(calls[0].response.validation_error.code, 'CODEX_PRODUCT_JSON');
+  assert.equal(calls[0].response.provider_completion_confirmed, true);
+  assert.deepEqual(calls[0].response.raw_response, envelope);
 });
 
 test('missing usage stays explicitly unknown and missing completion stays rejected', async () => {
@@ -196,4 +212,126 @@ test('transport failures do not invent a provider response or model call', async
     onModelCall: async (call) => calls.push(call),
   }), transportFailure);
   assert.deepEqual(calls, []);
+});
+
+test('rejected Codex JSONL and trusted final output become one durable failed model call', async () => {
+  const bin = fs.mkdtempSync(path.join(os.tmpdir(), 'fake-codex-durable-'));
+  const executable = path.join(bin, 'codex');
+  const rawPath = path.join(bin, 'response.jsonl');
+  const raw = [
+    '{"type":"thread.started","thread_id":"thread-durable"}',
+    '{"type":"turn.started"}',
+    '{"type":"item.completed","item":{"type":"agent_message","text":"Working."}}',
+    '{"type":"item.completed","item":{"type":"agent_message","text":"{\\"ok\\":true}"}}',
+    '{"type":"turn.completed","usage":{"input_tokens":12,"cached_input_tokens":3,"output_tokens":4,"reasoning_output_tokens":5}}',
+    '',
+  ].join('\n');
+  fs.writeFileSync(rawPath, raw);
+  fs.writeFileSync(executable, `#!/bin/sh
+final=''
+previous=''
+for argument in "$@"; do
+  if [ "$previous" = "--output-last-message" ]; then final="$argument"; fi
+  previous="$argument"
+done
+cat >/dev/null
+printf '%s\\n' '{"wrong":true}' > "$final"
+cat ${JSON.stringify(rawPath)}
+`, { mode: 0o755 });
+  const originalPath = process.env.PATH;
+  process.env.PATH = `${bin}:${originalPath}`;
+  try {
+    const client = createCodexCliClient({
+      isolated: true, skipAuthPreflight: true, maxAttempts: 1,
+    });
+    const calls = await captureFailure(createCodexCliProductModel({ client }),
+      '00000000-0000-4000-8000-000000000112');
+    assert.equal(calls.length, 1);
+    assert.equal(calls[0].response.status, 'PROVIDER_RESPONSE_REJECTED');
+    assert.equal(calls[0].response.provider_completion_confirmed, false);
+    assert.deepEqual(calls[0].response.raw_response, {
+      schema_version: 'CODEX_CLI_RECEIVED_OUTPUT/V1',
+      raw_jsonl: raw,
+      final_message: '{"wrong":true}\n',
+    });
+    assert.deepEqual(calls[0].response.usage, {
+      status: 'KNOWN', input_tokens: 12, output_tokens: 4,
+    });
+    assert.match(calls[0].response.validation_error.message, /CODEX_FINAL_MESSAGE_MISMATCH/);
+  } finally {
+    process.env.PATH = originalPath;
+    fs.rmSync(bin, { recursive: true, force: true });
+  }
+});
+
+test('Codex JSONL received before a non-zero exit becomes one durable failed model call', async () => {
+  const bin = fs.mkdtempSync(path.join(os.tmpdir(), 'fake-codex-nonzero-durable-'));
+  const executable = path.join(bin, 'codex');
+  const rawPath = path.join(bin, 'response.jsonl');
+  const raw = [
+    '{"type":"thread.started","thread_id":"thread-nonzero"}',
+    '{"type":"turn.started"}',
+    '{"type":"item.completed","item":{"type":"agent_message","text":"{\\"ok\\":true}"}}',
+    '{"type":"turn.completed","usage":{"input_tokens":8,"cached_input_tokens":2,"output_tokens":3,"reasoning_output_tokens":1}}',
+    '',
+  ].join('\n');
+  fs.writeFileSync(rawPath, raw);
+  fs.writeFileSync(executable, `#!/bin/sh
+final=''
+previous=''
+for argument in "$@"; do
+  if [ "$previous" = "--output-last-message" ]; then final="$argument"; fi
+  previous="$argument"
+done
+cat >/dev/null
+printf '%s\n' '{"ok":true}' > "$final"
+cat ${JSON.stringify(rawPath)}
+exit 7
+`, { mode: 0o755 });
+  const originalPath = process.env.PATH;
+  process.env.PATH = `${bin}:${originalPath}`;
+  try {
+    const client = createCodexCliClient({
+      isolated: true, skipAuthPreflight: true, maxAttempts: 1,
+    });
+    const calls = await captureFailure(createCodexCliProductModel({ client }),
+      '00000000-0000-4000-8000-000000000113');
+    assert.equal(calls.length, 1);
+    assert.equal(calls[0].response.status, 'PROVIDER_RESPONSE_REJECTED');
+    assert.equal(calls[0].response.provider_completion_confirmed, false);
+    assert.deepEqual(calls[0].response.raw_response, {
+      schema_version: 'CODEX_CLI_RECEIVED_OUTPUT/V1',
+      raw_jsonl: raw,
+      final_message: '{"ok":true}\n',
+    });
+    assert.deepEqual(calls[0].response.usage, {
+      status: 'KNOWN', input_tokens: 8, output_tokens: 3,
+    });
+    assert.match(calls[0].response.validation_error.message, /codex exited 7/);
+  } finally {
+    process.env.PATH = originalPath;
+    fs.rmSync(bin, { recursive: true, force: true });
+  }
+});
+
+test('a non-zero Codex exit without stdout does not invent a provider response', async () => {
+  const bin = fs.mkdtempSync(path.join(os.tmpdir(), 'fake-codex-empty-nonzero-'));
+  const executable = path.join(bin, 'codex');
+  fs.writeFileSync(executable, `#!/bin/sh
+cat >/dev/null
+exit 7
+`, { mode: 0o755 });
+  const originalPath = process.env.PATH;
+  process.env.PATH = `${bin}:${originalPath}`;
+  try {
+    const client = createCodexCliClient({
+      isolated: true, skipAuthPreflight: true, maxAttempts: 1,
+    });
+    const calls = await captureFailure(createCodexCliProductModel({ client }),
+      '00000000-0000-4000-8000-000000000114');
+    assert.deepEqual(calls, []);
+  } finally {
+    process.env.PATH = originalPath;
+    fs.rmSync(bin, { recursive: true, force: true });
+  }
 });

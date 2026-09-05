@@ -34,7 +34,7 @@ test('full runner uses Terra subscription JSONL once, records exact identity, an
   const promptLog = path.join(scratch, 'prompt.txt');
   fs.mkdirSync(bin);
   writeExecutable(path.join(bin, 'codex'), `#!/bin/sh
-printf '%s\\n' "$*" >> "$FAKE_CODEX_LOG"
+printf '%s\\n' "$*" >> ${JSON.stringify(codexLog)}
 if [ -n "$OPENAI_API_KEY$CODEX_API_KEY$CODEX_ACCESS_TOKEN" ]; then exit 91; fi
 if [ "$FAKE_CODEX_FAIL_IF_CALLED" = "1" ]; then exit 92; fi
 if [ "$1" = "login" ] && [ "$2" = "status" ]; then
@@ -44,8 +44,15 @@ fi
 case " $* " in *" exec "*) ;; *) exit 93 ;; esac
 case " $* " in *" --json "*) ;; *) exit 93 ;; esac
 case " $* " in *" -m gpt-5.6-terra "*) ;; *) exit 93 ;; esac
-touch "$FAKE_GIT_DIRTY_MARKER"
-cat > "$FAKE_CODEX_PROMPT"
+final=''
+previous=''
+for argument in "$@"; do
+  if [ "$previous" = "--output-last-message" ]; then final="$argument"; fi
+  previous="$argument"
+done
+touch ${JSON.stringify(path.join(scratch, 'git-became-dirty'))}
+cat > ${JSON.stringify(promptLog)}
+printf '%s\\n' '{"mae_definition_instances":[],"open_world_candidates":[]}' > "$final"
 printf '%s\\n' '{"type":"thread.started","thread_id":"terra-thread-1"}'
 printf '%s\\n' '{"type":"turn.started"}'
 printf '%s\\n' '{"type":"item.completed","item":{"type":"agent_message","text":"{\\"mae_definition_instances\\":[],\\"open_world_candidates\\":[]}"}}'

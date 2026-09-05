@@ -399,13 +399,21 @@ result. Every substantive section and required role has a disposition.
 
 ### Phase 5. Freeze, test blind and correct honestly, 3 days
 
-Current position, 2026-09-05: the seventh Public Storage diagnostic is processing
-all 105 sections through the ordinary signed-in Review form. It has passed both
-sections that stopped the previous run. Invalid claims remain visible review
-work; no invented citation is accepted. An explicit summary-group repair control
-and publication validation now pass browser and database checks. Speed work and
-precedent tracing are deferred in the future-feature list. Full processing,
-a usable reviewed summary and the untouched blind test remain unproved.
+Current position, 2026-09-05: the seventh Public Storage diagnostic stopped with
+65 sections complete, two failed and 38 pending. It passed both sections that
+stopped the previous run. Invalid claims remain visible review work; no invented
+citation is accepted. One failure exposed that Codex can emit a progress message
+before its final JSON message. The client now uses Codex's separate final-message
+output, checks the full event sequence and retains received output on rejection.
+The rejected attempts' raw CLI event streams were not saved by the old client
+and cannot be recovered. Earlier replies from one failed section also omitted
+required coverage fields and remain invalid. An explicit summary-group repair
+control and publication validation now pass browser and database checks. The
+website response had also omitted sections currently running from its progress
+count. The additive correction is applied only to the disposable preview database
+and reports this stopped run as zero running. Speed work and precedent tracing
+are deferred in the future-feature list. Full processing, a usable reviewed
+summary and the untouched blind test remain unproved.
 
 Speed investigation: the sixth diagnostic completed sections at an average
 interval of 32.3 seconds, with a longest gap of 76.6 seconds. The page polls
@@ -491,8 +499,14 @@ handling check, not a lawyer's assessment of the proposed facts. The three
 affected SEC integrations and the focused ownership checks pass. A fresh
 generation will test the correction; generation 4 will not be retried under
 changed rules. Received model replies rejected before parsing now persist with
-known, partial or unknown usage identified honestly. Focused checks and isolated
-database persistence pass. No provider reply is invented for transport failure.
+known, partial or unknown usage identified honestly. Multiple Codex messages are
+accepted only when a private final-message file identifies one unambiguous last
+answer. Missing, stale, mismatched and ambiguous final output fails closed.
+Received JSONL is saved even when Codex later exits with an error; empty transport
+failures still cannot invent a provider reply. Focused checks, an actual Codex
+0.145 event replay, the all-family recorded response check, the shared fake-runner
+check and isolated database persistence pass. A new ordinary Retry has not yet
+tested this correction.
 Generation 5 then completed three sections before section classification failed:
 the model returned category objects instead of selected category names. All
 replies were saved. The instructions now specify the exact JSON structure,
@@ -513,7 +527,7 @@ The existing release evaluation now requires an explicit final-fact link or
 reasoned omission to resolve an original model finding. Bare acknowledgement
 does not clear it; work that never ran and actual published contradictions
 remain blocking. Database and browser checks pass. Processing time and the
-fixed 90-minute limit remain unchanged. The seventh diagnostic is in progress;
+fixed 90-minute limit remain unchanged. The seventh diagnostic is stopped;
 no blind test has yet established full processing under these corrections.
 Full processing and a usable review draft remain unproved.
 The 90-minute check now includes measured processing time. This is
