@@ -10,7 +10,7 @@ const { buildLegacyCapture } = require('./intake');
 const { convertSecHtmlToCanonicalText } = require('./canonical-text');
 const componentDigest = require('./component-digest.json');
 
-const COMPONENT_VERSION = 'SHARED_SEC_INGEST/V1';
+const COMPONENT_VERSION = 'SHARED_SEC_INGEST/V1.0.1';
 const CANONICALISATION_PROFILE = Object.freeze({
   version: 'SEC_HTML_CANONICAL_TEXT_CONVERSION/V2',
   digest: 'c6b6a93315fad0bc3e65be699c71e2fea4d98111ba701f72f19dfb96dfb5c85a',
@@ -90,23 +90,47 @@ function ipv4In(address, base, bits) {
   return (ipv4Number(address) & mask) === (ipv4Number(base) & mask);
 }
 
+function ipv6Number(address) {
+  let source = address.toLowerCase();
+  if (source.includes('.')) {
+    const lastColon = source.lastIndexOf(':');
+    const mapped = ipv4Number(source.slice(lastColon + 1));
+    source = `${source.slice(0, lastColon)}:${(mapped >>> 16).toString(16)}:${(mapped & 0xffff).toString(16)}`;
+  }
+  const halves = source.split('::');
+  const left = halves[0] ? halves[0].split(':') : [];
+  const right = halves.length > 1 && halves[1] ? halves[1].split(':') : [];
+  const words = halves.length > 1
+    ? [...left, ...Array(8 - left.length - right.length).fill('0'), ...right]
+    : left;
+  if (words.length !== 8) return null;
+  return words.reduce((value, word) => (value << 16n) | BigInt(`0x${word || '0'}`), 0n);
+}
+
+function ipv6In(address, base, bits) {
+  const value = ipv6Number(address);
+  const start = ipv6Number(base);
+  if (value === null || start === null) return false;
+  const shift = BigInt(128 - bits);
+  return (value >> shift) === (start >> shift);
+}
+
 function forbiddenAddress(address) {
   const kind = net.isIP(address);
   if (!kind) return true;
   if (kind === 4) return [
     ['0.0.0.0', 8], ['10.0.0.0', 8], ['100.64.0.0', 10], ['127.0.0.0', 8],
     ['169.254.0.0', 16], ['172.16.0.0', 12], ['192.0.0.0', 24], ['192.0.2.0', 24],
-    ['192.168.0.0', 16], ['198.18.0.0', 15], ['198.51.100.0', 24],
+    ['192.31.196.0', 24], ['192.52.193.0', 24], ['192.88.99.0', 24],
+    ['192.168.0.0', 16], ['192.175.48.0', 24], ['198.18.0.0', 15], ['198.51.100.0', 24],
     ['203.0.113.0', 24], ['224.0.0.0', 4], ['240.0.0.0', 4],
   ].some(([base, bits]) => ipv4In(address, base, bits));
-  const compact = address.toLowerCase();
-  if (compact.startsWith('::ffff:')) {
-    const mapped = compact.slice(7);
-    return net.isIP(mapped) !== 4 || forbiddenAddress(mapped);
-  }
-  const first = Number.parseInt(compact.split(':', 1)[0], 16);
-  return compact === '::' || compact === '::1' || !(first >= 0x2000 && first <= 0x3fff)
-    || compact.startsWith('2001:db8:');
+  return [
+    ['::', 128], ['::1', 128], ['::ffff:0:0', 96], ['64:ff9b::', 96],
+    ['64:ff9b:1::', 48], ['100::', 64], ['2001::', 23], ['2001:db8::', 32],
+    ['2002::', 16], ['2620:4f:8000::', 48], ['3fff::', 20], ['5f00::', 16],
+    ['fc00::', 7], ['fe80::', 10], ['ff00::', 8],
+  ].some(([base, bits]) => ipv6In(address, base, bits));
 }
 
 function checkedUrl(value, approvedHosts) {
