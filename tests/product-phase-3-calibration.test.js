@@ -71,6 +71,7 @@ class CalibrationStore {
   }
   async getRunContext() { return { sourceDocument: this.sourceDocument, agreementStructure: this.agreementStructure }; }
   async claimNextSection() { const nodeId = this.pending.shift(); return nodeId ? { node_id: nodeId, attempt_token: crypto.randomUUID() } : null; }
+  async renewSectionLease() {}
   async commitSection({ nodeId, result }) { this.results.push(result); this.complete.add(nodeId); }
   async completeSection({ nodeId }) { this.complete.add(nodeId); }
   async failSection() {}

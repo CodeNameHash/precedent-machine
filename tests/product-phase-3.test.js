@@ -12,7 +12,8 @@ const {
   assertConfiguredRunModelConfig, assertRunModelConfig, configuredProductModelConfig,
 } = require('../lib/product/product-model-config');
 const {
-  MINIMUM_SESSION_MS, SANDBOX_LAUNCHER, SANDBOX_NAME, SANDBOX_WORKDIR, wakeSandboxProductRun,
+  MINIMUM_SESSION_MS, SANDBOX_LAUNCHER, SANDBOX_NAME, SANDBOX_WORKDIR,
+  STARTUP_CHECK_DELAY_MS, wakeSandboxProductRun,
 } = require('../lib/product/sandbox-wake');
 const { parseArguments: parseHostedArguments } = require('../scripts/product-hosted-worker');
 const {
@@ -300,11 +301,13 @@ test('server-side provider selection pins Preview Codex and leaves production on
 test('Sandbox wake uses one fixed detached launcher and does not return credentials', async () => {
   let getInput;
   let commandInput;
+  let commandLookup;
+  let startupDelay;
   let extension;
   const sessionStarted = new Date('2026-09-05T12:00:00.000Z');
   const result = await wakeSandboxProductRun({
     runId: '46c45080-6935-49e5-96ae-b6cb0609a924',
-    databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co\n',
     serviceRoleKey: 'service-role-secret-value',
     providerId: CODEX_PROVIDER_ID,
     sandboxApi: { async get(input) {
@@ -313,12 +316,16 @@ test('Sandbox wake uses one fixed detached launcher and does not return credenti
         currentSession: () => ({ createdAt: sessionStarted, timeout: 30 * 60 * 1000 }),
         async extendTimeout(value) { extension = value; },
         async runCommand(command) { commandInput = command; return { cmdId: 'command-1' }; },
+        async getCommand(commandId) { commandLookup = commandId; return { exitCode: null }; },
       };
     } },
     now: () => Date.parse('2026-09-05T12:20:00.000Z'),
+    startupDelay: async (milliseconds) => { startupDelay = milliseconds; },
   });
   assert.deepEqual(getInput, { name: SANDBOX_NAME, resume: true });
   assert.equal(extension, MINIMUM_SESSION_MS - (10 * 60 * 1000));
+  assert.equal(startupDelay, STARTUP_CHECK_DELAY_MS);
+  assert.equal(commandLookup, 'command-1');
   assert.deepEqual(commandInput, {
     cmd: SANDBOX_LAUNCHER,
     args: ['46c45080-6935-49e5-96ae-b6cb0609a924'],
@@ -337,6 +344,20 @@ test('Sandbox wake uses one fixed detached launcher and does not return credenti
     command_id: 'command-1',
   });
   assert.doesNotMatch(JSON.stringify(result), /service-role-secret-value/);
+  await assert.rejects(() => wakeSandboxProductRun({
+    runId: '46c45080-6935-49e5-96ae-b6cb0609a924',
+    databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    serviceRoleKey: 'service-role-secret-value',
+    providerId: CODEX_PROVIDER_ID,
+    sandboxApi: { async get() { return {
+      currentSession: () => ({ createdAt: sessionStarted, timeout: MINIMUM_SESSION_MS }),
+      async extendTimeout() {},
+      async runCommand() { return { cmdId: 'failed-command' }; },
+      async getCommand() { return { exitCode: 2 }; },
+    }; } },
+    now: () => sessionStarted.getTime(),
+    startupDelay: async () => {},
+  }), /STARTUP_FAILED/);
   await assert.rejects(() => wakeSandboxProductRun({
     runId: '46c45080-6935-49e5-96ae-b6cb0609a924',
     databaseUrl: 'https://tzulhdasmioeechxapdy.supabase.co',
@@ -532,7 +553,7 @@ test('Preview run boundary starts one detached Sandbox worker and returns durabl
     modelFactory: () => { modelCreated = true; return {}; },
     databaseUrlResolver: () => 'https://ecrtoofsyxozazkvsvcl.supabase.co',
     serviceRoleKeyResolver: () => 'service-role-secret-value',
-    wakeRun: async (input) => { wakeInput = input; },
+    wakeRun: async (input) => { wakeInput = input; return { command_id: 'command-1' }; },
   });
   const response = responseDouble();
   await handler({ method: 'POST', query: { id: runId }, headers: { 'x-pm-csrf': 'same-origin' }, body: {} }, response);
@@ -544,5 +565,5 @@ test('Preview run boundary starts one detached Sandbox worker and returns durabl
     serviceRoleKey: 'service-role-secret-value',
     providerId: CODEX_PROVIDER_ID,
   });
-  assert.deepEqual(response.body, { ...progress, execution_mode: 'HOSTED' });
+  assert.deepEqual(response.body, { ...progress, execution_mode: 'HOSTED', wake_command_id: 'command-1' });
 });
