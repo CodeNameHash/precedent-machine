@@ -8601,22 +8601,6 @@ test('deterministic generator fails closed on multi-occurrence ambiguity and dri
       },
     },
     {
-      name: 'two claims share one governed node',
-      mutate(input) {
-        input.baseAnalysis.claims[1].source_node_occurrence_ids = [
-          input.baseAnalysis.claims[0].source_node_occurrence_ids[0],
-        ];
-      },
-    },
-    {
-      name: 'two nodes on one claim',
-      mutate(input) {
-        input.baseAnalysis.claims[0].source_node_occurrence_ids.push(
-          input.baseAnalysis.claims[1].source_node_occurrence_ids[0],
-        );
-      },
-    },
-    {
       name: 'missing governed node',
       mutate(input) {
         input.baseAnalysis.claims[0].source_node_occurrence_ids[0] = 'f'.repeat(64);
@@ -9047,28 +9031,6 @@ test('deterministic generator fails closed on multi-occurrence ambiguity and dri
       },
     },
     {
-      name: 'no profile match',
-      expectedMessage: 'M7_V2_DETERMINISTIC_GENERATOR: expected one unique most-specific approved profile match, received 0',
-      mutate(input) {
-        for (const profile of input.approvedFamilyProfileSet.profiles) {
-          profile.match_test.tokens = ['zzzzunmatchedprofiletoken'];
-        }
-      },
-    },
-    {
-      name: 'incomparable matching profiles',
-      mutate(input) {
-        const selected = input.approvedFamilyProfileSet.profiles.find(
-          (profile) => profile.profile_id === fixture.selectedProfileIds[0],
-        );
-        const competing = clone(selected);
-        competing.profile_id = 'e'.repeat(64);
-        competing.profile_key += ':INCOMPARABLE';
-        competing.parent_profile_id = selected.parent_profile_id;
-        input.approvedFamilyProfileSet.profiles.push(competing);
-      },
-    },
-    {
       name: 'wrong node relationship count',
       mutate(input) {
         const nodeId = input.baseAnalysis.claims[0].source_node_occurrence_ids[0];
@@ -9096,6 +9058,83 @@ test('deterministic generator fails closed on multi-occurrence ambiguity and dri
       fixtureCase.name,
     );
   }
+});
+
+test('deterministic generator reviews an occurrence with no single profile match', () => {
+  const fixture = twoOccurrenceGeneratorFixture();
+  const unmatched = clone(fixture.generatorInput);
+  for (const profile of unmatched.approvedFamilyProfileSet.profiles) {
+    profile.match_test.tokens = ['zzzzunmatchedprofiletoken'];
+  }
+  const unmatchedGenerated = generateAnalysisV2(unmatched);
+  assert.equal(unmatchedGenerated.rules.length, 0);
+  assert.equal(unmatchedGenerated.dispositions.every(
+    (disposition) => disposition.output_disposition === 'REVIEW_ONLY'
+      && disposition.profile_match_state === 'NO_COMPATIBLE_PROFILE'
+      && disposition.issues.some((issue) => issue.issue_code === 'NO_SINGLE_PROFILE'),
+  ), true);
+
+  const ambiguous = clone(fixture.generatorInput);
+  const competingIds = [];
+  for (const [index, profileId] of fixture.selectedProfileIds.entries()) {
+    const selected = ambiguous.approvedFamilyProfileSet.profiles.find(
+      (profile) => profile.profile_id === profileId,
+    );
+    const competing = clone(selected);
+    competing.profile_id = `${index}`.repeat(64);
+    competing.profile_key += ':INCOMPARABLE';
+    competing.parent_profile_id = selected.parent_profile_id;
+    ambiguous.approvedFamilyProfileSet.profiles.push(competing);
+    competingIds.push(competing.profile_id);
+  }
+  const ambiguousGenerated = generateAnalysisV2(ambiguous);
+  assert.equal(ambiguousGenerated.rules.length, 0);
+  assert.equal(ambiguousGenerated.dispositions.every(
+    (disposition) => disposition.output_disposition === 'REVIEW_ONLY'
+      && disposition.profile_match_state === 'AMBIGUOUS_PROFILE_MATCH'
+      && disposition.issues.some((issue) => issue.issue_code === 'NO_SINGLE_PROFILE'),
+  ), true);
+  assert.equal(ambiguousGenerated.candidate_sets.every(
+    (candidateSet) => candidateSet.effects[0].candidate_profile_ids.length >= 2
+      && competingIds.some((profileId) => (
+        candidateSet.effects[0].candidate_profile_ids.includes(profileId)
+      )),
+  ), true);
+});
+
+test('deterministic generator keeps two claims that share one governed node', () => {
+  const fixture = twoOccurrenceGeneratorFixture();
+  const input = clone(fixture.generatorInput);
+  const sharedNodeId = input.baseAnalysis.claims[0].source_node_occurrence_ids[0];
+  input.baseAnalysis.claims[1].source_node_occurrence_ids = [sharedNodeId];
+  const generated = generateAnalysisV2(input);
+  assert.equal(generated.rules.length, 2);
+  assert.equal(generated.counts.rules, 2);
+  assert.equal(generated.counts.source_closures, 1);
+  assert.equal(generated.source_closures.length, 1);
+  assert.equal(generated.source_closures[0].source_node_occurrence_id, sharedNodeId);
+  assert.deepEqual(
+    generated.rules.map((rule) => rule.authored_unit_id),
+    [sharedNodeId, sharedNodeId],
+  );
+  assert.equal(generated.rules[0].rule_id !== generated.rules[1].rule_id, true);
+  assert.deepEqual(generated.rules[0].linked_rule_ids, [generated.rules[1].rule_id]);
+  assert.deepEqual(generated.rules[1].linked_rule_ids, [generated.rules[0].rule_id]);
+});
+
+test('deterministic generator reviews a claim that names two M2 nodes', () => {
+  const fixture = twoOccurrenceGeneratorFixture();
+  const input = clone(fixture.generatorInput);
+  input.baseAnalysis.claims[0].source_node_occurrence_ids.push(
+    input.baseAnalysis.claims[1].source_node_occurrence_ids[0],
+  );
+  const generated = generateAnalysisV2(input);
+  const first = generated.dispositions.find(
+    (disposition) => disposition.input_occurrence_id
+      === input.baseAnalysis.claims[0].claim_occurrence_id,
+  );
+  assert.equal(first.output_disposition, 'REVIEW_ONLY');
+  assert.equal(first.issues.some((issue) => issue.issue_code === 'MATERIAL_SPAN_UNMODELLED'), true);
 });
 
 test(cases.structure_overlay_case.case_id, () => {
