@@ -1,0 +1,39 @@
+items 50
+coverable_from_m4 41
+partly 3
+not_at_all 6
+distinct_claim_keys 45
+distinct_no_producer_keys 14
+intersecting_claim_rows 60
+items_with_zero_claims 1
+no_producer_keys
+  M7_DETERMINISTIC_ANTITRUST_REGULATORY_SOURCE_PROVISION grep_exit=1 stdout_bytes=0
+  M7_DETERMINISTIC_CAPITALISATION_SOURCE_PROVISION grep_exit=1 stdout_bytes=0
+  M7_DETERMINISTIC_CLOSING_CONDITIONS_SOURCE_PROVISION grep_exit=1 stdout_bytes=0
+  M7_DETERMINISTIC_CONSIDERATION_SOURCE_PROVISION grep_exit=1 stdout_bytes=0
+  M7_DETERMINISTIC_DNO_INDEMNIFICATION_SOURCE_PROVISION grep_exit=1 stdout_bytes=0
+  M7_DETERMINISTIC_EMPLOYEE_MATTERS_SOURCE_PROVISION grep_exit=1 stdout_bytes=0
+  M7_DETERMINISTIC_GENERAL_COVENANTS_SOURCE_PROVISION grep_exit=1 stdout_bytes=0
+  M7_DETERMINISTIC_INTERIM_OPERATING_SOURCE_PROVISION grep_exit=1 stdout_bytes=0
+  M7_DETERMINISTIC_KEY_DEFINED_TERMS_SOURCE_PROVISION grep_exit=1 stdout_bytes=0
+  M7_DETERMINISTIC_MAE_DEFINITION_SOURCE_PROVISION grep_exit=1 stdout_bytes=0
+  M7_DETERMINISTIC_MERGER_STRUCTURE_CLOSING_SOURCE_PROVISION grep_exit=1 stdout_bytes=0
+  M7_DETERMINISTIC_MISC_BOILERPLATE_SOURCE_PROVISION grep_exit=1 stdout_bytes=0
+  M7_DETERMINISTIC_REPRESENTATIONS_SOURCE_PROVISION grep_exit=1 stdout_bytes=0
+  NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT grep_exit=1 stdout_bytes=0
+commands
+  node docs/codex-program/handoffs/m7-ext/ext-scratch/verify-finding/11-fixed50-typed-coverage.mjs exit=0
+  rg -n -F --glob *-parse.js --glob candidate-resolution.js M7_DETERMINISTIC_ANTITRUST_REGULATORY_SOURCE_PROVISION lib/canonical-v2/native-producer exit=1
+  rg -n -F --glob *-parse.js --glob candidate-resolution.js M7_DETERMINISTIC_CAPITALISATION_SOURCE_PROVISION lib/canonical-v2/native-producer exit=1
+  rg -n -F --glob *-parse.js --glob candidate-resolution.js M7_DETERMINISTIC_CLOSING_CONDITIONS_SOURCE_PROVISION lib/canonical-v2/native-producer exit=1
+  rg -n -F --glob *-parse.js --glob candidate-resolution.js M7_DETERMINISTIC_CONSIDERATION_SOURCE_PROVISION lib/canonical-v2/native-producer exit=1
+  rg -n -F --glob *-parse.js --glob candidate-resolution.js M7_DETERMINISTIC_DNO_INDEMNIFICATION_SOURCE_PROVISION lib/canonical-v2/native-producer exit=1
+  rg -n -F --glob *-parse.js --glob candidate-resolution.js M7_DETERMINISTIC_EMPLOYEE_MATTERS_SOURCE_PROVISION lib/canonical-v2/native-producer exit=1
+  rg -n -F --glob *-parse.js --glob candidate-resolution.js M7_DETERMINISTIC_GENERAL_COVENANTS_SOURCE_PROVISION lib/canonical-v2/native-producer exit=1
+  rg -n -F --glob *-parse.js --glob candidate-resolution.js M7_DETERMINISTIC_INTERIM_OPERATING_SOURCE_PROVISION lib/canonical-v2/native-producer exit=1
+  rg -n -F --glob *-parse.js --glob candidate-resolution.js M7_DETERMINISTIC_KEY_DEFINED_TERMS_SOURCE_PROVISION lib/canonical-v2/native-producer exit=1
+  rg -n -F --glob *-parse.js --glob candidate-resolution.js M7_DETERMINISTIC_MAE_DEFINITION_SOURCE_PROVISION lib/canonical-v2/native-producer exit=1
+  rg -n -F --glob *-parse.js --glob candidate-resolution.js M7_DETERMINISTIC_MERGER_STRUCTURE_CLOSING_SOURCE_PROVISION lib/canonical-v2/native-producer exit=1
+  rg -n -F --glob *-parse.js --glob candidate-resolution.js M7_DETERMINISTIC_MISC_BOILERPLATE_SOURCE_PROVISION lib/canonical-v2/native-producer exit=1
+  rg -n -F --glob *-parse.js --glob candidate-resolution.js M7_DETERMINISTIC_REPRESENTATIONS_SOURCE_PROVISION lib/canonical-v2/native-producer exit=1
+  rg -n -F --glob *-parse.js --glob candidate-resolution.js NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT lib/canonical-v2/native-producer exit=1

@@ -1,0 +1,3580 @@
+{
+  "authority": "A-0020",
+  "child_kind_histogram": {
+    "CHAPEAU": 10,
+    "HEADING": 1,
+    "LIMB": 24,
+    "QUALIFICATION": 16,
+    "SENTENCE": 6,
+    "chapeau:CHAPEAU": 1,
+    "chapeau:LIMB": 2,
+    "chapeau:QUALIFICATION": 5
+  },
+  "counts": {
+    "items": 50,
+    "items_without_nodes": 1,
+    "sha_failed_spans": 0,
+    "sha_verified_spans": 289,
+    "surfaces": 77,
+    "unresolved_chapeaus": 21
+  },
+  "form_histogram": {
+    "enumerated_limb:CHAPEAU:none": 11,
+    "enumerated_limb:HEADING:none": 1,
+    "enumerated_limb:LIMB:(1)": 1,
+    "enumerated_limb:LIMB:(2)": 1,
+    "enumerated_limb:LIMB:(A)": 2,
+    "enumerated_limb:LIMB:(B)": 2,
+    "enumerated_limb:LIMB:(a)": 2,
+    "enumerated_limb:LIMB:(b)": 2,
+    "enumerated_limb:LIMB:(i)": 5,
+    "enumerated_limb:LIMB:(ii)": 5,
+    "enumerated_limb:LIMB:(iii)": 3,
+    "enumerated_limb:LIMB:(iv)": 1,
+    "enumerated_limb:LIMB:(x)": 1,
+    "enumerated_limb:LIMB:(y)": 1,
+    "enumerated_limb:QUALIFICATION:none": 21,
+    "enumerated_limb:SENTENCE:none": 6,
+    "modal:may": 6,
+    "modal:may not": 1,
+    "modal:shall": 73,
+    "modal:shall not": 9,
+    "modal:will": 1,
+    "modal:will not": 3,
+    "proviso:except": 12,
+    "proviso:except that": 1,
+    "proviso:notwithstanding": 2,
+    "proviso:other than": 8,
+    "proviso:provided that": 6,
+    "proviso:provided, however": 3,
+    "proviso:subject to": 12,
+    "proviso:to the extent": 8,
+    "proviso:unless": 2
+  },
+  "items": [
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 1,
+        "modal": 1,
+        "proviso": 2
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 211679,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 211674,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 211687,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 211681,
+          "surface": "node",
+          "text": "unless",
+          "text_sha256": "c8a69f69754487458ba1b8ff473d119702d7e43925fae45475156780939bc606",
+          "verified": true
+        },
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "4d5955eea5f19b68832f2b25e6d90937c23b29460491fee98429d760aff9a09e",
+          "end_byte": 212372,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 211681,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "5e9a866f6145a461d606bfbf82917b53701e39c59afb6841a31fa6824078bebd",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 211830,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 211820,
+          "surface": "node",
+          "text": "other than",
+          "text_sha256": "53dd72d04e71d4a1f3f2e955dc754c631ffda1a9f9ea7fb0a7f8915411a9bbd1",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "810c0363866c23b2d4ed7a5679cef549e59d3ab0ed905309156bc51ad797afc6",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 1
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 1,
+        "modal": 5,
+        "proviso": 3
+      },
+      "entries": [
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "854e2ef715e7aa93e2f4cd2f625bd95f625e679117a1117ca707d1b9246780df",
+          "end_byte": 229998,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 229058,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "7b8d248a460a95e7ca336e4fecf5144b60e6847fc8f5b1533294745a9a55c7ed",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 229078,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 229073,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 229642,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 229629,
+          "surface": "node",
+          "text": "provided that",
+          "text_sha256": "d5201236a8320664f0bdef3b6e559767277acb6de9a70dbe5ba14a4409776b1a",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 229659,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 229650,
+          "surface": "node",
+          "text": "shall not",
+          "text_sha256": "28a543410ef33838c223aa24fd725afc191e2cefa8bed95abc857ae6ff33f86e",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 229857,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 229852,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 224870,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 224867,
+          "surface": "governing_chapeau",
+          "text": "may",
+          "text_sha256": "ee4d988c65de860fabbfbcd27f73d50bbebe3fba37fe419284f4811389c30bdc",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 224924,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 224921,
+          "surface": "governing_chapeau",
+          "text": "may",
+          "text_sha256": "ee4d988c65de860fabbfbcd27f73d50bbebe3fba37fe419284f4811389c30bdc",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 225054,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 225048,
+          "surface": "governing_chapeau",
+          "text": "except",
+          "text_sha256": "b11279547bc49510a81a764a59dc2eaba8cd004d95878e3a284fd27427042553",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 225107,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 225097,
+          "surface": "governing_chapeau",
+          "text": "other than",
+          "text_sha256": "53dd72d04e71d4a1f3f2e955dc754c631ffda1a9f9ea7fb0a7f8915411a9bbd1",
+          "verified": true
+        }
+      ],
+      "node_kind": "PARAGRAPH",
+      "node_occurrence_id": "9a9d339a33d7c530a9668482cb65f537e96bf9c78836de56cae76d92f6ceff35",
+      "notes": [],
+      "sample_ordinal": 2
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 6,
+        "modal": 2,
+        "proviso": 0
+      },
+      "entries": [
+        {
+          "child_node_kind": "CHAPEAU",
+          "child_node_occurrence_id": "285b54a3b6e5e64ff74876199d1e5840e4191c517290d800695b684c07853df3",
+          "end_byte": 199084,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 198768,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "c5b5f9c1a43db7d4ed3fec00ed05537e085608bea3a75a5c1fffc975776fa699",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 198814,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 198809,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "10f164c276db52b83a47ddfa81ad5abed958d32ef330bcdc2a4a1d30a803dbb3",
+          "end_byte": 199196,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(a)",
+          "start_byte": 199084,
+          "surface": "node",
+          "text": "(a)",
+          "text_sha256": "ad9d1f307e7679704bbd5811148ca8bbe43a17998e55827c86bb5a8a5dd21362",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "426594fef042f202c429d8528c7917ac4331e5423098b02af3daa23794f41a81",
+          "end_byte": 199324,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(b)",
+          "start_byte": 199196,
+          "surface": "node",
+          "text": "(b)",
+          "text_sha256": "745e490c1a67e535d09528bcd231750e573a71998af55675754b84e2b3d1a3ed",
+          "verified": true
+        },
+        {
+          "child_node_kind": "CHAPEAU",
+          "child_node_occurrence_id": "285b54a3b6e5e64ff74876199d1e5840e4191c517290d800695b684c07853df3",
+          "end_byte": 199084,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 198768,
+          "surface": "governing_chapeau",
+          "text": null,
+          "text_sha256": "c5b5f9c1a43db7d4ed3fec00ed05537e085608bea3a75a5c1fffc975776fa699",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 198814,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 198809,
+          "surface": "governing_chapeau",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "10f164c276db52b83a47ddfa81ad5abed958d32ef330bcdc2a4a1d30a803dbb3",
+          "end_byte": 199196,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(a)",
+          "start_byte": 199084,
+          "surface": "governing_chapeau",
+          "text": "(a)",
+          "text_sha256": "ad9d1f307e7679704bbd5811148ca8bbe43a17998e55827c86bb5a8a5dd21362",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "426594fef042f202c429d8528c7917ac4331e5423098b02af3daa23794f41a81",
+          "end_byte": 199324,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(b)",
+          "start_byte": 199196,
+          "surface": "governing_chapeau",
+          "text": "(b)",
+          "text_sha256": "745e490c1a67e535d09528bcd231750e573a71998af55675754b84e2b3d1a3ed",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "283b4a78b0600728dc04e6d8173e1886c20284dc3b66571808c8f1b9094d92e6",
+      "notes": [],
+      "sample_ordinal": 3
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 1,
+        "modal": 1,
+        "proviso": 2
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 219370,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 219365,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 218408,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 218398,
+          "surface": "governing_chapeau",
+          "text": "subject to",
+          "text_sha256": "d8917ae9a95797bfabfc8788e22be3191025797f0feba42afdbe56541474d0ab",
+          "verified": true
+        },
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "a55c4686706a7231fad67d1f5f58ef1ca18ee0e4ec94c3927fb45fbe9d2c3cc4",
+          "end_byte": 218540,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 218398,
+          "surface": "governing_chapeau",
+          "text": null,
+          "text_sha256": "3f796ec144d5a4acd0622900745d9c126c64b2356df94e161c086205be58bcca",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 218450,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 218437,
+          "surface": "governing_chapeau",
+          "text": "to the extent",
+          "text_sha256": "9c40094d05801891f6a92047b4f835743d984ed680657fdd34c6302d16e30b34",
+          "verified": true
+        }
+      ],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "11613ee1c60ceca1db9e950b8643d43256045df0c58f2f63bcbd67eb2580ba8e",
+      "notes": [],
+      "sample_ordinal": 4
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 0,
+        "proviso": 0
+      },
+      "entries": [],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "1f9dd010613dcba51f35094840716c43e1f513cd6620e777b31803b16251f264",
+      "notes": [],
+      "sample_ordinal": 5
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 0,
+        "proviso": 0
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "86a5e68b7b198d5980a9b0d252aa96d58527c8c3c66df01d5e007564f956ce6b",
+      "notes": [],
+      "sample_ordinal": 6
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "enumerated_limb": 5,
+        "modal": 0,
+        "proviso": 1
+      },
+      "entries": [
+        {
+          "child_node_kind": "CHAPEAU",
+          "child_node_occurrence_id": "c399088453160dbf07f5a5eb2422ad4cec9fb47c43505f31a41d4d41e6cbdf26",
+          "end_byte": 39153,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 39102,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "8a4e0c5d60363ab428bd0277e29e7d729bda4d1f1609018b0efd2a745bd76198",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "5de8116c7f5a75701c934853b6faa4efddf571eb154f80ff90eecffdd45c0039",
+          "end_byte": 39236,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(i)",
+          "start_byte": 39153,
+          "surface": "node",
+          "text": "(i)",
+          "text_sha256": "5fa6c028074617b1c08bb40105e0e8435e93acb642a06c77b100e1e902854e5f",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "54de6c734ac63d6dfc174bac9b4d28699caced0f5f92991c71b1f9344db63cb8",
+          "end_byte": 39304,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(ii)",
+          "start_byte": 39236,
+          "surface": "node",
+          "text": "(ii)",
+          "text_sha256": "b1561445ed8235545cefad2f7fa90da17ca63c7fcbdc77c7a8b8bd778682cfaf",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 39271,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 39261,
+          "surface": "node",
+          "text": "subject to",
+          "text_sha256": "d8917ae9a95797bfabfc8788e22be3191025797f0feba42afdbe56541474d0ab",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "bfe4bbf41e86017f2815aeaef88ad262bdb8afa16517c4e87859de81297ac850",
+          "end_byte": 39394,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(iii)",
+          "start_byte": 39304,
+          "surface": "node",
+          "text": "(iii)",
+          "text_sha256": "70bffb090bd6325be7e28b4754e1c4e2bf76385bd360a1c11c45c36bec455d0b",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "e82f89f3ffb5354aee6abceb975214bdbb9463320ecda07a5aed8c215fac33e4",
+          "end_byte": 39480,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(iv)",
+          "start_byte": 39394,
+          "surface": "node",
+          "text": "(iv)",
+          "text_sha256": "b3a0d0ef9d1438c3bdd4876cc72fd3896bc6b65f94b71a0c4f53624bc6dd2b17",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "fa01e3da753cde91cf49e3202e88664a614f8ad75bf03c3e57d5ba70b08a94df",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 7
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 0,
+        "proviso": 0
+      },
+      "entries": [],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "ab8d289ea63597dc0379dce11f544f1c9ef73467a54c6e829d59d38ff4d8577e",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 8
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 1,
+        "proviso": 0
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 141338,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 141333,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        }
+      ],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "6c389ed1d9d403f66dfc338271b77c8e2a551500834f00e7739b2394177600ef",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 9
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 4,
+        "proviso": 0
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 190069,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 190064,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 190181,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 190176,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 190210,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 190205,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 190293,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 190288,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "4c42be693d7f2335f6447e1956b6dffd25a67c7bcbe99e2fbe0c64b967e4c841",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 10
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 1,
+        "modal": 1,
+        "proviso": 4
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 101522,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 101516,
+          "surface": "node",
+          "text": "Except",
+          "text_sha256": "60599d51947b784831d902b6074dcca7b359d18b42569138583154cb73fb6bc5",
+          "verified": true
+        },
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "6ee9a8fdf7610752e3d9416e77508fec46f75662e901c4cc51bfc5468a220c88",
+          "end_byte": 101680,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 101516,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "2df178834dbfa701cf08affb77bce28327764145dd0318c4421e9d10221e9332",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 28325,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 28319,
+          "surface": "governing_chapeau",
+          "text": "Except",
+          "text_sha256": "60599d51947b784831d902b6074dcca7b359d18b42569138583154cb73fb6bc5",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 28343,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 28330,
+          "surface": "governing_chapeau",
+          "text": "to the extent",
+          "text_sha256": "9c40094d05801891f6a92047b4f835743d984ed680657fdd34c6302d16e30b34",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 28654,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 28644,
+          "surface": "governing_chapeau",
+          "text": "other than",
+          "text_sha256": "53dd72d04e71d4a1f3f2e955dc754c631ffda1a9f9ea7fb0a7f8915411a9bbd1",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 29059,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 29051,
+          "surface": "governing_chapeau",
+          "text": "will not",
+          "text_sha256": "52ccbc4a7617819d554a20a8576170c095bdf754d3995060f81784dcb08a68b6",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "c4d6e369bf7fa593f12aaf8cb23620d2687cb395703f092d9ea4dbd6653d79aa",
+      "notes": [],
+      "sample_ordinal": 11
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 1,
+        "proviso": 1
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 167608,
+          "inside_defined_term": true,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 167595,
+          "surface": "node",
+          "text": "to the extent",
+          "text_sha256": "9c40094d05801891f6a92047b4f835743d984ed680657fdd34c6302d16e30b34",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 167631,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 167626,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        }
+      ],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "bd0de92cfce5e7a4f353ea14432628fc1977f2d995195ba75f9e0fcde7f18a4f",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 12
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 1,
+        "proviso": 1
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 83753,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 83746,
+          "surface": "node",
+          "text": "may not",
+          "text_sha256": "0007a8bea4dcd3f6b1490fc7199650f1046713dd92d9314e1f2ede6946fcd999",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 83761,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 83755,
+          "surface": "node",
+          "text": "except",
+          "text_sha256": "b11279547bc49510a81a764a59dc2eaba8cd004d95878e3a284fd27427042553",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "00b42c4e664ab41ca8a50ec8afcfc28ce69c30d517123789c9cb5faff8177eb6",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 13
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "enumerated_limb": 3,
+        "modal": 0,
+        "proviso": 0
+      },
+      "entries": [
+        {
+          "child_node_kind": "CHAPEAU",
+          "child_node_occurrence_id": "49d1b75c7a031744b601638ed69df355d31d4330f6fd96c9d89e934625d97e7e",
+          "end_byte": 37031,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 36975,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "66199bef61c5aa1a16435d5d23d0582a2307f5f3f20e2eea4c0859d76b03e17e",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "0378f2e32a623502d34de474b95d296c9c6521618a64a31bd25eb9abf0e3f214",
+          "end_byte": 37238,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(i)",
+          "start_byte": 37031,
+          "surface": "node",
+          "text": "(i)",
+          "text_sha256": "c058b62ebc6b3b69d373282c25b2a07a77a5d7937291ebff2bb5534b7c6a4278",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "ab9c140db04c925eea72c54d07f8d2f2201e0680917788d1cefd907129ddd47c",
+          "end_byte": 37379,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(ii)",
+          "start_byte": 37238,
+          "surface": "node",
+          "text": "(ii)",
+          "text_sha256": "2ab628eac25ae03e8d6fbb32a7dc6d782f8af282f54033a5f88e0b4f4eaf5f76",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "cc39d7879daea19cf9bb97c9cd6f98ef484e8a851877b44888a0ee1d3eb8db8a",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 14
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 1,
+        "modal": 6,
+        "proviso": 4
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 17767,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 17762,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 17861,
+          "inside_defined_term": true,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 17848,
+          "surface": "node",
+          "text": "to the extent",
+          "text_sha256": "9c40094d05801891f6a92047b4f835743d984ed680657fdd34c6302d16e30b34",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 17940,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 17935,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 17975,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 17970,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 18066,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 18061,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 18118,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 18112,
+          "surface": "node",
+          "text": "except",
+          "text_sha256": "b11279547bc49510a81a764a59dc2eaba8cd004d95878e3a284fd27427042553",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 18221,
+          "inside_defined_term": true,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 18208,
+          "surface": "node",
+          "text": "to the extent",
+          "text_sha256": "9c40094d05801891f6a92047b4f835743d984ed680657fdd34c6302d16e30b34",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 18277,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 18260,
+          "surface": "node",
+          "text": "provided, however",
+          "text_sha256": "eda8f157132b899cebe14e593ba169dcc5bf7dc7ea188dac079a881673308d3c",
+          "verified": true
+        },
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "6c33ffe2e187dcb6a8a2295ca9676e1266ce233a1767baad795dc249bc87ef82",
+          "end_byte": 18950,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 18260,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "1b6c39f6b97edcfa3cf54e368fd3f80818672dd2a293fdc125cef6c59e662ef9",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 18490,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 18485,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 18626,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 18621,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "2e47df88c29a8c143e9c19a2995d5e2ece86a6c73669c43b589a9460172d1750",
+      "notes": [],
+      "sample_ordinal": 15
+    },
+    {
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 4,
+        "proviso": 0
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 263839,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 263834,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 263985,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 263976,
+          "surface": "node",
+          "text": "shall not",
+          "text_sha256": "28a543410ef33838c223aa24fd725afc191e2cefa8bed95abc857ae6ff33f86e",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 263839,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 263834,
+          "surface": "governing_chapeau",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 263985,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 263976,
+          "surface": "governing_chapeau",
+          "text": "shall not",
+          "text_sha256": "28a543410ef33838c223aa24fd725afc191e2cefa8bed95abc857ae6ff33f86e",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "da88b5f3a5f84a7236d9e779908b7f6acec5a1b1111cf66cf297dbae1268b434",
+      "notes": [],
+      "sample_ordinal": 16
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "counts": {
+        "enumerated_limb": 1,
+        "modal": 0,
+        "proviso": 1
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 283020,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 283005,
+          "surface": "node",
+          "text": "Notwithstanding",
+          "text_sha256": "f3385458cbf26f9615805e172aac694449bb4b8ebb0912b53dafa607f5e47bf8",
+          "verified": true
+        },
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "cfa603636f95717ee4109c2e9a3fec9fb0d3172f137411aaf055565b7c0b92a1",
+          "end_byte": 283064,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 283005,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "012d35927c3c731de79a4614868498641424ac88cacc632ac53ca311ceea07ab",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "94fb647ede59b755f27e9be0ca92a29ea15a2932a1463ffbb2509618c2458153",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 17
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 0,
+        "proviso": 0
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "981b491be51b500174917edf90004445106b3dcafdb918f10d34389b61bc53c9",
+      "notes": [],
+      "sample_ordinal": 18
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 3,
+        "modal": 1,
+        "proviso": 4
+      },
+      "entries": [
+        {
+          "child_node_kind": "CHAPEAU",
+          "child_node_occurrence_id": "abba6f00e58b7d6bd6362ea2f50e8593de8b76598dcf39ba553e8fbf8a206e77",
+          "end_byte": 56105,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 56087,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "032c21414141581d8ea24b0b3e7e83a6c241e5e92baa57d89eddd4459891d2f3",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "5adea6f4b86ea93373395e6141b4000a00a126c578fc3f4adc3bab740da81321",
+          "end_byte": 56372,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(1)",
+          "start_byte": 56105,
+          "surface": "node",
+          "text": "(1)",
+          "text_sha256": "3ade755ccc4413c55cc9ac08ffd832ead09adec6691a0ca8a3cc4bb3aba6b994",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "2ee4173a764b5f5109f86164811059f38dda57aab57dd062485112ceefdf8891",
+          "end_byte": 56748,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(2)",
+          "start_byte": 56372,
+          "surface": "node",
+          "text": "(2)",
+          "text_sha256": "3f54d4da778af69908196ef1a5ee9946443fcb44c2e6ee7eb664ab1f4cab46ba",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 56652,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 56642,
+          "surface": "node",
+          "text": "other than",
+          "text_sha256": "53dd72d04e71d4a1f3f2e955dc754c631ffda1a9f9ea7fb0a7f8915411a9bbd1",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 28325,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 28319,
+          "surface": "governing_chapeau",
+          "text": "Except",
+          "text_sha256": "60599d51947b784831d902b6074dcca7b359d18b42569138583154cb73fb6bc5",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 28343,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 28330,
+          "surface": "governing_chapeau",
+          "text": "to the extent",
+          "text_sha256": "9c40094d05801891f6a92047b4f835743d984ed680657fdd34c6302d16e30b34",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 28654,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 28644,
+          "surface": "governing_chapeau",
+          "text": "other than",
+          "text_sha256": "53dd72d04e71d4a1f3f2e955dc754c631ffda1a9f9ea7fb0a7f8915411a9bbd1",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 29059,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 29051,
+          "surface": "governing_chapeau",
+          "text": "will not",
+          "text_sha256": "52ccbc4a7617819d554a20a8576170c095bdf754d3995060f81784dcb08a68b6",
+          "verified": true
+        }
+      ],
+      "node_kind": "PARAGRAPH",
+      "node_occurrence_id": "a14a7e59c9db6f016c026fe7e373d28feadd830673ed64bf357a04920cc537b5",
+      "notes": [],
+      "sample_ordinal": 19
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 3,
+        "modal": 6,
+        "proviso": 1
+      },
+      "entries": [
+        {
+          "child_node_kind": "CHAPEAU",
+          "child_node_occurrence_id": "42c10bd2d62ad4d9a5fbb28dd8f6224a3f28b793b7ebfb48cdf0ae2ab50d2e75",
+          "end_byte": 12977,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 12799,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "bf73db2b41ad83ea5a42de890f1fa6213b4f0b7420027cdfe5221629673a6bb8",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 12846,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 12841,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 12976,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 12965,
+          "surface": "node",
+          "text": "except that",
+          "text_sha256": "1fa546c5b3959d2f3367035ab4b4578e433e634220fa2c3d7b4dbc6ec81f577b",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "524e2e79851850b1922b7d57e28cfc7d46a568f5f89454118ca42d4061bc3a39",
+          "end_byte": 13103,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(i)",
+          "start_byte": 12977,
+          "surface": "node",
+          "text": "(i)",
+          "text_sha256": "e117b9518510608d33981850eec2f6c901a0866180c6d086581a6a4fc8cf7b65",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 13016,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 13011,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 13051,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 13046,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "d3c4bd0e728497ab155efa4fd4474cd554df2168d8372eb8b827f2b1bc92c0a0",
+          "end_byte": 13459,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(ii)",
+          "start_byte": 13103,
+          "surface": "node",
+          "text": "(ii)",
+          "text_sha256": "7813d6398f5cf66b4fbcaf50308ab1427b959774d1c9af286369e52dadabb021",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 13150,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 13145,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 13191,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 13186,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 13250,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 13245,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "2b254d2c19346a3f5f26ae4e53932cfecd7a485f5976252e9724ca501fbf2a92",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 20
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "counts": {
+        "enumerated_limb": 2,
+        "modal": 0,
+        "proviso": 4
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 359157,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 359151,
+          "surface": "node",
+          "text": "Except",
+          "text_sha256": "60599d51947b784831d902b6074dcca7b359d18b42569138583154cb73fb6bc5",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 359414,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 359404,
+          "surface": "node",
+          "text": "subject to",
+          "text_sha256": "d8917ae9a95797bfabfc8788e22be3191025797f0feba42afdbe56541474d0ab",
+          "verified": true
+        },
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "cb403b039965df0adaeabb92b2e38f63f0360ae2fe2846ea3a1311d415377e84",
+          "end_byte": 359443,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 359404,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "f72fdd68246b46a1f73e7adb80354d12b562de209f3158f28625c71c08c33e57",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 359157,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 359151,
+          "surface": "governing_chapeau",
+          "text": "Except",
+          "text_sha256": "60599d51947b784831d902b6074dcca7b359d18b42569138583154cb73fb6bc5",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 359414,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 359404,
+          "surface": "governing_chapeau",
+          "text": "subject to",
+          "text_sha256": "d8917ae9a95797bfabfc8788e22be3191025797f0feba42afdbe56541474d0ab",
+          "verified": true
+        },
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "cb403b039965df0adaeabb92b2e38f63f0360ae2fe2846ea3a1311d415377e84",
+          "end_byte": 359443,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 359404,
+          "surface": "governing_chapeau",
+          "text": null,
+          "text_sha256": "f72fdd68246b46a1f73e7adb80354d12b562de209f3158f28625c71c08c33e57",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "1ead4ac6fc62ec2b4358c2c42db02cd3abb07aabda84488354e49731624219f4",
+      "notes": [],
+      "sample_ordinal": 21
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 3,
+        "modal": 0,
+        "proviso": 0
+      },
+      "entries": [
+        {
+          "child_node_kind": "CHAPEAU",
+          "child_node_occurrence_id": "df98da102350c7f8d21c9fe3393136a533df248fc8c995a491bca314c86b8e74",
+          "end_byte": 153506,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 153365,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "aa034a8d6bd7dc8d6049839dc53ee456496e782b07a53dede82de5fdaba891cd",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "aac5333526f918b723e87e1f68c25017625ddb3ecd9b0f5ffc2efbf35db7a93e",
+          "end_byte": 153589,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(A)",
+          "start_byte": 153506,
+          "surface": "node",
+          "text": "(A)",
+          "text_sha256": "39e06a65b5b1035f5401e7e2c05386c3dd951c44f1f2ca1e409cf160a4096c7d",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "a87a3f5613366051362c84b26c8be69e7165e4f32eda0bbb1c7e128688d47f1f",
+          "end_byte": 153981,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(B)",
+          "start_byte": 153589,
+          "surface": "node",
+          "text": "(B)",
+          "text_sha256": "46a0e2f3c677a96ce926f89d227cc14f72d7f250eace1f0b5d98bd55b5478264",
+          "verified": true
+        }
+      ],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "c19a2f26932aecc3d06e7805bcf770e1c0b27e9584acc8385daeb2a624eb6058",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 22
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 7,
+        "modal": 4,
+        "proviso": 1
+      },
+      "entries": [
+        {
+          "child_node_kind": "HEADING",
+          "child_node_occurrence_id": "83cb8cd18dbf46d74a9a57eb8895a0afb8ee7091149b6bbfd25fc95eeab15e08",
+          "end_byte": 260933,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 260921,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "c090e7de859f30daf6253b215a27da12e3a4985724d66bccefd11d67af207684",
+          "verified": true
+        },
+        {
+          "child_node_kind": "SENTENCE",
+          "child_node_occurrence_id": "f456f6db53d065849e7dbe395accb1080cd794670371b0bc4d6a722740f54d86",
+          "end_byte": 261132,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 260934,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "bed9cdce32f50827bbaaecd91b790744d4245b8f601db85eae7d13fdfc208bf7",
+          "verified": true
+        },
+        {
+          "child_node_kind": "SENTENCE",
+          "child_node_occurrence_id": "e4d0a62fcddf38a7a200d1d7fbff5fd376d3b572548f5fc5a412824df96ffde6",
+          "end_byte": 261453,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 261133,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "88302b75af6e74d2f7df4af1bfea72b26a719a096c6b49131f536f963eba577a",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 261187,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 261182,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": "SENTENCE",
+          "child_node_occurrence_id": "fd8243f1d7cb92eb4b5c85ac96294299d684f63028629b99559419e5ea8bba05",
+          "end_byte": 261707,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 261454,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "aceda1370384a94749464e0af89a2cc0d0b599002042ad8f5710186b3b087804",
+          "verified": true
+        },
+        {
+          "child_node_kind": "SENTENCE",
+          "child_node_occurrence_id": "a891d3c009ebd6dfb4e4b61451e7f50bd6b832df8d038150949faf75aa897418",
+          "end_byte": 262251,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 261708,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "9032f95afbdd827e2df9ed4f0b57ab65cadc0a78b0dfc8a9c0bc2a1f50e32ea5",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 261942,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 261937,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 262267,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 262252,
+          "surface": "node",
+          "text": "Notwithstanding",
+          "text_sha256": "f3385458cbf26f9615805e172aac694449bb4b8ebb0912b53dafa607f5e47bf8",
+          "verified": true
+        },
+        {
+          "child_node_kind": "SENTENCE",
+          "child_node_occurrence_id": "0840a70c3a58744d68de21241d558f36f7fe90d3d9612c6d01f1ec426c73e70c",
+          "end_byte": 262726,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 262252,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "9cbd9d6ca5b77278817b9ee8368fb7134c89a18a0d5dc99715c14f90811bbb38",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 262347,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 262342,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 262645,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 262640,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": "SENTENCE",
+          "child_node_occurrence_id": "cc37787b88dbff89359b8ca620806926aad35026199528981744ae7d3fb4fd03",
+          "end_byte": 263173,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 262727,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "9605c18f830ff3cd74af23ee3c50bd88b898a2edb9acaff23a34cfa9d5a5d244",
+          "verified": true
+        }
+      ],
+      "node_kind": "SECTION",
+      "node_occurrence_id": "f5632803bdc78d9a3a119bf4ac4651f568c8c984778f2569a260cf6346c16423",
+      "notes": [],
+      "sample_ordinal": 23
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "counts": {
+        "enumerated_limb": 1,
+        "modal": 4,
+        "proviso": 1
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 315343,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 315338,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 315354,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 315349,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 315577,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 315560,
+          "surface": "node",
+          "text": "provided, however",
+          "text_sha256": "eda8f157132b899cebe14e593ba169dcc5bf7dc7ea188dac079a881673308d3c",
+          "verified": true
+        },
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "349710ae76e0d13effacd2234daabaaa021078bf4b36e8df3b35722f37b05858",
+          "end_byte": 316274,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 315619,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "203ce4a3ae9588f92a72fcffd6ef7ff1807cc353ce73083f06c38907ad24292a",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 315783,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 315778,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 316022,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 316017,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "87f43f93e5c7626a5e42e8ac907774a953cb84d4002fb1ba2796a2bdd5db321e",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 24
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 2,
+        "proviso": 0
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 193970,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 193965,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 193970,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 193965,
+          "surface": "governing_chapeau",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        }
+      ],
+      "node_kind": "CHAPEAU",
+      "node_occurrence_id": "288b099ce7224dcf1359a8da67acc0acd24616442ad429be64159c2685760152",
+      "notes": [],
+      "sample_ordinal": 25
+    },
+    {
+      "agreement_id": "fa0fff26622d0e90b47c3df527ccff91f4daa3db12f08d3832de76d8ae7541b5",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 1,
+        "proviso": 0
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 127245,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 127237,
+          "surface": "node",
+          "text": "will not",
+          "text_sha256": "52ccbc4a7617819d554a20a8576170c095bdf754d3995060f81784dcb08a68b6",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "f84fe61cca6593c2b59bbecc967411a1fb1930c67e1c4cc445dadaf5bfd9d406",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 26
+    },
+    {
+      "agreement_id": "aa72f3af29316df52ab5cb75eb2b0bb0a5b31036bd24c7f812241c5a688f4319",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 0,
+        "proviso": 1
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 89471,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 89465,
+          "surface": "node",
+          "text": "Except",
+          "text_sha256": "60599d51947b784831d902b6074dcca7b359d18b42569138583154cb73fb6bc5",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "705e40a47d6f83ab908501f51df430c4e2be1ad378b6f6e067b7053459bb99f2",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 27
+    },
+    {
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 3,
+        "proviso": 0
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 283625,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 283620,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 284219,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 284214,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 284301,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 284292,
+          "surface": "node",
+          "text": "shall not",
+          "text_sha256": "28a543410ef33838c223aa24fd725afc191e2cefa8bed95abc857ae6ff33f86e",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "717b78ef0bd7b4f18a66f142e1213676c2ebc557e5d91811d348fe0ac9e47dc2",
+      "notes": [],
+      "sample_ordinal": 28
+    },
+    {
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 0,
+        "proviso": 0
+      },
+      "entries": [],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "aff6d4227c9a1383685dd11b05b61ec1f7c2f56365b9daa675a8babcb31faaf5",
+      "notes": [],
+      "sample_ordinal": 29
+    },
+    {
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "counts": {
+        "enumerated_limb": 1,
+        "modal": 0,
+        "proviso": 1
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 168599,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 168593,
+          "surface": "node",
+          "text": "Except",
+          "text_sha256": "60599d51947b784831d902b6074dcca7b359d18b42569138583154cb73fb6bc5",
+          "verified": true
+        },
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "e9347f4a9fe9169b5e8892e30e72fc1f219f5a29bedd2606b9f828271fda9d69",
+          "end_byte": 168793,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 168593,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "dd49eeda934c6112df6ce90f08d4c078f089902bc0a196a2e1f989fc76f19a8f",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "d3994deea2bf30f2cd94da1d037341f2c8a2d19f9c64cdf95818be09ad52e72e",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 30
+    },
+    {
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "counts": {
+        "enumerated_limb": 1,
+        "modal": 3,
+        "proviso": 1
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 185818,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 185815,
+          "surface": "node",
+          "text": "may",
+          "text_sha256": "ee4d988c65de860fabbfbcd27f73d50bbebe3fba37fe419284f4811389c30bdc",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 186160,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 186143,
+          "surface": "node",
+          "text": "provided, however",
+          "text_sha256": "eda8f157132b899cebe14e593ba169dcc5bf7dc7ea188dac079a881673308d3c",
+          "verified": true
+        },
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "c2bb2c41ffbc749cf8386888d5d92b88e452006d35b7f3c1975fdeeb319b7c52",
+          "end_byte": 186440,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 186143,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "bab242a87345a17eb801a9cb326ba8b1c12855dcea2dfdfbbb02583d3b6bcdcf",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 186293,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 186288,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 186365,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 186360,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        }
+      ],
+      "node_kind": "PARAGRAPH",
+      "node_occurrence_id": "d1e2d0a062df582ed0f12e9bda171c0470c83b01c6ed84c85b73792b18e639d0",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 31
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 0,
+        "proviso": 0
+      },
+      "entries": [],
+      "node_kind": "PARAGRAPH",
+      "node_occurrence_id": "b7a4d3335c5cf56ded1f3634b536100e75e2715b878f174ae97713038e4cb8d8",
+      "notes": [],
+      "sample_ordinal": 32
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 1,
+        "proviso": 0
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 244626,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 244621,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        }
+      ],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "a9cfb178bb425a00b358813dbeb5a82628935e5d8aacc7a6bd61cec1e31bedd2",
+      "notes": [],
+      "sample_ordinal": 33
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 1,
+        "proviso": 0
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 245075,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 245070,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        }
+      ],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "77243edb98f6d88509246d291611f4a45fb9d3dd4d833683516d7f4cbc38cbe4",
+      "notes": [],
+      "sample_ordinal": 34
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 1,
+        "proviso": 0
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 244339,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 244334,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        }
+      ],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "83db67d06732b31e361c45f5df78b54f654262843e547c3a202885d33517147e",
+      "notes": [],
+      "sample_ordinal": 35
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 1,
+        "proviso": 0
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 245646,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 245641,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        }
+      ],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "951479b70a42cf744ce64478595260d9c59ac16a219eebb02aaea5fbae82ec1b",
+      "notes": [],
+      "sample_ordinal": 36
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 0,
+        "proviso": 2
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 56907,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 56897,
+          "surface": "node",
+          "text": "other than",
+          "text_sha256": "53dd72d04e71d4a1f3f2e955dc754c631ffda1a9f9ea7fb0a7f8915411a9bbd1",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 56907,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 56897,
+          "surface": "governing_chapeau",
+          "text": "other than",
+          "text_sha256": "53dd72d04e71d4a1f3f2e955dc754c631ffda1a9f9ea7fb0a7f8915411a9bbd1",
+          "verified": true
+        }
+      ],
+      "node_kind": "CHAPEAU",
+      "node_occurrence_id": "71b9f568087ff6db20040280af2d8484880f9c422accb8b21b374327583fea00",
+      "notes": [],
+      "sample_ordinal": 37
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "enumerated_limb": 4,
+        "modal": 3,
+        "proviso": 1
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 173049,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 173039,
+          "surface": "node",
+          "text": "Subject to",
+          "text_sha256": "e277faaad01ef5456e92e09de845404fbab1e63c46ce21fbb773811ea6cfb87b",
+          "verified": true
+        },
+        {
+          "child_node_kind": "CHAPEAU",
+          "child_node_occurrence_id": "45a685b16da4d7a90ba93d97052649eec3522a673baeb5a3471ba044013ac4a9",
+          "end_byte": 173612,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 173039,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "739f97869d756f56bbabe4b88303fd4c003a933290a24802b236db2ece5092c3",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 173129,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 173124,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 173140,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 173135,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "fb401f0e3d0506cce535471bce99e801b025d8bfbde594f99c5738dc1311518a",
+          "end_byte": 174203,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(i)",
+          "start_byte": 173612,
+          "surface": "node",
+          "text": "(i)",
+          "text_sha256": "33d236aad4162439dde9718da0b30121395950712b3f1e2dc3124aa85c5e96ab",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 173906,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 173903,
+          "surface": "node",
+          "text": "may",
+          "text_sha256": "ee4d988c65de860fabbfbcd27f73d50bbebe3fba37fe419284f4811389c30bdc",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "13e33954ab2231a3322b22680f510258d2dfdc4c3efe91d6c6ea1b137253a7be",
+          "end_byte": 174341,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(ii)",
+          "start_byte": 174203,
+          "surface": "node",
+          "text": "(ii)",
+          "text_sha256": "de8f718384a46e8ed578948e323503e530e227767600aa97d04d0acc0f153cae",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "6becc865b48af14267d92546b8d3c2961bdc2449160976dd17598aa1afd25c6e",
+          "end_byte": 174455,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(iii)",
+          "start_byte": 174341,
+          "surface": "node",
+          "text": "(iii)",
+          "text_sha256": "38a3d2cf66166d61b4c4bbc0dfecbc53e089caf31615031784e94fb155134078",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "bba19a056de51ec8e618dfe7b8f5b3f13844413be3e02943f6f7575b34b573be",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 38
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 0,
+        "proviso": 0
+      },
+      "entries": [],
+      "node_kind": null,
+      "node_occurrence_id": null,
+      "notes": [
+        "NO_SOURCE_NODE"
+      ],
+      "sample_ordinal": 39
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "enumerated_limb": 1,
+        "modal": 2,
+        "proviso": 2
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 213174,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 213169,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 212867,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 212862,
+          "surface": "governing_chapeau",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 212881,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 212871,
+          "surface": "governing_chapeau",
+          "text": "subject to",
+          "text_sha256": "d8917ae9a95797bfabfc8788e22be3191025797f0feba42afdbe56541474d0ab",
+          "verified": true
+        },
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "e1c98428080aa19de5498f51b4fc6b93f6c20154d581cfbc5ead4e381c0dbc73",
+          "end_byte": 212920,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 212871,
+          "surface": "governing_chapeau",
+          "text": null,
+          "text_sha256": "2e794af4ab000cc962155df055a163eb51e38965364412f4259aa57d6176b1e1",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 213012,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 212999,
+          "surface": "governing_chapeau",
+          "text": "to the extent",
+          "text_sha256": "9c40094d05801891f6a92047b4f835743d984ed680657fdd34c6302d16e30b34",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "dc8fdf56a922b22a7884e5ed84a3839e4c7a016996fb1ccb006484eb82a71e8f",
+      "notes": [],
+      "sample_ordinal": 40
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "enumerated_limb": 3,
+        "modal": 6,
+        "proviso": 0
+      },
+      "entries": [
+        {
+          "child_node_kind": "CHAPEAU",
+          "child_node_occurrence_id": "35604d025c6382a08286242497f135439568ba400c978b84befb2ac1e351f91f",
+          "end_byte": 19565,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 19218,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "83d94f7c083d3ba28161b9c8148d3c99349f2a65865754ed5dd143e35c6f2886",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 19378,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 19373,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "484ed396c39d4c6240768a4bd0086c0f6851218e11202619bf755f2634258b30",
+          "end_byte": 19925,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(A)",
+          "start_byte": 19565,
+          "surface": "node",
+          "text": "(A)",
+          "text_sha256": "7cd2a81ad68ce35b2df42073ab3ece8feac3cd30255a96f9eefb908e83a9e2c7",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 19605,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 19600,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 19633,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 19628,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 19695,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 19690,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 19816,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 19811,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 19893,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 19890,
+          "surface": "node",
+          "text": "may",
+          "text_sha256": "ee4d988c65de860fabbfbcd27f73d50bbebe3fba37fe419284f4811389c30bdc",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "80f7d9a1716862075978a3e8895507544133fb7e1e0c1cba94a5ced15f1f4753",
+          "end_byte": 20080,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(B)",
+          "start_byte": 19925,
+          "surface": "node",
+          "text": "(B)",
+          "text_sha256": "9c15d937c14d7d1fdd5eafb880ca9e0ed2918eb9befcddc9c47511f742609784",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "e98827c2a4a2ec76508d26c74e234a154f0174ce9a81db73a53e0b359ecaca55",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 41
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "enumerated_limb": 1,
+        "modal": 4,
+        "proviso": 1
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 190178,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 190173,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 190219,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 190210,
+          "surface": "node",
+          "text": "shall not",
+          "text_sha256": "28a543410ef33838c223aa24fd725afc191e2cefa8bed95abc857ae6ff33f86e",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 190364,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 190359,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 190626,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 190621,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 190652,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 190642,
+          "surface": "node",
+          "text": "subject to",
+          "text_sha256": "d8917ae9a95797bfabfc8788e22be3191025797f0feba42afdbe56541474d0ab",
+          "verified": true
+        },
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "fd77960e6d9236b5c993656c0d6ae97da7d61981d580d449e7cbb6406af8a124",
+          "end_byte": 190755,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 190642,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "c8e77fd011c23d541689a735ce80f521fbf76213110e80ffc51c574fc9183e3f",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "005e1651ed5ba5f031509229658f4e9682d95f1b59ce894bfb4f319388ad9ad4",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 42
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "enumerated_limb": 4,
+        "modal": 0,
+        "proviso": 1
+      },
+      "entries": [
+        {
+          "child_node_kind": "CHAPEAU",
+          "child_node_occurrence_id": "4fe215e5ef2f673980f83eef6af546f9b3761f7a89bb82eb28951d4737da900c",
+          "end_byte": 104326,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 104033,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "751ec0eff9693784704f3ba335d8a58731b2ca4ce3ad1538141570163d3cc41e",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "c20c33be7e11388cb9d746e94c2b22f6cb1341007f2a35ce6e8cc531801577eb",
+          "end_byte": 104527,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(i)",
+          "start_byte": 104326,
+          "surface": "node",
+          "text": "(i)",
+          "text_sha256": "8bb0877c26f8da7dc82e79b7d3549aa81e418a078fea842d9abb58fa61864746",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 104347,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 104337,
+          "surface": "node",
+          "text": "subject to",
+          "text_sha256": "d8917ae9a95797bfabfc8788e22be3191025797f0feba42afdbe56541474d0ab",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "aa1d7644d4d65300310d6dd3f2862d62e458cd7e6862d7232d43a1cdef3ebb66",
+          "end_byte": 104616,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(ii)",
+          "start_byte": 104527,
+          "surface": "node",
+          "text": "(ii)",
+          "text_sha256": "5106addc65e2db056f49ac450aa97f76579f4d3e563581274715108f0d124323",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "a7f639877f4f9f37e1ffd7234c680c1a3f0c125cc1ba7634d711256fc9043ed7",
+          "end_byte": 104713,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(iii)",
+          "start_byte": 104616,
+          "surface": "node",
+          "text": "(iii)",
+          "text_sha256": "8cd57bc1933d3d7d94e238bfc9105c2afb6b67da47357c1ba0a0e26a207a7caf",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "adcc44a850446a385f288d6830480199c610ef4eab5c216e271e154ae304dd5f",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 43
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "enumerated_limb": 2,
+        "modal": 3,
+        "proviso": 2
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 129158,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 129148,
+          "surface": "node",
+          "text": "Subject to",
+          "text_sha256": "e277faaad01ef5456e92e09de845404fbab1e63c46ce21fbb773811ea6cfb87b",
+          "verified": true
+        },
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "6003e07ceb97271f01688ba70baa5401809ecb5d294c0c6231d0787c85fb47f9",
+          "end_byte": 129174,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 129148,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "c72d80da74476cb536b4fd84b075ec78fc2889850e21dc267db5762632b10d0b",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 129428,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 129423,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 129439,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 129434,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 129781,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 129768,
+          "surface": "node",
+          "text": "provided that",
+          "text_sha256": "d5201236a8320664f0bdef3b6e559767277acb6de9a70dbe5ba14a4409776b1a",
+          "verified": true
+        },
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "f61826ef06cbe5489f777c3b35a3f0b600472a5c458158ad824fa1ce90ab747d",
+          "end_byte": 129949,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 129768,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "73bba1af63e1a88328fd944ee9eca90431b597e542bb66645324b3ff7a8d48ea",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 129803,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 129798,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "d011f79aae3c051670469038a679a5c72c80eb96af29cfe4f5d607c1d614aa19",
+      "notes": [
+        "SECTION has no CHAPEAU child and no lead-in PARAGRAPH/SENTENCE before the first limb"
+      ],
+      "sample_ordinal": 44
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "enumerated_limb": 4,
+        "modal": 4,
+        "proviso": 3
+      },
+      "entries": [
+        {
+          "child_node_kind": "CHAPEAU",
+          "child_node_occurrence_id": "f65113b0659f7610e947bf5998808f6b78d187738559a8a397bf9eb6ab6877d7",
+          "end_byte": 132775,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 132737,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "7325fac68a9e8664902537ad64297b038d4218bd9a133944067fc96534cf96c6",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 132774,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 132768,
+          "surface": "node",
+          "text": "except",
+          "text_sha256": "b11279547bc49510a81a764a59dc2eaba8cd004d95878e3a284fd27427042553",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "1d7feec988982ac733903d476711019059af779465b03825ac3f35978faa7d13",
+          "end_byte": 132875,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(x)",
+          "start_byte": 132775,
+          "surface": "node",
+          "text": "(x)",
+          "text_sha256": "5b39a2134735ce91b6d7739775375c7ad97261b6b41e9dca884c0ebd1ecd160d",
+          "verified": true
+        },
+        {
+          "child_node_kind": "LIMB",
+          "child_node_occurrence_id": "bf8259c993ae099a33cb5d491591738c3788c102ed6a6d7b7172b71c59c14d43",
+          "end_byte": 133464,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": "(y)",
+          "start_byte": 132875,
+          "surface": "node",
+          "text": "(y)",
+          "text_sha256": "37010500a5c0f6261cfd330fd707cd1640f9b23226bb9a477b36c726231f27a3",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 132938,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 132929,
+          "surface": "node",
+          "text": "shall not",
+          "text_sha256": "28a543410ef33838c223aa24fd725afc191e2cefa8bed95abc857ae6ff33f86e",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 133007,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 133002,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 133018,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 133013,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 133477,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 133464,
+          "surface": "node",
+          "text": "provided that",
+          "text_sha256": "d5201236a8320664f0bdef3b6e559767277acb6de9a70dbe5ba14a4409776b1a",
+          "verified": true
+        },
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "9768057203716512e1f78f10b28b6aa01c95e7e8045b238945c62a4668cd5d9a",
+          "end_byte": 133722,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 133464,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "bf4da3ffa11499c4cd9965cc3d2e71b1a7c56f169bc1ba6c60e6df7f24f109bf",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 133616,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 133611,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 133659,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 133653,
+          "surface": "node",
+          "text": "unless",
+          "text_sha256": "c8a69f69754487458ba1b8ff473d119702d7e43925fae45475156780939bc606",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "9dbb432bdbbce495787dea0323fbec05b1db679c7c5b0761f004755eacf12f3b",
+      "notes": [],
+      "sample_ordinal": 45
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 0,
+        "proviso": 0
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "173f493a67e94910696473dfbb6230650db0a8b48a8343671a2e8ebb2ecc55dc",
+      "notes": [],
+      "sample_ordinal": 46
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "enumerated_limb": 1,
+        "modal": 4,
+        "proviso": 5
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 281987,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 281974,
+          "surface": "node",
+          "text": "provided that",
+          "text_sha256": "d5201236a8320664f0bdef3b6e559767277acb6de9a70dbe5ba14a4409776b1a",
+          "verified": true
+        },
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "5229506dc6a2ec5be44ad588fbc0933faa4588b1fa54f06bbb2b9bfe7bb08554",
+          "end_byte": 285033,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 281974,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "2c3974b0141758030bc03699682f0180e644a536c4cfdbf8bce1e28a10e874b3",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 282057,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 282052,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 282120,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 282116,
+          "surface": "node",
+          "text": "will",
+          "text_sha256": "bc16f5825a9dafc8c245dc7cd93f4e671a9885035a73e6ef29c04f2d3863bfab",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 282504,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 282494,
+          "surface": "node",
+          "text": "other than",
+          "text_sha256": "53dd72d04e71d4a1f3f2e955dc754c631ffda1a9f9ea7fb0a7f8915411a9bbd1",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 282600,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 282590,
+          "surface": "node",
+          "text": "subject to",
+          "text_sha256": "d8917ae9a95797bfabfc8788e22be3191025797f0feba42afdbe56541474d0ab",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 284220,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 284211,
+          "surface": "node",
+          "text": "shall not",
+          "text_sha256": "28a543410ef33838c223aa24fd725afc191e2cefa8bed95abc857ae6ff33f86e",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 284618,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 284612,
+          "surface": "node",
+          "text": "except",
+          "text_sha256": "b11279547bc49510a81a764a59dc2eaba8cd004d95878e3a284fd27427042553",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 284687,
+          "inside_defined_term": true,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 284674,
+          "surface": "node",
+          "text": "to the extent",
+          "text_sha256": "9c40094d05801891f6a92047b4f835743d984ed680657fdd34c6302d16e30b34",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 284909,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 284906,
+          "surface": "node",
+          "text": "may",
+          "text_sha256": "ee4d988c65de860fabbfbcd27f73d50bbebe3fba37fe419284f4811389c30bdc",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "6068e6465cbdebbe6bdbf518744855cb09b45c4eea61a07d16dd45b6a72e46bc",
+      "notes": [],
+      "sample_ordinal": 47
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "enumerated_limb": 0,
+        "modal": 0,
+        "proviso": 0
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "d0cf1b04d87976581cfb75b5c8be5b911cea0d170a821b70965d41ec54cc51d1",
+      "notes": [],
+      "sample_ordinal": 48
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "enumerated_limb": 2,
+        "modal": 6,
+        "proviso": 2
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 8325,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 8315,
+          "surface": "node",
+          "text": "subject to",
+          "text_sha256": "d8917ae9a95797bfabfc8788e22be3191025797f0feba42afdbe56541474d0ab",
+          "verified": true
+        },
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "568cd86a45b7be417d95f71c8734e33a30a06903af73fb145c91150ea476dfae",
+          "end_byte": 8369,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 8315,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "509f39d98a0e7fe8f3a85c6fa0f4b3ead64c06278956a9aa84a98a95ba53f15c",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 8442,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 8437,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 8528,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 8523,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 8557,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 8552,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 8325,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 8315,
+          "surface": "governing_chapeau",
+          "text": "subject to",
+          "text_sha256": "d8917ae9a95797bfabfc8788e22be3191025797f0feba42afdbe56541474d0ab",
+          "verified": true
+        },
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "568cd86a45b7be417d95f71c8734e33a30a06903af73fb145c91150ea476dfae",
+          "end_byte": 8369,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 8315,
+          "surface": "governing_chapeau",
+          "text": null,
+          "text_sha256": "509f39d98a0e7fe8f3a85c6fa0f4b3ead64c06278956a9aa84a98a95ba53f15c",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 8442,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 8437,
+          "surface": "governing_chapeau",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 8528,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 8523,
+          "surface": "governing_chapeau",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 8557,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 8552,
+          "surface": "governing_chapeau",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "b21dab25319dff3fdbf197e4b25745e4d0ee2bd0e697430fd257877ab3b0470d",
+      "notes": [],
+      "sample_ordinal": 49
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "enumerated_limb": 2,
+        "modal": 6,
+        "proviso": 2
+      },
+      "entries": [
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 234864,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 234851,
+          "surface": "node",
+          "text": "provided that",
+          "text_sha256": "d5201236a8320664f0bdef3b6e559767277acb6de9a70dbe5ba14a4409776b1a",
+          "verified": true
+        },
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "652ab9429b097527487bf11333ae939de6477423462501344dbe2ca1b79485d5",
+          "end_byte": 235115,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 234851,
+          "surface": "node",
+          "text": null,
+          "text_sha256": "1752e8fcbdefa1d24c346cc158a3892da42c7d782b3268fbde8a142c9e48fae5",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 234904,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 234895,
+          "surface": "node",
+          "text": "shall not",
+          "text_sha256": "28a543410ef33838c223aa24fd725afc191e2cefa8bed95abc857ae6ff33f86e",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 234928,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 234923,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 235052,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 235047,
+          "surface": "node",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 234864,
+          "inside_defined_term": false,
+          "kind": "proviso",
+          "marker": null,
+          "start_byte": 234851,
+          "surface": "governing_chapeau",
+          "text": "provided that",
+          "text_sha256": "d5201236a8320664f0bdef3b6e559767277acb6de9a70dbe5ba14a4409776b1a",
+          "verified": true
+        },
+        {
+          "child_node_kind": "QUALIFICATION",
+          "child_node_occurrence_id": "652ab9429b097527487bf11333ae939de6477423462501344dbe2ca1b79485d5",
+          "end_byte": 235115,
+          "inside_defined_term": false,
+          "kind": "enumerated_limb",
+          "marker": null,
+          "start_byte": 234851,
+          "surface": "governing_chapeau",
+          "text": null,
+          "text_sha256": "1752e8fcbdefa1d24c346cc158a3892da42c7d782b3268fbde8a142c9e48fae5",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 234904,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 234895,
+          "surface": "governing_chapeau",
+          "text": "shall not",
+          "text_sha256": "28a543410ef33838c223aa24fd725afc191e2cefa8bed95abc857ae6ff33f86e",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 234928,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 234923,
+          "surface": "governing_chapeau",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        },
+        {
+          "child_node_kind": null,
+          "child_node_occurrence_id": null,
+          "end_byte": 235052,
+          "inside_defined_term": false,
+          "kind": "modal",
+          "marker": null,
+          "start_byte": 235047,
+          "surface": "governing_chapeau",
+          "text": "shall",
+          "text_sha256": "56ee5b508706bf2de91712d85d6d1e11ddbff01949142ed6e8c22e3b1bed1c71",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "dd18c430f173b3b471433acc4fc69e5554cfc0a18bcd358e510d4053883341d6",
+      "notes": [],
+      "sample_ordinal": 50
+    }
+  ],
+  "kind_histogram": {
+    "enumerated_limb": 65,
+    "modal": 93,
+    "proviso": 54
+  },
+  "missing_paths": [],
+  "phrases": {
+    "modal": [
+      "is entitled to",
+      "is required to",
+      "shall not",
+      "will not",
+      "may not",
+      "shall",
+      "will",
+      "may",
+      "must"
+    ],
+    "proviso": [
+      "provided, however",
+      "provided that",
+      "except that",
+      "other than",
+      "to the extent",
+      "so long as",
+      "subject to",
+      "notwithstanding",
+      "unless",
+      "except"
+    ]
+  },
+  "schema": "Q-0018-FIXED50-VOCABULARY/V1",
+  "table_sha256": "8a1a6c7c4446419a1a639e791772793ad38446a5cb2a826213c66b498f98349d"
+}

@@ -1,0 +1,612 @@
+{
+  "classes": [
+    {
+      "agreements_affected": [
+        "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71"
+      ],
+      "candidate_a": {
+        "annotation_occurrence_id": "ea4dc369b9062bc13e3708bae40ba959d72b743ccf47ad92006bc626c53969e9",
+        "first_120_bytes": "“Affiliate”",
+        "location": "definitions_article",
+        "rule": "rule_1",
+        "span": {
+          "end_byte": 254094,
+          "start_byte": 254079,
+          "text_sha256": "3ca1564a234e99004bc01df31d998472888c6e7a1e41830c6c8aef5f4709c8b0",
+          "verified": true
+        },
+        "value": "Affiliate"
+      },
+      "candidate_b": {
+        "annotation_occurrence_id": "f9bfd2431680edcc6ea15c1283930fca5c0e882121ad81f33b65269c22f1f1e8",
+        "first_120_bytes": "“Affiliate”",
+        "location": "inline_body",
+        "rule": "rule_3",
+        "span": {
+          "end_byte": 302482,
+          "start_byte": 302467,
+          "text_sha256": "3ca1564a234e99004bc01df31d998472888c6e7a1e41830c6c8aef5f4709c8b0",
+          "verified": true
+        },
+        "value": "Affiliate"
+      },
+      "class_key": "Affiliate | rule_1:definitions_article vs rule_3:inline_body",
+      "edge_count": 7,
+      "representative_agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "representative_edge_id": "052837f4f0bd4af7f75694201ae820edd2152bf70631c6ef56f0a9d6bb71e65a",
+      "term": "Affiliate",
+      "texts_byte_identical_after_whitespace_normalisation": true
+    },
+    {
+      "agreements_affected": [
+        "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71"
+      ],
+      "candidate_a": {
+        "annotation_occurrence_id": "12b48b0c5ff98c13f4a57bf84b6d4c191d7e8732d0995bc460615ecdfb08b7be",
+        "first_120_bytes": "“Company Options”",
+        "location": "definitions_article",
+        "rule": "rule_1",
+        "span": {
+          "end_byte": 263038,
+          "start_byte": 263017,
+          "text_sha256": "f39057416b7412377f8c6d9f6ec80b9ac58cb67457fdef6e51187dfcd245eef8",
+          "verified": true
+        },
+        "value": "Company Options"
+      },
+      "candidate_b": {
+        "annotation_occurrence_id": "fc89f569bd0afa781d5276aca802aa085c6b79b25b07607a73997084e6f1dc7a",
+        "first_120_bytes": "“Company Options”",
+        "location": "inline_body",
+        "rule": "rule_3",
+        "span": {
+          "end_byte": 326841,
+          "start_byte": 326820,
+          "text_sha256": "f39057416b7412377f8c6d9f6ec80b9ac58cb67457fdef6e51187dfcd245eef8",
+          "verified": true
+        },
+        "value": "Company Options"
+      },
+      "class_key": "Company Options | rule_1:definitions_article vs rule_3:inline_body",
+      "edge_count": 2,
+      "representative_agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "representative_edge_id": "3801bb4c888e8e82b47ded3bcea76109507dde025bb4652cc56a847fe7a2062f",
+      "term": "Company Options",
+      "texts_byte_identical_after_whitespace_normalisation": true
+    },
+    {
+      "agreements_affected": [
+        "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+        "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+        "fa0fff26622d0e90b47c3df527ccff91f4daa3db12f08d3832de76d8ae7541b5"
+      ],
+      "candidate_a": {
+        "annotation_occurrence_id": "044eeda59310cb35294bfe50ebf746b0ba13048ea91b21331c97354d990e6325",
+        "first_120_bytes": "“Company”",
+        "location": "preamble",
+        "rule": "rule_2",
+        "span": {
+          "end_byte": 5014,
+          "start_byte": 5001,
+          "text_sha256": "ba03443b2c09782367ec735a5b0f9707866821994a785fa329ea0a4abb7ecceb",
+          "verified": true
+        },
+        "value": "Company"
+      },
+      "candidate_b": {
+        "annotation_occurrence_id": "79086787a94130abd90695bb3a02c59063d96f328a91d80614eeb793ae804120",
+        "first_120_bytes": "“Company”",
+        "location": "inline_body",
+        "rule": "rule_3",
+        "span": {
+          "end_byte": 299473,
+          "start_byte": 299460,
+          "text_sha256": "ba03443b2c09782367ec735a5b0f9707866821994a785fa329ea0a4abb7ecceb",
+          "verified": true
+        },
+        "value": "Company"
+      },
+      "class_key": "Company | rule_2:preamble vs rule_3:inline_body",
+      "edge_count": 137,
+      "representative_agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "representative_edge_id": "00f8fb962602893ad46f7b8119461e91557228849d5b85018124710ad035671b",
+      "term": "Company",
+      "texts_byte_identical_after_whitespace_normalisation": true
+    },
+    {
+      "agreements_affected": [
+        "aa72f3af29316df52ab5cb75eb2b0bb0a5b31036bd24c7f812241c5a688f4319"
+      ],
+      "candidate_a": {
+        "annotation_occurrence_id": "a98f0edabb3bd8fdb4cb2e443922967803cdf844b6f4896cbcb95390d9669d78",
+        "first_120_bytes": "“DGCL”",
+        "location": "definitions_article",
+        "rule": "rule_1",
+        "span": {
+          "end_byte": 297759,
+          "start_byte": 297749,
+          "text_sha256": "8813f4fe755a6b312771d83d409d0722d5e51fd47787c6a2a5553120bd0bf6b3",
+          "verified": true
+        },
+        "value": "DGCL"
+      },
+      "candidate_b": {
+        "annotation_occurrence_id": "49a42caf66f6df51dda915fb395eb2408c029d2d6d041cd22ff507608d488d06",
+        "first_120_bytes": "“DGCL”",
+        "location": "inline_body",
+        "rule": "rule_3",
+        "span": {
+          "end_byte": 326708,
+          "start_byte": 326698,
+          "text_sha256": "8813f4fe755a6b312771d83d409d0722d5e51fd47787c6a2a5553120bd0bf6b3",
+          "verified": true
+        },
+        "value": "DGCL"
+      },
+      "class_key": "DGCL | rule_1:definitions_article vs rule_3:inline_body",
+      "edge_count": 7,
+      "representative_agreement_id": "aa72f3af29316df52ab5cb75eb2b0bb0a5b31036bd24c7f812241c5a688f4319",
+      "representative_edge_id": "00cef18fe81a2ef893d7195b2f8110f725b60a32b6d45243c251fc9efc2861cb",
+      "term": "DGCL",
+      "texts_byte_identical_after_whitespace_normalisation": true
+    },
+    {
+      "agreements_affected": [
+        "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+        "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c"
+      ],
+      "candidate_a": {
+        "annotation_occurrence_id": "1740d2372c31ba66c5e03d6b2f1b6c24eb52a9b1d4574f1a7e9f5faa030475a7",
+        "first_120_bytes": "“FDA”",
+        "location": "definitions_article",
+        "rule": "rule_1",
+        "span": {
+          "end_byte": 269760,
+          "start_byte": 269751,
+          "text_sha256": "af4ceb33b1216bb2b0305d198cb744ad62c82a06ee3660e219cd84bfaf59c3db",
+          "verified": true
+        },
+        "value": "FDA"
+      },
+      "candidate_b": {
+        "annotation_occurrence_id": "9080c257beb5d31035d134e90c873ee4c289f9b31141702818ef2c68dd7c2a7b",
+        "first_120_bytes": "“FDA”",
+        "location": "inline_body",
+        "rule": "rule_3",
+        "span": {
+          "end_byte": 82787,
+          "start_byte": 82778,
+          "text_sha256": "af4ceb33b1216bb2b0305d198cb744ad62c82a06ee3660e219cd84bfaf59c3db",
+          "verified": true
+        },
+        "value": "FDA"
+      },
+      "class_key": "FDA | rule_1:definitions_article vs rule_3:inline_body",
+      "edge_count": 71,
+      "representative_agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "representative_edge_id": "02cf27026d6641a1e865744750ab484480f5535e48916ba6fdba52e01db08102",
+      "term": "FDA",
+      "texts_byte_identical_after_whitespace_normalisation": true
+    },
+    {
+      "agreements_affected": [
+        "aa72f3af29316df52ab5cb75eb2b0bb0a5b31036bd24c7f812241c5a688f4319",
+        "fa0fff26622d0e90b47c3df527ccff91f4daa3db12f08d3832de76d8ae7541b5"
+      ],
+      "candidate_a": {
+        "annotation_occurrence_id": "96a0e41da14252c1f00fba3e6e0f75759f59b6b62087947e53f722e778a01d04",
+        "first_120_bytes": "“Merger”",
+        "location": "preamble",
+        "rule": "rule_2",
+        "span": {
+          "end_byte": 5713,
+          "start_byte": 5701,
+          "text_sha256": "677726a0ba927ec2634a5280d06541609ea93b4699c308128328fa43b7d8780e",
+          "verified": true
+        },
+        "value": "Merger"
+      },
+      "candidate_b": {
+        "annotation_occurrence_id": "06dbef41110a21161afe256095f2f719521bb1b19675c3cdda3bc416aa71a351",
+        "first_120_bytes": "“Merger”",
+        "location": "inline_body",
+        "rule": "rule_3",
+        "span": {
+          "end_byte": 327004,
+          "start_byte": 326992,
+          "text_sha256": "677726a0ba927ec2634a5280d06541609ea93b4699c308128328fa43b7d8780e",
+          "verified": true
+        },
+        "value": "Merger"
+      },
+      "class_key": "Merger | rule_2:preamble vs rule_3:inline_body",
+      "edge_count": 35,
+      "representative_agreement_id": "aa72f3af29316df52ab5cb75eb2b0bb0a5b31036bd24c7f812241c5a688f4319",
+      "representative_edge_id": "064c8c6bdbf090122c710358ad60c73d1b2105ac232ef3bfd2474f9158904eed",
+      "term": "Merger",
+      "texts_byte_identical_after_whitespace_normalisation": true
+    },
+    {
+      "agreements_affected": [
+        "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71"
+      ],
+      "candidate_a": {
+        "annotation_occurrence_id": "4c1d56436ccf4a5a6b404fc9b27e0267e2cd7d2bcd909f7944b15f4f8384d05f",
+        "first_120_bytes": "“Milestone Payment Amount”",
+        "location": "definitions_article",
+        "rule": "rule_1",
+        "span": {
+          "end_byte": 285137,
+          "start_byte": 285107,
+          "text_sha256": "ec3633c549653e374600224a0f676073f4214295623d32fe8900ab8145fb1180",
+          "verified": true
+        },
+        "value": "Milestone Payment Amount"
+      },
+      "candidate_b": {
+        "annotation_occurrence_id": "d352fe4518ba8026545ca08b45bd5c57d9570daa503c6cf0c2e7dd67ba5febec",
+        "first_120_bytes": "“Milestone Payment Amount”",
+        "location": "inline_body",
+        "rule": "rule_3",
+        "span": {
+          "end_byte": 329281,
+          "start_byte": 329251,
+          "text_sha256": "ec3633c549653e374600224a0f676073f4214295623d32fe8900ab8145fb1180",
+          "verified": true
+        },
+        "value": "Milestone Payment Amount"
+      },
+      "class_key": "Milestone Payment Amount | rule_1:definitions_article vs rule_3:inline_body",
+      "edge_count": 12,
+      "representative_agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "representative_edge_id": "030105914f0be9b160f1f871b6b0934fdd8023bb1446f6e769490f6ac85ffd2b",
+      "term": "Milestone Payment Amount",
+      "texts_byte_identical_after_whitespace_normalisation": true
+    },
+    {
+      "agreements_affected": [
+        "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+        "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+        "fa0fff26622d0e90b47c3df527ccff91f4daa3db12f08d3832de76d8ae7541b5"
+      ],
+      "candidate_a": {
+        "annotation_occurrence_id": "5ce7b5fa09d7a9afa42f8d23613a8ddb1d3df8d6338e5aac62f28ebc56e05368",
+        "first_120_bytes": "“Milestone Payment Date”",
+        "location": "definitions_article",
+        "rule": "rule_1",
+        "span": {
+          "end_byte": 285223,
+          "start_byte": 285195,
+          "text_sha256": "c4ce687306eb21a29eedca5913f098288588a050f95cf1f11427d319cf618c62",
+          "verified": true
+        },
+        "value": "Milestone Payment Date"
+      },
+      "candidate_b": {
+        "annotation_occurrence_id": "00a12658e8ef3698c68bd81f835d5e2a0f85993369e38a298624c92c560bd281",
+        "first_120_bytes": "“Milestone Payment Date”",
+        "location": "inline_body",
+        "rule": "rule_3",
+        "span": {
+          "end_byte": 329621,
+          "start_byte": 329593,
+          "text_sha256": "c4ce687306eb21a29eedca5913f098288588a050f95cf1f11427d319cf618c62",
+          "verified": true
+        },
+        "value": "Milestone Payment Date"
+      },
+      "class_key": "Milestone Payment Date | rule_1:definitions_article vs rule_3:inline_body",
+      "edge_count": 26,
+      "representative_agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "representative_edge_id": "13e584a12384c2899951c651cec25fac6116db141bcaf6e1df201d64238ebe1d",
+      "term": "Milestone Payment Date",
+      "texts_byte_identical_after_whitespace_normalisation": true
+    },
+    {
+      "agreements_affected": [
+        "fa0fff26622d0e90b47c3df527ccff91f4daa3db12f08d3832de76d8ae7541b5"
+      ],
+      "candidate_a": {
+        "annotation_occurrence_id": "cd31ef46b98ebadc7340f19b686ab05a81921e56fbb24339143168ad4b25b7d8",
+        "first_120_bytes": "“Milestone Payment”",
+        "location": "definitions_article",
+        "rule": "rule_1",
+        "span": {
+          "end_byte": 261257,
+          "start_byte": 261234,
+          "text_sha256": "4f3cee1605fbb6f4c1652b605f64333a568c1a00562ca1f375218f2fa7c832db",
+          "verified": true
+        },
+        "value": "Milestone Payment"
+      },
+      "candidate_b": {
+        "annotation_occurrence_id": "d8fe09433c935c8104243a0bf1a6d6793511012e22d5773376fba0f2f9324c2e",
+        "first_120_bytes": "“Milestone Payment”",
+        "location": "inline_body",
+        "rule": "rule_3",
+        "span": {
+          "end_byte": 306889,
+          "start_byte": 306866,
+          "text_sha256": "4f3cee1605fbb6f4c1652b605f64333a568c1a00562ca1f375218f2fa7c832db",
+          "verified": true
+        },
+        "value": "Milestone Payment"
+      },
+      "class_key": "Milestone Payment | rule_1:definitions_article vs rule_3:inline_body",
+      "edge_count": 32,
+      "representative_agreement_id": "fa0fff26622d0e90b47c3df527ccff91f4daa3db12f08d3832de76d8ae7541b5",
+      "representative_edge_id": "06ec13b83b31093bee854a1b90e03abbcb548a2a1d5570a1c4aa6b6d63744900",
+      "term": "Milestone Payment",
+      "texts_byte_identical_after_whitespace_normalisation": true
+    },
+    {
+      "agreements_affected": [
+        "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c"
+      ],
+      "candidate_a": {
+        "annotation_occurrence_id": "9ac24cea100c3289dc04fbb09d96417b13835598ac548896df6c0e3955db3857",
+        "first_120_bytes": "“Milestone Payments”",
+        "location": "definitions_article",
+        "rule": "rule_1",
+        "span": {
+          "end_byte": 253123,
+          "start_byte": 253099,
+          "text_sha256": "d2d4b73eee39a53574cd9e51685a1a116963cfc36f29989dc4294ae4d17b84a6",
+          "verified": true
+        },
+        "value": "Milestone Payments"
+      },
+      "candidate_b": {
+        "annotation_occurrence_id": "3db4884704852b4e34f1ea1b97555f3b10ec79a85d53d6b08be9c0a0ea622518",
+        "first_120_bytes": "“Milestone Payments”",
+        "location": "inline_body",
+        "rule": "rule_3",
+        "span": {
+          "end_byte": 281905,
+          "start_byte": 281881,
+          "text_sha256": "d2d4b73eee39a53574cd9e51685a1a116963cfc36f29989dc4294ae4d17b84a6",
+          "verified": true
+        },
+        "value": "Milestone Payments"
+      },
+      "class_key": "Milestone Payments | rule_1:definitions_article vs rule_3:inline_body",
+      "edge_count": 5,
+      "representative_agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "representative_edge_id": "1bf9b56f4a76353d8c01ff967c5f70402ddeb251b5e578c79bf52501f25a5630",
+      "term": "Milestone Payments",
+      "texts_byte_identical_after_whitespace_normalisation": true
+    },
+    {
+      "agreements_affected": [
+        "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71"
+      ],
+      "candidate_a": {
+        "annotation_occurrence_id": "ceb776f53e9d403b3e14afb5d186ac01365b6f33ac5e67451cdfe56f48f3ec2c",
+        "first_120_bytes": "“Milestone”",
+        "location": "definitions_article",
+        "rule": "rule_1",
+        "span": {
+          "end_byte": 285049,
+          "start_byte": 285034,
+          "text_sha256": "ad6587dc8227b30ce78a0841686b43d8c1440da8d17eea2e45fb64e4c52e94a2",
+          "verified": true
+        },
+        "value": "Milestone"
+      },
+      "candidate_b": {
+        "annotation_occurrence_id": "44c4e9de4a015d1de50f5afaeb23642269caec48a99f3d5307c9cb7ff365b262",
+        "first_120_bytes": "“Milestone”",
+        "location": "inline_body",
+        "rule": "rule_3",
+        "span": {
+          "end_byte": 329078,
+          "start_byte": 329063,
+          "text_sha256": "ad6587dc8227b30ce78a0841686b43d8c1440da8d17eea2e45fb64e4c52e94a2",
+          "verified": true
+        },
+        "value": "Milestone"
+      },
+      "class_key": "Milestone | rule_1:definitions_article vs rule_3:inline_body",
+      "edge_count": 44,
+      "representative_agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "representative_edge_id": "0d4e1be69a1356013034ff475e6f95644369f8d291f7f2716bb84edfaa076c6c",
+      "term": "Milestone",
+      "texts_byte_identical_after_whitespace_normalisation": true
+    },
+    {
+      "agreements_affected": [
+        "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71"
+      ],
+      "candidate_a": {
+        "annotation_occurrence_id": "2644823d3719470fec8337062b02beb1a3f4ba0209f3e40edad73cc43075d693",
+        "first_120_bytes": "“Parties”",
+        "location": "definitions_article",
+        "rule": "rule_1",
+        "span": {
+          "end_byte": 286341,
+          "start_byte": 286328,
+          "text_sha256": "d3d97b305d54e23f0bea9ef97de4fe7befdd417921b552efaa669de028a1f3ac",
+          "verified": true
+        },
+        "value": "Parties"
+      },
+      "candidate_b": {
+        "annotation_occurrence_id": "d0c420a1015ba1e96db825c0c72d388e33a7b68aa3bb02f04fc662b3425dcdf6",
+        "first_120_bytes": "“Parties”",
+        "location": "inline_body",
+        "rule": "rule_3",
+        "span": {
+          "end_byte": 330389,
+          "start_byte": 330376,
+          "text_sha256": "d3d97b305d54e23f0bea9ef97de4fe7befdd417921b552efaa669de028a1f3ac",
+          "verified": true
+        },
+        "value": "Parties"
+      },
+      "class_key": "Parties | rule_1:definitions_article vs rule_3:inline_body",
+      "edge_count": 21,
+      "representative_agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "representative_edge_id": "0d16c0e58703c3348d0474b8bd70b2af449c58642910d0c0af18342dfb055381",
+      "term": "Parties",
+      "texts_byte_identical_after_whitespace_normalisation": true
+    },
+    {
+      "agreements_affected": [
+        "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+        "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c"
+      ],
+      "candidate_a": {
+        "annotation_occurrence_id": "72ef3c7ae24f437967b11cbde3e0da70010788adf6dc3cea0d623bb7baa8dcb6",
+        "first_120_bytes": "“Rights Agent”",
+        "location": "definitions_article",
+        "rule": "rule_1",
+        "span": {
+          "end_byte": 292142,
+          "start_byte": 292124,
+          "text_sha256": "bd555b53793f23f72c400ac46b84d15e55c86100bfa5f665457ea96493e2bc7c",
+          "verified": true
+        },
+        "value": "Rights Agent"
+      },
+      "candidate_b": {
+        "annotation_occurrence_id": "ed7a4dc5325d736b04e950e9cb8efe697c71cd290576c6f5557075ed6607ac5b",
+        "first_120_bytes": "“Rights Agent”",
+        "location": "inline_body",
+        "rule": "rule_3",
+        "span": {
+          "end_byte": 325597,
+          "start_byte": 325579,
+          "text_sha256": "bd555b53793f23f72c400ac46b84d15e55c86100bfa5f665457ea96493e2bc7c",
+          "verified": true
+        },
+        "value": "Rights Agent"
+      },
+      "class_key": "Rights Agent | rule_1:definitions_article vs rule_3:inline_body",
+      "edge_count": 285,
+      "representative_agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "representative_edge_id": "0202462b5b6898a59af3664b393381466d694c8b47d2a1c257c6e8759a141658",
+      "term": "Rights Agent",
+      "texts_byte_identical_after_whitespace_normalisation": true
+    },
+    {
+      "agreements_affected": [
+        "fa0fff26622d0e90b47c3df527ccff91f4daa3db12f08d3832de76d8ae7541b5"
+      ],
+      "candidate_a": {
+        "annotation_occurrence_id": "498aee486e6328dab82496bee3a1536358c3f730f9321f6f138fd58939bb3a87",
+        "first_120_bytes": "“Rights Agent”",
+        "location": "preamble",
+        "rule": "rule_2",
+        "span": {
+          "end_byte": 6475,
+          "start_byte": 6457,
+          "text_sha256": "bd555b53793f23f72c400ac46b84d15e55c86100bfa5f665457ea96493e2bc7c",
+          "verified": true
+        },
+        "value": "Rights Agent"
+      },
+      "candidate_b": {
+        "annotation_occurrence_id": "a42a0ffe05cd6d936cf35a39c2f66308e923905e482494c84e1babdde4621684",
+        "first_120_bytes": "“Rights Agent”",
+        "location": "inline_body",
+        "rule": "rule_3",
+        "span": {
+          "end_byte": 310794,
+          "start_byte": 310776,
+          "text_sha256": "bd555b53793f23f72c400ac46b84d15e55c86100bfa5f665457ea96493e2bc7c",
+          "verified": true
+        },
+        "value": "Rights Agent"
+      },
+      "class_key": "Rights Agent | rule_2:preamble vs rule_3:inline_body",
+      "edge_count": 165,
+      "representative_agreement_id": "fa0fff26622d0e90b47c3df527ccff91f4daa3db12f08d3832de76d8ae7541b5",
+      "representative_edge_id": "01a77cabfcac9137ba70c94ceeb5bd1ebca393b280d40ad110186383f2a1eba9",
+      "term": "Rights Agent",
+      "texts_byte_identical_after_whitespace_normalisation": true
+    },
+    {
+      "agreements_affected": [
+        "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71"
+      ],
+      "candidate_a": {
+        "annotation_occurrence_id": "faa8774bdc23a04c6084f02d9ddb342ff0507c0c67b7f4a1a72d6c93fc1b6453",
+        "first_120_bytes": "“Surviving Corporation”",
+        "location": "preamble",
+        "rule": "rule_2",
+        "span": {
+          "end_byte": 5865,
+          "start_byte": 5838,
+          "text_sha256": "8c0239ddd462d307b4632d2622c216019a00ac794a64d16c87bd2b100bafeb1f",
+          "verified": true
+        },
+        "value": "Surviving Corporation"
+      },
+      "candidate_b": {
+        "annotation_occurrence_id": "cf29ad1123f87ec54119045ece2d239579be8bab38e755b40c43657183045492",
+        "first_120_bytes": "“Surviving Corporation”",
+        "location": "inline_body",
+        "rule": "rule_3",
+        "span": {
+          "end_byte": 300646,
+          "start_byte": 300619,
+          "text_sha256": "8c0239ddd462d307b4632d2622c216019a00ac794a64d16c87bd2b100bafeb1f",
+          "verified": true
+        },
+        "value": "Surviving Corporation"
+      },
+      "class_key": "Surviving Corporation | rule_2:preamble vs rule_3:inline_body",
+      "edge_count": 6,
+      "representative_agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "representative_edge_id": "332e6cb89cf0791da894fcfbf7946848de918e7efd93438e28b17a8bf43519fe",
+      "term": "Surviving Corporation",
+      "texts_byte_identical_after_whitespace_normalisation": true
+    },
+    {
+      "agreements_affected": [
+        "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c"
+      ],
+      "candidate_a": {
+        "annotation_occurrence_id": "ff8df144f68b3c903350345c652eea989c6369233c465fe1609efb72e92aacba",
+        "first_120_bytes": "“control”",
+        "location": "definitions_article",
+        "rule": "rule_1",
+        "span": {
+          "end_byte": 240579,
+          "start_byte": 240566,
+          "text_sha256": "0a9e0ca6c088a1cc7fe39dfcac881e2b18e3a19b22344f1e0ebf4f4ece8c4d8f",
+          "verified": true
+        },
+        "value": "control"
+      },
+      "candidate_b": {
+        "annotation_occurrence_id": "90787213e860e2e7fe8c2ab8c78c0f633d447bb2ec13a2d4df6af401f82b9e60",
+        "first_120_bytes": "“control”",
+        "location": "inline_body",
+        "rule": "rule_3",
+        "span": {
+          "end_byte": 274001,
+          "start_byte": 273988,
+          "text_sha256": "0a9e0ca6c088a1cc7fe39dfcac881e2b18e3a19b22344f1e0ebf4f4ece8c4d8f",
+          "verified": true
+        },
+        "value": "control"
+      },
+      "class_key": "control | rule_1:definitions_article vs rule_3:inline_body",
+      "edge_count": 1,
+      "representative_agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "representative_edge_id": "80466a91c321fee6ba65494f7098300048ce02555c3e59b0f232a9eaaca8f0cc",
+      "term": "control",
+      "texts_byte_identical_after_whitespace_normalisation": true
+    }
+  ],
+  "counts": {
+    "classes": 16,
+    "sha_mismatch_spans": 0,
+    "sha_verified_spans": 32,
+    "total_disagreement_edges": 856
+  },
+  "missing_paths": [],
+  "schema": "Q-0022-DEFINITION-DISAGREEMENT-CLASSES/V1",
+  "table_sha256": "dd90404a9cf1647d9ffc6c2c1fd63e02cf96a84882f6bdd257376789586202b6"
+}

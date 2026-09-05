@@ -1,0 +1,1152 @@
+{
+  "generated_from": "docs/codex-program/handoffs/m7-ext/ext-scratch/verify-finding/05-capability-inventory.mjs",
+  "work3_agreement_ids": [
+    "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+    "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+    "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+    "3888fa7618bbd9fd6530b657aaa18c7e85ff515acf80edb1fc78a190af86e9cb",
+    "aa72f3af29316df52ab5cb75eb2b0bb0a5b31036bd24c7f812241c5a688f4319",
+    "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+    "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+    "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+    "fa0fff26622d0e90b47c3df527ccff91f4daa3db12f08d3832de76d8ae7541b5",
+    "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c"
+  ],
+  "counts": {
+    "registered_section_families": 25,
+    "family_adapters": 25,
+    "table_rows": 37
+  },
+  "missing_expected": [],
+  "rows": [
+    {
+      "id": "native-family-ANTITRUST_REGULATORY",
+      "component_path": "lib/canonical-v2/native-producer/antitrust-regulatory-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildAntitrustRegulatoryProducerPrompt",
+        "shapeRegulatoryEffortsProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"regulatory_efforts_assertions\",\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 4,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 3,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-antitrust-expanded-package.test.js",
+          "tests/canonical-v2-antitrust-regulatory-efforts.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-APPRAISAL_DISSENTERS_RIGHTS",
+      "component_path": "lib/canonical-v2/native-producer/appraisal-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildAppraisalProducerPrompt",
+        "shapeAppraisalFamilyProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 5,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 2,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-consideration-family-seam.test.js",
+          "tests/canonical-v2-follow-on-family-prompt-contract.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-CAPITALISATION",
+      "component_path": "lib/canonical-v2/native-producer/capitalisation-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildCapitalisationProducerPrompt",
+        "shapeProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"representation_instances\",\"bring_down_conditions\",\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 5,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 3,
+        "script_files_requiring": 5,
+        "example_tests": [
+          "tests/canonical-v2-capitalisation-producer-prompt.test.js",
+          "tests/canonical-v2-native-prompt-binding.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-CLOSING_CONDITIONS",
+      "component_path": "lib/canonical-v2/native-producer/closing-conditions-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildClosingConditionsProducerPrompt",
+        "shapeClosingConditionProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 6,
+        "test_files_reading_evidence": 1,
+        "test_files_reading_fixtures": 3,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-closing-conditions-wave-b-resolution.test.js",
+          "tests/canonical-v2-closing-conditions.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-CONSIDERATION",
+      "component_path": "lib/canonical-v2/native-producer/consideration-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildConsiderationProducerPrompt",
+        "shapeConsiderationProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 5,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 2,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-consideration-family-seam.test.js",
+          "tests/canonical-v2-consideration-wave-a.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-DIVIDENDS",
+      "component_path": "lib/canonical-v2/native-producer/dividends-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildDividendsProducerPrompt",
+        "shapeDividendsFamilyProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 4,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 2,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-follow-on-family-prompt-contract.test.js",
+          "tests/canonical-v2-native-family-adapter-contract.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-DNO_INDEMNIFICATION",
+      "component_path": "lib/canonical-v2/native-producer/dno-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildDnoProducerPrompt",
+        "shapeDnoFamilyProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"dno_assertions\",\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 4,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 2,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-employee-dno-resolution.test.js",
+          "tests/canonical-v2-follow-on-family-prompt-contract.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-EMPLOYEE_MATTERS",
+      "component_path": "lib/canonical-v2/native-producer/employee-matters-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildEmployeeMattersProducerPrompt",
+        "shapeEmployeeMattersFamilyProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"employee_matters_assertions\",\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 5,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 3,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-antitrust-expanded-package.test.js",
+          "tests/canonical-v2-employee-dno-resolution.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-FINANCING_COVENANTS",
+      "component_path": "lib/canonical-v2/native-producer/financing-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildFinancingProducerPrompt",
+        "shapeFinancingFamilyProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 3,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 2,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-financing-guaranty-resolution.test.js",
+          "tests/canonical-v2-native-family-adapter-contract.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-GENERAL_COVENANTS",
+      "component_path": "lib/canonical-v2/native-producer/general-covenants-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildGeneralCovenantsProducerPrompt",
+        "shapeGeneralCovenantsProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"general_covenants\",\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 6,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 2,
+        "script_files_requiring": 1,
+        "example_tests": [
+          "tests/canonical-v2-approved-family-materiality-ranks.test.js",
+          "tests/canonical-v2-general-covenants-dark-bridge.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-GUARANTY_FINANCING_PARTY",
+      "component_path": "lib/canonical-v2/native-producer/guaranty-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildGuarantyProducerPrompt",
+        "shapeGuarantyFamilyProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 3,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 2,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-financing-guaranty-resolution.test.js",
+          "tests/canonical-v2-native-family-adapter-contract.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-INTERIM_OPERATING",
+      "component_path": "lib/canonical-v2/native-producer/ioc-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildIocProducerPrompt",
+        "shapeIocProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"ioc_mechanics\",\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 6,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 4,
+        "script_files_requiring": 1,
+        "example_tests": [
+          "tests/canonical-v2-ioc-producer-prompt.test.js",
+          "tests/canonical-v2-ioc-remaining.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-KEY_DEFINED_TERMS",
+      "component_path": "lib/canonical-v2/native-producer/defined-terms-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildDefinedTermsProducerPrompt",
+        "shapeDefinedTermsFamilyProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 4,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 2,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-defined-terms-family-seam.test.js",
+          "tests/canonical-v2-defined-terms-later-slices.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-MAE_DEFINITION",
+      "component_path": "lib/canonical-v2/native-producer/mae-definition-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildMaeDefinitionProducerPrompt",
+        "shapeMaeDefinitionProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"mae_definition_instances\",\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 7,
+        "test_files_reading_evidence": 1,
+        "test_files_reading_fixtures": 6,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-defined-terms-family-seam.test.js",
+          "tests/canonical-v2-mae-definition-resolution.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-MATERIAL_CONTRACTS",
+      "component_path": "lib/canonical-v2/native-producer/material-contracts-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildMaterialContractsProducerPrompt",
+        "shapeMaterialContractsProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"material_contract_criteria\",\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 4,
+        "test_files_reading_evidence": 1,
+        "test_files_reading_fixtures": 4,
+        "script_files_requiring": 2,
+        "example_tests": [
+          "tests/canonical-v2-legacy-card-bridge.test.js",
+          "tests/canonical-v2-m3-topbuild-ioc-sibling-citation-replay.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-MERGER_STRUCTURE_CLOSING",
+      "component_path": "lib/canonical-v2/native-producer/merger-structure-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildMergerStructureProducerPrompt",
+        "shapeMergerStructureProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"structure_assertions\",\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 5,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 2,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-follow-on-family-prompt-contract.test.js",
+          "tests/canonical-v2-m3-representations-merger-remedies-resolution.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-MISC_BOILERPLATE",
+      "component_path": "lib/canonical-v2/native-producer/remedies-misc-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildRemediesMiscProducerPrompt",
+        "shapeMiscBoilerplateProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"boilerplate_assertions\",\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 3,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 2,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-native-family-adapter-contract.test.js",
+          "tests/canonical-v2-producer-prompt-registry.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-NO_OTHER_REPS_FRAUD",
+      "component_path": "lib/canonical-v2/native-producer/no-other-reps-fraud-producer.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildNoOtherRepsFraudProducerPrompt",
+        "shapeNoOtherRepsFraudProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"no_other_reps_assertions\",\"non_reliance_assertions\",\"independent_investigation_assertions\",\"fraud_carveout_assertions\",\"willful_breach_definitions\",\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 8,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 8,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-general-covenants-dark-bridge.test.js",
+          "tests/canonical-v2-legacy-card-bridge.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-NO_SHOP",
+      "component_path": "lib/canonical-v2/native-producer/no-shop-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildNoShopProducerPrompt",
+        "shapeNoShopProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"no_shop_action_assertions\",\"exception_prerequisite_assertions\",\"period_assertions\",\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 6,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 3,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-m3-live-checkpoint-replay.test.js",
+          "tests/canonical-v2-native-provider-family-dispatch.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-PROXY_MEETING",
+      "component_path": "lib/canonical-v2/native-producer/proxy-meeting-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildProxyMeetingProducerPrompt",
+        "shapeProxyMeetingProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 4,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 1,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-producer-prompt-registry.test.js",
+          "tests/canonical-v2-proxy-meeting-follow-on.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-REPRESENTATIONS",
+      "component_path": "lib/canonical-v2/native-producer/representations-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildRepresentationsProducerPrompt",
+        "shapeRepresentationQualifierProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"representation_instances\",\"bring_down_conditions\",\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 7,
+        "test_files_reading_evidence": 1,
+        "test_files_reading_fixtures": 5,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-candidate-resolution.test.js",
+          "tests/canonical-v2-input-token-telemetry.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-SPECIFIC_PERFORMANCE_REMEDIES",
+      "component_path": "lib/canonical-v2/native-producer/specific-performance-remedies-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildSpecificPerformanceRemediesProducerPrompt",
+        "shapeSpecificPerformanceRemedyProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"remedy_assertions\",\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 7,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 5,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-follow-on-family-prompt-contract.test.js",
+          "tests/canonical-v2-m3-representations-merger-remedies-resolution.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-TAX_MATTERS",
+      "component_path": "lib/canonical-v2/native-producer/tax-matters-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildTaxMattersProducerPrompt",
+        "shapeTaxMattersFamilyProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 4,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 2,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-follow-on-family-prompt-contract.test.js",
+          "tests/canonical-v2-native-family-adapter-contract.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-TERMINATION",
+      "component_path": "lib/canonical-v2/native-producer/termination-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildTerminationProducerPrompt",
+        "shapeTerminationProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"termination_right_assertions\",\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 9,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 6,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-conditional-fee-values-write-set-wiring.test.js",
+          "tests/canonical-v2-m3-live-checkpoint-replay.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-family-TERMINATION_FEE",
+      "component_path": "lib/canonical-v2/native-producer/termination-fee-producer-prompt.js",
+      "related_paths": [
+        "lib/canonical-v2/native-producer/anthropic-provider.js",
+        "lib/canonical-v2/native-producer/native-extraction-run.js"
+      ],
+      "functions": [
+        "buildTerminationFeeProducerPrompt",
+        "shapeTerminationFeeProposals"
+      ],
+      "input": "section `source_text` + `governed_scope` (prompt); model JSON + source bytes (shaper)",
+      "output_schema": "no schema file; inline RESPONSE_SHAPE + required_response_lists=[\"fee_amount_assertions\",\"fee_trigger_assertions\",\"tail_period_assertions\",\"open_world_candidates\"]",
+      "validation": {
+        "test_files_requiring": 10,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 7,
+        "script_files_requiring": 1,
+        "example_tests": [
+          "tests/canonical-v2-conditional-fee-values-write-set-wiring.test.js",
+          "tests/canonical-v2-modiv-termination-fee-scope-correction-replay.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      },
+      "notes": "Facts appear only after a provider response is shaped; the prompt builder emits a prompt, not claims."
+    },
+    {
+      "id": "native-extraction-run",
+      "component_path": "lib/canonical-v2/native-producer/native-extraction-run.js",
+      "related_paths": [],
+      "functions": [
+        "NativeExtractionRunError",
+        "runNativeExtraction"
+      ],
+      "input": "full admitted `source_text`, `document_hash`, section references, contract bundle, injected provider",
+      "output_schema": "no schema file; RUN_RECEIPT_SCHEMA=NATIVE_EXTRACTION_RUN_RECEIPT/V1; PARTIAL_RUN_RECEIPT_SCHEMA=NATIVE_EXTRACTION_RUN_PARTIAL_RECEIPT/V1; GOVERNED_SCOPE_SCHEMA=NATIVE_EXTRACTION_GOVERNED_SCOPE/V1",
+      "validation": {
+        "test_files_requiring": 63,
+        "test_files_reading_evidence": 5,
+        "test_files_reading_fixtures": 50,
+        "script_files_requiring": 9,
+        "example_tests": [
+          "tests/canonical-v2-antitrust-closing-family-completion.test.js",
+          "tests/canonical-v2-antitrust-expanded-package.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      }
+    },
+    {
+      "id": "section-family-classifier",
+      "component_path": "lib/canonical-v2/native-producer/section-family-classifier.js",
+      "related_paths": [],
+      "functions": [
+        "adaptDeterministicFamilySetToSingleClassification",
+        "classifyDeterministicSectionFamilies",
+        "classifyDeterministicSectionFamily",
+        "classifySectionFamily",
+        "runStage1"
+      ],
+      "input": "section title + optional article context + optional `source_text`",
+      "output_schema": "no schema file; SECTION_FAMILY_CLASSIFIER_SCHEMA=NATIVE_SECTION_FAMILY_CLASSIFIER/V1",
+      "validation": {
+        "test_files_requiring": 15,
+        "test_files_reading_evidence": 1,
+        "test_files_reading_fixtures": 7,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-closing-conditions.test.js",
+          "tests/canonical-v2-consideration-family-seam.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      }
+    },
+    {
+      "id": "rubric",
+      "component_path": "lib/rubric.js",
+      "related_paths": [],
+      "functions": [
+        "getCodesForType",
+        "getFeaturesForType",
+        "isValidCode"
+      ],
+      "input": "provision type / rubric code (lookup; does not read agreement text)",
+      "output_schema": "CODES / FEATURES dictionaries; no schema file",
+      "validation": {
+        "test_files_requiring": 17,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 1,
+        "script_files_requiring": 1,
+        "example_tests": [
+          "tests/abry.test.js",
+          "tests/anti-regulatory-efforts.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      }
+    },
+    {
+      "id": "m2-agreement-index",
+      "component_path": "lib/canonical-v2/agreement-index.js",
+      "related_paths": [],
+      "functions": [
+        "AgreementIndexError",
+        "indexAgreement"
+      ],
+      "input": "exact source (`canonical_text` + hashes) + structural policy",
+      "output_schema": "no schema file; AGREEMENT_INDEX_SCHEMA_VERSION=AGREEMENT_INDEX/V1; SOURCE_NODE_SCHEMA_VERSION=AGREEMENT_SOURCE_NODE/V1; SOURCE_ANNOTATION_SCHEMA_VERSION=AGREEMENT_SOURCE_ANNOTATION/V1; SOURCE_ARTEFACT_SCHEMA_VERSION=AGREEMENT_SOURCE_ARTEFACT/V1",
+      "validation": {
+        "test_files_requiring": 2,
+        "test_files_reading_evidence": 2,
+        "test_files_reading_fixtures": 1,
+        "script_files_requiring": 4,
+        "example_tests": [
+          "tests/canonical-v2-agreement-index.test.js",
+          "tests/stage-2y-structure-generalisation-shadow.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 10,
+        "path_count": 16,
+        "paths": [
+          "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a.agreement-index.json",
+          "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154.agreement-index.json",
+          "evidence/canonical-v2/stage-2y-structure-migration/shadow/m2/1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116.agreement-index.json"
+        ],
+        "truncated": true
+      }
+    },
+    {
+      "id": "m3-context-compilation",
+      "component_path": "lib/canonical-v2/context-compilation.js",
+      "related_paths": [],
+      "functions": [
+        "compileContext"
+      ],
+      "input": "focus node ids + `AGREEMENT_INDEX/V1` + semantic policy",
+      "output_schema": "`CONTEXT_COMPILATION/V1` facts, scopes, relationships",
+      "validation": {
+        "test_files_requiring": 2,
+        "test_files_reading_evidence": 2,
+        "test_files_reading_fixtures": 1,
+        "script_files_requiring": 3,
+        "example_tests": [
+          "tests/canonical-v2-context-compilation.test.js",
+          "tests/stage-2y-structure-generalisation-shadow.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 10,
+        "path_count": 25,
+        "paths": [
+          "evidence/canonical-v2/stage-2y-structure-migration/shadow/m3/06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a.context-compilation.json",
+          "evidence/canonical-v2/stage-2y-structure-migration/shadow/m3/08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154.context-compilation.json",
+          "evidence/canonical-v2/stage-2y-structure-migration/shadow/m3/1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116.context-compilation.json"
+        ],
+        "truncated": true
+      }
+    },
+    {
+      "id": "m4-agreement-analysis",
+      "component_path": "lib/canonical-v2/agreement-analysis.js",
+      "related_paths": [],
+      "functions": [
+        "analyseAgreement"
+      ],
+      "input": "`AGREEMENT_INDEX/V1` + analysis task (legacy write-set / context / policy)",
+      "output_schema": "`AGREEMENT_ANALYSIS/V1` claims and evidence edges",
+      "validation": {
+        "test_files_requiring": 1,
+        "test_files_reading_evidence": 1,
+        "test_files_reading_fixtures": 1,
+        "script_files_requiring": 2,
+        "example_tests": [
+          "tests/stage-2y-structure-analysis-shadow.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 10,
+        "path_count": 30,
+        "paths": [
+          "evidence/canonical-v2/stage-2y-structure-migration/shadow/m4/06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a.agreement-analysis.json",
+          "evidence/canonical-v2/stage-2y-structure-migration/shadow/m4/08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154.agreement-analysis.json",
+          "evidence/canonical-v2/stage-2y-structure-migration/shadow/m4/1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116.agreement-analysis.json"
+        ],
+        "truncated": true
+      }
+    },
+    {
+      "id": "m7-deterministic-generalisation",
+      "component_path": "lib/canonical-v2/m7-deterministic-generalisation.js",
+      "related_paths": [],
+      "functions": [
+        "applyAmbiguityGate",
+        "applySelectionModeGate",
+        "buildBaseAnalysis",
+        "deriveFocusNodeIds",
+        "deriveSemanticPolicy",
+        "selectFamilySections",
+        "statesNoConflicts"
+      ],
+      "input": "M2 index (+ optional M3) and family order; reads node text via UTF-8 byte spans",
+      "output_schema": "family bindings + `AGREEMENT_ANALYSIS_CLAIM/V1` source-provision claims",
+      "validation": {
+        "test_files_requiring": 3,
+        "test_files_reading_evidence": 3,
+        "test_files_reading_fixtures": 0,
+        "script_files_requiring": 2,
+        "example_tests": [
+          "tests/stage-2y-structure-five-family-matching.test.js",
+          "tests/stage-2y-structure-generalisation-shadow.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 3,
+        "path_count": 243,
+        "paths": [
+          "evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-comparison-entry-correction/abbvie-landos/m5/agreement-analysis.json",
+          "evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-comparison-entry-correction/abbvie-landos/m5/families/01-EMPLOYEE_MATTERS.json",
+          "evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-comparison-entry-correction/abbvie-landos/m5/families/02-TERMINATION.json"
+        ],
+        "truncated": true
+      }
+    },
+    {
+      "id": "family-compound-adapter",
+      "component_path": "lib/canonical-v2/family-compound-adapter.js",
+      "related_paths": [],
+      "functions": [
+        "adaptCompoundFamily",
+        "policyForFamily"
+      ],
+      "input": "M4 analysis + M2 index + M3 compilation + family policy (not raw text)",
+      "output_schema": "`STAGE_2Y_M5_COMPOUND_ADAPTER_RESULT/V1` propositions",
+      "validation": {
+        "test_files_requiring": 2,
+        "test_files_reading_evidence": 2,
+        "test_files_reading_fixtures": 0,
+        "script_files_requiring": 2,
+        "example_tests": [
+          "tests/stage-2y-structure-generalisation-shadow.test.js",
+          "tests/stage-2y-structure-m5-correction.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 3,
+        "path_count": 225,
+        "paths": [
+          "evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-comparison-entry-correction/abbvie-landos/m5/families/01-EMPLOYEE_MATTERS.json",
+          "evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-comparison-entry-correction/abbvie-landos/m5/families/02-TERMINATION.json",
+          "evidence/canonical-v2/stage-2y-structure-migration/shadow/m7-generalisation-comparison-entry-correction/abbvie-landos/m5/families/03-GENERAL_COVENANTS.json"
+        ],
+        "truncated": true
+      }
+    },
+    {
+      "id": "m7-v2-deterministic-generator",
+      "component_path": "lib/canonical-v2/m7-v2-deterministic-generator.js",
+      "related_paths": [],
+      "functions": [
+        "compileSyntheticProfileExpression",
+        "generateAnalysisV2"
+      ],
+      "input": "M4 + M2 + M3 + approved profiles; matches `match_test` tokens against M2 `canonical_text`",
+      "output_schema": "`AGREEMENT_ANALYSIS/V2` (inline schema constants; no schema file)",
+      "validation": {
+        "test_files_requiring": 4,
+        "test_files_reading_evidence": 4,
+        "test_files_reading_fixtures": 4,
+        "script_files_requiring": 0,
+        "example_tests": [
+          "tests/canonical-v2-m7-v2-contract-nested-expression-evidence.test.js",
+          "tests/canonical-v2-m7-v2-deterministic-generator-nested-expression.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      }
+    },
+    {
+      "id": "parser-v2-classify",
+      "component_path": "lib/parser-v2/classify.js",
+      "related_paths": [],
+      "functions": [
+        "classifySections",
+        "tryDeterministic"
+      ],
+      "input": "parser sections/articles + optional model client",
+      "output_schema": "provision_type / subcodes on sections; no schema file",
+      "validation": {
+        "test_files_requiring": 12,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 0,
+        "script_files_requiring": 4,
+        "example_tests": [
+          "tests/classify-party-conduct.test.js",
+          "tests/classify-sweep-rules.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      }
+    },
+    {
+      "id": "parser-v2-extract",
+      "component_path": "lib/parser-v2/extract.js",
+      "related_paths": [],
+      "functions": [
+        "extractProvisions",
+        "extractProvisionsForType"
+      ],
+      "input": "classified sections + full cleaned text + model client",
+      "output_schema": "no schema file; provision cards with rubric codes and FEATURES; no dedicated schema file",
+      "validation": {
+        "test_files_requiring": 39,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 2,
+        "script_files_requiring": 8,
+        "example_tests": [
+          "tests/abry.test.js",
+          "tests/anti-regulatory-efforts.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      }
+    },
+    {
+      "id": "transaction-steps-detector",
+      "component_path": "lib/parser-v2/detectors/transaction-steps.js",
+      "related_paths": [
+        "lib/schema/topology-detector.js"
+      ],
+      "functions": [
+        "extractDetectorTransactionSteps",
+        "extractTransactionSteps",
+        "findDefinedMergerNames",
+        "modelForSteps"
+      ],
+      "input": "classified STRUCT/CONSID/DEF section text",
+      "output_schema": "ordered transaction_steps + topology via `lib/schema/topology-detector.js`",
+      "validation": {
+        "test_files_requiring": 4,
+        "test_files_reading_evidence": 0,
+        "test_files_reading_fixtures": 0,
+        "script_files_requiring": 1,
+        "example_tests": [
+          "tests/canonical-v2-deal-topology-from-claims.test.js",
+          "tests/canonical-v2-transaction-topology-detector.test.js"
+        ]
+      },
+      "work3_outputs": {
+        "agreement_count": 0,
+        "path_count": 0,
+        "paths": [],
+        "truncated": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,464 @@
+{
+  "counts": {
+    "operators": 16,
+    "sha_verified_example_spans": 15,
+    "undefined_arity": 11
+  },
+  "phase1_authority_id": "ac7af03e6206c62ef20eb97bff7f47e2180b23bc0468b7b517792078c10350a7",
+  "plan_vocabulary_present": true,
+  "rows": [
+    {
+      "arity": "UNDEFINED",
+      "canonical_serialisation": "ALL_OF(child, …)",
+      "child_roles_and_types": "UNDEFINED",
+      "definition": "Listed in the §5.2 minimum vocabulary. The plan states that each operator has fixed arity, child types, order, precedence, scope and serialisation, but does not specify those fields per operator.",
+      "example": {
+        "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+        "needle": "each of the following",
+        "span": {
+          "end_byte": 320526,
+          "start_byte": 320505,
+          "text_sha256": "ec7aac1dac2aff407e79412be06662a82a0f6c3a48103426cb8a43a6592309c7",
+          "verified": true
+        },
+        "text": "each of the following"
+      },
+      "operator": "ALL_OF",
+      "precedence": "UNDEFINED",
+      "scope_rule": "UNDEFINED",
+      "source": "docs/codex-program/notes/M7-CORE-SEMANTIC-REPAIR-PLAN-2026-08-14.md §5.2 (lines 459–469)"
+    },
+    {
+      "arity": "UNDEFINED",
+      "canonical_serialisation": "ANY_OF(child, …)",
+      "child_roles_and_types": "UNDEFINED",
+      "definition": "Listed in the §5.2 minimum vocabulary. The plan states that each operator has fixed arity, child types, order, precedence, scope and serialisation, but does not specify those fields per operator.",
+      "example": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "needle": "any of the following",
+        "span": {
+          "end_byte": 243774,
+          "start_byte": 243754,
+          "text_sha256": "eed057fca18dff513560646ea33513fd9b5f90d120ad24f587b6e39f8075a9cb",
+          "verified": true
+        },
+        "text": "any of the following"
+      },
+      "operator": "ANY_OF",
+      "precedence": "UNDEFINED",
+      "scope_rule": "UNDEFINED",
+      "source": "docs/codex-program/notes/M7-CORE-SEMANTIC-REPAIR-PLAN-2026-08-14.md §5.2 (lines 459–469)"
+    },
+    {
+      "arity": "UNDEFINED",
+      "canonical_serialisation": "NOT(child)",
+      "child_roles_and_types": "UNDEFINED",
+      "definition": "Listed in the §5.2 minimum vocabulary. The plan states that each operator has fixed arity, child types, order, precedence, scope and serialisation, but does not specify those fields per operator.",
+      "example": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "needle": " shall not ",
+        "span": {
+          "end_byte": 17628,
+          "start_byte": 17617,
+          "text_sha256": "7075a3b82bda565e36a458657283b44d79d9194fed00f30f988415fd28ae38cb",
+          "verified": true
+        },
+        "text": " shall not "
+      },
+      "operator": "NOT",
+      "precedence": "UNDEFINED",
+      "scope_rule": "UNDEFINED",
+      "source": "docs/codex-program/notes/M7-CORE-SEMANTIC-REPAIR-PLAN-2026-08-14.md §5.2 (lines 459–469)"
+    },
+    {
+      "arity": "UNDEFINED",
+      "canonical_serialisation": "IF_THEN(condition, consequent)",
+      "child_roles_and_types": "UNDEFINED",
+      "definition": "Listed in the §5.2 minimum vocabulary. The plan states that each operator has fixed arity, child types, order, precedence, scope and serialisation, but does not specify those fields per operator.",
+      "example": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "needle": "If ",
+        "span": {
+          "end_byte": 24214,
+          "start_byte": 24211,
+          "text_sha256": "53c0d3d6c8055e9a2a658bdc93afdef61d9a2cc261da9c105ca706feed48f7ee",
+          "verified": true
+        },
+        "text": "If "
+      },
+      "operator": "IF_THEN",
+      "precedence": "UNDEFINED",
+      "scope_rule": "UNDEFINED",
+      "source": "docs/codex-program/notes/M7-CORE-SEMANTIC-REPAIR-PLAN-2026-08-14.md §5.2 (lines 459–469)"
+    },
+    {
+      "arity": "UNDEFINED",
+      "canonical_serialisation": "EXCEPTION_TO(base, exception)",
+      "child_roles_and_types": "UNDEFINED",
+      "definition": "Listed in the §5.2 minimum vocabulary. The plan states that each operator has fixed arity, child types, order, precedence, scope and serialisation, but does not specify those fields per operator.",
+      "example": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "needle": "except as",
+        "span": {
+          "end_byte": 31748,
+          "start_byte": 31739,
+          "text_sha256": "28277ea4c67e25a5738e533389e7617d48fc766383dd95855380eaecee59d78d",
+          "verified": true
+        },
+        "text": "except as"
+      },
+      "operator": "EXCEPTION_TO",
+      "precedence": "UNDEFINED",
+      "scope_rule": "UNDEFINED",
+      "source": "docs/codex-program/notes/M7-CORE-SEMANTIC-REPAIR-PLAN-2026-08-14.md §5.2 (lines 459–469)"
+    },
+    {
+      "arity": "UNDEFINED",
+      "canonical_serialisation": "UNDEFINED",
+      "child_roles_and_types": "UNDEFINED",
+      "definition": "Listed in the §5.2 minimum vocabulary. The plan states that each operator has fixed arity, child types, order, precedence, scope and serialisation, but does not specify those fields per operator.",
+      "example": {
+        "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+        "needle": "notwithstanding",
+        "span": {
+          "end_byte": 180298,
+          "start_byte": 180283,
+          "text_sha256": "9ebc87f6f19d076b92e2a3e8ff2ca58090d40835c36bc41d60eafb7d0148bc69",
+          "verified": true
+        },
+        "text": "notwithstanding"
+      },
+      "operator": "OVERRIDES",
+      "precedence": "UNDEFINED",
+      "scope_rule": "UNDEFINED",
+      "source": "docs/codex-program/notes/M7-CORE-SEMANTIC-REPAIR-PLAN-2026-08-14.md §5.2 (lines 459–469)"
+    },
+    {
+      "arity": "UNDEFINED",
+      "canonical_serialisation": "UNDEFINED",
+      "child_roles_and_types": "UNDEFINED",
+      "definition": "Listed in the §5.2 minimum vocabulary. The plan states that each operator has fixed arity, child types, order, precedence, scope and serialisation, but does not specify those fields per operator.",
+      "example": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "needle": "shall be deemed",
+        "span": {
+          "end_byte": 23135,
+          "start_byte": 23120,
+          "text_sha256": "673af8e8be0d8da42a13d66c8f242fe88ae7b6a07d3990da316195a56f927353",
+          "verified": true
+        },
+        "text": "shall be deemed"
+      },
+      "operator": "DEEMS_AS",
+      "precedence": "UNDEFINED",
+      "scope_rule": "UNDEFINED",
+      "source": "docs/codex-program/notes/M7-CORE-SEMANTIC-REPAIR-PLAN-2026-08-14.md §5.2 (lines 459–469)"
+    },
+    {
+      "arity": "UNDEFINED",
+      "canonical_serialisation": "EARLIER_OF(child, …)",
+      "child_roles_and_types": "UNDEFINED",
+      "definition": "Phase 1 extends allowed fact value kinds to DATE, DEFINED_TERM, DURATION, PERIOD, REFERENCE; otherwise byte semantics unchanged",
+      "example": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "needle": "earlier of",
+        "span": {
+          "end_byte": 13625,
+          "start_byte": 13615,
+          "text_sha256": "1f6153f6335d19a043507d5182dd26db4cb72b606f87c1121d667fe816c008c4",
+          "verified": true
+        },
+        "text": "earlier of"
+      },
+      "operator": "EARLIER_OF",
+      "precedence": "UNDEFINED",
+      "scope_rule": "UNDEFINED",
+      "source": "docs/codex-program/notes/M7-CORE-SEMANTIC-REPAIR-PLAN-2026-08-14.md §5.2 (lines 459–469); evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-temporal-phase1-authority.json policy_overlay existing_operator_extensions"
+    },
+    {
+      "arity": "UNDEFINED",
+      "canonical_serialisation": "LATER_OF(child, …)",
+      "child_roles_and_types": "UNDEFINED",
+      "definition": "Listed in the §5.2 minimum vocabulary. The plan states that each operator has fixed arity, child types, order, precedence, scope and serialisation, but does not specify those fields per operator.",
+      "example": {
+        "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+        "needle": "later of",
+        "span": {
+          "end_byte": 31997,
+          "start_byte": 31989,
+          "text_sha256": "3f3e9b87c496e312ebd6731b20fe0edc2ee7c8151eeddf871af82beea0bb17b5",
+          "verified": true
+        },
+        "text": "later of"
+      },
+      "operator": "LATER_OF",
+      "precedence": "UNDEFINED",
+      "scope_rule": "UNDEFINED",
+      "source": "docs/codex-program/notes/M7-CORE-SEMANTIC-REPAIR-PLAN-2026-08-14.md §5.2 (lines 459–469)"
+    },
+    {
+      "arity": "UNDEFINED",
+      "canonical_serialisation": "UNDEFINED",
+      "child_roles_and_types": "UNDEFINED",
+      "definition": "Listed in the §5.2 minimum vocabulary. The plan states that each operator has fixed arity, child types, order, precedence, scope and serialisation, but does not specify those fields per operator.",
+      "example": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "needle": "to the extent",
+        "span": {
+          "end_byte": 9621,
+          "start_byte": 9608,
+          "text_sha256": "9c40094d05801891f6a92047b4f835743d984ed680657fdd34c6302d16e30b34",
+          "verified": true
+        },
+        "text": "to the extent"
+      },
+      "operator": "TO_EXTENT",
+      "precedence": "UNDEFINED",
+      "scope_rule": "UNDEFINED",
+      "source": "docs/codex-program/notes/M7-CORE-SEMANTIC-REPAIR-PLAN-2026-08-14.md §5.2 (lines 459–469)"
+    },
+    {
+      "arity": "UNDEFINED",
+      "canonical_serialisation": "UNDEFINED",
+      "child_roles_and_types": "UNDEFINED",
+      "definition": "Listed in the §5.2 minimum vocabulary. The plan states that each operator has fixed arity, child types, order, precedence, scope and serialisation, but does not specify those fields per operator.",
+      "example": null,
+      "operator": "CONSEQUENCE_MODIFIER",
+      "precedence": "UNDEFINED",
+      "scope_rule": "UNDEFINED",
+      "source": "docs/codex-program/notes/M7-CORE-SEMANTIC-REPAIR-PLAN-2026-08-14.md §5.2 (lines 459–469)"
+    },
+    {
+      "arity": 2,
+      "canonical_serialisation": "BEFORE(SUBJECT_EVENT, TEMPORAL_BOUNDARY)",
+      "child_roles_and_types": [
+        {
+          "allowed_child_kinds": [
+            "FACT",
+            "EXPRESSION"
+          ],
+          "allowed_expression_result_kinds": [
+            "TEMPORAL"
+          ],
+          "allowed_fact_value_kinds": [
+            "ENUM",
+            "REFERENCE"
+          ],
+          "role": "SUBJECT_EVENT"
+        },
+        {
+          "allowed_child_kinds": [
+            "FACT",
+            "EXPRESSION"
+          ],
+          "allowed_expression_result_kinds": [
+            "TEMPORAL"
+          ],
+          "allowed_fact_value_kinds": [
+            "DATE",
+            "DEFINED_TERM",
+            "REFERENCE"
+          ],
+          "role": "TEMPORAL_BOUNDARY"
+        }
+      ],
+      "definition": "STRICT temporal relation",
+      "example": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "needle": "prior to the Effective Time",
+        "span": {
+          "end_byte": 11953,
+          "start_byte": 11926,
+          "text_sha256": "339fc02584b6e0e971e160aae175529255a84c6154ec411070cd8eb3badb779e",
+          "verified": true
+        },
+        "text": "prior to the Effective Time"
+      },
+      "operator": "BEFORE",
+      "precedence": "UNDEFINED",
+      "scope_rule": "result_kind=LOGICAL; relation=STRICT; ordered children",
+      "source": "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-temporal-phase1-authority.json policy_overlay"
+    },
+    {
+      "arity": 2,
+      "canonical_serialisation": "ON_OR_BEFORE(SUBJECT_EVENT, TEMPORAL_BOUNDARY)",
+      "child_roles_and_types": [
+        {
+          "allowed_child_kinds": [
+            "FACT",
+            "EXPRESSION"
+          ],
+          "allowed_expression_result_kinds": [
+            "TEMPORAL"
+          ],
+          "allowed_fact_value_kinds": [
+            "ENUM",
+            "REFERENCE"
+          ],
+          "role": "SUBJECT_EVENT"
+        },
+        {
+          "allowed_child_kinds": [
+            "FACT",
+            "EXPRESSION"
+          ],
+          "allowed_expression_result_kinds": [
+            "TEMPORAL"
+          ],
+          "allowed_fact_value_kinds": [
+            "DATE",
+            "DEFINED_TERM",
+            "REFERENCE"
+          ],
+          "role": "TEMPORAL_BOUNDARY"
+        }
+      ],
+      "definition": "INCLUSIVE temporal relation",
+      "example": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "needle": "on or before",
+        "span": {
+          "end_byte": 227239,
+          "start_byte": 227227,
+          "text_sha256": "ad8c71c50562e4772f2cc72a0850605b76190798b5704cb4a783eb7be73bd74d",
+          "verified": true
+        },
+        "text": "on or before"
+      },
+      "operator": "ON_OR_BEFORE",
+      "precedence": "UNDEFINED",
+      "scope_rule": "result_kind=LOGICAL; relation=INCLUSIVE; ordered children",
+      "source": "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-temporal-phase1-authority.json policy_overlay"
+    },
+    {
+      "arity": 2,
+      "canonical_serialisation": "OFFSET_AFTER(ANCHOR, OFFSET_AMOUNT)",
+      "child_roles_and_types": [
+        {
+          "allowed_child_kinds": [
+            "FACT",
+            "EXPRESSION"
+          ],
+          "allowed_expression_result_kinds": [
+            "TEMPORAL"
+          ],
+          "allowed_fact_value_kinds": [
+            "DATE",
+            "DEFINED_TERM",
+            "ENUM",
+            "REFERENCE"
+          ],
+          "role": "ANCHOR"
+        },
+        {
+          "allowed_child_kinds": [
+            "FACT"
+          ],
+          "allowed_expression_result_kinds": null,
+          "allowed_fact_value_kinds": [
+            "DURATION"
+          ],
+          "role": "OFFSET_AMOUNT"
+        }
+      ],
+      "definition": "UNDEFINED",
+      "example": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "needle": "Business Days after",
+        "span": {
+          "end_byte": 188339,
+          "start_byte": 188320,
+          "text_sha256": "51bfa62dac4fd4428c37b5b0d8e4e09727721908e12034840cfb39eec5c79155",
+          "verified": true
+        },
+        "text": "Business Days after"
+      },
+      "operator": "OFFSET_AFTER",
+      "precedence": "UNDEFINED",
+      "scope_rule": "result_kind=TEMPORAL; ordered children",
+      "source": "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-temporal-phase1-authority.json policy_overlay"
+    },
+    {
+      "arity": 2,
+      "canonical_serialisation": "OFFSET_BEFORE(ANCHOR, OFFSET_AMOUNT)",
+      "child_roles_and_types": [
+        {
+          "allowed_child_kinds": [
+            "FACT",
+            "EXPRESSION"
+          ],
+          "allowed_expression_result_kinds": [
+            "TEMPORAL"
+          ],
+          "allowed_fact_value_kinds": [
+            "DATE",
+            "DEFINED_TERM",
+            "ENUM",
+            "REFERENCE"
+          ],
+          "role": "ANCHOR"
+        },
+        {
+          "allowed_child_kinds": [
+            "FACT"
+          ],
+          "allowed_expression_result_kinds": null,
+          "allowed_fact_value_kinds": [
+            "DURATION"
+          ],
+          "role": "OFFSET_AMOUNT"
+        }
+      ],
+      "definition": "UNDEFINED",
+      "example": {
+        "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+        "needle": "Business Days before",
+        "span": {
+          "end_byte": 240800,
+          "start_byte": 240780,
+          "text_sha256": "646d7829868c19113a3a25a3068757afd9bc2a524c84c93461881a3511001bb3",
+          "verified": true
+        },
+        "text": "Business Days before"
+      },
+      "operator": "OFFSET_BEFORE",
+      "precedence": "UNDEFINED",
+      "scope_rule": "result_kind=TEMPORAL; ordered children",
+      "source": "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-temporal-phase1-authority.json policy_overlay"
+    },
+    {
+      "arity": 1,
+      "canonical_serialisation": "CAPABLE(TEST)",
+      "child_roles_and_types": [
+        {
+          "allowed_child_kinds": [
+            "EXPRESSION"
+          ],
+          "allowed_expression_result_kinds": [
+            "LOGICAL"
+          ],
+          "allowed_fact_value_kinds": null,
+          "role": "TEST"
+        }
+      ],
+      "definition": "TRUE_IFF_THE_CHILD_TEMPORAL_TEST_IS_CAPABLE_OF_BEING_SATISFIED",
+      "example": {
+        "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+        "needle": "incapable of being cured",
+        "span": {
+          "end_byte": 229398,
+          "start_byte": 229374,
+          "text_sha256": "ba1da1e19f9c14deee1f55d32e9b12313eecf1ddf262ba6ab08427252f1103ca",
+          "verified": true
+        },
+        "text": "incapable of being cured"
+      },
+      "operator": "CAPABLE",
+      "precedence": "UNDEFINED",
+      "scope_rule": "result_kind=LOGICAL; ordered children",
+      "source": "evidence/canonical-v2/stage-2y-structure-migration/control/m7-v2-repair-contract-termination-temporal-phase1-authority.json policy_overlay"
+    }
+  ],
+  "schema": "Q-0020-OPERATOR-TABLE/V1",
+  "table_sha256": "2c467d05964988a9966f18648b9dcdc79ff9725086b9ff01fcad28a4e21b2dba"
+}

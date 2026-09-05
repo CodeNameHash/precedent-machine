@@ -1,0 +1,2934 @@
+{
+  "authority": "A-0020",
+  "counts": {
+    "items": 50,
+    "items_without_nodes": 1,
+    "sha_failed_spans": 0,
+    "sha_verified_spans": 69
+  },
+  "disposition_histogram": {
+    "date:PARSED": 1,
+    "duration:ABSTAINED": 6,
+    "duration:PARSED": 3,
+    "money:PARSED": 2,
+    "share_count:PARSED": 8
+  },
+  "items": [
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "810c0363866c23b2d4ed7a5679cef549e59d3ab0ed905309156bc51ad797afc6",
+      "notes": [],
+      "sample_ordinal": 1
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 1,
+          "no_parser": 0,
+          "parsed": 1
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [
+        {
+          "attempts": [
+            {
+              "export_name": "parseCurePeriod",
+              "module": "lib/canonical-v2/native-producer/cure-period-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "30"
+            },
+            {
+              "export_name": "parseNoShopPeriod",
+              "module": "lib/canonical-v2/native-producer/no-shop-period-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "30"
+            },
+            {
+              "export_name": "parseFinancingDayCount",
+              "module": "lib/canonical-v2/native-producer/financing-day-count-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "30"
+            },
+            {
+              "export_name": "parseDayCount",
+              "module": "lib/canonical-v2/native-producer/proxy-meeting-count-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "30"
+            },
+            {
+              "export_name": "parseFilingDeadlineDays",
+              "module": "lib/canonical-v2/native-producer/antitrust-regulatory-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "30"
+            },
+            {
+              "export_name": "parseTailPeriodMonths",
+              "module": "lib/canonical-v2/native-producer/termination-fee-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NON_MONTH_UNIT"
+            },
+            {
+              "export_name": "parseMeasurementPeriod",
+              "module": "lib/canonical-v2/native-producer/measurement-date-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NOT_A_PERIOD"
+            }
+          ],
+          "disposition": "PARSED",
+          "end_byte": 229568,
+          "kind": "duration",
+          "parser": "parseCurePeriod",
+          "start_byte": 229543,
+          "text": "thirty (30) Business Days",
+          "text_sha256": "e3fbeb9949241d4a2385e94cd24da02b4a5662f6d4afedcf2a3cb7bbef55da94",
+          "typed_value": "30",
+          "verified": true
+        }
+      ],
+      "node_kind": "PARAGRAPH",
+      "node_occurrence_id": "9a9d339a33d7c530a9668482cb65f537e96bf9c78836de56cae76d92f6ceff35",
+      "notes": [],
+      "sample_ordinal": 2
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "283b4a78b0600728dc04e6d8173e1886c20284dc3b66571808c8f1b9094d92e6",
+      "notes": [],
+      "sample_ordinal": 3
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "11613ee1c60ceca1db9e950b8643d43256045df0c58f2f63bcbd67eb2580ba8e",
+      "notes": [],
+      "sample_ordinal": 4
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "1f9dd010613dcba51f35094840716c43e1f513cd6620e777b31803b16251f264",
+      "notes": [],
+      "sample_ordinal": 5
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "86a5e68b7b198d5980a9b0d252aa96d58527c8c3c66df01d5e007564f956ce6b",
+      "notes": [],
+      "sample_ordinal": 6
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 4,
+          "no_parser": 0,
+          "parsed": 4
+        }
+      },
+      "entries": [
+        {
+          "attempts": [
+            {
+              "export_name": "parseShareCount",
+              "module": "lib/canonical-v2/native-producer/share-count-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "480131"
+            }
+          ],
+          "disposition": "PARSED",
+          "end_byte": 39171,
+          "kind": "share_count",
+          "parser": "parseShareCount",
+          "start_byte": 39157,
+          "text": "480,131 Shares",
+          "text_sha256": "ab45bdb17d688cb84a6745cf7e6f2e31b08e483823d46e8d101116b52ba4ce6c",
+          "typed_value": "480131",
+          "verified": true
+        },
+        {
+          "attempts": [
+            {
+              "export_name": "parseShareCount",
+              "module": "lib/canonical-v2/native-producer/share-count-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "254238"
+            }
+          ],
+          "disposition": "PARSED",
+          "end_byte": 39255,
+          "kind": "share_count",
+          "parser": "parseShareCount",
+          "start_byte": 39241,
+          "text": "254,238 Shares",
+          "text_sha256": "0e63f7792ff1160eca04468e8234d9700605d1c0ff818238e3518218fd10d164",
+          "typed_value": "254238",
+          "verified": true
+        },
+        {
+          "attempts": [
+            {
+              "export_name": "parseShareCount",
+              "module": "lib/canonical-v2/native-producer/share-count-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "150545"
+            }
+          ],
+          "disposition": "PARSED",
+          "end_byte": 39324,
+          "kind": "share_count",
+          "parser": "parseShareCount",
+          "start_byte": 39310,
+          "text": "150,545 Shares",
+          "text_sha256": "cec320ace17b822f6ec03bb1f82cd59c300aeb54f19002dfcc06fda43de6053b",
+          "typed_value": "150545",
+          "verified": true
+        },
+        {
+          "attempts": [
+            {
+              "export_name": "parseShareCount",
+              "module": "lib/canonical-v2/native-producer/share-count-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "3090908"
+            }
+          ],
+          "disposition": "PARSED",
+          "end_byte": 39415,
+          "kind": "share_count",
+          "parser": "parseShareCount",
+          "start_byte": 39399,
+          "text": "3,090,908 Shares",
+          "text_sha256": "c9642257a986d8cae1841f14093cf719d8ef01d718911e159d6156b496f5f72b",
+          "typed_value": "3090908",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "fa01e3da753cde91cf49e3202e88664a614f8ad75bf03c3e57d5ba70b08a94df",
+      "notes": [],
+      "sample_ordinal": 7
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "ab8d289ea63597dc0379dce11f544f1c9ef73467a54c6e829d59d38ff4d8577e",
+      "notes": [],
+      "sample_ordinal": 8
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 1,
+          "no_parser": 0,
+          "parsed": 1
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [
+        {
+          "attempts": [
+            {
+              "export_name": "parseCurePeriod",
+              "module": "lib/canonical-v2/native-producer/cure-period-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "3"
+            },
+            {
+              "export_name": "parseNoShopPeriod",
+              "module": "lib/canonical-v2/native-producer/no-shop-period-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "3"
+            },
+            {
+              "export_name": "parseFinancingDayCount",
+              "module": "lib/canonical-v2/native-producer/financing-day-count-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "3"
+            },
+            {
+              "export_name": "parseDayCount",
+              "module": "lib/canonical-v2/native-producer/proxy-meeting-count-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "3"
+            },
+            {
+              "export_name": "parseFilingDeadlineDays",
+              "module": "lib/canonical-v2/native-producer/antitrust-regulatory-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "3"
+            },
+            {
+              "export_name": "parseTailPeriodMonths",
+              "module": "lib/canonical-v2/native-producer/termination-fee-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NON_MONTH_UNIT"
+            },
+            {
+              "export_name": "parseMeasurementPeriod",
+              "module": "lib/canonical-v2/native-producer/measurement-date-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NOT_A_PERIOD"
+            }
+          ],
+          "disposition": "PARSED",
+          "end_byte": 141447,
+          "kind": "duration",
+          "parser": "parseCurePeriod",
+          "start_byte": 141424,
+          "text": "three (3) Business Days",
+          "text_sha256": "95deb762c06c5ec3be49ba3031e6c024f1f9ba7f13c0d4465e8e377bbab037bb",
+          "typed_value": "3",
+          "verified": true
+        }
+      ],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "6c389ed1d9d403f66dfc338271b77c8e2a551500834f00e7739b2394177600ef",
+      "notes": [],
+      "sample_ordinal": 9
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "4c42be693d7f2335f6447e1956b6dffd25a67c7bcbe99e2fbe0c64b967e4c841",
+      "notes": [],
+      "sample_ordinal": 10
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "c4d6e369bf7fa593f12aaf8cb23620d2687cb395703f092d9ea4dbd6653d79aa",
+      "notes": [],
+      "sample_ordinal": 11
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "bd0de92cfce5e7a4f353ea14432628fc1977f2d995195ba75f9e0fcde7f18a4f",
+      "notes": [],
+      "sample_ordinal": 12
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "00b42c4e664ab41ca8a50ec8afcfc28ce69c30d517123789c9cb5faff8177eb6",
+      "notes": [],
+      "sample_ordinal": 13
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 1,
+          "no_parser": 0,
+          "parsed": 1
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 3,
+          "no_parser": 0,
+          "parsed": 3
+        }
+      },
+      "entries": [
+        {
+          "attempts": [
+            {
+              "export_name": "parseShareCount",
+              "module": "lib/canonical-v2/native-producer/share-count-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "20000000"
+            }
+          ],
+          "disposition": "PARSED",
+          "end_byte": 37052,
+          "kind": "share_count",
+          "parser": "parseShareCount",
+          "start_byte": 37035,
+          "text": "20,000,000 shares",
+          "text_sha256": "120f2208f17e195a54f3c4a1b39be7abaa16053b04c5d563594caa04694b1e99",
+          "typed_value": "20000000",
+          "verified": true
+        },
+        {
+          "attempts": [
+            {
+              "export_name": "parseShareCount",
+              "module": "lib/canonical-v2/native-producer/share-count-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "3116729"
+            }
+          ],
+          "disposition": "PARSED",
+          "end_byte": 37103,
+          "kind": "share_count",
+          "parser": "parseShareCount",
+          "start_byte": 37087,
+          "text": "3,116,729 shares",
+          "text_sha256": "658799972eb32ea28dfbb68ef72609b0f795636b939a2b0412dcff1f1775d7aa",
+          "typed_value": "3116729",
+          "verified": true
+        },
+        {
+          "attempts": [
+            {
+              "export_name": "parseTerminationDeadline",
+              "module": "lib/canonical-v2/native-producer/termination-deadline-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "2024-03-22"
+            },
+            {
+              "export_name": "parseMeasurementDate",
+              "module": "lib/canonical-v2/native-producer/measurement-date-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "2024-03-22"
+            }
+          ],
+          "disposition": "PARSED",
+          "end_byte": 37209,
+          "kind": "date",
+          "parser": "parseTerminationDeadline",
+          "start_byte": 37195,
+          "text": "March 22, 2024",
+          "text_sha256": "810ce6d6bd09d913b1adecccebb57caa579d86620b5029777fa9a29bb35aeeda",
+          "typed_value": "2024-03-22",
+          "verified": true
+        },
+        {
+          "attempts": [
+            {
+              "export_name": "parseShareCount",
+              "module": "lib/canonical-v2/native-producer/share-count-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "10000000"
+            }
+          ],
+          "disposition": "PARSED",
+          "end_byte": 37260,
+          "kind": "share_count",
+          "parser": "parseShareCount",
+          "start_byte": 37243,
+          "text": "10,000,000 shares",
+          "text_sha256": "2a455620795fb9b23768bab033163d68a2af493ad425953ca4f7ddd83b86b772",
+          "typed_value": "10000000",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "cc39d7879daea19cf9bb97c9cd6f98ef484e8a851877b44888a0ee1d3eb8db8a",
+      "notes": [],
+      "sample_ordinal": 14
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 1,
+          "no_parser": 0,
+          "parsed": 1
+        }
+      },
+      "entries": [
+        {
+          "attempts": [
+            {
+              "export_name": "parseShareCount",
+              "module": "lib/canonical-v2/native-producer/share-count-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "3"
+            }
+          ],
+          "disposition": "PARSED",
+          "end_byte": 18060,
+          "kind": "share_count",
+          "parser": "parseShareCount",
+          "start_byte": 18052,
+          "text": "3\nShares",
+          "text_sha256": "9c32bdf95a1ea7c76d13c8b13621afec4c456d611a8d02acba2236d57bf324c7",
+          "typed_value": "3",
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "2e47df88c29a8c143e9c19a2995d5e2ece86a6c73669c43b589a9460172d1750",
+      "notes": [],
+      "sample_ordinal": 15
+    },
+    {
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "da88b5f3a5f84a7236d9e779908b7f6acec5a1b1111cf66cf297dbae1268b434",
+      "notes": [],
+      "sample_ordinal": 16
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "94fb647ede59b755f27e9be0ca92a29ea15a2932a1463ffbb2509618c2458153",
+      "notes": [],
+      "sample_ordinal": 17
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "981b491be51b500174917edf90004445106b3dcafdb918f10d34389b61bc53c9",
+      "notes": [],
+      "sample_ordinal": 18
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "PARAGRAPH",
+      "node_occurrence_id": "a14a7e59c9db6f016c026fe7e373d28feadd830673ed64bf357a04920cc537b5",
+      "notes": [],
+      "sample_ordinal": 19
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "2b254d2c19346a3f5f26ae4e53932cfecd7a485f5976252e9724ca501fbf2a92",
+      "notes": [],
+      "sample_ordinal": 20
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "1ead4ac6fc62ec2b4358c2c42db02cd3abb07aabda84488354e49731624219f4",
+      "notes": [],
+      "sample_ordinal": 21
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "c19a2f26932aecc3d06e7805bcf770e1c0b27e9584acc8385daeb2a624eb6058",
+      "notes": [],
+      "sample_ordinal": 22
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 1,
+          "no_parser": 0,
+          "parsed": 1
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [
+        {
+          "attempts": [
+            {
+              "export_name": "parseCurePeriod",
+              "module": "lib/canonical-v2/native-producer/cure-period-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "20"
+            },
+            {
+              "export_name": "parseNoShopPeriod",
+              "module": "lib/canonical-v2/native-producer/no-shop-period-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "20"
+            },
+            {
+              "export_name": "parseFinancingDayCount",
+              "module": "lib/canonical-v2/native-producer/financing-day-count-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "20"
+            },
+            {
+              "export_name": "parseDayCount",
+              "module": "lib/canonical-v2/native-producer/proxy-meeting-count-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "20"
+            },
+            {
+              "export_name": "parseFilingDeadlineDays",
+              "module": "lib/canonical-v2/native-producer/antitrust-regulatory-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "20"
+            },
+            {
+              "export_name": "parseTailPeriodMonths",
+              "module": "lib/canonical-v2/native-producer/termination-fee-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NON_MONTH_UNIT"
+            },
+            {
+              "export_name": "parseMeasurementPeriod",
+              "module": "lib/canonical-v2/native-producer/measurement-date-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NOT_A_PERIOD"
+            }
+          ],
+          "disposition": "PARSED",
+          "end_byte": 262114,
+          "kind": "duration",
+          "parser": "parseCurePeriod",
+          "start_byte": 262089,
+          "text": "twenty (20) Business Days",
+          "text_sha256": "718b59606c7717ad998a7f574a8a0daf0deb8eca1279fcfc35450c7a43610355",
+          "typed_value": "20",
+          "verified": true
+        }
+      ],
+      "node_kind": "SECTION",
+      "node_occurrence_id": "f5632803bdc78d9a3a119bf4ac4651f568c8c984778f2569a260cf6346c16423",
+      "notes": [],
+      "sample_ordinal": 23
+    },
+    {
+      "agreement_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "87f43f93e5c7626a5e42e8ac907774a953cb84d4002fb1ba2796a2bdd5db321e",
+      "notes": [],
+      "sample_ordinal": 24
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 1,
+          "no_parser": 0,
+          "parsed": 1
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [
+        {
+          "attempts": [
+            {
+              "export_name": "parseFeeAmount",
+              "module": "lib/canonical-v2/native-producer/termination-fee-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "975000000"
+            },
+            {
+              "export_name": "parsePerShareCash",
+              "module": "lib/canonical-v2/native-producer/per-share-cash-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "975000000"
+            },
+            {
+              "export_name": "parseThresholdAmount",
+              "module": "lib/canonical-v2/native-producer/ioc-threshold-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "975000000"
+            },
+            {
+              "export_name": "parseDivestitureCapAmount",
+              "module": "lib/canonical-v2/native-producer/antitrust-regulatory-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "975000000"
+            }
+          ],
+          "disposition": "PARSED",
+          "end_byte": 194034,
+          "kind": "money",
+          "parser": "parseFeeAmount",
+          "start_byte": 194022,
+          "text": "$975,000,000",
+          "text_sha256": "97c24bc221a03de7351bb4638284ffb9afb2059d6c22abc119486754e0cd01f0",
+          "typed_value": "975000000",
+          "verified": true
+        }
+      ],
+      "node_kind": "CHAPEAU",
+      "node_occurrence_id": "288b099ce7224dcf1359a8da67acc0acd24616442ad429be64159c2685760152",
+      "notes": [],
+      "sample_ordinal": 25
+    },
+    {
+      "agreement_id": "fa0fff26622d0e90b47c3df527ccff91f4daa3db12f08d3832de76d8ae7541b5",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "f84fe61cca6593c2b59bbecc967411a1fb1930c67e1c4cc445dadaf5bfd9d406",
+      "notes": [],
+      "sample_ordinal": 26
+    },
+    {
+      "agreement_id": "aa72f3af29316df52ab5cb75eb2b0bb0a5b31036bd24c7f812241c5a688f4319",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "705e40a47d6f83ab908501f51df430c4e2be1ad378b6f6e067b7053459bb99f2",
+      "notes": [],
+      "sample_ordinal": 27
+    },
+    {
+      "agreement_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 2,
+          "candidates": 2,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [
+        {
+          "attempts": [
+            {
+              "export_name": "parseCurePeriod",
+              "module": "lib/canonical-v2/native-producer/cure-period-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseNoShopPeriod",
+              "module": "lib/canonical-v2/native-producer/no-shop-period-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "PERIOD_UNIT_UNCORROBORATED"
+            },
+            {
+              "export_name": "parseFinancingDayCount",
+              "module": "lib/canonical-v2/native-producer/financing-day-count-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseDayCount",
+              "module": "lib/canonical-v2/native-producer/proxy-meeting-count-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseFilingDeadlineDays",
+              "module": "lib/canonical-v2/native-producer/antitrust-regulatory-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseTailPeriodMonths",
+              "module": "lib/canonical-v2/native-producer/termination-fee-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NON_MONTH_UNIT"
+            },
+            {
+              "export_name": "parseMeasurementPeriod",
+              "module": "lib/canonical-v2/native-producer/measurement-date-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NOT_A_PERIOD"
+            }
+          ],
+          "disposition": "ABSTAINED",
+          "end_byte": 283537,
+          "kind": "duration",
+          "parser": null,
+          "start_byte": 283524,
+          "text": "six (6) years",
+          "text_sha256": "3e3151729d2e1e038fab6ad52cfd7e911ee9ccfd462bbacccac76a0c6ecabf7c",
+          "typed_value": null,
+          "verified": true
+        },
+        {
+          "attempts": [
+            {
+              "export_name": "parseCurePeriod",
+              "module": "lib/canonical-v2/native-producer/cure-period-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseNoShopPeriod",
+              "module": "lib/canonical-v2/native-producer/no-shop-period-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "PERIOD_UNIT_UNCORROBORATED"
+            },
+            {
+              "export_name": "parseFinancingDayCount",
+              "module": "lib/canonical-v2/native-producer/financing-day-count-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseDayCount",
+              "module": "lib/canonical-v2/native-producer/proxy-meeting-count-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseFilingDeadlineDays",
+              "module": "lib/canonical-v2/native-producer/antitrust-regulatory-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseTailPeriodMonths",
+              "module": "lib/canonical-v2/native-producer/termination-fee-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NON_MONTH_UNIT"
+            },
+            {
+              "export_name": "parseMeasurementPeriod",
+              "module": "lib/canonical-v2/native-producer/measurement-date-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NOT_A_PERIOD"
+            }
+          ],
+          "disposition": "ABSTAINED",
+          "end_byte": 284364,
+          "kind": "duration",
+          "parser": null,
+          "start_byte": 284351,
+          "text": "six (6) years",
+          "text_sha256": "3e3151729d2e1e038fab6ad52cfd7e911ee9ccfd462bbacccac76a0c6ecabf7c",
+          "typed_value": null,
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "717b78ef0bd7b4f18a66f142e1213676c2ebc557e5d91811d348fe0ac9e47dc2",
+      "notes": [],
+      "sample_ordinal": 28
+    },
+    {
+      "agreement_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "aff6d4227c9a1383685dd11b05b61ec1f7c2f56365b9daa675a8babcb31faaf5",
+      "notes": [],
+      "sample_ordinal": 29
+    },
+    {
+      "agreement_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "d3994deea2bf30f2cd94da1d037341f2c8a2d19f9c64cdf95818be09ad52e72e",
+      "notes": [],
+      "sample_ordinal": 30
+    },
+    {
+      "agreement_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "PARAGRAPH",
+      "node_occurrence_id": "d1e2d0a062df582ed0f12e9bda171c0470c83b01c6ed84c85b73792b18e639d0",
+      "notes": [],
+      "sample_ordinal": 31
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "PARAGRAPH",
+      "node_occurrence_id": "b7a4d3335c5cf56ded1f3634b536100e75e2715b878f174ae97713038e4cb8d8",
+      "notes": [],
+      "sample_ordinal": 32
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "a9cfb178bb425a00b358813dbeb5a82628935e5d8aacc7a6bd61cec1e31bedd2",
+      "notes": [],
+      "sample_ordinal": 33
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "77243edb98f6d88509246d291611f4a45fb9d3dd4d833683516d7f4cbc38cbe4",
+      "notes": [],
+      "sample_ordinal": 34
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "83db67d06732b31e361c45f5df78b54f654262843e547c3a202885d33517147e",
+      "notes": [],
+      "sample_ordinal": 35
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "LIMB",
+      "node_occurrence_id": "951479b70a42cf744ce64478595260d9c59ac16a219eebb02aaea5fbae82ec1b",
+      "notes": [],
+      "sample_ordinal": 36
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 1,
+          "no_parser": 0,
+          "parsed": 1
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [
+        {
+          "attempts": [
+            {
+              "export_name": "parseFeeAmount",
+              "module": "lib/canonical-v2/native-producer/termination-fee-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "50000000"
+            },
+            {
+              "export_name": "parsePerShareCash",
+              "module": "lib/canonical-v2/native-producer/per-share-cash-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "50000000"
+            },
+            {
+              "export_name": "parseThresholdAmount",
+              "module": "lib/canonical-v2/native-producer/ioc-threshold-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "50000000"
+            },
+            {
+              "export_name": "parseDivestitureCapAmount",
+              "module": "lib/canonical-v2/native-producer/antitrust-regulatory-parse.js",
+              "outcome": "RESOLVED",
+              "typed_value": "50000000"
+            }
+          ],
+          "disposition": "PARSED",
+          "end_byte": 56896,
+          "kind": "money",
+          "parser": "parseFeeAmount",
+          "start_byte": 56885,
+          "text": "$50,000,000",
+          "text_sha256": "36c31016b7f139e5e2df382950834a0c715ffbb77cc1a8f05b2d8980d9f0494d",
+          "typed_value": "50000000",
+          "verified": true
+        }
+      ],
+      "node_kind": "CHAPEAU",
+      "node_occurrence_id": "71b9f568087ff6db20040280af2d8484880f9c422accb8b21b374327583fea00",
+      "notes": [],
+      "sample_ordinal": 37
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "bba19a056de51ec8e618dfe7b8f5b3f13844413be3e02943f6f7575b34b573be",
+      "notes": [],
+      "sample_ordinal": 38
+    },
+    {
+      "agreement_id": "06ec301641939fe0ac6e6ba598a33b40f16b1acc3ffb29109c7227b14bf1025a",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": null,
+      "node_occurrence_id": null,
+      "notes": [
+        "NO_SOURCE_NODE"
+      ],
+      "sample_ordinal": 39
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "dc8fdf56a922b22a7884e5ed84a3839e4c7a016996fb1ccb006484eb82a71e8f",
+      "notes": [],
+      "sample_ordinal": 40
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 1,
+          "candidates": 1,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [
+        {
+          "attempts": [
+            {
+              "export_name": "parseCurePeriod",
+              "module": "lib/canonical-v2/native-producer/cure-period-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseNoShopPeriod",
+              "module": "lib/canonical-v2/native-producer/no-shop-period-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_NUMERIC_LITERAL"
+            },
+            {
+              "export_name": "parseFinancingDayCount",
+              "module": "lib/canonical-v2/native-producer/financing-day-count-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseDayCount",
+              "module": "lib/canonical-v2/native-producer/proxy-meeting-count-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseFilingDeadlineDays",
+              "module": "lib/canonical-v2/native-producer/antitrust-regulatory-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseTailPeriodMonths",
+              "module": "lib/canonical-v2/native-producer/termination-fee-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_PERIOD_LITERAL"
+            },
+            {
+              "export_name": "parseMeasurementPeriod",
+              "module": "lib/canonical-v2/native-producer/measurement-date-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NOT_A_PERIOD"
+            }
+          ],
+          "disposition": "ABSTAINED",
+          "end_byte": 19337,
+          "kind": "duration",
+          "parser": null,
+          "start_byte": 19333,
+          "text": " day",
+          "text_sha256": "4b6a5d3d63b22f032e31959b981c78fdaa836b7892d4de6577ba3c28f3d4dad7",
+          "typed_value": null,
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "e98827c2a4a2ec76508d26c74e234a154f0174ce9a81db73a53e0b359ecaca55",
+      "notes": [],
+      "sample_ordinal": 41
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 1,
+          "candidates": 1,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [
+        {
+          "attempts": [
+            {
+              "export_name": "parseCurePeriod",
+              "module": "lib/canonical-v2/native-producer/cure-period-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseNoShopPeriod",
+              "module": "lib/canonical-v2/native-producer/no-shop-period-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "PERIOD_UNIT_UNCORROBORATED"
+            },
+            {
+              "export_name": "parseFinancingDayCount",
+              "module": "lib/canonical-v2/native-producer/financing-day-count-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseDayCount",
+              "module": "lib/canonical-v2/native-producer/proxy-meeting-count-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseFilingDeadlineDays",
+              "module": "lib/canonical-v2/native-producer/antitrust-regulatory-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseTailPeriodMonths",
+              "module": "lib/canonical-v2/native-producer/termination-fee-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NON_MONTH_UNIT"
+            },
+            {
+              "export_name": "parseMeasurementPeriod",
+              "module": "lib/canonical-v2/native-producer/measurement-date-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NOT_A_PERIOD"
+            }
+          ],
+          "disposition": "ABSTAINED",
+          "end_byte": 190524,
+          "kind": "duration",
+          "parser": null,
+          "start_byte": 190511,
+          "text": "six (6) years",
+          "text_sha256": "3e3151729d2e1e038fab6ad52cfd7e911ee9ccfd462bbacccac76a0c6ecabf7c",
+          "typed_value": null,
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "005e1651ed5ba5f031509229658f4e9682d95f1b59ce894bfb4f319388ad9ad4",
+      "notes": [],
+      "sample_ordinal": 42
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 1,
+          "candidates": 1,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [
+        {
+          "attempts": [
+            {
+              "export_name": "parseCurePeriod",
+              "module": "lib/canonical-v2/native-producer/cure-period-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseNoShopPeriod",
+              "module": "lib/canonical-v2/native-producer/no-shop-period-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "PERIOD_UNIT_UNCORROBORATED"
+            },
+            {
+              "export_name": "parseFinancingDayCount",
+              "module": "lib/canonical-v2/native-producer/financing-day-count-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseDayCount",
+              "module": "lib/canonical-v2/native-producer/proxy-meeting-count-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseFilingDeadlineDays",
+              "module": "lib/canonical-v2/native-producer/antitrust-regulatory-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseTailPeriodMonths",
+              "module": "lib/canonical-v2/native-producer/termination-fee-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NON_MONTH_UNIT"
+            },
+            {
+              "export_name": "parseMeasurementPeriod",
+              "module": "lib/canonical-v2/native-producer/measurement-date-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NOT_A_PERIOD"
+            }
+          ],
+          "disposition": "ABSTAINED",
+          "end_byte": 104228,
+          "kind": "duration",
+          "parser": null,
+          "start_byte": 104215,
+          "text": "six (6) years",
+          "text_sha256": "3e3151729d2e1e038fab6ad52cfd7e911ee9ccfd462bbacccac76a0c6ecabf7c",
+          "typed_value": null,
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "adcc44a850446a385f288d6830480199c610ef4eab5c216e271e154ae304dd5f",
+      "notes": [],
+      "sample_ordinal": 43
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 1,
+          "candidates": 1,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [
+        {
+          "attempts": [
+            {
+              "export_name": "parseCurePeriod",
+              "module": "lib/canonical-v2/native-producer/cure-period-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseNoShopPeriod",
+              "module": "lib/canonical-v2/native-producer/no-shop-period-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_NUMERIC_LITERAL"
+            },
+            {
+              "export_name": "parseFinancingDayCount",
+              "module": "lib/canonical-v2/native-producer/financing-day-count-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseDayCount",
+              "module": "lib/canonical-v2/native-producer/proxy-meeting-count-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseFilingDeadlineDays",
+              "module": "lib/canonical-v2/native-producer/antitrust-regulatory-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_DAY_COUNT"
+            },
+            {
+              "export_name": "parseTailPeriodMonths",
+              "module": "lib/canonical-v2/native-producer/termination-fee-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NO_PERIOD_LITERAL"
+            },
+            {
+              "export_name": "parseMeasurementPeriod",
+              "module": "lib/canonical-v2/native-producer/measurement-date-parse.js",
+              "outcome": "ABSTAIN",
+              "reason": "NOT_A_PERIOD"
+            }
+          ],
+          "disposition": "ABSTAINED",
+          "end_byte": 129573,
+          "kind": "duration",
+          "parser": null,
+          "start_byte": 129558,
+          "text": " business hours",
+          "text_sha256": "35920fee8ad1f4552ac40ae547e12610247816562a1a68806795e41cb75088af",
+          "typed_value": null,
+          "verified": true
+        }
+      ],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "d011f79aae3c051670469038a679a5c72c80eb96af29cfe4f5d607c1d614aa19",
+      "notes": [],
+      "sample_ordinal": 44
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "9dbb432bdbbce495787dea0323fbec05b1db679c7c5b0761f004755eacf12f3b",
+      "notes": [],
+      "sample_ordinal": 45
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "173f493a67e94910696473dfbb6230650db0a8b48a8343671a2e8ebb2ecc55dc",
+      "notes": [],
+      "sample_ordinal": 46
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "6068e6465cbdebbe6bdbf518744855cb09b45c4eea61a07d16dd45b6a72e46bc",
+      "notes": [],
+      "sample_ordinal": 47
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "d0cf1b04d87976581cfb75b5c8be5b911cea0d170a821b70965d41ec54cc51d1",
+      "notes": [],
+      "sample_ordinal": 48
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "b21dab25319dff3fdbf197e4b25745e4d0ee2bd0e697430fd257877ab3b0470d",
+      "notes": [],
+      "sample_ordinal": 49
+    },
+    {
+      "agreement_id": "f4a123d7c2bd8ba6358499dd9870513c8bac6a6893985bf5a581a536af280d71",
+      "counts": {
+        "date": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "duration": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "money": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "percentage": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        },
+        "share_count": {
+          "abstained": 0,
+          "candidates": 0,
+          "no_parser": 0,
+          "parsed": 0
+        }
+      },
+      "entries": [],
+      "node_kind": "SENTENCE",
+      "node_occurrence_id": "dd18c430f173b3b471433acc4fc69e5554cfc0a18bcd358e510d4053883341d6",
+      "notes": [],
+      "sample_ordinal": 50
+    }
+  ],
+  "kind_histogram": {
+    "date": 1,
+    "duration": 9,
+    "money": 2,
+    "share_count": 8
+  },
+  "missing_paths": [],
+  "parser_export_cites": [
+    {
+      "export_line": 84,
+      "export_name": "parseDivestitureCapAmount",
+      "function_line": 31,
+      "grep": "lib/canonical-v2/native-producer/antitrust-regulatory-parse.js:84:parseDivestitureCapAmount",
+      "kind": "money",
+      "module": "lib/canonical-v2/native-producer/antitrust-regulatory-parse.js",
+      "present": true
+    },
+    {
+      "export_line": 84,
+      "export_name": "parseFilingDeadlineDays",
+      "function_line": 59,
+      "grep": "lib/canonical-v2/native-producer/antitrust-regulatory-parse.js:84:parseFilingDeadlineDays",
+      "kind": "duration",
+      "module": "lib/canonical-v2/native-producer/antitrust-regulatory-parse.js",
+      "present": true
+    },
+    {
+      "export_line": 267,
+      "export_name": "parseCurePeriod",
+      "function_line": 207,
+      "grep": "lib/canonical-v2/native-producer/cure-period-parse.js:267:parseCurePeriod",
+      "kind": "duration",
+      "module": "lib/canonical-v2/native-producer/cure-period-parse.js",
+      "present": true
+    },
+    {
+      "export_line": 92,
+      "export_name": "parsePercentThreshold",
+      "function_line": 48,
+      "grep": "lib/canonical-v2/native-producer/defined-term-threshold-parse.js:92:parsePercentThreshold",
+      "kind": "percentage",
+      "module": "lib/canonical-v2/native-producer/defined-term-threshold-parse.js",
+      "present": true
+    },
+    {
+      "export_line": 93,
+      "export_name": "parseThresholdSubstitution",
+      "function_line": 64,
+      "grep": "lib/canonical-v2/native-producer/defined-term-threshold-parse.js:93:parseThresholdSubstitution",
+      "kind": "percentage",
+      "module": "lib/canonical-v2/native-producer/defined-term-threshold-parse.js",
+      "present": true
+    },
+    {
+      "export_line": 120,
+      "export_name": "parseFinancingDayCount",
+      "function_line": 70,
+      "grep": "lib/canonical-v2/native-producer/financing-day-count-parse.js:120:parseFinancingDayCount",
+      "kind": "duration",
+      "module": "lib/canonical-v2/native-producer/financing-day-count-parse.js",
+      "present": true
+    },
+    {
+      "export_line": 93,
+      "export_name": "parseThresholdAmount",
+      "function_line": 34,
+      "grep": "lib/canonical-v2/native-producer/ioc-threshold-parse.js:93:parseThresholdAmount",
+      "kind": "money",
+      "module": "lib/canonical-v2/native-producer/ioc-threshold-parse.js",
+      "present": true
+    },
+    {
+      "export_line": 340,
+      "export_name": "parseMeasurementDate",
+      "function_line": 173,
+      "grep": "lib/canonical-v2/native-producer/measurement-date-parse.js:340:parseMeasurementDate",
+      "kind": "date",
+      "module": "lib/canonical-v2/native-producer/measurement-date-parse.js",
+      "present": true
+    },
+    {
+      "export_line": 341,
+      "export_name": "parseMeasurementPeriod",
+      "function_line": 273,
+      "grep": "lib/canonical-v2/native-producer/measurement-date-parse.js:341:parseMeasurementPeriod",
+      "kind": "duration",
+      "module": "lib/canonical-v2/native-producer/measurement-date-parse.js",
+      "present": true
+    },
+    {
+      "export_line": 249,
+      "export_name": "parseNoShopPeriod",
+      "function_line": 174,
+      "grep": "lib/canonical-v2/native-producer/no-shop-period-parse.js:249:parseNoShopPeriod",
+      "kind": "duration",
+      "module": "lib/canonical-v2/native-producer/no-shop-period-parse.js",
+      "present": true
+    },
+    {
+      "export_line": 70,
+      "export_name": "parsePerShareCash",
+      "function_line": 20,
+      "grep": "lib/canonical-v2/native-producer/per-share-cash-parse.js:70:parsePerShareCash",
+      "kind": "money",
+      "module": "lib/canonical-v2/native-producer/per-share-cash-parse.js",
+      "present": true
+    },
+    {
+      "export_line": 46,
+      "export_name": "parseDayCount",
+      "function_line": 21,
+      "grep": "lib/canonical-v2/native-producer/proxy-meeting-count-parse.js:46:parseDayCount",
+      "kind": "duration",
+      "module": "lib/canonical-v2/native-producer/proxy-meeting-count-parse.js",
+      "present": true
+    },
+    {
+      "export_line": 293,
+      "export_name": "parseShareCount",
+      "function_line": 207,
+      "grep": "lib/canonical-v2/native-producer/share-count-parse.js:293:parseShareCount",
+      "kind": "share_count",
+      "module": "lib/canonical-v2/native-producer/share-count-parse.js",
+      "present": true
+    },
+    {
+      "export_line": 142,
+      "export_name": "parseTerminationDeadline",
+      "function_line": 111,
+      "grep": "lib/canonical-v2/native-producer/termination-deadline-parse.js:142:parseTerminationDeadline",
+      "kind": "date",
+      "module": "lib/canonical-v2/native-producer/termination-deadline-parse.js",
+      "present": true
+    },
+    {
+      "export_line": 452,
+      "export_name": "parseFeeAmount",
+      "function_line": 181,
+      "grep": "lib/canonical-v2/native-producer/termination-fee-parse.js:452:parseFeeAmount",
+      "kind": "money",
+      "module": "lib/canonical-v2/native-producer/termination-fee-parse.js",
+      "present": true
+    },
+    {
+      "export_line": 455,
+      "export_name": "parseTailPeriodMonths",
+      "function_line": 409,
+      "grep": "lib/canonical-v2/native-producer/termination-fee-parse.js:455:parseTailPeriodMonths",
+      "kind": "duration",
+      "module": "lib/canonical-v2/native-producer/termination-fee-parse.js",
+      "present": true
+    }
+  ],
+  "schema": "Q-0019-FIXED50-TEMPORAL-AMOUNT/V1",
+  "table_sha256": "361aa49c5bd7f8a09d4c3cf38e4fceb7529353fdde03c99f37e7198ab9967526"
+}

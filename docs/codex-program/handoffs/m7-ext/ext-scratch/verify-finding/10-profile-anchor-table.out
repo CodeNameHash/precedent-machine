@@ -1,0 +1,395 @@
+{
+  "row_count": 1382,
+  "verified_count": 1380,
+  "unresolved_count": 2,
+  "sha_mismatch_count": 0,
+  "pre_revision_table_sha256": "6496657a7a6283f957039b574626032e0cefd7cfe8d35042592df77288849c5f",
+  "pre_revision_table_bytes": 1471325,
+  "zero_claim_verified": {
+    "count": 49,
+    "nearest_none": 13,
+    "overlapping": 36,
+    "identity_mismatch": 36,
+    "by_family": [
+      {
+        "family_key": "GUARANTY_FINANCING_PARTY",
+        "total": 4,
+        "nearest_none": 4,
+        "overlapping": 0,
+        "identity_mismatch": 0
+      },
+      {
+        "family_key": "MAE_DEFINITION",
+        "total": 4,
+        "nearest_none": 0,
+        "overlapping": 4,
+        "identity_mismatch": 4
+      },
+      {
+        "family_key": "TERMINATION",
+        "total": 41,
+        "nearest_none": 9,
+        "overlapping": 32,
+        "identity_mismatch": 32
+      }
+    ]
+  },
+  "per_family": [
+    {
+      "family_key": "ANTITRUST_REGULATORY",
+      "profile_count": 70,
+      "verified": 70,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 0,
+        "M4_EVIDENCE_EDGE": 70,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "APPRAISAL_DISSENTERS_RIGHTS",
+      "profile_count": 5,
+      "verified": 5,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 5,
+        "M4_EVIDENCE_EDGE": 0,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "CLOSING_CONDITIONS",
+      "profile_count": 57,
+      "verified": 57,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 0,
+        "M4_EVIDENCE_EDGE": 57,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "CONSIDERATION",
+      "profile_count": 7,
+      "verified": 7,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 7,
+        "M4_EVIDENCE_EDGE": 0,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "DIVIDENDS",
+      "profile_count": 1,
+      "verified": 1,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 1,
+        "M4_EVIDENCE_EDGE": 0,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "DNO_INDEMNIFICATION",
+      "profile_count": 33,
+      "verified": 31,
+      "unresolved": 2,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 0,
+        "M4_EVIDENCE_EDGE": 31,
+        "UNRESOLVED": 2
+      }
+    },
+    {
+      "family_key": "EMPLOYEE_MATTERS",
+      "profile_count": 27,
+      "verified": 27,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 27,
+        "M4_EVIDENCE_EDGE": 0,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "FINANCING_COVENANTS",
+      "profile_count": 5,
+      "verified": 5,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 5,
+        "M4_EVIDENCE_EDGE": 0,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "GENERAL_COVENANTS",
+      "profile_count": 54,
+      "verified": 54,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 0,
+        "M4_EVIDENCE_EDGE": 54,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "GUARANTY_FINANCING_PARTY",
+      "profile_count": 5,
+      "verified": 5,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 4,
+        "M4_EVIDENCE_EDGE": 1,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "INTERIM_OPERATING",
+      "profile_count": 113,
+      "verified": 113,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 113,
+        "M4_EVIDENCE_EDGE": 0,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "KEY_DEFINED_TERMS",
+      "profile_count": 76,
+      "verified": 76,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 76,
+        "M4_EVIDENCE_EDGE": 0,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "MAE_DEFINITION",
+      "profile_count": 4,
+      "verified": 4,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 4,
+        "M4_EVIDENCE_EDGE": 0,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "MATERIAL_CONTRACTS",
+      "profile_count": 116,
+      "verified": 116,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 116,
+        "M4_EVIDENCE_EDGE": 0,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "MERGER_STRUCTURE_CLOSING",
+      "profile_count": 103,
+      "verified": 103,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 103,
+        "M4_EVIDENCE_EDGE": 0,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "MISC_BOILERPLATE",
+      "profile_count": 114,
+      "verified": 114,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 114,
+        "M4_EVIDENCE_EDGE": 0,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "NO_OTHER_REPS_FRAUD",
+      "profile_count": 36,
+      "verified": 36,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 0,
+        "M4_EVIDENCE_EDGE": 36,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "NO_SHOP",
+      "profile_count": 365,
+      "verified": 365,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 365,
+        "M4_EVIDENCE_EDGE": 0,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "PROXY_MEETING",
+      "profile_count": 31,
+      "verified": 31,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 31,
+        "M4_EVIDENCE_EDGE": 0,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "REPRESENTATIONS",
+      "profile_count": 70,
+      "verified": 70,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 0,
+        "M4_EVIDENCE_EDGE": 70,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "profile_count": 8,
+      "verified": 8,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 8,
+        "M4_EVIDENCE_EDGE": 0,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "TAX_MATTERS",
+      "profile_count": 17,
+      "verified": 17,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 17,
+        "M4_EVIDENCE_EDGE": 0,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "TERMINATION",
+      "profile_count": 45,
+      "verified": 45,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 45,
+        "M4_EVIDENCE_EDGE": 0,
+        "UNRESOLVED": 0
+      }
+    },
+    {
+      "family_key": "TERMINATION_FEE",
+      "profile_count": 20,
+      "verified": 20,
+      "unresolved": 0,
+      "sha_mismatch": 0,
+      "span_source": {
+        "REGISTRY": 0,
+        "M4_EVIDENCE_EDGE": 20,
+        "UNRESOLVED": 0
+      }
+    }
+  ],
+  "unresolved": [
+    {
+      "profile_id": "7a4460ebb3e8c9ffeec38e6aa3c6e5262ad102a6171e8093d474efab2ebf0879",
+      "profile_key": "PROFILE:DNO_INDEMNIFICATION:NO_ADVERSE_AMENDMENT",
+      "family_key": "DNO_INDEMNIFICATION",
+      "signature": "ALL_OF(NO_ADVERSE_AMENDMENT,NO_ADVERSE_AMENDMENT_DURATION)",
+      "why": "NO_REGISTRY_ENTRY_FOR_SIGNATURE"
+    },
+    {
+      "profile_id": "e8b413206e7f8f8bffad53059d1ea5cfa861ec7e9fc8308b30cbd16a7761b620",
+      "profile_key": "PROFILE:DNO_INDEMNIFICATION:RIGHTS_SURVIVAL",
+      "family_key": "DNO_INDEMNIFICATION",
+      "signature": "ALL_OF(RIGHTS_SURVIVAL,RIGHTS_SURVIVAL_DURATION)",
+      "why": "NO_REGISTRY_ENTRY_FOR_SIGNATURE"
+    }
+  ],
+  "node_kind_histogram": {
+    "(null)": 2,
+    "CHAPEAU": 132,
+    "LIMB": 472,
+    "PARAGRAPH": 132,
+    "QUALIFICATION": 98,
+    "SECTION": 18,
+    "SENTENCE": 528
+  },
+  "claims_on_node_histogram": {
+    "0": 51,
+    "1": 745,
+    "2": 329,
+    "3": 77,
+    "4": 77,
+    "5": 30,
+    "6": 12,
+    "7": 27,
+    "8": 8,
+    "10": 10,
+    "16": 16
+  },
+  "authority_files": {
+    "antitrust-regulatory": "m7-v2-repair-contract-antitrust-regulatory-authoring-phase2-authority-v2.json",
+    "appraisal-dissenters-rights": "m7-v2-repair-contract-appraisal-dissenters-rights-authoring-phase2-authority-v2.json",
+    "closing-conditions": "m7-v2-repair-contract-closing-conditions-authoring-phase2-authority-v2.json",
+    "consideration": "m7-v2-repair-contract-consideration-authoring-phase2-authority-v2.json",
+    "dividends": "m7-v2-repair-contract-dividends-authoring-phase2-authority-v2.json",
+    "dno-indemnification": "m7-v2-repair-contract-dno-indemnification-authoring-phase2-authority-v2.json",
+    "employee-matters": "m7-v2-repair-contract-employee-matters-authoring-phase2-authority-v2.json",
+    "financing-covenants": "m7-v2-repair-contract-financing-covenants-authoring-phase2-authority-v2.json",
+    "general-covenants": "m7-v2-repair-contract-general-covenants-authoring-phase2-authority-v2.json",
+    "guaranty-financing-party": "m7-v2-repair-contract-guaranty-financing-party-authoring-phase2-authority-v2.json",
+    "interim-operating": "m7-v2-repair-contract-interim-operating-authoring-phase2-authority-v2.json",
+    "key-defined-terms": "m7-v2-repair-contract-key-defined-terms-authoring-phase2-authority-v2.json",
+    "mae-definition": "m7-v2-repair-contract-mae-definition-authoring-phase2-authority-v1.json",
+    "material-contracts": "m7-v2-repair-contract-material-contracts-authoring-phase2-authority-v2.json",
+    "merger-structure-closing": "m7-v2-repair-contract-merger-structure-closing-authoring-phase2-authority-v2.json",
+    "misc-boilerplate": "m7-v2-repair-contract-misc-boilerplate-authoring-phase2-authority-v2.json",
+    "no-other-reps-fraud": "m7-v2-repair-contract-no-other-reps-fraud-authoring-phase2-authority-v2.json",
+    "no-shop": "m7-v2-repair-contract-no-shop-authoring-phase2-authority-v2.json",
+    "proxy-meeting": "m7-v2-repair-contract-proxy-meeting-authoring-phase2-authority-v2.json",
+    "representations": "m7-v2-repair-contract-representations-authoring-phase2-authority-v2.json",
+    "specific-performance-remedies": "m7-v2-repair-contract-specific-performance-remedies-authoring-phase2-authority-v2.json",
+    "tax-matters": "m7-v2-repair-contract-tax-matters-authoring-phase2-authority-v2.json",
+    "termination": "m7-v2-repair-contract-termination-authoring-phase2-authority-v2.json",
+    "termination-fee": "m7-v2-repair-contract-termination-fee-authoring-phase2-authority-v2.json"
+  },
+  "skipped_authority_files": [
+    "m7-v2-repair-contract-termination-authoring-phase2-authority.json"
+  ],
+  "missing_paths": []
+}
