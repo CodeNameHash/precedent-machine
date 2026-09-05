@@ -20,16 +20,16 @@ Verify each against the repository before relying on it.
   `32b7e8d9` on this branch, under `contract/`, with the corpus manifest
   input contract beside it. Later drafts are announced by an `A`.
 - Public shared SEC-ingest component: npm package
-  `@precedent-machine/shared-source-core` version `1.0.2`, released as the
+  `@precedent-machine/shared-source-core` version `1.0.3`, released as the
   package-root Git commit
-  `7f32174a36460e86ea60503c271f41a0a571f45b` on
-  `release/shared-source-core-v1.0.2`. Install it with
-  `npm install github:CodeNameHash/precedent-machine#7f32174a36460e86ea60503c271f41a0a571f45b`.
+  `5f2ccafa277202b64231071783973135b9b0c894` on
+  `release/shared-source-core-v1.0.3`. Install it with
+  `npm install github:CodeNameHash/precedent-machine#5f2ccafa277202b64231071783973135b9b0c894`.
   This is the only Shared Source Core seam Deal Storylines should consume.
   It exports `registerTransaction`, `admitDealSources`, and
-  `createSharedSourceCore`. Component version: `SHARED_SEC_INGEST/V1.0.2`.
+  `createSharedSourceCore`. Component version: `SHARED_SEC_INGEST/V1.0.3`.
   Component code digest:
-  `2a6e4b681c4cd8a8a1d2379374ac4a743ee5150e92aad93adb5b01b6715c7bd6`.
+  `232c75328b0c9301eededb83dfe3534358666cc2c5f619029cc1c7b24f12f3b4`.
   Canonicalisation profile: `SEC_HTML_CANONICAL_TEXT_CONVERSION/V2`, digest
   `c6b6a93315fad0bc3e65be699c71e2fea4d98111ba701f72f19dfb96dfb5c85a`,
   config digest
