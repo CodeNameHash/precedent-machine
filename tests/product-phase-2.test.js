@@ -379,7 +379,14 @@ test('effective-time routing receives the exact family scope instead of treating
     sourceDocument, agreementStructure, legalSchema: schema, model, node,
   });
   const keyTerms = schema.families.find((item) => item.family_key === 'KEY_DEFINED_TERMS');
-  assert.equal(routingCall.prompt_version, 'PRODUCT_MULTI_LABEL_ROUTER/V2');
+  assert.equal(routingCall.prompt_version, 'PRODUCT_MULTI_LABEL_ROUTER/V3');
+  const responseContract = routingCall.request.response_contract;
+  assert.equal(responseContract.type, 'object');
+  assert.equal(responseContract.additionalProperties, false);
+  assert.equal(responseContract.properties.families.type, 'array');
+  assert.equal(responseContract.properties.families.items.type, 'string');
+  assert.deepEqual(responseContract.properties.families.items.enum, routingCall.request.allowed_families);
+  assert.equal(responseContract.properties.disposition.type, 'string');
   assert.deepEqual(routingCall.request.family_routing_contracts.KEY_DEFINED_TERMS, {
     allowed_fact_types: keyTerms.required_fact_types,
     allowed_subtype_keys: keyTerms.subtypes.map((subtype) => subtype.subtype_key),
@@ -388,6 +395,18 @@ test('effective-time routing receives the exact family scope instead of treating
   assert.match(routingCall.request.instruction, /express absence/i);
   assert.match(routingCall.request.instruction, /generic defined term/i);
   assert.deepEqual(section.routing.families, ['MERGER_STRUCTURE_CLOSING']);
+});
+
+test('routing rejects per-family objects rather than silently assigning their categories', () => {
+  assert.throws(() => compileRouting({
+    response: {
+      families: [{ family: 'MERGER_STRUCTURE_CLOSING', disposition: 'FAMILY_ASSIGNED' }],
+      disposition: 'FAMILY_ASSIGNED', rationale: 'Provider used a different shape.',
+    },
+    call: { model_call_id: 'm'.repeat(64) },
+    node: { node_id: 'n'.repeat(64), reference: '1.4' },
+    deterministicEvidence: [],
+  }), /MODEL_RESPONSE_SHAPE: routing.families/);
 });
 
 test('section sealing deduplicates identical content-addressed components before persistence', () => {

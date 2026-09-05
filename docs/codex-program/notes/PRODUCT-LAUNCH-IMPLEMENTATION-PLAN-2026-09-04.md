@@ -454,6 +454,23 @@ generation will test the correction; generation 4 will not be retried under
 changed rules. Received model replies rejected before parsing now persist with
 known, partial or unknown usage identified honestly. Focused checks and isolated
 database persistence pass. No provider reply is invented for transport failure.
+Generation 5 then completed three sections before section classification failed:
+the model returned category objects instead of selected category names. All
+replies were saved. The instructions now specify the exact JSON structure,
+rather than presenting the full category catalogue as example output. Three
+real model probes, including both failing sections, return the required shape;
+the all-family recorded checks and real Concho/Modiv integrations pass. A second
+worker's later failure also changed the stopped run back to a partial status.
+That status calculation now preserves the exhausted failure after another
+worker fails or completes. Five database checks pass, including ordinary
+completion and duplicate-call accounting; the manager independently repeated
+the four failure checks. The review screen passed browser checks with the real
+proposal and source panels: failed quotes, background context and selected
+citations remain distinct, and cancelled or failed edits preserve saved state.
+A separate correction to later review revisions is in progress: accumulated
+draft review time must persist, but time already published must not count.
+Processing time and the fixed 90-minute limit remain unchanged. No fresh generation
+or blind test has yet established full processing under these corrections.
 Full processing and a usable review draft remain unproved.
 The 90-minute check now includes measured processing time. This is
 diagnostic work, not blind release evidence. The untouched final agreement,

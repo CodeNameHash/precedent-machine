@@ -614,8 +614,9 @@ test('Review UI separates candidate finalisation, evaluation, activation and rec
   assert.match(source, /Status:/);
   assert.match(source, /availableSourceSpans=/);
   const proposalCard = fs.readFileSync(require.resolve('../components/product/ProposalCard.jsx'), 'utf8');
-  assert.match(proposalCard, /Invalid evidence requires citation repair/);
-  assert.match(proposalCard, /proposal\.unmatched_evidence/);
+  assert.match(proposalCard, /claimed quotes did not match the source/);
+  assert.match(proposalCard, /presentReviewEvidence/);
+  assert.match(proposalCard, /reviewEvidence\.unmatched/);
   assert.match(proposalCard, /source_span_ids: selectedSourceSpanIds/);
   assert.match(proposalCard, /proposal\.validation_status !== 'VALID'/);
 });
