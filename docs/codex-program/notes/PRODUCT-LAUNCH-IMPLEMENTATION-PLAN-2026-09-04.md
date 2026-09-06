@@ -412,7 +412,10 @@ The new full diagnostic stopped after 14 saved sections because different
 proposals with the same supporting text received the same internal identifier.
 The correction preserves each candidate as separate pending review work;
 database checks pass. It is live in the private preview. Ordinary Retry resumed
-the same run with all 14 completed sections retained and two sections processing.
+the same run with all 14 completed sections retained. It has passed 46 saved
+sections, but section 5.1 contains no proposed facts and remains unresolved for
+coverage. Access and no-shop retain substantially more detail. Their saved
+output is being checked against Ben's partial notes, not accepted by count.
 The original Olaplex run is unchanged. Testing it again is diagnostic work,
 not a new blind test. Full lawyer review, publication and the combined 90-minute
 processing/review bar remain unproved. No release bar or production setting has
@@ -762,7 +765,19 @@ with the actual duplicate-key error under the prior compiler and succeeds under
 the correction. The all-family recorded checks pass; read-only replay retains
 all candidates from the actual failed replies. Review now explains the collision
 in plain language and preserves the full recorded detail, including malformed
-detail. Normal retry, not a new submission, is the next step for this diagnostic.
+detail. Ordinary Retry resumed the same run and retained the original 14 result
+rows. Five subsequent collision findings retain all ten referenced candidates
+separately, invalid for automatic use and with their source citations intact.
+The browser counter advances without a reload. The new access result has 14
+proposals and 16 relationships, including separate access, cooperation and
+information duties, four exclusions and the privilege and compliance workarounds.
+The no-shop result separates the prohibited and permitted actions and retains
+the furnishing-specific confidentiality wording. Its cessation proposals omit
+the information-provision parenthetical, and its information-parity fact lacks
+a link to the furnishing permission. Missing separately queryable fields do not
+by themselves block the internal launch. Section 5.1 saved no proposals after an
+extraction timeout and an empty later response; its full source survives and its
+coverage remains unresolved. The cause is being investigated from saved calls.
 Ben's two original note messages are also preserved privately outside the public
 repository. Their transcription is partial, with severity and acceptance pending;
 it is not an attestation or a completed independent inventory.
