@@ -15,6 +15,17 @@ export function CollisionDetail({ message }) {
   </div>;
 }
 
+export function EmptyExtractionWarning({ item, analysis }) {
+  const original = item?.original;
+  const nodeId = original?.structure_node_id || item?.structure_node_id;
+  if (!nodeId || !Array.isArray(analysis?.sections) || !Array.isArray(analysis?.proposals)) return null;
+  const selected = analysis.sections.find((r) => r && r.structure_node_id === nodeId && Array.isArray(r.families))?.families || [];
+  const hasProposal = analysis.proposals.some((p) => p && p.structure_node_id === nodeId && p.family_key === original?.family_key);
+  if (original?.subject_kind !== 'SECTION_FAMILY' || original.state !== 'UNRESOLVED'
+    || !original.family_key || !selected.includes(original.family_key) || hasProposal) return null;
+  return <p className="my-2 rounded bg-amber-50 p-2 text-xs">AI identified this subject but proposed no facts. Review the source and add any missing facts. This is not an absence statement.</p>;
+}
+
 export function findingResolutionCommand(findings, selections) {
   return findings.flatMap((item) => {
     if (item.original.state === 'NOT_RUN') return [];
@@ -33,7 +44,7 @@ export function findingResolutionCommand(findings, selections) {
   });
 }
 
-export default function FindingResolutionFields({ findings, facts, selections, onChange, busy, onSource }) {
+export default function FindingResolutionFields({ findings, facts, selections, onChange, busy, onSource, analysis }) {
   if (!findings.length) return null;
   return <section className="space-y-3" data-testid="finding-resolution-fields">
     <h3 className="text-sm font-semibold">Resolve model findings</h3>
@@ -51,6 +62,7 @@ export default function FindingResolutionFields({ findings, facts, selections, o
         {item.family_key ? <p>{item.family_key.replaceAll('_', ' ')}</p> : null}
         {original.section_reference ? <p>{displaySectionReference(original.section_reference)}</p> : null}
         {original.code === 'DUPLICATE_FACT_OCCURRENCE' ? <CollisionDetail message={original.message} /> : original.message || original.reason ? <p className="my-2 whitespace-pre-wrap">{original.message || original.reason}</p> : null}
+        <EmptyExtractionWarning item={item} analysis={analysis} />
         {onSource && item.source_span_ids?.length ? <button type="button" onClick={() => onSource(item.source_closure_id, item.source_span_ids[0])} className="mb-2 text-xs font-semibold text-accent">View finding source</button> : null}
         {notRun ? <p className="text-red-700">This work did not run. A review decision cannot mark it complete.</p> : <>
           <select aria-label={`Finding ${index + 1} resolution`} disabled={busy} value={selected.disposition || 'UNRESOLVED'} onChange={(event) => onChange(item.item_id, { disposition: event.target.value, published_fact_review_item_id: '', omission_reason: '' })} className="block w-full rounded border border-border p-2 text-sm">
