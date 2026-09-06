@@ -399,14 +399,13 @@ result. Every substantive section and required role has a disposition.
 
 ### Phase 5. Freeze, test blind and correct honestly, 3 days
 
-Current position, 2026-09-06: the corrected candidate is processing the untouched
-Apogee agreement through normal private intake, with 95 sections. The AI draft
-has not been opened. The earlier Arcellx diagnostic saved all 83 sections, but
-needed a repair and exceeded 90 minutes before review, so it is not a passed
-final test. Its full party names, clear review counters and access to each saved
-citation inside complete clause context are verified in the private view.
-Independent lawyer review, coverage confirmation, publication and the fixed
-processing-and-review requirements remain outstanding. No release bar is weakened.
+Current position, 2026-09-06: Apogee is still processing through normal private
+intake, without manual repair. It crossed 90 minutes before all 95 sections were
+saved, so this run cannot meet the fixed processing-and-review time requirement.
+The AI draft remains unopened. Arcellx's full party names, clear review counters
+and access to each saved citation inside complete clause context are verified
+in the private view. Independent lawyer review, coverage confirmation and
+publication remain outstanding. Phase 5 is not passed. No requirement is weakened.
 
 Earlier, Olaplex completed all 79 sections in about 36
 minutes through ordinary private intake. Ben's independent, partial legal notes
@@ -603,6 +602,15 @@ Normal private intake created run `a21f9bf7-f217-4f20-879c-586bad2e8be2` at
 2026-09-06 21:48:04 UTC, with 95 sections. The saved run confirms V6 prompts and
 the expected model map. Two sections started processing. The intake page was
 closed before completion to prevent automatic opening of the AI draft.
+
+At the 2026-09-06 23:18 UTC checkpoint, Apogee was still processing after 90
+minutes, with 79 sections complete, two running, 14 pending and none failed.
+No manual retry, code change or model-configuration change had been made during
+the run. Processing continues unchanged to preserve the result. Exceeding the
+limit before lawyer review means this run cannot satisfy the combined 90-minute
+bar. The draft remains unopened; no legal acceptance or phase completion is
+claimed. A further agreement will not be started automatically to replace this
+timing failure.
 
 Earlier assembly retries regenerated no sections or model calls. A separate
 one-limb IOC probe retained full context and
