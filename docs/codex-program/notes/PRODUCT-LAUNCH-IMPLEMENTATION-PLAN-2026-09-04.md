@@ -410,8 +410,9 @@ the smaller model for routing and uses the stronger model for extraction. Explic
 hour periods and non-duration update duties are retained in the data model.
 The new full diagnostic stopped after 14 saved sections because different
 proposals with the same supporting text received the same internal identifier.
-The local correction preserves each candidate as separate pending review work;
-database checks pass. The normal retry will retain the 14 completed sections.
+The correction preserves each candidate as separate pending review work;
+database checks pass. It is live in the private preview. Ordinary Retry resumed
+the same run with all 14 completed sections retained and two sections processing.
 The original Olaplex run is unchanged. Testing it again is diagnostic work,
 not a new blind test. Full lawyer review, publication and the combined 90-minute
 processing/review bar remain unproved. No release bar or production setting has
