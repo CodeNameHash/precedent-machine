@@ -19,7 +19,7 @@ require.extensions['.jsx'] = function compileJsx(module, filename) {
 const ProposalCard = require('../components/product/ProposalCard.jsx').default;
 const SourceContextPanel = require('../components/product/SourceContextPanel.jsx').default;
 const {
-  AddFact, ReviewSectionHeading, missingFactCommand, toggleSourceSpanId,
+  AcceptedSummary, AddFact, ReleaseEvaluation, ReviewSectionHeading, missingFactCommand, toggleSourceSpanId,
 } = require('../components/product/ReviewWorkspace.jsx');
 
 const nodes = [
@@ -82,6 +82,37 @@ test('source panel says an unmatched quote is not the highlighted containing con
   assert.match(markup, /Attempted quote, not an exact source citation/);
   assert.match(markup, /The highlighted text is the declared containing context/);
   assert.match(markup, /It is not an automatic citation/);
+});
+
+test('source panel highlights exact supporting words inside the smallest stored surrounding clause', () => {
+  const canonicalText = '5.1 Company’s Conduct of Business. The Company shall not amend its charter, except as permitted by Law.';
+  const selectedText = 'shall not amend its charter';
+  const clauseText = 'The Company shall not amend its charter, except as permitted by Law.';
+  const selectedStart = Buffer.byteLength(canonicalText.slice(0, canonicalText.indexOf(selectedText)));
+  const clauseStart = Buffer.byteLength(canonicalText.slice(0, canonicalText.indexOf(clauseText)));
+  const selectedSpan = {
+    span_id: 'support', kind: 'SUPPORTING_EVIDENCE', structure_node_id: 'section',
+    start_byte: selectedStart, end_byte: selectedStart + Buffer.byteLength(selectedText), exact_text: selectedText,
+  };
+  const clauseSpan = {
+    span_id: 'operative', kind: 'OPERATIVE', structure_node_id: 'section',
+    start_byte: clauseStart, end_byte: clauseStart + Buffer.byteLength(clauseText), exact_text: clauseText,
+  };
+  const markup = renderToStaticMarkup(React.createElement(SourceContextPanel, {
+    open: true,
+    onClose() {},
+    source: { canonical_text: canonicalText },
+    span: selectedSpan,
+    closureSpans: [{
+      span_id: 'full', kind: 'FULL_SECTION', structure_node_id: 'section',
+      start_byte: 0, end_byte: Buffer.byteLength(canonicalText), exact_text: canonicalText,
+    }, selectedSpan, clauseSpan],
+    loading: false,
+  }));
+
+  assert.match(markup, /Full surrounding clause/);
+  assert.match(markup, /The Company <mark[^>]*>shall not amend its charter<\/mark>, except as permitted by Law\./);
+  assert.match(markup, /OPERATIVE · bytes/);
 });
 
 test('saved edit acknowledgement stays neutral about citation sufficiency', () => {
@@ -170,6 +201,50 @@ test('review section heading keeps routing rationale separate and closed', () =>
   assert.match(markup, /<details[^>]*><summary[^>]*>Why this section was classified<\/summary>/);
   assert.match(markup, /The section contains interim operating covenants/);
   assert.doesNotMatch(markup, /<details[^>]*open/);
+});
+
+test('citation review labels focused supporting words as a diagnostic with surrounding context', () => {
+  const markup = renderToStaticMarkup(React.createElement(ReleaseEvaluation, {
+    state: {
+      summary: { families: [{ facts: [{
+        review_item_id: 'fact-1', statement: 'The Company shall not amend its charter.',
+        source_closure_id: 'closure', source_span_ids: ['owned'],
+      }] }] },
+      items: [],
+      release_evaluation_input: null,
+    },
+    analysis: { issues: [], coverage_assertions: [] },
+    onEvaluate() {},
+    onSource() {},
+    busy: false,
+  }));
+
+  assert.match(markup, /Focused supporting words \(diagnostic\)/);
+  assert.match(markup, /The full surrounding paragraph or clause remains visible/);
+  assert.match(markup, /does not add a publication requirement/);
+  assert.doesNotMatch(markup, />Narrow</);
+});
+
+test('accepted summary and release evaluation expose every saved citation', () => {
+  const fact = {
+    review_item_id: 'fact-1', source_id: 'proposal-1', statement: 'The Company shall not amend its charter.',
+    family_key: 'INTERIM_OPERATING', subtype_key: 'RESTRICTIVE_COVENANT', fact_type: 'IOC_RESTRICTION_PRESENT',
+    source_closure_id: 'closure', source_span_ids: ['support-1', 'support-2'],
+  };
+  const summary = { families: [{ family_key: fact.family_key, facts: [fact] }], relationships: [] };
+  const summaryMarkup = renderToStaticMarkup(React.createElement(AcceptedSummary, {
+    summary, metrics: { proposal_count: 1, proposal_errors: 0, proposal_omissions: 0, review_time_seconds: 60 },
+    onSource() {}, active: true,
+  }));
+  const evaluationMarkup = renderToStaticMarkup(React.createElement(ReleaseEvaluation, {
+    state: { summary, items: [], release_evaluation_input: null },
+    analysis: { issues: [], coverage_assertions: [] }, onEvaluate() {}, onSource() {}, busy: false,
+  }));
+
+  for (const markup of [summaryMarkup, evaluationMarkup]) {
+    assert.match(markup, />Citation 1</);
+    assert.match(markup, />Citation 2</);
+  }
 });
 
 test('proposal edit offers explicit standalone or compatible recorded group repair', () => {

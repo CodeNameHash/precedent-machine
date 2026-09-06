@@ -96,10 +96,23 @@ test('release evaluation rejects vacuous or non-lawyer evidence and duplicate or
   };
   const passingBaseline = evaluateSupervisedRelease(base);
   assert.equal(passingBaseline.passed, true, JSON.stringify(passingBaseline.bars));
-  assert.equal(evaluateSupervisedRelease({
+  const broadButSufficient = evaluateSupervisedRelease({
     ...base,
     citationAssessments: [{ ...base.citationAssessments[0], narrow: false }],
-  }).bars.citations_sufficient_and_narrow, false);
+  });
+  assert.equal(broadButSufficient.passed, true);
+  assert.equal(broadButSufficient.bars.citations_exact_and_legally_sufficient, true);
+  assert.equal(broadButSufficient.diagnostics.citation_narrowness_rate, 0);
+  for (const requiredAssessment of ['exact', 'legally_sufficient']) {
+    for (const value of [false, undefined]) {
+      const insufficient = evaluateSupervisedRelease({
+        ...base,
+        citationAssessments: [{ ...base.citationAssessments[0], [requiredAssessment]: value }],
+      });
+      assert.equal(insufficient.passed, false);
+      assert.equal(insufficient.bars.citations_exact_and_legally_sufficient, false);
+    }
+  }
   assert.equal(evaluateSupervisedRelease({
     ...base,
     reviewState: {

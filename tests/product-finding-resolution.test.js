@@ -106,11 +106,17 @@ test('Reviewed acknowledgement alone stays blocked; explicit fact or reasoned om
     }],
   });
   assert.equal(omitted.bars.no_unresolved_presented_as_completion, true);
-  const weakCitation = structuredClone(input);
-  weakCitation.citationAssessments[0].narrow = false;
+  const broadCitation = structuredClone(input);
+  broadCitation.citationAssessments[0].narrow = false;
+  const broadResult = evaluateSupervisedRelease({
+    ...broadCitation, findingResolutions: [publishedResolution()],
+  });
+  assert.equal(broadResult.bars.citations_exact_and_legally_sufficient, true);
+  assert.equal(broadResult.diagnostics.citation_narrowness_rate, 0);
+  broadCitation.citationAssessments[0].legally_sufficient = false;
   assert.equal(evaluateSupervisedRelease({
-    ...weakCitation, findingResolutions: [publishedResolution()],
-  }).bars.citations_sufficient_and_narrow, false);
+    ...broadCitation, findingResolutions: [publishedResolution()],
+  }).bars.citations_exact_and_legally_sufficient, false);
   const unreconciled = structuredClone(input);
   unreconciled.reconciliation[0].disposition = 'UNRESOLVED';
   assert.equal(evaluateSupervisedRelease({
