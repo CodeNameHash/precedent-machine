@@ -528,10 +528,16 @@ material issues.
 The latest saved attempt, selected by its original start time rather than its
 legal output, passes the unchanged compiler with three proposals and no compiler
 issues. All three requests match the saved requests exactly. This check made no
-provider call or database write and did not expose legal content. Recovery will
-preserve the original call records and the 19 completed sections, record which
-saved calls were reused, and add no new model usage charge. No filtering
-safeguard, source context, model configuration or release bar has changed.
+provider call or database write and did not expose legal content. The correction
+is committed as `e53eda1b03e147e080eeefef7d16a8f168be3a9d` and the private
+worker's reader matches it. Deterministic recovery through the existing store
+then saved the failed section: 20 sections complete and 63 still pending.
+The original call records and all 19 prior result rows are unchanged. The three
+replayed call records identify their saved source calls and add zero model usage,
+cost or duration. No provider call or legal decision was made for that recovery.
+The existing hosted worker was then restarted for the remaining sections.
+No filtering safeguard, source context, model configuration or release bar has
+changed.
 This is now an assisted diagnostic, not a passed final test. A new untouched
 agreement is still required for the corrected candidate.
 No sections or model
