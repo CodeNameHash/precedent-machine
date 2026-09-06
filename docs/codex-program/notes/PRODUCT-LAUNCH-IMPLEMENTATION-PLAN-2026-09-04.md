@@ -405,9 +405,9 @@ have exposed missing duties, lost qualifications and insufficient citations.
 Shared corrections are in progress. Cross-section relationship proposals now
 pass source-ownership and database checks without another AI pass. Stronger-model
 diagnostics capture more detail, but still lose some scope and citation context.
-The corrected candidate is not accepted. The next private candidate will retain
-the smaller model for routing and use the stronger model for extraction. Explicit
-hour periods and non-duration update duties are being added to the data model.
+The corrected candidate is not accepted. The private candidate now retains
+the smaller model for routing and uses the stronger model for extraction. Explicit
+hour periods and non-duration update duties are retained in the data model.
 The original Olaplex run is unchanged. Testing it again is diagnostic work,
 not a new blind test. Full lawyer review, publication and the combined 90-minute
 processing/review bar remain unproved. No release bar or production setting has
@@ -728,6 +728,18 @@ the three affected checks passed after correction. The all-family recorded
 replay passed after the final shared parser and schema change. All four additive
 storage changes are applied only to the disposable database. This changes no
 legal acceptance requirement.
+
+The fresh V5 no-shop diagnostic took 312.9 seconds and returned 38 proposals:
+36 mechanically valid and two held. It now retains the governing actor and
+time wording, but still combines three separate permitted actions into one
+proposal. This risks attaching an information-only condition to other actions.
+It is not a legal-quality pass. Two unsupported relationship types remain open,
+and one notice-period proposal lacks its numeric supporting quote. A separate
+false rejection treated an Article 7 reference as an unsupported period value.
+The parser now ignores that reference without supplying missing evidence or
+changing any duration. All 25 affected period and recovery checks pass. The
+saved model response and original Olaplex run remain unchanged. The next full
+run on exposed Olaplex is an integrated diagnostic, not another blind test.
 
 - [x] Run the release candidate on the untouched blind agreement.
 - [ ] Compare it with an independent, atomic lawyer inventory.

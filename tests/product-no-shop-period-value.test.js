@@ -51,6 +51,7 @@ async function compile({ quotes, unit = 'hours', value = '48', update = false })
 
 for (const [name, input, reason] of [
   ['hours remain hours', { quotes: ['Company shall notify Parent within forty-eight (48) hours after receipt of a proposal.'] }, null],
+  ['article reference does not invalidate a separate exact hour literal', { quotes: ['From signing until termination pursuant to Article 7, the Company shall', 'notify Parent within forty-eight (48) hours after entering discussions.'] }, null],
   ['source-written business days', { quotes: ['Company shall notify Parent within four (4) Business Days.'], unit: 'Business Days', value: '4' }, null],
   ['model changes hours to days', { quotes: ['Company shall notify Parent within 48 hours.'], unit: 'days' }, 'VALUE_UNIT_MODEL_MISMATCH'],
   ['different values across quotes', { quotes: ['Company shall notify Parent within 48 hours.', 'The notice period is 72 hours.'] }, 'VALUE_EVIDENCE_CONFLICT'],
