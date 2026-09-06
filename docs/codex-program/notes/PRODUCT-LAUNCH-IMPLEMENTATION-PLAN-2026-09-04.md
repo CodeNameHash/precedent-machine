@@ -399,13 +399,14 @@ result. Every substantive section and required role has a disposition.
 
 ### Phase 5. Freeze, test blind and correct honestly, 3 days
 
-Current position, 2026-09-06: Apogee is still processing through normal private
-intake, without manual repair. It crossed 90 minutes before all 95 sections were
-saved, so this run cannot meet the fixed processing-and-review time requirement.
-The AI draft remains unopened. Arcellx's full party names, clear review counters
-and access to each saved citation inside complete clause context are verified
-in the private view. Independent lawyer review, coverage confirmation and
-publication remain outstanding. Phase 5 is not passed. No requirement is weakened.
+Current position, 2026-09-06: Apogee finished all 95 sections through normal
+private intake, without manual repair, in 100 minutes 17 seconds. This exceeds
+the fixed 90-minute processing-and-review requirement before legal review.
+The AI draft remains unopened, with no review decisions or publication.
+Arcellx's full party names, clear review counters and access to each saved
+citation inside complete clause context are verified in the private view.
+Independent lawyer review, coverage confirmation and publication remain
+outstanding. Phase 5 is not passed. No requirement is weakened.
 
 Earlier, Olaplex completed all 79 sections in about 36
 minutes through ordinary private intake. Ben's independent, partial legal notes
@@ -611,6 +612,14 @@ limit before lawyer review means this run cannot satisfy the combined 90-minute
 bar. The draft remains unopened; no legal acceptance or phase completion is
 claimed. A further agreement will not be started automatically to replace this
 timing failure.
+Apogee then reached `READY / READY` at 2026-09-06 23:28:21.561513 UTC, with all
+95 section results saved and no failed section. Creation-to-ready time is
+6,016.770341 seconds, or 100 minutes 16.770341 seconds. The manager's read-only
+check confirms the terminal state, saved-result count and zero review sessions
+and review actions. The independent status monitor also reports zero
+publications. No legal output has been inspected and no lawyer decision is
+claimed. This proves ordinary processing completed without a manual repair;
+it does not pass the time bar or the outstanding legal-review requirements.
 
 Earlier assembly retries regenerated no sections or model calls. A separate
 one-limb IOC probe retained full context and
