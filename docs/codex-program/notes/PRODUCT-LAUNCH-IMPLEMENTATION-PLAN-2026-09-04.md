@@ -409,10 +409,14 @@ The source panel loads the saved agreement text and highlights the selected
 source. Invalid claims and missing coverage remain explicit review work.
 Relationship correction has passed local browser and database checks, including
 rollback, and is deployed to the private preview. A reviewed summary and the
-untouched blind test remain unproved. The frozen candidate has now started the
-untouched Olaplex agreement through ordinary private intake: 79 sections,
-processing started at 23:30 UTC. Its AI findings are not being shown to the
-lawyer before the independent inventory is prepared.
+untouched blind legal test remain unproved. The frozen candidate completed the
+untouched Olaplex agreement through ordinary private intake: all 79 sections
+are saved and the draft is ready. Processing ran from 23:30:00 UTC to
+00:06:11 UTC, about 36 minutes. One section recovered through built-in retry;
+there was no code change or manual retry during the run. The intake page was
+left before completion to avoid opening the AI draft or starting the lawyer's
+review clock. Its findings have not been shown to the lawyer. The independent
+inventory, legal review and all publication checks are still required.
 No legal acceptance, blind release bar or production setting has changed.
 Broader speed work and precedent tracing remain deferred in the future-feature list.
 
@@ -586,10 +590,12 @@ The next required input is the independent lawyer inventory for the untouched
 agreement: one critical or material legal point per entry, prepared before the
 lawyer sees model output. It must not be generated from this diagnostic draft.
 The frozen untouched Olaplex run started through the ordinary interface at
-23:30 UTC on 2026-09-05 and is still processing. No legal attestation or
-production cutover has been performed.
+23:30 UTC on 2026-09-05 and reached READY at 00:06:11 UTC on 2026-09-06,
+with all 79 sections complete. No legal attestation or production cutover has
+been performed. Processing completion alone does not satisfy the phase exit
+condition or establish the combined 90-minute processing and review bar.
 
-- [ ] Run the release candidate on the untouched blind agreement.
+- [x] Run the release candidate on the untouched blind agreement.
 - [ ] Compare it with an independent, atomic lawyer inventory.
 - [ ] Measure severity-weighted precision and recall, citation sufficiency and
       narrowness, duplicates, contradictions, unresolved burden and review
