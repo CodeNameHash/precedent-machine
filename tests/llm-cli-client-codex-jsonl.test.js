@@ -133,6 +133,7 @@ for (const [name, raw, finalMessage, pattern] of [
   ['ambiguous trusted final output', stream(THREAD, START, ANSWER, ANSWER, COMPLETE), '{}', /FINAL_MESSAGE_AMBIGUOUS/],
   ['an early message even when the last message is valid', stream(THREAD, ANSWER, START, ANSWER, COMPLETE), '{}', /LIFECYCLE_ORDER/],
   ['a failed turn before trusted output', stream(THREAD, START, { type: 'turn.failed', error: 'x' }, ANSWER, COMPLETE), '{}', /TURN_FAILED/],
+  ['an error item before trusted output', stream(THREAD, START, { type: 'item.completed', item: { type: 'error', message: 'provider failed' } }, ANSWER, COMPLETE), '{}', /TURN_FAILED:.*provider failed/],
   ['a model-generated command before trusted output', stream(THREAD, START, { type: 'item.completed', item: { type: 'command_execution', command: 'pwd' } }, ANSWER, COMPLETE), '{}', /TOOL_FORBIDDEN/],
   ['malformed usage after trusted output', stream(THREAD, START, ANSWER, { ...COMPLETE, usage: {} }), '{}', /USAGE_REQUIRED/],
 ]) {

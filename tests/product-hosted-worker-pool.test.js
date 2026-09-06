@@ -53,8 +53,8 @@ function dependencies(advance, runOverrides = {}) {
       stores.push(store);
       return store;
     },
-    createModel() {
-      const model = {};
+    createModel(input) {
+      const model = { input };
       models.push(model);
       return model;
     },
@@ -133,6 +133,8 @@ test('two independent workers stay bounded and drain before returning READY', as
   assert.equal(maximum, 2);
   assert.notEqual(calls[0].store, calls[1].store);
   assert.notEqual(calls[0].model, calls[1].model);
+  assert.deepEqual(calls[0].model.input, { modelConfig: CODEX_MODEL_CONFIG });
+  assert.deepEqual(calls[1].model.input, { modelConfig: CODEX_MODEL_CONFIG });
   assert.notEqual(calls[0].workerId, calls[1].workerId);
   waiting[0].resolve(analysis('RUNNING', 1));
   await nextTurn();

@@ -1,5 +1,6 @@
 {
   "schema_version": "LEGAL_SCHEMA/V1",
+  "schema_revision": "LEGAL_SCHEMA/V1.1",
   "status": "ACTIVE_DEVELOPMENT",
   "fact_rule": "One fact states one independently operative legal effect. Conditions, exceptions, thresholds and timing are roles or linked facts.",
   "families": [
@@ -306,6 +307,7 @@
         "PROHIBITED_ACTION",
         "EXCEPTION_PREREQUISITE",
         "NOTICE_PERIOD",
+        "NOTICE_UPDATE_OBLIGATION",
         "INITIAL_MATCH_PERIOD",
         "SUBSEQUENT_MATCH_PERIOD",
         "RECOMMENDATION_CHANGE"
@@ -367,6 +369,12 @@
             "TRIGGERS",
             "QUALIFIES"
           ]
+        },
+        {
+          "subtype_key": "NOTICE_UPDATE_OBLIGATION",
+          "required_roles": ["notice_giver", "notice_recipient", "action", "scope"],
+          "optional_roles": ["trigger", "standard", "timing"],
+          "relationships": ["QUALIFIES", "REQUIRES"]
         },
         {
           "subtype_key": "INITIAL_MATCH_PERIOD",
@@ -859,6 +867,7 @@
       "required_fact_types": [
         "COVENANT_COMPLIANCE_STANDARD",
         "FRUSTRATION_BREACH_STANDARD",
+        "GENERAL_CLOSING_CONDITION",
         "GOVERNMENT_PROCEEDING_CONDITION",
         "LEGAL_RESTRAINT_CONDITION",
         "LISTING_CONDITION",
@@ -875,6 +884,29 @@
         "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
       ],
       "subtypes": [
+        {
+          "subtype_key": "GENERAL_CLOSING_CONDITION",
+          "claim_definition_keys": [
+            "GENERAL_CLOSING_CONDITION"
+          ],
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
         {
           "subtype_key": "STOCKHOLDER_APPROVAL",
           "claim_definition_keys": [
@@ -4685,6 +4717,7 @@
       "family_key": "SPECIFIC_PERFORMANCE_REMEDIES",
       "state": "DEFINED",
       "required_fact_types": [
+        "REMEDY_LIMITATION",
         "SPECIFIC_PERFORMANCE_REMEDY_PRESENT"
       ],
       "materiality_rules": [
@@ -4692,6 +4725,35 @@
         "Every condition, exception, threshold, timing rule and cross-family dependency that changes its legal effect is material."
       ],
       "subtypes": [
+        {
+          "subtype_key": "PAID_FEE_EXCLUSIVE_REMEDY",
+          "claim_definition_keys": [
+            "REMEDY_LIMITATION"
+          ],
+          "required_roles": [
+            "fee_payment_condition",
+            "remedy_holders",
+            "protected_parties",
+            "limited_claim_scope",
+            "exclusive_remedy_effect",
+            "barred_remedy_scope"
+          ],
+          "optional_roles": [
+            "no_further_liability_effect",
+            "liquidated_damages_effect",
+            "single_payment_cap",
+            "surviving_exceptions"
+          ],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "TRIGGERS",
+            "DEFINED_BY",
+            "ALTERNATIVE_TO",
+            "EXTENDS",
+            "REQUIRES"
+          ]
+        },
         {
           "subtype_key": "GENERAL_EQUITABLE_RELIEF",
           "claim_definition_keys": [
@@ -5127,13 +5189,5 @@
       "UNRESOLVED_UNUSUAL_PROVISION"
     ]
   },
-  "issues": [
-    {
-      "issue_id": "LEGAL-GAP-TERMF-001",
-      "kind": "LEGAL_GAP",
-      "family_key": "TERMINATION_FEE",
-      "question": "Does a fee-linked sole-remedy limitation belong to Termination Fee or Specific Performance and Remedies?",
-      "effect": "Exclude sole-remedy facts from Termination Fee and hold final family ownership until a lawyer decides."
-    }
-  ]
+  "issues": []
 }

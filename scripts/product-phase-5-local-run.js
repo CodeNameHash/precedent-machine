@@ -4,6 +4,9 @@ const { createClient } = require('@supabase/supabase-js');
 const { advanceAgreementDraftAnalysis } = require('../lib/product/analysis-runner');
 const { createCodexCliProductModel } = require('../lib/product/codex-cli-model');
 const { ProductPhase3Store } = require('../lib/product/phase-3-store');
+const {
+  CODEX_MODEL_CONFIG, assertConfiguredRunModelConfig,
+} = require('../lib/product/product-model-config');
 const legalSchema = require('../contracts/product/legal-schema.v1.json');
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -57,14 +60,16 @@ async function run(options, output = process.stdout) {
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) throw new Error('product database environment is required');
   assertDatabaseTarget(process.env.SUPABASE_URL);
   const control = makeStore();
-  assertDiagnosticRunTarget(options.runId, await control.getRun(options.runId));
+  const runRecord = await control.getRun(options.runId);
+  assertDiagnosticRunTarget(options.runId, runRecord);
+  assertConfiguredRunModelConfig(runRecord, CODEX_MODEL_CONFIG);
   await control.recoverExpiredSections({ runId: options.runId });
   await control.assignRunOwner({ runId: options.runId, actor: options.actor });
   if (options.retryKey) await control.retryRun({ runId: options.runId, actor: options.actor, idempotencyKey: options.retryKey });
   const started = Date.now();
   const worker = async (number) => {
     const store = makeStore();
-    const model = createCodexCliProductModel();
+    const model = createCodexCliProductModel({ modelConfig: runRecord.model_config });
     let previous = '';
     for (;;) {
       const analysis = await advanceAgreementDraftAnalysis({

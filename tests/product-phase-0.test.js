@@ -73,6 +73,8 @@ function orderedSourceFixture() {
 
 test('legal schema equals the registered 25-family taxonomy', () => {
   const schema = validateLegalSchema(readJson('contracts/product/legal-schema.v1.json'));
+  assert.equal(schema.schema_version, 'LEGAL_SCHEMA/V1');
+  assert.equal(schema.schema_revision, 'LEGAL_SCHEMA/V1.1');
   assert.deepEqual(
     schema.families.map((family) => family.family_key).sort(),
     [...REGISTERED_FAMILY_KEYS].sort(),
@@ -90,7 +92,7 @@ test('legal schema equals the registered 25-family taxonomy', () => {
   }
   assert.equal(defined.TERMINATION_FEE.subtypes.some((item) => item.subtype_key === 'SOLE_REMEDY_EFFECT'), false);
   assert.equal(defined.TERMINATION_FEE.role_rules.reverse_fee, 'Use the same fee fact types. Set payer capacity to BUYER and payee capacity to SELLER.');
-  assert.deepEqual(schema.issues.map((issue) => issue.issue_id), ['LEGAL-GAP-TERMF-001']);
+  assert.deepEqual(schema.issues, []);
 });
 
 test('Phase 0 boundary builds product structure directly from canonical source', () => {

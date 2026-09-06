@@ -18,6 +18,7 @@ const {
   compileRouting,
   ownedStructureNodeIds,
   sealSectionResult,
+  valueValidation,
   validateAgreementDraft,
 } = require('../lib/product/agreement-draft');
 const { createProductAnalysisHandler } = require('../lib/product/analysis-handler');
@@ -806,9 +807,14 @@ test('real Concho SEC source reaches a reproducible, coherent draft with all-fam
   assert.deepEqual(new Set(draft.proposals.map((item) => item.family_key)), new Set(['TERMINATION', 'TERMINATION_FEE', 'NO_SHOP']));
   assert.ok(draft.fact_links.some((item) => item.relationship_type === 'EXCEPTS'));
   assert.ok(draft.fact_links.some((item) => item.relationship_type === 'QUALIFIES'));
-  assert.equal(draft.proposals.every((item) => item.validation_status === 'VALID'), true);
+  const invalid = draft.proposals.filter((item) => item.validation_status !== 'VALID');
+  assert.equal(invalid.length, 1);
+  assert.equal(invalid[0].fact_type, 'NOTICE_PERIOD');
+  assert.match(invalid[0].statement, /shorter of one Business Day or 48 hours/);
+  assert.ok(draft.issues.some((issue) => issue.code === 'VALUE_MULTIPLE_PERIOD_LITERALS'));
   assert.equal(draft.proposals.every((item) => item.model_call_id && item.source_span_ids.length > 0), true);
-  assert.deepEqual(new Set(draft.coverage_assertions.filter((item) => item.subject_kind === 'FAMILY' && item.state === 'FOUND').map((item) => item.family_key)), new Set(['TERMINATION', 'TERMINATION_FEE', 'NO_SHOP']));
+  assert.deepEqual(new Set(draft.coverage_assertions.filter((item) => item.subject_kind === 'FAMILY' && item.state === 'FOUND').map((item) => item.family_key)), new Set(['TERMINATION', 'TERMINATION_FEE']));
+  assert.equal(draft.coverage_assertions.find((item) => item.subject_kind === 'FAMILY' && item.family_key === 'NO_SHOP').state, 'UNRESOLVED');
   assert.equal(draft.coverage_assertions.filter((item) => item.subject_kind === 'FAMILY').length, 25);
   assert.equal(draft.residual_passes.length, draft.sections.length);
   assert.equal(draft.model_calls.length, (draft.sections.length * 2) + 6);
@@ -867,9 +873,73 @@ test('invalid evidence is retained for review without becoming a supporting cita
   assert.ok(section.issues.some((issue) => issue.code === 'PROPOSAL_CONTEXT_ONLY'
     && issue.proposal_id === compiled.proposal_id));
   const extraction = section.model_calls.find((call) => call.call_kind === 'EXTRACTION');
-  assert.equal(extraction.prompt_version, 'PRODUCT_ALL_FAMILY_EXTRACTOR/V4');
+  assert.equal(extraction.prompt_version, 'PRODUCT_ALL_FAMILY_EXTRACTOR/V5');
   assert.match(extraction.request.instruction, /contiguous verbatim substring/);
   assert.match(extraction.request.instruction, /cannot independently create a proposal/);
+});
+
+test('numeric validation uses every exact evidence span and fails closed on conflicts', () => {
+  const spans = (...exactText) => exactText.map((exact_text) => ({ exact_text }));
+
+  assert.deepEqual(valueValidation(
+    { fact_type: 'FEE_AMOUNT', value: '15000000' },
+    spans('The Company shall pay the applicable fee.', 'The Company Termination Fee is $15,000,000.'),
+  ), { value: '15000000', issue: null });
+  assert.deepEqual(valueValidation(
+    { fact_type: 'TAIL_PERIOD', value: '12' },
+    spans('following termination of this Agreement', 'within twelve (12) months after termination'),
+  ), { value: '12', issue: null });
+  assert.deepEqual(valueValidation(
+    { fact_type: 'CURE_OR_NOTICE_PERIOD', value: '30' },
+    spans('after written notice of the breach', 'during the thirty (30) days after notice'),
+  ), { value: '30', issue: null });
+
+  assert.deepEqual(valueValidation(
+    { fact_type: 'FEE_AMOUNT', value: '15000000' },
+    spans('The fee is $15,000,000.', 'A different selected quote states $20,000,000.'),
+  ), { value: '15000000', issue: 'VALUE_EVIDENCE_CONFLICT' });
+  assert.deepEqual(valueValidation(
+    { fact_type: 'FEE_AMOUNT', value: '15000000' },
+    spans('The amounts are $15,000,000 and $20,000,000.', 'The fee is $15,000,000.'),
+  ), { value: '15000000', issue: 'VALUE_MULTIPLE_MONEY_LITERALS' });
+  assert.deepEqual(valueValidation(
+    { fact_type: 'TAIL_PERIOD', value: '18' },
+    spans('within twelve (12) months after termination'),
+  ), { value: '12', issue: 'VALUE_MODEL_MISMATCH' });
+});
+
+test('compiled numeric proposals use a later exact value quote without losing earlier support', async () => {
+  const sourceDocument = await conchoSource();
+  const agreementStructure = buildAgreementStructure({
+    agreement_id: sourceDocument.source_document_id,
+    canonical_text: sourceDocument.canonical_text,
+    canonical_text_sha256: sourceDocument.canonical_text_sha256,
+  });
+  const node = substantiveSections(agreementStructure).find((item) => item.reference === '8.1');
+  const base = createSyntheticConchoModel();
+  const model = {
+    async complete(input) {
+      const result = await base.complete(input);
+      if (input.call_kind === 'EXTRACTION') {
+        const cure = result.response.proposals.find((item) => item.fact_type === 'CURE_OR_NOTICE_PERIOD');
+        cure.evidence_quotes.unshift({
+          quote: 'the breaching Party',
+          source_span_id: input.request.source_closure.full_section.span_id,
+          occurrence: 0,
+        });
+      }
+      return result;
+    },
+  };
+  const section = await require('../lib/product/agreement-draft').buildAgreementSectionDraft({
+    sourceDocument, agreementStructure, legalSchema: schema, model, node,
+  });
+  const cure = section.proposals.find((item) => item.fact_type === 'CURE_OR_NOTICE_PERIOD');
+  assert.equal(cure.canonical_value, '30');
+  assert.equal(cure.validation_status, 'VALID');
+  assert.equal(cure.source_span_ids.length, 2);
+  assert.equal(section.issues.some((issue) => issue.proposal_id === cure.proposal_id
+    && issue.code.startsWith('VALUE_')), false);
 });
 
 test('proposal ownership follows the cited component structure node, including cross-reference cycles', async () => {

@@ -78,7 +78,8 @@ test('one unknown evidence component stays invalid while usable proposals and ro
   assert.ok(section.issues.some((issue) => issue.code === 'UNKNOWN_SOURCE_COMPONENT'
     && issue.proposal_id === unknown.proposal_id));
 
-  assert.equal(caseVariant.validation_status, 'VALID');
+  assert.equal(caseVariant.validation_status, 'INVALID');
+  assert.ok(section.issues.some((issue) => issue.code === 'VALUE_MULTIPLE_PERIOD_LITERALS'));
   assert.equal(caseVariant.roles.notice_giver, 'Company');
   assert.equal(Object.hasOwn(caseVariant.roles, 'NOTICE_GIVER'), false);
 
@@ -95,7 +96,9 @@ test('one unknown evidence component stays invalid while usable proposals and ro
 
   const extraction = section.model_calls.find((call) => call.call_kind === 'EXTRACTION');
   assert.deepEqual(extraction.response, providerResponse);
-  assert.equal(extraction.prompt_version, 'PRODUCT_ALL_FAMILY_EXTRACTOR/V4');
+  assert.equal(extraction.prompt_version, 'PRODUCT_ALL_FAMILY_EXTRACTOR/V5');
+  assert.equal(extraction.request.schema_version, schema.schema_version);
+  assert.equal(extraction.request.schema_revision, schema.schema_revision);
   assert.match(extraction.request.instruction, /copy the exact required and optional role keys/i);
   assert.match(extraction.request.instruction, /copy only source_span_id values supplied in the source closure/i);
   assert.match(extraction.request.instruction, /do not generate or alter source span IDs/i);
@@ -169,6 +172,64 @@ test('unsupported fact types and their links become visible unresolved issues wi
     unsupportedProviderProposal);
   assert.deepEqual(extraction.response.links.find((link) => link.from_ref === 'p-ns-exception'),
     unsupportedProviderLink);
+});
+
+test('a proposal with an undeclared group is held without losing valid siblings', async () => {
+  const sourceDocument = await conchoSource();
+  const agreementStructure = buildAgreementStructure({
+    agreement_id: sourceDocument.source_document_id,
+    canonical_text: sourceDocument.canonical_text,
+    canonical_text_sha256: sourceDocument.canonical_text_sha256,
+  });
+  const node = substantiveSections(agreementStructure).find((item) => item.reference === '6.3');
+  const base = createSyntheticConchoModel();
+  let originalResponse;
+  let held;
+  let heldFactType;
+  let heldLink;
+  const model = {
+    async complete(input) {
+      const result = await base.complete(input);
+      if (input.call_kind === 'EXTRACTION') {
+        const proposal = result.response.proposals.find((item) => item.client_ref === 'p-ns-exception');
+        proposal.group_ref = 'missing-group';
+        held = structuredClone(proposal);
+        heldFactType = proposal.fact_type;
+        heldLink = structuredClone(result.response.links.find((link) => link.from_ref === proposal.client_ref || link.to_ref === proposal.client_ref));
+        originalResponse = structuredClone(result.response);
+      }
+      return { ...result, raw_response: result.response };
+    },
+  };
+  const section = await buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: schema, model, node });
+  assert.ok(section.proposals.some((proposal) => proposal.statement
+    === 'The Company must not solicit or encourage a Company Competing Proposal.'
+    && proposal.validation_status === 'VALID'));
+  const issue = section.issues.find((item) => item.code === 'UNSUPPORTED_PROPOSITION_GROUP_MEMBER');
+  assert.ok(issue);
+  assert.equal(issue.state, 'OPEN');
+  assert.deepEqual(JSON.parse(issue.message), held);
+  assert.deepEqual(issue.source_span_ids, [section.source_closure.full_section_span_id]);
+  const linkIssue = section.issues.find((item) => item.code === 'UNSUPPORTED_FACT_LINK');
+  assert.ok(linkIssue);
+  assert.equal(linkIssue.state, 'OPEN');
+  assert.deepEqual(JSON.parse(linkIssue.message), heldLink);
+  assert.equal(section.coverage.find((item) => item.subject_kind === 'SECTION_FAMILY' && item.family_key === 'NO_SHOP').state, 'UNRESOLVED');
+  assert.equal(section.coverage.find((item) => item.subject_kind === 'FACT_TYPE'
+    && item.family_key === held.family_key && item.subject_id.endsWith(`:${heldFactType}`)).state, 'UNRESOLVED');
+  const extraction = section.model_calls.find((call) => call.call_kind === 'EXTRACTION');
+  assert.deepEqual(extraction.response, originalResponse);
+  const analysis = {
+    kind: 'draftAnalysis', draft_analysis_id: 'undeclared-group-draft',
+    analysis_run_id: 'undeclared-group-run', proposals: section.proposals,
+    fact_links: section.links, issues: section.issues, coverage_assertions: section.coverage,
+    spans: section.spans, source_closures: [section.source_closure], sections: [section.routing],
+  };
+  const review = initialiseReviewState(analysis);
+  assert.equal(review.items.find((item) => item.source_id === issue.issue_id).decision, 'PENDING');
+  assert.throws(() => applyReviewCommand(review, { type: 'PUBLISH' }, {
+    analysis, legalSchema: schema,
+  }), /REVIEW_PENDING_ITEMS/);
 });
 
 test('unsupported subtype groups become visible unresolved issues without losing valid siblings', async () => {
@@ -432,7 +493,7 @@ test('one omitted fact-type coverage key becomes one unresolved source-linked is
     && assertion.family_key === 'NO_SHOP').state, 'UNRESOLVED');
 });
 
-test('complete valid coverage keeps its existing found result without omission issues', async () => {
+test('complete provider coverage cannot hide an unsupported mixed-unit period', async () => {
   const sourceDocument = await conchoSource();
   const agreementStructure = buildAgreementStructure({
     agreement_id: sourceDocument.source_document_id,
@@ -446,10 +507,16 @@ test('complete valid coverage keeps its existing found result without omission i
   });
   const noShop = section.coverage.filter((assertion) => assertion.family_key === 'NO_SHOP');
   assert.equal(section.issues.some((issue) => issue.code === 'MODEL_COVERAGE_KEY_OMITTED'), false);
-  assert.equal(noShop.find((assertion) => assertion.subject_kind === 'SECTION_FAMILY').state, 'FOUND');
-  assert.equal(noShop.filter((assertion) => assertion.subject_kind === 'FACT_TYPE')
+  assert.equal(noShop.find((assertion) => assertion.subject_kind === 'SECTION_FAMILY').state, 'UNRESOLVED');
+  const factTypes = noShop.filter((assertion) => assertion.subject_kind === 'FACT_TYPE');
+  assert.equal(factTypes.find((assertion) => assertion.reason === 'FACT_TYPE:NOTICE_PERIOD').state, 'UNRESOLVED');
+  assert.equal(factTypes.find((assertion) => assertion.reason === 'FACT_TYPE:NOTICE_UPDATE_OBLIGATION').state, 'NOT_FOUND');
+  assert.equal(factTypes.filter((assertion) => !['FACT_TYPE:NOTICE_PERIOD', 'FACT_TYPE:NOTICE_UPDATE_OBLIGATION'].includes(assertion.reason))
     .every((assertion) => assertion.state === 'FOUND'), true);
-  assert.equal(section.proposals.every((proposal) => proposal.validation_status === 'VALID'), true);
+  const held = section.proposals.filter((proposal) => proposal.validation_status === 'INVALID');
+  assert.equal(held.length, 1);
+  assert.equal(held[0].fact_type, 'NOTICE_PERIOD');
+  assert.ok(section.issues.some((issue) => issue.code === 'VALUE_MULTIPLE_PERIOD_LITERALS'));
 });
 
 test('explicit invalid coverage values and malformed coverage objects still fail closed', async () => {

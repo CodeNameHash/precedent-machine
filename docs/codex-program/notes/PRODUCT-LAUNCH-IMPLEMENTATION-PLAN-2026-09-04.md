@@ -399,26 +399,27 @@ result. Every substantive section and required role has a disposition.
 
 ### Phase 5. Freeze, test blind and correct honestly, 3 days
 
-Current position, 2026-09-05: all 105 sections of the seventh Public Storage
-diagnostic are saved. The final section completed routing, paragraph review and
-extraction after the paragraph-ID repair. Every prior saved section is unchanged.
-The saved sections now assemble into a draft without another model call. The
-private review page opens all 105 sections, 338 proposed facts and 62 proposed
-relationships. It shows 1,291 pending review items and no legal decisions made.
-The source panel loads the saved agreement text and highlights the selected
-source. Invalid claims and missing coverage remain explicit review work.
-Relationship correction has passed local browser and database checks, including
-rollback, and is deployed to the private preview. A reviewed summary and the
-untouched blind legal test remain unproved. The frozen candidate completed the
-untouched Olaplex agreement through ordinary private intake: all 79 sections
-are saved and the draft is ready. Processing ran from 23:30:00 UTC to
-00:06:11 UTC, about 36 minutes. One section recovered through built-in retry;
-there was no code change or manual retry during the run. The intake page was
-left before completion to avoid opening the AI draft or starting the lawyer's
-review clock. Its findings have not been shown to the lawyer. The independent
-inventory, legal review and all publication checks are still required.
-No legal acceptance, blind release bar or production setting has changed.
-Broader speed work and precedent tracing remain deferred in the future-feature list.
+Current position, 2026-09-06: Olaplex completed all 79 sections in about 36
+minutes through ordinary private intake. Ben's independent, partial legal notes
+have exposed missing duties, lost qualifications and insufficient citations.
+Shared corrections are in progress. Cross-section relationship proposals now
+pass source-ownership and database checks without another AI pass. Stronger-model
+diagnostics capture more detail, but still lose some scope and citation context.
+The corrected candidate is not accepted. The next private candidate will retain
+the smaller model for routing and use the stronger model for extraction. Explicit
+hour periods and non-duration update duties are being added to the data model.
+The original Olaplex run is unchanged. Testing it again is diagnostic work,
+not a new blind test. Full lawyer review, publication and the combined 90-minute
+processing/review bar remain unproved. No release bar or production setting has
+changed. Speed work and precedent tracing remain deferred.
+
+The seventh Public Storage diagnostic retains all 105 saved sections, 338
+proposed facts and 62 proposed relationships. Its private review page shows
+1,291 pending items and no legal decisions made. Source highlighting and
+relationship correction passed local browser and database checks, including
+rollback. The original Olaplex run had one built-in retry, no code change and
+no manual retry. Intake was left before completion to avoid starting the
+lawyer's review clock or opening the AI draft before independent notes.
 
 Speed investigation: the sixth diagnostic completed sections at an average
 interval of 32.3 seconds, with a longest gap of 76.6 seconds. The page polls
@@ -586,14 +587,147 @@ configuration (`gpt-5.4-mini`, low reasoning) and routing/citation prompt versio
 active product run found three obsolete test expectations; their affected
 behaviour checks now pass after test-only corrections. Metadata-only file-hash,
 correction-count and source-text checks were removed as required by section 9.
-The next required input is the independent lawyer inventory for the untouched
-agreement: one critical or material legal point per entry, prepared before the
-lawyer sees model output. It must not be generated from this diagnostic draft.
+Ben supplied independent notes before seeing model output, first on conditions,
+termination and fees, then on access, no-shop, employee protection, interim
+operations and regulatory efforts. His notes deliberately stop short of the
+whole agreement and do not assign severity to each point. They are sufficient
+to identify extraction failures, not to claim complete independent recall or
+lawyer acceptance. AI-derived additions must remain distinct from those notes.
 The frozen untouched Olaplex run started through the ordinary interface at
 23:30 UTC on 2026-09-05 and reached READY at 00:06:11 UTC on 2026-09-06,
 with all 79 sections complete. No legal attestation or production cutover has
 been performed. Processing completion alone does not satisfy the phase exit
 condition or establish the combined 90-minute processing and review bar.
+
+The 2026-09-06 read-only comparison uses the original run
+`068d9468-1b7e-42da-b4fb-2aa5663dc1ad`. It has already established:
+
+- Section 5.1 has twelve saved restrictive-covenant proposals, but no proposal
+  for the affirmative ordinary-course/efforts or goodwill-preservation duties.
+  The raw completed model response has the same omission; this is not display
+  loss or a truncated response.
+- Section 5.2 proposal `8b063c62` covers access but omits the separate cooperation
+  and information-furnishing duties and several exceptions and qualifications.
+- Section 5.3 proposal `1e36b6e` bundles five no-shop prohibitions, but its selected
+  citation ends after the first. The permitted-action proposal also fails to
+  retain the full timing and information-sharing requirements in usable form.
+- Section 5.8 proposal `9af6bf6b` combines the four employee protections, loses
+  the other-benefits-only aggregate comparison and places the exclusions in a
+  combined qualification. The saved source still contains the distinction.
+- Section 5.5 retains filing timing but lacks a separate remedy-efforts limit.
+  Its acquisition restriction omits the numeric, geographic and business-scope
+  details from the proposed fact. Several other proposals are explicitly
+  invalid because their supplied evidence quotes are not exact.
+- Sections 6.1 and 6.3 expose missing general closing-condition support for the
+  information-statement waiting period and the TRA waiver. Exact model text
+  for the waiting period and no-MAE condition survives in held issues. The
+  latter uses an unsupported subtype even though its fact type is supported.
+- Sections 7.1 and 7.3 expose a shared numeric validator defect: it checks only
+  the first citation, falsely invalidating values supported by later exact
+  citations. Some proposed relationships also misstate independent conditions
+  as extensions or omit the operative termination/fee dependencies.
+- The old fee/remedies family-ownership hold must not prevent capture of the
+  paid-fee remedy limit that Ben expressly identified. Store it once with its
+  actual conditions and linked fee, without treating a storage-category choice
+  as a new question about legal meaning or as final lawyer acceptance.
+
+The correction must preserve independently operative duties, source-authored
+qualification scope and useful support for every material part. It must not
+weaken exact-citation checks, invent legal meaning from keywords, alter the
+original run, or mark an AI comparison as a lawyer decision. Most distinctions
+fit existing roles; the general closing-condition and remedy-limitation gaps
+need additive schema support. A prompt change must be tested on actual model
+output, not only on a changed prompt string. The source also separates the
+Section 5.5(e) remedy-efforts exemption from the later competing-acquisition
+restriction: its dollar, country and Relevant Business limits qualify the
+latter, not the former. Keep this source clarification separate from Ben's
+original shorthand.
+
+The shared correction now adds a neutral general closing-condition type and a
+paid-fee remedy limitation under Remedies. The existing schema interface remains
+V1; its content revision is V1.1. Compiler tests retain both new conditions and
+the conditional negative remedy as proposed, source-linked facts. Missing roles
+remain unresolved. No test makes a lawyer decision. Numeric validation now
+checks all selected exact supporting quotes, not only the first. Conflicting
+values and model-value mismatches remain invalid. Replaying the original saved
+fee and two cure-period citations clears their false numeric rejection; the
+tail still has a model-value mismatch and is not claimed fixed.
+
+Required shared-change checks passed: all-family recorded fixtures, including
+the real Modiv source-to-review replay, and 22 focused schema, structure and
+intake checks. Modiv still rejects 72 of 114 recorded proposals and permits 42;
+this proves rejection and review behaviour, not acceptable legal recall.
+Fresh mini/low model comparisons are diagnostic work on the exposed Olaplex
+source. They are checking distinct duties, local qualification scope, complete
+citations and useful relationships before the corrected candidate is frozen.
+The final V5 access replay took 50.1 seconds and returned seven proposals, but
+still omitted the privilege, trade-secret, competing-proposal and law exceptions.
+Two duty citations spliced non-contiguous source passages and remained invalid.
+Its relationship output was also defective. The root rejected this as a completed
+release fix. A single same-prompt mini/medium diagnostic will test whether the
+next reasoning setting improves these failures. No live model setting changed.
+The mini/medium access replay took 204.2 seconds and captured more legal detail,
+but returned broken group references, incorrect quote-occurrence indexes,
+under-supporting citations and no relationships. It is not a usable release
+result. The final mini/low employee replay also retained the four compensation
+standards but failed group references and still compressed later provisions.
+Raw responses were saved before compilation; neither replaced the original run.
+One bounded Sol/medium diagnostic used the already-installed newer CLI to
+test whether a more capable model could satisfy the same extraction request.
+The first Sol diagnostic returned an error item after about 129 seconds, not
+usable model JSON. The old parser mislabelled this as a forbidden tool. Error
+items now remain failed turns with bounded provider context; the focused CLI
+checks pass and actual tool events still fail closed. The controlled repeat
+failed because Sol requires Code Mode under that CLI setup. The tool-free
+extraction policy was not weakened. The raw failure was retained.
+
+GPT-5.5/medium then completed the same exposed-source access request in 126.2
+seconds. Its 14 proposed facts retained the noted exclusions and workarounds,
+with exact source quotes and useful local links. Employee matters took 145.7
+seconds and returned 18 valid proposals, but still compressed the two distinct
+benefit-exclusion lists and omitted some relationships. The no-shop diagnostic
+first hit its five-minute diagnostic limit; a single repeat using the existing
+ten-minute product limit completed in 311.1 seconds. Its 38 proposals include
+31 valid and seven held proposals. In Ben's 5.3(a)-(b) slice, all 13 proposals
+passed mechanical validation, but review found incomplete governing citations,
+lost representative wording and an over-broad statement of a named-act-only
+condition. Exact quotes alone do not prove legal accuracy. No diagnostic
+replaced the original Olaplex run or establishes a release pass.
+
+The generic scope instruction now requires governing source quotes, distinct
+promise/comparator exclusions, exact actor-control and time scope, and retention
+of any act-specific condition limit. New candidate model selection will be
+fixed by call kind in the run identity: mini/low for routing and residual checks,
+GPT-5.5/medium for extraction. A small tool-free probe also confirmed GPT-5.5
+works with the existing 0.145.0 CLI; no CLI or authentication change is required
+merely to select that model. Full integrated-candidate behaviour remains to test.
+
+An undeclared group reference must retain the offending raw proposal and touching
+links as open, source-linked review issues, not discard the whole section or
+guess group membership. Valid sibling facts must survive. The implementer also
+confirmed that user-edited cross-section relationships already work in Review,
+but model-proposed links are constrained to one section during compilation,
+validation and persistence. The shared correction now resolves model-specified
+exact cross-section targets after section processing, without another AI call
+or copied facts. Missing, ambiguous or unsupported targets and relationship
+proof remain unresolved. The seven focused JavaScript checks and two local
+database checks passed, including forged-source rejection, access restrictions
+and migration rollback. The shared recorded replay passed again, with the same
+42 valid and 72 held Modiv proposals. The two additive storage migrations were
+applied only to the disposable database. Public and signed-in direct execution
+remain denied; only the worker role can stage links. Production is unchanged.
+The new schema revision and V2 links also survive finalisation and reopening;
+legacy drafts retain their old identity. Two local database round-trip checks
+passed. Hour periods retain their unit, update duties do not acquire an invented
+duration, and mixed units or conflicting values remain unresolved. Fourteen
+focused schema and compilation checks passed. The wider active suite found
+three old assertions that accepted Concho's shorter-of-one-Business-Day-or-48-hour
+notice as a single one-day scalar. Those assertions now require the proposal
+and related coverage to remain unresolved. The 282 unaffected checks passed;
+the three affected checks passed after correction. The all-family recorded
+replay passed after the final shared parser and schema change. All four additive
+storage changes are applied only to the disposable database. This changes no
+legal acceptance requirement.
 
 - [x] Run the release candidate on the untouched blind agreement.
 - [ ] Compare it with an independent, atomic lawyer inventory.
@@ -675,12 +809,13 @@ Add any of these later only when a concrete product need justifies it.
 This is the future-feature list, not launch work. Update each feature here;
 the online status page displays the same entries. Status starts as Deferred,
 then can become Investigating, Building or Done. Do not count these entries in
-the Phase 0 to 6 checklist. Both features below are for after external launch.
+the Phase 0 to 6 checklist. The features below are for after external launch.
 
 | Feature | Status | When | Intended outcome | Next step |
 |---|---|---|---|---|
 | Faster agreement processing and review | Deferred | After external launch | Shorter section and agreement processing, development feedback and future merger-agreement review, without reducing legal coverage, citation checks or required lawyer review. | Revisit measured model time, repeated input, retries and worker waiting. Compare combined checks within each existing section and safe parallel work. Do not infer section relatedness or omit context. Current small comparisons are recorded in Phase 5. |
 | Precedent tracing and clause-level markup reuse | Deferred | After external launch | For an uploaded agreement, rank likely source precedents across the stored corpus. Detect multiple source agreements at section and clause level, including representations from one precedent and interim covenants from another. Link a matching representation or other clause to relevant prior markups. | Compare several methods: stable miscellaneous provisions, distinctive wording, section and clause similarity, and changes between versions. Show supporting text, differences and uncertainty; similarity is evidence of a possible source, not proof of drafting history. Keep source attribution separate from advice to accept a prior markup. |
+| Compare exact covenant wording under common labels | Deferred | After external launch | Group comparable duties under a short common label while retaining the exact authored verbs, qualifiers and source locations, so small drafting differences remain visible across agreements. | Start with no-shop verb lists. Keep words such as solicit, initiate, knowingly encourage and facilitate distinct in the source-backed representation. A common label must not imply legal equivalence or replace the operative wording. |
 
 ## 8. Core-document reset
 

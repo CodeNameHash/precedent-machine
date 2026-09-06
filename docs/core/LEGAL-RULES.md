@@ -27,7 +27,15 @@ A positive fact can be accepted without a whole-document coverage certificate wh
 - Store payer, payee, amount, currency, trigger and payment timing explicitly.
 - Use the same fee fact types for reverse fees. Set the payer capacity to buyer and the payee capacity to seller.
 - Link the payment trigger to the owning termination right. Do not restate that right as a fee fact.
-- Exclude fee-linked sole-remedy language from the Termination Fee schema. Hold its final family ownership for legal review.
+- Store a paid-fee exclusive-remedy limitation once under Specific Performance and Remedies. Do not duplicate it under Termination Fee.
+- Preserve the fee-payment condition and negative remedy effect. Link the limitation to the fee fact and to each applicable termination-effect or survival fact.
+- This family choice implements the supplied paid-fee-only-remedy interpretation. It does not accept any extracted fact as legally correct.
+
+## Closing conditions
+
+- Use the neutral general closing-condition type when an operative condition is not stockholder approval, regulatory approval, legal restraint, filing effectiveness, bringdown, officer certification, frustration, or tax opinion.
+- Retain the actor or subject, legal operation, operative object, trigger or timing, and every qualification. This includes a waiting period after an information statement is mailed and a waiver that must remain in force at closing.
+- Do not label an information-statement waiting period as stockholder approval.
 
 ## No-Shop
 

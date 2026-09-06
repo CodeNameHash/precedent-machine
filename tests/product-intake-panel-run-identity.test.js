@@ -290,3 +290,52 @@ test('identity parties render structured API values and historical strings', asy
   assert.match(reviewSource, /displayIdentityParties\(workspace\.analysis\.source_document\.parties/);
   assert.doesNotMatch(reviewSource, /source_document\.parties\?\.join/);
 });
+
+test('intake submission sends the current routing prompt contract', async () => {
+  const { default: ProductIntakePanel } = await loadIntakePanelModule();
+  const React = require('react');
+  const routerModule = require('next/router');
+  const original = { useState: React.useState, useEffect: React.useEffect, useRef: React.useRef, useRouter: routerModule.useRouter, fetch: global.fetch };
+  const states = [];
+  let stateIndex = 0;
+  const requests = [];
+  const routes = [];
+  let submittedRunId;
+  React.useState = (initial) => {
+    const index = stateIndex++;
+    if (!(index in states)) states[index] = typeof initial === 'function' ? initial() : initial;
+    return [states[index], (value) => { states[index] = typeof value === 'function' ? value(states[index]) : value; }];
+  };
+  React.useEffect = () => {};
+  React.useRef = (initial) => ({ current: initial });
+  routerModule.useRouter = () => ({ isReady: false, query: {}, push: async () => {}, replace: async (route, as, options) => routes.push({ route, as, options }) });
+  global.fetch = async (url, options) => { requests.push({ url, options }); return { ok: true, async json() { return url === '/api/product/intake' ? (submittedRunId = crypto.randomUUID(), { analysis_run_id: submittedRunId, status: 'QUEUED', stage: 'SECTION_ANALYSIS', execution_mode: 'HOSTED' }) : { status: 'RUNNING', stage: 'SECTION_ANALYSIS', execution_mode: 'HOSTED' }; } }; };
+  try {
+    const findElement = (value, predicate) => {
+      if (!value) return null;
+      if (Array.isArray(value)) { for (const child of value) { const found = findElement(child, predicate); if (found) return found; } return null; }
+      if (predicate(value)) return value;
+      return findElement(value.props?.children, predicate);
+    };
+    stateIndex = 0;
+    let tree = ProductIntakePanel();
+    const input = findElement(tree, (value) => value.type === 'input');
+    input.props.onChange({ target: { value: 'https://www.sec.gov/Archives/edgar/data/1/10-k.htm' } });
+    stateIndex = 0;
+    tree = ProductIntakePanel();
+    const form = findElement(tree, (value) => value.type === 'form');
+    await form.props.onSubmit({ preventDefault() {} });
+    const intakeRequests = requests.filter((request) => request.url === '/api/product/intake');
+    assert.equal(intakeRequests.length, 1);
+    const body = JSON.parse(intakeRequests[0].options.body);
+    assert.deepEqual(routes, [{ route: { pathname: '/review', query: { productRun: submittedRunId } }, as: undefined, options: { shallow: true } }]);
+    assert.equal(body.url, 'https://www.sec.gov/Archives/edgar/data/1/10-k.htm');
+    assert.equal(body.schemaVersion, 'LEGAL_SCHEMA/V1');
+    assert.equal(body.promptBundleVersion, 'PRODUCT_ROUTING_CITATION_REPAIR/V5');
+    assert.match(body.idempotencyKey, /^[0-9a-f-]{36}$/);
+    assert.equal(body.explicitGeneration, 0);
+    assert.equal(body.maxAttempts, 3);
+  } finally {
+    React.useState = original.useState; React.useEffect = original.useEffect; React.useRef = original.useRef; routerModule.useRouter = original.useRouter; global.fetch = original.fetch;
+  }
+});

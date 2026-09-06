@@ -61,7 +61,7 @@ async function runHostedWorker(options, output = process.stdout, dependencies = 
   const worker = async (number) => {
     try {
       const workerStore = number === 1 ? store : makeStore();
-      const model = makeModel();
+      const model = makeModel({ modelConfig: run.model_config });
       let priorMarker = '';
       while (!stopped) {
         await workerStore.recoverExpiredSections({ runId: options.runId });
