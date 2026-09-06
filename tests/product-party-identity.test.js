@@ -23,6 +23,15 @@ test('party identity preserves comma names and explicit Merger Sub markers', () 
   ]);
 });
 
+test('party identity preserves full names after a colon and semicolon separators', () => {
+  const source = identity('THIS AGREEMENT is made and entered into by and among: Gilead Sciences, Inc., a Delaware corporation (\u201cParent\u201d); Ravens Sub, Inc., a Delaware corporation and a wholly owned Subsidiary of Parent (\u201cPurchaser\u201d); and Arcellx, Inc., a Delaware corporation (the \u201cCompany\u201d).');
+  assert.deepEqual(source.parties, [
+    { name: 'Gilead Sciences, Inc.', role: 'PARENT' },
+    { name: 'Ravens Sub, Inc.', role: 'PURCHASER' },
+    { name: 'Arcellx, Inc.', role: 'COMPANY' },
+  ]);
+});
+
 test('party identity uses the full introduction after cover captions and contents', () => {
   const source = identity([
     'AGREEMENT AND PLAN OF MERGER',

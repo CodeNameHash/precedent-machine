@@ -8,20 +8,25 @@ function byteToStringIndex(text, byteOffset) {
 function surroundingSourceSpan(span, closureSpans) {
   if (!span) return null;
   if (span.kind !== 'SUPPORTING_EVIDENCE') return span;
-  return closureSpans.filter((candidate) => (
+  const containing = closureSpans.filter((candidate) => (
     candidate.span_id !== span.span_id
     && candidate.kind !== 'SUPPORTING_EVIDENCE'
     && Number.isSafeInteger(candidate.start_byte)
     && Number.isSafeInteger(candidate.end_byte)
     && candidate.start_byte <= span.start_byte
     && candidate.end_byte >= span.end_byte
-  )).sort((left, right) => (left.end_byte - left.start_byte) - (right.end_byte - right.start_byte)
+  ));
+  const authoredUnits = containing.filter((candidate) => (
+    ['OPERATIVE', 'DEFINITION', 'FULL_SECTION'].includes(candidate.kind)
+  ));
+  return (authoredUnits.length > 0 ? authoredUnits : containing)
+    .sort((left, right) => (left.end_byte - left.start_byte) - (right.end_byte - right.start_byte)
     || left.start_byte - right.start_byte
     || left.span_id.localeCompare(right.span_id))[0] || span;
 }
 
 function surroundingLabel(span) {
-  if (span?.kind === 'RESIDUAL_PARAGRAPH') return 'Full surrounding paragraph';
+  if (span?.kind === 'RESIDUAL_PARAGRAPH') return 'Stored surrounding passage';
   if (span?.kind === 'FULL_SECTION') return 'Full surrounding section';
   if (span?.kind === 'DEFINITION') return 'Full surrounding definition';
   return span?.kind === 'SUPPORTING_EVIDENCE' ? 'Exact supporting words' : 'Full surrounding clause';

@@ -17,7 +17,9 @@ require.extensions['.jsx'] = function compileJsx(module, filename) {
 };
 
 const ProposalCard = require('../components/product/ProposalCard.jsx').default;
-const SourceContextPanel = require('../components/product/SourceContextPanel.jsx').default;
+const sourceContextModule = require('../components/product/SourceContextPanel.jsx');
+const SourceContextPanel = sourceContextModule.default;
+const { surroundingSourceSpan } = sourceContextModule;
 const {
   AcceptedSummary, AddFact, ReleaseEvaluation, ReviewSectionHeading, missingFactCommand, toggleSourceSpanId,
 } = require('../components/product/ReviewWorkspace.jsx');
@@ -113,6 +115,53 @@ test('source panel highlights exact supporting words inside the smallest stored 
   assert.match(markup, /Full surrounding clause/);
   assert.match(markup, /The Company <mark[^>]*>shall not amend its charter<\/mark>, except as permitted by Law\./);
   assert.match(markup, /OPERATIVE · bytes/);
+});
+
+test('proposal card exposes every saved citation and labels first-citation shortcuts', () => {
+  const markup = renderToStaticMarkup(React.createElement(ProposalCard, {
+    entry: {
+      proposal: { ...proposal, validation_status: 'VALID', source_span_ids: ['other-changes', 'increase-price'] },
+      review_item: { item_id: 'item', decision: 'PENDING', source_span_ids: ['other-changes', 'increase-price'] },
+      related_proposals: [], group_members: [],
+    },
+    requiredRoleKeys: [], availableSourceSpans: spans, structureNodes: nodes, busy: false,
+    onDecision() {}, onSource() {},
+  }));
+
+  assert.match(markup, /Saved citations/);
+  assert.match(markup, />Citation 1</);
+  assert.match(markup, />Citation 2</);
+  assert.match(markup, /Citation 1 of 2/);
+});
+
+test('source panel prefers a complete authored unit over a shorter residual fragment', () => {
+  const selected = { span_id: 'selected', kind: 'SUPPORTING_EVIDENCE', start_byte: 10094, end_byte: 10164 };
+  const residual = { span_id: 'residual', kind: 'RESIDUAL_PARAGRAPH', start_byte: 9399, end_byte: 10695 };
+  const operative = { span_id: 'operative', kind: 'OPERATIVE', start_byte: 9399, end_byte: 11871 };
+  const full = { span_id: 'full', kind: 'FULL_SECTION', start_byte: 8676, end_byte: 19662 };
+
+  assert.equal(surroundingSourceSpan(selected, [selected, residual, operative, full]), operative);
+});
+
+test('source panel labels a residual-only fallback as a stored passage', () => {
+  const canonicalText = 'The Purchaser may increase the Offer Price.';
+  const selectedText = 'increase the Offer Price';
+  const selectedStart = Buffer.byteLength(canonicalText.slice(0, canonicalText.indexOf(selectedText)));
+  const selected = {
+    span_id: 'selected', kind: 'SUPPORTING_EVIDENCE', start_byte: selectedStart,
+    end_byte: selectedStart + Buffer.byteLength(selectedText), exact_text: selectedText,
+  };
+  const residual = {
+    span_id: 'residual', kind: 'RESIDUAL_PARAGRAPH', start_byte: 0,
+    end_byte: Buffer.byteLength(canonicalText), exact_text: canonicalText,
+  };
+  const markup = renderToStaticMarkup(React.createElement(SourceContextPanel, {
+    open: true, onClose() {}, source: { canonical_text: canonicalText }, span: selected,
+    closureSpans: [selected, residual], loading: false,
+  }));
+
+  assert.match(markup, /Stored surrounding passage/);
+  assert.doesNotMatch(markup, /Full surrounding paragraph/);
 });
 
 test('saved edit acknowledgement stays neutral about citation sufficiency', () => {

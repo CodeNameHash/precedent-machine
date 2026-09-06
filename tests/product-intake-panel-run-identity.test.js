@@ -288,8 +288,10 @@ test('identity parties render structured API values and historical strings', asy
   ]), 'National Storage Affiliates Trust (Company) / Public Storage (Parent)');
   assert.equal(displayIdentityParties(['Old Parent', 'Old Target']), 'Old Parent / Old Target');
   assert.equal(displayIdentityParties([]), 'Not identified');
-  assert.match(reviewSource, /displayIdentityParties\(workspace\.analysis\.source_document\.parties/);
+  assert.match(reviewSource, /displayIdentityParties\(workspace\.analysis\.source_document\.display_parties \|\| workspace\.analysis\.source_document\.parties/);
   assert.doesNotMatch(reviewSource, /source_document\.parties\?\.join/);
+  assert.match(reviewSource, /Awaiting review: \{view\.pending_count\}/);
+  assert.match(reviewSource, /Marked unresolved: \{view\.unresolved_count\}/);
 });
 
 test('intake submission sends the current routing prompt contract', async () => {

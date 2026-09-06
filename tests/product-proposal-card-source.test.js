@@ -43,3 +43,15 @@ test('evidence-card navigation uses a real fallback span without changing the cl
     source_span_id: 'known-span-id', source_context: null,
   }), { spanId: 'known-span-id', reviewContext: null });
 });
+
+test('each saved proposal citation navigates by its own recorded span ID', async () => {
+  const { savedCitationNavigationSource } = await loadProposalCardModule();
+  const proposal = { source_closure_id: 'closure', source_span_ids: ['other-changes', 'increase-price'] };
+
+  assert.deepEqual(savedCitationNavigationSource(proposal, proposal.source_span_ids[0]), {
+    closureId: 'closure', spanId: 'other-changes', reviewContext: null,
+  });
+  assert.deepEqual(savedCitationNavigationSource(proposal, proposal.source_span_ids[1]), {
+    closureId: 'closure', spanId: 'increase-price', reviewContext: null,
+  });
+});

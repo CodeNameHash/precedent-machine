@@ -694,6 +694,69 @@ test('review HTTP boundary initialises state and persists commands with server-d
   assert.equal(postResponse.body.review.state.items.find((item) => item.item_id === proposalItem.item_id).decision, 'ACCEPTED');
 });
 
+test('review HTTP boundary presents repaired party names without changing saved identity', async () => {
+  const analysis = analysisFixture();
+  analysis.source_document.parties = [
+    { name: 'Inc.', role: 'PARENT' },
+    { name: 'Inc.', role: 'PURCHASER' },
+    { name: 'Inc.', role: 'COMPANY' },
+  ];
+  let persisted = null;
+  const store = {
+    assertAccess: async () => 'OWNER',
+    getAgreementAnalysis: async () => analysis,
+    getRunContext: async () => ({ sourceDocument: {
+      canonical_text: 'THIS AGREEMENT is made and entered into by and among: Gilead Sciences, Inc., a Delaware corporation (\u201cParent\u201d); Ravens Sub, Inc., a Delaware corporation and a wholly owned Subsidiary of Parent (\u201cPurchaser\u201d); and Arcellx, Inc., a Delaware corporation (the \u201cCompany\u201d).',
+    } }),
+    getReview: async () => persisted,
+    initialiseReview: async ({ state }) => {
+      persisted = { version: 0, status: state.status, state, revisions: [], publications: [], release_history: [] };
+    },
+  };
+  const handler = createProductReviewHandler({
+    getClient: () => ({}), storeFactory: () => store, actorResolver: async () => 'lawyer@example.test',
+  });
+  const response = responseDouble();
+  await handler({ method: 'GET', query: { id: analysis.analysis_run_id }, headers: {} }, response);
+
+  assert.equal(response.statusCode, 200);
+  assert.deepEqual(response.body.analysis.source_document.parties, analysis.source_document.parties);
+  assert.deepEqual(response.body.analysis.source_document.display_parties, [
+    { name: 'Gilead Sciences, Inc.', role: 'PARENT' },
+    { name: 'Ravens Sub, Inc.', role: 'PURCHASER' },
+    { name: 'Arcellx, Inc.', role: 'COMPANY' },
+  ]);
+});
+
+test('review HTTP boundary does not present an incomplete party-name recovery', async () => {
+  const analysis = analysisFixture();
+  analysis.source_document.parties = [
+    { name: 'Inc.', role: 'PARENT' },
+    { name: 'Inc.', role: 'COMPANY' },
+  ];
+  let persisted = null;
+  const store = {
+    assertAccess: async () => 'OWNER',
+    getAgreementAnalysis: async () => analysis,
+    getRunContext: async () => ({ sourceDocument: {
+      canonical_text: 'THIS AGREEMENT is made by and among: Gilead Sciences, Inc., a Delaware corporation (\u201cParent\u201d).',
+    } }),
+    getReview: async () => persisted,
+    initialiseReview: async ({ state }) => {
+      persisted = { version: 0, status: state.status, state, revisions: [], publications: [], release_history: [] };
+    },
+  };
+  const handler = createProductReviewHandler({
+    getClient: () => ({}), storeFactory: () => store, actorResolver: async () => 'lawyer@example.test',
+  });
+  const response = responseDouble();
+  await handler({ method: 'GET', query: { id: analysis.analysis_run_id }, headers: {} }, response);
+
+  assert.equal(response.statusCode, 200);
+  assert.equal(response.body.analysis.source_document.display_parties, undefined);
+  assert.deepEqual(response.body.analysis.source_document.parties, analysis.source_document.parties);
+});
+
 test('review HTTP boundary uses server-derived reviewer identity and processing time', async () => {
   const analysis = analysisFixture();
   let state = initialiseReviewState(analysis);

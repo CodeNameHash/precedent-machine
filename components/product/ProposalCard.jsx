@@ -30,6 +30,11 @@ export function evidenceNavigationSource(evidence) {
   };
 }
 
+export function savedCitationNavigationSource(proposal, spanId) {
+  if (!proposal?.source_span_ids?.includes(spanId)) return null;
+  return { closureId: proposal.source_closure_id, spanId, reviewContext: null };
+}
+
 export default function ProposalCard({
   entry, onDecision, onSource, availableSourceSpans = [], availablePropositionGroups = [],
   availableProposals = [],
@@ -53,6 +58,8 @@ export default function ProposalCard({
   );
   const savedSourceSpanIds = item?.source_span_ids || proposal.source_span_ids || [];
   const primarySource = primaryProposalSource(savedSourceSpanIds, reviewEvidence);
+  const primarySourceLabel = savedSourceSpanIds.length > 1
+    ? `Citation 1 of ${savedSourceSpanIds.length}` : 'Source';
   const missingRequiredRoles = requiredRoleKeys.filter((key) => roles[key] === undefined
     || roles[key] === null || roles[key] === '');
   const repair = useMemo(
@@ -126,10 +133,14 @@ export default function ProposalCard({
   function openPrimarySource() {
     onSource(proposal.source_closure_id, primarySource.spanId, primarySource.reviewContext);
   }
+  function openSavedCitation(spanId) {
+    const source = savedCitationNavigationSource({ ...proposal, source_span_ids: savedSourceSpanIds }, spanId);
+    if (source) onSource(source.closureId, source.spanId, source.reviewContext);
+  }
   return (
     <article className="rounded-lg border border-border bg-white p-4 shadow-sm" data-testid="proposal-card">
       <div className="flex flex-wrap items-start justify-between gap-2">
-        <div><p className="text-[11px] font-semibold uppercase tracking-wide text-accent">{proposal.family_key} · {proposal.subtype_key}</p><button type="button" onClick={openPrimarySource} className="mt-1 text-left text-base font-medium text-ink">{item?.edited_statement || proposal.statement} <span className="text-[10px] font-semibold uppercase text-accent">Source</span></button></div>
+        <div><p className="text-[11px] font-semibold uppercase tracking-wide text-accent">{proposal.family_key} · {proposal.subtype_key}</p><button type="button" onClick={openPrimarySource} className="mt-1 text-left text-base font-medium text-ink">{item?.edited_statement || proposal.statement} <span className="text-[10px] font-semibold uppercase text-accent">{primarySourceLabel}</span></button></div>
         <span className={`rounded-full px-2 py-1 text-[10px] font-bold ${badge[item?.decision || 'PENDING']}`}>{item?.decision || 'PENDING'}</span>
       </div>
       {invalid ? <div className={`mt-3 rounded border p-3 text-xs ${editSaved ? 'border-amber-300 bg-amber-50 text-amber-950' : 'border-red-200 bg-red-50 text-red-900'}`}>
@@ -143,9 +154,10 @@ export default function ProposalCard({
         <EvidenceGroup title="Supporting context outside the owned section" items={reviewEvidence.contextOnly} onOpen={openEvidence} />
       </div> : null}
       <dl className="mt-3 grid gap-2 sm:grid-cols-2">
-        {Object.entries(item?.edited_roles || proposal.roles || {}).map(([key, roleValue]) => <div key={key}><dt className="text-[10px] uppercase tracking-wide text-inkLight">{commonRoleHelp(key).label}</dt><dd className="flex items-start gap-1 text-sm text-inkMid"><span>{Array.isArray(roleValue) ? roleValue.join(', ') : String(roleValue)}</span><button type="button" onClick={openPrimarySource} className="text-[10px] font-semibold text-accent">Source</button></dd></div>)}
+        {Object.entries(item?.edited_roles || proposal.roles || {}).map(([key, roleValue]) => <div key={key}><dt className="text-[10px] uppercase tracking-wide text-inkLight">{commonRoleHelp(key).label}</dt><dd className="flex items-start gap-1 text-sm text-inkMid"><span>{Array.isArray(roleValue) ? roleValue.join(', ') : String(roleValue)}</span><button type="button" onClick={openPrimarySource} className="text-[10px] font-semibold text-accent">{primarySourceLabel}</button></dd></div>)}
       </dl>
-      {proposal.canonical_value != null ? <button type="button" onClick={openPrimarySource} className="mt-2 text-left text-sm"><span className="text-inkLight">Canonical value:</span> {String(item?.edited_value ?? proposal.canonical_value)} <span className="text-xs font-semibold text-accent">Source</span></button> : null}
+      {proposal.canonical_value != null ? <button type="button" onClick={openPrimarySource} className="mt-2 text-left text-sm"><span className="text-inkLight">Canonical value:</span> {String(item?.edited_value ?? proposal.canonical_value)} <span className="text-xs font-semibold text-accent">{primarySourceLabel}</span></button> : null}
+      {!editing && savedSourceSpanIds.length > 0 ? <div className="mt-3 flex flex-wrap items-center gap-2 text-xs"><span className="font-semibold text-inkMid">Saved citations</span>{savedSourceSpanIds.map((spanId, index) => <button key={spanId} type="button" onClick={() => openSavedCitation(spanId)} className="rounded border border-border px-2 py-1 font-semibold text-accent">Citation {index + 1}</button>)}</div> : null}
       {groupMembers.length > 1 ? <div className="mt-3 rounded bg-paper p-2 text-xs text-inkMid"><p className="font-semibold text-ink">Original AI group, for context</p>{groupMembers.map((member) => <p key={member.proposal_id}>{member.proposal_id === proposal.proposal_id ? 'This fact' : member.statement}</p>)}</div> : null}
       {related.length ? <div className="mt-3 rounded bg-paper p-2 text-xs text-inkMid">{related.map(({ link, other }) => <p key={link.fact_link_id}><strong>{link.relationship_type}</strong> {other?.statement || other?.fact_type}</p>)}</div> : null}
       {canEditGroup ? <label className="mt-3 block text-xs font-semibold text-inkMid">Summary group<span className="mt-0.5 block font-normal text-inkLight">Choose the group saved in the accepted summary. Standalone fact is an explicit lawyer choice.</span><select aria-label="Summary group" disabled={!editing || busy} value={groupSelection} onChange={(event) => setGroupSelection(event.target.value)} className="mt-1 block w-full rounded border border-border p-2 font-normal disabled:bg-paper"><option value="__UNCHANGED__">Keep current grouping</option><option value="">Standalone fact</option>{compatibleGroups.map((group) => <option key={group.proposition_group_id} value={group.proposition_group_id}>{group.label}</option>)}</select></label> : null}
@@ -164,7 +176,7 @@ export default function ProposalCard({
         <button type="button" disabled={busy} onClick={startEditing} className="rounded border border-blue-700 px-3 py-1 text-blue-800">Edit</button>
         <button type="button" disabled={busy} onClick={() => onDecision(item.item_id, 'REJECTED')} className="rounded border border-slate-500 px-3 py-1">Reject</button>
         <button type="button" disabled={busy} onClick={() => onDecision(item.item_id, 'UNRESOLVED')} className="rounded border border-red-600 px-3 py-1 text-red-700">Mark unresolved</button>
-        <button type="button" onClick={openPrimarySource} className="ml-auto rounded bg-paper px-3 py-1 font-semibold text-accent">View source closure</button>
+        <button type="button" onClick={openPrimarySource} className="ml-auto rounded bg-paper px-3 py-1 font-semibold text-accent">{savedSourceSpanIds.length > 1 ? `View citation 1 of ${savedSourceSpanIds.length}` : 'View source closure'}</button>
       </div>
     </article>
   );
