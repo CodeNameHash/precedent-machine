@@ -1,5 +1,20 @@
 import { displaySectionReference } from '../../lib/product/section-reference-display';
 
+export const COLLISION_TITLE = 'Review proposals that share supporting text';
+
+export function CollisionDetail({ message }) {
+  let value;
+  try { value = JSON.parse(message); } catch { value = null; }
+  const readable = Array.isArray(value?.candidates) && value.candidates.length >= 2
+    && value.candidates.every((item) => item && !Array.isArray(item)
+      && typeof item.client_ref === 'string' && item.client_ref.trim());
+  return <div className="basis-full my-2 min-w-0 rounded bg-amber-50 p-2 text-sm">
+    <p>These proposals use the same supporting text. They may state different duties or repeat a duty. Review each proposal separately.</p>
+    {readable ? <p>{value.candidates.length} candidate proposals</p> : <p>The recorded details could not be read. The original detail remains below.</p>}
+    <details className="mt-1"><summary className="cursor-pointer font-semibold">Show recorded detail</summary><pre className="mt-1 max-h-48 overflow-auto whitespace-pre-wrap">{typeof message === 'string' ? message : JSON.stringify(message) || 'No detail recorded.'}</pre></details>
+  </div>;
+}
+
 export function findingResolutionCommand(findings, selections) {
   return findings.flatMap((item) => {
     if (item.original.state === 'NOT_RUN') return [];
@@ -32,10 +47,10 @@ export default function FindingResolutionFields({ findings, facts, selections, o
         && (!factType || fact.fact_type === factType));
       const notRun = original.state === 'NOT_RUN';
       return <fieldset key={item.item_id} className="min-w-0 rounded border border-border p-3 text-sm">
-        <legend className="px-1 font-medium">Finding {index + 1}: {(original.code || original.subject_kind || item.kind).replaceAll('_', ' ')}</legend>
+        <legend className="px-1 font-medium">Finding {index + 1}: {original.code === 'DUPLICATE_FACT_OCCURRENCE' ? COLLISION_TITLE : (original.code || original.subject_kind || item.kind).replaceAll('_', ' ')}</legend>
         {item.family_key ? <p>{item.family_key.replaceAll('_', ' ')}</p> : null}
         {original.section_reference ? <p>{displaySectionReference(original.section_reference)}</p> : null}
-        {original.message || original.reason ? <p className="my-2 whitespace-pre-wrap">{original.message || original.reason}</p> : null}
+        {original.code === 'DUPLICATE_FACT_OCCURRENCE' ? <CollisionDetail message={original.message} /> : original.message || original.reason ? <p className="my-2 whitespace-pre-wrap">{original.message || original.reason}</p> : null}
         {onSource && item.source_span_ids?.length ? <button type="button" onClick={() => onSource(item.source_closure_id, item.source_span_ids[0])} className="mb-2 text-xs font-semibold text-accent">View finding source</button> : null}
         {notRun ? <p className="text-red-700">This work did not run. A review decision cannot mark it complete.</p> : <>
           <select aria-label={`Finding ${index + 1} resolution`} disabled={busy} value={selected.disposition || 'UNRESOLVED'} onChange={(event) => onChange(item.item_id, { disposition: event.target.value, published_fact_review_item_id: '', omission_reason: '' })} className="block w-full rounded border border-border p-2 text-sm">

@@ -408,6 +408,10 @@ diagnostics capture more detail, but still lose some scope and citation context.
 The corrected candidate is not accepted. The private candidate now retains
 the smaller model for routing and uses the stronger model for extraction. Explicit
 hour periods and non-duration update duties are retained in the data model.
+The new full diagnostic stopped after 14 saved sections because different
+proposals with the same supporting text received the same internal identifier.
+The local correction preserves each candidate as separate pending review work;
+database checks pass. The normal retry will retain the 14 completed sections.
 The original Olaplex run is unchanged. Testing it again is diagnostic work,
 not a new blind test. Full lawyer review, publication and the combined 90-minute
 processing/review bar remain unproved. No release bar or production setting has
@@ -740,6 +744,27 @@ The parser now ignores that reference without supplying missing evidence or
 changing any duration. All 25 affected period and recovery checks pass. The
 saved model response and original Olaplex run remain unchanged. The next full
 run on exposed Olaplex is an integrated diagnostic, not another blind test.
+
+That integrated diagnostic started through the normal private intake on
+2026-09-06 as run `9cb8e881-0757-4658-98ef-3f9484421d80`. Automatic retries
+exposed a database collision: different proposals with the same family, type
+and exact source span received the same fact identifier. Earlier saved replies
+compile successfully but could not save together. The run stopped with 14
+completed sections, two failed sections and 63 pending. Every completed section
+and received model reply remains saved. The correction keeps each colliding
+candidate, its statement, roles and citations, assigns a distinct unresolved
+candidate identifier, and raises one source-linked finding per shared anchor.
+It does not decide whether the candidates express different duties or duplicate
+one duty. A lawyer can retain both after explicit review or reject one. The
+database uniqueness rule remains unchanged. The inactive database check fails
+with the actual duplicate-key error under the prior compiler and succeeds under
+the correction. The all-family recorded checks pass; read-only replay retains
+all candidates from the actual failed replies. Review now explains the collision
+in plain language and preserves the full recorded detail, including malformed
+detail. Normal retry, not a new submission, is the next step for this diagnostic.
+Ben's two original note messages are also preserved privately outside the public
+repository. Their transcription is partial, with severity and acceptance pending;
+it is not an attestation or a completed independent inventory.
 
 - [x] Run the release candidate on the untouched blind agreement.
 - [ ] Compare it with an independent, atomic lawyer inventory.
