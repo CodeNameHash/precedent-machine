@@ -30,6 +30,7 @@ const closureId = 'c'.repeat(64);
 const closureTwoId = 'd'.repeat(64);
 const spanId = 's'.repeat(64);
 const spanTwoId = 't'.repeat(64);
+const chapeauSpanId = 'h'.repeat(64);
 const proposal = (id, family, subtype, factType, roles, statement = 'Legal fact') => ({
   proposal_id: id.repeat(64), fact_occurrence_id: `${id}o`.padEnd(64, id), structure_node_id: nodeOne,
   family_key: family, subtype_key: subtype, fact_type: factType, statement, roles,
@@ -271,6 +272,50 @@ test('lawyer edits preserve citations, missing facts validate roles, and publish
   assert.equal(reopened.metrics, null);
   assert.equal(reopened.release_evaluation_input, null);
   assert.equal(reopened.release_evaluation, null);
+});
+
+test('missing facts preserve unique multi-span citations without resolving coverage', () => {
+  const base = analysisFixture();
+  const analysis = {
+    ...base,
+    spans: [...base.spans, {
+      span_id: chapeauSpanId, structure_node_id: nodeOne, source_closure_ids: [closureId],
+      exact_text: 'The Company shall not, before the Effective Time,', start_byte: 41, end_byte: 91,
+      kind: 'CHAPEAU',
+    }],
+  };
+  const command = {
+    type: 'ADD_MISSING_FACT', structure_node_id: nodeOne, source_closure_id: closureId,
+    family_key: 'INTERIM_OPERATING', subtype_key: 'RESTRICTIVE_COVENANT', fact_type: 'IOC_RESTRICTION_PRESENT',
+    statement: 'The Company shall not amend its organisation documents.',
+    roles: {
+      LEGAL_ACTOR_OR_SUBJECT: 'Company', LEGAL_OPERATION: 'shall not amend',
+      OPERATIVE_OBJECT: 'organisation documents', TEMPORAL_OR_TRIGGER_SCOPE: 'before the Effective Time',
+      QUALIFICATIONS: 'subject to stated exceptions',
+    },
+    source_span_ids: [chapeauSpanId, spanId],
+  };
+  const initial = initialiseReviewState(analysis);
+  const forward = applyReviewCommand(initial, command, { analysis, legalSchema });
+  const reverse = applyReviewCommand(initial, {
+    ...command, source_span_ids: [...command.source_span_ids].reverse(),
+  }, { analysis, legalSchema });
+  const added = forward.items.find((item) => item.kind === 'USER_FACT');
+
+  assert.deepEqual(added.source_span_ids, [chapeauSpanId, spanId]);
+  assert.equal(added.source_id, reverse.items.find((item) => item.kind === 'USER_FACT').source_id);
+  assert.equal(added.decision, 'EDITED');
+  assert.equal(forward.items.some((item) => item.kind === 'COVERAGE' && item.decision === 'PENDING'), true);
+  assert.equal(forward.agreement_coverage.decision, 'PENDING');
+  assert.throws(() => applyReviewCommand(initial, {
+    ...command, source_span_ids: [spanId, spanId],
+  }, { analysis, legalSchema }), /MISSING_FACT_SOURCE/);
+  assert.throws(() => applyReviewCommand(initial, {
+    ...command, source_span_ids: ['unknown'],
+  }, { analysis, legalSchema }), /MISSING_FACT_SOURCE/);
+  assert.throws(() => applyReviewCommand(initial, {
+    ...command, source_span_ids: [spanTwoId],
+  }, { analysis, legalSchema }), /MISSING_FACT_SOURCE/);
 });
 
 test('invalid proposals require an explicit same-closure citation repair before publication', () => {

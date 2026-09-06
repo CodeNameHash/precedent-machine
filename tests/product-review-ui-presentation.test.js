@@ -18,6 +18,9 @@ require.extensions['.jsx'] = function compileJsx(module, filename) {
 
 const ProposalCard = require('../components/product/ProposalCard.jsx').default;
 const SourceContextPanel = require('../components/product/SourceContextPanel.jsx').default;
+const {
+  AddFact, missingFactCommand, toggleSourceSpanId,
+} = require('../components/product/ReviewWorkspace.jsx');
 
 const nodes = [
   { node_id: 'section', reference: '6.3', title: 'No solicitation' },
@@ -104,6 +107,44 @@ test('saved edit acknowledgement stays neutral about citation sufficiency', () =
   assert.match(markup, /Edit saved in this review revision/);
   assert.match(markup, /still requires lawyer assessment for support, scope and legal sufficiency/);
   assert.doesNotMatch(markup, /Correction saved/);
+});
+
+test('missing fact UI requires deliberate multi-span source selection and preserves selected IDs', () => {
+  const analysis = {
+    agreement_structure: { nodes },
+    source_closures: [{ source_closure_id: 'closure', structure_node_id: 'section' }],
+    spans: [
+      { ...spans[0], kind: 'CHAPEAU', exact_text: 'The Company shall not, before the Effective Time,' },
+      { ...spans[1], span_id: 'operative', structure_node_id: 'section', kind: 'OPERATIVE', exact_text: `(a) amend (i) its charter or (ii) the Tax Receivable Agreement${' subject to the stated exceptions'.repeat(8)}.` },
+      { span_id: 'full', structure_node_id: 'section', source_closure_ids: ['closure'], kind: 'FULL_SECTION', exact_text: 'Complete Section 5.1 text.' },
+    ],
+  };
+  const markup = renderToStaticMarkup(React.createElement(AddFact, {
+    section: { node: nodes[0] }, analysis, onAdd() {}, busy: false, initiallyOpen: true,
+  }));
+
+  assert.match(markup, /Exact fact sources/);
+  assert.match(markup, /Chapeau.*The Company shall not, before the Effective Time,/);
+  assert.match(markup, /Operative.*\(a\) amend/);
+  assert.match(markup, /Full section.*Complete Section 5\.1 text/);
+  assert.match(markup, /Read full source/);
+  assert.equal((markup.match(/type="checkbox"/g) || []).length, 3);
+  assert.doesNotMatch(markup, /checked=""/);
+  assert.match(markup, /<button disabled=""[^>]*>Add fact<\/button>/);
+
+  let selected = toggleSourceSpanId([], 'owned', true);
+  selected = toggleSourceSpanId(selected, 'operative', true);
+  selected = toggleSourceSpanId(selected, 'owned', true);
+  assert.deepEqual(selected, ['owned', 'operative']);
+  selected = toggleSourceSpanId(selected, 'owned', false);
+  assert.deepEqual(selected, ['operative']);
+  const command = missingFactCommand({
+    section: { node: nodes[0] }, closure: analysis.source_closures[0], familyKey: 'INTERIM_OPERATING',
+    subtypeKey: 'RESTRICTIVE_COVENANT', factType: 'IOC_RESTRICTION_PRESENT', statement: 'Company shall not amend its organisation documents.',
+    roles: { LEGAL_ACTOR_OR_SUBJECT: 'Company', LEGAL_OPERATION: 'shall not amend', OPERATIVE_OBJECT: 'organisation documents', TEMPORAL_OR_TRIGGER_SCOPE: 'before the Effective Time', QUALIFICATIONS: 'subject to stated exceptions' }, value: '',
+    sourceSpanIds: ['owned', 'operative'],
+  });
+  assert.deepEqual(command.source_span_ids, ['owned', 'operative']);
 });
 
 test('proposal edit offers explicit standalone or compatible recorded group repair', () => {

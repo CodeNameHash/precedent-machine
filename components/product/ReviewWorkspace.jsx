@@ -192,8 +192,29 @@ function RelationshipReview({ items, factItems, analysis, onDecision, onSave, on
   return <section className="space-y-3"><div className="flex items-end justify-between border-b border-border pb-2"><div><p className="text-xs font-bold uppercase tracking-wide text-accent">Relationship review</p><h2 className="font-display text-xl text-ink">Fact relationships</h2></div>{!adding ? <button type="button" onClick={() => setAdding(true)} className="text-xs font-semibold text-accent">+ Add relationship</button> : null}</div>{adding ? <RelationshipEditor factItems={factItems} analysis={analysis} busy={busy} onSave={onSave} onCancel={() => setAdding(false)} /> : null}{items.map((item) => <RelationshipReviewCard key={item.item_id} item={item} factItems={factItems} analysis={analysis} busy={busy} onDecision={onDecision} onSave={onSave} onSource={onSource} />)}{items.length === 0 && !adding ? <p className="text-sm text-inkLight">No model-proposed relationships. Add one only when the source supports it.</p> : null}</section>;
 }
 
-function AddFact({ section, analysis, onAdd, busy }) {
-  const [open, setOpen] = useState(false);
+export function toggleSourceSpanId(sourceSpanIds, spanId, checked) {
+  if (checked) return sourceSpanIds.includes(spanId) ? sourceSpanIds : [...sourceSpanIds, spanId];
+  return sourceSpanIds.filter((candidate) => candidate !== spanId);
+}
+
+export function missingFactCommand({
+  section, closure, familyKey, subtypeKey, factType, statement, roles, value, sourceSpanIds,
+}) {
+  return {
+    structure_node_id: section.node.node_id,
+    source_closure_id: closure.source_closure_id,
+    family_key: familyKey,
+    subtype_key: subtypeKey,
+    fact_type: factType,
+    statement,
+    roles: Object.fromEntries(Object.entries(roles).filter(([, roleValue]) => roleValue !== '')),
+    value: value || null,
+    source_span_ids: [...sourceSpanIds],
+  };
+}
+
+export function AddFact({ section, analysis, onAdd, busy, initiallyOpen = false }) {
+  const [open, setOpen] = useState(initiallyOpen);
   const [familyKey, setFamilyKey] = useState(legalSchema.families[0].family_key);
   const family = legalSchema.families.find((item) => item.family_key === familyKey);
   const [subtypeKey, setSubtypeKey] = useState(family.subtypes[0].subtype_key);
@@ -204,7 +225,9 @@ function AddFact({ section, analysis, onAdd, busy }) {
   const [value, setValue] = useState('');
   const closure = analysis.source_closures.find((item) => item.structure_node_id === section.node.node_id);
   const spans = analysis.spans.filter((span) => span.source_closure_ids?.includes(closure?.source_closure_id));
-  const [spanId, setSpanId] = useState('');
+  const spanGroups = [...new Set(spans.map((span) => span.kind))]
+    .map((kind) => [kind, spans.filter((span) => span.kind === kind)]);
+  const [sourceSpanIds, setSourceSpanIds] = useState([]);
   function changeFamily(value) {
     const next = legalSchema.families.find((item) => item.family_key === value);
     const nextSubtype = next.subtypes[0];
@@ -216,9 +239,16 @@ function AddFact({ section, analysis, onAdd, busy }) {
     setSubtypeKey(value);
     setRoles(Object.fromEntries([...next.required_roles, ...(next.optional_roles || [])].map((role) => [role, ''])));
   }
-  if (!open) return <button type="button" onClick={() => { setOpen(true); setSpanId(spans[0]?.span_id || ''); }} className="text-xs font-semibold text-accent">+ Add missing fact</button>;
-  return <form className="rounded-lg border border-accent/30 bg-white p-4" onSubmit={(event) => { event.preventDefault(); onAdd({ structure_node_id: section.node.node_id, source_closure_id: closure.source_closure_id, family_key: familyKey, subtype_key: subtypeKey, fact_type: factType, statement, roles: Object.fromEntries(Object.entries(roles).filter(([, roleValue]) => roleValue !== '')), value: value || null, source_span_ids: [spanId] }).then(() => setOpen(false)); }}>
-    <p className="mb-3 text-sm font-semibold">Add a source-linked missing fact</p><div className="grid gap-2 sm:grid-cols-3"><select aria-label="Family" value={familyKey} onChange={(event) => changeFamily(event.target.value)} className="rounded border border-border p-2 text-xs">{legalSchema.families.filter((item) => item.state === 'DEFINED').map((item) => <option key={item.family_key}>{item.family_key}</option>)}</select><select aria-label="Subtype" value={subtype.subtype_key} onChange={(event) => changeSubtype(event.target.value)} className="rounded border border-border p-2 text-xs">{family.subtypes.map((item) => <option key={item.subtype_key}>{item.subtype_key}</option>)}</select><select aria-label="Fact type" value={factType} onChange={(event) => setFactType(event.target.value)} className="rounded border border-border p-2 text-xs">{family.required_fact_types.map((item) => <option key={item}>{item}</option>)}</select></div><textarea required aria-label="Missing fact statement" value={statement} onChange={(event) => setStatement(event.target.value)} placeholder="Plain legal English" className="mt-2 w-full rounded border border-border p-2 text-sm" /><label className="mt-2 block text-xs font-semibold text-inkMid">Canonical value, when applicable<input aria-label="Missing fact canonical value" value={value} onChange={(event) => setValue(event.target.value)} className="mt-1 block w-full rounded border border-border p-2 font-normal" /></label><div className="mt-2 grid gap-2 sm:grid-cols-2">{Object.entries(roles).map(([role, roleValue]) => <label key={role} className="text-xs font-semibold text-inkMid">{role.replaceAll('_', ' ')}{subtype.required_roles.includes(role) ? ' *' : ''}<input required={subtype.required_roles.includes(role)} value={roleValue} onChange={(event) => setRoles((current) => ({ ...current, [role]: event.target.value }))} className="mt-1 block w-full rounded border border-border p-2 font-normal" /></label>)}</div><select required aria-label="Source span" value={spanId} onChange={(event) => setSpanId(event.target.value)} className="mt-2 w-full rounded border border-border p-2 text-xs">{spans.map((span) => <option value={span.span_id} key={span.span_id}>{span.kind}: {span.exact_text.slice(0, 100)}</option>)}</select><div className="mt-3 flex gap-2"><button disabled={busy} className="rounded bg-ink px-3 py-1 text-xs text-white">Add fact</button><button type="button" onClick={() => setOpen(false)} className="text-xs">Cancel</button></div>
+  function submit(event) {
+    event.preventDefault();
+    if (!closure || sourceSpanIds.length === 0) return;
+    return Promise.resolve(onAdd(missingFactCommand({
+      section, closure, familyKey, subtypeKey, factType, statement, roles, value, sourceSpanIds,
+    }))).then(() => setOpen(false));
+  }
+  if (!open) return <button type="button" onClick={() => { setOpen(true); setSourceSpanIds([]); }} className="text-xs font-semibold text-accent">+ Add missing fact</button>;
+  return <form className="rounded-lg border border-accent/30 bg-white p-4" onSubmit={submit}>
+    <p className="mb-3 text-sm font-semibold">Add a source-linked missing fact</p><div className="grid gap-2 sm:grid-cols-3"><select aria-label="Family" value={familyKey} onChange={(event) => changeFamily(event.target.value)} className="rounded border border-border p-2 text-xs">{legalSchema.families.filter((item) => item.state === 'DEFINED').map((item) => <option key={item.family_key}>{item.family_key}</option>)}</select><select aria-label="Subtype" value={subtype.subtype_key} onChange={(event) => changeSubtype(event.target.value)} className="rounded border border-border p-2 text-xs">{family.subtypes.map((item) => <option key={item.subtype_key}>{item.subtype_key}</option>)}</select><select aria-label="Fact type" value={factType} onChange={(event) => setFactType(event.target.value)} className="rounded border border-border p-2 text-xs">{family.required_fact_types.map((item) => <option key={item}>{item}</option>)}</select></div><textarea required aria-label="Missing fact statement" value={statement} onChange={(event) => setStatement(event.target.value)} placeholder="Plain legal English" className="mt-2 w-full rounded border border-border p-2 text-sm" /><label className="mt-2 block text-xs font-semibold text-inkMid">Canonical value, when applicable<input aria-label="Missing fact canonical value" value={value} onChange={(event) => setValue(event.target.value)} className="mt-1 block w-full rounded border border-border p-2 font-normal" /></label><div className="mt-2 grid gap-2 sm:grid-cols-2">{Object.entries(roles).map(([role, roleValue]) => <label key={role} className="text-xs font-semibold text-inkMid">{role.replaceAll('_', ' ')}{subtype.required_roles.includes(role) ? ' *' : ''}<input required={subtype.required_roles.includes(role)} value={roleValue} onChange={(event) => setRoles((current) => ({ ...current, [role]: event.target.value }))} className="mt-1 block w-full rounded border border-border p-2 font-normal" /></label>)}</div><fieldset className="mt-3 space-y-3 rounded border border-border p-3"><legend className="px-1 text-xs font-semibold">Exact fact sources</legend>{spanGroups.map(([kind, kindSpans]) => <div key={kind} className="space-y-2"><p className="text-xs font-bold text-inkMid">{relationshipTypeLabel(kind)}</p>{kindSpans.map((span) => <div key={span.span_id} className="rounded bg-paper p-2"><label className="flex items-start gap-2 text-xs"><input type="checkbox" value={span.span_id} checked={sourceSpanIds.includes(span.span_id)} onChange={(event) => setSourceSpanIds((current) => toggleSourceSpanId(current, span.span_id, event.target.checked))} /><span>{span.exact_text.slice(0, 160)}</span></label>{span.exact_text.length > 160 ? <details className="ml-5 mt-1 text-xs text-inkMid"><summary className="cursor-pointer font-semibold">Read full source</summary><p className="mt-1 whitespace-pre-wrap">{span.exact_text}</p></details> : null}</div>)}</div>)}</fieldset><div className="mt-3 flex gap-2"><button disabled={busy || !closure || sourceSpanIds.length === 0} className="rounded bg-ink px-3 py-1 text-xs text-white">Add fact</button><button type="button" onClick={() => setOpen(false)} className="text-xs">Cancel</button></div>
   </form>;
 }
 
