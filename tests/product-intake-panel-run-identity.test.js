@@ -332,7 +332,7 @@ test('intake submission sends the current routing prompt contract', async () => 
     assert.deepEqual(routes, [{ route: { pathname: '/review', query: { productRun: submittedRunId } }, as: undefined, options: { shallow: true } }]);
     assert.equal(body.url, 'https://www.sec.gov/Archives/edgar/data/1/10-k.htm');
     assert.equal(body.schemaVersion, 'LEGAL_SCHEMA/V1');
-    assert.equal(body.promptBundleVersion, 'PRODUCT_ROUTING_CITATION_REPAIR/V5');
+    assert.equal(body.promptBundleVersion, 'PRODUCT_ROUTING_CITATION_REPAIR/V6');
     assert.match(body.idempotencyKey, /^[0-9a-f-]{36}$/);
     assert.equal(body.explicitGeneration, 0);
     assert.equal(body.maxAttempts, 3);
