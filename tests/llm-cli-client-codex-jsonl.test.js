@@ -22,6 +22,17 @@ const COMPLETE = {
   type: 'turn.completed',
   usage: { input_tokens: 1, cached_input_tokens: 0, output_tokens: 1, reasoning_output_tokens: 0 },
 };
+const RECONNECT_WARNING = {
+  type: 'error',
+  message: 'Reconnecting... 2/5 (stream disconnected before completion: Incomplete response returned, reason: content_filter)',
+};
+const HTTPS_FALLBACK_WARNING = {
+  type: 'item.completed',
+  item: {
+    type: 'error',
+    message: 'Falling back from WebSockets to HTTPS transport. stream disconnected before completion: Incomplete response returned, reason: content_filter',
+  },
+};
 
 test('Codex client rejects an invalid retry delay', () => {
   assert.throws(() => createCodexCliClient({ retryDelayMs: -1 }), /non-negative integer/);
@@ -127,6 +138,49 @@ test('trusted final-message output selects the last completed agent message from
   assert.equal(response.content[0].text, '{"ok":true}');
 });
 
+test('known CLI transport progress can precede one independently verified completed answer', () => {
+  const commentary = { type: 'item.completed', item: { type: 'agent_message', text: 'Preparing the result.' } };
+  const final = { type: 'item.completed', item: { type: 'agent_message', text: '{"ok":true}' } };
+  const response = codexJsonlResponse(stream(
+    THREAD, START, commentary, RECONNECT_WARNING, HTTPS_FALLBACK_WARNING, final, COMPLETE,
+  ), { finalMessage: '{"ok":true}\n' });
+
+  assert.equal(response.content[0].text, '{"ok":true}');
+  assert.deepEqual(response.codex_completion.transport_recovery, {
+    warning_count: 2,
+    warning_types: ['RECONNECT', 'HTTPS_FALLBACK'],
+  });
+});
+
+for (const [name, warning, warningType] of [
+  ['reconnect progress', RECONNECT_WARNING, 'RECONNECT'],
+  ['HTTPS fallback progress', HTTPS_FALLBACK_WARNING, 'HTTPS_FALLBACK'],
+]) {
+  test(`Codex JSONL accepts independently verified output after ${name}`, () => {
+    const response = codexJsonlResponse(stream(THREAD, START, warning, ANSWER, COMPLETE), {
+      finalMessage: '{}\n',
+    });
+    assert.deepEqual(response.codex_completion.transport_recovery, {
+      warning_count: 1, warning_types: [warningType],
+    });
+  });
+}
+
+for (const [name, raw, finalMessage, pattern] of [
+  ['transport progress before turn start', stream(THREAD, RECONNECT_WARNING, START, ANSWER, COMPLETE), '{}', /TRANSPORT_RECOVERY_UNVERIFIED/],
+  ['transport progress after the trusted answer', stream(THREAD, START, ANSWER, RECONNECT_WARNING, COMPLETE), '{}', /TRANSPORT_RECOVERY_UNVERIFIED/],
+  ['transport progress without output-last-message proof', stream(THREAD, START, RECONNECT_WARNING, ANSWER, COMPLETE), undefined, /TRANSPORT_RECOVERY_UNVERIFIED/],
+  ['an unknown top-level error despite trusted output', stream(THREAD, START, { type: 'error', message: 'provider failed' }, ANSWER, COMPLETE), '{}', /TURN_FAILED/],
+  ['an altered reconnect reason despite trusted output', stream(THREAD, START, { type: 'error', message: 'Reconnecting... 2/5 (stream disconnected before completion: refusal)' }, ANSWER, COMPLETE), '{}', /TURN_FAILED/],
+  ['an altered fallback error despite trusted output', stream(THREAD, START, { type: 'item.completed', item: { type: 'error', message: 'Falling back after refusal' } }, ANSWER, COMPLETE), '{}', /TURN_FAILED/],
+  ['recognised reconnect progress carrying a forbidden tool item', stream(THREAD, START, { ...RECONNECT_WARNING, item: { type: 'command_execution', command: 'pwd' } }, ANSWER, COMPLETE), '{}', /TOOL_FORBIDDEN/],
+  ['recognised reconnect progress carrying any top-level item', stream(THREAD, START, { ...RECONNECT_WARNING, item: { type: 'reasoning', text: 'x' } }, ANSWER, COMPLETE), '{}', /TURN_FAILED/],
+]) {
+  test(`Codex JSONL rejects ${name}`, () => {
+    assert.throws(() => codexJsonlResponse(raw, { finalMessage }), pattern);
+  });
+}
+
 for (const [name, raw, finalMessage, pattern] of [
   ['empty trusted final output', stream(THREAD, START, ANSWER, COMPLETE), ' ', /FINAL_MESSAGE_REQUIRED/],
   ['mismatched trusted final output', stream(THREAD, START, ANSWER, COMPLETE), '{"wrong":true}', /FINAL_MESSAGE_MISMATCH/],
@@ -159,6 +213,8 @@ stat -f '%Lp' "$(dirname "$final")" >> ${JSON.stringify(capture)}
 printf '%s\n' '{"type":"thread.started","thread_id":"thread-final"}'
 printf '%s\n' '{"type":"turn.started"}'
 printf '%s\n' '{"type":"item.completed","item":{"type":"agent_message","text":"Working."}}'
+printf '%s\n' '{"type":"error","message":"Reconnecting... 2/5 (stream disconnected before completion: Incomplete response returned, reason: content_filter)"}'
+printf '%s\n' '{"type":"item.completed","item":{"type":"error","message":"Falling back from WebSockets to HTTPS transport. stream disconnected before completion: Incomplete response returned, reason: content_filter"}}'
 printf '%s\n' '{"type":"item.completed","item":{"type":"agent_message","text":"{\\"ok\\":true}"}}'
 printf '%s\n' '{"type":"turn.completed","usage":{"input_tokens":2,"cached_input_tokens":0,"output_tokens":1,"reasoning_output_tokens":0}}'
 `, { mode: 0o755 });
@@ -169,6 +225,9 @@ printf '%s\n' '{"type":"turn.completed","usage":{"input_tokens":2,"cached_input_
     const response = await client.messages.create({ messages: [{ role: 'user', content: 'extract' }] });
     const [finalPath, mode] = fs.readFileSync(capture, 'utf8').trim().split('\n');
     assert.equal(response.content[0].text, '{"ok":true}');
+    assert.deepEqual(response.codex_completion.transport_recovery, {
+      warning_count: 2, warning_types: ['RECONNECT', 'HTTPS_FALLBACK'],
+    });
     assert.equal(mode, '700');
     assert.equal(fs.existsSync(path.dirname(finalPath)), false);
   } finally {

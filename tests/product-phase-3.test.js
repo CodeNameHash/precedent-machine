@@ -495,6 +495,20 @@ test('Codex CLI product adapter rejects malformed JSON, missing usage and incomp
   });
   const make = (value) => createCodexCliProductModel({ client: { messages: { create: async () => value } } });
   await assert.rejects(() => make(response({ content: [{ type: 'text', text: '```json\n{"families":[]}\n```' }] })).complete({ call_kind: 'ROUTING', prompt_version: 'V1', request: {} }), /CODEX_PRODUCT_JSON/);
+  await assert.rejects(() => make(response({
+    content: [{ type: 'text', text: 'I cannot provide that response.' }],
+    codex_completion: {
+      status: 'COMPLETE', terminal_event: 'turn.completed',
+      transport_recovery: { warning_count: 1, warning_types: ['RECONNECT'] },
+    },
+  })).complete({ call_kind: 'ROUTING', prompt_version: 'V1', request: {} }), /CODEX_PRODUCT_JSON/);
+  await assert.rejects(() => make(response({
+    content: [{ type: 'text', text: '{"families":' }],
+    codex_completion: {
+      status: 'COMPLETE', terminal_event: 'turn.completed',
+      transport_recovery: { warning_count: 1, warning_types: ['HTTPS_FALLBACK'] },
+    },
+  })).complete({ call_kind: 'ROUTING', prompt_version: 'V1', request: {} }), /CODEX_PRODUCT_JSON/);
   await assert.rejects(() => make(response({ usage: null })).complete({ call_kind: 'ROUTING', prompt_version: 'V1', request: {} }), /CODEX_PRODUCT_USAGE/);
   await assert.rejects(() => make(response({ codex_completion: { status: 'FAILED' } })).complete({ call_kind: 'ROUTING', prompt_version: 'V1', request: {} }), /CODEX_PRODUCT_COMPLETION/);
 });
