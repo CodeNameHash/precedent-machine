@@ -1,6 +1,6 @@
 {
   "schema_version": "LEGAL_SCHEMA/V1",
-  "schema_revision": "LEGAL_SCHEMA/V1.1",
+  "schema_revision": "LEGAL_SCHEMA/V1.2",
   "status": "ACTIVE_DEVELOPMENT",
   "fact_rule": "One fact states one independently operative legal effect. Conditions, exceptions, thresholds and timing are roles or linked facts.",
   "families": [
@@ -10,11 +10,13 @@
       "required_fact_types": [
         "TERMINATION_RIGHT",
         "OUTSIDE_DATE",
-        "CURE_OR_NOTICE_PERIOD"
+        "CURE_OR_NOTICE_PERIOD",
+        "TERMINATION_EFFECT"
       ],
       "materiality_rules": [
         "Every independently operative termination right is material.",
-        "Every trigger, condition, exception, cure or notice period, outside-date extension and bar on exercise is material."
+        "Every trigger, condition, exception, cure or notice period, outside-date extension and bar on exercise is material.",
+        "Capture each independently operative termination effect, survival term, liability rule, breach carveout and remedy entitlement, and preserve its damages scope and qualifications without assigning legal severity."
       ],
       "subtypes": [
         {
@@ -159,9 +161,100 @@
             "QUALIFIES",
             "TRIGGERS"
           ]
+        },
+        {
+          "subtype_key": "TERMINATION_NOTICE",
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "AGREEMENT_VOIDING",
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES"
+          ]
+        },
+        {
+          "subtype_key": "PROVISION_SURVIVAL",
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS"
+          ]
+        },
+        {
+          "subtype_key": "LIABILITY_RELEASE",
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES"
+          ]
+        },
+        {
+          "subtype_key": "WILLFUL_MATERIAL_BREACH_CARVEOUT",
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [
+            "DAMAGES_SCOPE"
+          ],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "REQUIRES"
+          ]
+        },
+        {
+          "subtype_key": "REMEDY_ENTITLEMENT",
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT",
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS"
+          ],
+          "optional_roles": [],
+          "relationships": [
+            "QUALIFIES",
+            "REQUIRES"
+          ]
         }
       ],
-      "summary_grammar": "[Party] may terminate if [trigger], subject to [conditions and exceptions], by [notice/action], at [time].",
+      "summary_grammar": "[Party] may terminate if [trigger], subject to [conditions and exceptions], by [notice/action], at [time]. After termination, [actor or subject] [legal operation] [operative object], subject to [qualifications].",
       "compact_omissions": [
         "defined-term text when a linked definition is visible"
       ],

@@ -96,7 +96,7 @@ test('one unknown evidence component stays invalid while usable proposals and ro
 
   const extraction = section.model_calls.find((call) => call.call_kind === 'EXTRACTION');
   assert.deepEqual(extraction.response, providerResponse);
-  assert.equal(extraction.prompt_version, 'PRODUCT_ALL_FAMILY_EXTRACTOR/V5');
+  assert.equal(extraction.prompt_version, 'PRODUCT_ALL_FAMILY_EXTRACTOR/V6');
   assert.equal(extraction.request.schema_version, schema.schema_version);
   assert.equal(extraction.request.schema_revision, schema.schema_revision);
   assert.match(extraction.request.instruction, /copy the exact required and optional role keys/i);

@@ -74,7 +74,7 @@ function orderedSourceFixture() {
 test('legal schema equals the registered 25-family taxonomy', () => {
   const schema = validateLegalSchema(readJson('contracts/product/legal-schema.v1.json'));
   assert.equal(schema.schema_version, 'LEGAL_SCHEMA/V1');
-  assert.equal(schema.schema_revision, 'LEGAL_SCHEMA/V1.1');
+  assert.equal(schema.schema_revision, 'LEGAL_SCHEMA/V1.2');
   assert.deepEqual(
     schema.families.map((family) => family.family_key).sort(),
     [...REGISTERED_FAMILY_KEYS].sort(),
