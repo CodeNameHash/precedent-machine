@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const Module = require('node:module');
 const path = require('node:path');
 const test = require('node:test');
+const ReactDOMServer = require('react-dom/server');
 
 const { transform } = require('next/dist/build/swc');
 const { ProductPhase1Store } = require('../lib/product/phase-1-store');
@@ -337,5 +338,69 @@ test('intake submission sends the current routing prompt contract', async () => 
     assert.equal(body.maxAttempts, 3);
   } finally {
     React.useState = original.useState; React.useEffect = original.useEffect; React.useRef = original.useRef; routerModule.useRouter = original.useRouter; global.fetch = original.fetch;
+  }
+});
+
+test('draft finalization failure explains saved sections and uses draft assembly retry copy', async () => {
+  const { default: ProductIntakePanel } = await loadIntakePanelModule();
+  const React = require('react');
+  const routerModule = require('next/router');
+  const original = {
+    useState: React.useState,
+    useEffect: React.useEffect,
+    useRef: React.useRef,
+    useRouter: routerModule.useRouter,
+  };
+  const runs = [
+    {
+      status: 'FAILED', stage: 'DRAFT_FINALIZATION', run_id: 'draft-run',
+      progress: { total: 79, completed: 79, failed: 0, cost_microusd: 0 },
+    },
+    {
+      status: 'FAILED', stage: 'SECTION_ANALYSIS', run_id: 'section-run',
+      progress: { total: 79, completed: 78, failed: 1, cost_microusd: 0 },
+    },
+    { status: 'FAILED', stage: 'DRAFT_FINALIZATION', run_id: 'sparse-run' },
+    {
+      status: 'RUNNING', stage: 'DRAFT_FINALIZATION', run_id: 'running-run',
+      progress: { total: 79, completed: 79, failed: 0, running: 1, cost_microusd: 0 },
+    },
+    {
+      status: 'PENDING', stage: 'SECTION_ANALYSIS', run_id: 'pending-run',
+      progress: { total: 79, completed: 0, failed: 0, cost_microusd: 0 },
+    },
+  ];
+  try {
+    React.useEffect = () => {};
+    React.useRef = (initial) => ({ current: initial });
+    routerModule.useRouter = () => ({ isReady: false, query: {}, push: async () => {}, replace: async () => {} });
+    for (const run of runs) {
+      let stateIndex = 0;
+      React.useState = (initial) => {
+        const value = stateIndex++ === 1 ? run : (typeof initial === 'function' ? initial() : initial);
+        return [value, () => {}];
+      };
+      const html = ReactDOMServer.renderToStaticMarkup(React.createElement(ProductIntakePanel));
+      if (run.status === 'FAILED' && run.stage === 'DRAFT_FINALIZATION') {
+        if (run.progress) assert.match(html, /All section results are saved, but assembling the review draft failed\./);
+        else {
+          assert.match(html, /Saved section results are retained\./);
+          assert.doesNotMatch(html, /All section results are saved/);
+        }
+        assert.match(html, />Retry draft assembly</);
+        assert.doesNotMatch(html, />Retry failed sections</);
+      } else if (run.status === 'FAILED') {
+        assert.match(html, />Retry failed sections</);
+        assert.doesNotMatch(html, /All section results are saved/);
+      } else {
+        assert.doesNotMatch(html, /Retry (?:failed sections|draft assembly)/);
+        assert.doesNotMatch(html, /All section results are saved/);
+      }
+    }
+  } finally {
+    React.useState = original.useState;
+    React.useEffect = original.useEffect;
+    React.useRef = original.useRef;
+    routerModule.useRouter = original.useRouter;
   }
 });

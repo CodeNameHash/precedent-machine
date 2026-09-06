@@ -176,6 +176,8 @@ export default function ProductIntakePanel() {
   }, [activeRunId, run?.status, run?.stage, run?.progress?.running]);
 
   const progress = run?.progress;
+  const draftAssemblyFailed = run?.status === 'FAILED' && run?.stage === 'DRAFT_FINALIZATION';
+  const allSectionsSaved = progress?.total > 0 && progress.completed === progress.total && progress.failed === 0;
   return (
     <section className="rounded-xl border border-border bg-white p-5 shadow-sm">
       <h2 className="font-display text-lg text-ink">Analyse an SEC agreement</h2>
@@ -194,9 +196,10 @@ export default function ProductIntakePanel() {
         <div className="mt-4 rounded-lg bg-paper p-3 text-sm text-inkMid" data-testid="product-run-status">
           <div className="flex flex-wrap justify-between gap-2"><strong>{run.status}</strong><span>{run.stage}</span></div>
           {progress ? <p className="mt-1">{progress.completed}/{progress.total} sections, {progress.failed} failed, ${(Number(progress.cost_microusd || 0) / 1000000).toFixed(4)} model cost</p> : null}
+          {draftAssemblyFailed ? <p className="mt-2">{allSectionsSaved ? 'All section results are saved, but assembling the review draft failed.' : 'The review draft could not be assembled. Saved section results are retained.'}</p> : null}
           {run.stage === 'DOCUMENT_IDENTITY_REVIEW' ? <div className="mt-2 rounded border border-amber-200 bg-amber-50 p-3"><p className="font-semibold text-amber-900">Confirm document identity</p><dl className="mt-2 grid gap-1 text-xs"><div><dt className="inline font-semibold">Parties: </dt><dd className="inline">{displayIdentityParties(run.source_identity?.parties)}</dd></div><div><dt className="inline font-semibold">Filing: </dt><dd className="inline">{run.source_identity?.filing_accession || 'Unknown'} · {run.source_identity?.exhibit_filename || 'Unknown exhibit'}</dd></div><div><dt className="inline font-semibold">Agreement date: </dt><dd className="inline">{run.source_identity?.agreement_date || 'Not identified'}</dd></div></dl>{run.identity_review?.reasons?.length ? <ul className="mt-2 list-disc pl-4 text-xs text-amber-800">{run.identity_review.reasons.map((reason) => <li key={typeof reason === 'string' ? reason : JSON.stringify(reason)}>{typeof reason === 'string' ? reason : reason.message || reason.code || JSON.stringify(reason)}</li>)}</ul> : null}<button type="button" onClick={confirmIdentity} disabled={busy} className="mt-2 rounded border border-amber-700 px-3 py-1 font-semibold text-amber-900">Confirm this agreement</button></div> : null}
           {(progress?.failed > 0 || run.status === 'PARTIAL' || run.status === 'FAILED') ? (
-            <button type="button" onClick={() => advance(activeRunId, true)} disabled={busy} className="mt-2 rounded border border-ink px-3 py-1 font-semibold">Retry failed sections</button>
+            <button type="button" onClick={() => advance(activeRunId, true)} disabled={busy} className="mt-2 rounded border border-ink px-3 py-1 font-semibold">{draftAssemblyFailed ? 'Retry draft assembly' : 'Retry failed sections'}</button>
           ) : null}
           {!busy && canAdvanceProductRun(run) ? <button type="button" onClick={() => advance(activeRunId)} className="mt-2 rounded border border-ink px-3 py-1 font-semibold">Continue analysis</button> : null}
         </div>

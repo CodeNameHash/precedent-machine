@@ -412,13 +412,34 @@ The new full diagnostic stopped after 14 saved sections because different
 proposals with the same supporting text received the same internal identifier.
 The correction preserves each candidate as separate pending review work;
 database checks pass. It is live in the private preview. Ordinary Retry resumed
-the same run with all 14 completed sections retained. It has passed 46 saved
-sections, but section 5.1 contains no proposed facts and remains unresolved for
-coverage. Access and no-shop retain substantially more detail. Their saved
-output is being checked against Ben's partial notes, not accepted by count.
+the same run with all 14 completed sections retained. Section 5.1 contains no
+proposed facts and remains unresolved for coverage. Its first extraction timed
+out; the second completed normally with an explicitly unresolved empty reply.
+Access, employee protections, closing conditions and termination rights retain
+substantially more detail, including separate benefit standards and no added
+continuing-MAE condition. No-shop still omits the cease-discussions duty's
+information-provision limb. Section 7.2 also has no facts: the supplied
+termination schema can express rights, dates and cure periods, but not notice,
+survival, liability or remedies after termination. A shared additive schema
+correction is accepted and in progress. The review screen now clearly explains
+an unresolved empty extraction using the existing coverage finding; source
+controls and legal review requirements are unchanged. Focused interface tests
+and a browser check of both review locations pass. These are assistant checks
+against source and Ben's partial notes, not lawyer acceptance.
+All 79 sections are now saved, with 816 proposals and 135 relationships. Draft
+assembly exposed a mismatch: extraction retained unsupported relationships with
+explicit findings, but assembly then rejected the entire draft for those same
+relationships. The mechanical correction retains the links only with matching
+open findings and still prohibits acceptance of the unsupported relationship.
+Read-only replay of all saved results passes under the original V1.1 schema;
+the original failure reproduces without the correction. No sections or model
+calls are regenerated. A separate one-limb IOC probe retained full context and
+returned two proposals in 37 seconds, but still missed an inherited verb in one
+citation. It is not a full-section result or an accepted processing change.
 The original Olaplex run is unchanged. Testing it again is diagnostic work,
-not a new blind test. Full lawyer review, publication and the combined 90-minute
-processing/review bar remain unproved. No release bar or production setting has
+not a new blind test. The assisted diagnostic has exceeded 90 minutes before
+lawyer review and cannot meet the combined processing/review bar. Full lawyer
+review and publication remain unproved. No release bar or production setting has
 changed. Speed work and precedent tracing remain deferred.
 
 The seventh Public Storage diagnostic retains all 105 saved sections, 338
