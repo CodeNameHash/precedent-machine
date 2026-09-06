@@ -10,6 +10,15 @@ import { RELATIONSHIP_TYPES } from '../../lib/product/legal-schema';
 
 const headers = { 'Content-Type': 'application/json', 'X-PM-CSRF': 'same-origin' };
 
+const SOURCE_SPAN_KIND_ORDER = Object.freeze({
+  CHAPEAU: 0,
+  OPERATIVE: 1,
+  FULL_SECTION: 2,
+  DEFINITION: 3,
+  CROSS_REFERENCE: 4,
+  RESIDUAL_PARAGRAPH: 5,
+});
+
 function proposalRequiredRoles(proposal) {
   const family = legalSchema.families.find((item) => item.family_key === proposal.family_key);
   return family?.subtypes.find((item) => item.subtype_key === proposal.subtype_key)?.required_roles || [];
@@ -192,6 +201,10 @@ function RelationshipReview({ items, factItems, analysis, onDecision, onSave, on
   return <section className="space-y-3"><div className="flex items-end justify-between border-b border-border pb-2"><div><p className="text-xs font-bold uppercase tracking-wide text-accent">Relationship review</p><h2 className="font-display text-xl text-ink">Fact relationships</h2></div>{!adding ? <button type="button" onClick={() => setAdding(true)} className="text-xs font-semibold text-accent">+ Add relationship</button> : null}</div>{adding ? <RelationshipEditor factItems={factItems} analysis={analysis} busy={busy} onSave={onSave} onCancel={() => setAdding(false)} /> : null}{items.map((item) => <RelationshipReviewCard key={item.item_id} item={item} factItems={factItems} analysis={analysis} busy={busy} onDecision={onDecision} onSave={onSave} onSource={onSource} />)}{items.length === 0 && !adding ? <p className="text-sm text-inkLight">No model-proposed relationships. Add one only when the source supports it.</p> : null}</section>;
 }
 
+export function ReviewSectionHeading({ section }) {
+  return <div><p className="text-xs font-bold uppercase tracking-wide text-accent">{displaySectionReference(section.routing.section_reference)}</p><h2 className="font-display text-xl text-ink">{section.heading || 'Agreement section'}</h2>{section.routing.rationale ? <details className="mt-1 max-w-3xl text-xs text-inkMid"><summary className="cursor-pointer font-semibold">Why this section was classified</summary><p className="mt-1">{section.routing.rationale}</p></details> : null}</div>;
+}
+
 export function toggleSourceSpanId(sourceSpanIds, spanId, checked) {
   if (checked) return sourceSpanIds.includes(spanId) ? sourceSpanIds : [...sourceSpanIds, spanId];
   return sourceSpanIds.filter((candidate) => candidate !== spanId);
@@ -226,6 +239,8 @@ export function AddFact({ section, analysis, onAdd, busy, initiallyOpen = false 
   const closure = analysis.source_closures.find((item) => item.structure_node_id === section.node.node_id);
   const spans = analysis.spans.filter((span) => span.source_closure_ids?.includes(closure?.source_closure_id));
   const spanGroups = [...new Set(spans.map((span) => span.kind))]
+    .sort((left, right) => (SOURCE_SPAN_KIND_ORDER[left] ?? 99) - (SOURCE_SPAN_KIND_ORDER[right] ?? 99)
+      || left.localeCompare(right))
     .map((kind) => [kind, spans.filter((span) => span.kind === kind)]);
   const [sourceSpanIds, setSourceSpanIds] = useState([]);
   function changeFamily(value) {
@@ -382,7 +397,7 @@ export default function ReviewWorkspace({ runId }) {
         analysis={workspace.analysis} busy={busy} onSource={openSource}
         onDecision={(itemId, decision) => command({ type: 'DECIDE_ITEM', item_id: itemId, decision })}
         onSave={(relationship) => command({ type: 'UPSERT_RELATIONSHIP', ...relationship })} />
-      {view.sections.map((section) => <section id={`section-${section.node.node_id}`} key={section.node.node_id} className="space-y-3"><div className="flex items-end justify-between border-b border-border pb-2"><div><p className="text-xs font-bold uppercase tracking-wide text-accent">{displaySectionReference(section.routing.section_reference)}</p><h2 className="font-display text-xl text-ink">{section.node.title || section.routing.rationale || 'Agreement section'}</h2></div><AddFact section={section} analysis={workspace.analysis} busy={busy} onAdd={(fact) => command({ type: 'ADD_MISSING_FACT', ...fact })} /></div>{section.proposals.map((entry) => <ProposalCard key={entry.proposal.proposal_id} entry={entry} busy={busy} onSource={openSource} requiredRoleKeys={proposalRequiredRoles(entry.proposal)} structureNodes={workspace.analysis.agreement_structure?.nodes || []} availablePropositionGroups={workspace.analysis.proposition_groups || []} availableProposals={workspace.analysis.proposals || []} availableSourceSpans={workspace.analysis.spans.filter((span) => span.source_closure_ids?.includes(entry.proposal.source_closure_id))} onDecision={(itemId, decision, edits = {}) => command({ type: 'DECIDE_ITEM', item_id: itemId, decision, ...edits })} />)}{section.review_items.map((item) => <Requirement key={item.item_id} item={item} analysis={workspace.analysis} busy={busy} onSource={openSource} onDecision={(itemId, decision) => command({ type: 'DECIDE_ITEM', item_id: itemId, decision })} />)}{section.proposals.length === 0 && section.review_items.length === 0 ? <p className="text-sm text-inkLight">No proposal or flagged disposition.</p> : null}</section>)}
+      {view.sections.map((section) => <section id={`section-${section.node.node_id}`} key={section.node.node_id} className="space-y-3"><div className="flex items-end justify-between border-b border-border pb-2"><ReviewSectionHeading section={section} /><AddFact section={section} analysis={workspace.analysis} busy={busy} onAdd={(fact) => command({ type: 'ADD_MISSING_FACT', ...fact })} /></div>{section.proposals.map((entry) => <ProposalCard key={entry.proposal.proposal_id} entry={entry} busy={busy} onSource={openSource} requiredRoleKeys={proposalRequiredRoles(entry.proposal)} structureNodes={workspace.analysis.agreement_structure?.nodes || []} availablePropositionGroups={workspace.analysis.proposition_groups || []} availableProposals={workspace.analysis.proposals || []} availableSourceSpans={workspace.analysis.spans.filter((span) => span.source_closure_ids?.includes(entry.proposal.source_closure_id))} onDecision={(itemId, decision, edits = {}) => command({ type: 'DECIDE_ITEM', item_id: itemId, decision, ...edits })} />)}{section.review_items.map((item) => <Requirement key={item.item_id} item={item} analysis={workspace.analysis} busy={busy} onSource={openSource} onDecision={(itemId, decision) => command({ type: 'DECIDE_ITEM', item_id: itemId, decision })} />)}{section.proposals.length === 0 && section.review_items.length === 0 ? <p className="text-sm text-inkLight">No proposal or flagged disposition.</p> : null}</section>)}
       <section className="rounded-xl border border-border bg-white p-4"><h2 className="font-display text-lg">Revision history</h2><div className="mt-2 flex flex-wrap gap-2">{workspace.review.revisions.filter((revision) => revision.event_type !== 'PUBLISH').map((revision) => <button disabled={busy || revision.version === workspace.review.version} type="button" key={revision.version} onClick={() => command({ type: 'RESTORE', restore_version: revision.version })} className="rounded border border-border px-2 py-1 text-xs">Restore v{revision.version} · {revision.event_type}</button>)}</div></section>
     </>}
     <SourceContextPanel open={Boolean(sourceSelection)} onClose={() => setSourceSelection(null)} source={source} span={sourceSelection?.span} reviewContext={sourceSelection?.reviewContext} closureSpans={workspace.analysis.spans.filter((item) => item.source_closure_ids?.includes(sourceSelection?.closureId))} loading={!source} />

@@ -19,7 +19,7 @@ require.extensions['.jsx'] = function compileJsx(module, filename) {
 const ProposalCard = require('../components/product/ProposalCard.jsx').default;
 const SourceContextPanel = require('../components/product/SourceContextPanel.jsx').default;
 const {
-  AddFact, missingFactCommand, toggleSourceSpanId,
+  AddFact, ReviewSectionHeading, missingFactCommand, toggleSourceSpanId,
 } = require('../components/product/ReviewWorkspace.jsx');
 
 const nodes = [
@@ -114,9 +114,12 @@ test('missing fact UI requires deliberate multi-span source selection and preser
     agreement_structure: { nodes },
     source_closures: [{ source_closure_id: 'closure', structure_node_id: 'section' }],
     spans: [
+      { span_id: 'definition', structure_node_id: 'definition', source_closure_ids: ['closure'], kind: 'DEFINITION', exact_text: 'Acquisition Proposal means an offer.' },
       { ...spans[0], kind: 'CHAPEAU', exact_text: 'The Company shall not, before the Effective Time,' },
+      { span_id: 'residual', structure_node_id: 'section', source_closure_ids: ['closure'], kind: 'RESIDUAL_PARAGRAPH', exact_text: 'Residual source text.' },
       { ...spans[1], span_id: 'operative', structure_node_id: 'section', kind: 'OPERATIVE', exact_text: `(a) amend (i) its charter or (ii) the Tax Receivable Agreement${' subject to the stated exceptions'.repeat(8)}.` },
       { span_id: 'full', structure_node_id: 'section', source_closure_ids: ['closure'], kind: 'FULL_SECTION', exact_text: 'Complete Section 5.1 text.' },
+      { span_id: 'cross', structure_node_id: 'definition', source_closure_ids: ['closure'], kind: 'CROSS_REFERENCE', exact_text: 'Section 8.4 source text.' },
     ],
   };
   const markup = renderToStaticMarkup(React.createElement(AddFact, {
@@ -128,7 +131,12 @@ test('missing fact UI requires deliberate multi-span source selection and preser
   assert.match(markup, /Operative.*\(a\) amend/);
   assert.match(markup, /Full section.*Complete Section 5\.1 text/);
   assert.match(markup, /Read full source/);
-  assert.equal((markup.match(/type="checkbox"/g) || []).length, 3);
+  assert.equal((markup.match(/type="checkbox"/g) || []).length, 6);
+  assert.equal(markup.indexOf('Chapeau') < markup.indexOf('Operative'), true);
+  assert.equal(markup.indexOf('Operative') < markup.indexOf('Full section'), true);
+  assert.equal(markup.indexOf('Full section') < markup.indexOf('Definition'), true);
+  assert.equal(markup.indexOf('Definition') < markup.indexOf('Cross reference'), true);
+  assert.equal(markup.indexOf('Cross reference') < markup.indexOf('Residual paragraph'), true);
   assert.doesNotMatch(markup, /checked=""/);
   assert.match(markup, /<button disabled=""[^>]*>Add fact<\/button>/);
 
@@ -145,6 +153,23 @@ test('missing fact UI requires deliberate multi-span source selection and preser
     sourceSpanIds: ['owned', 'operative'],
   });
   assert.deepEqual(command.source_span_ids, ['owned', 'operative']);
+});
+
+test('review section heading keeps routing rationale separate and closed', () => {
+  const markup = renderToStaticMarkup(React.createElement(ReviewSectionHeading, {
+    section: {
+      heading: 'Conduct of Business by the Company Pending the Closing',
+      routing: {
+        section_reference: '5.1',
+        rationale: 'The section contains interim operating covenants.',
+      },
+    },
+  }));
+
+  assert.match(markup, /<h2[^>]*>Conduct of Business by the Company Pending the Closing<\/h2>/);
+  assert.match(markup, /<details[^>]*><summary[^>]*>Why this section was classified<\/summary>/);
+  assert.match(markup, /The section contains interim operating covenants/);
+  assert.doesNotMatch(markup, /<details[^>]*open/);
 });
 
 test('proposal edit offers explicit standalone or compatible recorded group repair', () => {

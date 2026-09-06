@@ -4,12 +4,55 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 
 const {
+  authoredSectionHeading,
   commonRoleHelp,
   primaryProposalSource,
   presentCitationChoices,
   proposalRepairState,
   presentReviewEvidence,
 } = require('../lib/product/review-presentation');
+
+test('review section heading uses stored title or exact owned full-section opening only', () => {
+  const node = { node_id: 'section-5-1', reference: '5.1' };
+  const routing = {
+    structure_node_id: node.node_id,
+    section_reference: '5.1',
+    rationale: 'A long model explanation that must never become the heading.',
+  };
+  const sourceClosure = {
+    source_closure_id: 'closure-5-1', structure_node_id: node.node_id,
+    section_reference: '5.1', full_section_span_id: 'full-5-1',
+  };
+  const fullSpan = {
+    span_id: 'full-5-1', structure_node_id: node.node_id,
+    source_closure_ids: ['closure-5-1'], kind: 'FULL_SECTION',
+    exact_text: '5.1 Conduct of Business by the Company Pending the Closing. Between signing and closing, the Company shall operate normally.',
+  };
+
+  assert.equal(authoredSectionHeading({ node: { ...node, title: ' Stored title ' }, routing, sourceClosure, spans: [fullSpan] }), 'Stored title');
+  assert.equal(authoredSectionHeading({ node, routing, sourceClosure, spans: [fullSpan] }), 'Conduct of Business by the Company Pending the Closing');
+  assert.equal(authoredSectionHeading({
+    node, routing, sourceClosure,
+    spans: [{ ...fullSpan, exact_text: 'Section 5.1. Conduct of Business by the Company Pending the Closing. Operative text.' }],
+  }), 'Conduct of Business by the Company Pending the Closing');
+  assert.equal(authoredSectionHeading({ node, routing, sourceClosure, spans: [] }), 'Agreement section');
+  assert.equal(authoredSectionHeading({
+    node, routing, sourceClosure,
+    spans: [{ ...fullSpan, structure_node_id: 'other-section' }],
+  }), 'Agreement section');
+  assert.equal(authoredSectionHeading({
+    node, routing, sourceClosure,
+    spans: [{ ...fullSpan, exact_text: '5.2 Wrong section. Operative text.' }],
+  }), 'Agreement section');
+  assert.equal(authoredSectionHeading({
+    node, routing, sourceClosure,
+    spans: [{ ...fullSpan, exact_text: '5.1 Heading without a sentence delimiter' }],
+  }), 'Agreement section');
+  assert.equal(authoredSectionHeading({
+    node, routing, sourceClosure,
+    spans: [{ ...fullSpan, exact_text: `5.1 ${'Long heading '.repeat(20)}. Operative text.` }],
+  }), 'Agreement section');
+});
 
 const ownNode = 'own';
 const contextNode = 'context';
