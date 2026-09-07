@@ -274,6 +274,30 @@ test('citation review labels focused supporting words as a diagnostic with surro
   assert.doesNotMatch(markup, />Narrow</);
 });
 
+test('release timing explanation matches the stored evaluation version', () => {
+  const renderEvaluation = (schemaVersion) => renderToStaticMarkup(React.createElement(ReleaseEvaluation, {
+    state: {
+      summary: { families: [] }, items: [], release_evaluation_input: null,
+      release_evaluation: {
+        schema_version: schemaVersion, passed: true, bars: {},
+        diagnostics: {
+          review_time_minutes: 120, measured_review_time_seconds: 1200,
+          processing_minutes: 100, effective_elapsed_minutes: 120,
+        },
+      },
+    },
+    analysis: { issues: [], coverage_assertions: [] }, onEvaluate() {}, onSource() {}, busy: false,
+  }));
+
+  const current = renderEvaluation('PRODUCT_SUPERVISED_RELEASE_EVALUATION/V2');
+  assert.match(current, /There is no 90-minute pass\/fail limit\. Valid timing is still required\./);
+  assert.doesNotMatch(current, /historical evaluation/);
+
+  const historical = renderEvaluation('PRODUCT_SUPERVISED_RELEASE_EVALUATION/V1');
+  assert.match(historical, /This historical evaluation used the 90-minute pass\/fail limit\./);
+  assert.doesNotMatch(historical, /There is no 90-minute/);
+});
+
 test('accepted summary and release evaluation expose every saved citation', () => {
   const fact = {
     review_item_id: 'fact-1', source_id: 'proposal-1', statement: 'The Company shall not amend its charter.',

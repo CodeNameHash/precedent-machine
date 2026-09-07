@@ -258,7 +258,7 @@ test('lawyer edits preserve citations, missing facts validate roles, and publish
     citation_assessments: publishedFacts.map((fact) => ({ review_item_id: fact.review_item_id, exact: true, legally_sufficient: true, narrow: true })),
     elapsed_minutes: 10, developer_assisted: false,
   }, { analysis, legalSchema, clock: clock('2026-09-04T12:11:00Z') });
-  assert.equal(state.release_evaluation.schema_version, 'PRODUCT_SUPERVISED_RELEASE_EVALUATION/V1');
+  assert.equal(state.release_evaluation.schema_version, 'PRODUCT_SUPERVISED_RELEASE_EVALUATION/V2');
   assert.equal(state.release_evaluation_input.lawyer_attested_by, 'lawyer@example.test');
   assert.equal(state.items.filter((item) => ['ACCEPTED', 'EDITED'].includes(item.decision)).every((item) => item.decided_by_role === 'LAWYER'), true);
   assert.equal(state.agreement_coverage.confirmed_by_role, 'LAWYER');
@@ -802,7 +802,7 @@ test('review HTTP boundary uses server-derived reviewer identity and processing 
   assert.equal(response.body.review.state.release_evaluation_input.lawyer_attested_by, 'lawyer@example.test');
   assert.equal(response.body.review.state.release_evaluation.diagnostics.processing_minutes, 80);
   assert.equal(response.body.review.state.release_evaluation.diagnostics.effective_elapsed_minutes, 100);
-  assert.equal(response.body.review.state.release_evaluation.bars.review_within_ninety_minutes_without_developer, false);
+  assert.equal(response.body.review.state.release_evaluation.bars.timing_measured_without_developer, true);
   const rejected = responseDouble();
   await handler({ method: 'POST', query: { id: analysis.analysis_run_id }, headers: { 'x-pm-csrf': 'same-origin' }, body: {
     expected_version: 1, idempotency_key: 'release-evaluation-2', command: {
@@ -823,6 +823,8 @@ test('Review UI separates candidate finalisation, evaluation, activation and rec
   assert.match(source, /displaySectionReference\(section\.section_reference\)/);
   assert.match(source, /displaySectionReference\(section\.routing\.section_reference\)/);
   assert.match(source, /pendingAction\.current\?\.signature === signature/);
+  assert.doesNotMatch(source, /90-minute check/);
+  assert.match(source, /There is no 90-minute pass\/fail limit\. Valid timing is still required\./);
   assert.match(source, /await load\(\)/);
   assert.match(source, /loadSource\(\).*catch/);
   assert.match(source, /Entered total:/);

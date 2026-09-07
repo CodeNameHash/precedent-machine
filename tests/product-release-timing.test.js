@@ -81,7 +81,7 @@ test('Friday publication and Monday reopen count only cumulative draft intervals
   }));
   assert.equal(evaluation.diagnostics.processing_minutes, 50);
   assert.equal(evaluation.diagnostics.effective_elapsed_minutes, 85);
-  assert.equal(evaluation.bars.review_within_ninety_minutes_without_developer, true);
+  assert.equal(evaluation.bars.timing_measured_without_developer, true);
 });
 
 test('repeated reopen accumulates each draft interval without counting published intervals', () => {
@@ -195,23 +195,25 @@ test('old reopened draft fails closed when historical timing is incomplete', () 
   }), /REVIEW_TIMING/);
 });
 
-test('effective elapsed rejects under-reported total', () => {
+test('effective elapsed reports an under-stated total without imposing a duration limit', () => {
   const result = evaluateSupervisedRelease(input({ elapsedMinutes: 10 }));
   assert.equal(result.diagnostics.processing_minutes, 80);
   assert.equal(result.diagnostics.effective_elapsed_minutes, 100);
-  assert.equal(result.bars.review_within_ninety_minutes_without_developer, false);
+  assert.equal(result.bars.timing_measured_without_developer, true);
+  assert.equal(result.passed, true);
 });
 
 test('missing, reversed and negative timing fail closed', () => {
   for (const timing of [{ processingStartedAt: undefined }, { processingStartedAt: '2026-01-02T00:00:00Z', processingCompletedAt: '2026-01-01T00:00:00Z' }, { elapsedMinutes: -1 }]) {
-    assert.equal(evaluateSupervisedRelease(input(timing)).bars.review_within_ninety_minutes_without_developer, false);
+    assert.equal(evaluateSupervisedRelease(input(timing)).bars.timing_measured_without_developer, false);
   }
 });
 
-test('valid total remains eligible', () => {
-  const result = evaluateSupervisedRelease(input({ elapsedMinutes: 90, reviewState: { ...input().reviewState, metrics: { review_time_seconds: 600 } } }));
-  assert.equal(result.diagnostics.effective_elapsed_minutes, 90);
-  assert.equal(result.bars.review_within_ninety_minutes_without_developer, true);
+test('valid timing over ninety minutes remains eligible without developer assistance', () => {
+  const result = evaluateSupervisedRelease(input({ elapsedMinutes: 120, reviewState: { ...input().reviewState, metrics: { review_time_seconds: 6000 } } }));
+  assert.equal(result.diagnostics.effective_elapsed_minutes, 180);
+  assert.equal(result.bars.timing_measured_without_developer, true);
+  assert.equal(result.passed, true);
 });
 
 test('store reads trusted run and draft timestamps', async () => {

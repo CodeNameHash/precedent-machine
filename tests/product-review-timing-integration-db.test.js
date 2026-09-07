@@ -23,6 +23,16 @@ const migrations = [
   'supabase/migrations/20260905214000_product_cumulative_review_timing.sql',
   'supabase/migrations/20260905215000_product_finding_resolution_validation.sql',
   'supabase/migrations/20260905220000_product_review_proposition_group_repair.sql',
+  'supabase/migrations/20260905221000_product_analysis_running_progress.sql',
+  'supabase/migrations/20260905222000_product_relationship_review.sql',
+  'supabase/migrations/20260905223000_product_span_closure_lookup.sql',
+  'supabase/migrations/20260905224000_product_cross_section_relationship_staging.sql',
+  'supabase/migrations/20260905225000_product_legal_schema_v1_1_relationship_types.sql',
+  'supabase/migrations/20260905227000_product_legal_schema_revision_persistence.sql',
+  'supabase/migrations/20260905230000_product_notice_update_relationship_types.sql',
+  'supabase/migrations/20260905231000_product_termination_effect_relationship_types.sql',
+  'supabase/migrations/20260905232000_product_review_validation_identity_lookup.sql',
+  'supabase/migrations/20260906234757_product_release_timing_measurement.sql',
 ].map((file) => fs.readFileSync(path.join(ROOT, file), 'utf8'));
 
 const actor = 'review-timing-integration-lawyer';
@@ -71,7 +81,7 @@ test('real review validator preserves cumulative timing across publish, reopen, 
     (run_id,source_document_id,retrieval_url,idempotency_key,submission_fingerprint,schema_version,
       prompt_bundle_version,model_config,explicit_generation,source_generation,max_attempts,status,stage,created_at,updated_at)
     VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb,0,1,1,'READY','READY',
-      statement_timestamp() - interval '50 minutes',statement_timestamp())`, [
+      statement_timestamp() - interval '100 minutes',statement_timestamp())`, [
     runId,
     sourceDocumentId,
     `https://example.test/${sourceDocumentId}`,
@@ -180,7 +190,9 @@ test('real review validator preserves cumulative timing across publish, reopen, 
     idempotencyKey: `timing-evaluate-${runId}`, command: evaluationCommand,
   });
   assert.equal(review.state.release_evaluation.diagnostics.measured_review_time_seconds, 35 * 60);
-  assert.equal(review.state.release_evaluation.diagnostics.effective_elapsed_minutes, 85);
+  assert.equal(review.state.release_evaluation.diagnostics.effective_elapsed_minutes, 135);
+  assert.equal(review.state.release_evaluation.bars.timing_measured_without_developer, true);
+  assert.equal(review.state.release_evaluation.schema_version, 'PRODUCT_SUPERVISED_RELEASE_EVALUATION/V2');
 
   const read = await store.getReview({ runId, actor });
   assert.equal(read.publications.length, 2);
@@ -188,7 +200,40 @@ test('real review validator preserves cumulative timing across publish, reopen, 
   assert.equal(publications[0].metrics.review_time_seconds, 30 * 60);
   assert.equal(publications[1].metrics.review_time_seconds, 35 * 60);
   assert.equal(read.revisions.find((revision) => revision.event_type === 'EVALUATE_RELEASE')
-    .release_evaluation_diagnostics.effective_elapsed_minutes, 85);
+    .release_evaluation_diagnostics.effective_elapsed_minutes, 135);
+
+  const forgedTiming = structuredClone(review.state);
+  forgedTiming.release_evaluation.diagnostics.processing_minutes += 1;
+  await client.query('SAVEPOINT forged_timing_measurement');
+  await assert.rejects(() => store.saveReview({
+    runId, expectedVersion: 5, state: forgedTiming, actor, eventType: 'EVALUATE_RELEASE',
+    idempotencyKey: `timing-forged-${runId}`, command: evaluationCommand,
+  }), /release timing mismatch|DATABASE_ERROR/i);
+  await client.query('ROLLBACK TO SAVEPOINT forged_timing_measurement');
+  await client.query('RELEASE SAVEPOINT forged_timing_measurement');
+
+  for (const [label, schemaVersion] of [['missing', undefined], ['unknown', 'PRODUCT_SUPERVISED_RELEASE_EVALUATION/V999']]) {
+    const invalidVersion = structuredClone(review.state);
+    if (schemaVersion === undefined) delete invalidVersion.release_evaluation.schema_version;
+    else invalidVersion.release_evaluation.schema_version = schemaVersion;
+    await client.query(`SAVEPOINT ${label}_timing_version`);
+    await assert.rejects(() => store.saveReview({
+      runId, expectedVersion: 5, state: invalidVersion, actor, eventType: 'EVALUATE_RELEASE',
+      idempotencyKey: `timing-${label}-version-${runId}`, command: evaluationCommand,
+    }), /release timing is incomplete|DATABASE_ERROR/i);
+    await client.query(`ROLLBACK TO SAVEPOINT ${label}_timing_version`);
+    await client.query(`RELEASE SAVEPOINT ${label}_timing_version`);
+  }
+
+  const assistedCommand = { ...evaluationCommand, developer_assisted: true };
+  state = applyReviewCommand(review.state, assistedCommand, {
+    analysis, legalSchema, clock: fixedClock(republishedAt), timing,
+  });
+  assert.equal(state.release_evaluation.bars.timing_measured_without_developer, false);
+  review = await store.saveReview({
+    runId, expectedVersion: 5, state, actor, eventType: 'EVALUATE_RELEASE',
+    idempotencyKey: `timing-assisted-${runId}`, command: assistedCommand,
+  });
 
   const privileges = (await client.query(`SELECT
     has_function_privilege('anon', 'public.product_phase3_restore_review(uuid,integer,integer,text,text,text)', 'EXECUTE') AS anon_restore,
@@ -204,5 +249,21 @@ test('real review validator preserves cumulative timing across publish, reopen, 
     anon_read: false,
     authenticated_read: false,
     service_read: true,
+  });
+
+  const savePrivileges = (await client.query(`SELECT
+    has_function_privilege('anon', 'product_private.product_phase3_save_review(uuid,integer,jsonb,text,text,text,text,jsonb)', 'EXECUTE') AS anon_private_save,
+    has_function_privilege('authenticated', 'product_private.product_phase3_save_review(uuid,integer,jsonb,text,text,text,text,jsonb)', 'EXECUTE') AS authenticated_private_save,
+    has_function_privilege('service_role', 'product_private.product_phase3_save_review(uuid,integer,jsonb,text,text,text,text,jsonb)', 'EXECUTE') AS service_private_save,
+    has_function_privilege('anon', 'public.product_phase3_save_review(uuid,integer,jsonb,text,text,text,text,jsonb)', 'EXECUTE') AS anon_public_save,
+    has_function_privilege('authenticated', 'public.product_phase3_save_review(uuid,integer,jsonb,text,text,text,text,jsonb)', 'EXECUTE') AS authenticated_public_save,
+    has_function_privilege('service_role', 'public.product_phase3_save_review(uuid,integer,jsonb,text,text,text,text,jsonb)', 'EXECUTE') AS service_public_save`)).rows[0];
+  assert.deepEqual(savePrivileges, {
+    anon_private_save: false,
+    authenticated_private_save: false,
+    service_private_save: true,
+    anon_public_save: false,
+    authenticated_public_save: false,
+    service_public_save: true,
   });
 });

@@ -24,6 +24,7 @@ const phase3Migration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/202
 const citationRepairMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260905212000_product_review_citation_repair.sql'), 'utf8');
 const finalizationRetryMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260905203000_product_finalization_retry.sql'), 'utf8');
 const releaseTimingGuardMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260905205000_product_release_timing_guard.sql'), 'utf8');
+const releaseTimingMeasurementMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260906234757_product_release_timing_measurement.sql'), 'utf8');
 const groupRepairMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260905220000_product_review_proposition_group_repair.sql'), 'utf8');
 const actor = 'phase3-db-lawyer';
 
@@ -40,6 +41,8 @@ test.before(async () => {
   else await client.query(citationRepairMigration);
   if (process.env.TEST_PGLITE_MODULE) await client.exec(groupRepairMigration);
   else await client.query(groupRepairMigration);
+  if (process.env.TEST_PGLITE_MODULE) await client.exec(releaseTimingMeasurementMigration);
+  else await client.query(releaseTimingMeasurementMigration);
 });
 
 test.after(phase2Database.teardownDatabase);
@@ -241,14 +244,14 @@ test('Phase 3 review persistence is isolated, idempotent, versioned and atomical
     inventory: [{ inventory_item_id: 'phase3-db-inventory-1', description: 'One independently identified material legal point.', severity: 'MATERIAL' }],
     reconciliation: [{ inventory_item_id: 'phase3-db-inventory-1', disposition: 'PUBLISHED_FACT', review_item_id: publishedFacts[0].review_item_id }],
     citation_assessments: publishedFacts.map((fact) => ({ review_item_id: fact.review_item_id, exact: true, legally_sufficient: true, narrow: true })),
-    elapsed_minutes: 45, developer_assisted: false,
+    elapsed_minutes: 120, developer_assisted: false,
   };
   const timing = await store.getReleaseTiming({ runId: run.run_id });
   state = applyReviewCommand(review.state, evaluationCommand, { analysis, legalSchema: schema, clock, timing });
   review = await store.saveReview({ runId: run.run_id, expectedVersion: 4, state, actor, eventType: 'EVALUATE_RELEASE', idempotencyKey: 'phase3-release-evaluation', command: evaluationCommand });
   const firstEvaluatedState = structuredClone(review.state);
   assert.equal(review.state.release_evaluation_input.lawyer_attested_by, actor);
-  assert.equal(review.state.release_evaluation.schema_version, 'PRODUCT_SUPERVISED_RELEASE_EVALUATION/V1');
+  assert.equal(review.state.release_evaluation.schema_version, 'PRODUCT_SUPERVISED_RELEASE_EVALUATION/V2');
   const forgedTiming = structuredClone(review.state);
   forgedTiming.release_evaluation.diagnostics.processing_minutes = 999;
   forgedTiming.release_evaluation.diagnostics.effective_elapsed_minutes = 999;

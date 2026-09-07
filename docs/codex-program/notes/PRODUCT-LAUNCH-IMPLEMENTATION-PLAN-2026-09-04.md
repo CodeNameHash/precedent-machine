@@ -400,13 +400,14 @@ result. Every substantive section and required role has a disposition.
 ### Phase 5. Freeze, test blind and correct honestly, 3 days
 
 Current position, 2026-09-06: Apogee finished all 95 sections through normal
-private intake, without manual repair, in 100 minutes 17 seconds. This exceeds
-the fixed 90-minute processing-and-review requirement before legal review.
+private intake, without manual repair, in 100 minutes 17 seconds. Ben has
+approved deferring speed improvements, so exceeding 90 minutes no longer blocks
+the supervised internal launch. Timing remains measured and reported.
 The AI draft remains unopened, with no review decisions or publication.
 Arcellx's full party names, clear review counters and access to each saved
 citation inside complete clause context are verified in the private view.
 Independent lawyer review, coverage confirmation and publication remain
-outstanding. Phase 5 is not passed. No requirement is weakened.
+outstanding. Phase 5 is not passed. Every legal-review requirement is unchanged.
 
 Earlier, Olaplex completed all 79 sections in about 36
 minutes through ordinary private intake. Ben's independent, partial legal notes
@@ -620,6 +621,17 @@ and review actions. The independent status monitor also reports zero
 publications. No legal output has been inspected and no lawyer decision is
 claimed. This proves ordinary processing completed without a manual repair;
 it does not pass the time bar or the outstanding legal-review requirements.
+
+Ben subsequently confirmed on 2026-09-06 that taking more than 90 minutes is
+acceptable for this launch and that speed improvements should wait until there
+is better evidence about product use. That explicit decision removes only the
+elapsed-time launch limit. The observations above preserve the result against
+the limit that applied when the run finished; they are not retroactively
+reported as a pass. Processing and lawyer-review durations remain measurements.
+No legal accuracy, citation, inventory, coverage, exception review, contradiction,
+unresolved-state, lawyer-acceptance or ordinary-flow requirement changes.
+The same unopened Apogee result remains available for independent legal review;
+this timing-policy change alone does not require another extraction run.
 
 Earlier assembly retries regenerated no sections or model calls. A separate
 one-limb IOC probe retained full context and
@@ -1024,11 +1036,15 @@ Supervised internal-release bars:
 - zero contradiction remains inside a published proposition group;
 - zero `NOT_RUN` or `UNRESOLVED` item is presented as absence or completion;
 - 100% of final published facts are lawyer accepted; and
-- a standard agreement can be processed and reviewed in no more than 90
-  minutes without a developer.
+- a standard agreement can be processed and reviewed through the ordinary
+  product flow without a developer.
 
-The bars are fixed before the blind run. A weaker bar needs Ben's explicit
-decision because it changes what the product promises.
+The original 90-minute processing-and-review limit was removed by Ben's explicit
+2026-09-06 decision. Processing and review time remain measured and reported,
+but elapsed duration alone does not reject the supervised internal release.
+Speed improvement is deferred in section 7. All remaining bars are unchanged.
+Any further weakening needs Ben's explicit decision because it changes what the
+product promises.
 
 Exit: the frozen candidate satisfies every supervised internal-release bar on
 the untouched blind agreement or, if the blind result required a shared fix,
@@ -1076,7 +1092,7 @@ the Phase 0 to 6 checklist. The features below are for after external launch.
 
 | Feature | Status | When | Intended outcome | Next step |
 |---|---|---|---|---|
-| Faster agreement processing and review | Deferred | After external launch | Shorter section and agreement processing, development feedback and future merger-agreement review, without reducing legal coverage, citation checks or required lawyer review. | Revisit measured model time, repeated input, retries and worker waiting. Compare combined checks within each existing section and safe parallel work. Do not infer section relatedness or omit context. Current small comparisons are recorded in Phase 5. |
+| Faster agreement processing and review | Deferred | After external launch | Shorter section and agreement processing, development feedback and future merger-agreement review, without reducing legal coverage, citation checks or required lawyer review. The former 90-minute launch limit is no longer mandatory, as Ben approved on 2026-09-06. | Use actual processing and review measurements to identify useful improvements. Apogee's ordinary processing baseline is 100 minutes 17 seconds, before lawyer review. Revisit measured model time, repeated input, retries and worker waiting. Compare combined checks within each existing section and safe parallel work. Do not infer section relatedness or omit context. Current small comparisons are recorded in Phase 5. |
 | Precedent tracing and clause-level markup reuse | Deferred | After external launch | For an uploaded agreement, rank likely source precedents across the stored corpus. Detect multiple source agreements at section and clause level, including representations from one precedent and interim covenants from another. Link a matching representation or other clause to relevant prior markups. | Compare several methods: stable miscellaneous provisions, distinctive wording, section and clause similarity, and changes between versions. Show supporting text, differences and uncertainty; similarity is evidence of a possible source, not proof of drafting history. Keep source attribution separate from advice to accept a prior markup. |
 | Compare exact covenant wording under common labels | Deferred | After external launch | Group comparable duties under a short common label while retaining the exact authored verbs, qualifiers and source locations, so small drafting differences remain visible across agreements. | Start with no-shop verb lists. Keep words such as solicit, initiate, knowingly encourage and facilitate distinct in the source-backed representation. A common label must not imply legal equivalence or replace the operative wording. |
 

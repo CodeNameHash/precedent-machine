@@ -64,7 +64,7 @@ test('supervised release evaluation counts omissions and unresolved work against
   assert.equal(result.diagnostics.unresolved_count, 2);
   assert.equal(result.bars.inventory_reconciled, true);
   assert.equal(result.bars.no_unresolved_presented_as_completion, false);
-  assert.equal(result.bars.review_within_ninety_minutes_without_developer, false);
+  assert.equal(result.bars.timing_measured_without_developer, false);
   assert.equal(result.passed, false);
 });
 
@@ -120,9 +120,9 @@ test('release evaluation rejects vacuous or non-lawyer evidence and duplicate or
       items: [{ ...base.reviewState.items[0], decision: 'REJECTED' }],
     },
   }).bars.all_final_facts_lawyer_accepted, false);
-  assert.equal(evaluateSupervisedRelease({ ...base, elapsedMinutes: -0.1 }).bars.review_within_ninety_minutes_without_developer, false);
-  assert.equal(evaluateSupervisedRelease({ ...base, reviewState: { ...base.reviewState, metrics: { review_time_seconds: 5401 } } }).bars.review_within_ninety_minutes_without_developer, false);
-  assert.equal(evaluateSupervisedRelease({ ...base, reviewState: { ...base.reviewState, metrics: null } }).bars.review_within_ninety_minutes_without_developer, false);
+  assert.equal(evaluateSupervisedRelease({ ...base, elapsedMinutes: -0.1 }).bars.timing_measured_without_developer, false);
+  assert.equal(evaluateSupervisedRelease({ ...base, elapsedMinutes: 120, reviewState: { ...base.reviewState, metrics: { review_time_seconds: 6000 } } }).bars.timing_measured_without_developer, true);
+  assert.equal(evaluateSupervisedRelease({ ...base, reviewState: { ...base.reviewState, metrics: null } }).bars.timing_measured_without_developer, false);
   assert.equal(evaluateSupervisedRelease({ ...base, inventory: [], reconciliation: [] }).passed, false);
   assert.equal(evaluateSupervisedRelease({ ...base, reviewState: { ...base.reviewState, summary: { families: [] } }, reconciliation: [{ ...base.reconciliation[0], disposition: 'REVIEWED_OMISSION', review_item_id: undefined, omission_reason: 'Not material after source review.' }], citationAssessments: [] }).passed, false);
   assert.throws(() => evaluateSupervisedRelease({ ...base, citationAssessments: [{ ...base.citationAssessments[0], reviewed_by_role: 'AUTOMATION' }] }), /CITATION_ASSESSMENT/);
