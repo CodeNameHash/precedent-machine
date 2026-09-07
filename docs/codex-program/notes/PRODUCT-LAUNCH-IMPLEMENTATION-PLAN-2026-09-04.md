@@ -402,7 +402,9 @@ result. Every substantive section and required role has a disposition.
 Current position, 2026-09-06: NCS completed ordinary private intake in
 118 minutes 26 seconds with the corrected code. All 104 sections have saved
 results and section coverage records, with no missing or unexpected section
-identities and no failed sections. No model output or completed Review has been opened.
+identities and no failed sections. There are 53 unresolved coverage records
+awaiting review, not necessarily 53 distinct legal issues. No model output or
+completed Review has been opened.
 Known agreements will check mechanical corrections; a new agreement is not
 required after every such correction. All legal-review requirements remain.
 
@@ -454,6 +456,12 @@ or unexpected. One final draft is saved. There are no review sessions, review
 actions or publications. The schema envelope, prompt and model configuration
 remain the same as the prior Apogee run. Processing completion is not legal
 acceptance or evidence that every proposed conclusion is correct.
+
+Coverage metadata contains 95 section records marked `FOUND`, eight marked
+`NOT_FOUND` and one marked `UNRESOLVED`. Across section, family, fact-type and
+paragraph levels, 53 of 8,814 coverage records are `UNRESOLVED`. These levels
+can overlap, so this is not a count of distinct legal defects. None of these
+states is lawyer-confirmed; `NOT_FOUND` is not a published absence statement.
 
 The saved call records contain 97 extraction, 108 routing and 108 residual
 calls, including retry history. They record 4,957,352 input tokens and 675,904
