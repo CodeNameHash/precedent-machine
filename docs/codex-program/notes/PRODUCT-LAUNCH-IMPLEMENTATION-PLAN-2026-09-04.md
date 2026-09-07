@@ -417,6 +417,26 @@ citation inside complete clause context are verified in the private view.
 Independent lawyer review, coverage confirmation and publication remain
 outstanding. Phase 5 is not passed. Every legal-review requirement is unchanged.
 
+The next untouched candidate is NCS Multistage Holdings / Weatherford
+International / Trinity Bell Sub, agreement dated 2026-05-31. The
+[SEC filing index](https://www.sec.gov/Archives/edgar/data/1692427/000119312526252096/0001193125-26-252096-index.htm)
+identifies NCS's 2026-06-02 Form 8-K and
+[Exhibit 2.1](https://www.sec.gov/Archives/edgar/data/1692427/000119312526252096/d23867dex21.htm).
+Selection used filing metadata, not agreement text or model output. Repository
+text and Git object-name searches found no exact issuer, accession, CIK,
+exhibit-filename or Weatherford matches. Those checks do not exclude copied or
+renamed text. The private database had no prior run matching the CIK, accession
+or exhibit filename. The corrected candidate keeps schema V1.2, prompt V6,
+the existing routing and extraction models, two section workers, and the same
+legal-review requirements. Ordinary private Review intake created run
+`eaafcac8-790b-41bb-a5e1-b12187a55e7d` at 2026-09-07 01:45:13.815066 UTC.
+The normal sign-in succeeded using Ben's existing credentials; no login flow
+or credentials changed. At the first independently checked checkpoint, three
+of 104 sections were complete, two were processing, and none had failed.
+Review was left before completed output could open. Only run configuration,
+status and counters are being monitored. No independent lawyer inventory or
+legal acceptance is claimed for this new agreement.
+
 Earlier, Olaplex completed all 79 sections in about 36
 minutes through ordinary private intake. Ben's independent, partial legal notes
 have exposed missing duties, lost qualifications and insufficient citations.
