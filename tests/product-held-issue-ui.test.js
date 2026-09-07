@@ -11,6 +11,19 @@ require.extensions['.jsx'] = function compileJsx(module, filename) {
 };
 const { Requirement } = require('../components/product/ReviewWorkspace.jsx');
 
+test('review diagnostics show readable text and keep raw JSON behind recorded detail', () => {
+  const render = (message) => renderToStaticMarkup(React.createElement(Requirement, {
+    item: { kind: 'ISSUE', decision: 'PENDING', original: { code: 'REQUIRED_FACT_TYPE_UNRESOLVED', message } },
+    onDecision() {}, onSource() {},
+  }));
+  assert.match(render('INITIAL_MATCH_PERIOD'), /Initial match period/);
+  const html = render(JSON.stringify({ explanation: 'Section context only; not a matched citation.', unknown_row: { rationale: 'Check issuance mechanics.', disposition: 'KNOWN_FAMILY' } }));
+  assert.match(html, /Section context only; not a matched citation\./);
+  assert.match(html, /Check issuance mechanics\./);
+  assert.match(html, /<details[^>]*><summary[^>]*>Show recorded detail<\/summary><pre/);
+  assert.doesNotMatch(html.split('<details')[0], /KNOWN_FAMILY|unknown_row/);
+});
+
 test('held unsupported proposal renders readable proposed content and preserves detail', () => {
   const html = renderToStaticMarkup(React.createElement(Requirement, {
     item: { kind: 'ISSUE', decision: 'PENDING', original: { code: 'UNSUPPORTED_FACT_TYPE', message: JSON.stringify({ client_ref: 'notice-proposal', group_ref: 'notice-group', statement: 'Buyer must deliver notice.', family_key: 'GENERAL_COVENANTS', subtype_key: 'NOTICE', fact_type: 'NOTICE', roles: { obligor: 'Buyer' }, value: '5 days', evidence_quotes: [{ quote: 'deliver notice' }] }) }, source_span_ids: ['span'] },
