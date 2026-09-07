@@ -404,10 +404,14 @@ private intake, without manual repair, in 100 minutes 17 seconds. Ben has
 approved deferring speed improvements, so exceeding 90 minutes no longer blocks
 the supervised internal launch. Timing remains measured and reported.
 Ben has now supplied independent partial notes on seven selected provisions.
-The sample comparison found that the Article III introduction has no processing
-record or coverage state, omitting its disclosure qualifications. That shared
-processing gap is under diagnosis. The full Review page remains unopened, with
-no review decisions or publication.
+The sample comparison found that article introductions had no processing
+record or coverage state, omitting Article III's disclosure qualifications.
+The shared correction now includes both saved introductions, Articles III and
+IV, and selects 97 sections rather than 95. Source-context and database checks
+pass. The database correction is applied only to the private test environment;
+the website and worker update is being completed. The original saved draft is
+unchanged. The full Review page remains unopened, with no review decisions or
+publication.
 Arcellx's full party names, clear review counters and access to each saved
 citation inside complete clause context are verified in the private view.
 Independent lawyer review, coverage confirmation and publication remain
@@ -658,7 +662,25 @@ but lacks the Article III disclosure qualifications. The Article III introductio
 exists in the saved structure but has no work row, result, proposal, coverage
 assertion or issue. No link supplies it to the selected representation or
 bringdown proposals. Root confirmed the missing work and coverage directly.
-This is a shared coverage failure to correct, not a reviewed omission.
+This is a shared coverage failure, not a reviewed omission.
+The correction gives article introductions ordinary section processing and
+coverage. A section receives its own article introduction as surrounding
+context, including that introduction's definitions and explicit references.
+The imported text does not become the child section's own operative text;
+main-agreement and exhibit scopes remain separate. The saved Apogee structure
+contains two introductions, so the corrected selection is 97 sections versus
+95 under the old exclusion. The original 95 saved results remain unchanged.
+Publication now requires the exact expected section identities in both saved
+results and section coverage, including introductions. Missing data and a
+wrong-section substitution fail even when counts match. Complete data can
+publish, and historical reads remain unchanged. The focused source checks,
+full Phase 2 checks with real Concho source, all-family recorded checks with
+real Modiv source, and dedicated full-chain database check pass. Root repeated
+the affected source checks and database check; two independent code reviews
+found no remaining defect. The private database update preserves service-only
+access and adds no security warnings. This is a shared fix prompted by the
+exposed sample, so a new untouched final agreement is still required. These
+checks are not lawyer acceptance or completion of Phase 5.
 The capex proposal keeps the individual $250,000 limit in review-visible text
 but only the $2,500,000 aggregate limit as a separately searchable numeric value;
 that alone does not block internal launch. Section 5.5(b) retains all eight

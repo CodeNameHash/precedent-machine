@@ -9,6 +9,7 @@ const test = require('node:test');
 const { buildAgreementStructure } = require('../lib/product/agreement-structure');
 const {
   buildAgreementDraft,
+  buildAgreementSectionDraft,
   canonicalLinkSourceSpanIds,
   canonicalProposalSourceSpanIds,
   canonicalRoutingDisagreements,
@@ -43,6 +44,45 @@ async function conchoSource() {
     arrayBuffer: async () => raw,
   });
   return createSecIntakeAdapter({ fetchImpl, clock: () => new Date('2026-09-04T12:00:00Z') }).intake({ url: CONCHO_URL });
+}
+
+function sourceDocumentFixture(label, canonicalText) {
+  const sourceDocumentId = sha256(label);
+  const canonicalTextSha256 = sha256(Buffer.from(canonicalText, 'utf8'));
+  const raw = Buffer.from(canonicalText, 'utf8');
+  return {
+    schema_version: 'SOURCE_DOCUMENT/V1',
+    source_document_id: sourceDocumentId,
+    agreement_id: sourceDocumentId,
+    retrieval_url: `https://www.sec.gov/Archives/edgar/data/1/${label}.htm`,
+    final_url: `https://www.sec.gov/Archives/edgar/data/1/${label}.htm`,
+    raw_sha256: canonicalTextSha256,
+    raw_bytes_base64: raw.toString('base64'),
+    raw_byte_length: raw.length,
+    canonical_text: canonicalText,
+    canonical_text_sha256: canonicalTextSha256,
+    canonical_text_byte_length: raw.length,
+    filing_accession: '1',
+    exhibit_filename: `${label}.htm`,
+    source_map_id: canonicalTextSha256,
+  };
+}
+
+function articleIntroductionSource() {
+  return sourceDocumentFixture('substantive-article-introduction', [
+    'AGREEMENT AND PLAN OF MERGER',
+    'ARTICLE I',
+    'GENERAL PROVISIONS',
+    'Section 1.1 Purpose. "Disclosure Standard" means the standard stated in the Main Schedule.',
+    'ARTICLE III',
+    'REPRESENTATIONS AND WARRANTIES OF THE COMPANY',
+    'Except as provided in Section 1.1 and under the Disclosure Standard, the Company represents and warrants to Parent as follows:',
+    'Section 3.1 Organization. The Company is duly organised and validly existing.',
+    'Section 3.2 Authority. The Company has the requisite power and authority.',
+    'ARTICLE IV',
+    'CLOSING CONDITIONS',
+    'Section 4.1 Bringdown. The representation in Section 3.1 must be true at Closing.',
+  ].join('\n\n'));
 }
 
 function proposal(clientRef, groupRef, familyKey, subtypeKey, factType, statement, roles, quote, value = null, occurrence = 0) {
@@ -247,6 +287,123 @@ function createSyntheticConchoModel({ failAtCall = null } = {}) {
 }
 
 if (process.env.PRODUCT_PHASE2_HELPER_ONLY !== '1') {
+test('substantive article introductions enter work and remain scoped context for descendants and references', () => {
+  const sourceDocument = articleIntroductionSource();
+  const agreementStructure = buildAgreementStructure(sourceDocument);
+  const introduction = agreementStructure.nodes.find((node) => node.reference === 'III-INTRO');
+  const representation = agreementStructure.nodes.find((node) => node.reference === '3.1');
+  const bringdown = agreementStructure.nodes.find((node) => node.reference === '4.1');
+
+  assert.ok(introduction, 'the structure must retain the authored Article III introduction');
+  assert.match(
+    sourceDocument.canonical_text.slice(introduction.span.start_byte, introduction.span.end_byte),
+    /Company represents and warrants to Parent as follows/,
+  );
+  assert.ok(
+    substantiveSections(agreementStructure).some((node) => node.node_id === introduction.node_id),
+    'the substantive Article III introduction must receive a section work item',
+  );
+  const representationClosure = require('../lib/product/source-context').sourceClosureForModel(buildSourceClosure({
+    sourceDocument, agreementStructure, nodeId: representation.node_id,
+  }));
+  assert.ok(representationClosure.chapeau.some((span) => span.structure_node_id === introduction.node_id));
+  assert.equal(ownedStructureNodeIds(agreementStructure, representation.node_id).includes(introduction.node_id), false);
+  const general = agreementStructure.nodes.find((node) => node.reference === '1.1');
+  assert.ok(representationClosure.cross_references.some((span) => span.structure_node_id === general.node_id));
+  assert.ok(representationClosure.definitions.some((span) => span.structure_node_id === general.node_id));
+
+  const bringdownClosure = require('../lib/product/source-context').sourceClosureForModel(buildSourceClosure({
+    sourceDocument, agreementStructure, nodeId: bringdown.node_id,
+  }));
+  assert.ok(bringdownClosure.cross_references.some((span) => span.structure_node_id === representation.node_id));
+  assert.ok(bringdownClosure.chapeau.some((span) => span.structure_node_id === introduction.node_id));
+});
+
+test('runner emits routing and section coverage for an article introduction', async () => {
+  const sourceDocument = articleIntroductionSource();
+  const agreementStructure = buildAgreementStructure(sourceDocument);
+  const introduction = agreementStructure.nodes.find((node) => node.reference === 'III-INTRO');
+  const model = createSyntheticConchoModel();
+  const draft = await buildAgreementDraft({ sourceDocument, agreementStructure, legalSchema: schema, model });
+
+  assert.ok(model.calls.some((call) => (
+    call.kind === 'ROUTING' && call.request.section_reference === 'III-INTRO'
+  )));
+  assert.ok(draft.sections.some((section) => section.node_id === introduction.node_id));
+  assert.ok(draft.coverage_assertions.some((coverage) => (
+    coverage.subject_kind === 'SECTION' && coverage.subject_id === introduction.node_id
+  )));
+});
+
+test('runner rejects a historical completed work set that lacks newly substantive introduction work', async () => {
+  const sourceDocument = articleIntroductionSource();
+  const agreementStructure = buildAgreementStructure(sourceDocument);
+  const currentSections = substantiveSections(agreementStructure);
+  const oldSections = currentSections
+    .filter((node) => !/-INTRO$/.test(node.reference));
+  const model = createSyntheticConchoModel();
+  const oldResults = [];
+  for (const node of oldSections) {
+    oldResults.push(await buildAgreementSectionDraft({
+      sourceDocument, agreementStructure, legalSchema: schema, model, node,
+    }));
+  }
+  let failure;
+  const store = {
+    getRunContext: async () => ({ sourceDocument, agreementStructure }),
+    claimNextSection: async () => null,
+    commitSection: async () => assert.fail('no missing work item may be silently fabricated'),
+    getProgress: async () => ({ completed: oldSections.length, total: oldSections.length }),
+    loadCompletedSectionResults: async () => oldResults,
+    failRun: async (input) => { failure = input.error; },
+    getAgreementAnalysis: async () => assert.fail('incomplete historical output must not be returned as complete'),
+  };
+
+  await assert.rejects(
+    runAgreementDraftAnalysis({ runId: 'historical-run', store, legalSchema: schema, model }),
+    /SECTION_RESULTS_INCOMPLETE/,
+  );
+  assert.match(failure.message, new RegExp(`${oldSections.length}/${currentSections.length} substantive sections persisted`));
+});
+
+test('inherited article introductions stay inside their main agreement or exhibit scope', () => {
+  const sourceDocument = sourceDocumentFixture('scoped-article-introductions', [
+    'AGREEMENT AND PLAN OF MERGER',
+    'ARTICLE I',
+    'GENERAL PROVISIONS',
+    'Section 1.1 Purpose. This Agreement governs the merger.',
+    'ARTICLE III',
+    'REPRESENTATIONS AND WARRANTIES OF THE COMPANY',
+    'Except as disclosed in the Main Schedule, the Company represents and warrants to Parent as follows:',
+    'Section 3.1 Organization. The Company is duly organised and validly existing.',
+    'Section 3.2 Authority. The Company has the requisite power and authority.',
+    '[Signature Page Follows]',
+    'EXHIBIT A',
+    'FORM OF OPERATIVE AGREEMENT',
+    'ARTICLE I',
+    'GENERAL PROVISIONS',
+    'Section 1.1 Purpose. This form governs.',
+    'ARTICLE III',
+    'REPRESENTATIONS AND WARRANTIES OF THE COMPANY',
+    'Except as disclosed in the Exhibit Schedule, the Company represents and warrants to Parent as follows:',
+    'Section 3.1 Organization. The Company is duly organised and validly existing.',
+    'Section 3.2 Authority. The Company has the requisite power and authority.',
+  ].join('\n\n'));
+  const agreementStructure = buildAgreementStructure(sourceDocument);
+  const node = (reference) => agreementStructure.nodes.find((candidate) => candidate.reference === reference);
+  const mainClosure = require('../lib/product/source-context').sourceClosureForModel(buildSourceClosure({
+    sourceDocument, agreementStructure, nodeId: node('3.1').node_id,
+  }));
+  const exhibitClosure = require('../lib/product/source-context').sourceClosureForModel(buildSourceClosure({
+    sourceDocument, agreementStructure, nodeId: node('Exhibit-A::3.1').node_id,
+  }));
+
+  assert.ok(mainClosure.chapeau.some((span) => span.structure_node_id === node('III-INTRO').node_id));
+  assert.equal(mainClosure.chapeau.some((span) => span.structure_node_id === node('Exhibit-A::III-INTRO').node_id), false);
+  assert.ok(exhibitClosure.chapeau.some((span) => span.structure_node_id === node('Exhibit-A::III-INTRO').node_id));
+  assert.equal(exhibitClosure.chapeau.some((span) => span.structure_node_id === node('III-INTRO').node_id), false);
+});
+
 test('routing identity canonicalises set order and reports invalid enum type and value', () => {
   assert.deepEqual(canonicalRoutingSet(['TERMINATION', 'NO_SHOP', 'TERMINATION'], 'routing.families'), ['NO_SHOP', 'TERMINATION']);
   assert.deepEqual(canonicalRoutingDisagreements([
