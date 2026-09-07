@@ -399,8 +399,10 @@ result. Every substantive section and required role has a disposition.
 
 ### Phase 5. Freeze, test blind and correct honestly, 3 days
 
-Current position, 2026-09-06: NCS is processing through ordinary private intake
-with the corrected code. No model output or completed Review has been opened.
+Current position, 2026-09-06: NCS completed ordinary private intake in
+118 minutes 26 seconds with the corrected code. All 104 sections have saved
+results and section coverage records, with no missing or unexpected section
+identities and no failed sections. No model output or completed Review has been opened.
 Known agreements will check mechanical corrections; a new agreement is not
 required after every such correction. All legal-review requirements remain.
 
@@ -422,7 +424,7 @@ citation inside complete clause context are verified in the private view.
 Independent lawyer review, coverage confirmation and publication remain
 outstanding. Phase 5 is not passed. Every legal-review requirement is unchanged.
 
-The next untouched candidate is NCS Multistage Holdings / Weatherford
+The final untouched processing candidate is NCS Multistage Holdings / Weatherford
 International / Trinity Bell Sub, agreement dated 2026-05-31. The
 [SEC filing index](https://www.sec.gov/Archives/edgar/data/1692427/000119312526252096/0001193125-26-252096-index.htm)
 identifies NCS's 2026-06-02 Form 8-K and
@@ -441,6 +443,26 @@ of 104 sections were complete, two were processing, and none had failed.
 Review was left before completed output could open. Only run configuration,
 status and counters are being monitored. No independent lawyer inventory or
 legal acceptance is claimed for this new agreement.
+
+NCS reached `READY` at 2026-09-07 03:43:39.709987 UTC, 7,105.894921 seconds
+after submission. The original run completed without a manual retry, restart
+or data repair. Four sections retried automatically and completed, with a
+maximum of two attempts. Independent metadata checks found 104 expected leaf
+sections, 104 completed work records, 104 saved results and 104 section coverage
+records. Exact section identities match in both directions; none is missing
+or unexpected. One final draft is saved. There are no review sessions, review
+actions or publications. The schema envelope, prompt and model configuration
+remain the same as the prior Apogee run. Processing completion is not legal
+acceptance or evidence that every proposed conclusion is correct.
+
+The saved call records contain 97 extraction, 108 routing and 108 residual
+calls, including retry history. They record 4,957,352 input tokens and 675,904
+output tokens. The subscription provider records zero metered API cost; this
+does not mean the run was free or measure the subscription cost attributable
+to it. Lawyer review time and legal-quality measurements remain unavailable.
+Ben's Olaplex and Apogee notes remain useful independent samples for those
+agreements, not a completed inventory or acceptance of NCS. No further
+agreement is needed solely to verify the mechanical introduction correction.
 
 Earlier, Olaplex completed all 79 sections in about 36
 minutes through ordinary private intake. Ben's independent, partial legal notes
