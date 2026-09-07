@@ -399,7 +399,12 @@ result. Every substantive section and required role has a disposition.
 
 ### Phase 5. Freeze, test blind and correct honestly, 3 days
 
-Current position, 2026-09-06: Apogee finished all 95 sections through normal
+Current position, 2026-09-06: NCS is processing through ordinary private intake
+with the corrected code. No model output or completed Review has been opened.
+Known agreements will check mechanical corrections; a new agreement is not
+required after every such correction. All legal-review requirements remain.
+
+Apogee finished all 95 sections through normal
 private intake, without manual repair, in 100 minutes 17 seconds. Ben has
 approved deferring speed improvements, so exceeding 90 minutes no longer blocks
 the supervised internal launch. Timing remains measured and reported.
@@ -698,9 +703,10 @@ full Phase 2 checks with real Concho source, all-family recorded checks with
 real Modiv source, and dedicated full-chain database check pass. Root repeated
 the affected source checks and database check; two independent code reviews
 found no remaining defect. The private database update preserves service-only
-access and adds no security warnings. This is a shared fix prompted by the
-exposed sample, so a new untouched final agreement is still required. These
-checks are not lawyer acceptance or completion of Phase 5.
+access and adds no security warnings. These checks are not lawyer acceptance
+or completion of Phase 5. The later testing correction below removes the
+automatic fresh-agreement requirement for this mechanical source-preservation
+fix. The correction does not provide fresh evidence of unseen legal accuracy.
 The capex proposal keeps the individual $250,000 limit in review-visible text
 but only the $2,500,000 aggregate limit as a separately searchable numeric value;
 that alone does not block internal launch. Section 5.5(b) retains all eight
@@ -1089,8 +1095,32 @@ it is not an attestation or a completed independent inventory.
       time.
 - [ ] Count `UNRESOLVED` against recall and review burden.
 - [ ] Fix shared release-blocking failures once.
-- [ ] If the blind agreement drives a fix, test the corrected candidate on a
-      new untouched final agreement. Do not reuse the exposed holdout as proof.
+- [ ] Test the stable final extraction approach on an untouched agreement.
+      Use known agreements to verify mechanical fixes. Require a new untouched
+      agreement after a material change to legal extraction decisions, not
+      automatically after every code correction.
+
+Testing correction, 2026-09-06: Ben challenged the cost of processing a new
+agreement for each fix. The article-introduction defect already had a failing
+reproduction, corrected checks on known Concho and Modiv sources, exact saved
+Apogee structure replay, and database checks for missing coverage. A further
+whole-agreement run was not needed merely to prove that code correction.
+
+For mechanical source preservation, storage, citation-coordinate or display
+fixes, run the affected checks in section 9 against known agreements. Confirm
+the complete affected product flow where needed. Do not present a reprocessed
+known agreement as fresh evidence of unseen legal accuracy. A change that
+introduces new legal-relevance judgements, changes the requested legal
+distinctions, or tunes extraction decisions using exposed legal results still
+needs a new untouched agreement. This includes material prompt, model, schema
+or semantic routing changes. Do not describe such a change as mechanical to
+avoid independent testing.
+
+Keep one final untouched test for the stable extraction approach. NCS was
+already submitted when this testing correction was made and continues as that
+test; no further deal is to start solely because of a mechanical fix. No
+legal-review or publication requirement below is relaxed, and no checklist
+item becomes complete merely because this testing rule changes.
 
 Draft-quality diagnostics:
 
@@ -1124,10 +1154,12 @@ Speed improvement is deferred in section 7. All remaining bars are unchanged.
 Any further weakening needs Ben's explicit decision because it changes what the
 product promises.
 
-Exit: the frozen candidate satisfies every supervised internal-release bar on
-the untouched blind agreement or, if the blind result required a shared fix,
-the corrected candidate satisfies every bar on a new untouched final
-agreement.
+Exit: the final candidate satisfies every supervised internal-release bar.
+Its stable legal extraction approach has an untouched agreement test; material
+changes to legal extraction decisions require a new untouched test as above.
+Mechanical corrections have the affected product checks on known agreements,
+and every final published fact, exception and coverage decision has the
+required lawyer review. Exposed reruns are not claimed as unseen legal proof.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
