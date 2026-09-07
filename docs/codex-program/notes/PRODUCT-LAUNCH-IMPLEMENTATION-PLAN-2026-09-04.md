@@ -403,7 +403,11 @@ Current position, 2026-09-06: Apogee finished all 95 sections through normal
 private intake, without manual repair, in 100 minutes 17 seconds. Ben has
 approved deferring speed improvements, so exceeding 90 minutes no longer blocks
 the supervised internal launch. Timing remains measured and reported.
-The AI draft remains unopened, with no review decisions or publication.
+Ben has now supplied independent partial notes on seven selected provisions.
+The sample comparison found that the Article III introduction has no processing
+record or coverage state, omitting its disclosure qualifications. That shared
+processing gap is under diagnosis. The full Review page remains unopened, with
+no review decisions or publication.
 Arcellx's full party names, clear review counters and access to each saved
 citation inside complete clause context are verified in the private view.
 Independent lawyer review, coverage confirmation and publication remain
@@ -632,6 +636,38 @@ No legal accuracy, citation, inventory, coverage, exception review, contradictio
 unresolved-state, lawyer-acceptance or ordinary-flow requirement changes.
 The same unopened Apogee result remains available for independent legal review;
 this timing-policy change alone does not require another extraction run.
+
+Ben then supplied notes on 2.1(a)(i), the Article III introduction, 3.9(b),
+5.2(b)(viii), 5.5(b), 5.5(e) and 6.3(a). His latest complete message supersedes
+the two interrupted drafts. The notes are preserved privately, separately from
+assistant source checks. They precede inspection of the corresponding saved AI
+proposals. This is a selected-provision comparison, not a complete independent
+critical/material inventory, a severity assessment, or lawyer acceptance.
+Source checks identify the Article III filing date as on or after 13 July 2023
+and the recipients as Parent and Merger Sub; those corrections are not silently
+substituted into Ben's original notes. No new extraction is needed for this
+comparison. The unreviewed remainder and all final legal-review requirements
+remain outstanding.
+
+The selected-provision comparison preserves the share price and named share
+exclusions, both capex thresholds and the introductory exceptions, the
+regulatory strategy and consultation duties, and the four representation
+bringdown standards with their timing. These are draft comparisons, not lawyer
+acceptance. The ordinary-course representation retains its local qualifications
+but lacks the Article III disclosure qualifications. The Article III introduction
+exists in the saved structure but has no work row, result, proposal, coverage
+assertion or issue. No link supplies it to the selected representation or
+bringdown proposals. Root confirmed the missing work and coverage directly.
+This is a shared coverage failure to correct, not a reviewed omission.
+The capex proposal keeps the individual $250,000 limit in review-visible text
+but only the $2,500,000 aggregate limit as a separately searchable numeric value;
+that alone does not block internal launch. Section 5.5(b) retains all eight
+buyer-side remedy exclusions and the Company's separate prohibition in its
+qualifications, but not as a separate Company duty. The share conversion fact
+uses Cancelled Shares without a separate definition link, but root verified
+that its saved full Section 2.1 context includes the complete adjacent
+cancellation definition. Neither observation is an automatic failure merely
+because a separate field or fact is absent.
 
 Earlier assembly retries regenerated no sections or model calls. A separate
 one-limb IOC probe retained full context and
