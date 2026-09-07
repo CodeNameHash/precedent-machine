@@ -409,7 +409,7 @@ record or coverage state, omitting Article III's disclosure qualifications.
 The shared correction now includes both saved introductions, Articles III and
 IV, and selects 97 sections rather than 95. Source-context and database checks
 pass. The database correction is applied only to the private test environment;
-the website and worker update is being completed. The original saved draft is
+the private website and online worker now use the corrected code. The original saved draft is
 unchanged. The full Review page remains unopened, with no review decisions or
 publication.
 Arcellx's full party names, clear review counters and access to each saved
