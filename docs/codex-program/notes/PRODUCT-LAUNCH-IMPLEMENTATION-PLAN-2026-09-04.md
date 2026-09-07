@@ -413,6 +413,26 @@ independent provision samples instead of a separate full lawyer inventory.
 Review the complete NCS draft with him now, before any more agreement runs.
 All other publication requirements remain unchanged.
 
+Review presentation correction, 2026-09-07: Ben reported that proposed facts
+were not apparent and the page displayed machine codes. The live page contained
+1,039 non-empty proposal cards, but the first was about 35,700 pixels below the
+top because agreement-wide coverage and relationships came first. This is not
+an adequate lawyer-review handoff. Correct the presentation so proposed legal
+sentences and source links come first, sections are easy to reach, and visible
+labels use plain English. Keep every coverage, exception and relationship
+check accessible with honest outstanding counts. Do not change stored legal
+content, review decisions or publication requirements, and do not rerun the
+agreement for this display correction.
+
+The presentation correction now places proposed facts first, adds section and
+review-check navigation, and replaces visible code labels with readable text.
+Coverage checks remain available behind an expandable heading; other findings
+and relationships remain in the review-checks area. The directly affected
+display and source tests pass. A representative 104-section browser check
+showed the first fact in the first screen and verified section navigation.
+No extraction, database or review-state change was needed. This corrects the
+review handoff, not the outstanding legal review or Phase 5 exit condition.
+
 Apogee finished all 95 sections through normal
 private intake, without manual repair, in 100 minutes 17 seconds. Ben has
 approved deferring speed improvements, so exceeding 90 minutes no longer blocks

@@ -21,7 +21,7 @@ const sourceContextModule = require('../components/product/SourceContextPanel.js
 const SourceContextPanel = sourceContextModule.default;
 const { surroundingSourceSpan } = sourceContextModule;
 const {
-  AcceptedSummary, AddFact, ReleaseEvaluation, ReviewSectionHeading, missingFactCommand, toggleSourceSpanId,
+  AcceptedSummary, AddFact, DraftReview, ReleaseEvaluation, ReviewSectionHeading, missingFactCommand, toggleSourceSpanId,
 } = require('../components/product/ReviewWorkspace.jsx');
 
 const nodes = [
@@ -47,6 +47,41 @@ const proposal = {
   }],
 };
 
+test('draft review puts section navigation and proposed facts before technical review checks', () => {
+  const sections = Array.from({ length: 100 }, (_, index) => ({
+    node: { node_id: `section-${index}`, reference: `${index + 1}`, title: `Agreement section ${index + 1}` },
+    heading: `Agreement section ${index + 1}`,
+    routing: { section_reference: `${index + 1}` },
+    proposals: index === 0 ? [{
+      proposal: { ...proposal, proposal_id: 'first-proposal', structure_node_id: 'section-0' },
+      review_item: { item_id: 'first-item', kind: 'PROPOSAL', decision: 'PENDING', source_span_ids: ['owned'] },
+      related_proposals: [], group_members: [],
+    }] : [],
+    review_items: [],
+  }));
+  const markup = renderToStaticMarkup(React.createElement(DraftReview, {
+    workspace: {
+      analysis: {
+        sections: [{ section_routing_id: 'routing-1', section_reference: '1', disposition: 'FAMILY_ASSIGNED', families: ['NO_SHOP'] }],
+        agreement_structure: { nodes: sections.map(({ node }) => node) }, source_closures: [], spans,
+        proposition_groups: [], proposals: [proposal],
+      },
+      review: { version: 0, revisions: [], state: { agreement_coverage: { decision: 'PENDING' } } },
+    },
+    view: {
+      sections, agreement_items: [{
+        item_id: 'finding-1', kind: 'ISSUE', decision: 'PENDING', original: { code: 'UNUSUAL_PROVISION', message: 'Check this clause.' },
+      }],
+      relationship_items: [], fact_items: [], pending_count: 2, unresolved_count: 0,
+    },
+    busy: false, command() {}, openSource() {},
+  }));
+
+  assert.match(markup, /aria-label="Jump to agreement section"/);
+  assert.equal(markup.indexOf('Proposed facts') < markup.indexOf('Review checks'), true);
+  assert.equal(markup.indexOf('The Company shall not solicit.') < markup.indexOf('Agreement coverage'), true);
+});
+
 test('invalid proposal UI distinguishes failed quotes, outside context, roles and citation quality', () => {
   const markup = renderToStaticMarkup(React.createElement(ProposalCard, {
     entry: { proposal, review_item: { item_id: 'item', decision: 'PENDING', source_span_ids: ['owned'] }, related_proposals: [], group_members: [] },
@@ -65,6 +100,23 @@ test('invalid proposal UI distinguishes failed quotes, outside context, roles an
   assert.match(markup, /Missing required roles/);
   assert.match(markup, /Legal actor or subject/);
   assert.match(markup, /Who has the right, duty, status or protection/);
+});
+
+test('proposal card uses plain review labels while preserving the legal statement', () => {
+  const markup = renderToStaticMarkup(React.createElement(ProposalCard, {
+    entry: {
+      proposal: { ...proposal, validation_status: 'VALID' },
+      review_item: { item_id: 'item', decision: 'PENDING', source_span_ids: ['owned'] },
+      related_proposals: [], group_members: [],
+    },
+    requiredRoleKeys: [], availableSourceSpans: spans, structureNodes: nodes, busy: false,
+    onDecision() {}, onSource() {},
+  }));
+
+  assert.match(markup, /No-shop · Prohibited action/);
+  assert.match(markup, />Needs review</);
+  assert.match(markup, /The Company shall not solicit\./);
+  assert.doesNotMatch(markup, /NO_SHOP|PROHIBITED_ACTION|>PENDING</);
 });
 
 test('source panel says an unmatched quote is not the highlighted containing context', () => {

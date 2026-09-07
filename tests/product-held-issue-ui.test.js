@@ -18,9 +18,9 @@ test('held unsupported proposal renders readable proposed content and preserves 
   }));
   assert.match(html, /Held model-proposed content, not accepted/);
   assert.match(html, /Model-proposed statement: Buyer must deliver notice\./);
-  assert.match(html, /Model-proposed category: GENERAL_COVENANTS · NOTICE · NOTICE/);
+  assert.match(html, /Model-proposed category: General covenants · Notice · Notice/);
   assert.match(html, /Model-proposed proposal reference:/);
-  assert.match(html, /Model-proposed roles: obligor: Buyer/);
+  assert.match(html, /Model-proposed roles: Obligor: Buyer/);
   assert.match(html, /Model-proposed evidence: deliver notice/);
   assert.match(html, /Show recorded detail/);
 });
@@ -55,7 +55,7 @@ test('all held issue codes label group, proposal, and link references without ob
     if (code === 'UNSUPPORTED_FACT_LINK') {
       assert.match(html, /Model-proposed link from: proposal-1/);
       assert.match(html, /Model-proposed link to: proposal-2/);
-      assert.match(html, /Model-proposed link type: QUALIFIES/);
+      assert.match(html, /Model-proposed link type: Qualifies/);
     }
   }
 });
