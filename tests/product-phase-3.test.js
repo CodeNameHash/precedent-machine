@@ -252,13 +252,12 @@ test('lawyer edits preserve citations, missing facts validate roles, and publish
   assert.equal(state.metrics.review_time_seconds, 600);
   const publishedFacts = state.summary.families.flatMap((family) => family.facts);
   state = applyReviewCommand(state, {
-    type: 'EVALUATE_RELEASE', reviewer_identity: 'lawyer@example.test', lawyer_attestation: true, independent_inventory_attestation: true,
-    inventory: [{ inventory_item_id: 'inventory-1', description: 'The agreement contains a termination fee.', severity: 'CRITICAL' }],
-    reconciliation: [{ inventory_item_id: 'inventory-1', disposition: 'PUBLISHED_FACT', review_item_id: publishedFacts[0].review_item_id }],
+    type: 'EVALUATE_RELEASE', reviewer_identity: 'lawyer@example.test', lawyer_attestation: true, reference_samples_attestation: true,
+    reference_samples: [{ reference_sample_id: 'sample-1', source_document_id: 'source-olaplex', source_url: 'https://example.test/review/olaplex', source_section: 'Section 7.3', description: 'The agreement contains a termination fee.', severity: 'CRITICAL', assessment: 'FOUND', comparison: 'The source and product output state the same legal point.' }],
     citation_assessments: publishedFacts.map((fact) => ({ review_item_id: fact.review_item_id, exact: true, legally_sufficient: true, narrow: true })),
     elapsed_minutes: 10, developer_assisted: false,
-  }, { analysis, legalSchema, clock: clock('2026-09-04T12:11:00Z') });
-  assert.equal(state.release_evaluation.schema_version, 'PRODUCT_SUPERVISED_RELEASE_EVALUATION/V2');
+  }, { analysis, legalSchema, clock: clock('2026-09-04T12:11:00Z'), referenceSources: [{ source_document_id: 'source-olaplex', retrieval_url: 'https://example.test/review/olaplex' }] });
+  assert.equal(state.release_evaluation.schema_version, 'PRODUCT_SUPERVISED_RELEASE_EVALUATION/V3');
   assert.equal(state.release_evaluation_input.lawyer_attested_by, 'lawyer@example.test');
   assert.equal(state.items.filter((item) => ['ACCEPTED', 'EDITED'].includes(item.decision)).every((item) => item.decided_by_role === 'LAWYER'), true);
   assert.equal(state.agreement_coverage.confirmed_by_role, 'LAWYER');
@@ -381,7 +380,7 @@ test('invalid proposals require an explicit same-closure citation repair before 
   assert.deepEqual(state.summary.families.flatMap((family) => family.facts)[0].source_span_ids, [spanId]);
 });
 
-test('release evaluation requires an explicit lawyer attestation and atomic inventory text', () => {
+test('release evaluation requires explicit lawyer attestation and complete source-linked reference samples', () => {
   const analysis = analysisFixture();
   let state = initialiseReviewState(analysis);
   for (const item of state.items) state = applyReviewCommand(state, { type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'ACCEPTED' }, { analysis, legalSchema });
@@ -389,14 +388,14 @@ test('release evaluation requires an explicit lawyer attestation and atomic inve
   state = applyReviewCommand(state, { type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: true }, { analysis, legalSchema });
   state = applyReviewCommand(state, { type: 'PUBLISH' }, { analysis, legalSchema });
   assert.throws(() => applyReviewCommand(state, {
-    type: 'EVALUATE_RELEASE', reviewer_identity: 'lawyer@example.test', lawyer_attestation: true, independent_inventory_attestation: false,
-    inventory: [], reconciliation: [], citation_assessments: [], elapsed_minutes: 1, developer_assisted: false,
+    type: 'EVALUATE_RELEASE', reviewer_identity: 'lawyer@example.test', lawyer_attestation: true, reference_samples_attestation: false,
+    reference_samples: [], citation_assessments: [], elapsed_minutes: 1, developer_assisted: false,
   }, { analysis, legalSchema }), /LAWYER_ATTESTATION_REQUIRED/);
   assert.throws(() => applyReviewCommand(state, {
-    type: 'EVALUATE_RELEASE', reviewer_identity: 'lawyer@example.test', lawyer_attestation: true, independent_inventory_attestation: true,
-    inventory: [{ inventory_item_id: 'blank', description: ' ', severity: 'MATERIAL' }],
-    reconciliation: [], citation_assessments: [], elapsed_minutes: 1, developer_assisted: false,
-  }, { analysis, legalSchema }), /RELEASE_INVENTORY/);
+    type: 'EVALUATE_RELEASE', reviewer_identity: 'lawyer@example.test', lawyer_attestation: true, reference_samples_attestation: true,
+    reference_samples: [{ reference_sample_id: 'blank', source_document_id: 'source-olaplex', source_url: 'https://example.test/review/olaplex', source_section: 'Section 5.2', description: ' ', severity: 'MATERIAL', assessment: 'FOUND', comparison: 'Matches.' }],
+    citation_assessments: [], elapsed_minutes: 1, developer_assisted: false,
+  }, { analysis, legalSchema, referenceSources: [{ source_document_id: 'source-olaplex', retrieval_url: 'https://example.test/review/olaplex' }] }), /RELEASE_REFERENCE_SAMPLE/);
 });
 
 test('unresolved or independently immaterial residual dispositions are source-linked and block publication until reviewed', () => {
@@ -772,6 +771,7 @@ test('review HTTP boundary uses server-derived reviewer identity and processing 
   const store = {
     assertAccess: async () => 'OWNER', getAgreementAnalysis: async () => analysis,
     getReview: async () => persisted,
+    listReferenceSources: async () => [{ source_document_id: 'source-olaplex', retrieval_url: 'https://example.test/review/olaplex', parties: [{ name: 'Olaplex', role: 'COMPANY' }] }],
     getReleaseTiming: async ({ runId }) => {
       assert.equal(runId, analysis.analysis_run_id);
       return { processingStartedAt: '2026-09-04T10:00:00Z', processingCompletedAt: '2026-09-04T11:20:00Z' };
@@ -787,9 +787,8 @@ test('review HTTP boundary uses server-derived reviewer identity and processing 
   const response = responseDouble();
   await handler({ method: 'POST', query: { id: analysis.analysis_run_id }, headers: { 'x-pm-csrf': 'same-origin' }, body: {
     expected_version: 0, idempotency_key: 'release-evaluation-1', command: {
-      type: 'EVALUATE_RELEASE', reviewer_identity: 'forged@example.test', lawyer_attestation: true, independent_inventory_attestation: true,
-      inventory: [{ inventory_item_id: 'inventory-1', description: 'One material legal point.', severity: 'MATERIAL' }],
-      reconciliation: [{ inventory_item_id: 'inventory-1', disposition: 'PUBLISHED_FACT', review_item_id: facts[0].review_item_id }],
+      type: 'EVALUATE_RELEASE', reviewer_identity: 'forged@example.test', lawyer_attestation: true, reference_samples_attestation: true,
+      reference_samples: [{ reference_sample_id: 'sample-1', source_document_id: 'source-olaplex', source_url: 'https://example.test/review/olaplex', source_section: 'Section 5.2', description: 'One material legal point.', severity: 'MATERIAL', assessment: 'FOUND', comparison: 'The source and product output state the same legal point.' }],
       citation_assessments: facts.map((fact) => ({ review_item_id: fact.review_item_id, exact: true, legally_sufficient: true, narrow: true })),
       elapsed_minutes: 30, developer_assisted: false,
       processingStartedAt: '2026-09-04T11:20:00Z', processingCompletedAt: '2026-09-04T11:20:00Z',
@@ -806,7 +805,7 @@ test('review HTTP boundary uses server-derived reviewer identity and processing 
   const rejected = responseDouble();
   await handler({ method: 'POST', query: { id: analysis.analysis_run_id }, headers: { 'x-pm-csrf': 'same-origin' }, body: {
     expected_version: 1, idempotency_key: 'release-evaluation-2', command: {
-      ...savedCommand, reviewer_identity: 'forged@example.test', independent_inventory_attestation: false,
+      ...savedCommand, reviewer_identity: 'forged@example.test', reference_samples_attestation: false,
     },
   } }, rejected);
   assert.equal(rejected.statusCode, 422);

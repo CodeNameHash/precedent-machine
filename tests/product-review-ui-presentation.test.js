@@ -274,6 +274,18 @@ test('citation review labels focused supporting words as a diagnostic with surro
   assert.doesNotMatch(markup, />Narrow</);
 });
 
+test('release evaluation asks for source-agreement samples without claiming candidate recall', () => {
+  const markup = renderToStaticMarkup(React.createElement(ReleaseEvaluation, {
+    state: { summary: { families: [] }, items: [], release_evaluation_input: null },
+    analysis: { issues: [], coverage_assertions: [] }, onEvaluate() {}, onSource() {}, busy: false,
+  }));
+
+  assert.match(markup, /Review source-linked reference samples on their original agreements/);
+  assert.match(markup, /Reference-sample results do not measure recall or precision for this agreement/);
+  assert.match(markup, /\+ Add reference sample/);
+  assert.doesNotMatch(markup, /inventory was prepared independently/);
+});
+
 test('release timing explanation matches the stored evaluation version', () => {
   const renderEvaluation = (schemaVersion) => renderToStaticMarkup(React.createElement(ReleaseEvaluation, {
     state: {
@@ -283,14 +295,19 @@ test('release timing explanation matches the stored evaluation version', () => {
         diagnostics: {
           review_time_minutes: 120, measured_review_time_seconds: 1200,
           processing_minutes: 100, effective_elapsed_minutes: 120,
+          reference_sample_count: 2, reference_sample_missed_count: 1,
+          reference_sample_incorrect_count: 0, reference_sample_unresolved_count: 0,
+          reference_sample_success_rate: 0.75,
         },
       },
     },
     analysis: { issues: [], coverage_assertions: [] }, onEvaluate() {}, onSource() {}, busy: false,
   }));
 
-  const current = renderEvaluation('PRODUCT_SUPERVISED_RELEASE_EVALUATION/V2');
+  const current = renderEvaluation('PRODUCT_SUPERVISED_RELEASE_EVALUATION/V3');
   assert.match(current, /There is no 90-minute pass\/fail limit\. Valid timing is still required\./);
+  assert.match(current, /Reference samples: 2; missed: 1; incorrect: 0; unresolved: 0; weighted success: 75\.0%/);
+  assert.match(current, /sample-only results do not measure recall or precision for this agreement/);
   assert.doesNotMatch(current, /historical evaluation/);
 
   const historical = renderEvaluation('PRODUCT_SUPERVISED_RELEASE_EVALUATION/V1');

@@ -77,9 +77,13 @@ function evaluationCommand(findingResolutions) {
     type: 'EVALUATE_RELEASE',
     reviewer_identity: 'finding-resolution-lawyer',
     lawyer_attestation: true,
-    independent_inventory_attestation: true,
-    inventory: [],
-    reconciliation: [],
+    reference_samples_attestation: true,
+    reference_samples: [{
+      reference_sample_id: 'sample-1', source_document_id: 'source-olaplex',
+      source_url: 'https://example.test/review/olaplex', source_section: 'Section 5.2',
+      description: 'The source contains a no-shop exception.', severity: 'MATERIAL', assessment: 'FOUND',
+      comparison: 'The source and product output state the same legal point.',
+    }],
     citation_assessments: [{
       review_item_id: 'review-item-1', exact: true, legally_sufficient: true, narrow: true,
     }],
@@ -92,6 +96,7 @@ function evaluationCommand(findingResolutions) {
 const options = {
   analysis,
   legalSchema,
+  referenceSources: [{ source_document_id: 'source-olaplex', retrieval_url: 'https://example.test/review/olaplex' }],
   clock: () => new Date('2026-09-05T09:36:00.000Z'),
   timing: {
     processingStartedAt: '2026-09-05T08:10:00.000Z',

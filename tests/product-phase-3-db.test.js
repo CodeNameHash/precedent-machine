@@ -25,6 +25,7 @@ const citationRepairMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrat
 const finalizationRetryMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260905203000_product_finalization_retry.sql'), 'utf8');
 const releaseTimingGuardMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260905205000_product_release_timing_guard.sql'), 'utf8');
 const releaseTimingMeasurementMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260906234757_product_release_timing_measurement.sql'), 'utf8');
+const referenceSamplesV3Migration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260907082337_product_release_reference_samples_v3.sql'), 'utf8');
 const groupRepairMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260905220000_product_review_proposition_group_repair.sql'), 'utf8');
 const actor = 'phase3-db-lawyer';
 
@@ -43,6 +44,8 @@ test.before(async () => {
   else await client.query(groupRepairMigration);
   if (process.env.TEST_PGLITE_MODULE) await client.exec(releaseTimingMeasurementMigration);
   else await client.query(releaseTimingMeasurementMigration);
+  if (process.env.TEST_PGLITE_MODULE) await client.exec(referenceSamplesV3Migration);
+  else await client.query(referenceSamplesV3Migration);
 });
 
 test.after(phase2Database.teardownDatabase);
@@ -239,19 +242,19 @@ test('Phase 3 review persistence is isolated, idempotent, versioned and atomical
   assert.equal((await client.query('SELECT count(*)::integer AS count FROM public.product_agreement_release_heads WHERE source_document_id=$1', [sourceDocument.source_document_id])).rows[0].count, 0);
 
   const publishedFacts = review.state.summary.families.flatMap((family) => family.facts);
+  const referenceSources = await store.listReferenceSources({ actor });
   const evaluationCommand = {
-    type: 'EVALUATE_RELEASE', reviewer_identity: actor, lawyer_attestation: true, independent_inventory_attestation: true,
-    inventory: [{ inventory_item_id: 'phase3-db-inventory-1', description: 'One independently identified material legal point.', severity: 'MATERIAL' }],
-    reconciliation: [{ inventory_item_id: 'phase3-db-inventory-1', disposition: 'PUBLISHED_FACT', review_item_id: publishedFacts[0].review_item_id }],
+    type: 'EVALUATE_RELEASE', reviewer_identity: actor, lawyer_attestation: true, reference_samples_attestation: true,
+    reference_samples: [{ reference_sample_id: 'phase3-db-sample-1', source_document_id: sourceDocument.source_document_id, source_url: sourceDocument.retrieval_url, source_section: 'Section 5.2', description: 'One reviewed reference legal point.', severity: 'MATERIAL', assessment: 'FOUND', comparison: 'The source and product output state the same legal point.' }],
     citation_assessments: publishedFacts.map((fact) => ({ review_item_id: fact.review_item_id, exact: true, legally_sufficient: true, narrow: true })),
     elapsed_minutes: 120, developer_assisted: false,
   };
   const timing = await store.getReleaseTiming({ runId: run.run_id });
-  state = applyReviewCommand(review.state, evaluationCommand, { analysis, legalSchema: schema, clock, timing });
+  state = applyReviewCommand(review.state, evaluationCommand, { analysis, legalSchema: schema, clock, timing, referenceSources });
   review = await store.saveReview({ runId: run.run_id, expectedVersion: 4, state, actor, eventType: 'EVALUATE_RELEASE', idempotencyKey: 'phase3-release-evaluation', command: evaluationCommand });
   const firstEvaluatedState = structuredClone(review.state);
   assert.equal(review.state.release_evaluation_input.lawyer_attested_by, actor);
-  assert.equal(review.state.release_evaluation.schema_version, 'PRODUCT_SUPERVISED_RELEASE_EVALUATION/V2');
+  assert.equal(review.state.release_evaluation.schema_version, 'PRODUCT_SUPERVISED_RELEASE_EVALUATION/V3');
   const forgedTiming = structuredClone(review.state);
   forgedTiming.release_evaluation.diagnostics.processing_minutes = 999;
   forgedTiming.release_evaluation.diagnostics.effective_elapsed_minutes = 999;
@@ -312,11 +315,10 @@ test('Phase 3 review persistence is isolated, idempotent, versioned and atomical
   assert.equal(head.release_id, releases[0].release_id);
   const secondFacts = review.state.summary.families.flatMap((family) => family.facts);
   const secondEvaluation = { ...evaluationCommand,
-    inventory: [{ inventory_item_id: 'phase3-db-inventory-2', description: 'One independently identified material legal point.', severity: 'MATERIAL' }],
-    reconciliation: [{ inventory_item_id: 'phase3-db-inventory-2', disposition: 'PUBLISHED_FACT', review_item_id: secondFacts[0].review_item_id }],
+    reference_samples: [{ reference_sample_id: 'phase3-db-sample-2', source_document_id: sourceDocument.source_document_id, source_url: sourceDocument.retrieval_url, source_section: 'Section 7.3', description: 'One reviewed reference legal point.', severity: 'MATERIAL', assessment: 'FOUND', comparison: 'The source and product output state the same legal point.' }],
     citation_assessments: secondFacts.map((fact) => ({ review_item_id: fact.review_item_id, exact: true, legally_sufficient: true, narrow: true })),
   };
-  state = applyReviewCommand(review.state, secondEvaluation, { analysis, legalSchema: schema, clock, timing });
+  state = applyReviewCommand(review.state, secondEvaluation, { analysis, legalSchema: schema, clock, timing, referenceSources });
   review = await store.saveReview({ runId: run.run_id, expectedVersion: 8, state, actor, eventType: 'EVALUATE_RELEASE', idempotencyKey: 'phase3-release-evaluation-2', command: secondEvaluation });
   state = applyReviewCommand(review.state, { type: 'ACTIVATE_RELEASE', release_id: releases[1].release_id }, { analysis, legalSchema: schema, clock });
   review = await store.saveReview({ runId: run.run_id, expectedVersion: 9, state, actor, eventType: 'ACTIVATE_RELEASE', idempotencyKey: 'phase3-activate-2', command: { type: 'ACTIVATE_RELEASE', release_id: releases[1].release_id } });

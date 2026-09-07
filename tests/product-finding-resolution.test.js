@@ -31,10 +31,12 @@ function baseInput() {
     source_span_ids: ['span-1'],
   };
   return {
-    inventory: [{ inventory_item_id: 'inventory-1', severity: 'CRITICAL' }],
-    reconciliation: [{
-      inventory_item_id: 'inventory-1', disposition: 'PUBLISHED_FACT',
-      review_item_id: factId, reviewed_by_role: 'LAWYER',
+    referenceSamples: [{
+      reference_sample_id: 'sample-1', source_document_id: 'source-olaplex',
+      source_url: 'https://example.test/review/olaplex', source_section: 'Section 5.2',
+      description: 'The agreement contains an outside-date termination right.', severity: 'CRITICAL',
+      assessment: 'FOUND', comparison: 'The source and product output state the same legal point.',
+      reviewed_by_role: 'LAWYER',
     }],
     analysis: {
       issues: [],
@@ -117,11 +119,11 @@ test('Reviewed acknowledgement alone stays blocked; explicit fact or reasoned om
   assert.equal(evaluateSupervisedRelease({
     ...broadCitation, findingResolutions: [publishedResolution()],
   }).bars.citations_exact_and_legally_sufficient, false);
-  const unreconciled = structuredClone(input);
-  unreconciled.reconciliation[0].disposition = 'UNRESOLVED';
+  const noSamples = structuredClone(input);
+  noSamples.referenceSamples = [];
   assert.equal(evaluateSupervisedRelease({
-    ...unreconciled, findingResolutions: [publishedResolution()],
-  }).bars.inventory_reconciled, false);
+    ...noSamples, findingResolutions: [publishedResolution()],
+  }).bars.reference_samples_reviewed, false);
 });
 
 test('finding resolutions reject identity, authority, scope and NOT_RUN violations', () => {

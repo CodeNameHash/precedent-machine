@@ -10,6 +10,16 @@ const {
   DIAGNOSTIC_SOURCE_DOCUMENT_ID, assertDatabaseTarget, assertDiagnosticRunTarget,
 } = require('../scripts/product-phase-5-local-run');
 
+function referenceSample(overrides = {}) {
+  return {
+    reference_sample_id: 'sample-1', source_document_id: 'source-olaplex',
+    source_url: 'https://example.test/review/olaplex', source_section: 'Section 5.2',
+    description: 'The agreement permits specified responses to an acquisition proposal.',
+    severity: 'CRITICAL', assessment: 'FOUND', comparison: 'The source and product output state the same legal point.',
+    reviewed_by_role: 'LAWYER', ...overrides,
+  };
+}
+
 test('local diagnostic runner is bound to the disposable host and exact diagnostic source', () => {
   assert.doesNotThrow(() => assertDatabaseTarget('https://ecrtoofsyxozazkvsvcl.supabase.co'));
   assert.throws(() => assertDatabaseTarget('https://production.supabase.co'), /PRODUCT_PHASE5_DATABASE_TARGET/);
@@ -23,7 +33,7 @@ test('local diagnostic runner is bound to the disposable host and exact diagnost
   assert.throws(() => assertDiagnosticRunTarget(runId, null), /PRODUCT_PHASE5_RUN_TARGET/);
 });
 
-test('supervised release evaluation counts omissions and unresolved work against weighted recall and review burden', () => {
+test('supervised release evaluation reports sample-only results and unresolved candidate work', () => {
   const facts = [{ review_item_id: 'review-fact-1', family_key: 'TERMINATION', subtype_key: 'OUTSIDE_DATE', fact_type: 'OUTSIDE_DATE', roles: { terminating_party: 'Company', action: 'terminate', outside_date: '2027-01-01', transaction_not_completed_condition: 'Merger not completed', breach_bar: 'No causative breach' }, source_span_ids: ['span-1'] }];
   const reviewState = {
     items: [
@@ -36,13 +46,11 @@ test('supervised release evaluation counts omissions and unresolved work against
     summary: { families: [{ family_key: 'TERMINATION', facts }] },
   };
   const result = evaluateSupervisedRelease({
-    inventory: [
-      { inventory_item_id: 'critical-1', severity: 'CRITICAL' },
-      { inventory_item_id: 'material-1', severity: 'MATERIAL' },
-    ],
-    reconciliation: [
-      { inventory_item_id: 'critical-1', disposition: 'PUBLISHED_FACT', review_item_id: 'review-fact-1', reviewed_by_role: 'LAWYER' },
-      { inventory_item_id: 'material-1', disposition: 'REVIEWED_OMISSION', omission_reason: 'Not a material fact after source review.', reviewed_by_role: 'LAWYER' },
+    referenceSamples: [
+      referenceSample(),
+      referenceSample({ reference_sample_id: 'sample-2', source_document_id: 'source-apogee', source_section: 'Section 7.3',
+        description: 'The fee is the exclusive remedy after payment.', severity: 'MATERIAL', assessment: 'MISSED', comparison: undefined,
+        reviewed_limitation: 'The product omitted the payment condition in the Apogee sample.' }),
     ],
     analysis: {
       issues: [],
@@ -58,11 +66,11 @@ test('supervised release evaluation counts omissions and unresolved work against
     elapsedMinutes: 91,
     developerAssisted: true,
   });
-  assert.equal(result.diagnostics.severity_weighted_recall, 0.75);
-  assert.equal(result.diagnostics.severity_weighted_precision, 1);
-  assert.equal(result.diagnostics.unresolved_weight, 1);
+  assert.equal(result.diagnostics.reference_sample_success_rate, 0.75);
+  assert.equal(result.diagnostics.reference_sample_count, 2);
+  assert.equal(result.diagnostics.reference_sample_missed_count, 1);
   assert.equal(result.diagnostics.unresolved_count, 2);
-  assert.equal(result.bars.inventory_reconciled, true);
+  assert.equal(result.bars.reference_samples_reviewed, true);
   assert.equal(result.bars.no_unresolved_presented_as_completion, false);
   assert.equal(result.bars.timing_measured_without_developer, false);
   assert.equal(result.passed, false);
@@ -73,8 +81,7 @@ test('release evaluation rejects vacuous or non-lawyer evidence and duplicate or
   const roleCoverage = ['terminating_party', 'action', 'outside_date', 'transaction_not_completed_condition']
     .map((role) => ({ subject_kind: 'ROLE', subject_id: `occurrence-1:${role}`, required_role: role, state: 'FOUND' }));
   const base = {
-    inventory: [{ inventory_item_id: 'critical-1', severity: 'CRITICAL' }],
-    reconciliation: [{ inventory_item_id: 'critical-1', disposition: 'PUBLISHED_FACT', review_item_id: 'fact-1', reviewed_by_role: 'LAWYER' }],
+    referenceSamples: [referenceSample()],
     analysis: {
       issues: [],
       sections: [{ structure_node_id: 'section-1' }],
@@ -123,13 +130,23 @@ test('release evaluation rejects vacuous or non-lawyer evidence and duplicate or
   assert.equal(evaluateSupervisedRelease({ ...base, elapsedMinutes: -0.1 }).bars.timing_measured_without_developer, false);
   assert.equal(evaluateSupervisedRelease({ ...base, elapsedMinutes: 120, reviewState: { ...base.reviewState, metrics: { review_time_seconds: 6000 } } }).bars.timing_measured_without_developer, true);
   assert.equal(evaluateSupervisedRelease({ ...base, reviewState: { ...base.reviewState, metrics: null } }).bars.timing_measured_without_developer, false);
-  assert.equal(evaluateSupervisedRelease({ ...base, inventory: [], reconciliation: [] }).passed, false);
-  assert.equal(evaluateSupervisedRelease({ ...base, reviewState: { ...base.reviewState, summary: { families: [] } }, reconciliation: [{ ...base.reconciliation[0], disposition: 'REVIEWED_OMISSION', review_item_id: undefined, omission_reason: 'Not material after source review.' }], citationAssessments: [] }).passed, false);
+  assert.equal(evaluateSupervisedRelease({ ...base, referenceSamples: [] }).passed, false);
+  assert.equal(evaluateSupervisedRelease({ ...base, reviewState: { ...base.reviewState, summary: { families: [] } }, citationAssessments: [] }).passed, false);
   assert.throws(() => evaluateSupervisedRelease({ ...base, citationAssessments: [{ ...base.citationAssessments[0], reviewed_by_role: 'AUTOMATION' }] }), /CITATION_ASSESSMENT/);
   assert.throws(() => evaluateSupervisedRelease({ ...base, citationAssessments: [...base.citationAssessments, base.citationAssessments[0]] }), /CITATION_ASSESSMENT/);
   assert.throws(() => evaluateSupervisedRelease({ ...base, citationAssessments: [{ ...base.citationAssessments[0], review_item_id: 'unknown' }] }), /CITATION_ASSESSMENT/);
-  assert.throws(() => evaluateSupervisedRelease({ ...base, reconciliation: [{ ...base.reconciliation[0], review_item_id: 'unknown' }] }), /RECONCILIATION_FACT/);
-  assert.throws(() => evaluateSupervisedRelease({ ...base, reconciliation: [{ ...base.reconciliation[0], disposition: 'REVIEWED_OMISSION', review_item_id: undefined }] }), /RECONCILIATION_ITEM/);
+  assert.throws(() => evaluateSupervisedRelease({ ...base, referenceSamples: [{ ...base.referenceSamples[0], source_url: '' }] }), /REFERENCE_SAMPLE/);
+  assert.throws(() => evaluateSupervisedRelease({ ...base, referenceSamples: [{ ...base.referenceSamples[0], source_url: 'https://user:secret@example.test/olaplex' }] }), /REFERENCE_SAMPLE/);
+  assert.throws(() => evaluateSupervisedRelease({ ...base, referenceSamples: [{ ...base.referenceSamples[0], assessment: 'MISSED', comparison: undefined }] }), /REFERENCE_SAMPLE/);
+  const unresolvedSample = evaluateSupervisedRelease({
+    ...base,
+    referenceSamples: [{ ...base.referenceSamples[0], assessment: 'UNRESOLVED', comparison: undefined,
+      reviewed_limitation: 'The source comparison remains unresolved.' }],
+  });
+  assert.equal(unresolvedSample.diagnostics.reference_sample_success_rate, 0);
+  assert.equal(unresolvedSample.diagnostics.reference_sample_unresolved_count, 1);
+  assert.equal(unresolvedSample.bars.reference_samples_reviewed, false);
+  assert.equal(unresolvedSample.passed, false);
   const missingRole = structuredClone(base);
   delete missingRole.reviewState.summary.families[0].facts[0].roles.transaction_not_completed_condition;
   assert.equal(evaluateSupervisedRelease(missingRole).bars.section_role_exception_and_agreement_coverage_complete, false);

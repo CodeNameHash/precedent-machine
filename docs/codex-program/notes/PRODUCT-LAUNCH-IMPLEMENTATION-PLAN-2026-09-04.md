@@ -1145,9 +1145,12 @@ it is not an attestation or a completed independent inventory.
 - [ ] Reconcile Ben's existing independent, detailed provision samples against
       the corresponding agreement results, and review the complete final draft
       with Ben. A separate full lawyer-written inventory is not required.
-- [ ] Measure sample-scoped severity-weighted precision and recall, citation
-      sufficiency and narrowness, duplicates, contradictions, unresolved burden
-      and review time. Do not infer whole-agreement recall from the samples.
+- [ ] Measure severity-weighted reference-sample success, with missed,
+      incorrect and unresolved counts, citation sufficiency and narrowness,
+      duplicates, contradictions, unresolved burden and review time. Report
+      sample precision or recall only where the reviewed comparison supports
+      the denominator; otherwise report it as unavailable. Do not infer
+      whole-agreement accuracy from the samples.
 - [ ] Count `UNRESOLVED` against sample recall where applicable and against
       overall review burden.
 - [ ] Fix shared release-blocking failures once.
@@ -1180,8 +1183,10 @@ item becomes complete merely because this testing rule changes.
 
 Draft-quality diagnostics:
 
-- severity-weighted recall and precision within Ben's independently supplied
-  samples only, with sample scope stated and no whole-agreement extrapolation;
+- severity-weighted success and missed, incorrect and unresolved counts within
+  Ben's independently supplied samples only; expected-point notes alone do not
+  establish a denominator for precision. Any precision or recall measurement
+  must state its supported sample scope, with no whole-agreement extrapolation;
 - citation sufficiency and narrowness;
 - duplicate and contradiction rate;
 - unresolved count; and
@@ -1223,6 +1228,22 @@ Every final published fact still needs lawyer acceptance, every exception still
 needs review, and agreement-level coverage still needs one lawyer confirmation.
 The remaining citation, contradiction and unresolved-item requirements above
 are unchanged. No publication or production cutover is authorised by this change.
+
+Implementation check, 2026-09-07: the review form now uses reference samples
+linked to stored original sources that the signed-in reviewer can access.
+Each sample records its section, legal point, severity and explicit found,
+missed, incorrect or unresolved assessment. The database independently checks
+source access and the reported sample counts. Historical evaluations remain
+readable. The affected application checks passed, and a local database check
+used the full current rules, including article-introduction coverage, then
+restored the previous database behaviour and successfully reapplied the change.
+The changed form passed its local browser check. The older broad Phase 3
+database fixture still fails before this change because it contains only 101
+of 109 substantive Concho sections; it is not reported as passing. The update
+was applied only to the disposable private database, with unchanged access
+permissions and no new security findings. NCS still has 104 saved sections,
+one review session, no review actions and no publication. These checks do not
+complete Ben's legal review or the Phase 5 exit condition.
 
 Ben's review cadence, 2026-09-07: show him a full agreement now, starting with
 the completed NCS draft, before processing any more agreements. Run focused,

@@ -13,8 +13,12 @@ function input(overrides = {}) {
   const roleCoverage = roleNames.map((role) => ({ subject_kind: 'ROLE', subject_id: `occ:${role}`, required_role: role, state: 'FOUND' }));
   const roles = Object.fromEntries(roleNames.map((role) => [role, role]));
   return {
-    inventory: [{ inventory_item_id: 'i', severity: 'CRITICAL' }],
-    reconciliation: [{ inventory_item_id: 'i', disposition: 'PUBLISHED_FACT', review_item_id: 'f', reviewed_by_role: 'LAWYER' }],
+    referenceSamples: [{
+      reference_sample_id: 'sample-1', source_document_id: 'source-olaplex',
+      source_url: 'https://example.test/review/olaplex', source_section: 'Section 5.2',
+      description: 'The source contains an outside-date termination right.', severity: 'CRITICAL',
+      assessment: 'FOUND', comparison: 'The source and product output state the same legal point.', reviewed_by_role: 'LAWYER',
+    }],
     analysis: { issues: [], sections: [{ structure_node_id: 's' }], proposals: [{ fact_occurrence_id: 'occ', family_key: 'TERMINATION', subtype_key: 'OUTSIDE_DATE' }], coverage_assertions: [{ subject_kind: 'SECTION', subject_id: 's', structure_node_id: 's', state: 'FOUND' }, ...roleCoverage] },
     reviewState: { items: [{ item_id: 'f', kind: 'PROPOSAL', decision: 'ACCEPTED', decided_by_role: 'LAWYER' }], agreement_coverage: { decision: 'ACCEPTED', confirmed_by_role: 'LAWYER' }, metrics: { review_time_seconds: 1200 }, summary: { families: [{ family_key: 'TERMINATION', facts: [{ review_item_id: 'f', family_key: 'TERMINATION', subtype_key: 'OUTSIDE_DATE', fact_type: 'OUTSIDE_DATE', roles, source_span_ids: ['sp'] }] }] } },
     legalSchema, citationAssessments: [{ review_item_id: 'f', exact: true, legally_sufficient: true, narrow: true, reviewed_by_role: 'LAWYER' }],
