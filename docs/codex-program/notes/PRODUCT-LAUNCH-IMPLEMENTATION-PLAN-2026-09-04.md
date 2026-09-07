@@ -399,14 +399,19 @@ result. Every substantive section and required role has a disposition.
 
 ### Phase 5. Freeze, test blind and correct honestly, 3 days
 
-Current position, 2026-09-06: NCS completed ordinary private intake in
+Current position, 2026-09-07: NCS completed ordinary private intake in
 118 minutes 26 seconds with the corrected code. All 104 sections have saved
 results and section coverage records, with no missing or unexpected section
 identities and no failed sections. There are 53 unresolved coverage records
-awaiting review, not necessarily 53 distinct legal issues. No model output or
-completed Review has been opened.
+awaiting review, not necessarily 53 distinct legal issues. The complete
+[NCS draft is now open for review](https://deal-corpus-git-codex-product-imp-7fe402-codenamehashs-projects.vercel.app/review/product/eaafcac8-790b-41bb-a5e1-b12187a55e7d),
+following Ben's approval below. It shows 104 section cards and 1,672 items
+awaiting review. Agent preparation is not Ben's legal review or acceptance.
 Known agreements will check mechanical corrections; a new agreement is not
-required after every such correction. All legal-review requirements remain.
+required after every such correction. Ben has now approved using his existing
+independent provision samples instead of a separate full lawyer inventory.
+Review the complete NCS draft with him now, before any more agreement runs.
+All other publication requirements remain unchanged.
 
 Apogee finished all 95 sections through normal
 private intake, without manual repair, in 100 minutes 17 seconds. Ben has
@@ -471,6 +476,24 @@ to it. Lawyer review time and legal-quality measurements remain unavailable.
 Ben's Olaplex and Apogee notes remain useful independent samples for those
 agreements, not a completed inventory or acceptance of NCS. No further
 agreement is needed solely to verify the mechanical introduction correction.
+
+The earlier diagnostic accounts below preserve what happened and the rules in
+force at that time. Their earlier full-inventory, pre-exposure and 90-minute
+requirements are superseded by Ben's dated decisions in the current Phase 5
+checklist and publication requirements below; they must not delay showing NCS.
+
+After Ben's 2026-09-07 approval, the implementer opened the completed NCS draft
+through ordinary signed-in Review. Revision 0 shows the complete party names,
+104 section cards, 1,672 pending review items, agreement coverage and findings,
+fact relationships, exceptions, qualifications and source controls. A Section
+5.2 source check opened both the exact supporting passage and its full operative
+clause context. No fact was accepted, rejected or edited; no coverage confirmation,
+save, finalisation or publication was made. This is agent preparation, not a
+lawyer review-time measurement. The initial view's zero items marked unresolved
+counts review decisions and does not erase the 53 unresolved extraction coverage
+records reported above. The page is large: targeted section/source interactions
+work, while a complete accessibility-tree export exceeds the browser tool's
+message limit. That export limit is not itself a product failure.
 
 Earlier, Olaplex completed all 79 sections in about 36
 minutes through ordinary private intake. Ben's independent, partial legal notes
@@ -1119,11 +1142,14 @@ repository. Their transcription is partial, with severity and acceptance pending
 it is not an attestation or a completed independent inventory.
 
 - [x] Run the release candidate on the untouched blind agreement.
-- [ ] Compare it with an independent, atomic lawyer inventory.
-- [ ] Measure severity-weighted precision and recall, citation sufficiency and
-      narrowness, duplicates, contradictions, unresolved burden and review
-      time.
-- [ ] Count `UNRESOLVED` against recall and review burden.
+- [ ] Reconcile Ben's existing independent, detailed provision samples against
+      the corresponding agreement results, and review the complete final draft
+      with Ben. A separate full lawyer-written inventory is not required.
+- [ ] Measure sample-scoped severity-weighted precision and recall, citation
+      sufficiency and narrowness, duplicates, contradictions, unresolved burden
+      and review time. Do not infer whole-agreement recall from the samples.
+- [ ] Count `UNRESOLVED` against sample recall where applicable and against
+      overall review burden.
 - [ ] Fix shared release-blocking failures once.
 - [ ] Test the stable final extraction approach on an untouched agreement.
       Use known agreements to verify mechanical fixes. Require a new untouched
@@ -1154,7 +1180,8 @@ item becomes complete merely because this testing rule changes.
 
 Draft-quality diagnostics:
 
-- severity-weighted recall and precision against the independent inventory;
+- severity-weighted recall and precision within Ben's independently supplied
+  samples only, with sample scope stated and no whole-agreement extrapolation;
 - citation sufficiency and narrowness;
 - duplicate and contradiction rate;
 - unresolved count; and
@@ -1165,8 +1192,9 @@ blind agreement.
 
 Supervised internal-release bars:
 
-- the lawyer's independent critical and material inventory is fully reconciled
-  into published facts or explicit reviewed omissions;
+- Ben's independent provision samples are reconciled against their own
+  agreements, with misses and corrections recorded honestly; Ben then reviews
+  the complete final agreement draft, including facts, exceptions and coverage;
 - 100% of published facts have exact and legally sufficient citations;
 - 100% of substantive sections and required roles have a coverage state, every
   exception has been reviewed, and the lawyer has given one agreement-level
@@ -1180,9 +1208,32 @@ Supervised internal-release bars:
 The original 90-minute processing-and-review limit was removed by Ben's explicit
 2026-09-06 decision. Processing and review time remain measured and reported,
 but elapsed duration alone does not reject the supervised internal release.
-Speed improvement is deferred in section 7. All remaining bars are unchanged.
+Speed improvement is deferred in section 7. The separate full-inventory
+requirement is replaced only by Ben's explicit decision below. All other
+publication requirements are unchanged.
 Any further weakening needs Ben's explicit decision because it changes what the
 product promises.
+
+Lawyer-review correction, 2026-09-07: Ben approved using his existing detailed
+Olaplex and Apogee samples instead of requiring a separate complete lawyer-written
+inventory before exposing the final draft. Those samples remain tied to their
+own sources; they are not an NCS inventory or acceptance of NCS conclusions.
+Independent sample comparisons do not measure whole-agreement omissions.
+Every final published fact still needs lawyer acceptance, every exception still
+needs review, and agreement-level coverage still needs one lawyer confirmation.
+The remaining citation, contradiction and unresolved-item requirements above
+are unchanged. No publication or production cutover is authorised by this change.
+
+Ben's review cadence, 2026-09-07: show him a full agreement now, starting with
+the completed NCS draft, before processing any more agreements. Run focused,
+source-linked excerpts by him during development rather than saving all feedback
+for a final whole-agreement review. He must review no later than four to five
+total distinct agreements; use four as the planning limit and earlier when a
+complete useful draft is ready. Prior agreements count, and reruns or phase
+changes do not reset the count. Several agreements have already been processed,
+so review is due now. Do not expand to ten or forty agreements ahead of his
+review. This changes work order within Phase 5, not the Phase 0 to 6 sequence,
+and does not create a separate gate or status document.
 
 Exit: the final candidate satisfies every supervised internal-release bar.
 Its stable legal extraction approach has an untouched agreement test; material
