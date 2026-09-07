@@ -119,6 +119,15 @@ test('proposal card uses plain review labels while preserving the legal statemen
   assert.doesNotMatch(markup, /NO_SHOP|PROHIBITED_ACTION|>PENDING</);
 });
 
+test('source panel uses readable source-kind labels', () => {
+  const markup = renderToStaticMarkup(React.createElement(SourceContextPanel, {
+    open: true, onClose() {}, source: { canonical_text: spans[0].exact_text },
+    span: spans[0], closureSpans: [spans[0]], loading: false,
+  }));
+  assert.match(markup, /Supporting evidence/);
+  assert.doesNotMatch(markup, /SUPPORTING_EVIDENCE/);
+});
+
 test('source panel says an unmatched quote is not the highlighted containing context', () => {
   const markup = renderToStaticMarkup(React.createElement(SourceContextPanel, {
     open: true,
@@ -166,7 +175,7 @@ test('source panel highlights exact supporting words inside the smallest stored 
 
   assert.match(markup, /Full surrounding clause/);
   assert.match(markup, /The Company <mark[^>]*>shall not amend its charter<\/mark>, except as permitted by Law\./);
-  assert.match(markup, /OPERATIVE · bytes/);
+  assert.match(markup, /Operative · bytes/);
 });
 
 test('proposal card exposes every saved citation and labels first-citation shortcuts', () => {
