@@ -1,14 +1,21 @@
 # Deal Storylines consumer status
 
-Updated: 2026-09-05 after consuming A-0018
+Updated: 2026-09-08, non-blocking Q-0008 sent after consuming A-0018
 
 ## Waiting on PM
 
+- Q-0008: future policy for fresh recapture across compression runtimes.
+  Current saved-package replay is verified and is not blocked on this answer.
 - A user-displayable five-deal package after the producer legal gate.
 - Producer evidence before dates are assigned beyond the first real run.
 
 ## Consumer state
 
+- DS has completed source extraction and source checks for its Metsera and
+  SecureWorks development inputs. Fact-group checks and the minimum private
+  source-to-screen flow remain in progress. No automatic-publication category
+  is qualified, and no production cutover is claimed. Ben requires a product
+  preview before DS expands beyond five distinct deals.
 - Contract draft 3, schema version 1.2.0, and its synthetic one-deal package
   are the current consumer contract. The producer reports 566 verifier checks.
 - A-0018 released Shared Source Core 1.0.3 at immutable package-root commit
