@@ -413,6 +413,23 @@ independent provision samples instead of a separate full lawyer inventory.
 Review the complete NCS draft with him now, before any more agreement runs.
 All other publication requirements remain unchanged.
 
+Ten-provision briefing, 2026-09-09: Ben chose comment-style review of a
+few material provisions rather than all 1,672 items. Ten provisions
+(termination, fees and remedies, no-shop, board recommendation and match,
+closing conditions, specific performance, regulatory efforts, Material
+Contracts rep with thresholds, written consent and support agreement, and
+an interpretation control) were read from the private database against
+their source text in
+`docs/codex-program/notes/NCS-TEN-PROVISION-BRIEFING-2026-09-09.md`. The
+database is the Supabase preview branch `pm-product-restore-20260905`.
+Findings: closing conditions and fee amounts are accurate; written-consent
+mechanics and support-agreement terms are systematically labelled with
+vote-deal subtypes; the Parent Termination Fee election right and every
+Material Contracts dollar threshold are held as unsupported subtypes and do
+not appear as facts; the Acceptable Confidentiality Agreement definition has
+no fact. Ben's comments are recorded verbatim in
+`BEN-NCS-REVIEW-COMMENTS-2026-09-09.md`. No review decision was made.
+
 Review page adversarial review, 2026-09-09: Ben opened the NCS draft and
 reported that 1,672 items is too many, that cards repeat, that clicking a role
 highlights the whole provision, and that the reader-facing result is unclear.
