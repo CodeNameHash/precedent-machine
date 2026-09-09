@@ -413,6 +413,26 @@ independent provision samples instead of a separate full lawyer inventory.
 Review the complete NCS draft with him now, before any more agreement runs.
 All other publication requirements remain unchanged.
 
+Focused review view, 2026-09-09: Ben asked for a page closer to the old
+review, showing the provisions selected for discussion. A presentation-only
+focused mode now opens when the Review URL carries `?focus=7.1,7.3,...`:
+each selected section shows the provision as written beside the draft's
+facts in source order, grouped by proposition group, with a click on a fact
+highlighting its cited words in the text, held model content listed as
+"not shown as facts", and the full card (roles, citations, edit) behind a
+toggle. "Show all sections" returns to the complete page. Files:
+`components/product/FocusedReview.jsx`, `lib/product/section-highlight.js`,
+`pages/review/product/[id].js`, `components/product/ReviewWorkspace.jsx`,
+test `tests/product-focused-review-ui.test.js` (added to `test:active`).
+Checks: focused, presentation, held-issue, proposal-card-source and
+first-load display tests pass (39 of 39); `npm run build` passes; forbidden
+patterns pass; one local browser check of login, focused view, click-to-
+highlight, card expansion and return to all sections passed against a
+fixture built from the real 7.1 text, with throwaway local auth values.
+The active suite ran 352 of 353; the one failure is the Codex client
+temporary-file permission test, which does not touch this change. No stored
+content, review decision, prompt, model or database changed.
+
 Ten-provision briefing, 2026-09-09: Ben chose comment-style review of a
 few material provisions rather than all 1,672 items. Ten provisions
 (termination, fees and remedies, no-shop, board recommendation and match,

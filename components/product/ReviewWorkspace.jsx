@@ -6,6 +6,7 @@ import { displayReviewLabel } from '../../lib/product/review-labels';
 import legalSchema from '../../contracts/product/legal-schema.v1.json';
 import ProposalCard from './ProposalCard';
 import SourceContextPanel from './SourceContextPanel';
+import FocusedReview from './FocusedReview';
 import FindingResolutionFields, { COLLISION_TITLE, CollisionDetail, EmptyExtractionWarning, findingResolutionCommand } from './FindingResolutionFields';
 import { RELATIONSHIP_TYPES } from '../../lib/product/legal-schema';
 
@@ -221,7 +222,7 @@ export function ReviewSectionHeading({ section }) {
   return <div><p className="text-xs font-bold uppercase tracking-wide text-accent">{displaySectionReference(section.routing.section_reference)}</p><h2 className="font-display text-xl text-ink">{section.heading || 'Agreement section'}</h2>{section.routing.rationale ? <details className="mt-1 max-w-3xl text-xs text-inkMid"><summary className="cursor-pointer font-semibold">Why this section was classified</summary><p className="mt-1">{section.routing.rationale}</p></details> : null}</div>;
 }
 
-export function DraftReview({ workspace, view, busy, command, openSource }) {
+export function DraftReview({ workspace, view, busy, command, openSource, focus = [], allSectionsHref = null }) {
   const state = workspace.review.state;
   const analysis = workspace.analysis;
   const firstFactSection = view.sections.find((section) => section.proposals.length > 0);
@@ -231,18 +232,27 @@ export function DraftReview({ workspace, view, busy, command, openSource }) {
     document.getElementById(`section-${sectionId}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     event.target.value = '';
   }
+  const cardPropsFor = (entry) => ({
+    requiredRoleKeys: proposalRequiredRoles(entry.proposal),
+    structureNodes: analysis.agreement_structure?.nodes || [],
+    availablePropositionGroups: analysis.proposition_groups || [],
+    availableProposals: analysis.proposals || [],
+    availableSourceSpans: analysis.spans.filter((span) => span.source_closure_ids?.includes(entry.proposal.source_closure_id)),
+  });
+  const focused = focus.length > 0;
   return <>
-    <nav aria-label="Review navigation" className="rounded-xl border border-border bg-paper p-4">
+    {focused ? <FocusedReview view={view} analysis={analysis} focus={focus} busy={busy} command={command} openSource={openSource} cardPropsFor={cardPropsFor} allSectionsHref={allSectionsHref} /> : null}
+    {focused ? null : <nav aria-label="Review navigation" className="rounded-xl border border-border bg-paper p-4">
       <div className="flex flex-wrap items-end gap-3">
         <div className="min-w-64 flex-1"><p className="text-xs font-bold uppercase tracking-wide text-accent">Review by section</p><label className="mt-1 block text-sm font-semibold text-ink">Jump to agreement section<select aria-label="Jump to agreement section" defaultValue="" onChange={jumpToSection} className="mt-1 block w-full rounded border border-border bg-white p-2 font-normal"><option value="">Choose a section</option>{view.sections.map((section) => <option key={section.node.node_id} value={section.node.node_id}>{displaySectionReference(section.routing.section_reference)}: {section.heading || 'Agreement section'}</option>)}</select></label></div>
         {firstFactSection ? <a href={`#section-${firstFactSection.node.node_id}`} className="rounded bg-ink px-4 py-2 text-xs font-semibold text-white">Start with first proposed fact</a> : null}
         <a href="#review-checks" className="rounded border border-border bg-white px-4 py-2 text-xs font-semibold text-ink">Go to review checks</a>
       </div>
-    </nav>
-    <section aria-labelledby="proposed-facts-heading" className="space-y-6">
+    </nav>}
+    {focused ? null : <section aria-labelledby="proposed-facts-heading" className="space-y-6">
       <div className="border-b border-border pb-2"><p className="text-xs font-bold uppercase tracking-wide text-accent">Primary review</p><h2 id="proposed-facts-heading" className="font-display text-2xl text-ink">Proposed facts</h2><p className="text-sm text-inkLight">Review the proposed legal facts in agreement order. Open the source from each fact.</p></div>
       {view.sections.map((section) => <section id={`section-${section.node.node_id}`} key={section.node.node_id} className="scroll-mt-40 space-y-3"><div className="flex items-end justify-between border-b border-border pb-2"><ReviewSectionHeading section={section} /><AddFact section={section} analysis={analysis} busy={busy} onAdd={(fact) => command({ type: 'ADD_MISSING_FACT', ...fact })} /></div>{section.proposals.map((entry) => <ProposalCard key={entry.proposal.proposal_id} entry={entry} busy={busy} onSource={openSource} requiredRoleKeys={proposalRequiredRoles(entry.proposal)} structureNodes={analysis.agreement_structure?.nodes || []} availablePropositionGroups={analysis.proposition_groups || []} availableProposals={analysis.proposals || []} availableSourceSpans={analysis.spans.filter((span) => span.source_closure_ids?.includes(entry.proposal.source_closure_id))} onDecision={(itemId, decision, edits = {}) => command({ type: 'DECIDE_ITEM', item_id: itemId, decision, ...edits })} />)}{section.review_items.map((item) => <Requirement key={item.item_id} item={item} analysis={analysis} busy={busy} onSource={openSource} onDecision={(itemId, decision) => command({ type: 'DECIDE_ITEM', item_id: itemId, decision })} />)}{section.proposals.length === 0 && section.review_items.length === 0 ? <p className="text-sm text-inkLight">No proposed fact or flagged review item.</p> : null}</section>)}
-    </section>
+    </section>}
     <section id="review-checks" aria-labelledby="review-checks-heading" className="scroll-mt-40 space-y-5">
       <div className="border-b border-border pb-2"><p className="text-xs font-bold uppercase tracking-wide text-accent">Complete before finalising</p><h2 id="review-checks-heading" className="font-display text-2xl text-ink">Review checks</h2><p className="text-sm text-inkLight">{view.pending_count} items need review. {view.unresolved_count} items are unresolved. Coverage, agreement-level findings and relationships remain available below.</p></div>
       <details className="rounded-xl border border-border bg-paper p-4"><summary className="cursor-pointer font-display text-lg text-ink">Agreement coverage · {displayReviewLabel(state.agreement_coverage.decision)}</summary><div className="mt-3 flex items-center justify-between gap-3"><p className="text-sm text-inkLight">Review every section classification, then confirm the agreement as a whole.</p><label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" checked={state.agreement_coverage.decision === 'ACCEPTED'} onChange={(event) => command({ type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: event.target.checked })} />Coverage confirmed</label></div><div className="mt-3 grid gap-2 sm:grid-cols-3">{analysis.sections.map((section) => <div key={section.section_routing_id} className="rounded bg-white p-2 text-xs"><strong>{displaySectionReference(section.section_reference)}</strong><br/><span className="text-inkLight">{displayReviewLabel(section.disposition)}{section.families.length ? ` · ${section.families.map(displayReviewLabel).join(', ')}` : ''}</span></div>)}</div></details>
@@ -392,7 +402,7 @@ export function ReleaseEvaluation({ state, analysis, referenceSources = [], onEv
   </form>;
 }
 
-export default function ReviewWorkspace({ runId }) {
+export default function ReviewWorkspace({ runId, focus = [], allSectionsHref = null }) {
   const [workspace, setWorkspace] = useState(null);
   const [source, setSource] = useState(null);
   const [sourceSelection, setSourceSelection] = useState(null);
@@ -441,7 +451,7 @@ export default function ReviewWorkspace({ runId }) {
   return <div className="mx-auto max-w-6xl space-y-6 pb-20">
     <header className="sticky top-0 z-20 -mx-4 flex flex-wrap items-center gap-3 border-b border-border bg-white/95 px-4 py-3 backdrop-blur"><div><p className="text-xs uppercase tracking-wide text-inkLight">25-family lawyer review</p><h1 className="font-display text-xl text-ink">{displayIdentityParties(workspace.analysis.source_document.display_parties || workspace.analysis.source_document.parties, 'Agreement analysis')}</h1></div><div className="ml-auto text-right text-xs text-inkMid"><p>Awaiting review: {view.pending_count} · Marked unresolved: {view.unresolved_count}</p><p>{view.residual_paragraph_count} residual paragraphs · {view.unusual_provision_count} unusual</p><p>Revision {workspace.review.version}</p></div>{state.status === 'DRAFT' ? <><button disabled={busy} type="button" onClick={() => command({ type: 'SAVE_PROGRESS' })} className="rounded border border-border px-3 py-2 text-xs font-semibold">Save progress</button><button disabled={busy || !view.can_publish} type="button" onClick={() => command({ type: 'PUBLISH' })} className="rounded bg-ink px-4 py-2 text-xs font-semibold text-white disabled:opacity-40">Finalise inactive candidate</button></> : <><button disabled={busy} type="button" onClick={() => command({ type: 'REOPEN' })} className="rounded border border-border px-3 py-2 text-xs font-semibold">Revise candidate</button>{candidate && state.release_evaluation?.passed === true && !candidateActive ? <button disabled={busy} type="button" onClick={() => command({ type: 'ACTIVATE_RELEASE', release_id: candidate.release_id })} className="rounded bg-green-800 px-4 py-2 text-xs font-semibold text-white">Activate evaluated release</button> : null}{candidateActive && candidate.supersedes_release_id ? <button disabled={busy} type="button" onClick={() => command({ type: 'ROLLBACK_RELEASE' })} className="rounded bg-red-800 px-4 py-2 text-xs font-semibold text-white">Roll back active release</button> : null}</>}</header>
     {error ? <p role="alert" className="rounded bg-red-50 p-3 text-sm text-red-800">{error}<button type="button" onClick={() => (sourceSelection && !source ? loadSource() : load()).catch((failure) => setError(failure.message))} className="ml-3 underline">Retry load</button></p> : null}
-    {state.status === 'PUBLISHED' ? <><AcceptedSummary summary={state.summary} metrics={state.metrics} onSource={openSource} active={candidateActive} /><ReleaseEvaluation state={state} analysis={workspace.analysis} referenceSources={workspace.reference_sources || []} busy={busy} onEvaluate={command} onSource={openSource} /></> : <DraftReview workspace={workspace} view={view} busy={busy} command={command} openSource={openSource} />}
+    {state.status === 'PUBLISHED' ? <><AcceptedSummary summary={state.summary} metrics={state.metrics} onSource={openSource} active={candidateActive} /><ReleaseEvaluation state={state} analysis={workspace.analysis} referenceSources={workspace.reference_sources || []} busy={busy} onEvaluate={command} onSource={openSource} /></> : <DraftReview workspace={workspace} view={view} busy={busy} command={command} openSource={openSource} focus={focus} allSectionsHref={allSectionsHref} />}
     <SourceContextPanel open={Boolean(sourceSelection)} onClose={() => setSourceSelection(null)} source={source} span={sourceSelection?.span} reviewContext={sourceSelection?.reviewContext} closureSpans={workspace.analysis.spans.filter((item) => item.source_closure_ids?.includes(sourceSelection?.closureId))} loading={!source} />
   </div>;
 }
