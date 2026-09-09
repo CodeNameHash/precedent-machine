@@ -413,6 +413,23 @@ independent provision samples instead of a separate full lawyer inventory.
 Review the complete NCS draft with him now, before any more agreement runs.
 All other publication requirements remain unchanged.
 
+Review page adversarial review, 2026-09-09: Ben opened the NCS draft and
+reported that 1,672 items is too many, that cards repeat, that clicking a role
+highlights the whole provision, and that the reader-facing result is unclear.
+The code-level review in
+`docs/codex-program/notes/ADVERSARIAL-REVIEW-NCS-REVIEW-PAGE-2026-09-09.md`
+confirms each point from the rendering code and prompt: role links all open
+citation 1 of the fact because citations are per fact, not per role; the
+schema marks every provision in 22 of 25 families material and the prompt
+demands one proposal per operative effect with repeated qualifications; the
+published summary is the same atomised list grouped by family, and
+`summary_grammar` is never used to compose it; every item must be individually
+decided before publication. Presentation fixes are safe now. Materiality and
+reader granularity are Ben's decisions under section 11 and are open. No
+review decision, stored content, prompt or model changed. The private
+database was not reachable from the reviewing session, so NCS counts were not
+re-verified.
+
 Review presentation correction, 2026-09-07: Ben reported that proposed facts
 were not apparent and the page displayed machine codes. The live page contained
 1,039 non-empty proposal cards, but the first was about 35,700 pixels below the
