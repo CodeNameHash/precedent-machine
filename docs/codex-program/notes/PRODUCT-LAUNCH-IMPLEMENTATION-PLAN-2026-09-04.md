@@ -413,6 +413,21 @@ independent provision samples instead of a separate full lawyer inventory.
 Review the complete NCS draft with him now, before any more agreement runs.
 All other publication requirements remain unchanged.
 
+Ben's first pass, 2026-09-12: Ben reviewed the briefed NCS provisions on
+the focused page and saved 35 comments, 2 edits and 3 unresolved marks
+(revision 45). All are recorded verbatim in
+`docs/codex-program/notes/BEN-NCS-REVIEW-COMMENTS-2026-09-09.md` and
+consolidated in `docs/codex-program/notes/NCS-REVIEW-IMPLICATIONS-2026-09-12.md`.
+The consistent instruction is finer, systematic tracking: each list element,
+standard, threshold and qualifier as its own comparable item under the
+fact, with inherited chapeau language marked, forced roles made optional,
+several subtypes renamed, covenant standards tracked, bring-down rep lists
+resolved, and cross-references resolved to content. That is a schema,
+prompt and data-model change needing an untouched agreement afterwards.
+Three direction questions are put to Ben in the implications note. No
+review decision was made or changed by the assistant. The two edits carry
+bracketed notes in role fields and should not publish as they stand.
+
 Review save timeout and comments, 2026-09-12: Ben reported Accept and
 Reject did nothing. Runtime logs showed every review POST failing with a
 Postgres statement timeout inside `product_phase3_save_review`. Measured on
