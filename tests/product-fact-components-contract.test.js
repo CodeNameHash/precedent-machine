@@ -38,7 +38,7 @@ test('rules reject invented text, ellipses, loose list elements, forced values a
   fact.components.push(stamp({ component_id: 'bad-1', kind: 'QUALIFIER', label: 'q', text: 'none', origin: 'OWN', children: [] }));
   fact.components.push(stamp({ component_id: 'bad-2', kind: 'TERM', label: 't', text: 'the parties ... agree', origin: 'OWN', children: [] }));
   fact.components.push(stamp({ component_id: 'bad-3', kind: 'LIST_ELEMENT', label: 'e', text: 'stray', origin: 'OWN', children: [] }));
-  fact.components.push(stamp({ component_id: 'bad-4', kind: 'THRESHOLD', label: 'th', text: '$250,000', origin: 'OWN', children: [] }));
+  fact.components.push(stamp({ component_id: 'bad-4', kind: 'AMOUNT', label: 'th', text: 'a fee', origin: 'OWN', children: [] }));
   fact.components.push(stamp({ component_id: 'bad-5', kind: 'CROSS_REFERENCE', label: 'x', text: 'Section 6.1', origin: 'OWN', children: [] }));
   fact.components.push(stamp({ component_id: 'bad-6', kind: 'TERM', label: 'i', text: 'inherited', origin: 'INTRO', children: [] }));
   const problems = validateFactComponents(fact);
