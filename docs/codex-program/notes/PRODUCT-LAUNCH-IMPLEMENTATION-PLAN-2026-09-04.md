@@ -1503,12 +1503,18 @@ Sequence and proof:
       `lib/product/review-state.js` for component-level edits. Proof: display
       tests and one browser check.
 - [ ] 5B.6 Rerun NCS under V2 as a new generation. Needs two things from
-      Ben's side: the hosted worker sandbox at `/vercel/sandbox/pm-product`
-      must be updated to the current product branch (its launcher runs the
-      checkout as is), and the preview environment must set
-      `NEXT_PUBLIC_PRODUCT_LEGAL_SCHEMA_VERSION=LEGAL_SCHEMA/V2` before the
-      NCS URL is resubmitted; the submission then creates a V2 generation
-      with prompt bundle `PRODUCT_LAYERED_COMPONENTS/V7`. Compare against Ben's 38
+      Ben's side. (1) Update the hosted worker's checkout: from a machine
+      logged in to Vercel and linked to the deal-corpus project, run
+      `node scripts/product/update-sandbox-worker.js` in the repository; it
+      resumes the persistent sandbox, fetches and checks out the product
+      branch, reinstalls dependencies and prints the commit. (2) Set
+      `NEXT_PUBLIC_PRODUCT_LEGAL_SCHEMA_VERSION=LEGAL_SCHEMA/V2` for the
+      preview environment of the product branch
+      (`vercel env add NEXT_PUBLIC_PRODUCT_LEGAL_SCHEMA_VERSION preview codex/product-implementation-plan-20260904`,
+      then a push or redeploy so the intake form picks it up), then resubmit
+      the NCS URL through the normal intake. The submission creates a V2
+      generation with prompt bundle `PRODUCT_LAYERED_COMPONENTS/V7`; the V1
+      run and revision 45 of its review stay untouched as the baseline. Compare against Ben's 38
       touched items and his samples. Ben reviews the same 13 provisions again
       on the layered page. Comparison tooling merged 2026-09-12 from the 5B.6
       worker: `lib/product/review-comparison.js` and
