@@ -18,7 +18,7 @@ require.extensions['.jsx'] = function compileJsx(module, filename) {
 
 const { byteRangesToParts, firstCitedByte, parseFocusSections } = require('../lib/product/section-highlight');
 const { contract } = require('../lib/product/fact-components');
-const { buildEditedComponents } = require('../lib/product/component-edit');
+const { buildEditedComponents, componentEditPayload } = require('../lib/product/component-edit');
 const focusedModule = require('../components/product/FocusedReview.jsx');
 const FocusedReview = focusedModule.default;
 const { sectionFacts, ComponentEditor } = focusedModule;
@@ -275,8 +275,14 @@ test('a component editor dispatches DECIDE_ITEM/EDITED with a components tree wh
   async function onDecision(itemId, decision, edit) {
     dispatched = { itemId, decision, edit };
   }
-  await onDecision('item-editor', 'EDITED', { statement: 'Unchanged statement.', components });
+  await onDecision('item-editor', 'EDITED', componentEditPayload({
+    proposal: { statement: 'Unchanged statement.', roles: { payer: 'Company' } },
+    item: { edited_statement: null, edited_roles: null },
+    components,
+  }));
   assert.equal(dispatched.itemId, 'item-editor');
+  // The database rejects an EDITED proposal without an object of roles.
+  assert.deepEqual(dispatched.edit.roles, { payer: 'Company' });
   assert.equal(dispatched.decision, 'EDITED');
   assert.equal(dispatched.edit.statement, 'Unchanged statement.');
   const revised = dispatched.edit.components.find((component) => component.component_id === 'c-obligation');

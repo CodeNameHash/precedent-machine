@@ -1511,8 +1511,15 @@ Sequence and proof:
       renders through `PublishedFact` with the decision buttons, comment and
       revert passed in as aids; clicking a component highlights its bytes in
       the provision text, clicking the headline highlights all own
-      components; proposals without a tree are unchanged. Remaining:
-      component-level edits, and the browser check on a V2 run (5B.6).
+      components; proposals without a tree are unchanged. Component-level
+      edits merged 2026-09-12 22:10 UTC from `session_01HTmc6MH7SNADn1bujttuFp`:
+      `DECIDE_ITEM` EDITED carries a validated component tree and headline
+      (`edited_components`, `edited_headline`, cleared by reset, preferred
+      by the summary); the editor in `FocusedReview.jsx` recomputes UTF-8
+      byte offsets from the section text (`lib/product/component-edit.js`)
+      and blocks text that is missing or not unique. Lead fix on merge: the
+      database requires an edited proposal to carry statement and roles, so
+      the payload keeps them. Remaining: the browser check on a V2 run (5B.6).
 - [x] 5B.2a Ben's check of the V2 headline and layer rules, 2026-09-12:
       `V2-HEADLINE-AND-LAYER-RULES-FOR-BEN-2026-09-12.md` put seven
       questions; Ben answered all seven (Q6: every MAE carve-out is its own

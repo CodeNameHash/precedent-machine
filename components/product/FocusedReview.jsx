@@ -6,7 +6,7 @@ import { displayReviewLabel } from '../../lib/product/review-labels';
 import { displaySectionReference } from '../../lib/product/section-reference-display';
 import { byteRangesToParts, firstCitedByte } from '../../lib/product/section-highlight';
 import { contract, walk } from '../../lib/product/fact-components';
-import { buildEditedComponents } from '../../lib/product/component-edit';
+import { buildEditedComponents, componentEditPayload } from '../../lib/product/component-edit';
 
 const COMPONENT_KINDS = contract.component.component_kinds;
 
@@ -80,7 +80,7 @@ export function ComponentEditor({ proposal, item, sectionText, onDecision, busy 
     }
     setSaving(true);
     try {
-      await onDecision(item.item_id, 'EDITED', { statement: item?.edited_statement || proposal.statement, components });
+      await onDecision(item.item_id, 'EDITED', componentEditPayload({ proposal, item, components }));
       setEdits({});
       setRemoved([]);
       setAdditions([]);
