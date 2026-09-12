@@ -1,0 +1,1161 @@
+{
+  "schema_version": "PRODUCT_TABLE_SHAPES/V1",
+  "status": "DRAFT_FOR_BEN_REVIEW",
+  "generated_from": [
+    "components/review/table-configs/consideration-hero.config.js",
+    "components/review/table-configs/equity-awards.config.js",
+    "components/review/table-configs/structure-mechanics.config.js",
+    "components/review/table-configs/conditions.config.js",
+    "components/review/table-configs/conditions-m.config.js",
+    "components/review/table-configs/approvals-votes.config.js",
+    "components/review/table-configs/votes-approvals-meeting.config.js",
+    "components/review/table-configs/sec-meeting.config.js",
+    "components/review/table-configs/termination-rights.config.js",
+    "components/review/table-configs/termination-fees.config.js",
+    "components/review/table-configs/tail-fee.config.js",
+    "components/review/table-configs/nosol-section.config.js",
+    "components/review/table-configs/nosol-noshop.config.js",
+    "components/review/table-configs/nosol-fiduciary.config.js",
+    "components/review/table-configs/nosol-intervening.config.js",
+    "components/review/table-configs/nosol-superior.config.js",
+    "components/review/table-configs/ioc-exceptions.config.js",
+    "components/review/table-configs/general-covenants.config.js",
+    "components/review/table-configs/employee-benefits.config.js",
+    "components/review/table-configs/antitrust-regulatory.config.js",
+    "components/review/table-configs/representations-qualifiers.config.js",
+    "components/review/table-configs/no-other-reps-fraud.config.js",
+    "components/review/table-configs/mae-definitions.config.js",
+    "components/review/table-configs/material-contracts.config.js",
+    "components/review/table-configs/advisers-fees-expenses.config.js",
+    "components/review/table-configs/misc-boilerplate.config.js",
+    "components/review/table-configs/fiduciary-standard-labels.js",
+    "components/review/table-configs/board-change-standard.js",
+    "components/review/table-configs/vote-standard.js"
+  ],
+  "sections": [
+    {
+      "section_key": "consideration-hero",
+      "title": "Consideration",
+      "legacy_config": "components/review/table-configs/consideration-hero.config.js",
+      "v2_family_keys": [
+        {
+          "key": "CONSIDERATION",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "consideration-hero-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "equity-awards",
+      "title": "Equity Awards",
+      "legacy_config": "components/review/table-configs/equity-awards.config.js",
+      "v2_family_keys": [
+        {
+          "key": "CONSIDERATION",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "equity-awards-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Equity Type",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "consideration",
+              "header": "Consideration",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "CASH",
+                  "label": "Cash",
+                  "tone": "present"
+                },
+                {
+                  "code": "STOCK",
+                  "label": "Parent stock / rollover",
+                  "tone": "info"
+                },
+                {
+                  "code": "CANCELLATION",
+                  "label": "Cancelled — no consideration",
+                  "tone": "missing"
+                }
+              ]
+            },
+            {
+              "column_id": "vestingTreatment",
+              "header": "Vesting Treatment",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "CANCELLED_NO_CONSIDERATION",
+                  "label": "Cancelled — no consideration",
+                  "tone": "missing"
+                },
+                {
+                  "code": "CONTINUED_VESTING",
+                  "label": "Continues vesting (double-trigger protection)",
+                  "tone": "warning"
+                },
+                {
+                  "code": "ASSUMED_BY_PARENT",
+                  "label": "Assumed by Parent",
+                  "tone": "info"
+                },
+                {
+                  "code": "PRO_RATA_ACCELERATION",
+                  "label": "Pro-rata acceleration",
+                  "tone": "info"
+                },
+                {
+                  "code": "ROLLOVER",
+                  "label": "Rollover into Parent award",
+                  "tone": "info"
+                },
+                {
+                  "code": "FULLY_VESTED_ACCELERATED",
+                  "label": "Fully vested (accelerated)",
+                  "tone": "present"
+                },
+                {
+                  "code": "CANCELLED_FOR_CONSIDERATION",
+                  "label": "Cancelled for cash consideration",
+                  "tone": "present"
+                }
+              ]
+            },
+            {
+              "column_id": "cvrEntitlement",
+              "header": "CVR Entitlement",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "structure-mechanics",
+      "title": "Structure & Mechanics",
+      "legacy_config": "components/review/table-configs/structure-mechanics.config.js",
+      "v2_family_keys": [
+        {
+          "key": "MERGER_STRUCTURE_CLOSING",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "structure-mechanics-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "FORWARD_MERGER",
+                  "label": "Forward merger",
+                  "tone": "neutral"
+                },
+                {
+                  "code": "REVERSE_TRIANGULAR_MERGER",
+                  "label": "Reverse triangular merger",
+                  "tone": "neutral"
+                }
+              ]
+            },
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "conditions",
+      "title": "Closing Conditions",
+      "legacy_config": "components/review/table-configs/conditions.config.js",
+      "v2_family_keys": [
+        {
+          "key": "CLOSING_CONDITIONS",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "conditions-table",
+          "group_header": null,
+          "term_column": null,
+          "columns": [
+            {
+              "column_id": "body",
+              "header": "",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "conditions-m",
+      "title": "Closing Conditions — Mutual",
+      "legacy_config": "components/review/table-configs/conditions-m.config.js",
+      "v2_family_keys": [
+        {
+          "key": "CLOSING_CONDITIONS",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "conditions-m-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "verbatim"
+            },
+            {
+              "column_id": "provision",
+              "header": "Provision",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "conditions-b",
+      "title": "Closing Conditions — Buyer",
+      "legacy_config": "components/review/table-configs/conditions-m.config.js",
+      "v2_family_keys": [
+        {
+          "key": "CLOSING_CONDITIONS",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "conditions-b-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "verbatim"
+            },
+            {
+              "column_id": "provision",
+              "header": "Provision",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "conditions-s",
+      "title": "Closing Conditions — Seller",
+      "legacy_config": "components/review/table-configs/conditions-m.config.js",
+      "v2_family_keys": [
+        {
+          "key": "CLOSING_CONDITIONS",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "conditions-s-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "verbatim"
+            },
+            {
+              "column_id": "provision",
+              "header": "Provision",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "approvals-votes",
+      "title": "Approvals / Votes",
+      "legacy_config": "components/review/table-configs/approvals-votes.config.js",
+      "v2_family_keys": [
+        {
+          "key": "TERMINATION",
+          "confidence": "low"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "approvals-votes-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "kind",
+              "header": "Kind",
+              "render": "verbatim"
+            },
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "votes-approvals-meeting",
+      "title": "Votes / Approvals / SEC Filing / Meeting Requirements",
+      "legacy_config": "components/review/table-configs/votes-approvals-meeting.config.js",
+      "v2_family_keys": [
+        {
+          "key": "PROXY_MEETING",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "votes-approvals-meeting-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "provision",
+              "header": "Provision",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "sec-meeting",
+      "title": "Shareholder Meeting / Proxy / Tender-Offer SEC Matters",
+      "legacy_config": "components/review/table-configs/sec-meeting.config.js",
+      "v2_family_keys": [
+        {
+          "key": "PROXY_MEETING",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "sec-meeting-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "subject",
+              "header": "Subject",
+              "render": "verbatim"
+            },
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "verbatim"
+            },
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "termination-rights",
+      "title": "Termination Rights",
+      "legacy_config": "components/review/table-configs/termination-rights.config.js",
+      "v2_family_keys": [
+        {
+          "key": "TERMINATION",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "termination-rights-table",
+          "group_header": null,
+          "term_column": null,
+          "columns": [
+            {
+              "column_id": "body",
+              "header": "",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "termination-fees",
+      "title": "Termination Fees",
+      "legacy_config": "components/review/table-configs/termination-fees.config.js",
+      "v2_family_keys": [
+        {
+          "key": "TERMINATION_FEE",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "termination-fees-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "tail-fee",
+      "title": "Tail Fee Mechanics",
+      "legacy_config": "components/review/table-configs/tail-fee.config.js",
+      "v2_family_keys": [
+        {
+          "key": "TERMINATION_FEE",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "tail-fee-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "nosol",
+      "title": "No-Solicitation / No-Shop",
+      "legacy_config": "components/review/table-configs/nosol-section.config.js",
+      "v2_family_keys": [
+        {
+          "key": "NO_SHOP",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "nosol-table",
+          "group_header": null,
+          "term_column": null,
+          "columns": [
+            {
+              "column_id": "body",
+              "header": "",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "nosol-noshop",
+      "title": "No-Shop Core Mechanics",
+      "legacy_config": "components/review/table-configs/nosol-noshop.config.js",
+      "v2_family_keys": [
+        {
+          "key": "NO_SHOP",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "nosol-noshop-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "verbatim"
+            },
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "nosol-fiduciary",
+      "title": "Fiduciary-Out Mechanics",
+      "legacy_config": "components/review/table-configs/nosol-fiduciary.config.js",
+      "v2_family_keys": [
+        {
+          "key": "NO_SHOP",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "nosol-fiduciary-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "CONSTITUTES_OR_COULD_REASONABLY_BE_EXPECTED_TO_LEAD_TO_A_SUPERIOR_PROPOSAL",
+                  "label": "Constitutes or could reasonably be expected to lead to a Superior Proposal",
+                  "tone": "neutral"
+                },
+                {
+                  "code": "CONSTITUTES_OR_COULD_LEAD_TO_A_SUPERIOR_PROPOSAL",
+                  "label": "Constitutes or could lead to a Superior Proposal",
+                  "tone": "neutral"
+                }
+              ]
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "nosol-intervening",
+      "title": "Intervening Event Mechanics",
+      "legacy_config": "components/review/table-configs/nosol-intervening.config.js",
+      "v2_family_keys": [
+        {
+          "key": "NO_SHOP",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "nosol-intervening-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "verbatim"
+            },
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "nosol-superior",
+      "title": "Superior Proposal Definition and Standards",
+      "legacy_config": "components/review/table-configs/nosol-superior.config.js",
+      "v2_family_keys": [
+        {
+          "key": "NO_SHOP",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "nosol-superior-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "ioc-exceptions",
+      "title": "Interim Operating Covenants — Target",
+      "legacy_config": "components/review/table-configs/ioc-exceptions.config.js",
+      "v2_family_keys": [
+        {
+          "key": "INTERIM_OPERATING",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "ioc-exceptions-negative-covenants",
+          "group_header": "NEGATIVE COVENANTS",
+          "term_column": null,
+          "columns": [
+            {
+              "column_id": "body",
+              "header": "",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        },
+        {
+          "table_key": "ioc-exceptions-affirmative-covenants",
+          "group_header": "AFFIRMATIVE COVENANTS",
+          "term_column": null,
+          "columns": [
+            {
+              "column_id": "body",
+              "header": "",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        },
+        {
+          "table_key": "ioc-exceptions-exceptions",
+          "group_header": "EXCEPTIONS",
+          "term_column": null,
+          "columns": [
+            {
+              "column_id": "body",
+              "header": "",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        },
+        {
+          "table_key": "ioc-exceptions-other-restrictions",
+          "group_header": "OTHER RESTRICTIONS",
+          "term_column": null,
+          "columns": [
+            {
+              "column_id": "body",
+              "header": "",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "parent-ioc-exceptions",
+      "title": "Interim Operating Covenants — Parent",
+      "legacy_config": "components/review/table-configs/ioc-exceptions.config.js",
+      "v2_family_keys": [
+        {
+          "key": "INTERIM_OPERATING",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "parent-ioc-exceptions-negative-covenants",
+          "group_header": "NEGATIVE COVENANTS",
+          "term_column": null,
+          "columns": [
+            {
+              "column_id": "body",
+              "header": "",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        },
+        {
+          "table_key": "parent-ioc-exceptions-affirmative-covenants",
+          "group_header": "AFFIRMATIVE COVENANTS",
+          "term_column": null,
+          "columns": [
+            {
+              "column_id": "body",
+              "header": "",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        },
+        {
+          "table_key": "parent-ioc-exceptions-exceptions",
+          "group_header": "EXCEPTIONS",
+          "term_column": null,
+          "columns": [
+            {
+              "column_id": "body",
+              "header": "",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        },
+        {
+          "table_key": "parent-ioc-exceptions-other-restrictions",
+          "group_header": "OTHER RESTRICTIONS",
+          "term_column": null,
+          "columns": [
+            {
+              "column_id": "body",
+              "header": "",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "general-covenants",
+      "title": "Other Covenants",
+      "legacy_config": "components/review/table-configs/general-covenants.config.js",
+      "v2_family_keys": [
+        {
+          "key": "GENERAL_COVENANTS",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "general-covenants-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Provision",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "detail",
+              "header": "Link",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "employee-benefits",
+      "title": "Employee Compensation and Benefits",
+      "legacy_config": "components/review/table-configs/employee-benefits.config.js",
+      "v2_family_keys": [
+        {
+          "key": "EMPLOYEE_MATTERS",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "employee-benefits-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Benefit",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "comparison",
+              "header": "Reference Group",
+              "render": "verbatim"
+            },
+            {
+              "column_id": "standard",
+              "header": "Standard",
+              "render": "verbatim"
+            },
+            {
+              "column_id": "period",
+              "header": "Period",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Base salary",
+            "Target annual bonus / cash incentive",
+            "Health and welfare benefits",
+            "Severance / change-in-control protection",
+            "Long-term incentive (LTI) / equity grants"
+          ]
+        }
+      ]
+    },
+    {
+      "section_key": "antitrust-regulatory",
+      "title": "Antitrust / Regulatory",
+      "legacy_config": "components/review/table-configs/antitrust-regulatory.config.js",
+      "v2_family_keys": [
+        {
+          "key": "ANTITRUST_REGULATORY",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "antitrust-regulatory-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "verbatim"
+            },
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "representations-qualifiers",
+      "title": "Representations & Warranties — Company",
+      "legacy_config": "components/review/table-configs/representations-qualifiers.config.js",
+      "v2_family_keys": [
+        {
+          "key": "REPRESENTATIONS",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "representations-qualifiers-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "materiality",
+              "header": "Qualifiers",
+              "render": "verbatim"
+            },
+            {
+              "column_id": "lookback",
+              "header": "Lookback",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "parent-representations-qualifiers",
+      "title": "Representations & Warranties — Parent",
+      "legacy_config": "components/review/table-configs/representations-qualifiers.config.js",
+      "v2_family_keys": [
+        {
+          "key": "REPRESENTATIONS",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "parent-representations-qualifiers-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "materiality",
+              "header": "Qualifiers",
+              "render": "verbatim"
+            },
+            {
+              "column_id": "lookback",
+              "header": "Lookback",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "no-other-reps-fraud",
+      "title": "No Other Reps / Fraud",
+      "legacy_config": "components/review/table-configs/no-other-reps-fraud.config.js",
+      "v2_family_keys": [
+        {
+          "key": "NO_OTHER_REPS_FRAUD",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "no-other-reps-fraud-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Question",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "status",
+              "header": "Status",
+              "render": "verbatim"
+            },
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "mae-definitions",
+      "title": "Material Adverse Effect",
+      "legacy_config": "components/review/table-configs/mae-definitions.config.js",
+      "v2_family_keys": [
+        {
+          "key": "MAE_DEFINITION",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "mae-definitions-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "verbatim"
+            },
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "material-contracts",
+      "title": "Material Contracts",
+      "legacy_config": "components/review/table-configs/material-contracts.config.js",
+      "v2_family_keys": [
+        {
+          "key": "MATERIAL_CONTRACTS",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "material-contracts-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Contract Type",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "threshold",
+              "header": "Threshold",
+              "render": "value",
+              "value_kind": "AMOUNT"
+            },
+            {
+              "column_id": "evidence",
+              "header": "Evidence",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "advisers-fees-expenses",
+      "title": "Advisers / Fees / Expenses",
+      "legacy_config": "components/review/table-configs/advisers-fees-expenses.config.js",
+      "v2_family_keys": [
+        {
+          "key": "GENERAL_COVENANTS",
+          "confidence": "low"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "advisers-fees-expenses-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "verbatim"
+            },
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    },
+    {
+      "section_key": "misc-boilerplate",
+      "title": "Miscellaneous / Boilerplate",
+      "legacy_config": "components/review/table-configs/misc-boilerplate.config.js",
+      "v2_family_keys": [
+        {
+          "key": "MISC_BOILERPLATE",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "misc-boilerplate-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
+          "columns": [
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "verbatim"
+            },
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim"
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    }
+  ]
+}
