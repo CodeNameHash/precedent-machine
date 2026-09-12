@@ -1569,7 +1569,17 @@ Sequence and proof:
       to the contract kind in code; contract rule R6 lets PERIOD and DATE
       carry value null when the words hold no number. Held proposals keep
       their components in the payload, so generation 3 stays useful as prompt
-      evidence. Next: sandbox update, resubmit as generation 4 under V8. The submission creates a V2
+      evidence. Next: sandbox update, resubmit as generation 4 under V8.
+      22:38 UTC: generation 4 `39456f2d-4c92-46c9-8398-2d55c5b0a58f` under
+      V8 on sandbox commit eab61a5; generation 3 stopped by hand so the
+      per-account worker lock freed (`scripts/product/sandbox-exec.js`).
+      22:57 UTC, 8 sections in: 36 of 43 proposals valid (generation 3 at
+      the same point: 4 of 23). Remaining holds: THRESHOLD used for a
+      comparative without a number or for a period, and non-contiguous
+      quotes. Code-only follow-up pushed (THRESHOLD may be descriptive;
+      a period-shaped threshold parses as a period); it applies from the
+      next sandbox update, not to the run in progress, so generation 4's
+      held items stay as recorded. The submission creates a V2
       generation with prompt bundle `PRODUCT_LAYERED_COMPONENTS/V7`; the V1
       run and revision 45 of its review stay untouched as the baseline. Compare against Ben's 38
       touched items and his samples. Ben reviews the same 13 provisions again

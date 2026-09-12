@@ -118,6 +118,13 @@ test('V2 extraction maps synonym kinds to the contract and allows a descriptive 
   ], { label: 'MAE carve-out', distinguishing_refs: ['p'] }));
   assert.equal(descriptive.proposals[0].validation_status, 'VALID', JSON.stringify(descriptive.issues));
   assert.equal(descriptive.proposals[0].components[0].value, null);
+  const thresholdPeriod = compile(response([
+    component('t', 'THRESHOLD', 'threshold', 'within 30 days'),
+    component('d', 'THRESHOLD', 'threshold', 'to the extent resulting from geopolitical conditions'),
+  ], { label: 'MAE carve-out', distinguishing_refs: ['t'] }));
+  assert.equal(thresholdPeriod.proposals[0].validation_status, 'VALID', JSON.stringify(thresholdPeriod.issues));
+  assert.deepEqual(thresholdPeriod.proposals[0].components[0].value, { canonical: 30, unit: 'DAY' });
+  assert.equal(thresholdPeriod.proposals[0].components[1].value, null);
   const amount = compile(response([
     component('a', 'AMOUNT', 'amount', 'geopolitical conditions'),
   ], { label: 'MAE carve-out', distinguishing_refs: ['a'] }));
