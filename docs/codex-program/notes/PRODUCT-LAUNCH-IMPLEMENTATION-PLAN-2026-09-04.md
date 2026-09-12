@@ -1491,8 +1491,13 @@ Sequence and proof:
       descend, inherited words marked, values beside thresholds, references
       on hover, coverage-only facts hidden, against
       `tests/fixtures/product/published-layers-fixture.v2.json`
-      (`tests/product-published-layers.test.js`). Remaining: wire into the
-      accepted summary in `ReviewWorkspace.jsx` and one browser check.
+      (`tests/product-published-layers.test.js`). Wiring merged 2026-09-12
+      21:25 UTC from `session_016AqiuEnkiKWJRp5rJnZXcj`: `compileReviewSummary`
+      carries components, headline, coverage_only and section_reference on a
+      summary fact with a V2 tree; `AcceptedSummary` renders those through
+      `PublishedSummary` under the run's schema and keeps V1 facts under
+      "Facts without layers". Remaining: one browser check on a V2 run
+      (blocked on 5B.6).
 - [ ] 5B.4 Review page is the production page plus aids (Ben, 2026-09-12:
       "the next review page I see to be the final production style page just
       with additional things added to aid review"). The focused page renders
@@ -1501,7 +1506,13 @@ Sequence and proof:
       line and click-to-highlight of cited words in the provision text. No
       second renderer. Depends on 5B.5. Files: `components/product/FocusedReview.jsx`,
       `lib/product/review-state.js` for component-level edits. Proof: display
-      tests and one browser check.
+      tests and one browser check. Display work merged 2026-09-12 21:25 UTC
+      from `session_01MapHS8xt3cyBdxGNn6RcfU`: a proposal with a V2 tree
+      renders through `PublishedFact` with the decision buttons, comment and
+      revert passed in as aids; clicking a component highlights its bytes in
+      the provision text, clicking the headline highlights all own
+      components; proposals without a tree are unchanged. Remaining:
+      component-level edits, and the browser check on a V2 run (5B.6).
 - [ ] 5B.6 Rerun NCS under V2 as a new generation. Needs two things from
       Ben's side. (1) Update the hosted worker's checkout: from a machine
       logged in to Vercel and linked to the deal-corpus project, run
@@ -1512,7 +1523,12 @@ Sequence and proof:
       preview environment of the product branch
       (`vercel env add NEXT_PUBLIC_PRODUCT_LEGAL_SCHEMA_VERSION preview codex/product-implementation-plan-20260904`,
       then a push or redeploy so the intake form picks it up), then resubmit
-      the NCS URL through the normal intake. The submission creates a V2
+      the NCS URL through the normal intake. 2026-09-12 21:19 UTC: Ben's
+      first resubmission deduplicated to the V1 run because the browser
+      bundle had been built without the variable; commit `95f9171` makes the
+      intake handler select the schema server-side, so the variable only has
+      to be present in the deployment's preview environment. Resubmit after
+      that deployment is ready. The submission creates a V2
       generation with prompt bundle `PRODUCT_LAYERED_COMPONENTS/V7`; the V1
       run and revision 45 of its review stay untouched as the baseline. Compare against Ben's 38
       touched items and his samples. Ben reviews the same 13 provisions again
