@@ -67,7 +67,7 @@ const heldItem = { item_id: 'held-1', kind: 'ISSUE', structure_node_id: 'n71', d
 const view = {
   sections: [{
     node: analysis.agreement_structure.nodes[0], routing: analysis.sections[0], heading: 'Termination', source_closure: analysis.source_closures[0], coverage: [],
-    proposals: proposals.map((item) => ({ proposal: item, review_item: { item_id: `item-${item.proposal_id}`, kind: 'PROPOSAL', decision: 'PENDING', source_span_ids: item.source_span_ids }, group: null, group_members: [], related_proposals: [] })),
+    proposals: proposals.map((item) => ({ proposal: item, review_item: { item_id: `item-${item.proposal_id}`, kind: 'PROPOSAL', decision: item.proposal_id === 'p-support' ? 'REJECTED' : 'PENDING', ...(item.proposal_id === 'p-support' ? { comment: 'Not a vote failure.', commented_at: '2026-09-12T19:00:00.000Z' } : {}), source_span_ids: item.source_span_ids }, group: null, group_members: [], related_proposals: [] })),
     review_items: [heldItem],
   }],
   fact_items: [], relationship_items: [], agreement_items: [], pending_count: 4, unresolved_count: 0, residual_paragraph_count: 0, unusual_provision_count: 0, can_publish: false,
@@ -93,6 +93,26 @@ test('focused review shows the provision text beside grouped facts and held cont
   assert.match(html, /1 held, not shown as facts/);
   assert.match(html, /href="\/review\/product\/run"/);
   assert.doesNotMatch(html, /<mark/);
+  assert.match(html, /data-decision="REJECTED"/);
+  assert.match(html, /1 of 3 decided/);
+  assert.match(html, /Comment:<\/span> Not a vote failure\./);
+  assert.match(html, /Save comment/);
+  assert.match(html, /Add comment/);
+});
+
+test('a reviewer brief renders at the top and per section', () => {
+  const brief = { title: 'What to look at', intro: 'Only these.', ask: ['Is the label right?'], sections: [{ reference: '7.1', look_for: 'Support Agreement right labelled Vote failure.' }] };
+  const html = renderToStaticMarkup(React.createElement(FocusedReview, {
+    view, analysis, focus: ['7.1'], busy: false, command: async () => {}, openSource: () => {}, cardPropsFor: () => ({}), allSectionsHref: '/review/product/run?all=1', brief,
+  }));
+  assert.match(html, /data-testid="review-brief"/);
+  assert.match(html, /What to look at/);
+  assert.match(html, /Is the label right\?/);
+  assert.match(html, /Look for: <\/span>Support Agreement right labelled Vote failure\./);
+  const { briefForRun } = require('../lib/product/review-briefs');
+  const ncs = briefForRun('eaafcac8-790b-41bb-a5e1-b12187a55e7d');
+  assert.ok(ncs && ncs.sections.length >= 10);
+  assert.equal(briefForRun('other'), null);
 });
 
 test('draft review swaps the full section list for the focused view when focus is set', () => {

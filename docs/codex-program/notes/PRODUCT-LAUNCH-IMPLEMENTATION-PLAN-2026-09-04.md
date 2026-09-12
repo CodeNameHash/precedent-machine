@@ -413,6 +413,27 @@ independent provision samples instead of a separate full lawyer inventory.
 Review the complete NCS draft with him now, before any more agreement runs.
 All other publication requirements remain unchanged.
 
+Review save timeout and comments, 2026-09-12: Ben reported Accept and
+Reject did nothing. Runtime logs showed every review POST failing with a
+Postgres statement timeout inside `product_phase3_save_review`. Measured on
+the private preview database: the validation chain alone takes 2 to 13
+seconds for the 1,672-item NCS state, against the 8 second limit inherited
+from the authenticator role; individual queries are fast, the cost is the
+chain of wrapper functions on a small instance. Mechanical corrections:
+`ALTER ROLE service_role SET statement_timeout = '60s'` applied to the
+preview database and recorded in
+`supabase/migrations/20260912190000_product_service_role_statement_timeout.sql`;
+the review API route now declares a 60 second function duration. No
+validation rule was weakened. Also added, presentation and review-state
+only: a `COMMENT_ITEM` command that stores a lawyer comment on a review
+item without changing its decision; decision colouring and a decided count
+on the focused view; a reviewer brief (`lib/product/review-briefs.js`) that
+opens the NCS run on the briefed provisions with a "look for" line per
+section (`?all=1` shows everything). Unit and display tests pass; build
+passes; a local browser round trip of accept, reject and comment passed
+against a fixture. A live save on the deployed page is Ben's next click;
+runtime logs will show whether it now completes.
+
 Preview database binding, 2026-09-12: the focused view was first pushed to
 `claude/festive-albattani-70cwn5`. That branch's Vercel preview built, but
 its review API returned 500 because the deployment's database environment

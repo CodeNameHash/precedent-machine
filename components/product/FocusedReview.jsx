@@ -10,6 +10,37 @@ const badge = {
   EDITED: 'bg-blue-100 text-blue-900', REJECTED: 'bg-slate-200 text-slate-700', UNRESOLVED: 'bg-red-100 text-red-800',
 };
 
+// Row colour follows the decision so the state of a fact is visible without
+// reading the badge. Selection for highlighting is shown as a ring instead.
+const rowTone = {
+  PENDING: 'border-border bg-white',
+  ACCEPTED: 'border-green-300 bg-green-50',
+  EDITED: 'border-blue-300 bg-blue-50',
+  REJECTED: 'border-slate-300 bg-slate-100 text-slate-500',
+  UNRESOLVED: 'border-red-300 bg-red-50',
+};
+
+const decisionWord = {
+  PENDING: 'Needs review', ACCEPTED: 'Accepted', EDITED: 'Edited and accepted', REJECTED: 'Rejected', UNRESOLVED: 'Marked unresolved',
+};
+
+export function CommentBox({ item, busy, onComment }) {
+  const [draft, setDraft] = useState(item?.comment || '');
+  const [open, setOpen] = useState(Boolean(item?.comment));
+  const saved = item?.comment || '';
+  if (!item) return null;
+  if (!open) return <button type="button" onClick={() => setOpen(true)} className="font-semibold text-accent">Add comment</button>;
+  return <div className="mt-1 basis-full" data-testid="fact-comment">
+    <textarea aria-label="Comment" value={draft} onChange={(event) => setDraft(event.target.value)} rows={2} placeholder="Your note on this fact, for the record" className="w-full rounded border border-border p-2 text-xs font-normal" />
+    <div className="mt-1 flex items-center gap-2 text-[11px]">
+      <button type="button" disabled={busy || draft.trim() === saved} onClick={() => onComment(item.item_id, draft)} className="rounded bg-ink px-2 py-0.5 text-white disabled:opacity-40">Save comment</button>
+      {saved ? <button type="button" disabled={busy} onClick={() => { setDraft(''); onComment(item.item_id, null); }} className="text-red-700">Remove</button> : null}
+      {saved && draft.trim() === saved ? <span className="text-inkLight">Saved{item.commented_at ? ` ${new Date(item.commented_at).toLocaleString()}` : ''}</span> : null}
+      <button type="button" onClick={() => { setDraft(saved); setOpen(Boolean(saved)); }} className="ml-auto text-inkLight">Close</button>
+    </div>
+  </div>;
+}
+
 const HELD_CODES = new Set([
   'UNSUPPORTED_SUBTYPE', 'UNSUPPORTED_FACT_TYPE', 'UNSUPPORTED_PROPOSITION_GROUP_MEMBER',
   'DUPLICATE_PROPOSITION_GROUP', 'UNSUPPORTED_FACT_LINK',
@@ -46,28 +77,32 @@ function SectionText({ text, marks }) {
   return <pre className="whitespace-pre-wrap font-serif text-[13px] leading-6 text-ink" data-testid="focused-section-text">{parts.map((part, index) => part.marked ? <mark key={index} className="bg-amber-200">{part.text}</mark> : <span key={index}>{part.text}</span>)}</pre>;
 }
 
-function FactRow({ fact, selected, onSelect, onDecision, onSource, busy, cardProps }) {
+function FactRow({ fact, selected, onSelect, onDecision, onComment, onSource, busy, cardProps }) {
   const [open, setOpen] = useState(false);
   const { proposal, review_item: item } = fact.entry;
   const decision = item?.decision || 'PENDING';
   const invalid = proposal.validation_status !== 'VALID';
-  return <li className={`rounded border p-2 ${selected ? 'border-amber-400 bg-amber-50' : 'border-border bg-white'}`} data-testid="focused-fact">
+  return <li className={`rounded border p-2 ${rowTone[decision] || rowTone.PENDING} ${selected ? 'ring-2 ring-amber-400' : ''}`} data-testid="focused-fact" data-decision={decision}>
     <div className="flex flex-wrap items-start gap-2">
-      <button type="button" onClick={onSelect} className="flex-1 text-left text-sm text-ink"><span className="mr-2 text-[10px] font-semibold uppercase tracking-wide text-accent">{displayReviewLabel(proposal.subtype_key)}</span>{item?.edited_statement || proposal.statement}</button>
-      <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${badge[decision]}`}>{displayReviewLabel(decision)}</span>
+      <button type="button" onClick={onSelect} className={`flex-1 text-left text-sm ${decision === 'REJECTED' ? 'line-through' : 'text-ink'}`}><span className="mr-2 text-[10px] font-semibold uppercase tracking-wide text-accent">{displayReviewLabel(proposal.subtype_key)}</span>{item?.edited_statement || proposal.statement}</button>
+      <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${badge[decision]}`}>{decisionWord[decision] || displayReviewLabel(decision)}</span>
     </div>
+    {decision === 'EDITED' && item?.edited_statement && item.edited_statement !== proposal.statement ? <p className="mt-1 text-[11px] text-blue-900">Original: <span className="line-through">{proposal.statement}</span></p> : null}
+    {item?.reviewed_at ? <p className="mt-1 text-[10px] text-inkLight">Decided {new Date(item.reviewed_at).toLocaleString()}</p> : null}
+    {item?.comment ? <p className="mt-1 rounded bg-white/70 p-1 text-[11px] text-ink"><span className="font-semibold">Comment:</span> {item.comment}</p> : null}
     {invalid ? <p className="mt-1 text-[11px] text-red-700">Requires edit before it can be accepted.</p> : null}
     <div className="mt-1 flex flex-wrap gap-2 text-[11px]">
       <button type="button" disabled={busy || invalid || !item} onClick={() => onDecision(item.item_id, 'ACCEPTED')} className="rounded border border-green-700 px-2 py-0.5 text-green-800 disabled:opacity-40">Accept</button>
       <button type="button" disabled={busy || !item} onClick={() => onDecision(item.item_id, 'REJECTED')} className="rounded border border-slate-500 px-2 py-0.5">Reject</button>
       <button type="button" disabled={busy || !item} onClick={() => onDecision(item.item_id, 'UNRESOLVED')} className="rounded border border-red-600 px-2 py-0.5 text-red-700">Unresolved</button>
+      <CommentBox item={item} busy={busy} onComment={onComment} />
       <button type="button" onClick={() => setOpen((current) => !current)} className="ml-auto font-semibold text-accent">{open ? 'Hide detail' : 'Roles, citations and edit'}</button>
     </div>
     {open ? <div className="mt-2"><ProposalCard entry={fact.entry} busy={busy} onSource={onSource} onDecision={onDecision} {...cardProps} /></div> : null}
   </li>;
 }
 
-export function FocusedSection({ section, analysis, busy, command, openSource, cardPropsFor }) {
+export function FocusedSection({ section, analysis, busy, command, openSource, cardPropsFor, lookFor = null }) {
   const spansById = useMemo(() => new Map((analysis.spans || []).map((span) => [span.span_id, span])), [analysis.spans]);
   const groups = useMemo(() => sectionFacts(section, spansById), [section, spansById]);
   const [selectedId, setSelectedId] = useState(null);
@@ -80,11 +115,16 @@ export function FocusedSection({ section, analysis, busy, command, openSource, c
   function decide(itemId, decision, edits = {}) {
     return command({ type: 'DECIDE_ITEM', item_id: itemId, decision, ...edits });
   }
+  function comment(itemId, text) {
+    return command({ type: 'COMMENT_ITEM', item_id: itemId, comment: text });
+  }
+  const decided = groups.flatMap((group) => group.facts).filter((fact) => (fact.entry.review_item?.decision || 'PENDING') !== 'PENDING').length;
   return <section id={`section-${section.node.node_id}`} className="scroll-mt-40 rounded-xl border border-border bg-paper p-4" data-testid="focused-section">
     <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border pb-2">
       <h3 className="font-display text-xl text-ink">{displaySectionReference(section.routing.section_reference)} {section.heading || 'Agreement section'}</h3>
-      <p className="text-xs text-inkLight">{factCount} proposed fact{factCount === 1 ? '' : 's'} in {groups.length} group{groups.length === 1 ? '' : 's'}{held.length ? ` · ${held.length} held, not shown as facts` : ''}{otherChecks.length ? ` · ${otherChecks.length} other check${otherChecks.length === 1 ? '' : 's'}` : ''}</p>
+      <p className="text-xs text-inkLight">{factCount} proposed fact{factCount === 1 ? '' : 's'} in {groups.length} group{groups.length === 1 ? '' : 's'} · {decided} of {factCount} decided{held.length ? ` · ${held.length} held, not shown as facts` : ''}{otherChecks.length ? ` · ${otherChecks.length} other check${otherChecks.length === 1 ? '' : 's'}` : ''}</p>
     </div>
+    {lookFor ? <p className="mt-2 rounded border border-accent/30 bg-white p-2 text-sm text-ink" data-testid="section-look-for"><span className="font-semibold text-accent">Look for: </span>{lookFor}</p> : null}
     <div className="mt-3 grid gap-4 lg:grid-cols-2">
       <div className="max-h-[70vh] overflow-auto rounded border border-border bg-white p-3">
         <p className="mb-2 text-[10px] font-bold uppercase tracking-wide text-inkLight">Provision as written{selected ? ' · cited words highlighted' : ''}</p>
@@ -93,7 +133,7 @@ export function FocusedSection({ section, analysis, busy, command, openSource, c
       <div className="max-h-[70vh] overflow-auto">
         <p className="mb-2 text-[10px] font-bold uppercase tracking-wide text-inkLight">What the draft says · click a fact to see its cited words</p>
         {groups.length === 0 ? <p className="text-sm text-inkLight">No proposed fact for this section.</p> : null}
-        <ol className="space-y-2">{groups.map((group) => <li key={group.key} className={group.facts.length > 1 ? 'rounded border border-dashed border-border p-1' : ''}>{group.facts.length > 1 ? <p className="px-1 text-[10px] font-semibold uppercase tracking-wide text-inkLight">One legal effect, {group.facts.length} facts</p> : null}<ul className="space-y-1">{group.facts.map((fact) => <FactRow key={fact.entry.proposal.proposal_id} fact={fact} busy={busy} selected={selectedId === fact.entry.proposal.proposal_id} onSelect={() => setSelectedId((current) => current === fact.entry.proposal.proposal_id ? null : fact.entry.proposal.proposal_id)} onDecision={decide} onSource={openSource} cardProps={cardPropsFor(fact.entry)} />)}</ul></li>)}</ol>
+        <ol className="space-y-2">{groups.map((group) => <li key={group.key} className={group.facts.length > 1 ? 'rounded border border-dashed border-border p-1' : ''}>{group.facts.length > 1 ? <p className="px-1 text-[10px] font-semibold uppercase tracking-wide text-inkLight">One legal effect, {group.facts.length} facts</p> : null}<ul className="space-y-1">{group.facts.map((fact) => <FactRow key={fact.entry.proposal.proposal_id} fact={fact} busy={busy} selected={selectedId === fact.entry.proposal.proposal_id} onSelect={() => setSelectedId((current) => current === fact.entry.proposal.proposal_id ? null : fact.entry.proposal.proposal_id)} onDecision={decide} onComment={comment} onSource={openSource} cardProps={cardPropsFor(fact.entry)} />)}</ul></li>)}</ol>
         {held.length ? <div className="mt-3 rounded border border-amber-300 bg-amber-50 p-2 text-xs text-amber-950" data-testid="focused-held"><p className="font-semibold">Proposed by the model but held, not shown as facts</p><ul className="mt-1 list-disc space-y-1 pl-5">{held.map((item) => <li key={item.item_id}>{heldStatement(item) || `${displayReviewLabel(item.original?.code)} finding`}</li>)}</ul></div> : null}
         {otherChecks.length ? <div className="mt-3"><button type="button" onClick={() => setShowChecks((current) => !current)} className="text-xs font-semibold text-accent">{showChecks ? 'Hide' : 'Show'} {otherChecks.length} other review check{otherChecks.length === 1 ? '' : 's'}</button>{showChecks ? <div className="mt-2 space-y-2">{otherChecks.map((item) => <Requirement key={item.item_id} item={item} analysis={analysis} busy={busy} onSource={openSource} onDecision={decide} />)}</div> : null}</div> : null}
       </div>
@@ -101,7 +141,8 @@ export function FocusedSection({ section, analysis, busy, command, openSource, c
   </section>;
 }
 
-export default function FocusedReview({ view, analysis, focus, busy, command, openSource, cardPropsFor, allSectionsHref }) {
+export default function FocusedReview({ view, analysis, focus, busy, command, openSource, cardPropsFor, allSectionsHref, brief = null }) {
+  const lookFor = new Map((brief?.sections || []).map((item) => [item.reference, item.look_for]));
   const sections = focus.map((reference) => ({
     reference,
     section: view.sections.find((candidate) => candidate.routing.section_reference === reference) || null,
@@ -116,6 +157,12 @@ export default function FocusedReview({ view, analysis, focus, busy, command, op
       <p className="mt-1 text-xs text-inkMid">Jump to: {sections.filter((item) => item.section).map((item) => <a key={item.reference} href={`#section-${item.section.node.node_id}`} className="mr-2 font-semibold text-accent">{displaySectionReference(item.reference)}</a>)}</p>
       {missing.length ? <p className="mt-1 text-xs text-red-700">Not found in this agreement: {missing.join(', ')}</p> : null}
     </div>
-    {sections.filter((item) => item.section).map((item) => <FocusedSection key={item.section.node.node_id} section={item.section} analysis={analysis} busy={busy} command={command} openSource={openSource} cardPropsFor={cardPropsFor} />)}
+    {brief ? <div className="rounded-xl border border-accent/40 bg-white p-4" data-testid="review-brief">
+      <p className="text-xs font-bold uppercase tracking-wide text-accent">{brief.title}</p>
+      <p className="mt-1 text-sm text-ink">{brief.intro}</p>
+      {brief.ask?.length ? <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-inkMid">{brief.ask.map((line, index) => <li key={index}>{line}</li>)}</ol> : null}
+      <p className="mt-2 text-xs text-inkLight">Each section below starts with what to look for. Comments are saved with the fact and read by the assistant; an edit is compared with the original wording to understand the correction.</p>
+    </div> : null}
+    {sections.filter((item) => item.section).map((item) => <FocusedSection key={item.section.node.node_id} section={item.section} analysis={analysis} busy={busy} command={command} openSource={openSource} cardPropsFor={cardPropsFor} lookFor={lookFor.get(item.reference) || null} />)}
   </section>;
 }
