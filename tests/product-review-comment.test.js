@@ -57,3 +57,21 @@ test('comment command rejects unknown items and non-text comments', () => {
   assert.throws(() => applyReviewCommand(state, { type: 'COMMENT_ITEM', item_id: item.item_id, comment: 5 }, { analysis, legalSchema, clock }), /REVIEW_COMMENT/);
   assert.throws(() => applyReviewCommand(state, { type: 'COMMENT_ITEM', item_id: item.item_id, comment: 'x'.repeat(4001) }, { analysis, legalSchema, clock }), /REVIEW_COMMENT/);
 });
+
+test('reset returns an edited item to pending, drops the edit and keeps the comment', () => {
+  const analysis = analysisFixture();
+  const state = initialiseReviewState(analysis, { clock });
+  const item = state.items.find((candidate) => candidate.kind === 'PROPOSAL');
+  const commented = applyReviewCommand(state, { type: 'COMMENT_ITEM', item_id: item.item_id, comment: 'note' }, { analysis, legalSchema, clock });
+  const edited = applyReviewCommand(commented, { type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'EDITED', statement: 'Changed.', roles: { ...item.original.roles, action: 'x [[note]]' }, source_span_ids: item.original.source_span_ids }, { analysis, legalSchema, clock });
+  assert.equal(edited.items.find((candidate) => candidate.item_id === item.item_id).decision, 'EDITED');
+  const reset = applyReviewCommand(edited, { type: 'RESET_ITEM', item_id: item.item_id }, { analysis, legalSchema, clock });
+  const after = reset.items.find((candidate) => candidate.item_id === item.item_id);
+  assert.equal(after.decision, 'PENDING');
+  assert.equal(after.edited_statement, null);
+  assert.equal(after.edited_roles, null);
+  assert.equal(after.comment, 'note');
+  assert.deepEqual(after.source_span_ids, item.original.source_span_ids);
+  assert.equal(Object.hasOwn(after, 'reviewed_at'), false);
+  assert.throws(() => applyReviewCommand(reset, { type: 'RESET_ITEM', item_id: 'missing' }, { analysis, legalSchema, clock }), /REVIEW_ITEM_NOT_FOUND/);
+});

@@ -94,6 +94,7 @@ test('focused review shows the provision text beside grouped facts and held cont
   assert.match(html, /href="\/review\/product\/run"/);
   assert.doesNotMatch(html, /<mark/);
   assert.match(html, /data-decision="REJECTED"/);
+  assert.equal((html.match(/Revert to pending/g) || []).length, 1);
   assert.match(html, /1 of 3 decided/);
   assert.match(html, /Comment saved[^<]*:<\/span> Not a vote failure\./);
   assert.match(html, /Edit comment/);

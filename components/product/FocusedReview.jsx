@@ -89,7 +89,7 @@ function SectionText({ text, marks }) {
   return <pre className="whitespace-pre-wrap font-serif text-[13px] leading-6 text-ink" data-testid="focused-section-text">{parts.map((part, index) => part.marked ? <mark key={index} className="bg-amber-200">{part.text}</mark> : <span key={index}>{part.text}</span>)}</pre>;
 }
 
-function FactRow({ fact, selected, onSelect, onDecision, onComment, onSource, busy, cardProps }) {
+function FactRow({ fact, selected, onSelect, onDecision, onComment, onReset, onSource, busy, cardProps }) {
   const [open, setOpen] = useState(false);
   const { proposal, review_item: item } = fact.entry;
   const decision = item?.decision || 'PENDING';
@@ -107,6 +107,7 @@ function FactRow({ fact, selected, onSelect, onDecision, onComment, onSource, bu
       <button type="button" disabled={busy || invalid || !item} onClick={() => onDecision(item.item_id, 'ACCEPTED')} className="rounded border border-green-700 px-2 py-0.5 text-green-800 disabled:opacity-40">Accept</button>
       <button type="button" disabled={busy || !item} onClick={() => onDecision(item.item_id, 'REJECTED')} className="rounded border border-slate-500 px-2 py-0.5">Reject</button>
       <button type="button" disabled={busy || !item} onClick={() => onDecision(item.item_id, 'UNRESOLVED')} className="rounded border border-red-600 px-2 py-0.5 text-red-700">Unresolved</button>
+      {decision !== 'PENDING' ? <button type="button" disabled={busy} onClick={() => onReset(item.item_id)} className="rounded border border-border px-2 py-0.5 text-inkMid">Revert to pending</button> : null}
       <CommentBox item={item} busy={busy} onComment={onComment} />
       <button type="button" onClick={() => setOpen((current) => !current)} className="ml-auto font-semibold text-accent">{open ? 'Hide detail' : 'Roles, citations and edit'}</button>
     </div>
@@ -130,6 +131,9 @@ export function FocusedSection({ section, analysis, busy, command, openSource, c
   function comment(itemId, text) {
     return command({ type: 'COMMENT_ITEM', item_id: itemId, comment: text });
   }
+  function reset(itemId) {
+    return command({ type: 'RESET_ITEM', item_id: itemId });
+  }
   const decided = groups.flatMap((group) => group.facts).filter((fact) => (fact.entry.review_item?.decision || 'PENDING') !== 'PENDING').length;
   return <section id={`section-${section.node.node_id}`} className="scroll-mt-40 rounded-xl border border-border bg-paper p-4" data-testid="focused-section">
     <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border pb-2">
@@ -145,7 +149,7 @@ export function FocusedSection({ section, analysis, busy, command, openSource, c
       <div className="max-h-[70vh] overflow-auto">
         <p className="mb-2 text-[10px] font-bold uppercase tracking-wide text-inkLight">What the draft says · click a fact to see its cited words</p>
         {groups.length === 0 ? <p className="text-sm text-inkLight">No proposed fact for this section.</p> : null}
-        <ol className="space-y-2">{groups.map((group) => <li key={group.key} className={group.facts.length > 1 ? 'rounded border border-dashed border-border p-1' : ''}>{group.facts.length > 1 ? <p className="px-1 text-[10px] font-semibold uppercase tracking-wide text-inkLight">One legal effect, {group.facts.length} facts</p> : null}<ul className="space-y-1">{group.facts.map((fact) => <FactRow key={fact.entry.proposal.proposal_id} fact={fact} busy={busy} selected={selectedId === fact.entry.proposal.proposal_id} onSelect={() => setSelectedId((current) => current === fact.entry.proposal.proposal_id ? null : fact.entry.proposal.proposal_id)} onDecision={decide} onComment={comment} onSource={openSource} cardProps={cardPropsFor(fact.entry)} />)}</ul></li>)}</ol>
+        <ol className="space-y-2">{groups.map((group) => <li key={group.key} className={group.facts.length > 1 ? 'rounded border border-dashed border-border p-1' : ''}>{group.facts.length > 1 ? <p className="px-1 text-[10px] font-semibold uppercase tracking-wide text-inkLight">One legal effect, {group.facts.length} facts</p> : null}<ul className="space-y-1">{group.facts.map((fact) => <FactRow key={fact.entry.proposal.proposal_id} fact={fact} busy={busy} selected={selectedId === fact.entry.proposal.proposal_id} onSelect={() => setSelectedId((current) => current === fact.entry.proposal.proposal_id ? null : fact.entry.proposal.proposal_id)} onDecision={decide} onComment={comment} onReset={reset} onSource={openSource} cardProps={cardPropsFor(fact.entry)} />)}</ul></li>)}</ol>
         {held.length ? <div className="mt-3 rounded border border-amber-300 bg-amber-50 p-2 text-xs text-amber-950" data-testid="focused-held"><p className="font-semibold">Proposed by the model but held, not shown as facts</p><ul className="mt-1 list-disc space-y-1 pl-5">{held.map((item) => <li key={item.item_id}>{heldStatement(item) || `${displayReviewLabel(item.original?.code)} finding`}</li>)}</ul></div> : null}
         {otherChecks.length ? <div className="mt-3"><button type="button" onClick={() => setShowChecks((current) => !current)} className="text-xs font-semibold text-accent">{showChecks ? 'Hide' : 'Show'} {otherChecks.length} other review check{otherChecks.length === 1 ? '' : 's'}</button>{showChecks ? <div className="mt-2 space-y-2">{otherChecks.map((item) => <Requirement key={item.item_id} item={item} analysis={analysis} busy={busy} onSource={openSource} onDecision={decide} />)}</div> : null}</div> : null}
       </div>
