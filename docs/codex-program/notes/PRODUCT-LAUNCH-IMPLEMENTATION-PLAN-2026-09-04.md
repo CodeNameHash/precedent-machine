@@ -1515,8 +1515,8 @@ Sequence and proof:
       component-level edits, and the browser check on a V2 run (5B.6).
 - [x] 5B.2a Ben's check of the V2 headline and layer rules, 2026-09-12:
       `V2-HEADLINE-AND-LAYER-RULES-FOR-BEN-2026-09-12.md` put seven
-      questions; Ben answered all but Q6 (MAE carve-outs as separate facts,
-      re-asked). Rules changed in the generator and schema regenerated:
+      questions; Ben answered all seven (Q6: every MAE carve-out is its own
+      visible fact). Rules changed in the generator and schema regenerated:
       termination headline carries the cure right and conditions or
       exceptions; fee headline is amount, payer, trigger, deeming named on a
       tail; consent facts carry no cross-references to termination, conditions

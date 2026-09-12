@@ -1,6 +1,6 @@
 # V2 headline and layer rules for Ben's check, 2026-09-12
 
-Status: Ben answered Q1 to Q7 on 2026-09-12 (recorded in `BEN-NCS-REVIEW-COMMENTS-2026-09-09.md`, section 6) and the rules were changed accordingly; Q6 is open. These rules sit in `contracts/product/legal-schema.v2.json` (status `DRAFT_FOR_BEN_REVIEW`) and drive prompt bundle `PRODUCT_LAYERED_COMPONENTS/V7`. The NCS rerun will follow them. Correct anything wrong here before you rely on the rerun output; a wrong rule produces wrong facts for every agreement.
+Status: Ben answered Q1 to Q7 on 2026-09-12 (recorded in `BEN-NCS-REVIEW-COMMENTS-2026-09-09.md`, section 6) and the rules were changed accordingly. Q6: every carve-out is shown as its own fact. These rules sit in `contracts/product/legal-schema.v2.json` (status `DRAFT_FOR_BEN_REVIEW`) and drive prompt bundle `PRODUCT_LAYERED_COMPONENTS/V7`. The NCS rerun will follow them. Correct anything wrong here before you rely on the rerun output; a wrong rule produces wrong facts for every agreement.
 
 How to read each entry. **Headline** is what the reader sees first: the subtype label plus the components that distinguish this fact from its siblings. **Layers** say how one provision is cut into facts and which components sit under each fact. Every component is verbatim text with a byte range; nothing is paraphrased or invented.
 
