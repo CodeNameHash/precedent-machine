@@ -413,6 +413,16 @@ independent provision samples instead of a separate full lawyer inventory.
 Review the complete NCS draft with him now, before any more agreement runs.
 All other publication requirements remain unchanged.
 
+Preview database binding, 2026-09-12: the focused view was first pushed to
+`claude/festive-albattani-70cwn5`. That branch's Vercel preview built, but
+its review API returned 500 because the deployment's database environment
+does not point at the private preview database (`product_run_access` was
+missing; the error hinted at an old production table). Only
+`codex/product-implementation-plan-20260904` carries the environment that
+reaches the private preview branch database. The four commits were
+fast-forwarded onto that branch, so the stable codex preview URL is again
+the live review. Nothing in the database changed.
+
 Focused review view, 2026-09-09: Ben asked for a page closer to the old
 review, showing the provisions selected for discussion. A presentation-only
 focused mode now opens when the Review URL carries `?focus=7.1,7.3,...`:
