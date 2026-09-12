@@ -1577,7 +1577,12 @@ Sequence and proof:
       worker: `lib/product/review-comparison.js` and
       `scripts/product/compare-review-items.js` map V1 review items to V2
       facts by node and byte overlap and write a Markdown report
-      (`tests/product-review-comparison.test.js`).
+      (`tests/product-review-comparison.test.js`). Input export merged
+      2026-09-12 22:40 UTC from `session_01VkE1xTDyLhQiFa7kUQLq32`:
+      `scripts/product/export-review-comparison-inputs.js` reads the V1
+      review state and the V2 analysis through the same store reads the page
+      uses and writes the two comparison files
+      (`tests/product-export-review-comparison.test.js`).
 - [ ] 5B.7 One untouched agreement under V2, then the Phase 5 exit.
 
 Parallel plan while Ben is away: 5B.1 and 5B.2 are lead work in this
