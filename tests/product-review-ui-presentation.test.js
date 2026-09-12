@@ -398,6 +398,53 @@ test('accepted summary and release evaluation expose every saved citation', () =
   }
 });
 
+const layeredFact = {
+  review_item_id: 'fact-layered', source_id: 'proposal-layered', statement: 'The threshold is $750,000.',
+  family_key: 'MATERIAL_CONTRACTS', subtype_key: 'CATEGORY_WITH_THRESHOLD', fact_type: 'CATEGORY_WITH_THRESHOLD',
+  source_closure_id: 'closure', source_span_ids: ['support-1'], section_reference: '3.14(a)', coverage_only: false,
+  headline: { label: 'Material Contracts category', distinguishing_component_ids: ['c-threshold'] },
+  components: [{
+    component_id: 'c-threshold', kind: 'THRESHOLD', label: 'threshold', text: '$750,000',
+    source_span_id: 'support-1', start_byte: 0, end_byte: 8, origin: 'OWN', gap_before: false,
+    value: { canonical: 750000, unit: 'USD' }, children: [],
+  }],
+};
+const plainFact = {
+  review_item_id: 'fact-plain', source_id: 'proposal-plain', statement: 'The Company shall not amend its charter.',
+  family_key: 'INTERIM_OPERATING', subtype_key: 'RESTRICTIVE_COVENANT', fact_type: 'IOC_RESTRICTION_PRESENT',
+  source_closure_id: 'closure', source_span_ids: ['support-2'],
+};
+
+test('accepted summary renders the layered published view for facts carrying components', () => {
+  const summary = {
+    families: [
+      { family_key: layeredFact.family_key, facts: [layeredFact] },
+      { family_key: plainFact.family_key, facts: [plainFact] },
+    ],
+    relationships: [],
+  };
+  const markup = renderToStaticMarkup(React.createElement(AcceptedSummary, {
+    summary, metrics: { proposal_count: 2, proposal_errors: 0, proposal_omissions: 0, review_time_seconds: 60 },
+    onSource() {}, active: true,
+  }));
+  assert.match(markup, /data-testid="published-summary"/);
+  assert.match(markup, /Material Contracts category/);
+  assert.match(markup, /Facts without layers \(V1\)/);
+  assert.match(markup, /The Company shall not amend its charter\./);
+  assert.doesNotMatch(markup, /The threshold is \$750,000\./);
+});
+
+test('accepted summary renders exactly as today when no fact carries components', () => {
+  const summary = { families: [{ family_key: plainFact.family_key, facts: [plainFact] }], relationships: [] };
+  const markup = renderToStaticMarkup(React.createElement(AcceptedSummary, {
+    summary, metrics: { proposal_count: 1, proposal_errors: 0, proposal_omissions: 0, review_time_seconds: 60 },
+    onSource() {}, active: true,
+  }));
+  assert.doesNotMatch(markup, /data-testid="published-summary"/);
+  assert.doesNotMatch(markup, /Facts without layers \(V1\)/);
+  assert.match(markup, /The Company shall not amend its charter\./);
+});
+
 test('proposal edit offers explicit standalone or compatible recorded group repair', () => {
   const markup = renderToStaticMarkup(React.createElement(ProposalCard, {
     entry: {

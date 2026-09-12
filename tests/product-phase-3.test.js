@@ -273,6 +273,55 @@ test('lawyer edits preserve citations, missing facts validate roles, and publish
   assert.equal(reopened.release_evaluation, null);
 });
 
+test('a published summary without any layered facts keeps the pre-5B.5 V1 summary_id', () => {
+  const analysis = analysisFixture();
+  let state = initialiseReviewState(analysis, { clock: clock('2026-09-04T12:00:00Z') });
+  for (const item of state.items.filter((candidate) => candidate.decision === 'PENDING')) {
+    state = applyReviewCommand(state, { type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'ACCEPTED' }, { analysis, legalSchema });
+  }
+  state = severMismatchedException(state, analysis);
+  state = applyReviewCommand(state, { type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: true }, { analysis, legalSchema });
+  state = applyReviewCommand(state, { type: 'PUBLISH' }, { analysis, legalSchema, clock: clock('2026-09-04T12:10:00Z') });
+  const facts = state.summary.families.flatMap((family) => family.facts);
+  assert.equal(facts.length, 2);
+  for (const fact of facts) {
+    assert.equal(Object.hasOwn(fact, 'components'), false);
+    assert.equal(Object.hasOwn(fact, 'headline'), false);
+    assert.equal(Object.hasOwn(fact, 'coverage_only'), false);
+    assert.equal(Object.hasOwn(fact, 'section_reference'), false);
+  }
+  // Computed on this same fixture with the pre-5B.5 compileReviewSummary
+  // (before components/headline/coverage_only/section_reference existed).
+  assert.equal(state.summary.summary_id, '505416779dc47f05acaa0fb2a7b5f39039c3a692071fffbb59ccec1ec36326d3');
+});
+
+test('an accepted proposal carrying a FACT_COMPONENTS/V2 tree publishes with layered summary fields', () => {
+  const analysis = analysisFixture();
+  const layered = analysis.proposals.find((item) => item.subtype_key === 'PROHIBITED_ACTION');
+  layered.components = [{
+    component_id: 'comp-1', kind: 'TERM', label: 'prohibited action', text: 'solicit proposals',
+    source_span_id: spanId, start_byte: 0, end_byte: 10, origin: 'OWN', gap_before: false, children: [],
+  }];
+  layered.headline = { label: 'No-shop prohibition', distinguishing_component_ids: ['comp-1'] };
+  let state = initialiseReviewState(analysis, { clock: clock('2026-09-04T12:00:00Z') });
+  for (const item of state.items.filter((candidate) => candidate.decision === 'PENDING')) {
+    state = applyReviewCommand(state, { type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'ACCEPTED' }, { analysis, legalSchema });
+  }
+  state = severMismatchedException(state, analysis);
+  state = applyReviewCommand(state, { type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: true }, { analysis, legalSchema });
+  state = applyReviewCommand(state, { type: 'PUBLISH' }, { analysis, legalSchema, clock: clock('2026-09-04T12:10:00Z') });
+  const facts = state.summary.families.flatMap((family) => family.facts);
+  const layeredFact = facts.find((fact) => fact.subtype_key === 'PROHIBITED_ACTION');
+  const plainFact = facts.find((fact) => fact.subtype_key === 'EXCEPTION_PREREQUISITE');
+  assert.deepEqual(layeredFact.components, layered.components);
+  assert.deepEqual(layeredFact.headline, layered.headline);
+  assert.equal(layeredFact.coverage_only, false);
+  assert.equal(layeredFact.section_reference, '6.3');
+  assert.equal(Object.hasOwn(plainFact, 'components'), false);
+  assert.equal(Object.hasOwn(plainFact, 'headline'), false);
+  assert.equal(Object.hasOwn(plainFact, 'section_reference'), false);
+});
+
 test('missing facts preserve unique multi-span citations without resolving coverage', () => {
   const base = analysisFixture();
   const analysis = {
