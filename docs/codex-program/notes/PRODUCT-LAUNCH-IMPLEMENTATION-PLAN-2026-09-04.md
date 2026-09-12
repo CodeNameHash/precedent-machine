@@ -1462,12 +1462,19 @@ Sequence and proof:
       Status DRAFT_FOR_BEN_REVIEW: Ben sees the headline and layer rules for
       the families he reviewed before prompt V7 uses them; the extraction
       still runs on V1 until 5B.3 lands.
-- [ ] 5B.3 Extraction prompt V7 and storage. Emit components with verbatim
-      quotes and inheritance markers; validate every component quote by byte
-      span; persist components with the proposal. Files:
-      `lib/product/agreement-draft.js`, `lib/product/phase-2-store.js`, one
-      migration. Proof: recorded family fixtures replayed, all-family
-      recorded fixture test, database check on the private preview branch.
+- [ ] 5B.3 Extraction prompt V7 and storage. Extraction half done
+      2026-09-12: when the legal schema is V2, `agreement-draft.js` sends
+      prompt `PRODUCT_ALL_FAMILY_EXTRACTOR/V7` with a component instruction
+      and the family layer rules, drops the forced-role sentence, compiles
+      each proposal's component tree to byte-checked spans, parses canonical
+      values in code, derives the headline, and holds a proposal as INVALID
+      with an `INVALID_FACT_COMPONENTS` or `INVENTED_ROLE_TEXT` issue rather
+      than dropping it. V1 runs are byte-for-byte unchanged. Proof passed:
+      `tests/product-fact-components-extraction.test.js` plus the Phase 2,
+      Phase 4, recovery, link-retention, collision and role-key suites
+      (58 tests). Storage half (tables, atomic write, read path) is with the
+      5B.3 worker session; recorded-fixture replay under V7 and the database
+      check follow when it lands.
 - [ ] 5B.5 Published reader view on layers, built first. Headline layer
       only, click to descend, inherited words marked, defined terms and
       cross-references on hover. New `components/product/PublishedSummary.jsx`
