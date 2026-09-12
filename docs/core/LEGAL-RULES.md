@@ -8,6 +8,17 @@ Each fact must state one legal effect and identify each material party, action, 
 
 An inferred value must be marked `INFERRED_PENDING_APPROVAL`. It is not a proven or publishable fact until a lawyer accepts it.
 
+Decided 2026-09-12 (Ben), being built as Phase 5B of the plan: a fact is a
+headline plus an ordered tree of verbatim components. The headline carries
+whatever distinguishes the provision from its counterpart in another deal
+(topic plus threshold plus carve-out for a contract category, not topic
+alone). Each layer beneath is the agreement's words, marked as inherited from
+the chapeau or the limb's own. A litany of synonyms is one component with
+member words; a list whose elements vary between deals is one component per
+element. Timing and qualification are optional; an empty role is allowed.
+Covenants carry their efforts standard and materiality qualifier. The reader
+sees the headline layer first and descends by click.
+
 ## Evidence and absence
 
 Exact source words prove provenance. They do not prove legal meaning. A lawyer confirms legal meaning for the internal release.

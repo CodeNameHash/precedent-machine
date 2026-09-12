@@ -399,7 +399,12 @@ result. Every substantive section and required role has a disposition.
 
 ### Phase 5. Freeze, test blind and correct honestly, 3 days
 
-Current position, 2026-09-07: NCS completed ordinary private intake in
+Current position, 2026-09-12: Ben has reviewed the NCS draft and decided on a
+rebuild of the fact model (Phase 5B). Phase 5's remaining items now apply to
+V2 output. The V1 NCS review state (revision 45) is kept as the comparison
+baseline. Phase 6 waits for Phase 5B and the Phase 5 exit.
+
+Earlier position, 2026-09-07: NCS completed ordinary private intake in
 118 minutes 26 seconds with the corrected code. All 104 sections have saved
 results and section coverage records, with no missing or unexpected section
 identities and no failed sections. There are 53 unresolved coverage records
@@ -1262,9 +1267,14 @@ repository. Their transcription is partial, with severity and acceptance pending
 it is not an attestation or a completed independent inventory.
 
 - [x] Run the release candidate on the untouched blind agreement.
+- [x] Review the complete NCS draft with Ben. Done 2026-09-12 on the focused
+      review page: 13 briefed provisions, 35 comments, 2 edits, 3 unresolved
+      marks, recorded verbatim and consolidated. Outcome: rebuild the fact
+      model as layered components (Phase 5B below). His Olaplex and Apogee
+      samples are reconciled against V2 output, not V1.
 - [ ] Reconcile Ben's existing independent, detailed provision samples against
-      the corresponding agreement results, and review the complete final draft
-      with Ben. A separate full lawyer-written inventory is not required.
+      the corresponding V2 agreement results. A separate full lawyer-written
+      inventory is not required.
 - [ ] Measure severity-weighted reference-sample success, with missed,
       incorrect and unresolved counts, citation sufficiency and narrowness,
       duplicates, contradictions, unresolved burden and review time. Report
@@ -1273,11 +1283,14 @@ it is not an attestation or a completed independent inventory.
       whole-agreement accuracy from the samples.
 - [ ] Count `UNRESOLVED` against sample recall where applicable and against
       overall review burden.
-- [ ] Fix shared release-blocking failures once.
+- [ ] Fix shared release-blocking failures once. Ben's 2026-09-12 review
+      found the shared failure to be the fact model itself; the fix is
+      Phase 5B, not a V1 correction.
 - [ ] Test the stable final extraction approach on an untouched agreement.
-      Use known agreements to verify mechanical fixes. Require a new untouched
-      agreement after a material change to legal extraction decisions, not
-      automatically after every code correction.
+      This now means the V2 approach after Phase 5B. Use known agreements to
+      verify mechanical fixes. Require a new untouched agreement after a
+      material change to legal extraction decisions, not automatically after
+      every code correction.
 
 Testing correction, 2026-09-06: Ben challenged the cost of processing a new
 agreement for each fix. The article-introduction defect already had a failing
@@ -1382,6 +1395,89 @@ changes to legal extraction decisions require a new untouched test as above.
 Mechanical corrections have the affected product checks on known agreements,
 and every final published fact, exception and coverage decision has the
 required lawyer review. Exposed reruns are not claimed as unseen legal proof.
+
+### Phase 5B. Rebuild the fact model as layered components, 6 to 8 days
+
+Decision, 2026-09-12 (Ben): rebuild rather than patch. The one-sentence fact
+with a flat bag of forced roles is the wrong unit. A fact becomes a headline
+plus an ordered tree of verbatim components, each comparable across deals at
+its own layer. The published page leads with the headline layer only; the
+current one-sentence facts disappear from it. Each layer is reachable by a
+visible click from the layer above.
+
+Headline rule: the headline carries whatever distinguishes the provision
+from its counterpart in another deal, not just its topic. For a Material
+Contracts category that is topic plus threshold plus carve-out; for an MAE
+carve-out it is the carve-out subject; for a termination right it is the
+trigger and the terminating party. The headline is a controlled label; every
+layer beneath it is the agreement's words, marked as inherited from the
+chapeau or the limb's own.
+
+What the rebuild changes, from Ben's 2026-09-12 review (see
+`docs/codex-program/notes/NCS-REVIEW-IMPLICATIONS-2026-09-12.md`):
+
+- Component tree per fact with verbatim quotes, byte spans and inheritance
+  markers. Litanies are one component with member words, not one fact per
+  synonym. Lists that vary between deals (carve-out elements, contract
+  categories, remedy actions, notice contents, fee triggers, tail parts,
+  divestiture actions) are one component per element.
+- Roles: timing and qualification optional; forum added; an empty role is
+  allowed and the prompt no longer forbids it. Actor and object checked
+  against the sentence's grammatical subject and object.
+- Covenants carry an efforts standard and a materiality qualifier as
+  components.
+- Bring-downs: one structure per tier naming the covered reps in words, the
+  standard as the key component, "remaining" computed as the complement.
+- Cross-references resolve to the referenced content (conditions in
+  termination rights, reps in bring-downs, defined terms such as Acceptable
+  Confidentiality Agreement, fee amount on the trigger).
+- Subtypes renamed and added per Ben's names: return or destroy
+  requirement; subsequent VDR removal; efforts standard; restriction on
+  proposing or agreeing to remedies; obligation to litigate; agreement of
+  irreparable damage; agreement to equitable relief; delivery of written
+  consent; delivery of support agreement; date-based bespoke termination
+  right; tax opinion qualifier; construction rule categories.
+- Thresholds, periods and percentages are components with canonical values.
+- Consent-deal mechanics tracked, including Consenting Stockholder identity
+  or percentage.
+- Boilerplate families are coverage-only: categorised for later comparison,
+  not shown to the reader.
+
+Sequence and proof:
+
+- [ ] 5B.1 Component contract. `contracts/product/fact-components.v2.json`
+      defines the tree shape, inheritance markers, headline rules by family
+      and the validation rules. Proof: `node --test tests/product-fact-components-contract.test.js`.
+- [ ] 5B.2 Legal schema V2. `contracts/product/legal-schema.v2.json`: optional
+      timing and qualification, forum role, covenant standard roles, renamed
+      and added subtypes, per-family headline rules, litany and list
+      definitions. Ben sees only genuine legal distinctions. Proof: schema
+      loads, every V1 family maps to V2, `tests/product-legal-schema-v2.test.js`.
+- [ ] 5B.3 Extraction prompt V7 and storage. Emit components with verbatim
+      quotes and inheritance markers; validate every component quote by byte
+      span; persist components with the proposal. Files:
+      `lib/product/agreement-draft.js`, `lib/product/phase-2-store.js`, one
+      migration. Proof: recorded family fixtures replayed, all-family
+      recorded fixture test, database check on the private preview branch.
+- [ ] 5B.4 Review page on layers. The focused page shows the headline, then
+      layers on click, with inherited words marked and "[...]" for skipped
+      words; accept, reject, comment and edit operate on the fact and its
+      components. Files: `components/product/FocusedReview.jsx`,
+      `lib/product/review-state.js`. Proof: display tests and one browser
+      check.
+- [ ] 5B.5 Published reader view on layers. Headline layer only, click to
+      descend, defined terms on hover. Files: `components/product/ReviewWorkspace.jsx`
+      accepted summary and `lib/product/review-state.js` summary compile.
+      Proof: display tests and one browser check.
+- [ ] 5B.6 Rerun NCS under V2 as a new generation. Compare against Ben's 38
+      touched items and his samples. Ben reviews the same 13 provisions again
+      on the layered page.
+- [ ] 5B.7 One untouched agreement under V2, then the Phase 5 exit.
+
+Parallel plan while Ben is away: 5B.1 and 5B.2 are lead work in this
+session. 5B.3 storage and validation, 5B.4 and 5B.5 can start as separate
+visible sessions once 5B.1 fixes the shape, each against fixtures built from
+the contract, with no overlapping files. Prompt V7 waits for 5B.2.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
