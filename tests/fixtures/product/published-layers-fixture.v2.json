@@ -1,0 +1,138 @@
+{
+  "schema_version": "FACT_COMPONENTS/V2",
+  "facts": [
+    {
+      "fact_id": "f-material-contracts-1",
+      "source_closure_id": "c-mc-1",
+      "family_key": "MATERIAL_CONTRACTS",
+      "subtype_key": "CATEGORY_WITH_THRESHOLD",
+      "section_reference": "3.14(a)",
+      "coverage_only": false,
+      "headline": { "label": "Material Contracts category", "distinguishing_component_ids": ["c-mc-category", "c-mc-threshold"] },
+      "components": [
+        {
+          "component_id": "c-mc-category", "kind": "TERM", "label": "contract category",
+          "text": "any Contract that involves aggregate payments to or from the Company in excess of",
+          "source_span_id": "s-mc-1", "start_byte": 4200, "end_byte": 4285,
+          "origin": "CHAPEAU", "origin_structure_node_id": "n-3-14-chapeau", "gap_before": false, "children": []
+        },
+        {
+          "component_id": "c-mc-threshold", "kind": "THRESHOLD", "label": "threshold",
+          "text": "$750,000", "source_span_id": "s-mc-1", "start_byte": 4289, "end_byte": 4297,
+          "origin": "OWN", "gap_before": false, "value": { "canonical": 750000, "unit": "USD" }, "children": []
+        }
+      ]
+    },
+    {
+      "fact_id": "f-mae-carveout-1",
+      "source_closure_id": "c-mae-1",
+      "family_key": "MAE_DEFINITION",
+      "subtype_key": "EXCLUSION",
+      "section_reference": "1.1(b)",
+      "coverage_only": false,
+      "headline": { "label": "MAE carve-out", "distinguishing_component_ids": ["c-war"] },
+      "components": [
+        {
+          "component_id": "c-litany", "kind": "LITANY", "label": "affected matters",
+          "text": "any event, change, circumstance, occurrence, effect or state of facts",
+          "source_span_id": "s-mae-1", "start_byte": 900, "end_byte": 971,
+          "origin": "CHAPEAU", "origin_structure_node_id": "n-1-1-chapeau", "gap_before": false,
+          "members": ["event", "change", "circumstance", "occurrence", "effect", "state of facts"],
+          "children": []
+        },
+        {
+          "component_id": "c-resulting", "kind": "OPERATION", "label": "resulting from",
+          "text": "to the extent resulting from",
+          "source_span_id": "s-mae-1", "start_byte": 972, "end_byte": 1001,
+          "origin": "CHAPEAU", "origin_structure_node_id": "n-1-1-chapeau", "gap_before": false, "children": []
+        },
+        {
+          "component_id": "c-war", "kind": "LIST", "label": "war, terrorism and sabotage",
+          "text": "geopolitical conditions or changes that are the result of the outbreak, conduct or escalation of war (whether declared or undeclared) or acts of terrorism or sabotage (including cyber-attacks)",
+          "source_span_id": "s-mae-1", "start_byte": 1002, "end_byte": 1196,
+          "origin": "OWN", "gap_before": true,
+          "children": [
+            {
+              "component_id": "c-war-1", "kind": "TERM", "label": "geopolitical conditions or changes",
+              "text": "geopolitical conditions or changes that are the result of",
+              "source_span_id": "s-mae-1", "start_byte": 1002, "end_byte": 1061,
+              "origin": "OWN", "gap_before": false, "children": []
+            },
+            {
+              "component_id": "c-war-2", "kind": "LIST_ELEMENT", "label": "war",
+              "text": "the outbreak, conduct or escalation of war (whether declared or undeclared)",
+              "source_span_id": "s-mae-1", "start_byte": 1062, "end_byte": 1138,
+              "origin": "OWN", "gap_before": false, "children": []
+            },
+            {
+              "component_id": "c-war-3", "kind": "LIST_ELEMENT", "label": "terrorism",
+              "text": "acts of terrorism",
+              "source_span_id": "s-mae-1", "start_byte": 1142, "end_byte": 1160,
+              "origin": "OWN", "gap_before": false, "children": []
+            },
+            {
+              "component_id": "c-war-4", "kind": "LIST_ELEMENT", "label": "sabotage",
+              "text": "sabotage",
+              "source_span_id": "s-mae-1", "start_byte": 1164, "end_byte": 1172,
+              "origin": "OWN", "gap_before": false,
+              "children": [
+                {
+                  "component_id": "c-war-4a", "kind": "LIST_ELEMENT", "label": "cyber-attacks",
+                  "text": "(including cyber-attacks)",
+                  "source_span_id": "s-mae-1", "start_byte": 1173, "end_byte": 1196,
+                  "origin": "OWN", "gap_before": false, "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fact_id": "f-boilerplate-notices-1",
+      "source_closure_id": "c-notices-1",
+      "family_key": "MISC_BOILERPLATE",
+      "subtype_key": "NOTICES",
+      "section_reference": "9.5",
+      "coverage_only": true,
+      "headline": { "label": "Notices mechanism", "distinguishing_component_ids": ["c-notices-method"] },
+      "components": [
+        {
+          "component_id": "c-notices-method", "kind": "TERM", "label": "delivery method",
+          "text": "by hand delivery, by nationally recognized overnight courier or by electronic mail",
+          "source_span_id": "s-notices-1", "start_byte": 15000, "end_byte": 15083,
+          "origin": "OWN", "gap_before": false, "children": []
+        }
+      ]
+    },
+    {
+      "fact_id": "f-termination-fee-trigger-1",
+      "source_closure_id": "c-tf-1",
+      "family_key": "TERMINATION_FEE",
+      "subtype_key": "FEE_TRIGGER",
+      "section_reference": "8.3(b)",
+      "coverage_only": false,
+      "headline": { "label": "Termination fee trigger", "distinguishing_component_ids": ["c-tf-trigger", "c-tf-crossref"] },
+      "components": [
+        {
+          "component_id": "c-tf-trigger", "kind": "TRIGGER", "label": "trigger",
+          "text": "if the Company terminates this Agreement pursuant to",
+          "source_span_id": "s-tf-1", "start_byte": 9800, "end_byte": 9854,
+          "origin": "OWN", "gap_before": false, "children": []
+        },
+        {
+          "component_id": "c-tf-crossref", "kind": "CROSS_REFERENCE", "label": "termination right",
+          "text": "Section 7.1(b)",
+          "source_span_id": "s-tf-1", "start_byte": 9855, "end_byte": 9869,
+          "origin": "OWN", "gap_before": false,
+          "resolves_to": {
+            "structure_node_id": "n-7-1-b",
+            "fact_id": "f-termination-right-support-agreement-1",
+            "text": "Parent may terminate if the Support Agreement has not been delivered by the Consent Time."
+          },
+          "children": []
+        }
+      ]
+    }
+  ]
+}
