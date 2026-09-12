@@ -20,7 +20,7 @@ function analysisFixture() {
     proposals: [{
       proposal_id: proposalId, fact_occurrence_id: 'f'.repeat(64), structure_node_id: nodeOne, source_closure_id: closureId,
       proposition_group_id: null, family_key: 'TERMINATION', subtype_key: 'MUTUAL_CONSENT', fact_type: 'TERMINATION_RIGHT',
-      statement: 'The parties may terminate by mutual consent.', roles: { action: 'terminate', trigger: 'mutual written consent', terminating_parties: 'Parent and the Company' },
+      statement: 'The parties may terminate by mutual consent.', roles: { action: 'terminate', trigger: 'mutual written consent', terminating_parties: 'Parent and the Company', writing_requirement: 'written consent' },
       canonical_value: null, validation_status: 'VALID', source_span_ids: [spanId], unmatched_evidence: [], context_only_evidence: [],
     }],
     proposition_groups: [], fact_links: [], issues: [], coverage_assertions: [],
