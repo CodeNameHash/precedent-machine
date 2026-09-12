@@ -1450,11 +1450,18 @@ Sequence and proof:
       validation rules; `lib/product/fact-components.js` validates a fact
       against it and renders layers. Proof passed 2026-09-12:
       `node --test tests/product-fact-components-contract.test.js`.
-- [ ] 5B.2 Legal schema V2. `contracts/product/legal-schema.v2.json`: optional
-      timing and qualification, forum role, covenant standard roles, renamed
-      and added subtypes, per-family headline rules, litany and list
-      definitions. Ben sees only genuine legal distinctions. Proof: schema
-      loads, every V1 family maps to V2, `tests/product-legal-schema-v2.test.js`.
+- [ ] 5B.2 Legal schema V2. Draft written 2026-09-12:
+      `contracts/product/legal-schema.v2.json`, generated deterministically by
+      `scripts/product/build-legal-schema-v2.js` from V1 plus an overlay
+      carrying Ben's subtype names, per-family headline and layer rules,
+      optional timing, qualification and forum, covenant standard components,
+      the BREACH role fix, consent-deal subtypes, FEE_ELECTION,
+      ACCEPTABLE_CONFIDENTIALITY_AGREEMENT and coverage-only boilerplate.
+      25 families, 194 subtypes (179 in V1). The loader validates both
+      versions. Proof passed: `tests/product-legal-schema-v2.test.js`.
+      Status DRAFT_FOR_BEN_REVIEW: Ben sees the headline and layer rules for
+      the families he reviewed before prompt V7 uses them; the extraction
+      still runs on V1 until 5B.3 lands.
 - [ ] 5B.3 Extraction prompt V7 and storage. Emit components with verbatim
       quotes and inheritance markers; validate every component quote by byte
       span; persist components with the proposal. Files:
