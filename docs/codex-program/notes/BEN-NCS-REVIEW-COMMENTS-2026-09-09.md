@@ -39,3 +39,34 @@ a contract and go from there?"
 
 Annotation: the app has no per-item comment field; decisions are accept,
 edit, reject or unresolved only. Comments are being captured here.
+
+## 4. Termination · Breach (7.1(c)(i) or (d)(i)), saved in the app 2026-09-12 19:11 UTC
+
+Ben (comment stored on the fact, revision 1): "Some issue here. Not sure why
+we show notice period - there is no notice period, it is just part of the
+cure period? Also, incurability is a bit odd as shown - I'd think of this as
+a flow diagram - there is a materai lbreach - is it curable - if yes, you go
+to the cure period and if not - you go another way.  Are we tracking that
+properly?  Also I don't know why the outside date cap item is completed? The
+outside date is referenced but as pthe end of the cure period? Also need to
+make sure we're picking up which closing conditions are cross referened"
+
+Annotation: the TERMINATION / BREACH subtype in `legal-schema.v1.json`
+has required roles terminating_party, breaching_party, action,
+breach_subject, closing_condition_failure_standard and optional roles
+incurability, cure_period, notice_period, outside_date_cap,
+terminator_breach_bar. The model filled every optional role from the same
+sentence: notice_period holds "30 days after the giving of written notice",
+which is the cure period measured from notice, not a separate notice
+period; outside_date_cap holds "the Outside Date" because the cure period
+ends at the earlier of the Outside Date and 30 days. The schema stores
+these as flat text roles, so the flow Ben describes (breach that would fail
+a condition, curable or not, cure window, then the right) is not modelled
+as a sequence. Closing-condition cross-references (Sections 6.1 and 6.2)
+are text inside closing_condition_failure_standard; no relationship links
+the termination right to the 6.x condition facts, and the six REQUIRES
+links the model proposed inside 7.1 were rejected because REQUIRES is not
+allowed from those subtypes. Whether the BREACH roles should be
+restructured (drop notice_period, rename outside_date_cap, model
+curability as a branch) and whether condition cross-references should
+become links are schema decisions for Ben.

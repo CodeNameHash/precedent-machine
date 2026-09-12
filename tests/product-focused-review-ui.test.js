@@ -95,9 +95,10 @@ test('focused review shows the provision text beside grouped facts and held cont
   assert.doesNotMatch(html, /<mark/);
   assert.match(html, /data-decision="REJECTED"/);
   assert.match(html, /1 of 3 decided/);
-  assert.match(html, /Comment:<\/span> Not a vote failure\./);
-  assert.match(html, /Save comment/);
+  assert.match(html, /Comment saved[^<]*:<\/span> Not a vote failure\./);
+  assert.match(html, /Edit comment/);
   assert.match(html, /Add comment/);
+  assert.doesNotMatch(html, /Save comment/);
 });
 
 test('a reviewer brief renders at the top and per section', () => {

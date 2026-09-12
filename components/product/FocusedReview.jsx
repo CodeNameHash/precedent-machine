@@ -26,17 +26,29 @@ const decisionWord = {
 
 export function CommentBox({ item, busy, onComment }) {
   const [draft, setDraft] = useState(item?.comment || '');
-  const [open, setOpen] = useState(Boolean(item?.comment));
+  const [open, setOpen] = useState(false);
+  const [status, setStatus] = useState('');
   const saved = item?.comment || '';
   if (!item) return null;
-  if (!open) return <button type="button" onClick={() => setOpen(true)} className="font-semibold text-accent">Add comment</button>;
+  async function save(text) {
+    setStatus('Saving…');
+    try {
+      await onComment(item.item_id, text);
+      setStatus(text ? 'Comment saved' : 'Comment removed');
+      setOpen(false);
+    } catch { setStatus('Not saved. Try again.'); }
+  }
+  if (!open) return <>
+    <button type="button" onClick={() => { setDraft(saved); setOpen(true); setStatus(''); }} className="font-semibold text-accent">{saved ? 'Edit comment' : 'Add comment'}</button>
+    {status ? <span role="status" className={`font-semibold ${status.startsWith('Not') ? 'text-red-700' : 'text-green-800'}`}>{status}</span> : null}
+  </>;
   return <div className="mt-1 basis-full" data-testid="fact-comment">
-    <textarea aria-label="Comment" value={draft} onChange={(event) => setDraft(event.target.value)} rows={2} placeholder="Your note on this fact, for the record" className="w-full rounded border border-border p-2 text-xs font-normal" />
+    <textarea aria-label="Comment" value={draft} onChange={(event) => setDraft(event.target.value)} rows={3} placeholder="Your note on this fact, for the record" className="w-full rounded border border-border p-2 text-xs font-normal" />
     <div className="mt-1 flex items-center gap-2 text-[11px]">
-      <button type="button" disabled={busy || draft.trim() === saved} onClick={() => onComment(item.item_id, draft)} className="rounded bg-ink px-2 py-0.5 text-white disabled:opacity-40">Save comment</button>
-      {saved ? <button type="button" disabled={busy} onClick={() => { setDraft(''); onComment(item.item_id, null); }} className="text-red-700">Remove</button> : null}
-      {saved && draft.trim() === saved ? <span className="text-inkLight">Saved{item.commented_at ? ` ${new Date(item.commented_at).toLocaleString()}` : ''}</span> : null}
-      <button type="button" onClick={() => { setDraft(saved); setOpen(Boolean(saved)); }} className="ml-auto text-inkLight">Close</button>
+      <button type="button" disabled={busy || draft.trim() === saved || draft.trim() === ''} onClick={() => save(draft)} className="rounded bg-ink px-2 py-0.5 text-white disabled:opacity-40">Save comment</button>
+      {saved ? <button type="button" disabled={busy} onClick={() => { setDraft(''); save(null); }} className="text-red-700">Remove</button> : null}
+      {status ? <span role="status" className={status.startsWith('Not') ? 'text-red-700' : 'text-inkLight'}>{status}</span> : null}
+      <button type="button" onClick={() => { setDraft(saved); setOpen(false); }} className="ml-auto text-inkLight">Cancel</button>
     </div>
   </div>;
 }
@@ -89,7 +101,7 @@ function FactRow({ fact, selected, onSelect, onDecision, onComment, onSource, bu
     </div>
     {decision === 'EDITED' && item?.edited_statement && item.edited_statement !== proposal.statement ? <p className="mt-1 text-[11px] text-blue-900">Original: <span className="line-through">{proposal.statement}</span></p> : null}
     {item?.reviewed_at ? <p className="mt-1 text-[10px] text-inkLight">Decided {new Date(item.reviewed_at).toLocaleString()}</p> : null}
-    {item?.comment ? <p className="mt-1 rounded bg-white/70 p-1 text-[11px] text-ink"><span className="font-semibold">Comment:</span> {item.comment}</p> : null}
+    {item?.comment ? <p className="mt-1 rounded border border-green-200 bg-white/80 p-1 text-[11px] text-ink" data-testid="saved-comment"><span className="font-semibold text-green-800">Comment saved{item.commented_at ? ` ${new Date(item.commented_at).toLocaleString()}` : ''}:</span> {item.comment}</p> : null}
     {invalid ? <p className="mt-1 text-[11px] text-red-700">Requires edit before it can be accepted.</p> : null}
     <div className="mt-1 flex flex-wrap gap-2 text-[11px]">
       <button type="button" disabled={busy || invalid || !item} onClick={() => onDecision(item.item_id, 'ACCEPTED')} className="rounded border border-green-700 px-2 py-0.5 text-green-800 disabled:opacity-40">Accept</button>
