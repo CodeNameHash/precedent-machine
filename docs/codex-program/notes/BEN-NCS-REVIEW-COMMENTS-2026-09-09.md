@@ -295,3 +295,15 @@ Ben's answers to the seven questions in `V2-HEADLINE-AND-LAYER-RULES-FOR-BEN-202
 - "q7) has it as an expandable section"
 
 Applied 2026-09-12 in `scripts/product/build-legal-schema-v2.js` (Termination headline adds cure right and conditions or exceptions; Termination fee headline is amount, payer, trigger, with the deeming mechanism named on a tail; consent facts do not cross-reference termination, conditions or fees; the "other reps" tier keeps the words of the text and carries one resolved cross-reference per representation; antitrust presents every obligation; boilerplate is a collapsed expandable section on the published page). Q6 re-asked as ten separate one-line carve-out facts versus one list fact; Ben: "show all the carve outs". Each carve-out stays its own fact, all visible on the page; the rule is unchanged.
+
+## 7. Query mockup feedback, 2026-09-12 23:15 UTC (verbatim)
+
+On the first Query mockup (headline = subtype label plus distinguishing components, rows keyed by section reference):
+
+"headlines are okay but completely wrong in terms of what they're focused on. For example employee compensation - it should say Each Assumed RSU is assumed by Parent and continues on the same terms and explain what an Assumed RSU is..."
+
+"also the site should be provision/subjet matter drien you don't need the section references, who cares."
+
+"GO back and look at the current system for hints on how this should work/look"
+
+Implications recorded by the assistant, not decided: the headline must read as the operative proposition (actor, operation, object, then the qualifier that matters), with defined terms explained on demand; distinguishing-component headlines built from thresholds and triggers alone read as fragments. Navigation is by provision and subject matter; section references move to the source layer. The legacy site's provision presentation is the reference for shape.
