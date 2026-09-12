@@ -1593,6 +1593,25 @@ Sequence and proof:
       review state and the V2 analysis through the same store reads the page
       uses and writes the two comparison files
       (`tests/product-export-review-comparison.test.js`).
+- [ ] 5B.8 Table shapes and coded conclusions on top of the layered facts.
+      Ben, 2026-09-12 23:20 to 23:40 UTC, on the Query mockups (comments
+      note sections 7 and 8): the published and Query pages show each
+      provision as the current review page does, small tables of headline
+      conclusions as pills per subject with a fixed table shape per section
+      and a coded vocabulary per column; the verbatim layered facts are the
+      evidence beneath, opened from any pill (words, location, layers, checks
+      the code ran, review trail, provenance). "yes the target is good. And
+      you should do this for all sections." Steps: (a) harvest the table
+      shapes and vocabularies from `components/review/table-configs/` into
+      `contracts/product/table-shapes.v1.json` with a note for Ben to
+      correct (`session_01HJJZ9Z1c9wPtjq8mHNoh6K`); (b) contract: each fact carries
+      `conclusions`, one coded value per column of its subtype's table,
+      validated against the vocabulary, alongside the verbatim components;
+      (c) extractor V9 returns conclusions; (d) published page and Query
+      render the tables from conclusions with the evidence drawer from
+      components; (e) NCS regeneration under V9 after Ben corrects the
+      vocabularies. The layered-fact contract is unchanged; conclusions are
+      an additional layer, so generation 4 stays valid evidence.
 - [ ] 5B.7 Metsera under V2, then the Phase 5 exit. Ben, 2026-09-12 23:05
       UTC, on the proposal of a fresh untouched agreement: "I really don't
       think we need to do that - we can just re-do metsera". Recorded as his
