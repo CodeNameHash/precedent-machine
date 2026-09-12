@@ -36,6 +36,8 @@ export default function ReviewIndex() {
 
       <ProductIntakePanel />
 
+      <Link href="/query/provisions" className="text-sm font-ui text-accent hover:underline">Query published provisions</Link>
+
       {dealsWithProvs.length === 0 ? (
         <EmptyState
           icon="+"
