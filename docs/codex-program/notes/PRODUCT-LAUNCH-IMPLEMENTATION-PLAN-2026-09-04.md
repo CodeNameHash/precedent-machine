@@ -1593,7 +1593,24 @@ Sequence and proof:
       review state and the V2 analysis through the same store reads the page
       uses and writes the two comparison files
       (`tests/product-export-review-comparison.test.js`).
-- [ ] 5B.7 One untouched agreement under V2, then the Phase 5 exit.
+- [ ] 5B.7 Metsera under V2, then the Phase 5 exit. Ben, 2026-09-12 23:05
+      UTC, on the proposal of a fresh untouched agreement: "I really don't
+      think we need to do that - we can just re-do metsera". Recorded as his
+      decision. The plan's rule (a material prompt, model or schema change
+      needs a new untouched agreement) is not met by Metsera, which was a
+      Stage 2Y comparator (`evidence/canonical-v2/metsera-*`), so the V2
+      Metsera result is an exposed check, not blind evidence; the plan says
+      so where it is reported. Metsera source:
+      `https://www.sec.gov/Archives/edgar/data/2040807/000119312525210030/d921605dex21.htm`,
+      to be submitted through the ordinary intake after NCS generation 4
+      finishes (the sandbox runs one agreement at a time). Olaplex
+      (`https://www.sec.gov/Archives/edgar/data/1868726/000119312526126362/d119132dex21.htm`,
+      V1 runs 068d9468 and 9cb8e881) and Apogee
+      (`https://www.sec.gov/Archives/edgar/data/1974640/000114036126025844/ef20076505_ex2-1.htm`,
+      V1 run a21f9bf7) follow, so Ben's sample notes can be reconciled
+      against V2 output. Ben's notes are stored as supplied in
+      `fixtures/product/ben-samples/`; the reconciliation tool is being
+      built in `session_01XujbrYbTFpQC1WWMjAfYEQ`.
 
 Parallel plan while Ben is away: 5B.1 and 5B.2 are lead work in this
 session. 5B.3 storage and 5B.5 reader view run as separate visible sessions
