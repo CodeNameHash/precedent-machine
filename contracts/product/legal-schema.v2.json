@@ -42,16 +42,18 @@
         "TERMINATION_EFFECT"
       ],
       "materiality_rules": [
-        "Every independently operative unit is captured as one fact with its components. Reader-facing headline: trigger and terminating party."
+        "Every independently operative unit is captured as one fact with its components. Reader-facing headline: trigger, terminating party, cure right, and any condition or exception to exercise (Ben, 2026-09-12: e.g. no termination where the terminator primarily caused the outside date to be missed)."
       ],
       "layer_rules": "One fact per termination right. Layer 1: trigger, terminating party, conditions to exercise, expiry of the right. Cure mechanics as a branch: breach that would fail a condition; curable or not; cure window measured from notice and capped at the outside date. Cross-reference the closing conditions the breach must fail.",
       "headline": {
         "label_source": "subtype_label",
         "distinguishing_kinds": [
           "TRIGGER",
-          "ACTOR"
+          "ACTOR",
+          "CONDITION",
+          "EXCEPTION"
         ],
-        "note": "trigger and terminating party"
+        "note": "trigger, terminating party, cure right, and any condition or exception to exercise (Ben, 2026-09-12: e.g. no termination where the terminator primarily caused the outside date to be missed)"
       },
       "subtypes": [
         {
@@ -400,17 +402,18 @@
         "LATE_INTEREST"
       ],
       "materiality_rules": [
-        "Every independently operative unit is captured as one fact with its components. Reader-facing headline: payer, amount or trigger, and tail."
+        "Every independently operative unit is captured as one fact with its components. Reader-facing headline: amount, payer and trigger; a tail headline names its deeming mechanism when one exists (Ben, 2026-09-12: unusual, so flag it)."
       ],
       "layer_rules": "One fact per fee amount, per trigger and per tail. A trigger with several limbs is one fact with one LIST_ELEMENT per limb; the tail is one fact whose components are the period, the qualifying event, the look-back condition and any deeming rule. The fee amount fact is cross-referenced from every trigger.",
       "headline": {
         "label_source": "subtype_label",
         "distinguishing_kinds": [
           "AMOUNT",
+          "ACTOR",
           "TRIGGER",
           "PERIOD"
         ],
-        "note": "payer, amount or trigger, and tail"
+        "note": "amount, payer and trigger; a tail headline names its deeming mechanism when one exists (Ben, 2026-09-12: unusual, so flag it)"
       },
       "subtypes": [
         {
@@ -1355,7 +1358,7 @@
       "materiality_rules": [
         "Every independently operative unit is captured as one fact with its components. Reader-facing headline: the condition and its standard."
       ],
-      "layer_rules": "Bring-down: one fact per tier. Components: the reps covered (one CROSS_REFERENCE per rep, resolved to the rep heading words), the standard (\"in all respects\", \"in all material respects\", \"de minimis\", MAE), the as-of date rule, and any scrape. \"Remaining\" tiers list the complement of the other tiers. A tax opinion condition carries its exclusions as QUALIFIER components, not separate conditions. A chapeau is never a fact.",
+      "layer_rules": "Bring-down: one fact per tier. Components: the reps covered (one CROSS_REFERENCE per rep, resolved to the rep heading words), the standard (\"in all respects\", \"in all material respects\", \"de minimis\", MAE), the as-of date rule, and any scrape. A \"remaining\" or \"other representations\" tier keeps the words of the text in its headline, and its components carry one resolved CROSS_REFERENCE per representation in the complement so the system knows the standard each representation is brought down to (Ben, 2026-09-12: the rep table shows it). A tax opinion condition carries its exclusions as QUALIFIER components, not separate conditions. A chapeau is never a fact.",
       "headline": {
         "label_source": "subtype_label",
         "distinguishing_kinds": [
@@ -3042,7 +3045,7 @@
       "materiality_rules": [
         "Every independently operative unit is captured as one fact with its components. Reader-facing headline: the obligation and its standard."
       ],
-      "layer_rules": "Every covenant fact carries an EFFORTS_STANDARD component (a flat \"agrees to take\" is recorded as such) and a MATERIALITY_QUALIFIER when present. Remedy limitations are one LIST with one LIST_ELEMENT per action (sale, divestiture, licence, other disposition; restriction, limitation, condition; commence, participate in, defend). Deadlines are PERIOD components.",
+      "layer_rules": "Every covenant fact carries an EFFORTS_STANDARD component (a flat \"agrees to take\" is recorded as such) and a MATERIALITY_QUALIFIER when present. Remedy limitations are one LIST with one LIST_ELEMENT per action (sale, divestiture, licence, other disposition; restriction, limitation, condition; commence, participate in, defend). Deadlines are PERIOD components. Present every obligation as its own fact; the pre-product key-provisions page is the guide to the cut (Ben, 2026-09-12).",
       "headline": {
         "label_source": "subtype_label",
         "distinguishing_kinds": [
@@ -5347,7 +5350,7 @@
       "materiality_rules": [
         "Coverage only. Categorise every rule for later comparison; do not show to the reader."
       ],
-      "layer_rules": "Coverage only: not shown to the reader. Every construction rule gets a category label so boilerplate can be compared later.",
+      "layer_rules": "Coverage only: shown to the reader as one collapsed, expandable section after the operative families (Ben, 2026-09-12). Every construction rule gets a category label so boilerplate can be compared later.",
       "headline": {
         "label_source": "subtype_label",
         "distinguishing_kinds": [
@@ -5702,7 +5705,7 @@
       "materiality_rules": [
         "Every independently operative unit is captured as one fact with its components. Reader-facing headline: the mechanic and its deadline."
       ],
-      "layer_rules": "Written-consent deals use the consent subtypes; meeting deals use the meeting subtypes. Deadlines are PERIOD or DATE components. Track the Consenting Stockholders identity or percentage as a component.",
+      "layer_rules": "Written-consent deals use the consent subtypes; meeting deals use the meeting subtypes. Deadlines are PERIOD or DATE components. Track the Consenting Stockholders identity or percentage as a component. Consent facts do not cross-reference the termination, condition or fee provisions that depend on them (Ben, 2026-09-12).",
       "headline": {
         "label_source": "subtype_label",
         "distinguishing_kinds": [

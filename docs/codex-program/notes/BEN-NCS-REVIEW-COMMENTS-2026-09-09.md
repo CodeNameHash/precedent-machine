@@ -281,3 +281,17 @@ Fact: "When a reference is made in this Agreement to a Section, Article, Exhibit
 
 Ben: "For all of these, they are not "front line" issues but you should come up with a category for each of them so we can compare them in the future."
 
+
+## 6. Answers to the V2 rules note, 2026-09-12 (verbatim)
+
+Ben's answers to the seven questions in `V2-HEADLINE-AND-LAYER-RULES-FOR-BEN-2026-09-12.md`:
+
+- "Q1 - I'd include cure right and if three are exceptions / conditions - e.g. you cab't terminate if you primarly caused the outside date not to be met"
+- "Q2 - amount, payer, trigger and I'd note there is a deeming mechanicsm as it is unusual"
+- "Q3 - I'd not x-ref the termination etc"
+- "q4 - just say other reps in the text but I want the system to know what each rep is brought down to so that the rep can show that in the rep table"
+- "q5) present them all and we can see on the page.  The old app should be a guide as well"
+- "Q6) not 100% sure what you are asking"
+- "q7) has it as an expandable section"
+
+Applied 2026-09-12 in `scripts/product/build-legal-schema-v2.js` (Termination headline adds cure right and conditions or exceptions; Termination fee headline is amount, payer, trigger, with the deeming mechanism named on a tail; consent facts do not cross-reference termination, conditions or fees; the "other reps" tier keeps the words of the text and carries one resolved cross-reference per representation; antitrust presents every obligation; boilerplate is a collapsed expandable section on the published page). Q6 is re-asked in plainer words in the chat.

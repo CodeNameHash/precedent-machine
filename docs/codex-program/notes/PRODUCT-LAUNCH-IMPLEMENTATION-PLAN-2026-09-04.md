@@ -1513,6 +1513,18 @@ Sequence and proof:
       the provision text, clicking the headline highlights all own
       components; proposals without a tree are unchanged. Remaining:
       component-level edits, and the browser check on a V2 run (5B.6).
+- [x] 5B.2a Ben's check of the V2 headline and layer rules, 2026-09-12:
+      `V2-HEADLINE-AND-LAYER-RULES-FOR-BEN-2026-09-12.md` put seven
+      questions; Ben answered all but Q6 (MAE carve-outs as separate facts,
+      re-asked). Rules changed in the generator and schema regenerated:
+      termination headline carries the cure right and conditions or
+      exceptions; fee headline is amount, payer, trigger, deeming named on a
+      tail; consent facts carry no cross-references to termination, conditions
+      or fees; the "other reps" bring-down tier keeps the words of the text
+      and carries one resolved cross-reference per representation for the rep
+      table; antitrust shows every obligation; boilerplate is a collapsed
+      section on the published page (`lib/product/published-layers.js`,
+      `PublishedSummary.jsx`).
 - [ ] 5B.6 Rerun NCS under V2 as a new generation. Needs two things from
       Ben's side. (1) Update the hosted worker's checkout: from a machine
       logged in to Vercel and linked to the deal-corpus project, run

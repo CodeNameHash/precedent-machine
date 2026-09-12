@@ -25,14 +25,13 @@ const { PublishedFact } = publishedSummaryModule;
 
 const fixture = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures/product/published-layers-fixture.v2.json'), 'utf8'));
 
-test('groupPublishedFacts orders families by the legal schema and drops coverage_only facts', () => {
+test('groupPublishedFacts orders families by the legal schema and puts coverage_only facts last, collapsed', () => {
   const groups = groupPublishedFacts(fixture.facts, legalSchema);
-  assert.deepEqual(groups.map((group) => group.family_key), ['TERMINATION_FEE', 'MAE_DEFINITION', 'MATERIAL_CONTRACTS']);
+  assert.deepEqual(groups.map((group) => group.family_key), ['TERMINATION_FEE', 'MAE_DEFINITION', 'MATERIAL_CONTRACTS', 'MISC_BOILERPLATE']);
+  assert.deepEqual(groups.map((group) => group.collapsed), [false, false, false, true]);
   assert.deepEqual(groups.flatMap((group) => group.facts.map((fact) => fact.fact_id)), [
-    'f-termination-fee-trigger-1', 'f-mae-carveout-1', 'f-material-contracts-1',
+    'f-termination-fee-trigger-1', 'f-mae-carveout-1', 'f-material-contracts-1', 'f-boilerplate-notices-1',
   ]);
-  const allIds = groups.flatMap((group) => group.facts.map((fact) => fact.fact_id));
-  assert.ok(!allIds.includes('f-boilerplate-notices-1'));
 });
 
 test('groupPublishedFacts orders facts within a family by section reference', () => {
@@ -44,15 +43,15 @@ test('groupPublishedFacts orders facts within a family by section reference', ()
   assert.deepEqual(groups[0].facts.map((fact) => fact.fact_id), ['a', 'b']);
 });
 
-test('an empty family list yields no groups and coverage_only facts never surface', () => {
+test('an empty family list yields no groups and coverage_only facts form only collapsed groups', () => {
   assert.deepEqual(groupPublishedFacts([], legalSchema), []);
   const onlyCoverage = [{ fact_id: 'x', family_key: 'MAE_DEFINITION', section_reference: '1.1', coverage_only: true }];
-  assert.deepEqual(groupPublishedFacts(onlyCoverage, legalSchema), []);
+  assert.deepEqual(groupPublishedFacts(onlyCoverage, legalSchema), [{ family_key: 'MAE_DEFINITION', collapsed: true, facts: onlyCoverage }]);
 });
 
 const groups = groupPublishedFacts(fixture.facts, legalSchema);
 
-test('the published summary shows headlines only, families in schema order, coverage_only absent', () => {
+test('the published summary shows headlines only, families in schema order, coverage_only collapsed last', () => {
   const html = renderToStaticMarkup(React.createElement(PublishedSummary, { groups, onSource: () => {} }));
   const feeIndex = html.indexOf('Termination fee');
   const maeIndex = html.indexOf('MAE definition');
@@ -61,8 +60,8 @@ test('the published summary shows headlines only, families in schema order, cove
   assert.match(html, /MAE carve-out/);
   assert.match(html, /Material Contracts category/);
   assert.match(html, /Termination fee trigger/);
-  assert.doesNotMatch(html, /Notices mechanism/);
-  assert.doesNotMatch(html, /nationally recognized overnight courier/);
+  assert.match(html, /<details[^>]*data-collapsed="true"[^>]*>(?:(?!<\/details>).)*Notices mechanism/s);
+  assert.ok(html.indexOf('<details') > mcIndex, 'boilerplate comes after every operative family');
   assert.doesNotMatch(html, /to the extent resulting from/);
   assert.doesNotMatch(html, /\[\.\.\.\]/);
   assert.doesNotMatch(html, /data-testid="inherited-word"/);

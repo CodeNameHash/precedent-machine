@@ -90,9 +90,14 @@ export function PublishedFact({ fact, onSource, initiallyExpanded, aids = null, 
 export default function PublishedSummary({ groups, onSource, initiallyExpanded = false }) {
   return <section aria-labelledby="published-summary-heading" className="space-y-6" data-testid="published-summary">
     <h2 id="published-summary-heading" className="font-display text-2xl text-ink">Published summary</h2>
-    {(groups || []).map((group) => <div key={group.family_key} data-testid="published-family">
-      <h3 className="font-display text-lg text-ink border-b border-border pb-1">{displayReviewLabel(group.family_key)}</h3>
-      <ul className="mt-2 space-y-2">{group.facts.map((fact) => <PublishedFact key={fact.fact_id} fact={fact} onSource={onSource} initiallyExpanded={initiallyExpanded} />)}</ul>
-    </div>)}
+    {(groups || []).map((group) => group.collapsed
+      ? <details key={group.family_key} data-testid="published-family" data-collapsed="true">
+        <summary className="cursor-pointer font-display text-lg text-ink border-b border-border pb-1">{displayReviewLabel(group.family_key)} <span className="text-sm text-inkLight">({group.facts.length} boilerplate {group.facts.length === 1 ? 'rule' : 'rules'}, click to expand)</span></summary>
+        <ul className="mt-2 space-y-2">{group.facts.map((fact) => <PublishedFact key={fact.fact_id} fact={fact} onSource={onSource} initiallyExpanded={initiallyExpanded} />)}</ul>
+      </details>
+      : <div key={group.family_key} data-testid="published-family">
+        <h3 className="font-display text-lg text-ink border-b border-border pb-1">{displayReviewLabel(group.family_key)}</h3>
+        <ul className="mt-2 space-y-2">{group.facts.map((fact) => <PublishedFact key={fact.fact_id} fact={fact} onSource={onSource} initiallyExpanded={initiallyExpanded} />)}</ul>
+      </div>)}
   </section>;
 }

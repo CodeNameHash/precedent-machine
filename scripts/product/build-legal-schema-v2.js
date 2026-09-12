@@ -25,7 +25,7 @@ function titleCase(key) {
 const OVERLAY = {
   TERMINATION: {
     layers: 'One fact per termination right. Layer 1: trigger, terminating party, conditions to exercise, expiry of the right. Cure mechanics as a branch: breach that would fail a condition; curable or not; cure window measured from notice and capped at the outside date. Cross-reference the closing conditions the breach must fail.',
-    headline: { distinguishing: ['TRIGGER', 'ACTOR'], note: 'trigger and terminating party' },
+    headline: { distinguishing: ['TRIGGER', 'ACTOR', 'CONDITION', 'EXCEPTION'], note: 'trigger, terminating party, cure right, and any condition or exception to exercise (Ben, 2026-09-12: e.g. no termination where the terminator primarily caused the outside date to be missed)' },
     rename: { VOTE_FAILURE: 'VOTE_FAILURE' },
     add: [
       { subtype_key: 'WRITTEN_CONSENT_NOT_DELIVERED', label: 'Written consent not delivered', required_roles: ['terminating_party', 'action', 'consent_deadline'], optional_roles: ['right_expiry', 'consenting_stockholders'], relationships: ['QUALIFIES', 'EXCEPTS', 'REQUIRES'] },
@@ -39,7 +39,7 @@ const OVERLAY = {
   },
   TERMINATION_FEE: {
     layers: 'One fact per fee amount, per trigger and per tail. A trigger with several limbs is one fact with one LIST_ELEMENT per limb; the tail is one fact whose components are the period, the qualifying event, the look-back condition and any deeming rule. The fee amount fact is cross-referenced from every trigger.',
-    headline: { distinguishing: ['AMOUNT', 'TRIGGER', 'PERIOD'], note: 'payer, amount or trigger, and tail' },
+    headline: { distinguishing: ['AMOUNT', 'ACTOR', 'TRIGGER', 'PERIOD'], note: 'amount, payer and trigger; a tail headline names its deeming mechanism when one exists (Ben, 2026-09-12: unusual, so flag it)' },
     add: [
       { subtype_key: 'FEE_ELECTION', label: 'Election to accept or decline fee', required_roles: ['electing_party', 'election_deadline', 'default_outcome'], optional_roles: ['waiver_scope'], relationships: ['QUALIFIES', 'TRIGGERS'] },
     ],
@@ -63,7 +63,7 @@ const OVERLAY = {
     ],
   },
   ANTITRUST_REGULATORY: {
-    layers: 'Every covenant fact carries an EFFORTS_STANDARD component (a flat "agrees to take" is recorded as such) and a MATERIALITY_QUALIFIER when present. Remedy limitations are one LIST with one LIST_ELEMENT per action (sale, divestiture, licence, other disposition; restriction, limitation, condition; commence, participate in, defend). Deadlines are PERIOD components.',
+    layers: 'Every covenant fact carries an EFFORTS_STANDARD component (a flat "agrees to take" is recorded as such) and a MATERIALITY_QUALIFIER when present. Remedy limitations are one LIST with one LIST_ELEMENT per action (sale, divestiture, licence, other disposition; restriction, limitation, condition; commence, participate in, defend). Deadlines are PERIOD components. Present every obligation as its own fact; the pre-product key-provisions page is the guide to the cut (Ben, 2026-09-12).',
     headline: { distinguishing: ['EFFORTS_STANDARD', 'LIST', 'PERIOD'], note: 'the obligation and its standard' },
     rename: { BURDEN: 'REMEDY_LIMITATION', LITIGATION: 'LITIGATION_OBLIGATION', COOPERATION: 'THIRD_PARTY_CONSENTS' },
     add: [
@@ -82,7 +82,7 @@ const OVERLAY = {
     labels: { AGREEMENT_TO_EQUITABLE_RELIEF: 'Agreement to equitable relief', ADEQUATE_REMEDY_DEFENCE_WAIVER: 'Waiver of adequate-remedy defence', BOND_SECURITY_WAIVER: 'Waiver of bond or security', REMEDY_COORDINATION: 'Fee and performance coordination', PAID_FEE_EXCLUSIVE_REMEDY: 'Fee as exclusive remedy', CLOSING_ENFORCEMENT: 'Enforcement of closing', REMEDY_ACTION_EXTENSION: 'Remedy action extension', COST_SHIFT: 'Cost shifting' },
   },
   CLOSING_CONDITIONS: {
-    layers: 'Bring-down: one fact per tier. Components: the reps covered (one CROSS_REFERENCE per rep, resolved to the rep heading words), the standard ("in all respects", "in all material respects", "de minimis", MAE), the as-of date rule, and any scrape. "Remaining" tiers list the complement of the other tiers. A tax opinion condition carries its exclusions as QUALIFIER components, not separate conditions. A chapeau is never a fact.',
+    layers: 'Bring-down: one fact per tier. Components: the reps covered (one CROSS_REFERENCE per rep, resolved to the rep heading words), the standard ("in all respects", "in all material respects", "de minimis", MAE), the as-of date rule, and any scrape. A "remaining" or "other representations" tier keeps the words of the text in its headline, and its components carry one resolved CROSS_REFERENCE per representation in the complement so the system knows the standard each representation is brought down to (Ben, 2026-09-12: the rep table shows it). A tax opinion condition carries its exclusions as QUALIFIER components, not separate conditions. A chapeau is never a fact.',
     headline: { distinguishing: ['STANDARD', 'CROSS_REFERENCE'], note: 'the condition and its standard' },
     labels: { BRINGDOWN: 'Bring-down of representations', GENERAL_CLOSING_CONDITION: 'Closing condition', STOCKHOLDER_APPROVAL: 'Stockholder approval', REGULATORY_APPROVAL: 'Regulatory approval', LEGAL_RESTRAINT: 'No legal restraint', S4_EFFECTIVENESS: 'Form S-4 effective', OFFICER_CERTIFICATE: 'Officer certificate', FRUSTRATION: 'No material adverse effect', TAX_OPINION: 'Tax opinion' },
     add: [
@@ -100,7 +100,7 @@ const OVERLAY = {
     labels: { MATERIAL_CONTRACT_CATEGORY_CRITERION: 'Material contract category', MATERIAL_CONTRACT_DISCLOSURE_LIST: 'Material contract disclosure', MATERIAL_CONTRACT_STATUS_REPRESENTATION: 'Material contract status', MATERIAL_CONTRACT_BREACH_TERMINATION_RIGHT: 'No default under material contracts' },
   },
   PROXY_MEETING: {
-    layers: 'Written-consent deals use the consent subtypes; meeting deals use the meeting subtypes. Deadlines are PERIOD or DATE components. Track the Consenting Stockholders identity or percentage as a component.',
+    layers: 'Written-consent deals use the consent subtypes; meeting deals use the meeting subtypes. Deadlines are PERIOD or DATE components. Track the Consenting Stockholders identity or percentage as a component. Consent facts do not cross-reference the termination, condition or fee provisions that depend on them (Ben, 2026-09-12).',
     headline: { distinguishing: ['OPERATION', 'DATE', 'PERIOD'], note: 'the mechanic and its deadline' },
     add: [
       { subtype_key: 'WRITTEN_CONSENT_SOLICITATION', label: 'Written consent solicitation', required_roles: ['LEGAL_ACTOR_OR_SUBJECT', 'LEGAL_OPERATION', 'OPERATIVE_OBJECT'], optional_roles: ['TEMPORAL_OR_TRIGGER_SCOPE', 'QUALIFICATIONS', 'consenting_stockholders'], relationships: ['QUALIFIES', 'REQUIRES', 'TRIGGERS'] },
@@ -110,7 +110,7 @@ const OVERLAY = {
   },
   MISC_BOILERPLATE: {
     coverage_only: true,
-    layers: 'Coverage only: not shown to the reader. Every construction rule gets a category label so boilerplate can be compared later.',
+    layers: 'Coverage only: shown to the reader as one collapsed, expandable section after the operative families (Ben, 2026-09-12). Every construction rule gets a category label so boilerplate can be compared later.',
     headline: { distinguishing: ['TERM'], note: 'the rule category' },
   },
   REPRESENTATIONS: {
