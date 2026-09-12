@@ -1,0 +1,377 @@
+{
+  "v1": {
+    "items": [
+      {
+        "item_id": "v1-item-mae",
+        "kind": "FACT_REVIEW",
+        "decision": "ACCEPTED",
+        "comment": "War/terrorism/sabotage carve-out reads correctly against the signed agreement.",
+        "commented_at": "2026-08-10T14:02:00Z",
+        "reviewed_at": "2026-08-10T14:02:00Z",
+        "section_reference": "3.2",
+        "structure_node_id": "n31",
+        "original": {
+          "proposal_id": "p-mae-1",
+          "family_key": "MAE_DEFINITION",
+          "subtype_key": "EXCLUSION",
+          "fact_type": "MAE_CARVE_OUT",
+          "statement": "The MAE definition excludes effects resulting from war, terrorism or sabotage, including cyber-attacks.",
+          "source_span_ids": [
+            "s-mae-1"
+          ]
+        },
+        "edited_statement": null,
+        "edited_roles": {}
+      },
+      {
+        "item_id": "v1-item-mc",
+        "kind": "FACT_REVIEW",
+        "decision": "ACCEPTED",
+        "comment": "Threshold amount looks right; double check the ordinary-course carve-out is captured too.",
+        "commented_at": "2026-08-11T09:15:00Z",
+        "reviewed_at": "2026-08-11T09:15:00Z",
+        "section_reference": "4.5",
+        "structure_node_id": "n55",
+        "original": {
+          "proposal_id": "p-mc-1",
+          "family_key": "MATERIAL_CONTRACTS",
+          "subtype_key": "MATERIAL_CONTRACT_CATEGORY_CRITERION",
+          "fact_type": "MATERIAL_CONTRACT_THRESHOLD",
+          "statement": "A Material Contract is one requiring payments over $10,000,000 in any twelve-month period, other than ordinary-course contracts.",
+          "source_span_ids": [
+            "s-mc-1"
+          ]
+        },
+        "edited_statement": null,
+        "edited_roles": {}
+      },
+      {
+        "item_id": "v1-item-term",
+        "kind": "FACT_REVIEW",
+        "decision": "REJECTED",
+        "comment": "This notice requirement is gone from the rerun — flag for Ben.",
+        "commented_at": "2026-08-12T11:47:00Z",
+        "reviewed_at": "2026-08-12T11:47:00Z",
+        "section_reference": "9.1",
+        "structure_node_id": "n77",
+        "original": {
+          "proposal_id": "p-term-1",
+          "family_key": "TERMINATION",
+          "subtype_key": "TERMINATION_RIGHT",
+          "fact_type": "TERMINATION_NOTICE",
+          "statement": "A terminating party must give written notice within five Business Days of termination.",
+          "source_span_ids": [
+            "s-term-1"
+          ]
+        },
+        "edited_statement": null,
+        "edited_roles": {}
+      },
+      {
+        "item_id": "v1-item-pending-comment",
+        "kind": "FACT_REVIEW",
+        "decision": "PENDING",
+        "comment": "Check this against the Credit Agreement consent list before accepting.",
+        "commented_at": "2026-08-13T08:30:00Z",
+        "reviewed_at": null,
+        "section_reference": "5.1",
+        "structure_node_id": "n90",
+        "original": {
+          "proposal_id": "p-unrelated-1",
+          "family_key": "FINANCING",
+          "subtype_key": "LENDER_CONSENT",
+          "fact_type": "LENDER_CONSENT_COVENANT",
+          "statement": "Each party must use commercially reasonable efforts to obtain lender consent under the Credit Agreement before Closing.",
+          "source_span_ids": [
+            "s-unrelated-1"
+          ]
+        },
+        "edited_statement": null,
+        "edited_roles": {}
+      },
+      {
+        "item_id": "v1-item-unresolved-no-comment",
+        "kind": "FACT_REVIEW",
+        "decision": "UNRESOLVED",
+        "comment": null,
+        "commented_at": null,
+        "reviewed_at": "2026-08-13T16:05:00Z",
+        "section_reference": "5.1",
+        "structure_node_id": "n91",
+        "original": {
+          "proposal_id": "p-unrelated-2",
+          "family_key": "FINANCING",
+          "subtype_key": "LENDER_CONSENT",
+          "fact_type": "LENDER_CONSENT_COVENANT",
+          "statement": "Scope of the lender consent obligation is unclear from the excerpt reviewed.",
+          "source_span_ids": [
+            "s-unrelated-1"
+          ]
+        },
+        "edited_statement": null,
+        "edited_roles": {}
+      },
+      {
+        "item_id": "v1-item-excluded-pending-no-comment",
+        "kind": "FACT_REVIEW",
+        "decision": "PENDING",
+        "comment": null,
+        "commented_at": null,
+        "reviewed_at": null,
+        "section_reference": "3.16",
+        "structure_node_id": "n99",
+        "original": {
+          "proposal_id": "p-excluded-1",
+          "family_key": "MISC_BOILERPLATE",
+          "subtype_key": "NOTICES",
+          "fact_type": "NOTICES_CLAUSE",
+          "statement": "Not yet reviewed.",
+          "source_span_ids": []
+        },
+        "edited_statement": null,
+        "edited_roles": {}
+      }
+    ],
+    "spans": {
+      "s-mae-1": {
+        "start_byte": 157,
+        "end_byte": 349,
+        "exact_text": "geopolitical conditions or changes that are the result of the outbreak, conduct or escalation of war (whether declared or undeclared) or acts of terrorism or sabotage (including cyber-attacks)"
+      },
+      "s-mc-1": {
+        "start_byte": 100000,
+        "end_byte": 100275,
+        "exact_text": "Section 4.5. For purposes of this Agreement, a \"Material Contract\" includes any contract requiring payments by the Company in excess of $10,000,000 in any twelve-month period, other than contracts entered into in the ordinary course of business consistent with past practice."
+      },
+      "s-term-1": {
+        "start_byte": 200334,
+        "end_byte": 200378,
+        "exact_text": "written notice within five (5) Business Days"
+      },
+      "s-unrelated-1": {
+        "start_byte": 300080,
+        "end_byte": 300128,
+        "exact_text": "consent of the lender under the Credit Agreement"
+      }
+    }
+  },
+  "v2": [
+    {
+      "fact_id": "fact-mae-1",
+      "family_key": "MAE_DEFINITION",
+      "subtype_key": "EXCLUSION",
+      "section_reference": "3.2",
+      "structure_node_id": "n31",
+      "headline": {
+        "label": "MAE carve-out",
+        "distinguishing_component_ids": [
+          "c-war"
+        ]
+      },
+      "components": [
+        {
+          "component_id": "c-litany",
+          "kind": "LITANY",
+          "label": "affected matters",
+          "text": "any event, change, circumstance, occurrence, effect or state of facts",
+          "origin": "CHAPEAU",
+          "origin_structure_node_id": "n30",
+          "start_byte": 57,
+          "end_byte": 126,
+          "members": [
+            "event",
+            "change",
+            "circumstance",
+            "occurrence",
+            "effect",
+            "state of facts"
+          ],
+          "children": []
+        },
+        {
+          "component_id": "c-resulting",
+          "kind": "OPERATION",
+          "label": "resulting from",
+          "text": "to the extent resulting from",
+          "origin": "CHAPEAU",
+          "origin_structure_node_id": "n30",
+          "start_byte": 128,
+          "end_byte": 156,
+          "children": []
+        },
+        {
+          "component_id": "c-war",
+          "kind": "LIST",
+          "label": "war, terrorism and sabotage",
+          "text": "geopolitical conditions or changes that are the result of the outbreak, conduct or escalation of war (whether declared or undeclared) or acts of terrorism or sabotage (including cyber-attacks)",
+          "origin": "OWN",
+          "start_byte": 157,
+          "end_byte": 349,
+          "children": [
+            {
+              "component_id": "c-war-1",
+              "kind": "TERM",
+              "label": "geopolitical conditions or changes",
+              "text": "geopolitical conditions or changes that are the result of",
+              "origin": "OWN",
+              "start_byte": 157,
+              "end_byte": 214,
+              "children": []
+            },
+            {
+              "component_id": "c-war-2",
+              "kind": "LIST_ELEMENT",
+              "label": "war",
+              "text": "the outbreak, conduct or escalation of war (whether declared or undeclared)",
+              "origin": "OWN",
+              "start_byte": 215,
+              "end_byte": 290,
+              "children": []
+            },
+            {
+              "component_id": "c-war-3",
+              "kind": "LIST_ELEMENT",
+              "label": "terrorism",
+              "text": "acts of terrorism",
+              "origin": "OWN",
+              "start_byte": 294,
+              "end_byte": 311,
+              "children": []
+            },
+            {
+              "component_id": "c-war-4",
+              "kind": "LIST_ELEMENT",
+              "label": "sabotage",
+              "text": "sabotage",
+              "origin": "OWN",
+              "start_byte": 315,
+              "end_byte": 323,
+              "children": [
+                {
+                  "component_id": "c-war-4a",
+                  "kind": "LIST_ELEMENT",
+                  "label": "cyber-attacks",
+                  "text": "(including cyber-attacks)",
+                  "origin": "OWN",
+                  "start_byte": 324,
+                  "end_byte": 349,
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fact_id": "fact-mc-1",
+      "family_key": "MATERIAL_CONTRACTS",
+      "subtype_key": "MATERIAL_CONTRACT_CATEGORY_CRITERION",
+      "section_reference": "4.5",
+      "structure_node_id": "n55",
+      "headline": {
+        "label": "Material Contract threshold",
+        "distinguishing_component_ids": [
+          "c-mc-threshold"
+        ]
+      },
+      "components": [
+        {
+          "component_id": "c-mc-op",
+          "kind": "OPERATION",
+          "label": "requiring payments in excess of",
+          "text": "requiring payments by the Company in excess of",
+          "origin": "CHAPEAU",
+          "origin_structure_node_id": "n54",
+          "start_byte": 100089,
+          "end_byte": 100135,
+          "children": []
+        },
+        {
+          "component_id": "c-mc-threshold",
+          "kind": "THRESHOLD",
+          "label": "threshold",
+          "text": "$10,000,000",
+          "origin": "OWN",
+          "start_byte": 100136,
+          "end_byte": 100147,
+          "value": {
+            "canonical": 10000000,
+            "unit": "USD"
+          },
+          "children": []
+        },
+        {
+          "component_id": "c-mc-period",
+          "kind": "PERIOD",
+          "label": "measurement period",
+          "text": "in any twelve-month period",
+          "origin": "OWN",
+          "start_byte": 100148,
+          "end_byte": 100174,
+          "value": {
+            "canonical": 12,
+            "unit": "months"
+          },
+          "children": []
+        },
+        {
+          "component_id": "c-mc-exception",
+          "kind": "EXCEPTION",
+          "label": "ordinary course carve-out",
+          "text": "other than contracts entered into in the ordinary course of business consistent with past practice",
+          "origin": "CHAPEAU",
+          "origin_structure_node_id": "n54",
+          "start_byte": 100176,
+          "end_byte": 100274,
+          "children": []
+        }
+      ]
+    },
+    {
+      "fact_id": "fact-term-1",
+      "family_key": "TERMINATION",
+      "subtype_key": "TERMINATION_RIGHT",
+      "section_reference": "9.1",
+      "structure_node_id": "n77",
+      "headline": {
+        "label": "Outside Date termination right",
+        "distinguishing_component_ids": [
+          "c-term-trigger"
+        ]
+      },
+      "components": [
+        {
+          "component_id": "c-term-actor",
+          "kind": "ACTOR",
+          "label": "terminating party",
+          "text": "either Parent or the Company",
+          "origin": "OWN",
+          "start_byte": 200049,
+          "end_byte": 200077,
+          "children": []
+        },
+        {
+          "component_id": "c-term-trigger",
+          "kind": "TRIGGER",
+          "label": "Outside Date",
+          "text": "if the Merger has not been consummated by the Outside Date",
+          "origin": "OWN",
+          "start_byte": 200106,
+          "end_byte": 200164,
+          "children": []
+        },
+        {
+          "component_id": "c-term-exception",
+          "kind": "EXCEPTION",
+          "label": "breaching party carve-out",
+          "text": "provided that this termination right is not available to a party whose breach caused the failure",
+          "origin": "OWN",
+          "start_byte": 200166,
+          "end_byte": 200262,
+          "children": []
+        }
+      ]
+    }
+  ]
+}
