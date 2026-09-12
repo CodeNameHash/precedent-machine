@@ -307,3 +307,9 @@ On the first Query mockup (headline = subtype label plus distinguishing componen
 "GO back and look at the current system for hints on how this should work/look"
 
 Implications recorded by the assistant, not decided: the headline must read as the operative proposition (actor, operation, object, then the qualifier that matters), with defined terms explained on demand; distinguishing-component headlines built from thresholds and triggers alone read as fragments. Navigation is by provision and subject matter; section references move to the source layer. The legacy site's provision presentation is the reference for shape.
+
+## 8. Query mockup, second and third rounds, 2026-09-12 23:25 to 23:35 UTC (verbatim)
+
+On mockup 2 (sentence headlines, Term / Provision table): Ben sent screenshots of the current review page (Structure & Mechanics, Consideration, Equity Awards, Representations, Interim Operating Covenants, No-Shop, Votes, Employee Compensation and Benefits) and wrote: "see attached - how tables were used to show similar data across ariavles etc. Not full drafting but just the headline conclusions. votes section looks particualrly good. as does employee benefits (see next message)> can you revise in this vain?"
+
+On mockup 3 (per-subtype pill tables, with a hand-composed target table and the gap that V2 has no per-subtype table shape or coded vocabulary): "we need to layer into the design the "we hav rthe backup" features of this new structure - i.e. show the evidence and all of the hard work behidn the scenes!!"
