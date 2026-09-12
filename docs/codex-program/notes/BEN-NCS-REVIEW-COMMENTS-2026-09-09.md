@@ -313,3 +313,11 @@ Implications recorded by the assistant, not decided: the headline must read as t
 On mockup 2 (sentence headlines, Term / Provision table): Ben sent screenshots of the current review page (Structure & Mechanics, Consideration, Equity Awards, Representations, Interim Operating Covenants, No-Shop, Votes, Employee Compensation and Benefits) and wrote: "see attached - how tables were used to show similar data across ariavles etc. Not full drafting but just the headline conclusions. votes section looks particualrly good. as does employee benefits (see next message)> can you revise in this vain?"
 
 On mockup 3 (per-subtype pill tables, with a hand-composed target table and the gap that V2 has no per-subtype table shape or coded vocabulary): "we need to layer into the design the "we hav rthe backup" features of this new structure - i.e. show the evidence and all of the hard work behidn the scenes!!"
+
+## 9. Table shapes, 2026-09-12 23:50 UTC (verbatim)
+
+"yes the target is good. And you should do this for all sectoins."
+
+"and obviosuly you should feel free to add to the vocabulary / table structure as you have more information than the old system had"
+
+Applied: the harvest keeps the legacy shapes and vocabularies verbatim as the baseline; a second pass adds proposed columns and codes drawn from the V2 schema (subtypes, layer rules) and from what the layered NCS output actually contains (component kinds, thresholds, carve-out subjects, efforts standards), each marked as an addition for Ben to accept or strike in the same note.

@@ -1614,7 +1614,12 @@ Sequence and proof:
       you should do this for all sections." Steps: (a) harvest the table
       shapes and vocabularies from `components/review/table-configs/` into
       `contracts/product/table-shapes.v1.json` with a note for Ben to
-      correct (`session_01HJJZ9Z1c9wPtjq8mHNoh6K`); (b) contract: each fact carries
+      correct (`session_01HJJZ9Z1c9wPtjq8mHNoh6K`); (a2) Ben, 23:50 UTC:
+      "feel free to add to the vocabulary / table structure as you have more
+      information than the old system had": a second pass proposes
+      additional columns and codes from the V2 schema and from the layered
+      NCS output, marked as additions in the same note for Ben to accept or
+      strike; (b) contract: each fact carries
       `conclusions`, one coded value per column of its subtype's table,
       validated against the vocabulary, alongside the verbatim components;
       (c) extractor V9 returns conclusions; (d) published page and Query
