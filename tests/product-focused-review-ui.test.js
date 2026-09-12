@@ -18,9 +18,10 @@ require.extensions['.jsx'] = function compileJsx(module, filename) {
 
 const { byteRangesToParts, firstCitedByte, parseFocusSections } = require('../lib/product/section-highlight');
 const { contract } = require('../lib/product/fact-components');
+const { buildEditedComponents } = require('../lib/product/component-edit');
 const focusedModule = require('../components/product/FocusedReview.jsx');
 const FocusedReview = focusedModule.default;
-const { sectionFacts } = focusedModule;
+const { sectionFacts, ComponentEditor } = focusedModule;
 const { DraftReview } = require('../components/product/ReviewWorkspace.jsx');
 
 test('byte ranges become marked parts, merging overlaps and honouring UTF-8 offsets', () => {
@@ -178,4 +179,111 @@ test('draft review swaps the full section list for the focused view when focus i
   const fullHtml = renderToStaticMarkup(React.createElement(DraftReview, { workspace, view, busy: false, command: async () => {}, openSource: () => {} }));
   assert.doesNotMatch(fullHtml, /Focused review/);
   assert.match(fullHtml, /Jump to agreement section/);
+});
+
+// Component-level edit of a layered fact (plan 5B.4). The section text
+// carries a section sign (§, two UTF-8 bytes, one JS string character) ahead
+// of the edited text so a byte-vs-index bug would shift the offset by one.
+const editorSectionText = 'Fees payable under § 3(a) include the reimbursement obligation described below.';
+const editorSectionSpan = { span_id: 'full-71', exact_text: editorSectionText, start_byte: 5000, end_byte: 5000 + Buffer.byteLength(editorSectionText, 'utf8') };
+
+test('buildEditedComponents computes UTF-8 byte offsets relative to the section span, not string indices', () => {
+  const prefix = 'Fees payable under § 3(a) include ';
+  assert.notEqual(prefix.length, Buffer.byteLength(prefix, 'utf8'), 'fixture must contain a multibyte character before the edited text');
+  const editedText = 'the reimbursement obligation described below.';
+  const original = [{
+    component_id: 'c-obligation', kind: 'TERM', label: 'obligation', text: 'old text', origin: 'CHAPEAU',
+    origin_structure_node_id: 'other-node', source_span_id: 'other-span', start_byte: 1, end_byte: 9, children: [],
+  }];
+  const { components, problems } = buildEditedComponents({
+    components: original,
+    edits: new Map([['c-obligation', editedText]]),
+    removed: new Set(),
+    additions: [],
+    sectionText: editorSectionText,
+    sectionStartByte: editorSectionSpan.start_byte,
+    sectionSpanId: editorSectionSpan.span_id,
+  });
+  assert.equal(problems.length, 0);
+  const updated = components[0];
+  assert.equal(updated.text, editedText);
+  assert.equal(updated.origin, 'OWN');
+  assert.equal(updated.source_span_id, editorSectionSpan.span_id);
+  assert.equal(Object.hasOwn(updated, 'origin_structure_node_id'), false);
+  assert.equal(updated.start_byte, editorSectionSpan.start_byte + Buffer.byteLength(prefix, 'utf8'));
+  assert.equal(updated.end_byte, updated.start_byte + Buffer.byteLength(editedText, 'utf8'));
+});
+
+test('buildEditedComponents blocks on text that is missing or not unique in the section, leaving problems for the caller to report', () => {
+  const original = [
+    { component_id: 'c-1', kind: 'TERM', label: 'a', text: 'old a', origin: 'OWN', source_span_id: editorSectionSpan.span_id, start_byte: 1, end_byte: 6, children: [] },
+    { component_id: 'c-2', kind: 'TERM', label: 'b', text: 'old b', origin: 'OWN', source_span_id: editorSectionSpan.span_id, start_byte: 1, end_byte: 6, children: [] },
+  ];
+  const sectionText = 'Fees payable under Fees payable again.';
+  const { problems } = buildEditedComponents({
+    components: original,
+    edits: new Map([
+      ['c-1', 'Fees payable'], // occurs twice in sectionText: not unique
+      ['c-2', 'not present anywhere in this section'], // occurs zero times: missing
+    ]),
+    removed: new Set(),
+    additions: [{ id: 'new-1', kind: 'TERM', text: 'under' }], // occurs exactly once: no problem
+    sectionText,
+    sectionStartByte: 0,
+    sectionSpanId: editorSectionSpan.span_id,
+  });
+  const problemIds = problems.map((problem) => problem.component_id);
+  assert.deepEqual(problemIds.sort(), ['c-1', 'c-2']);
+});
+
+function componentsForEditor() {
+  return [
+    { component_id: 'c-fee', kind: 'TERM', label: 'fee reference', text: 'Fees payable under § 3(a)', origin: 'OWN', source_span_id: editorSectionSpan.span_id, start_byte: editorSectionSpan.start_byte, end_byte: editorSectionSpan.start_byte + Buffer.byteLength('Fees payable under § 3(a)', 'utf8'), children: [] },
+    { component_id: 'c-obligation', kind: 'TERM', label: 'obligation', text: 'the reimbursement obligation described below.', origin: 'OWN', source_span_id: editorSectionSpan.span_id, start_byte: editorSectionSpan.start_byte + Buffer.byteLength('Fees payable under § 3(a) include ', 'utf8'), end_byte: editorSectionSpan.end_byte, children: [] },
+  ];
+}
+
+test('the component editor renders every component as a kind label, a verbatim-text input and a Remove button, plus an Add-component control', () => {
+  const editorProposal = {
+    proposal_id: 'p-editor', family_key: 'MAE_DEFINITION', subtype_key: 'EXCLUSION',
+    headline: { label: 'Fee provision', distinguishing_component_ids: ['c-fee'] },
+    components: componentsForEditor(),
+  };
+  const html = renderToStaticMarkup(React.createElement(ComponentEditor, {
+    proposal: editorProposal, item: { item_id: 'item-editor', edited_components: null, edited_headline: null },
+    sectionText: editorSectionSpan, onDecision: async () => {}, busy: false,
+  }));
+  assert.match(html, /data-testid="component-editor"/);
+  assert.equal((html.match(/data-testid="component-edit-row"/g) || []).length, 2);
+  assert.match(html, /value="Fees payable under § 3\(a\)"/);
+  assert.match(html, /value="the reimbursement obligation described below\."/);
+  assert.equal((html.match(/>Remove</g) || []).length, 2);
+  assert.match(html, />Add component</);
+  assert.match(html, />Save components</);
+});
+
+test('a component editor dispatches DECIDE_ITEM/EDITED with a components tree whose byte offsets are UTF-8 bytes', async () => {
+  const original = componentsForEditor();
+  const edits = new Map([['c-obligation', 'the reimbursement obligation described below, revised.']]);
+  const sectionTextWithRevision = 'Fees payable under § 3(a) include the reimbursement obligation described below, revised.';
+  const { components, problems } = buildEditedComponents({
+    components: original, edits, removed: new Set(), additions: [],
+    sectionText: sectionTextWithRevision, sectionStartByte: editorSectionSpan.start_byte, sectionSpanId: editorSectionSpan.span_id,
+  });
+  assert.equal(problems.length, 0);
+  let dispatched = null;
+  async function onDecision(itemId, decision, edit) {
+    dispatched = { itemId, decision, edit };
+  }
+  await onDecision('item-editor', 'EDITED', { statement: 'Unchanged statement.', components });
+  assert.equal(dispatched.itemId, 'item-editor');
+  assert.equal(dispatched.decision, 'EDITED');
+  assert.equal(dispatched.edit.statement, 'Unchanged statement.');
+  const revised = dispatched.edit.components.find((component) => component.component_id === 'c-obligation');
+  const prefix = 'Fees payable under § 3(a) include ';
+  assert.equal(revised.start_byte, editorSectionSpan.start_byte + Buffer.byteLength(prefix, 'utf8'));
+  assert.equal(revised.end_byte, revised.start_byte + Buffer.byteLength('the reimbursement obligation described below, revised.', 'utf8'));
+  assert.equal(revised.origin, 'OWN');
+  const untouched = dispatched.edit.components.find((component) => component.component_id === 'c-fee');
+  assert.deepEqual(untouched, original[0]);
 });
