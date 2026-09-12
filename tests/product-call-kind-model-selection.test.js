@@ -29,8 +29,8 @@ function completed(text = '{"ok":true}') {
 
 test('new Codex run identity freezes the exact call-kind model map', () => {
   assert.deepEqual(CODEX_CALL_KIND_MODELS, {
-    ROUTING: { model: 'gpt-5.4-mini', reasoning_effort: 'low' },
-    RESIDUAL: { model: 'gpt-5.4-mini', reasoning_effort: 'low' },
+    ROUTING: { model: 'gpt-5.5', reasoning_effort: 'low' },
+    RESIDUAL: { model: 'gpt-5.5', reasoning_effort: 'low' },
     EXTRACTION: { model: 'gpt-5.5', reasoning_effort: 'medium' },
   });
   assert.deepEqual(configuredProductModelConfig({ PRODUCT_MODEL_PROVIDER: 'OPENAI_CODEX_CLI_SUBSCRIPTION' }),
@@ -67,13 +67,13 @@ test('Codex boundary selects and records the actual model for every call kind', 
 
   assert.deepEqual(creations.map(({ model: selected, reasoningEffort }) => (
     [selected, reasoningEffort]
-  )), [['gpt-5.4-mini', 'low'], ['gpt-5.5', 'medium']]);
-  assert.equal(routing.model_id, 'gpt-5.4-mini;reasoning=low');
-  assert.equal(residual.model_id, 'gpt-5.4-mini;reasoning=low');
+  )), [['gpt-5.5', 'low'], ['gpt-5.5', 'medium']]);
+  assert.equal(routing.model_id, 'gpt-5.5;reasoning=low');
+  assert.equal(residual.model_id, 'gpt-5.5;reasoning=low');
   assert.equal(extraction.model_id, 'gpt-5.5;reasoning=medium');
   assert.deepEqual(requests.map(({ model: selected, reasoning_effort: effort }) => (
     [selected, effort]
-  )), [['gpt-5.4-mini', 'low'], ['gpt-5.4-mini', 'low'], ['gpt-5.5', 'medium']]);
+  )), [['gpt-5.5', 'low'], ['gpt-5.5', 'low'], ['gpt-5.5', 'medium']]);
 });
 
 test('unknown kinds fail before transport and received failures retain selected identity', async () => {

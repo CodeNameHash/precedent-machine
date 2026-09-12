@@ -1546,8 +1546,17 @@ Sequence and proof:
       first resubmission deduplicated to the V1 run because the browser
       bundle had been built without the variable; commit `95f9171` makes the
       intake handler select the schema server-side, so the variable only has
-      to be present in the deployment's preview environment. Resubmit after
-      that deployment is ready. The submission creates a V2
+      to be present in the deployment's preview environment. 22:15 UTC:
+      the variable reached the server after Ben relinked his Vercel CLI to
+      deal-corpus and redeployed; run `19927583-8bf8-4f9e-8607-16cbabda2c57`
+      was created as generation 2 under V2 and prompt bundle V7, then
+      FAILED on its first routing calls: the re-created sandbox carries Codex
+      CLI 0.145.0, which rejects gpt-5.4-mini on a ChatGPT login. Probe
+      (`scripts/product/probe-sandbox-models.js`, Ben's output 22:25 UTC):
+      only gpt-5.5 is accepted. Routing and residual calls moved to gpt-5.5
+      at low reasoning effort (`lib/product/product-model-config.js`); the
+      changed model configuration means the next submission is generation 3.
+      Sequence: Ben runs `update-sandbox-worker.js`, then resubmits. The submission creates a V2
       generation with prompt bundle `PRODUCT_LAYERED_COMPONENTS/V7`; the V1
       run and revision 45 of its review stay untouched as the baseline. Compare against Ben's 38
       touched items and his samples. Ben reviews the same 13 provisions again

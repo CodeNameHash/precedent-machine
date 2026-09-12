@@ -514,20 +514,20 @@ test('Codex CLI product adapter pins isolated subscription transport and records
           content: [{ type: 'text', text: '{"families":[]}' }],
           usage: { input_tokens: 12, cached_input_tokens: 3, output_tokens: 4, reasoning_output_tokens: 2 },
           codex_completion: { status: 'COMPLETE', terminal_event: 'turn.completed' },
-          codex_invocation_identity: { model: 'gpt-5.4-mini', reasoning_effort: 'low' },
+          codex_invocation_identity: { model: 'gpt-5.5', reasoning_effort: 'low' },
         };
       } } };
     },
   });
   const result = await model.complete({ call_kind: 'ROUTING', prompt_version: 'V1', request: { section_reference: '1.1' } });
   assert.deepEqual(options, {
-    model: 'gpt-5.4-mini', reasoningEffort: 'low', maxAttempts: 1,
+    model: 'gpt-5.5', reasoningEffort: 'low', maxAttempts: 1,
     ephemeral: true, ignoreUserConfig: true, ignoreRules: true, isolated: true,
   });
   assert.equal(request.system.includes('Return one JSON object only'), true);
   assert.equal(request.messages[0].content.includes('section_reference'), true);
   assert.equal(result.provider_id, 'OPENAI_CODEX_CLI_SUBSCRIPTION');
-  assert.equal(result.model_id, 'gpt-5.4-mini;reasoning=low');
+  assert.equal(result.model_id, 'gpt-5.5;reasoning=low');
   assert.equal(result.input_tokens, 12);
   assert.equal(result.output_tokens, 4);
   assert.equal(result.cost_microusd, 0);
