@@ -1621,6 +1621,27 @@ UTC: 5B.3 `session_01TcSpkRunUNCnKiVMntUZRC`, 5B.5 `session_01XN3SV7RNQ5auN72cmE
 the first 5B.4 session was archived unstarted when Ben set the
 production-page rule.
 
+### Parallel track, 2026-09-12: Query on layered facts
+
+Ben, 2026-09-12 23:10 UTC: "Can we work any of the query files? Or even just
+the UI elements for those / the site generally? FYI Deal storylines is
+adjusting the overall site design to be more aligned"; the design is still
+being developed and will be sent when done. Started as a parallel track that
+does not gate the Phase 5 exit or Phase 6: a Query surface that reads the
+contract the released Review writes (accepted, published layered facts across
+agreements, by family and subtype, headline first, click to descend), built
+in the existing product chrome and restyled when the Deal Storylines design
+arrives. The legacy Query, Compare and What's-market pages stay on their
+existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 and Q2).
+
+- [ ] Q1 Store read and API for published layered facts across agreements
+      (`listPublishedLayeredFacts`, `pages/api/product/published-facts.js`).
+- [ ] Q2 `pages/query/provisions.js`: family and subtype selects from the V2
+      schema, one block per agreement, facts through `PublishedFact`.
+- [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
+- [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
+      read or are retired.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.
