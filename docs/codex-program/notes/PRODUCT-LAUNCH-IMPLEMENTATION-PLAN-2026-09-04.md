@@ -1274,7 +1274,13 @@ it is not an attestation or a completed independent inventory.
       samples are reconciled against V2 output, not V1.
 - [ ] Reconcile Ben's existing independent, detailed provision samples against
       the corresponding V2 agreement results. A separate full lawyer-written
-      inventory is not required.
+      inventory is not required. Tooling merged 2026-09-12 23:40 UTC from
+      `session_01XujbrYbTFpQC1WWMjAfYEQ`: `lib/product/sample-reconciliation.js`
+      and `scripts/product/reconcile-sample-notes.js` match the note items in
+      `fixtures/product/ben-samples/` to V2 facts by section reference and
+      word overlap and write a Markdown report with severity and acceptance
+      columns left for Ben (`tests/product-sample-reconciliation.test.js`).
+      Waits on V2 runs of Olaplex and Apogee.
 - [ ] Measure severity-weighted reference-sample success, with missed,
       incorrect and unresolved counts, citation sufficiency and narrowness,
       duplicates, contradictions, unresolved burden and review time. Report
@@ -1484,7 +1490,11 @@ Sequence and proof:
       version, and new submissions use V1 until
       `NEXT_PUBLIC_PRODUCT_LEGAL_SCHEMA_VERSION=LEGAL_SCHEMA/V2` is set on the
       private preview (`lib/product/legal-schema-selection.js`). Remaining:
-      recorded-fixture replay under V7 once a V2 run has saved calls.
+      recorded-fixture replay under V7 once a V2 run has saved calls. Done
+      2026-09-12 23:40 UTC under V8: `tests/product-v8-replay.test.js`
+      replays a real generation 4 extraction call
+      (`tests/fixtures/product/ncs-v8-extraction-call.v1.json`) through
+      `compileExtraction` (merged from `session_01NoHhHYd1HWTi2qsXK2wb1N`).
 - [ ] 5B.5 Published reader view on layers, built first. Component merged
       2026-09-12 from the 5B.5 worker: `components/product/PublishedSummary.jsx`
       and `lib/product/published-layers.js` render headline first, click to
@@ -1653,10 +1663,16 @@ in the existing product chrome and restyled when the Deal Storylines design
 arrives. The legacy Query, Compare and What's-market pages stay on their
 existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 and Q2).
 
-- [ ] Q1 Store read and API for published layered facts across agreements
-      (`listPublishedLayeredFacts`, `pages/api/product/published-facts.js`).
-- [ ] Q2 `pages/query/provisions.js`: family and subtype selects from the V2
-      schema, one block per agreement, facts through `PublishedFact`.
+- [x] Q1 Store read and API for published layered facts across agreements
+      (`listPublishedLayeredFacts` in `lib/product/phase-3-store.js`,
+      `pages/api/product/published-facts.js`). Merged 2026-09-12 23:40 UTC
+      from `session_01AcnvBt4no15zzgKA5z6t7v`.
+- [x] Q2 `pages/query/provisions.js`: family and subtype selects from the V2
+      schema, one block per agreement, facts through `PublishedFact`. Merged
+      with Q1; superseded in shape by 5B.8 (pill tables per subtype with the
+      evidence sidebar), which replaces this page's body once conclusions
+      exist. Mockup with Ben's direction:
+      https://claude.ai/code/artifact/0caadcfa-a143-4e63-aff3-630a386cacb4
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.
