@@ -13,6 +13,6 @@ test('a run keeps its own schema version; unknown versions fail loudly', () => {
 
 test('new submissions default to V1 and switch to V2 with its prompt bundle only when configured', () => {
   assert.deepEqual(activeSubmissionVersion({}), { schemaVersion: 'LEGAL_SCHEMA/V1', promptBundleVersion: 'PRODUCT_ROUTING_CITATION_REPAIR/V6' });
-  assert.deepEqual(activeSubmissionVersion({ NEXT_PUBLIC_PRODUCT_LEGAL_SCHEMA_VERSION: 'LEGAL_SCHEMA/V2' }), { schemaVersion: 'LEGAL_SCHEMA/V2', promptBundleVersion: 'PRODUCT_LAYERED_COMPONENTS/V7' });
+  assert.deepEqual(activeSubmissionVersion({ NEXT_PUBLIC_PRODUCT_LEGAL_SCHEMA_VERSION: 'LEGAL_SCHEMA/V2' }), { schemaVersion: 'LEGAL_SCHEMA/V2', promptBundleVersion: 'PRODUCT_LAYERED_COMPONENTS/V8' });
   assert.throws(() => activeSubmissionVersion({ PRODUCT_LEGAL_SCHEMA_VERSION: 'nope' }), /PRODUCT_LEGAL_SCHEMA_UNKNOWN/);
 });

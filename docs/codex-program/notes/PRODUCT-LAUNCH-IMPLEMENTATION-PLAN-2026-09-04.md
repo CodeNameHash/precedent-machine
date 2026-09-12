@@ -1556,7 +1556,20 @@ Sequence and proof:
       only gpt-5.5 is accepted. Routing and residual calls moved to gpt-5.5
       at low reasoning effort (`lib/product/product-model-config.js`); the
       changed model configuration means the next submission is generation 3.
-      Sequence: Ben runs `update-sandbox-worker.js`, then resubmits. The submission creates a V2
+      Sequence: Ben runs `update-sandbox-worker.js`, then resubmits.
+      22:24 UTC: generation 3 `a7fb5881-dd93-43b6-96f3-888d083acda9` running
+      on gpt-5.5 under bundle V7. First 23 proposals: 4 valid, the rest held
+      by the component validator for (a) kinds outside the contract (PARTY,
+      SUBJECT, LEGAL_STATUS, TIME, QUALIFICATION, and the V1 role names used
+      as kinds), (b) descriptive PERIOD or DATE words with no number ("on the
+      second Business Day following ..."), (c) one non-contiguous quote.
+      Fixes 22:40 UTC: the extraction prompt now lists the closed kind set
+      and says role names are not kinds (`PRODUCT_ALL_FAMILY_EXTRACTOR/V8`,
+      bundle `PRODUCT_LAYERED_COMPONENTS/V8`); unambiguous synonym kinds map
+      to the contract kind in code; contract rule R6 lets PERIOD and DATE
+      carry value null when the words hold no number. Held proposals keep
+      their components in the payload, so generation 3 stays useful as prompt
+      evidence. Next: sandbox update, resubmit as generation 4 under V8. The submission creates a V2
       generation with prompt bundle `PRODUCT_LAYERED_COMPONENTS/V7`; the V1
       run and revision 45 of its review stay untouched as the baseline. Compare against Ben's 38
       touched items and his samples. Ben reviews the same 13 provisions again

@@ -100,3 +100,30 @@ test('V1 schema extraction is unchanged: no headline or components keys', () => 
   assert.equal(Object.hasOwn(compiled.proposals[0], 'components'), false);
   assert.equal(Object.hasOwn(compiled.proposals[0], 'headline'), false);
 });
+
+test('V2 extraction maps synonym kinds to the contract and allows a descriptive period without a number', () => {
+  const body = response([
+    component('who', 'PARTY', 'subject', 'Material Adverse Effect'),
+    component('when', 'TIME', 'timing', 'to the extent resulting from'),
+    component('q', 'QUALIFICATION', 'qualifier', '(whether declared or undeclared)'),
+    component('p', 'PERIOD', 'period', 'within 30 days'),
+    component('r', 'LEGAL_OPERATION', 'operation', 'shall not include'),
+  ], { label: 'MAE carve-out', distinguishing_refs: ['who'] });
+  const compiled = compile(body);
+  assert.equal(compiled.proposals[0].validation_status, 'VALID', JSON.stringify(compiled.issues));
+  assert.deepEqual(compiled.proposals[0].components.map((item) => item.kind), ['ACTOR', 'TRIGGER', 'QUALIFIER', 'PERIOD', 'OPERATION']);
+  assert.equal(compiled.proposals[0].components[3].value.canonical, 30);
+  const descriptive = compile(response([
+    component('p', 'PERIOD', 'period', 'to the extent resulting from geopolitical conditions'),
+  ], { label: 'MAE carve-out', distinguishing_refs: ['p'] }));
+  assert.equal(descriptive.proposals[0].validation_status, 'VALID', JSON.stringify(descriptive.issues));
+  assert.equal(descriptive.proposals[0].components[0].value, null);
+  const amount = compile(response([
+    component('a', 'AMOUNT', 'amount', 'geopolitical conditions'),
+  ], { label: 'MAE carve-out', distinguishing_refs: ['a'] }));
+  assert.equal(amount.proposals[0].validation_status, 'INVALID');
+  const unknown = compile(response([
+    component('z', 'WIDGET', 'widget', 'geopolitical conditions'),
+  ], { label: 'MAE carve-out', distinguishing_refs: ['z'] }));
+  assert.equal(unknown.proposals[0].validation_status, 'INVALID');
+});

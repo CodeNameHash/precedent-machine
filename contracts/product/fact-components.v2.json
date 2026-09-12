@@ -43,7 +43,7 @@
     "R3 A LITANY is one component; its synonyms are members, never separate components ('any event, change, circumstance, occurrence, effect or state of facts').",
     "R4 Inherited words carry origin CHAPEAU, INTRO or DEFINITION and origin_structure_node_id. Rendering marks them; a fused statement is never shown as one sentence without [...] at each gap.",
     "R5 No role or component is forced. A missing timing, qualification or forum is absent, not invented. The words 'none', 'not applicable' and section references never appear as component text.",
-    "R6 THRESHOLD, PERIOD, PERCENTAGE, DATE and AMOUNT components carry a canonical value parsed by code from the verbatim text, never by the model.",
+    "R6 THRESHOLD, PERCENTAGE and AMOUNT components carry a canonical value parsed by code from the verbatim text, never by the model. PERIOD and DATE carry one when the words contain a number or a date; a descriptive period or date ('on the second Business Day following the satisfaction of the conditions') carries value null.",
     "R7 A CROSS_REFERENCE component resolves to the referenced node and, when the referenced provision has a fact, to that fact. Bring-down tiers resolve each referenced representation to its heading words.",
     "R8 Every covenant fact has an EFFORTS_STANDARD component (flat obligation recorded as the verb phrase, e.g. 'agrees to take') and a MATERIALITY_QUALIFIER component when present.",
     "R9 A fact's components together cover the fact's operative words; words not covered by any component are reported as an uncovered gap for review.",
