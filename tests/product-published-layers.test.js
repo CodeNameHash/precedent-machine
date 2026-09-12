@@ -19,7 +19,9 @@ require.extensions['.jsx'] = function compileJsx(module, filename) {
 
 const { groupPublishedFacts } = require('../lib/product/published-layers');
 const legalSchema = require('../contracts/product/legal-schema.v1.json');
-const PublishedSummary = require('../components/product/PublishedSummary.jsx').default;
+const publishedSummaryModule = require('../components/product/PublishedSummary.jsx');
+const PublishedSummary = publishedSummaryModule.default;
+const { PublishedFact } = publishedSummaryModule;
 
 const fixture = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures/product/published-layers-fixture.v2.json'), 'utf8'));
 
@@ -79,4 +81,40 @@ test('every published fact has a citation button', () => {
   const html = renderToStaticMarkup(React.createElement(PublishedSummary, { groups, onSource: () => {} }));
   const factCount = groups.reduce((total, group) => total + group.facts.length, 0);
   assert.equal((html.match(/data-testid="citation-button"/g) || []).length, factCount);
+});
+
+const maeFact = groups.find((group) => group.family_key === 'MAE_DEFINITION').facts[0];
+
+test('PublishedFact renders aids under the headline row and annotation above the fact when provided', () => {
+  const html = renderToStaticMarkup(React.createElement('ul', {}, React.createElement(PublishedFact, {
+    fact: maeFact, onSource: () => {},
+    aids: React.createElement('div', { 'data-testid': 'test-aids' }, 'Decision controls'),
+    annotation: React.createElement('p', { 'data-testid': 'test-annotation' }, 'Look for: the carve-out standard.'),
+  })));
+  assert.match(html, /data-testid="test-annotation"/);
+  assert.match(html, /Look for: the carve-out standard\./);
+  assert.match(html, /data-testid="test-aids"/);
+  assert.match(html, /Decision controls/);
+  assert.ok(html.indexOf('test-annotation') < html.indexOf('data-testid="fact-headline"'));
+  assert.ok(html.indexOf('data-testid="fact-descend-control"') < html.indexOf('test-aids'));
+});
+
+test('absent aids and annotation change nothing in PublishedFact output', () => {
+  const html = renderToStaticMarkup(React.createElement('ul', {}, React.createElement(PublishedFact, { fact: maeFact, onSource: () => {} })));
+  assert.doesNotMatch(html, /test-aids/);
+  assert.doesNotMatch(html, /test-annotation/);
+  assert.doesNotMatch(html, /role="button"/);
+});
+
+test('onComponentSelect and selectedComponentId are optional and only change output when supplied', () => {
+  const baseline = renderToStaticMarkup(React.createElement(PublishedSummary, { groups, onSource: () => {} }));
+  const withSelection = renderToStaticMarkup(React.createElement('ul', {}, React.createElement(PublishedFact, {
+    fact: maeFact, onSource: () => {}, onComponentSelect: () => {}, selectedComponentId: 'c-war', initiallyExpanded: true,
+  })));
+  assert.match(withSelection, /role="button"/);
+  assert.match(withSelection, /data-selected="true"/);
+  const withoutSelection = renderToStaticMarkup(React.createElement('ul', {}, React.createElement(PublishedFact, { fact: maeFact, onSource: () => {}, initiallyExpanded: true })));
+  assert.doesNotMatch(withoutSelection, /role="button"/);
+  assert.doesNotMatch(withoutSelection, /data-selected/);
+  assert.ok(baseline.length > 0);
 });

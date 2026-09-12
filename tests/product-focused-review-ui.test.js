@@ -17,6 +17,7 @@ require.extensions['.jsx'] = function compileJsx(module, filename) {
 };
 
 const { byteRangesToParts, firstCitedByte, parseFocusSections } = require('../lib/product/section-highlight');
+const { contract } = require('../lib/product/fact-components');
 const focusedModule = require('../components/product/FocusedReview.jsx');
 const FocusedReview = focusedModule.default;
 const { sectionFacts } = focusedModule;
@@ -115,6 +116,57 @@ test('a reviewer brief renders at the top and per section', () => {
   const ncs = briefForRun('eaafcac8-790b-41bb-a5e1-b12187a55e7d');
   assert.ok(ncs && ncs.sections.length >= 10);
   assert.equal(briefForRun('other'), null);
+});
+
+function stampedComponentsFact() {
+  const fact = JSON.parse(JSON.stringify(contract.example_fact));
+  let cursor = 0;
+  (function stamp(list) {
+    for (const component of list || []) {
+      component.start_byte = cursor; cursor += Buffer.byteLength(component.text, 'utf8'); component.end_byte = cursor;
+      component.source_span_id = 's-v2';
+      stamp(component.children);
+    }
+  }(fact.components));
+  fact.components.forEach((component) => { if (component.origin === 'CHAPEAU') component.origin_structure_node_id = 'n-v2'; });
+  return fact;
+}
+
+test('a proposal carrying FACT_COMPONENTS/V2 headline and components renders with PublishedFact and keeps decision controls inside it; a proposal without components is unchanged', () => {
+  const fact = stampedComponentsFact();
+  const v2Proposal = {
+    proposal_id: 'p-v2', structure_node_id: 'n71', source_closure_id: 'c71', proposition_group_id: 'g-v2',
+    family_key: fact.family_key, subtype_key: fact.subtype_key, fact_type: 'MAE_DEFINITION',
+    statement: 'Old one-sentence MAE carve-out statement.', roles: {}, canonical_value: null,
+    validation_status: 'VALID', source_span_ids: ['e-a'], unmatched_evidence: [], context_only_evidence: [],
+    headline: fact.headline, components: fact.components,
+  };
+  const plainProposal = proposal('p-plain', 'Parties may terminate by mutual written consent.', ['e-a'], 'g-plain');
+  const localView = {
+    sections: [{
+      node: analysis.agreement_structure.nodes[0], routing: analysis.sections[0], heading: 'Termination',
+      source_closure: analysis.source_closures[0], coverage: [],
+      proposals: [
+        { proposal: v2Proposal, review_item: { item_id: 'item-p-v2', kind: 'PROPOSAL', decision: 'PENDING', source_span_ids: v2Proposal.source_span_ids }, group: null, group_members: [], related_proposals: [] },
+        { proposal: plainProposal, review_item: { item_id: 'item-p-plain', kind: 'PROPOSAL', decision: 'REJECTED', source_span_ids: plainProposal.source_span_ids }, group: null, group_members: [], related_proposals: [] },
+      ],
+      review_items: [],
+    }],
+    fact_items: [], relationship_items: [], agreement_items: [], pending_count: 2, unresolved_count: 0, residual_paragraph_count: 0, unusual_provision_count: 0, can_publish: false,
+  };
+  const html = renderToStaticMarkup(React.createElement(FocusedReview, {
+    view: localView, analysis, focus: ['7.1'], busy: false, command: async () => {}, openSource: () => {}, cardPropsFor: () => ({}), allSectionsHref: '/review/product/run',
+  }));
+  assert.equal((html.match(/data-testid="published-fact"/g) || []).length, 1);
+  assert.match(html, /MAE carve-out: geopolitical conditions/);
+  assert.doesNotMatch(html, /Old one-sentence MAE carve-out statement\./);
+  assert.match(html, /data-decision="PENDING"/);
+  assert.match(html, /data-decision="REJECTED"/);
+  const publishedFactHtml = html.split('data-testid="published-fact"')[1].split('data-testid="focused-fact"')[0];
+  assert.match(publishedFactHtml, /Accept/);
+  assert.match(publishedFactHtml, /Reject/);
+  assert.match(publishedFactHtml, /Unresolved/);
+  assert.match(html, /Parties may terminate by mutual written consent\./);
 });
 
 test('draft review swaps the full section list for the focused view when focus is set', () => {

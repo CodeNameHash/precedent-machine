@@ -11,19 +11,20 @@ function CanonicalValue({ value }) {
   return <span className="ml-1 rounded bg-paper px-1 text-[11px] font-semibold text-accent" data-testid="canonical-value">{value.unit ? `${value.canonical} ${value.unit}` : String(value.canonical)}</span>;
 }
 
-function ComponentNode({ display, raw, initiallyExpanded }) {
+function ComponentNode({ display, raw, initiallyExpanded, onComponentSelect, selectedComponentId }) {
   const [open, setOpen] = useState(!!initiallyExpanded);
   const [resolvedOpen, setResolvedOpen] = useState(!!initiallyExpanded);
   const isReference = REFERENCE_KINDS.has(display.kind);
   const hoverText = display.resolves_to?.text || null;
   const showsValue = VALUE_KINDS.has(display.kind);
-  return <li className="mt-1" data-testid="component-node" data-kind={display.kind}>
+  const isSelected = !!selectedComponentId && raw.component_id === selectedComponentId;
+  return <li className={isSelected ? 'mt-1 rounded bg-amber-100 ring-1 ring-amber-400' : 'mt-1'} data-testid="component-node" data-kind={display.kind} data-selected={isSelected || undefined}>
     <span className="inline-flex flex-wrap items-baseline gap-1">
       {display.gap_before ? <span className="text-inkLight" data-testid="gap-marker">[...]</span> : null}
       {isReference && hoverText ? (
         <button
           type="button"
-          onClick={() => setResolvedOpen((current) => !current)}
+          onClick={() => { setResolvedOpen((current) => !current); if (onComponentSelect) onComponentSelect(raw); }}
           title={hoverText}
           className={`underline decoration-dotted ${display.inherited ? 'italic text-inkLight' : 'text-ink'}`}
           data-testid="reference-term"
@@ -36,6 +37,7 @@ function ComponentNode({ display, raw, initiallyExpanded }) {
           className={display.inherited ? 'italic text-inkLight' : 'text-ink'}
           data-testid={display.inherited ? 'inherited-word' : undefined}
           data-origin={display.origin}
+          onClick={onComponentSelect ? () => onComponentSelect(raw) : undefined}
         >
           {display.text}
         </span>
@@ -48,26 +50,30 @@ function ComponentNode({ display, raw, initiallyExpanded }) {
       ) : null}
     </span>
     {isReference && hoverText && resolvedOpen ? <p className="ml-4 text-[11px] text-inkLight" data-testid="resolved-text">&rarr; {hoverText}</p> : null}
-    {display.has_children && open ? <ComponentLayer components={raw.children} initiallyExpanded={initiallyExpanded} /> : null}
+    {display.has_children && open ? <ComponentLayer components={raw.children} initiallyExpanded={initiallyExpanded} onComponentSelect={onComponentSelect} selectedComponentId={selectedComponentId} /> : null}
   </li>;
 }
 
-function ComponentLayer({ components, initiallyExpanded }) {
+export function ComponentLayer({ components, initiallyExpanded, onComponentSelect, selectedComponentId }) {
   const displayed = renderLayer(components);
   return <ul className="mt-1 space-y-1 border-l border-border pl-3">
-    {displayed.map((display, index) => <ComponentNode key={display.component_id} display={display} raw={components[index]} initiallyExpanded={initiallyExpanded} />)}
+    {displayed.map((display, index) => <ComponentNode key={display.component_id} display={display} raw={components[index]} initiallyExpanded={initiallyExpanded} onComponentSelect={onComponentSelect} selectedComponentId={selectedComponentId} />)}
   </ul>;
 }
 
-function PublishedFact({ fact, onSource, initiallyExpanded }) {
+export function PublishedFact({ fact, onSource, initiallyExpanded, aids = null, annotation = null, onComponentSelect = null, selectedComponentId = null }) {
   const [open, setOpen] = useState(!!initiallyExpanded);
   const headline = renderHeadline(fact);
   const firstSpanId = fact.components?.[0]?.source_span_id || null;
+  const headlineProps = onComponentSelect
+    ? { onClick: () => onComponentSelect(fact), role: 'button', tabIndex: 0, className: 'cursor-pointer text-sm text-ink' }
+    : { className: 'text-sm text-ink' };
   return <li className="rounded border border-border bg-white p-3" data-testid="published-fact">
+    {annotation}
     <div className="flex flex-wrap items-start justify-between gap-2">
       <div>
         {fact.section_reference ? <p className="text-[10px] font-bold uppercase tracking-wide text-inkLight">{displaySectionReference(fact.section_reference)}</p> : null}
-        <p className="text-sm text-ink" data-testid="fact-headline">{headline}</p>
+        <p {...headlineProps} data-testid="fact-headline">{headline}</p>
       </div>
       <div className="flex items-center gap-2">
         {onSource ? <button type="button" onClick={() => onSource(fact.source_closure_id, firstSpanId)} className="rounded border border-border px-2 py-0.5 text-[11px] font-semibold text-accent" data-testid="citation-button">Source</button> : null}
@@ -76,7 +82,8 @@ function PublishedFact({ fact, onSource, initiallyExpanded }) {
         </button>
       </div>
     </div>
-    {open ? <ComponentLayer components={fact.components} initiallyExpanded={initiallyExpanded} /> : null}
+    {aids}
+    {open ? <ComponentLayer components={fact.components} initiallyExpanded={initiallyExpanded} onComponentSelect={onComponentSelect} selectedComponentId={selectedComponentId} /> : null}
   </li>;
 }
 
