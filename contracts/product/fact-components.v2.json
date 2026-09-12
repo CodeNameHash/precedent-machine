@@ -1,0 +1,74 @@
+{
+  "schema_version": "FACT_COMPONENTS/V2",
+  "decided": "2026-09-12, Ben: rebuild the fact model as layered components",
+  "purpose": "A fact is a headline plus an ordered tree of verbatim components. The reader sees the headline first and descends by click. Each layer is comparable across deals at that layer.",
+  "fact": {
+    "fields": {
+      "fact_id": "stable identity, unchanged from PRODUCT_PROPOSAL identity rules",
+      "family_key": "legal schema family",
+      "subtype_key": "legal schema subtype (V2 names)",
+      "headline": "object: { label, distinguishing_component_ids }",
+      "components": "ordered array of component objects; the top layer of the tree",
+      "coverage_only": "boolean; true for families the reader does not see (boilerplate)"
+    },
+    "headline_rule": "label is a controlled term from the V2 schema for the subtype; distinguishing_component_ids point at the components whose text distinguishes this provision from its counterpart in another deal (threshold, carve-out, standard, trigger, party). The rendered headline is the label followed by the distinguishing components' verbatim text. Topic alone is not a headline."
+  },
+  "component": {
+    "fields": {
+      "component_id": "sha256 of fact_id, path and text",
+      "kind": "one of component_kinds",
+      "label": "controlled short label for the layer, e.g. 'resulting from', 'war', 'threshold'",
+      "text": "verbatim contiguous source text, no normalisation, no ellipsis",
+      "source_span_id": "closure component span containing the text",
+      "start_byte": "UTF-8 offset in canonical text, half-open",
+      "end_byte": "UTF-8 offset in canonical text, half-open",
+      "origin": "one of origins: where the words come from",
+      "origin_structure_node_id": "structure node the words belong to (for CHAPEAU, INTRO, DEFINITION origins)",
+      "gap_before": "boolean; true when words were skipped between the previous sibling's end and this text; rendered as [...]",
+      "value": "optional { canonical, unit } for THRESHOLD, PERIOD, PERCENTAGE, DATE, AMOUNT",
+      "members": "optional array of verbatim strings; only for LITANY",
+      "resolves_to": "optional { structure_node_id, fact_id|null, text } for CROSS_REFERENCE",
+      "children": "ordered array of components; the next layer down"
+    },
+    "component_kinds": [
+      "TERM", "ACTOR", "OBJECT", "OPERATION", "TRIGGER", "CONDITION", "EXCEPTION", "QUALIFIER",
+      "STANDARD", "EFFORTS_STANDARD", "MATERIALITY_QUALIFIER", "THRESHOLD", "PERIOD", "PERCENTAGE",
+      "DATE", "AMOUNT", "FORUM", "LIST", "LIST_ELEMENT", "LITANY", "CROSS_REFERENCE", "DEFINED_TERM"
+    ],
+    "origins": ["OWN", "CHAPEAU", "INTRO", "DEFINITION", "CROSS_REFERENCED"]
+  },
+  "rules": [
+    "R1 Every component text is a contiguous verbatim substring of its source span, checked by byte offsets; a component that fails is INVALID and the fact is held.",
+    "R2 Children are in source order. A LIST has one LIST_ELEMENT child per element that could vary between deals; nested lists nest ('including cyber-attacks' is a child of 'sabotage').",
+    "R3 A LITANY is one component; its synonyms are members, never separate components ('any event, change, circumstance, occurrence, effect or state of facts').",
+    "R4 Inherited words carry origin CHAPEAU, INTRO or DEFINITION and origin_structure_node_id. Rendering marks them; a fused statement is never shown as one sentence without [...] at each gap.",
+    "R5 No role or component is forced. A missing timing, qualification or forum is absent, not invented. The words 'none', 'not applicable' and section references never appear as component text.",
+    "R6 THRESHOLD, PERIOD, PERCENTAGE, DATE and AMOUNT components carry a canonical value parsed by code from the verbatim text, never by the model.",
+    "R7 A CROSS_REFERENCE component resolves to the referenced node and, when the referenced provision has a fact, to that fact. Bring-down tiers resolve each referenced representation to its heading words.",
+    "R8 Every covenant fact has an EFFORTS_STANDARD component (flat obligation recorded as the verb phrase, e.g. 'agrees to take') and a MATERIALITY_QUALIFIER component when present.",
+    "R9 A fact's components together cover the fact's operative words; words not covered by any component are reported as an uncovered gap for review.",
+    "R10 The V1 statement and roles are retained on the fact for comparison during Phase 5B and removed from the reader view."
+  ],
+  "rendering": {
+    "layer_0": "headline: label + distinguishing components' text",
+    "layer_n": "the components at that depth, each clickable when it has children, inherited words marked, [...] where gap_before is true",
+    "hover": "DEFINED_TERM and CROSS_REFERENCE show resolves_to.text"
+  },
+  "example_fact": {
+    "family_key": "MAE_DEFINITION",
+    "subtype_key": "EXCLUSION",
+    "headline": { "label": "MAE carve-out", "distinguishing_component_ids": ["c-war"] },
+    "components": [
+      { "component_id": "c-litany", "kind": "LITANY", "label": "affected matters", "text": "any event, change, circumstance, occurrence, effect or state of facts", "origin": "CHAPEAU", "members": ["event", "change", "circumstance", "occurrence", "effect", "state of facts"], "children": [] },
+      { "component_id": "c-resulting", "kind": "OPERATION", "label": "resulting from", "text": "to the extent resulting from", "origin": "CHAPEAU", "children": [] },
+      { "component_id": "c-war", "kind": "LIST", "label": "war, terrorism and sabotage", "text": "geopolitical conditions or changes that are the result of the outbreak, conduct or escalation of war (whether declared or undeclared) or acts of terrorism or sabotage (including cyber-attacks)", "origin": "OWN", "children": [
+        { "component_id": "c-war-1", "kind": "TERM", "label": "geopolitical conditions or changes", "text": "geopolitical conditions or changes that are the result of", "origin": "OWN", "children": [] },
+        { "component_id": "c-war-2", "kind": "LIST_ELEMENT", "label": "war", "text": "the outbreak, conduct or escalation of war (whether declared or undeclared)", "origin": "OWN", "children": [] },
+        { "component_id": "c-war-3", "kind": "LIST_ELEMENT", "label": "terrorism", "text": "acts of terrorism", "origin": "OWN", "children": [] },
+        { "component_id": "c-war-4", "kind": "LIST_ELEMENT", "label": "sabotage", "text": "sabotage", "origin": "OWN", "children": [
+          { "component_id": "c-war-4a", "kind": "LIST_ELEMENT", "label": "cyber-attacks", "text": "(including cyber-attacks)", "origin": "OWN", "children": [] }
+        ] }
+      ] }
+    ]
+  }
+}

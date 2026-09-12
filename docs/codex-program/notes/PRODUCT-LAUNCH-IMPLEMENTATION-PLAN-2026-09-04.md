@@ -1445,9 +1445,11 @@ What the rebuild changes, from Ben's 2026-09-12 review (see
 
 Sequence and proof:
 
-- [ ] 5B.1 Component contract. `contracts/product/fact-components.v2.json`
-      defines the tree shape, inheritance markers, headline rules by family
-      and the validation rules. Proof: `node --test tests/product-fact-components-contract.test.js`.
+- [x] 5B.1 Component contract. `contracts/product/fact-components.v2.json`
+      defines the tree shape, inheritance markers, headline rule and the
+      validation rules; `lib/product/fact-components.js` validates a fact
+      against it and renders layers. Proof passed 2026-09-12:
+      `node --test tests/product-fact-components-contract.test.js`.
 - [ ] 5B.2 Legal schema V2. `contracts/product/legal-schema.v2.json`: optional
       timing and qualification, forum role, covenant standard roles, renamed
       and added subtypes, per-family headline rules, litany and list
