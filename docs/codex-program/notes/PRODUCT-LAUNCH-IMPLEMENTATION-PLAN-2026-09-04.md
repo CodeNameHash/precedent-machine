@@ -1461,25 +1461,34 @@ Sequence and proof:
       `lib/product/agreement-draft.js`, `lib/product/phase-2-store.js`, one
       migration. Proof: recorded family fixtures replayed, all-family
       recorded fixture test, database check on the private preview branch.
-- [ ] 5B.4 Review page on layers. The focused page shows the headline, then
-      layers on click, with inherited words marked and "[...]" for skipped
-      words; accept, reject, comment and edit operate on the fact and its
-      components. Files: `components/product/FocusedReview.jsx`,
-      `lib/product/review-state.js`. Proof: display tests and one browser
-      check.
-- [ ] 5B.5 Published reader view on layers. Headline layer only, click to
-      descend, defined terms on hover. Files: `components/product/ReviewWorkspace.jsx`
-      accepted summary and `lib/product/review-state.js` summary compile.
-      Proof: display tests and one browser check.
+- [ ] 5B.5 Published reader view on layers, built first. Headline layer
+      only, click to descend, inherited words marked, defined terms and
+      cross-references on hover. New `components/product/PublishedSummary.jsx`
+      and `lib/product/published-layers.js` against a contract fixture, then
+      wired into the accepted summary in `ReviewWorkspace.jsx`. Proof: display
+      tests and one browser check.
+- [ ] 5B.4 Review page is the production page plus aids (Ben, 2026-09-12:
+      "the next review page I see to be the final production style page just
+      with additional things added to aid review"). The focused page renders
+      facts exactly as `PublishedSummary` does and adds, per fact, the
+      decision buttons, comment, revert, held content, the brief's "look for"
+      line and click-to-highlight of cited words in the provision text. No
+      second renderer. Depends on 5B.5. Files: `components/product/FocusedReview.jsx`,
+      `lib/product/review-state.js` for component-level edits. Proof: display
+      tests and one browser check.
 - [ ] 5B.6 Rerun NCS under V2 as a new generation. Compare against Ben's 38
       touched items and his samples. Ben reviews the same 13 provisions again
       on the layered page.
 - [ ] 5B.7 One untouched agreement under V2, then the Phase 5 exit.
 
 Parallel plan while Ben is away: 5B.1 and 5B.2 are lead work in this
-session. 5B.3 storage and validation, 5B.4 and 5B.5 can start as separate
-visible sessions once 5B.1 fixes the shape, each against fixtures built from
-the contract, with no overlapping files. Prompt V7 waits for 5B.2.
+session. 5B.3 storage and 5B.5 reader view run as separate visible sessions
+against fixtures built from the contract, with no overlapping files. 5B.4
+starts when 5B.5 lands, so the review page and the production page share one
+renderer. Prompt V7 waits for 5B.2. Worker sessions started 2026-09-12 20:30
+UTC: 5B.3 `session_01TcSpkRunUNCnKiVMntUZRC`, 5B.5 `session_01XN3SV7RNQ5auN72cmE4Fzx`;
+the first 5B.4 session was archived unstarted when Ben set the
+production-page rule.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
