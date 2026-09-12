@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { displayIdentityParties } from '../../lib/product/identity-display';
+import { activeSubmissionVersion } from '../../lib/product/legal-schema-selection';
 
 export { displayIdentityParties } from '../../lib/product/identity-display';
 
@@ -151,8 +152,7 @@ export default function ProductIntakePanel() {
       const response = await fetch('/api/product/intake', {
         method: 'POST', headers: csrfHeaders,
         body: JSON.stringify({
-          url: url.trim(), idempotencyKey: crypto.randomUUID(), schemaVersion: 'LEGAL_SCHEMA/V1',
-          promptBundleVersion: 'PRODUCT_ROUTING_CITATION_REPAIR/V6',
+          url: url.trim(), idempotencyKey: crypto.randomUUID(), ...activeSubmissionVersion(),
           explicitGeneration: 0, maxAttempts: 3,
         }),
       });

@@ -7,7 +7,7 @@ const { ProductPhase3Store } = require('../lib/product/phase-3-store');
 const {
   CODEX_MODEL_CONFIG, assertConfiguredRunModelConfig,
 } = require('../lib/product/product-model-config');
-const legalSchema = require('../contracts/product/legal-schema.v1.json');
+const { legalSchemaForVersion } = require('../lib/product/legal-schema-selection');
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const DISPOSABLE_BRANCH_REF = 'ecrtoofsyxozazkvsvcl';
@@ -73,7 +73,7 @@ async function run(options, output = process.stdout) {
     let previous = '';
     for (;;) {
       const analysis = await advanceAgreementDraftAnalysis({
-        runId: options.runId, store, legalSchema, model,
+        runId: options.runId, store, legalSchema: legalSchemaForVersion((await store.getRun(options.runId))?.schema_version), model,
         workerId: `product-phase5-local-${number}`, leaseSeconds: 900,
       });
       const progress = analysis.progress || {};

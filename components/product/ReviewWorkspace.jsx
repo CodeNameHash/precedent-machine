@@ -3,7 +3,15 @@ import { buildReviewView } from '../../lib/product/review-view';
 import { displayIdentityParties } from '../../lib/product/identity-display';
 import { displaySectionReference } from '../../lib/product/section-reference-display';
 import { displayReviewLabel } from '../../lib/product/review-labels';
-import legalSchema from '../../contracts/product/legal-schema.v1.json';
+import legalSchemaV1 from '../../contracts/product/legal-schema.v1.json';
+import legalSchemaV2 from '../../contracts/product/legal-schema.v2.json';
+
+// The workspace follows the run's own schema version; V1 runs stay on V1.
+let legalSchema = legalSchemaV1;
+function selectLegalSchema(version) {
+  legalSchema = version === 'LEGAL_SCHEMA/V2' ? legalSchemaV2 : legalSchemaV1;
+  return legalSchema;
+}
 import ProposalCard from './ProposalCard';
 import SourceContextPanel from './SourceContextPanel';
 import FocusedReview from './FocusedReview';
@@ -416,6 +424,7 @@ export default function ReviewWorkspace({ runId, focus = [], allSectionsHref = n
   }
   useEffect(() => { load().catch((failure) => setError(failure.message)); }, [runId]);
   const view = useMemo(() => workspace ? buildReviewView(workspace) : null, [workspace]);
+  if (workspace) selectLegalSchema(workspace.analysis?.legal_schema_version);
   async function command(value) {
     setBusy(true); setError('');
     const signature = JSON.stringify(value);

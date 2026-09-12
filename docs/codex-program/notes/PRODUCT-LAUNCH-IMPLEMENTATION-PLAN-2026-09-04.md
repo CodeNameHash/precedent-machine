@@ -1477,8 +1477,14 @@ Sequence and proof:
       in the same atomic section commit by an additive wrap of the commit
       RPC, validated before write, rebuilt as a tree on the Review read path,
       V1 runs untouched (`tests/product-fact-components-store.test.js`).
-      Remaining: apply the migration to the private preview database,
-      recorded-fixture replay under V7, and the database check.
+      Migration applied to the private preview database 2026-09-12
+      (tables present, commit RPC wrapped; V1 commits unaffected). Schema
+      selection added: every entry point (web run, hosted worker, local run,
+      review handler, workspace) follows the run's own recorded schema
+      version, and new submissions use V1 until
+      `NEXT_PUBLIC_PRODUCT_LEGAL_SCHEMA_VERSION=LEGAL_SCHEMA/V2` is set on the
+      private preview (`lib/product/legal-schema-selection.js`). Remaining:
+      recorded-fixture replay under V7 once a V2 run has saved calls.
 - [ ] 5B.5 Published reader view on layers, built first. Component merged
       2026-09-12 from the 5B.5 worker: `components/product/PublishedSummary.jsx`
       and `lib/product/published-layers.js` render headline first, click to
@@ -1496,7 +1502,13 @@ Sequence and proof:
       second renderer. Depends on 5B.5. Files: `components/product/FocusedReview.jsx`,
       `lib/product/review-state.js` for component-level edits. Proof: display
       tests and one browser check.
-- [ ] 5B.6 Rerun NCS under V2 as a new generation. Compare against Ben's 38
+- [ ] 5B.6 Rerun NCS under V2 as a new generation. Needs two things from
+      Ben's side: the hosted worker sandbox at `/vercel/sandbox/pm-product`
+      must be updated to the current product branch (its launcher runs the
+      checkout as is), and the preview environment must set
+      `NEXT_PUBLIC_PRODUCT_LEGAL_SCHEMA_VERSION=LEGAL_SCHEMA/V2` before the
+      NCS URL is resubmitted; the submission then creates a V2 generation
+      with prompt bundle `PRODUCT_LAYERED_COMPONENTS/V7`. Compare against Ben's 38
       touched items and his samples. Ben reviews the same 13 provisions again
       on the layered page. Comparison tooling merged 2026-09-12 from the 5B.6
       worker: `lib/product/review-comparison.js` and

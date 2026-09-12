@@ -1,7 +1,7 @@
 'use strict';
 
 const { createClient } = require('@supabase/supabase-js');
-const legalSchema = require('../contracts/product/legal-schema.v1.json');
+const { legalSchemaForVersion } = require('../lib/product/legal-schema-selection');
 const { advanceAgreementDraftAnalysis } = require('../lib/product/analysis-runner');
 const { createCodexCliProductModel } = require('../lib/product/codex-cli-model');
 const { ProductPhase3Store } = require('../lib/product/phase-3-store');
@@ -50,6 +50,7 @@ async function runHostedWorker(options, output = process.stdout, dependencies = 
   const advance = dependencies.advance || advanceAgreementDraftAnalysis;
   const store = makeStore();
   const run = await store.getRun(options.runId);
+  const legalSchema = legalSchemaForVersion(run?.schema_version);
   assertConfiguredRunModelConfig(run, CODEX_MODEL_CONFIG);
   await store.assertAccess({ runId: options.runId, actor: options.actor });
   if (run.stage === 'DOCUMENT_IDENTITY_REVIEW') throw new Error('PRODUCT_HOSTED_IDENTITY_REVIEW_REQUIRED');
