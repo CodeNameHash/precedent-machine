@@ -1472,15 +1472,21 @@ Sequence and proof:
       than dropping it. V1 runs are byte-for-byte unchanged. Proof passed:
       `tests/product-fact-components-extraction.test.js` plus the Phase 2,
       Phase 4, recovery, link-retention, collision and role-key suites
-      (58 tests). Storage half (tables, atomic write, read path) is with the
-      5B.3 worker session; recorded-fixture replay under V7 and the database
-      check follow when it lands.
-- [ ] 5B.5 Published reader view on layers, built first. Headline layer
-      only, click to descend, inherited words marked, defined terms and
-      cross-references on hover. New `components/product/PublishedSummary.jsx`
-      and `lib/product/published-layers.js` against a contract fixture, then
-      wired into the accepted summary in `ReviewWorkspace.jsx`. Proof: display
-      tests and one browser check.
+      (58 tests). Storage half merged 2026-09-12 from the 5B.3 worker:
+      `product_fact_components` and `product_fact_headlines` tables, written
+      in the same atomic section commit by an additive wrap of the commit
+      RPC, validated before write, rebuilt as a tree on the Review read path,
+      V1 runs untouched (`tests/product-fact-components-store.test.js`).
+      Remaining: apply the migration to the private preview database,
+      recorded-fixture replay under V7, and the database check.
+- [ ] 5B.5 Published reader view on layers, built first. Component merged
+      2026-09-12 from the 5B.5 worker: `components/product/PublishedSummary.jsx`
+      and `lib/product/published-layers.js` render headline first, click to
+      descend, inherited words marked, values beside thresholds, references
+      on hover, coverage-only facts hidden, against
+      `tests/fixtures/product/published-layers-fixture.v2.json`
+      (`tests/product-published-layers.test.js`). Remaining: wire into the
+      accepted summary in `ReviewWorkspace.jsx` and one browser check.
 - [ ] 5B.4 Review page is the production page plus aids (Ben, 2026-09-12:
       "the next review page I see to be the final production style page just
       with additional things added to aid review"). The focused page renders
@@ -1492,7 +1498,11 @@ Sequence and proof:
       tests and one browser check.
 - [ ] 5B.6 Rerun NCS under V2 as a new generation. Compare against Ben's 38
       touched items and his samples. Ben reviews the same 13 provisions again
-      on the layered page.
+      on the layered page. Comparison tooling merged 2026-09-12 from the 5B.6
+      worker: `lib/product/review-comparison.js` and
+      `scripts/product/compare-review-items.js` map V1 review items to V2
+      facts by node and byte overlap and write a Markdown report
+      (`tests/product-review-comparison.test.js`).
 - [ ] 5B.7 One untouched agreement under V2, then the Phase 5 exit.
 
 Parallel plan while Ben is away: 5B.1 and 5B.2 are lead work in this

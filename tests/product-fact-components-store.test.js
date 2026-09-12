@@ -222,7 +222,7 @@ test('a component tree with problems is rejected: not written, proposal marked I
   assert.equal(client.tables.product_fact_headlines.length, 0);
   const storedProposal = client.tables.product_proposals.find((row) => row.proposal_id === proposal.proposal_id);
   assert.equal(storedProposal.payload.validation_status, 'INVALID');
-  const issue = client.tables.product_issues.find((row) => row.payload.code === 'FACT_COMPONENTS_INVALID');
+  const issue = client.tables.product_issues.find((row) => row.payload.code === 'INVALID_FACT_COMPONENTS');
   assert.ok(issue, 'an issue records the rejected tree');
   assert.equal(issue.payload.proposal_id, proposal.proposal_id);
   const problems = JSON.parse(issue.payload.message);

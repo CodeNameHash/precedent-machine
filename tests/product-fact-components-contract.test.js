@@ -4,7 +4,18 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 const { contract, validateFactComponents, renderHeadline, renderLayer, uncoveredRanges } = require('../lib/product/fact-components');
 
-function example() { return JSON.parse(JSON.stringify(contract.example_fact)); }
+function example() {
+  const fact = JSON.parse(JSON.stringify(contract.example_fact));
+  let cursor = 0;
+  (function stamp(list) {
+    for (const component of list || []) {
+      component.start_byte = cursor; cursor += Buffer.byteLength(component.text, 'utf8'); component.end_byte = cursor;
+      component.source_span_id = 's';
+      stamp(component.children);
+    }
+  }(fact.components));
+  return fact;
+}
 
 test('the contract example satisfies its own rules', () => {
   const fact = example();
@@ -22,14 +33,16 @@ test('the contract example satisfies its own rules', () => {
 test('rules reject invented text, ellipses, loose list elements, forced values and unresolved references', () => {
   const fact = example();
   fact.components.forEach((component) => { if (component.origin === 'CHAPEAU') component.origin_structure_node_id = 'n31'; });
-  fact.components.push({ component_id: 'bad-1', kind: 'QUALIFIER', label: 'q', text: 'none', origin: 'OWN', children: [] });
-  fact.components.push({ component_id: 'bad-2', kind: 'TERM', label: 't', text: 'the parties ... agree', origin: 'OWN', children: [] });
-  fact.components.push({ component_id: 'bad-3', kind: 'LIST_ELEMENT', label: 'e', text: 'stray', origin: 'OWN', children: [] });
-  fact.components.push({ component_id: 'bad-4', kind: 'THRESHOLD', label: 'th', text: '$250,000', origin: 'OWN', children: [] });
-  fact.components.push({ component_id: 'bad-5', kind: 'CROSS_REFERENCE', label: 'x', text: 'Section 6.1', origin: 'OWN', children: [] });
-  fact.components.push({ component_id: 'bad-6', kind: 'TERM', label: 'i', text: 'inherited', origin: 'INTRO', children: [] });
+  const stamp = (component) => ({ start_byte: 0, end_byte: 1, source_span_id: 's', ...component });
+  fact.components.push(stamp({ component_id: 'bad-0', kind: 'TERM', label: '', text: 'unlabelled', origin: 'OWN', children: [] }));
+  fact.components.push(stamp({ component_id: 'bad-1', kind: 'QUALIFIER', label: 'q', text: 'none', origin: 'OWN', children: [] }));
+  fact.components.push(stamp({ component_id: 'bad-2', kind: 'TERM', label: 't', text: 'the parties ... agree', origin: 'OWN', children: [] }));
+  fact.components.push(stamp({ component_id: 'bad-3', kind: 'LIST_ELEMENT', label: 'e', text: 'stray', origin: 'OWN', children: [] }));
+  fact.components.push(stamp({ component_id: 'bad-4', kind: 'THRESHOLD', label: 'th', text: '$250,000', origin: 'OWN', children: [] }));
+  fact.components.push(stamp({ component_id: 'bad-5', kind: 'CROSS_REFERENCE', label: 'x', text: 'Section 6.1', origin: 'OWN', children: [] }));
+  fact.components.push(stamp({ component_id: 'bad-6', kind: 'TERM', label: 'i', text: 'inherited', origin: 'INTRO', children: [] }));
   const problems = validateFactComponents(fact);
-  for (const expected of ['invented text', 'ellipsis', 'LIST_ELEMENT outside a LIST', 'needs a canonical value', 'must resolve', 'needs origin_structure_node_id']) {
+  for (const expected of ['label missing', 'invented text', 'ellipsis', 'LIST_ELEMENT outside a LIST', 'needs a canonical value', 'must resolve', 'needs origin_structure_node_id']) {
     assert.ok(problems.some((problem) => problem.includes(expected)), expected);
   }
 });
