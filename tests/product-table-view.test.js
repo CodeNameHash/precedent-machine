@@ -133,7 +133,7 @@ test('a fact with an explicit conclusions.table_key and row_label lands exactly 
   // uncoveredBucket was not supplied by the conclusion, so it stays a dash
   // rather than falling back to component rendering.
   assert.equal(byColumn.uncoveredBucket.kind, 'dash');
-  assert.deepEqual(row.backing_facts, [{ fact_id: 'f-material-contracts-2', section_reference: '3.14(b)' }]);
+  assert.deepEqual(row.backing_facts, [{ fact_id: 'f-material-contracts-2', section_reference: '3.14(b)', structure_node_id: null }]);
 });
 
 test('a fact with conclusions but no table_key is placed by matching row_label against a fixed_row_label', () => {
@@ -216,4 +216,57 @@ test('a one-per-agreement table gathers every fact of the family into one row', 
   assert.equal(timing.kind, 'text');
   assert.equal(timing.label, 'on the third Business Day');
   assert.deepEqual(timing.fact_ids, ['p-closing']);
+});
+
+// Ben, 2026-09-13: two facts in one cell keep both readings; a representation
+// limb is a sub-item under its rep; the bring-down standard is derived from
+// the closing-conditions fact whose cross-reference names the rep.
+function repFact(id, label, detail, section, nodeId, materiality) {
+  return {
+    fact_id: id, proposal_id: id, family_key: 'REPRESENTATIONS', subtype_key: 'STATUS_REPRESENTATION', section_reference: section, structure_node_id: nodeId,
+    headline: { label: 'Status representation', distinguishing_component_ids: [`${id}-std`] },
+    components: [{ component_id: `${id}-std`, kind: 'MATERIALITY_QUALIFIER', label: 'materiality', text: 'Company Material Adverse Effect', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 10, gap_before: false, children: [] }],
+    conclusions: { table_key: 'representations-qualifiers-table', row_label: label, ...(detail ? { row_detail: detail } : {}), cells: [{ column_id: 'materiality', code: materiality, component_ids: [`${id}-std`] }] },
+  };
+}
+const bringDownFact = {
+  fact_id: 'bd-1', proposal_id: 'bd-1', family_key: 'CLOSING_CONDITIONS', subtype_key: 'BRINGDOWN', section_reference: '7.02(a)', structure_node_id: 'n-7-02',
+  headline: { label: 'Bring-down of representations', distinguishing_component_ids: ['bd-1-std'] },
+  components: [
+    { component_id: 'bd-1-std', kind: 'STANDARD', label: 'standard', text: 'true and correct in all material respects', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 10, gap_before: false, children: [] },
+    { component_id: 'bd-1-ref', kind: 'CROSS_REFERENCE', label: 'reps covered', text: 'Section 3.01', origin: 'OWN', source_span_id: 's', start_byte: 11, end_byte: 20, gap_before: true, children: [], resolves_to: { structure_node_id: 'n-3-01', text: 'Organization, Standing and Corporate Power' } },
+  ],
+  conclusions: { table_key: 'conditions-b-table', row_label: 'Accuracy of Representations', cells: [{ column_id: 'standard', code: 'TRUE_IN_ALL_MATERIAL_RESPECTS', component_ids: ['bd-1-std'] }] },
+};
+
+test('a representation limb is a sub-item under its rep, whose line gives the overview, and the bring-down is derived from the conditions', () => {
+  const facts = [
+    repFact('r-1', 'Organization; Qualification; Standing', null, '3.01', 'n-3-01', 'MAE_AGGREGATE'),
+    repFact('r-2', 'Organization; Qualification; Standing', 'Company Subsidiaries: organization and good standing', '3.01', 'n-3-01', 'MAE_AGGREGATE_PARTIAL'),
+    bringDownFact,
+  ];
+  const view = buildTableView({ facts, tableShapes, legalSchema });
+  const reps = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'representations-qualifiers-table');
+  assert.equal(reps.rows.length, 1);
+  const row = reps.rows[0];
+  assert.equal(row.subject, 'Organization; Qualification; Standing');
+  assert.equal(row.sub_rows.length, 1);
+  assert.equal(row.sub_rows[0].subject, 'Company Subsidiaries: organization and good standing');
+  const materiality = row.cells.find((cell) => cell.column_id === 'materiality');
+  assert.equal(materiality.values.length, 2, 'the overview keeps both readings');
+  const bringdown = row.cells.find((cell) => cell.column_id === 'bringdown');
+  assert.equal(bringdown.kind, 'pill');
+  assert.equal(bringdown.code, 'TRUE_IN_ALL_MATERIAL_RESPECTS');
+  assert.deepEqual(bringdown.fact_ids, ['bd-1']);
+  assert.ok(bringdown.component_ids.includes('bd-1-ref'));
+  const subBringdown = row.sub_rows[0].cells.find((cell) => cell.column_id === 'bringdown');
+  assert.equal(subBringdown.code, 'TRUE_IN_ALL_MATERIAL_RESPECTS');
+});
+
+test('a representation fact never fills the derived bring-down column itself', () => {
+  const fact = repFact('r-3', 'Taxes; Tax Returns', null, '3.15', 'n-3-15', 'MAE_AGGREGATE');
+  fact.conclusions.cells.push({ column_id: 'bringdown', code: 'TRUE_EXCEPT_NO_MAE', component_ids: ['r-3-std'] });
+  const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
+  const reps = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'representations-qualifiers-table');
+  assert.equal(reps.rows[0].cells.find((cell) => cell.column_id === 'bringdown').kind, 'dash');
 });

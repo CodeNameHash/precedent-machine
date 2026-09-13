@@ -307,59 +307,6 @@
           "guidance": "One row per limb of the per-share consideration: the cash limb, the stock limb, the CVR limb, each side of an election. A package fact that states several limbs in one sentence contributes to each limb it names."
         },
         {
-          "table_key": "consideration-exchange-mechanics",
-          "group_header": "EXCHANGE MECHANICS",
-          "term_column": {
-            "header": "Step",
-            "source": "subject",
-            "fill_from": [
-              "OBJECT",
-              "ACTOR",
-              "TERM"
-            ]
-          },
-          "columns": [
-            {
-              "column_id": "body",
-              "header": "Provision",
-              "render": "verbatim",
-              "fill_from": [
-                "OPERATION",
-                "OBJECT"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-13 #18 (Metsera, cash plus CVR): the consideration axis must describe any deal, not only an election deal. The operative words of the exchange step."
-            },
-            {
-              "column_id": "timing",
-              "header": "Timing",
-              "render": "verbatim",
-              "fill_from": [
-                "TRIGGER",
-                "PERIOD",
-                "DATE"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-13 #18 (Metsera, cash plus CVR): the consideration axis must describe any deal, not only an election deal. When the step happens (after the Effective Time, within five business days)."
-            },
-            {
-              "column_id": "who",
-              "header": "Who",
-              "render": "verbatim",
-              "fill_from": [
-                "ACTOR"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-13 #18 (Metsera, cash plus CVR): the consideration axis must describe any deal, not only an election deal. The party or agent that acts."
-            }
-          ],
-          "rows_are": "one per subject",
-          "subtype_keys": [
-            "EXCHANGE_MECHANICS"
-          ],
-          "guidance": "One row per exchange step: paying agent appointment, deposit of funds, letter of transmittal, surrender, lost certificates, unclaimed funds, payroll payment of award amounts."
-        },
-        {
           "table_key": "consideration-hero-election-mechanics",
           "group_header": "ELECTION MECHANICS",
           "term_column": null,
@@ -389,6 +336,9 @@
       "print_pages": [
         4,
         5
+      ],
+      "no_conclusions_subtype_keys": [
+        "EXCHANGE_MECHANICS"
       ]
     },
     {
@@ -545,7 +495,8 @@
               ]
             }
           ],
-          "rows_are": "one per subject"
+          "rows_are": "one per subject",
+          "guidance": "One row per award type and per class treated differently: an out-of-the-money option cancelled for no consideration is its own row, labelled to say so (for example \"Underwater Company Stock Option\"), never merged into the row for the in-the-money options; likewise vested and unvested awards when their treatment differs. A cell states only what its own fact says about its own row."
         }
       ],
       "print_pages": [
@@ -3239,7 +3190,13 @@
                 "STANDARD",
                 "MATERIALITY_QUALIFIER"
               ],
-              "vocabulary_ref": "BRING_DOWN_STANDARD"
+              "vocabulary_ref": "BRING_DOWN_STANDARD",
+              "derived": {
+                "from_family": "CLOSING_CONDITIONS",
+                "from_column": "standard",
+                "join": "cross_reference"
+              },
+              "guidance": "Derived by the page from the CLOSING_CONDITIONS bring-down facts whose cross-references name this representation. Never coded from the representation itself."
             },
             {
               "column_id": "materiality",
@@ -3324,7 +3281,32 @@
               "hover": "date"
             }
           ],
-          "rows_are": "one per subject"
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Organization; Qualification; Standing",
+            "Capitalization; Subsidiaries",
+            "Authority; Enforceability",
+            "No Conflict; Required Filings and Consents",
+            "SEC Documents; Financial Statements",
+            "Absence of Certain Changes or Events",
+            "Litigation; Legal Proceedings",
+            "Employee Benefit Plans; ERISA",
+            "Compliance with Laws; Permits; Licenses",
+            "Takeover Statutes; Anti-Takeover",
+            "Environmental Matters",
+            "Taxes; Tax Returns",
+            "Labor Matters; Relations",
+            "Intellectual Property",
+            "Insurance",
+            "Real Property; Personal Property; Title",
+            "Top Customers and Suppliers",
+            "Brokers; Finders",
+            "Information Supplied / Proxy Statement",
+            "Opinion of Financial Advisor"
+          ],
+          "fixed_row_labels_source": "TopBuild print pp.17-19, Representations & Warranties rows (legacy vocabulary)",
+          "open_rows": true,
+          "guidance": "row_label is the representation as the precedent names it (one of fixed_row_labels); add a new row label only for a representation none of them covers (for example a regulatory or FDA representation). Each limb of a representation is a sub-item: set row_detail to the limb's own subject (for example \"Company Subsidiaries: organization and good standing\") so the page shows it under its representation, whose line gives the overview. The bringdown column is never filled from a representation: it comes from the closing conditions."
         }
       ],
       "print_pages": [
@@ -3363,7 +3345,13 @@
                 "STANDARD",
                 "MATERIALITY_QUALIFIER"
               ],
-              "vocabulary_ref": "BRING_DOWN_STANDARD"
+              "vocabulary_ref": "BRING_DOWN_STANDARD",
+              "derived": {
+                "from_family": "CLOSING_CONDITIONS",
+                "from_column": "standard",
+                "join": "cross_reference"
+              },
+              "guidance": "Derived by the page from the CLOSING_CONDITIONS bring-down facts whose cross-references name this representation. Never coded from the representation itself."
             },
             {
               "column_id": "materiality",
@@ -3448,7 +3436,32 @@
               "hover": "date"
             }
           ],
-          "rows_are": "one per subject"
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Organization; Qualification; Standing",
+            "Capitalization; Subsidiaries",
+            "Authority; Enforceability",
+            "No Conflict; Required Filings and Consents",
+            "SEC Documents; Financial Statements",
+            "Absence of Certain Changes or Events",
+            "Litigation; Legal Proceedings",
+            "Employee Benefit Plans; ERISA",
+            "Compliance with Laws; Permits; Licenses",
+            "Takeover Statutes; Anti-Takeover",
+            "Environmental Matters",
+            "Taxes; Tax Returns",
+            "Labor Matters; Relations",
+            "Intellectual Property",
+            "Insurance",
+            "Real Property; Personal Property; Title",
+            "Top Customers and Suppliers",
+            "Brokers; Finders",
+            "Information Supplied / Proxy Statement",
+            "Opinion of Financial Advisor"
+          ],
+          "fixed_row_labels_source": "TopBuild print pp.17-19, Representations & Warranties rows (legacy vocabulary)",
+          "open_rows": true,
+          "guidance": "row_label is the representation as the precedent names it (one of fixed_row_labels); add a new row label only for a representation none of them covers (for example a regulatory or FDA representation). Each limb of a representation is a sub-item: set row_detail to the limb's own subject (for example \"Company Subsidiaries: organization and good standing\") so the page shows it under its representation, whose line gives the overview. The bringdown column is never filled from a representation: it comes from the closing conditions."
         }
       ],
       "print_pages": [

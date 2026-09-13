@@ -193,3 +193,25 @@ test('the attribute grid shows step-2 lines only for a double merger', () => {
   assert.match(doubleHtml, /data-column-id="mergerFormStep2"/);
   assert.match(doubleHtml, /\(Step 1\)/);
 });
+
+test('sub-rows render indented under their row and a two-reading cell shows both pills', () => {
+  const view = {
+    sections: [{ section_key: 's', title: 'Reps', tables: [{
+      table_key: 't', group_header: null, layout: 'rows', term_column: { header: 'Term' },
+      columns: [{ column_id: 'materiality', header: 'Materiality' }],
+      rows: [{
+        subject: 'Organization', backing_facts: [{ fact_id: 'r-1', section_reference: '3.01' }],
+        cells: [{ column_id: 'materiality', kind: 'pill', label: 'MAE (aggregate)', tone: 'standard', component_ids: ['c1'], fact_ids: ['r-1'], values: [
+          { label: 'MAE (aggregate)', kind: 'pill', tone: 'standard', component_ids: ['c1'], fact_ids: ['r-1'] },
+          { label: 'MAE (aggregate) (partial)', kind: 'pill', tone: 'standard', component_ids: ['c2'], fact_ids: ['r-2'] },
+        ] }],
+        sub_rows: [{ subject: 'Company Subsidiaries', backing_facts: [{ fact_id: 'r-2', section_reference: '3.01' }], cells: [{ column_id: 'materiality', kind: 'pill', label: 'MAE (aggregate) (partial)', tone: 'standard', component_ids: ['c2'], fact_ids: ['r-2'] }] }],
+      }],
+    }] }],
+    defined_terms: [],
+  };
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [] }));
+  assert.equal((html.match(/data-testid="table-sub-row"/g) || []).length, 1);
+  assert.match(html, /data-testid="table-multi"/);
+  assert.equal((html.match(/MAE \(aggregate\) \(partial\)/g) || []).length, 2);
+});

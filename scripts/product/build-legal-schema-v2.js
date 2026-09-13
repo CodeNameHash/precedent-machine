@@ -55,6 +55,9 @@ const OVERLAY = {
     ],
     labels: { PROHIBITED_ACTION: 'No-shop prohibition', EXCEPTION_PREREQUISITE: 'Fiduciary exception', NOTICE_PERIOD: 'Notice of proposals', NOTICE_UPDATE_OBLIGATION: 'Keep informed', INITIAL_MATCH_PERIOD: 'Match right', SUBSEQUENT_MATCH_PERIOD: 'Subsequent match right', RECOMMENDATION_CHANGE: 'Change of recommendation' },
   },
+  INTERIM_OPERATING: {
+    layers: 'One fact per independently operative unit. Components follow the sentence: actor, operation, object, then each condition, exception, threshold, period and qualifier as its own component; lists that vary between deals as LIST with LIST_ELEMENTs; synonym litanies as one LITANY. Nothing is invented for an absent timing, qualification or forum. Interim operating covenants come only from the conduct-of-business covenant between signing and closing (the interim operations section and its exceptions). Pre-closing actions required by the equity award treatment section (ESPP suspension or termination, board resolutions, payroll payment of award amounts) are CONSIDERATION / EQUITY_AWARD facts, never interim operating covenants (Ben, 2026-09-13, Metsera 2.03: "you are seeing IOCs from Section 2.03 that is the employee comp section, not the IOC section").',
+  },
   KEY_DEFINED_TERMS: {
     layers: 'Each definition is one fact. Layer 1: the defined term, the operation ("means"), the object, thresholds and deeming rules. Lists inside a definition are LISTs with LIST_ELEMENTs.',
     headline: { distinguishing: ['DEFINED_TERM', 'THRESHOLD', 'PERCENTAGE'], note: 'the term and its threshold' },

@@ -29,6 +29,15 @@ function Cell({ cell, tableKey, rowIndex, selected, onSelect }) {
   if (cell.kind === 'dash') {
     return <span className="text-inkFaint" data-testid="table-dash" aria-hidden="true">—</span>;
   }
+  if (Array.isArray(cell.values) && cell.values.length > 1) {
+    return (
+      <span className="inline-flex flex-wrap gap-1" data-testid="table-multi">
+        {cell.values.map((value, index) => (
+          <Cell key={`${value.label}-${index}`} cell={{ ...value, column_id: cell.column_id }} tableKey={tableKey} rowIndex={rowIndex} selected={selected} onSelect={onSelect} />
+        ))}
+      </span>
+    );
+  }
   const isPill = cell.kind === 'pill';
   const testId = isPill ? 'table-pill' : (cell.kind === 'value' ? 'table-value' : 'table-text');
   const canSelect = (cell.component_ids || []).length > 0 || (cell.fact_ids || []).length > 0;
@@ -200,21 +209,21 @@ function Table({ table, selection, onSelect }) {
         </tr>
       </thead>
       <tbody>
-        {table.rows.map((row, rowIndex) => {
+        {table.rows.flatMap((row, rowIndex) => {
           const rowSelected = selection?.tableKey === table.table_key && selection?.rowIndex === rowIndex;
-          return (
+          const line = (entry, key, sub) => (
             <tr
-              key={`${row.subject}-${rowIndex}`}
-              data-testid="table-row"
+              key={key}
+              data-testid={sub ? 'table-sub-row' : 'table-row'}
               data-selected={rowSelected || undefined}
               className={rowSelected ? 'bg-accentDim' : undefined}
             >
               {table.term_column ? (
-                <td className="border-b border-lineSoft px-3 py-2 align-top">
-                  <TermCell row={row} tableKey={table.table_key} rowIndex={rowIndex} onSelect={onSelect} />
+                <td className={`border-b border-lineSoft px-3 py-2 align-top ${sub ? 'pl-8 text-inkMid' : ''}`}>
+                  <TermCell row={entry} tableKey={table.table_key} rowIndex={rowIndex} onSelect={onSelect} />
                 </td>
               ) : null}
-              {row.cells.map((cell) => (
+              {entry.cells.map((cell) => (
                 <td key={cell.column_id} className="border-b border-lineSoft px-3 py-2 align-top">
                   <Cell
                     cell={cell}
@@ -227,6 +236,10 @@ function Table({ table, selection, onSelect }) {
               ))}
             </tr>
           );
+          return [
+            line(row, `${row.subject}-${rowIndex}`, false),
+            ...(row.sub_rows || []).map((subRow, subIndex) => line(subRow, `${row.subject}-${rowIndex}-${subIndex}`, true)),
+          ];
         })}
       </tbody>
     </table>

@@ -6,7 +6,8 @@
     "fields": {
       "table_key": "the contracts/product/table-shapes.v3.json table this readout targets; must belong to a section whose v2_family_keys includes the fact's family_key",
       "row_label": "the subject as that table names it, e.g. 'RSUs' or 'Base salary': one of the table's fixed_row_labels (or additional_fixed_row_labels) for a fixed-list table, or the fact's own subject term for a one-per-subject table",
-      "cells": "array of cell objects, at most one per column_id; a column the fact says nothing about simply has no cell -- the page shows a dash for it, nothing is invented to fill it"
+      "cells": "array of cell objects, at most one per column_id; a column the fact says nothing about simply has no cell -- the page shows a dash for it, nothing is invented to fill it",
+      "row_detail": "optional: the sub-item this fact is within its row (a limb of a representation, for example 'Company Subsidiaries: organization and good standing'); the page shows it indented under the row, whose own line gives the overview"
     }
   },
   "cell": {
@@ -28,7 +29,7 @@
     "C5 A 'boolean' cell's present is a plain boolean; still cites the component(s) that show presence or its stated absence.",
     "C6 Every cell cites at least one component_id from the same fact's own components tree. A component_id absent from the fact's tree is a problem. fill_from is advisory: it says which kinds usually carry the answer and drives the no-conclusions fallback rendering, and a cited component of another kind is not a problem (Metsera V9, 2026-09-13: the single-kind lists held every closing-mechanics fact).",
     "C7 A cell may be absent for any column; the page renders a dash. Nothing is invented to populate every column.",
-    "C8 row_label must be legal for the resolved table: one of fixed_row_labels/additional_fixed_row_labels for a fixed-list table; the fact's own subject term for a one-per-subject table.",
+    "C8 row_label must be legal for the resolved table: one of fixed_row_labels/additional_fixed_row_labels for a fixed-list table (a table marked open_rows also accepts a new label for a subject none of its rows covers); the fact's own subject term for a one-per-subject table; any label for a one-per-agreement table. row_detail, when present, is a non-empty string naming the sub-item.",
     "C9 conclusions is optional on every fact; a fact with valid components and no table shape for its family carries no conclusions and no problem. A fact whose family does have a table shape but whose conclusions are missing is not held -- it is a coverage note, not a validation failure (CONCLUSIONS_MISSING)."
   ],
   "example_fact_conclusions": {

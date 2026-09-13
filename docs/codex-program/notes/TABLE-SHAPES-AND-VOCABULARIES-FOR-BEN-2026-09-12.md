@@ -106,7 +106,9 @@ v3 as regenerated 2026-09-13 (generator decision 18, Ben on Metsera: "cash elect
   - "Entitled if a milestone brings the award into the money (spread over exercise price on cash plus CVR)" — *a milestone-linked entitlement; the extractor looks for the earn-in language that puts the award in the money, valued as the spread over the exercise price on cash plus CVR.*
 
 
-## Representations & Warranties — Company
+## Representations & Warranties
+
+v3 as regenerated 2026-09-13 (generator decision 20, Ben on Metsera): rows are the precedent's twenty representation names (TopBuild print pp.17-19) as a fixed list open to a new name when none fits; a limb of a representation is a sub-item (`row_detail`) shown under its rep, whose own line gives the overview; the bring-down column is derived from the CLOSING_CONDITIONS bring-down facts by cross-reference and is never coded from a representation. — Company
 
 - Section key: `representations-qualifiers`
 - Legacy config: `components/review/table-configs/representations-qualifiers.config.js`

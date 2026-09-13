@@ -380,23 +380,55 @@ function applyDecision18ConsiderationDealAgnostic(doc) {
     subtype_keys: ['CASH_COMPONENT', 'STOCK_COMPONENT', 'CVR_COMPONENT', 'CONSIDERATION_PACKAGE'],
     guidance: 'One row per limb of the per-share consideration: the cash limb, the stock limb, the CVR limb, each side of an election. A package fact that states several limbs in one sentence contributes to each limb it names.',
   };
-  const exchange = {
-    table_key: 'consideration-exchange-mechanics',
-    group_header: 'EXCHANGE MECHANICS',
-    term_column: { header: 'Step', source: 'subject', fill_from: ['OBJECT', 'ACTOR', 'TERM'] },
-    columns: [
-      { column_id: 'body', header: 'Provision', render: 'verbatim', fill_from: ['OPERATION', 'OBJECT'], addition: true, reason: `${why} The operative words of the exchange step.` },
-      { column_id: 'timing', header: 'Timing', render: 'verbatim', fill_from: ['TRIGGER', 'PERIOD', 'DATE'], addition: true, reason: `${why} When the step happens (after the Effective Time, within five business days).` },
-      { column_id: 'who', header: 'Who', render: 'verbatim', fill_from: ['ACTOR'], addition: true, reason: `${why} The party or agent that acts.` },
-    ],
-    rows_are: 'one per subject',
-    subtype_keys: ['EXCHANGE_MECHANICS'],
-    guidance: 'One row per exchange step: paying agent appointment, deposit of funds, letter of transmittal, surrender, lost certificates, unclaimed funds, payroll payment of award amounts.',
-  };
   const election = findTable(section, 'consideration-hero-election-mechanics');
   election.subtype_keys = ['ELECTION'];
   election.guidance = 'Only for a deal whose holders elect between forms of consideration. Never place a fact here when the agreement has no election.';
-  section.tables = [structure, components, exchange, election];
+  // Ben, 2026-09-13 18:05 UTC: "there are no such mechanics, these are
+  // payment mechanics that do not need to be summarized". Exchange and
+  // payment mechanics stay as facts (evidence) with no table and no readout.
+  section.no_conclusions_subtype_keys = ['EXCHANGE_MECHANICS'];
+  section.tables = [structure, components, election];
+}
+
+// Ben, 2026-09-13 18:05 UTC, Metsera equity awards: "you say no CVR
+// entitlement but your basis for that is out of the money options ... but
+// you apply it to all options. The other options get a cvr". A class of
+// award treated differently is its own row.
+function applyDecision19EquityAwardClasses(doc) {
+  const table = findTable(findSection(doc, 'equity-awards'), 'equity-awards-table');
+  table.guidance = 'One row per award type and per class treated differently: an out-of-the-money option cancelled for no consideration is its own row, labelled to say so (for example "Underwater Company Stock Option"), never merged into the row for the in-the-money options; likewise vested and unvested awards when their treatment differs. A cell states only what its own fact says about its own row.';
+}
+
+// Ben, 2026-09-13 18:05 UTC, Metsera representations: "(i) a bringdown
+// standard is what is said in the conditions, not the rep, so these should
+// be empty now and (ii) the summaries on the left are (x) not the right
+// vocabulary - see the precedent and (y) if we want to track more detail
+// ... it should be a sub item underneath a more general organization rep
+// that has sub items (which use the same columns) and then the general
+// organization rep gives an overview". Rows are the legacy rep names
+// (TopBuild print pp.17-19), open to a new name when no row fits; a limb
+// is a sub-item (row_detail) under its rep; the bring-down column is
+// derived from the CLOSING_CONDITIONS bring-down facts, never from a rep.
+const REP_ROWS = [
+  'Organization; Qualification; Standing', 'Capitalization; Subsidiaries', 'Authority; Enforceability',
+  'No Conflict; Required Filings and Consents', 'SEC Documents; Financial Statements', 'Absence of Certain Changes or Events',
+  'Litigation; Legal Proceedings', 'Employee Benefit Plans; ERISA', 'Compliance with Laws; Permits; Licenses',
+  'Takeover Statutes; Anti-Takeover', 'Environmental Matters', 'Taxes; Tax Returns', 'Labor Matters; Relations',
+  'Intellectual Property', 'Insurance', 'Real Property; Personal Property; Title', 'Top Customers and Suppliers',
+  'Brokers; Finders', 'Information Supplied / Proxy Statement', 'Opinion of Financial Advisor',
+];
+function applyDecision20RepresentationRows(doc) {
+  for (const [sectionKey, tableKey] of [['representations-qualifiers', 'representations-qualifiers-table'], ['parent-representations-qualifiers', 'parent-representations-qualifiers-table']]) {
+    const table = findTable(findSection(doc, sectionKey), tableKey);
+    table.rows_are = 'fixed list';
+    table.fixed_row_labels = [...REP_ROWS];
+    table.fixed_row_labels_source = 'TopBuild print pp.17-19, Representations & Warranties rows (legacy vocabulary)';
+    table.open_rows = true;
+    table.guidance = 'row_label is the representation as the precedent names it (one of fixed_row_labels); add a new row label only for a representation none of them covers (for example a regulatory or FDA representation). Each limb of a representation is a sub-item: set row_detail to the limb\'s own subject (for example "Company Subsidiaries: organization and good standing") so the page shows it under its representation, whose line gives the overview. The bringdown column is never filled from a representation: it comes from the closing conditions.';
+    const bringdown = findColumn(table, 'bringdown');
+    bringdown.derived = { from_family: 'CLOSING_CONDITIONS', from_column: 'standard', join: 'cross_reference' };
+    bringdown.guidance = 'Derived by the page from the CLOSING_CONDITIONS bring-down facts whose cross-references name this representation. Never coded from the representation itself.';
+  }
 }
 
 function applyDecision5MaeCarveouts(doc) {
@@ -611,6 +643,8 @@ function build() {
   applyDecision5MaeCarveouts(doc);
   applyDecision17StructureGrid(doc);
   applyDecision18ConsiderationDealAgnostic(doc);
+  applyDecision19EquityAwardClasses(doc);
+  applyDecision20RepresentationRows(doc);
   applyDecision7InterimCovenants(doc);
   applyDecision8NoShop(doc);
   applyDecision9VotesTrigger(doc);

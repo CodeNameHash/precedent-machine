@@ -1848,6 +1848,36 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       generation 2 as it fills in; the extractor-side fixes (consideration
       tables, guidance, the conditions rule, the count parser) need a
       generation 3 once Ben's feedback on generation 2 is in.
+      18:05 UTC, second batch, each a rule that applies to every agreement
+      (Ben: "remember we want everything to be driven by coding and not
+      just a layer on top so all edits need to be repeatable across
+      corpus"): (d) "you imagine election mechanics - there are no such
+      mechanics, these are payment mechanics that do not need to be
+      summarized": exchange and payment mechanics keep no table and no
+      readout (section `no_conclusions_subtype_keys`, sent to the
+      extractor); the election table is for election deals only. (e)
+      "you say no CVR entitlement but your basis for that is out of the
+      money options ... but you apply it to all options": the equity
+      table's guidance makes a differently treated class its own row, and
+      the table view keeps both readings when two facts disagree in one
+      cell instead of the first winning (generator decision 19). (f) "you
+      are seeing IOCs from Section 2.03 that is the employee comp section,
+      not the IOC section": INTERIM_OPERATING layer rule confines interim
+      covenants to the conduct-of-business covenant; equity award actions
+      are CONSIDERATION / EQUITY_AWARD facts (schema regenerated). (g)
+      Representations: "(i) a bringdown standard is what is said in the
+      conditions, not the rep ... (ii) the summaries on the left are (x)
+      not the right vocabulary - see the precedent and (y) ... a sub item
+      underneath a more general organization rep that has sub items
+      (which use the same columns) and then the general organization rep
+      gives an overview": generator decision 20 makes both rep tables
+      fixed lists of the precedent's twenty rep names (open to a new name
+      when none fits), adds `row_detail` to the conclusions contract for a
+      limb as a sub-item rendered under its rep with the rep's line as the
+      overview, and marks the bring-down column `derived`: the page fills
+      it from the CLOSING_CONDITIONS bring-down fact whose CROSS_REFERENCE
+      resolves to the rep's section, never from the rep (the extractor no
+      longer sees that column).
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.
