@@ -2042,6 +2042,16 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       of its cited words (component rule R6 applied to the readout); a
       date on the lookback column is shown as the date. Applies from the
       next generation; the ten facts are valid without a readout in 3.
+      21:30 UTC, Ben on Material Contracts: "why are there two contract
+      type columns and what is not covered doing? also are there
+      materiality qualifiers for any of these rather than just $
+      thresholds?" The harvest kept the clause's words as the row beside
+      a coded type, and the print's not-covered checklist had become a
+      per-row vocabulary; qualifiers were not captured. Generator
+      decision 32: rows are the canonical categories, Not covered for a
+      category with no fact, As drafted, Threshold and a new Qualifier
+      column. Extractor-side for the qualifier and the canonical rows;
+      the next generation after 3.
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q5 Canonical limb names for the other eighteen representations
       (Ben, 2026-09-13 21:25 UTC). After a few agreements have run (Metsera,

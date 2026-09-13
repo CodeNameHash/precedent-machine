@@ -36,7 +36,7 @@ const conclusionFactA = {
     table_key: 'material-contracts-table',
     row_label: 'Real estate leases',
     cells: {
-      contractType: { kind: 'pill', label: 'Real property lease', tone: 'buyer', component_ids: ['c-mc2-category'] },
+      qualifier: { kind: 'pill', label: 'Material', tone: 'buyer', component_ids: ['c-mc2-category'] },
       threshold: { kind: 'value', label: '$1,000,000', tone: 'neutral', component_ids: ['c-mc2-threshold'] },
     },
   },
@@ -119,14 +119,14 @@ test('a fact with an explicit conclusions.table_key and row_label lands exactly 
   const row = materialContracts.rows.find((candidate) => candidate.subject === 'Real estate leases');
   assert.ok(row, 'conclusion A should create its own row, keyed by row_label');
   const byColumn = Object.fromEntries(row.cells.map((cell) => [cell.column_id, cell]));
-  assert.equal(byColumn.contractType.kind, 'pill');
-  assert.equal(byColumn.contractType.label, 'Real property lease');
-  assert.equal(byColumn.contractType.tone, 'buyer');
+  assert.equal(byColumn.qualifier.kind, 'pill');
+  assert.equal(byColumn.qualifier.label, 'Material');
+  assert.equal(byColumn.qualifier.tone, 'buyer');
   assert.equal(byColumn.threshold.kind, 'value');
   assert.equal(byColumn.threshold.label, '$1,000,000');
-  // uncoveredBucket was not supplied by the conclusion, so it stays a dash
+  // provision was not supplied by the conclusion, so it stays a dash
   // rather than falling back to component rendering.
-  assert.equal(byColumn.uncoveredBucket.kind, 'dash');
+  assert.equal(byColumn.provision.kind, 'dash');
   assert.deepEqual(row.backing_facts, [{ fact_id: 'f-material-contracts-2', section_reference: '3.14(b)', structure_node_id: null }]);
 });
 

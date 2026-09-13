@@ -832,6 +832,65 @@ function applyDecision27SectionOrder(doc) {
   doc.sections = ordered;
 }
 
+// ==========================================================================
+// Decision 32 (Material Contracts). Ben, 2026-09-13 21:30 UTC: "why are
+// there two contract type columns and what is not covered doing? also are
+// there materiality qualifiers for any of these rather than just $
+// thresholds?" The harvest had the agreement's own words as the row and
+// a coded Contract Type beside it, and "Not covered" (the print's checklist
+// of usual categories the definition does not reach) had become a
+// vocabulary the model filled per row. Now: rows are the canonical
+// categories (both harvested lists, open to a new one); a category with no
+// fact reads "Not covered"; the agreement's words sit in As drafted; a
+// Qualifier column codes the materiality standard beside the $ threshold.
+// ==========================================================================
+
+function applyDecision32MaterialContracts(doc) {
+  const table = findTable(findSection(doc, 'material-contracts'), 'material-contracts-table');
+  const contractType = findColumn(table, 'contractType');
+  const uncovered = findColumn(table, 'uncoveredBucket');
+  const labels = [];
+  for (const entry of [...contractType.vocabulary, ...uncovered.vocabulary]) {
+    if (!labels.includes(entry.label)) labels.push(entry.label);
+  }
+  table.rows_are = 'fixed list';
+  table.fixed_row_labels = labels;
+  table.fixed_row_labels_source = 'TopBuild print Material Contracts buckets (covered and not-covered checklists), decision 32';
+  table.open_rows = true;
+  table.absent_row_label = 'Not covered';
+  table.term_column = { header: 'Contract category', source: 'subject', fill_from: ['TERM'] };
+  const threshold = findColumn(table, 'threshold');
+  threshold.guidance = 'The dollar floor the category carries, parsed from the cited words; blank when the category has none.';
+  table.columns = [
+    {
+      column_id: 'provision',
+      header: 'As drafted',
+      render: 'verbatim',
+      display: 'fact_text',
+      fill_from: ['TERM', 'LIST_ELEMENT', 'OPERATION'],
+      addition: true,
+      reason: `${BEN} #32: the agreement's own description of the category, beside the canonical row name.`,
+    },
+    threshold,
+    {
+      column_id: 'qualifier',
+      header: 'Qualifier',
+      render: 'vocabulary',
+      vocabulary: [
+        { code: 'MATERIAL_TO_COMPANY_TAKEN_AS_A_WHOLE', label: 'Material to the Company and its Subsidiaries, taken as a whole', tone: 'neutral', addition: true, reason: `${BEN} #32: "are there materiality qualifiers for any of these rather than just $ thresholds?"` },
+        { code: 'MATERIAL', label: 'Material', tone: 'neutral', addition: true, reason: `${BEN} #32: a bare materiality word on the category.` },
+        { code: 'MAE_STANDARD', label: 'Would reasonably be expected to have a Material Adverse Effect', tone: 'neutral', addition: true, reason: `${BEN} #32: an MAE-standard qualifier on the category.` },
+        { code: 'OUTSIDE_ORDINARY_COURSE', label: 'Not entered into in the ordinary course of business', tone: 'neutral', addition: true, reason: `${BEN} #32: an ordinary-course qualifier on the category.` },
+      ],
+      fill_from: ['MATERIALITY_QUALIFIER', 'STANDARD', 'QUALIFIER'],
+      addition: true,
+      reason: `${BEN} #32: the materiality standard beside the dollar threshold.`,
+      guidance: 'The materiality standard the category carries, coded from its qualifying words; omitted when the category has only a dollar threshold or no qualifier at all.',
+    },
+  ];
+  table.guidance = 'One row per contract category the Material Contract definition names: row_label is the canonical category from fixed_row_labels that the clause describes (a new category name only when none fits, never the clause\'s own words); the clause\'s words go in the provision column; threshold is the dollar floor from the cited words and qualifier the materiality standard, each omitted when the clause states none. A category the definition does not name has no fact; the page shows it as Not covered. Two clauses that fit one category (an annual and an aggregate payments threshold) are two facts on the same row.';
+}
+
 function applyDecision5MaeCarveouts(doc) {
   const section = findSection(doc, 'mae-definitions');
   for (const tableKey of ['mae-carveouts-parent', 'mae-carveouts-company']) {
@@ -1052,6 +1111,7 @@ function build() {
   applyDecision24ConditionTiers(doc);
   applyDecision25MaeSection(doc);
   applyDecision26DetailColumns(doc);
+  applyDecision32MaterialContracts(doc);
   applyDecision7InterimCovenants(doc);
   applyDecision8NoShop(doc);
   applyDecision9VotesTrigger(doc);
@@ -1060,6 +1120,8 @@ function build() {
   applyDecision13EmployeeBenefits(doc);
   applyDecision15DefinedTerms(doc);
   applyDecision27SectionOrder(doc);
+  // Any MAE-coded entry added by a later decision links to the definition too.
+  linkMaeCodesToDefinition(doc);
 
   return doc;
 }

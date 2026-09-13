@@ -1119,7 +1119,7 @@
           "table_key": "material-contracts-table",
           "group_header": null,
           "term_column": {
-            "header": "Contract Type",
+            "header": "Contract category",
             "source": "subject",
             "fill_from": [
               "TERM"
@@ -1127,194 +1127,17 @@
           },
           "columns": [
             {
-              "column_id": "contractType",
-              "header": "Contract Type",
-              "render": "vocabulary",
-              "vocabulary": [
-                {
-                  "code": "M_A_ACQUISITION_AGREEMENTS",
-                  "label": "M&A / acquisition agreements",
-                  "tone": "neutral",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 65,
-                    "row_label": "M&A / acquisition agreements"
-                  }
-                },
-                {
-                  "code": "HEDGING_AND_DERIVATIVE_CONTRACTS",
-                  "label": "Hedging and derivative contracts",
-                  "tone": "neutral",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 65,
-                    "row_label": "Hedging and derivative contracts"
-                  }
-                },
-                {
-                  "code": "CAPITAL_EXPENDITURE_COMMITMENTS",
-                  "label": "Capital expenditure commitments",
-                  "tone": "neutral",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 65,
-                    "row_label": "Capital expenditure commitments"
-                  }
-                },
-                {
-                  "code": "NON_COMPETITION_NON_SOLICITATION_AGREEMENTS",
-                  "label": "Non-competition / non-solicitation agreements",
-                  "tone": "neutral",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 65,
-                    "row_label": "Non-competition / non-solicitation agreements"
-                  }
-                },
-                {
-                  "code": "INBOUND_IP_LICENSES",
-                  "label": "Inbound IP licenses",
-                  "tone": "neutral",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 65,
-                    "row_label": "Inbound IP licenses"
-                  }
-                },
-                {
-                  "code": "JOINT_VENTURES_PARTNERSHIPS",
-                  "label": "Joint ventures / partnerships",
-                  "tone": "neutral",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 65,
-                    "row_label": "Joint ventures / partnerships"
-                  }
-                },
-                {
-                  "code": "INDEBTEDNESS_CONTRACTS",
-                  "label": "Indebtedness contracts",
-                  "tone": "neutral",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 65,
-                    "row_label": "Indebtedness contracts"
-                  }
-                },
-                {
-                  "code": "AGGREGATE_PAYMENTS_THRESHOLD_10M_PER_ANNUM",
-                  "label": "Contracts above an aggregate-payments threshold",
-                  "tone": "neutral",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 65,
-                    "row_label": "Contracts above an aggregate-payments threshold"
-                  }
-                },
-                {
-                  "code": "AGREEMENTS_WITH_ROFO_ROFN",
-                  "label": "Agreements with ROFO/ROFN",
-                  "tone": "neutral",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 65,
-                    "row_label": "Agreements with ROFO/ROFN"
-                  }
-                },
-                {
-                  "code": "EXCLUSIVITY_MOST_FAVORED_NATION_STANDSTILL",
-                  "label": "Exclusivity / most-favored-nation / standstill",
-                  "tone": "neutral",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "Exclusivity / most-favored-nation / standstill"
-                  }
-                },
-                {
-                  "code": "M_A_AGREEMENTS_WITH_ONGOING_OBLIGATIONS",
-                  "label": "M&A agreements with ongoing obligations",
-                  "tone": "neutral",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "M&A agreements with ongoing obligations"
-                  }
-                },
-                {
-                  "code": "OTHER_MATERIAL_CONTRACTS",
-                  "label": "Other material contracts",
-                  "tone": "neutral",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "Other material contracts"
-                  }
-                },
-                {
-                  "code": "OUTBOUND_IP_LICENSES",
-                  "label": "Outbound IP licenses",
-                  "tone": "neutral",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "Outbound IP licenses"
-                  }
-                },
-                {
-                  "code": "AGGREGATE_PAYMENTS_THRESHOLD_10M",
-                  "label": "Contracts above an aggregate-payments threshold",
-                  "tone": "info",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "Contracts above an aggregate-payments threshold"
-                  }
-                },
-                {
-                  "code": "SETTLEMENT_CONSENT_AGREEMENTS",
-                  "label": "Settlement / consent agreements",
-                  "tone": "neutral",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "Settlement / consent agreements"
-                  }
-                },
-                {
-                  "code": "SEC_ITEM_601_B_CONTRACTS",
-                  "label": "SEC Item 601(b) contracts",
-                  "tone": "neutral",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "SEC Item 601(b) contracts"
-                  }
-                },
-                {
-                  "code": "SUPPLIER_AGREEMENTS",
-                  "label": "Supplier agreements",
-                  "tone": "neutral",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "Supplier agreements"
-                  }
-                },
-                {
-                  "code": "REAL_ESTATE_LEASES",
-                  "label": "Real estate leases",
-                  "tone": "neutral",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "Real estate leases"
-                  }
-                }
-              ],
+              "column_id": "provision",
+              "header": "As drafted",
+              "render": "verbatim",
+              "display": "fact_text",
               "fill_from": [
-                "STANDARD"
-              ]
+                "TERM",
+                "LIST_ELEMENT",
+                "OPERATION"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-13 #32: the agreement's own description of the category, beside the canonical row name."
             },
             {
               "column_id": "threshold",
@@ -1324,140 +1147,90 @@
               "fill_from": [
                 "THRESHOLD",
                 "AMOUNT"
-              ]
+              ],
+              "guidance": "The dollar floor the category carries, parsed from the cited words; blank when the category has none."
             },
             {
-              "column_id": "uncoveredBucket",
-              "header": "Not Covered",
+              "column_id": "qualifier",
+              "header": "Qualifier",
               "render": "vocabulary",
               "vocabulary": [
                 {
-                  "code": "MANUFACTURING_AGREEMENTS",
-                  "label": "Manufacturing agreements",
-                  "tone": "missing",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "Manufacturing agreements"
-                  }
+                  "code": "MATERIAL_TO_COMPANY_TAKEN_AS_A_WHOLE",
+                  "label": "Material to the Company and its Subsidiaries, taken as a whole",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-13 #32: \"are there materiality qualifiers for any of these rather than just $ thresholds?\""
                 },
                 {
-                  "code": "DISTRIBUTION_RESELLER_AGREEMENTS",
-                  "label": "Distribution / reseller agreements",
-                  "tone": "missing",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "Distribution / reseller agreements"
-                  }
+                  "code": "MATERIAL",
+                  "label": "Material",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-13 #32: a bare materiality word on the category."
                 },
                 {
-                  "code": "COLLABORATION_R_D_AGREEMENTS",
-                  "label": "Collaboration / R&D agreements",
-                  "tone": "missing",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "Collaboration / R&D agreements"
-                  }
+                  "code": "MAE_STANDARD",
+                  "label": "Would reasonably be expected to have a Material Adverse Effect",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-13 #32: an MAE-standard qualifier on the category.",
+                  "links_to_section": "mae-definitions"
                 },
                 {
-                  "code": "KEY_EMPLOYMENT_EXECUTIVE_AGREEMENTS",
-                  "label": "Key employment / executive agreements",
-                  "tone": "missing",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "Key employment / executive agreements"
-                  }
-                },
-                {
-                  "code": "GOVERNMENT_CONTRACTS",
-                  "label": "Government contracts",
-                  "tone": "missing",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "Government contracts"
-                  }
-                },
-                {
-                  "code": "AFFILIATE_RELATED_PARTY_TRANSACTIONS",
-                  "label": "Affiliate / related-party transactions",
-                  "tone": "missing",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "Affiliate / related-party transactions"
-                  }
-                },
-                {
-                  "code": "DATA_PRIVACY_SECURITY_AGREEMENTS",
-                  "label": "Data privacy / security agreements",
-                  "tone": "missing",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "Data privacy / security agreements"
-                  }
-                },
-                {
-                  "code": "VOTING_REGISTRATION_RIGHTS_STOCKHOLDER_AGREEMENTS",
-                  "label": "Voting / registration-rights / stockholder agreements",
-                  "tone": "missing",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "Voting / registration-rights / stockholder agreements"
-                  }
-                },
-                {
-                  "code": "IP_DEVELOPMENT_CONTRACTS",
-                  "label": "IP development contracts",
-                  "tone": "missing",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "IP development contracts"
-                  }
-                },
-                {
-                  "code": "SINGLE_SOURCE_PROCUREMENT_CONTRACTS",
-                  "label": "Single source procurement contracts",
-                  "tone": "missing",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "Single source procurement contracts"
-                  }
-                },
-                {
-                  "code": "CLINICAL_RESEARCH_ORGANIZATION_CONTRACTS",
-                  "label": "Clinical research organization contracts",
-                  "tone": "missing",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "Clinical research organization contracts"
-                  }
-                },
-                {
-                  "code": "EMPLOYEE_LOANS_AND_ADVANCES",
-                  "label": "Employee loans and advances",
-                  "tone": "missing",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 66,
-                    "row_label": "Employee loans and advances"
-                  }
+                  "code": "OUTSIDE_ORDINARY_COURSE",
+                  "label": "Not entered into in the ordinary course of business",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-13 #32: an ordinary-course qualifier on the category."
                 }
               ],
               "fill_from": [
-                "STANDARD"
-              ]
+                "MATERIALITY_QUALIFIER",
+                "STANDARD",
+                "QUALIFIER"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-13 #32: the materiality standard beside the dollar threshold.",
+              "guidance": "The materiality standard the category carries, coded from its qualifying words; omitted when the category has only a dollar threshold or no qualifier at all."
             }
           ],
-          "rows_are": "one per subject"
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "M&A / acquisition agreements",
+            "Hedging and derivative contracts",
+            "Capital expenditure commitments",
+            "Non-competition / non-solicitation agreements",
+            "Inbound IP licenses",
+            "Joint ventures / partnerships",
+            "Indebtedness contracts",
+            "Contracts above an aggregate-payments threshold",
+            "Agreements with ROFO/ROFN",
+            "Exclusivity / most-favored-nation / standstill",
+            "M&A agreements with ongoing obligations",
+            "Other material contracts",
+            "Outbound IP licenses",
+            "Settlement / consent agreements",
+            "SEC Item 601(b) contracts",
+            "Supplier agreements",
+            "Real estate leases",
+            "Manufacturing agreements",
+            "Distribution / reseller agreements",
+            "Collaboration / R&D agreements",
+            "Key employment / executive agreements",
+            "Government contracts",
+            "Affiliate / related-party transactions",
+            "Data privacy / security agreements",
+            "Voting / registration-rights / stockholder agreements",
+            "IP development contracts",
+            "Single source procurement contracts",
+            "Clinical research organization contracts",
+            "Employee loans and advances"
+          ],
+          "fixed_row_labels_source": "TopBuild print Material Contracts buckets (covered and not-covered checklists), decision 32",
+          "open_rows": true,
+          "absent_row_label": "Not covered",
+          "guidance": "One row per contract category the Material Contract definition names: row_label is the canonical category from fixed_row_labels that the clause describes (a new category name only when none fits, never the clause's own words); the clause's words go in the provision column; threshold is the dollar floor from the cited words and qualifier the materiality standard, each omitted when the clause states none. A category the definition does not name has no fact; the page shows it as Not covered. Two clauses that fit one category (an annual and an aggregate payments threshold) are two facts on the same row."
         }
       ],
       "print_pages": [

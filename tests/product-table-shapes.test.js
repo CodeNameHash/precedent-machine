@@ -341,13 +341,20 @@ test('Decision 25: MAE definitions say "None" for a party without one; carve-out
   assert.ok(section.no_conclusions_subtype_keys.includes('UNDERLYING_CAUSE_RESTORATION'));
 });
 
-// Decision 6: material contracts rows with the same header but different thresholds stay separate.
-test('Decision 6: Material Contracts keeps distinct threshold buckets that share a header label', () => {
+// Decision 6 (distinct threshold buckets stay distinct) now lives in the
+// facts: the two clauses are two facts on the one canonical row, each with
+// its own threshold. Decision 32 (Ben, 2026-09-13: "why are there two
+// contract type columns and what is not covered doing? also are there
+// materiality qualifiers ...") makes rows the canonical categories.
+test('Decision 32: Material Contracts rows are the canonical categories, absent ones read Not covered, with As drafted, Threshold and Qualifier columns', () => {
   const table = findTableV3(findSectionV3('material-contracts'), 'material-contracts-table');
-  const contractType = table.columns.find((c) => c.column_id === 'contractType');
-  const sameLabelEntries = contractType.vocabulary.filter((v) => v.label === 'Contracts above an aggregate-payments threshold');
-  assert.equal(sameLabelEntries.length, 2, 'two distinct threshold buckets share this label');
-  assert.notEqual(sameLabelEntries[0].code, sameLabelEntries[1].code, 'the two buckets keep distinct codes');
+  assert.equal(table.rows_are, 'fixed list');
+  assert.equal(table.open_rows, true);
+  assert.equal(table.absent_row_label, 'Not covered');
+  assert.equal(table.fixed_row_labels.filter((label) => label === 'Contracts above an aggregate-payments threshold').length, 1);
+  assert.ok(table.fixed_row_labels.includes('Manufacturing agreements'));
+  assert.deepEqual(table.columns.map((column) => column.column_id), ['provision', 'threshold', 'qualifier']);
+  assert.ok(table.columns[2].vocabulary.some((entry) => entry.code === 'MAE_STANDARD' && entry.links_to_section === 'mae-definitions'));
 });
 
 // Decision 7: two columns per negative-covenant row, and empty_band_is_error on the Exceptions / Other Restrictions bands.

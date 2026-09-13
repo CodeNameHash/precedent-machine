@@ -44,7 +44,7 @@ const conclusionFact = {
     table_key: 'material-contracts-table',
     row_label: 'Real estate leases',
     cells: {
-      contractType: { kind: 'pill', label: 'Real property lease', tone: 'buyer', component_ids: ['c-mc2-category'] },
+      qualifier: { kind: 'pill', label: 'Material', tone: 'buyer', component_ids: ['c-mc2-category'] },
       threshold: { kind: 'value', label: '$1,000,000', tone: 'neutral', component_ids: ['c-mc2-threshold'] },
     },
   },
@@ -77,7 +77,7 @@ test('an empty table view renders nothing', () => {
 test('pills carry fact and component ids as data-testid="table-pill" buttons', () => {
   const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts }));
   assert.match(html, /data-testid="table-pill"/);
-  assert.match(html, /Real property lease/);
+  assert.match(html, /Material</);
 });
 
 test('a cell with no matching data renders a dash', () => {
