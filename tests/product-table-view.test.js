@@ -261,3 +261,18 @@ test('a representation fact never fills the derived bring-down column itself', (
   const reps = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'representations-qualifiers-table');
   assert.equal(reps.rows[0].cells.find((cell) => cell.column_id === 'bringdown').kind, 'dash');
 });
+
+test('a general covenant row is named from the fact\'s subtype; the model\'s own label becomes the sub-item', () => {
+  const fact = {
+    fact_id: 'gc-1', proposal_id: 'gc-1', family_key: 'GENERAL_COVENANTS', subtype_key: 'MERGER_SUB_OBLIGATION', section_reference: '6.12', structure_node_id: 'n-6-12',
+    headline: { label: 'Merger sub obligation', distinguishing_component_ids: ['gc-1-op'] },
+    components: [{ component_id: 'gc-1-op', kind: 'OPERATION', label: 'obligation', text: 'shall cause Merger Sub to perform', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 10, gap_before: false, children: [] }],
+    conclusions: { table_key: 'general-covenants-table', row_label: 'Parent, as sole stockholder of Merger Sub', cells: [{ column_id: 'obligor', code: 'PARENT', component_ids: ['gc-1-op'] }] },
+  };
+  const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'general-covenants-table');
+  assert.equal(table.rows.length, 1);
+  assert.equal(table.rows[0].subject, 'Merger Sub obligations');
+  assert.equal(table.rows[0].sub_rows[0].subject, 'Parent, as sole stockholder of Merger Sub');
+  assert.equal(table.rows[0].cells.find((cell) => cell.column_id === 'obligor').label, 'Parent');
+});

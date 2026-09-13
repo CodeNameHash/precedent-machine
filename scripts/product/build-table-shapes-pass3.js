@@ -468,6 +468,18 @@ function applyDecision21GeneralCovenants(doc) {
     fixed_row_labels: [...GENERAL_COVENANT_ROWS],
     fixed_row_labels_source: 'LEGAL_SCHEMA/V2 GENERAL_COVENANTS subtypes plus the covenants the legacy Other Covenants index curated (financing cooperation, D&O indemnification, confidentiality, transaction litigation)',
     open_rows: true,
+    // Ben, 2026-09-13 19:30 UTC: "the covenant column needs to give a
+    // description of the type of covenant". The row is derived from the
+    // fact's subtype (fixed by the schema), never from the words the model
+    // chose as a subject; a model row label that differs becomes the
+    // sub-item under that covenant.
+    row_from_subtype: true,
+    subtype_rows: {
+      ACCESS: 'Access to information', LITIGATION_NOTIFICATION: 'Litigation notification', GENERAL_NOTIFICATION: 'General notification',
+      SECTION_16: 'Section 16 matters', DELISTING: 'Stock exchange delisting', TAKEOVER_LAW: 'Takeover laws',
+      MERGER_SUB_OBLIGATION: 'Merger Sub obligations', PUBLICITY: 'Public announcements', RESIGNATION: 'Resignations',
+      CVR: 'CVR Agreement', LISTING: 'Stock exchange listing',
+    },
     guidance: 'One row per covenant, named as the precedent would (fixed_row_labels), with a new name only when none fits. Each limb of a covenant is a sub-item (row_detail) with the same columns; the covenant\'s line gives the overview. The subject of the row is the covenant, never a party or a pronoun; the obligor is a coded cell.',
   }];
 }
