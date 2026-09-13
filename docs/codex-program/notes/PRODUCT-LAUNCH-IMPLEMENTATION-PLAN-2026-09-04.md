@@ -2010,6 +2010,14 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       never by arrival; the closing mechanics lines (location, timing,
       effective time) show each fact as drafted, and the extractor is
       told a verbatim text runs to the end of the alternative it names.
+      21:10 UTC, Ben on equity awards: "we should have the different
+      types of option as sub items under the Company Stock Options and
+      include Unvested (that do vest by their terms), Vested and then
+      ones > the deal price". Generator decision 30: rows are the
+      instrument classes (open), treatment classes are sub-items from a
+      fixed detail list in that order, the instrument row the overview;
+      extractor guidance and request updated. Extractor-side, so it
+      reaches the next generation after 3.
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.

@@ -521,3 +521,13 @@ test('Decision 29: merger form columns name their basis kinds', () => {
     assert.deepEqual(table.columns.find((c) => c.column_id === columnId).basis_kinds, ['ACTOR', 'OPERATION', 'OBJECT', 'TERM']);
   }
 });
+
+// Decision 30 (Ben, 2026-09-13): equity award rows are instrument classes,
+// the treatment classes sub-items from a fixed list.
+test('Decision 30: equity awards rows are instrument classes with treatment classes as detail labels', () => {
+  const table = findTableV3(findSectionV3('equity-awards'), 'equity-awards-table');
+  assert.equal(table.rows_are, 'fixed list');
+  assert.equal(table.open_rows, true);
+  assert.ok(table.fixed_row_labels.includes('Company Stock Option'));
+  assert.deepEqual(table.detail_labels, ['Vested', 'Unvested, vesting by its terms at the Effective Time', 'Unvested, not vesting by its terms', 'Out of the money (exercise price at or above the deal price)']);
+});

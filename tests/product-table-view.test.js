@@ -399,3 +399,23 @@ test('two readings in one cell come out in source order, and a fact_text line sh
   ]);
   assert.equal(cell.label, 'at the offices of Wachtell, Lipton, Rosen & Katz');
 });
+
+test('equity award treatment classes nest under the instrument row in detail_labels order, the instrument row giving the overview', () => {
+  const award = (id, detail, code) => ({
+    fact_id: id, proposal_id: id, family_key: 'CONSIDERATION', subtype_key: 'EQUITY_AWARD', section_reference: '2.03', structure_node_id: 'n-2-03',
+    headline: { label: 'Equity award', distinguishing_component_ids: [`${id}-c`] },
+    components: [{ component_id: `${id}-c`, kind: 'OPERATION', label: 'treatment', text: 'shall be cancelled', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 10, gap_before: false, children: [] }],
+    conclusions: { table_key: 'equity-awards-table', row_label: 'Company Stock Option', ...(detail ? { row_detail: detail } : {}), cells: [{ column_id: 'cvrEntitlement', code, component_ids: [`${id}-c`] }] },
+  });
+  const facts = [
+    award('eq-otm', 'Out of the money (exercise price at or above the deal price)', 'NOT_ENTITLED'),
+    award('eq-vested', 'Vested', 'ENTITLED'),
+    award('eq-all', null, 'ENTITLED'),
+  ];
+  const view = buildTableView({ facts, tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'equity-awards-table');
+  assert.equal(table.rows.length, 1);
+  assert.equal(table.rows[0].subject, 'Company Stock Option');
+  assert.deepEqual(table.rows[0].sub_rows.map((row) => row.subject), ['Vested', 'Out of the money (exercise price at or above the deal price)']);
+  assert.equal(table.rows[0].cells.find((cell) => cell.column_id === 'cvrEntitlement').values.length, 2, 'the overview keeps both readings');
+});

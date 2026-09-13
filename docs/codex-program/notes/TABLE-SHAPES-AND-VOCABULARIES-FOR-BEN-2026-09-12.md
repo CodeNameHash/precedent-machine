@@ -910,3 +910,7 @@ Ben: "I'd use the ordering from the old app for the sections and the left hand s
 ### Decision 28 and 29 (structure grid), Ben 2026-09-13 20:40 and 20:50 UTC
 
 "why does merger form appear twice?": the legacy Merger Form column is removed; the per-step form column is the form, and the grid reads deal structure, merger form, surviving entity, then closing mechanics (decision 28). "it's actually the combined fact that MS is merged with Company and Company survives that makes it a reverse triangular (for the purposes of showing the basis for our views)": the merger form columns carry `basis_kinds` ACTOR / OPERATION / OBJECT / TERM; a readout cites one component of every such kind the fact has or is dropped with a note (contract rule C10); the extractor is told so; the evidence sidebar quotes, marks and lights every cited component (decision 29).
+
+### Decision 30 (equity awards), Ben 2026-09-13 21:10 UTC
+
+"we should have the different types of option as sub items under the Company Stock Options and include Unvested (that do vest by their terms), Vested and then ones > the deal price". The equity awards table is a fixed list of instrument classes (Company Stock Option, RSU, PSU, Restricted Stock Award, ESPP, Warrant; open), and each treatment class is a sub-item from `detail_labels` (Vested; Unvested, vesting by its terms at the Effective Time; Unvested, not vesting by its terms; Out of the money; open), rendered in that order under the instrument row, which gives the overview. Supersedes decision 19's one-row-per-class.

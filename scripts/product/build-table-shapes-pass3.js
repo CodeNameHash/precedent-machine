@@ -429,7 +429,24 @@ function applyDecision18ConsiderationDealAgnostic(doc) {
 // award treated differently is its own row.
 function applyDecision19EquityAwardClasses(doc) {
   const table = findTable(findSection(doc, 'equity-awards'), 'equity-awards-table');
-  table.guidance = 'One row per award type and per class treated differently: an out-of-the-money option cancelled for no consideration is its own row, labelled to say so (for example "Underwater Company Stock Option"), never merged into the row for the in-the-money options; likewise vested and unvested awards when their treatment differs. A cell states only what its own fact says about its own row.';
+  // Decision 30. Ben, 2026-09-13 21:10 UTC, on the Metsera equity table
+  // (four rows for one instrument): "we should have the different types of
+  // option as sub items under the Company Stock Options and include
+  // Unvested (that do vest by their terms), Vested and then ones > the deal
+  // price". Rows are the instrument classes, open to a new one; each
+  // treatment class is a sub-item (row_detail) from a fixed list, open to a
+  // new one; the instrument row gives the overview (decision 19 said one
+  // row per differently treated class; the classes now nest).
+  table.rows_are = 'fixed list';
+  table.fixed_row_labels = ['Company Stock Option', 'Company RSU', 'Company PSU', 'Company Restricted Stock Award', 'Company ESPP', 'Company Warrant'];
+  table.open_rows = true;
+  table.detail_labels = [
+    'Vested',
+    'Unvested, vesting by its terms at the Effective Time',
+    'Unvested, not vesting by its terms',
+    'Out of the money (exercise price at or above the deal price)',
+  ];
+  table.guidance = 'One row per instrument class (row_label from fixed_row_labels, a new class name only when none fits). Each class of that instrument treated differently is a sub-item: row_detail from detail_labels (Vested; Unvested, vesting by its terms at the Effective Time; Unvested, not vesting by its terms; Out of the money), a new detail only when none fits, never the agreement\'s own words as the row. A fact about the instrument as a whole carries no row_detail and gives the overview. A cell states only what its own fact says about its own class: an out-of-the-money option cancelled for no consideration never fills the in-the-money class\'s cells.';
 }
 
 // Ben, 2026-09-13 18:05 UTC, Metsera representations: "(i) a bringdown
