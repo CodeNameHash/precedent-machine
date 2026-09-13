@@ -407,8 +407,8 @@ test('draft finalization failure explains saved sections and uses draft assembly
   }
 });
 
-test('explicitGenerationFromQuery reads ?generation and defaults to 0', () => {
-  const { explicitGenerationFromQuery } = require('../components/product/ProductIntakePanel.jsx');
+test('explicitGenerationFromQuery reads ?generation and defaults to 0', async () => {
+  const { explicitGenerationFromQuery } = await loadIntakePanelModule();
   assert.equal(explicitGenerationFromQuery({}), 0);
   assert.equal(explicitGenerationFromQuery({ generation: '1' }), 1);
   assert.equal(explicitGenerationFromQuery({ generation: ['2'] }), 2);
