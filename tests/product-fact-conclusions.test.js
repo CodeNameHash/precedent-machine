@@ -293,3 +293,20 @@ test('a counted instrument keeps its parsed COUNT whatever unit the model wrote'
   assert.deepEqual(normalised.cells[0].value, { canonical: 1, unit: 'COUNT' });
   assert.equal(formatValue(normalised.cells[0].value, 'AMOUNT'), '1');
 });
+
+test('C11 / C12: an exchange-mechanics fact gets no per-share row, and appraisal rights come only from the appraisal provision', () => {
+  const mechanics = {
+    fact_id: 'xm-1', proposal_id: 'xm-1', family_key: 'CONSIDERATION', subtype_key: 'EXCHANGE_MECHANICS', section_reference: '2.02',
+    headline: { label: 'Exchange fund', distinguishing_component_ids: ['xm-1-c'] },
+    components: [{ component_id: 'xm-1-c', kind: 'OBJECT', label: 'deposit', text: 'an amount of cash', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 17, gap_before: false, children: [] }],
+    conclusions: { table_key: 'consideration-components', row_label: 'Cash', cells: [{ column_id: 'form', code: 'CASH', component_ids: ['xm-1-c'] }] },
+  };
+  assert.ok(validateFactConclusions(mechanics, { tableShapes }).some((p) => /does not belong in consideration-components/.test(p)));
+  const exclusion = {
+    fact_id: 'ex-1', proposal_id: 'ex-1', family_key: 'CONSIDERATION', subtype_key: 'EXCLUSION', section_reference: '2.01(b)',
+    headline: { label: 'Cancelled shares', distinguishing_component_ids: ['ex-1-c'] },
+    components: [{ component_id: 'ex-1-c', kind: 'OPERATION', label: 'no consideration', text: 'no consideration shall be delivered or deliverable in exchange therefor', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 70, gap_before: false, children: [] }],
+    conclusions: { table_key: 'consideration-structure', row_label: 'The deal', cells: [{ column_id: 'appraisalRights', text: 'no consideration shall be delivered or deliverable in exchange therefor', component_ids: ['ex-1-c'] }] },
+  };
+  assert.ok(validateFactConclusions(exclusion, { tableShapes }).some((p) => /filled only by APPRAISAL_LINK facts/.test(p)));
+});

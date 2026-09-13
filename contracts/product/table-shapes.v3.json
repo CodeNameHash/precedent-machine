@@ -355,7 +355,12 @@
                 "OBJECT"
               ],
               "addition": true,
-              "reason": "Ben's decision 2026-09-13 #18 (Metsera, cash plus CVR): the consideration axis must describe any deal, not only an election deal. The legacy \"Appraisal rights\" row, as one line of the grid."
+              "reason": "Ben's decision 2026-09-13 #18 (Metsera, cash plus CVR): the consideration axis must describe any deal, not only an election deal. The legacy \"Appraisal rights\" row, as one line of the grid.",
+              "display": "fact_text",
+              "from_subtype_keys": [
+                "APPRAISAL_LINK"
+              ],
+              "guidance": "Filled only by the APPRAISAL_LINK fact, the appraisal-rights provision itself, shown as drafted."
             },
             {
               "column_id": "withholding",
@@ -366,7 +371,11 @@
                 "OBJECT"
               ],
               "addition": true,
-              "reason": "Ben's decision 2026-09-13 #18 (Metsera, cash plus CVR): the consideration axis must describe any deal, not only an election deal. The legacy \"Withholding\" row, present or absent."
+              "reason": "Ben's decision 2026-09-13 #18 (Metsera, cash plus CVR): the consideration axis must describe any deal, not only an election deal. The legacy \"Withholding\" row, present or absent.",
+              "from_subtype_keys": [
+                "WITHHOLDING",
+                "EXCHANGE_MECHANICS"
+              ]
             },
             {
               "column_id": "withoutInterest",
@@ -510,14 +519,30 @@
               "reason": "Ben's decision 2026-09-13 #18 (Metsera, cash plus CVR): the consideration axis must describe any deal, not only an election deal. The defined term the agreement gives the limb (\"Closing Amount\", \"CVR\", \"Merger Consideration\")."
             }
           ],
-          "rows_are": "one per subject",
+          "rows_are": "fixed list",
           "subtype_keys": [
             "CASH_COMPONENT",
             "STOCK_COMPONENT",
             "CVR_COMPONENT",
             "CONSIDERATION_PACKAGE"
           ],
-          "guidance": "One row per limb of the per-share consideration: the cash limb, the stock limb, the CVR limb, each side of an election. A package fact that states several limbs in one sentence contributes to each limb it names."
+          "guidance": "One row per form of per-share consideration, named by the form code (Cash, Parent stock, CVR, each side of an election), from the conversion clause and the Merger Consideration definition only: what each share is converted into the right to receive, the amount or ratio, the \"per\" basis, any contingency and the defined term. Exchange-fund, deposit, payment, surrender and certificate mechanics are EXCHANGE_MECHANICS and never a row here, whatever cash or CVR words they contain.",
+          "fixed_row_labels": [
+            "Cash",
+            "Parent stock",
+            "CVR",
+            "Cash election",
+            "Stock election",
+            "Other"
+          ],
+          "open_rows": true,
+          "row_from_column": "form",
+          "only_subtype_keys": [
+            "CASH_COMPONENT",
+            "STOCK_COMPONENT",
+            "CVR_COMPONENT",
+            "CONSIDERATION_PACKAGE"
+          ]
         },
         {
           "table_key": "consideration-hero-election-mechanics",

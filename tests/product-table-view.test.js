@@ -419,3 +419,16 @@ test('equity award treatment classes nest under the instrument row in detail_lab
   assert.deepEqual(table.rows[0].sub_rows.map((row) => row.subject), ['Vested', 'Out of the money (exercise price at or above the deal price)']);
   assert.equal(table.rows[0].cells.find((cell) => cell.column_id === 'cvrEntitlement').values.length, 2, 'the overview keeps both readings');
 });
+
+test('per-share consideration rows are named from the form code, so two facts about cash share the Cash row', () => {
+  const limb = (id, code, text) => ({
+    fact_id: id, proposal_id: id, family_key: 'CONSIDERATION', subtype_key: 'CASH_COMPONENT', section_reference: '2.01(c)', structure_node_id: 'n-2-01',
+    headline: { label: 'Cash component', distinguishing_component_ids: [`${id}-c`] },
+    components: [{ component_id: `${id}-c`, kind: 'AMOUNT', label: 'amount', text, origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: text.length, gap_before: false, children: [] }],
+    conclusions: { table_key: 'consideration-components', row_label: text, cells: [{ column_id: 'form', code, component_ids: [`${id}-c`] }] },
+  });
+  const view = buildTableView({ facts: [limb('cash-a', 'CASH', '$47.50 in cash'), limb('cash-b', 'CASH', 'an amount of cash')], tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'consideration-components');
+  assert.deepEqual(table.rows.map((row) => row.subject), ['Cash']);
+  assert.equal(table.rows[0].backing_facts.length, 2);
+});

@@ -550,3 +550,17 @@ test('Decision 31: representation tables carry canonical limb names per row', ()
     assert.match(table.guidance, /canonical limb name/);
   }
 });
+
+// Decision 33 (Ben, 2026-09-13): appraisal from the appraisal provision only;
+// per-share rows by form; exchange mechanics never a component row.
+test('Decision 33: consideration shapes name their sources', () => {
+  const section = findSectionV3('consideration-hero');
+  const structure = findTableV3(section, 'consideration-structure');
+  const appraisal = structure.columns.find((c) => c.column_id === 'appraisalRights');
+  assert.equal(appraisal.display, 'fact_text');
+  assert.deepEqual(appraisal.from_subtype_keys, ['APPRAISAL_LINK']);
+  const components = findTableV3(section, 'consideration-components');
+  assert.equal(components.row_from_column, 'form');
+  assert.deepEqual(components.only_subtype_keys, ['CASH_COMPONENT', 'STOCK_COMPONENT', 'CVR_COMPONENT', 'CONSIDERATION_PACKAGE']);
+  assert.ok(components.fixed_row_labels.includes('CVR'));
+});

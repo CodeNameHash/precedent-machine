@@ -891,6 +891,37 @@ function applyDecision32MaterialContracts(doc) {
   table.guidance = 'One row per contract category the Material Contract definition names: row_label is the canonical category from fixed_row_labels that the clause describes (a new category name only when none fits, never the clause\'s own words); the clause\'s words go in the provision column; threshold is the dollar floor from the cited words and qualifier the materiality standard, each omitted when the clause states none. A category the definition does not name has no fact; the page shows it as Not covered. Two clauses that fit one category (an annual and an aggregate payments threshold) are two facts on the same row.';
 }
 
+// ==========================================================================
+// Decision 33 (Consideration). Ben, 2026-09-13 21:50 UTC: "On appraisal -
+// why isn't (d) the provision that this attaches to"; "why is there a
+// separate 'an amount of cash' row and also why does it say 'any CVR' with
+// a citation into the exchange mechanic? The Merger Consideration
+// definition was found and is clear and there is a clear covenant on what
+// shares are converted into". Rules: the appraisal line shows the
+// appraisal-rights provision as drafted and only an APPRAISAL_LINK fact
+// may fill it; the per-share table's rows are the canonical forms (from
+// the form cell), only component and package facts may fill it, and
+// exchange mechanics never do (schema layer rule regenerated alongside).
+// ==========================================================================
+
+function applyDecision33Consideration(doc) {
+  const section = findSection(doc, 'consideration-hero');
+  const structure = findTable(section, 'consideration-structure');
+  const appraisal = findColumn(structure, 'appraisalRights');
+  appraisal.display = 'fact_text';
+  appraisal.from_subtype_keys = ['APPRAISAL_LINK'];
+  appraisal.guidance = 'Filled only by the APPRAISAL_LINK fact, the appraisal-rights provision itself, shown as drafted.';
+  const withholding = findColumn(structure, 'withholding');
+  withholding.from_subtype_keys = ['WITHHOLDING', 'EXCHANGE_MECHANICS'];
+  const components = findTable(section, 'consideration-components');
+  components.rows_are = 'fixed list';
+  components.fixed_row_labels = ['Cash', 'Parent stock', 'CVR', 'Cash election', 'Stock election', 'Other'];
+  components.open_rows = true;
+  components.row_from_column = 'form';
+  components.only_subtype_keys = ['CASH_COMPONENT', 'STOCK_COMPONENT', 'CVR_COMPONENT', 'CONSIDERATION_PACKAGE'];
+  components.guidance = 'One row per form of per-share consideration, named by the form code (Cash, Parent stock, CVR, each side of an election), from the conversion clause and the Merger Consideration definition only: what each share is converted into the right to receive, the amount or ratio, the "per" basis, any contingency and the defined term. Exchange-fund, deposit, payment, surrender and certificate mechanics are EXCHANGE_MECHANICS and never a row here, whatever cash or CVR words they contain.';
+}
+
 function applyDecision5MaeCarveouts(doc) {
   const section = findSection(doc, 'mae-definitions');
   for (const tableKey of ['mae-carveouts-parent', 'mae-carveouts-company']) {
@@ -1112,6 +1143,7 @@ function build() {
   applyDecision25MaeSection(doc);
   applyDecision26DetailColumns(doc);
   applyDecision32MaterialContracts(doc);
+  applyDecision33Consideration(doc);
   applyDecision7InterimCovenants(doc);
   applyDecision8NoShop(doc);
   applyDecision9VotesTrigger(doc);

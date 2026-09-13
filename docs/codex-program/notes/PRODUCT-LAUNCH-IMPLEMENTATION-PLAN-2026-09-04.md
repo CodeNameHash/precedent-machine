@@ -2064,6 +2064,17 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       middle of its pane; the row name opens the sidebar on the row's
       first fact; Defined Terms is a collapsible table, each term
       collapsed until clicked.
+      21:50 UTC, Ben on Consideration: "why isn't (d) the provision that
+      this attaches to"; "why is there a separate 'an amount of cash' row
+      and also why does it say 'any CVR' with a citation into the
+      exchange mechanic?"; and on votes: "this voting section is being
+      pulled from a rep...!". Generator decision 33 (appraisal from the
+      APPRAISAL_LINK fact only, as drafted; per-share rows from the form
+      code; only component and package subtypes in that table) with
+      contract rules C11 and C12, and two schema layer rules (exchange
+      procedures are EXCHANGE_MECHANICS; board resolutions recited in a
+      representation are representation facts, never votes facts).
+      Extractor-side; the generation after 3.
 - [x] Q3 Restyle to the Deal Storylines design, 2026-09-13 21:45 UTC. Ben
       sent the Deal Storylines / Corpus timeline page: "shift the page
       design to match this ... mainly thinking of the left hand side bar,

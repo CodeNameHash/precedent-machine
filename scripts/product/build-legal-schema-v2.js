@@ -105,8 +105,19 @@ const OVERLAY = {
     headline: { distinguishing: ['TERM', 'THRESHOLD', 'EXCEPTION'], note: 'category plus threshold plus carve-out' },
     labels: { MATERIAL_CONTRACT_CATEGORY_CRITERION: 'Material contract category', MATERIAL_CONTRACT_DISCLOSURE_LIST: 'Material contract disclosure', MATERIAL_CONTRACT_STATUS_REPRESENTATION: 'Material contract status', MATERIAL_CONTRACT_BREACH_TERMINATION_RIGHT: 'No default under material contracts' },
   },
+  CONSIDERATION: {
+    // Ben, 2026-09-13 21:50 UTC, Metsera: "why is there a separate 'an
+    // amount of cash' row and also why does it say 'any CVR' with a citation
+    // into the exchange mechanic? The Merger Consideration definition was
+    // found and is clear and there is a clear covenant on what shares are
+    // converted into"; and on appraisal: "why isn't (d) the provision that
+    // this attaches to".
+    layers: 'One fact per independently operative unit. Components follow the sentence: actor, operation, object, then each condition, exception, threshold, period and qualifier as its own component; lists that vary between deals as LIST with LIST_ELEMENTs; synonym litanies as one LITANY. Nothing is invented for an absent timing, qualification or forum. The per-share components (CASH_COMPONENT, STOCK_COMPONENT, CVR_COMPONENT, CONSIDERATION_PACKAGE) come only from the conversion clause (what each share is converted into the right to receive) and the Merger Consideration definition. Exchange procedures are EXCHANGE_MECHANICS whatever they mention: the exchange agent, the exchange fund and its deposit, payment and delivery, surrender of certificates and book-entry shares, lost certificates, transfer books, and the withholding and no-interest words that sit in them. APPRAISAL_LINK is the appraisal-rights provision itself (shares held by holders who demand appraisal under the statute are not converted; loss of the right restores the Merger Consideration), never a sentence from another clause that mentions consideration.',
+  },
   PROXY_MEETING: {
-    layers: 'Written-consent deals use the consent subtypes; meeting deals use the meeting subtypes. Deadlines are PERIOD or DATE components. Track the Consenting Stockholders identity or percentage as a component. Consent facts do not cross-reference the termination, condition or fee provisions that depend on them (Ben, 2026-09-12).',
+    // Ben, 2026-09-13 21:55 UTC, Metsera 3.04(b) rendered as votes rows:
+    // "this voting section is being pulled from a rep...!"
+    layers: 'Written-consent deals use the consent subtypes; meeting deals use the meeting subtypes. Deadlines are PERIOD or DATE components. Track the Consenting Stockholders identity or percentage as a component. Consent facts do not cross-reference the termination, condition or fee provisions that depend on them (Ben, 2026-09-12). A PROXY_MEETING fact is an obligation in a covenant: to prepare or file the proxy statement, call or hold the meeting, set a record date, include or make the board recommendation, solicit proxies, adjourn. Board resolutions recited in a representation (the board has approved, declared advisable, directed that adoption be submitted to a vote, resolved to recommend) are REPRESENTATIONS facts of that representation, never votes, proxy or meeting facts.',
     headline: { distinguishing: ['OPERATION', 'DATE', 'PERIOD'], note: 'the mechanic and its deadline' },
     add: [
       { subtype_key: 'WRITTEN_CONSENT_SOLICITATION', label: 'Written consent solicitation', required_roles: ['LEGAL_ACTOR_OR_SUBJECT', 'LEGAL_OPERATION', 'OPERATIVE_OBJECT'], optional_roles: ['TEMPORAL_OR_TRIGGER_SCOPE', 'QUALIFICATIONS', 'consenting_stockholders'], relationships: ['QUALIFIES', 'REQUIRES', 'TRIGGERS'] },

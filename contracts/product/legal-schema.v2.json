@@ -4055,7 +4055,7 @@
       "materiality_rules": [
         "Every independently operative unit is captured as one fact with its components. Reader-facing headline: the operative term and what distinguishes it from other deals."
       ],
-      "layer_rules": "One fact per independently operative unit. Components follow the sentence: actor, operation, object, then each condition, exception, threshold, period and qualifier as its own component; lists that vary between deals as LIST with LIST_ELEMENTs; synonym litanies as one LITANY. Nothing is invented for an absent timing, qualification or forum.",
+      "layer_rules": "One fact per independently operative unit. Components follow the sentence: actor, operation, object, then each condition, exception, threshold, period and qualifier as its own component; lists that vary between deals as LIST with LIST_ELEMENTs; synonym litanies as one LITANY. Nothing is invented for an absent timing, qualification or forum. The per-share components (CASH_COMPONENT, STOCK_COMPONENT, CVR_COMPONENT, CONSIDERATION_PACKAGE) come only from the conversion clause (what each share is converted into the right to receive) and the Merger Consideration definition. Exchange procedures are EXCHANGE_MECHANICS whatever they mention: the exchange agent, the exchange fund and its deposit, payment and delivery, surrender of certificates and book-entry shares, lost certificates, transfer books, and the withholding and no-interest words that sit in them. APPRAISAL_LINK is the appraisal-rights provision itself (shares held by holders who demand appraisal under the statute are not converted; loss of the right restores the Merger Consideration), never a sentence from another clause that mentions consideration.",
       "headline": {
         "label_source": "subtype_label",
         "distinguishing_kinds": [
@@ -5705,7 +5705,7 @@
       "materiality_rules": [
         "Every independently operative unit is captured as one fact with its components. Reader-facing headline: the mechanic and its deadline."
       ],
-      "layer_rules": "Written-consent deals use the consent subtypes; meeting deals use the meeting subtypes. Deadlines are PERIOD or DATE components. Track the Consenting Stockholders identity or percentage as a component. Consent facts do not cross-reference the termination, condition or fee provisions that depend on them (Ben, 2026-09-12).",
+      "layer_rules": "Written-consent deals use the consent subtypes; meeting deals use the meeting subtypes. Deadlines are PERIOD or DATE components. Track the Consenting Stockholders identity or percentage as a component. Consent facts do not cross-reference the termination, condition or fee provisions that depend on them (Ben, 2026-09-12). A PROXY_MEETING fact is an obligation in a covenant: to prepare or file the proxy statement, call or hold the meeting, set a record date, include or make the board recommendation, solicit proxies, adjourn. Board resolutions recited in a representation (the board has approved, declared advisable, directed that adoption be submitted to a vote, resolved to recommend) are REPRESENTATIONS facts of that representation, never votes, proxy or meeting facts.",
       "headline": {
         "label_source": "subtype_label",
         "distinguishing_kinds": [
