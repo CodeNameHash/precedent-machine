@@ -763,11 +763,13 @@
             },
             {
               "column_id": "detail",
-              "header": "Detail",
+              "header": "As drafted",
               "render": "verbatim",
               "fill_from": [
                 "OPERATION"
-              ]
+              ],
+              "display": "fact_text",
+              "guidance": "Shown as the condition's own words as drafted (every component of the fact in source order); cite the operative words."
             }
           ],
           "rows_are": "fixed list",
@@ -3635,14 +3637,6 @@
               "fill_from": [
                 "STANDARD"
               ]
-            },
-            {
-              "column_id": "detail",
-              "header": "Detail",
-              "render": "verbatim",
-              "fill_from": [
-                "OPERATION"
-              ]
             }
           ],
           "rows_are": "fixed list",
@@ -3652,7 +3646,8 @@
             "Seller non-reliance",
             "Buyer no-other-reps",
             "Fraud carve-out"
-          ]
+          ],
+          "guidance": "Yes / No per question; the words behind the answer are read in the fact's tree, never summarised in a column."
         }
       ],
       "print_pages": [

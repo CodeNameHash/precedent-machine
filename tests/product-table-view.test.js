@@ -359,3 +359,24 @@ test('a carve-out row with no carve-back reading says No, and the carve-back fac
   assert.equal(table.footer.label, 'Disproportionate carve-back as drafted');
   assert.deepEqual(table.footer.entries.map((entry) => [entry.fact_id, entry.text]), [['mae-cb', 'except to the extent disproportionate']]);
 });
+
+test('a fact_text detail column shows the fact\'s own words as drafted, not the cited fragment', () => {
+  const fact = {
+    fact_id: 'cond-nlr', proposal_id: 'cond-nlr', family_key: 'CLOSING_CONDITIONS', subtype_key: 'NO_LEGAL_RESTRAINT', section_reference: '7.01(b)', structure_node_id: 'n-7-01',
+    headline: { label: 'No legal restraint', distinguishing_component_ids: ['nlr-3'] },
+    components: [
+      { component_id: 'nlr-0', kind: 'ACTOR', label: 'obligation', text: 'The respective obligation of each party', origin: 'ANCESTOR', source_span_id: 's', start_byte: 0, end_byte: 5, gap_before: false, children: [] },
+      { component_id: 'nlr-1', kind: 'ACTOR', label: 'restraint', text: 'No Judgment issued by any court of competent jurisdiction or Law enacted by any Governmental Entity', origin: 'OWN', source_span_id: 's', start_byte: 10, end_byte: 20, gap_before: false, children: [
+        { component_id: 'nlr-1a', kind: 'LIST_ELEMENT', label: 'court', text: 'any court of competent jurisdiction', origin: 'OWN', source_span_id: 's', start_byte: 12, end_byte: 14, gap_before: false, children: [] },
+      ] },
+      { component_id: 'nlr-2', kind: 'OBJECT', label: 'effect', text: 'preventing or prohibiting the consummation of the Merger', origin: 'OWN', source_span_id: 's', start_byte: 20, end_byte: 30, gap_before: false, children: [] },
+      { component_id: 'nlr-3', kind: 'OPERATION', label: 'test', text: 'shall be in effect', origin: 'OWN', source_span_id: 's', start_byte: 30, end_byte: 40, gap_before: false, children: [] },
+    ],
+    conclusions: { table_key: 'conditions-table', row_label: 'No Legal Restraint', cells: [{ column_id: 'detail', text: 'shall be in effect', component_ids: ['nlr-3'] }] },
+  };
+  const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'conditions-table');
+  const cell = table.rows[0].cells.find((candidate) => candidate.column_id === 'detail');
+  assert.equal(cell.label, 'No Judgment issued by any court of competent jurisdiction or Law enacted by any Governmental Entity preventing or prohibiting the consummation of the Merger shall be in effect');
+  assert.deepEqual(cell.component_ids, ['nlr-3'], 'the cited words stay the click target');
+});

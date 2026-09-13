@@ -1954,6 +1954,16 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the table's footer, as drafted, never a row. Rendering applies to
       generation 2; the generic titles and the footer routing reach the
       extractor with generation 3.
+      19:45 UTC: generation 2 READY, 85 of 85 sections, 422 valid facts,
+      305 with a readout, 47 readouts dropped with a note.
+      20:05 UTC, Ben on the mutual conditions table: "there is great
+      detail here on the right but it isn't shown on the left (e.g. it
+      doesn't say court of competent jurisdiction etc)", and on No Other
+      Reps / Fraud: "the detail here isn't actually reassuring, I'd just
+      say yes then have the tree ready to show the language etc".
+      Generator decision 26: the conditions detail column shows the fact
+      as drafted (its own words in source order; the cited words stay the
+      click target); the No Other Reps / Fraud table is status only.
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.

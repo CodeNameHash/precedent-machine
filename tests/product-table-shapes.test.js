@@ -482,3 +482,12 @@ test('every V3 vocabulary code (including shared vocabularies) is unique within 
     assert.equal(new Set(codes).size, codes.length, `shared vocabulary '${id}' has duplicate codes`);
   }
 });
+
+// Decision 26 (Ben, 2026-09-13): a detail column shows the drafting; a
+// Yes / No question table has no detail column at all.
+test('Decision 26: the conditions detail column is the fact as drafted and No Other Reps / Fraud is status only', () => {
+  const detail = findTableV3(findSectionV3('conditions'), 'conditions-table').columns.find((column) => column.column_id === 'detail');
+  assert.equal(detail.display, 'fact_text');
+  const table = findTableV3(findSectionV3('no-other-reps-fraud'), 'no-other-reps-fraud-table');
+  assert.deepEqual(table.columns.map((column) => column.column_id), ['status']);
+});

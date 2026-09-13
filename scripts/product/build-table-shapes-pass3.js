@@ -684,6 +684,32 @@ function applyDecision25MaeSection(doc) {
   }
 }
 
+// ==========================================================================
+// Decision 26 (verbatim detail columns). Ben, 2026-09-13 20:05 UTC, on the
+// mutual conditions table (Detail showing "shall be in effect" while the
+// sidebar tree carried the whole restraint): "there is great detail here on
+// the right but it isn't shown on the left (e.g. it doesn't say court of
+// competent jurisdiction etc)"; and on No Other Reps / Fraud (Detail
+// showing "makes"): "the detail here isn't actually reassuring, I'd just
+// say yes then have the tree ready to show the language etc". Rules:
+//   (a) a detail column meant to show the drafting shows the fact's own
+//       words as drafted (display: fact_text), the cited words being the
+//       click target, never the cited fragment alone;
+//   (b) a Yes / No question table carries no detail column: the status
+//       pill opens the tree.
+// ==========================================================================
+
+function applyDecision26DetailColumns(doc) {
+  const conditions = findTable(findSection(doc, 'conditions'), 'conditions-table');
+  const detail = findColumn(conditions, 'detail');
+  detail.display = 'fact_text';
+  detail.header = 'As drafted';
+  detail.guidance = 'Shown as the condition\'s own words as drafted (every component of the fact in source order); cite the operative words.';
+  const noOtherReps = findTable(findSection(doc, 'no-other-reps-fraud'), 'no-other-reps-fraud-table');
+  noOtherReps.columns = noOtherReps.columns.filter((column) => column.column_id !== 'detail');
+  noOtherReps.guidance = 'Yes / No per question; the words behind the answer are read in the fact\'s tree, never summarised in a column.';
+}
+
 function applyDecision5MaeCarveouts(doc) {
   const section = findSection(doc, 'mae-definitions');
   for (const tableKey of ['mae-carveouts-parent', 'mae-carveouts-company']) {
@@ -903,6 +929,7 @@ function build() {
   applyDecision23VotesAndMeeting(doc);
   applyDecision24ConditionTiers(doc);
   applyDecision25MaeSection(doc);
+  applyDecision26DetailColumns(doc);
   applyDecision7InterimCovenants(doc);
   applyDecision8NoShop(doc);
   applyDecision9VotesTrigger(doc);
