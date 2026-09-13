@@ -2075,6 +2075,14 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       procedures are EXCHANGE_MECHANICS; board resolutions recited in a
       representation are representation facts, never votes facts).
       Extractor-side; the generation after 3.
+      22:16 UTC check-in on generation 3: 50 of 85 sections, 396 valid
+      facts, 266 readouts, no failed sections; 5.01 and 5.02 now carry
+      facts (5 and 43). Of 77 dropped readouts, 43 are the lookback date
+      (fixed at 21:15), 15 are a representation qualified both by
+      knowledge and by materiality dropped as "duplicate column
+      materiality": a vocabulary column now accepts distinct codes as
+      two readings of one cell (the same code twice is still a
+      duplicate), and the table view renders both pills.
 - [x] Q3 Restyle to the Deal Storylines design, 2026-09-13 21:45 UTC. Ben
       sent the Deal Storylines / Corpus timeline page: "shift the page
       design to match this ... mainly thinking of the left hand side bar,

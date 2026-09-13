@@ -432,3 +432,23 @@ test('per-share consideration rows are named from the form code, so two facts ab
   assert.deepEqual(table.rows.map((row) => row.subject), ['Cash']);
   assert.equal(table.rows[0].backing_facts.length, 2);
 });
+
+test('two codes on one vocabulary column render as one cell with two readings', () => {
+  const fact = {
+    fact_id: 'rep-3', proposal_id: 'rep-3', family_key: 'REPRESENTATIONS', subtype_key: 'COMPLIANCE_REPRESENTATION', section_reference: '3.25', structure_node_id: 'n-3-25',
+    headline: { label: 'Compliance', distinguishing_component_ids: ['k'] },
+    components: [
+      { component_id: 'k', kind: 'QUALIFIER', label: 'knowledge', text: 'to the knowledge of the Company', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 31, gap_before: false, children: [] },
+      { component_id: 'm', kind: 'MATERIALITY_QUALIFIER', label: 'materiality', text: 'except as would not be material', origin: 'OWN', source_span_id: 's', start_byte: 40, end_byte: 72, gap_before: false, children: [] },
+    ],
+    conclusions: { table_key: 'representations-qualifiers-table', row_label: 'Compliance with Laws; Permits; Licenses', cells: [
+      { column_id: 'materiality', code: 'KNOWLEDGE_QUALIFIED_PARTIAL', component_ids: ['k'] },
+      { column_id: 'materiality', code: 'MATERIAL_TO_THE_REP_PARTIAL', component_ids: ['m'] },
+    ] },
+  };
+  const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'representations-qualifiers-table');
+  const cell = table.rows[0].cells.find((candidate) => candidate.column_id === 'materiality');
+  assert.equal(cell.values.length, 2);
+  assert.deepEqual(cell.values.map((value) => value.code), ['KNOWLEDGE_QUALIFIED_PARTIAL', 'MATERIAL_TO_THE_REP_PARTIAL']);
+});

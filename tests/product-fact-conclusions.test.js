@@ -310,3 +310,21 @@ test('C11 / C12: an exchange-mechanics fact gets no per-share row, and appraisal
   };
   assert.ok(validateFactConclusions(exclusion, { tableShapes }).some((p) => /filled only by APPRAISAL_LINK facts/.test(p)));
 });
+
+test('a vocabulary column accepts two distinct codes on one fact (knowledge and materiality qualifiers), not the same code twice', () => {
+  const fact = {
+    fact_id: 'rep-2', proposal_id: 'rep-2', family_key: 'REPRESENTATIONS', subtype_key: 'COMPLIANCE_REPRESENTATION', section_reference: '3.25',
+    headline: { label: 'Compliance', distinguishing_component_ids: ['k'] },
+    components: [
+      { component_id: 'k', kind: 'QUALIFIER', label: 'knowledge', text: 'to the knowledge of the Company', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 31, gap_before: false, children: [] },
+      { component_id: 'm', kind: 'MATERIALITY_QUALIFIER', label: 'materiality', text: 'except as would not reasonably be expected to be material', origin: 'OWN', source_span_id: 's', start_byte: 40, end_byte: 98, gap_before: false, children: [] },
+    ],
+    conclusions: { table_key: 'representations-qualifiers-table', row_label: 'Compliance with Laws; Permits; Licenses', cells: [
+      { column_id: 'materiality', code: 'KNOWLEDGE_QUALIFIED_PARTIAL', component_ids: ['k'] },
+      { column_id: 'materiality', code: 'MATERIAL_TO_THE_REP_PARTIAL', component_ids: ['m'] },
+    ] },
+  };
+  assert.deepEqual(validateFactConclusions(fact, { tableShapes }), []);
+  const twice = { ...fact, conclusions: { ...fact.conclusions, cells: [fact.conclusions.cells[0], { ...fact.conclusions.cells[0] }] } };
+  assert.ok(validateFactConclusions(twice, { tableShapes }).some((p) => /duplicate column materiality/.test(p)));
+});
