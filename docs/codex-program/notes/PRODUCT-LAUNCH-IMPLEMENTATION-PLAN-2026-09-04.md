@@ -2033,6 +2033,15 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       make canonical a later task (and perhaps you can suggest them once
       we have gone a few rounds with different agreements)". Seeded
       lists kept; the rest is Q5.
+      21:15 UTC check-in on generation 3 (run b437121b): 22 of 85
+      sections, 189 valid facts, 120 readouts, 37 notes. Twenty-two notes
+      are the expected CONCLUSIONS_MISSING for exchange mechanics; ten
+      readouts were dropped because the model wrote { 2023, year } for a
+      lookback cited as "since January 1, 2023", one because "one (1)"
+      CVR carried unit CVR. Rule: a value cell takes the code-parsed value
+      of its cited words (component rule R6 applied to the readout); a
+      date on the lookback column is shown as the date. Applies from the
+      next generation; the ten facts are valid without a readout in 3.
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q5 Canonical limb names for the other eighteen representations
       (Ben, 2026-09-13 21:25 UTC). After a few agreements have run (Metsera,

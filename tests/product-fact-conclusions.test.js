@@ -22,7 +22,7 @@ const test = require('node:test');
 const fs = require('node:fs');
 const path = require('node:path');
 const {
-  validateFactConclusions, renderConclusionCells, tableForFact, tablesForFamily, familyHasTableShape,
+  validateFactConclusions, renderConclusionCells, tableForFact, tablesForFamily, familyHasTableShape, normaliseConclusionValues, formatValue,
 } = require('../lib/product/fact-conclusions');
 
 const tableShapes = require('../contracts/product/table-shapes.v3.json');
@@ -266,4 +266,30 @@ test('C10: a merger form cited on every basis component is valid; cited on the m
   partial.conclusions.cells[0].component_ids = ['st-actor'];
   const problems = validateFactConclusions(partial, { tableShapes });
   assert.ok(problems.some((p) => /basis incomplete, no cited OPERATION \/ OBJECT \/ TERM component/.test(p)), problems.join('; '));
+});
+
+test('a value cell takes the code-parsed value of its cited words: a lookback cited as a date becomes that date and validates', () => {
+  const fact = {
+    fact_id: 'rep-1', proposal_id: 'rep-1', family_key: 'REPRESENTATIONS', subtype_key: 'COMPLIANCE_REPRESENTATION', section_reference: '3.25',
+    headline: { label: 'Compliance', distinguishing_component_ids: ['rep-1-d'] },
+    components: [{ component_id: 'rep-1-d', kind: 'DATE', label: 'lookback', text: 'since January 1, 2023', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 21, gap_before: false, children: [] }],
+    conclusions: { table_key: 'representations-qualifiers-table', row_label: 'Compliance with Laws; Permits; Licenses', cells: [{ column_id: 'lookback', value: { canonical: 2023, unit: 'year' }, component_ids: ['rep-1-d'] }] },
+  };
+  assert.ok(validateFactConclusions(fact, { tableShapes }).some((p) => /parseComponentValue/.test(p)), 'the model\'s own number does not validate');
+  const normalised = { ...fact, conclusions: normaliseConclusionValues(fact, tableShapes) };
+  assert.deepEqual(normalised.conclusions.cells[0].value, { canonical: '2023-01-01', unit: 'ISO_DATE' });
+  assert.deepEqual(validateFactConclusions(normalised, { tableShapes }), []);
+  assert.equal(formatValue(normalised.conclusions.cells[0].value, 'PERIOD'), 'January 1, 2023');
+});
+
+test('a counted instrument keeps its parsed COUNT whatever unit the model wrote', () => {
+  const fact = {
+    fact_id: 'cvr-1', proposal_id: 'cvr-1', family_key: 'CONSIDERATION', subtype_key: 'PER_SHARE_CONSIDERATION', section_reference: '2.01',
+    headline: { label: 'CVR', distinguishing_component_ids: ['cvr-1-a'] },
+    components: [{ component_id: 'cvr-1-a', kind: 'AMOUNT', label: 'count', text: 'one (1)', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 7, gap_before: false, children: [] }],
+    conclusions: { table_key: 'consideration-components', row_label: 'CVR', cells: [{ column_id: 'amount', value: { canonical: 1, unit: 'CVR' }, component_ids: ['cvr-1-a'] }] },
+  };
+  const normalised = normaliseConclusionValues(fact, tableShapes);
+  assert.deepEqual(normalised.cells[0].value, { canonical: 1, unit: 'COUNT' });
+  assert.equal(formatValue(normalised.cells[0].value, 'AMOUNT'), '1');
 });
