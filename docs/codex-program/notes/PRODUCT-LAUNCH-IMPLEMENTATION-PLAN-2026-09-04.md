@@ -1614,7 +1614,21 @@ Sequence and proof:
       was applied to the preview database at 03:30 UTC after the sections
       finished (table and wrapped commit function verified). Sequence: Ben
       pulls, runs `update-sandbox-worker.js`, presses "Retry draft assembly"
-      on the intake page; the sections are not re-run. The submission creates a V2
+      on the intake page; the sections are not re-run. 2026-09-13 11:54 UTC:
+      a stale browser tab carrying `?productRun=a7fb5881…` auto-advanced the
+      abandoned generation 3 (V7), which held the per-account sandbox lock;
+      the 11:56 retry queued behind it and expired at 12:56. Generation 3
+      was killed at 15:00 UTC after 91 sections; the 15:01 reload woke
+      generation 4, whose finalisation FAILED again with
+      DRAFT_NESTED_IDENTITY on a second proposal (3e9c4da8…, section 1.1
+      "Tolling Period"): the store's component-row rebuild dropped
+      `value: null` on a PERIOD component, so the rebuilt tree no longer
+      hashed to the stored proposal id. Fix: the rebuild mirrors the writer's
+      key rules (value kinds always carry `value`, reference kinds
+      `resolves_to`, litanies `members`, inherited components
+      `origin_structure_node_id`, each nullable); regression from the stored
+      rows in `tests/product-proposal-identity.test.js`. Same three steps
+      for Ben. The submission creates a V2
       generation with prompt bundle `PRODUCT_LAYERED_COMPONENTS/V7`; the V1
       run and revision 45 of its review stay untouched as the baseline. Compare against Ben's 38
       touched items and his samples. Ben reviews the same 13 provisions again
