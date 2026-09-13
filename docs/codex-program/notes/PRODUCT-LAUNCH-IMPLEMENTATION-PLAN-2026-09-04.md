@@ -1878,6 +1878,12 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       it from the CLOSING_CONDITIONS bring-down fact whose CROSS_REFERENCE
       resolves to the rep's section, never from the rep (the extractor no
       longer sees that column).
+      18:07 UTC: generation 2 FAILED at its 24th section: the first
+      CONCLUSIONS_DROPPED note hit the Phase 2 check constraint on issue
+      kinds (EXTRACTION, VALIDATION, COVERAGE). Migration
+      `20260913180000_product_issues_note_kind.sql` adds NOTE; applied to
+      the preview database 18:10 UTC. "Retry failed sections" resumes the
+      run; the 23 completed sections stay.
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.
