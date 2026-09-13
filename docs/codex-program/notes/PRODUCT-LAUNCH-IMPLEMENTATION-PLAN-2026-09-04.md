@@ -1991,6 +1991,17 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       one-step deal; generator decision 28 removes the legacy column and
       orders the grid structure first (deal structure, merger form,
       surviving entity), then the closing mechanics.
+      20:50 UTC, Ben: "it's actually the combined fact that MS is merged
+      with Company and Company survives that makes it a reverse
+      triangular (for the purposes of showing the basis for our views)".
+      Generator decision 29: the merger form columns name their basis
+      kinds (merging party, operation, party merged into, survivor); a
+      readout citing fewer than the fact has is dropped with a note
+      (conclusions rule C10); the extractor is told to cite them all;
+      the evidence sidebar quotes, marks and lights every cited
+      component of a cell. Generation 3 (submitted 20:12 UTC, run
+      b437121b) started before this; its structure readouts cite what
+      the extractor chose, and the sidebar shows every cited component.
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.

@@ -13,13 +13,14 @@ function CanonicalValue({ value }) {
   return <span className="ml-1 rounded bg-paper px-1 text-[11px] font-semibold text-accent" data-testid="canonical-value">{value.unit ? `${value.canonical} ${value.unit}` : String(value.canonical)}</span>;
 }
 
-function ComponentNode({ display, raw, initiallyExpanded, onComponentSelect, selectedComponentId }) {
+function ComponentNode({ display, raw, initiallyExpanded, onComponentSelect, selectedComponentId, selectedComponentIds = null }) {
   const [open, setOpen] = useState(!!initiallyExpanded);
   const [resolvedOpen, setResolvedOpen] = useState(!!initiallyExpanded);
   const isReference = REFERENCE_KINDS.has(display.kind);
   const hoverText = display.resolves_to?.text || null;
   const showsValue = VALUE_KINDS.has(display.kind);
-  const isSelected = !!selectedComponentId && raw.component_id === selectedComponentId;
+  const isSelected = (!!selectedComponentId && raw.component_id === selectedComponentId)
+    || (Array.isArray(selectedComponentIds) && selectedComponentIds.includes(raw.component_id));
   return <li className={isSelected ? 'mt-1 rounded bg-amber-100 ring-1 ring-amber-400' : 'mt-1'} data-testid="component-node" data-kind={display.kind} data-selected={isSelected || undefined}>
     <span className="inline-flex flex-wrap items-baseline gap-1">
       {display.gap_before ? <span className="text-inkLight" data-testid="gap-marker">[...]</span> : null}
@@ -52,14 +53,14 @@ function ComponentNode({ display, raw, initiallyExpanded, onComponentSelect, sel
       ) : null}
     </span>
     {isReference && hoverText && resolvedOpen ? <p className="ml-4 text-[11px] text-inkLight" data-testid="resolved-text">&rarr; {hoverText}</p> : null}
-    {display.has_children && open ? <ComponentLayer components={raw.children} initiallyExpanded={initiallyExpanded} onComponentSelect={onComponentSelect} selectedComponentId={selectedComponentId} /> : null}
+    {display.has_children && open ? <ComponentLayer components={raw.children} initiallyExpanded={initiallyExpanded} onComponentSelect={onComponentSelect} selectedComponentId={selectedComponentId} selectedComponentIds={selectedComponentIds} /> : null}
   </li>;
 }
 
-export function ComponentLayer({ components, initiallyExpanded, onComponentSelect, selectedComponentId }) {
+export function ComponentLayer({ components, initiallyExpanded, onComponentSelect, selectedComponentId, selectedComponentIds = null }) {
   const displayed = renderLayer(components);
   return <ul className="mt-1 space-y-1 border-l border-border pl-3">
-    {displayed.map((display, index) => <ComponentNode key={display.component_id} display={display} raw={components[index]} initiallyExpanded={initiallyExpanded} onComponentSelect={onComponentSelect} selectedComponentId={selectedComponentId} />)}
+    {displayed.map((display, index) => <ComponentNode key={display.component_id} display={display} raw={components[index]} initiallyExpanded={initiallyExpanded} onComponentSelect={onComponentSelect} selectedComponentId={selectedComponentId} selectedComponentIds={selectedComponentIds} />)}
   </ul>;
 }
 

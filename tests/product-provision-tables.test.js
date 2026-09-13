@@ -262,3 +262,21 @@ test('the provision rail groups sections the old app\'s way, one anchor per sect
   assert.ok(html.indexOf('Structure &amp; Mechanics') < html.indexOf('Consideration'));
   assert.ok(html.indexOf('Conditions to Closing') < html.indexOf('Termination Rights'));
 });
+
+test('EvidenceSidebar quotes, marks and lights every cited component when a cell rests on several', () => {
+  const fact = {
+    fact_id: 'st-1', family_key: 'MERGER_STRUCTURE_CLOSING', subtype_key: 'MERGER_MECHANICS', section_reference: '1.01',
+    headline: { label: 'The Merger', distinguishing_component_ids: ['st-op'] },
+    components: [
+      { component_id: 'st-actor', kind: 'ACTOR', label: 'merging party', text: 'Merger Sub', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 10, gap_before: false, children: [] },
+      { component_id: 'st-op', kind: 'OPERATION', label: 'merger', text: 'shall be merged with and into', origin: 'OWN', source_span_id: 's', start_byte: 11, end_byte: 40, gap_before: false, children: [] },
+      { component_id: 'st-term', kind: 'TERM', label: 'survivor', text: 'the Company shall continue as the surviving corporation', origin: 'OWN', source_span_id: 's', start_byte: 60, end_byte: 114, gap_before: true, children: [] },
+    ],
+  };
+  const clause = 'Merger Sub shall be merged with and into the Company, and the Company shall continue as the surviving corporation.';
+  const html = renderToStaticMarkup(React.createElement(EvidenceSidebar, { fact, componentId: 'st-actor', componentIds: ['st-actor', 'st-op', 'st-term'], sectionText: { exact_text: clause, start_byte: 0 } }));
+  assert.match(html, /Read together, 3 components/);
+  assert.match(html, /shall be merged with and into/);
+  assert.equal((html.match(/<mark/g) || []).length, 3);
+  assert.equal((html.match(/data-selected="true"/g) || []).length, 3);
+});

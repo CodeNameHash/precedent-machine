@@ -51,17 +51,23 @@ function ReviewTrail({ reviewItem, onDecision, onComment, onReset, busy }) {
 }
 
 export default function EvidenceSidebar({
-  fact, componentId = null, reviewItem = null, provenance = null, sectionText = null,
+  fact, componentId = null, componentIds = null, reviewItem = null, provenance = null, sectionText = null,
   onDecision = null, onComment = null, onReset = null, onClose = null, busy = false,
 }) {
   if (!fact) return null;
-  const component = componentId ? findComponent(fact.components, componentId) : null;
-  const highlightRanges = useMemo(() => {
-    if (component && Number.isSafeInteger(component.start_byte) && Number.isSafeInteger(component.end_byte)) {
-      return [{ start_byte: component.start_byte, end_byte: component.end_byte }];
-    }
-    return [];
-  }, [component]);
+  // A coded cell may rest on several components read together (a merger
+  // form on the merging party, the "with and into" operation, the party
+  // merged into and the survivor; Ben, 2026-09-13: "it's actually the
+  // combined fact ... that makes it a reverse triangular"). Every cited
+  // component is the basis: all are quoted, marked in the clause and lit in
+  // the tree.
+  const citedIds = Array.isArray(componentIds) && componentIds.length ? componentIds : (componentId ? [componentId] : []);
+  const components = citedIds.map((id) => findComponent(fact.components, id)).filter(Boolean);
+  const component = components[0] || null;
+  const highlightRanges = useMemo(() => components
+    .filter((item) => Number.isSafeInteger(item.start_byte) && Number.isSafeInteger(item.end_byte))
+    .map((item) => ({ start_byte: item.start_byte, end_byte: item.end_byte }))
+    .sort((left, right) => left.start_byte - right.start_byte), [components]);
   const clauseParts = useMemo(() => {
     if (!sectionText || !Number.isSafeInteger(sectionText.start_byte) || highlightRanges.length === 0) return null;
     return byteRangesToParts(sectionText.exact_text, sectionText.start_byte, highlightRanges);
@@ -82,7 +88,8 @@ export default function EvidenceSidebar({
 
     <section data-testid="evidence-words">
       <p className="text-[10px] font-bold uppercase tracking-wide text-inkLight">Exact words</p>
-      {component ? <p className="mt-1 font-serif text-[13px] leading-6 text-ink">&ldquo;{component.text}&rdquo;</p> : <p className="mt-1 text-xs text-inkLight">Select a pill to see its supporting words.</p>}
+      {components.length > 1 ? <p className="mt-1 text-[10px] text-inkLight" data-testid="evidence-basis-count">Read together, {components.length} components</p> : null}
+      {component ? components.map((item) => <p key={item.component_id} className="mt-1 font-serif text-[13px] leading-6 text-ink">&ldquo;{item.text}&rdquo;</p>) : <p className="mt-1 text-xs text-inkLight">Select a pill to see its supporting words.</p>}
     </section>
 
     {clauseParts ? <section data-testid="evidence-clause">
@@ -92,7 +99,7 @@ export default function EvidenceSidebar({
 
     <section data-testid="evidence-layers">
       <p className="text-[10px] font-bold uppercase tracking-wide text-inkLight">Full layer tree</p>
-      <ComponentLayer components={fact.components} initiallyExpanded selectedComponentId={componentId} />
+      <ComponentLayer components={fact.components} initiallyExpanded selectedComponentId={componentId} selectedComponentIds={citedIds} />
     </section>
 
     <section data-testid="evidence-checks">

@@ -323,6 +323,16 @@ function applyDecision17StructureGrid(doc) {
     const l = order.indexOf(left.column_id); const r = order.indexOf(right.column_id);
     return (l === -1 ? order.length : l) - (r === -1 ? order.length : r);
   });
+  // Ben, 2026-09-13 20:50 UTC: "it's actually the combined fact that MS is
+  // merged with Company and Company survives that makes it a reverse
+  // triangular (for the purposes of showing the basis for our views)". A
+  // coded form cites every component that establishes it, and the page
+  // shows them all as the basis.
+  for (const columnId of ['mergerFormStep1', 'mergerFormStep2']) {
+    const column = findColumn(table, columnId);
+    column.basis_kinds = ['ACTOR', 'OPERATION', 'OBJECT', 'TERM'];
+    column.guidance = 'The form follows from the merging party (ACTOR), the "merged with and into" operation (OPERATION), the party merged into (OBJECT) and which entity survives (TERM) read together: cite every one of those components the fact has, never the merging party alone.';
+  }
   table.guidance = 'One row for the whole agreement. dealStructure codes the transaction as a whole from the merger provisions: ONE_STEP_MERGER when one merger sub merges with and into the Company (or the Company into the merger sub) and no second merger follows; DOUBLE_MERGER when a second-step merger of the surviving corporation follows; TENDER_OFFER_BACK_END_MERGER when an offer precedes the merger. mergerFormStep1 codes the form of the first (or only) merger from the "with and into" words and which entity survives; the step-2 columns are used only for a DOUBLE_MERGER. Every fact of the family contributes the cells it can; the fact stating the merger itself carries dealStructure and mergerFormStep1.';
 }
 

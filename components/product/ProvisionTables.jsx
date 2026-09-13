@@ -53,7 +53,7 @@ function Cell({ cell, tableKey, rowIndex, selected, onSelect }) {
   if (definitionLink) {
     return (
       <span className="inline-flex items-center">
-        <button type="button" data-testid={testId} data-selected={selected || undefined} onClick={() => onSelect({ tableKey, rowIndex, columnId: cell.column_id, componentId: (cell.component_ids || [])[0] || null, factId: (cell.fact_ids || [])[0] || null })} className={`${baseClass} ${selectedClass}`}>{cell.label}</button>
+        <button type="button" data-testid={testId} data-selected={selected || undefined} onClick={() => onSelect({ tableKey, rowIndex, columnId: cell.column_id, componentId: (cell.component_ids || [])[0] || null, componentIds: cell.component_ids || [], factId: (cell.fact_ids || [])[0] || null })} className={`${baseClass} ${selectedClass}`}>{cell.label}</button>
         {definitionLink}
       </span>
     );
@@ -68,6 +68,7 @@ function Cell({ cell, tableKey, rowIndex, selected, onSelect }) {
         rowIndex,
         columnId: cell.column_id,
         componentId: (cell.component_ids || [])[0] || null,
+        componentIds: cell.component_ids || [],
         factId: (cell.fact_ids || [])[0] || null,
       })}
       className={`${baseClass} ${selectedClass}`}
@@ -401,6 +402,7 @@ export default function ProvisionTables({
         <EvidenceSidebar
           fact={selectedFact}
           componentId={selection.componentId}
+          componentIds={selection.componentIds || null}
           reviewItem={reviewItemsByFactId ? reviewItemsByFactId.get(selection.factId) || null : null}
           provenance={provenanceByFactId ? provenanceByFactId.get(selection.factId) || null : null}
           sectionText={sectionTextByFactId ? sectionTextByFactId.get(selection.factId) || null : null}

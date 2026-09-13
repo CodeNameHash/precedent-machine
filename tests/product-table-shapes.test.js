@@ -512,3 +512,12 @@ test('Decision 27: sections run in the old app\'s order and each carries its rai
   }
   assert.equal(findSectionV3('conditions-b').rail.group, 'Conditions to Closing');
 });
+
+// Decision 29 (Ben, 2026-09-13): the merger form is read from several
+// components together and cites them all.
+test('Decision 29: merger form columns name their basis kinds', () => {
+  const table = findTableV3(findSectionV3('structure-mechanics'), 'structure-mechanics-table');
+  for (const columnId of ['mergerFormStep1', 'mergerFormStep2']) {
+    assert.deepEqual(table.columns.find((c) => c.column_id === columnId).basis_kinds, ['ACTOR', 'OPERATION', 'OBJECT', 'TERM']);
+  }
+});

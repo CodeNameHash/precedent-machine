@@ -243,3 +243,27 @@ test('C4: a verbatim run may span adjacent cited components read in order', () =
   fact.conclusions.cells[0].component_ids = ['closing-when', 'closing-cond'];
   assert.deepEqual(validateFactConclusions(fact, { tableShapes }), []);
 });
+
+// C10 (decision 29, Ben 2026-09-13): a merger form cites the merging party,
+// the operation, the party merged into and the survivor together.
+const structureFact = () => ({
+  fact_id: 'st-1', proposal_id: 'st-1', family_key: 'MERGER_STRUCTURE_CLOSING', subtype_key: 'MERGER_MECHANICS', section_reference: '1.01',
+  headline: { label: 'The Merger', distinguishing_component_ids: ['st-op'] },
+  components: [
+    { component_id: 'st-actor', kind: 'ACTOR', label: 'merging party', text: 'Merger Sub', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 10, gap_before: false, children: [] },
+    { component_id: 'st-op', kind: 'OPERATION', label: 'merger', text: 'shall be merged with and into', origin: 'OWN', source_span_id: 's', start_byte: 11, end_byte: 40, gap_before: false, children: [] },
+    { component_id: 'st-obj', kind: 'OBJECT', label: 'merged into', text: 'the Company', origin: 'OWN', source_span_id: 's', start_byte: 41, end_byte: 52, gap_before: false, children: [] },
+    { component_id: 'st-term', kind: 'TERM', label: 'survivor', text: 'the Company shall continue as the surviving corporation', origin: 'OWN', source_span_id: 's', start_byte: 60, end_byte: 110, gap_before: true, children: [] },
+  ],
+  conclusions: { table_key: 'structure-mechanics-table', row_label: 'The deal', cells: [
+    { column_id: 'mergerFormStep1', code: 'REVERSE_TRIANGULAR_MERGER', component_ids: ['st-actor', 'st-op', 'st-obj', 'st-term'] },
+  ] },
+});
+
+test('C10: a merger form cited on every basis component is valid; cited on the merging party alone it is a problem', () => {
+  assert.deepEqual(validateFactConclusions(structureFact(), { tableShapes }), []);
+  const partial = structureFact();
+  partial.conclusions.cells[0].component_ids = ['st-actor'];
+  const problems = validateFactConclusions(partial, { tableShapes });
+  assert.ok(problems.some((p) => /basis incomplete, no cited OPERATION \/ OBJECT \/ TERM component/.test(p)), problems.join('; '));
+});
