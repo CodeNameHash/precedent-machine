@@ -1,0 +1,4114 @@
+{
+  "schema_version": "PRODUCT_TABLE_SHAPES/V2",
+  "status": "DRAFT_FOR_BEN_REVIEW",
+  "generated_from": [
+    "components/review/table-configs/consideration-hero.config.js",
+    "components/review/table-configs/equity-awards.config.js",
+    "components/review/table-configs/structure-mechanics.config.js",
+    "components/review/table-configs/conditions.config.js",
+    "components/review/table-configs/conditions-m.config.js",
+    "components/review/table-configs/approvals-votes.config.js",
+    "components/review/table-configs/votes-approvals-meeting.config.js",
+    "components/review/table-configs/sec-meeting.config.js",
+    "components/review/table-configs/termination-rights.config.js",
+    "components/review/table-configs/termination-fees.config.js",
+    "components/review/table-configs/tail-fee.config.js",
+    "components/review/table-configs/nosol-section.config.js",
+    "components/review/table-configs/nosol-noshop.config.js",
+    "components/review/table-configs/nosol-fiduciary.config.js",
+    "components/review/table-configs/nosol-intervening.config.js",
+    "components/review/table-configs/nosol-superior.config.js",
+    "components/review/table-configs/ioc-exceptions.config.js",
+    "components/review/table-configs/general-covenants.config.js",
+    "components/review/table-configs/employee-benefits.config.js",
+    "components/review/table-configs/antitrust-regulatory.config.js",
+    "components/review/table-configs/representations-qualifiers.config.js",
+    "components/review/table-configs/no-other-reps-fraud.config.js",
+    "components/review/table-configs/mae-definitions.config.js",
+    "components/review/table-configs/material-contracts.config.js",
+    "components/review/table-configs/advisers-fees-expenses.config.js",
+    "components/review/table-configs/misc-boilerplate.config.js",
+    "components/review/table-configs/fiduciary-standard-labels.js",
+    "components/review/table-configs/board-change-standard.js",
+    "components/review/table-configs/vote-standard.js",
+    "contracts/product/table-shapes.v1.json",
+    "fixtures/product/topbuild-review/print-text.v1.json",
+    "lib/employee-benefits.js"
+  ],
+  "sections": [
+    {
+      "section_key": "consideration-hero",
+      "title": "Consideration",
+      "legacy_config": "components/review/table-configs/consideration-hero.config.js",
+      "v2_family_keys": [
+        {
+          "key": "CONSIDERATION",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "consideration-hero-summary",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "value",
+              "header": "Value",
+              "render": "value",
+              "value_kind": "AMOUNT",
+              "fill_from": [
+                "THRESHOLD",
+                "AMOUNT"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Cash Election",
+            "Stock Election"
+          ]
+        },
+        {
+          "table_key": "consideration-hero-election-mechanics",
+          "group_header": "ELECTION MECHANICS",
+          "term_column": null,
+          "columns": [
+            {
+              "column_id": "body",
+              "header": "",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Election caps",
+            "Election deadline",
+            "Oversubscription / proration",
+            "If no election"
+          ]
+        },
+        {
+          "table_key": "consideration-hero-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "considerationType",
+              "header": "Detail",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "MIXED_ELECTION",
+                  "label": "Mixed election",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 5,
+                    "row_label": "Consideration type"
+                  }
+                },
+                {
+                  "code": "ALL_CASH_ELECTION",
+                  "label": "All-cash election",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "CONSIDERATION/ELECTION supports an all-cash deal with no stock election; not shown on this mixed-election deal but needed for the axis to be comparable across deals."
+                },
+                {
+                  "code": "ALL_STOCK_ELECTION",
+                  "label": "All-stock election",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "CONSIDERATION/ELECTION supports an all-stock deal with no cash election; same reasoning."
+                }
+              ],
+              "fill_from": [
+                "STANDARD"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Consideration type",
+            "Appraisal rights",
+            "Withholding"
+          ]
+        }
+      ],
+      "print_pages": [
+        4,
+        5
+      ]
+    },
+    {
+      "section_key": "equity-awards",
+      "title": "Equity Awards",
+      "legacy_config": "components/review/table-configs/equity-awards.config.js",
+      "v2_family_keys": [
+        {
+          "key": "CONSIDERATION",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "equity-awards-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Equity Type",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "consideration",
+              "header": "Consideration",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "CASH",
+                  "label": "Cash",
+                  "tone": "neutral",
+                  "source": "both",
+                  "print_evidence": {
+                    "page": 15,
+                    "row_label": "Stock Options"
+                  }
+                },
+                {
+                  "code": "PARENT_STOCK_ROLLOVER",
+                  "label": "Parent stock / rollover",
+                  "tone": "neutral",
+                  "source": "both",
+                  "print_evidence": {
+                    "page": 15,
+                    "row_label": "RSUs"
+                  }
+                },
+                {
+                  "code": "CANCELLED_NO_CONSIDERATION",
+                  "label": "Cancelled — no consideration",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                }
+              ],
+              "fill_from": [
+                "STANDARD"
+              ]
+            },
+            {
+              "column_id": "vestingTreatment",
+              "header": "Vesting Treatment",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "CANCELLED_NO_CONSIDERATION",
+                  "label": "Cancelled — no consideration",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                },
+                {
+                  "code": "CONTINUES_VESTING_DOUBLE_TRIGGER_PROTECTION",
+                  "label": "Continues vesting (double-trigger protection)",
+                  "tone": "neutral",
+                  "source": "both",
+                  "print_evidence": {
+                    "page": 15,
+                    "row_label": "PSUs"
+                  }
+                },
+                {
+                  "code": "ASSUMED_BY_PARENT",
+                  "label": "Assumed by Parent",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                },
+                {
+                  "code": "PRO_RATA_ACCELERATION",
+                  "label": "Pro-rata acceleration",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                },
+                {
+                  "code": "ROLLOVER_INTO_PARENT_AWARD",
+                  "label": "Rollover into Parent award",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                },
+                {
+                  "code": "FULLY_VESTED_ACCELERATED",
+                  "label": "Fully vested (accelerated)",
+                  "tone": "neutral",
+                  "source": "both",
+                  "print_evidence": {
+                    "page": 15,
+                    "row_label": "Restricted Stock Awards"
+                  }
+                },
+                {
+                  "code": "CANCELLED_FOR_CASH_CONSIDERATION",
+                  "label": "Cancelled for cash consideration",
+                  "tone": "neutral",
+                  "source": "both",
+                  "print_evidence": {
+                    "page": 15,
+                    "row_label": "Stock Options"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD"
+              ]
+            },
+            {
+              "column_id": "cvrEntitlement",
+              "header": "CVR Entitlement",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "ENTITLED",
+                  "label": "Entitled",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "CONSIDERATION/CVR_COMPONENT supports a CVR entitlement carried through to converted equity awards; this deal shows no CVR (all four rows print \"—\"), so only the absent/entitled axis is proposed, not a label drawn from this print."
+                },
+                {
+                  "code": "NOT_ENTITLED",
+                  "label": "Not entitled",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "complement of the above; matches the \"—\" seen on every row of this deal's CVR Entitlement column."
+                }
+              ],
+              "fill_from": [
+                "STANDARD"
+              ]
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ],
+      "print_pages": [
+        15,
+        16,
+        17
+      ]
+    },
+    {
+      "section_key": "structure-mechanics",
+      "title": "Structure & Mechanics",
+      "legacy_config": "components/review/table-configs/structure-mechanics.config.js",
+      "v2_family_keys": [
+        {
+          "key": "MERGER_STRUCTURE_CLOSING",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "structure-mechanics-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "dealStructure",
+              "header": "Deal Structure",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "ONE_STEP_MERGER",
+                  "label": "One Step Merger",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 1,
+                    "row_label": "Deal structure"
+                  }
+                },
+                {
+                  "code": "TWO_STEP_MERGER",
+                  "label": "Two Step Merger",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "the print's Deal structure axis names only the value shown on this deal; V2 MERGER_STRUCTURE_CLOSING/TRANSACTION_STEP supports a two-step structure as the complementary code for cross-deal comparability."
+                }
+              ],
+              "fill_from": [
+                "STANDARD"
+              ]
+            },
+            {
+              "column_id": "signals",
+              "header": "Merger Form",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "FORWARD_MERGER",
+                  "label": "Forward merger",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                },
+                {
+                  "code": "REVERSE_TRIANGULAR_MERGER",
+                  "label": "Reverse triangular merger",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                },
+                {
+                  "code": "REVERSE_TRIANGULAR_MERGER",
+                  "label": "Reverse triangular merger",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 1,
+                    "row_label": "Merger form"
+                  }
+                },
+                {
+                  "code": "FORWARD_TRIANGULAR_MERGER",
+                  "label": "Forward triangular merger",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 1,
+                    "row_label": "Merger form"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD"
+              ]
+            },
+            {
+              "column_id": "closingLocation",
+              "header": "Closing Location",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            },
+            {
+              "column_id": "closingTiming",
+              "header": "Closing Timing",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            },
+            {
+              "column_id": "effectiveTime",
+              "header": "Effective Time",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            },
+            {
+              "column_id": "effectsOfMerger",
+              "header": "Effects of Merger",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "DGCL",
+                  "label": "DGCL",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 1,
+                    "row_label": "Effects of merger"
+                  }
+                },
+                {
+                  "code": "DLLCA",
+                  "label": "DLLCA",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 1,
+                    "row_label": "Effects of merger"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD"
+              ]
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ],
+      "print_pages": [
+        1
+      ]
+    },
+    {
+      "section_key": "conditions",
+      "title": "Closing Conditions",
+      "legacy_config": "components/review/table-configs/conditions.config.js",
+      "v2_family_keys": [
+        {
+          "key": "CLOSING_CONDITIONS",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "conditions-table",
+          "group_header": "MUTUAL CONDITIONS",
+          "term_column": {
+            "header": "Condition",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "voteStandard",
+              "header": "Vote Standard",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "TWO_THIRDS_OF_OUTSTANDING_SHARES",
+                  "label": "Two-thirds of outstanding shares",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                },
+                {
+                  "code": "MAJORITY_OF_OUTSTANDING_SHARES",
+                  "label": "Majority of outstanding shares",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                },
+                {
+                  "code": "MAJORITY_OF_VOTING_POWER",
+                  "label": "Majority of voting power",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                },
+                {
+                  "code": "MAJORITY_STOCKHOLDER_APPROVAL",
+                  "label": "Majority stockholder approval",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                }
+              ],
+              "fill_from": [
+                "STANDARD",
+                "PERCENTAGE"
+              ]
+            },
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Stockholder Approval",
+            "No Legal Restraint",
+            "Antitrust / Regulatory Clearance",
+            "S-4 / Proxy Effective",
+            "Stock Exchange Listing"
+          ]
+        }
+      ],
+      "print_pages": [
+        115
+      ]
+    },
+    {
+      "section_key": "conditions-m",
+      "title": "Closing Conditions — Mutual",
+      "legacy_config": "components/review/table-configs/conditions-m.config.js",
+      "v2_family_keys": [
+        {
+          "key": "CLOSING_CONDITIONS",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "conditions-m-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Condition",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "presence",
+              "header": "Coverage",
+              "render": "boolean",
+              "fill_from": [
+                "CONDITION"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Condition Frustration / Prevention",
+            "Covenant Performance",
+            "Dissenting Shares Threshold",
+            "No Material Adverse Effect (Parent)",
+            "Covenant Performance (Parent)",
+            "Financing / Sufficient Funds"
+          ]
+        }
+      ],
+      "print_pages": [
+        116
+      ]
+    },
+    {
+      "section_key": "conditions-b",
+      "title": "Closing Conditions — Buyer",
+      "legacy_config": "components/review/table-configs/conditions-m.config.js",
+      "v2_family_keys": [
+        {
+          "key": "CLOSING_CONDITIONS",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "conditions-b-table",
+          "group_header": "BUYER'S CONDITIONS — TO PARENT / MERGER SUB'S OBLIGATION",
+          "term_column": {
+            "header": "Condition",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "standard",
+              "header": "Standard",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "TRUE_IN_ALL_RESPECTS",
+                  "label": "TRUE IN ALL RESPECTS",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 115,
+                    "row_label": "Accuracy of Representations"
+                  }
+                },
+                {
+                  "code": "TRUE_EXCEPT_FOR_DE_MINIMIS_INACCURACIES",
+                  "label": "TRUE EXCEPT FOR DE MINIMIS INACCURACIES",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 115,
+                    "row_label": "Accuracy of Representations"
+                  }
+                },
+                {
+                  "code": "TRUE_IN_ALL_MATERIAL_RESPECTS",
+                  "label": "TRUE IN ALL MATERIAL RESPECTS",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 115,
+                    "row_label": "Accuracy of Representations"
+                  }
+                },
+                {
+                  "code": "TRUE_EXCEPT_WHERE_FAILURE_WOULD_NOT_CAUSE_AN_MAE",
+                  "label": "TRUE EXCEPT WHERE FAILURE WOULD NOT CAUSE AN MAE",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 115,
+                    "row_label": "Accuracy of Representations"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD",
+                "MATERIALITY_QUALIFIER"
+              ]
+            },
+            {
+              "column_id": "reference",
+              "header": "Reference",
+              "render": "verbatim",
+              "fill_from": [
+                "CROSS_REFERENCE"
+              ]
+            },
+            {
+              "column_id": "materialityQualifiersDisregarded",
+              "header": "Materiality Qualifiers Disregarded",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "MATERIALITY_QUALIFIERS_DISREGARDED",
+                  "label": "Materiality qualifiers disregarded",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 115,
+                    "row_label": "Accuracy of Representations"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD",
+                "MATERIALITY_QUALIFIER"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Accuracy of Representations",
+            "No Material Adverse Effect",
+            "Officer's Certificate"
+          ]
+        }
+      ],
+      "print_pages": [
+        115
+      ]
+    },
+    {
+      "section_key": "conditions-s",
+      "title": "Closing Conditions — Seller",
+      "legacy_config": "components/review/table-configs/conditions-m.config.js",
+      "v2_family_keys": [
+        {
+          "key": "CLOSING_CONDITIONS",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "conditions-s-table",
+          "group_header": "TARGET'S CONDITIONS — TO THE COMPANY'S OBLIGATION",
+          "term_column": {
+            "header": "Condition",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "standard",
+              "header": "Standard",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "TRUE_IN_ALL_RESPECTS",
+                  "label": "TRUE IN ALL RESPECTS",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 115,
+                    "row_label": "Accuracy of Representations"
+                  }
+                },
+                {
+                  "code": "TRUE_EXCEPT_FOR_DE_MINIMIS_INACCURACIES",
+                  "label": "TRUE EXCEPT FOR DE MINIMIS INACCURACIES",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 115,
+                    "row_label": "Accuracy of Representations"
+                  }
+                },
+                {
+                  "code": "TRUE_IN_ALL_MATERIAL_RESPECTS",
+                  "label": "TRUE IN ALL MATERIAL RESPECTS",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 115,
+                    "row_label": "Accuracy of Representations"
+                  }
+                },
+                {
+                  "code": "TRUE_EXCEPT_WHERE_FAILURE_WOULD_NOT_CAUSE_AN_MAE",
+                  "label": "TRUE EXCEPT WHERE FAILURE WOULD NOT CAUSE AN MAE",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 115,
+                    "row_label": "Accuracy of Representations"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD",
+                "MATERIALITY_QUALIFIER"
+              ]
+            },
+            {
+              "column_id": "reference",
+              "header": "Reference",
+              "render": "verbatim",
+              "fill_from": [
+                "CROSS_REFERENCE"
+              ]
+            },
+            {
+              "column_id": "materialityQualifiersDisregarded",
+              "header": "Materiality Qualifiers Disregarded",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "MATERIALITY_QUALIFIERS_DISREGARDED",
+                  "label": "Materiality qualifiers disregarded",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 115,
+                    "row_label": "Accuracy of Representations"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD",
+                "MATERIALITY_QUALIFIER"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Accuracy of Representations",
+            "Officer's Certificate"
+          ]
+        }
+      ],
+      "print_pages": [
+        116
+      ]
+    },
+    {
+      "section_key": "approvals-votes",
+      "title": "Approvals / Votes",
+      "legacy_config": "components/review/table-configs/approvals-votes.config.js",
+      "v2_family_keys": [
+        {
+          "key": "TERMINATION",
+          "confidence": "low"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "approvals-votes-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "kind",
+              "header": "Kind",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            },
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ],
+      "print_pages": []
+    },
+    {
+      "section_key": "votes-approvals-meeting",
+      "title": "Votes / Approvals / SEC Filing / Meeting Requirements",
+      "legacy_config": "components/review/table-configs/votes-approvals-meeting.config.js",
+      "v2_family_keys": [
+        {
+          "key": "PROXY_MEETING",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "votes-approvals-meeting-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "voteStandard",
+              "header": "Vote Standard",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "TWO_THIRDS_OF_OUTSTANDING_SHARES",
+                  "label": "Two-thirds of outstanding shares",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                },
+                {
+                  "code": "MAJORITY_OF_OUTSTANDING_SHARES",
+                  "label": "Majority of outstanding shares",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                },
+                {
+                  "code": "MAJORITY_OF_VOTING_POWER",
+                  "label": "Majority of voting power",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                },
+                {
+                  "code": "MAJORITY_STOCKHOLDER_APPROVAL",
+                  "label": "Majority stockholder approval",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                }
+              ],
+              "fill_from": [
+                "STANDARD",
+                "PERCENTAGE"
+              ]
+            },
+            {
+              "column_id": "value",
+              "header": "Value",
+              "render": "value",
+              "value_kind": "PERIOD",
+              "trigger": {
+                "vocabulary": [
+                  {
+                    "code": "AFTER_AGREEMENT_DATE",
+                    "label": "after agreement date",
+                    "tone": "neutral",
+                    "source": "print",
+                    "print_evidence": {
+                      "page": 114,
+                      "row_label": "Proxy filing deadline"
+                    }
+                  },
+                  {
+                    "code": "AFTER_EFFECTIVENESS",
+                    "label": "after effectiveness",
+                    "tone": "neutral",
+                    "source": "print",
+                    "print_evidence": {
+                      "page": 114,
+                      "row_label": "Mailing"
+                    }
+                  },
+                  {
+                    "code": "AFTER_MAILING",
+                    "label": "after mailing",
+                    "tone": "neutral",
+                    "source": "print",
+                    "print_evidence": {
+                      "page": 114,
+                      "row_label": "Meeting"
+                    }
+                  }
+                ]
+              },
+              "fill_from": [
+                "PERIOD"
+              ]
+            },
+            {
+              "column_id": "requirement",
+              "header": "Requirement",
+              "render": "boolean",
+              "fill_from": [
+                "CONDITION"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Company stockholder approval",
+            "Parent / Merger Sub approvals",
+            "Proxy filing deadline",
+            "Mailing",
+            "Meeting",
+            "Meeting record date",
+            "Broker search"
+          ]
+        },
+        {
+          "table_key": "votes-approvals-meeting-adjournment",
+          "group_header": null,
+          "term_column": {
+            "header": "Adjournment Rights",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "permittedReason",
+              "header": "Permitted Reason",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "SUPPLEMENTAL_DISCLOSURE",
+                  "label": "Supplemental disclosure",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 114,
+                    "row_label": "Adjournment rights"
+                  }
+                },
+                {
+                  "code": "ABSENCE_OF_QUORUM",
+                  "label": "Absence of quorum",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 114,
+                    "row_label": "Adjournment rights"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD"
+              ]
+            },
+            {
+              "column_id": "controllingParty",
+              "header": "Controlling Party",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "COMPANY",
+                  "label": "Company",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 114,
+                    "row_label": "Adjournment rights"
+                  }
+                },
+                {
+                  "code": "PARENT",
+                  "label": "Parent",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 114,
+                    "row_label": "Adjournment rights"
+                  }
+                }
+              ],
+              "fill_from": [
+                "ACTOR"
+              ]
+            },
+            {
+              "column_id": "restriction",
+              "header": "Restriction",
+              "render": "verbatim",
+              "fill_from": [
+                "CONDITION"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Company adjournment rights",
+            "Parent adjournment rights"
+          ]
+        }
+      ],
+      "print_pages": [
+        114
+      ]
+    },
+    {
+      "section_key": "sec-meeting",
+      "title": "Shareholder Meeting / Proxy / Tender-Offer SEC Matters",
+      "legacy_config": "components/review/table-configs/sec-meeting.config.js",
+      "v2_family_keys": [
+        {
+          "key": "PROXY_MEETING",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "sec-meeting-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "subject",
+              "header": "Subject",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            },
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            },
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ],
+      "print_pages": []
+    },
+    {
+      "section_key": "termination-rights",
+      "title": "Termination Rights",
+      "legacy_config": "components/review/table-configs/termination-rights.config.js",
+      "v2_family_keys": [
+        {
+          "key": "TERMINATION",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "termination-rights-mutual",
+          "group_header": "MUTUAL / EITHER PARTY",
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "writtenConsent",
+              "header": "Written Consent",
+              "render": "boolean",
+              "fill_from": [
+                "CONDITION"
+              ]
+            },
+            {
+              "column_id": "outsideDate",
+              "header": "Outside Date",
+              "render": "value",
+              "value_kind": "DATE",
+              "fill_from": [
+                "DATE"
+              ]
+            },
+            {
+              "column_id": "exercisedBy",
+              "header": "Exercised By",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "EITHER_PARTY_MAY_ELECT_NOT_AUTOMATIC",
+                  "label": "Either party may elect (not automatic)",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 120,
+                    "row_label": "Outside / End Date"
+                  }
+                }
+              ],
+              "fill_from": [
+                "ACTOR"
+              ]
+            },
+            {
+              "column_id": "voteThreshold",
+              "header": "Vote Threshold",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "TWO_THIRDS_OF_OUTSTANDING_SHARES",
+                  "label": "Two-thirds of outstanding shares",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                },
+                {
+                  "code": "MAJORITY_OF_OUTSTANDING_SHARES",
+                  "label": "Majority of outstanding shares",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                },
+                {
+                  "code": "MAJORITY_OF_VOTING_POWER",
+                  "label": "Majority of voting power",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                },
+                {
+                  "code": "MAJORITY_STOCKHOLDER_APPROVAL",
+                  "label": "Majority stockholder approval",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                }
+              ],
+              "fill_from": [
+                "STANDARD",
+                "PERCENTAGE"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Mutual consent",
+            "Outside / End Date",
+            "Legal restraint / order",
+            "Stockholder vote not obtained"
+          ]
+        },
+        {
+          "table_key": "termination-rights-buyer-may-terminate",
+          "group_header": "BUYER / PARENT MAY TERMINATE",
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "faultBasedCarveOut",
+              "header": "Fault-Based Carve-Out",
+              "render": "boolean",
+              "fill_from": [
+                "EXCEPTION"
+              ]
+            },
+            {
+              "column_id": "trigger",
+              "header": "Trigger",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "ADVERSE_RECOMMENDATION_CHANGE",
+                  "label": "Adverse Recommendation Change",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 120,
+                    "row_label": "Change of Recommendation"
+                  }
+                }
+              ],
+              "fill_from": [
+                "TRIGGER"
+              ]
+            },
+            {
+              "column_id": "window",
+              "header": "Window",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "PRE_STOCKHOLDER_VOTE_ONLY",
+                  "label": "Pre-stockholder-vote only",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 120,
+                    "row_label": "Change of Recommendation"
+                  }
+                }
+              ],
+              "fill_from": [
+                "PERIOD"
+              ]
+            },
+            {
+              "column_id": "curePeriodValue",
+              "header": "Cure Period Value",
+              "render": "value",
+              "addition": true,
+              "reason": "TERMINATION/BREACH supports a cure-period value distinct from the outside date; the print shows the breach right as a bare \"No\" fault-based-carve-out pill with the cure mechanics only in clause text (§6.3(b)).",
+              "value_kind": "PERIOD",
+              "fill_from": [
+                "PERIOD"
+              ]
+            },
+            {
+              "column_id": "curePeriodEnd",
+              "header": "Cure Period End",
+              "render": "value",
+              "addition": true,
+              "reason": "companion to Cure Period Value -- the earlier-of date the cure window actually runs to.",
+              "value_kind": "DATE",
+              "fill_from": [
+                "DATE"
+              ]
+            },
+            {
+              "column_id": "curableOrNot",
+              "header": "Curable or Not",
+              "render": "boolean",
+              "addition": true,
+              "reason": "TERMINATION layer_rules calls out \"curable or not\" as its own branch; not a distinct pill on this print.",
+              "fill_from": [
+                "CONDITION"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Company (Target) breach",
+            "Change of Recommendation"
+          ]
+        },
+        {
+          "table_key": "termination-rights-company-may-terminate",
+          "group_header": "COMPANY / TARGET MAY TERMINATE",
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "faultBasedCarveOut",
+              "header": "Fault-Based Carve-Out",
+              "render": "boolean",
+              "fill_from": [
+                "EXCEPTION"
+              ]
+            },
+            {
+              "column_id": "terminatorBreachBar",
+              "header": "Terminator-Breach Bar",
+              "render": "boolean",
+              "addition": true,
+              "reason": "TERMINATION/BREACH's own condition (Ben, plan 5B.8 note): no termination where the terminator primarily caused the outside date to be missed -- present in clause text (§6.2(a) proviso) but not a pill on this print.",
+              "fill_from": [
+                "CONDITION"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Parent (Buyer) breach"
+          ]
+        },
+        {
+          "table_key": "termination-rights-remedies",
+          "group_header": "REMEDIES (CROSS-REFERENCE)",
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "value",
+              "header": "Value",
+              "render": "boolean",
+              "fill_from": [
+                "CONDITION"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Willful-breach carve-out",
+            "Willful-breach carve-out to sole remedy",
+            "Specific performance available to both parties"
+          ]
+        }
+      ],
+      "print_pages": [
+        119,
+        120,
+        121,
+        122
+      ]
+    },
+    {
+      "section_key": "termination-fees",
+      "title": "Termination Fees",
+      "legacy_config": "components/review/table-configs/termination-fees.config.js",
+      "v2_family_keys": [
+        {
+          "key": "TERMINATION_FEE",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "termination-fees-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "amount",
+              "header": "Amount",
+              "render": "value",
+              "value_kind": "AMOUNT",
+              "fill_from": [
+                "THRESHOLD",
+                "AMOUNT"
+              ]
+            },
+            {
+              "column_id": "trigger",
+              "header": "Trigger",
+              "render": "verbatim",
+              "fill_from": [
+                "TRIGGER"
+              ]
+            },
+            {
+              "column_id": "payer",
+              "header": "Payer",
+              "render": "vocabulary",
+              "addition": true,
+              "reason": "TERMINATION_FEE/FEE_AMOUNT names a payer role; this print shows the fee amount and trigger prose only, payer is implied by which row (Company/Reverse) rather than stated as its own pill.",
+              "vocabulary": [
+                {
+                  "code": "COMPANY",
+                  "label": "Company",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "the \"Company termination fee\" row implies the Company as payer; not stated as its own pill on this print."
+                },
+                {
+                  "code": "PARENT",
+                  "label": "Parent",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "the \"Reverse termination fee\" row implies Parent as payer; same reasoning."
+                }
+              ],
+              "fill_from": [
+                "ACTOR"
+              ]
+            },
+            {
+              "column_id": "deemingRulePresent",
+              "header": "Deeming Rule Present",
+              "render": "boolean",
+              "addition": true,
+              "reason": "TERMINATION_FEE/FEE_TRIGGER supports a \"deemed\" trigger variant (e.g. deemed acceptance of a proposal); not distinguished on this print.",
+              "fill_from": [
+                "CONDITION"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Company termination fee",
+            "Reverse termination fee",
+            "Sole and exclusive remedy",
+            "Willful-breach carve-out",
+            "Willful-breach carve-out to sole remedy",
+            "Interest on late payment"
+          ]
+        }
+      ],
+      "print_pages": [
+        122
+      ]
+    },
+    {
+      "section_key": "tail-fee",
+      "title": "Tail Fee Mechanics",
+      "legacy_config": "components/review/table-configs/tail-fee.config.js",
+      "v2_family_keys": [
+        {
+          "key": "TERMINATION_FEE",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "tail-fee-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "value",
+              "header": "Value",
+              "render": "value",
+              "value_kind": "PERIOD",
+              "fill_from": [
+                "PERIOD"
+              ]
+            },
+            {
+              "column_id": "tailPeriod",
+              "header": "Tail Period",
+              "render": "value",
+              "addition": true,
+              "reason": "TERMINATION_FEE/TAIL_PERIOD names the tail window as its own component; already present as this table's \"Tail window\" row, promoted here as an explicit reusable column for cross-deal comparison rather than a fixed-row value only.",
+              "value_kind": "PERIOD",
+              "fill_from": [
+                "PERIOD"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Tail window",
+            "Threshold % for Company Takeover Proposal",
+            "Termination scenarios",
+            "Qualifying transaction scope"
+          ]
+        }
+      ],
+      "print_pages": [
+        128
+      ]
+    },
+    {
+      "section_key": "nosol",
+      "title": "No-Solicitation / No-Shop",
+      "legacy_config": "components/review/table-configs/nosol-section.config.js",
+      "v2_family_keys": [
+        {
+          "key": "NO_SHOP",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "nosol-table",
+          "group_header": null,
+          "term_column": null,
+          "columns": [
+            {
+              "column_id": "body",
+              "header": "",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ],
+      "print_pages": []
+    },
+    {
+      "section_key": "nosol-noshop",
+      "title": "No-Shop Core Mechanics",
+      "legacy_config": "components/review/table-configs/nosol-noshop.config.js",
+      "v2_family_keys": [
+        {
+          "key": "NO_SHOP",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "nosol-noshop-go-shop",
+          "group_header": "GO-SHOP",
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "goShop",
+              "header": "Provision",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "NONE",
+                  "label": "None",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 97,
+                    "row_label": "Go-shop"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Go-shop"
+          ]
+        },
+        {
+          "table_key": "nosol-noshop-core-mechanics",
+          "group_header": "NO-SHOP CORE MECHANICS",
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            },
+            {
+              "column_id": "prohibitedVerb",
+              "header": "Prohibited Verb",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "SOLICIT",
+                  "label": "Solicit",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "the print's \"No-shop / non-solicit restriction\" row is one fused litany sentence (\"Solicit / initiate or knowingly encourage or facilitate ... an Acquisition Proposal\"), never per-verb pills; FACT_COMPONENTS/V2 LITANY carries the litany's members, so a present/absent column per prohibited verb is new structure the old page lacked, per Ben's \"add to the table structure\" instruction."
+                },
+                {
+                  "code": "INITIATE",
+                  "label": "Initiate",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "the print's \"No-shop / non-solicit restriction\" row is one fused litany sentence (\"Solicit / initiate or knowingly encourage or facilitate ... an Acquisition Proposal\"), never per-verb pills; FACT_COMPONENTS/V2 LITANY carries the litany's members, so a present/absent column per prohibited verb is new structure the old page lacked, per Ben's \"add to the table structure\" instruction."
+                },
+                {
+                  "code": "KNOWINGLY_ENCOURAGE",
+                  "label": "Knowingly encourage",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "the print's \"No-shop / non-solicit restriction\" row is one fused litany sentence (\"Solicit / initiate or knowingly encourage or facilitate ... an Acquisition Proposal\"), never per-verb pills; FACT_COMPONENTS/V2 LITANY carries the litany's members, so a present/absent column per prohibited verb is new structure the old page lacked, per Ben's \"add to the table structure\" instruction."
+                },
+                {
+                  "code": "FACILITATE",
+                  "label": "Facilitate",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "the print's \"No-shop / non-solicit restriction\" row is one fused litany sentence (\"Solicit / initiate or knowingly encourage or facilitate ... an Acquisition Proposal\"), never per-verb pills; FACT_COMPONENTS/V2 LITANY carries the litany's members, so a present/absent column per prohibited verb is new structure the old page lacked, per Ben's \"add to the table structure\" instruction."
+                }
+              ],
+              "fill_from": [
+                "CONDITION"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Cease discussions",
+            "No-shop / non-solicit restriction",
+            "Representative control standard",
+            "No-shop exceptions",
+            "Don't-ask-don't-waive / standstill enforcement"
+          ]
+        },
+        {
+          "table_key": "nosol-noshop-notice",
+          "group_header": "NOTICE",
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "value",
+              "header": "Value",
+              "render": "value",
+              "value_kind": "PERIOD",
+              "fill_from": [
+                "PERIOD"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Notice",
+            "Notice period",
+            "Notice content"
+          ]
+        }
+      ],
+      "print_pages": [
+        97
+      ]
+    },
+    {
+      "section_key": "nosol-fiduciary",
+      "title": "Fiduciary-Out Mechanics",
+      "legacy_config": "components/review/table-configs/nosol-fiduciary.config.js",
+      "v2_family_keys": [
+        {
+          "key": "NO_SHOP",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "nosol-fiduciary-table",
+          "group_header": "FIDUCIARY-OUT / ENGAGEMENT",
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "IS_A_SUPERIOR_PROPOSAL",
+                  "label": "Is a Superior Proposal",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                },
+                {
+                  "code": "CONSTITUTES_OR_COULD_LEAD_TO_A_SUPERIOR_PROPOSAL",
+                  "label": "Constitutes or could lead to a Superior Proposal",
+                  "tone": "neutral",
+                  "source": "both",
+                  "print_evidence": {
+                    "page": 97,
+                    "row_label": "Engagement standard (coded)"
+                  }
+                },
+                {
+                  "code": "CONSTITUTES_OR_COULD_REASONABLY_BE_EXPECTED_TO_LEAD_TO_A_SUPERIOR_PROPOSAL",
+                  "label": "Constitutes or could reasonably be expected to lead to a Superior Proposal",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                },
+                {
+                  "code": "CONTINUES_TO_CONSTITUTE_A_SUPERIOR_PROPOSAL",
+                  "label": "Continues to constitute a Superior Proposal",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                }
+              ],
+              "fill_from": [
+                "STANDARD"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Engagement standard",
+            "Final determination standard",
+            "Engagement standard (coded)"
+          ]
+        },
+        {
+          "table_key": "nosol-fiduciary-change-of-recommendation",
+          "group_header": "CHANGE OF RECOMMENDATION",
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "value",
+              "header": "Value",
+              "render": "boolean",
+              "fill_from": [
+                "CONDITION"
+              ]
+            },
+            {
+              "column_id": "prohibitedAction",
+              "header": "Prohibited Action",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "WITHHOLD_WITHDRAW_QUALIFY_MODIFY_THE_BOARD_RECOMMENDATION_ADVERSE_TO_PARENT",
+                  "label": "Withhold / withdraw / qualify / modify the Board Recommendation adverse to Parent",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 98,
+                    "row_label": "Change of Recommendation — prohibited actions"
+                  }
+                },
+                {
+                  "code": "FAIL_TO_PUBLICLY_REAFFIRM_THE_RECOMMENDATION_ON_REQUEST_WITHIN_10_BUSINESS_DAYS",
+                  "label": "Fail to publicly reaffirm the Recommendation on request (within 10 business days)",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 98,
+                    "row_label": "Change of Recommendation — prohibited actions"
+                  }
+                },
+                {
+                  "code": "APPROVE_ENDORSE_RECOMMEND_DECLARE_ADVISABLE_A_PROPOSAL",
+                  "label": "Approve / endorse / recommend / declare advisable a proposal",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 98,
+                    "row_label": "Change of Recommendation — prohibited actions"
+                  }
+                },
+                {
+                  "code": "FAIL_TO_INCLUDE_THE_BOARD_RECOMMENDATION_IN_THE_PROXY_14D_9_INFO_STATEMENT",
+                  "label": "Fail to include the Board Recommendation in the Proxy / 14D-9 / Info Statement",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 98,
+                    "row_label": "Change of Recommendation — prohibited actions"
+                  }
+                },
+                {
+                  "code": "ENTER_INTO_AN_LOI_ACQUISITION_MERGER_AGREEMENT_OTHER_THAN_AN_ACA",
+                  "label": "Enter into an LOI / acquisition / merger agreement (other than an ACA)",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 98,
+                    "row_label": "Change of Recommendation — prohibited actions"
+                  }
+                },
+                {
+                  "code": "FAIL_TO_RECOMMEND_AGAINST_A_TENDER_EXCHANGE_OFFER_WITHIN_THE_REQUIRED_PERIOD_WITHIN_10_BUSINESS_DAYS",
+                  "label": "Fail to recommend against a tender / exchange offer within the required period (within 10 business days)",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 98,
+                    "row_label": "Change of Recommendation — prohibited actions"
+                  }
+                }
+              ],
+              "fill_from": [
+                "CONDITION"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Board change right",
+            "Force the vote"
+          ]
+        }
+      ],
+      "print_pages": [
+        97,
+        98
+      ]
+    },
+    {
+      "section_key": "nosol-intervening",
+      "title": "Intervening Event Mechanics",
+      "legacy_config": "components/review/table-configs/nosol-intervening.config.js",
+      "v2_family_keys": [
+        {
+          "key": "NO_SHOP",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "nosol-intervening-table",
+          "group_header": "INTERVENING EVENT",
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "boolean",
+              "fill_from": [
+                "CONDITION"
+              ]
+            },
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Intervening Event provision",
+            "Definition",
+            "Scope",
+            "Exceptions",
+            "Termination right"
+          ]
+        }
+      ],
+      "print_pages": [
+        98
+      ]
+    },
+    {
+      "section_key": "nosol-superior",
+      "title": "Superior Proposal Definition and Standards",
+      "legacy_config": "components/review/table-configs/nosol-superior.config.js",
+      "v2_family_keys": [
+        {
+          "key": "NO_SHOP",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "nosol-superior-table",
+          "group_header": "SUPERIOR PROPOSAL",
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "value",
+              "value_kind": "PERCENTAGE",
+              "fill_from": [
+                "PERCENTAGE"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Superior Proposal threshold",
+            "Superior Proposal test",
+            "Determiner"
+          ]
+        },
+        {
+          "table_key": "nosol-superior-acquisition-proposal-definition",
+          "group_header": "ACQUISITION PROPOSAL — DEFINITION",
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Company Takeover Proposal",
+            "Acceptable Confidentiality Agreement"
+          ]
+        },
+        {
+          "table_key": "nosol-superior-matching-rights",
+          "group_header": "MATCHING RIGHTS",
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "value",
+              "header": "Value",
+              "render": "value",
+              "value_kind": "PERIOD",
+              "fill_from": [
+                "PERIOD"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Initial match period",
+            "Subsequent match period"
+          ]
+        }
+      ],
+      "print_pages": [
+        97,
+        98
+      ]
+    },
+    {
+      "section_key": "ioc-exceptions",
+      "title": "Interim Operating Covenants — Target",
+      "legacy_config": "components/review/table-configs/ioc-exceptions.config.js",
+      "v2_family_keys": [
+        {
+          "key": "INTERIM_OPERATING",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "ioc-exceptions-affirmative-covenants",
+          "group_header": "AFFIRMATIVE COVENANTS",
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "body",
+              "header": "Provision",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            },
+            {
+              "column_id": "effortsStandard",
+              "header": "Efforts Standard",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "COMMERCIALLY_REASONABLE_EFFORTS",
+                  "label": "Commercially reasonable efforts",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 86,
+                    "row_label": "Maintain leases & material property"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD",
+                "MATERIALITY_QUALIFIER"
+              ]
+            },
+            {
+              "column_id": "qualifier",
+              "header": "Qualifier",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "MATERIAL_ITEMS_ONLY",
+                  "label": "Material items only",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 86,
+                    "row_label": "Maintain leases & material property"
+                  }
+                },
+                {
+                  "code": "IN_ALL_MATERIAL_RESPECTS",
+                  "label": "In all material respects",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 86,
+                    "row_label": "Conduct business in ordinary course"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD",
+                "MATERIALITY_QUALIFIER"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Maintain leases & material property",
+            "Conduct business in ordinary course",
+            "Preserve business organization & relationships",
+            "Maintain permits, franchises & authorizations"
+          ]
+        },
+        {
+          "table_key": "ioc-exceptions-negative-covenants",
+          "group_header": "NEGATIVE COVENANTS",
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "specificRestrictions",
+              "header": "Specific Restrictions",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "ACQUISITIONS_BUSINESS_COMBINATIONS",
+                  "label": "Acquisitions / business combinations",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Mergers, Acquisitions, Dispositions"
+                  }
+                },
+                {
+                  "code": "MERGER_CONSOLIDATION_LIQUIDATION_RECAPITALIZATION",
+                  "label": "Merger / consolidation / liquidation / recapitalization",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Mergers, Acquisitions, Dispositions"
+                  }
+                },
+                {
+                  "code": "ASSET_SALES_DIVESTITURES_LICENSES",
+                  "label": "Asset sales / divestitures / licenses",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Mergers, Acquisitions, Dispositions"
+                  }
+                },
+                {
+                  "code": "REAL_ESTATE_LEASES",
+                  "label": "Real estate / leases",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Mergers, Acquisitions, Dispositions"
+                  }
+                },
+                {
+                  "code": "CAPITAL_EXPENDITURES",
+                  "label": "Capital expenditures",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Capital Expenditures"
+                  }
+                },
+                {
+                  "code": "LOANS_ADVANCES_CAPITAL_CONTRIBUTIONS",
+                  "label": "Loans / advances / capital contributions",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Commitments"
+                  }
+                },
+                {
+                  "code": "INDEBTEDNESS_FINANCING",
+                  "label": "Indebtedness / financing",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Indebtedness"
+                  }
+                },
+                {
+                  "code": "GUARANTEES_THIRD_PARTY_OBLIGATIONS",
+                  "label": "Guarantees / third-party obligations",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Indebtedness"
+                  }
+                }
+              ],
+              "fill_from": [
+                "CONDITION"
+              ]
+            },
+            {
+              "column_id": "exceptions",
+              "header": "Exceptions",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "ORDINARY_COURSE_OF_BUSINESS",
+                  "label": "Ordinary course of business",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Mergers, Acquisitions, Dispositions"
+                  }
+                },
+                {
+                  "code": "OTHER_SPECIFIC_EXCEPTION_SEE_TEXT",
+                  "label": "Other specific exception (see text)",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Mergers, Acquisitions, Dispositions"
+                  }
+                },
+                {
+                  "code": "AS_CONTEMPLATED_BY_THIS_AGREEMENT",
+                  "label": "As contemplated by this Agreement",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Mergers, Acquisitions, Dispositions"
+                  }
+                },
+                {
+                  "code": "EXISTING_CREDIT_FACILITIES_OR_INDEBTEDNESS",
+                  "label": "Existing credit facilities or indebtedness",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Mergers, Acquisitions, Dispositions"
+                  }
+                },
+                {
+                  "code": "TRANSACTIONS_AMONG_WHOLLY_OWNED_SUBSIDIARIES",
+                  "label": "Transactions among wholly-owned subsidiaries",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Issuance of Securities"
+                  }
+                },
+                {
+                  "code": "EXISTING_EQUITY_AWARD_EXERCISES_VESTING_OR_SETTLEMENT",
+                  "label": "Existing equity award exercises, vesting, or settlement",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Issuance of Securities"
+                  }
+                },
+                {
+                  "code": "BELOW_MONETARY_THRESHOLD",
+                  "label": "Below monetary threshold",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Capital Expenditures"
+                  }
+                },
+                {
+                  "code": "WITHIN_BUDGET_CAPEX_PLAN",
+                  "label": "Within budget / capex plan",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Capital Expenditures"
+                  }
+                },
+                {
+                  "code": "BELOW_10_000_000",
+                  "label": "Below $10,000,000,",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Commitments"
+                  }
+                },
+                {
+                  "code": "TRADE_PAYABLES_IN_ORDINARY_COURSE",
+                  "label": "Trade payables in ordinary course",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Indebtedness"
+                  }
+                },
+                {
+                  "code": "INTERCOMPANY_TRANSACTIONS",
+                  "label": "Intercompany transactions",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Indebtedness"
+                  }
+                },
+                {
+                  "code": "BELOW_10M_FLAT",
+                  "label": "Below $10,000,000",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Settlement of Claims"
+                  }
+                },
+                {
+                  "code": "AS_REQUIRED_BY_LAW",
+                  "label": "As required by law",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 88,
+                    "row_label": "Accounting Changes"
+                  }
+                },
+                {
+                  "code": "PURSUANT_TO_EXISTING_CONTRACTS_AS_OF_SIGNING",
+                  "label": "Pursuant to existing contracts as of signing",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 88,
+                    "row_label": "Compensation and Benefits"
+                  }
+                },
+                {
+                  "code": "NONE_SPECIFIED",
+                  "label": "None specified",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 87,
+                    "row_label": "Charter / Bylaws Amendments"
+                  }
+                }
+              ],
+              "fill_from": [
+                "EXCEPTION"
+              ]
+            }
+          ],
+          "rows_are": "one per subject"
+        },
+        {
+          "table_key": "ioc-exceptions-exceptions",
+          "group_header": "EXCEPTIONS",
+          "term_column": null,
+          "columns": [
+            {
+              "column_id": "body",
+              "header": "",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            }
+          ],
+          "rows_are": "one per subject"
+        },
+        {
+          "table_key": "ioc-exceptions-other-restrictions",
+          "group_header": "OTHER RESTRICTIONS",
+          "term_column": null,
+          "columns": [
+            {
+              "column_id": "body",
+              "header": "",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            },
+            {
+              "column_id": "fragmentName",
+              "header": "Restriction",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "TAX_MATTERS",
+                  "label": "Tax matters",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                },
+                {
+                  "code": "SPECIFIED_CONTRACT_AMENDMENTS",
+                  "label": "Specified-contract amendments",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                },
+                {
+                  "code": "INSURANCE_MAINTENANCE",
+                  "label": "Insurance maintenance",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                }
+              ],
+              "fill_from": [
+                "CONDITION"
+              ]
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ],
+      "print_pages": [
+        86,
+        87,
+        88
+      ]
+    },
+    {
+      "section_key": "parent-ioc-exceptions",
+      "title": "Interim Operating Covenants — Parent",
+      "legacy_config": "components/review/table-configs/ioc-exceptions.config.js",
+      "v2_family_keys": [
+        {
+          "key": "INTERIM_OPERATING",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "parent-ioc-exceptions-affirmative-covenants",
+          "group_header": "AFFIRMATIVE COVENANTS",
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "body",
+              "header": "Provision",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            },
+            {
+              "column_id": "effortsStandard",
+              "header": "Efforts Standard",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "COMMERCIALLY_REASONABLE_EFFORTS",
+                  "label": "Commercially reasonable efforts",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 94,
+                    "row_label": "Maintain leases & material property"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD",
+                "MATERIALITY_QUALIFIER"
+              ]
+            },
+            {
+              "column_id": "qualifier",
+              "header": "Qualifier",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "MATERIAL_ITEMS_ONLY",
+                  "label": "Material items only",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 94,
+                    "row_label": "Maintain leases & material property"
+                  }
+                },
+                {
+                  "code": "IN_ALL_MATERIAL_RESPECTS",
+                  "label": "In all material respects",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 94,
+                    "row_label": "Conduct business in ordinary course"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD",
+                "MATERIALITY_QUALIFIER"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Maintain leases & material property",
+            "Conduct business in ordinary course",
+            "Preserve business organization & relationships",
+            "Maintain permits, franchises & authorizations"
+          ]
+        },
+        {
+          "table_key": "parent-ioc-exceptions-negative-covenants",
+          "group_header": "NEGATIVE COVENANTS",
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "specificRestrictions",
+              "header": "Specific Restrictions",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "MERGER_CONSOLIDATION_LIQUIDATION_RECAPITALIZATION",
+                  "label": "Merger / consolidation / liquidation / recapitalization",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 94,
+                    "row_label": "Mergers, Acquisitions, Dispositions"
+                  }
+                }
+              ],
+              "fill_from": [
+                "CONDITION"
+              ]
+            },
+            {
+              "column_id": "exceptions",
+              "header": "Exceptions",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "AS_CONTEMPLATED_BY_THIS_AGREEMENT",
+                  "label": "As contemplated by this Agreement",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 94,
+                    "row_label": "Mergers, Acquisitions, Dispositions"
+                  }
+                },
+                {
+                  "code": "TRANSACTIONS_AMONG_WHOLLY_OWNED_SUBSIDIARIES",
+                  "label": "Transactions among wholly-owned subsidiaries",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 94,
+                    "row_label": "Issuance of Securities"
+                  }
+                },
+                {
+                  "code": "EXISTING_EQUITY_AWARD_EXERCISES_VESTING_OR_SETTLEMENT",
+                  "label": "Existing equity award exercises, vesting, or settlement",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 94,
+                    "row_label": "Issuance of Securities"
+                  }
+                },
+                {
+                  "code": "OTHER_SPECIFIC_EXCEPTION_SEE_TEXT",
+                  "label": "Other specific exception (see text)",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 94,
+                    "row_label": "Issuance of Securities"
+                  }
+                },
+                {
+                  "code": "ORDINARY_COURSE_OF_BUSINESS",
+                  "label": "Ordinary course of business",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 94,
+                    "row_label": "Dividends and Distributions"
+                  }
+                },
+                {
+                  "code": "TAX_WITHHOLDING_OR_SIMILAR_MANDATED_ACTIONS",
+                  "label": "Tax withholding or similar mandated actions",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 94,
+                    "row_label": "Dividends and Distributions"
+                  }
+                },
+                {
+                  "code": "NONE_SPECIFIED",
+                  "label": "None specified",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 94,
+                    "row_label": "Charter / Bylaws Amendments"
+                  }
+                }
+              ],
+              "fill_from": [
+                "EXCEPTION"
+              ]
+            }
+          ],
+          "rows_are": "one per subject"
+        },
+        {
+          "table_key": "parent-ioc-exceptions-exceptions",
+          "group_header": "EXCEPTIONS",
+          "term_column": null,
+          "columns": [
+            {
+              "column_id": "body",
+              "header": "",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            }
+          ],
+          "rows_are": "one per subject"
+        },
+        {
+          "table_key": "parent-ioc-exceptions-other-restrictions",
+          "group_header": "OTHER RESTRICTIONS",
+          "term_column": null,
+          "columns": [
+            {
+              "column_id": "body",
+              "header": "",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ],
+      "print_pages": [
+        94
+      ]
+    },
+    {
+      "section_key": "general-covenants",
+      "title": "Other Covenants",
+      "legacy_config": "components/review/table-configs/general-covenants.config.js",
+      "v2_family_keys": [
+        {
+          "key": "GENERAL_COVENANTS",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "general-covenants-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Provision",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "detail",
+              "header": "Link",
+              "render": "verbatim",
+              "fill_from": [
+                "CROSS_REFERENCE"
+              ]
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ],
+      "print_pages": [
+        142
+      ]
+    },
+    {
+      "section_key": "employee-benefits",
+      "title": "Employee Compensation and Benefits",
+      "legacy_config": "components/review/table-configs/employee-benefits.config.js",
+      "v2_family_keys": [
+        {
+          "key": "EMPLOYEE_MATTERS",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "employee-benefits-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Benefit",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "comparison",
+              "header": "Reference Group",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "COMPANY_PRE_CLOSING_ARRANGEMENTS",
+                  "label": "Company pre-closing arrangements",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                },
+                {
+                  "code": "SIMILARLY_SITUATED_BUYER_EMPLOYEES",
+                  "label": "Similarly-situated buyer employees",
+                  "tone": "neutral",
+                  "source": "legacy_map"
+                }
+              ],
+              "fill_from": [
+                "OBJECT"
+              ]
+            },
+            {
+              "column_id": "standard",
+              "header": "Standard",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "AT_TARGET_S_PRE_CLOSING_LEVELS",
+                  "label": "At target's pre-closing levels",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 129,
+                    "row_label": "Severance / change-in-control protection"
+                  }
+                },
+                {
+                  "code": "IN_THE_AGGREGATE_REBALANCING_PERMITTED",
+                  "label": "In the aggregate (rebalancing permitted)",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 129,
+                    "row_label": "Other benefits"
+                  }
+                },
+                {
+                  "code": "NO_LESS_FAVORABLE_THAN_CURRENT",
+                  "label": "No less favorable than current",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 129,
+                    "row_label": "Base salary"
+                  }
+                },
+                {
+                  "code": "AT_BUYER_S_DISCRETION",
+                  "label": "At buyer's discretion",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 129,
+                    "row_label": "Long-term incentive (LTI) / equity grants"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD",
+                "MATERIALITY_QUALIFIER"
+              ]
+            },
+            {
+              "column_id": "period",
+              "header": "Period",
+              "render": "value",
+              "value_kind": "PERIOD",
+              "fill_from": [
+                "PERIOD"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Severance / change-in-control protection",
+            "Other benefits",
+            "Base salary",
+            "Long-term incentive (LTI) / equity grants",
+            "Target annual bonus / cash incentive",
+            "Retirement / 401(k) benefits"
+          ],
+          "additional_fixed_row_labels": [
+            {
+              "label": "Earned annual bonus (pro-rata)",
+              "reason": "lib/employee-benefits.js's COMP_ITEM_LABELS/COMP_ITEM_ORDER carries this as a distinct comparable benefit element (code ANNUAL_BONUS_PAID); this deal's print does not populate it (the table only shows populated rows), but the fixed table shape should include it so an agreement that DOES populate it lands on the same row across deals."
+            },
+            {
+              "label": "Health and welfare benefits",
+              "reason": "lib/employee-benefits.js's COMP_ITEM_LABELS/COMP_ITEM_ORDER carries this as a distinct comparable benefit element (code HEALTH_WELFARE); this deal's print does not populate it (the table only shows populated rows), but the fixed table shape should include it so an agreement that DOES populate it lands on the same row across deals."
+            },
+            {
+              "label": "Paid time off / vacation",
+              "reason": "lib/employee-benefits.js's COMP_ITEM_LABELS/COMP_ITEM_ORDER carries this as a distinct comparable benefit element (code PTO); this deal's print does not populate it (the table only shows populated rows), but the fixed table shape should include it so an agreement that DOES populate it lands on the same row across deals."
+            },
+            {
+              "label": "Equity / stock awards (new grants)",
+              "reason": "lib/employee-benefits.js's COMP_ITEM_LABELS/COMP_ITEM_ORDER carries this as a distinct comparable benefit element (code EQUITY_AWARDS); this deal's print does not populate it (the table only shows populated rows), but the fixed table shape should include it so an agreement that DOES populate it lands on the same row across deals."
+            }
+          ]
+        },
+        {
+          "table_key": "employee-benefits-other-protections",
+          "group_header": "OTHER PROTECTIONS",
+          "term_column": {
+            "header": "Benefit",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "comparison",
+              "header": "Reference Group",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "ALL_COVERED_EMPLOYEES",
+                  "label": "All covered employees",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 129,
+                    "row_label": "401(k) plan continuation"
+                  }
+                }
+              ],
+              "fill_from": [
+                "OBJECT"
+              ]
+            },
+            {
+              "column_id": "standard",
+              "header": "Standard",
+              "render": "verbatim",
+              "fill_from": [
+                "STANDARD",
+                "MATERIALITY_QUALIFIER"
+              ]
+            },
+            {
+              "column_id": "period",
+              "header": "Period",
+              "render": "verbatim",
+              "fill_from": [
+                "PERIOD"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "401(k) plan continuation",
+            "Continued service crediting",
+            "Eligibility / waiting-period waiver",
+            "Severance protection"
+          ]
+        }
+      ],
+      "print_pages": [
+        128,
+        129
+      ]
+    },
+    {
+      "section_key": "antitrust-regulatory",
+      "title": "Antitrust / Regulatory",
+      "legacy_config": "components/review/table-configs/antitrust-regulatory.config.js",
+      "v2_family_keys": [
+        {
+          "key": "ANTITRUST_REGULATORY",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "antitrust-regulatory-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            },
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ],
+      "print_pages": []
+    },
+    {
+      "section_key": "representations-qualifiers",
+      "title": "Representations & Warranties — Company",
+      "legacy_config": "components/review/table-configs/representations-qualifiers.config.js",
+      "v2_family_keys": [
+        {
+          "key": "REPRESENTATIONS",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "representations-qualifiers-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "bringdown",
+              "header": "Bring-down Standard",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "BRINGDOWN_IN_ALL_RESPECTS",
+                  "label": "Bringdown: In all respects",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 18,
+                    "row_label": "Absence of Certain Changes or Events"
+                  }
+                },
+                {
+                  "code": "BRINGDOWN_DE_MINIMIS",
+                  "label": "Bringdown: De minimis",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 17,
+                    "row_label": "Capitalization; Subsidiaries"
+                  }
+                },
+                {
+                  "code": "BRINGDOWN_IN_ALL_MATERIAL_RESPECTS",
+                  "label": "Bringdown: In all material respects",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 17,
+                    "row_label": "Organization; Qualification; Standing"
+                  }
+                },
+                {
+                  "code": "BRINGDOWN_MAE",
+                  "label": "Bringdown: MAE",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 18,
+                    "row_label": "No Conflict; Required Filings and Consents"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD",
+                "MATERIALITY_QUALIFIER"
+              ]
+            },
+            {
+              "column_id": "materiality",
+              "header": "Qualifiers",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "MAE_AGGREGATE_PARTIAL",
+                  "label": "MAE (aggregate) (partial)",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 17,
+                    "row_label": "Organization; Qualification; Standing"
+                  }
+                },
+                {
+                  "code": "MAE_AGGREGATE",
+                  "label": "MAE (aggregate)",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 18,
+                    "row_label": "Litigation; Legal Proceedings"
+                  }
+                },
+                {
+                  "code": "MATERIAL_TO_THE_REP_PARTIAL",
+                  "label": "Material (to the rep) (partial)",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 17,
+                    "row_label": "Capitalization; Subsidiaries"
+                  }
+                },
+                {
+                  "code": "MATERIAL_TO_THE_REP",
+                  "label": "Material (to the rep)",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 18,
+                    "row_label": "SEC Documents; Financial Statements"
+                  }
+                },
+                {
+                  "code": "KNOWLEDGE_QUALIFIED_PARTIAL",
+                  "label": "Knowledge-qualified (partial)",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 18,
+                    "row_label": "No Conflict; Required Filings and Consents"
+                  }
+                },
+                {
+                  "code": "TRUE_IN_ALL_MATERIAL_RESPECTS_PARTIAL",
+                  "label": "True in all material respects (partial)",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 19,
+                    "row_label": "Information Supplied / Proxy Statement"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD",
+                "MATERIALITY_QUALIFIER"
+              ]
+            },
+            {
+              "column_id": "lookback",
+              "header": "Lookback",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ],
+      "print_pages": [
+        17,
+        18,
+        19
+      ]
+    },
+    {
+      "section_key": "parent-representations-qualifiers",
+      "title": "Representations & Warranties — Parent",
+      "legacy_config": "components/review/table-configs/representations-qualifiers.config.js",
+      "v2_family_keys": [
+        {
+          "key": "REPRESENTATIONS",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "parent-representations-qualifiers-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "bringdown",
+              "header": "Bring-down Standard",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "BRINGDOWN_IN_ALL_RESPECTS",
+                  "label": "Bringdown: In all respects",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 18,
+                    "row_label": "Absence of Certain Changes or Events"
+                  }
+                },
+                {
+                  "code": "BRINGDOWN_DE_MINIMIS",
+                  "label": "Bringdown: De minimis",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 17,
+                    "row_label": "Capitalization; Subsidiaries"
+                  }
+                },
+                {
+                  "code": "BRINGDOWN_IN_ALL_MATERIAL_RESPECTS",
+                  "label": "Bringdown: In all material respects",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 17,
+                    "row_label": "Organization; Qualification; Standing"
+                  }
+                },
+                {
+                  "code": "BRINGDOWN_MAE",
+                  "label": "Bringdown: MAE",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 18,
+                    "row_label": "No Conflict; Required Filings and Consents"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD",
+                "MATERIALITY_QUALIFIER"
+              ]
+            },
+            {
+              "column_id": "materiality",
+              "header": "Qualifiers",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "MAE_AGGREGATE_PARTIAL",
+                  "label": "MAE (aggregate) (partial)",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 17,
+                    "row_label": "Organization; Qualification; Standing"
+                  }
+                },
+                {
+                  "code": "MAE_AGGREGATE",
+                  "label": "MAE (aggregate)",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 18,
+                    "row_label": "Litigation; Legal Proceedings"
+                  }
+                },
+                {
+                  "code": "MATERIAL_TO_THE_REP_PARTIAL",
+                  "label": "Material (to the rep) (partial)",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 17,
+                    "row_label": "Capitalization; Subsidiaries"
+                  }
+                },
+                {
+                  "code": "MATERIAL_TO_THE_REP",
+                  "label": "Material (to the rep)",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 18,
+                    "row_label": "SEC Documents; Financial Statements"
+                  }
+                },
+                {
+                  "code": "KNOWLEDGE_QUALIFIED_PARTIAL",
+                  "label": "Knowledge-qualified (partial)",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 18,
+                    "row_label": "No Conflict; Required Filings and Consents"
+                  }
+                },
+                {
+                  "code": "TRUE_IN_ALL_MATERIAL_RESPECTS_PARTIAL",
+                  "label": "True in all material respects (partial)",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 19,
+                    "row_label": "Information Supplied / Proxy Statement"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD",
+                "MATERIALITY_QUALIFIER"
+              ]
+            },
+            {
+              "column_id": "lookback",
+              "header": "Lookback",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ],
+      "print_pages": [
+        47,
+        48
+      ]
+    },
+    {
+      "section_key": "no-other-reps-fraud",
+      "title": "No Other Reps / Fraud",
+      "legacy_config": "components/review/table-configs/no-other-reps-fraud.config.js",
+      "v2_family_keys": [
+        {
+          "key": "NO_OTHER_REPS_FRAUD",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "no-other-reps-fraud-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Question",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "status",
+              "header": "Status",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "YES",
+                  "label": "Yes",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 142,
+                    "row_label": "Buyer non-reliance"
+                  }
+                },
+                {
+                  "code": "SILENT",
+                  "label": "Silent",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 142,
+                    "row_label": "Fraud carve-out"
+                  }
+                },
+                {
+                  "code": "NO",
+                  "label": "No",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "complement of Yes -- V2 NO_OTHER_REPS_FRAUD/FRAUD_CARVEOUT is a yes/no/silent axis; this deal never shows an explicit \"No\" but the vocabulary should carry the full axis."
+                }
+              ],
+              "fill_from": [
+                "STANDARD"
+              ]
+            },
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Buyer non-reliance",
+            "Seller no-other-reps",
+            "Seller non-reliance",
+            "Buyer no-other-reps",
+            "Fraud carve-out"
+          ]
+        }
+      ],
+      "print_pages": [
+        142
+      ]
+    },
+    {
+      "section_key": "mae-definitions",
+      "title": "Material Adverse Effect",
+      "legacy_config": "components/review/table-configs/mae-definitions.config.js",
+      "v2_family_keys": [
+        {
+          "key": "MAE_DEFINITION",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "mae-definitions-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Party",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "test",
+              "header": "Test",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            },
+            {
+              "column_id": "limbSummary",
+              "header": "Provision",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "ONE_LIMB_EFFECT_ON_THE_BUSINESS_CONDITION_OR_RESULTS_OF_OPERATIONS",
+                  "label": "One limb — effect on the business, condition or results of operations",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 67,
+                    "row_label": "Parent"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Parent",
+            "Company"
+          ]
+        },
+        {
+          "table_key": "mae-carveouts-parent",
+          "group_header": "CARVE-OUTS — PARENT",
+          "term_column": {
+            "header": "Carve-out",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "disproportionateCarveback",
+              "header": "Disproportionate Carveback",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "YES",
+                  "label": "Yes",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 77,
+                    "row_label": "Changes in GAAP or accounting principles"
+                  }
+                },
+                {
+                  "code": "NOT_ESTABLISHED",
+                  "label": "Not established",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 77,
+                    "row_label": "Failure to meet internal projections or forecasts"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Failure to meet internal projections or forecasts",
+            "Compliance with the terms of this Agreement",
+            "Other carve-out",
+            "Changes in GAAP or accounting principles",
+            "Industry-wide conditions",
+            "Announcement or pendency of the transaction",
+            "General economic conditions",
+            "Changes in the trading price or volume of stock",
+            "Changes in applicable law or regulation",
+            "Acts of war, armed hostilities, or terrorism"
+          ]
+        },
+        {
+          "table_key": "mae-carveouts-company",
+          "group_header": "CARVE-OUTS — COMPANY",
+          "term_column": {
+            "header": "Carve-out",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "disproportionateCarveback",
+              "header": "Disproportionate Carveback",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "YES",
+                  "label": "Yes",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 77,
+                    "row_label": "Changes in GAAP or accounting principles"
+                  }
+                },
+                {
+                  "code": "NOT_ESTABLISHED",
+                  "label": "Not established",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 77,
+                    "row_label": "Failure to meet internal projections or forecasts"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Failure to meet internal projections or forecasts",
+            "Compliance with the terms of this Agreement",
+            "Other carve-out",
+            "Changes in GAAP or accounting principles",
+            "Industry-wide conditions",
+            "Announcement or pendency of the transaction",
+            "General economic conditions",
+            "Changes in the trading price or volume of stock",
+            "Changes in applicable law or regulation",
+            "Acts of war, armed hostilities, or terrorism"
+          ]
+        }
+      ],
+      "print_pages": [
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84
+      ]
+    },
+    {
+      "section_key": "material-contracts",
+      "title": "Material Contracts",
+      "legacy_config": "components/review/table-configs/material-contracts.config.js",
+      "v2_family_keys": [
+        {
+          "key": "MATERIAL_CONTRACTS",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "material-contracts-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Contract Type",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "contractType",
+              "header": "Contract Type",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "M_A_ACQUISITION_AGREEMENTS",
+                  "label": "M&A / acquisition agreements",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 65,
+                    "row_label": "M&A / acquisition agreements"
+                  }
+                },
+                {
+                  "code": "HEDGING_AND_DERIVATIVE_CONTRACTS",
+                  "label": "Hedging and derivative contracts",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 65,
+                    "row_label": "Hedging and derivative contracts"
+                  }
+                },
+                {
+                  "code": "CAPITAL_EXPENDITURE_COMMITMENTS",
+                  "label": "Capital expenditure commitments",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 65,
+                    "row_label": "Capital expenditure commitments"
+                  }
+                },
+                {
+                  "code": "NON_COMPETITION_NON_SOLICITATION_AGREEMENTS",
+                  "label": "Non-competition / non-solicitation agreements",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 65,
+                    "row_label": "Non-competition / non-solicitation agreements"
+                  }
+                },
+                {
+                  "code": "INBOUND_IP_LICENSES",
+                  "label": "Inbound IP licenses",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 65,
+                    "row_label": "Inbound IP licenses"
+                  }
+                },
+                {
+                  "code": "JOINT_VENTURES_PARTNERSHIPS",
+                  "label": "Joint ventures / partnerships",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 65,
+                    "row_label": "Joint ventures / partnerships"
+                  }
+                },
+                {
+                  "code": "INDEBTEDNESS_CONTRACTS",
+                  "label": "Indebtedness contracts",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 65,
+                    "row_label": "Indebtedness contracts"
+                  }
+                },
+                {
+                  "code": "AGGREGATE_PAYMENTS_THRESHOLD_10M_PER_ANNUM",
+                  "label": "Contracts above an aggregate-payments threshold",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 65,
+                    "row_label": "Contracts above an aggregate-payments threshold"
+                  }
+                },
+                {
+                  "code": "AGREEMENTS_WITH_ROFO_ROFN",
+                  "label": "Agreements with ROFO/ROFN",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 65,
+                    "row_label": "Agreements with ROFO/ROFN"
+                  }
+                },
+                {
+                  "code": "EXCLUSIVITY_MOST_FAVORED_NATION_STANDSTILL",
+                  "label": "Exclusivity / most-favored-nation / standstill",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "Exclusivity / most-favored-nation / standstill"
+                  }
+                },
+                {
+                  "code": "M_A_AGREEMENTS_WITH_ONGOING_OBLIGATIONS",
+                  "label": "M&A agreements with ongoing obligations",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "M&A agreements with ongoing obligations"
+                  }
+                },
+                {
+                  "code": "OTHER_MATERIAL_CONTRACTS",
+                  "label": "Other material contracts",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "Other material contracts"
+                  }
+                },
+                {
+                  "code": "OUTBOUND_IP_LICENSES",
+                  "label": "Outbound IP licenses",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "Outbound IP licenses"
+                  }
+                },
+                {
+                  "code": "AGGREGATE_PAYMENTS_THRESHOLD_10M",
+                  "label": "Contracts above an aggregate-payments threshold",
+                  "tone": "info",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "Contracts above an aggregate-payments threshold"
+                  }
+                },
+                {
+                  "code": "SETTLEMENT_CONSENT_AGREEMENTS",
+                  "label": "Settlement / consent agreements",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "Settlement / consent agreements"
+                  }
+                },
+                {
+                  "code": "SEC_ITEM_601_B_CONTRACTS",
+                  "label": "SEC Item 601(b) contracts",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "SEC Item 601(b) contracts"
+                  }
+                },
+                {
+                  "code": "SUPPLIER_AGREEMENTS",
+                  "label": "Supplier agreements",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "Supplier agreements"
+                  }
+                },
+                {
+                  "code": "REAL_ESTATE_LEASES",
+                  "label": "Real estate leases",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "Real estate leases"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD"
+              ]
+            },
+            {
+              "column_id": "threshold",
+              "header": "Threshold",
+              "render": "value",
+              "value_kind": "AMOUNT",
+              "fill_from": [
+                "THRESHOLD",
+                "AMOUNT"
+              ]
+            },
+            {
+              "column_id": "uncoveredBucket",
+              "header": "Not Covered",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "MANUFACTURING_AGREEMENTS",
+                  "label": "Manufacturing agreements",
+                  "tone": "missing",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "Manufacturing agreements"
+                  }
+                },
+                {
+                  "code": "DISTRIBUTION_RESELLER_AGREEMENTS",
+                  "label": "Distribution / reseller agreements",
+                  "tone": "missing",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "Distribution / reseller agreements"
+                  }
+                },
+                {
+                  "code": "COLLABORATION_R_D_AGREEMENTS",
+                  "label": "Collaboration / R&D agreements",
+                  "tone": "missing",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "Collaboration / R&D agreements"
+                  }
+                },
+                {
+                  "code": "KEY_EMPLOYMENT_EXECUTIVE_AGREEMENTS",
+                  "label": "Key employment / executive agreements",
+                  "tone": "missing",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "Key employment / executive agreements"
+                  }
+                },
+                {
+                  "code": "GOVERNMENT_CONTRACTS",
+                  "label": "Government contracts",
+                  "tone": "missing",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "Government contracts"
+                  }
+                },
+                {
+                  "code": "AFFILIATE_RELATED_PARTY_TRANSACTIONS",
+                  "label": "Affiliate / related-party transactions",
+                  "tone": "missing",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "Affiliate / related-party transactions"
+                  }
+                },
+                {
+                  "code": "DATA_PRIVACY_SECURITY_AGREEMENTS",
+                  "label": "Data privacy / security agreements",
+                  "tone": "missing",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "Data privacy / security agreements"
+                  }
+                },
+                {
+                  "code": "VOTING_REGISTRATION_RIGHTS_STOCKHOLDER_AGREEMENTS",
+                  "label": "Voting / registration-rights / stockholder agreements",
+                  "tone": "missing",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "Voting / registration-rights / stockholder agreements"
+                  }
+                },
+                {
+                  "code": "IP_DEVELOPMENT_CONTRACTS",
+                  "label": "IP development contracts",
+                  "tone": "missing",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "IP development contracts"
+                  }
+                },
+                {
+                  "code": "SINGLE_SOURCE_PROCUREMENT_CONTRACTS",
+                  "label": "Single source procurement contracts",
+                  "tone": "missing",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "Single source procurement contracts"
+                  }
+                },
+                {
+                  "code": "CLINICAL_RESEARCH_ORGANIZATION_CONTRACTS",
+                  "label": "Clinical research organization contracts",
+                  "tone": "missing",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "Clinical research organization contracts"
+                  }
+                },
+                {
+                  "code": "EMPLOYEE_LOANS_AND_ADVANCES",
+                  "label": "Employee loans and advances",
+                  "tone": "missing",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 66,
+                    "row_label": "Employee loans and advances"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD"
+              ]
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ],
+      "print_pages": [
+        65,
+        66
+      ]
+    },
+    {
+      "section_key": "advisers-fees-expenses",
+      "title": "Advisers / Fees / Expenses",
+      "legacy_config": "components/review/table-configs/advisers-fees-expenses.config.js",
+      "v2_family_keys": [
+        {
+          "key": "GENERAL_COVENANTS",
+          "confidence": "low"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "advisers-fees-expenses-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            },
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ],
+      "print_pages": []
+    },
+    {
+      "section_key": "misc-boilerplate",
+      "title": "Miscellaneous / Boilerplate",
+      "legacy_config": "components/review/table-configs/misc-boilerplate.config.js",
+      "v2_family_keys": [
+        {
+          "key": "MISC_BOILERPLATE",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "misc-boilerplate-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "signals",
+              "header": "Provision",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "YES",
+                  "label": "Yes",
+                  "tone": "neutral",
+                  "source": "print",
+                  "print_evidence": {
+                    "page": 130,
+                    "row_label": "Specific performance"
+                  }
+                }
+              ],
+              "fill_from": [
+                "STANDARD"
+              ]
+            },
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION"
+              ]
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Governing law",
+            "Forum / jurisdiction",
+            "Third-party beneficiaries",
+            "Fee / expense allocation",
+            "Specific performance",
+            "Specific performance limitations",
+            "Jury trial waiver",
+            "Amendment formalities",
+            "Severability",
+            "Counterparts and electronic execution",
+            "Assignment"
+          ]
+        }
+      ],
+      "print_pages": [
+        129,
+        130,
+        131
+      ]
+    },
+    {
+      "section_key": "defined-terms",
+      "title": "Defined Terms",
+      "legacy_config": null,
+      "print_pages": [
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180
+      ],
+      "v2_family_keys": [
+        {
+          "key": "KEY_DEFINED_TERMS",
+          "confidence": "low"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "defined-terms-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "definition",
+              "header": "Definition",
+              "render": "verbatim",
+              "fill_from": [
+                "DEFINED_TERM"
+              ]
+            }
+          ],
+          "rows_are": "one per subject"
+        }
+      ]
+    }
+  ]
+}

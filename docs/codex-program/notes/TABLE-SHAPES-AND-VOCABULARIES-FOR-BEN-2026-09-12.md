@@ -1,530 +1,850 @@
-# Table shapes and vocabularies for Ben's check, 2026-09-12
+# Table shapes and vocabularies for Ben's check, 2026-09-12 (pass 2)
 
-Status: DRAFT_FOR_BEN_REVIEW. This is a machine-generated first pass over every table on today's review page (`components/review/table-configs/*.config.js`), produced by `scripts/product/build-table-shapes.js`, which writes `contracts/product/table-shapes.v1.json`. This document is the plain-English readout of that JSON, in the same order the review page mounts the sections. Correct anything wrong here; the JSON is regenerated from the legacy configs, not from this document, so a correction belongs in the generator or in a decision recorded here for the next person to encode, not as a hand-edit of the JSON.
+Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same name for every section below -- pass 1 got the sections and column headers right from `components/review/table-configs/*.config.js` but left most columns `verbatim` because the legacy code composes pills inside render functions, not in a label map a static parser can see. Pass 2 (`contracts/product/table-shapes.v2.json`, built by `scripts/product/build-table-shapes-pass2.js`) fills those columns from the print of the actual TopBuild / QXO review page you supplied (`docs/codex-program/notes/TopBuild-Review-2026-09-12.pdf`, text in `fixtures/product/topbuild-review/print-text.v1.json`), plus the label maps pass 1 never opened (`lib/employee-benefits.js`, `fiduciary-standard-labels.js`, `vote-standard.js`, `board-change-standard.js`, `ioc-exceptions.config.js`'s `FRAGMENT_NAME_PATTERNS`).
 
-**Why this exists.** The published page and the Query page (plan Phase 5B) need to show each provision the way the review page shows it today: a small table of headline pills per subject, with the verbatim layered facts underneath. The V2 legal schema (`contracts/product/legal-schema.v2.json`) has families and subtypes but no table shapes or pill vocabularies -- those only exist today as React rendering code in `components/review/table-configs/`. This document (and the JSON behind it) is the extracted, reviewable version of that code.
+**Order.** Sections below run in the order they appear in your print (page numbers noted per section), not the review page's left-nav mount order pass 1 used -- so this document reads the way your print reads. The four sections at the end (Approvals / Votes, Shareholder Meeting / Proxy, Antitrust / Regulatory, Advisers / Fees / Expenses) are carried over from pass 1 unchanged: nothing in this deal's print showed a distinct pill table for them, so there is no print evidence to add. That does not mean the underlying legacy config renders nothing on a different deal -- it means TopBuild's own review page does not exercise it.
 
-**How it was built.** Every legacy config was read as source text and parsed (not `require()`'d and executed -- these modules compute their pills from live deal data fed through closures, not from an exported value, so running them with no deal to feed would either crash or produce nothing meaningful, and would make the output depend on side effects rather than being a deterministic function of the source). All 34 files under `table-configs/` parsed cleanly, so every section below was extracted the same way; none needed the text-scraping fallback the build brief anticipated for React-only files. What follows is exactly what the source declares: column headers verbatim, and vocabulary drawn only from label maps the config actually defines (`*_META` / `*_LABELS` objects) or from a classifier function whose only possible outputs are a fixed set of literal label strings (e.g. `vote-standard.js`'s `voteStandard()`). Nothing here is invented; where a column's real vocabulary could not be safely attributed, it is marked verbatim and flagged as a question rather than guessed.
+**Never-invent guarantee.** Every vocabulary entry marked `(print p.N, row "...")` below is checked, by the generator itself, to appear verbatim (modulo the PDF's own line-wrapping) on that exact page of the committed print fixture -- the build throws rather than writes a label that isn't really there. Entries marked `(legacy label map)` come from a label map or classifier function read the same static way pass 1 read its config files (never `require()`d and executed). A **Proposed addition** is neither: it is new structure this task's Part 2 asked for, drawn from the V2 schema's families/subtypes/layer rules or from a legacy code path the print happens not to exercise on this deal -- always followed by the reason in *italics*, always kept out of the harvested vocabulary count.
 
-**Reading each entry.** Each `##` section below is one legacy config (or one instance of it, where a single file builds several near-identical sections -- e.g. Closing Conditions — Mutual/Buyer/Seller are three calls into the same factory in `conditions-m.config.js`). "Proposed V2 family" is a judgment call, not a derived fact -- confidence `low` means the title/content didn't map cleanly onto one of the 25 V2 families and needs your call. Each `###` is one table; a `group_header` line under a table name means the legacy config visually bands that table's rows under an uppercase label (rendered via CSS on a mixed-case string, which is reproduced here as the site displays it). "Rows: a fixed list" means the config always shows the same named rows (e.g. "Base salary") rather than one row per matching provision. Questions are marked **Q**, numbered in reading order.
+**Reading each entry.** `render` is `vocabulary` (a pill from a closed set), `value` (a composed value, e.g. amount/period, with an optional `trigger` vocabulary for a fixed trigger set), `boolean`, `verbatim` (free text, no fixed vocabulary), or `term`. `rows_are: fixed list` means the table always shows the same named rows; `additional_fixed_row_labels` are Part-2 proposed rows the legacy code supports but this deal doesn't populate. `fill_from` names the FACT_COMPONENTS/V2 component kinds (`contracts/product/fact-components.v2.json`) a conclusions layer should validate that column's value against.
 
-**What this pass could not reach.** A number of sections (flagged below) render one composed "Provision" or "Detail" cell per row rather than a set of separately named pill columns -- the legacy code builds several small badges inside one cell (`renderSignals`/`signalFor`, or a single `body` column in the IOC-exceptions and no-solicitation tables) using data assembled earlier, in a different function, than the column definition itself. Static analysis can see that these cells render pills and can list every label map the file defines, but cannot safely say which map belongs to which composed line without guessing -- an earlier draft of the generator tried unioning all of a file's harvested labels onto such a column and it visibly produced a wrong answer (attaching `representations-qualifiers.config.js`'s materiality-qualifier labels onto the unrelated Lookback column), so that approach was dropped. These are flagged as open questions rather than filled in with a guess. Two related gaps: (1) a few columns' real vocabulary lives in a library outside `components/review/table-configs/` (e.g. Employee Compensation and Benefits' "Reference Group" column is actually a closed pair -- "Similarly-situated buyer employees" / "Company pre-closing arrangements" -- defined in `lib/employee-benefits.js`, which this generator was scoped to leave unread); (2) `ioc-exceptions.config.js` exports classifier functions (`scopeMaterialityPillFor`, `effortsStandardPillFor`) that return `{label, tone}` objects rather than bare label strings, which this generator's classifier-harvesting pass does not open up. Both are good candidates for a second, narrower extraction pass once you've confirmed the shapes below are right.
-
-**Decisions made without asking.** The first column of every table is always modelled as the `term_column` (the row's subject), with the remaining columns carried in `columns` -- true for every table below. A column with a blank header in the legacy source (e.g. Employee Compensation and Benefits' hidden `detail` column, which the site relocates behind a "see text" link rather than showing in the grid) is dropped, since it isn't one of "the columns the site shows." Where a vocabulary map was matched to a column by comparing words in the column's header against the map's variable name rather than by an exact, unambiguous name, treat it as a first guess to confirm rather than a certainty -- Fiduciary-Out Mechanics' "Provision" column below is the clearest example: its two harvested labels look right for a fiduciary-out table, but the match was by keyword scoring, not by a map named for that column.
-
-## Consideration
-
-- Legacy config: `components/review/table-configs/consideration-hero.config.js`
-- Proposed V2 family: CONSIDERATION (confidence: high)
-
-### Table: Consideration
-
-- Row subject column: **Term**
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Detail | shows free text lifted verbatim from the extraction | (none extracted) |
-
-## Equity Awards
-
-- Legacy config: `components/review/table-configs/equity-awards.config.js`
-- Proposed V2 family: CONSIDERATION (confidence: high)
-
-### Table: Equity Awards
-
-- Row subject column: **Equity Type**
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Consideration | shows a pill from a fixed vocabulary | Cash [present]; Parent stock / rollover [info]; Cancelled — no consideration [missing] |
-| Vesting Treatment | shows a pill from a fixed vocabulary | Cancelled — no consideration [missing]; Continues vesting (double-trigger protection) [warning]; Assumed by Parent [info]; Pro-rata acceleration [info]; Rollover into Parent award [info]; Fully vested (accelerated) [present]; Cancelled for cash consideration [present] |
-| CVR Entitlement | shows free text lifted verbatim from the extraction | (none extracted) |
+---
 
 ## Structure & Mechanics
 
+- Section key: `structure-mechanics`
 - Legacy config: `components/review/table-configs/structure-mechanics.config.js`
-- Proposed V2 family: MERGER_STRUCTURE_CLOSING (confidence: high)
+- Print pages: 1
+- V2 family mapping: MERGER_STRUCTURE_CLOSING (confidence: high)
 
-### Table: Structure & Mechanics
+### Table: `structure-mechanics-table`
 
-- Row subject column: **Term**
-- Rows: one row per matching provision/subject
+- Row subject: **Term**
+- Rows: one per subject
 
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Provision | shows a pill from a fixed vocabulary | Forward merger; Reverse triangular merger |
-| Detail | shows free text lifted verbatim from the extraction | (none extracted) |
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Deal Structure (`dealStructure`) | vocabulary | "One Step Merger" (print p.1, row "Deal structure") | STANDARD |
+| Merger Form (`signals`) | vocabulary | "Forward merger" (legacy label map); "Reverse triangular merger" (legacy label map); "Reverse triangular merger" (print p.1, row "Merger form"); "Forward triangular merger" (print p.1, row "Merger form") | STANDARD |
+| Closing Location (`closingLocation`) | verbatim | (free text / composed value) | OPERATION |
+| Closing Timing (`closingTiming`) | verbatim | (free text / composed value) | OPERATION |
+| Effective Time (`effectiveTime`) | verbatim | (free text / composed value) | OPERATION |
+| Effects of Merger (`effectsOfMerger`) | vocabulary | "DGCL" (print p.1, row "Effects of merger"); "DLLCA" (print p.1, row "Effects of merger") | STANDARD |
+  Proposed addition codes for **Deal Structure**:
+  - "Two Step Merger" — *the print's Deal structure axis names only the value shown on this deal; V2 MERGER_STRUCTURE_CLOSING/TRANSACTION_STEP supports a two-step structure as the complementary code for cross-deal comparability.*
 
-## Closing Conditions
 
-- Legacy config: `components/review/table-configs/conditions.config.js`
-- Proposed V2 family: CLOSING_CONDITIONS (confidence: high)
+## Consideration
 
-### Table: Closing Conditions
+- Section key: `consideration-hero`
+- Legacy config: `components/review/table-configs/consideration-hero.config.js`
+- Print pages: 4, 5
+- V2 family mapping: CONSIDERATION (confidence: high)
 
-- No separate row-subject column -- Question Q1: this table renders one composed cell per row rather than a flat term/columns pill table. What should the term/columns split be for this table under the V2 model?
-- Rows: one row per matching provision/subject
+### Table: `consideration-hero-summary`
 
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| (blank header) | shows free text lifted verbatim from the extraction | (none extracted) |
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Cash Election", "Stock Election"
 
-## Closing Conditions — Mutual
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Value (`value`) | value / AMOUNT | (free text / composed value) | THRESHOLD, AMOUNT |
 
-- Legacy config: `components/review/table-configs/conditions-m.config.js`
-- Proposed V2 family: CLOSING_CONDITIONS (confidence: high)
+### Table: `consideration-hero-election-mechanics` — group header **ELECTION MECHANICS**
 
-### Table: Closing Conditions — Mutual
+- Row subject: *(no separate subject column -- one composed cell per row)*
+- Rows: fixed list
+- Fixed rows: "Election caps", "Election deadline", "Oversubscription / proration", "If no election"
 
-- Row subject column: **Term**
-- Rows: one row per matching provision/subject
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| *(blank)* (`body`) | verbatim | (free text / composed value) | OPERATION |
 
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Provision | shows free text lifted verbatim from the extraction | (none extracted) |
-| Provision | shows free text lifted verbatim from the extraction | (none extracted) |
+### Table: `consideration-hero-table`
 
-- Question Q2: the legacy config gives two different columns the identical header "Provision" (one renders a status pill, the other renders the clause detail) -- is the second one meant to say "Detail", or is the repeated header intentional?
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Consideration type", "Appraisal rights", "Withholding"
 
-## Closing Conditions — Buyer
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Detail (`considerationType`) | vocabulary | "Mixed election" (print p.5, row "Consideration type") | STANDARD |
+  Proposed addition codes for **Detail**:
+  - "All-cash election" — *CONSIDERATION/ELECTION supports an all-cash deal with no stock election; not shown on this mixed-election deal but needed for the axis to be comparable across deals.*
+  - "All-stock election" — *CONSIDERATION/ELECTION supports an all-stock deal with no cash election; same reasoning.*
 
-- Legacy config: `components/review/table-configs/conditions-m.config.js`
-- Proposed V2 family: CLOSING_CONDITIONS (confidence: high)
 
-### Table: Closing Conditions — Buyer
+## Equity Awards
 
-- Row subject column: **Term**
-- Rows: one row per matching provision/subject
+- Section key: `equity-awards`
+- Legacy config: `components/review/table-configs/equity-awards.config.js`
+- Print pages: 15, 16, 17
+- V2 family mapping: CONSIDERATION (confidence: high)
 
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Provision | shows free text lifted verbatim from the extraction | (none extracted) |
-| Provision | shows free text lifted verbatim from the extraction | (none extracted) |
+### Table: `equity-awards-table`
 
-- Question Q3: the legacy config gives two different columns the identical header "Provision" (one renders a status pill, the other renders the clause detail) -- is the second one meant to say "Detail", or is the repeated header intentional?
+- Row subject: **Equity Type**
+- Rows: one per subject
 
-## Closing Conditions — Seller
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Consideration (`consideration`) | vocabulary | "Cash" (print p.15, row "Stock Options"); "Parent stock / rollover" (print p.15, row "RSUs"); "Cancelled — no consideration" (legacy label map) | STANDARD |
+| Vesting Treatment (`vestingTreatment`) | vocabulary | "Cancelled — no consideration" (legacy label map); "Continues vesting (double-trigger protection)" (print p.15, row "PSUs"); "Assumed by Parent" (legacy label map); "Pro-rata acceleration" (legacy label map); "Rollover into Parent award" (legacy label map); "Fully vested (accelerated)" (print p.15, row "Restricted Stock Awards"); "Cancelled for cash consideration" (print p.15, row "Stock Options") | STANDARD |
+| CVR Entitlement (`cvrEntitlement`) | vocabulary | *(all proposed -- see below)* | STANDARD |
+  Proposed addition codes for **CVR Entitlement**:
+  - "Entitled" — *CONSIDERATION/CVR_COMPONENT supports a CVR entitlement carried through to converted equity awards; this deal shows no CVR (all four rows print "—"), so only the absent/entitled axis is proposed, not a label drawn from this print.*
+  - "Not entitled" — *complement of the above; matches the "—" seen on every row of this deal's CVR Entitlement column.*
 
-- Legacy config: `components/review/table-configs/conditions-m.config.js`
-- Proposed V2 family: CLOSING_CONDITIONS (confidence: high)
-
-### Table: Closing Conditions — Seller
-
-- Row subject column: **Term**
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Provision | shows free text lifted verbatim from the extraction | (none extracted) |
-| Provision | shows free text lifted verbatim from the extraction | (none extracted) |
-
-- Question Q4: the legacy config gives two different columns the identical header "Provision" (one renders a status pill, the other renders the clause detail) -- is the second one meant to say "Detail", or is the repeated header intentional?
-
-## Approvals / Votes
-
-- Legacy config: `components/review/table-configs/approvals-votes.config.js`
-- Proposed V2 family: TERMINATION (confidence: low)
-- Question Q5: this section's title and content did not map cleanly onto one V2 family (candidate: TERMINATION). Which family should own it, or does it need a new one?
-
-### Table: Approvals / Votes
-
-- Row subject column: **Term**
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Kind | shows free text lifted verbatim from the extraction | (none extracted) |
-| Detail | shows free text lifted verbatim from the extraction | (none extracted) |
-
-## Votes / Approvals / SEC Filing / Meeting Requirements
-
-- Legacy config: `components/review/table-configs/votes-approvals-meeting.config.js`
-- Proposed V2 family: PROXY_MEETING (confidence: high)
-
-### Table: Votes / Approvals / SEC Filing / Meeting Requirements
-
-- Row subject column: **Term**
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Provision | shows free text lifted verbatim from the extraction | (none extracted) |
-
-## Shareholder Meeting / Proxy / Tender-Offer SEC Matters
-
-- Legacy config: `components/review/table-configs/sec-meeting.config.js`
-- Proposed V2 family: PROXY_MEETING (confidence: high)
-
-### Table: Shareholder Meeting / Proxy / Tender-Offer SEC Matters
-
-- Row subject column: **Term**
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Subject | shows free text lifted verbatim from the extraction | (none extracted) |
-| Provision | shows free text lifted verbatim from the extraction | (none extracted) |
-| Detail | shows free text lifted verbatim from the extraction | (none extracted) |
-
-## Termination Rights
-
-- Legacy config: `components/review/table-configs/termination-rights.config.js`
-- Proposed V2 family: TERMINATION (confidence: high)
-
-### Table: Termination Rights
-
-- No separate row-subject column -- Question Q6: this table renders one composed cell per row rather than a flat term/columns pill table. What should the term/columns split be for this table under the V2 model?
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| (blank header) | shows free text lifted verbatim from the extraction | (none extracted) |
-
-## Termination Fees
-
-- Legacy config: `components/review/table-configs/termination-fees.config.js`
-- Proposed V2 family: TERMINATION_FEE (confidence: high)
-
-### Table: Termination Fees
-
-- Row subject column: **Term**
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Provision | shows free text lifted verbatim from the extraction | (none extracted) |
-
-## Tail Fee Mechanics
-
-- Legacy config: `components/review/table-configs/tail-fee.config.js`
-- Proposed V2 family: TERMINATION_FEE (confidence: high)
-
-### Table: Tail Fee Mechanics
-
-- Row subject column: **Term**
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Provision | shows free text lifted verbatim from the extraction | (none extracted) |
-
-## No-Solicitation / No-Shop
-
-- Legacy config: `components/review/table-configs/nosol-section.config.js`
-- Proposed V2 family: NO_SHOP (confidence: high)
-
-### Table: No-Solicitation / No-Shop
-
-- No separate row-subject column -- Question Q7: this table renders one composed cell per row rather than a flat term/columns pill table. What should the term/columns split be for this table under the V2 model?
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| (blank header) | shows free text lifted verbatim from the extraction | (none extracted) |
-
-## No-Shop Core Mechanics
-
-- Legacy config: `components/review/table-configs/nosol-noshop.config.js`
-- Proposed V2 family: NO_SHOP (confidence: high)
-
-### Table: No-Shop Core Mechanics
-
-- Row subject column: **Term**
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Provision | shows free text lifted verbatim from the extraction | (none extracted) |
-| Detail | shows free text lifted verbatim from the extraction | (none extracted) |
-
-- Question Q8: column 'Provision' renders pills but this generator found 2 candidate vocabulary maps in the file and none named-matched this column -- left 'verbatim' rather than guess; needs Ben's review to identify the real vocabulary and, likely, split this into per-signal sub-columns
-
-## Fiduciary-Out Mechanics
-
-- Legacy config: `components/review/table-configs/nosol-fiduciary.config.js`
-- Proposed V2 family: NO_SHOP (confidence: high)
-
-### Table: Fiduciary-Out Mechanics
-
-- Row subject column: **Term**
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Provision | shows a pill from a fixed vocabulary | Constitutes or could reasonably be expected to lead to a Superior Proposal; Constitutes or could lead to a Superior Proposal |
-
-## Intervening Event Mechanics
-
-- Legacy config: `components/review/table-configs/nosol-intervening.config.js`
-- Proposed V2 family: NO_SHOP (confidence: high)
-
-### Table: Intervening Event Mechanics
-
-- Row subject column: **Term**
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Provision | shows free text lifted verbatim from the extraction | (none extracted) |
-| Detail | shows free text lifted verbatim from the extraction | (none extracted) |
-
-- Question Q9: column 'Provision' renders pills but this generator found 4 candidate vocabulary maps in the file and none named-matched this column -- left 'verbatim' rather than guess; needs Ben's review to identify the real vocabulary and, likely, split this into per-signal sub-columns
-
-## Superior Proposal Definition and Standards
-
-- Legacy config: `components/review/table-configs/nosol-superior.config.js`
-- Proposed V2 family: NO_SHOP (confidence: high)
-
-### Table: Superior Proposal Definition and Standards
-
-- Row subject column: **Term**
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Provision | shows free text lifted verbatim from the extraction | (none extracted) |
-
-## Interim Operating Covenants — Target
-
-- Legacy config: `components/review/table-configs/ioc-exceptions.config.js`
-- Proposed V2 family: INTERIM_OPERATING (confidence: high)
-
-### Table: Interim Operating Covenants — Target -- NEGATIVE COVENANTS
-
-- No separate row-subject column -- Question Q10: this table renders one composed cell per row rather than a flat term/columns pill table. What should the term/columns split be for this table under the V2 model?
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| (blank header) | shows free text lifted verbatim from the extraction | (none extracted) |
-
-### Table: Interim Operating Covenants — Target -- AFFIRMATIVE COVENANTS
-
-- No separate row-subject column -- Question Q11: this table renders one composed cell per row rather than a flat term/columns pill table. What should the term/columns split be for this table under the V2 model?
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| (blank header) | shows free text lifted verbatim from the extraction | (none extracted) |
-
-### Table: Interim Operating Covenants — Target -- EXCEPTIONS
-
-- No separate row-subject column -- Question Q12: this table renders one composed cell per row rather than a flat term/columns pill table. What should the term/columns split be for this table under the V2 model?
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| (blank header) | shows free text lifted verbatim from the extraction | (none extracted) |
-
-### Table: Interim Operating Covenants — Target -- OTHER RESTRICTIONS
-
-- No separate row-subject column -- Question Q13: this table renders one composed cell per row rather than a flat term/columns pill table. What should the term/columns split be for this table under the V2 model?
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| (blank header) | shows free text lifted verbatim from the extraction | (none extracted) |
-
-## Interim Operating Covenants — Parent
-
-- Legacy config: `components/review/table-configs/ioc-exceptions.config.js`
-- Proposed V2 family: INTERIM_OPERATING (confidence: high)
-
-### Table: Interim Operating Covenants — Parent -- NEGATIVE COVENANTS
-
-- No separate row-subject column -- Question Q14: this table renders one composed cell per row rather than a flat term/columns pill table. What should the term/columns split be for this table under the V2 model?
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| (blank header) | shows free text lifted verbatim from the extraction | (none extracted) |
-
-### Table: Interim Operating Covenants — Parent -- AFFIRMATIVE COVENANTS
-
-- No separate row-subject column -- Question Q15: this table renders one composed cell per row rather than a flat term/columns pill table. What should the term/columns split be for this table under the V2 model?
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| (blank header) | shows free text lifted verbatim from the extraction | (none extracted) |
-
-### Table: Interim Operating Covenants — Parent -- EXCEPTIONS
-
-- No separate row-subject column -- Question Q16: this table renders one composed cell per row rather than a flat term/columns pill table. What should the term/columns split be for this table under the V2 model?
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| (blank header) | shows free text lifted verbatim from the extraction | (none extracted) |
-
-### Table: Interim Operating Covenants — Parent -- OTHER RESTRICTIONS
-
-- No separate row-subject column -- Question Q17: this table renders one composed cell per row rather than a flat term/columns pill table. What should the term/columns split be for this table under the V2 model?
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| (blank header) | shows free text lifted verbatim from the extraction | (none extracted) |
-
-## Other Covenants
-
-- Legacy config: `components/review/table-configs/general-covenants.config.js`
-- Proposed V2 family: GENERAL_COVENANTS (confidence: high)
-
-### Table: Other Covenants
-
-- Row subject column: **Provision**
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Link | shows free text lifted verbatim from the extraction | (none extracted) |
-
-## Employee Compensation and Benefits
-
-- Legacy config: `components/review/table-configs/employee-benefits.config.js`
-- Proposed V2 family: EMPLOYEE_MATTERS (confidence: high)
-
-### Table: Employee Compensation and Benefits
-
-- Row subject column: **Benefit**
-- Rows: a fixed list of 5 items
-  - Fixed rows, in order: Base salary; Target annual bonus / cash incentive; Health and welfare benefits; Severance / change-in-control protection; Long-term incentive (LTI) / equity grants
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Reference Group | shows free text lifted verbatim from the extraction | (none extracted) |
-| Standard | shows free text lifted verbatim from the extraction | (none extracted) |
-| Period | shows free text lifted verbatim from the extraction | (none extracted) |
-
-## Antitrust / Regulatory
-
-- Legacy config: `components/review/table-configs/antitrust-regulatory.config.js`
-- Proposed V2 family: ANTITRUST_REGULATORY (confidence: high)
-
-### Table: Antitrust / Regulatory
-
-- Row subject column: **Term**
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Provision | shows free text lifted verbatim from the extraction | (none extracted) |
-| Detail | shows free text lifted verbatim from the extraction | (none extracted) |
-
-- Question Q18: column 'Provision' renders pills but this generator found 3 candidate vocabulary maps in the file and none named-matched this column -- left 'verbatim' rather than guess; needs Ben's review to identify the real vocabulary and, likely, split this into per-signal sub-columns
 
 ## Representations & Warranties — Company
 
+- Section key: `representations-qualifiers`
 - Legacy config: `components/review/table-configs/representations-qualifiers.config.js`
-- Proposed V2 family: REPRESENTATIONS (confidence: high)
+- Print pages: 17, 18, 19
+- V2 family mapping: REPRESENTATIONS (confidence: high)
 
-### Table: Representations & Warranties — Company
+### Table: `representations-qualifiers-table`
 
-- Row subject column: **Term**
-- Rows: one row per matching provision/subject
+- Row subject: **Term**
+- Rows: one per subject
 
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Qualifiers | shows free text lifted verbatim from the extraction | (none extracted) |
-| Lookback | shows free text lifted verbatim from the extraction | (none extracted) |
-
-- Question Q19: column 'Lookback' renders pills but this generator found 2 candidate vocabulary maps in the file and none named-matched this column -- left 'verbatim' rather than guess; needs Ben's review to identify the real vocabulary and, likely, split this into per-signal sub-columns
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Bring-down Standard (`bringdown`) | vocabulary | "Bringdown: In all respects" (print p.18, row "Absence of Certain Changes or Events"); "Bringdown: De minimis" (print p.17, row "Capitalization; Subsidiaries"); "Bringdown: In all material respects" (print p.17, row "Organization; Qualification; Standing"); "Bringdown: MAE" (print p.18, row "No Conflict; Required Filings and Consents") | STANDARD, MATERIALITY_QUALIFIER |
+| Qualifiers (`materiality`) | vocabulary | "MAE (aggregate) (partial)" (print p.17, row "Organization; Qualification; Standing"); "MAE (aggregate)" (print p.18, row "Litigation; Legal Proceedings"); "Material (to the rep) (partial)" (print p.17, row "Capitalization; Subsidiaries"); "Material (to the rep)" (print p.18, row "SEC Documents; Financial Statements"); "Knowledge-qualified (partial)" (print p.18, row "No Conflict; Required Filings and Consents"); "True in all material respects (partial)" (print p.19, row "Information Supplied / Proxy Statement") | STANDARD, MATERIALITY_QUALIFIER |
+| Lookback (`lookback`) | verbatim | (free text / composed value) | OPERATION |
 
 ## Representations & Warranties — Parent
 
+- Section key: `parent-representations-qualifiers`
 - Legacy config: `components/review/table-configs/representations-qualifiers.config.js`
-- Proposed V2 family: REPRESENTATIONS (confidence: high)
+- Print pages: 47, 48
+- V2 family mapping: REPRESENTATIONS (confidence: high)
 
-### Table: Representations & Warranties — Parent
+### Table: `parent-representations-qualifiers-table`
 
-- Row subject column: **Term**
-- Rows: one row per matching provision/subject
+- Row subject: **Term**
+- Rows: one per subject
 
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Qualifiers | shows free text lifted verbatim from the extraction | (none extracted) |
-| Lookback | shows free text lifted verbatim from the extraction | (none extracted) |
-
-- Question Q20: column 'Lookback' renders pills but this generator found 2 candidate vocabulary maps in the file and none named-matched this column -- left 'verbatim' rather than guess; needs Ben's review to identify the real vocabulary and, likely, split this into per-signal sub-columns
-
-## No Other Reps / Fraud
-
-- Legacy config: `components/review/table-configs/no-other-reps-fraud.config.js`
-- Proposed V2 family: NO_OTHER_REPS_FRAUD (confidence: high)
-
-### Table: No Other Reps / Fraud
-
-- Row subject column: **Question**
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Status | shows free text lifted verbatim from the extraction | (none extracted) |
-| Detail | shows free text lifted verbatim from the extraction | (none extracted) |
-
-## Material Adverse Effect
-
-- Legacy config: `components/review/table-configs/mae-definitions.config.js`
-- Proposed V2 family: MAE_DEFINITION (confidence: high)
-
-### Table: Material Adverse Effect
-
-- Row subject column: **Term**
-- Rows: one row per matching provision/subject
-
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Provision | shows free text lifted verbatim from the extraction | (none extracted) |
-| Detail | shows free text lifted verbatim from the extraction | (none extracted) |
-
-- Question Q21: column 'Provision' renders pills but this generator found 2 candidate vocabulary maps in the file and none named-matched this column -- left 'verbatim' rather than guess; needs Ben's review to identify the real vocabulary and, likely, split this into per-signal sub-columns
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Bring-down Standard (`bringdown`) | vocabulary | "Bringdown: In all respects" (print p.18, row "Absence of Certain Changes or Events"); "Bringdown: De minimis" (print p.17, row "Capitalization; Subsidiaries"); "Bringdown: In all material respects" (print p.17, row "Organization; Qualification; Standing"); "Bringdown: MAE" (print p.18, row "No Conflict; Required Filings and Consents") | STANDARD, MATERIALITY_QUALIFIER |
+| Qualifiers (`materiality`) | vocabulary | "MAE (aggregate) (partial)" (print p.17, row "Organization; Qualification; Standing"); "MAE (aggregate)" (print p.18, row "Litigation; Legal Proceedings"); "Material (to the rep) (partial)" (print p.17, row "Capitalization; Subsidiaries"); "Material (to the rep)" (print p.18, row "SEC Documents; Financial Statements"); "Knowledge-qualified (partial)" (print p.18, row "No Conflict; Required Filings and Consents"); "True in all material respects (partial)" (print p.19, row "Information Supplied / Proxy Statement") | STANDARD, MATERIALITY_QUALIFIER |
+| Lookback (`lookback`) | verbatim | (free text / composed value) | OPERATION |
 
 ## Material Contracts
 
+- Section key: `material-contracts`
 - Legacy config: `components/review/table-configs/material-contracts.config.js`
-- Proposed V2 family: MATERIAL_CONTRACTS (confidence: high)
+- Print pages: 65, 66
+- V2 family mapping: MATERIAL_CONTRACTS (confidence: high)
 
-### Table: Material Contracts
+### Table: `material-contracts-table`
 
-- Row subject column: **Contract Type**
-- Rows: one row per matching provision/subject
+- Row subject: **Contract Type**
+- Rows: one per subject
 
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Threshold | shows a computed value (AMOUNT) | (none extracted) |
-| Evidence | shows free text lifted verbatim from the extraction | (none extracted) |
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Contract Type (`contractType`) | vocabulary | "M&A / acquisition agreements" (print p.65, row "M&A / acquisition agreements"); "Hedging and derivative contracts" (print p.65, row "Hedging and derivative contracts"); "Capital expenditure commitments" (print p.65, row "Capital expenditure commitments"); "Non-competition / non-solicitation agreements" (print p.65, row "Non-competition / non-solicitation agreements"); "Inbound IP licenses" (print p.65, row "Inbound IP licenses"); "Joint ventures / partnerships" (print p.65, row "Joint ventures / partnerships"); "Indebtedness contracts" (print p.65, row "Indebtedness contracts"); "Contracts above an aggregate-payments threshold" (print p.65, row "Contracts above an aggregate-payments threshold"); "Agreements with ROFO/ROFN" (print p.65, row "Agreements with ROFO/ROFN"); "Exclusivity / most-favored-nation / standstill" (print p.66, row "Exclusivity / most-favored-nation / standstill"); "M&A agreements with ongoing obligations" (print p.66, row "M&A agreements with ongoing obligations"); "Other material contracts" (print p.66, row "Other material contracts"); "Outbound IP licenses" (print p.66, row "Outbound IP licenses"); "Contracts above an aggregate-payments threshold" [info] (print p.66, row "Contracts above an aggregate-payments threshold"); "Settlement / consent agreements" (print p.66, row "Settlement / consent agreements"); "SEC Item 601(b) contracts" (print p.66, row "SEC Item 601(b) contracts"); "Supplier agreements" (print p.66, row "Supplier agreements"); "Real estate leases" (print p.66, row "Real estate leases") | STANDARD |
+| Threshold (`threshold`) | value / AMOUNT | (free text / composed value) | THRESHOLD, AMOUNT |
+| Not Covered (`uncoveredBucket`) | vocabulary | "Manufacturing agreements" [missing] (print p.66, row "Manufacturing agreements"); "Distribution / reseller agreements" [missing] (print p.66, row "Distribution / reseller agreements"); "Collaboration / R&D agreements" [missing] (print p.66, row "Collaboration / R&D agreements"); "Key employment / executive agreements" [missing] (print p.66, row "Key employment / executive agreements"); "Government contracts" [missing] (print p.66, row "Government contracts"); "Affiliate / related-party transactions" [missing] (print p.66, row "Affiliate / related-party transactions"); "Data privacy / security agreements" [missing] (print p.66, row "Data privacy / security agreements"); "Voting / registration-rights / stockholder agreements" [missing] (print p.66, row "Voting / registration-rights / stockholder agreements"); "IP development contracts" [missing] (print p.66, row "IP development contracts"); "Single source procurement contracts" [missing] (print p.66, row "Single source procurement contracts"); "Clinical research organization contracts" [missing] (print p.66, row "Clinical research organization contracts"); "Employee loans and advances" [missing] (print p.66, row "Employee loans and advances") | STANDARD |
 
-## Advisers / Fees / Expenses
+## Material Adverse Effect
 
-- Legacy config: `components/review/table-configs/advisers-fees-expenses.config.js`
-- Proposed V2 family: GENERAL_COVENANTS (confidence: low)
-- Question Q22: this section's title and content did not map cleanly onto one V2 family (candidate: GENERAL_COVENANTS). Which family should own it, or does it need a new one?
+- Section key: `mae-definitions`
+- Legacy config: `components/review/table-configs/mae-definitions.config.js`
+- Print pages: 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84
+- V2 family mapping: MAE_DEFINITION (confidence: high)
 
-### Table: Advisers / Fees / Expenses
+### Table: `mae-definitions-table`
 
-- Row subject column: **Term**
-- Rows: one row per matching provision/subject
+- Row subject: **Party**
+- Rows: fixed list
+- Fixed rows: "Parent", "Company"
 
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Provision | shows free text lifted verbatim from the extraction | (none extracted) |
-| Detail | shows free text lifted verbatim from the extraction | (none extracted) |
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Test (`test`) | verbatim | (free text / composed value) | OPERATION |
+| Provision (`limbSummary`) | vocabulary | "One limb — effect on the business, condition or results of operations" (print p.67, row "Parent") | STANDARD |
+
+### Table: `mae-carveouts-parent` — group header **CARVE-OUTS — PARENT**
+
+- Row subject: **Carve-out**
+- Rows: fixed list
+- Fixed rows: "Failure to meet internal projections or forecasts", "Compliance with the terms of this Agreement", "Other carve-out", "Changes in GAAP or accounting principles", "Industry-wide conditions", "Announcement or pendency of the transaction", "General economic conditions", "Changes in the trading price or volume of stock", "Changes in applicable law or regulation", "Acts of war, armed hostilities, or terrorism"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Disproportionate Carveback (`disproportionateCarveback`) | vocabulary | "Yes" (print p.77, row "Changes in GAAP or accounting principles"); "Not established" (print p.77, row "Failure to meet internal projections or forecasts") | STANDARD |
+
+### Table: `mae-carveouts-company` — group header **CARVE-OUTS — COMPANY**
+
+- Row subject: **Carve-out**
+- Rows: fixed list
+- Fixed rows: "Failure to meet internal projections or forecasts", "Compliance with the terms of this Agreement", "Other carve-out", "Changes in GAAP or accounting principles", "Industry-wide conditions", "Announcement or pendency of the transaction", "General economic conditions", "Changes in the trading price or volume of stock", "Changes in applicable law or regulation", "Acts of war, armed hostilities, or terrorism"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Disproportionate Carveback (`disproportionateCarveback`) | vocabulary | "Yes" (print p.77, row "Changes in GAAP or accounting principles"); "Not established" (print p.77, row "Failure to meet internal projections or forecasts") | STANDARD |
+
+## Interim Operating Covenants — Target
+
+- Section key: `ioc-exceptions`
+- Legacy config: `components/review/table-configs/ioc-exceptions.config.js`
+- Print pages: 86, 87, 88
+- V2 family mapping: INTERIM_OPERATING (confidence: high)
+
+### Table: `ioc-exceptions-affirmative-covenants` — group header **AFFIRMATIVE COVENANTS**
+
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Maintain leases & material property", "Conduct business in ordinary course", "Preserve business organization & relationships", "Maintain permits, franchises & authorizations"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Provision (`body`) | verbatim | (free text / composed value) | OPERATION |
+| Efforts Standard (`effortsStandard`) | vocabulary | "Commercially reasonable efforts" (print p.86, row "Maintain leases & material property") | STANDARD, MATERIALITY_QUALIFIER |
+| Qualifier (`qualifier`) | vocabulary | "Material items only" (print p.86, row "Maintain leases & material property"); "In all material respects" (print p.86, row "Conduct business in ordinary course") | STANDARD, MATERIALITY_QUALIFIER |
+
+### Table: `ioc-exceptions-negative-covenants` — group header **NEGATIVE COVENANTS**
+
+- Row subject: **Term**
+- Rows: one per subject
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Specific Restrictions (`specificRestrictions`) | vocabulary | "Acquisitions / business combinations" (print p.87, row "Mergers, Acquisitions, Dispositions"); "Merger / consolidation / liquidation / recapitalization" (print p.87, row "Mergers, Acquisitions, Dispositions"); "Asset sales / divestitures / licenses" (print p.87, row "Mergers, Acquisitions, Dispositions"); "Real estate / leases" (print p.87, row "Mergers, Acquisitions, Dispositions"); "Capital expenditures" (print p.87, row "Capital Expenditures"); "Loans / advances / capital contributions" (print p.87, row "Commitments"); "Indebtedness / financing" (print p.87, row "Indebtedness"); "Guarantees / third-party obligations" (print p.87, row "Indebtedness") | CONDITION |
+| Exceptions (`exceptions`) | vocabulary | "Ordinary course of business" (print p.87, row "Mergers, Acquisitions, Dispositions"); "Other specific exception (see text)" (print p.87, row "Mergers, Acquisitions, Dispositions"); "As contemplated by this Agreement" (print p.87, row "Mergers, Acquisitions, Dispositions"); "Existing credit facilities or indebtedness" (print p.87, row "Mergers, Acquisitions, Dispositions"); "Transactions among wholly-owned subsidiaries" (print p.87, row "Issuance of Securities"); "Existing equity award exercises, vesting, or settlement" (print p.87, row "Issuance of Securities"); "Below monetary threshold" (print p.87, row "Capital Expenditures"); "Within budget / capex plan" (print p.87, row "Capital Expenditures"); "Below $10,000,000," (print p.87, row "Commitments"); "Trade payables in ordinary course" (print p.87, row "Indebtedness"); "Intercompany transactions" (print p.87, row "Indebtedness"); "Below $10,000,000" (print p.87, row "Settlement of Claims"); "As required by law" (print p.88, row "Accounting Changes"); "Pursuant to existing contracts as of signing" (print p.88, row "Compensation and Benefits"); "None specified" (print p.87, row "Charter / Bylaws Amendments") | EXCEPTION |
+
+### Table: `ioc-exceptions-exceptions` — group header **EXCEPTIONS**
+
+- Row subject: *(no separate subject column -- one composed cell per row)*
+- Rows: one per subject
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| *(blank)* (`body`) | verbatim | (free text / composed value) | OPERATION |
+
+### Table: `ioc-exceptions-other-restrictions` — group header **OTHER RESTRICTIONS**
+
+- Row subject: *(no separate subject column -- one composed cell per row)*
+- Rows: one per subject
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| *(blank)* (`body`) | verbatim | (free text / composed value) | OPERATION |
+| Restriction (`fragmentName`) | vocabulary | "Tax matters" (legacy label map); "Specified-contract amendments" (legacy label map); "Insurance maintenance" (legacy label map) | CONDITION |
+
+## Interim Operating Covenants — Parent
+
+- Section key: `parent-ioc-exceptions`
+- Legacy config: `components/review/table-configs/ioc-exceptions.config.js`
+- Print pages: 94
+- V2 family mapping: INTERIM_OPERATING (confidence: high)
+
+### Table: `parent-ioc-exceptions-affirmative-covenants` — group header **AFFIRMATIVE COVENANTS**
+
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Maintain leases & material property", "Conduct business in ordinary course", "Preserve business organization & relationships", "Maintain permits, franchises & authorizations"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Provision (`body`) | verbatim | (free text / composed value) | OPERATION |
+| Efforts Standard (`effortsStandard`) | vocabulary | "Commercially reasonable efforts" (print p.94, row "Maintain leases & material property") | STANDARD, MATERIALITY_QUALIFIER |
+| Qualifier (`qualifier`) | vocabulary | "Material items only" (print p.94, row "Maintain leases & material property"); "In all material respects" (print p.94, row "Conduct business in ordinary course") | STANDARD, MATERIALITY_QUALIFIER |
+
+### Table: `parent-ioc-exceptions-negative-covenants` — group header **NEGATIVE COVENANTS**
+
+- Row subject: **Term**
+- Rows: one per subject
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Specific Restrictions (`specificRestrictions`) | vocabulary | "Merger / consolidation / liquidation / recapitalization" (print p.94, row "Mergers, Acquisitions, Dispositions") | CONDITION |
+| Exceptions (`exceptions`) | vocabulary | "As contemplated by this Agreement" (print p.94, row "Mergers, Acquisitions, Dispositions"); "Transactions among wholly-owned subsidiaries" (print p.94, row "Issuance of Securities"); "Existing equity award exercises, vesting, or settlement" (print p.94, row "Issuance of Securities"); "Other specific exception (see text)" (print p.94, row "Issuance of Securities"); "Ordinary course of business" (print p.94, row "Dividends and Distributions"); "Tax withholding or similar mandated actions" (print p.94, row "Dividends and Distributions"); "None specified" (print p.94, row "Charter / Bylaws Amendments") | EXCEPTION |
+
+### Table: `parent-ioc-exceptions-exceptions` — group header **EXCEPTIONS**
+
+- Row subject: *(no separate subject column -- one composed cell per row)*
+- Rows: one per subject
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| *(blank)* (`body`) | verbatim | (free text / composed value) | OPERATION |
+
+### Table: `parent-ioc-exceptions-other-restrictions` — group header **OTHER RESTRICTIONS**
+
+- Row subject: *(no separate subject column -- one composed cell per row)*
+- Rows: one per subject
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| *(blank)* (`body`) | verbatim | (free text / composed value) | OPERATION |
+
+## No-Shop Core Mechanics
+
+- Section key: `nosol-noshop`
+- Legacy config: `components/review/table-configs/nosol-noshop.config.js`
+- Print pages: 97
+- V2 family mapping: NO_SHOP (confidence: high)
+
+### Table: `nosol-noshop-go-shop` — group header **GO-SHOP**
+
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Go-shop"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Provision (`goShop`) | vocabulary | "None" (print p.97, row "Go-shop") | STANDARD |
+
+### Table: `nosol-noshop-core-mechanics` — group header **NO-SHOP CORE MECHANICS**
+
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Cease discussions", "No-shop / non-solicit restriction", "Representative control standard", "No-shop exceptions", "Don't-ask-don't-waive / standstill enforcement"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Detail (`detail`) | verbatim | (free text / composed value) | OPERATION |
+| Prohibited Verb (`prohibitedVerb`) | vocabulary | *(all proposed -- see below)* | CONDITION |
+  Proposed addition codes for **Prohibited Verb**:
+  - "Solicit" — *the print's "No-shop / non-solicit restriction" row is one fused litany sentence ("Solicit / initiate or knowingly encourage or facilitate ... an Acquisition Proposal"), never per-verb pills; FACT_COMPONENTS/V2 LITANY carries the litany's members, so a present/absent column per prohibited verb is new structure the old page lacked, per Ben's "add to the table structure" instruction.*
+  - "Initiate" — *the print's "No-shop / non-solicit restriction" row is one fused litany sentence ("Solicit / initiate or knowingly encourage or facilitate ... an Acquisition Proposal"), never per-verb pills; FACT_COMPONENTS/V2 LITANY carries the litany's members, so a present/absent column per prohibited verb is new structure the old page lacked, per Ben's "add to the table structure" instruction.*
+  - "Knowingly encourage" — *the print's "No-shop / non-solicit restriction" row is one fused litany sentence ("Solicit / initiate or knowingly encourage or facilitate ... an Acquisition Proposal"), never per-verb pills; FACT_COMPONENTS/V2 LITANY carries the litany's members, so a present/absent column per prohibited verb is new structure the old page lacked, per Ben's "add to the table structure" instruction.*
+  - "Facilitate" — *the print's "No-shop / non-solicit restriction" row is one fused litany sentence ("Solicit / initiate or knowingly encourage or facilitate ... an Acquisition Proposal"), never per-verb pills; FACT_COMPONENTS/V2 LITANY carries the litany's members, so a present/absent column per prohibited verb is new structure the old page lacked, per Ben's "add to the table structure" instruction.*
+
+
+### Table: `nosol-noshop-notice` — group header **NOTICE**
+
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Notice", "Notice period", "Notice content"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Value (`value`) | value / PERIOD | (free text / composed value) | PERIOD |
+
+## Fiduciary-Out Mechanics
+
+- Section key: `nosol-fiduciary`
+- Legacy config: `components/review/table-configs/nosol-fiduciary.config.js`
+- Print pages: 97, 98
+- V2 family mapping: NO_SHOP (confidence: high)
+
+### Table: `nosol-fiduciary-table` — group header **FIDUCIARY-OUT / ENGAGEMENT**
+
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Engagement standard", "Final determination standard", "Engagement standard (coded)"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Provision (`signals`) | vocabulary | "Is a Superior Proposal" (legacy label map); "Constitutes or could lead to a Superior Proposal" (print p.97, row "Engagement standard (coded)"); "Constitutes or could reasonably be expected to lead to a Superior Proposal" (legacy label map); "Continues to constitute a Superior Proposal" (legacy label map) | STANDARD |
+
+### Table: `nosol-fiduciary-change-of-recommendation` — group header **CHANGE OF RECOMMENDATION**
+
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Board change right", "Force the vote"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Value (`value`) | boolean | (free text / composed value) | CONDITION |
+| Prohibited Action (`prohibitedAction`) | vocabulary | "Withhold / withdraw / qualify / modify the Board Recommendation adverse to Parent" (print p.98, row "Change of Recommendation — prohibited actions"); "Fail to publicly reaffirm the Recommendation on request (within 10 business days)" (print p.98, row "Change of Recommendation — prohibited actions"); "Approve / endorse / recommend / declare advisable a proposal" (print p.98, row "Change of Recommendation — prohibited actions"); "Fail to include the Board Recommendation in the Proxy / 14D-9 / Info Statement" (print p.98, row "Change of Recommendation — prohibited actions"); "Enter into an LOI / acquisition / merger agreement (other than an ACA)" (print p.98, row "Change of Recommendation — prohibited actions"); "Fail to recommend against a tender / exchange offer within the required period (within 10 business days)" (print p.98, row "Change of Recommendation — prohibited actions") | CONDITION |
+
+## Intervening Event Mechanics
+
+- Section key: `nosol-intervening`
+- Legacy config: `components/review/table-configs/nosol-intervening.config.js`
+- Print pages: 98
+- V2 family mapping: NO_SHOP (confidence: high)
+
+### Table: `nosol-intervening-table` — group header **INTERVENING EVENT**
+
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Intervening Event provision", "Definition", "Scope", "Exceptions", "Termination right"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Provision (`signals`) | boolean | (free text / composed value) | CONDITION |
+| Detail (`detail`) | verbatim | (free text / composed value) | OPERATION |
+
+## Superior Proposal Definition and Standards
+
+- Section key: `nosol-superior`
+- Legacy config: `components/review/table-configs/nosol-superior.config.js`
+- Print pages: 97, 98
+- V2 family mapping: NO_SHOP (confidence: high)
+
+### Table: `nosol-superior-table` — group header **SUPERIOR PROPOSAL**
+
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Superior Proposal threshold", "Superior Proposal test", "Determiner"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Provision (`signals`) | value / PERCENTAGE | (free text / composed value) | PERCENTAGE |
+
+### Table: `nosol-superior-acquisition-proposal-definition` — group header **ACQUISITION PROPOSAL — DEFINITION**
+
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Company Takeover Proposal", "Acceptable Confidentiality Agreement"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Detail (`detail`) | verbatim | (free text / composed value) | OPERATION |
+
+### Table: `nosol-superior-matching-rights` — group header **MATCHING RIGHTS**
+
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Initial match period", "Subsequent match period"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Value (`value`) | value / PERIOD | (free text / composed value) | PERIOD |
+
+## Votes / Approvals / SEC Filing / Meeting Requirements
+
+- Section key: `votes-approvals-meeting`
+- Legacy config: `components/review/table-configs/votes-approvals-meeting.config.js`
+- Print pages: 114
+- V2 family mapping: PROXY_MEETING (confidence: high)
+
+### Table: `votes-approvals-meeting-table`
+
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Company stockholder approval", "Parent / Merger Sub approvals", "Proxy filing deadline", "Mailing", "Meeting", "Meeting record date", "Broker search"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Vote Standard (`voteStandard`) | vocabulary | "Two-thirds of outstanding shares" (legacy label map); "Majority of outstanding shares" (legacy label map); "Majority of voting power" (legacy label map); "Majority stockholder approval" (legacy label map) | STANDARD, PERCENTAGE |
+| Value (`value`) | value / PERIOD | value; trigger: "after agreement date" (print p.114, row "Proxy filing deadline"); "after effectiveness" (print p.114, row "Mailing"); "after mailing" (print p.114, row "Meeting") | PERIOD |
+| Requirement (`requirement`) | boolean | (free text / composed value) | CONDITION |
+
+### Table: `votes-approvals-meeting-adjournment`
+
+- Row subject: **Adjournment Rights**
+- Rows: fixed list
+- Fixed rows: "Company adjournment rights", "Parent adjournment rights"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Permitted Reason (`permittedReason`) | vocabulary | "Supplemental disclosure" (print p.114, row "Adjournment rights"); "Absence of quorum" (print p.114, row "Adjournment rights") | STANDARD |
+| Controlling Party (`controllingParty`) | vocabulary | "Company" (print p.114, row "Adjournment rights"); "Parent" (print p.114, row "Adjournment rights") | ACTOR |
+| Restriction (`restriction`) | verbatim | (free text / composed value) | CONDITION |
+
+## Closing Conditions
+
+- Section key: `conditions`
+- Legacy config: `components/review/table-configs/conditions.config.js`
+- Print pages: 115
+- V2 family mapping: CLOSING_CONDITIONS (confidence: high)
+
+### Table: `conditions-table` — group header **MUTUAL CONDITIONS**
+
+- Row subject: **Condition**
+- Rows: fixed list
+- Fixed rows: "Stockholder Approval", "No Legal Restraint", "Antitrust / Regulatory Clearance", "S-4 / Proxy Effective", "Stock Exchange Listing"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Vote Standard (`voteStandard`) | vocabulary | "Two-thirds of outstanding shares" (legacy label map); "Majority of outstanding shares" (legacy label map); "Majority of voting power" (legacy label map); "Majority stockholder approval" (legacy label map) | STANDARD, PERCENTAGE |
+| Detail (`detail`) | verbatim | (free text / composed value) | OPERATION |
+
+## Closing Conditions — Buyer
+
+- Section key: `conditions-b`
+- Legacy config: `components/review/table-configs/conditions-m.config.js`
+- Print pages: 115
+- V2 family mapping: CLOSING_CONDITIONS (confidence: high)
+
+### Table: `conditions-b-table` — group header **BUYER'S CONDITIONS — TO PARENT / MERGER SUB'S OBLIGATION**
+
+- Row subject: **Condition**
+- Rows: fixed list
+- Fixed rows: "Accuracy of Representations", "No Material Adverse Effect", "Officer's Certificate"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Standard (`standard`) | vocabulary | "TRUE IN ALL RESPECTS" (print p.115, row "Accuracy of Representations"); "TRUE EXCEPT FOR DE MINIMIS INACCURACIES" (print p.115, row "Accuracy of Representations"); "TRUE IN ALL MATERIAL RESPECTS" (print p.115, row "Accuracy of Representations"); "TRUE EXCEPT WHERE FAILURE WOULD NOT CAUSE AN MAE" (print p.115, row "Accuracy of Representations") | STANDARD, MATERIALITY_QUALIFIER |
+| Reference (`reference`) | verbatim | (free text / composed value) | CROSS_REFERENCE |
+| Materiality Qualifiers Disregarded (`materialityQualifiersDisregarded`) | vocabulary | "Materiality qualifiers disregarded" (print p.115, row "Accuracy of Representations") | STANDARD, MATERIALITY_QUALIFIER |
+
+## Closing Conditions — Seller
+
+- Section key: `conditions-s`
+- Legacy config: `components/review/table-configs/conditions-m.config.js`
+- Print pages: 116
+- V2 family mapping: CLOSING_CONDITIONS (confidence: high)
+
+### Table: `conditions-s-table` — group header **TARGET'S CONDITIONS — TO THE COMPANY'S OBLIGATION**
+
+- Row subject: **Condition**
+- Rows: fixed list
+- Fixed rows: "Accuracy of Representations", "Officer's Certificate"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Standard (`standard`) | vocabulary | "TRUE IN ALL RESPECTS" (print p.115, row "Accuracy of Representations"); "TRUE EXCEPT FOR DE MINIMIS INACCURACIES" (print p.115, row "Accuracy of Representations"); "TRUE IN ALL MATERIAL RESPECTS" (print p.115, row "Accuracy of Representations"); "TRUE EXCEPT WHERE FAILURE WOULD NOT CAUSE AN MAE" (print p.115, row "Accuracy of Representations") | STANDARD, MATERIALITY_QUALIFIER |
+| Reference (`reference`) | verbatim | (free text / composed value) | CROSS_REFERENCE |
+| Materiality Qualifiers Disregarded (`materialityQualifiersDisregarded`) | vocabulary | "Materiality qualifiers disregarded" (print p.115, row "Accuracy of Representations") | STANDARD, MATERIALITY_QUALIFIER |
+
+## Closing Conditions — Mutual
+
+- Section key: `conditions-m`
+- Legacy config: `components/review/table-configs/conditions-m.config.js`
+- Print pages: 116
+- V2 family mapping: CLOSING_CONDITIONS (confidence: high)
+
+### Table: `conditions-m-table`
+
+- Row subject: **Condition**
+- Rows: fixed list
+- Fixed rows: "Condition Frustration / Prevention", "Covenant Performance", "Dissenting Shares Threshold", "No Material Adverse Effect (Parent)", "Covenant Performance (Parent)", "Financing / Sufficient Funds"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Coverage (`presence`) | boolean | (free text / composed value) | CONDITION |
+
+## Termination Rights
+
+- Section key: `termination-rights`
+- Legacy config: `components/review/table-configs/termination-rights.config.js`
+- Print pages: 119, 120, 121, 122
+- V2 family mapping: TERMINATION (confidence: high)
+
+### Table: `termination-rights-mutual` — group header **MUTUAL / EITHER PARTY**
+
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Mutual consent", "Outside / End Date", "Legal restraint / order", "Stockholder vote not obtained"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Written Consent (`writtenConsent`) | boolean | (free text / composed value) | CONDITION |
+| Outside Date (`outsideDate`) | value / DATE | (free text / composed value) | DATE |
+| Exercised By (`exercisedBy`) | vocabulary | "Either party may elect (not automatic)" (print p.120, row "Outside / End Date") | ACTOR |
+| Vote Threshold (`voteThreshold`) | vocabulary | "Two-thirds of outstanding shares" (legacy label map); "Majority of outstanding shares" (legacy label map); "Majority of voting power" (legacy label map); "Majority stockholder approval" (legacy label map) | STANDARD, PERCENTAGE |
+
+### Table: `termination-rights-buyer-may-terminate` — group header **BUYER / PARENT MAY TERMINATE**
+
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Company (Target) breach", "Change of Recommendation"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Fault-Based Carve-Out (`faultBasedCarveOut`) | boolean | (free text / composed value) | EXCEPTION |
+| Trigger (`trigger`) | vocabulary | "Adverse Recommendation Change" (print p.120, row "Change of Recommendation") | TRIGGER |
+| Window (`window`) | vocabulary | "Pre-stockholder-vote only" (print p.120, row "Change of Recommendation") | PERIOD |
+| Cure Period Value (`curePeriodValue`) — **proposed addition** | value / PERIOD | (free text / composed value) | PERIOD |
+| Cure Period End (`curePeriodEnd`) — **proposed addition** | value / DATE | (free text / composed value) | DATE |
+| Curable or Not (`curableOrNot`) — **proposed addition** | boolean | (free text / composed value) | CONDITION |
+
+  Proposed additions:
+  - **Cure Period Value** (`curePeriodValue`, render: value/PERIOD) — *TERMINATION/BREACH supports a cure-period value distinct from the outside date; the print shows the breach right as a bare "No" fault-based-carve-out pill with the cure mechanics only in clause text (§6.3(b)).*
+  - **Cure Period End** (`curePeriodEnd`, render: value/DATE) — *companion to Cure Period Value -- the earlier-of date the cure window actually runs to.*
+  - **Curable or Not** (`curableOrNot`, render: boolean) — *TERMINATION layer_rules calls out "curable or not" as its own branch; not a distinct pill on this print.*
+
+
+### Table: `termination-rights-company-may-terminate` — group header **COMPANY / TARGET MAY TERMINATE**
+
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Parent (Buyer) breach"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Fault-Based Carve-Out (`faultBasedCarveOut`) | boolean | (free text / composed value) | EXCEPTION |
+| Terminator-Breach Bar (`terminatorBreachBar`) — **proposed addition** | boolean | (free text / composed value) | CONDITION |
+
+  Proposed addition:
+  - **Terminator-Breach Bar** (`terminatorBreachBar`, render: boolean) — *TERMINATION/BREACH's own condition (Ben, plan 5B.8 note): no termination where the terminator primarily caused the outside date to be missed -- present in clause text (§6.2(a) proviso) but not a pill on this print.*
+
+
+### Table: `termination-rights-remedies` — group header **REMEDIES (CROSS-REFERENCE)**
+
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Willful-breach carve-out", "Willful-breach carve-out to sole remedy", "Specific performance available to both parties"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Value (`value`) | boolean | (free text / composed value) | CONDITION |
+
+## Termination Fees
+
+- Section key: `termination-fees`
+- Legacy config: `components/review/table-configs/termination-fees.config.js`
+- Print pages: 122
+- V2 family mapping: TERMINATION_FEE (confidence: high)
+
+### Table: `termination-fees-table`
+
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Company termination fee", "Reverse termination fee", "Sole and exclusive remedy", "Willful-breach carve-out", "Willful-breach carve-out to sole remedy", "Interest on late payment"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Amount (`amount`) | value / AMOUNT | (free text / composed value) | THRESHOLD, AMOUNT |
+| Trigger (`trigger`) | verbatim | (free text / composed value) | TRIGGER |
+| Payer (`payer`) — **proposed addition** | vocabulary | *(all proposed -- see below)* | ACTOR |
+| Deeming Rule Present (`deemingRulePresent`) — **proposed addition** | boolean | (free text / composed value) | CONDITION |
+
+  Proposed additions:
+  - **Payer** (`payer`, render: vocabulary) — *TERMINATION_FEE/FEE_AMOUNT names a payer role; this print shows the fee amount and trigger prose only, payer is implied by which row (Company/Reverse) rather than stated as its own pill.*
+  - **Deeming Rule Present** (`deemingRulePresent`, render: boolean) — *TERMINATION_FEE/FEE_TRIGGER supports a "deemed" trigger variant (e.g. deemed acceptance of a proposal); not distinguished on this print.*
+
+  Proposed addition codes for **Payer**:
+  - "Company" — *the "Company termination fee" row implies the Company as payer; not stated as its own pill on this print.*
+  - "Parent" — *the "Reverse termination fee" row implies Parent as payer; same reasoning.*
+
+
+## Tail Fee Mechanics
+
+- Section key: `tail-fee`
+- Legacy config: `components/review/table-configs/tail-fee.config.js`
+- Print pages: 128
+- V2 family mapping: TERMINATION_FEE (confidence: high)
+
+### Table: `tail-fee-table`
+
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Tail window", "Threshold % for Company Takeover Proposal", "Termination scenarios", "Qualifying transaction scope"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Value (`value`) | value / PERIOD | (free text / composed value) | PERIOD |
+| Tail Period (`tailPeriod`) — **proposed addition** | value / PERIOD | (free text / composed value) | PERIOD |
+
+  Proposed addition:
+  - **Tail Period** (`tailPeriod`, render: value/PERIOD) — *TERMINATION_FEE/TAIL_PERIOD names the tail window as its own component; already present as this table's "Tail window" row, promoted here as an explicit reusable column for cross-deal comparison rather than a fixed-row value only.*
+
+
+## Employee Compensation and Benefits
+
+- Section key: `employee-benefits`
+- Legacy config: `components/review/table-configs/employee-benefits.config.js`
+- Print pages: 128, 129
+- V2 family mapping: EMPLOYEE_MATTERS (confidence: high)
+
+### Table: `employee-benefits-table`
+
+- Row subject: **Benefit**
+- Rows: fixed list
+- Fixed rows: "Severance / change-in-control protection", "Other benefits", "Base salary", "Long-term incentive (LTI) / equity grants", "Target annual bonus / cash incentive", "Retirement / 401(k) benefits"
+- Proposed addition rows:
+  - "Earned annual bonus (pro-rata)" — *lib/employee-benefits.js's COMP_ITEM_LABELS/COMP_ITEM_ORDER carries this as a distinct comparable benefit element (code ANNUAL_BONUS_PAID); this deal's print does not populate it (the table only shows populated rows), but the fixed table shape should include it so an agreement that DOES populate it lands on the same row across deals.*
+  - "Health and welfare benefits" — *lib/employee-benefits.js's COMP_ITEM_LABELS/COMP_ITEM_ORDER carries this as a distinct comparable benefit element (code HEALTH_WELFARE); this deal's print does not populate it (the table only shows populated rows), but the fixed table shape should include it so an agreement that DOES populate it lands on the same row across deals.*
+  - "Paid time off / vacation" — *lib/employee-benefits.js's COMP_ITEM_LABELS/COMP_ITEM_ORDER carries this as a distinct comparable benefit element (code PTO); this deal's print does not populate it (the table only shows populated rows), but the fixed table shape should include it so an agreement that DOES populate it lands on the same row across deals.*
+  - "Equity / stock awards (new grants)" — *lib/employee-benefits.js's COMP_ITEM_LABELS/COMP_ITEM_ORDER carries this as a distinct comparable benefit element (code EQUITY_AWARDS); this deal's print does not populate it (the table only shows populated rows), but the fixed table shape should include it so an agreement that DOES populate it lands on the same row across deals.*
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Reference Group (`comparison`) | vocabulary | "Company pre-closing arrangements" (legacy label map); "Similarly-situated buyer employees" (legacy label map) | OBJECT |
+| Standard (`standard`) | vocabulary | "At target's pre-closing levels" (print p.129, row "Severance / change-in-control protection"); "In the aggregate (rebalancing permitted)" (print p.129, row "Other benefits"); "No less favorable than current" (print p.129, row "Base salary"); "At buyer's discretion" (print p.129, row "Long-term incentive (LTI) / equity grants") | STANDARD, MATERIALITY_QUALIFIER |
+| Period (`period`) | value / PERIOD | (free text / composed value) | PERIOD |
+
+### Table: `employee-benefits-other-protections` — group header **OTHER PROTECTIONS**
+
+- Row subject: **Benefit**
+- Rows: fixed list
+- Fixed rows: "401(k) plan continuation", "Continued service crediting", "Eligibility / waiting-period waiver", "Severance protection"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Reference Group (`comparison`) | vocabulary | "All covered employees" (print p.129, row "401(k) plan continuation") | OBJECT |
+| Standard (`standard`) | verbatim | (free text / composed value) | STANDARD, MATERIALITY_QUALIFIER |
+| Period (`period`) | verbatim | (free text / composed value) | PERIOD |
 
 ## Miscellaneous / Boilerplate
 
+- Section key: `misc-boilerplate`
 - Legacy config: `components/review/table-configs/misc-boilerplate.config.js`
-- Proposed V2 family: MISC_BOILERPLATE (confidence: high)
+- Print pages: 129, 130, 131
+- V2 family mapping: MISC_BOILERPLATE (confidence: high)
 
-### Table: Miscellaneous / Boilerplate
+### Table: `misc-boilerplate-table`
 
-- Row subject column: **Term**
-- Rows: one row per matching provision/subject
+- Row subject: **Term**
+- Rows: fixed list
+- Fixed rows: "Governing law", "Forum / jurisdiction", "Third-party beneficiaries", "Fee / expense allocation", "Specific performance", "Specific performance limitations", "Jury trial waiver", "Amendment formalities", "Severability", "Counterparts and electronic execution", "Assignment"
 
-| Column | What it shows | Vocabulary (pill text) |
-|---|---|---|
-| Provision | shows free text lifted verbatim from the extraction | (none extracted) |
-| Detail | shows free text lifted verbatim from the extraction | (none extracted) |
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Provision (`signals`) | vocabulary | "Yes" (print p.130, row "Specific performance") | STANDARD |
+| Detail (`detail`) | verbatim | (free text / composed value) | OPERATION |
 
+## No Other Reps / Fraud
+
+- Section key: `no-other-reps-fraud`
+- Legacy config: `components/review/table-configs/no-other-reps-fraud.config.js`
+- Print pages: 142
+- V2 family mapping: NO_OTHER_REPS_FRAUD (confidence: high)
+
+### Table: `no-other-reps-fraud-table`
+
+- Row subject: **Question**
+- Rows: fixed list
+- Fixed rows: "Buyer non-reliance", "Seller no-other-reps", "Seller non-reliance", "Buyer no-other-reps", "Fraud carve-out"
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Status (`status`) | vocabulary | "Yes" (print p.142, row "Buyer non-reliance"); "Silent" (print p.142, row "Fraud carve-out") | STANDARD |
+| Detail (`detail`) | verbatim | (free text / composed value) | OPERATION |
+  Proposed addition codes for **Status**:
+  - "No" — *complement of Yes -- V2 NO_OTHER_REPS_FRAUD/FRAUD_CARVEOUT is a yes/no/silent axis; this deal never shows an explicit "No" but the vocabulary should carry the full axis.*
+
+
+## Other Covenants
+
+- Section key: `general-covenants`
+- Legacy config: `components/review/table-configs/general-covenants.config.js`
+- Print pages: 142
+- V2 family mapping: GENERAL_COVENANTS (confidence: high)
+
+### Table: `general-covenants-table`
+
+- Row subject: **Provision**
+- Rows: one per subject
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Link (`detail`) | verbatim | (free text / composed value) | CROSS_REFERENCE |
+
+## Defined Terms
+
+- Section key: `defined-terms`
+- Legacy config: *(none -- this table exists only in the print, not in any legacy config)*
+- Print pages: 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180
+- V2 family mapping: KEY_DEFINED_TERMS (confidence: low)
+
+### Table: `defined-terms-table`
+
+- Row subject: **Term**
+- Rows: one per subject
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Definition (`definition`) | verbatim | (free text / composed value) | DEFINED_TERM |
+
+## Approvals / Votes
+
+- Section key: `approvals-votes`
+- Legacy config: `components/review/table-configs/approvals-votes.config.js`
+- Print pages: *(no print evidence found in this deal)*
+- V2 family mapping: TERMINATION (confidence: low)
+
+### Table: `approvals-votes-table`
+
+- Row subject: **Term**
+- Rows: one per subject
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Kind (`kind`) | verbatim | (free text / composed value) | OPERATION |
+| Detail (`detail`) | verbatim | (free text / composed value) | OPERATION |
+
+## Shareholder Meeting / Proxy / Tender-Offer SEC Matters
+
+- Section key: `sec-meeting`
+- Legacy config: `components/review/table-configs/sec-meeting.config.js`
+- Print pages: *(no print evidence found in this deal)*
+- V2 family mapping: PROXY_MEETING (confidence: high)
+
+### Table: `sec-meeting-table`
+
+- Row subject: **Term**
+- Rows: one per subject
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Subject (`subject`) | verbatim | (free text / composed value) | OPERATION |
+| Provision (`signals`) | verbatim | (free text / composed value) | OPERATION |
+| Detail (`detail`) | verbatim | (free text / composed value) | OPERATION |
+
+## Antitrust / Regulatory
+
+- Section key: `antitrust-regulatory`
+- Legacy config: `components/review/table-configs/antitrust-regulatory.config.js`
+- Print pages: *(no print evidence found in this deal)*
+- V2 family mapping: ANTITRUST_REGULATORY (confidence: high)
+
+### Table: `antitrust-regulatory-table`
+
+- Row subject: **Term**
+- Rows: one per subject
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Provision (`signals`) | verbatim | (free text / composed value) | OPERATION |
+| Detail (`detail`) | verbatim | (free text / composed value) | OPERATION |
+
+## Advisers / Fees / Expenses
+
+- Section key: `advisers-fees-expenses`
+- Legacy config: `components/review/table-configs/advisers-fees-expenses.config.js`
+- Print pages: *(no print evidence found in this deal)*
+- V2 family mapping: GENERAL_COVENANTS (confidence: low)
+
+### Table: `advisers-fees-expenses-table`
+
+- Row subject: **Term**
+- Rows: one per subject
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| Provision (`signals`) | verbatim | (free text / composed value) | OPERATION |
+| Detail (`detail`) | verbatim | (free text / composed value) | OPERATION |
+
+## No-Solicitation / No-Shop
+
+- Section key: `nosol`
+- Legacy config: `components/review/table-configs/nosol-section.config.js`
+- Print pages: *(no print evidence found in this deal)*
+- V2 family mapping: NO_SHOP (confidence: high)
+
+### Table: `nosol-table`
+
+- Row subject: *(no separate subject column -- one composed cell per row)*
+- Rows: one per subject
+
+| Column | Render | Vocabulary / value | fill_from |
+|---|---|---|---|
+| *(blank)* (`body`) | verbatim | (free text / composed value) | OPERATION |
+
+---
+
+## Open questions
+
+1. **Structure & Mechanics.** The print labels this a "One Step Merger" (Deal structure row) even though the agreement text describes a merger sub merging into the Company followed by the surviving corporation merging into a second merger sub (i.e. two mergers). Is "One Step Merger" the legacy code's own vocabulary term for a double-dummy/forward-triangular structure (distinct from a literal single-step merger), or is this a labeling bug in the legacy table the pill vocabulary should not perpetuate?
+2. **Consideration.** The print shows two distinct pill texts for merger form on the same row ("Reverse triangular merger" and "Forward triangular merger"), while the legacy `structure-mechanics.config.js` vocabulary only defines "Forward merger" (no "triangular") and "Reverse triangular merger". Should the legacy label be corrected to match the print's "Forward triangular merger", or are these two different concepts that happen to look similar?
+3. **Equity Awards.** CVR Entitlement is "—" (not entitled) on all four rows of this deal. Is Entitled/Not entitled the right two-value axis for this column, or does a real CVR deal need a richer vocabulary (e.g. entitlement percentage, milestone-linked)?
+4. **Representations & Warranties — Company/Parent.** This table now carries two independently-recorded bring-down vocabularies for the same four-tier concept: the reps page's own lower-case "Bringdown: X" pills, and the Closing Conditions page's upper-case "TRUE IN ALL RESPECTS"-style pills. Should these be unified into one shared vocabulary (with the two print renderings recorded as display variants of the same code), or kept as two genuinely separate columns because a rep's own bring-down and its Closing-Conditions bring-down can, on some deals, diverge?
+5. **Representations & Warranties — Company/Parent.** Lookback is left `verbatim` (e.g. "Since Jan 1, 2023 (≈3.3 yrs)") rather than a vocabulary, since only two example values exist in this one deal and lookback dates are inherently deal-specific. Confirm that's right, or say what a cross-deal-comparable Lookback vocabulary should look like (e.g. a value_kind of DATE plus a separate reference-date/duration split).
+6. **Material Adverse Effect.** The ten MAE carve-out categories and their disproportionate-carveback yes/no are harvested per party (Parent vs Company) as two separate tables with identical fixed rows. On this deal the two parties' carve-out lists are the same ten categories with matching carvebacks -- is that expected to always be a mirror-image list, or can a real deal give the two parties different carve-out sets (in which case this table should not force the same fixed_row_labels on both)?
+7. **Material Contracts.** Two rows use the header phrase "Contracts above an aggregate-payments threshold" with two different dollar thresholds ($10,000,000 per annum vs $10,000,000 flat) on the same page. Confirm these are two distinct contract-type buckets that happen to share a name (I have not merged them), or say if this is a print/extraction duplication.
+8. **Interim Operating Covenants.** This deal's print shows every negative-covenant row's own Exceptions/Specific-Restrictions pills fused inline with the category, not as two clean sub-columns -- the vocabulary in this readout is the union of every restriction category and exception phrase seen across all rows, attached at the table level rather than per row. Section 5B's eventual `conclusions` layer will need a per-row (per-fact) association, not just a table-level vocabulary; confirm this table shape is the right interim step.
+9. **Interim Operating Covenants.** The print shows no populated rows in this deal for the legacy "EXCEPTIONS" (general/section-wide) or "OTHER RESTRICTIONS" bands -- both tables are carried over from pass 1 unchanged (verbatim, no vocabulary). Confirm whether those bands are simply empty on this deal, or whether the print omits content the underlying data actually has.
+10. **No-Shop.** The prohibited-verb litany ("solicit, initiate or knowingly encourage or facilitate") is split into four Part-2 proposed present/absent columns (Solicit / Initiate / Knowingly encourage / Facilitate) since the print shows them fused into one sentence. Confirm this is the split you want, or whether "knowingly encourage" and "facilitate" should stay combined as they are in the print's own row label.
+11. **No-Shop — Fiduciary-Out.** The print truncates "Engagement standard" mid-sentence with a "SEE PROVISION" marker rather than showing the full coded label; only "Engagement standard (coded)" shows the complete phrase. I have therefore recorded the "Engagement standard" row's vocabulary from the legacy label map only (not claimed as print evidence for text the print does not fully show). Confirm that reading is right.
+12. **Votes / Approvals / SEC Filing / Meeting Requirements.** Proxy filing deadline / Mailing / Meeting are each a composed value ("30 business days after agreement date", etc.) modelled as one `value` column plus a shared `trigger` vocabulary (after agreement date / after effectiveness / after mailing). Confirm a single shared trigger vocabulary across all three rows is right, rather than each row needing its own independent trigger set.
+13. **Closing Conditions.** The pass-1 "10 of 16 standard conditions present" checklist and its named-but-absent conditions (page 116) are recorded here only as the `conditions-m` table's fixed rows (Condition Frustration / Prevention, Covenant Performance, etc.) with a bare `boolean` "Coverage" column, since the print gives no further pill detail for them. Confirm that coarse a treatment is enough for this checklist, or whether it needs its own richer table.
+14. **Termination Rights.** The print gives "Company (Target) breach" and "Parent (Buyer) breach" as two separate rows under two different group headers (Buyer/Parent May Terminate; Company/Target May Terminate) with only a "Fault-Based Carve-Out: No" pill each -- the cure mechanics, cure period and terminator-breach bar all live in clause text only. All three are recorded as Part-2 proposed addition columns; confirm that's the right scope rather than trying to parse the clause text into real values now.
+15. **Termination Fees.** Payer is recorded as a Part-2 proposed addition (Company/Parent) rather than harvested, since the print states it only by which named row you're reading ("Company termination fee" vs "Reverse termination fee"), never as its own pill. Confirm whether Payer should instead be derived automatically from the row label rather than needing its own coded value.
+16. **Employee Compensation and Benefits.** Long-term incentive (LTI) / equity grants and Retirement / 401(k) benefits both show Reference Group "Not specified" on the print. `lib/employee-benefits.js`'s own model treats "Not specified" as the ABSENCE of a reference group (a buyer-discretion standard carries no comparison pill at all) rather than a third vocabulary value, so I have left the Reference Group vocabulary at exactly the two legacy labels and left these two rows without a Reference Group value. Confirm that reading, or say if "Not specified" should be a real third code.
+17. **Employee Compensation and Benefits.** Four benefit elements `lib/employee-benefits.js` supports (Earned annual bonus (pro-rata), Health and welfare benefits, Paid time off / vacation, Equity / stock awards (new grants)) are not populated on this deal and are recorded as proposed addition rows rather than real fixed rows. Confirm the main table's fixed-row list should eventually carry all ten canonical benefit elements (matching the legacy code's own `COMP_ITEM_ORDER`), not just the six this deal happens to populate.
+18. **No Other Reps / Fraud.** "Silent" appears once (Fraud carve-out) alongside "Yes" everywhere else; "No" never appears on this deal and is recorded as a proposed addition to complete the axis. Confirm Yes/No/Silent is the right three-value Status vocabulary for this table's five fixed questions.
+19. **Defined Terms.** This table exists only in the print (there is no `defined-terms.config.js` in `components/review/table-configs/`) -- it is mapped to the V2 `KEY_DEFINED_TERMS` family at low confidence because that family's subtypes (Acquisition Proposal, Superior Proposal, Intervening Event, Knowledge, Willful Breach, Acceptable Confidentiality Agreement) name only six specific terms, while this print glossary has 125. Confirm whether the full glossary belongs in the table-shapes contract at all, or whether it is out of scope for the pill-table model entirely (a reference appendix, not a fact table).
+20. **Approvals / Votes; Antitrust / Regulatory; Advisers / Fees / Expenses; Shareholder Meeting / Proxy / Tender-Offer SEC Matters.** None of these four legacy-config sections show a distinct populated pill table in this deal's print (their content, where present at all, appears folded into Votes / Approvals / SEC Filing / Meeting Requirements or Other Covenants' link list instead). They are carried over from pass 1 unchanged. Confirm whether they are genuinely redundant with other sections on a two-step-merger-with-election deal like this one, or whether a different deal shape (e.g. a pure tender offer, or a deal with a distinct antitrust efforts covenant) would populate them and they should stay in the shape as-is.
