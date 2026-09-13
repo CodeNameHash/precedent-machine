@@ -380,3 +380,22 @@ test('a fact_text detail column shows the fact\'s own words as drafted, not the 
   assert.equal(cell.label, 'No Judgment issued by any court of competent jurisdiction or Law enacted by any Governmental Entity preventing or prohibiting the consummation of the Merger shall be in effect');
   assert.deepEqual(cell.component_ids, ['nlr-3'], 'the cited words stay the click target');
 });
+
+test('two readings in one cell come out in source order, and a fact_text line shows each alternative in full', () => {
+  const closing = (id, start, text, cited) => ({
+    fact_id: id, proposal_id: id, family_key: 'MERGER_STRUCTURE_CLOSING', subtype_key: 'CLOSING_MECHANICS', section_reference: '1.02', structure_node_id: 'n-1-02',
+    headline: { label: 'Closing', distinguishing_component_ids: [`${id}-c`] },
+    components: [{ component_id: `${id}-c`, kind: 'TERM', label: 'place', text, origin: 'OWN', source_span_id: 's', start_byte: start, end_byte: start + text.length, gap_before: false, children: [] }],
+    conclusions: { table_key: 'structure-mechanics-table', row_label: 'The deal', cells: [{ column_id: 'closingLocation', text: cited, component_ids: [`${id}-c`] }] },
+  });
+  const other = closing('cl-other', 120, 'such other place, time and date as Parent and the Company may agree in writing', 'such other place, time and date');
+  const offices = closing('cl-offices', 20, 'at the offices of Wachtell, Lipton, Rosen & Katz', 'at the offices of Wachtell, Lipton, Rosen & Katz');
+  const view = buildTableView({ facts: [other, offices], tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'structure-mechanics-table');
+  const cell = table.rows[0].cells.find((candidate) => candidate.column_id === 'closingLocation');
+  assert.deepEqual(cell.values.map((value) => value.label), [
+    'at the offices of Wachtell, Lipton, Rosen & Katz',
+    'such other place, time and date as Parent and the Company may agree in writing',
+  ]);
+  assert.equal(cell.label, 'at the offices of Wachtell, Lipton, Rosen & Katz');
+});

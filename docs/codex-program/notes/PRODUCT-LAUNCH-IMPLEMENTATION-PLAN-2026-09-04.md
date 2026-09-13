@@ -2002,6 +2002,14 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       component of a cell. Generation 3 (submitted 20:12 UTC, run
       b437121b) started before this; its structure readouts cite what
       the extractor chose, and the sidebar shows every cited component.
+      21:00 UTC, Ben on Closing Location: "the 'such other...' is the 2nd
+      alternative and so should appear second. You are also missing 'as
+      the parties agree..' which is an important part of such other...
+      (such other means nothing by itself)". Two rules: readings that
+      share a cell are ordered by where their words sit in the source,
+      never by arrival; the closing mechanics lines (location, timing,
+      effective time) show each fact as drafted, and the extractor is
+      told a verbatim text runs to the end of the alternative it names.
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.
