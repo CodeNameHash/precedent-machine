@@ -304,11 +304,99 @@ function applyDecision4Lookback(doc) {
 // Structure & Mechanics is a TERM / PROVISION grid for the deal (print p.1),
 // not a row per fact: one row for the agreement, every structure fact
 // contributing the cells it can, rendered as an attribute grid.
-function applyDecision16StructureGrid(doc) {
+function applyDecision17StructureGrid(doc) {
   const table = findTable(findSection(doc, 'structure-mechanics'), 'structure-mechanics-table');
   table.rows_are = 'one per agreement';
   table.layout = 'attribute grid';
   table.subject_label = 'The deal';
+  table.guidance = 'One row for the whole agreement. dealStructure codes the transaction as a whole from the merger provisions: ONE_STEP_MERGER when one merger sub merges with and into the Company (or the Company into the merger sub) and no second merger follows; DOUBLE_MERGER when a second-step merger of the surviving corporation follows; TENDER_OFFER_BACK_END_MERGER when an offer precedes the merger. mergerFormStep1 codes the form of the first (or only) merger from the "with and into" words and which entity survives; the step-2 columns are used only for a DOUBLE_MERGER. Every fact of the family contributes the cells it can; the fact stating the merger itself carries dealStructure and mergerFormStep1.';
+}
+
+// Ben, 2026-09-13 17:45 UTC, on Metsera (cash plus CVR, no election): "cash
+// election - (i) there is no cash election and (ii) you missed the CVR
+// portion of the consideration". The legacy consideration tables were
+// harvested from TopBuild, an election deal, so their only row labels were
+// "Cash Election" / "Stock Election" and their only detail codes election
+// codes; the model had nowhere else to put a $47.50 cash limb or a CVR.
+// Deal-agnostic shape: a consideration-structure attribute grid for the
+// deal, a consideration-components table with one row per limb (cash, stock,
+// CVR, ...), an exchange-mechanics table for the paying-agent steps, and the
+// election-mechanics table kept for election deals only.
+function applyDecision18ConsiderationDealAgnostic(doc) {
+  const section = findSection(doc, 'consideration-hero');
+  const legacy = findTable(section, 'consideration-hero-table');
+  const legacyDetail = findColumn(legacy, 'considerationType');
+  const why = `${BEN} #18 (Metsera, cash plus CVR): the consideration axis must describe any deal, not only an election deal.`;
+  const structure = {
+    table_key: 'consideration-structure',
+    group_header: null,
+    term_column: { header: 'Term', source: 'subject', fill_from: ['TERM'] },
+    columns: [
+      {
+        column_id: 'considerationType', header: 'Consideration type', render: 'vocabulary',
+        vocabulary: [
+          addition('All cash', `${why} A fixed cash price per share.`, { code: 'ALL_CASH' }),
+          addition('All stock', `${why} A fixed exchange ratio into acquirer stock.`, { code: 'ALL_STOCK' }),
+          addition('Cash and stock (fixed mix)', `${why} A fixed cash amount plus a fixed number of acquirer shares, no election.`, { code: 'CASH_AND_STOCK_FIXED' }),
+          addition('Cash plus CVR', `${why} Cash plus a contingent value right per share (Metsera).`, { code: 'CASH_AND_CVR' }),
+          addition('Stock plus CVR', `${why} Acquirer stock plus a contingent value right per share.`, { code: 'STOCK_AND_CVR' }),
+          ...legacyDetail.vocabulary.map(clone),
+        ],
+        fill_from: ['STANDARD', 'OBJECT', 'AMOUNT', 'TERM'],
+      },
+      { column_id: 'appraisalRights', header: 'Appraisal rights', render: 'verbatim', fill_from: ['EXCEPTION', 'OPERATION', 'OBJECT'], addition: true, reason: `${why} The legacy "Appraisal rights" row, as one line of the grid.` },
+      { column_id: 'withholding', header: 'Withholding', render: 'boolean', fill_from: ['OPERATION', 'OBJECT'], addition: true, reason: `${why} The legacy "Withholding" row, present or absent.` },
+      { column_id: 'withoutInterest', header: 'Without interest', render: 'boolean', fill_from: ['QUALIFIER'], addition: true, reason: `${why} Whether the consideration is stated to be paid without interest.` },
+    ],
+    rows_are: 'one per agreement',
+    layout: 'attribute grid',
+    subject_label: 'The deal',
+    subtype_keys: ['CONSIDERATION_PACKAGE', 'ELECTION', 'APPRAISAL_LINK', 'WITHHOLDING', 'EXCLUSION'],
+    guidance: 'One row for the whole agreement. The consideration-type code describes the package as a whole (cash, stock, cash plus CVR, an election).',
+  };
+  const components = {
+    table_key: 'consideration-components',
+    group_header: 'CONSIDERATION PER SHARE',
+    term_column: { header: 'Component', source: 'subject', fill_from: ['TERM', 'DEFINED_TERM', 'OBJECT', 'AMOUNT'] },
+    columns: [
+      {
+        column_id: 'form', header: 'Form', render: 'vocabulary',
+        vocabulary: [
+          addition('Cash', `${why} A cash limb.`, { code: 'CASH' }),
+          addition('Acquirer stock', `${why} A stock limb.`, { code: 'PARENT_STOCK' }),
+          addition('CVR', `${why} A contingent value right limb.`, { code: 'CVR' }),
+          addition('Cash election', `${why} The cash side of an election.`, { code: 'CASH_ELECTION' }),
+          addition('Stock election', `${why} The stock side of an election.`, { code: 'STOCK_ELECTION' }),
+          addition('Other', `${why} Any other form of consideration.`, { code: 'OTHER' }),
+        ],
+        fill_from: ['OBJECT', 'AMOUNT', 'TERM', 'DEFINED_TERM'],
+      },
+      { column_id: 'amount', header: 'Amount / ratio', render: 'value', value_kind: 'AMOUNT', fill_from: ['AMOUNT', 'THRESHOLD', 'PERCENTAGE'], addition: true, reason: `${why} The per-share cash amount, exchange ratio or CVR count, as stated.` },
+      { column_id: 'per', header: 'Per', render: 'verbatim', fill_from: ['ACTOR', 'OBJECT', 'QUALIFIER'], addition: true, reason: `${why} The unit the amount attaches to (per share of Company Common Stock).` },
+      { column_id: 'contingency', header: 'Contingent on', render: 'verbatim', fill_from: ['CONDITION', 'OBJECT', 'QUALIFIER', 'CROSS_REFERENCE'], addition: true, reason: `${why} What a contingent limb depends on (the Milestone Payments under the CVR Agreement).` },
+      { column_id: 'definedAs', header: 'Defined as', render: 'term', fill_from: ['DEFINED_TERM', 'TERM'], addition: true, reason: `${why} The defined term the agreement gives the limb ("Closing Amount", "CVR", "Merger Consideration").` },
+    ],
+    rows_are: 'one per subject',
+    subtype_keys: ['CASH_COMPONENT', 'STOCK_COMPONENT', 'CVR_COMPONENT', 'CONSIDERATION_PACKAGE'],
+    guidance: 'One row per limb of the per-share consideration: the cash limb, the stock limb, the CVR limb, each side of an election. A package fact that states several limbs in one sentence contributes to each limb it names.',
+  };
+  const exchange = {
+    table_key: 'consideration-exchange-mechanics',
+    group_header: 'EXCHANGE MECHANICS',
+    term_column: { header: 'Step', source: 'subject', fill_from: ['OBJECT', 'ACTOR', 'TERM'] },
+    columns: [
+      { column_id: 'body', header: 'Provision', render: 'verbatim', fill_from: ['OPERATION', 'OBJECT'], addition: true, reason: `${why} The operative words of the exchange step.` },
+      { column_id: 'timing', header: 'Timing', render: 'verbatim', fill_from: ['TRIGGER', 'PERIOD', 'DATE'], addition: true, reason: `${why} When the step happens (after the Effective Time, within five business days).` },
+      { column_id: 'who', header: 'Who', render: 'verbatim', fill_from: ['ACTOR'], addition: true, reason: `${why} The party or agent that acts.` },
+    ],
+    rows_are: 'one per subject',
+    subtype_keys: ['EXCHANGE_MECHANICS'],
+    guidance: 'One row per exchange step: paying agent appointment, deposit of funds, letter of transmittal, surrender, lost certificates, unclaimed funds, payroll payment of award amounts.',
+  };
+  const election = findTable(section, 'consideration-hero-election-mechanics');
+  election.subtype_keys = ['ELECTION'];
+  election.guidance = 'Only for a deal whose holders elect between forms of consideration. Never place a fact here when the agreement has no election.';
+  section.tables = [structure, components, exchange, election];
 }
 
 function applyDecision5MaeCarveouts(doc) {
@@ -521,7 +609,8 @@ function build() {
   applyDecision3BringDown(doc);
   applyDecision4Lookback(doc);
   applyDecision5MaeCarveouts(doc);
-  applyDecision16StructureGrid(doc);
+  applyDecision17StructureGrid(doc);
+  applyDecision18ConsiderationDealAgnostic(doc);
   applyDecision7InterimCovenants(doc);
   applyDecision8NoShop(doc);
   applyDecision9VotesTrigger(doc);

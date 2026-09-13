@@ -96,10 +96,32 @@ function TermCell({ row, tableKey, rowIndex, onSelect }) {
 // The legacy Structure & Mechanics shape (TopBuild print p.1): one line per
 // attribute, TERM / PROVISION, for the single agreement row. Each line lists
 // the facts behind it under "See provision".
+// Per-step lines (Merger form / Surviving entity, step 1 and step 2) belong
+// to a double merger. For any other structure the step-2 lines are hidden
+// and the step-1 lines drop their "(Step 1)" suffix (Ben, 2026-09-13:
+// "merger form (step 2) shows - and it shouldn't there is no step 2").
+function attributeLines(table, row) {
+  const perStep = table.per_step_structure || null;
+  const dealStructure = row.cells.find((cell) => cell.column_id === 'dealStructure');
+  const double = !!perStep && dealStructure?.code === 'DOUBLE_MERGER';
+  const stepOf = new Map();
+  for (const step of perStep?.steps || []) {
+    stepOf.set(step.form_column_id, step.step);
+    stepOf.set(step.surviving_entity_column_id, step.step);
+  }
+  return table.columns
+    .filter((column) => double || !stepOf.has(column.column_id) || stepOf.get(column.column_id) === 1)
+    .map((column) => ({
+      ...column,
+      header: !double && stepOf.get(column.column_id) === 1 ? column.header.replace(/\s*\(step 1\)/i, '') : column.header,
+    }));
+}
+
 function AttributeGrid({ table, selection, onSelect }) {
   const row = table.rows[0];
   if (!row) return null;
   const rowSelected = selection?.tableKey === table.table_key && selection?.rowIndex === 0;
+  const lines = attributeLines(table, row);
   return (
     <table className="w-full border-separate border-spacing-0 border border-border bg-white text-left text-xs" data-testid="provision-table" data-table-key={table.table_key} data-layout="attribute-grid">
       {table.group_header ? (
@@ -112,7 +134,7 @@ function AttributeGrid({ table, selection, onSelect }) {
         </tr>
       </thead>
       <tbody>
-        {table.columns.map((column, index) => {
+        {lines.map((column) => {
           const cell = row.cells.find((candidate) => candidate.column_id === column.column_id);
           const backing = row.backing_facts.filter((entry) => (cell?.fact_ids || []).includes(entry.fact_id));
           return (

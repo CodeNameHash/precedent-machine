@@ -1825,6 +1825,29 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       `one per agreement` with `layout: attribute grid` (generator decision
       16), every structure fact filling one row, rendered one line per
       attribute with "See provision" listing the facts behind it.
+      Feedback as the run went (Ben, 2026-09-13 17:40 to 18:00 UTC), each
+      encoded without a rerun: (a) "cash election - (i) there is no cash
+      election and (ii) you missed the CVR portion of the consideration":
+      the consideration tables were harvested from an election deal;
+      replaced by a deal-agnostic set (generator decision 18: structure
+      grid, one row per limb, exchange mechanics, election mechanics kept
+      for election deals only); the CVR limb had been held because
+      "one (1) CVR" parsed as no value, and AMOUNT now parses a counted
+      instrument as a COUNT. (b) "there is no answer on deal structure and
+      merger form (step 2) shows - and it shouldn't there is no step 2":
+      the structure table now carries guidance on coding dealStructure and
+      mergerFormStep1 from the "with and into" words, and the attribute
+      grid shows step-2 lines only when the deal is coded DOUBLE_MERGER.
+      (c) a closing-timing sentence from 1.02 landed in the conditions
+      table as "Antitrust / Regulatory Clearance": the extractor is now
+      told to omit conclusions when no fixed row fits rather than pick
+      the nearest, and the CLOSING_CONDITIONS layer rule says the closing
+      clause's reference to satisfaction or waiver of the Article VII
+      conditions is closing timing, never a condition fact (schema
+      regenerated). Shape and rendering fixes apply to the running
+      generation 2 as it fills in; the extractor-side fixes (consideration
+      tables, guidance, the conditions rule, the count parser) need a
+      generation 3 once Ben's feedback on generation 2 is in.
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.

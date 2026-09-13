@@ -160,5 +160,36 @@ test('a one-per-agreement table renders as an attribute grid, one line per colum
   assert.match(html, /data-column-id="effectsOfMerger"/);
   assert.match(html, />DGCL</);
   assert.doesNotMatch(html, /data-testid="table-row"/);
-  assert.equal((html.match(/data-testid="attribute-row"/g) || []).length, 10);
+  assert.equal((html.match(/data-testid="attribute-row"/g) || []).length, 8, 'step-2 lines are hidden until the deal is coded as a double merger');
+});
+
+test('the attribute grid shows step-2 lines only for a double merger', () => {
+  const structureFact = { ...require('./fixtures/product/metsera-v9-structure-fact.v1.json') };
+  structureFact.fact_id = structureFact.proposal_id;
+  const oneStep = { ...structureFact, conclusions: { ...structureFact.conclusions, cells: [...structureFact.conclusions.cells, { column_id: 'dealStructure', code: 'ONE_STEP_MERGER', component_ids: ['874bb170b1e89d2d6e5eec061acf9652d163eea6d75d942c74a7d0568a6e3897'] }] } };
+  const oneStepHtml = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: buildTableView({ facts: [oneStep], tableShapes, legalSchema }), facts: [oneStep] }));
+  assert.doesNotMatch(oneStepHtml, /data-column-id="mergerFormStep2"/);
+  assert.match(oneStepHtml, /data-column-id="mergerFormStep1"/);
+  assert.doesNotMatch(oneStepHtml, /\(Step 1\)/);
+  assert.match(oneStepHtml, />One-step merger</);
+  const double = { ...structureFact, conclusions: { ...structureFact.conclusions, cells: [...structureFact.conclusions.cells, { column_id: 'dealStructure', code: 'DOUBLE_MERGER', component_ids: ['874bb170b1e89d2d6e5eec061acf9652d163eea6d75d942c74a7d0568a6e3897'] }] } };
+  const doubleHtml = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: buildTableView({ facts: [double], tableShapes, legalSchema }), facts: [double] }));
+  assert.match(doubleHtml, /data-column-id="mergerFormStep2"/);
+  assert.match(doubleHtml, /\(Step 1\)/);
+});
+
+test('the attribute grid shows step-2 lines only for a double merger', () => {
+  const structureFact = { ...require('./fixtures/product/metsera-v9-structure-fact.v1.json') };
+  structureFact.fact_id = structureFact.proposal_id;
+  const withStructure = (code) => ({ ...structureFact, conclusions: { ...structureFact.conclusions, cells: [...structureFact.conclusions.cells, { column_id: 'dealStructure', code, component_ids: ['874bb170b1e89d2d6e5eec061acf9652d163eea6d75d942c74a7d0568a6e3897'] }] } });
+  const oneStep = withStructure('ONE_STEP_MERGER');
+  const oneStepHtml = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: buildTableView({ facts: [oneStep], tableShapes, legalSchema }), facts: [oneStep] }));
+  assert.doesNotMatch(oneStepHtml, /data-column-id="mergerFormStep2"/);
+  assert.match(oneStepHtml, /data-column-id="mergerFormStep1"/);
+  assert.doesNotMatch(oneStepHtml, /\(Step 1\)/);
+  assert.match(oneStepHtml, />One-step merger</);
+  const double = withStructure('DOUBLE_MERGER');
+  const doubleHtml = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: buildTableView({ facts: [double], tableShapes, legalSchema }), facts: [double] }));
+  assert.match(doubleHtml, /data-column-id="mergerFormStep2"/);
+  assert.match(doubleHtml, /\(Step 1\)/);
 });

@@ -47,7 +47,9 @@ Status: DECIDED 2026-09-13, encoded in table-shapes.v3.json. This note originall
 - Print pages: 4, 5
 - V2 family mapping: CONSIDERATION (confidence: high)
 
-### Table: `consideration-hero-summary`
+v3 as regenerated 2026-09-13 (generator decision 18, Ben on Metsera: "cash election - (i) there is no cash election and (ii) you missed the CVR portion of the consideration"): the three legacy tables below were harvested from TopBuild, an election deal, and could only name "Cash Election" / "Stock Election" and election codes. They are replaced by a deal-agnostic set: `consideration-structure` (attribute grid for the deal: consideration type with codes All cash / All stock / Cash and stock (fixed mix) / Cash plus CVR / Stock plus CVR plus the three election codes; appraisal rights; withholding; without interest), `consideration-components` (one row per limb: form Cash / Acquirer stock / CVR / Cash election / Stock election / Other; amount or ratio; per; contingent on; defined as), `consideration-exchange-mechanics` (one row per paying-agent step: provision, timing, who), and the legacy `consideration-hero-election-mechanics` kept for election deals only, with guidance telling the extractor never to place a fact there when the agreement has no election. Every added label is marked as an addition with its reason. The legacy tables are recorded below as harvested.
+
+### Table: `consideration-hero-summary` (legacy, replaced)
 
 - Row subject: **Term**
 - Rows: fixed list
