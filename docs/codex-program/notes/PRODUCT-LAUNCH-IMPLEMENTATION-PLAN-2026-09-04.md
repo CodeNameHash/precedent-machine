@@ -2083,7 +2083,28 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       materiality": a vocabulary column now accepts distinct codes as
       two readings of one cell (the same code twice is still a
       duplicate), and the table view renders both pills.
-- [x] Q3 Restyle to the Deal Storylines design, 2026-09-13 21:45 UTC. Ben
+      23:02 UTC: generation 3 READY (run b437121b), 85 of 85 sections,
+      631 valid facts (generation 2: 422), 409 readouts, 103 readouts
+      dropped with a note (58 of them by the two causes fixed during the
+      run), 54 CONCLUSIONS_MISSING notes (exchange mechanics and other
+      no-readout subtypes). No declined sections: the regulatory efforts
+      covenant (6.03) carries 30 facts and the no-shop (5.02) 43. The
+      interim operating covenants (5.01, 57k input tokens) came back
+      with 5 facts and the family marked UNRESOLVED: a partial decline
+      the zero-proposal check does not catch, so the negative-covenant
+      list is missing. See Q6.
+- [x] Q3 Restyle to the Deal Storylines design, 2026-09-13 21:45 UTC.
+- [ ] Q6 Long sections. The interim operating covenants section is one
+      structure node with twenty-odd child limbs; the extractor returned
+      five facts and marked the family UNRESOLVED (Metsera generation 3).
+      The source closure already knows the children (`operativeNodes` in
+      `lib/product/source-context.js`). Proposal: when a section's closure
+      exceeds a token threshold and the node has children, extract per
+      child group (chapeau plus each limb group plus the definitions they
+      use) and merge, so no single call carries the whole article; and
+      treat a family-level UNRESOLVED on a long section as a partial
+      decline that retries the uncovered children. Needs Ben's go-ahead
+      on the cost (more calls per long section). Ben
       sent the Deal Storylines / Corpus timeline page: "shift the page
       design to match this ... mainly thinking of the left hand side bar,
       page header and the right hand side bar". The rail is the black
