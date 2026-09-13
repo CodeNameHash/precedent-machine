@@ -467,6 +467,25 @@ const REP_ROWS = [
   'Intellectual Property', 'Insurance', 'Real Property; Personal Property; Title', 'Top Customers and Suppliers',
   'Brokers; Finders', 'Information Supplied / Proxy Statement', 'Opinion of Financial Advisor',
 ];
+const REP_LIMBS = {
+  'Organization; Qualification; Standing': [
+    'Due organization, valid existence and good standing',
+    'Corporate power and authority to own, lease and operate its properties and assets and to conduct its business',
+    'Qualification or licensing to do business in each jurisdiction where required',
+    'Organizational documents made available; no violation',
+    'Subsidiaries: due organization, valid existence and good standing',
+    'Subsidiaries: corporate power and authority to own, lease and operate its properties and assets and to conduct its business',
+    'Subsidiaries: qualification or licensing to do business in each jurisdiction where required',
+  ],
+  'Authority; Enforceability': [
+    'Corporate power and authority to execute, deliver and perform the Agreement',
+    'Due authorization by all necessary corporate action',
+    'Board approval and recommendation',
+    'Stockholder approval required',
+    'Due execution and delivery; valid and binding obligation',
+    'Enforceability subject to bankruptcy and equitable-remedies exceptions',
+  ],
+};
 function applyDecision20RepresentationRows(doc) {
   for (const [sectionKey, tableKey] of [['representations-qualifiers', 'representations-qualifiers-table'], ['parent-representations-qualifiers', 'parent-representations-qualifiers-table']]) {
     const table = findTable(findSection(doc, sectionKey), tableKey);
@@ -474,7 +493,16 @@ function applyDecision20RepresentationRows(doc) {
     table.fixed_row_labels = [...REP_ROWS];
     table.fixed_row_labels_source = 'TopBuild print pp.17-19, Representations & Warranties rows (legacy vocabulary)';
     table.open_rows = true;
-    table.guidance = 'row_label is the representation as the precedent names it (one of fixed_row_labels); add a new row label only for a representation none of them covers (for example a regulatory or FDA representation). Each limb of a representation is a sub-item: set row_detail to the limb\'s own subject (for example "Company Subsidiaries: organization and good standing") so the page shows it under its representation, whose line gives the overview. The bringdown column is never filled from a representation: it comes from the closing conditions.';
+    // Decision 31. Ben, 2026-09-13 21:20 UTC, on the sub-items under
+    // Organization: "the 'power and authority' should include 'to own...'
+    // etc otherwise it can be confused with power to enter contracts. Also
+    // - are these items in Term canonical and being used across all deals?
+    // They need to be so they can be compared". Limbs are named from a
+    // canonical list per representation (detail_labels_by_row), open to a
+    // new limb only when none fits; the list below seeds the two
+    // representations Ben reviewed and awaits his vocabulary for the rest.
+    table.detail_labels_by_row = { ...REP_LIMBS };
+    table.guidance = 'row_label is the representation as the precedent names it (one of fixed_row_labels); add a new row label only for a representation none of them covers (for example a regulatory or FDA representation). Each limb of a representation is a sub-item: row_detail is the canonical limb name from detail_labels_by_row for that row (a new limb name only when none fits, in the same style, never the agreement\'s own words); a fact about the representation as a whole carries no row_detail and gives the overview. The bringdown column is never filled from a representation: it comes from the closing conditions.';
     const bringdown = findColumn(table, 'bringdown');
     bringdown.derived = { from_family: 'CLOSING_CONDITIONS', from_column: 'standard', join: 'cross_reference' };
     bringdown.guidance = 'Derived by the page from the CLOSING_CONDITIONS bring-down facts whose cross-references name this representation. Never coded from the representation itself.';

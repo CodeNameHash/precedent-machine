@@ -2018,6 +2018,17 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       fixed detail list in that order, the instrument row the overview;
       extractor guidance and request updated. Extractor-side, so it
       reaches the next generation after 3.
+      21:20 UTC, Ben on the Organization rep's sub-items: "clicking one of
+      the qualifications shouldn't cause the others to turn orange...!
+      Also the 'power and authority' should include 'to own...' etc
+      otherwise it can be confused with power to enter contracts. Also -
+      are these items in Term canonical and being used across all deals?
+      They need to be so they can be compared". Selection now lights one
+      line. Rows were canonical; sub-items were the model's words.
+      Generator decision 31 gives both rep tables a canonical limb list
+      per representation (seeded for Organization and Authority; the
+      other eighteen await Ben's vocabulary), sent to the extractor as
+      the only allowed limb names, open only when none fits.
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.

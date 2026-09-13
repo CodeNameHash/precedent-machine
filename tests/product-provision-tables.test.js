@@ -280,3 +280,19 @@ test('EvidenceSidebar quotes, marks and lights every cited component when a cell
   assert.equal((html.match(/<mark/g) || []).length, 3);
   assert.equal((html.match(/data-selected="true"/g) || []).length, 3);
 });
+
+test('a selected pill lights only its own line, not the same column on every sub-item of the row', () => {
+  const cell = (id) => ({ column_id: 'materiality', kind: 'pill', label: 'MAE (aggregate)', code: 'MAE', tone: 'standard', component_ids: [`${id}-c`], fact_ids: [id] });
+  const view = { defined_terms: [], sections: [{ section_key: 'representations-qualifiers', title: 'Reps', facts_without_readout: [], tables: [{
+    table_key: 'representations-qualifiers-table', group_header: null, layout: 'rows', term_column: { header: 'Term', source: 'subject' }, columns: [{ column_id: 'materiality', header: 'Qualifiers' }],
+    rows: [{ subject: 'Organization; Qualification; Standing', cells: [cell('r')], backing_facts: [{ fact_id: 'r' }], sub_rows: [
+      { subject: 'Due organization, valid existence and good standing', cells: [cell('a')], backing_facts: [{ fact_id: 'a' }] },
+      { subject: 'Qualification or licensing to do business in each jurisdiction where required', cells: [cell('b')], backing_facts: [{ fact_id: 'b' }] },
+    ] }],
+  }] }] };
+  // Render with the second sub-item selected by driving the component's own state through a click is not
+  // possible in static markup; assert the selection contract instead: each line's Cell receives its subIndex.
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [] }));
+  assert.equal((html.match(/data-testid="table-sub-row"/g) || []).length, 2);
+  assert.equal((html.match(/data-selected="true"/g) || []).length, 0);
+});

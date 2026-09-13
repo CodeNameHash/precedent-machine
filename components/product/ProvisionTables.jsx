@@ -25,7 +25,7 @@ function toneClass(tone) {
   return TONE_CLASSES[tone] || TONE_CLASSES.neutral;
 }
 
-function Cell({ cell, tableKey, rowIndex, selected, onSelect }) {
+function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect }) {
   if (cell.kind === 'dash') {
     return <span className="text-inkFaint" data-testid="table-dash" aria-hidden="true">—</span>;
   }
@@ -33,7 +33,7 @@ function Cell({ cell, tableKey, rowIndex, selected, onSelect }) {
     return (
       <span className="inline-flex flex-wrap gap-1" data-testid="table-multi">
         {cell.values.map((value, index) => (
-          <Cell key={`${value.label}-${index}`} cell={{ ...value, column_id: cell.column_id }} tableKey={tableKey} rowIndex={rowIndex} selected={selected} onSelect={onSelect} />
+          <Cell key={`${value.label}-${index}`} cell={{ ...value, column_id: cell.column_id }} tableKey={tableKey} rowIndex={rowIndex} subIndex={subIndex} selected={selected} onSelect={onSelect} />
         ))}
       </span>
     );
@@ -53,7 +53,7 @@ function Cell({ cell, tableKey, rowIndex, selected, onSelect }) {
   if (definitionLink) {
     return (
       <span className="inline-flex items-center">
-        <button type="button" data-testid={testId} data-selected={selected || undefined} onClick={() => onSelect({ tableKey, rowIndex, columnId: cell.column_id, componentId: (cell.component_ids || [])[0] || null, componentIds: cell.component_ids || [], factId: (cell.fact_ids || [])[0] || null })} className={`${baseClass} ${selectedClass}`}>{cell.label}</button>
+        <button type="button" data-testid={testId} data-selected={selected || undefined} onClick={() => onSelect({ tableKey, rowIndex, subIndex, columnId: cell.column_id, componentId: (cell.component_ids || [])[0] || null, componentIds: cell.component_ids || [], factId: (cell.fact_ids || [])[0] || null })} className={`${baseClass} ${selectedClass}`}>{cell.label}</button>
         {definitionLink}
       </span>
     );
@@ -66,6 +66,7 @@ function Cell({ cell, tableKey, rowIndex, selected, onSelect }) {
       onClick={() => onSelect({
         tableKey,
         rowIndex,
+        subIndex,
         columnId: cell.column_id,
         componentId: (cell.component_ids || [])[0] || null,
         componentIds: cell.component_ids || [],
@@ -250,7 +251,11 @@ function Table({ table, selection, onSelect }) {
       <tbody>
         {table.rows.flatMap((row, rowIndex) => {
           const rowSelected = selection?.tableKey === table.table_key && selection?.rowIndex === rowIndex;
-          const line = (entry, key, sub) => (
+          // A click selects one line: the sub-item clicked, or the row's
+          // own line, never every line of the row (Ben, 2026-09-13:
+          // "clicking one of the qualifications shouldn't cause the others
+          // to turn orange").
+          const line = (entry, key, sub, subIndex = null) => (
             <tr
               key={key}
               data-testid={sub ? 'table-sub-row' : 'table-row'}
@@ -268,7 +273,8 @@ function Table({ table, selection, onSelect }) {
                     cell={cell}
                     tableKey={table.table_key}
                     rowIndex={rowIndex}
-                    selected={!!rowSelected && selection?.columnId === cell.column_id}
+                    subIndex={subIndex}
+                    selected={!!rowSelected && (selection?.subIndex ?? null) === subIndex && selection?.columnId === cell.column_id}
                     onSelect={onSelect}
                   />
                 </td>
@@ -287,7 +293,7 @@ function Table({ table, selection, onSelect }) {
           }
           return [
             line(row, `${row.subject}-${rowIndex}`, false),
-            ...(row.sub_rows || []).map((subRow, subIndex) => line(subRow, `${row.subject}-${rowIndex}-${subIndex}`, true)),
+            ...(row.sub_rows || []).map((subRow, subIndex) => line(subRow, `${row.subject}-${rowIndex}-${subIndex}`, true, subIndex)),
           ];
         })}
       </tbody>

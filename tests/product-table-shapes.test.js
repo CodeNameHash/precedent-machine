@@ -531,3 +531,15 @@ test('Decision 30: equity awards rows are instrument classes with treatment clas
   assert.ok(table.fixed_row_labels.includes('Company Stock Option'));
   assert.deepEqual(table.detail_labels, ['Vested', 'Unvested, vesting by its terms at the Effective Time', 'Unvested, not vesting by its terms', 'Out of the money (exercise price at or above the deal price)']);
 });
+
+// Decision 31 (Ben, 2026-09-13): representation limbs are named from a
+// canonical list per representation so they compare across deals.
+test('Decision 31: representation tables carry canonical limb names per row', () => {
+  for (const [sectionKey, tableKey] of [['representations-qualifiers', 'representations-qualifiers-table'], ['parent-representations-qualifiers', 'parent-representations-qualifiers-table']]) {
+    const table = findTableV3(findSectionV3(sectionKey), tableKey);
+    const limbs = table.detail_labels_by_row['Organization; Qualification; Standing'];
+    assert.ok(limbs.includes('Corporate power and authority to own, lease and operate its properties and assets and to conduct its business'));
+    assert.ok(table.detail_labels_by_row['Authority; Enforceability'].includes('Corporate power and authority to execute, deliver and perform the Agreement'));
+    assert.match(table.guidance, /canonical limb name/);
+  }
+});
