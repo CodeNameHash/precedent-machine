@@ -68,7 +68,10 @@ export default function EvidenceSidebar({
   }, [sectionText, highlightRanges]);
   const checks = useMemo(() => validateFactComponents(fact), [fact]);
 
-  return <aside className="w-full max-w-sm shrink-0 space-y-4 border-l border-border bg-white p-4 text-sm" data-testid="evidence-sidebar" aria-label="Evidence">
+  // Sticky: the sidebar's top follows the viewport, so a pill clicked half-way
+  // down a long page opens its evidence beside it, not at the page top (Ben,
+  // 2026-09-13). Its own contents scroll when they exceed the viewport.
+  return <aside className="sticky top-4 max-h-[calc(100vh-2rem)] w-full max-w-sm shrink-0 self-start space-y-4 overflow-y-auto border-l border-border bg-white p-4 text-sm" data-testid="evidence-sidebar" aria-label="Evidence">
     <div className="flex items-start justify-between gap-2">
       <div>
         {fact.section_reference ? <p className="text-[10px] font-bold uppercase tracking-wide text-inkLight">{displaySectionReference(fact.section_reference)}</p> : null}
