@@ -1634,8 +1634,11 @@ Sequence and proof:
       proposal keeps its rejected tree in the stored payload and its id was
       hashed over it. Fix: proposals without rows read back exactly as
       written. All 995 stored proposals were then re-hashed locally through
-      the fixed read path (101 mismatches before, 0 after). Same three
-      steps for Ben. The submission creates a V2
+      the fixed read path (101 mismatches before, 0 after). 15:19 UTC:
+      generation 4 READY, draft 0c7c41a1…; 104 sections, 995 proposals
+      (850 valid), 5,070 components, no coverage-only headlines. This is
+      the V2 baseline for Ben's re-review of the 13 briefed provisions and
+      for the V1-to-V2 comparison. The submission creates a V2
       generation with prompt bundle `PRODUCT_LAYERED_COMPONENTS/V7`; the V1
       run and revision 45 of its review stay untouched as the baseline. Compare against Ben's 38
       touched items and his samples. Ben reviews the same 13 provisions again
