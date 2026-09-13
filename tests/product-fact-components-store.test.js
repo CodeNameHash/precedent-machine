@@ -307,7 +307,7 @@ test('a fact conclusions readout round-trips through commit and read', async () 
   assert.equal(readProposal.validation_status, 'VALID');
 });
 
-test('a conclusions readout with an unknown vocabulary code is rejected: not written, proposal marked INVALID', async () => {
+test('a conclusions readout with an unknown vocabulary code is not written; the proposal stays as compiled with a CONCLUSIONS_DROPPED note', async () => {
   const client = createFakeClient();
   const store = new ProductPhase2Store({ client });
   const components = equityAwardComponents();
@@ -327,13 +327,17 @@ test('a conclusions readout with an unknown vocabulary code is rejected: not wri
   assert.equal(client.tables.product_fact_conclusions.length, 0, 'an invalid conclusions readout is never written');
   assert.ok(client.tables.product_fact_components.length > 0, 'the (valid) component rows are unaffected');
   const storedProposal = client.tables.product_proposals.find((row) => row.proposal_id === proposal.proposal_id);
-  assert.equal(storedProposal.payload.validation_status, 'INVALID');
-  const issue = client.tables.product_issues.find((row) => row.payload.code === 'INVALID_FACT_CONCLUSIONS');
+  assert.equal(storedProposal.payload.validation_status, 'VALID');
+  const issue = client.tables.product_issues.find((row) => row.payload.code === 'CONCLUSIONS_DROPPED');
+  assert.equal(issue.payload.kind, 'NOTE');
   assert.ok(issue, 'an issue records the rejected conclusions readout');
   const problems = JSON.parse(issue.payload.message);
   assert.ok(problems.some((problem) => /unknown code "BOGUS_CODE"/.test(problem)));
 
+  // The payload reads back exactly as compiled (its id was hashed over the
+  // conclusions); only the readout row is absent.
   const sections = await store.loadCompletedSectionResults(RUN_ID);
   const readProposal = sections[0].proposals[0];
-  assert.equal('conclusions' in readProposal, false);
+  assert.deepEqual(readProposal.conclusions, conclusions);
+  assert.equal(readProposal.validation_status, 'VALID');
 });

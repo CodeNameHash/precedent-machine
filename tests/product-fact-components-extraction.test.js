@@ -200,11 +200,11 @@ test('V9: a proposal in a family with a table shape gets a validated conclusions
   assert.deepEqual(compiled.proposals[0].conclusions.cells[0].component_ids, [
     compiled.proposals[0].components.find((c) => c.label === 'consideration').component_id,
   ]);
-  assert.equal(compiled.issues.filter((issue) => issue.code === 'INVALID_FACT_CONCLUSIONS').length, 0);
+  assert.equal(compiled.issues.filter((issue) => issue.code === 'CONCLUSIONS_DROPPED').length, 0);
   assert.equal(compiled.issues.filter((issue) => issue.code === 'CONCLUSIONS_MISSING').length, 0);
 });
 
-test('V9: conclusions with an unknown vocabulary code hold the proposal with INVALID_FACT_CONCLUSIONS', () => {
+test('V9: conclusions with an unknown vocabulary code are dropped with a CONCLUSIONS_DROPPED note; the fact stays VALID', () => {
   const badConclusions = {
     ...validConclusions,
     cells: [{ column_id: 'consideration', code: 'NOT_A_REAL_CODE', component_refs: ['consid'] }],
@@ -212,11 +212,13 @@ test('V9: conclusions with an unknown vocabulary code hold the proposal with INV
   const compiled = compileWithTableShapes(equityResponse({
     components: equityComponents(), headline: equityHeadline, conclusions: badConclusions,
   }));
-  assert.equal(compiled.proposals[0].validation_status, 'INVALID');
-  const issue = compiled.issues.find((candidate) => candidate.code === 'INVALID_FACT_CONCLUSIONS');
+  assert.equal(compiled.proposals[0].validation_status, 'VALID');
+  const issue = compiled.issues.find((candidate) => candidate.code === 'CONCLUSIONS_DROPPED');
   assert.ok(issue);
+  assert.equal(issue.kind, 'NOTE');
   assert.match(issue.message, /unknown code/);
   assert.equal(Object.hasOwn(compiled.proposals[0], 'conclusions'), false);
+  assert.equal(compiled.issues.some((candidate) => candidate.code === 'INVALID_FACT_CONCLUSIONS'), false);
 });
 
 test('V9: valid components with no conclusions from the model stay VALID with a CONCLUSIONS_MISSING note issue', () => {
@@ -238,7 +240,7 @@ test('V9: without tableShapes, compileExtraction ignores conclusions entirely --
   });
   assert.equal(compiled.proposals[0].validation_status, 'VALID');
   assert.equal(Object.hasOwn(compiled.proposals[0], 'conclusions'), false);
-  assert.equal(compiled.issues.filter((issue) => issue.code === 'CONCLUSIONS_MISSING' || issue.code === 'INVALID_FACT_CONCLUSIONS').length, 0);
+  assert.equal(compiled.issues.filter((issue) => issue.code === 'CONCLUSIONS_MISSING' || issue.code === 'CONCLUSIONS_DROPPED').length, 0);
 });
 
 test('V9: buildAgreementSectionDraft adds table_shapes/conclusion_instruction and uses PRODUCT_ALL_FAMILY_EXTRACTOR/V9 when a routed family has a table shape', async () => {

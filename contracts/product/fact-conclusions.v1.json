@@ -22,7 +22,7 @@
   },
   "rules": [
     "C1 A cell's column_id must name a column of the fact's resolved table (table_key, checked against the fact's family_key through table-shapes.v3.json section.v2_family_keys).",
-    "C2 A 'vocabulary' cell's code must be a code in that column's vocabulary (own or shared via vocabulary_ref); an unknown code is a problem and holds the fact.",
+    "C2 A 'vocabulary' cell's code must be a code in that column's vocabulary (own or shared via vocabulary_ref); an unknown code is a problem. Any C1-C8 problem drops the readout, never the fact: the fact stays VALID on its components with no conclusions, and a CONCLUSIONS_DROPPED note records the problems (Ben, 2026-09-13: \"I'd keep the fact and drop readout with a note\").",
     "C3 A 'value' cell's value must equal parseComponentValue(kind, text) of at least one cited component; the model never states a value column's canonical number or unit itself.",
     "C4 A 'verbatim' or 'term' cell's text must be the exact text of at least one cited component, or a contiguous run of words cut from one cited component's exact text; no paraphrase, normalisation or added words.",
     "C5 A 'boolean' cell's present is a plain boolean; still cites the component(s) that show presence or its stated absence.",

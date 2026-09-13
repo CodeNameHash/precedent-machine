@@ -1758,9 +1758,17 @@ Sequence and proof:
       words from one cited component, and C6 makes `fill_from` advisory
       (a cited component must belong to the fact; its kind is not
       checked). fill_from still drives the no-conclusions fallback
-      rendering. Open for Ben: C2 still holds the whole fact when the
-      readout uses an unknown vocabulary code; the alternative is to keep
-      the fact and drop the readout with a note.
+      rendering. Ben, 2026-09-13 16:30 UTC: "I'd keep the fact and drop
+      readout with a note". Encoded: any conclusions problem drops the
+      readout and records a CONCLUSIONS_DROPPED note; the fact stays VALID
+      (contract C2, compiler and store). Found while encoding it: a
+      proposal's conclusions are compiled into it before its id is hashed,
+      yet finalisation stripped `conclusions` as a read-side annotation, so
+      every V9 fact with a readout would have failed DRAFT_NESTED_IDENTITY
+      at assembly. `PROPOSAL_READ_ANNOTATIONS` is now `coverage_only`
+      alone and the read path returns a payload's conclusions untouched
+      (regression from Metsera proposal f5d41547… in
+      `tests/product-proposal-identity.test.js`).
 
 Parallel plan while Ben is away: 5B.1 and 5B.2 are lead work in this
 session. 5B.3 storage and 5B.5 reader view run as separate visible sessions

@@ -24,10 +24,10 @@ test('a stored V2 proposal hashes to its own id, layers included', () => {
 });
 
 test('read-side annotations are ignored by the identity check', () => {
-  const asRead = { ...stored, coverage_only: false, conclusions: { table_key: 't', row_label: 'r', cells: [] } };
+  const asRead = { ...stored, coverage_only: false };
   assert.notEqual(contentId('PRODUCT_PROPOSAL/V1', identityBody(asRead, [])), stored.proposal_id);
   assert.equal(contentId('PRODUCT_PROPOSAL/V1', identityBody(asRead, PROPOSAL_READ_ANNOTATIONS)), stored.proposal_id);
-  assert.deepEqual([...PROPOSAL_READ_ANNOTATIONS], ['coverage_only', 'conclusions']);
+  assert.deepEqual([...PROPOSAL_READ_ANNOTATIONS], ['coverage_only']);
 });
 
 // The store rebuilds `components` from product_fact_components rows when a
@@ -52,4 +52,27 @@ test('a proposal rebuilt from component rows hashes to its own id when a value k
   assert.deepEqual(asRead.components, components);
   assert.deepEqual(asRead.headline, headline);
   assert.equal(contentId('PRODUCT_PROPOSAL/V1', identityBody(asRead, PROPOSAL_READ_ANNOTATIONS)), storedNullValue.proposal_id);
+});
+
+// A V9 proposal's conclusions are compiled into it before its id is computed
+// (Metsera generation 1, 2026-09-13, proposal f5d41547…). The read path must
+// return the payload's conclusions untouched, and finalisation must hash them.
+const storedV9 = require('./fixtures/product/metsera-v9-proposal-conclusions.v1.json');
+const v9Rows = require('./fixtures/product/metsera-v9-proposal-conclusions-rows.v1.json');
+
+test('a V9 proposal with conclusions hashes to its own id through the read path', () => {
+  const { components, headline, ...payload } = storedV9;
+  const stripped = { ...payload, components, headline }; // the stored payload keeps every key
+  const [asRead] = withFactConclusions(
+    withFactComponents(
+      [stripped],
+      new Map([[payload.proposal_id, v9Rows.components]]),
+      new Map([[payload.proposal_id, v9Rows.headline]]),
+    ),
+    new Map([[payload.proposal_id, v9Rows.conclusions]]),
+  );
+  assert.deepEqual(asRead.conclusions, storedV9.conclusions);
+  assert.equal(contentId('PRODUCT_PROPOSAL/V1', identityBody(asRead, PROPOSAL_READ_ANNOTATIONS)), storedV9.proposal_id);
+  const withoutRow = withFactConclusions([stripped], new Map());
+  assert.deepEqual(withoutRow[0].conclusions, storedV9.conclusions);
 });
