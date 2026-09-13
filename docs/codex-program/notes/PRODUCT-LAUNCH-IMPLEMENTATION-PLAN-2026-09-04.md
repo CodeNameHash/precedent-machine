@@ -1598,7 +1598,11 @@ Sequence and proof:
       run's model configuration is unchanged, so the same run can be
       retried). Sequence: Ben updates the sandbox and presses "Retry failed
       sections" on the intake page, which resets the failed section and
-      resumes the 73 pending ones in the same generation. The submission creates a V2
+      resumes the 73 pending ones in the same generation. Ben retried
+      2026-09-13 00:53 UTC after the sandbox update; 3.12 completed on its
+      second attempt in 633 seconds, past the old limit, so the 30-minute
+      timeout is confirmed live. 01:30 UTC: 49 of 104 sections, 406 of 479
+      proposals valid. The submission creates a V2
       generation with prompt bundle `PRODUCT_LAYERED_COMPONENTS/V7`; the V1
       run and revision 45 of its review stay untouched as the baseline. Compare against Ben's 38
       touched items and his samples. Ben reviews the same 13 provisions again
@@ -1648,7 +1652,12 @@ Sequence and proof:
       merger and merger-form vocabulary, CVR earn-in, one shared bring-down
       vocabulary, relative lookback, per-row trigger sets, separate no-shop
       verbs, cure and terminator-bar columns, payer column, defined terms as
-      an appendix, the four thin sections kept. Pass 3 (`session_01K8KAWSpPXEge1PNjHgTSAg`) encodes them as data with one test per decision; (b)
+      an appendix, the four thin sections kept. Pass 3 merged 2026-09-13
+      01:35 UTC from `session_01K8KAWSpPXEge1PNjHgTSAg`:
+      `contracts/product/table-shapes.v3.json` with shared vocabularies
+      (MERGER_FORM, BRING_DOWN_STANDARD), double-merger structure per step,
+      cure and terminator-bar columns, payer column, per-row trigger sets,
+      defined terms as a reference appendix; 36 tests. Step (a) is done. (b)
       contract: each fact carries
       `conclusions`, one coded value per column of its subtype's table,
       validated against the vocabulary, alongside the verbatim components;
