@@ -97,7 +97,8 @@ test('ProvisionsPreviewBody renders the rail, the tables and no decision control
   assert.match(html, /Lawyer preview/);
   assert.match(html, /Parent Inc/);
   assert.match(html, /data-testid="provision-rail"/);
-  assert.match(html, /data-testid="table-pill"/);
+  // The fixture facts carry no readout: they are listed as evidence without one.
+  assert.match(html, /data-testid="facts-without-readout"/);
   assert.match(html, /1 held by validation, not shown/);
   assert.doesNotMatch(html, />Accept</);
   assert.doesNotMatch(html, /Finalise inactive candidate/);

@@ -170,7 +170,10 @@ test('QueryProvisionsBody renders matching facts headline-first, grouped per agr
     {
       run_id: 'run-a', source_document_id: 'doc-a', agreement_label: 'https://www.sec.gov/Archives/doc-a.htm',
       released_at: '2026-09-10T00:00:00.000Z',
-      facts: [layeredFact({ reviewItemId: 'v-1', familyKey: 'TERMINATION', subtypeKey: 'MUTUAL_CONSENT', label: 'Mutual consent', sectionReference: '7.1' })],
+      facts: [{
+        ...layeredFact({ reviewItemId: 'v-1', familyKey: 'TERMINATION', subtypeKey: 'MUTUAL_CONSENT', label: 'Mutual consent', sectionReference: '7.1' }),
+        conclusions: { table_key: 'termination-rights-mutual', row_label: 'Mutual consent', cells: [] },
+      }],
     },
   ];
   const html = renderToStaticMarkup(React.createElement(QueryProvisionsBody, {

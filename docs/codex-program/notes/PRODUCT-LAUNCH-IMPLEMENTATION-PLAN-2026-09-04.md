@@ -1904,6 +1904,23 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       one row per covenant (V2 subtypes plus the covenants the legacy
       index curated, open to a new name) with obligor, standard, scope
       and exceptions, limbs as sub-items.
+      19:10 UTC, Ben on employee benefits: "this is also garbage - look at
+      the precedent - we should be showing rows for each type of
+      instrument vs standard and period and then for things that don't
+      fit that rubric a simple 2 column table". Three causes, all rules
+      now: (1) a fact whose readout was dropped fell back into the table
+      as a row keyed by its grammatical subject with components as pills;
+      no fact without a readout becomes a row any more, it is listed under
+      the section as evidence without a readout, openable in the sidebar
+      (this also retires the V8 fallback rendering). (2) Most readouts
+      had been dropped by two over-strict checks: a period cited from a
+      TRIGGER component now parses as the column's value kind (C3), and a
+      verbatim run may span adjacent cited components read in order (C4).
+      (3) The benefits table keeps the precedent's rows per benefit
+      element (open to a new element) with guidance and an
+      EMPLOYEE_MATTERS layer rule that a covenant listing several elements
+      yields one fact per element; the other-protections table becomes a
+      two-column Term / Provision table (generator decision 22).
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.

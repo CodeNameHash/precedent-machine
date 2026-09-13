@@ -106,18 +106,12 @@ test('a coverage-only fact never reaches a table', () => {
   assert.ok(!allFactIds.includes('f-boilerplate-notices-1'));
 });
 
-test('a fact with no conclusions falls back to rendering cells from its components by fill_from kind', () => {
+test('a fact with no conclusions never becomes a row; it is listed under its section as evidence without a readout', () => {
   const materialContracts = table('material-contracts', 'material-contracts-table');
-  const fallbackRow = materialContracts.rows.find((row) => row.backing_facts.some((entry) => entry.fact_id === 'f-material-contracts-1'));
-  assert.ok(fallbackRow, 'the fixture fact should have landed in material-contracts-table');
-  const byColumn = Object.fromEntries(fallbackRow.cells.map((cell) => [cell.column_id, cell]));
-  assert.equal(byColumn.contractType.kind, 'dash');
-  assert.equal(byColumn.threshold.kind, 'pill');
-  assert.equal(byColumn.threshold.label, 'threshold');
-  assert.equal(byColumn.threshold.tone, 'neutral');
-  assert.deepEqual(byColumn.threshold.component_ids, ['c-mc-threshold']);
-  assert.deepEqual(byColumn.threshold.fact_ids, ['f-material-contracts-1']);
-  assert.equal(byColumn.uncoveredBucket.kind, 'dash');
+  const fallbackRow = materialContracts && materialContracts.rows.find((row) => row.backing_facts.some((entry) => entry.fact_id === 'f-material-contracts-1'));
+  assert.equal(fallbackRow, undefined);
+  const section = view.sections.find((candidate) => candidate.section_key === 'material-contracts');
+  assert.ok(section.facts_without_readout.some((entry) => entry.fact_id === 'f-material-contracts-1'));
 });
 
 test('a fact with an explicit conclusions.table_key and row_label lands exactly there, cells taken from conclusions', () => {
@@ -148,21 +142,18 @@ test('a fact with conclusions but no table_key is placed by matching row_label a
   assert.equal(byColumn.trigger.kind, 'dash');
   assert.equal(byColumn.deemingRulePresent.kind, 'dash');
 
-  // The fixture's own termination-fee-trigger fact has no conclusions and no
-  // subject that matches a fixed row label, so it lands in the same table as
-  // its own, separate row rather than being dropped.
-  const fallbackRow = terminationFees.rows.find((candidate) => candidate.backing_facts.some((entry) => entry.fact_id === 'f-termination-fee-trigger-1'));
-  assert.ok(fallbackRow);
-  assert.notEqual(fallbackRow.subject, row.subject);
+  // The fixture's own termination-fee-trigger fact has no conclusions: it is
+  // never a row, and is listed under the section as evidence without a readout.
+  assert.equal(terminationFees.rows.some((candidate) => candidate.backing_facts.some((entry) => entry.fact_id === 'f-termination-fee-trigger-1')), false);
+  const section = view.sections.find((candidate) => candidate.section_key === 'termination-fees');
+  assert.ok(section.facts_without_readout.some((entry) => entry.fact_id === 'f-termination-fee-trigger-1'));
 });
 
-test('a fact with no conclusions and no fixed-row match falls back to the one-per-subject table for its family', () => {
-  const maeParent = table('mae-definitions', 'mae-carveouts-parent');
-  const maeCompany = table('mae-definitions', 'mae-carveouts-company');
-  assert.ok(maeParent, 'the MAE carve-out fixture fact should land in the first one-per-subject table for MAE_DEFINITION');
-  assert.equal(maeCompany, undefined);
-  assert.equal(maeParent.rows.length, 1);
-  assert.equal(maeParent.rows[0].cells.find((cell) => cell.column_id === 'disproportionateCarveback').kind, 'dash');
+test('a family whose facts all lack a readout still appears, with the facts listed and no tables', () => {
+  const section = view.sections.find((candidate) => candidate.section_key === 'mae-definitions');
+  assert.ok(section, 'the MAE section is present for its evidence');
+  assert.equal(section.tables.length, 0);
+  assert.ok(section.facts_without_readout.length >= 1);
 });
 
 test('the term_column and group_header carry through from the table shape', () => {

@@ -198,10 +198,15 @@ test('C4: a verbatim cell may carry a run of words cut from the cited component,
   assert.ok(added.some((p) => /run of words/.test(p)), added.join('; '));
 });
 
-test('row_label must be one of the resolved fixed-list table\'s row labels', () => {
+test('row_label must be one of the resolved fixed-list table\'s row labels, unless the table is open to new rows', () => {
   const fact = baseSalaryFact();
   fact.conclusions.row_label = 'Not A Real Row';
-  const problems = validateFactConclusions(fact, { tableShapes });
+  // employee-benefits-table is open_rows (decision 22): a new label is accepted.
+  assert.deepEqual(validateFactConclusions(fact, { tableShapes }), []);
+  // The same table closed: the label is a problem.
+  const closed = JSON.parse(JSON.stringify(tableShapes));
+  for (const section of closed.sections) for (const table of section.tables || []) if (table.table_key === 'employee-benefits-table') delete table.open_rows;
+  const problems = validateFactConclusions(fact, { tableShapes: closed });
   assert.ok(problems.some((p) => /is not one of employee-benefits-table's fixed row labels/.test(p)), problems.join('; '));
 });
 
@@ -222,4 +227,19 @@ test('renderConclusionCells renders a pill label per vocabulary cell, a formatte
   const withDash = renderConclusionCells(missingCell, tableShapes);
   const dash = withDash.find((cell) => cell.column_id === 'period');
   assert.equal(dash.text, '—');
+});
+
+test('C3: a period cited from a TRIGGER component parses as the column\'s value kind', () => {
+  const fact = baseSalaryFact();
+  fact.components.push({ component_id: 'salary-when', kind: 'TRIGGER', label: 'timing', text: 'For a period of one year following the Effective Time', origin: 'OWN', source_span_id: 's', start_byte: 200, end_byte: 250, gap_before: true, children: [] });
+  fact.conclusions.cells[2] = { column_id: 'period', value: { canonical: 1, unit: 'YEAR' }, component_ids: ['salary-when'] };
+  assert.deepEqual(validateFactConclusions(fact, { tableShapes }), []);
+});
+
+test('C4: a verbatim run may span adjacent cited components read in order', () => {
+  const fact = closingTimingFact('third Business Day after the satisfaction or waiver of the conditions set forth in Article VII');
+  fact.components[0].text = 'on the third Business Day after';
+  fact.components.push({ component_id: 'closing-cond', kind: 'CONDITION', label: 'condition', text: 'the satisfaction or waiver of the conditions set forth in Article VII', origin: 'OWN', source_span_id: 's-1', start_byte: 101, end_byte: 200, gap_before: false, children: [] });
+  fact.conclusions.cells[0].component_ids = ['closing-when', 'closing-cond'];
+  assert.deepEqual(validateFactConclusions(fact, { tableShapes }), []);
 });

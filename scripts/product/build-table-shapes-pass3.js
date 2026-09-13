@@ -472,6 +472,30 @@ function applyDecision21GeneralCovenants(doc) {
   }];
 }
 
+// Ben, 2026-09-13 19:10 UTC, on the employee benefits table (a row per
+// grammatical subject, the comp covenant's benefit list as pills in the
+// reference-group column): "this is also garbage - look at the precedent -
+// we should be showing rows for each type of instrument vs standard and
+// period and then for things that don't fit that rubric a simple 2 column
+// table". The main table keeps the precedent's rows (one per benefit
+// element) and its comparison / standard / period columns, with guidance
+// that a covenant listing several elements yields one readout per element;
+// everything else goes to a two-column Term / Provision table.
+function applyDecision22EmployeeBenefits(doc) {
+  const section = findSection(doc, 'employee-benefits');
+  const main = findTable(section, 'employee-benefits-table');
+  main.open_rows = true;
+  main.guidance = 'One row per benefit element (the precedent\'s rows); a compensation covenant that lists several elements ("base salary, target cash incentive opportunities, equity opportunities and other benefits") yields one readout per element it names, each with the comparison group, the standard and the protection period, never one row for the whole list. A new row label only for an element none of the rows covers. Anything that is not a benefit element (plan amendment disclaimers, no third-party beneficiaries, no right to employment, service crediting exclusions) belongs to employee-benefits-other-protections.';
+  const other = findTable(section, 'employee-benefits-other-protections');
+  other.term_column = { header: 'Term', source: 'subject', fill_from: ['TERM'] };
+  other.columns = [
+    { column_id: 'provision', header: 'Provision', render: 'verbatim', fill_from: ['OPERATION', 'OBJECT', 'STANDARD', 'CONDITION', 'EXCEPTION'], addition: true, reason: `${BEN} #22: a simple two-column table for what does not fit the benefit-element rubric.` },
+  ];
+  other.fixed_row_labels = [...other.fixed_row_labels, 'No plan amendment', 'No third-party beneficiaries', 'No right to continued employment', 'Duplication of benefits'];
+  other.open_rows = true;
+  other.guidance = 'Term / Provision: one row per protection or disclaimer that is not a benefit element, named as the precedent would; the provision cell carries the operative words.';
+}
+
 function applyDecision5MaeCarveouts(doc) {
   const section = findSection(doc, 'mae-definitions');
   for (const tableKey of ['mae-carveouts-parent', 'mae-carveouts-company']) {
@@ -687,6 +711,7 @@ function build() {
   applyDecision19EquityAwardClasses(doc);
   applyDecision20RepresentationRows(doc);
   applyDecision21GeneralCovenants(doc);
+  applyDecision22EmployeeBenefits(doc);
   applyDecision7InterimCovenants(doc);
   applyDecision8NoShop(doc);
   applyDecision9VotesTrigger(doc);

@@ -3130,6 +3130,8 @@
             "Paid time off / vacation",
             "Equity / stock awards (new grants)"
           ],
+          "open_rows": true,
+          "guidance": "One row per benefit element (the precedent's rows); a compensation covenant that lists several elements (\"base salary, target cash incentive opportunities, equity opportunities and other benefits\") yields one readout per element it names, each with the comparison group, the standard and the protection period, never one row for the whole list. A new row label only for an element none of the rows covers. Anything that is not a benefit element (plan amendment disclaimers, no third-party beneficiaries, no right to employment, service crediting exclusions) belongs to employee-benefits-other-protections.",
           "show_only_when_populated": true,
           "split_combined_elements": true
         },
@@ -3137,7 +3139,7 @@
           "table_key": "employee-benefits-other-protections",
           "group_header": "OTHER PROTECTIONS",
           "term_column": {
-            "header": "Benefit",
+            "header": "Term",
             "source": "subject",
             "fill_from": [
               "TERM"
@@ -3145,41 +3147,18 @@
           },
           "columns": [
             {
-              "column_id": "comparison",
-              "header": "Reference Group",
-              "render": "vocabulary",
-              "vocabulary": [
-                {
-                  "code": "ALL_COVERED_EMPLOYEES",
-                  "label": "All covered employees",
-                  "tone": "neutral",
-                  "source": "print",
-                  "print_evidence": {
-                    "page": 129,
-                    "row_label": "401(k) plan continuation"
-                  }
-                }
-              ],
-              "fill_from": [
-                "OBJECT"
-              ]
-            },
-            {
-              "column_id": "standard",
-              "header": "Standard",
+              "column_id": "provision",
+              "header": "Provision",
               "render": "verbatim",
               "fill_from": [
+                "OPERATION",
+                "OBJECT",
                 "STANDARD",
-                "MATERIALITY_QUALIFIER"
-              ]
-            },
-            {
-              "column_id": "period",
-              "header": "Period",
-              "render": "verbatim",
-              "fill_from": [
-                "PERIOD"
-              ]
+                "CONDITION",
+                "EXCEPTION"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-13 #22: a simple two-column table for what does not fit the benefit-element rubric."
             }
           ],
           "rows_are": "fixed list",
@@ -3187,8 +3166,14 @@
             "401(k) plan continuation",
             "Continued service crediting",
             "Eligibility / waiting-period waiver",
-            "Severance protection"
-          ]
+            "Severance protection",
+            "No plan amendment",
+            "No third-party beneficiaries",
+            "No right to continued employment",
+            "Duplication of benefits"
+          ],
+          "open_rows": true,
+          "guidance": "Term / Provision: one row per protection or disclaimer that is not a benefit element, named as the precedent would; the provision cell carries the operative words."
         }
       ],
       "print_pages": [

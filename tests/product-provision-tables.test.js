@@ -85,13 +85,13 @@ test('a cell with no matching data renders a dash', () => {
   assert.match(html, /data-testid="table-dash"/);
 });
 
-test('the fallback path (no conclusions on the fact) still renders a row and a pill', () => {
-  // f-material-contracts-1 (the fixture fact) carries no `conclusions`; its
-  // threshold component must still surface as a pill via the fallback
-  // fill_from rendering.
+test('a fact with no conclusions is listed under its section as evidence without a readout, never rendered as a row', () => {
+  // f-material-contracts-1 (the fixture fact) carries no `conclusions`: it is
+  // not a row (a row keyed by its grammatical subject is not a conclusion),
+  // but it is listed so nothing is hidden and it opens in the sidebar.
   const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts }));
-  const materialSection = html.split('Material Contracts')[1] || '';
-  assert.match(materialSection, /data-testid="table-pill"/);
+  assert.match(html, /data-testid="facts-without-readout"/);
+  assert.match(html, /without a coded readout/);
 });
 
 test('rows carry a data-testid and the Term column offers "See provision"', () => {
@@ -102,7 +102,9 @@ test('rows carry a data-testid and the Term column offers "See provision"', () =
 });
 
 test('group headers render in the table caption', () => {
-  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts }));
+  const carveout = { ...fixture.facts.find((fact) => fact.fact_id === 'f-mae-carveout-1'), conclusions: { table_key: 'mae-carveouts-parent', row_label: 'War', cells: [] } };
+  const view = buildTableView({ facts: [carveout], tableShapes, legalSchema });
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [carveout] }));
   assert.match(html, /data-testid="table-group-header"[^>]*>CARVE-OUTS/);
 });
 

@@ -189,6 +189,30 @@ function AttributeTerm({ header, backing, tableKey, onSelect }) {
   );
 }
 
+// Facts of the section's families that carry no readout: evidence the tables
+// cannot place, listed so nothing is hidden and each opens in the sidebar.
+function FactsWithoutReadout({ entries, sectionKey, onSelect }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="mt-2 text-[11px] text-inkLight" data-testid="facts-without-readout">
+      <button type="button" onClick={() => setOpen((current) => !current)} className="font-semibold text-accent">
+        {entries.length} fact{entries.length === 1 ? '' : 's'} without a coded readout · {open ? 'hide' : 'see provisions'}
+      </button>
+      {open ? (
+        <ul className="mt-1 space-y-0.5 pl-2">
+          {entries.map((entry, index) => (
+            <li key={`${entry.fact_id}-${index}`}>
+              <button type="button" data-testid="backing-fact" onClick={() => onSelect({ tableKey: `${sectionKey}:without-readout`, rowIndex: index, columnId: null, componentId: null, factId: entry.fact_id })} className="underline decoration-dotted">
+                {entry.section_reference ? `§ ${entry.section_reference}` : entry.fact_id}{entry.headline ? ` · ${entry.headline}` : ''}
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  );
+}
+
 function Table({ table, selection, onSelect }) {
   if (table.layout === 'attribute grid') return <AttributeGrid table={table} selection={selection} onSelect={onSelect} />;
   return (
@@ -279,6 +303,9 @@ export default function ProvisionTables({
                 <Table key={table.table_key} table={table} selection={selection} onSelect={setSelection} />
               ))}
             </div>
+            {section.facts_without_readout?.length ? (
+              <FactsWithoutReadout entries={section.facts_without_readout} sectionKey={section.section_key} onSelect={setSelection} />
+            ) : null}
           </section>
         ))}
         {tableView.defined_terms.length ? (
