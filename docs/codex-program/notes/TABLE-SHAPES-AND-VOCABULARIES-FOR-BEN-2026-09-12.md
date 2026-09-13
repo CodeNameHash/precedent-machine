@@ -1,6 +1,6 @@
 # Table shapes and vocabularies for Ben's check, 2026-09-12 (pass 2)
 
-Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same name for every section below -- pass 1 got the sections and column headers right from `components/review/table-configs/*.config.js` but left most columns `verbatim` because the legacy code composes pills inside render functions, not in a label map a static parser can see. Pass 2 (`contracts/product/table-shapes.v2.json`, built by `scripts/product/build-table-shapes-pass2.js`) fills those columns from the print of the actual TopBuild / QXO review page you supplied (`docs/codex-program/notes/TopBuild-Review-2026-09-12.pdf`, text in `fixtures/product/topbuild-review/print-text.v1.json`), plus the label maps pass 1 never opened (`lib/employee-benefits.js`, `fiduciary-standard-labels.js`, `vote-standard.js`, `board-change-standard.js`, `ioc-exceptions.config.js`'s `FRAGMENT_NAME_PATTERNS`).
+Status: DECIDED 2026-09-13, encoded in table-shapes.v3.json. This note originally superseded the pass-1 readout of the same name for every section below -- pass 1 got the sections and column headers right from `components/review/table-configs/*.config.js` but left most columns `verbatim` because the legacy code composes pills inside render functions, not in a label map a static parser can see. Pass 2 (`contracts/product/table-shapes.v2.json`, built by `scripts/product/build-table-shapes-pass2.js`) filled those columns from the print of the actual TopBuild / QXO review page you supplied (`docs/codex-program/notes/TopBuild-Review-2026-09-12.pdf`, text in `fixtures/product/topbuild-review/print-text.v1.json`), plus the label maps pass 1 never opened (`lib/employee-benefits.js`, `fiduciary-standard-labels.js`, `vote-standard.js`, `board-change-standard.js`, `ioc-exceptions.config.js`'s `FRAGMENT_NAME_PATTERNS`). Pass 3 (`contracts/product/table-shapes.v3.json`, built by `scripts/product/build-table-shapes-pass3.js`) applies your answers below, under "Ben's answers, 2026-09-13", as data on top of the pass-2 contract; the section tables below are regenerated to show the v3 shape.
 
 **Order.** Sections below run in the order they appear in your print (page numbers noted per section), not the review page's left-nav mount order pass 1 used -- so this document reads the way your print reads. The four sections at the end (Approvals / Votes, Shareholder Meeting / Proxy, Antitrust / Regulatory, Advisers / Fees / Expenses) are carried over from pass 1 unchanged: nothing in this deal's print showed a distinct pill table for them, so there is no print evidence to add. That does not mean the underlying legacy config renders nothing on a different deal -- it means TopBuild's own review page does not exercise it.
 
@@ -17,21 +17,26 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 - Print pages: 1
 - V2 family mapping: MERGER_STRUCTURE_CLOSING (confidence: high)
 
-### Table: `structure-mechanics-table`
+### Table: `structure-mechanics-table` (v3)
 
 - Row subject: **Term**
 - Rows: one per subject
+- `per_step_structure`: applies when `dealStructure` is `DOUBLE_MERGER` -- Step 1 (`mergerFormStep1`, `survivingEntityStep1`), Step 2 (`mergerFormStep2`, `survivingEntityStep2`).
 
 | Column | Render | Vocabulary / value | fill_from |
 |---|---|---|---|
-| Deal Structure (`dealStructure`) | vocabulary | "One Step Merger" (print p.1, row "Deal structure") | STANDARD |
-| Merger Form (`signals`) | vocabulary | "Forward merger" (legacy label map); "Reverse triangular merger" (legacy label map); "Reverse triangular merger" (print p.1, row "Merger form"); "Forward triangular merger" (print p.1, row "Merger form") | STANDARD |
+| Deal Structure (`dealStructure`) | vocabulary | "One-step merger" (`ONE_STEP_MERGER`, display variant "One Step Merger" (print p.1, row "Deal structure")); "Double merger (reverse triangular merger followed by a second-step forward merger)" (`DOUBLE_MERGER`, addition); "Tender offer with back-end merger" (`TENDER_OFFER_BACK_END_MERGER`, addition) | STANDARD |
+| Merger Form (`signals`) | vocabulary_ref: `MERGER_FORM` (shared) | "Reverse triangular merger" (both; print p.1, row "Merger form"); "Forward triangular merger" (print p.1, row "Merger form"); "Forward merger" (legacy label map) | OPERATION, ACTOR, OBJECT |
+| Merger Form — Step 1 (`mergerFormStep1`) — **proposed addition** | vocabulary_ref: `MERGER_FORM` (shared) | *(same shared vocabulary as Merger Form)* | OPERATION, ACTOR, OBJECT |
+| Surviving Entity — Step 1 (`survivingEntityStep1`) — **proposed addition** | term | (the named surviving entity) | TERM |
+| Merger Form — Step 2 (`mergerFormStep2`) — **proposed addition** | vocabulary_ref: `MERGER_FORM` (shared) | *(same shared vocabulary as Merger Form)* | OPERATION, ACTOR, OBJECT |
+| Surviving Entity — Step 2 (`survivingEntityStep2`) — **proposed addition** | term | (the named surviving entity) | TERM |
 | Closing Location (`closingLocation`) | verbatim | (free text / composed value) | OPERATION |
 | Closing Timing (`closingTiming`) | verbatim | (free text / composed value) | OPERATION |
 | Effective Time (`effectiveTime`) | verbatim | (free text / composed value) | OPERATION |
 | Effects of Merger (`effectsOfMerger`) | vocabulary | "DGCL" (print p.1, row "Effects of merger"); "DLLCA" (print p.1, row "Effects of merger") | STANDARD |
-  Proposed addition codes for **Deal Structure**:
-  - "Two Step Merger" — *the print's Deal structure axis names only the value shown on this deal; V2 MERGER_STRUCTURE_CLOSING/TRANSACTION_STEP supports a two-step structure as the complementary code for cross-deal comparability.*
+
+  Ben's decision 2026-09-13 #1-#2: "One Step Merger" is wrong for a merger sub merging into the target followed by the surviving corporation merging into a second merger sub -- that is a **double merger** (Cadwalader, "Multiple Step Acquisitions"; the IRS Double Merger Ruling), whose second step agreements label a **Second-Step Forward Merger** (Law Insider sample clause language). "Two-step merger" is avoided as a name because it is also used for a tender offer followed by a back-end merger. TopBuild's own deal is recoded `DOUBLE_MERGER`; "One Step Merger" survives only as a display variant of `ONE_STEP_MERGER` for a deal that is genuinely one-step. Merger form now records Reverse triangular merger, Forward triangular merger and Forward merger as three distinct codes (previously "Reverse triangular merger" was harvested twice, once from the legacy label map and once from the print, as if they were different); the structure family records which form applies from the "merge with and into" language and which entity survives, one form and one surviving entity per step for a double merger.
 
 
 ## Consideration
@@ -92,9 +97,10 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 | Consideration (`consideration`) | vocabulary | "Cash" (print p.15, row "Stock Options"); "Parent stock / rollover" (print p.15, row "RSUs"); "Cancelled — no consideration" (legacy label map) | STANDARD |
 | Vesting Treatment (`vestingTreatment`) | vocabulary | "Cancelled — no consideration" (legacy label map); "Continues vesting (double-trigger protection)" (print p.15, row "PSUs"); "Assumed by Parent" (legacy label map); "Pro-rata acceleration" (legacy label map); "Rollover into Parent award" (legacy label map); "Fully vested (accelerated)" (print p.15, row "Restricted Stock Awards"); "Cancelled for cash consideration" (print p.15, row "Stock Options") | STANDARD |
 | CVR Entitlement (`cvrEntitlement`) | vocabulary | *(all proposed -- see below)* | STANDARD |
-  Proposed addition codes for **CVR Entitlement**:
+  Proposed addition codes for **CVR Entitlement** (v3, Ben's decision 2026-09-13 #3):
   - "Entitled" — *CONSIDERATION/CVR_COMPONENT supports a CVR entitlement carried through to converted equity awards; this deal shows no CVR (all four rows print "—"), so only the absent/entitled axis is proposed, not a label drawn from this print.*
   - "Not entitled" — *complement of the above; matches the "—" seen on every row of this deal's CVR Entitlement column.*
+  - "Entitled if a milestone brings the award into the money (spread over exercise price on cash plus CVR)" — *a milestone-linked entitlement; the extractor looks for the earn-in language that puts the award in the money, valued as the spread over the exercise price on cash plus CVR.*
 
 
 ## Representations & Warranties — Company
@@ -111,9 +117,11 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 
 | Column | Render | Vocabulary / value | fill_from |
 |---|---|---|---|
-| Bring-down Standard (`bringdown`) | vocabulary | "Bringdown: In all respects" (print p.18, row "Absence of Certain Changes or Events"); "Bringdown: De minimis" (print p.17, row "Capitalization; Subsidiaries"); "Bringdown: In all material respects" (print p.17, row "Organization; Qualification; Standing"); "Bringdown: MAE" (print p.18, row "No Conflict; Required Filings and Consents") | STANDARD, MATERIALITY_QUALIFIER |
+| Bring-down Standard (`bringdown`) | vocabulary_ref: `BRING_DOWN_STANDARD` (shared with Closing Conditions) | `TRUE_IN_ALL_RESPECTS` (display variants: "Bringdown: In all respects", print p.18, row "Absence of Certain Changes or Events"; "TRUE IN ALL RESPECTS", print p.115); `TRUE_EXCEPT_DE_MINIMIS` (display variants: "Bringdown: De minimis", print p.17, row "Capitalization; Subsidiaries"; "TRUE EXCEPT FOR DE MINIMIS INACCURACIES", print p.115); `TRUE_IN_ALL_MATERIAL_RESPECTS` (display variants: "Bringdown: In all material respects", print p.17, row "Organization; Qualification; Standing"; "TRUE IN ALL MATERIAL RESPECTS", print p.115); `TRUE_EXCEPT_NO_MAE` (display variants: "Bringdown: MAE", print p.18, row "No Conflict; Required Filings and Consents"; "TRUE EXCEPT WHERE FAILURE WOULD NOT CAUSE AN MAE", print p.115) | STANDARD, MATERIALITY_QUALIFIER |
 | Qualifiers (`materiality`) | vocabulary | "MAE (aggregate) (partial)" (print p.17, row "Organization; Qualification; Standing"); "MAE (aggregate)" (print p.18, row "Litigation; Legal Proceedings"); "Material (to the rep) (partial)" (print p.17, row "Capitalization; Subsidiaries"); "Material (to the rep)" (print p.18, row "SEC Documents; Financial Statements"); "Knowledge-qualified (partial)" (print p.18, row "No Conflict; Required Filings and Consents"); "True in all material respects (partial)" (print p.19, row "Information Supplied / Proxy Statement") | STANDARD, MATERIALITY_QUALIFIER |
-| Lookback (`lookback`) | verbatim | (free text / composed value) | OPERATION |
+| Lookback (`lookback`) | value / PERIOD, `hover: 'date'` | a relative period computed from a date (e.g. "≈3.3 yrs"), the underlying date shown on hover | PERIOD, DATE |
+
+  v3 (Ben's decision 2026-09-13 #4): the reps' own Bring-down Standard and the Closing Conditions bring-down tiers are the same four-tier concept, so both now reference one shared `BRING_DOWN_STANDARD` vocabulary by id, each code carrying both print renderings (the reps page's lower-case "Bringdown: X" pill and the Closing Conditions page's upper-case "TRUE ... " pill) as display variants of the same code. The rep's own qualifier standard (`materiality`) stays a separate column, unaffected. Decision #5: Lookback renders as a computed PERIOD value with the source date on hover, so deals compare on the same axis instead of a free-text date string.
 
 ## Representations & Warranties — Parent
 
@@ -129,9 +137,11 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 
 | Column | Render | Vocabulary / value | fill_from |
 |---|---|---|---|
-| Bring-down Standard (`bringdown`) | vocabulary | "Bringdown: In all respects" (print p.18, row "Absence of Certain Changes or Events"); "Bringdown: De minimis" (print p.17, row "Capitalization; Subsidiaries"); "Bringdown: In all material respects" (print p.17, row "Organization; Qualification; Standing"); "Bringdown: MAE" (print p.18, row "No Conflict; Required Filings and Consents") | STANDARD, MATERIALITY_QUALIFIER |
+| Bring-down Standard (`bringdown`) | vocabulary_ref: `BRING_DOWN_STANDARD` (shared with Closing Conditions) | `TRUE_IN_ALL_RESPECTS` (display variants: "Bringdown: In all respects", print p.18, row "Absence of Certain Changes or Events"; "TRUE IN ALL RESPECTS", print p.115); `TRUE_EXCEPT_DE_MINIMIS` (display variants: "Bringdown: De minimis", print p.17, row "Capitalization; Subsidiaries"; "TRUE EXCEPT FOR DE MINIMIS INACCURACIES", print p.115); `TRUE_IN_ALL_MATERIAL_RESPECTS` (display variants: "Bringdown: In all material respects", print p.17, row "Organization; Qualification; Standing"; "TRUE IN ALL MATERIAL RESPECTS", print p.115); `TRUE_EXCEPT_NO_MAE` (display variants: "Bringdown: MAE", print p.18, row "No Conflict; Required Filings and Consents"; "TRUE EXCEPT WHERE FAILURE WOULD NOT CAUSE AN MAE", print p.115) | STANDARD, MATERIALITY_QUALIFIER |
 | Qualifiers (`materiality`) | vocabulary | "MAE (aggregate) (partial)" (print p.17, row "Organization; Qualification; Standing"); "MAE (aggregate)" (print p.18, row "Litigation; Legal Proceedings"); "Material (to the rep) (partial)" (print p.17, row "Capitalization; Subsidiaries"); "Material (to the rep)" (print p.18, row "SEC Documents; Financial Statements"); "Knowledge-qualified (partial)" (print p.18, row "No Conflict; Required Filings and Consents"); "True in all material respects (partial)" (print p.19, row "Information Supplied / Proxy Statement") | STANDARD, MATERIALITY_QUALIFIER |
-| Lookback (`lookback`) | verbatim | (free text / composed value) | OPERATION |
+| Lookback (`lookback`) | value / PERIOD, `hover: 'date'` | a relative period computed from a date (e.g. "≈3.3 yrs"), the underlying date shown on hover | PERIOD, DATE |
+
+  v3 (Ben's decision 2026-09-13 #4): the reps' own Bring-down Standard and the Closing Conditions bring-down tiers are the same four-tier concept, so both now reference one shared `BRING_DOWN_STANDARD` vocabulary by id, each code carrying both print renderings (the reps page's lower-case "Bringdown: X" pill and the Closing Conditions page's upper-case "TRUE ... " pill) as display variants of the same code. The rep's own qualifier standard (`materiality`) stays a separate column, unaffected. Decision #5: Lookback renders as a computed PERIOD value with the source date on hover, so deals compare on the same axis instead of a free-text date string.
 
 ## Material Contracts
 
@@ -151,6 +161,8 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 | Threshold (`threshold`) | value / AMOUNT | (free text / composed value) | THRESHOLD, AMOUNT |
 | Not Covered (`uncoveredBucket`) | vocabulary | "Manufacturing agreements" [missing] (print p.66, row "Manufacturing agreements"); "Distribution / reseller agreements" [missing] (print p.66, row "Distribution / reseller agreements"); "Collaboration / R&D agreements" [missing] (print p.66, row "Collaboration / R&D agreements"); "Key employment / executive agreements" [missing] (print p.66, row "Key employment / executive agreements"); "Government contracts" [missing] (print p.66, row "Government contracts"); "Affiliate / related-party transactions" [missing] (print p.66, row "Affiliate / related-party transactions"); "Data privacy / security agreements" [missing] (print p.66, row "Data privacy / security agreements"); "Voting / registration-rights / stockholder agreements" [missing] (print p.66, row "Voting / registration-rights / stockholder agreements"); "IP development contracts" [missing] (print p.66, row "IP development contracts"); "Single source procurement contracts" [missing] (print p.66, row "Single source procurement contracts"); "Clinical research organization contracts" [missing] (print p.66, row "Clinical research organization contracts"); "Employee loans and advances" [missing] (print p.66, row "Employee loans and advances") | STANDARD |
 
+  v3 (Ben's decision 2026-09-13 #7, confirming pass 2's reading): the two "Contracts above an aggregate-payments threshold" rows (`AGGREGATE_PAYMENTS_THRESHOLD_10M_PER_ANNUM`, page 65; `AGGREGATE_PAYMENTS_THRESHOLD_10M`, page 66) stay two distinct buckets sharing one header label -- the contract's own threshold decides the bucket, not the header text, and this table is never deduplicated by label.
+
 ## Material Adverse Effect
 
 - Section key: `mae-definitions`
@@ -169,25 +181,27 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 | Test (`test`) | verbatim | (free text / composed value) | OPERATION |
 | Provision (`limbSummary`) | vocabulary | "One limb — effect on the business, condition or results of operations" (print p.67, row "Parent") | STANDARD |
 
-### Table: `mae-carveouts-parent` — group header **CARVE-OUTS — PARENT**
+### Table: `mae-carveouts-parent` — group header **CARVE-OUTS — PARENT** (v3)
 
 - Row subject: **Carve-out**
-- Rows: fixed list
-- Fixed rows: "Failure to meet internal projections or forecasts", "Compliance with the terms of this Agreement", "Other carve-out", "Changes in GAAP or accounting principles", "Industry-wide conditions", "Announcement or pendency of the transaction", "General economic conditions", "Changes in the trading price or volume of stock", "Changes in applicable law or regulation", "Acts of war, armed hostilities, or terrorism"
+- Rows: one per subject (v3, Ben's decision 2026-09-13 #6: no forced shared fixed rows with the Company table)
+- On this deal: "Failure to meet internal projections or forecasts", "Compliance with the terms of this Agreement", "Other carve-out", "Changes in GAAP or accounting principles", "Industry-wide conditions", "Announcement or pendency of the transaction", "General economic conditions", "Changes in the trading price or volume of stock", "Changes in applicable law or regulation", "Acts of war, armed hostilities, or terrorism"
 
 | Column | Render | Vocabulary / value | fill_from |
 |---|---|---|---|
 | Disproportionate Carveback (`disproportionateCarveback`) | vocabulary | "Yes" (print p.77, row "Changes in GAAP or accounting principles"); "Not established" (print p.77, row "Failure to meet internal projections or forecasts") | STANDARD |
 
-### Table: `mae-carveouts-company` — group header **CARVE-OUTS — COMPANY**
+### Table: `mae-carveouts-company` — group header **CARVE-OUTS — COMPANY** (v3)
 
 - Row subject: **Carve-out**
-- Rows: fixed list
-- Fixed rows: "Failure to meet internal projections or forecasts", "Compliance with the terms of this Agreement", "Other carve-out", "Changes in GAAP or accounting principles", "Industry-wide conditions", "Announcement or pendency of the transaction", "General economic conditions", "Changes in the trading price or volume of stock", "Changes in applicable law or regulation", "Acts of war, armed hostilities, or terrorism"
+- Rows: one per subject (v3, Ben's decision 2026-09-13 #6: no forced shared fixed rows with the Parent table)
+- On this deal: "Failure to meet internal projections or forecasts", "Compliance with the terms of this Agreement", "Other carve-out", "Changes in GAAP or accounting principles", "Industry-wide conditions", "Announcement or pendency of the transaction", "General economic conditions", "Changes in the trading price or volume of stock", "Changes in applicable law or regulation", "Acts of war, armed hostilities, or terrorism"
 
 | Column | Render | Vocabulary / value | fill_from |
 |---|---|---|---|
 | Disproportionate Carveback (`disproportionateCarveback`) | vocabulary | "Yes" (print p.77, row "Changes in GAAP or accounting principles"); "Not established" (print p.77, row "Failure to meet internal projections or forecasts") | STANDARD |
+
+  v3: Parent and Company happen to show the same ten carve-outs on this deal, but the table shape no longer forces that -- each party's table is `rows_are: 'one per subject'`, populated from whatever that party's MAE definition actually carves out, so a deal where the two parties diverge is not forced onto one shared fixed-row list.
 
 ## Interim Operating Covenants — Target
 
@@ -218,7 +232,7 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 | Specific Restrictions (`specificRestrictions`) | vocabulary | "Acquisitions / business combinations" (print p.87, row "Mergers, Acquisitions, Dispositions"); "Merger / consolidation / liquidation / recapitalization" (print p.87, row "Mergers, Acquisitions, Dispositions"); "Asset sales / divestitures / licenses" (print p.87, row "Mergers, Acquisitions, Dispositions"); "Real estate / leases" (print p.87, row "Mergers, Acquisitions, Dispositions"); "Capital expenditures" (print p.87, row "Capital Expenditures"); "Loans / advances / capital contributions" (print p.87, row "Commitments"); "Indebtedness / financing" (print p.87, row "Indebtedness"); "Guarantees / third-party obligations" (print p.87, row "Indebtedness") | CONDITION |
 | Exceptions (`exceptions`) | vocabulary | "Ordinary course of business" (print p.87, row "Mergers, Acquisitions, Dispositions"); "Other specific exception (see text)" (print p.87, row "Mergers, Acquisitions, Dispositions"); "As contemplated by this Agreement" (print p.87, row "Mergers, Acquisitions, Dispositions"); "Existing credit facilities or indebtedness" (print p.87, row "Mergers, Acquisitions, Dispositions"); "Transactions among wholly-owned subsidiaries" (print p.87, row "Issuance of Securities"); "Existing equity award exercises, vesting, or settlement" (print p.87, row "Issuance of Securities"); "Below monetary threshold" (print p.87, row "Capital Expenditures"); "Within budget / capex plan" (print p.87, row "Capital Expenditures"); "Below $10,000,000," (print p.87, row "Commitments"); "Trade payables in ordinary course" (print p.87, row "Indebtedness"); "Intercompany transactions" (print p.87, row "Indebtedness"); "Below $10,000,000" (print p.87, row "Settlement of Claims"); "As required by law" (print p.88, row "Accounting Changes"); "Pursuant to existing contracts as of signing" (print p.88, row "Compensation and Benefits"); "None specified" (print p.87, row "Charter / Bylaws Amendments") | EXCEPTION |
 
-### Table: `ioc-exceptions-exceptions` — group header **EXCEPTIONS**
+### Table: `ioc-exceptions-exceptions` — group header **EXCEPTIONS** (v3: `empty_band_is_error: true`)
 
 - Row subject: *(no separate subject column -- one composed cell per row)*
 - Rows: one per subject
@@ -227,7 +241,7 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 |---|---|---|---|
 | *(blank)* (`body`) | verbatim | (free text / composed value) | OPERATION |
 
-### Table: `ioc-exceptions-other-restrictions` — group header **OTHER RESTRICTIONS**
+### Table: `ioc-exceptions-other-restrictions` — group header **OTHER RESTRICTIONS** (v3: `empty_band_is_error: true`)
 
 - Row subject: *(no separate subject column -- one composed cell per row)*
 - Rows: one per subject
@@ -236,6 +250,8 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 |---|---|---|---|
 | *(blank)* (`body`) | verbatim | (free text / composed value) | OPERATION |
 | Restriction (`fragmentName`) | vocabulary | "Tax matters" (legacy label map); "Specified-contract amendments" (legacy label map); "Insurance maintenance" (legacy label map) | CONDITION |
+
+  v3 (Ben's decision 2026-09-13 #9): an empty Exceptions or Other Restrictions band is never a conscious omission -- if the agreement has content there, an empty band is an error to be surfaced, not silently treated as "nothing found". Both bands carry a table-level `empty_band_is_error: true` rule. The Specific Restrictions / Exceptions split on the negative-covenants table above already gives each restriction category its own two columns, each with its own vocabulary (from the print and `ioc-exceptions.config.js`'s `FRAGMENT_NAME_PATTERNS`); that shape is unchanged in v3.
 
 ## Interim Operating Covenants — Parent
 
@@ -266,7 +282,7 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 | Specific Restrictions (`specificRestrictions`) | vocabulary | "Merger / consolidation / liquidation / recapitalization" (print p.94, row "Mergers, Acquisitions, Dispositions") | CONDITION |
 | Exceptions (`exceptions`) | vocabulary | "As contemplated by this Agreement" (print p.94, row "Mergers, Acquisitions, Dispositions"); "Transactions among wholly-owned subsidiaries" (print p.94, row "Issuance of Securities"); "Existing equity award exercises, vesting, or settlement" (print p.94, row "Issuance of Securities"); "Other specific exception (see text)" (print p.94, row "Issuance of Securities"); "Ordinary course of business" (print p.94, row "Dividends and Distributions"); "Tax withholding or similar mandated actions" (print p.94, row "Dividends and Distributions"); "None specified" (print p.94, row "Charter / Bylaws Amendments") | EXCEPTION |
 
-### Table: `parent-ioc-exceptions-exceptions` — group header **EXCEPTIONS**
+### Table: `parent-ioc-exceptions-exceptions` — group header **EXCEPTIONS** (v3: `empty_band_is_error: true`)
 
 - Row subject: *(no separate subject column -- one composed cell per row)*
 - Rows: one per subject
@@ -275,7 +291,7 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 |---|---|---|---|
 | *(blank)* (`body`) | verbatim | (free text / composed value) | OPERATION |
 
-### Table: `parent-ioc-exceptions-other-restrictions` — group header **OTHER RESTRICTIONS**
+### Table: `parent-ioc-exceptions-other-restrictions` — group header **OTHER RESTRICTIONS** (v3: `empty_band_is_error: true`)
 
 - Row subject: *(no separate subject column -- one composed cell per row)*
 - Rows: one per subject
@@ -283,6 +299,8 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 | Column | Render | Vocabulary / value | fill_from |
 |---|---|---|---|
 | *(blank)* (`body`) | verbatim | (free text / composed value) | OPERATION |
+
+  v3 (Ben's decision 2026-09-13 #9): same `empty_band_is_error: true` rule as the Target's Exceptions / Other Restrictions bands above.
 
 ## No-Shop Core Mechanics
 
@@ -310,12 +328,12 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 | Column | Render | Vocabulary / value | fill_from |
 |---|---|---|---|
 | Detail (`detail`) | verbatim | (free text / composed value) | OPERATION |
-| Prohibited Verb (`prohibitedVerb`) | vocabulary | *(all proposed -- see below)* | CONDITION |
-  Proposed addition codes for **Prohibited Verb**:
-  - "Solicit" — *the print's "No-shop / non-solicit restriction" row is one fused litany sentence ("Solicit / initiate or knowingly encourage or facilitate ... an Acquisition Proposal"), never per-verb pills; FACT_COMPONENTS/V2 LITANY carries the litany's members, so a present/absent column per prohibited verb is new structure the old page lacked, per Ben's "add to the table structure" instruction.*
-  - "Initiate" — *the print's "No-shop / non-solicit restriction" row is one fused litany sentence ("Solicit / initiate or knowingly encourage or facilitate ... an Acquisition Proposal"), never per-verb pills; FACT_COMPONENTS/V2 LITANY carries the litany's members, so a present/absent column per prohibited verb is new structure the old page lacked, per Ben's "add to the table structure" instruction.*
-  - "Knowingly encourage" — *the print's "No-shop / non-solicit restriction" row is one fused litany sentence ("Solicit / initiate or knowingly encourage or facilitate ... an Acquisition Proposal"), never per-verb pills; FACT_COMPONENTS/V2 LITANY carries the litany's members, so a present/absent column per prohibited verb is new structure the old page lacked, per Ben's "add to the table structure" instruction.*
-  - "Facilitate" — *the print's "No-shop / non-solicit restriction" row is one fused litany sentence ("Solicit / initiate or knowingly encourage or facilitate ... an Acquisition Proposal"), never per-verb pills; FACT_COMPONENTS/V2 LITANY carries the litany's members, so a present/absent column per prohibited verb is new structure the old page lacked, per Ben's "add to the table structure" instruction.*
+| Solicit (`solicit`) — **proposed addition** | boolean | present / absent | CONDITION |
+| Initiate (`initiate`) — **proposed addition** | boolean | present / absent | CONDITION |
+| Knowingly Encourage (`knowinglyEncourage`) — **proposed addition** | boolean | present / absent | CONDITION |
+| Facilitate (`facilitate`) — **proposed addition** | boolean | present / absent | CONDITION |
+
+  v3 (Ben's decision 2026-09-13 #10): the print's "No-shop / non-solicit restriction" row is one fused litany sentence ("Solicit / initiate or knowingly encourage or facilitate ... an Acquisition Proposal"), never per-verb pills. Ben confirmed the four verbs stay four *separate* present/absent columns (not one `prohibitedVerb` vocabulary column with four codes, as pass 2 had it, and not combined "knowingly encourage" / "facilitate" into one column) -- FACT_COMPONENTS/V2 LITANY carries the litany's members, so a present/absent column per prohibited verb is new structure the old page lacked, per Ben's "add to the table structure" instruction.
 
 
 ### Table: `nosol-noshop-notice` — group header **NOTICE**
@@ -335,15 +353,17 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 - Print pages: 97, 98
 - V2 family mapping: NO_SHOP (confidence: high)
 
-### Table: `nosol-fiduciary-table` — group header **FIDUCIARY-OUT / ENGAGEMENT**
+### Table: `nosol-fiduciary-table` — group header **FIDUCIARY-OUT / ENGAGEMENT** (v3)
 
 - Row subject: **Term**
 - Rows: fixed list
-- Fixed rows: "Engagement standard", "Final determination standard", "Engagement standard (coded)"
+- Fixed rows: "Engagement standard", "Final determination standard"
 
 | Column | Render | Vocabulary / value | fill_from |
 |---|---|---|---|
-| Provision (`signals`) | vocabulary | "Is a Superior Proposal" (legacy label map); "Constitutes or could lead to a Superior Proposal" (print p.97, row "Engagement standard (coded)"); "Constitutes or could reasonably be expected to lead to a Superior Proposal" (legacy label map); "Continues to constitute a Superior Proposal" (legacy label map) | STANDARD |
+| Provision (`signals`), `full_text_on_click: true` | vocabulary | "Is a Superior Proposal" (legacy label map); "Constitutes or could lead to a Superior Proposal" (print p.97, row "Engagement standard (coded)"); "Constitutes or could reasonably be expected to lead to a Superior Proposal" (legacy label map); "Continues to constitute a Superior Proposal" (legacy label map) | STANDARD |
+
+  v3 (Ben's decision 2026-09-13 #11): one "Engagement standard" row now shows the coded label (previously split across two rows, "Engagement standard" and "Engagement standard (coded)", because the print truncates the former mid-sentence with a "SEE PROVISION" marker); `full_text_on_click: true` lets the reader open the full sentence instead of only the coded pill.
 
 ### Table: `nosol-fiduciary-change-of-recommendation` — group header **CHANGE OF RECOMMENDATION**
 
@@ -427,8 +447,10 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 | Column | Render | Vocabulary / value | fill_from |
 |---|---|---|---|
 | Vote Standard (`voteStandard`) | vocabulary | "Two-thirds of outstanding shares" (legacy label map); "Majority of outstanding shares" (legacy label map); "Majority of voting power" (legacy label map); "Majority stockholder approval" (legacy label map) | STANDARD, PERCENTAGE |
-| Value (`value`) | value / PERIOD | value; trigger: "after agreement date" (print p.114, row "Proxy filing deadline"); "after effectiveness" (print p.114, row "Mailing"); "after mailing" (print p.114, row "Meeting") | PERIOD |
+| Value (`value`) | value / PERIOD, `trigger.per_row: true` | Proxy filing deadline row's own trigger: "after agreement date" (print p.114); Mailing row's own trigger: "after effectiveness" (print p.114); Meeting row's own trigger: "after mailing" (print p.114) | PERIOD |
 | Requirement (`requirement`) | boolean | (free text / composed value) | CONDITION |
+
+  v3 (Ben's decision 2026-09-13 #12): each row (Proxy filing deadline, Mailing, Meeting) carries its own trigger vocabulary keyed by row label (`trigger.by_row_label`), not one trigger set shared across all three rows as pass 2 had it.
 
 ### Table: `votes-approvals-meeting-adjournment`
 
@@ -475,7 +497,7 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 
 | Column | Render | Vocabulary / value | fill_from |
 |---|---|---|---|
-| Standard (`standard`) | vocabulary | "TRUE IN ALL RESPECTS" (print p.115, row "Accuracy of Representations"); "TRUE EXCEPT FOR DE MINIMIS INACCURACIES" (print p.115, row "Accuracy of Representations"); "TRUE IN ALL MATERIAL RESPECTS" (print p.115, row "Accuracy of Representations"); "TRUE EXCEPT WHERE FAILURE WOULD NOT CAUSE AN MAE" (print p.115, row "Accuracy of Representations") | STANDARD, MATERIALITY_QUALIFIER |
+| Standard (`standard`) | vocabulary_ref: `BRING_DOWN_STANDARD` (shared with the reps tables) | `TRUE_IN_ALL_RESPECTS` (display variant "TRUE IN ALL RESPECTS", print p.115, row "Accuracy of Representations"); `TRUE_EXCEPT_DE_MINIMIS` (display variant "TRUE EXCEPT FOR DE MINIMIS INACCURACIES", print p.115); `TRUE_IN_ALL_MATERIAL_RESPECTS` (display variant "TRUE IN ALL MATERIAL RESPECTS", print p.115); `TRUE_EXCEPT_NO_MAE` (display variant "TRUE EXCEPT WHERE FAILURE WOULD NOT CAUSE AN MAE", print p.115) | STANDARD, MATERIALITY_QUALIFIER |
 | Reference (`reference`) | verbatim | (free text / composed value) | CROSS_REFERENCE |
 | Materiality Qualifiers Disregarded (`materialityQualifiersDisregarded`) | vocabulary | "Materiality qualifiers disregarded" (print p.115, row "Accuracy of Representations") | STANDARD, MATERIALITY_QUALIFIER |
 
@@ -494,26 +516,13 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 
 | Column | Render | Vocabulary / value | fill_from |
 |---|---|---|---|
-| Standard (`standard`) | vocabulary | "TRUE IN ALL RESPECTS" (print p.115, row "Accuracy of Representations"); "TRUE EXCEPT FOR DE MINIMIS INACCURACIES" (print p.115, row "Accuracy of Representations"); "TRUE IN ALL MATERIAL RESPECTS" (print p.115, row "Accuracy of Representations"); "TRUE EXCEPT WHERE FAILURE WOULD NOT CAUSE AN MAE" (print p.115, row "Accuracy of Representations") | STANDARD, MATERIALITY_QUALIFIER |
+| Standard (`standard`) | vocabulary_ref: `BRING_DOWN_STANDARD` (shared with the reps tables) | `TRUE_IN_ALL_RESPECTS` (display variant "TRUE IN ALL RESPECTS", print p.115, row "Accuracy of Representations"); `TRUE_EXCEPT_DE_MINIMIS` (display variant "TRUE EXCEPT FOR DE MINIMIS INACCURACIES", print p.115); `TRUE_IN_ALL_MATERIAL_RESPECTS` (display variant "TRUE IN ALL MATERIAL RESPECTS", print p.115); `TRUE_EXCEPT_NO_MAE` (display variant "TRUE EXCEPT WHERE FAILURE WOULD NOT CAUSE AN MAE", print p.115) | STANDARD, MATERIALITY_QUALIFIER |
 | Reference (`reference`) | verbatim | (free text / composed value) | CROSS_REFERENCE |
 | Materiality Qualifiers Disregarded (`materialityQualifiersDisregarded`) | vocabulary | "Materiality qualifiers disregarded" (print p.115, row "Accuracy of Representations") | STANDARD, MATERIALITY_QUALIFIER |
 
-## Closing Conditions — Mutual
+## Closing Conditions — Mutual (removed in v3)
 
-- Section key: `conditions-m`
-- Legacy config: `components/review/table-configs/conditions-m.config.js`
-- Print pages: 116
-- V2 family mapping: CLOSING_CONDITIONS (confidence: high)
-
-### Table: `conditions-m-table`
-
-- Row subject: **Condition**
-- Rows: fixed list
-- Fixed rows: "Condition Frustration / Prevention", "Covenant Performance", "Dissenting Shares Threshold", "No Material Adverse Effect (Parent)", "Covenant Performance (Parent)", "Financing / Sufficient Funds"
-
-| Column | Render | Vocabulary / value | fill_from |
-|---|---|---|---|
-| Coverage (`presence`) | boolean | (free text / composed value) | CONDITION |
+Section key `conditions-m` (table `conditions-m-table`, the "x of y standard conditions" checklist -- Condition Frustration / Prevention, Covenant Performance, Dissenting Shares Threshold, No Material Adverse Effect (Parent), Covenant Performance (Parent), Financing / Sufficient Funds, each a bare `presence` boolean) is **removed** in `table-shapes.v3.json` (Ben's decision 2026-09-13 #13): a coarse presence checklist adds no comparable detail over the richer Closing Conditions — Buyer/Seller tables above, so it is dropped rather than carried forward.
 
 ## Termination Rights
 
@@ -546,14 +555,15 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 | Fault-Based Carve-Out (`faultBasedCarveOut`) | boolean | (free text / composed value) | EXCEPTION |
 | Trigger (`trigger`) | vocabulary | "Adverse Recommendation Change" (print p.120, row "Change of Recommendation") | TRIGGER |
 | Window (`window`) | vocabulary | "Pre-stockholder-vote only" (print p.120, row "Change of Recommendation") | PERIOD |
-| Cure Period Value (`curePeriodValue`) — **proposed addition** | value / PERIOD | (free text / composed value) | PERIOD |
-| Cure Period End (`curePeriodEnd`) — **proposed addition** | value / DATE | (free text / composed value) | DATE |
-| Curable or Not (`curableOrNot`) — **proposed addition** | boolean | (free text / composed value) | CONDITION |
+| Cure Period (`curePeriodValue`) — **proposed addition** | value / PERIOD | (free text / composed value) | PERIOD |
+| Cure Period End (`curePeriodEnd`) — **proposed addition (v3: vocabulary)** | vocabulary | "Outside date"; "Fixed date"; "Earlier of notice period and outside date" | EXCEPTION |
+| Curable or Not (`curableOrNot`) — **proposed addition (v3: vocabulary)** | vocabulary | "Curable"; "Not curable"; "Curable in part" | CONDITION |
 
-  Proposed additions:
-  - **Cure Period Value** (`curePeriodValue`, render: value/PERIOD) — *TERMINATION/BREACH supports a cure-period value distinct from the outside date; the print shows the breach right as a bare "No" fault-based-carve-out pill with the cure mechanics only in clause text (§6.3(b)).*
-  - **Cure Period End** (`curePeriodEnd`, render: value/DATE) — *companion to Cure Period Value -- the earlier-of date the cure window actually runs to.*
-  - **Curable or Not** (`curableOrNot`, render: boolean) — *TERMINATION layer_rules calls out "curable or not" as its own branch; not a distinct pill on this print.*
+  Proposed additions (v3, Ben's decision 2026-09-13 #14):
+  - **Cure Period** (`curePeriodValue`, render: value/PERIOD) — *TERMINATION/BREACH supports a cure-period value distinct from the outside date; the print shows the breach right as a bare "No" fault-based-carve-out pill with the cure mechanics only in clause text (§6.3(b)).*
+  - **Cure Period End** (`curePeriodEnd`, render: vocabulary, not a literal date) — *describes what the end point IS -- the outside date itself, a fixed date, or the earlier of a stated notice period and the outside date -- rather than the literal date value.*
+  - **Curable or Not** (`curableOrNot`, render: vocabulary, not boolean) — *TERMINATION layer_rules calls out "curable or not" as its own branch, including a partial-cure case; not a distinct pill on this print.*
+  - fill_from across this group of columns spans CONDITION (Curable or Not), PERIOD (Cure Period), EXCEPTION (Cure Period End) and CROSS_REFERENCE (Terminator-Breach Bar, below).
 
 
 ### Table: `termination-rights-company-may-terminate` — group header **COMPANY / TARGET MAY TERMINATE**
@@ -565,10 +575,10 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 | Column | Render | Vocabulary / value | fill_from |
 |---|---|---|---|
 | Fault-Based Carve-Out (`faultBasedCarveOut`) | boolean | (free text / composed value) | EXCEPTION |
-| Terminator-Breach Bar (`terminatorBreachBar`) — **proposed addition** | boolean | (free text / composed value) | CONDITION |
+| Terminator-Breach Bar (`terminatorBreachBar`) — **proposed addition (v3: vocabulary)** | vocabulary | "Yes"; "No" | CROSS_REFERENCE |
 
-  Proposed addition:
-  - **Terminator-Breach Bar** (`terminatorBreachBar`, render: boolean) — *TERMINATION/BREACH's own condition (Ben, plan 5B.8 note): no termination where the terminator primarily caused the outside date to be missed -- present in clause text (§6.2(a) proviso) but not a pill on this print.*
+  Proposed addition (v3, Ben's decision 2026-09-13 #14):
+  - **Terminator-Breach Bar** (`terminatorBreachBar`, render: vocabulary Yes/No) — *TERMINATION/BREACH's own condition (Ben, plan 5B.8 note): no termination where the terminator primarily caused the outside date to be missed -- present in clause text (§6.2(a) proviso) but not a pill on this print.*
 
 
 ### Table: `termination-rights-remedies` — group header **REMEDIES (CROSS-REFERENCE)**
@@ -609,6 +619,8 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
   - "Company" — *the "Company termination fee" row implies the Company as payer; not stated as its own pill on this print.*
   - "Parent" — *the "Reverse termination fee" row implies Parent as payer; same reasoning.*
 
+  v3 (Ben's decision 2026-09-13 #15): Payer stays its own column (Company / Parent); Ben is indifferent between deriving it from the row label and coding it explicitly, but the explicit column keeps the comparison visible across deals.
+
 
 ## Tail Fee Mechanics
 
@@ -639,22 +651,18 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 - Print pages: 128, 129
 - V2 family mapping: EMPLOYEE_MATTERS (confidence: high)
 
-### Table: `employee-benefits-table`
+### Table: `employee-benefits-table` (v3, `split_combined_elements: true`, `show_only_when_populated: true`)
 
 - Row subject: **Benefit**
-- Rows: fixed list
-- Fixed rows: "Severance / change-in-control protection", "Other benefits", "Base salary", "Long-term incentive (LTI) / equity grants", "Target annual bonus / cash incentive", "Retirement / 401(k) benefits"
-- Proposed addition rows:
-  - "Earned annual bonus (pro-rata)" — *lib/employee-benefits.js's COMP_ITEM_LABELS/COMP_ITEM_ORDER carries this as a distinct comparable benefit element (code ANNUAL_BONUS_PAID); this deal's print does not populate it (the table only shows populated rows), but the fixed table shape should include it so an agreement that DOES populate it lands on the same row across deals.*
-  - "Health and welfare benefits" — *lib/employee-benefits.js's COMP_ITEM_LABELS/COMP_ITEM_ORDER carries this as a distinct comparable benefit element (code HEALTH_WELFARE); this deal's print does not populate it (the table only shows populated rows), but the fixed table shape should include it so an agreement that DOES populate it lands on the same row across deals.*
-  - "Paid time off / vacation" — *lib/employee-benefits.js's COMP_ITEM_LABELS/COMP_ITEM_ORDER carries this as a distinct comparable benefit element (code PTO); this deal's print does not populate it (the table only shows populated rows), but the fixed table shape should include it so an agreement that DOES populate it lands on the same row across deals.*
-  - "Equity / stock awards (new grants)" — *lib/employee-benefits.js's COMP_ITEM_LABELS/COMP_ITEM_ORDER carries this as a distinct comparable benefit element (code EQUITY_AWARDS); this deal's print does not populate it (the table only shows populated rows), but the fixed table shape should include it so an agreement that DOES populate it lands on the same row across deals.*
+- Rows: fixed list -- all ten canonical benefit elements (`lib/employee-benefits.js`'s `COMP_ITEM_ORDER`): "Severance / change-in-control protection", "Other benefits", "Base salary", "Long-term incentive (LTI) / equity grants", "Target annual bonus / cash incentive", "Retirement / 401(k) benefits", "Earned annual bonus (pro-rata)", "Health and welfare benefits", "Paid time off / vacation", "Equity / stock awards (new grants)" -- but `show_only_when_populated: true` means a row renders only when the deal actually populates it; this deal populates only the first six.
 
 | Column | Render | Vocabulary / value | fill_from |
 |---|---|---|---|
 | Reference Group (`comparison`) | vocabulary | "Company pre-closing arrangements" (legacy label map); "Similarly-situated buyer employees" (legacy label map) | OBJECT |
 | Standard (`standard`) | vocabulary | "At target's pre-closing levels" (print p.129, row "Severance / change-in-control protection"); "In the aggregate (rebalancing permitted)" (print p.129, row "Other benefits"); "No less favorable than current" (print p.129, row "Base salary"); "At buyer's discretion" (print p.129, row "Long-term incentive (LTI) / equity grants") | STANDARD, MATERIALITY_QUALIFIER |
 | Period (`period`) | value / PERIOD | (free text / composed value) | PERIOD |
+
+  v3 (Ben's decision 2026-09-13 #17): the four elements pass 2 only proposed as additional rows (Earned annual bonus (pro-rata), Health and welfare benefits, Paid time off / vacation, Equity / stock awards (new grants)) are now part of the same fixed-row list as the six populated ones -- the canonical row set is all ten elements, `show_only_when_populated: true` renders only the ones the deal actually shows, and `split_combined_elements: true` records that where the agreement combines several elements in one sentence, the row split keeps each element on its own canonical row so the reference stays consistent across deals. Decision #16 (Reference Group "Not specified"): unchanged from pass 2 -- "Not specified" stays the absence of a Reference Group value (a buyer-discretion standard carries no comparison pill), not a third code.
 
 ### Table: `employee-benefits-other-protections` — group header **OTHER PROTECTIONS**
 
@@ -729,6 +737,7 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 - Legacy config: *(none -- this table exists only in the print, not in any legacy config)*
 - Print pages: 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180
 - V2 family mapping: KEY_DEFINED_TERMS (confidence: low)
+- **v3: `kind: 'reference_appendix'`, `excluded_from_fact_tables: true`** (Ben's decision 2026-09-13 #19): a reference appendix, not a fact table. Cross-deal comparison of a definition (e.g. how "Law" is defined across two deals) is a later feature, possibly soon.
 
 ### Table: `defined-terms-table`
 
@@ -745,6 +754,7 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 - Legacy config: `components/review/table-configs/approvals-votes.config.js`
 - Print pages: *(no print evidence found in this deal)*
 - V2 family mapping: TERMINATION (confidence: low)
+- **v3: kept as a section** (Ben's decision 2026-09-13 #20) for deals whose print does carry this content, even though TopBuild's own print does not.
 
 ### Table: `approvals-votes-table`
 
@@ -762,6 +772,7 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 - Legacy config: `components/review/table-configs/sec-meeting.config.js`
 - Print pages: *(no print evidence found in this deal)*
 - V2 family mapping: PROXY_MEETING (confidence: high)
+- **v3: kept as a section** (Ben's decision 2026-09-13 #20) for a deal shape (e.g. a pure tender offer) that would populate it.
 
 ### Table: `sec-meeting-table`
 
@@ -780,6 +791,7 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 - Legacy config: `components/review/table-configs/antitrust-regulatory.config.js`
 - Print pages: *(no print evidence found in this deal)*
 - V2 family mapping: ANTITRUST_REGULATORY (confidence: high)
+- **v3: kept as a section** (Ben's decision 2026-09-13 #20) for a deal with a distinct antitrust efforts covenant that would populate it.
 
 ### Table: `antitrust-regulatory-table`
 
@@ -797,6 +809,7 @@ Status: DRAFT_FOR_BEN_REVIEW. This supersedes the pass-1 readout of the same nam
 - Legacy config: `components/review/table-configs/advisers-fees-expenses.config.js`
 - Print pages: *(no print evidence found in this deal)*
 - V2 family mapping: GENERAL_COVENANTS (confidence: low)
+- **v3: kept as a section** (Ben's decision 2026-09-13 #20) for a deal whose print does carry this content, even though TopBuild's own print folds it into Other Covenants' link list instead.
 
 ### Table: `advisers-fees-expenses-table`
 

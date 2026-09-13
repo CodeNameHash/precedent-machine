@@ -5,9 +5,10 @@ const test = require('node:test');
 const { execFileSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
-const { validateTableShapes, validateTableShapesV2 } = require('../lib/product/table-shapes');
+const { validateTableShapes, validateTableShapesV2, validateTableShapesV3 } = require('../lib/product/table-shapes');
 const tableShapes = require('../contracts/product/table-shapes.v1.json');
 const tableShapesV2 = require('../contracts/product/table-shapes.v2.json');
+const tableShapesV3 = require('../contracts/product/table-shapes.v3.json');
 const legalSchemaV2 = require('../contracts/product/legal-schema.v2.json');
 const factComponentsV2 = require('../contracts/product/fact-components.v2.json');
 
@@ -201,5 +202,259 @@ test('every V2 column carries fill_from kinds drawn from the FACT_COMPONENTS/V2 
         }
       }
     }
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Pass 3 (Ben's answers, 2026-09-13, to the twenty questions pass 2's readout
+// asked -- docs/codex-program/notes/TABLE-SHAPES-AND-VOCABULARIES-FOR-BEN-
+// 2026-09-12.md). One assertion per decision, encoded in
+// contracts/product/table-shapes.v3.json.
+// ---------------------------------------------------------------------------
+
+test('table shapes V3 validate against the V2 legal schema and fact-components contract', () => {
+  const validated = validateTableShapesV3(tableShapesV3, legalSchemaV2, factComponentsV2);
+  assert.equal(validated.schema_version, 'PRODUCT_TABLE_SHAPES/V3');
+  assert.equal(validated.status, 'DECIDED');
+});
+
+test('the V3 generator is deterministic', () => {
+  const target = path.join(__dirname, '../contracts/product/table-shapes.v3.json');
+  const before = fs.readFileSync(target, 'utf8');
+  execFileSync('node', [path.join(__dirname, '../scripts/product/build-table-shapes-pass3.js')], { stdio: 'pipe' });
+  const after = fs.readFileSync(target, 'utf8');
+  assert.equal(after, before, 'committed table-shapes.v3.json must equal the generator output');
+});
+
+function findSectionV3(key) {
+  const section = tableShapesV3.sections.find((s) => s.section_key === key);
+  assert.ok(section, `V3 section '${key}' not found`);
+  return section;
+}
+
+function findTableV3(section, key) {
+  const table = section.tables.find((t) => t.table_key === key);
+  assert.ok(table, `V3 table '${key}' not found in section '${section.section_key}'`);
+  return table;
+}
+
+// Decision 1: deal-structure and merger-form vocabularies, per-step structure.
+test('Decision 1: deal structure carries One-step / Double / Tender-offer codes, "One Step Merger" survives only as a display variant, and merger form is a shared vocabulary with a per-step structure', () => {
+  const section = findSectionV3('structure-mechanics');
+  const table = findTableV3(section, 'structure-mechanics-table');
+  const dealStructure = table.columns.find((c) => c.column_id === 'dealStructure');
+  const codes = dealStructure.vocabulary.map((v) => v.code);
+  assert.deepEqual(codes.sort(), ['DOUBLE_MERGER', 'ONE_STEP_MERGER', 'TENDER_OFFER_BACK_END_MERGER'].sort());
+  const oneStep = dealStructure.vocabulary.find((v) => v.code === 'ONE_STEP_MERGER');
+  assert.equal(oneStep.label, 'One-step merger');
+  assert.ok(oneStep.display_variants.some((v) => v.label === 'One Step Merger'), '"One Step Merger" kept only as a display variant');
+  const doubleMerger = dealStructure.vocabulary.find((v) => v.code === 'DOUBLE_MERGER');
+  assert.ok(!doubleMerger.label.toLowerCase().includes('one step'), 'Double merger must not be labeled One Step Merger');
+
+  const mergerForm = table.columns.find((c) => c.column_id === 'signals');
+  assert.equal(mergerForm.vocabulary_ref, 'MERGER_FORM');
+  const mergerFormVocab = tableShapesV3.shared_vocabularies.MERGER_FORM;
+  assert.deepEqual(mergerFormVocab.map((v) => v.label).sort(), ['Forward merger', 'Forward triangular merger', 'Reverse triangular merger'].sort());
+
+  assert.ok(table.per_step_structure && table.per_step_structure.steps.length === 2, 'per-step structure with first and second step');
+  const [step1, step2] = table.per_step_structure.steps;
+  assert.equal(table.columns.find((c) => c.column_id === step1.form_column_id).vocabulary_ref, 'MERGER_FORM');
+  assert.equal(table.columns.find((c) => c.column_id === step1.surviving_entity_column_id).render, 'term');
+  assert.equal(table.columns.find((c) => c.column_id === step2.form_column_id).vocabulary_ref, 'MERGER_FORM');
+  assert.equal(table.columns.find((c) => c.column_id === step2.surviving_entity_column_id).render, 'term');
+  assert.deepEqual(mergerForm.fill_from, ['OPERATION', 'ACTOR', 'OBJECT']);
+  assert.deepEqual(table.columns.find((c) => c.column_id === step1.surviving_entity_column_id).fill_from, ['TERM']);
+});
+
+// Decision 2: CVR entitlement vocabulary.
+test('Decision 2: CVR Entitlement is Entitled / Not entitled / Entitled if a milestone brings the award into the money', () => {
+  const section = findSectionV3('equity-awards');
+  const table = findTableV3(section, 'equity-awards-table');
+  const column = table.columns.find((c) => c.column_id === 'cvrEntitlement');
+  const labels = column.vocabulary.map((v) => v.label);
+  assert.ok(labels.includes('Entitled'));
+  assert.ok(labels.includes('Not entitled'));
+  assert.ok(labels.some((l) => l.includes('milestone brings the award into the money') && l.includes('exercise price on cash plus CVR')));
+});
+
+// Decision 3: one shared bring-down vocabulary used by reps and closing conditions.
+test('Decision 3: reps and closing-conditions tables share one bring-down vocabulary by id, each code carrying both print renderings as display variants', () => {
+  const bringDown = tableShapesV3.shared_vocabularies.BRING_DOWN_STANDARD;
+  assert.deepEqual(bringDown.map((v) => v.code).sort(), [
+    'TRUE_EXCEPT_DE_MINIMIS', 'TRUE_EXCEPT_NO_MAE', 'TRUE_IN_ALL_MATERIAL_RESPECTS', 'TRUE_IN_ALL_RESPECTS',
+  ].sort());
+  for (const entry of bringDown) {
+    assert.ok(entry.display_variants && entry.display_variants.length === 2, `${entry.code} should carry both print renderings as display variants`);
+  }
+  const reps = findTableV3(findSectionV3('representations-qualifiers'), 'representations-qualifiers-table');
+  const parentReps = findTableV3(findSectionV3('parent-representations-qualifiers'), 'parent-representations-qualifiers-table');
+  const conditionsB = findTableV3(findSectionV3('conditions-b'), 'conditions-b-table');
+  const conditionsS = findTableV3(findSectionV3('conditions-s'), 'conditions-s-table');
+  assert.equal(reps.columns.find((c) => c.column_id === 'bringdown').vocabulary_ref, 'BRING_DOWN_STANDARD');
+  assert.equal(parentReps.columns.find((c) => c.column_id === 'bringdown').vocabulary_ref, 'BRING_DOWN_STANDARD');
+  assert.equal(conditionsB.columns.find((c) => c.column_id === 'standard').vocabulary_ref, 'BRING_DOWN_STANDARD');
+  assert.equal(conditionsS.columns.find((c) => c.column_id === 'standard').vocabulary_ref, 'BRING_DOWN_STANDARD');
+  // The rep's own qualifier standard stays a separate column.
+  assert.ok(reps.columns.find((c) => c.column_id === 'materiality'), 'materiality (Qualifiers) stays a separate column');
+});
+
+// Decision 4: Lookback renders a PERIOD value computed from a date, date on hover.
+test('Decision 4: Lookback renders value/PERIOD with hover: date', () => {
+  for (const [sectionKey, tableKey] of [
+    ['representations-qualifiers', 'representations-qualifiers-table'],
+    ['parent-representations-qualifiers', 'parent-representations-qualifiers-table'],
+  ]) {
+    const table = findTableV3(findSectionV3(sectionKey), tableKey);
+    const lookback = table.columns.find((c) => c.column_id === 'lookback');
+    assert.equal(lookback.render, 'value');
+    assert.equal(lookback.value_kind, 'PERIOD');
+    assert.equal(lookback.hover, 'date');
+  }
+});
+
+// Decision 5: MAE carve-outs carry no forced shared fixed rows between parties.
+test('Decision 5: MAE carve-out tables for Parent and Company carry no forced shared fixed rows', () => {
+  const section = findSectionV3('mae-definitions');
+  const parentTable = findTableV3(section, 'mae-carveouts-parent');
+  const companyTable = findTableV3(section, 'mae-carveouts-company');
+  assert.equal(parentTable.rows_are, 'one per subject');
+  assert.equal(companyTable.rows_are, 'one per subject');
+  assert.equal(parentTable.fixed_row_labels, undefined);
+  assert.equal(companyTable.fixed_row_labels, undefined);
+});
+
+// Decision 6: material contracts rows with the same header but different thresholds stay separate.
+test('Decision 6: Material Contracts keeps distinct threshold buckets that share a header label', () => {
+  const table = findTableV3(findSectionV3('material-contracts'), 'material-contracts-table');
+  const contractType = table.columns.find((c) => c.column_id === 'contractType');
+  const sameLabelEntries = contractType.vocabulary.filter((v) => v.label === 'Contracts above an aggregate-payments threshold');
+  assert.equal(sameLabelEntries.length, 2, 'two distinct threshold buckets share this label');
+  assert.notEqual(sameLabelEntries[0].code, sameLabelEntries[1].code, 'the two buckets keep distinct codes');
+});
+
+// Decision 7: two columns per negative-covenant row, and empty_band_is_error on the Exceptions / Other Restrictions bands.
+test('Decision 7: Interim covenants keep Specific Restrictions and Exceptions as two per-row columns, and mark empty_band_is_error on the Exceptions and Other Restrictions bands', () => {
+  for (const sectionKey of ['ioc-exceptions', 'parent-ioc-exceptions']) {
+    const section = findSectionV3(sectionKey);
+    const negative = findTableV3(section, `${sectionKey}-negative-covenants`);
+    assert.ok(negative.columns.find((c) => c.column_id === 'specificRestrictions'));
+    assert.ok(negative.columns.find((c) => c.column_id === 'exceptions'));
+    assert.equal(findTableV3(section, `${sectionKey}-exceptions`).empty_band_is_error, true);
+    assert.equal(findTableV3(section, `${sectionKey}-other-restrictions`).empty_band_is_error, true);
+  }
+});
+
+// Decision 8: four present/absent prohibited-verb columns; one Engagement standard row, full text on click.
+test('Decision 8: No-Shop splits the prohibited-verb litany into four boolean columns, and Fiduciary-Out collapses to one Engagement standard row with full_text_on_click', () => {
+  const coreTable = findTableV3(findSectionV3('nosol-noshop'), 'nosol-noshop-core-mechanics');
+  for (const columnId of ['solicit', 'initiate', 'knowinglyEncourage', 'facilitate']) {
+    const column = coreTable.columns.find((c) => c.column_id === columnId);
+    assert.ok(column, `column ${columnId} present`);
+    assert.equal(column.render, 'boolean');
+  }
+  assert.equal(coreTable.columns.find((c) => c.column_id === 'prohibitedVerb'), undefined, 'single prohibitedVerb column replaced');
+
+  const fiduciaryTable = findTableV3(findSectionV3('nosol-fiduciary'), 'nosol-fiduciary-table');
+  assert.deepEqual(fiduciaryTable.fixed_row_labels, ['Engagement standard', 'Final determination standard']);
+  assert.equal(fiduciaryTable.columns.find((c) => c.column_id === 'signals').full_text_on_click, true);
+});
+
+// Decision 9: Proxy filing deadline / Mailing / Meeting each get their own trigger vocabulary.
+test('Decision 9: Votes gives Proxy filing deadline, Mailing and Meeting each their own per-row trigger vocabulary', () => {
+  const table = findTableV3(findSectionV3('votes-approvals-meeting'), 'votes-approvals-meeting-table');
+  const column = table.columns.find((c) => c.column_id === 'value');
+  assert.equal(column.trigger.per_row, true);
+  for (const rowLabel of ['Proxy filing deadline', 'Mailing', 'Meeting']) {
+    const rowVocab = column.trigger.by_row_label[rowLabel];
+    assert.ok(Array.isArray(rowVocab) && rowVocab.length > 0, `row '${rowLabel}' has its own trigger vocabulary`);
+  }
+  const proxyLabels = column.trigger.by_row_label['Proxy filing deadline'].map((v) => v.label);
+  const mailingLabels = column.trigger.by_row_label.Mailing.map((v) => v.label);
+  assert.notDeepEqual(proxyLabels, mailingLabels, 'each row keeps its own trigger set, not one shared set');
+});
+
+// Decision 10: the "x of y standard conditions" checklist is removed.
+test('Decision 10: the standard-conditions checklist table (conditions-m) is removed', () => {
+  assert.equal(tableShapesV3.sections.find((s) => s.section_key === 'conditions-m'), undefined);
+});
+
+// Decision 11: termination-for-breach columns.
+test('Decision 11: Termination for breach carries Curable-or-not, Cure period, Cure period end and Terminator-breach bar vocabularies, filled from CONDITION/PERIOD/EXCEPTION/CROSS_REFERENCE', () => {
+  const section = findSectionV3('termination-rights');
+  const buyerTable = findTableV3(section, 'termination-rights-buyer-may-terminate');
+  const curable = buyerTable.columns.find((c) => c.column_id === 'curableOrNot');
+  assert.equal(curable.render, 'vocabulary');
+  assert.deepEqual(curable.vocabulary.map((v) => v.label).sort(), ['Curable', 'Curable in part', 'Not curable'].sort());
+  assert.deepEqual(curable.fill_from, ['CONDITION']);
+
+  const curePeriod = buyerTable.columns.find((c) => c.column_id === 'curePeriodValue');
+  assert.equal(curePeriod.render, 'value');
+  assert.equal(curePeriod.value_kind, 'PERIOD');
+  assert.deepEqual(curePeriod.fill_from, ['PERIOD']);
+
+  const curePeriodEnd = buyerTable.columns.find((c) => c.column_id === 'curePeriodEnd');
+  assert.equal(curePeriodEnd.render, 'vocabulary');
+  assert.deepEqual(curePeriodEnd.vocabulary.map((v) => v.label).sort(), [
+    'Earlier of notice period and outside date', 'Fixed date', 'Outside date',
+  ].sort());
+  assert.deepEqual(curePeriodEnd.fill_from, ['EXCEPTION']);
+
+  const companyTable = findTableV3(section, 'termination-rights-company-may-terminate');
+  const terminatorBreachBar = companyTable.columns.find((c) => c.column_id === 'terminatorBreachBar');
+  assert.equal(terminatorBreachBar.render, 'vocabulary');
+  assert.deepEqual(terminatorBreachBar.vocabulary.map((v) => v.label).sort(), ['No', 'Yes'].sort());
+  assert.deepEqual(terminatorBreachBar.fill_from, ['CROSS_REFERENCE']);
+
+  const usedKinds = new Set([...curable.fill_from, ...curePeriod.fill_from, ...curePeriodEnd.fill_from, ...terminatorBreachBar.fill_from]);
+  assert.deepEqual([...usedKinds].sort(), ['CONDITION', 'CROSS_REFERENCE', 'EXCEPTION', 'PERIOD'].sort());
+});
+
+// Decision 12: Payer column (Company; Parent) on termination fees.
+test('Decision 12: Termination Fees carries a Payer column with Company and Parent', () => {
+  const table = findTableV3(findSectionV3('termination-fees'), 'termination-fees-table');
+  const payer = table.columns.find((c) => c.column_id === 'payer');
+  assert.deepEqual(payer.vocabulary.map((v) => v.label).sort(), ['Company', 'Parent'].sort());
+});
+
+// Decision 13: employee benefits canonical rows shown only when found; split_combined_elements.
+test('Decision 13: Employee benefits carries all ten canonical benefit rows, shown only when populated, with split_combined_elements set', () => {
+  const table = findTableV3(findSectionV3('employee-benefits'), 'employee-benefits-table');
+  assert.equal(table.fixed_row_labels.length, 10);
+  for (const label of [
+    'Earned annual bonus (pro-rata)', 'Health and welfare benefits', 'Paid time off / vacation', 'Equity / stock awards (new grants)',
+  ]) {
+    assert.ok(table.fixed_row_labels.includes(label), `canonical row '${label}' present`);
+  }
+  assert.equal(table.show_only_when_populated, true);
+  assert.equal(table.split_combined_elements, true);
+  assert.equal(table.additional_fixed_row_labels, undefined);
+});
+
+// Decision 14: No Other Reps Status is Yes / No / Silent.
+test('Decision 14: No Other Reps Status vocabulary is exactly Yes / No / Silent', () => {
+  const table = findTableV3(findSectionV3('no-other-reps-fraud'), 'no-other-reps-fraud-table');
+  const status = table.columns.find((c) => c.column_id === 'status');
+  assert.deepEqual(status.vocabulary.map((v) => v.label).sort(), ['No', 'Silent', 'Yes'].sort());
+});
+
+// Decision 15: Defined Terms is a reference appendix, excluded from fact tables.
+test('Decision 15: Defined Terms is marked kind: reference_appendix, excluded from fact tables, with a note on the later cross-deal feature', () => {
+  const section = findSectionV3('defined-terms');
+  assert.equal(section.kind, 'reference_appendix');
+  assert.equal(section.excluded_from_fact_tables, true);
+  assert.ok(/later feature/i.test(section.note));
+});
+
+// Decision 16: the four sections stay, unchanged.
+test('Decision 16: Approvals / Votes, Antitrust / Regulatory, Advisers / Fees / Expenses and Shareholder Meeting / Proxy / Tender Offer stay as sections', () => {
+  for (const sectionKey of ['approvals-votes', 'antitrust-regulatory', 'advisers-fees-expenses', 'sec-meeting']) {
+    assert.ok(findSectionV3(sectionKey), `section '${sectionKey}' is kept`);
+  }
+});
+
+test('every V3 vocabulary code (including shared vocabularies) is unique within the enclosing list', () => {
+  for (const [id, vocabulary] of Object.entries(tableShapesV3.shared_vocabularies)) {
+    const codes = vocabulary.map((v) => v.code);
+    assert.equal(new Set(codes).size, codes.length, `shared vocabulary '${id}' has duplicate codes`);
   }
 });
