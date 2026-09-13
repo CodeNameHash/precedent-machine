@@ -58,6 +58,16 @@ export async function refreshProductRunStatus({
   }
 }
 
+// `?generation=1` on the intake page starts a fresh generation of the same
+// submission (explicit_generation is part of the run's deduplication key), for
+// when a run must be redone without any change to source, schema, bundle or
+// model config. Anything else, including no value, is generation 0.
+export function explicitGenerationFromQuery(query) {
+  const raw = Array.isArray(query?.generation) ? query.generation[0] : query?.generation;
+  const value = Number(raw);
+  return Number.isInteger(value) && value >= 0 ? value : 0;
+}
+
 export default function ProductIntakePanel() {
   const router = useRouter();
   const [url, setUrl] = useState('');
@@ -153,7 +163,7 @@ export default function ProductIntakePanel() {
         method: 'POST', headers: csrfHeaders,
         body: JSON.stringify({
           url: url.trim(), idempotencyKey: crypto.randomUUID(), ...activeSubmissionVersion(),
-          explicitGeneration: 0, maxAttempts: 3,
+          explicitGeneration: explicitGenerationFromQuery(router.query), maxAttempts: 3,
         }),
       });
       const value = await response.json();

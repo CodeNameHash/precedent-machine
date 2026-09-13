@@ -1735,6 +1735,18 @@ Sequence and proof:
       against V2 output. Ben's notes are stored as supplied in
       `fixtures/product/ben-samples/`; the reconciliation tool is being
       built in `session_01XujbrYbTFpQC1WWMjAfYEQ`.
+      2026-09-13 15:47 UTC: Metsera submitted, run c4c90c61… (V2, bundle
+      V9, 85 sections). Its first sections went out with the V8 extractor
+      prompt and no conclusions: the section runner never passed the table
+      shapes through, so the V9 request augmentation never triggered
+      outside the unit test. Fix: `lib/product/analysis-runner.js`
+      `tableShapesForRun` hands the shapes to every section of a run whose
+      recorded bundle is V9 (runner-level regression in
+      `tests/product-runner-prompt-bundle.test.js`). Because the fix
+      changes no fingerprint input, resubmitting resumes the same run; the
+      intake page now accepts `?generation=1` to start a fresh generation
+      of the same submission. Recommendation to Ben: kill c4c90c61 and
+      resubmit as generation 1 so every section carries conclusions.
 
 Parallel plan while Ben is away: 5B.1 and 5B.2 are lead work in this
 session. 5B.3 storage and 5B.5 reader view run as separate visible sessions
