@@ -117,7 +117,7 @@ const OVERLAY = {
     headline: { distinguishing: ['TERM'], note: 'the rule category' },
   },
   REPRESENTATIONS: {
-    layers: 'Each representation limb is one fact. Components: the subject, the standard, each materiality or knowledge qualifier, thresholds, look-back periods and carve-outs as separate components; disclosure-letter and SEC-document limitations inherited from the article intro with origin INTRO.',
+    layers: 'Each representation limb is one fact. Components: the subject, the standard, each materiality or knowledge qualifier, thresholds, look-back periods and carve-outs as separate components; disclosure-letter and SEC-document limitations inherited from the article intro with origin INTRO. A qualifier (knowledge, materiality, a look-back date, a disclosure exception) is never a fact of its own: it is a component of every limb it qualifies, and a limb\'s tree runs from the qualifiers through the subject to the operative words and their object, so the tree says what the representation is about. The subtype follows the representation\'s topic (its heading: anti-corruption, sanctions, permits and laws are COMPLIANCE_REPRESENTATION; organization, standing, authority and capitalization are STATUS_REPRESENTATION), never the grammatical form of a limb ("is the subject of an investigation" in an anti-corruption representation is compliance, not status) (Ben, 2026-09-13, Metsera 3.25).',
     headline: { distinguishing: ['TERM', 'THRESHOLD', 'MATERIALITY_QUALIFIER'], note: 'subject plus qualifier plus threshold' },
   },
 };

@@ -1884,6 +1884,19 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       `20260913180000_product_issues_note_kind.sql` adds NOTE; applied to
       the preview database 18:10 UTC. "Retry failed sections" resumes the
       run; the 23 completed sections stay.
+      18:20 UTC, Ben on 3.25 (Anti-Corruption): "why does the full layer
+      tree for 3.25 stop with [the look-back, the knowledge qualifier and
+      the Representative actor]? Why doesn't it go onto what the rep is
+      actually about? Also it isn't a status rep". The extractor had made
+      the knowledge qualifier a fact of its own (the one Ben opened) and
+      labelled limb (iii) a status representation; limbs (i) and (ii)
+      were extracted correctly as compliance facts and (iv) was held on a
+      non-contiguous quote. REPRESENTATIONS layer rule: a qualifier is
+      never a fact of its own; a limb's tree runs from qualifiers through
+      subject to operation and object; the subtype follows the heading's
+      topic, never a limb's grammar (schema regenerated). The evidence
+      sidebar is now sticky (Ben: "the top of the side bar should be
+      where I'm looking").
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.
