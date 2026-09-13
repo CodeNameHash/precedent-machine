@@ -1964,6 +1964,12 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       Generator decision 26: the conditions detail column shows the fact
       as drafted (its own words in source order; the cited words stay the
       click target); the No Other Reps / Fraud table is status only.
+      20:20 UTC, Ben: "I'd use the ordering from the old app for the
+      sections and the left hand side bar (and for the styling of that
+      side bar)". Generator decision 27 re-orders the sections to the old
+      app's sidebar groups and gives each its group, label and colour;
+      the rail renders those groups in the old sidebar's style, sticky,
+      and the section heading dots take the group colour.
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.

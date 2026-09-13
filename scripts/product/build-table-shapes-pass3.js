@@ -710,6 +710,53 @@ function applyDecision26DetailColumns(doc) {
   noOtherReps.guidance = 'Yes / No per question; the words behind the answer are read in the fact\'s tree, never summarised in a column.';
 }
 
+// ==========================================================================
+// Decision 27 (section order and the left rail). Ben, 2026-09-13 20:20 UTC:
+// "I'd use the ordering from the old app for the sections and the left hand
+// side bar (and for the styling of that side bar)". The old app's order is
+// SIDEBAR_GROUPS in components/review/shared.js (Structure, Consideration,
+// Reps, Material Contracts, MAE, IOC, No-Sol, Antitrust, SEC / Meeting,
+// Conditions, Termination Rights, Termination Fees, Employee Benefits, Other
+// Covenants, Misc, No Other Reps, Definitions) with its group colours
+// (TYPE_HEX). Sections are re-ordered to it and each carries its rail group
+// (label, its label within the group, the group's colour), so the page and
+// the rail read the same order.
+// ==========================================================================
+
+const RAIL_GROUPS = [
+  { group: 'Structure & Mechanics', hex: '#7459A6', sections: [['structure-mechanics', 'Structure & Mechanics']] },
+  { group: 'Consideration', hex: '#2F8B7E', sections: [['consideration-hero', 'Consideration'], ['equity-awards', 'Equity Awards']] },
+  { group: 'Representations', hex: '#3F8A6A', sections: [['representations-qualifiers', 'Company / Target'], ['parent-representations-qualifiers', 'Buyer / Parent']] },
+  { group: 'Material Contracts', hex: '#8A8782', sections: [['material-contracts', 'Material Contracts']] },
+  { group: 'Material Adverse Effect', hex: '#8B5B3A', sections: [['mae-definitions', 'Material Adverse Effect']] },
+  { group: 'Interim Operating Covenants', hex: '#B5862E', sections: [['ioc-exceptions', 'Company / Target'], ['parent-ioc-exceptions', 'Buyer / Parent']] },
+  { group: 'No-Solicitation / No-Shop', hex: '#A8538C', sections: [['nosol', 'Overview'], ['nosol-noshop', 'No-Shop Core Mechanics'], ['nosol-fiduciary', 'Fiduciary-Out Mechanics'], ['nosol-intervening', 'Intervening Event Mechanics'], ['nosol-superior', 'Superior Proposal']] },
+  { group: 'Antitrust / Regulatory', hex: '#2F8FA8', sections: [['antitrust-regulatory', 'Antitrust / Regulatory']] },
+  { group: 'SEC Filing / Meeting Requirements', hex: '#6E8AA8', sections: [['votes-approvals-meeting', 'Votes / Approvals / SEC Filing / Meeting']] },
+  { group: 'Conditions to Closing', hex: '#5660B0', sections: [['conditions', 'Mutual'], ['conditions-b', 'Buyer'], ['conditions-s', 'Seller']] },
+  { group: 'Termination Rights', hex: '#C0673A', sections: [['termination-rights', 'Termination Rights']] },
+  { group: 'Termination Fees', hex: '#B14E63', sections: [['termination-fees', 'Termination Fees'], ['tail-fee', 'Tail Fee Mechanics']] },
+  { group: 'Employee Benefits', hex: '#6E8AA8', sections: [['employee-benefits', 'Employee Benefits']] },
+  { group: 'Other Covenants', hex: '#6E8AA8', sections: [['general-covenants', 'Other Covenants'], ['advisers-fees-expenses', 'Advisers / Fees / Expenses']] },
+  { group: 'Miscellaneous / Boilerplate', hex: '#8A8782', sections: [['misc-boilerplate', 'Miscellaneous / Boilerplate']] },
+  { group: 'No Other Reps / Fraud', hex: '#8A8782', sections: [['no-other-reps-fraud', 'No Other Reps / Fraud']] },
+  { group: 'Definitions', hex: '#4E6FA6', sections: [['defined-terms', 'Defined Terms']] },
+];
+
+function applyDecision27SectionOrder(doc) {
+  const ordered = [];
+  for (const entry of RAIL_GROUPS) {
+    for (const [sectionKey, label] of entry.sections) {
+      const section = findSection(doc, sectionKey);
+      section.rail = { group: entry.group, label, hex: entry.hex };
+      ordered.push(section);
+    }
+  }
+  const missing = doc.sections.filter((section) => !ordered.includes(section)).map((section) => section.section_key);
+  if (missing.length) throw new Error(`SECTION_WITHOUT_RAIL_GROUP: ${missing.join(', ')}`);
+  doc.sections = ordered;
+}
+
 function applyDecision5MaeCarveouts(doc) {
   const section = findSection(doc, 'mae-definitions');
   for (const tableKey of ['mae-carveouts-parent', 'mae-carveouts-company']) {
@@ -937,6 +984,7 @@ function build() {
   applyDecision11TerminationForBreach(doc);
   applyDecision13EmployeeBenefits(doc);
   applyDecision15DefinedTerms(doc);
+  applyDecision27SectionOrder(doc);
 
   return doc;
 }

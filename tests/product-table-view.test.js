@@ -95,7 +95,7 @@ function table(sectionKey, tableKey) {
 
 test('sections come out in the table shapes order, only for sections that ended up with rows', () => {
   const keys = view.sections.map((candidate) => candidate.section_key);
-  assert.deepEqual(keys, ['termination-fees', 'mae-definitions', 'material-contracts']);
+  assert.deepEqual(keys, ['material-contracts', 'mae-definitions', 'termination-fees'], 'the old app\'s order (decision 27)');
 });
 
 test('a coverage-only fact never reaches a table', () => {

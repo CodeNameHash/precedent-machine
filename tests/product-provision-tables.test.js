@@ -250,3 +250,15 @@ test('an absent fixed row renders its label and a table footer renders the carve
   assert.match(html, /except to the extent disproportionate/);
   assert.match(html, /data-defaulted="true"[^>]*>No</);
 });
+
+test('the provision rail groups sections the old app\'s way, one anchor per section', () => {
+  const ProvisionRail = require('../components/product/ProvisionRail.jsx').default;
+  const html = renderToStaticMarkup(React.createElement(ProvisionRail, { sections: tableShapes.sections }));
+  assert.match(html, /rec-side-eyebrow/);
+  const groups = html.match(/data-testid="provision-rail-group"/g) || [];
+  assert.equal(groups.length, 17);
+  assert.match(html, /href="#provision-section-structure-mechanics"/);
+  assert.match(html, /href="#provision-section-conditions-s"/);
+  assert.ok(html.indexOf('Structure &amp; Mechanics') < html.indexOf('Consideration'));
+  assert.ok(html.indexOf('Conditions to Closing') < html.indexOf('Termination Rights'));
+});

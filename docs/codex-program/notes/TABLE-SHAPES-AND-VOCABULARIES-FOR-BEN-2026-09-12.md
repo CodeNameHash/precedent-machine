@@ -902,3 +902,7 @@ Ben, on the rendered Metsera MAE section: "if there is no MAE for parent just sa
 ### Decision 26 (verbatim detail columns), Ben 2026-09-13 20:05 UTC
 
 Ben, on the mutual conditions table: "there is great detail here on the right but it isn't shown on the left (e.g. it doesn't say court of competent jurisdiction etc)"; on No Other Reps / Fraud: "the detail here isn't actually reassuring, I'd just say yes then have the tree ready to show the language etc". `applyDecision26DetailColumns`: the conditions detail column is `display: fact_text` (the fact's top-level own words in source order, the cited words remaining the click target) headed "As drafted"; the No Other Reps / Fraud table keeps only the status column, the pill opening the tree.
+
+### Decision 27 (section order and the left rail), Ben 2026-09-13 20:20 UTC
+
+Ben: "I'd use the ordering from the old app for the sections and the left hand side bar (and for the styling of that side bar)". `applyDecision27SectionOrder` runs last: sections are re-ordered to the old app's `SIDEBAR_GROUPS` (Structure, Consideration, Reps, Material Contracts, MAE, IOC, No-Sol, Antitrust, SEC / Meeting, Conditions, Termination Rights, Termination Fees, Employee Benefits, Other Covenants, Misc, No Other Reps, Definitions) and each carries `rail: { group, label, hex }` with the old app's group colour. `components/product/ProvisionRail.jsx` renders those groups with the old sidebar's `.rec-side-*` styling (eyebrow, dot, indented children, active row), sticky; the section heading dot takes the same colour.

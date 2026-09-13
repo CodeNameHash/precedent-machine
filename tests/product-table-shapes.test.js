@@ -491,3 +491,20 @@ test('Decision 26: the conditions detail column is the fact as drafted and No Ot
   const table = findTableV3(findSectionV3('no-other-reps-fraud'), 'no-other-reps-fraud-table');
   assert.deepEqual(table.columns.map((column) => column.column_id), ['status']);
 });
+
+// Decision 27 (Ben, 2026-09-13): sections and the rail follow the old app's
+// order (SIDEBAR_GROUPS in components/review/shared.js).
+test('Decision 27: sections run in the old app\'s order and each carries its rail group', () => {
+  const keys = tableShapesV3.sections.map((section) => section.section_key);
+  assert.equal(keys[0], 'structure-mechanics');
+  assert.equal(keys[1], 'consideration-hero');
+  assert.ok(keys.indexOf('representations-qualifiers') < keys.indexOf('material-contracts'));
+  assert.ok(keys.indexOf('mae-definitions') < keys.indexOf('ioc-exceptions'));
+  assert.ok(keys.indexOf('conditions') < keys.indexOf('termination-rights'));
+  assert.ok(keys.indexOf('employee-benefits') < keys.indexOf('general-covenants'));
+  assert.equal(keys[keys.length - 1], 'defined-terms');
+  for (const section of tableShapesV3.sections) {
+    assert.ok(section.rail && section.rail.group && section.rail.label && /^#[0-9A-F]{6}$/i.test(section.rail.hex), section.section_key);
+  }
+  assert.equal(findSectionV3('conditions-b').rail.group, 'Conditions to Closing');
+});

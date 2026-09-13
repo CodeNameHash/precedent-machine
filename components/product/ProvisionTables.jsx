@@ -363,7 +363,7 @@ export default function ProvisionTables({
                 className="mb-2 flex w-full items-center gap-2 text-left"
                 data-testid="section-heading"
               >
-                <span className="h-2 w-2 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+                <span className="h-2 w-2 shrink-0 rounded-full bg-accent" style={section.rail?.hex ? { backgroundColor: section.rail.hex } : undefined} aria-hidden="true" />
                 <h3 className="whitespace-nowrap font-display text-lg text-ink">{section.title}</h3>
                 <span className="h-[2px] flex-1 bg-border" />
                 <span className="font-mono text-[10px] uppercase tracking-wide text-inkFaint" aria-hidden="true">{isCollapsed ? 'show' : 'hide'}</span>
