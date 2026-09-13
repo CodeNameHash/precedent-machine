@@ -1657,7 +1657,13 @@ Sequence and proof:
       `contracts/product/table-shapes.v3.json` with shared vocabularies
       (MERGER_FORM, BRING_DOWN_STANDARD), double-merger structure per step,
       cure and terminator-bar columns, payer column, per-row trigger sets,
-      defined terms as a reference appendix; 36 tests. Step (a) is done. (b)
+      defined terms as a reference appendix; 36 tests. Step (a) is done.
+      Started 2026-09-13 01:32 UTC in parallel: (b) and (c) in
+      `session_01LwCkHrYnHFSMjoDNT9Hsq9` (conclusions contract, validator,
+      extractor V9, storage migration not yet applied), (d) in
+      `session_01AoH15krAhB3GFZ1tfbu2oe` (table view, ProvisionTables,
+      EvidenceSidebar, wired into PublishedSummary, Query provisions page and
+      FocusedReview). (b)
       contract: each fact carries
       `conclusions`, one coded value per column of its subtype's table,
       validated against the vocabulary, alongside the verbatim components;
