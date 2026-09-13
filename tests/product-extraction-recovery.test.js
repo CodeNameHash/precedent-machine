@@ -624,3 +624,59 @@ test('coverage recovery keeps invalid citation findings and blocks publication w
     analysis, legalSchema: schema,
   }), /REVIEW_PENDING_ITEMS/);
 });
+
+test('an extraction with no proposals and every routed family UNRESOLVED is a declined section and fails the attempt', async () => {
+  const sourceDocument = await conchoSource();
+  const agreementStructure = buildAgreementStructure({
+    agreement_id: sourceDocument.source_document_id,
+    canonical_text: sourceDocument.canonical_text,
+    canonical_text_sha256: sourceDocument.canonical_text_sha256,
+  });
+  const node = substantiveSections(agreementStructure).find((item) => item.reference === '6.3');
+  const base = createSyntheticConchoModel();
+  const model = {
+    async complete(input) {
+      const result = await base.complete(input);
+      if (input.call_kind !== 'EXTRACTION') return result;
+      const families = Object.keys(result.response.coverage || {});
+      result.response.proposals = [];
+      result.response.groups = [];
+      result.response.links = [];
+      result.response.coverage = Object.fromEntries(families.map((key) => [key, 'UNRESOLVED']));
+      result.response.fact_type_coverage = Object.fromEntries(families.map((key) => [key,
+        Object.fromEntries(Object.keys(result.response.fact_type_coverage?.[key] || {}).map((factType) => [factType, 'UNRESOLVED']))]));
+      return { ...result, raw_response: result.response };
+    },
+  };
+  await assert.rejects(
+    buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: schema, model, node }),
+    (error) => error.code === 'EXTRACTION_DECLINED',
+  );
+});
+
+test('an extraction with no proposals and NOT_FOUND coverage is an answer, not a declined section', async () => {
+  const sourceDocument = await conchoSource();
+  const agreementStructure = buildAgreementStructure({
+    agreement_id: sourceDocument.source_document_id,
+    canonical_text: sourceDocument.canonical_text,
+    canonical_text_sha256: sourceDocument.canonical_text_sha256,
+  });
+  const node = substantiveSections(agreementStructure).find((item) => item.reference === '6.3');
+  const base = createSyntheticConchoModel();
+  const model = {
+    async complete(input) {
+      const result = await base.complete(input);
+      if (input.call_kind !== 'EXTRACTION') return result;
+      const families = Object.keys(result.response.coverage || {});
+      result.response.proposals = [];
+      result.response.groups = [];
+      result.response.links = [];
+      result.response.coverage = Object.fromEntries(families.map((key) => [key, 'NOT_FOUND']));
+      result.response.fact_type_coverage = Object.fromEntries(families.map((key) => [key,
+        Object.fromEntries(Object.keys(result.response.fact_type_coverage?.[key] || {}).map((factType) => [factType, 'NOT_FOUND']))]));
+      return { ...result, raw_response: result.response };
+    },
+  };
+  const section = await buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: schema, model, node });
+  assert.equal(section.proposals.length, 0);
+});

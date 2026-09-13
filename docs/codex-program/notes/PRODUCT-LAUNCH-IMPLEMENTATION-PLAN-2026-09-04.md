@@ -1970,6 +1970,21 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       app's sidebar groups and gives each its group, label and colour;
       the rail renders those groups in the old sidebar's style, sticky,
       and the section heading dots take the group colour.
+      20:30 UTC, Ben: "is extraction still working? I don't see regulatory
+      yet". Generation 2 had finished; the regulatory efforts covenant
+      (6.03) is missing because the extractor returned no proposals with
+      every routed family UNRESOLVED, in about a minute, and the runner
+      recorded the section as complete with coverage issues only. Nine of
+      85 sections came back this way (3.06, 3.09, 3.13, 3.17, 3.19, 5.01
+      interim covenants, 5.02 no-shop, 6.03 regulatory efforts, and one
+      after a 30-minute provider timeout); NCS generation 4 under V8 had
+      none. Fix: a response with no proposals and every routed family
+      UNRESOLVED is now EXTRACTION_DECLINED, failing the attempt so the
+      section is retried up to its three attempts and otherwise ends
+      FAILED where "Retry failed sections" sees it (NOT_FOUND stays an
+      answer); the extractor prompt now defines the three coverage
+      states and says a declined response is rejected. Reaches the
+      worker with generation 3.
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.
