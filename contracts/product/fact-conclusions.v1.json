@@ -1,0 +1,43 @@
+{
+  "schema_version": "FACT_CONCLUSIONS/V1",
+  "decided": "2026-09-12/13, Ben: the published and Query pages show each provision as the review page does today -- small tables of coded headline conclusions (pills) per subject, with the verbatim layered facts (FACT_COMPONENTS/V2) as evidence beneath. contracts/product/table-shapes.v3.json is the table and vocabulary data this layer renders against.",
+  "purpose": "A fact may carry one additional, optional layer: conclusions, a coded readout of the fact against one table-shapes.v3.json table. Conclusions never state anything the fact's own components do not already state; every coded, valued or verbatim cell cites the component(s) that support it, and a value cell's value is parsed by code from the cited component text, never invented or restated by the model.",
+  "fact_conclusions": {
+    "fields": {
+      "table_key": "the contracts/product/table-shapes.v3.json table this readout targets; must belong to a section whose v2_family_keys includes the fact's family_key",
+      "row_label": "the subject as that table names it, e.g. 'RSUs' or 'Base salary': one of the table's fixed_row_labels (or additional_fixed_row_labels) for a fixed-list table, or the fact's own subject term for a one-per-subject table",
+      "cells": "array of cell objects, at most one per column_id; a column the fact says nothing about simply has no cell -- the page shows a dash for it, nothing is invented to fill it"
+    }
+  },
+  "cell": {
+    "fields": {
+      "column_id": "one of the resolved table's columns[].column_id",
+      "code": "for a column with render 'vocabulary': one of that column's vocabulary codes (its own vocabulary, or the shared vocabulary named by vocabulary_ref)",
+      "value": "for a column with render 'value': { canonical, unit }, parsed by code (parseComponentValue in lib/product/fact-components.js) from a cited component's verbatim text -- never asserted by the model and never invented",
+      "text": "for a column with render 'verbatim' or 'term': the exact verbatim text of a cited component -- never paraphrased, normalised or newly worded",
+      "present": "for a column with render 'boolean': true or false",
+      "component_ids": "component_id values, all drawn from this same fact's own component tree, whose kind is one of the column's fill_from kinds; at least one is required. A cell can never cite a component belonging to another fact, and never a component whose kind is outside the column's fill_from."
+    },
+    "one_content_field": "a cell carries exactly one of code, value, text or present, matching its column's render kind"
+  },
+  "rules": [
+    "C1 A cell's column_id must name a column of the fact's resolved table (table_key, checked against the fact's family_key through table-shapes.v3.json section.v2_family_keys).",
+    "C2 A 'vocabulary' cell's code must be a code in that column's vocabulary (own or shared via vocabulary_ref); an unknown code is a problem and holds the fact.",
+    "C3 A 'value' cell's value must equal parseComponentValue(kind, text) of at least one cited component; the model never states a value column's canonical number or unit itself.",
+    "C4 A 'verbatim' or 'term' cell's text must equal the exact text of at least one cited component; no paraphrase, normalisation or added words.",
+    "C5 A 'boolean' cell's present is a plain boolean; still cites the component(s) that show presence or its stated absence.",
+    "C6 Every cell cites at least one component_id from the same fact's own components tree whose kind is one of the column's fill_from kinds. A component_id absent from the fact's tree, or present but of a kind outside fill_from, is a problem.",
+    "C7 A cell may be absent for any column; the page renders a dash. Nothing is invented to populate every column.",
+    "C8 row_label must be legal for the resolved table: one of fixed_row_labels/additional_fixed_row_labels for a fixed-list table; the fact's own subject term for a one-per-subject table.",
+    "C9 conclusions is optional on every fact; a fact with valid components and no table shape for its family carries no conclusions and no problem. A fact whose family does have a table shape but whose conclusions are missing is not held -- it is a coverage note, not a validation failure (CONCLUSIONS_MISSING)."
+  ],
+  "example_fact_conclusions": {
+    "table_key": "equity-awards-table",
+    "row_label": "RSUs",
+    "cells": [
+      { "column_id": "consideration", "code": "PARENT_STOCK_ROLLOVER", "component_ids": ["c-rsu-treatment"] },
+      { "column_id": "vestingTreatment", "code": "CONTINUES_VESTING_DOUBLE_TRIGGER_PROTECTION", "component_ids": ["c-rsu-vesting"] },
+      { "column_id": "cvrEntitlement", "code": "NOT_ENTITLED", "component_ids": ["c-rsu-treatment"] }
+    ]
+  }
+}

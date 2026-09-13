@@ -3,8 +3,11 @@
 const assert = require('node:assert/strict');
 const test = require('node:test');
 const { createHash } = require('node:crypto');
-const { compileExtraction } = require('../lib/product/agreement-draft');
+const { compileExtraction, buildAgreementSectionDraft } = require('../lib/product/agreement-draft');
+const { buildAgreementStructure } = require('../lib/product/agreement-structure');
+const { substantiveSections } = require('../lib/product/source-context');
 const legalSchemaV2 = require('../contracts/product/legal-schema.v2.json');
+const tableShapes = require('../contracts/product/table-shapes.v3.json');
 
 const sha = (value) => createHash('sha256').update(value).digest('hex');
 const text = 'Section 3.1 Organization. For purposes of this Agreement, Material Adverse Effect shall not include any event, change, circumstance, occurrence, effect or state of facts to the extent resulting from geopolitical conditions or changes that are the result of the outbreak, conduct or escalation of war (whether declared or undeclared) or acts of terrorism or sabotage (including cyber-attacks), or a fee of $750,000 within 30 days.';
@@ -133,4 +136,180 @@ test('V2 extraction maps synonym kinds to the contract and allows a descriptive 
     component('z', 'WIDGET', 'widget', 'geopolitical conditions'),
   ], { label: 'MAE carve-out', distinguishing_refs: ['z'] }));
   assert.equal(unknown.proposals[0].validation_status, 'INVALID');
+});
+
+// V9 (FACT_CONCLUSIONS/V1, contracts/product/fact-conclusions.v1.json): once
+// a table-shapes.v3.json table exists for the routed family (CONSIDERATION ->
+// equity-awards-table), compileExtraction also compiles conclusions when
+// `tableShapes` is supplied. Reuses this file's shared MAE closure/spans for
+// the fixture plumbing; the CONSIDERATION/EQUITY_AWARD proposal below is a
+// second, independent family carried over that same closure.
+
+function equityComponents() {
+  return [
+    component('term', 'TERM', 'Equity type', 'sabotage'),
+    component('consid', 'STANDARD', 'consideration', 'the outbreak, conduct or escalation of war (whether declared or undeclared)'),
+    component('vest', 'STANDARD', 'vesting', 'acts of terrorism'),
+    component('cvr', 'STANDARD', 'CVR entitlement', 'geopolitical conditions or changes'),
+  ];
+}
+
+function equityResponse({ components, headline, conclusions }) {
+  return {
+    proposals: [{
+      client_ref: 'p1', group_ref: 'g1', family_key: 'CONSIDERATION', subtype_key: 'EQUITY_AWARD', fact_type: 'PER_SHARE_CASH_CONSIDERATION',
+      statement: 'RSUs convert into the right to receive Parent common stock and continue vesting.',
+      roles: { LEGAL_ACTOR_OR_SUBJECT: 'Material Adverse Effect', LEGAL_OPERATION: 'shall not include', OPERATIVE_OBJECT: 'geopolitical conditions or changes' },
+      value: null,
+      evidence_quotes: [{ quote: 'geopolitical conditions or changes that are the result of the outbreak, conduct or escalation of war (whether declared or undeclared) or acts of terrorism or sabotage (including cyber-attacks)', source_span_id: fullSpanId, occurrence: 0 }],
+      headline,
+      components,
+      ...(conclusions !== undefined ? { conclusions } : {}),
+    }],
+    groups: [{ client_ref: 'g1', family_key: 'CONSIDERATION', subtype_key: 'EQUITY_AWARD' }],
+    links: [],
+  };
+}
+
+function compileWithTableShapes(body) {
+  return compileExtraction({
+    sourceDocument, legalSchema: legalSchemaV2, node, closure, call, response: body,
+    routedFamilies: ['CONSIDERATION'], ownedNodeIds: new Set([nodeId]), tableShapes,
+  });
+}
+
+const equityHeadline = { label: 'Equity award', distinguishing_refs: ['term'] };
+const validConclusions = {
+  table_key: 'equity-awards-table',
+  row_label: 'RSUs',
+  cells: [
+    { column_id: 'consideration', code: 'PARENT_STOCK_ROLLOVER', component_refs: ['consid'] },
+    { column_id: 'vestingTreatment', code: 'CONTINUES_VESTING_DOUBLE_TRIGGER_PROTECTION', component_refs: ['vest'] },
+    { column_id: 'cvrEntitlement', code: 'NOT_ENTITLED', component_refs: ['cvr'] },
+  ],
+};
+
+test('V9: a proposal in a family with a table shape gets a validated conclusions readout attached', () => {
+  const compiled = compileWithTableShapes(equityResponse({
+    components: equityComponents(), headline: equityHeadline, conclusions: validConclusions,
+  }));
+  assert.equal(compiled.proposals[0].validation_status, 'VALID', JSON.stringify(compiled.issues));
+  assert.equal(compiled.proposals[0].conclusions.table_key, 'equity-awards-table');
+  assert.equal(compiled.proposals[0].conclusions.row_label, 'RSUs');
+  assert.equal(compiled.proposals[0].conclusions.cells.length, 3);
+  assert.deepEqual(compiled.proposals[0].conclusions.cells[0].component_ids, [
+    compiled.proposals[0].components.find((c) => c.label === 'consideration').component_id,
+  ]);
+  assert.equal(compiled.issues.filter((issue) => issue.code === 'INVALID_FACT_CONCLUSIONS').length, 0);
+  assert.equal(compiled.issues.filter((issue) => issue.code === 'CONCLUSIONS_MISSING').length, 0);
+});
+
+test('V9: conclusions with an unknown vocabulary code hold the proposal with INVALID_FACT_CONCLUSIONS', () => {
+  const badConclusions = {
+    ...validConclusions,
+    cells: [{ column_id: 'consideration', code: 'NOT_A_REAL_CODE', component_refs: ['consid'] }],
+  };
+  const compiled = compileWithTableShapes(equityResponse({
+    components: equityComponents(), headline: equityHeadline, conclusions: badConclusions,
+  }));
+  assert.equal(compiled.proposals[0].validation_status, 'INVALID');
+  const issue = compiled.issues.find((candidate) => candidate.code === 'INVALID_FACT_CONCLUSIONS');
+  assert.ok(issue);
+  assert.match(issue.message, /unknown code/);
+  assert.equal(Object.hasOwn(compiled.proposals[0], 'conclusions'), false);
+});
+
+test('V9: valid components with no conclusions from the model stay VALID with a CONCLUSIONS_MISSING note issue', () => {
+  const compiled = compileWithTableShapes(equityResponse({
+    components: equityComponents(), headline: equityHeadline, conclusions: undefined,
+  }));
+  assert.equal(compiled.proposals[0].validation_status, 'VALID', JSON.stringify(compiled.issues));
+  assert.equal(Object.hasOwn(compiled.proposals[0], 'conclusions'), false);
+  const issue = compiled.issues.find((candidate) => candidate.code === 'CONCLUSIONS_MISSING');
+  assert.ok(issue);
+  assert.equal(issue.kind, 'NOTE');
+});
+
+test('V9: without tableShapes, compileExtraction ignores conclusions entirely -- V8 behaviour unchanged', () => {
+  const compiled = compileExtraction({
+    sourceDocument, legalSchema: legalSchemaV2, node, closure, call,
+    response: equityResponse({ components: equityComponents(), headline: equityHeadline, conclusions: validConclusions }),
+    routedFamilies: ['CONSIDERATION'], ownedNodeIds: new Set([nodeId]),
+  });
+  assert.equal(compiled.proposals[0].validation_status, 'VALID');
+  assert.equal(Object.hasOwn(compiled.proposals[0], 'conclusions'), false);
+  assert.equal(compiled.issues.filter((issue) => issue.code === 'CONCLUSIONS_MISSING' || issue.code === 'INVALID_FACT_CONCLUSIONS').length, 0);
+});
+
+test('V9: buildAgreementSectionDraft adds table_shapes/conclusion_instruction and uses PRODUCT_ALL_FAMILY_EXTRACTOR/V9 when a routed family has a table shape', async () => {
+  const canonicalText = ['ARTICLE III', 'TREATMENT OF EQUITY AWARDS', 'Section 3.2 RSUs. Each restricted stock unit shall be converted into the right to receive one share of Parent common stock and shall continue vesting on its existing schedule.'].join('\n\n');
+  const id = sha(canonicalText);
+  const sourceDoc = {
+    schema_version: 'SOURCE_DOCUMENT/V1', source_document_id: id, agreement_id: id,
+    canonical_text: canonicalText, canonical_text_sha256: id,
+    retrieval_url: 'https://example.test/equity.htm', final_url: 'https://example.test/equity.htm', source_map_id: id,
+    filing_accession: '0000000000-00-000000', exhibit_filename: 'equity.htm',
+  };
+  const agreementStructure = buildAgreementStructure({ agreement_id: id, canonical_text: canonicalText, canonical_text_sha256: id });
+  const sectionNode = substantiveSections(agreementStructure)[0];
+  let extractionRequestSeen = null;
+
+  const section = await buildAgreementSectionDraft({
+    sourceDocument: sourceDoc, agreementStructure, node: sectionNode, legalSchema: legalSchemaV2, tableShapes,
+    model: {
+      async complete({ call_kind, request }) {
+        let modelResponse;
+        if (call_kind === 'ROUTING') {
+          modelResponse = { families: ['CONSIDERATION'], disposition: 'FAMILY_ASSIGNED', rationale: 'RSU treatment', deterministic_disagreements: [] };
+        } else if (call_kind === 'RESIDUAL') {
+          modelResponse = { paragraphs: request.paragraphs.map((p) => ({ source_span_id: p.source_span_id, disposition: 'KNOWN_FAMILY', family_keys: ['CONSIDERATION'], rationale: 'RSU treatment' })) };
+        } else {
+          extractionRequestSeen = request;
+          const spanId = request.source_closure.full_section.span_id;
+          const proposal = {
+            client_ref: 'p1', group_ref: 'g1', family_key: 'CONSIDERATION', subtype_key: 'EQUITY_AWARD', fact_type: 'PER_SHARE_CASH_CONSIDERATION',
+            statement: 'Each RSU converts into the right to receive one share of Parent common stock and continues vesting.',
+            roles: { LEGAL_ACTOR_OR_SUBJECT: 'Each restricted stock unit', LEGAL_OPERATION: 'shall be converted into', OPERATIVE_OBJECT: 'the right to receive one share of Parent common stock' },
+            value: null,
+            evidence_quotes: [{ quote: 'shall be converted into the right to receive one share of Parent common stock and shall continue vesting on its existing schedule', source_span_id: spanId, occurrence: 0 }],
+            headline: { label: 'Equity award', distinguishing_refs: ['term'] },
+            components: [
+              { ref: 'term', kind: 'TERM', label: 'Equity type', quote: 'RSUs', source_span_id: spanId, occurrence: 0, origin: 'OWN', gap_before: false, children: [] },
+              { ref: 'consid', kind: 'STANDARD', label: 'consideration', quote: 'shall be converted into the right to receive one share of Parent common stock', source_span_id: spanId, occurrence: 0, origin: 'OWN', gap_before: true, children: [] },
+              { ref: 'vest', kind: 'STANDARD', label: 'vesting', quote: 'shall continue vesting on its existing schedule', source_span_id: spanId, occurrence: 0, origin: 'OWN', gap_before: true, children: [] },
+            ],
+            conclusions: {
+              table_key: 'equity-awards-table',
+              row_label: 'RSUs',
+              cells: [
+                { column_id: 'consideration', code: 'PARENT_STOCK_ROLLOVER', component_refs: ['consid'] },
+                { column_id: 'vestingTreatment', code: 'CONTINUES_VESTING_DOUBLE_TRIGGER_PROTECTION', component_refs: ['vest'] },
+              ],
+            },
+          };
+          modelResponse = {
+            proposals: [proposal], groups: [{ client_ref: 'g1', family_key: 'CONSIDERATION', subtype_key: 'EQUITY_AWARD' }], links: [],
+            coverage: { CONSIDERATION: 'FOUND' },
+            fact_type_coverage: { CONSIDERATION: Object.fromEntries(request.family_contracts[0].required_fact_types.map((type) => [type, type === 'PER_SHARE_CASH_CONSIDERATION' ? 'FOUND' : 'NOT_FOUND'])) },
+          };
+        }
+        return {
+          provider_id: 'TEST', model_id: 'TEST', response: modelResponse, raw_request: request, raw_response: modelResponse,
+          input_tokens: 1, output_tokens: 1, cost_microusd: 0, duration_ms: 1,
+        };
+      },
+    },
+  });
+
+  assert.ok(extractionRequestSeen, 'the extraction call must have been made');
+  assert.ok(extractionRequestSeen.table_shapes && Array.isArray(extractionRequestSeen.table_shapes.CONSIDERATION),
+    'request must carry table_shapes for the routed family');
+  assert.ok(extractionRequestSeen.table_shapes.CONSIDERATION.some((entry) => entry.table_key === 'equity-awards-table'));
+  assert.ok(typeof extractionRequestSeen.conclusion_instruction === 'string' && extractionRequestSeen.conclusion_instruction.length > 0);
+  assert.ok(extractionRequestSeen.response_contract.proposals[0].conclusions);
+
+  const extractionCall = section.model_calls.find((call) => call.call_kind === 'EXTRACTION');
+  assert.equal(extractionCall.prompt_version, 'PRODUCT_ALL_FAMILY_EXTRACTOR/V9');
+  assert.equal(section.proposals[0].validation_status, 'VALID', JSON.stringify(section.issues));
+  assert.equal(section.proposals[0].conclusions.table_key, 'equity-awards-table');
 });
