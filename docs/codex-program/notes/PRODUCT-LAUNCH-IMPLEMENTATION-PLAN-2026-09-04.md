@@ -1768,6 +1768,12 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       evidence sidebar), which replaces this page's body once conclusions
       exist. Mockup with Ben's direction:
       https://claude.ai/code/artifact/0caadcfa-a143-4e63-aff3-630a386cacb4
+- [x] Q2a Lawyer preview per run, 2026-09-13: `pages/review/product/[id]/provisions.js`
+      shows one run's draft in the table layout, read-only, every valid
+      layered fact with the evidence sidebar; linked from the review page
+      header. Under V8 output (NCS generation 4) the cells are filled from
+      component labels and text, which reads roughly; the coded vocabularies
+      arrive with the first V9 run (Metsera).
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.
