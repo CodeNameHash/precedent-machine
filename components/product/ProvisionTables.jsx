@@ -93,7 +93,73 @@ function TermCell({ row, tableKey, rowIndex, onSelect }) {
   );
 }
 
+// The legacy Structure & Mechanics shape (TopBuild print p.1): one line per
+// attribute, TERM / PROVISION, for the single agreement row. Each line lists
+// the facts behind it under "See provision".
+function AttributeGrid({ table, selection, onSelect }) {
+  const row = table.rows[0];
+  if (!row) return null;
+  const rowSelected = selection?.tableKey === table.table_key && selection?.rowIndex === 0;
+  return (
+    <table className="w-full border-separate border-spacing-0 border border-border bg-white text-left text-xs" data-testid="provision-table" data-table-key={table.table_key} data-layout="attribute-grid">
+      {table.group_header ? (
+        <caption className="border-b border-border bg-paper px-3 py-1.5 text-left text-[11px] font-bold uppercase tracking-wide text-ink" data-testid="table-group-header">{table.group_header}</caption>
+      ) : null}
+      <thead>
+        <tr>
+          <th className="w-48 border-b border-border px-3 py-2 font-mono text-[10px] uppercase tracking-wide text-inkFaint">Term</th>
+          <th className="border-b border-border px-3 py-2 font-mono text-[10px] uppercase tracking-wide text-inkFaint">Provision</th>
+        </tr>
+      </thead>
+      <tbody>
+        {table.columns.map((column, index) => {
+          const cell = row.cells.find((candidate) => candidate.column_id === column.column_id);
+          const backing = row.backing_facts.filter((entry) => (cell?.fact_ids || []).includes(entry.fact_id));
+          return (
+            <tr key={column.column_id} data-testid="attribute-row" data-column-id={column.column_id}>
+              <td className="border-b border-lineSoft px-3 py-2 align-top font-medium text-ink">
+                <AttributeTerm header={column.header} backing={backing} tableKey={table.table_key} onSelect={onSelect} />
+              </td>
+              <td className="border-b border-lineSoft px-3 py-2 align-top">
+                {cell ? (
+                  <Cell cell={cell} tableKey={table.table_key} rowIndex={0} selected={!!rowSelected && selection?.columnId === column.column_id} onSelect={onSelect} />
+                ) : <span className="text-inkFaint" data-testid="table-dash" aria-hidden="true">—</span>}
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+}
+
+function AttributeTerm({ header, backing, tableKey, onSelect }) {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <div>
+      <span>{header}</span>
+      {backing.length ? (
+        <button type="button" onClick={() => setExpanded((current) => !current)} className="ml-2 text-[10px] font-semibold uppercase tracking-wide text-accent" data-testid="see-provision">
+          {expanded ? 'Hide provision' : 'See provision'}
+        </button>
+      ) : null}
+      {expanded ? (
+        <ul className="mt-1 space-y-0.5 pl-2 text-[11px] font-normal text-inkLight" data-testid="backing-facts">
+          {backing.map((entry, index) => (
+            <li key={`${entry.fact_id}-${index}`}>
+              <button type="button" data-testid="backing-fact" onClick={() => onSelect({ tableKey, rowIndex: 0, columnId: null, componentId: null, factId: entry.fact_id })} className="underline decoration-dotted">
+                {entry.section_reference ? `§ ${entry.section_reference}` : entry.fact_id}
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  );
+}
+
 function Table({ table, selection, onSelect }) {
+  if (table.layout === 'attribute grid') return <AttributeGrid table={table} selection={selection} onSelect={onSelect} />;
   return (
     <table className="w-full border-separate border-spacing-0 border border-border bg-white text-left text-xs" data-testid="provision-table" data-table-key={table.table_key}>
       {table.group_header ? (

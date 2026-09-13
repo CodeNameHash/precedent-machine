@@ -150,3 +150,15 @@ test('EvidenceSidebar without a review item omits the decision controls', () => 
   const html = renderToStaticMarkup(React.createElement(EvidenceSidebar, { fact: maeCarveoutFact, componentId: 'c-war' }));
   assert.doesNotMatch(html, /data-testid="evidence-decision-controls"/);
 });
+
+test('a one-per-agreement table renders as an attribute grid, one line per column', () => {
+  const structureFact = { ...require('./fixtures/product/metsera-v9-structure-fact.v1.json') };
+  structureFact.fact_id = structureFact.proposal_id;
+  const view = buildTableView({ facts: [structureFact], tableShapes, legalSchema });
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [structureFact] }));
+  assert.match(html, /data-layout="attribute-grid"/);
+  assert.match(html, /data-column-id="effectsOfMerger"/);
+  assert.match(html, />DGCL</);
+  assert.doesNotMatch(html, /data-testid="table-row"/);
+  assert.equal((html.match(/data-testid="attribute-row"/g) || []).length, 10);
+});

@@ -22,6 +22,7 @@ Status: DECIDED 2026-09-13, encoded in table-shapes.v3.json. This note originall
 - Row subject: **Term**
 - Rows: one per subject
 - `per_step_structure`: applies when `dealStructure` is `DOUBLE_MERGER` -- Step 1 (`mergerFormStep1`, `survivingEntityStep1`), Step 2 (`mergerFormStep2`, `survivingEntityStep2`).
+- Rows: `one per agreement`, rendered as an attribute grid (`layout: attribute grid`, TERM / PROVISION, one line per column, the legacy print p.1 shape). Ben, 2026-09-13 17:30 UTC, on the first Metsera V9 render as a wide per-fact table: "this doesn't look great...we designed something that was a bespoke grid here not this weird table?" Every structure fact fills the single row together; "See provision" on each line lists the facts behind it.
 
 | Column | Render | Vocabulary / value | fill_from |
 |---|---|---|---|

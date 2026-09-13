@@ -1812,6 +1812,19 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       `/api/product/analysis/:id/preview` (every completed section, the
       saved review applied when one exists) and polls once a minute while
       the run is analysing.
+      17:30 UTC, Ben on the first Metsera V9 tables: "this doesn't look
+      great...we designed something that was a bespoke grid here not this
+      weird table?" Two causes. (1) A render seam: contract-shaped
+      conclusions cells were passed through unmapped, so every coded cell
+      came out as a blank pill; the table view now maps codes to vocabulary
+      labels, values to formatted numbers and text to words, each cell
+      keeping its component ids (regression from a real Metsera fact).
+      (2) The structure-mechanics table was `one per subject`, which made a
+      row per fact ("Merger Sub", "the Company", ...) under ten columns; the
+      legacy page is a TERM / PROVISION grid for the deal. The shape is now
+      `one per agreement` with `layout: attribute grid` (generator decision
+      16), every structure fact filling one row, rendered one line per
+      attribute with "See provision" listing the facts behind it.
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.

@@ -299,6 +299,18 @@ function applyDecision4Lookback(doc) {
 // shows, not a hard-coded shared list.
 // ==========================================================================
 
+// Ben, 2026-09-13 17:30 UTC, on the first Metsera V9 tables: "we designed
+// something that was a bespoke grid here not this weird table". The legacy
+// Structure & Mechanics is a TERM / PROVISION grid for the deal (print p.1),
+// not a row per fact: one row for the agreement, every structure fact
+// contributing the cells it can, rendered as an attribute grid.
+function applyDecision16StructureGrid(doc) {
+  const table = findTable(findSection(doc, 'structure-mechanics'), 'structure-mechanics-table');
+  table.rows_are = 'one per agreement';
+  table.layout = 'attribute grid';
+  table.subject_label = 'The deal';
+}
+
 function applyDecision5MaeCarveouts(doc) {
   const section = findSection(doc, 'mae-definitions');
   for (const tableKey of ['mae-carveouts-parent', 'mae-carveouts-company']) {
@@ -509,6 +521,7 @@ function build() {
   applyDecision3BringDown(doc);
   applyDecision4Lookback(doc);
   applyDecision5MaeCarveouts(doc);
+  applyDecision16StructureGrid(doc);
   applyDecision7InterimCovenants(doc);
   applyDecision8NoShop(doc);
   applyDecision9VotesTrigger(doc);

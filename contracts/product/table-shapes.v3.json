@@ -495,7 +495,7 @@
               ]
             }
           ],
-          "rows_are": "one per subject",
+          "rows_are": "one per agreement",
           "per_step_structure": {
             "applies_when": "dealStructure === 'DOUBLE_MERGER'",
             "steps": [
@@ -510,7 +510,9 @@
                 "surviving_entity_column_id": "survivingEntityStep2"
               }
             ]
-          }
+          },
+          "layout": "attribute grid",
+          "subject_label": "The deal"
         }
       ],
       "print_pages": [

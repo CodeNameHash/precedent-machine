@@ -180,3 +180,40 @@ test('defined_terms collects DEFINED_TERM components across all facts, de-duplic
   assert.equal(term.fact_id, 'f-material-contracts-2');
   assert.match(term.definition, /means any Contract/);
 });
+
+// Contract-shaped conclusions (a real Metsera V9 fact, 2026-09-13) render as
+// labelled cells that carry their component ids; and a one-per-agreement
+// table gathers every fact of the family into one row.
+const structureFact = { ...require('./fixtures/product/metsera-v9-structure-fact.v1.json') };
+structureFact.fact_id = structureFact.proposal_id;
+
+test('a contract-shaped vocabulary cell renders its vocabulary label and keeps its component ids', () => {
+  const view = buildTableView({ facts: [structureFact], tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'structure-mechanics-table');
+  assert.ok(table, 'the structure table is present');
+  assert.equal(table.layout, 'attribute grid');
+  assert.equal(table.rows.length, 1);
+  const cell = table.rows[0].cells.find((candidate) => candidate.column_id === 'effectsOfMerger');
+  assert.equal(cell.kind, 'pill');
+  assert.equal(cell.label, 'DGCL');
+  assert.deepEqual(cell.component_ids, ['aaf01d341b5c8926bdace0f8685ee73523f250d183dd4a7020a81d4054903367']);
+  assert.deepEqual(cell.fact_ids, [structureFact.proposal_id]);
+  assert.equal(table.rows[0].cells.find((candidate) => candidate.column_id === 'closingTiming').kind, 'dash');
+});
+
+test('a one-per-agreement table gathers every fact of the family into one row', () => {
+  const closingFact = {
+    ...structureFact, proposal_id: 'p-closing', fact_id: 'p-closing', subtype_key: 'CLOSING',
+    components: [{ component_id: 'c-when', kind: 'TRIGGER', label: 'timing', text: 'on the third Business Day', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 10, gap_before: false, children: [] }],
+    conclusions: { table_key: 'structure-mechanics-table', row_label: 'the Merger', cells: [{ column_id: 'closingTiming', text: 'on the third Business Day', component_ids: ['c-when'] }] },
+  };
+  const view = buildTableView({ facts: [structureFact, closingFact], tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'structure-mechanics-table');
+  assert.equal(table.rows.length, 1);
+  assert.equal(table.rows[0].subject, 'The deal');
+  assert.equal(table.rows[0].backing_facts.length, 2);
+  const timing = table.rows[0].cells.find((candidate) => candidate.column_id === 'closingTiming');
+  assert.equal(timing.kind, 'text');
+  assert.equal(timing.label, 'on the third Business Day');
+  assert.deepEqual(timing.fact_ids, ['p-closing']);
+});
