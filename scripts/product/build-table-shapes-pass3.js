@@ -562,6 +562,28 @@ function applyDecision23VotesAndMeeting(doc) {
   });
 }
 
+// Ben, 2026-09-13 19:40 UTC, on the buyer's conditions table: "(i) the
+// titles of the reps, not their x-refs should be included, (ii) where is
+// cov compliance, (iii) the Materiality Qualifiers Disregarded should be
+// shown per row of reps and we should put row lines in there to clearly
+// separate". The print (p.115) shows each bring-down tier as its own line
+// with "Section 3.1(a) (Organization, Good Standing and Qualification)".
+function applyDecision24ConditionTiers(doc) {
+  for (const [sectionKey, tableKey] of [['conditions-b', 'conditions-b-table'], ['conditions-s', 'conditions-s-table']]) {
+    const table = findTable(findSection(doc, sectionKey), tableKey);
+    if (!table.fixed_row_labels.includes('Performance of Covenants')) {
+      table.fixed_row_labels.splice(1, 0, 'Performance of Covenants');
+      table.additional_row_reasons = { ...(table.additional_row_reasons || {}), 'Performance of Covenants': `${BEN} #24: "where is cov compliance" -- the covenant performance condition is a row of its own.` };
+    }
+    const reference = findColumn(table, 'reference');
+    reference.header = 'Representations covered';
+    reference.display = 'resolved_reference';
+    reference.guidance = 'Shown as the representation\'s title from the resolved cross-reference ("Section 3.01 (Organization, Standing and Corporate Power)"), never the bare section number.';
+    table.sub_row_from_column = 'standard';
+    table.guidance = 'One line per bring-down tier under Accuracy of Representations (each tier is a fact with its standard, the representations it covers as resolved CROSS_REFERENCE components, and whether materiality qualifiers are disregarded); the covenant performance condition, the no-MAE condition and the officer\'s certificate are rows of their own.';
+  }
+}
+
 function applyDecision5MaeCarveouts(doc) {
   const section = findSection(doc, 'mae-definitions');
   for (const tableKey of ['mae-carveouts-parent', 'mae-carveouts-company']) {
@@ -779,6 +801,7 @@ function build() {
   applyDecision21GeneralCovenants(doc);
   applyDecision22EmployeeBenefits(doc);
   applyDecision23VotesAndMeeting(doc);
+  applyDecision24ConditionTiers(doc);
   applyDecision7InterimCovenants(doc);
   applyDecision8NoShop(doc);
   applyDecision9VotesTrigger(doc);

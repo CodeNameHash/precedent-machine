@@ -243,12 +243,12 @@ function Table({ table, selection, onSelect }) {
               className={rowSelected ? 'bg-accentDim' : undefined}
             >
               {table.term_column ? (
-                <td className={`border-b border-lineSoft px-3 py-2 align-top ${sub ? 'pl-8 text-inkMid' : ''}`}>
+                <td className={`border-b px-3 py-2 align-top ${sub ? 'border-lineSoft pl-8 text-inkMid' : 'border-border'}`}>
                   <TermCell row={entry} tableKey={table.table_key} rowIndex={rowIndex} onSelect={onSelect} />
                 </td>
               ) : null}
               {entry.cells.map((cell) => (
-                <td key={cell.column_id} className="border-b border-lineSoft px-3 py-2 align-top">
+                <td key={cell.column_id} className={`border-b px-3 py-2 align-top ${sub ? 'border-lineSoft' : 'border-border'}`}>
                   <Cell
                     cell={cell}
                     tableKey={table.table_key}

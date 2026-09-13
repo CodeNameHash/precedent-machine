@@ -276,3 +276,30 @@ test('a general covenant row is named from the fact\'s subtype; the model\'s own
   assert.equal(table.rows[0].sub_rows[0].subject, 'Parent, as sole stockholder of Merger Sub');
   assert.equal(table.rows[0].cells.find((cell) => cell.column_id === 'obligor').label, 'Parent');
 });
+
+test('bring-down tiers are lines under Accuracy of Representations, referencing the reps by title', () => {
+  const tier = (id, code, refs) => ({
+    fact_id: id, proposal_id: id, family_key: 'CLOSING_CONDITIONS', subtype_key: 'BRINGDOWN', section_reference: '7.02(a)', structure_node_id: 'n-7-02',
+    headline: { label: 'Bring-down of representations', distinguishing_component_ids: [`${id}-std`] },
+    components: [
+      { component_id: `${id}-std`, kind: 'STANDARD', label: 'standard', text: 'true and correct', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 10, gap_before: false, children: [] },
+      ...refs.map((ref, index) => ({ component_id: `${id}-ref-${index}`, kind: 'CROSS_REFERENCE', label: 'rep', text: ref.text, origin: 'OWN', source_span_id: 's', start_byte: 20 + index, end_byte: 30 + index, gap_before: true, children: [], resolves_to: { structure_node_id: ref.node, text: ref.title } })),
+    ],
+    conclusions: { table_key: 'conditions-b-table', row_label: 'Accuracy of Representations', cells: [
+      { column_id: 'standard', code, component_ids: [`${id}-std`] },
+      { column_id: 'reference', text: refs.map((ref) => ref.text).join(', '), component_ids: refs.map((_, index) => `${id}-ref-${index}`) },
+    ] },
+  });
+  const facts = [
+    tier('bd-a', 'TRUE_EXCEPT_DE_MINIMIS', [{ text: 'Section 3.02(a)', node: 'n-3-02', title: 'Capitalization' }]),
+    tier('bd-b', 'TRUE_IN_ALL_MATERIAL_RESPECTS', [{ text: 'Section 3.01', node: 'n-3-01', title: 'Organization, Standing and Corporate Power' }, { text: 'Section 3.04', node: 'n-3-04', title: 'Authority' }]),
+  ];
+  const view = buildTableView({ facts, tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'conditions-b-table');
+  assert.equal(table.rows.length, 1);
+  const row = table.rows[0];
+  assert.equal(row.sub_rows.length, 2);
+  assert.equal(row.sub_rows[0].subject, 'True except for de minimis inaccuracies');
+  assert.equal(row.sub_rows[1].cells.find((cell) => cell.column_id === 'reference').label, 'Section 3.01 (Organization, Standing and Corporate Power); Section 3.04 (Authority)');
+  assert.equal(row.cells.find((cell) => cell.column_id === 'standard').values.length, 2, 'the overview keeps both tiers');
+});

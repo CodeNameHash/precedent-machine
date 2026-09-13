@@ -818,11 +818,13 @@
             },
             {
               "column_id": "reference",
-              "header": "Reference",
+              "header": "Representations covered",
               "render": "verbatim",
               "fill_from": [
                 "CROSS_REFERENCE"
-              ]
+              ],
+              "display": "resolved_reference",
+              "guidance": "Shown as the representation's title from the resolved cross-reference (\"Section 3.01 (Organization, Standing and Corporate Power)\"), never the bare section number."
             },
             {
               "column_id": "materialityQualifiersDisregarded",
@@ -849,9 +851,15 @@
           "rows_are": "fixed list",
           "fixed_row_labels": [
             "Accuracy of Representations",
+            "Performance of Covenants",
             "No Material Adverse Effect",
             "Officer's Certificate"
-          ]
+          ],
+          "additional_row_reasons": {
+            "Performance of Covenants": "Ben's decision 2026-09-13 #24: \"where is cov compliance\" -- the covenant performance condition is a row of its own."
+          },
+          "sub_row_from_column": "standard",
+          "guidance": "One line per bring-down tier under Accuracy of Representations (each tier is a fact with its standard, the representations it covers as resolved CROSS_REFERENCE components, and whether materiality qualifiers are disregarded); the covenant performance condition, the no-MAE condition and the officer's certificate are rows of their own."
         }
       ],
       "print_pages": [
@@ -892,11 +900,13 @@
             },
             {
               "column_id": "reference",
-              "header": "Reference",
+              "header": "Representations covered",
               "render": "verbatim",
               "fill_from": [
                 "CROSS_REFERENCE"
-              ]
+              ],
+              "display": "resolved_reference",
+              "guidance": "Shown as the representation's title from the resolved cross-reference (\"Section 3.01 (Organization, Standing and Corporate Power)\"), never the bare section number."
             },
             {
               "column_id": "materialityQualifiersDisregarded",
@@ -923,8 +933,14 @@
           "rows_are": "fixed list",
           "fixed_row_labels": [
             "Accuracy of Representations",
+            "Performance of Covenants",
             "Officer's Certificate"
-          ]
+          ],
+          "additional_row_reasons": {
+            "Performance of Covenants": "Ben's decision 2026-09-13 #24: \"where is cov compliance\" -- the covenant performance condition is a row of its own."
+          },
+          "sub_row_from_column": "standard",
+          "guidance": "One line per bring-down tier under Accuracy of Representations (each tier is a fact with its standard, the representations it covers as resolved CROSS_REFERENCE components, and whether materiality qualifiers are disregarded); the covenant performance condition, the no-MAE condition and the officer's certificate are rows of their own."
         }
       ],
       "print_pages": [

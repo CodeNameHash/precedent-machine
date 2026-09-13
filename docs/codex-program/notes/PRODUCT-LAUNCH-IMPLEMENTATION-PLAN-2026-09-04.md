@@ -1929,6 +1929,18 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       keeps the print's votes table (p.114) as the one votes table with
       the period's anchor and a detail column added, and adds a
       two-column Proxy statement & SEC table for the proxy and SEC facts.
+      19:30 to 19:45 UTC: general covenant rows now derive from the fact's
+      subtype (Ben: "the covenant column needs to give a description of
+      the type of covenant"); sections collapse with collapse / expand
+      all; on the buyer's conditions ("(i) the titles of the reps, not
+      their x-refs should be included, (ii) where is cov compliance,
+      (iii) the Materiality Qualifiers Disregarded should be shown per
+      row of reps and we should put row lines in there to clearly
+      separate") generator decision 24 adds a Performance of Covenants
+      row to both conditions tables, shows the reference column as the
+      resolved representation titles, and makes each bring-down tier its
+      own line under Accuracy of Representations with the row's line as
+      the overview.
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.
