@@ -1648,7 +1648,7 @@ Sequence and proof:
       merger and merger-form vocabulary, CVR earn-in, one shared bring-down
       vocabulary, relative lookback, per-row trigger sets, separate no-shop
       verbs, cure and terminator-bar columns, payer column, defined terms as
-      an appendix, the four thin sections kept. Pass 3 encodes them; (b)
+      an appendix, the four thin sections kept. Pass 3 (`session_01K8KAWSpPXEge1PNjHgTSAg`) encodes them as data with one test per decision; (b)
       contract: each fact carries
       `conclusions`, one coded value per column of its subtype's table,
       validated against the vocabulary, alongside the verbatim components;
