@@ -1589,7 +1589,16 @@ Sequence and proof:
       quotes. Code-only follow-up pushed (THRESHOLD may be descriptive;
       a period-shaped threshold parses as a period); it applies from the
       next sandbox update, not to the run in progress, so generation 4's
-      held items stay as recorded. The submission creates a V2
+      held items stay as recorded. 2026-09-13 00:40 UTC: generation 4
+      FAILED at 30 of 104 sections when section 3.12's extraction hit the
+      10-minute Codex timeout on all three attempts (a comparable section
+      finished in 9.6 minutes with 31,843 output tokens); 287 of 320
+      proposals valid so far, 3.1 and 3.16 complete. Fix: extraction calls
+      get a 30-minute timeout in `lib/product/codex-cli-model.js` (the
+      run's model configuration is unchanged, so the same run can be
+      retried). Sequence: Ben updates the sandbox and presses "Retry failed
+      sections" on the intake page, which resets the failed section and
+      resumes the 73 pending ones in the same generation. The submission creates a V2
       generation with prompt bundle `PRODUCT_LAYERED_COMPONENTS/V7`; the V1
       run and revision 45 of its review stay untouched as the baseline. Compare against Ben's 38
       touched items and his samples. Ben reviews the same 13 provisions again

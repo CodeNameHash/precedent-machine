@@ -68,6 +68,8 @@ test('Codex boundary selects and records the actual model for every call kind', 
   assert.deepEqual(creations.map(({ model: selected, reasoningEffort }) => (
     [selected, reasoningEffort]
   )), [['gpt-5.5', 'low'], ['gpt-5.5', 'medium']]);
+  // Extraction calls get a 30-minute Codex timeout; routing and residual keep the client default.
+  assert.deepEqual(creations.map(({ timeoutMs }) => timeoutMs), [undefined, 30 * 60 * 1000]);
   assert.equal(routing.model_id, 'gpt-5.5;reasoning=low');
   assert.equal(residual.model_id, 'gpt-5.5;reasoning=low');
   assert.equal(extraction.model_id, 'gpt-5.5;reasoning=medium');
