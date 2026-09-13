@@ -894,3 +894,7 @@ Ben answered the twenty questions above by dictation (verbatim in `BEN-NCS-REVIE
 20. Approvals / Votes, Antitrust / Regulatory, Advisers / Fees / Expenses and Shareholder Meeting / Proxy / Tender Offer stay as sections for deals that carry that content.
 
 All twenty questions are answered (Ben, 2026-09-13 01:10 UTC). Pass 3 encodes these decisions in the generator and regenerates the JSON.
+
+### Decision 25 (MAE section), Ben 2026-09-13 19:50 UTC
+
+Ben, on the rendered Metsera MAE section: "if there is no MAE for parent just say none. And in the carve outs column we need to use generic titles. And the disproportionate carve out must say yes or no. Then we should show how the disproportionate carve out is drafted at the bottom of the table". Encoded in `scripts/product/build-table-shapes-pass3.js` (`applyDecision25MaeSection`), superseding decision 6 above (decision 5 in the generator): the definitions table keeps its fixed Parent / Company rows and a row with no definition fact renders "None" (`absent_row_label`, shown only once another row is filled); both carve-out tables are fixed lists of the corpus taxonomy's 27 generic carve-out titles (the print's ten among them), open to a new title, with an "As drafted" verbatim column; the carve-back column is Yes / No only and a blank reads No (`absent_code`); the disproportionality carve-back fact is the table's footer (`footer_from_subtype`), never a row. Definition instances and underlying-cause restorations carry no readout.

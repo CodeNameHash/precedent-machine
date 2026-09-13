@@ -49,6 +49,7 @@ function Cell({ cell, tableKey, rowIndex, selected, onSelect }) {
     <a href={`#provision-section-${cell.link_section}`} className="ml-1 text-[10px] font-semibold uppercase tracking-wide text-accent" data-testid="definition-link">definition</a>
   ) : null;
   if (!canSelect) return <span className={baseClass}>{cell.label}{definitionLink}</span>;
+  const title = cell.defaulted ? 'Not stated for this row; shown as the column\'s default' : undefined;
   if (definitionLink) {
     return (
       <span className="inline-flex items-center">
@@ -70,6 +71,8 @@ function Cell({ cell, tableKey, rowIndex, selected, onSelect }) {
         factId: (cell.fact_ids || [])[0] || null,
       })}
       className={`${baseClass} ${selectedClass}`}
+      title={title}
+      data-defaulted={cell.defaulted || undefined}
     >
       {cell.label}
     </button>
@@ -271,12 +274,44 @@ function Table({ table, selection, onSelect }) {
               ))}
             </tr>
           );
+          if (row.absent) {
+            return [(
+              <tr key={`${row.subject}-${rowIndex}`} data-testid="table-row" data-absent="true">
+                {table.term_column ? (
+                  <td className="border-b border-border px-3 py-2 align-top"><span className="font-medium text-ink">{row.subject}</span></td>
+                ) : null}
+                <td className="border-b border-border px-3 py-2 align-top text-xs text-inkMid" colSpan={table.columns.length} data-testid="table-absent">{table.absent_row_label}</td>
+              </tr>
+            )];
+          }
           return [
             line(row, `${row.subject}-${rowIndex}`, false),
             ...(row.sub_rows || []).map((subRow, subIndex) => line(subRow, `${row.subject}-${rowIndex}-${subIndex}`, true)),
           ];
         })}
       </tbody>
+      {table.footer && table.footer.entries.length ? (
+        <tfoot>
+          <tr data-testid="table-footer">
+            <td colSpan={table.columns.length + (table.term_column ? 1 : 0)} className="border-t-2 border-border bg-paper px-3 py-2 align-top">
+              <div className="font-mono text-[10px] uppercase tracking-wide text-inkFaint">{table.footer.label}</div>
+              {table.footer.entries.map((entry, index) => (
+                <div key={`${entry.fact_id}-${index}`} className="mt-1 text-xs text-ink">
+                  <span>{entry.text}</span>
+                  <button
+                    type="button"
+                    data-testid="backing-fact"
+                    onClick={() => onSelect({ tableKey: table.table_key, rowIndex: null, columnId: null, componentId: (entry.component_ids || [])[0] || null, factId: entry.fact_id })}
+                    className="ml-2 text-[10px] font-semibold uppercase tracking-wide text-accent"
+                  >
+                    {entry.section_reference ? `§ ${entry.section_reference}` : 'See provision'}
+                  </button>
+                </div>
+              ))}
+            </td>
+          </tr>
+        </tfoot>
+      ) : null}
     </table>
   );
 }

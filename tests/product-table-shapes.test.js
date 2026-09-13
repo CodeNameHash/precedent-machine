@@ -312,15 +312,29 @@ test('Decision 4: Lookback renders value/PERIOD with hover: date', () => {
   }
 });
 
-// Decision 5: MAE carve-outs carry no forced shared fixed rows between parties.
-test('Decision 5: MAE carve-out tables for Parent and Company carry no forced shared fixed rows', () => {
+// Decision 5 (no forced shared fixed rows between the parties' carve-out
+// tables) is superseded by decision 25 (Ben, 2026-09-13, on the rendered
+// Metsera MAE section): both tables are fixed lists of the corpus's generic
+// carve-out titles, open to a new title, each with its own facts.
+test('Decision 25: MAE definitions say "None" for a party without one; carve-outs use generic titles, Yes / No, and the carve-back as a footer', () => {
   const section = findSectionV3('mae-definitions');
-  const parentTable = findTableV3(section, 'mae-carveouts-parent');
-  const companyTable = findTableV3(section, 'mae-carveouts-company');
-  assert.equal(parentTable.rows_are, 'one per subject');
-  assert.equal(companyTable.rows_are, 'one per subject');
-  assert.equal(parentTable.fixed_row_labels, undefined);
-  assert.equal(companyTable.fixed_row_labels, undefined);
+  const definitions = findTableV3(section, 'mae-definitions-table');
+  assert.deepEqual(definitions.fixed_row_labels, ['Parent', 'Company']);
+  assert.equal(definitions.absent_row_label, 'None');
+  for (const tableKey of ['mae-carveouts-parent', 'mae-carveouts-company']) {
+    const table = findTableV3(section, tableKey);
+    assert.equal(table.rows_are, 'fixed list');
+    assert.equal(table.open_rows, true);
+    assert.ok(table.fixed_row_labels.includes('Failure to meet internal projections or forecasts'));
+    assert.ok(table.fixed_row_labels.includes('Other carve-out'));
+    assert.deepEqual(table.columns.map((column) => column.column_id), ['provision', 'disproportionateCarveback']);
+    const carveback = table.columns[1];
+    assert.deepEqual(carveback.vocabulary.map((entry) => entry.code), ['YES', 'NO']);
+    assert.equal(carveback.absent_code, 'NO');
+    assert.deepEqual(table.footer_from_subtype, { subtype_key: 'DISPROPORTIONALITY_CARVEBACK', label: 'Disproportionate carve-back as drafted' });
+    assert.match(table.guidance, /generic title/);
+  }
+  assert.ok(section.no_conclusions_subtype_keys.includes('UNDERLYING_CAUSE_RESTORATION'));
 });
 
 // Decision 6: material contracts rows with the same header but different thresholds stay separate.

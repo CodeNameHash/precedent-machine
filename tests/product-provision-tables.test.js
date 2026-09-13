@@ -226,3 +226,27 @@ test('every section has a collapsible heading and the bar offers collapse / expa
   assert.equal((html.match(/data-testid="section-heading"/g) || []).length, tableView.sections.length);
   assert.match(html, /aria-expanded="true"/);
 });
+
+test('an absent fixed row renders its label and a table footer renders the carve-back as drafted', () => {
+  const view = {
+    defined_terms: [],
+    sections: [{ section_key: 'mae-definitions', title: 'Material Adverse Effect', facts_without_readout: [], tables: [
+      { table_key: 'mae-definitions-table', group_header: null, layout: 'rows', absent_row_label: 'None', term_column: { header: 'Party', source: 'subject' }, columns: [{ column_id: 'test', header: 'Test' }], rows: [
+        { subject: 'Parent', absent: true, cells: [{ column_id: 'test', kind: 'dash', label: null, tone: null, component_ids: [], fact_ids: [] }], backing_facts: [] },
+        { subject: 'Company', cells: [{ column_id: 'test', kind: 'text', label: 'any change', tone: 'neutral', component_ids: ['c1'], fact_ids: ['f1'] }], backing_facts: [{ fact_id: 'f1', section_reference: '1.01' }] },
+      ] },
+      { table_key: 'mae-carveouts-company', group_header: 'CARVE-OUTS — COMPANY', layout: 'rows', term_column: { header: 'Carve-out', source: 'subject' }, columns: [{ column_id: 'provision', header: 'As drafted' }, { column_id: 'disproportionateCarveback', header: 'Disproportionate Carveback' }],
+        footer: { label: 'Disproportionate carve-back as drafted', entries: [{ fact_id: 'f2', section_reference: '1.01', structure_node_id: null, text: 'except to the extent disproportionate', component_ids: ['c2'] }] },
+        rows: [{ subject: 'Changes in GAAP or accounting principles', cells: [
+          { column_id: 'provision', kind: 'text', label: 'any change in GAAP', tone: 'neutral', component_ids: ['c3'], fact_ids: ['f3'] },
+          { column_id: 'disproportionateCarveback', kind: 'pill', label: 'No', code: 'NO', tone: 'standard', defaulted: true, component_ids: [], fact_ids: ['f3'] },
+        ], backing_facts: [{ fact_id: 'f3', section_reference: '1.01' }] }] },
+    ] }],
+  };
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [] }));
+  assert.match(html, /data-testid="table-absent"[^>]*>None</);
+  assert.match(html, /data-testid="table-footer"/);
+  assert.match(html, /Disproportionate carve-back as drafted/);
+  assert.match(html, /except to the extent disproportionate/);
+  assert.match(html, /data-defaulted="true"[^>]*>No</);
+});

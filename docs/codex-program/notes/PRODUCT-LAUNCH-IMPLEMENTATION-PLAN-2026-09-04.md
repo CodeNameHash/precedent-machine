@@ -1941,6 +1941,19 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       resolved representation titles, and makes each bring-down tier its
       own line under Accuracy of Representations with the row's line as
       the overview.
+      19:50 UTC, Ben on the MAE section: "if there is no MAE for parent
+      just say none. And in the carve outs column we need to use generic
+      titles. And the disproportionate carve out must say yes or no. Then
+      we should show how the disproportionate carve out is drafted at the
+      bottom of the table". Generator decision 25: the definitions table
+      renders "None" for a fixed party row no fact fills (once another
+      row is filled); the carve-out tables are fixed lists of the corpus
+      taxonomy's generic carve-out titles, open to a new one, with the
+      carve-out's words beside the title; the carve-back column is Yes /
+      No and a blank reads No; the disproportionality carve-back fact is
+      the table's footer, as drafted, never a row. Rendering applies to
+      generation 2; the generic titles and the footer routing reach the
+      extractor with generation 3.
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.

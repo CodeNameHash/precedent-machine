@@ -315,3 +315,47 @@ test('an MAE-coded pill carries a link to the MAE definition section', () => {
   const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'conditions-b-table');
   assert.equal(table.rows[0].cells.find((cell) => cell.column_id === 'standard').link_section, 'mae-definitions');
 });
+
+// Decision 25 (Ben, 2026-09-13, on the MAE section).
+const maeFact = (id, subtype, subject, conclusions, text = 'any change in GAAP') => ({
+  fact_id: id, proposal_id: id, family_key: 'MAE_DEFINITION', subtype_key: subtype, section_reference: '1.01', structure_node_id: 'n-1-01',
+  headline: { label: subject, distinguishing_component_ids: [`${id}-c`] },
+  components: [
+    { component_id: `${id}-c`, kind: 'LIST_ELEMENT', label: subject, text, origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 10, gap_before: false, children: [] },
+    { component_id: `${id}-x`, kind: 'CROSS_REFERENCE', label: 'clauses', text: 'clauses (i) through (iv)', origin: 'OWN', source_span_id: 's', start_byte: 20, end_byte: 30, gap_before: true, children: [], resolves_to: null },
+  ],
+  conclusions,
+});
+
+test('the MAE definitions table shows "None" for a fixed row no fact fills, once another row is filled', () => {
+  const company = maeFact('mae-def-co', 'DEFINITION_PRONG', 'Company', { table_key: 'mae-definitions-table', row_label: 'Company', cells: [{ column_id: 'test', text: 'any change in GAAP', component_ids: ['mae-def-co-c'] }] });
+  const view = buildTableView({ facts: [company], tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'mae-definitions-table');
+  assert.equal(table.absent_row_label, 'None');
+  assert.deepEqual(table.rows.map((row) => [row.subject, row.absent || false]), [['Parent', true], ['Company', false]]);
+  assert.equal(table.rows[0].backing_facts.length, 0);
+});
+
+test('an empty MAE definitions table is not evidence of absence: no rows, no table', () => {
+  const view = buildTableView({ facts: [], tableShapes, legalSchema });
+  assert.equal(view.sections.some((section) => section.section_key === 'mae-definitions'), false);
+});
+
+test('a carve-out row with no carve-back reading says No, and the carve-back fact is the footer, never a row', () => {
+  const gaap = maeFact('mae-gaap', 'EXCLUSION', 'GAAP', { table_key: 'mae-carveouts-company', row_label: 'Changes in GAAP or accounting principles', cells: [{ column_id: 'provision', text: 'any change in GAAP', component_ids: ['mae-gaap-c'] }] });
+  const war = maeFact('mae-war', 'EXCLUSION', 'war', { table_key: 'mae-carveouts-company', row_label: 'Acts of war, armed hostilities, or terrorism', cells: [
+    { column_id: 'provision', text: 'acts of war', component_ids: ['mae-war-c'] },
+    { column_id: 'disproportionateCarveback', code: 'YES', component_ids: ['mae-war-x'] },
+  ] }, 'acts of war');
+  const carveback = maeFact('mae-cb', 'DISPROPORTIONALITY_CARVEBACK', 'carve-back', { table_key: 'mae-carveouts-company', row_label: 'Disproportionate carve-back', cells: [{ column_id: 'provision', text: 'except to the extent disproportionate', component_ids: ['mae-cb-c'] }] }, 'except to the extent disproportionate');
+  const view = buildTableView({ facts: [gaap, war, carveback], tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'mae-carveouts-company');
+  assert.deepEqual(table.rows.map((row) => row.subject), ['Changes in GAAP or accounting principles', 'Acts of war, armed hostilities, or terrorism']);
+  const gaapCell = table.rows[0].cells.find((cell) => cell.column_id === 'disproportionateCarveback');
+  assert.equal(gaapCell.label, 'No');
+  assert.equal(gaapCell.code, 'NO');
+  assert.equal(gaapCell.defaulted, true);
+  assert.equal(table.rows[1].cells.find((cell) => cell.column_id === 'disproportionateCarveback').label, 'Yes');
+  assert.equal(table.footer.label, 'Disproportionate carve-back as drafted');
+  assert.deepEqual(table.footer.entries.map((entry) => [entry.fact_id, entry.text]), [['mae-cb', 'except to the extent disproportionate']]);
+});

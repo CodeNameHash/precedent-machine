@@ -598,6 +598,92 @@ function applyDecision24ConditionTiers(doc) {
   }
 }
 
+// ==========================================================================
+// Decision 25 (MAE section). Ben, 2026-09-13, on the rendered Metsera MAE
+// section: "if there is no MAE for parent just say none. And in the carve
+// outs column we need to use generic titles. And the disproportionate carve
+// out must say yes or no. Then we should show how the disproportionate carve
+// out is drafted at the bottom of the table". Each is a rule over the
+// shapes, applied the same way on every agreement:
+//   (a) the definitions table keeps its fixed Parent / Company rows and a
+//       row with no definition fact renders as "None" (absent_row_label);
+//   (b) the carve-out tables become fixed lists of the generic carve-out
+//       titles (the corpus taxonomy MAE_CARVEOUT_CODES, which contains the
+//       print's ten), open to a new title when none fits, with the
+//       carve-out's words in a verbatim column beside the title;
+//   (c) the carve-back column says Yes or No and nothing else: a carve-out
+//       row whose readout leaves it blank renders No (absent_code);
+//   (d) the disproportionality carve-back fact is the table's footer
+//       (footer_from_subtype), showing how it is drafted, never a row.
+// ==========================================================================
+
+const MAE_CARVEOUT_ROWS = [
+  'General economic conditions',
+  'Industry-wide conditions',
+  'Financial / capital / credit market conditions',
+  'Acts of war, armed hostilities, or terrorism',
+  'Natural disasters or acts of God',
+  'Pandemic / epidemic / public health crisis',
+  'Announcement or pendency of the transaction',
+  'Compliance with the terms of this Agreement',
+  'Actions taken at the request or with consent of Parent',
+  'Changes in applicable law or regulation',
+  'Changes in GAAP or accounting principles',
+  'Changes in the trading price or volume of stock',
+  'Failure to meet internal projections or forecasts',
+  'Most-favored-nation pricing actions',
+  'Executive orders / sanctions / tariffs',
+  'Tariffs / trade barriers',
+  'Government shutdowns / civil unrest',
+  'Clinical trial results (life sciences)',
+  'FDA discussions or correspondence (life sciences)',
+  'FDA approvals of competitor products / competitor entry',
+  'Supply chain disruptions',
+  'Pricing / reimbursement changes (healthcare)',
+  'Statements by medical / scientific organizations',
+  'Patent expirations / loss of exclusivity',
+  'Acts or omissions of Parent / Buyer',
+  'Loss of employees or executive departures',
+  'Other carve-out',
+];
+
+function applyDecision25MaeSection(doc) {
+  const section = findSection(doc, 'mae-definitions');
+  const definitions = findTable(section, 'mae-definitions-table');
+  definitions.absent_row_label = 'None';
+  definitions.guidance = 'One row per party: the DEFINITION_PRONG fact defining that party\'s Material Adverse Effect, its operative test in the Test column. A party with no MAE definition in the agreement has no fact and the row shows "None"; never code a definition from the other party\'s.';
+  section.no_conclusions_subtype_keys = [...new Set([...(section.no_conclusions_subtype_keys || []), 'DEFINITION_INSTANCE', 'UNDERLYING_CAUSE_RESTORATION'])];
+  for (const [tableKey, party] of [['mae-carveouts-parent', 'Parent'], ['mae-carveouts-company', 'the Company']]) {
+    const table = findTable(section, tableKey);
+    table.rows_are = 'fixed list';
+    table.fixed_row_labels = [...MAE_CARVEOUT_ROWS];
+    table.open_rows = true;
+    table.subtype_keys = ['EXCLUSION', 'DISPROPORTIONALITY_CARVEBACK'];
+    table.term_column.header = 'Carve-out';
+    table.columns = [
+      {
+        column_id: 'provision',
+        header: 'As drafted',
+        render: 'verbatim',
+        fill_from: ['LIST_ELEMENT', 'OPERATION', 'LIST'],
+      },
+      {
+        column_id: 'disproportionateCarveback',
+        header: 'Disproportionate Carveback',
+        render: 'vocabulary',
+        vocabulary: [
+          { code: 'YES', label: 'Yes', tone: 'neutral', source: 'print', print_evidence: { page: 77, row_label: 'Changes in GAAP or accounting principles' } },
+          { code: 'NO', label: 'No', tone: 'neutral', addition: true, reason: `${BEN} #25: "the disproportionate carve out must say yes or no" -- the print's "Not established" is not an answer.` },
+        ],
+        absent_code: 'NO',
+        fill_from: ['STANDARD', 'CROSS_REFERENCE'],
+      },
+    ];
+    table.footer_from_subtype = { subtype_key: 'DISPROPORTIONALITY_CARVEBACK', label: 'Disproportionate carve-back as drafted' };
+    table.guidance = `Carve-outs from ${party}'s Material Adverse Effect: one row per EXCLUSION fact, row_label the generic title from fixed_row_labels that names the carve-out's subject (a new generic title only when none fits, never the agreement's own words), the carve-out's words in the provision column, and disproportionateCarveback YES only when the disproportionality carve-back applies to this carve-out (cite the CROSS_REFERENCE that names it), otherwise NO. The DISPROPORTIONALITY_CARVEBACK fact goes to this table with row_label "Disproportionate carve-back" and its words in the provision column; the page shows it under the table, never as a row.`;
+  }
+}
+
 function applyDecision5MaeCarveouts(doc) {
   const section = findSection(doc, 'mae-definitions');
   for (const tableKey of ['mae-carveouts-parent', 'mae-carveouts-company']) {
@@ -816,6 +902,7 @@ function build() {
   applyDecision22EmployeeBenefits(doc);
   applyDecision23VotesAndMeeting(doc);
   applyDecision24ConditionTiers(doc);
+  applyDecision25MaeSection(doc);
   applyDecision7InterimCovenants(doc);
   applyDecision8NoShop(doc);
   applyDecision9VotesTrigger(doc);
