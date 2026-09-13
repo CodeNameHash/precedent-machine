@@ -1619,7 +1619,15 @@ Sequence and proof:
       information than the old system had": a second pass proposes
       additional columns and codes from the V2 schema and from the layered
       NCS output, marked as additions in the same note for Ben to accept or
-      strike; (b) contract: each fact carries
+      strike. Pass 1 merged 2026-09-13 00:08 UTC from
+      `session_01HJJZ9Z1c9wPtjq8mHNoh6K`: 30 sections, 36 tables, headers
+      right, but most columns came out verbatim with no vocabulary because
+      the legacy code composes pills in render functions. Ben's printed
+      TopBuild review page (`docs/codex-program/notes/TopBuild-Review-2026-09-12.pdf`,
+      text in `fixtures/product/topbuild-review/print-text.v1.json`) carries
+      the pills as shown; pass 2 (`session_01JddnH4Qh57hJE4kCccU58D`) harvests
+      the vocabularies from it and the unread label maps, adds the V2
+      additions, and rewrites the note for Ben; (b) contract: each fact carries
       `conclusions`, one coded value per column of its subtype's table,
       validated against the vocabulary, alongside the verbatim components;
       (c) extractor V9 returns conclusions; (d) published page and Query
