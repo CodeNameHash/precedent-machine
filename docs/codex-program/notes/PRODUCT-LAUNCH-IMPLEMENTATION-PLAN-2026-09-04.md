@@ -2029,7 +2029,18 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       per representation (seeded for Organization and Authority; the
       other eighteen await Ben's vocabulary), sent to the extractor as
       the only allowed limb names, open only when none fits.
+      Ben, 21:25 UTC: "the sub items are pretty good, put that work to
+      make canonical a later task (and perhaps you can suggest them once
+      we have gone a few rounds with different agreements)". Seeded
+      lists kept; the rest is Q5.
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
+- [ ] Q5 Canonical limb names for the other eighteen representations
+      (Ben, 2026-09-13 21:25 UTC). After a few agreements have run (Metsera,
+      Olaplex, Apogee at least), harvest the row_detail values the extractor
+      produced per representation across those runs, cluster them, and put a
+      proposed canonical list per representation to Ben in one note for his
+      decision; then add them to `detail_labels_by_row` in generator decision
+      31 and regenerate. Ben decides the names; the code only proposes.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.
 
