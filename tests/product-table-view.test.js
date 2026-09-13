@@ -303,3 +303,15 @@ test('bring-down tiers are lines under Accuracy of Representations, referencing 
   assert.equal(row.sub_rows[1].cells.find((cell) => cell.column_id === 'reference').label, 'Section 3.01 (Organization, Standing and Corporate Power); Section 3.04 (Authority)');
   assert.equal(row.cells.find((cell) => cell.column_id === 'standard').values.length, 2, 'the overview keeps both tiers');
 });
+
+test('an MAE-coded pill carries a link to the MAE definition section', () => {
+  const fact = {
+    fact_id: 'bd-mae', proposal_id: 'bd-mae', family_key: 'CLOSING_CONDITIONS', subtype_key: 'BRINGDOWN', section_reference: '7.02(a)', structure_node_id: 'n-7-02',
+    headline: { label: 'Bring-down', distinguishing_component_ids: ['bd-mae-std'] },
+    components: [{ component_id: 'bd-mae-std', kind: 'STANDARD', label: 'standard', text: 'would not have a Company Material Adverse Effect', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 10, gap_before: false, children: [] }],
+    conclusions: { table_key: 'conditions-b-table', row_label: 'Accuracy of Representations', cells: [{ column_id: 'standard', code: 'TRUE_EXCEPT_NO_MAE', component_ids: ['bd-mae-std'] }] },
+  };
+  const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'conditions-b-table');
+  assert.equal(table.rows[0].cells.find((cell) => cell.column_id === 'standard').link_section, 'mae-definitions');
+});

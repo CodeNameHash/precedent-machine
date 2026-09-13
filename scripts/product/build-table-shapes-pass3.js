@@ -256,6 +256,9 @@ function applyDecision3BringDown(doc) {
       label: 'True except where failure would not cause an MAE',
       tone: 'neutral',
       source: 'legacy_map',
+      // Ben, 2026-09-13: "there should be a link to the MAE definition from
+      // the MAE bringdown". The page renders a definition link on this pill.
+      links_to_section: 'mae-definitions',
       display_variants: [
         { label: 'Bringdown: MAE', source: 'print', print_evidence: { page: 18, row_label: 'No Conflict; Required Filings and Consents' } },
         { label: 'TRUE EXCEPT WHERE FAILURE WOULD NOT CAUSE AN MAE', source: 'print', print_evidence: { page: 115, row_label: 'Accuracy of Representations' } },
@@ -568,7 +571,18 @@ function applyDecision23VotesAndMeeting(doc) {
 // shown per row of reps and we should put row lines in there to clearly
 // separate". The print (p.115) shows each bring-down tier as its own line
 // with "Section 3.1(a) (Organization, Good Standing and Qualification)".
+function linkMaeCodesToDefinition(doc) {
+  const visit = (vocabulary) => {
+    for (const entry of vocabulary || []) {
+      if (/(^|_)MAE(_|$)/.test(entry.code) && !entry.links_to_section) entry.links_to_section = 'mae-definitions';
+    }
+  };
+  for (const vocabulary of Object.values(doc.shared_vocabularies || {})) visit(vocabulary);
+  for (const section of doc.sections) for (const table of section.tables || []) for (const column of table.columns || []) visit(column.vocabulary);
+}
+
 function applyDecision24ConditionTiers(doc) {
+  linkMaeCodesToDefinition(doc);
   for (const [sectionKey, tableKey] of [['conditions-b', 'conditions-b-table'], ['conditions-s', 'conditions-s-table']]) {
     const table = findTable(findSection(doc, sectionKey), tableKey);
     if (!table.fixed_row_labels.includes('Performance of Covenants')) {

@@ -45,7 +45,18 @@ function Cell({ cell, tableKey, rowIndex, selected, onSelect }) {
     ? `inline-flex items-center gap-1 rounded-none border px-2 py-0.5 text-[11px] font-semibold ${toneClass(cell.tone)}`
     : 'text-left text-xs text-ink';
   const selectedClass = selected ? 'ring-2 ring-amber-400' : '';
-  if (!canSelect) return <span className={baseClass}>{cell.label}</span>;
+  const definitionLink = cell.link_section ? (
+    <a href={`#provision-section-${cell.link_section}`} className="ml-1 text-[10px] font-semibold uppercase tracking-wide text-accent" data-testid="definition-link">definition</a>
+  ) : null;
+  if (!canSelect) return <span className={baseClass}>{cell.label}{definitionLink}</span>;
+  if (definitionLink) {
+    return (
+      <span className="inline-flex items-center">
+        <button type="button" data-testid={testId} data-selected={selected || undefined} onClick={() => onSelect({ tableKey, rowIndex, columnId: cell.column_id, componentId: (cell.component_ids || [])[0] || null, factId: (cell.fact_ids || [])[0] || null })} className={`${baseClass} ${selectedClass}`}>{cell.label}</button>
+        {definitionLink}
+      </span>
+    );
+  }
   return (
     <button
       type="button"
