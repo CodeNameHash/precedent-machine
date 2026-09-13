@@ -283,31 +283,60 @@ export default function ProvisionTables({
 }) {
   const factsById = useMemo(() => new Map((facts || []).map((fact) => [factIdOf(fact), fact])), [facts]);
   const [selection, setSelection] = useState(null);
+  // Each section collapses on its heading; the bar above offers collapse /
+  // expand all (Ben, 2026-09-13). Collapsed keys live here so a republish of
+  // the table view keeps the reader's choice.
+  const [collapsed, setCollapsed] = useState(() => new Set());
 
   if (!tableView || tableView.sections.length === 0) return null;
 
   const selectedFact = selection ? factsById.get(selection.factId) || null : null;
+  const allCollapsed = tableView.sections.every((section) => collapsed.has(section.section_key));
+  const toggleSection = (key) => setCollapsed((current) => {
+    const next = new Set(current);
+    if (next.has(key)) next.delete(key); else next.add(key);
+    return next;
+  });
+  const setAll = (collapse) => setCollapsed(collapse ? new Set(tableView.sections.map((section) => section.section_key)) : new Set());
 
   return (
     <div className="flex flex-wrap gap-6 lg:flex-nowrap" data-testid="provision-tables">
       <div className="min-w-0 flex-1 space-y-8">
-        {tableView.sections.map((section) => (
-          <section key={section.section_key} data-testid="provision-section" id={`provision-section-${section.section_key}`}>
-            <div className="mb-2 flex items-center gap-2">
-              <span className="h-2 w-2 shrink-0 rounded-full bg-accent" aria-hidden="true" />
-              <h3 className="whitespace-nowrap font-display text-lg text-ink">{section.title}</h3>
-              <span className="h-[2px] flex-1 bg-border" />
-            </div>
-            <div className="space-y-4 overflow-x-auto">
-              {section.tables.map((table) => (
-                <Table key={table.table_key} table={table} selection={selection} onSelect={setSelection} />
-              ))}
-            </div>
-            {section.facts_without_readout?.length ? (
-              <FactsWithoutReadout entries={section.facts_without_readout} sectionKey={section.section_key} onSelect={setSelection} />
-            ) : null}
-          </section>
-        ))}
+        <div className="flex justify-end gap-3 text-[11px] font-semibold text-accent" data-testid="section-toggles">
+          <button type="button" onClick={() => setAll(false)} disabled={collapsed.size === 0} className="disabled:text-inkFaint">Expand all</button>
+          <button type="button" onClick={() => setAll(true)} disabled={allCollapsed} className="disabled:text-inkFaint">Collapse all</button>
+        </div>
+        {tableView.sections.map((section) => {
+          const isCollapsed = collapsed.has(section.section_key);
+          return (
+            <section key={section.section_key} data-testid="provision-section" data-collapsed={isCollapsed || undefined} id={`provision-section-${section.section_key}`}>
+              <button
+                type="button"
+                onClick={() => toggleSection(section.section_key)}
+                aria-expanded={!isCollapsed}
+                className="mb-2 flex w-full items-center gap-2 text-left"
+                data-testid="section-heading"
+              >
+                <span className="h-2 w-2 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+                <h3 className="whitespace-nowrap font-display text-lg text-ink">{section.title}</h3>
+                <span className="h-[2px] flex-1 bg-border" />
+                <span className="font-mono text-[10px] uppercase tracking-wide text-inkFaint" aria-hidden="true">{isCollapsed ? 'show' : 'hide'}</span>
+              </button>
+              {isCollapsed ? null : (
+                <>
+                  <div className="space-y-4 overflow-x-auto">
+                    {section.tables.map((table) => (
+                      <Table key={table.table_key} table={table} selection={selection} onSelect={setSelection} />
+                    ))}
+                  </div>
+                  {section.facts_without_readout?.length ? (
+                    <FactsWithoutReadout entries={section.facts_without_readout} sectionKey={section.section_key} onSelect={setSelection} />
+                  ) : null}
+                </>
+              )}
+            </section>
+          );
+        })}
         {tableView.defined_terms.length ? (
           <section data-testid="defined-terms-appendix">
             <h3 className="mb-2 border-b border-border pb-1 font-display text-lg text-ink">Defined Terms</h3>

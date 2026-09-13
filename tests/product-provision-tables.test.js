@@ -217,3 +217,12 @@ test('sub-rows render indented under their row and a two-reading cell shows both
   assert.match(html, /data-testid="table-multi"/);
   assert.equal((html.match(/MAE \(aggregate\) \(partial\)/g) || []).length, 2);
 });
+
+test('every section has a collapsible heading and the bar offers collapse / expand all', () => {
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts }));
+  assert.match(html, /data-testid="section-toggles"/);
+  assert.match(html, /Collapse all/);
+  assert.match(html, /Expand all/);
+  assert.equal((html.match(/data-testid="section-heading"/g) || []).length, tableView.sections.length);
+  assert.match(html, /aria-expanded="true"/);
+});
