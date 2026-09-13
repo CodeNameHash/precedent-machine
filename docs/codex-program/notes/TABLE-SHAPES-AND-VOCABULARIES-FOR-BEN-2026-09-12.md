@@ -869,4 +869,10 @@ Ben answered the twenty questions above by dictation (verbatim in `BEN-NCS-REVIE
 18. No other reps: Yes / No / Silent stands, subject to later findings.
 19. Defined terms: a reference appendix, not a fact table. Cross-deal comparison of a definition (how "Law" is defined in two deals) is a later feature, possibly soon.
 
-Open, re-asked in plainer words: 8, 11, 14, 15, 20.
+8. Interim covenants: two columns per negative-covenant row, Specific restrictions and Exceptions, each with its own pills.
+11. No-shop fiduciary out: one Engagement standard row showing the coded label, full sentence on click.
+14. Termination for breach: columns for Curable or not, Cure period, Cure period end (outside-date cap) and Terminator-breach bar, filled from the clause.
+15. Termination fees: Payer as its own column (Company / Parent); Ben is indifferent, the column keeps the comparison explicit.
+20. Approvals / Votes, Antitrust / Regulatory, Advisers / Fees / Expenses and Shareholder Meeting / Proxy / Tender Offer stay as sections for deals that carry that content.
+
+All twenty questions are answered (Ben, 2026-09-13 01:10 UTC). Pass 3 encodes these decisions in the generator and regenerates the JSON.

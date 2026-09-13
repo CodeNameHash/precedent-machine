@@ -1642,8 +1642,14 @@ Sequence and proof:
       added columns, each column mapped to the component kinds that fill
       it (`contracts/product/table-shapes.v2.json`,
       `tests/product-table-shapes.test.js`). Votes and Employee benefits
-      spot-checked against the print pages. The note is with Ben to
-      correct; (b) contract: each fact carries
+      spot-checked against the print pages. Ben answered all twenty of the
+      note's questions 2026-09-13 01:00 to 01:10 UTC (comments note section
+      10; decisions listed at the end of the table-shapes note): double
+      merger and merger-form vocabulary, CVR earn-in, one shared bring-down
+      vocabulary, relative lookback, per-row trigger sets, separate no-shop
+      verbs, cure and terminator-bar columns, payer column, defined terms as
+      an appendix, the four thin sections kept. Pass 3 encodes them; (b)
+      contract: each fact carries
       `conclusions`, one coded value per column of its subtype's table,
       validated against the vocabulary, alongside the verbatim components;
       (c) extractor V9 returns conclusions; (d) published page and Query
