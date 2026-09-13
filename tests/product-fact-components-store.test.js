@@ -39,6 +39,7 @@ function createFakeClient() {
     product_residual_passes: [],
     product_fact_components: [],
     product_fact_headlines: [],
+    product_fact_conclusions: [],
   };
 
   function fromTable(table) {
@@ -88,6 +89,7 @@ function createFakeClient() {
       });
       for (const row of (prepared.fact_component_rows || [])) tables.product_fact_components.push({ run_id: runId, ...row });
       for (const row of (prepared.fact_headline_rows || [])) tables.product_fact_headlines.push({ run_id: runId, ...row });
+      for (const row of (prepared.fact_conclusion_rows || [])) tables.product_fact_conclusions.push({ run_id: runId, ...row });
       return { data: { ok: true }, error: null };
     },
     from: fromTable,
@@ -254,4 +256,81 @@ test('a V1 proposal without components reads back without the components/headlin
   assert.equal('headline' in readProposal, false);
   assert.equal(readProposal.statement, proposal.statement);
   assert.deepEqual(readProposal.roles, proposal.roles);
+});
+
+// FACT_CONCLUSIONS/V1 (contracts/product/fact-conclusions.v1.json), Part 3
+// storage: product_fact_conclusions is written in the same atomic section
+// commit as components, guarded the same way -- a fact whose conclusions
+// fail contract validation is rejected (not written, proposal marked
+// INVALID), and a valid one round-trips through commit and read.
+
+function equityAwardComponents() {
+  return [
+    {
+      component_id: 'c-term', kind: 'TERM', label: 'Equity type', text: 'RSUs', origin: 'OWN',
+      source_span_id: SPAN_ID, start_byte: 0, end_byte: 4, gap_before: false, children: [],
+    },
+    {
+      component_id: 'c-standard', kind: 'STANDARD', label: 'treatment',
+      text: 'converted into the right to receive shares of Parent common stock', origin: 'OWN',
+      source_span_id: SPAN_ID, start_byte: 5, end_byte: 72, gap_before: true, children: [],
+    },
+  ];
+}
+
+test('a fact conclusions readout round-trips through commit and read', async () => {
+  const client = createFakeClient();
+  const store = new ProductPhase2Store({ client });
+  const components = equityAwardComponents();
+  const headline = { label: 'Equity award', distinguishing_component_ids: ['c-term'] };
+  const conclusions = {
+    table_key: 'equity-awards-table',
+    row_label: 'RSUs',
+    cells: [{ column_id: 'consideration', code: 'PARENT_STOCK_ROLLOVER', component_ids: ['c-standard'] }],
+  };
+  const proposal = baseProposal({
+    family_key: 'CONSIDERATION', subtype_key: 'EQUITY_AWARD', components, headline, conclusions,
+  });
+  const result = baseResult({ proposals: [proposal] });
+
+  await store.commitSection({ runId: RUN_ID, nodeId: NODE_ID, workerId: 'worker', attemptToken: 't'.repeat(8), result });
+
+  assert.equal(client.tables.product_fact_conclusions.length, 1, 'one conclusions row must be written');
+  assert.equal(client.tables.product_issues.length, 0, 'a valid conclusions readout raises no issue');
+
+  const sections = await store.loadCompletedSectionResults(RUN_ID);
+  const readProposal = sections[0].proposals[0];
+  assert.deepEqual(readProposal.conclusions, conclusions);
+  assert.equal(readProposal.validation_status, 'VALID');
+});
+
+test('a conclusions readout with an unknown vocabulary code is rejected: not written, proposal marked INVALID', async () => {
+  const client = createFakeClient();
+  const store = new ProductPhase2Store({ client });
+  const components = equityAwardComponents();
+  const headline = { label: 'Equity award', distinguishing_component_ids: ['c-term'] };
+  const conclusions = {
+    table_key: 'equity-awards-table',
+    row_label: 'RSUs',
+    cells: [{ column_id: 'consideration', code: 'BOGUS_CODE', component_ids: ['c-standard'] }],
+  };
+  const proposal = baseProposal({
+    family_key: 'CONSIDERATION', subtype_key: 'EQUITY_AWARD', components, headline, conclusions,
+  });
+  const result = baseResult({ proposals: [proposal] });
+
+  await store.commitSection({ runId: RUN_ID, nodeId: NODE_ID, workerId: 'worker', attemptToken: 't'.repeat(8), result });
+
+  assert.equal(client.tables.product_fact_conclusions.length, 0, 'an invalid conclusions readout is never written');
+  assert.ok(client.tables.product_fact_components.length > 0, 'the (valid) component rows are unaffected');
+  const storedProposal = client.tables.product_proposals.find((row) => row.proposal_id === proposal.proposal_id);
+  assert.equal(storedProposal.payload.validation_status, 'INVALID');
+  const issue = client.tables.product_issues.find((row) => row.payload.code === 'INVALID_FACT_CONCLUSIONS');
+  assert.ok(issue, 'an issue records the rejected conclusions readout');
+  const problems = JSON.parse(issue.payload.message);
+  assert.ok(problems.some((problem) => /unknown code "BOGUS_CODE"/.test(problem)));
+
+  const sections = await store.loadCompletedSectionResults(RUN_ID);
+  const readProposal = sections[0].proposals[0];
+  assert.equal('conclusions' in readProposal, false);
 });
