@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { renderHeadline, renderLayer } from '../../lib/product/fact-components';
 import { displayReviewLabel } from '../../lib/product/review-labels';
 import { displaySectionReference } from '../../lib/product/section-reference-display';
+import { buildTableView } from '../../lib/product/table-view';
+import ProvisionTables from './ProvisionTables';
 
 const VALUE_KINDS = new Set(['THRESHOLD', 'PERIOD', 'PERCENTAGE', 'DATE', 'AMOUNT']);
 const REFERENCE_KINDS = new Set(['DEFINED_TERM', 'CROSS_REFERENCE']);
@@ -87,7 +89,42 @@ export function PublishedFact({ fact, onSource, initiallyExpanded, aids = null, 
   </li>;
 }
 
-export default function PublishedSummary({ groups, onSource, initiallyExpanded = false }) {
+// `view` picks between the table-based layout (mockup approved by Ben
+// 2026-09-12/13) and the original layer-descent layout. Left unset, it
+// defaults to 'tables' only when `tableShapes` resolves a table for at
+// least one fact -- so callers that pass no `tableShapes` (V1 output, or a
+// caller not yet updated for the table view) keep rendering exactly as
+// before.
+export default function PublishedSummary({
+  groups, onSource, initiallyExpanded = false, view = null,
+  tableShapes = null, legalSchema = null, reviewItemsByFactId = null,
+  provenanceByFactId = null, sectionTextByFactId = null,
+  onDecision = null, onComment = null, onReset = null,
+}) {
+  const flatFacts = useMemo(() => (groups || []).flatMap((group) => group.facts), [groups]);
+  const tableView = useMemo(
+    () => (tableShapes ? buildTableView({ facts: flatFacts, tableShapes, legalSchema }) : null),
+    [tableShapes, legalSchema, flatFacts],
+  );
+  const hasTables = !!(tableView && tableView.sections.some((section) => section.tables.some((table) => table.rows.length > 0)));
+  const resolvedView = view || (hasTables ? 'tables' : 'layers');
+
+  if (resolvedView === 'tables' && tableView) {
+    return <section aria-labelledby="published-summary-heading" className="space-y-6" data-testid="published-summary">
+      <h2 id="published-summary-heading" className="font-display text-2xl text-ink">Published summary</h2>
+      <ProvisionTables
+        tableView={tableView}
+        facts={flatFacts}
+        reviewItemsByFactId={reviewItemsByFactId}
+        provenanceByFactId={provenanceByFactId}
+        sectionTextByFactId={sectionTextByFactId}
+        onDecision={onDecision}
+        onComment={onComment}
+        onReset={onReset}
+      />
+    </section>;
+  }
+
   return <section aria-labelledby="published-summary-heading" className="space-y-6" data-testid="published-summary">
     <h2 id="published-summary-heading" className="font-display text-2xl text-ink">Published summary</h2>
     {(groups || []).map((group) => group.collapsed

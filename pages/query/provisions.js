@@ -1,9 +1,29 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useUser } from '../../lib/useUser';
 import { Breadcrumbs, EmptyState, SkeletonCard, ErrorState } from '../../components/UI';
-import { PublishedFact } from '../../components/product/PublishedSummary.jsx';
+import PublishedSummary from '../../components/product/PublishedSummary.jsx';
 import { displayReviewLabel } from '../../lib/product/review-labels';
 import legalSchemaV2 from '../../contracts/product/legal-schema.v2.json';
+import tableShapesV3 from '../../contracts/product/table-shapes.v3.json';
+
+// The provision rail: one link per table-shapes section, in shape order, so
+// a reader can jump straight to (say) Termination Fees across every
+// agreement shown below (mockup approved by Ben 2026-09-12/13).
+function ProvisionRail({ sections }) {
+  if (!sections.length) return null;
+  return (
+    <nav aria-label="Provision sections" className="hidden w-48 shrink-0 lg:block" data-testid="provision-rail">
+      <p className="text-[10px] font-bold uppercase tracking-wide text-inkFaint">Jump to</p>
+      <ul className="mt-2 space-y-1 text-xs">
+        {sections.map((section) => (
+          <li key={section.section_key}>
+            <a href={`#provision-section-${section.section_key}`} className="text-inkMid hover:text-accent">{section.title}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
 
 export const NO_FACTS_MESSAGE = 'No published layered facts yet. Facts appear here after a V2 review is published.';
 
@@ -77,17 +97,20 @@ export function QueryProvisionsBody({
       ) : null}
 
       {!error && agreementsWithFacts.length > 0 ? (
-        <div className="space-y-8">
-          {agreementsWithFacts.map((agreement) => (
-            <div key={agreement.source_document_id} className="space-y-2">
-              <h2 className="font-display text-lg text-ink border-b border-border pb-1">{agreement.agreement_label}</h2>
-              <ul className="mt-2 space-y-2">
-                {agreement.facts.map((fact) => (
-                  <PublishedFact key={fact.review_item_id} fact={fact} />
-                ))}
-              </ul>
-            </div>
-          ))}
+        <div className="flex gap-8">
+          <ProvisionRail sections={tableShapesV3.sections} />
+          <div className="min-w-0 flex-1 space-y-8">
+            {agreementsWithFacts.map((agreement) => (
+              <div key={agreement.source_document_id} className="space-y-2">
+                <h2 className="font-display text-lg text-ink border-b border-border pb-1">{agreement.agreement_label}</h2>
+                <PublishedSummary
+                  groups={[{ family_key: 'ALL', collapsed: false, facts: agreement.facts }]}
+                  tableShapes={tableShapesV3}
+                  legalSchema={legalSchemaV2}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       ) : null}
     </div>

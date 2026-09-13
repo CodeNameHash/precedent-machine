@@ -1,0 +1,182 @@
+'use strict';
+
+// Tests for lib/product/table-view.js buildTableView: turns accepted
+// FACT_COMPONENTS/V2 facts into the section/table/row/cell shape behind the
+// published and Query pages' coded-conclusion tables (docs/core/CODEBASE-GUIDE.md
+// "Layered fact model, V2"; mockup approved by Ben 2026-09-12/13). Exercises
+// the fixture used by tests/product-published-layers.test.js plus two
+// hand-written facts carrying a `conclusions` layer, standing in for the
+// (not yet merged) lib/product/fact-conclusions.js.
+
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const test = require('node:test');
+
+const { buildTableView } = require('../lib/product/table-view');
+const tableShapes = require('../contracts/product/table-shapes.v3.json');
+const legalSchema = require('../contracts/product/legal-schema.v2.json');
+
+const fixture = JSON.parse(fs.readFileSync(
+  path.join(__dirname, 'fixtures/product/published-layers-fixture.v2.json'), 'utf8',
+));
+
+// Hand-written conclusion A: an explicit table_key, a full row_label, cells
+// for two of the table's three columns (the third stays a dash), and a
+// DEFINED_TERM component to exercise the defined_terms appendix.
+const conclusionFactA = {
+  fact_id: 'f-material-contracts-2',
+  source_closure_id: 'c-mc-2',
+  family_key: 'MATERIAL_CONTRACTS',
+  subtype_key: 'MATERIAL_CONTRACT_CATEGORY_CRITERION',
+  section_reference: '3.14(b)',
+  coverage_only: false,
+  headline: { label: 'Material Contracts category', distinguishing_component_ids: [] },
+  conclusions: {
+    table_key: 'material-contracts-table',
+    row_label: 'Real estate leases',
+    cells: {
+      contractType: { kind: 'pill', label: 'Real property lease', tone: 'buyer', component_ids: ['c-mc2-category'] },
+      threshold: { kind: 'value', label: '$1,000,000', tone: 'neutral', component_ids: ['c-mc2-threshold'] },
+    },
+  },
+  components: [
+    {
+      component_id: 'c-mc2-category', kind: 'TERM', label: 'contract category', text: 'any real property lease',
+      source_span_id: 's-mc-2', start_byte: 100, end_byte: 124, origin: 'OWN', gap_before: false, children: [],
+    },
+    {
+      component_id: 'c-defined-1', kind: 'DEFINED_TERM', label: 'defined term', text: 'Material Contract',
+      source_span_id: 's-mc-2', start_byte: 130, end_byte: 148, origin: 'OWN', gap_before: false, children: [],
+      resolves_to: { structure_node_id: 'n-1-1', text: '"Material Contract" means any Contract described in this Section 3.14.' },
+    },
+  ],
+};
+
+// Hand-written conclusion B: no table_key -- the row_label ("Company
+// termination fee") matches a fixed_row_label of termination-fees-table
+// exactly, so the fallback table resolution (used because
+// lib/product/fact-conclusions.js is not merged yet) must find it the same
+// way it would place a fact with no conclusions at all.
+const conclusionFactB = {
+  fact_id: 'f-termination-fee-2',
+  source_closure_id: 'c-tf-2',
+  family_key: 'TERMINATION_FEE',
+  subtype_key: 'FEE_AMOUNT',
+  section_reference: '8.3(a)',
+  coverage_only: false,
+  headline: { label: 'Company termination fee amount', distinguishing_component_ids: [] },
+  conclusions: {
+    row_label: 'Company termination fee',
+    cells: {
+      amount: { kind: 'value', label: '$50,000,000', tone: 'neutral', component_ids: ['c-tf2-amount'] },
+      payer: { kind: 'pill', label: 'Company', tone: 'seller', component_ids: ['c-tf2-payer'] },
+    },
+  },
+  components: [
+    {
+      component_id: 'c-tf2-amount', kind: 'AMOUNT', label: 'amount', text: '$50,000,000',
+      source_span_id: 's-tf-2', start_byte: 200, end_byte: 211, origin: 'OWN', gap_before: false,
+      value: { canonical: 50000000, unit: 'USD' }, children: [],
+    },
+  ],
+};
+
+const facts = [...fixture.facts, conclusionFactA, conclusionFactB];
+const view = buildTableView({ facts, tableShapes, legalSchema });
+
+function section(sectionKey) {
+  return view.sections.find((candidate) => candidate.section_key === sectionKey);
+}
+
+function table(sectionKey, tableKey) {
+  return section(sectionKey)?.tables.find((candidate) => candidate.table_key === tableKey);
+}
+
+test('sections come out in the table shapes order, only for sections that ended up with rows', () => {
+  const keys = view.sections.map((candidate) => candidate.section_key);
+  assert.deepEqual(keys, ['termination-fees', 'mae-definitions', 'material-contracts']);
+});
+
+test('a coverage-only fact never reaches a table', () => {
+  assert.equal(section('misc-boilerplate'), undefined);
+  const allFactIds = view.sections.flatMap((candidate) => candidate.tables)
+    .flatMap((candidate) => candidate.rows)
+    .flatMap((row) => row.backing_facts.map((entry) => entry.fact_id));
+  assert.ok(!allFactIds.includes('f-boilerplate-notices-1'));
+});
+
+test('a fact with no conclusions falls back to rendering cells from its components by fill_from kind', () => {
+  const materialContracts = table('material-contracts', 'material-contracts-table');
+  const fallbackRow = materialContracts.rows.find((row) => row.backing_facts.some((entry) => entry.fact_id === 'f-material-contracts-1'));
+  assert.ok(fallbackRow, 'the fixture fact should have landed in material-contracts-table');
+  const byColumn = Object.fromEntries(fallbackRow.cells.map((cell) => [cell.column_id, cell]));
+  assert.equal(byColumn.contractType.kind, 'dash');
+  assert.equal(byColumn.threshold.kind, 'pill');
+  assert.equal(byColumn.threshold.label, 'threshold');
+  assert.equal(byColumn.threshold.tone, 'neutral');
+  assert.deepEqual(byColumn.threshold.component_ids, ['c-mc-threshold']);
+  assert.deepEqual(byColumn.threshold.fact_ids, ['f-material-contracts-1']);
+  assert.equal(byColumn.uncoveredBucket.kind, 'dash');
+});
+
+test('a fact with an explicit conclusions.table_key and row_label lands exactly there, cells taken from conclusions', () => {
+  const materialContracts = table('material-contracts', 'material-contracts-table');
+  const row = materialContracts.rows.find((candidate) => candidate.subject === 'Real estate leases');
+  assert.ok(row, 'conclusion A should create its own row, keyed by row_label');
+  const byColumn = Object.fromEntries(row.cells.map((cell) => [cell.column_id, cell]));
+  assert.equal(byColumn.contractType.kind, 'pill');
+  assert.equal(byColumn.contractType.label, 'Real property lease');
+  assert.equal(byColumn.contractType.tone, 'buyer');
+  assert.equal(byColumn.threshold.kind, 'value');
+  assert.equal(byColumn.threshold.label, '$1,000,000');
+  // uncoveredBucket was not supplied by the conclusion, so it stays a dash
+  // rather than falling back to component rendering.
+  assert.equal(byColumn.uncoveredBucket.kind, 'dash');
+  assert.deepEqual(row.backing_facts, [{ fact_id: 'f-material-contracts-2', section_reference: '3.14(b)' }]);
+});
+
+test('a fact with conclusions but no table_key is placed by matching row_label against a fixed_row_label', () => {
+  const terminationFees = table('termination-fees', 'termination-fees-table');
+  const row = terminationFees.rows.find((candidate) => candidate.subject === 'Company termination fee');
+  assert.ok(row, 'conclusion B should resolve to termination-fees-table via its row_label');
+  const byColumn = Object.fromEntries(row.cells.map((cell) => [cell.column_id, cell]));
+  assert.equal(byColumn.amount.kind, 'value');
+  assert.equal(byColumn.amount.label, '$50,000,000');
+  assert.equal(byColumn.payer.kind, 'pill');
+  assert.equal(byColumn.payer.tone, 'seller');
+  assert.equal(byColumn.trigger.kind, 'dash');
+  assert.equal(byColumn.deemingRulePresent.kind, 'dash');
+
+  // The fixture's own termination-fee-trigger fact has no conclusions and no
+  // subject that matches a fixed row label, so it lands in the same table as
+  // its own, separate row rather than being dropped.
+  const fallbackRow = terminationFees.rows.find((candidate) => candidate.backing_facts.some((entry) => entry.fact_id === 'f-termination-fee-trigger-1'));
+  assert.ok(fallbackRow);
+  assert.notEqual(fallbackRow.subject, row.subject);
+});
+
+test('a fact with no conclusions and no fixed-row match falls back to the one-per-subject table for its family', () => {
+  const maeParent = table('mae-definitions', 'mae-carveouts-parent');
+  const maeCompany = table('mae-definitions', 'mae-carveouts-company');
+  assert.ok(maeParent, 'the MAE carve-out fixture fact should land in the first one-per-subject table for MAE_DEFINITION');
+  assert.equal(maeCompany, undefined);
+  assert.equal(maeParent.rows.length, 1);
+  assert.equal(maeParent.rows[0].cells.find((cell) => cell.column_id === 'disproportionateCarveback').kind, 'dash');
+});
+
+test('the term_column and group_header carry through from the table shape', () => {
+  const terminationFees = table('termination-fees', 'termination-fees-table');
+  assert.equal(terminationFees.group_header, null);
+  assert.equal(terminationFees.term_column.header, 'Term');
+  const mutual = table('termination-rights', 'termination-rights-mutual');
+  assert.equal(mutual, undefined, 'no fact in this run maps to termination-rights, so it is absent entirely');
+});
+
+test('defined_terms collects DEFINED_TERM components across all facts, de-duplicated and sorted', () => {
+  assert.equal(view.defined_terms.length, 1);
+  const [term] = view.defined_terms;
+  assert.equal(term.term, 'Material Contract');
+  assert.equal(term.fact_id, 'f-material-contracts-2');
+  assert.match(term.definition, /means any Contract/);
+});

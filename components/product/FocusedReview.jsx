@@ -1,12 +1,16 @@
 import { useMemo, useState } from 'react';
 import ProposalCard from './ProposalCard';
 import { PublishedFact } from './PublishedSummary';
+import ProvisionTables from './ProvisionTables';
 import { Requirement } from './ReviewWorkspace';
 import { displayReviewLabel } from '../../lib/product/review-labels';
 import { displaySectionReference } from '../../lib/product/section-reference-display';
 import { byteRangesToParts, firstCitedByte } from '../../lib/product/section-highlight';
 import { contract, walk } from '../../lib/product/fact-components';
 import { buildEditedComponents, componentEditPayload } from '../../lib/product/component-edit';
+import { buildTableView } from '../../lib/product/table-view';
+import tableShapesV3 from '../../contracts/product/table-shapes.v3.json';
+import legalSchemaV2 from '../../contracts/product/legal-schema.v2.json';
 
 const COMPONENT_KINDS = contract.component.component_kinds;
 
@@ -282,6 +286,30 @@ export function FocusedSection({ section, analysis, busy, command, openSource, c
       : { proposalId: proposal.proposal_id, componentId: selection.component_id, ranges: [{ start_byte: selection.start_byte, end_byte: selection.end_byte }] });
   }
   const decided = groups.flatMap((group) => group.facts).filter((fact) => (fact.entry.review_item?.decision || 'PENDING') !== 'PENDING').length;
+
+  // A table view of the same facts (mockup approved by Ben 2026-09-12/13),
+  // shown as an aid alongside the existing headline-and-layers list above --
+  // never replacing it (docs/core/CODEBASE-GUIDE.md "Review page aids").
+  // Decision, comment and revert stay wired to the section's own `command`,
+  // now offered from the evidence sidebar's review trail.
+  const tableFacts = useMemo(() => groups.flatMap((group) => group.facts)
+    .map((fact) => fact.entry)
+    .filter((entry) => !!entry.proposal.headline && Array.isArray(entry.proposal.components) && entry.proposal.components.length > 0)
+    .map((entry) => ({
+      ...entry.proposal,
+      fact_id: entry.proposal.proposal_id,
+      headline: entry.review_item?.edited_headline || entry.proposal.headline,
+      components: entry.review_item?.edited_components || entry.proposal.components,
+    })), [groups]);
+  const tableView = useMemo(
+    () => (tableFacts.length ? buildTableView({ facts: tableFacts, tableShapes: tableShapesV3, legalSchema: legalSchemaV2 }) : null),
+    [tableFacts],
+  );
+  const hasTableRows = !!(tableView && tableView.sections.some((candidate) => candidate.tables.some((table) => table.rows.length > 0)));
+  const reviewItemsByFactId = useMemo(() => new Map(
+    groups.flatMap((group) => group.facts).map((fact) => [fact.entry.proposal.proposal_id, fact.entry.review_item]),
+  ), [groups]);
+  const sectionTextByFactId = useMemo(() => (text ? new Map(tableFacts.map((fact) => [fact.fact_id, text])) : null), [tableFacts, text]);
   return <section id={`section-${section.node.node_id}`} className="scroll-mt-40 rounded-xl border border-border bg-paper p-4" data-testid="focused-section">
     <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border pb-2">
       <h3 className="font-display text-xl text-ink">{displaySectionReference(section.routing.section_reference)} {section.heading || 'Agreement section'}</h3>
@@ -301,6 +329,19 @@ export function FocusedSection({ section, analysis, busy, command, openSource, c
         {otherChecks.length ? <div className="mt-3"><button type="button" onClick={() => setShowChecks((current) => !current)} className="text-xs font-semibold text-accent">{showChecks ? 'Hide' : 'Show'} {otherChecks.length} other review check{otherChecks.length === 1 ? '' : 's'}</button>{showChecks ? <div className="mt-2 space-y-2">{otherChecks.map((item) => <Requirement key={item.item_id} item={item} analysis={analysis} busy={busy} onSource={openSource} onDecision={decide} />)}</div> : null}</div> : null}
       </div>
     </div>
+    {hasTableRows ? <div className="mt-4 rounded border border-border bg-paper p-3" data-testid="focused-table-view">
+      <p className="mb-2 text-[10px] font-bold uppercase tracking-wide text-inkLight">Table view</p>
+      <ProvisionTables
+        tableView={tableView}
+        facts={tableFacts}
+        reviewItemsByFactId={reviewItemsByFactId}
+        sectionTextByFactId={sectionTextByFactId}
+        onDecision={decide}
+        onComment={comment}
+        onReset={reset}
+        busy={busy}
+      />
+    </div> : null}
   </section>;
 }
 

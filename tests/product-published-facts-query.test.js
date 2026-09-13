@@ -183,8 +183,12 @@ test('QueryProvisionsBody renders matching facts headline-first, grouped per agr
     onSubtypeChange: () => {},
   }));
   assert.match(html, /https:\/\/www\.sec\.gov\/Archives\/doc-a\.htm/);
-  assert.match(html, /data-testid="fact-headline"/);
+  // The fact's family/subtype (TERMINATION/MUTUAL_CONSENT) resolves to the
+  // "Mutual consent" fixed row of termination-rights-mutual (table-shapes.v3.json),
+  // rendered as a small table of coded conclusions rather than the old
+  // headline-and-layers list.
+  assert.match(html, /data-testid="provision-tables"/);
+  assert.match(html, /data-testid="table-row"/);
   assert.match(html, /Mutual consent/);
-  assert.match(html, /Show layers/);
   assert.doesNotMatch(html, new RegExp(NO_FACTS_MESSAGE.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 });
