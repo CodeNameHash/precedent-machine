@@ -932,50 +932,6 @@
       ]
     },
     {
-      "section_key": "approvals-votes",
-      "title": "Approvals / Votes",
-      "legacy_config": "components/review/table-configs/approvals-votes.config.js",
-      "v2_family_keys": [
-        {
-          "key": "TERMINATION",
-          "confidence": "low"
-        }
-      ],
-      "tables": [
-        {
-          "table_key": "approvals-votes-table",
-          "group_header": null,
-          "term_column": {
-            "header": "Term",
-            "source": "subject",
-            "fill_from": [
-              "TERM"
-            ]
-          },
-          "columns": [
-            {
-              "column_id": "kind",
-              "header": "Kind",
-              "render": "verbatim",
-              "fill_from": [
-                "OPERATION"
-              ]
-            },
-            {
-              "column_id": "detail",
-              "header": "Detail",
-              "render": "verbatim",
-              "fill_from": [
-                "OPERATION"
-              ]
-            }
-          ],
-          "rows_are": "one per subject"
-        }
-      ],
-      "print_pages": []
-    },
-    {
       "section_key": "votes-approvals-meeting",
       "title": "Votes / Approvals / SEC Filing / Meeting Requirements",
       "legacy_config": "components/review/table-configs/votes-approvals-meeting.config.js",
@@ -1034,7 +990,7 @@
             },
             {
               "column_id": "value",
-              "header": "Value",
+              "header": "Period",
               "render": "value",
               "value_kind": "PERIOD",
               "trigger": {
@@ -1079,8 +1035,35 @@
                 }
               },
               "fill_from": [
-                "PERIOD"
+                "PERIOD",
+                "THRESHOLD",
+                "TRIGGER"
               ]
+            },
+            {
+              "column_id": "anchor",
+              "header": "After",
+              "render": "verbatim",
+              "fill_from": [
+                "TRIGGER",
+                "CONDITION",
+                "PERIOD"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-13 #23 (Metsera): the votes and meeting section reads as the print's table, one line per requirement. The print shows each period with its anchor (\"after mailing\", \"after effectiveness\")."
+            },
+            {
+              "column_id": "detail",
+              "header": "Detail",
+              "render": "verbatim",
+              "fill_from": [
+                "OPERATION",
+                "OBJECT",
+                "QUALIFIER",
+                "STANDARD"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-13 #23 (Metsera): the votes and meeting section reads as the print's table, one line per requirement. The print's Parent / Merger Sub approvals row is a sentence (\"Merger Sub stockholders adopt by written consent\")."
             },
             {
               "column_id": "requirement",
@@ -1100,7 +1083,9 @@
             "Meeting",
             "Meeting record date",
             "Broker search"
-          ]
+          ],
+          "open_rows": true,
+          "guidance": "One line per requirement as the print names it: the stockholder approval and its vote standard; Parent / Merger Sub approvals; the proxy filing deadline, mailing and meeting each as a period with its anchor; record date and broker search as present or absent. A new row only for a requirement none covers."
         },
         {
           "table_key": "votes-approvals-meeting-adjournment",
@@ -1186,27 +1171,12 @@
           "fixed_row_labels": [
             "Company adjournment rights",
             "Parent adjournment rights"
-          ]
-        }
-      ],
-      "print_pages": [
-        114
-      ]
-    },
-    {
-      "section_key": "sec-meeting",
-      "title": "Shareholder Meeting / Proxy / Tender-Offer SEC Matters",
-      "legacy_config": "components/review/table-configs/sec-meeting.config.js",
-      "v2_family_keys": [
+          ],
+          "guidance": "One row per party that may adjourn, with the permitted reasons, the controlling party and the restriction (how many times, how long, whose consent)."
+        },
         {
-          "key": "PROXY_MEETING",
-          "confidence": "high"
-        }
-      ],
-      "tables": [
-        {
-          "table_key": "sec-meeting-table",
-          "group_header": null,
+          "table_key": "votes-proxy-sec",
+          "group_header": "PROXY STATEMENT & SEC",
           "term_column": {
             "header": "Term",
             "source": "subject",
@@ -1216,34 +1186,73 @@
           },
           "columns": [
             {
-              "column_id": "subject",
-              "header": "Subject",
-              "render": "verbatim",
+              "column_id": "who",
+              "header": "Who",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "COMPANY",
+                  "label": "Company",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-13 #23 (Metsera): the votes and meeting section reads as the print's table, one line per requirement. The Company acts."
+                },
+                {
+                  "code": "PARENT",
+                  "label": "Parent",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-13 #23 (Metsera): the votes and meeting section reads as the print's table, one line per requirement. Parent acts."
+                },
+                {
+                  "code": "EACH_PARTY",
+                  "label": "Each party",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-13 #23 (Metsera): the votes and meeting section reads as the print's table, one line per requirement. Both act or cooperate."
+                }
+              ],
               "fill_from": [
-                "OPERATION"
+                "ACTOR"
               ]
             },
             {
-              "column_id": "signals",
+              "column_id": "provision",
               "header": "Provision",
               "render": "verbatim",
               "fill_from": [
-                "OPERATION"
-              ]
-            },
-            {
-              "column_id": "detail",
-              "header": "Detail",
-              "render": "verbatim",
-              "fill_from": [
-                "OPERATION"
-              ]
+                "OPERATION",
+                "OBJECT",
+                "STANDARD",
+                "EFFORTS_STANDARD",
+                "CONDITION"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-13 #23 (Metsera): the votes and meeting section reads as the print's table, one line per requirement. The operative words of the proxy or SEC step."
             }
           ],
-          "rows_are": "one per subject"
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Proxy statement filing",
+            "Parent review and comment",
+            "SEC comments and correspondence",
+            "Amendment or supplement",
+            "Board recommendation in proxy",
+            "Solicitation of approval",
+            "Information supplied"
+          ],
+          "open_rows": true,
+          "subtype_keys": [
+            "DOCUMENT_FILING",
+            "RECOMMENDATION_INCLUSION",
+            "MEETING_CALL_OR_HOLD"
+          ],
+          "guidance": "Term / Provision for the proxy statement and SEC steps: one row per step as named, the party in the Who column, the operative words in Provision. Never a row per grammatical subject."
         }
       ],
-      "print_pages": []
+      "print_pages": [
+        114
+      ]
     },
     {
       "section_key": "termination-rights",

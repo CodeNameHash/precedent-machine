@@ -1921,6 +1921,14 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       EMPLOYEE_MATTERS layer rule that a covenant listing several elements
       yields one fact per element; the other-protections table becomes a
       two-column Term / Provision table (generator decision 22).
+      19:20 UTC, Ben: "you have a termination right under approvals. And
+      then the votes section looks awful. And then so does the meeting
+      section...just doesn't make sense". The legacy Approvals / Votes
+      section mapped to TERMINATION (harvest artefact) and the SEC-meeting
+      section had no printed shape; generator decision 23 removes both,
+      keeps the print's votes table (p.114) as the one votes table with
+      the period's anchor and a detail column added, and adds a
+      two-column Proxy statement & SEC table for the proxy and SEC facts.
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.

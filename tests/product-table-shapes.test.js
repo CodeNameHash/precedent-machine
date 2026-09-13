@@ -445,11 +445,21 @@ test('Decision 15: Defined Terms is marked kind: reference_appendix, excluded fr
   assert.ok(/later feature/i.test(section.note));
 });
 
-// Decision 16: the four sections stay, unchanged.
-test('Decision 16: Approvals / Votes, Antitrust / Regulatory, Advisers / Fees / Expenses and Shareholder Meeting / Proxy / Tender Offer stay as sections', () => {
-  for (const sectionKey of ['approvals-votes', 'antitrust-regulatory', 'advisers-fees-expenses', 'sec-meeting']) {
+// Decision 16 kept four sections; decision 23 (Ben, 2026-09-13, on Metsera)
+// later removed Approvals / Votes (it mapped to TERMINATION, a harvest
+// artefact) and the SEC-meeting section (no printed shape), folding the
+// proxy and SEC facts into the votes section as a two-column table.
+test('Decision 16 / 23: Antitrust / Regulatory and Advisers / Fees / Expenses stay; Approvals / Votes and SEC meeting are folded into the votes section', () => {
+  for (const sectionKey of ['antitrust-regulatory', 'advisers-fees-expenses', 'votes-approvals-meeting']) {
     assert.ok(findSectionV3(sectionKey), `section '${sectionKey}' is kept`);
   }
+  for (const sectionKey of ['approvals-votes', 'sec-meeting']) {
+    assert.equal(tableShapesV3.sections.some((s) => s.section_key === sectionKey), false, `section '${sectionKey}' is removed`);
+  }
+  const votes = findSectionV3('votes-approvals-meeting');
+  assert.ok(votes.tables.some((t) => t.table_key === 'votes-proxy-sec'));
+  const votesTable = votes.tables.find((t) => t.table_key === 'votes-approvals-meeting-table');
+  assert.deepEqual(votesTable.columns.map((c) => c.column_id), ['voteStandard', 'value', 'anchor', 'detail', 'requirement']);
 });
 
 test('every V3 vocabulary code (including shared vocabularies) is unique within the enclosing list', () => {

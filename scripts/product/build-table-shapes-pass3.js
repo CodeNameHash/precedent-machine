@@ -496,6 +496,60 @@ function applyDecision22EmployeeBenefits(doc) {
   other.guidance = 'Term / Provision: one row per protection or disclaimer that is not a benefit element, named as the precedent would; the provision cell carries the operative words.';
 }
 
+// Ben, 2026-09-13 19:20 UTC: "you have a termination right under approvals.
+// And then the votes section looks awful. And then so does the meeting
+// section...just doesn't make sense". The legacy Approvals / Votes section
+// mapped to TERMINATION (a harvest artefact; termination has its own
+// section) and the SEC-meeting section had no printed shape, only a
+// subject / signals / detail list. Both are removed; the print's Votes /
+// Approvals / SEC Filing / Meeting Requirements table (p.114) is the one
+// votes table, with the anchor of each period ("after mailing") and a
+// detail column added, and a two-column Proxy statement & SEC table for the
+// proxy and SEC facts.
+function applyDecision23VotesAndMeeting(doc) {
+  removeSection(doc, 'approvals-votes');
+  removeSection(doc, 'sec-meeting');
+  const section = findSection(doc, 'votes-approvals-meeting');
+  const votes = findTable(section, 'votes-approvals-meeting-table');
+  const why = `${BEN} #23 (Metsera): the votes and meeting section reads as the print's table, one line per requirement.`;
+  const valueColumn = findColumn(votes, 'value');
+  valueColumn.header = 'Period';
+  valueColumn.fill_from = ['PERIOD', 'THRESHOLD', 'TRIGGER'];
+  votes.columns = [
+    findColumn(votes, 'voteStandard'),
+    valueColumn,
+    { column_id: 'anchor', header: 'After', render: 'verbatim', fill_from: ['TRIGGER', 'CONDITION', 'PERIOD'], addition: true, reason: `${why} The print shows each period with its anchor ("after mailing", "after effectiveness").` },
+    { column_id: 'detail', header: 'Detail', render: 'verbatim', fill_from: ['OPERATION', 'OBJECT', 'QUALIFIER', 'STANDARD'], addition: true, reason: `${why} The print's Parent / Merger Sub approvals row is a sentence ("Merger Sub stockholders adopt by written consent").` },
+    findColumn(votes, 'requirement'),
+  ];
+  votes.open_rows = true;
+  votes.guidance = 'One line per requirement as the print names it: the stockholder approval and its vote standard; Parent / Merger Sub approvals; the proxy filing deadline, mailing and meeting each as a period with its anchor; record date and broker search as present or absent. A new row only for a requirement none covers.';
+  const adjournment = findTable(section, 'votes-approvals-meeting-adjournment');
+  adjournment.guidance = 'One row per party that may adjourn, with the permitted reasons, the controlling party and the restriction (how many times, how long, whose consent).';
+  section.tables.push({
+    table_key: 'votes-proxy-sec',
+    group_header: 'PROXY STATEMENT & SEC',
+    term_column: { header: 'Term', source: 'subject', fill_from: ['TERM'] },
+    columns: [
+      {
+        column_id: 'who', header: 'Who', render: 'vocabulary',
+        vocabulary: [
+          addition('Company', `${why} The Company acts.`, { code: 'COMPANY' }),
+          addition('Parent', `${why} Parent acts.`, { code: 'PARENT' }),
+          addition('Each party', `${why} Both act or cooperate.`, { code: 'EACH_PARTY' }),
+        ],
+        fill_from: ['ACTOR'],
+      },
+      { column_id: 'provision', header: 'Provision', render: 'verbatim', fill_from: ['OPERATION', 'OBJECT', 'STANDARD', 'EFFORTS_STANDARD', 'CONDITION'], addition: true, reason: `${why} The operative words of the proxy or SEC step.` },
+    ],
+    rows_are: 'fixed list',
+    fixed_row_labels: ['Proxy statement filing', 'Parent review and comment', 'SEC comments and correspondence', 'Amendment or supplement', 'Board recommendation in proxy', 'Solicitation of approval', 'Information supplied'],
+    open_rows: true,
+    subtype_keys: ['DOCUMENT_FILING', 'RECOMMENDATION_INCLUSION', 'MEETING_CALL_OR_HOLD'],
+    guidance: 'Term / Provision for the proxy statement and SEC steps: one row per step as named, the party in the Who column, the operative words in Provision. Never a row per grammatical subject.',
+  });
+}
+
 function applyDecision5MaeCarveouts(doc) {
   const section = findSection(doc, 'mae-definitions');
   for (const tableKey of ['mae-carveouts-parent', 'mae-carveouts-company']) {
@@ -712,6 +766,7 @@ function build() {
   applyDecision20RepresentationRows(doc);
   applyDecision21GeneralCovenants(doc);
   applyDecision22EmployeeBenefits(doc);
+  applyDecision23VotesAndMeeting(doc);
   applyDecision7InterimCovenants(doc);
   applyDecision8NoShop(doc);
   applyDecision9VotesTrigger(doc);
