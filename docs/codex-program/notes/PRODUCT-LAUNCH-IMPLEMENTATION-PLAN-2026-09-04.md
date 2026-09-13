@@ -1627,8 +1627,15 @@ Sequence and proof:
       key rules (value kinds always carry `value`, reference kinds
       `resolves_to`, litanies `members`, inherited components
       `origin_structure_node_id`, each nullable); regression from the stored
-      rows in `tests/product-proposal-identity.test.js`. Same three steps
-      for Ben. The submission creates a V2
+      rows in `tests/product-proposal-identity.test.js`. 15:12 UTC retry:
+      FAILED again on the first held proposal (324dbed6…, section 1.1
+      bylaws succession): the read path stripped `components` and
+      `headline` from every proposal without component rows, but a held V2
+      proposal keeps its rejected tree in the stored payload and its id was
+      hashed over it. Fix: proposals without rows read back exactly as
+      written. All 995 stored proposals were then re-hashed locally through
+      the fixed read path (101 mismatches before, 0 after). Same three
+      steps for Ben. The submission creates a V2
       generation with prompt bundle `PRODUCT_LAYERED_COMPONENTS/V7`; the V1
       run and revision 45 of its review stay untouched as the baseline. Compare against Ben's 38
       touched items and his samples. Ben reviews the same 13 provisions again

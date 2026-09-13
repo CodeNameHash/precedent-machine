@@ -230,10 +230,13 @@ test('a component tree with problems is rejected: not written, proposal marked I
   const problems = JSON.parse(issue.payload.message);
   assert.ok(problems.some((problem) => /no distinguishing component/.test(problem)));
 
+  // The rejected tree stays in the payload: the proposal_id was hashed over
+  // it, so the proposal must read back exactly as written.
   const sections = await store.loadCompletedSectionResults(RUN_ID);
   const readProposal = sections[0].proposals[0];
-  assert.equal('components' in readProposal, false);
-  assert.equal('headline' in readProposal, false);
+  assert.deepEqual(readProposal.components, components);
+  assert.deepEqual(readProposal.headline, headline);
+  assert.equal(readProposal.validation_status, 'INVALID');
 });
 
 test('a V1 proposal without components reads back without the components/headline keys', async () => {
