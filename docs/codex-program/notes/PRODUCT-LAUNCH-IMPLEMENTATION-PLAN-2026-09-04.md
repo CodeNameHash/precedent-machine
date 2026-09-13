@@ -1602,7 +1602,19 @@ Sequence and proof:
       2026-09-13 00:53 UTC after the sandbox update; 3.12 completed on its
       second attempt in 633 seconds, past the old limit, so the 30-minute
       timeout is confirmed live. 01:30 UTC: 49 of 104 sections, 406 of 479
-      proposals valid. The submission creates a V2
+      proposals valid. 03:20 UTC: all 104 sections complete, 850 of 995
+      proposals valid, 5,070 components, every briefed section in; draft
+      finalisation then FAILED with DRAFT_NESTED_IDENTITY because the Review
+      read path attaches `coverage_only` to each proposal and the identity
+      re-check hashed it in (reproduced from the stored proposal in
+      `tests/product-proposal-identity.test.js`). Fix: finalisation ignores
+      the read-side annotations `coverage_only` and `conclusions`
+      (`PROPOSAL_READ_ANNOTATIONS` in `lib/product/agreement-draft.js`).
+      The conclusions migration `20260913020000_product_fact_conclusions.sql`
+      was applied to the preview database at 03:30 UTC after the sections
+      finished (table and wrapped commit function verified). Sequence: Ben
+      pulls, runs `update-sandbox-worker.js`, presses "Retry draft assembly"
+      on the intake page; the sections are not re-run. The submission creates a V2
       generation with prompt bundle `PRODUCT_LAYERED_COMPONENTS/V7`; the V1
       run and revision 45 of its review stay untouched as the baseline. Compare against Ben's 38
       touched items and his samples. Ben reviews the same 13 provisions again
