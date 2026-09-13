@@ -312,6 +312,17 @@ function applyDecision17StructureGrid(doc) {
   table.rows_are = 'one per agreement';
   table.layout = 'attribute grid';
   table.subject_label = 'The deal';
+  // Ben, 2026-09-13 20:40 UTC: "why does merger form appear twice?" The
+  // legacy Merger Form column (signals) and the per-step form column both
+  // rendered as "Merger Form" once the step suffix was dropped for a
+  // one-step deal. The per-step column is the merger form; the legacy one
+  // goes, and the grid reads structure first, then the closing mechanics.
+  table.columns = table.columns.filter((column) => column.column_id !== 'signals');
+  const order = ['dealStructure', 'mergerFormStep1', 'survivingEntityStep1', 'mergerFormStep2', 'survivingEntityStep2'];
+  table.columns.sort((left, right) => {
+    const l = order.indexOf(left.column_id); const r = order.indexOf(right.column_id);
+    return (l === -1 ? order.length : l) - (r === -1 ? order.length : r);
+  });
   table.guidance = 'One row for the whole agreement. dealStructure codes the transaction as a whole from the merger provisions: ONE_STEP_MERGER when one merger sub merges with and into the Company (or the Company into the merger sub) and no second merger follows; DOUBLE_MERGER when a second-step merger of the surviving corporation follows; TENDER_OFFER_BACK_END_MERGER when an offer precedes the merger. mergerFormStep1 codes the form of the first (or only) merger from the "with and into" words and which entity survives; the step-2 columns are used only for a DOUBLE_MERGER. Every fact of the family contributes the cells it can; the fact stating the merger itself carries dealStructure and mergerFormStep1.';
 }
 

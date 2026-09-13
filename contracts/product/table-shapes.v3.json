@@ -101,15 +101,50 @@
               ]
             },
             {
-              "column_id": "signals",
-              "header": "Merger Form",
+              "column_id": "mergerFormStep1",
+              "header": "Merger Form (Step 1)",
               "render": "vocabulary",
+              "vocabulary_ref": "MERGER_FORM",
+              "addition": true,
+              "reason": "Ben's decision 2026-09-13 #2: a double merger carries one merger form per step; Step 1 is the reverse triangular merger of merger sub into the target.",
               "fill_from": [
                 "OPERATION",
                 "ACTOR",
                 "OBJECT"
-              ],
-              "vocabulary_ref": "MERGER_FORM"
+              ]
+            },
+            {
+              "column_id": "survivingEntityStep1",
+              "header": "Surviving Entity (Step 1)",
+              "render": "term",
+              "addition": true,
+              "reason": "Ben's decision 2026-09-13 #2: the structure family must record which entity survives each step, not just the form.",
+              "fill_from": [
+                "TERM"
+              ]
+            },
+            {
+              "column_id": "mergerFormStep2",
+              "header": "Merger Form (Step 2)",
+              "render": "vocabulary",
+              "vocabulary_ref": "MERGER_FORM",
+              "addition": true,
+              "reason": "Ben's decision 2026-09-13 #1-#2: the second step of a double merger is a second-step forward merger of the surviving corporation into a second merger sub.",
+              "fill_from": [
+                "OPERATION",
+                "ACTOR",
+                "OBJECT"
+              ]
+            },
+            {
+              "column_id": "survivingEntityStep2",
+              "header": "Surviving Entity (Step 2)",
+              "render": "term",
+              "addition": true,
+              "reason": "Ben's decision 2026-09-13 #2: companion to Surviving Entity (Step 1) for the second step.",
+              "fill_from": [
+                "TERM"
+              ]
             },
             {
               "column_id": "closingLocation",
@@ -163,52 +198,6 @@
               ],
               "fill_from": [
                 "STANDARD"
-              ]
-            },
-            {
-              "column_id": "mergerFormStep1",
-              "header": "Merger Form (Step 1)",
-              "render": "vocabulary",
-              "vocabulary_ref": "MERGER_FORM",
-              "addition": true,
-              "reason": "Ben's decision 2026-09-13 #2: a double merger carries one merger form per step; Step 1 is the reverse triangular merger of merger sub into the target.",
-              "fill_from": [
-                "OPERATION",
-                "ACTOR",
-                "OBJECT"
-              ]
-            },
-            {
-              "column_id": "survivingEntityStep1",
-              "header": "Surviving Entity (Step 1)",
-              "render": "term",
-              "addition": true,
-              "reason": "Ben's decision 2026-09-13 #2: the structure family must record which entity survives each step, not just the form.",
-              "fill_from": [
-                "TERM"
-              ]
-            },
-            {
-              "column_id": "mergerFormStep2",
-              "header": "Merger Form (Step 2)",
-              "render": "vocabulary",
-              "vocabulary_ref": "MERGER_FORM",
-              "addition": true,
-              "reason": "Ben's decision 2026-09-13 #1-#2: the second step of a double merger is a second-step forward merger of the surviving corporation into a second merger sub.",
-              "fill_from": [
-                "OPERATION",
-                "ACTOR",
-                "OBJECT"
-              ]
-            },
-            {
-              "column_id": "survivingEntityStep2",
-              "header": "Surviving Entity (Step 2)",
-              "render": "term",
-              "addition": true,
-              "reason": "Ben's decision 2026-09-13 #2: companion to Surviving Entity (Step 1) for the second step.",
-              "fill_from": [
-                "TERM"
               ]
             }
           ],

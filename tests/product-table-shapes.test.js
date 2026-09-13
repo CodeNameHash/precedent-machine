@@ -251,8 +251,12 @@ test('Decision 1: deal structure carries One-step / Double / Tender-offer codes,
   const doubleMerger = dealStructure.vocabulary.find((v) => v.code === 'DOUBLE_MERGER');
   assert.ok(!doubleMerger.label.toLowerCase().includes('one step'), 'Double merger must not be labeled One Step Merger');
 
-  const mergerForm = table.columns.find((c) => c.column_id === 'signals');
+  // Decision 28 (Ben, 2026-09-13: "why does merger form appear twice?"):
+  // the legacy Merger Form column is gone; the per-step column is the form.
+  assert.equal(table.columns.some((c) => c.column_id === 'signals'), false);
+  const mergerForm = table.columns.find((c) => c.column_id === 'mergerFormStep1');
   assert.equal(mergerForm.vocabulary_ref, 'MERGER_FORM');
+  assert.deepEqual(table.columns.slice(0, 3).map((c) => c.column_id), ['dealStructure', 'mergerFormStep1', 'survivingEntityStep1']);
   const mergerFormVocab = tableShapesV3.shared_vocabularies.MERGER_FORM;
   assert.deepEqual(mergerFormVocab.map((v) => v.label).sort(), ['Forward merger', 'Forward triangular merger', 'Reverse triangular merger'].sort());
 

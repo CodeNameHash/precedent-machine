@@ -162,7 +162,7 @@ test('a one-per-agreement table renders as an attribute grid, one line per colum
   assert.match(html, /data-column-id="effectsOfMerger"/);
   assert.match(html, />DGCL</);
   assert.doesNotMatch(html, /data-testid="table-row"/);
-  assert.equal((html.match(/data-testid="attribute-row"/g) || []).length, 8, 'step-2 lines are hidden until the deal is coded as a double merger');
+  assert.equal((html.match(/data-testid="attribute-row"/g) || []).length, 7, 'the legacy Merger Form line is gone (decision 28); step-2 lines are hidden until the deal is coded as a double merger');
 });
 
 test('the attribute grid shows step-2 lines only for a double merger', () => {

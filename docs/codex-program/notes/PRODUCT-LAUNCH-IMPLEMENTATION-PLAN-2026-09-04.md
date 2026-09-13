@@ -1985,6 +1985,12 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       answer); the extractor prompt now defines the three coverage
       states and says a declined response is rejected. Reaches the
       worker with generation 3.
+      20:40 UTC, Ben on the structure grid: "why does merger form appear
+      twice?" The legacy Merger Form column and the per-step form column
+      both read "Merger Form" once the step suffix was dropped for a
+      one-step deal; generator decision 28 removes the legacy column and
+      orders the grid structure first (deal structure, merger form,
+      surviving entity), then the closing mechanics.
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.
