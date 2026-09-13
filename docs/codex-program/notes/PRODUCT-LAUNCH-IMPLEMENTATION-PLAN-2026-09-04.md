@@ -1897,6 +1897,13 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       topic, never a limb's grammar (schema regenerated). The evidence
       sidebar is now sticky (Ben: "the top of the side bar should be
       where I'm looking").
+      19:00 UTC, Ben on the general covenants table (access covenant as a
+      row per grammatical subject with its verbs in two columns): "this
+      is the access covenant....". The legacy Other Covenants was a link
+      index, nothing to harvest; generator decision 21 makes the table
+      one row per covenant (V2 subtypes plus the covenants the legacy
+      index curated, open to a new name) with obligor, standard, scope
+      and exceptions, limbs as sub-items.
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.

@@ -431,6 +431,47 @@ function applyDecision20RepresentationRows(doc) {
   }
 }
 
+// Ben, 2026-09-13 19:00 UTC, on the general covenants table showing the
+// access covenant as a row per grammatical subject with its verbs in two
+// columns: "this is the access covenant....". The legacy "Other Covenants"
+// was a link index, so nothing to harvest: the table is redesigned as one
+// row per covenant (the V2 subtypes, open to a new name), with the obligor,
+// the standard, the scope and the exceptions coded per covenant; a limb is
+// a sub-item.
+const GENERAL_COVENANT_ROWS = [
+  'Access to information', 'Litigation notification', 'General notification', 'Section 16 matters', 'Stock exchange delisting',
+  'Takeover laws', 'Merger Sub obligations', 'Public announcements', 'Resignations', 'CVR Agreement', 'Stock exchange listing',
+  'Confidentiality', 'Transaction litigation', 'Financing cooperation', 'Director and officer indemnification',
+];
+function applyDecision21GeneralCovenants(doc) {
+  const section = findSection(doc, 'general-covenants');
+  const why = `${BEN} #21 (Metsera 6.07): a covenant reads as obligor, standard, scope and exceptions, never as its grammatical subjects and verbs.`;
+  section.tables = [{
+    table_key: 'general-covenants-table',
+    group_header: null,
+    term_column: { header: 'Covenant', source: 'subject', fill_from: ['TERM'] },
+    columns: [
+      {
+        column_id: 'obligor', header: 'Obligor', render: 'vocabulary',
+        vocabulary: [
+          addition('Company', `${why} The Company (and its subsidiaries) is bound.`, { code: 'COMPANY' }),
+          addition('Parent', `${why} Parent (and Merger Sub) is bound.`, { code: 'PARENT' }),
+          addition('Each party', `${why} A mutual covenant.`, { code: 'EACH_PARTY' }),
+        ],
+        fill_from: ['ACTOR'],
+      },
+      { column_id: 'standard', header: 'Standard', render: 'verbatim', fill_from: ['EFFORTS_STANDARD', 'STANDARD', 'QUALIFIER', 'OPERATION'], addition: true, reason: `${why} The effort or conduct standard (reasonable access during normal business hours; commercially reasonable efforts; promptly).` },
+      { column_id: 'scope', header: 'Scope', render: 'verbatim', fill_from: ['OBJECT', 'LIST', 'LITANY'], addition: true, reason: `${why} What is given, done or notified (properties, books, records and personnel; any Proceeding).` },
+      { column_id: 'exceptions', header: 'Exceptions', render: 'verbatim', fill_from: ['EXCEPTION', 'CONDITION', 'QUALIFIER'], addition: true, reason: `${why} The carve-outs (privilege, confidentiality obligations, applicable Law, unreasonable interference).` },
+    ],
+    rows_are: 'fixed list',
+    fixed_row_labels: [...GENERAL_COVENANT_ROWS],
+    fixed_row_labels_source: 'LEGAL_SCHEMA/V2 GENERAL_COVENANTS subtypes plus the covenants the legacy Other Covenants index curated (financing cooperation, D&O indemnification, confidentiality, transaction litigation)',
+    open_rows: true,
+    guidance: 'One row per covenant, named as the precedent would (fixed_row_labels), with a new name only when none fits. Each limb of a covenant is a sub-item (row_detail) with the same columns; the covenant\'s line gives the overview. The subject of the row is the covenant, never a party or a pronoun; the obligor is a coded cell.',
+  }];
+}
+
 function applyDecision5MaeCarveouts(doc) {
   const section = findSection(doc, 'mae-definitions');
   for (const tableKey of ['mae-carveouts-parent', 'mae-carveouts-company']) {
@@ -645,6 +686,7 @@ function build() {
   applyDecision18ConsiderationDealAgnostic(doc);
   applyDecision19EquityAwardClasses(doc);
   applyDecision20RepresentationRows(doc);
+  applyDecision21GeneralCovenants(doc);
   applyDecision7InterimCovenants(doc);
   applyDecision8NoShop(doc);
   applyDecision9VotesTrigger(doc);

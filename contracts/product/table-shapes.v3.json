@@ -2909,7 +2909,7 @@
           "table_key": "general-covenants-table",
           "group_header": null,
           "term_column": {
-            "header": "Provision",
+            "header": "Covenant",
             "source": "subject",
             "fill_from": [
               "TERM"
@@ -2917,15 +2917,95 @@
           },
           "columns": [
             {
-              "column_id": "detail",
-              "header": "Link",
+              "column_id": "obligor",
+              "header": "Obligor",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "COMPANY",
+                  "label": "Company",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-13 #21 (Metsera 6.07): a covenant reads as obligor, standard, scope and exceptions, never as its grammatical subjects and verbs. The Company (and its subsidiaries) is bound."
+                },
+                {
+                  "code": "PARENT",
+                  "label": "Parent",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-13 #21 (Metsera 6.07): a covenant reads as obligor, standard, scope and exceptions, never as its grammatical subjects and verbs. Parent (and Merger Sub) is bound."
+                },
+                {
+                  "code": "EACH_PARTY",
+                  "label": "Each party",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-13 #21 (Metsera 6.07): a covenant reads as obligor, standard, scope and exceptions, never as its grammatical subjects and verbs. A mutual covenant."
+                }
+              ],
+              "fill_from": [
+                "ACTOR"
+              ]
+            },
+            {
+              "column_id": "standard",
+              "header": "Standard",
               "render": "verbatim",
               "fill_from": [
-                "CROSS_REFERENCE"
-              ]
+                "EFFORTS_STANDARD",
+                "STANDARD",
+                "QUALIFIER",
+                "OPERATION"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-13 #21 (Metsera 6.07): a covenant reads as obligor, standard, scope and exceptions, never as its grammatical subjects and verbs. The effort or conduct standard (reasonable access during normal business hours; commercially reasonable efforts; promptly)."
+            },
+            {
+              "column_id": "scope",
+              "header": "Scope",
+              "render": "verbatim",
+              "fill_from": [
+                "OBJECT",
+                "LIST",
+                "LITANY"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-13 #21 (Metsera 6.07): a covenant reads as obligor, standard, scope and exceptions, never as its grammatical subjects and verbs. What is given, done or notified (properties, books, records and personnel; any Proceeding)."
+            },
+            {
+              "column_id": "exceptions",
+              "header": "Exceptions",
+              "render": "verbatim",
+              "fill_from": [
+                "EXCEPTION",
+                "CONDITION",
+                "QUALIFIER"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-13 #21 (Metsera 6.07): a covenant reads as obligor, standard, scope and exceptions, never as its grammatical subjects and verbs. The carve-outs (privilege, confidentiality obligations, applicable Law, unreasonable interference)."
             }
           ],
-          "rows_are": "one per subject"
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Access to information",
+            "Litigation notification",
+            "General notification",
+            "Section 16 matters",
+            "Stock exchange delisting",
+            "Takeover laws",
+            "Merger Sub obligations",
+            "Public announcements",
+            "Resignations",
+            "CVR Agreement",
+            "Stock exchange listing",
+            "Confidentiality",
+            "Transaction litigation",
+            "Financing cooperation",
+            "Director and officer indemnification"
+          ],
+          "fixed_row_labels_source": "LEGAL_SCHEMA/V2 GENERAL_COVENANTS subtypes plus the covenants the legacy Other Covenants index curated (financing cooperation, D&O indemnification, confidentiality, transaction litigation)",
+          "open_rows": true,
+          "guidance": "One row per covenant, named as the precedent would (fixed_row_labels), with a new name only when none fits. Each limb of a covenant is a sub-item (row_detail) with the same columns; the covenant's line gives the overview. The subject of the row is the covenant, never a party or a pronoun; the obligor is a coded cell."
         }
       ],
       "print_pages": [
