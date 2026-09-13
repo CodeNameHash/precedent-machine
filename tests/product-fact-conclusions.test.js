@@ -158,12 +158,44 @@ test('a cell citing a component from another fact is a problem (not found on thi
   assert.ok(problems.some((p) => /rsu-consideration is not part of this fact/.test(p)), problems.join('; '));
 });
 
-test('a cell citing a component of this fact but of a kind outside the column\'s fill_from is a problem', () => {
+test('C6: a cited component of a kind outside the column\'s fill_from is accepted (fill_from is advisory)', () => {
   const fact = baseSalaryFact();
-  // 'period' column's fill_from is ['PERIOD']; salary-term is kind TERM.
-  fact.conclusions.cells[2].component_ids = ['salary-term'];
+  // 'standard' column's fill_from is STANDARD/MATERIALITY_QUALIFIER; salary-comparison is kind OBJECT.
+  fact.conclusions.cells[1].component_ids = ['salary-comparison'];
   const problems = validateFactConclusions(fact, { tableShapes });
-  assert.ok(problems.some((p) => /salary-term kind TERM is outside period's fill_from/.test(p)), problems.join('; '));
+  assert.deepEqual(problems, []);
+});
+
+test('C6: a component_id that is not part of this fact is still a problem', () => {
+  const fact = baseSalaryFact();
+  fact.conclusions.cells[1].component_ids = ['someone-elses-component'];
+  const problems = validateFactConclusions(fact, { tableShapes });
+  assert.ok(problems.some((p) => /someone-elses-component is not part of this fact/.test(p)), problems.join('; '));
+});
+
+function closingTimingFact(text) {
+  return {
+    fact_id: 'f-closing', family_key: 'MERGER_STRUCTURE_CLOSING', subtype_key: 'CLOSING',
+    headline: { label: 'Closing', distinguishing_component_ids: ['closing-when'] },
+    components: [{
+      component_id: 'closing-when', kind: 'TRIGGER', label: 'timing',
+      text: 'on the third Business Day after the satisfaction or waiver of the conditions set forth in Article VII',
+      origin: 'OWN', source_span_id: 's-1', start_byte: 0, end_byte: 100, gap_before: false, children: [],
+    }],
+    conclusions: {
+      table_key: 'structure-mechanics-table', row_label: 'Closing',
+      cells: [{ column_id: 'closingTiming', text, component_ids: ['closing-when'] }],
+    },
+  };
+}
+
+test('C4: a verbatim cell may carry a run of words cut from the cited component, never added words', () => {
+  assert.deepEqual(validateFactConclusions(closingTimingFact('on the third Business Day after the satisfaction or waiver of the conditions set forth in Article VII'), { tableShapes }), []);
+  assert.deepEqual(validateFactConclusions(closingTimingFact('third Business Day after the satisfaction or waiver of the conditions'), { tableShapes }), []);
+  const cut = validateFactConclusions(closingTimingFact('hird Business Day'), { tableShapes });
+  assert.ok(cut.some((p) => /run of words/.test(p)), cut.join('; '));
+  const added = validateFactConclusions(closingTimingFact('on the third Business Day after closing'), { tableShapes });
+  assert.ok(added.some((p) => /run of words/.test(p)), added.join('; '));
 });
 
 test('row_label must be one of the resolved fixed-list table\'s row labels', () => {

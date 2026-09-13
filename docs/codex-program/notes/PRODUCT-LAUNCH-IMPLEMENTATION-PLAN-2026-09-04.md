@@ -1747,6 +1747,20 @@ Sequence and proof:
       intake page now accepts `?generation=1` to start a fresh generation
       of the same submission. Recommendation to Ben: kill c4c90c61 and
       resubmit as generation 1 so every section carries conclusions.
+      16:20 UTC: generation 1, run d1f37a50…, V9 prompts confirmed and
+      conclusions written from the first section. First readout of the
+      holds: 5 of the first 15 proposals held with
+      INVALID_FACT_CONCLUSIONS, all from two mechanical rules: the
+      per-column `fill_from` kinds were single-kind guesses (closing
+      timing allowed only OPERATION, so a TRIGGER citation held the fact),
+      and C4 rejected a phrase cut from a longer cited component. Contract
+      `fact-conclusions.v1.json` C4 now accepts a contiguous run of whole
+      words from one cited component, and C6 makes `fill_from` advisory
+      (a cited component must belong to the fact; its kind is not
+      checked). fill_from still drives the no-conclusions fallback
+      rendering. Open for Ben: C2 still holds the whole fact when the
+      readout uses an unknown vocabulary code; the alternative is to keep
+      the fact and drop the readout with a note.
 
 Parallel plan while Ben is away: 5B.1 and 5B.2 are lead work in this
 session. 5B.3 storage and 5B.5 reader view run as separate visible sessions

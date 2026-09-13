@@ -16,7 +16,7 @@
       "value": "for a column with render 'value': { canonical, unit }, parsed by code (parseComponentValue in lib/product/fact-components.js) from a cited component's verbatim text -- never asserted by the model and never invented",
       "text": "for a column with render 'verbatim' or 'term': the exact verbatim text of a cited component -- never paraphrased, normalised or newly worded",
       "present": "for a column with render 'boolean': true or false",
-      "component_ids": "component_id values, all drawn from this same fact's own component tree, whose kind is one of the column's fill_from kinds; at least one is required. A cell can never cite a component belonging to another fact, and never a component whose kind is outside the column's fill_from."
+      "component_ids": "component_id values, all drawn from this same fact's own component tree; at least one is required. A cell can never cite a component belonging to another fact. The column's fill_from kinds are the hint for which components usually carry the answer (and for rendering a fact that has no conclusions); a cited component of another kind is accepted."
     },
     "one_content_field": "a cell carries exactly one of code, value, text or present, matching its column's render kind"
   },
@@ -24,9 +24,9 @@
     "C1 A cell's column_id must name a column of the fact's resolved table (table_key, checked against the fact's family_key through table-shapes.v3.json section.v2_family_keys).",
     "C2 A 'vocabulary' cell's code must be a code in that column's vocabulary (own or shared via vocabulary_ref); an unknown code is a problem and holds the fact.",
     "C3 A 'value' cell's value must equal parseComponentValue(kind, text) of at least one cited component; the model never states a value column's canonical number or unit itself.",
-    "C4 A 'verbatim' or 'term' cell's text must equal the exact text of at least one cited component; no paraphrase, normalisation or added words.",
+    "C4 A 'verbatim' or 'term' cell's text must be the exact text of at least one cited component, or a contiguous run of words cut from one cited component's exact text; no paraphrase, normalisation or added words.",
     "C5 A 'boolean' cell's present is a plain boolean; still cites the component(s) that show presence or its stated absence.",
-    "C6 Every cell cites at least one component_id from the same fact's own components tree whose kind is one of the column's fill_from kinds. A component_id absent from the fact's tree, or present but of a kind outside fill_from, is a problem.",
+    "C6 Every cell cites at least one component_id from the same fact's own components tree. A component_id absent from the fact's tree is a problem. fill_from is advisory: it says which kinds usually carry the answer and drives the no-conclusions fallback rendering, and a cited component of another kind is not a problem (Metsera V9, 2026-09-13: the single-kind lists held every closing-mechanics fact).",
     "C7 A cell may be absent for any column; the page renders a dash. Nothing is invented to populate every column.",
     "C8 row_label must be legal for the resolved table: one of fixed_row_labels/additional_fixed_row_labels for a fixed-list table; the fact's own subject term for a one-per-subject table.",
     "C9 conclusions is optional on every fact; a fact with valid components and no table shape for its family carries no conclusions and no problem. A fact whose family does have a table shape but whose conclusions are missing is not held -- it is a coverage note, not a validation failure (CONCLUSIONS_MISSING)."
