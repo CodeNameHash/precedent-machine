@@ -1636,7 +1636,14 @@ Sequence and proof:
       text in `fixtures/product/topbuild-review/print-text.v1.json`) carries
       the pills as shown; pass 2 (`session_01JddnH4Qh57hJE4kCccU58D`) harvests
       the vocabularies from it and the unread label maps, adds the V2
-      additions, and rewrites the note for Ben; (b) contract: each fact carries
+      additions, and rewrites the note for Ben. Pass 2 merged 2026-09-13
+      00:50 UTC: 31 sections, 51 tables, 108 columns, 175 vocabulary
+      entries (130 from the print, 27 from legacy label maps, 6 both), 7
+      added columns, each column mapped to the component kinds that fill
+      it (`contracts/product/table-shapes.v2.json`,
+      `tests/product-table-shapes.test.js`). Votes and Employee benefits
+      spot-checked against the print pages. The note is with Ben to
+      correct; (b) contract: each fact carries
       `conclusions`, one coded value per column of its subtype's table,
       validated against the vocabulary, alongside the verbatim components;
       (c) extractor V9 returns conclusions; (d) published page and Query
