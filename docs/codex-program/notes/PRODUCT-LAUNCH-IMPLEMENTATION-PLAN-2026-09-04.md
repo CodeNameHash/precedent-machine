@@ -1807,7 +1807,11 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       layered fact with the evidence sidebar; linked from the review page
       header. Under V8 output (NCS generation 4) the cells are filled from
       component labels and text, which reads roughly; the coded vocabularies
-      arrive with the first V9 run (Metsera).
+      arrive with the first V9 run (Metsera). Ben, 2026-09-13 17:05 UTC:
+      "can we populating the output as it goes?" Done: the page reads
+      `/api/product/analysis/:id/preview` (every completed section, the
+      saved review applied when one exists) and polls once a minute while
+      the run is analysing.
 - [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired.

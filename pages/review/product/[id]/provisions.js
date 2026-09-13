@@ -17,6 +17,11 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
   const source = workspace.analysis.source_document || {};
   const title = displayIdentityParties(source.display_parties || source.parties, 'Agreement analysis');
   const published = workspace.review?.state?.status && workspace.review.state.status !== 'DRAFT';
+  const progress = workspace.progress || null;
+  const live = !!progress && progress.status !== 'READY';
+  const stateLabel = live
+    ? `${progress.status === 'FAILED' ? 'run failed' : 'analysis in progress'}, ${progress.completed} of ${progress.total} sections in`
+    : (published ? 'finalised review' : 'draft, not published');
   return (
     <div className="space-y-6">
       <Breadcrumbs items={[
@@ -26,14 +31,15 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
         { label: 'Lawyer preview' },
       ]} />
       <div>
-        <p className="text-xs uppercase tracking-wide text-inkLight">Lawyer preview · {published ? 'finalised review' : 'draft, not published'}</p>
+        <p className="text-xs uppercase tracking-wide text-inkLight" data-testid="preview-state">Lawyer preview · {stateLabel}</p>
         <h1 className="font-display text-2xl text-ink">{title}</h1>
         <p className="mt-1 text-sm text-inkLight" data-testid="preview-counts">
           {preview.facts.length} layered facts across {preview.section_count} sections{preview.held_count ? ` · ${preview.held_count} held by validation, not shown` : ''}. Click a pill to see the words behind it.
         </p>
       </div>
+      {live && progress.status !== 'FAILED' ? <p className="rounded border border-amber-300 bg-amber-50 p-2 text-xs text-amber-950" data-testid="preview-live">Filling in as sections complete. This page refreshes itself every minute.</p> : null}
       {preview.facts.length === 0 ? (
-        <EmptyState icon="" title="No layered facts" description="This run has no valid layered (V2) facts to show." />
+        <EmptyState icon="" title={live ? 'No sections in yet' : 'No layered facts'} description={live ? 'The first completed section appears here within a few minutes.' : 'This run has no valid layered (V2) facts to show.'} />
       ) : (
         <div className="flex gap-8">
           <ProvisionRail sections={tableShapesV3.sections} />
@@ -59,19 +65,27 @@ export default function ProvisionsPreviewPage() {
   const id = Array.isArray(router.query.id) ? router.query.id[0] : router.query.id;
   const [workspace, setWorkspace] = useState(null);
   const [error, setError] = useState('');
+  // The preview read returns every completed section whether or not the run
+  // has finalised; while the run is still analysing, poll it once a minute.
   useEffect(() => {
     if (!id) return undefined;
     let cancelled = false;
-    setError('');
-    fetch(`/api/product/review/${id}`, { cache: 'no-store' })
+    let timer = null;
+    const load = () => fetch(`/api/product/analysis/${id}/preview`, { cache: 'no-store' })
       .then(async (response) => {
         const value = await response.json();
-        if (!response.ok) throw new Error(value.error || 'Review could not load');
+        if (!response.ok) throw new Error(value.error || 'Preview could not load');
         return value;
       })
-      .then((value) => { if (!cancelled) setWorkspace(value); })
+      .then((value) => {
+        if (cancelled) return;
+        setError('');
+        setWorkspace(value);
+        if (value.progress && !['READY', 'FAILED'].includes(value.progress.status)) timer = setTimeout(load, 60000);
+      })
       .catch((failure) => { if (!cancelled) setError(failure.message); });
-    return () => { cancelled = true; };
+    load();
+    return () => { cancelled = true; if (timer) clearTimeout(timer); };
   }, [id]);
   if (error) return <div className="p-8"><ErrorState message={error} /></div>;
   if (!id || !workspace) return <div className="space-y-4 p-8"><SkeletonCard /><SkeletonCard /></div>;
