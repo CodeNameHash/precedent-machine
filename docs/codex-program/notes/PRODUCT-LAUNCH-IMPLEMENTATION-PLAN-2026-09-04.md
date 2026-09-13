@@ -1663,7 +1663,16 @@ Sequence and proof:
       extractor V9, storage migration not yet applied), (d) in
       `session_01AoH15krAhB3GFZ1tfbu2oe` (table view, ProvisionTables,
       EvidenceSidebar, wired into PublishedSummary, Query provisions page and
-      FocusedReview). (b)
+      FocusedReview). Both merged 2026-09-13 02:20 UTC: contract
+      `contracts/product/fact-conclusions.v1.json`, `lib/product/fact-conclusions.js`,
+      extractor V9 (`PRODUCT_LAYERED_COMPONENTS/V9`, V8 kept selectable),
+      migration `20260913020000_product_fact_conclusions.sql` (not yet
+      applied; applied to the preview database after generation 4 finishes,
+      so the commit function is not replaced mid-run), `lib/product/table-view.js`,
+      `components/product/ProvisionTables.jsx`, `components/product/EvidenceSidebar.jsx`.
+      Lead fix on merge: the table view renders the contract's cell array
+      through the conclusions module and accepts an already rendered cell
+      object. 105 tests across the affected suites, build passes. (b)
       contract: each fact carries
       `conclusions`, one coded value per column of its subtype's table,
       validated against the vocabulary, alongside the verbatim components;
