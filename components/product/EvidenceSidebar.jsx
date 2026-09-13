@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ComponentLayer } from './PublishedSummary';
 import { walk, validateFactComponents } from '../../lib/product/fact-components';
 import { displaySectionReference } from '../../lib/product/section-reference-display';
-import { byteRangesToParts } from '../../lib/product/section-highlight';
+import { byteRangesToLayeredParts } from '../../lib/product/section-highlight';
 
 // The persistent right-hand evidence sidebar behind a table pill (mockup
 // approved by Ben 2026-09-12/13): the exact words of the supporting
@@ -68,52 +68,100 @@ export default function EvidenceSidebar({
     .filter((item) => Number.isSafeInteger(item.start_byte) && Number.isSafeInteger(item.end_byte))
     .map((item) => ({ start_byte: item.start_byte, end_byte: item.end_byte }))
     .sort((left, right) => left.start_byte - right.start_byte), [components]);
+  // The whole fact (its own words, first to last byte) is marked lightly
+  // and the cited words strongly, so a qualifier reads inside its
+  // representation. A row opened without a cited component shows the
+  // fact's extent alone.
+  const factExtent = useMemo(() => {
+    const own = [...walk(fact.components || [])].map(([item]) => item)
+      .filter((item) => (item.origin === 'OWN' || !item.origin) && Number.isSafeInteger(item.start_byte) && Number.isSafeInteger(item.end_byte));
+    if (!own.length) return [];
+    return [{ start_byte: Math.min(...own.map((item) => item.start_byte)), end_byte: Math.max(...own.map((item) => item.end_byte)) }];
+  }, [fact]);
   const clauseParts = useMemo(() => {
-    if (!sectionText || !Number.isSafeInteger(sectionText.start_byte) || highlightRanges.length === 0) return null;
-    return byteRangesToParts(sectionText.exact_text, sectionText.start_byte, highlightRanges);
-  }, [sectionText, highlightRanges]);
+    if (!sectionText || !Number.isSafeInteger(sectionText.start_byte) || (highlightRanges.length === 0 && factExtent.length === 0)) return null;
+    return byteRangesToLayeredParts(sectionText.exact_text, sectionText.start_byte, highlightRanges, factExtent);
+  }, [sectionText, highlightRanges, factExtent]);
+  // The marked words sit in the middle of the sidebar's own scroll pane
+  // when a selection opens (Ben, 2026-09-13: "make the qualifier middle of
+  // the view pane on the side bar").
+  const asideRef = useRef(null);
+  const markRef = useRef(null);
+  useEffect(() => {
+    const aside = asideRef.current;
+    const mark = markRef.current;
+    if (!aside || !mark) return;
+    const target = mark.offsetTop - aside.clientHeight / 2 + mark.offsetHeight / 2;
+    if (typeof aside.scrollTo === 'function') aside.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
+    else aside.scrollTop = Math.max(0, target);
+  }, [fact, citedIds.join(','), clauseParts]);
   const checks = useMemo(() => validateFactComponents(fact), [fact]);
 
   // Sticky: the sidebar's top follows the viewport, so a pill clicked half-way
   // down a long page opens its evidence beside it, not at the page top (Ben,
   // 2026-09-13). Its own contents scroll when they exceed the viewport.
-  return <aside className="sticky top-4 max-h-[calc(100vh-2rem)] w-full max-w-sm shrink-0 self-start space-y-4 overflow-y-auto border-l border-border bg-white p-4 text-sm" data-testid="evidence-sidebar" aria-label="Evidence">
-    <div className="flex items-start justify-between gap-2">
-      <div>
-        {fact.section_reference ? <p className="text-[10px] font-bold uppercase tracking-wide text-inkLight">{displaySectionReference(fact.section_reference)}</p> : null}
-        <p className="font-display text-base text-ink">{fact.headline?.label || 'Evidence'}</p>
+  // Deal Storylines / Corpus panel (Ben, 2026-09-13): a white column with
+  // the section reference as eyebrow, the headline as a large title, an X
+  // to close, and three tabs. Detail holds the words, the clause and the
+  // tree; Source the checks and provenance; Comments the review trail.
+  const [tab, setTab] = useState('detail');
+  const tabButton = (key, label, testId) => (
+    <button type="button" onClick={() => setTab(key)} data-testid={testId} aria-selected={tab === key} role="tab"
+      className={`-mb-px border-b-2 px-1 pb-2 text-[13px] ${tab === key ? 'border-accent font-semibold text-ink' : 'border-transparent text-inkLight hover:text-ink'}`}>{label}</button>
+  );
+  return <aside ref={asideRef} className="sticky top-0 max-h-screen w-full max-w-sm shrink-0 self-start overflow-y-auto border-l border-border bg-white text-sm" data-testid="evidence-sidebar" aria-label="Evidence">
+    <div className="border-b border-border px-5 pt-5">
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          {fact.section_reference ? <p className="text-[12px] text-inkLight" data-testid="evidence-eyebrow">{displaySectionReference(fact.section_reference)}</p> : null}
+          <p className="mt-1 font-sans text-2xl font-semibold tracking-tight text-ink">{fact.headline?.label || 'Evidence'}</p>
+        </div>
+        {onClose ? <button type="button" onClick={onClose} aria-label="Close evidence" className="text-xl leading-none text-inkLight hover:text-ink">×</button> : null}
       </div>
-      {onClose ? <button type="button" onClick={onClose} aria-label="Close evidence" className="rounded-none border border-border px-2 py-0.5 text-xs text-inkMid">Close</button> : null}
+      <div className="mt-4 flex gap-5" role="tablist" data-testid="evidence-tabs">
+        {tabButton('detail', 'Detail', 'evidence-tab-detail')}
+        {tabButton('source', 'Source', 'evidence-tab-source')}
+        {tabButton('comments', 'Comments', 'evidence-tab-comments')}
+      </div>
     </div>
-
+    <div className="space-y-4 px-5 py-4">
+    {tab !== 'detail' ? null : <>
     <section data-testid="evidence-words">
       <p className="text-[10px] font-bold uppercase tracking-wide text-inkLight">Exact words</p>
       {components.length > 1 ? <p className="mt-1 text-[10px] text-inkLight" data-testid="evidence-basis-count">Read together, {components.length} components</p> : null}
-      {component ? components.map((item) => <p key={item.component_id} className="mt-1 font-serif text-[13px] leading-6 text-ink">&ldquo;{item.text}&rdquo;</p>) : <p className="mt-1 text-xs text-inkLight">Select a pill to see its supporting words.</p>}
+      {component ? components.map((item) => <p key={item.component_id} className="mt-1 font-serif text-[13px] leading-6 text-ink">&ldquo;{item.text}&rdquo;</p>) : <p className="mt-1 text-xs text-inkLight">The whole fact is marked in the clause below; select a pill for the words behind one reading.</p>}
     </section>
 
     {clauseParts ? <section data-testid="evidence-clause">
       <p className="text-[10px] font-bold uppercase tracking-wide text-inkLight">Clause</p>
-      <pre className="mt-1 whitespace-pre-wrap font-serif text-[13px] leading-6 text-ink">{clauseParts.map((part, index) => part.marked ? <mark key={index} className="bg-amber-200">{part.text}</mark> : <span key={index}>{part.text}</span>)}</pre>
+      <pre className="mt-1 whitespace-pre-wrap font-serif text-[13px] leading-6 text-ink">{(() => {
+        let anchored = false;
+        return clauseParts.map((part, index) => {
+          if (part.level === 'strong') {
+            const ref = anchored ? undefined : markRef; anchored = true;
+            return <mark key={index} ref={ref} className="bg-amber-200" data-level="strong">{part.text}</mark>;
+          }
+          if (part.level === 'light') {
+            const ref = anchored || highlightRanges.length ? undefined : markRef; if (!highlightRanges.length) anchored = true;
+            return <mark key={index} ref={ref} className="bg-amber-50 text-ink" data-level="light">{part.text}</mark>;
+          }
+          return <span key={index}>{part.text}</span>;
+        });
+      })()}</pre>
     </section> : null}
 
     <section data-testid="evidence-layers">
       <p className="text-[10px] font-bold uppercase tracking-wide text-inkLight">Full layer tree</p>
       <ComponentLayer components={fact.components} initiallyExpanded selectedComponentId={componentId} selectedComponentIds={citedIds} />
     </section>
+    </>}
 
+    {tab !== 'source' ? null : <>
     <section data-testid="evidence-checks">
       <p className="text-[10px] font-bold uppercase tracking-wide text-inkLight">Checks the code ran</p>
       {checks.length === 0
         ? <p className="mt-1 text-[11px] text-green-800">All structural checks passed.</p>
         : <ul className="mt-1 list-disc space-y-0.5 pl-4 text-[11px] text-red-700">{checks.map((problem, index) => <li key={index}>{problem}</li>)}</ul>}
-    </section>
-
-    <section data-testid="evidence-review-trail-section">
-      <p className="text-[10px] font-bold uppercase tracking-wide text-inkLight">Review trail</p>
-      <div className="mt-1">
-        <ReviewTrail reviewItem={reviewItem} onDecision={onDecision} onComment={onComment} onReset={onReset} busy={busy} />
-      </div>
     </section>
 
     <section data-testid="evidence-provenance">
@@ -125,5 +173,16 @@ export default function EvidenceSidebar({
         {provenance.model ? <div><dt className="inline font-semibold text-inkLight">Model: </dt><dd className="inline">{provenance.model}</dd></div> : null}
       </dl> : <p className="mt-1 text-[11px] text-inkLight">Provenance unavailable.</p>}
     </section>
+    </>}
+
+    {tab !== 'comments' ? null : (
+    <section data-testid="evidence-review-trail-section">
+      <p className="text-[10px] font-bold uppercase tracking-wide text-inkLight">Review trail</p>
+      <div className="mt-1">
+        <ReviewTrail reviewItem={reviewItem} onDecision={onDecision} onComment={onComment} onReset={onReset} busy={busy} />
+      </div>
+    </section>
+    )}
+    </div>
   </aside>;
 }

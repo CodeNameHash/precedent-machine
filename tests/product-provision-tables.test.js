@@ -117,16 +117,14 @@ test('EvidenceSidebar renders the five evidence blocks for a selected component'
     reviewItem: { item_id: 'item-1', decision: 'ACCEPTED', reviewed_at: '2026-09-12T00:00:00.000Z', comment: 'Looks right.' },
     provenance: { run_id: 'run-42', generation: 3, schema_version: 'LEGAL_SCHEMA/V2', prompt_bundle: 'PRODUCT_LAYERED_COMPONENTS/V7', model: 'gpt-5.5' },
   }));
+  // Deal Storylines panel: Detail (words, clause, tree) opens first; Source
+  // (checks, provenance) and Comments (review trail) sit behind tabs.
   assert.match(html, /data-testid="evidence-sidebar"/);
+  assert.match(html, /data-testid="evidence-tabs"/);
   assert.match(html, /data-testid="evidence-words"/);
   assert.match(html, /data-testid="evidence-layers"/);
-  assert.match(html, /data-testid="evidence-checks"/);
-  assert.match(html, /data-testid="evidence-review-trail-section"/);
-  assert.match(html, /data-testid="evidence-provenance"/);
-  assert.match(html, /run-42/);
-  assert.match(html, /PRODUCT_LAYERED_COMPONENTS\/V7/);
-  assert.match(html, /Accepted/);
-  assert.match(html, /Looks right\./);
+  assert.doesNotMatch(html, /data-testid="evidence-checks"/);
+  assert.doesNotMatch(html, /data-testid="evidence-review-trail-section"/);
   // the exact words of the supporting component
   assert.match(html, /geopolitical conditions or changes that are the result of the outbreak/);
 });
@@ -223,7 +221,7 @@ test('every section has a collapsible heading and the bar offers collapse / expa
   assert.match(html, /data-testid="section-toggles"/);
   assert.match(html, /Collapse all/);
   assert.match(html, /Expand all/);
-  assert.equal((html.match(/data-testid="section-heading"/g) || []).length, tableView.sections.length);
+  assert.equal((html.match(/data-testid="section-heading"/g) || []).length, tableView.sections.length + (tableView.defined_terms.length ? 1 : 0));
   assert.match(html, /aria-expanded="true"/);
 });
 
@@ -254,7 +252,7 @@ test('an absent fixed row renders its label and a table footer renders the carve
 test('the provision rail groups sections the old app\'s way, one anchor per section', () => {
   const ProvisionRail = require('../components/product/ProvisionRail.jsx').default;
   const html = renderToStaticMarkup(React.createElement(ProvisionRail, { sections: tableShapes.sections }));
-  assert.match(html, /rec-side-eyebrow/);
+  assert.match(html, /bg-black/);
   const groups = html.match(/data-testid="provision-rail-group"/g) || [];
   assert.equal(groups.length, 17);
   assert.match(html, /href="#provision-section-structure-mechanics"/);
@@ -277,7 +275,7 @@ test('EvidenceSidebar quotes, marks and lights every cited component when a cell
   const html = renderToStaticMarkup(React.createElement(EvidenceSidebar, { fact, componentId: 'st-actor', componentIds: ['st-actor', 'st-op', 'st-term'], sectionText: { exact_text: clause, start_byte: 0 } }));
   assert.match(html, /Read together, 3 components/);
   assert.match(html, /shall be merged with and into/);
-  assert.equal((html.match(/<mark/g) || []).length, 3);
+  assert.equal((html.match(/data-level="strong"/g) || []).length, 3);
   assert.equal((html.match(/data-selected="true"/g) || []).length, 3);
 });
 
@@ -295,4 +293,40 @@ test('a selected pill lights only its own line, not the same column on every sub
   const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [] }));
   assert.equal((html.match(/data-testid="table-sub-row"/g) || []).length, 2);
   assert.equal((html.match(/data-selected="true"/g) || []).length, 0);
+});
+
+test('defined terms render as a collapsible table with every term collapsed to start', () => {
+  const withTerm = { ...conclusionFact, components: [...conclusionFact.components, {
+    component_id: 'c-defined-1', kind: 'DEFINED_TERM', label: 'defined term', text: 'Material Contract',
+    source_span_id: 's-mc-2', start_byte: 130, end_byte: 148, origin: 'OWN', gap_before: false, children: [],
+    resolves_to: { structure_node_id: 'n-1-1', text: '"Material Contract" means any Contract described in this Section 3.14.' },
+  }] };
+  const view = buildTableView({ facts: [withTerm], tableShapes, legalSchema });
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [withTerm] }));
+  assert.match(html, /data-testid="defined-terms-table"/);
+  assert.match(html, /data-testid="defined-term-row"/);
+  assert.doesNotMatch(html, /data-testid="defined-term-row" data-open="true"/);
+  assert.match(html, /Material Contract/);
+});
+
+test('the row name opens the sidebar for the row\'s first fact', () => {
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts }));
+  assert.match(html, /data-testid="term-open"/);
+});
+
+test('EvidenceSidebar marks the whole fact lightly and the cited words strongly', () => {
+  const fact = {
+    fact_id: 'rep-q', family_key: 'REPRESENTATIONS', subtype_key: 'STATUS_REPRESENTATION', section_reference: '3.06',
+    headline: { label: 'SEC documents', distinguishing_component_ids: ['q'] },
+    components: [
+      { component_id: 'a', kind: 'ACTOR', label: 'actor', text: 'none of the Company SEC Documents', origin: 'OWN', source_span_id: 's', start_byte: 33, end_byte: 66, gap_before: false, children: [] },
+      { component_id: 'q', kind: 'QUALIFIER', label: 'knowledge', text: 'to the knowledge of the Company', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 31, gap_before: false, children: [] },
+      { component_id: 'o', kind: 'OPERATION', label: 'operation', text: 'are subject to ongoing SEC review', origin: 'OWN', source_span_id: 's', start_byte: 67, end_byte: 100, gap_before: false, children: [] },
+    ],
+  };
+  const clause = 'to the knowledge of the Company, none of the Company SEC Documents are subject to ongoing SEC review or investigation.';
+  const html = renderToStaticMarkup(React.createElement(EvidenceSidebar, { fact, componentId: 'q', componentIds: ['q'], sectionText: { exact_text: clause, start_byte: 0 } }));
+  assert.match(html, /<mark[^>]*data-level="strong"[^>]*>to the knowledge of the Company</);
+  assert.match(html, /<mark[^>]*data-level="light"[^>]*>, none of the Company SEC Documents are subject to ongoing SEC review</);
+  assert.doesNotMatch(html, /<mark[^>]*>[^<]*or investigation/);
 });

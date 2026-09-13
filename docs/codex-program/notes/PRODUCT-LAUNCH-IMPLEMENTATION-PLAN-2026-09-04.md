@@ -2052,7 +2052,29 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       category with no fact, As drafted, Threshold and a new Qualifier
       column. Extractor-side for the qualifier and the canonical rows;
       the next generation after 3.
-- [ ] Q3 Restyle to the Deal Storylines design when Ben sends it.
+      21:40 UTC, Ben on the evidence sidebar: "when we show the rep's
+      qualifier, I'd put some form of lighter highlighting on the whole
+      rep so it is easily viewed. And I'd also make the qualifier middle
+      of the view pane on the side bar. also you should be able to see
+      the side bar and sourcing not just by clicking the pills. defined
+      terms should be served in a table and the whole of that should be
+      collapsable, and each term should be auto collapsed to start". All
+      four rendered: the clause marks the whole fact lightly and the
+      cited words strongly; the sidebar scrolls the marked words to the
+      middle of its pane; the row name opens the sidebar on the row's
+      first fact; Defined Terms is a collapsible table, each term
+      collapsed until clicked.
+- [x] Q3 Restyle to the Deal Storylines design, 2026-09-13 21:45 UTC. Ben
+      sent the Deal Storylines / Corpus timeline page: "shift the page
+      design to match this ... mainly thinking of the left hand side bar,
+      page header and the right hand side bar". The rail is the black
+      column with the parties at the top and a white active row; the
+      page header is eyebrow, large title and a black rule; the evidence
+      panel is white with the section reference as eyebrow, the headline
+      as title, an X, and Detail / Source / Comments tabs (Detail: words,
+      clause, tree; Source: checks, provenance; Comments: review trail).
+      Supersedes the old-app rail styling of decision 27 (its order and
+      groups stay).
 - [ ] Q5 Canonical limb names for the other eighteen representations
       (Ben, 2026-09-13 21:25 UTC). After a few agreements have run (Metsera,
       Olaplex, Apogee at least), harvest the row_detail values the extractor

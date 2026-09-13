@@ -81,11 +81,18 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
   );
 }
 
-function TermCell({ row, tableKey, rowIndex, onSelect }) {
+// The row name itself opens the sidebar on the row's first fact, so the
+// clause and its sourcing are reachable without a pill (Ben, 2026-09-13:
+// "you should be able to see the side bar and sourcing not just by
+// clicking the pills").
+function TermCell({ row, tableKey, rowIndex, subIndex = null, onSelect }) {
   const [expanded, setExpanded] = useState(false);
+  const first = row.backing_facts[0] || null;
   return (
     <div>
-      <span className="font-medium text-ink">{row.subject}</span>
+      {first ? (
+        <button type="button" data-testid="term-open" onClick={() => onSelect({ tableKey, rowIndex, subIndex, columnId: null, componentId: null, componentIds: [], factId: first.fact_id })} className="text-left font-medium text-ink hover:text-accent">{row.subject}</button>
+      ) : <span className="font-medium text-ink">{row.subject}</span>}
       {row.backing_facts.length ? (
         <button
           type="button"
@@ -229,6 +236,48 @@ function FactsWithoutReadout({ entries, sectionKey, onSelect }) {
   );
 }
 
+const DEFINED_TERMS_KEY = 'defined-terms';
+
+// Defined terms as a table under a collapsible heading like every section,
+// each term collapsed to start: the term on its line, the definition on a
+// click (Ben, 2026-09-13).
+function DefinedTermRow({ term }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <tr data-testid="defined-term-row" data-open={open || undefined}>
+      <td className="border-b border-border px-3 py-2 align-top">
+        <button type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open} className="text-left font-semibold text-ink hover:text-accent" data-testid="defined-term-toggle">{term.term}</button>
+        {term.section_reference ? <span className="ml-2 text-[10px] text-inkFaint">§ {term.section_reference}</span> : null}
+      </td>
+      <td className="border-b border-border px-3 py-2 align-top text-inkLight">
+        {open ? (term.definition || <span className="text-inkFaint">Definition not in the closure</span>) : <button type="button" onClick={() => setOpen(true)} className="text-[10px] font-semibold uppercase tracking-wide text-accent">Show</button>}
+      </td>
+    </tr>
+  );
+}
+
+function DefinedTermsSection({ terms, collapsed, onToggle }) {
+  return (
+    <section data-testid="defined-terms-appendix" data-collapsed={collapsed || undefined} id={`provision-section-${DEFINED_TERMS_KEY}`}>
+      <button type="button" onClick={onToggle} aria-expanded={!collapsed} className="mb-2 flex w-full items-center gap-2 text-left" data-testid="section-heading">
+        <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: '#4E6FA6' }} aria-hidden="true" />
+        <h3 className="whitespace-nowrap font-display text-lg text-ink">Defined Terms</h3>
+        <span className="h-[2px] flex-1 bg-border" />
+        <span className="font-mono text-[10px] uppercase tracking-wide text-inkFaint" aria-hidden="true">{collapsed ? 'show' : 'hide'}</span>
+      </button>
+      {collapsed ? null : (
+        <table className="w-full border-separate border-spacing-0 border border-border bg-white text-left text-xs" data-testid="defined-terms-table">
+          <thead><tr>
+            <th className="border-b border-border px-3 py-2 font-mono text-[10px] uppercase tracking-wide text-inkFaint">Term</th>
+            <th className="border-b border-border px-3 py-2 font-mono text-[10px] uppercase tracking-wide text-inkFaint">Definition</th>
+          </tr></thead>
+          <tbody>{terms.map((term) => <DefinedTermRow key={term.component_id} term={term} />)}</tbody>
+        </table>
+      )}
+    </section>
+  );
+}
+
 function Table({ table, selection, onSelect }) {
   if (table.layout === 'attribute grid') return <AttributeGrid table={table} selection={selection} onSelect={onSelect} />;
   return (
@@ -264,7 +313,7 @@ function Table({ table, selection, onSelect }) {
             >
               {table.term_column ? (
                 <td className={`border-b px-3 py-2 align-top ${sub ? 'border-lineSoft pl-8 text-inkMid' : 'border-border'}`}>
-                  <TermCell row={entry} tableKey={table.table_key} rowIndex={rowIndex} onSelect={onSelect} />
+                  <TermCell row={entry} tableKey={table.table_key} rowIndex={rowIndex} subIndex={subIndex} onSelect={onSelect} />
                 </td>
               ) : null}
               {entry.cells.map((cell) => (
@@ -350,7 +399,7 @@ export default function ProvisionTables({
     if (next.has(key)) next.delete(key); else next.add(key);
     return next;
   });
-  const setAll = (collapse) => setCollapsed(collapse ? new Set(tableView.sections.map((section) => section.section_key)) : new Set());
+  const setAll = (collapse) => setCollapsed(collapse ? new Set([...tableView.sections.map((section) => section.section_key), DEFINED_TERMS_KEY]) : new Set());
 
   return (
     <div className="flex flex-wrap gap-6 lg:flex-nowrap" data-testid="provision-tables">
@@ -391,17 +440,7 @@ export default function ProvisionTables({
           );
         })}
         {tableView.defined_terms.length ? (
-          <section data-testid="defined-terms-appendix">
-            <h3 className="mb-2 border-b border-border pb-1 font-display text-lg text-ink">Defined Terms</h3>
-            <dl className="space-y-2 text-xs">
-              {tableView.defined_terms.map((term) => (
-                <div key={term.component_id}>
-                  <dt className="font-semibold text-ink">{term.term}</dt>
-                  {term.definition ? <dd className="text-inkLight">{term.definition}</dd> : null}
-                </div>
-              ))}
-            </dl>
-          </section>
+          <DefinedTermsSection terms={tableView.defined_terms} collapsed={collapsed.has(DEFINED_TERMS_KEY)} onToggle={() => toggleSection(DEFINED_TERMS_KEY)} />
         ) : null}
       </div>
       {selectedFact ? (

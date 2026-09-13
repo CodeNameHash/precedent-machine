@@ -30,20 +30,22 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
         { label: 'Agreement review', href: `/review/product/${runId}` },
         { label: 'Lawyer preview' },
       ]} />
-      <div>
-        <p className="text-xs uppercase tracking-wide text-inkLight" data-testid="preview-state">Lawyer preview · {stateLabel}</p>
-        <h1 className="font-display text-2xl text-ink">{title}</h1>
-        <p className="mt-1 text-sm text-inkLight" data-testid="preview-counts">
-          {preview.facts.length} layered facts across {preview.section_count} sections{preview.held_count ? ` · ${preview.held_count} held by validation, not shown` : ''}. Click a pill to see the words behind it.
-        </p>
-      </div>
-      {live && progress.status !== 'FAILED' ? <p className="rounded border border-amber-300 bg-amber-50 p-2 text-xs text-amber-950" data-testid="preview-live">Filling in as sections complete. This page refreshes itself every minute.</p> : null}
       {preview.facts.length === 0 ? (
         <EmptyState icon="" title={live ? 'No sections in yet' : 'No layered facts'} description={live ? 'The first completed section appears here within a few minutes.' : 'This run has no valid layered (V2) facts to show.'} />
       ) : (
         <div className="flex gap-8">
-          <ProvisionRail sections={tableShapesV3.sections} />
+          <ProvisionRail sections={tableShapesV3.sections} title={title} subtitle="Agreement review" />
           <div className="min-w-0 flex-1">
+            {/* Page header in the Deal Storylines style: eyebrow, title, rule. */}
+            <header className="mb-6" data-testid="preview-header">
+              <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-inkLight" data-testid="preview-state">Lawyer preview · {stateLabel}</p>
+              <h1 className="mt-2 font-sans text-4xl font-bold tracking-tight text-ink">Provisions</h1>
+              <p className="mt-2 text-sm text-inkLight" data-testid="preview-counts">
+                {preview.facts.length} layered facts across {preview.section_count} sections{preview.held_count ? ` · ${preview.held_count} held by validation, not shown` : ''}. Click a row or a pill for the words behind it.
+              </p>
+              <div className="mt-4 h-[2px] w-full bg-ink" />
+              {live && progress.status !== 'FAILED' ? <p className="mt-3 rounded border border-amber-300 bg-amber-50 p-2 text-xs text-amber-950" data-testid="preview-live">Filling in as sections complete. This page refreshes itself every minute.</p> : null}
+            </header>
             <PublishedSummary
               groups={[{ family_key: 'ALL', collapsed: false, facts: preview.facts }]}
               view="tables"
