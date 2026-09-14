@@ -627,3 +627,28 @@ test('Decision 34: termination rights name their rows from the subtype, the effe
   assert.ok(reps.fixed_row_labels.includes('No Undisclosed Liabilities'));
   assert.ok(reps.detail_labels_by_row['Capitalization; Subsidiaries'].includes('Authorized capital stock'));
 });
+
+// Ben, 2026-09-14: "do you have an agent looking at all of our tweaks and
+// seeing if they should be made systematically/throughout the code base
+// back to extraction? I don't want to make surface level/one deal level
+// fixes". The shape carries the rules the page used to apply on its own.
+test('the accelerated vesting code lists the words that contradict it, and the validator checks the list\'s shape', () => {
+  const table = findTableV3(findSectionV3('equity-awards'), 'equity-awards-table');
+  const vesting = table.columns.find((column) => column.column_id === 'vestingTreatment');
+  const accelerated = vesting.vocabulary.find((entry) => entry.code === 'FULLY_VESTED_ACCELERATED');
+  assert.deepEqual(accelerated.contradicted_by, ['continued service', 'continued employment', 'continuous service', 'continuous employment']);
+  assert.ok(vesting.vocabulary.some((entry) => entry.code === 'FULLY_VESTED_CONDITIONAL_UPON_SERVICE'));
+  const broken = structuredClone(tableShapesV3);
+  const brokenEntry = broken.sections.find((s) => s.section_key === 'equity-awards').tables[0].columns.find((column) => column.column_id === 'vestingTreatment').vocabulary.find((entry) => entry.code === 'FULLY_VESTED_ACCELERATED');
+  brokenEntry.contradicted_by = [''];
+  assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_VOCAB_CONTRADICTED_BY/);
+});
+
+test('the surviving-entity party columns carry extractor guidance to cite the entity\'s own words with the term', () => {
+  const table = findTableV3(findSectionV3('structure-mechanics'), 'structure-mechanics-table');
+  for (const columnId of ['survivingEntityStep1', 'survivingEntityStep2']) {
+    const column = table.columns.find((candidate) => candidate.column_id === columnId);
+    assert.equal(column.display, 'party');
+    assert.match(column.guidance, /never the defined term alone/);
+  }
+});

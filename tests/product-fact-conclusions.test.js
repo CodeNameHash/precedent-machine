@@ -374,3 +374,69 @@ test('an as-drafted (fact_text) cell needs cited components, not verbatim text: 
   fact.conclusions.cells = [{ column_id: 'closingTiming', text: 'the third business day after the conditions are met', component_ids: fact.conclusions.cells[0].component_ids }];
   assert.deepEqual(validateFactConclusions(fact, { tableShapes }), []);
 });
+
+// Ben, 2026-09-14: "do you have an agent looking at all of our tweaks and
+// seeing if they should be made systematically/throughout the code base
+// back to extraction? I don't want to make surface level/one deal level
+// fixes". The two page-side rules of 2026-09-14 (the fully-vested remap
+// and the Lookback cell filled from the fact's DATE) now hold at
+// extraction on every deal: C15 drops a readout whose code the fact's own
+// words contradict; normaliseConclusionValues completes a value column
+// the readout omitted from the fact's one parsable fill_from component.
+function optionFact(conditionText, code = 'FULLY_VESTED_ACCELERATED') {
+  return {
+    fact_id: 'opt-1', proposal_id: 'opt-1', family_key: 'CONSIDERATION', subtype_key: 'EQUITY_AWARD', section_reference: '2.03',
+    headline: { label: 'Equity award', distinguishing_component_ids: ['opt-1-o'] },
+    components: [
+      ...(conditionText ? [{ component_id: 'opt-1-c', kind: 'CONDITION', label: 'Continued service', text: conditionText, origin: 'OWN', source_span_id: SPAN_ID, start_byte: 0, end_byte: conditionText.length, gap_before: false, children: [] }] : []),
+      { component_id: 'opt-1-o', kind: 'OPERATION', label: 'Vesting', text: 'shall become vested', origin: 'OWN', source_span_id: SPAN_ID, start_byte: 200, end_byte: 219, gap_before: false, children: [] },
+    ],
+    conclusions: { table_key: 'equity-awards-table', row_label: 'Company Stock Option', row_detail: 'Unvested, not vesting by its terms', cells: [{ column_id: 'vestingTreatment', code, component_ids: ['opt-1-o'] }] },
+  };
+}
+
+test('C15: "Fully vested (accelerated)" on a fact whose own words say "continued service" is a problem; the conditional code, or no such words, is not', () => {
+  const problems = validateFactConclusions(optionFact('subject to the holder’s continued service with Parent through the first anniversary of the Closing'), { tableShapes });
+  assert.ok(problems.some((problem) => /contradicted by the fact's own words "continued service"/.test(problem)), JSON.stringify(problems));
+  assert.deepEqual(validateFactConclusions(optionFact('subject to the holder’s Continued Employment through the first anniversary'), { tableShapes }).filter((problem) => /contradicted/.test(problem)).length, 1);
+  assert.deepEqual(validateFactConclusions(optionFact(null), { tableShapes }), []);
+  assert.deepEqual(validateFactConclusions(optionFact('subject to the holder’s continued service through the first anniversary', 'FULLY_VESTED_CONDITIONAL_UPON_SERVICE'), { tableShapes }), []);
+  // Whole words only: "discontinued service" is not the phrase.
+  assert.deepEqual(validateFactConclusions(optionFact('after any discontinued service arrangement'), { tableShapes }), []);
+});
+
+function absenceFact(dates, extraCells = []) {
+  return {
+    fact_id: 'r-3-08', proposal_id: 'r-3-08', family_key: 'REPRESENTATIONS', subtype_key: 'NEGATIVE_REPRESENTATION', section_reference: '3.08',
+    headline: { label: 'Negative representation', distinguishing_component_ids: [] },
+    components: [
+      ...dates.map((text, index) => ({ component_id: `r-3-08-d${index}`, kind: 'DATE', label: 'Look-back start date', text, origin: 'OWN', source_span_id: SPAN_ID, start_byte: index * 30, end_byte: index * 30 + text.length, gap_before: false, children: [] })),
+      { component_id: 'r-3-08-o', kind: 'OPERATION', label: 'Absence statement', text: 'there has not been', origin: 'OWN', source_span_id: SPAN_ID, start_byte: 100, end_byte: 118, gap_before: false, children: [] },
+      { component_id: 'r-3-08-m', kind: 'DEFINED_TERM', label: 'Company Material Adverse Effect', text: 'any Company Material Adverse Effect', origin: 'OWN', source_span_id: SPAN_ID, start_byte: 120, end_byte: 155, gap_before: false, children: [] },
+    ],
+    conclusions: { table_key: 'representations-qualifiers-table', row_label: 'Absence of Certain Changes or Events', cells: [{ column_id: 'materiality', code: 'MAE_AGGREGATE', component_ids: ['r-3-08-m'] }, ...extraCells] },
+  };
+}
+
+test('a value column the readout omitted is completed at extraction from the fact\'s one parsable fill_from component, and validates', () => {
+  const fact = absenceFact(['Since January 1, 2025']);
+  const normalised = { ...fact, conclusions: normaliseConclusionValues(fact, tableShapes) };
+  const lookback = normalised.conclusions.cells.find((cell) => cell.column_id === 'lookback');
+  assert.ok(lookback, JSON.stringify(normalised.conclusions.cells));
+  assert.deepEqual(lookback.value, { canonical: '2025-01-01', unit: 'ISO_DATE' });
+  assert.deepEqual(lookback.component_ids, ['r-3-08-d0']);
+  assert.deepEqual(validateFactConclusions(normalised, { tableShapes }), []);
+  assert.equal(formatValue(lookback.value, 'PERIOD'), 'January 1, 2025');
+});
+
+test('an omitted value column is not completed when two components could fill it, nor when the readout already fills it', () => {
+  const two = absenceFact(['Since January 1, 2025', 'since December 31, 2023']);
+  assert.equal(normaliseConclusionValues(two, tableShapes).cells.some((cell) => cell.column_id === 'lookback'), false);
+  const filled = absenceFact(['Since January 1, 2025'], [{ column_id: 'lookback', value: { canonical: 2025, unit: 'year' }, component_ids: ['r-3-08-d0'] }]);
+  const cells = normaliseConclusionValues(filled, tableShapes).cells.filter((cell) => cell.column_id === 'lookback');
+  assert.equal(cells.length, 1);
+  assert.deepEqual(cells[0].value, { canonical: '2025-01-01', unit: 'ISO_DATE' });
+  // A readout on a fact with no parsable words is left as it was.
+  const none = absenceFact([]);
+  assert.deepEqual(normaliseConclusionValues(none, tableShapes).cells, none.conclusions.cells);
+});

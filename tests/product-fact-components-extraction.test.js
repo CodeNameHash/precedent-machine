@@ -317,3 +317,166 @@ test('V9: buildAgreementSectionDraft adds table_shapes/conclusion_instruction an
   assert.equal(section.proposals[0].validation_status, 'VALID', JSON.stringify(section.issues));
   assert.equal(section.proposals[0].conclusions.table_key, 'equity-awards-table');
 });
+
+// Ben, 2026-09-14: "do you have an agent looking at all of our tweaks and
+// seeing if they should be made systematically/throughout the code base
+// back to extraction? I don't want to make surface level/one deal level
+// fixes". The page-side rules of 2026-09-14 reach the extractor as prompt
+// guidance, request data and a validator: every column's guidance and a
+// party column's display are in the request; the instruction names the
+// value-column, party, label and DEFINED_TERM rules; a REPRESENTATIONS
+// proposal cut from an article introduction is held unless it is a
+// REPRESENTATION_QUALIFICATION, and the section is told so.
+function representationsSource() {
+  const canonicalText = [
+    'AGREEMENT AND PLAN OF MERGER', 'ARTICLE I', 'THE MERGER',
+    'Section 1.01 The Merger. Merger Sub shall be merged with and into the Company.',
+    'ARTICLE III', 'REPRESENTATIONS AND WARRANTIES OF THE COMPANY',
+    'Except as disclosed in the Company SEC Documents filed since January 1, 2024 or as set forth in the Company Disclosure Letter, the Company represents and warrants to Parent and Merger Sub that:',
+    'Section 3.01 Organization. The Company is duly organized and validly existing.',
+    'Section 3.02 Capitalization. The authorized capital stock of the Company consists of 100 shares.',
+  ].join('\n\n');
+  const id = sha(canonicalText);
+  const sourceDoc = {
+    schema_version: 'SOURCE_DOCUMENT/V1', source_document_id: id, agreement_id: id,
+    canonical_text: canonicalText, canonical_text_sha256: id,
+    retrieval_url: 'https://example.test/reps.htm', final_url: 'https://example.test/reps.htm', source_map_id: id,
+    filing_accession: '0000000000-00-000000', exhibit_filename: 'reps.htm',
+  };
+  const agreementStructure = buildAgreementStructure({ agreement_id: id, canonical_text: canonicalText, canonical_text_sha256: id });
+  return { sourceDoc, agreementStructure };
+}
+
+async function draftIntroSection(subtypeKey) {
+  const { sourceDoc, agreementStructure } = representationsSource();
+  const introNode = substantiveSections(agreementStructure).find((candidate) => candidate.reference === 'III-INTRO');
+  assert.ok(introNode, 'the sectionizer mints the article introduction node');
+  let extractionRequestSeen = null;
+  const section = await buildAgreementSectionDraft({
+    sourceDocument: sourceDoc, agreementStructure, node: introNode, legalSchema: legalSchemaV2, tableShapes,
+    model: {
+      async complete({ call_kind, request }) {
+        let modelResponse;
+        if (call_kind === 'ROUTING') {
+          modelResponse = { families: ['REPRESENTATIONS'], disposition: 'FAMILY_ASSIGNED', rationale: 'article intro', deterministic_disagreements: [] };
+        } else if (call_kind === 'RESIDUAL') {
+          modelResponse = { paragraphs: request.paragraphs.map((p) => ({ source_span_id: p.source_span_id, disposition: 'KNOWN_FAMILY', family_keys: ['REPRESENTATIONS'], rationale: 'article intro' })) };
+        } else {
+          extractionRequestSeen = request;
+          const spanId = request.source_closure.full_section.span_id;
+          const roles = subtypeKey === 'REPRESENTATION_QUALIFICATION'
+            ? { qualification_source: 'the Company SEC Documents', qualified_scope: 'represents and warrants to Parent and Merger Sub' }
+            : { LEGAL_ACTOR_OR_SUBJECT: 'the Company', LEGAL_OPERATION: 'represents and warrants', OPERATIVE_OBJECT: 'to Parent and Merger Sub' };
+          const proposal = {
+            client_ref: 'p1', group_ref: 'g1', family_key: 'REPRESENTATIONS', subtype_key: subtypeKey, fact_type: 'REPRESENTATION_ACCURACY_STANDARD',
+            statement: 'Except as disclosed in the Company SEC Documents, the Company represents and warrants.',
+            roles, value: null,
+            evidence_quotes: [{ quote: 'Except as disclosed in the Company SEC Documents', source_span_id: spanId, occurrence: 0 }],
+            headline: { label: 'General qualification', distinguishing_refs: ['src'] },
+            components: [
+              { ref: 'src', kind: 'EXCEPTION', label: 'SEC filings exception', quote: 'Except as disclosed in the Company SEC Documents', source_span_id: spanId, occurrence: 0, origin: 'OWN', gap_before: false, children: [] },
+              { ref: 'win', kind: 'DATE', label: 'Filing window', quote: 'since January 1, 2024', source_span_id: spanId, occurrence: 0, origin: 'OWN', gap_before: true, children: [] },
+              { ref: 'op', kind: 'OPERATION', label: 'Representation', quote: 'represents and warrants', source_span_id: spanId, occurrence: 0, origin: 'OWN', gap_before: true, children: [] },
+            ],
+            conclusions: {
+              table_key: 'representations-general-qualifications', row_label: 'SEC filings exception',
+              cells: [{ column_id: 'provision', code: 'EXCEPT_AS_DISCLOSED_IN_SEC_FILINGS', component_refs: ['src'] }],
+            },
+          };
+          modelResponse = {
+            proposals: [proposal], groups: [{ client_ref: 'g1', family_key: 'REPRESENTATIONS', subtype_key: subtypeKey }], links: [],
+            coverage: { REPRESENTATIONS: 'FOUND' },
+            fact_type_coverage: { REPRESENTATIONS: Object.fromEntries(request.family_contracts[0].required_fact_types.map((type) => [type, type === 'REPRESENTATION_ACCURACY_STANDARD' ? 'FOUND' : 'NOT_FOUND'])) },
+          };
+        }
+        return {
+          provider_id: 'TEST', model_id: 'TEST', response: modelResponse, raw_request: request, raw_response: modelResponse,
+          input_tokens: 1, output_tokens: 1, cost_microusd: 0, duration_ms: 1,
+        };
+      },
+    },
+  });
+  return { section, request: extractionRequestSeen };
+}
+
+test('an article introduction routed to REPRESENTATIONS is told its facts are REPRESENTATION_QUALIFICATION, and one of another subtype is held INTRO_NOT_QUALIFICATION', async () => {
+  const held = await draftIntroSection('STATUS_REPRESENTATION');
+  assert.match(held.request.article_introduction_instruction, /REPRESENTATION_QUALIFICATION/);
+  assert.equal(held.section.proposals[0].validation_status, 'INVALID');
+  const issue = held.section.issues.find((candidate) => candidate.code === 'INTRO_NOT_QUALIFICATION');
+  assert.ok(issue, JSON.stringify(held.section.issues));
+  assert.equal(issue.kind, 'VALIDATION');
+  assert.match(issue.message, /III-INTRO/);
+
+  const accepted = await draftIntroSection('REPRESENTATION_QUALIFICATION');
+  assert.equal(accepted.section.proposals[0].validation_status, 'VALID', JSON.stringify(accepted.section.issues));
+  assert.equal(accepted.section.issues.some((candidate) => candidate.code === 'INTRO_NOT_QUALIFICATION'), false);
+  assert.equal(accepted.section.proposals[0].conclusions.table_key, 'representations-general-qualifications');
+  // The Window column the readout omitted is completed from the fact's own
+  // DATE at extraction, so the stored readout carries it on every deal.
+  const window = accepted.section.proposals[0].conclusions.cells.find((cell) => cell.column_id === 'window');
+  assert.ok(window, JSON.stringify(accepted.section.proposals[0].conclusions.cells));
+  assert.deepEqual(window.value, { canonical: '2024-01-01', unit: 'ISO_DATE' });
+  // Every column's guidance reaches the extractor, not only the basis and
+  // from-subtype columns'.
+  const qualifications = accepted.request.table_shapes.REPRESENTATIONS.find((entry) => entry.table_key === 'representations-general-qualifications');
+  assert.match(qualifications.columns.find((column) => column.column_id === 'window').guidance, /look-back or cut-off/);
+});
+
+test('a numbered representation section is not an article introduction: no instruction, no hold', async () => {
+  const { sourceDoc, agreementStructure } = representationsSource();
+  const node = substantiveSections(agreementStructure).find((candidate) => candidate.reference === '3.01');
+  const fullSpan = 'a'.repeat(64);
+  const compiled = compileExtraction({
+    sourceDocument: sourceDoc, legalSchema: legalSchemaV2, node, call,
+    closure: {
+      source_closure_id: 'c'.repeat(64), structure_node_id: node.node_id, section_node_id: node.node_id, section_reference: '3.01', full_section_span_id: fullSpan,
+      spans: [{ span_id: fullSpan, kind: 'FULL_SECTION', structure_node_id: node.node_id, start_byte: 0, end_byte: bytes('The Company is duly organized and validly existing.'), exact_text: 'The Company is duly organized and validly existing.' }],
+      components: [{ kind: 'FULL_SECTION', span_id: fullSpan, structure_node_id: node.node_id }],
+    },
+    response: {
+      proposals: [{
+        client_ref: 'p1', group_ref: 'g1', family_key: 'REPRESENTATIONS', subtype_key: 'STATUS_REPRESENTATION', fact_type: 'REPRESENTATION_ACCURACY_STANDARD',
+        statement: 'The Company is duly organized.', value: null,
+        roles: { LEGAL_ACTOR_OR_SUBJECT: 'The Company', LEGAL_OPERATION: 'is duly organized', OPERATIVE_OBJECT: 'validly existing' },
+        evidence_quotes: [{ quote: 'The Company is duly organized', source_span_id: fullSpan, occurrence: 0 }],
+        headline: { label: 'Status representation', distinguishing_refs: ['op'] },
+        components: [{ ref: 'op', kind: 'OPERATION', label: 'Organization', quote: 'is duly organized', source_span_id: fullSpan, occurrence: 0, origin: 'OWN', gap_before: false, children: [] }],
+      }],
+      groups: [{ client_ref: 'g1', family_key: 'REPRESENTATIONS', subtype_key: 'STATUS_REPRESENTATION' }], links: [],
+    },
+    routedFamilies: ['REPRESENTATIONS'], ownedNodeIds: new Set([node.node_id]),
+  });
+  assert.equal(compiled.issues.some((candidate) => candidate.code === 'INTRO_NOT_QUALIFICATION'), false);
+});
+
+test('the V9 request carries the value-column, party, label and DEFINED_TERM rules and a party column\'s display', async () => {
+  const { sourceDoc, agreementStructure } = representationsSource();
+  const mergerNode = substantiveSections(agreementStructure).find((candidate) => candidate.reference === '1.01');
+  let request = null;
+  await buildAgreementSectionDraft({
+    sourceDocument: sourceDoc, agreementStructure, node: mergerNode, legalSchema: legalSchemaV2, tableShapes,
+    model: {
+      async complete({ call_kind, request: seen }) {
+        let modelResponse;
+        if (call_kind === 'ROUTING') modelResponse = { families: ['MERGER_STRUCTURE_CLOSING'], disposition: 'FAMILY_ASSIGNED', rationale: 'merger', deterministic_disagreements: [] };
+        else if (call_kind === 'RESIDUAL') modelResponse = { paragraphs: seen.paragraphs.map((p) => ({ source_span_id: p.source_span_id, disposition: 'KNOWN_FAMILY', family_keys: ['MERGER_STRUCTURE_CLOSING'], rationale: 'merger' })) };
+        else {
+          request = seen;
+          modelResponse = { proposals: [], groups: [], links: [], coverage: { MERGER_STRUCTURE_CLOSING: 'NOT_FOUND' }, fact_type_coverage: { MERGER_STRUCTURE_CLOSING: Object.fromEntries(seen.family_contracts[0].required_fact_types.map((type) => [type, 'NOT_FOUND'])) } };
+        }
+        return { provider_id: 'TEST', model_id: 'TEST', response: modelResponse, raw_request: seen, raw_response: modelResponse, input_tokens: 1, output_tokens: 1, cost_microusd: 0, duration_ms: 1 };
+      },
+    },
+  });
+  assert.ok(request);
+  assert.match(request.conclusion_instruction, /A value column is never left empty when this proposal's own components include one of its fill_from kinds/);
+  assert.match(request.conclusion_instruction, /A column with display party names an entity/);
+  assert.match(request.component_instruction, /never a tag such as "Subject:", "Operation:" or "Actor:"/);
+  assert.match(request.component_instruction, /resolves_to whose text is the definition's own words/);
+  const structure = request.table_shapes.MERGER_STRUCTURE_CLOSING.find((entry) => entry.table_key === 'structure-mechanics-table');
+  const surviving = structure.columns.find((column) => column.column_id === 'survivingEntityStep1');
+  assert.equal(surviving.display, 'party');
+  assert.match(surviving.guidance, /never the defined term alone/);
+  assert.equal('article_introduction_instruction' in request, false);
+});

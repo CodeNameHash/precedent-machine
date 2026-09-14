@@ -30,13 +30,18 @@ test('longSectionGroups splits a long section with children into source-ordered 
   const closure = buildSourceClosure({ sourceDocument, agreementStructure, nodeId: node.node_id });
   const production = longSectionGroups(closure);
   assert.ok(production.length > 1, 'Concho 6.3 (20k bytes, 7 limbs) splits under the production thresholds');
-  const short = substantiveSections(agreementStructure).find((item) => item.reference === '4.10');
-  assert.deepEqual(longSectionGroups(buildSourceClosure({ sourceDocument, agreementStructure, nodeId: short.node_id })), [], '4.10 (5k bytes, 12 limbs) stays whole');
+  // 5,000 bytes and three limbs since 2026-09-14 (Metsera generation 6,
+  // 3.09: eleven limbs in 7k bytes outran the CLI's output cap).
+  const mid = substantiveSections(agreementStructure).find((item) => item.reference === '4.10');
+  assert.ok(longSectionGroups(buildSourceClosure({ sourceDocument, agreementStructure, nodeId: mid.node_id })).length > 1, '4.10 (5k bytes, 12 limbs) splits under the production thresholds');
+  const sized = (item) => item.span.end_byte - item.span.start_byte;
+  const short = substantiveSections(agreementStructure).filter((item) => sized(item) < 4000).sort((left, right) => sized(right) - sized(left))[0];
+  assert.deepEqual(longSectionGroups(buildSourceClosure({ sourceDocument, agreementStructure, nodeId: short.node_id })), [], `${short.reference} (${sized(short)} bytes) stays whole`);
   const groups = longSectionGroups(closure, { min_section_bytes: 1000, min_children: 3, group_bytes: 6000 });
   assert.ok(groups.length > 1, `groups: ${groups.length}`);
   assert.deepEqual(groups.flat(), closure.operative_span_ids, 'every operative limb is in exactly one group, in order');
   assert.deepEqual(longSectionGroups(closure, { min_section_bytes: 1000, min_children: 8, group_bytes: 6000 }), [], 'too few children: no split');
-  assert.equal(LONG_SECTION_SPLIT.min_children, 4);
+  assert.deepEqual(LONG_SECTION_SPLIT, { min_section_bytes: 5000, min_children: 3, group_bytes: 3500 });
 });
 
 test('mergePartResponses prefixes every ref per part and merges coverage to the strongest state', () => {

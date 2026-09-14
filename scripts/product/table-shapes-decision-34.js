@@ -763,6 +763,16 @@ function applyEquityAwards(doc) {
   const conditional = code('Fully vested (conditional upon service)', `${BEN}: "While fully vested is normally right I know why this is coded as such but it should say Fully Vested (Conditional Upon Service) or similar" (an unvested option whose converted payments vest at the first anniversary of the Closing subject to continued service).`, { code: 'FULLY_VESTED_CONDITIONAL_UPON_SERVICE' });
   if (!vesting.vocabulary.some((existing) => existing.code === conditional.code)) vesting.vocabulary.push(conditional);
   table.guidance = `${table.guidance} Vesting Treatment: FULLY_VESTED_CONDITIONAL_UPON_SERVICE when the converted award or its payments vest in full at a later date or on the original schedule subject to the holder's continued service or employment; FULLY_VESTED_ACCELERATED only when vesting occurs at the Effective Time with no continued-service condition.`;
+  // The same rule as a validator, not a page remap: FULLY_VESTED_ACCELERATED
+  // on a fact whose own words say "continued service" or "continued
+  // employment" is a problem (fact-conclusions.js C15, `contradicted_by`),
+  // so the readout is dropped with a note and the extractor is held to the
+  // conditional code on every deal. Ben, 2026-09-14: "do you have an agent
+  // looking at all of our tweaks and seeing if they should be made
+  // systematically/throughout the code base back to extraction? I don't
+  // want to make surface level/one deal level fixes".
+  const accelerated = vesting.vocabulary.find((existing) => existing.code === 'FULLY_VESTED_ACCELERATED');
+  if (accelerated) accelerated.contradicted_by = ['continued service', 'continued employment', 'continuous service', 'continuous employment'];
 }
 
 function applyEmployeeBenefits(doc) {

@@ -125,6 +125,7 @@
               "header": "Surviving Entity (Step 1)",
               "render": "term",
               "display": "party",
+              "guidance": "Names the entity that survives this step. Cite the component naming that entity (the ACTOR or OBJECT words: \"the Company\", \"Merger Sub\") together with the TERM component carrying its defined name (\"the “Surviving Corporation”\"); the cell text is the entity's own words, never the defined term alone.",
               "addition": true,
               "reason": "Ben's decision 2026-09-13 #2: the structure family must record which entity survives each step, not just the form.",
               "fill_from": [
@@ -156,6 +157,7 @@
               "header": "Surviving Entity (Step 2)",
               "render": "term",
               "display": "party",
+              "guidance": "Names the entity that survives this step. Cite the component naming that entity (the ACTOR or OBJECT words: \"the Company\", \"Merger Sub\") together with the TERM component carrying its defined name (\"the “Surviving Corporation”\"); the cell text is the entity's own words, never the defined term alone.",
               "addition": true,
               "reason": "Ben's decision 2026-09-13 #2: companion to Surviving Entity (Step 1) for the second step.",
               "fill_from": [
@@ -719,7 +721,13 @@
                   "print_evidence": {
                     "page": 15,
                     "row_label": "Restricted Stock Awards"
-                  }
+                  },
+                  "contradicted_by": [
+                    "continued service",
+                    "continued employment",
+                    "continuous service",
+                    "continuous employment"
+                  ]
                 },
                 {
                   "code": "CANCELLED_FOR_CASH_CONSIDERATION",

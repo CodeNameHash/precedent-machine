@@ -786,3 +786,27 @@ test('a value column the extractor left empty is filled from the fact\'s own par
   assert.deepEqual(cell.component_ids, ['r-3-08-d']);
   assert.equal(cell.derived, true);
 });
+
+// The extractor is now asked to cite the entity's own words with the term
+// on a party column (Ben, 2026-09-14: "do you have an agent looking at all
+// of our tweaks and seeing if they should be made systematically/throughout
+// the code base back to extraction? I don't want to make surface level/one
+// deal level fixes"): a cell whose text is the entity and which cites the
+// ACTOR and the TERM reads the same as the stored generations' term-only cell.
+test('a party column cell that cites the entity and the term reads as entity (term), the same as a term-only cell', () => {
+  const fact = {
+    fact_id: 'sv-2', proposal_id: 'sv-2', family_key: 'MERGER_STRUCTURE_CLOSING', subtype_key: 'LEGAL_EFFECT', section_reference: '1.01', structure_node_id: 'n-1-01',
+    headline: { label: 'Legal effect', distinguishing_component_ids: ['sv2-term'] },
+    components: [
+      { component_id: 'sv2-actor', kind: 'ACTOR', label: 'Continuing entity', text: 'the Company', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 11, gap_before: false, children: [] },
+      { component_id: 'sv2-op', kind: 'OPERATION', label: 'Continues as survivor', text: 'shall continue as the surviving corporation', origin: 'OWN', source_span_id: 's', start_byte: 12, end_byte: 55, gap_before: false, children: [] },
+      { component_id: 'sv2-term', kind: 'TERM', label: 'Surviving Corporation', text: 'the “Surviving Corporation”', origin: 'OWN', source_span_id: 's', start_byte: 57, end_byte: 84, gap_before: false, children: [] },
+    ],
+    conclusions: { table_key: 'structure-mechanics-table', row_label: 'the Merger', cells: [{ column_id: 'survivingEntityStep1', text: 'the Company', component_ids: ['sv2-actor', 'sv2-term'] }] },
+  };
+  const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'structure-mechanics-table');
+  const cell = table.rows[0].cells.find((candidate) => candidate.column_id === 'survivingEntityStep1');
+  assert.equal(cell.label, 'the Company (the “Surviving Corporation”)');
+  assert.deepEqual(cell.component_ids, ['sv2-actor', 'sv2-term']);
+});

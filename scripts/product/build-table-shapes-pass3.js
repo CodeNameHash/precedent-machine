@@ -161,6 +161,13 @@ function applyDecision1StructureMechanics(doc) {
       // cell names the fact's actor (the entity that continues) with the
       // cited term after it.
       display: 'party',
+      // Sent to the extractor as display party with this guidance so the cell
+      // cites the entity's own words, not the bare term, on every deal (Ben,
+      // 2026-09-14: "do you have an agent looking at all of our tweaks and
+      // seeing if they should be made systematically/throughout the code base
+      // back to extraction? I don't want to make surface level/one deal level
+      // fixes"); the page's actor-plus-term composition stays as the safety net.
+      guidance: 'Names the entity that survives this step. Cite the component naming that entity (the ACTOR or OBJECT words: "the Company", "Merger Sub") together with the TERM component carrying its defined name ("the “Surviving Corporation”"); the cell text is the entity\'s own words, never the defined term alone.',
       addition: true,
       reason: `${BEN} #2: the structure family must record which entity survives each step, not just the form.`,
       fill_from: ['TERM'],
@@ -184,6 +191,13 @@ function applyDecision1StructureMechanics(doc) {
       // cell names the fact's actor (the entity that continues) with the
       // cited term after it.
       display: 'party',
+      // Sent to the extractor as display party with this guidance so the cell
+      // cites the entity's own words, not the bare term, on every deal (Ben,
+      // 2026-09-14: "do you have an agent looking at all of our tweaks and
+      // seeing if they should be made systematically/throughout the code base
+      // back to extraction? I don't want to make surface level/one deal level
+      // fixes"); the page's actor-plus-term composition stays as the safety net.
+      guidance: 'Names the entity that survives this step. Cite the component naming that entity (the ACTOR or OBJECT words: "the Company", "Merger Sub") together with the TERM component carrying its defined name ("the “Surviving Corporation”"); the cell text is the entity\'s own words, never the defined term alone.',
       addition: true,
       reason: `${BEN} #2: companion to Surviving Entity (Step 1) for the second step.`,
       fill_from: ['TERM'],
