@@ -135,3 +135,22 @@ test('a LITANY built with children and no members takes the children as members'
   assert.deepEqual(tree.components[0].members, ['event', 'change', 'effect']);
   assert.deepEqual(tree.components[0].children, []);
 });
+
+// Generation 7, 3.18: a LIST_ELEMENT the model placed outside a LIST held
+// the fact; it is an ordinary TERM.
+test('a LIST_ELEMENT outside a LIST is built as a TERM', () => {
+  const { buildComponentTree } = require('../lib/product/fact-components');
+  const resolve = (raw) => ({ span: { source_span_id: 's', start_byte: 0, end_byte: raw.quote.length }, context: {} });
+  const tree = buildComponentTree({
+    modelComponents: [
+      { ref: 'a', kind: 'LIST_ELEMENT', label: 'first', quote: 'air permits', source_span_id: 's', occurrence: 0, origin: 'OWN', gap_before: false, children: [] },
+      { ref: 'l', kind: 'LIST', label: 'list', quote: 'water permits and waste permits', source_span_id: 's', occurrence: 0, origin: 'OWN', gap_before: false, children: [
+        { ref: 'l1', kind: 'LIST_ELEMENT', label: 'water', quote: 'water permits', source_span_id: 's', occurrence: 0, origin: 'OWN', gap_before: false, children: [] },
+      ] },
+    ],
+    resolve, factId: 'f', contentId: (domain, body) => `${domain}:${JSON.stringify(body).length}`,
+  });
+  assert.deepEqual(tree.problems, []);
+  assert.equal(tree.components[0].kind, 'TERM');
+  assert.equal(tree.components[1].children[0].kind, 'LIST_ELEMENT');
+});

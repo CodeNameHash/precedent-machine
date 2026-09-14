@@ -2571,7 +2571,21 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       was updated twice in a quarter of an hour (f5c00f4, then c616f56)
       and its process killed each time; the leases those kills left
       behind expire on their own and the sections retry under their
-      attempts. Ben's afternoon decisions,
+      attempts.
+      (31) 18:20 UTC, generation 7's 3.12, 3.13, 3.16 to 3.18 read. The
+      Material Contracts table is the precedent's list filled from the
+      definition: 26 categories, each with its summary, the thresholds
+      parsed from the words ($500,000 indebtedness and leases,
+      $2,000,000 goods and services, manufacturing, CRO, royalty,
+      milestone and future-payment contracts, "two million dollars" for
+      commercialisation, $50,000 employee loans), the materiality
+      qualifiers, no absent rows; 3.13's and 3.17's limb (a) extracted.
+      The reps rows of 3.12, 3.16 to 3.18 carry their qualifiers and
+      look-backs (January 1, 2023; June 30, 2025 for undisclosed
+      liabilities). 3.16's two definition cells were dropped as
+      non-verbatim and the rows kept (the cell rule of (29) at work).
+      3.18 had one fact INVALID on two LIST_ELEMENTs outside a LIST: such
+      an element is now built as a TERM. Ben's afternoon decisions,
       2026-09-14, each in code: "by miscoded I meant oyu currentl have it
       messed up and you need to move it over to what we had in the old
       vesrion...." (the reps table opens with General Exceptions: SEC
