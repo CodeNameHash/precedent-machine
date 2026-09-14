@@ -2319,7 +2319,16 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       definition" jumps to the section); "make the elements below the top
       level reps (e.g. Organizzation) collapsable and hide them initiall
       but have a clear 'more detail' button" ("More detail (N)" /
-      "Exceptions (N)" under the subject).
+      "Exceptions (N)" under the subject). After the first look at that
+      deployment: "I don't like the 'see provision' behaviour - it
+      shouldn't show the provision x-refs but instead should open the
+      side bar" (the control opens the row's first fact in the sidebar)
+      and, on the Other provisions block, "I assume this isn't how you're
+      going to render this when you're done? It should look like the rest
+      of the table structure etc and for now no summary is fine but
+      ultimately we want to get to summary" (the same card and Term /
+      Provision columns as the grid, the section reference as the Term,
+      branches as indented rows; the summary is a later rule).
       (16) 11:25 UTC, at 13 of 85: generation 6 went FAILED on 3.02
       (Capitalization) after three attempts. Claude Code's `result`
       field is the last text block of the answer; at high effort the
