@@ -586,7 +586,7 @@ function buildOverrides(legacy) {
           { column_id: 'test', header: 'Test', render: 'verbatim' },
           {
             column_id: 'limbSummary',
-            header: 'Provision',
+            header: 'Summary',
             render: 'vocabulary',
             vocabulary: [P('One limb — effect on the business, condition or results of operations', { page: 67, row: 'Parent' })],
           },
@@ -726,7 +726,7 @@ function buildOverrides(legacy) {
     group_header: groupHeader,
     term_column: { header: 'Term', source: 'subject' },
     columns: [
-      { column_id: 'body', header: 'Provision', render: 'verbatim' },
+      { column_id: 'body', header: 'Summary', render: 'verbatim' },
       { column_id: 'effortsStandard', header: 'Efforts Standard', render: 'vocabulary', vocabulary: effortsVocab },
       { column_id: 'qualifier', header: 'Qualifier', render: 'vocabulary', vocabulary: qualifierVocab },
     ],
@@ -814,7 +814,7 @@ function buildOverrides(legacy) {
         table_key: 'nosol-noshop-go-shop',
         group_header: 'GO-SHOP',
         term_column: { header: 'Term', source: 'subject' },
-        columns: [{ column_id: 'goShop', header: 'Provision', render: 'vocabulary', vocabulary: [P('None', { page: 97, row: 'Go-shop' })] }],
+        columns: [{ column_id: 'goShop', header: 'Summary', render: 'vocabulary', vocabulary: [P('None', { page: 97, row: 'Go-shop' })] }],
         rows_are: 'fixed list',
         fixed_row_labels: ['Go-shop'],
       },
@@ -857,7 +857,7 @@ function buildOverrides(legacy) {
         group_header: 'FIDUCIARY-OUT / ENGAGEMENT',
         term_column: { header: 'Term', source: 'subject' },
         columns: [
-          { column_id: 'signals', header: 'Provision', render: 'vocabulary', vocabulary: FIDUCIARY_STANDARD_VOCAB },
+          { column_id: 'signals', header: 'Summary', render: 'vocabulary', vocabulary: FIDUCIARY_STANDARD_VOCAB },
         ],
         rows_are: 'fixed list',
         fixed_row_labels: ['Engagement standard', 'Final determination standard', 'Engagement standard (coded)'],
@@ -894,7 +894,7 @@ function buildOverrides(legacy) {
       group_header: 'INTERVENING EVENT',
       term_column: { header: 'Term', source: 'subject' },
       columns: [
-        { column_id: 'signals', header: 'Provision', render: 'boolean' },
+        { column_id: 'signals', header: 'Summary', render: 'boolean' },
         { column_id: 'detail', header: 'Detail', render: 'verbatim' },
       ],
       rows_are: 'fixed list',
@@ -909,7 +909,7 @@ function buildOverrides(legacy) {
         group_header: 'SUPERIOR PROPOSAL',
         term_column: { header: 'Term', source: 'subject' },
         columns: [
-          { column_id: 'signals', header: 'Provision', render: 'value', value_kind: 'PERCENTAGE' },
+          { column_id: 'signals', header: 'Summary', render: 'value', value_kind: 'PERCENTAGE' },
         ],
         rows_are: 'fixed list',
         fixed_row_labels: ['Superior Proposal threshold', 'Superior Proposal test', 'Determiner'],
@@ -1249,7 +1249,7 @@ function buildOverrides(legacy) {
     tables: [{
       table_key: 'general-covenants-table',
       group_header: null,
-      term_column: { header: 'Provision', source: 'subject' },
+      term_column: { header: 'Summary', source: 'subject' },
       columns: [{ column_id: 'detail', header: 'Link', render: 'verbatim' }],
       rows_are: 'one per subject',
     }],
@@ -1265,7 +1265,7 @@ function buildOverrides(legacy) {
       columns: [
         {
           column_id: 'signals',
-          header: 'Provision',
+          header: 'Summary',
           render: 'vocabulary',
           vocabulary: [
             P('Yes', { page: 130, row: 'Specific performance', code: 'YES' }),

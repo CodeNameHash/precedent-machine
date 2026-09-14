@@ -604,7 +604,7 @@ function applyDecision22EmployeeBenefits(doc) {
   const other = findTable(section, 'employee-benefits-other-protections');
   other.term_column = { header: 'Term', source: 'subject', fill_from: ['TERM'] };
   other.columns = [
-    { column_id: 'provision', header: 'Provision', render: 'verbatim', fill_from: ['OPERATION', 'OBJECT', 'STANDARD', 'CONDITION', 'EXCEPTION'], addition: true, reason: `${BEN} #22: a simple two-column table for what does not fit the benefit-element rubric.` },
+    { column_id: 'provision', header: 'Summary', render: 'verbatim', fill_from: ['OPERATION', 'OBJECT', 'STANDARD', 'CONDITION', 'EXCEPTION'], addition: true, reason: `${BEN} #22: a simple two-column table for what does not fit the benefit-element rubric.` },
   ];
   other.fixed_row_labels = [...other.fixed_row_labels, 'No plan amendment', 'No third-party beneficiaries', 'No right to continued employment', 'Duplication of benefits'];
   other.open_rows = true;
@@ -655,7 +655,7 @@ function applyDecision23VotesAndMeeting(doc) {
         ],
         fill_from: ['ACTOR'],
       },
-      { column_id: 'provision', header: 'Provision', render: 'verbatim', fill_from: ['OPERATION', 'OBJECT', 'STANDARD', 'EFFORTS_STANDARD', 'CONDITION'], addition: true, reason: `${why} The operative words of the proxy or SEC step.` },
+      { column_id: 'provision', header: 'Summary', render: 'verbatim', fill_from: ['OPERATION', 'OBJECT', 'STANDARD', 'EFFORTS_STANDARD', 'CONDITION'], addition: true, reason: `${why} The operative words of the proxy or SEC step.` },
     ],
     rows_are: 'fixed list',
     fixed_row_labels: ['Proxy statement filing', 'Parent review and comment', 'SEC comments and correspondence', 'Amendment or supplement', 'Board recommendation in proxy', 'Solicitation of approval', 'Information supplied'],

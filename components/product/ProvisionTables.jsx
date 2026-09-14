@@ -222,7 +222,7 @@ function AttributeGrid({ table, selection, onSelect }) {
         <thead>
           <tr>
             <th className={`w-[111.5px] ${TH}`}>Term</th>
-            <th className={TH}>Provision</th>
+            <th className={TH}>Summary</th>
           </tr>
         </thead>
         <tbody>
@@ -292,7 +292,7 @@ function OtherProvisions({ groups, tableKey, onSelect }) {
           <thead>
             <tr>
               <th className={`w-[111.5px] ${TH}`}>Term</th>
-              <th className={TH}>Provision</th>
+              <th className={TH}>Summary</th>
             </tr>
           </thead>
           <tbody>

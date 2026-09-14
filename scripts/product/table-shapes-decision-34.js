@@ -110,7 +110,7 @@ function provisionTable({ tableKey, groupHeader = null, termHeader = 'Term', row
     columns: [
       {
         column_id: 'provision',
-        header: 'Provision',
+        header: 'Summary',
         render: 'vocabulary',
         vocabulary,
         vocabulary_by_row: byRow,

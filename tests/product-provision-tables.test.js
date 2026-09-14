@@ -391,7 +391,7 @@ test('a one-per-agreement table renders its other provisions as a collapsed Term
   assert.doesNotMatch(html, /data-testid="other-provisions"[^>]*data-open/);
   assert.match(html, /<table[^>]*data-testid="other-provisions-table"[^>]*hidden/, 'collapsed to start');
   assert.match(html, /Other provisions \(3\)/);
-  assert.match(html, /data-testid="other-provisions-table"[^]*?<th[^>]*>Term<\/th><th[^>]*>Provision<\/th>/);
+  assert.match(html, /data-testid="other-provisions-table"[^]*?<th[^>]*>Term<\/th><th[^>]*>Summary<\/th>/);
   // The Term is a summary from the component labels, the reference quiet beside it.
   assert.match(html, /data-testid="other-provision-term">files</);
   assert.match(html, /data-testid="other-provision-term">files · obj</);
