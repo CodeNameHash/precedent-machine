@@ -42,4 +42,6 @@ test('sandbox credentials come from VERCEL_TOKEN, VERCEL_TEAM_ID and VERCEL_PROJ
   assert.deepEqual(sandboxCredentials({}), {});
   assert.deepEqual(sandboxCredentials({ VERCEL_TOKEN: 't', VERCEL_TEAM_ID: 'team', VERCEL_PROJECT_ID: 'prj' }), { token: 't', teamId: 'team', projectId: 'prj' });
   assert.throws(() => sandboxCredentials({ VERCEL_TOKEN: 't' }), /VERCEL_TEAM_ID and VERCEL_PROJECT_ID/);
+  // A deployment's system variables without a token mean the OIDC default.
+  assert.deepEqual(sandboxCredentials({ VERCEL_PROJECT_ID: 'prj', VERCEL_TEAM_ID: 'team' }), {});
 });
