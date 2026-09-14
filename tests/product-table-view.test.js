@@ -167,7 +167,7 @@ test('defined_terms collects DEFINED_TERM components across all facts, de-duplic
   const [term] = view.defined_terms;
   assert.equal(term.term, 'Material Contract');
   assert.equal(term.fact_id, 'f-material-contracts-2');
-  assert.match(term.definition, /means any Contract/);
+  assert.match(term.definition, /^any Contract/, 'the definition without its "means" (Ben, 2026-09-14: term on the left, definition on the right)');
 });
 
 // Contract-shaped conclusions (a real Metsera V9 fact, 2026-09-13) render as
@@ -466,6 +466,26 @@ test('a party column names the entity, with the cited defined term after it', ()
   assert.deepEqual(cell.component_ids, ['sv-term']);
 });
 
+// Ben, 2026-09-14: "the term should [be] in [the] LH column and the
+// definition on RH".
+test('defined terms split into the quoted term and its definition, whatever shape the component takes', () => {
+  const { definedTermParts } = require('../lib/product/table-view');
+  const fact = { fact_id: 'dt', components: [
+    { component_id: 'cash', kind: 'OBJECT', label: 'cash', text: '$47.50 in cash, without interest', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 32, children: [] },
+    { component_id: 'closing-amount', kind: 'DEFINED_TERM', label: 'Closing Amount', text: 'the “Closing Amount”', origin: 'OWN', source_span_id: 's', start_byte: 34, end_byte: 54, children: [] },
+    { component_id: 'shares', kind: 'ACTOR', label: 'shares', text: 'shares of Company Common Stock held by any Person who is entitled to demand appraisal', origin: 'OWN', source_span_id: 's', start_byte: 60, end_byte: 140, children: [
+      { component_id: 'appraisal-shares', kind: 'DEFINED_TERM', label: 'Appraisal Shares', text: '(such shares, “Appraisal Shares”)', origin: 'OWN', source_span_id: 's', start_byte: 141, end_byte: 174, children: [] },
+    ] },
+    { component_id: 'cvr-agreement', kind: 'DEFINED_TERM', label: 'CVR Agreement', text: '“CVR Agreement” means the Contingent Value Rights Agreement between Parent and the Rights Agent.', origin: 'DEFINITION', source_span_id: 'd', start_byte: 0, end_byte: 90, resolves_to: { text: '“CVR Agreement” means the Contingent Value Rights Agreement between Parent and the Rights Agent.' }, children: [] },
+    { component_id: 'bday', kind: 'DEFINED_TERM', label: 'Business day', text: 'A “business day” means any day on which the principal offices of the SEC are open.', origin: 'DEFINITION', source_span_id: 'd', start_byte: 100, end_byte: 180, resolves_to: { text: 'business day' }, children: [] },
+  ] };
+  const parts = (id) => definedTermParts(fact.components.flatMap((c) => [c, ...(c.children || [])]).find((c) => c.component_id === id), fact);
+  assert.deepEqual(parts('closing-amount'), { term: 'Closing Amount', definition: '$47.50 in cash, without interest' });
+  assert.deepEqual(parts('appraisal-shares'), { term: 'Appraisal Shares', definition: 'shares of Company Common Stock held by any Person who is entitled to demand appraisal' });
+  assert.deepEqual(parts('cvr-agreement'), { term: 'CVR Agreement', definition: 'the Contingent Value Rights Agreement between Parent and the Rights Agent' });
+  assert.deepEqual(parts('bday'), { term: 'business day', definition: 'any day on which the principal offices of the SEC are open' });
+});
+
 test('two readings in one cell come out in source order, and a fact_text line shows each alternative in full', () => {
   const closing = (id, start, text, cited) => ({
     fact_id: id, proposal_id: id, family_key: 'MERGER_STRUCTURE_CLOSING', subtype_key: 'CLOSING_MECHANICS', section_reference: '1.02', structure_node_id: 'n-1-02',
@@ -581,4 +601,73 @@ test('the appraisal line takes the CONSIDERATION/APPRAISAL_LINK fact first, an A
     .find((candidate) => candidate.table_key === 'consideration-structure').rows[0].cells.find((cell) => cell.column_id === 'appraisalRights');
   assert.equal(cellFor([link, status, entitlement]).label, 'shall not be converted into the Merger Consideration');
   assert.equal(cellFor([status, entitlement]).label, 'shall be entitled only to receive such consideration as is determined to be due', 'the invalid status fact is skipped, the entitlement fact serves');
+});
+
+// Ben, 2026-09-14, on the § 1.03 filing facts: "render them as a hidden
+// 'other provisions' section under the main structure and mechanics parts -
+// needs to be high level"; "show them as one fact in the layer tree with
+// 'Branches' for the different clauses/'or's etc on UI".
+const { groupOtherProvisions, factSummaryText } = require('../lib/product/table-view');
+
+function filingFact(id, extras, distinguishing) {
+  const span = 's-1-03';
+  const component = (cid, kind, text, start, origin = 'OWN') => ({ component_id: `${id}-${cid}`, kind, label: cid, text, origin, source_span_id: span, start_byte: start, end_byte: start + text.length, gap_before: false, children: [] });
+  return {
+    fact_id: id, proposal_id: id, family_key: 'MERGER_STRUCTURE_CLOSING', subtype_key: 'TRANSACTION_STEP', section_reference: '1.03', structure_node_id: 'n-1-03',
+    headline: { label: 'Transaction step', distinguishing_component_ids: distinguishing.map((cid) => `${id}-${cid}`) },
+    components: [
+      component('chapeau', 'QUALIFIER', 'On the Closing Date', 0, 'CHAPEAU'),
+      component('actor', 'ACTOR', 'the Company', 20),
+      component('op', 'OPERATION', 'shall file', 32),
+      ...extras.map(([cid, kind, text, start]) => component(cid, kind, text, start)),
+    ],
+  };
+}
+const certificate = filingFact('ts-1', [['obj', 'OBJECT', 'a certificate of merger', 43], ['with', 'TERM', 'with the Secretary of State of the State of Delaware', 67]], ['obj']);
+const otherFilings = filingFact('ts-2', [['obj', 'OBJECT', 'such other documents as may be required', 121], ['std', 'STANDARD', 'in a form acceptable to Parent', 170]], ['std']);
+const acceptable = filingFact('ts-3', [['std', 'STANDARD', 'in a form acceptable to Parent', 170]], ['std']);
+
+test('facts cut from one sentence become one "other provisions" line with a branch per fact, common words first, own words in the branch', () => {
+  const groups = groupOtherProvisions([otherFilings, certificate, acceptable]);
+  assert.equal(groups.length, 1);
+  const [group] = groups;
+  assert.equal(group.subtype_key, 'TRANSACTION_STEP');
+  assert.equal(group.span_id, 's-1-03');
+  // The common line is the operative core every fact shares; the chapeau is not the fact's own words.
+  assert.equal(group.common_text, 'the Company shall file');
+  // Branches come in source order and carry only that fact's own words, an ellipsis for skipped words.
+  assert.deepEqual(group.branches.map((branch) => branch.fact_id), ['ts-1', 'ts-2', 'ts-3']);
+  assert.deepEqual(group.branches.map((branch) => branch.text), [
+    'a certificate of merger with the Secretary of State of the State of Delaware',
+    'such other documents as may be required … in a form acceptable to Parent',
+    'in a form acceptable to Parent',
+  ]);
+  assert.deepEqual(group.branches.map((branch) => branch.section_reference), ['1.03', '1.03', '1.03']);
+});
+
+test('a fact on its own sentence is a plain line: its summary as the common text and a single branch', () => {
+  const alone = { ...certificate, fact_id: 'ts-9', components: certificate.components.map((component) => ({ ...component, source_span_id: 's-1-03-b' })) };
+  const groups = groupOtherProvisions([certificate, alone]);
+  assert.equal(groups.length, 2);
+  assert.equal(groups[1].branches.length, 1);
+  assert.equal(groups[1].common_text, factSummaryText(alone));
+  assert.equal(groups[1].branches[0].text, groups[1].common_text);
+  // A different subtype on the same span is its own group.
+  const otherSubtype = { ...acceptable, fact_id: 'ts-8', subtype_key: 'LEGAL_EFFECT' };
+  assert.equal(groupOtherProvisions([certificate, otherSubtype]).length, 2);
+});
+
+test('a one-per-agreement table exposes its no-cell facts as other_provisions, grouped, while they still back the row', () => {
+  const view = buildTableView({ facts: [certificate, otherFilings, acceptable], tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'structure-mechanics-table');
+  assert.ok(table, 'the structure table is present');
+  assert.equal(table.rows[0].backing_facts.length, 3);
+  assert.equal(table.other_provisions.length, 1);
+  assert.equal(table.other_provisions[0].branches.length, 3);
+  assert.equal(table.other_provisions[0].common_text, 'the Company shall file');
+  // A fact whose readout adds no cell joins them too.
+  const emptyReadout = { ...certificate, fact_id: 'ts-7', components: certificate.components.map((component) => ({ ...component, source_span_id: 's-1-03-c' })), conclusions: { table_key: 'structure-mechanics-table', row_label: 'The deal', cells: [] } };
+  const again = buildTableView({ facts: [certificate, emptyReadout], tableShapes, legalSchema }).sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'structure-mechanics-table');
+  assert.equal(again.other_provisions.length, 2);
+  assert.ok(again.other_provisions.some((group) => group.branches[0].fact_id === 'ts-7'));
 });
