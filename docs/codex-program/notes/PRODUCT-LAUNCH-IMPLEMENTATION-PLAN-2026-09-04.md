@@ -2763,6 +2763,62 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       "forty-eight (48) hours" read as 8 (parenthetical digits win,
       compound number words add up); "6 year" (period units plural);
       overlapping components repeated words in summaries (written once).
+      (38) 22:09 to 22:50 UTC: every section complete, the run FAILED
+      at DRAFT_FINALIZATION twice, both in the pipeline, both fixed for
+      every run. DRAFT_NESTED_IDENTITY on one 3.14 proposal: the
+      section results are read 500 rows a page and the component rows
+      were ordered by (proposal_id, ordinal), not a total order (a child
+      and a top-level sibling share an ordinal); the tie fell across the
+      2,500-row boundary, Postgres ordered the tied rows differently on
+      the two pages, one row came back twice and one never, and the
+      rebuilt tree no longer hashed to the id. Every paged order now
+      ends in the table's key; a store test pages a double that
+      resolves ties differently on each page. Then
+      DRAFT_COVERAGE_COMPLETENESS on 2.01's
+      OTHER_DEFINED_TERM_RECORDED: finding (29)'s schema fix added a
+      required fact type mid-run and six sections (2.01, 2.03, 3.02,
+      3.03, 3.09, 3.12) extracted before it carry no assertion for it.
+      Their stored extraction requests name every fact type the model
+      was asked to cover, so a fact type absent from all of them is
+      schema drift: the draft records a draft-level
+      SCHEMA_DRIFT_FACT_TYPE issue, the family's coverage of that fact
+      type stays UNRESOLVED, and validation accepts the missing
+      assertion only when the drift is evidenced and recorded; a
+      missing assertion for a fact type the model was asked about is
+      still a failure. The finalisation retry of
+      `product_phase3_retry_run` returned the run to RUNNING and the
+      wake finalised it: READY at 22:50 UTC, 937 proposals, 916 VALID.
+      Lesson recorded: a change to a family's required fact types
+      during a run is drift by construction; the next such change is
+      made between runs.
+      (39) 23:15 UTC, generation 7's Article IX read: 9.01 to 9.11 on
+      their Miscellaneous rows (survival, notices, eighteen
+      construction rules, severability, counterparts, entire agreement,
+      the third-party beneficiary carve-outs as sub-items, Delaware,
+      assignment, the Chancery forum, specific performance with the
+      Company's right to compel the closing, jury waiver), 9.07's
+      disclaimers, non-reliance and fraud carve-outs on the No Other
+      Reps table and the indemnified parties' enforcement right on the
+      D&O table; 9.03's carve-outs on the fixed rows with their
+      disproportionality answers, Knowledge on the reps table's second
+      row, 17 new Defined Terms and 11 already entered. Three defects in
+      9.03, each fixed in code: the Company MAE came back as one prong
+      fact (the consummation limb) and the page read "One limb" again
+      (the layer rule now asks one DEFINITION_PRONG per limb, never the
+      consummation limb alone); the underlying-cause proviso had no
+      readout and no place (the carve-out tables' footer takes both
+      provisos, `footer_from_subtype.subtype_keys`, a footer fact needs
+      no readout, and one without a readout resolves to its family's
+      table by the party its words name); the scheduled-matters
+      carve-out lost its summary to the summary rule's reading of
+      "Section 9.03(a) of the Company Disclosure Letter" as a section of
+      the agreement and its row showed an empty cell (a Disclosure
+      Letter section is content; "Matters scheduled in the Disclosure
+      Letter" is a fixed row). The reading is
+      `docs/codex-program/notes/METSERA-GENERATION-7-AUDIT-2026-09-14.md`.
+      Open: the page does not yet show the draft-level drift issues;
+      the six drift sections' definitions are generation 8's; Ben's
+      intervening event and no-shop comments.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
