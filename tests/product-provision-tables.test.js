@@ -308,6 +308,10 @@ test('EvidenceSidebar quotes, marks and lights every cited component when a cell
   // Ben, 2026-09-14: "I'd put interpretation tree above the clause and
   // have the top level interpretation tree items shown."
   assert.ok(html.indexOf('data-testid="evidence-layers"') < html.indexOf('data-testid="evidence-clause"'), 'tree above the clause');
+  // Ben, 2026-09-14: "the sidebar to show first the interpretation tree
+  // with the clause x-ref added and then a 'jump to text' button".
+  assert.ok(html.indexOf('data-testid="evidence-layers"') < html.indexOf('data-testid="evidence-words"'), 'tree first');
+  assert.match(html, /data-testid="evidence-clause-reference"[^>]*>[\s\S]*?<button[^>]*data-testid="jump-to-text"[^>]*>Jump to text</);
   const opened = renderToStaticMarkup(React.createElement(EvidenceSidebar, { fact, componentId: 'st-actor', componentIds: ['st-actor', 'st-op', 'st-term'], sectionText: { exact_text: clause, start_byte: 0 } }));
   assert.match(opened, /aria-expanded="true"[^>]*data-testid="interpretation-tree-toggle"/, 'open to start');
   assert.doesNotMatch(html, /Full layer tree/);

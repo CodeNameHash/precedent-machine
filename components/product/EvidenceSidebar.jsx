@@ -131,19 +131,23 @@ export default function EvidenceSidebar({
     if (!sectionText || !Number.isSafeInteger(sectionText.start_byte) || (highlightRanges.length === 0 && factExtent.length === 0)) return null;
     return byteRangesToLayeredParts(sectionText.exact_text, sectionText.start_byte, highlightRanges, factExtent);
   }, [sectionText, highlightRanges, factExtent]);
-  // The marked words sit in the middle of the sidebar's own scroll pane
-  // when a selection opens (Ben, 2026-09-13: "make the qualifier middle of
-  // the view pane on the side bar").
+  // Ben, 2026-09-14, on clicking Cash plus CVR: "the side bar focuses to
+  // the clause itself but I would prefer: the sidebar to show first the
+  // interpretation tree with the clause x-ref added and then a 'jump to
+  // text' button that then jumps down to the actual language". A
+  // selection opens the panel at its top (the tree first, with the
+  // section reference and the Jump to text control beneath it); the
+  // marked words are centred in the pane only when that control is used
+  // (the 2026-09-13 centring, "make the qualifier middle of the view pane
+  // on the side bar", now behind the button).
   const asideRef = useRef(null);
   const markRef = useRef(null);
   useEffect(() => {
     const aside = asideRef.current;
-    const mark = markRef.current;
-    if (!aside || !mark) return;
-    const target = mark.offsetTop - aside.clientHeight / 2 + mark.offsetHeight / 2;
-    if (typeof aside.scrollTo === 'function') aside.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
-    else aside.scrollTop = Math.max(0, target);
-  }, [fact, citedIds.join(','), clauseParts]);
+    if (!aside) return;
+    if (typeof aside.scrollTo === 'function') aside.scrollTo({ top: 0 });
+    else aside.scrollTop = 0;
+  }, [fact, citedIds.join(',')]);
   const checks = useMemo(() => validateFactComponents(fact), [fact]);
   const [treeOpen, setTreeOpen] = useState(!!initialTreeOpen);
   const ownComponents = useMemo(() => (fact.components || []).filter((item) => item && (item.origin === 'OWN' || !item.origin)), [fact]);
@@ -204,13 +208,6 @@ export default function EvidenceSidebar({
     </div>
     <div className="divide-y divide-[#ececec] px-[18.5px] [&>*]:py-[14px]">
     {tab !== 'detail' ? null : <>
-    <section data-testid="evidence-words">
-      <p className={HEADING}>Provision</p>
-      {fact.headline?.summary ? <p className={`mt-[7px] ${BODY}`} data-testid="evidence-summary">{fact.headline.summary}{sourceChip('summary')}</p> : null}
-      {components.length > 1 ? <p className={`mt-[4.5px] ${NOTE}`} data-testid="evidence-basis-count">Read together, {components.length} components</p> : null}
-      {component ? components.map((item) => <p key={item.component_id} className={`mt-[4.5px] ${BODY}`}>&ldquo;{item.text}&rdquo;{sourceChip(item.component_id)}</p>) : <p className={`mt-[4.5px] ${NOTE}`}>The whole fact is marked in the clause below; select a pill for the words behind one reading.</p>}
-    </section>
-
     <section data-testid="evidence-layers">
       {/* Ben, 2026-09-14: "in right hand side bar - hide detail under the
           full layer tree as the default. Also call it Interpretation Tree
@@ -227,6 +224,17 @@ export default function EvidenceSidebar({
         <span className={`${NOTE} font-normal`}>{treeOpen ? 'hide' : 'show'}</span>
       </button>
       {treeOpen ? <div className="mt-[7px]"><ComponentLayer components={ownComponents} initiallyExpanded={false} selectedComponentId={componentId} selectedComponentIds={citedIds} /></div> : null}
+      <p className="mt-[9.5px] flex flex-wrap items-center gap-[7px]" data-testid="evidence-clause-reference">
+        {fact.section_reference ? <span className={NOTE}>{displaySectionReference(fact.section_reference)}</span> : null}
+        {clauseParts ? <button type="button" onClick={toSource} className={BUTTON} data-testid="jump-to-text">Jump to text</button> : null}
+      </p>
+    </section>
+
+    <section data-testid="evidence-words">
+      <p className={HEADING}>Provision</p>
+      {fact.headline?.summary ? <p className={`mt-[7px] ${BODY}`} data-testid="evidence-summary">{fact.headline.summary}{sourceChip('summary')}</p> : null}
+      {components.length > 1 ? <p className={`mt-[4.5px] ${NOTE}`} data-testid="evidence-basis-count">Read together, {components.length} components</p> : null}
+      {component ? components.map((item) => <p key={item.component_id} className={`mt-[4.5px] ${BODY}`}>&ldquo;{item.text}&rdquo;{sourceChip(item.component_id)}</p>) : <p className={`mt-[4.5px] ${NOTE}`}>The whole fact is marked in the clause below; select a pill for the words behind one reading.</p>}
     </section>
 
     {clauseParts ? <section data-testid="evidence-clause">

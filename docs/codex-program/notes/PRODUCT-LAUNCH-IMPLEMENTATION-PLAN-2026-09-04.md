@@ -2549,7 +2549,16 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       "Supporting record detail" disclosure holding the checks and
       provenance; the Source tab the section's text with the words
       marked; Comments the review trail; the selected pill outlined in
-      the accent as the selected event card is). Reading the second half of
+      the accent as the selected event card is); "change the title of the
+      page that appears in a browser to Corpus - Pfizer / Metsera" (the
+      tab reads "Corpus - " and the deal title); on clicking Cash plus
+      CVR, "the side bar focuses to the clause itself but I would prefer:
+      1. the sidebar to show first the interpretation tree with the
+      clause x-ref added and then a 'jump to text' button that then
+      jumps down to the actual language" (the panel opens at its top with
+      the tree first, the section reference and a Jump to text button
+      beneath it that centres the marked words; the Provision words and
+      the Clause follow). Reading the second half of
       the run: 3.09's tax-asset disclaimer had filled the No Other Reps
       table (a subject-limited disclaimer is the representation's
       exclusion: held at extraction by the section heading, and on the
