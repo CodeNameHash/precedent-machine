@@ -101,7 +101,8 @@ test('a long section is extracted in parts, each part carrying only its limbs wi
   const closure = buildSourceClosure({ sourceDocument, agreementStructure, nodeId: node.node_id });
   assert.deepEqual(model.extractionRequests.flatMap((request) => request.source_closure.operative.map((span) => span.span_id)), closure.operative_span_ids);
   for (const request of model.extractionRequests) {
-    assert.equal(request.source_closure.full_section, null, 'the whole section is not resent with each part');
+    assert.equal(request.source_closure.full_section.exact_text, '', 'the whole section is not resent with each part');
+    assert.ok(request.source_closure.full_section.span_id, 'the span identity stays');
     assert.ok(request.source_closure.chapeau.length >= 0 && Array.isArray(request.source_closure.definitions));
     assert.match(request.part_instruction, /part \d+ of \d+/);
   }

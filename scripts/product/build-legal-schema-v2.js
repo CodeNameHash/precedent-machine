@@ -62,14 +62,17 @@ const OVERLAY = {
     layers: 'One fact per independently operative unit. Components follow the sentence: actor, operation, object, then each condition, exception, threshold, period and qualifier as its own component; lists that vary between deals as LIST with LIST_ELEMENTs; synonym litanies as one LITANY. Nothing is invented for an absent timing, qualification or forum. Interim operating covenants come only from the conduct-of-business covenant between signing and closing (the interim operations section and its exceptions). Pre-closing actions required by the equity award treatment section (ESPP suspension or termination, board resolutions, payroll payment of award amounts) are CONSIDERATION / EQUITY_AWARD facts, never interim operating covenants (Ben, 2026-09-13, Metsera 2.03: "you are seeing IOCs from Section 2.03 that is the employee comp section, not the IOC section").',
   },
   KEY_DEFINED_TERMS: {
-    layers: 'Each definition is one fact. Layer 1: the defined term, the operation ("means"), the object, thresholds and deeming rules. Lists inside a definition are LISTs with LIST_ELEMENTs.',
+    layers: 'Each definition is one fact. Layer 1: the defined term, the operation ("means"), the object, thresholds and deeming rules. Lists inside a definition are LISTs with LIST_ELEMENTs. A definition that is none of the named subtypes (Tax, Tax Return, Law, Person) is OTHER_DEFINED_TERM, never forced into a named one (Metsera generation 5, 3.09).',
+    add: [
+      { subtype_key: 'OTHER_DEFINED_TERM', label: 'Other defined term', required_roles: ['defined_term', 'definition'], optional_roles: ['threshold', 'exclusions'], relationships: ['DEFINES'] },
+    ],
     headline: { distinguishing: ['DEFINED_TERM', 'THRESHOLD', 'PERCENTAGE'], note: 'the term and its threshold' },
     add: [
       { subtype_key: 'ACCEPTABLE_CONFIDENTIALITY_AGREEMENT', label: 'Acceptable Confidentiality Agreement', required_roles: ['LEGAL_ACTOR_OR_SUBJECT', 'LEGAL_OPERATION', 'OPERATIVE_OBJECT'], optional_roles: ['TEMPORAL_OR_TRIGGER_SCOPE', 'QUALIFICATIONS', 'FORUM'], relationships: ['QUALIFIES', 'EXCEPTS', 'DEFINED_BY'] },
     ],
   },
   ANTITRUST_REGULATORY: {
-    layers: 'Every covenant fact carries an EFFORTS_STANDARD component (a flat "agrees to take" is recorded as such) and a MATERIALITY_QUALIFIER when present. Remedy limitations are one LIST with one LIST_ELEMENT per action (sale, divestiture, licence, other disposition; restriction, limitation, condition; commence, participate in, defend). Deadlines are PERIOD components. Present every obligation as its own fact; the pre-product key-provisions page is the guide to the cut (Ben, 2026-09-12).',
+    layers: 'ANTITRUST_REGULATORY facts come only from the regulatory efforts covenant (the covenant to obtain antitrust and other governmental clearances: filings, efforts, remedies, litigation, control, consultation). The representation that lists the governmental filings and consents the transaction requires (the no-conflicts and consents representation) is a REPRESENTATIONS fact of that representation, never a filing obligation, and no timing is coded for it (Metsera generation 5, 3.05). Every covenant fact carries an EFFORTS_STANDARD component (a flat "agrees to take" is recorded as such) and a MATERIALITY_QUALIFIER when present. Remedy limitations are one LIST with one LIST_ELEMENT per action (sale, divestiture, licence, other disposition; restriction, limitation, condition; commence, participate in, defend). Deadlines are PERIOD components. Present every obligation as its own fact; the pre-product key-provisions page is the guide to the cut (Ben, 2026-09-12).',
     headline: { distinguishing: ['EFFORTS_STANDARD', 'LIST', 'PERIOD'], note: 'the obligation and its standard' },
     rename: { BURDEN: 'REMEDY_LIMITATION', LITIGATION: 'LITIGATION_OBLIGATION', COOPERATION: 'THIRD_PARTY_CONSENTS' },
     add: [

@@ -39,7 +39,11 @@ function calibrationModel() {
     else {
       const proposals = [];
       const groups = [];
-      if (reference === '7.1') {
+      // A long section arrives in parts (Q6); like a real model following the
+      // part instruction, this one answers only for the limbs of its part.
+      const ownWords = [...request.source_closure.operative, ...request.source_closure.chapeau];
+      const partWithoutPhrase = request.source_closure.extraction_part && !ownWords.some((item) => item.exact_text.includes('mutual written consent'));
+      if (reference === '7.1' && !partWithoutPhrase) {
         const components = [...request.source_closure.operative, ...request.source_closure.chapeau, ...request.source_closure.definitions, ...request.source_closure.cross_references, request.source_closure.full_section];
         const matching = components.filter((item) => item.exact_text.includes('mutual written consent'));
         const component = matching.find((item) => (

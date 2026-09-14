@@ -1928,7 +1928,7 @@
       "materiality_rules": [
         "Every independently operative unit is captured as one fact with its components. Reader-facing headline: the term and its threshold."
       ],
-      "layer_rules": "Each definition is one fact. Layer 1: the defined term, the operation (\"means\"), the object, thresholds and deeming rules. Lists inside a definition are LISTs with LIST_ELEMENTs.",
+      "layer_rules": "Each definition is one fact. Layer 1: the defined term, the operation (\"means\"), the object, thresholds and deeming rules. Lists inside a definition are LISTs with LIST_ELEMENTs. A definition that is none of the named subtypes (Tax, Tax Return, Law, Person) is OTHER_DEFINED_TERM, never forced into a named one (Metsera generation 5, 3.09).",
       "headline": {
         "label_source": "subtype_label",
         "distinguishing_kinds": [
@@ -3045,7 +3045,7 @@
       "materiality_rules": [
         "Every independently operative unit is captured as one fact with its components. Reader-facing headline: the obligation and its standard."
       ],
-      "layer_rules": "Every covenant fact carries an EFFORTS_STANDARD component (a flat \"agrees to take\" is recorded as such) and a MATERIALITY_QUALIFIER when present. Remedy limitations are one LIST with one LIST_ELEMENT per action (sale, divestiture, licence, other disposition; restriction, limitation, condition; commence, participate in, defend). Deadlines are PERIOD components. Present every obligation as its own fact; the pre-product key-provisions page is the guide to the cut (Ben, 2026-09-12).",
+      "layer_rules": "ANTITRUST_REGULATORY facts come only from the regulatory efforts covenant (the covenant to obtain antitrust and other governmental clearances: filings, efforts, remedies, litigation, control, consultation). The representation that lists the governmental filings and consents the transaction requires (the no-conflicts and consents representation) is a REPRESENTATIONS fact of that representation, never a filing obligation, and no timing is coded for it (Metsera generation 5, 3.05). Every covenant fact carries an EFFORTS_STANDARD component (a flat \"agrees to take\" is recorded as such) and a MATERIALITY_QUALIFIER when present. Remedy limitations are one LIST with one LIST_ELEMENT per action (sale, divestiture, licence, other disposition; restriction, limitation, condition; commence, participate in, defend). Deadlines are PERIOD components. Present every obligation as its own fact; the pre-product key-provisions page is the guide to the cut (Ben, 2026-09-12).",
       "headline": {
         "label_source": "subtype_label",
         "distinguishing_kinds": [
