@@ -108,44 +108,26 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
   );
 }
 
-function BackingFactList({ backing, tableKey, rowIndex, onSelect }) {
-  return (
-    <ul className="mt-1 space-y-0.5 pl-2" data-testid="backing-facts">
-      {backing.map((entry, index) => (
-        <li key={`${entry.fact_id}-${index}`}>
-          <button type="button" data-testid="backing-fact" onClick={() => onSelect({ tableKey, rowIndex, columnId: null, componentId: null, factId: entry.fact_id })} className={QUIET}>
-            {entry.section_reference ? `§ ${entry.section_reference}` : entry.fact_id}
-          </button>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
 // The row name itself opens the sidebar on the row's first fact, so the
 // clause and its sourcing are reachable without a pill (Ben, 2026-09-13:
 // "you should be able to see the side bar and sourcing not just by
 // clicking the pills").
 function TermCell({ row, tableKey, rowIndex, subIndex = null, onSelect, detail = null }) {
-  const [expanded, setExpanded] = useState(false);
   const first = row.backing_facts[0] || null;
+  // Ben, 2026-09-14: "I don't like the 'see provision' behaviour - it
+  // shouldn't show the provision x-refs but instead should open the side
+  // bar". The control opens the row's first fact in the sidebar, the way
+  // the subject does; no list of section references.
+  const openFirst = () => onSelect({ tableKey, rowIndex, subIndex, columnId: null, componentId: null, componentIds: [], factId: first.fact_id });
   return (
-    <div>
+    <div className="font-ui text-sm">
       {first ? (
-        <button type="button" data-testid="term-open" onClick={() => onSelect({ tableKey, rowIndex, subIndex, columnId: null, componentId: null, componentIds: [], factId: first.fact_id })} className="text-left font-ui text-sm font-medium text-ink hover:text-accent">{row.subject}</button>
+        <button type="button" data-testid="term-open" onClick={openFirst} className="text-left font-ui text-sm font-medium text-ink hover:text-accent">{row.subject}</button>
       ) : <span className="font-ui text-sm font-medium text-ink">{row.subject}</span>}
-      {row.backing_facts.length ? (
-        <button
-          type="button"
-          onClick={() => setExpanded((current) => !current)}
-          className={`ml-2 ${QUIET}`}
-          data-testid="see-provision"
-        >
-          {expanded ? 'Hide provision' : 'See provision'}
-        </button>
+      {first ? (
+        <button type="button" onClick={openFirst} className={`ml-2 ${QUIET}`} data-testid="see-provision">See provision</button>
       ) : null}
       {row.subject_note ? <div className="mt-0.5 font-body text-xs text-inkLight" data-testid="subject-note">{row.subject_note}</div> : null}
-      {expanded ? <BackingFactList backing={row.backing_facts} tableKey={tableKey} rowIndex={rowIndex} onSelect={onSelect} /> : null}
       {detail ? <DetailControl {...detail} /> : null}
     </div>
   );
@@ -235,20 +217,16 @@ function AttributeGrid({ table, selection, onSelect }) {
 }
 
 function AttributeTerm({ header, backing, tableKey, onSelect }) {
-  const [expanded, setExpanded] = useState(false);
+  const first = backing[0] || null;
   return (
     <div>
       <span>{header}</span>
-      {backing.length ? (
-        <button type="button" onClick={() => setExpanded((current) => !current)} className={`ml-2 ${QUIET}`} data-testid="see-provision">
-          {expanded ? 'Hide provision' : 'See provision'}
-        </button>
+      {first ? (
+        <button type="button" onClick={() => onSelect({ tableKey, rowIndex: 0, columnId: null, componentId: null, componentIds: [], factId: first.fact_id })} className={`ml-2 ${QUIET}`} data-testid="see-provision">See provision</button>
       ) : null}
-      {expanded ? <BackingFactList backing={backing} tableKey={tableKey} rowIndex={0} onSelect={onSelect} /> : null}
     </div>
   );
 }
-
 // Ben, 2026-09-14, on the § 1.03 filing facts: "I'd try to render them as a
 // hidden 'other provisions' section under the main structure and mechanics
 // parts - needs to be high level - Company files CoM and other required
@@ -259,33 +237,56 @@ function AttributeTerm({ header, backing, tableKey, onSelect }) {
 // its branches indented, one per fact. Every line opens its own fact in the
 // evidence sidebar the way a backing fact does.
 function OtherProvisions({ groups, tableKey, onSelect }) {
+  const [open, setOpen] = useState(false);
   const count = groups.reduce((total, group) => total + group.branches.length, 0);
-  const open = (factId) => onSelect({ tableKey, rowIndex: 0, columnId: null, componentId: null, factId });
-  const reference = (entry) => (entry.section_reference ? <span className={`ml-2 ${QUIET}`}>§ {entry.section_reference}</span> : null);
+  const select = (factId) => onSelect({ tableKey, rowIndex: 0, columnId: null, componentId: null, componentIds: [], factId });
+  // Ben, 2026-09-14, on the first rendering (a list of lines with § marks):
+  // "It should look like the rest of the table structure etc and for now no
+  // summary is fine but ultimately we want to get to summary". The same
+  // card, header and Term / Provision columns as the grid above it; the
+  // Term is the section reference until a summary exists; a sentence cut
+  // into branches is one row with its branches indented under it, the way
+  // a row's sub-items are.
   return (
-    <details className="mt-2 px-1" data-testid="other-provisions">
-      <summary className={`cursor-pointer select-none ${LINK}`} data-testid="other-provisions-toggle">Other provisions ({count})</summary>
-      <ul className="mt-2 space-y-2 pl-2">
-        {groups.map((group, index) => (
-          <li key={`${group.subtype_key}-${group.span_id}-${index}`} data-testid="other-provision" data-branches={group.branches.length > 1 ? group.branches.length : undefined}>
-            <button type="button" data-testid="other-provision-line" onClick={() => open(group.branches[0].fact_id)} className="text-left font-body text-sm leading-relaxed text-ink hover:text-accent">{group.common_text}</button>
-            {group.branches.length === 1 ? reference(group.branches[0]) : (
-              <>
-                <p className="mt-1 text-[10px] font-ui font-medium uppercase tracking-wider text-inkFaint">Branches</p>
-                <ul className="mt-1 space-y-1 border-l border-border pl-3" data-testid="other-provision-branches">
-                  {group.branches.map((branch, branchIndex) => (
-                    <li key={`${branch.fact_id}-${branchIndex}`}>
-                      <button type="button" data-testid="other-provision-branch" onClick={() => open(branch.fact_id)} className="text-left font-body text-sm leading-relaxed text-inkMid hover:text-accent">{branch.text}</button>
-                      {reference(branch)}
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
-    </details>
+    <div className={`${CARD} mt-3`} data-testid="other-provisions" data-open={open || undefined}>
+      <button type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open} className={`flex w-full items-center justify-between ${TH}`} data-testid="other-provisions-toggle">
+        <span>Other provisions ({count})</span>
+        <span className="text-inkFaint">{open ? '▾' : '▸'}</span>
+      </button>
+      {(
+        <table className="w-full border-collapse text-left" data-testid="other-provisions-table" hidden={!open}>
+          <thead>
+            <tr>
+              <th className={`w-48 ${TH}`}>Term</th>
+              <th className={TH}>Provision</th>
+            </tr>
+          </thead>
+          <tbody>
+            {groups.flatMap((group, index) => {
+              const key = `${group.subtype_key}-${group.span_id}-${index}`;
+              const lead = group.branches[0];
+              const line = (
+                <tr key={key} className="border-b border-border last:border-0" data-testid="other-provision" data-branches={group.branches.length > 1 ? group.branches.length : undefined}>
+                  <td className={`${TD} font-ui text-sm font-medium text-ink`}>{lead.section_reference ? `§ ${lead.section_reference}` : ''}</td>
+                  <td className={TD}>
+                    <button type="button" data-testid="other-provision-line" onClick={() => select(lead.fact_id)} className="text-left font-body text-sm leading-relaxed text-ink hover:text-accent">{group.common_text}</button>
+                  </td>
+                </tr>
+              );
+              if (group.branches.length === 1) return [line];
+              return [line, ...group.branches.map((branch, branchIndex) => (
+                <tr key={`${key}-${branchIndex}`} className="border-b border-border last:border-0" data-testid="other-provision-branch-row">
+                  <td className={`${TD} pl-8 font-ui text-xs text-inkFaint`}>{branchIndex === 0 ? 'Branches' : ''}</td>
+                  <td className={`${TD} pl-8`}>
+                    <button type="button" data-testid="other-provision-branch" onClick={() => select(branch.fact_id)} className="text-left font-body text-sm leading-relaxed text-inkMid hover:text-accent">{branch.text}</button>
+                  </td>
+                </tr>
+              ))];
+            })}
+          </tbody>
+        </table>
+      )}
+    </div>
   );
 }
 

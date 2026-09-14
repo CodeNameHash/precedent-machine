@@ -94,11 +94,14 @@ test('a fact with no conclusions is listed under its section as evidence without
   assert.match(html, /without a coded readout/);
 });
 
-test('rows carry a data-testid and the Term column offers "See provision"', () => {
+// Ben, 2026-09-14: "I don't like the 'see provision' behaviour - it
+// shouldn't show the provision x-refs but instead should open the side bar".
+test('rows carry a data-testid and the Term column offers "See provision", which opens the sidebar and lists no references', () => {
   const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts }));
   assert.match(html, /data-testid="table-row"/);
   assert.match(html, /data-testid="see-provision"/);
   assert.match(html, /See provision/);
+  assert.doesNotMatch(html, /Hide provision|data-testid="backing-facts"|data-testid="backing-fact"[^>]*>§/);
 });
 
 test('group headers render in the table caption', () => {
@@ -334,9 +337,13 @@ test('EvidenceSidebar marks the whole fact lightly and the cited words strongly'
 // Ben, 2026-09-14: "render them as a hidden 'other provisions' section under
 // the main structure and mechanics parts"; "show them as one fact ... with
 // 'Branches' for the different clauses/'or's". The block is collapsed to
-// start (a <details>), one line per group, branches indented under a group
-// of several facts; every line opens its fact the way a backing fact does.
-test('a one-per-agreement table renders its other provisions as a collapsed block with branches under the grid', () => {
+// start, one line per group, branches indented under a group of several
+// facts; every line opens its fact the way a backing fact does. Then, on
+// the first rendering: "It should look like the rest of the table structure
+// etc and for now no summary is fine but ultimately we want to get to
+// summary": the same card and Term / Provision columns as the grid, the
+// section reference as the Term for now.
+test('a one-per-agreement table renders its other provisions as a collapsed Term / Provision table under the grid', () => {
   const filing = (id, extras, spanId = 's-1-03') => ({
     fact_id: id, proposal_id: id, family_key: 'MERGER_STRUCTURE_CLOSING', subtype_key: 'TRANSACTION_STEP', section_reference: '1.03', structure_node_id: 'n-1-03',
     headline: { label: 'Transaction step', distinguishing_component_ids: [] },
@@ -356,20 +363,24 @@ test('a one-per-agreement table renders its other provisions as a collapsed bloc
   ];
   const view = buildTableView({ facts, tableShapes, legalSchema });
   const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts }));
-  assert.match(html, /<details[^>]*data-testid="other-provisions"/, 'a collapsed block, not an open list');
-  assert.doesNotMatch(html, /<details[^>]*data-testid="other-provisions"[^>]*open/);
+  assert.match(html, /<div[^>]*data-testid="other-provisions"/, 'the same card as the tables');
+  assert.doesNotMatch(html, /data-testid="other-provisions"[^>]*data-open/);
+  assert.match(html, /<table[^>]*data-testid="other-provisions-table"[^>]*hidden/, 'collapsed to start');
   assert.match(html, /Other provisions \(3\)/);
+  assert.match(html, /data-testid="other-provisions-table"[^]*?<th[^>]*>Term<\/th><th[^>]*>Provision<\/th>/);
+  assert.match(html, /data-testid="other-provision"[^>]*><td[^>]*>§ 1\.03</, 'the section reference is the Term until a summary exists');
   // The block sits under the grid: after the attribute-grid table, before the next section.
   assert.ok(html.indexOf('data-layout="attribute-grid"') < html.indexOf('data-testid="other-provisions"'));
   assert.equal((html.match(/data-testid="other-provision"/g) || []).length, 2, 'two lines: one sentence with branches, one sentence alone');
   assert.match(html, /data-branches="2"/);
   assert.match(html, />Branches</);
+  assert.equal((html.match(/data-testid="other-provision-branch-row"/g) || []).length, 2, 'branches are indented rows under their sentence');
   assert.equal((html.match(/data-testid="other-provision-branch"/g) || []).length, 2);
   assert.match(html, /data-testid="other-provision-line"[^>]*>the Company shall file</);
   assert.match(html, /data-testid="other-provision-branch"[^>]*>a certificate of merger</);
   assert.match(html, /data-testid="other-provision-branch"[^>]*>such other documents as may be required</);
   assert.match(html, /data-testid="other-provision-line"[^>]*>the Company shall file a notice with the Delaware Secretary of State</);
-  // The facts still back the row's "See provision" list, and the section lists nothing "without a readout".
+  // The section lists nothing "without a readout".
   assert.doesNotMatch(html, /data-testid="facts-without-readout"/);
 });
 
