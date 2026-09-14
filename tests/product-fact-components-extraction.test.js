@@ -487,7 +487,7 @@ test('the V9 request carries the value-column, party, label and DEFINED_TERM rul
   // summary of the provision on the right etc - like in the normal course.
   // Not just a sec ref...!"; "1. for now - yes").
   assert.match(request.component_instruction, /and summary, on every proposal: summary is one plain-English line of at most 15 words stating the provision's operative effect in the parties' defined names/);
-  assert.match(request.component_instruction, /no section reference, no quotation marks and no trailing period/);
+  assert.match(request.component_instruction, /no reference to a section of the agreement[^.]*no quotation marks and no trailing period/);
   assert.equal(typeof request.response_contract.proposals[0].headline.summary, 'string');
   const structure = request.table_shapes.MERGER_STRUCTURE_CLOSING.find((entry) => entry.table_key === 'structure-mechanics-table');
   const surviving = structure.columns.find((column) => column.column_id === 'survivingEntityStep1');
