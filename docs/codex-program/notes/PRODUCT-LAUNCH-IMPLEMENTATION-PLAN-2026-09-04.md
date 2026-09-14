@@ -2457,7 +2457,13 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       "can we kill 'as drafted' columns throughout - the whole point is
       to only ummarize the key parts!! ... Also same comment on
       'provision' columns" (a detail column shows headline.summary only
-      and is dropped when no row has one). Reading the second half of
+      and is dropped when no row has one); then "sorry I think you are
+      confused. By 'provision' I don't mean summaries like this - this is
+      what I want. I just saw some blank provision columns and thought
+      you were goign to include x-refs or full contract lanugage...!" and
+      "Can we rename that as 'Summary'" (the coded summary column stays;
+      its header is Summary in every shape, the page grid and the Other
+      provisions table). Reading the second half of
       the run: 3.09's tax-asset disclaimer had filled the No Other Reps
       table (a subject-limited disclaimer is the representation's
       exclusion: held at extraction by the section heading, and on the
