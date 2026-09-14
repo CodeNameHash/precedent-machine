@@ -744,6 +744,10 @@ const MAE_CARVEOUT_ROWS = [
   'Patent expirations / loss of exclusivity',
   'Acts or omissions of Parent / Buyer',
   'Loss of employees or executive departures',
+  // Metsera generation 7, 2026-09-14 (9.03(J)): the matters scheduled in
+  // the Disclosure Letter are a carve-out of their own in many deals; the
+  // model had put it on "Other carve-out".
+  'Matters scheduled in the Disclosure Letter',
   'Other carve-out',
 ];
 
@@ -795,8 +799,12 @@ function applyDecision25MaeSection(doc) {
         fill_from: ['STANDARD', 'CROSS_REFERENCE'],
       },
     ];
-    table.footer_from_subtype = { subtype_key: 'DISPROPORTIONALITY_CARVEBACK', label: 'Disproportionate carve-back as drafted' };
-    table.guidance = `Carve-outs from ${party}'s Material Adverse Effect: one row per EXCLUSION fact, row_label the generic title from fixed_row_labels that names the carve-out's subject (a new generic title only when none fits, never the agreement's own words), the carve-out's words in the provision column, and disproportionateCarveback YES only when the disproportionality carve-back applies to this carve-out (cite the CROSS_REFERENCE that names it), otherwise NO. The DISPROPORTIONALITY_CARVEBACK fact goes to this table with row_label "Disproportionate carve-back" and its words in the provision column; the page shows it under the table, never as a row.`;
+    // Metsera generation 7, 2026-09-14: the underlying-cause proviso ("the
+    // underlying facts giving rise to such failure may be taken into
+    // account") had no readout and no place; it is the second proviso
+    // under the table, as drafted.
+    table.footer_from_subtype = { subtype_keys: ['DISPROPORTIONALITY_CARVEBACK', 'UNDERLYING_CAUSE_RESTORATION'], label: 'Carve-back provisos as drafted' };
+    table.guidance = `Carve-outs from ${party}'s Material Adverse Effect: one row per EXCLUSION fact, row_label the generic title from fixed_row_labels that names the carve-out's subject (a new generic title only when none fits, never the agreement's own words), the carve-out's words in the provision column, and disproportionateCarveback YES only when the disproportionality carve-back applies to this carve-out (cite the CROSS_REFERENCE that names it), otherwise NO. The DISPROPORTIONALITY_CARVEBACK fact goes to this table with row_label "Disproportionate carve-back" and its words in the provision column, and the UNDERLYING_CAUSE_RESTORATION fact (the underlying facts of an excluded failure or change may still count) with row_label "Underlying cause proviso"; the page shows both under the table, never as rows.`;
   }
 }
 

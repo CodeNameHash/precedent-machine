@@ -110,6 +110,9 @@ test('headline.summary is optional; headlineSummaryProblems checks it without ho
   assert.deepEqual(headlineSummaryProblems('Closing occurs third business day after Article VII conditions satisfied or waived'), []);
   assert.deepEqual(headlineSummaryProblems('Shares of properly demanding Section 262 holders are cancelled Appraisal Shares'), []);
   assert.ok(headlineSummaryProblems('Company terminates under Section 8.01(f)').some((problem) => problem.includes('section reference')));
+  // A section of the Disclosure Letter names a schedule, not a section of the agreement (generation 7, 9.03).
+  assert.deepEqual(headlineSummaryProblems('Matters listed on Section 9.03(a) of the Company Disclosure Letter are excluded'), []);
+  assert.ok(headlineSummaryProblems('Matters on Section 9.03(a) of the Company Disclosure Letter are excluded under Section 9.03').some((problem) => problem.includes('section reference')));
   assert.ok(headlineSummaryProblems('Parent pays the "Termination Fee"').some((problem) => problem.includes('quotation mark')));
   assert.ok(headlineSummaryProblems('Parent pays the fee.').some((problem) => problem.includes('ends with a period')));
   assert.deepEqual(headlineSummaryProblems("Parent's obligation survives the Closing"), [], 'a possessive apostrophe is not a quotation mark');

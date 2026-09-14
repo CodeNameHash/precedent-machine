@@ -335,7 +335,7 @@ test('Decision 25: MAE definitions say "None" for a party without one; carve-out
     const carveback = table.columns[1];
     assert.deepEqual(carveback.vocabulary.map((entry) => entry.code), ['YES', 'NO']);
     assert.equal(carveback.absent_code, 'NO');
-    assert.deepEqual(table.footer_from_subtype, { subtype_key: 'DISPROPORTIONALITY_CARVEBACK', label: 'Disproportionate carve-back as drafted' });
+    assert.deepEqual(table.footer_from_subtype, { subtype_keys: ['DISPROPORTIONALITY_CARVEBACK', 'UNDERLYING_CAUSE_RESTORATION'], label: 'Carve-back provisos as drafted' });
     assert.match(table.guidance, /generic title/);
   }
   assert.ok(section.no_conclusions_subtype_keys.includes('UNDERLYING_CAUSE_RESTORATION'));

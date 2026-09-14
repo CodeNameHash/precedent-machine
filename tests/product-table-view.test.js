@@ -369,9 +369,25 @@ test('a carve-out row with no carve-back reading says No, and the carve-back fac
   assert.equal(gaapCell.code, 'NO');
   assert.equal(gaapCell.defaulted, true);
   assert.equal(table.rows[0].cells.find((cell) => cell.column_id === 'disproportionateCarveback').label, 'Yes');
-  assert.equal(table.footer.label, 'Disproportionate carve-back as drafted');
+  assert.equal(table.footer.label, 'Carve-back provisos as drafted');
   // The footer shows the carve-back as drafted (its own words in full), not the cited fragment (decision 34).
   assert.deepEqual(table.footer.entries.map((entry) => [entry.fact_id, entry.text]), [['mae-cb', 'except to the extent disproportionate clauses (i) through (iv)']]);
+});
+
+// Metsera generation 7, 2026-09-14: the underlying-cause proviso had no
+// readout and no place on the page. It is the second proviso under the
+// carve-out table, as drafted; a footer fact needs no readout.
+test('the underlying-cause proviso joins the carve-back under the carve-out table without a readout', () => {
+  const carveback = maeFact('mae-cb', 'DISPROPORTIONALITY_CARVEBACK', 'carve-back', { table_key: 'mae-carveouts-company', row_label: 'Disproportionate carve-back', cells: [{ column_id: 'provision', text: 'except to the extent disproportionate', component_ids: ['mae-cb-c'] }] }, 'except to the extent disproportionate');
+  const underlying = maeFact('mae-uc', 'UNDERLYING_CAUSE_RESTORATION', 'underlying cause', null, 'it being understood that the underlying facts giving rise to such failure may be taken into account');
+  delete underlying.conclusions;
+  const view = buildTableView({ facts: [carveback, underlying], tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'mae-carveouts-company');
+  assert.deepEqual(table.rows.filter((row) => !row.absent), []);
+  assert.deepEqual(table.footer.entries.map((entry) => entry.fact_id), ['mae-cb', 'mae-uc']);
+  assert.match(table.footer.entries[1].text, /underlying facts giving rise/);
+  const maeSection = view.sections.find((section) => section.tables.some((candidate) => candidate.table_key === 'mae-carveouts-company'));
+  assert.deepEqual((maeSection.facts_without_readout || []).map((entry) => entry.fact_id), []);
 });
 
 test('a fact_text detail column shows the fact\'s operative words, not the cited fragment', () => {
