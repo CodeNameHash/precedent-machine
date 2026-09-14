@@ -1116,3 +1116,27 @@ test('a readout naming a retired table is placed by the page rules', () => {
   assert.deepEqual(rowIds(parent), ['iv-intro']);
   assert.deepEqual(rowIds(company), []);
 });
+
+// Metsera generation 6, 9.03: the MAE summary is derived from the row's own
+// prong facts, not coded by the extractor.
+test('the MAE summary counts the party\'s prongs and sorts them by their words', () => {
+  const prong = (id, party, text) => ({
+    fact_id: id, proposal_id: id, family_key: 'MAE_DEFINITION', subtype_key: 'DEFINITION_PRONG', fact_type: 'MAE_DEFINITION_PRONG', section_reference: '9.03',
+    headline: { label: 'MAE definition', distinguishing_component_ids: [`${id}-c`] },
+    components: [{ component_id: `${id}-c`, kind: 'STANDARD', label: 'test', text, origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: text.length, gap_before: false, children: [] }],
+    conclusions: { table_key: 'mae-definitions-table', row_label: party, cells: [{ column_id: 'test', text, component_ids: [`${id}-c`] }] },
+  });
+  const facts = [
+    prong('c-1', 'Company', 'has had, or would reasonably be expected to have, a material adverse effect on the business'),
+    prong('c-2', 'Company', 'would reasonably be expected to prevent the consummation of the Merger by the Outside Date'),
+    prong('p-1', 'Parent', 'would prevent or materially impair the ability of Parent to consummate the Merger'),
+  ];
+  const view = buildTableView({ facts, tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'mae-definitions-table');
+  const summary = (party) => table.rows.find((row) => row.subject === party).cells.find((cell) => cell.column_id === 'limbSummary');
+  assert.equal(summary('Company').code, 'TWO_LIMBS_EFFECT_ON_THE_BUSINESS_AND_ABILITY_TO_CONSUMMATE');
+  assert.deepEqual(summary('Company').fact_ids, ['c-1', 'c-2']);
+  assert.equal(summary('Parent').code, 'ONE_LIMB_ABILITY_TO_CONSUMMATE');
+  const alone = buildTableView({ facts: [facts[0]], tableShapes, legalSchema });
+  assert.equal(alone.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'mae-definitions-table').rows.find((row) => row.subject === 'Company').cells.find((cell) => cell.column_id === 'limbSummary').code, 'ONE_LIMB_EFFECT_ON_THE_BUSINESS_CONDITION_OR_RESULTS_OF_OPERATIONS');
+});

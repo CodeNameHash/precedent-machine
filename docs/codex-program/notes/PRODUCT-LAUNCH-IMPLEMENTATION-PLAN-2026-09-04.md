@@ -2471,7 +2471,19 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       definition (8.02(a)) sit under "without a readout"; the general
       covenants Access row shows every standard of its twelve facts
       joined, not a summary; 6.03's efforts and remedy rows wait on the
-      split fix. Ben's afternoon decisions,
+      split fix.
+      (22) 15:50 UTC, Article IX. The MAE definitions table said "One
+      limb — effect on the business" for the Company (whose definition
+      has the ability-to-consummate limb too) and nothing for Parent
+      (whose has that limb alone): the precedent's one code could say
+      neither. The summary is now derived by the page from the row's own
+      prong facts (`derived: { join: 'limbs' }`: a prong whose words
+      speak of consummating is the ability limb, any other the business
+      limb; codes for one of each and for both), never coded by the
+      extractor. The carve-back footer, the carve-out rows with their
+      disproportionality answers, the no-other-reps table and the
+      boilerplate rows read correctly; 9.03's "underlying cause counts"
+      parenthetical sits under "without a readout" by decision 25. Ben's afternoon decisions,
       2026-09-14, each in code: "by miscoded I meant oyu currentl have it
       messed up and you need to move it over to what we had in the old
       vesrion...." (the reps table opens with General Exceptions: SEC

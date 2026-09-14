@@ -1924,11 +1924,36 @@
                     "page": 67,
                     "row_label": "Parent"
                   }
+                },
+                {
+                  "code": "ONE_LIMB_ABILITY_TO_CONSUMMATE",
+                  "label": "One limb — ability to consummate the transaction",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Metsera generation 6, 9.03: Parent Material Adverse Effect is the ability to consummate alone."
+                },
+                {
+                  "code": "TWO_LIMBS_EFFECT_ON_THE_BUSINESS_AND_ABILITY_TO_CONSUMMATE",
+                  "label": "Two limbs — effect on the business and ability to consummate",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Metsera generation 6, 9.03: Company Material Adverse Effect has both limbs."
                 }
               ],
               "fill_from": [
                 "STANDARD"
-              ]
+              ],
+              "derived": {
+                "from_family": "MAE_DEFINITION",
+                "from_subtype": "DEFINITION_PRONG",
+                "join": "limbs",
+                "ability_words": "consummat",
+                "codes": {
+                  "EFFECT": "ONE_LIMB_EFFECT_ON_THE_BUSINESS_CONDITION_OR_RESULTS_OF_OPERATIONS",
+                  "ABILITY": "ONE_LIMB_ABILITY_TO_CONSUMMATE",
+                  "BOTH": "TWO_LIMBS_EFFECT_ON_THE_BUSINESS_AND_ABILITY_TO_CONSUMMATE"
+                }
+              }
             }
           ],
           "rows_are": "fixed list",

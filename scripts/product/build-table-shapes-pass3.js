@@ -752,6 +752,22 @@ function applyDecision25MaeSection(doc) {
   const definitions = findTable(section, 'mae-definitions-table');
   definitions.absent_row_label = 'None';
   definitions.guidance = 'One row per party: the DEFINITION_PRONG fact defining that party\'s Material Adverse Effect, its operative test in the Test column. A party with no MAE definition in the agreement has no fact and the row shows "None"; never code a definition from the other party\'s.';
+  // Metsera generation 6, 9.03 (2026-09-14): the Company definition has two
+  // limbs (the effect on the business and the ability to consummate) and
+  // Parent's one (the ability to consummate), and the one code the
+  // precedent gave could say neither. The summary is derived by the page
+  // from the row's own prong facts: a prong whose words speak of
+  // consummating is the ability limb, any other the business limb.
+  const limbSummary = definitions.columns.find((column) => column.column_id === 'limbSummary');
+  limbSummary.vocabulary = [
+    ...limbSummary.vocabulary,
+    { code: 'ONE_LIMB_ABILITY_TO_CONSUMMATE', label: 'One limb — ability to consummate the transaction', tone: 'neutral', addition: true, reason: 'Metsera generation 6, 9.03: Parent Material Adverse Effect is the ability to consummate alone.' },
+    { code: 'TWO_LIMBS_EFFECT_ON_THE_BUSINESS_AND_ABILITY_TO_CONSUMMATE', label: 'Two limbs — effect on the business and ability to consummate', tone: 'neutral', addition: true, reason: 'Metsera generation 6, 9.03: Company Material Adverse Effect has both limbs.' },
+  ];
+  limbSummary.derived = {
+    from_family: 'MAE_DEFINITION', from_subtype: 'DEFINITION_PRONG', join: 'limbs', ability_words: 'consummat',
+    codes: { EFFECT: 'ONE_LIMB_EFFECT_ON_THE_BUSINESS_CONDITION_OR_RESULTS_OF_OPERATIONS', ABILITY: 'ONE_LIMB_ABILITY_TO_CONSUMMATE', BOTH: 'TWO_LIMBS_EFFECT_ON_THE_BUSINESS_AND_ABILITY_TO_CONSUMMATE' },
+  };
   section.no_conclusions_subtype_keys = [...new Set([...(section.no_conclusions_subtype_keys || []), 'DEFINITION_INSTANCE', 'UNDERLYING_CAUSE_RESTORATION'])];
   for (const [tableKey, party] of [['mae-carveouts-parent', 'Parent'], ['mae-carveouts-company', 'the Company']]) {
     const table = findTable(section, tableKey);
