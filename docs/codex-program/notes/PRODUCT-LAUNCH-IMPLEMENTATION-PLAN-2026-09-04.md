@@ -2147,8 +2147,20 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       `VERCEL_TEAM_ID` and `VERCEL_PROJECT_ID`, the cycle runs from here:
       `node scripts/product/update-sandbox-worker.js`, then
       `node scripts/product/start-generation.js <preview-url> <sec-url> 4`.
-      Until then Ben: `git pull`, `node scripts/product/update-sandbox-worker.js`,
-      submit on `/review?generation=4`. Then every section of the output is read
+      2026-09-14 02:45 UTC: Ben supplied both tokens in chat ("with these
+      can you proceed?"). Done from here: `PRODUCT_INTERNAL_TOKEN` set on
+      the deal-corpus preview environment for the codex branch through the
+      Vercel API and the branch redeployed; the session middleware also
+      had to admit the bearer (c0be3039); Vercel Authentication on preview
+      deployments is passed with a share link from the Vercel connector
+      (`get_access_to_vercel_url`, a cookie per deployment, 23 hours),
+      never by weakening the project's protection; a deployment's own
+      `VERCEL_PROJECT_ID` had tripped the credential check (158e0428).
+      Worker updated to the codex branch head; run
+      `42a597b2-0f9e-4405-8ac5-e0535a51dc1a` submitted (explicit
+      generation 4, stored as source generation 5: the run read as
+      generation 3 is stored as 4) and woken (HOSTED, command
+      cmd_d4d1e6c4d2c54252af26be0f383c). Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
       4.06, 4.08, 4.09, 6.15) and the all-INVALID ones (3.03, 3.05,
