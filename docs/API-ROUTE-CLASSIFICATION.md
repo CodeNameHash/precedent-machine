@@ -19,7 +19,12 @@ only by appearing in one of two short, explicit lists in `lib/auth/gate.js`:
 login page itself, the three `/api/auth/**` bootstrap routes, and static
 framework/font assets) or **`SELF_GATED_PREFIXES`** (`/api/cron/**`, which
 enforces its own `CRON_SECRET` check and must not also be asked for a
-session — Vercel's cron infrastructure has no browser). Everything else —
+session — Vercel's cron infrastructure has no browser). A third, narrower
+exemption (2026-09-14): a request to `/api/product/**` carrying
+`Authorization: Bearer <PRODUCT_INTERNAL_TOKEN>` (an exact match against a
+configured token of 32 or more characters) passes the gate as
+`internal-token`; the product route handler checks the same token again and
+acts as the configured login user (`lib/product/request-auth.js`). Everything else —
 all 76 pre-existing routes below, and any route added after this document
 was written — defaults to refused. That default is what
 `tests/auth-route-enforcement.test.js` proves by walking the actual

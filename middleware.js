@@ -47,6 +47,7 @@ export default async function middleware(request) {
   const decision = await decideAccess({
     pathname,
     cookieHeader: request.headers.get('cookie'),
+    authorizationHeader: request.headers.get('authorization'),
     env: process.env,
   });
 

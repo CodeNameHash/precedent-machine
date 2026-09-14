@@ -116,3 +116,18 @@ test('PUBLIC_PATHS and SELF_GATED_PREFIXES do not overlap', () => {
     );
   }
 });
+
+// Internal bearer token (Ben, 2026-09-14: "Server side route is fine"):
+// product API routes only, an exact 32+ character match, never a page, and
+// the route handler still checks the same token itself.
+test('the internal bearer token admits a /api/product/ request without a session, and nothing else', async () => {
+  const token = 't'.repeat(40);
+  const env = { PRODUCT_INTERNAL_TOKEN: token, SESSION_SECRET: SECRET };
+  const bearer = `Bearer ${token}`;
+  assert.deepEqual(await decideAccess({ pathname: '/api/product/intake', cookieHeader: null, authorizationHeader: bearer, env }), { allow: true, reason: 'internal-token' });
+  assert.equal((await decideAccess({ pathname: '/api/product/intake', cookieHeader: null, authorizationHeader: `Bearer ${'u'.repeat(40)}`, env })).allow, false, 'wrong token');
+  assert.equal((await decideAccess({ pathname: '/api/product/intake', cookieHeader: null, authorizationHeader: bearer, env: { ...env, PRODUCT_INTERNAL_TOKEN: 'short' } })).allow, false, 'short configured token disables the path');
+  assert.equal((await decideAccess({ pathname: '/api/product/intake', cookieHeader: null, authorizationHeader: bearer, env: ENV })).allow, false, 'unconfigured');
+  assert.equal((await decideAccess({ pathname: '/api/deals', cookieHeader: null, authorizationHeader: bearer, env })).allow, false, 'only product routes');
+  assert.equal((await decideAccess({ pathname: '/review', cookieHeader: null, authorizationHeader: bearer, env })).allow, false, 'never a page');
+});
