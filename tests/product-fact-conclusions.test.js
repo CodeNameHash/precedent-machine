@@ -502,3 +502,13 @@ test('formatValue writes a period unit as a word, plural past one', () => {
   assert.equal(formatValue({ canonical: 1, unit: 'BUSINESS_DAY' }, 'PERIOD'), '1 business day');
   assert.equal(formatValue({ canonical: 2, unit: 'BUSINESS_DAY' }, 'PERIOD'), '2 business days');
 });
+
+// Generation 6, 5.02: "no later than forty-eight (48) hours" read as
+// "8 hours". The parenthetical digits win; compound number words add up.
+test('a period written in words with parenthetical digits parses to the digits', () => {
+  const { parseComponentValue } = require('../lib/product/fact-conclusions');
+  assert.deepEqual(parseComponentValue('PERIOD', 'no later than forty-eight (48) hours after'), { canonical: 48, unit: 'HOUR' });
+  assert.deepEqual(parseComponentValue('PERIOD', 'within twenty-four hours'), { canonical: 24, unit: 'HOUR' });
+  assert.deepEqual(parseComponentValue('PERIOD', 'within five (5) Business Days'), { canonical: 5, unit: 'BUSINESS_DAY' });
+  assert.deepEqual(parseComponentValue('PERIOD', 'at least two (2) Business Days prior'), { canonical: 2, unit: 'BUSINESS_DAY' });
+});
