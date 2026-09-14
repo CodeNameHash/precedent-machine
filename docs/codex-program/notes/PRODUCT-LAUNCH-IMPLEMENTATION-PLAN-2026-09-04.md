@@ -2264,6 +2264,20 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       and woken on Claude. Codex stays available by flipping
       PRODUCT_MODEL_PROVIDER back; Claude was chosen because the Codex
       account ran dry mid-run and Claude Opus 5 is the stronger reader.
+      Ben's first reading of the generation 6 page, 2026-09-14: "we
+      shouldn't just be dumping in the full text in the summary" (the
+      closing row): an as-drafted cell now shows the fact's operative
+      core (its own actor, operation, object and term words) plus the
+      headline's distinguishing components, in source order with an
+      ellipsis for skipped words; the whole fact stays behind "See
+      provision" and the MAE carve-back footer stays in full. "this
+      portion is stated to be a fact without a coded readout but it is
+      part of the structuring that describes a reverse triangular merger
+      so it is used" (Merger Sub's existence ceasing): a one-row table's
+      fact with no cell of its own now backs the row instead of being
+      listed as evidence without a readout. Both are page rules
+      (`lib/product/table-view.js`), so they apply to every generation
+      already stored.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,

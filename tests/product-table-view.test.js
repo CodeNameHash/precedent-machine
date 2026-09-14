@@ -360,7 +360,7 @@ test('a carve-out row with no carve-back reading says No, and the carve-back fac
   assert.deepEqual(table.footer.entries.map((entry) => [entry.fact_id, entry.text]), [['mae-cb', 'except to the extent disproportionate clauses (i) through (iv)']]);
 });
 
-test('a fact_text detail column shows the fact\'s own words as drafted, not the cited fragment', () => {
+test('a fact_text detail column shows the fact\'s operative words, not the cited fragment', () => {
   const fact = {
     fact_id: 'cond-nlr', proposal_id: 'cond-nlr', family_key: 'CLOSING_CONDITIONS', subtype_key: 'NO_LEGAL_RESTRAINT', section_reference: '7.01(b)', structure_node_id: 'n-7-01',
     headline: { label: 'No legal restraint', distinguishing_component_ids: ['nlr-3'] },
@@ -379,6 +379,71 @@ test('a fact_text detail column shows the fact\'s own words as drafted, not the 
   const cell = table.rows[0].cells.find((candidate) => candidate.column_id === 'detail');
   assert.equal(cell.label, 'No Judgment issued by any court of competent jurisdiction or Law enacted by any Governmental Entity preventing or prohibiting the consummation of the Merger shall be in effect');
   assert.deepEqual(cell.component_ids, ['nlr-3'], 'the cited words stay the click target');
+});
+
+// Ben, 2026-09-14: "we shouldn't just be dumping in the full text in the
+// summary". The closing timing cell shows the operative core and the
+// distinguishing time and period, not the Article VII qualifier, the
+// exception or the proviso.
+test('an as-drafted cell shows the operative core plus the distinguishing components, with an ellipsis for skipped words', () => {
+  const component = (id, kind, text, start, extra = {}) => ({ component_id: id, kind, label: id, text, origin: 'OWN', source_span_id: 's', start_byte: start, end_byte: start + text.length, gap_before: false, children: [], ...extra });
+  const fact = {
+    fact_id: 'cl-1', proposal_id: 'cl-1', family_key: 'MERGER_STRUCTURE_CLOSING', subtype_key: 'CLOSING', section_reference: '1.02', structure_node_id: 'n-1-02',
+    headline: { label: 'Closing', distinguishing_component_ids: ['time', 'period'] },
+    components: [
+      component('qual', 'QUALIFIER', 'Subject to the provisions of Article VII', 0),
+      component('actor', 'ACTOR', 'the closing (the “Closing”) of the Merger', 42),
+      component('op', 'OPERATION', 'shall take place', 84),
+      component('time', 'DATE', 'at 8:00 a.m., New York City time', 101),
+      component('period', 'PERIOD', 'on the third (3rd) business day', 134),
+      component('trigger', 'TRIGGER', 'after the satisfaction or waiver of the conditions set forth in Article VII', 166),
+      component('exc', 'EXCEPTION', 'other than those conditions that by their nature are to be satisfied at the Closing', 242),
+      { ...component('chapeau', 'QUALIFIER', 'On the terms of this Agreement', 400), origin: 'CHAPEAU' },
+    ],
+    conclusions: { table_key: 'structure-mechanics-table', row_label: 'The deal', cells: [{ column_id: 'closingTiming', text: 'on the third (3rd) business day', component_ids: ['time', 'period', 'trigger'] }] },
+  };
+  const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'structure-mechanics-table');
+  const cell = table.rows[0].cells.find((candidate) => candidate.column_id === 'closingTiming');
+  assert.equal(cell.label, 'the closing (the “Closing”) of the Merger shall take place at 8:00 a.m., New York City time on the third (3rd) business day');
+  assert.deepEqual(cell.component_ids, ['time', 'period', 'trigger'], 'the cited words stay the click target');
+  // A distinguishing component after skipped words is joined with an ellipsis.
+  fact.headline.distinguishing_component_ids = ['exc'];
+  const again = buildTableView({ facts: [fact], tableShapes, legalSchema }).sections.flatMap((section) => section.tables)
+    .find((candidate) => candidate.table_key === 'structure-mechanics-table').rows[0].cells.find((candidate) => candidate.column_id === 'closingTiming');
+  assert.equal(again.label, 'the closing (the “Closing”) of the Merger shall take place … other than those conditions that by their nature are to be satisfied at the Closing');
+});
+
+// Ben, 2026-09-14: "this portion is stated to be a fact without a coded
+// readout but it is part of the structuring that describes a reverse
+// triangular merger so it is used". A one-row table's fact with no cell
+// backs the row instead of being listed as evidence without a readout.
+test('a one-per-agreement fact without a readout backs the row rather than the without-readout list', () => {
+  const ceases = {
+    fact_id: 'ce-1', proposal_id: 'ce-1', family_key: 'MERGER_STRUCTURE_CLOSING', subtype_key: 'LEGAL_EFFECT', section_reference: '1.01', structure_node_id: 'n-1-01',
+    headline: { label: 'Legal effect', distinguishing_component_ids: ['ce-op'] },
+    components: [
+      { component_id: 'ce-actor', kind: 'ACTOR', label: 'entity', text: 'the separate corporate existence of Merger Sub', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 46, gap_before: false, children: [] },
+      { component_id: 'ce-op', kind: 'OPERATION', label: 'ceases', text: 'shall cease', origin: 'OWN', source_span_id: 's', start_byte: 47, end_byte: 58, gap_before: false, children: [] },
+    ],
+  };
+  const merger = {
+    fact_id: 'mg-1', proposal_id: 'mg-1', family_key: 'MERGER_STRUCTURE_CLOSING', subtype_key: 'TRANSACTION_STEP', section_reference: '1.01', structure_node_id: 'n-1-01',
+    headline: { label: 'Transaction step', distinguishing_component_ids: ['mg-op'] },
+    components: [
+      { component_id: 'mg-actor', kind: 'ACTOR', label: 'merging party', text: 'Merger Sub', origin: 'OWN', source_span_id: 's', start_byte: 100, end_byte: 110, gap_before: false, children: [] },
+      { component_id: 'mg-op', kind: 'OPERATION', label: 'merger', text: 'shall be merged with and into', origin: 'OWN', source_span_id: 's', start_byte: 111, end_byte: 140, gap_before: false, children: [] },
+      { component_id: 'mg-obj', kind: 'OBJECT', label: 'merged into', text: 'the Company', origin: 'OWN', source_span_id: 's', start_byte: 141, end_byte: 152, gap_before: false, children: [] },
+      { component_id: 'mg-term', kind: 'TERM', label: 'survivor', text: 'the Company shall continue as the surviving corporation', origin: 'OWN', source_span_id: 's', start_byte: 160, end_byte: 210, gap_before: true, children: [] },
+    ],
+    conclusions: { table_key: 'structure-mechanics-table', row_label: 'The deal', cells: [{ column_id: 'mergerFormStep1', code: 'REVERSE_TRIANGULAR_MERGER', component_ids: ['mg-actor', 'mg-op', 'mg-obj', 'mg-term'] }] },
+  };
+  const view = buildTableView({ facts: [ceases, merger], tableShapes, legalSchema });
+  const section = view.sections.find((candidate) => candidate.tables.some((table) => table.table_key === 'structure-mechanics-table'));
+  const table = section.tables.find((candidate) => candidate.table_key === 'structure-mechanics-table');
+  assert.equal(table.rows.length, 1);
+  assert.deepEqual(table.rows[0].backing_facts.map((entry) => entry.fact_id).sort(), ['ce-1', 'mg-1']);
+  assert.equal((section.facts_without_readout || []).length, 0);
 });
 
 test('two readings in one cell come out in source order, and a fact_text line shows each alternative in full', () => {
