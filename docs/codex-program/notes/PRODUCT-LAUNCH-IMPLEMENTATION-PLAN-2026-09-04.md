@@ -2094,6 +2094,16 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the zero-proposal check does not catch, so the negative-covenant
       list is missing. See Q6.
 - [x] Q3 Restyle to the Deal Storylines design, 2026-09-13 21:45 UTC.
+      2026-09-14 00:10 UTC, Ben on Antitrust / Regulatory and Intervening
+      Event (verbatim in the shapes note, decision 34 proposal): the
+      harvest left free-text Provision / Detail columns and, for the three
+      sections without print, a one-row-per-subject table, and the
+      redesign had gone section by section as Ben pointed. Proposal put
+      to Ben: no fragment columns anywhere (coded, number, yes / no or as
+      drafted only) and a shape per remaining section, listed in the
+      note for his sign-off before generation 4.
+- [ ] Q7 Decision 34: apply the no-fragment rule and the remaining
+      section shapes once Ben signs off the row and code names.
 - [ ] Q6 Long sections. The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
