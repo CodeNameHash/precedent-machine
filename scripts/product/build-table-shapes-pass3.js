@@ -156,6 +156,11 @@ function applyDecision1StructureMechanics(doc) {
       column_id: 'survivingEntityStep1',
       header: 'Surviving Entity (Step 1)',
       render: 'term',
+      // Ben, 2026-09-14, on "the “Surviving Corporation”": "this says
+      // nothing - needs to say which entity is the surviving entity". The
+      // cell names the fact's actor (the entity that continues) with the
+      // cited term after it.
+      display: 'party',
       addition: true,
       reason: `${BEN} #2: the structure family must record which entity survives each step, not just the form.`,
       fill_from: ['TERM'],
@@ -174,6 +179,11 @@ function applyDecision1StructureMechanics(doc) {
       column_id: 'survivingEntityStep2',
       header: 'Surviving Entity (Step 2)',
       render: 'term',
+      // Ben, 2026-09-14, on "the “Surviving Corporation”": "this says
+      // nothing - needs to say which entity is the surviving entity". The
+      // cell names the fact's actor (the entity that continues) with the
+      // cited term after it.
+      display: 'party',
       addition: true,
       reason: `${BEN} #2: companion to Surviving Entity (Step 1) for the second step.`,
       fill_from: ['TERM'],

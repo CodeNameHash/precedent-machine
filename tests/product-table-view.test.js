@@ -446,6 +446,26 @@ test('a one-per-agreement fact without a readout backs the row rather than the w
   assert.equal((section.facts_without_readout || []).length, 0);
 });
 
+// Ben, 2026-09-14: "this says nothing - needs to say which entity is the
+// surviving entity". The party column names the actor with the term after it.
+test('a party column names the entity, with the cited defined term after it', () => {
+  const fact = {
+    fact_id: 'sv-1', proposal_id: 'sv-1', family_key: 'MERGER_STRUCTURE_CLOSING', subtype_key: 'LEGAL_EFFECT', section_reference: '1.01', structure_node_id: 'n-1-01',
+    headline: { label: 'Legal effect', distinguishing_component_ids: ['sv-term'] },
+    components: [
+      { component_id: 'sv-actor', kind: 'ACTOR', label: 'continuing entity', text: 'the Company', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 11, gap_before: false, children: [] },
+      { component_id: 'sv-op', kind: 'OPERATION', label: 'continues', text: 'shall continue as the surviving corporation', origin: 'OWN', source_span_id: 's', start_byte: 12, end_byte: 55, gap_before: false, children: [] },
+      { component_id: 'sv-term', kind: 'TERM', label: 'defined term', text: 'the “Surviving Corporation”', origin: 'OWN', source_span_id: 's', start_byte: 57, end_byte: 84, gap_before: false, children: [] },
+    ],
+    conclusions: { table_key: 'structure-mechanics-table', row_label: 'the Merger', cells: [{ column_id: 'survivingEntityStep1', text: 'the “Surviving Corporation”', component_ids: ['sv-term'] }] },
+  };
+  const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'structure-mechanics-table');
+  const cell = table.rows[0].cells.find((candidate) => candidate.column_id === 'survivingEntityStep1');
+  assert.equal(cell.label, 'the Company (the “Surviving Corporation”)');
+  assert.deepEqual(cell.component_ids, ['sv-term']);
+});
+
 test('two readings in one cell come out in source order, and a fact_text line shows each alternative in full', () => {
   const closing = (id, start, text, cited) => ({
     fact_id: id, proposal_id: id, family_key: 'MERGER_STRUCTURE_CLOSING', subtype_key: 'CLOSING_MECHANICS', section_reference: '1.02', structure_node_id: 'n-1-02',
