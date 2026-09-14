@@ -565,7 +565,9 @@ test('Decision 33: consideration shapes name their sources', () => {
   const section = findSectionV3('consideration-hero');
   const structure = findTableV3(section, 'consideration-structure');
   const appraisal = structure.columns.find((c) => c.column_id === 'appraisalRights');
-  assert.equal(appraisal.display, 'fact_text');
+  // Ben, 2026-09-14: "this should just say 'present'".
+  assert.equal(appraisal.render, 'boolean');
+  assert.equal(appraisal.display, undefined);
   // Decision 34: derived by the page from the appraisal provision's own family.
   assert.equal(appraisal.from_subtype_keys, undefined);
   assert.equal(appraisal.derived.join, 'presence');

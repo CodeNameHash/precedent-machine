@@ -903,7 +903,10 @@ function applyConsideration(doc) {
   // extractor reads it that way and as APPRAISAL_DISSENTERS_RIGHTS otherwise
   // (Metsera generation 5 had both, the second one invalid).
   appraisal.derived = { from_family: 'CONSIDERATION', from_subtype: 'APPRAISAL_LINK', join: 'presence', alternatives: [{ from_family: 'APPRAISAL_DISSENTERS_RIGHTS', from_subtype: 'APPRAISAL_STATUS' }, { from_family: 'APPRAISAL_DISSENTERS_RIGHTS', from_subtype: 'APPRAISAL_ENTITLEMENT' }] };
-  appraisal.guidance = 'Derived by the page from the appraisal provision itself (the CONSIDERATION/APPRAISAL_LINK fact, else the APPRAISAL_DISSENTERS_RIGHTS facts), shown as drafted. Never filled from a readout.';
+  // Ben, 2026-09-14: "this should just say 'present'".
+  appraisal.render = 'boolean';
+  delete appraisal.display;
+  appraisal.guidance = 'Derived by the page from the appraisal provision itself (the CONSIDERATION/APPRAISAL_LINK fact, else the APPRAISAL_DISSENTERS_RIGHTS facts): Present when the agreement has one. Never filled from a readout.';
   structure.guidance = `${structure.guidance} An APPRAISAL_LINK fact carries no cells at all (its line is derived); the consideration type is coded from the CONSIDERATION_PACKAGE fact (the Merger Consideration definition or conversion clause), never from an appraisal, exclusion or Merger Sub share fact.`;
   const components = findTable(section, 'consideration-components');
   components.guidance = `${components.guidance} The conversion of Merger Sub's shares into shares of the Surviving Corporation is a MERGER_STRUCTURE_CLOSING/LEGAL_EFFECT fact, never a row here.`;
@@ -914,9 +917,17 @@ function applyConsideration(doc) {
     code('Per share of Company Preferred Stock', why, { code: 'PER_SHARE_OF_COMPANY_PREFERRED_STOCK' }),
     code('Per unit or other interest', why, { code: 'PER_UNIT_OR_OTHER_INTEREST' }),
   ];
-  const contingency = findColumn(components, 'contingency');
-  contingency.header = 'As drafted';
-  contingency.display = 'fact_text';
+  // Ben, 2026-09-14, on the per-share grid: "I'd get rid of 'as drafted'
+  // unless you think it is offering something I'm missing". The words stay
+  // behind "See provision"; the column goes.
+  components.columns = components.columns.filter((column) => column.column_id !== 'contingency');
+  // Ben, 2026-09-14: "I also don't mind the definitions but I'd put them
+  // under the word 'cash' and 'CVR' in component and also present the
+  // combined definition". The defined term sits under the component name;
+  // the package's own term (the “Merger Consideration”) closes the table.
+  const definedAs = findColumn(components, 'definedAs');
+  definedAs.display = 'subject_note';
+  components.combined_definition_from = { family_key: 'CONSIDERATION', subtype_key: 'CONSIDERATION_PACKAGE', label: 'Combined definition' };
   const election = findTable(section, 'consideration-hero-election-mechanics');
   for (const column of election.columns) if (column.render === 'verbatim') { column.display = 'fact_text'; column.header = 'As drafted'; }
   const mae = findSection(doc, 'mae-definitions');
@@ -953,7 +964,60 @@ function applyRepresentations(doc) {
     for (const label of EXTRA_REP_ROWS) if (!table.fixed_row_labels.includes(label)) table.fixed_row_labels.push(label);
     table.fixed_row_labels_source = `${table.fixed_row_labels_source}; lib/rubric.js REP-T-* labels (decision 34)`;
     table.detail_labels_by_row = { ...(table.detail_labels_by_row || {}), 'Capitalization; Subsidiaries': [...CAPITALISATION_LIMBS] };
-    table.guidance = `${table.guidance} A CAPITALISATION fact (authorized capital, issued and outstanding shares, reserved securities, the award inventory, subsidiary equity) is a limb of Capitalization; Subsidiaries: row_label that representation, row_detail the limb from its list. The article's introductory sentence (the representing party, the disclosure-letter and SEC-document exceptions) is never a row: omit conclusions for it.`;
+    table.guidance = `${table.guidance} A CAPITALISATION fact (authorized capital, issued and outstanding shares, reserved securities, the award inventory, subsidiary equity) is a limb of Capitalization; Subsidiaries: row_label that representation, row_detail the limb from its list. The article's introductory sentence (the representing party, the disclosure-letter and SEC-document exceptions) is never a row of this table: its REPRESENTATION_QUALIFICATION facts go to the general qualifications table.`;
+    table.only_subtype_keys = ['STATUS_REPRESENTATION', 'COMPLIANCE_REPRESENTATION', 'DOCUMENT_REPRESENTATION', 'CONTRACT_REPRESENTATION', 'FINANCIAL_REPRESENTATION', 'NEGATIVE_REPRESENTATION'];
+    // Ben, 2026-09-14, on the Article III introduction rendered as seven
+    // status and document representations: "all of this is miscoded. This
+    // is the standard intro to the reps that provides the exceptions for
+    // all reps - look at the old system - we should be able to show the
+    // reader the general categories of the exceptions (SEC filings) and as
+    // they click into deeper levels show more detail (last X days) etc".
+    const why = `${BEN}: the general qualifications to every representation, by category.`;
+    const qualifications = provisionTable({
+      tableKey: sectionKey === 'representations-qualifiers' ? 'representations-general-qualifications' : 'parent-representations-general-qualifications',
+      termHeader: 'Qualification',
+      rows: [
+        ['SEC filings exception', [
+          code('Except as disclosed in SEC filings', why, { code: 'EXCEPT_AS_DISCLOSED_IN_SEC_FILINGS' }),
+          code('Filings within a stated window', why, { code: 'FILINGS_WITHIN_STATED_WINDOW' }),
+          code('Risk factors and forward-looking statements excluded', why, { code: 'RISK_FACTORS_AND_FORWARD_LOOKING_EXCLUDED' }),
+          code('Exhibits excluded', why, { code: 'EXHIBITS_EXCLUDED' }),
+          code('Specific historical facts still count', why, { code: 'SPECIFIC_HISTORICAL_FACTS_NOT_EXCLUDED' }),
+        ]],
+        ['Disclosure Letter exception', [
+          code('Except as set forth in the Disclosure Letter', why, { code: 'EXCEPT_AS_SET_FORTH_IN_DISCLOSURE_LETTER' }),
+          code('Arranged by section', why, { code: 'ARRANGED_BY_SECTION' }),
+          code('Disclosure qualifies other sections where reasonably apparent', why, { code: 'CROSS_SECTION_WHERE_REASONABLY_APPARENT' }),
+          code('Disclosure qualifies only the section it is made against', why, { code: 'SECTION_SPECIFIC_ONLY' }),
+        ]],
+        ['Other general qualification', [
+          code('Knowledge standard for the article', why, { code: 'ARTICLE_KNOWLEDGE_STANDARD' }),
+          code('Materiality standard for the article', why, { code: 'ARTICLE_MATERIALITY_STANDARD' }),
+        ]],
+      ],
+      numberColumns: [{
+        column_id: 'window',
+        header: 'Window',
+        render: 'value',
+        value_kind: 'PERIOD',
+        fill_from: ['PERIOD', 'DATE'],
+        addition: true,
+        reason: why,
+        guidance: 'The look-back or cut-off the exception states (filed since a date, at least one business day before signing), as the cited words parse; omitted when the clause states none.',
+      }],
+      reason: why,
+      subtypeKeys: ['REPRESENTATION_QUALIFICATION'],
+      openRows: true,
+      guidance: 'One row per general qualification the article introduction states for every representation: row_label the category (SEC filings exception, Disclosure Letter exception), provision the codes the clause establishes (several cells when it establishes several), window its date or period, the as-drafted column the operative words; the reader opens the fact for the full detail. Only REPRESENTATION_QUALIFICATION facts belong here; a limb of a numbered representation never does.',
+    });
+    qualifications.only_subtype_keys = ['REPRESENTATION_QUALIFICATION'];
+    // Facts the extractor cut from an article introduction without a
+    // readout (generation 6 read them as status and document
+    // representations) are shown under this table as other provisions,
+    // grouped by sentence, until the REPRESENTATION_QUALIFICATION reading
+    // replaces them.
+    qualifications.intro_facts_of_family = 'REPRESENTATIONS';
+    section.tables.push(qualifications);
   }
 }
 

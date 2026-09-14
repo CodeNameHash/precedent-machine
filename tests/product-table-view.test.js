@@ -486,6 +486,58 @@ test('defined terms split into the quoted term and its definition, whatever shap
   assert.deepEqual(parts('bday'), { term: 'business day', definition: 'any day on which the principal offices of the SEC are open' });
 });
 
+// Ben, 2026-09-14: "I'd put them under the word 'cash' and 'CVR' in
+// component and also present the combined definition".
+test('the per-share grid shows the defined term under the component and the package term as a combined definition', () => {
+  const component = (id, kind, text, start, extra = {}) => ({ component_id: id, kind, label: id, text, origin: 'OWN', source_span_id: 's', start_byte: start, end_byte: start + text.length, gap_before: false, children: [], ...extra });
+  const cash = {
+    fact_id: 'cash', proposal_id: 'cash', family_key: 'CONSIDERATION', subtype_key: 'CASH_COMPONENT', section_reference: '2.01', structure_node_id: 'n',
+    headline: { label: 'Cash component', distinguishing_component_ids: ['cash-amt'] },
+    components: [component('cash-obj', 'OBJECT', '$47.50 in cash', 0), component('cash-amt', 'AMOUNT', '$47.50', 0), component('cash-term', 'DEFINED_TERM', 'the “Closing Amount”', 40)],
+    conclusions: { table_key: 'consideration-components', row_label: 'Cash', cells: [
+      { column_id: 'form', code: 'CASH', component_ids: ['cash-obj'] },
+      { column_id: 'definedAs', text: 'the “Closing Amount”', component_ids: ['cash-term'] },
+    ] },
+  };
+  const pack = {
+    fact_id: 'pack', proposal_id: 'pack', family_key: 'CONSIDERATION', subtype_key: 'CONSIDERATION_PACKAGE', section_reference: '2.01', structure_node_id: 'n', validation_status: 'VALID',
+    headline: { label: 'Consideration package', distinguishing_component_ids: ['pack-term'] },
+    components: [component('pack-actor', 'ACTOR', 'each issued and outstanding share of Company Common Stock', 100), component('pack-op', 'OPERATION', 'shall be converted into the right to receive', 160), component('pack-obj', 'OBJECT', '(i) $47.50 in cash and (ii) one CVR', 205), component('pack-term', 'DEFINED_TERM', '(clauses (i) and (ii), collectively, the “Merger Consideration”)', 245)],
+    conclusions: { table_key: 'consideration-structure', row_label: 'the Merger', cells: [{ column_id: 'considerationType', code: 'CASH_AND_CVR', component_ids: ['pack-obj'] }] },
+  };
+  const view = buildTableView({ facts: [cash, pack], tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'consideration-components');
+  assert.equal(table.columns.some((column) => column.column_id === 'definedAs'), false, 'the defined term is not a column');
+  assert.equal(table.columns.some((column) => column.column_id === 'contingency'), false, 'the as-drafted column is gone');
+  assert.equal(table.rows[0].subject, 'Cash');
+  assert.equal(table.rows[0].subject_note, 'the “Closing Amount”');
+  assert.equal(table.combined_definition.label, 'Combined definition');
+  assert.equal(table.combined_definition.term, 'Merger Consideration');
+  assert.match(table.combined_definition.text, /^each issued and outstanding share of Company Common Stock .*shall be converted into the right to receive \(i\) \$47.50 in cash and \(ii\) one CVR/);
+  assert.equal(table.combined_definition.fact_id, 'pack');
+});
+
+// Ben, 2026-09-14: "This is the standard intro to the reps that provides
+// the exceptions for all reps". Until the extractor reads the introduction
+// as REPRESENTATION_QUALIFICATION facts, its facts sit under the general
+// qualifications table as other provisions, never as facts without a readout.
+test('representation facts from an article introduction without a readout become other provisions of the general qualifications table', () => {
+  const component = (id, kind, text, start) => ({ component_id: id, kind, label: id, text, origin: 'OWN', source_span_id: 'intro', start_byte: start, end_byte: start + text.length, gap_before: false, children: [] });
+  const sec = {
+    fact_id: 'intro-sec', proposal_id: 'intro-sec', family_key: 'REPRESENTATIONS', subtype_key: 'DOCUMENT_REPRESENTATION', section_reference: 'III-INTRO', structure_node_id: 'n-intro',
+    headline: { label: 'Document representation', distinguishing_component_ids: ['sec-obj'] },
+    components: [component('sec-exc', 'EXCEPTION', 'Except as disclosed in', 0), component('sec-obj', 'OBJECT', 'the Filed Company SEC Documents', 23)],
+  };
+  const view = buildTableView({ facts: [sec], tableShapes, legalSchema });
+  const section = view.sections.find((candidate) => candidate.section_key === 'representations-qualifiers');
+  assert.ok(section, 'the representations section renders');
+  assert.equal((section.facts_without_readout || []).length, 0);
+  const table = section.tables.find((candidate) => candidate.table_key === 'representations-general-qualifications');
+  assert.ok(table, 'the general qualifications table renders for the intro facts');
+  assert.equal(table.other_provisions.length, 1);
+  assert.equal(table.other_provisions[0].branches[0].fact_id, 'intro-sec');
+});
+
 test('two readings in one cell come out in source order, and a fact_text line shows each alternative in full', () => {
   const closing = (id, start, text, cited) => ({
     fact_id: id, proposal_id: id, family_key: 'MERGER_STRUCTURE_CLOSING', subtype_key: 'CLOSING_MECHANICS', section_reference: '1.02', structure_node_id: 'n-1-02',
@@ -577,7 +629,7 @@ test('a presence-derived row is created from another family\'s fact: Company ter
   assert.ok(company.rows.some((candidate) => candidate.subject === 'Superior Proposal'));
 });
 
-test('a presence-derived line of the consideration grid shows the appraisal provision as drafted', () => {
+test('a presence-derived line of the consideration grid says Present', () => {
   const appraisal = {
     fact_id: 'appr-1', family_key: 'APPRAISAL_DISSENTERS_RIGHTS', subtype_key: 'APPRAISAL_STATUS', section_reference: '2.01(d)',
     headline: { label: 'Appraisal', distinguishing_component_ids: ['appr-1-c'] },
@@ -586,8 +638,8 @@ test('a presence-derived line of the consideration grid shows the appraisal prov
   const view = buildTableView({ facts: [appraisal], tableShapes, legalSchema });
   const structure = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'consideration-structure');
   const cell = structure.rows[0].cells.find((candidate) => candidate.column_id === 'appraisalRights');
-  assert.equal(cell.kind, 'text');
-  assert.equal(cell.label, 'shall not be converted into the right to receive the Merger Consideration');
+  assert.equal(cell.kind, 'pill');
+  assert.equal(cell.label, 'Present');
 });
 
 test('the appraisal line takes the CONSIDERATION/APPRAISAL_LINK fact first, an APPRAISAL_DISSENTERS_RIGHTS fact otherwise, and never an invalid one', () => {
@@ -599,8 +651,11 @@ test('the appraisal line takes the CONSIDERATION/APPRAISAL_LINK fact first, an A
     components: [{ component_id: 'en-1-c', kind: 'OPERATION', label: 'entitled', text: 'shall be entitled only to receive such consideration as is determined to be due', origin: 'OWN', source_span_id: 's', start_byte: 100, end_byte: 180, children: [] }] };
   const cellFor = (facts) => buildTableView({ facts, tableShapes, legalSchema }).sections.flatMap((section) => section.tables)
     .find((candidate) => candidate.table_key === 'consideration-structure').rows[0].cells.find((cell) => cell.column_id === 'appraisalRights');
-  assert.equal(cellFor([link, status, entitlement]).label, 'shall not be converted into the Merger Consideration');
-  assert.equal(cellFor([status, entitlement]).label, 'shall be entitled only to receive such consideration as is determined to be due', 'the invalid status fact is skipped, the entitlement fact serves');
+  // Ben, 2026-09-14: "this should just say 'present'". The line is a Present pill citing the chosen fact.
+  assert.equal(cellFor([link, status, entitlement]).label, 'Present');
+  assert.deepEqual(cellFor([link, status, entitlement]).fact_ids, ['link-1']);
+  assert.equal(cellFor([status, entitlement]).label, 'Present');
+  assert.deepEqual(cellFor([status, entitlement]).fact_ids, ['en-1'], 'the invalid status fact is skipped, the entitlement fact serves');
 });
 
 // Ben, 2026-09-14, on the § 1.03 filing facts: "render them as a hidden

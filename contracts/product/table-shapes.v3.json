@@ -350,7 +350,7 @@
             {
               "column_id": "appraisalRights",
               "header": "Appraisal rights",
-              "render": "verbatim",
+              "render": "boolean",
               "fill_from": [
                 "EXCEPTION",
                 "OPERATION",
@@ -358,8 +358,7 @@
               ],
               "addition": true,
               "reason": "Ben's decision 2026-09-13 #18 (Metsera, cash plus CVR): the consideration axis must describe any deal, not only an election deal. The legacy \"Appraisal rights\" row, as one line of the grid.",
-              "display": "fact_text",
-              "guidance": "Derived by the page from the appraisal provision itself (the CONSIDERATION/APPRAISAL_LINK fact, else the APPRAISAL_DISSENTERS_RIGHTS facts), shown as drafted. Never filled from a readout.",
+              "guidance": "Derived by the page from the appraisal provision itself (the CONSIDERATION/APPRAISAL_LINK fact, else the APPRAISAL_DISSENTERS_RIGHTS facts): Present when the agreement has one. Never filled from a readout.",
               "derived": {
                 "from_family": "CONSIDERATION",
                 "from_subtype": "APPRAISAL_LINK",
@@ -532,20 +531,6 @@
               ]
             },
             {
-              "column_id": "contingency",
-              "header": "As drafted",
-              "render": "verbatim",
-              "fill_from": [
-                "CONDITION",
-                "OBJECT",
-                "QUALIFIER",
-                "CROSS_REFERENCE"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-13 #18 (Metsera, cash plus CVR): the consideration axis must describe any deal, not only an election deal. What a contingent limb depends on (the Milestone Payments under the CVR Agreement).",
-              "display": "fact_text"
-            },
-            {
               "column_id": "definedAs",
               "header": "Defined as",
               "render": "term",
@@ -554,7 +539,8 @@
                 "TERM"
               ],
               "addition": true,
-              "reason": "Ben's decision 2026-09-13 #18 (Metsera, cash plus CVR): the consideration axis must describe any deal, not only an election deal. The defined term the agreement gives the limb (\"Closing Amount\", \"CVR\", \"Merger Consideration\")."
+              "reason": "Ben's decision 2026-09-13 #18 (Metsera, cash plus CVR): the consideration axis must describe any deal, not only an election deal. The defined term the agreement gives the limb (\"Closing Amount\", \"CVR\", \"Merger Consideration\").",
+              "display": "subject_note"
             }
           ],
           "rows_are": "fixed list",
@@ -580,7 +566,12 @@
             "STOCK_COMPONENT",
             "CVR_COMPONENT",
             "CONSIDERATION_PACKAGE"
-          ]
+          ],
+          "combined_definition_from": {
+            "family_key": "CONSIDERATION",
+            "subtype_key": "CONSIDERATION_PACKAGE",
+            "label": "Combined definition"
+          }
         },
         {
           "table_key": "consideration-hero-election-mechanics",
@@ -1007,7 +998,189 @@
               "Valid issuance, fully paid and nonassessable"
             ]
           },
-          "guidance": "row_label is the representation as the precedent names it (one of fixed_row_labels); add a new row label only for a representation none of them covers (for example a regulatory or FDA representation). Each limb of a representation is a sub-item: row_detail is the canonical limb name from detail_labels_by_row for that row (a new limb name only when none fits, in the same style, never the agreement's own words); a fact about the representation as a whole carries no row_detail and gives the overview. The bringdown column is never filled from a representation: it comes from the closing conditions. A CAPITALISATION fact (authorized capital, issued and outstanding shares, reserved securities, the award inventory, subsidiary equity) is a limb of Capitalization; Subsidiaries: row_label that representation, row_detail the limb from its list. The article's introductory sentence (the representing party, the disclosure-letter and SEC-document exceptions) is never a row: omit conclusions for it."
+          "guidance": "row_label is the representation as the precedent names it (one of fixed_row_labels); add a new row label only for a representation none of them covers (for example a regulatory or FDA representation). Each limb of a representation is a sub-item: row_detail is the canonical limb name from detail_labels_by_row for that row (a new limb name only when none fits, in the same style, never the agreement's own words); a fact about the representation as a whole carries no row_detail and gives the overview. The bringdown column is never filled from a representation: it comes from the closing conditions. A CAPITALISATION fact (authorized capital, issued and outstanding shares, reserved securities, the award inventory, subsidiary equity) is a limb of Capitalization; Subsidiaries: row_label that representation, row_detail the limb from its list. The article's introductory sentence (the representing party, the disclosure-letter and SEC-document exceptions) is never a row of this table: its REPRESENTATION_QUALIFICATION facts go to the general qualifications table.",
+          "only_subtype_keys": [
+            "STATUS_REPRESENTATION",
+            "COMPLIANCE_REPRESENTATION",
+            "DOCUMENT_REPRESENTATION",
+            "CONTRACT_REPRESENTATION",
+            "FINANCIAL_REPRESENTATION",
+            "NEGATIVE_REPRESENTATION"
+          ]
+        },
+        {
+          "table_key": "representations-general-qualifications",
+          "group_header": null,
+          "term_column": {
+            "header": "Qualification",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "provision",
+              "header": "Provision",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "EXCEPT_AS_DISCLOSED_IN_SEC_FILINGS",
+                  "label": "Except as disclosed in SEC filings",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                },
+                {
+                  "code": "FILINGS_WITHIN_STATED_WINDOW",
+                  "label": "Filings within a stated window",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                },
+                {
+                  "code": "RISK_FACTORS_AND_FORWARD_LOOKING_EXCLUDED",
+                  "label": "Risk factors and forward-looking statements excluded",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                },
+                {
+                  "code": "EXHIBITS_EXCLUDED",
+                  "label": "Exhibits excluded",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                },
+                {
+                  "code": "SPECIFIC_HISTORICAL_FACTS_NOT_EXCLUDED",
+                  "label": "Specific historical facts still count",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                },
+                {
+                  "code": "EXCEPT_AS_SET_FORTH_IN_DISCLOSURE_LETTER",
+                  "label": "Except as set forth in the Disclosure Letter",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                },
+                {
+                  "code": "ARRANGED_BY_SECTION",
+                  "label": "Arranged by section",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                },
+                {
+                  "code": "CROSS_SECTION_WHERE_REASONABLY_APPARENT",
+                  "label": "Disclosure qualifies other sections where reasonably apparent",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                },
+                {
+                  "code": "SECTION_SPECIFIC_ONLY",
+                  "label": "Disclosure qualifies only the section it is made against",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                },
+                {
+                  "code": "ARTICLE_KNOWLEDGE_STANDARD",
+                  "label": "Knowledge standard for the article",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                },
+                {
+                  "code": "ARTICLE_MATERIALITY_STANDARD",
+                  "label": "Materiality standard for the article",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                }
+              ],
+              "vocabulary_by_row": {
+                "SEC filings exception": [
+                  "EXCEPT_AS_DISCLOSED_IN_SEC_FILINGS",
+                  "FILINGS_WITHIN_STATED_WINDOW",
+                  "RISK_FACTORS_AND_FORWARD_LOOKING_EXCLUDED",
+                  "EXHIBITS_EXCLUDED",
+                  "SPECIFIC_HISTORICAL_FACTS_NOT_EXCLUDED"
+                ],
+                "Disclosure Letter exception": [
+                  "EXCEPT_AS_SET_FORTH_IN_DISCLOSURE_LETTER",
+                  "ARRANGED_BY_SECTION",
+                  "CROSS_SECTION_WHERE_REASONABLY_APPARENT",
+                  "SECTION_SPECIFIC_ONLY"
+                ],
+                "Other general qualification": [
+                  "ARTICLE_KNOWLEDGE_STANDARD",
+                  "ARTICLE_MATERIALITY_STANDARD"
+                ]
+              },
+              "fill_from": [
+                "STANDARD",
+                "EFFORTS_STANDARD",
+                "OPERATION",
+                "CONDITION",
+                "EXCEPTION",
+                "QUALIFIER",
+                "ACTOR",
+                "FORUM"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category.",
+              "guidance": "One code from this row's own list (vocabulary_by_row); several cells with distinct codes when the clause states several of them (the acts a no-shop prohibits, the events an intervening-event definition excludes); never a code from another row's list."
+            },
+            {
+              "column_id": "window",
+              "header": "Window",
+              "render": "value",
+              "value_kind": "PERIOD",
+              "fill_from": [
+                "PERIOD",
+                "DATE"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category.",
+              "guidance": "The look-back or cut-off the exception states (filed since a date, at least one business day before signing), as the cited words parse; omitted when the clause states none."
+            },
+            {
+              "column_id": "asDrafted",
+              "header": "As drafted",
+              "render": "verbatim",
+              "display": "fact_text",
+              "fill_from": [
+                "OPERATION",
+                "OBJECT",
+                "CONDITION",
+                "STANDARD",
+                "EXCEPTION",
+                "QUALIFIER"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category.",
+              "guidance": "Shown as the fact's own words as drafted (every component in source order); cite the operative words."
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "SEC filings exception",
+            "Disclosure Letter exception",
+            "Other general qualification"
+          ],
+          "open_rows": true,
+          "subtype_keys": [
+            "REPRESENTATION_QUALIFICATION"
+          ],
+          "guidance": "One row per general qualification the article introduction states for every representation: row_label the category (SEC filings exception, Disclosure Letter exception), provision the codes the clause establishes (several cells when it establishes several), window its date or period, the as-drafted column the operative words; the reader opens the fact for the full detail. Only REPRESENTATION_QUALIFICATION facts belong here; a limb of a numbered representation never does.",
+          "only_subtype_keys": [
+            "REPRESENTATION_QUALIFICATION"
+          ],
+          "intro_facts_of_family": "REPRESENTATIONS"
         }
       ],
       "print_pages": [
@@ -1221,7 +1394,189 @@
               "Valid issuance, fully paid and nonassessable"
             ]
           },
-          "guidance": "row_label is the representation as the precedent names it (one of fixed_row_labels); add a new row label only for a representation none of them covers (for example a regulatory or FDA representation). Each limb of a representation is a sub-item: row_detail is the canonical limb name from detail_labels_by_row for that row (a new limb name only when none fits, in the same style, never the agreement's own words); a fact about the representation as a whole carries no row_detail and gives the overview. The bringdown column is never filled from a representation: it comes from the closing conditions. A CAPITALISATION fact (authorized capital, issued and outstanding shares, reserved securities, the award inventory, subsidiary equity) is a limb of Capitalization; Subsidiaries: row_label that representation, row_detail the limb from its list. The article's introductory sentence (the representing party, the disclosure-letter and SEC-document exceptions) is never a row: omit conclusions for it."
+          "guidance": "row_label is the representation as the precedent names it (one of fixed_row_labels); add a new row label only for a representation none of them covers (for example a regulatory or FDA representation). Each limb of a representation is a sub-item: row_detail is the canonical limb name from detail_labels_by_row for that row (a new limb name only when none fits, in the same style, never the agreement's own words); a fact about the representation as a whole carries no row_detail and gives the overview. The bringdown column is never filled from a representation: it comes from the closing conditions. A CAPITALISATION fact (authorized capital, issued and outstanding shares, reserved securities, the award inventory, subsidiary equity) is a limb of Capitalization; Subsidiaries: row_label that representation, row_detail the limb from its list. The article's introductory sentence (the representing party, the disclosure-letter and SEC-document exceptions) is never a row of this table: its REPRESENTATION_QUALIFICATION facts go to the general qualifications table.",
+          "only_subtype_keys": [
+            "STATUS_REPRESENTATION",
+            "COMPLIANCE_REPRESENTATION",
+            "DOCUMENT_REPRESENTATION",
+            "CONTRACT_REPRESENTATION",
+            "FINANCIAL_REPRESENTATION",
+            "NEGATIVE_REPRESENTATION"
+          ]
+        },
+        {
+          "table_key": "parent-representations-general-qualifications",
+          "group_header": null,
+          "term_column": {
+            "header": "Qualification",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "provision",
+              "header": "Provision",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "EXCEPT_AS_DISCLOSED_IN_SEC_FILINGS",
+                  "label": "Except as disclosed in SEC filings",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                },
+                {
+                  "code": "FILINGS_WITHIN_STATED_WINDOW",
+                  "label": "Filings within a stated window",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                },
+                {
+                  "code": "RISK_FACTORS_AND_FORWARD_LOOKING_EXCLUDED",
+                  "label": "Risk factors and forward-looking statements excluded",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                },
+                {
+                  "code": "EXHIBITS_EXCLUDED",
+                  "label": "Exhibits excluded",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                },
+                {
+                  "code": "SPECIFIC_HISTORICAL_FACTS_NOT_EXCLUDED",
+                  "label": "Specific historical facts still count",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                },
+                {
+                  "code": "EXCEPT_AS_SET_FORTH_IN_DISCLOSURE_LETTER",
+                  "label": "Except as set forth in the Disclosure Letter",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                },
+                {
+                  "code": "ARRANGED_BY_SECTION",
+                  "label": "Arranged by section",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                },
+                {
+                  "code": "CROSS_SECTION_WHERE_REASONABLY_APPARENT",
+                  "label": "Disclosure qualifies other sections where reasonably apparent",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                },
+                {
+                  "code": "SECTION_SPECIFIC_ONLY",
+                  "label": "Disclosure qualifies only the section it is made against",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                },
+                {
+                  "code": "ARTICLE_KNOWLEDGE_STANDARD",
+                  "label": "Knowledge standard for the article",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                },
+                {
+                  "code": "ARTICLE_MATERIALITY_STANDARD",
+                  "label": "Materiality standard for the article",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
+                }
+              ],
+              "vocabulary_by_row": {
+                "SEC filings exception": [
+                  "EXCEPT_AS_DISCLOSED_IN_SEC_FILINGS",
+                  "FILINGS_WITHIN_STATED_WINDOW",
+                  "RISK_FACTORS_AND_FORWARD_LOOKING_EXCLUDED",
+                  "EXHIBITS_EXCLUDED",
+                  "SPECIFIC_HISTORICAL_FACTS_NOT_EXCLUDED"
+                ],
+                "Disclosure Letter exception": [
+                  "EXCEPT_AS_SET_FORTH_IN_DISCLOSURE_LETTER",
+                  "ARRANGED_BY_SECTION",
+                  "CROSS_SECTION_WHERE_REASONABLY_APPARENT",
+                  "SECTION_SPECIFIC_ONLY"
+                ],
+                "Other general qualification": [
+                  "ARTICLE_KNOWLEDGE_STANDARD",
+                  "ARTICLE_MATERIALITY_STANDARD"
+                ]
+              },
+              "fill_from": [
+                "STANDARD",
+                "EFFORTS_STANDARD",
+                "OPERATION",
+                "CONDITION",
+                "EXCEPTION",
+                "QUALIFIER",
+                "ACTOR",
+                "FORUM"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category.",
+              "guidance": "One code from this row's own list (vocabulary_by_row); several cells with distinct codes when the clause states several of them (the acts a no-shop prohibits, the events an intervening-event definition excludes); never a code from another row's list."
+            },
+            {
+              "column_id": "window",
+              "header": "Window",
+              "render": "value",
+              "value_kind": "PERIOD",
+              "fill_from": [
+                "PERIOD",
+                "DATE"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category.",
+              "guidance": "The look-back or cut-off the exception states (filed since a date, at least one business day before signing), as the cited words parse; omitted when the clause states none."
+            },
+            {
+              "column_id": "asDrafted",
+              "header": "As drafted",
+              "render": "verbatim",
+              "display": "fact_text",
+              "fill_from": [
+                "OPERATION",
+                "OBJECT",
+                "CONDITION",
+                "STANDARD",
+                "EXCEPTION",
+                "QUALIFIER"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category.",
+              "guidance": "Shown as the fact's own words as drafted (every component in source order); cite the operative words."
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "SEC filings exception",
+            "Disclosure Letter exception",
+            "Other general qualification"
+          ],
+          "open_rows": true,
+          "subtype_keys": [
+            "REPRESENTATION_QUALIFICATION"
+          ],
+          "guidance": "One row per general qualification the article introduction states for every representation: row_label the category (SEC filings exception, Disclosure Letter exception), provision the codes the clause establishes (several cells when it establishes several), window its date or period, the as-drafted column the operative words; the reader opens the fact for the full detail. Only REPRESENTATION_QUALIFICATION facts belong here; a limb of a numbered representation never does.",
+          "only_subtype_keys": [
+            "REPRESENTATION_QUALIFICATION"
+          ],
+          "intro_facts_of_family": "REPRESENTATIONS"
         }
       ],
       "print_pages": [

@@ -65,7 +65,7 @@ function workspace({ items = [] } = {}) {
   proposals.push(proposalFrom(fixture.facts[0], 99, { validation_status: 'INVALID' }));
   return {
     analysis: {
-      source_document: { parties: ['Parent Inc.', 'Target Corp.'] },
+      source_document: { parties: ['Parent Inc.', 'Target Corp.'], agreement_date: '2025-09-18', exhibit_type: 'EX-2.1', filing_accession: '0001193125-25-000001', retrieval_url: 'https://www.sec.gov/Archives/edgar/data/1/000119312525000001/ex21.htm' },
       agreement_structure: { nodes: [{ node_id: NODE, reference: '3.14', authored_order: 1 }] },
       sections: [{ structure_node_id: NODE, section_reference: '3.14' }],
       source_closures: [{ source_closure_id: 'c-3-14', structure_node_id: NODE, section_reference: '3.14', full_section_span_id: 's-full' }],
@@ -77,6 +77,7 @@ function workspace({ items = [] } = {}) {
       coverage_assertions: [],
     },
     review: { version: 3, state: { status: 'DRAFT', items, agreement_coverage: { decision: 'PENDING' } } },
+    progress: { status: 'READY', stage: 'READY', completed: 1, total: 1, generation: 6 },
   };
 }
 
@@ -102,4 +103,18 @@ test('ProvisionsPreviewBody renders the rail, the tables and no decision control
   assert.match(html, /1 held by validation, not shown/);
   assert.doesNotMatch(html, />Accept</);
   assert.doesNotMatch(html, /Finalise inactive candidate/);
+});
+
+// Ben, 2026-09-14: "completely copy the visual style - including the page
+// header". The header is the legacy deal page's card: "Acquirer / Target"
+// in font-display, a badge, one metadata line with what the run knows.
+test('the page header is the legacy deal header card with the agreement date, SEC source and generation', () => {
+  const html = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: workspace(), runId: 'run-1' }));
+  assert.match(html, /<header class="bg-white border border-border rounded-lg shadow-sm p-6" data-testid="preview-header"/);
+  assert.match(html, /<h1 class="font-display text-2xl text-ink">Parent Inc\. \/ Target Corp\.<\/h1>/);
+  assert.match(html, /data-testid="preview-badge"[^>]*>Draft</);
+  assert.match(html, /Date: <span class="text-inkMid">September 18, 2025</);
+  assert.match(html, /data-testid="preview-source-link"[^>]*>EX-2\.1 · 0001193125-25-000001</);
+  assert.match(html, /Generation: <span class="text-inkMid">6</);
+  assert.doesNotMatch(html, /text-4xl/);
 });

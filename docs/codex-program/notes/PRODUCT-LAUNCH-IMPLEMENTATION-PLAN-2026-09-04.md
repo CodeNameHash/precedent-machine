@@ -2277,7 +2277,34 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       fact with no cell of its own now backs the row instead of being
       listed as evidence without a readout. Both are page rules
       (`lib/product/table-view.js`), so they apply to every generation
-      already stored.
+      already stored. Further readings the same morning, each a page or
+      shape rule: "this says nothing - needs to say which entity is the
+      surviving entity" (a party column names the actor, term after it);
+      "the term should [be] in [the] LH column and the definition on RH"
+      (Defined Terms split by `definedTermParts`); "these four - hand off
+      to an agent ... render them as a hidden 'other provisions' section
+      under the main structure and mechanics parts - needs to be high
+      level" and "consider if you can show them as one fact in the layer
+      tree with 'Branches'" (a collapsed Other provisions block, facts cut
+      from one sentence as one line with a branch per fact); "the
+      background summary app lives on deal corpus - I want you to
+      completely copy the visual style - including the page header" (the
+      deal summary header card and table framing, `pages/deals/[id].js`);
+      "this should just say 'present'" (the appraisal line is a Present
+      pill); "I'd get rid of 'as drafted'" on the per-share grid and "I'd
+      put them under the word 'cash' and 'CVR' in component and also
+      present the combined definition" (defined term under the component,
+      the Merger Consideration as the table's combined definition); "all
+      of this is miscoded. This is the standard intro to the reps that
+      provides the exceptions for all reps ... show the reader the general
+      categories of the exceptions (SEC filings) and as they click into
+      deeper levels show more detail" (subtype REPRESENTATION_QUALIFICATION
+      and a general qualifications table with rows per category for
+      generation 7; generation 6's introduction facts sit under that table
+      as other provisions meanwhile). "I'm surprised I haven't seen an
+      employee equity section yet?": 2.03 completed at 10:52 UTC and the
+      Equity Awards section filled (options and restricted stock rows,
+      consideration, vesting and CVR entitlement coded).
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,

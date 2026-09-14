@@ -330,3 +330,57 @@ test('EvidenceSidebar marks the whole fact lightly and the cited words strongly'
   assert.match(html, /<mark[^>]*data-level="light"[^>]*>, none of the Company SEC Documents are subject to ongoing SEC review</);
   assert.doesNotMatch(html, /<mark[^>]*>[^<]*or investigation/);
 });
+
+// Ben, 2026-09-14: "render them as a hidden 'other provisions' section under
+// the main structure and mechanics parts"; "show them as one fact ... with
+// 'Branches' for the different clauses/'or's". The block is collapsed to
+// start (a <details>), one line per group, branches indented under a group
+// of several facts; every line opens its fact the way a backing fact does.
+test('a one-per-agreement table renders its other provisions as a collapsed block with branches under the grid', () => {
+  const filing = (id, extras, spanId = 's-1-03') => ({
+    fact_id: id, proposal_id: id, family_key: 'MERGER_STRUCTURE_CLOSING', subtype_key: 'TRANSACTION_STEP', section_reference: '1.03', structure_node_id: 'n-1-03',
+    headline: { label: 'Transaction step', distinguishing_component_ids: [] },
+    components: [
+      { component_id: `${id}-a`, kind: 'ACTOR', label: 'actor', text: 'the Company', origin: 'OWN', source_span_id: spanId, start_byte: 20, end_byte: 31, gap_before: false, children: [] },
+      { component_id: `${id}-o`, kind: 'OPERATION', label: 'files', text: 'shall file', origin: 'OWN', source_span_id: spanId, start_byte: 32, end_byte: 42, gap_before: false, children: [] },
+      ...extras.map(([cid, kind, text, start]) => ({ component_id: `${id}-${cid}`, kind, label: cid, text, origin: 'OWN', source_span_id: spanId, start_byte: start, end_byte: start + text.length, gap_before: false, children: [] })),
+    ],
+  });
+  const structureFact = { ...require('./fixtures/product/metsera-v9-structure-fact.v1.json') };
+  structureFact.fact_id = structureFact.proposal_id;
+  const facts = [
+    structureFact,
+    filing('ts-1', [['obj', 'OBJECT', 'a certificate of merger', 43]]),
+    filing('ts-2', [['obj', 'OBJECT', 'such other documents as may be required', 121]]),
+    filing('ts-3', [['obj', 'OBJECT', 'a notice with the Delaware Secretary of State', 43]], 's-1-04'),
+  ];
+  const view = buildTableView({ facts, tableShapes, legalSchema });
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts }));
+  assert.match(html, /<details[^>]*data-testid="other-provisions"/, 'a collapsed block, not an open list');
+  assert.doesNotMatch(html, /<details[^>]*data-testid="other-provisions"[^>]*open/);
+  assert.match(html, /Other provisions \(3\)/);
+  // The block sits under the grid: after the attribute-grid table, before the next section.
+  assert.ok(html.indexOf('data-layout="attribute-grid"') < html.indexOf('data-testid="other-provisions"'));
+  assert.equal((html.match(/data-testid="other-provision"/g) || []).length, 2, 'two lines: one sentence with branches, one sentence alone');
+  assert.match(html, /data-branches="2"/);
+  assert.match(html, />Branches</);
+  assert.equal((html.match(/data-testid="other-provision-branch"/g) || []).length, 2);
+  assert.match(html, /data-testid="other-provision-line"[^>]*>the Company shall file</);
+  assert.match(html, /data-testid="other-provision-branch"[^>]*>a certificate of merger</);
+  assert.match(html, /data-testid="other-provision-branch"[^>]*>such other documents as may be required</);
+  assert.match(html, /data-testid="other-provision-line"[^>]*>the Company shall file a notice with the Delaware Secretary of State</);
+  // The facts still back the row's "See provision" list, and the section lists nothing "without a readout".
+  assert.doesNotMatch(html, /data-testid="facts-without-readout"/);
+});
+
+// Ben, 2026-09-14: "completely copy the visual style" of the legacy deal
+// summary (pages/deals/[id].js): white cards with a hairline border and soft
+// shadow, font-display headings, font-ui metadata, small uppercase badges.
+test('tables and pills carry the legacy deal summary\'s card and badge style', () => {
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts }));
+  assert.match(html, /class="bg-white border border-border rounded-lg shadow-sm overflow-hidden"><table/);
+  assert.match(html, /data-testid="table-pill"[^>]*class="inline-flex items-center text-\[10px\] font-ui font-medium px-2 py-1 rounded border uppercase tracking-wider/);
+  assert.match(html, /<h3 class="font-display text-lg text-ink">/);
+  assert.doesNotMatch(html, /font-mono/);
+  assert.doesNotMatch(html, /rounded-none/);
+});

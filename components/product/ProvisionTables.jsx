@@ -5,20 +5,39 @@ import { factIdOf } from '../../lib/product/table-view';
 // Renders a lib/product/table-view.js buildTableView() result as the small
 // tables of coded headline conclusions, pills per subject, that the
 // published and Query pages show (mockup approved by Ben 2026-09-12/13):
-// one section band per family with a 2px rule and a coloured dot, group
-// headers in capitals, uppercase tracked column headers, a Term column with
-// a "See provision" control, square-cornered pills carrying a tone.
+// one section per family, group headers in capitals, a Term column with a
+// "See provision" control, pills carrying a tone.
 // Clicking a pill (or any populated cell) selects it and its row and opens
 // the persistent EvidenceSidebar; it is never a modal.
+//
+// Visual style, Ben, 2026-09-14: "the background summary app lives on deal
+// corpus - I want you to completely copy the visual style - including the
+// page header." The legacy deal summary (pages/deals/[id].js,
+// pages/provisions/[id].js, components/UI.js) is the reference: white
+// cards with a hairline border and soft shadow, `font-display` headings,
+// `font-ui` metadata and labels in ink-light, small uppercase tracked badges
+// with a rounded border, body text in `font-body`.
 
+const CARD = 'bg-white border border-border rounded-lg shadow-sm overflow-hidden';
+const TH = 'border-b border-border bg-bg/50 px-4 py-3 text-left text-xs font-ui font-medium text-inkLight';
+const TD = 'px-4 py-3 align-top';
+const LINK = 'text-xs font-ui text-accent hover:underline';
+const BADGE = 'inline-flex items-center text-[10px] font-ui font-medium px-2 py-1 rounded border uppercase tracking-wider';
+
+// Tones in the legacy badge palette (the deal header's topology badge, the
+// provision card's favourability pill, the AI badge).
 const TONE_CLASSES = {
-  neutral: 'border-border bg-paper text-inkMid',
-  present: 'border-green-300 bg-green-50 text-green-800',
-  missing: 'border-slate-300 bg-slate-100 text-slate-500',
-  warning: 'border-amber-300 bg-amber-50 text-amber-900',
-  info: 'border-blue-300 bg-blue-50 text-blue-900',
-  buyer: 'border-buyer/40 bg-buyer/10 text-buyer',
-  seller: 'border-seller/40 bg-seller/10 text-seller',
+  neutral: 'bg-gray-100 text-inkLight border-border',
+  standard: 'bg-sky-50 text-sky-700 border-sky-200',
+  value: 'bg-gray-100 text-inkMid border-border',
+  term: 'bg-gray-100 text-inkLight border-border',
+  condition: 'bg-green-50 text-green-700 border-green-200',
+  present: 'bg-green-50 text-green-700 border-green-200',
+  missing: 'bg-gray-100 text-inkFaint border-dashed border-inkFaint/40',
+  warning: 'bg-amber-50 text-amber-700 border-amber-200',
+  info: 'bg-sky-50 text-sky-700 border-sky-200',
+  buyer: 'bg-buyer/10 text-buyer border-buyer/20',
+  seller: 'bg-seller/10 text-seller border-seller/20',
 };
 
 function toneClass(tone) {
@@ -42,11 +61,11 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
   const testId = isPill ? 'table-pill' : (cell.kind === 'value' ? 'table-value' : 'table-text');
   const canSelect = (cell.component_ids || []).length > 0 || (cell.fact_ids || []).length > 0;
   const baseClass = isPill
-    ? `inline-flex items-center gap-1 rounded-none border px-2 py-0.5 text-[11px] font-semibold ${toneClass(cell.tone)}`
-    : 'text-left text-xs text-ink';
+    ? `${BADGE} ${toneClass(cell.tone)}`
+    : (cell.kind === 'value' ? 'text-left font-ui text-sm text-ink' : 'text-left font-body text-sm text-ink leading-relaxed');
   const selectedClass = selected ? 'ring-2 ring-amber-400' : '';
   const definitionLink = cell.link_section ? (
-    <a href={`#provision-section-${cell.link_section}`} className="ml-1 text-[10px] font-semibold uppercase tracking-wide text-accent" data-testid="definition-link">definition</a>
+    <a href={`#provision-section-${cell.link_section}`} className={`ml-1 ${LINK}`} data-testid="definition-link">definition</a>
   ) : null;
   if (!canSelect) return <span className={baseClass}>{cell.label}{definitionLink}</span>;
   const title = cell.defaulted ? 'Not stated for this row; shown as the column\'s default' : undefined;
@@ -81,6 +100,20 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
   );
 }
 
+function BackingFactList({ backing, tableKey, rowIndex, onSelect }) {
+  return (
+    <ul className="mt-1 space-y-0.5 pl-2 text-xs font-ui font-normal text-inkLight" data-testid="backing-facts">
+      {backing.map((entry, index) => (
+        <li key={`${entry.fact_id}-${index}`}>
+          <button type="button" data-testid="backing-fact" onClick={() => onSelect({ tableKey, rowIndex, columnId: null, componentId: null, factId: entry.fact_id })} className="hover:text-ink underline decoration-dotted">
+            {entry.section_reference ? `§ ${entry.section_reference}` : entry.fact_id}
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 // The row name itself opens the sidebar on the row's first fact, so the
 // clause and its sourcing are reachable without a pill (Ben, 2026-09-13:
 // "you should be able to see the side bar and sourcing not just by
@@ -91,36 +124,20 @@ function TermCell({ row, tableKey, rowIndex, subIndex = null, onSelect }) {
   return (
     <div>
       {first ? (
-        <button type="button" data-testid="term-open" onClick={() => onSelect({ tableKey, rowIndex, subIndex, columnId: null, componentId: null, componentIds: [], factId: first.fact_id })} className="text-left font-medium text-ink hover:text-accent">{row.subject}</button>
-      ) : <span className="font-medium text-ink">{row.subject}</span>}
+        <button type="button" data-testid="term-open" onClick={() => onSelect({ tableKey, rowIndex, subIndex, columnId: null, componentId: null, componentIds: [], factId: first.fact_id })} className="text-left font-ui text-sm font-medium text-ink hover:text-accent">{row.subject}</button>
+      ) : <span className="font-ui text-sm font-medium text-ink">{row.subject}</span>}
+      {row.subject_note ? <div className="mt-0.5 font-body text-xs text-inkLight" data-testid="subject-note">{row.subject_note}</div> : null}
       {row.backing_facts.length ? (
         <button
           type="button"
           onClick={() => setExpanded((current) => !current)}
-          className="ml-2 text-[10px] font-semibold uppercase tracking-wide text-accent"
+          className={`ml-2 ${LINK}`}
           data-testid="see-provision"
         >
           {expanded ? 'Hide provision' : 'See provision'}
         </button>
       ) : null}
-      {expanded ? (
-        <ul className="mt-1 space-y-0.5 pl-2 text-[11px] text-inkLight" data-testid="backing-facts">
-          {row.backing_facts.map((entry, index) => (
-            <li key={`${entry.fact_id}-${index}`}>
-              <button
-                type="button"
-                data-testid="backing-fact"
-                onClick={() => onSelect({
-                  tableKey, rowIndex, columnId: null, componentId: null, factId: entry.fact_id,
-                })}
-                className="underline decoration-dotted"
-              >
-                {entry.section_reference ? `§ ${entry.section_reference}` : entry.fact_id}
-              </button>
-            </li>
-          ))}
-        </ul>
-      ) : null}
+      {expanded ? <BackingFactList backing={row.backing_facts} tableKey={tableKey} rowIndex={rowIndex} onSelect={onSelect} /> : null}
     </div>
   );
 }
@@ -149,41 +166,48 @@ function attributeLines(table, row) {
     }));
 }
 
+function GroupHeader({ table }) {
+  if (!table.group_header) return null;
+  return (
+    <caption className="border-b border-border bg-bg/50 px-4 py-2 text-left text-[10px] font-ui font-medium uppercase tracking-wider text-inkLight" data-testid="table-group-header">{table.group_header}</caption>
+  );
+}
+
 function AttributeGrid({ table, selection, onSelect }) {
   const row = table.rows[0];
   if (!row) return null;
   const rowSelected = selection?.tableKey === table.table_key && selection?.rowIndex === 0;
   const lines = attributeLines(table, row);
   return (
-    <table className="w-full border-separate border-spacing-0 border border-border bg-white text-left text-xs" data-testid="provision-table" data-table-key={table.table_key} data-layout="attribute-grid">
-      {table.group_header ? (
-        <caption className="border-b border-border bg-paper px-3 py-1.5 text-left text-[11px] font-bold uppercase tracking-wide text-ink" data-testid="table-group-header">{table.group_header}</caption>
-      ) : null}
-      <thead>
-        <tr>
-          <th className="w-48 border-b border-border px-3 py-2 font-mono text-[10px] uppercase tracking-wide text-inkFaint">Term</th>
-          <th className="border-b border-border px-3 py-2 font-mono text-[10px] uppercase tracking-wide text-inkFaint">Provision</th>
-        </tr>
-      </thead>
-      <tbody>
-        {lines.map((column) => {
-          const cell = row.cells.find((candidate) => candidate.column_id === column.column_id);
-          const backing = row.backing_facts.filter((entry) => (cell?.fact_ids || []).includes(entry.fact_id));
-          return (
-            <tr key={column.column_id} data-testid="attribute-row" data-column-id={column.column_id}>
-              <td className="border-b border-lineSoft px-3 py-2 align-top font-medium text-ink">
-                <AttributeTerm header={column.header} backing={backing} tableKey={table.table_key} onSelect={onSelect} />
-              </td>
-              <td className="border-b border-lineSoft px-3 py-2 align-top">
-                {cell ? (
-                  <Cell cell={cell} tableKey={table.table_key} rowIndex={0} selected={!!rowSelected && selection?.columnId === column.column_id} onSelect={onSelect} />
-                ) : <span className="text-inkFaint" data-testid="table-dash" aria-hidden="true">—</span>}
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <div className={CARD}>
+      <table className="w-full border-collapse text-left" data-testid="provision-table" data-table-key={table.table_key} data-layout="attribute-grid">
+        <GroupHeader table={table} />
+        <thead>
+          <tr>
+            <th className={`w-48 ${TH}`}>Term</th>
+            <th className={TH}>Provision</th>
+          </tr>
+        </thead>
+        <tbody>
+          {lines.map((column) => {
+            const cell = row.cells.find((candidate) => candidate.column_id === column.column_id);
+            const backing = row.backing_facts.filter((entry) => (cell?.fact_ids || []).includes(entry.fact_id));
+            return (
+              <tr key={column.column_id} className="border-b border-border last:border-0" data-testid="attribute-row" data-column-id={column.column_id}>
+                <td className={`${TD} font-ui text-sm font-medium text-ink`}>
+                  <AttributeTerm header={column.header} backing={backing} tableKey={table.table_key} onSelect={onSelect} />
+                </td>
+                <td className={TD}>
+                  {cell ? (
+                    <Cell cell={cell} tableKey={table.table_key} rowIndex={0} selected={!!rowSelected && selection?.columnId === column.column_id} onSelect={onSelect} />
+                  ) : <span className="text-inkFaint" data-testid="table-dash" aria-hidden="true">—</span>}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
@@ -193,22 +217,52 @@ function AttributeTerm({ header, backing, tableKey, onSelect }) {
     <div>
       <span>{header}</span>
       {backing.length ? (
-        <button type="button" onClick={() => setExpanded((current) => !current)} className="ml-2 text-[10px] font-semibold uppercase tracking-wide text-accent" data-testid="see-provision">
+        <button type="button" onClick={() => setExpanded((current) => !current)} className={`ml-2 ${LINK}`} data-testid="see-provision">
           {expanded ? 'Hide provision' : 'See provision'}
         </button>
       ) : null}
-      {expanded ? (
-        <ul className="mt-1 space-y-0.5 pl-2 text-[11px] font-normal text-inkLight" data-testid="backing-facts">
-          {backing.map((entry, index) => (
-            <li key={`${entry.fact_id}-${index}`}>
-              <button type="button" data-testid="backing-fact" onClick={() => onSelect({ tableKey, rowIndex: 0, columnId: null, componentId: null, factId: entry.fact_id })} className="underline decoration-dotted">
-                {entry.section_reference ? `§ ${entry.section_reference}` : entry.fact_id}
-              </button>
-            </li>
-          ))}
-        </ul>
-      ) : null}
+      {expanded ? <BackingFactList backing={backing} tableKey={tableKey} rowIndex={0} onSelect={onSelect} /> : null}
     </div>
+  );
+}
+
+// Ben, 2026-09-14, on the § 1.03 filing facts: "I'd try to render them as a
+// hidden 'other provisions' section under the main structure and mechanics
+// parts - needs to be high level - Company files CoM and other required
+// docs which must be acceptable to Parent", and "consider if you can show
+// them as one fact in the layer tree with 'Branches' for the different
+// clauses/'or's etc on UI". A collapsed block under the grid, one line per
+// group (table-view groupOtherProvisions): the words the group shares, then
+// its branches indented, one per fact. Every line opens its own fact in the
+// evidence sidebar the way a backing fact does.
+function OtherProvisions({ groups, tableKey, onSelect }) {
+  const count = groups.reduce((total, group) => total + group.branches.length, 0);
+  const open = (factId) => onSelect({ tableKey, rowIndex: 0, columnId: null, componentId: null, factId });
+  const reference = (entry) => (entry.section_reference ? <span className="ml-2 text-xs font-ui text-inkFaint">§ {entry.section_reference}</span> : null);
+  return (
+    <details className="mt-2 px-1" data-testid="other-provisions">
+      <summary className={`cursor-pointer select-none ${LINK}`} data-testid="other-provisions-toggle">Other provisions ({count})</summary>
+      <ul className="mt-2 space-y-2 pl-2">
+        {groups.map((group, index) => (
+          <li key={`${group.subtype_key}-${group.span_id}-${index}`} data-testid="other-provision" data-branches={group.branches.length > 1 ? group.branches.length : undefined}>
+            <button type="button" data-testid="other-provision-line" onClick={() => open(group.branches[0].fact_id)} className="text-left font-body text-sm leading-relaxed text-ink hover:text-accent">{group.common_text}</button>
+            {group.branches.length === 1 ? reference(group.branches[0]) : (
+              <>
+                <p className="mt-1 text-[10px] font-ui font-medium uppercase tracking-wider text-inkFaint">Branches</p>
+                <ul className="mt-1 space-y-1 border-l border-border pl-3" data-testid="other-provision-branches">
+                  {group.branches.map((branch, branchIndex) => (
+                    <li key={`${branch.fact_id}-${branchIndex}`}>
+                      <button type="button" data-testid="other-provision-branch" onClick={() => open(branch.fact_id)} className="text-left font-body text-sm leading-relaxed text-inkMid hover:text-accent">{branch.text}</button>
+                      {reference(branch)}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </li>
+        ))}
+      </ul>
+    </details>
   );
 }
 
@@ -217,15 +271,15 @@ function AttributeTerm({ header, backing, tableKey, onSelect }) {
 function FactsWithoutReadout({ entries, sectionKey, onSelect }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="mt-2 text-[11px] text-inkLight" data-testid="facts-without-readout">
-      <button type="button" onClick={() => setOpen((current) => !current)} className="font-semibold text-accent">
+    <div className="mt-2 px-1 text-xs font-ui text-inkLight" data-testid="facts-without-readout">
+      <button type="button" onClick={() => setOpen((current) => !current)} className={LINK}>
         {entries.length} fact{entries.length === 1 ? '' : 's'} without a coded readout · {open ? 'hide' : 'see provisions'}
       </button>
       {open ? (
         <ul className="mt-1 space-y-0.5 pl-2">
           {entries.map((entry, index) => (
             <li key={`${entry.fact_id}-${index}`}>
-              <button type="button" data-testid="backing-fact" onClick={() => onSelect({ tableKey: `${sectionKey}:without-readout`, rowIndex: index, columnId: null, componentId: null, factId: entry.fact_id })} className="underline decoration-dotted">
+              <button type="button" data-testid="backing-fact" onClick={() => onSelect({ tableKey: `${sectionKey}:without-readout`, rowIndex: index, columnId: null, componentId: null, factId: entry.fact_id })} className="hover:text-ink underline decoration-dotted">
                 {entry.section_reference ? `§ ${entry.section_reference}` : entry.fact_id}{entry.headline ? ` · ${entry.headline}` : ''}
               </button>
             </li>
@@ -238,19 +292,31 @@ function FactsWithoutReadout({ entries, sectionKey, onSelect }) {
 
 const DEFINED_TERMS_KEY = 'defined-terms';
 
+// A section heading in the legacy deal page's style (a `font-display
+// text-lg` heading over its cards), still a button that collapses the
+// section, with the show / hide word on the right.
+function SectionHeading({ title, collapsed, onToggle }) {
+  return (
+    <button type="button" onClick={onToggle} aria-expanded={!collapsed} className="mb-3 flex w-full items-baseline justify-between gap-3 text-left" data-testid="section-heading">
+      <h3 className="font-display text-lg text-ink">{title}</h3>
+      <span className="text-xs font-ui text-inkFaint" aria-hidden="true">{collapsed ? 'show' : 'hide'}</span>
+    </button>
+  );
+}
+
 // Defined terms as a table under a collapsible heading like every section,
 // each term collapsed to start: the term on its line, the definition on a
 // click (Ben, 2026-09-13).
 function DefinedTermRow({ term }) {
   const [open, setOpen] = useState(false);
   return (
-    <tr data-testid="defined-term-row" data-open={open || undefined}>
-      <td className="border-b border-border px-3 py-2 align-top">
-        <button type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open} className="text-left font-semibold text-ink hover:text-accent" data-testid="defined-term-toggle">{term.term}</button>
-        {term.section_reference ? <span className="ml-2 text-[10px] text-inkFaint">§ {term.section_reference}</span> : null}
+    <tr className="border-b border-border last:border-0" data-testid="defined-term-row" data-open={open || undefined}>
+      <td className={TD}>
+        <button type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open} className="text-left font-ui text-sm font-medium text-ink hover:text-accent" data-testid="defined-term-toggle">{term.term}</button>
+        {term.section_reference ? <span className="ml-2 text-xs font-ui text-inkFaint">§ {term.section_reference}</span> : null}
       </td>
-      <td className="border-b border-border px-3 py-2 align-top text-inkLight">
-        {open ? (term.definition || <span className="text-inkFaint">Definition not in the closure</span>) : <button type="button" onClick={() => setOpen(true)} className="text-[10px] font-semibold uppercase tracking-wide text-accent">Show</button>}
+      <td className={`${TD} font-body text-sm leading-relaxed text-inkMid`}>
+        {open ? (term.definition || <span className="text-inkFaint">Definition not in the closure</span>) : <button type="button" onClick={() => setOpen(true)} className={LINK}>Show</button>}
       </td>
     </tr>
   );
@@ -259,20 +325,17 @@ function DefinedTermRow({ term }) {
 function DefinedTermsSection({ terms, collapsed, onToggle }) {
   return (
     <section data-testid="defined-terms-appendix" data-collapsed={collapsed || undefined} id={`provision-section-${DEFINED_TERMS_KEY}`}>
-      <button type="button" onClick={onToggle} aria-expanded={!collapsed} className="mb-2 flex w-full items-center gap-2 text-left" data-testid="section-heading">
-        <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: '#4E6FA6' }} aria-hidden="true" />
-        <h3 className="whitespace-nowrap font-display text-lg text-ink">Defined Terms</h3>
-        <span className="h-[2px] flex-1 bg-border" />
-        <span className="font-mono text-[10px] uppercase tracking-wide text-inkFaint" aria-hidden="true">{collapsed ? 'show' : 'hide'}</span>
-      </button>
+      <SectionHeading title="Defined Terms" collapsed={collapsed} onToggle={onToggle} />
       {collapsed ? null : (
-        <table className="w-full border-separate border-spacing-0 border border-border bg-white text-left text-xs" data-testid="defined-terms-table">
-          <thead><tr>
-            <th className="border-b border-border px-3 py-2 font-mono text-[10px] uppercase tracking-wide text-inkFaint">Term</th>
-            <th className="border-b border-border px-3 py-2 font-mono text-[10px] uppercase tracking-wide text-inkFaint">Definition</th>
-          </tr></thead>
-          <tbody>{terms.map((term) => <DefinedTermRow key={term.component_id} term={term} />)}</tbody>
-        </table>
+        <div className={CARD}>
+          <table className="w-full border-collapse text-left" data-testid="defined-terms-table">
+            <thead><tr>
+              <th className={TH}>Term</th>
+              <th className={TH}>Definition</th>
+            </tr></thead>
+            <tbody>{terms.map((term) => <DefinedTermRow key={term.component_id} term={term} />)}</tbody>
+          </table>
+        </div>
       )}
     </section>
   );
@@ -281,94 +344,113 @@ function DefinedTermsSection({ terms, collapsed, onToggle }) {
 function Table({ table, selection, onSelect }) {
   if (table.layout === 'attribute grid') return <AttributeGrid table={table} selection={selection} onSelect={onSelect} />;
   return (
-    <table className="w-full border-separate border-spacing-0 border border-border bg-white text-left text-xs" data-testid="provision-table" data-table-key={table.table_key}>
-      {table.group_header ? (
-        <caption className="border-b border-border bg-paper px-3 py-1.5 text-left text-[11px] font-bold uppercase tracking-wide text-ink" data-testid="table-group-header">
-          {table.group_header}
-        </caption>
-      ) : null}
-      <thead>
-        <tr>
-          {table.term_column ? (
-            <th className="border-b border-border px-3 py-2 font-mono text-[10px] uppercase tracking-wide text-inkFaint">{table.term_column.header}</th>
-          ) : null}
-          {table.columns.map((column) => (
-            <th key={column.column_id} className="border-b border-border px-3 py-2 font-mono text-[10px] uppercase tracking-wide text-inkFaint">{column.header}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {table.rows.flatMap((row, rowIndex) => {
-          const rowSelected = selection?.tableKey === table.table_key && selection?.rowIndex === rowIndex;
-          // A click selects one line: the sub-item clicked, or the row's
-          // own line, never every line of the row (Ben, 2026-09-13:
-          // "clicking one of the qualifications shouldn't cause the others
-          // to turn orange").
-          const line = (entry, key, sub, subIndex = null) => (
-            <tr
-              key={key}
-              data-testid={sub ? 'table-sub-row' : 'table-row'}
-              data-selected={rowSelected || undefined}
-              className={rowSelected ? 'bg-accentDim' : undefined}
-            >
-              {table.term_column ? (
-                <td className={`border-b px-3 py-2 align-top ${sub ? 'border-lineSoft pl-8 text-inkMid' : 'border-border'}`}>
-                  <TermCell row={entry} tableKey={table.table_key} rowIndex={rowIndex} subIndex={subIndex} onSelect={onSelect} />
-                </td>
-              ) : null}
-              {entry.cells.map((cell) => (
-                <td key={cell.column_id} className={`border-b px-3 py-2 align-top ${sub ? 'border-lineSoft' : 'border-border'}`}>
-                  <Cell
-                    cell={cell}
-                    tableKey={table.table_key}
-                    rowIndex={rowIndex}
-                    subIndex={subIndex}
-                    selected={!!rowSelected && (selection?.subIndex ?? null) === subIndex && selection?.columnId === cell.column_id}
-                    onSelect={onSelect}
-                  />
-                </td>
-              ))}
-            </tr>
-          );
-          if (row.absent) {
-            return [(
-              <tr key={`${row.subject}-${rowIndex}`} data-testid="table-row" data-absent="true">
+    <div className={CARD}>
+      <table className="w-full border-collapse text-left" data-testid="provision-table" data-table-key={table.table_key}>
+        <GroupHeader table={table} />
+        <thead>
+          <tr>
+            {table.term_column ? (
+              <th className={TH}>{table.term_column.header}</th>
+            ) : null}
+            {table.columns.map((column) => (
+              <th key={column.column_id} className={TH}>{column.header}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {table.rows.flatMap((row, rowIndex) => {
+            const rowSelected = selection?.tableKey === table.table_key && selection?.rowIndex === rowIndex;
+            // A click selects one line: the sub-item clicked, or the row's
+            // own line, never every line of the row (Ben, 2026-09-13:
+            // "clicking one of the qualifications shouldn't cause the others
+            // to turn orange").
+            const line = (entry, key, sub, subIndex = null) => (
+              <tr
+                key={key}
+                data-testid={sub ? 'table-sub-row' : 'table-row'}
+                data-selected={rowSelected || undefined}
+                className={`border-b border-border last:border-0 ${rowSelected ? 'bg-accentDim' : ''}`}
+              >
                 {table.term_column ? (
-                  <td className="border-b border-border px-3 py-2 align-top"><span className="font-medium text-ink">{row.subject}</span></td>
+                  <td className={`${TD} ${sub ? 'pl-8 text-inkMid' : ''}`}>
+                    <TermCell row={entry} tableKey={table.table_key} rowIndex={rowIndex} subIndex={subIndex} onSelect={onSelect} />
+                  </td>
                 ) : null}
-                <td className="border-b border-border px-3 py-2 align-top text-xs text-inkMid" colSpan={table.columns.length} data-testid="table-absent">{table.absent_row_label}</td>
+                {entry.cells.map((cell) => (
+                  <td key={cell.column_id} className={TD}>
+                    <Cell
+                      cell={cell}
+                      tableKey={table.table_key}
+                      rowIndex={rowIndex}
+                      subIndex={subIndex}
+                      selected={!!rowSelected && (selection?.subIndex ?? null) === subIndex && selection?.columnId === cell.column_id}
+                      onSelect={onSelect}
+                    />
+                  </td>
+                ))}
               </tr>
-            )];
-          }
-          return [
-            line(row, `${row.subject}-${rowIndex}`, false),
-            ...(row.sub_rows || []).map((subRow, subIndex) => line(subRow, `${row.subject}-${rowIndex}-${subIndex}`, true, subIndex)),
-          ];
-        })}
-      </tbody>
-      {table.footer && table.footer.entries.length ? (
-        <tfoot>
-          <tr data-testid="table-footer">
-            <td colSpan={table.columns.length + (table.term_column ? 1 : 0)} className="border-t-2 border-border bg-paper px-3 py-2 align-top">
-              <div className="font-mono text-[10px] uppercase tracking-wide text-inkFaint">{table.footer.label}</div>
-              {table.footer.entries.map((entry, index) => (
-                <div key={`${entry.fact_id}-${index}`} className="mt-1 text-xs text-ink">
-                  <span>{entry.text}</span>
+            );
+            if (row.absent) {
+              return [(
+                <tr key={`${row.subject}-${rowIndex}`} className="border-b border-border last:border-0" data-testid="table-row" data-absent="true">
+                  {table.term_column ? (
+                    <td className={TD}><span className="font-ui text-sm font-medium text-ink">{row.subject}</span></td>
+                  ) : null}
+                  <td className={`${TD} font-ui text-sm text-inkLight`} colSpan={table.columns.length} data-testid="table-absent">{table.absent_row_label}</td>
+                </tr>
+              )];
+            }
+            return [
+              line(row, `${row.subject}-${rowIndex}`, false),
+              ...(row.sub_rows || []).map((subRow, subIndex) => line(subRow, `${row.subject}-${rowIndex}-${subIndex}`, true, subIndex)),
+            ];
+          })}
+        </tbody>
+        {table.combined_definition ? (
+          <tfoot>
+            <tr data-testid="combined-definition">
+              <td colSpan={table.columns.length + (table.term_column ? 1 : 0)} className="border-t border-border bg-bg/50 px-4 py-3 align-top">
+                <div className="text-[10px] font-ui font-medium uppercase tracking-wider text-inkLight">{table.combined_definition.label}</div>
+                <div className="mt-1 font-body text-sm leading-relaxed text-ink">
+                  <span className="font-medium">“{table.combined_definition.term}”</span>
+                  {table.combined_definition.text ? <span className="text-inkMid"> · {table.combined_definition.text}</span> : null}
                   <button
                     type="button"
                     data-testid="backing-fact"
-                    onClick={() => onSelect({ tableKey: table.table_key, rowIndex: null, columnId: null, componentId: (entry.component_ids || [])[0] || null, factId: entry.fact_id })}
-                    className="ml-2 text-[10px] font-semibold uppercase tracking-wide text-accent"
+                    onClick={() => onSelect({ tableKey: table.table_key, rowIndex: null, columnId: null, componentId: (table.combined_definition.component_ids || [])[0] || null, factId: table.combined_definition.fact_id })}
+                    className={`ml-2 ${LINK}`}
                   >
-                    {entry.section_reference ? `§ ${entry.section_reference}` : 'See provision'}
+                    {table.combined_definition.section_reference ? `§ ${table.combined_definition.section_reference}` : 'See provision'}
                   </button>
                 </div>
-              ))}
-            </td>
-          </tr>
-        </tfoot>
-      ) : null}
-    </table>
+              </td>
+            </tr>
+          </tfoot>
+        ) : null}
+        {table.footer && table.footer.entries.length ? (
+          <tfoot>
+            <tr data-testid="table-footer">
+              <td colSpan={table.columns.length + (table.term_column ? 1 : 0)} className="border-t border-border bg-bg/50 px-4 py-3 align-top">
+                <div className="text-[10px] font-ui font-medium uppercase tracking-wider text-inkLight">{table.footer.label}</div>
+                {table.footer.entries.map((entry, index) => (
+                  <div key={`${entry.fact_id}-${index}`} className="mt-1 font-body text-sm leading-relaxed text-ink">
+                    <span>{entry.text}</span>
+                    <button
+                      type="button"
+                      data-testid="backing-fact"
+                      onClick={() => onSelect({ tableKey: table.table_key, rowIndex: null, columnId: null, componentId: (entry.component_ids || [])[0] || null, factId: entry.fact_id })}
+                      className={`ml-2 ${LINK}`}
+                    >
+                      {entry.section_reference ? `§ ${entry.section_reference}` : 'See provision'}
+                    </button>
+                  </div>
+                ))}
+              </td>
+            </tr>
+          </tfoot>
+        ) : null}
+      </table>
+    </div>
   );
 }
 
@@ -406,32 +488,26 @@ export default function ProvisionTables({
 
   return (
     <div className="flex flex-wrap gap-6 lg:flex-nowrap" data-testid="provision-tables">
-      <div className="min-w-0 flex-1 space-y-8">
-        <div className="flex justify-end gap-3 text-[11px] font-semibold text-accent" data-testid="section-toggles">
-          <button type="button" onClick={() => setAll(false)} disabled={collapsed.size === 0} className="disabled:text-inkFaint">Expand all</button>
-          <button type="button" onClick={() => setAll(true)} disabled={allCollapsed} className="disabled:text-inkFaint">Collapse all</button>
+      <div className="min-w-0 flex-1 space-y-6">
+        <div className="flex justify-end gap-3 text-xs font-ui text-accent" data-testid="section-toggles">
+          <button type="button" onClick={() => setAll(false)} disabled={collapsed.size === 0} className="hover:underline disabled:text-inkFaint disabled:no-underline">Expand all</button>
+          <button type="button" onClick={() => setAll(true)} disabled={allCollapsed} className="hover:underline disabled:text-inkFaint disabled:no-underline">Collapse all</button>
         </div>
         {tableView.sections.map((section) => {
           const isCollapsed = collapsed.has(section.section_key);
           return (
             <section key={section.section_key} data-testid="provision-section" data-collapsed={isCollapsed || undefined} id={`provision-section-${section.section_key}`}>
-              <button
-                type="button"
-                onClick={() => toggleSection(section.section_key)}
-                aria-expanded={!isCollapsed}
-                className="mb-2 flex w-full items-center gap-2 text-left"
-                data-testid="section-heading"
-              >
-                <span className="h-2 w-2 shrink-0 rounded-full bg-accent" style={section.rail?.hex ? { backgroundColor: section.rail.hex } : undefined} aria-hidden="true" />
-                <h3 className="whitespace-nowrap font-display text-lg text-ink">{section.title}</h3>
-                <span className="h-[2px] flex-1 bg-border" />
-                <span className="font-mono text-[10px] uppercase tracking-wide text-inkFaint" aria-hidden="true">{isCollapsed ? 'show' : 'hide'}</span>
-              </button>
+              <SectionHeading title={section.title} collapsed={isCollapsed} onToggle={() => toggleSection(section.section_key)} />
               {isCollapsed ? null : (
                 <>
-                  <div className="space-y-4 overflow-x-auto">
+                  <div className="space-y-3 overflow-x-auto">
                     {section.tables.map((table) => (
-                      <Table key={table.table_key} table={table} selection={selection} onSelect={setSelection} />
+                      <div key={table.table_key}>
+                        <Table table={table} selection={selection} onSelect={setSelection} />
+                        {table.other_provisions?.length ? (
+                          <OtherProvisions groups={table.other_provisions} tableKey={table.table_key} onSelect={setSelection} />
+                        ) : null}
+                      </div>
                     ))}
                   </div>
                   {section.facts_without_readout?.length ? (
