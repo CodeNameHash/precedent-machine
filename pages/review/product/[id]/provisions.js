@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useUser } from '../../../../lib/useUser';
 import { ErrorState, SkeletonCard, EmptyState } from '../../../../components/UI';
@@ -95,8 +96,12 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
   // uppercase letter-spaced grey eyebrow, the title at 52px semibold in
   // near-black on a tight leading, the run's facts as one grey metadata
   // line, then a 3px black rule across the content width. No header card.
+  // Ben, 2026-09-14: "change the title of the page that appears in a
+  // browser to Corpus - Pfizer / Metsera": "Corpus - " then the deal
+  // title, the parent's and the company's names.
   return (
     <div className="flex min-h-screen bg-white text-[#1f1f1f]" style={PAGE_STYLE} data-testid="provisions-page">
+      <Head><title>{`Corpus - ${title}`}</title></Head>
       {preview.facts.length === 0 ? (
         <div className="p-[9.5px] md:p-[18.5px]"><EmptyState icon="" title={live ? 'No sections in yet' : 'No layered facts'} description={live ? 'The first completed section appears here within a few minutes.' : 'This run has no valid layered (V2) facts to show.'} /></div>
       ) : (
