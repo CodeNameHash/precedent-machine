@@ -50,9 +50,32 @@ function ReviewTrail({ reviewItem, onDecision, onComment, onReset, busy }) {
   </div>;
 }
 
+// Ben, 2026-09-14, on the MAE (aggregate) cell of the representations
+// table: "for the definition, take out of table but when you click the MAE
+// box and the side bar opens, there is a fixed visual element at the bottom
+// of the side bar that has the MAE definition summary which you can click
+// through to get the full definition". Pinned to the sidebar's foot (the
+// aside is the scroll pane, so sticky bottom-0 as its last child keeps it in
+// view while the evidence scrolls): the linked section's title, the
+// party, one summary line per definition prong (at most three, then "…"),
+// and "Full definition", which jumps to the section's anchor and opens the
+// definition fact in this sidebar.
+function LinkedDefinition({ definition, onOpen }) {
+  return <div className="sticky bottom-0 border-t border-border bg-white px-5 py-3" data-testid="linked-definition" data-section={definition.section_key}>
+    <p className="text-[10px] font-bold uppercase tracking-wide text-inkLight">{definition.title}{definition.party && definition.exact ? <span className="ml-1 font-normal normal-case tracking-normal text-inkFaint">· {definition.party}</span> : null}</p>
+    {definition.lines.length
+      ? <ul className="mt-1 space-y-0.5" data-testid="linked-definition-summary">{definition.lines.map((line, index) => <li key={index} className="truncate font-serif text-[12px] leading-5 text-ink" title={line}>{line}</li>)}</ul>
+      : <p className="mt-1 text-[11px] text-inkLight" data-testid="linked-definition-summary">No definition of that party's Material Adverse Effect among the facts.</p>}
+    {definition.fact_id
+      ? <a href={`#provision-section-${definition.section_key}`} onClick={() => { if (onOpen) onOpen(definition); }} className="mt-2 inline-block rounded border border-border px-2 py-0.5 text-[11px] font-ui font-medium text-ink hover:border-ink" data-testid="full-definition">Full definition</a>
+      : null}
+  </div>;
+}
+
 export default function EvidenceSidebar({
   fact, componentId = null, componentIds = null, reviewItem = null, provenance = null, sectionText = null,
   onDecision = null, onComment = null, onReset = null, onClose = null, busy = false,
+  linkedDefinition = null, onOpenDefinition = null,
 }) {
   if (!fact) return null;
   // A coded cell may rest on several components read together (a merger
@@ -184,5 +207,6 @@ export default function EvidenceSidebar({
     </section>
     )}
     </div>
+    {linkedDefinition ? <LinkedDefinition definition={linkedDefinition} onOpen={onOpenDefinition} /> : null}
   </aside>;
 }

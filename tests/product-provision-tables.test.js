@@ -210,7 +210,7 @@ test('sub-rows render indented under their row and a two-reading cell shows both
     }] }],
     defined_terms: [],
   };
-  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [] }));
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [], initialSubRowsOpen: true }));
   assert.equal((html.match(/data-testid="table-sub-row"/g) || []).length, 1);
   assert.match(html, /data-testid="table-multi"/);
   assert.equal((html.match(/MAE \(aggregate\) \(partial\)/g) || []).length, 2);
@@ -290,7 +290,7 @@ test('a selected pill lights only its own line, not the same column on every sub
   }] }] };
   // Render with the second sub-item selected by driving the component's own state through a click is not
   // possible in static markup; assert the selection contract instead: each line's Cell receives its subIndex.
-  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [] }));
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [], initialSubRowsOpen: true }));
   assert.equal((html.match(/data-testid="table-sub-row"/g) || []).length, 2);
   assert.equal((html.match(/data-selected="true"/g) || []).length, 0);
 });
@@ -383,4 +383,128 @@ test('tables and pills carry the legacy deal summary\'s card and badge style', (
   assert.match(html, /<h3 class="font-display text-lg text-ink">/);
   assert.doesNotMatch(html, /font-mono/);
   assert.doesNotMatch(html, /rounded-none/);
+});
+
+// Ben, 2026-09-14: "UI point, 'see provision' has too much visual hierarchy
+// and color which distracts readability."
+test('"See provision" and the § links are quiet controls: small, faint, no capitals, underline on hover only', () => {
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts }));
+  const controls = html.match(/<button[^>]*data-testid="see-provision"[^>]*>/g) || [];
+  assert.ok(controls.length > 0);
+  for (const control of controls) {
+    assert.match(control, /text-\[11px\]/);
+    assert.match(control, /font-ui/);
+    assert.match(control, /text-inkFaint/);
+    assert.match(control, /hover:underline/);
+    assert.doesNotMatch(control, /text-accent|uppercase|font-(semi)?bold|font-medium/);
+  }
+  // The subject comes first, the control after it.
+  assert.ok(html.indexOf('data-testid="term-open"') < html.indexOf('data-testid="see-provision"'));
+});
+
+// Ben, 2026-09-14, on the MAE (aggregate) cell: "for the definition, take
+// out of table but when you click the MAE box and the side bar opens, there
+// is a fixed visual element at the bottom of the side bar that has the MAE
+// definition summary which you can click through to get the full
+// definition".
+const maeProng = (id, party) => ({
+  fact_id: id, family_key: 'MAE_DEFINITION', subtype_key: 'MAE_DEFINITION_PRONG', section_reference: '1.01',
+  headline: { label: `${party} Material Adverse Effect`, distinguishing_component_ids: [`${id}-op`] },
+  conclusions: { table_key: 'mae-definitions-table', row_label: party, cells: [{ column_id: 'test', text: 'is or would reasonably be expected to be materially adverse', component_ids: [`${id}-op`] }] },
+  components: [
+    { component_id: `${id}-actor`, kind: 'ACTOR', label: party, text: `${party} Material Adverse Effect`, origin: 'OWN', source_span_id: 's-mae', start_byte: 0, end_byte: 30, gap_before: false, children: [] },
+    { component_id: `${id}-op`, kind: 'OPERATION', label: 'test', text: `is or would reasonably be expected to be materially adverse to the ${party}`, origin: 'OWN', source_span_id: 's-mae', start_byte: 31, end_byte: 100, gap_before: false, children: [] },
+  ],
+});
+
+test('cells no longer render an inline definition link; the MAE link travels with the selection', () => {
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts }));
+  assert.doesNotMatch(html, /data-testid="definition-link"/);
+  assert.doesNotMatch(html, />definition</);
+  const repView = { defined_terms: [], sections: [{ section_key: 'representations-qualifiers', title: 'Reps', facts_without_readout: [], tables: [{
+    table_key: 'representations-qualifiers-table', group_header: null, layout: 'rows', term_column: { header: 'Term', source: 'subject' }, columns: [{ column_id: 'materiality', header: 'Qualifiers' }],
+    rows: [{ subject: 'Organization', cells: [{ column_id: 'materiality', kind: 'pill', label: 'MAE (aggregate)', code: 'MAE_AGGREGATE', tone: 'standard', component_ids: ['r-c'], fact_ids: ['r'], link_section: 'mae-definitions' }], backing_facts: [{ fact_id: 'r' }] }],
+  }] }] };
+  const repHtml = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: repView, facts: [] }));
+  assert.doesNotMatch(repHtml, /data-testid="definition-link"/);
+  assert.match(repHtml, /data-testid="table-pill"[^>]*>MAE \(aggregate\)</);
+});
+
+test('a selection whose cell links to the MAE section pins the definition summary to the sidebar foot with a Full definition control', () => {
+  const rep = { fact_id: 'r', family_key: 'REPRESENTATIONS', subtype_key: 'STATUS_REPRESENTATION', section_reference: '3.01', headline: { label: 'Organization', distinguishing_component_ids: ['r-c'] },
+    components: [{ component_id: 'r-c', kind: 'QUALIFIER', label: 'MAE', text: 'except as would not have a Company Material Adverse Effect', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 10, gap_before: false, children: [] }] };
+  const definition = { section_key: 'mae-definitions', table_key: 'mae-definitions-table', title: 'Material Adverse Effect', party: 'Company', exact: true, fact_id: 'mae-company', lines: ['is or would reasonably be expected to be materially adverse to the Company'] };
+  const html = renderToStaticMarkup(React.createElement(EvidenceSidebar, { fact: rep, componentId: 'r-c', componentIds: ['r-c'], linkedDefinition: definition }));
+  const pinned = html.match(/<div[^>]*data-testid="linked-definition"[^>]*>[\s\S]*$/);
+  assert.ok(pinned, 'the pinned element renders');
+  assert.match(pinned[0], /sticky bottom-0/);
+  assert.match(pinned[0], /border-t/);
+  assert.match(pinned[0], /bg-white/);
+  assert.match(pinned[0], /Material Adverse Effect/);
+  assert.match(pinned[0], /data-testid="linked-definition-summary"/);
+  assert.match(pinned[0], /materially adverse to the Company/);
+  assert.match(pinned[0], /<a[^>]*href="#provision-section-mae-definitions"[^>]*data-testid="full-definition"[^>]*>Full definition</);
+  // It is the aside's last child, so it stays pinned while the evidence scrolls.
+  assert.match(html, /data-testid="linked-definition"[\s\S]*<\/div><\/aside>$/);
+  // Without a linked section there is no pinned element.
+  const plain = renderToStaticMarkup(React.createElement(EvidenceSidebar, { fact: rep, componentId: 'r-c', componentIds: ['r-c'] }));
+  assert.doesNotMatch(plain, /data-testid="linked-definition"/);
+});
+
+test('the pinned summary lists one line per MAE definition prong of the relevant party, capped at three', () => {
+  // The table view is static markup, so the selection cannot be clicked here; the helper the sidebar
+  // receives is exercised through the section anchor and the prong facts the page holds.
+  const view = buildTableView({ facts: [maeProng('mae-company', 'Company'), maeProng('mae-parent', 'Parent')], tableShapes, legalSchema });
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [maeProng('mae-company', 'Company'), maeProng('mae-parent', 'Parent')] }));
+  assert.match(html, /id="provision-section-mae-definitions"/, 'the Full definition anchor exists on the section');
+  const { factSummaryText } = require('../lib/product/table-view');
+  assert.match(factSummaryText(maeProng('mae-company', 'Company')), /materially adverse to the Company/);
+});
+
+// Ben, 2026-09-14: "also make the elements below the top level reps (e.g.
+// Organization) collapsable and hide them initially but have a clear 'more
+// detail' button or similar"; on the equity awards table: "say 'Exceptions'
+// and show the sub rows".
+test('sub-rows are hidden until the "More detail (N)" control under the subject opens them', () => {
+  const sub = (subject, id) => ({ subject, backing_facts: [{ fact_id: id, section_reference: '3.01' }], cells: [{ column_id: 'materiality', kind: 'pill', label: 'MAE (aggregate)', tone: 'standard', component_ids: [`${id}-c`], fact_ids: [id] }] });
+  const view = { defined_terms: [], sections: [{ section_key: 'representations-qualifiers', title: 'Reps', facts_without_readout: [], tables: [{
+    table_key: 'representations-qualifiers-table', group_header: null, layout: 'rows', term_column: { header: 'Term', source: 'subject' }, columns: [{ column_id: 'materiality', header: 'Qualifiers' }],
+    rows: [
+      { subject: 'Organization', backing_facts: [{ fact_id: 'r', section_reference: '3.01' }], cells: [{ column_id: 'materiality', kind: 'pill', label: 'MAE (aggregate)', tone: 'standard', component_ids: ['r-c'], fact_ids: ['r'] }], sub_rows: [sub('Company Subsidiaries', 'a'), sub('Good standing', 'b')] },
+      { subject: 'Authority', backing_facts: [{ fact_id: 'x', section_reference: '3.04' }], cells: [{ column_id: 'materiality', kind: 'pill', label: 'None', tone: 'standard', component_ids: ['x-c'], fact_ids: ['x'] }], sub_rows: [] },
+    ],
+  }] }] };
+  const closed = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [] }));
+  assert.equal((closed.match(/data-testid="table-sub-row"/g) || []).length, 0, 'sub-rows hidden to start');
+  assert.equal((closed.match(/data-testid="table-row"/g) || []).length, 2);
+  assert.doesNotMatch(closed, /Company Subsidiaries/);
+  const controls = closed.match(/<button[^>]*data-testid="more-detail"[^>]*>[^<]*</g) || [];
+  assert.equal(controls.length, 1, 'only the row with sub-rows carries the control');
+  assert.match(controls[0], /More detail \(2\)</);
+  assert.match(controls[0], /aria-expanded="false"/);
+  assert.ok(closed.indexOf('>Organization<') < closed.indexOf('data-testid="more-detail"'), 'the control sits under the subject');
+  const open = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [], initialSubRowsOpen: true }));
+  assert.equal((open.match(/data-testid="table-sub-row"/g) || []).length, 2);
+  assert.match(open, /Company Subsidiaries/);
+  assert.match(open, /<button[^>]*aria-expanded="true"[^>]*data-testid="more-detail"[^>]*>[^<]*Less detail</);
+  // The section collapse / expand-all bar still renders.
+  assert.match(closed, /data-testid="section-toggles"/);
+  assert.match(closed, /Collapse all/);
+});
+
+test('the equity awards table calls its sub-rows "Exceptions"', () => {
+  const view = { defined_terms: [], sections: [{ section_key: 'equity-awards', title: 'Equity Awards', facts_without_readout: [], tables: [{
+    table_key: 'equity-awards-table', group_header: null, layout: 'rows', sub_rows_label: 'Exceptions', term_column: { header: 'Instrument', source: 'subject' }, columns: [{ column_id: 'treatment', header: 'Treatment' }],
+    rows: [{ subject: 'Options', backing_facts: [{ fact_id: 'o', section_reference: '2.04' }], cells: [{ column_id: 'treatment', kind: 'pill', label: 'Cashed out', tone: 'standard', component_ids: ['o-c'], fact_ids: ['o'] }], sub_rows: [
+      { subject: 'Vested', backing_facts: [{ fact_id: 'v' }], cells: [{ column_id: 'treatment', kind: 'pill', label: 'Cashed out', tone: 'standard', component_ids: ['v-c'], fact_ids: ['v'] }] },
+      { subject: 'Out of the money', backing_facts: [{ fact_id: 'm' }], cells: [{ column_id: 'treatment', kind: 'pill', label: 'Cancelled', tone: 'standard', component_ids: ['m-c'], fact_ids: ['m'] }] },
+    ] }],
+  }] }] };
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [] }));
+  assert.match(html, /<button[^>]*data-testid="more-detail"[^>]*>[^<]*Exceptions \(2\)</);
+  assert.doesNotMatch(html, /More detail/);
+  assert.doesNotMatch(html, /data-testid="table-sub-row"/);
+  const open = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [], initialSubRowsOpen: true }));
+  assert.equal((open.match(/data-testid="table-sub-row"/g) || []).length, 2);
+  assert.match(open, /Out of the money/);
 });

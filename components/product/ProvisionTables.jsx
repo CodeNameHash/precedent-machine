@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import EvidenceSidebar from './EvidenceSidebar';
-import { factIdOf } from '../../lib/product/table-view';
+import { factIdOf, factSummaryText } from '../../lib/product/table-view';
+import { walk } from '../../lib/product/fact-components';
 
 // Renders a lib/product/table-view.js buildTableView() result as the small
 // tables of coded headline conclusions, pills per subject, that the
@@ -22,6 +23,17 @@ const CARD = 'bg-white border border-border rounded-lg shadow-sm overflow-hidden
 const TH = 'border-b border-border bg-bg/50 px-4 py-3 text-left text-xs font-ui font-medium text-inkLight';
 const TD = 'px-4 py-3 align-top';
 const LINK = 'text-xs font-ui text-accent hover:underline';
+// Ben, 2026-09-14: "UI point, 'see provision' has too much visual hierarchy
+// and color which distracts readability." Every "See provision" control and
+// the § reference links used the same way (backing-fact lists, Other
+// provisions, footers, the combined definition) are quiet: small, faint,
+// no capitals, no weight, an underline only under the pointer, placed after
+// the subject so they never compete with it.
+const QUIET = 'text-[11px] font-ui font-normal normal-case tracking-normal text-inkFaint hover:underline hover:text-inkLight';
+// Ben, 2026-09-14: "make the elements below the top level reps (e.g.
+// Organization) collapsable and hide them initially but have a clear 'more
+// detail' button or similar". The control under a row's subject.
+const DETAIL = 'mt-1 block text-xs font-ui font-medium text-accent hover:underline';
 const BADGE = 'inline-flex items-center text-[10px] font-ui font-medium px-2 py-1 rounded border uppercase tracking-wider';
 
 // Tones in the legacy badge palette (the deal header's topology badge, the
@@ -64,19 +76,14 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
     ? `${BADGE} ${toneClass(cell.tone)}`
     : (cell.kind === 'value' ? 'text-left font-ui text-sm text-ink' : 'text-left font-body text-sm text-ink leading-relaxed');
   const selectedClass = selected ? 'ring-2 ring-amber-400' : '';
-  const definitionLink = cell.link_section ? (
-    <a href={`#provision-section-${cell.link_section}`} className={`ml-1 ${LINK}`} data-testid="definition-link">definition</a>
-  ) : null;
-  if (!canSelect) return <span className={baseClass}>{cell.label}{definitionLink}</span>;
+  // Ben, 2026-09-14, on the MAE (aggregate) cell: "for the definition, take
+  // out of table but when you click the MAE box and the side bar opens,
+  // there is a fixed visual element at the bottom of the side bar that has
+  // the MAE definition summary which you can click through to get the full
+  // definition". No inline "definition" link: the cell carries its
+  // link_section on the selection and the sidebar pins the summary.
+  if (!canSelect) return <span className={baseClass}>{cell.label}</span>;
   const title = cell.defaulted ? 'Not stated for this row; shown as the column\'s default' : undefined;
-  if (definitionLink) {
-    return (
-      <span className="inline-flex items-center">
-        <button type="button" data-testid={testId} data-selected={selected || undefined} onClick={() => onSelect({ tableKey, rowIndex, subIndex, columnId: cell.column_id, componentId: (cell.component_ids || [])[0] || null, componentIds: cell.component_ids || [], factId: (cell.fact_ids || [])[0] || null })} className={`${baseClass} ${selectedClass}`}>{cell.label}</button>
-        {definitionLink}
-      </span>
-    );
-  }
   return (
     <button
       type="button"
@@ -90,6 +97,7 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
         componentId: (cell.component_ids || [])[0] || null,
         componentIds: cell.component_ids || [],
         factId: (cell.fact_ids || [])[0] || null,
+        linkSection: cell.link_section || null,
       })}
       className={`${baseClass} ${selectedClass}`}
       title={title}
@@ -102,10 +110,10 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
 
 function BackingFactList({ backing, tableKey, rowIndex, onSelect }) {
   return (
-    <ul className="mt-1 space-y-0.5 pl-2 text-xs font-ui font-normal text-inkLight" data-testid="backing-facts">
+    <ul className="mt-1 space-y-0.5 pl-2" data-testid="backing-facts">
       {backing.map((entry, index) => (
         <li key={`${entry.fact_id}-${index}`}>
-          <button type="button" data-testid="backing-fact" onClick={() => onSelect({ tableKey, rowIndex, columnId: null, componentId: null, factId: entry.fact_id })} className="hover:text-ink underline decoration-dotted">
+          <button type="button" data-testid="backing-fact" onClick={() => onSelect({ tableKey, rowIndex, columnId: null, componentId: null, factId: entry.fact_id })} className={QUIET}>
             {entry.section_reference ? `§ ${entry.section_reference}` : entry.fact_id}
           </button>
         </li>
@@ -118,7 +126,7 @@ function BackingFactList({ backing, tableKey, rowIndex, onSelect }) {
 // clause and its sourcing are reachable without a pill (Ben, 2026-09-13:
 // "you should be able to see the side bar and sourcing not just by
 // clicking the pills").
-function TermCell({ row, tableKey, rowIndex, subIndex = null, onSelect }) {
+function TermCell({ row, tableKey, rowIndex, subIndex = null, onSelect, detail = null }) {
   const [expanded, setExpanded] = useState(false);
   const first = row.backing_facts[0] || null;
   return (
@@ -126,19 +134,34 @@ function TermCell({ row, tableKey, rowIndex, subIndex = null, onSelect }) {
       {first ? (
         <button type="button" data-testid="term-open" onClick={() => onSelect({ tableKey, rowIndex, subIndex, columnId: null, componentId: null, componentIds: [], factId: first.fact_id })} className="text-left font-ui text-sm font-medium text-ink hover:text-accent">{row.subject}</button>
       ) : <span className="font-ui text-sm font-medium text-ink">{row.subject}</span>}
-      {row.subject_note ? <div className="mt-0.5 font-body text-xs text-inkLight" data-testid="subject-note">{row.subject_note}</div> : null}
       {row.backing_facts.length ? (
         <button
           type="button"
           onClick={() => setExpanded((current) => !current)}
-          className={`ml-2 ${LINK}`}
+          className={`ml-2 ${QUIET}`}
           data-testid="see-provision"
         >
           {expanded ? 'Hide provision' : 'See provision'}
         </button>
       ) : null}
+      {row.subject_note ? <div className="mt-0.5 font-body text-xs text-inkLight" data-testid="subject-note">{row.subject_note}</div> : null}
       {expanded ? <BackingFactList backing={row.backing_facts} tableKey={tableKey} rowIndex={rowIndex} onSelect={onSelect} /> : null}
+      {detail ? <DetailControl {...detail} /> : null}
     </div>
+  );
+}
+
+// Ben, 2026-09-14: "also make the elements below the top level reps (e.g.
+// Organization) collapsable and hide them initially but have a clear 'more
+// detail' button or similar" and, on the equity awards table, "say
+// 'Exceptions' and show the sub rows". Under the subject: "More detail (N)"
+// (or the table's sub_rows_label, "Exceptions (N)"), "Less detail" once
+// open.
+function DetailControl({ count, label, open, onToggle }) {
+  return (
+    <button type="button" onClick={onToggle} aria-expanded={open} className={DETAIL} data-testid="more-detail" data-open={open || undefined}>
+      {open ? '▾ Less detail' : `▸ ${label || 'More detail'} (${count})`}
+    </button>
   );
 }
 
@@ -217,7 +240,7 @@ function AttributeTerm({ header, backing, tableKey, onSelect }) {
     <div>
       <span>{header}</span>
       {backing.length ? (
-        <button type="button" onClick={() => setExpanded((current) => !current)} className={`ml-2 ${LINK}`} data-testid="see-provision">
+        <button type="button" onClick={() => setExpanded((current) => !current)} className={`ml-2 ${QUIET}`} data-testid="see-provision">
           {expanded ? 'Hide provision' : 'See provision'}
         </button>
       ) : null}
@@ -238,7 +261,7 @@ function AttributeTerm({ header, backing, tableKey, onSelect }) {
 function OtherProvisions({ groups, tableKey, onSelect }) {
   const count = groups.reduce((total, group) => total + group.branches.length, 0);
   const open = (factId) => onSelect({ tableKey, rowIndex: 0, columnId: null, componentId: null, factId });
-  const reference = (entry) => (entry.section_reference ? <span className="ml-2 text-xs font-ui text-inkFaint">§ {entry.section_reference}</span> : null);
+  const reference = (entry) => (entry.section_reference ? <span className={`ml-2 ${QUIET}`}>§ {entry.section_reference}</span> : null);
   return (
     <details className="mt-2 px-1" data-testid="other-provisions">
       <summary className={`cursor-pointer select-none ${LINK}`} data-testid="other-provisions-toggle">Other provisions ({count})</summary>
@@ -341,7 +364,55 @@ function DefinedTermsSection({ terms, collapsed, onToggle }) {
   );
 }
 
-function Table({ table, selection, onSelect }) {
+// One row and its sub-rows. The sub-rows are hidden to start and open on
+// the DetailControl under the subject; the state is the row's own, so
+// opening one row's detail leaves the others closed. `initialOpen` lets a
+// caller (and the render tests) start every row open.
+function RowGroup({ table, row, rowIndex, selection, onSelect, initialOpen = false }) {
+  const [open, setOpen] = useState(!!initialOpen);
+  const rowSelected = selection?.tableKey === table.table_key && selection?.rowIndex === rowIndex;
+  const subRows = row.sub_rows || [];
+  const detail = subRows.length ? { count: subRows.length, label: table.sub_rows_label || null, open, onToggle: () => setOpen((current) => !current) } : null;
+  // A click selects one line: the sub-item clicked, or the row's
+  // own line, never every line of the row (Ben, 2026-09-13:
+  // "clicking one of the qualifications shouldn't cause the others
+  // to turn orange").
+  const line = (entry, key, sub, subIndex = null) => (
+    <tr
+      key={key}
+      data-testid={sub ? 'table-sub-row' : 'table-row'}
+      data-selected={rowSelected || undefined}
+      className={`border-b border-border last:border-0 ${rowSelected ? 'bg-accentDim' : ''}`}
+    >
+      {table.term_column ? (
+        <td className={`${TD} ${sub ? 'pl-8 text-inkMid' : ''}`}>
+          <TermCell row={entry} tableKey={table.table_key} rowIndex={rowIndex} subIndex={subIndex} onSelect={onSelect} detail={sub ? null : detail} />
+        </td>
+      ) : null}
+      {entry.cells.map((cell, cellIndex) => (
+        <td key={cell.column_id} className={TD}>
+          <Cell
+            cell={cell}
+            tableKey={table.table_key}
+            rowIndex={rowIndex}
+            subIndex={subIndex}
+            selected={!!rowSelected && (selection?.subIndex ?? null) === subIndex && selection?.columnId === cell.column_id}
+            onSelect={onSelect}
+          />
+          {!table.term_column && !sub && cellIndex === 0 && detail ? <DetailControl {...detail} /> : null}
+        </td>
+      ))}
+    </tr>
+  );
+  return (
+    <>
+      {line(row, `${row.subject}-${rowIndex}`, false)}
+      {open ? subRows.map((subRow, subIndex) => line(subRow, `${row.subject}-${rowIndex}-${subIndex}`, true, subIndex)) : null}
+    </>
+  );
+}
+
+function Table({ table, selection, onSelect, initialSubRowsOpen = false }) {
   if (table.layout === 'attribute grid') return <AttributeGrid table={table} selection={selection} onSelect={onSelect} />;
   return (
     <div className={CARD}>
@@ -358,52 +429,18 @@ function Table({ table, selection, onSelect }) {
           </tr>
         </thead>
         <tbody>
-          {table.rows.flatMap((row, rowIndex) => {
-            const rowSelected = selection?.tableKey === table.table_key && selection?.rowIndex === rowIndex;
-            // A click selects one line: the sub-item clicked, or the row's
-            // own line, never every line of the row (Ben, 2026-09-13:
-            // "clicking one of the qualifications shouldn't cause the others
-            // to turn orange").
-            const line = (entry, key, sub, subIndex = null) => (
-              <tr
-                key={key}
-                data-testid={sub ? 'table-sub-row' : 'table-row'}
-                data-selected={rowSelected || undefined}
-                className={`border-b border-border last:border-0 ${rowSelected ? 'bg-accentDim' : ''}`}
-              >
-                {table.term_column ? (
-                  <td className={`${TD} ${sub ? 'pl-8 text-inkMid' : ''}`}>
-                    <TermCell row={entry} tableKey={table.table_key} rowIndex={rowIndex} subIndex={subIndex} onSelect={onSelect} />
-                  </td>
-                ) : null}
-                {entry.cells.map((cell) => (
-                  <td key={cell.column_id} className={TD}>
-                    <Cell
-                      cell={cell}
-                      tableKey={table.table_key}
-                      rowIndex={rowIndex}
-                      subIndex={subIndex}
-                      selected={!!rowSelected && (selection?.subIndex ?? null) === subIndex && selection?.columnId === cell.column_id}
-                      onSelect={onSelect}
-                    />
-                  </td>
-                ))}
-              </tr>
-            );
+          {table.rows.map((row, rowIndex) => {
             if (row.absent) {
-              return [(
+              return (
                 <tr key={`${row.subject}-${rowIndex}`} className="border-b border-border last:border-0" data-testid="table-row" data-absent="true">
                   {table.term_column ? (
                     <td className={TD}><span className="font-ui text-sm font-medium text-ink">{row.subject}</span></td>
                   ) : null}
                   <td className={`${TD} font-ui text-sm text-inkLight`} colSpan={table.columns.length} data-testid="table-absent">{table.absent_row_label}</td>
                 </tr>
-              )];
+              );
             }
-            return [
-              line(row, `${row.subject}-${rowIndex}`, false),
-              ...(row.sub_rows || []).map((subRow, subIndex) => line(subRow, `${row.subject}-${rowIndex}-${subIndex}`, true, subIndex)),
-            ];
+            return <RowGroup key={`${row.subject}-${rowIndex}`} table={table} row={row} rowIndex={rowIndex} selection={selection} onSelect={onSelect} initialOpen={initialSubRowsOpen} />;
           })}
         </tbody>
         {table.combined_definition ? (
@@ -418,7 +455,7 @@ function Table({ table, selection, onSelect }) {
                     type="button"
                     data-testid="backing-fact"
                     onClick={() => onSelect({ tableKey: table.table_key, rowIndex: null, columnId: null, componentId: (table.combined_definition.component_ids || [])[0] || null, factId: table.combined_definition.fact_id })}
-                    className={`ml-2 ${LINK}`}
+                    className={`ml-2 ${QUIET}`}
                   >
                     {table.combined_definition.section_reference ? `§ ${table.combined_definition.section_reference}` : 'See provision'}
                   </button>
@@ -439,7 +476,7 @@ function Table({ table, selection, onSelect }) {
                       type="button"
                       data-testid="backing-fact"
                       onClick={() => onSelect({ tableKey: table.table_key, rowIndex: null, columnId: null, componentId: (entry.component_ids || [])[0] || null, factId: entry.fact_id })}
-                      className={`ml-2 ${LINK}`}
+                      className={`ml-2 ${QUIET}`}
                     >
                       {entry.section_reference ? `§ ${entry.section_reference}` : 'See provision'}
                     </button>
@@ -454,6 +491,48 @@ function Table({ table, selection, onSelect }) {
   );
 }
 
+// Ben, 2026-09-14: "for the definition, take out of table but when you
+// click the MAE box and the side bar opens, there is a fixed visual element
+// at the bottom of the side bar that has the MAE definition summary which
+// you can click through to get the full definition". The element's
+// contents for a selection whose cell links to a section: the section's
+// title, the MAE definition prong facts of the party whose table the cell
+// sits in (the Parent tables are keyed parent-*; the seller's conditions
+// bear on Parent's representations), every prong when none names that
+// party, any MAE_DEFINITION fact when there is no prong at all; one summary
+// line per fact (factSummaryText), at most three, then "…".
+const PARENT_PARTY_TABLE = /^parent-|^conditions-s-/;
+const DEFINITION_LINES = 3;
+
+function factParty(fact) {
+  const rowLabel = fact?.conclusions?.row_label;
+  if (typeof rowLabel === 'string' && rowLabel.trim()) return rowLabel.trim();
+  for (const [component] of walk(fact?.components || [])) {
+    if (component.kind === 'ACTOR') return component.label || component.text || '';
+  }
+  return '';
+}
+
+function linkedDefinitionFor(selection, tableView, facts) {
+  const sectionKey = selection.linkSection;
+  const section = (tableView?.sections || []).find((candidate) => candidate.section_key === sectionKey) || null;
+  const party = PARENT_PARTY_TABLE.test(String(selection.tableKey || '')) ? 'Parent' : 'Company';
+  const family = (facts || []).filter((fact) => fact && fact.family_key === 'MAE_DEFINITION' && fact.validation_status !== 'INVALID');
+  const prongs = family.filter((fact) => fact.subtype_key === 'MAE_DEFINITION_PRONG');
+  const ofParty = prongs.filter((fact) => factParty(fact).toLowerCase().includes(party.toLowerCase()));
+  const chosen = ofParty.length ? ofParty : (prongs.length ? prongs : family);
+  const lines = chosen.map((fact) => factSummaryText(fact)).filter((text) => typeof text === 'string' && text.trim());
+  return {
+    section_key: sectionKey,
+    table_key: section?.tables?.[0]?.table_key || `${sectionKey}-table`,
+    title: section?.title || 'Material Adverse Effect',
+    party,
+    exact: ofParty.length > 0,
+    fact_id: chosen.length ? factIdOf(chosen[0]) : null,
+    lines: lines.length > DEFINITION_LINES ? [...lines.slice(0, DEFINITION_LINES), '…'] : lines,
+  };
+}
+
 export default function ProvisionTables({
   tableView,
   facts = [],
@@ -464,6 +543,7 @@ export default function ProvisionTables({
   onComment = null,
   onReset = null,
   busy = false,
+  initialSubRowsOpen = false,
 }) {
   const factsById = useMemo(() => new Map((facts || []).map((fact) => [factIdOf(fact), fact])), [facts]);
   const [selection, setSelection] = useState(null);
@@ -485,6 +565,15 @@ export default function ProvisionTables({
     return next;
   });
   const setAll = (collapse) => setCollapsed(collapse ? new Set([...tableView.sections.map((section) => section.section_key), DEFINED_TERMS_KEY]) : new Set());
+  const linkedDefinition = selection?.linkSection ? linkedDefinitionFor(selection, tableView, facts) : null;
+  // "Full definition": jump to the definitions section (its heading carries
+  // id provision-section-<key> above, open or collapsed) and open the
+  // definition fact in the sidebar the way a backing fact opens.
+  const openDefinition = (definition) => {
+    if (!definition) return;
+    setCollapsed((current) => { if (!current.has(definition.section_key)) return current; const next = new Set(current); next.delete(definition.section_key); return next; });
+    if (definition.fact_id) setSelection({ tableKey: definition.table_key, rowIndex: null, subIndex: null, columnId: null, componentId: null, componentIds: [], factId: definition.fact_id, linkSection: null });
+  };
 
   return (
     <div className="flex flex-wrap gap-6 lg:flex-nowrap" data-testid="provision-tables">
@@ -503,7 +592,7 @@ export default function ProvisionTables({
                   <div className="space-y-3 overflow-x-auto">
                     {section.tables.map((table) => (
                       <div key={table.table_key}>
-                        <Table table={table} selection={selection} onSelect={setSelection} />
+                        <Table table={table} selection={selection} onSelect={setSelection} initialSubRowsOpen={initialSubRowsOpen} />
                         {table.other_provisions?.length ? (
                           <OtherProvisions groups={table.other_provisions} tableKey={table.table_key} onSelect={setSelection} />
                         ) : null}
@@ -535,6 +624,8 @@ export default function ProvisionTables({
           onReset={onReset}
           onClose={() => setSelection(null)}
           busy={busy}
+          linkedDefinition={linkedDefinition}
+          onOpenDefinition={openDefinition}
         />
       ) : null}
     </div>
