@@ -155,32 +155,60 @@ export default function EvidenceSidebar({
   // the section reference as eyebrow, the headline as a large title, an X
   // to close, and three tabs. Detail holds the words, the clause and the
   // tree; Source the checks and provenance; Comments the review trail.
+  // Ben, 2026-09-14, with a screenshot of the Deal Storylines event panel:
+  // "I prefer this side bar behavior from corpus". That panel is a fixed
+  // right-hand column of the viewport (the page scrolls under it, the
+  // panel scrolls on its own), its header an eyebrow, a large title and an
+  // X, its tabs plain words with the active one underlined in the accent,
+  // its detail a run of bold-headed sections ("Agreement provisions",
+  // "What followed") of body sentences each followed by a small "Source"
+  // chip, rules between the sections, and a closed "Supporting record
+  // detail" disclosure at the foot. Here: the Provision section (the
+  // summary and the cited words, each with a Source chip that turns to
+  // the clause), the Interpretation Tree, the Clause, and the checks and
+  // provenance behind the disclosure; the selected row in the tables is
+  // outlined in the accent as the selected event card is.
+  const recordDetail = <RecordDetailBlocks checks={checks} provenance={provenance} />;
   const [tab, setTab] = useState('detail');
   const tabButton = (key, label, testId) => (
     <button type="button" onClick={() => setTab(key)} data-testid={testId} aria-selected={tab === key} role="tab"
-      className={`rounded-[2px] border px-[9.5px] py-[4.5px] text-[11.5px] font-ui leading-none transition-colors ${tab === key ? 'border-[#dcdcdc] bg-[#f3f3f3] text-[#1f1f1f]' : 'border-transparent text-[#6b6b6b] hover:text-[#1f1f1f]'}`}>{label}</button>
+      className={`-mb-px border-b-2 px-[2px] pb-[7px] text-[12px] font-ui leading-none transition-colors ${tab === key ? 'border-accent text-[#1f1f1f]' : 'border-transparent text-[#6b6b6b] hover:text-[#1f1f1f]'}`}>{label}</button>
   );
-  return <aside ref={asideRef} className="sticky top-0 max-h-screen w-full shrink-0 self-start overflow-y-auto border-l border-[#dcdcdc] bg-white text-[12.5px] text-[#1f1f1f] lg:w-[232px]" data-testid="evidence-sidebar" aria-label="Evidence">
-    <div className="border-b border-[#ececec] px-[14px] pt-[14px] pb-[9.5px]">
+  const HEADING = 'font-sans text-[13px] font-semibold leading-tight text-[#1f1f1f]';
+  const SOURCE_CHIP = 'ml-[4.5px] inline-flex items-center rounded-[2px] border border-[#dcdcdc] bg-[#fafafa] px-[5px] py-[1px] align-middle text-[9px] font-ui leading-[14px] text-[#555555] hover:bg-[#f3f3f3]';
+  const toSource = () => {
+    const aside = asideRef.current;
+    const mark = markRef.current;
+    if (!aside || !mark) return;
+    const target = mark.offsetTop - aside.clientHeight / 2 + mark.offsetHeight / 2;
+    if (typeof aside.scrollTo === 'function') aside.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
+    else aside.scrollTop = Math.max(0, target);
+  };
+  const sourceChip = (key) => (clauseParts ? <button key={key} type="button" onClick={toSource} className={SOURCE_CHIP} data-testid="evidence-source-chip">Source</button> : null);
+  return <aside ref={asideRef} className="fixed inset-y-0 right-0 z-30 w-full overflow-y-auto border-l border-[#dcdcdc] bg-white text-[12.5px] text-[#1f1f1f] lg:w-[406px]" data-testid="evidence-sidebar" aria-label="Evidence">
+    {/* The header (eyebrow, title, tabs) stays at the top of the panel while
+        its body scrolls to the marked words, as the Storylines panel's does. */}
+    <div className="sticky top-0 z-10 bg-white px-[18.5px] pt-[18.5px]" data-testid="evidence-header">
       <div className="flex items-start justify-between gap-[7px]">
         <div className="min-w-0">
-          {fact.section_reference ? <p className="text-[9px] font-ui uppercase tracking-[0.12em] text-[#6b6b6b]" data-testid="evidence-eyebrow">{displaySectionReference(fact.section_reference)}</p> : null}
-          <p className="mt-[4.5px] font-sans text-[18px] font-semibold leading-tight tracking-tight text-[#1f1f1f]">{fact.headline?.label || 'Evidence'}</p>
+          {fact.section_reference ? <p className="text-[10px] font-ui tracking-[0.02em] text-[#6b6b6b]" data-testid="evidence-eyebrow">{displaySectionReference(fact.section_reference)}</p> : null}
+          <p className="mt-[7px] font-sans text-[21px] font-semibold leading-tight tracking-tight text-[#1f1f1f]">{fact.headline?.label || 'Evidence'}</p>
         </div>
-        {onClose ? <button type="button" onClick={onClose} aria-label="Close evidence" className="text-[18px] leading-none text-[#6b6b6b] hover:text-[#1f1f1f]">×</button> : null}
+        {onClose ? <button type="button" onClick={onClose} aria-label="Close evidence" className="text-[21px] leading-none text-[#6b6b6b] hover:text-[#1f1f1f]">×</button> : null}
       </div>
-      <div className="mt-[11.5px] flex gap-[2.5px]" role="tablist" data-testid="evidence-tabs">
+      <div className="mt-[14px] flex gap-[16px] border-b border-[#ececec]" role="tablist" data-testid="evidence-tabs">
         {tabButton('detail', 'Detail', 'evidence-tab-detail')}
         {tabButton('source', 'Source', 'evidence-tab-source')}
         {tabButton('comments', 'Comments', 'evidence-tab-comments')}
       </div>
     </div>
-    <div className="space-y-[14px] px-[14px] py-[14px]">
+    <div className="divide-y divide-[#ececec] px-[18.5px] [&>*]:py-[14px]">
     {tab !== 'detail' ? null : <>
     <section data-testid="evidence-words">
-      <p className={LABEL}>Exact words</p>
-      {components.length > 1 ? <p className={`mt-[2.5px] ${NOTE}`} data-testid="evidence-basis-count">Read together, {components.length} components</p> : null}
-      {component ? components.map((item) => <p key={item.component_id} className={`mt-[2.5px] ${BODY}`}>&ldquo;{item.text}&rdquo;</p>) : <p className={`mt-[2.5px] ${NOTE}`}>The whole fact is marked in the clause below; select a pill for the words behind one reading.</p>}
+      <p className={HEADING}>Provision</p>
+      {fact.headline?.summary ? <p className={`mt-[7px] ${BODY}`} data-testid="evidence-summary">{fact.headline.summary}{sourceChip('summary')}</p> : null}
+      {components.length > 1 ? <p className={`mt-[4.5px] ${NOTE}`} data-testid="evidence-basis-count">Read together, {components.length} components</p> : null}
+      {component ? components.map((item) => <p key={item.component_id} className={`mt-[4.5px] ${BODY}`}>&ldquo;{item.text}&rdquo;{sourceChip(item.component_id)}</p>) : <p className={`mt-[4.5px] ${NOTE}`}>The whole fact is marked in the clause below; select a pill for the words behind one reading.</p>}
     </section>
 
     <section data-testid="evidence-layers">
@@ -194,16 +222,16 @@ export default function EvidenceSidebar({
           shows the fact's own components only (the inherited chapeau and
           the representing words that precede them are context, not this
           fact). */}
-      <button type="button" onClick={() => setTreeOpen((current) => !current)} aria-expanded={treeOpen} className={`${LABEL} flex w-full items-center justify-between text-left`} data-testid="interpretation-tree-toggle">
+      <button type="button" onClick={() => setTreeOpen((current) => !current)} aria-expanded={treeOpen} className={`${HEADING} flex w-full items-center justify-between text-left`} data-testid="interpretation-tree-toggle">
         <span>Interpretation Tree</span>
-        <span className="font-normal normal-case tracking-normal text-inkFaint">{treeOpen ? 'hide' : 'show'}</span>
+        <span className={`${NOTE} font-normal`}>{treeOpen ? 'hide' : 'show'}</span>
       </button>
-      {treeOpen ? <ComponentLayer components={ownComponents} initiallyExpanded={false} selectedComponentId={componentId} selectedComponentIds={citedIds} /> : null}
+      {treeOpen ? <div className="mt-[7px]"><ComponentLayer components={ownComponents} initiallyExpanded={false} selectedComponentId={componentId} selectedComponentIds={citedIds} /></div> : null}
     </section>
 
     {clauseParts ? <section data-testid="evidence-clause">
-      <p className={LABEL}>Clause</p>
-      <pre className={`mt-[2.5px] whitespace-pre-wrap ${BODY}`}>{(() => {
+      <p className={HEADING}>Clause</p>
+      <pre className={`mt-[7px] whitespace-pre-wrap ${BODY}`}>{(() => {
         let anchored = false;
         return clauseParts.map((part, index) => {
           if (part.level === 'strong') {
@@ -219,9 +247,40 @@ export default function EvidenceSidebar({
       })()}</pre>
     </section> : null}
 
+    <details data-testid="supporting-record-detail">
+      <summary className={`cursor-pointer list-none ${BODY} [&::-webkit-details-marker]:hidden`}><span className="mr-[4.5px] inline-block text-[9px]" aria-hidden="true">&#9654;</span>Supporting record detail</summary>
+      <div className="mt-[9.5px] space-y-[9.5px]">
+        {recordDetail}
+      </div>
+    </details>
+
     </>}
 
     {tab !== 'source' ? null : <>
+    {clauseParts ? <section data-testid="evidence-source-clause">
+      <p className={HEADING}>{fact.section_reference ? displaySectionReference(fact.section_reference) : 'Source'}</p>
+      <pre className={`mt-[7px] whitespace-pre-wrap ${BODY}`}>{clauseParts.map((part, index) => (part.level === 'strong'
+        ? <mark key={index} className="bg-amber-200" data-level="strong">{part.text}</mark>
+        : (part.level === 'light' ? <mark key={index} className="bg-amber-50 text-ink" data-level="light">{part.text}</mark> : <span key={index}>{part.text}</span>)))}</pre>
+    </section> : <section><p className={`${NOTE}`}>The section text is not available for this fact.</p></section>}
+    <section>{recordDetail}</section>
+    </>}
+
+    {tab !== 'comments' ? null : (
+    <section data-testid="evidence-review-trail-section">
+      <p className={HEADING}>Review trail</p>
+      <div className="mt-[7px]">
+        <ReviewTrail reviewItem={reviewItem} onDecision={onDecision} onComment={onComment} onReset={onReset} busy={busy} />
+      </div>
+    </section>
+    )}
+    </div>
+    {linkedDefinition ? <LinkedDefinition definition={linkedDefinition} onOpen={onOpenDefinition} /> : null}
+  </aside>;
+}
+
+function RecordDetailBlocks({ checks, provenance }) {
+  return <>
     <section data-testid="evidence-checks">
       <p className={LABEL}>Checks the code ran</p>
       {checks.length === 0
@@ -238,17 +297,5 @@ export default function EvidenceSidebar({
         {provenance.model ? <div><dt className="inline font-medium text-[#6b6b6b]">Model: </dt><dd className="inline">{provenance.model}</dd></div> : null}
       </dl> : <p className={`mt-[2.5px] ${NOTE}`}>Provenance unavailable.</p>}
     </section>
-    </>}
-
-    {tab !== 'comments' ? null : (
-    <section data-testid="evidence-review-trail-section">
-      <p className={LABEL}>Review trail</p>
-      <div className="mt-[2.5px]">
-        <ReviewTrail reviewItem={reviewItem} onDecision={onDecision} onComment={onComment} onReset={onReset} busy={busy} />
-      </div>
-    </section>
-    )}
-    </div>
-    {linkedDefinition ? <LinkedDefinition definition={linkedDefinition} onOpen={onOpenDefinition} /> : null}
-  </aside>;
+  </>;
 }

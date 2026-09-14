@@ -2538,7 +2538,18 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       you were goign to include x-refs or full contract lanugage...!" and
       "Can we rename that as 'Summary'" (the coded summary column stays;
       its header is Summary in every shape, the page grid and the Other
-      provisions table). Reading the second half of
+      provisions table); with a screenshot of the Deal Storylines event
+      panel, "I prefer this side bar behavior from corpus" (the sidebar is
+      that panel: fixed to the viewport's right edge and scrolling on its
+      own while the page scrolls under it, 406px; eyebrow, 21px title and
+      an X; plain-word tabs with the active one underlined in the accent;
+      Detail as bold-headed sections divided by rules: Provision (the
+      summary and the cited words, each with a "Source" chip that turns
+      to the clause), Interpretation Tree, Clause, then a closed
+      "Supporting record detail" disclosure holding the checks and
+      provenance; the Source tab the section's text with the words
+      marked; Comments the review trail; the selected pill outlined in
+      the accent as the selected event card is). Reading the second half of
       the run: 3.09's tax-asset disclaimer had filled the No Other Reps
       table (a subject-limited disclaimer is the representation's
       exclusion: held at extraction by the section heading, and on the

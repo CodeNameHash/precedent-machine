@@ -130,7 +130,13 @@ test('EvidenceSidebar renders the five evidence blocks for a selected component'
   assert.match(html, /data-testid="evidence-tabs"/);
   assert.match(html, /data-testid="evidence-words"/);
   assert.match(html, /data-testid="evidence-layers"/);
-  assert.doesNotMatch(html, /data-testid="evidence-checks"/);
+  // Ben, 2026-09-14: "I prefer this side bar behavior from corpus" (the
+  // Deal Storylines panel): fixed to the viewport, the active tab
+  // underlined, the checks and provenance behind a closed "Supporting
+  // record detail" disclosure at the foot of Detail.
+  assert.match(html, /<aside[^>]*class="[^"]*fixed inset-y-0 right-0[^"]*lg:w-\[406px\]/);
+  assert.match(html, /aria-selected="true"[^>]*role="tab"[^>]*class="[^"]*border-accent/);
+  assert.match(html, /<details[^>]*data-testid="supporting-record-detail"[^>]*>[\s\S]*Supporting record detail[\s\S]*data-testid="evidence-checks"[\s\S]*data-testid="evidence-provenance"[\s\S]*<\/details>/);
   assert.doesNotMatch(html, /data-testid="evidence-review-trail-section"/);
   // the exact words of the supporting component
   assert.match(html, /geopolitical conditions or changes that are the result of the outbreak/);
@@ -147,6 +153,8 @@ test('EvidenceSidebar highlights the clause when sectionText is supplied', () =>
   }));
   assert.match(html, /data-testid="evidence-clause"/);
   assert.match(html, /<mark[^>]*>geopolitical conditions or changes that are the result of the outbreak/);
+  // Each cited words paragraph carries a Source chip (Deal Storylines).
+  assert.match(html, /geopolitical conditions[^<]*”<button[^>]*data-testid="evidence-source-chip"[^>]*>Source</);
 });
 
 test('EvidenceSidebar with no fact renders nothing', () => {

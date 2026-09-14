@@ -107,7 +107,9 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
   const baseClass = isPill
     ? `${BADGE} ${toneClass(cell.tone)}`
     : (cell.kind === 'value' ? `text-left font-ui ${TEXT}` : `text-left font-body ${TEXT}`);
-  const selectedClass = selected ? 'ring-2 ring-amber-400' : '';
+  // The selected pill is outlined in the accent, as the selected card in
+  // Deal Storylines is (Ben, 2026-09-14: "I prefer this side bar behavior").
+  const selectedClass = selected ? 'ring-2 ring-accent' : '';
   // Ben, 2026-09-14, on the MAE (aggregate) cell: "for the definition, take
   // out of table but when you click the MAE box and the side bar opens,
   // there is a fixed visual element at the bottom of the side bar that has
@@ -599,7 +601,8 @@ export default function ProvisionTables({
   onReset = null,
   busy = false,
   initialSubRowsOpen = false,
-  initialTreeOpen = false,
+  // Ben, 2026-09-14: "have the top level interpretation tree items shown".
+  initialTreeOpen = true,
 }) {
   const factsById = useMemo(() => new Map((facts || []).map((fact) => [factIdOf(fact), fact])), [facts]);
   const [selection, setSelection] = useState(null);
@@ -642,7 +645,10 @@ export default function ProvisionTables({
   const tabClass = (current) => `${TAB} ${current ? 'border-[#dcdcdc] bg-[#f3f3f3] text-[#1f1f1f]' : 'border-transparent text-[#6b6b6b] hover:text-[#1f1f1f]'}`;
   return (
     <div className="flex flex-wrap gap-[18.5px] lg:flex-nowrap" data-testid="provision-tables">
-      <div className="min-w-0 flex-1 space-y-[16px]">
+      {/* The sidebar is fixed to the viewport's right edge (Deal Storylines;
+          Ben, 2026-09-14), so the tables keep its width clear while it is
+          open. */}
+      <div className={`min-w-0 flex-1 space-y-[16px] ${selectedFact ? 'lg:pr-[406px]' : ''}`} data-sidebar-open={selectedFact ? 'true' : undefined}>
         <div className="flex items-center gap-[4.5px]" data-testid="section-toggles">
           <button type="button" onClick={() => setAll(false)} disabled={collapsed.size === 0} className={tabClass(collapsed.size === 0)}>Expand all</button>
           <button type="button" onClick={() => setAll(true)} disabled={allCollapsed} className={tabClass(allCollapsed)}>Collapse all</button>
