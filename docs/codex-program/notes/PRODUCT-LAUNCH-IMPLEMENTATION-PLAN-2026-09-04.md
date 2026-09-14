@@ -2656,7 +2656,23 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       (finding (21)'s unknown-span rule). 6.04's benefit rows, 6.10 and
       6.11's proxy timetable with the adjournment reason coded
       Insufficient votes, 6.06's five publicity sub-items, 6.12 to 6.14
-      read correctly; 6.15 stays UNRESOLVED_UNUSUAL_PROVISION. Ben's afternoon decisions,
+      read correctly; 6.15 stays UNRESOLVED_UNUSUAL_PROVISION.
+      (37) 21:50 UTC, generation 7's Articles VII and VIII read: the
+      three bring-down tiers of 7.02 as sub-items with their standards
+      and the sections they cover, 7.03's two tiers, the certificates,
+      the frustration rule with a branch per party; 8.01's rights with
+      the 30-day cures and the earlier-of rule; 8.02's fee, triggers,
+      timing per trigger, exclusive remedy, interest and the 12-month
+      tail; 8.05's board-action formalities. The outside date row still
+      showed both dates in both columns though the stored cells were
+      right: the page's own value completion (the safety net for stored
+      generations) read each fact's one DATE into the other column; it
+      now skips a component another value column of the same kind
+      already reads, as the extractor's completion does. The
+      willful-breach definition and its knowledge standard (no table for
+      them) are Defined Terms entries, as every readout-less definition
+      fact now is; the once-only fee clause is a line of the Sole and
+      exclusive remedy row. Ben's afternoon decisions,
       2026-09-14, each in code: "by miscoded I meant oyu currentl have it
       messed up and you need to move it over to what we had in the old
       vesrion...." (the reps table opens with General Exceptions: SEC

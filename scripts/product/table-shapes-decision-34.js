@@ -749,6 +749,11 @@ function applyTerminationFees(doc) {
     guidance: 'Company termination fee: the FEE_AMOUNT fact (amount, payer COMPANY) and each FEE_TRIGGER fact (one trigger code per scenario, the scenario a sub-item as drafted); Reverse termination fee: the same for a fee Parent pays; Expense reimbursement (amount or cap, the trigger); Payment timing: when each fee falls due, one cell per rule; Sole and exclusive remedy: the PAID_FEE_EXCLUSIVE_REMEDY fact (SPECIFIC_PERFORMANCE_REMEDIES) as YES; Willful-breach carve-out to sole remedy: YES when the exclusivity does not cover willful breach; Interest on late payment: the LATE_INTEREST fact. The tail period goes to the tail-fee table.',
   });
   delete payer.reason; delete payer.addition;
+  // Generation 7, 8.02: "in no event shall the Company be required to pay
+  // the Company Termination Fee on more than one occasion" came back as a
+  // PAID_FEE_EXCLUSIVE_REMEDY fact without a readout; it is a line of the
+  // Sole and exclusive remedy row.
+  table.fact_type_rows = { 'REMEDY_LIMITATION:PAID_FEE_EXCLUSIVE_REMEDY': 'Sole and exclusive remedy' };
   section.tables = [table];
 
   const tailSection = findSection(doc, 'tail-fee');
