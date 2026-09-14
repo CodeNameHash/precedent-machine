@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from '../../../../lib/useUser';
-import { Breadcrumbs, ErrorState, SkeletonCard, EmptyState } from '../../../../components/UI';
+import { ErrorState, SkeletonCard, EmptyState } from '../../../../components/UI';
 import PublishedSummary from '../../../../components/product/PublishedSummary.jsx';
 import ProvisionRail from '../../../../components/product/ProvisionRail.jsx';
 import { previewFactsFromWorkspace } from '../../../../lib/product/provisions-preview';
@@ -63,20 +63,20 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
   const agreementDate = formatAgreementDate(source.agreement_date);
   const secLabel = [source.exhibit_type, source.filing_accession].filter(Boolean).join(' · ') || (source.retrieval_url ? 'SEC EDGAR' : null);
   const generation = progress && Number.isFinite(progress.generation) ? progress.generation : null;
+  // Ben, 2026-09-14, on the Corpus top bar and breadcrumbs above the page:
+  // "on UI - I still see this at the top and the left hand side bar is not
+  // flush to the side of the page?" The page renders without the Corpus
+  // shell (no header, no breadcrumbs: ProvisionsPreviewPage.noLayout); the
+  // rail is the page's left edge, full height, and the content sits beside
+  // it with the deal page's padding.
   return (
-    <div className="space-y-6">
-      <Breadcrumbs items={[
-        { label: 'Dashboard', href: '/' },
-        { label: 'Review', href: '/review' },
-        { label: 'Agreement review', href: `/review/product/${runId}` },
-        { label: 'Lawyer preview' },
-      ]} />
+    <div className="flex min-h-screen bg-paper" data-testid="provisions-page">
       {preview.facts.length === 0 ? (
-        <EmptyState icon="" title={live ? 'No sections in yet' : 'No layered facts'} description={live ? 'The first completed section appears here within a few minutes.' : 'This run has no valid layered (V2) facts to show.'} />
+        <div className="p-4 md:p-8"><EmptyState icon="" title={live ? 'No sections in yet' : 'No layered facts'} description={live ? 'The first completed section appears here within a few minutes.' : 'This run has no valid layered (V2) facts to show.'} /></div>
       ) : (
-        <div className="flex gap-8">
-          <ProvisionRail sections={tableShapesV3.sections} title={title} subtitle="Agreement review" />
-          <div className="min-w-0 flex-1 space-y-6">
+        <>
+          <ProvisionRail sections={tableShapesV3.sections} title={title} subtitle="Lawyer preview" />
+          <div className="min-w-0 flex-1 space-y-6 p-4 md:p-8">
             {/* Deal header card, the legacy deal page's (pages/deals/[id].js). */}
             <header className="bg-white border border-border rounded-lg shadow-sm p-6" data-testid="preview-header">
               <div className="flex flex-wrap items-center gap-2">
@@ -108,7 +108,7 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
               reviewItemsByFactId={preview.reviewItemsByFactId}
             />
           </div>
-        </div>
+        </>
       )}
     </div>
   );
@@ -146,3 +146,4 @@ export default function ProvisionsPreviewPage() {
   if (!id || !workspace) return <div className="space-y-4 p-8"><SkeletonCard /><SkeletonCard /></div>;
   return <ProvisionsPreviewBody workspace={workspace} runId={id} />;
 }
+ProvisionsPreviewPage.noLayout = true;
