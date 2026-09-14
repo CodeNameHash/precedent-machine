@@ -11,7 +11,7 @@
 const assert = require('node:assert/strict');
 const test = require('node:test');
 
-const { ProductPhase2Store } = require('../lib/product/phase-2-store');
+const { ProductPhase2Store, RESULT_TABLE_ORDER } = require('../lib/product/phase-2-store');
 
 const RUN_ID = '00000000-0000-4000-8000-0000000000aa';
 const NODE_ID = 'n'.repeat(64);
@@ -366,4 +366,90 @@ test('headline.summary is written to the headline row and read back into headlin
   assert.equal(older.tables.product_fact_headlines[0].summary, null, 'the column is nullable');
   const olderSections = await olderStore.loadCompletedSectionResults(RUN_ID);
   assert.equal(Object.hasOwn(olderSections[0].proposals[0].headline, 'summary'), false);
+});
+
+// Metsera generation 7, 2026-09-14: loadCompletedSectionResults pages the
+// component rows 500 at a time, ordered by (proposal_id, ordinal). A child
+// and a top-level sibling share an ordinal, so the order was not total; the
+// tie fell across the 2500-row page boundary, Postgres returned the tied
+// rows in a different order on each page, one row came back twice and one
+// never, and draft finalisation failed with DRAFT_NESTED_IDENTITY. This
+// double resolves ties differently on odd and even pages, as Postgres may.
+function createTieFlippingClient(base) {
+  return {
+    ...base,
+    from(table) {
+      let runIdFilter = null;
+      let orderColumns = [];
+      const query = {
+        select() { return query; },
+        eq(column, value) { if (column === 'run_id') runIdFilter = value; return query; },
+        order(column) { orderColumns.push(column); return query; },
+        range(from, to) {
+          const rows = (base.tables[table] || []).filter((row) => runIdFilter == null || row.run_id === runIdFilter);
+          const pageParity = Math.floor(from / (to - from + 1)) % 2;
+          const sorted = rows.map((row, index) => ({ row, index })).sort((left, right) => {
+            for (const column of orderColumns) {
+              const l = left.row[column]; const r = right.row[column];
+              if (l < r) return -1;
+              if (l > r) return 1;
+            }
+            return pageParity === 0 ? left.index - right.index : right.index - left.index;
+          }).map(({ row }) => row);
+          return Promise.resolve({ data: sorted.slice(from, to + 1), error: null });
+        },
+      };
+      return query;
+    },
+  };
+}
+
+test('component rows page in a total order: a tied ordinal across a page boundary still rebuilds every tree', async () => {
+  const base = createFakeClient();
+  const store = new ProductPhase2Store({ client: base });
+  // 80 proposals x 7 rows = 560 rows, so one page boundary at 500, which
+  // falls inside proposal 71's rows, between its two tied ordinal-1 rows.
+  // Every proposal has a top-level sibling and a child that share ordinal 0
+  // and another pair that share ordinal 1.
+  const proposals = [];
+  for (let i = 0; i < 80; i += 1) {
+    const id = String(i).padStart(2, '0');
+    const own = (n) => `${id}-${n}`;
+    const components = [
+      { component_id: own('a'), kind: 'ACTOR', label: 'party', text: 'the Company', origin: 'OWN', source_span_id: SPAN_ID, start_byte: 0, end_byte: 11, gap_before: false, children: [] },
+      { component_id: own('b'), kind: 'OPERATION', label: 'operation', text: 'shall pay the fee', origin: 'OWN', source_span_id: SPAN_ID, start_byte: 12, end_byte: 29, gap_before: false, children: [
+        { component_id: own('b1'), kind: 'OBJECT', label: 'object', text: 'the fee', origin: 'OWN', source_span_id: SPAN_ID, start_byte: 22, end_byte: 29, gap_before: false, children: [] },
+        { component_id: own('b2'), kind: 'QUALIFIER', label: 'qualifier', text: 'promptly', origin: 'OWN', source_span_id: SPAN_ID, start_byte: 30, end_byte: 38, gap_before: true, children: [] },
+      ] },
+      { component_id: own('c'), kind: 'TERM', label: 'term one', text: 'one', origin: 'OWN', source_span_id: SPAN_ID, start_byte: 40, end_byte: 43, gap_before: true, children: [] },
+      { component_id: own('d'), kind: 'TERM', label: 'term two', text: 'two', origin: 'OWN', source_span_id: SPAN_ID, start_byte: 44, end_byte: 47, gap_before: true, children: [] },
+      { component_id: own('e'), kind: 'TERM', label: 'term three', text: 'three', origin: 'OWN', source_span_id: SPAN_ID, start_byte: 48, end_byte: 53, gap_before: true, children: [] },
+    ];
+    proposals.push(baseProposal({
+      proposal_id: `${id}${'p'.repeat(62)}`, fact_occurrence_id: `${id}${'o'.repeat(62)}`,
+      components, headline: { label: 'Fee', distinguishing_component_ids: [own('b1')] },
+    }));
+  }
+  await store.commitSection({ runId: RUN_ID, nodeId: NODE_ID, workerId: 'worker', attemptToken: 't'.repeat(8), result: baseResult({ proposals }) });
+  assert.equal(base.tables.product_fact_components.length, 560);
+
+  const flipping = new ProductPhase2Store({ client: createTieFlippingClient(base) });
+  const [section] = await flipping.loadCompletedSectionResults(RUN_ID);
+  assert.equal(section.proposals.length, 80);
+  for (const proposal of section.proposals) {
+    const original = proposals.find((item) => item.proposal_id === proposal.proposal_id);
+    assert.deepEqual(
+      proposal.components.map((component) => [component.component_id, component.children.map((child) => child.component_id)]),
+      original.components.map((component) => [component.component_id, component.children.map((child) => child.component_id)]),
+      `proposal ${proposal.proposal_id} must rebuild its tree from paged rows`,
+    );
+  }
+});
+
+test('every paged result table is read in a total order that ends in its own key', () => {
+  for (const [table, columns] of Object.entries(RESULT_TABLE_ORDER)) {
+    const last = columns[columns.length - 1];
+    assert.ok(/_id$/.test(last) || table === 'product_section_results' || table === 'product_fact_headlines' || table === 'product_fact_conclusions', `${table} pages by ${columns.join(', ')}`);
+  }
+  assert.deepEqual(RESULT_TABLE_ORDER.product_fact_components, ['proposal_id', 'ordinal', 'component_id']);
 });
